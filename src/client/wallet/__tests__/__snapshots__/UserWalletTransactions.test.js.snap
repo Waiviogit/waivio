@@ -1,44 +1,58 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`(Component) UserWalletTransactions with default prop values renders and matches snapshot 1`] = `
+exports[`(Component) UserWalletTransactions renders and matches snapshot 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <UserWalletTransactions
-    actions={Array []}
-    currentUsername="hellosteem"
-    demoTransactions={Array []}
-    getMoreUserAccountHistory={[Function]}
-    getMoreUserTransactionHistory={[Function]}
-    hasMore={false}
-    loadingMoreUsersAccountHistory={false}
-    totalVestingFundSteem="0"
-    totalVestingShares="0"
-    transactions={
-      Array [
-        Object {
-          "op": Array [
-            "transfer_to_vesting",
-            Object {
-              "amount": "100 HIVE",
-            },
-          ],
-          "timestamp": "0",
-        },
-        Object {
-          "op": Array [
-            "transfer",
-            Object {
-              "amount": "100 HIVE",
-              "from": "hellosteem1",
-              "memo": "transfer memo",
-            },
-          ],
-          "timestamp": "0",
-        },
-      ]
+  Symbol(enzyme.__unrendered__): <Provider
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
     }
-    userHasMoreActions={false}
-  />,
+  >
+    <IntlProvider
+      locale="en"
+    >
+      <InjectIntl(UserWalletTransactions)
+        currentUsername="hellosteem"
+        getMoreUserAccountHistory={[Function]}
+        loadingMoreUsersAccountHistory={false}
+        totalVestingFundSteem="0"
+        totalVestingShares="0"
+        transactions={
+          Array [
+            Object {
+              "op": Array [
+                "transfer_to_vesting",
+                Object {
+                  "amount": "100 HIVE",
+                },
+              ],
+              "timestamp": "0",
+            },
+            Object {
+              "op": Array [
+                "transfer",
+                Object {
+                  "amount": "100 HIVE",
+                  "from": "hellosteem1",
+                  "memo": "transfer memo",
+                },
+              ],
+              "timestamp": "0",
+            },
+          ]
+        }
+        userHasMoreActions={false}
+      />
+    </IntlProvider>
+    ,
+  </Provider>,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
     "checkPropTypes": [Function],
@@ -51,87 +65,20 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "host",
+    "nodeType": "function",
     "props": Object {
-      "children": <ReduxInfiniteScroll
-        className=""
-        containerHeight="100%"
-        elementIsScrollable={false}
-        hasMore={false}
-        holderType="div"
-        horizontal={false}
-        items={Array []}
-        loadMore={[Function]}
-        loader={
-          <div
-            className="UserWalletTransactions__loader"
-          >
-            <Loading
-              center={true}
-            />
-          </div>
-        }
-        loadingMore={false}
-        showLoader={true}
-        threshold={500}
-      >
-        <div />
-        <WalletTransaction
-          currentUsername="hellosteem"
-          isGuestPage={false}
-          totalVestingFundSteem="0"
-          totalVestingShares="0"
-          transaction={
-            Object {
-              "op": Array [
-                "transfer_to_vesting",
-                Object {
-                  "amount": "100 HIVE",
-                },
-              ],
-              "timestamp": "0",
-            }
-          }
-          transactionHistory={Object {}}
-        />
-        <WalletTransaction
-          currentUsername="hellosteem"
-          isGuestPage={false}
-          totalVestingFundSteem="0"
-          totalVestingShares="0"
-          transaction={
-            Object {
-              "op": Array [
-                "transfer",
-                Object {
-                  "amount": "100 HIVE",
-                  "from": "hellosteem1",
-                  "memo": "transfer memo",
-                },
-              ],
-              "timestamp": "0",
-            }
-          }
-          transactionHistory={Object {}}
-        />
-      </ReduxInfiniteScroll>,
-      "className": "UserWalletTransactions",
-    },
-    "ref": null,
-    "rendered": Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "class",
-      "props": Object {
-        "children": Array [
-          <div />,
-          Array [
-            <WalletTransaction
-              currentUsername="hellosteem"
-              isGuestPage={false}
-              totalVestingFundSteem="0"
-              totalVestingShares="0"
-              transaction={
+      "children": Array [
+        <IntlProvider
+          locale="en"
+        >
+          <InjectIntl(UserWalletTransactions)
+            currentUsername="hellosteem"
+            getMoreUserAccountHistory={[Function]}
+            loadingMoreUsersAccountHistory={false}
+            totalVestingFundSteem="0"
+            totalVestingShares="0"
+            transactions={
+              Array [
                 Object {
                   "op": Array [
                     "transfer_to_vesting",
@@ -140,16 +87,7 @@ ShallowWrapper {
                     },
                   ],
                   "timestamp": "0",
-                }
-              }
-              transactionHistory={Object {}}
-            />,
-            <WalletTransaction
-              currentUsername="hellosteem"
-              isGuestPage={false}
-              totalVestingFundSteem="0"
-              totalVestingShares="0"
-              transaction={
+                },
                 Object {
                   "op": Array [
                     "transfer",
@@ -160,132 +98,95 @@ ShallowWrapper {
                     },
                   ],
                   "timestamp": "0",
-                }
-              }
-              transactionHistory={Object {}}
-            />,
-          ],
-        ],
-        "className": "",
-        "containerHeight": "100%",
-        "elementIsScrollable": false,
-        "hasMore": false,
-        "holderType": "div",
-        "horizontal": false,
-        "items": Array [],
-        "loadMore": [Function],
-        "loader": <div
-          className="UserWalletTransactions__loader"
-        >
-          <Loading
-            center={true}
+                },
+              ]
+            }
+            userHasMoreActions={false}
           />
-        </div>,
-        "loadingMore": false,
-        "showLoader": true,
-        "threshold": 500,
-      },
-      "ref": null,
-      "rendered": Array [
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "host",
-          "props": Object {},
-          "ref": null,
-          "rendered": null,
-          "type": "div",
-        },
-        Object {
-          "instance": null,
-          "key": "0",
-          "nodeType": "function",
-          "props": Object {
-            "currentUsername": "hellosteem",
-            "isGuestPage": false,
-            "totalVestingFundSteem": "0",
-            "totalVestingShares": "0",
-            "transaction": Object {
-              "op": Array [
-                "transfer_to_vesting",
-                Object {
-                  "amount": "100 HIVE",
-                },
-              ],
-              "timestamp": "0",
-            },
-            "transactionHistory": Object {},
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": "0",
-          "nodeType": "function",
-          "props": Object {
-            "currentUsername": "hellosteem",
-            "isGuestPage": false,
-            "totalVestingFundSteem": "0",
-            "totalVestingShares": "0",
-            "transaction": Object {
-              "op": Array [
-                "transfer",
-                Object {
-                  "amount": "100 HIVE",
-                  "from": "hellosteem1",
-                  "memo": "transfer memo",
-                },
-              ],
-              "timestamp": "0",
-            },
-            "transactionHistory": Object {},
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
+        </IntlProvider>,
+        ",",
       ],
-      "type": [Function],
+      "value": Object {
+        "store": Object {
+          "clearActions": [Function],
+          "dispatch": [Function],
+          "getActions": [Function],
+          "getState": [Function],
+          "replaceReducer": [Function],
+          "subscribe": [Function],
+        },
+        "subscription": Subscription {
+          "handleChangeWrapper": [Function],
+          "listeners": Object {
+            "notify": [Function],
+          },
+          "onStateChange": [Function],
+          "parentSub": undefined,
+          "store": Object {
+            "clearActions": [Function],
+            "dispatch": [Function],
+            "getActions": [Function],
+            "getState": [Function],
+            "replaceReducer": [Function],
+            "subscribe": [Function],
+          },
+          "unsubscribe": null,
+        },
+      },
     },
-    "type": "div",
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "host",
-      "props": Object {
-        "children": <ReduxInfiniteScroll
-          className=""
-          containerHeight="100%"
-          elementIsScrollable={false}
-          hasMore={false}
-          holderType="div"
-          horizontal={false}
-          items={Array []}
-          loadMore={[Function]}
-          loader={
-            <div
-              className="UserWalletTransactions__loader"
-            >
-              <Loading
-                center={true}
-              />
-            </div>
-          }
-          loadingMore={false}
-          showLoader={true}
-          threshold={500}
-        >
-          <div />
-          <WalletTransaction
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": <InjectIntl(UserWalletTransactions)
             currentUsername="hellosteem"
-            isGuestPage={false}
+            getMoreUserAccountHistory={[Function]}
+            loadingMoreUsersAccountHistory={false}
             totalVestingFundSteem="0"
             totalVestingShares="0"
-            transaction={
+            transactions={
+              Array [
+                Object {
+                  "op": Array [
+                    "transfer_to_vesting",
+                    Object {
+                      "amount": "100 HIVE",
+                    },
+                  ],
+                  "timestamp": "0",
+                },
+                Object {
+                  "op": Array [
+                    "transfer",
+                    Object {
+                      "amount": "100 HIVE",
+                      "from": "hellosteem1",
+                      "memo": "transfer memo",
+                    },
+                  ],
+                  "timestamp": "0",
+                },
+              ]
+            }
+            userHasMoreActions={false}
+          />,
+          "locale": "en",
+        },
+        "ref": null,
+        "rendered": Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "currentUsername": "hellosteem",
+            "getMoreUserAccountHistory": [Function],
+            "loadingMoreUsersAccountHistory": false,
+            "totalVestingFundSteem": "0",
+            "totalVestingShares": "0",
+            "transactions": Array [
               Object {
                 "op": Array [
                   "transfer_to_vesting",
@@ -294,16 +195,7 @@ ShallowWrapper {
                   },
                 ],
                 "timestamp": "0",
-              }
-            }
-            transactionHistory={Object {}}
-          />
-          <WalletTransaction
-            currentUsername="hellosteem"
-            isGuestPage={false}
-            totalVestingFundSteem="0"
-            totalVestingShares="0"
-            transaction={
+              },
               Object {
                 "op": Array [
                   "transfer",
@@ -314,28 +206,56 @@ ShallowWrapper {
                   },
                 ],
                 "timestamp": "0",
-              }
-            }
-            transactionHistory={Object {}}
-          />
-        </ReduxInfiniteScroll>,
-        "className": "UserWalletTransactions",
+              },
+            ],
+            "userHasMoreActions": false,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        "type": [Function],
       },
-      "ref": null,
-      "rendered": Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "children": Array [
-            <div />,
-            Array [
-              <WalletTransaction
-                currentUsername="hellosteem"
-                isGuestPage={false}
-                totalVestingFundSteem="0"
-                totalVestingShares="0"
-                transaction={
+      ",",
+    ],
+    "type": Object {
+      "$$typeof": Symbol(react.provider),
+      "_context": Object {
+        "$$typeof": Symbol(react.context),
+        "Consumer": Object {
+          "$$typeof": Symbol(react.context),
+          "_calculateChangedBits": null,
+          "_context": [Circular],
+        },
+        "Provider": [Circular],
+        "_calculateChangedBits": null,
+        "_currentRenderer": null,
+        "_currentRenderer2": null,
+        "_currentValue": null,
+        "_currentValue2": null,
+        "_threadCount": 0,
+        "displayName": "ReactRedux",
+      },
+    },
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "function",
+      "props": Object {
+        "children": Array [
+          <IntlProvider
+            locale="en"
+          >
+            <InjectIntl(UserWalletTransactions)
+              currentUsername="hellosteem"
+              getMoreUserAccountHistory={[Function]}
+              loadingMoreUsersAccountHistory={false}
+              totalVestingFundSteem="0"
+              totalVestingShares="0"
+              transactions={
+                Array [
                   Object {
                     "op": Array [
                       "transfer_to_vesting",
@@ -344,16 +264,7 @@ ShallowWrapper {
                       },
                     ],
                     "timestamp": "0",
-                  }
-                }
-                transactionHistory={Object {}}
-              />,
-              <WalletTransaction
-                currentUsername="hellosteem"
-                isGuestPage={false}
-                totalVestingFundSteem="0"
-                totalVestingShares="0"
-                transaction={
+                  },
                   Object {
                     "op": Array [
                       "transfer",
@@ -364,96 +275,145 @@ ShallowWrapper {
                       },
                     ],
                     "timestamp": "0",
-                  }
-                }
-                transactionHistory={Object {}}
-              />,
-            ],
-          ],
-          "className": "",
-          "containerHeight": "100%",
-          "elementIsScrollable": false,
-          "hasMore": false,
-          "holderType": "div",
-          "horizontal": false,
-          "items": Array [],
-          "loadMore": [Function],
-          "loader": <div
-            className="UserWalletTransactions__loader"
-          >
-            <Loading
-              center={true}
+                  },
+                ]
+              }
+              userHasMoreActions={false}
             />
-          </div>,
-          "loadingMore": false,
-          "showLoader": true,
-          "threshold": 500,
+          </IntlProvider>,
+          ",",
+        ],
+        "value": Object {
+          "store": Object {
+            "clearActions": [Function],
+            "dispatch": [Function],
+            "getActions": [Function],
+            "getState": [Function],
+            "replaceReducer": [Function],
+            "subscribe": [Function],
+          },
+          "subscription": Subscription {
+            "handleChangeWrapper": [Function],
+            "listeners": Object {
+              "notify": [Function],
+            },
+            "onStateChange": [Function],
+            "parentSub": undefined,
+            "store": Object {
+              "clearActions": [Function],
+              "dispatch": [Function],
+              "getActions": [Function],
+              "getState": [Function],
+              "replaceReducer": [Function],
+              "subscribe": [Function],
+            },
+            "unsubscribe": null,
+          },
         },
-        "ref": null,
-        "rendered": Array [
-          Object {
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": <InjectIntl(UserWalletTransactions)
+              currentUsername="hellosteem"
+              getMoreUserAccountHistory={[Function]}
+              loadingMoreUsersAccountHistory={false}
+              totalVestingFundSteem="0"
+              totalVestingShares="0"
+              transactions={
+                Array [
+                  Object {
+                    "op": Array [
+                      "transfer_to_vesting",
+                      Object {
+                        "amount": "100 HIVE",
+                      },
+                    ],
+                    "timestamp": "0",
+                  },
+                  Object {
+                    "op": Array [
+                      "transfer",
+                      Object {
+                        "amount": "100 HIVE",
+                        "from": "hellosteem1",
+                        "memo": "transfer memo",
+                      },
+                    ],
+                    "timestamp": "0",
+                  },
+                ]
+              }
+              userHasMoreActions={false}
+            />,
+            "locale": "en",
+          },
+          "ref": null,
+          "rendered": Object {
             "instance": null,
             "key": undefined,
-            "nodeType": "host",
-            "props": Object {},
-            "ref": null,
-            "rendered": null,
-            "type": "div",
-          },
-          Object {
-            "instance": null,
-            "key": "0",
-            "nodeType": "function",
+            "nodeType": "class",
             "props": Object {
               "currentUsername": "hellosteem",
-              "isGuestPage": false,
+              "getMoreUserAccountHistory": [Function],
+              "loadingMoreUsersAccountHistory": false,
               "totalVestingFundSteem": "0",
               "totalVestingShares": "0",
-              "transaction": Object {
-                "op": Array [
-                  "transfer_to_vesting",
-                  Object {
-                    "amount": "100 HIVE",
-                  },
-                ],
-                "timestamp": "0",
-              },
-              "transactionHistory": Object {},
+              "transactions": Array [
+                Object {
+                  "op": Array [
+                    "transfer_to_vesting",
+                    Object {
+                      "amount": "100 HIVE",
+                    },
+                  ],
+                  "timestamp": "0",
+                },
+                Object {
+                  "op": Array [
+                    "transfer",
+                    Object {
+                      "amount": "100 HIVE",
+                      "from": "hellosteem1",
+                      "memo": "transfer memo",
+                    },
+                  ],
+                  "timestamp": "0",
+                },
+              ],
+              "userHasMoreActions": false,
             },
             "ref": null,
             "rendered": null,
             "type": [Function],
           },
-          Object {
-            "instance": null,
-            "key": "0",
-            "nodeType": "function",
-            "props": Object {
-              "currentUsername": "hellosteem",
-              "isGuestPage": false,
-              "totalVestingFundSteem": "0",
-              "totalVestingShares": "0",
-              "transaction": Object {
-                "op": Array [
-                  "transfer",
-                  Object {
-                    "amount": "100 HIVE",
-                    "from": "hellosteem1",
-                    "memo": "transfer memo",
-                  },
-                ],
-                "timestamp": "0",
-              },
-              "transactionHistory": Object {},
-            },
-            "ref": null,
-            "rendered": null,
-            "type": [Function],
+          "type": [Function],
+        },
+        ",",
+      ],
+      "type": Object {
+        "$$typeof": Symbol(react.provider),
+        "_context": Object {
+          "$$typeof": Symbol(react.context),
+          "Consumer": Object {
+            "$$typeof": Symbol(react.context),
+            "_calculateChangedBits": null,
+            "_context": [Circular],
           },
-        ],
-        "type": [Function],
+          "Provider": [Circular],
+          "_calculateChangedBits": null,
+          "_currentRenderer": null,
+          "_currentRenderer2": null,
+          "_currentValue": null,
+          "_currentValue2": null,
+          "_threadCount": 0,
+          "displayName": "ReactRedux",
+        },
       },
-      "type": "div",
     },
   ],
   Symbol(enzyme.__options__): Object {
@@ -482,6 +442,5 @@ ShallowWrapper {
     Symbol(enzyme.__providerValues__): undefined,
   },
   Symbol(enzyme.__providerValues__): Map {},
-  Symbol(enzyme.__childContext__): null,
 }
 `;

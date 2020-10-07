@@ -1,5 +1,5 @@
 import React from 'react';
-import { map, get, isEmpty } from 'lodash';
+import { map, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -17,13 +17,7 @@ import {
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
-import {
-  getField,
-  generatePermlink,
-  prepareImageToStore,
-  prepareAlbumData,
-  prepareAlbumToStore,
-} from '../../helpers/wObjectHelper';
+import { generatePermlink, prepareImageToStore, getObjectName } from '../../helpers/wObjectHelper';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import './CreateImage.less';
@@ -43,7 +37,6 @@ import { getVoteValue } from '../../helpers/user';
       {
         addImageToAlbumStore: image => galleryActions.addImageToAlbumStore(image),
         appendObject: wObject => appendActions.appendObject(wObject),
-        addAlbumToStore: album => galleryActions.addAlbumToStore(album),
       },
       dispatch,
     ),
@@ -69,7 +62,7 @@ class CreateImage extends React.Component {
     data.parentPermlink = wObject.author_permlink;
     data.title = '';
     data.lastUpdated = Date.now();
-    data.wobjectName = getField(wObject, objectFields.name);
+    data.wobjectName = getObjectName(wObject);
     data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
 
     return data;
@@ -127,17 +120,13 @@ class CreateImage extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    const { hideModal, intl, albums } = this.props;
+    const { hideModal, intl } = this.props;
     const album = this.getImageAlbum();
-    console.log(this.props.albums);
-    console.log(album);
 
     this.props.form.validateFields(err => {
       if (!err) {
         this.setState({ loading: true });
-        if (isEmpty(albums)) {
-          this.appendAlbum();
-        }
+
         this.appendImages()
           .then(() => {
             hideModal();
@@ -218,40 +207,6 @@ class CreateImage extends React.Component {
     }
 
     this.setState({ fileList });
-  };
-
-  appendAlbum = async () => {
-    const formData = {
-      galleryAlbum: 'Photos',
-    };
-
-    const { currentUsername, wObject } = this.props;
-    const data = prepareAlbumData({ galleryAlbum: 'Photos' }, currentUsername, wObject);
-    const album = prepareAlbumToStore(data);
-
-    try {
-      const { author } = await this.props.appendObject(data);
-      await this.props.addAlbumToStore({ ...album, author });
-      this.setState(() => ({ currentAlbum: album }));
-      message.success(
-        this.props.intl.formatMessage(
-          {
-            id: 'gallery_add_album_success',
-            defaultMessage: 'You successfully have created the {albumName} album',
-          },
-          {
-            albumName: formData.galleryAlbum,
-          },
-        ),
-      );
-    } catch (err) {
-      message.error(
-        this.props.intl.formatMessage({
-          id: 'gallery_add_album_failure',
-          defaultMessage: "Couldn't create the album.",
-        }),
-      );
-    }
   };
 
   appendImages = async () => {
@@ -410,7 +365,6 @@ CreateImage.propTypes = {
   rewardFund: PropTypes.shape(),
   rate: PropTypes.number,
   defaultVotePercent: PropTypes.number,
-  addAlbumToStore: PropTypes.func,
 };
 
 CreateImage.defaultProps = {
@@ -423,7 +377,6 @@ CreateImage.defaultProps = {
   rewardFund: {},
   rate: 0,
   defaultVotePercent: 100,
-  addAlbumToStore: () => {},
 };
 
 export default injectIntl(Form.create()(CreateImage));

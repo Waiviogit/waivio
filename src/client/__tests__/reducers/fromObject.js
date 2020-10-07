@@ -15,6 +15,7 @@ describe('fromObject', () => {
       wobject: {
         fields: [{ name: 'rating' }, { name: 'no-rating' }],
         tagCategories: 'tagCategories',
+        rating: [{ name: 'rating' }],
       },
       isFetching: 'isFetching',
       author: 'author',

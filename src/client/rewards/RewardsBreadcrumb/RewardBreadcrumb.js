@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
 import classNames from 'classnames';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { getObjectName } from '../../helpers/wObjectHelper';
 import { getBreadCrumbText } from '../rewardsHelper';
 import '../Rewards.less';
 
@@ -19,7 +19,7 @@ const rewardText = {
 
 const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
   const isCorrectFilter = !!rewardText[filterKey];
-  const objName = !isEmpty(reqObject) ? getFieldWithMaxWeight(reqObject, 'name') : null;
+  const objName = getObjectName(reqObject);
   const breadCrumbText = `${
     isCorrectFilter ? getBreadCrumbText(intl, location, filterKey, rewardText, match) : ''
   } ${

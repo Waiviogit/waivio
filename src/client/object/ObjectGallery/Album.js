@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { Card, Row, Col } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { FormattedMessage } from 'react-intl';
+
 import GalleryItem from './GalleryItem';
+
 import './GalleryAlbum.less';
-import { calculateApprovePercent } from '../../helpers/wObjectHelper';
 
 class Album extends React.Component {
   static propTypes = {
     album: PropTypes.shape(),
-    wobjMainer: PropTypes.shape(),
   };
   static defaultProps = {
     album: {},
@@ -24,13 +24,9 @@ class Album extends React.Component {
   handleOpenLightbox = photoIndex => this.setState({ isOpen: true, photoIndex });
 
   render() {
-    const { album, wobjMainer } = this.props;
+    const { album } = this.props;
     const { isOpen, photoIndex } = this.state;
-    const pictures =
-      album.items &&
-      album.items.filter(
-        picture => calculateApprovePercent(picture.active_votes, picture.weight, wobjMainer) >= 70,
-      );
+    const pictures = album.items;
     return (
       <div className="GalleryAlbum">
         <Card title={album.body}>

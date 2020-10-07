@@ -148,7 +148,7 @@ export const getMoreFeedContentByObject = ({
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
-export const getFeedContent = (sortBy, queryData, locale, follower) => {
+export const getFeedContent = (sortBy, locale, follower, queryData) => {
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {
       headers: {
@@ -383,12 +383,16 @@ export const getUserAccount = (username, withFollowings = false, authUser) =>
       .catch(error => reject(error));
   });
 
-export const getFollowingUpdates = (userName, count = 5) =>
+export const getFollowingUpdates = (locale, userName, count = 5) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.apiPrefix}${config.user}/${userName}${config.followingUpdates}?users_count=${count}&wobjects_count=${count}`,
       {
-        headers,
+        headers: {
+          ...headers,
+          app: config.appName,
+          locale,
+        },
         method: 'GET',
       },
     )

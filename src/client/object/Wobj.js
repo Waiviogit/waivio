@@ -111,7 +111,6 @@ export default class Wobj extends React.Component {
 
   componentDidMount() {
     const { match, wobject, authenticatedUserName } = this.props;
-    console.log(wobject);
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
@@ -119,15 +118,8 @@ export default class Wobj extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props.wobject);
     if (nextProps.match.params[0] !== this.props.match.params[0]) {
       this.setState({ hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE });
-    }
-    if (!isEmpty(this.props.wobject)) {
-      if (this.props.wobject.albums_count === 0) {
-        console.log('kklk');
-        this.appendAlbum();
-      }
     }
   }
 
@@ -237,6 +229,7 @@ export default class Wobj extends React.Component {
           onFollowClick={this.handleFollowClick}
           toggleViewEditMode={this.toggleViewEditMode}
           albumsAndImagesCount={albumsAndImagesCount}
+          appendAlbum={this.appendAlbum}
         />
         <div className="shifted">
           <div className={`container ${hasLeftSidebar ? 'feed-layout' : 'post-layout'}`}>
@@ -252,6 +245,7 @@ export default class Wobj extends React.Component {
                     wobject={wobject}
                     userName={userName}
                     history={history}
+                    appendAlbum={this.appendAlbum}
                   />
                 </div>
               </Affix>

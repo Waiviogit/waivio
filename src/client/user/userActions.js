@@ -7,7 +7,6 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
-import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { createCommentPermlink } from '../vendor/steemitHelpers';
 import { getObjectName } from '../helpers/wObjectHelper';
@@ -112,13 +111,14 @@ export const getFollowingObjects = username => (dispatch, getState) => {
 export const GET_FOLLOWING_UPDATES = createAsyncActionType('@user/GET_FOLLOWING_UPDATES');
 export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
   const state = getState();
+  const locale = getLocale(state);
   const isUpdatesFetched = store.getFollowingUpdatesFetched(state);
   const userName = store.getAuthenticatedUserName(state);
   if (!isUpdatesFetched && userName) {
     dispatch({
       type: GET_FOLLOWING_UPDATES.ACTION,
       payload: {
-        promise: ApiClient.getFollowingUpdates(userName, count),
+        promise: ApiClient.getFollowingUpdates(locale, userName, count),
       },
     });
   }
@@ -452,9 +452,9 @@ export const activateCampaign = (company, campaignPermlink) => (
   const rewardFund = store.getRewardFund(state);
   const recentClaims = rewardFund.recent_claims;
   const rewardBalance = rewardFund.reward_balance.replace(' HIVE', '');
-  const proposedWobjName = getFieldWithMaxWeight(company.objects[0], 'name');
+  const proposedWobjName = getObjectName(company.objects[0]);
   const proposedAuthorPermlink = company.objects[0].author_permlink;
-  const primaryObjectName = getFieldWithMaxWeight(company.requiredObject, 'name');
+  const primaryObjectName = getObjectName(company.requiredObject);
   const processingFees = company.commissionAgreement * 100;
   const expiryDate = moment(company.expired_at).format('YYYY-MM-DD');
   const alias = get(company, ['guide', 'alias']);

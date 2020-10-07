@@ -15,6 +15,7 @@ class WobjMenuWrapper extends React.Component {
     wobject: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
     albumsAndImagesCount: PropTypes.number,
+    appendAlbum: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -25,9 +26,13 @@ class WobjMenuWrapper extends React.Component {
   };
 
   onChange = key => {
-    const { match, history } = this.props;
+    const { match, history, albumsAndImagesCount, appendAlbum } = this.props;
+    console.log(appendAlbum);
     const section = key === 'reviews' ? '' : `/${key}`;
     history.push(`${match.url.replace(/\/$/, '')}${section}`);
+    if (key === 'gallery' && albumsAndImagesCount === 0) {
+      appendAlbum();
+    }
   };
 
   render() {
