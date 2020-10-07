@@ -1,12 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
+import { getObjectAlbums } from '../reducers';
 
 @withRouter
+@connect(state => ({
+  albums: getObjectAlbums(state),
+}))
 class WobjMenuWrapper extends React.Component {
   static propTypes = {
     match: PropTypes.shape(),
@@ -16,6 +22,7 @@ class WobjMenuWrapper extends React.Component {
     username: PropTypes.string.isRequired,
     albumsAndImagesCount: PropTypes.number,
     appendAlbum: PropTypes.func.isRequired,
+    albums: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
@@ -23,15 +30,16 @@ class WobjMenuWrapper extends React.Component {
     match: {},
     location: {},
     history: {},
+    albums: [],
   };
 
   onChange = key => {
-    const { match, history, albumsAndImagesCount, appendAlbum } = this.props;
-    console.log(appendAlbum);
+    const { match, history, albums } = this.props;
     const section = key === 'reviews' ? '' : `/${key}`;
     history.push(`${match.url.replace(/\/$/, '')}${section}`);
-    if (key === 'gallery' && albumsAndImagesCount === 0) {
-      appendAlbum();
+
+    if (key === 'gallery' && isEmpty(albums)) {
+      this.props.appendAlbum();
     }
   };
 
@@ -65,6 +73,7 @@ const WobjHero = ({
   isFollowing,
   toggleViewEditMode,
   albumsAndImagesCount,
+  appendAlbum,
 }) => (
   <React.Fragment>
     <Switch>
@@ -89,6 +98,7 @@ const WobjHero = ({
               wobject={wobject}
               username={username}
               albumsAndImagesCount={albumsAndImagesCount}
+              appendAlbum={appendAlbum}
             />
           </React.Fragment>
         )}
@@ -106,6 +116,7 @@ WobjHero.propTypes = {
   wobject: PropTypes.shape(),
   toggleViewEditMode: PropTypes.func,
   albumsAndImagesCount: PropTypes.number,
+  appendAlbum: PropTypes.func.isRequired,
 };
 
 WobjHero.defaultProps = {
