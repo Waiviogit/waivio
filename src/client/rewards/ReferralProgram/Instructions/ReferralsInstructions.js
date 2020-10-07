@@ -12,7 +12,6 @@ import {
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
-  getIsChangedRuleSelection,
   getIsUserInWaivioBlackList,
   getReferralStatus,
   isGuestUser,
@@ -49,43 +48,34 @@ const ReferralsInstructions = props => {
     referralStatus,
   } = props;
   const [isModal, setIsModal] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
-  const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [isCopyButton, setIsCopyButton] = useState(false);
 
+  const currentStatus = !!(referralStatus && referralStatus === 'activated');
+
   useEffect(() => {
-    console.log(isConfirmModal);
-    getUserInBlackList(authUserName);
     userReferralInfo(authUserName);
+    getUserInBlackList(authUserName);
   }, []);
 
-  useEffect(() => {
-    if (isChecked === true) {
-      confirmRules(authUserName, isGuest);
-    }
-  }, [isChecked]);
-
-  console.log('referralStatus: ', referralStatus);
-
   const handleAgreeRulesCheckbox = () => {
-    if (isChecked === true && isModal === false) {
+    if (currentStatus === true && isModal === false) {
       setIsModal(true);
     }
+    if (currentStatus !== true) {
+      return confirmRules(authUserName, isGuest);
+    }
+    return null;
   };
 
   const handleOkButton = () => {
     if (isModal === true) {
       setIsModal(false);
-      setIsChecked(false);
-      setIsConfirmModal(true);
     }
   };
 
   const handleCancelButton = () => {
     if (isModal === true) {
       setIsModal(false);
-      setIsChecked(true);
-      setIsConfirmModal(false);
     }
   };
 
@@ -143,16 +133,10 @@ const ReferralsInstructions = props => {
 
           <div className="ReferralInstructions__wrap-conditions">
             <Checkbox
-              checked={isChecked}
+              checked={currentStatus}
               id="agreeButton"
-              onChange={() => {
-                setIsChecked(prevState => {
-                  if (prevState === false) {
-                    return true;
-                  }
-                  return handleAgreeRulesCheckbox();
-                });
-              }}
+              // onChange={() => foo()}
+              onChange={() => handleAgreeRulesCheckbox()}
             />
             <label
               htmlFor="agreeButton"
@@ -165,7 +149,7 @@ const ReferralsInstructions = props => {
             </label>
           </div>
 
-          {isChecked && (
+          {currentStatus && (
             <div className="ReferralInstructions__accepted-conditions">
               <div className="ReferralInstructions__accepted-conditions__text-wrap">
                 <div className="ReferralInstructions__accepted-conditions__text-wrap__title">
@@ -224,7 +208,6 @@ ReferralsInstructions.propTypes = {
   rejectRules: PropTypes.func,
   userReferralInfo: PropTypes.func,
   referralStatus: PropTypes.string.isRequired,
-  // isChangedRuleSelection: PropTypes.bool,
 };
 
 ReferralsInstructions.defaultProps = {
@@ -234,7 +217,6 @@ ReferralsInstructions.defaultProps = {
   confirmRules: () => {},
   rejectRules: () => {},
   userReferralInfo: () => {},
-  isChangedRuleSelection: false,
 };
 
 const mapStateToProps = state => ({
@@ -243,7 +225,6 @@ const mapStateToProps = state => ({
   isBlackListUser: getIsUserInWaivioBlackList(state),
   isGuest: isGuestUser(state),
   referralStatus: getReferralStatus(state),
-  isChangedRuleSelection: getIsChangedRuleSelection(state),
 });
 
 export default injectIntl(

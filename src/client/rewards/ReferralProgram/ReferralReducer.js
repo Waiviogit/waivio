@@ -75,6 +75,8 @@ const ReferralReducer = (state = initialState, action) => {
     case REFERRAL_GET_ADDITION_FIELDS.SUCCESS: {
       return {
         ...state,
+        referralStatus: action.payload.referralStatus,
+        referralList: action.payload.referral,
         isChangedRuleSelection: false,
       };
     }

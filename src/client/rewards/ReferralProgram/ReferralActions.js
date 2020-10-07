@@ -18,7 +18,10 @@ export const REFERRAL_REJECT_RULES = createAsyncActionType('@referral/REFERRAL_R
 export const getUserReferralInfo = username => dispatch => {
   dispatch({
     type: GET_USER_REFERRAL_INFO.ACTION,
-    payload: ApiClient.getUserAccount(username),
+    payload: ApiClient.getUserAccount(username).then(res => ({
+      referralStatus: res.referralStatus,
+      referralList: res.referral,
+    })),
   });
 };
 
