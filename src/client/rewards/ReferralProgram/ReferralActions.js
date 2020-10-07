@@ -33,7 +33,7 @@ export const REFERRAL_GET_ADDITION_FIELDS = createAsyncActionType(
   '@referral/REFERRAL_GET_ADDITION_FIELDS',
 );
 
-export const getChangedReferralFields = (username, isGuestName, blockNum) => (
+export const getChangeOnConfirmReferral = (username, isGuestName, blockNum) => (
   dispatch,
   getState,
   { busyAPI },
@@ -74,7 +74,9 @@ export const referralConfirmRules = (username, isGuest) => (
     .then(async res => {
       if (!res.message) {
         const data = await res;
-        return dispatch(getChangedReferralFields(username, isGuest, get(data, 'result.block_num')));
+        return dispatch(
+          getChangeOnConfirmReferral(username, isGuest, get(data, 'result.block_num')),
+        );
       }
       return dispatch({
         type: REFERRAL_CONFIRM_RULES.ERROR,
