@@ -20,7 +20,7 @@ import {
   isEmpty,
 } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
-import { getCampaignById } from '../../../waivioApi/ApiClient';
+import { getReviewCheckInfo } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUser,
   getDraftPosts,
@@ -145,28 +145,20 @@ class EditPost extends Component {
 
   componentDidMount() {
     const { campaign } = this.state;
+    const { locale, userName } = this.props;
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const campaignId =
       campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ isReview });
+    const postPermlink = get(currDraft, 'permlink');
 
     if (isReview)
-      getCampaignById(campaignId)
+      getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
         .then(campaignData => {
-          const secondaryObjectReservation = campaignData.users.find(
-            user => user.name === this.props.userName && user.status === 'assigned',
-          );
-          const secondaryObject = campaignData.objects.find(
-            obj => obj.author_permlink === secondaryObjectReservation.object_permlink,
-          );
           this.setState({
-            campaign: {
-              ...campaignData,
-              objects: [{ object: secondaryObject }],
-              required_object: campaignData.requiredObject,
-            },
+            campaign: campaignData,
           });
         })
         .then(() => {
@@ -191,25 +183,18 @@ class EditPost extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { locale, userName } = this.props;
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    const postPermlink = get(currDraft, 'permlink');
+    const campaignId = get(currDraft, ['jsonMetadata', 'campaignId']);
     if (
       this.props.draftId !== prevProps.draftId &&
       has(currDraft, ['jsonMetadata', 'campaignId'])
     ) {
-      getCampaignById(get(currDraft, ['jsonMetadata', 'campaignId']))
+      getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
         .then(campaignData => {
-          const secondaryObjectReservation = campaignData.users.find(
-            user => user.name === this.props.userName && user.status === 'assigned',
-          );
-          const secondaryObject = campaignData.objects.find(
-            obj => obj.author_permlink === secondaryObjectReservation.object_permlink,
-          );
           this.setState({
-            campaign: {
-              ...campaignData,
-              objects: [{ object: secondaryObject }],
-              required_object: campaignData.requiredObject,
-            },
+            campaign: campaignData,
           });
         })
         .catch(error => console.log('Failed to get campaign data:', error));
@@ -245,6 +230,7 @@ class EditPost extends Component {
     if (!isEqual(prevEntityMap, nextEntityMap)) {
       this.setState({
         draftContent: {
+          title: nextState.titleValue,
           body: nextState.content,
         },
         currentRawContent: rawContent,
@@ -315,7 +301,7 @@ class EditPost extends Component {
     }
     const updPercentage = {
       ...objPercentage,
-      [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
+      [objId || uniqId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
     this.setState({
       objPercentage: setObjPercents(linkedObjects, updPercentage),
@@ -440,7 +426,16 @@ class EditPost extends Component {
       isUpdating,
       titleValue,
     } = this.state;
-    const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
+    const {
+      saving,
+      publishing,
+      imageLoading,
+      intl,
+      locale,
+      draftPosts,
+      isGuest,
+      draftId,
+    } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -453,6 +448,7 @@ class EditPost extends Component {
               intl={intl}
               handleHashtag={this.handleHashtag}
               displayTitle
+              draftId={draftId}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">

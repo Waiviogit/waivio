@@ -78,7 +78,7 @@ const ImageSetter = ({
   }, [isOkayBtn, isModal]);
 
   // For image pasted for link
-  const checkIsImage = (isValidLink, image) => {
+  const checkImage = (isValidLink, image) => {
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
     if (isSameLink) {
       message.error(
@@ -90,9 +90,7 @@ const ImageSetter = ({
       return;
     }
 
-    const urlValidation = image.src.match(objectURLValidationRegExp);
-
-    if (isValidLink && urlValidation) {
+    if (isValidLink) {
       if (!isMultiple) {
         setCurrentImages([image]);
       } else {
@@ -109,7 +107,7 @@ const ImageSetter = ({
   };
 
   // For image pasted for link
-  const handleOnUploadImageByLink = image => {
+  const handleOnUploadImageByLink = async image => {
     if (currentImages.length >= 25) {
       message.error(
         intl.formatMessage({
@@ -121,19 +119,27 @@ const ImageSetter = ({
     }
     if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
       const url = image || imageLinkInput.current.value;
-      const filename = url.substring(url.lastIndexOf('/') + 1);
-      const newImage = {
-        src: url,
-        name: filename,
-        id: uuidv4(),
-      };
-      const img = new Image();
-      img.src = newImage.src;
-      img.onload = () => {
+      const urlValidation = url.match(objectURLValidationRegExp);
+
+      if (urlValidation) {
+        const onErrorLoadImage = () => {
+          onLoadingImage(false);
+        };
+        let newImage = {};
+        const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
+          newImage = {
+            src: currentLinkSrc,
+            name: currentLinkName,
+            id: uuidv4(),
+          };
+        };
+
+        await onImageUpload(url, insertImage, onErrorLoadImage, true);
         imageLinkInput.current.value = '';
-        return checkIsImage(true, newImage);
-      };
-      img.onerror = () => checkIsImage(false, newImage);
+        checkImage(true, newImage);
+      } else {
+        checkImage(false);
+      }
     }
   };
 
@@ -311,9 +317,7 @@ const ImageSetter = ({
                 id: 'imageSetter_paste_image_link',
                 defaultMessage: 'Paste image link',
               })}
-              onInput={() => {
-                handleOnUploadImageByLink();
-              }}
+              onInput={() => handleOnUploadImageByLink()}
             />
             <Icon type="upload" className="input-upload__btn" />
           </div>
