@@ -152,6 +152,7 @@ class Story extends React.Component {
 
       if (i < 5) {
         i += 1;
+
         return this.getObjectLayout(wobj);
       }
 
@@ -182,11 +183,13 @@ class Story extends React.Component {
 
   handleReportClick(post, postState, isRejectField) {
     let weight = postState.isReported ? 0 : -10000;
+
     if (isRejectField) {
       weight = postState.isReported ? 0 : 9999;
     }
 
     const author = post.root_author;
+
     this.props.votePost(post.id, author, post.permlink, weight);
   }
 
@@ -196,6 +199,7 @@ class Story extends React.Component {
 
   handleFollowClick(post) {
     const postId = `${post.author}/${post.permlink}`;
+
     this.props.pendingFollowingPostAuthor(postId);
 
     if (post.youFollows) {
@@ -261,6 +265,7 @@ class Story extends React.Component {
     } else if (openInNewTab) {
       if (window) {
         const url = `${window.location.origin}${postURL}`;
+
         window.open(url);
       }
     } else {
@@ -285,6 +290,7 @@ class Story extends React.Component {
     } else if (openInNewTab && showPostModal) {
       if (window) {
         const url = `${window.location.origin}${postURL}`;
+
         window.open(url);
       }
     } else if (showPostModal) {
@@ -372,6 +378,7 @@ class Story extends React.Component {
         </div>
       );
     }
+
     return (
       post.depth >= 0 && (
         <div className="Story" id={`${author}-${post.permlink}`}>

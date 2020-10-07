@@ -155,7 +155,9 @@ ManageWebsite.propTypes = {
       minimumValue: PropTypes.number,
     }),
     websites: PropTypes.arrayOf(PropTypes.shape()),
-    dataForPayments: PropTypes.shape({}),
+    dataForPayments: PropTypes.shape({
+      memo: PropTypes.string,
+    }),
   }).isRequired,
   activateWebsite: PropTypes.func.isRequired,
   suspendWebsite: PropTypes.func.isRequired,

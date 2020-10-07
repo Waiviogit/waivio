@@ -1,3 +1,5 @@
+import { message } from 'antd';
+
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
   checkAvailable,
@@ -6,7 +8,7 @@ import {
   getInfoForManagePage,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, getParentDomain } from '../reducers';
-import { message } from 'antd';
+import {subscribeMethod, subscribeTypes} from '../../common/constants/blockTypes';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 
@@ -60,18 +62,32 @@ export const getManageInfo = name => ({
 
 export const ACTIVATE_WEBSITE = createAsyncActionType('@website/ACTIVATE_WEBSITE');
 
-export const activateWebsite = id => (dispatch, getState, { steemConnectAPI }) => {
+export const activateWebsite = id => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const name = getAuthenticatedUserName(getState());
 
   dispatch({ type: ACTIVATE_WEBSITE.START, id });
-  steemConnectAPI.activateWebsite(name, id);
+  steemConnectAPI.activateWebsite(name, id).then(res => {
+    busyAPI.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
+    busyAPI.subscribe((response, mess) => {
+      if (subscribeTypes.posts === mess.type && mess.notification.blockParsed ===  res.result.block_num) {
+        dispatch(getManageInfo(name));
+      }
+    });
+  });
 };
 
 export const SUSPEND_WEBSITE = createAsyncActionType('@website/SUSPEND_WEBSITE');
 
-export const suspendWebsite = id => (dispatch, getState, { steemConnectAPI }) => {
+export const suspendWebsite = id => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const name = getAuthenticatedUserName(getState());
 
   dispatch({ type: SUSPEND_WEBSITE.START, id });
-  steemConnectAPI.suspendWebsite(name, id);
+  steemConnectAPI.suspendWebsite(name, id).then(res => {
+    busyAPI.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
+    busyAPI.subscribe((response, mess) => {
+      if (subscribeTypes.posts === mess.type && mess.notification.blockParsed ===  res.result.block_num) {
+        dispatch(getManageInfo(name));
+      }
+    });
+  });
 };

@@ -5,15 +5,21 @@ import { get } from 'lodash';
 import { Checkbox } from 'antd';
 
 import './DynamicTable.less';
+import Loading from "../../Icon/Loading";
 
 const DynamicTable = ({ header, bodyConfig, intl, onChange }) => {
+  const checkLoading = (item, key) => {
+    const value = get(item, key);
+
+    return value === 'loading' ? <Loading /> : value;
+  };
   const getTdBodyType = (item, head) => {
     switch (head.type) {
       case 'checkbox':
         return <Checkbox checked={item.checked} onChange={e => onChange(e, item)} />;
 
       default:
-        return get(item, head.id);
+        return checkLoading(item, head.id);
     }
   };
 

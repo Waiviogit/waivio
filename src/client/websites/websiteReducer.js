@@ -61,19 +61,21 @@ export default function websiteReducer(state = initialState, action) {
         loading: false,
       };
     }
-
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.START: {
       return {
         ...state,
         loading: true,
       };
     }
-
     case websiteAction.ACTIVATE_WEBSITE.START: {
       const websites = [...state.manage.websites];
       const changedIndex = websites.findIndex(web => web.host === action.id);
 
-      websites.splice(changedIndex, 1, { ...websites[changedIndex], checked: true });
+      websites.splice(changedIndex, 1, {
+        ...websites[changedIndex],
+        checked: true,
+        status: 'loading'
+      });
 
       return {
         ...state,
@@ -83,12 +85,15 @@ export default function websiteReducer(state = initialState, action) {
         },
       };
     }
-
     case websiteAction.SUSPEND_WEBSITE.START: {
       const websites = [...state.manage.websites];
       const changedIndex = websites.findIndex(web => web.host === action.id);
 
-      websites.splice(changedIndex, 1, { ...websites[changedIndex], checked: false });
+      websites.splice(changedIndex, 1, {
+        ...websites[changedIndex],
+        checked: false,
+        status: 'loading'
+      });
 
       return {
         ...state,
