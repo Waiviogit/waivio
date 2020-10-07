@@ -12,6 +12,7 @@ import Loading from '../../Icon/Loading';
 
 const itemsCount = 5;
 const usersSection = 'People';
+
 function buildFollowingUpdatesMenuConfig(updates) {
   const config = {};
   const { usersUpdates, objectsUpdates } = updates;
@@ -36,6 +37,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
   if (!isEmpty(objectsUpdates)) {
     Object.values(objectsUpdates).forEach(objectsGroup => {
       const { object_type: objType, related_wobjects: objects, hasMore } = objectsGroup;
+
       config[objType] = {
         name: objType,
         intlId: objType,
@@ -44,6 +46,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
         hasMore,
         items: objects.map(followingObject => {
           const clientObj = followingObject;
+
           return {
             name: clientObj.name || clientObj.id,
             intlId: clientObj.name || clientObj.id,
@@ -82,6 +85,7 @@ const FollowingUpdates = () => {
       dispatch(getFollowingObjectsUpdatesMore(menuSectionName, itemsCount));
     }
   };
+
   return (
     !isEmpty(menuConfig) &&
     (followingUpdates.isFetching ? (

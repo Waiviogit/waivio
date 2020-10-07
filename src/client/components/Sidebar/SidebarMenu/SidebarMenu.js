@@ -9,8 +9,10 @@ import { getIsAuthenticated } from '../../../reducers';
 import './SidebarMenu.less';
 
 const actionType = { TOGGLE_BLOCK: 'toggleBlock' };
+
 function sidebarMenuReducer(state, action) {
   const { type, section } = action;
+
   switch (type) {
     case actionType.TOGGLE_BLOCK:
       return {
@@ -38,6 +40,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
 
   const checkIsActive = (match, location) => {
     if (!match) return false;
+
     return match.url !== '' && location.pathname.includes(match.url);
   };
 
@@ -86,6 +89,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
               id: sectionItem.intlId,
               defaultMessage: sectionItem.name,
             });
+
         return linkTo ? (
           <li className="collapsible-block__item" key={`sectionItem-${sectionItem.name}`}>
             <NavLink

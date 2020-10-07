@@ -6,6 +6,7 @@ import {
   getInfoForManagePage,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, getParentDomain } from '../reducers';
+import { message } from 'antd';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 
@@ -53,6 +54,24 @@ export const getManageInfo = name => ({
     promise: getInfoForManagePage(name)
       .then(r => r.json())
       .then(r => r)
-      .catch(e => e),
+      .catch(e => message.error(e.message)),
   },
 });
+
+export const ACTIVATE_WEBSITE = createAsyncActionType('@website/ACTIVATE_WEBSITE');
+
+export const activateWebsite = id => (dispatch, getState, { steemConnectAPI }) => {
+  const name = getAuthenticatedUserName(getState());
+
+  dispatch({ type: ACTIVATE_WEBSITE.START, id });
+  steemConnectAPI.activateWebsite(name, id);
+};
+
+export const SUSPEND_WEBSITE = createAsyncActionType('@website/SUSPEND_WEBSITE');
+
+export const suspendWebsite = id => (dispatch, getState, { steemConnectAPI }) => {
+  const name = getAuthenticatedUserName(getState());
+
+  dispatch({ type: SUSPEND_WEBSITE.START, id });
+  steemConnectAPI.suspendWebsite(name, id);
+};

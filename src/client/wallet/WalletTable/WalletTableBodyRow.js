@@ -48,10 +48,12 @@ const WalletTableBodyRow = props => {
       const from = transaction.from;
       const to = transaction.to;
       const options = { from, to };
+
       if (transaction.to === currentUsername) {
         if (transaction.to === transaction.from) {
           const amountHIVE = `- ${toVestingAmount.amount}`;
           const amountHP = toVestingAmount.amount;
+
           description = getTransactionDescription(transactionType);
 
           data = {
@@ -60,6 +62,7 @@ const WalletTableBodyRow = props => {
             fieldHP: amountHP,
             fieldDescription: description.powerUpTransaction,
           };
+
           return getCurrentRows(data);
         }
         description = getTransactionDescription(transactionType, options);
@@ -79,6 +82,7 @@ const WalletTableBodyRow = props => {
         fieldHP: toVestingAmount.amount,
         fieldDescription: description.powerUpTransactionTo,
       };
+
       return getCurrentRows(data);
     }
     case accountHistoryConstants.TRANSFER: {
@@ -111,6 +115,7 @@ const WalletTableBodyRow = props => {
           fieldDescription: description,
           fieldMemo: transaction.memo,
         };
+
         return getCurrentRows(data);
       }
       description = receiveDescription.transferredTo;
@@ -121,6 +126,7 @@ const WalletTableBodyRow = props => {
         fieldDescription: description,
         fieldMemo: transaction.memo,
       };
+
       return getCurrentRows(data);
     }
     case accountHistoryConstants.CLAIM_REWARD_BALANCE: {
@@ -132,6 +138,7 @@ const WalletTableBodyRow = props => {
         totalVestingFundSteem,
       );
       const claimRewardsDescription = getTransactionDescription(transactionType);
+
       description = claimRewardsDescription.claimRewards;
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
@@ -140,6 +147,7 @@ const WalletTableBodyRow = props => {
         fieldHBD: get(claimRewardAmounts, 'HBD'),
         fieldDescription: description,
       };
+
       return getCurrentRows(data);
     }
     case accountHistoryConstants.TRANSFER_TO_SAVINGS:
@@ -151,6 +159,7 @@ const WalletTableBodyRow = props => {
         transactionType,
         tableView,
       );
+
       description = getSavingsTransactionMessage(transaction.type, transaction, transaction.amount);
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
@@ -159,6 +168,7 @@ const WalletTableBodyRow = props => {
         fieldDescription: description,
         fieldMemo: transaction.memo,
       };
+
       return getCurrentRows(data);
     }
     case accountHistoryConstants.LIMIT_ORDER: {
@@ -172,6 +182,7 @@ const WalletTableBodyRow = props => {
       const currentPays = transaction.current_pays;
       const options = { openPays, currentPays };
       const limitOrderDescription = getTransactionDescription(transactionType, options);
+
       description = limitOrderDescription.limitOrder;
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
@@ -179,6 +190,7 @@ const WalletTableBodyRow = props => {
         fieldHBD: currentPaysAmount.currency === 'HBD' && `${currentPaysAmount.amount}`,
         fieldDescription: description,
       };
+
       return getCurrentRows(data);
     }
     case accountHistoryConstants.FILL_ORDER: {
@@ -204,6 +216,7 @@ const WalletTableBodyRow = props => {
       const url = `/@${exchanger}`;
       const options = { url, exchanger };
       const fillOrderDescription = getTransactionDescription(transactionType, options);
+
       description = fillOrderDescription.fillOrder;
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
@@ -216,6 +229,7 @@ const WalletTableBodyRow = props => {
         data.fieldHIVE = `- ${paysAmountTransfer.amount}`;
         data.fieldHBD = `${paysAmountReceived.amount}`;
       }
+
       return getCurrentRows(data);
     }
     case accountHistoryConstants.CANCEL_ORDER: {
@@ -234,6 +248,7 @@ const WalletTableBodyRow = props => {
       const openPays = transaction.open_pays;
       const options = { openPays };
       const cancelOrderDescription = getTransactionDescription(transactionType, options);
+
       description = openPaysAmount
         ? cancelOrderDescription.cancelOrder
         : cancelOrderDescription.cancelLimitOrder;
@@ -249,6 +264,7 @@ const WalletTableBodyRow = props => {
           `${currentPaysAmount.amount}`,
         fieldDescription: description,
       };
+
       return getCurrentRows(data);
     }
     case accountHistoryConstants.PROPOSAL_PAY: {
@@ -262,6 +278,7 @@ const WalletTableBodyRow = props => {
       const termsOperation = receiver === currentUsername && receiver !== 'steem.dao' ? '' : '- ';
       const options = { receiver };
       const proposalDescription = getTransactionDescription(transactionType, options);
+
       description =
         receiver === currentUsername && receiver !== 'steem.dao'
           ? proposalDescription.proposalPaymentFrom
@@ -273,6 +290,7 @@ const WalletTableBodyRow = props => {
         fieldHBD: proposalAmount.currency === 'HBD' && `${termsOperation}${proposalAmount.amount}`,
         fieldDescription: description,
       };
+
       return getCurrentRows(data);
     }
     default:

@@ -47,9 +47,55 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {
+      const websites = get(action.payload, 'websites').map(website => ({
+        ...website,
+        checked: website.status === 'active',
+      }));
+
       return {
         ...state,
-        manage: action.payload,
+        manage: {
+          ...action.payload,
+          websites,
+        },
+        loading: false,
+      };
+    }
+
+    case websiteAction.GET_INFO_FOR_MANAGE_PAGE.START: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+
+    case websiteAction.ACTIVATE_WEBSITE.START: {
+      const websites = [...state.manage.websites];
+      const changedIndex = websites.findIndex(web => web.host === action.id);
+
+      websites.splice(changedIndex, 1, { ...websites[changedIndex], checked: true });
+
+      return {
+        ...state,
+        manage: {
+          ...state.manage,
+          websites,
+        },
+      };
+    }
+
+    case websiteAction.SUSPEND_WEBSITE.START: {
+      const websites = [...state.manage.websites];
+      const changedIndex = websites.findIndex(web => web.host === action.id);
+
+      websites.splice(changedIndex, 1, { ...websites[changedIndex], checked: false });
+
+      return {
+        ...state,
+        manage: {
+          ...state.manage,
+          websites,
+        },
       };
     }
     default: {
