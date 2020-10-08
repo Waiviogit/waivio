@@ -1,4 +1,4 @@
-import { get, filter, find, isEmpty, uniqBy, reduce, findIndex, isEqual, map, size } from 'lodash';
+import { get, filter, isEmpty, uniqBy, reduce, findIndex, isEqual, size } from 'lodash';
 import {
   TYPES_OF_MENU_ITEM,
   objectFields,
@@ -97,16 +97,8 @@ export const getWobjectsWithMaxWeight = wobjects =>
   );
 
 export const getWobjectsForMap = objects => {
-  const wobjectsWithMap = filter(objects, wobj => !isEmpty(wobj.parent.map));
-  const wobjectWithPropositions = filter(
-    wobjectsWithMap,
-    wobject => wobject.campaigns || wobject.propositions,
-  );
-  const wobjectsWithMaxWeight = getWobjectsWithMaxWeight(wobjectsWithMap);
-  return map(
-    wobjectsWithMaxWeight,
-    obj => find(wobjectWithPropositions, o => isEqual(o.map, obj.map)) || obj,
-  );
+  const wobjectsWithMap = filter(objects, wobj => !isEmpty(wobj.map) || !isEmpty(wobj.parent.map));
+  return wobjectsWithMap;
 };
 
 export const getLink = link => {
