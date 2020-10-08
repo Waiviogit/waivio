@@ -138,7 +138,7 @@ export const parseAddress = wobject => {
   return compact(
     Object.values(addressFields).map(fieldName => {
       const parsedWobject = parseWobjectField(wobject, 'address');
-      return parsedWobject ? parsedWobject[fieldName] : null;
+      return parsedWobject ? get(parsedWobject, fieldName) : null;
     }),
   ).join(', ');
 };
