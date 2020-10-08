@@ -38,48 +38,6 @@ export const getIsUserInBlackList = username => dispatch =>
     payload: ApiClient.getUserIsBlackListed(username),
   });
 
-export const getIsGuestChangeOnConfirmReferral = username => dispatch => {
-  setTimeout(() => {
-    dispatch({
-      type: REFERRAL_GET_ADDITION_FIELDS.ACTION,
-      payload: {
-        promise: ApiClient.getUserAccount(username)
-          .then(res => {
-            dispatch({
-              type: REFERRAL_CONFIRM_RULES.SUCCESS,
-            });
-            return {
-              referralStatus: res.referralStatus,
-              referralList: res.referral,
-            };
-          })
-          .catch(error => error),
-      },
-    });
-  }, 5000);
-};
-
-export const getIsGuestChangeOnRejectReferral = username => dispatch => {
-  setTimeout(() => {
-    dispatch({
-      type: REFERRAL_GET_ADDITION_FIELDS.ACTION,
-      payload: {
-        promise: ApiClient.getUserAccount(username)
-          .then(res => {
-            dispatch({
-              type: REFERRAL_REJECT_RULES.SUCCESS,
-            });
-            return {
-              referralStatus: res.referralStatus,
-              referralList: res.referral,
-            };
-          })
-          .catch(error => error),
-      },
-    });
-  }, 5000);
-};
-
 export const getChangeOnConfirmReferral = (username, isGuestName, blockNum) => (
   dispatch,
   getState,
@@ -120,14 +78,8 @@ export const referralConfirmRules = (username, isGuest) => (
     .referralConfirmRules(username, isGuest)
     .then(async res => {
       if (!res.message) {
-        const data = await res;
-        if (isGuest) {
-          return dispatch(getIsGuestChangeOnConfirmReferral(username));
-        }
-
-        return dispatch(
-          getChangeOnConfirmReferral(username, isGuest, get(data, 'result.block_num')),
-        );
+        const data = isGuest ? await res.json() : await res.result;
+        return dispatch(getChangeOnConfirmReferral(username, isGuest, get(data, 'block_num')));
       }
       return dispatch({
         type: REFERRAL_CONFIRM_RULES.ERROR,
@@ -181,13 +133,8 @@ export const referralRejectRules = (username, isGuest) => (
     .referralRejectRules(username, isGuest)
     .then(async res => {
       if (!res.message) {
-        const data = await res;
-        if (isGuest) {
-          return dispatch(getIsGuestChangeOnRejectReferral(username));
-        }
-        return dispatch(
-          getChangeOnRejectReferral(username, isGuest, get(data, 'result.block_num')),
-        );
+        const data = isGuest ? await res.json() : await res.result;
+        return dispatch(getChangeOnRejectReferral(username, isGuest, get(data, 'block_num')));
       }
       return dispatch({
         type: REFERRAL_REJECT_RULES.ERROR,
