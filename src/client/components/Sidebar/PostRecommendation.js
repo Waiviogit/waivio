@@ -2,23 +2,33 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
 import { usernameURLRegex } from '../../helpers/regexHelpers';
 import { getPostKey } from '../../helpers/stateHelpers';
 import formatter from '../../helpers/steemitFormatter';
 import Loading from '../../components/Icon/Loading';
 import PostRecommendationLink from './PostRecommendationLink';
 import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../../reducers';
 import './PostRecommendation.less';
 import './SidebarContentBlock.less';
 
 @withRouter
+@connect(state => ({
+  follower: getAuthenticatedUserName(state),
+}))
 class PostRecommendation extends Component {
   static propTypes = {
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     isAuthFetching: PropTypes.bool.isRequired,
     locale: PropTypes.string.isRequired,
+    follower: PropTypes.string,
   };
+  static defaultProps = {
+    follower: '',
+  };
+
   constructor(props) {
     super(props);
 
@@ -56,7 +66,8 @@ class PostRecommendation extends Component {
   }
 
   getPostsByAuthor = author => {
-    getUserProfileBlog(author, { limit: 4 }, this.props.locale)
+    const { follower } = this.props;
+    getUserProfileBlog(author, follower, { limit: 4 }, this.props.locale)
       .then(result => {
         const recommendedPosts = result || [];
         this.setState({

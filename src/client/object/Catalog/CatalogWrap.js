@@ -74,14 +74,15 @@ const CatalogWrap = props => {
         getObject(pathUrl, userName, locale).then(wObject => {
           const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
-            getPropositions({ match, requiredObject, sort });
+            getPropositions({ userName, match, requiredObject, sort });
           }
           setListItems(wObject.listItems);
           dispatch(setWobjectForBreadCrumbs(wObject));
         });
       } else {
+        const requiredObject = get(wobject, ['parent', 'author_permlink']);
         setListItems(wobject.listItems);
-        getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
+        getPropositions({ userName, match, requiredObject, sort });
       }
     }
   }, [props.location.hash, props.wobject, userName]);
