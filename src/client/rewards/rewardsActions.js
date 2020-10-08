@@ -112,3 +112,12 @@ export const getFollowingSponsorsRewards = skip => (dispatch, getState) => {
     payload: ApiClient.getFollowingSponsorsRewards({ userName, skip }),
   });
 };
+
+export const CLEAR_FOLLOWING_SPONSORS_REWARDS = createAsyncActionType(
+  '@rewards/CLEAR_FOLLOWING_SPONSORS_REWARDS',
+);
+
+export const clearFollowingSponsorsRewards = () => dispatch =>
+  dispatch({
+    type: CLEAR_FOLLOWING_SPONSORS_REWARDS.ACTION,
+  });

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { map, isEmpty } from 'lodash';
-import { getFollowingSponsorsRewards } from '../rewardsActions';
+import { getFollowingSponsorsRewards, clearFollowingSponsorsRewards } from '../rewardsActions';
 import Campaign from '../Campaign/Campaign';
 import {
   getAuthenticatedUserName,
@@ -19,12 +19,18 @@ const RewardsList = ({
   intl,
   userName,
   getFollowingRewards,
+  clearFollowingRewards,
   followingRewards,
   hasMoreFollowingRewards,
   loading,
 }) => {
+  const cleanUp = () => {
+    clearFollowingRewards();
+  };
+
   useEffect(() => {
     getFollowingRewards();
+    return cleanUp();
   }, []);
 
   const handleLoadMore = () => {
@@ -90,6 +96,7 @@ RewardsList.propTypes = {
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string,
   getFollowingRewards: PropTypes.func,
+  clearFollowingRewards: PropTypes.func,
   hasMoreFollowingRewards: PropTypes.bool,
   loading: PropTypes.bool,
   followingRewards: PropTypes.arrayOf(PropTypes.shape()),
@@ -101,6 +108,7 @@ RewardsList.defaultProps = {
   hasMoreFollowingRewards: false,
   loading: false,
   getFollowingRewards: () => {},
+  clearFollowingRewards: () => {},
 };
 
 export default connect(
@@ -112,5 +120,6 @@ export default connect(
   }),
   {
     getFollowingRewards: getFollowingSponsorsRewards,
+    clearFollowingRewards: clearFollowingSponsorsRewards,
   },
 )(injectIntl(RewardsList));
