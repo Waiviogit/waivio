@@ -5,3 +5,4 @@ export const handleFeesValue = value => `$${value}`;
 export const getCurrentFeesValue = value => value * (value / 100);
 export const handleProcessingFees = (staticValue, currentValue) =>
   `$${(staticValue * (staticValue / 100) * currentValue) / 100}`;
+export const handleRefName = refName => refName.replace(/^"(.+(?="$))"$/, '$1');

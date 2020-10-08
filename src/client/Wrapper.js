@@ -40,6 +40,7 @@ import { PATH_NAME_ACTIVE } from '../common/constants/rewards';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
+import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -175,7 +176,8 @@ class Wrapper extends React.PureComponent {
     }
     const refName = sessionStorage.getItem('refUser');
     if (this.props.isAuthenticated && refName) {
-      this.props.handleRefAuthUser(this.props.username, refName);
+      const currentRefName = handleRefName(refName);
+      this.props.handleRefAuthUser(this.props.username, currentRefName);
     }
   }
 
