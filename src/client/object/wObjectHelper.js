@@ -96,10 +96,8 @@ export const getWobjectsWithMaxWeight = wobjects =>
     [],
   );
 
-export const getWobjectsForMap = objects => {
-  const wobjectsWithMap = filter(objects, wobj => !isEmpty(wobj.map) || !isEmpty(wobj.parent.map));
-  return wobjectsWithMap;
-};
+export const getWobjectsForMap = objects =>
+  filter(objects, wobj => !isEmpty(wobj.map) || !isEmpty(wobj.parent.map));
 
 export const getLink = link => {
   if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
