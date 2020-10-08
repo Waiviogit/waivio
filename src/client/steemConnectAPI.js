@@ -6,14 +6,18 @@ import { getValidTokenData } from './helpers/getToken';
 function broadcast(operations, isReview, actionAuthor) {
   let operation;
   if (operations[0][0] === 'custom_json') {
-    if (operations[0][1].json.includes('reblog')) {
+    if (operations[0][1].id.includes('confirm_referral_license')) {
+      operation = 'confirm_referral_license';
+    } else if (operations[0][1].id.includes('reject_referral_license')) {
+      operation = 'reject_referral_license';
+    } else if (operations[0][1].id.includes('add_referral_agent')) {
+      operation = 'add_referral_agent';
+    } else if (operations[0][1].json.includes('reblog')) {
       operation = `waivio_guest_reblog`;
+    } else if (operations[0][1].json.includes('bell_notifications')) {
+      operation = `waivio_guest_bell`;
     } else {
       operation = `waivio_guest_${operations[0][1].id}`;
-    }
-
-    if (operations[0][1].json.includes('bell_notifications')) {
-      operation = `waivio_guest_bell`;
     }
   } else if (operations[0][0] === 'comment') {
     const jsonMetadata = JSON.parse(operations[0][1].json_metadata);
@@ -181,29 +185,55 @@ function sc2Extended() {
     },
     {
       referralConfirmRules(username, isGuestUser, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [username],
-          id: 'confirm_referral_license',
-          json: JSON.stringify({
-            agent: username,
-            isGuest: isGuestUser,
-          }),
-        };
+        let params = {};
+        if (isGuestUser) {
+          params = {
+            required_auths: [],
+            required_posting_auths: [username],
+            id: 'confirm_referral_license',
+            json: {
+              agent: username,
+              isGuest: isGuestUser,
+            },
+          };
+        } else {
+          params = {
+            required_auths: [],
+            required_posting_auths: [username],
+            id: 'confirm_referral_license',
+            json: JSON.stringify({
+              agent: username,
+              isGuest: isGuestUser,
+            }),
+          };
+        }
         return this.broadcast([['custom_json', params]], cb);
       },
     },
     {
       referralRejectRules(username, isGuestUser, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [username],
-          id: 'reject_referral_license',
-          json: JSON.stringify({
-            agent: username,
-            isGuest: isGuestUser,
-          }),
-        };
+        let params = {};
+        if (isGuestUser) {
+          params = {
+            required_auths: [],
+            required_posting_auths: [username],
+            id: 'reject_referral_license',
+            json: {
+              agent: username,
+              isGuest: isGuestUser,
+            },
+          };
+        } else {
+          params = {
+            required_auths: [],
+            required_posting_auths: [username],
+            id: 'reject_referral_license',
+            json: JSON.stringify({
+              agent: username,
+              isGuest: isGuestUser,
+            }),
+          };
+        }
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -214,26 +244,30 @@ function sc2Extended() {
          For guest user send request without stringify
        */
       addReferralAgent(username, refUser, isGuestUser, refType = 'rewards', cb) {
+        console.log('addReferralAgent');
         let params = {};
         if (isGuestUser) {
           params = {
             required_auths: [],
             required_posting_auths: [username],
             id: 'add_referral_agent',
-            agent: refUser,
-            type: refType,
-            guestName: username,
+            json: {
+              agent: refUser,
+              guestName: username,
+              type: refType,
+            },
+          };
+        } else {
+          params = {
+            required_auths: [],
+            required_posting_auths: [username],
+            id: 'add_referral_agent',
+            json: JSON.stringify({
+              agent: refUser,
+              type: refType,
+            }),
           };
         }
-        params = {
-          required_auths: [],
-          required_posting_auths: [username],
-          id: 'add_referral_agent',
-          json: JSON.stringify({
-            agent: refUser,
-            type: refType,
-          }),
-        };
         return this.broadcast([['custom_json', params]], cb);
       },
     },

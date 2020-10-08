@@ -1097,7 +1097,6 @@ export const broadcastGuestOperation = async (operationId, data) => {
         userName: userData.userData.name,
       };
     }
-
     return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
       method: 'POST',
       headers: { ...headers, 'access-token': userData.token },
