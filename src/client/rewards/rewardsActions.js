@@ -88,14 +88,14 @@ export const GET_REWARDS_GENERAL_COUNTS = createAsyncActionType(
   '@rewards/GET_REWARDS_GENERAL_COUNTS',
 );
 
-export const getRewardsGeneralCounts = ({ userName, sort }) => (dispatch, getState) => {
+export const getRewardsGeneralCounts = ({ userName, sort, match }) => (dispatch, getState) => {
   const state = getState();
   const locale = getLocale(state);
 
   return dispatch({
     type: GET_REWARDS_GENERAL_COUNTS.ACTION,
     payload: {
-      promise: ApiClient.getRewardsGeneralCounts({ userName, sort, locale }),
+      promise: ApiClient.getRewardsGeneralCounts({ userName, sort, match, locale }),
     },
   });
 };
