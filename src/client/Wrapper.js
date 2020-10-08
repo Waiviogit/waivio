@@ -95,6 +95,7 @@ class Wrapper extends React.PureComponent {
     loadingFetching: PropTypes.bool,
     location: PropTypes.shape(),
     handleRefAuthUser: PropTypes.func,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -177,7 +178,7 @@ class Wrapper extends React.PureComponent {
     const refName = sessionStorage.getItem('refUser');
     if (this.props.isAuthenticated && refName) {
       const currentRefName = handleRefName(refName);
-      this.props.handleRefAuthUser(this.props.username, currentRefName);
+      this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
     }
   }
 

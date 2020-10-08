@@ -213,8 +213,19 @@ function sc2Extended() {
          If guest agent, we send in agent name like before and in "isGuest" field write his name, not bool.
          For guest user send request without stringify
        */
-      addReferralAgent(username, refUser, refType = 'rewards', cb) {
-        const params = {
+      addReferralAgent(username, refUser, isGuestUser, refType = 'rewards', cb) {
+        let params = {};
+        if (isGuestUser) {
+          params = {
+            required_auths: [],
+            required_posting_auths: [username],
+            id: 'add_referral_agent',
+            agent: refUser,
+            type: refType,
+            guestName: username,
+          };
+        }
+        params = {
           required_auths: [],
           required_posting_auths: [username],
           id: 'add_referral_agent',

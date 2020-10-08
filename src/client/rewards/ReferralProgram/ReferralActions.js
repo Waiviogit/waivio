@@ -152,7 +152,11 @@ export const referralRejectRules = (username, isGuest) => (
     });
 };
 
-export const handleRefAuthUser = (username, refUser) => (dispatch, getState, { steemConnectAPI }) =>
+export const handleRefAuthUser = (username, refUser, isGuest) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) =>
   getUserAccount(username)
     .then(res => {
       if (isEmpty(res.referral)) {
@@ -160,7 +164,7 @@ export const handleRefAuthUser = (username, refUser) => (dispatch, getState, { s
           type: HANDLE_REF_AUTH_USER.ACTION,
           payload: {
             promise: steemConnectAPI
-              .addReferralAgent(username, refUser)
+              .addReferralAgent(username, refUser, isGuest)
               .then(result => result)
               .catch(error => error),
           },
