@@ -1,4 +1,4 @@
-import { get, filter, isEmpty, uniqBy, reduce, findIndex, isEqual, size } from 'lodash';
+import { get, filter, isEmpty, uniqBy, size } from 'lodash';
 import {
   TYPES_OF_MENU_ITEM,
   objectFields,
@@ -80,21 +80,6 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
   }
   return resultArr;
 };
-
-export const getWobjectsWithMaxWeight = wobjects =>
-  reduce(
-    wobjects,
-    (acc, object) => {
-      const idx = findIndex(acc, o => isEqual(o.map, object.map));
-      if (idx === -1) {
-        return [...acc, object];
-      }
-      acc[idx] = acc[idx].weight < object.weight ? object : acc[idx];
-
-      return acc;
-    },
-    [],
-  );
 
 export const getWobjectsForMap = objects =>
   filter(objects, wobj => !isEmpty(wobj.map) || !isEmpty(wobj.parent.map));
