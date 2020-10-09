@@ -758,7 +758,7 @@ class Rewards extends React.Component {
               loading: false,
               hasMore: newPropositions.campaigns && newPropositions.hasMore,
               propositions: this.state.propositions.concat(newPropositions.campaigns),
-              sponsors: newPropositions.sponsors,
+              sponsors: sortBy(newPropositions.sponsors),
               campaignsTypes: newPropositions.campaigns_types,
               guideNames: activeFilters.guideNames,
               types: activeFilters.types,
