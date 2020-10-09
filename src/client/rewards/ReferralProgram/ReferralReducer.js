@@ -3,6 +3,7 @@ import {
   GET_IS_USER_IN_BLACKLIST,
   GET_USER_REFERRAL_INFO,
   REFERRAL_GET_ADDITION_FIELDS,
+  GET_USER_STATUS_CARDS,
 } from './ReferralActions';
 
 const initialState = {
@@ -18,6 +19,9 @@ const initialState = {
   referralStatus: '',
   referral: [],
   isChangedRuleSelection: false,
+  isGetUsersCards: false,
+  hasMoreCards: false,
+  userCards: false,
 };
 
 const ReferralReducer = (state = initialState, action) => {
@@ -80,6 +84,20 @@ const ReferralReducer = (state = initialState, action) => {
         isChangedRuleSelection: false,
       };
     }
+    case GET_USER_STATUS_CARDS.START: {
+      return {
+        ...state,
+        isGetUsersCards: true,
+      };
+    }
+    case GET_USER_STATUS_CARDS.SUCCESS: {
+      return {
+        ...state,
+        hasMoreCards: action.payload.hasMore,
+        userCards: action.payload.userCards,
+        isGetUsersCards: false,
+      };
+    }
     default:
       return state;
   }
@@ -98,3 +116,6 @@ export const getIsUserInWaivioBlackList = state => state.isUserInWaivioBlackList
 export const getReferralStatus = state => state.referralStatus;
 export const getReferralList = state => state.referral;
 export const getIsChangedRuleSelection = state => state.isChangedRuleSelection;
+export const getIsUsersCards = state => state.isGetUsersCards;
+export const getIsHasMoreCards = state => state.hasMoreCards;
+export const getCurrentUserCards = state => state.userCards;

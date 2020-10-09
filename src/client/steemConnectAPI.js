@@ -244,7 +244,6 @@ function sc2Extended() {
          For guest user send request without stringify
        */
       addReferralAgent(username, refUser, isGuestUser, refType = 'rewards', cb) {
-        console.log('addReferralAgent');
         let params = {};
         if (isGuestUser) {
           params = {

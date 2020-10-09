@@ -316,6 +316,9 @@ export const getReferralStatus = state => fromReferral.getReferralStatus(state.r
 export const getReferralList = state => fromReferral.getReferralList(state.referral);
 export const getIsChangedRuleSelection = state =>
   fromReferral.getIsChangedRuleSelection(state.referral);
+export const getIsUsersCards = state => fromReferral.getIsUsersCards(state.referral);
+export const getIsHasMoreCards = state => fromReferral.getIsHasMoreCards(state.referral);
+export const getCurrentUserCards = state => fromReferral.getCurrentUserCards(state.referral);
 
 // common selectors
 

@@ -15,7 +15,7 @@ const routes = {
     },
     {
       path: [
-        `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?`,
+        `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:name`,
         '/rewards/blacklist/:listType?',
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
         '/rewards/:filterKey/:campaignParent?',
@@ -70,17 +70,17 @@ const routes = {
           component: Views.CreateRewardForm,
         },
         {
-          path: '/referral-details',
+          path: '/referral-details/:name',
           exact: true,
           component: Views.ReferralDetails,
         },
         {
-          path: '/referral-instructions',
+          path: '/referral-instructions/:name',
           exact: true,
           component: Views.ReferralInstructions,
         },
         {
-          path: '/referral-status',
+          path: '/referral-status/:name',
           exact: true,
           component: Views.ReferralStatus,
         },

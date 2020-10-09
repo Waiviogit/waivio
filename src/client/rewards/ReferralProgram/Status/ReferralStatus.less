@@ -2,4 +2,21 @@
 @import (reference) '../../../styles/modules/variables.less';
 @import (reference) '../../../styles/mixins.less';
 
+.ReferralStatus {
+  .referrals-main-styles();
+
+  &__title {
+    padding-bottom: 10px;
+  }
+
+  &__description {
+    padding-bottom: 20px;
+  }
+
+  &__container {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
 @import 'ReferralStatus-nightmode';

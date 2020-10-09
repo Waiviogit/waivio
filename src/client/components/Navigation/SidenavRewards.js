@@ -10,6 +10,7 @@ import {
   getHasReceivables,
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
+  getAuthenticatedUserName,
 } from '../../reducers';
 import { MESSAGES, HISTORY, PATH_NAME_HISTORY } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
@@ -17,6 +18,7 @@ import './Sidenav.less';
 
 @injectIntl
 @connect(state => ({
+  authUserName: getAuthenticatedUserName(state),
   autoCompleteSearchResults: getAutoCompleteSearchResults(state),
   authenticated: getIsAuthenticated(state),
   isGuest: isGuestUser(state),
@@ -32,6 +34,7 @@ export default class SidenavRewards extends React.Component {
     hasReceivables: PropTypes.bool,
     countTookPartCampaigns: PropTypes.number,
     createdCampaignsCount: PropTypes.number,
+    authUserName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -39,6 +42,7 @@ export default class SidenavRewards extends React.Component {
     hasReceivables: false,
     countTookPartCampaigns: 0,
     createdCampaignsCount: 0,
+    authUserName: '',
   };
 
   constructor(props) {
@@ -76,6 +80,7 @@ export default class SidenavRewards extends React.Component {
       hasReceivables,
       countTookPartCampaigns,
       createdCampaignsCount,
+      authUserName,
     } = this.props;
     const { menuCondition } = this.state;
     return (
@@ -338,7 +343,7 @@ export default class SidenavRewards extends React.Component {
                 <React.Fragment>
                   <li>
                     <NavLink
-                      to={`/rewards/referral-details`}
+                      to={`/rewards/referral-details/${authUserName}`}
                       className="sidenav-discover-objects__item"
                       activeClassName="Sidenav__item--active"
                     >
@@ -350,7 +355,7 @@ export default class SidenavRewards extends React.Component {
                   </li>
                   <li>
                     <NavLink
-                      to={`/rewards/referral-instructions`}
+                      to={`/rewards/referral-instructions/${authUserName}`}
                       className="sidenav-discover-objects__item"
                       activeClassName="Sidenav__item--active"
                     >
@@ -362,7 +367,7 @@ export default class SidenavRewards extends React.Component {
                   </li>
                   <li>
                     <NavLink
-                      to={`/rewards/referral-status`}
+                      to={`/rewards/referral-status/${authUserName}`}
                       className="sidenav-discover-objects__item"
                       activeClassName="Sidenav__item--active"
                     >

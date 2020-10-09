@@ -1544,4 +1544,15 @@ export const getUserIsBlackListed = username =>
       .catch(error => reject(error));
   });
 
+export const getUserStatusCards = (username, skip = 0, limit = 10, sort = 'recency') =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.referrals}/status?userName=${username}&skip=${skip}&limit=${limit}&sort=${sort}`,
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export default null;

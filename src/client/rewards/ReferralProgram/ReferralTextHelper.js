@@ -273,13 +273,17 @@ export const referralInstructionsContent = data => {
 export const ReferralStatusContent = data => {
   const { username } = data;
   return {
-    statusTitle: <FormattedMessage id="referral_status_title" defaultMessage="Referral status" />,
+    statusTitle: <FormattedMessage id="referral_status_title" defaultMessage="Referral status:" />,
     statusDescription: (
       <FormattedMessage
         id="referral_status_description"
         defaultMessage="The following users are currently assigned by the Waivio index server to the referral partner {username}:"
         values={{
-          username,
+          username: (
+            <Link to={`/@${username}`}>
+              <span className="text-link">{username}</span>
+            </Link>
+          ),
         }}
       />
     ),

@@ -3,7 +3,6 @@ import { message } from 'antd';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
-import { getUserAccount } from '../../../waivioApi/ApiClient';
 
 export const GET_USER_REFERRAL_INFO = createAsyncActionType('@referral/GET_USER_REFERRAL_INFO');
 export const GET_USER_REFERRAL_DETAILS = createAsyncActionType(
@@ -16,6 +15,7 @@ export const REFERRAL_GET_ADDITION_FIELDS = createAsyncActionType(
 );
 export const REFERRAL_REJECT_RULES = createAsyncActionType('@referral/REFERRAL_REJECT_RULES');
 export const HANDLE_REF_AUTH_USER = createAsyncActionType('@referral/HANDLE_REF_AUTH_USER');
+export const GET_USER_STATUS_CARDS = createAsyncActionType('@referral/GET_USER_STATUS_CARDS');
 
 export const getUserReferralInfo = username => dispatch =>
   dispatch({
@@ -153,7 +153,7 @@ export const handleRefAuthUser = (username, refUser, isGuest) => (
   getState,
   { steemConnectAPI },
 ) =>
-  getUserAccount(username)
+  ApiClient.getUserAccount(username)
     .then(res => {
       if (isEmpty(res.referral)) {
         dispatch({
@@ -169,3 +169,16 @@ export const handleRefAuthUser = (username, refUser, isGuest) => (
     })
     .then(() => sessionStorage.removeItem('refUser'))
     .catch(error => error);
+
+export const getUserStatusCards = (username, skip, limit, sort) => dispatch =>
+  dispatch({
+    type: GET_USER_STATUS_CARDS.ACTION,
+    payload: {
+      promise: ApiClient.getUserStatusCards(username, skip, limit, sort)
+        .then(data => ({
+          hasMore: data.hasMore,
+          userCards: data.users,
+        }))
+        .catch(error => error),
+    },
+  });
