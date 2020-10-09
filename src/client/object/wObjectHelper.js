@@ -1,4 +1,4 @@
-import { get, filter, find, isEmpty, uniqBy, reduce, findIndex, isEqual, map, size } from 'lodash';
+import { get, filter, isEmpty, uniqBy, size } from 'lodash';
 import {
   TYPES_OF_MENU_ITEM,
   objectFields,
@@ -81,33 +81,8 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
   return resultArr;
 };
 
-export const getWobjectsWithMaxWeight = wobjects =>
-  reduce(
-    wobjects,
-    (acc, object) => {
-      const idx = findIndex(acc, o => isEqual(o.map, object.map));
-      if (idx === -1) {
-        return [...acc, object];
-      }
-      acc[idx] = acc[idx].weight < object.weight ? object : acc[idx];
-
-      return acc;
-    },
-    [],
-  );
-
-export const getWobjectsForMap = objects => {
-  const wobjectsWithMap = filter(objects, wobj => !isEmpty(wobj.map));
-  const wobjectWithPropositions = filter(
-    wobjectsWithMap,
-    wobject => wobject.campaigns || wobject.propositions,
-  );
-  const wobjectsWithMaxWeight = getWobjectsWithMaxWeight(wobjectsWithMap);
-  return map(
-    wobjectsWithMaxWeight,
-    obj => find(wobjectWithPropositions, o => isEqual(o.map, obj.map)) || obj,
-  );
-};
+export const getWobjectsForMap = objects =>
+  filter(objects, wobj => !isEmpty(wobj.map) || !isEmpty(wobj.parent.map));
 
 export const getLink = link => {
   if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
