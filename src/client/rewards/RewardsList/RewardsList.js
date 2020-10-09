@@ -24,13 +24,11 @@ const RewardsList = ({
   hasMoreFollowingRewards,
   loading,
 }) => {
-  const cleanUp = () => {
-    clearFollowingRewards();
-  };
-
   useEffect(() => {
     getFollowingRewards();
-    return cleanUp();
+    return () => {
+      clearFollowingRewards();
+    };
   }, []);
 
   const handleLoadMore = () => {
