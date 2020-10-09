@@ -1437,5 +1437,9 @@
   "referrals_instructions_terminate_referral_title": "Terminate the Referral program",
   "referrals_instructions_terminate_referral_info": "If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended.",
   "copy_button": "Copy",
-  "copy_button_copied": "Copied"
+  "copy_button_copied": "Copied",
+  "referral_status_title": "Referral status",
+  "referral_status_description": "The following users are currently assigned by the Waivio index server to the referral partner {username}:",
+  "referral_status_count": "Total count: {count}",
+  "referral_status_payments_text": "The status of all outstanding and completed payments can be checked on the {receivablesPage} page in the Rewards section."
 }

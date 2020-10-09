@@ -269,3 +269,43 @@ export const referralInstructionsContent = data => {
     copyButtonCopiedText: <FormattedMessage id="copy_button_copied" defaultMessage="Copied" />,
   };
 };
+
+export const ReferralStatusContent = data => {
+  const { username } = data;
+  return {
+    statusTitle: <FormattedMessage id="referral_status_title" defaultMessage="Referral status" />,
+    statusDescription: (
+      <FormattedMessage
+        id="referral_status_description"
+        defaultMessage="The following users are currently assigned by the Waivio index server to the referral partner {username}:"
+        values={{
+          username,
+        }}
+      />
+    ),
+    statusCount: (
+      <FormattedMessage
+        id="referral_status_count"
+        defaultMessage="Total count: {count}"
+        values={{
+          count: 'empty',
+        }}
+      />
+    ),
+    statusPaymentText: (
+      <FormattedMessage
+        id="referral_status_payments_text"
+        defaultMessage="The status of all outstanding and completed payments can be checked on the {receivablesPage} page in the Rewards section."
+        values={{
+          receivablesPage: (
+            <Link to={`/rewards/receivables`}>
+              <span className="">
+                <FormattedMessage id="debts_receivables" defaultMessage="Receivables" />
+              </span>
+            </Link>
+          ),
+        }}
+      />
+    ),
+  };
+};
