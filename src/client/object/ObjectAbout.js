@@ -3,20 +3,35 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { filter, get, isEmpty, map } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { Button, Icon } from 'antd';
+import { Button, Icon, message } from 'antd';
 import { getAuthenticatedUser, getLocale } from '../reducers';
-import { getFollowingSponsorsRewards } from '../rewards/rewardsActions';
-import ObjectInfo from '../app/Sidebar/ObjectInfo';
-import * as ApiClient from '../../waivioApi/ApiClient';
-import './ObjectAbout.less';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import Proposition from '../rewards/Proposition/Proposition';
+import * as apiConfig from '../../waivioApi/config.json';
+import { assignProposition, declineProposition } from '../user/userActions';
+import ObjectInfo from '../app/Sidebar/ObjectInfo';
+import * as ApiClient from '../../waivioApi/ApiClient';
+import './ObjectAbout.less';
 
-const ObjectAbout = ({ isEditMode, wobject, userName, locale, match, intl, history, user }) => {
+const ObjectAbout = ({
+  isEditMode,
+  wobject,
+  userName,
+  locale,
+  match,
+  intl,
+  history,
+  user,
+  assignPropos,
+  declinePropos,
+}) => {
   const [loadingPropositions, setLoadingPropositions] = useState(false);
+  const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [allPropositions, setAllPropositions] = useState([]);
   const [currentProposition, setCurrentProposition] = useState([]);
+  const [proposition, setProposition] = useState([]);
+  const [isAssign, setIsAssign] = useState(false);
   const getPropositions = reqData => {
     setLoadingPropositions(true);
     ApiClient.getPropositions(reqData).then(data => {
@@ -49,25 +64,131 @@ const ObjectAbout = ({ isEditMode, wobject, userName, locale, match, intl, histo
     }
   }, [wobject, userName]);
 
+  // Propositions
+  const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
+    proposition.map(propos => {
+      const updatedProposition = propos;
+      // eslint-disable-next-line no-underscore-dangle
+      if (updatedProposition._id === propsId) {
+        updatedProposition.objects.forEach((object, index) => {
+          if (object.object.author_permlink === objPermlink) {
+            updatedProposition.objects[index].assigned = assigned;
+          } else {
+            updatedProposition.objects[index].assigned = null;
+          }
+        });
+      }
+      // eslint-disable-next-line no-underscore-dangle
+      if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
+        updatedProposition.isReservedSiblingObj = true;
+      }
+      return updatedProposition;
+    });
+
+  const assignPropositionHandler = ({
+    companyAuthor,
+    companyPermlink,
+    resPermlink,
+    objPermlink,
+    companyId,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
+    // eslint-disable-next-line no-shadow
+    proposition,
+    proposedWobj,
+    username,
+    currencyId,
+  }) => {
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+    setLoadingAssignDiscard(true);
+    return assignPropos({
+      companyAuthor,
+      companyPermlink,
+      objPermlink,
+      resPermlink,
+      appName,
+      primaryObjectName,
+      secondaryObjectName,
+      amount,
+      proposition,
+      proposedWobj,
+      userName: username,
+      currencyId,
+    })
+      .then(() => {
+        message.success(
+          intl.formatMessage({
+            id: 'assigned_successfully_update',
+            defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
+          }),
+        );
+        const updatedPropositions = updateProposition(companyId, true, objPermlink, companyAuthor);
+        setLoadingAssignDiscard(false);
+        setProposition(updatedPropositions);
+        setIsAssign(true);
+
+        return { isAssign: true };
+      })
+      .catch(e => {
+        setLoadingAssignDiscard(false);
+        setIsAssign(false);
+        throw e;
+      });
+  };
+
+  const discardProposition = ({
+    companyAuthor,
+    companyPermlink,
+    companyId,
+    objPermlink,
+    unreservationPermlink,
+    reservationPermlink,
+  }) => {
+    setLoadingAssignDiscard(true);
+    return declinePropos({
+      companyAuthor,
+      companyPermlink,
+      companyId,
+      objPermlink,
+      unreservationPermlink,
+      reservationPermlink,
+    })
+      .then(() => {
+        const updatedPropositions = updateProposition(companyId, false, objPermlink);
+        setLoadingAssignDiscard(false);
+        setProposition(updatedPropositions);
+        setIsAssign(true);
+
+        return { isAssign: false };
+      })
+      .catch(e => {
+        message.error(e.error_description);
+        setLoadingAssignDiscard(false);
+        setIsAssign(true);
+      });
+  };
+  // END Propositions
+
   const renderProposition = propositions =>
-    map(propositions, proposition =>
+    map(propositions, propos =>
       map(
-        proposition.objects,
+        propos.objects,
         wobj =>
           get(wobj, ['object', 'author_permlink']) === match.params.name && (
             <Proposition
-              proposition={proposition}
+              proposition={propos}
               wobj={wobj.object}
               wobjPrice={wobj.reward}
               assignCommentPermlink={wobj.permlink}
-              // assignProposition={this.assignPropositionHandler}
-              // discardProposition={this.discardProposition}
+              assignProposition={assignPropositionHandler}
+              discardProposition={discardProposition}
               authorizedUserName={userName}
-              // loading={this.state.loadingAssignDiscard}
+              loading={loadingAssignDiscard}
               key={`${wobj.object.author_permlink}`}
               assigned={wobj.assigned}
               history={history}
-              // isAssign={this.state.isAssign}
+              isAssign={isAssign}
               match={match}
               user={user}
             />
@@ -145,6 +266,8 @@ ObjectAbout.propTypes = {
   intl: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   user: PropTypes.shape(),
+  assignPropos: PropTypes.func,
+  declinePropos: PropTypes.func,
 };
 
 ObjectAbout.defaultProps = {
@@ -152,6 +275,8 @@ ObjectAbout.defaultProps = {
   locale: 'en-US',
   match: {},
   user: {},
+  assignPropos: () => {},
+  declinePropos: () => {},
 };
 
 export default connect(
@@ -160,6 +285,7 @@ export default connect(
     user: getAuthenticatedUser(state),
   }),
   {
-    getFollowingRewards: getFollowingSponsorsRewards,
+    assignPropos: assignProposition,
+    declinePropos: declineProposition,
   },
 )(injectIntl(ObjectAbout));
