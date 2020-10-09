@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { getIsAuthenticated } from '../../../reducers';
 import { ReferralStatusContent } from '../ReferralTextHelper';
 import { getUserStatusCards } from '../ReferralActions';
+import ReferralUserCard from './UserStatusCard/ReferralUserStatusCard';
 
 import './ReferralStatus.less';
 
@@ -27,7 +28,9 @@ const ReferralStatusView = propsData => {
             <span className="ReferralStatus__container__total-count">{statusCount}</span>
             <span className="ReferralStatus__container__sort-by">sort by</span>
           </div>
-          <div className="ReferralStatus__user-cards">cards here</div>
+          <div className="ReferralStatus__user-cards">
+            <ReferralUserCard alias="Vall" username="vallon" daysLeft={270} />
+          </div>
           <div className="ReferralStatus__payment-text">{statusPaymentText}</div>
         </div>
       )}

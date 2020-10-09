@@ -3,7 +3,13 @@
 @import (reference) '../../../styles/mixins.less';
 
 .ReferralStatus {
-  .referrals-main-styles();
+  padding: 0 15px;
+  color: @black;
+  width: auto;
+
+  @media @small {
+    width: 500px;
+  }
 
   &__title {
     padding-bottom: 10px;
