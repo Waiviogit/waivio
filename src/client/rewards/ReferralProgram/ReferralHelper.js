@@ -8,6 +8,10 @@ export const getCurrentFeesValue = value => value * (value / 100);
 export const handleProcessingFees = (staticValue, currentValue) =>
   `$${(staticValue * (staticValue / 100) * currentValue) / 100}`;
 export const handleRefName = refName => refName.replace(/^"(.+(?="$))"$/, '$1');
+export const handleStatusDaysLeft = days => {
+  const currentValue = String(days);
+  return currentValue.split('-').join('');
+};
 
 export const handleLoadMoreUserStatusCards = ({
   username,

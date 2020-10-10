@@ -14,7 +14,7 @@ import { getMoreUserStatusCards, getUserStatusCards } from '../ReferralActions';
 import ReferralUserCard from './UserStatusCard/ReferralUserStatusCard';
 import ReduxInfiniteScroll from '../../../vendor/ReduxInfiniteScroll';
 import Loading from '../../../components/Icon/Loading';
-import { handleLoadMoreUserStatusCards } from '../ReferralHelper';
+import { handleLoadMoreUserStatusCards, handleStatusDaysLeft } from '../ReferralHelper';
 
 import './ReferralStatus.less';
 import ReferralStatusSort from './ReferralStatusSort/ReferralStatusSort';
@@ -31,7 +31,7 @@ const ReferralStatusView = propsData => {
     sortBy,
     setSortBy,
   } = propsData;
-  const data = { username };
+  const data = { username, currentUserCards };
 
   const { statusTitle, statusDescription, statusCount, statusPaymentText } = ReferralStatusContent(
     data,
@@ -79,7 +79,7 @@ const ReferralStatusView = propsData => {
                     key={`${userCard.name}${userCard.started}`}
                     alias={userCard.alias}
                     username={userCard.name}
-                    daysLeft={userCard.daysLeft}
+                    daysLeft={handleStatusDaysLeft(userCard.daysLeft)}
                   />
                 ))}
               </ReduxInfiniteScroll>

@@ -1,3 +1,4 @@
+import { size } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -271,7 +272,7 @@ export const referralInstructionsContent = data => {
 };
 
 export const ReferralStatusContent = data => {
-  const { username } = data;
+  const { username, currentUserCards } = data;
   return {
     statusTitle: <FormattedMessage id="referral_status_title" defaultMessage="Referral status:" />,
     statusDescription: (
@@ -292,7 +293,7 @@ export const ReferralStatusContent = data => {
         id="referral_status_count"
         defaultMessage="Total count: {count}"
         values={{
-          count: 'empty',
+          count: <span className="status-count">{size(currentUserCards)}</span>,
         }}
       />
     ),
