@@ -175,11 +175,11 @@ export const handleRefAuthUser = (username, refUser, isGuest) => (
     })
     .catch(error => error);
 
-export const getUserStatusCards = (username, skip, limit, sort) => dispatch =>
+export const getUserStatusCards = (username, sort, skip, limit) => dispatch =>
   dispatch({
     type: GET_USER_STATUS_CARDS.ACTION,
     payload: {
-      promise: ApiClient.getUserStatusCards(username, skip, limit, sort)
+      promise: ApiClient.getUserStatusCards(username, sort, skip, limit)
         .then(data => ({
           hasMore: data.hasMore,
           userCards: data.users,
@@ -188,11 +188,11 @@ export const getUserStatusCards = (username, skip, limit, sort) => dispatch =>
     },
   });
 
-export const getMoreUserStatusCards = (username, skip, limit, sort) => dispatch =>
+export const getMoreUserStatusCards = (username, sort, skip, limit) => dispatch =>
   dispatch({
     type: GET_MORE_USER_STATUS_CARDS.ACTION,
     payload: {
-      promise: ApiClient.getUserStatusCards(username, skip, limit, sort)
+      promise: ApiClient.getUserStatusCards(username, sort, skip, limit)
         .then(data => ({
           hasMore: data.hasMore,
           userCards: data.users,

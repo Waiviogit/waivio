@@ -1443,5 +1443,8 @@
   "referral_status_title": "Реферальный статус:",
   "referral_status_description": "Следующие пользователи в настоящее время назначены сервером индекса Waivio реферальному партнеру {username}:",
   "referral_status_count": "Общее количество: {count}",
-  "referral_status_payments_text": "Статус всех невыплаченных и завершенных платежей можно проверить на странице {ReceivablesPage} в разделе вознаграждений."
+  "referral_status_payments_text": "Статус всех невыплаченных и завершенных платежей можно проверить на странице {ReceivablesPage} в разделе вознаграждений.",
+  "referral_status_sort_by": "Сортировать по",
+  "referral_status_recency_sort": "Новизне",
+  "referral_status_expiry_sort": "Истечению"
 }

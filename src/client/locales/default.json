@@ -1441,5 +1441,8 @@
   "referral_status_title": "Referral status:",
   "referral_status_description": "The following users are currently assigned by the Waivio index server to the referral partner {username}:",
   "referral_status_count": "Total count: {count}",
-  "referral_status_payments_text": "The status of all outstanding and completed payments can be checked on the {receivablesPage} page in the Rewards section."
+  "referral_status_payments_text": "The status of all outstanding and completed payments can be checked on the {receivablesPage} page in the Rewards section.",
+  "referral_status_sort_by": "Sort by",
+  "referral_status_recency_sort": "Recency",
+  "referral_status_expiry_sort": "Expiry"
 }

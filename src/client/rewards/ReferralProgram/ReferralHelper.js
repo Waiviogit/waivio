@@ -23,7 +23,7 @@ export const handleLoadMoreUserStatusCards = ({
     skip = userCardsLength;
   }
   if (!isLoadingMoreUserCards) {
-    getMoreUserCards(username, skip, limit, sort);
+    getMoreUserCards(username, sort, skip, limit);
   }
 };
 

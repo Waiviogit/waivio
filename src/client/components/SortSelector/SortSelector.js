@@ -49,7 +49,6 @@ export default class SortSelector extends React.Component {
   render() {
     const { sort } = this.props;
     const { visible } = this.state;
-
     const currentSort = React.Children.map(this.props.children, c => c).find(
       c => c.key === `.$${sort}`,
     );

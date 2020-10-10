@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -17,6 +17,7 @@ import Loading from '../../../components/Icon/Loading';
 import { handleLoadMoreUserStatusCards } from '../ReferralHelper';
 
 import './ReferralStatus.less';
+import ReferralStatusSort from './ReferralStatusSort/ReferralStatusSort';
 
 const ReferralStatusView = propsData => {
   const {
@@ -27,10 +28,11 @@ const ReferralStatusView = propsData => {
     isErrorLoading,
     isLoadingMoreUserCards,
     getMoreUserCards,
+    sortBy,
+    setSortBy,
   } = propsData;
-  const data = {
-    username,
-  };
+  const data = { username };
+
   const { statusTitle, statusDescription, statusCount, statusPaymentText } = ReferralStatusContent(
     data,
   );
@@ -41,7 +43,6 @@ const ReferralStatusView = propsData => {
       currentUserCards,
       isLoadingMoreUserCards,
       getMoreUserCards,
-      sort: 'recency',
     };
     return handleLoadMoreUserStatusCards(values);
   };
@@ -54,7 +55,9 @@ const ReferralStatusView = propsData => {
           <div className="ReferralStatus__description">{statusDescription}</div>
           <div className="ReferralStatus__container">
             <span className="ReferralStatus__container__total-count">{statusCount}</span>
-            <span className="ReferralStatus__container__sort-by">sort by</span>
+            <span className="ReferralStatus__container__sort-by">
+              <ReferralStatusSort handleSortChange={setSortBy} sortBy={sortBy} />
+            </span>
           </div>
           <div className="ReferralStatus__user-cards">
             {currentUserCards && (
@@ -102,9 +105,11 @@ const ReferralStatus = props => {
   } = props;
   const name = match.params.name;
 
+  const [sortBy, setSortBy] = useState('recency');
+
   useEffect(() => {
-    getUserCards(name);
-  }, []);
+    getUserCards(name, sortBy);
+  }, [sortBy]);
 
   const propsData = {
     username: name,
@@ -114,6 +119,8 @@ const ReferralStatus = props => {
     isErrorLoading,
     isLoadingMoreUserCards,
     getMoreUserCards,
+    sortBy,
+    setSortBy,
   };
   return ReferralStatusView(propsData);
 };
