@@ -16,6 +16,12 @@ export const REFERRAL_GET_ADDITION_FIELDS = createAsyncActionType(
 export const REFERRAL_REJECT_RULES = createAsyncActionType('@referral/REFERRAL_REJECT_RULES');
 export const HANDLE_REF_AUTH_USER = createAsyncActionType('@referral/HANDLE_REF_AUTH_USER');
 export const GET_USER_STATUS_CARDS = createAsyncActionType('@referral/GET_USER_STATUS_CARDS');
+export const GET_MORE_USER_STATUS_CARDS = createAsyncActionType(
+  '@referral/GET_MORE_USER_STATUS_CARDS',
+);
+export const GET_ERROR_MORE_USER_STATUS_CARDS = createAsyncActionType(
+  '@referral/GET_ERROR_MORE_USER_STATUS_CARDS',
+);
 
 export const getUserReferralInfo = username => dispatch =>
   dispatch({
@@ -180,5 +186,22 @@ export const getUserStatusCards = (username, skip, limit, sort) => dispatch =>
           userCards: data.users,
         }))
         .catch(error => error),
+    },
+  });
+
+export const getMoreUserStatusCards = (username, skip, limit, sort) => dispatch =>
+  dispatch({
+    type: GET_MORE_USER_STATUS_CARDS.ACTION,
+    payload: {
+      promise: ApiClient.getUserStatusCards(username, skip, limit, sort)
+        .then(data => ({
+          hasMore: data.hasMore,
+          userCards: data.users,
+        }))
+        .catch(() =>
+          dispatch({
+            type: GET_ERROR_MORE_USER_STATUS_CARDS,
+          }),
+        ),
     },
   });

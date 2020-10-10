@@ -2,21 +2,49 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { getIsAuthenticated } from '../../../reducers';
+import {
+  getCurrentUserCards,
+  getIsAuthenticated,
+  getIsErrorLoadingUserCards,
+  getIsHasMoreCards,
+  getIsLoadingMoreUserCards,
+} from '../../../reducers';
 import { ReferralStatusContent } from '../ReferralTextHelper';
-import { getUserStatusCards } from '../ReferralActions';
+import { getMoreUserStatusCards, getUserStatusCards } from '../ReferralActions';
 import ReferralUserCard from './UserStatusCard/ReferralUserStatusCard';
+import ReduxInfiniteScroll from '../../../vendor/ReduxInfiniteScroll';
+import Loading from '../../../components/Icon/Loading';
+import { handleLoadMoreUserStatusCards } from '../ReferralHelper';
 
 import './ReferralStatus.less';
 
 const ReferralStatusView = propsData => {
-  const { username, isAuthUser } = propsData;
+  const {
+    username,
+    isAuthUser,
+    currentUserCards,
+    hasMore,
+    isErrorLoading,
+    isLoadingMoreUserCards,
+    getMoreUserCards,
+  } = propsData;
   const data = {
     username,
   };
   const { statusTitle, statusDescription, statusCount, statusPaymentText } = ReferralStatusContent(
     data,
   );
+
+  const handleLoadMore = () => {
+    const values = {
+      username,
+      currentUserCards,
+      isLoadingMoreUserCards,
+      getMoreUserCards,
+      sort: 'recency',
+    };
+    return handleLoadMoreUserStatusCards(values);
+  };
 
   return (
     <React.Fragment>
@@ -29,7 +57,30 @@ const ReferralStatusView = propsData => {
             <span className="ReferralStatus__container__sort-by">sort by</span>
           </div>
           <div className="ReferralStatus__user-cards">
-            <ReferralUserCard alias="Vall" username="vallon" daysLeft={270} />
+            {currentUserCards && (
+              <ReduxInfiniteScroll
+                loadMore={handleLoadMore}
+                hasMore={hasMore}
+                elementIsScrollable={false}
+                threshold={500}
+                loader={
+                  !isErrorLoading && (
+                    <div className="WalletTable__loader">
+                      <Loading />
+                    </div>
+                  )
+                }
+              >
+                {currentUserCards.map(userCard => (
+                  <ReferralUserCard
+                    key={`${userCard.name}${userCard.started}`}
+                    alias={userCard.alias}
+                    username={userCard.name}
+                    daysLeft={userCard.daysLeft}
+                  />
+                ))}
+              </ReduxInfiniteScroll>
+            )}
           </div>
           <div className="ReferralStatus__payment-text">{statusPaymentText}</div>
         </div>
@@ -39,7 +90,16 @@ const ReferralStatusView = propsData => {
 };
 
 const ReferralStatus = props => {
-  const { match, isAuthenticated, getUserCards } = props;
+  const {
+    match,
+    isAuthenticated,
+    getUserCards,
+    currentUserCards,
+    hasMore,
+    isErrorLoading,
+    isLoadingMoreUserCards,
+    getMoreUserCards,
+  } = props;
   const name = match.params.name;
 
   useEffect(() => {
@@ -49,6 +109,11 @@ const ReferralStatus = props => {
   const propsData = {
     username: name,
     isAuthUser: isAuthenticated,
+    currentUserCards,
+    hasMore,
+    isErrorLoading,
+    isLoadingMoreUserCards,
+    getMoreUserCards,
   };
   return ReferralStatusView(propsData);
 };
@@ -56,18 +121,33 @@ const ReferralStatus = props => {
 ReferralStatus.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   getUserCards: PropTypes.func,
+  getMoreUserCards: PropTypes.func,
+  currentUserCards: PropTypes.shape(),
+  hasMore: PropTypes.bool,
+  isErrorLoading: PropTypes.bool,
+  isLoadingMoreUserCards: PropTypes.bool,
 };
 
 ReferralStatus.defaultProps = {
   getUserCards: () => {},
+  getMoreUserCards: () => {},
+  currentUserCards: [],
+  hasMore: false,
+  isErrorLoading: false,
+  isLoadingMoreUserCards: false,
 };
 
 const mapStateToProps = state => ({
   isAuthenticated: getIsAuthenticated(state),
+  currentUserCards: getCurrentUserCards(state),
+  hasMore: getIsHasMoreCards(state),
+  isErrorLoading: getIsErrorLoadingUserCards(state),
+  isLoadingMoreUserCards: getIsLoadingMoreUserCards(state),
 });
 
 export default injectIntl(
   connect(mapStateToProps, {
     getUserCards: getUserStatusCards,
+    getMoreUserCards: getMoreUserStatusCards,
   })(ReferralStatus),
 );

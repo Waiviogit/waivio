@@ -319,6 +319,10 @@ export const getIsChangedRuleSelection = state =>
 export const getIsUsersCards = state => fromReferral.getIsUsersCards(state.referral);
 export const getIsHasMoreCards = state => fromReferral.getIsHasMoreCards(state.referral);
 export const getCurrentUserCards = state => fromReferral.getCurrentUserCards(state.referral);
+export const getIsErrorLoadingUserCards = state =>
+  fromReferral.getIsErrorLoadingUserCards(state.referral);
+export const getIsLoadingMoreUserCards = state =>
+  fromReferral.getIsLoadingMoreUserCards(state.referral);
 
 // common selectors
 

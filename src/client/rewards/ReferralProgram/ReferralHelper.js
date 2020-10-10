@@ -1,3 +1,5 @@
+import { size } from 'lodash';
+
 export const getCurrentOfferPercent = value => `${100 - value}%`;
 export const handleOffersReward = value => `$${value.toFixed(2)}`;
 export const handleOffersPercent = value => `${value}%`;
@@ -6,6 +8,24 @@ export const getCurrentFeesValue = value => value * (value / 100);
 export const handleProcessingFees = (staticValue, currentValue) =>
   `$${(staticValue * (staticValue / 100) * currentValue) / 100}`;
 export const handleRefName = refName => refName.replace(/^"(.+(?="$))"$/, '$1');
+
+export const handleLoadMoreUserStatusCards = ({
+  username,
+  currentUserCards,
+  isLoadingMoreUserCards,
+  getMoreUserCards,
+  sort,
+}) => {
+  let skip = 0;
+  const limit = 10;
+  const userCardsLength = size(currentUserCards);
+  if (userCardsLength >= limit) {
+    skip = userCardsLength;
+  }
+  if (!isLoadingMoreUserCards) {
+    getMoreUserCards(username, skip, limit, sort);
+  }
+};
 
 export const mockStatusData = () => ({
   users: [

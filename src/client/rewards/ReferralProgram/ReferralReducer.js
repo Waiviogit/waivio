@@ -1,9 +1,12 @@
+import { uniqWith, isEqual } from 'lodash';
 import {
   GET_USER_REFERRAL_DETAILS,
   GET_IS_USER_IN_BLACKLIST,
   GET_USER_REFERRAL_INFO,
   REFERRAL_GET_ADDITION_FIELDS,
   GET_USER_STATUS_CARDS,
+  GET_MORE_USER_STATUS_CARDS,
+  GET_ERROR_MORE_USER_STATUS_CARDS,
 } from './ReferralActions';
 
 const initialState = {
@@ -21,7 +24,9 @@ const initialState = {
   isChangedRuleSelection: false,
   isGetUsersCards: false,
   hasMoreCards: false,
-  userCards: false,
+  userCards: [],
+  isLoadingMoreUserCards: false,
+  isErrorLoadingMore: false,
 };
 
 const ReferralReducer = (state = initialState, action) => {
@@ -98,6 +103,33 @@ const ReferralReducer = (state = initialState, action) => {
         isGetUsersCards: false,
       };
     }
+    case GET_MORE_USER_STATUS_CARDS.START: {
+      return {
+        ...state,
+        isLoadingMoreUserCards: true,
+        isErrorLoadingMore: false,
+      };
+    }
+    case GET_MORE_USER_STATUS_CARDS.SUCCESS: {
+      return {
+        ...state,
+        userCards: uniqWith(state.userCards.concat(action.payload.userCards), isEqual),
+        isLoadingMoreUserCards: false,
+        isErrorLoadingMore: false,
+      };
+    }
+    case GET_MORE_USER_STATUS_CARDS.ERROR: {
+      return {
+        ...state,
+        isErrorLoadingMore: true,
+      };
+    }
+    case GET_ERROR_MORE_USER_STATUS_CARDS: {
+      return {
+        ...state,
+        isErrorLoadingMore: true,
+      };
+    }
     default:
       return state;
   }
@@ -119,3 +151,5 @@ export const getIsChangedRuleSelection = state => state.isChangedRuleSelection;
 export const getIsUsersCards = state => state.isGetUsersCards;
 export const getIsHasMoreCards = state => state.hasMoreCards;
 export const getCurrentUserCards = state => state.userCards;
+export const getIsErrorLoadingUserCards = state => state.isErrorLoadingMore;
+export const getIsLoadingMoreUserCards = state => state.isLoadingMoreUserCards;
