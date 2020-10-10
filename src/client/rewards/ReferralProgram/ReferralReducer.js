@@ -7,6 +7,8 @@ import {
   GET_USER_STATUS_CARDS,
   GET_MORE_USER_STATUS_CARDS,
   GET_ERROR_MORE_USER_STATUS_CARDS,
+  REFERRAL_CONFIRM_RULES,
+  REFERRAL_REJECT_RULES,
 } from './ReferralActions';
 
 const initialState = {
@@ -27,6 +29,7 @@ const initialState = {
   userCards: [],
   isLoadingMoreUserCards: false,
   isErrorLoadingMore: false,
+  isStartChangeRules: false,
 };
 
 const ReferralReducer = (state = initialState, action) => {
@@ -130,6 +133,30 @@ const ReferralReducer = (state = initialState, action) => {
         isErrorLoadingMore: true,
       };
     }
+    case REFERRAL_CONFIRM_RULES.START: {
+      return {
+        ...state,
+        isStartChangeRules: true,
+      };
+    }
+    case REFERRAL_CONFIRM_RULES.SUCCESS: {
+      return {
+        ...state,
+        isStartChangeRules: false,
+      };
+    }
+    case REFERRAL_REJECT_RULES.START: {
+      return {
+        ...state,
+        isStartChangeRules: true,
+      };
+    }
+    case REFERRAL_REJECT_RULES.SUCCESS: {
+      return {
+        ...state,
+        isStartChangeRules: false,
+      };
+    }
     default:
       return state;
   }
@@ -153,3 +180,4 @@ export const getIsHasMoreCards = state => state.hasMoreCards;
 export const getCurrentUserCards = state => state.userCards;
 export const getIsErrorLoadingUserCards = state => state.isErrorLoadingMore;
 export const getIsLoadingMoreUserCards = state => state.isLoadingMoreUserCards;
+export const getIsStartChangeRules = state => state.isStartChangeRules;

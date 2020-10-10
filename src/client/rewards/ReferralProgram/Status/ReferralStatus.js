@@ -68,7 +68,7 @@ const ReferralStatusView = propsData => {
                 threshold={500}
                 loader={
                   !isErrorLoading && (
-                    <div className="WalletTable__loader">
+                    <div className="ReferralStatus__user-cards__loader">
                       <Loading />
                     </div>
                   )

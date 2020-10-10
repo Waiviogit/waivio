@@ -12,11 +12,13 @@ import {
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
+  getIsStartChangeRules,
   getIsUserInWaivioBlackList,
   getReferralStatus,
   isGuestUser,
 } from '../../../reducers';
 import { referralInstructionsContent } from '../ReferralTextHelper';
+import Loading from '../../../components/Icon/Loading';
 
 import './ReferralsInstructions.less';
 
@@ -46,6 +48,7 @@ const ReferralsInstructions = props => {
     rejectRules,
     userReferralInfo,
     referralStatus,
+    isStartChangeRules,
   } = props;
   const [isModal, setIsModal] = useState(false);
   const [isCopyButton, setIsCopyButton] = useState(false);
@@ -135,7 +138,6 @@ const ReferralsInstructions = props => {
             <Checkbox
               checked={currentStatus}
               id="agreeButton"
-              // onChange={() => foo()}
               onChange={() => handleAgreeRulesCheckbox()}
             />
             <label
@@ -148,7 +150,11 @@ const ReferralsInstructions = props => {
               {instructionsConditions}
             </label>
           </div>
-
+          {isStartChangeRules && (
+            <div className="ReferralInstructions__wrap-conditions__loader">
+              <Loading />
+            </div>
+          )}
           {currentStatus && (
             <div className="ReferralInstructions__accepted-conditions">
               <div className="ReferralInstructions__accepted-conditions__text-wrap">
@@ -208,6 +214,7 @@ ReferralsInstructions.propTypes = {
   rejectRules: PropTypes.func,
   userReferralInfo: PropTypes.func,
   referralStatus: PropTypes.string.isRequired,
+  isStartChangeRules: PropTypes.bool,
 };
 
 ReferralsInstructions.defaultProps = {
@@ -217,6 +224,7 @@ ReferralsInstructions.defaultProps = {
   confirmRules: () => {},
   rejectRules: () => {},
   userReferralInfo: () => {},
+  isStartChangeRules: false,
 };
 
 const mapStateToProps = state => ({
@@ -225,6 +233,7 @@ const mapStateToProps = state => ({
   isBlackListUser: getIsUserInWaivioBlackList(state),
   isGuest: isGuestUser(state),
   referralStatus: getReferralStatus(state),
+  isStartChangeRules: getIsStartChangeRules(state),
 });
 
 export default injectIntl(
