@@ -173,7 +173,6 @@ export const handleRefAuthUser = (username, refUser, isGuest) => (
         });
       }
     })
-    .then(() => sessionStorage.removeItem('refUser'))
     .catch(error => error);
 
 export const getUserStatusCards = (username, skip, limit, sort) => dispatch =>

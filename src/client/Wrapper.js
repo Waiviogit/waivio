@@ -179,6 +179,7 @@ class Wrapper extends React.PureComponent {
     if (this.props.isAuthenticated && refName) {
       const currentRefName = handleRefName(refName);
       this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
+      sessionStorage.removeItem('refUser');
     }
   }
 

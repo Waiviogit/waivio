@@ -323,6 +323,7 @@ export const getIsErrorLoadingUserCards = state =>
   fromReferral.getIsErrorLoadingUserCards(state.referral);
 export const getIsLoadingMoreUserCards = state =>
   fromReferral.getIsLoadingMoreUserCards(state.referral);
+export const getIsHandleRef = state => fromReferral.getIsHandleRef(state.referral);
 
 // common selectors
 
