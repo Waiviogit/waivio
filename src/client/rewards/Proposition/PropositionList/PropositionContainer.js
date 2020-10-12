@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { filter, get, isEmpty, map } from 'lodash';
+import { withRouter } from 'react-router-dom';
+import { filter, get, map } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { Button, Icon, message } from 'antd';
-import { getAuthenticatedUser, getLocale } from '../../reducers';
-import Loading from '../../components/Icon/Loading';
-import ObjectCardView from '../../objectCard/ObjectCardView';
-import Proposition from '../../rewards/Proposition/Proposition';
-import * as apiConfig from '../../../waivioApi/config.json';
-import { assignProposition, declineProposition } from '../../user/userActions';
-import * as ApiClient from '../../../waivioApi/ApiClient';
+import { message } from 'antd';
+import { getAuthenticatedUser, getLocale } from '../../../reducers';
+import Loading from '../../../components/Icon/Loading';
+import Proposition from '../Proposition';
+import PropositionList from './PropositionList';
+import * as apiConfig from '../../../../waivioApi/config.json';
+import { assignProposition, declineProposition } from '../../../user/userActions';
+import * as ApiClient from '../../../../waivioApi/ApiClient';
 
 const PropositionContainer = ({
   wobject,
@@ -38,7 +39,7 @@ const PropositionContainer = ({
       );
       setAllPropositions(data.campaigns);
       setLoadingPropositions(false);
-      setCurrentProposition(currentPropos);
+      setCurrentProposition(currentPropos[0]);
     });
   };
 
@@ -61,7 +62,6 @@ const PropositionContainer = ({
     }
   }, [wobject, userName]);
 
-  // Propositions
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {
       const updatedProposition = propos;
@@ -165,7 +165,6 @@ const PropositionContainer = ({
         setIsAssign(true);
       });
   };
-  // END Propositions
 
   const renderProposition = propositions =>
     map(propositions, propos =>
@@ -197,56 +196,22 @@ const PropositionContainer = ({
     const permlink = get(wobject, 'author_permlink');
     history.push(`/rewards/all/${permlink}`);
   };
-  const minReward = currentProposition ? get(currentProposition[0], ['min_reward']) : 0;
-  const maxReward = currentProposition ? get(currentProposition[0], ['max_reward']) : 0;
-  const rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
-  const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
-
-  const getFeedProposition = () => {
-    if (wobject && isEmpty(wobject.parent) && !isEmpty(currentProposition)) {
-      return (
-        <div>
-          <ObjectCardView wObject={wobject} passedParent={currentProposition} />
-          <div className="Campaign__button" role="presentation" onClick={goToProducts}>
-            <Button type="primary" size="large">
-              {!rewardMax ? (
-                <React.Fragment>
-                  <span>
-                    {intl.formatMessage({
-                      id: 'rewards_details_earn',
-                      defaultMessage: 'Earn',
-                    })}
-                  </span>
-                  <span>
-                    <span className="fw6 ml1">{rewardPrise}</span>
-                    <Icon type="right" />
-                  </span>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <span>
-                    {intl.formatMessage({
-                      id: 'rewards_details_earn_up_to',
-                      defaultMessage: 'Earn up to',
-                    })}
-                  </span>
-                  <span>
-                    <span className="fw6 ml1">{`${rewardMax}`}</span>
-                    <Icon type="right" />
-                  </span>
-                </React.Fragment>
-              )}
-            </Button>
-          </div>
-        </div>
-      );
-    }
-    return renderProposition(allPropositions);
-  };
 
   return (
     <React.Fragment>
-      {loadingPropositions ? <Loading /> : <React.Fragment>{getFeedProposition()}</React.Fragment>}
+      {loadingPropositions ? (
+        <Loading />
+      ) : (
+        <React.Fragment>
+          <PropositionList
+            wobject={wobject}
+            allPropositions={allPropositions}
+            currentProposition={currentProposition}
+            goToProducts={goToProducts}
+            renderProposition={renderProposition}
+          />
+        </React.Fragment>
+      )}
     </React.Fragment>
   );
 };
@@ -280,4 +245,4 @@ export default connect(
     assignPropos: assignProposition,
     declinePropos: declineProposition,
   },
-)(injectIntl(PropositionContainer));
+)(withRouter(injectIntl(PropositionContainer)));
