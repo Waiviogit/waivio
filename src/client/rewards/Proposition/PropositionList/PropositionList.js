@@ -1,17 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, map } from 'lodash';
 import { Button, Icon } from 'antd';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
+import Proposition from '../Proposition';
 
 const PropositionList = ({
   allPropositions,
   wobject,
   currentProposition,
-  renderProposition,
+  discardProposition,
+  assignPropositionHandler,
   intl,
   goToProducts,
+  match,
+  history,
+  user,
+  userName,
+  loadingAssignDiscard,
+  isAssign,
 }) => {
   const minReward = get(currentProposition, ['min_reward'], 0);
   const maxReward = get(currentProposition, ['max_reward'], 0);
@@ -56,7 +64,30 @@ const PropositionList = ({
           </div>
         </div>
       ) : (
-        renderProposition(allPropositions)
+        map(allPropositions, propos =>
+          map(
+            propos.objects,
+            wobj =>
+              get(wobj, ['object', 'author_permlink']) === match.params.name && (
+                <Proposition
+                  proposition={propos}
+                  wobj={wobj.object}
+                  wobjPrice={wobj.reward}
+                  assignCommentPermlink={wobj.permlink}
+                  assignProposition={assignPropositionHandler}
+                  discardProposition={discardProposition}
+                  authorizedUserName={userName}
+                  loading={loadingAssignDiscard}
+                  key={`${wobj.object.author_permlink}`}
+                  assigned={wobj.assigned}
+                  history={history}
+                  isAssign={isAssign}
+                  match={match}
+                  user={user}
+                />
+              ),
+          ),
+        )
       )}
     </React.Fragment>
   );
@@ -67,15 +98,28 @@ PropositionList.propTypes = {
   wobject: PropTypes.shape().isRequired,
   allPropositions: PropTypes.arrayOf(PropTypes.shape()),
   currentProposition: PropTypes.arrayOf(PropTypes.shape()),
-  renderProposition: PropTypes.func,
+  discardProposition: PropTypes.func,
+  assignPropositionHandler: PropTypes.func,
   goToProducts: PropTypes.func,
+  match: PropTypes.shape(),
+  history: PropTypes.shape().isRequired,
+  user: PropTypes.shape(),
+  userName: PropTypes.string.isRequired,
+  loadingAssignDiscard: PropTypes.bool,
+  isAssign: PropTypes.bool,
 };
 
 PropositionList.defaultProps = {
   allPropositions: [],
   currentProposition: [],
+  match: {},
+  user: {},
+  loadingAssignDiscard: false,
+  isAssign: false,
   renderProposition: () => {},
   goToProducts: () => {},
+  discardProposition: () => {},
+  assignPropositionHandler: () => {},
 };
 
 export default injectIntl(PropositionList);

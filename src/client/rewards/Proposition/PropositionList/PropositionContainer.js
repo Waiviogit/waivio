@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { filter, get, map } from 'lodash';
+import { filter, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { message } from 'antd';
 import { getAuthenticatedUser, getLocale } from '../../../reducers';
 import Loading from '../../../components/Icon/Loading';
-import Proposition from '../Proposition';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
 import { assignProposition, declineProposition } from '../../../user/userActions';
@@ -166,32 +165,6 @@ const PropositionContainer = ({
       });
   };
 
-  const renderProposition = propositions =>
-    map(propositions, propos =>
-      map(
-        propos.objects,
-        wobj =>
-          get(wobj, ['object', 'author_permlink']) === match.params.name && (
-            <Proposition
-              proposition={propos}
-              wobj={wobj.object}
-              wobjPrice={wobj.reward}
-              assignCommentPermlink={wobj.permlink}
-              assignProposition={assignPropositionHandler}
-              discardProposition={discardProposition}
-              authorizedUserName={userName}
-              loading={loadingAssignDiscard}
-              key={`${wobj.object.author_permlink}`}
-              assigned={wobj.assigned}
-              history={history}
-              isAssign={isAssign}
-              match={match}
-              user={user}
-            />
-          ),
-      ),
-    );
-
   const goToProducts = () => {
     const permlink = get(wobject, 'author_permlink');
     history.push(`/rewards/all/${permlink}`);
@@ -208,7 +181,13 @@ const PropositionContainer = ({
             allPropositions={allPropositions}
             currentProposition={currentProposition}
             goToProducts={goToProducts}
-            renderProposition={renderProposition}
+            discardProposition={discardProposition}
+            assignPropositionHandler={assignPropositionHandler}
+            user={user}
+            loadingAssignDiscard={loadingAssignDiscard}
+            isAssign={isAssign}
+            match={match}
+            userName={userName}
           />
         </React.Fragment>
       )}
