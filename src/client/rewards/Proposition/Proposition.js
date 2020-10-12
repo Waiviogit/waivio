@@ -9,8 +9,6 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
 import { getAuthenticatedUser, getCommentContent } from '../../reducers';
-import { ASSIGNED, GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
-import { getCommentContent } from '../../reducers';
 import {
   ASSIGNED,
   GUIDE_HISTORY,
