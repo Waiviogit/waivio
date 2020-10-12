@@ -218,7 +218,7 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           rewardHBD: notification.rewardHBD,
         },
       );
-    case notificationConstants.CUSTOMER_SUPPORT:
+    case notificationConstants.CAMPAIGN_MESSAGE:
       return intl.formatMessage(
         {
           id: 'customer_support',
@@ -238,6 +238,36 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
         {
           voter: notification.voter,
           postTitle: notification.postTitle,
+        },
+      );
+    case notificationConstants.MY_LIKE:
+      return intl.formatMessage(
+        {
+          id: 'my_like_notify',
+          defaultMessage: 'You liked {post}',
+        },
+        {
+          post: notification.title,
+        },
+      );
+    case notificationConstants.MY_COMMENT:
+      return intl.formatMessage(
+        {
+          id: 'my_comment_notify',
+          defaultMessage: 'You replied to {parentAuthor}',
+        },
+        {
+          parentAuthor: notification.parentAuthor,
+        },
+      );
+    case notificationConstants.MY_POST:
+      return intl.formatMessage(
+        {
+          id: 'my_post_notify',
+          defaultMessage: 'You created post {post}',
+        },
+        {
+          post: notification.title,
         },
       );
     default:
@@ -288,7 +318,7 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.from}/transfers`;
     case notificationConstants.CLAIM_REWARD:
       return `/@${notification.account}`;
-    case notificationConstants.CUSTOMER_SUPPORT:
+    case notificationConstants.CAMPAIGN_MESSAGE:
       return `/@${notification.author}/${notification.permlink}`;
     case notificationConstants.LIKE:
       return `/@${notification.author}/${notification.permlink}`;
@@ -342,7 +372,7 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.from;
     case notificationConstants.CLAIM_REWARD:
       return notification.account;
-    case notificationConstants.CUSTOMER_SUPPORT:
+    case notificationConstants.CAMPAIGN_MESSAGE:
       return notification.author;
     case notificationConstants.LIKE:
       return notification.voter;

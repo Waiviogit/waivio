@@ -4,9 +4,11 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import 'beautiful-react-redux/patch';
 import { message } from 'antd';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
 import Cookie from 'js-cookie';
 import steemConnectAPI from './steemConnectAPI';
-import { waivioAPI } from '../waivioApi/ApiClient';
+import { waivioAPI, sendSentryNotification } from '../waivioApi/ApiClient';
 import history from './history';
 import getStore from './store';
 import AppHost from './AppHost';
@@ -22,6 +24,18 @@ const accessToken = Cookie.get('access_token');
 if (accessToken) {
   steemConnectAPI.setAccessToken(accessToken);
 }
+
+Sentry.init({
+  environment: process.env.NODE_ENV || 'development',
+  dsn: process.env.SENTRY_DSN,
+  integrations: [new Integrations.BrowserTracing()],
+  tracesSampleRate: 1.0,
+});
+
+process.on('unhandledRejection', error => {
+  sendSentryNotification();
+  Sentry.captureException(error);
+});
 
 const store = getStore(steemConnectAPI, waivioAPI, '/', history);
 

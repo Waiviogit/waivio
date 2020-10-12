@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty, get, pickBy, identity, size, has, setWith, uniq } from 'lodash';
+import { isEmpty, get, pickBy, identity, has, setWith, uniq } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -17,18 +17,12 @@ import {
   getMenuItems,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
-import {
-  getFieldsCount,
-  getFieldsByName,
-  getLink,
-  getExposedFieldsByObjType,
-} from '../../object/wObjectHelper';
+import { getFieldsCount, getLink, getExposedFieldsByObjType } from '../../object/wObjectHelper';
 import {
   objectFields,
   TYPES_OF_MENU_ITEM,
   linkFields,
 } from '../../../common/constants/listOfFields';
-import URL from '../../../common/constants/routing';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
@@ -41,7 +35,6 @@ import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import LinkButton from '../../components/LinkButton/LinkButton';
-import ExpandingBlock from './ExpandingBlock';
 
 import './ObjectInfo.less';
 
@@ -192,8 +185,7 @@ class ObjectInfo extends React.Component {
         className={classNames('menu-btn', {
           active: location.hash.slice(1).split('/')[0] === item.body,
         })}
-        to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.body ||
-          item.author_permlink}`}
+        to={`/object/${wobject.author_permlink}/menu#${item.body || item.author_permlink}`}
       >
         {item.alias || getObjectName(item)}
       </LinkButton>
@@ -252,9 +244,6 @@ class ObjectInfo extends React.Component {
     const website = parseWobjectField(wobject, 'website');
     const wobjName = getObjectName(wobject);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
-    const names = getFieldsByName(wobject, objectFields.name)
-      .filter(nameFld => nameFld.body !== (wobject.name || wobject.default_name))
-      .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
     const photosCount = get(wobject, 'photos_count', 0);
     const tagCategories = get(wobject, 'tagCategory', []);
     const map = parseWobjectField(wobject, 'map');
@@ -288,6 +277,7 @@ class ObjectInfo extends React.Component {
     const menuLinks = getMenuItems(wobject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
     const menuPages = getMenuItems(wobject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
     const button = parseButtonsField(wobject);
+    const isList = hasType(wobject, OBJECT_TYPE.LIST);
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort)) {
@@ -314,36 +304,38 @@ class ObjectInfo extends React.Component {
 
       return (
         <React.Fragment>
-          {isEditMode && (
+          {isEditMode && !isList && (
             <div className="object-sidebar__section-title">
               <FormattedMessage id="menu" defaultMessage="Menu" />
             </div>
           )}
-          <div className="object-sidebar__menu-items">
-            <React.Fragment>
-              {this.listItem(
-                TYPES_OF_MENU_ITEM.LIST,
-                !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
-              )}
-              {this.listItem(
-                TYPES_OF_MENU_ITEM.PAGE,
-                !isEmpty(menuPages) &&
-                  menuPages.map(page =>
-                    this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.PAGE, ...page }),
-                  ),
-              )}
-              {this.listItem(
-                objectFields.button,
-                !isEmpty(button) &&
-                  button.map(btn => this.getMenuSectionLink({ id: btn.name, ...btn })),
-              )}
-              {this.listItem(
-                objectFields.newsFilter,
-                newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
-              )}
-              {this.listItem(objectFields.sorting, null)}
-            </React.Fragment>
-          </div>
+          {!isList && (
+            <div className="object-sidebar__menu-items">
+              <React.Fragment>
+                {this.listItem(
+                  TYPES_OF_MENU_ITEM.LIST,
+                  !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
+                )}
+                {this.listItem(
+                  TYPES_OF_MENU_ITEM.PAGE,
+                  !isEmpty(menuPages) &&
+                    menuPages.map(page =>
+                      this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.PAGE, ...page }),
+                    ),
+                )}
+                {this.listItem(
+                  objectFields.button,
+                  !isEmpty(button) &&
+                    button.map(btn => this.getMenuSectionLink({ id: btn.name, ...btn })),
+                )}
+                {this.listItem(
+                  objectFields.newsFilter,
+                  newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+                )}
+                {this.listItem(objectFields.sorting, null)}
+              </React.Fragment>
+            </div>
+          )}
         </React.Fragment>
       );
     };
@@ -364,15 +356,7 @@ class ObjectInfo extends React.Component {
             <FormattedMessage id="about" defaultMessage="About" />
           </div>
         )}
-        {this.listItem(
-          objectFields.name,
-          !isEditMode && size(names) && (
-            <React.Fragment>
-              <span className="field-icon">{'\u2217'}</span>
-              <ExpandingBlock className="object-sidebar__names" entities={names} minLines={4} />
-            </React.Fragment>
-          ),
-        )}
+        {this.listItem(objectFields.name, null)}
         {this.listItem(
           objectFields.description,
           description && <DescriptionInfo description={description} />,
@@ -553,6 +537,7 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
+        {this.listItem(objectFields.authority, null)}
       </React.Fragment>
     );
 

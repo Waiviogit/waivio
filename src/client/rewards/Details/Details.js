@@ -7,6 +7,7 @@ import getDetailsMessages from './detailsMessagesData';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
+import { getObjectName } from '../../helpers/wObjectHelper';
 import './Details.less';
 
 const Details = ({
@@ -30,7 +31,7 @@ const Details = ({
 
   const isExpired = objectDetails.status === 'expired';
   const isInActive = objectDetails.status === 'inactive';
-  const proposedWobjName = proposedWobj.name;
+  const proposedWobjName = getObjectName(proposedWobj);
 
   const getRequiredObjectName = () => {
     let result;

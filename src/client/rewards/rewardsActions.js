@@ -88,14 +88,14 @@ export const GET_REWARDS_GENERAL_COUNTS = createAsyncActionType(
   '@rewards/GET_REWARDS_GENERAL_COUNTS',
 );
 
-export const getRewardsGeneralCounts = ({ userName, sort }) => (dispatch, getState) => {
+export const getRewardsGeneralCounts = ({ userName, sort, match }) => (dispatch, getState) => {
   const state = getState();
   const locale = getLocale(state);
 
   return dispatch({
     type: GET_REWARDS_GENERAL_COUNTS.ACTION,
     payload: {
-      promise: ApiClient.getRewardsGeneralCounts({ userName, sort, locale }),
+      promise: ApiClient.getRewardsGeneralCounts({ userName, sort, match, locale }),
     },
   });
 };
@@ -104,10 +104,22 @@ export const GET_FOLLOWING_SPONSORS_REWARDS = createAsyncActionType(
   '@rewards/GET_FOLLOWING_SPONSORS_REWARDS',
 );
 
-export const getFollowingSponsorsRewards = userName => dispatch =>
-  dispatch({
+export const getFollowingSponsorsRewards = skip => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  return dispatch({
     type: GET_FOLLOWING_SPONSORS_REWARDS.ACTION,
-    payload: ApiClient.getFollowingSponsorsRewards({ userName }),
+    payload: ApiClient.getFollowingSponsorsRewards({ userName, skip }),
+  });
+};
+
+export const CLEAR_FOLLOWING_SPONSORS_REWARDS = createAsyncActionType(
+  '@rewards/CLEAR_FOLLOWING_SPONSORS_REWARDS',
+);
+
+export const clearFollowingSponsorsRewards = () => dispatch =>
+  dispatch({
+    type: CLEAR_FOLLOWING_SPONSORS_REWARDS.ACTION,
   });
 
 export const GET_FRAUD_SUSPICION = createAsyncActionType('@rewards/GET_FRAUD_SUSPICION');

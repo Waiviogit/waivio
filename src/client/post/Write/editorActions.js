@@ -130,6 +130,8 @@ const broadcastComment = (
   authUsername,
   beneficiaries,
   isReview,
+  isGuest,
+  hiveBeneficiaryAccount,
 ) => {
   const operations = [];
   const commentOp = [
@@ -147,14 +149,14 @@ const broadcastComment = (
   operations.push(commentOp);
 
   if (isUpdating) return steemConnectAPI.broadcast(operations);
-
+  const guestHivePresent = hiveBeneficiaryAccount && isGuest ? 5000 : 0;
   const commentOptionsConfig = {
     author,
     permlink,
     allow_votes: true,
     allow_curation_rewards: true,
     max_accepted_payout: '1000000.000 HBD',
-    percent_steem_dollars: 10000,
+    percent_steem_dollars: isGuest ? guestHivePresent : 10000,
     extensions: [],
   };
 
@@ -269,6 +271,8 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
         authUser.name,
         currentBeneficiaries,
         isReview,
+        isGuest,
+        hiveBeneficiaryAccount,
       )
         .then(result => {
           if (draftId) {
@@ -284,7 +288,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
             }
             if (result.status === 200) {
               dispatch(notify(publicMessage, 'success'));
-              dispatch(push('/'));
+              dispatch(push(`/@${author}`));
             }
           } else {
             setTimeout(() => dispatch(push(`/@${author}`)), 3000);

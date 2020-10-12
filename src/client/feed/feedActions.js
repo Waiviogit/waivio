@@ -52,16 +52,16 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
   const state = getState();
   const user_languages = getUserLocalesArray(getState);
   const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
 
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
-    payload: ApiClient.getFeedContent(sortBy, {
+    payload: ApiClient.getFeedContent(sortBy, locale, follower, {
       category: sortBy,
       tag: category,
       skip: 0,
       limit,
       user_languages,
-      locale,
     }),
     meta: {
       sortBy,
@@ -78,19 +78,19 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   const user_languages = getUserLocalesArray(getState);
   const locale = getLocale(state);
   const lastId = getLastPostId(state);
+  const follower = getAuthenticatedUserName(state);
 
   if (!feedContent.length) return Promise.resolve(null);
 
   return dispatch({
     type: GET_MORE_FEED_CONTENT.ACTION,
-    payload: ApiClient.getFeedContent(sortBy, {
+    payload: ApiClient.getFeedContent(sortBy, locale, follower, {
       category: sortBy,
       tag: category,
       skip: feedContent.length,
       limit,
       user_languages,
       lastId,
-      locale,
     }),
     meta: {
       sortBy,
@@ -109,6 +109,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
   let userBlogPosts = [];
   const state = getState();
   const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
 
   if (!initialLoad) {
     const feed = getFeed(state);
@@ -126,6 +127,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
     type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
     payload: ApiClient.getUserProfileBlog(
       userName,
+      follower,
       {
         startAuthor,
         startPermlink,

@@ -26,8 +26,8 @@ const NotificationTransferVesting = ({ notification, read, onClick }) => {
             defaultMessage="{from} sent to {to} {amount}"
             values={{
               from: <span className="username">{notification.from}</span>,
-              to: <span className="username">{notification.to}</span>,
-              amount: <span className="username">{notification.amount}</span>,
+              to: <span>{notification.to}</span>,
+              amount: <span>{notification.amount}</span>,
             }}
           />
         </div>

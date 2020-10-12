@@ -9,13 +9,13 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import toMarkdown from '../../components/EditorExtended/util/editorStateToMarkdown';
 import LikeSection from '../LikeSection';
 import FollowObjectForm from '../FollowObjectForm';
-import { getFieldWithMaxWeight } from '../wObjectHelper';
-import { getAppendData } from '../../helpers/wObjectHelper';
+import { getAppendData, getObjectName } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
-import { splitPostContent } from '../../helpers/postHelpers';
 import { appendObject } from '../appendActions';
 import { getFollowingObjectsList, getIsAppendLoading, getLocale } from '../../reducers';
 import IconButton from '../../components/IconButton';
+import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
+
 import './ObjectOfTypePage.less';
 
 @injectIntl
@@ -59,7 +59,7 @@ class ObjectOfTypePage extends Component {
   constructor(props) {
     super(props);
 
-    this.currentPageContent = getFieldWithMaxWeight(props.wobject, objectFields.pageContent);
+    this.currentPageContent = props.wobject.pageContent;
     this.state = {
       content: this.currentPageContent,
       editorInitContent: this.currentPageContent,
@@ -69,7 +69,7 @@ class ObjectOfTypePage extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!isEmpty(nextProps.wobject) && !isEqual(nextProps.wobject, this.props.wobject)) {
-      this.currentPageContent = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
+      this.currentPageContent = nextProps.wobject.pageContent;
       this.setState({
         editorInitContent: this.currentPageContent,
       });
@@ -88,13 +88,12 @@ class ObjectOfTypePage extends Component {
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       const { appendPageContent, locale, wobject, userName, intl, toggleViewEditMode } = this.props;
-      const { votePercent } = this.state;
+      const { votePercent, content } = this.state;
       const { follow } = values;
       if (!err) {
-        const { postTitle, postBody } = splitPostContent(this.state.content);
         const pageContentField = {
           name: objectFields.pageContent,
-          body: `${postTitle}\n${postBody}`,
+          body: content,
           locale,
         };
         const postData = getAppendData(userName, wobject, '', pageContentField);
@@ -108,7 +107,7 @@ class ObjectOfTypePage extends Component {
                 },
                 {
                   field: objectFields.pageContent,
-                  wobject: getFieldWithMaxWeight(wobject, objectFields.name),
+                  wobject: getObjectName(wobject),
                 },
               ),
             );
@@ -159,6 +158,7 @@ class ObjectOfTypePage extends Component {
                       onClick={this.handleReadyPublishClick}
                     />
                   </div>
+                  <CatalogBreadcrumb wobject={wobject} intl={intl} />
                   <BodyContainer full body={content} />
                   <div className="object-page-preview__options">
                     <LikeSection form={form} onVotePercentChange={this.handleVotePercentChange} />
@@ -186,6 +186,7 @@ class ObjectOfTypePage extends Component {
                     initialContent={{ body: editorInitContent }}
                     locale={locale === 'auto' ? 'en-US' : locale}
                     onChange={this.handleChangeContent}
+                    displayTitle={false}
                   />
                 </div>
               )}
@@ -198,8 +199,8 @@ class ObjectOfTypePage extends Component {
                 <div className="object-of-type-page__empty-placeholder">
                   <span>
                     {intl.formatMessage({
-                      id: 'empty_object_profile',
-                      defaultMessage: 'Be the first to write a review',
+                      id: 'empty_page_content',
+                      defaultMessage: 'The page is not full yet',
                     })}
                   </span>
                 </div>

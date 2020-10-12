@@ -60,8 +60,15 @@
 }
 
 .ant-btn > span {
-  max-width: 100px;
-  font-size: 12px;
+  max-width: 120px;
+  font-size: 14px;
+  margin-top: 5px;
+
+  @media @medium, @large {
+    max-width: 134px;
+    font-size: 16px;
+    margin-top: 0;
+  }
 }
 
 @import 'PostPreviewModal-nightmode';

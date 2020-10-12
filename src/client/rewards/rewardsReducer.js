@@ -3,6 +3,7 @@ import {
   SET_DATA_FOR_SINGLE_REPORT,
   GET_REWARDS_GENERAL_COUNTS,
   GET_FOLLOWING_SPONSORS_REWARDS,
+  CLEAR_FOLLOWING_SPONSORS_REWARDS,
   GET_FRAUD_SUSPICION,
 } from './rewardsActions';
 import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
@@ -60,8 +61,14 @@ const rewardsReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        followingRewards: campaigns,
+        followingRewards: state.followingRewards.concat(campaigns),
         hasMoreFollowingRewards: hasMore,
+      };
+    }
+    case CLEAR_FOLLOWING_SPONSORS_REWARDS.ACTION: {
+      return {
+        ...state,
+        followingRewards: [],
       };
     }
     case GET_FRAUD_SUSPICION.START: {

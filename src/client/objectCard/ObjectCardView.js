@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, orderBy, truncate, get, isEmpty } from 'lodash';
+import { includes, truncate, get, filter, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,7 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import { getObjectName, parseAddress } from '../helpers/wObjectHelper';
+import { getObjectName, parseAddress, getObjectAvatar } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
@@ -17,28 +17,26 @@ const ObjectCardView = ({
   intl,
   wObject,
   options: { mobileView = 'compact', ownRatesOnly = false },
-  passedParent,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
-  const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const address = parseAddress(wObject);
+  const parent = get(wObject, 'parent', {});
 
   useEffect(() => {
-    if (wObject.tagCategories && wObject.tagCategories.length) {
-      const currentTags = wObject.tagCategories
-        .map(category => category.categoryItems)
-        .filter(categoryItems => !!categoryItems.length)
-        .map(items => orderBy(items, ['weight', 'name'])[0].name);
+    const tagCategory = get(wObject, 'tagCategory');
+    if (tagCategory) {
+      const currentTagsFiltered = filter(tagCategory, item => size(item.items));
+      const currentTags = map(currentTagsFiltered, item => item.body);
       setTags(currentTags);
     } else setTags([wObject.object_type]);
-  }, []);
+  }, [wObject, setTags]);
 
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
-    let url = wObject.avatar || parent.avatar;
+    let url = getObjectAvatar(wObject) || getObjectAvatar(parent);
 
     if (url) url = getProxyImageURL(url, 'preview');
     else url = DEFAULTS.AVATAR;
@@ -72,8 +70,7 @@ const ObjectCardView = ({
       defaultMessage: 'Go to',
     })} ${wobjName}`;
 
-  const parentLink =
-    get(parent, 'defaultShowLink') || `/object/${get(parent, 'author_permlink', '')}`;
+  const parentLink = get(parent, 'defaultShowLink');
 
   return (
     <div key={wObject.author_permlink}>
@@ -153,8 +150,7 @@ const ObjectCardView = ({
 
 ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
-  wObject: PropTypes.shape().isRequired,
-  passedParent: PropTypes.shape(),
+  wObject: PropTypes.shape(),
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -164,6 +160,6 @@ ObjectCardView.propTypes = {
 
 ObjectCardView.defaultProps = {
   options: {},
-  passedParent: {},
+  wObject: {},
 };
 export default injectIntl(ObjectCardView);

@@ -1,5 +1,5 @@
 import Loadable from 'react-loadable';
-import URL from '../../src/common/constants/routing';
+import URL from '../../src/common/routes/constants';
 import Wrapper from '../client/Wrapper';
 import Page from '../client/feed/Page';
 import Loading from '../client/components/Icon/Loading';
@@ -96,7 +96,7 @@ const UserWallet = Loadable({
   loading: Loading,
 });
 const WalletTable = Loadable({
-  loader: () => import('../client/wallet/WalletTable'),
+  loader: () => import('../client/wallet/WalletTable/WalletTable'),
   loading: Loading,
 });
 const UserActivity = Loadable({

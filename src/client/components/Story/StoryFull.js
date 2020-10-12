@@ -229,7 +229,7 @@ class StoryFull extends React.Component {
         proposition.users,
         usersItem => usersItem.name === user.name && usersItem.status === UNASSIGNED,
       );
-      if (!isEmpty(currentUser) && !proposition.assigned) {
+      if (isEmpty(proposition.users) || (!isEmpty(currentUser) && !proposition.assigned)) {
         newPropositions.push(proposition);
       }
     });
@@ -504,7 +504,11 @@ class StoryFull extends React.Component {
                       ))
                     : null;
                 }
-                return <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />;
+                return (
+                  <div className="CardView">
+                    <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />
+                  </div>
+                );
               })}
             </Collapse.Panel>
           )}

@@ -394,13 +394,13 @@ class Story extends React.Component {
                   <BTooltip
                     title={
                       <span>
-                        <FormattedDate value={post.createdAt} />{' '}
-                        <FormattedTime value={post.createdAt} />
+                        <FormattedDate value={`${post.created}Z`} />{' '}
+                        <FormattedTime value={`${post.created}Z`} />
                       </span>
                     }
                   >
                     <span className="Story__date">
-                      <FormattedRelative value={post.createdAt || post.created} />
+                      <FormattedRelative value={`${post.created}Z`} />
                     </span>
                   </BTooltip>
                   <PostedFrom post={post} />

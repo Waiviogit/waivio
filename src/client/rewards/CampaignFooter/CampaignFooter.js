@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { findKey, find, get, isEmpty, map, includes, filter, size } from 'lodash';
+import { findKey, find, get, isEmpty, map, includes, filter, size, isEqual } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import CommentsMessages from './CommentsMessages';
@@ -13,6 +13,7 @@ import { getDaysLeft } from '../rewardsHelper';
 import {
   getRate,
   getAppUrl,
+  getLocale,
   isGuestUser,
   getCommentsFromReserved,
   getAuthenticatedUserName,
@@ -33,6 +34,8 @@ import './CampaignFooter.less';
     reservedComments: getCommentsFromReserved(state),
     userName: getAuthenticatedUserName(state),
     isGuest: isGuestUser(state),
+    locale: getLocale(state),
+    follower: getAuthenticatedUserName(state),
   }),
   {
     getReservedComments,
@@ -79,6 +82,8 @@ class CampaignFooter extends React.Component {
     isGuest: PropTypes.bool,
     sendCommentMessages: PropTypes.func,
     sortFraudDetection: PropTypes.string,
+    locale: PropTypes.string,
+    follower: PropTypes.string,
   };
 
   static defaultProps = {
@@ -108,6 +113,8 @@ class CampaignFooter extends React.Component {
     sendCommentMessages: () => {},
     proposition: {},
     sortFraudDetection: 'reservation',
+    locale: 'en-US',
+    follower: '',
   };
 
   constructor(props) {
@@ -137,16 +144,18 @@ class CampaignFooter extends React.Component {
       : '';
   }
 
-  componentWillMount() {
-    const { user, post, defaultVotePercent, proposition } = this.props;
+  componentDidMount() {
+    const { user, post, defaultVotePercent, proposition, locale, follower } = this.props;
     if (user) {
       const userVote = find(post.active_votes, { voter: user.name }) || {};
 
       if (userVote.percent && userVote.percent > 0) {
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
           sliderValue: userVote.percent / 100,
         });
       } else {
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
           sliderValue: defaultVotePercent / 100,
         });
@@ -160,9 +169,10 @@ class CampaignFooter extends React.Component {
       ? get(currentUser, ['0', 'permlink'])
       : get(proposition, ['users', '0', 'permlink']);
     this.getReservedComments();
-
     if (!isEmpty(author) && !isEmpty(permlink)) {
-      getContent(author, permlink).then(res => this.setState({ currentPost: res }));
+      getContent(author, permlink, locale, follower).then(res =>
+        this.setState({ currentPost: res }),
+      );
     }
     const reservationsTime =
       get(currentUser, ['0', 'createdAt']) || get(currentUser, ['createdAt']);
@@ -382,9 +392,47 @@ class CampaignFooter extends React.Component {
       });
   };
 
+  handleNotificationComments = (
+    commentsArr,
+    hasComments,
+    postAll,
+    rootComment,
+    isNotifyComment,
+  ) => {
+    const { match, user, getMessageHistory, isGuest, proposition } = this.props;
+    const { commentsVisible } = this.state;
+
+    const currentFilteredComments =
+      hasComments && !commentsVisible && isNotifyComment
+        ? filter(
+            commentsArr,
+            comment => isEqual(match.params.permlink, comment.permlink) && comment,
+          )
+        : commentsArr;
+
+    const isShow = (!commentsVisible && isNotifyComment) || commentsVisible;
+
+    return map(currentFilteredComments, currentComment => (
+      <div key={currentComment.post_id}>
+        <CommentsMessages
+          show={isShow}
+          user={user}
+          post={postAll}
+          getMessageHistory={getMessageHistory}
+          currentComment={currentComment}
+          getReservedComments={this.getReservedComments}
+          parent={rootComment}
+          matchPath={match.params[0]}
+          match={match}
+          isGuest={isGuest}
+          proposition={proposition}
+        />
+      </div>
+    ));
+  };
+
   render() {
     const {
-      commentsVisible,
       modalVisible,
       daysLeft,
       sliderVisible,
@@ -414,7 +462,6 @@ class CampaignFooter extends React.Component {
       getMessageHistory,
       blacklistUsers,
       reservedComments,
-      isGuest,
       sortFraudDetection,
     } = this.props;
     const isRewards = !isEmpty(match)
@@ -436,7 +483,7 @@ class CampaignFooter extends React.Component {
     const numberOfComments = postCurrent
       ? size(commentsAll) - 1
       : size(currentPostReserved.content) - 1;
-
+    const isNotifyComment = Boolean(this.props.match.params.campaignId);
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -480,24 +527,13 @@ class CampaignFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {hasComments &&
-          map(commentsArr, currentComment => (
-            <div key={currentComment.post_id}>
-              <CommentsMessages
-                show={commentsVisible}
-                user={user}
-                post={postAll}
-                getMessageHistory={getMessageHistory}
-                currentComment={currentComment}
-                getReservedComments={this.getReservedComments}
-                parent={rootComment}
-                matchPath={match.params[0]}
-                match={match}
-                isGuest={isGuest}
-                proposition={proposition}
-              />
-            </div>
-          ))}
+        {this.handleNotificationComments(
+          commentsArr,
+          hasComments,
+          postAll,
+          rootComment,
+          isNotifyComment,
+        )}
         {!singlePostVew && (
           <QuickCommentEditor
             parentPost={currentPost}

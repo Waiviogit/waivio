@@ -1,0 +1,102 @@
+@import (reference) '../../styles/custom.less';
+
+.nightmode {
+  .WalletTable {
+    & th {
+      border: 1px solid @grey-darkGrey;
+      color: @white;
+    }
+
+    & td {
+      border: 1px solid @grey-darkGrey;
+      color: @white;
+    }
+
+    &__from {
+      color: @white;
+    }
+
+    &__till {
+      color: @white;
+    }
+  }
+
+  .ant-calendar-picker-icon {
+    color: @white;
+  }
+
+  .ant-calendar {
+    background-color: @grey-nero;
+    border: 1px solid @normal-grey;
+    color: @white-smoke;
+  }
+
+  .ant-calendar-input {
+    background-color: @grey-nero;
+    color: @white;
+  }
+
+  .ant-calendar-month-select {
+    color: @white-smoke !important;
+  }
+
+  .ant-calendar-year-select {
+    color: @white-smoke !important;
+  }
+
+  .ant-calendar-date {
+    color: @white-smoke;
+    background: @normal-grey;
+  }
+
+  .ant-calendar-date:hover {
+    background-color: @grey-nero;
+  }
+
+  .ant-calendar-last-month-cell .ant-calendar-date {
+    color: @normal-grey;
+  }
+
+  .ant-calendar-input-wrap {
+    border-bottom: 1px solid @normal-grey;
+  }
+
+  .ant-calendar-header {
+    border-bottom: 1px solid @normal-grey;
+  }
+
+  .ant-calendar-footer {
+    border-top: 1px solid @normal-grey;
+  }
+
+  .ant-calendar-selected-day .ant-calendar-date {
+    background: @normal-grey;
+    color: @orange-hot;
+  }
+
+  .ant-calendar-selected-day .ant-calendar-date:hover {
+    background: @grey-nero;
+  }
+
+  .ant-calendar-cell.ant-calendar-next-month-btn-day > .ant-calendar-date {
+    color: @normal-grey;
+  }
+
+  .ant-calendar-year-panel-header,
+  .ant-calendar-month-panel-header,
+  .ant-calendar-decade-panel-header,
+  .ant-calendar-year-panel-tbody,
+  .ant-calendar-month-panel-tbody,
+  .ant-calendar-decade-panel-tbody {
+    background-color: @grey-nero;
+  }
+
+  .ant-calendar-year-panel-decade-select-content,
+  .ant-calendar-month-panel-year-select-content,
+  .ant-calendar-decade-panel-decade,
+  .ant-calendar-year-panel-year,
+  .ant-calendar-month-panel-month,
+  .ant-calendar-decade-panel-century {
+    color: @white-smoke;
+  }
+}

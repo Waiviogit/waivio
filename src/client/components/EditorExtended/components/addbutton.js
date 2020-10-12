@@ -19,7 +19,7 @@ export default class AddButton extends React.Component {
     super(props);
     this.state = {
       style: {},
-      visible: false,
+      visible: true,
       isOpen: false,
       isControlElem: false,
     };

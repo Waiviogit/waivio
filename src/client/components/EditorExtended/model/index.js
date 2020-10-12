@@ -145,8 +145,8 @@ export const addNewBlockAt = (
 
   const newContent = content.merge({
     blockMap: newBlockMap,
-    selectionBefore: selection,
-    selectionAfter: selection.merge({
+    selectionAfter: selection,
+    selectionBefore: selection.merge({
       anchorKey: newBlockKey,
       anchorOffset: 0,
       focusKey: newBlockKey,
