@@ -27,10 +27,10 @@ const ImageSetter = ({
   isRequired,
   isTitle,
 }) => {
-  const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
+  const [linkInputValue, setInputValue] = useState('');
 
   useEffect(() => {
     if (currentImages.length) {
@@ -76,8 +76,11 @@ const ImageSetter = ({
       );
       return;
     }
-    if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
-      const url = image || imageLinkInput.current.value;
+    if (image || linkInputValue) {
+      const url = image || linkInputValue;
+      console.log(url);
+      console.log(image);
+      console.log(linkInputValue);
       const filename = url.substring(url.lastIndexOf('/') + 1);
       const newImage = {
         src: url,
@@ -88,7 +91,7 @@ const ImageSetter = ({
       img.src = newImage.src;
       img.onload = () => checkIsImage(true, newImage);
       img.onerror = () => checkIsImage(false, newImage);
-      imageLinkInput.current.value = '';
+      setInputValue('');
     }
   };
 
@@ -234,16 +237,19 @@ const ImageSetter = ({
             <input
               className="input-upload__item"
               size="large"
-              ref={imageLinkInput}
+              value={linkInputValue}
+              onChange={e => setInputValue(e.target.value)}
               placeholder={intl.formatMessage({
                 id: 'imageSetter_paste_image_link',
                 defaultMessage: 'Paste image link',
               })}
             />
             <button
-              className="input-upload__btn"
+              className={classNames({"input-upload__btn-disable": !linkInputValue}, {"input-upload__btn": linkInputValue})}
               type="button"
-              onClick={() => handleOnUploadImageByLink()}
+              disabled={!linkInputValue}
+              onClick={handleOnUploadImageByLink}
+              title={intl.formatMessage({ id: 'modal.upload.image', defaultMessage: 'Upload Image'})}
             >
               <Icon type="upload" />
             </button>
@@ -253,6 +259,7 @@ const ImageSetter = ({
     </div>
   );
 };
+
 ImageSetter.propTypes = {
   intl: PropTypes.shape().isRequired,
   onImageInvalid: PropTypes.func.isRequired,

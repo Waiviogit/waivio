@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import { Modal } from 'antd';
+import { Modal, Button, Tooltip } from 'antd';
 import { addNewBlock } from '../../model';
 import { Block } from '../../util/constants';
 import ImageSetter from '../../../ImageSetter/ImageSetter';
@@ -47,7 +47,6 @@ export default class ImageSideButton extends React.Component {
   };
 
   handleOpenModal = () => this.setState({ isModal: !this.state.isModal });
-
   // For testing - don't load images to ipfs
   // onChange(e) {
   //   // e.preventDefault();
@@ -64,7 +63,7 @@ export default class ImageSideButton extends React.Component {
   // }
 
   render() {
-    const { isLoadingImage, isModal } = this.state;
+    const { isLoadingImage, isModal, currentImage } = this.state;
     return (
       <React.Fragment>
         <button
@@ -87,10 +86,20 @@ export default class ImageSideButton extends React.Component {
         <Modal
           wrapClassName="Settings__modal"
           onCancel={this.handleOpenModal}
-          okButtonProps={{ disabled: isLoadingImage }}
+          okButtonProps={{ disabled: isLoadingImage || !currentImage.length, title: "А вот и я!" }}
           cancelButtonProps={{ disabled: isLoadingImage }}
           visible={isModal}
           onOk={this.handleOnOk}
+          footer={[
+            <Button key="back" onClick={this.props.close}>
+              {this.props.intl.formatMessage({ id: 'modal.button.cancel', defaultMessage: 'Cancel' })}
+            </Button>,
+            // <Tooltip title="you must upload image" visible={!this.state.currentImage.length}>
+              <Button type="primary" disabled={!this.state.currentImage.length} onClick={this.props.close}>
+                {this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
+              </Button>,
+            // </Tooltip>,
+          ]}
         >
           {isModal && (
             <ImageSetter
