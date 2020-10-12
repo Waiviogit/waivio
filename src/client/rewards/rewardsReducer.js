@@ -82,7 +82,7 @@ const rewardsReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        fraudSuspicionData: state.fraudSuspicionData.concat(campaigns),
+        fraudSuspicionData: hasMore ? state.fraudSuspicionData.concat(campaigns) : campaigns,
         hasMoreFraudSuspicionData: hasMore,
       };
     }

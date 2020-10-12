@@ -84,7 +84,13 @@ const FraudDetection = ({
   const handleSortChange = useCallback(
     sortChanged => {
       setSortValue(sortChanged);
-      getFraudSuspicionData({ userName, sortChanged });
+      const requestData = {
+        guideName: userName,
+        fraudSuspicion: true,
+        sort: sortChanged,
+        skip: fraudSuspicionData ? fraudSuspicionData.length : 0,
+      };
+      getFraudSuspicionData(requestData);
     },
     [setSortValue, getFraudSuspicionData, userName],
   );

@@ -753,7 +753,7 @@ export const getHistory = ({
       reqData.onlyWithMessages = false;
     }
     if (guideName) reqData.guideName = guideName;
-    // if (fraudSuspicion) reqData.fraudSuspicion = fraudSuspicion;
+    if (fraudSuspicion) reqData.fraudSuspicion = fraudSuspicion;
     if (!isEmpty(rewards)) reqData.rewards = rewards;
     if (!isEmpty(status)) reqData.status = status;
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
