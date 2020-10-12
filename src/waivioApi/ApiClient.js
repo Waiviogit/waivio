@@ -1548,7 +1548,24 @@ export const getUserStatusCards = (username, sort = 'recency', skip = 0, limit =
   new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.referrals}/status?userName=${username}&skip=${skip}&limit=${limit}&sort=${sort}`,
+      {
+        headers,
+        method: 'GET',
+      },
     )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getStatusSponsoredRewards = (username = 'vallon', type = 'referral_server_fee') =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.payments}${config.payables}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ userName: username, type }),
+    })
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))

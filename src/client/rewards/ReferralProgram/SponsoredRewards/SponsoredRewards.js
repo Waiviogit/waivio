@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -7,9 +7,13 @@ import { SponsoredRewardsContent } from '../ReferralTextHelper';
 import SponsoredRewardsHeader from '../constants';
 
 import './SponsoredRewards.less';
+import { getStatusSponsoredRewards } from '../../../../waivioApi/ApiClient';
 
 const SponsoredRewards = props => {
   const { match, intl } = props;
+  useEffect(() => {
+    getStatusSponsoredRewards().then(res => console.log(res));
+  }, []);
   const data = { username: match.params.name };
   const { sponsoredRewardsTitle } = SponsoredRewardsContent(data);
   return (
