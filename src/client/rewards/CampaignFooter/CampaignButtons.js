@@ -171,11 +171,13 @@ export default class CampaignButtons extends React.Component {
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const objPermlink = get(proposition, ['users', '0', 'object_permlink']);
     const userName = get(proposition, ['users', '0', 'rootName']);
+    const guideName = get(proposition, ['guideName']);
     return this.props
       .rejectReview({
         companyAuthor,
         companyPermlink,
         username: userName,
+        guideName,
         reservationPermlink,
         objPermlink,
         appName,
@@ -433,7 +435,10 @@ export default class CampaignButtons extends React.Component {
     };
 
     const closeModalReport = () => this.setState({ isModalReportOpen: false });
-    const isHistory = match.path === '/rewards/(history|guideHistory|messages)';
+    const isHistory =
+      includes(match.path, 'history') ||
+      includes(match.path, 'guideHistory') ||
+      includes(match.path, 'messages');
 
     return (
       <Popover
