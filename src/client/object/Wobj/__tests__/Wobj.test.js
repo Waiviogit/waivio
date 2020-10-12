@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Wobj from '../Wobj';
+import WobjectContainer from '../WobjectContainer';
 
-describe('(Component) Wobj', () => {
+describe('(Component) WobjectContainer', () => {
   describe('with default prop values', () => {
     it('renders and matches snapshot', () => {
       const props = {
@@ -13,7 +13,7 @@ describe('(Component) Wobj', () => {
         match: {},
         authenticated: false,
       };
-      const wrapper = shallow(<Wobj {...props} />);
+      const wrapper = shallow(<WobjectContainer {...props} />);
       expect(wrapper).toMatchSnapshot();
     });
   });
