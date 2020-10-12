@@ -1,0 +1,40 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/mixins.less';
+
+.SponsoredRewards {
+  .referrals-main-styles();
+
+  &__title {
+    padding-bottom: 10px;
+  }
+
+  & table {
+    border: 1px solid @black;
+    text-align: center;
+    text-transform: capitalize;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-top: 20px;
+    position: relative;
+    width: 100%;
+    overflow: auto;
+  }
+
+  & th {
+    border: 1px solid @black;
+    vertical-align: top;
+    color: @black;
+    font-weight: 600;
+  }
+
+  & td {
+    font-size: 15px;
+    border: 1px solid @black;
+    color: @black;
+    word-wrap: break-word;
+    text-transform: none;
+  }
+}
+
+@import 'SponsoredRewards-nightmode';

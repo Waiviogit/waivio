@@ -236,11 +236,9 @@ const mapStateToProps = state => ({
   isStartChangeRules: getIsStartChangeRules(state),
 });
 
-export default injectIntl(
-  connect(mapStateToProps, {
-    getUserInBlackList: getIsUserInBlackList,
-    confirmRules: referralConfirmRules,
-    rejectRules: referralRejectRules,
-    userReferralInfo: getUserReferralInfo,
-  })(ReferralsInstructions),
-);
+export default connect(mapStateToProps, {
+  getUserInBlackList: getIsUserInBlackList,
+  confirmRules: referralConfirmRules,
+  rejectRules: referralRejectRules,
+  userReferralInfo: getUserReferralInfo,
+})(injectIntl(ReferralsInstructions));

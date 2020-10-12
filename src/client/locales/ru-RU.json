@@ -1446,5 +1446,11 @@
   "referral_status_payments_text": "Статус всех невыплаченных и завершенных платежей можно проверить на странице {ReceivablesPage} в разделе вознаграждений.",
   "referral_status_sort_by": "Сортировать по",
   "referral_status_recency_sort": "Новизне",
-  "referral_status_expiry_sort": "Истечению"
+  "referral_status_expiry_sort": "Истечению",
+  "sponsored_rewards_title": "Спонсорские награды: {username}",
+  "sponsored_rewards__table_date": "Дата",
+  "sponsored_rewards__table_action": "Действие",
+  "sponsored_rewards__table_details": "Детали",
+  "sponsored_rewards__table_amount": "Количество",
+  "sponsored_rewards__table_balance": "Баланс"
 }

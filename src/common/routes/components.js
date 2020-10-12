@@ -78,4 +78,7 @@ export default {
   ReferralStatus: loableComponent(
     import('../../client/rewards/ReferralProgram/Status/ReferralStatus'),
   ),
+  SponsoredRewards: loableComponent(
+    import('../../client/rewards/ReferralProgram/SponsoredRewards/SponsoredRewards'),
+  ),
 };

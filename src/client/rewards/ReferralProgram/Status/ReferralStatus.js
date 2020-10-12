@@ -30,6 +30,7 @@ const ReferralStatusView = propsData => {
     getMoreUserCards,
     sortBy,
     setSortBy,
+    history,
   } = propsData;
   const data = { username, currentUserCards };
 
@@ -80,6 +81,7 @@ const ReferralStatusView = propsData => {
                     alias={userCard.alias}
                     username={userCard.name}
                     daysLeft={handleStatusDaysLeft(userCard.daysLeft)}
+                    history={history}
                   />
                 ))}
               </ReduxInfiniteScroll>
@@ -102,6 +104,7 @@ const ReferralStatus = props => {
     isErrorLoading,
     isLoadingMoreUserCards,
     getMoreUserCards,
+    history,
   } = props;
   const name = match.params.name;
 
@@ -121,6 +124,7 @@ const ReferralStatus = props => {
     getMoreUserCards,
     sortBy,
     setSortBy,
+    history,
   };
   return ReferralStatusView(propsData);
 };
@@ -133,6 +137,7 @@ ReferralStatus.propTypes = {
   hasMore: PropTypes.bool,
   isErrorLoading: PropTypes.bool,
   isLoadingMoreUserCards: PropTypes.bool,
+  history: PropTypes.shape(),
 };
 
 ReferralStatus.defaultProps = {
@@ -142,6 +147,7 @@ ReferralStatus.defaultProps = {
   hasMore: false,
   isErrorLoading: false,
   isLoadingMoreUserCards: false,
+  history: {},
 };
 
 const mapStateToProps = state => ({
@@ -152,9 +158,7 @@ const mapStateToProps = state => ({
   isLoadingMoreUserCards: getIsLoadingMoreUserCards(state),
 });
 
-export default injectIntl(
-  connect(mapStateToProps, {
-    getUserCards: getUserStatusCards,
-    getMoreUserCards: getMoreUserStatusCards,
-  })(ReferralStatus),
-);
+export default connect(mapStateToProps, {
+  getUserCards: getUserStatusCards,
+  getMoreUserCards: getMoreUserStatusCards,
+})(injectIntl(ReferralStatus));

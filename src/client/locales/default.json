@@ -1444,5 +1444,11 @@
   "referral_status_payments_text": "The status of all outstanding and completed payments can be checked on the {receivablesPage} page in the Rewards section.",
   "referral_status_sort_by": "Sort by",
   "referral_status_recency_sort": "Recency",
-  "referral_status_expiry_sort": "Expiry"
+  "referral_status_expiry_sort": "Expiry",
+  "sponsored_rewards_title": "Sponsored rewards: {username}",
+  "sponsored_rewards_table_date": "Date",
+  "sponsored_rewards_table_action": "Action",
+  "sponsored_rewards_table_details": "Details",
+  "sponsored_rewards_table_amount": "Amount",
+  "sponsored_rewards_table_balance": "Balance"
 }

@@ -139,8 +139,6 @@ const mapStateToProps = state => ({
   isStartLoadingReferralDetails: getIsStartLoadingReferralDetails(state),
 });
 
-export default injectIntl(
-  connect(mapStateToProps, {
-    getReferralDetails: getUserReferralDetails,
-  })(ReferralDetail),
-);
+export default connect(mapStateToProps, {
+  getReferralDetails: getUserReferralDetails,
+})(injectIntl(ReferralDetail));

@@ -314,3 +314,19 @@ export const ReferralStatusContent = data => {
     ),
   };
 };
+
+export const SponsoredRewardsContent = data => {
+  const { username } = data;
+
+  return {
+    sponsoredRewardsTitle: (
+      <FormattedMessage
+        id="sponsored_rewards_title"
+        defaultMessage="Sponsored rewards: {username}"
+        values={{
+          username,
+        }}
+      />
+    ),
+  };
+};
