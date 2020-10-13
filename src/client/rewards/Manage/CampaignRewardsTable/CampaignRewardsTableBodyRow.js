@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { includes } from 'lodash';
 import { rewardPostContainerData } from '../../../rewards/rewardsHelper';
 import { generatePermlink } from '../../../helpers/wObjectHelper';
 import {
   validateActivationCampaign,
   validateInactivationCampaign,
 } from '../../../../waivioApi/ApiClient';
+import { isCheckedStatus, isInactiveStatus } from '../../../../common/constants/rewards';
 import './CampaignRewardsTable.less';
 
 const CampaignRewardsTableRow = ({
@@ -22,14 +24,8 @@ const CampaignRewardsTableRow = ({
   const [isLoading, setLoad] = useState(false);
   const [activationStatus, setActivationStatus] = useState('');
   const [activationPermlink, setActivationPermlink] = useState('');
-  const isChecked =
-    currentItem.status === 'active' ||
-    currentItem.status === 'payed' ||
-    currentItem.status === 'reachedLimit';
-  const isInactive =
-    currentItem.status === 'inactive' ||
-    currentItem.status === 'expired' ||
-    currentItem.status === 'deleted';
+  const isChecked = includes(isCheckedStatus, currentItem.status);
+  const isInactive = includes(isInactiveStatus, currentItem.status);
 
   const activateCamp = () => {
     const generatedPermlink = `activate-${rewardPostContainerData.author}-${generatePermlink()}`;

@@ -4,12 +4,14 @@ import authReducer from '../authReducer';
 
 const initialStateMock = {
   isAuthenticated: false,
-  isFetching: false,
+  isFetching: true,
   isReloading: false,
   loaded: false,
   user: {},
   userMetaData: {},
+  privateEmail: '',
   isGuestUser: false,
+  sort: 'recency',
 };
 
 describe('authReducer', () => {

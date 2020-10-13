@@ -1,7 +1,7 @@
 import { message } from 'antd';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getLocale } from '../reducers';
+import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
@@ -16,11 +16,12 @@ export const getContent = (author, permlink, afterLike) => (dispatch, getState) 
   }
   const state = getState();
   const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
 
   return dispatch({
     type: GET_CONTENT.ACTION,
     payload: {
-      promise: ApiClient.getContent(author, permlink, locale).then(res => {
+      promise: ApiClient.getContent(author, permlink, locale, follower).then(res => {
         if (res.id === 0) throw new Error('There is no such post');
         if (res.message) throw new Error(res.message);
         return res;

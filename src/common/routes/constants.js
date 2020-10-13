@@ -41,7 +41,6 @@ export default {
       'history',
       'guideHistory',
       'messages',
-      'payables',
       'reports',
       'receivables',
       'referral-details',

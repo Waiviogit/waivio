@@ -94,9 +94,4 @@ describe('<AvatarLightbox />', () => {
     expect(wrapper.find('.UserHeader__container--active')).toHaveLength(1);
     expect(wrapper.find('.UserHeader__container--active')).not.toBeUndefined();
   });
-
-  it('Should render Lightbox on Avatar click action', () => {
-    wrapper.find('a').simulate('click');
-    expect(wrapper.find('Lightbox')).not.toBeUndefined();
-  });
 });

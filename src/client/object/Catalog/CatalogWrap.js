@@ -6,13 +6,16 @@ import { compose } from 'redux';
 import { get, isEmpty, map, filter, max, min, some } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
+import { sortListItemsBy } from '../wObjectHelper';
 import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import { getObject } from '../../../waivioApi/ApiClient';
-import * as wobjectActions from '../../../client/object/wobjectsActions';
-import { getSuitableLanguage, getAuthenticatedUserName } from '../../reducers';
+import {
+  getSuitableLanguage,
+  getAuthenticatedUserName,
+  getWobjectBreadCrumbs,
+} from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { getPermLink, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
@@ -34,6 +37,7 @@ const CatalogWrap = props => {
 
   const locale = useSelector(getSuitableLanguage);
   const userName = useSelector(getAuthenticatedUserName);
+  const currentWobject = useSelector(getWobjectBreadCrumbs);
 
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [loadingPropositions, setLoadingPropositions] = useState(true);
@@ -42,10 +46,10 @@ const CatalogWrap = props => {
   const [isAssign, setIsAssign] = useState(false);
   const [listItems, setListItems] = useState([]);
 
-  const getPropositions = ({ username, match, requiredObject, sorting }) => {
+  const getPropositions = ({ match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
     ApiClient.getPropositions({
-      username,
+      userName,
       match,
       requiredObject,
       sort: 'reward',
@@ -68,7 +72,7 @@ const CatalogWrap = props => {
       if (hash) {
         const pathUrl = getPermLink(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
-          const requiredObject = wObject.author_permlink;
+          const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
             getPropositions({ userName, match, requiredObject, sort });
           }
@@ -76,18 +80,16 @@ const CatalogWrap = props => {
           dispatch(setWobjectForBreadCrumbs(wObject));
         });
       } else {
+        const requiredObject = get(wobject, ['parent', 'author_permlink']);
         setListItems(wobject.listItems);
-        getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
+        getPropositions({ userName, match, requiredObject, sort });
       }
     }
-  }, [props.location.hash, props.wobject]);
+  }, [props.location.hash, props.wobject, userName]);
 
   const handleAddItem = listItem => {
-    const { wobject } = props;
-    setListItems(sortListItemsBy([...listItems, listItem], 'recency'));
-    if (wobject.object_type === OBJ_TYPE.LIST) {
-      dispatch(wobjectActions.addListItem(listItem));
-    }
+    const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
+    setListItems(sortListItemsBy(currentList, 'recency'));
   };
 
   const updateProposition = (propsId, isassign, objPermlink, companyAuthor) => {
@@ -225,7 +227,7 @@ const CatalogWrap = props => {
           wobj.object &&
           wobj.object.author_permlink && (
             <Proposition
-              proposition={propositionsObject}
+              proposition={propositionsObject[0]}
               wobj={wobj.object}
               wobjPrice={wobj.reward}
               assignCommentPermlink={wobj.permlink}
@@ -278,7 +280,7 @@ const CatalogWrap = props => {
     } else if (objects.length && isMatchedPermlinks) {
       item = renderProposition(propositions, listItem);
     } else {
-      item = <ObjectCardView wObject={listItem} passedParent={props.wobject} />;
+      item = <ObjectCardView wObject={listItem} />;
     }
     return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
@@ -310,8 +312,10 @@ const CatalogWrap = props => {
   const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
     setSorting(sortType);
-    setListItems(sortListItemsBy(listItems, sort, sortOrder));
+    setListItems(sortListItemsBy(listItems, sortType, sortOrder));
   };
+
+  const obj = isEmpty(currentWobject) ? wobject : currentWobject;
 
   return (
     <div>
@@ -320,7 +324,7 @@ const CatalogWrap = props => {
           {!isEmpty(propositions) && renderCampaign(propositions)}
           {isEditMode && (
             <div className="CatalogWrap__add-item">
-              <AddItemModal wobject={wobject} onAddItem={handleAddItem} />
+              <AddItemModal wobject={obj} onAddItem={handleAddItem} />
             </div>
           )}
           {loadingPropositions || isEmpty(wobject) ? (
@@ -344,7 +348,7 @@ const CatalogWrap = props => {
           )}
         </React.Fragment>
       )}
-      <BodyContainer full body={getFieldWithMaxWeight(wobject, objectFields.pageContent)} />
+      <BodyContainer full body={wobject.pageContent} />
     </div>
   );
 };

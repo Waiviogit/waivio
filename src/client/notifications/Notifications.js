@@ -33,7 +33,7 @@ import NotificationTransferVesting from '../components/Navigation/Notifications/
 import NotificationChangeRecoveryAccount from '../components/Navigation/Notifications/NotificationChangeRecoveryAccount';
 import NotificationTransferFromSavings from '../components/Navigation/Notifications/NotificationTransferFromSavings';
 import NotificationClaimReward from '../components/Navigation/Notifications/NotificationClaimReward';
-import NotificationCustomerSupport from '../components/Navigation/Notifications/NotificationCustomerSupport';
+import NotificationCampaignMessage from '../components/Navigation/Notifications/NotificationCampaignMessage';
 import NotificationLikes from '../components/Navigation/Notifications/NotificationLikes';
 import NotificationMyLike from '../components/Navigation/Notifications/NotificationMyLike';
 import NotificationMyComment from '../components/Navigation/Notifications/NotificationMyComment';
@@ -260,9 +260,9 @@ class Notifications extends React.Component {
                     onClick={this.handleNotificationsClick}
                   />
                 );
-              case notificationConstants.CUSTOMER_SUPPORT:
+              case notificationConstants.CAMPAIGN_MESSAGE:
                 return (
-                  <NotificationCustomerSupport
+                  <NotificationCampaignMessage
                     key={key}
                     notification={notification}
                     read={read}

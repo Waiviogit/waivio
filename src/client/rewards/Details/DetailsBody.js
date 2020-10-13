@@ -16,7 +16,9 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const requirementFilters = get(objectDetails, ['requirement_filters'], {});
-  const frequency = requirementFilters.frequency && requirementFilters.not_same_assigns;
+  const frequency =
+    requirementFilters.frequency &&
+    (requirementFilters.not_same_assigns || requirementFilters.freeReservation);
   const getChecked = useCallback(param => (isAuthenticated ? param : null), []);
   return (
     <div className="Details__text-wrap">

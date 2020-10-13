@@ -7,9 +7,10 @@ ShallowWrapper {
     rewardSbd="0 HBD"
     rewardSteem="0 HIVE"
     rewardVests="0 HP"
-    timestamp="0"
+    timestamp={0}
     totalVestingFundSteem="0"
     totalVestingShares="0"
+    transactionType="claim_reward_balance"
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
