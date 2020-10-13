@@ -134,7 +134,7 @@ export default class Transfer extends React.Component {
   };
 
   state = {
-    currency: Transfer.CURRENCIES.HIVE,
+    currency: '',
     oldAmount: undefined,
     searchBarValue: '',
     searchName: '',
@@ -182,9 +182,8 @@ export default class Transfer extends React.Component {
         amount: nextProps.amount,
         currency: nextProps.currency === 'HIVE' ? HIVE.symbol : HBD.symbol,
       });
-      this.setState({
-        currency: HIVE.symbol,
-      });
+
+      this.setState({ currency: nextProps.currency });
     }
   }
 
@@ -514,6 +513,8 @@ export default class Transfer extends React.Component {
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
+
+    console.log(this.state.currency);
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
     const currentBalance = isGuest ? `${user.balance} HIVE` : balance;

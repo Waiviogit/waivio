@@ -185,6 +185,7 @@ export default class AppendForm extends Component {
     const listItem = getListItems(wObject, { uniq: true, isMappedToClientWobject: true }).map(
       item => item.id,
     );
+
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
       let equalBody;
@@ -220,6 +221,7 @@ export default class AppendForm extends Component {
               if (data.votePower !== null) {
                 if (objectFields.rating === formValues.currentField && formValues.rate) {
                   const { author, permlink } = res;
+
                   this.props.rateObject(
                     author,
                     permlink,
@@ -276,6 +278,7 @@ export default class AppendForm extends Component {
 
   onUpdateCoordinate = positionField => e => {
     const value = Number(e.target.value);
+
     if (!isNaN(value)) {
       this.props.form.setFieldsValue({
         [positionField]: Number(e.target.value),
@@ -312,11 +315,13 @@ export default class AppendForm extends Component {
           sub => sub.length,
         );
         const ignoreList = map(this.state.ignoreList, o => o.id);
+
         fieldBody.push(JSON.stringify({ allowList, ignoreList }));
         break;
       }
       case objectFields.sorting: {
         const sortingData = JSON.stringify(rest[objectFields.sorting].split(','));
+
         fieldBody.push(sortingData);
         break;
       }
@@ -343,6 +348,7 @@ export default class AppendForm extends Component {
 
     const getAppendMsg = (author, appendValue) => {
       const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
+
       switch (currentField) {
         case objectFields.avatar:
         case objectFields.background:
@@ -357,6 +363,7 @@ export default class AppendForm extends Component {
           const alias = getFieldValue('menuItemName');
           const displayName = `${this.state.selectedObject.name} (type: ${this.state.selectedObject.type})`;
           const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${appendValue}`;
+
           return `@${author} added ${currentField} (${langReadable}):\n[${displayName}](${objectUrl})${
             alias ? ` as "${alias}"` : ''
           }`;
@@ -383,9 +390,11 @@ export default class AppendForm extends Component {
           this.state.ignoreList.forEach((rule, index) => {
             if (!isEmpty(rule)) {
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
+
               rulesIgnore += ` <a href="${baseUrl}/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
             }
           });
+
           return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         default:
@@ -472,6 +481,7 @@ export default class AppendForm extends Component {
 
     try {
       const parsed = JSON.parse(filtered[0].body);
+
       return parsed[fieldName];
     } catch (e) {
       return filtered[0].body;
@@ -487,12 +497,14 @@ export default class AppendForm extends Component {
 
   addNewNewsFilterLine = () => {
     const allowList = this.state.allowList;
+
     allowList[this.state.allowList.length] = [];
     this.setState({ allowList });
   };
 
   handleAddObjectToRule = (obj, rowIndex, ruleIndex) => {
     const allowList = this.state.allowList;
+
     if (obj && rowIndex >= 0 && allowList[rowIndex] && ruleIndex >= 0) {
       allowList[rowIndex][ruleIndex] = obj;
       this.setState({ allowList });
@@ -501,18 +513,21 @@ export default class AppendForm extends Component {
 
   deleteRuleItem = (rowNum, id) => {
     const allowList = this.state.allowList;
+
     allowList[rowNum] = filter(allowList[rowNum], o => o.id !== id);
     this.setState({ allowList });
   };
 
   handleAddObjectToIgnoreList = obj => {
     const ignoreList = this.state.ignoreList;
+
     ignoreList.push(obj);
     this.setState({ ignoreList });
   };
 
   handleRemoveObjectFromIgnoreList = obj => {
     let ignoreList = this.state.ignoreList;
+
     ignoreList = filter(ignoreList, o => o.id !== obj.id);
     this.setState({ ignoreList });
   };
@@ -537,6 +552,7 @@ export default class AppendForm extends Component {
 
     try {
       const { author } = await this.props.appendObject(data);
+
       await addAlbumToStore({ ...album, author });
       hideModal();
       message.success(
@@ -598,6 +614,7 @@ export default class AppendForm extends Component {
     const { currentImages } = this.state;
 
     const data = this.getWobjectData();
+
     /* eslint-disable no-restricted-syntax */
     for (const image of currentImages) {
       const postData = {
@@ -609,12 +626,15 @@ export default class AppendForm extends Component {
 
       /* eslint-disable no-await-in-loop */
       const response = await this.props.appendObject(postData);
+
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       if (response.transactionId) {
         const filteredFileList = this.state.fileList.filter(file => file.uid !== image.uid);
+
         this.setState({ fileList: filteredFileList }, async () => {
           const img = prepareImageToStore(postData);
+
           await addImageToAlbumStore({
             ...img,
             author: get(response, ['value', 'author']),
@@ -632,6 +652,7 @@ export default class AppendForm extends Component {
   getWobjectData = () => {
     const { user, wObject } = this.props;
     const data = {};
+
     data.author = user.name;
     data.parentAuthor = wObject.author;
     data.parentPermlink = wObject.author_permlink;
@@ -645,6 +666,7 @@ export default class AppendForm extends Component {
 
   getWobjectField = image => {
     const { form } = this.props;
+
     return {
       name: 'galleryItem',
       body: image.src,
@@ -658,7 +680,9 @@ export default class AppendForm extends Component {
     const { albums } = this.props;
     let albumName = '';
     const album = albums.find(item => item.id === currentAlbum);
+
     albumName = get(album, 'body');
+
     return albumName;
   };
 
@@ -684,6 +708,7 @@ export default class AppendForm extends Component {
     const { categoryItem, selectedCategory } = this.state;
     const currentLocale = this.props.form.getFieldValue('currentLocale');
     const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
+
     this.props.form.validateFields(err => {
       if (!err) {
         this.setState({ loading: true });
@@ -753,6 +778,7 @@ export default class AppendForm extends Component {
         if (field.body === values.rating) {
           return field.locale === values.currentLocale ? [...acc, field] : acc;
         }
+
         return acc;
       }, []);
 
@@ -799,6 +825,7 @@ export default class AppendForm extends Component {
 
   checkRequiredField = (form, currentField) => {
     let formFields = null;
+
     switch (currentField) {
       case objectFields.address:
         formFields = form.getFieldsValue(Object.values(addressFields));
@@ -818,7 +845,9 @@ export default class AppendForm extends Component {
 
     if (formFields) {
       const isSomeValueFilled = Object.values(formFields).some(f => Boolean(f));
+
       this.setState({ isSomeValue: isSomeValueFilled });
+
       return !isSomeValueFilled;
     }
 
@@ -886,8 +915,10 @@ export default class AppendForm extends Component {
       );
     } else {
       const fields = form.getFieldsValue();
+
       if (fields[currentField]) {
         const triggerValue = fields[currentField];
+
         if (triggerValue)
           form.setFieldsValue({
             [currentField]: triggerValue,
@@ -938,6 +969,7 @@ export default class AppendForm extends Component {
   getImages = image => {
     const { getFieldValue } = this.props.form;
     const currentField = getFieldValue('currentField');
+
     if (image.length) {
       this.props.form.setFieldsValue({ [currentField]: image[0].src });
     } else {
@@ -993,6 +1025,7 @@ export default class AppendForm extends Component {
         );
       }
     }
+
     return callback();
   };
 
@@ -1010,6 +1043,7 @@ export default class AppendForm extends Component {
   handleSelectObject = (obj = {}) => {
     const { wObject, intl } = this.props;
     const currentField = this.props.form.getFieldValue('currentField');
+
     if (obj.author_permlink === wObject.author_permlink && currentField === 'parent') {
       message.error(
         intl.formatMessage({
@@ -1027,10 +1061,12 @@ export default class AppendForm extends Component {
 
   handleSelectCategory = value => {
     const category = this.props.categories.find(item => item.body === value);
+
     if (!isEmpty(category.categoryItems)) {
       let currentTags = getObjectsByIds({
         authorPermlinks: category.categoryItems.map(tag => tag.name),
       });
+
       currentTags = currentTags.wobjects;
       this.setState({ selectedCategory: category, currentTags });
     } else {
@@ -1052,6 +1088,7 @@ export default class AppendForm extends Component {
       if (has(rule, 'validator')) {
         return { validator: this.validateFieldValue };
       }
+
       return rule;
     });
   };
@@ -1078,6 +1115,7 @@ export default class AppendForm extends Component {
       case TYPES_OF_MENU_ITEM.LIST: {
         const objectType =
           currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : OBJECT_TYPE.PAGE;
+
         return (
           <React.Fragment>
             <Form.Item>
@@ -1930,6 +1968,7 @@ export default class AppendForm extends Component {
       form.getFieldValue('currentField') === objectFields.sorting;
 
     const languageOptions = [];
+
     LANGUAGES.forEach(lang => {
       languageOptions.push(
         <Select.Option key={lang.id} value={lang.id}>
@@ -1940,6 +1979,7 @@ export default class AppendForm extends Component {
 
     const fieldOptions = [];
     const disabledSelect = currentField !== 'auto';
+
     if (currentField === 'auto') {
       fieldOptions.push(
         <Select.Option disabled key="auto" value="auto">

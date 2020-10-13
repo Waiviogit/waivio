@@ -13,7 +13,7 @@ ShallowWrapper {
         "status": 200,
       }
     }
-    checkStatusAvailableDomain={[Function]}
+    checkStatusAvailableDomain={[MockFunction]}
     createWebsite={[MockFunction]}
     form={
       Object {
@@ -212,6 +212,7 @@ ShallowWrapper {
                 >
                   <Input
                     disabled={true}
+                    id="domain"
                     onInput={[Function]}
                     type="text"
                   />
@@ -349,6 +350,7 @@ ShallowWrapper {
                   >
                     <Input
                       disabled={true}
+                      id="domain"
                       onInput={[Function]}
                       type="text"
                     />
@@ -474,6 +476,7 @@ ShallowWrapper {
                     >
                       <Input
                         disabled={true}
+                        id="domain"
                         onInput={[Function]}
                         type="text"
                       />
@@ -582,6 +585,7 @@ ShallowWrapper {
                       >
                         <Input
                           disabled={true}
+                          id="domain"
                           onInput={[Function]}
                           type="text"
                         />
@@ -705,6 +709,7 @@ ShallowWrapper {
                         >
                           <Input
                             disabled={true}
+                            id="domain"
                             onInput={[Function]}
                             type="text"
                           />
@@ -746,6 +751,7 @@ ShallowWrapper {
                           "children": Array [
                             <Input
                               disabled={true}
+                              id="domain"
                               onInput={[Function]}
                               type="text"
                             />,
@@ -761,6 +767,7 @@ ShallowWrapper {
                             "nodeType": "class",
                             "props": Object {
                               "disabled": true,
+                              "id": "domain",
                               "onInput": [Function],
                               "type": "text",
                             },
@@ -962,6 +969,7 @@ ShallowWrapper {
                   >
                     <Input
                       disabled={true}
+                      id="domain"
                       onInput={[Function]}
                       type="text"
                     />
@@ -1099,6 +1107,7 @@ ShallowWrapper {
                     >
                       <Input
                         disabled={true}
+                        id="domain"
                         onInput={[Function]}
                         type="text"
                       />
@@ -1224,6 +1233,7 @@ ShallowWrapper {
                       >
                         <Input
                           disabled={true}
+                          id="domain"
                           onInput={[Function]}
                           type="text"
                         />
@@ -1332,6 +1342,7 @@ ShallowWrapper {
                         >
                           <Input
                             disabled={true}
+                            id="domain"
                             onInput={[Function]}
                             type="text"
                           />
@@ -1455,6 +1466,7 @@ ShallowWrapper {
                           >
                             <Input
                               disabled={true}
+                              id="domain"
                               onInput={[Function]}
                               type="text"
                             />
@@ -1496,6 +1508,7 @@ ShallowWrapper {
                             "children": Array [
                               <Input
                                 disabled={true}
+                                id="domain"
                                 onInput={[Function]}
                                 type="text"
                               />,
@@ -1511,6 +1524,7 @@ ShallowWrapper {
                               "nodeType": "class",
                               "props": Object {
                                 "disabled": true,
+                                "id": "domain",
                                 "onInput": [Function],
                                 "type": "text",
                               },

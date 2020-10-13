@@ -25,6 +25,7 @@ import './MobileNavigation.less';
 
 const MobileNavigation = ({ location, match }) => {
   const [isModalOpen, setModalVisibility] = useState(false);
+
   useEffect(() => {
     setModalVisibility(false);
   }, [match]);
@@ -33,6 +34,7 @@ const MobileNavigation = ({ location, match }) => {
   let filterName = 'Menu';
 
   const { url } = match;
+
   switch (url) {
     case (url.match(pages.hive.regExp) || {}).input:
       pageName = pages.hive.id;
@@ -48,6 +50,7 @@ const MobileNavigation = ({ location, match }) => {
       break;
     case (url.match(pages.objectsUpdates.regExp) || {}).input: {
       const { search } = location;
+
       if (/\?category=(.+)&name=(.+)/.test(search)) {
         pageName = new URLSearchParams(search).get('category');
         filterName = new URLSearchParams(search).get('name');
@@ -142,6 +145,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'website';
       filterName = 'create';
       break;
+    case '/payments':
+      pageName = 'website';
+      filterName = 'payments';
+      break;
     case '/':
       if (!authenticated) {
         pageName = pages.hive.id;
@@ -155,6 +162,7 @@ const MobileNavigation = ({ location, match }) => {
       break;
   }
   const page = <FormattedMessage id={`mobnav_${pageName}`} defaultMessage={pageName} />;
+
   return (
     <React.Fragment>
       <div className="MobileNavigation">

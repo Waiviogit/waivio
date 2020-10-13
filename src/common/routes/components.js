@@ -71,4 +71,7 @@ export default {
   HistoryCampaign: loableComponent(import('../../client/rewards/History/History')),
   CreateWebsite: loableComponent(import('../../client/websites/WebsiteTools/Create/CreateWebsite')),
   ManageWebsite: loableComponent(import('../../client/websites/WebsiteTools/Manage/ManageWebsite')),
+  ReportsWebsite: loableComponent(
+    import('../../client/websites/WebsiteTools/Reports/ReportsWebsite'),
+  ),
 };

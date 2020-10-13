@@ -1567,4 +1567,30 @@ export const getInfoForManagePage = name => {
     .catch(e => e);
 };
 
+export const deleteSite = (userName, host) => {
+  return fetch(`${config.apiPrefix}${config.sites}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    body: JSON.stringify({ userName, host }),
+    method: 'DELETE',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const getWebsitesReports = formData => {
+  const queryString = Object.keys(formData).reduce(
+    (acc, value) => (acc ? `${acc}&${value}=${formData[value]}` : `${value}=${formData[value]}`),
+    '',
+  );
+
+  return fetch(`${config.apiPrefix}${config.sites}${config.report}?${queryString}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
 export default null;

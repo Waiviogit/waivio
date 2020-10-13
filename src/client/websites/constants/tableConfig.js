@@ -65,6 +65,53 @@ export const configUsersWebsitesTableHeader = [
       defaultMessage: 'Average DAU*',
     },
   },
+  {
+    id: 'delete',
+    intl: {
+      id: 'actions',
+      defaultMessage: 'Actions',
+    },
+    type: 'delete',
+    checkShowItem: (item, getBody) =>
+      item.status === 'pending' ? getBody(item, { type: 'delete' }) : '-',
+  },
+];
+export const configReportsWebsitesTableHeader = [
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'date',
+      defaultMessage: 'Date',
+    },
+  },
+  {
+    id: 'type',
+    intl: {
+      id: 'action',
+      defaultMessage: 'Action',
+    },
+  },
+  {
+    id: 'countUsers',
+    intl: {
+      id: 'DAU',
+      defaultMessage: 'DAU',
+    },
+  },
+  {
+    id: 'amount',
+    intl: {
+      id: 'amount_hbd',
+      defaultMessage: 'Amount (HBD)',
+    },
+  },
+  {
+    id: 'balance',
+    intl: {
+      id: 'balance_hbd',
+      defaultMessage: 'Balance (HBD)',
+    },
+  },
 ];
 
 export default null;

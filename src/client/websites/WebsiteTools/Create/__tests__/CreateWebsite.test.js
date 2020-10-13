@@ -29,9 +29,4 @@ describe('<CreateWebsite />', () => {
     wrapper.find('#CreateWebsite').simulate('submit', { preventDefault: jest.fn() });
     expect(props.form.validateFieldsAndScroll).toHaveBeenCalled();
   });
-
-  it('handle change domain name', () => {
-    wrapper.find('#domain').simulate('change', { preventDefault: jest.fn() });
-    expect(props.checkStatusAvailableDomain).toHaveBeenCalled();
-  });
 });

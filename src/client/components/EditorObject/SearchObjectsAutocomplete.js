@@ -100,8 +100,10 @@ class SearchObjectsAutocomplete extends Component {
     let val = value;
     const parentPermlink = this.props.parentPermlink ? this.props.parentPermlink : null;
     const link = val.match(linkRegex);
+
     if (link && link.length > 0 && link[0] !== '') {
       const permlink = link[0].split('/');
+
       val = permlink[permlink.length - 1].replace('@', '');
     }
     if (val) {
@@ -113,6 +115,7 @@ class SearchObjectsAutocomplete extends Component {
     const selectedObject = this.props.searchObjectsResults.find(
       obj => obj.author_permlink === objId,
     );
+
     this.props.handleSelect(
       selectedObject || {
         author_permlink: objId,

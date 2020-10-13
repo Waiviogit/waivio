@@ -142,6 +142,11 @@ const routes = {
       component: Views.ManageWebsite,
     },
     {
+      path: '/payments',
+      exact: true,
+      component: Views.ReportsWebsite,
+    },
+    {
       path: `/@:name/(${URL.USER.tabs})?/(table)?`,
       component: Views.User,
       exact: true,

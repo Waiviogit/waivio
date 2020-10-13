@@ -7,20 +7,28 @@ import { get, isEmpty } from 'lodash';
 import { Button } from 'antd';
 
 import Affix from '../../../components/Utils/Affix';
-import DynamicTable from '../../../components/Tools/DynamicTable/DynamicTable';
+import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
 import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
 
 import { getAuthenticatedUserName, getManage, getWebsiteLoading } from '../../../reducers';
-import { activateWebsite, getManageInfo, suspendWebsite } from '../../websiteActions';
-import { configBalanceTableHeader, configUsersWebsitesTableHeader } from '../constants/tableConfig';
+import {
+  activateWebsite,
+  deleteWebsite,
+  getManageInfo,
+  suspendWebsite,
+} from '../../websiteActions';
+import {
+  configBalanceTableHeader,
+  configUsersWebsitesTableHeader,
+} from '../../constants/tableConfig';
 import Loading from '../../../components/Icon/Loading';
 import { openTransfer } from '../../../wallet/walletActions';
 import Transfer from '../../../wallet/Transfer/Transfer';
 
 import './ManageWebsite.less';
 
-const ManageWebsite = props => {
+export const ManageWebsite = props => {
   const { prices, accountBalance, websites, dataForPayments } = props.manageInfo;
 
   useEffect(() => {
@@ -46,7 +54,7 @@ const ManageWebsite = props => {
         <title>
           {props.intl.formatMessage({
             id: 'manage_website',
-            defaultMessage: 'Create new website',
+            defaultMessage: 'Website management',
           })}{' '}
           - Waivio
         </title>
@@ -95,10 +103,11 @@ const ManageWebsite = props => {
                 )}
               </div>
               <p>
-                Daily active users (DAU) is the total number of website visitors that engage with
-                the desktop or mobile version of the site from a single device or a browser. The
-                user who visits the website using multiple devices or browsers will be counted
-                multiple times.
+                {props.intl.formatMessage({
+                  id: 'manage_website_info_dau',
+                  defaultMessage:
+                    'Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.',
+                })}
               </p>
             </div>
             <div className="Settings__section">
@@ -107,33 +116,44 @@ const ManageWebsite = props => {
                   id: 'manage_account_balance',
                   defaultMessage: 'Account balance (HBD)',
                 })}
-                <Button onClick={handleClickPayNow} type="primary">
+                <Button
+                  onClick={handleClickPayNow}
+                  type="primary"
+                  className="ManageWebsites__btn-pay"
+                >
                   {props.intl.formatMessage({
                     id: 'pay_now',
                     defaultMessage: 'Pay now',
                   })}
                 </Button>
               </h3>
-              <DynamicTable header={configBalanceTableHeader} bodyConfig={[accountBalance]} />
-              <p>Daily active users are averaged over the last 7 days.</p>
+              <DynamicTbl header={configBalanceTableHeader} bodyConfig={[accountBalance]} />
               <p>
-                ** If the account balance becomes negative, all websites will be suspended. The user
-                is responsible for ensuring that the account balance remains positive. The estimate
-                of the Days remaining is based on the current website usage and is subject to
-                change.
+                {props.intl.formatMessage({
+                  id: 'manage_website_info_dau_averaged',
+                  defaultMessage: 'Daily active users are averaged over the last 7 days.',
+                })}
+              </p>
+              <p>
+                {props.intl.formatMessage({
+                  id: 'manage_website_info_account_balance',
+                  defaultMessage:
+                    '** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.',
+                })}
               </p>
             </div>
             <div className="Settings__section">
               <h3 className="ManageWebsites__title">
                 {props.intl.formatMessage({
-                  id: 'manage_websites',
+                  id: 'websites',
                   defaultMessage: 'Websites',
                 })}
               </h3>
-              <DynamicTable
+              <DynamicTbl
                 header={configUsersWebsitesTableHeader}
                 bodyConfig={websites}
                 onChange={onChangeCheckbox}
+                deleteItem={props.deleteWebsite}
               />
             </div>
           </div>
@@ -162,6 +182,7 @@ ManageWebsite.propTypes = {
   activateWebsite: PropTypes.func.isRequired,
   suspendWebsite: PropTypes.func.isRequired,
   openTransfer: PropTypes.func.isRequired,
+  deleteWebsite: PropTypes.func.isRequired,
 };
 
 ManageWebsite.defaultProps = {
@@ -179,5 +200,6 @@ export default connect(
     activateWebsite,
     suspendWebsite,
     openTransfer,
+    deleteWebsite,
   },
 )(injectIntl(ManageWebsite));

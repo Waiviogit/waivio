@@ -306,9 +306,11 @@ export const getQueryString = state => state.router.location.search;
 
 export const getSuitableLanguage = state => {
   const settingsLocale = getLocale(state);
+
   if (settingsLocale !== 'auto') return settingsLocale;
 
   const usedLocale = getUsedLocale(state);
+
   return usedLocale || 'en-US';
 };
 
@@ -318,3 +320,4 @@ export const getDomainAvailableStatus = state =>
   fromWebsite.getDomainAvailableStatus(state.website);
 export const getWebsiteLoading = state => fromWebsite.getWebsiteLoading(state.website);
 export const getManage = state => fromWebsite.getManage(state.website);
+export const getReports = state => fromWebsite.getReports(state.website);

@@ -17,8 +17,8 @@ export default {
   ],
   politics: [
     {
-      required: true,
-      message: 'Should accept agreement',
+      validator: (rule, value) =>
+        value ? Promise.resolve() : Promise.reject('Should accept agreement'),
     },
   ],
   autocomplete: [

@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import moment from 'moment';
 import * as websiteAction from './websiteActions';
 import { getAvailableStatus } from './helper';
 
@@ -6,6 +7,7 @@ const initialState = {
   parentDomain: [],
   domainAvailableStatus: '',
   manage: {},
+  reports: {},
   loading: false,
 };
 
@@ -50,6 +52,7 @@ export default function websiteReducer(state = initialState, action) {
       const websites = get(action.payload, 'websites').map(website => ({
         ...website,
         checked: website.status === 'active',
+        pending: [],
       }));
 
       return {
@@ -67,14 +70,13 @@ export default function websiteReducer(state = initialState, action) {
         loading: true,
       };
     }
-    case websiteAction.ACTIVATE_WEBSITE.START: {
+    case websiteAction.CHANGE_STATUS_WEBSITE: {
       const websites = [...state.manage.websites];
       const changedIndex = websites.findIndex(web => web.host === action.id);
 
       websites.splice(changedIndex, 1, {
         ...websites[changedIndex],
-        checked: true,
-        status: 'loading'
+        pending: [...websites[changedIndex].pending, 'checkbox'],
       });
 
       return {
@@ -85,14 +87,14 @@ export default function websiteReducer(state = initialState, action) {
         },
       };
     }
-    case websiteAction.SUSPEND_WEBSITE.START: {
+
+    case websiteAction.DELETE_WEBSITE: {
       const websites = [...state.manage.websites];
       const changedIndex = websites.findIndex(web => web.host === action.id);
 
       websites.splice(changedIndex, 1, {
         ...websites[changedIndex],
-        checked: false,
-        status: 'loading'
+        pending: [...websites[changedIndex].pending, 'delete'],
       });
 
       return {
@@ -100,6 +102,19 @@ export default function websiteReducer(state = initialState, action) {
         manage: {
           ...state.manage,
           websites,
+        },
+      };
+    }
+
+    case websiteAction.GET_REPORTS_PAGE.SUCCESS: {
+      return {
+        ...state,
+        reports: {
+          ...action.payload,
+          payments: action.payload.payments.map(payment => ({
+            ...payment,
+            createdAt: moment(payment.createdAt).format('DD-MMM-YYYY'),
+          })),
         },
       };
     }
@@ -113,3 +128,4 @@ export const getParentDomain = state => get(state, 'parentDomain', []);
 export const getDomainAvailableStatus = state => get(state, 'domainAvailableStatus', []);
 export const getWebsiteLoading = state => get(state, 'loading');
 export const getManage = state => get(state, 'manage');
+export const getReports = state => get(state, 'reports');

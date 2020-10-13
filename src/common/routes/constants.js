@@ -75,6 +75,7 @@ export default {
       'notification-settings',
       'create',
       'manage',
+      'payments',
     ].join('|'),
   },
 };

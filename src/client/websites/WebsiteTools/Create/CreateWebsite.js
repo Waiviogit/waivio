@@ -9,7 +9,7 @@ import { debounce, get, isEmpty } from 'lodash';
 import Affix from '../../../components/Utils/Affix';
 import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
-import validateRules from '../constants/validateRules';
+import validateRules from '../../constants/validateRules';
 import { checkAvailableDomain, createNewWebsite, getParentDomainList } from '../../websiteActions';
 import { getDomainAvailableStatus, getParentDomain, getWebsiteLoading } from '../../../reducers';
 
