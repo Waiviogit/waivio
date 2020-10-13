@@ -66,7 +66,7 @@ function sc2Extended() {
     sc2Proto,
     sc2api,
     {
-      followObject(follower, followingObject, cb) {
+      followObject(follower, followingObject, name, type, cb) {
         const params = {
           required_auths: [],
           required_posting_auths: [follower],
@@ -77,25 +77,33 @@ function sc2Extended() {
               user: follower,
               author_permlink: followingObject,
               what: ['feed'],
+              object_type: type,
+              object_name: name,
+              type_operation: 'follow_wobject',
             },
           ]),
         };
-
         return this.broadcast([['custom_json', params]], cb);
       },
     },
     {
-      unfollowObject(unfollower, unfollowingObject, cb) {
+      unfollowObject(unfollower, unfollowingObject, name, type, cb) {
         const params = {
           required_auths: [],
           required_posting_auths: [unfollower],
           id: 'follow_wobject',
           json: JSON.stringify([
             'follow',
-            { user: unfollower, author_permlink: unfollowingObject, what: [] },
+            {
+              user: unfollower,
+              author_permlink: unfollowingObject,
+              what: [],
+              object_type: type,
+              object_name: name,
+              type_operation: 'unfollow_wobject',
+            },
           ]),
         };
-
         return this.broadcast([['custom_json', params]], cb);
       },
     },

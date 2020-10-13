@@ -82,12 +82,17 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
     body: JSON.stringify({ author_permlinks: authorPermlinks, locale }),
   }).then(res => res.json());
 
-export const getObject = (authorPermlink, requiredField) => {
-  const query = requiredField ? `?required_fields=${requiredField}` : '';
-
-  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`, {
-    headers,
-  }).then(res => res.json());
+export const getObject = (authorPermlink, user, locale) => {
+  const queryString = user ? `?user=${user}` : '';
+  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
+    headers: {
+      app: config.appName,
+      follower: user,
+      locale,
+    },
+  })
+    .then(handleErrors)
+    .then(res => res.json());
 };
 
 export const getUsersByObject = object =>

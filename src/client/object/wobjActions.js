@@ -3,48 +3,51 @@ import { getAuthenticatedUserName, getIsAuthenticated } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 
-export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
-export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
-export const FOLLOW_WOBJECT_SUCCESS = '@wobj/FOLLOW_WOBJECT_SUCCESS';
-export const FOLLOW_WOBJECT_ERROR = '@wobj/FOLLOW_WOBJECT_ERROR';
+export const FOLLOW_OBJECT = createAsyncActionType('FOLLOW_OBJECT');
 
-export const followObject = authorPermlink => (dispatch, getState, { steemConnectAPI }) => {
+export const followWobject = (permlink, name, type) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
-
   if (!getIsAuthenticated(state)) {
     return Promise.reject('User is not authenticated');
   }
 
   return dispatch({
-    type: FOLLOW_WOBJECT,
+    type: FOLLOW_OBJECT.ACTION,
     payload: {
-      promise: steemConnectAPI.followObject(getAuthenticatedUserName(state), authorPermlink),
+      promise: steemConnectAPI.followObject(getAuthenticatedUserName(state), permlink, name, type),
     },
     meta: {
-      authorPermlink,
+      permlink,
     },
   });
 };
 
-export const UNFOLLOW_WOBJECT = '@wobj/UNFOLLOW_WOBJECT';
-export const UNFOLLOW_WOBJECT_START = '@wobj/UNFOLLOW_WOBJECT_START';
-export const UNFOLLOW_WOBJECT_SUCCESS = '@wobj/UNFOLLOW_WOBJECT_SUCCESS';
-export const UNFOLLOW_WOBJECT_ERROR = '@wobj/UNFOLLOW_WOBJECT_ERROR';
+export const UNFOLLOW_OBJECT = createAsyncActionType('UNFOLLOW_OBJECT');
 
-export const unfollowObject = authorPermlink => (dispatch, getState, { steemConnectAPI }) => {
+export const unfollowWobject = (permlink, name, type) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const state = getState();
+  console.log("perm", permlink, name, type)
 
   if (!getIsAuthenticated(state)) {
     return Promise.reject('User is not authenticated');
   }
 
   return dispatch({
-    type: UNFOLLOW_WOBJECT,
+    type: UNFOLLOW_OBJECT.ACTION,
     payload: {
-      promise: steemConnectAPI.unfollowObject(getAuthenticatedUserName(state), authorPermlink),
+      promise: steemConnectAPI.unfollowObject(
+        getAuthenticatedUserName(state),
+        permlink,
+        name,
+        type,
+      ),
     },
     meta: {
-      authorPermlink,
+      permlink,
     },
   });
 };

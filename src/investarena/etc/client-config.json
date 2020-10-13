@@ -92,7 +92,7 @@
     "logonWithToken": "https://test-api.tokenexus.com/Account/logonWithToken?token="
   },
   "test": {
-    "apiPrefix": "http://localhost:3000/",
+    "apiPrefix": "http://localhost:3001/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",

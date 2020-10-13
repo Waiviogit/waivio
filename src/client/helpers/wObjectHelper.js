@@ -1,12 +1,14 @@
-import _ from 'lodash';
+import { isEmpty, get, some, filter, find } from 'lodash';
 import { objectFields } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
+
+export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'default_name');
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 
 export const haveAccess = (wobj, userName, accessType) =>
   wobj[accessType] ||
-  !!(wobj.white_list && _.some(wobj.white_list, userInWL => userName === userInWL));
+  !!(wobj.white_list && some(wobj.white_list, userInWL => userName === userInWL));
 
 export const generateRandomString = stringLength => {
   let randomString = '';
@@ -26,7 +28,7 @@ export const generatePermlink = () =>
     .substring(2);
 
 export const getField = (item, field) => {
-  const wo = _.find(item.fields, ['name', field]);
+  const wo = find(item.fields, ['name', field]);
   return wo ? wo.body : null;
 };
 
@@ -83,7 +85,7 @@ export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
   const { author, author_permlink } = wObj;
   let body = bodyMsg;
   if (!body) {
-    const langReadable = _.filter(LANGUAGES, {
+    const langReadable = filter(LANGUAGES, {
       id: fieldContent.locale === 'auto' ? 'en-US' : fieldContent.locale,
     })[0].name;
     body = `@${creator} added ${fieldContent.name} (${langReadable}):\n ${fieldContent.body.replace(
@@ -105,11 +107,11 @@ export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
 };
 
 export const calculateApprovePercent = votes => {
-  if (!_.isEmpty(votes)) {
+  if (!isEmpty(votes)) {
     const filteredByOriginalFlag = votes.filter(vote => vote.percent > 0);
-    if (!_.isEmpty(filteredByOriginalFlag)) {
+    if (!isEmpty(filteredByOriginalFlag)) {
       const onlyApproved = filteredByOriginalFlag.filter(vote => vote.percent % 10 === 0);
-      if (!_.isEmpty(onlyApproved)) {
+      if (!isEmpty(onlyApproved)) {
         return (onlyApproved.length / filteredByOriginalFlag.length) * 100;
       }
     }
