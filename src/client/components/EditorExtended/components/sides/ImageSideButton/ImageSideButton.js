@@ -2,10 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import { Modal, Button, Tooltip } from 'antd';
-import { addNewBlock } from '../../model';
-import { Block } from '../../util/constants';
-import ImageSetter from '../../../ImageSetter/ImageSetter';
-import withEditor from '../../../Editor/withEditor';
+import { addNewBlock } from '../../../model';
+import { Block } from '../../../util/constants';
+import ImageSetter from '../../../../ImageSetter/ImageSetter';
+import withEditor from '../../../../Editor/withEditor';
+
+import './ImageSideButton.less';
 
 @withEditor
 @injectIntl
@@ -64,6 +66,8 @@ export default class ImageSideButton extends React.Component {
 
   render() {
     const { isLoadingImage, isModal, currentImage } = this.state;
+    const tooltipMessage = currentImage.length ? 'modal_set_image' : 'modal_must_upload_image'
+    const tooltipDefaultMessage = currentImage.length ? 'Set Image' : 'Нou have to upload a image'
     return (
       <React.Fragment>
         <button
@@ -94,11 +98,16 @@ export default class ImageSideButton extends React.Component {
             <Button key="back" onClick={this.props.close}>
               {this.props.intl.formatMessage({ id: 'modal.button.cancel', defaultMessage: 'Cancel' })}
             </Button>,
-            // <Tooltip title="you must upload image" visible={!this.state.currentImage.length}>
-              <Button type="primary" disabled={!this.state.currentImage.length} onClick={this.props.close}>
-                {this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
-              </Button>,
-            // </Tooltip>,
+            <Tooltip
+              overlayClassName='customize-ant-tooltip'
+              title={this.props.intl.formatMessage({ id: tooltipMessage, defaultMessage: tooltipDefaultMessage })}
+              overlayStyle={{fontSize: '12px'}}
+              children={
+                <Button type="primary" disabled={!this.state.currentImage.length} onClick={this.handleOnOk}>
+                  {this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
+                </Button>
+              }
+            />
           ]}
         >
           {isModal && (

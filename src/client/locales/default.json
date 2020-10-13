@@ -1169,5 +1169,7 @@
   "market_order_filled_last": "at price ",
   "profile_updated": "Profile updated",
   "no_results": "No results were found for '{search}' request",
-  "modal.upload.image": "Upload Image"
+  "modal_upload_image": "Upload Image",
+  "modal_set_image": "Set Image",
+  "modal_must_upload_image": "You have to upload a image"
 }

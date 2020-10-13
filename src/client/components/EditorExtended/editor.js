@@ -26,7 +26,7 @@ import beforeInput, { StringToTypeMap } from './util/beforeinput';
 import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 
-import ImageSideButton from './components/sides/ImageSideButton';
+import ImageSideButton from './components/sides/ImageSideButton/ImageSideButton';
 import './index.less';
 
 /*

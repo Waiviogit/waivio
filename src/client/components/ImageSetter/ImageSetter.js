@@ -77,10 +77,7 @@ const ImageSetter = ({
       return;
     }
     if (image || linkInputValue) {
-      const url = image || linkInputValue;
-      console.log(url);
-      console.log(image);
-      console.log(linkInputValue);
+      const url = linkInputValue;
       const filename = url.substring(url.lastIndexOf('/') + 1);
       const newImage = {
         src: url,
@@ -249,7 +246,7 @@ const ImageSetter = ({
               type="button"
               disabled={!linkInputValue}
               onClick={handleOnUploadImageByLink}
-              title={intl.formatMessage({ id: 'modal.upload.image', defaultMessage: 'Upload Image'})}
+              title={intl.formatMessage({ id: 'modal_upload_image', defaultMessage: 'Upload Image'})}
             >
               <Icon type="upload" />
             </button>
