@@ -15,7 +15,7 @@ import { IS_RESERVED } from '../common/constants/rewards';
 let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
-  'Sec-Fetch-Site': 'cross-site',
+  'Access-Control-Allow-Origin': '*',
 };
 
 export function handleErrors(response) {
@@ -707,7 +707,6 @@ export const getPropositions = ({
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
     if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
-    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
     if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     const url = getUrl(match);
