@@ -1450,5 +1450,11 @@
   "sponsored_rewards_table_action": "Action",
   "sponsored_rewards_table_details": "Details",
   "sponsored_rewards_table_amount": "Amount",
-  "sponsored_rewards_table_balance": "Balance"
+  "sponsored_rewards_table_balance": "Balance",
+  "sponsored_rewards_requested_text": "Review by {userName} (requested by {sponsorName})",
+  "sponsored_rewards_review_text": "Review: {prymaryObjectName}, {reviewObjectName}",
+  "sponsored_rewards_review": "Review:",
+  "sponsored_rewards_beneficiaries": "Beneficiaries: ",
+  "sponsored_rewards_details_reservation": "Reservation",
+  "sponsored_rewards_details_report": "Report"
 }

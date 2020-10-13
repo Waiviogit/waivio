@@ -1559,12 +1559,12 @@ export const getUserStatusCards = (username, sort = 'recency', skip = 0, limit =
       .catch(error => reject(error));
   });
 
-export const getStatusSponsoredRewards = (username = 'vallon', type = 'referral_server_fee') =>
+export const getStatusSponsoredRewards = (referral, userName, type = 'referral_server_fee') =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.payments}${config.payables}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ userName: username, type }),
+      body: JSON.stringify({ referral, userName, type }),
     })
       .then(handleErrors)
       .then(res => res.json())

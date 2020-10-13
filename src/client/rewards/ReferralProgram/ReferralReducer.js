@@ -9,6 +9,7 @@ import {
   GET_ERROR_MORE_USER_STATUS_CARDS,
   REFERRAL_CONFIRM_RULES,
   REFERRAL_REJECT_RULES,
+  GET_STATUS_SPONSORED_REWARDS,
 } from './ReferralActions';
 
 const initialState = {
@@ -30,6 +31,7 @@ const initialState = {
   isLoadingMoreUserCards: false,
   isErrorLoadingMore: false,
   isStartChangeRules: false,
+  statusSponsoredHistory: [],
 };
 
 const ReferralReducer = (state = initialState, action) => {
@@ -157,6 +159,12 @@ const ReferralReducer = (state = initialState, action) => {
         isStartChangeRules: false,
       };
     }
+    case GET_STATUS_SPONSORED_REWARDS.SUCCESS: {
+      return {
+        ...state,
+        statusSponsoredHistory: action.payload.histories,
+      };
+    }
     default:
       return state;
   }
@@ -181,3 +189,4 @@ export const getCurrentUserCards = state => state.userCards;
 export const getIsErrorLoadingUserCards = state => state.isErrorLoadingMore;
 export const getIsLoadingMoreUserCards = state => state.isLoadingMoreUserCards;
 export const getIsStartChangeRules = state => state.isStartChangeRules;
+export const getStatusSponsoredHistory = state => state.statusSponsoredHistory;

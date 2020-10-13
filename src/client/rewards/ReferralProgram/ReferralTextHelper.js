@@ -315,7 +315,7 @@ export const ReferralStatusContent = data => {
   };
 };
 
-export const SponsoredRewardsContent = data => {
+export const SponsoredRewardsMainContent = data => {
   const { username } = data;
 
   return {
@@ -327,6 +327,74 @@ export const SponsoredRewardsContent = data => {
           username,
         }}
       />
+    ),
+  };
+};
+
+export const SponsoredRewardsTableContent = data => {
+  const {
+    username,
+    sponsorName,
+    prymaryObjectName,
+    prymaryObjectLink,
+    reviewObjectName,
+    reviewObjectLink,
+    reservationPermlink,
+  } = data;
+
+  return {
+    sponsoredActionReviewRequested: (
+      <FormattedMessage
+        id="sponsored_rewards_requested_text"
+        defaultMessage="Review by {userName} (requested by {sponsorName})"
+        values={{
+          userName: (
+            <Link to={`/@${username}`}>
+              <span className="text-link">@{username}</span>
+            </Link>
+          ),
+          sponsorName: (
+            <Link to={`/@${sponsorName}`}>
+              <span className="text-link">@{sponsorName}</span>
+            </Link>
+          ),
+        }}
+      />
+    ),
+    sponsoredActionReview: (
+      <FormattedMessage
+        id="sponsored_rewards_review_text"
+        defaultMessage="Review: {prymaryObjectName}, {reviewObjectName}"
+        values={{
+          prymaryObjectName: (
+            <Link to={`/object/${prymaryObjectLink}`}>
+              <span className="text-link">{prymaryObjectName}</span>
+            </Link>
+          ),
+          reviewObjectName: (
+            <Link to={`/object/${reviewObjectLink}`}>
+              <span className="text-link">{reviewObjectName}</span>
+            </Link>
+          ),
+        }}
+      />
+    ),
+    sponsoredActionBeneficiaries: (
+      <FormattedMessage id="sponsored_rewards_beneficiaries" defaultMessage="Beneficiaries: " />
+    ),
+    sponsoredActionBeneficiariesName: <Link to={`/@${username}`}>{username}</Link>,
+    sponsoredDetailsReservation: (
+      <React.Fragment>
+        <Link to={`/@${username}/${reservationPermlink}`}>
+          <FormattedMessage
+            id="sponsored_rewards_details_reservation"
+            defaultMessage="Reservation"
+          />
+        </Link>
+        <div className="text-link" onClick={() => console.log('modalReport')} role="presentation">
+          <FormattedMessage id="sponsored_rewards_details_report" defaultMessage="Report" />
+        </div>
+      </React.Fragment>
     ),
   };
 };

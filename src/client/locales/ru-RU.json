@@ -1452,5 +1452,9 @@
   "sponsored_rewards__table_action": "Действие",
   "sponsored_rewards__table_details": "Детали",
   "sponsored_rewards__table_amount": "Количество",
-  "sponsored_rewards__table_balance": "Баланс"
+  "sponsored_rewards__table_balance": "Баланс",
+  "sponsored_rewards_requested_text": "Автор отзыва: {userName} (запросил {sponsorName})",
+  "sponsored_rewards_review_text": "Отзыв: {prymaryObjectName}, {reviewObjectName}",
+  "sponsored_rewards_review": "Отзыв:",
+  "sponsored_rewards_beneficiaries": "Бенефициары: "
 }

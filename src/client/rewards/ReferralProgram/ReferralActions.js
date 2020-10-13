@@ -22,6 +22,9 @@ export const GET_MORE_USER_STATUS_CARDS = createAsyncActionType(
 export const GET_ERROR_MORE_USER_STATUS_CARDS = createAsyncActionType(
   '@referral/GET_ERROR_MORE_USER_STATUS_CARDS',
 );
+export const GET_STATUS_SPONSORED_REWARDS = createAsyncActionType(
+  '@referral/GET_STATUS_SPONSORED_REWARDS',
+);
 
 export const getUserReferralInfo = username => dispatch =>
   dispatch({
@@ -202,5 +205,15 @@ export const getMoreUserStatusCards = (username, sort, skip, limit) => dispatch 
             type: GET_ERROR_MORE_USER_STATUS_CARDS,
           }),
         ),
+    },
+  });
+
+export const getStatusSponsoredRewards = (referral, username) => dispatch =>
+  dispatch({
+    type: GET_STATUS_SPONSORED_REWARDS.ACTION,
+    payload: {
+      promise: ApiClient.getStatusSponsoredRewards(referral, username)
+        .then(data => data)
+        .catch(error => error),
     },
   });

@@ -3,54 +3,74 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
-import { SponsoredRewardsContent } from '../ReferralTextHelper';
+import { get } from 'lodash';
+import { SponsoredRewardsMainContent } from '../ReferralTextHelper';
 import SponsoredRewardsHeader from '../constants';
+import { getStatusSponsoredRewards } from '../ReferralActions';
+import { getAuthenticatedUserName, getStatusSponsoredHistory } from '../../../reducers';
+import SponsoredRewardsTableRow from './SponsoredRewardsTableRow/SponsoredRewardsTableRow';
 
 import './SponsoredRewards.less';
-import { getStatusSponsoredRewards } from '../../../../waivioApi/ApiClient';
+
+const SponsoredRewardsView = (intl, statusSponsoredHistory, sponsoredRewardsTitle) => (
+  <div className="SponsoredRewards">
+    <h2 className="SponsoredRewards__title">{sponsoredRewardsTitle}</h2>
+    <div className="SponsoredRewards__table">
+      <table style={{ width: '100%' }}>
+        <thead>
+          <tr>
+            {SponsoredRewardsHeader.map(tdElement => (
+              <th key={tdElement.id} className={tdElement.className}>
+                {intl.formatMessage({
+                  id: tdElement.id,
+                  defaultMessage: tdElement.message,
+                })}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {statusSponsoredHistory.map(sponsor => (
+            <SponsoredRewardsTableRow key={get(sponsor, '_id', '')} intl={intl} sponsor={sponsor} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+);
 
 const SponsoredRewards = props => {
-  const { match, intl } = props;
+  const { match, intl, getStatusSponsoredInfo, authSponsorName, statusSponsoredHistory } = props;
+  const username = match.params.name;
+
   useEffect(() => {
-    getStatusSponsoredRewards().then(res => console.log(res));
+    getStatusSponsoredInfo(authSponsorName, username);
   }, []);
-  const data = { username: match.params.name };
-  const { sponsoredRewardsTitle } = SponsoredRewardsContent(data);
-  return (
-    <div className="SponsoredRewards">
-      <h2 className="SponsoredRewards__title">{sponsoredRewardsTitle}</h2>
-      <div className="SponsoredRewards__table">
-        <table style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              {SponsoredRewardsHeader.map(tdElement => (
-                <th key={tdElement.id} className={tdElement.className}>
-                  {intl.formatMessage({
-                    id: tdElement.id,
-                    defaultMessage: tdElement.message,
-                  })}
-                </th>
-              ))}
-            </tr>
-          </thead>
-        </table>
-      </div>
-    </div>
-  );
+
+  const data = { username };
+  const { sponsoredRewardsTitle } = SponsoredRewardsMainContent(data);
+  return SponsoredRewardsView(intl, statusSponsoredHistory, sponsoredRewardsTitle);
 };
 
 SponsoredRewards.propTypes = {
   match: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
+  getStatusSponsoredInfo: PropTypes.func,
+  authSponsorName: PropTypes.string.isRequired,
+  statusSponsoredHistory: PropTypes.shape(),
 };
 
 SponsoredRewards.defaultProps = {
   match: {},
+  getStatusSponsoredInfo: () => {},
+  statusSponsoredHistory: [],
 };
 
-const mapStateToProps = state => {
-  // eslint-disable-next-line no-unused-expressions
-  state;
-};
+const mapStateToProps = state => ({
+  authSponsorName: getAuthenticatedUserName(state),
+  statusSponsoredHistory: getStatusSponsoredHistory(state),
+});
 
-export default connect(mapStateToProps, null)(withRouter(injectIntl(SponsoredRewards)));
+export default connect(mapStateToProps, {
+  getStatusSponsoredInfo: getStatusSponsoredRewards,
+})(withRouter(injectIntl(SponsoredRewards)));

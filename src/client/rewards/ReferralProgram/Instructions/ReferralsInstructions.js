@@ -22,13 +22,11 @@ import Loading from '../../../components/Icon/Loading';
 
 import './ReferralsInstructions.less';
 
-const widget = () =>
-  `<iframe class="waivio" src="https://waivio.com?ref=[username]" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
+const widget = `<iframe class="waivio" src="https://waivio.com?ref=[username]" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
 
 const handleCopyTextButton = setIsCopyButton => {
-  const widgetText = widget();
   const reservoir = document.createElement('textarea');
-  reservoir.value = widgetText;
+  reservoir.value = widget;
   document.body.appendChild(reservoir);
   reservoir.select();
   document.execCommand('copy');
@@ -179,7 +177,7 @@ const ReferralsInstructions = props => {
               </div>
 
               <div className="ReferralInstructions__accepted-conditions__widget">
-                {widget()}
+                {widget}
                 <div className="ReferralInstructions__accepted-conditions__widget__copy-icon">
                   <Tooltip title={currentCopyText}>
                     <span>
