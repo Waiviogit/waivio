@@ -6,6 +6,7 @@ import { addNewBlock } from '../../../model';
 import { Block } from '../../../util/constants';
 import ImageSetter from '../../../../ImageSetter/ImageSetter';
 import withEditor from '../../../../Editor/withEditor';
+import _size from 'lodash/size';
 
 import './ImageSideButton.less';
 
@@ -66,8 +67,9 @@ export default class ImageSideButton extends React.Component {
 
   render() {
     const { isLoadingImage, isModal, currentImage } = this.state;
-    const tooltipMessage = currentImage.length ? 'modal_set_image' : 'modal_must_upload_image'
-    const tooltipDefaultMessage = currentImage.length ? 'Set Image' : 'Нou have to upload a image'
+    const isCurrentImage = _size(currentImage.length);
+    const tooltipMessage = isCurrentImage ? 'modal_set_image' : 'modal_must_upload_image'
+    const tooltipDefaultMessage = isCurrentImage ? 'Set Image' : 'Нou have to upload a image'
     return (
       <React.Fragment>
         <button
@@ -90,7 +92,7 @@ export default class ImageSideButton extends React.Component {
         <Modal
           wrapClassName="Settings__modal"
           onCancel={this.handleOpenModal}
-          okButtonProps={{ disabled: isLoadingImage || !currentImage.length }}
+          okButtonProps={{ disabled: isLoadingImage || !isCurrentImage }}
           cancelButtonProps={{ disabled: isLoadingImage }}
           visible={isModal}
           footer={[
@@ -100,9 +102,10 @@ export default class ImageSideButton extends React.Component {
             <Tooltip
               overlayClassName='SideButtonTooltip'
               title={this.props.intl.formatMessage({ id: tooltipMessage, defaultMessage: tooltipDefaultMessage })}
-              overlayStyle={{fontSize: '12px'}}
+              overlayStyle={{ fontSize: '12px' }}
+              visible={true}
               children={
-                <Button type="primary" disabled={!this.state.currentImage.length} onClick={this.handleOnOk}>
+                <Button type="primary" disabled={!isCurrentImage} onClick={this.handleOnOk}>
                   {this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
                 </Button>
               }
