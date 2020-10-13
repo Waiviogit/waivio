@@ -256,9 +256,11 @@ export default class Buttons extends React.Component {
         visible={this.state.actionButtonsVisible}
         onVisibleChange={this.handlePopoverVisibleChange}
         content={
-          <PopoverMenu onSelect={item => this.handleSelectOptions(item)} bold={false}>
-            {popoverMenu}
-          </PopoverMenu>
+          <div className="buttons-popover">
+            <PopoverMenu onSelect={item => this.handleSelectOptions(item)} bold={false}>
+              {popoverMenu}
+            </PopoverMenu>
+          </div>
         }
       >
         <i
