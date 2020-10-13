@@ -103,7 +103,6 @@ export default class ImageSideButton extends React.Component {
               overlayClassName='SideButtonTooltip'
               title={this.props.intl.formatMessage({ id: tooltipMessage, defaultMessage: tooltipDefaultMessage })}
               overlayStyle={{ fontSize: '12px' }}
-              visible={true}
               children={
                 <Button type="primary" disabled={!isCurrentImage} onClick={this.handleOnOk}>
                   {this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
