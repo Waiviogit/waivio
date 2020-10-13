@@ -136,7 +136,10 @@ export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;
 
   return compact(
-    Object.values(addressFields).map(fieldName => parseWobjectField(wobject, 'address')[fieldName]),
+    Object.values(addressFields).map(fieldName => {
+      const parsedWobject = parseWobjectField(wobject, 'address');
+      return get(parsedWobject, fieldName);
+    }),
   ).join(', ');
 };
 
