@@ -428,7 +428,8 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.categoryItem) {
         fieldsObject = {
           ...fieldsObject,
-          tagCategory: this.state.selectedCategory,
+          id: this.state.selectedCategory.id,
+          tagCategory: this.state.selectedCategory.body,
         };
       }
 
@@ -742,9 +743,7 @@ export default class AppendForm extends Component {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
 
-    if (objectFields.categoryItem === currentField) {
-      this.handleCreateTag();
-    } else if (objectFields.galleryItem === currentField) {
+    if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
     }
 
