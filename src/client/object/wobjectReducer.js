@@ -1,10 +1,8 @@
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
-import { SET_USED_LOCALE } from '../app/appActions';
-import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
+import { RATE_WOBJECT_SUCCESS, FOLLOW_OBJECT, UNFOLLOW_OBJECT } from './wobjActions';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
-import { getClientWObj } from '../adapters';
 
 const initialState = {
   wobject: {},
@@ -97,14 +95,85 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     }
-    case SET_USED_LOCALE: {
-      if (!isEmpty(state.wobject)) {
-        const usedLocale = action.payload.id;
+    case FOLLOW_OBJECT.START: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
         return {
           ...state,
-          wobject: getClientWObj(state.wobject, usedLocale),
+          wobject: {
+            ...state.wobject,
+            pending: true,
+          },
         };
       }
+
+      return state;
+    }
+    case FOLLOW_OBJECT.SUCCESS: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: false,
+            youFollows: true,
+          },
+        };
+      }
+
+      return state;
+    }
+    case FOLLOW_OBJECT.ERROR: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: false,
+          },
+        };
+      }
+
+      return state;
+    }
+
+    case UNFOLLOW_OBJECT.START: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: true,
+          },
+        };
+      }
+
+      return state;
+    }
+    case UNFOLLOW_OBJECT.SUCCESS: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: false,
+            youFollows: false,
+          },
+        };
+      }
+
+      return state;
+    }
+    case UNFOLLOW_OBJECT.ERROR: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: false,
+          },
+        };
+      }
+
       return state;
     }
     default: {

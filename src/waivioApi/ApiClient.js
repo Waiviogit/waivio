@@ -11,7 +11,7 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { supportedObjectTypes } from '../investarena/constants/objectsInvestarena';
 import { setBxySessionData } from '../client/helpers/localStorageHelpers';
 import { logout } from '../client/auth/authActions';
-import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
+import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 
 const filterKey = 'beaxy';
 
@@ -82,12 +82,17 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
     body: JSON.stringify({ author_permlinks: authorPermlinks, locale }),
   }).then(res => res.json());
 
-export const getObject = (authorPermlink, requiredField) => {
-  const query = requiredField ? `?required_fields=${requiredField}` : '';
-
-  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`, {
-    headers,
-  }).then(res => res.json());
+export const getObject = (authorPermlink, user, locale) => {
+  const queryString = user ? `?user=${user}` : '';
+  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
+    headers: {
+      app: config.appName,
+      follower: user,
+      locale,
+    },
+  })
+    .then(handleErrors)
+    .then(res => res.json());
 };
 
 export const getUsersByObject = object =>
@@ -927,11 +932,11 @@ export const updateGuestProfile = async (username, json_metadata) => {
           {
             required_auths: [],
             required_posting_auths: [username],
-            id: ACCOUNT_UPDATE,
+            id: GUEST_ACCOUNT_UPDATE,
             json: JSON.stringify({
               account: username,
               json_metadata: '',
-              posting_json_metadata: JSON.stringify(json_metadata),
+              posting_json_metadata: JSON.stringify({ ...json_metadata, version: 2 }),
             }),
           },
         ],

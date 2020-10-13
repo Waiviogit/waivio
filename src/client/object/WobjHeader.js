@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
+import { get } from 'lodash';
 
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
@@ -10,22 +12,30 @@ import ObjectType from './ObjectType';
 import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
-import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
-import { getClientWObj } from '../adapters';
+import { accessTypesArr, getObjectName, haveAccess } from '../helpers/wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
-import { UsedLocaleContext } from '../Wrapper';
 import '../components/ObjectHeader.less';
+import { followWobject, unfollowWobject } from './wobjActions';
 
-const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, authenticated }) => {
-  const usedLocale = useContext(UsedLocaleContext);
+const WobjHeader = ({
+  isEditMode,
+  wobject,
+  username,
+  intl,
+  toggleViewEditMode,
+  authenticated,
+  followWobj,
+  unfollowWobj,
+}) => {
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
   const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
-  const parentName = wobject.parent
-    ? getClientWObj(wobject.parent, usedLocale)[objectFields.name]
-    : '';
+  const parent = get(wobject, 'parent', {});
+  const parentName = getObjectName(parent);
+  const name = getObjectName(wobject);
+  const isHashtag = wobject.object_type === 'hashtag';
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -55,11 +65,17 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
           )}
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
-              <div className="ObjectHeader__text" title={wobject.name}>
-                {wobject.name}
+              <div className="ObjectHeader__text" title={name}>
+                {name}
               </div>
               <div className="ObjectHeader__controls">
-                <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
+                <FollowButton
+                  followObject={followWobj}
+                  unfollowObject={unfollowWobj}
+                  following={wobject.youFollows}
+                  wobj={wobject}
+                  followingType="wobject"
+                />
                 {accessExtend && authenticated && (
                   <Button onClick={toggleViewEditMode}>
                     {isEditMode
@@ -77,7 +93,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
               {/* eslint-disable-next-line no-nested-ternary */}
-              {canEdit && !descriptionShort ? (
+              {!isHashtag && canEdit && !descriptionShort ? (
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
@@ -90,7 +106,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
               )}
             </div>
           </div>
-          {canEdit && !wobject[objectFields.background] && (
+          {!isHashtag && canEdit && !wobject[objectFields.background] && (
             <div className="ObjectHeader__user__addCover">
               <Proposition
                 objectID={wobject.author_permlink}
@@ -112,6 +128,8 @@ WobjHeader.propTypes = {
   wobject: PropTypes.shape(),
   username: PropTypes.string,
   toggleViewEditMode: PropTypes.func,
+  followWobj: PropTypes.func,
+  unfollowWobj: PropTypes.func,
 };
 
 WobjHeader.defaultProps = {
@@ -121,6 +139,15 @@ WobjHeader.defaultProps = {
   wobject: {},
   username: '',
   toggleViewEditMode: () => {},
+  followWobj: () => {},
+  unfollowWobj: () => {},
 };
 
-export default injectIntl(WobjHeader);
+const mapStateToProps = state => ({ isMobile: state.app.screenSize !== 'large' });
+
+const mapDispatchToProps = dispatch => ({
+  followWobj: (permlink, name, type) => dispatch(followWobject(permlink, name, type)),
+  unfollowWobj: (permlink, name, type) => dispatch(unfollowWobject(permlink, name, type)),
+})
+
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps )(WobjHeader));
