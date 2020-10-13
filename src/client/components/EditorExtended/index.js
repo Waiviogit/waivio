@@ -17,7 +17,7 @@ import TodoBlock from './components/blocks/todo';
 import ImageBlock from './components/blocks/image';
 import BreakBlock from './components/blocks/break';
 
-import ImageSideButton from './components/sides/ImageSideButton';
+import ImageSideButton from './components/sides/ImageSideButton/ImageSideButton';
 import BreakSideButton from './components/sides/SeparatorSideButton';
 
 export { Block, Inline, Entity, HANDLED, NOT_HANDLED } from './util/constants';

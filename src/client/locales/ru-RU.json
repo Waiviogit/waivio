@@ -1137,5 +1137,8 @@
   "market_order_filled_first": "Рыночный ордер выполнен (купить ",
   "market_order_filled_last": "по цене ",
   "profile_updated": "Профиль обновлен",
-  "no_results": "По запросу '{search}' ничего не найдено"
+  "no_results": "По запросу '{search}' ничего не найдено",
+  "modal_upload_image": "Загрузить изображение",
+  "modal_set_image": "Установить изображение",
+  "modal_must_upload_image": "Вам необходимо загрузить изображение"
 }
