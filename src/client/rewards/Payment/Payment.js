@@ -32,7 +32,6 @@ const Payment = ({
   const [payable, setPayable] = useState({});
   const { reservationPermlink } = match.params;
   const payables = get(match, ['params', '0']) === 'payables';
-  console.log('match.params: ', match.params);
   const getRequestParams = () => ({
     sponsor: reservationPermlink || payables ? userName : match.params.userName,
     user: reservationPermlink || payables ? match.params.userName : userName,
