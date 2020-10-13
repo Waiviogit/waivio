@@ -340,6 +340,7 @@ export const SponsoredRewardsTableContent = data => {
     reviewObjectName,
     reviewObjectLink,
     reservationPermlink,
+    toggleModalReport,
   } = data;
 
   return {
@@ -391,7 +392,7 @@ export const SponsoredRewardsTableContent = data => {
             defaultMessage="Reservation"
           />
         </Link>
-        <div className="text-link" onClick={() => console.log('modalReport')} role="presentation">
+        <div className="text-link" onClick={() => toggleModalReport()} role="presentation">
           <FormattedMessage id="sponsored_rewards_details_report" defaultMessage="Report" />
         </div>
       </React.Fragment>
