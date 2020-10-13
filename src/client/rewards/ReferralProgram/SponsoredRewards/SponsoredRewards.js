@@ -41,7 +41,7 @@ const SponsoredRewardsView = (intl, statusSponsoredHistory, sponsoredRewardsTitl
 
 const SponsoredRewards = props => {
   const { match, intl, getStatusSponsoredInfo, authSponsorName, statusSponsoredHistory } = props;
-  const username = match.params.name;
+  const username = match.params.userName;
 
   useEffect(() => {
     getStatusSponsoredInfo(authSponsorName, username);

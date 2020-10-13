@@ -106,7 +106,7 @@ const ReferralStatus = props => {
     getMoreUserCards,
     history,
   } = props;
-  const name = match.params.name;
+  const name = match.params.userName;
 
   const [sortBy, setSortBy] = useState('recency');
 
