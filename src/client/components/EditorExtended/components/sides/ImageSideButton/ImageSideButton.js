@@ -90,16 +90,15 @@ export default class ImageSideButton extends React.Component {
         <Modal
           wrapClassName="Settings__modal"
           onCancel={this.handleOpenModal}
-          okButtonProps={{ disabled: isLoadingImage || !currentImage.length, title: "А вот и я!" }}
+          okButtonProps={{ disabled: isLoadingImage || !currentImage.length }}
           cancelButtonProps={{ disabled: isLoadingImage }}
           visible={isModal}
-          onOk={this.handleOnOk}
           footer={[
             <Button key="back" onClick={this.props.close}>
               {this.props.intl.formatMessage({ id: 'modal.button.cancel', defaultMessage: 'Cancel' })}
             </Button>,
             <Tooltip
-              overlayClassName='customize-ant-tooltip'
+              overlayClassName='SideButtonTooltip'
               title={this.props.intl.formatMessage({ id: tooltipMessage, defaultMessage: tooltipDefaultMessage })}
               overlayStyle={{fontSize: '12px'}}
               children={

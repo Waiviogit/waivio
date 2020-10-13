@@ -251,16 +251,15 @@ export default class Buttons extends React.Component {
 
     return (
       <Popover
+        overlayClassName='ButtonsPopover'
         placement="bottomRight"
         trigger="click"
         visible={this.state.actionButtonsVisible}
         onVisibleChange={this.handlePopoverVisibleChange}
         content={
-          <div className="buttons-popover">
-            <PopoverMenu onSelect={item => this.handleSelectOptions(item)} bold={false}>
-              {popoverMenu}
-            </PopoverMenu>
-          </div>
+          <PopoverMenu onSelect={item => this.handleSelectOptions(item)} bold={false}>
+            {popoverMenu}
+          </PopoverMenu>
         }
       >
         <i
