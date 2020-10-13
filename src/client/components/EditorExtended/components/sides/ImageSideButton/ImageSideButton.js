@@ -67,7 +67,7 @@ export default class ImageSideButton extends React.Component {
 
   render() {
     const { isLoadingImage, isModal, currentImage } = this.state;
-    const isCurrentImage = _size(currentImage.length);
+    const isCurrentImage = _size(currentImage);
     const tooltipMessage = isCurrentImage ? 'modal_set_image' : 'modal_must_upload_image'
     const tooltipDefaultMessage = isCurrentImage ? 'Set Image' : 'Нou have to upload a image'
     return (
