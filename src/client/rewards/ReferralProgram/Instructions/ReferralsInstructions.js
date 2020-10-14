@@ -71,8 +71,6 @@ const ReferralsInstructionsView = mainProps => {
     terminateReferralTitle,
     terminateReferralInfo,
   } = referralInstructionsContent(authUserName);
-  console.log('isStartChangeRules: ', isStartChangeRules);
-  console.log('isStartGetReferralInfo: ', isStartGetReferralInfo);
   return (
     <React.Fragment>
       {isAuthenticated && (
