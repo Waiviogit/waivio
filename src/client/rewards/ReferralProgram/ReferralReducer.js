@@ -22,6 +22,7 @@ const initialState = {
   suspendedTimer: null,
   isUserInWaivioBlackList: false,
   isStartGetReferralInfo: false,
+  isStartChangeRules: false,
   referralStatus: '',
   referral: [],
   isChangedRuleSelection: false,
@@ -30,7 +31,6 @@ const initialState = {
   userCards: [],
   isLoadingMoreUserCards: false,
   isErrorLoadingMore: false,
-  isStartChangeRules: false,
   statusSponsoredHistory: [],
 };
 
@@ -189,5 +189,5 @@ export const getCurrentUserCards = state => state.userCards;
 export const getIsErrorLoadingUserCards = state => state.isErrorLoadingMore;
 export const getIsLoadingMoreUserCards = state => state.isLoadingMoreUserCards;
 export const getIsStartChangeRules = state => state.isStartChangeRules;
-export const getStatusSponsoredHistory = state => state.statusSponsoredHistory;
 export const getIsStartGetReferralInfo = state => state.isStartGetReferralInfo;
+export const getStatusSponsoredHistory = state => state.statusSponsoredHistory;

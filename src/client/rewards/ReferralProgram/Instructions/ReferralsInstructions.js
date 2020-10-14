@@ -71,7 +71,8 @@ const ReferralsInstructionsView = mainProps => {
     terminateReferralTitle,
     terminateReferralInfo,
   } = referralInstructionsContent(authUserName);
-
+  console.log('isStartChangeRules: ', isStartChangeRules);
+  console.log('isStartGetReferralInfo: ', isStartGetReferralInfo);
   return (
     <React.Fragment>
       {isAuthenticated && (
@@ -113,12 +114,11 @@ const ReferralsInstructionsView = mainProps => {
               {instructionsConditions}
             </label>
           </div>
-          {isStartChangeRules ||
-            (isStartGetReferralInfo && (
-              <div className="ReferralInstructions__wrap-conditions__loader">
-                <Loading />
-              </div>
-            ))}
+          {(isStartChangeRules || isStartGetReferralInfo) && (
+            <div className="ReferralInstructions__wrap-conditions__loader">
+              <Loading />
+            </div>
+          )}
           {currentStatus && (
             <div className="ReferralInstructions__accepted-conditions">
               <div className="ReferralInstructions__accepted-conditions__text-wrap">
