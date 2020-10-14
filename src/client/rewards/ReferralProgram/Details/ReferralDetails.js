@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { referralDetailContent } from '../ReferralTextHelper';
 import { getCurrentFeesValue, getCurrentOfferPercent } from '../ReferralHelper';
 import {
+  getAuthenticatedUserName,
   getCampaignServerPercent,
   getIndexAbsolutePercent,
   getIndexServerPercent,
@@ -34,6 +35,7 @@ const ReferralDetail = props => {
     referralDuration,
     referralServerPercent,
     suspendedTimer,
+    username,
   } = props;
   useEffect(() => {
     getReferralDetails();
@@ -44,6 +46,7 @@ const ReferralDetail = props => {
   }, [additionData.feesValue]);
 
   const data = {
+    username,
     firstPercent: getCurrentOfferPercent(campaignServerPercent),
     secondPercent: getCurrentOfferPercent(indexAbsolutePercent),
     campaignPercent: campaignServerPercent,
@@ -108,6 +111,7 @@ const ReferralDetail = props => {
 };
 
 ReferralDetail.propTypes = {
+  username: PropTypes.string,
   isAuthenticated: PropTypes.bool.isRequired,
   getReferralDetails: PropTypes.func.isRequired,
   campaignServerPercent: PropTypes.number,
@@ -119,6 +123,7 @@ ReferralDetail.propTypes = {
 };
 
 ReferralDetail.defaultProps = {
+  username: '',
   isStartLoadingReferralDetails: false,
   campaignServerPercent: null,
   indexAbsolutePercent: null,
@@ -129,6 +134,7 @@ ReferralDetail.defaultProps = {
 };
 
 const mapStateToProps = state => ({
+  username: getAuthenticatedUserName(state),
   isAuthenticated: getIsAuthenticated(state),
   campaignServerPercent: getCampaignServerPercent(state),
   indexAbsolutePercent: getIndexAbsolutePercent(state),

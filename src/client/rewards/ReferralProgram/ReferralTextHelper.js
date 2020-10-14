@@ -12,6 +12,7 @@ import {
 // eslint-disable-next-line import/prefer-default-export
 export const referralDetailContent = data => {
   const {
+    username,
     firstPercent,
     secondPercent,
     campaignPercent,
@@ -140,7 +141,7 @@ export const referralDetailContent = data => {
         defaultMessage="Referral partners can check the list of users currently attributed to them on the {statusPage} page."
         values={{
           statusPage: (
-            <Link to={`/rewards/referral-status`}>
+            <Link to={`/rewards/referral-status/${username}`}>
               <span className="referral-partners__status">
                 <FormattedMessage id="referrals_status" defaultMessage="Status" />
               </span>
