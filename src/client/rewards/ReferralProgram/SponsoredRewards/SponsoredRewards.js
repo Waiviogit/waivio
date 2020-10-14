@@ -27,6 +27,20 @@ const SponsoredRewardsView = (intl, statusSponsoredHistory, sponsoredRewardsTitl
                 })}
               </th>
             ))}
+            <th className="SponsoredRewards__amount">
+              {intl.formatMessage({
+                id: 'sponsored_rewards_table_amount',
+                defaultMessage: 'Amount',
+              })}
+              <div>HIVE</div>
+            </th>
+            <th className="SponsoredRewards__balance">
+              {intl.formatMessage({
+                id: 'sponsored_rewards_table_balance',
+                defaultMessage: 'Balance',
+              })}
+              <div>HIVE</div>
+            </th>
           </tr>
         </thead>
         <tbody>
