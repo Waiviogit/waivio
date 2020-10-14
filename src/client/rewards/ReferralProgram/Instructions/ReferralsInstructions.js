@@ -36,55 +36,23 @@ const handleCopyTextButton = setIsCopyButton => {
   return setIsCopyButton(true);
 };
 
-const ReferralsInstructions = props => {
+const ReferralsInstructionsView = mainProps => {
   const {
-    authUserName,
-    getUserInBlackList,
     isBlackListUser,
     isAuthenticated,
-    isGuest,
-    confirmRules,
     rejectRules,
-    userReferralInfo,
-    referralStatus,
     isStartChangeRules,
     isStartGetReferralInfo,
-  } = props;
-  const [isModal, setIsModal] = useState(false);
-  const [isCopyButton, setIsCopyButton] = useState(false);
-
-  const currentStatus = !!(referralStatus && referralStatus === 'activated');
-
-  useEffect(() => {
-    userReferralInfo(authUserName);
-    getUserInBlackList(authUserName);
-  }, []);
-
-  const handleAgreeRulesCheckbox = () => {
-    if (currentStatus === true && isModal === false) {
-      setIsModal(true);
-    }
-    if (currentStatus !== true) {
-      return confirmRules(authUserName, isGuest);
-    }
-    return null;
-  };
-
-  const handleOkButton = () => {
-    if (isModal === true) {
-      setIsModal(false);
-    }
-  };
-
-  const handleCancelButton = () => {
-    if (isModal === true) {
-      setIsModal(false);
-    }
-  };
-
-  const data = {
-    username: authUserName,
-  };
+    handleAgreeRulesCheckbox,
+    handleOkButton,
+    handleCancelButton,
+    currentCopyText,
+    authUserName,
+    isModal,
+    isGuest,
+    currentStatus,
+    setIsCopyButton,
+  } = mainProps;
 
   const {
     instructionsTitle,
@@ -102,12 +70,7 @@ const ReferralsInstructions = props => {
     acceptedConditionsAlert,
     terminateReferralTitle,
     terminateReferralInfo,
-    copyButtonText,
-    copyButtonCopiedText,
-  } = referralInstructionsContent(data);
-
-  const currentCopyText = isCopyButton ? copyButtonCopiedText : copyButtonText;
-  setTimeout(() => setIsCopyButton(false), 3000);
+  } = referralInstructionsContent(authUserName);
 
   return (
     <React.Fragment>
@@ -203,6 +166,77 @@ const ReferralsInstructions = props => {
       )}
     </React.Fragment>
   );
+};
+
+const ReferralsInstructions = props => {
+  const {
+    authUserName,
+    getUserInBlackList,
+    isBlackListUser,
+    isAuthenticated,
+    isGuest,
+    confirmRules,
+    rejectRules,
+    userReferralInfo,
+    referralStatus,
+    isStartChangeRules,
+    isStartGetReferralInfo,
+  } = props;
+  const [isModal, setIsModal] = useState(false);
+  const [isCopyButton, setIsCopyButton] = useState(false);
+
+  const currentStatus = !!(referralStatus && referralStatus === 'activated');
+
+  useEffect(() => {
+    userReferralInfo(authUserName);
+    getUserInBlackList(authUserName);
+  }, []);
+
+  const handleAgreeRulesCheckbox = () => {
+    if (currentStatus === true && isModal === false) {
+      setIsModal(true);
+    }
+    if (currentStatus !== true) {
+      return confirmRules(authUserName, isGuest);
+    }
+    return null;
+  };
+
+  const handleOkButton = () => {
+    if (isModal === true) {
+      setIsModal(false);
+    }
+  };
+
+  const handleCancelButton = () => {
+    if (isModal === true) {
+      setIsModal(false);
+    }
+  };
+
+  const { copyButtonText, copyButtonCopiedText } = referralInstructionsContent(authUserName);
+
+  const currentCopyText = isCopyButton ? copyButtonCopiedText : copyButtonText;
+  setTimeout(() => setIsCopyButton(false), 3000);
+
+  const mainProps = {
+    isBlackListUser,
+    isAuthenticated,
+    rejectRules,
+    isStartChangeRules,
+    isStartGetReferralInfo,
+    handleAgreeRulesCheckbox,
+    handleOkButton,
+    handleCancelButton,
+    currentCopyText,
+    authUserName,
+    isModal,
+    isGuest,
+    currentStatus,
+    setIsCopyButton,
+  };
+
+  return ReferralsInstructionsView(mainProps);
 };
 
 ReferralsInstructions.propTypes = {
