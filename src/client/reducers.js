@@ -326,6 +326,8 @@ export const getIsLoadingMoreUserCards = state =>
 export const getIsStartChangeRules = state => fromReferral.getIsStartChangeRules(state.referral);
 export const getStatusSponsoredHistory = state =>
   fromReferral.getStatusSponsoredHistory(state.referral);
+export const getIsStartGetReferralInfo = state =>
+  fromReferral.getIsStartGetReferralInfo(state.referral);
 
 // common selectors
 

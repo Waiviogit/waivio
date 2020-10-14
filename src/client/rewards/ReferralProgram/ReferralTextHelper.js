@@ -304,9 +304,7 @@ export const ReferralStatusContent = data => {
         values={{
           receivablesPage: (
             <Link to={`/rewards/receivables`}>
-              <span className="">
-                <FormattedMessage id="debts_receivables" defaultMessage="Receivables" />
-              </span>
+              <FormattedMessage id="debts_receivables" defaultMessage="Receivables" />
             </Link>
           ),
         }}
@@ -324,7 +322,11 @@ export const SponsoredRewardsMainContent = data => {
         id="sponsored_rewards_title"
         defaultMessage="Sponsored rewards: {username}"
         values={{
-          username,
+          username: (
+            <Link to={`/@${username}`}>
+              <span className="title-link">{username}</span>
+            </Link>
+          ),
         }}
       />
     ),

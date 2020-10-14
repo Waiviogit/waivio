@@ -13,6 +13,7 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   getIsStartChangeRules,
+  getIsStartGetReferralInfo,
   getIsUserInWaivioBlackList,
   getReferralStatus,
   isGuestUser,
@@ -47,6 +48,7 @@ const ReferralsInstructions = props => {
     userReferralInfo,
     referralStatus,
     isStartChangeRules,
+    isStartGetReferralInfo,
   } = props;
   const [isModal, setIsModal] = useState(false);
   const [isCopyButton, setIsCopyButton] = useState(false);
@@ -148,11 +150,12 @@ const ReferralsInstructions = props => {
               {instructionsConditions}
             </label>
           </div>
-          {isStartChangeRules && (
-            <div className="ReferralInstructions__wrap-conditions__loader">
-              <Loading />
-            </div>
-          )}
+          {isStartChangeRules ||
+            (isStartGetReferralInfo && (
+              <div className="ReferralInstructions__wrap-conditions__loader">
+                <Loading />
+              </div>
+            ))}
           {currentStatus && (
             <div className="ReferralInstructions__accepted-conditions">
               <div className="ReferralInstructions__accepted-conditions__text-wrap">
@@ -213,6 +216,7 @@ ReferralsInstructions.propTypes = {
   userReferralInfo: PropTypes.func,
   referralStatus: PropTypes.string.isRequired,
   isStartChangeRules: PropTypes.bool,
+  isStartGetReferralInfo: PropTypes.bool,
 };
 
 ReferralsInstructions.defaultProps = {
@@ -223,6 +227,7 @@ ReferralsInstructions.defaultProps = {
   rejectRules: () => {},
   userReferralInfo: () => {},
   isStartChangeRules: false,
+  isStartGetReferralInfo: false,
 };
 
 const mapStateToProps = state => ({
@@ -232,6 +237,7 @@ const mapStateToProps = state => ({
   isGuest: isGuestUser(state),
   referralStatus: getReferralStatus(state),
   isStartChangeRules: getIsStartChangeRules(state),
+  isStartGetReferralInfo: getIsStartGetReferralInfo(state),
 });
 
 export default connect(mapStateToProps, {

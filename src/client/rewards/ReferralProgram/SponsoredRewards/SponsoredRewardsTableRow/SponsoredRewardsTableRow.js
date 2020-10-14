@@ -16,6 +16,8 @@ import { getReport } from '../../../../../waivioApi/ApiClient';
 import { setDataForSingleReport } from '../../../rewardsActions';
 import Report from '../../../Report/Report';
 
+import './SponsoredRewardsTableRow.less';
+
 const SponsoredRewardsTableRowView = (
   data,
   sponsorInfo,
@@ -52,7 +54,7 @@ const SponsoredRewardsTableRowView = (
           </React.Fragment>
         )}
       </td>
-      <td>
+      <td className="SponsoredRewardsTableRow__details-row">
         {sponsoredDetailsReservation}
         <Report
           isModalReportOpen={isModalReportOpen}
@@ -60,8 +62,8 @@ const SponsoredRewardsTableRowView = (
           sponsor={sponsor}
         />
       </td>
-      <td>{currentAmount}</td>
-      <td>{currentBalance}</td>
+      <td className="SponsoredRewardsTableRow__amount-row">{currentAmount}</td>
+      <td className="SponsoredRewardsTableRow__balance-row">{currentBalance}</td>
     </tr>
   );
 };

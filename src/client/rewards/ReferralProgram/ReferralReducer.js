@@ -190,3 +190,4 @@ export const getIsErrorLoadingUserCards = state => state.isErrorLoadingMore;
 export const getIsLoadingMoreUserCards = state => state.isLoadingMoreUserCards;
 export const getIsStartChangeRules = state => state.isStartChangeRules;
 export const getStatusSponsoredHistory = state => state.statusSponsoredHistory;
+export const getIsStartGetReferralInfo = state => state.isStartGetReferralInfo;

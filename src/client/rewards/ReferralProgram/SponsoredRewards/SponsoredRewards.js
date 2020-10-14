@@ -16,7 +16,7 @@ const SponsoredRewardsView = (intl, statusSponsoredHistory, sponsoredRewardsTitl
   <div className="SponsoredRewards">
     <h2 className="SponsoredRewards__title">{sponsoredRewardsTitle}</h2>
     <div className="SponsoredRewards__table">
-      <table style={{ width: '100%' }}>
+      <table>
         <thead>
           <tr>
             {SponsoredRewardsHeader.map(tdElement => (

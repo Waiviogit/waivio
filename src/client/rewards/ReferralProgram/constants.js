@@ -1,27 +1,27 @@
 const SponsoredRewardsHeader = [
   {
     className: 'SponsoredRewards__date',
-    id: 'sponsored__table_rewards_date',
+    id: 'sponsored_rewards_table_date',
     message: 'Date',
   },
   {
     className: 'SponsoredRewards__action',
-    id: 'sponsored__table_rewards_action',
+    id: 'sponsored_rewards_table_action',
     message: 'Action',
   },
   {
     className: 'SponsoredRewards__details',
-    id: 'sponsored__table_rewards_details',
+    id: 'sponsored_rewards_table_details',
     message: 'Details',
   },
   {
     className: 'SponsoredRewards__amount',
-    id: 'sponsored__table_rewards_amount',
+    id: 'sponsored_rewards_table_amount',
     message: 'Amount',
   },
   {
     className: 'SponsoredRewards__balance',
-    id: 'sponsored__table_rewards_balance',
+    id: 'sponsored_rewards_table_balance',
     message: 'Balance',
   },
 ];
