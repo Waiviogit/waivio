@@ -57,7 +57,6 @@ const FilteredRewardsList = props => {
     blacklistUsers,
     pendingUpdate,
   } = props;
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
   const sort = getSort(
@@ -79,6 +78,8 @@ const FilteredRewardsList = props => {
     !match.params.campaignParent &&
     location !== historyLocation &&
     location !== messagesLocation &&
+    location !== `${messagesLocation}/${match.params.campaignId}/${match.params.permlink}` &&
+    location !== `${historyLocation}/${match.params.campaignId}/${match.params.permlink}` &&
     location !== guideHistoryLocation;
 
   const getFiltersForTags = useMemo(() => {
@@ -165,6 +166,7 @@ const FilteredRewardsList = props => {
             ? propositions[0].required_object
             : null
         }
+        match={match}
         location={location}
       />
       {isSearchAreaFilter && (

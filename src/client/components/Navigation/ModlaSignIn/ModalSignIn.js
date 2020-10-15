@@ -12,10 +12,11 @@ import { getRebloggedList } from './../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
+import SignUpButton from '../SignUpButton/SignUpButton';
 
 import './ModalSignIn.less';
 
-const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }) => {
+const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink, isButton }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
@@ -192,14 +193,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
 
   return (
     <React.Fragment>
-      {!hideLink && (
-        <a role="presentation" onClick={() => setIsModalOpen(true)}>
-          {intl.formatMessage({
-            id: 'signin',
-            defaultMessage: 'Sign in',
-          })}
-        </a>
-      )}
+      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={setIsModalOpen} />}
       <Modal width={480} visible={isModalOpen} onCancel={memoizedOnModalClose} footer={null}>
         {isFormVisible ? renderGuestSignUpForm() : renderSignIn()}
       </Modal>
@@ -215,6 +209,7 @@ ModalSignIn.propTypes = {
   showModal: PropTypes.bool,
   handleLoginModalCancel: PropTypes.func,
   hideLink: PropTypes.bool,
+  isButton: PropTypes.bool,
 };
 
 ModalSignIn.defaultProps = {
@@ -222,6 +217,7 @@ ModalSignIn.defaultProps = {
   showModal: false,
   handleLoginModalCancel: () => {},
   hideLink: false,
+  isButton: false,
 };
 
 export default injectIntl(ModalSignIn);

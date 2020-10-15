@@ -13,8 +13,8 @@ const Campaign = ({
   filterKey,
   history,
   intl,
-  rewardPriceCatalogWrap,
-  rewardMaxCatalogWrap,
+  rewardPricePassed,
+  rewardMaxPassed,
 }) => {
   const requiredObject = has(proposition, ['campaigns'])
     ? proposition
@@ -32,10 +32,14 @@ const Campaign = ({
   };
   return (
     <div className="Campaign">
-      <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
+      <ObjectCardView
+        wObject={requiredObject}
+        key={requiredObject.id}
+        passedParent={requiredObject.parent}
+      />
       <div className="Campaign__button" role="presentation" onClick={goToProducts}>
         <Button type="primary" size="large">
-          {!rewardMax && !rewardMaxCatalogWrap ? (
+          {!rewardMax && !rewardMaxPassed ? (
             <React.Fragment>
               <span>
                 {intl.formatMessage({
@@ -44,7 +48,7 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{rewardPrice || rewardPriceCatalogWrap}</span>
+                <span className="fw6 ml1">{rewardPrice || rewardPricePassed}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -57,7 +61,7 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{`${rewardMax || rewardMaxCatalogWrap}`}</span>
+                <span className="fw6 ml1">{rewardMax || rewardMaxPassed}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -73,14 +77,14 @@ Campaign.propTypes = {
   intl: PropTypes.shape().isRequired,
   filterKey: PropTypes.string,
   history: PropTypes.shape().isRequired,
-  rewardPriceCatalogWrap: PropTypes.string,
-  rewardMaxCatalogWrap: PropTypes.string,
+  rewardPricePassed: PropTypes.string,
+  rewardMaxPassed: PropTypes.string,
 };
 
 Campaign.defaultProps = {
   proposition: {},
-  rewardPriceCatalogWrap: '',
-  rewardMaxCatalogWrap: '',
+  rewardPricePassed: '',
+  rewardMaxPassed: '',
   filterKey: '',
 };
 

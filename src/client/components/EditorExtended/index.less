@@ -3,13 +3,13 @@
 
 .waiv-editor-wrap {
   width: 100%;
-  margin-left: 0;
+  margin-left: -5px;
 
   .waiv-editor {
     border: 1px solid @white-gainsboro;
     background-color: @white;
     margin-left: 5px;
-    width: 98%;
+    width: 100%;
     border-radius: 4px;
   }
 }
@@ -28,12 +28,16 @@
   color: @black;
   font-size: 32px;
   font-weight: bold;
-  padding: 0 14px;
+  padding: 0 20px;
   caret-color: @black;
   resize: none;
   margin-bottom: 10px;
-  width: 98%;
+  width: 100%;
   margin-left: 5px;
+
+  &textaria {
+    overflow: hidden;
+  }
 }
 
 .md-RichEditor-title::placeholder {
@@ -47,7 +51,7 @@
   cursor: text;
   position: relative;
   margin-left: 7px;
-  padding: 4px 10px;
+  padding: 12px 15px;
 
   &.md-RichEditor-readonly {
     cursor: wait;

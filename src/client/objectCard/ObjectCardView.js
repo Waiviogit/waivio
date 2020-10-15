@@ -1,46 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, orderBy, truncate, get } from 'lodash';
+import { includes, truncate, get, filter, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
+import { getObjectName, parseAddress, getObjectAvatar } from '../helpers/wObjectHelper';
+import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
 
 const ObjectCardView = ({
   intl,
   wObject,
-  options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
+  options: { mobileView = 'compact', ownRatesOnly = false },
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
+  const address = parseAddress(wObject);
   const parent = get(wObject, 'parent', {});
-  const street = get(wObject, ['address', 'street'], '');
-  const address = get(wObject, ['address', 'address'], '');
-  const city = get(wObject, ['address', 'city'], '');
 
   useEffect(() => {
-    if (wObject.tagCategories && wObject.tagCategories.length) {
-      const currentTags = wObject.tagCategories
-        .map(category => category.categoryItems)
-        .filter(categoryItems => !!categoryItems.length)
-        .map(items => orderBy(items, ['weight', 'name'])[0].name);
+    const tagCategory = get(wObject, 'tagCategory');
+    if (tagCategory) {
+      const currentTagsFiltered = filter(tagCategory, item => size(item.items));
+      const currentTags = map(currentTagsFiltered, item => item.body);
       setTags(currentTags);
     } else setTags([wObject.object_type]);
-  }, []);
+  }, [wObject, setTags]);
 
-  const pathName = pathNameAvatar || `/object/${wObject.author_permlink}`;
+  const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
-    let url = wObject.avatar || parent.avatar;
+    let url = getObjectAvatar(wObject) || getObjectAvatar(parent);
 
-    if (!url) url = DEFAULTS.AVATAR;
+    if (url) url = getProxyImageURL(url, 'preview');
+    else url = DEFAULTS.AVATAR;
 
     if (includes(url, 'waivio.')) url = `${url}_medium`;
 
@@ -55,8 +54,8 @@ const ObjectCardView = ({
       />
     );
   };
-  const objName = wObject.name || wObject.default_name;
-  const parentName = parent.name || parent.default_name;
+  const objName = getObjectName(wObject);
+  const parentName = getObjectName(parent);
   const description = wObject.description && (
     <div className="ObjectCardView__title" title={wObject.description}>
       {truncate(wObject.description, {
@@ -71,18 +70,25 @@ const ObjectCardView = ({
       defaultMessage: 'Go to',
     })} ${wobjName}`;
 
+  const parentLink = get(parent, 'defaultShowLink');
+
   return (
-    <React.Fragment>
+    <div key={wObject.author_permlink}>
       <div className="ObjectCardView">
         <div className="ObjectCardView__content">
           <div className="ObjectCardView__content-row">
-            <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
+            <Link
+              to={pathName}
+              title={goToObjTitle(objName)}
+              className="ObjectCardView__avatar"
+              key={wObject.author_permlink}
+            >
               {avatarLayout()}
             </Link>
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${get(parent, 'author_permlink', '')}`}
+                  to={parentLink}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -91,7 +97,8 @@ const ObjectCardView = ({
               )}
               <div className="ObjectCardView__name">
                 <Link
-                  to={`/object/${wObject.author_permlink}`}
+                  key={wObject.author_permlink}
+                  to={pathName}
                   className="ObjectCardView__name-truncated"
                   title={goToObjTitle(objName)}
                 >
@@ -122,12 +129,7 @@ const ObjectCardView = ({
                   </span>
                 ))}
               </span>
-              {wObject.address && (
-                <div className="ObjectCardView__tag-text">
-                  {(street || address) && <span>{`${street || address}, `}</span>}
-                  {city && <span>{city}</span>}
-                </div>
-              )}
+              {address && <div className="ObjectCardView__tag-text">{address}</div>}
               {wObject.title ? (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {truncate(wObject.title, {
@@ -142,13 +144,13 @@ const ObjectCardView = ({
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 
 ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
-  wObject: PropTypes.shape().isRequired,
+  wObject: PropTypes.shape(),
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -158,5 +160,6 @@ ObjectCardView.propTypes = {
 
 ObjectCardView.defaultProps = {
   options: {},
+  wObject: {},
 };
 export default injectIntl(ObjectCardView);

@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { debounce, get } from 'lodash';
 import { AutoComplete } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
+import {
+  clearSearchObjectsResults,
+  resetToInitialIsClearSearchObj,
+  searchObjectsAutoCompete,
+} from '../../search/searchActions';
 import { getIsStartSearchObject, getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
 import { pendingSearch } from '../../search/Search';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './SearchObjectsAutocomplete.less';
 
@@ -21,6 +26,7 @@ import './SearchObjectsAutocomplete.less';
   {
     searchObjects: searchObjectsAutoCompete,
     clearSearchResults: clearSearchObjectsResults,
+    resetIsClearSearchFlag: resetToInitialIsClearSearchObj,
   },
 )
 class SearchObjectsAutocomplete extends Component {
@@ -34,6 +40,7 @@ class SearchObjectsAutocomplete extends Component {
     objectType: '',
     searchObjects: () => {},
     clearSearchResults: () => {},
+    resetIsClearSearchFlag: () => {},
     handleSelect: () => {},
     allowClear: true,
     rowIndex: 0,
@@ -43,6 +50,7 @@ class SearchObjectsAutocomplete extends Component {
     parentPermlink: '',
     autoFocus: true,
     isSearchObject: false,
+    addItem: false,
   };
 
   static propTypes = {
@@ -64,6 +72,9 @@ class SearchObjectsAutocomplete extends Component {
     autoFocus: PropTypes.bool,
     style: PropTypes.shape({}),
     isSearchObject: PropTypes.bool,
+    resetIsClearSearchFlag: PropTypes.func,
+    parentObject: PropTypes.shape().isRequired,
+    addItem: PropTypes.bool,
   };
 
   constructor(props) {
@@ -80,7 +91,7 @@ class SearchObjectsAutocomplete extends Component {
     this.setState({ searchString: value.toLowerCase() });
   }
 
-  debouncedSearch = _.debounce(
+  debouncedSearch = debounce(
     (searchString, objType = '', parent) => this.props.searchObjects(searchString, objType, parent),
     300,
   );
@@ -99,7 +110,9 @@ class SearchObjectsAutocomplete extends Component {
   }
 
   handleSelect(objId) {
-    const selectedObject = this.props.searchObjectsResults.find(obj => obj.id === objId);
+    const selectedObject = this.props.searchObjectsResults.find(
+      obj => obj.author_permlink === objId,
+    );
     this.props.handleSelect(
       selectedObject || {
         author_permlink: objId,
@@ -115,6 +128,7 @@ class SearchObjectsAutocomplete extends Component {
       this.props.ruleIndex,
     );
     this.props.clearSearchResults();
+    setTimeout(() => this.props.resetIsClearSearchFlag(), 300);
     this.setState({ searchString: '' });
   }
 
@@ -129,13 +143,37 @@ class SearchObjectsAutocomplete extends Component {
       disabled,
       autoFocus,
       isSearchObject,
+      parentObject,
+      addItem,
     } = this.props;
+    const searchObjectListed = searchObjectPermlink =>
+      parentObject.listItems &&
+      get(parentObject, 'listItems', []).some(
+        item => get(item, 'author_permlink') === searchObjectPermlink,
+      );
+
     const searchObjectsOptions = searchString
       ? searchObjectsResults
-          .filter(obj => !itemsIdsToOmit.includes(obj.id))
+          .filter(obj => !itemsIdsToOmit.includes(obj.author_permlink))
           .map(obj => (
-            <AutoComplete.Option key={obj.id} label={obj.id} className="obj-search-option item">
-              <ObjectSearchCard object={obj} name={obj.name} type={obj.type} />
+            <AutoComplete.Option
+              key={obj.author_permlink}
+              label={obj.author_permlink}
+              value={obj.author_permlink}
+              className="obj-search-option item"
+            >
+              {!addItem || (addItem && !searchObjectListed(obj.author_permlink)) ? (
+                <ObjectSearchCard
+                  object={obj}
+                  name={getObjectName(obj)}
+                  type={obj.type || obj.object_type}
+                />
+              ) : (
+                intl.formatMessage({
+                  id: 'object_listed',
+                  defaultMessage: 'This object is already listed',
+                })
+              )}
             </AutoComplete.Option>
           ))
       : [];

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import { Input } from 'antd';
 
 import BlockToolbar from './blocktoolbar';
 import InlineToolbar from './inlinetoolbar';
@@ -21,6 +22,7 @@ export default class Toolbar extends React.Component {
     editorNode: PropTypes.shape(),
     setLink: PropTypes.func,
     focus: PropTypes.func,
+    intl: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -33,6 +35,7 @@ export default class Toolbar extends React.Component {
     editorNode: {},
     setLink: () => {},
     focus: () => {},
+    intl: {},
   };
 
   constructor(props) {
@@ -228,7 +231,7 @@ export default class Toolbar extends React.Component {
   };
 
   render() {
-    const { editorState, editorEnabled, inlineButtons } = this.props;
+    const { editorState, editorEnabled, inlineButtons, intl } = this.props;
     const { showURLInput, urlInputValue } = this.state;
     let isOpen = true;
     if (!editorEnabled || editorState.getSelection().isCollapsed()) {
@@ -238,7 +241,7 @@ export default class Toolbar extends React.Component {
       let className = `md-editor-toolbar${isOpen ? ' md-editor-toolbar--isopen' : ''}`;
       className += ' md-editor-toolbar--linkinput';
       return (
-        <div className={className}>
+        <div className={className} style={{ left: 0, width: '97%' }}>
           <div
             className="md-RichEditor-controls md-RichEditor-show-link-input"
             style={{ display: 'block' }}
@@ -246,15 +249,17 @@ export default class Toolbar extends React.Component {
             <span className="md-url-input-close" role="presentation" onClick={this.hideLinkInput}>
               &times;
             </span>
-            <input
+            <Input
               ref={node => {
                 this.urlinput = node;
               }}
-              type="text"
               className="md-url-input"
               onKeyDown={this.onKeyDown}
               onChange={this.onChange}
-              placeholder="Press ENTER or ESC"
+              placeholder={intl.formatMessage({
+                id: 'toolbar_link',
+                defaultMessage: 'Paste link and press Enter',
+              })}
               value={urlInputValue}
             />
           </div>

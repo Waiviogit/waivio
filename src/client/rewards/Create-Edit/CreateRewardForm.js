@@ -1,4 +1,4 @@
-import { isEmpty, map, includes } from 'lodash';
+import { isEmpty, map, includes, get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -14,7 +14,11 @@ import { AppSharedContext } from '../../Wrapper';
 import * as apiConfig from '../../../waivioApi/config';
 import { getRate, getRewardFund } from '../../reducers';
 import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
-import { PATH_NAME_MANAGE } from '../../../common/constants/rewards';
+import {
+  PATH_NAME_MANAGE,
+  CAMPAIGN_STATUS,
+  isDisabledStatus,
+} from '../../../common/constants/rewards';
 import './CreateReward.less';
 
 @withRouter
@@ -24,6 +28,8 @@ import './CreateReward.less';
   state => ({
     rate: getRate(state),
     rewardFund: getRewardFund(state),
+    createDuplicate: false,
+    campaign: {},
   }),
   {},
 )
@@ -92,20 +98,18 @@ class CreateRewardForm extends React.Component {
       this.setState({ loading: true });
 
       const campaign = await getCampaignById(this.props.match.params.campaignId);
-
       const isExpired = campaign.status === 'expired';
-
       const expiredAt = isExpired
         ? moment(new Date().toISOString())
         : moment(new Date(campaign.expired_at));
-
-      const isDuplicate = this.props.match.path.includes('createDuplicate');
-
-      const isPending = campaign.status === 'pending';
-
+      const matchPath = get(this.props.match, ['path', 'params', '0']);
+      const isDuplicate = includes(matchPath, 'createDuplicate');
+      const isDisabled =
+        includes(isDisabledStatus, campaign.status) || campaign.status !== CAMPAIGN_STATUS.pending;
       let combinedObjects;
       let sponsors;
-      const secondaryObjectsPermlinks = campaign.objects
+
+      const secondaryObjectsPermlinks = !isEmpty(campaign.objects)
         ? map(campaign.objects, obj => obj.author_permlink)
         : [];
       if (!isEmpty(campaign.match_bots)) {
@@ -148,16 +152,13 @@ class CreateRewardForm extends React.Component {
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
+          campaign,
           iAgree: true,
           loading: false,
-          campaignName: `${
-            this.props.match.path.includes('createDuplicate')
-              ? `Copy ${campaign.name}`
-              : campaign.name
-          }`,
+          campaignName: `${this.state.createDuplicate ? `Copy ${campaign.name}` : campaign.name}`,
           campaignType: campaign.type,
-          budget: campaign.budget,
-          reward: campaign.reward,
+          budget: campaign.budget.toString(),
+          reward: campaign.reward.toString(),
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
           sponsorsList: !isEmpty(sponsors) ? values[2] : [],
@@ -179,7 +180,7 @@ class CreateRewardForm extends React.Component {
           usersLegalNotice: campaign.usersLegalNotice,
           expiredAt,
           isDuplicate,
-          isPending,
+          isDisabled,
         });
         if (campaign.match_bots.length) {
           this.setState({
@@ -191,6 +192,13 @@ class CreateRewardForm extends React.Component {
       });
     }
   };
+
+  componentDidUpdate() {
+    const { campaign, createDuplicate } = this.state;
+    if (createDuplicate)
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ campaignName: `Copy ${campaign.name}`, createDuplicate: false });
+  }
 
   checkOptionFields = () => {
     const { setFieldsValue, getFieldValue } = this.props.form;
@@ -207,7 +215,7 @@ class CreateRewardForm extends React.Component {
   prepareSubmitData = (data, userName) => {
     const { campaignId, pageObjects, isDuplicate } = this.state;
     const { rate, rewardFund } = this.props;
-    const objects = map(data.secondaryObject, o => o.id);
+    const objects = map(data.secondaryObject, o => o.author_permlink);
     const agreementObjects = pageObjects.length !== 0 ? map(pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
@@ -350,10 +358,10 @@ class CreateRewardForm extends React.Component {
     getObjectsToOmit: () => {
       const objectsToOmit = [];
       if (!isEmpty(this.state.primaryObject)) {
-        objectsToOmit.push(this.state.primaryObject.id);
+        objectsToOmit.push(this.state.primaryObject.author_permlink);
       }
       if (!isEmpty(this.state.secondaryObjectsList)) {
-        map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.id));
+        map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.author_permlink));
       }
       return objectsToOmit;
     },
@@ -399,6 +407,10 @@ class CreateRewardForm extends React.Component {
     handleSelectChange: () => {},
   };
 
+  handleCreateDuplicate = () => {
+    this.setState({ createDuplicate: true });
+  };
+
   render() {
     const { user, currentSteemDollarPrice, form, match } = this.props;
     const {
@@ -428,7 +440,7 @@ class CreateRewardForm extends React.Component {
       campaignId,
       iAgree,
       eligibleDays,
-      isPending,
+      isDisabled,
       isDuplicate,
     } = this.state;
     return (
@@ -465,8 +477,9 @@ class CreateRewardForm extends React.Component {
         campaignId={campaignId}
         iAgree={iAgree}
         eligibleDays={eligibleDays}
-        isPending={isPending}
+        isDisabled={isDisabled}
         isDuplicate={isDuplicate}
+        handleCreateDuplicate={this.handleCreateDuplicate}
       />
     );
   }

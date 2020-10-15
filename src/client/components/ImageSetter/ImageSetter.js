@@ -32,6 +32,8 @@ const ImageSetter = ({
   addNewBlockAt,
   Block,
   selection,
+  isOkayBtn,
+  isModal,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -43,8 +45,40 @@ const ImageSetter = ({
     }
   }, [currentImages]);
 
+  const clearImageState = () => {
+    setCurrentImages([]);
+  };
+
+  const addImage = () => {
+    if (isModal && isOkayBtn) {
+      currentImages.forEach(newImage => {
+        if (selection && newImage) {
+          setTimeout(() => {
+            const selectionBlock = getEditorState().getSelection();
+            const key = selectionBlock.getAnchorKey();
+
+            setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
+            setEditorState(
+              addNewBlockAt(getEditorState(), key, Block.IMAGE, {
+                src: `${
+                  newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`
+                }`,
+                alt: newImage.name,
+              }),
+            );
+          }, 1000);
+        }
+      });
+    }
+    return clearImageState();
+  };
+
+  useEffect(() => {
+    addImage();
+  }, [isOkayBtn, isModal]);
+
   // For image pasted for link
-  const checkIsImage = (isValidLink, image) => {
+  const checkImage = (isValidLink, image) => {
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
     if (isSameLink) {
       message.error(
@@ -56,12 +90,12 @@ const ImageSetter = ({
       return;
     }
 
-    const urlValidation = image.src.match(objectURLValidationRegExp);
-
-    if (isValidLink && urlValidation) {
+    if (isValidLink) {
       if (!isMultiple) {
         setCurrentImages([image]);
-      } else setCurrentImages([...currentImages, image]);
+      } else {
+        setCurrentImages([...currentImages, image]);
+      }
     } else {
       message.error(
         intl.formatMessage({
@@ -70,23 +104,10 @@ const ImageSetter = ({
         }),
       );
     }
-
-    if (selection && image) {
-      const selectionBlock = getEditorState().getSelection();
-      const key = selectionBlock.getAnchorKey();
-
-      setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
-      setEditorState(
-        addNewBlockAt(getEditorState(), key, Block.IMAGE, {
-          src: `${image.src.startsWith('http') ? image.src : `https://${image.src}`}`,
-          alt: image.name,
-        }),
-      );
-    }
   };
 
   // For image pasted for link
-  const handleOnUploadImageByLink = image => {
+  const handleOnUploadImageByLink = async image => {
     if (currentImages.length >= 25) {
       message.error(
         intl.formatMessage({
@@ -98,19 +119,27 @@ const ImageSetter = ({
     }
     if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
       const url = image || imageLinkInput.current.value;
-      const filename = url.substring(url.lastIndexOf('/') + 1);
-      const newImage = {
-        src: url,
-        name: filename,
-        id: uuidv4(),
-      };
-      const img = new Image();
-      img.src = newImage.src;
-      img.onload = () => {
+      const urlValidation = url.match(objectURLValidationRegExp);
+
+      if (urlValidation) {
+        const onErrorLoadImage = () => {
+          onLoadingImage(false);
+        };
+        let newImage = {};
+        const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
+          newImage = {
+            src: currentLinkSrc,
+            name: currentLinkName,
+            id: uuidv4(),
+          };
+        };
+
+        await onImageUpload(url, insertImage, onErrorLoadImage, true);
         imageLinkInput.current.value = '';
-        return checkIsImage(true, newImage);
-      };
-      img.onerror = () => checkIsImage(false, newImage);
+        checkImage(true, newImage);
+      } else {
+        checkImage(false);
+      }
     }
   };
 
@@ -138,22 +167,6 @@ const ImageSetter = ({
           name: imageName,
           id: uuidv4(),
         };
-        if (selection && newImage) {
-          setTimeout(() => {
-            const selectionBlock = getEditorState().getSelection();
-            const key = selectionBlock.getAnchorKey();
-
-            setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
-            setEditorState(
-              addNewBlockAt(getEditorState(), key, Block.IMAGE, {
-                src: `${
-                  newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`
-                }`,
-                alt: newImage.name,
-              }),
-            );
-          }, 1000);
-        }
 
         uploadedImages.push(newImage);
       };
@@ -191,7 +204,7 @@ const ImageSetter = ({
       // eslint-disable-next-line no-underscore-dangle
       const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
       if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
-        const blockBefore = contentState.getBlockAfter(index).getKey();
+        const blockBefore = contentState.getBlockBefore(index).getKey();
         const removeImage = contentState.getBlockMap().delete(index);
         const contentAfterRemove = removeImage.delete(blockBefore);
         const filtered = contentAfterRemove.filter(element => !isNil(element));
@@ -304,9 +317,7 @@ const ImageSetter = ({
                 id: 'imageSetter_paste_image_link',
                 defaultMessage: 'Paste image link',
               })}
-              onInput={() => {
-                handleOnUploadImageByLink();
-              }}
+              onInput={() => handleOnUploadImageByLink()}
             />
             <Icon type="upload" className="input-upload__btn" />
           </div>
@@ -330,6 +341,8 @@ ImageSetter.propTypes = {
   addNewBlockAt: PropTypes.func,
   selection: PropTypes.func,
   Block: PropTypes.shape(),
+  isOkayBtn: PropTypes.bool,
+  isModal: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {
@@ -342,6 +355,8 @@ ImageSetter.defaultProps = {
   addNewBlockAt: () => {},
   selection: undefined,
   Block: {},
+  isOkayBtn: false,
+  isModal: false,
 };
 
 export default withEditor(injectIntl(ImageSetter));

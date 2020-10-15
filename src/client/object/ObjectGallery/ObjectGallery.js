@@ -9,13 +9,7 @@ import { getAlbums } from './galleryActions';
 import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
 import CreateAlbum from './CreateAlbum';
-import {
-  getIsObjectAlbumsLoading,
-  getObjectAlbums,
-  getIsAuthenticated,
-  getObjectAdmins,
-  getObjectModerators,
-} from '../../reducers';
+import { getIsObjectAlbumsLoading, getObjectAlbums, getIsAuthenticated } from '../../reducers';
 import IconButton from '../../components/IconButton';
 
 import './ObjectGallery.less';
@@ -26,8 +20,6 @@ import './ObjectGallery.less';
     loading: getIsObjectAlbumsLoading(state),
     albums: getObjectAlbums(state),
     isAuthenticated: getIsAuthenticated(state),
-    moderatorsList: getObjectAdmins(state),
-    adminsList: getObjectModerators(state),
   }),
   {
     getAlbums,
@@ -40,8 +32,6 @@ export default class ObjectGallery extends Component {
     isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     getAlbums: PropTypes.func,
-    adminsList: PropTypes.arrayOf(PropTypes.string).isRequired,
-    moderatorsList: PropTypes.arrayOf(PropTypes.string).isRequired,
   };
 
   static defaultProps = {
@@ -66,7 +56,7 @@ export default class ObjectGallery extends Component {
 
   render() {
     const { showModal } = this.state;
-    const { match, albums, loading, isAuthenticated, adminsList, moderatorsList } = this.props;
+    const { match, albums, loading, isAuthenticated } = this.props;
     if (loading) return <Loading center />;
     const empty = isEmpty(albums);
 
@@ -96,13 +86,7 @@ export default class ObjectGallery extends Component {
                     to={`/object/${match.params.name}/gallery/album/${album.id}`}
                     className="GalleryAlbum"
                   >
-                    <GalleryAlbum
-                      album={album}
-                      wobjMainers={{
-                        admins: adminsList,
-                        moderators: moderatorsList,
-                      }}
-                    />
+                    <GalleryAlbum album={album} />
                   </Link>
                 </Col>
               ))}

@@ -7,12 +7,17 @@ import {
   UNFOLLOW_OBJECT,
   GET_CHANGED_WOBJECT_FIELD,
   VOTE_APPEND_ERROR,
+  SET_CATALOG_BREADCRUMBS,
+  SET_WOBJECT_FOR_BREADCRUMBS,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 
 const initialState = {
   wobject: {},
+  wobjectBreadCrumbs: {},
   isFetching: false,
+  isFailed: false,
+  breadcrumb: [],
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -26,6 +31,7 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         isFetching: false,
+        isFailed: true,
       };
     case actions.CLEAR_OBJECT:
       return {
@@ -39,6 +45,7 @@ export default function wobjectReducer(state = initialState, action) {
           ...action.payload,
         },
         isFetching: false,
+        isFailed: false,
       };
 
     case actions.ADD_ITEM_TO_LIST:
@@ -264,6 +271,20 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
 
+    case SET_CATALOG_BREADCRUMBS: {
+      return {
+        ...state,
+        breadcrumb: action.payload,
+      };
+    }
+
+    case SET_WOBJECT_FOR_BREADCRUMBS: {
+      return {
+        ...state,
+        wobjectBreadCrumbs: action.payload,
+      };
+    }
+
     default: {
       return state;
     }
@@ -278,3 +299,7 @@ export const getObjectAdmins = state => state.wobject.admins || [];
 export const getObjectModerators = state => state.wobject.moderators || [];
 export const getRatingFields = state => state.wobject.rating || [];
 export const getObjectTagCategory = state => state.wobject.tagCategories;
+export const getWobjectIsFailed = state => state.wobject.isFailed;
+export const getWobjectIsFatching = state => state.wobject.isFetching;
+export const getBreadCrumbs = state => state.breadcrumb || [];
+export const getWobjectBreadCrumbs = state => state.wobjectBreadCrumbs;

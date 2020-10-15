@@ -60,6 +60,11 @@ import {
   GUIDE_HISTORY,
   PATH_NAME_RECEIVABLES,
   PATH_NAME_PAYABLES,
+  IS_RESERVED,
+  IS_ALL,
+  IS_ACTIVE,
+  PAYABLES,
+  RECEIVABLES,
 } from '../../common/constants/rewards';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
@@ -70,8 +75,7 @@ import * as apiConfig from '../../waivioApi/config';
 import { getRewardsGeneralCounts } from '../rewards/rewardsActions';
 import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
-import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
-import { getZoom } from '../components/Maps/mapHelper';
+import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
 
 @withRouter
 @injectIntl
@@ -185,16 +189,12 @@ class Rewards extends React.Component {
       getCryptoPriceHistory: getCryptoPriceHistoryAction,
     } = this.props;
     const { sortAll, sortEligible, sortReserved, url, activeFilters, area } = this.state;
-    getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
-    if (!size(userLocation)) {
-      this.props.getCoordinates();
-    }
-    if (username && !url) {
-      this.getPropositionsByStatus({ username, sort });
-    } else if (match.params.filterKey !== 'all') {
-      this.props.history.push(`/rewards/all`);
-    }
+
+    getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
+
+    if (!size(userLocation)) this.props.getCoordinates();
+    if (username && !url) this.getPropositionsByStatus({ username, sort });
     if (!authenticated && match.params.filterKey === 'all')
       this.getPropositions({ username, match, activeFilters, area, sort });
   }
@@ -204,20 +204,18 @@ class Rewards extends React.Component {
     const { username, authenticated } = this.props;
     const { sortAll, sortEligible, sortReserved, url } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
-    if (username !== nextProps.username && !url) {
+
+    if (username !== nextProps.username) {
       const userName = username || nextProps.username;
+
       this.getPropositionsByStatus({ username: userName, sort });
     } else if (!authenticated && url && this.props.match.params.filterKey !== 'all') {
       this.props.history.push(`/rewards/all`);
     }
-    if (match.path !== this.props.match.path) {
-      this.setState({ activePayableFilters: [] });
-    }
-    if (match.params.filterKey !== 'reserved') {
-      this.setState({ propositionsReserved: [] });
-    } else {
-      this.setState({ propositions: [] });
-    }
+
+    if (match.path !== this.props.match.path) this.setState({ activePayableFilters: [] });
+    if (match.params.filterKey !== 'reserved') this.setState({ propositionsReserved: [] });
+    else this.setState({ propositions: [] });
   }
 
   componentDidUpdate(prevProps) {
@@ -231,6 +229,7 @@ class Rewards extends React.Component {
     const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
+
     if (!isSecondaryObjectsCards || (isSecondaryObjectsCards && !firstMapLoad)) {
       this.getPropositions(
         { username, match, area: coordinates, radius, activeFilters, limit },
@@ -373,7 +372,7 @@ class Rewards extends React.Component {
   getPropositionsByStatus = ({ username, sort }) => {
     const { pendingUpdate, match } = this.props;
     this.setState({ loadingCampaigns: true });
-    this.props.getRewardsGeneralCounts({ userName: username, sort }).then(data => {
+    this.props.getRewardsGeneralCounts({ userName: username, sort, match }).then(data => {
       // eslint-disable-next-line camelcase
       const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
       const newSponsors = sortBy(sponsors);
@@ -388,7 +387,14 @@ class Rewards extends React.Component {
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      if (!pendingUpdate && match.params.filterKey && !match.params.campaignParent) {
+      const filterKey = match.params.filterKey;
+      if (
+        !pendingUpdate &&
+        filterKey &&
+        filterKey !== PAYABLES &&
+        filterKey !== RECEIVABLES &&
+        !match.params.campaignParent
+      ) {
         if (match.params.filterKey !== rewardsTab[tabType]) {
           this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
         }
@@ -432,11 +438,13 @@ class Rewards extends React.Component {
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
+      const sponsors = sortBy(data.sponsors);
       this.setState({
         area,
         radius,
         loading: false,
         fetched: false,
+        sponsors,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -446,7 +454,6 @@ class Rewards extends React.Component {
           loadingCampaigns: false,
         });
       } else {
-        const sponsors = sortBy(data.sponsors);
         this.setState({
           propositions: data.campaigns,
           loadingCampaigns: false,
@@ -454,7 +461,6 @@ class Rewards extends React.Component {
           area,
           radius,
           hasMore: data.hasMore,
-          sponsors,
         });
       }
       if (isMap && firstMapLoad) {
@@ -594,7 +600,6 @@ class Rewards extends React.Component {
         return { isAssign: false };
       })
       .catch(e => {
-        console.log(e.toString());
         message.error(e.error_description);
         this.setState({ loadingAssignDiscard: false, isAssign: true });
       });
@@ -618,8 +623,10 @@ class Rewards extends React.Component {
       fetched,
       propositionsReserved,
     } = this.state;
+    const isReserved = match.params.filterKey === IS_RESERVED;
+
     let propositionsUniq;
-    if (!isEmpty(propositionsReserved)) {
+    if (isReserved) {
       propositionsUniq = propositionsReserved;
     } else if (match.params.campaignParent) {
       propositionsUniq = uniqBy(propositions, '_id');
@@ -648,12 +655,12 @@ class Rewards extends React.Component {
         const sortChanged = getSortChanged({ path, sortHistory, sortMessages, sortGuideHistory });
         await getHistory(userName, sortChanged, activeFilters, false);
       } catch (error) {
-        console.log(error);
+        messages.error(error);
       }
     };
     const { intl, user, users } = this.props;
     if (size(actualPropositions) !== 0) {
-      if (IsRequiredObjectWrap && isEmpty(propositionsReserved) && !pendingUpdate) {
+      if (IsRequiredObjectWrap && isEmpty(propositionsReserved) && !isReserved && !pendingUpdate) {
         return map(
           actualPropositions,
           proposition =>
@@ -719,13 +726,17 @@ class Rewards extends React.Component {
     const {
       propositions,
       hasMore,
-      sort,
       area,
       activeFilters,
       radius,
       isSearchAreaFilter,
+      sortAll,
+      sortEligible,
+      sortReserved,
     } = this.state;
     const { username, match, usedLocale } = this.props;
+    const path = match.params.filterKey;
+    const sortChanged = getSortChanged({ path, sortAll, sortEligible, sortReserved });
     if (hasMore) {
       this.setState(
         {
@@ -735,7 +746,7 @@ class Rewards extends React.Component {
           const reqData = preparePropositionReqData({
             username,
             match,
-            sort,
+            sort: sortChanged,
             area,
             usedLocale,
             ...activeFilters,
@@ -766,27 +777,25 @@ class Rewards extends React.Component {
       map(newPropositions, proposition => map(proposition.objects, object => object.object)),
     );
     const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
-    const primaryObjectForMap = !isEmpty(secondaryObjectsForMap)
-      ? get(newPropositions, ['0', 'required_object'])
-      : {};
-    const secondaryObjectsWithUniqueCoordinates = filter(
-      secondaryObjectsForMap,
-      object => object.map && !isEqual(object.map, primaryObjectForMap.map),
-    );
-    const secondaryObjectsWithWeight = getWobjectsWithMaxWeight(
-      secondaryObjectsWithUniqueCoordinates,
-    );
-    const campaignsObjectsForMap =
-      match.params.filterKey === 'reserved'
-        ? map(newPropositions, proposition => {
-            const propositionObject = get(proposition, ['objects', '0', 'object']);
-            return !isEmpty(propositionObject.map)
-              ? propositionObject
-              : proposition.required_object;
-          })
-        : [primaryObjectForMap, ...secondaryObjectsWithWeight];
+    const primaryObjectForMap =
+      !isEmpty(secondaryObjectsForMap) && match.params.filterKey !== 'reserved'
+        ? get(newPropositions, ['0', 'required_object'])
+        : {};
+    const secondaryObjectsWithUniqueCoordinates = filter(secondaryObjectsForMap, object => {
+      const parent = object.parent;
+      const objMap = getParsedMap(object || parent);
+      const primaryObjectMap = getParsedMap(primaryObjectForMap);
 
-    return campaignsObjectsForMap;
+      return !isEqual(objMap, primaryObjectMap) ? object : '';
+    });
+
+    return match.params.filterKey === 'reserved'
+      ? map(newPropositions, proposition => {
+          const propositionObject = get(proposition, ['objects', '0', 'object']);
+          const propositionObjectMap = get(proposition, ['objects', '0', 'object', 'map']);
+          return !isEmpty(propositionObjectMap) ? propositionObject : proposition.required_object;
+        })
+      : [primaryObjectForMap, ...secondaryObjectsWithUniqueCoordinates];
   };
 
   moveToCoordinates = objects => {
@@ -910,10 +919,11 @@ class Rewards extends React.Component {
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
-    const isReserved = match.params.filterKey === 'reserved';
+    const isReserved = match.params.filterKey === IS_RESERVED;
     const campaignsObjectsForMap =
       campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
+
     return (
       <div className="Rewards">
         <div className="shifted">
@@ -950,7 +960,7 @@ class Rewards extends React.Component {
               <MobileNavigation />
               {renderedRoutes}
             </div>
-            {(match.path === PATH_NAME_PAYABLES || match.path === PATH_NAME_RECEIVABLES) && (
+            {(match.url === PATH_NAME_PAYABLES || match.url === PATH_NAME_RECEIVABLES) && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   <RewardsFiltersPanel
@@ -965,7 +975,7 @@ class Rewards extends React.Component {
                 </div>
               </Affix>
             )}
-            {match.path === '/rewards/:filterKey/:campaignParent?' && (
+            {(filterKey === IS_RESERVED || filterKey === IS_ALL || filterKey === IS_ACTIVE) && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   {!isEmpty(userLocation) && !isCreate && (

@@ -1,7 +1,6 @@
 import { compact, concat, get, isEmpty, map, sortBy, remove, findIndex } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
-import { getClientWObj } from '../adapters';
 
 const initialState = {
   loading: true,
@@ -17,6 +16,7 @@ const initialState = {
   isStartSearchAutoComplete: false,
   isStartSearchUser: false,
   isStartSearchObject: false,
+  isClearSearchObjects: false,
 };
 
 export default (state = initialState, action) => {
@@ -83,12 +83,10 @@ export default (state = initialState, action) => {
         isStartSearchObject: true,
       };
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
-      const { result, search, locale } = action.payload;
+      const { result, search } = action.payload;
       return {
         ...state,
-        searchObjectsResults: isEmpty(search)
-          ? []
-          : result.map(serverWObj => getClientWObj(serverWObj, locale)),
+        searchObjectsResults: isEmpty(search) ? [] : result,
         isStartSearchObject: false,
       };
     }
@@ -152,11 +150,17 @@ export default (state = initialState, action) => {
         usersForDiscoverPage: [],
       };
     }
-
     case searchActions.CLEAR_SEARCH_OBJECTS_RESULT: {
       return {
         ...state,
         searchObjectsResults: [],
+        isClearSearchObjects: true,
+      };
+    }
+    case searchActions.RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS: {
+      return {
+        ...state,
+        isClearSearchObjects: false,
       };
     }
     case searchActions.UNFOLLOW_SEARCH_USER.SUCCESS: {
@@ -325,3 +329,4 @@ export const getBeneficiariesUsers = state => state.beneficiariesUsers;
 export const getIsStartSearchAutoComplete = state => state.isStartSearchAutoComplete;
 export const getIsStartSearchUser = state => state.isStartSearchUser;
 export const getIsStartSearchObject = state => state.isStartSearchObject;
+export const getIsClearSearchObjects = state => state.isClearSearchObjects;

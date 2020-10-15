@@ -115,6 +115,7 @@ export const getComments = postId => (dispatch, getState) => {
   const listFields = get(object, ['wobject', 'fields'], null);
   const matchPost = listFields && listFields.find(field => field.permlink === postId);
   const content = posts.list[postId] || comments.comments[postId] || matchPost;
+  const locale = getLocale(getState());
   if (content) {
     // eslint-disable-next-line camelcase
     const { category, permlink } = content;
@@ -128,11 +129,13 @@ export const getComments = postId => (dispatch, getState) => {
     dispatch({
       type: GET_COMMENTS,
       payload: {
-        promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        })),
+        promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(
+          apiRes => ({
+            rootCommentsList: getRootCommentsList(apiRes),
+            commentsChildrenList: getCommentsChildrenLists(apiRes),
+            content: apiRes.content,
+          }),
+        ),
       },
       meta: {
         id: postId,
@@ -258,7 +261,7 @@ export const sendCommentMessages = (
   let parentAuthor;
   if (isUpdating) {
     parentAuthor = originalComment.parent_author;
-  } else if (parentPost.root_author && parentPost.guestInfo) {
+  } else if (parentPost.guestInfo) {
     parentAuthor = parentAuthorIfGuest;
   } else {
     parentAuthor = parentPost.author;
@@ -300,6 +303,8 @@ export const sendCommentMessages = (
     rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
   }
 
+  const rootAuthor = parentPost.guestInfo ? get(parentPost, ['author']) : parentPost.root_author;
+
   return dispatch({
     type: SEND_COMMENT,
     payload: {
@@ -312,7 +317,7 @@ export const sendCommentMessages = (
           '',
           newBody,
           jsonMetadata,
-          parentPost.root_author,
+          rootAuthor,
         )
         .catch(err => {
           dispatch(notify(err.error.message || err.error_description, 'error'));
@@ -362,14 +367,19 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
   });
 };
 
-export const getReservedComments = ({ category, author, permlink }) => dispatch =>
-  dispatch({
+export const getReservedComments = ({ category, author, permlink }) => (dispatch, getState) => {
+  const locale = getLocale(getState());
+
+  return dispatch({
     type: GET_RESERVED_COMMENTS,
     payload: {
-      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
-        rootCommentsList: getRootCommentsList(apiRes),
-        commentsChildrenList: getCommentsChildrenLists(apiRes),
-        content: apiRes.content,
-      })),
+      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(
+        apiRes => ({
+          rootCommentsList: getRootCommentsList(apiRes),
+          commentsChildrenList: getCommentsChildrenLists(apiRes),
+          content: apiRes.content,
+        }),
+      ),
     },
   });
+};

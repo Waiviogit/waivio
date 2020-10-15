@@ -8,9 +8,10 @@ import moment from 'moment';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
 import { getReport } from '../../../../waivioApi/ApiClient';
-import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { setDataForSingleReport } from '../../rewardsActions';
 import { TYPE } from '../../../../common/constants/rewards';
+import { getObjectName } from '../../../helpers/wObjectHelper';
+
 import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink }) => {
@@ -42,10 +43,11 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink
     if (isModalReportOpen) setModalReportOpen(!isModalReportOpen);
   };
 
-  const prymaryObjectName = getFieldWithMaxWeight(get(sponsor, 'details.main_object', {}), 'name');
-  const reviewObjectName = getFieldWithMaxWeight(get(sponsor, 'details.review_object', {}), 'name');
+  const prymaryObjectName = getObjectName(get(sponsor, 'details.main_object', {}));
+  const reviewObjectName = getObjectName(get(sponsor, 'details.review_object', {}));
+  const beneficiaries = get(sponsor, ['details', 'beneficiaries']);
   const userWeight = `(${(10000 -
-    reduce(sponsor.details.beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
+    reduce(beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
     100}%)`;
   const time = isReports ? moment(sponsor.createdAt).format('h:mm:ss') : '';
   const getOperation = useCallback(() => {
@@ -135,6 +137,12 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink
     }
   }, [sponsor]);
 
+  const reviewPermlink = get(sponsor, ['details', 'review_permlink'], '');
+  const review = intl.formatMessage({
+    id: 'paymentTable_review',
+    defaultMessage: `Review`,
+  });
+
   return (
     <tr>
       <td>
@@ -146,12 +154,13 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink
           {sponsor && sponsor.details && sponsor.details.main_object && (
             <div className="PaymentTable__action-items">
               <div>
-                <Link to={`/@${sponsor.userName}/${sponsor.details.review_permlink}`}>
-                  {intl.formatMessage({
-                    id: 'paymentTable_review',
-                    defaultMessage: `Review`,
-                  })}
-                </Link>
+                {reviewPermlink ? (
+                  <Link to={`/@${sponsor.userName}/${sponsor.details.review_permlink}`}>
+                    {review}
+                  </Link>
+                ) : (
+                  review
+                )}
                 :{' '}
                 <Link to={`/object/${get(sponsor, ['details', 'main_object', 'author_permlink'])}`}>
                   {prymaryObjectName}
@@ -169,8 +178,8 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink
                   defaultMessage: `Beneficiaries`,
                 })}
                 :{' '}
-                {sponsor.details.beneficiaries
-                  ? map(sponsor.details.beneficiaries, benef => (
+                {beneficiaries
+                  ? map(beneficiaries, benef => (
                       <React.Fragment key={benef.account}>
                         <Link to={`/@${benef.account}`}>{benef.account}</Link>
                         <span>{` (${benef.weight / 100}%), `}</span>

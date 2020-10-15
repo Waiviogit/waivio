@@ -105,8 +105,9 @@ class PostModal extends React.Component {
       dropCategory(url),
       currentShownPost.guestInfo,
     )}`;
-    const twitterText = `"${encodeURIComponent(title)}" by @${author}`;
-    const twitterShareURL = getTwitterShareURL(twitterText, postURL);
+    const shareTextSocial = `"${encodeURIComponent(title)}" by @${author}`;
+
+    const twitterShareURL = getTwitterShareURL(shareTextSocial, postURL);
     const facebookShareURL = getFacebookShareURL(postURL);
     const signature = get(authorDetails, 'posting_json_metadata.profile.signature', null);
 

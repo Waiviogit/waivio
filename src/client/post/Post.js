@@ -13,6 +13,8 @@ import {
   getIsPostFailed,
   getUser,
   getIsAuthFetching,
+  getSuitableLanguage,
+  getAuthenticatedUserName,
 } from '../reducers';
 import { getContent } from './postActions';
 import { getUserAccount } from '../user/usersActions';
@@ -38,6 +40,8 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     loaded: getIsPostLoaded(state, ownProps.match.params.author, ownProps.match.params.permlink),
     failed: getIsPostFailed(state, ownProps.match.params.author, ownProps.match.params.permlink),
     user: getUser(state, ownProps.match.params.author),
+    locale: getSuitableLanguage(state),
+    follower: getAuthenticatedUserName(state),
   }),
   { getContent, getUserAccount },
 )
@@ -53,15 +57,19 @@ export default class Post extends React.Component {
     failed: PropTypes.bool,
     getContent: PropTypes.func,
     getUserAccount: PropTypes.func,
+    locale: PropTypes.string,
+    follower: PropTypes.string,
   };
 
   static defaultProps = {
     user: {},
     edited: false,
-    content: undefined,
+    content: null,
     fetching: false,
     loaded: false,
     failed: false,
+    locale: 'en-US',
+    follower: '',
     getContent: () => {},
     getUserAccount: () => {},
   };
@@ -85,7 +93,7 @@ export default class Post extends React.Component {
     const shouldUpdate = (!loaded && !failed) || edited;
 
     if (shouldUpdate && !fetching) {
-      this.props.getContent(author, permlink);
+      this.props.getContent(author, permlink, false);
       this.props.getUserAccount(author);
     }
 
@@ -105,7 +113,7 @@ export default class Post extends React.Component {
     const shouldUpdate = author !== prevAuthor || permlink !== prevPermlink;
     if (shouldUpdate && !nextProps.fetching) {
       this.setState({ commentsVisible: false }, () => {
-        this.props.getContent(author, permlink);
+        this.props.getContent(author, permlink, false);
         this.props.getUserAccount(author);
       });
     }
@@ -132,7 +140,17 @@ export default class Post extends React.Component {
   };
 
   render() {
-    const { content, fetching, loaded, failed, isAuthFetching, user, match } = this.props;
+    const {
+      content,
+      fetching,
+      loaded,
+      failed,
+      isAuthFetching,
+      user,
+      match,
+      locale,
+      follower,
+    } = this.props;
 
     if (failed) return <Error404 />;
     if (fetching || !content) return <Loading />;
@@ -150,7 +168,11 @@ export default class Post extends React.Component {
           <div className="post-layout container">
             <Affix className="rightContainer" stickPosition={77}>
               <div className="right">
-                <PostRecommendation isAuthFetching={isAuthFetching} />
+                <PostRecommendation
+                  isAuthFetching={isAuthFetching}
+                  locale={locale}
+                  follower={follower}
+                />
               </div>
             </Affix>
             {showPost ? (

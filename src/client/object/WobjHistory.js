@@ -15,23 +15,18 @@ import {
   getRate,
   getIsAppendLoading,
 } from '../reducers';
-import {
-  objectFields,
-  getAllowedFieldsByObjType,
-  sortingMenuName,
-} from '../../common/constants/listOfFields';
+import { objectFields, sortingMenuName } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
-import AppendModal from './AppendModal';
+import AppendModal from './AppendModal/AppendModal';
 import IconButton from '../components/IconButton';
 import SortSelector from '../components/SortSelector/SortSelector';
 import OBJECT_TYPE from './const/objectTypes';
-import CreateImage from './ObjectGallery/CreateImage';
-import CreateAlbum from './ObjectGallery/CreateAlbum';
-import CreateTag from './TagCategory/CreateTag';
 import { AppSharedContext } from '../Wrapper';
-import AppendCard from './AppendCard';
+import AppendCard from './AppendCard/AppendCard';
 import Loading from '../components/Icon/Loading';
+import { getObjectName } from '../helpers/wObjectHelper';
+import { getExposedFieldsByObjType } from './wObjectHelper';
 
 import './WobjHistory.less';
 
@@ -109,28 +104,25 @@ class WobjHistory extends React.Component {
   };
 
   handleToggleModal = () => {
-    if (this.state.field === objectFields.galleryItem) {
-      this.setState(prevState => ({ showModalGalleryItem: !prevState.showModalGalleryItem }));
-    } else if (this.state.field === objectFields.galleryAlbum) {
-      this.setState(prevState => ({ showModalGalleryAlbum: !prevState.showModalGalleryAlbum }));
-    } else if (this.state.field === objectFields.categoryItem) {
-      this.setState(prevState => ({ showModalCategoryItem: !prevState.showModalCategoryItem }));
-    } else {
-      this.setState({ showModal: !this.state.showModal });
-    }
+    this.setState({ showModal: !this.state.showModal });
   };
 
   handleSortChange = sort => this.setState({ sort });
 
+  sortedList = (wobj, voteValue, sort) => {
+    switch (sort) {
+      case 'vote':
+        return wobj.fields.sort((before, after) => voteValue(after) - voteValue(before));
+
+      case 'approval':
+        return wobj.fields.sort((before, after) => after.approvePercent - before.approvePercent);
+      default:
+        return wobj.fields.sort((before, after) => after.createdAt - before.createdAt);
+    }
+  };
+
   render() {
-    const {
-      field,
-      showModal,
-      showModalGalleryItem,
-      showModalGalleryAlbum,
-      showModalCategoryItem,
-      sort,
-    } = this.state;
+    const { field, showModal, sort } = this.state;
     const { object, readLanguages, isAuthenticated, rewardFund, rate, appendLoading } = this.props;
     const { params } = this.props.match;
     const isFullParams =
@@ -143,18 +135,7 @@ class WobjHistory extends React.Component {
           1000000
         : 0;
 
-    const sortedList = wobj => {
-      switch (sort) {
-        case 'vote':
-          return wobj.fields.sort((before, after) => voteValue(after) - voteValue(before));
-
-        case 'approval':
-          return wobj.fields.sort((before, after) => after.approvePercent - before.approvePercent);
-        default:
-          return wobj.fields.sort((before, after) => after.createdAt - before.createdAt);
-      }
-    };
-    let content = object && object.fields && sortedList(object);
+    let content = object && object.fields && this.sortedList(object, voteValue, sort);
     const isFetched = !isEmpty(content) && content[0].name;
     const usedByUserLanguages = [];
     const filteredLanguages = LANGUAGES.filter(lang => {
@@ -166,10 +147,14 @@ class WobjHistory extends React.Component {
     });
 
     if (params[1] && isFetched) {
-      content = content.filter(f => sortingMenuName[params[1]] === f.name || f.name === params[1]);
+      if (sortingMenuName[params[1]]) {
+        content = content.filter(f => f.name === objectFields.listItem && f.type === params[1]);
+      } else {
+        content = content.filter(f => f.name === params[1]);
+      }
     }
 
-    const objName = object.name || object.default_name;
+    const objName = getObjectName(object);
 
     const renderFields = () => {
       if (!appendLoading) {
@@ -198,7 +183,7 @@ class WobjHistory extends React.Component {
             value={field}
             onChange={this.handleFieldChange}
           >
-            {getAllowedFieldsByObjType(this.props.object.object_type).map(f => (
+            {getExposedFieldsByObjType(this.props.object).map(f => (
               <Select.Option key={f}>
                 <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
               </Select.Option>
@@ -227,9 +212,6 @@ class WobjHistory extends React.Component {
                 onClick={this.handleAddBtnClick}
                 caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
               />
-              <CreateImage showModal={showModalGalleryItem} hideModal={this.handleToggleModal} />
-              <CreateAlbum showModal={showModalGalleryAlbum} hideModal={this.handleToggleModal} />
-              <CreateTag showModal={showModalCategoryItem} hideModal={this.handleToggleModal} />
               {showModal && (
                 <AppendModal
                   showModal={showModal}

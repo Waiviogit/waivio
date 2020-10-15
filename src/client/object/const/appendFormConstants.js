@@ -41,7 +41,7 @@ export const fieldsRules = {
       validator: true,
     },
   ],
-  [objectFields.tagCloud]: [
+  [objectFields.authority]: [
     {
       transform: value => value && value.toLowerCase(),
     },
@@ -52,7 +52,7 @@ export const fieldsRules = {
           id: 'field_error',
           defaultMessage: 'Field is required',
         },
-        intlMeta: { field: 'Tag' },
+        intlMeta: { field: 'authority' },
       },
     },
     {

@@ -11,9 +11,11 @@ import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
-import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
 import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
+import { getFeed, isGuestUser } from '../../reducers';
+import { getFeedFromState } from '../../helpers/stateHelpers';
+import UserSidebar from './UserSidebar';
 
 @withRouter
 @connect(state => ({
@@ -21,15 +23,19 @@ import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar
   authUserName: store.getAuthenticatedUserName(state),
   isAuthFetching: store.getIsAuthFetching(state),
   locale: store.getLocale(state),
+  isGuest: isGuestUser(state),
+  feed: getFeed(state),
 }))
 export default class RightSidebar extends React.Component {
   static propTypes = {
-    authenticated: PropTypes.bool.isRequired,
-    isAuthFetching: PropTypes.bool.isRequired,
+    authenticated: PropTypes.bool,
+    isAuthFetching: PropTypes.bool,
     showPostRecommendation: PropTypes.bool,
     match: PropTypes.shape(),
     authUserName: PropTypes.string,
     locale: PropTypes.string,
+    isGuest: PropTypes.bool,
+    feed: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -37,6 +43,9 @@ export default class RightSidebar extends React.Component {
     match: {},
     authUserName: '',
     locale: 'en-US',
+    authenticated: false,
+    isAuthFetching: false,
+    isGuest: false,
   };
 
   render() {
@@ -47,12 +56,15 @@ export default class RightSidebar extends React.Component {
       match,
       authUserName,
       locale,
+      isGuest,
+      feed,
     } = this.props;
+
+    const content = getFeedFromState('blog', authUserName, feed);
 
     if (isAuthFetching) {
       return <Loading />;
     }
-
     return (
       <div>
         {!authenticated && <SignUp />}
@@ -65,6 +77,19 @@ export default class RightSidebar extends React.Component {
           <Route path="/hot/:tag" component={FeedSidebar} />
           <Route path="/promoted/:tag" component={FeedSidebar} />
           <Route
+            path="/@:name"
+            render={() => (
+              <UserSidebar
+                authenticated={authenticated}
+                isGuest={isGuest}
+                content={content}
+                match={match}
+                authUserName={authUserName}
+                locale={locale}
+              />
+            )}
+          />
+          <Route
             path="/discover-objects/:typeName"
             render={() => (
               <React.Fragment>
@@ -72,18 +97,6 @@ export default class RightSidebar extends React.Component {
                 <ObjectExpertiseByType match={match} />
               </React.Fragment>
             )}
-          />
-          <Route
-            path="/@:name"
-            render={() =>
-              authenticated && (
-                <ObjectWeightBlock
-                  username={match.params.name}
-                  authUser={authUserName}
-                  locale={locale}
-                />
-              )
-            }
           />
           <Route
             path="/"

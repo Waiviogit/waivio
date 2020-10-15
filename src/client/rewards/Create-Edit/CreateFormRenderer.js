@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty, map, get } from 'lodash';
+import { isEmpty, map, get, includes } from 'lodash';
 import { Link } from 'react-router-dom';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -47,13 +47,12 @@ const CreateFormRenderer = props => {
     getFieldValue,
     commissionAgreement,
     campaignId,
-    isPending,
-    isDuplicate,
+    isDisabled,
     intl,
+    handleCreateDuplicate,
   } = props;
 
   const currentItemId = get(match, ['params', 'campaignId']);
-
   const messages = validatorMessagesCreator(handlers.messageFactory);
   const validators = validatorsCreator(
     user,
@@ -65,8 +64,8 @@ const CreateFormRenderer = props => {
     compensationAccount,
   );
   const fields = fieldsData(handlers.messageFactory, validators, user.name);
-
-  const disabled = (!isDuplicate && !isPending && !isEmpty(campaignId)) || loading;
+  const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
+  const disabled = (isDisabled && !isDuplicate && !isEmpty(campaignId)) || loading;
 
   const notEnoughMoneyWarn =
     parseFloat(user.balance) <= 0 ? (
@@ -165,7 +164,11 @@ const CreateFormRenderer = props => {
       >
         <Form.Item>
           {!isEmpty(match.params) ? (
-            <div className="CreateReward__createDuplicate">
+            <div
+              role="presentation"
+              className="CreateReward__createDuplicate"
+              onClick={handleCreateDuplicate}
+            >
               <div className="CreateReward__first">*</div>
               <div className="CreateReward__second">
                 {fields.campaignName.label}{' '}
@@ -513,7 +516,8 @@ CreateFormRenderer.defaultProps = {
   commissionAgreement: 5,
   campaignId: null,
   iAgree: false,
-  isPending: false,
+  isDisabled: false,
+  handleCreateDuplicate: () => {},
 };
 
 CreateFormRenderer.propTypes = {
@@ -563,10 +567,10 @@ CreateFormRenderer.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
-  isPending: PropTypes.bool,
-  isDuplicate: PropTypes.bool.isRequired,
+  isDisabled: PropTypes.bool,
   match: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  handleCreateDuplicate: PropTypes.func,
 };
 
 export default injectIntl(CreateFormRenderer);

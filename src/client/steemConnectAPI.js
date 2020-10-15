@@ -26,7 +26,7 @@ function broadcast(operations, isReview, actionAuthor) {
   } else {
     operation = `waivio_guest_${operations[0][0]}`;
   }
-  return waivioAPI.broadcastGuestOperation(operation, isReview, operations);
+  return waivioAPI.broadcastGuestOperation(operation, operations);
 }
 
 async function getUserAccount() {

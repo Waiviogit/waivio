@@ -9,7 +9,7 @@ import './Notification.less';
 
 const NotificationReblogBell = ({ notification, read, onClick }) => (
   <Link
-    to={`/@${notification.author}/${notification.permlink}`}
+    to={`/@${notification.account}`}
     className={classNames('Notification', {
       'Notification--unread': !read,
     })}

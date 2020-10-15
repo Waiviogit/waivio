@@ -7,8 +7,10 @@ import {
   getQueryString,
   getLocale,
   getAuthenticatedUserName,
+  getActiveFiltersTags,
 } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { createFilterBody } from '../discoverObjects/helper';
 
 export const GET_OBJECT_TYPE = createAsyncActionType('@objectType/GET_OBJECT_TYPE');
 export const GET_OBJECT_TYPE_MAP = createAsyncActionType('@objectType/GET_OBJECT_TYPE_MAP');
@@ -32,6 +34,7 @@ export const getObjectType = (
   actionType,
   filters,
   { limit = 30, skip = 0, simplified = false } = {},
+  filterBody,
 ) => (dispatch, getState) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
@@ -42,7 +45,10 @@ export const getObjectType = (
     wobjects_count: limit,
     simplified,
     wobjects_skip: skip,
-    filter: filters,
+    filter: {
+      ...filters,
+      tagCategory: filterBody,
+    },
     sort,
     locale,
   };
@@ -78,13 +84,14 @@ export const getObjectTypeByStateFilters = (
   { skip = 0, limit = 15, simplified = false } = {},
 ) => (dispatch, getState) => {
   const state = getState();
-  const activeFilters = { ...getActiveFilters(state) };
+  const activeFilters = getActiveFilters(state);
+  const filterBody = createFilterBody(getActiveFiltersTags(state));
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
   const sort = getObjectTypeSorting(state);
-
   // if use sort by proximity, require to use map filter
   if (sort === 'proximity' && !activeFilters.map) {
     const userLocation = getUserLocation(state);
+
     activeFilters.map = {
       coordinates: [Number(userLocation.lat), Number(userLocation.lon)],
       radius: 50000000,
@@ -94,7 +101,9 @@ export const getObjectTypeByStateFilters = (
     activeFilters.searchString = searchString;
   }
   const actionType = GET_OBJECT_TYPE.ACTION;
-  return dispatch(getObjectType(typeName, actionType, activeFilters, { limit, skip, simplified }));
+  return dispatch(
+    getObjectType(typeName, actionType, activeFilters, { limit, skip, simplified }, filterBody),
+  );
 };
 
 export const clearType = () => dispatch => {
@@ -135,5 +144,34 @@ export const changeSortingAndLoad = sorting => (dispatch, getState) => {
 export const resetUpdatedFlag = () => dispatch => {
   dispatch({
     type: RESET_UPDATED_STATE,
+  });
+};
+
+export const SHOW_MORE_TAGS_FOR_FILTERS = createAsyncActionType(
+  '@objectType/SHOW_MORE_TAGS_FOR_FILTERS',
+);
+
+export const showMoreTags = (category, skip, limit) => dispatch =>
+  dispatch({
+    type: SHOW_MORE_TAGS_FOR_FILTERS.ACTION,
+    payload: ApiClient.showMoreTagsForFilters(category, skip, limit),
+    meta: category,
+  });
+
+export const SET_ACTIVE_TAGS_FILTERS = '@objectType/SET_ACTIVE_TAGS_FILTERS';
+
+export const setActiveTagsFilters = filters => dispatch => {
+  dispatch({
+    type: SET_ACTIVE_TAGS_FILTERS,
+    payload: filters,
+  });
+
+  return Promise.resolve();
+};
+
+export const setTagsFiltersAndLoad = filters => (dispatch, getState) => {
+  dispatch(setActiveTagsFilters(filters)).then(() => {
+    const typeName = getTypeName(getState());
+    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
   });
 };
