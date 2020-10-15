@@ -54,7 +54,6 @@ const ObjectCardView = ({
       />
     );
   };
-  console.log('wObject', wObject);
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
   const description = wObject.description && (

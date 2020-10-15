@@ -33,7 +33,7 @@ const PropositionList = ({
           <ObjectCardView wObject={wobject} passedParent={currentProposition} />
           <div className="Campaign__button" role="presentation" onClick={goToProducts}>
             <Button type="primary" size="large">
-              {!rewardMax ? (
+              {maxReward === minReward ? (
                 <React.Fragment>
                   <span>
                     {intl.formatMessage({
