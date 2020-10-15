@@ -21,7 +21,7 @@ export default {
   ProfileSettings: loableComponent(import('../../client/settings/ProfileSettings')),
   Invite: loableComponent(import('../../client/invite/Invite')),
   User: loableComponent(import('../../client/user/User')),
-  Wobj: loableComponent(import('../../client/object/Wobj')),
+  Wobj: loableComponent(import('../../client/object/Wobj/WobjectContainer')),
   UserProfile: loableComponent(import('../../client/user/UserProfile')),
   UserComments: loableComponent(import('../../client/user/UserComments')),
   UserFollowers: loableComponent(import('../../client/user/UserFollowers')),
