@@ -20,7 +20,7 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
   const rewardPriceHive = `${
     price ? price.toFixed(3) : (campaignData.reward / currentUSDPrice).toFixed(3)
   } HIVE`;
-  const rewardPriceUsd = `${campaignData.reward} USD`;
+  const rewardPriceUsd = `${campaignData.reward.toFixed(2)} USD`;
   const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
   return (
     <React.Fragment>
