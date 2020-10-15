@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
-import ObjectAvatar, { getObjectUrl } from './ObjectAvatar';
+import ObjectAvatar from './ObjectAvatar';
 import AppendModal from '../object/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
@@ -32,7 +32,7 @@ export default class ObjectLightbox extends Component {
 
   render() {
     const { wobject, size, accessExtend } = this.props;
-    const imageUrl = getObjectUrl(wobject);
+    const imageUrl = wobject.avatar;
     const objectName = getFieldWithMaxWeight(wobject, objectFields.name) || wobject.default_name;
     return (
       <React.Fragment>
