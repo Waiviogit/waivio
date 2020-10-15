@@ -41,6 +41,7 @@ import MobileMenu from './MobileMenu/MobileMenu';
 import LoggedOutMenu from './LoggedOutMenu';
 import LoggedInMenu from './LoggedInMenu';
 import { getIsBeaxyUser } from '../../user/usersHelper';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './Topnav.less';
 
@@ -154,15 +155,6 @@ class Topnav extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.searchBarValue !== this.state.searchBarValue &&
-      this.state.searchBarValue !== ''
-    ) {
-      this.debouncedSearchByUser(this.state.searchBarValue);
-      this.debouncedSearchByObjectTypes(this.state.searchBarValue);
-    }
-  }
 
   componentWillUnmount() {
     if (window) {
@@ -198,7 +190,7 @@ class Topnav extends React.Component {
     if (usersCount) {
       countArr = [...countArr, { name: 'Users', count: usersCount, type: 'user' }];
     }
-
+    console.log("countArr", countArr);
     return countArr;
   };
 
@@ -276,18 +268,26 @@ class Topnav extends React.Component {
   };
 
   debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
-  debouncedSearchByObject = debounce((searchString, objType) =>
-    this.props.searchObjectsAutoCompete(searchString, objType),
+  debouncedSearchByObject = debounce(
+    (searchString, objType) => this.props.searchObjectsAutoCompete(searchString, objType)
   );
-  debouncedSearchByUser = debounce(searchString => this.props.searchUsersAutoCompete(searchString));
-  debouncedSearchByObjectTypes = debounce(searchString =>
-    this.props.searchObjectTypesAutoCompete(searchString),
+  debouncedSearchByUser = debounce(
+    searchString => this.props.searchUsersAutoCompete(searchString)
+  );
+  debouncedSearchByObjectTypes = debounce(
+    searchString => this.props.searchObjectTypesAutoCompete(searchString)
   );
 
   handleAutoCompleteSearch = value => {
-    this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true });
+    this.setState({ dropdownOpen: true }, () => this.handleSearch(value));
   };
+
+  handleSearch = value => {
+    this.debouncedSearch(value);
+    this.debouncedSearchByUser(value);
+    this.debouncedSearchByObjectTypes(value);
+  };
+
 
   handleSelectOnAutoCompleteDropdown = (value, data) => {
     const { isMobileMenuOpen, toggleMobileMenu } = this.props;
@@ -394,7 +394,7 @@ class Topnav extends React.Component {
         )}
       >
         {map(wobjects, option => {
-          const wobjName = getFieldWithMaxWeight(option, objectFields.name);
+          const wobjName = getObjectName(option);
           const parent = option.parent;
           return wobjName ? (
             <AutoComplete.Option

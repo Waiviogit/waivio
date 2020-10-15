@@ -249,12 +249,12 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_la
       .catch(error => reject(error));
   });
 
-export const searchObjects = (searchString, objType = '', forParent, limit = 15) => {
-  const requestBody = { search_string: searchString, limit, sortByApp: 'beaxy' };
+export const searchObjects = (searchString, objType = '', forParent, limit = 15, locale) => {
+  const requestBody = { search_string: searchString, limit };
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
-    headers,
+    headers: { ...headers, locale, app: config.appName },
     method: 'POST',
     body: JSON.stringify(requestBody),
   })
@@ -262,12 +262,16 @@ export const searchObjects = (searchString, objType = '', forParent, limit = 15)
     .then(res => res.json());
 };
 
-export const searchUsers = (searchString, limit = 15) =>
+export const searchUsers = (searchString, username, limit = 15, notGuest = false) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}`,
+      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}&notGuest=${notGuest}`,
       {
-        headers,
+        headers: {
+          ...headers,
+          following: username,
+          follower: username,
+        },
         method: 'GET',
       },
     )

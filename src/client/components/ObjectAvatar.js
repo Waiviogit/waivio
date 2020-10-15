@@ -17,7 +17,7 @@ const ObjectAvatar = ({ item, size }) => {
     height: `${size}px`,
   };
 
-  let url = getObjectUrl(item);
+  let url = item.avatar;
   if (_.includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
   if (url) {
     style = {
