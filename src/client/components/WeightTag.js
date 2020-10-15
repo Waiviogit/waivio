@@ -19,12 +19,12 @@ const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
     const expertize = weightValue > 0 ? weightValue : 0;
     return (
       <span className="Weight" title={tagTitle}>
-        {isNaN(isValidWeight) ? (
-          <Icon type="loading" className="text-icon-right" />
-        ) : (
+        {isValidWeight ? (
           <Tag>
             <WeightDisplay value={expertize} />
           </Tag>
+        ) : (
+          <Icon type="loading" className="text-icon-right" />
         )}
       </span>
     );
