@@ -33,7 +33,7 @@ const ObjectCardView = ({
     } else setTags([wObject.object_type]);
   }, [wObject, setTags]);
 
-  const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
+  const pathName = wObject.defaultShowLink;
 
   const avatarLayout = () => {
     let url = getObjectAvatar(wObject) || getObjectAvatar(parent);
@@ -54,6 +54,7 @@ const ObjectCardView = ({
       />
     );
   };
+  console.log('wObject', wObject);
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
   const description = wObject.description && (
