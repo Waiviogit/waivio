@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { get, map } from 'lodash';
@@ -47,6 +47,7 @@ const FraudDetection = ({
     ],
     [intl],
   );
+  const sortRef = useRef('');
 
   useEffect(() => {
     if (userName && sortFraudDetection) {
@@ -60,12 +61,14 @@ const FraudDetection = ({
         setBlacklistUsers(blacklistNames);
       });
       setLoadingCampaigns(true);
-      getFraudSuspicionData(requestData).then(() => {
-        setLoadingCampaigns(false);
-        setLoading(false);
-      });
+      if (sortRef.current !== sortFraudDetection) {
+        getFraudSuspicionData(requestData).then(() => {
+          setLoadingCampaigns(false);
+          setLoading(false);
+        });
+      }
     }
-  }, [userName, getFraudSuspicionData, sortFraudDetection, getBlacklistUsers, sort]);
+  }, [userName, getFraudSuspicionData, sortFraudDetection, getBlacklistUsers, sort, sortRef]);
 
   const handleLoadMore = () => {
     if (hasMoreFraudSuspicionData) {
@@ -84,13 +87,17 @@ const FraudDetection = ({
   const handleSortChange = useCallback(
     sortChanged => {
       setSortValue(sortChanged);
+      sortRef.current = sortChanged;
       const requestData = {
         guideName: userName,
         fraudSuspicion: true,
         sort: sortChanged,
         skip: fraudSuspicionData ? fraudSuspicionData.length : 0,
       };
-      getFraudSuspicionData(requestData);
+      getFraudSuspicionData(requestData).then(() => {
+        setLoadingCampaigns(false);
+        setLoading(false);
+      });
     },
     [setSortValue, getFraudSuspicionData, userName],
   );
