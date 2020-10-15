@@ -1,0 +1,47 @@
+import React from 'react';
+import { get } from 'lodash';
+import SponsoredRewardsHeader from '../constants';
+import SponsoredRewardsTableRow from './SponsoredRewardsTableRow/SponsoredRewardsTableRow';
+
+const SponsoredRewardsView = (intl, statusSponsoredHistory, sponsoredRewardsTitle) => (
+  <div className="SponsoredRewards">
+    <h2 className="SponsoredRewards__title">{sponsoredRewardsTitle}</h2>
+    <div className="SponsoredRewards__table">
+      <table>
+        <thead>
+          <tr>
+            {SponsoredRewardsHeader.map(tdElement => (
+              <th key={tdElement.id} className={tdElement.className}>
+                {intl.formatMessage({
+                  id: tdElement.id,
+                  defaultMessage: tdElement.message,
+                })}
+              </th>
+            ))}
+            <th className="SponsoredRewards__amount">
+              {intl.formatMessage({
+                id: 'sponsored_rewards_table_amount',
+                defaultMessage: 'Amount',
+              })}
+              <div>HIVE</div>
+            </th>
+            <th className="SponsoredRewards__balance">
+              {intl.formatMessage({
+                id: 'sponsored_rewards_table_balance',
+                defaultMessage: 'Balance',
+              })}
+              <div>HIVE</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {statusSponsoredHistory.map(sponsor => (
+            <SponsoredRewardsTableRow key={get(sponsor, '_id', '')} intl={intl} sponsor={sponsor} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+);
+
+export default SponsoredRewardsView;

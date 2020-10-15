@@ -1,57 +1,14 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
-import { get } from 'lodash';
 import { SponsoredRewardsMainContent } from '../ReferralTextHelper';
-import SponsoredRewardsHeader from '../constants';
 import { getStatusSponsoredRewards } from '../ReferralActions';
 import { getAuthenticatedUserName, getStatusSponsoredHistory } from '../../../reducers';
-import SponsoredRewardsTableRow from './SponsoredRewardsTableRow/SponsoredRewardsTableRow';
+import SponsoredRewardsView from './SponsoredRewardsView';
 
 import './SponsoredRewards.less';
-
-const SponsoredRewardsView = (intl, statusSponsoredHistory, sponsoredRewardsTitle) => (
-  <div className="SponsoredRewards">
-    <h2 className="SponsoredRewards__title">{sponsoredRewardsTitle}</h2>
-    <div className="SponsoredRewards__table">
-      <table>
-        <thead>
-          <tr>
-            {SponsoredRewardsHeader.map(tdElement => (
-              <th key={tdElement.id} className={tdElement.className}>
-                {intl.formatMessage({
-                  id: tdElement.id,
-                  defaultMessage: tdElement.message,
-                })}
-              </th>
-            ))}
-            <th className="SponsoredRewards__amount">
-              {intl.formatMessage({
-                id: 'sponsored_rewards_table_amount',
-                defaultMessage: 'Amount',
-              })}
-              <div>HIVE</div>
-            </th>
-            <th className="SponsoredRewards__balance">
-              {intl.formatMessage({
-                id: 'sponsored_rewards_table_balance',
-                defaultMessage: 'Balance',
-              })}
-              <div>HIVE</div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {statusSponsoredHistory.map(sponsor => (
-            <SponsoredRewardsTableRow key={get(sponsor, '_id', '')} intl={intl} sponsor={sponsor} />
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
-);
 
 const SponsoredRewards = props => {
   const { match, intl, getStatusSponsoredInfo, authSponsorName, statusSponsoredHistory } = props;
