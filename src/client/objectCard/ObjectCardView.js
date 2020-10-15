@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
+import objectTypes from '../object/const/objectTypes';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import { getObjectName, parseAddress, getObjectAvatar } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
@@ -106,7 +107,7 @@ const ObjectCardView = ({
                 </Link>
                 {!isNaN(wObject.weight) && <WeightTag weight={Number(wObject.weight)} />}
               </div>
-              {wObject.rating && (
+              {wObject.rating && wObject.object_type !== objectTypes.HASHTAG && (
                 <RatingsWrap
                   mobileView={mobileView}
                   ownRatesOnly={ownRatesOnly}
