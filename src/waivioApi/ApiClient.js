@@ -877,20 +877,25 @@ export const getCampaignsByGuideName = guideName =>
 export const getRewardsGeneralCounts = ({
   userName,
   sort,
+  status = ['active'],
   limit = 10,
   skip = 0,
   locale = 'en-US',
+  match,
 } = {}) =>
   new Promise((resolve, reject) => {
+    const reqData = {
+      userName: userName,
+      sort,
+      status,
+      limit,
+      skip,
+    };
+    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
-      body: JSON.stringify({
-        userName: userName,
-        sort,
-        limit,
-        skip,
-      }),
+      body: JSON.stringify(reqData),
     })
       .then(res => res.json())
       .then(result => resolve(result))
