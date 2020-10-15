@@ -365,11 +365,8 @@ export default class CampaignButtons extends React.Component {
   getPopoverMenu = () => {
     const { propositionStatus } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (
-      this.matchParams === MESSAGES ||
-      this.matchParams === GUIDE_HISTORY ||
-      this.matchParams === FRAUD_DETECTION
-    ) {
+    const matchParams = [MESSAGES, GUIDE_HISTORY, FRAUD_DETECTION];
+    if (includes(matchParams, this.matchParams)) {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
@@ -445,12 +442,8 @@ export default class CampaignButtons extends React.Component {
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
-    const userName =
-      this.matchParams === MESSAGES ||
-      this.matchParams === GUIDE_HISTORY ||
-      this.matchParams === FRAUD_DETECTION
-        ? propositionUserName
-        : user.name;
+    const matchParams = [MESSAGES, GUIDE_HISTORY, FRAUD_DETECTION];
+    const userName = includes(matchParams, this.matchParams) ? propositionUserName : user.name;
     const toggleModalReport = e => {
       e.preventDefault();
       e.stopPropagation();

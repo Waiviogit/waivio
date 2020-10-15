@@ -68,7 +68,7 @@ const User = Loadable({
   loading: Loading,
 });
 const Wobj = Loadable({
-  loader: () => import('../client/object/Wobj'),
+  loader: () => import('../client/object/Wobj/Wobj'),
   loading: Loading,
 });
 const UserProfile = Loadable({
