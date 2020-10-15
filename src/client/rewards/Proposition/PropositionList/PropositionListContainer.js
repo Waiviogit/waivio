@@ -12,7 +12,7 @@ import * as apiConfig from '../../../../waivioApi/config.json';
 import { assignProposition, declineProposition } from '../../../user/userActions';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
 
-const PropositionContainer = ({
+const PropositionListContainer = ({
   wobject,
   userName,
   locale,
@@ -64,18 +64,15 @@ const PropositionContainer = ({
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {
       const updatedProposition = propos;
-      // eslint-disable-next-line no-underscore-dangle
-      if (updatedProposition._id === propsId) {
+      const updatedPropositionId = get(updatedProposition, ['_id'], '');
+      if (updatedPropositionId === propsId) {
         updatedProposition.objects.forEach((object, index) => {
-          if (object.object.author_permlink === objPermlink) {
-            updatedProposition.objects[index].assigned = assigned;
-          } else {
-            updatedProposition.objects[index].assigned = null;
-          }
+          const objectAuthorPermlink = get(object, ['object', 'author_permlink']);
+          updatedProposition.objects[index].assigned =
+            objectAuthorPermlink === objPermlink || assigned;
         });
       }
-      // eslint-disable-next-line no-underscore-dangle
-      if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
+      if (updatedProposition.guide.name === companyAuthor && updatedPropositionId !== propsId) {
         updatedProposition.isReservedSiblingObj = true;
       }
       return updatedProposition;
@@ -188,6 +185,7 @@ const PropositionContainer = ({
             isAssign={isAssign}
             match={match}
             userName={userName}
+            history={history}
           />
         </React.Fragment>
       )}
@@ -195,7 +193,7 @@ const PropositionContainer = ({
   );
 };
 
-PropositionContainer.propTypes = {
+PropositionListContainer.propTypes = {
   wobject: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
   locale: PropTypes.string,
@@ -207,7 +205,7 @@ PropositionContainer.propTypes = {
   declinePropos: PropTypes.func,
 };
 
-PropositionContainer.defaultProps = {
+PropositionListContainer.defaultProps = {
   locale: 'en-US',
   match: {},
   user: {},
@@ -224,4 +222,4 @@ export default connect(
     assignPropos: assignProposition,
     declinePropos: declineProposition,
   },
-)(withRouter(injectIntl(PropositionContainer)));
+)(withRouter(injectIntl(PropositionListContainer)));

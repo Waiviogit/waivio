@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ObjectInfo from '../app/Sidebar/ObjectInfo';
-import PropositionContainer from '../rewards/Proposition/PropositionList/PropositionContainer';
+import PropositionContainer from '../rewards/Proposition/PropositionList/PropositionListContainer';
 import './ObjectAbout.less';
 
 const ObjectAbout = ({ isEditMode, wobject, userName }) => (

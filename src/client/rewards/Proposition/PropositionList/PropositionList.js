@@ -23,8 +23,8 @@ const PropositionList = ({
 }) => {
   const minReward = get(currentProposition, ['min_reward'], 0);
   const maxReward = get(currentProposition, ['max_reward'], 0);
-  const rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
-  const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
+  const rewardPrise = `${minReward.toFixed(2)} USD`;
+  const rewardMax = `${maxReward.toFixed(2)} USD`;
 
   return (
     <React.Fragment>
