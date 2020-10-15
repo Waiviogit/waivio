@@ -5,7 +5,7 @@ import { Icon, Button, message, Modal, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { map, get, includes, isEmpty } from 'lodash';
+import { map, get, includes, isEmpty, some } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
@@ -435,10 +435,8 @@ export default class CampaignButtons extends React.Component {
     };
 
     const closeModalReport = () => this.setState({ isModalReportOpen: false });
-    const isHistory =
-      includes(match.path, 'history') ||
-      includes(match.path, 'guideHistory') ||
-      includes(match.path, 'messages');
+    const history = ['history', 'guideHistory', 'messages'];
+    const isHistory = some(history, item => includes(match.path, item));
 
     return (
       <Popover
