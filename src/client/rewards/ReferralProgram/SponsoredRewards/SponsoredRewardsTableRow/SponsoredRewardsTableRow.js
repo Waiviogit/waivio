@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { convertDigits, formatDate } from '../../../rewardsHelper';
-import { SponsoredRewardsTableContent } from '../../ReferralTextHelper';
 import {
-  getBeneficiaresInfo,
   getPrymaryObjectLink,
   getPrymaryObjectName,
   getReservationPermlink,
@@ -14,59 +12,9 @@ import {
 } from '../../ReferralHelper';
 import { getReport } from '../../../../../waivioApi/ApiClient';
 import { setDataForSingleReport } from '../../../rewardsActions';
-import Report from '../../../Report/Report';
+import SponsoredRewardsTableRowView from './SponsoredRewardsTableRowView';
 
 import './SponsoredRewardsTableRow.less';
-
-const SponsoredRewardsTableRowView = (
-  data,
-  sponsorInfo,
-  dateReview,
-  userWeight,
-  sponsor,
-  isModalReportOpen,
-  closeModalReport,
-  currentAmount,
-  currentBalance,
-) => {
-  const {
-    sponsoredActionReviewRequested,
-    sponsoredActionReview,
-    sponsoredActionBeneficiaries,
-    sponsoredActionBeneficiariesName,
-    sponsoredDetailsReservation,
-  } = SponsoredRewardsTableContent(data);
-
-  return (
-    <tr className="SponsoredRewardsTableRow">
-      <td className="SponsoredRewardsTableRow__date-row">{dateReview}</td>
-      <td className="SponsoredRewardsTableRow__action-row">
-        {sponsoredActionReviewRequested}
-        {sponsorInfo && (
-          <React.Fragment>
-            <div>{sponsoredActionReview}</div>
-            <div>
-              {sponsoredActionBeneficiaries}
-              {getBeneficiaresInfo(sponsor)}
-              {sponsoredActionBeneficiariesName}
-              {userWeight}
-            </div>
-          </React.Fragment>
-        )}
-      </td>
-      <td className="SponsoredRewardsTableRow__details-row">
-        {sponsoredDetailsReservation}
-        <Report
-          isModalReportOpen={isModalReportOpen}
-          toggleModal={closeModalReport}
-          sponsor={sponsor}
-        />
-      </td>
-      <td className="SponsoredRewardsTableRow__amount-row">{currentAmount}</td>
-      <td className="SponsoredRewardsTableRow__balance-row">{currentBalance}</td>
-    </tr>
-  );
-};
 
 const SponsoredRewardsTableRow = ({ intl, sponsor }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
@@ -98,7 +46,7 @@ const SponsoredRewardsTableRow = ({ intl, sponsor }) => {
         dispatch(setDataForSingleReport(data));
       })
       .then(() => setModalReportOpen(!isModalReportOpen))
-      .catch(e => console.log(e));
+      .catch(e => e);
   };
 
   const closeModalReport = () => {
