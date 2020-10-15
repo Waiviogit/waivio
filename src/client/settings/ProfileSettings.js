@@ -158,7 +158,7 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, updateProfile, intl, reload } = this.props;
+    const { form, isGuest, userName, user, updateProfile, intl, reload, history } = this.props;
     const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -183,15 +183,16 @@ export default class ProfileSettings extends React.Component {
           );
         if (isGuest) {
           updateProfile(userName, cleanValues).then(data => {
-            if ((isChangedAvatar || isChangedCover) && data.value.isProfileUpdated) {
+            if (isChangedAvatar || isChangedCover || data.value.isProfileUpdated) {
               message.success(
                 intl.formatMessage({
                   id: 'changes_take_effect_later',
                   defaultMessage: 'Changes will take effect later',
                 }),
               );
+              history.push(`/@${user.name}`);
             }
-          });
+          }).catch(e => message.error(e.message));
         } else {
           const profileDateEncoded = [
             ACCOUNT_UPDATE,
@@ -215,7 +216,7 @@ export default class ProfileSettings extends React.Component {
                     defaultMessage: 'Profile updated',
                   }),
                 );
-                this.props.history.push(`/@${userName}`);
+                history.push(`/@${userName}`);
               }, 2000);
             })
             .catch(e => {
