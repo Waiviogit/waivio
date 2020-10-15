@@ -45,10 +45,7 @@ const getUserLocalesArray = getState => {
   return locales;
 };
 
-export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => (
-  dispatch,
-  getState,
-) => {
+export const getFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, getState) => {
   const state = getState();
   const user_languages = getUserLocalesArray(getState);
   const locale = getLocale(state);

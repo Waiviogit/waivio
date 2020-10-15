@@ -374,9 +374,10 @@ export const getUserAccount = (username, withFollowings = false, authUser) =>
     fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${withFollowings}`, {
       headers: {
         ...headers,
-        following: authUser,
         follower: authUser,
+        following: authUser,
       },
+      method: 'GET',
     })
       .then(res => res.json())
       .then(result => resolve(result))
