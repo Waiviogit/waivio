@@ -28,7 +28,7 @@ const PropositionList = ({
 
   return (
     <React.Fragment>
-      {wobject && isEmpty(wobject.parent) && !isEmpty(currentProposition) ? (
+      {wobject && isEmpty(wobject.object.parent) && !isEmpty(currentProposition) ? (
         <div>
           <ObjectCardView wObject={wobject} passedParent={currentProposition} />
           <div className="Campaign__button" role="presentation" onClick={goToProducts}>
@@ -116,7 +116,6 @@ PropositionList.defaultProps = {
   user: {},
   loadingAssignDiscard: false,
   isAssign: false,
-  renderProposition: () => {},
   goToProducts: () => {},
   discardProposition: () => {},
   assignPropositionHandler: () => {},
