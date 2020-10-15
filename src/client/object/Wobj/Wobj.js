@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { isEmpty } from 'lodash';
 import { renderRoutes } from 'react-router-config';
-import Error404 from '../../statics/Error404';
-import { getObjectName } from '../../helpers/wObjectHelper';
-import NotFound from '../../statics/NotFound';
 import DEFAULTS from '../const/defaultValues';
 import ScrollToTopOnMount from '../../components/Utils/ScrollToTopOnMount';
 import WobjHero from '../WobjHero';
@@ -14,45 +11,30 @@ import LeftObjectProfileSidebar from '../../app/Sidebar/LeftObjectProfileSidebar
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../../components/Sidebar/ObjectsRelated/ObjectsRelated';
 
-const Wobj = {
-  render() {
-    const {
-      authenticated,
-      failed,
-      authenticatedUserName: userName,
-      match,
-      wobject,
-      isFetching,
-      history,
-      isEditMode,
-      hasLeftSidebar,
-      toggleViewEditMode,
-      route,
-      appendAlbum,
-    } = this.props;
-    if (failed) return <Error404 />;
+const Wobj = ({
+  authenticated,
+  authenticatedUserName: userName,
+  match,
+  wobject,
+  history,
+  isEditMode,
+  hasLeftSidebar,
+  toggleViewEditMode,
+  route,
+  appendAlbum,
+  handleFollowClick,
+  objectName,
+}) => {
+  const waivioHost = global.postOrigin || 'https://www.waivio.com';
+  const image = wobject.avatar || DEFAULTS.AVATAR;
+  const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
+  const url = `${waivioHost}/object/${match.params.name}`;
+  const albumsAndImagesCount = wobject.albums_count;
+  const displayedObjectName = objectName;
+  const desc = wobject.description || objectName;
 
-    const objectName = getObjectName(wobject);
-    if (!objectName && !isFetching) {
-      return (
-        <div className="main-panel">
-          <NotFound
-            item={match.params.name}
-            title={'there_are_not_object_with_name'}
-            titleDefault={'Sorry! There are no object with name {item} on Waivio'}
-          />
-        </div>
-      );
-    }
-    const waivioHost = global.postOrigin || 'https://www.waivio.com';
-    const desc = wobject.description || objectName;
-    const image = wobject.avatar || DEFAULTS.AVATAR;
-    const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
-    const url = `${waivioHost}/object/${match.params.name}`;
-    const displayedObjectName = objectName;
-    const albumsAndImagesCount = wobject.albums_count;
-
-    return (
+  return (
+    <React.Fragment>
       <div className="main-panel">
         <Helmet>
           <title>{objectName}</title>
@@ -90,8 +72,8 @@ const Wobj = {
           isFetching={isEmpty(wobject)}
           wobject={wobject}
           username={displayedObjectName}
-          onFollowClick={this.handleFollowClick}
-          toggleViewEditMode={this.toggleViewEditMode}
+          onFollowClick={handleFollowClick}
+          toggleViewEditMode={toggleViewEditMode}
           albumsAndImagesCount={albumsAndImagesCount}
           appendAlbum={appendAlbum}
         />
@@ -134,29 +116,30 @@ const Wobj = {
           </div>
         </div>
       </div>
-    );
-  },
+    </React.Fragment>
+  );
 };
 
 Wobj.propTypes = {
   route: PropTypes.shape().isRequired,
   authenticated: PropTypes.bool.isRequired,
-  failed: PropTypes.bool,
   authenticatedUserName: PropTypes.string.isRequired,
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
-  isFetching: PropTypes.bool,
   history: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
   hasLeftSidebar: PropTypes.bool.isRequired,
   toggleViewEditMode: PropTypes.func,
   appendAlbum: PropTypes.func,
+  handleFollowClick: PropTypes.func,
+  objectName: PropTypes.string.isRequired,
 };
 
 Wobj.defaultProps = {
-  failed: false,
   wobject: {},
-  isFetching: false,
   toggleViewEditMode: () => {},
   appendAlbum: () => {},
+  handleFollowClick: () => {},
 };
+
+export default Wobj;

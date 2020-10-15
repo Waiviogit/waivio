@@ -42,7 +42,7 @@
     "@sentry/react": "^5.24.2",
     "@sentry/tracing": "^5.24.2",
     "@textlint/markdown-to-ast": "^6.1.2",
-    "antd": "^3.4.4",
+    "antd": "^3.7.2",
     "babel-core": "^6.25.0",
     "babel-eslint": "^8.0.1",
     "babel-loader": "^7.1.4",
