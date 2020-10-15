@@ -52,8 +52,8 @@ UserCard.propTypes = {
   user: PropTypes.shape(),
   alt: PropTypes.node,
   showFollow: PropTypes.bool,
-  unfollow: PropTypes.func.isRequired,
-  follow: PropTypes.func.isRequired,
+  unfollow: PropTypes.func,
+  follow: PropTypes.func,
 };
 
 UserCard.defaultProps = {
@@ -61,6 +61,8 @@ UserCard.defaultProps = {
   user: {},
   showFollow: true,
   authUser: '',
+  unfollow: () => {},
+  follow: () => {},
 };
 
 export default UserCard;

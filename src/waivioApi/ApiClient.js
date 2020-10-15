@@ -374,9 +374,10 @@ export const getUserAccount = (username, withFollowings = false, authUser) =>
     fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${withFollowings}`, {
       headers: {
         ...headers,
-        following: authUser,
         follower: authUser,
+        following: authUser,
       },
+      method: 'GET',
     })
       .then(res => res.json())
       .then(result => resolve(result))
@@ -883,6 +884,7 @@ export const getRewardsGeneralCounts = ({
   skip = 0,
   locale = 'en-US',
   match,
+  area,
 } = {}) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -891,6 +893,7 @@ export const getRewardsGeneralCounts = ({
       status,
       limit,
       skip,
+      area,
     };
     if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {

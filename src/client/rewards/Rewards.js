@@ -190,27 +190,32 @@ class Rewards extends React.Component {
       authenticated,
       getCryptoPriceHistory: getCryptoPriceHistoryAction,
     } = this.props;
-    const { sortAll, sortEligible, sortReserved, url, activeFilters, area } = this.state;
+    const { sortAll, sortEligible, sortReserved, url, activeFilters } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
 
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
 
-    if (!size(userLocation)) this.props.getCoordinates();
-    if (username && !url) this.getPropositionsByStatus({ username, sort });
-    if (!authenticated && match.params.filterKey === 'all')
-      this.getPropositions({ username, match, activeFilters, area, sort });
+    if (!size(userLocation)) {
+      this.props.getCoordinates().then(coords => {
+        const { lat, lon } = coords.value;
+        this.setState({ area: [+lat, +lon] });
+        if (username && !url) this.getPropositionsByStatus({ username, sort, area: [+lat, +lon] });
+        if (!authenticated && match.params.filterKey === 'all')
+          this.getPropositions({ username, match, activeFilters, sort, area: [+lat, +lon] });
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
     const { username, authenticated } = this.props;
-    const { sortAll, sortEligible, sortReserved, url } = this.state;
+    const { sortAll, sortEligible, sortReserved, url, area } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
 
     if (username !== nextProps.username) {
       const userName = username || nextProps.username;
 
-      this.getPropositionsByStatus({ username: userName, sort });
+      this.getPropositionsByStatus({ username: userName, sort, area });
     } else if (!authenticated && url && this.props.match.params.filterKey !== 'all') {
       this.props.history.push(`/rewards/all`);
     }
@@ -373,10 +378,10 @@ class Rewards extends React.Component {
     }
   };
 
-  getPropositionsByStatus = ({ username, sort }) => {
+  getPropositionsByStatus = ({ username, sort, area }) => {
     const { pendingUpdate, match } = this.props;
     this.setState({ loadingCampaigns: true });
-    this.props.getRewardsGeneralCounts({ userName: username, sort, match }).then(data => {
+    this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
       // eslint-disable-next-line camelcase
       const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
       const newSponsors = sortBy(sponsors);
@@ -762,7 +767,7 @@ class Rewards extends React.Component {
               loading: false,
               hasMore: newPropositions.campaigns && newPropositions.hasMore,
               propositions: this.state.propositions.concat(newPropositions.campaigns),
-              sponsors: newPropositions.sponsors,
+              sponsors: sortBy(newPropositions.sponsors),
               campaignsTypes: newPropositions.campaigns_types,
               guideNames: activeFilters.guideNames,
               types: activeFilters.types,

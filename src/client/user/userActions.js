@@ -274,8 +274,8 @@ export const rejectReview = ({
   reservationPermlink,
   objPermlink,
   appName,
+  guideName,
 }) => (dispatch, getState, { steemConnectAPI }) => {
-  const userName = store.getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
     {
@@ -284,7 +284,7 @@ export const rejectReview = ({
       author: companyAuthor,
       permlink: createCommentPermlink(username, reservationPermlink),
       title: 'Reject review',
-      body: `Sponsor ${userName} (@${userName}) has rejected the review `,
+      body: `Sponsor ${guideName} (@${guideName}) has rejected the review `,
       json_metadata: JSON.stringify({
         app: appName,
         waivioRewards: {

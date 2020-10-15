@@ -275,8 +275,8 @@ const Proposition = ({
 Proposition.propTypes = {
   proposition: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   wobj: PropTypes.shape().isRequired,
-  assignProposition: PropTypes.func.isRequired,
-  discardProposition: PropTypes.func.isRequired,
+  assignProposition: PropTypes.func,
+  discardProposition: PropTypes.func,
   loading: PropTypes.bool,
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,
@@ -294,6 +294,8 @@ Proposition.defaultProps = {
   loading: false,
   users: {},
   match: {},
+  assignProposition: () => {},
+  discardProposition: () => {},
   sortFraudDetection: 'reservation',
 };
 
