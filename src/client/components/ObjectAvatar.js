@@ -4,6 +4,12 @@ import PropTypes from 'prop-types';
 import { DEFAULT_OBJECT_AVATAR_URL } from '../../common/constants/waivio';
 import './ObjectAvatar.less';
 
+export const getObjectUrl = item => {
+  const avatarFields = _.filter(item.fields, o => o.name === 'avatar');
+  const avatarField = _.maxBy(avatarFields, 'weight');
+  return avatarField ? avatarField.body : null;
+};
+
 const ObjectAvatar = ({ item, size }) => {
   let style = {
     minWidth: `${size}px`,
