@@ -150,7 +150,7 @@ export const getMoreFeedContentByObject = ({
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
-export const getFeedContent = (sortBy, queryData, locale, follower) => {
+export const getFeedContent = (sortBy, locale, follower, queryData) => {
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {
       headers: {
@@ -385,12 +385,16 @@ export const getUserAccount = (username, withFollowings = false, authUser) =>
       .catch(error => reject(error));
   });
 
-export const getFollowingUpdates = (userName, count = 5) =>
+export const getFollowingUpdates = (locale, userName, count = 5) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.apiPrefix}${config.user}/${userName}${config.followingUpdates}?users_count=${count}&wobjects_count=${count}`,
       {
-        headers,
+        headers: {
+          ...headers,
+          app: config.appName,
+          locale,
+        },
         method: 'GET',
       },
     )
@@ -637,6 +641,28 @@ export const getCampaignById = campaignId =>
       .catch(error => reject(error));
   });
 
+export const getReviewCheckInfo = ({ campaignId, locale = 'en-US', userName, postPermlink }) => {
+  const queryString = `${
+    postPermlink ? `?userName=${userName}&postPermlink=${postPermlink}` : `?userName=${userName}`
+  }`;
+  return new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.campaign}${config.reviewCheck}/${campaignId}${queryString}`,
+      {
+        headers: {
+          ...headers,
+          app: config.appName,
+          locale,
+        },
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(response => resolve(response.campaign))
+      .catch(error => reject(error));
+  });
+};
+
 export const getPropositions = ({
   limit = 30,
   skip = 0,
@@ -852,20 +878,25 @@ export const getCampaignsByGuideName = guideName =>
 export const getRewardsGeneralCounts = ({
   userName,
   sort,
+  status = ['active'],
   limit = 10,
   skip = 0,
   locale = 'en-US',
+  match,
 } = {}) =>
   new Promise((resolve, reject) => {
+    const reqData = {
+      userName: userName,
+      sort,
+      status,
+      limit,
+      skip,
+    };
+    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
-      body: JSON.stringify({
-        userName: userName,
-        sort,
-        limit,
-        skip,
-      }),
+      body: JSON.stringify(reqData),
     })
       .then(res => res.json())
       .then(result => resolve(result))
@@ -1592,5 +1623,14 @@ export const getWebsitesReports = formData => {
     .then(res => res)
     .catch(e => e);
 };
+
+export const getWebsites = userName =>
+  fetch(`${config.apiPrefix}${config.sites}?userName=${userName}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
 
 export default null;

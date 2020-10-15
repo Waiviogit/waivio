@@ -7,6 +7,7 @@ import {
   deleteSite,
   getDomainList,
   getInfoForManagePage,
+  getWebsites,
   getWebsitesReports,
   // getWebsitesReports,
 } from '../../waivioApi/ApiClient';
@@ -127,6 +128,19 @@ export const getReportsWebsiteInfo = (formData = {}) => (dispatch, getState) => 
     type: GET_REPORTS_PAGE.ACTION,
     payload: {
       promise: getWebsitesReports({ userName, ...formData }),
+    },
+  });
+};
+
+export const GET_OWN_WEBSITE = createAsyncActionType('@website/GET_OWN_WEBSITE');
+
+export const getOwnWebsite = () => (dispatch, getState) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: GET_OWN_WEBSITE.ACTION,
+    payload: {
+      promise: getWebsites(userName),
     },
   });
 };

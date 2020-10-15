@@ -64,6 +64,7 @@ class MapOS extends React.Component {
   componentDidMount() {
     const { radius, center } = this.state;
     const { setMapArea, match } = this.props;
+
     if (match.params.filterKey !== IS_RESERVED)
       setMapArea({ radius, coordinates: center, isMap: true, firstMapLoad: true });
     document.addEventListener('click', this.handleClick);
@@ -73,6 +74,7 @@ class MapOS extends React.Component {
     const { primaryObjectCoordinates, zoomMap, match, wobjects } = this.props;
     const { zoom, center } = this.state;
     let newZoom;
+
     if (
       (!isEmpty(get(nextProps.match, ['params', 'campaignParent'])) &&
         !isEmpty(nextProps.wobjects) &&
@@ -80,11 +82,14 @@ class MapOS extends React.Component {
       (match.params.filterKey === IS_RESERVED && +nextProps.userLocation.lat === center[0])
     ) {
       const coordinates = this.getWobjectsCoordinates(nextProps.wobjects);
+
       if (size(coordinates) === 1) {
         this.setState({ center: [coordinates[0].latitude, coordinates[0].longitude], zoom: 11 });
+
         return;
       }
       const distance = this.getDistance(coordinates, center);
+
       newZoom = has(match, ['params', 'campaignParent']) ? getZoom(distance) - 2 : zoom;
     } else {
       newZoom = zoom;
@@ -126,6 +131,7 @@ class MapOS extends React.Component {
       prevProps.match.params.campaignParent !== this.props.match.params.campaignParent
     ) {
       const firstMapLoad = true;
+
       this.updateMap(firstMapLoad);
     }
     if (
@@ -154,12 +160,14 @@ class MapOS extends React.Component {
       isSecondaryObjectsCards,
       firstMapLoad,
     };
+
     setMapArea(reqParams);
   };
 
   onBoundsChanged = debounce(({ center, zoom }) => {
     this.setState({ radius: this.calculateRadius(zoom) });
     const { setArea } = this.props;
+
     setArea({ center, zoom });
     this.setState({ center, zoom });
   }, 1000);
@@ -173,17 +181,21 @@ class MapOS extends React.Component {
   calculateRadius = zoom => {
     const { width, isFullscreenMode } = this.props;
     let radius = getRadius(zoom);
+
     if (isFullscreenMode)
       radius = this.mapRef.current ? (radius * this.mapRef.current.state.width) / width : null;
+
     return radius;
   };
 
   getWobjectsCoordinates = wobjects => {
     const coordinates = [];
     let parsedMap;
+
     if (!isEmpty(wobjects)) {
       map(wobjects, wobject => {
         const parent = wobject.parent || {};
+
         if (!isEmpty(wobject.map)) {
           parsedMap = getParsedMap(wobject);
           coordinates.push(parsedMap);
@@ -209,6 +221,7 @@ class MapOS extends React.Component {
         const isMarked =
           Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
           match.path.includes('rewards');
+
         return lat && lng ? (
           <CustomMarker
             key={`obj${wobject.author_permlink}`}
@@ -228,6 +241,7 @@ class MapOS extends React.Component {
     const { infoboxData } = this.state;
     const wobj = infoboxData.wobject;
     const wobjPermlink = get(infoboxData, ['wobject', 'author_permlink']);
+
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
         <div
@@ -252,6 +266,7 @@ class MapOS extends React.Component {
   setCoordinates = () => {
     if (navigator && navigator.geolocation) {
       const positionGPS = navigator.geolocation.getCurrentPosition(this.showUserPosition);
+
       if (positionGPS) {
         this.setState({ center: positionGPS });
       }
@@ -278,6 +293,7 @@ class MapOS extends React.Component {
     if (this.state.zoom >= 18) return null;
     const zoom = this.state.zoom + 1;
     const radius = this.calculateRadius(zoom);
+
     this.setState({ zoom, radius });
   };
 
@@ -286,11 +302,13 @@ class MapOS extends React.Component {
     if (this.state.zoom <= 1) return null;
     const zoom = this.state.zoom - 1;
     const radius = this.calculateRadius(zoom);
+
     this.setState({ zoom, radius });
   };
 
   toggleModal = async () => {
     const { zoom } = this.state;
+
     await this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
     await this.setState({ radius: this.calculateRadius(zoom) });
   };
@@ -299,6 +317,7 @@ class MapOS extends React.Component {
     this.toggleModal().then(() => {
       const { setMapArea } = this.props;
       const { radius, center } = this.state;
+
       setMapArea({ radius, coordinates: center, isMap: true });
     });
   };
@@ -317,6 +336,7 @@ class MapOS extends React.Component {
   getAreaSearchData = () => {
     const { center, radius } = this.state;
     const { getAreaSearchData } = this.props;
+
     if (isEmpty(center)) {
       getAreaSearchData({
         radius: 500000000,
@@ -341,6 +361,7 @@ class MapOS extends React.Component {
 
       return Math.max(...distance);
     }
+
     return null;
   };
 
@@ -348,6 +369,7 @@ class MapOS extends React.Component {
     const { heigth, isFullscreenMode, customControl, onCustomControlClick, wobjects } = this.props;
     const { infoboxData, center, zoom } = this.state;
     const markersLayout = this.getMarkers(wobjects);
+
     return center && zoom > 0 ? (
       <div className="MapOS">
         <Map

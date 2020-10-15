@@ -287,14 +287,16 @@ export default class Transfer extends React.Component {
           transferQuery.memo = { id: memo || REWARD.guestTransfer, to: values.to };
         } else {
           transferQuery.to = values.to;
-          if (memo) transferQuery.memo = { id: memo };
           if (values.memo) transferQuery.memo = values.memo;
         }
 
         if (app) transferQuery.memo.app = app;
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
-        if (values.memo) transferQuery.memo.message = values.memo;
-        if (transferQuery.memo) transferQuery.memo = JSON.stringify(transferQuery.memo);
+        if (memo) {
+          transferQuery.memo = { id: memo };
+          if (values.memo) transferQuery.memo.message = values.memo;
+        }
+        transferQuery.memo = JSON.stringify(transferQuery.memo);
 
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, truncate, get, isEmpty, filter, map, size } from 'lodash';
+import { includes, truncate, get, filter, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -17,13 +17,12 @@ const ObjectCardView = ({
   intl,
   wObject,
   options: { mobileView = 'compact', ownRatesOnly = false },
-  passedParent,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
-  const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const address = parseAddress(wObject);
+  const parent = get(wObject, 'parent', {});
 
   useEffect(() => {
     const tagCategory = get(wObject, 'tagCategory');
@@ -71,8 +70,7 @@ const ObjectCardView = ({
       defaultMessage: 'Go to',
     })} ${wobjName}`;
 
-  const parentLink =
-    get(parent, 'defaultShowLink') || `/object/${get(parent, 'author_permlink', '')}`;
+  const parentLink = get(parent, 'defaultShowLink');
 
   return (
     <div key={wObject.author_permlink}>
@@ -153,7 +151,6 @@ const ObjectCardView = ({
 ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   wObject: PropTypes.shape(),
-  passedParent: PropTypes.shape(),
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -163,7 +160,6 @@ ObjectCardView.propTypes = {
 
 ObjectCardView.defaultProps = {
   options: {},
-  passedParent: {},
   wObject: {},
 };
 export default injectIntl(ObjectCardView);

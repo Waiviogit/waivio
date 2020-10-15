@@ -321,3 +321,4 @@ export const getDomainAvailableStatus = state =>
 export const getWebsiteLoading = state => fromWebsite.getWebsiteLoading(state.website);
 export const getManage = state => fromWebsite.getManage(state.website);
 export const getReports = state => fromWebsite.getReports(state.website);
+export const getOwnWebsites = state => fromWebsite.getOwnWebsites(state.website);

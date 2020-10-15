@@ -111,13 +111,14 @@ export const getFollowingObjects = username => (dispatch, getState) => {
 export const GET_FOLLOWING_UPDATES = createAsyncActionType('@user/GET_FOLLOWING_UPDATES');
 export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
   const state = getState();
+  const locale = getLocale(state);
   const isUpdatesFetched = store.getFollowingUpdatesFetched(state);
   const userName = store.getAuthenticatedUserName(state);
   if (!isUpdatesFetched && userName) {
     dispatch({
       type: GET_FOLLOWING_UPDATES.ACTION,
       payload: {
-        promise: ApiClient.getFollowingUpdates(userName, count),
+        promise: ApiClient.getFollowingUpdates(locale, userName, count),
       },
     });
   }

@@ -8,6 +8,7 @@ const initialState = {
   domainAvailableStatus: '',
   manage: {},
   reports: {},
+  ownWebsites: [],
   loading: false,
 };
 
@@ -118,6 +119,14 @@ export default function websiteReducer(state = initialState, action) {
         },
       };
     }
+
+    case websiteAction.GET_OWN_WEBSITE.SUCCESS: {
+      return {
+        ...state,
+        ownWebsites: action.payload,
+      };
+    }
+
     default: {
       return state;
     }
@@ -129,3 +138,4 @@ export const getDomainAvailableStatus = state => get(state, 'domainAvailableStat
 export const getWebsiteLoading = state => get(state, 'loading');
 export const getManage = state => get(state, 'manage');
 export const getReports = state => get(state, 'reports');
+export const getOwnWebsites = state => get(state, 'ownWebsites', []);
