@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getSuitableLanguage } from '../reducers';
+import { getAuthenticatedUserName, getLocale, getSuitableLanguage } from '../reducers';
 import { replacer } from '../helpers/parser';
 
 export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');
@@ -66,27 +66,39 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
 ) => {
   const state = getState();
   const usedLocale = getSuitableLanguage(state);
+  const locale = getLocale(state);
+  const search = replacer(searchString, '@');
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, forParent).then(result => ({
+    payload: ApiClient.searchObjects(search, objType, forParent, 15, locale).then(result => ({
       result,
-      search: searchString,
+      search,
       locale: usedLocale,
     })),
   }).catch(error => console.log('Object search >', error.message));
 };
 
-export const searchUsersAutoCompete = (userName, limit) => dispatch =>
-  dispatch({
-    type: SEARCH_USERS.ACTION,
-    payload: {
-      promise: ApiClient.searchUsers(userName, limit).then(result => ({
-        result,
-        search: userName,
-      })),
-    },
-  });
+export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
+  dispatch,
+  getState,
+) => {
+  const search = replacer(userName, '@');
+  const user = getAuthenticatedUserName(getState());
 
+  if (search) {
+    dispatch({
+      type: SEARCH_USERS.ACTION,
+      payload: {
+        promise: ApiClient.searchUsers(search, user, limit, notGuest)
+          .then(result => ({
+            result,
+            search,
+          }))
+          .catch(console.log),
+      },
+    });
+  }
+};
 export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch =>
   dispatch({
     type: SEARCH_OBJECT_TYPES.ACTION,
