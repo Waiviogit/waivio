@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import { Modal } from 'antd';
-import { addNewBlock } from '../../model';
-import { Block } from '../../util/constants';
-import ImageSetter from '../../../ImageSetter/ImageSetter';
-import withEditor from '../../../Editor/withEditor';
+import { Modal, Button, Tooltip } from 'antd';
+import { addNewBlock } from '../../../model';
+import { Block } from '../../../util/constants';
+import ImageSetter from '../../../../ImageSetter/ImageSetter';
+import withEditor from '../../../../Editor/withEditor';
+import { size } from 'lodash';
+
+import './ImageSideButton.less';
 
 @withEditor
 @injectIntl
@@ -47,7 +50,6 @@ export default class ImageSideButton extends React.Component {
   };
 
   handleOpenModal = () => this.setState({ isModal: !this.state.isModal });
-
   // For testing - don't load images to ipfs
   // onChange(e) {
   //   // e.preventDefault();
@@ -64,7 +66,10 @@ export default class ImageSideButton extends React.Component {
   // }
 
   render() {
-    const { isLoadingImage, isModal } = this.state;
+    const { isLoadingImage, isModal, currentImage } = this.state;
+    const isCurrentImage = size(currentImage);
+    const tooltipMessage = isCurrentImage ? 'modal_set_image' : 'modal_must_upload_image'
+    const tooltipDefaultMessage = isCurrentImage ? 'Set Image' : 'Нou have to upload a image'
     return (
       <React.Fragment>
         <button
@@ -87,10 +92,24 @@ export default class ImageSideButton extends React.Component {
         <Modal
           wrapClassName="Settings__modal"
           onCancel={this.handleOpenModal}
-          okButtonProps={{ disabled: isLoadingImage }}
+          okButtonProps={{ disabled: isLoadingImage || !isCurrentImage }}
           cancelButtonProps={{ disabled: isLoadingImage }}
           visible={isModal}
-          onOk={this.handleOnOk}
+          footer={[
+            <Button key="back" onClick={this.props.close}>
+              {this.props.intl.formatMessage({ id: 'modal.button.cancel', defaultMessage: 'Cancel' })}
+            </Button>,
+            <Tooltip
+              overlayClassName='SideButtonTooltip'
+              title={this.props.intl.formatMessage({ id: tooltipMessage, defaultMessage: tooltipDefaultMessage })}
+              overlayStyle={{ fontSize: '12px' }}
+              children={
+                <Button type="primary" disabled={!isCurrentImage} onClick={this.handleOnOk}>
+                  {this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
+                </Button>
+              }
+            />
+          ]}
         >
           {isModal && (
             <ImageSetter

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { convertToRaw } from 'draft-js';
 import { forEach, get, has, keyBy, isEqual } from 'lodash';
 import { Editor as MediumDraftEditor, createEditorState, fromMarkdown, Entity } from './index';
-import ImageSideButton from './components/sides/ImageSideButton';
+import ImageSideButton from './components/sides/ImageSideButton/ImageSideButton';
 import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
