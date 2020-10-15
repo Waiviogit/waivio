@@ -28,7 +28,7 @@ const PropositionList = ({
 
   return (
     <React.Fragment>
-      {wobject && isEmpty(wobject.object.parent) && !isEmpty(currentProposition) ? (
+      {wobject && isEmpty(wobject.parent) && !isEmpty(currentProposition) ? (
         <div>
           <ObjectCardView wObject={wobject} passedParent={currentProposition} />
           <div className="Campaign__button" role="presentation" onClick={goToProducts}>
@@ -68,7 +68,8 @@ const PropositionList = ({
           map(
             propos.objects,
             wobj =>
-              get(wobj, ['object', 'author_permlink']) === match.params.name && (
+              (get(wobj, ['object', 'author_permlink']) === match.params.name ||
+                get(wobj, ['object', 'parent', 'author_permlink']) === match.params.name) && (
                 <Proposition
                   proposition={propos}
                   wobj={wobj.object}

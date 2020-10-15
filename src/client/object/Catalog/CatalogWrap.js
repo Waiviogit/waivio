@@ -107,7 +107,7 @@ const CatalogWrap = props => {
           proposition.objects,
           object => get(object, ['object', 'author_permlink']) === listItem.author_permlink,
         ),
-        wobj => <PropositionListContainer wobject={wobj} userName={userName} />,
+        wobj => <PropositionListContainer wobject={wobj.object} userName={userName} />,
       ),
     );
 
