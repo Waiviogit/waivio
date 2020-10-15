@@ -1294,11 +1294,11 @@ const mapStateToProps = state => ({
   albums: getObjectAlbums(state),
 });
 
-const mapDispatchToProps = () => ({
+const mapDispatchToProps = {
   appendObject,
   rateObject,
   addImageToAlbumStore,
-});
+};
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

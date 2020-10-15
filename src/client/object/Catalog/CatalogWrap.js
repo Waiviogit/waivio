@@ -6,13 +6,13 @@ import { compose } from 'redux';
 import { get, isEmpty, map, filter, max, min, some } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
+import { sortListItemsBy } from '../wObjectHelper';
 import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import { getObject } from '../../../waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjectsActions';
-import { getSuitableLanguage, getAuthenticatedUserName } from '../../reducers';
+import { getSuitableLanguage, getAuthenticatedUserName, getWobjectNested } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { getPermLink, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
@@ -25,7 +25,7 @@ import Proposition from '../../rewards/Proposition/Proposition';
 import Campaign from '../../rewards/Campaign/Campaign';
 import CatalogSorting from './CatalogSorting/CatalogSorting';
 import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
-import { setWobjectForBreadCrumbs } from '../wobjActions';
+import { setNestedWobject } from '../wobjActions';
 import './CatalogWrap.less';
 
 const CatalogWrap = props => {
@@ -33,6 +33,7 @@ const CatalogWrap = props => {
 
   const locale = useSelector(getSuitableLanguage);
   const userName = useSelector(getAuthenticatedUserName);
+  const wobjectNested = useSelector(getWobjectNested);
 
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [loadingPropositions, setLoadingPropositions] = useState(true);
@@ -72,7 +73,7 @@ const CatalogWrap = props => {
             getPropositions({ userName, match, requiredObject, sort });
           }
           setListItems(wObject.listItems);
-          dispatch(setWobjectForBreadCrumbs(wObject));
+          dispatch(setNestedWobject(wObject));
         });
       } else {
         setListItems(wobject.listItems);
@@ -318,7 +319,7 @@ const CatalogWrap = props => {
 
   return (
     <div>
-      {!hasType(wobject, OBJ_TYPE.PAGE) && (
+      {!hasType(wobjectNested, OBJ_TYPE.PAGE) || !hasType(wobject, OBJ_TYPE.PAGE) ? (
         <React.Fragment>
           {!isEmpty(propositions) && renderCampaign(propositions)}
           {isEditMode && (
@@ -346,8 +347,9 @@ const CatalogWrap = props => {
             </React.Fragment>
           )}
         </React.Fragment>
+      ) : (
+        <BodyContainer full body={wobjectNested.pageContent} />
       )}
-      <BodyContainer full body={getFieldWithMaxWeight(wobject, objectFields.pageContent)} />
     </div>
   );
 };

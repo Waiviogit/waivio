@@ -8,13 +8,13 @@ import {
   GET_CHANGED_WOBJECT_FIELD,
   VOTE_APPEND_ERROR,
   SET_CATALOG_BREADCRUMBS,
-  SET_WOBJECT_FOR_BREADCRUMBS,
+  SET_WOBJECT_NESTED,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 
 const initialState = {
   wobject: {},
-  wobjectBreadCrumbs: {},
+  nestedWobject: {},
   isFetching: false,
   isFailed: false,
   breadcrumb: [],
@@ -278,10 +278,10 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
 
-    case SET_WOBJECT_FOR_BREADCRUMBS: {
+    case SET_WOBJECT_NESTED: {
       return {
         ...state,
-        wobjectBreadCrumbs: action.payload,
+        nestedWobject: action.payload,
       };
     }
 
@@ -302,4 +302,4 @@ export const getObjectTagCategory = state => state.wobject.tagCategories;
 export const getWobjectIsFailed = state => state.wobject.isFailed;
 export const getWobjectIsFatching = state => state.wobject.isFetching;
 export const getBreadCrumbs = state => state.breadcrumb;
-export const getWobjectBreadCrumbs = state => state.wobjectBreadCrumbs;
+export const getWobjectNested = state => state.nestedWobject;

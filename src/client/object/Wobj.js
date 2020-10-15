@@ -30,7 +30,7 @@ import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated'
 import NotFound from '../statics/NotFound';
 import { getObjectName } from '../helpers/wObjectHelper';
 import DEFAULTS from '../object/const/defaultValues';
-import { setCatalogBreadCrumbs, setWobjectForBreadCrumbs } from './wobjActions';
+import { setCatalogBreadCrumbs, setNestedWobject } from './wobjActions';
 
 @withRouter
 @connect(
@@ -48,7 +48,7 @@ import { setCatalogBreadCrumbs, setWobjectForBreadCrumbs } from './wobjActions';
   {
     clearObjectFromStore,
     setCatalogBreadCrumbs,
-    setWobjectForBreadCrumbs,
+    setNestedWobject,
     getObject,
     resetGallery,
     getAlbums,
@@ -67,7 +67,7 @@ export default class Wobj extends React.Component {
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     clearObjectFromStore: PropTypes.func,
-    setWobjectForBreadCrumbs: PropTypes.func,
+    setNestedWobject: PropTypes.func,
     setCatalogBreadCrumbs: PropTypes.func,
     locale: PropTypes.string,
     getAlbums: PropTypes.func,
@@ -83,7 +83,7 @@ export default class Wobj extends React.Component {
     wobject: {},
     clearObjectFromStore: () => {},
     setCatalogBreadCrumbs: () => {},
-    setWobjectForBreadCrumbs: () => {},
+    setNestedWobject: () => {},
   };
 
   static fetchData({ store, match }) {
@@ -123,7 +123,7 @@ export default class Wobj extends React.Component {
       this.props.resetGallery();
       this.props.clearObjectFromStore();
       this.props.setCatalogBreadCrumbs([]);
-      this.props.setWobjectForBreadCrumbs({});
+      this.props.setNestedWobject({});
       this.props.getObject(match.params.name, authenticatedUserName);
     }
   }
@@ -131,7 +131,7 @@ export default class Wobj extends React.Component {
   componentWillUnmount() {
     this.props.clearObjectFromStore();
     this.props.setCatalogBreadCrumbs([]);
-    this.props.setWobjectForBreadCrumbs({});
+    this.props.setNestedWobject({});
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
