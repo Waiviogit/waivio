@@ -47,6 +47,7 @@ class CreateObject extends React.Component {
     openModalBtnText: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     onCreateObject: PropTypes.func,
     onCloseModal: PropTypes.func,
+    defaultObjectType: PropTypes.string,
   };
 
   static defaultProps = {
@@ -162,9 +163,8 @@ class CreateObject extends React.Component {
       withOpenModalBtn,
       openModalBtnText,
       isSingleType,
+      defaultObjectType
     } = this.props;
-
-    const defaultValue = _.get(objectTypes, 'hashtag.name');
 
     const { loading } = this.state;
 
@@ -270,7 +270,7 @@ class CreateObject extends React.Component {
             </span>
             <Form.Item>
               {getFieldDecorator('type', {
-                initialValue: defaultValue,
+                initialValue: defaultObjectType,
                 rules: [
                   {
                     required: true,
@@ -283,7 +283,6 @@ class CreateObject extends React.Component {
               })(
                 <Select
                   showSearch
-                  value="Hashtag"
                   disabled={isSingleType}
                   style={{ width: '100%' }}
                   optionFilterProp="children"

@@ -471,7 +471,10 @@ class EditPost extends Component {
 
             <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
             <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} />
-            <CreateObject onCreateObject={this.handleCreateObject} />
+            <CreateObject
+              defaultObjectType="hashtag"
+              onCreateObject={this.handleCreateObject}
+            />
             {defaultObjects.map(wObj => (
               <div className="edit-post__object-card" key={wObj.id}>
                 <div className="edit-post__object-card-icon">
