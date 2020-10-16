@@ -131,8 +131,8 @@ const WalletTableBodyRow = props => {
     }
     case accountHistoryConstants.CLAIM_REWARD_BALANCE: {
       const claimRewardAmounts = getFormattedClaimRewardPayout(
-        transaction.reward_steem,
-        transaction.reward_sbd,
+        transaction.reward_hive,
+        transaction.reward_hbd,
         transaction.reward_vests,
         totalVestingShares,
         totalVestingFundSteem,

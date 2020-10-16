@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import * as settingsTypes from './settingsActions';
 import * as authTypes from '../auth/authActions';
 import { GET_USER_METADATA } from '../user/usersActions';
@@ -87,7 +88,7 @@ const settings = (state = initialState, action) => {
 export default settings;
 
 export const getIsLoading = state => state.loading;
-export const getLocale = state => state.locale;
+export const getLocale = state => get(state, 'locale', 'en-US');
 export const getReadLanguages = state => state.postLocales;
 export const getVotingPower = state => state.votingPower;
 export const getVotePercent = state => state.votePercent;
