@@ -33,7 +33,7 @@ const PropositionList = ({
           <ObjectCardView wObject={wobject} passedParent={currentProposition} />
           <div className="Campaign__button" role="presentation" onClick={goToProducts}>
             <Button type="primary" size="large">
-              {!rewardMax ? (
+              {maxReward === minReward ? (
                 <React.Fragment>
                   <span>
                     {intl.formatMessage({
@@ -68,7 +68,8 @@ const PropositionList = ({
           map(
             propos.objects,
             wobj =>
-              get(wobj, ['object', 'author_permlink']) === match.params.name && (
+              (get(wobj, ['object', 'author_permlink']) === match.params.name ||
+                get(wobj, ['object', 'parent', 'author_permlink']) === match.params.name) && (
                 <Proposition
                   proposition={propos}
                   wobj={wobj.object}
@@ -116,7 +117,6 @@ PropositionList.defaultProps = {
   user: {},
   loadingAssignDiscard: false,
   isAssign: false,
-  renderProposition: () => {},
   goToProducts: () => {},
   discardProposition: () => {},
   assignPropositionHandler: () => {},
