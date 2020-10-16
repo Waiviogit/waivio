@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get, includes, filter } from 'lodash';
+import { isEmpty, get, includes, filter, some } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
@@ -174,6 +174,8 @@ const Proposition = ({
   };
   const requiredObjectAuthorPermlink = get(proposition, ['required_object', 'author_permlink']);
 
+  const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
+
   return (
     <div className="Proposition">
       <div className="Proposition__header">
@@ -195,11 +197,7 @@ const Proposition = ({
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
-        {assigned ||
-        includes(match.url, HISTORY) ||
-        includes(match.url, GUIDE_HISTORY) ||
-        includes(match.url, MESSAGES) ||
-        includes(match.url, FRAUD_DETECTION) ? (
+        {assigned || some(paramsUrl, item => includes(match.url, item)) ? (
           <CampaignFooter
             post={post}
             loading={loading}
