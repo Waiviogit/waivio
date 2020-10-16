@@ -67,7 +67,6 @@ const CatalogWrap = props => {
       match,
       location: { hash },
     } = props;
-    console.log(wobject);
 
     if (!isEmpty(wobject)) {
       if (hash) {
