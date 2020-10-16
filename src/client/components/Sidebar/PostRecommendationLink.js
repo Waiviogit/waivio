@@ -61,15 +61,17 @@ const PostRecommendationLink = ({ post, navigateToPost, navigateToPostComments }
           </Link>
         )}
       </div>
-      <div className="PostRecommendation__link__image-container">
-        <Link
-          to={`/${post.category}/@${post.author}/${post.permlink}`}
-          onClick={() => navigateToPost(post.author)}
-          className="PostRecommendation__link__post-title"
-        >
-          <img alt="" src={imagePath} className="PostRecommendation__link__image" />
-        </Link>
-      </div>
+      {imagePath && (
+        <div className="PostRecommendation__link__image-container">
+          <Link
+            to={`/${post.category}/@${post.author}/${post.permlink}`}
+            onClick={() => navigateToPost(post.author)}
+            className="PostRecommendation__link__post-title"
+          >
+            <img alt="" src={imagePath} className="PostRecommendation__link__image" />
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
