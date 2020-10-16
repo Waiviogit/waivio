@@ -3,18 +3,7 @@
 exports[`ReferralInstructionsView should create snapshot 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Provider
-    store={
-      Object {
-        "clearActions": [Function],
-        "dispatch": [Function],
-        "getActions": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-      }
-    }
-  >
+  Symbol(enzyme.__unrendered__): <BrowserRouter>
     <IntlProvider
       locale="en"
     >
@@ -73,7 +62,7 @@ ShallowWrapper {
             checked={false}
             id="agreeButton"
             indeterminate={false}
-            onChange={[Function]}
+            onChange={[MockFunction]}
           />
           <label
             className="ReferralInstructions__wrap-conditions__condition-content"
@@ -114,7 +103,7 @@ ShallowWrapper {
         </div>
       </div>
     </IntlProvider>
-  </Provider>,
+  </BrowserRouter>,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
     "checkPropTypes": [Function],
@@ -127,7 +116,7 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "function",
+    "nodeType": "class",
     "props": Object {
       "children": <IntlProvider
         locale="en"
@@ -187,7 +176,7 @@ ShallowWrapper {
               checked={false}
               id="agreeButton"
               indeterminate={false}
-              onChange={[Function]}
+              onChange={[MockFunction]}
             />
             <label
               className="ReferralInstructions__wrap-conditions__condition-content"
@@ -228,32 +217,23 @@ ShallowWrapper {
           </div>
         </div>
       </IntlProvider>,
-      "value": Object {
-        "store": Object {
-          "clearActions": [Function],
-          "dispatch": [Function],
-          "getActions": [Function],
-          "getState": [Function],
-          "replaceReducer": [Function],
-          "subscribe": [Function],
+      "history": Object {
+        "action": "POP",
+        "block": [Function],
+        "createHref": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
         },
-        "subscription": Subscription {
-          "handleChangeWrapper": [Function],
-          "listeners": Object {
-            "notify": [Function],
-          },
-          "onStateChange": [Function],
-          "parentSub": undefined,
-          "store": Object {
-            "clearActions": [Function],
-            "dispatch": [Function],
-            "getActions": [Function],
-            "getState": [Function],
-            "replaceReducer": [Function],
-            "subscribe": [Function],
-          },
-          "unsubscribe": null,
-        },
+        "push": [Function],
+        "replace": [Function],
       },
     },
     "ref": null,
@@ -317,7 +297,7 @@ ShallowWrapper {
               checked={false}
               id="agreeButton"
               indeterminate={false}
-              onChange={[Function]}
+              onChange={[MockFunction]}
             />
             <label
               className="ReferralInstructions__wrap-conditions__condition-content"
@@ -418,7 +398,7 @@ ShallowWrapper {
                 checked={false}
                 id="agreeButton"
                 indeterminate={false}
-                onChange={[Function]}
+                onChange={[MockFunction]}
               />
               <label
                 className="ReferralInstructions__wrap-conditions__condition-content"
@@ -620,7 +600,7 @@ ShallowWrapper {
                   checked={false}
                   id="agreeButton"
                   indeterminate={false}
-                  onChange={[Function]}
+                  onChange={[MockFunction]}
                 />,
                 <label
                   className="ReferralInstructions__wrap-conditions__condition-content"
@@ -671,7 +651,7 @@ ShallowWrapper {
                   "checked": false,
                   "id": "agreeButton",
                   "indeterminate": false,
-                  "onChange": [Function],
+                  "onChange": [MockFunction],
                 },
                 "ref": null,
                 "rendered": null,
@@ -777,31 +757,13 @@ ShallowWrapper {
       },
       "type": [Function],
     },
-    "type": Object {
-      "$$typeof": Symbol(react.provider),
-      "_context": Object {
-        "$$typeof": Symbol(react.context),
-        "Consumer": Object {
-          "$$typeof": Symbol(react.context),
-          "_calculateChangedBits": null,
-          "_context": [Circular],
-        },
-        "Provider": [Circular],
-        "_calculateChangedBits": null,
-        "_currentRenderer": null,
-        "_currentRenderer2": null,
-        "_currentValue": null,
-        "_currentValue2": null,
-        "_threadCount": 0,
-        "displayName": "ReactRedux",
-      },
-    },
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "function",
+      "nodeType": "class",
       "props": Object {
         "children": <IntlProvider
           locale="en"
@@ -861,7 +823,7 @@ ShallowWrapper {
                 checked={false}
                 id="agreeButton"
                 indeterminate={false}
-                onChange={[Function]}
+                onChange={[MockFunction]}
               />
               <label
                 className="ReferralInstructions__wrap-conditions__condition-content"
@@ -902,32 +864,23 @@ ShallowWrapper {
             </div>
           </div>
         </IntlProvider>,
-        "value": Object {
-          "store": Object {
-            "clearActions": [Function],
-            "dispatch": [Function],
-            "getActions": [Function],
-            "getState": [Function],
-            "replaceReducer": [Function],
-            "subscribe": [Function],
+        "history": Object {
+          "action": "POP",
+          "block": [Function],
+          "createHref": [Function],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "pathname": "/",
+            "search": "",
+            "state": undefined,
           },
-          "subscription": Subscription {
-            "handleChangeWrapper": [Function],
-            "listeners": Object {
-              "notify": [Function],
-            },
-            "onStateChange": [Function],
-            "parentSub": undefined,
-            "store": Object {
-              "clearActions": [Function],
-              "dispatch": [Function],
-              "getActions": [Function],
-              "getState": [Function],
-              "replaceReducer": [Function],
-              "subscribe": [Function],
-            },
-            "unsubscribe": null,
-          },
+          "push": [Function],
+          "replace": [Function],
         },
       },
       "ref": null,
@@ -991,7 +944,7 @@ ShallowWrapper {
                 checked={false}
                 id="agreeButton"
                 indeterminate={false}
-                onChange={[Function]}
+                onChange={[MockFunction]}
               />
               <label
                 className="ReferralInstructions__wrap-conditions__condition-content"
@@ -1092,7 +1045,7 @@ ShallowWrapper {
                   checked={false}
                   id="agreeButton"
                   indeterminate={false}
-                  onChange={[Function]}
+                  onChange={[MockFunction]}
                 />
                 <label
                   className="ReferralInstructions__wrap-conditions__condition-content"
@@ -1294,7 +1247,7 @@ ShallowWrapper {
                     checked={false}
                     id="agreeButton"
                     indeterminate={false}
-                    onChange={[Function]}
+                    onChange={[MockFunction]}
                   />,
                   <label
                     className="ReferralInstructions__wrap-conditions__condition-content"
@@ -1345,7 +1298,7 @@ ShallowWrapper {
                     "checked": false,
                     "id": "agreeButton",
                     "indeterminate": false,
-                    "onChange": [Function],
+                    "onChange": [MockFunction],
                   },
                   "ref": null,
                   "rendered": null,
@@ -1451,25 +1404,7 @@ ShallowWrapper {
         },
         "type": [Function],
       },
-      "type": Object {
-        "$$typeof": Symbol(react.provider),
-        "_context": Object {
-          "$$typeof": Symbol(react.context),
-          "Consumer": Object {
-            "$$typeof": Symbol(react.context),
-            "_calculateChangedBits": null,
-            "_context": [Circular],
-          },
-          "Provider": [Circular],
-          "_calculateChangedBits": null,
-          "_currentRenderer": null,
-          "_currentRenderer2": null,
-          "_currentValue": null,
-          "_currentValue2": null,
-          "_threadCount": 0,
-          "displayName": "ReactRedux",
-        },
-      },
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {
@@ -1498,5 +1433,6 @@ ShallowWrapper {
     Symbol(enzyme.__providerValues__): undefined,
   },
   Symbol(enzyme.__providerValues__): Map {},
+  Symbol(enzyme.__childContext__): null,
 }
 `;
