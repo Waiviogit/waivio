@@ -56,6 +56,9 @@ export default class WobjectContainer extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     match: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
+    location: PropTypes.shape({
+      hash: PropTypes.string,
+    }).isRequired,
     failed: PropTypes.bool,
     isFetching: PropTypes.bool,
     getObject: PropTypes.func.isRequired,
@@ -91,13 +94,13 @@ export default class WobjectContainer extends React.Component {
 
   constructor(props) {
     super(props);
-
+    const isPage = props.match.params[0] === OBJECT_TYPE.PAGE;
     this.state = {
       isEditMode:
         props.wobject.type === OBJECT_TYPE.PAGE &&
         props.authenticated &&
         !props.wobject[objectFields.pageContent],
-      hasLeftSidebar: props.match.params[0] !== OBJECT_TYPE.PAGE,
+      hasLeftSidebar: !isPage || (isPage && props.location.hash),
     };
   }
 
