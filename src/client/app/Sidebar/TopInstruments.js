@@ -162,52 +162,48 @@ class TopInstruments extends React.Component {
     });
     return (
       <React.Fragment>
-        {isPlatformConnected && (
+        {!isLoading ? (
           <React.Fragment>
-            {!isLoading ? (
-              <React.Fragment>
-                {isAuthenticated && (
-                  <div
-                    className={classNames(
-                      'SidebarContentBlock SidebarContentBlock__title ttu justify-between',
-                      {
-                        mobileTitle: isMobile,
-                      },
-                    )}
-                  >
-                    {instrumentsTitle}
-                    <div className="SidebarContentBlock__amount">{instrumentsCount}</div>
-                  </div>
-                )}
-                {!_.isEmpty(instrumentsToShow[cryptoMarket.name]) &&
-                  this.getInstruments(instruments, cryptoMarket)}
-                {isMobile && instrumentsToShow[cryptoMarket.name].length > 3 && (
-                  <div
-                    className="HomeBar__show-more"
-                    onClick={this.toggleModal}
-                    role="presentation"
-                  >
-                    {intl.formatMessage({
-                      id: 'show_more',
-                      defaultMessage: 'Show more',
-                    })}
-                  </div>
-                )}
-                <Modal
-                  className="HomeBar__modal"
-                  destroyOnClose
-                  title={instrumentsTitle}
-                  visible={isModalOpen}
-                  footer={null}
-                  onCancel={this.toggleModal}
+            {isAuthenticated && (<div
+              className={classNames(
+                'SidebarContentBlock SidebarContentBlock__title ttu justify-between',
+                {
+                  mobileTitle: isMobile,
+                },
+              )}
+            >
+              {instrumentsTitle}
+              <div className="SidebarContentBlock__amount">{instrumentsCount}</div>
+            </div>)}
+            {isPlatformConnected && <React.Fragment>
+              {!_.isEmpty(instrumentsToShow[cryptoMarket.name]) &&
+              this.getInstruments(instruments, cryptoMarket)}
+              {isMobile && instrumentsToShow[cryptoMarket.name].length > 3 && (
+                <div
+                  className="HomeBar__show-more"
+                  onClick={this.toggleModal}
+                  role="presentation"
                 >
-                  {this.getInstruments(instrumentsToShow[cryptoMarket.name])}
-                </Modal>
-              </React.Fragment>
-            ) : (
-              <TopInstrumentsLoading />
-            )}
+                  {intl.formatMessage({
+                    id: 'show_more',
+                    defaultMessage: 'Show more',
+                  })}
+                </div>
+              )}
+              <Modal
+                className="HomeBar__modal"
+                destroyOnClose
+                title={instrumentsTitle}
+                visible={isModalOpen}
+                footer={null}
+                onCancel={this.toggleModal}
+              >
+                {this.getInstruments(instrumentsToShow[cryptoMarket.name])}
+              </Modal>
+            </React.Fragment>}
           </React.Fragment>
+        ) : (
+          <TopInstrumentsLoading/>
         )}
       </React.Fragment>
     );
