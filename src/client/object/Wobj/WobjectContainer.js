@@ -134,7 +134,7 @@ export default class WobjectContainer extends React.Component {
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
-  appendAlbum = async () => {
+  appendAlbum = () => {
     const formData = {
       galleryAlbum: 'Photos',
     };
@@ -143,8 +143,8 @@ export default class WobjectContainer extends React.Component {
     const data = prepareAlbumData(formData, authenticatedUserName, wobject);
     const album = prepareAlbumToStore(data);
 
-    const { author } = await this.props.appendObject(data);
-    await this.props.addAlbumToStore({ ...album, author });
+    const { author } = this.props.appendObject(data);
+    this.props.addAlbumToStore({ ...album, author });
   };
 
   render() {
@@ -190,6 +190,7 @@ export default class WobjectContainer extends React.Component {
           hasLeftSidebar={hasLeftSidebar}
           toggleViewEditMode={this.toggleViewEditMode}
           objectName={objectName}
+          appendAlbum={this.appendAlbum}
         />
       </React.Fragment>
     );
