@@ -366,10 +366,7 @@ class ObjectInfo extends React.Component {
           objectFields.rating,
           <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
         )}
-        {this.listItem(
-          objectFields.tagCategory,
-          tagCategoriesList && this.renderTagCategories(tagCategoriesList),
-        )}
+        {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
         {isRenderGallery && (!isEmpty(pictures) || accessExtend) && (
           <div className="field-info">
