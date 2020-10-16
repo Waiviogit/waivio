@@ -39,7 +39,7 @@ export default (localizer, objectData) => ({
     'rewards_details_account_not_blacklisted',
     'User account is not blacklisted by ',
   ),
-  referencedAccounts: localizer('rewards_details_referenced_accounts.', 'or referenced accounts.'),
+  referencedAccounts: localizer('rewards_details_referenced_accounts', 'or referenced accounts.'),
   postRequirements: localizer('rewards_details_post_requirements', 'Post requirements'),
   reviewEligibleAward: localizer(
     'rewards_details_review_eligible_award',
@@ -68,7 +68,7 @@ export default (localizer, objectData) => ({
   reward: localizer('rewards_details_reward', 'Reward'),
   amountRewardDetermined: localizer(
     'rewards_details_amount_reward_determined',
-    'The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Steem Power) and direct payments (liquid HIVE). Only upvotes from registered accounts',
+    'The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (HIVE Power) and direct payments (liquid HIVE). Only upvotes from registered accounts',
   ),
   countTowardsPaymentRewards: localizer(
     'rewards_details_count_towards_payment_rewards',
