@@ -1,4 +1,3 @@
-import { message } from 'antd';
 import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,29 +20,22 @@ import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { getPermLink, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
-import * as apiConfig from '../../../waivioApi/config.json';
-import { assignProposition, declineProposition } from '../../user/userActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
-import Proposition from '../../rewards/Proposition/Proposition';
 import Campaign from '../../rewards/Campaign/Campaign';
 import CatalogSorting from './CatalogSorting/CatalogSorting';
 import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
 import { setWobjectForBreadCrumbs } from '../wobjActions';
-
+import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import './CatalogWrap.less';
 
 const CatalogWrap = props => {
   const dispatch = useDispatch();
-
   const locale = useSelector(getSuitableLanguage);
   const userName = useSelector(getAuthenticatedUserName);
   const currentWobject = useSelector(getWobjectBreadCrumbs);
-
-  const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [loadingPropositions, setLoadingPropositions] = useState(true);
   const [propositions, setPropositions] = useState([]);
   const [sort, setSorting] = useState('recency');
-  const [isAssign, setIsAssign] = useState(false);
   const [listItems, setListItems] = useState([]);
 
   const getPropositions = ({ match, requiredObject, sorting }) => {
@@ -85,33 +77,11 @@ const CatalogWrap = props => {
         getPropositions({ userName, match, requiredObject, sort });
       }
     }
-  }, [props.location.hash, props.wobject, userName]);
+  }, [props.location.hash, props.wobject.author_permlink, userName]);
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
     setListItems(sortListItemsBy(currentList, 'recency'));
-  };
-
-  const updateProposition = (propsId, isassign, objPermlink, companyAuthor) => {
-    propositions.map(proposition => {
-      const updatedProposition = proposition;
-      const propositionId = get(updatedProposition, '_id');
-
-      if (propositionId === propsId) {
-        updatedProposition.objects.forEach((object, index) => {
-          if (object.object.author_permlink === objPermlink) {
-            updatedProposition.objects[index].assigned = isassign;
-          } else {
-            updatedProposition.objects[index].assigned = null;
-          }
-        });
-      }
-
-      if (updatedProposition.guide.name === companyAuthor && propositionId !== propsId) {
-        updatedProposition.isReservedSiblingObj = true;
-      }
-      return updatedProposition;
-    });
   };
 
   /**
@@ -129,92 +99,6 @@ const CatalogWrap = props => {
    * @param username
    * @param currencyId
    */
-  const assignPropositionHandler = ({
-    companyAuthor,
-    companyPermlink,
-    resPermlink,
-    objPermlink,
-    companyId,
-    primaryObjectName,
-    secondaryObjectName,
-    amount,
-    proposition,
-    proposedWobj,
-    username,
-    currencyId,
-  }) => {
-    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
-
-    setLoadingAssignDiscard(true);
-
-    dispatch(
-      assignProposition({
-        companyAuthor,
-        companyPermlink,
-        objPermlink,
-        resPermlink,
-        appName,
-        primaryObjectName,
-        secondaryObjectName,
-        amount,
-        proposition,
-        proposedWobj,
-        username,
-        currencyId,
-      }),
-    )
-      .then(() => {
-        message.success(
-          props.intl.formatMessage({
-            id: 'assigned_successfully_update',
-            defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
-          }),
-        );
-
-        setPropositions(updateProposition(companyId, true, objPermlink, companyAuthor));
-
-        setLoadingAssignDiscard(false);
-        setIsAssign(true);
-      })
-      .catch(e => {
-        setLoadingAssignDiscard(false);
-        setIsAssign(false);
-        throw e;
-      });
-  };
-
-  const discardProposition = ({
-    companyAuthor,
-    companyPermlink,
-    companyId,
-    objPermlink,
-    unreservationPermlink,
-    reservationPermlink,
-  }) => {
-    setLoadingAssignDiscard(true);
-
-    dispatch(
-      declineProposition({
-        companyAuthor,
-        companyPermlink,
-        companyId,
-        objPermlink,
-        unreservationPermlink,
-        reservationPermlink,
-      }),
-    )
-      .then(() => {
-        const updatedPropositions = updateProposition(companyId, false, objPermlink);
-        setPropositions(updatedPropositions);
-        setLoadingAssignDiscard(false);
-        setIsAssign(false);
-      })
-      .catch(e => {
-        message.error(e.error_description);
-        setLoadingAssignDiscard(false);
-        setIsAssign(true);
-      });
-  };
 
   const renderProposition = (propositionsObject, listItem) =>
     map(propositionsObject, proposition =>
@@ -223,25 +107,7 @@ const CatalogWrap = props => {
           proposition.objects,
           object => get(object, ['object', 'author_permlink']) === listItem.author_permlink,
         ),
-        wobj =>
-          wobj.object &&
-          wobj.object.author_permlink && (
-            <Proposition
-              proposition={propositionsObject[0]}
-              wobj={wobj.object}
-              wobjPrice={wobj.reward}
-              assignCommentPermlink={wobj.permlink}
-              assignProposition={assignPropositionHandler}
-              discardProposition={discardProposition}
-              authorizedUserName={userName}
-              loading={loadingAssignDiscard}
-              key={`${wobj.object.author_permlink}`}
-              assigned={wobj.assigned}
-              history={props.history}
-              isAssign={isAssign}
-              match={props.match}
-            />
-          ),
+        wobj => <PropositionListContainer wobject={wobj.object} userName={userName} />,
       ),
     );
 
@@ -358,7 +224,6 @@ CatalogWrap.propTypes = {
   location: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
-  history: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
 };
 
