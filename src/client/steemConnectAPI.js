@@ -44,7 +44,6 @@ function sc2Extended() {
   const sc2api = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
-    rebrandedApi: true,
   });
 
   const sc2Proto = Object.create(Object.getPrototypeOf(sc2api));

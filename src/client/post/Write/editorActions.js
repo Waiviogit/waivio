@@ -147,7 +147,6 @@ const broadcastComment = (
     },
   ];
   operations.push(commentOp);
-  console.log(permlink);
   if (isUpdating) return steemConnectAPI.broadcast(operations);
   const guestHivePresent = hiveBeneficiaryAccount && isGuest ? 5000 : 0;
   const commentOptionsConfig = {
@@ -157,7 +156,6 @@ const broadcastComment = (
     allow_curation_rewards: true,
     max_accepted_payout: '1000000.000 HBD',
     percent_hbd: isGuest ? guestHivePresent : 10000,
-    percent_hive_dollars: 0,
     extensions: [],
   };
 
