@@ -5,11 +5,11 @@ import { AutoComplete } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
+import { getObjectName } from '../../helpers/wObjectHelper';
 import { getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
 import './SearchObjectsAutocomplete.less';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
-import { getObjectName } from "../../helpers/wObjectHelper";
 
 @injectIntl
 @connect(
