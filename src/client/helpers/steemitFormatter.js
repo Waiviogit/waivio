@@ -99,10 +99,10 @@ const createFormatter = api => {
         price_per_steem = parseFloat(base.split(' ')[0]);
       }
       const savings_balance = account.savings_balance;
-      const savings_sbd_balance = account.savings_sbd_balance;
+      const savings_sbd_balance = account.savings_hbd_balance;
       const balance_steem = parseFloat(account.balance.split(' ')[0]);
       const saving_balance_steem = parseFloat(savings_balance.split(' ')[0]);
-      const sbd_balance = parseFloat(account.sbd_balance);
+      const sbd_balance = parseFloat(account.hbd_balance);
       const sbd_balance_savings = parseFloat(savings_sbd_balance.split(' ')[0]);
 
       let conversionValue = 0;
