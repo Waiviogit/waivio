@@ -1,4 +1,5 @@
 import Cookie from 'js-cookie';
+import { get } from 'lodash';
 import { createAction } from 'redux-actions';
 import {
   getAuthenticatedUserName,
@@ -125,9 +126,9 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         reject(e);
       }
     });
-  } else if (!steemConnectAPI.options.accessToken && !isGuest) {
+  } else if (!steemConnectAPI.accessToken && !isGuest) {
     promise = Promise.reject(new Error('There is not accessToken present'));
-  } else if (isGuest || steemConnectAPI.options.accessToken) {
+  } else if (isGuest || steemConnectAPI.accessToken) {
     promise = new Promise(async (resolve, reject) => {
       try {
         const scUserData = await steemConnectAPI.me();
@@ -220,7 +221,7 @@ export const changeSorting = sorting => dispatch => {
 export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
   // eslint-disable-next-line camelcase
-  const json_metadata = JSON.parse(state.auth.user.posting_json_metadata);
+  const json_metadata = JSON.parse(get(state, ['auth', 'user', 'posting_json_metadata']));
 
   json_metadata.profile = { ...json_metadata.profile, ...values };
 

@@ -17,7 +17,7 @@ ShallowWrapper {
       Object {
         "balance": "100",
         "savings_balance": "100 HIVE",
-        "savings_sbd_balance": "1000 HIVE",
+        "savings_hbd_balance": "1000 HIVE",
         "vesting_shares": "0",
       }
     }

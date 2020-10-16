@@ -15,7 +15,6 @@ import { IS_RESERVED } from '../common/constants/rewards';
 let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
-  'Sec-Fetch-Site': 'cross-site',
 };
 
 export function handleErrors(response) {

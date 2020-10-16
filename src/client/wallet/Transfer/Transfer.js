@@ -7,7 +7,6 @@ import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
-import SteemConnect from '../../steemConnectAPI';
 import { getCryptoPriceHistory } from '../../app/appActions';
 import { closeTransfer, sendPendingTransfer } from '../walletActions';
 import { notify } from '../../app/Notification/notificationActions';
@@ -315,7 +314,12 @@ export default class Transfer extends React.Component {
             }
           });
         } else {
-          const win = window.open(SteemConnect.sign('transfer', transferQuery), '_blank');
+          const win = window.open(
+            `https://hivesigner.com/sign/transfer?amount=${transferQuery.amount}&to=${
+              transferQuery.to
+            }${transferQuery.memo ? `&memo=${transferQuery.memo}` : ''}`,
+            '_blank',
+          );
           win.focus();
         }
 
@@ -398,7 +402,7 @@ export default class Transfer extends React.Component {
     }
 
     const selectedBalance =
-      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
+      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
     const currentSelectedBalance = this.props.isGuest ? user.balance : selectedBalance;
 
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
@@ -506,7 +510,7 @@ export default class Transfer extends React.Component {
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
     const balance =
-      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
+      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
     const currentBalance = isGuest ? `${user.balance} HIVE` : balance;
     const isChangesDisabled = !!memo;
     const currencyPrefix = getFieldDecorator('currency', {
