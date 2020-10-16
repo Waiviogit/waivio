@@ -35,7 +35,8 @@ function broadcast(operations, isReview, actionAuthor) {
 
 async function getUserAccount() {
   const userData = await getValidTokenData();
-  const account = await waivioAPI.getUserAccount(userData.userData.name, true);
+  const userName = userData.userData.name;
+  const account = await waivioAPI.getUserAccount(userName, true, userName);
   return { account, name: account.name };
 }
 
