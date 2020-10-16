@@ -187,7 +187,7 @@ const UserWalletSummary = ({
                 <UserWalletSummaryLoading />
               ) : (
                 <span>
-                  <FormattedNumber value={parseFloat(user.sbd_balance)} />
+                  <FormattedNumber value={parseFloat(user.hbd_balance)} />
                   {' HBD'}
                 </span>
               )}
@@ -205,7 +205,7 @@ const UserWalletSummary = ({
                 <span>
                   <FormattedNumber value={parseFloat(user.savings_balance)} />
                   {' HIVE, '}
-                  <FormattedNumber value={parseFloat(user.savings_sbd_balance)} />
+                  <FormattedNumber value={parseFloat(user.savings_hbd_balance)} />
                   {' HBD'}
                 </span>
               )}

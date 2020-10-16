@@ -77,8 +77,8 @@ const WalletTransaction = ({
       return (
         <ClaimReward
           timestamp={transaction.timestamp}
-          rewardSteem={transactionDetails.reward_steem}
-          rewardSbd={transactionDetails.reward_sbd}
+          rewardSteem={transactionDetails.reward_hive}
+          rewardSbd={transactionDetails.reward_hbd}
           rewardVests={transactionDetails.reward_vests}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}

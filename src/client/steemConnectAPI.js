@@ -1,4 +1,4 @@
-import sc2 from 'sc2-sdk';
+import hivesigner from 'hivesigner';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from './helpers/getToken';
 
@@ -37,7 +37,7 @@ async function getUserAccount() {
 function sc2Extended() {
   const isGuest = () => waivioAPI.isGuest;
 
-  const sc2api = sc2.Initialize({
+  const sc2api = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     baseURL: process.env.STEEMCONNECT_HOST,
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
