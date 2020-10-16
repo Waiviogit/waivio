@@ -19,7 +19,6 @@ export const referralDetailContent = data => {
     indexPercent,
     referralsPercent,
     referralDuration,
-    waivioOffers,
     additionData,
     suspendedTimer,
   } = data;
@@ -34,7 +33,7 @@ export const referralDetailContent = data => {
         id="referrals_details_description"
         defaultMessage="Waivio offers {countOffers} of its combined processing fees to referral parties for brining new users to Waivio.com. These commissions will be paid on all the sponsored rewards for these users for a period of {referralDuration} days from their initial visit."
         values={{
-          countOffers: <span className="ReferralDetail__offer-percent">{waivioOffers}%</span>,
+          countOffers: <span className="ReferralDetail__offer-percent">{referralsPercent}%</span>,
           referralDuration,
         }}
       />

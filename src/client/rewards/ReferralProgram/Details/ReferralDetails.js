@@ -53,7 +53,6 @@ const ReferralDetail = props => {
     indexPercent: indexServerPercent,
     referralsPercent: referralServerPercent,
     referralDuration,
-    waivioOffers: referralServerPercent,
     additionData,
     suspendedTimer,
   };
