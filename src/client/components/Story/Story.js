@@ -468,7 +468,7 @@ class Story extends React.Component {
       }
     }
 
-    return isEnoughData ? (
+    return isEnoughData && post.depth >= 0 ? (
       <VisibilitySensor onChange={this.handleChangeVisibility} partialVisibility>
         <div className="Story" id={`${author}-${post.permlink}`}>
           {rebloggedUI}

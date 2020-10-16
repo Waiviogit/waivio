@@ -5,6 +5,7 @@ import { AutoComplete } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
+import { getObjectName } from '../../helpers/wObjectHelper';
 import { getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
 import './SearchObjectsAutocomplete.less';
@@ -125,7 +126,7 @@ class SearchObjectsAutocomplete extends Component {
           .filter(obj => !itemsIdsToOmit.includes(obj.id))
           .map(obj => (
             <AutoComplete.Option key={obj.id} label={obj.id} className="obj-search-option item">
-              <ObjectSearchCard object={obj} name={obj.name} type={obj.type} />
+              <ObjectSearchCard object={obj} name={getObjectName(obj)} type={obj.type} />
             </AutoComplete.Option>
           ))
       : [];
