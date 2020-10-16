@@ -1140,5 +1140,16 @@
   "no_results": "По запросу '{search}' ничего не найдено",
   "modal_upload_image": "Загрузить изображение",
   "modal_set_image": "Установить изображение",
-  "modal_must_upload_image": "Вам необходимо загрузить изображение"
+  "modal_must_upload_image": "Вам необходимо загрузить изображение",
+  "upload_video_placeholder": "Вставьте ссылку (YouTube | DTube | Vimeo | 3Speak) и нажмите 'Enter'",
+  "createPost.selectLabel.15m": "15 минут",
+  "createPost.selectLabel.30m": "30 минут",
+  "createPost.selectLabel.1h": "1 час",
+  "createPost.selectLabel.4h": "4 часа",
+  "createPost.selectLabel.8h": "8 часа",
+  "createPost.selectLabel.24h": "24 часа",
+  "createPost.selectLabel.1week": "1 неделя",
+  "createPost.selectLabel.18days": "18 дней",
+  "createPost.selectLabel.3weeks": "3 недели",
+  "createPost.selectLabel.custom": "Выбрать дату"
 }
