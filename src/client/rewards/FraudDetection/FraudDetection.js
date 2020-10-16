@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { get, map } from 'lodash';
+import { get, map, size } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import {
   getAuthenticatedUserName,
@@ -76,7 +76,7 @@ const FraudDetection = ({
         guideName: userName,
         fraudSuspicion: true,
         sort: sortFraudDetection,
-        skip: fraudSuspicionData ? fraudSuspicionData.length : 0,
+        skip: size(fraudSuspicionData),
       };
       getFraudSuspicionData(requestData).then(() => {
         setLoading(false);
@@ -92,7 +92,7 @@ const FraudDetection = ({
         guideName: userName,
         fraudSuspicion: true,
         sort: sortChanged,
-        skip: fraudSuspicionData ? fraudSuspicionData.length : 0,
+        skip: size(fraudSuspicionData),
       };
       getFraudSuspicionData(requestData).then(() => {
         setLoadingCampaigns(false);

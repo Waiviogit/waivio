@@ -5,7 +5,7 @@ import { Icon, Button, message, Modal, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { map, get, includes, isEmpty, some } from 'lodash';
+import { map, get, includes, isEmpty, some, every } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
@@ -644,6 +644,7 @@ export default class CampaignButtons extends React.Component {
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
     const status = this.getPropositionStatus(proposition);
     const buttonsTitleForRender = buttonsTitle[status] || buttonsTitle.default;
+    const matchParams = [GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
 
     return (
       <div className="Buttons">
@@ -675,9 +676,7 @@ export default class CampaignButtons extends React.Component {
           {this.renderPostPopoverMenu()}
         </div>
         {(isAssigned || status === ASSIGNED) &&
-          this.matchParams !== GUIDE_HISTORY &&
-          this.matchParams !== MESSAGES &&
-          this.matchParams !== FRAUD_DETECTION && (
+          every(matchParams, item => item !== this.matchParams) && (
             <React.Fragment>
               <Button type="primary" onClick={this.openModalDetails}>
                 {intl.formatMessage({
@@ -687,9 +686,7 @@ export default class CampaignButtons extends React.Component {
               </Button>
             </React.Fragment>
           )}
-        {(this.matchParams === MESSAGES ||
-          this.matchParams === GUIDE_HISTORY ||
-          this.matchParams === FRAUD_DETECTION) && (
+        {some(matchParams, item => item === this.matchParams) && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">
