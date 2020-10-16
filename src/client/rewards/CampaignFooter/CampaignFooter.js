@@ -81,6 +81,7 @@ class CampaignFooter extends React.Component {
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
     sendCommentMessages: PropTypes.func,
+    sortFraudDetection: PropTypes.string,
     locale: PropTypes.string,
     follower: PropTypes.string,
   };
@@ -111,6 +112,7 @@ class CampaignFooter extends React.Component {
     isGuest: false,
     sendCommentMessages: () => {},
     proposition: {},
+    sortFraudDetection: 'reservation',
     locale: 'en-US',
     follower: '',
   };
@@ -460,6 +462,7 @@ class CampaignFooter extends React.Component {
       getMessageHistory,
       blacklistUsers,
       reservedComments,
+      sortFraudDetection,
     } = this.props;
     const isRewards = !isEmpty(match)
       ? match.params.filterKey === 'reserved' ||
@@ -513,6 +516,7 @@ class CampaignFooter extends React.Component {
               numberOfComments={numberOfComments}
               getMessageHistory={getMessageHistory}
               blacklistUsers={blacklistUsers}
+              sortFraudDetection={sortFraudDetection}
             />
           )}
         </div>

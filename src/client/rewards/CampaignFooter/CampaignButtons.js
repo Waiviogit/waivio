@@ -5,7 +5,7 @@ import { Icon, Button, message, Modal, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { map, get, includes, isEmpty, some } from 'lodash';
+import { map, get, includes, isEmpty, some, every } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
@@ -18,12 +18,18 @@ import {
   HISTORY,
   IS_RESERVED,
   IS_ALL,
+  FRAUD_DETECTION,
 } from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview, changeReward, reinstateReward } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
+import {
+  changeBlackAndWhiteLists,
+  setDataForSingleReport,
+  getBlacklist,
+  getFraudSuspicion,
+} from '../rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
 import '../../components/StoryFooter/Buttons.less';
@@ -37,6 +43,7 @@ import '../../components/StoryFooter/Buttons.less';
   getBlacklist,
   changeReward,
   reinstateReward,
+  getFraudSuspicion,
 })
 export default class CampaignButtons extends React.Component {
   static propTypes = {
@@ -66,6 +73,8 @@ export default class CampaignButtons extends React.Component {
     setDataForSingleReport: PropTypes.func.isRequired,
     getBlacklist: PropTypes.func.isRequired,
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
+    sortFraudDetection: PropTypes.string,
+    getFraudSuspicion: PropTypes.func,
   };
 
   static defaultProps = {
@@ -84,7 +93,9 @@ export default class CampaignButtons extends React.Component {
     numberOfComments: null,
     getMessageHistory: () => {},
     onActionInitiated: () => {},
+    getFraudSuspicion: () => {},
     blacklistUsers: [],
+    sortFraudDetection: 'reservation',
   };
 
   constructor(props) {
@@ -163,6 +174,22 @@ export default class CampaignButtons extends React.Component {
     });
   }
 
+  updatePage = () => {
+    const { user, sortFraudDetection } = this.props;
+
+    if (this.matchParams === FRAUD_DETECTION) {
+      const requestData = {
+        guideName: user.name,
+        fraudSuspicion: true,
+        sort: sortFraudDetection,
+      };
+
+      return this.props.getFraudSuspicion(requestData);
+    }
+
+    return this.props.getMessageHistory();
+  };
+
   handleRejectClick = () => {
     const { proposition } = this.props;
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
@@ -183,15 +210,15 @@ export default class CampaignButtons extends React.Component {
         appName,
       })
       .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'review_rejected',
-            defaultMessage: 'Review rejected',
-          }),
-        );
-      })
-      .then(() => {
-        setTimeout(() => this.props.getMessageHistory(), 8000);
+        setTimeout(() => {
+          this.updatePage();
+          message.success(
+            this.props.intl.formatMessage({
+              id: 'review_rejected',
+              defaultMessage: 'Review rejected',
+            }),
+          );
+        }, 8000);
       })
       .catch(e => message.error(e.message));
   };
@@ -338,7 +365,8 @@ export default class CampaignButtons extends React.Component {
   getPopoverMenu = () => {
     const { propositionStatus } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) {
+    const matchParams = [MESSAGES, GUIDE_HISTORY, FRAUD_DETECTION];
+    if (includes(matchParams, this.matchParams)) {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
@@ -414,10 +442,8 @@ export default class CampaignButtons extends React.Component {
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
-    const userName =
-      this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY
-        ? propositionUserName
-        : user.name;
+    const matchParams = [MESSAGES, GUIDE_HISTORY, FRAUD_DETECTION];
+    const userName = includes(matchParams, this.matchParams) ? propositionUserName : user.name;
     const toggleModalReport = e => {
       e.preventDefault();
       e.stopPropagation();
@@ -618,6 +644,7 @@ export default class CampaignButtons extends React.Component {
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
     const status = this.getPropositionStatus(proposition);
     const buttonsTitleForRender = buttonsTitle[status] || buttonsTitle.default;
+    const matchParams = [GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
 
     return (
       <div className="Buttons">
@@ -649,8 +676,7 @@ export default class CampaignButtons extends React.Component {
           {this.renderPostPopoverMenu()}
         </div>
         {(isAssigned || status === ASSIGNED) &&
-          this.matchParams !== GUIDE_HISTORY &&
-          this.matchParams !== MESSAGES && (
+          every(matchParams, item => item !== this.matchParams) && (
             <React.Fragment>
               <Button type="primary" onClick={this.openModalDetails}>
                 {intl.formatMessage({
@@ -660,7 +686,7 @@ export default class CampaignButtons extends React.Component {
               </Button>
             </React.Fragment>
           )}
-        {(this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) && (
+        {some(matchParams, item => item === this.matchParams) && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">
