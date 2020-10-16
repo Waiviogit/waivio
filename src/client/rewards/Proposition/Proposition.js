@@ -55,7 +55,7 @@ const Proposition = ({
   const userName = isMessages ? propositionUserName : authorizedUserName;
   const propositionUsers = get(proposition, ['users']);
   const guideName = get(proposition, ['guide', 'name']);
-  const parenAuthor = isMessages ? propositionUsers : guideName;
+  const parentAuthor = isMessages ? get(proposition, ['users', '0', 'rootName']) : guideName;
   const propositionActivationPermlink = get(proposition, ['activation_permlink']);
   const parentPermlink = isMessages ? permlink : propositionActivationPermlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
@@ -87,7 +87,7 @@ const Proposition = ({
     return rejectReservationCampaign(rejectData).then(() =>
       discardProposition({
         requiredObjectName,
-        companyAuthor: parenAuthor,
+        companyAuthor: parentAuthor,
         companyPermlink: parentPermlink,
         objPermlink: obj.author_permlink,
         reservationPermlink: rejectData.reservation_permlink,
