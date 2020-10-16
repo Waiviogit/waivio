@@ -14,24 +14,24 @@ export const optionsAction = [
 export const optionsForecast = [
   {
     value: '900',
-    label: <FormattedMessage id="createPost.selectLabel.15m" defaultMessage="15m" />,
+    label: <FormattedMessage id="createPost.selectLabel.15m" defaultMessage="15 minutes" />,
   },
   {
     value: '1800',
-    label: <FormattedMessage id="createPost.selectLabel.30m" defaultMessage="30m" />,
+    label: <FormattedMessage id="createPost.selectLabel.30m" defaultMessage="30 minutes" />,
   },
-  { value: '3600', label: <FormattedMessage id="createPost.selectLabel.1h" defaultMessage="1h" /> },
+  { value: '3600', label: <FormattedMessage id="createPost.selectLabel.1h" defaultMessage="1 hour" /> },
   {
     value: '14400',
-    label: <FormattedMessage id="createPost.selectLabel.4h" defaultMessage="4h" />,
+    label: <FormattedMessage id="createPost.selectLabel.4h" defaultMessage="4 hours" />,
   },
   {
     value: '28800',
-    label: <FormattedMessage id="createPost.selectLabel.8h" defaultMessage="8h" />,
+    label: <FormattedMessage id="createPost.selectLabel.8h" defaultMessage="8 hours" />,
   },
   {
     value: '86400',
-    label: <FormattedMessage id="createPost.selectLabel.24h" defaultMessage="24h" />,
+    label: <FormattedMessage id="createPost.selectLabel.24h" defaultMessage="24 hours" />,
   },
   {
     value: '604800',

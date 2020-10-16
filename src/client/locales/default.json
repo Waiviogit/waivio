@@ -573,12 +573,12 @@
   "createPost.selectTitle.recommend": "Action",
   "createPost.selectTitle.price": "Price",
   "createPost.titleForecast": "Your forecast (optional)",
-  "createPost.selectLabel.15m": "15m",
-  "createPost.selectLabel.30m": "30m",
-  "createPost.selectLabel.1h": "1h",
-  "createPost.selectLabel.4h": "4h",
-  "createPost.selectLabel.8h": "8h",
-  "createPost.selectLabel.24h": "24h",
+  "createPost.selectLabel.15m": "15 minutes",
+  "createPost.selectLabel.30m": "30 minutes",
+  "createPost.selectLabel.1h": "1 hour",
+  "createPost.selectLabel.4h": "4 hours",
+  "createPost.selectLabel.8h": "8 hours",
+  "createPost.selectLabel.24h": "24 hours",
   "createPost.selectLabel.1week": "1 week",
   "createPost.selectLabel.18days": "18 days",
   "createPost.selectLabel.3weeks": "3 weeks",
@@ -1171,5 +1171,6 @@
   "no_results": "No results were found for '{search}' request",
   "modal_upload_image": "Upload Image",
   "modal_set_image": "Set Image",
-  "modal_must_upload_image": "You have to upload a image"
+  "modal_must_upload_image": "You have to upload a image",
+  "upload_video_placeholder": "Paste link (YouTube | DTube | Vimeo | 3Speak) and press 'Enter'"
 }

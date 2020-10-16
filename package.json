@@ -30,6 +30,7 @@
     "heroku"
   ],
   "dependencies": {
+    "@hiveio/dhive": "^0.14.8",
     "@hot-loader/react-dom": "^16.8.6",
     "@stomp/stompjs": "^5.4.3",
     "@textlint/markdown-to-ast": "^6.1.2",
@@ -70,6 +71,7 @@
     "he": "^1.2.0",
     "heroku": "^7.18.3",
     "history": "^4.6.3",
+    "hivesigner": "^3.2.1",
     "identity-obj-proxy": "^3.0.0",
     "immutable": "^4.0.0-rc.12",
     "isomorphic-fetch": "^2.2.1",

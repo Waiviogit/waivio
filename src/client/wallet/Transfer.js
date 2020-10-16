@@ -348,7 +348,7 @@ export default class Transfer extends React.Component {
     }
 
     const selectedBalance =
-      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
+      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
     const currentSelectedBalance = this.props.isGuest ? user.balance : selectedBalance;
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
       callback([
@@ -369,7 +369,7 @@ export default class Transfer extends React.Component {
     const guestName = to && guestUserRegex.test(to);
 
     const balance =
-      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
+      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
     const isChangesDisabled = !!memo;
     const currentBalance = isGuest ? `${user.balance} HIVE` : balance;
     const currencyPrefix = getFieldDecorator('currency', {

@@ -1,6 +1,7 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
+import { get } from 'lodash';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -68,7 +69,7 @@ export const logoutWithoutBroker = () => (dispatch, getState, { steemConnectAPI,
       // eslint-disable-next-line no-unused-expressions
       window.gapi && window.gapi.auth2.getAuthInstance().signOut();
     }
-  } else if (steemConnectAPI.options.accessToken) {
+  } else if (steemConnectAPI.accessToken) {
     steemConnectAPI.revokeToken();
     steemConnectAPI.removeAccessToken();
     Cookie.remove('access_token');
@@ -158,9 +159,9 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
         reject(e);
       }
     });
-  } else if (!steemConnectAPI.options.accessToken && !isGuest) {
+  } else if (!steemConnectAPI.accessToken && !isGuest) {
     promise = Promise.reject(new Error('There is not accessToken present'));
-  } else if (isGuest || steemConnectAPI.options.accessToken) {
+  } else if (isGuest || steemConnectAPI.accessToken) {
     promise = new Promise(async (resolve, reject) => {
       try {
         const scUserData = await steemConnectAPI.me();
@@ -236,7 +237,8 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
 
 export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
-  const jsonMetadata = JSON.parse(state.auth.user.posting_json_metadata);
+  const jsonMetadata = JSON.parse(get(state, ['auth', 'user', 'posting_json_metadata']));
+
   jsonMetadata.profile = { ...jsonMetadata.profile, ...values };
   return dispatch({
     type: UPDATE_PROFILE,
