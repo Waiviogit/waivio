@@ -38,6 +38,7 @@
   ],
   "dependencies": {
     "@hivechain/dsteem": "^0.12.14",
+    "@hiveio/dhive": "^0.14.4",
     "@hot-loader/react-dom": "^16.8.6",
     "@sentry/react": "^5.24.2",
     "@sentry/tracing": "^5.24.2",
@@ -77,6 +78,7 @@
     "he": "^1.2.0",
     "heroku": "^7.18.3",
     "history": "^4.6.3",
+    "hivesigner": "^3.2.1",
     "hoist-non-react-statics": "^3.3.2",
     "identity-obj-proxy": "^3.0.0",
     "immutable": "^4.0.0-rc.12",
@@ -124,7 +126,6 @@
     "remarkable": "1.7.1",
     "resize-observer-polyfill": "^1.4.2",
     "sanitize-html": "1.15.0",
-    "sc2-sdk": "1.0.2",
     "secure-random": "^1.1.1",
     "speakingurl": "^11.0.0",
     "steem": "^0.7.11",
