@@ -180,7 +180,7 @@ class Rewards extends React.Component {
     url: '',
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
       userLocation,
       match,
@@ -194,14 +194,20 @@ class Rewards extends React.Component {
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
 
     if (!size(userLocation)) {
-      this.props.getCoordinates().then(coords => {
+      try {
+        const coords = await this.props.getCoordinates();
         const { lat, lon } = coords.value;
-        this.setState({ area: [+lat, +lon] });
-        if (username && !url) this.getPropositionsByStatus({ username, sort, area: [+lat, +lon] });
-        if (!authenticated && match.params.filterKey === 'all')
-          this.getPropositions({ username, match, activeFilters, sort, area: [+lat, +lon] });
-      });
+        // eslint-disable-next-line react/no-did-mount-set-state
+        await this.setState({ area: [+lat, +lon] });
+      } catch (e) {
+        message.error(e.error_description);
+      }
     }
+
+    const { area } = this.state;
+    if (username && !url) this.getPropositionsByStatus({ username, sort, area });
+    if (!authenticated && match.params.filterKey === 'all')
+      this.getPropositions({ username, match, activeFilters, sort, area });
   }
 
   componentWillReceiveProps(nextProps) {

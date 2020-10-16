@@ -7,7 +7,6 @@ import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
-import SteemConnect from '../../steemConnectAPI';
 import { getCryptoPriceHistory } from '../../app/appActions';
 import { closeTransfer, sendPendingTransfer } from '../walletActions';
 import { notify } from '../../app/Notification/notificationActions';
@@ -315,7 +314,12 @@ export default class Transfer extends React.Component {
             }
           });
         } else {
-          const win = window.open(SteemConnect.sign('transfer', transferQuery), '_blank');
+          const win = window.open(
+            `https://hivesigner.com/sign/transfer?amount=${transferQuery.amount}&to=${
+              transferQuery.to
+            }${transferQuery.memo ? `&memo=${transferQuery.memo}` : ''}`,
+            '_blank',
+          );
           win.focus();
         }
 

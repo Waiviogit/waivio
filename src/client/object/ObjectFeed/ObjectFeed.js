@@ -2,18 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Icon, message } from 'antd';
-import { isEmpty, uniq, map, get, filter } from 'lodash';
-import withAuthActions from '../../auth/withAuthActions';
+import { isEmpty, uniq, get, filter } from 'lodash';
+import PropositionContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import Feed from '../../feed/Feed';
-import {
-  getFeed,
-  getReadLanguages,
-  getCryptosPriceHistory,
-  getSuitableLanguage,
-  getAuthenticatedUser,
-} from '../../reducers';
-import { assignProposition, declineProposition } from '../../user/userActions';
+import { getFeed, getReadLanguages, getSuitableLanguage } from '../../reducers';
 import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
@@ -21,30 +13,22 @@ import {
 } from '../../helpers/stateHelpers';
 import { getObjectPosts, getMoreObjectPosts } from '../../feed/feedActions';
 import { showPostModal } from '../../app/appActions';
-import Proposition from '../../rewards/Proposition/Proposition';
-import ObjectCardView from '../../objectCard/ObjectCardView';
 import PostModal from '../../post/PostModalContainer';
-import * as apiConfig from '../../../waivioApi/config.json';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import './ObjectFeed.less';
 
 @injectIntl
-@withAuthActions
 @connect(
   state => ({
     feed: getFeed(state),
-    user: getAuthenticatedUser(state),
     readLocales: getReadLanguages(state),
     usedLocale: getSuitableLanguage(state),
-    cryptosPriceHistory: getCryptosPriceHistory(state),
   }),
   {
     getObjectPosts,
     getMoreObjectPosts,
     showPostModal,
-    assignProposition,
-    declineProposition,
   },
 )
 export default class ObjectFeed extends React.Component {
@@ -58,15 +42,8 @@ export default class ObjectFeed extends React.Component {
     match: PropTypes.shape().isRequired,
     limit: PropTypes.number,
     handleCreatePost: PropTypes.func,
-    intl: PropTypes.shape().isRequired,
-    history: PropTypes.shape().isRequired,
-    cryptosPriceHistory: PropTypes.shape().isRequired,
     wobject: PropTypes.shape(),
-    assignProposition: PropTypes.func.isRequired,
-    declineProposition: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
-    onActionInitiated: PropTypes.func.isRequired,
-    user: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -149,14 +126,6 @@ export default class ObjectFeed extends React.Component {
 
   mountedId = null;
 
-  getCurrentUSDPrice = () => {
-    const { cryptosPriceHistory } = this.props;
-
-    if (isEmpty(cryptosPriceHistory)) return !cryptosPriceHistory;
-
-    return get(cryptosPriceHistory, ['hive', 'usdPriceHistory', 'usd']);
-  };
-
   getPropositions = reqData => {
     const { match } = this.props;
     this.setState({ loadingPropositions: true });
@@ -173,152 +142,9 @@ export default class ObjectFeed extends React.Component {
     });
   };
 
-  renderProposition = propositions =>
-    map(propositions, proposition =>
-      map(
-        proposition.objects,
-        wobj =>
-          get(wobj, ['object', 'author_permlink']) === this.props.match.params.name && (
-            <Proposition
-              proposition={proposition}
-              wobj={wobj.object}
-              wobjPrice={wobj.reward}
-              assignCommentPermlink={wobj.permlink}
-              assignProposition={this.assignPropositionHandler}
-              discardProposition={this.discardProposition}
-              authorizedUserName={this.props.userName}
-              loading={this.state.loadingAssignDiscard}
-              key={`${wobj.object.author_permlink}`}
-              assigned={wobj.assigned}
-              history={this.props.history}
-              isAssign={this.state.isAssign}
-              match={this.props.match}
-              user={this.props.user}
-            />
-          ),
-      ),
-    );
-
-  // Propositions
-  assignPropositionHandler = ({
-    companyAuthor,
-    companyPermlink,
-    resPermlink,
-    objPermlink,
-    companyId,
-    primaryObjectName,
-    secondaryObjectName,
-    amount,
-    proposition,
-    proposedWobj,
-    userName,
-    currencyId,
-  }) => {
-    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
-    this.setState({ loadingAssignDiscard: true });
-    return this.props
-      .assignProposition({
-        companyAuthor,
-        companyPermlink,
-        objPermlink,
-        resPermlink,
-        appName,
-        primaryObjectName,
-        secondaryObjectName,
-        amount,
-        proposition,
-        proposedWobj,
-        userName,
-        currencyId,
-      })
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'assigned_successfully_update',
-            defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
-          }),
-        );
-        const updatedPropositions = this.updateProposition(
-          companyId,
-          true,
-          objPermlink,
-          companyAuthor,
-        );
-        this.setState({
-          propositions: updatedPropositions,
-          loadingAssignDiscard: false,
-          isAssign: true,
-        });
-
-        return { isAssign: true };
-      })
-      .catch(e => {
-        this.setState({ loadingAssignDiscard: false, isAssign: false });
-        throw e;
-      });
-  };
-
-  updateProposition = (propsId, isAssign, objPermlink, companyAuthor) =>
-    this.state.propositions.map(proposition => {
-      const updatedProposition = proposition;
-      // eslint-disable-next-line no-underscore-dangle
-      if (updatedProposition._id === propsId) {
-        updatedProposition.objects.forEach((object, index) => {
-          if (object.object.author_permlink === objPermlink) {
-            updatedProposition.objects[index].assigned = isAssign;
-          } else {
-            updatedProposition.objects[index].assigned = null;
-          }
-        });
-      }
-      // eslint-disable-next-line no-underscore-dangle
-      if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
-        updatedProposition.isReservedSiblingObj = true;
-      }
-      return updatedProposition;
-    });
-
-  discardProposition = ({
-    companyAuthor,
-    companyPermlink,
-    companyId,
-    objPermlink,
-    unreservationPermlink,
-    reservationPermlink,
-  }) => {
-    this.setState({ loadingAssignDiscard: true });
-    return this.props
-      .declineProposition({
-        companyAuthor,
-        companyPermlink,
-        companyId,
-        objPermlink,
-        unreservationPermlink,
-        reservationPermlink,
-      })
-      .then(() => {
-        const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
-        this.setState({
-          propositions: updatedPropositions,
-          loadingAssignDiscard: false,
-          isAssign: false,
-        });
-        return { isAssign: false };
-      })
-      .catch(e => {
-        message.error(e.error_description);
-        this.setState({ loadingAssignDiscard: false, isAssign: true });
-      });
-  };
-
-  createFirtsReview = () => {
-    this.props.onActionInitiated(this.props.handleCreatePost);
-  };
-  // END Propositions
-
   render() {
-    const { feed, limit, wobject, intl } = this.props;
-    const { loadingPropositions, allPropositions, currentProposition } = this.state;
+    const { feed, limit, handleCreatePost, userName, wobject } = this.props;
+    const { loadingPropositions } = this.state;
     const wObjectName = this.props.match.params.name;
     const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);
     const content = uniq(objectFeed);
@@ -332,55 +158,6 @@ export default class ObjectFeed extends React.Component {
         limit,
         skip,
       });
-    };
-    const goToProducts = () => {
-      const permlink = get(wobject, 'author_permlink');
-      this.props.history.push(`/rewards/all/${permlink}`);
-    };
-    const minReward = currentProposition ? get(currentProposition[0], ['min_reward']) : 0;
-    const maxReward = currentProposition ? get(currentProposition[0], ['max_reward']) : 0;
-    const rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
-    const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
-    const getFeedProposition = () => {
-      if (wobject && isEmpty(wobject.parent) && !isEmpty(currentProposition)) {
-        return (
-          <div>
-            <ObjectCardView wObject={wobject} passedParent={currentProposition} />
-            <div className="Campaign__button" role="presentation" onClick={goToProducts}>
-              <Button type="primary" size="large">
-                {!rewardMax ? (
-                  <React.Fragment>
-                    <span>
-                      {intl.formatMessage({
-                        id: 'rewards_details_earn',
-                        defaultMessage: 'Earn',
-                      })}
-                    </span>
-                    <span>
-                      <span className="fw6 ml1">{rewardPrise}</span>
-                      <Icon type="right" />
-                    </span>
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    <span>
-                      {intl.formatMessage({
-                        id: 'rewards_details_earn_up_to',
-                        defaultMessage: 'Earn up to',
-                      })}
-                    </span>
-                    <span>
-                      <span className="fw6 ml1">{`${rewardMax}`}</span>
-                      <Icon type="right" />
-                    </span>
-                  </React.Fragment>
-                )}
-              </Button>
-            </div>
-          </div>
-        );
-      }
-      return this.renderProposition(allPropositions);
     };
 
     const getFeedContent = () => {
@@ -399,7 +176,7 @@ export default class ObjectFeed extends React.Component {
         <div
           role="presentation"
           className="object-feed__row justify-center"
-          onClick={this.createFirtsReview}
+          onClick={handleCreatePost}
         >
           <FormattedMessage
             id="empty_object_profile"
@@ -415,7 +192,7 @@ export default class ObjectFeed extends React.Component {
           <Loading />
         ) : (
           <React.Fragment>
-            {getFeedProposition()}
+            <PropositionContainer userName={userName} wobject={wobject} />
             {getFeedContent()}
           </React.Fragment>
         )}

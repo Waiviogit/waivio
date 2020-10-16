@@ -199,7 +199,6 @@ class ObjectInfo extends React.Component {
         {item.alias || getObjectName(item)}
       </LinkButton>
     );
-
     switch (item.id) {
       case TYPES_OF_MENU_ITEM.BUTTON:
         menuItem = (
@@ -211,6 +210,18 @@ class ObjectInfo extends React.Component {
           >
             {item.body.title}
           </Button>
+        );
+        break;
+      case TYPES_OF_MENU_ITEM.PAGE:
+        menuItem = (
+          <LinkButton
+            className={classNames('menu-btn', {
+              active: location.hash.slice(1).split('/')[0] === item.body,
+            })}
+            to={`/object/${wobject.author_permlink}/page#${item.body || item.author_permlink}`}
+          >
+            {item.alias || getObjectName(item)}
+          </LinkButton>
         );
         break;
       case TYPES_OF_MENU_ITEM.NEWS:
@@ -292,7 +303,7 @@ class ObjectInfo extends React.Component {
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort)) {
         const buttonArray = [...menuLinks, ...menuPages, ...button];
-
+        console.log(menuLinks);
         if (newsFilter) buttonArray.push({ id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter });
 
         const sortButtons = customSort.reduce((acc, curr) => {
@@ -306,9 +317,8 @@ class ObjectInfo extends React.Component {
 
           return currentLink ? [...acc, currentLink] : acc;
         }, []);
-
         return uniq([...sortButtons, ...buttonArray]).map(item =>
-          this.getMenuSectionLink({ id: item.name, ...item }),
+          this.getMenuSectionLink({ id: item.id || item.name, ...item }),
         );
       }
 
