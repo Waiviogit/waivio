@@ -287,6 +287,7 @@ class ObjectInfo extends React.Component {
     const menuPages = getMenuItems(wobject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
     const button = parseButtonsField(wobject);
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
+    const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort)) {
@@ -374,10 +375,7 @@ class ObjectInfo extends React.Component {
           objectFields.rating,
           <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
         )}
-        {this.listItem(
-          objectFields.tagCategory,
-          tagCategories && this.renderTagCategories(tagCategories),
-        )}
+        {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
         {isRenderGallery && (!isEmpty(pictures) || accessExtend) && (
           <div className="field-info">
