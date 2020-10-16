@@ -15,6 +15,7 @@ import { IS_RESERVED } from '../common/constants/rewards';
 let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*',
 };
 
 export function handleErrors(response) {
