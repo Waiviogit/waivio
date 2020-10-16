@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import sc2 from 'sc2-sdk';
+import hivesigner from 'hivesigner';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from './helpers/getToken';
 
@@ -45,9 +45,8 @@ function sc2Extended() {
     !!localStorage.getItem('accessToken') &&
     !!localStorage.getItem('guestName');
 
-  const sc2api = sc2.Initialize({
+  const sc2api = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
   });
 
