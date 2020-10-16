@@ -85,7 +85,7 @@ const CatalogWrap = props => {
         getPropositions({ userName, match, requiredObject, sort });
       }
     }
-  }, [props.location.hash, props.wobject, userName]);
+  }, [props.location.hash, props.wobject.author_permlink, userName]);
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
