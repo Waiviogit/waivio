@@ -17,7 +17,7 @@ export const mockData = {
 
 export const mockDataDetails = {
   isAuthenticated: true,
-  getReferralDetails: () => {},
+  getReferralDetails: jest.fn(),
   campaignServerPercent: 50,
   indexAbsolutePercent: 60,
   indexServerPercent: 30,

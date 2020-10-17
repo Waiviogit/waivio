@@ -63,3 +63,37 @@ export const mockDataIsModal = {
   currentStatus: true,
   setIsCopyButton: jest.fn(),
 };
+
+export const mockDataIsBlackListUser = {
+  isBlackListUser: true,
+  isAuthenticated: true,
+  rejectRules: jest.fn(),
+  isStartChangeRules: false,
+  isStartGetReferralInfo: false,
+  handleAgreeRulesCheckbox: jest.fn(),
+  handleOkButton: jest.fn(),
+  handleCancelButton: jest.fn(),
+  currentCopyText: '',
+  authUserName: 'vallon',
+  isModal: false,
+  isGuest: false,
+  currentStatus: false,
+  setIsCopyButton: jest.fn(),
+};
+
+export const mockDataIsLoadingState = {
+  isBlackListUser: false,
+  isAuthenticated: true,
+  rejectRules: jest.fn(),
+  isStartChangeRules: true,
+  isStartGetReferralInfo: false,
+  handleAgreeRulesCheckbox: jest.fn(),
+  handleOkButton: jest.fn(),
+  handleCancelButton: jest.fn(),
+  currentCopyText: '',
+  authUserName: 'vallon',
+  isModal: false,
+  isGuest: false,
+  currentStatus: false,
+  setIsCopyButton: jest.fn(),
+};
