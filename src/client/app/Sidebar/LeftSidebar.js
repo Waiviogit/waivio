@@ -23,6 +23,7 @@ const LeftSidebar = () => (
     <Route path="/rewards/guideHistory" component={SidenavRewards} />
     <Route path="/rewards/messages" component={SidenavRewards} />
     <Route path="/rewards/match-bot" component={SidenavRewards} />
+    <Route path="/rewards/fraud-detection" component={SidenavRewards} />
     <Route path="/rewards/blacklist" component={SidenavRewards} />
     <Route path="/rewards/details/:campaignName" component={SidenavRewards} />
     <Route path="/rewards/referral-details/:userName" component={SidenavRewards} />

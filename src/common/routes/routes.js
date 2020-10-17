@@ -60,6 +60,11 @@ const routes = {
           component: Views.HistoryCampaign,
         },
         {
+          path: '/fraud-detection',
+          exact: true,
+          component: Views.FraudDetection,
+        },
+        {
           path: '/blacklist/:listType?',
           exact: true,
           component: Views.BlacklistCampaign,
