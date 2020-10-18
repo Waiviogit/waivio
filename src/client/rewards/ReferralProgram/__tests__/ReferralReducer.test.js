@@ -13,7 +13,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_USER_REFERRAL_INFO.START', () => {
     state = mock.MOCK_GET_USER_REFERRAL_INFO_START;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_USER_REFERRAL_INFO.START,
       }),
     ).toEqual(state);
@@ -22,7 +22,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_USER_REFERRAL_INFO.SUCCESS', () => {
     state = mock.MOCK_GET_USER_REFERRAL_INFO_SUCCESS;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_USER_REFERRAL_INFO.SUCCESS,
         payload: {
           referralStatus: 'activate',
@@ -35,7 +35,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_USER_REFERRAL_INFO.ERROR', () => {
     state = mock.MOCK_GET_USER_REFERRAL_INFO_ERROR;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_USER_REFERRAL_INFO.ERROR,
       }),
     ).toEqual(state);
@@ -44,7 +44,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_USER_REFERRAL_DETAILS.START', () => {
     state = mock.MOCK_GET_USER_REFERRAL_DETAILS_START;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_USER_REFERRAL_DETAILS.START,
       }),
     ).toEqual(state);
@@ -53,7 +53,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_USER_REFERRAL_DETAILS.SUCCESS', () => {
     state = mock.MOCK_GET_USER_REFERRAL_DETAILS_SUCCESS;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_USER_REFERRAL_DETAILS.SUCCESS,
         payload: {
           campaignServerPercent: 50,
@@ -83,7 +83,7 @@ describe('ReferralReducer', () => {
   it('should handle REFERRAL_GET_ADDITION_FIELDS.START', () => {
     state = mock.MOCK_REFERRAL_GET_ADDITION_FIELDS_START;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.REFERRAL_GET_ADDITION_FIELDS.START,
       }),
     ).toEqual(state);
@@ -92,7 +92,7 @@ describe('ReferralReducer', () => {
   it('should handle REFERRAL_GET_ADDITION_FIELDS.SUCCESS', () => {
     state = mock.MOCK_REFERRAL_GET_ADDITION_FIELDS_SUCCESS;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.REFERRAL_GET_ADDITION_FIELDS.SUCCESS,
         payload: {
           referralStatus: 'activate',
@@ -105,7 +105,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_USER_STATUS_CARDS.START', () => {
     state = mock.MOCK_GET_USER_STATUS_CARDS_START;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_USER_STATUS_CARDS.START,
       }),
     ).toEqual(state);
@@ -114,7 +114,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_USER_STATUS_CARDS.SUCCESS', () => {
     state = mock.MOCK_GET_USER_STATUS_CARDS_SUCCESS;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_USER_STATUS_CARDS.SUCCESS,
         payload: {
           hasMore: false,
@@ -149,7 +149,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_MORE_USER_STATUS_CARDS.START', () => {
     state = mock.MOCK_GET_MORE_USER_STATUS_CARDS_START;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_MORE_USER_STATUS_CARDS.START,
       }),
     ).toEqual(state);
@@ -158,7 +158,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_MORE_USER_STATUS_CARDS.SUCCESS', () => {
     state = mock.MOCK_GET_USER_STATUS_CARDS_SUCCESS;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_MORE_USER_STATUS_CARDS.SUCCESS,
         payload: {
           hasMore: false,
@@ -193,7 +193,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_MORE_USER_STATUS_CARDS.ERROR', () => {
     state = mock.MOCK_GET_MORE_USER_STATUS_CARDS_ERROR;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_MORE_USER_STATUS_CARDS.ERROR,
       }),
     ).toEqual(state);
@@ -202,7 +202,7 @@ describe('ReferralReducer', () => {
   it('should handle GET_ERROR_MORE_USER_STATUS_CARDS.ERROR', () => {
     state = mock.MOCK_GET_MORE_USER_STATUS_CARDS_ERROR;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.GET_ERROR_MORE_USER_STATUS_CARDS,
       }),
     ).toEqual(state);
@@ -211,7 +211,7 @@ describe('ReferralReducer', () => {
   it('should handle REFERRAL_CONFIRM_RULES.START', () => {
     state = mock.MOCK_REFERRAL_CONFIRM_RULES_START;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.REFERRAL_CONFIRM_RULES.START,
       }),
     ).toEqual(state);
@@ -220,7 +220,7 @@ describe('ReferralReducer', () => {
   it('should handle REFERRAL_CONFIRM_RULES.SUCCESS', () => {
     state = mock.MOCK_REFERRAL_CONFIRM_RULES_SUCCESS;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.REFERRAL_CONFIRM_RULES.SUCCESS,
       }),
     ).toEqual(state);
@@ -229,7 +229,7 @@ describe('ReferralReducer', () => {
   it('should handle REFERRAL_REJECT_RULES.START', () => {
     state = mock.MOCK_REFERRAL_REJECT_RULES_START;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.REFERRAL_REJECT_RULES.START,
       }),
     ).toEqual(state);
@@ -238,7 +238,7 @@ describe('ReferralReducer', () => {
   it('should handle REFERRAL_REJECT_RULES.SUCCESS', () => {
     state = mock.MOCK_REFERRAL_REJECT_RULES_SUCCESS;
     expect(
-      ReferralReducer(undefined, {
+      ReferralReducer(state, {
         type: actions.REFERRAL_REJECT_RULES.SUCCESS,
       }),
     ).toEqual(state);
