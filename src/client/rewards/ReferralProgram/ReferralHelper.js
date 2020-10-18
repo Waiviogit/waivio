@@ -14,7 +14,6 @@ export const handleStatusDaysLeft = days => {
   const currentValue = String(days);
   return currentValue.split('-').join('');
 };
-
 export const getPrymaryObjectLink = sponsor =>
   get(sponsor, ['details', 'main_object', 'author_permlink']);
 export const getReviewObjectLink = sponsor =>

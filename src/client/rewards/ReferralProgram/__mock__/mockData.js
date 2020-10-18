@@ -120,3 +120,125 @@ export const MOCK_REFERRAL_REJECT_RULES_START = {
 export const MOCK_REFERRAL_REJECT_RULES_SUCCESS = {
   isStartChangeRules: false,
 };
+
+export const sponsor = {
+  details: {
+    beneficiaries: [{ account: 'waivio', weight: 300 }],
+    commissionWeight: null,
+    hiveCurrency: 0.238689,
+    main_object: {
+      author_permlink: 'vvr-floret',
+      defaultShowLink: '/object/vvr-floret',
+      default_name: 'Floret',
+      name: 'Floret',
+      object_type: 'restaurant',
+    },
+    payableInDollars: 0.0009308871,
+    reservation_permlink: 'reserve-hypzi77o2nh',
+    review_object: {
+      author_permlink: 'tbf-clear-tea',
+      defaultShowLink: '/object/tbf-clear-tea',
+      default_name: 'Clear tea',
+      name: 'Clear tea',
+      object_type: 'drink',
+    },
+    review_permlink: '4cmiet-review-floret-clear-tea',
+  },
+};
+
+export const sponsorWithoutBeneficiaries = {
+  details: {},
+};
+
+export const handleLoadMoreData = {
+  username: 'vallon',
+  currentUserCards: [
+    {
+      alias: 'Waivio Service',
+      guideName: 'sor31',
+      lastCreatedAt: '2020-08-31T07:40:03.623Z',
+      payable: 0.008,
+      payed: false,
+    },
+    {
+      alias: 'Waivio Service',
+      guideName: 'asd09',
+      lastCreatedAt: '2020-10-13T15:07:13.471Z',
+      payable: 0.006,
+      payed: false,
+    },
+    {
+      alias: '',
+      guideName: 'vallon',
+      lastCreatedAt: '2020-06-22T07:39:21.654Z',
+      payable: 0.004,
+      payed: false,
+    },
+    {
+      alias: 'Waivio Service',
+      guideName: 'sor32',
+      lastCreatedAt: '2020-08-31T07:40:03.623Z',
+      payable: 0.008,
+      payed: false,
+    },
+    {
+      alias: 'Waivio Service',
+      guideName: 'asd093',
+      lastCreatedAt: '2020-10-13T15:07:13.471Z',
+      payable: 0.006,
+      payed: false,
+    },
+    {
+      alias: '',
+      guideName: 'vallon',
+      lastCreatedAt: '2020-06-22T07:39:21.654Z',
+      payable: 0.004,
+      payed: false,
+    },
+    {
+      alias: 'Waivio Service',
+      guideName: 'sor31',
+      lastCreatedAt: '2020-08-31T07:40:03.623Z',
+      payable: 0.008,
+      payed: false,
+    },
+    {
+      alias: 'Waivio Service',
+      guideName: 'asd09',
+      lastCreatedAt: '2020-10-13T15:07:13.471Z',
+      payable: 0.006,
+      payed: false,
+    },
+    {
+      alias: '',
+      guideName: 'vallon',
+      lastCreatedAt: '2020-06-22T07:39:21.654Z',
+      payable: 0.004,
+      payed: false,
+    },
+    {
+      alias: 'Waivio Service',
+      guideName: 'sor32as',
+      lastCreatedAt: '2020-08-31T07:40:03.623Z',
+      payable: 0.008,
+      payed: false,
+    },
+    {
+      alias: 'Waivio Service',
+      guideName: 'asd09s3',
+      lastCreatedAt: '2020-10-13T15:07:13.471Z',
+      payable: 0.006,
+      payed: false,
+    },
+    {
+      alias: '',
+      guideName: 'vallon',
+      lastCreatedAt: '2020-06-22T07:39:21.654Z',
+      payable: 0.004,
+      payed: false,
+    },
+  ],
+  isLoadingMoreUserCards: false,
+  getMoreUserCards: jest.fn(),
+  sort: 'recency',
+};

@@ -1,4 +1,7 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import * as helper from '../ReferralHelper';
+import * as mock from '../__mock__/mockData';
 
 describe('ReferralHelper', () => {
   let value;
@@ -102,5 +105,62 @@ describe('ReferralHelper', () => {
     const name = 'vallon';
     value = `"${name}"`;
     expect(helper.handleRefName(value)).toEqual(name);
+  });
+
+  it('should handle days in handleStatusDaysLeft', () => {
+    value = 90;
+    expect(helper.handleStatusDaysLeft(value)).toEqual('90');
+  });
+
+  it('should handle sponsor in getPrymaryObjectLink', () => {
+    value = mock.sponsor;
+    expect(helper.getPrymaryObjectLink(value)).toEqual('vvr-floret');
+  });
+
+  it('should handle sponsor in getReviewObjectLink', () => {
+    value = mock.sponsor;
+    expect(helper.getReviewObjectLink(value)).toEqual('tbf-clear-tea');
+  });
+
+  it('should handle sponsor in getPrymaryObjectName', () => {
+    value = mock.sponsor;
+    expect(helper.getPrymaryObjectName(value)).toEqual('Floret');
+  });
+
+  it('should handle sponsor in getReviewObjectName', () => {
+    value = mock.sponsor;
+    expect(helper.getReviewObjectName(value)).toEqual('Clear tea');
+  });
+
+  it('should handle sponsor in getReservationPermlink', () => {
+    value = mock.sponsor;
+    expect(helper.getReservationPermlink(value)).toEqual('reserve-hypzi77o2nh');
+  });
+
+  it('should handle sponsor in getSponsoredUserWeight', () => {
+    value = mock.sponsor;
+    expect(helper.getSponsoredUserWeight(value)).toEqual(' (97%)');
+  });
+
+  it('should handle handleLoadMoreUserStatusCards', () => {
+    value = mock.handleLoadMoreData;
+    helper.handleLoadMoreUserStatusCards(value);
+    expect(mock.handleLoadMoreData.getMoreUserCards).toHaveBeenCalled();
+  });
+
+  it('should handle sponsor in getBeneficiaresInfo', () => {
+    value = mock.sponsor;
+    const returnedData = [
+      <React.Fragment key="waivio">
+        <Link to="/@waivio">waivio</Link>
+        <span> (3%), </span>
+      </React.Fragment>,
+    ];
+    expect(helper.getBeneficiaresInfo(value)).toEqual(returnedData);
+  });
+
+  it('should handle sponsor in getBeneficiaresInfo as null', () => {
+    value = mock.sponsorWithoutBeneficiaries;
+    expect(helper.getBeneficiaresInfo(value)).toEqual(null);
   });
 });
