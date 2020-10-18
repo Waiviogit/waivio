@@ -1,4 +1,5 @@
 import ReferralReducer from '../ReferralReducer';
+import * as selector from '../ReferralReducer';
 import * as actions from '../ReferralActions';
 import * as mock from '../__mock__/mockData';
 
@@ -254,5 +255,102 @@ describe('ReferralReducer', () => {
         },
       }),
     ).toEqual(state);
+  });
+
+  it('should return selector getCampaignServerPercent()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getCampaignServerPercent(state)).toEqual(state.campaignServerPercent);
+  });
+
+  it('should return selector getCampaignServerPercent()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIndexAbsolutePercent(state)).toEqual(state.indexAbsolutePercent);
+  });
+
+  it('should return selector getIndexServerPercent()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIndexServerPercent(state)).toEqual(state.indexServerPercent);
+  });
+
+  it('should return selector getReferralDuration()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getReferralDuration(state)).toEqual(state.referralDuration);
+  });
+
+  it('should return selector getReferralServerPercent()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getReferralServerPercent(state)).toEqual(state.referralServerPercent);
+  });
+
+  it('should return selector getSuspendedTimer()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getSuspendedTimer(state)).toEqual(state.suspendedTimer);
+  });
+
+  it('should return selector getIsStartLoadingReferralDetails()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIsStartLoadingReferralDetails(state)).toEqual(
+      state.isStartLoadingReferralDetails,
+    );
+  });
+
+  it('should return selector getIsUserInWaivioBlackList()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIsUserInWaivioBlackList(state)).toEqual(state.isUserInWaivioBlackList);
+  });
+
+  it('should return selector getReferralStatus()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getReferralStatus(state)).toEqual(state.referralStatus);
+  });
+
+  it('should return selector getReferralList()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getReferralList(state)).toEqual(state.referral);
+  });
+
+  it('should return selector getIsChangedRuleSelection()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIsChangedRuleSelection(state)).toEqual(state.isChangedRuleSelection);
+  });
+
+  it('should return selector getIsUsersCards()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIsUsersCards(state)).toEqual(state.isGetUsersCards);
+  });
+
+  it('should return selector getIsHasMoreCards()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIsHasMoreCards(state)).toEqual(state.hasMoreCards);
+  });
+
+  it('should return selector getCurrentUserCards()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getCurrentUserCards(state)).toEqual(state.userCards);
+  });
+
+  it('should return selector getIsErrorLoadingUserCards()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIsErrorLoadingUserCards(state)).toEqual(state.isErrorLoadingMore);
+  });
+
+  it('should return selector getIsLoadingMoreUserCards()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIsLoadingMoreUserCards(state)).toEqual(state.isLoadingMoreUserCards);
+  });
+
+  it('should return selector getIsStartChangeRules()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIsStartChangeRules(state)).toEqual(state.isStartChangeRules);
+  });
+
+  it('should return selector getIsStartGetReferralInfo()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getIsStartGetReferralInfo(state)).toEqual(state.isStartGetReferralInfo);
+  });
+
+  it('should return selector getStatusSponsoredHistory()', () => {
+    state = mock.mockDataInitialState;
+    expect(selector.getStatusSponsoredHistory(state)).toEqual(state.statusSponsoredHistory);
   });
 });
