@@ -757,7 +757,7 @@
   "longTermData_m9": "9 months",
   "longTermData_m12": "Year",
   "longTermData_m24": "2 years",
-  "findComparedItem": "Item to compare",
+  "find_compared_item": "Item to compare",
   "compare": "Compare",
   "compare_profitability": "Compare Profitability",
   "unavailableStatisticsObject": "Long term statistics is unavailable for current instrument",
@@ -1172,5 +1172,7 @@
   "modal_upload_image": "Upload Image",
   "modal_set_image": "Set Image",
   "modal_must_upload_image": "You have to upload a image",
-  "upload_video_placeholder": "Paste link (YouTube | DTube | Vimeo | 3Speak) and press 'Enter'"
+  "upload_video_placeholder": "Paste link (YouTube | DTube | Vimeo | 3Speak) and press 'Enter'",
+  "empty_user_own_profile": "You didn't publish any stories yet.",
+  "@statics/start_now": "Start now"
 }
