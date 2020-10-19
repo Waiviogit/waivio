@@ -416,6 +416,8 @@ export const getLink = link => {
   return link;
 };
 
+export const getWithUrlWordList = urlPathname => urlPathname.split('/').pop() === 'list';
+
 export const getLinkEdit = (wobject, isEditMode, isMobile) => {
   const link = `/object/${wobject.author_permlink}`;
   if (isEditMode) return null;

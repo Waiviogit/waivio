@@ -9,15 +9,20 @@ import {
   getObjectName,
   getObjectTitle,
   getPermLinksWithHash,
+  hasType,
 } from '../../../helpers/wObjectHelper';
 import { setCatalogBreadCrumbs } from '../../wobjActions';
 import { getBreadCrumbs, getSuitableLanguage, getWobjectNested } from '../../../reducers';
-import './CatalogBreadcrumb.less';
 import { getObjectsByIds } from '../../../../waivioApi/ApiClient';
+import './CatalogBreadcrumb.less';
 
 const CatalogBreadcrumb = props => {
-  const dispatch = useDispatch();
+  const {
+    wobject,
+    location: { hash },
+  } = props;
 
+  const dispatch = useDispatch();
   const locale = useSelector(getSuitableLanguage);
   const nestedWobject = useSelector(getWobjectNested);
   const breadcrumb = useSelector(getBreadCrumbs);
@@ -25,7 +30,19 @@ const CatalogBreadcrumb = props => {
   const BreadCrumbSize = size(breadcrumb);
   const currentTitle = get(breadcrumb[BreadCrumbSize - 1], 'title', '');
   const permlinks = getPermLinksWithHash(props.location.hash);
+  let currentBreadCrumbs = breadcrumb.filter(el => permlinks.includes(el.id));
 
+  if (!permlinks.includes(wobject.author_permlink) && hasType(wobject, 'list')) {
+    currentBreadCrumbs = [
+      {
+        id: wobject.author_permlink,
+        name: getObjectName(wobject),
+        title: getObjectTitle(wobject),
+        path: wobject.defaultShowLink,
+      },
+      ...currentBreadCrumbs,
+    ];
+  }
   /**
    * @param wObject : {}
    * Will be set breadcrumbs
@@ -33,7 +50,6 @@ const CatalogBreadcrumb = props => {
   const handleChangeBreadCrumbs = wObject => {
     if (isEmpty(wObject)) return;
 
-    let currentBreadCrumbs = breadcrumb.filter(el => permlinks.includes(el.id));
     const findWobj = crumb => crumb.id === wObject.author_permlink;
     const findBreadCrumbs = currentBreadCrumbs.some(findWobj);
 
@@ -54,7 +70,8 @@ const CatalogBreadcrumb = props => {
     dispatch(setCatalogBreadCrumbs(currentBreadCrumbs));
   };
 
-  const createNewHash = (hash, permlink) => {
+  // Delete next breadCrumbs when click to back
+  const createNewHash = permlink => {
     const findIndex = permlinks.findIndex(el => el === permlink);
     const hashPermlinks = [...permlinks];
     hashPermlinks.splice(findIndex + 1);
@@ -62,14 +79,8 @@ const CatalogBreadcrumb = props => {
   };
 
   useEffect(() => {
-    const {
-      wobject,
-      location: { hash },
-    } = props;
-
     if (size(permlinks) > 1) {
       getObjectsByIds({ authorPermlinks: permlinks, locale }).then(response => {
-        // Если объект типа лист и имеет вложенные объекты, то получить их по запросу
         const wobjectRes = response.wobjects.map(wobj => ({
           id: wobj.author_permlink,
           name: getObjectName(wobj),

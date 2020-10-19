@@ -248,14 +248,12 @@ export const parseAddress = wobject => {
 
 export const getObjectName = (wobj = {}) => wobj.name || wobj.default_name;
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
-
 export const getPermLink = url =>
   url
     .split('/')
     .pop()
     .replace('#', '');
 export const getPermLinksWithHash = url => url.replace('#', '').split('/');
-
 export const getMenuItems = (wobject, menuType, objType) => {
   const listItems = get(wobject, 'listItem', []).filter(item => item.type === menuType);
   if (isEmpty(wobject.menuItems)) return listItems;
