@@ -230,7 +230,7 @@ export const calculateEstAccountValue = (
   );
   return (
     parseFloat(steemRate) * (parseFloat(user.balance) + parseFloat(steemPower)) +
-    parseFloat(user.sbd_balance) * parseFloat(sbdRate)
+    parseFloat(user.hbd_balance) * parseFloat(sbdRate)
   );
 };
 
