@@ -7,6 +7,7 @@ import Slider from '../Slider/Slider';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import { getRate } from '../../reducers';
+import { calculateVotePowerForSlider } from '../../vendor/steemitHelpers';
 import './CommentFooter.less';
 
 @connect(state => ({
@@ -94,15 +95,10 @@ export default class CommentFooter extends React.Component {
 
   handleSliderCancel = () => this.setState({ sliderVisible: false });
 
-  handleSliderChange = value => {
-    const { user, rewardFund, rate } = this.props;
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
+  handleSliderChange = async value => {
+    const { isGuest, user, comment } = this.props;
+    const voteWorth = isGuest ? 0 : await calculateVotePowerForSlider(user.name, value, comment.author, comment.permlink);
+
     this.setState({ sliderValue: value, voteWorth });
   };
 

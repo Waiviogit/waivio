@@ -6,7 +6,7 @@ import PopoverContainer from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 
 const BurgerMenu = props => {
-  const { isGuest, onMenuItemClick } = props;
+  const { onMenuItemClick } = props;
 
   const [burgerMenuVisible, setBurgerMenuVisible] = useState(false);
 
@@ -26,11 +26,6 @@ const BurgerMenu = props => {
       overlayStyle={{ position: 'fixed' }}
       content={
         <PopoverMenu onSelect={handleBurgerMenuSelect}>
-          {!isGuest && (
-            <PopoverMenuItem key="activity" mobileScreenHidden>
-              <FormattedMessage id="activity" defaultMessage="Activity" />
-            </PopoverMenuItem>
-          )}
           <PopoverMenuItem key="bookmarks" mobileScreenHidden>
             <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
           </PopoverMenuItem>
@@ -56,7 +51,6 @@ const BurgerMenu = props => {
   );
 };
 BurgerMenu.propTypes = {
-  isGuest: PropTypes.bool.isRequired,
   onMenuItemClick: PropTypes.func.isRequired,
 };
 
