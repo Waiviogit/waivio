@@ -13,6 +13,7 @@ import {
 } from '../../common/constants/waivio';
 import { rewardsValues } from '../../common/constants/rewards';
 import * as apiConfig from '../../waivioApi/config.json';
+import { getObjectName } from './wObjectHelper';
 
 const appVersion = require('../../../package.json').version;
 
@@ -215,4 +216,12 @@ export function getInitialState(props) {
 export function isContentValid(markdownContent) {
   const { postBody } = splitPostContent(markdownContent);
   return Boolean(postBody.trim());
+}
+
+export function getPostHashtags(items) {
+  if (!items || !items.length) return [];
+  const sortedItems = items.sort((a, b) => b.weight - a.weight);
+  const postItems = sortedItems.slice(0, 3);
+  const postHashtags = postItems.map(item => getObjectName(item));
+  return postHashtags;
 }
