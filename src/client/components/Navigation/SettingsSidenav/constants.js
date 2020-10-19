@@ -68,46 +68,46 @@ export const websiteSettings = {
   ],
 };
 export const currentWebsiteSettings = site => [
-         {
-           to: `/${site}/configuration`,
-           id: 'sidenav_user_configuration',
-           defaultMessage: 'Configuration',
-         },
-         {
-           to: `/${site}/settings`,
-           id: 'sidenav_user_settings',
-           defaultMessage: 'Settings',
-         },
-         {
-           to: `/${site}/administrations`,
-           id: 'sidenav_user_administrations',
-           defaultMessage: 'Administrations',
-         },
-         {
-           to: `/${site}/moderators`,
-           id: 'moderators',
-           defaultMessage: 'Moderators',
-         },
-         {
-           to: `/${site}/authorities`,
-           id: 'authorities',
-           defaultMessage: 'Authorities',
-         },
-         {
-           to: `/${site}/objects`,
-           id: 'objects',
-           defaultMessage: 'objects',
-         },
-         {
-           to: `/${site}/objects-filters`,
-           id: 'objects_filters',
-           defaultMessage: 'Objects filters',
-         },
-         {
-           to: `/${site}/muted-users`,
-           id: 'muted_users',
-           defaultMessage: 'Muted users',
-         },
-       ];
+  {
+    to: `/${site}/configuration`,
+    id: 'sidenav_user_configuration',
+    defaultMessage: 'Configuration',
+  },
+  {
+    to: `/${site}/settings`,
+    id: 'sidenav_user_settings',
+    defaultMessage: 'Settings',
+  },
+  {
+    to: `/${site}/administrations`,
+    id: 'sidenav_user_administrations',
+    defaultMessage: 'Administrations',
+  },
+  {
+    to: `/${site}/moderators`,
+    id: 'moderators',
+    defaultMessage: 'Moderators',
+  },
+  {
+    to: `/${site}/authorities`,
+    id: 'authorities',
+    defaultMessage: 'Authorities',
+  },
+  {
+    to: `/${site}/objects`,
+    id: 'objects',
+    defaultMessage: 'objects',
+  },
+  {
+    to: `/${site}/objects-filters`,
+    id: 'objects_filters',
+    defaultMessage: 'Objects filters',
+  },
+  {
+    to: `/${site}/muted-users`,
+    id: 'muted_users',
+    defaultMessage: 'Muted users',
+  },
+];
 
 export default null;

@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import {AutoComplete, Button, Checkbox, Input, Form, message, Modal, Avatar} from 'antd';
+import { AutoComplete, Button, Checkbox, Input, Form, message, Modal, Avatar } from 'antd';
 import { connect } from 'react-redux';
 import { debounce, get, isEmpty } from 'lodash';
 
@@ -11,19 +11,13 @@ import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
 import validateRules from '../../constants/validateRules';
 import { getWebsiteLoading } from '../../../reducers';
-import ImageSetter from "../../../components/ImageSetter/ImageSetter";
+import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 
-
-export const WebsitesConfigurations = ({
-                                intl,
-                                form,
-                                loading,
-                              }) => {
+export const WebsitesConfigurations = ({ intl, form, loading }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [isDesktop, setIsDesktop] = useState(false);
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -64,27 +58,21 @@ export const WebsitesConfigurations = ({
                   })}
                 </span>
               </h3>
-              {getFieldDecorator('parent', {
-                rules: validateRules.autocomplete,
-              })()}
+              {getFieldDecorator('desktopLogo', {})()}
             </Form.Item>
-              <Form.Item>
-                {getFieldDecorator('profile_image')(
-                  <div className="Settings__profile-image">
-                    <Avatar
-                      size="large"
-                      icon="user"
-                      src={''}
-                    />
-                    <Button type="primary" onClick={this.onOpenChangeAvatarModal}>
-                      {intl.formatMessage({
-                        id: 'profile_change_avatar',
-                        defaultMessage: 'Change avatar',
-                      })}
-                    </Button>
-                  </div>,
-                )}
-              </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('profile_image')(
+                <div className="Settings__profile-image">
+                  <Avatar size="large" icon="user" src={''} />
+                  <Button type="primary" onClick={this.onOpenChangeAvatarModal}>
+                    {intl.formatMessage({
+                      id: 'profile_change_avatar',
+                      defaultMessage: 'Change avatar',
+                    })}
+                  </Button>
+                </div>,
+              )}
+            </Form.Item>
             <p>
               {intl.formatMessage({
                 id: 'info_level_domain_name',
@@ -107,13 +95,13 @@ export const WebsitesConfigurations = ({
         title={
           isDesktop
             ? intl.formatMessage({
-              id: 'profile_change_avatar',
-              defaultMessage: 'Change avatar',
-            })
+                id: 'profile_change_avatar',
+                defaultMessage: 'Change avatar',
+              })
             : intl.formatMessage({
-              id: 'profile_change_cover',
-              defaultMessage: 'Change cover',
-            })
+                id: 'profile_change_cover',
+                defaultMessage: 'Change cover',
+              })
         }
         closable
         onCancel={isDesktop ? this.onOpenChangeAvatarModal : this.onOpenChangeCoverModal}

@@ -11,7 +11,12 @@ import {
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
 } from '../../reducers';
-import { MESSAGES, HISTORY, PATH_NAME_HISTORY } from '../../../common/constants/rewards';
+import {
+  MESSAGES,
+  HISTORY,
+  PATH_NAME_HISTORY,
+  FRAUD_DETECTION,
+} from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import './Sidenav.less';
 
@@ -295,6 +300,18 @@ export default class SidenavRewards extends React.Component {
                       {intl.formatMessage({
                         id: 'matchBot',
                         defaultMessage: `Match bot`,
+                      })}
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to={'/rewards/fraud-detection'}
+                      className="sidenav-discover-objects__item"
+                      activeClassName="Sidenav__item--active"
+                    >
+                      {intl.formatMessage({
+                        id: FRAUD_DETECTION,
+                        defaultMessage: 'Fraud detection',
                       })}
                     </NavLink>
                   </li>

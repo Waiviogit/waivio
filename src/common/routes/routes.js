@@ -60,6 +60,11 @@ const routes = {
           component: Views.HistoryCampaign,
         },
         {
+          path: '/fraud-detection',
+          exact: true,
+          component: Views.FraudDetection,
+        },
+        {
           path: '/blacklist/:listType?',
           exact: true,
           component: Views.BlacklistCampaign,
@@ -75,6 +80,11 @@ const routes = {
           component: Views.RewardsComponent,
         },
       ],
+    },
+    {
+      path: '/drafts',
+      exact: true,
+      component: Views.Drafts,
     },
     {
       path: '/drafts',
@@ -145,6 +155,19 @@ const routes = {
       path: '/payments',
       exact: true,
       component: Views.ReportsWebsite,
+    },
+    {
+      path: `/:site/(${URL.WEBSITES.tabs})`,
+      pathScope: '/:site',
+      exact: true,
+      component: Views.WebsiteSettings,
+      routes: [
+        {
+          path: '/configuration',
+          exact: true,
+          component: Views.WebsitesConfigurations
+        }
+      ],
     },
     {
       path: `/@:name/(${URL.USER.tabs})?/(table)?`,

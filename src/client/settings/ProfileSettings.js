@@ -170,6 +170,7 @@ export default class ProfileSettings extends React.Component {
               }),
             },
           ];
+
           SteemConnectAPI.broadcast([profileDateEncoded])
             .then(() => {
               reload();

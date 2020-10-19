@@ -42,6 +42,7 @@ export default {
       'guideHistory',
       'messages',
       'reports',
+      'fraud-detection',
     ].join('|'),
     sideBar: [
       'all',
@@ -76,6 +77,18 @@ export default {
       'create',
       'manage',
       'payments',
+    ].join('|'),
+  },
+  WEBSITES: {
+    tabs: [
+      'configuration',
+      'settings',
+      'administrators',
+      'moderators',
+      'authorities',
+      'objects',
+      'object_filters',
+      'muted_users',
     ].join('|'),
   },
 };

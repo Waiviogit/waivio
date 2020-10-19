@@ -17,6 +17,7 @@ export default {
   Editor: loableComponent(import('../../client/post/EditPost/EditPost')),
   Settings: loableComponent(import('../../client/settings/Settings')),
   GuestsSettings: loableComponent(import('../../client/settings/GuestsSettings')),
+  WebsiteSettings: loableComponent(import('../../client/settings/WebsiteSettings')),
   NotificationSettings: loableComponent(import('../../client/settings/NotificationSettings')),
   ProfileSettings: loableComponent(import('../../client/settings/ProfileSettings')),
   Invite: loableComponent(import('../../client/invite/Invite')),
@@ -71,7 +72,7 @@ export default {
   HistoryCampaign: loableComponent(import('../../client/rewards/History/History')),
   CreateWebsite: loableComponent(import('../../client/websites/WebsiteTools/Create/CreateWebsite')),
   ManageWebsite: loableComponent(import('../../client/websites/WebsiteTools/Manage/ManageWebsite')),
-  ReportsWebsite: loableComponent(
-    import('../../client/websites/WebsiteTools/Reports/ReportsWebsite'),
-  ),
+  ReportsWebsite: loableComponent(import('../../client/websites/WebsiteTools/Reports/ReportsWebsite')),
+  WebsitesConfigurations: loableComponent(import('../../client/websites/WebsiteTools/Configuration/WebsitesConfigurations')),
+  FraudDetection: loableComponent(import('../../client/rewards/FraudDetection/FraudDetection')),
 };

@@ -20,7 +20,8 @@ import {
 import { setMapFullscreenMode, resetUpdatedFlag } from './mapActions';
 import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
-import { getObjectName } from '../../helpers/wObjectHelper';
+import { getObjectAvatar, getObjectName } from '../../helpers/wObjectHelper';
+import DEFAULTS from '../../object/const/defaultValues';
 import './Map.less';
 
 const defaultCoords = {
@@ -239,7 +240,9 @@ class MapOS extends React.Component {
   getOverlayLayout = () => {
     const { onMarkerClick } = this.props;
     const { infoboxData } = this.state;
+    const defaultAvatar = DEFAULTS.AVATAR;
     const wobj = infoboxData.wobject;
+    const avatar = getObjectAvatar(wobj);
     const wobjPermlink = get(infoboxData, ['wobject', 'author_permlink']);
 
     return (
@@ -250,7 +253,7 @@ class MapOS extends React.Component {
           onMouseLeave={this.closeInfobox}
           onClick={() => onMarkerClick(wobjPermlink)}
         >
-          <img src={wobj.avatar} width={35} height={35} alt="" />
+          <img src={avatar || defaultAvatar} width={35} height={35} alt="" />
           <div role="presentation" className="MapOS__overlay-wrap-name">
             {getObjectName(wobj)}
           </div>

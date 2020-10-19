@@ -7,7 +7,6 @@ import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
-import SteemConnect from '../../steemConnectAPI';
 import { getCryptoPriceHistory } from '../../app/appActions';
 import { closeTransfer, sendPendingTransfer } from '../walletActions';
 import { notify } from '../../app/Notification/notificationActions';
@@ -290,14 +289,13 @@ export default class Transfer extends React.Component {
           if (values.memo) transferQuery.memo = values.memo;
         }
 
-        if (app) transferQuery.memo.app = app;
+        if (app) transferQuery.memo = { app };
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (memo) {
           transferQuery.memo = { id: memo };
           if (values.memo) transferQuery.memo.message = values.memo;
         }
         transferQuery.memo = JSON.stringify(transferQuery.memo);
-
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
             if (res.result) {
@@ -319,7 +317,12 @@ export default class Transfer extends React.Component {
             }
           });
         } else {
-          const win = window.open(SteemConnect.sign('transfer', transferQuery), '_blank');
+          const win = window.open(
+            `https://hivesigner.com/sign/transfer?amount=${transferQuery.amount}&to=${
+              transferQuery.to
+            }${transferQuery.memo ? `&memo=${transferQuery.memo}` : ''}`,
+            '_blank',
+          );
 
           win.focus();
         }
@@ -515,8 +518,6 @@ export default class Transfer extends React.Component {
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
-
-    console.log(this.state.currency);
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
     const currentBalance = isGuest ? `${user.balance} HIVE` : balance;

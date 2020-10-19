@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import { message } from 'antd';
 import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
@@ -59,24 +60,20 @@ export default function withEditor(WrappedComponent) {
       message.info(
         formatMessage({ id: 'notify_uploading_image', defaultMessage: 'Uploading image' }),
       );
-      const currentLocation = window.location.hostname;
-
-      let currentApp = 'waivio';
-
-      if (currentLocation === 'waiviodev') {
-        currentApp = 'waiviodev';
-      }
 
       const formData = new FormData();
       const currentMethod = linkMethod ? 'imageUrl' : 'file';
       formData.append(currentMethod, blob);
 
-      return fetch(`https://www.${currentApp}.com/api/image`, {
-        method: 'POST',
-        body: formData,
-      })
-        .then(res => res.json())
-        .then(res => callback(res.image, blob.name))
+      const currentLocation = window.location.hostname;
+      let currentApp = 'waivio';
+      if (currentLocation === 'waiviodev') {
+        currentApp = 'waiviodev';
+      }
+
+      return axios
+        .post(`https://www.${currentApp}.com/api/image`, formData)
+        .then(res => callback(res.data.image, blob.name))
         .catch(() => {
           errorCallback();
           message.error(
