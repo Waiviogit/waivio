@@ -67,10 +67,9 @@ export default function withEditor(WrappedComponent) {
 
       const currentLocation = window.location.hostname;
       let currentApp = 'waivio';
-      if (currentLocation === 'waiviodev') {
+      if (currentLocation === 'waiviodev.com') {
         currentApp = 'waiviodev';
       }
-
       return axios
         .post(`https://www.${currentApp}.com/api/image`, formData)
         .then(res => callback(res.data.image, blob.name))

@@ -40,6 +40,7 @@ const CatalogWrap = props => {
 
   const getPropositions = ({ match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
+    console.log('propos');
     ApiClient.getPropositions({
       userName,
       match,
@@ -67,6 +68,8 @@ const CatalogWrap = props => {
           const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
             getPropositions({ userName, match, requiredObject, sort });
+          } else {
+            setLoadingPropositions(false);
           }
           setListItems(wObject.listItems);
           dispatch(setWobjectForBreadCrumbs(wObject));

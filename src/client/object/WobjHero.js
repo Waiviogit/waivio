@@ -19,7 +19,7 @@ class WobjMenuWrapper extends React.Component {
     location: PropTypes.shape(),
     history: PropTypes.shape(),
     wobject: PropTypes.shape().isRequired,
-    username: PropTypes.string.isRequired,
+    username: PropTypes.string,
     albumsAndImagesCount: PropTypes.number,
     appendAlbum: PropTypes.func.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()),
@@ -31,14 +31,15 @@ class WobjMenuWrapper extends React.Component {
     location: {},
     history: {},
     albums: [],
+    username: '',
   };
 
   onChange = key => {
-    const { match, history, albums } = this.props;
+    const { match, history, albums, wobject } = this.props;
     const section = key === 'reviews' ? '' : `/${key}`;
     history.push(`${match.url.replace(/\/$/, '')}${section}`);
 
-    if (key === 'gallery' && isEmpty(albums)) {
+    if (key === 'gallery' && isEmpty(wobject.galleryAlbum) && isEmpty(albums)) {
       this.props.appendAlbum();
     }
   };
