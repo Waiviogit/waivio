@@ -24,6 +24,9 @@ describe('ObjectExpertiseByType component', () => {
         <ObjectExpertiseByType {...props} />
       </Router>,
     );
+    act(() => {
+      wrapper.update();
+    });
   });
 
   afterEach(() => jest.clearAllMocks());

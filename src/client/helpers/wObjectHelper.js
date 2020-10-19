@@ -1,12 +1,10 @@
-import { get, some, find, filter, isEmpty, compact } from 'lodash';
-import {
-  addressFields,
-  objectFields,
-  TYPES_OF_MENU_ITEM,
-} from '../../common/constants/listOfFields';
+import { get, some, filter, isEmpty, compact } from 'lodash';
+import { addressFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
-import { getAppendDownvotes, getAppendUpvotes } from './voteHelpers';
-import { mainerName } from '../object/wObjectHelper';
+
+export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'default_name');
+export const getObjectTitle = (wobj = {}) => wobj.title || '';
+export const getObjectAvatar = (wobj = {}) => wobj.avatar || get(wobj, ['parent', 'avatar'], '');
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 
@@ -31,11 +29,6 @@ export const generatePermlink = () =>
     .toString(36)
     .substring(2);
 
-export const getField = (item, field) => {
-  const wo = find(item.fields, ['name', field]);
-  return wo ? wo.body : null;
-};
-
 export const prepareAlbumData = (form, currentUsername, wObject) => {
   const data = {};
   data.author = currentUsername;
@@ -53,8 +46,8 @@ export const prepareAlbumData = (form, currentUsername, wObject) => {
 
   data.permlink = `${data.author}-${generatePermlink()}`;
   data.lastUpdated = Date.now();
+  data.wobjectName = getObjectName(wObject);
 
-  data.wobjectName = getField(wObject, 'name');
   return data;
 };
 
@@ -83,10 +76,8 @@ export const prepareImageToStore = postData => ({
 export const hasType = (wobj, type) =>
   Boolean(wobj && wobj.object_type && wobj.object_type.toLowerCase() === type.toLowerCase());
 
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable camelcase */
 export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
-  const { author, author_permlink } = wObj;
+  const { author, author_permlink: parentPermlink } = wObj;
   let body = bodyMsg;
   if (!body) {
     const langReadable = filter(LANGUAGES, {
@@ -100,111 +91,14 @@ export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
   return {
     author: creator,
     parentAuthor: author,
-    parentPermlink: author_permlink,
+    parentPermlink,
     body,
     title: '',
     field: fieldContent,
     permlink: `${creator}-${generatePermlink()}`,
     lastUpdated: Date.now(),
-    wobjectName: getField(wObj, objectFields.name),
+    wobjectName: getObjectName(wObj),
   };
-};
-
-export const calculateApprovePercent = (votes, weight, wobj = {}) => {
-  if (weight < 0) return 0;
-
-  const approves = getAppendUpvotes(votes);
-  const rejects = getAppendDownvotes(votes);
-
-  if (!isEmpty(votes)) {
-    if (rejects.length && !approves.length) return 0;
-
-    const mainer = mainerName(votes, wobj.moderators, wobj.admins);
-
-    if (mainer) return mainer.status === 'approved' ? 100 : 0;
-
-    const summRshares = votes.reduce((acc, vote) => acc + Math.abs(vote.rshares_weight), 0);
-
-    if (summRshares < 0) return 0;
-
-    const approveRshares = approves.reduce((acc, vote) => acc + vote.rshares_weight, 0);
-    const rejectRshares = rejects.reduce((acc, vote) => acc + Math.abs(vote.rshares_weight), 0);
-
-    if (rejectRshares) return summRshares ? (approveRshares * 100) / summRshares : 0;
-
-    return 100;
-  }
-
-  return 100;
-};
-
-export const addActiveVotesInField = (wobj, field, category = '') => {
-  const fieldsArray = get(wobj, 'fields', []);
-  let matchField = fieldsArray.find(
-    wobjField =>
-      wobjField.body === field.id ||
-      wobjField.permlink === field.permlink ||
-      wobjField.body === field.name ||
-      wobjField.body === field.body ||
-      wobjField.body === field.author_permlink,
-  );
-
-  if (category) {
-    matchField = fieldsArray.find(
-      wobjField => wobjField.body === field.name && wobjField.id === category,
-    );
-  }
-  const activeVotes = matchField ? matchField.active_votes : [];
-  const weight = matchField ? matchField.weight : 0;
-
-  return {
-    ...field,
-    active_votes: [...activeVotes],
-    weight,
-  };
-};
-
-export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
-  const stringBodyFields = ['name', 'parent', 'avatar', 'description', 'background'];
-  const localeIndependentFields = ['status', 'map', 'avatar'];
-
-  if (!wobj || !wobj.fields || !fieldName) return null;
-
-  let approvedField = get(wobj, 'fields').filter(field => {
-    let mapedField = field;
-
-    if (!field.active_votes || field.active_votes.length) {
-      mapedField = addActiveVotesInField(wobj, field);
-    }
-
-    return (
-      mapedField.name === fieldName &&
-      calculateApprovePercent(mapedField.active_votes, mapedField.weight, wobj) >= 70 &&
-      (localeIndependentFields.includes(fieldName) || mapedField.locale === locale)
-    );
-  });
-
-  if (!approvedField.length) return null;
-
-  const approveByMainer = approvedField.filter(field => {
-    const mainer = mainerName(field.active_votes, wobj.moderators, wobj.admins);
-
-    return mainer && mainer.status === 'approved';
-  });
-
-  if (approveByMainer.length) {
-    approvedField = approveByMainer[0].created
-      ? approveByMainer[0]
-      : approveByMainer[approveByMainer.length - 1];
-  } else {
-    approvedField = approvedField.sort((a, b) => b.weight - a.weight)[0];
-  }
-
-  if (stringBodyFields.includes(fieldName)) {
-    return approvedField.body;
-  }
-
-  return JSON.parse(approvedField.body);
 };
 
 export const parseWobjectField = (wobject, fieldName) => {
@@ -242,12 +136,13 @@ export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;
 
   return compact(
-    Object.values(addressFields).map(fieldName => parseWobjectField(wobject, 'address')[fieldName]),
+    Object.values(addressFields).map(fieldName => {
+      const parsedWobject = parseWobjectField(wobject, 'address');
+      return get(parsedWobject, fieldName);
+    }),
   ).join(', ');
 };
 
-export const getObjectName = (wobj = {}) => wobj.name || wobj.default_name;
-export const getObjectTitle = (wobj = {}) => wobj.title || '';
 export const getPermLink = url =>
   url
     .split('/')
@@ -263,6 +158,6 @@ export const getMenuItems = (wobject, menuType, objType) => {
     .map(item => {
       const matchItem = listItems.find(f => f.body === item.author_permlink) || {};
 
-      return { ...item, alias: matchItem.alias };
+      return { ...item, alias: matchItem.alias, id: menuType };
     });
 };

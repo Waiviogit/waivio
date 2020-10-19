@@ -298,7 +298,7 @@ export const getObjectFields = state => state.wobject.fields || [];
 export const getObjectAdmins = state => state.wobject.admins || [];
 export const getObjectModerators = state => state.wobject.moderators || [];
 export const getRatingFields = state => state.wobject.rating || [];
-export const getObjectTagCategory = state => state.wobject.tagCategories;
+export const getObjectTagCategory = state => state.wobject.tagCategory;
 export const getWobjectIsFailed = state => state.wobject.isFailed;
 export const getWobjectIsFatching = state => state.wobject.isFetching;
 export const getBreadCrumbs = state => state.breadcrumb;

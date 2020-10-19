@@ -19,7 +19,7 @@ import {
   getAllUsers,
   getUsersAccountHistory,
 } from '../../reducers';
-import { calculateDownVote, calcReputation, dSteem } from '../../vendor/steemitHelpers';
+import { calculateDownVote, calcReputation, dHive } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
@@ -75,14 +75,14 @@ class UserInfo extends React.Component {
       !match.params.name.startsWith(GUEST_PREFIX) &&
       !match.params.name.startsWith(BXY_GUEST_PREFIX)
     ) {
-      dSteem.rc.getRCMana(match.params.name).then(res => {
+      dHive.rc.getRCMana(match.params.name).then(res => {
         this.setState({
           rc_percentage: res.percentage,
         });
       });
-      dSteem.database.getAccounts([match.params.name]).then(res => {
+      dHive.database.getAccounts([match.params.name]).then(res => {
         this.setState({
-          voting_mana: dSteem.rc.calculateVPMana(res[0]).percentage,
+          voting_mana: dHive.rc.calculateVPMana(res[0]).percentage,
         });
       });
     }

@@ -218,7 +218,7 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           rewardHBD: notification.rewardHBD,
         },
       );
-    case notificationConstants.CUSTOMER_SUPPORT:
+    case notificationConstants.CAMPAIGN_MESSAGE:
       return intl.formatMessage(
         {
           id: 'customer_support',
@@ -318,7 +318,7 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.from}/transfers`;
     case notificationConstants.CLAIM_REWARD:
       return `/@${notification.account}`;
-    case notificationConstants.CUSTOMER_SUPPORT:
+    case notificationConstants.CAMPAIGN_MESSAGE:
       return `/@${notification.author}/${notification.permlink}`;
     case notificationConstants.LIKE:
       return `/@${notification.author}/${notification.permlink}`;
@@ -372,7 +372,7 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.from;
     case notificationConstants.CLAIM_REWARD:
       return notification.account;
-    case notificationConstants.CUSTOMER_SUPPORT:
+    case notificationConstants.CAMPAIGN_MESSAGE:
       return notification.author;
     case notificationConstants.LIKE:
       return notification.voter;

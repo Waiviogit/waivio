@@ -7,7 +7,6 @@ import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
-import SteemConnect from '../../steemConnectAPI';
 import { getCryptoPriceHistory } from '../../app/appActions';
 import { closeTransfer, sendPendingTransfer } from '../walletActions';
 import { notify } from '../../app/Notification/notificationActions';
@@ -97,7 +96,6 @@ export default class Transfer extends React.Component {
     openLinkHiveAccountModal: PropTypes.func.isRequired,
     showModal: PropTypes.bool.isRequired,
     sendPendingTransfer: PropTypes.func.isRequired,
-    history: PropTypes.shape().isRequired,
     getPayables: PropTypes.func,
     match: PropTypes.shape().isRequired,
   };
@@ -263,12 +261,16 @@ export default class Transfer extends React.Component {
       amount,
       to,
       user,
-      history,
+      match,
       getPayables,
     } = this.props;
+    const matchPath = get(match, ['params', '0']);
+    const params = ['payables', 'receivables'];
     const sponsor = user.name;
     const transactionId = uuidv4();
     const userName = to;
+    const overpaymentRefund = includes(memo, 'overpayment_refund');
+
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
@@ -280,13 +282,16 @@ export default class Transfer extends React.Component {
           transferQuery.memo = { id: memo || REWARD.guestTransfer, to: values.to };
         } else {
           transferQuery.to = values.to;
-          if (memo) transferQuery.memo = { id: memo };
           if (values.memo) transferQuery.memo = values.memo;
         }
 
         if (app) transferQuery.memo.app = app;
-        if (values.memo) transferQuery.memo.message = values.memo;
-        if (transferQuery.memo) transferQuery.memo = JSON.stringify(transferQuery.memo);
+        if (app && overpaymentRefund && isGuest) transferQuery.app = app;
+        if (memo) {
+          transferQuery.memo = { id: memo };
+          if (values.memo) transferQuery.memo.message = values.memo;
+        }
+        transferQuery.memo = JSON.stringify(transferQuery.memo);
 
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
@@ -309,13 +314,18 @@ export default class Transfer extends React.Component {
             }
           });
         } else {
-          const win = window.open(SteemConnect.sign('transfer', transferQuery), '_blank');
+          const win = window.open(
+            `https://hivesigner.com/sign/transfer?amount=${transferQuery.amount}&to=${
+              transferQuery.to
+            }${transferQuery.memo ? `&memo=${transferQuery.memo}` : ''}`,
+            '_blank',
+          );
           win.focus();
         }
 
-        if (includes(history.location.pathname, 'payables')) {
+        if (includes(params, matchPath)) {
           sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
-          setTimeout(() => getPayables(), 500);
+          setTimeout(() => getPayables(), 1000);
         }
         this.props.closeTransfer();
       }
@@ -392,7 +402,7 @@ export default class Transfer extends React.Component {
     }
 
     const selectedBalance =
-      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
+      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
     const currentSelectedBalance = this.props.isGuest ? user.balance : selectedBalance;
 
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
@@ -500,7 +510,7 @@ export default class Transfer extends React.Component {
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
     const balance =
-      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
+      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
     const currentBalance = isGuest ? `${user.balance} HIVE` : balance;
     const isChangesDisabled = !!memo;
     const currencyPrefix = getFieldDecorator('currency', {

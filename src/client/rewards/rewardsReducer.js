@@ -3,6 +3,8 @@ import {
   SET_DATA_FOR_SINGLE_REPORT,
   GET_REWARDS_GENERAL_COUNTS,
   GET_FOLLOWING_SPONSORS_REWARDS,
+  CLEAR_FOLLOWING_SPONSORS_REWARDS,
+  GET_FRAUD_SUSPICION,
 } from './rewardsActions';
 import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
 
@@ -17,6 +19,8 @@ const initialState = {
   followingRewards: [],
   hasMoreFollowingRewards: false,
   loading: false,
+  fraudSuspicionData: [],
+  hasMoreFraudSuspicionData: false,
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -61,6 +65,27 @@ const rewardsReducer = (state = initialState, action) => {
         hasMoreFollowingRewards: hasMore,
       };
     }
+    case CLEAR_FOLLOWING_SPONSORS_REWARDS.ACTION: {
+      return {
+        ...state,
+        followingRewards: [],
+      };
+    }
+    case GET_FRAUD_SUSPICION.START: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case GET_FRAUD_SUSPICION.SUCCESS: {
+      const { campaigns, hasMore } = action.payload;
+      return {
+        ...state,
+        loading: false,
+        fraudSuspicionData: hasMore ? state.fraudSuspicionData.concat(campaigns) : campaigns,
+        hasMoreFraudSuspicionData: hasMore,
+      };
+    }
     default:
       return state;
   }
@@ -77,5 +102,7 @@ export const getCountTookPartCampaigns = state => state.countTookPartCampaigns;
 export const getCreatedCampaignsCount = state => state.createdCampaignsCount;
 export const getCommentsFromReserved = state => state.reservedComments;
 export const getSponsorsRewards = state => state.followingRewards;
+export const getFraudSuspicionDataState = state => state.fraudSuspicionData;
 export const getHasMoreFollowingRewards = state => state.hasMoreFollowingRewards;
+export const getHasMoreFraudSuspicionData = state => state.hasMoreFraudSuspicionData;
 export const getIsLoading = state => state.loading;

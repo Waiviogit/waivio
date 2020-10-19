@@ -1,15 +1,21 @@
 /* eslint-disable */
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get, includes, filter } from 'lodash';
+import { isEmpty, get, includes, filter, some } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
-import { getCommentContent } from '../../reducers';
-import { ASSIGNED, GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
+import { getAuthenticatedUser, getCommentContent } from '../../reducers';
+import {
+  ASSIGNED,
+  GUIDE_HISTORY,
+  HISTORY,
+  MESSAGES,
+  FRAUD_DETECTION,
+} from '../../../common/constants/rewards';
 import { connect } from 'react-redux';
 import {
   rejectReservationCampaign,
@@ -38,27 +44,27 @@ const Proposition = ({
   blacklistUsers,
   users,
   wobjPrice,
+  sortFraudDetection,
 }) => {
-  const getEligibility = proposition =>
-    Object.values(proposition.requirement_filters).every(item => item === true);
-  const isEligible = getEligibility(proposition);
+  const requirementFilters = get(proposition, ['requirement_filters'], {});
+  const isEligible = Object.values(requirementFilters).every(item => item === true);
   const proposedWobj = wobj;
+  const requiredObject = get(proposition, ['required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const parentObject = isEmpty(proposedWobj.parent)
-    ? get(proposition, ['required_object'], {})
-    : {};
-  const requiredObjectName = getObjectName(proposition.required_object);
+  const parentObject = isEmpty(proposedWobj.parent) ? requiredObject : {};
+  const requiredObjectName = getObjectName(requiredObject);
   const isMessages = !isEmpty(match)
     ? match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY
     : '';
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
-  const parenAuthor = isMessages
-    ? get(proposition, ['users', '0', 'rootName'])
-    : proposition.guide.name;
-  const parentPermlink = isMessages ? permlink : proposition.activation_permlink;
+  const propositionUsers = get(proposition, ['users']);
+  const guideName = get(proposition, ['guide', 'name']);
+  const parentAuthor = isMessages ? get(proposition, ['users', '0', 'rootName']) : guideName;
+  const propositionActivationPermlink = get(proposition, ['activation_permlink']);
+  const parentPermlink = isMessages ? permlink : propositionActivationPermlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
 
@@ -68,19 +74,19 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    const permlinks = filter(proposition.objects, object => object.permlink);
+    const objects = get(proposition, ['objects']);
+    const users = get(proposition, ['users']);
+    const permlinks = filter(objects, object => object.permlink);
     const reservationPermlink = get(permlinks, ['0', 'permlink']);
 
     const currentUser =
       isMessages || match.params[0] === HISTORY
-        ? proposition.users
-        : filter(
-            proposition.users,
-            usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
-          );
+        ? users
+        : filter(users, usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED);
+    const activationPermlink = get(proposition, ['activation_permlink']);
 
     const rejectData = {
-      campaign_permlink: proposition.activation_permlink,
+      campaign_permlink: activationPermlink,
       user_name: userName,
       reservation_permlink: reservationPermlink || get(currentUser, ['0', 'permlink'], ''),
       unreservation_permlink: unreservationPermlink,
@@ -88,7 +94,7 @@ const Proposition = ({
     return rejectReservationCampaign(rejectData).then(() =>
       discardProposition({
         requiredObjectName,
-        companyAuthor: parenAuthor,
+        companyAuthor: parentAuthor,
         companyPermlink: parentPermlink,
         objPermlink: obj.author_permlink,
         reservationPermlink: rejectData.reservation_permlink,
@@ -100,7 +106,6 @@ const Proposition = ({
 
   const [isReserved, setReservation] = useState(false);
   const userData = get(users, ['user', 'name', 'alias'], '');
-
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
       if (!isEmpty(user)) {
@@ -120,7 +125,7 @@ const Proposition = ({
       userData || get(getJsonData(), ['profile', 'name'], '') || get(user, ['name'], '');
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
-      approved_object: wobj.author_permlink,
+      approved_object: get(wobj, 'author_permlink'),
       user_name: authorizedUserName,
       reservation_permlink: `reserve-${generatePermlink()}`,
     };
@@ -128,10 +133,11 @@ const Proposition = ({
       const currencyId = res.id;
       const currentHivePrice = res.hiveCurrency;
       const amount = (proposition.reward / currentHivePrice).toFixed(3);
+      const guideName = get(proposition, ['guide', 'name']);
       reserveActivatedCampaign(reserveData)
         .then(() =>
           assignProposition({
-            companyAuthor: proposition.guide.name,
+            companyAuthor: guideName,
             companyPermlink: proposition.activation_permlink,
             resPermlink: reserveData.reservation_permlink,
             objPermlink: wobj.author_permlink,
@@ -166,6 +172,10 @@ const Proposition = ({
         });
     });
   };
+  const requiredObjectAuthorPermlink = get(proposition, ['required_object', 'author_permlink']);
+
+  const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
+
   return (
     <div className="Proposition">
       <div className="Proposition__header">
@@ -187,15 +197,12 @@ const Proposition = ({
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
-        {assigned ||
-        includes(match.url, HISTORY) ||
-        includes(match.url, GUIDE_HISTORY) ||
-        includes(match.url, MESSAGES) ? (
+        {assigned || some(paramsUrl, item => includes(match.url, item)) ? (
           <CampaignFooter
             post={post}
             loading={loading}
             proposedWobj={proposedWobj}
-            requiredObjectPermlink={proposition.required_object.author_permlink}
+            requiredObjectPermlink={requiredObjectAuthorPermlink}
             requiredObjectName={requiredObjectName}
             discardPr={discardPr}
             proposition={proposition}
@@ -204,6 +211,7 @@ const Proposition = ({
             match={match}
             getMessageHistory={getMessageHistory}
             blacklistUsers={blacklistUsers}
+            sortFraudDetection={sortFraudDetection}
           />
         ) : (
           <React.Fragment>
@@ -256,16 +264,17 @@ const Proposition = ({
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
         isEligible={isEligible}
+        match={match}
       />
     </div>
   );
 };
 
 Proposition.propTypes = {
-  proposition: PropTypes.shape().isRequired,
+  proposition: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   wobj: PropTypes.shape().isRequired,
-  assignProposition: PropTypes.func.isRequired,
-  discardProposition: PropTypes.func.isRequired,
+  assignProposition: PropTypes.func,
+  discardProposition: PropTypes.func,
   loading: PropTypes.bool,
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,
@@ -273,6 +282,7 @@ Proposition.propTypes = {
   post: PropTypes.shape(),
   users: PropTypes.shape(),
   match: PropTypes.shape(),
+  sortFraudDetection: PropTypes.string,
 };
 
 Proposition.defaultProps = {
@@ -282,10 +292,14 @@ Proposition.defaultProps = {
   loading: false,
   users: {},
   match: {},
+  assignProposition: () => {},
+  discardProposition: () => {},
+  sortFraudDetection: 'reservation',
 };
 
 export default connect(
   (state, ownProps) => ({
+    user: getAuthenticatedUser(state),
     post:
       ownProps.authorizedUserName &&
       ownProps.assignCommentPermlink &&

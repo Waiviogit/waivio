@@ -60,6 +60,11 @@ const routes = {
           component: Views.HistoryCampaign,
         },
         {
+          path: '/fraud-detection',
+          exact: true,
+          component: Views.FraudDetection,
+        },
+        {
           path: '/blacklist/:listType?',
           exact: true,
           component: Views.BlacklistCampaign,
@@ -332,6 +337,7 @@ const routes = {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
       component: Page,
       exact: true,
+      pathScope: '',
       routes: [
         {
           path: '/confirmation',

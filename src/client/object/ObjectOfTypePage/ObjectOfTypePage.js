@@ -11,8 +11,7 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import toMarkdown from '../../components/EditorExtended/util/editorStateToMarkdown';
 import LikeSection from '../LikeSection';
 import FollowObjectForm from '../FollowObjectForm';
-import { getFieldWithMaxWeight } from '../wObjectHelper';
-import { getAppendData, getPermLink } from '../../helpers/wObjectHelper';
+import { getAppendData, getObjectName, getPermLink } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
 import {
@@ -90,7 +89,7 @@ const ObjectOfTypePage = props => {
                 },
                 {
                   field: objectFields.pageContent,
-                  wobject: getFieldWithMaxWeight(wobject, objectFields.name),
+                  wobject: getObjectName(wobject),
                 },
               ),
             );

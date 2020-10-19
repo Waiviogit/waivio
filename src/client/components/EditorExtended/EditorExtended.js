@@ -2,21 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
-import { forEach, get, has, keyBy, isEqual, isEmpty } from 'lodash';
+import { forEach, get, has, isEmpty, isEqual, keyBy, includes } from 'lodash';
 import { Input, message } from 'antd';
 import {
-  Editor as MediumDraftEditor,
   createEditorState,
-  fromMarkdown,
+  Editor as MediumDraftEditor,
   Entity,
   findLinkEntities,
+  fromMarkdown,
 } from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
 import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
-import { getClientWObj } from '../../adapters';
 import ObjectLink, { findObjEntities } from './components/entities/objectlink';
 import Link from './components/entities/link';
 
@@ -63,12 +62,14 @@ class Editor extends React.Component {
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
     displayTitle: PropTypes.bool,
+    draftId: PropTypes.string,
   };
   static defaultProps = {
     intl: {},
     onChange: () => {},
     handleHashtag: () => {},
     displayTitle: true,
+    draftId: '',
   };
 
   static MAX_LENGTH = 255;
@@ -110,10 +111,44 @@ class Editor extends React.Component {
     this.setState({ editorEnabled: true });
   };
 
+  getCurrentLinkPermlink = value => {
+    const data = get(value, 'data.url', '');
+    const currentSeparator = data.split('/');
+    return get(currentSeparator, '[4]', []);
+  };
+
+  // eslint-disable-next-line consistent-return
+  getCurrentLoadObjects = (response, value) => {
+    const loadObjects = keyBy(response.wobjects, 'author_permlink');
+    if (value.type === Entity.OBJECT) {
+      return loadObjects[get(value, 'data.object.id')];
+    } else if (value.type === Entity.LINK) {
+      return loadObjects[this.getCurrentLinkPermlink(value)];
+    }
+  };
+
   restoreObjects = async rawContent => {
+    const { draftId } = this.props;
+    const isReview = includes(draftId, 'review');
     const objectIds = Object.values(rawContent.entityMap)
-      .filter(entity => entity.type === Entity.OBJECT && has(entity, 'data.object.id'))
-      .map(entity => get(entity, 'data.object.id', ''));
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .filter(entity => {
+        if (entity.type === Entity.OBJECT) {
+          return has(entity, 'data.object.id');
+        }
+        if (!isReview && entity.type === Entity.LINK) {
+          return has(entity, 'data.url');
+        }
+      })
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .map(entity => {
+        if (entity.type === Entity.OBJECT) {
+          return get(entity, 'data.object.id', '');
+        }
+        if (!isReview && entity.type === Entity.LINK) {
+          return this.getCurrentLinkPermlink(entity);
+        }
+      });
 
     if (objectIds.length) {
       const response = await getObjectsByIds({
@@ -122,16 +157,13 @@ class Editor extends React.Component {
         requiredFields: ['rating'],
       });
 
-      const loadObjects = keyBy(response.wobjects, 'author_permlink');
       const entityMap = {};
       forEach(rawContent.entityMap, (value, key) => {
-        const loadedObject =
-          value.type === Entity.OBJECT && loadObjects[get(value, 'data.object.id')];
+        const loadedObject = this.getCurrentLoadObjects(response, value);
+
         entityMap[key] = {
           ...value,
-          data: loadedObject
-            ? { ...value.data, object: getClientWObj(loadedObject, this.props.locale) }
-            : { ...value.data },
+          data: loadedObject ? { ...value.data, object: loadedObject } : { ...value.data },
         };
       });
       const rawContentUpdated = {
@@ -139,7 +171,13 @@ class Editor extends React.Component {
         entityMap,
       };
 
-      this.handleContentChange(createEditorState(rawContentUpdated));
+      setTimeout(
+        () =>
+          this.handleContentChange(
+            EditorState.moveFocusToEnd(createEditorState(rawContentUpdated)),
+          ),
+        0,
+      );
     }
     // eslint-disable-next-line no-unused-expressions
     !isEmpty(rawContent.blocks) &&

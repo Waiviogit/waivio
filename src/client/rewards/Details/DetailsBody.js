@@ -16,7 +16,9 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const requirementFilters = get(objectDetails, ['requirement_filters'], {});
-  const frequency = requirementFilters.frequency && requirementFilters.not_same_assigns;
+  const frequency =
+    requirementFilters.frequency &&
+    (requirementFilters.not_same_assigns || requirementFilters.freeReservation);
   const getChecked = useCallback(param => (isAuthenticated ? param : null), []);
   return (
     <div className="Details__text-wrap">
@@ -69,7 +71,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
       />
       <div className="Details__text fw6 mv3">{messageData.reward}:</div>
       <span>
-        {messageData.amountRewardDetermined}(
+        {messageData.amountRewardDetermined} (
         <Link to={`/@${objectDetails.guide.name}`}>{`@${objectDetails.guide.name}`}</Link>
         {!isEmpty(objectDetails.match_bots) &&
           objectDetails.match_bots.map(bot => (
@@ -80,7 +82,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
               </Link>
             </React.Fragment>
           ))}
-        ){messageData.countTowardsPaymentRewards}
+        ) {messageData.countTowardsPaymentRewards}
       </span>
       <div className="Details__text fw6 mv3">{messageData.legal}:</div>
       <span>

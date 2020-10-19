@@ -51,7 +51,6 @@ import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import {
   generatePermlink,
-  getField,
   getObjectName,
   hasType,
   prepareAlbumData,
@@ -298,7 +297,7 @@ const AppendForm = props => {
         .substring(2)}`;
       data.lastUpdated = Date.now();
 
-      data.wobjectName = getField(wObject, 'name');
+      data.wobjectName = getObjectName(wObject);
 
       data.votePower = votePercent !== null ? votePercent * 100 : null;
 
