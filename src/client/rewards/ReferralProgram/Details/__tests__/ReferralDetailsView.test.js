@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { mountWithIntl } from 'enzyme-react-intl';
 import { act } from 'react-dom/test-utils';
 import ReferralDetailsView from '../ReferralDetailsView';

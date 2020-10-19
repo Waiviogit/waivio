@@ -20,7 +20,6 @@ const ReferralStatusView = propsData => {
     history,
   } = propsData;
   const data = { username, currentUserCards };
-
   const { statusTitle, statusDescription, statusCount, statusPaymentText } = ReferralStatusContent(
     data,
   );

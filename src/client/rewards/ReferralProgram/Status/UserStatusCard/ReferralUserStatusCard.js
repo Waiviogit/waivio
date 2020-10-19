@@ -32,7 +32,7 @@ export default ReferralUserCard;
 ReferralUserCard.propTypes = {
   username: PropTypes.string,
   alias: PropTypes.string,
-  daysLeft: PropTypes.number,
+  daysLeft: PropTypes.string,
   history: PropTypes.shape(),
 };
 
