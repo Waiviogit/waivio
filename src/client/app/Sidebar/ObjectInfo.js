@@ -303,7 +303,6 @@ class ObjectInfo extends React.Component {
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort)) {
         const buttonArray = [...menuLinks, ...menuPages, ...button];
-        console.log(menuLinks);
         if (newsFilter) buttonArray.push({ id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter });
 
         const sortButtons = customSort.reduce((acc, curr) => {
