@@ -736,6 +736,7 @@ export const getHistory = ({
   status,
   guideNames,
   campaignNames,
+  fraudSuspicion,
   locale = 'en-US',
   reservationPermlink,
 }) =>
@@ -754,6 +755,7 @@ export const getHistory = ({
       reqData.onlyWithMessages = false;
     }
     if (guideName) reqData.guideName = guideName;
+    if (fraudSuspicion) reqData.fraudSuspicion = fraudSuspicion;
     if (!isEmpty(rewards)) reqData.rewards = rewards;
     if (!isEmpty(status)) reqData.status = status;
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;

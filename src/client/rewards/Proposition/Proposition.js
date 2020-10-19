@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get, includes, filter } from 'lodash';
+import { isEmpty, get, includes, filter, some } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
@@ -9,7 +9,13 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
 import { getAuthenticatedUser, getCommentContent } from '../../reducers';
-import { ASSIGNED, GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
+import {
+  ASSIGNED,
+  GUIDE_HISTORY,
+  HISTORY,
+  MESSAGES,
+  FRAUD_DETECTION,
+} from '../../../common/constants/rewards';
 import { connect } from 'react-redux';
 import {
   rejectReservationCampaign,
@@ -38,6 +44,7 @@ const Proposition = ({
   blacklistUsers,
   users,
   wobjPrice,
+  sortFraudDetection,
 }) => {
   const requirementFilters = get(proposition, ['requirement_filters'], {});
   const isEligible = Object.values(requirementFilters).every(item => item === true);
@@ -167,6 +174,8 @@ const Proposition = ({
   };
   const requiredObjectAuthorPermlink = get(proposition, ['required_object', 'author_permlink']);
 
+  const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
+
   return (
     <div className="Proposition">
       <div className="Proposition__header">
@@ -188,10 +197,7 @@ const Proposition = ({
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
-        {assigned ||
-        includes(match.url, HISTORY) ||
-        includes(match.url, GUIDE_HISTORY) ||
-        includes(match.url, MESSAGES) ? (
+        {assigned || some(paramsUrl, item => includes(match.url, item)) ? (
           <CampaignFooter
             post={post}
             loading={loading}
@@ -205,6 +211,7 @@ const Proposition = ({
             match={match}
             getMessageHistory={getMessageHistory}
             blacklistUsers={blacklistUsers}
+            sortFraudDetection={sortFraudDetection}
           />
         ) : (
           <React.Fragment>
@@ -275,6 +282,7 @@ Proposition.propTypes = {
   post: PropTypes.shape(),
   users: PropTypes.shape(),
   match: PropTypes.shape(),
+  sortFraudDetection: PropTypes.string,
 };
 
 Proposition.defaultProps = {
@@ -286,6 +294,7 @@ Proposition.defaultProps = {
   match: {},
   assignProposition: () => {},
   discardProposition: () => {},
+  sortFraudDetection: 'reservation',
 };
 
 export default connect(

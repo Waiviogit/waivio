@@ -42,6 +42,7 @@ export default {
       'guideHistory',
       'messages',
       'reports',
+      'fraud-detection',
     ].join('|'),
   },
 };
