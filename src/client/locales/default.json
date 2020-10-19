@@ -1407,5 +1407,6 @@
   "administrative": "Administrative",
   "ownership": "Ownership",
   "claim_authority": "Claim authority",
+  "rewards_details_for_reviewing": "for reviewing",
   "campaign_message_reply": "{author} replied on your comment"
 }

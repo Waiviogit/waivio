@@ -1409,5 +1409,6 @@
   "administrative": "Администратор",
   "ownership": "Владелец",
   "claim_authority": "Заявить о полномочиях",
-  "campaign_message_reply": "{author} ответил на ваш комментарий"
+  "campaign_message_reply": "{author} ответил на ваш комментарий",
+  "rewards_details_for_reviewing": "за отзывы"
 }
