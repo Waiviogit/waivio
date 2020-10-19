@@ -56,6 +56,9 @@ export default class WobjectContainer extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     match: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
+    location: PropTypes.shape({
+      hash: PropTypes.string,
+    }).isRequired,
     failed: PropTypes.bool,
     isFetching: PropTypes.bool,
     getObject: PropTypes.func.isRequired,
@@ -91,13 +94,13 @@ export default class WobjectContainer extends React.Component {
 
   constructor(props) {
     super(props);
-
+    const isPage = props.match.params[0] === OBJECT_TYPE.PAGE;
     this.state = {
       isEditMode:
         props.wobject.type === OBJECT_TYPE.PAGE &&
         props.authenticated &&
         !props.wobject[objectFields.pageContent],
-      hasLeftSidebar: props.match.params[0] !== OBJECT_TYPE.PAGE,
+      hasLeftSidebar: !isPage || (isPage && props.location.hash),
     };
   }
 
@@ -134,7 +137,7 @@ export default class WobjectContainer extends React.Component {
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
-  appendAlbum = async () => {
+  appendAlbum = () => {
     const formData = {
       galleryAlbum: 'Photos',
     };
@@ -143,8 +146,8 @@ export default class WobjectContainer extends React.Component {
     const data = prepareAlbumData(formData, authenticatedUserName, wobject);
     const album = prepareAlbumToStore(data);
 
-    const { author } = await this.props.appendObject(data);
-    await this.props.addAlbumToStore({ ...album, author });
+    const { author } = this.props.appendObject(data);
+    this.props.addAlbumToStore({ ...album, author });
   };
 
   render() {
@@ -190,6 +193,7 @@ export default class WobjectContainer extends React.Component {
           hasLeftSidebar={hasLeftSidebar}
           toggleViewEditMode={this.toggleViewEditMode}
           objectName={objectName}
+          appendAlbum={this.appendAlbum}
         />
       </React.Fragment>
     );

@@ -59,19 +59,12 @@ export default function withEditor(WrappedComponent) {
       message.info(
         formatMessage({ id: 'notify_uploading_image', defaultMessage: 'Uploading image' }),
       );
-      const currentLocation = window.location.hostname;
-
-      let currentApp = 'waivio';
-
-      if (currentLocation === 'waiviodev') {
-        currentApp = 'waiviodev';
-      }
 
       const formData = new FormData();
       const currentMethod = linkMethod ? 'imageUrl' : 'file';
       formData.append(currentMethod, blob);
 
-      return fetch(`https://www.${currentApp}.com/api/image`, {
+      return fetch(`https://www.waivio.com/api/image`, {
         method: 'POST',
         body: formData,
       })

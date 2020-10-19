@@ -61,6 +61,7 @@ import {
   PATH_NAME_RECEIVABLES,
   PATH_NAME_PAYABLES,
   IS_RESERVED,
+  FRAUD_DETECTION,
   IS_ALL,
   IS_ACTIVE,
   PAYABLES,
@@ -148,6 +149,7 @@ class Rewards extends React.Component {
     sponsors: [],
     sortHistory: 'reservation',
     sortGuideHistory: 'reservation',
+    sortFraudDetection: 'reservation',
     sortMessages: 'inquiryDate',
     sortAll: 'proximity',
     sortEligible: 'proximity',
@@ -180,7 +182,7 @@ class Rewards extends React.Component {
     url: '',
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
       userLocation,
       match,
@@ -194,14 +196,20 @@ class Rewards extends React.Component {
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
 
     if (!size(userLocation)) {
-      this.props.getCoordinates().then(coords => {
+      try {
+        const coords = await this.props.getCoordinates();
         const { lat, lon } = coords.value;
-        this.setState({ area: [+lat, +lon] });
-        if (username && !url) this.getPropositionsByStatus({ username, sort, area: [+lat, +lon] });
-        if (!authenticated && match.params.filterKey === 'all')
-          this.getPropositions({ username, match, activeFilters, sort, area: [+lat, +lon] });
-      });
+        // eslint-disable-next-line react/no-did-mount-set-state
+        await this.setState({ area: [+lat, +lon] });
+      } catch (e) {
+        message.error(e.error_description);
+      }
     }
+
+    const { area } = this.state;
+    if (username && !url) this.getPropositionsByStatus({ username, sort, area });
+    if (!authenticated && match.params.filterKey === 'all')
+      this.getPropositions({ username, match, activeFilters, sort, area });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -271,6 +279,8 @@ class Rewards extends React.Component {
         return this.setState({ sortMessages: sort });
       case GUIDE_HISTORY:
         return this.setState({ sortGuideHistory: sort });
+      case FRAUD_DETECTION:
+        return this.setState({ sortFraudDetection: sort });
       default:
         return this.setState({ sortAll: sort });
     }
@@ -856,6 +866,7 @@ class Rewards extends React.Component {
       sortGuideHistory,
       activeGuideHistoryFilters,
       url,
+      sortFraudDetection,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => wobj.required_object);
     const IsRequiredObjectWrap = !match.params.campaignParent;
@@ -916,6 +927,7 @@ class Rewards extends React.Component {
       messagesCampaigns,
       sortHistory,
       sortMessages,
+      sortFraudDetection,
       sortGuideHistory,
       setActiveMessagesFilters: this.setActiveMessagesFilters,
       propositionsReserved,

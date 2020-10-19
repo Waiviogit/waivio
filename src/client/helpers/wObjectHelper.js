@@ -158,6 +158,6 @@ export const getMenuItems = (wobject, menuType, objType) => {
     .map(item => {
       const matchItem = listItems.find(f => f.body === item.author_permlink) || {};
 
-      return { ...item, alias: matchItem.alias };
+      return { ...item, alias: matchItem.alias, id: menuType };
     });
 };
