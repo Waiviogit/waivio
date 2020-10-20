@@ -71,8 +71,7 @@ const CatalogBreadcrumb = props => {
   };
 
   // Delete next breadCrumbs when click to back
-  // eslint-disable-next-line no-shadow
-  const createNewHash = (hash, permlink) => {
+  const createNewHash = permlink => {
     const findIndex = permlinks.findIndex(el => el === permlink);
     const hashPermlinks = [...permlinks];
     hashPermlinks.splice(findIndex + 1);
