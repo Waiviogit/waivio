@@ -11,7 +11,8 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../reducers';
-import { getVoteValue } from '../helpers/user';
+import { calculateVotePower } from '../helpers/user';
+import { ceil } from 'lodash';
 import './LikeSection.less';
 
 @injectIntl
@@ -66,13 +67,7 @@ class LikeSection extends React.Component {
 
   calculateVoteWorth = value => {
     const { user, rewardFund, rate, onVotePercentChange } = this.props;
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
+    const voteWorth = ceil((calculateVotePower(user, rewardFund, rate) * value) / 100, 3);
     this.setState({ votePercent: value, voteWorth });
 
     onVotePercentChange(value);

@@ -1151,5 +1151,8 @@
   "createPost.selectLabel.1week": "1 неделя",
   "createPost.selectLabel.18days": "18 дней",
   "createPost.selectLabel.3weeks": "3 недели",
-  "createPost.selectLabel.custom": "Выбрать дату"
+  "createPost.selectLabel.custom": "Выбрать дату",
+  "empty_user_own_profile": "Вы еще не опубликовали ни одного поста.",
+  "@statics/start_now": "Начать сейчас",
+  "find_compared_item": "Выберите пользователя"
 }

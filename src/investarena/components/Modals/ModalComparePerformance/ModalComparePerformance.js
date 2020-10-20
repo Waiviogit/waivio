@@ -247,7 +247,7 @@ class ModalComparePerformance extends React.Component {
                     }}
                     onPressEnter={this.handleSearchForInput}
                     placeholder={intl.formatMessage({
-                      id: 'findComparedItem',
+                      id: 'find_compared_item',
                       defaultMessage: 'Item to compare',
                     })}
                   />
