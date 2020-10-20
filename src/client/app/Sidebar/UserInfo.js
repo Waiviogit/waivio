@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
-import { get } from 'lodash';
+import { get, ceil } from 'lodash';
 import urlParse from 'url-parse';
 import { getRate, getRewardFund, getScreenSize, getUser } from '../../reducers';
-import { getVoteValue } from '../../helpers/user';
+import { calculateVotePower } from '../../helpers/user';
 import { calculateVotingPower } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
@@ -79,10 +79,7 @@ class UserInfo extends React.Component {
       hostWithoutWWW = hostWithoutWWW.slice(4);
     }
 
-    const voteWorth =
-      user && rewardFund.recent_claims && rewardFund.reward_balance && rate
-        ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
-        : 0;
+    const voteWorth = user && rewardFund && rate ? ceil(calculateVotePower(user, rewardFund, rate), 3) : 0;
 
     const isMobile = this.props.screenSize === 'xsmall';
     return (
