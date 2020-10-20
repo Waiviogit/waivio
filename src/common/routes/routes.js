@@ -165,8 +165,8 @@ const routes = {
         {
           path: '/configuration',
           exact: true,
-          component: Views.WebsitesConfigurations
-        }
+          component: Views.WebsitesConfigurations,
+        },
       ],
     },
     {

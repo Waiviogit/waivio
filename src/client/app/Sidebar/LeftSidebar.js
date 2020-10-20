@@ -16,6 +16,7 @@ const LeftSidebar = () => (
     <Route path="/(discover-objects|discover)/:typeName?" component={SidenavDiscoverObjects} />
     <Route path="/replies" component={SidebarMenu} />
     <Route path={`/(${URL.SETTINGS.tabs})`} component={SettingsSidenav} />
+    <Route path={`/:site/(${URL.WEBSITES.tabs})`} component={SettingsSidenav} />
     <Route path="/" component={SidebarMenu} />
   </Switch>
 );
