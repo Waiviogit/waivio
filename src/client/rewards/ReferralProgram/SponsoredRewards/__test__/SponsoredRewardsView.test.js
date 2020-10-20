@@ -1,8 +1,8 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
 import { shallow } from 'enzyme';
-import SponsoredRewardsView from '../SponsoredRewardsView';
 import * as mock from '../__mock__/mockData';
+import SponsoredRewardsView from '../SponsoredRewardsView';
 
 jest.mock('../SponsoredRewardsTableRow/SponsoredRewardsTableRow');
 
@@ -15,7 +15,11 @@ describe('SponsoredRewardsView', () => {
   beforeEach(() => {
     wrapper = shallow(
       <IntlProvider locale="en">
-        {SponsoredRewardsView(intl, statusSponsoredHistory, sponsoredRewardsTitle)}
+        <SponsoredRewardsView
+          intl={intl}
+          statusSponsoredHistory={statusSponsoredHistory}
+          sponsoredRewardsTitle={sponsoredRewardsTitle}
+        />
       </IntlProvider>,
     );
   });

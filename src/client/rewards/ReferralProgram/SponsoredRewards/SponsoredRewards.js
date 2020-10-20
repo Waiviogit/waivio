@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -20,7 +20,13 @@ const SponsoredRewards = props => {
 
   const data = { username };
   const { sponsoredRewardsTitle } = sponsoredRewardsMainContent(data);
-  return SponsoredRewardsView(intl, statusSponsoredHistory, sponsoredRewardsTitle);
+  return (
+    <SponsoredRewardsView
+      intl={intl}
+      statusSponsoredHistory={statusSponsoredHistory}
+      sponsoredRewardsTitle={sponsoredRewardsTitle}
+    />
+  );
 };
 
 SponsoredRewards.propTypes = {

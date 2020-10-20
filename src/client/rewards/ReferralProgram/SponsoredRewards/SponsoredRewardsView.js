@@ -1,9 +1,11 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
+import PropTypes from 'prop-types';
 import { get } from 'lodash';
 import SponsoredRewardsHeader from '../constants';
 import SponsoredRewardsTableRow from './SponsoredRewardsTableRow/SponsoredRewardsTableRow';
 
-const SponsoredRewardsView = (intl, statusSponsoredHistory, sponsoredRewardsTitle) => (
+const SponsoredRewardsView = ({ intl, statusSponsoredHistory, sponsoredRewardsTitle }) => (
   <div className="SponsoredRewards">
     <h2 className="SponsoredRewards__title">{sponsoredRewardsTitle}</h2>
     <div className="SponsoredRewards__table">
@@ -43,5 +45,16 @@ const SponsoredRewardsView = (intl, statusSponsoredHistory, sponsoredRewardsTitl
     </div>
   </div>
 );
+
+SponsoredRewardsView.propTypes = {
+  intl: PropTypes.shape().isRequired,
+  statusSponsoredHistory: PropTypes.shape(),
+  sponsoredRewardsTitle: PropTypes.element,
+};
+
+SponsoredRewardsView.defaultProps = {
+  statusSponsoredHistory: [],
+  sponsoredRewardsTitle: <FormattedMessage />,
+};
 
 export default SponsoredRewardsView;
