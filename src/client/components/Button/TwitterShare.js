@@ -19,7 +19,7 @@ const TwitterShare = ({ url, text, hashtags }) => (
 TwitterShare.propTypes = {
   url: PropTypes.string,
   text: PropTypes.string,
-  hashtags: PropTypes.shape(),
+  hashtags: PropTypes.arrayOf(PropTypes.string),
 };
 
 TwitterShare.defaultProps = {
