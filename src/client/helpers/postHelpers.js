@@ -222,6 +222,5 @@ export function getPostHashtags(items) {
   if (!size(items)) return [];
   const sortedItems = items.sort((a, b) => b.weight - a.weight);
   const postItems = sortedItems.slice(0, 3);
-  const postHashtags = postItems.map(item => getObjectName(item));
-  return postHashtags;
+  return postItems.map(item => getObjectName(item));
 }
