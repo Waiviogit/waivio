@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4';
-import { fromPairs, get, attempt, isError, includes, unescape, split, isEmpty } from 'lodash';
+import { fromPairs, get, attempt, isError, includes, unescape, split, isEmpty, size } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex, botNameRegex } from './regexHelpers';
@@ -219,7 +219,7 @@ export function isContentValid(markdownContent) {
 }
 
 export function getPostHashtags(items) {
-  if (!items || !items.length) return [];
+  if (!size(items)) return [];
   const sortedItems = items.sort((a, b) => b.weight - a.weight);
   const postItems = sortedItems.slice(0, 3);
   const postHashtags = postItems.map(item => getObjectName(item));
