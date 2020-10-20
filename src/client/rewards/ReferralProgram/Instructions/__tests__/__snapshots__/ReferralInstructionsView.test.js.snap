@@ -7,101 +7,28 @@ ShallowWrapper {
     <IntlProvider
       locale="en"
     >
-      <div
-        className="ReferralInstructions"
-      >
-        <h2
-          className="ReferralInstructions__title"
-        >
-          <FormattedMessage
-            defaultMessage="Referral instructions:"
-            id="referrals_instructions_title"
-            values={Object {}}
-          />
-        </h2>
-        <div
-          className="ReferralInstructions__description"
-        >
-          <FormattedMessage
-            defaultMessage="To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service."
-            id="referrals_instructions_description"
-            values={Object {}}
-          />
-        </div>
-        <div>
-          <Modal
-            confirmLoading={false}
-            maskTransitionName="fade"
-            okType="primary"
-            onCancel={[Function]}
-            onOk={[Function]}
-            title={
-              <FormattedMessage
-                defaultMessage="Terminate the Referral program"
-                id="referrals_instructions_terminate_referral_title"
-                values={Object {}}
-              />
-            }
-            transitionName="zoom"
-            visible={false}
-            width={520}
-          >
-            <p>
-              <FormattedMessage
-                defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                id="referrals_instructions_terminate_referral_info"
-                values={Object {}}
-              />
-            </p>
-          </Modal>
-        </div>
-        <div
-          className="ReferralInstructions__wrap-conditions"
-        >
-          <Checkbox
-            checked={false}
-            id="agreeButton"
-            indeterminate={false}
-            onChange={[MockFunction]}
-          />
-          <label
-            className="ReferralInstructions__wrap-conditions__condition-content"
-            htmlFor="agreeButton"
-          >
-            <div
-              className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-            >
-              *
-            </div>
-            <FormattedMessage
-              defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-              id="referrals_instructions_conditions"
-              values={
-                Object {
-                  "ReferralAgreement": <UNDEFINED
-                    to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                  >
-                    <span
-                      className="is-blacklist__referral-username"
-                    >
-                      Referral Agreement
-                    </span>
-                  </UNDEFINED>,
-                  "ServiceAgreement": <UNDEFINED
-                    to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                  >
-                    <span
-                      className="is-blacklist__referral-username"
-                    >
-                      Service Agreement
-                    </span>
-                  </UNDEFINED>,
-                }
-              }
-            />
-          </label>
-        </div>
-      </div>
+      <ReferralsInstructionsView
+        handleCopyTextButton={[MockFunction]}
+        mainProps={
+          Object {
+            "authUserName": "vallon",
+            "currentCopyText": "",
+            "currentStatus": false,
+            "handleAgreeRulesCheckbox": [MockFunction],
+            "handleCancelButton": [MockFunction],
+            "handleOkButton": [MockFunction],
+            "isAuthenticated": true,
+            "isBlackListUser": false,
+            "isGuest": false,
+            "isModal": false,
+            "isStartChangeRules": false,
+            "isStartGetReferralInfo": false,
+            "rejectRules": [MockFunction],
+            "setIsCopyButton": [MockFunction],
+          }
+        }
+        widget="<iframe></iframe>"
+      />
     </IntlProvider>
   </BrowserRouter>,
   Symbol(enzyme.__renderer__): Object {
@@ -121,101 +48,28 @@ ShallowWrapper {
       "children": <IntlProvider
         locale="en"
       >
-        <div
-          className="ReferralInstructions"
-        >
-          <h2
-            className="ReferralInstructions__title"
-          >
-            <FormattedMessage
-              defaultMessage="Referral instructions:"
-              id="referrals_instructions_title"
-              values={Object {}}
-            />
-          </h2>
-          <div
-            className="ReferralInstructions__description"
-          >
-            <FormattedMessage
-              defaultMessage="To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service."
-              id="referrals_instructions_description"
-              values={Object {}}
-            />
-          </div>
-          <div>
-            <Modal
-              confirmLoading={false}
-              maskTransitionName="fade"
-              okType="primary"
-              onCancel={[Function]}
-              onOk={[Function]}
-              title={
-                <FormattedMessage
-                  defaultMessage="Terminate the Referral program"
-                  id="referrals_instructions_terminate_referral_title"
-                  values={Object {}}
-                />
-              }
-              transitionName="zoom"
-              visible={false}
-              width={520}
-            >
-              <p>
-                <FormattedMessage
-                  defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                  id="referrals_instructions_terminate_referral_info"
-                  values={Object {}}
-                />
-              </p>
-            </Modal>
-          </div>
-          <div
-            className="ReferralInstructions__wrap-conditions"
-          >
-            <Checkbox
-              checked={false}
-              id="agreeButton"
-              indeterminate={false}
-              onChange={[MockFunction]}
-            />
-            <label
-              className="ReferralInstructions__wrap-conditions__condition-content"
-              htmlFor="agreeButton"
-            >
-              <div
-                className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-              >
-                *
-              </div>
-              <FormattedMessage
-                defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-                id="referrals_instructions_conditions"
-                values={
-                  Object {
-                    "ReferralAgreement": <UNDEFINED
-                      to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                    >
-                      <span
-                        className="is-blacklist__referral-username"
-                      >
-                        Referral Agreement
-                      </span>
-                    </UNDEFINED>,
-                    "ServiceAgreement": <UNDEFINED
-                      to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                    >
-                      <span
-                        className="is-blacklist__referral-username"
-                      >
-                        Service Agreement
-                      </span>
-                    </UNDEFINED>,
-                  }
-                }
-              />
-            </label>
-          </div>
-        </div>
+        <ReferralsInstructionsView
+          handleCopyTextButton={[MockFunction]}
+          mainProps={
+            Object {
+              "authUserName": "vallon",
+              "currentCopyText": "",
+              "currentStatus": false,
+              "handleAgreeRulesCheckbox": [MockFunction],
+              "handleCancelButton": [MockFunction],
+              "handleOkButton": [MockFunction],
+              "isAuthenticated": true,
+              "isBlackListUser": false,
+              "isGuest": false,
+              "isModal": false,
+              "isStartChangeRules": false,
+              "isStartGetReferralInfo": false,
+              "rejectRules": [MockFunction],
+              "setIsCopyButton": [MockFunction],
+            }
+          }
+          widget="<iframe></iframe>"
+        />
       </IntlProvider>,
       "history": Object {
         "action": "POP",
@@ -242,518 +96,58 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "class",
       "props": Object {
-        "children": <div
-          className="ReferralInstructions"
-        >
-          <h2
-            className="ReferralInstructions__title"
-          >
-            <FormattedMessage
-              defaultMessage="Referral instructions:"
-              id="referrals_instructions_title"
-              values={Object {}}
-            />
-          </h2>
-          <div
-            className="ReferralInstructions__description"
-          >
-            <FormattedMessage
-              defaultMessage="To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service."
-              id="referrals_instructions_description"
-              values={Object {}}
-            />
-          </div>
-          <div>
-            <Modal
-              confirmLoading={false}
-              maskTransitionName="fade"
-              okType="primary"
-              onCancel={[Function]}
-              onOk={[Function]}
-              title={
-                <FormattedMessage
-                  defaultMessage="Terminate the Referral program"
-                  id="referrals_instructions_terminate_referral_title"
-                  values={Object {}}
-                />
-              }
-              transitionName="zoom"
-              visible={false}
-              width={520}
-            >
-              <p>
-                <FormattedMessage
-                  defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                  id="referrals_instructions_terminate_referral_info"
-                  values={Object {}}
-                />
-              </p>
-            </Modal>
-          </div>
-          <div
-            className="ReferralInstructions__wrap-conditions"
-          >
-            <Checkbox
-              checked={false}
-              id="agreeButton"
-              indeterminate={false}
-              onChange={[MockFunction]}
-            />
-            <label
-              className="ReferralInstructions__wrap-conditions__condition-content"
-              htmlFor="agreeButton"
-            >
-              <div
-                className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-              >
-                *
-              </div>
-              <FormattedMessage
-                defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-                id="referrals_instructions_conditions"
-                values={
-                  Object {
-                    "ReferralAgreement": <UNDEFINED
-                      to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                    >
-                      <span
-                        className="is-blacklist__referral-username"
-                      >
-                        Referral Agreement
-                      </span>
-                    </UNDEFINED>,
-                    "ServiceAgreement": <UNDEFINED
-                      to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                    >
-                      <span
-                        className="is-blacklist__referral-username"
-                      >
-                        Service Agreement
-                      </span>
-                    </UNDEFINED>,
-                  }
-                }
-              />
-            </label>
-          </div>
-        </div>,
+        "children": <ReferralsInstructionsView
+          handleCopyTextButton={[MockFunction]}
+          mainProps={
+            Object {
+              "authUserName": "vallon",
+              "currentCopyText": "",
+              "currentStatus": false,
+              "handleAgreeRulesCheckbox": [MockFunction],
+              "handleCancelButton": [MockFunction],
+              "handleOkButton": [MockFunction],
+              "isAuthenticated": true,
+              "isBlackListUser": false,
+              "isGuest": false,
+              "isModal": false,
+              "isStartChangeRules": false,
+              "isStartGetReferralInfo": false,
+              "rejectRules": [MockFunction],
+              "setIsCopyButton": [MockFunction],
+            }
+          }
+          widget="<iframe></iframe>"
+        />,
         "locale": "en",
       },
       "ref": null,
       "rendered": Object {
         "instance": null,
         "key": undefined,
-        "nodeType": "host",
+        "nodeType": "function",
         "props": Object {
-          "children": Array [
-            <h2
-              className="ReferralInstructions__title"
-            >
-              <FormattedMessage
-                defaultMessage="Referral instructions:"
-                id="referrals_instructions_title"
-                values={Object {}}
-              />
-            </h2>,
-            <div
-              className="ReferralInstructions__description"
-            >
-              <FormattedMessage
-                defaultMessage="To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service."
-                id="referrals_instructions_description"
-                values={Object {}}
-              />
-            </div>,
-            <div>
-              <Modal
-                confirmLoading={false}
-                maskTransitionName="fade"
-                okType="primary"
-                onCancel={[Function]}
-                onOk={[Function]}
-                title={
-                  <FormattedMessage
-                    defaultMessage="Terminate the Referral program"
-                    id="referrals_instructions_terminate_referral_title"
-                    values={Object {}}
-                  />
-                }
-                transitionName="zoom"
-                visible={false}
-                width={520}
-              >
-                <p>
-                  <FormattedMessage
-                    defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                    id="referrals_instructions_terminate_referral_info"
-                    values={Object {}}
-                  />
-                </p>
-              </Modal>
-            </div>,
-            <div
-              className="ReferralInstructions__wrap-conditions"
-            >
-              <Checkbox
-                checked={false}
-                id="agreeButton"
-                indeterminate={false}
-                onChange={[MockFunction]}
-              />
-              <label
-                className="ReferralInstructions__wrap-conditions__condition-content"
-                htmlFor="agreeButton"
-              >
-                <div
-                  className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-                >
-                  *
-                </div>
-                <FormattedMessage
-                  defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-                  id="referrals_instructions_conditions"
-                  values={
-                    Object {
-                      "ReferralAgreement": <UNDEFINED
-                        to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                      >
-                        <span
-                          className="is-blacklist__referral-username"
-                        >
-                          Referral Agreement
-                        </span>
-                      </UNDEFINED>,
-                      "ServiceAgreement": <UNDEFINED
-                        to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                      >
-                        <span
-                          className="is-blacklist__referral-username"
-                        >
-                          Service Agreement
-                        </span>
-                      </UNDEFINED>,
-                    }
-                  }
-                />
-              </label>
-            </div>,
-            false,
-            false,
-          ],
-          "className": "ReferralInstructions",
+          "handleCopyTextButton": [MockFunction],
+          "mainProps": Object {
+            "authUserName": "vallon",
+            "currentCopyText": "",
+            "currentStatus": false,
+            "handleAgreeRulesCheckbox": [MockFunction],
+            "handleCancelButton": [MockFunction],
+            "handleOkButton": [MockFunction],
+            "isAuthenticated": true,
+            "isBlackListUser": false,
+            "isGuest": false,
+            "isModal": false,
+            "isStartChangeRules": false,
+            "isStartGetReferralInfo": false,
+            "rejectRules": [MockFunction],
+            "setIsCopyButton": [MockFunction],
+          },
+          "widget": "<iframe></iframe>",
         },
         "ref": null,
-        "rendered": Array [
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "host",
-            "props": Object {
-              "children": <FormattedMessage
-                defaultMessage="Referral instructions:"
-                id="referrals_instructions_title"
-                values={Object {}}
-              />,
-              "className": "ReferralInstructions__title",
-            },
-            "ref": null,
-            "rendered": Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "class",
-              "props": Object {
-                "defaultMessage": "Referral instructions:",
-                "id": "referrals_instructions_title",
-                "values": Object {},
-              },
-              "ref": null,
-              "rendered": null,
-              "type": [Function],
-            },
-            "type": "h2",
-          },
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "host",
-            "props": Object {
-              "children": <FormattedMessage
-                defaultMessage="To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service."
-                id="referrals_instructions_description"
-                values={Object {}}
-              />,
-              "className": "ReferralInstructions__description",
-            },
-            "ref": null,
-            "rendered": Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "class",
-              "props": Object {
-                "defaultMessage": "To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service.",
-                "id": "referrals_instructions_description",
-                "values": Object {},
-              },
-              "ref": null,
-              "rendered": null,
-              "type": [Function],
-            },
-            "type": "div",
-          },
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "host",
-            "props": Object {
-              "children": <Modal
-                confirmLoading={false}
-                maskTransitionName="fade"
-                okType="primary"
-                onCancel={[Function]}
-                onOk={[Function]}
-                title={
-                  <FormattedMessage
-                    defaultMessage="Terminate the Referral program"
-                    id="referrals_instructions_terminate_referral_title"
-                    values={Object {}}
-                  />
-                }
-                transitionName="zoom"
-                visible={false}
-                width={520}
-              >
-                <p>
-                  <FormattedMessage
-                    defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                    id="referrals_instructions_terminate_referral_info"
-                    values={Object {}}
-                  />
-                </p>
-              </Modal>,
-            },
-            "ref": null,
-            "rendered": Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "class",
-              "props": Object {
-                "children": <p>
-                  <FormattedMessage
-                    defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                    id="referrals_instructions_terminate_referral_info"
-                    values={Object {}}
-                  />
-                </p>,
-                "confirmLoading": false,
-                "maskTransitionName": "fade",
-                "okType": "primary",
-                "onCancel": [Function],
-                "onOk": [Function],
-                "title": <FormattedMessage
-                  defaultMessage="Terminate the Referral program"
-                  id="referrals_instructions_terminate_referral_title"
-                  values={Object {}}
-                />,
-                "transitionName": "zoom",
-                "visible": false,
-                "width": 520,
-              },
-              "ref": null,
-              "rendered": Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": <FormattedMessage
-                    defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                    id="referrals_instructions_terminate_referral_info"
-                    values={Object {}}
-                  />,
-                },
-                "ref": null,
-                "rendered": Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "class",
-                  "props": Object {
-                    "defaultMessage": "If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended.",
-                    "id": "referrals_instructions_terminate_referral_info",
-                    "values": Object {},
-                  },
-                  "ref": null,
-                  "rendered": null,
-                  "type": [Function],
-                },
-                "type": "p",
-              },
-              "type": [Function],
-            },
-            "type": "div",
-          },
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "host",
-            "props": Object {
-              "children": Array [
-                <Checkbox
-                  checked={false}
-                  id="agreeButton"
-                  indeterminate={false}
-                  onChange={[MockFunction]}
-                />,
-                <label
-                  className="ReferralInstructions__wrap-conditions__condition-content"
-                  htmlFor="agreeButton"
-                >
-                  <div
-                    className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-                  >
-                    *
-                  </div>
-                  <FormattedMessage
-                    defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-                    id="referrals_instructions_conditions"
-                    values={
-                      Object {
-                        "ReferralAgreement": <UNDEFINED
-                          to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                        >
-                          <span
-                            className="is-blacklist__referral-username"
-                          >
-                            Referral Agreement
-                          </span>
-                        </UNDEFINED>,
-                        "ServiceAgreement": <UNDEFINED
-                          to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                        >
-                          <span
-                            className="is-blacklist__referral-username"
-                          >
-                            Service Agreement
-                          </span>
-                        </UNDEFINED>,
-                      }
-                    }
-                  />
-                </label>,
-              ],
-              "className": "ReferralInstructions__wrap-conditions",
-            },
-            "ref": null,
-            "rendered": Array [
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "class",
-                "props": Object {
-                  "checked": false,
-                  "id": "agreeButton",
-                  "indeterminate": false,
-                  "onChange": [MockFunction],
-                },
-                "ref": null,
-                "rendered": null,
-                "type": [Function],
-              },
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": Array [
-                    <div
-                      className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-                    >
-                      *
-                    </div>,
-                    <FormattedMessage
-                      defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-                      id="referrals_instructions_conditions"
-                      values={
-                        Object {
-                          "ReferralAgreement": <UNDEFINED
-                            to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                          >
-                            <span
-                              className="is-blacklist__referral-username"
-                            >
-                              Referral Agreement
-                            </span>
-                          </UNDEFINED>,
-                          "ServiceAgreement": <UNDEFINED
-                            to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                          >
-                            <span
-                              className="is-blacklist__referral-username"
-                            >
-                              Service Agreement
-                            </span>
-                          </UNDEFINED>,
-                        }
-                      }
-                    />,
-                  ],
-                  "className": "ReferralInstructions__wrap-conditions__condition-content",
-                  "htmlFor": "agreeButton",
-                },
-                "ref": null,
-                "rendered": Array [
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": "*",
-                      "className": "ReferralInstructions__wrap-conditions__condition-content__star-flag",
-                    },
-                    "ref": null,
-                    "rendered": "*",
-                    "type": "div",
-                  },
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "class",
-                    "props": Object {
-                      "defaultMessage": "I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada.",
-                      "id": "referrals_instructions_conditions",
-                      "values": Object {
-                        "ReferralAgreement": <UNDEFINED
-                          to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                        >
-                          <span
-                            className="is-blacklist__referral-username"
-                          >
-                            Referral Agreement
-                          </span>
-                        </UNDEFINED>,
-                        "ServiceAgreement": <UNDEFINED
-                          to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                        >
-                          <span
-                            className="is-blacklist__referral-username"
-                          >
-                            Service Agreement
-                          </span>
-                        </UNDEFINED>,
-                      },
-                    },
-                    "ref": null,
-                    "rendered": null,
-                    "type": [Function],
-                  },
-                ],
-                "type": "label",
-              },
-            ],
-            "type": "div",
-          },
-          false,
-          false,
-        ],
-        "type": "div",
+        "rendered": null,
+        "type": [Function],
       },
       "type": [Function],
     },
@@ -768,101 +162,28 @@ ShallowWrapper {
         "children": <IntlProvider
           locale="en"
         >
-          <div
-            className="ReferralInstructions"
-          >
-            <h2
-              className="ReferralInstructions__title"
-            >
-              <FormattedMessage
-                defaultMessage="Referral instructions:"
-                id="referrals_instructions_title"
-                values={Object {}}
-              />
-            </h2>
-            <div
-              className="ReferralInstructions__description"
-            >
-              <FormattedMessage
-                defaultMessage="To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service."
-                id="referrals_instructions_description"
-                values={Object {}}
-              />
-            </div>
-            <div>
-              <Modal
-                confirmLoading={false}
-                maskTransitionName="fade"
-                okType="primary"
-                onCancel={[Function]}
-                onOk={[Function]}
-                title={
-                  <FormattedMessage
-                    defaultMessage="Terminate the Referral program"
-                    id="referrals_instructions_terminate_referral_title"
-                    values={Object {}}
-                  />
-                }
-                transitionName="zoom"
-                visible={false}
-                width={520}
-              >
-                <p>
-                  <FormattedMessage
-                    defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                    id="referrals_instructions_terminate_referral_info"
-                    values={Object {}}
-                  />
-                </p>
-              </Modal>
-            </div>
-            <div
-              className="ReferralInstructions__wrap-conditions"
-            >
-              <Checkbox
-                checked={false}
-                id="agreeButton"
-                indeterminate={false}
-                onChange={[MockFunction]}
-              />
-              <label
-                className="ReferralInstructions__wrap-conditions__condition-content"
-                htmlFor="agreeButton"
-              >
-                <div
-                  className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-                >
-                  *
-                </div>
-                <FormattedMessage
-                  defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-                  id="referrals_instructions_conditions"
-                  values={
-                    Object {
-                      "ReferralAgreement": <UNDEFINED
-                        to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                      >
-                        <span
-                          className="is-blacklist__referral-username"
-                        >
-                          Referral Agreement
-                        </span>
-                      </UNDEFINED>,
-                      "ServiceAgreement": <UNDEFINED
-                        to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                      >
-                        <span
-                          className="is-blacklist__referral-username"
-                        >
-                          Service Agreement
-                        </span>
-                      </UNDEFINED>,
-                    }
-                  }
-                />
-              </label>
-            </div>
-          </div>
+          <ReferralsInstructionsView
+            handleCopyTextButton={[MockFunction]}
+            mainProps={
+              Object {
+                "authUserName": "vallon",
+                "currentCopyText": "",
+                "currentStatus": false,
+                "handleAgreeRulesCheckbox": [MockFunction],
+                "handleCancelButton": [MockFunction],
+                "handleOkButton": [MockFunction],
+                "isAuthenticated": true,
+                "isBlackListUser": false,
+                "isGuest": false,
+                "isModal": false,
+                "isStartChangeRules": false,
+                "isStartGetReferralInfo": false,
+                "rejectRules": [MockFunction],
+                "setIsCopyButton": [MockFunction],
+              }
+            }
+            widget="<iframe></iframe>"
+          />
         </IntlProvider>,
         "history": Object {
           "action": "POP",
@@ -889,518 +210,58 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
-          "children": <div
-            className="ReferralInstructions"
-          >
-            <h2
-              className="ReferralInstructions__title"
-            >
-              <FormattedMessage
-                defaultMessage="Referral instructions:"
-                id="referrals_instructions_title"
-                values={Object {}}
-              />
-            </h2>
-            <div
-              className="ReferralInstructions__description"
-            >
-              <FormattedMessage
-                defaultMessage="To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service."
-                id="referrals_instructions_description"
-                values={Object {}}
-              />
-            </div>
-            <div>
-              <Modal
-                confirmLoading={false}
-                maskTransitionName="fade"
-                okType="primary"
-                onCancel={[Function]}
-                onOk={[Function]}
-                title={
-                  <FormattedMessage
-                    defaultMessage="Terminate the Referral program"
-                    id="referrals_instructions_terminate_referral_title"
-                    values={Object {}}
-                  />
-                }
-                transitionName="zoom"
-                visible={false}
-                width={520}
-              >
-                <p>
-                  <FormattedMessage
-                    defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                    id="referrals_instructions_terminate_referral_info"
-                    values={Object {}}
-                  />
-                </p>
-              </Modal>
-            </div>
-            <div
-              className="ReferralInstructions__wrap-conditions"
-            >
-              <Checkbox
-                checked={false}
-                id="agreeButton"
-                indeterminate={false}
-                onChange={[MockFunction]}
-              />
-              <label
-                className="ReferralInstructions__wrap-conditions__condition-content"
-                htmlFor="agreeButton"
-              >
-                <div
-                  className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-                >
-                  *
-                </div>
-                <FormattedMessage
-                  defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-                  id="referrals_instructions_conditions"
-                  values={
-                    Object {
-                      "ReferralAgreement": <UNDEFINED
-                        to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                      >
-                        <span
-                          className="is-blacklist__referral-username"
-                        >
-                          Referral Agreement
-                        </span>
-                      </UNDEFINED>,
-                      "ServiceAgreement": <UNDEFINED
-                        to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                      >
-                        <span
-                          className="is-blacklist__referral-username"
-                        >
-                          Service Agreement
-                        </span>
-                      </UNDEFINED>,
-                    }
-                  }
-                />
-              </label>
-            </div>
-          </div>,
+          "children": <ReferralsInstructionsView
+            handleCopyTextButton={[MockFunction]}
+            mainProps={
+              Object {
+                "authUserName": "vallon",
+                "currentCopyText": "",
+                "currentStatus": false,
+                "handleAgreeRulesCheckbox": [MockFunction],
+                "handleCancelButton": [MockFunction],
+                "handleOkButton": [MockFunction],
+                "isAuthenticated": true,
+                "isBlackListUser": false,
+                "isGuest": false,
+                "isModal": false,
+                "isStartChangeRules": false,
+                "isStartGetReferralInfo": false,
+                "rejectRules": [MockFunction],
+                "setIsCopyButton": [MockFunction],
+              }
+            }
+            widget="<iframe></iframe>"
+          />,
           "locale": "en",
         },
         "ref": null,
         "rendered": Object {
           "instance": null,
           "key": undefined,
-          "nodeType": "host",
+          "nodeType": "function",
           "props": Object {
-            "children": Array [
-              <h2
-                className="ReferralInstructions__title"
-              >
-                <FormattedMessage
-                  defaultMessage="Referral instructions:"
-                  id="referrals_instructions_title"
-                  values={Object {}}
-                />
-              </h2>,
-              <div
-                className="ReferralInstructions__description"
-              >
-                <FormattedMessage
-                  defaultMessage="To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service."
-                  id="referrals_instructions_description"
-                  values={Object {}}
-                />
-              </div>,
-              <div>
-                <Modal
-                  confirmLoading={false}
-                  maskTransitionName="fade"
-                  okType="primary"
-                  onCancel={[Function]}
-                  onOk={[Function]}
-                  title={
-                    <FormattedMessage
-                      defaultMessage="Terminate the Referral program"
-                      id="referrals_instructions_terminate_referral_title"
-                      values={Object {}}
-                    />
-                  }
-                  transitionName="zoom"
-                  visible={false}
-                  width={520}
-                >
-                  <p>
-                    <FormattedMessage
-                      defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                      id="referrals_instructions_terminate_referral_info"
-                      values={Object {}}
-                    />
-                  </p>
-                </Modal>
-              </div>,
-              <div
-                className="ReferralInstructions__wrap-conditions"
-              >
-                <Checkbox
-                  checked={false}
-                  id="agreeButton"
-                  indeterminate={false}
-                  onChange={[MockFunction]}
-                />
-                <label
-                  className="ReferralInstructions__wrap-conditions__condition-content"
-                  htmlFor="agreeButton"
-                >
-                  <div
-                    className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-                  >
-                    *
-                  </div>
-                  <FormattedMessage
-                    defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-                    id="referrals_instructions_conditions"
-                    values={
-                      Object {
-                        "ReferralAgreement": <UNDEFINED
-                          to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                        >
-                          <span
-                            className="is-blacklist__referral-username"
-                          >
-                            Referral Agreement
-                          </span>
-                        </UNDEFINED>,
-                        "ServiceAgreement": <UNDEFINED
-                          to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                        >
-                          <span
-                            className="is-blacklist__referral-username"
-                          >
-                            Service Agreement
-                          </span>
-                        </UNDEFINED>,
-                      }
-                    }
-                  />
-                </label>
-              </div>,
-              false,
-              false,
-            ],
-            "className": "ReferralInstructions",
+            "handleCopyTextButton": [MockFunction],
+            "mainProps": Object {
+              "authUserName": "vallon",
+              "currentCopyText": "",
+              "currentStatus": false,
+              "handleAgreeRulesCheckbox": [MockFunction],
+              "handleCancelButton": [MockFunction],
+              "handleOkButton": [MockFunction],
+              "isAuthenticated": true,
+              "isBlackListUser": false,
+              "isGuest": false,
+              "isModal": false,
+              "isStartChangeRules": false,
+              "isStartGetReferralInfo": false,
+              "rejectRules": [MockFunction],
+              "setIsCopyButton": [MockFunction],
+            },
+            "widget": "<iframe></iframe>",
           },
           "ref": null,
-          "rendered": Array [
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "host",
-              "props": Object {
-                "children": <FormattedMessage
-                  defaultMessage="Referral instructions:"
-                  id="referrals_instructions_title"
-                  values={Object {}}
-                />,
-                "className": "ReferralInstructions__title",
-              },
-              "ref": null,
-              "rendered": Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "class",
-                "props": Object {
-                  "defaultMessage": "Referral instructions:",
-                  "id": "referrals_instructions_title",
-                  "values": Object {},
-                },
-                "ref": null,
-                "rendered": null,
-                "type": [Function],
-              },
-              "type": "h2",
-            },
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "host",
-              "props": Object {
-                "children": <FormattedMessage
-                  defaultMessage="To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service."
-                  id="referrals_instructions_description"
-                  values={Object {}}
-                />,
-                "className": "ReferralInstructions__description",
-              },
-              "ref": null,
-              "rendered": Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "class",
-                "props": Object {
-                  "defaultMessage": "To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service.",
-                  "id": "referrals_instructions_description",
-                  "values": Object {},
-                },
-                "ref": null,
-                "rendered": null,
-                "type": [Function],
-              },
-              "type": "div",
-            },
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "host",
-              "props": Object {
-                "children": <Modal
-                  confirmLoading={false}
-                  maskTransitionName="fade"
-                  okType="primary"
-                  onCancel={[Function]}
-                  onOk={[Function]}
-                  title={
-                    <FormattedMessage
-                      defaultMessage="Terminate the Referral program"
-                      id="referrals_instructions_terminate_referral_title"
-                      values={Object {}}
-                    />
-                  }
-                  transitionName="zoom"
-                  visible={false}
-                  width={520}
-                >
-                  <p>
-                    <FormattedMessage
-                      defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                      id="referrals_instructions_terminate_referral_info"
-                      values={Object {}}
-                    />
-                  </p>
-                </Modal>,
-              },
-              "ref": null,
-              "rendered": Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "class",
-                "props": Object {
-                  "children": <p>
-                    <FormattedMessage
-                      defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                      id="referrals_instructions_terminate_referral_info"
-                      values={Object {}}
-                    />
-                  </p>,
-                  "confirmLoading": false,
-                  "maskTransitionName": "fade",
-                  "okType": "primary",
-                  "onCancel": [Function],
-                  "onOk": [Function],
-                  "title": <FormattedMessage
-                    defaultMessage="Terminate the Referral program"
-                    id="referrals_instructions_terminate_referral_title"
-                    values={Object {}}
-                  />,
-                  "transitionName": "zoom",
-                  "visible": false,
-                  "width": 520,
-                },
-                "ref": null,
-                "rendered": Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "host",
-                  "props": Object {
-                    "children": <FormattedMessage
-                      defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
-                      id="referrals_instructions_terminate_referral_info"
-                      values={Object {}}
-                    />,
-                  },
-                  "ref": null,
-                  "rendered": Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "class",
-                    "props": Object {
-                      "defaultMessage": "If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended.",
-                      "id": "referrals_instructions_terminate_referral_info",
-                      "values": Object {},
-                    },
-                    "ref": null,
-                    "rendered": null,
-                    "type": [Function],
-                  },
-                  "type": "p",
-                },
-                "type": [Function],
-              },
-              "type": "div",
-            },
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "host",
-              "props": Object {
-                "children": Array [
-                  <Checkbox
-                    checked={false}
-                    id="agreeButton"
-                    indeterminate={false}
-                    onChange={[MockFunction]}
-                  />,
-                  <label
-                    className="ReferralInstructions__wrap-conditions__condition-content"
-                    htmlFor="agreeButton"
-                  >
-                    <div
-                      className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-                    >
-                      *
-                    </div>
-                    <FormattedMessage
-                      defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-                      id="referrals_instructions_conditions"
-                      values={
-                        Object {
-                          "ReferralAgreement": <UNDEFINED
-                            to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                          >
-                            <span
-                              className="is-blacklist__referral-username"
-                            >
-                              Referral Agreement
-                            </span>
-                          </UNDEFINED>,
-                          "ServiceAgreement": <UNDEFINED
-                            to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                          >
-                            <span
-                              className="is-blacklist__referral-username"
-                            >
-                              Service Agreement
-                            </span>
-                          </UNDEFINED>,
-                        }
-                      }
-                    />
-                  </label>,
-                ],
-                "className": "ReferralInstructions__wrap-conditions",
-              },
-              "ref": null,
-              "rendered": Array [
-                Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "class",
-                  "props": Object {
-                    "checked": false,
-                    "id": "agreeButton",
-                    "indeterminate": false,
-                    "onChange": [MockFunction],
-                  },
-                  "ref": null,
-                  "rendered": null,
-                  "type": [Function],
-                },
-                Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "host",
-                  "props": Object {
-                    "children": Array [
-                      <div
-                        className="ReferralInstructions__wrap-conditions__condition-content__star-flag"
-                      >
-                        *
-                      </div>,
-                      <FormattedMessage
-                        defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
-                        id="referrals_instructions_conditions"
-                        values={
-                          Object {
-                            "ReferralAgreement": <UNDEFINED
-                              to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                            >
-                              <span
-                                className="is-blacklist__referral-username"
-                              >
-                                Referral Agreement
-                              </span>
-                            </UNDEFINED>,
-                            "ServiceAgreement": <UNDEFINED
-                              to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                            >
-                              <span
-                                className="is-blacklist__referral-username"
-                              >
-                                Service Agreement
-                              </span>
-                            </UNDEFINED>,
-                          }
-                        }
-                      />,
-                    ],
-                    "className": "ReferralInstructions__wrap-conditions__condition-content",
-                    "htmlFor": "agreeButton",
-                  },
-                  "ref": null,
-                  "rendered": Array [
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "host",
-                      "props": Object {
-                        "children": "*",
-                        "className": "ReferralInstructions__wrap-conditions__condition-content__star-flag",
-                      },
-                      "ref": null,
-                      "rendered": "*",
-                      "type": "div",
-                    },
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "class",
-                      "props": Object {
-                        "defaultMessage": "I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada.",
-                        "id": "referrals_instructions_conditions",
-                        "values": Object {
-                          "ReferralAgreement": <UNDEFINED
-                            to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                          >
-                            <span
-                              className="is-blacklist__referral-username"
-                            >
-                              Referral Agreement
-                            </span>
-                          </UNDEFINED>,
-                          "ServiceAgreement": <UNDEFINED
-                            to="/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
-                          >
-                            <span
-                              className="is-blacklist__referral-username"
-                            >
-                              Service Agreement
-                            </span>
-                          </UNDEFINED>,
-                        },
-                      },
-                      "ref": null,
-                      "rendered": null,
-                      "type": [Function],
-                    },
-                  ],
-                  "type": "label",
-                },
-              ],
-              "type": "div",
-            },
-            false,
-            false,
-          ],
-          "type": "div",
+          "rendered": null,
+          "type": [Function],
         },
         "type": [Function],
       },

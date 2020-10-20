@@ -14,7 +14,7 @@ describe('ReferralDetailsView', () => {
       <BrowserRouter>
         <Route
           path="/rewards/referral-details/vallon"
-          component={ReferralDetailsView(isAuthenticated, mockData)}
+          component={<ReferralDetailsView isAuthenticated={isAuthenticated} mockData={mockData} />}
         />
       </BrowserRouter>,
     );

@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Checkbox, Icon, Modal, Tooltip } from 'antd';
 import { referralInstructionsContent } from '../ReferralTextHelper';
 import Loading from '../../../components/Icon/Loading';
 
-const ReferralsInstructionsView = (mainProps, handleCopyTextButton, widget) => {
+const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) => {
   const {
     isBlackListUser,
     isAuthenticated,
@@ -11,8 +12,7 @@ const ReferralsInstructionsView = (mainProps, handleCopyTextButton, widget) => {
     isStartChangeRules,
     isStartGetReferralInfo,
     handleAgreeRulesCheckbox,
-    handleOkButton,
-    handleCancelButton,
+    handleClickOnCheckbox,
     currentCopyText,
     authUserName,
     isModal,
@@ -38,6 +38,11 @@ const ReferralsInstructionsView = (mainProps, handleCopyTextButton, widget) => {
     terminateReferralTitle,
     terminateReferralInfo,
   } = referralInstructionsContent(authUserName);
+
+  const handleOnOk = () => {
+    rejectRules(authUserName, isGuest);
+    return handleClickOnCheckbox();
+  };
   return (
     isAuthenticated && (
       <div className="ReferralInstructions">
@@ -52,11 +57,8 @@ const ReferralsInstructionsView = (mainProps, handleCopyTextButton, widget) => {
           <Modal
             title={terminateReferralTitle}
             visible={isModal}
-            onOk={() => {
-              rejectRules(authUserName, isGuest);
-              return handleOkButton();
-            }}
-            onCancel={() => handleCancelButton()}
+            onOk={handleOnOk}
+            onCancel={() => handleClickOnCheckbox()}
           >
             <p>{terminateReferralInfo}</p>
           </Modal>
@@ -81,12 +83,12 @@ const ReferralsInstructionsView = (mainProps, handleCopyTextButton, widget) => {
         )}
         {currentStatus && (
           <div className="ReferralInstructions__accepted-conditions">
-            <div className="ReferralInstructions__accepted-conditions__text-wrap">
-              <div className="ReferralInstructions__accepted-conditions__text-wrap__title">
+            <div className="ReferralInstructions__text-wrap">
+              <div className="ReferralInstructions__text-wrap__title">
                 {acceptedConditionsTitleDirect}
               </div>
 
-              <div className="ReferralInstructions__accepted-conditions__text-wrap__links">
+              <div className="ReferralInstructions__text-wrap__links">
                 {acceptedConditionsExamplesLinks}
                 {acceptedConditionsForExample}
                 {acceptedConditionsFirstExampleLink}
@@ -94,17 +96,15 @@ const ReferralsInstructionsView = (mainProps, handleCopyTextButton, widget) => {
               </div>
             </div>
 
-            <div className="ReferralInstructions__accepted-conditions__widget-title">
+            <div className="ReferralInstructions__widget-title">
               {acceptedConditionsTitleWidget}
             </div>
 
-            <div className="ReferralInstructions__accepted-conditions__widget-info">
-              {acceptedConditionsWidgetInfo}
-            </div>
+            <div className="ReferralInstructions__widget-info">{acceptedConditionsWidgetInfo}</div>
 
-            <div className="ReferralInstructions__accepted-conditions__widget">
+            <div className="ReferralInstructions__widget">
               {widget}
-              <div className="ReferralInstructions__accepted-conditions__widget__copy-icon">
+              <div className="ReferralInstructions__widget__copy-icon">
                 <Tooltip title={currentCopyText}>
                   <span>
                     <Icon onClick={() => handleCopyTextButton(setIsCopyButton)} type="copy" />
@@ -113,18 +113,56 @@ const ReferralsInstructionsView = (mainProps, handleCopyTextButton, widget) => {
               </div>
             </div>
 
-            <div className="ReferralInstructions__accepted-conditions__an-example">
+            <div className="ReferralInstructions__an-example">
               {acceptedConditionsWidgetExample}
             </div>
 
-            <div className="ReferralInstructions__accepted-conditions__alert">
-              {acceptedConditionsAlert}
-            </div>
+            <div className="ReferralInstructions__alert">{acceptedConditionsAlert}</div>
           </div>
         )}
       </div>
     )
   );
+};
+
+ReferralsInstructionsView.propTypes = {
+  mainProps: PropTypes.shape({
+    isBlackListUser: PropTypes.bool,
+    isAuthenticated: PropTypes.bool,
+    rejectRules: PropTypes.func,
+    isStartChangeRules: PropTypes.bool,
+    isStartGetReferralInfo: PropTypes.bool,
+    handleAgreeRulesCheckbox: PropTypes.func,
+    handleClickOnCheckbox: PropTypes.func,
+    currentCopyText: PropTypes.string,
+    authUserName: PropTypes.string,
+    isModal: PropTypes.bool,
+    isGuest: PropTypes.bool,
+    currentStatus: PropTypes.bool,
+    setIsCopyButton: PropTypes.func,
+  }),
+  handleCopyTextButton: PropTypes.func,
+  widget: PropTypes.string,
+};
+
+ReferralsInstructionsView.defaultProps = {
+  mainProps: PropTypes.shape({
+    isBlackListUser: false,
+    isAuthenticated: false,
+    rejectRules: () => {},
+    isStartChangeRules: false,
+    isStartGetReferralInfo: false,
+    handleAgreeRulesCheckbox: () => {},
+    handleClickOnCheckbox: () => {},
+    currentCopyText: '',
+    authUserName: '',
+    isModal: false,
+    isGuest: false,
+    currentStatus: false,
+    setIsCopyButton: () => {},
+  }),
+  handleCopyTextButton: () => {},
+  widget: '',
 };
 
 export default ReferralsInstructionsView;

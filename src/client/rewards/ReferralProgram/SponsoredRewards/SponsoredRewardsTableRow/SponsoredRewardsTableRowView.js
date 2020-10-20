@@ -1,5 +1,5 @@
 import React from 'react';
-import { SponsoredRewardsTableContent } from '../../ReferralTextHelper';
+import { sponsoredRewardsTableContent } from '../../ReferralTextHelper';
 import { getBeneficiaresInfo } from '../../ReferralHelper';
 import Report from '../../../Report/Report';
 
@@ -20,7 +20,7 @@ const SponsoredRewardsTableRowView = (
     sponsoredActionBeneficiaries,
     sponsoredActionBeneficiariesName,
     sponsoredDetailsReservation,
-  } = SponsoredRewardsTableContent(data);
+  } = sponsoredRewardsTableContent(data);
 
   return (
     <tr className="SponsoredRewardsTableRow">

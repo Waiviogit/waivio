@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -19,21 +19,11 @@ import {
 } from '../../../reducers';
 import { referralInstructionsContent } from '../ReferralTextHelper';
 import ReferralsInstructionsView from './ReferralInstructionsView';
+import { getCopyTextButtonResult, widget } from '../ReferralHelper';
 
 import './ReferralsInstructions.less';
 
-const widget = `<iframe class="waivio" src="https://waivio.com?ref=[username]" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
-
-const handleCopyTextButton = setIsCopyButton => {
-  const reservoir = document.createElement('textarea');
-  reservoir.value = widget;
-  document.body.appendChild(reservoir);
-  reservoir.select();
-  document.execCommand('copy');
-  document.body.removeChild(reservoir);
-
-  return setIsCopyButton(true);
-};
+const handleCopyTextButton = setIsCopyButton => getCopyTextButtonResult(setIsCopyButton, widget);
 
 const ReferralsInstructions = props => {
   const {
@@ -60,23 +50,17 @@ const ReferralsInstructions = props => {
   }, []);
 
   const handleAgreeRulesCheckbox = () => {
-    if (currentStatus === true && isModal === false) {
+    if (currentStatus && !isModal) {
       setIsModal(true);
     }
-    if (currentStatus !== true) {
+    if (!currentStatus) {
       return confirmRules(authUserName, isGuest);
     }
     return null;
   };
 
-  const handleOkButton = () => {
-    if (isModal === true) {
-      setIsModal(false);
-    }
-  };
-
-  const handleCancelButton = () => {
-    if (isModal === true) {
+  const handleClickOnCheckbox = () => {
+    if (isModal) {
       setIsModal(false);
     }
   };
@@ -93,8 +77,7 @@ const ReferralsInstructions = props => {
     isStartChangeRules,
     isStartGetReferralInfo,
     handleAgreeRulesCheckbox,
-    handleOkButton,
-    handleCancelButton,
+    handleClickOnCheckbox,
     currentCopyText,
     authUserName,
     isModal,
@@ -103,7 +86,13 @@ const ReferralsInstructions = props => {
     setIsCopyButton,
   };
 
-  return ReferralsInstructionsView(mainProps, handleCopyTextButton, widget);
+  return (
+    <ReferralsInstructionsView
+      mainProps={mainProps}
+      handleCopyTextButton={handleCopyTextButton}
+      widget={widget}
+    />
+  );
 };
 
 ReferralsInstructions.propTypes = {

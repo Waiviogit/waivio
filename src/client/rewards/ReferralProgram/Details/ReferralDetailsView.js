@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { referralDetailContent } from '../ReferralTextHelper';
 
-const ReferralDetailsView = (isAuthenticated, data) => {
+const ReferralDetailsView = ({ isAuthenticated, data }) => {
   const {
     detailTitle,
     detailDescription,
@@ -53,6 +54,15 @@ const ReferralDetailsView = (isAuthenticated, data) => {
       )}
     </React.Fragment>
   );
+};
+
+ReferralDetailsView.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired,
+  data: PropTypes.shape(),
+};
+
+ReferralDetailsView.defaultProps = {
+  data: {},
 };
 
 export default ReferralDetailsView;

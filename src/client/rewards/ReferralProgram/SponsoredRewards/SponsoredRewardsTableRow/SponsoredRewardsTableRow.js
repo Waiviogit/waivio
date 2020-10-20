@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { get } from 'lodash';
 import PropTypes from 'prop-types';
 import { convertDigits, formatDate } from '../../../rewardsHelper';
 import {
@@ -19,7 +20,7 @@ import './SponsoredRewardsTableRow.less';
 const SponsoredRewardsTableRow = ({ intl, sponsor }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
   const dispatch = useDispatch();
-  const sponsorInfo = sponsor && sponsor.details && sponsor.details.main_object;
+  const sponsorInfo = get(sponsor, ['details', 'main_object'], {});
   const dateReview = formatDate(intl, sponsor.createdAt);
   const userWeight = getSponsoredUserWeight(sponsor);
 
@@ -30,16 +31,14 @@ const SponsoredRewardsTableRow = ({ intl, sponsor }) => {
   const reviewObjectLink = getReviewObjectLink(sponsor);
   const reservationPermlink = getReservationPermlink(sponsor);
 
-  const currentAmount = sponsor.amount ? convertDigits(sponsor.amount, true) : 0;
-  const currentBalance = convertDigits(sponsor.balance, true)
-    ? convertDigits(sponsor.balance, true)
-    : 0;
+  const currentAmount = convertDigits(sponsor.amount, true);
+  const currentBalance = convertDigits(sponsor.balance, true);
 
   const toggleModalReport = () => {
     const requestParams = {
       guideName: sponsor.sponsor,
       userName: sponsor.userName,
-      reservationPermlink: sponsor.details.reservation_permlink,
+      reservationPermlink: get(sponsor, ['details', 'reservation_permlink'], ''),
     };
     getReport(requestParams)
       .then(data => {

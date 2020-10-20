@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
-import { SponsoredRewardsMainContent } from '../ReferralTextHelper';
+import { sponsoredRewardsMainContent } from '../ReferralTextHelper';
 import { getStatusSponsoredRewards } from '../ReferralActions';
 import { getAuthenticatedUserName, getStatusSponsoredHistory } from '../../../reducers';
 import SponsoredRewardsView from './SponsoredRewardsView';
@@ -19,7 +19,7 @@ const SponsoredRewards = props => {
   }, []);
 
   const data = { username };
-  const { sponsoredRewardsTitle } = SponsoredRewardsMainContent(data);
+  const { sponsoredRewardsTitle } = sponsoredRewardsMainContent(data);
   return SponsoredRewardsView(intl, statusSponsoredHistory, sponsoredRewardsTitle);
 };
 

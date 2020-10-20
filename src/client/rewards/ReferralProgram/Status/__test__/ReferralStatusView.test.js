@@ -1,10 +1,9 @@
 import React from 'react';
-import { Route } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
-import { mount } from 'enzyme';
-import ReferralStatusView from '../ReferralStatusView';
+import { shallow } from 'enzyme';
 import { mockData } from '../__mock__/mockData';
+import ReferralStatusView from '../ReferralStatusView';
 
 describe('ReferralStatusView', () => {
   let wrapper;
@@ -12,10 +11,10 @@ describe('ReferralStatusView', () => {
 
   beforeEach(() => {
     props = mockData;
-    wrapper = mount(
+    wrapper = shallow(
       <BrowserRouter>
         <IntlProvider locale="en">
-          <Route path="/rewards/referral-status/vallon" component={ReferralStatusView(props)} />
+          <ReferralStatusView propsData={props} />
         </IntlProvider>
       </BrowserRouter>,
     );

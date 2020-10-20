@@ -46,10 +46,22 @@ export const handleLoadMoreUserStatusCards = ({
 
 export const getBeneficiaresInfo = sponsor =>
   sponsor.details.beneficiaries
-    ? map(sponsor.details.beneficiaries, beneficiar => (
+    ? map(get(sponsor, 'details.beneficiaries', []), beneficiar => (
         <React.Fragment key={beneficiar.account}>
           <Link to={`/@${beneficiar.account}`}>{beneficiar.account}</Link>
           <span>{` (${beneficiar.weight / 100}%), `}</span>
         </React.Fragment>
       ))
     : null;
+
+export const getCopyTextButtonResult = (setIsCopyButton, widget) => {
+  const reservoir = document.createElement('textarea');
+  reservoir.value = widget;
+  document.body.appendChild(reservoir);
+  reservoir.select();
+  document.execCommand('copy');
+  document.body.removeChild(reservoir);
+  return setIsCopyButton(true);
+};
+
+export const widget = `<iframe class="waivio" src="https://waivio.com?ref=[username]" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;

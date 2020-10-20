@@ -5,6 +5,59 @@
 .ReferralInstructions {
   .referrals-main-styles();
 
+  &__text-wrap {
+    line-height: 35px;
+    padding-bottom: 40px;
+
+    &__title {
+      font-weight: 600;
+    }
+
+    &__links {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  &__widget-title {
+    font-weight: 600;
+  }
+
+  &__widget {
+    display: flex;
+    align-items: flex-end;
+    background: @grey-darkGrey;
+    padding: 10px;
+    margin: 10px 0 10px;
+    width: 100%;
+    height: auto;
+
+    &__copy-icon {
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: @grey-mortar;
+      }
+
+      &:active {
+        color: @grey-nightRider;
+      }
+    }
+  }
+
+  &__an-example {
+    padding-top: 10px;
+
+    &__text-link {
+      .referrals-link-button();
+    }
+  }
+
+  &__alert {
+    padding-top: 40px;
+  }
+
   &__title {
     padding-bottom: 10px;
   }
@@ -35,61 +88,6 @@
         font-size: 25px;
         line-height: 5px;
       }
-    }
-  }
-
-  &__accepted-conditions {
-    &__text-wrap {
-      line-height: 35px;
-      padding-bottom: 40px;
-
-      &__title {
-        font-weight: 600;
-      }
-
-      &__links {
-        display: flex;
-        flex-direction: column;
-      }
-    }
-
-    &__widget-title {
-      font-weight: 600;
-    }
-
-    &__widget {
-      display: flex;
-      align-items: flex-end;
-      background: @grey-darkGrey;
-      padding: 10px;
-      margin: 10px 0 10px;
-      width: 100%;
-      height: auto;
-
-      &__copy-icon {
-        cursor: pointer;
-        transition: all 0.3s ease;
-
-        &:hover {
-          color: @grey-mortar;
-        }
-
-        &:active {
-          color: @grey-nightRider;
-        }
-      }
-    }
-
-    &__an-example {
-      padding-top: 10px;
-
-      &__text-link {
-        .referrals-link-button();
-      }
-    }
-
-    &__alert {
-      padding-top: 40px;
     }
   }
 }

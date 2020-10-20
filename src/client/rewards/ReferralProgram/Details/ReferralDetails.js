@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -57,7 +57,7 @@ const ReferralDetail = props => {
     suspendedTimer,
   };
 
-  return ReferralDetailsView(isAuthenticated, data);
+  return <ReferralDetailsView isAuthenticated={isAuthenticated} data={data} />;
 };
 
 ReferralDetail.propTypes = {

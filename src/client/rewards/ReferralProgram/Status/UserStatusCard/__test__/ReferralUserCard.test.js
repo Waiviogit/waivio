@@ -1,7 +1,7 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
 import { shallow } from 'enzyme';
-import ReferralUserCard from '../ReferralUserStatusCard';
+import ReferralUserCard from '../ReferralUserCard';
 import { mockData } from '../__mock__/mockData';
 
 describe('ReferralUserCard', () => {

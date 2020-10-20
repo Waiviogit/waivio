@@ -24,7 +24,7 @@ module.exports = {
       ERROR,
       {
         devDependencies: [
-          '**/__test__/*.js',
+          '**/__tests__/*.js',
           'scripts/**/*.js',
           'webpack/**/*.js',
         ],

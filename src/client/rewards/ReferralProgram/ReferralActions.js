@@ -26,26 +26,23 @@ export const GET_STATUS_SPONSORED_REWARDS = createAsyncActionType(
   '@referral/GET_STATUS_SPONSORED_REWARDS',
 );
 
-export const getUserReferralInfo = username => dispatch =>
-  dispatch({
-    type: GET_USER_REFERRAL_INFO.ACTION,
-    payload: ApiClient.getUserAccount(username).then(res => ({
-      referralStatus: res.referralStatus,
-      referralList: res.referral,
-    })),
-  });
+export const getUserReferralInfo = username => ({
+  type: GET_USER_REFERRAL_INFO.ACTION,
+  payload: ApiClient.getUserAccount(username).then(res => ({
+    referralStatus: res.referralStatus,
+    referralList: res.referral,
+  })),
+});
 
-export const getUserReferralDetails = () => dispatch =>
-  dispatch({
-    type: GET_USER_REFERRAL_DETAILS.ACTION,
-    payload: ApiClient.getReferralDetails(),
-  });
+export const getUserReferralDetails = () => ({
+  type: GET_USER_REFERRAL_DETAILS.ACTION,
+  payload: ApiClient.getReferralDetails(),
+});
 
-export const getIsUserInBlackList = username => dispatch =>
-  dispatch({
-    type: GET_IS_USER_IN_BLACKLIST.ACTION,
-    payload: ApiClient.getUserIsBlackListed(username),
-  });
+export const getIsUserInBlackList = username => ({
+  type: GET_IS_USER_IN_BLACKLIST.ACTION,
+  payload: ApiClient.getUserIsBlackListed(username),
+});
 
 export const getChangeOnConfirmReferral = (username, isGuestName, blockNum) => (
   dispatch,
@@ -178,42 +175,37 @@ export const handleRefAuthUser = (username, refUser, isGuest) => (
     })
     .catch(error => error);
 
-export const getUserStatusCards = (username, sort, skip, limit) => dispatch =>
-  dispatch({
-    type: GET_USER_STATUS_CARDS.ACTION,
-    payload: {
-      promise: ApiClient.getUserStatusCards(username, sort, skip, limit)
-        .then(data => ({
-          hasMore: data.hasMore,
-          userCards: data.users,
-        }))
-        .catch(error => error),
-    },
-  });
+export const getUserStatusCards = (username, sort, skip, limit) => ({
+  type: GET_USER_STATUS_CARDS.ACTION,
+  payload: {
+    promise: ApiClient.getUserStatusCards(username, sort, skip, limit)
+      .then(data => ({
+        hasMore: data.hasMore,
+        userCards: data.users,
+      }))
+      .catch(error => error),
+  },
+});
 
-export const getMoreUserStatusCards = (username, sort, skip, limit) => dispatch =>
-  dispatch({
-    type: GET_MORE_USER_STATUS_CARDS.ACTION,
-    payload: {
-      promise: ApiClient.getUserStatusCards(username, sort, skip, limit)
-        .then(data => ({
-          hasMore: data.hasMore,
-          userCards: data.users,
-        }))
-        .catch(() =>
-          dispatch({
-            type: GET_ERROR_MORE_USER_STATUS_CARDS,
-          }),
-        ),
-    },
-  });
+export const getMoreUserStatusCards = (username, sort, skip, limit) => ({
+  type: GET_MORE_USER_STATUS_CARDS.ACTION,
+  payload: {
+    promise: ApiClient.getUserStatusCards(username, sort, skip, limit)
+      .then(data => ({
+        hasMore: data.hasMore,
+        userCards: data.users,
+      }))
+      .catch(() => ({
+        type: GET_ERROR_MORE_USER_STATUS_CARDS,
+      })),
+  },
+});
 
-export const getStatusSponsoredRewards = (referral, username) => dispatch =>
-  dispatch({
-    type: GET_STATUS_SPONSORED_REWARDS.ACTION,
-    payload: {
-      promise: ApiClient.getStatusSponsoredRewards(referral, username)
-        .then(data => data)
-        .catch(error => error),
-    },
-  });
+export const getStatusSponsoredRewards = (referral, username) => ({
+  type: GET_STATUS_SPONSORED_REWARDS.ACTION,
+  payload: {
+    promise: ApiClient.getStatusSponsoredRewards(referral, username)
+      .then(data => data)
+      .catch(error => error),
+  },
+});

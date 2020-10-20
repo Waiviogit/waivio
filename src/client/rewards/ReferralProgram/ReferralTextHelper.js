@@ -267,7 +267,7 @@ export const referralInstructionsContent = username => ({
   copyButtonCopiedText: <FormattedMessage id="copy_button_copied" defaultMessage="Copied" />,
 });
 
-export const ReferralStatusContent = data => {
+export const referralStatusContent = data => {
   const { username, currentUserCards } = data;
   return {
     statusTitle: <FormattedMessage id="referral_status_title" defaultMessage="Referral status:" />,
@@ -309,9 +309,8 @@ export const ReferralStatusContent = data => {
   };
 };
 
-export const SponsoredRewardsMainContent = data => {
+export const sponsoredRewardsMainContent = data => {
   const { username } = data;
-
   return {
     sponsoredRewardsTitle: (
       <FormattedMessage
@@ -329,7 +328,7 @@ export const SponsoredRewardsMainContent = data => {
   };
 };
 
-export const SponsoredRewardsTableContent = data => {
+export const sponsoredRewardsTableContent = data => {
   const {
     username,
     sponsorName,

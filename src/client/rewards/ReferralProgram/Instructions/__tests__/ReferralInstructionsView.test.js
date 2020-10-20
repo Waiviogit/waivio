@@ -1,15 +1,14 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
-import { shallow } from 'enzyme';
-import ReferralInstructionsView from '../../Instructions/ReferralInstructionsView';
+import { shallow, mount } from 'enzyme';
 import {
   mockDataConfirm,
   mockDataIsBlackListUser,
   mockDataIsLoadingState,
-  mockDataIsModal,
   mockDataView,
 } from '../__mock__/mockData';
+import ReferralsInstructionsView from '../../Instructions/ReferralInstructionsView';
 
 describe('ReferralInstructionsView', () => {
   const handleCopyTextButton = jest.fn();
@@ -23,7 +22,11 @@ describe('ReferralInstructionsView', () => {
     wrapper = shallow(
       <BrowserRouter>
         <IntlProvider locale="en">
-          {ReferralInstructionsView(props, handleCopyTextButton, widget)}
+          <ReferralsInstructionsView
+            mainProps={props}
+            handleCopyTextButton={handleCopyTextButton}
+            widget={widget}
+          />
         </IntlProvider>
       </BrowserRouter>,
     );
@@ -35,18 +38,16 @@ describe('ReferralInstructionsView', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('should simulate chackbox button', () => {
-    const container = wrapper.find('Checkbox');
-    container.simulate('change');
-    expect(props.handleAgreeRulesCheckbox).toHaveBeenCalled();
-  });
-
   it('should simulate click on copy-icon', () => {
     props = mockDataConfirm;
-    wrapper = shallow(
+    wrapper = mount(
       <BrowserRouter>
         <IntlProvider locale="en">
-          {ReferralInstructionsView(props, handleCopyTextButton, widget)}
+          <ReferralsInstructionsView
+            mainProps={props}
+            handleCopyTextButton={handleCopyTextButton}
+            widget={widget}
+          />
         </IntlProvider>
       </BrowserRouter>,
     );
@@ -55,40 +56,16 @@ describe('ReferralInstructionsView', () => {
     expect(handleCopyTextButton).toHaveBeenCalled();
   });
 
-  it('should simulate click on okay modal button', () => {
-    props = mockDataIsModal;
-    wrapper = shallow(
-      <BrowserRouter>
-        <IntlProvider locale="en">
-          {ReferralInstructionsView(props, handleCopyTextButton, widget)}
-        </IntlProvider>
-      </BrowserRouter>,
-    );
-    const container = wrapper.find('Modal');
-    container.simulate('ok');
-    expect(props.handleOkButton).toHaveBeenCalled();
-  });
-
-  it('should simulate click on cancel modal button', () => {
-    props = mockDataIsModal;
-    wrapper = shallow(
-      <BrowserRouter>
-        <IntlProvider locale="en">
-          {ReferralInstructionsView(props, handleCopyTextButton, widget)}
-        </IntlProvider>
-      </BrowserRouter>,
-    );
-    const container = wrapper.find('Modal');
-    container.simulate('cancel');
-    expect(props.handleCancelButton).toHaveBeenCalled();
-  });
-
   it('should return info for blacklist user', () => {
     props = mockDataIsBlackListUser;
-    wrapper = shallow(
+    wrapper = mount(
       <BrowserRouter>
         <IntlProvider locale="en">
-          {ReferralInstructionsView(props, handleCopyTextButton, widget)}
+          <ReferralsInstructionsView
+            mainProps={props}
+            handleCopyTextButton={handleCopyTextButton}
+            widget={widget}
+          />
         </IntlProvider>
       </BrowserRouter>,
     );
@@ -101,10 +78,14 @@ describe('ReferralInstructionsView', () => {
 
   it('should return loading state', () => {
     props = mockDataIsLoadingState;
-    wrapper = shallow(
+    wrapper = mount(
       <BrowserRouter>
         <IntlProvider locale="en">
-          {ReferralInstructionsView(props, handleCopyTextButton, widget)}
+          <ReferralsInstructionsView
+            mainProps={props}
+            handleCopyTextButton={handleCopyTextButton}
+            widget={widget}
+          />
         </IntlProvider>
       </BrowserRouter>,
     );

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -46,7 +46,7 @@ const ReferralStatus = props => {
     setSortBy,
     history,
   };
-  return ReferralStatusView(propsData);
+  return <ReferralStatusView propsData={propsData} />;
 };
 
 ReferralStatus.propTypes = {
@@ -58,6 +58,7 @@ ReferralStatus.propTypes = {
   isErrorLoading: PropTypes.bool,
   isLoadingMoreUserCards: PropTypes.bool,
   history: PropTypes.shape(),
+  match: PropTypes.shape(),
 };
 
 ReferralStatus.defaultProps = {
@@ -68,6 +69,7 @@ ReferralStatus.defaultProps = {
   isErrorLoading: false,
   isLoadingMoreUserCards: false,
   history: {},
+  match: {},
 };
 
 const mapStateToProps = state => ({

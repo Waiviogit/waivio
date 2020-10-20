@@ -1,12 +1,13 @@
 import React from 'react';
-import { ReferralStatusContent } from '../ReferralTextHelper';
+import PropTypes from 'prop-types';
+import { referralStatusContent } from '../ReferralTextHelper';
 import { handleLoadMoreUserStatusCards, handleStatusDaysLeft } from '../ReferralHelper';
 import ReferralStatusSort from './ReferralStatusSort/ReferralStatusSort';
 import ReduxInfiniteScroll from '../../../vendor/ReduxInfiniteScroll';
 import Loading from '../../../components/Icon/Loading';
-import ReferralUserCard from './UserStatusCard/ReferralUserStatusCard';
+import ReferralUserCard from './UserStatusCard/ReferralUserCard';
 
-const ReferralStatusView = propsData => {
+const ReferralStatusView = ({ propsData }) => {
   const {
     username,
     isAuthUser,
@@ -20,7 +21,7 @@ const ReferralStatusView = propsData => {
     history,
   } = propsData;
   const data = { username, currentUserCards };
-  const { statusTitle, statusDescription, statusCount, statusPaymentText } = ReferralStatusContent(
+  const { statusTitle, statusDescription, statusCount, statusPaymentText } = referralStatusContent(
     data,
   );
 
@@ -41,8 +42,8 @@ const ReferralStatusView = propsData => {
           <h2 className="ReferralStatus__title">{statusTitle}</h2>
           <div className="ReferralStatus__description">{statusDescription}</div>
           <div className="ReferralStatus__container">
-            <span className="ReferralStatus__container__total-count">{statusCount}</span>
-            <span className="ReferralStatus__container__sort-by">
+            <span className="ReferralStatus__total-count">{statusCount}</span>
+            <span className="ReferralStatus__sort-by">
               <ReferralStatusSort handleSortChange={setSortBy} sortBy={sortBy} />
             </span>
           </div>
@@ -78,6 +79,36 @@ const ReferralStatusView = propsData => {
       )}
     </React.Fragment>
   );
+};
+
+ReferralStatusView.propTypes = {
+  propsData: PropTypes.shape({
+    username: PropTypes.string,
+    isAuthUser: PropTypes.bool,
+    currentUserCards: PropTypes.shape(),
+    hasMore: PropTypes.bool,
+    isErrorLoading: PropTypes.bool,
+    isLoadingMoreUserCards: PropTypes.bool,
+    getMoreUserCards: PropTypes.func,
+    sortBy: PropTypes.string,
+    setSortBy: PropTypes.func,
+    history: PropTypes.shape(),
+  }),
+};
+
+ReferralStatusView.defaultProps = {
+  propsData: PropTypes.shape({
+    username: '',
+    isAuthUser: false,
+    currentUserCards: [],
+    hasMore: false,
+    isErrorLoading: false,
+    isLoadingMoreUserCards: false,
+    getMoreUserCards: () => {},
+    sortBy: '',
+    setSortBy: () => {},
+    history: {},
+  }),
 };
 
 export default ReferralStatusView;

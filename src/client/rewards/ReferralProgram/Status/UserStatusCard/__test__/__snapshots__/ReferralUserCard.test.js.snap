@@ -22,15 +22,15 @@ ShallowWrapper {
           className="ReferralUserCard__content__left"
         >
           <div
-            className="ReferralUserCard__content__left__alias"
+            className="ReferralUserCard__alias"
           >
             
           </div>
           <div
-            className="ReferralUserCard__content__left__wrap"
+            className="ReferralUserCard__wrap"
           >
             <div
-              className="ReferralUserCard__content__left__wrap__name"
+              className="ReferralUserCard__name"
             >
               @vallon
             </div>
@@ -41,12 +41,12 @@ ShallowWrapper {
         className="ReferralUserCard__right"
       >
         <div
-          className="ReferralUserCard__right__days"
+          className="ReferralUserCard__days"
         >
           277 days
         </div>
         <div
-          className="ReferralUserCard__right__arrow"
+          className="ReferralUserCard__arrow"
         >
           <img
             alt="User status card"
@@ -82,15 +82,15 @@ ShallowWrapper {
             className="ReferralUserCard__content__left"
           >
             <div
-              className="ReferralUserCard__content__left__alias"
+              className="ReferralUserCard__alias"
             >
               
             </div>
             <div
-              className="ReferralUserCard__content__left__wrap"
+              className="ReferralUserCard__wrap"
             >
               <div
-                className="ReferralUserCard__content__left__wrap__name"
+                className="ReferralUserCard__name"
               >
                 @vallon
               </div>
@@ -101,12 +101,12 @@ ShallowWrapper {
           className="ReferralUserCard__right"
         >
           <div
-            className="ReferralUserCard__right__days"
+            className="ReferralUserCard__days"
           >
             277 days
           </div>
           <div
-            className="ReferralUserCard__right__arrow"
+            className="ReferralUserCard__arrow"
           >
             <img
               alt="User status card"
@@ -135,15 +135,15 @@ ShallowWrapper {
               className="ReferralUserCard__content__left"
             >
               <div
-                className="ReferralUserCard__content__left__alias"
+                className="ReferralUserCard__alias"
               >
                 
               </div>
               <div
-                className="ReferralUserCard__content__left__wrap"
+                className="ReferralUserCard__wrap"
               >
                 <div
-                  className="ReferralUserCard__content__left__wrap__name"
+                  className="ReferralUserCard__name"
                 >
                   @vallon
                 </div>
@@ -173,15 +173,15 @@ ShallowWrapper {
             "props": Object {
               "children": Array [
                 <div
-                  className="ReferralUserCard__content__left__alias"
+                  className="ReferralUserCard__alias"
                 >
                   
                 </div>,
                 <div
-                  className="ReferralUserCard__content__left__wrap"
+                  className="ReferralUserCard__wrap"
                 >
                   <div
-                    className="ReferralUserCard__content__left__wrap__name"
+                    className="ReferralUserCard__name"
                   >
                     @vallon
                   </div>
@@ -197,7 +197,7 @@ ShallowWrapper {
                 "nodeType": "host",
                 "props": Object {
                   "children": "",
-                  "className": "ReferralUserCard__content__left__alias",
+                  "className": "ReferralUserCard__alias",
                 },
                 "ref": null,
                 "rendered": "",
@@ -209,11 +209,11 @@ ShallowWrapper {
                 "nodeType": "host",
                 "props": Object {
                   "children": <div
-                    className="ReferralUserCard__content__left__wrap__name"
+                    className="ReferralUserCard__name"
                   >
                     @vallon
                   </div>,
-                  "className": "ReferralUserCard__content__left__wrap",
+                  "className": "ReferralUserCard__wrap",
                 },
                 "ref": null,
                 "rendered": Object {
@@ -222,7 +222,7 @@ ShallowWrapper {
                   "nodeType": "host",
                   "props": Object {
                     "children": "@vallon",
-                    "className": "ReferralUserCard__content__left__wrap__name",
+                    "className": "ReferralUserCard__name",
                   },
                   "ref": null,
                   "rendered": "@vallon",
@@ -243,12 +243,12 @@ ShallowWrapper {
         "props": Object {
           "children": Array [
             <div
-              className="ReferralUserCard__right__days"
+              className="ReferralUserCard__days"
             >
               277 days
             </div>,
             <div
-              className="ReferralUserCard__right__arrow"
+              className="ReferralUserCard__arrow"
             >
               <img
                 alt="User status card"
@@ -266,7 +266,7 @@ ShallowWrapper {
             "nodeType": "host",
             "props": Object {
               "children": "277 days",
-              "className": "ReferralUserCard__right__days",
+              "className": "ReferralUserCard__days",
             },
             "ref": null,
             "rendered": "277 days",
@@ -281,7 +281,7 @@ ShallowWrapper {
                 alt="User status card"
                 src="/images/icons/arrowSmall.svg"
               />,
-              "className": "ReferralUserCard__right__arrow",
+              "className": "ReferralUserCard__arrow",
             },
             "ref": null,
             "rendered": Object {
@@ -322,15 +322,15 @@ ShallowWrapper {
               className="ReferralUserCard__content__left"
             >
               <div
-                className="ReferralUserCard__content__left__alias"
+                className="ReferralUserCard__alias"
               >
                 
               </div>
               <div
-                className="ReferralUserCard__content__left__wrap"
+                className="ReferralUserCard__wrap"
               >
                 <div
-                  className="ReferralUserCard__content__left__wrap__name"
+                  className="ReferralUserCard__name"
                 >
                   @vallon
                 </div>
@@ -341,12 +341,12 @@ ShallowWrapper {
             className="ReferralUserCard__right"
           >
             <div
-              className="ReferralUserCard__right__days"
+              className="ReferralUserCard__days"
             >
               277 days
             </div>
             <div
-              className="ReferralUserCard__right__arrow"
+              className="ReferralUserCard__arrow"
             >
               <img
                 alt="User status card"
@@ -375,15 +375,15 @@ ShallowWrapper {
                 className="ReferralUserCard__content__left"
               >
                 <div
-                  className="ReferralUserCard__content__left__alias"
+                  className="ReferralUserCard__alias"
                 >
                   
                 </div>
                 <div
-                  className="ReferralUserCard__content__left__wrap"
+                  className="ReferralUserCard__wrap"
                 >
                   <div
-                    className="ReferralUserCard__content__left__wrap__name"
+                    className="ReferralUserCard__name"
                   >
                     @vallon
                   </div>
@@ -413,15 +413,15 @@ ShallowWrapper {
               "props": Object {
                 "children": Array [
                   <div
-                    className="ReferralUserCard__content__left__alias"
+                    className="ReferralUserCard__alias"
                   >
                     
                   </div>,
                   <div
-                    className="ReferralUserCard__content__left__wrap"
+                    className="ReferralUserCard__wrap"
                   >
                     <div
-                      className="ReferralUserCard__content__left__wrap__name"
+                      className="ReferralUserCard__name"
                     >
                       @vallon
                     </div>
@@ -437,7 +437,7 @@ ShallowWrapper {
                   "nodeType": "host",
                   "props": Object {
                     "children": "",
-                    "className": "ReferralUserCard__content__left__alias",
+                    "className": "ReferralUserCard__alias",
                   },
                   "ref": null,
                   "rendered": "",
@@ -449,11 +449,11 @@ ShallowWrapper {
                   "nodeType": "host",
                   "props": Object {
                     "children": <div
-                      className="ReferralUserCard__content__left__wrap__name"
+                      className="ReferralUserCard__name"
                     >
                       @vallon
                     </div>,
-                    "className": "ReferralUserCard__content__left__wrap",
+                    "className": "ReferralUserCard__wrap",
                   },
                   "ref": null,
                   "rendered": Object {
@@ -462,7 +462,7 @@ ShallowWrapper {
                     "nodeType": "host",
                     "props": Object {
                       "children": "@vallon",
-                      "className": "ReferralUserCard__content__left__wrap__name",
+                      "className": "ReferralUserCard__name",
                     },
                     "ref": null,
                     "rendered": "@vallon",
@@ -483,12 +483,12 @@ ShallowWrapper {
           "props": Object {
             "children": Array [
               <div
-                className="ReferralUserCard__right__days"
+                className="ReferralUserCard__days"
               >
                 277 days
               </div>,
               <div
-                className="ReferralUserCard__right__arrow"
+                className="ReferralUserCard__arrow"
               >
                 <img
                   alt="User status card"
@@ -506,7 +506,7 @@ ShallowWrapper {
               "nodeType": "host",
               "props": Object {
                 "children": "277 days",
-                "className": "ReferralUserCard__right__days",
+                "className": "ReferralUserCard__days",
               },
               "ref": null,
               "rendered": "277 days",
@@ -521,7 +521,7 @@ ShallowWrapper {
                   alt="User status card"
                   src="/images/icons/arrowSmall.svg"
                 />,
-                "className": "ReferralUserCard__right__arrow",
+                "className": "ReferralUserCard__arrow",
               },
               "ref": null,
               "rendered": Object {
