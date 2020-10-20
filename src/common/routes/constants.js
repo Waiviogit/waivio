@@ -43,6 +43,10 @@ export default {
       'messages',
       'reports',
       'fraud-detection',
+      'receivables',
+      'referral-details',
+      'referral-instructions',
+      'referral-status',
     ].join('|'),
   },
 };

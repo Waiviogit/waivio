@@ -163,8 +163,12 @@ export const formatDate = (intl, date) => {
   }
 };
 
-export const convertDigits = (number, isHive) =>
-  parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
+export const convertDigits = (number, isHive) => {
+  if (number) {
+    return parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
+  }
+  return 0;
+};
 
 export const getCurrentUSDPrice = () => {
   const cryptosPriceHistory = useSelector(getCryptosPriceHistory);

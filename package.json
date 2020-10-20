@@ -42,6 +42,7 @@
     "@hot-loader/react-dom": "^16.8.6",
     "@sentry/react": "^5.24.2",
     "@sentry/tracing": "^5.24.2",
+    "@testing-library/react": "^11.1.0",
     "@textlint/markdown-to-ast": "^6.1.2",
     "antd": "^3.7.2",
     "axios": "^0.20.0",

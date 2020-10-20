@@ -26,6 +26,9 @@ const LeftSidebar = () => (
     <Route path="/rewards/fraud-detection" component={SidenavRewards} />
     <Route path="/rewards/blacklist" component={SidenavRewards} />
     <Route path="/rewards/details/:campaignName" component={SidenavRewards} />
+    <Route path="/rewards/referral-details/:userName" component={SidenavRewards} />
+    <Route path="/rewards/referral-instructions/:userName" component={SidenavRewards} />
+    <Route path="/rewards/referral-status/:userName/:table?" component={SidenavRewards} />
     <Route path="/rewards/createDuplicate/:campaignName" component={SidenavRewards} />
     <Route path="/discover-objects/:typeName?" component={SidenavDiscoverObjects} />
     <Route path="/discover" component={SidenavDiscoverObjects} />
