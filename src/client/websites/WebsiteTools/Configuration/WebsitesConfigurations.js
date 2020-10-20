@@ -1,19 +1,20 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Helmet from 'react-helmet';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { AutoComplete, Button, Checkbox, Input, Form, message, Modal, Avatar } from 'antd';
+import { Button, Form, message, Modal, Avatar } from 'antd';
 import { connect } from 'react-redux';
+import { isEmpty, get } from 'lodash';
 
-import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
-import validateRules from '../../constants/validateRules';
 import { getWebsiteLoading } from '../../../reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 
+
 export const WebsitesConfigurations = ({ intl, form, loading }) => {
   const { getFieldDecorator, getFieldValue } = form;
-  const [isDesktop, setIsDesktop] = useState(false);
-  const [isOpenModal, setOpenModal] = useState(false);
+  const [modalsState, setModalState] = useState({});
+  const handleModalState = data => setModalState(data);
+  const mobileLogo = getFieldValue('mobileLogo');
+  const desktopLogo = getFieldValue('desktopLogo');
 
   useEffect(() => {}, []);
 
@@ -40,11 +41,34 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
             </span>
           </h3>
            {getFieldDecorator('desktopLogo', {})(<div className="Settings__profile-image">
-             <Avatar size="large" icon="user" src={''} />
-             <Button type="primary" onClick={() => {}}>
+             <Avatar size="large" icon="user" src={get(desktopLogo, 'src', '')} />
+             <Button type="primary" onClick={() => handleModalState({
+               key: 'mobileLogo',
+               method: (value) => form.setFieldsValue({desktopLogo: value[0]})})}>
                {intl.formatMessage({
-                 id: 'profile_change_avatar',
-                 defaultMessage: 'Change avatar',
+                 id: 'website_change_logo',
+                 defaultMessage: 'Change logo',
+               })}
+             </Button>
+           </div>, )}
+        </Form.Item>
+        <Form.Item>
+          <h3>
+            <span className="ant-form-item-required">
+              {intl.formatMessage({
+                id: 'mobile_logo',
+                defaultMessage: 'Mobile logo',
+              })}
+            </span>
+          </h3>
+           {getFieldDecorator('mobileLogo', {})(<div className="Settings__profile-image">
+             <Avatar size="large" icon="user" src={get(mobileLogo, 'src', '')} />
+             <Button type="primary" onClick={() => handleModalState({
+               key: 'mobileLogo',
+               method: (value) => form.setFieldsValue({mobileLogo: value[0]})})}>
+               {intl.formatMessage({
+                 id: 'website_change_logo',
+                 defaultMessage: 'Change logo',
                })}
              </Button>
            </div>, )}
@@ -58,34 +82,20 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
           </Button>
         </Form.Item>
       </Form>
-      {/* <Modal */}
-      {/*  wrapClassName="Settings__modal" */}
-      {/*  title={ */}
-      {/*    isDesktop */}
-      {/*      ? intl.formatMessage({ */}
-      {/*          id: 'profile_change_avatar', */}
-      {/*          defaultMessage: 'Change avatar', */}
-      {/*        }) */}
-      {/*      : intl.formatMessage({ */}
-      {/*          id: 'profile_change_cover', */}
-      {/*          defaultMessage: 'Change cover', */}
-      {/*        }) */}
-      {/*  } */}
-      {/*  closable */}
-      {/*  onCancel={isDesktop ? this.onOpenChangeAvatarModal : this.onOpenChangeCoverModal} */}
-      {/*  onOk={isDesktop ? this.onOkAvatarModal : this.onOkCoverModal} */}
-      {/*  okButtonProps={{ disabled: isLoadingImage }} */}
-      {/*  cancelButtonProps={{ disabled: isLoadingImage }} */}
-      {/*  visible={isModal} */}
-      {/* > */}
-      {/*  {isModal && ( */}
-      {/*    <ImageSetter */}
-      {/*      onImageLoaded={isDesktop ? this.getAvatar : this.getCover} */}
-      {/*      onLoadingImage={this.onLoadingImage} */}
-      {/*      isRequired */}
-      {/*    /> */}
-      {/*  )} */}
-      {/* </Modal> */}
+       <Modal
+        wrapClassName="Settings__modal"
+        title={'Choose logo'}
+        closable
+        onCancel={() => handleModalState({})}
+        onOk={() => handleModalState({})}
+        visible={!isEmpty(modalsState)}
+       >
+          <ImageSetter
+            onImageLoaded={modalsState.method}
+            onLoadingImage={() => {}}
+            isRequired
+          />
+       </Modal>
     </React.Fragment>
   );
 };
