@@ -581,7 +581,10 @@ export default class Transfer extends React.Component {
               defaultMessage="Your funds transaction will be processed through WaivioBank service. WaivioBank doesn't take any fees."
             />
           )}
-          <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
+          <Form.Item
+            className="Transfer__amount-wrap"
+            label={<FormattedMessage id="amount" defaultMessage="Amount" />}
+          >
             <InputGroup className="Transfer__amount">
               {getFieldDecorator('amount', {
                 trigger: '',
@@ -620,7 +623,9 @@ export default class Transfer extends React.Component {
                 </span>
               )}
             </InputGroup>
-            <Form.Item>{isMobile && currencyPrefix}</Form.Item>
+          </Form.Item>
+          <Form.Item>{isMobile && currencyPrefix}</Form.Item>
+          <Form.Item>
             {authenticated && (
               <FormattedMessage
                 id="balance_amount"
@@ -638,6 +643,8 @@ export default class Transfer extends React.Component {
                 }}
               />
             )}
+          </Form.Item>
+          <Form.Item>
             <div>
               <FormattedMessage
                 id="estimated_value"
