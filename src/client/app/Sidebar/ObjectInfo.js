@@ -52,6 +52,7 @@ class ObjectInfo extends React.Component {
     isAuthenticated: PropTypes.bool,
     albums: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
+    appendAlbum: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -93,6 +94,14 @@ class ObjectInfo extends React.Component {
   handleSelectField = field => () => this.setState({ selectedField: field });
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
+
+  handleToggleModalAddPhoto = () => {
+    const { albums, appendAlbum } = this.props;
+    if (isEmpty(albums)) {
+      appendAlbum();
+    }
+    this.handleToggleModal();
+  };
 
   listItem = (name, content) => {
     const { wobject, userName, isEditMode } = this.props;
@@ -190,7 +199,6 @@ class ObjectInfo extends React.Component {
         {item.alias || getObjectName(item)}
       </LinkButton>
     );
-
     switch (item.id) {
       case TYPES_OF_MENU_ITEM.BUTTON:
         menuItem = (
@@ -202,6 +210,18 @@ class ObjectInfo extends React.Component {
           >
             {item.body.title}
           </Button>
+        );
+        break;
+      case TYPES_OF_MENU_ITEM.PAGE:
+        menuItem = (
+          <LinkButton
+            className={classNames('menu-btn', {
+              active: location.hash.slice(1).split('/')[0] === item.body,
+            })}
+            to={`/object/${wobject.author_permlink}/page#${item.body || item.author_permlink}`}
+          >
+            {item.alias || getObjectName(item)}
+          </LinkButton>
         );
         break;
       case TYPES_OF_MENU_ITEM.NEWS:
@@ -278,6 +298,7 @@ class ObjectInfo extends React.Component {
     const menuPages = getMenuItems(wobject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
     const button = parseButtonsField(wobject);
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
+    const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort)) {
@@ -296,9 +317,8 @@ class ObjectInfo extends React.Component {
 
           return currentLink ? [...acc, currentLink] : acc;
         }, []);
-
         return uniq([...sortButtons, ...buttonArray]).map(item =>
-          this.getMenuSectionLink({ id: item.name, ...item }),
+          this.getMenuSectionLink({ id: item.id || item.name, ...item }),
         );
       }
 
@@ -365,10 +385,7 @@ class ObjectInfo extends React.Component {
           objectFields.rating,
           <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
         )}
-        {this.listItem(
-          objectFields.tagCategory,
-          tagCategories && this.renderTagCategories(tagCategories),
-        )}
+        {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
         {isRenderGallery && (!isEmpty(pictures) || accessExtend) && (
           <div className="field-info">
@@ -378,7 +395,10 @@ class ObjectInfo extends React.Component {
                   to={{ pathname: `/object/${wobject.author_permlink}/gallery` }}
                   onClick={() => this.handleSelectField('gallery')}
                 >
-                  <IconButton icon={<Icon type="plus-circle" />} onClick={this.handleToggleModal} />
+                  <IconButton
+                    icon={<Icon type="plus-circle" />}
+                    onClick={this.handleToggleModalAddPhoto}
+                  />
                   <div
                     className={`icon-button__text ${
                       selectedField === 'gallery' ? 'field-selected' : ''

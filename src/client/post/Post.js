@@ -14,6 +14,7 @@ import {
   getUser,
   getIsAuthFetching,
   getSuitableLanguage,
+  getAuthenticatedUserName,
 } from '../reducers';
 import { getContent } from './postActions';
 import { getUserAccount } from '../user/usersActions';
@@ -40,6 +41,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     failed: getIsPostFailed(state, ownProps.match.params.author, ownProps.match.params.permlink),
     user: getUser(state, ownProps.match.params.author),
     locale: getSuitableLanguage(state),
+    follower: getAuthenticatedUserName(state),
   }),
   { getContent, getUserAccount },
 )
@@ -56,6 +58,7 @@ export default class Post extends React.Component {
     getContent: PropTypes.func,
     getUserAccount: PropTypes.func,
     locale: PropTypes.string,
+    follower: PropTypes.string,
   };
 
   static defaultProps = {
@@ -66,6 +69,7 @@ export default class Post extends React.Component {
     loaded: false,
     failed: false,
     locale: 'en-US',
+    follower: '',
     getContent: () => {},
     getUserAccount: () => {},
   };
@@ -136,7 +140,17 @@ export default class Post extends React.Component {
   };
 
   render() {
-    const { content, fetching, loaded, failed, isAuthFetching, user, match, locale } = this.props;
+    const {
+      content,
+      fetching,
+      loaded,
+      failed,
+      isAuthFetching,
+      user,
+      match,
+      locale,
+      follower,
+    } = this.props;
 
     if (failed) return <Error404 />;
     if (fetching || !content) return <Loading />;
@@ -154,7 +168,11 @@ export default class Post extends React.Component {
           <div className="post-layout container">
             <Affix className="rightContainer" stickPosition={77}>
               <div className="right">
-                <PostRecommendation isAuthFetching={isAuthFetching} locale={locale} />
+                <PostRecommendation
+                  isAuthFetching={isAuthFetching}
+                  locale={locale}
+                  follower={follower}
+                />
               </div>
             </Affix>
             {showPost ? (

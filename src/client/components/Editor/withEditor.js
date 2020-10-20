@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import { message } from 'antd';
 import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
@@ -64,12 +65,14 @@ export default function withEditor(WrappedComponent) {
       const currentMethod = linkMethod ? 'imageUrl' : 'file';
       formData.append(currentMethod, blob);
 
-      return fetch(`https://www.waivio.com/api/image`, {
-        method: 'POST',
-        body: formData,
-      })
-        .then(res => res.json())
-        .then(res => callback(res.image, blob.name))
+      const currentLocation = window.location.hostname;
+      let currentApp = 'waivio';
+      if (currentLocation === 'waiviodev.com') {
+        currentApp = 'waiviodev';
+      }
+      return axios
+        .post(`https://www.${currentApp}.com/api/image`, formData)
+        .then(res => callback(res.data.image, blob.name))
         .catch(() => {
           errorCallback();
           message.error(

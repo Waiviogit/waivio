@@ -88,14 +88,17 @@ export const GET_REWARDS_GENERAL_COUNTS = createAsyncActionType(
   '@rewards/GET_REWARDS_GENERAL_COUNTS',
 );
 
-export const getRewardsGeneralCounts = ({ userName, sort, match }) => (dispatch, getState) => {
+export const getRewardsGeneralCounts = ({ userName, sort, match, area }) => (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const locale = getLocale(state);
 
   return dispatch({
     type: GET_REWARDS_GENERAL_COUNTS.ACTION,
     payload: {
-      promise: ApiClient.getRewardsGeneralCounts({ userName, sort, match, locale }),
+      promise: ApiClient.getRewardsGeneralCounts({ userName, sort, match, area, locale }),
     },
   });
 };
@@ -121,3 +124,14 @@ export const clearFollowingSponsorsRewards = () => dispatch =>
   dispatch({
     type: CLEAR_FOLLOWING_SPONSORS_REWARDS.ACTION,
   });
+
+export const GET_FRAUD_SUSPICION = createAsyncActionType('@rewards/GET_FRAUD_SUSPICION');
+
+export const getFraudSuspicion = ({ fraudSuspicion, sort, skip }) => (dispatch, getState) => {
+  const state = getState();
+  const guideName = getAuthenticatedUserName(state);
+  return dispatch({
+    type: GET_FRAUD_SUSPICION.ACTION,
+    payload: ApiClient.getHistory({ guideName, fraudSuspicion, sort, skip }),
+  });
+};

@@ -15,7 +15,6 @@ import { IS_RESERVED } from '../common/constants/rewards';
 let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': '*',
 };
 
 export function handleErrors(response) {
@@ -375,9 +374,10 @@ export const getUserAccount = (username, withFollowings = false, authUser) =>
     fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${withFollowings}`, {
       headers: {
         ...headers,
-        following: authUser,
         follower: authUser,
+        following: authUser,
       },
+      method: 'GET',
     })
       .then(res => res.json())
       .then(result => resolve(result))
@@ -707,7 +707,6 @@ export const getPropositions = ({
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
     if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
-    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
     if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     const url = getUrl(match);
@@ -736,6 +735,7 @@ export const getHistory = ({
   status,
   guideNames,
   campaignNames,
+  fraudSuspicion,
   locale = 'en-US',
   reservationPermlink,
 }) =>
@@ -754,6 +754,7 @@ export const getHistory = ({
       reqData.onlyWithMessages = false;
     }
     if (guideName) reqData.guideName = guideName;
+    if (fraudSuspicion) reqData.fraudSuspicion = fraudSuspicion;
     if (!isEmpty(rewards)) reqData.rewards = rewards;
     if (!isEmpty(status)) reqData.status = status;
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
@@ -883,6 +884,7 @@ export const getRewardsGeneralCounts = ({
   skip = 0,
   locale = 'en-US',
   match,
+  area,
 } = {}) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -891,6 +893,7 @@ export const getRewardsGeneralCounts = ({
       status,
       limit,
       skip,
+      area,
     };
     if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {

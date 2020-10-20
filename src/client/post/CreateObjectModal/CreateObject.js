@@ -251,6 +251,8 @@ class CreateObject extends React.Component {
           >
             <Form.Item>
               {getFieldDecorator(objectFields.name, {
+                getValueFromEvent:
+                  defaultObjectType === 'hashtag' ? e => e.target.value.toLowerCase() : null,
                 initialValue: '',
                 rules: [
                   {

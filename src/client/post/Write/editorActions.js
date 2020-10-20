@@ -147,7 +147,6 @@ const broadcastComment = (
     },
   ];
   operations.push(commentOp);
-
   if (isUpdating) return steemConnectAPI.broadcast(operations);
   const guestHivePresent = hiveBeneficiaryAccount && isGuest ? 5000 : 0;
   const commentOptionsConfig = {

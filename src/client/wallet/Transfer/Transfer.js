@@ -276,7 +276,6 @@ export default class Transfer extends React.Component {
         const transferQuery = {
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
         };
-
         if (guestUserRegex.test(values.to)) {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = { id: memo || REWARD.guestTransfer, to: values.to };
@@ -285,14 +284,13 @@ export default class Transfer extends React.Component {
           if (values.memo) transferQuery.memo = values.memo;
         }
 
-        if (app) transferQuery.memo.app = app;
+        if (app) transferQuery.memo = { app };
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (memo) {
           transferQuery.memo = { id: memo };
           if (values.memo) transferQuery.memo.message = values.memo;
         }
         transferQuery.memo = JSON.stringify(transferQuery.memo);
-
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
             if (res.result) {

@@ -181,9 +181,10 @@ export const getDaysLeft = (reserveDate, daysCount) => {
 };
 
 export const getFrequencyAssign = objectDetails => {
-  const requiredObjectName = getObjectName(objectDetails.requiredObject);
+  const requiredObjectName = getObjectName(objectDetails.required_object);
+  const requiredObjectAuthorPermlink = get(objectDetails, ['requiredObject', 'author_permlink']);
   return objectDetails.frequency_assign
-    ? `<ul><li>User did not receive a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/object/${objectDetails.requiredObject.author_permlink}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
+    ? `<ul><li>User did not receive a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/object/${requiredObjectAuthorPermlink}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
     : '';
 };
 

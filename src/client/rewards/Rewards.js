@@ -61,6 +61,7 @@ import {
   PATH_NAME_RECEIVABLES,
   PATH_NAME_PAYABLES,
   IS_RESERVED,
+  FRAUD_DETECTION,
   IS_ALL,
   IS_ACTIVE,
   PAYABLES,
@@ -148,6 +149,7 @@ class Rewards extends React.Component {
     sponsors: [],
     sortHistory: 'reservation',
     sortGuideHistory: 'reservation',
+    sortFraudDetection: 'reservation',
     sortMessages: 'inquiryDate',
     sortAll: 'proximity',
     sortEligible: 'proximity',
@@ -180,7 +182,7 @@ class Rewards extends React.Component {
     url: '',
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
       userLocation,
       match,
@@ -188,27 +190,38 @@ class Rewards extends React.Component {
       authenticated,
       getCryptoPriceHistory: getCryptoPriceHistoryAction,
     } = this.props;
-    const { sortAll, sortEligible, sortReserved, url, activeFilters, area } = this.state;
+    const { sortAll, sortEligible, sortReserved, url, activeFilters } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
 
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
 
-    if (!size(userLocation)) this.props.getCoordinates();
-    if (username && !url) this.getPropositionsByStatus({ username, sort });
+    if (!size(userLocation)) {
+      try {
+        const coords = await this.props.getCoordinates();
+        const { lat, lon } = coords.value;
+        // eslint-disable-next-line react/no-did-mount-set-state
+        await this.setState({ area: [+lat, +lon] });
+      } catch (e) {
+        message.error(e.error_description);
+      }
+    }
+
+    const { area } = this.state;
+    if (username && !url) this.getPropositionsByStatus({ username, sort, area });
     if (!authenticated && match.params.filterKey === 'all')
-      this.getPropositions({ username, match, activeFilters, area, sort });
+      this.getPropositions({ username, match, activeFilters, sort, area });
   }
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
     const { username, authenticated } = this.props;
-    const { sortAll, sortEligible, sortReserved, url } = this.state;
+    const { sortAll, sortEligible, sortReserved, url, area } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
 
     if (username !== nextProps.username) {
       const userName = username || nextProps.username;
 
-      this.getPropositionsByStatus({ username: userName, sort });
+      this.getPropositionsByStatus({ username: userName, sort, area });
     } else if (!authenticated && url && this.props.match.params.filterKey !== 'all') {
       this.props.history.push(`/rewards/all`);
     }
@@ -266,6 +279,8 @@ class Rewards extends React.Component {
         return this.setState({ sortMessages: sort });
       case GUIDE_HISTORY:
         return this.setState({ sortGuideHistory: sort });
+      case FRAUD_DETECTION:
+        return this.setState({ sortFraudDetection: sort });
       default:
         return this.setState({ sortAll: sort });
     }
@@ -369,10 +384,10 @@ class Rewards extends React.Component {
     }
   };
 
-  getPropositionsByStatus = ({ username, sort }) => {
+  getPropositionsByStatus = ({ username, sort, area }) => {
     const { pendingUpdate, match } = this.props;
     this.setState({ loadingCampaigns: true });
-    this.props.getRewardsGeneralCounts({ userName: username, sort, match }).then(data => {
+    this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
       // eslint-disable-next-line camelcase
       const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
       const newSponsors = sortBy(sponsors);
@@ -758,7 +773,7 @@ class Rewards extends React.Component {
               loading: false,
               hasMore: newPropositions.campaigns && newPropositions.hasMore,
               propositions: this.state.propositions.concat(newPropositions.campaigns),
-              sponsors: newPropositions.sponsors,
+              sponsors: sortBy(newPropositions.sponsors),
               campaignsTypes: newPropositions.campaigns_types,
               guideNames: activeFilters.guideNames,
               types: activeFilters.types,
@@ -851,6 +866,7 @@ class Rewards extends React.Component {
       sortGuideHistory,
       activeGuideHistoryFilters,
       url,
+      sortFraudDetection,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => wobj.required_object);
     const IsRequiredObjectWrap = !match.params.campaignParent;
@@ -911,6 +927,7 @@ class Rewards extends React.Component {
       messagesCampaigns,
       sortHistory,
       sortMessages,
+      sortFraudDetection,
       sortGuideHistory,
       setActiveMessagesFilters: this.setActiveMessagesFilters,
       propositionsReserved,
