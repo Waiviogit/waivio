@@ -121,7 +121,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink, 
               />
               {intl.formatMessage({
                 id: 'signin_with_steemIt',
-                defaultMessage: 'SteemConnect',
+                defaultMessage: 'HiveSinger',
               })}
             </a>
             <p className="ModalSignIn__title ModalSignIn__title--lined">
