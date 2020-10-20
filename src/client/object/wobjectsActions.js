@@ -74,15 +74,15 @@ export const createWaivioObject = postData => (dispatch, getState) => {
       type: CREATE_WOBJECT,
       payload: {
         promise: new Promise((resolve, reject) =>
-          ApiClient.getObject(wobj.name, auth.user.name)
+          ApiClient.getObject(wobj.name.toLowerCase(), auth.user.name)
             .then(() => reject('object_exist'))
             .catch(() => {
               const requestBody = {
                 author: auth.user.name,
-                title: `${wobj.name} - waivio object`,
-                body: `Waivio object "${wobj.name}" has been created`,
-                permlink: wobj.name,
-                objectName: wobj.name,
+                title: `${wobj.name.toLowerCase()} - waivio object`,
+                body: `Waivio object "${wobj.name.toLowerCase()}" has been created`,
+                permlink: wobj.name.toLowerCase(),
+                objectName: wobj.name.toLowerCase(),
                 locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
                 type: wobj.type,
                 isExtendingOpen: Boolean(wobj.isExtendingOpen),
