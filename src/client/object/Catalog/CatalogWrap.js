@@ -226,6 +226,7 @@ CatalogWrap.propTypes = {
 };
 
 CatalogWrap.defaultProps = {
+  intl: {},
   wobject: {},
   locale: 'en-US',
   userName: '',
