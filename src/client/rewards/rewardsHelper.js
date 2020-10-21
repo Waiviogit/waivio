@@ -778,8 +778,11 @@ export const buttonsTitle = {
   },
 };
 
-export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
-  if (location === PATH_NAME_MESSAGES) {
+export const getBreadCrumbText = (intl, location, filterKey, rewardText, match) => {
+  if (
+    location === PATH_NAME_MESSAGES ||
+    location === `${PATH_NAME_MESSAGES}/${match.params.campaignId}/${match.params.permlink}`
+  ) {
     return intl.formatMessage({
       id: MESSAGES,
       defaultMessage: 'Messages',
