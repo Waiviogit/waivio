@@ -1,4 +1,4 @@
-import { get, some, filter, isEmpty, compact } from 'lodash';
+import { get, some, filter, isEmpty, compact, size } from 'lodash';
 import { addressFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 
@@ -163,7 +163,8 @@ export const getMenuItems = (wobject, menuType, objType) => {
 };
 
 export const getObjectTags = items => {
+  if (!size(items)) return [];
   const sortedItems = items.sort((a, b) => b.weight - a.weight);
-  const tag = sortedItems.slice(0, 2);
-  return tag.map(item => get(item, 'body'));
+  const tags = sortedItems.slice(0, 2);
+  return tags.map(item => get(item, 'body'));
 };

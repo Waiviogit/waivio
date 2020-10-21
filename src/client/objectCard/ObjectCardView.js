@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, truncate, get, filter, map, size } from 'lodash';
+import { includes, truncate, get, filter, map, size, reduce } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -34,12 +34,9 @@ const ObjectCardView = ({
     const tagCategory = get(wObject, 'tagCategory');
     if (inList) {
       const listTags = tagCategory.map(items => get(items, 'items'));
-      const tag = getObjectTags(listTags.flat());
-      if (tag) {
-        const currentTags = map(tag, item => item);
-        setTags([wObject.object_type, ...currentTags]);
-      }
-    } else if (!inList && tagCategory) {
+      const objectTags = getObjectTags(reduce(listTags, (array, other) => array.concat(other), []));
+      setTags([wObject.object_type, ...objectTags]);
+    } else if (tagCategory) {
       const currentTagsFiltered = filter(tagCategory, item => size(item.items));
       const currentTags = map(currentTagsFiltered, item => item.body);
       setTags(currentTags);
@@ -86,7 +83,7 @@ const ObjectCardView = ({
     })} ${wobjName}`;
 
   const parentLink = get(parent, 'defaultShowLink');
-  console.log(tags);
+
   return (
     <div key={wObject.author_permlink}>
       <div className="ObjectCardView">
