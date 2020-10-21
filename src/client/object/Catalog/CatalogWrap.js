@@ -40,7 +40,6 @@ const CatalogWrap = props => {
 
   const getPropositions = ({ match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
-    console.log('propos');
     ApiClient.getPropositions({
       userName,
       match,

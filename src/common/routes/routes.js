@@ -16,7 +16,8 @@ const routes = {
     {
       path: [
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
-        `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:userName/:table?`,
+        `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?`,
+        `/rewards/(${URL.REFERRAL.tabs})/:userName?/:table?`,
         '/rewards/blacklist/:listType?',
         '/rewards/:filterKey/:campaignParent?',
       ],
