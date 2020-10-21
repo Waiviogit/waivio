@@ -21,7 +21,7 @@ const WalletTable = ({
   totalVestingFundSteem,
 }) => (
   <div className="WalletTable">
-    <table style={{ width: '100%' }}>
+    <table>
       <thead>
         <tr>
           {WalletTableHeader.map(tdInfo => (
