@@ -8,7 +8,12 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import { getObjectName, parseAddress, getObjectAvatar } from '../helpers/wObjectHelper';
+import {
+  getObjectName,
+  parseAddress,
+  getObjectAvatar,
+  getObjectTags,
+} from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
@@ -17,6 +22,7 @@ const ObjectCardView = ({
   intl,
   wObject,
   options: { mobileView = 'compact', ownRatesOnly = false },
+  inList,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
@@ -26,11 +32,20 @@ const ObjectCardView = ({
 
   useEffect(() => {
     const tagCategory = get(wObject, 'tagCategory');
-    if (tagCategory) {
+    if (inList) {
+      const listTags = tagCategory.map(items => get(items, 'items'));
+      const tag = getObjectTags(listTags.flat());
+      if (tag) {
+        const currentTags = map(tag, item => item);
+        setTags([wObject.object_type, ...currentTags]);
+      }
+    } else if (!inList && tagCategory) {
       const currentTagsFiltered = filter(tagCategory, item => size(item.items));
       const currentTags = map(currentTagsFiltered, item => item.body);
       setTags(currentTags);
-    } else setTags([wObject.object_type]);
+    } else {
+      setTags([wObject.object_type]);
+    }
   }, [wObject, setTags]);
 
   const pathName = wObject.defaultShowLink;
@@ -71,7 +86,7 @@ const ObjectCardView = ({
     })} ${wobjName}`;
 
   const parentLink = get(parent, 'defaultShowLink');
-
+  console.log(tags);
   return (
     <div key={wObject.author_permlink}>
       <div className="ObjectCardView">
@@ -156,10 +171,12 @@ ObjectCardView.propTypes = {
     ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
+  inList: PropTypes.bool,
 };
 
 ObjectCardView.defaultProps = {
   options: {},
   wObject: {},
+  inList: false,
 };
 export default injectIntl(ObjectCardView);

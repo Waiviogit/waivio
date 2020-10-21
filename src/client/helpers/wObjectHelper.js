@@ -161,3 +161,9 @@ export const getMenuItems = (wobject, menuType, objType) => {
       return { ...item, alias: matchItem.alias, id: menuType };
     });
 };
+
+export const getObjectTags = items => {
+  const sortedItems = items.sort((a, b) => b.weight - a.weight);
+  const tag = sortedItems.slice(0, 2);
+  return tag.map(item => get(item, 'body'));
+};
