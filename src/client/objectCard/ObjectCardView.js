@@ -86,7 +86,6 @@ const ObjectCardView = ({
     })} ${wobjName}`;
 
   const parentLink = get(parent, 'defaultShowLink');
-  console.log(tags);
   return (
     <div key={wObject.author_permlink}>
       <div className="ObjectCardView">
