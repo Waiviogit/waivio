@@ -3,20 +3,29 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Form, message, Modal, Avatar } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, get } from 'lodash';
+import { isEmpty } from 'lodash';
 
+import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import { getWebsiteLoading } from '../../../reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
-
+import {getObjectName} from "../../../helpers/wObjectHelper";
+import ObjectAvatar from "../../../components/ObjectAvatar";
 
 export const WebsitesConfigurations = ({ intl, form, loading }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [modalsState, setModalState] = useState({});
-  const handleModalState = data => setModalState(data);
   const mobileLogo = getFieldValue('mobileLogo');
   const desktopLogo = getFieldValue('desktopLogo');
+  const selectedObj = getFieldValue('aboutObject');
 
   useEffect(() => {}, []);
+
+  const resetModalState = () => setModalState({});
+
+  const handleModalState = key =>
+    setModalState({
+      method: value => form.setFieldsValue({ [key]: value[0].src }),
+    });
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -40,17 +49,21 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
               })}
             </span>
           </h3>
-           {getFieldDecorator('desktopLogo', {})(<div className="Settings__profile-image">
-             <Avatar size="large" icon="user" src={get(desktopLogo, 'src', '')} />
-             <Button type="primary" onClick={() => handleModalState({
-               key: 'mobileLogo',
-               method: (value) => form.setFieldsValue({desktopLogo: value[0]})})}>
-               {intl.formatMessage({
-                 id: 'website_change_logo',
-                 defaultMessage: 'Change logo',
-               })}
-             </Button>
-           </div>, )}
+          {getFieldDecorator(
+            'desktopLogo',
+            {},
+          )(
+            <div className="Settings__profile-image">
+              <Avatar size="large" icon="user" src={desktopLogo} />
+              <Button type="primary" onClick={() => handleModalState('desktopLogo')}>
+                {intl.formatMessage({
+                  id: 'website_change_logo',
+                  defaultMessage: 'Change logo',
+                })}
+              </Button>
+            </div>,
+          )}
+          <p>Desktop logo will appear on the home page of the desktop version of the site.</p>
         </Form.Item>
         <Form.Item>
           <h3>
@@ -61,17 +74,48 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
               })}
             </span>
           </h3>
-           {getFieldDecorator('mobileLogo', {})(<div className="Settings__profile-image">
-             <Avatar size="large" icon="user" src={get(mobileLogo, 'src', '')} />
-             <Button type="primary" onClick={() => handleModalState({
-               key: 'mobileLogo',
-               method: (value) => form.setFieldsValue({mobileLogo: value[0]})})}>
-               {intl.formatMessage({
-                 id: 'website_change_logo',
-                 defaultMessage: 'Change logo',
-               })}
-             </Button>
-           </div>, )}
+          {getFieldDecorator(
+            'mobileLogo',
+            {},
+          )(
+            <div className="Settings__profile-image">
+              <Avatar size="large" icon="user" src={mobileLogo} />
+              <Button type="primary" onClick={() => handleModalState('mobileLogo')}>
+                {intl.formatMessage({
+                  id: 'website_change_logo',
+                  defaultMessage: 'Change logo',
+                })}
+              </Button>
+            </div>,
+          )}
+          <p>Mobile logo will appear on the home page of the mobile version of the site.</p>
+        </Form.Item>
+        <Form.Item>
+          <h3>
+            <span className="ant-form-item-required">
+              {intl.formatMessage({
+                id: 'about_object',
+                defaultMessage: 'About object:',
+              })}
+            </span>
+          </h3>
+          {selectedObj ? <div>
+            <div className="Transfer__search-content-wrap-current">
+              <div className="Transfer__search-content-wrap-current-user">
+                <ObjectAvatar item={selectedObj} size={40}/>
+                <div className="Transfer__search-content">{getObjectName(selectedObj)}</div>
+              </div>
+                <span
+                  role="presentation"
+                  onClick={() => form.setFieldsValue({aboutObject: null })}
+                  className="iconfont icon-delete"
+                />
+            </div>
+          </div> : getFieldDecorator(
+            'aboutObject',
+            {},
+          )(<SearchObjectsAutocomplete handleSelect={value => form.setFieldsValue({ aboutObject: value })} />)}
+          <p>About object will be opened when visitors click on the logo on the home page.</p>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={loading}>
@@ -82,20 +126,18 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
           </Button>
         </Form.Item>
       </Form>
-       <Modal
+      <Modal
         wrapClassName="Settings__modal"
-        title={'Choose logo'}
+        title={`Choose logo`}
         closable
-        onCancel={() => handleModalState({})}
-        onOk={() => handleModalState({})}
+        onCancel={resetModalState}
+        onOk={resetModalState}
         visible={!isEmpty(modalsState)}
-       >
-          <ImageSetter
-            onImageLoaded={modalsState.method}
-            onLoadingImage={() => {}}
-            isRequired
-          />
-       </Modal>
+      >
+        {!isEmpty(modalsState) && (
+          <ImageSetter onImageLoaded={modalsState.method} isRequired isMultiple={false} />
+        )}
+      </Modal>
     </React.Fragment>
   );
 };

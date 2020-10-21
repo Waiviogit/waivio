@@ -7,7 +7,7 @@ import { injectIntl } from 'react-intl';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import {getWebsiteSettingsTitle} from './common/helpers';
+import { getWebsiteSettingsTitle } from './common/helpers';
 
 import './Settings.less';
 

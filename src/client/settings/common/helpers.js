@@ -1,4 +1,4 @@
-import { get } from "lodash";
+import { get } from 'lodash';
 
 export const getWebsiteSettingsTitle = match => {
   const param = get(match, ['params', '0'], '');
@@ -21,7 +21,7 @@ export const getWebsiteSettingsTitle = match => {
     case 'muted-users':
       return { id: 'muted_users', defaultMessage: 'Muted users' };
     default:
-      return {id: 'websites', defaultMessage: 'Websites'};
+      return { id: 'websites', defaultMessage: 'Websites' };
   }
 };
 

@@ -39,7 +39,7 @@ const ImageSetter = ({
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
-  
+
   useEffect(() => {
     if (currentImages.length) {
       onImageLoaded(currentImages);
@@ -343,7 +343,7 @@ ImageSetter.propTypes = {
   intl: PropTypes.shape().isRequired,
   onImageInvalid: PropTypes.func.isRequired,
   onImageUpload: PropTypes.func.isRequired,
-  onLoadingImage: PropTypes.func.isRequired,
+  onLoadingImage: PropTypes.func,
   onImageLoaded: PropTypes.func.isRequired,
   isMultiple: PropTypes.bool,
   defaultImage: PropTypes.string,
@@ -366,6 +366,7 @@ ImageSetter.defaultProps = {
   setEditorState: () => {},
   getEditorState: () => {},
   addNewBlockAt: () => {},
+  onLoadingImage: () => {},
   selection: undefined,
   Block: {},
   isOkayBtn: false,

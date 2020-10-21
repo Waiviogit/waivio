@@ -51,6 +51,7 @@ class SearchObjectsAutocomplete extends Component {
     autoFocus: true,
     isSearchObject: false,
     addItem: false,
+    parentObject: {}
   };
 
   static propTypes = {
@@ -73,7 +74,7 @@ class SearchObjectsAutocomplete extends Component {
     style: PropTypes.shape({}),
     isSearchObject: PropTypes.bool,
     resetIsClearSearchFlag: PropTypes.func,
-    parentObject: PropTypes.shape().isRequired,
+    parentObject: PropTypes.shape(),
     addItem: PropTypes.bool,
   };
 
@@ -150,7 +151,6 @@ class SearchObjectsAutocomplete extends Component {
       addItem,
     } = this.props;
     const searchObjectListed = searchObjectPermlink =>
-      parentObject.listItems &&
       get(parentObject, 'listItems', []).some(
         item => get(item, 'author_permlink') === searchObjectPermlink,
       );
