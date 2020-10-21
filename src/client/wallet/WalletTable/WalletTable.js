@@ -21,14 +21,14 @@ const WalletTable = ({
   totalVestingFundSteem,
 }) => (
   <div className="WalletTable">
-    <table style={{ width: '100%' }}>
+    <table>
       <thead>
         <tr>
           {WalletTableHeader.map(tdInfo => (
             <th key={tdInfo.id} className={tdInfo.className}>
               {intl.formatMessage({
                 id: tdInfo.id,
-                defaultMessage: tdInfo.className,
+                defaultMessage: tdInfo.message,
               })}
             </th>
           ))}

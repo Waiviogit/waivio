@@ -11,6 +11,7 @@ describe('<TwitterShare />', () => {
     props = {
       url: 'url',
       text: 'text',
+      hashtags: ['hashtags'],
     };
 
     wrapper = mount(<TwitterShare {...props} />);
@@ -45,6 +46,7 @@ describe('<TwitterShare />', () => {
     const defaultProps = {
       url: '',
       text: '',
+      hashtags: [],
     };
     expect(TwitterShare.defaultProps).toEqual(defaultProps);
   });

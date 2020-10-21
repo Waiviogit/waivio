@@ -1,0 +1,18 @@
+@import (reference) '../../../../styles/custom.less';
+@import (reference) '../../../../styles/modules/variables.less';
+@import (reference) '../../../../styles/mixins.less';
+
+.nightmode {
+  .ReferralUserCard {
+    border: 1px solid @normal-grey;
+    background-color: @grey-nero;
+
+    &__content__left__alias {
+      color: @white-smoke;
+    }
+
+    &__arrow {
+      .light-arrows-color();
+    }
+  }
+}
