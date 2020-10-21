@@ -51,7 +51,7 @@ class SearchObjectsAutocomplete extends Component {
     autoFocus: true,
     isSearchObject: false,
     addItem: false,
-    parentObject: {}
+    parentObject: {},
   };
 
   static propTypes = {
