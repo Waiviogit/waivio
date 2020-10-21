@@ -15,9 +15,9 @@ const routes = {
     },
     {
       path: [
-        `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?`,
-        '/rewards/blacklist/:listType?',
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
+        `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:userName/:table?`,
+        '/rewards/blacklist/:listType?',
         '/rewards/:filterKey/:campaignParent?',
       ],
       pathScope: '/rewards',
@@ -73,6 +73,26 @@ const routes = {
           path: '/(details|createDuplicate|create)/:campaignId?',
           exact: true,
           component: Views.CreateRewardForm,
+        },
+        {
+          path: '/referral-details/:userName',
+          exact: true,
+          component: Views.ReferralDetails,
+        },
+        {
+          path: '/referral-instructions/:userName',
+          exact: true,
+          component: Views.ReferralInstructions,
+        },
+        {
+          path: '/referral-status/:userName',
+          exact: true,
+          component: Views.ReferralStatus,
+        },
+        {
+          path: '/referral-status/:userName/:table?',
+          exact: true,
+          component: Views.SponsoredRewards,
         },
         {
           path: '/:filterKey/:campaignParent?',

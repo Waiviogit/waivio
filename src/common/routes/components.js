@@ -70,4 +70,16 @@ export default {
   ),
   HistoryCampaign: loableComponent(import('../../client/rewards/History/History')),
   FraudDetection: loableComponent(import('../../client/rewards/FraudDetection/FraudDetection')),
+  ReferralDetails: loableComponent(
+    import('../../client/rewards/ReferralProgram/Details/ReferralDetails'),
+  ),
+  ReferralInstructions: loableComponent(
+    import('../../client/rewards/ReferralProgram/Instructions/ReferralsInstructions'),
+  ),
+  ReferralStatus: loableComponent(
+    import('../../client/rewards/ReferralProgram/Status/ReferralStatus'),
+  ),
+  SponsoredRewards: loableComponent(
+    import('../../client/rewards/ReferralProgram/SponsoredRewards/SponsoredRewards'),
+  ),
 };
