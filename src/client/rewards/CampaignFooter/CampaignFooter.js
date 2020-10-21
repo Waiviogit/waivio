@@ -134,6 +134,8 @@ class CampaignFooter extends React.Component {
       commentFromText: '',
       commentSubmitted: false,
       loadingComments: false,
+      userFollowed: this.props.postState.userFollowed,
+      objectFollowed: this.props.postState.objectFollowed,
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
 
@@ -237,7 +239,7 @@ class CampaignFooter extends React.Component {
   };
 
   handleFollowClick() {
-    const { userFollowed } = this.props.postState;
+    const { userFollowed } = this.state;
     const { proposition } = this.props;
 
     if (userFollowed) {
@@ -245,15 +247,17 @@ class CampaignFooter extends React.Component {
     } else {
       this.props.followUser(proposition.guideName);
     }
+    this.setState(prevState => ({ userFollowed: !prevState.userFollowed }));
   }
 
   handleFollowObjectClick() {
-    const { objectFollowed } = this.props.postState;
+    const { objectFollowed } = this.state;
     if (objectFollowed) {
       this.props.unfollowObject(this.props.requiredObjectPermlink);
     } else {
       this.props.followObject(this.props.requiredObjectPermlink);
     }
+    this.setState(prevState => ({ objectFollowed: !prevState.objectFollowed }));
   }
 
   clickMenuItem(key) {
@@ -441,6 +445,8 @@ class CampaignFooter extends React.Component {
       commentFormText,
       commentSubmitted,
       loadingComments,
+      userFollowed,
+      objectFollowed,
     } = this.state;
     const {
       post,
@@ -517,6 +523,8 @@ class CampaignFooter extends React.Component {
               getMessageHistory={getMessageHistory}
               blacklistUsers={blacklistUsers}
               sortFraudDetection={sortFraudDetection}
+              userFollowed={userFollowed}
+              objectFollowed={objectFollowed}
             />
           )}
         </div>

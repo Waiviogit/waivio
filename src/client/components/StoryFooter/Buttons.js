@@ -200,7 +200,7 @@ export default class Buttons extends React.Component {
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
     const hasRebloggedUsers = post.reblogged_users && !!post.reblogged_users.length;
-
+    console.log(post);
     const totalPayout =
       parseFloat(post.pending_payout_value) +
       parseFloat(post.total_payout_value) +

@@ -76,6 +76,8 @@ export default class CampaignButtons extends React.Component {
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
     sortFraudDetection: PropTypes.string,
     getFraudSuspicion: PropTypes.func,
+    userFollowed: PropTypes.bool,
+    objectFollowed: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -97,6 +99,8 @@ export default class CampaignButtons extends React.Component {
     getFraudSuspicion: () => {},
     blacklistUsers: [],
     sortFraudDetection: 'reservation',
+    userFollowed: false,
+    objectFollowed: false,
   };
 
   constructor(props) {
@@ -396,12 +400,14 @@ export default class CampaignButtons extends React.Component {
       proposition,
       user,
       toggleModal,
+      userFollowed,
+      objectFollowed,
     } = this.props;
     const { isUserInBlacklist } = this.state;
 
-    const followText = this.getFollowText(postState.userFollowed, `@${propositionGuideName}`);
+    const followText = this.getFollowText(userFollowed, `@${propositionGuideName}`);
 
-    const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectName);
+    const followObjText = this.getFollowText(objectFollowed, requiredObjectName);
 
     let popoverMenu = [];
 
