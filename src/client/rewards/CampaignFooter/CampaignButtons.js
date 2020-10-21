@@ -8,7 +8,6 @@ import classNames from 'classnames';
 import { map, get, includes, isEmpty, some, every } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
-// import { CampaignPopoverMenu } from '../../components/CampaignPopoverMenu/CampaignPopoverMenu';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
 import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
