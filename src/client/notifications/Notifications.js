@@ -143,7 +143,14 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.TRANSFER:
-                return <NotificationTransfer key={key} notification={notification} read={read} />;
+                return (
+                  <NotificationTransfer
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
               case notificationConstants.WITNESS_VOTE:
                 return (
                   <NotificationVoteWitness key={key} notification={notification} read={read} />

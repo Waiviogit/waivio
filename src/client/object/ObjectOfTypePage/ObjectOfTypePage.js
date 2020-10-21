@@ -9,14 +9,14 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import toMarkdown from '../../components/EditorExtended/util/editorStateToMarkdown';
 import LikeSection from '../LikeSection';
 import FollowObjectForm from '../FollowObjectForm';
-import { getFieldWithMaxWeight } from '../wObjectHelper';
-import { getAppendData } from '../../helpers/wObjectHelper';
+import { getAppendData, getObjectName } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
 import { getFollowingObjectsList, getIsAppendLoading, getLocale } from '../../reducers';
 import IconButton from '../../components/IconButton';
-import './ObjectOfTypePage.less';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
+
+import './ObjectOfTypePage.less';
 
 @injectIntl
 @Form.create()
@@ -59,7 +59,7 @@ class ObjectOfTypePage extends Component {
   constructor(props) {
     super(props);
 
-    this.currentPageContent = getFieldWithMaxWeight(props.wobject, objectFields.pageContent);
+    this.currentPageContent = props.wobject.pageContent;
     this.state = {
       content: this.currentPageContent,
       editorInitContent: this.currentPageContent,
@@ -69,7 +69,7 @@ class ObjectOfTypePage extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!isEmpty(nextProps.wobject) && !isEqual(nextProps.wobject, this.props.wobject)) {
-      this.currentPageContent = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
+      this.currentPageContent = nextProps.wobject.pageContent;
       this.setState({
         editorInitContent: this.currentPageContent,
       });
@@ -107,7 +107,7 @@ class ObjectOfTypePage extends Component {
                 },
                 {
                   field: objectFields.pageContent,
-                  wobject: getFieldWithMaxWeight(wobject, objectFields.name),
+                  wobject: getObjectName(wobject),
                 },
               ),
             );

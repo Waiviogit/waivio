@@ -54,7 +54,6 @@ import { getLanguageText } from '../../translations';
 import MapAppendObject from '../../components/Maps/MapAppendObject';
 import {
   generatePermlink,
-  getField,
   getMenuItems,
   getObjectName,
   hasType,
@@ -356,7 +355,8 @@ export default class AppendForm extends Component {
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
-          const displayName = `${this.state.selectedObject.name} (type: ${this.state.selectedObject.type})`;
+          const objectType = this.state.selectedObject.object_type;
+          const displayName = `${this.state.selectedObject.name} (type: ${objectType})`;
           const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${appendValue}`;
           return `@${author} added ${currentField} (${langReadable}):\n[${displayName}](${objectUrl})${
             alias ? ` as "${alias}"` : ''
@@ -429,7 +429,8 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.categoryItem) {
         fieldsObject = {
           ...fieldsObject,
-          tagCategory: this.state.selectedCategory,
+          id: this.state.selectedCategory.id,
+          tagCategory: this.state.selectedCategory.body,
         };
       }
 
@@ -448,7 +449,7 @@ export default class AppendForm extends Component {
         .substring(2)}`;
       data.lastUpdated = Date.now();
 
-      data.wobjectName = getField(wObject, 'name');
+      data.wobjectName = getObjectName(wObject);
 
       data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
 
@@ -743,9 +744,7 @@ export default class AppendForm extends Component {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
 
-    if (objectFields.categoryItem === currentField) {
-      this.handleCreateTag();
-    } else if (objectFields.galleryItem === currentField) {
+    if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
     }
 

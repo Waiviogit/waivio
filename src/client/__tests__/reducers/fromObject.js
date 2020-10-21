@@ -14,7 +14,8 @@ describe('fromObject', () => {
     object: {
       wobject: {
         fields: [{ name: 'rating' }, { name: 'no-rating' }],
-        tagCategories: 'tagCategories',
+        tagCategory: 'tagCategory',
+        rating: [{ name: 'rating' }],
       },
       isFetching: 'isFetching',
       author: 'author',
@@ -43,6 +44,6 @@ describe('fromObject', () => {
   });
 
   it('Should return tagCategories', () => {
-    expect(getObjectTagCategory(state)).toEqual('tagCategories');
+    expect(getObjectTagCategory(state)).toEqual('tagCategory');
   });
 });

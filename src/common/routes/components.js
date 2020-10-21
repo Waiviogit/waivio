@@ -21,7 +21,7 @@ export default {
   ProfileSettings: loableComponent(import('../../client/settings/ProfileSettings')),
   Invite: loableComponent(import('../../client/invite/Invite')),
   User: loableComponent(import('../../client/user/User')),
-  Wobj: loableComponent(import('../../client/object/Wobj')),
+  Wobj: loableComponent(import('../../client/object/Wobj/WobjectContainer')),
   UserProfile: loableComponent(import('../../client/user/UserProfile')),
   UserComments: loableComponent(import('../../client/user/UserComments')),
   UserFollowers: loableComponent(import('../../client/user/UserFollowers')),
@@ -69,4 +69,17 @@ export default {
     import('../../client/rewards/RewardsComponent/RewardsComponent'),
   ),
   HistoryCampaign: loableComponent(import('../../client/rewards/History/History')),
+  FraudDetection: loableComponent(import('../../client/rewards/FraudDetection/FraudDetection')),
+  ReferralDetails: loableComponent(
+    import('../../client/rewards/ReferralProgram/Details/ReferralDetails'),
+  ),
+  ReferralInstructions: loableComponent(
+    import('../../client/rewards/ReferralProgram/Instructions/ReferralsInstructions'),
+  ),
+  ReferralStatus: loableComponent(
+    import('../../client/rewards/ReferralProgram/Status/ReferralStatus'),
+  ),
+  SponsoredRewards: loableComponent(
+    import('../../client/rewards/ReferralProgram/SponsoredRewards/SponsoredRewards'),
+  ),
 };

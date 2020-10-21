@@ -148,7 +148,7 @@ export const getMoreFeedContentByObject = ({
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
-export const getFeedContent = (sortBy, queryData, locale, follower) => {
+export const getFeedContent = (sortBy, locale, follower, queryData) => {
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {
       headers: {
@@ -170,7 +170,7 @@ export const getUserProfileBlog = (
   userName,
   follower,
   { startAuthor = '', startPermlink = '', limit = 10, skip },
-  locale,
+  locale = 'en-US',
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
@@ -374,21 +374,26 @@ export const getUserAccount = (username, withFollowings = false, authUser) =>
     fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${withFollowings}`, {
       headers: {
         ...headers,
-        following: authUser,
         follower: authUser,
+        following: authUser,
       },
+      method: 'GET',
     })
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
 
-export const getFollowingUpdates = (userName, count = 5) =>
+export const getFollowingUpdates = (locale, userName, count = 5) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.apiPrefix}${config.user}/${userName}${config.followingUpdates}?users_count=${count}&wobjects_count=${count}`,
       {
-        headers,
+        headers: {
+          ...headers,
+          app: config.appName,
+          locale,
+        },
         method: 'GET',
       },
     )
@@ -635,6 +640,28 @@ export const getCampaignById = campaignId =>
       .catch(error => reject(error));
   });
 
+export const getReviewCheckInfo = ({ campaignId, locale = 'en-US', userName, postPermlink }) => {
+  const queryString = `${
+    postPermlink ? `?userName=${userName}&postPermlink=${postPermlink}` : `?userName=${userName}`
+  }`;
+  return new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.campaign}${config.reviewCheck}/${campaignId}${queryString}`,
+      {
+        headers: {
+          ...headers,
+          app: config.appName,
+          locale,
+        },
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(response => resolve(response.campaign))
+      .catch(error => reject(error));
+  });
+};
+
 export const getPropositions = ({
   limit = 30,
   skip = 0,
@@ -708,6 +735,7 @@ export const getHistory = ({
   status,
   guideNames,
   campaignNames,
+  fraudSuspicion,
   locale = 'en-US',
   reservationPermlink,
 }) =>
@@ -726,6 +754,7 @@ export const getHistory = ({
       reqData.onlyWithMessages = false;
     }
     if (guideName) reqData.guideName = guideName;
+    if (fraudSuspicion) reqData.fraudSuspicion = fraudSuspicion;
     if (!isEmpty(rewards)) reqData.rewards = rewards;
     if (!isEmpty(status)) reqData.status = status;
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
@@ -850,20 +879,27 @@ export const getCampaignsByGuideName = guideName =>
 export const getRewardsGeneralCounts = ({
   userName,
   sort,
+  status = ['active'],
   limit = 10,
   skip = 0,
   locale = 'en-US',
+  match,
+  area,
 } = {}) =>
   new Promise((resolve, reject) => {
+    const reqData = {
+      userName: userName,
+      sort,
+      status,
+      limit,
+      skip,
+      area,
+    };
+    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
-      body: JSON.stringify({
-        userName: userName,
-        sort,
-        limit,
-        skip,
-      }),
+      body: JSON.stringify(reqData),
     })
       .then(res => res.json())
       .then(result => resolve(result))
@@ -1097,7 +1133,6 @@ export const broadcastGuestOperation = async (operationId, data) => {
         userName: userData.userData.name,
       };
     }
-
     return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
       method: 'POST',
       headers: { ...headers, 'access-token': userData.token },
@@ -1198,13 +1233,20 @@ export const updateGuestProfile = async (username, json_metadata) => {
     .catch(err => err.message);
 };
 
-export const sendGuestTransfer = async ({ to, amount, memo }) => {
+export const sendGuestTransfer = async ({ to, amount, memo, app }) => {
   const userData = await getValidTokenData();
+  const overpaymentRefund = includes(memo, 'overpayment_refund');
   const body = {
-    id: 'waivio_guest_transfer',
+    id: overpaymentRefund ? 'overpayment_refund' : 'waivio_guest_transfer',
     data: { to, amount: +amount.split(' ')[0] },
   };
-  if (memo) body.data.memo = memo;
+  if (app) body.app = app;
+  if (memo && !overpaymentRefund) {
+    body.data.memo = memo;
+  } else {
+    body.data.memo = '';
+  }
+
   return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
     method: 'POST',
     headers: { ...headers, 'access-token': userData.token },
@@ -1517,5 +1559,60 @@ export const sendSentryNotification = async () => {
     return { error };
   }
 };
+
+export const getReferralDetails = () =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.referrals}/details?appName=${config.appName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getUserIsBlackListed = username =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.referrals}/check-user-app-blacklist?userName=${username}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getUserStatusCards = (username, sort = 'recency', skip = 0, limit = 10) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.referrals}/status?userName=${username}&skip=${skip}&limit=${limit}&sort=${sort}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getStatusSponsoredRewards = (referral, userName, type = 'referral_server_fee') =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.payments}${config.payables}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ referral, userName, type }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export default null;

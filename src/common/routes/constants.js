@@ -41,9 +41,12 @@ export default {
       'history',
       'guideHistory',
       'messages',
-      'payables',
       'reports',
+      'fraud-detection',
       'receivables',
+      'referral-details',
+      'referral-instructions',
+      'referral-status',
     ].join('|'),
   },
 };

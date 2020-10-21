@@ -28,7 +28,7 @@ const WalletTable = ({
             <th key={tdInfo.id} className={tdInfo.className}>
               {intl.formatMessage({
                 id: tdInfo.id,
-                defaultMessage: tdInfo.className,
+                defaultMessage: tdInfo.message,
               })}
             </th>
           ))}

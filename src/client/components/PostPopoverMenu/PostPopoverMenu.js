@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import { dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
+import { dropCategory, getPostHashtags, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import { getFacebookShareURL, getTwitterShareURL } from '../../helpers/socialProfiles';
 
 import './PostPopoverMenu.less';
@@ -30,6 +30,7 @@ const propTypes = {
     author_original: PropTypes.string,
     youFollows: PropTypes.bool,
     loading: PropTypes.bool,
+    wobjects: PropTypes.shape(),
   }).isRequired,
   handlePostPopoverMenuClick: PropTypes.func,
   ownPost: PropTypes.bool,
@@ -64,13 +65,16 @@ const PostPopoverMenu = ({
     author_original: authorOriginal,
     youFollows: userFollowed,
     loading,
+    wobjects,
   } = post;
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = window ? window.location.origin : 'https://waivio.com';
   const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
   const twitterText = `"${encodeURIComponent(title)}" by @${postAuthor}`;
-  const twitterShareURL = getTwitterShareURL(twitterText, postURL);
+  const postHashtags = getPostHashtags(wobjects);
+  const socialHashtags = [...postHashtags, 'waivio', 'hive'];
+  const twitterShareURL = getTwitterShareURL(twitterText, postURL, socialHashtags);
   const facebookShareURL = getFacebookShareURL(postURL);
 
   if (userFollowed) {

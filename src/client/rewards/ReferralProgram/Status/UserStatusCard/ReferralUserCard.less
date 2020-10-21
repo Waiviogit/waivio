@@ -1,0 +1,54 @@
+@import (reference) '../../../../styles/custom.less';
+@import (reference) '../../../../styles/modules/variables.less';
+
+.ReferralUserCard {
+  display: flex;
+  align-items: center;
+  border: 1px solid @white-gainsboro;
+  background-color: @white;
+  padding: 10px 14px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  cursor: pointer;
+
+  &__content {
+    display: flex;
+    align-items: center;
+
+    &__left {
+      margin-left: 10px;
+      max-width: calc(100vw - 210px);
+      flex-direction: column;
+
+      &__alias {
+        font-weight: bold;
+        color: @black-text-basic;
+      }
+
+      &__wrap {
+        display: flex;
+        align-items: center;
+        font-size: medium;
+
+        &__name {
+          font-weight: 500;
+          color: @blue-botticelli;
+          padding-right: 10px;
+        }
+      }
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+  }
+
+  &__arrow {
+    height: 25px;
+    width: 25px;
+    margin-left: 15px;
+  }
+}
+
+@import 'ReferralUserCard-nightmode';

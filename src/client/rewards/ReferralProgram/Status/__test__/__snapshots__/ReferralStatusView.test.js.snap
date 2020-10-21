@@ -1,0 +1,411 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReferralStatusView should create ReferralStatusView's snapshot 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <BrowserRouter>
+    <IntlProvider
+      locale="en"
+    >
+      <ReferralStatusView
+        propsData={
+          Object {
+            "currentUserCards": Array [
+              Object {
+                "alias": "Waivio Service",
+                "guideName": "sor31",
+                "lastCreatedAt": "2020-08-31T07:40:03.623Z",
+                "payable": 0.008,
+                "payed": false,
+              },
+              Object {
+                "alias": "Waivio Service",
+                "guideName": "asd09",
+                "lastCreatedAt": "2020-10-13T15:07:13.471Z",
+                "payable": 0.006,
+                "payed": false,
+              },
+              Object {
+                "alias": "",
+                "guideName": "vallon",
+                "lastCreatedAt": "2020-06-22T07:39:21.654Z",
+                "payable": 0.004,
+                "payed": false,
+              },
+            ],
+            "getMoreUserCards": [MockFunction],
+            "hasMore": false,
+            "history": Object {},
+            "isAuthUser": true,
+            "isErrorLoading": false,
+            "isLoadingMoreUserCards": false,
+            "setSortBy": [MockFunction],
+            "sortBy": "recency",
+            "username": "vallon",
+          }
+        }
+      />
+    </IntlProvider>
+  </BrowserRouter>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": <IntlProvider
+        locale="en"
+      >
+        <ReferralStatusView
+          propsData={
+            Object {
+              "currentUserCards": Array [
+                Object {
+                  "alias": "Waivio Service",
+                  "guideName": "sor31",
+                  "lastCreatedAt": "2020-08-31T07:40:03.623Z",
+                  "payable": 0.008,
+                  "payed": false,
+                },
+                Object {
+                  "alias": "Waivio Service",
+                  "guideName": "asd09",
+                  "lastCreatedAt": "2020-10-13T15:07:13.471Z",
+                  "payable": 0.006,
+                  "payed": false,
+                },
+                Object {
+                  "alias": "",
+                  "guideName": "vallon",
+                  "lastCreatedAt": "2020-06-22T07:39:21.654Z",
+                  "payable": 0.004,
+                  "payed": false,
+                },
+              ],
+              "getMoreUserCards": [MockFunction],
+              "hasMore": false,
+              "history": Object {},
+              "isAuthUser": true,
+              "isErrorLoading": false,
+              "isLoadingMoreUserCards": false,
+              "setSortBy": [MockFunction],
+              "sortBy": "recency",
+              "username": "vallon",
+            }
+          }
+        />
+      </IntlProvider>,
+      "history": Object {
+        "action": "POP",
+        "block": [Function],
+        "createHref": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
+        },
+        "push": [Function],
+        "replace": [Function],
+      },
+    },
+    "ref": null,
+    "rendered": Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": <ReferralStatusView
+          propsData={
+            Object {
+              "currentUserCards": Array [
+                Object {
+                  "alias": "Waivio Service",
+                  "guideName": "sor31",
+                  "lastCreatedAt": "2020-08-31T07:40:03.623Z",
+                  "payable": 0.008,
+                  "payed": false,
+                },
+                Object {
+                  "alias": "Waivio Service",
+                  "guideName": "asd09",
+                  "lastCreatedAt": "2020-10-13T15:07:13.471Z",
+                  "payable": 0.006,
+                  "payed": false,
+                },
+                Object {
+                  "alias": "",
+                  "guideName": "vallon",
+                  "lastCreatedAt": "2020-06-22T07:39:21.654Z",
+                  "payable": 0.004,
+                  "payed": false,
+                },
+              ],
+              "getMoreUserCards": [MockFunction],
+              "hasMore": false,
+              "history": Object {},
+              "isAuthUser": true,
+              "isErrorLoading": false,
+              "isLoadingMoreUserCards": false,
+              "setSortBy": [MockFunction],
+              "sortBy": "recency",
+              "username": "vallon",
+            }
+          }
+        />,
+        "locale": "en",
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "propsData": Object {
+            "currentUserCards": Array [
+              Object {
+                "alias": "Waivio Service",
+                "guideName": "sor31",
+                "lastCreatedAt": "2020-08-31T07:40:03.623Z",
+                "payable": 0.008,
+                "payed": false,
+              },
+              Object {
+                "alias": "Waivio Service",
+                "guideName": "asd09",
+                "lastCreatedAt": "2020-10-13T15:07:13.471Z",
+                "payable": 0.006,
+                "payed": false,
+              },
+              Object {
+                "alias": "",
+                "guideName": "vallon",
+                "lastCreatedAt": "2020-06-22T07:39:21.654Z",
+                "payable": 0.004,
+                "payed": false,
+              },
+            ],
+            "getMoreUserCards": [MockFunction],
+            "hasMore": false,
+            "history": Object {},
+            "isAuthUser": true,
+            "isErrorLoading": false,
+            "isLoadingMoreUserCards": false,
+            "setSortBy": [MockFunction],
+            "sortBy": "recency",
+            "username": "vallon",
+          },
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      "type": [Function],
+    },
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": <IntlProvider
+          locale="en"
+        >
+          <ReferralStatusView
+            propsData={
+              Object {
+                "currentUserCards": Array [
+                  Object {
+                    "alias": "Waivio Service",
+                    "guideName": "sor31",
+                    "lastCreatedAt": "2020-08-31T07:40:03.623Z",
+                    "payable": 0.008,
+                    "payed": false,
+                  },
+                  Object {
+                    "alias": "Waivio Service",
+                    "guideName": "asd09",
+                    "lastCreatedAt": "2020-10-13T15:07:13.471Z",
+                    "payable": 0.006,
+                    "payed": false,
+                  },
+                  Object {
+                    "alias": "",
+                    "guideName": "vallon",
+                    "lastCreatedAt": "2020-06-22T07:39:21.654Z",
+                    "payable": 0.004,
+                    "payed": false,
+                  },
+                ],
+                "getMoreUserCards": [MockFunction],
+                "hasMore": false,
+                "history": Object {},
+                "isAuthUser": true,
+                "isErrorLoading": false,
+                "isLoadingMoreUserCards": false,
+                "setSortBy": [MockFunction],
+                "sortBy": "recency",
+                "username": "vallon",
+              }
+            }
+          />
+        </IntlProvider>,
+        "history": Object {
+          "action": "POP",
+          "block": [Function],
+          "createHref": [Function],
+          "go": [Function],
+          "goBack": [Function],
+          "goForward": [Function],
+          "length": 1,
+          "listen": [Function],
+          "location": Object {
+            "hash": "",
+            "pathname": "/",
+            "search": "",
+            "state": undefined,
+          },
+          "push": [Function],
+          "replace": [Function],
+        },
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": <ReferralStatusView
+            propsData={
+              Object {
+                "currentUserCards": Array [
+                  Object {
+                    "alias": "Waivio Service",
+                    "guideName": "sor31",
+                    "lastCreatedAt": "2020-08-31T07:40:03.623Z",
+                    "payable": 0.008,
+                    "payed": false,
+                  },
+                  Object {
+                    "alias": "Waivio Service",
+                    "guideName": "asd09",
+                    "lastCreatedAt": "2020-10-13T15:07:13.471Z",
+                    "payable": 0.006,
+                    "payed": false,
+                  },
+                  Object {
+                    "alias": "",
+                    "guideName": "vallon",
+                    "lastCreatedAt": "2020-06-22T07:39:21.654Z",
+                    "payable": 0.004,
+                    "payed": false,
+                  },
+                ],
+                "getMoreUserCards": [MockFunction],
+                "hasMore": false,
+                "history": Object {},
+                "isAuthUser": true,
+                "isErrorLoading": false,
+                "isLoadingMoreUserCards": false,
+                "setSortBy": [MockFunction],
+                "sortBy": "recency",
+                "username": "vallon",
+              }
+            }
+          />,
+          "locale": "en",
+        },
+        "ref": null,
+        "rendered": Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "propsData": Object {
+              "currentUserCards": Array [
+                Object {
+                  "alias": "Waivio Service",
+                  "guideName": "sor31",
+                  "lastCreatedAt": "2020-08-31T07:40:03.623Z",
+                  "payable": 0.008,
+                  "payed": false,
+                },
+                Object {
+                  "alias": "Waivio Service",
+                  "guideName": "asd09",
+                  "lastCreatedAt": "2020-10-13T15:07:13.471Z",
+                  "payable": 0.006,
+                  "payed": false,
+                },
+                Object {
+                  "alias": "",
+                  "guideName": "vallon",
+                  "lastCreatedAt": "2020-06-22T07:39:21.654Z",
+                  "payable": 0.004,
+                  "payed": false,
+                },
+              ],
+              "getMoreUserCards": [MockFunction],
+              "hasMore": false,
+              "history": Object {},
+              "isAuthUser": true,
+              "isErrorLoading": false,
+              "isLoadingMoreUserCards": false,
+              "setSortBy": [MockFunction],
+              "sortBy": "recency",
+              "username": "vallon",
+            },
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        "type": [Function],
+      },
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+    Symbol(enzyme.__providerValues__): undefined,
+  },
+  Symbol(enzyme.__providerValues__): Map {},
+  Symbol(enzyme.__childContext__): null,
+}
+`;
