@@ -4,7 +4,7 @@ import { Button, Modal, Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { isEmpty, map, get } from 'lodash';
+import { isEmpty, map, get, every } from 'lodash';
 import { getTextByFilterKey, getSort } from './rewardsHelper';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
@@ -72,15 +72,20 @@ const FilteredRewardsList = props => {
   const historyLocation = PATH_NAME_HISTORY;
   const messagesLocation = PATH_NAME_MESSAGES;
   const guideHistoryLocation = PATH_NAME_GUIDE_HISTORY;
+  const notifyHistoryLocation = `${historyLocation}/${match.params.campaignId}/${match.params.permlink}/${match.params.username}`;
+  const messageHistoryLocation = `${messagesLocation}/${match.params.campaignId}/${match.params.permlink}`;
+
+  const arrLocations = [
+    historyLocation,
+    messagesLocation,
+    guideHistoryLocation,
+    notifyHistoryLocation,
+    messageHistoryLocation,
+  ];
+  const IsRequiredObjectWrap =
+    !match.params.campaignParent && every(arrLocations, arrLocation => location !== arrLocation);
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
-  const IsRequiredObjectWrap =
-    !match.params.campaignParent &&
-    location !== historyLocation &&
-    location !== messagesLocation &&
-    location !== `${messagesLocation}/${match.params.campaignId}/${match.params.permlink}` &&
-    location !== `${historyLocation}/${match.params.campaignId}/${match.params.permlink}` &&
-    location !== guideHistoryLocation;
 
   const getFiltersForTags = useMemo(() => {
     if (location === historyLocation) {

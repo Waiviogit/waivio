@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, map, get, reduce, round, memoize } from 'lodash';
+import { isEmpty, map, get, reduce, round, memoize, includes } from 'lodash';
 import moment from 'moment';
 import {
   REWARD,
@@ -779,10 +779,11 @@ export const buttonsTitle = {
 };
 
 export const getBreadCrumbText = (intl, location, filterKey, rewardText, match) => {
-  if (
-    location === PATH_NAME_MESSAGES ||
-    location === `${PATH_NAME_MESSAGES}/${match.params.campaignId}/${match.params.permlink}`
-  ) {
+  const messageCrumb = [
+    PATH_NAME_MESSAGES,
+    `${PATH_NAME_MESSAGES}/${match.params.campaignId}/${match.params.permlink}`,
+  ];
+  if (includes(messageCrumb, location)) {
     return intl.formatMessage({
       id: MESSAGES,
       defaultMessage: 'Messages',
@@ -858,3 +859,6 @@ export const getReviewRequirements = memoize(campaign => ({
     minPosts: get(campaign, ['userRequirements', 'minPosts'], 0),
   },
 }));
+
+export const pathNameHistoryNotify = match =>
+  `${PATH_NAME_HISTORY}/${match.params.campaignId}/${match.params.permlink}/${match.params.username}`;

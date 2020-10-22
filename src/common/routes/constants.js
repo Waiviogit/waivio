@@ -44,9 +44,9 @@ export default {
       'reports',
       'fraud-detection',
       'receivables',
-      'referral-details',
-      'referral-instructions',
-      'referral-status',
     ].join('|'),
+  },
+  REFERRAL: {
+    tabs: ['referral-details', 'referral-instructions', 'referral-status'].join('|'),
   },
 };
