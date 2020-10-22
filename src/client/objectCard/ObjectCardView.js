@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, truncate, get, filter, map, size, reduce } from 'lodash';
+import { includes, truncate, get, filter, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -8,12 +8,7 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import {
-  getObjectName,
-  parseAddress,
-  getObjectAvatar,
-  getObjectTags,
-} from '../helpers/wObjectHelper';
+import { getObjectName, parseAddress, getObjectAvatar, getTopTags } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
@@ -33,8 +28,7 @@ const ObjectCardView = ({
   useEffect(() => {
     const tagCategory = get(wObject, 'tagCategory');
     if (inList) {
-      const listTags = tagCategory.map(items => get(items, 'items'));
-      const objectTags = getObjectTags(reduce(listTags, (array, other) => array.concat(other), []));
+      const objectTags = getTopTags(tagCategory);
       setTags([wObject.object_type, ...objectTags]);
     } else if (tagCategory) {
       const currentTagsFiltered = filter(tagCategory, item => size(item.items));
