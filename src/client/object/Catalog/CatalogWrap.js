@@ -148,7 +148,7 @@ const CatalogWrap = props => {
     } else if (objects.length && isMatchedPermlinks) {
       item = renderProposition(propositions, listItem);
     } else {
-      item = <ObjectCardView wObject={listItem} />;
+      item = <ObjectCardView wObject={listItem} inList />;
     }
     return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
