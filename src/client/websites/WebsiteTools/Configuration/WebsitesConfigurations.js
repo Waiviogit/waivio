@@ -5,8 +5,6 @@ import { Button, Form, message, Modal, Avatar } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import Map from "pigeon-maps";
-import Marker from "pigeon-marker";
-import Overlay from "pigeon-overlay";
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import { getWebsiteLoading } from '../../../reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
@@ -23,6 +21,8 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
   const desktopLogo = getFieldValue('desktopLogo');
   const selectedObj = getFieldValue('aboutObject');
 
+  console.log(getFieldValue('desktopMap'));
+
   useEffect(() => {}, []);
 
   const resetModalState = () => setModalState({});
@@ -31,6 +31,15 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
     setModalState({
       method: value => form.setFieldsValue({ [key]: value[0].src }),
     });
+
+  const setMapBounds = bounds => {
+    form.setFieldsValue({
+      desktopMap: {
+        topPoint: bounds.ne,
+        bottomPoint: bounds.sw,
+      },
+    });
+  }
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -131,13 +140,36 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
               })}
             </span>
           </h3>
-          <Button type="primary" htmlType="submit" onClick={() => setShowMap(true)}>
+          {getFieldDecorator(
+            'desktopMap',
+            {},
+          )(<Button type="primary" htmlType="submit" onClick={() => setShowMap(true)}>
             {intl.formatMessage({
               id: 'select_area',
               defaultMessage: 'Select area',
             })}
-          </Button>
+          </Button>)}
           <p>Select the initial map focus for the desktop site.</p>
+        </Form.Item>
+        <Form.Item>
+          <h3>
+            <span className="ant-form-item-required">
+              {intl.formatMessage({
+                id: 'mobile_map_default_view',
+                defaultMessage: 'Mobile map - default view:',
+              })}
+            </span>
+          </h3>
+          {getFieldDecorator(
+            'mobileMap',
+            {},
+          )(<Button type="primary" htmlType="submit" onClick={() => setShowMap(true)}>
+            {intl.formatMessage({
+              id: 'select_area',
+              defaultMessage: 'Select area',
+            })}
+          </Button>)}
+          <p>Select the initial map focus for the mobile site.</p>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={loading}>
@@ -169,12 +201,9 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
         visible={showMap}
       >
         {showMap && (
-          <Map center={[50.879, 4.6997]} zoom={12} height={400} provider={mapProvider}>
-            <Marker anchor={[50.874, 4.6947]} payload={1} onClick={({ event, anchor, payload }) => {console.log(event,anchor, payload)}} />
-            {/* <Overlay anchor={[50.879, 4.6997]} offset={[120, 79]}> */}
-            {/*  <img src='' width={240} height={158} alt='' /> */}
-            {/* </Overlay> */}
-          </Map>)}
+          <Map center={[50.879, 4.6997]} zoom={12} height={400}
+               provider={mapProvider}
+               onBoundsChanged={({ bounds }) => setMapBounds(bounds)} />)}
       </Modal>
     </React.Fragment>
   );
