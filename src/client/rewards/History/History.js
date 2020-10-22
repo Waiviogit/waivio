@@ -14,6 +14,7 @@ import {
   PATH_NAME_GUIDE_HISTORY,
   PATH_NAME_HISTORY,
 } from '../../../common/constants/rewards';
+import { pathNameHistoryNotify } from '../rewardsHelper';
 
 const History = ({
   intl,
@@ -36,9 +37,7 @@ const History = ({
   const location = useLocation();
   const dispatch = useDispatch();
   const isHistory = location.pathname === PATH_NAME_HISTORY;
-  const isHistoryNotify =
-    location.pathname ===
-    `${PATH_NAME_HISTORY}/${match.params.campaignId}/${match.params.permlink}/${match.params.username}`;
+  const isHistoryNotify = location.pathname === pathNameHistoryNotify(match);
   const isGuideHistory = location.pathname === PATH_NAME_GUIDE_HISTORY;
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);
   const [messages, setMessages] = useState([]);
