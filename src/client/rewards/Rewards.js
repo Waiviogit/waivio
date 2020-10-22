@@ -312,7 +312,7 @@ class Rewards extends React.Component {
 
   setActiveMessagesFilters = (filterValue, key) => {
     const { match } = this.props;
-    const paramsKey = match.params[0];
+    const paramsKey = match.params.filterKey;
     let activeFilters;
     switch (paramsKey) {
       case HISTORY:
