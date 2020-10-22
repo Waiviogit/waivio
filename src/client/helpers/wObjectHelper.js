@@ -163,6 +163,7 @@ export const getMenuItems = (wobject, menuType, objType) => {
 };
 
 export const getTopTags = tagCategory => {
+  if (!size(tagCategory)) return [];
   const items = tagCategory.map(category => get(category, 'items'));
   const listTags = reduce(items, (array, other) => array.concat(other), []);
   const sortedItems = listTags.sort((a, b) => b.weight - a.weight);
