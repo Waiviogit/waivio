@@ -33,6 +33,7 @@ const RewardsFiltersPanel = ({
   setActiveMessagesFilters,
   activeGuideHistoryFilters,
 }) => {
+  const campaignDataKey = 'messagesCampaigns';
   const handleChange = useCallback(
     (filterName, key) => {
       if (
@@ -57,8 +58,12 @@ const RewardsFiltersPanel = ({
     ),
     [handleChange],
   );
-
-  useEffect(() => {});
+  const guideHistoryNotifyName = new URLSearchParams(location.search).get('campaign');
+  useEffect(() => {
+    if (guideHistoryNotifyName) {
+      setActiveMessagesFilters(guideHistoryNotifyName, campaignDataKey);
+    }
+  }, [guideHistoryNotifyName]);
 
   const filterPaymentLayout = useCallback(
     (obj, checked) => (
@@ -208,7 +213,7 @@ const RewardsFiltersPanel = ({
             {map(campaignsData, campaign =>
               filterLayout(
                 campaign,
-                'messagesCampaigns',
+                campaignDataKey,
                 includes(activeGuideHistoryFilters.messagesCampaigns, campaign),
               ),
             )}
