@@ -26,6 +26,7 @@ export const LIKE = 'like';
 export const MY_LIKE = 'myLike';
 export const MY_COMMENT = 'myComment';
 export const MY_POST = 'myPost';
+export const CAMPAIGN_RESERVATION = 'campaignReservation';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -52,6 +53,7 @@ export const PARSED_NOTIFICATIONS = [
   MY_LIKE,
   MY_COMMENT,
   MY_POST,
+  CAMPAIGN_RESERVATION,
 ];
 
 export const BUSY_API_TYPES = {

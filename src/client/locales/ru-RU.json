@@ -1463,5 +1463,6 @@
   "sponsored_rewards_review": "Обзор:",
   "sponsored_rewards_beneficiaries": "Получатели: ",
   "sponsored_rewards_details_reservation": "Резервации",
-  "sponsored_rewards_details_report": "Отчет"
+  "sponsored_rewards_details_report": "Отчет",
+  "notification_campaign_reservation": "{author} зарезервировал {campaignName}"
 }

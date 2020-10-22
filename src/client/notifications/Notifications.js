@@ -38,6 +38,7 @@ import NotificationLikes from '../components/Navigation/Notifications/Notificati
 import NotificationMyLike from '../components/Navigation/Notifications/NotificationMyLike';
 import NotificationMyComment from '../components/Navigation/Notifications/NotificationMyComment';
 import NotificationMyPost from '../components/Navigation/Notifications/NotificationMyPost';
+import NotificationCampaignReservation from '../components/Navigation/Notifications/NotificationCampaignReservation';
 
 import './Notifications.less';
 
@@ -306,6 +307,15 @@ class Notifications extends React.Component {
               case notificationConstants.MY_POST:
                 return (
                   <NotificationMyPost
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CAMPAIGN_RESERVATION:
+                return (
+                  <NotificationCampaignReservation
                     key={key}
                     notification={notification}
                     read={read}

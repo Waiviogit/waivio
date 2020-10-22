@@ -1461,5 +1461,6 @@
   "sponsored_rewards_review": "Review:",
   "sponsored_rewards_beneficiaries": "Beneficiaries: ",
   "sponsored_rewards_details_reservation": "Reservation",
-  "sponsored_rewards_details_report": "Report"
+  "sponsored_rewards_details_report": "Report",
+  "notification_campaign_reservation": "{author} made a reservation for {campaignName}"
 }
