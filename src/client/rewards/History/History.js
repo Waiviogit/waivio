@@ -55,6 +55,8 @@ const History = ({
 
   const reservationPermlink = match.params.campaignId;
 
+  console.log(match.params);
+
   const getHistory = useCallback(
     async (username, sortChanged, activeFilters, withLoader, loadMore = false) => {
       const rewards = map(activeFilters.rewards, item =>

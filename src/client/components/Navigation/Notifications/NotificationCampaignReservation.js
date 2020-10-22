@@ -8,8 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationCampaignReservation = ({ notification, read, onClick }) => {
-  const url = ``;
-
+  const url = `/rewards/guideHistory/${notification.campaignName}`;
   return (
     <Link
       to={url}

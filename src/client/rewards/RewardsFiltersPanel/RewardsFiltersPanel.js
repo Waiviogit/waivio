@@ -1,7 +1,7 @@
 import { Checkbox } from 'antd';
 import { map, includes } from 'lodash';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { payablesFilterData } from '../rewardsHelper';
 import {
@@ -57,6 +57,8 @@ const RewardsFiltersPanel = ({
     ),
     [handleChange],
   );
+
+  useEffect(() => {});
 
   const filterPaymentLayout = useCallback(
     (obj, checked) => (
