@@ -165,8 +165,8 @@ class CampaignFooter extends React.Component {
     }
     const currentUser = this.getCurrentUser();
     const author = this.isReserved
-      ? get(currentUser, ['0', 'name'])
-      : get(proposition, ['users', '0', 'name']);
+      ? get(currentUser, ['0', 'rootName'])
+      : get(proposition, ['users', '0', 'rootName']);
     const permlink = this.isReserved
       ? get(currentUser, ['0', 'permlink'])
       : get(proposition, ['users', '0', 'permlink']);
