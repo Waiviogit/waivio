@@ -271,9 +271,21 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
         },
       );
     case notificationConstants.CAMPAIGN_RESERVATION:
+      if (notification.isReleased) {
+        return intl.formatMessage(
+          {
+            id: 'notification_campaign_released_reservation',
+            defaultMessage: '{author} made a released for {campaignName}',
+          },
+          {
+            author: notification.author,
+            campaignName: notification.campaignName,
+          },
+        );
+      }
       return intl.formatMessage(
         {
-          id: 'notification_campaign_reservation',
+          id: 'notification_campaign_reserved_reservation',
           defaultMessage: '{author} made a reservation for {campaignName}',
         },
         {

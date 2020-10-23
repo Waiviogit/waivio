@@ -67,7 +67,7 @@ const RewardsFiltersPanel = ({
       setActiveMessagesFilters(guideHistoryNotifyFilterReleased, 'rewards');
     if (guideHistoryNotifyFilterReserved)
       setActiveMessagesFilters(guideHistoryNotifyFilterReserved, 'rewards');
-  }, [guideHistoryNotifyName, guideHistoryNotifyFilterReleased, guideHistoryNotifyFilterReserved]);
+  }, [location.search]);
 
   const filterPaymentLayout = useCallback(
     (obj, checked) => (

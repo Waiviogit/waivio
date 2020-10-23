@@ -22,14 +22,25 @@ const NotificationCampaignReservation = ({ notification, read, onClick }) => {
       <Avatar username={notification.author} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
-          <FormattedMessage
-            id="notification_campaign_reservation"
-            defaultMessage="{author} made a reservation for {campaignName}"
-            values={{
-              author: <span className="username">{notification.author}</span>,
-              campaignName: <span>{notification.campaignName}</span>,
-            }}
-          />
+          {notification.isReleased ? (
+            <FormattedMessage
+              id="notification_campaign_released_reservation"
+              defaultMessage="{author} made a released for {campaignName}"
+              values={{
+                author: <span className="username">{notification.author}</span>,
+                campaignName: <span>{notification.campaignName}</span>,
+              }}
+            />
+          ) : (
+            <FormattedMessage
+              id="notification_campaign_reserved_reservation"
+              defaultMessage="{author} made a reservation for {campaignName}"
+              values={{
+                author: <span className="username">{notification.author}</span>,
+                campaignName: <span>{notification.campaignName}</span>,
+              }}
+            />
+          )}
         </div>
         <div className="Notification__text__date">
           <FormattedRelative value={epochToUTC(notification.timestamp)} />

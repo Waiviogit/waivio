@@ -4,4 +4,5 @@ export const NOTIFICATION_CAMPAIGN_RESERVATION = {
   campaignName: 'test activation 2',
   timestamp: 1600948177,
   author: 'x6oc5',
+  isReleased: false,
 };
