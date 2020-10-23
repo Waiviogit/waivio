@@ -338,7 +338,6 @@ export const sortDebtObjsData = (items, sortBy) => {
 
 export const getProcessingFee = data => {
   if (!data || isEmpty(data)) return null;
-  console.log('data: ', data);
   const amounts = {
     share: get(data, ['details', 'commissionWeight']) || '',
     hive: get(data, ['amount']) || '',
