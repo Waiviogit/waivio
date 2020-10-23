@@ -36,7 +36,6 @@ const CatalogWrap = props => {
   const getPropositions = ({ requiredObject, sorting }) => {
     setLoadingPropositions(true);
     ApiClient.getPropositions({
-      userName,
       match,
       requiredObject,
       sort: 'reward',
@@ -52,14 +51,13 @@ const CatalogWrap = props => {
     const {
       location: { hash },
     } = props;
-
     if (!isEmpty(wobject)) {
       if (hash) {
         const pathUrl = getPermLink(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
           const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
-            getPropositions({ userName, match, requiredObject, sort });
+            getPropositions({ match, requiredObject, sort });
           } else {
             setLoadingPropositions(false);
           }
@@ -69,10 +67,10 @@ const CatalogWrap = props => {
       } else {
         const requiredObject = get(wobject, ['parent', 'author_permlink']);
         setListItems(wobject.listItems);
-        getPropositions({ userName, match, requiredObject, sort });
+        getPropositions({ match, requiredObject, sort });
       }
     }
-  }, [props.location.hash, props.wobject.author_permlink, userName]);
+  }, [props.location.hash, get(wobject, 'author_permlink', '')]);
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
