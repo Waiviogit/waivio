@@ -25,7 +25,6 @@ const PropositionList = ({
   const maxReward = get(currentProposition, ['max_reward'], 0);
   const rewardPrise = `${minReward.toFixed(2)} USD`;
   const rewardMax = `${maxReward.toFixed(2)} USD`;
-
   return (
     <React.Fragment>
       {wobject && isEmpty(wobject.parent) && !isEmpty(currentProposition) ? (
