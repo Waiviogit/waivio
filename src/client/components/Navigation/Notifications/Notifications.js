@@ -33,6 +33,7 @@ import NotificationLikes from './NotificationLikes';
 import NotificationMyLike from './NotificationMyLike';
 import NotificationMyComment from './NotificationMyComment';
 import NotificationMyPost from './NotificationMyPost';
+import NotificationCampaignReservation from './NotificationCampaignReservation';
 
 import './Notification.less';
 import './Notifications.less';
@@ -409,6 +410,15 @@ class Notifications extends React.Component {
               case notificationConstants.MY_POST:
                 return (
                   <NotificationMyPost
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CAMPAIGN_RESERVATION:
+                return (
+                  <NotificationCampaignReservation
                     key={key}
                     notification={notification}
                     read={read}

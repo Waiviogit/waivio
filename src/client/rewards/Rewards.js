@@ -180,6 +180,7 @@ class Rewards extends React.Component {
       messagesCampaigns: [],
     },
     url: '',
+    currentLocation: null,
   };
 
   async componentDidMount() {
@@ -189,9 +190,13 @@ class Rewards extends React.Component {
       username,
       authenticated,
       getCryptoPriceHistory: getCryptoPriceHistoryAction,
+      location,
     } = this.props;
     const { sortAll, sortEligible, sortReserved, url, activeFilters } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
+
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ currentLocation: location.search });
 
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
 
@@ -217,7 +222,15 @@ class Rewards extends React.Component {
     const { username, authenticated } = this.props;
     const { sortAll, sortEligible, sortReserved, url, area } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
-
+    if (this.state.currentLocation !== nextProps.location.search) {
+      this.setState({
+        activeGuideHistoryFilters: {
+          rewards: [],
+          messagesCampaigns: [],
+        },
+        currentLocation: nextProps.location.search,
+      });
+    }
     if (username !== nextProps.username) {
       const userName = username || nextProps.username;
 
@@ -312,7 +325,7 @@ class Rewards extends React.Component {
 
   setActiveMessagesFilters = (filterValue, key) => {
     const { match } = this.props;
-    const paramsKey = match.params.filterKey;
+    const paramsKey = match.params[0];
     let activeFilters;
     switch (paramsKey) {
       case HISTORY:
