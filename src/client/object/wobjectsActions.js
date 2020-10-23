@@ -70,19 +70,20 @@ export const createWaivioObject = postData => (dispatch, getState) => {
   const { votePower, follow, ...wobj } = postData;
 
   if (wobj.type === 'hashtag') {
+    const hashtagName = wobj.name.toLowerCase();
     return dispatch({
       type: CREATE_WOBJECT,
       payload: {
         promise: new Promise((resolve, reject) =>
-          ApiClient.getObject(wobj.name, auth.user.name)
+          ApiClient.getObject(hashtagName, auth.user.name)
             .then(() => reject('object_exist'))
             .catch(() => {
               const requestBody = {
                 author: auth.user.name,
-                title: `${wobj.name} - waivio object`,
-                body: `Waivio object "${wobj.name}" has been created`,
-                permlink: wobj.name,
-                objectName: wobj.name,
+                title: `${hashtagName} - waivio object`,
+                body: `Waivio object "${hashtagName}" has been created`,
+                permlink: hashtagName,
+                objectName: hashtagName,
                 locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
                 type: wobj.type,
                 isExtendingOpen: Boolean(wobj.isExtendingOpen),

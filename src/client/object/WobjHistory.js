@@ -82,6 +82,7 @@ class WobjHistory extends React.Component {
       showModalGalleryAlbum: false,
       showModalCategoryItem: false,
       sort: 'recency',
+      locale: 'en-US',
     };
   }
 
