@@ -38,6 +38,9 @@ import NotificationLikes from '../components/Navigation/Notifications/Notificati
 import NotificationMyLike from '../components/Navigation/Notifications/NotificationMyLike';
 import NotificationMyComment from '../components/Navigation/Notifications/NotificationMyComment';
 import NotificationMyPost from '../components/Navigation/Notifications/NotificationMyPost';
+import NotificationPostBell from '../components/Navigation/Notifications/NotificationPostBell';
+import NotificationReblogBell from '../components/Navigation/Notifications/NotificationReblogBell';
+import NotificationFollowBell from '../components/Navigation/Notifications/NotificationFollowBell';
 import NotificationCampaignReservation from '../components/Navigation/Notifications/NotificationCampaignReservation';
 
 import './Notifications.less';
@@ -307,6 +310,33 @@ class Notifications extends React.Component {
               case notificationConstants.MY_POST:
                 return (
                   <NotificationMyPost
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_POST:
+                return (
+                  <NotificationPostBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_REBLOG:
+                return (
+                  <NotificationReblogBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_FOLLOW:
+                return (
+                  <NotificationFollowBell
                     key={key}
                     notification={notification}
                     read={read}
