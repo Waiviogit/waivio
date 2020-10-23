@@ -338,7 +338,7 @@ export const sortDebtObjsData = (items, sortBy) => {
 
 export const getProcessingFee = data => {
   if (!data || isEmpty(data)) return null;
-
+  console.log('data: ', data);
   const amounts = {
     share: get(data, ['details', 'commissionWeight']) || '',
     hive: get(data, ['amount']) || '',
@@ -355,7 +355,7 @@ export const getProcessingFee = data => {
     case 'referral_server_fee':
       return {
         name: 'Referral',
-        account: 'waivio.referrals',
+        account: data.userName,
         ...amounts,
       };
     case 'campaign_server_fee':
