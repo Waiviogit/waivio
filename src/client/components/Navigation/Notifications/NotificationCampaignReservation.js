@@ -8,7 +8,9 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationCampaignReservation = ({ notification, read, onClick }) => {
-  const url = `/rewards/guideHistory?campaign=${notification.campaignName}`;
+  const currentFilter = notification.isReleased ? 'released=Released' : 'reserved=Reserved';
+  const url = `/rewards/guideHistory?campaign=${notification.campaignName}&${currentFilter}`;
+
   return (
     <Link
       to={url}
@@ -44,6 +46,7 @@ NotificationCampaignReservation.propTypes = {
     campaignName: PropTypes.string,
     timestamp: PropTypes.number,
     author: PropTypes.string,
+    isReleased: PropTypes.bool,
   }),
   onClick: PropTypes.func,
 };
