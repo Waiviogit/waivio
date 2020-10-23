@@ -10,11 +10,7 @@ import { objectFields, statusNoVisibleItem } from '../../../common/constants/lis
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import { getObject } from '../../../waivioApi/ApiClient';
-import {
-  getSuitableLanguage,
-  getAuthenticatedUserName,
-  getWobjectBreadCrumbs,
-} from '../../reducers';
+import { getSuitableLanguage } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { getPermLink, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
@@ -29,18 +25,16 @@ import PropositionListContainer from '../../rewards/Proposition/PropositionList/
 import './CatalogWrap.less';
 
 const CatalogWrap = props => {
+  const { userName, wobject, isEditMode, intl, location, match } = props;
   const dispatch = useDispatch();
   const locale = useSelector(getSuitableLanguage);
-  const userName = useSelector(getAuthenticatedUserName);
-  const currentWobject = useSelector(getWobjectBreadCrumbs);
   const [loadingPropositions, setLoadingPropositions] = useState(true);
   const [propositions, setPropositions] = useState([]);
   const [sort, setSorting] = useState('recency');
   const [listItems, setListItems] = useState([]);
 
-  const getPropositions = ({ match, requiredObject, sorting }) => {
+  const getPropositions = ({ requiredObject, sorting }) => {
     setLoadingPropositions(true);
-    console.log('propos');
     ApiClient.getPropositions({
       userName,
       match,
@@ -56,8 +50,6 @@ const CatalogWrap = props => {
 
   useEffect(() => {
     const {
-      wobject,
-      match,
       location: { hash },
     } = props;
 
@@ -176,15 +168,11 @@ const CatalogWrap = props => {
     return listRow;
   };
 
-  const { isEditMode, wobject, intl } = props;
-
   const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
     setSorting(sortType);
     setListItems(sortListItemsBy(listItems, sortType, sortOrder));
   };
-
-  const obj = isEmpty(currentWobject) ? wobject : currentWobject;
 
   return (
     <div>
@@ -193,7 +181,7 @@ const CatalogWrap = props => {
           {!isEmpty(propositions) && renderCampaign(propositions)}
           {isEditMode && (
             <div className="CatalogWrap__add-item">
-              <AddItemModal wobject={obj} onAddItem={handleAddItem} />
+              <AddItemModal wobject={wobject} onAddItem={handleAddItem} />
             </div>
           )}
           {loadingPropositions || isEmpty(wobject) ? (
@@ -228,6 +216,7 @@ CatalogWrap.propTypes = {
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
   isEditMode: PropTypes.bool.isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
 CatalogWrap.defaultProps = {

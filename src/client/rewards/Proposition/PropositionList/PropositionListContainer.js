@@ -12,6 +12,7 @@ import * as apiConfig from '../../../../waivioApi/config.json';
 import { assignProposition, declineProposition } from '../../../user/userActions';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
 
+// render review cards in object
 const PropositionListContainer = ({
   wobject,
   userName,
