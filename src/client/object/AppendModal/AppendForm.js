@@ -308,10 +308,8 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.newsFilter: {
-        const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
-          sub => sub.length,
-        );
-        const ignoreList = map(this.state.ignoreList, o => o.id);
+        const allowList = this.state.allowList.map(o => o.map(item => item.author_permlink));
+        const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
         fieldBody.push(JSON.stringify({ allowList, ignoreList }));
         break;
       }
@@ -367,14 +365,14 @@ export default class AppendForm extends Component {
         }
         case objectFields.newsFilter: {
           let rulesAllow = `\n`;
-          let rulesIgnore = '\nIgnore list:';
+          let rulesIgnore = '\n';
           let rulesCounter = 0;
 
           this.state.allowList.forEach(rule => {
             if (!isEmpty(rule)) {
               rulesAllow += `\n Filter rule #${rulesCounter + 1}:`;
               rule.forEach(item => {
-                rulesAllow += ` <a href="${baseUrl}/object/${item.id}">${item.id}</a>,`;
+                rulesAllow += ` <a href="${baseUrl}/object/${item.author_permlink}">${item.author_permlink}</a>,`;
               });
 
               rulesCounter += 1;
@@ -383,8 +381,9 @@ export default class AppendForm extends Component {
 
           this.state.ignoreList.forEach((rule, index) => {
             if (!isEmpty(rule)) {
+              rulesIgnore = '\nIgnore list:';
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
-              rulesIgnore += ` <a href="${baseUrl}/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
+              rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${rule.author_permlink}</a>${dotOrComma}`;
             }
           });
           return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
@@ -746,6 +745,23 @@ export default class AppendForm extends Component {
 
     if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
+    } else if (objectFields.newsFilter === currentField) {
+      const { chosenLocale } = this.props;
+      const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
+        sub => sub.length,
+      );
+      const ignoreList = map(this.state.ignoreList, o => o.id);
+
+      if (!isEmpty(allowList) || !isEmpty(ignoreList))
+        this.onSubmit({ currentField, currentLocale: chosenLocale });
+      else {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'at_least_one',
+            defaultMessage: 'You should add at least one object',
+          }),
+        );
+      }
     }
 
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -757,25 +773,10 @@ export default class AppendForm extends Component {
       }, []);
 
       if (!identicalNameFields.length) {
-        const { form, intl } = this.props;
+        const { form } = this.props;
 
         if (objectFields.galleryAlbum === currentField) {
           this.handleCreateAlbum(values);
-        } else if (objectFields.newsFilter === currentField) {
-          const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
-            sub => sub.length,
-          );
-          const ignoreList = map(this.state.ignoreList, o => o.id);
-
-          if (!isEmpty(allowList) || !isEmpty(ignoreList)) this.onSubmit(values);
-          else {
-            message.error(
-              intl.formatMessage({
-                id: 'at_least_one',
-                defaultMessage: 'You should add at least one object',
-              }),
-            );
-          }
         } else if (err || this.checkRequiredField(form, currentField)) {
           message.error(
             this.props.intl.formatMessage({
