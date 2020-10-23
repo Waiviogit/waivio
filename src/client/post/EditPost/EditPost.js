@@ -311,7 +311,7 @@ class EditPost extends Component {
 
   handleObjectSelect(object) {
     this.setState(prevState => {
-      const objName = object.name || object.default_name;
+      const objName = getObjectName(object).toLowerCase();
       const objPermlink = object.author_permlink;
       const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
       return {
