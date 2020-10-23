@@ -11,6 +11,7 @@ ShallowWrapper {
         Object {
           "author": "x6oc5",
           "campaignName": "test activation 2",
+          "isReleased": false,
           "timestamp": 1600948177,
           "type": "campaignReservation",
         }
@@ -36,6 +37,7 @@ ShallowWrapper {
       "notification": Object {
         "author": "x6oc5",
         "campaignName": "test activation 2",
+        "isReleased": false,
         "timestamp": 1600948177,
         "type": "campaignReservation",
       },
@@ -55,6 +57,7 @@ ShallowWrapper {
         "notification": Object {
           "author": "x6oc5",
           "campaignName": "test activation 2",
+          "isReleased": false,
           "timestamp": 1600948177,
           "type": "campaignReservation",
         },
