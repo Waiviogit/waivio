@@ -3,27 +3,27 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Form, message, Modal, Avatar } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
-import Map from "pigeon-maps";
+import { isEmpty, get } from 'lodash';
+import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
-import { getWebsiteLoading } from '../../../reducers';
+import {getConfiguration, getWebsiteLoading} from '../../../reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
-import {getObjectName} from "../../../helpers/wObjectHelper";
-import ObjectAvatar from "../../../components/ObjectAvatar";
-import mapProvider from "../../../helpers/mapProvider";
+import { getObjectName } from '../../../helpers/wObjectHelper';
+import ObjectAvatar from '../../../components/ObjectAvatar';
+import mapProvider from '../../../helpers/mapProvider';
+import {getWebConfiguration} from "../../websiteActions";
 
+import './WebsitesConfigurations.less'
 
-export const WebsitesConfigurations = ({ intl, form, loading }) => {
+export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, match, config }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [modalsState, setModalState] = useState({});
-  const [showMap, setShowMap] = useState(false);
+  const [showMap, setShowMap] = useState('');
   const mobileLogo = getFieldValue('mobileLogo');
   const desktopLogo = getFieldValue('desktopLogo');
   const selectedObj = getFieldValue('aboutObject');
 
-  console.log(getFieldValue('desktopMap'));
-
-  useEffect(() => {}, []);
+  useEffect(() => {getWebConfig(match.params.site)}, []);
 
   const resetModalState = () => setModalState({});
 
@@ -32,14 +32,18 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
       method: value => form.setFieldsValue({ [key]: value[0].src }),
     });
 
-  const setMapBounds = bounds => {
+  const setMapBounds = state => {
+    const { center, zoom, bounds } = state;
+
     form.setFieldsValue({
-      desktopMap: {
+      [showMap]: {
         topPoint: bounds.ne,
         bottomPoint: bounds.sw,
+        center,
+        zoom
       },
     });
-  }
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -113,22 +117,30 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
               })}
             </span>
           </h3>
-          {selectedObj ? <div>
-            <div className="Transfer__search-content-wrap-current">
-              <div className="Transfer__search-content-wrap-current-user">
-                <ObjectAvatar item={selectedObj} size={40}/>
-                <div className="Transfer__search-content">{getObjectName(selectedObj)}</div>
-              </div>
+          {selectedObj ? (
+            <div>
+              <div className="Transfer__search-content-wrap-current">
+                <div className="Transfer__search-content-wrap-current-user">
+                  <ObjectAvatar item={selectedObj} size={40} />
+                  <div className="Transfer__search-content">{getObjectName(selectedObj)}</div>
+                </div>
                 <span
                   role="presentation"
-                  onClick={() => form.setFieldsValue({aboutObject: null })}
+                  onClick={() => form.setFieldsValue({ aboutObject: null })}
                   className="iconfont icon-delete"
                 />
+              </div>
             </div>
-          </div> : getFieldDecorator(
-            'aboutObject',
-            {},
-          )(<SearchObjectsAutocomplete handleSelect={value => form.setFieldsValue({ aboutObject: value })} />)}
+          ) : (
+            getFieldDecorator(
+              'aboutObject',
+              {},
+            )(
+              <SearchObjectsAutocomplete
+                handleSelect={value => form.setFieldsValue({ aboutObject: value })}
+              />,
+            )
+          )}
           <p>About object will be opened when visitors click on the logo on the home page.</p>
         </Form.Item>
         <Form.Item>
@@ -143,12 +155,14 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
           {getFieldDecorator(
             'desktopMap',
             {},
-          )(<Button type="primary" htmlType="submit" onClick={() => setShowMap(true)}>
-            {intl.formatMessage({
-              id: 'select_area',
-              defaultMessage: 'Select area',
-            })}
-          </Button>)}
+          )(
+            <Button type="primary" htmlType="submit" onClick={() => setShowMap('desktopMap')}>
+              {intl.formatMessage({
+                id: 'select_area',
+                defaultMessage: 'Select area',
+              })}
+            </Button>,
+          )}
           <p>Select the initial map focus for the desktop site.</p>
         </Form.Item>
         <Form.Item>
@@ -163,12 +177,41 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
           {getFieldDecorator(
             'mobileMap',
             {},
-          )(<Button type="primary" htmlType="submit" onClick={() => setShowMap(true)}>
-            {intl.formatMessage({
-              id: 'select_area',
-              defaultMessage: 'Select area',
-            })}
-          </Button>)}
+          )(
+            <Button type="primary" htmlType="submit" onClick={() => setShowMap('mobileMap')}>
+              {intl.formatMessage({
+                id: 'select_area',
+                defaultMessage: 'Select area',
+              })}
+            </Button>,
+          )}
+          <p>Select the initial map focus for the mobile site.</p>
+        </Form.Item>
+        <Form.Item>
+          <h3>
+            <span className="ant-form-item-required">
+              {intl.formatMessage({
+                id: 'website_colors',
+                defaultMessage: 'Website colors',
+              })}
+            </span>
+          </h3>
+          <div />
+          <div className="WebsitesConfigurations__colors-wrap">
+            {Object.keys(get(config, 'colors', {})).map(color => <div key={color}>
+            <span className="WebsitesConfigurations__colors"
+                  style={{backgroundColor: '#B1357A'}} />
+              <b>{color}</b>
+            </div>)}
+          </div>
+          {getFieldDecorator('colors')(
+            <Button type="primary" htmlType="submit" onClick={() => setShowMap('mobileMap')}>
+              {intl.formatMessage({
+                id: 'select_colors',
+                defaultMessage: 'Select colors',
+              })}
+            </Button>,
+          )}
           <p>Select the initial map focus for the mobile site.</p>
         </Form.Item>
         <Form.Item>
@@ -194,16 +237,21 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
       </Modal>
       <Modal
         wrapClassName="Settings__modal"
-        title={`Choose logo`}
+        title={`Select area`}
         closable
-        onCancel={() => setShowMap(false)}
-        onOk={() => setShowMap(false)}
+        onCancel={() => setShowMap('')}
+        onOk={() => setShowMap('')}
         visible={showMap}
       >
         {showMap && (
-          <Map center={[50.879, 4.6997]} zoom={12} height={400}
-               provider={mapProvider}
-               onBoundsChanged={({ bounds }) => setMapBounds(bounds)} />)}
+          <Map
+            center={[50.879, 4.6997]}
+            zoom={12}
+            height={400}
+            provider={mapProvider}
+            onBoundsChanged={(state) => setMapBounds(state)}
+          />
+        )}
       </Modal>
     </React.Fragment>
   );
@@ -212,7 +260,14 @@ export const WebsitesConfigurations = ({ intl, form, loading }) => {
 WebsitesConfigurations.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
+  config: PropTypes.arrayOf.isRequired,
   loading: PropTypes.bool.isRequired,
+  getWebConfig: PropTypes.func.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      site: PropTypes.string,
+    })
+  }).isRequired
 };
 
 WebsitesConfigurations.defaultProps = {
@@ -222,6 +277,9 @@ WebsitesConfigurations.defaultProps = {
 export default connect(
   state => ({
     loading: getWebsiteLoading(state),
+    config: getConfiguration(state)
   }),
-  {},
+  {
+    getWebConfig: getWebConfiguration
+  },
 )(Form.create()(injectIntl(WebsitesConfigurations)));

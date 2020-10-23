@@ -1638,4 +1638,13 @@ export const getWebsites = userName =>
     .then(res => res)
     .catch(e => e);
 
+export const getWebsitesConfiguration = host =>
+  fetch(`${config.apiPrefix}${config.sites}${config.configuration}?host=${host}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;

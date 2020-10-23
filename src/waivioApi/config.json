@@ -106,5 +106,6 @@
   "getParents": "/getParents",
   "create": "/create",
   "checkAvailable": "/checkAvailable",
-  "managePage": "/manage"
+  "managePage": "/manage",
+  "configuration": "/configuration"
 }

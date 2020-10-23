@@ -7,9 +7,8 @@ import {
   deleteSite,
   getDomainList,
   getInfoForManagePage,
-  getWebsites,
+  getWebsites, getWebsitesConfiguration,
   getWebsitesReports,
-  // getWebsitesReports,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, getParentDomain } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
@@ -144,3 +143,12 @@ export const getOwnWebsite = () => (dispatch, getState) => {
     },
   });
 };
+
+export const GET_WEBSITE_CONFIGURATIONS = createAsyncActionType('@website/GET_WEBSITE_CONFIGURATIONS');
+
+export const getWebConfiguration = site => ({
+    type: GET_WEBSITE_CONFIGURATIONS.ACTION,
+    payload: {
+      promise: getWebsitesConfiguration(site),
+    },
+  });

@@ -326,3 +326,4 @@ export const getWebsiteLoading = state => fromWebsite.getWebsiteLoading(state.we
 export const getManage = state => fromWebsite.getManage(state.website);
 export const getReports = state => fromWebsite.getReports(state.website);
 export const getOwnWebsites = state => fromWebsite.getOwnWebsites(state.website);
+export const getConfiguration = state => fromWebsite.getConfiguration(state.website);
