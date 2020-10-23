@@ -11,6 +11,7 @@ import {
   isEqual,
   omitBy,
   isNil,
+  size,
 } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
@@ -747,8 +748,8 @@ export default class AppendForm extends Component {
       this.handleAddPhotoToAlbum();
     } else if (objectFields.newsFilter === currentField) {
       const { chosenLocale } = this.props;
-      const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
-        sub => sub.length,
+      const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(sub =>
+        size(sub),
       );
       const ignoreList = map(this.state.ignoreList, o => o.id);
 
