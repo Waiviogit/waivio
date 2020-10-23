@@ -88,18 +88,8 @@ const CatalogWrap = props => {
 
   /**
    *
-   * @param companyAuthor
-   * @param companyPermlink
-   * @param resPermlink
-   * @param objPermlink
-   * @param companyId
-   * @param primaryObjectName
-   * @param secondaryObjectName
-   * @param amount
-   * @param proposition
-   * @param proposedWobj
-   * @param username
-   * @param currencyId
+   * @param propositionsObject
+   * @param listItem
    */
 
   const renderProposition = (propositionsObject, listItem) =>
