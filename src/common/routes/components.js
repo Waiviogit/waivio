@@ -38,7 +38,7 @@ export default {
   Error404: loableComponent(import('../../client/statics/Error404')),
   ExitPage: loableComponent(import('../../client/statics/ExitPage')),
   ObjectPageFeed: loableComponent(import('../../client/object/ObjectFeed')),
-  ObjectFeed: loableComponent(import('../../client/object/ObjectFeed/ObjectFeed')),
+  ObjectFeed: loableComponent(import('../../client/object/ObjectFeed')),
   WobjFollowers: loableComponent(import('../../client/object/WobjFollowers')),
   ObjectGallery: loableComponent(import('../../client/object/ObjectGallery/ObjectGallery')),
   ObjectGalleryAlbum: loableComponent(
