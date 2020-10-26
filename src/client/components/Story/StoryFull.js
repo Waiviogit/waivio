@@ -35,6 +35,7 @@ import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../user/userActions';
 import { UNASSIGNED } from '../../../common/constants/rewards';
 import './StoryFull.less';
+import { getProxyImageURL } from '../../helpers/image';
 
 @injectIntl
 @withRouter
@@ -263,24 +264,24 @@ class StoryFull extends React.Component {
     const { loadingAssign } = this.state;
     const taggedObjects = [];
     const linkedObjects = [];
-    const authorName =
-      post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
+    const authorName = get(post, ['guestInfo', 'userId'], '') || post.author;
+    const imagesArraySize = size(this.images);
     forEach(post.wobjects, wobj => {
       if (wobj.tagged) taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
     const { open, index } = this.state.lightbox;
     const parsedBody = getHtml(post.body, {}, 'text');
-    this.images = extractImageTags(parsedBody);
+    this.images = extractImageTags(parsedBody).map(image => ({
+      ...image,
+      src: getProxyImageURL(image.src, 'preview'),
+    }));
     const body = this.images.reduce(
       (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
       post.body,
     );
-
     let signedBody = body;
-    if (signature) {
-      signedBody = `${body}<hr>${signature}`;
-    }
+    if (signature) signedBody = `${body}<hr>${signature}`;
 
     let replyUI = null;
 
@@ -332,7 +333,6 @@ class StoryFull extends React.Component {
         </div>
       );
     }
-
     return (
       <div className="StoryFull">
         {replyUI}
@@ -424,10 +424,10 @@ class StoryFull extends React.Component {
           <Lightbox
             imageTitle={this.images[index].alt}
             mainSrc={this.images[index].src}
-            nextSrc={this.images.length > 1 && this.images[(index + 1) % this.images.length].src}
+            nextSrc={imagesArraySize > 1 && this.images[(index + 1) % imagesArraySize].src}
             prevSrc={
-              this.images.length > 1 &&
-              this.images[(index + (this.images.length - 1)) % this.images.length].src
+              imagesArraySize > 1 &&
+              this.images[(index + (imagesArraySize - 1)) % imagesArraySize].src
             }
             onCloseRequest={() => {
               this.setState({
@@ -441,7 +441,7 @@ class StoryFull extends React.Component {
               this.setState({
                 lightbox: {
                   ...this.state.lightbox,
-                  index: (index + (this.images.length - 1)) % this.images.length,
+                  index: (index + (imagesArraySize - 1)) % imagesArraySize,
                 },
               })
             }
