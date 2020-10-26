@@ -6,7 +6,14 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { getFeedContent } from './feedActions';
-import { getIsAuthenticated, getIsLoaded } from '../reducers';
+import {
+  getIsAuthenticated,
+  getIsLoaded,
+  getAuthenticatedUserName,
+  getSuitableLanguage,
+  getObject as getObjectState,
+} from '../reducers';
+import { getObject } from '../object/wobjectsActions';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
@@ -17,10 +24,18 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 
 @injectIntl
 @withRouter
-@connect(state => ({
-  authenticated: getIsAuthenticated(state),
-  loaded: getIsLoaded(state),
-}))
+@connect(
+  state => ({
+    authenticatedUserName: getAuthenticatedUserName(state),
+    authenticated: getIsAuthenticated(state),
+    loaded: getIsLoaded(state),
+    locale: getSuitableLanguage(state),
+    wobject: getObjectState(state),
+  }),
+  {
+    getObject,
+  },
+)
 class Page extends React.Component {
   static fetchData({ store, match }) {
     const { sortBy, category } = match.params;
@@ -32,9 +47,22 @@ class Page extends React.Component {
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     route: PropTypes.shape().isRequired,
+    authenticatedUserName: PropTypes.string,
+    wobject: PropTypes.shape(),
+    getObject: PropTypes.func,
   };
 
-  state = { isModalOpen: false };
+  static defaultProps = {
+    authenticatedUserName: '',
+    wobject: {},
+    getObject: () => {},
+  };
+
+  componentDidMount() {
+    const { authenticatedUserName } = this.props;
+    const wobjectPermlink = location.pathname.split('/feed/')[1];
+    this.props.getObject(wobjectPermlink, authenticatedUserName);
+  }
 
   handleSortChange = key => {
     const { category } = this.props.match.params;
@@ -48,7 +76,9 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, history } = this.props;
+    const { authenticated, history, wobject } = this.props;
+    const isPageMode = true;
+
     return (
       <div>
         <Helmet>
@@ -75,7 +105,10 @@ class Page extends React.Component {
             <div className="center">
               <MobileNavigation />
               {authenticated && <QuickPostEditor history={history} />}
-              {renderRoutes(this.props.route.routes)}
+              {renderRoutes(this.props.route.routes, {
+                isPageMode,
+                wobject,
+              })}
             </div>
           </div>
         </div>
