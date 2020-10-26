@@ -14,9 +14,15 @@ const propTypes = {
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
+  isPageMode: PropTypes.bool,
 };
 
-const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
+const defaultProps = {
+  isPageMode: false,
+};
+
+const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) => {
+  /* redux store */
   const isAuthenticated = useSelector(getIsAuthenticated);
 
   const handleCreatePost = () => {
@@ -37,7 +43,7 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
 
   return (
     <React.Fragment>
-      {isAuthenticated && (
+      {isAuthenticated && !isPageMode && (
         <div className="object-feed__row justify-end">
           <IconButton
             icon={<Icon type="plus-circle" />}
@@ -58,5 +64,6 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
 };
 
 ObjectFeedContainer.propTypes = propTypes;
+ObjectFeedContainer.defaultProps = defaultProps;
 
 export default ObjectFeedContainer;
