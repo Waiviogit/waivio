@@ -59,8 +59,8 @@ class Page extends React.Component {
   };
 
   componentDidMount() {
-    const { authenticatedUserName } = this.props;
-    const wobjectPermlink = location.pathname.split('/feed/')[1];
+    const { authenticatedUserName, match } = this.props;
+    const wobjectPermlink = match.params.category;
     this.props.getObject(wobjectPermlink, authenticatedUserName);
   }
 
