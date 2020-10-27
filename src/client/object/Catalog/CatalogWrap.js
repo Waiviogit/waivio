@@ -223,7 +223,6 @@ CatalogWrap.defaultProps = {
   isEditMode: false,
   userName: '',
   locale: '',
-  getObjectCreator: () => {},
   listItems: [],
 };
 
