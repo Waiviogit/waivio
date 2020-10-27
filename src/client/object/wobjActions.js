@@ -327,12 +327,3 @@ export const setListItems = lists => ({
   type: SET_LIST_ITEMS,
   lists,
 });
-
-// export const getObjectCreator = (pathUrl, userName, locale) => (dispatch) => {
-// 	isLoadingData(true);
-// 	getObject(pathUrl, userName, locale).then(wObject => {
-// 		dispatch(setListItems(wObject.listItems));
-// 		dispatch(setNestedWobject(wObject));
-// 		isLoadingData(false);
-// 	});
-// }

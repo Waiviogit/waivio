@@ -1,6 +1,6 @@
 import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { get, isEmpty, map, filter, max, min, some } from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -12,8 +12,7 @@ import AddItemModal from './AddItemModal/AddItemModal';
 import { getObjectLists, getSuitableLanguage, getWobjectNested } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { getPermLink, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
-import BodyContainer from '../../containers/Story/BodyContainer';
+import { getLastPermlinksFromHash, parseWobjectField } from '../../helpers/wObjectHelper';
 import Loading from '../../components/Icon/Loading';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Campaign from '../../rewards/Campaign/Campaign';
@@ -21,12 +20,11 @@ import CatalogSorting from './CatalogSorting/CatalogSorting';
 import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import { setListItems, setNestedWobject } from '../wobjActions';
-import './CatalogWrap.less';
 import { getObject } from '../../../waivioApi/ApiClient';
+import './CatalogWrap.less';
 
 const CatalogWrap = props => {
-  const { userName, wobjectNested, listItems, locale } = props;
-  const dispatch = useDispatch();
+  const { userName, listItems, locale } = props;
 
   const [loadingPropositions, setLoadingPropositions] = useState(true);
   const [propositions, setPropositions] = useState([]);
@@ -52,11 +50,13 @@ const CatalogWrap = props => {
       wobject,
       match,
       location: { hash },
+      setLists,
+      setNestedWobj,
     } = props;
 
     if (!isEmpty(wobject)) {
       if (hash) {
-        const pathUrl = getPermLink(hash);
+        const pathUrl = getLastPermlinksFromHash(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
           const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
@@ -64,12 +64,12 @@ const CatalogWrap = props => {
           } else {
             setLoadingPropositions(false);
           }
-          dispatch(setListItems(wObject.listItems));
-          dispatch(setNestedWobject(wObject));
+          setLists(wObject.listItems);
+          setNestedWobj(wObject);
         });
       } else {
         const requiredObject = get(wobject, ['parent', 'author_permlink']);
-        dispatch(setListItems(wobject.listItems));
+        setLists(wobject.listItems);
         getPropositions({ userName, match, requiredObject, sort });
       }
     }
@@ -77,7 +77,7 @@ const CatalogWrap = props => {
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
-    dispatch(setListItems(sortListItemsBy(currentList, 'recency')));
+    props.setLists(sortListItemsBy(currentList, 'recency'));
   };
 
   /**
@@ -164,44 +164,40 @@ const CatalogWrap = props => {
   const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
     setSorting(sortType);
-    dispatch(setListItems(sortListItemsBy(listItems, sortType, sortOrder)));
+    props.setLists(sortListItemsBy(listItems, sortType, sortOrder));
   };
 
   const obj = isEmpty(getWobjectNested) ? wobject : getWobjectNested;
 
   return (
     <div>
-      {!hasType(wobjectNested, OBJ_TYPE.PAGE) || !hasType(wobject, OBJ_TYPE.PAGE) ? (
-        <React.Fragment>
-          {!isEmpty(propositions) && renderCampaign(propositions)}
-          {isEditMode && (
-            <div className="CatalogWrap__add-item">
-              <AddItemModal wobject={obj} onAddItem={handleAddItem} />
+      <React.Fragment>
+        {!isEmpty(propositions) && renderCampaign(propositions)}
+        {isEditMode && (
+          <div className="CatalogWrap__add-item">
+            <AddItemModal wobject={obj} onAddItem={handleAddItem} />
+          </div>
+        )}
+        {loadingPropositions || isEmpty(wobject) ? (
+          <Loading />
+        ) : (
+          <React.Fragment>
+            <div className="CatalogWrap__breadcrumb">
+              <CatalogBreadcrumb intl={intl} wobject={wobject} />
             </div>
-          )}
-          {loadingPropositions || isEmpty(wobject) ? (
-            <Loading />
-          ) : (
-            <React.Fragment>
-              <div className="CatalogWrap__breadcrumb">
-                <CatalogBreadcrumb intl={intl} wobject={wobject} />
-              </div>
-              <div className="CatalogWrap__sort">
-                <CatalogSorting
-                  sort={sort}
-                  currWobject={wobject}
-                  handleSortChange={handleSortChange}
-                />
-              </div>
-              <div className="CatalogWrap">
-                <div>{getMenuList()}</div>
-              </div>
-            </React.Fragment>
-          )}
-        </React.Fragment>
-      ) : (
-        <BodyContainer full body={wobjectNested.pageContent} />
-      )}
+            <div className="CatalogWrap__sort">
+              <CatalogSorting
+                sort={sort}
+                currWobject={wobject}
+                handleSortChange={handleSortChange}
+              />
+            </div>
+            <div className="CatalogWrap">
+              <div>{getMenuList()}</div>
+            </div>
+          </React.Fragment>
+        )}
+      </React.Fragment>
     </div>
   );
 };
@@ -211,11 +207,12 @@ CatalogWrap.propTypes = {
   location: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
-  wobjectNested: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,
   locale: PropTypes.string.isRequired,
   listItems: PropTypes.shape({}).isRequired,
+  setLists: PropTypes.func.isRequired,
+  setNestedWobj: PropTypes.func.isRequired,
 };
 
 CatalogWrap.defaultProps = {
@@ -224,6 +221,8 @@ CatalogWrap.defaultProps = {
   userName: '',
   locale: '',
   listItems: [],
+  setLists: () => {},
+  setNestedWobj: () => {},
 };
 
 const mapStateToProps = state => ({
@@ -233,7 +232,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  setListItems,
+  setLists: setListItems,
+  setNestedWobj: setNestedWobject,
 };
 
 export default compose(

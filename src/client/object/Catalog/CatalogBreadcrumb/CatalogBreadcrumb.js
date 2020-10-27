@@ -8,7 +8,7 @@ import { isEmpty, map, size, get } from 'lodash';
 import {
   getObjectName,
   getObjectTitle,
-  getPermLinksWithHash,
+  getPermlinksFromHash,
   hasType,
 } from '../../../helpers/wObjectHelper';
 import { setCatalogBreadCrumbs } from '../../wobjActions';
@@ -29,7 +29,7 @@ const CatalogBreadcrumb = props => {
 
   const BreadCrumbSize = size(breadcrumb);
   const currentTitle = get(breadcrumb[BreadCrumbSize - 1], 'title', '');
-  const permlinks = getPermLinksWithHash(props.location.hash);
+  const permlinks = getPermlinksFromHash(props.location.hash);
   let currentBreadCrumbs = breadcrumb.filter(el => permlinks.includes(el.id));
 
   if (!permlinks.includes(wobject.author_permlink) && hasType(wobject, 'list')) {

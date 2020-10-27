@@ -143,12 +143,12 @@ export const parseAddress = wobject => {
   ).join(', ');
 };
 
-export const getPermLink = url =>
+export const getLastPermlinksFromHash = url =>
   url
     .split('/')
     .pop()
     .replace('#', '');
-export const getPermLinksWithHash = url => url.replace('#', '').split('/');
+export const getPermlinksFromHash = url => url.replace('#', '').split('/');
 export const getMenuItems = (wobject, menuType, objType) => {
   const listItems = get(wobject, 'listItem', []).filter(item => item.type === menuType);
   if (isEmpty(wobject.menuItems)) return listItems;
