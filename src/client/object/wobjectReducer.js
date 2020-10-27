@@ -9,12 +9,14 @@ import {
   VOTE_APPEND_ERROR,
   SET_CATALOG_BREADCRUMBS,
   SET_WOBJECT_NESTED,
+  SET_LIST_ITEMS,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 
-const initialState = {
+export const initialState = {
   wobject: {},
   nestedWobject: {},
+  lists: [],
   isFetching: false,
   isFailed: false,
   breadcrumb: [],
@@ -285,6 +287,13 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
 
+    case SET_LIST_ITEMS: {
+      return {
+        ...state,
+        lists: action.lists,
+      };
+    }
+
     default: {
       return state;
     }
@@ -303,3 +312,4 @@ export const getWobjectIsFailed = state => state.wobject.isFailed;
 export const getWobjectIsFatching = state => state.wobject.isFetching;
 export const getBreadCrumbs = state => state.breadcrumb;
 export const getWobjectNested = state => state.nestedWobject;
+export const getObjectLists = state => state.lists;

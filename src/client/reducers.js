@@ -250,6 +250,7 @@ export const getWobjectIsFatching = state => fromObject.getWobjectIsFatching(sta
 
 export const getBreadCrumbs = state => fromObject.getBreadCrumbs(state.object);
 export const getWobjectNested = state => fromObject.getWobjectNested(state.object);
+export const getObjectLists = state => fromObject.getObjectLists(state.object);
 
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>
