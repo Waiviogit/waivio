@@ -34,8 +34,9 @@ import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../user/userActions';
 import { UNASSIGNED } from '../../../common/constants/rewards';
-import './StoryFull.less';
 import { getProxyImageURL } from '../../helpers/image';
+
+import './StoryFull.less';
 
 @injectIntl
 @withRouter
