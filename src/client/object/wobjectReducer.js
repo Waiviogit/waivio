@@ -8,13 +8,15 @@ import {
   GET_CHANGED_WOBJECT_FIELD,
   VOTE_APPEND_ERROR,
   SET_CATALOG_BREADCRUMBS,
-  SET_WOBJECT_FOR_BREADCRUMBS,
+  SET_WOBJECT_NESTED,
+  SET_LIST_ITEMS,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 
-const initialState = {
+export const initialState = {
   wobject: {},
-  wobjectBreadCrumbs: {},
+  nestedWobject: {},
+  lists: [],
   isFetching: false,
   isFailed: false,
   breadcrumb: [],
@@ -278,10 +280,17 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
 
-    case SET_WOBJECT_FOR_BREADCRUMBS: {
+    case SET_WOBJECT_NESTED: {
       return {
         ...state,
-        wobjectBreadCrumbs: action.payload,
+        nestedWobject: action.payload,
+      };
+    }
+
+    case SET_LIST_ITEMS: {
+      return {
+        ...state,
+        lists: action.lists,
       };
     }
 
@@ -301,5 +310,6 @@ export const getRatingFields = state => state.wobject.rating || [];
 export const getObjectTagCategory = state => state.wobject.tagCategory;
 export const getWobjectIsFailed = state => state.wobject.isFailed;
 export const getWobjectIsFatching = state => state.wobject.isFetching;
-export const getBreadCrumbs = state => state.breadcrumb || [];
-export const getWobjectBreadCrumbs = state => state.wobjectBreadCrumbs;
+export const getBreadCrumbs = state => state.breadcrumb;
+export const getWobjectNested = state => state.nestedWobject;
+export const getObjectLists = state => state.lists;
