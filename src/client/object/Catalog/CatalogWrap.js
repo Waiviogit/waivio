@@ -24,7 +24,7 @@ import { getObject } from '../../../waivioApi/ApiClient';
 import './CatalogWrap.less';
 
 const CatalogWrap = props => {
-  const { userName, listItems, locale } = props;
+  const { userName, listItems, wobjectNested, locale } = props;
 
   const [loadingPropositions, setLoadingPropositions] = useState(true);
   const [propositions, setPropositions] = useState([]);
@@ -167,7 +167,7 @@ const CatalogWrap = props => {
     props.setLists(sortListItemsBy(listItems, sortType, sortOrder));
   };
 
-  const obj = isEmpty(getWobjectNested) ? wobject : getWobjectNested;
+  const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
 
   return (
     <div>
@@ -209,6 +209,7 @@ CatalogWrap.propTypes = {
   wobject: PropTypes.shape(),
   isEditMode: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,
+  wobjectNested: PropTypes.shape().isRequired,
   locale: PropTypes.string.isRequired,
   listItems: PropTypes.shape({}).isRequired,
   setLists: PropTypes.func.isRequired,
