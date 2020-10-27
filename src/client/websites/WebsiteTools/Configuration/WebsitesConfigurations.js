@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Form, message, Modal, Avatar } from 'antd';
+import { Button, Input, Form, Modal, Avatar } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, isArray } from 'lodash';
 import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import {getConfiguration, getWebsiteLoading} from '../../../reducers';
@@ -11,19 +11,23 @@ import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import { getObjectName } from '../../../helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';
 import mapProvider from '../../../helpers/mapProvider';
-import {getWebConfiguration} from "../../websiteActions";
+import {getWebConfiguration, saveWebConfiguration} from "../../websiteActions";
 
 import './WebsitesConfigurations.less'
 
-export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, match, config }) => {
+export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, match, config, saveWebConfig }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');
-  const mobileLogo = getFieldValue('mobileLogo');
-  const desktopLogo = getFieldValue('desktopLogo');
-  const selectedObj = getFieldValue('aboutObject');
+  const [showSelectColor, setShowSelectColor] = useState('');
+  const mobileLogo = getFieldValue('mobileLogo') || get(config, 'mobileLogo');
+  const desktopLogo = getFieldValue('desktopLogo') || get(config, 'desktopLogo');
+  const aboutObject = getFieldValue('aboutObject');
+  const host = match.params.site;
 
-  useEffect(() => {getWebConfig(match.params.site)}, []);
+  useEffect(() => {
+    getWebConfig(host);
+  }, []);
 
   const resetModalState = () => setModalState({});
 
@@ -31,6 +35,8 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
     setModalState({
       method: value => form.setFieldsValue({ [key]: value[0].src }),
     });
+
+  const getSelectedColor = type => `#${getFieldValue(type) || get(config, ['colors', type], '') }`;
 
   const setMapBounds = state => {
     const { center, zoom, bounds } = state;
@@ -48,7 +54,31 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
   const handleSubmit = e => {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
-      if (!err) return values;
+      if (!err) {
+        const getConfigFieldsValue = obj => {
+          const array = isArray(obj) ? obj : Object.keys(obj);
+
+          return array.reduce(
+            (acc, curr) => ({
+              ...acc,
+              [curr]: get(values, curr),
+            }),
+            {},
+          );
+        };
+        const colors = getConfigFieldsValue(config.colors);
+        const configuration = getConfigFieldsValue(config.configurationFields);
+
+        const configurationObj = {
+          configuration: {
+            ...configuration,
+            aboutObject: get(aboutObject, 'author_permlink', ''),
+            colors,
+          },
+        };
+
+        saveWebConfig(host, configurationObj)
+      }
     });
   };
 
@@ -117,12 +147,13 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
               })}
             </span>
           </h3>
-          {selectedObj ? (
+          {getFieldDecorator('aboutObject')(
+            aboutObject ? (
             <div>
               <div className="Transfer__search-content-wrap-current">
                 <div className="Transfer__search-content-wrap-current-user">
-                  <ObjectAvatar item={selectedObj} size={40} />
-                  <div className="Transfer__search-content">{getObjectName(selectedObj)}</div>
+                  <ObjectAvatar item={aboutObject} size={40} />
+                  <div className="Transfer__search-content">{getObjectName(aboutObject)}</div>
                 </div>
                 <span
                   role="presentation"
@@ -132,13 +163,9 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
               </div>
             </div>
           ) : (
-            getFieldDecorator(
-              'aboutObject',
-              {},
-            )(
               <SearchObjectsAutocomplete
                 handleSelect={value => form.setFieldsValue({ aboutObject: value })}
-              />,
+              />
             )
           )}
           <p>About object will be opened when visitors click on the logo on the home page.</p>
@@ -200,18 +227,16 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
           <div className="WebsitesConfigurations__colors-wrap">
             {Object.keys(get(config, 'colors', {})).map(color => <div key={color}>
             <span className="WebsitesConfigurations__colors"
-                  style={{backgroundColor: '#B1357A'}} />
+                  style={{backgroundColor: getSelectedColor(color)}} />
               <b>{color}</b>
             </div>)}
           </div>
-          {getFieldDecorator('colors')(
-            <Button type="primary" htmlType="submit" onClick={() => setShowMap('mobileMap')}>
+            <Button type="primary" htmlType="submit" onClick={() => setShowSelectColor(true)}>
               {intl.formatMessage({
                 id: 'select_colors',
                 defaultMessage: 'Select colors',
               })}
-            </Button>,
-          )}
+            </Button>
           <p>Select the initial map focus for the mobile site.</p>
         </Form.Item>
         <Form.Item>
@@ -253,6 +278,22 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
           />
         )}
       </Modal>
+      <Modal
+        wrapClassName="Settings__modal"
+        title={`Select color`}
+        closable
+        onCancel={() => setShowSelectColor(false)}
+        onOk={() => setShowSelectColor(false)}
+        visible={showSelectColor}
+      >
+        {
+          Object.keys(get(config, 'colors', {})).map(color => (
+            <div className="WebsitesConfigurations__select-color" key={color}>
+              {color}: <span>#{getFieldDecorator(color)(<Input />)}</span>
+            </div>
+          ))
+        }
+      </Modal>
     </React.Fragment>
   );
 };
@@ -263,15 +304,12 @@ WebsitesConfigurations.propTypes = {
   config: PropTypes.arrayOf.isRequired,
   loading: PropTypes.bool.isRequired,
   getWebConfig: PropTypes.func.isRequired,
+  saveWebConfig: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       site: PropTypes.string,
     })
   }).isRequired
-};
-
-WebsitesConfigurations.defaultProps = {
-  availableStatus: '',
 };
 
 export default connect(
@@ -280,6 +318,7 @@ export default connect(
     config: getConfiguration(state)
   }),
   {
-    getWebConfig: getWebConfiguration
+    getWebConfig: getWebConfiguration,
+    saveWebConfig: saveWebConfiguration
   },
 )(Form.create()(injectIntl(WebsitesConfigurations)));

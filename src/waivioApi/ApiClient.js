@@ -1647,4 +1647,14 @@ export const getWebsitesConfiguration = host =>
     .then(res => res)
     .catch(e => e);
 
+export const saveWebsitesConfiguration = body =>
+  fetch(`${config.apiPrefix}${config.sites}${config.configuration}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    body: JSON.stringify({ ...body }),
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;

@@ -8,7 +8,7 @@ import {
   getDomainList,
   getInfoForManagePage,
   getWebsites, getWebsitesConfiguration,
-  getWebsitesReports,
+  getWebsitesReports, saveWebsitesConfiguration,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, getParentDomain } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
@@ -152,3 +152,22 @@ export const getWebConfiguration = site => ({
       promise: getWebsitesConfiguration(site),
     },
   });
+
+export const SAVE_WEBSITE_CONFIGURATIONS = createAsyncActionType(
+  '@website/SAVE_WEBSITE_CONFIGURATIONS',
+);
+
+export const saveWebConfiguration = (host, configuration) => (dispatch, getState) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: SAVE_WEBSITE_CONFIGURATIONS.ACTION,
+    payload: {
+      promise: saveWebsitesConfiguration({
+        userName,
+        host,
+        ...configuration,
+      }),
+    },
+  });
+};
