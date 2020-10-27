@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { connect } from 'react-redux';
 
-import { getLocale } from '../reducers';
+import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 
@@ -14,11 +14,17 @@ const TabPane = Tabs.TabPane;
 
 @connect(state => ({
   locale: getLocale(state),
+  authUser: getAuthenticatedUserName(state),
 }))
 export default class UserExpertise extends React.Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
+    authUser: PropTypes.string,
+  };
+
+  static defaultProps = {
+    authUser: '',
   };
 
   static limit = 30;
@@ -28,6 +34,12 @@ export default class UserExpertise extends React.Component {
     hashtagsCount: 0,
     tagCount: 0,
   };
+
+  componentDidMount() {
+    const { authUser } = this.props;
+    this.fetcher(0, authUser, true).then(res => this.objectCount(res.wobjects_count, true));
+    this.fetcher(0, authUser, false).then(res => this.objectCount(res.wobjects_count, false));
+  }
 
   fetcher = (skip, authUser, isOnlyHashtags) => {
     const { match, locale } = this.props;

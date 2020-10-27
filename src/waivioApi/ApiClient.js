@@ -462,6 +462,10 @@ export const getWobjectsWithUserWeight = (
   excludeObjectTypes,
   locale,
 ) => {
+  console.log(userName);
+  console.log(authUser);
+  console.log(objectTypes);
+  console.log(excludeObjectTypes);
   const reqData = { skip, limit };
   if (objectTypes) reqData.object_types = objectTypes;
   if (excludeObjectTypes) reqData.exclude_object_types = excludeObjectTypes;
