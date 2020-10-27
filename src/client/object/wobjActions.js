@@ -310,14 +310,29 @@ export const unfollowWobject = (permlink, name, type) => (
 };
 
 export const SET_CATALOG_BREADCRUMBS = '@wobj/SET_CATALOG_BREADCRUMBS';
-export const SET_WOBJECT_FOR_BREADCRUMBS = '@wobj/SET_WOBJECT_FOR_BREADCRUMBS';
+export const SET_WOBJECT_NESTED = '@wobj/SET_WOBJECT_NESTED';
+export const SET_LIST_ITEMS = '@wobj/SET_LIST_ITEMS';
 
 export const setCatalogBreadCrumbs = payload => ({
   type: SET_CATALOG_BREADCRUMBS,
   payload,
 });
 
-export const setWobjectForBreadCrumbs = payload => ({
-  type: SET_WOBJECT_FOR_BREADCRUMBS,
+export const setNestedWobject = payload => ({
+  type: SET_WOBJECT_NESTED,
   payload,
 });
+
+export const setListItems = lists => ({
+  type: SET_LIST_ITEMS,
+  lists,
+});
+
+// export const getObjectCreator = (pathUrl, userName, locale) => (dispatch) => {
+// 	isLoadingData(true);
+// 	getObject(pathUrl, userName, locale).then(wObject => {
+// 		dispatch(setListItems(wObject.listItems));
+// 		dispatch(setNestedWobject(wObject));
+// 		isLoadingData(false);
+// 	});
+// }
