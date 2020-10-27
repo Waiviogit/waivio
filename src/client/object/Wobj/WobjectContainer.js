@@ -94,13 +94,11 @@ export default class WobjectContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    const isPage = props.match.params[0] === OBJECT_TYPE.PAGE;
     this.state = {
       isEditMode:
         props.wobject.type === OBJECT_TYPE.PAGE &&
         props.authenticated &&
         !props.wobject[objectFields.pageContent],
-      hasLeftSidebar: !isPage || (isPage && props.location.hash),
     };
   }
 
@@ -109,12 +107,6 @@ export default class WobjectContainer extends React.Component {
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.match.params[0] !== this.props.match.params[0]) {
-      this.setState({ hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE });
     }
   }
 
@@ -161,7 +153,7 @@ export default class WobjectContainer extends React.Component {
       isFetching,
       history,
     } = this.props;
-    const { isEditMode, hasLeftSidebar } = this.state;
+    const { isEditMode } = this.state;
     const objectName = getObjectName(wobject);
 
     if (failed) {
@@ -190,7 +182,6 @@ export default class WobjectContainer extends React.Component {
           isFetching={isFetching}
           history={history}
           isEditMode={isEditMode}
-          hasLeftSidebar={hasLeftSidebar}
           toggleViewEditMode={this.toggleViewEditMode}
           objectName={objectName}
           appendAlbum={this.appendAlbum}
