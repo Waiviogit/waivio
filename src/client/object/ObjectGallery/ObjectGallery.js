@@ -94,7 +94,10 @@ export default class ObjectGallery extends Component {
           </div>
         ) : (
           <div className="ObjectGallery__emptyText">
-            <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
+            <FormattedMessage
+              id="gallery_list_empty"
+              defaultMessage="There are no photos in this album. There are no photos in this album. Be the first to add one!"
+            />
           </div>
         )}
       </div>

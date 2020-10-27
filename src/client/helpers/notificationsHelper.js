@@ -275,7 +275,7 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
         return intl.formatMessage(
           {
             id: 'notification_campaign_released_reservation',
-            defaultMessage: '{author} made a released for {campaignName}',
+            defaultMessage: '{author} released a reservation for {campaignName}',
           },
           {
             author: notification.author,

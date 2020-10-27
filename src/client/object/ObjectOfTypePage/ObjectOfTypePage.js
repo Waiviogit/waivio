@@ -200,7 +200,7 @@ class ObjectOfTypePage extends Component {
                   <span>
                     {intl.formatMessage({
                       id: 'empty_page_content',
-                      defaultMessage: 'The page is not full yet',
+                      defaultMessage: 'This page has no content',
                     })}
                   </span>
                 </div>

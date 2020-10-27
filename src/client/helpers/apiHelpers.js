@@ -141,3 +141,9 @@ export const currentUserFollowersUser = (currentUsername, username) =>
     'get_following',
     [username, currentUsername, 'blog', 1],
   ]);
+
+export const createQuery = params =>
+  Object.keys(params).reduce(
+    (acc, value) => (acc ? `${acc}&${value}=${params[value]}` : `${value}=${params[value]}`),
+    '',
+  );
