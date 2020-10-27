@@ -25,7 +25,7 @@ const NotificationCampaignReservation = ({ notification, read, onClick }) => {
           {notification.isReleased ? (
             <FormattedMessage
               id="notification_campaign_released_reservation"
-              defaultMessage="{author} made a released for {campaignName}"
+              defaultMessage="{author} released a reservation for {campaignName}"
               values={{
                 author: <span className="username">{notification.author}</span>,
                 campaignName: <span>{notification.campaignName}</span>,
