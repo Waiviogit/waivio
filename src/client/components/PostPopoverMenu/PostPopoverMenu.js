@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
+import { get } from 'lodash';
 import { FormattedMessage } from 'react-intl';
-import classNames from 'classnames';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, getPostHashtags, replaceBotWithGuestName } from '../../helpers/postHelpers';
@@ -76,6 +76,7 @@ const PostPopoverMenu = ({
   const socialHashtags = [...postHashtags, 'waivio', 'hive'];
   const twitterShareURL = getTwitterShareURL(twitterText, postURL, socialHashtags);
   const facebookShareURL = getFacebookShareURL(postURL);
+  const activePost = Date.parse(get(post, 'cashout_time')) > Date.now();
 
   if (userFollowed) {
     followText = intl.formatMessage(
@@ -120,24 +121,23 @@ const PostPopoverMenu = ({
         defaultMessage={isSaved ? 'Unsave post' : 'Save post'}
       />
     </PopoverMenuItem>,
-    <PopoverMenuItem key="report">
-      {pendingFlag ? (
-        <Icon type="loading" />
-      ) : (
-        <i
-          className={classNames('iconfont', {
-            'icon-flag': !isReported,
-            'icon-flag_fill': isReported,
-          })}
-        />
-      )}
-      {isReported ? (
-        <FormattedMessage id="unflag_post" defaultMessage="Unflag post" />
-      ) : (
-        <FormattedMessage id="flag_post" defaultMessage="Flag post" />
-      )}
-    </PopoverMenuItem>,
   ];
+
+  if (activePost)
+    popoverMenu.push(
+      <PopoverMenuItem key="report">
+        {pendingFlag ? (
+          <Icon type="loading" />
+        ) : (
+          <i className={`iconfont icon-flag${isReported ? '_fill' : ''}`} />
+        )}
+        {isReported ? (
+          <FormattedMessage id="unflag_post" defaultMessage="Unflag post" />
+        ) : (
+          <FormattedMessage id="flag_post" defaultMessage="Flag post" />
+        )}
+      </PopoverMenuItem>,
+    );
 
   return (
     <Popover
