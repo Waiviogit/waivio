@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import 'url-search-params-polyfill';
 import { FormattedMessage } from 'react-intl';
@@ -17,14 +18,21 @@ export default class ExitPage extends React.Component {
     }
   };
 
+  handleCurrentUrl = url => {
+    const splitedRedirectUrl = url.split('/');
+    splitedRedirectUrl.splice(0, 3);
+    return splitedRedirectUrl.join('/');
+  };
+
   render() {
     const { location } = this.props;
+    const saveLocation = window.location.hostname === 'waivio' || 'waiviodev.com';
 
     const url = decodeURIComponent(new URLSearchParams(location.search).get('url'));
+    const redirectUrl = this.handleCurrentUrl(url);
 
     if (!url) return <div />;
-
-    return (
+    return !saveLocation ? (
       <div className="ExitPage container">
         <h1 className="ExitPage__title">
           <FormattedMessage id="page_exit" defaultMessage="Hold on!" />
@@ -45,6 +53,8 @@ export default class ExitPage extends React.Component {
           </ActionButton>
         </div>
       </div>
+    ) : (
+      <Redirect to={redirectUrl} />
     );
   }
 }
