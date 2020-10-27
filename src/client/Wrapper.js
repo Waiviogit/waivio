@@ -6,7 +6,6 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
-
 import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
@@ -40,6 +39,8 @@ import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 import { PATH_NAME_ACTIVE } from '../common/constants/rewards';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
+import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
+import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -67,6 +68,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     busyLogin,
     setUsedLocale,
     dispatchGetAuthGuestBalance,
+    handleRefAuthUser,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -91,6 +93,9 @@ class Wrapper extends React.PureComponent {
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
     loadingFetching: PropTypes.bool,
+    location: PropTypes.shape(),
+    handleRefAuthUser: PropTypes.func,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -111,6 +116,8 @@ class Wrapper extends React.PureComponent {
     isNewUser: false,
     isOpenWalletTable: false,
     loadingFetching: true,
+    location: {},
+    handleRefAuthUser: () => {},
   };
 
   static fetchData({ store, req }) {
@@ -138,6 +145,11 @@ class Wrapper extends React.PureComponent {
   }
 
   componentDidMount() {
+    const { location } = this.props;
+    const ref = new URLSearchParams(location.search).get('ref');
+    if (ref) {
+      sessionStorage.setItem('refUser', ref);
+    }
     this.props.login().then(() => {
       batch(() => {
         this.props.getNotifications();
@@ -162,6 +174,12 @@ class Wrapper extends React.PureComponent {
       document.body.classList.add('nightmode');
     } else {
       document.body.classList.remove('nightmode');
+    }
+    const refName = sessionStorage.getItem('refUser');
+    if (this.props.isAuthenticated && refName) {
+      const currentRefName = handleRefName(refName);
+      this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
+      sessionStorage.removeItem('refUser');
     }
   }
 

@@ -61,6 +61,8 @@ const CatalogWrap = props => {
           const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
             getPropositions({ userName, match, requiredObject, sort });
+          } else {
+            setLoadingPropositions(false);
           }
           dispatch(setListItems(wObject.listItems));
           dispatch(setNestedWobject(wObject));
@@ -80,18 +82,8 @@ const CatalogWrap = props => {
 
   /**
    *
-   * @param companyAuthor
-   * @param companyPermlink
-   * @param resPermlink
-   * @param objPermlink
-   * @param companyId
-   * @param primaryObjectName
-   * @param secondaryObjectName
-   * @param amount
-   * @param proposition
-   * @param proposedWobj
-   * @param username
-   * @param currencyId
+   * @param propositionsObject
+   * @param listItem
    */
 
   const renderProposition = (propositionsObject, listItem) =>
@@ -140,7 +132,7 @@ const CatalogWrap = props => {
     } else if (objects.length && isMatchedPermlinks) {
       item = renderProposition(propositions, listItem);
     } else {
-      item = <ObjectCardView wObject={listItem} />;
+      item = <ObjectCardView wObject={listItem} inList />;
     }
     return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };

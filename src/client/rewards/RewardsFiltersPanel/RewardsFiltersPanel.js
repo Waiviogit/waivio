@@ -1,7 +1,7 @@
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Checkbox } from 'antd';
 import { map, includes } from 'lodash';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { payablesFilterData } from '../rewardsHelper';
 import {
@@ -33,6 +33,7 @@ const RewardsFiltersPanel = ({
   setActiveMessagesFilters,
   activeGuideHistoryFilters,
 }) => {
+  const campaignDataKey = 'messagesCampaigns';
   const handleChange = useCallback(
     (filterName, key) => {
       if (
@@ -57,6 +58,16 @@ const RewardsFiltersPanel = ({
     ),
     [handleChange],
   );
+  const guideHistoryNotifyName = new URLSearchParams(location.search).get('campaign');
+  const guideHistoryNotifyFilterReleased = new URLSearchParams(location.search).get('released');
+  const guideHistoryNotifyFilterReserved = new URLSearchParams(location.search).get('reserved');
+  useEffect(() => {
+    if (guideHistoryNotifyName) setActiveMessagesFilters(guideHistoryNotifyName, campaignDataKey);
+    if (guideHistoryNotifyFilterReleased)
+      setActiveMessagesFilters(guideHistoryNotifyFilterReleased, 'rewards');
+    if (guideHistoryNotifyFilterReserved)
+      setActiveMessagesFilters(guideHistoryNotifyFilterReserved, 'rewards');
+  }, [location.search]);
 
   const filterPaymentLayout = useCallback(
     (obj, checked) => (
@@ -206,7 +217,7 @@ const RewardsFiltersPanel = ({
             {map(campaignsData, campaign =>
               filterLayout(
                 campaign,
-                'messagesCampaigns',
+                campaignDataKey,
                 includes(activeGuideHistoryFilters.messagesCampaigns, campaign),
               ),
             )}

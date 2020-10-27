@@ -275,8 +275,8 @@ export default class Transfer extends React.Component {
       if (!errors) {
         const transferQuery = {
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
+          memo: {},
         };
-
         if (guestUserRegex.test(values.to)) {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = { id: memo || REWARD.guestTransfer, to: values.to };
@@ -285,14 +285,15 @@ export default class Transfer extends React.Component {
           if (values.memo) transferQuery.memo = values.memo;
         }
 
-        if (app) transferQuery.memo.app = app;
-        if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (memo) {
-          transferQuery.memo = { id: memo };
+          transferQuery.memo = { ...transferQuery.memo, id: memo };
           if (values.memo) transferQuery.memo.message = values.memo;
         }
-        transferQuery.memo = JSON.stringify(transferQuery.memo);
 
+        if (app) transferQuery.memo = { ...transferQuery.memo, app };
+        if (values.to) transferQuery.memo = { ...transferQuery.memo, to: values.to };
+        if (app && overpaymentRefund && isGuest) transferQuery.app = app;
+        transferQuery.memo = JSON.stringify(transferQuery.memo);
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
             if (res.result) {
@@ -583,7 +584,10 @@ export default class Transfer extends React.Component {
               defaultMessage="Your funds transaction will be processed through WaivioBank service. WaivioBank doesn't take any fees."
             />
           )}
-          <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
+          <Form.Item
+            className="Transfer__amount-wrap"
+            label={<FormattedMessage id="amount" defaultMessage="Amount" />}
+          >
             <InputGroup className="Transfer__amount">
               {getFieldDecorator('amount', {
                 trigger: '',
@@ -622,7 +626,9 @@ export default class Transfer extends React.Component {
                 </span>
               )}
             </InputGroup>
-            <Form.Item>{isMobile && currencyPrefix}</Form.Item>
+          </Form.Item>
+          <Form.Item>{isMobile && currencyPrefix}</Form.Item>
+          <Form.Item>
             {authenticated && (
               <FormattedMessage
                 id="balance_amount"
@@ -640,6 +646,8 @@ export default class Transfer extends React.Component {
                 }}
               />
             )}
+          </Form.Item>
+          <Form.Item>
             <div>
               <FormattedMessage
                 id="estimated_value"

@@ -26,6 +26,7 @@ export const LIKE = 'like';
 export const MY_LIKE = 'myLike';
 export const MY_COMMENT = 'myComment';
 export const MY_POST = 'myPost';
+export const CAMPAIGN_RESERVATION = 'campaignReservation';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -46,12 +47,16 @@ export const PARSED_NOTIFICATIONS = [
   TRANSFER_TO_VESTING,
   CHANGE_RECOVERY_ACCOUNT,
   TRANSFER_FROM_SAVINGS,
+  BELL_POST,
+  BELL_REBLOG,
+  BELL_FOLLOW,
   CLAIM_REWARD,
   CAMPAIGN_MESSAGE,
   LIKE,
   MY_LIKE,
   MY_COMMENT,
   MY_POST,
+  CAMPAIGN_RESERVATION,
 ];
 
 export const BUSY_API_TYPES = {

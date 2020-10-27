@@ -162,6 +162,8 @@ class DiscoverObjectsContent extends Component {
 
     if (activeFilters.rating)
       this.props.setActiveFilters({ rating: activeFilters.rating.split(',') });
+    if (activeFilters.searchString)
+      this.props.setActiveFilters({ searchString: activeFilters.searchString });
     if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
     dispatchGetObjectType(typeName, { skip: 0 });
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
@@ -250,7 +252,15 @@ class DiscoverObjectsContent extends Component {
     dispatchSetActiveFilters(updatedFilters);
   };
 
-  resetNameSearchFilter = () => this.props.history.push(this.props.history.location.pathname);
+  resetNameSearchFilter = () => {
+    const { history, activeFilters, location, dispatchSetActiveFilters } = this.props;
+    const updatedFilters = { ...activeFilters };
+
+    delete updatedFilters.searchString;
+
+    dispatchSetActiveFilters(updatedFilters);
+    changeUrl(updatedFilters, history, location);
+  };
 
   showMap = () => this.props.dispatchSetMapFullscreenMode(true);
 

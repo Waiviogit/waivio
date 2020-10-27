@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, map, get, reduce, round, memoize } from 'lodash';
+import { isEmpty, map, get, reduce, round, memoize, includes } from 'lodash';
 import moment from 'moment';
 import {
   REWARD,
@@ -163,8 +163,12 @@ export const formatDate = (intl, date) => {
   }
 };
 
-export const convertDigits = (number, isHive) =>
-  parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
+export const convertDigits = (number, isHive) => {
+  if (number) {
+    return parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
+  }
+  return 0;
+};
 
 export const getCurrentUSDPrice = () => {
   const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
@@ -334,7 +338,6 @@ export const sortDebtObjsData = (items, sortBy) => {
 
 export const getProcessingFee = data => {
   if (!data || isEmpty(data)) return null;
-
   const amounts = {
     share: get(data, ['details', 'commissionWeight']) || '',
     hive: get(data, ['amount']) || '',
@@ -351,7 +354,7 @@ export const getProcessingFee = data => {
     case 'referral_server_fee':
       return {
         name: 'Referral',
-        account: 'waivio.referrals',
+        account: data.userName,
         ...amounts,
       };
     case 'campaign_server_fee':
@@ -774,8 +777,12 @@ export const buttonsTitle = {
   },
 };
 
-export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
-  if (location === PATH_NAME_MESSAGES) {
+export const getBreadCrumbText = (intl, location, filterKey, rewardText, match) => {
+  const messageCrumb = [
+    PATH_NAME_MESSAGES,
+    `${PATH_NAME_MESSAGES}/${match.params.campaignId}/${match.params.permlink}`,
+  ];
+  if (includes(messageCrumb, location)) {
     return intl.formatMessage({
       id: MESSAGES,
       defaultMessage: 'Messages',
@@ -851,3 +858,6 @@ export const getReviewRequirements = memoize(campaign => ({
     minPosts: get(campaign, ['userRequirements', 'minPosts'], 0),
   },
 }));
+
+export const pathNameHistoryNotify = match =>
+  `${PATH_NAME_HISTORY}/${match.params.campaignId}/${match.params.permlink}/${match.params.username}`;

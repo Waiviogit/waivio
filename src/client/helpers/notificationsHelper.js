@@ -270,6 +270,29 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           post: notification.title,
         },
       );
+    case notificationConstants.CAMPAIGN_RESERVATION:
+      if (notification.isReleased) {
+        return intl.formatMessage(
+          {
+            id: 'notification_campaign_released_reservation',
+            defaultMessage: '{author} made a released for {campaignName}',
+          },
+          {
+            author: notification.author,
+            campaignName: notification.campaignName,
+          },
+        );
+      }
+      return intl.formatMessage(
+        {
+          id: 'notification_campaign_reserved_reservation',
+          defaultMessage: '{author} made a reservation for {campaignName}',
+        },
+        {
+          author: notification.author,
+          campaignName: notification.campaignName,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -381,6 +404,8 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
     case notificationConstants.MY_COMMENT:
       return notification.author;
     case notificationConstants.MY_POST:
+      return notification.author;
+    case notificationConstants.CAMPAIGN_RESERVATION:
       return notification.author;
     default:
       return currentAuthUsername;

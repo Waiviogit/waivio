@@ -12,7 +12,7 @@ export const getUserAccount = name => (dispatch, getState) => {
     type: GET_ACCOUNT.ACTION,
     payload: ApiClient.getUserAccount(name, false, authUser),
     meta: { username: name },
-  }).catch(() => {});
+  });
 };
 
 export const GET_RANDOM_EXPERTS = '@users/GET_RANDOM_EXPERTS';

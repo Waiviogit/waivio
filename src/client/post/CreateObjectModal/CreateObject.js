@@ -251,6 +251,8 @@ class CreateObject extends React.Component {
           >
             <Form.Item>
               {getFieldDecorator(objectFields.name, {
+                getValueFromEvent:
+                  defaultObjectType === 'hashtag' ? e => e.target.value.toLowerCase() : null,
                 initialValue: '',
                 rules: [
                   {
@@ -303,7 +305,7 @@ class CreateObject extends React.Component {
                   },
                 ],
               })(
-                <Select disabled={loading} style={{ width: '100%' }}>
+                <Select disabled={loading} style={{ width: '100%' }} className="languageOptions">
                   {languageOptions}
                 </Select>,
               )}

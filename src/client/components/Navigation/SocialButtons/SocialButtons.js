@@ -10,7 +10,7 @@ const SocialButtons = ({ responseSocial, className }) => (
       buttonText="Google"
       clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
       onSuccess={response => responseSocial(response, 'google')}
-      onFailure={() => {}}
+      onFailure={failResponse => responseSocial(failResponse, 'google')}
       cookiePolicy={'single_host_origin'}
       className="ModalSignIn__social-btn"
     />
@@ -19,7 +19,7 @@ const SocialButtons = ({ responseSocial, className }) => (
       autoLoad={false}
       fields="name,email,picture"
       callback={response => responseSocial(response, 'facebook')}
-      onFailure={() => {}}
+      onFailure={failResponse => responseSocial(failResponse, 'facebook')}
       textButton="Facebook"
       cssClass="ModalSignIn__social-btn ModalSignIn__social-btn--fb"
       icon={<Icon type="facebook" className="ModalSignIn__icon-fb" />}

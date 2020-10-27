@@ -90,18 +90,16 @@ class UserInfo extends React.Component {
 
   render() {
     const { intl, user, rewardFund, rate, usersAccountHistory } = this.props;
+    const isGuestPage = guestUserRegex.test(user && user.name);
     let metadata = {};
     let location = null;
     let profile = {};
     let website = null;
     let about = null;
-    let lastActive = null;
+    const lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
     let email;
 
-    const isGuestPage = guestUserRegex.test(user && user.name);
-
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
-      lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
       metadata = getMetadata(user);
       profile = get(metadata, 'profile', {});
       location = metadata && get(profile, 'location');
