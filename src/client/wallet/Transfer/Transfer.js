@@ -37,6 +37,7 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import { REWARD } from '../../../common/constants/rewards';
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 import { saveSettings, openLinkHiveAccountModal } from '../../settings/settingsActions';
+import { createQuery } from '../../helpers/apiHelpers';
 
 import './Transfer.less';
 
@@ -291,7 +292,11 @@ export default class Transfer extends React.Component {
         }
 
         if (app) transferQuery.memo = { ...transferQuery.memo, app };
-        if (values.to) transferQuery.memo = { ...transferQuery.memo, to: values.to };
+        if (values.to && transferQuery.memo.id === REWARD.guestTransfer)
+          transferQuery.memo = {
+            ...transferQuery.memo,
+            to: values.to,
+          };
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         transferQuery.memo = JSON.stringify(transferQuery.memo);
         if (isGuest) {
@@ -316,9 +321,7 @@ export default class Transfer extends React.Component {
           });
         } else {
           const win = window.open(
-            `https://hivesigner.com/sign/transfer?amount=${transferQuery.amount}&to=${
-              transferQuery.to
-            }${transferQuery.memo ? `&memo=${transferQuery.memo}` : ''}`,
+            `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
             '_blank',
           );
           win.focus();
