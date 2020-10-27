@@ -354,7 +354,8 @@ export default class AppendForm extends Component {
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
-          const objectType = this.state.selectedObject.object_type;
+          const objectType =
+            get(this.state.selectedObject, 'object_type') || get(this.state.selectedObject, 'type');
           const displayName = `${this.state.selectedObject.name} (type: ${objectType})`;
           const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${appendValue}`;
           return `@${author} added ${currentField} (${langReadable}):\n[${displayName}](${objectUrl})${
