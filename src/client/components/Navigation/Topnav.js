@@ -38,6 +38,7 @@ import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
 import { pendingSearch } from '../../search/Search';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
 
 import './Topnav.less';
 
@@ -56,6 +57,7 @@ import './Topnav.less';
   }),
   {
     searchObjectsAutoCompete,
+    setActiveFilters: setFiltersAndLoad,
     searchAutoComplete,
     getUserMetadata,
     searchUsersAutoCompete,
@@ -80,6 +82,7 @@ class Topnav extends React.Component {
     searchAutoComplete: PropTypes.func.isRequired,
     getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
+    setActiveFilters: PropTypes.func.isRequired,
     /* passed props */
     username: PropTypes.string,
     onMenuItemClick: PropTypes.func,
@@ -435,6 +438,7 @@ class Topnav extends React.Component {
     switch (searchData.type) {
       case 'wobject':
         redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchBarValue}`;
+        this.props.setActiveFilters({ searchString: searchBarValue });
         break;
       case 'user':
         redirectUrl = `/discover/${searchBarValue.replace('@', '')}`;

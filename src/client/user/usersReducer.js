@@ -36,7 +36,7 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
-    case actions.GET_ACCOUNT.SUCCESS:
+    case actions.GET_ACCOUNT.SUCCESS: {
       return {
         ...state,
         users: {
@@ -50,6 +50,7 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
+    }
     case actions.GET_ACCOUNT.ERROR:
       return {
         ...state,

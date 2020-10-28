@@ -6,7 +6,12 @@ import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import VisibilitySensor from 'react-visibility-sensor';
-import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
+import {
+  dropCategory,
+  isBannedPost,
+  replaceBotWithGuestName,
+  getPostHashtags,
+} from '../helpers/postHelpers';
 import PostContent from './PostContent';
 import Comments from '../comments/Comments';
 import { getFacebookShareURL, getTwitterShareURL } from '../helpers/socialProfiles';
@@ -96,7 +101,7 @@ class PostModal extends React.Component {
       author: authorDetails,
       shownPostContents,
     } = this.props;
-    const { permlink, title, url } = currentShownPost;
+    const { permlink, title, url, wobjects } = currentShownPost;
     const author = currentShownPost.guestInfo
       ? currentShownPost.guestInfo.userId
       : currentShownPost.author;
@@ -105,9 +110,11 @@ class PostModal extends React.Component {
       dropCategory(url),
       currentShownPost.guestInfo,
     )}`;
+    const postHashtags = getPostHashtags(wobjects);
+    const socialHashtags = [...postHashtags, 'waivio', 'hive'];
     const shareTextSocial = `"${encodeURIComponent(title)}" by @${author}`;
 
-    const twitterShareURL = getTwitterShareURL(shareTextSocial, postURL);
+    const twitterShareURL = getTwitterShareURL(shareTextSocial, postURL, socialHashtags);
     const facebookShareURL = getFacebookShareURL(postURL);
     const signature = get(authorDetails, 'posting_json_metadata.profile.signature', null);
 

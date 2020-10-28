@@ -37,6 +37,7 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import { REWARD } from '../../../common/constants/rewards';
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 import { saveSettings, openLinkHiveAccountModal } from '../../settings/settingsActions';
+import { createQuery } from '../../helpers/apiHelpers';
 
 import './Transfer.less';
 
@@ -275,6 +276,7 @@ export default class Transfer extends React.Component {
       if (!errors) {
         const transferQuery = {
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
+          memo: {},
         };
         if (guestUserRegex.test(values.to)) {
           transferQuery.to = BANK_ACCOUNT;
@@ -284,12 +286,19 @@ export default class Transfer extends React.Component {
           if (values.memo) transferQuery.memo = values.memo;
         }
 
-        if (app) transferQuery.memo = { app };
-        if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (memo) {
           transferQuery.memo = { id: memo };
           if (values.memo) transferQuery.memo.message = values.memo;
         }
+
+        if (app) transferQuery.memo = { ...transferQuery.memo, app };
+        if (values.to && transferQuery.memo.id === REWARD.guestTransfer)
+          transferQuery.memo = {
+            ...transferQuery.memo,
+            to: values.to,
+          };
+        if (app && overpaymentRefund && isGuest) transferQuery.app = app;
+
         transferQuery.memo = JSON.stringify(transferQuery.memo);
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
@@ -313,9 +322,7 @@ export default class Transfer extends React.Component {
           });
         } else {
           const win = window.open(
-            `https://hivesigner.com/sign/transfer?amount=${transferQuery.amount}&to=${
-              transferQuery.to
-            }${transferQuery.memo ? `&memo=${transferQuery.memo}` : ''}`,
+            `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
             '_blank',
           );
           win.focus();
@@ -581,7 +588,10 @@ export default class Transfer extends React.Component {
               defaultMessage="Your funds transaction will be processed through WaivioBank service. WaivioBank doesn't take any fees."
             />
           )}
-          <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
+          <Form.Item
+            className="Transfer__amount-wrap"
+            label={<FormattedMessage id="amount" defaultMessage="Amount" />}
+          >
             <InputGroup className="Transfer__amount">
               {getFieldDecorator('amount', {
                 trigger: '',
@@ -620,7 +630,9 @@ export default class Transfer extends React.Component {
                 </span>
               )}
             </InputGroup>
-            <Form.Item>{isMobile && currencyPrefix}</Form.Item>
+          </Form.Item>
+          <Form.Item>{isMobile && currencyPrefix}</Form.Item>
+          <Form.Item>
             {authenticated && (
               <FormattedMessage
                 id="balance_amount"
@@ -638,6 +650,8 @@ export default class Transfer extends React.Component {
                 }}
               />
             )}
+          </Form.Item>
+          <Form.Item>
             <div>
               <FormattedMessage
                 id="estimated_value"

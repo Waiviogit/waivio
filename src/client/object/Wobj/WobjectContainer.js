@@ -19,7 +19,7 @@ import { clearObjectFromStore, getObject } from '../wobjectsActions';
 import { getAlbums, resetGallery, addAlbumToStore } from '../ObjectGallery/galleryActions';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
-import { setCatalogBreadCrumbs, setWobjectForBreadCrumbs } from '../wobjActions';
+import { setCatalogBreadCrumbs, setNestedWobject } from '../wobjActions';
 import { appendObject } from '../appendActions';
 import Wobj from './Wobj';
 import Error404 from '../../statics/Error404';
@@ -41,7 +41,7 @@ import NotFound from '../../statics/NotFound';
   {
     clearObjectFromStore,
     setCatalogBreadCrumbs,
-    setWobjectForBreadCrumbs,
+    setNestedWobject,
     getObject,
     resetGallery,
     getAlbums,
@@ -65,7 +65,7 @@ export default class WobjectContainer extends React.Component {
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     clearObjectFromStore: PropTypes.func,
-    setWobjectForBreadCrumbs: PropTypes.func,
+    setNestedWobject: PropTypes.func,
     setCatalogBreadCrumbs: PropTypes.func,
     locale: PropTypes.string,
     getAlbums: PropTypes.func,
@@ -83,7 +83,7 @@ export default class WobjectContainer extends React.Component {
     wobject: {},
     clearObjectFromStore: () => {},
     setCatalogBreadCrumbs: () => {},
-    setWobjectForBreadCrumbs: () => {},
+    setNestedWobject: () => {},
     appendObject: () => {},
     addAlbumToStore: () => {},
   };
@@ -94,13 +94,11 @@ export default class WobjectContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    const isPage = props.match.params[0] === OBJECT_TYPE.PAGE;
     this.state = {
       isEditMode:
         props.wobject.type === OBJECT_TYPE.PAGE &&
         props.authenticated &&
         !props.wobject[objectFields.pageContent],
-      hasLeftSidebar: !isPage || (isPage && props.location.hash),
     };
   }
 
@@ -112,19 +110,13 @@ export default class WobjectContainer extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.match.params[0] !== this.props.match.params[0]) {
-      this.setState({ hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE });
-    }
-  }
-
   componentDidUpdate(prevProps) {
     const { authenticatedUserName, match, locale } = this.props;
     if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
       this.props.resetGallery();
       this.props.clearObjectFromStore();
       this.props.setCatalogBreadCrumbs([]);
-      this.props.setWobjectForBreadCrumbs({});
+      this.props.setNestedWobject({});
       this.props.getObject(match.params.name, authenticatedUserName);
     }
   }
@@ -132,7 +124,7 @@ export default class WobjectContainer extends React.Component {
   componentWillUnmount() {
     this.props.clearObjectFromStore();
     this.props.setCatalogBreadCrumbs([]);
-    this.props.setWobjectForBreadCrumbs({});
+    this.props.setNestedWobject({});
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
@@ -161,7 +153,7 @@ export default class WobjectContainer extends React.Component {
       isFetching,
       history,
     } = this.props;
-    const { isEditMode, hasLeftSidebar } = this.state;
+    const { isEditMode } = this.state;
     const objectName = getObjectName(wobject);
 
     if (failed) {
@@ -190,7 +182,6 @@ export default class WobjectContainer extends React.Component {
           isFetching={isFetching}
           history={history}
           isEditMode={isEditMode}
-          hasLeftSidebar={hasLeftSidebar}
           toggleViewEditMode={this.toggleViewEditMode}
           objectName={objectName}
           appendAlbum={this.appendAlbum}

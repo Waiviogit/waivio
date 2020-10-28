@@ -29,6 +29,7 @@ const PropositionListContainer = ({
   const [currentProposition, setCurrentProposition] = useState([]);
   const [proposition, setProposition] = useState([]);
   const [isAssign, setIsAssign] = useState(false);
+
   const getPropositions = reqData => {
     setLoadingPropositions(true);
     ApiClient.getPropositions(reqData).then(data => {

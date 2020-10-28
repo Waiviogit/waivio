@@ -35,6 +35,12 @@
       min-height: 150px !important;
     }
 
+    &__wobj {
+      @media @small {
+        display: block;
+      }
+    }
+
     @media @medium {
       display: block;
     }
@@ -47,6 +53,23 @@
     padding-left: 20px;
 
     @media @small {
+      display: block;
+    }
+
+    &__wobj {
+      @media @medium {
+        display: block;
+      }
+    }
+  }
+
+  .wobjRightContainer {
+    float: right;
+    display: none;
+    width: @right-width;
+    padding-left: 20px;
+
+    @media @medium {
       display: block;
     }
   }

@@ -1,6 +1,6 @@
 import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { get, isEmpty, map, filter, max, min, some } from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -9,40 +9,31 @@ import { sortListItemsBy } from '../wObjectHelper';
 import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
-import { getObject } from '../../../waivioApi/ApiClient';
-import {
-  getSuitableLanguage,
-  getAuthenticatedUserName,
-  getWobjectBreadCrumbs,
-} from '../../reducers';
+import { getObjectLists, getSuitableLanguage, getWobjectNested } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { getPermLink, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
-import BodyContainer from '../../containers/Story/BodyContainer';
+import { getLastPermlinksFromHash, parseWobjectField } from '../../helpers/wObjectHelper';
 import Loading from '../../components/Icon/Loading';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Campaign from '../../rewards/Campaign/Campaign';
 import CatalogSorting from './CatalogSorting/CatalogSorting';
 import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
-import { setWobjectForBreadCrumbs } from '../wobjActions';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
+import { setListItems, setNestedWobject } from '../wobjActions';
+import { getObject } from '../../../waivioApi/ApiClient';
 import './CatalogWrap.less';
 
 const CatalogWrap = props => {
-  const dispatch = useDispatch();
-  const locale = useSelector(getSuitableLanguage);
-  const userName = useSelector(getAuthenticatedUserName);
-  const currentWobject = useSelector(getWobjectBreadCrumbs);
+  const { userName, listItems, wobjectNested, locale } = props;
+
   const [loadingPropositions, setLoadingPropositions] = useState(true);
   const [propositions, setPropositions] = useState([]);
   const [sort, setSorting] = useState('recency');
-  const [listItems, setListItems] = useState([]);
 
-  const getPropositions = ({ match, requiredObject, sorting }) => {
+  const getPropositions = ({ username, match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
-    console.log('propos');
     ApiClient.getPropositions({
-      userName,
+      username,
       match,
       requiredObject,
       sort: 'reward',
@@ -59,11 +50,13 @@ const CatalogWrap = props => {
       wobject,
       match,
       location: { hash },
+      setLists,
+      setNestedWobj,
     } = props;
 
     if (!isEmpty(wobject)) {
       if (hash) {
-        const pathUrl = getPermLink(hash);
+        const pathUrl = getLastPermlinksFromHash(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
           const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
@@ -71,12 +64,12 @@ const CatalogWrap = props => {
           } else {
             setLoadingPropositions(false);
           }
-          setListItems(wObject.listItems);
-          dispatch(setWobjectForBreadCrumbs(wObject));
+          setLists(wObject.listItems);
+          setNestedWobj(wObject);
         });
       } else {
         const requiredObject = get(wobject, ['parent', 'author_permlink']);
-        setListItems(wobject.listItems);
+        setLists(wobject.listItems);
         getPropositions({ userName, match, requiredObject, sort });
       }
     }
@@ -84,23 +77,13 @@ const CatalogWrap = props => {
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
-    setListItems(sortListItemsBy(currentList, 'recency'));
+    props.setLists(sortListItemsBy(currentList, 'recency'));
   };
 
   /**
    *
-   * @param companyAuthor
-   * @param companyPermlink
-   * @param resPermlink
-   * @param objPermlink
-   * @param companyId
-   * @param primaryObjectName
-   * @param secondaryObjectName
-   * @param amount
-   * @param proposition
-   * @param proposedWobj
-   * @param username
-   * @param currencyId
+   * @param propositionsObject
+   * @param listItem
    */
 
   const renderProposition = (propositionsObject, listItem) =>
@@ -149,7 +132,7 @@ const CatalogWrap = props => {
     } else if (objects.length && isMatchedPermlinks) {
       item = renderProposition(propositions, listItem);
     } else {
-      item = <ObjectCardView wObject={listItem} />;
+      item = <ObjectCardView wObject={listItem} inList />;
     }
     return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
@@ -181,43 +164,40 @@ const CatalogWrap = props => {
   const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
     setSorting(sortType);
-    setListItems(sortListItemsBy(listItems, sortType, sortOrder));
+    props.setLists(sortListItemsBy(listItems, sortType, sortOrder));
   };
 
-  const obj = isEmpty(currentWobject) ? wobject : currentWobject;
+  const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
 
   return (
     <div>
-      {!hasType(wobject, OBJ_TYPE.PAGE) && (
-        <React.Fragment>
-          {!isEmpty(propositions) && renderCampaign(propositions)}
-          {isEditMode && (
-            <div className="CatalogWrap__add-item">
-              <AddItemModal wobject={obj} onAddItem={handleAddItem} />
+      <React.Fragment>
+        {!isEmpty(propositions) && renderCampaign(propositions)}
+        {isEditMode && (
+          <div className="CatalogWrap__add-item">
+            <AddItemModal wobject={obj} onAddItem={handleAddItem} />
+          </div>
+        )}
+        {loadingPropositions || isEmpty(wobject) ? (
+          <Loading />
+        ) : (
+          <React.Fragment>
+            <div className="CatalogWrap__breadcrumb">
+              <CatalogBreadcrumb intl={intl} wobject={wobject} />
             </div>
-          )}
-          {loadingPropositions || isEmpty(wobject) ? (
-            <Loading />
-          ) : (
-            <React.Fragment>
-              <div className="CatalogWrap__breadcrumb">
-                <CatalogBreadcrumb intl={intl} wobject={wobject} />
-              </div>
-              <div className="CatalogWrap__sort">
-                <CatalogSorting
-                  sort={sort}
-                  currWobject={wobject}
-                  handleSortChange={handleSortChange}
-                />
-              </div>
-              <div className="CatalogWrap">
-                <div>{getMenuList()}</div>
-              </div>
-            </React.Fragment>
-          )}
-        </React.Fragment>
-      )}
-      <BodyContainer full body={wobject.pageContent} />
+            <div className="CatalogWrap__sort">
+              <CatalogSorting
+                sort={sort}
+                currWobject={wobject}
+                handleSortChange={handleSortChange}
+              />
+            </div>
+            <div className="CatalogWrap">
+              <div>{getMenuList()}</div>
+            </div>
+          </React.Fragment>
+        )}
+      </React.Fragment>
     </div>
   );
 };
@@ -228,12 +208,37 @@ CatalogWrap.propTypes = {
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
   isEditMode: PropTypes.bool.isRequired,
+  userName: PropTypes.string.isRequired,
+  wobjectNested: PropTypes.shape().isRequired,
+  locale: PropTypes.string.isRequired,
+  listItems: PropTypes.shape({}).isRequired,
+  setLists: PropTypes.func.isRequired,
+  setNestedWobj: PropTypes.func.isRequired,
 };
 
 CatalogWrap.defaultProps = {
   wobject: {},
-  locale: 'en-US',
+  isEditMode: false,
   userName: '',
+  locale: '',
+  listItems: [],
+  setLists: () => {},
+  setNestedWobj: () => {},
 };
 
-export default compose(injectIntl, withRouter)(CatalogWrap);
+const mapStateToProps = state => ({
+  listItems: getObjectLists(state),
+  wobjectNested: getWobjectNested(state),
+  locale: getSuitableLanguage(state),
+});
+
+const mapDispatchToProps = {
+  setLists: setListItems,
+  setNestedWobj: setNestedWobject,
+};
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  injectIntl,
+  withRouter,
+)(CatalogWrap);

@@ -738,6 +738,7 @@ export const getHistory = ({
   fraudSuspicion,
   locale = 'en-US',
   reservationPermlink,
+  notifyAuthor,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -748,7 +749,6 @@ export const getHistory = ({
     };
     /* If we have userName, we sent request from history page. On history page we should display all propositions: with messages and without */
     /* If we have guideName, we sent request from messages page. On this page we should display only propositions with messages */
-
     if (userName) {
       reqData.userName = userName;
       reqData.onlyWithMessages = false;
@@ -761,6 +761,7 @@ export const getHistory = ({
     if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
     if (!isEmpty(campaignNames)) reqData.campaignNames = campaignNames;
     if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
+    if (notifyAuthor) reqData.guideName = notifyAuthor;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
@@ -1133,7 +1134,6 @@ export const broadcastGuestOperation = async (operationId, data) => {
         userName: userData.userData.name,
       };
     }
-
     return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
       method: 'POST',
       headers: { ...headers, 'access-token': userData.token },
@@ -1560,5 +1560,60 @@ export const sendSentryNotification = async () => {
     return { error };
   }
 };
+
+export const getReferralDetails = () =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.referrals}/details?appName=${config.appName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getUserIsBlackListed = username =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.referrals}/check-user-app-blacklist?userName=${username}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getUserStatusCards = (username, sort = 'recency', skip = 0, limit = 10) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.referrals}/status?userName=${username}&skip=${skip}&limit=${limit}&sort=${sort}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getStatusSponsoredRewards = (referral, userName, type = 'referral_server_fee') =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.payments}${config.payables}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ referral, userName, type }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export default null;

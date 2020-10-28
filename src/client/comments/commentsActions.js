@@ -267,7 +267,6 @@ export const sendCommentMessages = (
     parentAuthor = parentPost.author;
   }
   const { auth, comments } = getState();
-
   if (!auth.isAuthenticated) {
     return dispatch(notify('You have to be logged in to comment', 'error'));
   }

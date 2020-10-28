@@ -212,6 +212,8 @@ const Proposition = ({
             getMessageHistory={getMessageHistory}
             blacklistUsers={blacklistUsers}
             sortFraudDetection={sortFraudDetection}
+            userFollowing={proposition.guide.youFollows}
+            objectFollowing={proposition.required_object.followsObject}
           />
         ) : (
           <React.Fragment>
