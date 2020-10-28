@@ -135,3 +135,12 @@ export const getFraudSuspicion = ({ fraudSuspicion, sort, skip }) => (dispatch, 
     payload: ApiClient.getHistory({ guideName, fraudSuspicion, sort, skip }),
   });
 };
+
+export const GET_PROPOSITIONS_LIST_CONTAINER = createAsyncActionType(
+  '@rewards/GET_PROPOSITIONS_LIST_CONTAINER',
+);
+
+export const getPropositionsForListContainer = reqData => ({
+  type: GET_PROPOSITIONS_LIST_CONTAINER.ACTION,
+  payload: ApiClient.getPropositions(reqData),
+});

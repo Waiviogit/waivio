@@ -5,12 +5,17 @@ import { withRouter } from 'react-router-dom';
 import { filter, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { message } from 'antd';
-import { getAuthenticatedUser, getLocale } from '../../../reducers';
+import {
+  getAuthenticatedUser,
+  getIsLoadingPropositions,
+  getLocale,
+  getPropositionCampaign,
+} from '../../../reducers';
 import Loading from '../../../components/Icon/Loading';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
 import { assignProposition, declineProposition } from '../../../user/userActions';
-import * as ApiClient from '../../../../waivioApi/ApiClient';
+import { getPropositionsForListContainer } from '../../rewardsActions';
 
 const PropositionListContainer = ({
   wobject,
@@ -22,43 +27,51 @@ const PropositionListContainer = ({
   user,
   assignPropos,
   declinePropos,
+  catalogGetMenuList,
+  catalogHandleSortChange,
+  catalogSort,
+  // catalogSetSorting,
+  isCatalogWrap,
+  getProposListContainer,
+  campaigns,
+  isLoadingPropositions,
 }) => {
-  const [loadingPropositions, setLoadingPropositions] = useState(false);
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [allPropositions, setAllPropositions] = useState([]);
   const [currentProposition, setCurrentProposition] = useState([]);
   const [proposition, setProposition] = useState([]);
   const [isAssign, setIsAssign] = useState(false);
 
-  const getPropositions = reqData => {
-    setLoadingPropositions(true);
-    ApiClient.getPropositions(reqData).then(data => {
-      const currentPropos = filter(
-        data.campaigns,
-        obj => obj.required_object.author_permlink === match.params.name,
-      );
-      setAllPropositions(data.campaigns);
-      setLoadingPropositions(false);
-      setCurrentProposition(currentPropos[0]);
-    });
-  };
-
   useEffect(() => {
     if (wobject && userName) {
-      const requiredObject =
-        get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
-      const primaryObject = get(wobject, ['author_permlink']);
-      const reqData = {
-        userName,
-        match,
-        locale,
-      };
-      if (requiredObject) {
-        reqData.requiredObject = requiredObject;
+      let requiredObject;
+      let primaryObject;
+
+      if (isCatalogWrap) {
+        const reqData = {
+          userName,
+          match,
+          requiredObject: get(wobject, ['author_permlink']),
+          sort: 'reward',
+          locale,
+        };
+        getProposListContainer(reqData);
       } else {
-        reqData.primaryObject = primaryObject;
+        const reqData = {
+          userName,
+          match,
+          locale,
+        };
+        requiredObject = get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
+        primaryObject = get(wobject, ['author_permlink']);
+
+        if (requiredObject) {
+          reqData.requiredObject = requiredObject;
+        } else {
+          reqData.primaryObject = primaryObject;
+        }
+        getProposListContainer(reqData);
       }
-      getPropositions(reqData);
     }
   }, [wobject, userName]);
 
@@ -131,6 +144,15 @@ const PropositionListContainer = ({
       });
   };
 
+  useEffect(() => {
+    const currentPropos = filter(
+      campaigns,
+      obj => obj.required_object.author_permlink === match.params.name,
+    );
+    setAllPropositions(campaigns);
+    setCurrentProposition(currentPropos[0]);
+  }, [campaigns]);
+
   const discardProposition = ({
     companyAuthor,
     companyPermlink,
@@ -170,11 +192,15 @@ const PropositionListContainer = ({
 
   return (
     <React.Fragment>
-      {loadingPropositions ? (
+      {isLoadingPropositions ? (
         <Loading />
       ) : (
         <React.Fragment>
           <PropositionList
+            isCatalogWrap={isCatalogWrap}
+            catalogGetMenuList={catalogGetMenuList}
+            catalogHandleSortChange={catalogHandleSortChange}
+            catalogSort={catalogSort}
             wobject={wobject}
             allPropositions={allPropositions}
             currentProposition={currentProposition}
@@ -204,6 +230,14 @@ PropositionListContainer.propTypes = {
   user: PropTypes.shape(),
   assignPropos: PropTypes.func,
   declinePropos: PropTypes.func,
+  catalogGetMenuList: PropTypes.func,
+  catalogHandleSortChange: PropTypes.func,
+  // catalogSetSorting: PropTypes.func,
+  catalogSort: PropTypes.string,
+  isCatalogWrap: PropTypes.bool,
+  getProposListContainer: PropTypes.func,
+  campaigns: PropTypes.shape(),
+  isLoadingPropositions: PropTypes.shape(),
 };
 
 PropositionListContainer.defaultProps = {
@@ -212,15 +246,26 @@ PropositionListContainer.defaultProps = {
   user: {},
   assignPropos: () => {},
   declinePropos: () => {},
+  isCatalogWrap: false,
+  catalogGetMenuList: () => {},
+  catalogHandleSortChange: () => {},
+  // catalogSetSorting: () => {},
+  catalogSort: '',
+  getProposListContainer: () => {},
+  campaigns: {},
+  isLoadingPropositions: false,
 };
 
 export default connect(
   state => ({
     locale: getLocale(state),
     user: getAuthenticatedUser(state),
+    campaigns: getPropositionCampaign(state),
+    isLoadingPropositions: getIsLoadingPropositions(state),
   }),
   {
     assignPropos: assignProposition,
     declinePropos: declineProposition,
+    getProposListContainer: getPropositionsForListContainer,
   },
 )(withRouter(injectIntl(PropositionListContainer)));

@@ -253,6 +253,7 @@ export const getWobjectIsFatching = state => fromObject.getWobjectIsFatching(sta
 export const getBreadCrumbs = state => fromObject.getBreadCrumbs(state.object);
 export const getWobjectNested = state => fromObject.getWobjectNested(state.object);
 export const getObjectLists = state => fromObject.getObjectLists(state.object);
+export const getIsNestedWobject = state => fromObject.getIsNestedWobject(state.object);
 
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>
@@ -303,6 +304,9 @@ export const getHasMoreFollowingRewards = state =>
 export const getHasMoreFraudSuspicionData = state =>
   fromRewards.getHasMoreFraudSuspicionData(state.rewards);
 export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
+export const getPropositionCampaign = state => fromRewards.getPropositionCampaign(state.rewards);
+export const getIsLoadingPropositions = state =>
+  fromRewards.getIsLoadingPropositions(state.rewards);
 
 export const getCampaignServerPercent = state =>
   fromReferral.getCampaignServerPercent(state.referral);

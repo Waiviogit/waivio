@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { get, isEmpty, map } from 'lodash';
-import { Button, Icon } from 'antd';
-import ObjectCardView from '../../../objectCard/ObjectCardView';
-import Proposition from '../Proposition';
+import { get, map, max, min } from 'lodash';
+import propositionListFromCatalog from './propositionListFromCatalog';
+import defaultPropositionList from './defaultPropositionList';
+import { getIsNestedWobject } from '../../../reducers';
 
 const PropositionList = ({
   allPropositions,
@@ -20,76 +21,60 @@ const PropositionList = ({
   userName,
   loadingAssignDiscard,
   isAssign,
+  isCatalogWrap,
+  catalogGetMenuList,
+  catalogHandleSortChange,
+  catalogSort,
+  isGetNested,
 }) => {
-  const minReward = get(currentProposition, ['min_reward'], 0);
-  const maxReward = get(currentProposition, ['max_reward'], 0);
-  const rewardPrise = `${minReward.toFixed(2)} USD`;
-  const rewardMax = `${maxReward.toFixed(2)} USD`;
+  let minReward;
+  let maxReward;
+  let rewardPrise;
+  let rewardMax;
+
+  if (isCatalogWrap) {
+    minReward = allPropositions
+      ? min(map(allPropositions, proposition => proposition.reward))
+      : null;
+    maxReward = allPropositions
+      ? max(map(allPropositions, proposition => proposition.reward))
+      : null;
+    rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
+    rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
+  } else {
+    minReward = get(currentProposition, ['min_reward'], 0);
+    maxReward = get(currentProposition, ['max_reward'], 0);
+    rewardPrise = `${minReward.toFixed(2)} USD`;
+    rewardMax = `${maxReward.toFixed(2)} USD`;
+  }
+
+  const data = {
+    intl,
+    wobject,
+    currentProposition,
+    goToProducts,
+    maxReward,
+    minReward,
+    rewardPrise,
+    rewardMax,
+    allPropositions,
+    match,
+    assignPropositionHandler,
+    discardProposition,
+    userName,
+    loadingAssignDiscard,
+    isAssign,
+    user,
+    history,
+    catalogGetMenuList,
+    catalogHandleSortChange,
+    catalogSort,
+    isGetNested,
+  };
 
   return (
     <React.Fragment>
-      {wobject && isEmpty(wobject.parent) && !isEmpty(currentProposition) ? (
-        <div>
-          <ObjectCardView wObject={wobject} passedParent={currentProposition} />
-          <div className="Campaign__button" role="presentation" onClick={goToProducts}>
-            <Button type="primary" size="large">
-              {maxReward === minReward ? (
-                <React.Fragment>
-                  <span>
-                    {intl.formatMessage({
-                      id: 'rewards_details_earn',
-                      defaultMessage: 'Earn',
-                    })}
-                  </span>
-                  <span>
-                    <span className="fw6 ml1">{rewardPrise}</span>
-                    <Icon type="right" />
-                  </span>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <span>
-                    {intl.formatMessage({
-                      id: 'rewards_details_earn_up_to',
-                      defaultMessage: 'Earn up to',
-                    })}
-                  </span>
-                  <span>
-                    <span className="fw6 ml1">{`${rewardMax}`}</span>
-                    <Icon type="right" />
-                  </span>
-                </React.Fragment>
-              )}
-            </Button>
-          </div>
-        </div>
-      ) : (
-        map(allPropositions, propos =>
-          map(
-            propos.objects,
-            wobj =>
-              (get(wobj, ['object', 'author_permlink']) === match.params.name ||
-                get(wobj, ['object', 'parent', 'author_permlink']) === match.params.name) && (
-                <Proposition
-                  proposition={propos}
-                  wobj={wobj.object}
-                  wobjPrice={wobj.reward}
-                  assignCommentPermlink={wobj.permlink}
-                  assignProposition={assignPropositionHandler}
-                  discardProposition={discardProposition}
-                  authorizedUserName={userName}
-                  loading={loadingAssignDiscard}
-                  key={`${wobj.object.author_permlink}`}
-                  assigned={wobj.assigned}
-                  history={history}
-                  isAssign={isAssign}
-                  match={match}
-                  user={user}
-                />
-              ),
-          ),
-        )
-      )}
+      {isCatalogWrap ? propositionListFromCatalog(data) : defaultPropositionList(data)}
     </React.Fragment>
   );
 };
@@ -108,6 +93,11 @@ PropositionList.propTypes = {
   userName: PropTypes.string.isRequired,
   loadingAssignDiscard: PropTypes.bool,
   isAssign: PropTypes.bool,
+  isCatalogWrap: PropTypes.bool,
+  catalogGetMenuList: PropTypes.func,
+  catalogHandleSortChange: PropTypes.func,
+  catalogSort: PropTypes.string,
+  isGetNested: PropTypes.bool,
 };
 
 PropositionList.defaultProps = {
@@ -120,6 +110,13 @@ PropositionList.defaultProps = {
   goToProducts: () => {},
   discardProposition: () => {},
   assignPropositionHandler: () => {},
+  isCatalogWrap: false,
+  catalogGetMenuList: () => {},
+  catalogHandleSortChange: () => {},
+  catalogSort: '',
+  isGetNested: false,
 };
 
-export default injectIntl(PropositionList);
+export default connect(state => ({
+  isGetNested: getIsNestedWobject(state),
+}))(injectIntl(PropositionList));
