@@ -30,15 +30,15 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
   const authenticated = useSelector(getIsAuthenticated);
   const authenticatedUserName = useSelector(getAuthenticatedUserName);
   // local state
-  const [menuState, dispatch] = useReducer(
+  const [menuState, setMenuState] = useReducer(
     sidebarMenuReducer,
     mapValues(menuConfig, menuSection => ({ isCollapsed: menuSection.isCollapsed })),
   );
 
-  const dispatchFunk = useDispatch();
+  const dispatch = useDispatch();
 
   const toggleBlock = section => () =>
-    dispatch({ type: actionType.TOGGLE_BLOCK, section: section.name });
+    setMenuState({ type: actionType.TOGGLE_BLOCK, section: section.name });
 
   const checkIsActive = (match, location) => {
     if (!match) return false;
@@ -46,7 +46,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
   };
 
   const handleGetObject = permlink => {
-    dispatchFunk(getObject(permlink, authenticatedUserName));
+    dispatch(getObject(permlink, authenticatedUserName));
   };
 
   const getSectionTitle = menuSection =>
