@@ -744,7 +744,7 @@ export default class AppendForm extends Component {
   handleSubmit = event => {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
-
+    console.log(currentField);
     if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
     } else if (objectFields.newsFilter === currentField) {
