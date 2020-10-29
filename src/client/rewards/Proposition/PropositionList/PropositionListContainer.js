@@ -30,24 +30,25 @@ const PropositionListContainer = ({
   catalogGetMenuList,
   catalogHandleSortChange,
   catalogSort,
-  // catalogSetSorting,
   isCatalogWrap,
   getProposListContainer,
   campaigns,
   isLoadingPropositions,
+  currentHash,
 }) => {
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [allPropositions, setAllPropositions] = useState([]);
   const [currentProposition, setCurrentProposition] = useState([]);
   const [proposition, setProposition] = useState([]);
   const [isAssign, setIsAssign] = useState(false);
+  const hashArr = currentHash.split('/');
 
   useEffect(() => {
     if (wobject && userName) {
       let requiredObject;
       let primaryObject;
 
-      if (isCatalogWrap) {
+      if (isCatalogWrap && hashArr[0] === currentHash) {
         const reqData = {
           userName,
           match,
@@ -73,7 +74,7 @@ const PropositionListContainer = ({
         getProposListContainer(reqData);
       }
     }
-  }, [wobject, userName]);
+  }, [wobject, userName, currentHash]);
 
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {
@@ -232,12 +233,12 @@ PropositionListContainer.propTypes = {
   declinePropos: PropTypes.func,
   catalogGetMenuList: PropTypes.func,
   catalogHandleSortChange: PropTypes.func,
-  // catalogSetSorting: PropTypes.func,
   catalogSort: PropTypes.string,
   isCatalogWrap: PropTypes.bool,
   getProposListContainer: PropTypes.func,
   campaigns: PropTypes.shape(),
   isLoadingPropositions: PropTypes.shape(),
+  currentHash: PropTypes.string,
 };
 
 PropositionListContainer.defaultProps = {
@@ -249,11 +250,11 @@ PropositionListContainer.defaultProps = {
   isCatalogWrap: false,
   catalogGetMenuList: () => {},
   catalogHandleSortChange: () => {},
-  // catalogSetSorting: () => {},
   catalogSort: '',
   getProposListContainer: () => {},
   campaigns: {},
   isLoadingPropositions: false,
+  currentHash: '',
 };
 
 export default connect(

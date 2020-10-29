@@ -38,14 +38,14 @@ const CatalogWrap = props => {
     clearNestedWobjFlag,
   } = props;
 
-  const [sort, setSorting] = useState('recency');
+  const [sortBy, setSortingBy] = useState('recency');
 
   useEffect(() => {
     if (!isEmpty(wobject)) {
       if (hash) {
         const pathUrl = getLastPermlinksFromHash(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
-          setLists(wObject.listItems);
+          setLists(get(wObject, 'listItems', []));
           setNestedWobj(wObject);
         });
       } else {
@@ -101,7 +101,7 @@ const CatalogWrap = props => {
 
   const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
-    setSorting(sortType);
+    setSortingBy(sortType);
     setLists(sortListItemsBy(listItems, sortType, sortOrder));
   };
 
@@ -115,8 +115,9 @@ const CatalogWrap = props => {
           userName={userName}
           catalogGetMenuList={getMenuList}
           catalogHandleSortChange={handleSortChange}
-          catalogSort={sort}
+          catalogSort={sortBy}
           isCatalogWrap
+          currentHash={hash}
         />
         {isEditMode && (
           <div className="CatalogWrap__add-item">

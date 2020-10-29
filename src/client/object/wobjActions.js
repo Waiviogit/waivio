@@ -324,9 +324,8 @@ export const setNestedWobject = payload => ({
   payload,
 });
 
-export const clearIsGetNestedWobject = payload => ({
+export const clearIsGetNestedWobject = () => ({
   type: CLEAR_IS_GET_NESTED_WOBJECT,
-  payload,
 });
 
 export const setListItems = lists => ({
