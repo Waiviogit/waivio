@@ -744,18 +744,18 @@ export default class AppendForm extends Component {
   handleSubmit = event => {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
-
     if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
     } else if (objectFields.newsFilter === currentField) {
-      const { chosenLocale } = this.props;
+      const { chosenLocale, usedLocale } = this.props;
       const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(sub =>
         size(sub),
       );
       const ignoreList = map(this.state.ignoreList, o => o.id);
+      const locale = !isEmpty(chosenLocale) ? chosenLocale : usedLocale;
 
       if (!isEmpty(allowList) || !isEmpty(ignoreList))
-        this.onSubmit({ currentField, currentLocale: chosenLocale });
+        this.onSubmit({ currentField, currentLocale: locale });
       else {
         message.error(
           this.props.intl.formatMessage({

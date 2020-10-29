@@ -53,8 +53,12 @@
     }
 
     &--flex-wrapper {
-      display: flex;
+      display: unset;
       align-items: center;
+
+      @media @small {
+        display: flex;
+      }
     }
   }
 
