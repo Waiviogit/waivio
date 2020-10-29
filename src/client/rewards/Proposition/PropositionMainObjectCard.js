@@ -50,8 +50,8 @@ const PropositionMainObjectCard = ({
 );
 
 PropositionMainObjectCard.propTypes = {
-  intl: PropTypes.shape().isRequired,
-  wobject: PropTypes.shape().isRequired,
+  intl: PropTypes.shape(),
+  wobject: PropTypes.shape(),
   currentProposition: PropTypes.arrayOf(PropTypes.shape()),
   goToProducts: PropTypes.func,
   maxReward: PropTypes.number,
@@ -61,6 +61,8 @@ PropositionMainObjectCard.propTypes = {
 };
 
 PropositionMainObjectCard.defaultProps = {
+  intl: {},
+  wobject: {},
   currentProposition: [],
   goToProducts: () => {},
   maxReward: null,

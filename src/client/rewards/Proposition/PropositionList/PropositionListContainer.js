@@ -42,13 +42,14 @@ const PropositionListContainer = ({
   const [proposition, setProposition] = useState([]);
   const [isAssign, setIsAssign] = useState(false);
   const hashArr = currentHash.split('/');
+  const firstHash = get(hashArr, '[0]', '');
 
   useEffect(() => {
     if (wobject && userName) {
       let requiredObject;
       let primaryObject;
 
-      if (isCatalogWrap && hashArr[0] === currentHash) {
+      if (isCatalogWrap && firstHash === currentHash) {
         const reqData = {
           userName,
           match,

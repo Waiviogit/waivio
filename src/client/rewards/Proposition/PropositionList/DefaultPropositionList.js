@@ -4,7 +4,7 @@ import { get, isEmpty, map } from 'lodash';
 import PropositionMainObjectCard from '../PropositionMainObjectCard';
 import Proposition from '../Proposition';
 
-const defaultPropositionList = ({
+const DefaultPropositionList = ({
   intl,
   wobject,
   currentProposition,
@@ -62,9 +62,9 @@ const defaultPropositionList = ({
     )
   );
 
-defaultPropositionList.PropTypes = {
-  intl: PropTypes.shape().isRequired,
-  wobject: PropTypes.shape().isRequired,
+DefaultPropositionList.propTypes = {
+  intl: PropTypes.shape(),
+  wobject: PropTypes.shape(),
   currentProposition: PropTypes.arrayOf(PropTypes.shape()),
   goToProducts: PropTypes.func,
   maxReward: PropTypes.number,
@@ -75,17 +75,18 @@ defaultPropositionList.PropTypes = {
   match: PropTypes.shape(),
   assignPropositionHandler: PropTypes.func,
   discardProposition: PropTypes.func,
-  userName: PropTypes.string.isRequired,
+  userName: PropTypes.string,
   loadingAssignDiscard: PropTypes.bool,
   isAssign: PropTypes.bool,
   user: PropTypes.shape(),
-  history: PropTypes.shape().isRequired,
-  catalogGetMenuList: PropTypes.func,
-  catalogHandleSortChange: PropTypes.func,
-  catalogSort: PropTypes.string,
+  history: PropTypes.shape(),
 };
 
-defaultPropositionList.defaultProps = {
+DefaultPropositionList.defaultProps = {
+  intl: {},
+  wobject: {},
+  history: {},
+  userName: '',
   currentProposition: [],
   goToProducts: () => {},
   maxReward: null,
@@ -99,9 +100,6 @@ defaultPropositionList.defaultProps = {
   loadingAssignDiscard: false,
   isAssign: false,
   user: {},
-  catalogGetMenuList: () => {},
-  catalogHandleSortChange: () => {},
-  catalogSort: '',
 };
 
-export default defaultPropositionList;
+export default DefaultPropositionList;

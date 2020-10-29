@@ -7,7 +7,7 @@ import CatalogSorting from '../../../object/Catalog/CatalogSorting/CatalogSortin
 import Proposition from '../Proposition';
 import Loading from '../../../components/Icon/Loading';
 
-const propositionListFromCatalog = ({
+const PropositionListFromCatalog = ({
   intl,
   wobject,
   currentProposition,
@@ -92,7 +92,7 @@ const propositionListFromCatalog = ({
   </React.Fragment>
 );
 
-propositionListFromCatalog.PropTypes = {
+PropositionListFromCatalog.propTypes = {
   intl: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
   currentProposition: PropTypes.arrayOf(PropTypes.shape()),
@@ -113,9 +113,10 @@ propositionListFromCatalog.PropTypes = {
   catalogGetMenuList: PropTypes.func,
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string,
+  isGetNested: PropTypes.bool,
 };
 
-PropositionMainObjectCard.defaultProps = {
+PropositionListFromCatalog.defaultProps = {
   currentProposition: [],
   goToProducts: () => {},
   maxReward: null,
@@ -132,6 +133,7 @@ PropositionMainObjectCard.defaultProps = {
   catalogGetMenuList: () => {},
   catalogHandleSortChange: () => {},
   catalogSort: '',
+  isGetNested: false,
 };
 
-export default propositionListFromCatalog;
+export default PropositionListFromCatalog;

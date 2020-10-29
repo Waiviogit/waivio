@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { get, map, max, min } from 'lodash';
-import propositionListFromCatalog from './propositionListFromCatalog';
-import defaultPropositionList from './defaultPropositionList';
 import { getIsNestedWobject } from '../../../reducers';
+import PropositionListFromCatalog from './PropositionListFromCatalog';
+import DefaultPropositionList from './DefaultPropositionList';
 
 const PropositionList = ({
   allPropositions,
@@ -74,7 +74,11 @@ const PropositionList = ({
 
   return (
     <React.Fragment>
-      {isCatalogWrap ? propositionListFromCatalog(data) : defaultPropositionList(data)}
+      {isCatalogWrap ? (
+        <PropositionListFromCatalog {...data} />
+      ) : (
+        <DefaultPropositionList {...data} />
+      )}
     </React.Fragment>
   );
 };
