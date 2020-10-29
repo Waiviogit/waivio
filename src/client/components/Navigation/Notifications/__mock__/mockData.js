@@ -6,3 +6,10 @@ export const NOTIFICATION_CAMPAIGN_RESERVATION = {
   author: 'x6oc5',
   isReleased: false,
 };
+
+export const CLAIM_REWARD = {
+  type: 'claimReward',
+  account: 'test',
+  rewardHBD: 'test reward',
+  timestamp: 1600948177,
+};
