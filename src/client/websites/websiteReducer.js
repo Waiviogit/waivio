@@ -10,6 +10,7 @@ const initialState = {
   reports: {},
   ownWebsites: [],
   configurationWebsite: {},
+  administrators: [],
   loading: false,
 };
 
@@ -135,6 +136,13 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.GET_WEBSITE_ADMINISTRATORS.SUCCESS: {
+      return {
+        ...state,
+        administrators: action.payload,
+      };
+    }
+
     default: {
       return state;
     }
@@ -147,4 +155,5 @@ export const getWebsiteLoading = state => get(state, 'loading');
 export const getManage = state => get(state, 'manage');
 export const getReports = state => get(state, 'reports');
 export const getOwnWebsites = state => get(state, 'ownWebsites', []);
-export const getConfiguration = state => get(state, 'configurationWebsite', {})
+export const getConfiguration = state => get(state, 'configurationWebsite', {});
+export const getAdministrators = state => get(state, 'getAdministrators', {});

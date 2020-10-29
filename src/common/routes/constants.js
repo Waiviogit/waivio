@@ -83,7 +83,7 @@ export default {
     tabs: [
       'configuration',
       'settings',
-      'administrators',
+      'administrations',
       'moderators',
       'authorities',
       'objects',

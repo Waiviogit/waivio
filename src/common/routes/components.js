@@ -79,4 +79,7 @@ export default {
     import('../../client/websites/WebsiteTools/Configuration/WebsitesConfigurations'),
   ),
   FraudDetection: loableComponent(import('../../client/rewards/FraudDetection/FraudDetection')),
+  WebsitesAdministrators: loableComponent(
+    import('../../client/websites/WebsiteTools/Administrators/Administrators'),
+  ),
 };

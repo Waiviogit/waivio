@@ -167,6 +167,11 @@ const routes = {
           exact: true,
           component: Views.WebsitesConfigurations,
         },
+        {
+          path: '/administrations',
+          exact: true,
+          component: Views.WebsitesAdministrators,
+        },
       ],
     },
     {

@@ -7,8 +7,11 @@ import {
   deleteSite,
   getDomainList,
   getInfoForManagePage,
-  getWebsites, getWebsitesConfiguration,
-  getWebsitesReports, saveWebsitesConfiguration,
+  getWebsiteAdministrators,
+  getWebsites,
+  getWebsitesConfiguration,
+  getWebsitesReports,
+  saveWebsitesConfiguration,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, getParentDomain } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
@@ -144,14 +147,16 @@ export const getOwnWebsite = () => (dispatch, getState) => {
   });
 };
 
-export const GET_WEBSITE_CONFIGURATIONS = createAsyncActionType('@website/GET_WEBSITE_CONFIGURATIONS');
+export const GET_WEBSITE_CONFIGURATIONS = createAsyncActionType(
+  '@website/GET_WEBSITE_CONFIGURATIONS',
+);
 
 export const getWebConfiguration = site => ({
-    type: GET_WEBSITE_CONFIGURATIONS.ACTION,
-    payload: {
-      promise: getWebsitesConfiguration(site),
-    },
-  });
+  type: GET_WEBSITE_CONFIGURATIONS.ACTION,
+  payload: {
+    promise: getWebsitesConfiguration(site),
+  },
+});
 
 export const SAVE_WEBSITE_CONFIGURATIONS = createAsyncActionType(
   '@website/SAVE_WEBSITE_CONFIGURATIONS',
@@ -168,6 +173,21 @@ export const saveWebConfiguration = (host, configuration) => (dispatch, getState
         host,
         ...configuration,
       }),
+    },
+  });
+};
+
+export const GET_WEBSITE_ADMINISTRATORS = createAsyncActionType(
+  '@website/GET_WEBSITE_ADMINISTRATORS',
+);
+
+export const getWebAdministrators = host => (dispatch, getState) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: GET_WEBSITE_ADMINISTRATORS.ACTION,
+    payload: {
+      promise: getWebsiteAdministrators(host, userName),
     },
   });
 };

@@ -107,5 +107,6 @@
   "create": "/create",
   "checkAvailable": "/checkAvailable",
   "managePage": "/manage",
-  "configuration": "/configuration"
+  "configuration": "/configuration",
+  "administrators": "/administrators"
 }

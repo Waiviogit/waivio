@@ -6,16 +6,24 @@ import { connect } from 'react-redux';
 import { isEmpty, get, isArray } from 'lodash';
 import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
-import {getConfiguration, getWebsiteLoading} from '../../../reducers';
+import { getConfiguration, getWebsiteLoading } from '../../../reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import { getObjectName } from '../../../helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';
 import mapProvider from '../../../helpers/mapProvider';
-import {getWebConfiguration, saveWebConfiguration} from "../../websiteActions";
+import { getWebConfiguration, saveWebConfiguration } from '../../websiteActions';
 
-import './WebsitesConfigurations.less'
+import './WebsitesConfigurations.less';
 
-export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, match, config, saveWebConfig }) => {
+export const WebsitesConfigurations = ({
+  intl,
+  form,
+  loading,
+  getWebConfig,
+  match,
+  config,
+  saveWebConfig,
+}) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');
@@ -36,7 +44,7 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
       method: value => form.setFieldsValue({ [key]: value[0].src }),
     });
 
-  const getSelectedColor = type => `#${getFieldValue(type) || get(config, ['colors', type], '') }`;
+  const getSelectedColor = type => `#${getFieldValue(type) || get(config, ['colors', type], '')}`;
 
   const setMapBounds = state => {
     const { center, zoom, bounds } = state;
@@ -46,7 +54,7 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
         topPoint: bounds.ne,
         bottomPoint: bounds.sw,
         center,
-        zoom
+        zoom,
       },
     });
   };
@@ -77,7 +85,7 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
           },
         };
 
-        saveWebConfig(host, configurationObj)
+        saveWebConfig(host, configurationObj);
       }
     });
   };
@@ -149,24 +157,24 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
           </h3>
           {getFieldDecorator('aboutObject')(
             aboutObject ? (
-            <div>
-              <div className="Transfer__search-content-wrap-current">
-                <div className="Transfer__search-content-wrap-current-user">
-                  <ObjectAvatar item={aboutObject} size={40} />
-                  <div className="Transfer__search-content">{getObjectName(aboutObject)}</div>
+              <div>
+                <div className="Transfer__search-content-wrap-current">
+                  <div className="Transfer__search-content-wrap-current-user">
+                    <ObjectAvatar item={aboutObject} size={40} />
+                    <div className="Transfer__search-content">{getObjectName(aboutObject)}</div>
+                  </div>
+                  <span
+                    role="presentation"
+                    onClick={() => form.setFieldsValue({ aboutObject: null })}
+                    className="iconfont icon-delete"
+                  />
                 </div>
-                <span
-                  role="presentation"
-                  onClick={() => form.setFieldsValue({ aboutObject: null })}
-                  className="iconfont icon-delete"
-                />
               </div>
-            </div>
-          ) : (
+            ) : (
               <SearchObjectsAutocomplete
                 handleSelect={value => form.setFieldsValue({ aboutObject: value })}
               />
-            )
+            ),
           )}
           <p>About object will be opened when visitors click on the logo on the home page.</p>
         </Form.Item>
@@ -225,18 +233,22 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
           </h3>
           <div />
           <div className="WebsitesConfigurations__colors-wrap">
-            {Object.keys(get(config, 'colors', {})).map(color => <div key={color}>
-            <span className="WebsitesConfigurations__colors"
-                  style={{backgroundColor: getSelectedColor(color)}} />
-              <b>{color}</b>
-            </div>)}
+            {Object.keys(get(config, 'colors', {})).map(color => (
+              <div key={color}>
+                <span
+                  className="WebsitesConfigurations__colors"
+                  style={{ backgroundColor: getSelectedColor(color) }}
+                />
+                <b>{color}</b>
+              </div>
+            ))}
           </div>
-            <Button type="primary" htmlType="submit" onClick={() => setShowSelectColor(true)}>
-              {intl.formatMessage({
-                id: 'select_colors',
-                defaultMessage: 'Select colors',
-              })}
-            </Button>
+          <Button type="primary" htmlType="submit" onClick={() => setShowSelectColor(true)}>
+            {intl.formatMessage({
+              id: 'select_colors',
+              defaultMessage: 'Select colors',
+            })}
+          </Button>
           <p>Select the initial map focus for the mobile site.</p>
         </Form.Item>
         <Form.Item>
@@ -274,7 +286,7 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
             zoom={12}
             height={400}
             provider={mapProvider}
-            onBoundsChanged={(state) => setMapBounds(state)}
+            onBoundsChanged={state => setMapBounds(state)}
           />
         )}
       </Modal>
@@ -286,13 +298,11 @@ export const WebsitesConfigurations = ({ intl, form, loading, getWebConfig, matc
         onOk={() => setShowSelectColor(false)}
         visible={showSelectColor}
       >
-        {
-          Object.keys(get(config, 'colors', {})).map(color => (
-            <div className="WebsitesConfigurations__select-color" key={color}>
-              {color}: <span>#{getFieldDecorator(color)(<Input />)}</span>
-            </div>
-          ))
-        }
+        {Object.keys(get(config, 'colors', {})).map(color => (
+          <div className="WebsitesConfigurations__select-color" key={color}>
+            {color}: <span>#{getFieldDecorator(color)(<Input />)}</span>
+          </div>
+        ))}
       </Modal>
     </React.Fragment>
   );
@@ -308,17 +318,17 @@ WebsitesConfigurations.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       site: PropTypes.string,
-    })
-  }).isRequired
+    }),
+  }).isRequired,
 };
 
 export default connect(
   state => ({
     loading: getWebsiteLoading(state),
-    config: getConfiguration(state)
+    config: getConfiguration(state),
   }),
   {
     getWebConfig: getWebConfiguration,
-    saveWebConfig: saveWebConfiguration
+    saveWebConfig: saveWebConfiguration,
   },
 )(Form.create()(injectIntl(WebsitesConfigurations)));
