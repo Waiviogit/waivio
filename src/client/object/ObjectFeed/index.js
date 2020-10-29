@@ -5,9 +5,10 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import ObjectFeed from './ObjectFeed';
-import { getIsAuthenticated } from '../../reducers';
+import { getIsAuthenticated, getObjectFetchingState } from '../../reducers';
 import IconButton from '../../components/IconButton';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import Loading from '../../components/Icon/Loading';
 
 const propTypes = {
   history: PropTypes.shape().isRequired,
@@ -24,6 +25,7 @@ const defaultProps = {
 const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) => {
   /* redux store */
   const isAuthenticated = useSelector(getIsAuthenticated);
+  const isFetching = useSelector(getObjectFetchingState);
 
   const handleCreatePost = () => {
     if (wobject && wobject.author_permlink) {
@@ -52,13 +54,17 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
           />
         </div>
       )}
-      <ObjectFeed
-        match={match}
-        userName={userName}
-        history={history}
-        handleCreatePost={handleCreatePost}
-        wobject={wobject}
-      />
+      {isFetching ? (
+        <Loading />
+      ) : (
+        <ObjectFeed
+          match={match}
+          userName={userName}
+          history={history}
+          handleCreatePost={handleCreatePost}
+          wobject={wobject}
+        />
+      )}
     </React.Fragment>
   );
 };
