@@ -6,14 +6,7 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { getFeedContent } from './feedActions';
-import {
-  getIsAuthenticated,
-  getIsLoaded,
-  getAuthenticatedUserName,
-  getSuitableLanguage,
-  getObject as getObjectState,
-} from '../reducers';
-import { getObject } from '../object/wobjectsActions';
+import { getIsAuthenticated, getIsLoaded, getObject as getObjectState } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
@@ -24,18 +17,11 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 
 @injectIntl
 @withRouter
-@connect(
-  state => ({
-    authenticatedUserName: getAuthenticatedUserName(state),
-    authenticated: getIsAuthenticated(state),
-    loaded: getIsLoaded(state),
-    locale: getSuitableLanguage(state),
-    wobject: getObjectState(state),
-  }),
-  {
-    getObject,
-  },
-)
+@connect(state => ({
+  authenticated: getIsAuthenticated(state),
+  loaded: getIsLoaded(state),
+  wobject: getObjectState(state),
+}))
 class Page extends React.Component {
   static fetchData({ store, match }) {
     const { sortBy, category } = match.params;
@@ -47,9 +33,7 @@ class Page extends React.Component {
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     route: PropTypes.shape().isRequired,
-    authenticatedUserName: PropTypes.string,
     wobject: PropTypes.shape(),
-    getObject: PropTypes.func,
   };
 
   static defaultProps = {
@@ -57,12 +41,6 @@ class Page extends React.Component {
     wobject: {},
     getObject: () => {},
   };
-
-  componentDidMount() {
-    const { authenticatedUserName, match } = this.props;
-    const wobjectPermlink = match.params.category;
-    this.props.getObject(wobjectPermlink, authenticatedUserName);
-  }
 
   handleSortChange = key => {
     const { category } = this.props.match.params;
