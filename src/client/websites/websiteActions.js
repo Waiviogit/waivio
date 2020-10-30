@@ -191,3 +191,33 @@ export const getWebAdministrators = host => (dispatch, getState) => {
     },
   });
 };
+
+export const ADD_WEBSITE_ADMINISTRATOR = createAsyncActionType(
+  '@website/ADD_WEBSITE_ADMINISTRATOR',
+);
+
+export const addWebAdministrator = (host, names) => (dispatch, getState, { steemConnectAPI }) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: ADD_WEBSITE_ADMINISTRATOR.ACTION,
+    payload: {
+      promise: steemConnectAPI.addWebsiteAdministrators(userName, host, names),
+    },
+  });
+};
+
+export const DELETE_WEBSITE_ADMINISTRATOR = createAsyncActionType(
+  '@website/DELETE_WEBSITE_ADMINISTRATOR',
+);
+
+export const deleteWebAdministrator = (host, names) => (dispatch, getState, { steemConnectAPI }) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: DELETE_WEBSITE_ADMINISTRATOR.ACTION,
+    payload: {
+      promise: steemConnectAPI.deleteWebsiteAdministrators(userName, host, names),
+    },
+  });
+};

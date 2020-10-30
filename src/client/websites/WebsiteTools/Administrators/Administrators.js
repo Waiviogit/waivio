@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Form } from 'antd';
+import { Button, message} from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { getAdministrators } from '../../../reducers';
-import { getWebAdministrators } from '../../websiteActions';
+import {addWebAdministrator, deleteWebAdministrator, getWebAdministrators} from '../../websiteActions';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import Avatar from '../../../components/Avatar';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 
 import './Administrators.less';
 
-export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl }) => {
+export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl, addWebAdmins, deleteWebAdmins }) => {
   const [selectUser, setSelectUser] = useState('');
   const host = match.params.site;
   const mockAdmins = [
     { name: 'lucykolosova', _id: 1233434 },
     { name: 'lucykolosova', _id: 12330434 },
   ];
+
+  const addAdmin = () => {
+    addWebAdmins(host, [selectUser])
+      .then(() => setSelectUser(''))
+      .catch(() => message.error('Try again, please'))
+  }
+
 
   useEffect(() => {
     getWebAdmins(host);
@@ -66,7 +73,7 @@ export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl }) =>
         )}
       </div>
 
-      <Button className="WebsitesAdministrators__add-button" type="primary">
+      <Button className="WebsitesAdministrators__add-button" type="primary" onClick={addAdmin} disabled={!selectUser}>
         <FormattedMessage id="add" defaultMessage="Add" />
       </Button>
       <h3>
@@ -79,7 +86,7 @@ export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl }) =>
               <Avatar size={50} username={admin.name} />
               <span>{admin.name}</span>
             </span>
-            <Button type="primary">
+            <Button type="primary" onClick={() => deleteWebAdmins(host, admin.name)}>
               <FormattedMessage id="delete" defaultMessage="Delete" />
             </Button>
           </div>
@@ -91,6 +98,8 @@ export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl }) =>
 
 WebsitesAdministrators.propTypes = {
   getWebAdmins: PropTypes.func.isRequired,
+  addWebAdmins: PropTypes.func.isRequired,
+  deleteWebAdmins: PropTypes.func.isRequired,
   admins: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
@@ -107,5 +116,7 @@ export default connect(
   }),
   {
     getWebAdmins: getWebAdministrators,
+    addWebAdmins: addWebAdministrator,
+    deleteWebAdmins: deleteWebAdministrator,
   },
-)(Form.create()(injectIntl(WebsitesAdministrators)));
+)(injectIntl(WebsitesAdministrators));

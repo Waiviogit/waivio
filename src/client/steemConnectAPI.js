@@ -190,6 +190,30 @@ function sc2Extended() {
       },
     },
     {
+      addWebsiteAdministrators(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'custom_website_add_administrators',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      deleteWebsiteAdministrators(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'custom_website_remove_administrators',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       settingMatchBotVotingPower(username, voteObj, cb) {
         const params = {
           required_auths: [],
@@ -226,6 +250,7 @@ function sc2Extended() {
     {
       referralConfirmRules(username, isGuestUser, cb) {
         let params = {};
+
         if (isGuestUser) {
           params = {
             required_auths: [],
@@ -247,6 +272,7 @@ function sc2Extended() {
             }),
           };
         }
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -270,6 +296,7 @@ function sc2Extended() {
     {
       referralRejectRules(username, isGuestUser, cb) {
         let params = {};
+
         if (isGuestUser) {
           params = {
             required_auths: [],
@@ -291,6 +318,7 @@ function sc2Extended() {
             }),
           };
         }
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -302,6 +330,7 @@ function sc2Extended() {
        */
       addReferralAgent(username, refUser, isGuestUser, refType = 'rewards', cb) {
         let params = {};
+
         if (isGuestUser) {
           params = {
             required_auths: [],
@@ -324,6 +353,7 @@ function sc2Extended() {
             }),
           };
         }
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
