@@ -1,170 +1,69 @@
 import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { get, isEmpty, map, filter, max, min, some } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { sortListItemsBy } from '../wObjectHelper';
-import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
-import OBJ_TYPE from '../const/objectTypes';
+import { objectFields } from '../../../common/constants/listOfFields';
 import AddItemModal from './AddItemModal/AddItemModal';
-import { getObjectLists, getSuitableLanguage, getWobjectNested } from '../../reducers';
-import ObjectCardView from '../../objectCard/ObjectCardView';
-import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { getLastPermlinksFromHash, parseWobjectField } from '../../helpers/wObjectHelper';
-import Loading from '../../components/Icon/Loading';
-import * as ApiClient from '../../../waivioApi/ApiClient';
-import Campaign from '../../rewards/Campaign/Campaign';
-import CatalogSorting from './CatalogSorting/CatalogSorting';
-import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
+import {
+  getIsNestedWobject,
+  getObjectLists,
+  getSuitableLanguage,
+  getWobjectNested,
+} from '../../reducers';
+import { getLastPermlinksFromHash } from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
-import { setListItems, setNestedWobject } from '../wobjActions';
+import { clearIsGetNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
 import { getObject } from '../../../waivioApi/ApiClient';
 import './CatalogWrap.less';
 
 const CatalogWrap = props => {
-  const { userName, listItems, wobjectNested, locale } = props;
+  const {
+    userName,
+    listItems,
+    wobjectNested,
+    locale,
+    isEditMode,
+    wobject,
+    setLists,
+    setNestedWobj,
+    location: { hash },
+    clearNestedWobjFlag,
+  } = props;
 
-  const [loadingPropositions, setLoadingPropositions] = useState(true);
-  const [propositions, setPropositions] = useState([]);
-  const [sort, setSorting] = useState('recency');
-
-  const getPropositions = ({ username, match, requiredObject, sorting }) => {
-    setLoadingPropositions(true);
-    ApiClient.getPropositions({
-      username,
-      match,
-      requiredObject,
-      sort: 'reward',
-      locale,
-    }).then(data => {
-      setPropositions(data.campaigns);
-      setSorting(sorting);
-      setLoadingPropositions(false);
-    });
-  };
+  const [sortBy, setSortingBy] = useState('recency');
 
   useEffect(() => {
-    const {
-      wobject,
-      match,
-      location: { hash },
-      setLists,
-      setNestedWobj,
-    } = props;
-
     if (!isEmpty(wobject)) {
       if (hash) {
         const pathUrl = getLastPermlinksFromHash(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
-          const requiredObject = get(wObject, ['parent', 'author_permlink']);
-          if (requiredObject) {
-            getPropositions({ userName, match, requiredObject, sort });
-          } else {
-            setLoadingPropositions(false);
-          }
-          setLists(wObject.listItems);
+          setLists(get(wObject, 'listItems', []));
           setNestedWobj(wObject);
         });
       } else {
-        const requiredObject = get(wobject, ['parent', 'author_permlink']);
         setLists(wobject.listItems);
-        getPropositions({ userName, match, requiredObject, sort });
       }
     }
-  }, [props.location.hash, props.wobject.author_permlink, userName]);
+  }, [hash, wobject.author_permlink, userName]);
+
+  useEffect(() => {
+    if (wobjectNested) {
+      clearNestedWobjFlag();
+    }
+  }, [wobjectNested]);
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
-    props.setLists(sortListItemsBy(currentList, 'recency'));
+    setLists(sortListItemsBy(currentList, 'recency'));
   };
-
-  /**
-   *
-   * @param propositionsObject
-   * @param listItem
-   */
-
-  const renderProposition = (propositionsObject, listItem) =>
-    map(propositionsObject, proposition =>
-      map(
-        filter(
-          proposition.objects,
-          object => get(object, ['object', 'author_permlink']) === listItem.author_permlink,
-        ),
-        wobj => <PropositionListContainer wobject={wobj.object} userName={userName} />,
-      ),
-    );
-
-  const renderCampaign = propositionsObject => {
-    const minReward = propositionsObject
-      ? min(map(propositionsObject, proposition => proposition.reward))
-      : null;
-    const rewardPriceCatalogWrap = minReward ? `${minReward.toFixed(2)} USD` : '';
-    const maxReward = propositionsObject
-      ? max(map(propositionsObject, proposition => proposition.reward))
-      : null;
-    const rewardMaxCatalogWrap = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
-
-    return (
-      <Campaign
-        proposition={propositionsObject[0]}
-        filterKey="all"
-        rewardPricePassed={!rewardMaxCatalogWrap ? rewardPriceCatalogWrap : null}
-        rewardMaxPassed={rewardMaxCatalogWrap || null}
-        key={`${propositionsObject[0].required_object.author_permlink}${propositionsObject[0].required_object.createdAt}`}
-        userName={userName}
-      />
-    );
-  };
-
-  const getListRow = (listItem, objects) => {
-    const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
-    const isMatchedPermlinks = some(objects, object => object.includes(listItem.author_permlink));
-    const status = get(parseWobjectField(listItem, 'status'), 'title');
-
-    if (statusNoVisibleItem.includes(status)) return null;
-
-    let item;
-    if (isList) {
-      item = <CategoryItemView wObject={listItem} location={location} />;
-    } else if (objects.length && isMatchedPermlinks) {
-      item = renderProposition(propositions, listItem);
-    } else {
-      item = <ObjectCardView wObject={listItem} inList />;
-    }
-    return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
-  };
-
-  const getMenuList = () => {
-    let listRow;
-    if (propositions) {
-      if (isEmpty(listItems)) {
-        return (
-          <div>
-            {props.intl.formatMessage({
-              id: 'emptyList',
-              defaultMessage: 'This list is empty',
-            })}
-          </div>
-        );
-      }
-
-      const campaignObjects = map(propositions, item =>
-        map(item.objects, obj => get(obj, ['object', 'author_permlink'])),
-      );
-      listRow = map(listItems, listItem => getListRow(listItem, campaignObjects));
-    }
-    return listRow;
-  };
-
-  const { isEditMode, wobject, intl } = props;
 
   const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
-    setSorting(sortType);
-    props.setLists(sortListItemsBy(listItems, sortType, sortOrder));
+    setSortingBy(sortType);
+    setLists(sortListItemsBy(listItems, sortType, sortOrder));
   };
 
   const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
@@ -172,30 +71,18 @@ const CatalogWrap = props => {
   return (
     <div>
       <React.Fragment>
-        {!isEmpty(propositions) && renderCampaign(propositions)}
+        <PropositionListContainer
+          wobject={wobject}
+          userName={userName}
+          catalogHandleSortChange={handleSortChange}
+          catalogSort={sortBy}
+          isCatalogWrap
+          currentHash={hash}
+        />
         {isEditMode && (
           <div className="CatalogWrap__add-item">
             <AddItemModal wobject={obj} onAddItem={handleAddItem} />
           </div>
-        )}
-        {loadingPropositions || isEmpty(wobject) ? (
-          <Loading />
-        ) : (
-          <React.Fragment>
-            <div className="CatalogWrap__breadcrumb">
-              <CatalogBreadcrumb intl={intl} wobject={wobject} />
-            </div>
-            <div className="CatalogWrap__sort">
-              <CatalogSorting
-                sort={sort}
-                currWobject={wobject}
-                handleSortChange={handleSortChange}
-              />
-            </div>
-            <div className="CatalogWrap">
-              <div>{getMenuList()}</div>
-            </div>
-          </React.Fragment>
         )}
       </React.Fragment>
     </div>
@@ -203,9 +90,7 @@ const CatalogWrap = props => {
 };
 
 CatalogWrap.propTypes = {
-  intl: PropTypes.shape().isRequired,
   location: PropTypes.shape().isRequired,
-  match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
   isEditMode: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,
@@ -214,6 +99,7 @@ CatalogWrap.propTypes = {
   listItems: PropTypes.shape({}).isRequired,
   setLists: PropTypes.func.isRequired,
   setNestedWobj: PropTypes.func.isRequired,
+  clearNestedWobjFlag: PropTypes.func,
 };
 
 CatalogWrap.defaultProps = {
@@ -224,21 +110,21 @@ CatalogWrap.defaultProps = {
   listItems: [],
   setLists: () => {},
   setNestedWobj: () => {},
+  clearNestedWobjFlag: () => {},
+  isGetNestedWobj: false,
 };
 
 const mapStateToProps = state => ({
   listItems: getObjectLists(state),
   wobjectNested: getWobjectNested(state),
   locale: getSuitableLanguage(state),
+  isGetNestedWobj: getIsNestedWobject(state),
 });
 
 const mapDispatchToProps = {
   setLists: setListItems,
   setNestedWobj: setNestedWobject,
+  clearNestedWobjFlag: clearIsGetNestedWobject,
 };
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  injectIntl,
-  withRouter,
-)(CatalogWrap);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(CatalogWrap)));

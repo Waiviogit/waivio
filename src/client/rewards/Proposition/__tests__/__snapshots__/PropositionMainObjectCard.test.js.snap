@@ -1,0 +1,153 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PropositionMainObjectCard should create snapshot 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <IntlProvider
+    locale="en"
+  >
+    <PropositionMainObjectCard
+      currentProposition={Array []}
+      goToProducts={[Function]}
+      intl={Object {}}
+      maxReward={null}
+      minReward={null}
+      props={
+        Object {
+          "currentProposition": Array [],
+          "goToProducts": [MockFunction],
+          "intl": Object {},
+          "maxReward": 1,
+          "minReward": 1,
+          "rewardMax": "",
+          "rewardPrise": "",
+          "wobject": Object {},
+        }
+      }
+      rewardMax=""
+      rewardPrise=""
+      wobject={Object {}}
+    />
+  </IntlProvider>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "function",
+    "props": Object {
+      "currentProposition": Array [],
+      "goToProducts": [Function],
+      "intl": Object {},
+      "maxReward": null,
+      "minReward": null,
+      "props": Object {
+        "currentProposition": Array [],
+        "goToProducts": [MockFunction],
+        "intl": Object {},
+        "maxReward": 1,
+        "minReward": 1,
+        "rewardMax": "",
+        "rewardPrise": "",
+        "wobject": Object {},
+      },
+      "rewardMax": "",
+      "rewardPrise": "",
+      "wobject": Object {},
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "function",
+      "props": Object {
+        "currentProposition": Array [],
+        "goToProducts": [Function],
+        "intl": Object {},
+        "maxReward": null,
+        "minReward": null,
+        "props": Object {
+          "currentProposition": Array [],
+          "goToProducts": [MockFunction],
+          "intl": Object {},
+          "maxReward": 1,
+          "minReward": 1,
+          "rewardMax": "",
+          "rewardPrise": "",
+          "wobject": Object {},
+        },
+        "rewardMax": "",
+        "rewardPrise": "",
+        "wobject": Object {},
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+    Symbol(enzyme.__providerValues__): undefined,
+  },
+  Symbol(enzyme.__providerValues__): Map {},
+  Symbol(enzyme.__childContext__): Object {
+    "intl": Object {
+      "defaultFormats": Object {},
+      "defaultLocale": "en",
+      "formatDate": [Function],
+      "formatHTMLMessage": [Function],
+      "formatMessage": [Function],
+      "formatNumber": [Function],
+      "formatPlural": [Function],
+      "formatRelative": [Function],
+      "formatTime": [Function],
+      "formats": Object {},
+      "formatters": Object {
+        "getDateTimeFormat": [Function],
+        "getMessageFormat": [Function],
+        "getNumberFormat": [Function],
+        "getPluralFormat": [Function],
+        "getRelativeFormat": [Function],
+      },
+      "locale": "en",
+      "messages": Object {},
+      "now": [Function],
+      "onError": [Function],
+      "textComponent": "span",
+      "timeZone": null,
+    },
+  },
+}
+`;
