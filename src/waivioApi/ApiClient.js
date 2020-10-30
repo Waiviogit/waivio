@@ -795,10 +795,7 @@ export const createCampaign = data =>
     })
       .then(handleErrors)
       .then(res => res.json())
-      .then(result => {
-        console.log('result: ', result);
-        return resolve(result);
-      })
+      .then(result => resolve(result))
       .catch(error => reject(error));
   });
 
