@@ -35,7 +35,7 @@ const AppendCard = props => {
   const [commentsVisible, setCommentsVisible] = useState(false);
   const [sliderValue, setSliderValue] = useState(100);
   const [voteWorth, setVoteWorth] = useState(100);
-
+  const isPostCash = isPostCashout(props.post);
   const calculateSliderValue = () => {
     const { user, post, defaultVotePercent } = props;
 
@@ -163,7 +163,7 @@ const AppendCard = props => {
       <div className="Story__footer">
         <div className="StoryFooter__actions">
           <Payout post={props.post} />
-          {visibleSlider && !isLiked && (
+          {(visibleSlider || isPostCash) && !isLiked && (
             <Confirmation onConfirm={handleLikeConfirm} onCancel={() => showSlider(false)} />
           )}
           {!visibleSlider && (
@@ -184,7 +184,7 @@ const AppendCard = props => {
             value={sliderValue}
             voteWorth={voteWorth}
             onChange={handleSliderChange}
-            isPostCashout={isPostCashout(props.post)}
+            isPostCashout={isPostCash}
           />
         )}
         <Comments show={commentsVisible} isQuickComments post={props.post} isUpdating />
