@@ -1,12 +1,11 @@
 import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { get, isEmpty, map } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { sortListItemsBy } from '../wObjectHelper';
-import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
-import OBJ_TYPE from '../const/objectTypes';
+import { objectFields } from '../../../common/constants/listOfFields';
 import AddItemModal from './AddItemModal/AddItemModal';
 import {
   getIsNestedWobject,
@@ -14,9 +13,7 @@ import {
   getSuitableLanguage,
   getWobjectNested,
 } from '../../reducers';
-import ObjectCardView from '../../objectCard/ObjectCardView';
-import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { getLastPermlinksFromHash, parseWobjectField } from '../../helpers/wObjectHelper';
+import { getLastPermlinksFromHash } from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import { clearIsGetNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
 import { getObject } from '../../../waivioApi/ApiClient';
@@ -24,7 +21,6 @@ import './CatalogWrap.less';
 
 const CatalogWrap = props => {
   const {
-    intl,
     userName,
     listItems,
     wobjectNested,
@@ -64,40 +60,6 @@ const CatalogWrap = props => {
     setLists(sortListItemsBy(currentList, 'recency'));
   };
 
-  /**
-   *
-   * @param propositionsObject
-   * @param listItem
-   */
-
-  const getListRow = listItem => {
-    const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
-    const status = get(parseWobjectField(listItem, 'status'), 'title');
-
-    if (statusNoVisibleItem.includes(status)) return null;
-    let item;
-    if (isList) {
-      item = <CategoryItemView wObject={listItem} location={location} />;
-    } else {
-      item = <ObjectCardView wObject={listItem} inList />;
-    }
-    return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
-  };
-
-  const getMenuList = () => {
-    if (isEmpty(listItems)) {
-      return (
-        <div>
-          {intl.formatMessage({
-            id: 'emptyList',
-            defaultMessage: 'This list is empty',
-          })}
-        </div>
-      );
-    }
-    return map(listItems, listItem => getListRow(listItem));
-  };
-
   const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
     setSortingBy(sortType);
@@ -112,7 +74,6 @@ const CatalogWrap = props => {
         <PropositionListContainer
           wobject={wobject}
           userName={userName}
-          catalogGetMenuList={getMenuList}
           catalogHandleSortChange={handleSortChange}
           catalogSort={sortBy}
           isCatalogWrap
@@ -129,7 +90,6 @@ const CatalogWrap = props => {
 };
 
 CatalogWrap.propTypes = {
-  intl: PropTypes.shape().isRequired,
   location: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
   isEditMode: PropTypes.bool.isRequired,

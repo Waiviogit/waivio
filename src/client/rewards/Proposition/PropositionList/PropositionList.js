@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { get, map, max, min } from 'lodash';
-import { getIsNestedWobject } from '../../../reducers';
+import { getIsNestedWobject, getObjectLists } from '../../../reducers';
 import PropositionListFromCatalog from './PropositionListFromCatalog';
 import DefaultPropositionList from './DefaultPropositionList';
 
@@ -22,10 +22,10 @@ const PropositionList = ({
   loadingAssignDiscard,
   isAssign,
   isCatalogWrap,
-  catalogGetMenuList,
   catalogHandleSortChange,
   catalogSort,
   isGetNested,
+  listItems,
 }) => {
   let minReward;
   let maxReward;
@@ -66,10 +66,10 @@ const PropositionList = ({
     isAssign,
     user,
     history,
-    catalogGetMenuList,
     catalogHandleSortChange,
     catalogSort,
     isGetNested,
+    listItems,
   };
 
   return (
@@ -98,10 +98,10 @@ PropositionList.propTypes = {
   loadingAssignDiscard: PropTypes.bool,
   isAssign: PropTypes.bool,
   isCatalogWrap: PropTypes.bool,
-  catalogGetMenuList: PropTypes.func,
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string,
   isGetNested: PropTypes.bool,
+  listItems: PropTypes.shape(),
 };
 
 PropositionList.defaultProps = {
@@ -115,12 +115,13 @@ PropositionList.defaultProps = {
   discardProposition: () => {},
   assignPropositionHandler: () => {},
   isCatalogWrap: false,
-  catalogGetMenuList: () => {},
   catalogHandleSortChange: () => {},
   catalogSort: '',
   isGetNested: false,
+  listItems: [],
 };
 
 export default connect(state => ({
   isGetNested: getIsNestedWobject(state),
+  listItems: getObjectLists(state),
 }))(injectIntl(PropositionList));

@@ -27,7 +27,6 @@ const PropositionListContainer = ({
   user,
   assignPropos,
   declinePropos,
-  catalogGetMenuList,
   catalogHandleSortChange,
   catalogSort,
   isCatalogWrap,
@@ -200,7 +199,6 @@ const PropositionListContainer = ({
         <React.Fragment>
           <PropositionList
             isCatalogWrap={isCatalogWrap}
-            catalogGetMenuList={catalogGetMenuList}
             catalogHandleSortChange={catalogHandleSortChange}
             catalogSort={catalogSort}
             wobject={wobject}
@@ -232,7 +230,6 @@ PropositionListContainer.propTypes = {
   user: PropTypes.shape(),
   assignPropos: PropTypes.func,
   declinePropos: PropTypes.func,
-  catalogGetMenuList: PropTypes.func,
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string,
   isCatalogWrap: PropTypes.bool,
