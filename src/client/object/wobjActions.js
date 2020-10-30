@@ -217,7 +217,7 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
   const fieldName = name || post.name;
-
+  const currentMethod = isGuest ? 'vote' : 'appendVote';
   if (!getIsAuthenticated(state)) return null;
 
   dispatch({
@@ -228,8 +228,7 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
     },
   });
 
-  return steemConnectAPI
-    .vote(voter, author, permlink, weight)
+  return steemConnectAPI[currentMethod](voter, author, permlink, weight)
     .then(async data => {
       const res = isGuest ? await data.json() : data.result;
 
