@@ -211,6 +211,23 @@ function sc2Extended() {
       },
     },
     {
+      appendVote(voter, author, permlink, weight, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [voter],
+          id: 'vote_append_object',
+          json: JSON.stringify({
+            author,
+            permlink,
+            weight,
+            voter,
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       referralRejectRules(username, isGuestUser, cb) {
         let params = {};
         if (isGuestUser) {
