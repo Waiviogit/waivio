@@ -25,6 +25,7 @@ import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/gal
 import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
 import websiteReducer, * as fromWebsite from './websites/websiteReducer';
+import referralReducer, * as fromReferral from '../client/rewards/ReferralProgram/ReferralReducer';
 
 export default history =>
   combineReducers({
@@ -51,6 +52,7 @@ export default history =>
     gallery: galleryReducer,
     map: mapReducer,
     rewards: rewardsReducer,
+    referral: referralReducer,
     website: websiteReducer,
   });
 
@@ -251,7 +253,9 @@ export const getWobjectIsFailed = state => fromObject.getWobjectIsFailed(state.o
 export const getWobjectIsFatching = state => fromObject.getWobjectIsFatching(state.object);
 
 export const getBreadCrumbs = state => fromObject.getBreadCrumbs(state.object);
-export const getWobjectBreadCrumbs = state => fromObject.getWobjectBreadCrumbs(state.object);
+export const getWobjectNested = state => fromObject.getWobjectNested(state.object);
+export const getObjectLists = state => fromObject.getObjectLists(state.object);
+export const getIsNestedWobject = state => fromObject.getIsNestedWobject(state.object);
 
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>
@@ -302,6 +306,39 @@ export const getHasMoreFollowingRewards = state =>
 export const getHasMoreFraudSuspicionData = state =>
   fromRewards.getHasMoreFraudSuspicionData(state.rewards);
 export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
+export const getPropositionCampaign = state => fromRewards.getPropositionCampaign(state.rewards);
+export const getIsLoadingPropositions = state =>
+  fromRewards.getIsLoadingPropositions(state.rewards);
+
+export const getCampaignServerPercent = state =>
+  fromReferral.getCampaignServerPercent(state.referral);
+export const getIndexAbsolutePercent = state =>
+  fromReferral.getIndexAbsolutePercent(state.referral);
+export const getIndexServerPercent = state => fromReferral.getIndexServerPercent(state.referral);
+export const getReferralDuration = state => fromReferral.getReferralDuration(state.referral);
+export const getReferralServerPercent = state =>
+  fromReferral.getReferralServerPercent(state.referral);
+export const getSuspendedTimer = state => fromReferral.getSuspendedTimer(state.referral);
+export const getIsStartLoadingReferralDetails = state =>
+  fromReferral.getIsStartLoadingReferralDetails(state.referral);
+export const getIsUserInWaivioBlackList = state =>
+  fromReferral.getIsUserInWaivioBlackList(state.referral);
+export const getReferralStatus = state => fromReferral.getReferralStatus(state.referral);
+export const getReferralList = state => fromReferral.getReferralList(state.referral);
+export const getIsChangedRuleSelection = state =>
+  fromReferral.getIsChangedRuleSelection(state.referral);
+export const getIsUsersCards = state => fromReferral.getIsUsersCards(state.referral);
+export const getIsHasMoreCards = state => fromReferral.getIsHasMoreCards(state.referral);
+export const getCurrentUserCards = state => fromReferral.getCurrentUserCards(state.referral);
+export const getIsErrorLoadingUserCards = state =>
+  fromReferral.getIsErrorLoadingUserCards(state.referral);
+export const getIsLoadingMoreUserCards = state =>
+  fromReferral.getIsLoadingMoreUserCards(state.referral);
+export const getIsStartChangeRules = state => fromReferral.getIsStartChangeRules(state.referral);
+export const getIsStartGetReferralInfo = state =>
+  fromReferral.getIsStartGetReferralInfo(state.referral);
+export const getStatusSponsoredHistory = state =>
+  fromReferral.getStatusSponsoredHistory(state.referral);
 
 // common selectors
 

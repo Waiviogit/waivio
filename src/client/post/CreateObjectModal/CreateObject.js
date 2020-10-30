@@ -305,7 +305,7 @@ class CreateObject extends React.Component {
                   },
                 ],
               })(
-                <Select disabled={loading} style={{ width: '100%' }}>
+                <Select disabled={loading} style={{ width: '100%' }} className="languageOptions">
                   {languageOptions}
                 </Select>,
               )}

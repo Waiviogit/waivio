@@ -39,7 +39,7 @@ export default {
   Error404: loableComponent(import('../../client/statics/Error404')),
   ExitPage: loableComponent(import('../../client/statics/ExitPage')),
   ObjectPageFeed: loableComponent(import('../../client/object/ObjectFeed')),
-  ObjectFeed: loableComponent(import('../../client/object/ObjectFeed/ObjectFeed')),
+  ObjectFeed: loableComponent(import('../../client/object/ObjectFeed')),
   WobjFollowers: loableComponent(import('../../client/object/WobjFollowers')),
   ObjectGallery: loableComponent(import('../../client/object/ObjectGallery/ObjectGallery')),
   ObjectGalleryAlbum: loableComponent(
@@ -79,6 +79,18 @@ export default {
     import('../../client/websites/WebsiteTools/Configuration/WebsitesConfigurations'),
   ),
   FraudDetection: loableComponent(import('../../client/rewards/FraudDetection/FraudDetection')),
+  ReferralDetails: loableComponent(
+    import('../../client/rewards/ReferralProgram/Details/ReferralDetails'),
+  ),
+  ReferralInstructions: loableComponent(
+    import('../../client/rewards/ReferralProgram/Instructions/ReferralsInstructions'),
+  ),
+  ReferralStatus: loableComponent(
+    import('../../client/rewards/ReferralProgram/Status/ReferralStatus'),
+  ),
+  SponsoredRewards: loableComponent(
+    import('../../client/rewards/ReferralProgram/SponsoredRewards/SponsoredRewards'),
+  ),
   WebsitesAdministrators: loableComponent(
     import('../../client/websites/WebsiteTools/Administrators/Administrators'),
   ),

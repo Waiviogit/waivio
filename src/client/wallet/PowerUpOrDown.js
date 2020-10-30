@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Modal } from 'antd';
-import SteemConnect from '../steemConnectAPI';
 import { closePowerUpOrDown } from './walletActions';
 import {
   getAuthenticatedUser,
@@ -13,6 +12,8 @@ import {
   getTotalVestingFundSteem,
 } from '../reducers';
 import formatter from '../helpers/steemitFormatter';
+import { createQuery } from '../helpers/apiHelpers';
+
 import './Transfer/Transfer.less';
 
 @injectIntl
@@ -95,7 +96,9 @@ export default class PowerUpOrDown extends React.Component {
             };
 
         const win = window.open(
-          SteemConnect.sign(down ? 'withdraw-vesting' : 'transfer-to-vesting', transferQuery),
+          `https://hivesigner.com/sign/${
+            down ? 'withdraw-vesting' : 'transfer-to-vesting'
+          }?${createQuery(transferQuery)}`,
           '_blank',
         );
         win.focus();

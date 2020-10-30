@@ -29,7 +29,10 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink, 
 
   const responseSocial = async (response, socialNetwork) => {
     setIsLoading(true);
-    if (response) {
+    if (response.error) {
+      setIsLoading(false);
+      setIsModalOpen(false);
+    } else if (isModalOpen && response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
       const res = await isUserRegistered(id, socialNetwork);
       if (res) {
@@ -121,7 +124,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink, 
               />
               {intl.formatMessage({
                 id: 'signin_with_steemIt',
-                defaultMessage: 'SteemConnect',
+                defaultMessage: 'HiveSinger',
               })}
             </a>
             <p className="ModalSignIn__title ModalSignIn__title--lined">
@@ -194,7 +197,13 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink, 
   return (
     <React.Fragment>
       {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={setIsModalOpen} />}
-      <Modal width={480} visible={isModalOpen} onCancel={memoizedOnModalClose} footer={null}>
+      <Modal
+        width={480}
+        visible={isModalOpen}
+        onCancel={!isLoading ? memoizedOnModalClose : null}
+        footer={null}
+        closable={!isLoading}
+      >
         {isFormVisible ? renderGuestSignUpForm() : renderSignIn()}
       </Modal>
     </React.Fragment>

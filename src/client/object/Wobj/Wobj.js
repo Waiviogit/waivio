@@ -18,7 +18,6 @@ const Wobj = ({
   wobject,
   history,
   isEditMode,
-  hasLeftSidebar,
   toggleViewEditMode,
   route,
   appendAlbum,
@@ -78,25 +77,23 @@ const Wobj = ({
           appendAlbum={appendAlbum}
         />
         <div className="shifted">
-          <div className={`container ${hasLeftSidebar ? 'feed-layout' : 'post-layout'}`}>
-            {hasLeftSidebar && (
-              <Affix
-                key={match.params.name}
-                className="leftContainer leftContainer__user"
-                stickPosition={72}
-              >
-                <div className="left">
-                  <LeftObjectProfileSidebar
-                    isEditMode={isEditMode}
-                    wobject={wobject}
-                    userName={userName}
-                    history={history}
-                    appendAlbum={appendAlbum}
-                  />
-                </div>
-              </Affix>
-            )}
-            <Affix className="rightContainer" stickPosition={72}>
+          <div className="container feed-layout">
+            <Affix
+              key={match.params.name}
+              className="leftContainer leftContainer__wobj"
+              stickPosition={72}
+            >
+              <div className="left">
+                <LeftObjectProfileSidebar
+                  isEditMode={isEditMode}
+                  wobject={wobject}
+                  userName={userName}
+                  history={history}
+                  appendAlbum={appendAlbum}
+                />
+              </div>
+            </Affix>
+            <Affix className="wobjRightContainer" stickPosition={72}>
               <div className="right">
                 {wobject.author_permlink && (
                   <ObjectExpertise username={userName} wobject={wobject} />
@@ -128,7 +125,6 @@ Wobj.propTypes = {
   wobject: PropTypes.shape(),
   history: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
-  hasLeftSidebar: PropTypes.bool.isRequired,
   toggleViewEditMode: PropTypes.func,
   appendAlbum: PropTypes.func,
   handleFollowClick: PropTypes.func,

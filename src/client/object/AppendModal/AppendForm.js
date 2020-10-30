@@ -11,6 +11,7 @@ import {
   isEqual,
   omitBy,
   isNil,
+  size,
 } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
@@ -311,11 +312,8 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.newsFilter: {
-        const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
-          sub => sub.length,
-        );
-        const ignoreList = map(this.state.ignoreList, o => o.id);
-
+        const allowList = this.state.allowList.map(o => o.map(item => item.author_permlink));
+        const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
         fieldBody.push(JSON.stringify({ allowList, ignoreList }));
         break;
       }
@@ -348,7 +346,6 @@ export default class AppendForm extends Component {
 
     const getAppendMsg = (author, appendValue) => {
       const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
-
       switch (currentField) {
         case objectFields.avatar:
         case objectFields.background:
@@ -361,7 +358,8 @@ export default class AppendForm extends Component {
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
-          const objectType = this.state.selectedObject.object_type;
+          const objectType =
+            get(this.state.selectedObject, 'object_type') || get(this.state.selectedObject, 'type');
           const displayName = `${this.state.selectedObject.name} (type: ${objectType})`;
           const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${appendValue}`;
 
@@ -374,14 +372,14 @@ export default class AppendForm extends Component {
         }
         case objectFields.newsFilter: {
           let rulesAllow = `\n`;
-          let rulesIgnore = '\nIgnore list:';
+          let rulesIgnore = '\n';
           let rulesCounter = 0;
 
           this.state.allowList.forEach(rule => {
             if (!isEmpty(rule)) {
               rulesAllow += `\n Filter rule #${rulesCounter + 1}:`;
               rule.forEach(item => {
-                rulesAllow += ` <a href="${baseUrl}/object/${item.id}">${item.id}</a>,`;
+                rulesAllow += ` <a href="${baseUrl}/object/${item.author_permlink}">${item.author_permlink}</a>,`;
               });
 
               rulesCounter += 1;
@@ -390,9 +388,9 @@ export default class AppendForm extends Component {
 
           this.state.ignoreList.forEach((rule, index) => {
             if (!isEmpty(rule)) {
+              rulesIgnore = '\nIgnore list:';
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
-
-              rulesIgnore += ` <a href="${baseUrl}/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
+              rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${rule.author_permlink}</a>${dotOrComma}`;
             }
           });
 
@@ -768,9 +766,26 @@ export default class AppendForm extends Component {
   handleSubmit = event => {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
-
     if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
+    } else if (objectFields.newsFilter === currentField) {
+      const { chosenLocale, usedLocale } = this.props;
+      const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(sub =>
+        size(sub),
+      );
+      const ignoreList = map(this.state.ignoreList, o => o.id);
+      const locale = !isEmpty(chosenLocale) ? chosenLocale : usedLocale;
+
+      if (!isEmpty(allowList) || !isEmpty(ignoreList))
+        this.onSubmit({ currentField, currentLocale: locale });
+      else {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'at_least_one',
+            defaultMessage: 'You should add at least one object',
+          }),
+        );
+      }
     }
 
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -783,25 +798,10 @@ export default class AppendForm extends Component {
       }, []);
 
       if (!identicalNameFields.length) {
-        const { form, intl } = this.props;
+        const { form } = this.props;
 
         if (objectFields.galleryAlbum === currentField) {
           this.handleCreateAlbum(values);
-        } else if (objectFields.newsFilter === currentField) {
-          const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
-            sub => sub.length,
-          );
-          const ignoreList = map(this.state.ignoreList, o => o.id);
-
-          if (!isEmpty(allowList) || !isEmpty(ignoreList)) this.onSubmit(values);
-          else {
-            message.error(
-              intl.formatMessage({
-                id: 'at_least_one',
-                defaultMessage: 'You should add at least one object',
-              }),
-            );
-          }
         } else if (err || this.checkRequiredField(form, currentField)) {
           message.error(
             this.props.intl.formatMessage({

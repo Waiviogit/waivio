@@ -260,7 +260,7 @@ export default class GuestsSettings extends React.Component {
         <LinkHiveAccountModal
           handleOk={this.handleOkModal}
           handleSelect={this.hideAutoCompleteDropdown}
-          handleClose={() => this.setState({ showModal: false })}
+          handleClose={() => this.setState({ showModal: false, hiveBeneficiaryAccount: '' })}
           showModal={showModal}
           hiveBeneficiaryAccount={hiveBeneficiaryAccount}
           handleUnselectUser={this.handleUnselectUser}

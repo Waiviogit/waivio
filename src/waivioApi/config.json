@@ -101,6 +101,7 @@
   "getField": "/getField",
   "showMoreTags": "/showMoreTags",
   "setSentryNotify": "/sentry",
+  "referrals": "/referrals",
   "sentryAppName": "waivio",
   "sites": "/sites",
   "getParents": "/getParents",

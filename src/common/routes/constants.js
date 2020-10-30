@@ -43,6 +43,7 @@ export default {
       'messages',
       'reports',
       'fraud-detection',
+      'receivables',
     ].join('|'),
     sideBar: [
       'all',
@@ -90,5 +91,8 @@ export default {
       'object_filters',
       'muted_users',
     ].join('|'),
+  },
+  REFERRAL: {
+    tabs: ['referral-details', 'referral-instructions', 'referral-status'].join('|'),
   },
 };

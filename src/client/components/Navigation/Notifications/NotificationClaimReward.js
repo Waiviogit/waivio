@@ -8,7 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationClaimReward = ({ notification, read, onClick }) => {
-  const url = `/@${notification.account}`;
+  const url = `/@${notification.account}/transfers`;
 
   return (
     <Link
