@@ -47,7 +47,7 @@ const CatalogWrap = props => {
         setLists(wobject.listItems);
       }
     }
-  }, [hash, wobject.author_permlink, userName]);
+  }, [hash, wobject.author_permlink]);
 
   useEffect(() => {
     if (wobjectNested) {
