@@ -165,6 +165,7 @@ export const getTransferAmount = state => fromWallet.getTransferAmount(state.wal
 export const getTransferCurrency = state => fromWallet.getTransferCurrency(state.wallet);
 export const getTransferMemo = state => fromWallet.getTransferMemo(state.wallet);
 export const getTransferApp = state => fromWallet.getTransferApp(state.wallet);
+export const getTransferIsTip = state => fromWallet.getTransferIsTip(state.wallet);
 export const getIsPowerUpOrDownVisible = state =>
   fromWallet.getIsPowerUpOrDownVisible(state.wallet);
 export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);

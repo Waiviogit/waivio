@@ -27,6 +27,7 @@ import {
   getTotalVestingFundSteem,
   getHiveBeneficiaryAccount,
   isOpenLinkModal,
+  getTransferIsTip,
 } from '../../reducers';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -53,6 +54,7 @@ const InputGroup = Input.Group;
     currency: getTransferCurrency(state),
     memo: getTransferMemo(state),
     app: getTransferApp(state),
+    isTip: getTransferIsTip(state),
     authenticated: getIsAuthenticated(state),
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
@@ -99,6 +101,7 @@ export default class Transfer extends React.Component {
     sendPendingTransfer: PropTypes.func.isRequired,
     getPayables: PropTypes.func,
     match: PropTypes.shape().isRequired,
+    isTip: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -115,6 +118,7 @@ export default class Transfer extends React.Component {
     searchByUser: [],
     hiveBeneficiaryAccount: '',
     getPayables: () => {},
+    isTip: false,
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -264,6 +268,7 @@ export default class Transfer extends React.Component {
       user,
       match,
       getPayables,
+      isTip,
     } = this.props;
     const matchPath = get(match, ['params', '0']);
     const params = ['payables', 'receivables'];
@@ -293,12 +298,12 @@ export default class Transfer extends React.Component {
 
         if (app) transferQuery.memo = { ...transferQuery.memo, app };
         if (values.to && transferQuery.memo.id === REWARD.guestTransfer)
-          transferQuery.memo = {
-            ...transferQuery.memo,
-            to: values.to,
-          };
+          transferQuery.memo = { ...transferQuery.memo, to: values.to };
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
+        if (isTip) transferQuery.memo = memo;
+
         transferQuery.memo = JSON.stringify(transferQuery.memo);
+
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
             if (res.result) {
@@ -392,7 +397,7 @@ export default class Transfer extends React.Component {
     const { intl, authenticated, user } = this.props;
     const currentValue = parseFloat(value);
 
-    if (value && currentValue <= 0) {
+    if (value <= 0) {
       callback([
         new Error(
           intl.formatMessage({
@@ -507,6 +512,7 @@ export default class Transfer extends React.Component {
       cryptosPriceHistory,
       hiveBeneficiaryAccount,
       showModal,
+      isTip,
     } = this.props;
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
@@ -541,6 +547,12 @@ export default class Transfer extends React.Component {
     );
 
     const usdValue = this.getUSDValue();
+    const memoPlaceHolder = isTip
+      ? get(memo, 'message', memo)
+      : intl.formatMessage({
+          id: 'memo_placeholder',
+          defaultMessage: 'Additional message to include in this payment (optional)',
+        });
 
     return (isGuest && hiveBeneficiaryAccount) || !isGuest ? (
       <Modal
@@ -614,7 +626,7 @@ export default class Transfer extends React.Component {
                 ],
               })(
                 <Input
-                  disabled={isChangesDisabled}
+                  disabled={isChangesDisabled && amount}
                   className="Transfer__amount__input"
                   onChange={this.handleAmountChange}
                   placeholder={intl.formatMessage({
@@ -680,10 +692,7 @@ export default class Transfer extends React.Component {
               <Input.TextArea
                 disabled={isChangesDisabled}
                 autoSize={{ minRows: 2, maxRows: 6 }}
-                placeholder={intl.formatMessage({
-                  id: 'memo_placeholder',
-                  defaultMessage: 'Additional message to include in this payment (optional)',
-                })}
+                placeholder={memoPlaceHolder}
               />,
             )}
           </Form.Item>
