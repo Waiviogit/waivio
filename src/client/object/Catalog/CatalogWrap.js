@@ -1,7 +1,6 @@
 import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
 import { get, isEmpty, map } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -168,8 +167,4 @@ const mapDispatchToProps = {
   clearNestedWobjFlag: clearIsGetNestedWobject,
 };
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  injectIntl,
-  withRouter,
-)(CatalogWrap);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(CatalogWrap)));
