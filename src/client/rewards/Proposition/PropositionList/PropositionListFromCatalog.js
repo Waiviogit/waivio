@@ -5,7 +5,6 @@ import PropositionMainObjectCard from '../PropositionMainObjectCard';
 import CatalogBreadcrumb from '../../../object/Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import CatalogSorting from '../../../object/Catalog/CatalogSorting/CatalogSorting';
 import Proposition from '../Proposition';
-import Loading from '../../../components/Icon/Loading';
 import OBJ_TYPE from '../../../object/const/objectTypes';
 import { parseWobjectField } from '../../../helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
@@ -77,9 +76,7 @@ const PropositionListFromCatalog = ({
           rewardMax={rewardMax}
         />
       )}
-      {isGetNested ? (
-        <Loading />
-      ) : (
+      {!isGetNested && (
         <React.Fragment>
           <div className="CatalogWrap__breadcrumb">
             <CatalogBreadcrumb intl={intl} wobject={wobject} />
