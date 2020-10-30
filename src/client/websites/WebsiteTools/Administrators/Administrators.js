@@ -37,13 +37,17 @@ export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl }) =>
         })}
       </p>
       <p>
-        But sometimes it is essential that certain objects appear on the website exactly as intended
-        by the site operators. To do this, the website owner may grant administrative privileges to
-        some Hive users.
+        {intl.formatMessage({
+          id: 'certain_objects_appear',
+          defaultMessage:
+            'But sometimes it is essential that certain objects appear on the website exactly as intended by the site operators. To do this, the website owner may grant administrative privileges to',
+        })}
       </p>
       <p>
-        Administrators have a deciding right to approve or reject object updates on the website. If
-        several administrators vote on the same update, only the last vote stands.
+        {intl.formatMessage({
+          id: 'admin_rules',
+          defaultMessage: 'Administrators have a deciding right to approve or reject object updates on the website. If several administrators vote on the same update, only the last vote stands.',
+        })}
       </p>
       <h3>
         <FormattedMessage
@@ -63,7 +67,7 @@ export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl }) =>
       </div>
 
       <Button className="WebsitesAdministrators__add-button" type="primary">
-        Add
+        <FormattedMessage id="add" defaultMessage="Add" />
       </Button>
       <h3>
         <FormattedMessage id="website_administrators" defaultMessage="Website administrators" />:
@@ -75,7 +79,9 @@ export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl }) =>
               <Avatar size={50} username={admin.name} />
               <span>{admin.name}</span>
             </span>
-            <Button type="primary">Delete</Button>
+            <Button type="primary">
+              <FormattedMessage id="delete" defaultMessage="Delete" />
+            </Button>
           </div>
         ))}
       </div>
