@@ -6,12 +6,14 @@
   height: 30px !important;
 
   a {
-    .menu-item-link();
-  }
+    color: #99aab5 !important;
+    font-size: 18px !important;
+    &:hover {
+      color: @primary-color !important;
+    }
 
-  &--bold {
-    & > a {
-      font-weight: bold !important;
+    &[disabled] {
+      color: #c2ccd3 !important;
     }
   }
 }
