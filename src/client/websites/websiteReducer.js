@@ -136,10 +136,44 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.GET_WEBSITE_MODERATORS.SUCCESS: {
+      return {
+        ...state,
+        moderators: action.payload,
+      };
+    }
+
+    case websiteAction.GET_WEBSITE_AUTHORITIES.SUCCESS: {
+      return {
+        ...state,
+        authorities: action.payload,
+      };
+    }
+
     case websiteAction.GET_WEBSITE_ADMINISTRATORS.SUCCESS: {
       return {
         ...state,
         administrators: action.payload,
+      };
+    }
+
+    case websiteAction.DELETE_WEBSITE_ADMINISTRATOR.SUCCESS: {
+      return {
+        ...state,
+        administrators: state.administrators.filter(admin => !action.payload.includes(admin.name)),
+      };
+    }
+
+    case websiteAction.ADD_WEBSITE_ADMINISTRATOR.SUCCESS: {
+      return {
+        ...state,
+        administrators: [
+          ...state.administrators,
+          {
+            name: action.payload.account,
+            wobjects_weight: action.payload.wobjects_weight,
+          },
+        ],
       };
     }
 
@@ -156,4 +190,6 @@ export const getManage = state => get(state, 'manage');
 export const getReports = state => get(state, 'reports');
 export const getOwnWebsites = state => get(state, 'ownWebsites', []);
 export const getConfiguration = state => get(state, 'configurationWebsite', {});
-export const getAdministrators = state => get(state, 'getAdministrators', {});
+export const getAdministrators = state => get(state, 'administrators', {});
+export const getModerators = state => get(state, 'moderators', {});
+export const getAuthorities = state => get(state, 'authorities', {});

@@ -194,7 +194,7 @@ function sc2Extended() {
         const params = {
           required_auths: [],
           required_posting_auths: [username],
-          id: 'custom_website_add_administrators',
+          id: 'website_add_administrators',
           json: JSON.stringify({ host, names }),
         };
 
@@ -206,7 +206,55 @@ function sc2Extended() {
         const params = {
           required_auths: [],
           required_posting_auths: [username],
-          id: 'custom_website_remove_administrators',
+          id: 'website_remove_administrators',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      addWebsiteModerators(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'website_add_moderators',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      deleteWebsiteModerators(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'website_remove_moderators',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      addWebsiteAuthorities(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'website_add_authorities',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      deleteWebsiteAuthorities(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'website_remove_authorities',
           json: JSON.stringify({ host, names }),
         };
 

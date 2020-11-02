@@ -1,31 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, message} from 'antd';
+import { Button, message } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 
 import { getAdministrators } from '../../../reducers';
-import {addWebAdministrator, deleteWebAdministrator, getWebAdministrators} from '../../websiteActions';
+import {
+  addWebAdministrator,
+  deleteWebAdministrator,
+  getWebAdministrators,
+} from '../../websiteActions';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import Avatar from '../../../components/Avatar';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 
 import './Administrators.less';
 
-export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl, addWebAdmins, deleteWebAdmins }) => {
+export const WebsitesAdministrators = ({
+  getWebAdmins,
+  match,
+  admins,
+  intl,
+  addWebAdmins,
+  deleteWebAdmins,
+}) => {
   const [selectUser, setSelectUser] = useState('');
   const host = match.params.site;
-  const mockAdmins = [
-    { name: 'lucykolosova', _id: 1233434 },
-    { name: 'lucykolosova', _id: 12330434 },
-  ];
 
   const addAdmin = () => {
-    addWebAdmins(host, [selectUser])
-      .then(() => setSelectUser(''))
-      .catch(() => message.error('Try again, please'))
-  }
-
+    addWebAdmins(host, selectUser)
+      .then(() => setSelectUser(null))
+      .catch(() => message.error('Try again, please'));
+  };
 
   useEffect(() => {
     getWebAdmins(host);
@@ -53,7 +60,8 @@ export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl, addW
       <p>
         {intl.formatMessage({
           id: 'admin_rules',
-          defaultMessage: 'Administrators have a deciding right to approve or reject object updates on the website. If several administrators vote on the same update, only the last vote stands.',
+          defaultMessage:
+            'Administrators have a deciding right to approve or reject object updates on the website. If several administrators vote on the same update, only the last vote stands.',
         })}
       </p>
       <h3>
@@ -64,33 +72,53 @@ export const WebsitesAdministrators = ({ getWebAdmins, match, admins, intl, addW
       </h3>
       <div className="WebsitesAdministrators__search-user">
         {selectUser ? (
-          <SelectUserForAutocomplete account={selectUser} resetUser={() => setSelectUser('')} />
+          <SelectUserForAutocomplete
+            account={selectUser.account}
+            resetUser={() => setSelectUser(null)}
+          />
         ) : (
           <SearchUsersAutocomplete
-            handleSelect={({ account }) => setSelectUser(account)}
+            handleSelect={({ account, wobjects_weight: weight }) =>
+              setSelectUser({
+                name: account,
+                weight,
+              })
+            }
             style={{ width: '100%' }}
           />
         )}
       </div>
 
-      <Button className="WebsitesAdministrators__add-button" type="primary" onClick={addAdmin} disabled={!selectUser}>
+      <Button
+        className="WebsitesAdministrators__add-button"
+        type="primary"
+        onClick={addAdmin}
+        disabled={!selectUser}
+      >
         <FormattedMessage id="add" defaultMessage="Add" />
       </Button>
       <h3>
         <FormattedMessage id="website_administrators" defaultMessage="Website administrators" />:
       </h3>
       <div className="WebsitesAdministrators__user-table">
-        {mockAdmins.map(admin => (
-          <div key={admin._id} className="WebsitesAdministrators__user">
-            <span className="WebsitesAdministrators__user-info">
-              <Avatar size={50} username={admin.name} />
-              <span>{admin.name}</span>
-            </span>
-            <Button type="primary" onClick={() => deleteWebAdmins(host, admin.name)}>
-              <FormattedMessage id="delete" defaultMessage="Delete" />
-            </Button>
-          </div>
-        ))}
+        {isEmpty(admins) ? (
+          <FormattedMessage
+            id={'web_admins_empty'}
+            defaultMessage={"You don't have administratives."}
+          />
+        ) : (
+          admins.map(({ name, _id: id }) => (
+            <div key={id} className="WebsitesAdministrators__user">
+              <span className="WebsitesAdministrators__user-info">
+                <Avatar size={50} username={name} />
+                <span>{name}</span>
+              </span>
+              <Button type="primary" onClick={() => deleteWebAdmins(host, name)}>
+                <FormattedMessage id="delete" defaultMessage="Delete" />
+              </Button>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
@@ -103,6 +131,11 @@ WebsitesAdministrators.propTypes = {
   admins: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
+  }).isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      site: PropTypes.string,
+    }),
   }).isRequired,
 };
 

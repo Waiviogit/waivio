@@ -94,4 +94,7 @@ export default {
   WebsitesAdministrators: loableComponent(
     import('../../client/websites/WebsiteTools/Administrators/Administrators'),
   ),
+  WebsiteModerators: loableComponent(
+    import('../../client/websites/WebsiteTools/Moderators/WebsiteModerators'),
+  ),
 };

@@ -365,3 +365,5 @@ export const getReports = state => fromWebsite.getReports(state.website);
 export const getOwnWebsites = state => fromWebsite.getOwnWebsites(state.website);
 export const getConfiguration = state => fromWebsite.getConfiguration(state.website);
 export const getAdministrators = state => fromWebsite.getAdministrators(state.website);
+export const getModerators = state => fromWebsite.getModerators(state.website);
+export const getAuthorities = state => fromWebsite.getAuthorities(state.website);

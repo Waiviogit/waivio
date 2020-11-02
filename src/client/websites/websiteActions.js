@@ -8,6 +8,8 @@ import {
   getDomainList,
   getInfoForManagePage,
   getWebsiteAdministrators,
+  getWebsiteAuthorities,
+  getWebsiteModerators,
   getWebsites,
   getWebsitesConfiguration,
   getWebsitesReports,
@@ -196,28 +198,91 @@ export const ADD_WEBSITE_ADMINISTRATOR = createAsyncActionType(
   '@website/ADD_WEBSITE_ADMINISTRATOR',
 );
 
-export const addWebAdministrator = (host, names) => (dispatch, getState, { steemConnectAPI }) => {
+export const addWebAdministrator = (host, user) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = getAuthenticatedUserName(getState());
 
-  dispatch({
-    type: ADD_WEBSITE_ADMINISTRATOR.ACTION,
-    payload: {
-      promise: steemConnectAPI.addWebsiteAdministrators(userName, host, names),
-    },
-  });
+  return steemConnectAPI.addWebsiteAdministrators(userName, host, [user.account]).then(() =>
+    dispatch({
+      type: ADD_WEBSITE_ADMINISTRATOR.SUCCESS,
+      payload: user,
+    }),
+  );
 };
 
 export const DELETE_WEBSITE_ADMINISTRATOR = createAsyncActionType(
   '@website/DELETE_WEBSITE_ADMINISTRATOR',
 );
 
-export const deleteWebAdministrator = (host, names) => (dispatch, getState, { steemConnectAPI }) => {
+export const deleteWebAdministrator = (host, names) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const userName = getAuthenticatedUserName(getState());
 
   dispatch({
-    type: DELETE_WEBSITE_ADMINISTRATOR.ACTION,
+    type: DELETE_WEBSITE_ADMINISTRATOR.START,
+    payload: names,
+  });
+
+  steemConnectAPI.deleteWebsiteAdministrators(userName, host, names).then(() =>
+    dispatch({
+      type: DELETE_WEBSITE_ADMINISTRATOR.SUCCESS,
+      payload: names,
+    }),
+  );
+};
+
+export const GET_WEBSITE_MODERATORS = createAsyncActionType('@website/GET_WEBSITE_MODERATORS');
+
+export const getWebModerators = host => (dispatch, getState) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: GET_WEBSITE_MODERATORS.ACTION,
     payload: {
-      promise: steemConnectAPI.deleteWebsiteAdministrators(userName, host, names),
+      promise: getWebsiteModerators(host, userName),
+    },
+  });
+};
+
+export const ADD_WEBSITE_MODERATORS = createAsyncActionType('@website/ADD_WEBSITE_MODERATORS');
+
+export const addWebsiteModerators = (host, names) => (dispatch, getState, { steemConnectAPI }) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: ADD_WEBSITE_MODERATORS.ACTION,
+    payload: {
+      promise: steemConnectAPI.addWebsiteModerators(userName, host, names),
+    },
+  });
+};
+
+export const DELETE_WEBSITE_MODERATORS = createAsyncActionType(
+  '@website/DELETE_WEBSITE_MODERATORS',
+);
+
+export const deleteWebModerators = (host, names) => (dispatch, getState, { steemConnectAPI }) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  steemConnectAPI.deleteWebsiteModerators(userName, host, names).then(() =>
+    dispatch({
+      type: DELETE_WEBSITE_MODERATORS.SUCCESS,
+      payload: names[0],
+    }),
+  );
+};
+
+export const GET_WEBSITE_AUTHORITIES = createAsyncActionType('@website/GET_WEBSITE_AUTHORITIES');
+
+export const getWebAuthorities = host => (dispatch, getState) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: GET_WEBSITE_AUTHORITIES.ACTION,
+    payload: {
+      promise: getWebsiteAuthorities(host, userName),
     },
   });
 };

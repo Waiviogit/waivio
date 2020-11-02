@@ -109,5 +109,7 @@
   "checkAvailable": "/checkAvailable",
   "managePage": "/manage",
   "configuration": "/configuration",
-  "administrators": "/administrators"
+  "administrators": "/administrators",
+  "authorities": "/authorities",
+  "moderators": "/moderators"
 }

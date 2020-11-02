@@ -1722,4 +1722,28 @@ export const getWebsiteAdministrators = (host, userName) =>
     .then(res => res)
     .catch(e => e);
 
+export const getWebsiteModerators = (host, userName) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.moderators}?host=${host}&userName=${userName}`,
+    {
+      headers: { ...headers, 'access-token': Cookie.get('access_token') },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getWebsiteAuthorities = (host, userName) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.authorities}?host=${host}&userName=${userName}`,
+    {
+      headers: { ...headers, 'access-token': Cookie.get('access_token') },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;
