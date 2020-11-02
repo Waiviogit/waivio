@@ -8,7 +8,7 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import { getObjectName, parseAddress, getObjectAvatar, getTopTags } from '../helpers/wObjectHelper';
+import { getObjectName, parseAddress, getObjectAvatar } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
@@ -28,7 +28,7 @@ const ObjectCardView = ({
   useEffect(() => {
     const tagCategory = get(wObject, 'tagCategory');
     if (inList) {
-      const objectTags = getTopTags(tagCategory);
+      const objectTags = get(wObject, 'topTags', '');
       setTags([wObject.object_type, ...objectTags]);
     } else if (tagCategory) {
       const currentTagsFiltered = filter(tagCategory, item => size(item.items));
