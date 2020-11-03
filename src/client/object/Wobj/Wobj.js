@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Helmet } from 'react-helmet';
 import { isEmpty } from 'lodash';
 import { renderRoutes } from 'react-router-config';
@@ -10,6 +11,8 @@ import Affix from '../../components/Utils/Affix';
 import LeftObjectProfileSidebar from '../../app/Sidebar/LeftObjectProfileSidebar';
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../../components/Sidebar/ObjectsRelated/ObjectsRelated';
+import { hasType } from '../../helpers/wObjectHelper';
+import OBJECT_TYPE from '../const/objectTypes';
 
 const Wobj = ({
   authenticated,
@@ -31,6 +34,12 @@ const Wobj = ({
   const albumsAndImagesCount = wobject.albums_count;
   const displayedObjectName = objectName;
   const desc = wobject.description || objectName;
+  const rightSidebarClassList = classNames('wobjRightContainer', {
+    'wobjRightContainer--right': hasType(wobject, OBJECT_TYPE.PAGE),
+  });
+  const centerClassList = classNames('center', {
+    'center--page': hasType(wobject, OBJECT_TYPE.PAGE),
+  });
 
   return (
     <React.Fragment>
@@ -93,7 +102,7 @@ const Wobj = ({
                 />
               </div>
             </Affix>
-            <Affix className="wobjRightContainer" stickPosition={72}>
+            <Affix className={rightSidebarClassList} stickPosition={72}>
               <div className="right">
                 {wobject.author_permlink && (
                   <ObjectExpertise username={userName} wobject={wobject} />
@@ -101,7 +110,7 @@ const Wobj = ({
               </div>
               <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
             </Affix>
-            <div className="center">
+            <div className={centerClassList}>
               {renderRoutes(route.routes, {
                 isEditMode,
                 wobject,
