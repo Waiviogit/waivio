@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, truncate, get, filter, map, size } from 'lodash';
+import { includes, truncate, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -17,7 +17,6 @@ const ObjectCardView = ({
   intl,
   wObject,
   options: { mobileView = 'compact', ownRatesOnly = false },
-  inList,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
@@ -26,17 +25,8 @@ const ObjectCardView = ({
   const parent = get(wObject, 'parent', {});
 
   useEffect(() => {
-    const tagCategory = get(wObject, 'tagCategory');
-    if (inList) {
-      const objectTags = get(wObject, 'topTags', []);
-      setTags([wObject.object_type, ...objectTags]);
-    } else if (tagCategory) {
-      const currentTagsFiltered = filter(tagCategory, item => size(item.items));
-      const currentTags = map(currentTagsFiltered, item => item.body);
-      setTags(currentTags);
-    } else {
-      setTags([wObject.object_type]);
-    }
+    const objectTags = get(wObject, 'topTags', []);
+    setTags([wObject.object_type, ...objectTags]);
   }, [wObject, setTags]);
 
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
@@ -162,12 +152,10 @@ ObjectCardView.propTypes = {
     ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
-  inList: PropTypes.bool,
 };
 
 ObjectCardView.defaultProps = {
   options: {},
   wObject: {},
-  inList: false,
 };
 export default injectIntl(ObjectCardView);
