@@ -47,7 +47,7 @@ const CatalogWrap = props => {
         setLists(wobject.listItems);
       }
     }
-  }, [hash, wobject.author_permlink, userName]);
+  }, [hash, wobject.author_permlink]);
 
   useEffect(() => {
     if (wobjectNested) {
@@ -71,6 +71,11 @@ const CatalogWrap = props => {
   return (
     <div>
       <React.Fragment>
+        {isEditMode && (
+          <div className="CatalogWrap__add-item">
+            <AddItemModal wobject={obj} onAddItem={handleAddItem} />
+          </div>
+        )}
         <PropositionListContainer
           wobject={wobject}
           userName={userName}
@@ -79,11 +84,6 @@ const CatalogWrap = props => {
           isCatalogWrap
           currentHash={hash}
         />
-        {isEditMode && (
-          <div className="CatalogWrap__add-item">
-            <AddItemModal wobject={obj} onAddItem={handleAddItem} />
-          </div>
-        )}
       </React.Fragment>
     </div>
   );

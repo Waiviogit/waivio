@@ -342,14 +342,14 @@ class Topnav extends React.Component {
                   <PopoverMenuItem key="rewards">
                     <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
                   </PopoverMenuItem>
+                  <PopoverMenuItem key="discover">
+                    <FormattedMessage id="menu_discover" defaultMessage="Discover" />
+                  </PopoverMenuItem>
+                  <PopoverMenuItem key="tools">
+                    <FormattedMessage id="menu_tools" defaultMessage="Tools" />
+                  </PopoverMenuItem>
                   <PopoverMenuItem key="my-profile">
                     <FormattedMessage id="my_profile" defaultMessage="Profile" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="news" fullScreenHidden>
-                    <FormattedMessage id="news" defaultMessage="News" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="objects" fullScreenHidden>
-                    <FormattedMessage id="objects" defaultMessage="Objects" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="wallet">
                     <FormattedMessage id="wallet" defaultMessage="Wallet" />
