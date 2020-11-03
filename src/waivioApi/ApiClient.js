@@ -747,6 +747,7 @@ export const getHistory = ({
       onlyWithMessages,
       sort,
     };
+    console.log('onlyWithMessages: ', onlyWithMessages);
     /* If we have userName, we sent request from history page. On history page we should display all propositions: with messages and without */
     /* If we have guideName, we sent request from messages page. On this page we should display only propositions with messages */
     if (userName) {
@@ -762,6 +763,7 @@ export const getHistory = ({
     if (!isEmpty(campaignNames)) reqData.campaignNames = campaignNames;
     if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
     if (notifyAuthor) reqData.guideName = notifyAuthor;
+
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
