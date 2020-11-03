@@ -154,10 +154,7 @@ export const getRewardsHistory = requestData => ({
 
 export const GET_MORE_REWARDS_HISTORY = createAsyncActionType('@rewards/GET_MORE_REWARDS_HISTORY');
 
-export const getMoreRewardsHistory = requestData => {
-  console.log('getMoreRewardsHistory: ', requestData);
-  return {
-    type: GET_MORE_REWARDS_HISTORY.ACTION,
-    payload: ApiClient.getHistory(requestData),
-  };
-};
+export const getMoreRewardsHistory = requestData => ({
+  type: GET_MORE_REWARDS_HISTORY.ACTION,
+  payload: ApiClient.getHistory(requestData),
+});

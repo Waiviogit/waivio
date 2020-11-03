@@ -56,6 +56,7 @@ const History = ({
 
   const [loading, setLoading] = useState(false);
   const [blacklistUsers, setBlacklistUsers] = useState([]);
+  const [loadingCampaigns, setLoadingCampaigns] = useState(false);
 
   const sortForFilters = useMemo(() => {
     if (isHistory) {
@@ -69,8 +70,7 @@ const History = ({
   const reservationPermlink = match.params.campaignId;
   const currentNotifyAuthor = match.params.username;
 
-  const getHistory = (username, sortChanged, activeFilters) => {
-    console.log('getHistory');
+  const getHistory = (username, sortChanged, activeFilters, isLoadMore = false) => {
     const rewards = map(activeFilters.rewards, item =>
       Object.keys(REWARDS_TYPES_MESSAGES).find(key => REWARDS_TYPES_MESSAGES[key] === item),
     );
@@ -85,6 +85,7 @@ const History = ({
       rewards,
       status: activeFilters.status,
       locale: usedLocale,
+      skip: size(historyCampaigns),
     };
 
     if (isHistory) {
@@ -104,12 +105,16 @@ const History = ({
       requestData.campaignNames = activeFilters.messagesCampaigns;
       requestData.onlyWithMessages = false;
     }
-    getCurrentRewardsHistory(requestData);
+    if (!isLoadMore) {
+      setLoadingCampaigns(true);
+      getCurrentRewardsHistory(requestData).then(() => setLoadingCampaigns(false));
+    } else {
+      getMoreHistory(requestData);
+    }
   };
 
   useEffect(() => {
     if (!isLoadingHistory) {
-      // setMessages(historyCampaigns);
       setMessagesSponsors(historySponsors);
       setMessagesCampaigns(campaignNames);
       setLoading(false);
@@ -133,7 +138,7 @@ const History = ({
 
   const handleSortChange = useCallback(
     sortChanged => {
-      console.log('handleSortChange');
+      setLoadingCampaigns(true);
       setSortValue(sortChanged);
       getHistory(userName, sortChanged, filters);
     },
@@ -141,7 +146,6 @@ const History = ({
   );
 
   useEffect(() => {
-    console.log('useEffect');
     if (userName) getHistory(userName, sortForFilters, filters);
     if (!isHistory) {
       getUserBlackList(userName).then(data => {
@@ -159,41 +163,11 @@ const History = ({
   ]);
 
   const handleLoadMore = () => {
-    console.log('handleLoadMore');
-    if (hasMoreHistory) {
-      const requestData = {
-        onlyWithMessages: true,
-        sort: sortForFilters,
-        status: filters.status,
-        skip: size(historyCampaigns),
-      };
-
-      const caseStatus = Object.keys(CAMPAIGNS_TYPES_MESSAGES).find(
-        key => CAMPAIGNS_TYPES_MESSAGES[key] === filters.caseStatus,
-      );
-
-      if (isHistory) {
-        requestData.guideNames = filters.messagesSponsors;
-        requestData.userName = userName;
-      }
-      if (!isHistory) {
-        requestData.caseStatus = caseStatus;
-        requestData.guideName = userName;
-        requestData.reservationPermlink = reservationPermlink;
-      }
-      if (isHistoryNotify) {
-        requestData.notifyAuthor = currentNotifyAuthor;
-      }
-      if (isGuideHistory) {
-        requestData.guideName = userName;
-        requestData.campaignNames = filters.messagesCampaigns;
-        requestData.onlyWithMessages = false;
-      }
-
-      getMoreHistory(requestData);
+    if (hasMoreHistory && !isLoadingHistory) {
+      getHistory(userName, sortForFilters, filters, true);
     }
   };
-  console.log('historyCampaigns: ', historyCampaigns);
+
   return (
     <div className="history">
       <FilteredRewardsList
@@ -201,7 +175,7 @@ const History = ({
           intl,
           match,
           campaignsLayoutWrapLayout,
-          loadingCampaigns: isLoadingHistory,
+          loadingCampaigns,
           loading,
           hasMore: hasMoreHistory,
           messages: historyCampaigns,
