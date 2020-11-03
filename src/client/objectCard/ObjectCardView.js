@@ -28,7 +28,7 @@ const ObjectCardView = ({
   useEffect(() => {
     const tagCategory = get(wObject, 'tagCategory');
     if (inList) {
-      const objectTags = get(wObject, 'topTags', '');
+      const objectTags = get(wObject, 'topTags', []);
       setTags([wObject.object_type, ...objectTags]);
     } else if (tagCategory) {
       const currentTagsFiltered = filter(tagCategory, item => size(item.items));
