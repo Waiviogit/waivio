@@ -642,8 +642,8 @@ export default class Transfer extends React.Component {
               )}
             </InputGroup>
           </Form.Item>
-          <Form.Item>{isMobile && currencyPrefix}</Form.Item>
-          <Form.Item>
+          {isMobile && <Form.Item>{currencyPrefix}</Form.Item>}
+          <div className={'Transfer__info-text'}>
             {authenticated && (
               <FormattedMessage
                 id="balance_amount"
@@ -661,28 +661,26 @@ export default class Transfer extends React.Component {
                 }}
               />
             )}
-          </Form.Item>
-          <Form.Item>
-            <div>
-              <FormattedMessage
-                id="estimated_value"
-                defaultMessage="Estimated transaction value: {estimate} USD"
-                values={{
-                  estimate: (
-                    <span role="presentation" className="estimate">
-                      <USDDisplay
-                        value={
-                          amount
-                            ? this.estimatedValue(cryptosPriceHistory, amount)
-                            : this.state.currentEstimate
-                        }
-                      />
-                    </span>
-                  ),
-                }}
-              />
-            </div>
-          </Form.Item>
+          </div>
+          <div className={'Transfer__info-text'}>
+            <FormattedMessage
+              id="estimated_value"
+              defaultMessage="Estimated transaction value: {estimate} USD"
+              values={{
+                estimate: (
+                  <span role="presentation" className="estimate">
+                    <USDDisplay
+                      value={
+                        amount
+                          ? this.estimatedValue(cryptosPriceHistory, amount)
+                          : this.state.currentEstimate
+                      }
+                    />
+                  </span>
+                ),
+              }}
+            />
+          </div>
           <Form.Item
             label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
           >
