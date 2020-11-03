@@ -217,7 +217,7 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
   const fieldName = name || post.name;
-
+  const currentMethod = isGuest ? 'vote' : 'appendVote';
   if (!getIsAuthenticated(state)) return null;
 
   dispatch({
@@ -228,8 +228,7 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
     },
   });
 
-  return steemConnectAPI
-    .vote(voter, author, permlink, weight)
+  return steemConnectAPI[currentMethod](voter, author, permlink, weight)
     .then(async data => {
       const res = isGuest ? await data.json() : data.result;
 
@@ -311,6 +310,7 @@ export const unfollowWobject = (permlink, name, type) => (
 
 export const SET_CATALOG_BREADCRUMBS = '@wobj/SET_CATALOG_BREADCRUMBS';
 export const SET_WOBJECT_NESTED = '@wobj/SET_WOBJECT_NESTED';
+export const CLEAR_IS_GET_NESTED_WOBJECT = '@wobj/CLEAR_IS_GET_NESTED_WOBJECT';
 export const SET_LIST_ITEMS = '@wobj/SET_LIST_ITEMS';
 
 export const setCatalogBreadCrumbs = payload => ({
@@ -321,6 +321,10 @@ export const setCatalogBreadCrumbs = payload => ({
 export const setNestedWobject = payload => ({
   type: SET_WOBJECT_NESTED,
   payload,
+});
+
+export const clearIsGetNestedWobject = () => ({
+  type: CLEAR_IS_GET_NESTED_WOBJECT,
 });
 
 export const setListItems = lists => ({

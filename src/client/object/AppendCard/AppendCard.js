@@ -23,7 +23,7 @@ import { voteAppends } from '../wobjActions';
 import Payout from '../../components/StoryFooter/Payout';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import ApprovingCard from './ApprovingCard';
-import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
+import { calculateVotePowerForSlider } from '../../vendor/steemitHelpers';
 
 import '../../components/Story/Story.less';
 import '../../components/StoryFooter/StoryFooter.less';
@@ -51,6 +51,7 @@ const AppendCard = props => {
   };
 
   useEffect(() => calculateSliderValue(), []);
+
   const upVotes = props.post.active_votes && getAppendUpvotes(props.post.active_votes);
   const isLiked = props.post.isLiked || some(upVotes, { voter: props.user.name });
 
@@ -70,8 +71,7 @@ const AppendCard = props => {
     const { user, post, isGuest } = props;
     const voteWorthCalc = isGuest
       ? 0
-      : await calculateVotePowerForSlider(user.name, value, post.creator, post.permlink);
-
+      : await calculateVotePowerForSlider(user.name, value, post.author, post.permlink);
     setVoteWorth(voteWorthCalc);
     setSliderValue(value);
   }
@@ -180,12 +180,7 @@ const AppendCard = props => {
           )}
         </div>
         {visibleSlider && !isLiked && (
-          <Slider
-            value={sliderValue}
-            voteWorth={voteWorth}
-            onChange={handleSliderChange}
-            isPostCashout={isPostCashout(props.post)}
-          />
+          <Slider value={sliderValue} voteWorth={voteWorth} onChange={handleSliderChange} />
         )}
         <Comments show={commentsVisible} isQuickComments post={props.post} isUpdating />
       </div>

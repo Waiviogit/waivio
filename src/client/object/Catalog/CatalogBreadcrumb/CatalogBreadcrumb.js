@@ -31,18 +31,6 @@ const CatalogBreadcrumb = props => {
   const currentTitle = get(breadcrumb[BreadCrumbSize - 1], 'title', '');
   const permlinks = getPermlinksFromHash(props.location.hash);
   let currentBreadCrumbs = breadcrumb.filter(el => permlinks.includes(el.id));
-
-  if (!permlinks.includes(wobject.author_permlink) && hasType(wobject, 'list')) {
-    currentBreadCrumbs = [
-      {
-        id: wobject.author_permlink,
-        name: getObjectName(wobject),
-        title: getObjectTitle(wobject),
-        path: wobject.defaultShowLink,
-      },
-      ...currentBreadCrumbs,
-    ];
-  }
   /**
    * @param wObject : {}
    * Will be set breadcrumbs
@@ -79,7 +67,22 @@ const CatalogBreadcrumb = props => {
     return hashPermlinks.join('/');
   };
 
+  const createBreadCrumbs = crumbs => {
+    currentBreadCrumbs = [
+      {
+        id: wobject.author_permlink,
+        name: getObjectName(wobject),
+        title: getObjectTitle(wobject),
+        path: wobject.defaultShowLink,
+      },
+      ...crumbs,
+    ];
+  };
+
   useEffect(() => {
+    if (hasType(wobject, 'list')) {
+      createBreadCrumbs(currentBreadCrumbs);
+    }
     if (size(permlinks) > 1) {
       getObjectsByIds({ authorPermlinks: permlinks, locale }).then(response => {
         const wobjectRes = response.wobjects.map(wobj => ({
@@ -88,7 +91,13 @@ const CatalogBreadcrumb = props => {
           title: getObjectTitle(wobj),
           path: wobj.defaultShowLink,
         }));
-        dispatch(setCatalogBreadCrumbs(wobjectRes));
+
+        if (!permlinks.includes(wobject.author_permlink) && hasType(wobject, 'list')) {
+          createBreadCrumbs(wobjectRes);
+          dispatch(setCatalogBreadCrumbs(currentBreadCrumbs));
+        } else {
+          dispatch(setCatalogBreadCrumbs(wobjectRes));
+        }
       });
     } else {
       const usedObj = hash ? nestedWobject : wobject;
@@ -145,7 +154,6 @@ const CatalogBreadcrumb = props => {
     </div>
   );
 };
-
 CatalogBreadcrumb.propTypes = {
   location: PropTypes.string,
   intl: PropTypes.shape().isRequired,

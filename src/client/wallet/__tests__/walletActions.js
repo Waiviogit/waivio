@@ -15,10 +15,12 @@ describe('walletActions', () => {
         amount: 0,
         currency: 'HIVE',
         memo: '',
+        tip: false,
+        app: 'waivio',
       },
     };
     const store = mockStore({});
-    store.dispatch(actions.openTransfer(userName));
+    store.dispatch(actions.openTransfer(userName, 0, 'HIVE', '', 'waivio'));
     expect(store.getActions()).toEqual([expectedAction]);
   });
 

@@ -124,12 +124,14 @@ const CreateFormRenderer = props => {
       ))
     : null;
 
-  const pageObjectsIdsToOmit = !isEmpty(pageObjects) ? map(pageObjects, obj => obj.id) : [];
+  const pageObjectsIdsToOmit = !isEmpty(pageObjects)
+    ? map(pageObjects, obj => obj.author_permlink)
+    : [];
 
   const renderPageObjectsList = !isEmpty(pageObjects)
     ? map(pageObjects, obj => (
         <ReviewItem
-          key={obj.id}
+          key={obj.author_permlink}
           object={obj}
           loading={disabled}
           removeReviewObject={handlers.removePageObject}

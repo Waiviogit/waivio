@@ -4,14 +4,15 @@
 
 .PopoverMenuItem {
   height: 30px !important;
+  font-size: 16px !important;
 
   a {
     .menu-item-link();
-  }
 
-  &--bold {
-    & > a {
-      font-weight: bold !important;
+    &--bold {
+      & > a {
+        font-weight: bold !important;
+      }
     }
   }
 }
@@ -22,4 +23,8 @@
   @media @small {
     display: none;
   }
+}
+
+.PopoverMenuItem.PopOverMenuitem__topNav {
+  font-size: 18px !important;
 }

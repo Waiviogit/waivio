@@ -3,7 +3,9 @@
 exports[`(Component) ObjectCardViewwith default props renders and matches snapshot 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <IntlProvider>
+  Symbol(enzyme.__unrendered__): <IntlProvider
+    locale="en"
+  >
     <InjectIntl(ObjectCardView) />
   </IntlProvider>,
   Symbol(enzyme.__renderer__): Object {

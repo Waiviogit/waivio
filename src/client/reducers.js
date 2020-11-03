@@ -165,6 +165,7 @@ export const getTransferAmount = state => fromWallet.getTransferAmount(state.wal
 export const getTransferCurrency = state => fromWallet.getTransferCurrency(state.wallet);
 export const getTransferMemo = state => fromWallet.getTransferMemo(state.wallet);
 export const getTransferApp = state => fromWallet.getTransferApp(state.wallet);
+export const getTransferIsTip = state => fromWallet.getTransferIsTip(state.wallet);
 export const getIsPowerUpOrDownVisible = state =>
   fromWallet.getIsPowerUpOrDownVisible(state.wallet);
 export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);
@@ -253,6 +254,7 @@ export const getWobjectIsFatching = state => fromObject.getWobjectIsFatching(sta
 export const getBreadCrumbs = state => fromObject.getBreadCrumbs(state.object);
 export const getWobjectNested = state => fromObject.getWobjectNested(state.object);
 export const getObjectLists = state => fromObject.getObjectLists(state.object);
+export const getIsNestedWobject = state => fromObject.getIsNestedWobject(state.object);
 
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>
@@ -303,6 +305,15 @@ export const getHasMoreFollowingRewards = state =>
 export const getHasMoreFraudSuspicionData = state =>
   fromRewards.getHasMoreFraudSuspicionData(state.rewards);
 export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
+export const getPropositionCampaign = state => fromRewards.getPropositionCampaign(state.rewards);
+export const getIsLoadingPropositions = state =>
+  fromRewards.getIsLoadingPropositions(state.rewards);
+export const getIsLoadingRewardsHistory = state =>
+  fromRewards.getIsLoadingRewardsHistory(state.rewards);
+export const getCampaignNames = state => fromRewards.getCampaignNames(state.rewards);
+export const getHistoryCampaigns = state => fromRewards.getHistoryCampaigns(state.rewards);
+export const getHistorySponsors = state => fromRewards.getHistorySponsors(state.rewards);
+export const getHasMoreHistory = state => fromRewards.getHasMoreHistory(state.rewards);
 
 export const getCampaignServerPercent = state =>
   fromReferral.getCampaignServerPercent(state.referral);

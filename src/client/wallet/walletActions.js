@@ -51,7 +51,14 @@ export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
 
 export const SET_PENDING_TRANSFER = '@wallet/SET_PENDING_TRANSFER';
 
-export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '', app) => dispatch =>
+export const openTransfer = (
+  userName,
+  amount = 0,
+  currency = 'HIVE',
+  memo = '',
+  app,
+  tip = false,
+) => dispatch =>
   dispatch({
     type: OPEN_TRANSFER,
     payload: {
@@ -60,6 +67,7 @@ export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '',
       currency,
       memo,
       app,
+      tip,
     },
   });
 
