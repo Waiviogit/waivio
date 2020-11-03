@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { get, map } from 'lodash';
+import { get, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import FilteredRewardsList from '../FilteredRewardsList';
@@ -54,7 +54,6 @@ const History = ({
   const isHistoryNotify = location.pathname === pathNameHistoryNotify(match);
   const isGuideHistory = location.pathname === PATH_NAME_GUIDE_HISTORY;
 
-  // const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [blacklistUsers, setBlacklistUsers] = useState([]);
 
@@ -105,17 +104,7 @@ const History = ({
       requestData.campaignNames = activeFilters.messagesCampaigns;
       requestData.onlyWithMessages = false;
     }
-
     getCurrentRewardsHistory(requestData);
-    // console.log('skip: ', requestData.skip)
-    // if (isLoadMore) {
-    //   requestData.skip = skip;
-    //   getCurrentRewardsHistory(requestData);
-    //   console.log('isLoadMore way!!!')
-    // } else {
-    //   console.log('NOT isLoadMore way!!!')
-    //   getMoreHistory(requestData)
-    // }
   };
 
   useEffect(() => {
@@ -173,9 +162,10 @@ const History = ({
     console.log('handleLoadMore');
     if (hasMoreHistory) {
       const requestData = {
+        onlyWithMessages: true,
         sort: sortForFilters,
         status: filters.status,
-        skip: historyCampaigns.length,
+        skip: size(historyCampaigns),
       };
 
       const caseStatus = Object.keys(CAMPAIGNS_TYPES_MESSAGES).find(
@@ -200,40 +190,10 @@ const History = ({
         requestData.onlyWithMessages = false;
       }
 
-      // const historyCampaignsLength = size(historyCampaigns);
-      //
-      // if (historyCampaignsLength >= 10) {
-      //   requestData.skip = historyCampaignsLength;
-      // } else {
-      //   requestData.skip = 0;
-      // }
-      // console.log('requestData.skip: ', requestData.skip)
-      console.log('historyCampaigns: ', historyCampaigns);
       getMoreHistory(requestData);
     }
   };
-
-  // const handleLoadMore = useCallback(() => {
-  //   console.log('handleLoadMore')
-  //   if (hasMoreHistory) {
-  //     const requestData = {
-  //       userName,
-  //       sort: sortForFilters,
-  //       status: filters.status,
-  //     };
-  //     const historyCampaignsLength = size(historyCampaigns);
-  //
-  //     if (historyCampaignsLength >= 5) {
-  //       requestData.skip = historyCampaignsLength;
-  //     } else {
-  //       requestData.skip = 0;
-  //     }
-  //     console.log('requestData.skip: ', requestData.skip)
-  //     console.log('historyCampaigns: ', historyCampaigns)
-  //     getMoreHistory(requestData)
-  //   }
-  // }, [filters, getMoreHistory, hasMoreHistory, sortForFilters, userName]);
-
+  console.log('historyCampaigns: ', historyCampaigns);
   return (
     <div className="history">
       <FilteredRewardsList

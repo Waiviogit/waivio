@@ -146,7 +146,7 @@ const rewardsReducer = (state = initialState, action) => {
         isLoadingRewardsHistory: false,
         historyCampaigns: uniqWith(currentRewardsHistory.concat(action.payload.campaigns), isEqual),
         campaignNames: action.payload.campaigns_names,
-        historySponsors: uniqWith(currentHistorySponsors.concat(action.payload.campaigns), isEqual),
+        historySponsors: uniqWith(currentHistorySponsors.concat(action.payload.sponsors), isEqual),
         hasMoreHistory: action.payload.hasMore,
       };
     }
