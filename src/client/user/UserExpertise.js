@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { connect } from 'react-redux';
 
-import { getLocale } from '../reducers';
+import { getLocale, getUser } from '../reducers';
 import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 
@@ -12,21 +12,22 @@ import './UserExpertise.less';
 
 const TabPane = Tabs.TabPane;
 
-@connect(state => ({
+@connect((state, ownProps) => ({
   locale: getLocale(state),
+  user: getUser(state, ownProps.match.params.name),
 }))
 export default class UserExpertise extends React.Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
+    user: PropTypes.shape().isRequired,
   };
 
   static limit = 30;
 
   state = {
-    objCount: 0,
-    hashtagsCount: 0,
-    tagCount: 0,
+    objCount: this.props.user.wobjectsExpCount,
+    hashtagsCount: this.props.user.hashtagsExpCount,
   };
 
   fetcher = (skip, authUser, isOnlyHashtags) => {
@@ -41,15 +42,6 @@ export default class UserExpertise extends React.Component {
       !isOnlyHashtags ? ['hashtag'] : null,
       locale,
     );
-  };
-
-  objectCount = (count, isOnlyHashtags) => {
-    const { hashtagsCount, objCount } = this.state;
-    if (isOnlyHashtags && hashtagsCount !== count) {
-      this.setState({ hashtagsCount: count });
-    } else if (!isOnlyHashtags && objCount !== count) {
-      this.setState({ objCount: count });
-    }
   };
 
   render() {
@@ -77,7 +69,6 @@ export default class UserExpertise extends React.Component {
               isOnlyHashtags
               limit={UserExpertise.limit}
               fetcher={this.fetcher}
-              handleObjectCount={this.objectCount}
               expertize
             />
           </TabPane>
@@ -96,12 +87,7 @@ export default class UserExpertise extends React.Component {
             }
             key="2"
           >
-            <ObjectDynamicList
-              limit={UserExpertise.limit}
-              fetcher={this.fetcher}
-              handleObjectCount={this.objectCount}
-              expertize
-            />
+            <ObjectDynamicList limit={UserExpertise.limit} fetcher={this.fetcher} expertize />
           </TabPane>
         </Tabs>
       </div>
