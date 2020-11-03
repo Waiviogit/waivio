@@ -5,6 +5,7 @@ import React, { createRef } from 'react';
 import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
+import {withRouter} from "react-router";
 import classNames from 'classnames';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { IS_RESERVED } from '../../../common/constants/rewards';
@@ -29,6 +30,7 @@ const defaultCoords = {
   centerLng: 95.0235,
 };
 
+@withRouter
 @connect(
   state => ({
     isFullscreenMode: getIsMapModalOpen(state),
@@ -111,11 +113,10 @@ class MapOS extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { center, zoom } = this.state;
-    const { match } = this.props;
+    const { center, zoom, radius } = this.state;
+    const { match, history, setMapArea } = this.props;
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
-
     if (prevPropsMatch === IS_RESERVED && propsMatch !== prevPropsMatch) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ zoom: 0 });
@@ -134,6 +135,10 @@ class MapOS extends React.Component {
       (!isEqual(prevState.center, center) && isEqual(prevProps.match, this.props.match))
     ) {
       this.updateMap();
+    }
+
+    if(history.search !== prevProps.history.search) {
+      setMapArea({ radius, coordinates: center, isMap: true, firstMapLoad: true });
     }
   }
 
@@ -448,6 +453,9 @@ MapOS.propTypes = {
   resetUpdatedFlag: PropTypes.func,
   primaryObjectCoordinates: PropTypes.arrayOf(PropTypes.number),
   zoomMap: PropTypes.number,
+  history: PropTypes.shape({
+    search: PropTypes.string,
+  }).isRequired,
 };
 
 MapOS.defaultProps = {
