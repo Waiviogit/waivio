@@ -25,11 +25,6 @@ export default class UserExpertise extends React.Component {
 
   static limit = 30;
 
-  state = {
-    objCount: this.props.user.wobjectsExpCount,
-    hashtagsCount: this.props.user.hashtagsExpCount,
-  };
-
   fetcher = (skip, authUser, isOnlyHashtags) => {
     const { match, locale } = this.props;
 
@@ -45,7 +40,7 @@ export default class UserExpertise extends React.Component {
   };
 
   render() {
-    const { objCount, hashtagsCount } = this.state;
+    const { wobjectsExpCount, hashtagsExpCount } = this.props.user;
 
     return (
       <div className="UserExpertise">
@@ -56,9 +51,9 @@ export default class UserExpertise extends React.Component {
                 <span className="UserExpertise__item">
                   <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />
                 </span>
-                {!!hashtagsCount && (
+                {!!hashtagsExpCount && (
                   <span className="UserExpertise__badge">
-                    <FormattedNumber value={hashtagsCount} />
+                    <FormattedNumber value={hashtagsExpCount} />
                   </span>
                 )}
               </React.Fragment>
@@ -78,9 +73,9 @@ export default class UserExpertise extends React.Component {
                 <span className="UserExpertise__item">
                   <FormattedMessage id="objects" defaultMessage="Objects" />
                 </span>
-                {!!objCount && (
+                {!!wobjectsExpCount && (
                   <span className="UserExpertise__badge">
-                    <FormattedNumber value={objCount} />
+                    <FormattedNumber value={wobjectsExpCount} />
                   </span>
                 )}
               </React.Fragment>
