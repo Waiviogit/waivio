@@ -115,6 +115,8 @@ class CreateRewardForm extends React.Component {
 
       let authorPermlinks = [];
 
+      const agreementObject = get(campaign, 'agreementObjects[0]', '');
+
       if (!isEmpty(campaign.match_bots)) {
         authorPermlinks = [
           ...campaign.match_bots,
@@ -122,9 +124,8 @@ class CreateRewardForm extends React.Component {
           ...secondaryObjectsPermlinks,
         ];
 
-        const agreementObjects = get(campaign, 'agreementObjects[0]', '');
         // eslint-disable-next-line no-unused-expressions
-        agreementObjects && authorPermlinks.push(agreementObjects);
+        agreementObject && authorPermlinks.push(agreementObject);
 
         combinedObjects = await getObjectsByIds({
           authorPermlinks,
@@ -135,10 +136,8 @@ class CreateRewardForm extends React.Component {
         );
       } else {
         authorPermlinks = [campaign.requiredObject.author_permlink, ...secondaryObjectsPermlinks];
-        const agreementObjects = get(campaign, 'agreementObjects[0]', '');
         // eslint-disable-next-line no-unused-expressions
-        agreementObjects && authorPermlinks.push(agreementObjects);
-
+        agreementObject && authorPermlinks.push(agreementObject);
         combinedObjects = await getObjectsByIds({
           authorPermlinks,
         });
