@@ -1342,6 +1342,8 @@
   "notify_campaign": "campaign",
   "cancel_limit_order": "Cancel limit order",
   "menu_rewards": "Rewards",
+  "menu_discover": "Discover",
+  "menu_tools": "Tools",
   "signing": "Signing in",
   "alphabet": "A..Z",
   "page": "Page",

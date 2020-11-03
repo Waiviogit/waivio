@@ -23,7 +23,7 @@ import { voteAppends } from '../wobjActions';
 import Payout from '../../components/StoryFooter/Payout';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import ApprovingCard from './ApprovingCard';
-import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
+import { calculateVotePowerForSlider } from '../../vendor/steemitHelpers';
 
 import '../../components/Story/Story.less';
 import '../../components/StoryFooter/StoryFooter.less';
@@ -35,7 +35,7 @@ const AppendCard = props => {
   const [commentsVisible, setCommentsVisible] = useState(false);
   const [sliderValue, setSliderValue] = useState(100);
   const [voteWorth, setVoteWorth] = useState(100);
-  const isPostCash = isPostCashout(props.post);
+
   const calculateSliderValue = () => {
     const { user, post, defaultVotePercent } = props;
 
@@ -51,6 +51,7 @@ const AppendCard = props => {
   };
 
   useEffect(() => calculateSliderValue(), []);
+
   const upVotes = props.post.active_votes && getAppendUpvotes(props.post.active_votes);
   const isLiked = props.post.isLiked || some(upVotes, { voter: props.user.name });
 
@@ -70,8 +71,7 @@ const AppendCard = props => {
     const { user, post, isGuest } = props;
     const voteWorthCalc = isGuest
       ? 0
-      : await calculateVotePowerForSlider(user.name, value, post.creator, post.permlink);
-
+      : await calculateVotePowerForSlider(user.name, value, post.author, post.permlink);
     setVoteWorth(voteWorthCalc);
     setSliderValue(value);
   }
@@ -163,7 +163,7 @@ const AppendCard = props => {
       <div className="Story__footer">
         <div className="StoryFooter__actions">
           <Payout post={props.post} />
-          {(visibleSlider || isPostCash) && !isLiked && (
+          {visibleSlider && !isLiked && (
             <Confirmation onConfirm={handleLikeConfirm} onCancel={() => showSlider(false)} />
           )}
           {!visibleSlider && (
@@ -180,12 +180,7 @@ const AppendCard = props => {
           )}
         </div>
         {visibleSlider && !isLiked && (
-          <Slider
-            value={sliderValue}
-            voteWorth={voteWorth}
-            onChange={handleSliderChange}
-            isPostCashout={isPostCash}
-          />
+          <Slider value={sliderValue} voteWorth={voteWorth} onChange={handleSliderChange} />
         )}
         <Comments show={commentsVisible} isQuickComments post={props.post} isUpdating />
       </div>

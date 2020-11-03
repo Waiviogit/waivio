@@ -72,6 +72,14 @@
     @media @medium {
       display: block;
     }
+
+    &--right {
+      display: none;
+
+      @media @medium {
+        display: none;
+      }
+    }
   }
 
   .center {
@@ -85,6 +93,13 @@
     @media @medium {
       width: calc(100% - (@left-width + @right-width + 2 * @margin));
       margin-left: @margin;
+    }
+
+    &--page {
+      @media @small, @medium {
+        margin-left: 0;
+        width: calc(100% - (@left-width + @margin));
+      }
     }
   }
 }
