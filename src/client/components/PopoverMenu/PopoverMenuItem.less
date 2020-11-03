@@ -4,16 +4,15 @@
 
 .PopoverMenuItem {
   height: 30px !important;
+  font-size: 16px !important;
 
   a {
-    color: #99aab5 !important;
-    font-size: 18px !important;
-    &:hover {
-      color: @primary-color !important;
-    }
+    .menu-item-link();
 
-    &[disabled] {
-      color: #c2ccd3 !important;
+    &--bold {
+      & > a {
+        font-weight: bold !important;
+      }
     }
   }
 }
@@ -24,4 +23,8 @@
   @media @small {
     display: none;
   }
+}
+
+.PopoverMenuItem.PopOverMenuitem__topNav {
+  font-size: 18px !important;
 }
