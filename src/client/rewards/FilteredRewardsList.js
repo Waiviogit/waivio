@@ -160,7 +160,6 @@ const FilteredRewardsList = props => {
       },
     ];
   }, [location, intl]);
-
   return !loadingCampaigns && !pendingUpdate ? (
     <React.Fragment>
       <RewardBreadcrumb
