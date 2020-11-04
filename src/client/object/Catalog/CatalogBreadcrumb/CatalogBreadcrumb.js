@@ -85,7 +85,6 @@ const CatalogBreadcrumb = props => {
     }
     if (size(permlinks) > 1) {
       getObjectsByIds({ authorPermlinks: permlinks, locale }).then(response => {
-        console.log('-- CatalogWrapBread --', response.wobjects);
         const wobjectRes = response.wobjects.map(wobj => ({
           id: wobj.author_permlink,
           name: getObjectName(wobj),
