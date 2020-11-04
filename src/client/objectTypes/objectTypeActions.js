@@ -74,7 +74,7 @@ export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode)
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
   const filters = { rating: [], map: { radius, coordinates }, ...activeFilters };
 
-  if(searchString) filters.searchString = searchString;
+  if (searchString) filters.searchString = searchString;
 
   const getLimit = () => {
     let limit = 50;
@@ -83,7 +83,13 @@ export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode)
   };
 
   return dispatch(
-    getObjectType(typeName, actionType, filters, { limit: getLimit(), skip: 0, simplified: true }, filterBody),
+    getObjectType(
+      typeName,
+      actionType,
+      filters,
+      { limit: getLimit(), skip: 0, simplified: true },
+      filterBody,
+    ),
   );
 };
 

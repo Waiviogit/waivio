@@ -83,6 +83,7 @@ class MapWrap extends React.Component {
       match,
       primaryObjectCoordinates,
       zoomMap,
+      history,
     } = this.props;
     return (
       <div className="map-wrap">
@@ -128,6 +129,7 @@ class MapWrap extends React.Component {
             match={match}
             primaryObjectCoordinates={primaryObjectCoordinates}
             zoomMap={zoomMap}
+            history={history}
           />
         )}
       </div>
