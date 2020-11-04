@@ -8,14 +8,14 @@ import { sortListItemsBy } from '../wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import AddItemModal from './AddItemModal/AddItemModal';
 import {
-  getIsNestedWobject,
   getObjectLists,
   getSuitableLanguage,
   getWobjectNested,
+  getLoadingFlag,
 } from '../../reducers';
 import { getLastPermlinksFromHash } from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
-import { clearIsGetNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
+import { setLoadedNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
 import { getObject } from '../../../waivioApi/ApiClient';
 import './CatalogWrap.less';
 
@@ -30,7 +30,8 @@ const CatalogWrap = props => {
     setLists,
     setNestedWobj,
     location: { hash },
-    clearNestedWobjFlag,
+    setLoadingNestedWobject,
+    isLoadingFlag,
   } = props;
 
   const [sortBy, setSortingBy] = useState('recency');
@@ -38,22 +39,21 @@ const CatalogWrap = props => {
   useEffect(() => {
     if (!isEmpty(wobject)) {
       if (hash) {
+        setLoadingNestedWobject(true);
         const pathUrl = getLastPermlinksFromHash(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
           setLists(get(wObject, 'listItems', []));
           setNestedWobj(wObject);
+          setLoadingNestedWobject(false);
         });
       } else {
         setLists(wobject.listItems);
       }
     }
+    return () => {
+      setNestedWobj({});
+    };
   }, [hash, wobject.author_permlink]);
-
-  useEffect(() => {
-    if (wobjectNested) {
-      clearNestedWobjFlag();
-    }
-  }, [wobjectNested]);
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
@@ -83,6 +83,7 @@ const CatalogWrap = props => {
           catalogSort={sortBy}
           isCatalogWrap
           currentHash={hash}
+          isLoadingFlag={isLoadingFlag}
         />
       </React.Fragment>
     </div>
@@ -99,7 +100,8 @@ CatalogWrap.propTypes = {
   listItems: PropTypes.shape({}).isRequired,
   setLists: PropTypes.func.isRequired,
   setNestedWobj: PropTypes.func.isRequired,
-  clearNestedWobjFlag: PropTypes.func,
+  setLoadingNestedWobject: PropTypes.func.isRequired,
+  isLoadingFlag: PropTypes.bool,
 };
 
 CatalogWrap.defaultProps = {
@@ -110,21 +112,21 @@ CatalogWrap.defaultProps = {
   listItems: [],
   setLists: () => {},
   setNestedWobj: () => {},
-  clearNestedWobjFlag: () => {},
-  isGetNestedWobj: false,
+  setLoadingNestedWobject: () => {},
+  isLoadingFlag: false,
 };
 
 const mapStateToProps = state => ({
   listItems: getObjectLists(state),
   wobjectNested: getWobjectNested(state),
   locale: getSuitableLanguage(state),
-  isGetNestedWobj: getIsNestedWobject(state),
+  isLoadingFlag: getLoadingFlag(state),
 });
 
 const mapDispatchToProps = {
   setLists: setListItems,
   setNestedWobj: setNestedWobject,
-  clearNestedWobjFlag: clearIsGetNestedWobject,
+  setLoadingNestedWobject: setLoadedNestedWobject,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(CatalogWrap)));

@@ -85,17 +85,18 @@ const CatalogBreadcrumb = props => {
     }
     if (size(permlinks) > 1) {
       getObjectsByIds({ authorPermlinks: permlinks, locale }).then(response => {
+        console.log('-- CatalogWrapBread --', response.wobjects);
         const wobjectRes = response.wobjects.map(wobj => ({
           id: wobj.author_permlink,
           name: getObjectName(wobj),
           title: getObjectTitle(wobj),
           path: wobj.defaultShowLink,
         }));
-
         if (!permlinks.includes(wobject.author_permlink) && hasType(wobject, 'list')) {
           createBreadCrumbs(wobjectRes);
           dispatch(setCatalogBreadCrumbs(currentBreadCrumbs));
         } else {
+          createBreadCrumbs(wobjectRes);
           dispatch(setCatalogBreadCrumbs(wobjectRes));
         }
       });

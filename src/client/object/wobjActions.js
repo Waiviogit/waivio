@@ -310,7 +310,7 @@ export const unfollowWobject = (permlink, name, type) => (
 
 export const SET_CATALOG_BREADCRUMBS = '@wobj/SET_CATALOG_BREADCRUMBS';
 export const SET_WOBJECT_NESTED = '@wobj/SET_WOBJECT_NESTED';
-export const CLEAR_IS_GET_NESTED_WOBJECT = '@wobj/CLEAR_IS_GET_NESTED_WOBJECT';
+export const SET_LOADING_NESTED_WOBJECT = '@wobj/SET_LOADING_NESTED_WOBJECT';
 export const SET_LIST_ITEMS = '@wobj/SET_LIST_ITEMS';
 
 export const setCatalogBreadCrumbs = payload => ({
@@ -323,8 +323,9 @@ export const setNestedWobject = payload => ({
   payload,
 });
 
-export const clearIsGetNestedWobject = () => ({
-  type: CLEAR_IS_GET_NESTED_WOBJECT,
+export const setLoadedNestedWobject = flag => ({
+  type: SET_LOADING_NESTED_WOBJECT,
+  flag,
 });
 
 export const setListItems = lists => ({

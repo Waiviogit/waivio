@@ -1,94 +1,82 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+import { isEmpty } from 'lodash';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button, Form, Icon, message } from 'antd';
-import { isEmpty, isEqual } from 'lodash';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import toMarkdown from '../../components/EditorExtended/util/editorStateToMarkdown';
 import LikeSection from '../LikeSection';
 import FollowObjectForm from '../FollowObjectForm';
-import { getAppendData, getObjectName } from '../../helpers/wObjectHelper';
+import {
+  getAppendData,
+  getLastPermlinksFromHash,
+  getObjectName,
+} from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
-import { getFollowingObjectsList, getIsAppendLoading, getLocale } from '../../reducers';
+import {
+  getFollowingObjectsList,
+  getIsAppendLoading,
+  getLoadingFlag,
+  getLocale,
+} from '../../reducers';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
-
+import { getObject } from '../../../waivioApi/ApiClient';
+import { setLoadedNestedWobject, setNestedWobject } from '../wobjActions';
 import './ObjectOfTypePage.less';
+import Loading from '../../components/Icon/Loading';
 
-@injectIntl
-@Form.create()
-@connect(
-  state => ({
-    locale: getLocale(state),
-    isAppending: getIsAppendLoading(state),
-    followingList: getFollowingObjectsList(state),
-  }),
-  {
-    appendPageContent: appendObject,
-  },
-)
-class ObjectOfTypePage extends Component {
-  static propTypes = {
-    /* decorators */
-    form: PropTypes.shape().isRequired,
-    intl: PropTypes.shape().isRequired,
+const ObjectOfTypePage = props => {
+  const { isLoadingFlag } = props;
+  const [content, setContent] = useState('');
+  const [isReadyToPublish, setIsReadyToPublish] = useState(false);
+  const [votePercent, setVotePercent] = useState('');
 
-    /* connect */
-    locale: PropTypes.string,
-    isAppending: PropTypes.bool,
-    appendPageContent: PropTypes.func.isRequired,
-    followingList: PropTypes.arrayOf(PropTypes.string),
-
-    /* passed */
-    wobject: PropTypes.shape(),
-    isEditMode: PropTypes.bool.isRequired,
-    userName: PropTypes.string.isRequired,
-    toggleViewEditMode: PropTypes.func.isRequired,
-  };
-
-  static defaultProps = {
-    wobject: {},
-    isAppending: false,
-    locale: 'en-US',
-    followingList: [],
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.currentPageContent = props.wobject.pageContent;
-    this.state = {
-      content: this.currentPageContent,
-      editorInitContent: this.currentPageContent,
-      isReadyToPublish: false,
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!isEmpty(nextProps.wobject) && !isEqual(nextProps.wobject, this.props.wobject)) {
-      this.currentPageContent = nextProps.wobject.pageContent;
-      this.setState({
-        editorInitContent: this.currentPageContent,
-      });
+  useEffect(() => {
+    const {
+      location: { hash },
+      userName,
+      locale,
+      setNestedWobj,
+      setLoadingNestedWobject,
+      wobject,
+    } = props;
+    setLoadingNestedWobject(true);
+    if (!isEmpty(wobject)) {
+      if (hash) {
+        const pathUrl = getLastPermlinksFromHash(hash);
+        getObject(pathUrl, userName, locale).then(wObject => {
+          setContent(wObject.pageContent);
+          setNestedWobj(wObject);
+          setLoadingNestedWobject(false);
+        });
+      } else {
+        setContent(wobject.pageContent);
+        setLoadingNestedWobject(false);
+      }
     }
-  }
+  }, [props.location.hash, props.wobject]);
 
-  handleChangeContent = contentRaw => {
-    const content = toMarkdown(contentRaw);
-    this.setState({ content });
+  const { intl, form, isEditMode, isAppending, locale, wobject, followingList } = props;
+
+  const handleChangeContent = contentRaw => {
+    const newContent = toMarkdown(contentRaw);
+    setContent(newContent);
   };
 
-  handleVotePercentChange = votePercent => this.setState({ votePercent });
+  // eslint-disable-next-line no-shadow
+  const handleVotePercentChange = votePercent => setVotePercent(votePercent);
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
 
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      const { appendPageContent, locale, wobject, userName, intl, toggleViewEditMode } = this.props;
-      const { votePercent, content } = this.state;
+    props.form.validateFieldsAndScroll((err, values) => {
+      const { appendPageContent, userName, toggleViewEditMode } = props;
       const { follow } = values;
       if (!err) {
         const pageContentField = {
@@ -126,103 +114,162 @@ class ObjectOfTypePage extends Component {
     });
   };
 
-  handleReadyPublishClick = e => {
+  const handleReadyPublishClick = e => {
     e.preventDefault();
-    this.setState(prevState => ({
-      isReadyToPublish: !prevState.isReadyToPublish,
-      editorInitContent: prevState.content,
-    }));
+    setIsReadyToPublish(!isReadyToPublish);
   };
 
-  render() {
-    const { intl, form, isEditMode, isAppending, locale, wobject, followingList } = this.props;
-    const { isReadyToPublish, content, editorInitContent } = this.state;
+  const renderBody = () => {
+    if (!isLoadingFlag) {
+      if (content) {
+        return (
+          <React.Fragment>
+            <CatalogBreadcrumb wobject={wobject} intl={intl} />
+            <BodyContainer full body={content} />
+          </React.Fragment>
+        );
+      }
+      return (
+        <React.Fragment>
+          <div className="object-of-type-page__empty-placeholder">
+            <span>
+              {intl.formatMessage({
+                id: 'empty_page_content',
+                defaultMessage: 'This page has no content',
+              })}
+            </span>
+          </div>
+        </React.Fragment>
+      );
+    }
+    return <Loading />;
+  };
 
-    return (
-      <React.Fragment>
-        <div
-          className={`object-of-type-page ${
-            isEditMode && !isReadyToPublish ? 'edit' : 'view'
-          }-mode`}
-        >
-          {isEditMode ? (
-            <React.Fragment>
-              {isReadyToPublish ? (
-                <div className="object-page-preview">
-                  <div className="object-page-preview__header">
-                    <div>Preview</div>
-                    <IconButton
-                      className="object-page-preview__close-btn"
-                      disabled={isAppending}
-                      icon={<Icon type="close" />}
-                      onClick={this.handleReadyPublishClick}
-                    />
-                  </div>
-                  <CatalogBreadcrumb wobject={wobject} intl={intl} />
-                  <BodyContainer full body={content} />
-                  <div className="object-page-preview__options">
-                    <LikeSection form={form} onVotePercentChange={this.handleVotePercentChange} />
-                    {followingList.includes(wobject.author_permlink) ? null : (
-                      <FollowObjectForm form={form} />
-                    )}
-                  </div>
-                  <div className="object-of-type-page__row align-center">
-                    <Button
-                      htmlType="submit"
-                      disabled={form.getFieldError('like')}
-                      loading={isAppending}
-                      onClick={this.handleSubmit}
-                      size="large"
-                    >
-                      {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="object-of-type-page__editor-wrapper">
-                  <Editor
-                    enabled={!isAppending}
-                    withTitle={false}
-                    initialContent={{ body: editorInitContent }}
-                    locale={locale === 'auto' ? 'en-US' : locale}
-                    onChange={this.handleChangeContent}
-                    displayTitle={false}
+  return (
+    <React.Fragment>
+      <div
+        className={`object-of-type-page ${isEditMode && !isReadyToPublish ? 'edit' : 'view'}-mode`}
+      >
+        {isEditMode ? (
+          <React.Fragment>
+            {isReadyToPublish ? (
+              <div className="object-page-preview">
+                <div className="object-page-preview__header">
+                  <div>Preview</div>
+                  <IconButton
+                    className="object-page-preview__close-btn"
+                    disabled={isAppending}
+                    icon={<Icon type="close" />}
+                    onClick={handleReadyPublishClick}
                   />
                 </div>
-              )}
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              {this.currentPageContent ? (
-                <BodyContainer full body={this.currentPageContent} />
-              ) : (
-                <div className="object-of-type-page__empty-placeholder">
-                  <span>
-                    {intl.formatMessage({
-                      id: 'empty_page_content',
-                      defaultMessage: 'This page has no content',
-                    })}
-                  </span>
-                </div>
-              )}
-            </React.Fragment>
-          )}
-        </div>
-        {isEditMode && !isReadyToPublish && (
-          <div className="object-of-type-page__row align-center">
-            <Button
-              htmlType="button"
-              disabled={!content || content === this.currentPageContent}
-              onClick={this.handleReadyPublishClick}
-              size="large"
-            >
-              {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
-            </Button>
-          </div>
+                {isLoadingFlag ? (
+                  <Loading />
+                ) : (
+                  <React.Fragment>
+                    <CatalogBreadcrumb wobject={wobject} intl={intl} />
+                    <BodyContainer full body={content} />
+                    <div className="object-page-preview__options">
+                      <LikeSection form={form} onVotePercentChange={handleVotePercentChange} />
+                      {followingList.includes(wobject.author_permlink) ? null : (
+                        <FollowObjectForm form={form} />
+                      )}
+                    </div>
+                    <div className="object-of-type-page__row align-center">
+                      <Button
+                        htmlType="submit"
+                        disabled={form.getFieldError('like')}
+                        loading={isAppending}
+                        onClick={handleSubmit}
+                        size="large"
+                      >
+                        {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
+                      </Button>
+                    </div>
+                  </React.Fragment>
+                )}
+              </div>
+            ) : (
+              <div className="object-of-type-page__editor-wrapper">
+                <Editor
+                  enabled={!isAppending}
+                  withTitle={false}
+                  initialContent={{ body: content }}
+                  locale={locale === 'auto' ? 'en-US' : locale}
+                  onChange={handleChangeContent}
+                  displayTitle={false}
+                />
+              </div>
+            )}
+          </React.Fragment>
+        ) : (
+          <React.Fragment>{renderBody()}</React.Fragment>
         )}
-      </React.Fragment>
-    );
-  }
-}
+      </div>
 
-export default ObjectOfTypePage;
+      {isEditMode && !isReadyToPublish && (
+        <div className="object-of-type-page__row align-center">
+          <Button
+            htmlType="button"
+            disabled={!content}
+            onClick={handleReadyPublishClick}
+            size="large"
+          >
+            {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
+          </Button>
+        </div>
+      )}
+    </React.Fragment>
+  );
+};
+
+ObjectOfTypePage.propTypes = {
+  /* decorators */
+  form: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
+
+  /* connect */
+  locale: PropTypes.string,
+  location: PropTypes.string,
+  isAppending: PropTypes.bool,
+  isLoadingFlag: PropTypes.bool,
+  appendPageContent: PropTypes.func.isRequired,
+  setNestedWobj: PropTypes.func.isRequired,
+  followingList: PropTypes.arrayOf(PropTypes.string),
+  setLoadingNestedWobject: PropTypes.func,
+
+  /* passed */
+  wobject: PropTypes.shape(),
+  isEditMode: PropTypes.bool.isRequired,
+  userName: PropTypes.string.isRequired,
+  toggleViewEditMode: PropTypes.func.isRequired,
+};
+
+ObjectOfTypePage.defaultProps = {
+  wobject: {},
+  location: '',
+  isAppending: false,
+  isLoadingFlag: false,
+  locale: 'en-US',
+  followingList: [],
+  setLoadingNestedWobject: () => {},
+};
+
+const mapStateToProps = state => ({
+  locale: getLocale(state),
+  isAppending: getIsAppendLoading(state),
+  followingList: getFollowingObjectsList(state),
+  isLoadingFlag: getLoadingFlag(state),
+});
+const mapDispatchToProps = {
+  appendPageContent: appendObject,
+  setNestedWobj: setNestedWobject,
+  setLoadingNestedWobject: setLoadedNestedWobject,
+};
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  Form.create(),
+  injectIntl,
+  withRouter,
+)(ObjectOfTypePage);

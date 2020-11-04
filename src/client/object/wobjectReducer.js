@@ -10,7 +10,7 @@ import {
   SET_CATALOG_BREADCRUMBS,
   SET_WOBJECT_NESTED,
   SET_LIST_ITEMS,
-  CLEAR_IS_GET_NESTED_WOBJECT,
+  SET_LOADING_NESTED_WOBJECT,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 
@@ -21,7 +21,7 @@ export const initialState = {
   isFetching: false,
   isFailed: false,
   breadcrumb: [],
-  isGetNestedWobject: false,
+  isLoadingFlag: true,
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -107,7 +107,6 @@ export default function wobjectReducer(state = initialState, action) {
           },
         };
       }
-
       return state;
     }
 
@@ -130,7 +129,6 @@ export default function wobjectReducer(state = initialState, action) {
           },
         };
       }
-
       return state;
     }
 
@@ -146,7 +144,6 @@ export default function wobjectReducer(state = initialState, action) {
         ...matchPost,
         children: matchPost.children + 1,
       });
-
       return {
         ...state,
         wobject: {
@@ -285,15 +282,15 @@ export default function wobjectReducer(state = initialState, action) {
     case SET_WOBJECT_NESTED: {
       return {
         ...state,
-        isGetNestedWobject: true,
+        isLoadingFlag: action.flag,
         nestedWobject: action.payload,
       };
     }
 
-    case CLEAR_IS_GET_NESTED_WOBJECT: {
+    case SET_LOADING_NESTED_WOBJECT: {
       return {
         ...state,
-        isGetNestedWobject: false,
+        isLoadingFlag: action.flag,
       };
     }
 
@@ -323,4 +320,4 @@ export const getWobjectIsFatching = state => state.wobject.isFetching;
 export const getBreadCrumbs = state => state.breadcrumb;
 export const getWobjectNested = state => state.nestedWobject;
 export const getObjectLists = state => state.lists;
-export const getIsNestedWobject = state => state.isGetNestedWobject;
+export const getLoadingFlag = state => state.isLoadingFlag;
