@@ -447,9 +447,6 @@ MapOS.propTypes = {
   resetUpdatedFlag: PropTypes.func,
   primaryObjectCoordinates: PropTypes.arrayOf(PropTypes.number),
   zoomMap: PropTypes.number,
-  history: PropTypes.shape({
-    search: PropTypes.string,
-  }).isRequired,
 };
 
 MapOS.defaultProps = {

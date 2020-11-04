@@ -20,7 +20,6 @@ class MapWrap extends React.Component {
     onCustomControlClick: PropTypes.func,
     setMapArea: PropTypes.func.isRequired,
     match: PropTypes.shape().isRequired,
-    history: PropTypes.shape().isRequired,
     primaryObjectCoordinates: PropTypes.arrayOf(PropTypes.number),
     zoomMap: PropTypes.number,
   };
@@ -83,7 +82,6 @@ class MapWrap extends React.Component {
       match,
       primaryObjectCoordinates,
       zoomMap,
-      history,
     } = this.props;
     return (
       <div className="map-wrap">
@@ -129,7 +127,6 @@ class MapWrap extends React.Component {
             match={match}
             primaryObjectCoordinates={primaryObjectCoordinates}
             zoomMap={zoomMap}
-            history={history}
           />
         )}
       </div>

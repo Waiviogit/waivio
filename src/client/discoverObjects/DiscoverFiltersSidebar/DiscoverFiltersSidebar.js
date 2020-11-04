@@ -79,7 +79,6 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
             onCustomControlClick={handleMapSearchClick}
             match={match}
             zoomMap={DEFAULT_ZOOM}
-            history={history}
           />
         )}
         {(!isEmpty(filters) || !isEmpty(tagsFilters)) && (
