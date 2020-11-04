@@ -9,6 +9,7 @@ ShallowWrapper {
     fullScreenHidden={false}
     itemKey=""
     onClick={[Function]}
+    topNav={false}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
