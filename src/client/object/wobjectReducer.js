@@ -282,7 +282,7 @@ export default function wobjectReducer(state = initialState, action) {
     case SET_WOBJECT_NESTED: {
       return {
         ...state,
-        isLoadingFlag: action.flag,
+        isLoadingFlag: action.payload,
         nestedWobject: action.payload,
       };
     }
@@ -290,7 +290,7 @@ export default function wobjectReducer(state = initialState, action) {
     case SET_LOADING_NESTED_WOBJECT: {
       return {
         ...state,
-        isLoadingFlag: action.flag,
+        isLoadingFlag: action.payload,
       };
     }
 

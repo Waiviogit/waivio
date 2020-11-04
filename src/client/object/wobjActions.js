@@ -323,9 +323,9 @@ export const setNestedWobject = payload => ({
   payload,
 });
 
-export const setLoadedNestedWobject = flag => ({
+export const setLoadedNestedWobject = payload => ({
   type: SET_LOADING_NESTED_WOBJECT,
-  flag,
+  payload,
 });
 
 export const setListItems = lists => ({
