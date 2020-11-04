@@ -227,6 +227,12 @@ class Wrapper extends React.PureComponent {
       case 'rewards':
         this.props.history.push(PATH_NAME_ACTIVE);
         break;
+      case 'discover':
+        this.props.history.push(`/discover-objects/hashtag`);
+        break;
+      case 'tools':
+        this.props.history.push(`/drafts`);
+        break;
       default:
         break;
     }

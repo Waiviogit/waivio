@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
+import { get, isNull, isEmpty, isNaN, includes, isString } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
@@ -27,6 +27,7 @@ import {
   getTotalVestingFundSteem,
   getHiveBeneficiaryAccount,
   isOpenLinkModal,
+  getTransferIsTip,
 } from '../../reducers';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -53,6 +54,7 @@ const InputGroup = Input.Group;
     currency: getTransferCurrency(state),
     memo: getTransferMemo(state),
     app: getTransferApp(state),
+    isTip: getTransferIsTip(state),
     authenticated: getIsAuthenticated(state),
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
@@ -99,6 +101,7 @@ export default class Transfer extends React.Component {
     sendPendingTransfer: PropTypes.func.isRequired,
     getPayables: PropTypes.func,
     match: PropTypes.shape().isRequired,
+    isTip: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -115,6 +118,7 @@ export default class Transfer extends React.Component {
     searchByUser: [],
     hiveBeneficiaryAccount: '',
     getPayables: () => {},
+    isTip: false,
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -268,6 +272,7 @@ export default class Transfer extends React.Component {
       user,
       match,
       getPayables,
+      isTip,
     } = this.props;
     const matchPath = get(match, ['params', '0']);
     const params = ['payables', 'receivables'];
@@ -298,12 +303,12 @@ export default class Transfer extends React.Component {
 
         if (app) transferQuery.memo = { ...transferQuery.memo, app };
         if (values.to && transferQuery.memo.id === REWARD.guestTransfer)
-          transferQuery.memo = {
-            ...transferQuery.memo,
-            to: values.to,
-          };
+          transferQuery.memo = { ...transferQuery.memo, to: values.to };
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
-        transferQuery.memo = JSON.stringify(transferQuery.memo);
+        if (isTip) transferQuery.memo = memo;
+
+        if (!isString(transferQuery.memo)) transferQuery.memo = JSON.stringify(transferQuery.memo);
+
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
             if (res.result) {
@@ -401,7 +406,7 @@ export default class Transfer extends React.Component {
     const { intl, authenticated, user } = this.props;
     const currentValue = parseFloat(value);
 
-    if (value && currentValue <= 0) {
+    if (value <= 0) {
       callback([
         new Error(
           intl.formatMessage({
@@ -518,6 +523,7 @@ export default class Transfer extends React.Component {
       cryptosPriceHistory,
       hiveBeneficiaryAccount,
       showModal,
+      isTip,
     } = this.props;
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
@@ -552,6 +558,12 @@ export default class Transfer extends React.Component {
     );
 
     const usdValue = this.getUSDValue();
+    const memoPlaceHolder = isTip
+      ? get(memo, 'message', memo)
+      : intl.formatMessage({
+          id: 'memo_placeholder',
+          defaultMessage: 'Additional message to include in this payment (optional)',
+        });
 
     return (isGuest && hiveBeneficiaryAccount) || !isGuest ? (
       <Modal
@@ -625,7 +637,7 @@ export default class Transfer extends React.Component {
                 ],
               })(
                 <Input
-                  disabled={isChangesDisabled}
+                  disabled={isChangesDisabled && amount}
                   className="Transfer__amount__input"
                   onChange={this.handleAmountChange}
                   placeholder={intl.formatMessage({
@@ -641,8 +653,8 @@ export default class Transfer extends React.Component {
               )}
             </InputGroup>
           </Form.Item>
-          <Form.Item>{isMobile && currencyPrefix}</Form.Item>
-          <Form.Item>
+          {isMobile && <Form.Item>{currencyPrefix}</Form.Item>}
+          <div className={'Transfer__info-text'}>
             {authenticated && (
               <FormattedMessage
                 id="balance_amount"
@@ -660,28 +672,26 @@ export default class Transfer extends React.Component {
                 }}
               />
             )}
-          </Form.Item>
-          <Form.Item>
-            <div>
-              <FormattedMessage
-                id="estimated_value"
-                defaultMessage="Estimated transaction value: {estimate} USD"
-                values={{
-                  estimate: (
-                    <span role="presentation" className="estimate">
-                      <USDDisplay
-                        value={
-                          amount
-                            ? this.estimatedValue(cryptosPriceHistory, amount)
-                            : this.state.currentEstimate
-                        }
-                      />
-                    </span>
-                  ),
-                }}
-              />
-            </div>
-          </Form.Item>
+          </div>
+          <div className={'Transfer__info-text'}>
+            <FormattedMessage
+              id="estimated_value"
+              defaultMessage="Estimated transaction value: {estimate} USD"
+              values={{
+                estimate: (
+                  <span role="presentation" className="estimate">
+                    <USDDisplay
+                      value={
+                        amount
+                          ? this.estimatedValue(cryptosPriceHistory, amount)
+                          : this.state.currentEstimate
+                      }
+                    />
+                  </span>
+                ),
+              }}
+            />
+          </div>
           <Form.Item
             label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
           >
@@ -691,10 +701,7 @@ export default class Transfer extends React.Component {
               <Input.TextArea
                 disabled={isChangesDisabled}
                 autoSize={{ minRows: 2, maxRows: 6 }}
-                placeholder={intl.formatMessage({
-                  id: 'memo_placeholder',
-                  defaultMessage: 'Additional message to include in this payment (optional)',
-                })}
+                placeholder={memoPlaceHolder}
               />,
             )}
           </Form.Item>

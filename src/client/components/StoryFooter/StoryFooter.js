@@ -86,7 +86,10 @@ class StoryFooter extends React.Component {
   }
 
   handleLikeClick = () => {
-    if (this.props.sliderMode && !this.props.postState.isLiked) {
+    if (
+      (this.props.sliderMode || isPostCashout(this.props.post)) &&
+      !this.props.postState.isLiked
+    ) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
@@ -111,7 +114,7 @@ class StoryFooter extends React.Component {
     const { user, isGuest, post } = this.props;
     const voteWorth = isGuest
       ? 0
-      : await calculateVotePowerForSlider(user.name, value, post.author, post.permlink);
+      : await calculateVotePowerForSlider(user.name, value, post.root_author, post.permlink);
     this.setState({ sliderValue: value, voteWorth });
   };
 
@@ -137,13 +140,18 @@ class StoryFooter extends React.Component {
       handlePostPopoverMenuClick,
       onReportClick,
     } = this.props;
+    const isCashout = isPostCashout(post);
 
     return (
       <div className="StoryFooter">
         <div className="StoryFooter__actions">
           <Payout post={post} />
           {this.state.sliderVisible && !postState.isLiked && (
-            <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
+            <Confirmation
+              onConfirm={this.handleLikeConfirm}
+              onCancel={this.handleSliderCancel}
+              isCashout={isCashout}
+            />
           )}
           {(!this.state.sliderVisible || postState.isLiked) && (
             <Buttons
@@ -171,7 +179,8 @@ class StoryFooter extends React.Component {
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
             onChange={this.handleSliderChange}
-            isPostCashout={isPostCashout(post)}
+            isPostCashout={isCashout}
+            post={post}
           />
         )}
         {!singlePostVew && (

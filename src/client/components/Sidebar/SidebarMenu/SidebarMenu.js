@@ -48,8 +48,8 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
     return match.url !== '' && location.pathname.includes(match.url);
   };
 
-  const handleGetObject = permlink => {
-    dispatch(getObject(permlink, authenticatedUserName));
+  const handleGetObject = (permlink, key) => {
+    if (key === 'list') dispatch(getObject(permlink, authenticatedUserName));
   };
 
   const getSectionTitle = menuSection =>
@@ -102,7 +102,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
           <li
             className="collapsible-block__item"
             key={`sectionItem-${sectionItem.name}`}
-            onClick={() => handleGetObject(sectionItem.intlId)}
+            onClick={() => handleGetObject(sectionItem.intlId, menuSection.name)}
             role="presentation"
           >
             <NavLink

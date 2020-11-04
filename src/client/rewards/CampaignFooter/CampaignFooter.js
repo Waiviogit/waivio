@@ -416,7 +416,9 @@ class CampaignFooter extends React.Component {
 
     const isShow = (!commentsVisible && isNotifyComment) || commentsVisible;
 
-    return map(currentFilteredComments, currentComment => (
+    const reversedComments = currentFilteredComments.reverse();
+
+    return map(reversedComments, currentComment => (
       <div key={currentComment.post_id}>
         <CommentsMessages
           show={isShow}

@@ -6,7 +6,7 @@ import ObjectCardView from '../ObjectCardView';
 describe('(Component) ObjectCardViewwith default props', () => {
   it('renders and matches snapshot', () => {
     const wrapper = shallow(
-      <IntlProvider>
+      <IntlProvider locale="en">
         <ObjectCardView />
       </IntlProvider>,
     );

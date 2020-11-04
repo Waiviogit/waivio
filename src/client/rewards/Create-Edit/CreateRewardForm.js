@@ -1,4 +1,4 @@
-import { isEmpty, map, includes, get } from 'lodash';
+import { isEmpty, map, includes, get, size } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -112,21 +112,34 @@ class CreateRewardForm extends React.Component {
       const secondaryObjectsPermlinks = !isEmpty(campaign.objects)
         ? map(campaign.objects, obj => obj.author_permlink)
         : [];
+
+      let authorPermlinks = [];
+
+      const agreementObject = get(campaign, 'agreementObjects[0]', '');
+
       if (!isEmpty(campaign.match_bots)) {
+        authorPermlinks = [
+          ...campaign.match_bots,
+          campaign.requiredObject.author_permlink,
+          ...secondaryObjectsPermlinks,
+        ];
+
+        // eslint-disable-next-line no-unused-expressions
+        agreementObject && authorPermlinks.push(agreementObject);
+
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [
-            ...campaign.match_bots,
-            campaign.requiredObject.author_permlink,
-            ...secondaryObjectsPermlinks,
-          ],
+          authorPermlinks,
         });
 
         sponsors = combinedObjects.wobjects.filter(wobj =>
           includes(campaign.match_bots, wobj.author_permlink),
         );
       } else {
+        authorPermlinks = [campaign.requiredObject.author_permlink, ...secondaryObjectsPermlinks];
+        // eslint-disable-next-line no-unused-expressions
+        agreementObject && authorPermlinks.push(agreementObject);
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [campaign.requiredObject.author_permlink, ...secondaryObjectsPermlinks],
+          authorPermlinks,
         });
       }
 
@@ -136,6 +149,10 @@ class CreateRewardForm extends React.Component {
 
       const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
         includes(secondaryObjectsPermlinks, wobj.author_permlink),
+      );
+
+      const agreementObjects = combinedObjects.wobjects.find(
+        wobj => wobj.author_permlink === campaign.agreementObjects[0],
       );
 
       const rewardFundRecentClaims = rewardFund.recent_claims;
@@ -149,7 +166,7 @@ class CreateRewardForm extends React.Component {
         rate,
       });
 
-      Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
+      Promise.all([primaryObject, secondaryObjects, agreementObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
           campaign,
@@ -161,6 +178,7 @@ class CreateRewardForm extends React.Component {
           reward: campaign.reward.toString(),
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
+          pageObjects: !isEmpty(values[2]) ? [values[2]] : [],
           sponsorsList: !isEmpty(sponsors) ? values[2] : [],
           reservationPeriod: campaign.count_reservation_days,
           receiptPhoto: campaign.requirements.receiptPhoto,
@@ -216,7 +234,7 @@ class CreateRewardForm extends React.Component {
     const { campaignId, pageObjects, isDuplicate } = this.state;
     const { rate, rewardFund } = this.props;
     const objects = map(data.secondaryObject, o => o.author_permlink);
-    const agreementObjects = pageObjects.length ? map(pageObjects, o => o.author_permlink) : [];
+    const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const minExpertise = Number(data.minExpertise);
@@ -329,7 +347,7 @@ class CreateRewardForm extends React.Component {
     },
 
     handleAddPageObject: obj => {
-      this.setState({ pageObjects: [...this.state.pageObjects, obj] }, () =>
+      this.setState({ pageObjects: [obj] }, () =>
         this.props.form.setFieldsValue({ agreement: this.state.pageObjects }),
       );
     },

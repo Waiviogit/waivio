@@ -12,6 +12,7 @@ describe('<Confirmation />', () => {
     props = {
       onConfirm: () => {},
       onCancel: () => {},
+      isCashout: false,
     };
 
     wrapper = mount(<Confirmation {...props} />);
@@ -24,8 +25,16 @@ describe('<Confirmation />', () => {
     expect(wrapper.find('div').props().className).toBe('Confirmation');
   });
 
-  it('should render without exploding', () => {
+  it('should render without exploding when post isn`t cashout', () => {
     wrapper = shallow(<Confirmation {...props} />);
+    act(() => {
+      wrapper.update();
+    });
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('should render without exploding when post is cashout', () => {
+    wrapper = shallow(<Confirmation {...props} isCashout />);
     act(() => {
       wrapper.update();
     });

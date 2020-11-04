@@ -120,7 +120,6 @@ class MapOS extends React.Component {
     const { match } = this.props;
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
-
     if (prevPropsMatch === IS_RESERVED && propsMatch !== prevPropsMatch) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ zoom: 0 });

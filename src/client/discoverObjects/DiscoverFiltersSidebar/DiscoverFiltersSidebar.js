@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
@@ -21,7 +21,7 @@ import { getCoordinates } from '../../user/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
 import FiltersContainer from './FiltersContainer';
 import '../../components/Sidebar/SidebarContentBlock.less';
-import { DEFAULT_ZOOM } from '../../../common/constants/map';
+import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { getWobjectsForMap } from '../../object/wObjectHelper';
 
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
@@ -43,6 +43,15 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
   const setMapArea = ({ radius, coordinates }) =>
     dispatch(getObjectTypeMap({ radius, coordinates }, isFullscreenMode));
+
+  useEffect(() => {
+    setMapArea({
+      radius: DEFAULT_RADIUS,
+      coordinates: [+userLocation.lat, +userLocation.lon],
+      isMap: true,
+      firstMapLoad: true,
+    });
+  }, [history.location.search]);
 
   const handleMapSearchClick = map => {
     setSearchArea(map);

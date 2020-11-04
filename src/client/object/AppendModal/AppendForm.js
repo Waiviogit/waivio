@@ -1230,6 +1230,7 @@ export default class AppendForm extends Component {
                   onImageLoaded={this.getImages}
                   onLoadingImage={this.onLoadingImage}
                   isRequired
+                  isMultiple={false}
                 />,
               )}
             </Form.Item>

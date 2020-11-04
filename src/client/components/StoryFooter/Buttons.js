@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import take from 'lodash/take';
+import { take, get } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Icon, Modal } from 'antd';
@@ -371,10 +371,7 @@ export default class Buttons extends React.Component {
         >
           <i className="Buttons__post-menu iconfont icon-more" />
         </PostPopoverMenu>
-        {!(
-          this.props.post.reblogged_users &&
-          this.props.post.reblogged_users.includes(this.props.username)
-        ) &&
+        {!get(post, 'reblogged_users', []).includes(this.props.username) &&
           this.state.shareModalVisible && (
             <Modal
               title={intl.formatMessage({

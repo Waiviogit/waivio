@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`(Component) ObjectCardViewwith default props renders and matches snapshot 1`] = `
+exports[`(Component) PopoverMenu renders and matches snapshot 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <IntlProvider
-    locale="en"
-  >
-    <InjectIntl(ObjectCardView) />
-  </IntlProvider>,
+  Symbol(enzyme.__unrendered__): <PopoverMenu
+    bold={true}
+    hide={[Function]}
+    onSelect={[Function]}
+  />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
     "checkPropTypes": [Function],
@@ -20,21 +20,27 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "class",
-    "props": Object {},
+    "nodeType": "host",
+    "props": Object {
+      "children": null,
+      "className": "PopoverMenu",
+    },
     "ref": null,
     "rendered": null,
-    "type": [Function],
+    "type": "ul",
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "class",
-      "props": Object {},
+      "nodeType": "host",
+      "props": Object {
+        "children": null,
+        "className": "PopoverMenu",
+      },
       "ref": null,
       "rendered": null,
-      "type": [Function],
+      "type": "ul",
     },
   ],
   Symbol(enzyme.__options__): Object {
@@ -63,32 +69,5 @@ ShallowWrapper {
     Symbol(enzyme.__providerValues__): undefined,
   },
   Symbol(enzyme.__providerValues__): Map {},
-  Symbol(enzyme.__childContext__): Object {
-    "intl": Object {
-      "defaultFormats": Object {},
-      "defaultLocale": "en",
-      "formatDate": [Function],
-      "formatHTMLMessage": [Function],
-      "formatMessage": [Function],
-      "formatNumber": [Function],
-      "formatPlural": [Function],
-      "formatRelative": [Function],
-      "formatTime": [Function],
-      "formats": Object {},
-      "formatters": Object {
-        "getDateTimeFormat": [Function],
-        "getMessageFormat": [Function],
-        "getNumberFormat": [Function],
-        "getPluralFormat": [Function],
-        "getRelativeFormat": [Function],
-      },
-      "locale": "en",
-      "messages": Object {},
-      "now": [Function],
-      "onError": [Function],
-      "textComponent": "span",
-      "timeZone": null,
-    },
-  },
 }
 `;

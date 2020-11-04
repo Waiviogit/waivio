@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
-import { get } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, getPostHashtags, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import { getFacebookShareURL, getTwitterShareURL } from '../../helpers/socialProfiles';
+import { isPostCashout } from '../../vendor/steemitHelpers';
 
 import './PostPopoverMenu.less';
 
@@ -76,7 +76,7 @@ const PostPopoverMenu = ({
   const socialHashtags = [...postHashtags, 'waivio', 'hive'];
   const twitterShareURL = getTwitterShareURL(twitterText, postURL, socialHashtags);
   const facebookShareURL = getFacebookShareURL(postURL);
-  const activePost = Date.parse(get(post, 'cashout_time')) > Date.now();
+  const activePost = !isPostCashout(post);
 
   if (userFollowed) {
     followText = intl.formatMessage(
