@@ -1,3 +1,4 @@
+import { uniqWith, isEqual, get, isEmpty } from 'lodash';
 import {
   SET_DATA_FOR_GLOBAL_REPORT,
   SET_DATA_FOR_SINGLE_REPORT,
@@ -6,6 +7,8 @@ import {
   CLEAR_FOLLOWING_SPONSORS_REWARDS,
   GET_FRAUD_SUSPICION,
   GET_PROPOSITIONS_LIST_CONTAINER,
+  GET_REWARDS_HISTORY,
+  GET_MORE_REWARDS_HISTORY,
 } from './rewardsActions';
 import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
 
@@ -22,8 +25,13 @@ const initialState = {
   loading: false,
   fraudSuspicionData: [],
   hasMoreFraudSuspicionData: false,
-  campaigns: {},
+  campaigns: [],
   isLoadingPropositions: false,
+  isLoadingRewardsHistory: false,
+  campaignNames: [],
+  historyCampaigns: [],
+  historySponsors: [],
+  hasMoreHistory: false,
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -102,6 +110,52 @@ const rewardsReducer = (state = initialState, action) => {
         campaigns: action.payload.campaigns,
       };
     }
+    case GET_REWARDS_HISTORY.START: {
+      return {
+        ...state,
+        isLoadingRewardsHistory: true,
+      };
+    }
+    case GET_REWARDS_HISTORY.SUCCESS: {
+      return {
+        ...state,
+        isLoadingRewardsHistory: false,
+        campaignNames: action.payload.campaigns_names,
+        historyCampaigns: action.payload.campaigns,
+        historySponsors: action.payload.sponsors,
+        hasMoreHistory: action.payload.hasMore,
+      };
+    }
+    case GET_REWARDS_HISTORY.ERROR: {
+      return {
+        ...state,
+        isLoadingRewardsHistory: false,
+      };
+    }
+    case GET_MORE_REWARDS_HISTORY.START: {
+      return {
+        ...state,
+        isLoadingRewardsHistory: true,
+      };
+    }
+    case GET_MORE_REWARDS_HISTORY.SUCCESS: {
+      const currentRewardsHistory = get(state, 'historyCampaigns', []);
+      const currentHistorySponsors = get(state, 'sponsors', []);
+      return {
+        ...state,
+        isLoadingRewardsHistory: false,
+        historyCampaigns: uniqWith(currentRewardsHistory.concat(action.payload.campaigns), isEqual),
+        campaignNames: action.payload.campaigns_names,
+        historySponsors: uniqWith(currentHistorySponsors.concat(action.payload.sponsors), isEqual),
+        hasMoreHistory: isEmpty(action.payload.campaigns) ? false : action.payload.hasMore, // workaround until there is a fix from the backend
+      };
+    }
+    case GET_MORE_REWARDS_HISTORY.ERROR: {
+      return {
+        ...state,
+        isLoadingRewardsHistory: false,
+      };
+    }
     default:
       return state;
   }
@@ -124,3 +178,9 @@ export const getHasMoreFraudSuspicionData = state => state.hasMoreFraudSuspicion
 export const getIsLoading = state => state.loading;
 export const getPropositionCampaign = state => state.campaigns;
 export const getIsLoadingPropositions = state => state.isLoadingPropositions;
+
+export const getIsLoadingRewardsHistory = state => state.isLoadingRewardsHistory;
+export const getCampaignNames = state => state.campaignNames;
+export const getHistoryCampaigns = state => state.historyCampaigns;
+export const getHistorySponsors = state => state.historySponsors;
+export const getHasMoreHistory = state => state.hasMoreHistory;
