@@ -13,6 +13,7 @@ import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
+import { handleHttpUrl } from '../../helpers/postHelpers';
 import './Body.less';
 
 export const remarkable = new Remarkable({
@@ -22,8 +23,6 @@ export const remarkable = new Remarkable({
   typographer: false,
   quotes: '“”‘’',
 });
-
-const handleHttpUrl = (string, token) => string.replace(new RegExp(token, 'g'), `<br>${token}`);
 
 const getEmbed = link => {
   const embed = steemEmbed.get(link, { width: '100%', height: 400, autoplay: false });

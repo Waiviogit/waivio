@@ -224,3 +224,6 @@ export function getPostHashtags(items) {
   const postItems = sortedItems.slice(0, 3);
   return postItems.map(item => getObjectName(item));
 }
+
+export const handleHttpUrl = (string, token) =>
+  string.replace(new RegExp(token, 'g'), `<br>${token}`);
