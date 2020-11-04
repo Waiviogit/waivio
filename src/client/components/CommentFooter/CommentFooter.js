@@ -102,7 +102,7 @@ export default class CommentFooter extends React.Component {
     const { isGuest, user, comment } = this.props;
     const voteWorth = isGuest
       ? 0
-      : await calculateVotePowerForSlider(user.name, value, comment.author, comment.permlink);
+      : await calculateVotePowerForSlider(user.name, value, comment.root_author, comment.permlink);
 
     this.setState({ sliderValue: value, voteWorth });
   };
