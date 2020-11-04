@@ -66,16 +66,30 @@ export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode)
   dispatch,
   getState,
 ) => {
-  const filters = { rating: [], map: { radius, coordinates } };
-  const typeName = getTypeName(getState());
+  const state = getState();
+  const typeName = getTypeName(state);
   const actionType = GET_OBJECT_TYPE_MAP.ACTION;
+  const activeFilters = getActiveFilters(state);
+  const filterBody = createFilterBody(getActiveFiltersTags(state));
+  const searchString = new URLSearchParams(getQueryString(state)).get('search');
+  const filters = { rating: [], map: { radius, coordinates }, ...activeFilters };
+
+  if (searchString) filters.searchString = searchString;
+
   const getLimit = () => {
     let limit = 50;
     if (isFullscreenMode) limit = 200;
     return limit;
   };
+
   return dispatch(
-    getObjectType(typeName, actionType, filters, { limit: getLimit(), skip: 0, simplified: true }),
+    getObjectType(
+      typeName,
+      actionType,
+      filters,
+      { limit: getLimit(), skip: 0, simplified: true },
+      filterBody,
+    ),
   );
 };
 
