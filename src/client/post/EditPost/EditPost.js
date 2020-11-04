@@ -356,17 +356,20 @@ class EditPost extends Component {
     const campaignId = get(campaign, '_id', null);
     const postData = {
       body: content,
-      title: titleValue,
       lastUpdated: Date.now(),
       isUpdating,
       draftId,
       ...settings,
     };
 
+    if (titleValue) {
+      postData.title = titleValue;
+      postData.permlink = permlink || kebabCase(titleValue);
+    }
+
     postData.parentAuthor = '';
     postData.parentPermlink = parentPermlink;
     postData.author = this.props.user.name || '';
-    postData.permlink = permlink || kebabCase(titleValue);
 
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const oldMetadata = currDraft && currDraft.jsonMetadata;
