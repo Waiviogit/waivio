@@ -23,6 +23,8 @@ export const remarkable = new Remarkable({
   quotes: '“”‘’',
 });
 
+const handleHttpUrl = (string, token) => string.replace(new RegExp(token, 'g'), `<br>${token}`);
+
 const getEmbed = link => {
   const embed = steemEmbed.get(link, { width: '100%', height: 400, autoplay: false });
 
@@ -61,6 +63,8 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   parsedBody = improve(parsedBody);
   parsedBody = remarkable.render(parsedBody);
 
+  parsedBody = handleHttpUrl(parsedBody, 'http');
+
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
 
@@ -75,6 +79,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       secureLinks: options.secureLinks,
     }),
   );
+
   if (returnType === 'text') {
     return parsedBody;
   }
