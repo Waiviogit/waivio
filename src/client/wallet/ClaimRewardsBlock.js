@@ -92,7 +92,7 @@ class ClaimRewardsBlock extends Component {
     const { rewardClaimed } = this.state;
     const rewardSteem = parseFloat(user.reward_hive_balance);
     const rewardSbd = parseFloat(user.reward_hbd_balance);
-    const rewardSP = parseFloat(user.reward_vesting_steem);
+    const rewardSP = parseFloat(user.reward_vesting_hive);
     const userHasRewards = rewardSteem > 0 || rewardSbd > 0 || rewardSP > 0;
 
     const buttonText = rewardClaimed
