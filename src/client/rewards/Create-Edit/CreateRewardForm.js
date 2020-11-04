@@ -113,26 +113,33 @@ class CreateRewardForm extends React.Component {
         ? map(campaign.objects, obj => obj.author_permlink)
         : [];
 
+      let authorPermlinks = [];
+
+      const agreementObject = get(campaign, 'agreementObjects[0]', '');
+
       if (!isEmpty(campaign.match_bots)) {
+        authorPermlinks = [
+          ...campaign.match_bots,
+          campaign.requiredObject.author_permlink,
+          ...secondaryObjectsPermlinks,
+        ];
+
+        // eslint-disable-next-line no-unused-expressions
+        agreementObject && authorPermlinks.push(agreementObject);
+
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [
-            ...campaign.match_bots,
-            campaign.requiredObject.author_permlink,
-            campaign.agreementObjects[0],
-            ...secondaryObjectsPermlinks,
-          ],
+          authorPermlinks,
         });
 
         sponsors = combinedObjects.wobjects.filter(wobj =>
           includes(campaign.match_bots, wobj.author_permlink),
         );
       } else {
+        authorPermlinks = [campaign.requiredObject.author_permlink, ...secondaryObjectsPermlinks];
+        // eslint-disable-next-line no-unused-expressions
+        agreementObject && authorPermlinks.push(agreementObject);
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [
-            campaign.requiredObject.author_permlink,
-            campaign.agreementObjects[0],
-            ...secondaryObjectsPermlinks,
-          ],
+          authorPermlinks,
         });
       }
 
@@ -171,7 +178,7 @@ class CreateRewardForm extends React.Component {
           reward: campaign.reward.toString(),
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
-          pageObjects: [values[2]],
+          pageObjects: !isEmpty(values[2]) ? [values[2]] : [],
           sponsorsList: !isEmpty(sponsors) ? values[2] : [],
           reservationPeriod: campaign.count_reservation_days,
           receiptPhoto: campaign.requirements.receiptPhoto,

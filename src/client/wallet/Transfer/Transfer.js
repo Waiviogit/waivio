@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
+import { get, isNull, isEmpty, isNaN, includes, isString } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
@@ -302,7 +302,7 @@ export default class Transfer extends React.Component {
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (isTip) transferQuery.memo = memo;
 
-        transferQuery.memo = JSON.stringify(transferQuery.memo);
+        if (!isString(transferQuery.memo)) transferQuery.memo = JSON.stringify(transferQuery.memo);
 
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
@@ -642,8 +642,8 @@ export default class Transfer extends React.Component {
               )}
             </InputGroup>
           </Form.Item>
-          <Form.Item>{isMobile && currencyPrefix}</Form.Item>
-          <Form.Item>
+          {isMobile && <Form.Item>{currencyPrefix}</Form.Item>}
+          <div className={'Transfer__info-text'}>
             {authenticated && (
               <FormattedMessage
                 id="balance_amount"
@@ -661,28 +661,26 @@ export default class Transfer extends React.Component {
                 }}
               />
             )}
-          </Form.Item>
-          <Form.Item>
-            <div>
-              <FormattedMessage
-                id="estimated_value"
-                defaultMessage="Estimated transaction value: {estimate} USD"
-                values={{
-                  estimate: (
-                    <span role="presentation" className="estimate">
-                      <USDDisplay
-                        value={
-                          amount
-                            ? this.estimatedValue(cryptosPriceHistory, amount)
-                            : this.state.currentEstimate
-                        }
-                      />
-                    </span>
-                  ),
-                }}
-              />
-            </div>
-          </Form.Item>
+          </div>
+          <div className={'Transfer__info-text'}>
+            <FormattedMessage
+              id="estimated_value"
+              defaultMessage="Estimated transaction value: {estimate} USD"
+              values={{
+                estimate: (
+                  <span role="presentation" className="estimate">
+                    <USDDisplay
+                      value={
+                        amount
+                          ? this.estimatedValue(cryptosPriceHistory, amount)
+                          : this.state.currentEstimate
+                      }
+                    />
+                  </span>
+                ),
+              }}
+            />
+          </div>
           <Form.Item
             label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
           >

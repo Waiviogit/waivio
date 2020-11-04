@@ -65,7 +65,7 @@ const PropositionListFromCatalog = ({
 
   return (
     <React.Fragment>
-      {wobject && (
+      {wobject && maxReward && minReward && (
         <PropositionMainObjectCard
           intl={intl}
           wobject={wobject}

@@ -336,28 +336,28 @@ class Topnav extends React.Component {
               overlayStyle={{ position: 'fixed' }}
               content={
                 <PopoverMenu onSelect={this.handleMoreMenuSelect}>
-                  <PopoverMenuItem key="feed">
+                  <PopoverMenuItem key="feed" topNav>
                     <FormattedMessage id="feed" defaultMessage=" My Feed" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="rewards">
+                  <PopoverMenuItem key="rewards" topNav>
                     <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="my-profile">
+                  <PopoverMenuItem key="discover" topNav>
+                    <FormattedMessage id="menu_discover" defaultMessage="Discover" />
+                  </PopoverMenuItem>
+                  <PopoverMenuItem key="tools" topNav>
+                    <FormattedMessage id="menu_tools" defaultMessage="Tools" />
+                  </PopoverMenuItem>
+                  <PopoverMenuItem key="my-profile" topNav>
                     <FormattedMessage id="my_profile" defaultMessage="Profile" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="news" fullScreenHidden>
-                    <FormattedMessage id="news" defaultMessage="News" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="objects" fullScreenHidden>
-                    <FormattedMessage id="objects" defaultMessage="Objects" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="wallet">
+                  <PopoverMenuItem key="wallet" topNav>
                     <FormattedMessage id="wallet" defaultMessage="Wallet" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="settings">
+                  <PopoverMenuItem key="settings" topNav>
                     <FormattedMessage id="settings" defaultMessage="Settings" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="logout">
+                  <PopoverMenuItem key="logout" topNav>
                     <FormattedMessage id="logout" defaultMessage="Logout" />
                   </PopoverMenuItem>
                 </PopoverMenu>
