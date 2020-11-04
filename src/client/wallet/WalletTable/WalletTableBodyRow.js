@@ -76,7 +76,6 @@ const WalletTableBodyRow = props => {
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldHIVE: `- ${toVestingAmount.amount}`,
-        fieldHP: toVestingAmount.amount,
         fieldDescription: description.powerUpTransactionTo,
       };
       return getCurrentRows(data);

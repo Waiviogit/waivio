@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
+import { get, isNull, isEmpty, isNaN, includes, isString } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
@@ -302,7 +302,7 @@ export default class Transfer extends React.Component {
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (isTip) transferQuery.memo = memo;
 
-        transferQuery.memo = JSON.stringify(transferQuery.memo);
+        if (!isString(transferQuery.memo)) transferQuery.memo = JSON.stringify(transferQuery.memo);
 
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
