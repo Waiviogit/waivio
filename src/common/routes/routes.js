@@ -198,6 +198,11 @@ const routes = {
           exact: true,
           component: Views.WebsiteModerators,
         },
+        {
+          path: '/authorities',
+          exact: true,
+          component: Views.WebsitesAuthorities,
+        },
       ],
     },
     {

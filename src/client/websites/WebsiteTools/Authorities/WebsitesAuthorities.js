@@ -5,78 +5,74 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 
-import { getAdministrators, getWebsiteLoading } from '../../../reducers';
-import {
-  addWebAdministrator,
-  deleteWebAdministrator,
-  getWebAdministrators,
-} from '../../websiteActions';
+import { getAuthorities, getWebsiteLoading } from '../../../reducers';
+import { addWebAuthorities, deleteWebAuthorities, getWebAuthorities } from '../../websiteActions';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import Avatar from '../../../components/Avatar';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import WeightTag from '../../../components/WeightTag';
 
-import './Administrators.less';
+import './WebsitesAuthorities.less';
 
-export const WebsitesAdministrators = ({
-  getWebAdmins,
+export const WebsitesAuthorities = ({
+  getWebAuthority,
   match,
-  admins,
+  authorities,
   intl,
-  addWebAdmins,
-  deleteWebAdmins,
+  addWebsiteAuthorities,
+  deleteWebsiteAuthorities,
   isLoading,
 }) => {
   const [selectUser, setSelectUser] = useState('');
   const host = match.params.site;
 
   const addAdmin = () => {
-    if (admins.includes(selectUser.name)) {
+    if (authorities.includes(selectUser.name)) {
       message.error('This user in admins list');
     } else {
-      addWebAdmins(host, selectUser)
+      addWebsiteAuthorities(host, selectUser)
         .then(() => setSelectUser(null))
         .catch(() => message.error('Try again, please'));
     }
   };
 
   useEffect(() => {
-    getWebAdmins(host);
+    getWebAuthority(host);
   }, []);
 
   return (
-    <div className="WebsitesAdministrators">
+    <div className="WebsitesAuthorities">
       <h1>
-        <FormattedMessage id="website_administrators" defaultMessage="Website administrators" />
+        <FormattedMessage id="website_authorities" defaultMessage="Website authorities" />
       </h1>
       <p>
         {intl.formatMessage({
-          id: 'hive_public_blockchain',
+          id: 'hive_public_blockchain_authority',
           defaultMessage:
-            'Hive is a public blockchain and any user can post updates to any object. The Hive community then approves or rejects these updates.',
+            'Any Hive user can declare that they are responsible for the accuracy of an object by claiming authority over it. They exercise their authority by approving or rejecting object updates. If full ownership authority has been claimed, then user assumes that only approved updates will be processed.',
         })}
       </p>
       <p>
         {intl.formatMessage({
-          id: 'certain_objects_appear',
+          id: 'specify_which_authorities',
           defaultMessage:
-            'But sometimes it is essential that certain objects appear on the website exactly as intended by the site operators. To do this, the website owner may grant administrative privileges to',
+            'The website owner can specify which authorities to trust (claims of other users will be ignored).',
         })}
       </p>
       <p>
         {intl.formatMessage({
-          id: 'admin_rules',
+          id: 'author_rules',
           defaultMessage:
-            'Administrators have a deciding right to approve or reject object updates on the website. If several administrators vote on the same update, only the last vote stands.',
+            'This mechanism can be used to add controlled lists of objects to the website, while ensuring their accuracy..',
         })}
       </p>
       <h3>
         <FormattedMessage
-          id="grant_administrative_privileges"
-          defaultMessage="Grant administrative privileges:"
+          id="add_authority"
+          defaultMessage="Add authorities:"
         />
       </h3>
-      <div className="WebsitesAdministrators__search-user">
+      <div className="WebsitesAuthorities__search-user">
         {selectUser ? (
           <SelectUserForAutocomplete
             account={selectUser.name}
@@ -96,7 +92,7 @@ export const WebsitesAdministrators = ({
       </div>
 
       <Button
-        className="WebsitesAdministrators__add-button"
+        className="WebsitesAuthorities__add-button"
         type="primary"
         onClick={addAdmin}
         disabled={!selectUser}
@@ -105,23 +101,27 @@ export const WebsitesAdministrators = ({
         <FormattedMessage id="add" defaultMessage="Add" />
       </Button>
       <h3>
-        <FormattedMessage id="website_administrators" defaultMessage="Website administrators" />:
+        <FormattedMessage id="trust_authorities" defaultMessage="Trusted authorities" />:
       </h3>
-      <div className="WebsitesAdministrators__user-table">
-        {isEmpty(admins) ? (
+      <div className="WebsitesAuthorities__user-table">
+        {isEmpty(authorities) ? (
           <FormattedMessage
-            id={'web_admins_empty'}
-            defaultMessage={"You don't have administratives."}
+            id={'web_authorities_empty'}
+            defaultMessage={"You don't have authorities."}
           />
         ) : (
-          admins.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
-            <div key={id} className="WebsitesAdministrators__user">
-              <span className="WebsitesAdministrators__user-info">
+          authorities.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
+            <div key={id} className="WebsitesAuthorities__user">
+              <span className="WebsitesAuthorities__user-info">
                 <Avatar size={50} username={name} />
                 <span>{name}</span>
                 <WeightTag weight={weight} />
               </span>
-              <Button type="primary" onClick={() => deleteWebAdmins(host, name)} loading={loading}>
+              <Button
+                type="primary"
+                onClick={() => deleteWebsiteAuthorities(host, name)}
+                loading={loading}
+              >
                 <FormattedMessage id="delete" defaultMessage="Delete" />
               </Button>
             </div>
@@ -132,11 +132,11 @@ export const WebsitesAdministrators = ({
   );
 };
 
-WebsitesAdministrators.propTypes = {
-  getWebAdmins: PropTypes.func.isRequired,
-  addWebAdmins: PropTypes.func.isRequired,
-  deleteWebAdmins: PropTypes.func.isRequired,
-  admins: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+WebsitesAuthorities.propTypes = {
+  getWebAuthority: PropTypes.func.isRequired,
+  addWebsiteAuthorities: PropTypes.func.isRequired,
+  deleteWebsiteAuthorities: PropTypes.func.isRequired,
+  authorities: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -148,18 +148,18 @@ WebsitesAdministrators.propTypes = {
   isLoading: PropTypes.bool.isRequired,
 };
 
-WebsitesAdministrators.defaultProps = {
-  admins: [],
+WebsitesAuthorities.defaultProps = {
+  authorities: [],
 };
 
 export default connect(
   state => ({
-    admins: getAdministrators(state),
+    authorities: getAuthorities(state),
     isLoading: getWebsiteLoading(state),
   }),
   {
-    getWebAdmins: getWebAdministrators,
-    addWebAdmins: addWebAdministrator,
-    deleteWebAdmins: deleteWebAdministrator,
+    getWebAuthority: getWebAuthorities,
+    addWebsiteAuthorities: addWebAuthorities,
+    deleteWebsiteAuthorities: deleteWebAuthorities,
   },
-)(injectIntl(WebsitesAdministrators));
+)(injectIntl(WebsitesAuthorities));

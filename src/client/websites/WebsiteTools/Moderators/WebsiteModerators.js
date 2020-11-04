@@ -5,11 +5,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 
-import { getModerators } from '../../../reducers';
+import { getModerators, getWebsiteLoading } from '../../../reducers';
 import { addWebsiteModerators, deleteWebModerators, getWebModerators } from '../../websiteActions';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import Avatar from '../../../components/Avatar';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
+import WeightTag from '../../../components/WeightTag';
 
 import './WebsiteModerators.less';
 
@@ -20,13 +21,14 @@ export const WebsiteModerators = ({
   intl,
   addWebModerators,
   delWebModerators,
+  isLoading,
 }) => {
-  const [selectUser, setSelectUser] = useState('');
+  const [selectUser, setSelectUser] = useState(null);
   const host = match.params.site;
 
   const addModerator = () => {
-    addWebModerators(host, [selectUser])
-      .then(() => setSelectUser(''))
+    addWebModerators(host, selectUser)
+      .then(() => setSelectUser(null))
       .catch(() => message.error('Try again, please'));
   };
 
@@ -67,20 +69,28 @@ export const WebsiteModerators = ({
       </h3>
       <div className="WebsiteModerators__search-user">
         {selectUser ? (
-          <SelectUserForAutocomplete account={selectUser} resetUser={() => setSelectUser('')} />
+          <SelectUserForAutocomplete
+            account={selectUser.name}
+            resetUser={() => setSelectUser(null)}
+          />
         ) : (
           <SearchUsersAutocomplete
-            handleSelect={({ account }) => setSelectUser(account)}
+            handleSelect={({ account, wobjects_weight: weight }) =>
+              setSelectUser({
+                name: account,
+                wobjects_weight: weight,
+              })
+            }
             style={{ width: '100%' }}
           />
         )}
       </div>
-
       <Button
         className="WebsiteModerators__add-button"
         type="primary"
         onClick={addModerator}
         disabled={!selectUser}
+        loading={isLoading}
       >
         <FormattedMessage id="add" defaultMessage="Add" />
       </Button>
@@ -91,13 +101,14 @@ export const WebsiteModerators = ({
         {isEmpty(moderators) ? (
           <FormattedMessage id={'web_mods_empty'} defaultMessage={"You don't have moderators."} />
         ) : (
-          moderators.map(({ name, _id: id }) => (
-            <div key={id} className="WebsiteModerators__user">
-              <span className="WebsiteModerators__user-info">
+          moderators.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
+            <div key={id} className="WebsitesAdministrators__user">
+              <span className="WebsitesAdministrators__user-info">
                 <Avatar size={50} username={name} />
                 <span>{name}</span>
+                <WeightTag weight={weight} />
               </span>
-              <Button type="primary" onClick={() => delWebModerators(host, name)}>
+              <Button type="primary" onClick={() => delWebModerators(host, name)} loading={loading}>
                 <FormattedMessage id="delete" defaultMessage="Delete" />
               </Button>
             </div>
@@ -121,6 +132,7 @@ WebsiteModerators.propTypes = {
       site: PropTypes.string,
     }),
   }).isRequired,
+  isLoading: PropTypes.string.isRequired,
 };
 
 WebsiteModerators.defaultProps = {
@@ -130,6 +142,7 @@ WebsiteModerators.defaultProps = {
 export default connect(
   state => ({
     moderators: getModerators(state),
+    isLoading: getWebsiteLoading(state),
   }),
   {
     getWebMods: getWebModerators,

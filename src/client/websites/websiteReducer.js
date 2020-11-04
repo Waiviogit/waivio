@@ -11,6 +11,8 @@ const initialState = {
   ownWebsites: [],
   configurationWebsite: {},
   administrators: [],
+  moderators: [],
+  authorities: [],
   loading: false,
 };
 
@@ -157,6 +159,20 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.DELETE_WEBSITE_ADMINISTRATOR.START: {
+      const administrators = [...state.administrators];
+      const findUser = administrators.findIndex(admin => admin.name === action.payload);
+
+      administrators.splice(findUser, 1, {
+        ...administrators[findUser],
+        loading: true,
+      });
+
+      return {
+        ...state,
+        administrators,
+      };
+    }
     case websiteAction.DELETE_WEBSITE_ADMINISTRATOR.SUCCESS: {
       return {
         ...state,
@@ -164,16 +180,87 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.ADD_WEBSITE_ADMINISTRATOR.START: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
     case websiteAction.ADD_WEBSITE_ADMINISTRATOR.SUCCESS: {
       return {
         ...state,
-        administrators: [
-          ...state.administrators,
-          {
-            name: action.payload.account,
-            wobjects_weight: action.payload.wobjects_weight,
-          },
-        ],
+        administrators: [...state.administrators, action.payload],
+        loading: false,
+      };
+    }
+
+    case websiteAction.DELETE_WEBSITE_MODERATORS.START: {
+      const moderators = [...state.moderators];
+      const findUser = moderators.findIndex(admin => admin.name === action.payload);
+
+      moderators.splice(findUser, 1, {
+        ...moderators[findUser],
+        loading: true,
+      });
+
+      return {
+        ...state,
+        moderators,
+      };
+    }
+    case websiteAction.DELETE_WEBSITE_MODERATORS.SUCCESS: {
+      return {
+        ...state,
+        moderators: state.moderators.filter(admin => !action.payload.includes(admin.name)),
+      };
+    }
+
+    case websiteAction.ADD_WEBSITE_MODERATORS.START: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case websiteAction.ADD_WEBSITE_MODERATORS.SUCCESS: {
+      return {
+        ...state,
+        moderators: [...state.moderators, action.payload],
+        loading: false,
+      };
+    }
+
+    case websiteAction.DELETE_WEBSITE_AUTHORITIES.START: {
+      const authorities = [...state.authorities];
+      const findUser = authorities.findIndex(admin => admin.name === action.payload);
+
+      authorities.splice(findUser, 1, {
+        ...authorities[findUser],
+        loading: true,
+      });
+
+      return {
+        ...state,
+        authorities,
+      };
+    }
+    case websiteAction.DELETE_WEBSITE_AUTHORITIES.SUCCESS: {
+      return {
+        ...state,
+        authorities: state.authorities.filter(admin => !action.payload.includes(admin.name)),
+      };
+    }
+
+    case websiteAction.ADD_WEBSITE_AUTHORITIES.START: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case websiteAction.ADD_WEBSITE_AUTHORITIES.SUCCESS: {
+      return {
+        ...state,
+        authorities: [...state.authorities, action.payload],
+        loading: false,
       };
     }
 
