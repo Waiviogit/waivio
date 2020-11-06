@@ -26,13 +26,14 @@ const PropositionList = ({
   catalogSort,
   isGetNested,
   listItems,
+  parentPermlink,
 }) => {
   let minReward;
   let maxReward;
   let rewardPrise;
   let rewardMax;
 
-  if (isCatalogWrap) {
+  if (isCatalogWrap || parentPermlink) {
     minReward = allPropositions
       ? min(map(allPropositions, proposition => proposition.reward))
       : null;
@@ -74,7 +75,7 @@ const PropositionList = ({
 
   return (
     <React.Fragment>
-      {isCatalogWrap ? (
+      {isCatalogWrap || parentPermlink ? (
         <PropositionListFromCatalog {...data} />
       ) : (
         <DefaultPropositionList {...data} />
@@ -100,6 +101,7 @@ PropositionList.propTypes = {
   isCatalogWrap: PropTypes.bool,
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string,
+  parentPermlink: PropTypes.string,
   isGetNested: PropTypes.bool,
   listItems: PropTypes.shape(),
 };
@@ -117,6 +119,7 @@ PropositionList.defaultProps = {
   isCatalogWrap: false,
   catalogHandleSortChange: () => {},
   catalogSort: '',
+  parentPermlink: '',
   isGetNested: false,
   listItems: [],
 };

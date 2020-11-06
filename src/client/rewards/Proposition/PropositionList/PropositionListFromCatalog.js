@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get, isEmpty, map } from 'lodash';
+import { get, isEmpty, map, isEqual } from 'lodash';
 import PropositionMainObjectCard from '../PropositionMainObjectCard';
 import CatalogBreadcrumb from '../../../object/Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import CatalogSorting from '../../../object/Catalog/CatalogSorting/CatalogSorting';
@@ -48,6 +48,17 @@ const PropositionListFromCatalog = ({
     return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
 
+  const handleListItems = listItem => {
+    const parentObject = get(wobject, 'parent.author_permlink', '');
+    const wobjectPermlink = get(wobject, 'author_permlink', '');
+    const listItemPermlink = get(listItem, 'parent.author_permlink', '');
+
+    if (parentObject) {
+      return !isEqual(parentObject, listItemPermlink) && getListRow(listItem);
+    }
+    return !isEqual(wobjectPermlink, listItemPermlink) && getListRow(listItem);
+  };
+
   const getMenuList = () => {
     if (isEmpty(listItems)) {
       return (
@@ -59,7 +70,7 @@ const PropositionListFromCatalog = ({
         </div>
       );
     }
-    return map(listItems, listItem => getListRow(listItem));
+    return map(listItems, listItem => handleListItems(listItem));
   };
 
   return (
@@ -92,29 +103,24 @@ const PropositionListFromCatalog = ({
       )}
       <React.Fragment>
         {map(allPropositions, propos =>
-          map(
-            propos.objects,
-            wobj =>
-              (get(wobj, ['object', 'author_permlink']) === match.params.name ||
-                get(wobj, ['object', 'parent', 'author_permlink']) === match.params.name) && (
-                <Proposition
-                  proposition={propos}
-                  wobj={wobj.object}
-                  wobjPrice={wobj.reward}
-                  assignCommentPermlink={wobj.permlink}
-                  assignProposition={assignPropositionHandler}
-                  discardProposition={discardProposition}
-                  authorizedUserName={userName}
-                  loading={loadingAssignDiscard}
-                  key={`${wobj.object.author_permlink}`}
-                  assigned={wobj.assigned}
-                  history={history}
-                  isAssign={isAssign}
-                  match={match}
-                  user={user}
-                />
-              ),
-          ),
+          map(propos.objects, wobj => (
+            <Proposition
+              proposition={propos}
+              wobj={wobj.object}
+              wobjPrice={wobj.reward}
+              assignCommentPermlink={wobj.permlink}
+              assignProposition={assignPropositionHandler}
+              discardProposition={discardProposition}
+              authorizedUserName={userName}
+              loading={loadingAssignDiscard}
+              key={`${wobj.object.author_permlink}`}
+              assigned={wobj.assigned}
+              history={history}
+              isAssign={isAssign}
+              match={match}
+              user={user}
+            />
+          )),
         )}
         <div className="CatalogWrap">
           <div>{getMenuList()}</div>
