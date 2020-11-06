@@ -229,19 +229,21 @@ export function getPostHashtags(items) {
 //   string.replace(new RegExp(token, 'g'), `<br>${token}`);
 
 export const handleHttpUrl = (string, token) => {
-  console.log('before: ', string);
-  const a = string.split(' ');
-  a.forEach((item, index) => {
-    console.log('item: ', item);
-    if (item.match(token)) {
-      console.log('совпадение!: ', item);
-
-      const b = item.split('"');
-      console.log('b: ', b);
-      a.splice(index, 1, `<br>${item}`);
-    }
-  });
-
-  console.log('after: ', a.join(' '));
-  return a.join(' ');
+  console.log('before: ', string, token);
+  // const a = string.split(' ');
+  // a.forEach((item, index) => {
+  //   if (item.match(token)) {
+  //     const b = item.split('"');
+  //
+  //     b.forEach((httpItem, httpIndex) => {
+  //       if (httpItem.match(token)) {
+  //         console.log('b: ', b);
+  //         b.splice(httpIndex, 1, `!!!!!${httpItem}!!!!!`);
+  //       }
+  //     });
+  //   }
+  // });
+  //
+  // console.log('after: ', a.join(' '));
+  // return a.join(' ');
 };
