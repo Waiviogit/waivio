@@ -10,6 +10,7 @@ import { parseWobjectField } from '../../../helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
+import Loading from '../../../components/Icon/Loading';
 
 const PropositionListFromCatalog = ({
   intl,
@@ -31,8 +32,8 @@ const PropositionListFromCatalog = ({
   history,
   catalogHandleSortChange,
   catalogSort,
-  isGetNested,
   listItems,
+  isLoadingFlag,
 }) => {
   const getListRow = listItem => {
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
@@ -87,7 +88,9 @@ const PropositionListFromCatalog = ({
           rewardMax={rewardMax}
         />
       )}
-      {!isGetNested && (
+      {isLoadingFlag ? (
+        <Loading />
+      ) : (
         <React.Fragment>
           <div className="CatalogWrap__breadcrumb">
             <CatalogBreadcrumb intl={intl} wobject={wobject} />
@@ -99,33 +102,31 @@ const PropositionListFromCatalog = ({
               handleSortChange={catalogHandleSortChange}
             />
           </div>
+          {map(allPropositions, propos =>
+            map(propos.objects, wobj => (
+              <Proposition
+                proposition={propos}
+                wobj={wobj.object}
+                wobjPrice={wobj.reward}
+                assignCommentPermlink={wobj.permlink}
+                assignProposition={assignPropositionHandler}
+                discardProposition={discardProposition}
+                authorizedUserName={userName}
+                loading={loadingAssignDiscard}
+                key={`${wobj.object.author_permlink}`}
+                assigned={wobj.assigned}
+                history={history}
+                isAssign={isAssign}
+                match={match}
+                user={user}
+              />
+            )),
+          )}
+          <div className="CatalogWrap">
+            <div>{getMenuList()}</div>
+          </div>
         </React.Fragment>
       )}
-      <React.Fragment>
-        {map(allPropositions, propos =>
-          map(propos.objects, wobj => (
-            <Proposition
-              proposition={propos}
-              wobj={wobj.object}
-              wobjPrice={wobj.reward}
-              assignCommentPermlink={wobj.permlink}
-              assignProposition={assignPropositionHandler}
-              discardProposition={discardProposition}
-              authorizedUserName={userName}
-              loading={loadingAssignDiscard}
-              key={`${wobj.object.author_permlink}`}
-              assigned={wobj.assigned}
-              history={history}
-              isAssign={isAssign}
-              match={match}
-              user={user}
-            />
-          )),
-        )}
-        <div className="CatalogWrap">
-          <div>{getMenuList()}</div>
-        </div>
-      </React.Fragment>
     </React.Fragment>
   );
 };
@@ -150,7 +151,7 @@ PropositionListFromCatalog.propTypes = {
   history: PropTypes.shape().isRequired,
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string,
-  isGetNested: PropTypes.bool,
+  isLoadingFlag: PropTypes.bool,
   listItems: PropTypes.shape(),
 };
 
@@ -170,7 +171,7 @@ PropositionListFromCatalog.defaultProps = {
   user: {},
   catalogHandleSortChange: () => {},
   catalogSort: '',
-  isGetNested: false,
+  isLoadingFlag: false,
   listItems: [],
 };
 

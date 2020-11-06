@@ -85,7 +85,6 @@ const History = ({
       rewards,
       status: activeFilters.status,
       locale: usedLocale,
-      skip: size(historyCampaigns),
     };
 
     if (isHistory) {
@@ -109,6 +108,7 @@ const History = ({
       setLoadingCampaigns(true);
       getCurrentRewardsHistory(requestData).then(() => setLoadingCampaigns(false));
     } else {
+      requestData.skip = size(historyCampaigns);
       getMoreHistory(requestData);
     }
   };
