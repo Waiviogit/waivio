@@ -31,11 +31,13 @@ class TagsSelector extends Component {
   handleTopicsChange(tags) {
     const { validator } = this.props;
     const updatedTopics = validator ? tags.filter(t => validator(t)) : tags;
+
     this.props.onChange(updatedTopics);
   }
 
   render() {
     const { label, placeholder, tags, className, disabled } = this.props;
+
     return (
       <div className={classNames('tags-selector', { [className]: Boolean(className) })}>
         {label && <div className="tags-selector__label">{label}</div>}

@@ -404,6 +404,20 @@ function sc2Extended() {
 
         return this.broadcast([['custom_json', params]], cb);
       },
+      saveWebsiteSettings(username, appId, googleAnalyticsTag, beneficiary, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'custom_website_settings',
+          json: JSON.stringify({
+            appId,
+            googleAnalyticsTag,
+            beneficiary,
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
     },
   );
 }

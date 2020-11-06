@@ -88,8 +88,8 @@ export default {
       'moderators',
       'authorities',
       'objects',
-      'object_filters',
-      'muted_users',
+      'objects-filters',
+      'muted-users',
     ].join('|'),
   },
   REFERRAL: {

@@ -7,15 +7,18 @@ import {
   deleteSite,
   getDomainList,
   getInfoForManagePage,
+  getObjectType,
+  getTagCategoryForSite,
   getWebsiteAdministrators,
   getWebsiteAuthorities,
   getWebsiteModerators,
   getWebsites,
   getWebsitesConfiguration,
   getWebsitesReports,
+  saveTagCategoryForSite,
   saveWebsitesConfiguration,
 } from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName, getParentDomain } from '../reducers';
+import { getAuthenticatedUserName, getOwnWebsites, getParentDomain } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
@@ -334,4 +337,78 @@ export const deleteWebAuthorities = (host, name) => (dispatch, getState, { steem
       payload: name,
     }),
   );
+};
+
+export const SAVE_WEBSITE_SETTINGS = createAsyncActionType('@website/SAVE_WEBSITE_SETTINGS');
+
+export const saveWebsiteSettings = (host, googleAnalyticsTag, beneficiary) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const appId = getOwnWebsites(state).find(web => web === host);
+
+  dispatch({
+    type: SAVE_WEBSITE_SETTINGS.ACTION,
+    payload: {
+      promise: steemConnectAPI.saveWebsiteSettings(
+        userName,
+        appId,
+        googleAnalyticsTag,
+        beneficiary,
+      ),
+    },
+  });
+};
+
+export const GET_WEBSITE_TAGS = createAsyncActionType('@website/GET_WEBSITE_TAGS');
+
+export const getWebsiteTags = host => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+
+  dispatch({
+    type: GET_WEBSITE_TAGS.ACTION,
+    payload: {
+      promise: getTagCategoryForSite(host, userName),
+    },
+  });
+};
+
+export const saveTagsCategoryForSite = (host, objectsFilter) => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+
+  dispatch({
+    type: GET_WEBSITE_TAGS.ACTION,
+    payload: {
+      promise: saveTagCategoryForSite(host, userName, objectsFilter),
+    },
+  });
+};
+
+export const GET_COORDINATES_FOG_MAP = createAsyncActionType('@website/GET_COORDINATES_FOG_MAP');
+
+export const getCoordinatesForMap = (coordinates, radius) => (dispatch, getState) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  return dispatch({
+    type: GET_COORDINATES_FOG_MAP.ACTION,
+    payload: {
+      promise: getObjectType('restaurant', {
+        simplified: true,
+        userName,
+        wobjects_count: 50,
+        wobjects_skip: 0,
+        filter: {
+          map: {
+            coordinates,
+            radius,
+          },
+        },
+      }),
+    },
+  });
 };

@@ -111,5 +111,6 @@
   "configuration": "/configuration",
   "administrators": "/administrators",
   "authorities": "/authorities",
-  "moderators": "/moderators"
+  "moderators": "/moderators",
+  "filters": "/filters"
 }

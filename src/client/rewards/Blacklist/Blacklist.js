@@ -32,6 +32,7 @@ const Blacklist = ({ intl, userName, match }) => {
       const blacklist = get(data, ['value', 'blackList', 'blackList']);
       const whiteList = get(data, ['value', 'blackList', 'whiteList']);
       const followLists = get(data, ['value', 'blackList', 'followLists']);
+
       saveWhitelistUsers(whiteList);
       saveFollowLists(followLists);
       saveBlacklistUsers(blacklist);

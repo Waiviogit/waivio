@@ -1,3 +1,5 @@
+import { get, isArray } from 'lodash';
+
 export const getAvailableStatus = status => {
   switch (status) {
     case 200:
@@ -12,6 +14,18 @@ export const getAvailableStatus = status => {
     default:
       return null;
   }
+};
+
+export const getConfigFieldsValue = (obj, values) => {
+  const array = isArray(obj) ? obj : Object.keys(obj);
+
+  return array.reduce(
+    (acc, curr) => ({
+      ...acc,
+      ...(values[curr] ? { [curr]: get(values, curr) } : {}),
+    }),
+    {},
+  );
 };
 
 export default null;

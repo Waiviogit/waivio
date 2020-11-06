@@ -13,6 +13,7 @@ const initialState = {
   administrators: [],
   moderators: [],
   authorities: [],
+  tags: {},
   loading: false,
 };
 
@@ -256,10 +257,19 @@ export default function websiteReducer(state = initialState, action) {
         loading: true,
       };
     }
+
     case websiteAction.ADD_WEBSITE_AUTHORITIES.SUCCESS: {
       return {
         ...state,
         authorities: [...state.authorities, action.payload],
+        loading: false,
+      };
+    }
+
+    case websiteAction.GET_WEBSITE_TAGS.SUCCESS: {
+      return {
+        ...state,
+        tags: action.payload,
         loading: false,
       };
     }
@@ -280,3 +290,4 @@ export const getConfiguration = state => get(state, 'configurationWebsite', {});
 export const getAdministrators = state => get(state, 'administrators', {});
 export const getModerators = state => get(state, 'moderators', {});
 export const getAuthorities = state => get(state, 'authorities', {});
+export const getTagsSite = state => get(state, 'tags', {});

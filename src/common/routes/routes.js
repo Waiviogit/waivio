@@ -203,6 +203,21 @@ const routes = {
           exact: true,
           component: Views.WebsitesAuthorities,
         },
+        {
+          path: '/settings',
+          exact: true,
+          component: Views.WebsitesSettings,
+        },
+        {
+          path: '/objects-filters',
+          exact: true,
+          component: Views.WebsiteObjectFilters,
+        },
+        {
+          path: '/muted-users',
+          exact: true,
+          component: Views.WebsiteRestrictions,
+        },
       ],
     },
     {

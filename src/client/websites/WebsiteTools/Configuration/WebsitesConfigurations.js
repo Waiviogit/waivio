@@ -3,7 +3,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Input, Form, Modal, Avatar } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, get, isArray } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import { getConfiguration, getWebsiteLoading } from '../../../reducers';
@@ -11,7 +11,12 @@ import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import { getObjectName } from '../../../helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';
 import mapProvider from '../../../helpers/mapProvider';
-import { getWebConfiguration, saveWebConfiguration } from '../../websiteActions';
+import {
+  getCoordinatesForMap,
+  getWebConfiguration,
+  saveWebConfiguration,
+} from '../../websiteActions';
+import { getConfigFieldsValue } from '../../helper';
 
 import './WebsitesConfigurations.less';
 
@@ -23,19 +28,29 @@ export const WebsitesConfigurations = ({
   match,
   config,
   saveWebConfig,
+  getMapsCoordinates,
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');
   const [showSelectColor, setShowSelectColor] = useState('');
+  const [colors, setColors] = useState('');
   const mobileLogo = getFieldValue('mobileLogo') || get(config, 'mobileLogo');
   const desktopLogo = getFieldValue('desktopLogo') || get(config, 'desktopLogo');
-  const aboutObject = getFieldValue('aboutObject');
+  const mapState = {
+    mobileMap: getFieldValue('mobileMap') || get(config, 'mobileMap'),
+    desktopMap: getFieldValue('desktopMap') || get(config, 'desktopMap'),
+  };
+  const aboutObject = getFieldValue('aboutObject') || get(config, 'aboutObject');
   const host = match.params.site;
 
   useEffect(() => {
     getWebConfig(host);
   }, []);
+
+  useEffect(() => {
+    if(!isEmpty(config)) getMapsCoordinates(get(mapState, ['desktopMap', 'center']), 38000);
+  }, [config])
 
   const resetModalState = () => setModalState({});
 
@@ -44,7 +59,7 @@ export const WebsitesConfigurations = ({
       method: value => form.setFieldsValue({ [key]: value[0].src }),
     });
 
-  const getSelectedColor = type => `#${getFieldValue(type) || get(config, ['colors', type], '')}`;
+  const getSelectedColor = type => `${get(colors, [type]) || get(config, ['colors', type], '')}`;
 
   const setMapBounds = state => {
     const { center, zoom, bounds } = state;
@@ -63,25 +78,16 @@ export const WebsitesConfigurations = ({
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const getConfigFieldsValue = obj => {
-          const array = isArray(obj) ? obj : Object.keys(obj);
-
-          return array.reduce(
-            (acc, curr) => ({
-              ...acc,
-              [curr]: get(values, curr),
-            }),
-            {},
-          );
-        };
-        const colors = getConfigFieldsValue(config.colors);
-        const configuration = getConfigFieldsValue(config.configurationFields);
-
+        const configuration = getConfigFieldsValue(config.configurationFields, values);
         const configurationObj = {
           configuration: {
+            ...config,
             ...configuration,
+            colors: {
+              ...config.colors,
+              ...colors,
+            },
             aboutObject: get(aboutObject, 'author_permlink', ''),
-            colors,
           },
         };
 
@@ -90,12 +96,19 @@ export const WebsitesConfigurations = ({
     });
   };
 
+  const handleClickOk = () => {
+    const formValues = form.getFieldsValue();
+
+    setColors(getConfigFieldsValue(config.colors, formValues));
+    setShowSelectColor(false);
+  };
+
   return (
     <React.Fragment>
       <h1>
         <FormattedMessage id="website_configuration" defaultMessage="Website configuration" />
       </h1>
-      <Form className="WebsitesConfigurations" id="CreateWebsite" onSubmit={handleSubmit}>
+      <Form className="WebsitesConfigurations" id="WebsitesConfigurations" onSubmit={handleSubmit}>
         <Form.Item>
           <h3>
             <span className="ant-form-item-required">
@@ -191,12 +204,23 @@ export const WebsitesConfigurations = ({
             'desktopMap',
             {},
           )(
-            <Button type="primary" htmlType="submit" onClick={() => setShowMap('desktopMap')}>
-              {intl.formatMessage({
-                id: 'select_area',
-                defaultMessage: 'Select area',
-              })}
-            </Button>,
+            <div className="WebsitesConfigurations__map">
+              <Map
+                center={get(mapState, ['desktopMap', 'center'], [])}
+                zoom={get(mapState, ['desktopMap', 'zoom'], 0)}
+                minZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
+                maxZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
+                provider={mapProvider}
+                height={200}
+                width={160}
+              />
+              <Button type="primary" onClick={() => setShowMap('desktopMap')}>
+                {intl.formatMessage({
+                  id: 'select_area',
+                  defaultMessage: 'Select area',
+                })}
+              </Button>
+            </div>,
           )}
           <p>Select the initial map focus for the desktop site.</p>
         </Form.Item>
@@ -213,12 +237,23 @@ export const WebsitesConfigurations = ({
             'mobileMap',
             {},
           )(
-            <Button type="primary" htmlType="submit" onClick={() => setShowMap('mobileMap')}>
-              {intl.formatMessage({
-                id: 'select_area',
-                defaultMessage: 'Select area',
-              })}
-            </Button>,
+            <div className="WebsitesConfigurations__map">
+              <Map
+                center={get(mapState, ['mobileMap', 'center'], [])}
+                zoom={get(mapState, ['mobileMap', 'zoom'], 0)}
+                minZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
+                maxZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
+                height={200}
+                width={160}
+                provider={mapProvider}
+              />
+              <Button type="primary" onClick={() => setShowMap('mobileMap')}>
+                {intl.formatMessage({
+                  id: 'select_area',
+                  defaultMessage: 'Select area',
+                })}
+              </Button>
+            </div>,
           )}
           <p>Select the initial map focus for the mobile site.</p>
         </Form.Item>
@@ -237,13 +272,13 @@ export const WebsitesConfigurations = ({
               <div key={color}>
                 <span
                   className="WebsitesConfigurations__colors"
-                  style={{ backgroundColor: getSelectedColor(color) }}
+                  style={{ backgroundColor: `#${getSelectedColor(color)}` }}
                 />
                 <b>{color}</b>
               </div>
             ))}
           </div>
-          <Button type="primary" htmlType="submit" onClick={() => setShowSelectColor(true)}>
+          <Button type="primary" onClick={() => setShowSelectColor(true)}>
             {intl.formatMessage({
               id: 'select_colors',
               defaultMessage: 'Select colors',
@@ -282,8 +317,8 @@ export const WebsitesConfigurations = ({
       >
         {showMap && (
           <Map
-            center={[50.879, 4.6997]}
-            zoom={12}
+            center={get(mapState, [showMap, 'center'])}
+            zoom={get(mapState, [showMap, 'zoom'])}
             height={400}
             provider={mapProvider}
             onBoundsChanged={state => setMapBounds(state)}
@@ -294,15 +329,34 @@ export const WebsitesConfigurations = ({
         wrapClassName="Settings__modal"
         title={`Select color`}
         closable
-        onCancel={() => setShowSelectColor(false)}
-        onOk={() => setShowSelectColor(false)}
+        onCancel={() => {
+          setShowSelectColor(false);
+        }}
+        onOk={handleClickOk}
         visible={showSelectColor}
       >
-        {Object.keys(get(config, 'colors', {})).map(color => (
-          <div className="WebsitesConfigurations__select-color" key={color}>
-            {color}: <span>#{getFieldDecorator(color)(<Input />)}</span>
-          </div>
-        ))}
+        {showSelectColor &&
+          Object.keys(get(config, 'colors', {})).map(color => (
+            <div className="WebsitesConfigurations__select-color" key={color}>
+              {color}:{' '}
+              <span>
+                #
+                {getFieldDecorator(color)(
+                  <Input.Group>
+                    <Input
+                      type="text"
+                      defaultValue={getSelectedColor(color)}
+                      onChange={e =>
+                        form.setFieldsValue({
+                          [color]: e.currentTarget.value,
+                        })
+                      }
+                    />
+                  </Input.Group>,
+                )}
+              </span>
+            </div>
+          ))}
       </Modal>
     </React.Fragment>
   );
@@ -330,5 +384,6 @@ export default connect(
   {
     getWebConfig: getWebConfiguration,
     saveWebConfig: saveWebConfiguration,
+    getMapsCoordinates: getCoordinatesForMap,
   },
 )(Form.create()(injectIntl(WebsitesConfigurations)));

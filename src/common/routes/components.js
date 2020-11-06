@@ -100,4 +100,13 @@ export default {
   WebsitesAuthorities: loableComponent(
     import('../../client/websites/WebsiteTools/Authorities/WebsitesAuthorities'),
   ),
+  WebsitesSettings: loableComponent(
+    import('../../client/websites/WebsiteTools/Settings/WebsitesSettings'),
+  ),
+  WebsiteObjectFilters: loableComponent(
+    import('../../client/websites/WebsiteTools/ObjectsFilters/WebsiteObjectFilters'),
+  ),
+  WebsiteRestrictions: loableComponent(
+    import('../../client/websites/WebsiteTools/Restrictions/WebsiteRestrictions'),
+  ),
 };

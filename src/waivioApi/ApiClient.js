@@ -1747,4 +1747,27 @@ export const getWebsiteAuthorities = (host, userName) =>
     .then(res => res)
     .catch(e => e);
 
+export const getTagCategoryForSite = (host, userName) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.filters}?host=${host}&userName=${userName}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const saveTagCategoryForSite = (host, userName, objectsFilter) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.filters}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'POST',
+    body: JSON.stringify({
+      host,
+      userName,
+      objectsFilter,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;

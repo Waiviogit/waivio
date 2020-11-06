@@ -67,10 +67,7 @@ export const WebsitesAuthorities = ({
         })}
       </p>
       <h3>
-        <FormattedMessage
-          id="add_authority"
-          defaultMessage="Add authorities:"
-        />
+        <FormattedMessage id="add_authority" defaultMessage="Add authorities:" />
       </h3>
       <div className="WebsitesAuthorities__search-user">
         {selectUser ? (

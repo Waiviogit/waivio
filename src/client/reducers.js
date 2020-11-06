@@ -374,3 +374,4 @@ export const getConfiguration = state => fromWebsite.getConfiguration(state.webs
 export const getAdministrators = state => fromWebsite.getAdministrators(state.website);
 export const getModerators = state => fromWebsite.getModerators(state.website);
 export const getAuthorities = state => fromWebsite.getAuthorities(state.website);
+export const getTagsSite = state => fromWebsite.getTagsSite(state.website);
