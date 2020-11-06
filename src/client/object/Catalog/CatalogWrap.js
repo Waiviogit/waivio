@@ -48,6 +48,7 @@ const CatalogWrap = props => {
         });
       } else {
         setLists(wobject.listItems);
+        setLoadingNestedWobject(false);
       }
     }
     return () => {

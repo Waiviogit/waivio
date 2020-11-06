@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -145,11 +144,14 @@ const ObjectOfTypePage = props => {
     return <Loading />;
   };
 
+  const classObjPage = `object-of-type-page ${
+    isEditMode && !isReadyToPublish ? 'edit' : 'view'
+  }-mode`;
+  const editorLocale = locale === 'auto' ? 'en-US' : locale;
+
   return (
     <React.Fragment>
-      <div
-        className={`object-of-type-page ${isEditMode && !isReadyToPublish ? 'edit' : 'view'}-mode`}
-      >
+      <div className={classObjPage}>
         {isEditMode ? (
           <React.Fragment>
             {isReadyToPublish ? (
@@ -195,7 +197,7 @@ const ObjectOfTypePage = props => {
                   enabled={!isAppending}
                   withTitle={false}
                   initialContent={{ body: content }}
-                  locale={locale === 'auto' ? 'en-US' : locale}
+                  locale={editorLocale}
                   onChange={handleChangeContent}
                   displayTitle={false}
                 />
@@ -267,9 +269,7 @@ const mapDispatchToProps = {
   setLoadingNestedWobject: setLoadedNestedWobject,
 };
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  Form.create(),
-  injectIntl,
-  withRouter,
-)(ObjectOfTypePage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withRouter(injectIntl(Form.create()(ObjectOfTypePage))));
