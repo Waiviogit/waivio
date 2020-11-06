@@ -225,5 +225,23 @@ export function getPostHashtags(items) {
   return postItems.map(item => getObjectName(item));
 }
 
-export const handleHttpUrl = (string, token) =>
-  string.replace(new RegExp(token, 'g'), `<br>${token}`);
+// export const handleHttpUrl = (string, token) =>
+//   string.replace(new RegExp(token, 'g'), `<br>${token}`);
+
+export const handleHttpUrl = (string, token) => {
+  console.log('before: ', string);
+  const a = string.split(' ');
+  a.forEach((item, index) => {
+    console.log('item: ', item);
+    if (item.match(token)) {
+      console.log('совпадение!: ', item);
+
+      const b = item.split('"');
+      console.log('b: ', b);
+      a.splice(index, 1, `<br>${item}`);
+    }
+  });
+
+  console.log('after: ', a.join(' '));
+  return a.join(' ');
+};

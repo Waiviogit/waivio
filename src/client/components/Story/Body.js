@@ -62,7 +62,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   parsedBody = improve(parsedBody);
   parsedBody = remarkable.render(parsedBody);
 
-  parsedBody = handleHttpUrl(parsedBody, 'http');
+  parsedBody = handleHttpUrl(parsedBody, /http/);
 
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
