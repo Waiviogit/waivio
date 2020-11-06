@@ -34,6 +34,7 @@ const PropositionListContainer = ({
   campaigns,
   isLoadingPropositions,
   currentHash,
+  isLoadingFlag,
 }) => {
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [allPropositions, setAllPropositions] = useState([]);
@@ -213,6 +214,7 @@ const PropositionListContainer = ({
             match={match}
             userName={userName}
             history={history}
+            isLoadingFlag={isLoadingFlag}
           />
         </React.Fragment>
       )}
@@ -237,6 +239,7 @@ PropositionListContainer.propTypes = {
   campaigns: PropTypes.shape(),
   isLoadingPropositions: PropTypes.shape(),
   currentHash: PropTypes.string,
+  isLoadingFlag: PropTypes.bool,
 };
 
 PropositionListContainer.defaultProps = {
@@ -252,6 +255,7 @@ PropositionListContainer.defaultProps = {
   getProposListContainer: () => {},
   campaigns: {},
   isLoadingPropositions: false,
+  isLoadingFlag: false,
   currentHash: '',
 };
 

@@ -13,6 +13,7 @@ import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
+import { handleHttpUrl } from '../../helpers/postHelpers';
 import './Body.less';
 
 export const remarkable = new Remarkable({
@@ -61,6 +62,8 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   parsedBody = improve(parsedBody);
   parsedBody = remarkable.render(parsedBody);
 
+  parsedBody = handleHttpUrl(parsedBody, 'http');
+
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
 
@@ -75,6 +78,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       secureLinks: options.secureLinks,
     }),
   );
+
   if (returnType === 'text') {
     return parsedBody;
   }
