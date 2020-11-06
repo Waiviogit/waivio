@@ -231,6 +231,7 @@ class EditPost extends Component {
       this.setState({
         draftContent: {
           body: nextState.content,
+          title: nextState.titleValue,
         },
         currentRawContent: rawContent,
       });
@@ -238,7 +239,6 @@ class EditPost extends Component {
   }, 500);
 
   handleChangeContent(rawContent, title) {
-    const { isReview } = this.state;
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
@@ -257,9 +257,7 @@ class EditPost extends Component {
       this.state.titleValue !== nextState.titleValue
     ) {
       this.setState(nextState, this.handleUpdateState);
-      if (!isReview) {
-        this.setCurrentDraftContent(nextState, rawContent);
-      }
+      this.setCurrentDraftContent(nextState, rawContent);
     }
   }
 
