@@ -91,11 +91,11 @@ const CatalogBreadcrumb = props => {
           title: getObjectTitle(wobj),
           path: wobj.defaultShowLink,
         }));
-
         if (!permlinks.includes(wobject.author_permlink) && hasType(wobject, 'list')) {
           createBreadCrumbs(wobjectRes);
           dispatch(setCatalogBreadCrumbs(currentBreadCrumbs));
         } else {
+          createBreadCrumbs(wobjectRes);
           dispatch(setCatalogBreadCrumbs(wobjectRes));
         }
       });
