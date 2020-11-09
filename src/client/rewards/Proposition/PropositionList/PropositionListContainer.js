@@ -43,17 +43,19 @@ const PropositionListContainer = ({
   const [isAssign, setIsAssign] = useState(false);
   const hashArr = currentHash.split('/');
   const firstHash = get(hashArr, '[0]', '');
+  const authorPermlink = get(wobject, ['author_permlink'], '');
+  const parentPermlink = get(wobject, 'parent.author_permlink', '');
 
   useEffect(() => {
     if (wobject && userName) {
       let requiredObject;
       let primaryObject;
 
-      if (isCatalogWrap && firstHash === currentHash) {
+      if ((isCatalogWrap && firstHash === currentHash) || parentPermlink) {
         const reqData = {
           userName,
           match,
-          requiredObject: get(wobject, ['author_permlink']),
+          requiredObject: parentPermlink || authorPermlink,
           sort: 'reward',
           locale,
         };
@@ -215,6 +217,7 @@ const PropositionListContainer = ({
             userName={userName}
             history={history}
             isLoadingFlag={isLoadingFlag}
+            parentPermlink={parentPermlink}
           />
         </React.Fragment>
       )}
