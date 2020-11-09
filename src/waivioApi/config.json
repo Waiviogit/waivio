@@ -102,5 +102,6 @@
   "showMoreTags": "/showMoreTags",
   "setSentryNotify": "/sentry",
   "sentryAppName": "waivio",
-  "referrals": "/referrals"
+  "referrals": "/referrals",
+  "social": "/social-info"
 }

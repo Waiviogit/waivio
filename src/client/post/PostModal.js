@@ -16,6 +16,7 @@ import PostContent from './PostContent';
 import Comments from '../comments/Comments';
 import { getFacebookShareURL, getTwitterShareURL } from '../helpers/socialProfiles';
 import BBackTop from '../components/BBackTop';
+import { getSocialInfoPost } from '../../waivioApi/ApiClient';
 import './PostModal.less';
 
 class PostModal extends React.Component {
@@ -25,12 +26,14 @@ class PostModal extends React.Component {
     currentShownPost: PropTypes.shape(),
     shownPostContents: PropTypes.shape(),
     author: PropTypes.shape(),
+    userName: PropTypes.string,
   };
 
   static defaultProps = {
     currentShownPost: {},
     shownPostContents: {},
     author: {},
+    userName: '',
   };
 
   static pushURLState(title, url) {
@@ -94,6 +97,12 @@ class PostModal extends React.Component {
     this.props.hidePostModal();
   }
 
+  getTwitterSocial = () => {
+    const { author, permlink } = this.props.currentShownPost;
+    const { userName } = this.props;
+    getSocialInfoPost(author, permlink, userName, 'twitter').then(res => console.log(res));
+  };
+
   render() {
     const {
       showPostModal,
@@ -151,6 +160,7 @@ class PostModal extends React.Component {
             rel="noopener noreferrer"
             target="_blank"
             className="PostModal__action"
+            onClick={this.getTwitterSocial}
           >
             <i className="iconfont icon-twitter PostModal__icon" />
           </a>
