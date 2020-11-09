@@ -1,3 +1,4 @@
+import xmldom from 'xmldom';
 import uuidv4 from 'uuid/v4';
 import { fromPairs, get, attempt, isError, includes, unescape, split, isEmpty, size } from 'lodash';
 import { getHtml } from '../components/Story/Body';
@@ -225,25 +226,21 @@ export function getPostHashtags(items) {
   return postItems.map(item => getObjectName(item));
 }
 
-// export const handleHttpUrl = (string, token) =>
-//   string.replace(new RegExp(token, 'g'), `<br>${token}`);
+const noop = () => {};
+const DOMParser = new xmldom.DOMParser({
+  errorHandler: { warning: noop, error: noop },
+});
 
 export const handleHttpUrl = (string, token) => {
-  console.log('before: ', string, token);
-  // const a = string.split(' ');
-  // a.forEach((item, index) => {
-  //   if (item.match(token)) {
-  //     const b = item.split('"');
-  //
-  //     b.forEach((httpItem, httpIndex) => {
-  //       if (httpItem.match(token)) {
-  //         console.log('b: ', b);
-  //         b.splice(httpIndex, 1, `!!!!!${httpItem}!!!!!`);
-  //       }
-  //     });
-  //   }
-  // });
-  //
-  // console.log('after: ', a.join(' '));
-  // return a.join(' ');
+  if (string.match(token)) {
+    let isImgTeg = false;
+    let isATeg = false;
+    const docString = DOMParser.parseFromString(string, 'text/html');
+    Array(...docString.childNodes).forEach(child => {
+      isImgTeg = get(child, 'firstChild.firstChild.tagName', '');
+      isATeg = get(child, 'lastChild.tagName', '');
+    });
+    return !isImgTeg && !isATeg ? string.replace(token, `<br>${string.match(token)}<br>`) : string;
+  }
+  return string;
 };
