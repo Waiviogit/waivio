@@ -1,4 +1,4 @@
-import { uniqWith, isEqual, get, isEmpty } from 'lodash';
+import { uniqWith, isEqual, get } from 'lodash';
 import {
   SET_DATA_FOR_GLOBAL_REPORT,
   SET_DATA_FOR_SINGLE_REPORT,
@@ -147,7 +147,7 @@ const rewardsReducer = (state = initialState, action) => {
         historyCampaigns: uniqWith(currentRewardsHistory.concat(action.payload.campaigns), isEqual),
         campaignNames: action.payload.campaigns_names,
         historySponsors: uniqWith(currentHistorySponsors.concat(action.payload.sponsors), isEqual),
-        hasMoreHistory: isEmpty(action.payload.campaigns) ? false : action.payload.hasMore, // workaround until there is a fix from the backend
+        hasMoreHistory: action.payload.hasMore,
       };
     }
     case GET_MORE_REWARDS_HISTORY.ERROR: {
