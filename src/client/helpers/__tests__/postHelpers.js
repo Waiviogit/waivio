@@ -1,4 +1,5 @@
 import { getAppData, getContentImages, handleHttpUrl } from '../postHelpers';
+import { linkRegex } from '../regexHelpers';
 
 describe('getAppData', () => {
   it('should return an empty object when post does not contain an app', () => {
@@ -52,7 +53,7 @@ Bye!
     `;
 
     const expected = [
-      `<br>https://user-images.githubusercontent.com/1968722/41253250-0a6d2ece-6dc0-11e8-981a-a1d1a1c0ecec.png`,
+      `<br>https://user-images.githubusercontent.com/1968722/41253250-0a6d2ece-6dc0-11e8-981a-a1d1a1c0ecec.png<br>`,
     ];
     const actual = getContentImages(content);
 
@@ -77,7 +78,7 @@ Bye!
     `;
 
     const expected = [
-      '<br>https://user-images.githubusercontent.com/1968722/41253250-0a6d2ece-6dc0-11e8-981a-a1d1a1c0ecec.png',
+      '<br>https://user-images.githubusercontent.com/1968722/41253250-0a6d2ece-6dc0-11e8-981a-a1d1a1c0ecec.png<br>',
     ];
     const actual = getContentImages(content);
 
@@ -86,19 +87,34 @@ Bye!
 
   it('should return text with link and br in the middle', () => {
     const text = 'hello world https://youtu.be/exampleLink';
-    const actual = handleHttpUrl(text, 'http');
-    expect(actual).toEqual(`hello world <br>https://youtu.be/exampleLink`);
+    const actual = handleHttpUrl(text, linkRegex);
+    expect(actual).toEqual(`hello world <br>https://youtu.be/exampleLink<br>`);
   });
 
   it('should return text with link and br in the middle without space', () => {
     const text = 'hello worldhttps://youtu.be/exampleLink';
-    const actual = handleHttpUrl(text, 'http');
-    expect(actual).toEqual(`hello world<br>https://youtu.be/exampleLink`);
+    const actual = handleHttpUrl(text, linkRegex);
+    expect(actual).toEqual(`hello world<br>https://youtu.be/exampleLink<br>`);
   });
 
   it('should return text with link and br in the middle with mutch spacing', () => {
     const text = 'hello world         https://youtu.be/exampleLink';
-    const actual = handleHttpUrl(text, 'http');
-    expect(actual).toEqual(`hello world         <br>https://youtu.be/exampleLink`);
+    const actual = handleHttpUrl(text, linkRegex);
+    expect(actual).toEqual(`hello world         <br>https://youtu.be/exampleLink<br>`);
+  });
+
+  it('should return text with link and br in the middle with mutch spacing', () => {
+    const text = 'hello world         https://youtu.be/exampleLink hello-hello';
+    const actual = handleHttpUrl(text, linkRegex);
+    expect(actual).toEqual(`hello world         <br>https://youtu.be/exampleLink<br> hello-hello`);
+  });
+
+  it('should return text with 2 links and text', () => {
+    const text =
+      'hello world https://youtu.be/exampleLink1 hello-hello https://youtu.be/exampleLink1 test link again';
+    const actual = handleHttpUrl(text, linkRegex);
+    expect(actual).toEqual(
+      `hello world <br>https://youtu.be/exampleLink1,https://youtu.be/exampleLink1<br> hello-hello <br>https://youtu.be/exampleLink1,https://youtu.be/exampleLink1<br> test link again`,
+    );
   });
 });
