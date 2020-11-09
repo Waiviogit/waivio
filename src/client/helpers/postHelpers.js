@@ -233,12 +233,16 @@ const DOMParser = new xmldom.DOMParser({
 
 export const handleHttpUrl = (string, token) => {
   if (string.match(token)) {
-    let isImgTeg = false;
-    let isATeg = false;
-    const docString = DOMParser.parseFromString(string, 'text/html');
-    Array(...docString.childNodes).forEach(child => {
-      isImgTeg = get(child, 'firstChild.firstChild.tagName', '');
-      isATeg = get(child, 'lastChild.tagName', '');
+    let isImgTeg = true;
+    let isATeg = true;
+    string.match(token).forEach(item => {
+      if (!item.match(/waivio/)) {
+        const docString = DOMParser.parseFromString(string, 'text/html');
+        Array(...docString.childNodes).forEach(child => {
+          isImgTeg = get(child, 'firstChild.firstChild.tagName', '');
+          isATeg = get(child, 'lastChild.tagName', '');
+        });
+      }
     });
     return !isImgTeg && !isATeg ? string.replace(token, `<br>${string.match(token)}<br>`) : string;
   }
