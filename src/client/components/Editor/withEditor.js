@@ -66,12 +66,18 @@ export default function withEditor(WrappedComponent) {
       formData.append(currentMethod, blob);
 
       const currentLocation = window.location.hostname;
-      let currentApp = 'waivio';
+
+      let url;
       if (currentLocation === 'waiviodev.com') {
-        currentApp = 'waiviodev';
+        url = `https://waiviodev.com/api/image`;
+      } else if (currentLocation === 'waivio') {
+        url = `https://waivio.com/api/image`;
+      } else {
+        url = `https://www.waivio.com/api/image`;
       }
+
       return axios
-        .post(`https://www.${currentApp}.com/api/image`, formData)
+        .post(url, formData)
         .then(res => callback(res.data.image, blob.name))
         .catch(() => {
           errorCallback();
