@@ -27,6 +27,7 @@ const PropositionList = ({
   listItems,
   isLoadingFlag,
   parentPermlink,
+  location,
 }) => {
   let minReward;
   let maxReward;
@@ -72,15 +73,18 @@ const PropositionList = ({
     listItems,
     isLoadingFlag,
   };
+  const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
 
   return (
-    <React.Fragment>
-      {isCatalogWrap || parentPermlink ? (
-        <PropositionListFromCatalog {...data} />
-      ) : (
-        <DefaultPropositionList {...data} />
-      )}
-    </React.Fragment>
+    !isReviewPage && (
+      <React.Fragment>
+        {isCatalogWrap || parentPermlink ? (
+          <PropositionListFromCatalog {...data} />
+        ) : (
+          <DefaultPropositionList {...data} />
+        )}
+      </React.Fragment>
+    )
   );
 };
 
@@ -105,6 +109,7 @@ PropositionList.propTypes = {
   parentPermlink: PropTypes.string,
   isGetNested: PropTypes.bool,
   listItems: PropTypes.shape(),
+  location: PropTypes.shape().isRequired,
 };
 
 PropositionList.defaultProps = {
