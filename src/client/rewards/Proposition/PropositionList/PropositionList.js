@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { get, map, max, min, isEmpty } from 'lodash';
+import { get, map, max, min } from 'lodash';
 import { getObjectLists } from '../../../reducers';
 import PropositionListFromCatalog from './PropositionListFromCatalog';
 import DefaultPropositionList from './DefaultPropositionList';
@@ -27,6 +27,7 @@ const PropositionList = ({
   listItems,
   isLoadingFlag,
   parentPermlink,
+  location,
 }) => {
   let minReward;
   let maxReward;
@@ -72,11 +73,10 @@ const PropositionList = ({
     listItems,
     isLoadingFlag,
   };
+  const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
 
   return (
-    wobject &&
-    isEmpty(wobject.parent) &&
-    !isEmpty(currentProposition) && (
+    !isReviewPage && (
       <React.Fragment>
         {isCatalogWrap || parentPermlink ? (
           <PropositionListFromCatalog {...data} />
@@ -109,6 +109,7 @@ PropositionList.propTypes = {
   parentPermlink: PropTypes.string,
   isGetNested: PropTypes.bool,
   listItems: PropTypes.shape(),
+  location: PropTypes.shape().isRequired,
 };
 
 PropositionList.defaultProps = {
