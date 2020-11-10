@@ -8,6 +8,7 @@ import {
   getDomainList,
   getInfoForManagePage,
   getObjectType,
+  getSettingsWebsite,
   getTagCategoryForSite,
   getWebsiteAdministrators,
   getWebsiteAuthorities,
@@ -348,14 +349,14 @@ export const saveWebsiteSettings = (host, googleAnalyticsTag, beneficiary) => (
 ) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
-  const appId = getOwnWebsites(state).find(web => web === host);
+  const currentWebsite = getOwnWebsites(state).find(web => web.host === host);
 
   dispatch({
     type: SAVE_WEBSITE_SETTINGS.ACTION,
     payload: {
       promise: steemConnectAPI.saveWebsiteSettings(
         userName,
-        appId,
+        currentWebsite.id,
         googleAnalyticsTag,
         beneficiary,
       ),
@@ -412,3 +413,12 @@ export const getCoordinatesForMap = (coordinates, radius) => (dispatch, getState
     },
   });
 };
+
+export const GET_WEBSITE_SETTINGS = createAsyncActionType('@website/GET_WEBSITE_SETTINGS');
+
+export const getWebsiteSettings = host => ({
+  type: GET_WEBSITE_SETTINGS.ACTION,
+  payload: {
+    promise: getSettingsWebsite(host),
+  },
+});

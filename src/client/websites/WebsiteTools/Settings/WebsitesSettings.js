@@ -3,36 +3,62 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Form, Input } from 'antd';
 import { connect } from 'react-redux';
+import { get, isEmpty } from 'lodash';
 
 import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
-import { getWebsiteLoading } from '../../../reducers';
+import { getSettingsSite, getWebsiteLoading } from '../../../reducers';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
-import { saveWebsiteSettings } from '../../websiteActions';
+import { getWebsiteSettings, saveWebsiteSettings } from '../../websiteActions';
+import Loading from "../../../components/Icon/Loading";
 
 import './WebsitesSettings.less';
 
-const WebsitesSettings = ({ intl, form, loading, saveWebSettings, match }) => {
-  const { getFieldDecorator } = form;
+const WebsitesSettings = ({
+  intl,
+  form,
+  loading,
+  saveWebSettings,
+  match,
+  getWebSettings,
+  settings,
+}) => {
+  const { getFieldDecorator, getFieldValue } = form;
   const [beneficiaryAccount, setBeneficiaryAccount] = useState('');
   const host = match.params.site;
+  const beneficiaryPercent = getFieldValue('beneficiaryPercent');
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getWebSettings(host);
+  }, []);
+
+  useEffect(() => {
+    const beneficiaryAcc = get(settings, ['beneficiary', 'account']);
+
+    if (beneficiaryAcc) setBeneficiaryAccount(beneficiaryAcc);
+  }, [settings]);
+
+  const handleChange = (e, fieldsName) => form.setFieldsValue({ [fieldsName]: e.currentTarget.value })
 
   const handleSubmit = e => {
     e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      const beneficiary =
-        beneficiaryAccount && values.beneficiaryPercent
-          ? {
-              account: beneficiaryAccount,
-              percent: values.beneficiaryPercent,
-            }
-          : {};
+      form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          const beneficiary =
+            beneficiaryAccount && values.beneficiaryPercent
+              ? {
+                account: beneficiaryAccount,
+                percent: values.beneficiaryPercent,
+              }
+              : {};
 
-      // saveWebSettings(host, values.googleAnalyticsTag, ...beneficiary);
-    });
+          saveWebSettings(host, values.googleAnalyticsTag, ...beneficiary);
+        }
+      });
+
   };
+
+  if(isEmpty(settings)) return <Loading />
 
   return (
     <div className="center">
@@ -49,12 +75,17 @@ const WebsitesSettings = ({ intl, form, loading, saveWebSettings, match }) => {
             })}
           </h3>
           {getFieldDecorator('googleAnalyticsTag')(
-            <Input
-              placeholder={intl.formatMessage({
-                id: 'paste_tag_here',
-                defaultMessage: 'Paste tag here',
-              })}
-            />,
+            <Input.Group>
+              <Input
+                type="text"
+                placeholder={intl.formatMessage({
+                  id: 'paste_tag_here',
+                  defaultMessage: 'Paste tag here',
+                })}
+                defaultValue={get(settings, 'googleAnalyticsTag')}
+                onChange={e => handleChange(e, 'googleAnalyticsTag')}
+              />
+            </Input.Group>,
           )}
         </Form.Item>
         <h3>{intl.formatMessage({ id: 'beneficiary', defaultMessage: 'Beneficiary' })}</h3>
@@ -93,16 +124,22 @@ const WebsitesSettings = ({ intl, form, loading, saveWebSettings, match }) => {
               })}
             </h3>
             {getFieldDecorator('beneficiaryPercent')(
-              <Input
-                placeholder={intl.formatMessage({
-                  id: 'enter_percentage',
-                  defaultMessage: 'Enter percentage',
-                })}
-              />,
+              <Input.Group>
+                <Input
+                  disabled={!beneficiaryAccount}
+                  placeholder={intl.formatMessage({
+                    id: 'enter_percentage',
+                    defaultMessage: 'Enter percentage',
+                  })}
+                  defaultValue={get(settings, ['beneficiary', 'percent'])}
+                  onChange={e => handleChange(e, 'beneficiaryPercent')}
+                  required={beneficiaryAccount}
+                />
+              </Input.Group>,
             )}
           </Form.Item>
         </div>
-        <Button type="primary" htmlType="submit" loading={loading}>
+        <Button type="primary" htmlType="submit" loading={loading} >
           {intl.formatMessage({
             id: 'save',
             defaultMessage: 'Save',
@@ -117,7 +154,9 @@ WebsitesSettings.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
+  settings: PropTypes.shape({}).isRequired,
   saveWebSettings: PropTypes.func.isRequired,
+  getWebSettings: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       site: PropTypes.string,
@@ -132,8 +171,10 @@ WebsitesSettings.defaultProps = {
 export default connect(
   state => ({
     loading: getWebsiteLoading(state),
+    settings: getSettingsSite(state),
   }),
   {
     saveWebSettings: saveWebsiteSettings,
+    getWebSettings: getWebsiteSettings,
   },
 )(Form.create()(injectIntl(WebsitesSettings)));

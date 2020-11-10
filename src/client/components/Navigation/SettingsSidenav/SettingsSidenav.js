@@ -47,15 +47,15 @@ const SettingsSidenav = () => {
       />
       {ownWebsite.map(website => (
         <SettingsItem
-          key={website}
-          condition={menuCondition[website]}
+          key={website.host}
+          condition={menuCondition[website.host]}
           configItem={{
             tab: {
-              name: website,
-              id: website,
-              defaultMessage: website,
+              name: website.host,
+              id: website.host,
+              defaultMessage: website.host,
             },
-            settings: currentWebsiteSettings(website),
+            settings: currentWebsiteSettings(website.host),
           }}
           toggleMenuCondition={toggleMenuCondition}
         />

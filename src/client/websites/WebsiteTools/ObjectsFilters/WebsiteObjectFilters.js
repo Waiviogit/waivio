@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { get, isArray } from 'lodash';
+import { get, isArray, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 
 import { getTagsSite, getWebsiteLoading } from '../../../reducers';
 import { getWebsiteTags, saveTagsCategoryForSite } from '../../websiteActions';
 import TagsSelector from '../../../components/TagsSelector/TagsSelector';
+import Loading from "../../../components/Icon/Loading";
 
 import './WebsiteObjectFilters.less';
 
@@ -25,6 +26,7 @@ export const WebsiteObjectFilters = ({
     getWebTags(host);
   }, []);
 
+  if (isEmpty(categories)) return <Loading />
   const saveTags = () => saveCategoryForSite(host, currentTags);
 
   const handleChangeCurrentTags = (topic, category, tag) => {

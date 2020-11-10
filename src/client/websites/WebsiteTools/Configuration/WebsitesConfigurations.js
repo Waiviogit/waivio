@@ -49,8 +49,8 @@ export const WebsitesConfigurations = ({
   }, []);
 
   useEffect(() => {
-    if(!isEmpty(config)) getMapsCoordinates(get(mapState, ['desktopMap', 'center']), 38000);
-  }, [config])
+    if (!isEmpty(config)) getMapsCoordinates(get(mapState, ['desktopMap', 'center']), 38000);
+  }, [config]);
 
   const resetModalState = () => setModalState({});
 
