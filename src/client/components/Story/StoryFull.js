@@ -80,6 +80,7 @@ class StoryFull extends React.Component {
     history: PropTypes.shape(),
     isOriginalPost: PropTypes.string,
     getSocialInfoPost: PropTypes.func.isRequired,
+    postSocialInfo: PropTypes.shape.isRequired,
   };
 
   static defaultProps = {
@@ -143,7 +144,7 @@ class StoryFull extends React.Component {
   getSocialInfoPost = () => {
     const { getSocialInfoPost, post } = this.props;
     const author = getAuthorName(post);
-    const permlink = get(post, 'permlink');
+    const permlink = get(post, 'permlink', '');
     return getSocialInfoPost(author, permlink);
   };
 
@@ -276,7 +277,9 @@ class StoryFull extends React.Component {
       isOriginalPost,
       match,
       history,
+      postSocialInfo,
     } = this.props;
+    console.log(postSocialInfo);
     const { loadingAssign } = this.state;
     const taggedObjects = [];
     const linkedObjects = [];

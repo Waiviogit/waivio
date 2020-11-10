@@ -98,7 +98,7 @@ export default class Buttons extends React.Component {
   getSocialInfoPost = () => {
     const { getSocialInfoPost, post } = this.props;
     const author = getAuthorName(post);
-    const permlink = get(post, 'permlink');
+    const permlink = get(post, 'permlink', '');
     return getSocialInfoPost(author, permlink);
   };
 

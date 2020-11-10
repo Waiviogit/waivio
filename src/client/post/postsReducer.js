@@ -3,7 +3,7 @@ import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
 import { getPostKey } from '../helpers/stateHelpers';
-import { FAKE_REBLOG_POST, FOLLOWING_POST_AUTHOR } from './postActions';
+import { FAKE_REBLOG_POST, FOLLOWING_POST_AUTHOR, GET_SOCIAL_INFO_POST } from './postActions';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -39,6 +39,7 @@ const initialState = {
   list: {},
   postsStates: {},
   lastId: null,
+  postSocialInfo: {},
 };
 
 const posts = (state = initialState, action) => {
@@ -272,6 +273,23 @@ const posts = (state = initialState, action) => {
       };
     }
 
+    case GET_SOCIAL_INFO_POST.START:
+      return {
+        ...state,
+      };
+    case GET_SOCIAL_INFO_POST.ERROR:
+      return {
+        ...state,
+      };
+    case GET_SOCIAL_INFO_POST.SUCCESS: {
+      console.log(action.payload);
+      return {
+        ...state,
+        postSocialInfo: {
+          ...action.payload,
+        },
+      };
+    }
     default:
       return state;
   }
@@ -294,3 +312,4 @@ export const getIsPostLoaded = (state, author, permlink) =>
 export const getIsPostFailed = (state, author, permlink) =>
   get(state, ['postsStates', `${author}/${permlink}`, 'failed']);
 export const getLastPostId = state => state.lastId;
+export const getSocialInfoPostState = state => state.postSocialInfo;

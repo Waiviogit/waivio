@@ -149,12 +149,15 @@ export const errorFollowingPostAuthor = postId => dispatch =>
     payload: postId,
   });
 
+export const GET_SOCIAL_INFO_POST = createAsyncActionType('GET_SOCIAL_INFO_POST');
+
 export const getSocialInfoPost = (author, permlink) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
   return dispatch({
     payload: {
-      promise: ApiClient.getSocialInfoPost(author, permlink, userName).then(res => res),
+      type: GET_SOCIAL_INFO_POST.ACTION,
+      promise: ApiClient.getSocialInfoPost(author, permlink, userName),
     },
   });
 };

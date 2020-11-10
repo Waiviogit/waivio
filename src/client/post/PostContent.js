@@ -25,6 +25,7 @@ import {
   getRewardFund,
   getVotePercent,
   getAppUrl,
+  getSocialInfoPostState,
 } from '../reducers';
 import { editPost } from './Write/editorActions';
 import {
@@ -59,6 +60,7 @@ import { getProxyImageURL } from '../helpers/image';
     rewardFund: getRewardFund(state),
     defaultVotePercent: getVotePercent(state),
     appUrl: getAppUrl(state),
+    postSocialInfo: getSocialInfoPostState(state),
   }),
   {
     editPost,
@@ -103,6 +105,7 @@ class PostContent extends React.Component {
     followingPostAuthor: PropTypes.func.isRequired,
     errorFollowingPostAuthor: PropTypes.func.isRequired,
     getSocialInfoPost: PropTypes.func.isRequired,
+    postSocialInfo: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -248,6 +251,7 @@ class PostContent extends React.Component {
       defaultVotePercent,
       appUrl,
       isOriginalPost,
+      postSocialInfo,
     } = this.props;
 
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
@@ -344,6 +348,7 @@ class PostContent extends React.Component {
           onFollowClick={this.handleFollowClick}
           onEditClick={this.handleEditClick}
           isOriginalPost={isOriginalPost}
+          postSocialInfo={postSocialInfo}
         />
       </div>
     );
