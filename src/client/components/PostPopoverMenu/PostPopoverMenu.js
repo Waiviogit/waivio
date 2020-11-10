@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import { isEmpty } from 'lodash';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import { dropCategory, getPostHashtags, replaceBotWithGuestName } from '../../helpers/postHelpers';
+import { dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import { getFacebookShareURL, getTwitterShareURL } from '../../helpers/socialProfiles';
 import { isPostCashout } from '../../vendor/steemitHelpers';
 
@@ -35,6 +36,7 @@ const propTypes = {
   handlePostPopoverMenuClick: PropTypes.func,
   ownPost: PropTypes.bool,
   children: PropTypes.node.isRequired,
+  getSocialInfoPost: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -55,6 +57,7 @@ const PostPopoverMenu = ({
   handlePostPopoverMenuClick,
   ownPost,
   children,
+  getSocialInfoPost,
 }) => {
   const { isReported, isSaved } = postState;
   const {
@@ -65,16 +68,26 @@ const PostPopoverMenu = ({
     author_original: authorOriginal,
     youFollows: userFollowed,
     loading,
-    wobjects,
   } = post;
+  const [postSocialInfo, setPostSocialInfo] = useState({});
+
+  useEffect(() => {
+    if (isEmpty(postSocialInfo)) {
+      getSocialInfoPost().then(res => setPostSocialInfo(res.value));
+    }
+  }, [post]);
+
+  const { tags, cities, wobjectsTwitter, userTwitter } = postSocialInfo;
+
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = window ? window.location.origin : 'https://waivio.com';
   const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
-  const twitterText = `"${encodeURIComponent(title)}" by @${postAuthor}`;
-  const postHashtags = getPostHashtags(wobjects);
-  const socialHashtags = [...postHashtags, 'waivio', 'hive'];
-  const twitterShareURL = getTwitterShareURL(twitterText, postURL, socialHashtags);
+  const hashtags = !isEmpty(postSocialInfo) ? [...tags, ...cities] : [];
+  const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
+  const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
+  const shareTextSocialTwitter = `"${encodeURIComponent(title)}" ${authorTwitter} ${objectTwitter}`;
+  const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
   const facebookShareURL = getFacebookShareURL(postURL);
   const activePost = !isPostCashout(post);
 

@@ -16,7 +16,12 @@ import { Link } from 'react-router-dom';
 import { Collapse, message } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { extractImageTags } from '../../helpers/parser';
-import { dropCategory, isPostDeleted, replaceBotWithGuestName } from '../../helpers/postHelpers';
+import {
+  dropCategory,
+  isPostDeleted,
+  replaceBotWithGuestName,
+  getAuthorName,
+} from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
 import { getHtml } from './Body';
@@ -35,6 +40,7 @@ import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../user/userActions';
 import { UNASSIGNED } from '../../../common/constants/rewards';
 import { getProxyImageURL } from '../../helpers/image';
+import { getSocialInfoPost as getSocialInfoPostAction } from '../../post/postActions';
 
 import './StoryFull.less';
 
@@ -43,6 +49,7 @@ import './StoryFull.less';
 @withAuthActions
 @connect(null, {
   assignProposition,
+  getSocialInfoPost: getSocialInfoPostAction,
 })
 class StoryFull extends React.Component {
   static propTypes = {
@@ -72,6 +79,7 @@ class StoryFull extends React.Component {
     assignProposition: PropTypes.func,
     history: PropTypes.shape(),
     isOriginalPost: PropTypes.string,
+    getSocialInfoPost: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -131,6 +139,13 @@ class StoryFull extends React.Component {
       document.body.classList.remove('white-bg');
     }
   }
+
+  getSocialInfoPost = () => {
+    const { getSocialInfoPost, post } = this.props;
+    const author = getAuthorName(post);
+    const permlink = get(post, 'permlink');
+    return getSocialInfoPost(author, permlink);
+  };
 
   clickMenuItem(key) {
     const { post, postState } = this.props;
@@ -416,6 +431,7 @@ class StoryFull extends React.Component {
             post={post}
             handlePostPopoverMenuClick={this.handleClick}
             ownPost={ownPost}
+            getSocialInfoPost={this.getSocialInfoPost}
           >
             <i className="StoryFull__header__more iconfont icon-more" />
           </PostPopoverMenu>

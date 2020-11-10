@@ -1509,20 +1509,22 @@ export const showMoreTagsForFilters = (category, skip = 0, limit = 10) =>
       .catch(error => reject(error));
   });
 
-export const getSocialInfoPost = (author, postPermlink, userName, social) => {
-  fetch(
-    `${config.apiPrefix}${config.post}${config.social}?author=${author}&permlink=${postPermlink}$userName=${userName}&social=${social}`,
-    {
-      headers: {
-        ...headers,
-        app: config.appName,
+export const getSocialInfoPost = (author, postPermlink, userName) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.post}${config.social}?author=${author}&permlink=${postPermlink}&userName=${userName}`,
+      {
+        headers: {
+          ...headers,
+          app: config.appName,
+        },
+        method: 'GET',
       },
-      method: 'GET',
-    },
-  )
-    .then(res => res.json())
-    .catch(error => error);
-};
+    )
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export const waivioAPI = {
   getAuthenticatedUserMetadata,

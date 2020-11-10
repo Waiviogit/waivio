@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { get } from 'lodash';
 import * as PropTypes from 'prop-types';
 import { getShowPostModal, getCurrentShownPost, getUser, getPostContent } from '../reducers';
+import { getSocialInfoPost as getSocialInfoPostAction } from './postActions';
 import { hidePostModal as hidePostModalAction } from '../app/appActions';
 import PostModal from './PostModal';
 
@@ -12,6 +13,7 @@ const PostModalContainer = ({
   hidePostModal,
   author,
   shownPostContents,
+  getSocialInfoPost,
 }) =>
   showPostModal && (
     <PostModal
@@ -20,6 +22,7 @@ const PostModalContainer = ({
       hidePostModal={hidePostModal}
       author={author}
       shownPostContents={shownPostContents}
+      getSocialInfoPost={getSocialInfoPost}
     />
   );
 
@@ -29,6 +32,7 @@ PostModalContainer.propTypes = {
   showPostModal: PropTypes.bool,
   currentShownPost: PropTypes.shape(),
   shownPostContents: PropTypes.shape(),
+  getSocialInfoPost: PropTypes.func.isRequired,
 };
 
 PostModalContainer.defaultProps = {
@@ -52,5 +56,6 @@ export default connect(
   },
   {
     hidePostModal: hidePostModalAction,
+    getSocialInfoPost: getSocialInfoPostAction,
   },
 )(PostModalContainer);

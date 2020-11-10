@@ -148,3 +148,13 @@ export const errorFollowingPostAuthor = postId => dispatch =>
     type: FOLLOWING_POST_AUTHOR.ERROR,
     payload: postId,
   });
+
+export const getSocialInfoPost = (author, permlink) => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  return dispatch({
+    payload: {
+      promise: ApiClient.getSocialInfoPost(author, permlink, userName).then(res => res),
+    },
+  });
+};

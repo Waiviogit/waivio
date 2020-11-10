@@ -1,22 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import VisibilitySensor from 'react-visibility-sensor';
-import {
-  dropCategory,
-  isBannedPost,
-  replaceBotWithGuestName,
-  getPostHashtags,
-} from '../helpers/postHelpers';
+import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
 import PostContent from './PostContent';
 import Comments from '../comments/Comments';
 import { getFacebookShareURL, getTwitterShareURL } from '../helpers/socialProfiles';
 import BBackTop from '../components/BBackTop';
-import { getSocialInfoPost } from '../../waivioApi/ApiClient';
 import './PostModal.less';
 
 class PostModal extends React.Component {
@@ -26,14 +20,13 @@ class PostModal extends React.Component {
     currentShownPost: PropTypes.shape(),
     shownPostContents: PropTypes.shape(),
     author: PropTypes.shape(),
-    userName: PropTypes.string,
+    getSocialInfoPost: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     currentShownPost: {},
     shownPostContents: {},
     author: {},
-    userName: '',
   };
 
   static pushURLState(title, url) {
@@ -51,6 +44,12 @@ class PostModal extends React.Component {
     this.state = {
       commentsVisible: false,
       previousURL,
+      cities: [],
+      socialHashtags: [],
+      userFacebook: '',
+      userTwitter: '',
+      wobjectsFacebook: [],
+      wobjectsTwitter: [],
     };
 
     this.handleCommentsVisibility = this.handleCommentsVisibility.bind(this);
@@ -68,12 +67,23 @@ class PostModal extends React.Component {
       document.body.classList.add('post-modal');
     }
 
-    const { currentShownPost } = this.props;
-    const { title, url } = currentShownPost;
+    const { currentShownPost, getSocialInfoPost } = this.props;
+    const { title, url, author, permlink } = currentShownPost;
     PostModal.pushURLState(
       title,
       replaceBotWithGuestName(dropCategory(url), currentShownPost.guestInfo),
     );
+
+    getSocialInfoPost(author, permlink).then(res => {
+      this.setState({
+        cities: res.value.cities,
+        socialHashtags: res.value.tags,
+        userFacebook: res.value.userFacebook,
+        userTwitter: res.value.userTwitter,
+        wobjectsFacebook: res.value.wobjectsFacebook,
+        wobjectsTwitter: res.value.wobjectsTwitter,
+      });
+    });
   }
 
   componentWillUnmount() {
@@ -97,12 +107,6 @@ class PostModal extends React.Component {
     this.props.hidePostModal();
   }
 
-  getTwitterSocial = () => {
-    const { author, permlink } = this.props.currentShownPost;
-    const { userName } = this.props;
-    getSocialInfoPost(author, permlink, userName, 'twitter').then(res => console.log(res));
-  };
-
   render() {
     const {
       showPostModal,
@@ -110,7 +114,8 @@ class PostModal extends React.Component {
       author: authorDetails,
       shownPostContents,
     } = this.props;
-    const { permlink, title, url, wobjects } = currentShownPost;
+    const { cities, socialHashtags, userTwitter, wobjectsTwitter } = this.state;
+    const { permlink, title, url } = currentShownPost;
     const author = currentShownPost.guestInfo
       ? currentShownPost.guestInfo.userId
       : currentShownPost.author;
@@ -119,14 +124,16 @@ class PostModal extends React.Component {
       dropCategory(url),
       currentShownPost.guestInfo,
     )}`;
-    const postHashtags = getPostHashtags(wobjects);
-    const socialHashtags = [...postHashtags, 'waivio', 'hive'];
-    const shareTextSocial = `"${encodeURIComponent(title)}" by @${author}`;
+    const hashtags = [...socialHashtags, ...cities];
+    const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
+    const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
+    const shareTextSocialTwitter = `"${encodeURIComponent(
+      title,
+    )}" ${authorTwitter} ${objectTwitter}`;
+    const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
 
-    const twitterShareURL = getTwitterShareURL(shareTextSocial, postURL, socialHashtags);
     const facebookShareURL = getFacebookShareURL(postURL);
     const signature = get(authorDetails, 'posting_json_metadata.profile.signature', null);
-
     return (
       <Modal
         title={null}
@@ -160,7 +167,6 @@ class PostModal extends React.Component {
             rel="noopener noreferrer"
             target="_blank"
             className="PostModal__action"
-            onClick={this.getTwitterSocial}
           >
             <i className="iconfont icon-twitter PostModal__icon" />
           </a>
