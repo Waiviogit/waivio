@@ -113,7 +113,7 @@ export default class Slider extends React.Component {
         values={{
           link: (
             <span role="presentation" className="Slider__tipping" onClick={openTippingTransfer}>
-              <FormattedMessage id="tipping " defaultMessage="tipping" />
+              <FormattedMessage id="tipping" defaultMessage="tipping" />
             </span>
           ),
         }}

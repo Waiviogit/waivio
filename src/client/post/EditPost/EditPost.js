@@ -230,8 +230,8 @@ class EditPost extends Component {
     if (!isEqual(prevEntityMap, nextEntityMap)) {
       this.setState({
         draftContent: {
-          title: nextState.titleValue,
           body: nextState.content,
+          title: nextState.titleValue,
         },
         currentRawContent: rawContent,
       });
@@ -239,7 +239,6 @@ class EditPost extends Component {
   }, 500);
 
   handleChangeContent(rawContent, title) {
-    const { isReview } = this.state;
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
@@ -258,9 +257,7 @@ class EditPost extends Component {
       this.state.titleValue !== nextState.titleValue
     ) {
       this.setState(nextState, this.handleUpdateState);
-      if (!isReview) {
-        this.setCurrentDraftContent(nextState, rawContent);
-      }
+      this.setCurrentDraftContent(nextState, rawContent);
     }
   }
 
@@ -357,17 +354,20 @@ class EditPost extends Component {
     const campaignId = get(campaign, '_id', null);
     const postData = {
       body: content,
-      title: titleValue,
       lastUpdated: Date.now(),
       isUpdating,
       draftId,
       ...settings,
     };
 
+    if (titleValue) {
+      postData.title = titleValue;
+      postData.permlink = permlink || kebabCase(titleValue);
+    }
+
     postData.parentAuthor = '';
     postData.parentPermlink = parentPermlink;
     postData.author = this.props.user.name || '';
-    postData.permlink = permlink || kebabCase(titleValue);
 
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const oldMetadata = currDraft && currDraft.jsonMetadata;

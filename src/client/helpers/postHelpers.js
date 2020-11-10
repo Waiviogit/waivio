@@ -1,3 +1,4 @@
+import xmldom from 'xmldom';
 import uuidv4 from 'uuid/v4';
 import { fromPairs, get, attempt, isError, includes, unescape, split, isEmpty, size } from 'lodash';
 import { getHtml } from '../components/Story/Body';
@@ -224,3 +225,26 @@ export function getPostHashtags(items) {
   const postItems = sortedItems.slice(0, 3);
   return postItems.map(item => getObjectName(item));
 }
+
+const noop = () => {};
+const DOMParser = new xmldom.DOMParser({
+  errorHandler: { warning: noop, error: noop },
+});
+
+export const handleHttpUrl = (string, token) => {
+  if (string.match(token)) {
+    let isImgTeg = true;
+    let isATeg = true;
+    string.match(token).forEach(item => {
+      if (!item.match(/waivio/)) {
+        const docString = DOMParser.parseFromString(string, 'text/html');
+        Array(...docString.childNodes).forEach(child => {
+          isImgTeg = get(child, 'firstChild.firstChild.tagName', '');
+          isATeg = get(child, 'lastChild.tagName', '');
+        });
+      }
+    });
+    return !isImgTeg && !isATeg ? string.replace(token, `<br>${string.match(token)}<br>`) : string;
+  }
+  return string;
+};
