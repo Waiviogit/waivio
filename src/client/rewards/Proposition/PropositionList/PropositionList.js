@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { get, map, max, min } from 'lodash';
+import { get, map, max, min, isEmpty } from 'lodash';
 import { getObjectLists } from '../../../reducers';
 import PropositionListFromCatalog from './PropositionListFromCatalog';
 import DefaultPropositionList from './DefaultPropositionList';
@@ -74,13 +74,17 @@ const PropositionList = ({
   };
 
   return (
-    <React.Fragment>
-      {isCatalogWrap || parentPermlink ? (
-        <PropositionListFromCatalog {...data} />
-      ) : (
-        <DefaultPropositionList {...data} />
-      )}
-    </React.Fragment>
+    wobject &&
+    isEmpty(wobject.parent) &&
+    !isEmpty(currentProposition) && (
+      <React.Fragment>
+        {isCatalogWrap || parentPermlink ? (
+          <PropositionListFromCatalog {...data} />
+        ) : (
+          <DefaultPropositionList {...data} />
+        )}
+      </React.Fragment>
+    )
   );
 };
 
