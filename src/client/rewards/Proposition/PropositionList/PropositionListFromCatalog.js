@@ -49,15 +49,37 @@ const PropositionListFromCatalog = ({
     return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
 
+  const handlePropositions = (listItem, listItemPermlink, wobjectPermlink) => {
+    let currentItem;
+    allPropositions.forEach(propos => {
+      const objects = get(propos, 'objects', []);
+      objects.forEach(obj => {
+        const objAuthorPermlink = get(obj, 'object.author_permlink', '');
+        if (!isEqual(objAuthorPermlink, listItemPermlink)) {
+          currentItem = listItem;
+        }
+      });
+    });
+    return !isEqual(wobjectPermlink, listItemPermlink) && currentItem && getListRow(currentItem);
+  };
+
   const handleListItems = listItem => {
     const parentObject = get(wobject, 'parent.author_permlink', '');
     const wobjectPermlink = get(wobject, 'author_permlink', '');
-    const listItemPermlink = get(listItem, 'parent.author_permlink', '');
+    const listItemPermlink = get(listItem, 'author_permlink', '');
 
-    if (parentObject) {
+    if (!isEmpty(parentObject)) {
+      if (!isEmpty(allPropositions)) {
+        return handlePropositions(listItem, listItemPermlink, wobjectPermlink);
+      }
       return !isEqual(parentObject, listItemPermlink) && getListRow(listItem);
+    } else if (isEmpty(parentObject)) {
+      if (!isEmpty(allPropositions)) {
+        return handlePropositions(listItem, listItemPermlink, wobjectPermlink);
+      }
+      return getListRow(listItem);
     }
-    return !isEqual(wobjectPermlink, listItemPermlink) && getListRow(listItem);
+    return getListRow(listItem);
   };
 
   const getMenuList = () => {
