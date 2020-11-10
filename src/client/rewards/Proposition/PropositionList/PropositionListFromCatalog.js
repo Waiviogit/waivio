@@ -51,16 +51,24 @@ const PropositionListFromCatalog = ({
 
   const handlePropositions = (listItem, listItemPermlink, wobjectPermlink) => {
     let currentItem;
+    let simpleList;
     allPropositions.forEach(propos => {
       const objects = get(propos, 'objects', []);
-      objects.forEach(obj => {
-        const objAuthorPermlink = get(obj, 'object.author_permlink', '');
-        if (!isEqual(objAuthorPermlink, listItemPermlink)) {
-          currentItem = listItem;
-        }
-      });
+      if (!isEmpty(objects)) {
+        objects.forEach(obj => {
+          const objAuthorPermlink = get(obj, 'object.author_permlink', '');
+          if (!isEqual(objAuthorPermlink, listItemPermlink)) {
+            currentItem = listItem;
+          }
+        });
+      } else {
+        simpleList = true;
+      }
     });
-    return !isEqual(wobjectPermlink, listItemPermlink) && currentItem && getListRow(currentItem);
+    if (!simpleList) {
+      return !isEqual(wobjectPermlink, listItemPermlink) && currentItem && getListRow(currentItem);
+    }
+    return getListRow(listItem);
   };
 
   const handleListItems = listItem => {
