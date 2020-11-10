@@ -52,12 +52,44 @@ const PropositionListFromCatalog = ({
   const handleListItems = listItem => {
     const parentObject = get(wobject, 'parent.author_permlink', '');
     const wobjectPermlink = get(wobject, 'author_permlink', '');
-    const listItemPermlink = get(listItem, 'parent.author_permlink', '');
+    const listItemPermlink = get(listItem, 'author_permlink', '');
 
-    if (parentObject) {
+    let currentItem;
+
+    if (!isEmpty(parentObject)) {
+      if (!isEmpty(allPropositions)) {
+        allPropositions.forEach(propos => {
+          const objects = get(propos, 'objects', []);
+          objects.forEach(obj => {
+            const objAuthorPermlink = get(obj, 'object.author_permlink', '');
+            if (!isEqual(objAuthorPermlink, listItemPermlink)) {
+              currentItem = listItem;
+            }
+          });
+        });
+        return (
+          !isEqual(wobjectPermlink, listItemPermlink) && currentItem && getListRow(currentItem)
+        );
+      }
       return !isEqual(parentObject, listItemPermlink) && getListRow(listItem);
+    } else if (isEmpty(parentObject)) {
+      if (!isEmpty(allPropositions)) {
+        allPropositions.forEach(propos => {
+          const objects = get(propos, 'objects', []);
+          objects.forEach(obj => {
+            const objAuthorPermlink = get(obj, 'object.author_permlink', '');
+            if (!isEqual(objAuthorPermlink, listItemPermlink)) {
+              currentItem = listItem;
+            }
+          });
+        });
+        return (
+          !isEqual(wobjectPermlink, listItemPermlink) && currentItem && getListRow(currentItem)
+        );
+      }
+      return getListRow(listItem);
     }
-    return !isEqual(wobjectPermlink, listItemPermlink) && getListRow(listItem);
+    return getListRow(listItem);
   };
 
   const getMenuList = () => {
