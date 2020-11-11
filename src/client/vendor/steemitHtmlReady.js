@@ -104,15 +104,10 @@ function traverse(node, state, depth = 0) {
     const tag = child.tagName ? child.tagName.toLowerCase() : null;
     if (tag) state.htmltags.add(tag);
 
-    if (tag === 'img') {
-      img(state, child);
-    } else if (tag === 'iframe') {
-      iframe(state, child);
-    } else if (tag === 'a') {
-      link(state, child);
-    } else if (child.nodeName === '#text') {
-      linkifyNode(child, state);
-    }
+    if (tag === 'img') img(state, child);
+    else if (tag === 'iframe') iframe(state, child);
+    else if (tag === 'a') link(state, child);
+    else if (child.nodeName === '#text') linkifyNode(child, state);
 
     traverse(child, state, depth + 1);
   });
