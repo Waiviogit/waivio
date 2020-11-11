@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import './SortSelector.less';
-import { pathNameHistoryNotify, pathNameMessageNotify } from '../../rewards/rewardsHelper';
 
 export default class SortSelector extends React.Component {
   static Item = PopoverMenuItem;
@@ -57,12 +56,13 @@ export default class SortSelector extends React.Component {
       c => c.key === `.$${sort}`,
     );
 
-    const historyExclusion = !isEmpty(match) ? pathNameHistoryNotify(match) : false;
-    const messageExclusion = !isEmpty(match) ? pathNameMessageNotify(match) : false;
+    const exclusion =
+      !isEmpty(get(match, 'params.campaignId', '')) &&
+      !isEmpty(get(match, 'params.permlink', '')) &&
+      !isEmpty(get(match, 'params.username', ''));
 
     return (
-      !historyExclusion ||
-      (!messageExclusion && (
+      !exclusion && (
         <div className="SortSelector">
           <span className="SortSelector__title">
             <FormattedMessage id="sort_by" defaultMessage="Sort by" />
@@ -84,7 +84,7 @@ export default class SortSelector extends React.Component {
             </span>
           </Popover>
         </div>
-      ))
+      )
     );
   }
 }
