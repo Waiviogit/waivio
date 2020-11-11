@@ -860,14 +860,4 @@ export const getReviewRequirements = memoize(campaign => ({
 }));
 
 export const pathNameHistoryNotify = match =>
-  `${PATH_NAME_HISTORY}/${get(match, 'params.campaignId', '')}/${get(
-    match,
-    'params.permlink',
-    '',
-  )}/${get(match, 'params.username', '')}`;
-export const pathNameMessageNotify = match =>
-  `${PATH_NAME_MESSAGES}/${get(match, 'params.campaignId', '')}/${get(
-    match,
-    'params.permlink',
-    '',
-  )}/${get(match, 'params.username', '')}`;
+  `${PATH_NAME_HISTORY}/${match.params.campaignId}/${match.params.permlink}/${match.params.username}`;
