@@ -8,12 +8,11 @@ import Remarkable from 'remarkable';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
-import { imageRegex, rewriteRegex, videoPreviewRegex, linkRegex } from '../../helpers/regexHelpers';
+import { imageRegex, rewriteRegex, videoPreviewRegex } from '../../helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
-import { handleHttpUrl } from '../../helpers/postHelpers';
 import './Body.less';
 
 export const remarkable = new Remarkable({
@@ -62,8 +61,6 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   parsedBody = improve(parsedBody);
   parsedBody = remarkable.render(parsedBody);
 
-  parsedBody = handleHttpUrl(parsedBody, linkRegex);
-
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
 
@@ -89,7 +86,6 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
     const match = section.match(/^([A-Za-z0-9./_-]+) ([A-Za-z0-9]+) (\S+) ~~~/);
-
     if (match && match.length >= 4) {
       const id = match[1];
       const type = match[2];
