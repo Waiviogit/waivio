@@ -91,19 +91,23 @@ const History = ({
       requestData.guideNames = activeFilters.messagesSponsors;
       requestData.userName = username;
     }
+
     if (!isHistory) {
       requestData.caseStatus = caseStatus;
       requestData.guideName = username;
       requestData.reservationPermlink = reservationPermlink;
     }
+
     if (isHistoryNotify) {
       requestData.notifyAuthor = currentNotifyAuthor;
     }
+
     if (isGuideHistory) {
       requestData.guideName = username;
       requestData.campaignNames = activeFilters.messagesCampaigns;
       requestData.onlyWithMessages = false;
     }
+
     if (!isLoadMore) {
       setLoadingCampaigns(true);
       getCurrentRewardsHistory(requestData).then(() => setLoadingCampaigns(false));
