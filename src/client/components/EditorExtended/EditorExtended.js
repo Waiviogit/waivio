@@ -18,6 +18,7 @@ import ObjectSideButton from './components/sides/ObjectSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import ObjectLink, { findObjEntities } from './components/entities/objectlink';
 import Link from './components/entities/link';
+import { handlePastedLink } from './util/editorHelper';
 
 const SIDE_BUTTONS = [
   {
@@ -139,7 +140,13 @@ class Editor extends React.Component {
           return has(entity, 'data.object.id');
         }
         if (!isReview && entity.type === Entity.LINK) {
-          return has(entity, 'data.url');
+          const query = '(localhost:3000|waivio.com|waiviodev.com)';
+          const string = get(entity, 'data.url', '');
+          const queryString = string.match(handlePastedLink(query));
+          if (queryString) {
+            return has(entity, 'data.url');
+          }
+          return null;
         }
       })
       // eslint-disable-next-line array-callback-return,consistent-return
