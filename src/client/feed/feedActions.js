@@ -305,12 +305,12 @@ export const getMoreReplies = () => (dispatch, getState, { steemAPI }) => {
  * @param bookmarks from localStorage only contain author and permlink
  * @returns Promise - bookmarksData
  */
-async function getBookmarksData(bookmarks) {
+async function getBookmarksData(bookmarks, locale, follower) {
   const bookmarksData = [];
   for (let idx = 0; idx < bookmarks.length; idx += 1) {
     const [author, permlink] = bookmarks[idx].split('/');
     if (author !== 'undefined' && permlink !== 'undefined') {
-      const postData = ApiClient.getContent(author, permlink);
+      const postData = ApiClient.getContent(author, permlink, locale, follower);
       bookmarksData.push(postData);
     }
   }
@@ -321,11 +321,15 @@ export const getBookmarks = () => (dispatch, getState) => {
   const state = getState();
   const loaded = get(getFeed(state), ['bookmarks', 'all', 'list'], []);
   const bookmarks = getBookmarksSelector(state);
+  const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
   if (loaded.length && loaded.length === bookmarks.length) return;
 
   dispatch({
     type: GET_BOOKMARKS.ACTION,
-    payload: getBookmarksData(bookmarks).then(posts => posts.filter(post => post.id !== 0)),
+    payload: getBookmarksData(bookmarks, locale, follower).then(posts =>
+      posts.filter(post => post.id !== 0),
+    ),
     meta: {
       sortBy: 'bookmarks',
       category: 'all',
