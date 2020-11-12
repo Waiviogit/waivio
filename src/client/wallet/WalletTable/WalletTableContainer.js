@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form } from 'antd';
 import { injectIntl } from 'react-intl';
-import { get, size } from 'lodash';
+import { get, size, isEmpty } from 'lodash';
 import moment from 'moment';
 
 import {
@@ -236,16 +236,56 @@ class WalletTableContainer extends React.Component {
     return handleLoadMoreTransactions(loadMoreValues);
   };
 
+  selectRenderElements = (intl, transactions, isGuestPage, currentUsername) => {
+    const {
+      demoHasMoreActions,
+      hasMore,
+      isErrorLoading,
+      totalVestingShares,
+      totalVestingFundSteem,
+    } = this.props;
+
+    if (
+      (!this.state.isEmptyPeriod && !isEmpty(transactions)) ||
+      (this.state.isEmptyPeriod && !isEmpty(transactions))
+    ) {
+      return (
+        <WalletTable
+          intl={intl}
+          handleLoadMore={this.handleLoadMore}
+          hasMore={isGuestPage ? demoHasMoreActions : hasMore}
+          isErrorLoading={isErrorLoading}
+          transactions={transactions}
+          currentUsername={currentUsername}
+          totalVestingShares={totalVestingShares}
+          totalVestingFundSteem={totalVestingFundSteem}
+        />
+      );
+    } else if (!this.state.isEmptyPeriod && isEmpty(transactions)) {
+      return (
+        <div className="WalletTable__empty-table">
+          {intl.formatMessage({
+            id: 'empty_table_transaction_list',
+            defaultMessage: `You did not have any transactions during this period`,
+          })}
+        </div>
+      );
+    }
+    return (
+      <div className="WalletTable__empty-table">
+        {intl.formatMessage({
+          id: 'empty_table',
+          defaultMessage: `Please, select start and end date`,
+        })}
+      </div>
+    );
+  };
+
   render() {
     const {
       user,
       intl,
-      totalVestingShares,
-      totalVestingFundSteem,
-      hasMore,
-      demoHasMoreActions,
       tableTransactionsHistory,
-      isErrorLoading,
       isloadingTableTransactions,
       locale,
       history,
@@ -254,10 +294,6 @@ class WalletTableContainer extends React.Component {
     const currentUsername = get(user, 'name', '');
     const isGuestPage = guestUserRegex.test(currentUsername);
     const transactions = this.getCurrentTransactions(isGuestPage, tableTransactionsHistory);
-
-    console.log('transactions: ', transactions);
-
-    // size(transactions)
     return (
       <React.Fragment>
         <TableFilter
@@ -271,25 +307,7 @@ class WalletTableContainer extends React.Component {
           changeEndDate={value => this.setState({ endDate: moment(value).unix() })}
           changeStartDate={value => this.setState({ startDate: moment(value).unix() })}
         />
-        {!this.state.isEmptyPeriod || size(transactions) ? (
-          <WalletTable
-            intl={intl}
-            handleLoadMore={this.handleLoadMore}
-            hasMore={isGuestPage ? demoHasMoreActions : hasMore}
-            isErrorLoading={isErrorLoading}
-            transactions={transactions}
-            currentUsername={currentUsername}
-            totalVestingShares={totalVestingShares}
-            totalVestingFundSteem={totalVestingFundSteem}
-          />
-        ) : (
-          <div className="WalletTable__empty-table">
-            {intl.formatMessage({
-              id: 'empty_table',
-              defaultMessage: `Please, select start and end date`,
-            })}
-          </div>
-        )}
+        {this.selectRenderElements(intl, transactions, isGuestPage, currentUsername)}
       </React.Fragment>
     );
   }
