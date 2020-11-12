@@ -59,7 +59,6 @@ class PostModal extends React.Component {
 
       document.body.classList.add('post-modal');
     }
-
     const { currentShownPost } = this.props;
     const { title, url } = currentShownPost;
     PostModal.pushURLState(
