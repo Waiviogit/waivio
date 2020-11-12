@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
@@ -32,11 +32,14 @@ const propTypes = {
     youFollows: PropTypes.bool,
     loading: PropTypes.bool,
     wobjects: PropTypes.shape(),
+    tags: PropTypes.array,
+    cities: PropTypes.array,
+    userTwitter: PropTypes.string,
+    wobjectsTwitter: PropTypes.array,
   }).isRequired,
   handlePostPopoverMenuClick: PropTypes.func,
   ownPost: PropTypes.bool,
   children: PropTypes.node.isRequired,
-  getSocialInfoPost: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -57,7 +60,6 @@ const PostPopoverMenu = ({
   handlePostPopoverMenuClick,
   ownPost,
   children,
-  getSocialInfoPost,
 }) => {
   const { isReported, isSaved } = postState;
   const {
@@ -68,22 +70,17 @@ const PostPopoverMenu = ({
     author_original: authorOriginal,
     youFollows: userFollowed,
     loading,
+    tags,
+    cities,
+    userTwitter,
+    wobjectsTwitter,
   } = post;
-  const [postSocialInfo, setPostSocialInfo] = useState({});
-
-  useEffect(() => {
-    if (isEmpty(postSocialInfo)) {
-      getSocialInfoPost().then(res => setPostSocialInfo(res.value));
-    }
-  }, [post]);
-
-  const { tags, cities, wobjectsTwitter, userTwitter } = postSocialInfo;
 
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = window ? window.location.origin : 'https://waivio.com';
   const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
-  const hashtags = !isEmpty(postSocialInfo) ? [...tags, ...cities] : [];
+  const hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
   const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
   const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
   const shareTextSocialTwitter = `"${encodeURIComponent(title)}" ${authorTwitter} ${objectTwitter}`;

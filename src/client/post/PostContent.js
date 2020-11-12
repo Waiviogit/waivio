@@ -25,7 +25,6 @@ import {
   getRewardFund,
   getVotePercent,
   getAppUrl,
-  getSocialInfoPostState,
 } from '../reducers';
 import { editPost } from './Write/editorActions';
 import {
@@ -60,7 +59,6 @@ import { getProxyImageURL } from '../helpers/image';
     rewardFund: getRewardFund(state),
     defaultVotePercent: getVotePercent(state),
     appUrl: getAppUrl(state),
-    postSocialInfo: getSocialInfoPostState(state),
   }),
   {
     editPost,
@@ -105,7 +103,7 @@ class PostContent extends React.Component {
     followingPostAuthor: PropTypes.func.isRequired,
     errorFollowingPostAuthor: PropTypes.func.isRequired,
     getSocialInfoPost: PropTypes.func.isRequired,
-    postSocialInfo: PropTypes.shape().isRequired,
+    postSocialInfo: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -125,6 +123,7 @@ class PostContent extends React.Component {
     unfollowUser: () => {},
     push: () => {},
     isOriginalPost: '',
+    postSocialInfo: {},
   };
 
   constructor(props) {
@@ -143,20 +142,13 @@ class PostContent extends React.Component {
 
   componentDidMount() {
     const { content, getSocialInfoPost } = this.props;
-    const authorName = getAuthorName(content);
-    const postPermlink = get(content, 'permlink');
+    if (!content.tags) {
+      const authorName = getAuthorName(content);
+      const postPermlink = get(content, 'permlink');
+      getSocialInfoPost(authorName, postPermlink);
+    }
 
     this.renderWithCommentsSettings();
-    getSocialInfoPost(authorName, postPermlink).then(res => {
-      this.setState({
-        cities: res.value.cities,
-        socialHashtags: res.value.tags,
-        userFacebook: res.value.userFacebook,
-        userTwitter: res.value.userTwitter,
-        wobjectsFacebook: res.value.wobjectsFacebook,
-        wobjectsTwitter: res.value.wobjectsTwitter,
-      });
-    });
   }
 
   componentDidUpdate() {

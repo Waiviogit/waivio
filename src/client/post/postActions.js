@@ -5,6 +5,7 @@ import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
+export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
 
 export const LIKE_POST = createAsyncActionType('@post/LIKE_POST');
 export const FAKE_REBLOG_POST = '@post/FAKE_REBLOG_POST';
@@ -149,15 +150,17 @@ export const errorFollowingPostAuthor = postId => dispatch =>
     payload: postId,
   });
 
-export const GET_SOCIAL_INFO_POST = createAsyncActionType('GET_SOCIAL_INFO_POST');
-
 export const getSocialInfoPost = (author, permlink) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
   return dispatch({
+    type: GET_SOCIAL_INFO_POST.ACTION,
     payload: {
-      type: GET_SOCIAL_INFO_POST.ACTION,
       promise: ApiClient.getSocialInfoPost(author, permlink, userName),
+    },
+    meta: {
+      author,
+      permlink,
     },
   });
 };

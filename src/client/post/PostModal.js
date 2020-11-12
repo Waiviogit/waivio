@@ -20,7 +20,6 @@ class PostModal extends React.Component {
     currentShownPost: PropTypes.shape(),
     shownPostContents: PropTypes.shape(),
     author: PropTypes.shape(),
-    getSocialInfoPost: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -44,12 +43,6 @@ class PostModal extends React.Component {
     this.state = {
       commentsVisible: false,
       previousURL,
-      cities: [],
-      socialHashtags: [],
-      userFacebook: '',
-      userTwitter: '',
-      wobjectsFacebook: [],
-      wobjectsTwitter: [],
     };
 
     this.handleCommentsVisibility = this.handleCommentsVisibility.bind(this);
@@ -67,23 +60,12 @@ class PostModal extends React.Component {
       document.body.classList.add('post-modal');
     }
 
-    const { currentShownPost, getSocialInfoPost } = this.props;
-    const { title, url, author, permlink } = currentShownPost;
+    const { currentShownPost } = this.props;
+    const { title, url } = currentShownPost;
     PostModal.pushURLState(
       title,
       replaceBotWithGuestName(dropCategory(url), currentShownPost.guestInfo),
     );
-
-    getSocialInfoPost(author, permlink).then(res => {
-      this.setState({
-        cities: res.value.cities,
-        socialHashtags: res.value.tags,
-        userFacebook: res.value.userFacebook,
-        userTwitter: res.value.userTwitter,
-        wobjectsFacebook: res.value.wobjectsFacebook,
-        wobjectsTwitter: res.value.wobjectsTwitter,
-      });
-    });
   }
 
   componentWillUnmount() {
@@ -114,8 +96,7 @@ class PostModal extends React.Component {
       author: authorDetails,
       shownPostContents,
     } = this.props;
-    const { cities, socialHashtags, userTwitter, wobjectsTwitter } = this.state;
-    const { permlink, title, url } = currentShownPost;
+    const { permlink, title, url, cities, tags, userTwitter, wobjectsTwitter } = currentShownPost;
     const author = currentShownPost.guestInfo
       ? currentShownPost.guestInfo.userId
       : currentShownPost.author;
@@ -124,7 +105,7 @@ class PostModal extends React.Component {
       dropCategory(url),
       currentShownPost.guestInfo,
     )}`;
-    const hashtags = [...socialHashtags, ...cities];
+    const hashtags = [...tags, ...cities];
     const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
     const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
     const shareTextSocialTwitter = `"${encodeURIComponent(

@@ -13,7 +13,6 @@ import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import UserRebloggedModal from '../../user/UserReblogModal';
 import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
-import { getAuthorName } from '../../helpers/postHelpers';
 
 import './Buttons.less';
 
@@ -37,7 +36,6 @@ export default class Buttons extends React.Component {
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     username: PropTypes.string,
-    getSocialInfoPost: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -67,7 +65,6 @@ export default class Buttons extends React.Component {
       upVotes: getUpvotes(this.props.post.active_votes),
       downVotes: getDownvotes(this.props.post.active_votes),
       isUsersReblogModal: false,
-      postSocialInfo: {},
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -94,13 +91,6 @@ export default class Buttons extends React.Component {
       downVotes: getDownvotes(nextProps.post.active_votes),
     });
   }
-
-  getSocialInfoPost = () => {
-    const { getSocialInfoPost, post } = this.props;
-    const author = getAuthorName(post);
-    const permlink = get(post, 'permlink', '');
-    return getSocialInfoPost(author, permlink);
-  };
 
   handleReject = () =>
     this.props.onActionInitiated(() => this.props.handlePostPopoverMenuClick('report'));
@@ -378,7 +368,6 @@ export default class Buttons extends React.Component {
           post={post}
           handlePostPopoverMenuClick={handlePostPopoverMenuClick}
           ownPost={ownPost}
-          getSocialInfoPost={this.getSocialInfoPost}
         >
           <i className="Buttons__post-menu iconfont icon-more" />
         </PostPopoverMenu>

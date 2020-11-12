@@ -3,7 +3,7 @@ import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
 import { getPostKey } from '../helpers/stateHelpers';
-import { FAKE_REBLOG_POST, FOLLOWING_POST_AUTHOR, GET_SOCIAL_INFO_POST } from './postActions';
+import { FAKE_REBLOG_POST, FOLLOWING_POST_AUTHOR } from './postActions';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -39,7 +39,6 @@ const initialState = {
   list: {},
   postsStates: {},
   lastId: null,
-  postSocialInfo: {},
 };
 
 const posts = (state = initialState, action) => {
@@ -273,20 +272,28 @@ const posts = (state = initialState, action) => {
       };
     }
 
-    case GET_SOCIAL_INFO_POST.START:
+    case postsActions.GET_SOCIAL_INFO_POST.START:
       return {
         ...state,
       };
-    case GET_SOCIAL_INFO_POST.ERROR:
+    case postsActions.GET_SOCIAL_INFO_POST.ERROR:
       return {
         ...state,
       };
-    case GET_SOCIAL_INFO_POST.SUCCESS: {
-      console.log(action.payload);
+    case postsActions.GET_SOCIAL_INFO_POST.SUCCESS: {
       return {
         ...state,
-        postSocialInfo: {
-          ...action.payload,
+        list: {
+          ...state.list,
+          [getPostKey(action.meta)]: {
+            ...state.list[getPostKey(action.meta)],
+            tags: [...action.payload.tags],
+            cities: [...action.payload.cities],
+            wobjectsTwitter: [...action.payload.wobjectsTwitter],
+            wobjectsFacebook: [...action.payload.wobjectsFacebook],
+            userFacebook: action.payload.userFacebook,
+            userTwitter: action.payload.userTwitter,
+          },
         },
       };
     }
@@ -312,4 +319,3 @@ export const getIsPostLoaded = (state, author, permlink) =>
 export const getIsPostFailed = (state, author, permlink) =>
   get(state, ['postsStates', `${author}/${permlink}`, 'failed']);
 export const getLastPostId = state => state.lastId;
-export const getSocialInfoPostState = state => state.postSocialInfo;
