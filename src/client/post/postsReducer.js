@@ -272,14 +272,6 @@ const posts = (state = initialState, action) => {
       };
     }
 
-    case postsActions.GET_SOCIAL_INFO_POST.START:
-      return {
-        ...state,
-      };
-    case postsActions.GET_SOCIAL_INFO_POST.ERROR:
-      return {
-        ...state,
-      };
     case postsActions.GET_SOCIAL_INFO_POST.SUCCESS: {
       return {
         ...state,

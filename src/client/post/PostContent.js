@@ -144,7 +144,7 @@ class PostContent extends React.Component {
     const { content, getSocialInfoPost } = this.props;
     if (!content.tags) {
       const authorName = getAuthorName(content);
-      const postPermlink = get(content, 'permlink');
+      const postPermlink = get(content, 'permlink', '');
       getSocialInfoPost(authorName, postPermlink);
     }
 
