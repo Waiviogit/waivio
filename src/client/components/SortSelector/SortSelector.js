@@ -59,7 +59,7 @@ export default class SortSelector extends React.Component {
     const exclusion =
       !isEmpty(get(match, 'params.campaignId', '')) &&
       !isEmpty(get(match, 'params.permlink', '')) &&
-      !isEmpty(get(match, 'params.username', ''));
+      (!isEmpty(get(match, 'params.username', '')) || get(match, 'params[0]', '') === 'messages');
 
     return (
       !exclusion && (

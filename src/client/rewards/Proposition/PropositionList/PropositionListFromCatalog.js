@@ -104,6 +104,49 @@ const PropositionListFromCatalog = ({
     return map(listItems, listItem => handleListItems(listItem));
   };
 
+  const renderPropositions = () =>
+    map(allPropositions, propos =>
+      map(propos.objects, wobj => {
+        const wobjParentDefaultShowLink = get(wobj, ['object', 'parent', 'defaultShowLink']);
+        const arr = wobjParentDefaultShowLink.split('#');
+        const currentDefaultShowLink = arr[arr.length - 1];
+        const hash = location.hash;
+        const currHash = hash.replace(/#/, '');
+
+        let isEqualFlag = true;
+        listItems.forEach(listItem => {
+          if (isEqual(get(wobj, 'object.author_permlink'), get(listItem, 'author_permlink'))) {
+            if (!isEqual(currentDefaultShowLink, currHash)) {
+              console.log('not equal');
+              isEqualFlag = false;
+            } else {
+              isEqualFlag = true;
+            }
+          }
+        });
+        return (
+          !isEqualFlag && (
+            <Proposition
+              proposition={propos}
+              wobj={wobj.object}
+              wobjPrice={wobj.reward}
+              assignCommentPermlink={wobj.permlink}
+              assignProposition={assignPropositionHandler}
+              discardProposition={discardProposition}
+              authorizedUserName={userName}
+              loading={loadingAssignDiscard}
+              key={`${wobj.object.author_permlink}`}
+              assigned={wobj.assigned}
+              history={history}
+              isAssign={isAssign}
+              match={match}
+              user={user}
+            />
+          )
+        );
+      }),
+    );
+
   return (
     <React.Fragment>
       {wobject && maxReward && minReward && (
@@ -132,26 +175,7 @@ const PropositionListFromCatalog = ({
               handleSortChange={catalogHandleSortChange}
             />
           </div>
-          {map(allPropositions, propos =>
-            map(propos.objects, wobj => (
-              <Proposition
-                proposition={propos}
-                wobj={wobj.object}
-                wobjPrice={wobj.reward}
-                assignCommentPermlink={wobj.permlink}
-                assignProposition={assignPropositionHandler}
-                discardProposition={discardProposition}
-                authorizedUserName={userName}
-                loading={loadingAssignDiscard}
-                key={`${wobj.object.author_permlink}`}
-                assigned={wobj.assigned}
-                history={history}
-                isAssign={isAssign}
-                match={match}
-                user={user}
-              />
-            )),
-          )}
+          {renderPropositions()}
           <div className="CatalogWrap">
             <div>{getMenuList()}</div>
           </div>
