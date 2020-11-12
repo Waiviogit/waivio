@@ -120,7 +120,7 @@ export default class UserProfile extends React.Component {
           {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
           {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
         </Feed>
-        {<PostModal />}
+        {<PostModal userName={authenticatedUser.name} />}
       </div>
     );
   }
