@@ -224,3 +224,6 @@ export function getPostHashtags(items) {
   const postItems = sortedItems.slice(0, 3);
   return postItems.map(item => getObjectName(item));
 }
+
+export const getAuthorName = post =>
+  post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
