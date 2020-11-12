@@ -264,7 +264,6 @@ class PostContent extends React.Component {
       isReported: userVote.percent < 0,
       userFollowed: followingList.includes(getAuthorName(content)),
     };
-    console.log(followingList.includes(getAuthorName(content)));
     const pendingLike =
       pendingLikes[content.id] &&
       (pendingLikes[content.id].weight > 0 ||
