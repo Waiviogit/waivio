@@ -143,7 +143,6 @@ class WalletTableContainer extends React.Component {
     startDate: 0,
     endDate: 0,
     isEmptyPeriod: true,
-    transactions: [],
   };
 
   componentDidMount() {
@@ -182,7 +181,6 @@ class WalletTableContainer extends React.Component {
       clearTable,
       clearWalletHistory,
       user,
-      tableTransactionsHistory,
     } = this.props;
     const { startDate, endDate } = this.state;
     const currentUsername = user.name;
@@ -194,9 +192,6 @@ class WalletTableContainer extends React.Component {
 
     if (isGuestPage) {
       getDemoTransactionsByInterval(currentUsername, tableView, startDate, endDate).then(() => {
-        this.setState({
-          transactions: this.getCurrentTransactions(isGuestPage, tableTransactionsHistory),
-        });
         this.handleRequestResultMessage(startDate, endDate);
       });
     } else {
@@ -260,7 +255,6 @@ class WalletTableContainer extends React.Component {
     const isGuestPage = guestUserRegex.test(currentUsername);
     const transactions = this.getCurrentTransactions(isGuestPage, tableTransactionsHistory);
 
-    console.log('this.state.transactions: ', this.state.transactions);
     console.log('transactions: ', transactions);
 
     // size(transactions)
@@ -277,7 +271,7 @@ class WalletTableContainer extends React.Component {
           changeEndDate={value => this.setState({ endDate: moment(value).unix() })}
           changeStartDate={value => this.setState({ startDate: moment(value).unix() })}
         />
-        {!this.state.isEmptyPeriod ? (
+        {!this.state.isEmptyPeriod || size(transactions) ? (
           <WalletTable
             intl={intl}
             handleLoadMore={this.handleLoadMore}
