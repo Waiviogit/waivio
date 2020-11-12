@@ -174,6 +174,25 @@ class Wallet extends Component {
     }
   }
 
+  tableButton = (isGuest, transactions, demoTransactions) => {
+    const { intl, user } = this.props;
+    if ((isGuest && !isEmpty(demoTransactions)) || (!isGuest && !isEmpty(transactions))) {
+      return (
+        <span
+          className="UserWallet__view-btn"
+          role="presentation"
+          onClick={() => this.props.history.push(`/@${user.name}/transfers/table`)}
+        >
+          {intl.formatMessage({
+            id: 'table_view',
+            defaultMessage: 'Table view',
+          })}
+        </span>
+      );
+    }
+    return null;
+  };
+
   render() {
     const {
       user,
@@ -193,7 +212,6 @@ class Wallet extends Component {
       operationNum,
       isloadingMoreTransactions,
       isloadingMoreDemoTransactions,
-      intl,
     } = this.props;
     const userKey = user.name;
     const demoTransactions = get(usersTransactions, userKey, []);
@@ -249,16 +267,7 @@ class Wallet extends Component {
           steemRateLoading={steemRateLoading}
           isGuest={isGuest}
         />
-        <span
-          className="UserWallet__view-btn"
-          role="presentation"
-          onClick={() => this.props.history.push(`/@${user.name}/transfers/table`)}
-        >
-          {intl.formatMessage({
-            id: 'table_view',
-            defaultMessage: 'Table view',
-          })}
-        </span>
+        {this.tableButton(isGuest, transactions, demoTransactions)}
         {isMobile && <WalletSidebar />}
         {walletTransactions}
         <Transfer history={this.props.history} />
