@@ -142,6 +142,8 @@ class WalletTableContainer extends React.Component {
   state = {
     startDate: 0,
     endDate: 0,
+    isEmptyPeriod: true,
+    transactions: [],
   };
 
   componentDidMount() {
@@ -165,6 +167,14 @@ class WalletTableContainer extends React.Component {
     return get(transactionsHistory, username, []);
   };
 
+  handleRequestResultMessage = (startDate, endDate) => {
+    if (startDate === 0 && endDate === 0) {
+      this.setState({ isEmptyPeriod: true });
+    } else {
+      this.setState({ isEmptyPeriod: false });
+    }
+  };
+
   handleSubmit = () => {
     const {
       getTransactionsByInterval,
@@ -172,6 +182,7 @@ class WalletTableContainer extends React.Component {
       clearTable,
       clearWalletHistory,
       user,
+      tableTransactionsHistory,
     } = this.props;
     const { startDate, endDate } = this.state;
     const currentUsername = user.name;
@@ -182,7 +193,12 @@ class WalletTableContainer extends React.Component {
     clearWalletHistory();
 
     if (isGuestPage) {
-      getDemoTransactionsByInterval(currentUsername, tableView, startDate, endDate);
+      getDemoTransactionsByInterval(currentUsername, tableView, startDate, endDate).then(() => {
+        this.setState({
+          transactions: this.getCurrentTransactions(isGuestPage, tableTransactionsHistory),
+        });
+        this.handleRequestResultMessage(startDate, endDate);
+      });
     } else {
       clearTable();
       getTransactionsByInterval(
@@ -192,7 +208,7 @@ class WalletTableContainer extends React.Component {
         startDate,
         endDate,
         TRANSACTION_TYPES,
-      );
+      ).then(() => this.handleRequestResultMessage(startDate, endDate));
     }
   };
 
@@ -244,6 +260,10 @@ class WalletTableContainer extends React.Component {
     const isGuestPage = guestUserRegex.test(currentUsername);
     const transactions = this.getCurrentTransactions(isGuestPage, tableTransactionsHistory);
 
+    console.log('this.state.transactions: ', this.state.transactions);
+    console.log('transactions: ', transactions);
+
+    // size(transactions)
     return (
       <React.Fragment>
         <TableFilter
@@ -257,7 +277,7 @@ class WalletTableContainer extends React.Component {
           changeEndDate={value => this.setState({ endDate: moment(value).unix() })}
           changeStartDate={value => this.setState({ startDate: moment(value).unix() })}
         />
-        {size(transactions) ? (
+        {!this.state.isEmptyPeriod ? (
           <WalletTable
             intl={intl}
             handleLoadMore={this.handleLoadMore}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { get, isEmpty, isNull } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
 import { HBD, HIVE } from '../../common/constants/cryptos';
@@ -28,6 +28,7 @@ import {
   getUsersAccountHistoryLoading,
   getUsersTransactions,
   hasMoreGuestActions,
+  getIsTransactionsHistoryLoading,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -72,6 +73,7 @@ import './UserWallet.less';
     isloadingMoreTransactions: getIsloadingMoreTransactions(state),
     isloadingMoreDemoTransactions: getLoadingMoreUsersAccountHistory(state),
     isWithdrawOpen: getStatusWithdraw(state),
+    isTransactionsHistoryLoading: getIsTransactionsHistoryLoading(state),
   }),
   {
     getGlobalProperties,
@@ -118,6 +120,7 @@ class Wallet extends Component {
     isWithdrawOpen: PropTypes.bool,
     history: PropTypes.shape(),
     match: PropTypes.shape().isRequired,
+    isTransactionsHistoryLoading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -135,6 +138,7 @@ class Wallet extends Component {
     clearTransactionsHistory: () => {},
     isWithdrawOpen: false,
     history: {},
+    isTransactionsHistoryLoading: false,
   };
 
   componentDidMount() {
@@ -174,23 +178,78 @@ class Wallet extends Component {
     }
   }
 
-  tableButton = (isGuest, transactions, demoTransactions) => {
+  tableButton = () => {
     const { intl, user } = this.props;
-    if ((isGuest && !isEmpty(demoTransactions)) || (!isGuest && !isEmpty(transactions))) {
+    return (
+      <span
+        className="UserWallet__view-btn"
+        role="presentation"
+        onClick={() => this.props.history.push(`/@${user.name}/transfers/table`)}
+      >
+        {intl.formatMessage({
+          id: 'table_view',
+          defaultMessage: 'Table view',
+        })}
+      </span>
+    );
+  };
+
+  handleRenderWalletTransactions = (
+    transactions,
+    demoTransactions,
+    isEmptyTransactions,
+    actions,
+    isMobile,
+  ) => {
+    const {
+      user,
+      usersAccountHistoryLoading,
+      isTransactionsHistoryLoading,
+      hasMore,
+      totalVestingShares,
+      totalVestingFundSteem,
+      loadingMoreUsersAccountHistory,
+      demoHasMoreActions,
+      isErrorLoading,
+      operationNum,
+      isloadingMoreTransactions,
+      isloadingMoreDemoTransactions,
+    } = this.props;
+
+    if (usersAccountHistoryLoading || isTransactionsHistoryLoading) {
+      return <Loading style={{ marginTop: '20px' }} />;
+    }
+    if (!isEmptyTransactions) {
       return (
-        <span
-          className="UserWallet__view-btn"
-          role="presentation"
-          onClick={() => this.props.history.push(`/@${user.name}/transfers/table`)}
-        >
-          {intl.formatMessage({
-            id: 'table_view',
-            defaultMessage: 'Table view',
-          })}
-        </span>
+        <UserWalletTransactions
+          user={user}
+          getMoreUserTransactionHistory={this.props.getMoreUserTransactionHistory}
+          transactions={transactions}
+          hasMore={hasMore}
+          currentUsername={user.name}
+          totalVestingShares={totalVestingShares}
+          totalVestingFundSteem={totalVestingFundSteem}
+          getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
+          loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
+          demoTransactions={demoTransactions}
+          demoHasMoreActions={demoHasMoreActions}
+          actions={actions}
+          isErrorLoading={isErrorLoading}
+          operationNum={operationNum}
+          isloadingMoreTransactions={isloadingMoreTransactions}
+          isloadingMoreDemoTransactions={isloadingMoreDemoTransactions}
+          isMobile={isMobile}
+        />
       );
     }
-    return null;
+    return (
+      <div className="UserWallet__empty-transactions-list">
+        <FormattedMessage
+          id="empty_transaction_list"
+          defaultMessage="You don't have any transactions yet"
+        />
+      </div>
+    );
   };
 
   render() {
@@ -199,24 +258,19 @@ class Wallet extends Component {
       totalVestingShares,
       totalVestingFundSteem,
       loadingGlobalProperties,
-      usersAccountHistoryLoading,
-      loadingMoreUsersAccountHistory,
-      demoHasMoreActions,
       cryptosPriceHistory,
       screenSize,
       transactionsHistory,
-      hasMore,
       usersTransactions,
       usersAccountHistory,
-      isErrorLoading,
-      operationNum,
-      isloadingMoreTransactions,
-      isloadingMoreDemoTransactions,
     } = this.props;
+    const isGuest = guestUserRegex.test(user && user.name);
     const userKey = user.name;
     const demoTransactions = get(usersTransactions, userKey, []);
     const actions = get(usersAccountHistory, userKey, []);
     const transactions = get(transactionsHistory, userKey, []);
+    const isEmptyTransactions =
+      (isGuest && isEmpty(demoTransactions)) || (!isGuest && isEmpty(transactions));
 
     const currentSteemRate = get(
       cryptosPriceHistory,
@@ -227,32 +281,6 @@ class Wallet extends Component {
     const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
 
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
-
-    const isGuest = guestUserRegex.test(user && user.name);
-
-    const walletTransactions = usersAccountHistoryLoading ? (
-      <Loading style={{ marginTop: '20px' }} />
-    ) : (
-      <UserWalletTransactions
-        user={user}
-        getMoreUserTransactionHistory={this.props.getMoreUserTransactionHistory}
-        transactions={transactions}
-        hasMore={hasMore}
-        currentUsername={user.name}
-        totalVestingShares={totalVestingShares}
-        totalVestingFundSteem={totalVestingFundSteem}
-        getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
-        loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
-        demoTransactions={demoTransactions}
-        demoHasMoreActions={demoHasMoreActions}
-        actions={actions}
-        isErrorLoading={isErrorLoading}
-        operationNum={operationNum}
-        isloadingMoreTransactions={isloadingMoreTransactions}
-        isloadingMoreDemoTransactions={isloadingMoreDemoTransactions}
-        isMobile={isMobile}
-      />
-    );
 
     return (
       <div>
@@ -267,9 +295,15 @@ class Wallet extends Component {
           steemRateLoading={steemRateLoading}
           isGuest={isGuest}
         />
-        {this.tableButton(isGuest, transactions, demoTransactions)}
+        {!isEmptyTransactions && this.tableButton(isEmptyTransactions)}
         {isMobile && <WalletSidebar />}
-        {walletTransactions}
+        {this.handleRenderWalletTransactions(
+          transactions,
+          demoTransactions,
+          isEmptyTransactions,
+          actions,
+          isMobile,
+        )}
         <Transfer history={this.props.history} />
         <PowerUpOrDown />
         {this.props.isWithdrawOpen && <Withdraw />}
