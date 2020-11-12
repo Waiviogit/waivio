@@ -272,6 +272,23 @@ const posts = (state = initialState, action) => {
       };
     }
 
+    case postsActions.GET_SOCIAL_INFO_POST.SUCCESS: {
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [getPostKey(action.meta)]: {
+            ...state.list[getPostKey(action.meta)],
+            tags: [...action.payload.tags],
+            cities: [...action.payload.cities],
+            wobjectsTwitter: [...action.payload.wobjectsTwitter],
+            wobjectsFacebook: [...action.payload.wobjectsFacebook],
+            userFacebook: action.payload.userFacebook,
+            userTwitter: action.payload.userTwitter,
+          },
+        },
+      };
+    }
     default:
       return state;
   }

@@ -1,17 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import VisibilitySensor from 'react-visibility-sensor';
-import {
-  dropCategory,
-  isBannedPost,
-  replaceBotWithGuestName,
-  getPostHashtags,
-} from '../helpers/postHelpers';
+import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
 import PostContent from './PostContent';
 import Comments from '../comments/Comments';
 import { getFacebookShareURL, getTwitterShareURL } from '../helpers/socialProfiles';
@@ -101,7 +96,7 @@ class PostModal extends React.Component {
       author: authorDetails,
       shownPostContents,
     } = this.props;
-    const { permlink, title, url, wobjects } = currentShownPost;
+    const { permlink, title, url, cities, tags, userTwitter, wobjectsTwitter } = currentShownPost;
     const author = currentShownPost.guestInfo
       ? currentShownPost.guestInfo.userId
       : currentShownPost.author;
@@ -110,14 +105,16 @@ class PostModal extends React.Component {
       dropCategory(url),
       currentShownPost.guestInfo,
     )}`;
-    const postHashtags = getPostHashtags(wobjects);
-    const socialHashtags = [...postHashtags, 'waivio', 'hive'];
-    const shareTextSocial = `"${encodeURIComponent(title)}" by @${author}`;
+    const hashtags = [...tags, ...cities];
+    const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
+    const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
+    const shareTextSocialTwitter = `"${encodeURIComponent(
+      title,
+    )}" ${authorTwitter} ${objectTwitter}`;
+    const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
 
-    const twitterShareURL = getTwitterShareURL(shareTextSocial, postURL, socialHashtags);
     const facebookShareURL = getFacebookShareURL(postURL);
     const signature = get(authorDetails, 'posting_json_metadata.profile.signature', null);
-
     return (
       <Modal
         title={null}
