@@ -188,7 +188,7 @@ const FilteredRewardsList = props => {
           </Link>
         </div>
       ) : (
-        <SortSelector sort={sort} onChange={handleSortChange}>
+        <SortSelector sort={sort} onChange={handleSortChange} match={match}>
           {map(sortRewards, item => (
             <SortSelector.Item key={item.key}>
               <FormattedMessage id={item.id} defaultMessage={item.defaultMessage}>
