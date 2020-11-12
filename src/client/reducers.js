@@ -182,6 +182,8 @@ export const getIsloadingMoreTableTransactions = state =>
 export const getIsloadingTableTransactions = state =>
   fromWallet.getIsloadingTableTransactions(state.wallet);
 export const getIsOpenWalletTable = state => fromWallet.getIsOpenWalletTable(state.wallet);
+export const getIsTransactionsHistoryLoading = state =>
+  fromWallet.getIsTransactionsHistoryLoading(state.wallet);
 
 export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
 export const getLocale = state => fromSettings.getLocale(state.settings);
