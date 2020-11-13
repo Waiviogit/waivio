@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get, isEmpty, map, isEqual } from 'lodash';
+import { get, isEmpty, map } from 'lodash';
 import PropositionMainObjectCard from '../PropositionMainObjectCard';
 import CatalogBreadcrumb from '../../../object/Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import CatalogSorting from '../../../object/Catalog/CatalogSorting/CatalogSorting';
@@ -34,6 +34,7 @@ const PropositionListFromCatalog = ({
   catalogSort,
   listItems,
   isLoadingFlag,
+  isReviewPage,
 }) => {
   const getListRow = listItem => {
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
@@ -46,49 +47,61 @@ const PropositionListFromCatalog = ({
     } else {
       item = <ObjectCardView wObject={listItem} inList />;
     }
-    return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
+    return !isReviewPage && <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
 
-  const handlePropositions = (listItem, listItemPermlink, wobjectPermlink) => {
-    let currentItem;
-    let simpleList;
-    allPropositions.forEach(propos => {
-      const objects = get(propos, 'objects', []);
-      if (!isEmpty(objects)) {
-        objects.forEach(obj => {
-          const objAuthorPermlink = get(obj, 'object.author_permlink', '');
-          if (!isEqual(objAuthorPermlink, listItemPermlink)) {
-            currentItem = listItem;
-          }
-        });
-      } else {
-        simpleList = true;
-      }
+  // const handlePropositions = (listItem, listItemPermlink, wobjectPermlink) => {
+  //   let currentItem;
+  //   let simpleList;
+  //   allPropositions.forEach(propos => {
+  //     const objects = get(propos, 'objects', []);
+  //     if (!isEmpty(objects)) {
+  //       objects.forEach(obj => {
+  //         const objAuthorPermlink = get(obj, 'object.author_permlink', '');
+  //         if (!isEqual(objAuthorPermlink, listItemPermlink)) {
+  //           currentItem = listItem;
+  //         }
+  //       });
+  //     } else {
+  //       simpleList = true;
+  //     }
+  //   });
+  //   if (!simpleList) {
+  //     return !isEqual(wobjectPermlink, listItemPermlink) && currentItem && getListRow(currentItem);
+  //   }
+  //   return getListRow(listItem);
+  // };
+
+  const getPropositionObjects = () => {
+    const arr = [];
+    const propositionObjects = get(allPropositions, '[0]objects', []);
+    propositionObjects.forEach(propos => {
+      const currentProposObj = get(propos, 'object', {});
+      arr.push(get(currentProposObj, '_id'));
     });
-    if (!simpleList) {
-      return !isEqual(wobjectPermlink, listItemPermlink) && currentItem && getListRow(currentItem);
-    }
-    return getListRow(listItem);
+    return arr;
   };
 
-  const handleListItems = listItem => {
-    const parentObject = get(wobject, 'parent.author_permlink', '');
-    const wobjectPermlink = get(wobject, 'author_permlink', '');
-    const listItemPermlink = get(listItem, 'author_permlink', '');
-
-    if (!isEmpty(parentObject)) {
-      if (!isEmpty(allPropositions)) {
-        return handlePropositions(listItem, listItemPermlink, wobjectPermlink);
-      }
-      return !isEqual(parentObject, listItemPermlink) && getListRow(listItem);
-    } else if (isEmpty(parentObject)) {
-      if (!isEmpty(allPropositions)) {
-        return handlePropositions(listItem, listItemPermlink, wobjectPermlink);
-      }
-      return getListRow(listItem);
-    }
-    return getListRow(listItem);
-  };
+  // const handleListItems = listItem => {
+  //   const parentObject = get(wobject, 'parent.author_permlink', '');
+  //   const wobjectPermlink = get(wobject, 'author_permlink', '');
+  //   const listItemPermlink = get(listItem, 'author_permlink', '');
+  //
+  //   // if (!isEmpty(parentObject)) {
+  //   //   if (!isEmpty(allPropositions)) {
+  //   //     return handlePropositions(listItem, listItemPermlink, wobjectPermlink);
+  //   //   }
+  //   //   return !isEqual(parentObject, listItemPermlink) && getListRow(listItem);
+  //   // } else if (isEmpty(parentObject)) {
+  //   //   if (!isEmpty(allPropositions)) {
+  //   //     return handlePropositions(listItem, listItemPermlink, wobjectPermlink);
+  //   //   }
+  //   //   return getListRow(listItem);
+  //   // }
+  //
+  //   const proposObj = getPropositionObjects();
+  //   return !proposObj.includes(get(listItem, '_id', '')) && getListRow(listItem);
+  // };
 
   const getMenuList = () => {
     if (isEmpty(listItems)) {
@@ -101,45 +114,33 @@ const PropositionListFromCatalog = ({
         </div>
       );
     }
-    return map(listItems, listItem => handleListItems(listItem));
+
+    return map(listItems, listItem => {
+      const proposObj = getPropositionObjects();
+      return !proposObj.includes(get(listItem, '_id')) && getListRow(listItem);
+    });
   };
 
   const renderPropositions = () =>
     map(allPropositions, propos =>
-      map(propos.objects, wobj => {
-        const wobjParentDefaultShowLink = get(wobj, ['object', 'parent', 'defaultShowLink']);
-        const arr = wobjParentDefaultShowLink.split('#');
-        const currentDefaultShowLink = arr[arr.length - 1];
-        const hash = location.hash;
-        const currHash = hash.replace(/#/, '');
-
-        let isEqualFlag = true;
-        listItems.forEach(listItem => {
-          if (isEqual(get(wobj, 'object.author_permlink'), get(listItem, 'author_permlink'))) {
-            isEqualFlag = isEqual(currentDefaultShowLink, currHash);
-          }
-        });
-        return (
-          !isEqualFlag && (
-            <Proposition
-              proposition={propos}
-              wobj={wobj.object}
-              wobjPrice={wobj.reward}
-              assignCommentPermlink={wobj.permlink}
-              assignProposition={assignPropositionHandler}
-              discardProposition={discardProposition}
-              authorizedUserName={userName}
-              loading={loadingAssignDiscard}
-              key={`${wobj.object.author_permlink}`}
-              assigned={wobj.assigned}
-              history={history}
-              isAssign={isAssign}
-              match={match}
-              user={user}
-            />
-          )
-        );
-      }),
+      map(propos.objects, wobj => (
+        <Proposition
+          proposition={propos}
+          wobj={wobj.object}
+          wobjPrice={wobj.reward}
+          assignCommentPermlink={wobj.permlink}
+          assignProposition={assignPropositionHandler}
+          discardProposition={discardProposition}
+          authorizedUserName={userName}
+          loading={loadingAssignDiscard}
+          key={`${wobj.object.author_permlink}`}
+          assigned={wobj.assigned}
+          history={history}
+          isAssign={isAssign}
+          match={match}
+          user={user}
+        />
+      )),
     );
 
   return (
@@ -170,7 +171,7 @@ const PropositionListFromCatalog = ({
               handleSortChange={catalogHandleSortChange}
             />
           </div>
-          {renderPropositions()}
+          {!isReviewPage && renderPropositions()}
           <div className="CatalogWrap">
             <div>{getMenuList()}</div>
           </div>
@@ -202,6 +203,7 @@ PropositionListFromCatalog.propTypes = {
   catalogSort: PropTypes.string,
   isLoadingFlag: PropTypes.bool,
   listItems: PropTypes.shape(),
+  isReviewPage: PropTypes.bool,
 };
 
 PropositionListFromCatalog.defaultProps = {
@@ -222,6 +224,7 @@ PropositionListFromCatalog.defaultProps = {
   catalogSort: '',
   isLoadingFlag: false,
   listItems: [],
+  isReviewPage: false,
 };
 
 export default PropositionListFromCatalog;

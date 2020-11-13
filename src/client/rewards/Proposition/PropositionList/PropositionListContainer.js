@@ -35,6 +35,7 @@ const PropositionListContainer = ({
   isLoadingPropositions,
   currentHash,
   isLoadingFlag,
+  location,
 }) => {
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [allPropositions, setAllPropositions] = useState([]);
@@ -45,6 +46,25 @@ const PropositionListContainer = ({
   const firstHash = get(hashArr, '[0]', '');
   const authorPermlink = get(wobject, ['author_permlink'], '');
   const parentPermlink = get(wobject, 'parent.author_permlink', '');
+
+  // useEffect(() => {
+  //   if (wobject && userName) {
+  //     const requiredObject =
+  //       get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
+  //     const primaryObject = get(wobject, ['author_permlink']);
+  //     const reqData = {
+  //       userName,
+  //       match,
+  //       locale,
+  //     };
+  //     if (requiredObject) {
+  //       reqData.requiredObject = requiredObject;
+  //     } else {
+  //       reqData.primaryObject = primaryObject;
+  //     }
+  //     getProposListContainer(reqData);
+  //   }
+  // }, [wobject, userName]);
 
   useEffect(() => {
     if (wobject && userName) {
@@ -218,6 +238,7 @@ const PropositionListContainer = ({
             history={history}
             isLoadingFlag={isLoadingFlag}
             parentPermlink={parentPermlink}
+            location={location}
           />
         </React.Fragment>
       )}
@@ -243,6 +264,7 @@ PropositionListContainer.propTypes = {
   isLoadingPropositions: PropTypes.shape(),
   currentHash: PropTypes.string,
   isLoadingFlag: PropTypes.bool,
+  location: PropTypes.shape().isRequired,
 };
 
 PropositionListContainer.defaultProps = {

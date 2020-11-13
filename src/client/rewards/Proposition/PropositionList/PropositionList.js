@@ -1,11 +1,14 @@
 import React from 'react';
+import { Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { get, map, max, min } from 'lodash';
+import { get, map, max, min, isEmpty } from 'lodash';
 import { getObjectLists } from '../../../reducers';
-import PropositionListFromCatalog from './PropositionListFromCatalog';
-import DefaultPropositionList from './DefaultPropositionList';
+// import PropositionListFromCatalog from './PropositionListFromCatalog';
+// import DefaultPropositionList from './DefaultPropositionList';
+import Proposition from '../Proposition';
+import ObjectCardView from '../../../objectCard/ObjectCardView';
 
 const PropositionList = ({
   allPropositions,
@@ -22,11 +25,12 @@ const PropositionList = ({
   loadingAssignDiscard,
   isAssign,
   isCatalogWrap,
-  catalogHandleSortChange,
-  catalogSort,
-  listItems,
-  isLoadingFlag,
+  // catalogHandleSortChange,
+  // catalogSort,
+  // listItems,
+  // isLoadingFlag,
   parentPermlink,
+  // location,
 }) => {
   let minReward;
   let maxReward;
@@ -49,39 +53,112 @@ const PropositionList = ({
     rewardMax = `${maxReward.toFixed(2)} USD`;
   }
 
-  const data = {
-    intl,
-    wobject,
-    currentProposition,
-    goToProducts,
-    maxReward,
-    minReward,
-    rewardPrise,
-    rewardMax,
-    allPropositions,
-    match,
-    assignPropositionHandler,
-    discardProposition,
-    userName,
-    loadingAssignDiscard,
-    isAssign,
-    user,
-    history,
-    catalogHandleSortChange,
-    catalogSort,
-    listItems,
-    isLoadingFlag,
-  };
+  // const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
+
+  // const data = {
+  //   intl,
+  //   wobject,
+  //   currentProposition,
+  //   goToProducts,
+  //   maxReward,
+  //   minReward,
+  //   rewardPrise,
+  //   rewardMax,
+  //   allPropositions,
+  //   match,
+  //   assignPropositionHandler,
+  //   discardProposition,
+  //   userName,
+  //   loadingAssignDiscard,
+  //   isAssign,
+  //   user,
+  //   history,
+  //   catalogHandleSortChange,
+  //   catalogSort,
+  //   listItems,
+  //   isLoadingFlag,
+  //   isReviewPage,
+  // };
+
+  console.log('allPropositions: ', allPropositions);
+  const renderPropositions = () =>
+    map(allPropositions, propos =>
+      map(propos.objects, wobj => (
+        <Proposition
+          proposition={propos}
+          wobj={wobj.object}
+          wobjPrice={wobj.reward}
+          assignCommentPermlink={wobj.permlink}
+          assignProposition={assignPropositionHandler}
+          discardProposition={discardProposition}
+          authorizedUserName={userName}
+          loading={loadingAssignDiscard}
+          key={`${wobj.object.author_permlink}`}
+          assigned={wobj.assigned}
+          history={history}
+          isAssign={isAssign}
+          match={match}
+          user={user}
+        />
+      )),
+    );
 
   return (
     <React.Fragment>
-      {isCatalogWrap || parentPermlink ? (
-        <PropositionListFromCatalog {...data} />
-      ) : (
-        <DefaultPropositionList {...data} />
+      {wobject && isEmpty(wobject.parent) && !isEmpty(currentProposition) && (
+        <div>
+          <ObjectCardView wObject={wobject} passedParent={currentProposition} />
+          <div className="Campaign__button" role="presentation" onClick={goToProducts}>
+            <Button type="primary" size="large">
+              {maxReward === minReward ? (
+                <React.Fragment>
+                  <span>
+                    {intl.formatMessage({
+                      id: 'rewards_details_earn',
+                      defaultMessage: 'Earn',
+                    })}
+                  </span>
+                  <span>
+                    <span className="fw6 ml1">{rewardPrise}</span>
+                    <Icon type="right" />
+                  </span>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <span>
+                    {intl.formatMessage({
+                      id: 'rewards_details_earn_up_to',
+                      defaultMessage: 'Earn up to',
+                    })}
+                  </span>
+                  <span>
+                    <span className="fw6 ml1">{`${rewardMax}`}</span>
+                    <Icon type="right" />
+                  </span>
+                </React.Fragment>
+              )}
+            </Button>
+          </div>
+        </div>
       )}
+      {renderPropositions()}
     </React.Fragment>
+    // <React.Fragment>
+    //   <PropositionListFromCatalog {...data} />
+    //   <div>-----------------------------------------------------------------</div>
+    //   <DefaultPropositionList {...data} />
+    // </React.Fragment>
   );
+
+  // return (
+  //   <React.Fragment>
+  //     {isCatalogWrap || parentPermlink ? (
+  //       <PropositionListFromCatalog {...data} />
+  //     ) : (
+  //       <DefaultPropositionList {...data} />
+  //     )}
+  //   </React.Fragment>
+  // );
 };
 
 PropositionList.propTypes = {
@@ -99,12 +176,13 @@ PropositionList.propTypes = {
   loadingAssignDiscard: PropTypes.bool,
   isAssign: PropTypes.bool,
   isCatalogWrap: PropTypes.bool,
-  catalogHandleSortChange: PropTypes.func,
-  catalogSort: PropTypes.string,
-  isLoadingFlag: PropTypes.bool,
   parentPermlink: PropTypes.string,
-  isGetNested: PropTypes.bool,
-  listItems: PropTypes.shape(),
+  // catalogHandleSortChange: PropTypes.func,
+  // catalogSort: PropTypes.string,
+  // isLoadingFlag: PropTypes.bool,
+  // isGetNested: PropTypes.bool,
+  // listItems: PropTypes.shape(),
+  // location: PropTypes.shape().isRequired,
 };
 
 PropositionList.defaultProps = {
