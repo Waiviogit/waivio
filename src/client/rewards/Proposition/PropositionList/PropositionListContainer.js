@@ -37,67 +37,80 @@ const PropositionListContainer = ({
   isLoadingFlag,
   location,
 }) => {
+  console.log(currentHash);
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
-  const [allPropositions, setAllPropositions] = useState([]);
+  // const [allPropositions, setAllPropositions] = useState([]);
   const [currentProposition, setCurrentProposition] = useState([]);
+  const [allCurrentPropositions, setAllCurrentPropositions] = useState([]);
   const [proposition, setProposition] = useState([]);
   const [isAssign, setIsAssign] = useState(false);
-  const hashArr = currentHash.split('/');
-  const firstHash = get(hashArr, '[0]', '');
-  const authorPermlink = get(wobject, ['author_permlink'], '');
+  // const hashArr = currentHash.split('/');
+  // const firstHash = get(hashArr, '[0]', '');
+  // const authorPermlink = get(wobject, ['author_permlink'], '');
   const parentPermlink = get(wobject, 'parent.author_permlink', '');
-
-  // useEffect(() => {
-  //   if (wobject && userName) {
-  //     const requiredObject =
-  //       get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
-  //     const primaryObject = get(wobject, ['author_permlink']);
-  //     const reqData = {
-  //       userName,
-  //       match,
-  //       locale,
-  //     };
-  //     if (requiredObject) {
-  //       reqData.requiredObject = requiredObject;
-  //     } else {
-  //       reqData.primaryObject = primaryObject;
-  //     }
-  //     getProposListContainer(reqData);
-  //   }
-  // }, [wobject, userName]);
 
   useEffect(() => {
     if (wobject && userName) {
-      let requiredObject;
-      let primaryObject;
-
-      if ((isCatalogWrap && firstHash === currentHash) || parentPermlink) {
-        const reqData = {
-          userName,
-          match,
-          requiredObject: parentPermlink || authorPermlink,
-          sort: 'reward',
-          locale,
-        };
-        getProposListContainer(reqData);
-      } else {
-        const reqData = {
-          userName,
-          match,
-          locale,
-        };
-        requiredObject = get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
-        primaryObject = get(wobject, ['author_permlink']);
-
-        if (requiredObject) {
-          reqData.requiredObject = requiredObject;
-        } else {
-          reqData.primaryObject = primaryObject;
-        }
-        getProposListContainer(reqData);
-      }
+      // const requiredObject = get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
+      // const requiredObject = 'woe-pizza-happy';
+      // const primaryObject = get(wobject, ['author_permlink']);
+      const reqData = {
+        userName,
+        match,
+        locale,
+      };
+      // reqData.requiredObject = requiredObject;
+      // reqData.primaryObject = primaryObject;
+      console.log('reqData: ', reqData);
+      console.log('wobject: ', wobject);
+      // if (requiredObject) {
+      //   reqData.requiredObject = requiredObject;
+      // } else {
+      //   reqData.primaryObject = primaryObject;
+      // }
+      getProposListContainer(reqData);
+      const currentPropos = filter(
+        campaigns,
+        obj => obj.required_object.author_permlink === match.params.name,
+      );
+      console.log('currentPropos: ', currentPropos);
+      setAllCurrentPropositions(campaigns);
+      setCurrentProposition(currentPropos[0]);
     }
-  }, [wobject, userName, currentHash]);
+  }, [wobject, userName]);
+
+  // useEffect(() => {
+  //   if (wobject && userName) {
+  //     let requiredObject;
+  //     let primaryObject;
+  //
+  //     if ((isCatalogWrap && firstHash === currentHash) || parentPermlink) {
+  //       const reqData = {
+  //         userName,
+  //         match,
+  //         requiredObject: parentPermlink || authorPermlink,
+  //         sort: 'reward',
+  //         locale,
+  //       };
+  //       getProposListContainer(reqData);
+  //     } else {
+  //       const reqData = {
+  //         userName,
+  //         match,
+  //         locale,
+  //       };
+  //       requiredObject = get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
+  //       primaryObject = get(wobject, ['author_permlink']);
+  //
+  //       if (requiredObject) {
+  //         reqData.requiredObject = requiredObject;
+  //       } else {
+  //         reqData.primaryObject = primaryObject;
+  //       }
+  //       getProposListContainer(reqData);
+  //     }
+  //   }
+  // }, [wobject, userName, currentHash]);
 
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {
@@ -168,14 +181,14 @@ const PropositionListContainer = ({
       });
   };
 
-  useEffect(() => {
-    const currentPropos = filter(
-      campaigns,
-      obj => obj.required_object.author_permlink === match.params.name,
-    );
-    setAllPropositions(campaigns);
-    setCurrentProposition(currentPropos[0]);
-  }, [campaigns]);
+  // useEffect(() => {
+  //   const currentPropos = filter(
+  //     campaigns,
+  //     obj => obj.required_object.author_permlink === match.params.name,
+  //   );
+  //   setAllPropositions(campaigns);
+  //   setCurrentProposition(currentPropos[0]);
+  // }, [campaigns]);
 
   const discardProposition = ({
     companyAuthor,
@@ -209,8 +222,8 @@ const PropositionListContainer = ({
       });
   };
 
-  const goToProducts = () => {
-    const permlink = get(wobject, 'author_permlink');
+  const goToProducts = currWobject => {
+    const permlink = get(currWobject, 'author_permlink');
     history.push(`/rewards/all/${permlink}`);
   };
 
@@ -225,7 +238,8 @@ const PropositionListContainer = ({
             catalogHandleSortChange={catalogHandleSortChange}
             catalogSort={catalogSort}
             wobject={wobject}
-            allPropositions={allPropositions}
+            // allPropositions={allPropositions}
+            allCurrentPropositions={allCurrentPropositions}
             currentProposition={currentProposition}
             goToProducts={goToProducts}
             discardProposition={discardProposition}
