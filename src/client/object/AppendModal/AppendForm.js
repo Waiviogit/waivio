@@ -62,6 +62,7 @@ import {
   prepareAlbumData,
   prepareAlbumToStore,
   prepareImageToStore,
+  getDefaultAlbum,
 } from '../../helpers/wObjectHelper';
 import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -171,11 +172,18 @@ export default class AppendForm extends Component {
   };
 
   componentDidMount = () => {
+    const { currentAlbum } = this.state;
+    const { albums } = this.props;
     if (this.props.sliderMode) {
       if (!this.state.sliderVisible) {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
+    }
+    if (isEmpty(currentAlbum)) {
+      const defaultAlbum = getDefaultAlbum(albums);
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ currentAlbum: defaultAlbum });
     }
     this.calculateVoteWorth(this.state.votePercent);
   };
@@ -1064,9 +1072,10 @@ export default class AppendForm extends Component {
     const { intl, wObject, categories, selectedAlbum, albums } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const statusTitle = this.props.form.getFieldValue(statusFields.title);
+    const defaultAlbum = getDefaultAlbum(albums);
     const albumInitialValue = selectedAlbum
       ? selectedAlbum.id || selectedAlbum.body
-      : 'Choose an album';
+      : defaultAlbum.id || defaultAlbum.body;
     const combinedFieldValidationMsg = !this.state.isSomeValue && (
       <div className="append-combined-value__validation-msg">
         {intl.formatMessage({
