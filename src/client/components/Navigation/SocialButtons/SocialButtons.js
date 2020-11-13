@@ -19,7 +19,6 @@ const SocialButtons = ({ responseSocial, className }) => (
       autoLoad={false}
       fields="name,email,picture"
       callback={response => responseSocial(response, 'facebook')}
-      onFailure={failResponse => responseSocial(failResponse, 'facebook')}
       textButton="Facebook"
       cssClass="ModalSignIn__social-btn ModalSignIn__social-btn--fb"
       icon={<Icon type="facebook" className="ModalSignIn__icon-fb" />}
