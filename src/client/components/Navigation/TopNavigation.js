@@ -23,7 +23,7 @@ const LINKS = {
   TOOLS_SETTINGS: '/settings',
   TOOLS_SETTINGS_GUESTS: '/guests-settings',
   TOOLS_SETTINGS_NOTIFICATIONS: '/notification-settings',
-  ABOUT: '/object/ylr-waivio',
+  ABOUT: '/object/ylr-waivio/page#mwt-about-waivio',
   NOTIFICATIONS: '/notifications-list',
   USERS: PATH_NAME_DISCOVER,
   BLOG: '/blog',
