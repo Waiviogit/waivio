@@ -1,5 +1,5 @@
 import React from 'react';
-import { map, get } from 'lodash';
+import { map, get, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -17,7 +17,12 @@ import {
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
-import { generatePermlink, prepareImageToStore, getObjectName } from '../../helpers/wObjectHelper';
+import {
+  generatePermlink,
+  prepareImageToStore,
+  getObjectName,
+  getDefaultAlbum,
+} from '../../helpers/wObjectHelper';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import './CreateImage.less';
@@ -53,6 +58,16 @@ class CreateImage extends React.Component {
     voteWorth: 0,
     currentAlbum: null,
   };
+
+  componentDidMount() {
+    const { currentAlbum } = this.state;
+    const { albums } = this.props;
+    if (isEmpty(currentAlbum)) {
+      const defaultAlbum = getDefaultAlbum(albums);
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ currentAlbum: defaultAlbum });
+    }
+  }
 
   getWobjectData = () => {
     const { currentUsername, wObject } = this.props;
@@ -257,9 +272,10 @@ class CreateImage extends React.Component {
     const { fileList, uploadingList, loading } = this.state;
     const uploadingListLength = uploadingList.length;
     const isLoading = !uploadingListLength ? loading : Boolean(uploadingListLength); // must be uploadingList.length
+    const defaultAlbum = getDefaultAlbum(albums);
     const albumInitialValue = selectedAlbum
       ? selectedAlbum.id || selectedAlbum.body
-      : 'Choose an album';
+      : defaultAlbum.id || defaultAlbum.body;
 
     return (
       <Modal
