@@ -35,7 +35,6 @@ const PropositionListContainer = ({
   isLoadingPropositions,
   currentHash,
   isLoadingFlag,
-  location,
 }) => {
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [allPropositions, setAllPropositions] = useState([]);
@@ -219,7 +218,6 @@ const PropositionListContainer = ({
             history={history}
             isLoadingFlag={isLoadingFlag}
             parentPermlink={parentPermlink}
-            location={location}
           />
         </React.Fragment>
       )}
@@ -245,7 +243,6 @@ PropositionListContainer.propTypes = {
   isLoadingPropositions: PropTypes.shape(),
   currentHash: PropTypes.string,
   isLoadingFlag: PropTypes.bool,
-  location: PropTypes.shape().isRequired,
 };
 
 PropositionListContainer.defaultProps = {

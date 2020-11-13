@@ -85,7 +85,6 @@ const CatalogWrap = props => {
           isCatalogWrap
           currentHash={hash}
           isLoadingFlag={isLoadingFlag}
-          location={location}
         />
       </React.Fragment>
     </div>

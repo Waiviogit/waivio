@@ -116,12 +116,7 @@ const PropositionListFromCatalog = ({
         let isEqualFlag = true;
         listItems.forEach(listItem => {
           if (isEqual(get(wobj, 'object.author_permlink'), get(listItem, 'author_permlink'))) {
-            if (!isEqual(currentDefaultShowLink, currHash)) {
-              console.log('not equal');
-              isEqualFlag = false;
-            } else {
-              isEqualFlag = true;
-            }
+            isEqualFlag = isEqual(currentDefaultShowLink, currHash);
           }
         });
         return (
