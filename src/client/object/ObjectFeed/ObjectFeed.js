@@ -13,6 +13,7 @@ import {
 } from '../../helpers/stateHelpers';
 import { getObjectPosts, getMoreObjectPosts } from '../../feed/feedActions';
 import { showPostModal } from '../../app/appActions';
+import { getSocialInfoPost } from '../../post/postActions';
 import PostModal from '../../post/PostModalContainer';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
@@ -29,6 +30,7 @@ import './ObjectFeed.less';
     getObjectPosts,
     getMoreObjectPosts,
     showPostModal,
+    getSocialInfoPost,
   },
 )
 export default class ObjectFeed extends React.Component {
@@ -47,6 +49,7 @@ export default class ObjectFeed extends React.Component {
     handleCreatePost: PropTypes.func,
     wobject: PropTypes.shape(),
     userName: PropTypes.string.isRequired,
+    getSocialInfoPost: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -172,6 +175,7 @@ export default class ObjectFeed extends React.Component {
             hasMore={hasMore}
             loadMoreContent={loadMoreContentAction}
             showPostModal={this.props.showPostModal}
+            getSocialInfoPost={this.props.getSocialInfoPost}
           />
         );
       }
