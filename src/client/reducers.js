@@ -307,9 +307,6 @@ export const getHasMoreFollowingRewards = state =>
 export const getHasMoreFraudSuspicionData = state =>
   fromRewards.getHasMoreFraudSuspicionData(state.rewards);
 export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
-export const getPropositionCampaign = state => fromRewards.getPropositionCampaign(state.rewards);
-export const getIsLoadingPropositions = state =>
-  fromRewards.getIsLoadingPropositions(state.rewards);
 export const getIsLoadingRewardsHistory = state =>
   fromRewards.getIsLoadingRewardsHistory(state.rewards);
 export const getCampaignNames = state => fromRewards.getCampaignNames(state.rewards);
