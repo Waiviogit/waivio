@@ -1,9 +1,8 @@
-import React from 'react';
-import { Button, Icon } from 'antd';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { get, map, isEmpty, isEqual } from 'lodash';
+import { get, map, isEmpty, isEqual, max, min } from 'lodash';
 import { getObjectLists } from '../../../reducers';
 // import PropositionListFromCatalog from './PropositionListFromCatalog';
 // import DefaultPropositionList from './DefaultPropositionList';
@@ -16,9 +15,10 @@ import OBJ_TYPE from '../../../object/const/objectTypes';
 import { parseWobjectField } from '../../../helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
+import PropositionMainObjectCard from '../PropositionMainObjectCard';
+import { getObject } from '../../../../waivioApi/ApiClient';
 
 const PropositionList = ({
-  allPropositions,
   wobject,
   currentProposition,
   discardProposition,
@@ -31,24 +31,33 @@ const PropositionList = ({
   userName,
   loadingAssignDiscard,
   isAssign,
-  isCatalogWrap,
   catalogHandleSortChange,
   catalogSort,
   listItems,
   isLoadingFlag,
-  parentPermlink,
   location,
   allCurrentPropositions,
+  locale,
 }) => {
   // let minReward;
   // let maxReward;
   // let rewardPrise;
   // let rewardMax;
-  const forSave = {
-    isCatalogWrap,
-    parentPermlink,
-  };
-  console.log(forSave);
+  const [parentWobj, setParentWobj] = useState({});
+  console.log('listItems: ', listItems);
+  useEffect(() => {
+    if (!isEmpty(wobject.parent)) {
+      getObject(get(wobject, ['parent', 'author_permlink']), userName, locale).then(wObject => {
+        setParentWobj(wObject);
+      });
+    }
+  }, [wobject]);
+
+  // const forSave = {
+  //   isCatalogWrap,
+  //   parentPermlink,
+  // };
+  // console.log(forSave);
   // if (isCatalogWrap || parentPermlink) {
   //   minReward = allPropositions
   //     ? min(map(allPropositions, proposition => proposition.reward))
@@ -66,56 +75,52 @@ const PropositionList = ({
   // }
 
   const handleCurrentProposition = (currPropos, currWobject) => {
-    const minReward = get(currPropos, ['min_reward'], 0);
-    const maxReward = get(currPropos, ['max_reward'], 0);
-    const rewardPrise = `${minReward.toFixed(2)} USD`;
-    const rewardMax = `${maxReward.toFixed(2)} USD`;
+    let minReward;
+    let maxReward;
+    let rewardPrise;
+    let rewardMax;
 
-    // console.log('minReward: ', minReward)
-    // console.log('maxReward: ', maxReward)
+    if (!isEmpty(currWobject.parent)) {
+      minReward = allCurrentPropositions
+        ? min(map(allCurrentPropositions, proposition => proposition.reward))
+        : null;
+      maxReward = allCurrentPropositions
+        ? max(map(allCurrentPropositions, proposition => proposition.reward))
+        : null;
+      rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
+      rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
+
+      return (
+        <PropositionMainObjectCard
+          intl={intl}
+          wobject={parentWobj}
+          currentProposition={currPropos}
+          goToProducts={goToProducts}
+          maxReward={maxReward}
+          minReward={minReward}
+          rewardPrise={rewardPrise}
+          rewardMax={rewardMax}
+        />
+      );
+    }
+
+    minReward = get(currentProposition, ['min_reward'], 0);
+    maxReward = get(currentProposition, ['max_reward'], 0);
+    rewardPrise = `${minReward.toFixed(2)} USD`;
+    rewardMax = `${maxReward.toFixed(2)} USD`;
 
     return (
-      wobject &&
-      isEmpty(wobject.parent) &&
       !isEmpty(currPropos) && (
-        <div>
-          <ObjectCardView wObject={currWobject} passedParent={currPropos} />
-          <div
-            className="Campaign__button"
-            role="presentation"
-            onClick={() => goToProducts(currWobject)}
-          >
-            <Button type="primary" size="large">
-              {maxReward === minReward ? (
-                <React.Fragment>
-                  <span>
-                    {intl.formatMessage({
-                      id: 'rewards_details_earn',
-                      defaultMessage: 'Earn',
-                    })}
-                  </span>
-                  <span>
-                    <span className="fw6 ml1">{rewardPrise}</span>
-                    <Icon type="right" />
-                  </span>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <span>
-                    {intl.formatMessage({
-                      id: 'rewards_details_earn_up_to',
-                      defaultMessage: 'Earn up to',
-                    })}
-                  </span>
-                  <span>
-                    <span className="fw6 ml1">{`${rewardMax}`}</span>
-                    <Icon type="right" />
-                  </span>
-                </React.Fragment>
-              )}
-            </Button>
-          </div>
-        </div>
+        <PropositionMainObjectCard
+          intl={intl}
+          wobject={currWobject}
+          currentProposition={currPropos}
+          goToProducts={goToProducts}
+          maxReward={maxReward}
+          minReward={minReward}
+          rewardPrise={rewardPrise}
+          rewardMax={rewardMax}
+        />
       )
     );
   };
@@ -164,10 +169,9 @@ const PropositionList = ({
       map(allCurrentPropositions, currPropos => {
         const objPermlink = get(currPropos, 'required_object.author_permlink', {});
         const currListItemPermlink = get(listItem, 'author_permlink', {});
-
-        console.log('objPermlink: ', objPermlink);
-        console.log('currListItemPermlink: ', currListItemPermlink);
-        console.log('allCurrentPropositions: ', allCurrentPropositions);
+        //
+        // console.log('objPermlink: ', objPermlink);
+        // console.log('currListItemPermlink: ', currListItemPermlink);
 
         if (isEqual(objPermlink, currListItemPermlink)) {
           item = handleCurrentProposition(currPropos, listItem);
@@ -181,11 +185,12 @@ const PropositionList = ({
     return !isReviewPage && <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
 
-  const getPropositionObjects = () => {
+  const getPropositionObjectsIds = () => {
     const arr = [];
-    const propositionObjects = get(allPropositions, '[0]objects', []);
+    const propositionObjects = get(allCurrentPropositions, '[0]objects', []);
     propositionObjects.forEach(propos => {
       const currentProposObj = get(propos, 'object', {});
+      console.log('currentProposObj: ', currentProposObj);
       arr.push(get(currentProposObj, '_id'));
     });
     return arr;
@@ -204,13 +209,13 @@ const PropositionList = ({
     }
 
     return map(listItems, listItem => {
-      const proposObj = getPropositionObjects();
+      const proposObj = getPropositionObjectsIds();
       return !proposObj.includes(get(listItem, '_id')) && getListRow(listItem);
     });
   };
 
   const renderPropositions = () =>
-    map(allPropositions, propos =>
+    map(allCurrentPropositions, propos =>
       map(propos.objects, wobj => (
         <Proposition
           proposition={propos}
@@ -233,6 +238,7 @@ const PropositionList = ({
   // console.log('allPropositions: ', allPropositions);
   // console.log('currentProposition: ', currentProposition)
   // console.log('wobject: ', wobject)
+  // console.log('allCurrentPropositions: ', allCurrentPropositions);
   return (
     <React.Fragment>
       {handleCurrentProposition(currentProposition, wobject)}
@@ -282,7 +288,6 @@ const PropositionList = ({
 PropositionList.propTypes = {
   intl: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
-  allPropositions: PropTypes.arrayOf(PropTypes.shape()),
   allCurrentPropositions: PropTypes.arrayOf(PropTypes.shape()),
   currentProposition: PropTypes.arrayOf(PropTypes.shape()),
   discardProposition: PropTypes.func,
@@ -294,14 +299,13 @@ PropositionList.propTypes = {
   userName: PropTypes.string.isRequired,
   loadingAssignDiscard: PropTypes.bool,
   isAssign: PropTypes.bool,
-  isCatalogWrap: PropTypes.bool,
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string,
   isLoadingFlag: PropTypes.bool,
-  parentPermlink: PropTypes.string,
   // isGetNested: PropTypes.bool,
   listItems: PropTypes.shape(),
   location: PropTypes.shape().isRequired,
+  locale: PropTypes.string.isRequired,
 };
 
 PropositionList.defaultProps = {

@@ -142,7 +142,9 @@ export const GET_PROPOSITIONS_LIST_CONTAINER = createAsyncActionType(
 
 export const getPropositionsForListContainer = reqData => ({
   type: GET_PROPOSITIONS_LIST_CONTAINER.ACTION,
-  payload: ApiClient.getPropositions(reqData),
+  payload: ApiClient.getPropositions(reqData).then(res => ({
+    proposCampaigns: res.campaigns,
+  })),
 });
 
 export const GET_REWARDS_HISTORY = createAsyncActionType('@rewards/GET_REWARDS_HISTORY');

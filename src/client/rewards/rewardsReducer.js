@@ -104,10 +104,11 @@ const rewardsReducer = (state = initialState, action) => {
       };
     }
     case GET_PROPOSITIONS_LIST_CONTAINER.SUCCESS: {
+      console.log('action.payload.campaigns: ', action.payload.proposCampaigns);
       return {
         ...state,
         isLoadingPropositions: false,
-        campaigns: action.payload.campaigns,
+        campaigns: action.payload.proposCampaigns,
       };
     }
     case GET_REWARDS_HISTORY.START: {

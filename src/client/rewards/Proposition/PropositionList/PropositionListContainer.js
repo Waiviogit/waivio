@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { filter, get } from 'lodash';
+import { filter, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { message } from 'antd';
 import {
@@ -11,11 +11,11 @@ import {
   getLocale,
   getPropositionCampaign,
 } from '../../../reducers';
-import Loading from '../../../components/Icon/Loading';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
 import { assignProposition, declineProposition } from '../../../user/userActions';
 import { getPropositionsForListContainer } from '../../rewardsActions';
+import * as ApiClient from '../../../../waivioApi/ApiClient';
 
 const PropositionListContainer = ({
   wobject,
@@ -30,14 +30,11 @@ const PropositionListContainer = ({
   catalogHandleSortChange,
   catalogSort,
   isCatalogWrap,
-  getProposListContainer,
-  campaigns,
-  isLoadingPropositions,
-  currentHash,
   isLoadingFlag,
   location,
+  listItems,
 }) => {
-  console.log(currentHash);
+  // console.log(currentHash);
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   // const [allPropositions, setAllPropositions] = useState([]);
   const [currentProposition, setCurrentProposition] = useState([]);
@@ -48,36 +45,79 @@ const PropositionListContainer = ({
   // const firstHash = get(hashArr, '[0]', '');
   // const authorPermlink = get(wobject, ['author_permlink'], '');
   const parentPermlink = get(wobject, 'parent.author_permlink', '');
+  const requiredObject = get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
+  const primaryObject = get(wobject, ['author_permlink']);
+
+  const getPropositions = reqData => {
+    ApiClient.getPropositions(reqData).then(data => {
+      const currentPropos = filter(
+        data.campaigns,
+        obj => obj.required_object.author_permlink === match.params.name,
+      );
+      console.log('currentPropos: ', currentPropos);
+      setAllCurrentPropositions(data.campaigns);
+      setCurrentProposition(currentPropos[0]);
+    });
+
+    // getProposListContainer(reqData).then(() => {
+    //   const currentPropos = filter(
+    //     campaigns,
+    //     obj => obj.required_object.author_permlink === match.params.name,
+    //   );
+    //   setAllCurrentPropositions(campaigns);
+    //   setCurrentProposition(currentPropos[0]);
+    // });
+  };
 
   useEffect(() => {
     if (wobject && userName) {
-      // const requiredObject = get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
-      // const requiredObject = 'woe-pizza-happy';
-      // const primaryObject = get(wobject, ['author_permlink']);
+      console.log('wobject: ', wobject);
       const reqData = {
         userName,
         match,
         locale,
       };
-      // reqData.requiredObject = requiredObject;
-      // reqData.primaryObject = primaryObject;
-      console.log('reqData: ', reqData);
-      console.log('wobject: ', wobject);
-      // if (requiredObject) {
-      //   reqData.requiredObject = requiredObject;
-      // } else {
-      //   reqData.primaryObject = primaryObject;
-      // }
-      getProposListContainer(reqData);
-      const currentPropos = filter(
-        campaigns,
-        obj => obj.required_object.author_permlink === match.params.name,
-      );
-      console.log('currentPropos: ', currentPropos);
-      setAllCurrentPropositions(campaigns);
-      setCurrentProposition(currentPropos[0]);
+      if (isEmpty(wobject.parent)) {
+        reqData.requiredObject = primaryObject;
+      } else if (requiredObject) {
+        reqData.requiredObject = requiredObject;
+      }
+      getPropositions(reqData);
     }
   }, [wobject, userName]);
+
+  // useEffect(() => {
+  //   if (wobject && userName) {
+  //     console.log('wobject: ', wobject);
+  //     const requiredObject = get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
+  //     // const requiredObject = 'woe-pizza-happy';
+  //     const primaryObject = get(wobject, ['author_permlink']);
+  //     const reqData = {
+  //       userName,
+  //       match,
+  //       locale,
+  //     };
+  //     // reqData.requiredObject = requiredObject;
+  //     // reqData.primaryObject = primaryObject;
+  //     // console.log('reqData: ', reqData);
+  //     // console.log('wobject: ', wobject);
+  //     if (requiredObject) {
+  //       reqData.requiredObject = requiredObject;
+  //     } else {
+  //       reqData.primaryObject = primaryObject;
+  //     }
+  //     getProposListContainer(reqData).then(() => {
+  //       const currentPropos = filter(
+  //         campaigns,
+  //         obj => obj.required_object.author_permlink === match.params.name,
+  //       );
+  //       // console.log('currentPropos: ', currentPropos);
+  //       setAllCurrentPropositions(campaigns);
+  //       setCurrentProposition(currentPropos[0]);
+  //     });
+  //
+  //   }
+  // }, [wobject, userName]);
 
   // useEffect(() => {
   //   if (wobject && userName) {
@@ -226,36 +266,32 @@ const PropositionListContainer = ({
     const permlink = get(currWobject, 'author_permlink');
     history.push(`/rewards/all/${permlink}`);
   };
-
+  // console.log('isLoadingPropositions: ', isLoadingPropositions)
   return (
     <React.Fragment>
-      {isLoadingPropositions ? (
-        <Loading />
-      ) : (
-        <React.Fragment>
-          <PropositionList
-            isCatalogWrap={isCatalogWrap}
-            catalogHandleSortChange={catalogHandleSortChange}
-            catalogSort={catalogSort}
-            wobject={wobject}
-            // allPropositions={allPropositions}
-            allCurrentPropositions={allCurrentPropositions}
-            currentProposition={currentProposition}
-            goToProducts={goToProducts}
-            discardProposition={discardProposition}
-            assignPropositionHandler={assignPropositionHandler}
-            user={user}
-            loadingAssignDiscard={loadingAssignDiscard}
-            isAssign={isAssign}
-            match={match}
-            userName={userName}
-            history={history}
-            isLoadingFlag={isLoadingFlag}
-            parentPermlink={parentPermlink}
-            location={location}
-          />
-        </React.Fragment>
-      )}
+      <PropositionList
+        isCatalogWrap={isCatalogWrap}
+        catalogHandleSortChange={catalogHandleSortChange}
+        catalogSort={catalogSort}
+        wobject={wobject}
+        // allPropositions={allPropositions}
+        allCurrentPropositions={allCurrentPropositions}
+        currentProposition={currentProposition}
+        goToProducts={goToProducts}
+        discardProposition={discardProposition}
+        assignPropositionHandler={assignPropositionHandler}
+        user={user}
+        loadingAssignDiscard={loadingAssignDiscard}
+        isAssign={isAssign}
+        match={match}
+        userName={userName}
+        history={history}
+        isLoadingFlag={isLoadingFlag}
+        parentPermlink={parentPermlink}
+        location={location}
+        locale={locale}
+        listItems={listItems}
+      />
     </React.Fragment>
   );
 };
@@ -273,12 +309,9 @@ PropositionListContainer.propTypes = {
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string,
   isCatalogWrap: PropTypes.bool,
-  getProposListContainer: PropTypes.func,
-  campaigns: PropTypes.shape(),
-  isLoadingPropositions: PropTypes.shape(),
-  currentHash: PropTypes.string,
   isLoadingFlag: PropTypes.bool,
   location: PropTypes.shape().isRequired,
+  listItems: PropTypes.shape(),
 };
 
 PropositionListContainer.defaultProps = {
@@ -296,6 +329,7 @@ PropositionListContainer.defaultProps = {
   isLoadingPropositions: false,
   isLoadingFlag: false,
   currentHash: '',
+  listItems: [],
 };
 
 export default connect(
