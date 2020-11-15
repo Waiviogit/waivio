@@ -6,7 +6,6 @@ import {
   GET_FOLLOWING_SPONSORS_REWARDS,
   CLEAR_FOLLOWING_SPONSORS_REWARDS,
   GET_FRAUD_SUSPICION,
-  GET_PROPOSITIONS_LIST_CONTAINER,
   GET_REWARDS_HISTORY,
   GET_MORE_REWARDS_HISTORY,
 } from './rewardsActions';
@@ -25,8 +24,6 @@ const initialState = {
   loading: false,
   fraudSuspicionData: [],
   hasMoreFraudSuspicionData: false,
-  campaigns: [],
-  isLoadingPropositions: false,
   isLoadingRewardsHistory: false,
   campaignNames: [],
   historyCampaigns: [],
@@ -97,20 +94,6 @@ const rewardsReducer = (state = initialState, action) => {
         hasMoreFraudSuspicionData: hasMore,
       };
     }
-    case GET_PROPOSITIONS_LIST_CONTAINER.START: {
-      return {
-        ...state,
-        isLoadingPropositions: true,
-      };
-    }
-    case GET_PROPOSITIONS_LIST_CONTAINER.SUCCESS: {
-      console.log('action.payload.campaigns: ', action.payload.proposCampaigns);
-      return {
-        ...state,
-        isLoadingPropositions: false,
-        campaigns: action.payload.proposCampaigns,
-      };
-    }
     case GET_REWARDS_HISTORY.START: {
       return {
         ...state,
@@ -177,8 +160,6 @@ export const getFraudSuspicionDataState = state => state.fraudSuspicionData;
 export const getHasMoreFollowingRewards = state => state.hasMoreFollowingRewards;
 export const getHasMoreFraudSuspicionData = state => state.hasMoreFraudSuspicionData;
 export const getIsLoading = state => state.loading;
-export const getPropositionCampaign = state => state.campaigns;
-export const getIsLoadingPropositions = state => state.isLoadingPropositions;
 
 export const getIsLoadingRewardsHistory = state => state.isLoadingRewardsHistory;
 export const getCampaignNames = state => state.campaignNames;

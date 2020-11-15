@@ -136,17 +136,6 @@ export const getFraudSuspicion = ({ fraudSuspicion, sort, skip }) => (dispatch, 
   });
 };
 
-export const GET_PROPOSITIONS_LIST_CONTAINER = createAsyncActionType(
-  '@rewards/GET_PROPOSITIONS_LIST_CONTAINER',
-);
-
-export const getPropositionsForListContainer = reqData => ({
-  type: GET_PROPOSITIONS_LIST_CONTAINER.ACTION,
-  payload: ApiClient.getPropositions(reqData).then(res => ({
-    proposCampaigns: res.campaigns,
-  })),
-});
-
 export const GET_REWARDS_HISTORY = createAsyncActionType('@rewards/GET_REWARDS_HISTORY');
 
 export const getRewardsHistory = requestData => ({

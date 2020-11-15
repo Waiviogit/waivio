@@ -5,16 +5,10 @@ import { withRouter } from 'react-router-dom';
 import { filter, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { message } from 'antd';
-import {
-  getAuthenticatedUser,
-  getIsLoadingPropositions,
-  getLocale,
-  getPropositionCampaign,
-} from '../../../reducers';
+import { getAuthenticatedUser, getLocale } from '../../../reducers';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
 import { assignProposition, declineProposition } from '../../../user/userActions';
-import { getPropositionsForListContainer } from '../../rewardsActions';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
 
 const PropositionListContainer = ({
@@ -237,7 +231,6 @@ PropositionListContainer.defaultProps = {
   catalogGetMenuList: () => {},
   catalogHandleSortChange: () => {},
   catalogSort: '',
-  getProposListContainer: () => {},
   campaigns: {},
   isLoadingPropositions: false,
   isLoadingFlag: false,
@@ -249,12 +242,9 @@ export default connect(
   state => ({
     locale: getLocale(state),
     user: getAuthenticatedUser(state),
-    campaigns: getPropositionCampaign(state),
-    isLoadingPropositions: getIsLoadingPropositions(state),
   }),
   {
     assignPropos: assignProposition,
     declinePropos: declineProposition,
-    getProposListContainer: getPropositionsForListContainer,
   },
 )(withRouter(injectIntl(PropositionListContainer)));
