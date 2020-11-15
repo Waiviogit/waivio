@@ -68,7 +68,6 @@ const CatalogWrap = props => {
   };
 
   const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
-
   return (
     <div>
       <React.Fragment>

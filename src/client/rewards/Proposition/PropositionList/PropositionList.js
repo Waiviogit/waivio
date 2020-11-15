@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { get, map, isEmpty, isEqual, max, min } from 'lodash';
-import { getObjectLists } from '../../../reducers';
-// import PropositionListFromCatalog from './PropositionListFromCatalog';
-// import DefaultPropositionList from './DefaultPropositionList';
 import Proposition from '../Proposition';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import Loading from '../../../components/Icon/Loading';
@@ -39,40 +35,18 @@ const PropositionList = ({
   allCurrentPropositions,
   locale,
 }) => {
-  // let minReward;
-  // let maxReward;
-  // let rewardPrise;
-  // let rewardMax;
   const [parentWobj, setParentWobj] = useState({});
-  console.log('listItems: ', listItems);
+  const [isGetWobject, setIsGetWobject] = useState(false);
+
   useEffect(() => {
     if (!isEmpty(wobject.parent)) {
+      setIsGetWobject(true);
       getObject(get(wobject, ['parent', 'author_permlink']), userName, locale).then(wObject => {
         setParentWobj(wObject);
+        setIsGetWobject(false);
       });
     }
   }, [wobject]);
-
-  // const forSave = {
-  //   isCatalogWrap,
-  //   parentPermlink,
-  // };
-  // console.log(forSave);
-  // if (isCatalogWrap || parentPermlink) {
-  //   minReward = allPropositions
-  //     ? min(map(allPropositions, proposition => proposition.reward))
-  //     : null;
-  //   maxReward = allPropositions
-  //     ? max(map(allPropositions, proposition => proposition.reward))
-  //     : null;
-  //   rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
-  //   rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
-  // } else {
-  //   minReward = get(currentProposition, ['min_reward'], 0);
-  //   maxReward = get(currentProposition, ['max_reward'], 0);
-  //   rewardPrise = `${minReward.toFixed(2)} USD`;
-  //   rewardMax = `${maxReward.toFixed(2)} USD`;
-  // }
 
   const handleCurrentProposition = (currPropos, currWobject) => {
     let minReward;
@@ -90,7 +64,9 @@ const PropositionList = ({
       rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
       rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
 
-      return (
+      return isGetWobject ? (
+        <Loading />
+      ) : (
         <PropositionMainObjectCard
           intl={intl}
           wobject={parentWobj}
@@ -125,37 +101,7 @@ const PropositionList = ({
     );
   };
 
-  // const minReward = get(currentProposition, ['min_reward'], 0);
-  // const maxReward = get(currentProposition, ['max_reward'], 0);
-  // const rewardPrise = `${minReward.toFixed(2)} USD`;
-  // const rewardMax = `${maxReward.toFixed(2)} USD`;
-
   const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
-
-  // const data = {
-  //   intl,
-  //   wobject,
-  //   currentProposition,
-  //   goToProducts,
-  //   maxReward,
-  //   minReward,
-  //   rewardPrise,
-  //   rewardMax,
-  //   allPropositions,
-  //   match,
-  //   assignPropositionHandler,
-  //   discardProposition,
-  //   userName,
-  //   loadingAssignDiscard,
-  //   isAssign,
-  //   user,
-  //   history,
-  //   catalogHandleSortChange,
-  //   catalogSort,
-  //   listItems,
-  //   isLoadingFlag,
-  //   isReviewPage,
-  // };
 
   const getListRow = listItem => {
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
@@ -169,9 +115,6 @@ const PropositionList = ({
       map(allCurrentPropositions, currPropos => {
         const objPermlink = get(currPropos, 'required_object.author_permlink', {});
         const currListItemPermlink = get(listItem, 'author_permlink', {});
-        //
-        // console.log('objPermlink: ', objPermlink);
-        // console.log('currListItemPermlink: ', currListItemPermlink);
 
         if (isEqual(objPermlink, currListItemPermlink)) {
           item = handleCurrentProposition(currPropos, listItem);
@@ -179,19 +122,20 @@ const PropositionList = ({
           item = <ObjectCardView wObject={listItem} inList />;
         }
       });
-
-      // item = <ObjectCardView wObject={listItem} inList />;
     }
     return !isReviewPage && <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
 
-  const getPropositionObjectsIds = () => {
+  const getPropositionObjectsData = item => {
     const arr = [];
     const propositionObjects = get(allCurrentPropositions, '[0]objects', []);
     propositionObjects.forEach(propos => {
       const currentProposObj = get(propos, 'object', {});
-      console.log('currentProposObj: ', currentProposObj);
-      arr.push(get(currentProposObj, '_id'));
+      if (item) {
+        arr.push(get(currentProposObj, `${item}`, ''));
+      } else {
+        arr.push(currentProposObj);
+      }
     });
     return arr;
   };
@@ -209,36 +153,42 @@ const PropositionList = ({
     }
 
     return map(listItems, listItem => {
-      const proposObj = getPropositionObjectsIds();
+      const proposObj = getPropositionObjectsData('_id');
       return !proposObj.includes(get(listItem, '_id')) && getListRow(listItem);
     });
   };
 
   const renderPropositions = () =>
     map(allCurrentPropositions, propos =>
-      map(propos.objects, wobj => (
-        <Proposition
-          proposition={propos}
-          wobj={wobj.object}
-          wobjPrice={wobj.reward}
-          assignCommentPermlink={wobj.permlink}
-          assignProposition={assignPropositionHandler}
-          discardProposition={discardProposition}
-          authorizedUserName={userName}
-          loading={loadingAssignDiscard}
-          key={`${wobj.object.author_permlink}`}
-          assigned={wobj.assigned}
-          history={history}
-          isAssign={isAssign}
-          match={match}
-          user={user}
-        />
-      )),
+      map(propos.objects, wobj => {
+        const wobjId = get(wobj, ['object', '_id'], '');
+        return map(listItems, listItem => {
+          const listItemId = get(listItem, '_id', '');
+          if (isEqual(listItemId, wobjId)) {
+            return (
+              <Proposition
+                proposition={propos}
+                wobj={wobj.object}
+                wobjPrice={wobj.reward}
+                assignCommentPermlink={wobj.permlink}
+                assignProposition={assignPropositionHandler}
+                discardProposition={discardProposition}
+                authorizedUserName={userName}
+                loading={loadingAssignDiscard}
+                key={`${wobj.object.author_permlink}`}
+                assigned={wobj.assigned}
+                history={history}
+                isAssign={isAssign}
+                match={match}
+                user={user}
+              />
+            );
+          }
+          return null;
+        });
+      }),
     );
-  // console.log('allPropositions: ', allPropositions);
-  // console.log('currentProposition: ', currentProposition)
-  // console.log('wobject: ', wobject)
-  // console.log('allCurrentPropositions: ', allCurrentPropositions);
+
   return (
     <React.Fragment>
       {handleCurrentProposition(currentProposition, wobject)}
@@ -267,22 +217,7 @@ const PropositionList = ({
         </React.Fragment>
       )}
     </React.Fragment>
-    // <React.Fragment>
-    //   <PropositionListFromCatalog {...data} />
-    //   <div>-----------------------------------------------------------------</div>
-    //   <DefaultPropositionList {...data} />
-    // </React.Fragment>
   );
-
-  // return (
-  //   <React.Fragment>
-  //     {isCatalogWrap || parentPermlink ? (
-  //       <PropositionListFromCatalog {...data} />
-  //     ) : (
-  //       <DefaultPropositionList {...data} />
-  //     )}
-  //   </React.Fragment>
-  // );
 };
 
 PropositionList.propTypes = {
@@ -302,7 +237,6 @@ PropositionList.propTypes = {
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string,
   isLoadingFlag: PropTypes.bool,
-  // isGetNested: PropTypes.bool,
   listItems: PropTypes.shape(),
   location: PropTypes.shape().isRequired,
   locale: PropTypes.string.isRequired,
@@ -328,6 +262,4 @@ PropositionList.defaultProps = {
   listItems: [],
 };
 
-export default connect(state => ({
-  listItems: getObjectLists(state),
-}))(injectIntl(PropositionList));
+export default injectIntl(PropositionList);
