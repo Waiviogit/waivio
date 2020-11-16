@@ -10,7 +10,7 @@ import { getSettingsSite, getWebsiteLoading } from '../../../reducers';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import { getWebsiteSettings, saveWebsiteSettings } from '../../websiteActions';
-import Loading from "../../../components/Icon/Loading";
+import Loading from '../../../components/Icon/Loading';
 
 import './WebsitesSettings.less';
 
@@ -23,10 +23,9 @@ const WebsitesSettings = ({
   getWebSettings,
   settings,
 }) => {
-  const { getFieldDecorator, getFieldValue } = form;
+  const { getFieldDecorator } = form;
   const [beneficiaryAccount, setBeneficiaryAccount] = useState('');
   const host = match.params.site;
-  const beneficiaryPercent = getFieldValue('beneficiaryPercent');
 
   useEffect(() => {
     getWebSettings(host);
@@ -38,27 +37,24 @@ const WebsitesSettings = ({
     if (beneficiaryAcc) setBeneficiaryAccount(beneficiaryAcc);
   }, [settings]);
 
-  const handleChange = (e, fieldsName) => form.setFieldsValue({ [fieldsName]: e.currentTarget.value })
+  const handleChange = (e, fieldsName) =>
+    form.setFieldsValue({ [fieldsName]: e.currentTarget.value });
 
   const handleSubmit = e => {
     e.preventDefault();
-      form.validateFieldsAndScroll((err, values) => {
-        if (!err) {
-          const beneficiary =
-            beneficiaryAccount && values.beneficiaryPercent
-              ? {
-                account: beneficiaryAccount,
-                percent: values.beneficiaryPercent,
-              }
-              : {};
+    form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const percent = values.beneficiaryPercent || get(settings, ['beneficiary', 'percent']);
+        const account = beneficiaryAccount || get(settings, ['beneficiary', 'account']);
+        const tag = values.googleAnalyticsTag || get(settings, 'googleAnalyticsTag');
+        const beneficiary = account && percent ? { account, percent } : {};
 
-          saveWebSettings(host, values.googleAnalyticsTag, ...beneficiary);
-        }
-      });
-
+        saveWebSettings(host, tag, beneficiary);
+      }
+    });
   };
 
-  if(isEmpty(settings)) return <Loading />
+  if (isEmpty(settings)) return <Loading />;
 
   return (
     <div className="center">
@@ -139,7 +135,7 @@ const WebsitesSettings = ({
             )}
           </Form.Item>
         </div>
-        <Button type="primary" htmlType="submit" loading={loading} >
+        <Button type="primary" htmlType="submit" loading={loading}>
           {intl.formatMessage({
             id: 'save',
             defaultMessage: 'Save',

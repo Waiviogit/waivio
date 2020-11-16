@@ -28,15 +28,21 @@ export const WebsitesConfigurations = ({
   match,
   config,
   saveWebConfig,
-  getMapsCoordinates,
+  // getMapsCoordinates,
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');
   const [showSelectColor, setShowSelectColor] = useState('');
   const [colors, setColors] = useState('');
+  const [image, setImage] = useState('');
+
   const mobileLogo = getFieldValue('mobileLogo') || get(config, 'mobileLogo');
   const desktopLogo = getFieldValue('desktopLogo') || get(config, 'desktopLogo');
+  const logoState = {
+    mobileLogo,
+    desktopLogo,
+  };
   const mapState = {
     mobileMap: getFieldValue('mobileMap') || get(config, 'mobileMap'),
     desktopMap: getFieldValue('desktopMap') || get(config, 'desktopMap'),
@@ -48,16 +54,31 @@ export const WebsitesConfigurations = ({
     getWebConfig(host);
   }, []);
 
-  useEffect(() => {
-    if (!isEmpty(config)) getMapsCoordinates(get(mapState, ['desktopMap', 'center']), 38000);
-  }, [config]);
+  // useEffect(() => {
+  //   if (!isEmpty(config)) getMapsCoordinates(get(mapState, ['desktopMap', 'center']), 38000);
+  // }, [config]);
 
-  const resetModalState = () => setModalState({});
+  const handleSubmitLogoModal = () => {
+    form.setFieldsValue({
+      [modalsState.type]: image,
+    });
+    setModalState({});
+    setImage('');
+  };
 
   const handleModalState = key =>
     setModalState({
-      method: value => form.setFieldsValue({ [key]: value[0].src }),
+      type: key,
+      method: value => setImage(value[0].src),
     });
+
+  const closeLogoModal = () => {
+    const key = modalsState.type;
+
+    form.setFieldsValue({ [key]: logoState[key] });
+    setModalState({});
+    setImage('');
+  };
 
   const getSelectedColor = type => `${get(colors, [type]) || get(config, ['colors', type], '')}`;
 
@@ -299,8 +320,8 @@ export const WebsitesConfigurations = ({
         wrapClassName="Settings__modal"
         title={`Choose logo`}
         closable
-        onCancel={resetModalState}
-        onOk={resetModalState}
+        onCancel={closeLogoModal}
+        onOk={handleSubmitLogoModal}
         visible={!isEmpty(modalsState)}
       >
         {!isEmpty(modalsState) && (

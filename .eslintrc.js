@@ -44,10 +44,10 @@ module.exports = {
         'render'
       ]
     }],
-    "padding-line-between-statements": [2,
-      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
-      { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
-      { "blankLine": "always", "prev": "*", "next": "return" }
-    ]
+    // "padding-line-between-statements": [2,
+    //   { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+    //   { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
+    //   { "blankLine": "always", "prev": "*", "next": "return" }
+    // ]
   },
 };

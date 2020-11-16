@@ -1,3 +1,5 @@
+import { size } from 'lodash';
+
 export default {
   domain: [
     {
@@ -9,10 +11,17 @@ export default {
       // message:
     },
     {
-      validator: (rule, value) =>
-        value !== 'www'
-          ? Promise.resolve()
-          : Promise.reject('You can`t use only www in domain name'),
+      validator: (rule, value) => {
+        if (value === 'www') {
+          return Promise.reject('You can`t use only www in domain name');
+        }
+
+        if (size(value) < 3) {
+          return Promise.reject('The domain must contain at least 3 characters.');
+        }
+
+        return Promise.resolve();
+      },
     },
   ],
   politics: [

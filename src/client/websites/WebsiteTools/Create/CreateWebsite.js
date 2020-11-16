@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -26,9 +26,13 @@ export const CreateWebsite = ({
   loading,
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
+  const [searchString, setSearchString] = useState('');
   const template = getFieldValue('parent');
   const subDomain = getFieldValue('domain');
   const domainNamesList = Object.keys(parentDomain);
+  const showingParentList = searchString
+    ? domainNamesList.filter(host => host.includes(searchString))
+    : domainNamesList;
   const available = get(availableStatus, 'status');
   const statusMessageClassList = available ? 'CreateWebsite__available' : 'CreateWebsite__error';
   const domainStatus = useCallback(
@@ -37,6 +41,11 @@ export const CreateWebsite = ({
       300,
     ),
     [template],
+  );
+
+  const handleSearchHost = useCallback(
+    debounce(value => setSearchString(value), 300),
+    [],
   );
 
   useEffect(() => {
@@ -91,15 +100,19 @@ export const CreateWebsite = ({
               </h3>
               {getFieldDecorator('parent', {
                 rules: validateRules.autocomplete,
-              })(
-                <AutoComplete>
-                  {domainNamesList.map(domain => (
-                    <AutoComplete.Option key={domain} value={domain}>
-                      {domain}
-                    </AutoComplete.Option>
-                  ))}
-                </AutoComplete>,
-              )}
+              })(<div />)}
+              <AutoComplete
+                onSelect={value => {
+                  form.setFieldsValue({ parent: value });
+                }}
+                onChange={value => handleSearchHost(value)}
+              >
+                {showingParentList.map(domain => (
+                  <AutoComplete.Option key={domain} value={domain}>
+                    {domain}
+                  </AutoComplete.Option>
+                ))}
+              </AutoComplete>
             </Form.Item>
             <Form.Item>
               <h3>
@@ -128,7 +141,7 @@ export const CreateWebsite = ({
                 defaultMessage: 'It will be used as a second level domain name.',
               })}
             </p>
-            <Form.Item>
+            <Form.Item className="CreateWebsite__checkbox-wrap">
               {getFieldDecorator('politics', {
                 rules: validateRules.politics,
               })(
@@ -136,9 +149,18 @@ export const CreateWebsite = ({
                   <span className="ant-form-item-required">
                     {intl.formatMessage({
                       id: 'website_create_alerts_info',
-                      defaultMessage:
-                        'I have read and agree to the terms and conditions of the Web Hosting Service Agreement',
-                    })}
+                      defaultMessage: 'I have read and agree to the terms and conditions of the',
+                    })}{' '}
+                    <a
+                      href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {intl.formatMessage({
+                        id: 'web_hosting_service',
+                        defaultMessage: 'Web Hosting Service Agreement',
+                      })}
+                    </a>
                   </span>
                 </Checkbox>,
               )}
