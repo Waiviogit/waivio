@@ -30,7 +30,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink, 
 
   const responseSocial = async (response, socialNetwork) => {
     setIsLoading(true);
-    if (response.error || isEmpty(response.id)) {
+    if (response.error || (socialNetwork === 'facebook' && isEmpty(response.id))) {
       setIsLoading(false);
       setIsModalOpen(false);
     } else if (isModalOpen && response) {
