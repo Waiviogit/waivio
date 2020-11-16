@@ -163,6 +163,7 @@ class WalletTableContainer extends React.Component {
     if (isGuestPage) {
       return getDataDemoTransactions(username, demoTransactionsHistory);
     }
+
     return get(transactionsHistory, username, []);
   };
 
@@ -233,6 +234,7 @@ class WalletTableContainer extends React.Component {
       tillDate: this.state.endDate,
       types: TRANSACTION_TYPES,
     };
+
     return handleLoadMoreTransactions(loadMoreValues);
   };
 

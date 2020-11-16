@@ -36,11 +36,13 @@ const BlacklistContent = ({
     } else if (listType === 'references') {
       return reverse(followListsUsers);
     }
+
     return reverse(blacklistUsers);
   }, [listType, whiteListUsers, followListsUsers, blacklistUsers]);
 
   const removeUser = user => {
     const newUsers = filter(users, obj => obj.account !== user.account);
+
     setUsers(newUsers);
   };
 
@@ -56,6 +58,7 @@ const BlacklistContent = ({
         defaultMessage: 'References',
       });
     }
+
     return intl.formatMessage({
       id: 'blacklist',
       defaultMessage: 'Blacklist',
@@ -67,14 +70,18 @@ const BlacklistContent = ({
   const handleGetBlacklist = async messageSuccess => {
     try {
       const data = await dispatch(getBlacklist(userName));
+
       if (listType === 'whitelist') {
         const whiteList = get(data, ['value', 'blackList', 'whiteList']);
+
         await saveWhitelistUsers(whiteList);
       } else if (listType === 'references') {
         const followLists = get(data, ['value', 'blackList', 'followLists']);
+
         await saveFollowLists(followLists);
       } else {
         const blacklist = get(data, ['value', 'blackList', 'blackList']);
+
         await saveBlacklistUsers(blacklist);
       }
       message.success(
@@ -92,6 +99,7 @@ const BlacklistContent = ({
   const handleDeleteUsers = async user => {
     try {
       let id = 'removeUsersFromBlackList';
+
       if (listType === 'whitelist') id = 'removeUsersFromWhiteList';
       if (listType === 'references') id = 'unFollowAnotherBlacklist';
       if (user) {

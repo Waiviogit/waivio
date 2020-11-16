@@ -24,6 +24,7 @@ const LINKS = {
   TOOLS_SETTINGS_GUESTS: '/guests-settings',
   TOOLS_SETTINGS_NOTIFICATIONS: '/notification-settings',
   ABOUT: '/object/ylr-waivio/page#mwt-about-waivio',
+  WEBSITE_CREATE: '/create',
   NOTIFICATIONS: '/notifications-list',
   USERS: PATH_NAME_DISCOVER,
   BLOG: '/blog',
@@ -39,6 +40,7 @@ const TOOLS_URLS = [
   LINKS.TOOLS_SETTINGS,
   LINKS.TOOLS_SETTINGS_GUESTS,
   LINKS.TOOLS_SETTINGS_NOTIFICATIONS,
+  LINKS.WEBSITE_CREATE,
 ];
 
 const TopNavigation = ({ location: { pathname } }) => {

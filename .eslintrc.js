@@ -19,6 +19,7 @@ module.exports = {
   extends: ['airbnb', 'prettier', 'prettier/react'],
   rules: {
     'react/jsx-filename-extension': [ERROR, { extensions: ['.js'] }],
+    'no-duplicate-imports': 2,
     'react/jsx-key': 2,
     'import/no-extraneous-dependencies': [
       ERROR,
@@ -42,6 +43,11 @@ module.exports = {
         'everything-else',
         'render'
       ]
-    }]
+    }],
+    // "padding-line-between-statements": [2,
+    //   { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+    //   { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
+    //   { "blankLine": "always", "prev": "*", "next": "return" }
+    // ]
   },
 };

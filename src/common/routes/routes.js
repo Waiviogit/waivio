@@ -108,6 +108,11 @@ const routes = {
       component: Views.Drafts,
     },
     {
+      path: '/drafts',
+      exact: true,
+      component: Views.Drafts,
+    },
+    {
       path: '/replies',
       exact: true,
       component: Views.Replies,
@@ -156,6 +161,64 @@ const routes = {
       path: '/notification-settings',
       exact: true,
       component: Views.NotificationSettings,
+    },
+    {
+      path: '/create',
+      exact: true,
+      component: Views.CreateWebsite,
+    },
+    {
+      path: '/manage',
+      exact: true,
+      component: Views.ManageWebsite,
+    },
+    {
+      path: '/payments',
+      exact: true,
+      component: Views.ReportsWebsite,
+    },
+    {
+      path: `/:site/(${URL.WEBSITES.tabs})`,
+      pathScope: '/:site',
+      exact: true,
+      component: Views.WebsiteSettings,
+      routes: [
+        {
+          path: '/configuration',
+          exact: true,
+          component: Views.WebsitesConfigurations,
+        },
+        {
+          path: '/administrations',
+          exact: true,
+          component: Views.WebsitesAdministrators,
+        },
+        {
+          path: '/moderators',
+          exact: true,
+          component: Views.WebsiteModerators,
+        },
+        {
+          path: '/authorities',
+          exact: true,
+          component: Views.WebsitesAuthorities,
+        },
+        {
+          path: '/settings',
+          exact: true,
+          component: Views.WebsitesSettings,
+        },
+        {
+          path: '/objects-filters',
+          exact: true,
+          component: Views.WebsiteObjectFilters,
+        },
+        {
+          path: '/muted-users',
+          exact: true,
+          component: Views.WebsiteRestrictions,
+        },
+      ],
     },
     {
       path: `/@:name/(${URL.USER.tabs})?/(table)?`,
@@ -320,31 +383,6 @@ const routes = {
       path: '/edit',
       component: Views.BusyEditor,
       exact: true,
-    },
-    {
-      path: '/settings',
-      exact: true,
-      component: Views.Settings,
-    },
-    {
-      path: '/edit-profile',
-      exact: true,
-      component: Views.ProfileSettings,
-    },
-    {
-      path: '/invite',
-      exact: true,
-      component: Views.Invite,
-    },
-    {
-      path: '/guests-settings',
-      exact: true,
-      component: Views.GuestsSettings,
-    },
-    {
-      path: '/notification-settings',
-      exact: true,
-      component: Views.NotificationSettings,
     },
     {
       path: '/search',

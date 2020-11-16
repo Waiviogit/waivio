@@ -25,6 +25,7 @@ export const getContent = (author, permlink, afterLike) => (dispatch, getState) 
       promise: ApiClient.getContent(author, permlink, locale, follower).then(res => {
         if (res.id === 0) throw new Error('There is no such post');
         if (res.message) throw new Error(res.message);
+
         return res;
       }),
     },
@@ -126,6 +127,7 @@ export const voteCommentFromRewards = (postId, author, permlink, weight = 10000)
 
     // Delay to make sure you get the latest data (unknown issue with API)
     setTimeout(() => dispatch(getContent(author, permlink, true)), 1000);
+
     return res;
   });
 };

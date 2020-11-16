@@ -64,6 +64,7 @@ class MapObjectInfo extends React.Component {
     const isMarked = Boolean(
       (wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions)),
     );
+
     return lat && lng ? (
       <CustomMarker
         key={`obj${wobject.author_permlink}`}
@@ -85,6 +86,7 @@ class MapObjectInfo extends React.Component {
   getOverlayLayout = () => {
     const { infoboxData } = this.state;
     const wobj = infoboxData.wobject;
+
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
         <div
@@ -105,6 +107,7 @@ class MapObjectInfo extends React.Component {
   setCoordinates = () => {
     if (navigator && navigator.geolocation) {
       const positionGPS = navigator.geolocation.getCurrentPosition(this.showUserPosition);
+
       if (positionGPS) {
         this.setState({ center: positionGPS });
       }
@@ -125,7 +128,9 @@ class MapObjectInfo extends React.Component {
   calculateRadius = zoom => {
     const { width, isFullscreenMode } = this.props;
     let radius = getRadius(zoom);
+
     if (isFullscreenMode) radius = (radius * this.mapRef.current.state.width) / width;
+
     return radius;
   };
 
@@ -134,6 +139,7 @@ class MapObjectInfo extends React.Component {
     if (this.state.zoom >= 18) return null;
     const zoom = this.state.zoom + 1;
     const radius = this.calculateRadius(zoom);
+
     this.setState({ zoom, radius });
   };
 
@@ -142,6 +148,7 @@ class MapObjectInfo extends React.Component {
     if (this.state.zoom <= 1) return null;
     const zoom = this.state.zoom - 1;
     const radius = this.calculateRadius(zoom);
+
     this.setState({ zoom, radius });
   };
 
@@ -164,6 +171,7 @@ class MapObjectInfo extends React.Component {
     const { mapHeigth, isFullscreenMode, wobject } = this.props;
     const { center, infoboxData, zoom } = this.state;
     const markersLayout = this.getMarkers(wobject);
+
     return center ? (
       <div className="MapOS">
         <Map provider={mapProvider} center={center} zoom={zoom} height={mapHeigth} animate>

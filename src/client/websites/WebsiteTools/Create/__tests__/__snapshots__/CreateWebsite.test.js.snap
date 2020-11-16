@@ -1,0 +1,1680 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<CreateWebsite /> renders without exploding 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <CreateWebsite
+    availableStatus={
+      Object {
+        "intl": Object {
+          "defaultMessage": "Available",
+          "id": "available",
+        },
+        "status": 200,
+      }
+    }
+    checkStatusAvailableDomain={[MockFunction]}
+    createWebsite={[MockFunction]}
+    form={
+      Object {
+        "getFieldDecorator": [MockFunction] {
+          "calls": Array [
+            Array [
+              "parent",
+              Object {
+                "rules": Array [
+                  Object {
+                    "message": "Field is required",
+                    "required": true,
+                  },
+                ],
+              },
+            ],
+            Array [
+              "domain",
+              Object {
+                "rules": Array [
+                  Object {
+                    "message": "Field is required",
+                    "required": true,
+                  },
+                  Object {
+                    "pattern": /\\[a-z,0-9\\]\\+\\$/,
+                  },
+                  Object {
+                    "validator": [Function],
+                  },
+                ],
+              },
+            ],
+            Array [
+              "politics",
+              Object {
+                "rules": Array [
+                  Object {
+                    "message": "Should accept agreement",
+                    "required": true,
+                  },
+                ],
+              },
+            ],
+          ],
+        },
+        "getFieldValue": [MockFunction] {
+          "calls": Array [
+            Array [
+              "parent",
+            ],
+            Array [
+              "domain",
+            ],
+          ],
+        },
+        "validateFieldsAndScroll": [MockFunction],
+      }
+    }
+    getDomainList={[Function]}
+    intl={
+      Object {
+        "formatMessage": [MockFunction] {
+          "calls": Array [
+            Array [
+              Object {
+                "defaultMessage": "Create new website",
+                "id": "create_new_website",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Select website template:",
+                "id": "select_website_template",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Specify name for your website:",
+                "id": "name_website",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Available",
+                "id": "available",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "It will be used as a second level domain name.",
+                "id": "info_level_domain_name",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "I have read and agree to the terms and conditions of the Web Hosting Service Agreement",
+                "id": "website_create_alerts_info",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Create website",
+                "id": "create_website",
+              },
+            ],
+          ],
+        },
+      }
+    }
+    loading={false}
+    parentDomain={Array []}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <HelmetWrapper
+          defer={true}
+          encodeSpecialCharacters={true}
+        >
+          <title>
+             
+            - Waivio
+          </title>
+        </HelmetWrapper>,
+        <div
+          className="settings-layout container"
+        >
+          <Affix
+            className="leftContainer"
+            stickPosition={77}
+          >
+            <div
+              className="left"
+            >
+              <LeftSidebar />
+            </div>
+          </Affix>
+          <div
+            className="center"
+          >
+            <withRouter(MobileNavigation) />
+            <h1>
+              <FormattedMessage
+                defaultMessage="Create new website"
+                id="create_new_website"
+                values={Object {}}
+              />
+            </h1>
+            <Form
+              className="CreateWebsite"
+              colon={true}
+              hideRequiredMark={false}
+              id="CreateWebsite"
+              layout="horizontal"
+              onSubmit={[Function]}
+            >
+              <FormItem
+                hasFeedback={false}
+              >
+                <h3>
+                  <span
+                    className="ant-form-item-required"
+                  />
+                </h3>
+                <AutoComplete
+                  choiceTransitionName="zoom"
+                  filterOption={false}
+                  optionLabelProp="children"
+                  showSearch={false}
+                  transitionName="slide-up"
+                />
+              </FormItem>
+              <FormItem
+                hasFeedback={false}
+              >
+                <h3>
+                  <span
+                    className="ant-form-item-required"
+                  />
+                </h3>
+                <div
+                  className="CreateWebsite__domain-wrap"
+                >
+                  <Input
+                    disabled={true}
+                    id="domain"
+                    onInput={[Function]}
+                    type="text"
+                  />
+                </div>
+              </FormItem>
+              <span
+                className="CreateWebsite__available"
+              />
+              <p />
+              <FormItem
+                hasFeedback={false}
+              >
+                <Checkbox
+                  indeterminate={false}
+                >
+                  <span
+                    className="ant-form-item-required"
+                  />
+                </Checkbox>
+              </FormItem>
+              <FormItem
+                hasFeedback={false}
+              >
+                <Button
+                  block={false}
+                  ghost={false}
+                  htmlType="submit"
+                  loading={false}
+                  type="primary"
+                />
+              </FormItem>
+            </Form>
+          </div>
+        </div>,
+      ],
+      "className": "shifted",
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": <title>
+             
+            - Waivio
+          </title>,
+          "defer": true,
+          "encodeSpecialCharacters": true,
+        },
+        "ref": null,
+        "rendered": Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              undefined,
+              " ",
+              "- Waivio",
+            ],
+          },
+          "ref": null,
+          "rendered": Array [
+            undefined,
+            " ",
+            "- Waivio",
+          ],
+          "type": "title",
+        },
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <Affix
+              className="leftContainer"
+              stickPosition={77}
+            >
+              <div
+                className="left"
+              >
+                <LeftSidebar />
+              </div>
+            </Affix>,
+            <div
+              className="center"
+            >
+              <withRouter(MobileNavigation) />
+              <h1>
+                <FormattedMessage
+                  defaultMessage="Create new website"
+                  id="create_new_website"
+                  values={Object {}}
+                />
+              </h1>
+              <Form
+                className="CreateWebsite"
+                colon={true}
+                hideRequiredMark={false}
+                id="CreateWebsite"
+                layout="horizontal"
+                onSubmit={[Function]}
+              >
+                <FormItem
+                  hasFeedback={false}
+                >
+                  <h3>
+                    <span
+                      className="ant-form-item-required"
+                    />
+                  </h3>
+                  <AutoComplete
+                    choiceTransitionName="zoom"
+                    filterOption={false}
+                    optionLabelProp="children"
+                    showSearch={false}
+                    transitionName="slide-up"
+                  />
+                </FormItem>
+                <FormItem
+                  hasFeedback={false}
+                >
+                  <h3>
+                    <span
+                      className="ant-form-item-required"
+                    />
+                  </h3>
+                  <div
+                    className="CreateWebsite__domain-wrap"
+                  >
+                    <Input
+                      disabled={true}
+                      id="domain"
+                      onInput={[Function]}
+                      type="text"
+                    />
+                  </div>
+                </FormItem>
+                <span
+                  className="CreateWebsite__available"
+                />
+                <p />
+                <FormItem
+                  hasFeedback={false}
+                >
+                  <Checkbox
+                    indeterminate={false}
+                  >
+                    <span
+                      className="ant-form-item-required"
+                    />
+                  </Checkbox>
+                </FormItem>
+                <FormItem
+                  hasFeedback={false}
+                >
+                  <Button
+                    block={false}
+                    ghost={false}
+                    htmlType="submit"
+                    loading={false}
+                    type="primary"
+                  />
+                </FormItem>
+              </Form>
+            </div>,
+          ],
+          "className": "settings-layout container",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "children": <div
+                className="left"
+              >
+                <LeftSidebar />
+              </div>,
+              "className": "leftContainer",
+              "stickPosition": 77,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <LeftSidebar />,
+                "className": "left",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "function",
+                "props": Object {},
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "div",
+            },
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <withRouter(MobileNavigation) />,
+                <h1>
+                  <FormattedMessage
+                    defaultMessage="Create new website"
+                    id="create_new_website"
+                    values={Object {}}
+                  />
+                </h1>,
+                <Form
+                  className="CreateWebsite"
+                  colon={true}
+                  hideRequiredMark={false}
+                  id="CreateWebsite"
+                  layout="horizontal"
+                  onSubmit={[Function]}
+                >
+                  <FormItem
+                    hasFeedback={false}
+                  >
+                    <h3>
+                      <span
+                        className="ant-form-item-required"
+                      />
+                    </h3>
+                    <AutoComplete
+                      choiceTransitionName="zoom"
+                      filterOption={false}
+                      optionLabelProp="children"
+                      showSearch={false}
+                      transitionName="slide-up"
+                    />
+                  </FormItem>
+                  <FormItem
+                    hasFeedback={false}
+                  >
+                    <h3>
+                      <span
+                        className="ant-form-item-required"
+                      />
+                    </h3>
+                    <div
+                      className="CreateWebsite__domain-wrap"
+                    >
+                      <Input
+                        disabled={true}
+                        id="domain"
+                        onInput={[Function]}
+                        type="text"
+                      />
+                    </div>
+                  </FormItem>
+                  <span
+                    className="CreateWebsite__available"
+                  />
+                  <p />
+                  <FormItem
+                    hasFeedback={false}
+                  >
+                    <Checkbox
+                      indeterminate={false}
+                    >
+                      <span
+                        className="ant-form-item-required"
+                      />
+                    </Checkbox>
+                  </FormItem>
+                  <FormItem
+                    hasFeedback={false}
+                  >
+                    <Button
+                      block={false}
+                      ghost={false}
+                      htmlType="submit"
+                      loading={false}
+                      type="primary"
+                    />
+                  </FormItem>
+                </Form>,
+              ],
+              "className": "center",
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "function",
+                "props": Object {},
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": <FormattedMessage
+                    defaultMessage="Create new website"
+                    id="create_new_website"
+                    values={Object {}}
+                  />,
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "defaultMessage": "Create new website",
+                    "id": "create_new_website",
+                    "values": Object {},
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                "type": "h1",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": Array [
+                    <FormItem
+                      hasFeedback={false}
+                    >
+                      <h3>
+                        <span
+                          className="ant-form-item-required"
+                        />
+                      </h3>
+                      <AutoComplete
+                        choiceTransitionName="zoom"
+                        filterOption={false}
+                        optionLabelProp="children"
+                        showSearch={false}
+                        transitionName="slide-up"
+                      />
+                    </FormItem>,
+                    <FormItem
+                      hasFeedback={false}
+                    >
+                      <h3>
+                        <span
+                          className="ant-form-item-required"
+                        />
+                      </h3>
+                      <div
+                        className="CreateWebsite__domain-wrap"
+                      >
+                        <Input
+                          disabled={true}
+                          id="domain"
+                          onInput={[Function]}
+                          type="text"
+                        />
+                      </div>
+                    </FormItem>,
+                    <span
+                      className="CreateWebsite__available"
+                    />,
+                    <p />,
+                    <FormItem
+                      hasFeedback={false}
+                    >
+                      <Checkbox
+                        indeterminate={false}
+                      >
+                        <span
+                          className="ant-form-item-required"
+                        />
+                      </Checkbox>
+                    </FormItem>,
+                    <FormItem
+                      hasFeedback={false}
+                    >
+                      <Button
+                        block={false}
+                        ghost={false}
+                        htmlType="submit"
+                        loading={false}
+                        type="primary"
+                      />
+                    </FormItem>,
+                  ],
+                  "className": "CreateWebsite",
+                  "colon": true,
+                  "hideRequiredMark": false,
+                  "id": "CreateWebsite",
+                  "layout": "horizontal",
+                  "onSubmit": [Function],
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "children": Array [
+                        <h3>
+                          <span
+                            className="ant-form-item-required"
+                          />
+                        </h3>,
+                        <AutoComplete
+                          choiceTransitionName="zoom"
+                          filterOption={false}
+                          optionLabelProp="children"
+                          showSearch={false}
+                          transitionName="slide-up"
+                        />,
+                      ],
+                      "hasFeedback": false,
+                    },
+                    "ref": null,
+                    "rendered": Array [
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "host",
+                        "props": Object {
+                          "children": <span
+                            className="ant-form-item-required"
+                          />,
+                        },
+                        "ref": null,
+                        "rendered": Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "host",
+                          "props": Object {
+                            "children": undefined,
+                            "className": "ant-form-item-required",
+                          },
+                          "ref": null,
+                          "rendered": null,
+                          "type": "span",
+                        },
+                        "type": "h3",
+                      },
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "class",
+                        "props": Object {
+                          "children": Array [],
+                          "choiceTransitionName": "zoom",
+                          "filterOption": false,
+                          "optionLabelProp": "children",
+                          "showSearch": false,
+                          "transitionName": "slide-up",
+                        },
+                        "ref": null,
+                        "rendered": Array [],
+                        "type": [Function],
+                      },
+                    ],
+                    "type": [Function],
+                  },
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "children": Array [
+                        <h3>
+                          <span
+                            className="ant-form-item-required"
+                          />
+                        </h3>,
+                        <div
+                          className="CreateWebsite__domain-wrap"
+                        >
+                          <Input
+                            disabled={true}
+                            id="domain"
+                            onInput={[Function]}
+                            type="text"
+                          />
+                        </div>,
+                      ],
+                      "hasFeedback": false,
+                    },
+                    "ref": null,
+                    "rendered": Array [
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "host",
+                        "props": Object {
+                          "children": <span
+                            className="ant-form-item-required"
+                          />,
+                        },
+                        "ref": null,
+                        "rendered": Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "host",
+                          "props": Object {
+                            "children": undefined,
+                            "className": "ant-form-item-required",
+                          },
+                          "ref": null,
+                          "rendered": null,
+                          "type": "span",
+                        },
+                        "type": "h3",
+                      },
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "host",
+                        "props": Object {
+                          "children": Array [
+                            <Input
+                              disabled={true}
+                              id="domain"
+                              onInput={[Function]}
+                              type="text"
+                            />,
+                            undefined,
+                          ],
+                          "className": "CreateWebsite__domain-wrap",
+                        },
+                        "ref": null,
+                        "rendered": Array [
+                          Object {
+                            "instance": null,
+                            "key": undefined,
+                            "nodeType": "class",
+                            "props": Object {
+                              "disabled": true,
+                              "id": "domain",
+                              "onInput": [Function],
+                              "type": "text",
+                            },
+                            "ref": null,
+                            "rendered": null,
+                            "type": [Function],
+                          },
+                          undefined,
+                        ],
+                        "type": "div",
+                      },
+                    ],
+                    "type": [Function],
+                  },
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": undefined,
+                      "className": "CreateWebsite__available",
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": "span",
+                  },
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": undefined,
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": "p",
+                  },
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "children": <Checkbox
+                        indeterminate={false}
+                      >
+                        <span
+                          className="ant-form-item-required"
+                        />
+                      </Checkbox>,
+                      "hasFeedback": false,
+                    },
+                    "ref": null,
+                    "rendered": Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "class",
+                      "props": Object {
+                        "children": <span
+                          className="ant-form-item-required"
+                        />,
+                        "indeterminate": false,
+                      },
+                      "ref": null,
+                      "rendered": Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "host",
+                        "props": Object {
+                          "children": undefined,
+                          "className": "ant-form-item-required",
+                        },
+                        "ref": null,
+                        "rendered": null,
+                        "type": "span",
+                      },
+                      "type": [Function],
+                    },
+                    "type": [Function],
+                  },
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "children": <Button
+                        block={false}
+                        ghost={false}
+                        htmlType="submit"
+                        loading={false}
+                        type="primary"
+                      />,
+                      "hasFeedback": false,
+                    },
+                    "ref": null,
+                    "rendered": Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "class",
+                      "props": Object {
+                        "block": false,
+                        "children": undefined,
+                        "ghost": false,
+                        "htmlType": "submit",
+                        "loading": false,
+                        "type": "primary",
+                      },
+                      "ref": null,
+                      "rendered": null,
+                      "type": [Function],
+                    },
+                    "type": [Function],
+                  },
+                ],
+                "type": [Function],
+              },
+            ],
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <HelmetWrapper
+            defer={true}
+            encodeSpecialCharacters={true}
+          >
+            <title>
+               
+              - Waivio
+            </title>
+          </HelmetWrapper>,
+          <div
+            className="settings-layout container"
+          >
+            <Affix
+              className="leftContainer"
+              stickPosition={77}
+            >
+              <div
+                className="left"
+              >
+                <LeftSidebar />
+              </div>
+            </Affix>
+            <div
+              className="center"
+            >
+              <withRouter(MobileNavigation) />
+              <h1>
+                <FormattedMessage
+                  defaultMessage="Create new website"
+                  id="create_new_website"
+                  values={Object {}}
+                />
+              </h1>
+              <Form
+                className="CreateWebsite"
+                colon={true}
+                hideRequiredMark={false}
+                id="CreateWebsite"
+                layout="horizontal"
+                onSubmit={[Function]}
+              >
+                <FormItem
+                  hasFeedback={false}
+                >
+                  <h3>
+                    <span
+                      className="ant-form-item-required"
+                    />
+                  </h3>
+                  <AutoComplete
+                    choiceTransitionName="zoom"
+                    filterOption={false}
+                    optionLabelProp="children"
+                    showSearch={false}
+                    transitionName="slide-up"
+                  />
+                </FormItem>
+                <FormItem
+                  hasFeedback={false}
+                >
+                  <h3>
+                    <span
+                      className="ant-form-item-required"
+                    />
+                  </h3>
+                  <div
+                    className="CreateWebsite__domain-wrap"
+                  >
+                    <Input
+                      disabled={true}
+                      id="domain"
+                      onInput={[Function]}
+                      type="text"
+                    />
+                  </div>
+                </FormItem>
+                <span
+                  className="CreateWebsite__available"
+                />
+                <p />
+                <FormItem
+                  hasFeedback={false}
+                >
+                  <Checkbox
+                    indeterminate={false}
+                  >
+                    <span
+                      className="ant-form-item-required"
+                    />
+                  </Checkbox>
+                </FormItem>
+                <FormItem
+                  hasFeedback={false}
+                >
+                  <Button
+                    block={false}
+                    ghost={false}
+                    htmlType="submit"
+                    loading={false}
+                    type="primary"
+                  />
+                </FormItem>
+              </Form>
+            </div>
+          </div>,
+        ],
+        "className": "shifted",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": <title>
+               
+              - Waivio
+            </title>,
+            "defer": true,
+            "encodeSpecialCharacters": true,
+          },
+          "ref": null,
+          "rendered": Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                undefined,
+                " ",
+                "- Waivio",
+              ],
+            },
+            "ref": null,
+            "rendered": Array [
+              undefined,
+              " ",
+              "- Waivio",
+            ],
+            "type": "title",
+          },
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <Affix
+                className="leftContainer"
+                stickPosition={77}
+              >
+                <div
+                  className="left"
+                >
+                  <LeftSidebar />
+                </div>
+              </Affix>,
+              <div
+                className="center"
+              >
+                <withRouter(MobileNavigation) />
+                <h1>
+                  <FormattedMessage
+                    defaultMessage="Create new website"
+                    id="create_new_website"
+                    values={Object {}}
+                  />
+                </h1>
+                <Form
+                  className="CreateWebsite"
+                  colon={true}
+                  hideRequiredMark={false}
+                  id="CreateWebsite"
+                  layout="horizontal"
+                  onSubmit={[Function]}
+                >
+                  <FormItem
+                    hasFeedback={false}
+                  >
+                    <h3>
+                      <span
+                        className="ant-form-item-required"
+                      />
+                    </h3>
+                    <AutoComplete
+                      choiceTransitionName="zoom"
+                      filterOption={false}
+                      optionLabelProp="children"
+                      showSearch={false}
+                      transitionName="slide-up"
+                    />
+                  </FormItem>
+                  <FormItem
+                    hasFeedback={false}
+                  >
+                    <h3>
+                      <span
+                        className="ant-form-item-required"
+                      />
+                    </h3>
+                    <div
+                      className="CreateWebsite__domain-wrap"
+                    >
+                      <Input
+                        disabled={true}
+                        id="domain"
+                        onInput={[Function]}
+                        type="text"
+                      />
+                    </div>
+                  </FormItem>
+                  <span
+                    className="CreateWebsite__available"
+                  />
+                  <p />
+                  <FormItem
+                    hasFeedback={false}
+                  >
+                    <Checkbox
+                      indeterminate={false}
+                    >
+                      <span
+                        className="ant-form-item-required"
+                      />
+                    </Checkbox>
+                  </FormItem>
+                  <FormItem
+                    hasFeedback={false}
+                  >
+                    <Button
+                      block={false}
+                      ghost={false}
+                      htmlType="submit"
+                      loading={false}
+                      type="primary"
+                    />
+                  </FormItem>
+                </Form>
+              </div>,
+            ],
+            "className": "settings-layout container",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": <div
+                  className="left"
+                >
+                  <LeftSidebar />
+                </div>,
+                "className": "leftContainer",
+                "stickPosition": 77,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": <LeftSidebar />,
+                  "className": "left",
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "function",
+                  "props": Object {},
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                "type": "div",
+              },
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <withRouter(MobileNavigation) />,
+                  <h1>
+                    <FormattedMessage
+                      defaultMessage="Create new website"
+                      id="create_new_website"
+                      values={Object {}}
+                    />
+                  </h1>,
+                  <Form
+                    className="CreateWebsite"
+                    colon={true}
+                    hideRequiredMark={false}
+                    id="CreateWebsite"
+                    layout="horizontal"
+                    onSubmit={[Function]}
+                  >
+                    <FormItem
+                      hasFeedback={false}
+                    >
+                      <h3>
+                        <span
+                          className="ant-form-item-required"
+                        />
+                      </h3>
+                      <AutoComplete
+                        choiceTransitionName="zoom"
+                        filterOption={false}
+                        optionLabelProp="children"
+                        showSearch={false}
+                        transitionName="slide-up"
+                      />
+                    </FormItem>
+                    <FormItem
+                      hasFeedback={false}
+                    >
+                      <h3>
+                        <span
+                          className="ant-form-item-required"
+                        />
+                      </h3>
+                      <div
+                        className="CreateWebsite__domain-wrap"
+                      >
+                        <Input
+                          disabled={true}
+                          id="domain"
+                          onInput={[Function]}
+                          type="text"
+                        />
+                      </div>
+                    </FormItem>
+                    <span
+                      className="CreateWebsite__available"
+                    />
+                    <p />
+                    <FormItem
+                      hasFeedback={false}
+                    >
+                      <Checkbox
+                        indeterminate={false}
+                      >
+                        <span
+                          className="ant-form-item-required"
+                        />
+                      </Checkbox>
+                    </FormItem>
+                    <FormItem
+                      hasFeedback={false}
+                    >
+                      <Button
+                        block={false}
+                        ghost={false}
+                        htmlType="submit"
+                        loading={false}
+                        type="primary"
+                      />
+                    </FormItem>
+                  </Form>,
+                ],
+                "className": "center",
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "function",
+                  "props": Object {},
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": <FormattedMessage
+                      defaultMessage="Create new website"
+                      id="create_new_website"
+                      values={Object {}}
+                    />,
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "defaultMessage": "Create new website",
+                      "id": "create_new_website",
+                      "values": Object {},
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  "type": "h1",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "children": Array [
+                      <FormItem
+                        hasFeedback={false}
+                      >
+                        <h3>
+                          <span
+                            className="ant-form-item-required"
+                          />
+                        </h3>
+                        <AutoComplete
+                          choiceTransitionName="zoom"
+                          filterOption={false}
+                          optionLabelProp="children"
+                          showSearch={false}
+                          transitionName="slide-up"
+                        />
+                      </FormItem>,
+                      <FormItem
+                        hasFeedback={false}
+                      >
+                        <h3>
+                          <span
+                            className="ant-form-item-required"
+                          />
+                        </h3>
+                        <div
+                          className="CreateWebsite__domain-wrap"
+                        >
+                          <Input
+                            disabled={true}
+                            id="domain"
+                            onInput={[Function]}
+                            type="text"
+                          />
+                        </div>
+                      </FormItem>,
+                      <span
+                        className="CreateWebsite__available"
+                      />,
+                      <p />,
+                      <FormItem
+                        hasFeedback={false}
+                      >
+                        <Checkbox
+                          indeterminate={false}
+                        >
+                          <span
+                            className="ant-form-item-required"
+                          />
+                        </Checkbox>
+                      </FormItem>,
+                      <FormItem
+                        hasFeedback={false}
+                      >
+                        <Button
+                          block={false}
+                          ghost={false}
+                          htmlType="submit"
+                          loading={false}
+                          type="primary"
+                        />
+                      </FormItem>,
+                    ],
+                    "className": "CreateWebsite",
+                    "colon": true,
+                    "hideRequiredMark": false,
+                    "id": "CreateWebsite",
+                    "layout": "horizontal",
+                    "onSubmit": [Function],
+                  },
+                  "ref": null,
+                  "rendered": Array [
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "class",
+                      "props": Object {
+                        "children": Array [
+                          <h3>
+                            <span
+                              className="ant-form-item-required"
+                            />
+                          </h3>,
+                          <AutoComplete
+                            choiceTransitionName="zoom"
+                            filterOption={false}
+                            optionLabelProp="children"
+                            showSearch={false}
+                            transitionName="slide-up"
+                          />,
+                        ],
+                        "hasFeedback": false,
+                      },
+                      "ref": null,
+                      "rendered": Array [
+                        Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "host",
+                          "props": Object {
+                            "children": <span
+                              className="ant-form-item-required"
+                            />,
+                          },
+                          "ref": null,
+                          "rendered": Object {
+                            "instance": null,
+                            "key": undefined,
+                            "nodeType": "host",
+                            "props": Object {
+                              "children": undefined,
+                              "className": "ant-form-item-required",
+                            },
+                            "ref": null,
+                            "rendered": null,
+                            "type": "span",
+                          },
+                          "type": "h3",
+                        },
+                        Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "class",
+                          "props": Object {
+                            "children": Array [],
+                            "choiceTransitionName": "zoom",
+                            "filterOption": false,
+                            "optionLabelProp": "children",
+                            "showSearch": false,
+                            "transitionName": "slide-up",
+                          },
+                          "ref": null,
+                          "rendered": Array [],
+                          "type": [Function],
+                        },
+                      ],
+                      "type": [Function],
+                    },
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "class",
+                      "props": Object {
+                        "children": Array [
+                          <h3>
+                            <span
+                              className="ant-form-item-required"
+                            />
+                          </h3>,
+                          <div
+                            className="CreateWebsite__domain-wrap"
+                          >
+                            <Input
+                              disabled={true}
+                              id="domain"
+                              onInput={[Function]}
+                              type="text"
+                            />
+                          </div>,
+                        ],
+                        "hasFeedback": false,
+                      },
+                      "ref": null,
+                      "rendered": Array [
+                        Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "host",
+                          "props": Object {
+                            "children": <span
+                              className="ant-form-item-required"
+                            />,
+                          },
+                          "ref": null,
+                          "rendered": Object {
+                            "instance": null,
+                            "key": undefined,
+                            "nodeType": "host",
+                            "props": Object {
+                              "children": undefined,
+                              "className": "ant-form-item-required",
+                            },
+                            "ref": null,
+                            "rendered": null,
+                            "type": "span",
+                          },
+                          "type": "h3",
+                        },
+                        Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "host",
+                          "props": Object {
+                            "children": Array [
+                              <Input
+                                disabled={true}
+                                id="domain"
+                                onInput={[Function]}
+                                type="text"
+                              />,
+                              undefined,
+                            ],
+                            "className": "CreateWebsite__domain-wrap",
+                          },
+                          "ref": null,
+                          "rendered": Array [
+                            Object {
+                              "instance": null,
+                              "key": undefined,
+                              "nodeType": "class",
+                              "props": Object {
+                                "disabled": true,
+                                "id": "domain",
+                                "onInput": [Function],
+                                "type": "text",
+                              },
+                              "ref": null,
+                              "rendered": null,
+                              "type": [Function],
+                            },
+                            undefined,
+                          ],
+                          "type": "div",
+                        },
+                      ],
+                      "type": [Function],
+                    },
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": undefined,
+                        "className": "CreateWebsite__available",
+                      },
+                      "ref": null,
+                      "rendered": null,
+                      "type": "span",
+                    },
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": undefined,
+                      },
+                      "ref": null,
+                      "rendered": null,
+                      "type": "p",
+                    },
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "class",
+                      "props": Object {
+                        "children": <Checkbox
+                          indeterminate={false}
+                        >
+                          <span
+                            className="ant-form-item-required"
+                          />
+                        </Checkbox>,
+                        "hasFeedback": false,
+                      },
+                      "ref": null,
+                      "rendered": Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "class",
+                        "props": Object {
+                          "children": <span
+                            className="ant-form-item-required"
+                          />,
+                          "indeterminate": false,
+                        },
+                        "ref": null,
+                        "rendered": Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "host",
+                          "props": Object {
+                            "children": undefined,
+                            "className": "ant-form-item-required",
+                          },
+                          "ref": null,
+                          "rendered": null,
+                          "type": "span",
+                        },
+                        "type": [Function],
+                      },
+                      "type": [Function],
+                    },
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "class",
+                      "props": Object {
+                        "children": <Button
+                          block={false}
+                          ghost={false}
+                          htmlType="submit"
+                          loading={false}
+                          type="primary"
+                        />,
+                        "hasFeedback": false,
+                      },
+                      "ref": null,
+                      "rendered": Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "class",
+                        "props": Object {
+                          "block": false,
+                          "children": undefined,
+                          "ghost": false,
+                          "htmlType": "submit",
+                          "loading": false,
+                          "type": "primary",
+                        },
+                        "ref": null,
+                        "rendered": null,
+                        "type": [Function],
+                      },
+                      "type": [Function],
+                    },
+                  ],
+                  "type": [Function],
+                },
+              ],
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+    Symbol(enzyme.__providerValues__): undefined,
+  },
+  Symbol(enzyme.__providerValues__): Map {},
+}
+`;
