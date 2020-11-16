@@ -17,6 +17,7 @@ export default {
   Editor: loableComponent(import('../../client/post/EditPost/EditPost')),
   Settings: loableComponent(import('../../client/settings/Settings')),
   GuestsSettings: loableComponent(import('../../client/settings/GuestsSettings')),
+  WebsiteSettings: loableComponent(import('../../client/settings/WebsiteSettings')),
   NotificationSettings: loableComponent(import('../../client/settings/NotificationSettings')),
   ProfileSettings: loableComponent(import('../../client/settings/ProfileSettings')),
   Invite: loableComponent(import('../../client/invite/Invite')),
@@ -69,6 +70,14 @@ export default {
     import('../../client/rewards/RewardsComponent/RewardsComponent'),
   ),
   HistoryCampaign: loableComponent(import('../../client/rewards/History/History')),
+  CreateWebsite: loableComponent(import('../../client/websites/WebsiteTools/Create/CreateWebsite')),
+  ManageWebsite: loableComponent(import('../../client/websites/WebsiteTools/Manage/ManageWebsite')),
+  ReportsWebsite: loableComponent(
+    import('../../client/websites/WebsiteTools/Reports/ReportsWebsite'),
+  ),
+  WebsitesConfigurations: loableComponent(
+    import('../../client/websites/WebsiteTools/Configuration/WebsitesConfigurations'),
+  ),
   FraudDetection: loableComponent(import('../../client/rewards/FraudDetection/FraudDetection')),
   ReferralDetails: loableComponent(
     import('../../client/rewards/ReferralProgram/Details/ReferralDetails'),
@@ -81,5 +90,23 @@ export default {
   ),
   SponsoredRewards: loableComponent(
     import('../../client/rewards/ReferralProgram/SponsoredRewards/SponsoredRewards'),
+  ),
+  WebsitesAdministrators: loableComponent(
+    import('../../client/websites/WebsiteTools/Administrators/Administrators'),
+  ),
+  WebsiteModerators: loableComponent(
+    import('../../client/websites/WebsiteTools/Moderators/WebsiteModerators'),
+  ),
+  WebsitesAuthorities: loableComponent(
+    import('../../client/websites/WebsiteTools/Authorities/WebsitesAuthorities'),
+  ),
+  WebsitesSettings: loableComponent(
+    import('../../client/websites/WebsiteTools/Settings/WebsitesSettings'),
+  ),
+  WebsiteObjectFilters: loableComponent(
+    import('../../client/websites/WebsiteTools/ObjectsFilters/WebsiteObjectFilters'),
+  ),
+  WebsiteRestrictions: loableComponent(
+    import('../../client/websites/WebsiteTools/Restrictions/WebsiteRestrictions'),
   ),
 };

@@ -104,6 +104,7 @@ class SearchUsersAutocomplete extends React.Component {
             </AutoComplete.Option>
           ))
       : [];
+
     return (
       <AutoComplete
         onChange={this.handleChange}

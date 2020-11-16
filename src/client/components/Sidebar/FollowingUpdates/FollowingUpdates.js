@@ -83,6 +83,7 @@ const FollowingUpdates = () => {
       dispatch(getFollowingObjectsUpdatesMore(menuSectionName, itemsCount));
     }
   };
+
   return (
     !isEmpty(menuConfig) &&
     (followingUpdates.isFetching ? (

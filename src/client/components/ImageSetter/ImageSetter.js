@@ -39,6 +39,7 @@ const ImageSetter = ({
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
+
   useEffect(() => {
     if (currentImages.length) {
       onImageLoaded(currentImages);
@@ -70,6 +71,7 @@ const ImageSetter = ({
         }
       });
     }
+
     return clearImageState();
   };
 
@@ -80,6 +82,7 @@ const ImageSetter = ({
   // For image pasted for link
   const checkImage = (isValidLink, image) => {
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
+
     if (isSameLink) {
       message.error(
         intl.formatMessage({
@@ -87,6 +90,7 @@ const ImageSetter = ({
           defaultMessage: 'The link you are trying to add is already added',
         }),
       );
+
       return;
     }
 
@@ -115,6 +119,7 @@ const ImageSetter = ({
           defaultMessage: 'You cannot upload more then 25 images',
         }),
       );
+
       return;
     }
     if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
@@ -151,6 +156,7 @@ const ImageSetter = ({
     if (e.target.files && e.target.files[0]) {
       const uploadedImages = [];
       const images = Object.values(e.target.files);
+
       setFileImages(images);
       if (images.length > 25 || currentImages.length + images.length > 25) {
         message.error(
@@ -159,6 +165,7 @@ const ImageSetter = ({
             defaultMessage: 'You cannot upload more then 25 images',
           }),
         );
+
         return;
       }
       const disableAndInsertImage = (image, imageName = 'image') => {
@@ -174,6 +181,7 @@ const ImageSetter = ({
         setLoadingImage(false);
         onLoadingImage(false);
       };
+
       setLoadingImage(true);
       onLoadingImage(true);
       /* eslint-disable no-restricted-syntax */
@@ -196,6 +204,7 @@ const ImageSetter = ({
 
   const handleRemoveImage = imageDetail => {
     const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
+
     setCurrentImages(filteredImages);
     const contentState = getEditorState().getCurrentContent();
     const allBlocks = contentState.getBlockMap();
@@ -203,6 +212,7 @@ const ImageSetter = ({
     allBlocks.forEach((block, index) => {
       // eslint-disable-next-line no-underscore-dangle
       const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
+
       if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
         const blockBefore = contentState.getBlockBefore(index).getKey();
         const removeImage = contentState.getBlockMap().delete(index);
@@ -212,6 +222,7 @@ const ImageSetter = ({
         const newContent = contentState.merge({
           blockMap: filtered,
         });
+
         setEditorState(EditorState.push(getEditorState(), newContent, 'split-block'));
       }
     });
@@ -231,6 +242,7 @@ const ImageSetter = ({
         defaultMessage: 'Add images',
       });
     }
+
     return intl.formatMessage({
       id: 'imageSetter_add_image',
       defaultMessage: 'Add image',
@@ -326,11 +338,12 @@ const ImageSetter = ({
     </div>
   );
 };
+
 ImageSetter.propTypes = {
   intl: PropTypes.shape().isRequired,
   onImageInvalid: PropTypes.func.isRequired,
   onImageUpload: PropTypes.func.isRequired,
-  onLoadingImage: PropTypes.func.isRequired,
+  onLoadingImage: PropTypes.func,
   onImageLoaded: PropTypes.func.isRequired,
   isMultiple: PropTypes.bool,
   defaultImage: PropTypes.string,
@@ -353,6 +366,7 @@ ImageSetter.defaultProps = {
   setEditorState: () => {},
   getEditorState: () => {},
   addNewBlockAt: () => {},
+  onLoadingImage: () => {},
   selection: undefined,
   Block: {},
   isOkayBtn: false,

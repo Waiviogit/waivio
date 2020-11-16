@@ -28,6 +28,7 @@ export const selectFormatDate = locale => {
   if (locale === 'en-US') {
     return 'MM/DD/YYYY';
   }
+
   return 'DD/MM/YYYY';
 };
 
@@ -36,6 +37,7 @@ export const getTransactionDescription = (type, options) => {
     case accountHistoryConstants.TRANSFER_TO_VESTING: {
       const from = get(options, 'from', 'user');
       const to = get(options, 'to', 'user');
+
       return {
         powerUpTransaction: <FormattedMessage id="powered_up" defaultMessage="Powered up " />,
         powerUpTransactionFrom: (
@@ -74,6 +76,7 @@ export const getTransactionDescription = (type, options) => {
       const tableView = get(options, 'tableView', false);
       const from = get(options, 'from', '');
       const to = get(options, 'to', '');
+
       return {
         reviewAuthorRewards: (
           <FormattedMessage
@@ -140,6 +143,7 @@ export const getTransactionDescription = (type, options) => {
     case accountHistoryConstants.LIMIT_ORDER: {
       const openPays = get(options, 'openPays', null);
       const currentPays = get(options, 'currentPays', null);
+
       return {
         limitOrder: (
           <FormattedMessage
@@ -156,6 +160,7 @@ export const getTransactionDescription = (type, options) => {
     case accountHistoryConstants.FILL_ORDER: {
       const url = get(options, 'url', '');
       const exchanger = get(options, 'exchanger', '');
+
       return {
         fillOrder: (
           <FormattedMessage
@@ -174,6 +179,7 @@ export const getTransactionDescription = (type, options) => {
     }
     case accountHistoryConstants.CANCEL_ORDER: {
       const openPays = get(options, 'openPays', '');
+
       return {
         cancelOrder: (
           <FormattedMessage
@@ -191,6 +197,7 @@ export const getTransactionDescription = (type, options) => {
     }
     case accountHistoryConstants.PROPOSAL_PAY: {
       const receiver = get(options, 'receiver', '');
+
       return {
         proposalPaymentFrom: (
           <FormattedMessage
@@ -243,6 +250,7 @@ export const handleLoadMoreTransactions = ({
   let skip = 0;
   const limit = 10;
   const transferActionsLength = size(transferActions);
+
   if (isGuest) {
     if (transferActionsLength >= limit) {
       skip = transferActionsLength;
@@ -264,14 +272,17 @@ export const handleLoadMoreTransactions = ({
 export const getDataDemoTransactions = (username, demoTransactionsHistory) => {
   const transactions = [];
   const demoTransactions = get(demoTransactionsHistory, username, []);
+
   demoTransactions.forEach(transaction => {
     const timestamp = get(transaction, 'timestamp', {});
     const typeTransaction = get(transaction, 'op[0]', {});
     const data = get(transaction, 'op[1]', {});
+
     data.timestamp = timestamp;
     data.type = typeTransaction;
     transactions.push(data);
   });
+
   return transactions;
 };
 
@@ -371,9 +382,11 @@ export const validateGuestTransferTitle = (
   const urlPost = `/@${username}/${postPermlink}`;
   const options = { urlComment, urlPost, title, isMobile, tableView };
   const description = getTransactionDescription(transactionType, options);
+
   if (post) {
     return description.reviewAuthorRewards;
   }
+
   return description.commentsAuthorRewards;
 };
 
@@ -430,6 +443,7 @@ export const getFormattedClaimRewardPayout = (
       </span>,
     );
   }
+
   return {
     payouts,
     HIVE: parsedRewardSteem ? floor(parsedRewardSteem, 3) : null,

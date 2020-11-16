@@ -2,20 +2,14 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { filter, get } from 'lodash';
+import { filter, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { message } from 'antd';
-import {
-  getAuthenticatedUser,
-  getIsLoadingPropositions,
-  getLocale,
-  getPropositionCampaign,
-} from '../../../reducers';
-import Loading from '../../../components/Icon/Loading';
+import { getAuthenticatedUser, getLocale } from '../../../reducers';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
 import { assignProposition, declineProposition } from '../../../user/userActions';
-import { getPropositionsForListContainer } from '../../rewardsActions';
+import * as ApiClient from '../../../../waivioApi/ApiClient';
 
 const PropositionListContainer = ({
   wobject,
@@ -30,55 +24,50 @@ const PropositionListContainer = ({
   catalogHandleSortChange,
   catalogSort,
   isCatalogWrap,
-  getProposListContainer,
-  campaigns,
-  isLoadingPropositions,
-  currentHash,
   isLoadingFlag,
   location,
+  listItems,
 }) => {
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
-  const [allPropositions, setAllPropositions] = useState([]);
   const [currentProposition, setCurrentProposition] = useState([]);
+  const [allCurrentPropositions, setAllCurrentPropositions] = useState([]);
   const [proposition, setProposition] = useState([]);
   const [isAssign, setIsAssign] = useState(false);
-  const hashArr = currentHash.split('/');
-  const firstHash = get(hashArr, '[0]', '');
-  const authorPermlink = get(wobject, ['author_permlink'], '');
   const parentPermlink = get(wobject, 'parent.author_permlink', '');
+  const requiredObject = get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
+  const primaryObject = get(wobject, ['author_permlink']);
+
+  const getPropositions = reqData => {
+    ApiClient.getPropositions(reqData).then(data => {
+      const currentPropos = filter(
+        data.campaigns,
+        obj => obj.required_object.author_permlink === match.params.name,
+      );
+      setAllCurrentPropositions(data.campaigns);
+      setCurrentProposition(currentPropos[0]);
+    });
+  };
 
   useEffect(() => {
     if (wobject && userName) {
-      let requiredObject;
-      let primaryObject;
+      const isParentList = get(listItems[0], 'parent', {});
+      const reqData = {
+        userName,
+        match,
+        locale,
+      };
 
-      if ((isCatalogWrap && firstHash === currentHash) || parentPermlink) {
-        const reqData = {
-          userName,
-          match,
-          requiredObject: parentPermlink || authorPermlink,
-          sort: 'reward',
-          locale,
-        };
-        getProposListContainer(reqData);
-      } else {
-        const reqData = {
-          userName,
-          match,
-          locale,
-        };
-        requiredObject = get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
-        primaryObject = get(wobject, ['author_permlink']);
-
-        if (requiredObject) {
-          reqData.requiredObject = requiredObject;
-        } else {
-          reqData.primaryObject = primaryObject;
+      if (isEmpty(wobject.parent)) {
+        if (!isEmpty(isParentList)) {
+          reqData.requiredObject = primaryObject;
         }
-        getProposListContainer(reqData);
+      } else {
+        reqData.requiredObject = requiredObject;
       }
+
+      getPropositions(reqData);
     }
-  }, [wobject, userName, currentHash]);
+  }, [wobject, userName, listItems]);
 
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {
@@ -149,15 +138,6 @@ const PropositionListContainer = ({
       });
   };
 
-  useEffect(() => {
-    const currentPropos = filter(
-      campaigns,
-      obj => obj.required_object.author_permlink === match.params.name,
-    );
-    setAllPropositions(campaigns);
-    setCurrentProposition(currentPropos[0]);
-  }, [campaigns]);
-
   const discardProposition = ({
     companyAuthor,
     companyPermlink,
@@ -190,39 +170,35 @@ const PropositionListContainer = ({
       });
   };
 
-  const goToProducts = () => {
-    const permlink = get(wobject, 'author_permlink');
+  const goToProducts = currWobject => {
+    const permlink = get(currWobject, 'author_permlink');
     history.push(`/rewards/all/${permlink}`);
   };
 
   return (
     <React.Fragment>
-      {isLoadingPropositions ? (
-        <Loading />
-      ) : (
-        <React.Fragment>
-          <PropositionList
-            isCatalogWrap={isCatalogWrap}
-            catalogHandleSortChange={catalogHandleSortChange}
-            catalogSort={catalogSort}
-            wobject={wobject}
-            allPropositions={allPropositions}
-            currentProposition={currentProposition}
-            goToProducts={goToProducts}
-            discardProposition={discardProposition}
-            assignPropositionHandler={assignPropositionHandler}
-            user={user}
-            loadingAssignDiscard={loadingAssignDiscard}
-            isAssign={isAssign}
-            match={match}
-            userName={userName}
-            history={history}
-            isLoadingFlag={isLoadingFlag}
-            parentPermlink={parentPermlink}
-            location={location}
-          />
-        </React.Fragment>
-      )}
+      <PropositionList
+        isCatalogWrap={isCatalogWrap}
+        catalogHandleSortChange={catalogHandleSortChange}
+        catalogSort={catalogSort}
+        wobject={wobject}
+        allCurrentPropositions={allCurrentPropositions}
+        currentProposition={currentProposition}
+        goToProducts={goToProducts}
+        discardProposition={discardProposition}
+        assignPropositionHandler={assignPropositionHandler}
+        user={user}
+        loadingAssignDiscard={loadingAssignDiscard}
+        isAssign={isAssign}
+        match={match}
+        userName={userName}
+        history={history}
+        isLoadingFlag={isLoadingFlag}
+        parentPermlink={parentPermlink}
+        location={location}
+        locale={locale}
+        listItems={listItems}
+      />
     </React.Fragment>
   );
 };
@@ -240,12 +216,9 @@ PropositionListContainer.propTypes = {
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string,
   isCatalogWrap: PropTypes.bool,
-  getProposListContainer: PropTypes.func,
-  campaigns: PropTypes.shape(),
-  isLoadingPropositions: PropTypes.shape(),
-  currentHash: PropTypes.string,
   isLoadingFlag: PropTypes.bool,
   location: PropTypes.shape().isRequired,
+  listItems: PropTypes.shape(),
 };
 
 PropositionListContainer.defaultProps = {
@@ -258,23 +231,20 @@ PropositionListContainer.defaultProps = {
   catalogGetMenuList: () => {},
   catalogHandleSortChange: () => {},
   catalogSort: '',
-  getProposListContainer: () => {},
   campaigns: {},
   isLoadingPropositions: false,
   isLoadingFlag: false,
   currentHash: '',
+  listItems: [],
 };
 
 export default connect(
   state => ({
     locale: getLocale(state),
     user: getAuthenticatedUser(state),
-    campaigns: getPropositionCampaign(state),
-    isLoadingPropositions: getIsLoadingPropositions(state),
   }),
   {
     assignPropos: assignProposition,
     declinePropos: declineProposition,
-    getProposListContainer: getPropositionsForListContainer,
   },
 )(withRouter(injectIntl(PropositionListContainer)));
