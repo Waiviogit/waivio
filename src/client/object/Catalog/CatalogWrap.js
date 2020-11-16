@@ -68,7 +68,6 @@ const CatalogWrap = props => {
   };
 
   const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
-
   return (
     <div>
       <React.Fragment>
@@ -85,6 +84,8 @@ const CatalogWrap = props => {
           isCatalogWrap
           currentHash={hash}
           isLoadingFlag={isLoadingFlag}
+          location={location}
+          listItems={listItems}
         />
       </React.Fragment>
     </div>

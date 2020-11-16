@@ -389,3 +389,4 @@ export const getIsloadingMoreTransactions = state => state.loadingMoreTransactio
 export const getIsloadingMoreTableTransactions = state => state.loadingMoreTableTransactions;
 export const getIsloadingTableTransactions = state => state.tableTransactionsHistoryLoading;
 export const getIsOpenWalletTable = state => state.isOpenWalletTable;
+export const getIsTransactionsHistoryLoading = state => state.transactionsHistoryLoading;

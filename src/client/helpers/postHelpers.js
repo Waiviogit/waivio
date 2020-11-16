@@ -225,5 +225,5 @@ export function getPostHashtags(items) {
   return postItems.map(item => getObjectName(item));
 }
 
-export const handleHttpUrl = (string, token) =>
-  string.replace(new RegExp(token, 'g'), `<br>${token}`);
+export const getAuthorName = post =>
+  post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;

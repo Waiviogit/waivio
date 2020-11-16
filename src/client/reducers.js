@@ -184,6 +184,8 @@ export const getIsloadingMoreTableTransactions = state =>
 export const getIsloadingTableTransactions = state =>
   fromWallet.getIsloadingTableTransactions(state.wallet);
 export const getIsOpenWalletTable = state => fromWallet.getIsOpenWalletTable(state.wallet);
+export const getIsTransactionsHistoryLoading = state =>
+  fromWallet.getIsTransactionsHistoryLoading(state.wallet);
 
 export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
 export const getLocale = state => fromSettings.getLocale(state.settings);
@@ -307,9 +309,6 @@ export const getHasMoreFollowingRewards = state =>
 export const getHasMoreFraudSuspicionData = state =>
   fromRewards.getHasMoreFraudSuspicionData(state.rewards);
 export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
-export const getPropositionCampaign = state => fromRewards.getPropositionCampaign(state.rewards);
-export const getIsLoadingPropositions = state =>
-  fromRewards.getIsLoadingPropositions(state.rewards);
 export const getIsLoadingRewardsHistory = state =>
   fromRewards.getIsLoadingRewardsHistory(state.rewards);
 export const getCampaignNames = state => fromRewards.getCampaignNames(state.rewards);

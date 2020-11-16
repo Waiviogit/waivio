@@ -136,50 +136,57 @@ class SearchObjectsAutocomplete extends Component {
     this.setState({ searchString: '' });
   }
 
+  renderSearchObjectsOptions = (searchString, intl) => {
+    const { addItem, searchObjectsResults, itemsIdsToOmit } = this.props;
+    let searchObjectsOptions = [];
+    if (
+      searchString &&
+      addItem &&
+      searchObjectsResults.map(item => this.searchObjectListed(item.author_permlink)).includes(true)
+    ) {
+      searchObjectsOptions = (
+        <AutoComplete.Option disabled key="all">
+          <div className="pending-status">
+            {intl.formatMessage({
+              id: 'object_listed',
+              defaultMessage: 'This object is already listed',
+            })}
+          </div>
+        </AutoComplete.Option>
+      );
+      return [searchObjectsOptions];
+    } else if (searchString) {
+      searchObjectsOptions = searchObjectsResults
+        .filter(obj => !itemsIdsToOmit.includes(obj.author_permlink))
+        .map(obj => (
+          <AutoComplete.Option
+            key={obj.author_permlink}
+            label={obj.author_permlink}
+            value={obj.author_permlink}
+            className="obj-search-option item"
+          >
+            <ObjectSearchCard
+              object={obj}
+              name={getObjectName(obj)}
+              type={obj.type || obj.object_type}
+            />
+          </AutoComplete.Option>
+        ));
+      return searchObjectsOptions;
+    }
+
+    return searchObjectsOptions;
+  };
+  searchObjectListed = searchObjectPermlink => {
+    const parentListItems = get(this.props.parentObject, 'listItems', []);
+    return (
+      parentListItems.some(item => get(item, 'author_permlink', '') === searchObjectPermlink) &&
+      parentListItems.some(item => getObjectName(item).toLowerCase() === this.state.searchString)
+    );
+  };
   render() {
     const { searchString } = this.state;
-    const {
-      intl,
-      style,
-      searchObjectsResults,
-      itemsIdsToOmit,
-      allowClear,
-      disabled,
-      autoFocus,
-      isSearchObject,
-      parentObject,
-      addItem,
-    } = this.props;
-    const searchObjectListed = searchObjectPermlink =>
-      get(parentObject, 'listItems', []).some(
-        item => get(item, 'author_permlink') === searchObjectPermlink,
-      );
-
-    const searchObjectsOptions = searchString
-      ? searchObjectsResults
-          .filter(obj => !itemsIdsToOmit.includes(obj.author_permlink))
-          .map(obj => (
-            <AutoComplete.Option
-              key={obj.author_permlink}
-              label={obj.author_permlink}
-              value={obj.author_permlink}
-              className="obj-search-option item"
-            >
-              {!addItem || (addItem && !searchObjectListed(obj.author_permlink)) ? (
-                <ObjectSearchCard
-                  object={obj}
-                  name={getObjectName(obj)}
-                  type={obj.type || obj.object_type}
-                />
-              ) : (
-                intl.formatMessage({
-                  id: 'object_listed',
-                  defaultMessage: 'This object is already listed',
-                })
-              )}
-            </AutoComplete.Option>
-          ))
-      : [];
+    const { intl, style, allowClear, disabled, autoFocus, isSearchObject } = this.props;
 
     return (
       <AutoComplete
@@ -190,7 +197,11 @@ class SearchObjectsAutocomplete extends Component {
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
         optionLabelProp={'label'}
-        dataSource={isSearchObject ? pendingSearch(searchString, intl) : searchObjectsOptions}
+        dataSource={
+          isSearchObject
+            ? pendingSearch(searchString, intl)
+            : this.renderSearchObjectsOptions(searchString, intl)
+        }
         placeholder={
           !this.props.placeholder
             ? intl.formatMessage({

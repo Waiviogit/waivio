@@ -1,4 +1,4 @@
-import { getAppData, getContentImages, handleHttpUrl } from '../postHelpers';
+import { getAppData, getContentImages } from '../postHelpers';
 
 describe('getAppData', () => {
   it('should return an empty object when post does not contain an app', () => {
@@ -48,11 +48,15 @@ Hello World!
 Before:
 ![image](https://user-images.githubusercontent.com/1968722/41253250-0a6d2ece-6dc0-11e8-981a-a1d1a1c0ecec.png)
 
+After:
+![image](https://user-images.githubusercontent.com/1968722/41253262-1056e3f2-6dc0-11e8-8cfb-7cca34f41e86.png)
+
 Bye!
     `;
 
     const expected = [
-      `<br>https://user-images.githubusercontent.com/1968722/41253250-0a6d2ece-6dc0-11e8-981a-a1d1a1c0ecec.png`,
+      'https://user-images.githubusercontent.com/1968722/41253250-0a6d2ece-6dc0-11e8-981a-a1d1a1c0ecec.png',
+      'https://user-images.githubusercontent.com/1968722/41253262-1056e3f2-6dc0-11e8-8cfb-7cca34f41e86.png',
     ];
     const actual = getContentImages(content);
 
@@ -73,32 +77,18 @@ Hello World!
 Before:
 <img src="https://user-images.githubusercontent.com/1968722/41253250-0a6d2ece-6dc0-11e8-981a-a1d1a1c0ecec.png" />
 
+After:
+<img src="https://user-images.githubusercontent.com/1968722/41253262-1056e3f2-6dc0-11e8-8cfb-7cca34f41e86.png" />
+
 Bye!
     `;
 
     const expected = [
-      '<br>https://user-images.githubusercontent.com/1968722/41253250-0a6d2ece-6dc0-11e8-981a-a1d1a1c0ecec.png',
+      'https://user-images.githubusercontent.com/1968722/41253250-0a6d2ece-6dc0-11e8-981a-a1d1a1c0ecec.png',
+      'https://user-images.githubusercontent.com/1968722/41253262-1056e3f2-6dc0-11e8-8cfb-7cca34f41e86.png',
     ];
     const actual = getContentImages(content);
 
     expect(actual).toEqual(expected);
-  });
-
-  it('should return text with link and br in the middle', () => {
-    const text = 'hello world https://youtu.be/exampleLink';
-    const actual = handleHttpUrl(text, 'http');
-    expect(actual).toEqual(`hello world <br>https://youtu.be/exampleLink`);
-  });
-
-  it('should return text with link and br in the middle without space', () => {
-    const text = 'hello worldhttps://youtu.be/exampleLink';
-    const actual = handleHttpUrl(text, 'http');
-    expect(actual).toEqual(`hello world<br>https://youtu.be/exampleLink`);
-  });
-
-  it('should return text with link and br in the middle with mutch spacing', () => {
-    const text = 'hello world         https://youtu.be/exampleLink';
-    const actual = handleHttpUrl(text, 'http');
-    expect(actual).toEqual(`hello world         <br>https://youtu.be/exampleLink`);
   });
 });

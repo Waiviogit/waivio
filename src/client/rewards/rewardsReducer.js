@@ -1,4 +1,4 @@
-import { uniqWith, isEqual, get, isEmpty } from 'lodash';
+import { uniqWith, isEqual, get } from 'lodash';
 import {
   SET_DATA_FOR_GLOBAL_REPORT,
   SET_DATA_FOR_SINGLE_REPORT,
@@ -6,7 +6,6 @@ import {
   GET_FOLLOWING_SPONSORS_REWARDS,
   CLEAR_FOLLOWING_SPONSORS_REWARDS,
   GET_FRAUD_SUSPICION,
-  GET_PROPOSITIONS_LIST_CONTAINER,
   GET_REWARDS_HISTORY,
   GET_MORE_REWARDS_HISTORY,
 } from './rewardsActions';
@@ -25,8 +24,6 @@ const initialState = {
   loading: false,
   fraudSuspicionData: [],
   hasMoreFraudSuspicionData: false,
-  campaigns: [],
-  isLoadingPropositions: false,
   isLoadingRewardsHistory: false,
   campaignNames: [],
   historyCampaigns: [],
@@ -97,19 +94,6 @@ const rewardsReducer = (state = initialState, action) => {
         hasMoreFraudSuspicionData: hasMore,
       };
     }
-    case GET_PROPOSITIONS_LIST_CONTAINER.START: {
-      return {
-        ...state,
-        isLoadingPropositions: true,
-      };
-    }
-    case GET_PROPOSITIONS_LIST_CONTAINER.SUCCESS: {
-      return {
-        ...state,
-        isLoadingPropositions: false,
-        campaigns: action.payload.campaigns,
-      };
-    }
     case GET_REWARDS_HISTORY.START: {
       return {
         ...state,
@@ -147,7 +131,7 @@ const rewardsReducer = (state = initialState, action) => {
         historyCampaigns: uniqWith(currentRewardsHistory.concat(action.payload.campaigns), isEqual),
         campaignNames: action.payload.campaigns_names,
         historySponsors: uniqWith(currentHistorySponsors.concat(action.payload.sponsors), isEqual),
-        hasMoreHistory: isEmpty(action.payload.campaigns) ? false : action.payload.hasMore, // workaround until there is a fix from the backend
+        hasMoreHistory: action.payload.hasMore,
       };
     }
     case GET_MORE_REWARDS_HISTORY.ERROR: {
@@ -176,8 +160,6 @@ export const getFraudSuspicionDataState = state => state.fraudSuspicionData;
 export const getHasMoreFollowingRewards = state => state.hasMoreFollowingRewards;
 export const getHasMoreFraudSuspicionData = state => state.hasMoreFraudSuspicionData;
 export const getIsLoading = state => state.loading;
-export const getPropositionCampaign = state => state.campaigns;
-export const getIsLoadingPropositions = state => state.isLoadingPropositions;
 
 export const getIsLoadingRewardsHistory = state => state.isLoadingRewardsHistory;
 export const getCampaignNames = state => state.campaignNames;

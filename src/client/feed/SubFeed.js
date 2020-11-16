@@ -11,6 +11,7 @@ import {
   getMoreFeedContent,
   getMoreUserFeedContent,
 } from './feedActions';
+import { getSocialInfoPost } from '../post/postActions';
 
 import {
   getFeedFromState,
@@ -46,6 +47,7 @@ import PostModal from '../post/PostModalContainer';
     getMoreFeedContent: (sortBy, category) =>
       dispatch(getMoreFeedContent({ sortBy, category, limit: 10 })),
     showPostModal: post => dispatch(showPostModal(post)),
+    getSocialInfoPost: (author, permlink) => dispatch(getSocialInfoPost(author, permlink)),
   }),
 )
 class SubFeed extends React.Component {
@@ -60,6 +62,7 @@ class SubFeed extends React.Component {
     getUserFeedContent: PropTypes.func,
     getMoreUserFeedContent: PropTypes.func,
     getMoreFeedContent: PropTypes.func,
+    getSocialInfoPost: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -163,6 +166,7 @@ class SubFeed extends React.Component {
           hasMore={hasMore}
           loadMoreContent={loadMoreContent}
           showPostModal={this.props.showPostModal}
+          getSocialInfoPost={this.props.getSocialInfoPost}
         />
         {ready && failed && <FetchFailed />}
         {displayEmptyFeed && <EmptyFeed />}

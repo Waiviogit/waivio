@@ -35,7 +35,6 @@ import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../user/userActions';
 import { UNASSIGNED } from '../../../common/constants/rewards';
 import { getProxyImageURL } from '../../helpers/image';
-
 import './StoryFull.less';
 
 @injectIntl
@@ -115,10 +114,6 @@ class StoryFull extends React.Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.handleContentClick = this.handleContentClick.bind(this);
-  }
-
-  componentDidMount() {
-    document.body.classList.add('white-bg');
   }
 
   componentWillUnmount() {
@@ -262,6 +257,7 @@ class StoryFull extends React.Component {
       match,
       history,
     } = this.props;
+
     const { loadingAssign } = this.state;
     const taggedObjects = [];
     const linkedObjects = [];
