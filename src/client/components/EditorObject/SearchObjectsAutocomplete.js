@@ -177,6 +177,9 @@ class SearchObjectsAutocomplete extends Component {
     this.props.parentObject.listItems &&
     get(this.props.parentObject, 'listItems', []).some(
       item => get(item, 'author_permlink', '') === searchObjectPermlink,
+    ) &&
+    get(this.props.parentObject, 'listItems', []).some(
+      item => getObjectName(item).toLowerCase() === this.state.searchString,
     );
   render() {
     const { searchString } = this.state;
