@@ -20,7 +20,7 @@ const BellButton = ({ bellUserNotifications, authUserName, user, wobj, bellWobjN
   };
 
   return (
-    <div onClick={() => bellNotification()} className="UserHeader__bell" role="presentation">
+    <div onClick={bellNotification} className="UserHeader__bell" role="presentation">
       {type.bellLoading ? <Icon type="loading" /> : <Icon type="bell" theme={bellStyle} />}
     </div>
   );

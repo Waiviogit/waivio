@@ -346,21 +346,19 @@ export const wobjectBellNotification = followingWobj => (
   const subscribe = !get(state, ['object', 'wobject', 'bell']);
   dispatch({
     type: BELL_WOBJECT_NOTIFICATION.START,
-    payload: { followingWobj },
   });
   steemConnectAPI
     .bellNotificationsWobject(username, followingWobj, subscribe)
     .then(() =>
       dispatch({
         type: BELL_WOBJECT_NOTIFICATION.SUCCESS,
-        payload: { followingWobj, subscribe },
+        payload: { subscribe },
       }),
     )
     .catch(err => {
       message.error(err.message);
       return dispatch({
         type: BELL_USER_NOTIFICATION.ERROR,
-        payload: { followingWobj },
       });
     });
 };
