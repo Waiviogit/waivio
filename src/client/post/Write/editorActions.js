@@ -3,6 +3,7 @@ import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
+import { isEmpty } from 'lodash';
 import { REFERRAL_PERCENT } from '../../helpers/constants';
 import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
 import { jsonParse } from '../../helpers/formatter';
@@ -218,9 +219,11 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
       isUpdating,
     } = postData;
 
+    const isPost = !isEmpty(postData);
+
     const getPermLink = isUpdating
       ? Promise.resolve(postData.permlink)
-      : createPermlink(title, author, parentAuthor, parentPermlink);
+      : createPermlink(title, author, parentAuthor, parentPermlink, isPost);
     const state = getState();
     const authUser = state.auth.user;
     const isGuest = state.auth.isGuestUser;

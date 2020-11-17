@@ -7,6 +7,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
+// eslint-disable-next-line no-duplicate-imports
 import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { createCommentPermlink } from '../vendor/steemitHelpers';
 import { getObjectName } from '../helpers/wObjectHelper';
