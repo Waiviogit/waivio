@@ -108,10 +108,12 @@ const PropositionList = ({
     const status = get(parseWobjectField(listItem, 'status'), 'title');
 
     if (statusNoVisibleItem.includes(status)) return null;
+
     let item;
+
     if (isList) {
       item = <CategoryItemView wObject={listItem} location={location} />;
-    } else {
+    } else if (allCurrentPropositions.length) {
       map(allCurrentPropositions, currPropos => {
         const objPermlink = get(currPropos, 'required_object.author_permlink', {});
         const currListItemPermlink = get(listItem, 'author_permlink', {});
@@ -122,7 +124,10 @@ const PropositionList = ({
           item = <ObjectCardView wObject={listItem} inList />;
         }
       });
+    } else {
+      item = <ObjectCardView wObject={listItem} inList />;
     }
+
     return !isReviewPage && <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
 
