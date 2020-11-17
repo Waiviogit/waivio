@@ -59,7 +59,7 @@ const ObjectOfTypePage = props => {
         setLoadingNestedWobject(false);
       }
     }
-  }, [props.location.hash, props.wobject]);
+  }, [props.location.hash, props.wobject.author_permlink]);
 
   const { intl, form, isEditMode, isAppending, locale, wobject, followingList } = props;
 
