@@ -45,8 +45,12 @@ export const ManageWebsite = props => {
     }
   };
 
-  const handleClickPayNow = () =>
-    props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'HBD', dataForPayments.memo);
+  const handleClickPayNow = () => {
+    let memo = get(dataForPayments, 'memo');
+    memo = JSON.parse(memo);
+
+    props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'HBD', memo.id);
+  };
 
   return (
     <div className="shifted">

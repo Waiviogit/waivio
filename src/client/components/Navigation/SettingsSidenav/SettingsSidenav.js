@@ -40,11 +40,13 @@ const SettingsSidenav = () => {
         configItem={personalSettings}
         toggleMenuCondition={toggleMenuCondition}
       />
-      <SettingsItem
-        condition={menuCondition.websites}
-        configItem={websiteSettings}
-        toggleMenuCondition={toggleMenuCondition}
-      />
+      {!isGuest && (
+        <SettingsItem
+          condition={menuCondition.websites}
+          configItem={websiteSettings}
+          toggleMenuCondition={toggleMenuCondition}
+        />
+      )}
       {ownWebsite.map(website => (
         <SettingsItem
           key={website.host}
