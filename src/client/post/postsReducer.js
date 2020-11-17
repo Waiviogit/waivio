@@ -3,7 +3,6 @@ import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
 import { getPostKey } from '../helpers/stateHelpers';
-import { FAKE_REBLOG_POST, FOLLOWING_POST_AUTHOR } from './postActions';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -212,7 +211,7 @@ const posts = (state = initialState, action) => {
         list: getPostsList(state.list, action),
       };
 
-    case FAKE_REBLOG_POST: {
+    case postsActions.FAKE_REBLOG_POST: {
       const rebloggedPost = state.list[action.payload.postId];
       return {
         ...state,
@@ -226,7 +225,7 @@ const posts = (state = initialState, action) => {
       };
     }
 
-    case FOLLOWING_POST_AUTHOR.START: {
+    case postsActions.FOLLOWING_POST_AUTHOR.START: {
       const post = state.list[action.payload];
 
       return {
@@ -241,7 +240,7 @@ const posts = (state = initialState, action) => {
       };
     }
 
-    case FOLLOWING_POST_AUTHOR.SUCCESS: {
+    case postsActions.FOLLOWING_POST_AUTHOR.SUCCESS: {
       const post = state.list[action.payload];
 
       return {
@@ -257,7 +256,7 @@ const posts = (state = initialState, action) => {
       };
     }
 
-    case FOLLOWING_POST_AUTHOR.ERROR: {
+    case postsActions.FOLLOWING_POST_AUTHOR.ERROR: {
       const post = state.list[action.payload];
 
       return {

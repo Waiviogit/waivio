@@ -1634,4 +1634,166 @@ export const getStatusSponsoredRewards = (referral, userName, type = 'referral_s
       .catch(error => reject(error));
   });
 
+//websites
+
+export const getDomainList = () => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.getParents}`, {
+    method: 'GET',
+    headers,
+  })
+    .then(r => r.json())
+    .catch(err => err);
+};
+
+export const createWebsite = body => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    body: JSON.stringify(body),
+    method: 'PUT',
+  });
+};
+
+export const checkAvailable = (name, parent) => {
+  return fetch(
+    `${config.apiPrefix}${config.sites}${config.checkAvailable}?name=${name}&parentId=${parent}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const getInfoForManagePage = name => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.managePage}?userName=${name}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const deleteSite = (userName, host) => {
+  return fetch(`${config.apiPrefix}${config.sites}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    body: JSON.stringify({ userName, host }),
+    method: 'DELETE',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const getWebsitesReports = formData => {
+  const queryString = Object.keys(formData).reduce(
+    (acc, value) => (acc ? `${acc}&${value}=${formData[value]}` : `${value}=${formData[value]}`),
+    '',
+  );
+
+  return fetch(`${config.apiPrefix}${config.sites}${config.report}?${queryString}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const getWebsites = userName =>
+  fetch(`${config.apiPrefix}${config.sites}?userName=${userName}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getWebsitesConfiguration = host =>
+  fetch(`${config.apiPrefix}${config.sites}${config.configuration}?host=${host}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const saveWebsitesConfiguration = body =>
+  fetch(`${config.apiPrefix}${config.sites}${config.configuration}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    body: JSON.stringify({ ...body }),
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getWebsiteAdministrators = (host, userName) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.administrators}?host=${host}&userName=${userName}`,
+    {
+      headers: { ...headers, 'access-token': Cookie.get('access_token') },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getWebsiteModerators = (host, userName) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.moderators}?host=${host}&userName=${userName}`,
+    {
+      headers: { ...headers, 'access-token': Cookie.get('access_token') },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getWebsiteAuthorities = (host, userName) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.authorities}?host=${host}&userName=${userName}`,
+    {
+      headers: { ...headers, 'access-token': Cookie.get('access_token') },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getTagCategoryForSite = (host, userName) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.filters}?host=${host}&userName=${userName}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const saveTagCategoryForSite = (host, userName, objectsFilter) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.filters}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'POST',
+    body: JSON.stringify({
+      host,
+      userName,
+      objectsFilter,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getSettingsWebsite = host =>
+  fetch(`${config.apiPrefix}${config.sites}${config.settings}?host=${host}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;

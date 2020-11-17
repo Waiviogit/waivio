@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { batch, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import { isEmpty } from 'lodash';
 import SteemConnect from '../../../steemConnectAPI';
 import { login, busyLogin, getAuthGuestBalance } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
@@ -29,7 +30,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink, 
 
   const responseSocial = async (response, socialNetwork) => {
     setIsLoading(true);
-    if (response.error) {
+    if (response.error || (socialNetwork === 'facebook' && isEmpty(response.id))) {
       setIsLoading(false);
       setIsModalOpen(false);
     } else if (isModalOpen && response) {

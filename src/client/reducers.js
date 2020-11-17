@@ -24,6 +24,7 @@ import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
+import websiteReducer, * as fromWebsite from './websites/websiteReducer';
 import referralReducer, * as fromReferral from '../client/rewards/ReferralProgram/ReferralReducer';
 
 export default history =>
@@ -52,6 +53,7 @@ export default history =>
     map: mapReducer,
     rewards: rewardsReducer,
     referral: referralReducer,
+    website: websiteReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -307,9 +309,6 @@ export const getHasMoreFollowingRewards = state =>
 export const getHasMoreFraudSuspicionData = state =>
   fromRewards.getHasMoreFraudSuspicionData(state.rewards);
 export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
-export const getPropositionCampaign = state => fromRewards.getPropositionCampaign(state.rewards);
-export const getIsLoadingPropositions = state =>
-  fromRewards.getIsLoadingPropositions(state.rewards);
 export const getIsLoadingRewardsHistory = state =>
   fromRewards.getIsLoadingRewardsHistory(state.rewards);
 export const getCampaignNames = state => fromRewards.getCampaignNames(state.rewards);
@@ -354,8 +353,25 @@ export const getQueryString = state => state.router.location.search;
 
 export const getSuitableLanguage = state => {
   const settingsLocale = getLocale(state);
+
   if (settingsLocale !== 'auto') return settingsLocale;
 
   const usedLocale = getUsedLocale(state);
+
   return usedLocale || 'en-US';
 };
+
+// website
+export const getParentDomain = state => fromWebsite.getParentDomain(state.website);
+export const getDomainAvailableStatus = state =>
+  fromWebsite.getDomainAvailableStatus(state.website);
+export const getWebsiteLoading = state => fromWebsite.getWebsiteLoading(state.website);
+export const getManage = state => fromWebsite.getManage(state.website);
+export const getReports = state => fromWebsite.getReports(state.website);
+export const getOwnWebsites = state => fromWebsite.getOwnWebsites(state.website);
+export const getConfiguration = state => fromWebsite.getConfiguration(state.website);
+export const getAdministrators = state => fromWebsite.getAdministrators(state.website);
+export const getModerators = state => fromWebsite.getModerators(state.website);
+export const getAuthorities = state => fromWebsite.getAuthorities(state.website);
+export const getTagsSite = state => fromWebsite.getTagsSite(state.website);
+export const getSettingsSite = state => fromWebsite.getSettingsSite(state.website);

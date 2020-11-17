@@ -19,52 +19,22 @@ import {
   PATH_NAME_BLACKLIST,
   CAMPAIGNS,
 } from '../../../../common/constants/rewards';
+import { pages } from './helpers';
+
 import './MobileNavigation.less';
 
 const MobileNavigation = ({ location, match }) => {
   const [isModalOpen, setModalVisibility] = useState(false);
+
   useEffect(() => {
     setModalVisibility(false);
   }, [match]);
   const authenticated = useSelector(getIsAuthenticated);
-
-  const pages = {
-    hive: {
-      trending: 'trending',
-      regExp: /(^\/)(created|hot|trending)$/,
-      id: 'hive',
-    },
-    personal: {
-      myFeed: 'my_feed',
-      regExp: /(^\/)(notifications-list|updates|rewards-list)$/,
-      id: 'personal',
-    },
-    people: {
-      regExp: /(^\/blog)\/(@[\w\d.-]{3,})$/,
-      id: 'people',
-    },
-    objectsUpdates: {
-      regExp: /(^\/feed\/)([\w\d.-]{3,})/,
-    },
-    discoverObjects: {
-      all: 'all',
-      regExp: /(^\/discover-objects)\/?(.*)/,
-      id: 'objects',
-    },
-    rewards: {
-      regExp: /(^\/rewards\/)(all|active|reserved|receivables|history)/,
-      id: 'rewards',
-    },
-    rewardsCampaigns: {
-      regExp: /(^\/rewards\/)(create|manage|payables|reservations|messages|match-bot|blacklist)$/,
-      id: CAMPAIGNS,
-    },
-  };
-
   let pageName = '';
   let filterName = 'Menu';
 
   const { url } = match;
+
   switch (url) {
     case (url.match(pages.hive.regExp) || {}).input:
       pageName = pages.hive.id;
@@ -80,6 +50,7 @@ const MobileNavigation = ({ location, match }) => {
       break;
     case (url.match(pages.objectsUpdates.regExp) || {}).input: {
       const { search } = location;
+
       if (/\?category=(.+)&name=(.+)/.test(search)) {
         pageName = new URLSearchParams(search).get('category');
         filterName = new URLSearchParams(search).get('name');
@@ -170,6 +141,14 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'notification_settings';
       break;
+    case '/create':
+      pageName = 'website';
+      filterName = 'create';
+      break;
+    case '/payments':
+      pageName = 'website';
+      filterName = 'payments';
+      break;
     case '/':
       if (!authenticated) {
         pageName = pages.hive.id;
@@ -183,6 +162,7 @@ const MobileNavigation = ({ location, match }) => {
       break;
   }
   const page = <FormattedMessage id={`mobnav_${pageName}`} defaultMessage={pageName} />;
+
   return (
     <React.Fragment>
       <div className="MobileNavigation">

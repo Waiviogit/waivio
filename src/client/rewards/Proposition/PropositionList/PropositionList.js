@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { get, map, max, min } from 'lodash';
-import { getObjectLists } from '../../../reducers';
-import PropositionListFromCatalog from './PropositionListFromCatalog';
-import DefaultPropositionList from './DefaultPropositionList';
+import { get, map, isEmpty, isEqual, max, min } from 'lodash';
+import Proposition from '../Proposition';
+import ObjectCardView from '../../../objectCard/ObjectCardView';
+import Loading from '../../../components/Icon/Loading';
+import CatalogBreadcrumb from '../../../object/Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
+import CatalogSorting from '../../../object/Catalog/CatalogSorting/CatalogSorting';
+import OBJ_TYPE from '../../../object/const/objectTypes';
+import { parseWobjectField } from '../../../helpers/wObjectHelper';
+import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
+import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
+import PropositionMainObjectCard from '../PropositionMainObjectCard';
+import { getObject } from '../../../../waivioApi/ApiClient';
 
 const PropositionList = ({
-  allPropositions,
   wobject,
   currentProposition,
   discardProposition,
@@ -21,77 +27,203 @@ const PropositionList = ({
   userName,
   loadingAssignDiscard,
   isAssign,
-  isCatalogWrap,
   catalogHandleSortChange,
   catalogSort,
   listItems,
   isLoadingFlag,
-  parentPermlink,
   location,
+  allCurrentPropositions,
+  locale,
 }) => {
-  let minReward;
-  let maxReward;
-  let rewardPrise;
-  let rewardMax;
+  const [parentWobj, setParentWobj] = useState({});
+  const [isGetWobject, setIsGetWobject] = useState(false);
 
-  if (isCatalogWrap || parentPermlink) {
-    minReward = allPropositions
-      ? min(map(allPropositions, proposition => proposition.reward))
-      : null;
-    maxReward = allPropositions
-      ? max(map(allPropositions, proposition => proposition.reward))
-      : null;
-    rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
-    rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
-  } else {
+  useEffect(() => {
+    if (!isEmpty(wobject.parent)) {
+      setIsGetWobject(true);
+      getObject(get(wobject, ['parent', 'author_permlink']), userName, locale).then(wObject => {
+        setParentWobj(wObject);
+        setIsGetWobject(false);
+      });
+    }
+  }, [wobject]);
+
+  const handleCurrentProposition = (currPropos, currWobject) => {
+    let minReward;
+    let maxReward;
+    let rewardPrise;
+    let rewardMax;
+
+    if (!isEmpty(currWobject.parent)) {
+      minReward = allCurrentPropositions
+        ? min(map(allCurrentPropositions, proposition => proposition.reward))
+        : null;
+      maxReward = allCurrentPropositions
+        ? max(map(allCurrentPropositions, proposition => proposition.reward))
+        : null;
+      rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
+      rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
+
+      return isGetWobject ? (
+        <Loading />
+      ) : (
+        <PropositionMainObjectCard
+          intl={intl}
+          wobject={parentWobj}
+          currentProposition={currPropos}
+          goToProducts={goToProducts}
+          maxReward={maxReward}
+          minReward={minReward}
+          rewardPrise={rewardPrise}
+          rewardMax={rewardMax}
+        />
+      );
+    }
+
     minReward = get(currentProposition, ['min_reward'], 0);
     maxReward = get(currentProposition, ['max_reward'], 0);
     rewardPrise = `${minReward.toFixed(2)} USD`;
     rewardMax = `${maxReward.toFixed(2)} USD`;
-  }
 
-  const data = {
-    intl,
-    wobject,
-    currentProposition,
-    goToProducts,
-    maxReward,
-    minReward,
-    rewardPrise,
-    rewardMax,
-    allPropositions,
-    match,
-    assignPropositionHandler,
-    discardProposition,
-    userName,
-    loadingAssignDiscard,
-    isAssign,
-    user,
-    history,
-    catalogHandleSortChange,
-    catalogSort,
-    listItems,
-    isLoadingFlag,
+    return (
+      !isEmpty(currPropos) && (
+        <PropositionMainObjectCard
+          intl={intl}
+          wobject={currWobject}
+          currentProposition={currPropos}
+          goToProducts={goToProducts}
+          maxReward={maxReward}
+          minReward={minReward}
+          rewardPrise={rewardPrise}
+          rewardMax={rewardMax}
+        />
+      )
+    );
   };
+
   const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
 
+  const getListRow = listItem => {
+    const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
+    const status = get(parseWobjectField(listItem, 'status'), 'title');
+
+    if (statusNoVisibleItem.includes(status)) return null;
+    let item;
+    if (isList) {
+      item = <CategoryItemView wObject={listItem} location={location} />;
+    } else {
+      map(allCurrentPropositions, currPropos => {
+        const objPermlink = get(currPropos, 'required_object.author_permlink', {});
+        const currListItemPermlink = get(listItem, 'author_permlink', {});
+
+        if (isEqual(objPermlink, currListItemPermlink)) {
+          item = handleCurrentProposition(currPropos, listItem);
+        } else {
+          item = <ObjectCardView wObject={listItem} inList />;
+        }
+      });
+    }
+    return !isReviewPage && <div key={`category-${listItem.author_permlink}`}>{item}</div>;
+  };
+
+  const getPropositionObjectsData = item => {
+    const arr = [];
+    const propositionObjects = get(allCurrentPropositions, '[0]objects', []);
+    propositionObjects.forEach(propos => {
+      const currentProposObj = get(propos, 'object', {});
+      if (item) {
+        arr.push(get(currentProposObj, `${item}`, ''));
+      } else {
+        arr.push(currentProposObj);
+      }
+    });
+    return arr;
+  };
+
+  const getMenuList = () => {
+    if (isEmpty(listItems)) {
+      return (
+        <div>
+          {intl.formatMessage({
+            id: 'emptyList',
+            defaultMessage: 'This list is empty',
+          })}
+        </div>
+      );
+    }
+
+    return map(listItems, listItem => {
+      const proposObj = getPropositionObjectsData('_id');
+      return !proposObj.includes(get(listItem, '_id')) && getListRow(listItem);
+    });
+  };
+
+  const renderPropositions = () =>
+    map(allCurrentPropositions, propos =>
+      map(propos.objects, wobj => {
+        const wobjId = get(wobj, ['object', '_id'], '');
+        return map(listItems, listItem => {
+          const listItemId = get(listItem, '_id', '');
+          if (isEqual(listItemId, wobjId)) {
+            return (
+              <Proposition
+                proposition={propos}
+                wobj={wobj.object}
+                wobjPrice={wobj.reward}
+                assignCommentPermlink={wobj.permlink}
+                assignProposition={assignPropositionHandler}
+                discardProposition={discardProposition}
+                authorizedUserName={userName}
+                loading={loadingAssignDiscard}
+                key={`${wobj.object.author_permlink}`}
+                assigned={wobj.assigned}
+                history={history}
+                isAssign={isAssign}
+                match={match}
+                user={user}
+              />
+            );
+          }
+          return null;
+        });
+      }),
+    );
+
   return (
-    !isReviewPage && (
-      <React.Fragment>
-        {isCatalogWrap || parentPermlink ? (
-          <PropositionListFromCatalog {...data} />
-        ) : (
-          <DefaultPropositionList {...data} />
-        )}
-      </React.Fragment>
-    )
+    <React.Fragment>
+      {handleCurrentProposition(currentProposition, wobject)}
+      {isLoadingFlag ? (
+        <Loading />
+      ) : (
+        <React.Fragment>
+          {!isReviewPage && (
+            <React.Fragment>
+              <div className="CatalogWrap__breadcrumb">
+                <CatalogBreadcrumb intl={intl} wobject={wobject} />
+              </div>
+              <div className="CatalogWrap__sort">
+                <CatalogSorting
+                  sort={catalogSort}
+                  currWobject={wobject}
+                  handleSortChange={catalogHandleSortChange}
+                />
+              </div>
+              {!isReviewPage && renderPropositions()}
+              <div className="CatalogWrap">
+                <div>{getMenuList()}</div>
+              </div>
+            </React.Fragment>
+          )}
+        </React.Fragment>
+      )}
+    </React.Fragment>
   );
 };
 
 PropositionList.propTypes = {
   intl: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
-  allPropositions: PropTypes.arrayOf(PropTypes.shape()),
+  allCurrentPropositions: PropTypes.arrayOf(PropTypes.shape()),
   currentProposition: PropTypes.arrayOf(PropTypes.shape()),
   discardProposition: PropTypes.func,
   assignPropositionHandler: PropTypes.func,
@@ -102,18 +234,17 @@ PropositionList.propTypes = {
   userName: PropTypes.string.isRequired,
   loadingAssignDiscard: PropTypes.bool,
   isAssign: PropTypes.bool,
-  isCatalogWrap: PropTypes.bool,
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string,
   isLoadingFlag: PropTypes.bool,
-  parentPermlink: PropTypes.string,
-  isGetNested: PropTypes.bool,
   listItems: PropTypes.shape(),
   location: PropTypes.shape().isRequired,
+  locale: PropTypes.string.isRequired,
 };
 
 PropositionList.defaultProps = {
   allPropositions: [],
+  allCurrentPropositions: [],
   currentProposition: [],
   match: {},
   user: {},
@@ -131,6 +262,4 @@ PropositionList.defaultProps = {
   listItems: [],
 };
 
-export default connect(state => ({
-  listItems: getObjectLists(state),
-}))(injectIntl(PropositionList));
+export default injectIntl(PropositionList);

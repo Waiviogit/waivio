@@ -52,6 +52,7 @@ export const getObjectType = (
     sort,
     locale,
   };
+
   if (username) preparedData.userName = username;
   dispatch({
     type: actionType,
@@ -80,7 +81,9 @@ export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode)
 
   const getLimit = () => {
     let limit = 50;
+
     if (isFullscreenMode) limit = 200;
+
     return limit;
   };
   return dispatch(
@@ -103,6 +106,7 @@ export const getObjectTypeByStateFilters = (
   const filterBody = createFilterBody(getActiveFiltersTags(state));
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
   const sort = getObjectTypeSorting(state);
+
   // if use sort by proximity, require to use map filter
   if (sort === 'proximity' && !activeFilters.map) {
     const userLocation = getUserLocation(state);
@@ -116,6 +120,7 @@ export const getObjectTypeByStateFilters = (
     activeFilters.searchString = searchString;
   }
   const actionType = GET_OBJECT_TYPE.ACTION;
+
   return dispatch(
     getObjectType(typeName, actionType, activeFilters, { limit, skip, simplified }, filterBody),
   );
@@ -123,6 +128,7 @@ export const getObjectTypeByStateFilters = (
 
 export const clearType = () => dispatch => {
   dispatch({ type: CLEAR_OBJECT_TYPE });
+
   return Promise.resolve();
 };
 
@@ -131,12 +137,14 @@ export const setActiveFilters = filters => dispatch => {
     type: UPDATE_ACTIVE_FILTERS,
     payload: filters,
   });
+
   return Promise.resolve();
 };
 
 export const setFiltersAndLoad = filters => (dispatch, getState) => {
   dispatch(setActiveFilters(filters)).then(() => {
     const typeName = getTypeName(getState());
+
     if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
   });
 };
@@ -146,12 +154,14 @@ export const changeSorting = sorting => dispatch => {
     type: CHANGE_SORTING,
     payload: sorting,
   });
+
   return Promise.resolve();
 };
 
 export const changeSortingAndLoad = sorting => (dispatch, getState) => {
   dispatch(changeSorting(sorting)).then(() => {
     const typeName = getTypeName(getState());
+
     if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
   });
 };
@@ -187,6 +197,7 @@ export const setActiveTagsFilters = filters => dispatch => {
 export const setTagsFiltersAndLoad = filters => (dispatch, getState) => {
   dispatch(setActiveTagsFilters(filters)).then(() => {
     const typeName = getTypeName(getState());
+
     if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
   });
 };
