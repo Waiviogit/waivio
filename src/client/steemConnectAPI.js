@@ -141,6 +141,25 @@ function sc2Extended() {
       },
     },
     {
+      bellNotificationsWobject(follower, following, subscribe, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [follower],
+          id: 'bell_notifications',
+          json: JSON.stringify([
+            'bell_wobject',
+            {
+              follower,
+              following,
+              subscribe,
+            },
+          ]),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       activateWebsite(userName, host, subscribe, cb) {
         const params = {
           required_auths: [],
