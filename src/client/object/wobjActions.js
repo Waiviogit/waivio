@@ -8,6 +8,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getChangedField } from '../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { APPEND_WAIVIO_OBJECT } from './appendActions';
+import { BELL_USER_NOTIFICATION } from '../user/userActions';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -332,3 +333,34 @@ export const setListItems = lists => ({
   type: SET_LIST_ITEMS,
   lists,
 });
+
+export const BELL_WOBJECT_NOTIFICATION = createAsyncActionType('@wobj/BELL_WOBJECT_NOTIFICATION');
+
+export const wobjectBellNotification = followingWobj => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+  const subscribe = !get(state, ['object', 'wobject', 'bell']);
+  dispatch({
+    type: BELL_WOBJECT_NOTIFICATION.START,
+    payload: { followingWobj },
+  });
+  steemConnectAPI
+    .bellNotificationsWobject(username, followingWobj, subscribe)
+    .then(() =>
+      dispatch({
+        type: BELL_WOBJECT_NOTIFICATION.SUCCESS,
+        payload: { followingWobj, subscribe },
+      }),
+    )
+    .catch(err => {
+      message.error(err.message);
+      return dispatch({
+        type: BELL_USER_NOTIFICATION.ERROR,
+        payload: { followingWobj },
+      });
+    });
+};

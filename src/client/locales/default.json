@@ -1317,6 +1317,8 @@
   "notification_bell_post": "New post by {username}: {title}",
   "notification_bell_reblog": "{account} re-blogged {author}'s post: {title}",
   "notification_bell_follow": "{follower} followed {following}",
+  "notification_bell_object_rewards": "{guideName} launched a reward campaign for {objectName}",
+  "notification_bell_object_post": "{author} referenced {wobjectName}",
   "send_to": "Send to",
   "received_from_self": "received from self",
   "failed_to_get_campaign_data": "Failed to get campaign data: {error}",
