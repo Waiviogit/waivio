@@ -27,12 +27,14 @@ import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { setLoadedNestedWobject, setNestedWobject } from '../wobjActions';
-import './ObjectOfTypePage.less';
 import Loading from '../../components/Icon/Loading';
+
+import './ObjectOfTypePage.less';
 
 const ObjectOfTypePage = props => {
   const { isLoadingFlag } = props;
   const [content, setContent] = useState('');
+  const [contentForPublish, setCurrentContent] = useState('');
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
   const [votePercent, setVotePercent] = useState('');
 
@@ -46,16 +48,17 @@ const ObjectOfTypePage = props => {
       wobject,
     } = props;
     setLoadingNestedWobject(true);
+
     if (!isEmpty(wobject)) {
       if (hash) {
         const pathUrl = getLastPermlinksFromHash(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
-          setContent(wObject.pageContent);
+          setCurrentContent(wObject.pageContent);
           setNestedWobj(wObject);
           setLoadingNestedWobject(false);
         });
       } else {
-        setContent(wobject.pageContent);
+        setCurrentContent(wobject.pageContent);
         setLoadingNestedWobject(false);
       }
     }
@@ -65,11 +68,11 @@ const ObjectOfTypePage = props => {
 
   const handleChangeContent = contentRaw => {
     const newContent = toMarkdown(contentRaw);
-    setContent(newContent);
+
+    if (content !== newContent) setContent(newContent);
   };
 
-  // eslint-disable-next-line no-shadow
-  const handleVotePercentChange = votePercent => setVotePercent(votePercent);
+  const handleVotePercentChange = percent => setVotePercent(percent);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -116,6 +119,7 @@ const ObjectOfTypePage = props => {
   const handleReadyPublishClick = e => {
     e.preventDefault();
     setIsReadyToPublish(!isReadyToPublish);
+    setCurrentContent(content);
   };
 
   const renderBody = () => {
@@ -148,7 +152,6 @@ const ObjectOfTypePage = props => {
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
   const editorLocale = locale === 'auto' ? 'en-US' : locale;
-
   return (
     <React.Fragment>
       <div className={classObjPage}>
@@ -196,7 +199,7 @@ const ObjectOfTypePage = props => {
                 <Editor
                   enabled={!isAppending}
                   withTitle={false}
-                  initialContent={{ body: content }}
+                  initialContent={{ body: contentForPublish }}
                   locale={editorLocale}
                   onChange={handleChangeContent}
                   displayTitle={false}
