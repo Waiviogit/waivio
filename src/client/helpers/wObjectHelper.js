@@ -162,4 +162,4 @@ export const getMenuItems = (wobject, menuType, objType) => {
     });
 };
 
-export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos');
+export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};
