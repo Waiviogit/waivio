@@ -1,14 +1,11 @@
 import React, { useEffect } from 'react';
-import Helmet from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 import { Button } from 'antd';
 
-import Affix from '../../../components/Utils/Affix';
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
-import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
 
 import { getAuthenticatedUserName, getManage, getWebsiteLoading } from '../../../reducers';
@@ -54,21 +51,7 @@ export const ManageWebsite = props => {
 
   return (
     <div className="shifted">
-      <Helmet>
-        <title>
-          {props.intl.formatMessage({
-            id: 'manage_website',
-            defaultMessage: 'Website management',
-          })}{' '}
-          - Waivio
-        </title>
-      </Helmet>
       <div className="settings-layout container">
-        <Affix className="leftContainer" stickPosition={77}>
-          <div className="left">
-            <LeftSidebar />
-          </div>
-        </Affix>
         {isEmpty(props.manageInfo) ? (
           <Loading />
         ) : (

@@ -68,21 +68,7 @@ export const CreateWebsite = ({
 
   return (
     <div className="shifted">
-      <Helmet>
-        <title>
-          {intl.formatMessage({
-            id: 'create_new_website',
-            defaultMessage: 'Create new website',
-          })}{' '}
-          - Waivio
-        </title>
-      </Helmet>
       <div className="settings-layout container">
-        <Affix className="leftContainer" stickPosition={77}>
-          <div className="left">
-            <LeftSidebar />
-          </div>
-        </Affix>
         <div className="center">
           <MobileNavigation />
           <h1>

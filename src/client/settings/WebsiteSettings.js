@@ -47,4 +47,4 @@ WebsiteSettings.propTypes = {
   }).isRequired,
 };
 
-export default injectIntl(WebsiteSettings);
+export default injectIntl( );
