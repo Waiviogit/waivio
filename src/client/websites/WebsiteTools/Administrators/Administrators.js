@@ -60,7 +60,7 @@ export const WebsitesAdministrators = ({
         {intl.formatMessage({
           id: 'certain_objects_appear',
           defaultMessage:
-            'But sometimes it is essential that certain objects appear on the website exactly as intended by the site operators. To do this, the website owner may grant administrative privileges to',
+            'But sometimes it is essential that certain objects appear on the website exactly as intended by the site operators. To do this, the website owner may grant administrative privileges to some Hive users.',
         })}
       </p>
       <p>
@@ -111,7 +111,7 @@ export const WebsitesAdministrators = ({
         {isEmpty(admins) ? (
           <FormattedMessage
             id={'web_admins_empty'}
-            defaultMessage={"You don't have administratives."}
+            defaultMessage={"You don't have administrators."}
           />
         ) : (
           admins.map(({ name, _id: id, wobjects_weight: weight, loading }) => (

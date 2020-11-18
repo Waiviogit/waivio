@@ -95,7 +95,7 @@ export const WebsiteModerators = ({
         <FormattedMessage id="add" defaultMessage="Add" />
       </Button>
       <h3>
-        <FormattedMessage id="website_administrators" defaultMessage="Website administrators" />:
+        <FormattedMessage id="website_moderators" defaultMessage="Website moderators" />:
       </h3>
       <div className="WebsiteModerators__user-table">
         {isEmpty(moderators) ? (
