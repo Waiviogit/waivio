@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Input } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Affix from '../components/Utils/Affix';
-import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import { getAuthenticatedUserName } from '../reducers';
 import FacebookShare from '../components/Button/FacebookShare';
@@ -14,7 +11,6 @@ import TwitterShare from '../components/Button/TwitterShare';
 import EmailShare from '../components/Button/EmailShare';
 import { REFERRAL_PERCENT } from '../helpers/constants';
 import './Invite.less';
-import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 @requiresLogin
 @injectIntl
@@ -65,71 +61,57 @@ export default class Invite extends React.Component {
     ) : (
       <FormattedMessage id="invite_copy_link" defaultMessage="Copy link" />
     );
+
     return (
-      <div className="shifted">
-        <Helmet>
-          <title>{intl.formatMessage({ id: 'invite', defaultMessage: 'Invite' })} - Waivio</title>
-        </Helmet>
-        <div className="settings-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
-            <div className="left">
-              <LeftSidebar />
-            </div>
-          </Affix>
-          <div className="center">
-            <MobileNavigation />
-            <div className="Invite">
-              <div className="Invite__icon-container" />
-              <h1 className="Invite__title">
-                <FormattedMessage id="invite_title" defaultMessage="Don't use Waivio alone!" />
-              </h1>
-              <p className="Invite__description">
-                <FormattedMessage
-                  id="invite_info"
-                  defaultMessage="Onboard new users on Waivio today using the link below and get {percent}% of their rewards for {days} days."
-                  values={{
-                    percent: REFERRAL_PERCENT / 100,
-                    days: 30,
-                  }}
-                />
-              </p>
-              <div className="Invite__input-container">
-                <div className="Invite__input-wrapper">
-                  <Input className="Invite__input" value={this.state.inviteURL} readOnly />
-                  <CopyToClipboard text={this.state.inviteURL} onCopy={this.handleCopyClick}>
-                    <span className="Invite__input__copy">{buttonLabel}</span>
-                  </CopyToClipboard>
-                </div>
-              </div>
-              <div className="Invite__social">
-                <FacebookShare url={this.state.inviteURL} />
-                <TwitterShare
-                  url={this.state.inviteURL}
-                  text={intl.formatMessage(
-                    {
-                      id: 'invite_share',
-                      defaultMessage: 'Join me today on Waivio and get rewarded to blog {link}',
-                    },
-                    {
-                      link: '',
-                    },
-                  )}
-                />
-                <EmailShare
-                  url={this.state.inviteURL}
-                  text={intl.formatMessage(
-                    {
-                      id: 'invite_share',
-                      defaultMessage: 'Join me today on Waivio and get rewarded to blog {link}',
-                    },
-                    {
-                      link: this.state.inviteURL,
-                    },
-                  )}
-                />
-              </div>
-            </div>
+      <div className="Invite">
+        <div className="Invite__icon-container" />
+        <h1 className="Invite__title">
+          <FormattedMessage id="invite_title" defaultMessage="Don't use Waivio alone!" />
+        </h1>
+        <p className="Invite__description">
+          <FormattedMessage
+            id="invite_info"
+            defaultMessage="Onboard new users on Waivio today using the link below and get {percent}% of their rewards for {days} days."
+            values={{
+              percent: REFERRAL_PERCENT / 100,
+              days: 30,
+            }}
+          />
+        </p>
+        <div className="Invite__input-container">
+          <div className="Invite__input-wrapper">
+            <Input className="Invite__input" value={this.state.inviteURL} readOnly />
+            <CopyToClipboard text={this.state.inviteURL} onCopy={this.handleCopyClick}>
+              <span className="Invite__input__copy">{buttonLabel}</span>
+            </CopyToClipboard>
           </div>
+        </div>
+        <div className="Invite__social">
+          <FacebookShare url={this.state.inviteURL} />
+          <TwitterShare
+            url={this.state.inviteURL}
+            text={intl.formatMessage(
+              {
+                id: 'invite_share',
+                defaultMessage: 'Join me today on Waivio and get rewarded to blog {link}',
+              },
+              {
+                link: '',
+              },
+            )}
+          />
+          <EmailShare
+            url={this.state.inviteURL}
+            text={intl.formatMessage(
+              {
+                id: 'invite_share',
+                defaultMessage: 'Join me today on Waivio and get rewarded to blog {link}',
+              },
+              {
+                link: this.state.inviteURL,
+              },
+            )}
+          />
         </div>
       </div>
     );

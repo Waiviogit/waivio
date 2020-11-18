@@ -145,7 +145,7 @@ export const GET_OWN_WEBSITE = createAsyncActionType('@website/GET_OWN_WEBSITE')
 export const getOwnWebsite = () => (dispatch, getState) => {
   const userName = getAuthenticatedUserName(getState());
 
-  dispatch({
+  return dispatch({
     type: GET_OWN_WEBSITE.ACTION,
     payload: {
       promise: getWebsites(userName),
@@ -304,18 +304,18 @@ export const getWebAuthorities = host => (dispatch, getState) => {
 
 export const ADD_WEBSITE_AUTHORITIES = createAsyncActionType('@website/ADD_WEBSITE_AUTHORITIES');
 
-export const addWebAuthorities = (host, name) => (dispatch, getState, { steemConnectAPI }) => {
+export const addWebAuthorities = (host, account) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = getAuthenticatedUserName(getState());
 
   dispatch({
     type: ADD_WEBSITE_AUTHORITIES.START,
-    payload: name,
+    payload: account,
   });
 
-  steemConnectAPI.addWebsiteAuthorities(userName, host, [name]).then(() =>
+  steemConnectAPI.addWebsiteAuthorities(userName, host, [account.name]).then(() =>
     dispatch({
       type: ADD_WEBSITE_AUTHORITIES.SUCCESS,
-      payload: name,
+      payload: account,
     }),
   );
 };
