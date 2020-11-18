@@ -229,7 +229,7 @@ const PropositionList = ({
 PropositionList.propTypes = {
   intl: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
-  isCatalogWrap: PropTypes.shape().isRequired,
+  isCatalogWrap: PropTypes.bool,
   allCurrentPropositions: PropTypes.arrayOf(PropTypes.shape()),
   currentProposition: PropTypes.arrayOf(PropTypes.shape()),
   discardProposition: PropTypes.func,
