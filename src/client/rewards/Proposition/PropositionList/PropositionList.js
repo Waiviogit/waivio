@@ -50,14 +50,14 @@ const PropositionList = ({
   }, [wobject]);
 
   const handleCurrentProposition = (currPropos, currWobject) => {
-    if (isEmpty(currPropos)) return null;
-
     let minReward;
     let maxReward;
     let rewardPrise;
     let rewardMax;
 
     if (!isEmpty(currWobject.parent)) {
+      if (isEmpty(allCurrentPropositions)) return null;
+
       minReward = allCurrentPropositions
         ? min(map(allCurrentPropositions, proposition => proposition.reward))
         : null;
@@ -82,6 +82,8 @@ const PropositionList = ({
         />
       );
     }
+
+    if (isEmpty(currPropos)) return null;
 
     minReward = get(currentProposition, ['min_reward'], 0);
     maxReward = get(currentProposition, ['max_reward'], 0);
