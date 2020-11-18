@@ -38,7 +38,6 @@ const SettingsSidenav = ({ match }) => {
     });
   };
 
-  console.log(menuCondition);
   return (
     <ul className="Sidenav">
       <SettingsItem
