@@ -54,11 +54,13 @@ const ObjectOfTypePage = props => {
         const pathUrl = getLastPermlinksFromHash(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
           setCurrentContent(wObject.pageContent);
+          setContent(wObject.pageContent);
           setNestedWobj(wObject);
           setLoadingNestedWobject(false);
         });
       } else {
         setCurrentContent(wobject.pageContent);
+        setContent(wobject.pageContent);
         setLoadingNestedWobject(false);
       }
     }
@@ -132,6 +134,7 @@ const ObjectOfTypePage = props => {
           </React.Fragment>
         );
       }
+
       return (
         <React.Fragment>
           <div className="object-of-type-page__empty-placeholder">
