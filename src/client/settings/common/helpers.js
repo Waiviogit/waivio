@@ -28,6 +28,8 @@ export const getSettingsTitle = match => {
       return { id: 'edit-profile', defaultMessage: 'Edit profile' };
     case 'notification-settings':
       return { id: 'notification-settings', defaultMessage: 'Notification Settings' };
+    case 'guests-settings':
+      return { id: 'guests_account_settings', defaultMessage: 'Guests Account Settings' };
     case 'invite':
       return { id: 'invite', defaultMessage: 'Invite' };
 

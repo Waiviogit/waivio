@@ -10,7 +10,6 @@ import { getDraftPosts, getPendingDrafts, getIsReloading } from '../../reducers'
 import DraftRow from './DraftRow';
 import DeleteDraftModal from './DeleteDraftModal';
 import requiresLogin from '../../auth/requiresLogin';
-import MobileNavigation from '../../components/Navigation/MobileNavigation/MobileNavigation';
 
 import './Drafts.less';
 
@@ -26,7 +25,6 @@ import './Drafts.less';
 )
 class Drafts extends React.Component {
   static propTypes = {
-    intl: PropTypes.shape().isRequired,
     reloading: PropTypes.bool,
     draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     pendingDrafts: PropTypes.arrayOf(PropTypes.string),
@@ -92,70 +90,58 @@ class Drafts extends React.Component {
 
     return (
       <div className="Drafts">
-        <div className="drafts-layout container">
-          <div className="center">
-            <MobileNavigation />
-            <div>
-              <h1>
-                <FormattedMessage id="drafts" defaultMessage="Drafts" />
-              </h1>
-              <h3>
-                <FormattedMessage
-                  id="drafts_description"
-                  defaultMessage="These are posts that were never made public. You can publish them or delete them."
-                />
-              </h3>
-            </div>
-            {reloading && <Loading center={false} />}
-            {!reloading && size(draftPosts) !== 0 && (
-              <div className="Drafts__toolbar">
-                <Checkbox
-                  checked={isEqual(
-                    selectedDrafts,
-                    draftPosts.map(d => d.draftId),
-                  )}
-                  onChange={this.handleCheckAll}
-                />
-                <div>
-                  <a
-                    role="presentation"
-                    className="Drafts__toolbar__delete"
-                    onClick={this.showModal}
-                  >
-                    <i className="iconfont icon-trash Drafts__toolbar__delete__icon" />
-                    <FormattedMessage id="delete_selected" defaultMessage="Delete selected" />
-                  </a>
-                </div>
-              </div>
-            )}
-            {noDrafts && (
-              <h3 className="text-center">
-                <FormattedMessage
-                  id="drafts_empty"
-                  defaultMessage="You don't have any draft saved"
-                />
-              </h3>
-            )}
-            {!reloading &&
-              map(sortedDraftPosts, draft => (
-                <DraftRow
-                  key={draft.draftId}
-                  draft={draft}
-                  id={draft.draftId}
-                  selected={selectedDrafts.includes(draft.draftId)}
-                  pending={pendingDrafts.includes(draft.draftId)}
-                  onCheck={this.handleCheck}
-                />
-              ))}
-            {showModalDelete && (
-              <DeleteDraftModal
-                draftIds={selectedDrafts}
-                onCancel={this.hideModal}
-                onDelete={this.hideModal}
-              />
-            )}
-          </div>
+        <div>
+          <h1>
+            <FormattedMessage id="drafts" defaultMessage="Drafts" />
+          </h1>
+          <h3>
+            <FormattedMessage
+              id="drafts_description"
+              defaultMessage="These are posts that were never made public. You can publish them or delete them."
+            />
+          </h3>
         </div>
+        {reloading && <Loading center={false} />}
+        {!reloading && size(draftPosts) !== 0 && (
+          <div className="Drafts__toolbar">
+            <Checkbox
+              checked={isEqual(
+                selectedDrafts,
+                draftPosts.map(d => d.draftId),
+              )}
+              onChange={this.handleCheckAll}
+            />
+            <div>
+              <a role="presentation" className="Drafts__toolbar__delete" onClick={this.showModal}>
+                <i className="iconfont icon-trash Drafts__toolbar__delete__icon" />
+                <FormattedMessage id="delete_selected" defaultMessage="Delete selected" />
+              </a>
+            </div>
+          </div>
+        )}
+        {noDrafts && (
+          <h3 className="text-center">
+            <FormattedMessage id="drafts_empty" defaultMessage="You don't have any draft saved" />
+          </h3>
+        )}
+        {!reloading &&
+          map(sortedDraftPosts, draft => (
+            <DraftRow
+              key={draft.draftId}
+              draft={draft}
+              id={draft.draftId}
+              selected={selectedDrafts.includes(draft.draftId)}
+              pending={pendingDrafts.includes(draft.draftId)}
+              onCheck={this.handleCheck}
+            />
+          ))}
+        {showModalDelete && (
+          <DeleteDraftModal
+            draftIds={selectedDrafts}
+            onCancel={this.hideModal}
+            onDelete={this.hideModal}
+          />
+        )}
       </div>
     );
   }

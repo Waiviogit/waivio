@@ -103,7 +103,7 @@ const routes = {
       ],
     },
     {
-      path: [`/:site?/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],
+      path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],
       exact: true,
       component: Views.SettingsMain,
       pathScope: '',
@@ -226,7 +226,7 @@ const routes = {
             },
           ],
         },
-      ]
+      ],
     },
     {
       path: `/@:name/(${URL.USER.tabs})?/(table)?`,

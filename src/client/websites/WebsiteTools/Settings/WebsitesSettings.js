@@ -5,7 +5,6 @@ import { Button, Form, Input } from 'antd';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 
-import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
 import { getSettingsSite, getWebsiteLoading } from '../../../reducers';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
@@ -70,7 +69,6 @@ const WebsitesSettings = ({
 
   return (
     <div className="center">
-      <MobileNavigation />
       <h1>
         <FormattedMessage id="settings" defaultMessage="Settings" />
       </h1>
