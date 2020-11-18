@@ -16,7 +16,6 @@ const Feed = ({
   showPostModal,
   isGuest,
   history,
-  getSocialInfoPost,
 }) => {
   if (isGuest && !size(content) && !isFetching && !history.location.pathname.includes('blog')) {
     return <QuickPostEditor history={history} />;
@@ -33,13 +32,7 @@ const Feed = ({
       threshold={1500}
     >
       {content.map(id => (
-        <StoryContainer
-          key={id}
-          id={id}
-          showPostModal={showPostModal}
-          singlePostVew={false}
-          getSocialInfoPost={getSocialInfoPost}
-        />
+        <StoryContainer key={id} id={id} showPostModal={showPostModal} singlePostVew={false} />
       ))}
     </ReduxInfiniteScroll>
   );
@@ -53,7 +46,6 @@ Feed.propTypes = {
   isGuest: PropTypes.bool,
   loadMoreContent: PropTypes.func,
   history: PropTypes.shape(),
-  getSocialInfoPost: PropTypes.func,
 };
 
 Feed.defaultProps = {
@@ -64,7 +56,6 @@ Feed.defaultProps = {
   loadMoreContent: () => {},
   showPostModal: () => {},
   history: {},
-  getSocialInfoPost: () => {},
 };
 
 export default Feed;

@@ -13,7 +13,6 @@ import {
 import { reload } from '../auth/authActions';
 import { getBookmarks } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
-import { getSocialInfoPost } from '../post/postActions';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
@@ -30,7 +29,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
     pendingBookmarks: getPendingBookmarks(state),
     reloading: getIsReloading(state),
   }),
-  { getBookmarks, reload, showPostModal, getSocialInfoPost },
+  { getBookmarks, reload, showPostModal },
 )
 export default class Bookmarks extends React.Component {
   static propTypes = {
@@ -41,7 +40,6 @@ export default class Bookmarks extends React.Component {
     pendingBookmarks: PropTypes.arrayOf(PropTypes.string),
     getBookmarks: PropTypes.func,
     reload: PropTypes.func,
-    getSocialInfoPost: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -103,7 +101,6 @@ export default class Bookmarks extends React.Component {
                 isFetching={isFetching}
                 hasMore={hasMore}
                 showPostModal={this.props.showPostModal}
-                getSocialInfoPost={this.props.getSocialInfoPost}
               />
             )}
           </div>

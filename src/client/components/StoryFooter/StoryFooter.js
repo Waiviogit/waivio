@@ -8,7 +8,6 @@ import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
-import { getSocialInfoPost as getSocialInfoPostAction } from '../../post/postActions';
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
 
 import './StoryFooter.less';
@@ -18,9 +17,7 @@ import './StoryFooter.less';
     isGuest: isGuestUser(state),
     userName: getAuthenticatedUserName(state),
   }),
-  {
-    getSocialInfoPost: getSocialInfoPostAction,
-  },
+  {},
 )
 class StoryFooter extends React.Component {
   static propTypes = {
@@ -43,7 +40,6 @@ class StoryFooter extends React.Component {
     handlePostPopoverMenuClick: PropTypes.func,
     isGuest: PropTypes.bool,
     userName: PropTypes.string,
-    getSocialInfoPost: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -178,7 +174,6 @@ class StoryFooter extends React.Component {
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={handlePostPopoverMenuClick}
               username={this.props.userName}
-              getSocialInfoPost={this.props.getSocialInfoPost}
             />
           )}
         </div>
