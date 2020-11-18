@@ -54,15 +54,17 @@ const ObjectOfTypePage = props => {
         const pathUrl = getLastPermlinksFromHash(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
           setCurrentContent(wObject.pageContent);
+          setContent(wObject.pageContent);
           setNestedWobj(wObject);
           setLoadingNestedWobject(false);
         });
       } else {
         setCurrentContent(wobject.pageContent);
+        setContent(wobject.pageContent);
         setLoadingNestedWobject(false);
       }
     }
-  }, [props.location.hash, props.wobject]);
+  }, [props.location.hash, props.wobject.author_permlink]);
 
   const { intl, form, isEditMode, isAppending, locale, wobject, followingList } = props;
 
@@ -132,6 +134,7 @@ const ObjectOfTypePage = props => {
           </React.Fragment>
         );
       }
+
       return (
         <React.Fragment>
           <div className="object-of-type-page__empty-placeholder">

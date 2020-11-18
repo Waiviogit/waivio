@@ -34,6 +34,7 @@ const PropositionList = ({
   location,
   allCurrentPropositions,
   locale,
+  isCatalogWrap,
 }) => {
   const [parentWobj, setParentWobj] = useState({});
   const [isGetWobject, setIsGetWobject] = useState(false);
@@ -49,6 +50,8 @@ const PropositionList = ({
   }, [wobject]);
 
   const handleCurrentProposition = (currPropos, currWobject) => {
+    if (isEmpty(currPropos)) return null;
+
     let minReward;
     let maxReward;
     let rewardPrise;
@@ -86,18 +89,16 @@ const PropositionList = ({
     rewardMax = `${maxReward.toFixed(2)} USD`;
 
     return (
-      !isEmpty(currPropos) && (
-        <PropositionMainObjectCard
-          intl={intl}
-          wobject={currWobject}
-          currentProposition={currPropos}
-          goToProducts={goToProducts}
-          maxReward={maxReward}
-          minReward={minReward}
-          rewardPrise={rewardPrise}
-          rewardMax={rewardMax}
-        />
-      )
+      <PropositionMainObjectCard
+        intl={intl}
+        wobject={currWobject}
+        currentProposition={currPropos}
+        goToProducts={goToProducts}
+        maxReward={maxReward}
+        minReward={minReward}
+        rewardPrise={rewardPrise}
+        rewardMax={rewardMax}
+      />
     );
   };
 
@@ -201,7 +202,7 @@ const PropositionList = ({
         <Loading />
       ) : (
         <React.Fragment>
-          {!isReviewPage && (
+          {isCatalogWrap && (
             <React.Fragment>
               <div className="CatalogWrap__breadcrumb">
                 <CatalogBreadcrumb intl={intl} wobject={wobject} />
@@ -213,7 +214,7 @@ const PropositionList = ({
                   handleSortChange={catalogHandleSortChange}
                 />
               </div>
-              {!isReviewPage && renderPropositions()}
+              {renderPropositions()}
               <div className="CatalogWrap">
                 <div>{getMenuList()}</div>
               </div>
@@ -228,6 +229,7 @@ const PropositionList = ({
 PropositionList.propTypes = {
   intl: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
+  isCatalogWrap: PropTypes.bool,
   allCurrentPropositions: PropTypes.arrayOf(PropTypes.shape()),
   currentProposition: PropTypes.arrayOf(PropTypes.shape()),
   discardProposition: PropTypes.func,
