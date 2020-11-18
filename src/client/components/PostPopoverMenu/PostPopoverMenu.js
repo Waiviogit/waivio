@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
+import { getSocialInfoPost } from '../../../waivioApi/ApiClient';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
@@ -70,22 +71,39 @@ const PostPopoverMenu = ({
     author_original: authorOriginal,
     youFollows: userFollowed,
     loading,
-    tags,
-    cities,
-    userTwitter,
-    wobjectsTwitter,
   } = post;
 
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = window ? window.location.origin : 'https://waivio.com';
-  const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
-  const hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
-  const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
-  const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
-  const shareTextSocialTwitter = `"${encodeURIComponent(title)}" ${authorTwitter} ${objectTwitter}`;
-  const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
-  const facebookShareURL = getFacebookShareURL(postURL);
+
+  const handleShare = async isTwitter => {
+    const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;
+    const permlink = get(post, 'permlink', '');
+    const socialInfoPost = await getSocialInfoPost(authorPost, permlink);
+    const hashtags = !isEmpty(socialInfoPost)
+      ? [...socialInfoPost.tags, ...socialInfoPost.cities]
+      : [];
+    const authorTwitter = !isEmpty(socialInfoPost.userTwitter)
+      ? `by@${socialInfoPost.userTwitter}`
+      : '';
+    const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
+      ? `@${socialInfoPost.wobjectsTwitter}`
+      : '';
+    const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
+
+    if (isTwitter) {
+      const shareTextSocialTwitter = `"${encodeURIComponent(
+        title,
+      )}" ${authorTwitter} ${objectTwitter}`;
+      const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
+      window.open(twitterShareURL);
+    } else {
+      const facebookShareURL = getFacebookShareURL(postURL);
+      window.open(facebookShareURL);
+    }
+  };
+
   const activePost = !isPostCashout(post);
 
   if (userFollowed) {
@@ -99,6 +117,8 @@ const PostPopoverMenu = ({
       { username: postAuthor },
     );
   }
+
+  const isTwitter = true;
 
   let popoverMenu = [];
 
@@ -159,21 +179,29 @@ const PostPopoverMenu = ({
             {popoverMenu}
           </PopoverMenu>
           <a
+            role="presentation"
             key="share-facebook"
-            href={facebookShareURL}
             rel="noopener noreferrer"
             target="_blank"
             className="Popover__shared-link"
+            onClick={e => {
+              e.preventDefault();
+              handleShare();
+            }}
           >
             <i className="iconfont icon-facebook" />
             <FormattedMessage id="share_facebook" defaultMessage="Share to Facebook" />
           </a>
           <a
+            role="presentation"
             key="share-twitter"
-            href={twitterShareURL}
             rel="noopener noreferrer"
             target="_blank"
             className="Popover__shared-link"
+            onClick={e => {
+              e.preventDefault();
+              handleShare(isTwitter);
+            }}
           >
             <i className="iconfont icon-twitter" />
             <FormattedMessage id="share_twitter" defaultMessage="Share to Twitter" />

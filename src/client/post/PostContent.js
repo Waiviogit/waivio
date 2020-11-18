@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { find, truncate, get } from 'lodash';
+import { find, truncate } from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
 import {
@@ -32,7 +32,6 @@ import {
   followingPostAuthor,
   pendingFollowingPostAuthor,
   votePost,
-  getSocialInfoPost as getSocialInfoPostAction,
 } from './postActions';
 import { reblog } from '../app/Reblog/reblogActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
@@ -71,7 +70,6 @@ import { getProxyImageURL } from '../helpers/image';
     pendingFollowingPostAuthor,
     followingPostAuthor,
     errorFollowingPostAuthor,
-    getSocialInfoPost: getSocialInfoPostAction,
   },
 )
 class PostContent extends React.Component {
@@ -102,8 +100,6 @@ class PostContent extends React.Component {
     pendingFollowingPostAuthor: PropTypes.func.isRequired,
     followingPostAuthor: PropTypes.func.isRequired,
     errorFollowingPostAuthor: PropTypes.func.isRequired,
-    getSocialInfoPost: PropTypes.func.isRequired,
-    postSocialInfo: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -141,13 +137,6 @@ class PostContent extends React.Component {
   }
 
   componentDidMount() {
-    const { content, getSocialInfoPost } = this.props;
-    if (!content.tags) {
-      const authorName = getAuthorName(content);
-      const postPermlink = get(content, 'permlink', '');
-      getSocialInfoPost(authorName, postPermlink);
-    }
-
     this.renderWithCommentsSettings();
   }
 
@@ -243,7 +232,6 @@ class PostContent extends React.Component {
       defaultVotePercent,
       appUrl,
       isOriginalPost,
-      postSocialInfo,
     } = this.props;
 
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
@@ -339,7 +327,6 @@ class PostContent extends React.Component {
           onFollowClick={this.handleFollowClick}
           onEditClick={this.handleEditClick}
           isOriginalPost={isOriginalPost}
-          postSocialInfo={postSocialInfo}
         />
       </div>
     );

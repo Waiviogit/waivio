@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import VisibilitySensor from 'react-visibility-sensor';
+import { getSocialInfoPost } from '../../waivioApi/ApiClient';
 import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
 import PostContent from './PostContent';
 import Comments from '../comments/Comments';
@@ -43,6 +44,7 @@ class PostModal extends React.Component {
     this.state = {
       commentsVisible: false,
       previousURL,
+      socialInfoPost: {},
     };
 
     this.handleCommentsVisibility = this.handleCommentsVisibility.bind(this);
@@ -61,10 +63,14 @@ class PostModal extends React.Component {
     }
     const { currentShownPost } = this.props;
     const { title, url } = currentShownPost;
+    const authorName =
+      get(currentShownPost, ['guestInfo', 'userId'], '') || currentShownPost.author;
+    const permlink = get(currentShownPost, 'permlink', '');
     PostModal.pushURLState(
       title,
       replaceBotWithGuestName(dropCategory(url), currentShownPost.guestInfo),
     );
+    getSocialInfoPost(authorName, permlink).then(res => this.setState({ socialInfoPost: res }));
   }
 
   componentWillUnmount() {
@@ -95,7 +101,9 @@ class PostModal extends React.Component {
       author: authorDetails,
       shownPostContents,
     } = this.props;
-    const { permlink, title, url, cities, tags, userTwitter, wobjectsTwitter } = currentShownPost;
+    const { socialInfoPost } = this.state;
+    const { permlink, title, url } = currentShownPost;
+    const { tags, cities, userTwitter, wobjectsTwitter } = socialInfoPost;
     const author = currentShownPost.guestInfo
       ? currentShownPost.guestInfo.userId
       : currentShownPost.author;
@@ -104,12 +112,13 @@ class PostModal extends React.Component {
       dropCategory(url),
       currentShownPost.guestInfo,
     )}`;
-    const hashtags = [...tags, ...cities];
+    const hashtags = !isEmpty(socialInfoPost) ? [...tags, ...cities] : [];
     const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
     const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
     const shareTextSocialTwitter = `"${encodeURIComponent(
       title,
     )}" ${authorTwitter} ${objectTwitter}`;
+
     const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
 
     const facebookShareURL = getFacebookShareURL(postURL);
