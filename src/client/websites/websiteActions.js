@@ -145,7 +145,7 @@ export const GET_OWN_WEBSITE = createAsyncActionType('@website/GET_OWN_WEBSITE')
 export const getOwnWebsite = () => (dispatch, getState) => {
   const userName = getAuthenticatedUserName(getState());
 
-  dispatch({
+  return dispatch({
     type: GET_OWN_WEBSITE.ACTION,
     payload: {
       promise: getWebsites(userName),
