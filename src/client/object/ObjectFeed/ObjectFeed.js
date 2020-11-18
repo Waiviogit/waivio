@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { isEmpty, uniq, get, filter } from 'lodash';
-// import PropositionContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
+import PropositionContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import Feed from '../../feed/Feed';
 import { getFeed, getReadLanguages, getSuitableLanguage } from '../../reducers';
 import {
@@ -149,7 +149,7 @@ export default class ObjectFeed extends React.Component {
   };
 
   render() {
-    const { feed, limit, handleCreatePost } = this.props;
+    const { feed, limit, handleCreatePost, userName, wobject } = this.props;
     const { loadingPropositions } = this.state;
     const wObjectName = this.props.match.params.name;
     const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);
@@ -195,7 +195,14 @@ export default class ObjectFeed extends React.Component {
 
     return (
       <div className="object-feed">
-        {loadingPropositions ? <Loading /> : <React.Fragment>{getFeedContent()}</React.Fragment>}
+        {loadingPropositions ? (
+          <Loading />
+        ) : (
+          <React.Fragment>
+            <PropositionContainer userName={userName} wobject={wobject} />
+            {getFeedContent()}
+          </React.Fragment>
+        )}
         <PostModal />
       </div>
     );
