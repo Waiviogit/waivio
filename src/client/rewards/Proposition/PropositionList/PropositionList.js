@@ -80,11 +80,14 @@ const PropositionList = ({
   const handleCurrentProposition = (currPropos, currWobject) => {
     if (!isEmpty(currWobject.parent)) {
       if (isEmpty(allCurrentPropositions)) return null;
-
+      const filteredPropos = allCurrentPropositions.filter(
+        prop =>
+          get(prop, ['objects', '0', 'object', 'author_permlink']) === currWobject.author_permlink,
+      );
       return isGetWobject ? (
         <Loading />
       ) : (
-        map(allCurrentPropositions, propos => {
+        map(filteredPropos, propos => {
           if (!isEmpty(propos)) {
             return (
               <Proposition
