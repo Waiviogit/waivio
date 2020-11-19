@@ -138,7 +138,7 @@ export default class Transfer extends React.Component {
   };
 
   state = {
-    currency: Transfer.CURRENCIES.HIVE,
+    currency: '',
     oldAmount: undefined,
     searchBarValue: '',
     searchName: '',
@@ -159,6 +159,7 @@ export default class Transfer extends React.Component {
     } = this.props;
     const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
     const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
+
     if (isNull(currentHiveRate) || isNull(currentHBDRate))
       getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
     this.props.form.setFieldsValue({
@@ -169,6 +170,7 @@ export default class Transfer extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { form, to, amount, currency } = this.props;
+
     if (!this.props.visible) {
       this.setState({
         searchBarValue: '',
@@ -184,9 +186,8 @@ export default class Transfer extends React.Component {
         amount: nextProps.amount,
         currency: nextProps.currency === 'HIVE' ? HIVE.symbol : HBD.symbol,
       });
-      this.setState({
-        currency: HIVE.symbol,
-      });
+
+      this.setState({ currency: nextProps.currency });
     }
   }
 
@@ -230,6 +231,7 @@ export default class Transfer extends React.Component {
 
   handleSwitchCurrency = () => {
     const { cryptosPriceHistory } = this.props;
+
     this.setState({
       currentEstimate: this.estimatedValue(cryptosPriceHistory, this.state.inputValue),
     });
@@ -239,6 +241,7 @@ export default class Transfer extends React.Component {
     const { cryptosPriceHistory } = this.props;
     const { oldAmount } = this.state;
     const value = parseFloat(event.currentTarget.innerText);
+
     this.props.form.setFieldsValue({
       amount: value,
     });
@@ -251,6 +254,7 @@ export default class Transfer extends React.Component {
 
   handleCurrencyChange = event => {
     const { form } = this.props;
+
     this.setState({ currency: event.target.value }, () =>
       form.validateFields(['amount'], { force: true }, this.handleSwitchCurrency()),
     );
@@ -283,6 +287,7 @@ export default class Transfer extends React.Component {
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
           memo: {},
         };
+
         if (guestUserRegex.test(values.to)) {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = { id: memo || REWARD.guestTransfer, to: values.to };
@@ -329,6 +334,7 @@ export default class Transfer extends React.Component {
             `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
             '_blank',
           );
+
           win.focus();
         }
 
@@ -372,10 +378,12 @@ export default class Transfer extends React.Component {
 
   validateUsername = (rule, value, callback) => {
     const { intl } = this.props;
+
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
       callback();
+
       return;
     }
 
@@ -388,6 +396,7 @@ export default class Transfer extends React.Component {
           }),
         ),
       ]);
+
       return;
     }
     callback();
@@ -432,6 +441,7 @@ export default class Transfer extends React.Component {
     const isCurrentUser = user.name === match.params.name;
     const guestWithBeneficiary = isGuest && hiveBeneficiaryAccount;
     const account = guestWithBeneficiary ? hiveBeneficiaryAccount : userName;
+
     if (guestWithBeneficiary && !form.getFieldValue('to')) {
       this.props.form.setFieldsValue({
         to: hiveBeneficiaryAccount,
@@ -487,6 +497,7 @@ export default class Transfer extends React.Component {
     const { value } = event.target;
     const { oldAmount } = this.state;
     const { cryptosPriceHistory } = this.props;
+
     this.setState({
       inputValue: value,
       oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,

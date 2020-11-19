@@ -16,6 +16,7 @@ const TableFilter = ({
   changeEndDate,
 }) => {
   const formatDate = selectFormatDate(locale);
+
   return (
     <React.Fragment>
       <span

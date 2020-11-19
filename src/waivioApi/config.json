@@ -102,5 +102,17 @@
   "showMoreTags": "/showMoreTags",
   "setSentryNotify": "/sentry",
   "sentryAppName": "waivio",
-  "referrals": "/referrals"
+  "referrals": "/referrals",
+  "social": "/social-info",
+  "sites": "/sites",
+  "getParents": "/getParents",
+  "create": "/create",
+  "checkAvailable": "/checkAvailable",
+  "managePage": "/manage",
+  "configuration": "/configuration",
+  "administrators": "/administrators",
+  "authorities": "/authorities",
+  "moderators": "/moderators",
+  "filters": "/filters",
+  "settings": "/settings"
 }

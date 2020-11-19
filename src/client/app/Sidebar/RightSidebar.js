@@ -13,7 +13,6 @@ import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
 import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
-import { getFeed, isGuestUser } from '../../reducers';
 import { getFeedFromState } from '../../helpers/stateHelpers';
 import UserSidebar from './UserSidebar';
 
@@ -23,8 +22,8 @@ import UserSidebar from './UserSidebar';
   authUserName: store.getAuthenticatedUserName(state),
   isAuthFetching: store.getIsAuthFetching(state),
   locale: store.getLocale(state),
-  isGuest: isGuestUser(state),
-  feed: getFeed(state),
+  isGuest: store.isGuestUser(state),
+  feed: store.getFeed(state),
 }))
 export default class RightSidebar extends React.Component {
   static propTypes = {

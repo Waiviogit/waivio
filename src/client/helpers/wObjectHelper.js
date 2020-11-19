@@ -161,3 +161,5 @@ export const getMenuItems = (wobject, menuType, objType) => {
       return { ...item, alias: matchItem.alias, id: menuType };
     });
 };
+
+export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};

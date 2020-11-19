@@ -55,6 +55,7 @@ class MapAppendObject extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps !== this.props) {
       let location = defaultCoords;
+
       if (_.size(nextProps.userLocation) > 0 && this.state.isInitial) {
         location = [+nextProps.userLocation.lat, +nextProps.userLocation.lon];
         this.setState({ userCoordinates: location, isInitial: false });
@@ -71,12 +72,15 @@ class MapAppendObject extends React.Component {
   setPosition = () => {
     if (navigator && navigator.geolocation) {
       const positionGPS = navigator.geolocation.getCurrentPosition(this.showUserPosition);
+
       if (positionGPS) {
         this.setState({ userCoordinates: positionGPS });
+
         return true;
       }
     }
     this.setState({ userCoordinates: [this.props.userLocation.lat, this.props.userLocation.lon] });
+
     return true;
   };
 
@@ -104,6 +108,7 @@ class MapAppendObject extends React.Component {
 
   render() {
     const { infoboxData, zoom, userCoordinates } = this.state;
+
     return userCoordinates ? (
       <div className="MapOS">
         <Map

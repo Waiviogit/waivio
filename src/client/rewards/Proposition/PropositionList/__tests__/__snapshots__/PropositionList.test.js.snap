@@ -6,7 +6,7 @@ ShallowWrapper {
   Symbol(enzyme.__unrendered__): <IntlProvider
     locale="en"
   >
-    <UNDEFINED
+    <InjectIntl(PropositionList)
       props={
         Object {
           "allPropositions": Object {},
@@ -43,7 +43,7 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "function",
+    "nodeType": "class",
     "props": Object {
       "props": Object {
         "allPropositions": Object {},
@@ -68,20 +68,13 @@ ShallowWrapper {
     },
     "ref": null,
     "rendered": null,
-    "type": Object {
-      "$$typeof": Symbol(react.memo),
-      "WrappedComponent": [Function],
-      "compare": null,
-      "displayName": "Connect(InjectIntl(PropositionList))",
-      "type": [Function],
-      Symbol(Symbol.hasInstance): [Function],
-    },
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "function",
+      "nodeType": "class",
       "props": Object {
         "props": Object {
           "allPropositions": Object {},
@@ -106,14 +99,7 @@ ShallowWrapper {
       },
       "ref": null,
       "rendered": null,
-      "type": Object {
-        "$$typeof": Symbol(react.memo),
-        "WrappedComponent": [Function],
-        "compare": null,
-        "displayName": "Connect(InjectIntl(PropositionList))",
-        "type": [Function],
-        Symbol(Symbol.hasInstance): [Function],
-      },
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {

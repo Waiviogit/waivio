@@ -6,7 +6,12 @@ import { push } from 'connected-react-router';
 import { find, truncate } from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
-import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
+import {
+  dropCategory,
+  isBannedPost,
+  replaceBotWithGuestName,
+  getAuthorName,
+} from '../helpers/postHelpers';
 import {
   getAuthenticatedUser,
   getBookmarks,
@@ -114,12 +119,21 @@ class PostContent extends React.Component {
     unfollowUser: () => {},
     push: () => {},
     isOriginalPost: '',
+    postSocialInfo: {},
   };
 
   constructor(props) {
     super(props);
 
     this.handleReportClick = this.handleReportClick.bind(this);
+    this.state = {
+      cities: [],
+      socialHashtags: [],
+      userFacebook: '',
+      userTwitter: '',
+      wobjectsFacebook: [],
+      wobjectsTwitter: [],
+    };
   }
 
   componentDidMount() {
@@ -152,9 +166,6 @@ class PostContent extends React.Component {
     }
   };
 
-  getAuthorName = post =>
-    post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
-
   handleLikeClick = (post, postState, weight = 10000) => {
     const { sliderMode, defaultVotePercent } = this.props;
     const authorName = post.guestInfo ? post.root_author : post.author;
@@ -180,7 +191,7 @@ class PostContent extends React.Component {
   handleSaveClick = post => this.props.toggleBookmark(post.id);
 
   handleFollowClick = post => {
-    const authorName = this.getAuthorName(post);
+    const authorName = getAuthorName(post);
     const postId = `${post.author}/${post.permlink}`;
 
     this.props.pendingFollowingPostAuthor(postId);
@@ -239,9 +250,8 @@ class PostContent extends React.Component {
         : bookmarks.includes(content.id),
       isLiked: userVote.percent > 0,
       isReported: userVote.percent < 0,
-      userFollowed: followingList.includes(this.getAuthorName(content)),
+      userFollowed: followingList.includes(getAuthorName(content)),
     };
-
     const pendingLike =
       pendingLikes[content.id] &&
       (pendingLikes[content.id].weight > 0 ||
@@ -253,11 +263,13 @@ class PostContent extends React.Component {
         (pendingLikes[content.id].weight === 0 && postState.isReported));
 
     const { title, category, created, body, guestInfo } = content;
-    const authorName = this.getAuthorName(content);
+    const { socialHashtags, cities } = this.state;
+    const hashtags = [...socialHashtags, ...cities];
+    const authorName = getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
-    const desc = `${truncate(bodyText, { length: 143 })}`;
+    const desc = `${truncate(bodyText, { length: 143 })} ${hashtags}`;
     const image =
       postMetaImage ||
       getAvatarURL(authorName) ||
@@ -276,13 +288,12 @@ class PostContent extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <link rel="amphtml" href={ampUrl} />
-          <meta name="description" property="description" content={desc} />
-          <meta name="og:title" property="og:title" content={metaTitle} />
-          <meta name="og:type" property="og:type" content="article" />
-          <meta name="og:url" property="og:url" content={url} />
-          <meta name="og:image" property="og:image" content={getProxyImageURL(image)} />
-          <meta name="og:description" property="og:description" content={desc} />
-          <meta name="og:site_name" property="og:site_name" content="Waivio" />
+          <meta property="og:title" content={metaTitle} />
+          <meta property="og:type" content="article" />
+          <meta property="description" content={desc} />
+          <meta property="og:url" content={url} />
+          <meta property="og:image" content={getProxyImageURL(image)} />
+          <meta property="og:site_name" content="Waivio" />
           <meta name="article:tag" property="article:tag" content={category} />
           <meta name="article:published_time" property="article:published_time" content={created} />
           <meta

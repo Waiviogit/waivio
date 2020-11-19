@@ -12,10 +12,13 @@ import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemit
 
 import './StoryFooter.less';
 
-@connect(state => ({
-  isGuest: isGuestUser(state),
-  userName: getAuthenticatedUserName(state),
-}))
+@connect(
+  state => ({
+    isGuest: isGuestUser(state),
+    userName: getAuthenticatedUserName(state),
+  }),
+  {},
+)
 class StoryFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,

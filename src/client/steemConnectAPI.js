@@ -5,6 +5,7 @@ import { getValidTokenData } from './helpers/getToken';
 
 function broadcast(operations, isReview, actionAuthor) {
   let operation;
+
   if (operations[0][0] === 'custom_json') {
     if (operations[0][1].id.includes('confirm_referral_license')) {
       operation = 'confirm_referral_license';
@@ -14,13 +15,17 @@ function broadcast(operations, isReview, actionAuthor) {
       operation = 'add_referral_agent';
     } else if (operations[0][1].json.includes('reblog')) {
       operation = `waivio_guest_reblog`;
-    } else if (operations[0][1].json.includes('bell_notifications')) {
+    } else if (
+      operations[0][1].json.includes('bell_notifications') ||
+      operations[0][1].id === 'bell_notifications'
+    ) {
       operation = `waivio_guest_bell`;
     } else {
       operation = `waivio_guest_${operations[0][1].id}`;
     }
   } else if (operations[0][0] === 'comment') {
     const jsonMetadata = JSON.parse(operations[0][1].json_metadata);
+
     if (actionAuthor) operations[0][1].post_root_author = actionAuthor;
     if (jsonMetadata.comment) {
       operations[0][1].guest_root_author = operations[0][1].author;
@@ -30,13 +35,14 @@ function broadcast(operations, isReview, actionAuthor) {
   } else {
     operation = `waivio_guest_${operations[0][0]}`;
   }
+
   return waivioAPI.broadcastGuestOperation(operation, operations);
 }
 
 async function getUserAccount() {
   const userData = await getValidTokenData();
-  const userName = userData.userData.name;
-  const account = await waivioAPI.getUserAccount(userName, true, userName);
+  const account = await waivioAPI.getUserAccount(userData.userData.name, true);
+
   return { account, name: account.name };
 }
 
@@ -58,11 +64,13 @@ function sc2Extended() {
 
   sc2Proto.broadcast = (operations, cb) => {
     if (isGuest()) return broadcast(operations, cb);
+
     return sc2Proto.broadcastOp(operations);
   };
 
   sc2Proto.me = () => {
     if (isGuest()) return getUserAccount();
+
     return sc2Proto.meOp();
   };
 
@@ -87,6 +95,7 @@ function sc2Extended() {
             },
           ]),
         };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -108,6 +117,7 @@ function sc2Extended() {
             },
           ]),
         };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -131,6 +141,53 @@ function sc2Extended() {
       },
     },
     {
+      bellNotificationsWobject(follower, following, subscribe, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [follower],
+          id: 'bell_notifications',
+          json: JSON.stringify([
+            'bell_wobject',
+            {
+              follower,
+              following,
+              subscribe,
+            },
+          ]),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      activateWebsite(userName, host, subscribe, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [userName],
+          id: 'active_custom_website',
+          json: JSON.stringify({
+            host,
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      suspendWebsite(userName, host, subscribe, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [userName],
+          id: 'suspend_custom_website',
+          json: JSON.stringify({
+            host,
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       rankingObject(username, author, permlink, authorPermlink, rate, cb) {
         const params = {
           required_auths: [],
@@ -138,6 +195,7 @@ function sc2Extended() {
           id: 'wobj_rating',
           json: JSON.stringify({ author, permlink, author_permlink: authorPermlink, rate }),
         };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -149,6 +207,79 @@ function sc2Extended() {
           id: 'match_bot_set_rule',
           json: JSON.stringify(ruleObj),
         };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      addWebsiteAdministrators(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'website_add_administrators',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      deleteWebsiteAdministrators(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'website_remove_administrators',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      addWebsiteModerators(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'website_add_moderators',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      deleteWebsiteModerators(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'website_remove_moderators',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      addWebsiteAuthorities(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'website_add_authorities',
+          json: JSON.stringify({ host, names }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      deleteWebsiteAuthorities(username, host, names, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'website_remove_authorities',
+          json: JSON.stringify({ host, names }),
+        };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -160,6 +291,7 @@ function sc2Extended() {
           id: 'match_bot_change_power',
           json: JSON.stringify(voteObj),
         };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -171,6 +303,7 @@ function sc2Extended() {
           id: 'match_bot_remove_rule',
           json: JSON.stringify(sponsorName),
         };
+
         return this.broadcast([['custom_json', params]], cb);
       },
       changeBlackAndWhiteLists(username, id, user, cb) {
@@ -180,12 +313,14 @@ function sc2Extended() {
           id,
           json: JSON.stringify({ names: user }),
         };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
     {
       referralConfirmRules(username, isGuestUser, cb) {
         let params = {};
+
         if (isGuestUser) {
           params = {
             required_auths: [],
@@ -207,6 +342,7 @@ function sc2Extended() {
             }),
           };
         }
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -230,6 +366,7 @@ function sc2Extended() {
     {
       referralRejectRules(username, isGuestUser, cb) {
         let params = {};
+
         if (isGuestUser) {
           params = {
             required_auths: [],
@@ -251,6 +388,7 @@ function sc2Extended() {
             }),
           };
         }
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -262,6 +400,7 @@ function sc2Extended() {
        */
       addReferralAgent(username, refUser, isGuestUser, refType = 'rewards', cb) {
         let params = {};
+
         if (isGuestUser) {
           params = {
             required_auths: [],
@@ -284,6 +423,21 @@ function sc2Extended() {
             }),
           };
         }
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+      saveWebsiteSettings(username, appId, googleAnalyticsTag, beneficiary, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'custom_website_settings',
+          json: JSON.stringify({
+            appId,
+            googleAnalyticsTag,
+            beneficiary,
+          }),
+        };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },

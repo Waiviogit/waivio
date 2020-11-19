@@ -1,0 +1,47 @@
+@import (reference) '../../../styles/custom.less';
+
+.CreateWebsite {
+  &__domain-wrap {
+    display: flex;
+
+    .ant-input {
+      width: 50%;
+      margin-right: 5px;
+    }
+  }
+
+  &__available {
+    color: @green;
+  }
+
+  &__error {
+    color: @red;
+  }
+
+  &__domain-name {
+    font-weight: bolder;
+  }
+
+  .ant-form-explain {
+    margin: 0;
+    min-height: auto;
+  }
+
+  .ant-select-auto-complete.ant-select .ant-input {
+    background: @white;
+  }
+
+  .ant-form-item-children .ant-checkbox-wrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  &__checkbox-wrap.ant-form-item-with-help {
+    margin-bottom: 0;
+
+    //.ant-form-item-control.has-success {
+    //}
+  }
+}
+
+@import 'CreateWebsite-nightmode';

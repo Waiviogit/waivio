@@ -41,7 +41,12 @@ const StoryPreview = ({ post, isUpdates }) => {
     }
   }
 
-  if (isUpdates && (post.name === objectFields.avatar || post.name === objectFields.galleryItem))
+  if (
+    isUpdates &&
+    (post.name === objectFields.avatar ||
+      post.name === objectFields.galleryItem ||
+      post.name === objectFields.background)
+  )
     imagePath = getProxyImageURL(post.body, 'preview');
 
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });

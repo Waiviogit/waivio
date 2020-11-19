@@ -1,4 +1,5 @@
 import ReferralReducer from '../ReferralReducer';
+// eslint-disable-next-line no-duplicate-imports
 import * as selector from '../ReferralReducer';
 import * as actions from '../ReferralActions';
 import * as mock from '../__mock__/mockData';

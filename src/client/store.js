@@ -11,6 +11,7 @@ import createReducer from './reducers';
 export default (steemConnectAPI, waivioAPI, currUrl, historyPassed) => {
   const history = historyPassed || createHistory(currUrl);
   let preloadedState;
+
   if (typeof window !== 'undefined') {
     /* eslint-disable no-underscore-dangle */
     preloadedState = window.__PRELOADED_STATE__;
@@ -33,6 +34,7 @@ export default (steemConnectAPI, waivioAPI, currUrl, historyPassed) => {
   ];
 
   let enhancer;
+
   if (typeof window !== 'undefined') {
     // eslint-disable-next-line no-underscore-dangle
     const composeEnhancers =
@@ -41,6 +43,7 @@ export default (steemConnectAPI, waivioAPI, currUrl, historyPassed) => {
         // eslint-disable-next-line no-underscore-dangle
         window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ trace: true, traceLimit: 25 })) ||
       compose;
+
     enhancer = composeEnhancers(applyMiddleware(...middleware));
   } else {
     enhancer = compose(applyMiddleware(...middleware));

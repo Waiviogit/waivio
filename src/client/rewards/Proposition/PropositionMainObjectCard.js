@@ -15,7 +15,7 @@ const PropositionMainObjectCard = ({
 }) => (
   <React.Fragment>
     <ObjectCardView wObject={wobject} passedParent={currentProposition} />
-    <div className="Campaign__button" role="presentation" onClick={goToProducts}>
+    <div className="Campaign__button" role="presentation" onClick={() => goToProducts(wobject)}>
       <Button type="primary" size="large">
         {maxReward === minReward ? (
           <React.Fragment>
