@@ -49,6 +49,7 @@ const PropositionListContainer = ({
   };
 
   useEffect(() => {
+    console.log(wobject);
     if (wobject && userName) {
       const isParentList = get(listItems[0], 'parent', {});
       const reqData = {
@@ -67,7 +68,7 @@ const PropositionListContainer = ({
 
       getPropositions(reqData);
     }
-  }, [wobject, userName, listItems]);
+  }, [wobject.author_permlink, userName, listItems]);
 
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {

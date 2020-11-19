@@ -46,7 +46,7 @@ const PropositionList = ({
         setIsGetWobject(false);
       });
     }
-  }, [wobject]);
+  }, [wobject.author_permlink]);
 
   const handleCurrentProposition = (currPropos, currWobject) => {
     let minReward;
