@@ -67,7 +67,7 @@ import {
 import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
 import { getVoteValue } from '../../helpers/user';
-import { getExposedFieldsByObjType, getListItems } from '../wObjectHelper';
+import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { rateObject } from '../wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import DnDListItem from '../../components/DnDList/DnDListItem';
@@ -191,97 +191,59 @@ export default class AppendForm extends Component {
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
-    const listItem = getListItems(wObject, { uniq: true, isMappedToClientWobject: true }).map(
-      item => item.id,
-    );
-
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
-      let equalBody;
-
-      if (data.field.name === objectFields.sorting) {
-        equalBody = isEqual(listItem, JSON.parse(data.field.body));
-        if (wObject.sortCustom.length && equalBody)
-          message.error(
-            this.props.intl.formatMessage(
-              {
-                id: 'no_changes',
-                defaultMessage: `There are no changes to save`,
-              },
-              {
-                field: form.getFieldValue('currentField'),
-                wobject: getObjectName(wObject),
-              },
-            ),
-          );
-      }
       const field = form.getFieldValue('currentField');
+      this.setState({ loading: true });
+      this.props
+        .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
+        .then(res => {
+          const mssg = get(res, ['value', 'message']);
 
-      if (data.field.name !== objectFields.sorting || !wObject.sortCustom.length || !equalBody) {
-        this.setState({ loading: true });
-        this.props
-          .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
-          .then(res => {
-            const mssg = get(res, ['value', 'message']);
+          if (mssg) {
+            message.error(mssg);
+          } else {
+            if (data.votePower !== null) {
+              if (objectFields.rating === formValues.currentField && formValues.rate) {
+                const { author, permlink } = res;
 
-            if (mssg) {
-              message.error(mssg);
-            } else {
-              if (data.votePower !== null) {
-                if (objectFields.rating === formValues.currentField && formValues.rate) {
-                  const { author, permlink } = res;
-
-                  this.props.rateObject(
-                    author,
-                    permlink,
-                    wObject.author_permlink,
-                    ratePercent[formValues.rate - 1],
-                  );
-                }
-              }
-              if (data.field.name === objectFields.button) {
-                message.success(
-                  this.props.intl.formatMessage(
-                    {
-                      id: 'added_field_to_wobject_button',
-                      defaultMessage: `You successfully have added the button field to {wobject} object <br /> {url}`,
-                    },
-                    {
-                      wobject: getObjectName(wObject),
-                      url: formValues.link,
-                    },
-                  ),
+                this.props.rateObject(
+                  author,
+                  permlink,
+                  wObject.author_permlink,
+                  ratePercent[formValues.rate - 1],
                 );
               }
-
-              message.success(
-                this.props.intl.formatMessage(
-                  {
-                    id: `added_field_to_wobject_${field}`,
-                    defaultMessage: `You successfully have added the {field} field to {wobject} object`,
-                  },
-                  {
-                    field: form.getFieldValue('currentField'),
-                    wobject: getObjectName(wObject),
-                  },
-                ),
-              );
-              this.props.hideModal();
             }
 
-            this.setState({ loading: false });
-          })
-          .catch(() => {
-            message.error(
-              this.props.intl.formatMessage({
-                id: 'couldnt_append',
-                defaultMessage: "Couldn't add the field to object.",
-              }),
+            message.success(
+              this.props.intl.formatMessage(
+                {
+                  id: `added_field_to_wobject_${field}`,
+                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                },
+                {
+                  field: form.getFieldValue('currentField'),
+                  wobject: getObjectName(wObject),
+                },
+              ),
             );
+            this.props.hideModal();
+          }
 
-            this.setState({ loading: false });
-          });
-      }
+          this.setState({ loading: false });
+        })
+        .catch(() => {
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'couldnt_append',
+              defaultMessage: "Couldn't add the field to object.",
+            }),
+          );
+
+          this.setState({ loading: false });
+          this.props.hideModal();
+        });
     }
   };
 
@@ -784,9 +746,9 @@ export default class AppendForm extends Component {
       const ignoreList = map(this.state.ignoreList, o => o.id);
       const locale = !isEmpty(chosenLocale) ? chosenLocale : usedLocale;
 
-      if (!isEmpty(allowList) || !isEmpty(ignoreList))
+      if (!isEmpty(allowList) || !isEmpty(ignoreList)) {
         this.onSubmit({ currentField, currentLocale: locale });
-      else {
+      } else {
         message.error(
           this.props.intl.formatMessage({
             id: 'at_least_one',
@@ -796,39 +758,41 @@ export default class AppendForm extends Component {
       }
     }
 
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
-        if (field.body === values.rating) {
-          return field.locale === values.currentLocale ? [...acc, field] : acc;
-        }
+    if (currentField !== objectFields.newsFilter) {
+      this.props.form.validateFieldsAndScroll((err, values) => {
+        const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
+          if (field.body === values.rating) {
+            return field.locale === values.currentLocale ? [...acc, field] : acc;
+          }
 
-        return acc;
-      }, []);
+          return acc;
+        }, []);
 
-      if (!identicalNameFields.length) {
-        const { form } = this.props;
+        if (!identicalNameFields.length) {
+          const { form } = this.props;
 
-        if (objectFields.galleryAlbum === currentField) {
-          this.handleCreateAlbum(values);
-        } else if (err || this.checkRequiredField(form, currentField)) {
+          if (objectFields.galleryAlbum === currentField) {
+            this.handleCreateAlbum(values);
+          } else if (err || this.checkRequiredField(form, currentField)) {
+            message.error(
+              this.props.intl.formatMessage({
+                id: 'append_validate_common_message',
+                defaultMessage: 'The value is already exist',
+              }),
+            );
+          } else {
+            this.onSubmit(values);
+          }
+        } else {
           message.error(
             this.props.intl.formatMessage({
-              id: 'append_validate_common_message',
-              defaultMessage: 'The value is already exist',
+              id: 'append_validate_message',
+              defaultMessage: 'The rating with such name already exist in this locale',
             }),
           );
-        } else {
-          this.onSubmit(values);
         }
-      } else {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'append_validate_message',
-            defaultMessage: 'The rating with such name already exist in this locale',
-          }),
-        );
-      }
-    });
+      });
+    }
   };
 
   checkRequiredField = (form, currentField) => {
