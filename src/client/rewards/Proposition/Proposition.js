@@ -67,7 +67,6 @@ const Proposition = ({
   const parentPermlink = isMessages ? permlink : propositionActivationPermlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
-
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
     setModalDetailsOpen(!isModalDetailsOpen);
@@ -110,7 +109,9 @@ const Proposition = ({
     const getJsonData = () => {
       if (!isEmpty(user)) {
         try {
-          return JSON.parse(user.posting_json_metadata) || JSON.parse(user.json_metadata);
+          return !isEmpty(user.posting_json_metadata)
+            ? JSON.parse(user.posting_json_metadata)
+            : JSON.parse(user.json_metadata);
         } catch (err) {
           message.error(
             intl.formatMessage({
