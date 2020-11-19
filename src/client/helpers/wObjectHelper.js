@@ -115,22 +115,23 @@ export const parseWobjectField = (wobject, fieldName) => {
   }
 };
 
-export const parseButtonsField = wobject =>
-  get(wobject, 'button', []).map(btn => {
-    if (btn) {
-      try {
-        return {
-          ...btn,
-          id: TYPES_OF_MENU_ITEM.BUTTON,
-          body: JSON.parse(btn.body),
-        };
-      } catch (err) {
-        return null;
-      }
-    }
+export const parseButtonsField = wobject => {
+  const buttons = get(wobject, 'button');
 
-    return null;
+  if (!buttons) return null;
+
+  return buttons.map(btn => {
+    try {
+      return {
+        ...btn,
+        id: TYPES_OF_MENU_ITEM.BUTTON,
+        body: JSON.parse(btn.body),
+      };
+    } catch (err) {
+      return null;
+    }
   });
+};
 
 export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;
@@ -162,4 +163,4 @@ export const getMenuItems = (wobject, menuType, objType) => {
     });
 };
 
-export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos');
+export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};

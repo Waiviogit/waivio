@@ -12,15 +12,16 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
   const currentUSDPrice = getCurrentUSDPrice();
   const price = get(campaignData, ['objects', '0', 'reward']) || wobjPrice;
   const isAssigned = get(campaignData, ['objects', '0', ASSIGNED]) || isWobjAssigned;
+  const campainReward = get(campaignData, 'reward', 0);
   const isMessages =
     match &&
     (includes(match.url, HISTORY) ||
       includes(match.url, GUIDE_HISTORY) ||
       includes(match.url, MESSAGES));
   const rewardPriceHive = `${
-    price ? price.toFixed(3) : (campaignData.reward / currentUSDPrice).toFixed(3)
+    price ? price.toFixed(3) : (campainReward / currentUSDPrice).toFixed(3)
   } HIVE`;
-  const rewardPriceUsd = `${campaignData.reward.toFixed(2)} USD`;
+  const rewardPriceUsd = `${campainReward.toFixed(2)} USD`;
   const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
   return (
     <React.Fragment>

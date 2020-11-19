@@ -305,7 +305,6 @@ export const WebsitesConfigurations = ({
               defaultMessage: 'Select colors',
             })}
           </Button>
-          <p>Select the initial map focus for the mobile site.</p>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={loading}>
