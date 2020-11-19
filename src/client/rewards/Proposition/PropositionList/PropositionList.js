@@ -84,24 +84,30 @@ const PropositionList = ({
       return isGetWobject ? (
         <Loading />
       ) : (
-        map(allCurrentPropositions, propos => (
-          <Proposition
-            proposition={propos}
-            wobj={wobject}
-            wobjPrice={wobject.reward}
-            assignCommentPermlink={wobject.permlink}
-            assignProposition={assignPropositionHandler}
-            discardProposition={discardProposition}
-            authorizedUserName={userName}
-            loading={loadingAssignDiscard}
-            key={`${wobject.author_permlink}`}
-            assigned={wobject.assigned}
-            history={history}
-            isAssign={isAssign}
-            match={match}
-            user={user}
-          />
-        ))
+        map(allCurrentPropositions, propos => {
+          if (!isEmpty(propos)) {
+            return (
+              <Proposition
+                proposition={propos}
+                wobj={wobject}
+                wobjPrice={wobject.reward}
+                assignCommentPermlink={wobject.permlink}
+                assignProposition={assignPropositionHandler}
+                discardProposition={discardProposition}
+                authorizedUserName={userName}
+                loading={loadingAssignDiscard}
+                key={`${wobject.author_permlink}`}
+                assigned={wobject.assigned}
+                history={history}
+                isAssign={isAssign}
+                match={match}
+                user={user}
+              />
+            );
+          }
+
+          return null;
+        })
       );
     }
 
