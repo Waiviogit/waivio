@@ -49,7 +49,6 @@ const PropositionListContainer = ({
   };
 
   useEffect(() => {
-    console.log(wobject);
     if (wobject && userName) {
       const isParentList = get(listItems[0], 'parent', {});
       const reqData = {
