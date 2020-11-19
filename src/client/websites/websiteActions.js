@@ -45,6 +45,7 @@ export const createNewWebsite = formData => (dispatch, getState) => {
     type: CREATE_NEW_WEBSITE.ACTION,
     payload: {
       promise: createWebsite(body),
+      host: `${formData.domain}.${formData.parent}`
     },
   });
 };

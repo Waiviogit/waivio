@@ -57,8 +57,8 @@ export const CreateWebsite = ({
     form.validateFieldsAndScroll((err, values) => {
       if (!err && available)
         createWebsite(values)
-          .then(() => form.resetFields())
-          .catch(error => message.error(error));
+          // .then(() => form.resetFields())
+          // .catch(error => message.error(error));
     });
   };
 
