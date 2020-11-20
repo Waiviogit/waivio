@@ -247,7 +247,10 @@ class AddItemModal extends Component {
           parentObject={wobject}
           addItem
         />
-        <CreateObject onCreateObject={this.handleCreateObject} parentObject={wobject || {}} />{' '}
+        <CreateObject
+          onCreateObject={this.handleCreateObject}
+          parentObject={wobject.parent || wobject || {}}
+        />{' '}
       </React.Fragment>
     );
   }
