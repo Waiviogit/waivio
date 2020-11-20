@@ -80,10 +80,10 @@ const PropositionList = ({
   const handleCurrentProposition = (currPropos, currWobject) => {
     if (!isEmpty(currWobject.parent)) {
       if (isEmpty(allCurrentPropositions)) return null;
-      const filteredPropos = allCurrentPropositions.filter(
-        prop =>
-          get(prop, ['objects', '0', 'object', 'author_permlink']) === currWobject.author_permlink,
+      const filteredPropos = allCurrentPropositions.filter(prop =>
+        prop.objects.some(obj => obj.object.author_permlink === currWobject.author_permlink),
       );
+
       return isGetWobject ? (
         <Loading />
       ) : (
@@ -99,8 +99,8 @@ const PropositionList = ({
                 discardProposition={discardProposition}
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}
-                key={`${wobject.author_permlink}`}
-                assigned={wobject.assigned}
+                key={`${currWobject.author_permlink}`}
+                assigned={currWobject.assigned}
                 history={history}
                 isAssign={isAssign}
                 match={match}
@@ -118,7 +118,7 @@ const PropositionList = ({
 
     const minReward = get(currentProposition, ['min_reward'], 0);
     const maxReward = get(currentProposition, ['max_reward'], 0);
-    const rewardPrise = `${minReward.toFixed(2)} USD`;
+    const rewardPrise = `${get(currentProposition, ['reward'], 0).toFixed(2)} USD`;
     const rewardMax = `${maxReward.toFixed(2)} USD`;
 
     return (
