@@ -20,6 +20,7 @@ export const CreateWebsite = ({
   availableStatus,
   createWebsite,
   loading,
+  history,
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [searchString, setSearchString] = useState('');
@@ -56,7 +57,7 @@ export const CreateWebsite = ({
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err && available)
-        createWebsite(values)
+        createWebsite(values, history)
           .then(() => form.resetFields())
           .catch(error => message.error(error));
     });
@@ -158,6 +159,9 @@ export const CreateWebsite = ({
 CreateWebsite.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
   getDomainList: PropTypes.func.isRequired,
   createWebsite: PropTypes.func.isRequired,
   parentDomain: PropTypes.arrayOf(PropTypes.string).isRequired,
