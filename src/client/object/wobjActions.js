@@ -214,7 +214,7 @@ export const voteAppends = (
   weight = 10000,
   name = '',
   isNew = false,
-  type = {},
+  type = '',
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const wobj = get(state, ['object', 'wobject'], {});
@@ -222,13 +222,9 @@ export const voteAppends = (
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
   const fieldName = name || post.name;
-  let currentMethod;
-  if (!isEmpty(type)) {
-    currentMethod = isGuest ? 'vote' : 'appendVote';
-  } else {
-    const currentHieUserMethod = isPostCashout(post) || weight % 5 ? 'appendVote' : 'vote';
-    currentMethod = isGuest ? 'vote' : currentHieUserMethod;
-  }
+  const currentHieUserMethod =
+    !isEmpty(type) || isPostCashout(post) || weight % 5 ? 'appendVote' : 'vote';
+  const currentMethod = isGuest ? 'vote' : currentHieUserMethod;
 
   if (!getIsAuthenticated(state)) return null;
 
