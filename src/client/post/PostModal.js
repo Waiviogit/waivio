@@ -21,6 +21,8 @@ class PostModal extends React.Component {
     currentShownPost: PropTypes.shape(),
     shownPostContents: PropTypes.shape(),
     author: PropTypes.shape(),
+    isGuest: PropTypes.bool.isRequired,
+    username: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -100,6 +102,8 @@ class PostModal extends React.Component {
       currentShownPost,
       author: authorDetails,
       shownPostContents,
+      isGuest,
+      username,
     } = this.props;
     const { socialInfoPost } = this.state;
     const { permlink, title, url } = currentShownPost;
@@ -107,11 +111,12 @@ class PostModal extends React.Component {
     const author = currentShownPost.guestInfo
       ? currentShownPost.guestInfo.userId
       : currentShownPost.author;
+    const postName = isGuest ? '' : username;
     const baseURL = window ? window.location.origin : 'https://waivio.com';
     const postURL = `${baseURL}${replaceBotWithGuestName(
       dropCategory(url),
       currentShownPost.guestInfo,
-    )}`;
+    )}?ref=${postName}`;
     const hashtags = !isEmpty(socialInfoPost) ? [...tags, ...cities] : [];
     const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
     const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';

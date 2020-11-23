@@ -12,13 +12,10 @@ import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemit
 
 import './StoryFooter.less';
 
-@connect(
-  state => ({
-    isGuest: isGuestUser(state),
-    userName: getAuthenticatedUserName(state),
-  }),
-  {},
-)
+@connect(state => ({
+  isGuest: isGuestUser(state),
+  userName: getAuthenticatedUserName(state),
+}))
 class StoryFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
@@ -142,6 +139,7 @@ class StoryFooter extends React.Component {
       singlePostVew,
       handlePostPopoverMenuClick,
       onReportClick,
+      isGuest,
     } = this.props;
     const isCashout = isPostCashout(post);
 
@@ -174,6 +172,7 @@ class StoryFooter extends React.Component {
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={handlePostPopoverMenuClick}
               username={this.props.userName}
+              isGuest={isGuest}
             />
           )}
         </div>

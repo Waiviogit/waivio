@@ -41,6 +41,8 @@ const propTypes = {
   handlePostPopoverMenuClick: PropTypes.func,
   ownPost: PropTypes.bool,
   children: PropTypes.node.isRequired,
+  isGuest: PropTypes.bool.isRequired,
+  username: PropTypes.string.isRequired,
 };
 
 const defaultProps = {
@@ -61,6 +63,8 @@ const PostPopoverMenu = ({
   handlePostPopoverMenuClick,
   ownPost,
   children,
+  isGuest,
+  username,
 }) => {
   const { isReported, isSaved } = postState;
   const {
@@ -90,7 +94,11 @@ const PostPopoverMenu = ({
     const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
       ? `@${socialInfoPost.wobjectsTwitter}`
       : '';
-    const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
+    const postName = isGuest ? '' : username;
+    const postURL = `${baseURL}${replaceBotWithGuestName(
+      dropCategory(url),
+      guestInfo,
+    )}?ref=${postName}`;
 
     if (isTwitter) {
       const shareTextSocialTwitter = `"${encodeURIComponent(
