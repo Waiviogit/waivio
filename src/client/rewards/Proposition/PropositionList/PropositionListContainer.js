@@ -43,6 +43,7 @@ const PropositionListContainer = ({
         data.campaigns,
         obj => obj.required_object.author_permlink === match.params.name,
       );
+
       setAllCurrentPropositions(data.campaigns);
       setCurrentProposition(currentPropos[0]);
     });

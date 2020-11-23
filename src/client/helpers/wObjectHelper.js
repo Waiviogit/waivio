@@ -118,7 +118,7 @@ export const parseWobjectField = (wobject, fieldName) => {
 export const parseButtonsField = wobject => {
   const buttons = get(wobject, 'button');
 
-  if (!buttons) return null;
+  if (!buttons) return [];
 
   return buttons.map(btn => {
     try {
