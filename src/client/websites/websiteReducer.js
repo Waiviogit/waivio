@@ -50,12 +50,9 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
     case websiteAction.CREATE_NEW_WEBSITE.SUCCESS: {
-      const host = action.payload;
-
       return {
         ...state,
         loading: false,
-        ownWebsites: [...state.ownWebsites, { host }]
       };
     }
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {

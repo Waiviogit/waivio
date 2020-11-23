@@ -26,15 +26,14 @@ const SettingsSidenav = ({ match }) => {
     }, {});
 
     setMenuCondition(prevState => ({ ...prevState, ...websiteItems }));
-  }
+  };
 
   useEffect(() => {
-    if (!isGuest)
-      dispatch(getOwnWebsite());
+    if (!isGuest) dispatch(getOwnWebsite());
   }, []);
 
   useEffect(() => {
-    createWebsiteConditions(ownWebsite)
+    createWebsiteConditions(ownWebsite);
   }, [ownWebsite]);
 
   const toggleMenuCondition = menuItem => {
