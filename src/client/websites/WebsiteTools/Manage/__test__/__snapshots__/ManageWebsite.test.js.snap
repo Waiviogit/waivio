@@ -2387,12 +2387,6 @@ ShallowWrapper {
           "calls": Array [
             Array [
               Object {
-                "defaultMessage": "Create new website",
-                "id": "manage_website",
-              },
-            ],
-            Array [
-              Object {
                 "defaultMessage": "Prices",
                 "id": "prices",
               },
@@ -2417,6 +2411,12 @@ ShallowWrapper {
             ],
             Array [
               Object {
+                "defaultMessage": "Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
+                "id": "manage_website_info_dau",
+              },
+            ],
+            Array [
+              Object {
                 "defaultMessage": "Account balance (HBD)",
                 "id": "manage_account_balance",
               },
@@ -2429,14 +2429,20 @@ ShallowWrapper {
             ],
             Array [
               Object {
-                "defaultMessage": "Websites",
-                "id": "manage_websites",
+                "defaultMessage": "Daily active users are averaged over the last 7 days.",
+                "id": "manage_website_info_dau_averaged",
               },
             ],
             Array [
               Object {
-                "defaultMessage": "Create new website",
-                "id": "manage_website",
+                "defaultMessage": "** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.",
+                "id": "manage_website_info_account_balance",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Websites",
+                "id": "websites",
               },
             ],
           ],
@@ -2463,32 +2469,9 @@ ShallowWrapper {
     "nodeType": "host",
     "props": Object {
       "children": Array [
-        <HelmetWrapper
-          defer={true}
-          encodeSpecialCharacters={true}
-        >
-          <title>
-             
-            - Waivio
-          </title>
-        </HelmetWrapper>,
-        <div
-          className="settings-layout container"
-        >
-          <Affix
-            className="leftContainer"
-            stickPosition={77}
-          >
-            <div
-              className="left"
-            >
-              <LeftSidebar />
-            </div>
-          </Affix>
-          <Loading
-            center={true}
-          />
-        </div>,
+        <Loading
+          center={true}
+        />,
         <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
       ],
       "className": "shifted",
@@ -2498,110 +2481,13 @@ ShallowWrapper {
       Object {
         "instance": null,
         "key": undefined,
-        "nodeType": "class",
+        "nodeType": "function",
         "props": Object {
-          "children": <title>
-             
-            - Waivio
-          </title>,
-          "defer": true,
-          "encodeSpecialCharacters": true,
+          "center": true,
         },
         "ref": null,
-        "rendered": Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "host",
-          "props": Object {
-            "children": Array [
-              undefined,
-              " ",
-              "- Waivio",
-            ],
-          },
-          "ref": null,
-          "rendered": Array [
-            undefined,
-            " ",
-            "- Waivio",
-          ],
-          "type": "title",
-        },
+        "rendered": null,
         "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "host",
-        "props": Object {
-          "children": Array [
-            <Affix
-              className="leftContainer"
-              stickPosition={77}
-            >
-              <div
-                className="left"
-              >
-                <LeftSidebar />
-              </div>
-            </Affix>,
-            <Loading
-              center={true}
-            />,
-          ],
-          "className": "settings-layout container",
-        },
-        "ref": null,
-        "rendered": Array [
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "class",
-            "props": Object {
-              "children": <div
-                className="left"
-              >
-                <LeftSidebar />
-              </div>,
-              "className": "leftContainer",
-              "stickPosition": 77,
-            },
-            "ref": null,
-            "rendered": Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "host",
-              "props": Object {
-                "children": <LeftSidebar />,
-                "className": "left",
-              },
-              "ref": null,
-              "rendered": Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "function",
-                "props": Object {},
-                "ref": null,
-                "rendered": null,
-                "type": [Function],
-              },
-              "type": "div",
-            },
-            "type": [Function],
-          },
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "function",
-            "props": Object {
-              "center": true,
-            },
-            "ref": null,
-            "rendered": null,
-            "type": [Function],
-          },
-        ],
-        "type": "div",
       },
       Object {
         "instance": null,
@@ -2622,32 +2508,9 @@ ShallowWrapper {
       "nodeType": "host",
       "props": Object {
         "children": Array [
-          <HelmetWrapper
-            defer={true}
-            encodeSpecialCharacters={true}
-          >
-            <title>
-               
-              - Waivio
-            </title>
-          </HelmetWrapper>,
-          <div
-            className="settings-layout container"
-          >
-            <Affix
-              className="leftContainer"
-              stickPosition={77}
-            >
-              <div
-                className="left"
-              >
-                <LeftSidebar />
-              </div>
-            </Affix>
-            <Loading
-              center={true}
-            />
-          </div>,
+          <Loading
+            center={true}
+          />,
           <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
         ],
         "className": "shifted",
@@ -2657,110 +2520,13 @@ ShallowWrapper {
         Object {
           "instance": null,
           "key": undefined,
-          "nodeType": "class",
+          "nodeType": "function",
           "props": Object {
-            "children": <title>
-               
-              - Waivio
-            </title>,
-            "defer": true,
-            "encodeSpecialCharacters": true,
+            "center": true,
           },
           "ref": null,
-          "rendered": Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "host",
-            "props": Object {
-              "children": Array [
-                undefined,
-                " ",
-                "- Waivio",
-              ],
-            },
-            "ref": null,
-            "rendered": Array [
-              undefined,
-              " ",
-              "- Waivio",
-            ],
-            "type": "title",
-          },
+          "rendered": null,
           "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "host",
-          "props": Object {
-            "children": Array [
-              <Affix
-                className="leftContainer"
-                stickPosition={77}
-              >
-                <div
-                  className="left"
-                >
-                  <LeftSidebar />
-                </div>
-              </Affix>,
-              <Loading
-                center={true}
-              />,
-            ],
-            "className": "settings-layout container",
-          },
-          "ref": null,
-          "rendered": Array [
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "class",
-              "props": Object {
-                "children": <div
-                  className="left"
-                >
-                  <LeftSidebar />
-                </div>,
-                "className": "leftContainer",
-                "stickPosition": 77,
-              },
-              "ref": null,
-              "rendered": Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": <LeftSidebar />,
-                  "className": "left",
-                },
-                "ref": null,
-                "rendered": Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "function",
-                  "props": Object {},
-                  "ref": null,
-                  "rendered": null,
-                  "type": [Function],
-                },
-                "type": "div",
-              },
-              "type": [Function],
-            },
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "function",
-              "props": Object {
-                "center": true,
-              },
-              "ref": null,
-              "rendered": null,
-              "type": [Function],
-            },
-          ],
-          "type": "div",
         },
         Object {
           "instance": null,
