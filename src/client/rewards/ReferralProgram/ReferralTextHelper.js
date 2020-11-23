@@ -178,16 +178,16 @@ export const referralInstructionsContent = username => ({
   instructionsConditions: (
     <FormattedMessage
       id="referrals_instructions_conditions"
-      defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
+      defaultMessage="I have read and agree to the {termsAndConditions} of the service. I also acknowledge that I am not operating any online or offline service in violation of the laws of British Columbia, Canada."
       values={{
-        ReferralAgreement: (
-          <Link to={`/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions`}>
-            <span className="is-blacklist__referral-username">Referral Agreement</span>
-          </Link>
-        ),
-        ServiceAgreement: (
-          <Link to={`/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions`}>
-            <span className="is-blacklist__referral-username">Service Agreement</span>
+        termsAndConditions: (
+          <Link to={`/object/xrj-terms-and-conditions/page`}>
+            <span className="is-blacklist__referral-username">
+              <FormattedMessage
+                id="referral_terms_conditions"
+                defaultMessage="Terms and Conditions"
+              />
+            </span>
           </Link>
         ),
       }}

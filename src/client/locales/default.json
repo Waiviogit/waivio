@@ -1440,7 +1440,7 @@
   "referrals_instructions_title": "Referral instructions:",
   "referrals_instructions_is_blacklist": "Your account {username} is listed in the Waivio’s blacklist or in other blacklists trusted by Waivio and you are not eligible to participate in the Referral program.",
   "referrals_instructions_description": "To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service.",
-  "referrals_instructions_conditions": "I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada.",
+  "referrals_instructions_conditions": "I have read and agree to the {termsAndConditions} of the service. I also acknowledge that I am not operating any online or offline service in violation of the laws of British Columbia, Canada.",
   "referrals_instructions_accepted_title_links": "Direct links:",
   "referrals_instructions_accepted_example_links": "Simply add {link} to any Waivio page URL",
   "referrals_instructions_accepted_for_example": "For example:",

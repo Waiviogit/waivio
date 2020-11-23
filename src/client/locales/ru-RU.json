@@ -1441,7 +1441,7 @@
   "referrals_instructions_title": "Реферальные инструкции:",
   "referrals_instructions_is_blacklist": "Ваша учетная запись {username} внесена в черный список Waivio или в другие черные списки, которым доверяет Waivio, и вы не имеете права участвовать в реферальной программе.",
   "referrals_instructions_description": "Чтобы раскрыть инструкции и принять участие в реферальной программе, вы должны согласиться с условиями предоставления услуги.",
-  "referrals_instructions_conditions": "Я прочитал и принимаю положения и условия {ReferralAgreement} и {ServiceAgreement}. Я также подтверждаю, что не использую какие-либо онлайн или офлайн-услуги в нарушение законов Британской Колумбии, Канада.",
+  "referrals_instructions_conditions": "Я прочитал и согласен с {termsAndConditions} службы. Я также подтверждаю, что не использую какие-либо онлайн или офлайн-сервисы в нарушение законов Британской Колумбии, Канада.",
   "referrals_instructions_accepted_title_links": "Прямые ссылки:",
   "referrals_instructions_accepted_title_example_links": "Просто добавьте {link} в URL любой страницы Waivio",
   "referrals_instructions_accepted_for_example": "Например:",
