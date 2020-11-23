@@ -27,8 +27,8 @@ const NotificationClaimReward = ({ notification, read, onClick }) => {
             values={{
               account: <span className="username">{notification.account}</span>,
               rewardHIVE: <span>{notification.rewardHive}</span>,
-              rewardHBD: <span>{notification.rewardHBD}</span>,
               rewardHP: <span>{notification.rewardHP}</span>,
+              rewardHBD: <span>{notification.rewardHBD}</span>,
             }}
           />
         </div>
@@ -45,8 +45,8 @@ NotificationClaimReward.propTypes = {
   notification: PropTypes.shape({
     account: PropTypes.string,
     rewardHive: PropTypes.string,
-    rewardHBD: PropTypes.string,
     rewardHP: PropTypes.string,
+    rewardHBD: PropTypes.string,
     timestamp: PropTypes.number,
   }),
   onClick: PropTypes.func,
