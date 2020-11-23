@@ -537,7 +537,11 @@ export default class Transfer extends React.Component {
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(
-      <Radio.Group onChange={this.handleCurrencyChange} className="Transfer__amount__type">
+      <Radio.Group
+        onChange={this.handleCurrencyChange}
+        className="Transfer__amount__type"
+        defaultValue={this.state.currency}
+      >
         <Radio.Button
           disabled={isChangesDisabled && this.state.currency !== Transfer.CURRENCIES.HIVE}
           value={Transfer.CURRENCIES.HIVE}

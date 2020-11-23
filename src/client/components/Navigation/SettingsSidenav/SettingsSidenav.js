@@ -18,18 +18,23 @@ const SettingsSidenav = ({ match }) => {
     websites: true,
   });
 
+  const createWebsiteConditions = value => {
+    const websiteItems = value.reduce((acc, { host }) => {
+      acc[host] = host === match.params.site;
+
+      return acc;
+    }, {});
+
+    setMenuCondition(prevState => ({ ...prevState, ...websiteItems }));
+  };
+
   useEffect(() => {
-    if (!isGuest)
-      dispatch(getOwnWebsite()).then(({ value }) => {
-        const websiteItems = value.reduce((acc, { host }) => {
-          acc[host] = host === match.params.site;
-
-          return acc;
-        }, {});
-
-        setMenuCondition(prevState => ({ ...prevState, ...websiteItems }));
-      });
+    if (!isGuest) dispatch(getOwnWebsite());
   }, []);
+
+  useEffect(() => {
+    createWebsiteConditions(ownWebsite);
+  }, [ownWebsite]);
 
   const toggleMenuCondition = menuItem => {
     setMenuCondition({

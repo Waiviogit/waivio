@@ -336,64 +336,68 @@ export default class SidenavRewards extends React.Component {
                 </React.Fragment>
               )}
 
-              <div
-                className="Sidenav__title-wrap"
-                onClick={() => this.toggleMenuCondition('referrals')}
-                role="presentation"
-              >
-                <div className="Sidenav__title-item">
-                  {intl.formatMessage({
-                    id: 'referrals',
-                    defaultMessage: `Referrals`,
-                  })}
-                  :
-                </div>
-                <div className="Sidenav__title-icon">
-                  {!menuCondition.referrals ? (
-                    <i className="iconfont icon-addition" />
-                  ) : (
-                    <i className="iconfont icon-offline" />
-                  )}
-                </div>
-              </div>
-              {menuCondition.referrals && (
+              {!isGuest && (
                 <React.Fragment>
-                  <li>
-                    <NavLink
-                      to={`/rewards/referral-details/${authUserName}`}
-                      className="sidenav-discover-objects__item"
-                      activeClassName="Sidenav__item--active"
-                    >
+                  <div
+                    className="Sidenav__title-wrap"
+                    onClick={() => this.toggleMenuCondition('referrals')}
+                    role="presentation"
+                  >
+                    <div className="Sidenav__title-item">
                       {intl.formatMessage({
-                        id: 'referrals_details',
-                        defaultMessage: `Details`,
+                        id: 'referrals',
+                        defaultMessage: `Referrals`,
                       })}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to={`/rewards/referral-instructions/${authUserName}`}
-                      className="sidenav-discover-objects__item"
-                      activeClassName="Sidenav__item--active"
-                    >
-                      {intl.formatMessage({
-                        id: 'referrals_instructions',
-                        defaultMessage: `Instructions`,
-                      })}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to={`/rewards/referral-status/${authUserName}`}
-                      className="sidenav-discover-objects__item"
-                      activeClassName="Sidenav__item--active"
-                    >
-                      {intl.formatMessage({
-                        id: 'referrals_status',
-                        defaultMessage: `Status`,
-                      })}
-                    </NavLink>
-                  </li>
+                      :
+                    </div>
+                    <div className="Sidenav__title-icon">
+                      {!menuCondition.referrals ? (
+                        <i className="iconfont icon-addition" />
+                      ) : (
+                        <i className="iconfont icon-offline" />
+                      )}
+                    </div>
+                  </div>
+                  {menuCondition.referrals && (
+                    <React.Fragment>
+                      <li>
+                        <NavLink
+                          to={`/rewards/referral-details/${authUserName}`}
+                          className="sidenav-discover-objects__item"
+                          activeClassName="Sidenav__item--active"
+                        >
+                          {intl.formatMessage({
+                            id: 'referrals_details',
+                            defaultMessage: `Details`,
+                          })}
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to={`/rewards/referral-instructions/${authUserName}`}
+                          className="sidenav-discover-objects__item"
+                          activeClassName="Sidenav__item--active"
+                        >
+                          {intl.formatMessage({
+                            id: 'referrals_instructions',
+                            defaultMessage: `Instructions`,
+                          })}
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to={`/rewards/referral-status/${authUserName}`}
+                          className="sidenav-discover-objects__item"
+                          activeClassName="Sidenav__item--active"
+                        >
+                          {intl.formatMessage({
+                            id: 'referrals_status',
+                            defaultMessage: `Status`,
+                          })}
+                        </NavLink>
+                      </li>
+                    </React.Fragment>
+                  )}
                 </React.Fragment>
               )}
             </React.Fragment>
