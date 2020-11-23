@@ -4,7 +4,7 @@ import { followObject, voteAppends } from './wobjActions';
 
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO_OBJECT');
 
-export const appendObject = (postData, { follow } = {}) => dispatch => {
+export const appendObject = (postData, type, { follow } = {}) => dispatch => {
   dispatch({
     type: APPEND_WAIVIO_OBJECT.START,
   });
@@ -13,7 +13,14 @@ export const appendObject = (postData, { follow } = {}) => dispatch => {
     .then(res => {
       if (!res.message) {
         dispatch(
-          voteAppends(res.author, res.permlink, postData.votePower, postData.field.name, true),
+          voteAppends(
+            res.author,
+            res.permlink,
+            postData.votePower,
+            postData.field.name,
+            true,
+            type,
+          ),
         );
         if (follow) dispatch(followObject(postData.parentPermlink));
       }

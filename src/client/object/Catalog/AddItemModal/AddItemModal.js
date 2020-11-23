@@ -98,7 +98,7 @@ class AddItemModal extends Component {
         const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
 
         this.props
-          .appendObject(appendData, {
+          .appendObject(appendData, selectedItem.object_type || selectedItem.type, {
             votePower: isManualSelected ? votePercent * 100 : null,
             follow: objectValues.follow,
           })
