@@ -103,11 +103,14 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
             <div className="ReferralInstructions__widget-info">{acceptedConditionsWidgetInfo}</div>
 
             <div className="ReferralInstructions__widget">
-              {widget}
+              {widget(authUserName)}
               <div className="ReferralInstructions__widget__copy-icon">
                 <Tooltip title={currentCopyText}>
                   <span>
-                    <Icon onClick={() => handleCopyTextButton(setIsCopyButton)} type="copy" />
+                    <Icon
+                      onClick={() => handleCopyTextButton(setIsCopyButton, authUserName)}
+                      type="copy"
+                    />
                   </span>
                 </Tooltip>
               </div>
@@ -142,7 +145,7 @@ ReferralsInstructionsView.propTypes = {
     setIsCopyButton: PropTypes.func,
   }),
   handleCopyTextButton: PropTypes.func,
-  widget: PropTypes.string,
+  widget: PropTypes.func,
 };
 
 ReferralsInstructionsView.defaultProps = {
@@ -162,7 +165,7 @@ ReferralsInstructionsView.defaultProps = {
     setIsCopyButton: () => {},
   }),
   handleCopyTextButton: () => {},
-  widget: '',
+  widget: () => {},
 };
 
 export default ReferralsInstructionsView;

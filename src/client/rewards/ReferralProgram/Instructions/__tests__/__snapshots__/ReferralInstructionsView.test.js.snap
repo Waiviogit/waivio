@@ -27,7 +27,7 @@ ShallowWrapper {
             "setIsCopyButton": [MockFunction],
           }
         }
-        widget="<iframe></iframe>"
+        widget={[MockFunction]}
       />
     </IntlProvider>
   </BrowserRouter>,
@@ -68,7 +68,7 @@ ShallowWrapper {
               "setIsCopyButton": [MockFunction],
             }
           }
-          widget="<iframe></iframe>"
+          widget={[MockFunction]}
         />
       </IntlProvider>,
       "history": Object {
@@ -116,7 +116,7 @@ ShallowWrapper {
               "setIsCopyButton": [MockFunction],
             }
           }
-          widget="<iframe></iframe>"
+          widget={[MockFunction]}
         />,
         "locale": "en",
       },
@@ -143,7 +143,7 @@ ShallowWrapper {
             "rejectRules": [MockFunction],
             "setIsCopyButton": [MockFunction],
           },
-          "widget": "<iframe></iframe>",
+          "widget": [MockFunction],
         },
         "ref": null,
         "rendered": null,
@@ -182,7 +182,7 @@ ShallowWrapper {
                 "setIsCopyButton": [MockFunction],
               }
             }
-            widget="<iframe></iframe>"
+            widget={[MockFunction]}
           />
         </IntlProvider>,
         "history": Object {
@@ -230,7 +230,7 @@ ShallowWrapper {
                 "setIsCopyButton": [MockFunction],
               }
             }
-            widget="<iframe></iframe>"
+            widget={[MockFunction]}
           />,
           "locale": "en",
         },
@@ -257,7 +257,7 @@ ShallowWrapper {
               "rejectRules": [MockFunction],
               "setIsCopyButton": [MockFunction],
             },
-            "widget": "<iframe></iframe>",
+            "widget": [MockFunction],
           },
           "ref": null,
           "rendered": null,

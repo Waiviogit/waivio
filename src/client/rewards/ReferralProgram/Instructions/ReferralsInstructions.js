@@ -23,7 +23,8 @@ import { getCopyTextButtonResult, widget } from '../ReferralHelper';
 
 import './ReferralsInstructions.less';
 
-const handleCopyTextButton = setIsCopyButton => getCopyTextButtonResult(setIsCopyButton, widget);
+const handleCopyTextButton = (setIsCopyButton, authUserName) =>
+  getCopyTextButtonResult(setIsCopyButton, authUserName);
 
 const ReferralsInstructions = props => {
   const {

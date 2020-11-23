@@ -204,7 +204,7 @@ export const referralInstructionsContent = username => ({
       id="referrals_instructions_accepted_title_example_links"
       defaultMessage="Simply add {link} to any Waivio page URL"
       values={{
-        link: <span style={{ fontWeight: 600 }}>?ref=[username]</span>,
+        link: <span style={{ fontWeight: 600 }}>{`?ref="${username}"`}</span>,
       }}
     />
   ),
@@ -214,9 +214,9 @@ export const referralInstructionsContent = username => ({
       defaultMessage="For example:"
     />
   ),
-  acceptedConditionsFirstExampleLink: <span>http://www.waivio.com?ref=[username]</span>,
+  acceptedConditionsFirstExampleLink: <span>{`http://www.waivio.com?ref="${username}"`}</span>,
   acceptedConditionsSecondExampleLink: (
-    <span>https://www.waivio.com/rewards/all?ref=[username]</span>
+    <span>{`https://www.waivio.com/rewards/all?ref="${username}"`}</span>
   ),
   acceptedConditionsTitleWidget: (
     <FormattedMessage
