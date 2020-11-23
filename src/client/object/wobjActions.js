@@ -9,6 +9,7 @@ import { getChangedField } from '../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { APPEND_WAIVIO_OBJECT } from './appendActions';
 import { BELL_USER_NOTIFICATION } from '../user/userActions';
+import { isPostCashout } from '../vendor/steemitHelpers';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -218,7 +219,8 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
   const fieldName = name || post.name;
-  const currentMethod = isGuest ? 'vote' : 'appendVote';
+  const currentHieUserMethod = isPostCashout(post) || weight % 5 ? 'appendVote' : 'vote';
+  const currentMethod = isGuest ? 'vote' : currentHieUserMethod;
   if (!getIsAuthenticated(state)) return null;
 
   dispatch({
