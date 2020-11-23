@@ -1,28 +1,50 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import UserDynamicList from './UserDynamicList';
 import { getFollowersFromAPI } from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../reducers';
+import { getAuthenticatedUserName, getAuthorizationUserFollowSort } from '../reducers';
 
-const UserFollowers = ({ match }) => {
-  const limit = 50;
-  let skip = 0;
-  const sort = useSelector(state => state.auth.sort);
-  const authUser = useSelector(getAuthenticatedUserName);
-
-  const fetcher = async () => {
-    const response = await getFollowersFromAPI(match.params.name, limit, skip, sort, authUser);
-    const users = response.followers;
-    skip += limit;
-    return { users, hasMore: response.hasMore };
+@connect(state => ({
+  authUser: getAuthenticatedUserName(state),
+  sort: getAuthorizationUserFollowSort(state),
+}))
+export default class UserFollowers extends React.Component {
+  static propTypes = {
+    match: PropTypes.shape().isRequired,
+    authUser: PropTypes.string,
+    sort: PropTypes.string,
   };
 
-  return <UserDynamicList limit={limit} fetcher={fetcher} />;
-};
+  static defaultProps = {
+    authUser: '',
+    sort: 'recency',
+  };
 
-UserFollowers.propTypes = {
-  match: PropTypes.shape().isRequired,
-};
+  static limit = 50;
 
-export default UserFollowers;
+  constructor(props) {
+    super(props);
+
+    this.fetcher = this.fetcher.bind(this);
+  }
+  skip = 0;
+  limit = 100;
+
+  async fetcher() {
+    const response = await getFollowersFromAPI(
+      this.props.match.params.name,
+      this.limit,
+      this.skip,
+      this.props.sort,
+      this.props.authUser,
+    );
+    const users = response.followers;
+    UserFollowers.skip += UserFollowers.limit;
+    return { users, hasMore: response.hasMore };
+  }
+
+  render() {
+    return <UserDynamicList limit={UserFollowers.limit} fetcher={this.fetcher} />;
+  }
+}
