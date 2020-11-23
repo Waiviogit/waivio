@@ -1239,7 +1239,7 @@
   "hive_account_link_rules": "Настоящим подтверждаю, что эта учетная запись Hive принадлежит мне и что я полностью контролирую эту учетную запись, включая все связанные с ней закрытые ключи.",
   "imageSetter_upload_for_mobile": "Выберите фотографию",
   "menu_sections_personal": "Личный",
-  "claim_reward_notify": "{account} получил в награду {rewardHIVE}, {rewardHBD}",
+  "claim_reward_notify": "Вы получил в награду {rewardHIVE}, {rewardHBD}, {rewardHP}",
   "like_slider_message_cashout_for_guest": "За более старые сообщения нельзя проголосовать.",
   "transaction_details": "Детали транзакции",
   "transaction_state": "Состояние транзакции",
