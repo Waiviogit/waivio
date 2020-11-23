@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import requiresLogin from '../auth/requiresLogin';
 import { getAuthenticatedUserName, getIsUserInWaivioBlackList, isGuestUser } from '../reducers';
-import './Invite.less';
 import InviteGuestUser from './InviteGuestUser';
 import InviteHiveUser from './InviteHiveUser';
+import './Invite.less';
 
 @requiresLogin
 @injectIntl
@@ -50,7 +50,7 @@ export default class Invite extends React.Component {
     if (typeof window !== 'undefined') {
       const inviteURL = isGuest
         ? `${window.location.protocol}//${window.location.host}/i/@${authenticatedUserName}`
-        : `https://www.waivio.com?ref="${authenticatedUserName}"`;
+        : `https://www.waivio.com?ref=${authenticatedUserName}`;
       this.setState({ inviteURL });
     }
   }

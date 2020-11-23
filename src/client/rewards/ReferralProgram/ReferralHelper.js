@@ -55,7 +55,7 @@ export const getBeneficiaresInfo = sponsor =>
     : null;
 
 export const widget = username =>
-  `<iframe class="waivio" src="https://waivio.com?ref='${username}'" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
+  `<iframe class="waivio" src="https://waivio.com?ref=${username}" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
 
 export const getCopyTextButtonResult = (setIsCopyButton, username) => {
   const reservoir = document.createElement('textarea');
