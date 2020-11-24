@@ -272,19 +272,16 @@ const posts = (state = initialState, action) => {
     }
 
     case postsActions.GET_SOCIAL_INFO_POST.SUCCESS: {
-      const tags = get(action, ['payload', 'tags'], []);
-      const cities = get(action, ['payload', 'cities'], []);
-
       return {
         ...state,
         list: {
           ...state.list,
           [getPostKey(action.meta)]: {
             ...state.list[getPostKey(action.meta)],
-            tags: [...tags],
-            cities: [...cities],
-            wobjectsTwitter: [...action.payload.wobjectsTwitter],
-            wobjectsFacebook: [...action.payload.wobjectsFacebook],
+            tags: action.payload.tags,
+            cities: action.payload.cities,
+            wobjectsTwitter: action.payload.wobjectsTwitter,
+            wobjectsFacebook: action.payload.wobjectsFacebook,
             userFacebook: action.payload.userFacebook,
             userTwitter: action.payload.userTwitter,
           },
