@@ -83,7 +83,7 @@
   "add_to_favorites": "Add to favorites",
   "remove_from_favorites": "Remove from favorites",
   "like": "Like",
-  "like_slider_info": "Your vote will be worth {amount}.",
+  "like_slider_info": "Your vote will be worth",
   "dislike": "Dislike",
   "unlike": "Unlike",
   "and_more_amount": "and {amount} more",
@@ -1498,5 +1498,6 @@
   "days_remaning": "Days remaining",
   "website": "Website",
   "website_management": "Websites management",
-  "empty_dynamic_table": "Table has been empty yet"
+  "empty_dynamic_table": "Table has been empty yet",
+  "flag": "Flag"
 }

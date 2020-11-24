@@ -12,7 +12,9 @@ import { getSocialInfoPost as getSocialInfoPostAction } from '../../post/postAct
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
 
 import './StoryFooter.less';
+import withAuthActions from '../../auth/withAuthActions';
 
+@withAuthActions
 @connect(
   state => ({
     isGuest: isGuestUser(state),
@@ -39,11 +41,13 @@ class StoryFooter extends React.Component {
     onLikeClick: PropTypes.func,
     onReportClick: PropTypes.func,
     onShareClick: PropTypes.func,
-    onEditClick: PropTypes.func,
-    handlePostPopoverMenuClick: PropTypes.func,
+    onActionInitiated: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
     userName: PropTypes.string,
     getSocialInfoPost: PropTypes.func.isRequired,
+    handleEditClick: PropTypes.func.isRequired,
+    handleFollowClick: PropTypes.func.isRequired,
+    toggleBookmark: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -57,7 +61,6 @@ class StoryFooter extends React.Component {
     sliderMode: false,
     onLikeClick: () => {},
     onShareClick: () => {},
-    onEditClick: () => {},
     handlePostPopoverMenuClick: () => {},
     onReportClick: () => {},
     isGuest: false,
@@ -69,6 +72,7 @@ class StoryFooter extends React.Component {
 
     this.state = {
       sliderVisible: false,
+      sliderState: 'confirm',
       commentsVisible: !props.post.children,
       sliderValue: 100,
       voteWorth: 0,
@@ -98,24 +102,64 @@ class StoryFooter extends React.Component {
       !this.props.postState.isLiked
     ) {
       if (!this.state.sliderVisible) {
-        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
+        this.setState(prevState => ({
+          sliderVisible: !prevState.sliderVisible,
+          sliderType: 'confirm',
+        }));
       }
     } else {
       this.props.onLikeClick(this.props.post, this.props.postState);
     }
   };
 
-  handleLikeConfirm = () => {
+  handleFlagClick = () => {
+    if (this.props.sliderMode && !this.props.postState.isReported) {
+      if (!this.state.sliderVisible) {
+        this.setState(prevState => ({
+          sliderVisible: !prevState.sliderVisible,
+          sliderType: 'flag',
+        }));
+      }
+    } else {
+      this.props.onReportClick(this.props.post, this.props.postState);
+    }
+  };
+
+  handleClickConfirm = () => {
+    const confirmMethod =
+      this.state.sliderType === 'confirm' ? this.props.onLikeClick : this.props.onReportClick;
+
     this.setState({ sliderVisible: false }, () => {
-      this.props.onLikeClick(this.props.post, this.props.postState, this.state.sliderValue * 100);
+      confirmMethod(this.props.post, this.props.postState, this.state.sliderValue * 100);
     });
   };
 
   handleShareClick = () => this.props.onShareClick(this.props.post);
 
-  handleEditClick = () => this.props.onEditClick(this.props.post);
+  handleSliderCancel = () => this.setState({ sliderVisible: false, sliderType: 'Confirm' });
 
-  handleSliderCancel = () => this.setState({ sliderVisible: false });
+  handlePostPopoverMenuClick = key => {
+    const { post, postState, handleEditClick, handleFollowClick, toggleBookmark } = this.props;
+
+    switch (key) {
+      case 'follow':
+        handleFollowClick(post);
+        break;
+      case 'save':
+        toggleBookmark(`${post.author}/${post.root_permlink}`);
+        break;
+      case 'report':
+        this.handleFlagClick(post, postState);
+        break;
+      case 'edit':
+        handleEditClick.edit(post);
+        break;
+      default:
+    }
+  };
+
+  handlePopoverClick = key =>
+    this.props.onActionInitiated(this.handlePostPopoverMenuClick.bind(this, key));
 
   handleSliderChange = async value => {
     const { user, isGuest, post } = this.props;
@@ -132,7 +176,7 @@ class StoryFooter extends React.Component {
   };
 
   render() {
-    const { commentsVisible } = this.state;
+    const { commentsVisible, sliderType } = this.state;
     const {
       post,
       postState,
@@ -144,8 +188,6 @@ class StoryFooter extends React.Component {
       pendingBookmark,
       saving,
       singlePostVew,
-      handlePostPopoverMenuClick,
-      onReportClick,
     } = this.props;
     const isCashout = isPostCashout(post);
 
@@ -155,9 +197,10 @@ class StoryFooter extends React.Component {
           <Payout post={post} />
           {this.state.sliderVisible && !postState.isLiked && (
             <Confirmation
-              onConfirm={this.handleLikeConfirm}
+              onConfirm={this.handleClickConfirm}
               onCancel={this.handleSliderCancel}
               isCashout={isCashout}
+              type={sliderType}
             />
           )}
           {(!this.state.sliderVisible || postState.isLiked) && (
@@ -172,11 +215,9 @@ class StoryFooter extends React.Component {
               ownPost={ownPost}
               defaultVotePercent={defaultVotePercent}
               onLikeClick={this.handleLikeClick}
-              onReportClick={onReportClick}
               onShareClick={this.handleShareClick}
-              onEditClick={this.handleEditClick}
               onCommentClick={this.toggleCommentsVisibility}
-              handlePostPopoverMenuClick={handlePostPopoverMenuClick}
+              handlePostPopoverMenuClick={this.handlePopoverClick}
               username={this.props.userName}
               getSocialInfoPost={this.props.getSocialInfoPost}
             />
@@ -189,6 +230,7 @@ class StoryFooter extends React.Component {
             onChange={this.handleSliderChange}
             isPostCashout={isCashout}
             post={post}
+            type={sliderType}
           />
         )}
         {!singlePostVew && (
