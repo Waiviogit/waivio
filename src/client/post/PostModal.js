@@ -20,12 +20,16 @@ class PostModal extends React.Component {
     currentShownPost: PropTypes.shape(),
     shownPostContents: PropTypes.shape(),
     author: PropTypes.shape(),
+    isGuest: PropTypes.bool.isRequired,
+    username: PropTypes.string.isRequired,
+    getSocialInfoPost: PropTypes.func,
   };
 
   static defaultProps = {
     currentShownPost: {},
     shownPostContents: {},
     author: {},
+    getSocialInfoPost: () => {},
   };
 
   static pushURLState(title, url) {
@@ -61,10 +65,14 @@ class PostModal extends React.Component {
     }
     const { currentShownPost } = this.props;
     const { title, url } = currentShownPost;
+    const authorName =
+      get(currentShownPost, ['guestInfo', 'userId'], '') || currentShownPost.author;
+    const permlink = get(currentShownPost, 'permlink', '');
     PostModal.pushURLState(
       title,
       replaceBotWithGuestName(dropCategory(url), currentShownPost.guestInfo),
     );
+    this.props.getSocialInfoPost(authorName, permlink);
   }
 
   componentWillUnmount() {
@@ -94,22 +102,27 @@ class PostModal extends React.Component {
       currentShownPost,
       author: authorDetails,
       shownPostContents,
+      isGuest,
+      username,
     } = this.props;
-    const { permlink, title, url, cities, tags, userTwitter, wobjectsTwitter } = currentShownPost;
+    const { permlink, title, url } = currentShownPost;
+    const { tags, cities, userTwitter, wobjectsTwitter } = shownPostContents;
     const author = currentShownPost.guestInfo
       ? currentShownPost.guestInfo.userId
       : currentShownPost.author;
+    const postName = isGuest ? '' : username;
     const baseURL = window ? window.location.origin : 'https://waivio.com';
     const postURL = `${baseURL}${replaceBotWithGuestName(
       dropCategory(url),
       currentShownPost.guestInfo,
-    )}`;
-    const hashtags = [...tags, ...cities];
+    )}?ref=${postName}`;
+    const hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
     const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
     const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
     const shareTextSocialTwitter = `"${encodeURIComponent(
       title,
     )}" ${authorTwitter} ${objectTwitter}`;
+
     const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
 
     const facebookShareURL = getFacebookShareURL(postURL);

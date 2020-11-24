@@ -84,6 +84,10 @@ export const getIsPostLoaded = (state, author, permlink) =>
 export const getIsPostFailed = (state, author, permlink) =>
   fromPosts.getIsPostFailed(state.posts, author, permlink);
 export const getLastPostId = state => fromPosts.getLastPostId(state.posts);
+export const getPostTags = (state, author, permlink) =>
+  fromPosts.getPostTags(state.posts, author, permlink);
+export const getPostCities = (state, author, permlink) =>
+  fromPosts.getPostCities(state.posts, author, permlink);
 
 export const getDraftPosts = state => fromEditor.getDraftPosts(state.editor);
 export const getIsEditorLoading = state => fromEditor.getIsEditorLoading(state.editor);

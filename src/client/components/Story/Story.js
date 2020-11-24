@@ -63,7 +63,6 @@ class Story extends React.Component {
     followingPostAuthor: PropTypes.func.isRequired,
     pendingFollowingPostAuthor: PropTypes.func.isRequired,
     errorFollowingPostAuthor: PropTypes.func.isRequired,
-    getSocialInfoPost: PropTypes.func,
   };
 
   static defaultProps = {
@@ -85,7 +84,6 @@ class Story extends React.Component {
     followUser: () => {},
     unfollowUser: () => {},
     push: () => {},
-    getSocialInfoPost: () => {},
   };
 
   constructor(props) {
@@ -105,13 +103,6 @@ class Story extends React.Component {
     this.handleShareClick = this.handleShareClick.bind(this);
     this.handleFollowClick = this.handleFollowClick.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
-  }
-
-  componentDidMount() {
-    const { getSocialInfoPost, post } = this.props;
-    const authorName = get(post, ['guestInfo', 'userId'], '') || post.author;
-    const permlink = get(post, 'permlink', '');
-    getSocialInfoPost(authorName, permlink);
   }
 
   getDisplayStoryPreview() {

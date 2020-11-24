@@ -8,8 +8,8 @@ import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
-import { getSocialInfoPost as getSocialInfoPostAction } from '../../post/postActions';
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
+import { getSocialInfoPost } from '../../post/postActions';
 
 import './StoryFooter.less';
 import withAuthActions from '../../auth/withAuthActions';
@@ -21,7 +21,7 @@ import withAuthActions from '../../auth/withAuthActions';
     userName: getAuthenticatedUserName(state),
   }),
   {
-    getSocialInfoPost: getSocialInfoPostAction,
+    getSocialInfoPostAction: getSocialInfoPost,
   },
 )
 class StoryFooter extends React.Component {
@@ -44,7 +44,7 @@ class StoryFooter extends React.Component {
     onActionInitiated: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
     userName: PropTypes.string,
-    getSocialInfoPost: PropTypes.func.isRequired,
+    getSocialInfoPostAction: PropTypes.func,
     handleEditClick: PropTypes.func.isRequired,
     handleFollowClick: PropTypes.func.isRequired,
     toggleBookmark: PropTypes.func.isRequired,
@@ -65,6 +65,7 @@ class StoryFooter extends React.Component {
     onReportClick: () => {},
     isGuest: false,
     userName: '',
+    getSocialInfoPostAction: () => {},
   };
 
   constructor(props) {
@@ -188,6 +189,7 @@ class StoryFooter extends React.Component {
       pendingBookmark,
       saving,
       singlePostVew,
+      getSocialInfoPostAction,
     } = this.props;
     const isCashout = isPostCashout(post);
 
@@ -219,7 +221,7 @@ class StoryFooter extends React.Component {
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={this.handlePopoverClick}
               username={this.props.userName}
-              getSocialInfoPost={this.props.getSocialInfoPost}
+              getSocialInfoPost={getSocialInfoPostAction}
             />
           )}
         </div>
