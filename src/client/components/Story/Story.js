@@ -233,21 +233,8 @@ class Story extends React.Component {
   handlePostModalDisplay(e) {
     e.preventDefault();
     const { post } = this.props;
-    const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
-    const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
-    const postURL = replaceBotWithGuestName(`/@${post.id}`, post.guestInfo);
 
-    if (isReplyPreview) {
-      this.props.history.push(postURL);
-    } else if (openInNewTab) {
-      if (window) {
-        const url = `${window.location.origin}${postURL}`;
-
-        window.open(url);
-      }
-    } else {
-      this.props.showPostModal(post);
-    }
+    this.props.showPostModal(post);
   }
 
   handlePreviewClickPostModalDisplay(e) {
