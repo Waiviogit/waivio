@@ -83,7 +83,7 @@
   "add_to_favorites": "Add to favorites",
   "remove_from_favorites": "Remove from favorites",
   "like": "Like",
-  "like_slider_info": "Your vote will be worth {amount}.",
+  "like_slider_info": "Your vote will be worth",
   "dislike": "Dislike",
   "unlike": "Unlike",
   "and_more_amount": "and {amount} more",
@@ -1476,8 +1476,6 @@
   "tipping": "tipping",
   "empty_transaction_list": "You don't have any transactions yet",
   "empty_table_transaction_list": "You did not have any transactions during this period",
-  "tipping": "tipping",
-  "notification_campaign_released_reservation": "{author} released a reservation for {campaignName}",
   "create_new_website": "Create new website",
   "select_website_template": "Select website template:",
   "name_website": "Specify name for your website:",
@@ -1504,5 +1502,6 @@
   "website_management": "Websites management",
   "empty_dynamic_table": "Table has been empty yet",
   "vote_sponsor": "Sponsor:",
-  "vote_upvotes": "Upvotes:"
+  "vote_upvotes": "Upvotes:",
+  "flag": "Flag"
 }

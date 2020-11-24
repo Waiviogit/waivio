@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import './Confirmation.less';
 
-const Confirmation = ({ onConfirm, onCancel, isCashout }) => (
+const Confirmation = ({ onConfirm, onCancel, isCashout, type }) => (
   <div className="Confirmation">
     {!isCashout && (
       <a role="presentation" onClick={onConfirm}>
         <i className="iconfont icon-success" />
-        <FormattedMessage id="confirm" defaultMessage="Confirm" />
+        <FormattedMessage id={type} defaultMessage={type} />
       </a>
     )}
     <a role="presentation" onClick={onCancel}>
@@ -22,12 +22,14 @@ Confirmation.propTypes = {
   onConfirm: PropTypes.func,
   onCancel: PropTypes.func,
   isCashout: PropTypes.bool,
+  type: PropTypes.string,
 };
 
 Confirmation.defaultProps = {
   onConfirm: () => {},
   onCancel: () => {},
   isCashout: false,
+  type: 'confirm',
 };
 
 export default Confirmation;

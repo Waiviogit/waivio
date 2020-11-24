@@ -48,7 +48,6 @@ export default class Buttons extends React.Component {
     onLikeClick: () => {},
     onShareClick: () => {},
     onCommentClick: () => {},
-    onReportClick: () => {},
     handlePostPopoverMenuClick: () => {},
     username: '',
   };
