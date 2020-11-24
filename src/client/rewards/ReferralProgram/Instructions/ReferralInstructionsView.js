@@ -43,7 +43,7 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
     rejectRules(authUserName, isGuest);
     return handleClickOnCheckbox();
   };
-  // Todo: Задал вопрос Александру. По ответу доделать виджет
+
   return (
     isAuthenticated && (
       <div className="ReferralInstructions">
@@ -102,13 +102,6 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
             </div>
 
             <div className="ReferralInstructions__widget-info">{acceptedConditionsWidgetInfo}</div>
-
-            {/* <div> */}
-            {/*  <iframe className="waivio" src="https://waivio.com/rewards/all?ref=vallon" height="400" width="350" */}
-            {/*          style={{border: 'none'}}>Can't load Rewards widget. */}
-            {/*  </iframe> */}
-
-            {/* </div> */}
 
             <div className="ReferralInstructions__widget">
               {widget(authUserName)}
