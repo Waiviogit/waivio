@@ -9,6 +9,8 @@ import {
   getPostContent,
   isGuestUser,
   getAuthenticatedUserName,
+  getPostTags,
+  getPostCities,
 } from '../reducers';
 import { getSocialInfoPost as getSocialInfoPostAction } from './postActions';
 import { hidePostModal as hidePostModalAction } from '../app/appActions';
@@ -23,6 +25,8 @@ const PostModalContainer = ({
   getSocialInfoPost,
   isGuest,
   userName,
+  postTags,
+  postCities,
 }) =>
   showPostModal && (
     <PostModal
@@ -34,6 +38,8 @@ const PostModalContainer = ({
       getSocialInfoPost={getSocialInfoPost}
       isGuest={isGuest}
       username={userName}
+      postTags={postTags}
+      postCities={postCities}
     />
   );
 
@@ -46,6 +52,8 @@ PostModalContainer.propTypes = {
   getSocialInfoPost: PropTypes.func.isRequired,
   isGuest: PropTypes.bool,
   userName: PropTypes.string,
+  postTags: PropTypes.shape(),
+  postCities: PropTypes.shape(),
 };
 
 PostModalContainer.defaultProps = {
@@ -55,6 +63,8 @@ PostModalContainer.defaultProps = {
   shownPostContents: {},
   isGuest: false,
   userName: '',
+  postTags: [],
+  postCities: [],
 };
 
 export default connect(
@@ -69,6 +79,8 @@ export default connect(
       shownPostContents: getPostContent(state, permlink, author),
       isGuest: isGuestUser(state),
       userName: getAuthenticatedUserName(state),
+      postTags: getPostTags(state, author, permlink),
+      postCities: getPostCities(state, author, permlink),
     };
   },
   {

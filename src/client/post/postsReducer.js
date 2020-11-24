@@ -310,3 +310,10 @@ export const getIsPostLoaded = (state, author, permlink) =>
 export const getIsPostFailed = (state, author, permlink) =>
   get(state, ['postsStates', `${author}/${permlink}`, 'failed']);
 export const getLastPostId = state => state.lastId;
+export const getPostTags = (state, author, permlink) => {
+  console.log(get(state, ['list', `${author}/${permlink}`, 'tags']));
+  get(state, ['list', `${author}/${permlink}`, 'tags']);
+};
+export const getPostCities = (state, author, permlink) => {
+  get(state, ['list', `${author}/${permlink}`, 'cities']);
+};
