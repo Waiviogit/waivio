@@ -1498,5 +1498,7 @@
   "days_remaning": "Days remaining",
   "website": "Website",
   "website_management": "Websites management",
-  "empty_dynamic_table": "Table has been empty yet"
+  "empty_dynamic_table": "Table has been empty yet",
+  "vote_sponsor": "Sponsor:",
+  "vote_upvotes": "Upvotes:"
 }

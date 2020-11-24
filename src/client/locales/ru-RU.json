@@ -1501,5 +1501,7 @@
   "days_remaning": "Осталось дней",
   "website": "Cайт",
   "website_management": "Управление сайтами",
-  "empty_dynamic_table": "Таблица еще пуста"
+  "empty_dynamic_table": "Таблица еще пуста",
+  "vote_sponsor": "Спонсор:",
+  "vote_upvotes": "Лайки:"
 }
