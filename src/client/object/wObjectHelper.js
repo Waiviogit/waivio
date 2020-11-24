@@ -4,7 +4,7 @@ import {
   objectFields,
   sortingMenuName,
 } from '../../common/constants/listOfFields';
-import { getObjectName } from '../helpers/wObjectHelper';
+import { getObjectName, getObjectType } from '../helpers/wObjectHelper';
 
 export const getListItems = (wobj, { uniq } = { uniq: false, isMappedToClientWobject: false }) => {
   let items = [];
@@ -63,8 +63,8 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
   }
   const sorted = uniqBy(items, 'author_permlink').sort(comparator);
   const resultArr = [
-    ...sorted.filter(item => item.type === 'list'),
-    ...sorted.filter(item => item.type !== 'list'),
+    ...sorted.filter(item => getObjectType(item) === 'list'),
+    ...sorted.filter(item => getObjectType(item) !== 'list'),
   ];
 
   if (sortBy === 'custom' && sortOrder && sortOrder.length) {
