@@ -55,6 +55,7 @@ const WalletTransaction = ({
           <ReceiveTransaction
             isGuestPage={isGuestPage}
             from={transactionDetails.from}
+            to={transactionDetails.to}
             memo={transactionDetails.memo}
             amount={getTransactionCurrency(transactionDetails.amount)}
             timestamp={transaction.timestamp}

@@ -54,14 +54,15 @@ export const getBeneficiaresInfo = sponsor =>
       ))
     : null;
 
-export const getCopyTextButtonResult = (setIsCopyButton, widget) => {
+export const widget = username =>
+  `<iframe class="waivio" src="https://waivio.com?ref=${username}" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
+
+export const getCopyTextButtonResult = (setIsCopyButton, username) => {
   const reservoir = document.createElement('textarea');
-  reservoir.value = widget;
+  reservoir.value = widget(username);
   document.body.appendChild(reservoir);
   reservoir.select();
   document.execCommand('copy');
   document.body.removeChild(reservoir);
   return setIsCopyButton(true);
 };
-
-export const widget = `<iframe class="waivio" src="https://waivio.com?ref=[username]" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;

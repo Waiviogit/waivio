@@ -17,7 +17,6 @@ import {
   isBannedPost,
   replaceBotWithGuestName,
 } from '../../helpers/postHelpers';
-import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
 import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
@@ -33,7 +32,6 @@ import './Story.less';
 
 @injectIntl
 @withRouter
-@withAuthActions
 class Story extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -44,7 +42,6 @@ class Story extends React.Component {
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     showNSFWPosts: PropTypes.bool.isRequired,
-    onActionInitiated: PropTypes.func.isRequired,
     pendingLike: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
@@ -98,7 +95,6 @@ class Story extends React.Component {
     };
 
     this.getDisplayStoryPreview = this.getDisplayStoryPreview.bind(this);
-    this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
     this.handleShowStoryPreview = this.handleShowStoryPreview.bind(this);
     this.handlePostModalDisplay = this.handlePostModalDisplay.bind(this);
     this.handlePreviewClickPostModalDisplay = this.handlePreviewClickPostModalDisplay.bind(this);
@@ -168,29 +164,25 @@ class Story extends React.Component {
     return returnData;
   };
 
-  handleLikeClick(post, postState, weight = 10000) {
+  handleClickVote(post, postState, weight, type) {
     const { sliderMode, defaultVotePercent, votePost } = this.props;
     const author = post.root_author;
 
-    if (sliderMode && !postState.isLiked) {
+    if (sliderMode && !postState[type]) {
       votePost(post.id, author, post.permlink, weight);
-    } else if (postState.isLiked) {
+    } else if (postState[type]) {
       votePost(post.id, author, post.permlink, 0);
     } else {
       votePost(post.id, author, post.permlink, defaultVotePercent);
     }
   }
 
-  handleReportClick(post, postState, isRejectField) {
-    let weight = postState.isReported ? 0 : -10000;
+  handleLikeClick(post, postState, weight = 10000) {
+    this.handleClickVote(post, postState, weight, 'isLiked');
+  }
 
-    if (isRejectField) {
-      weight = postState.isReported ? 0 : 9999;
-    }
-
-    const author = post.root_author;
-
-    this.props.votePost(post.id, author, post.permlink, weight);
+  handleReportClick(post, postState, weight) {
+    this.handleClickVote(post, postState, -weight, 'isReported');
   }
 
   handleShareClick(post) {
@@ -215,37 +207,13 @@ class Story extends React.Component {
       .catch(() => this.props.errorFollowingPostAuthor(postId));
   }
 
-  handleEditClick(post) {
+  handleEditClick = post => {
     const { intl } = this.props;
 
     if (post.depth === 0) return this.props.editPost(post, intl);
 
     return this.props.push(`${post.url}-edit`);
-  }
-
-  clickMenuItem(key) {
-    const { post, postState } = this.props;
-
-    switch (key) {
-      case 'follow':
-        this.handleFollowClick(post);
-        break;
-      case 'save':
-        this.props.toggleBookmark(`${post.author}/${post.root_permlink}`);
-        break;
-      case 'report':
-        this.handleReportClick(post, postState);
-        break;
-      case 'edit':
-        this.handleEditClick(post);
-        break;
-      default:
-    }
-  }
-
-  handlePostPopoverMenuClick(key) {
-    this.props.onActionInitiated(this.clickMenuItem.bind(this, key));
-  }
+  };
 
   handleShowStoryPreview() {
     this.setState({
@@ -437,11 +405,12 @@ class Story extends React.Component {
                 onLikeClick={this.handleLikeClick}
                 onReportClick={this.handleReportClick}
                 onShareClick={this.handleShareClick}
-                onEditClick={this.handleEditClick}
                 pendingFollow={pendingFollow}
                 pendingBookmark={pendingBookmark}
                 saving={saving}
-                handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
+                handleFollowClick={this.handleFollowClick}
+                toggleBookmark={this.props.toggleBookmark}
+                handleEditClick={this.handleEditClick}
               />
             </div>
           </div>
