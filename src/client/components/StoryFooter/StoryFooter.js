@@ -9,13 +9,19 @@ import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
+import { getSocialInfoPost } from '../../post/postActions';
 
 import './StoryFooter.less';
 
-@connect(state => ({
-  isGuest: isGuestUser(state),
-  userName: getAuthenticatedUserName(state),
-}))
+@connect(
+  state => ({
+    isGuest: isGuestUser(state),
+    userName: getAuthenticatedUserName(state),
+  }),
+  {
+    getSocialInfoPostAction: getSocialInfoPost,
+  },
+)
 class StoryFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
@@ -37,6 +43,7 @@ class StoryFooter extends React.Component {
     handlePostPopoverMenuClick: PropTypes.func,
     isGuest: PropTypes.bool,
     userName: PropTypes.string,
+    getSocialInfoPostAction: PropTypes.func,
   };
 
   static defaultProps = {
@@ -55,6 +62,7 @@ class StoryFooter extends React.Component {
     onReportClick: () => {},
     isGuest: false,
     userName: '',
+    getSocialInfoPostAction: () => {},
   };
 
   constructor(props) {
@@ -140,6 +148,7 @@ class StoryFooter extends React.Component {
       handlePostPopoverMenuClick,
       onReportClick,
       isGuest,
+      getSocialInfoPostAction,
     } = this.props;
     const isCashout = isPostCashout(post);
 
@@ -173,6 +182,7 @@ class StoryFooter extends React.Component {
               handlePostPopoverMenuClick={handlePostPopoverMenuClick}
               username={this.props.userName}
               isGuest={isGuest}
+              getSocialInfoPost={getSocialInfoPostAction}
             />
           )}
         </div>

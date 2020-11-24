@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { find, truncate } from 'lodash';
+import { find, truncate, isEmpty } from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
 import {
@@ -126,14 +126,6 @@ class PostContent extends React.Component {
     super(props);
 
     this.handleReportClick = this.handleReportClick.bind(this);
-    this.state = {
-      cities: [],
-      socialHashtags: [],
-      userFacebook: '',
-      userTwitter: '',
-      wobjectsFacebook: [],
-      wobjectsTwitter: [],
-    };
   }
 
   componentDidMount() {
@@ -234,6 +226,8 @@ class PostContent extends React.Component {
       isOriginalPost,
     } = this.props;
 
+    const { tags, cities, wobjectsFacebook } = content;
+
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
 
     const postMetaData = jsonParse(content.json_metadata);
@@ -263,13 +257,15 @@ class PostContent extends React.Component {
         (pendingLikes[content.id].weight === 0 && postState.isReported));
 
     const { title, category, created, body, guestInfo } = content;
-    const { socialHashtags, cities } = this.state;
-    const hashtags = [...socialHashtags, ...cities];
+    let hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
+    hashtags = hashtags.map(hashtag => `#${hashtag}`);
     const authorName = getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
-    const desc = `${truncate(bodyText, { length: 143 })} ${hashtags}`;
+    const desc = `${truncate(bodyText, { length: 143 })} ${truncate(hashtags, {
+      length: 120,
+    })} @${wobjectsFacebook}`;
     const image =
       postMetaImage ||
       getAvatarURL(authorName) ||
@@ -288,10 +284,10 @@ class PostContent extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <link rel="amphtml" href={ampUrl} />
-          <meta property="og:title" content={metaTitle} />
-          <meta property="og:type" content="article" />
-          <meta property="description" content={desc} />
           <meta property="og:url" content={url} />
+          <meta property="og:type" content="article" />
+          <meta property="og:title" content={metaTitle} />
+          <meta property="description" content={desc} />
           <meta property="og:image" content={getProxyImageURL(image)} />
           <meta property="og:site_name" content="Waivio" />
           <meta name="article:tag" property="article:tag" content={category} />
