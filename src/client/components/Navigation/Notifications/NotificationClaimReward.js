@@ -23,10 +23,11 @@ const NotificationClaimReward = ({ notification, read, onClick }) => {
         <div className="Notification__text__message">
           <FormattedMessage
             id="claim_reward_notify"
-            defaultMessage="{account} claim reward {rewardHIVE}, {rewardHBD}"
+            defaultMessage="You claim reward {rewardHIVE}, {rewardHBD}, {rewardHP}"
             values={{
               account: <span className="username">{notification.account}</span>,
               rewardHIVE: <span>{notification.rewardHive}</span>,
+              rewardHP: <span>{notification.rewardHP}</span>,
               rewardHBD: <span>{notification.rewardHBD}</span>,
             }}
           />
@@ -44,6 +45,7 @@ NotificationClaimReward.propTypes = {
   notification: PropTypes.shape({
     account: PropTypes.string,
     rewardHive: PropTypes.string,
+    rewardHP: PropTypes.string,
     rewardHBD: PropTypes.string,
     timestamp: PropTypes.number,
   }),

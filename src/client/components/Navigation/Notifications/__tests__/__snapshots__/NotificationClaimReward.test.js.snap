@@ -12,6 +12,7 @@ ShallowWrapper {
           "account": "test",
           "rewardHBD": "test reward",
           "rewardHIVE": "test reward",
+          "rewardHP": "test reward",
           "timestamp": 1600948177,
           "type": "claimReward",
         }
@@ -38,6 +39,7 @@ ShallowWrapper {
         "account": "test",
         "rewardHBD": "test reward",
         "rewardHIVE": "test reward",
+        "rewardHP": "test reward",
         "timestamp": 1600948177,
         "type": "claimReward",
       },
@@ -58,6 +60,7 @@ ShallowWrapper {
           "account": "test",
           "rewardHBD": "test reward",
           "rewardHIVE": "test reward",
+          "rewardHP": "test reward",
           "timestamp": 1600948177,
           "type": "claimReward",
         },

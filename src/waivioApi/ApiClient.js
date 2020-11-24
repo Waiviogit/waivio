@@ -1650,7 +1650,7 @@ export const createWebsite = body => {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     body: JSON.stringify(body),
     method: 'PUT',
-  });
+  }).then(res => res.json());
 };
 
 export const checkAvailable = (name, parent) => {
