@@ -11,5 +11,6 @@ export const CLAIM_REWARD = {
   account: 'test',
   rewardHIVE: 'test reward',
   rewardHBD: 'test reward',
+  rewardHP: 'test reward',
   timestamp: 1600948177,
 };

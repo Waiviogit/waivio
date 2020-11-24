@@ -531,19 +531,19 @@ export default class Transfer extends React.Component {
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
     const balance =
-      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
+      this.props.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
     const currentBalance = isGuest ? `${user.balance} HIVE` : balance;
     const isChangesDisabled = !!memo;
     const currencyPrefix = getFieldDecorator('currency', {
-      initialValue: this.state.currency,
+      initialValue: this.props.currency,
     })(
       <Radio.Group
         onChange={this.handleCurrencyChange}
         className="Transfer__amount__type"
-        defaultValue={this.state.currency}
+        defaultValue={this.props.currency}
       >
         <Radio.Button
-          disabled={isChangesDisabled && this.state.currency !== Transfer.CURRENCIES.HIVE}
+          disabled={isChangesDisabled && this.props.currency !== Transfer.CURRENCIES.HIVE}
           value={Transfer.CURRENCIES.HIVE}
           className="Transfer__amount__type-steem"
         >
@@ -553,7 +553,7 @@ export default class Transfer extends React.Component {
           value={Transfer.CURRENCIES.HBD}
           className="Transfer__amount__type-sbd"
           disabled={
-            !isGuest ? isChangesDisabled && this.state.currency !== Transfer.CURRENCIES.HBD : true
+            !isGuest ? isChangesDisabled && this.props.currency !== Transfer.CURRENCIES.HBD : true
           }
         >
           {Transfer.CURRENCIES.HBD}
