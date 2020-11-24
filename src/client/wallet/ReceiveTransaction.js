@@ -11,6 +11,7 @@ import { getTransactionDescription, validateGuestTransferTitle } from './WalletH
 
 const ReceiveTransaction = ({
   from,
+  to,
   memo,
   amount,
   timestamp,
@@ -42,7 +43,7 @@ const ReceiveTransaction = ({
               'UserWalletTransactions__received-self': userName === from,
             })}
           >
-            {'+ '}
+            {from !== to && '+ '}
             {amount}
           </div>
         </div>
@@ -82,6 +83,7 @@ const ReceiveTransaction = ({
 
 ReceiveTransaction.propTypes = {
   from: PropTypes.string,
+  to: PropTypes.string,
   memo: PropTypes.string,
   amount: PropTypes.element,
   timestamp: PropTypes.string,
@@ -95,6 +97,7 @@ ReceiveTransaction.propTypes = {
 
 ReceiveTransaction.defaultProps = {
   from: '',
+  to: '',
   memo: '',
   amount: <span />,
   timestamp: '',

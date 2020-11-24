@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions';
 import { message } from 'antd';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 import { getIsAuthenticated, getAuthenticatedUserName, getLocale, isGuestUser } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
@@ -208,19 +208,24 @@ export const getChangedWobjectField = (
   });
 };
 
-export const voteAppends = (author, permlink, weight = 10000, name = '', isNew = false) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const voteAppends = (
+  author,
+  permlink,
+  weight = 10000,
+  name = '',
+  isNew = false,
+  type = '',
+) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const wobj = get(state, ['object', 'wobject'], {});
   const post = wobj.fields.find(field => field.permlink === permlink) || null;
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
   const fieldName = name || post.name;
-  const currentHieUserMethod = isPostCashout(post) || weight % 5 ? 'appendVote' : 'vote';
+  const currentHieUserMethod =
+    !isEmpty(type) || isPostCashout(post) || weight % 5 ? 'appendVote' : 'vote';
   const currentMethod = isGuest ? 'vote' : currentHieUserMethod;
+
   if (!getIsAuthenticated(state)) return null;
 
   dispatch({

@@ -12,7 +12,7 @@ import ReferralsInstructionsView from '../../Instructions/ReferralInstructionsVi
 
 describe('ReferralInstructionsView', () => {
   const handleCopyTextButton = jest.fn();
-  const widget = `<iframe></iframe>`;
+  const widget = jest.fn();
 
   let props;
   let wrapper;
