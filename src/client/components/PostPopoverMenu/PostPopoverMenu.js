@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
@@ -73,6 +73,7 @@ const PostPopoverMenu = ({
     loading,
   } = post;
 
+  const [popoverVisible, setPopoverVisible] = useState(false);
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = window ? window.location.origin : 'https://waivio.com';
@@ -168,11 +169,14 @@ const PostPopoverMenu = ({
         )}
       </PopoverMenuItem>,
     );
-
+  console.log(popoverVisible);
   return (
     <Popover
+      visible={popoverVisible}
+      onVisibleChange={() => setPopoverVisible(!popoverVisible)}
       placement="bottomRight"
-      trigger="hover"
+      trigger="click"
+      overlayStyle={{ position: 'fixed' }}
       content={
         <React.Fragment>
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
