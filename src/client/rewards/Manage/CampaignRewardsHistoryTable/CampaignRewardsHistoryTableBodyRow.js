@@ -21,7 +21,7 @@ const CampaignRewardsHistoryTableBodyRow = ({ currentItem }) => {
         <td className="Campaign-rewards-history hide-element">{currentItem.type}</td>
         <td className="Campaign-rewards-history hide-element">{currentItem.reward.toFixed(2)}</td>
         <td className="Campaign-rewards-history hide-element">USD</td>
-        <td className="Campaign-rewards-history hide-element">{currentItem.completed}</td>
+        <td className="Campaign-rewards-history hide-element">{currentItem.completedTotal}</td>
         <td className="Campaign-rewards-history hide-element">{payed}</td>
       </tr>
     </React.Fragment>
