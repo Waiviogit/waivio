@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { get, map, isEmpty, isEqual, max, min } from 'lodash';
+import { get, map, isEmpty, isEqual } from 'lodash';
 import Proposition from '../Proposition';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import Loading from '../../../components/Icon/Loading';
@@ -36,57 +36,90 @@ const PropositionList = ({
   locale,
   isCatalogWrap,
 }) => {
-  const [parentWobj, setParentWobj] = useState({});
   const [isGetWobject, setIsGetWobject] = useState(false);
 
   useEffect(() => {
     if (!isEmpty(wobject.parent)) {
       setIsGetWobject(true);
-      getObject(get(wobject, ['parent', 'author_permlink']), userName, locale).then(wObject => {
-        setParentWobj(wObject);
+      getObject(get(wobject, ['parent', 'author_permlink']), userName, locale).then(() => {
         setIsGetWobject(false);
       });
     }
-  }, [wobject]);
+  }, [wobject.author_permlink]);
+  const renderPropositions = () =>
+    map(allCurrentPropositions, propos =>
+      map(propos.objects, wobj => {
+        const wobjId = get(wobj, ['object', '_id'], '');
+        return map(listItems, listItem => {
+          const listItemId = get(listItem, '_id', '');
+          if (isEqual(listItemId, wobjId)) {
+            return (
+              <Proposition
+                proposition={propos}
+                wobj={wobj.object}
+                wobjPrice={wobj.reward}
+                assignCommentPermlink={wobj.permlink}
+                assignProposition={assignPropositionHandler}
+                discardProposition={discardProposition}
+                authorizedUserName={userName}
+                loading={loadingAssignDiscard}
+                key={`${wobj.object.author_permlink}`}
+                assigned={wobj.assigned}
+                history={history}
+                isAssign={isAssign}
+                match={match}
+                user={user}
+              />
+            );
+          }
+          return null;
+        });
+      }),
+    );
 
   const handleCurrentProposition = (currPropos, currWobject) => {
-    if (isEmpty(currPropos)) return null;
-
-    let minReward;
-    let maxReward;
-    let rewardPrise;
-    let rewardMax;
-
     if (!isEmpty(currWobject.parent)) {
-      minReward = allCurrentPropositions
-        ? min(map(allCurrentPropositions, proposition => proposition.reward))
-        : null;
-      maxReward = allCurrentPropositions
-        ? max(map(allCurrentPropositions, proposition => proposition.reward))
-        : null;
-      rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
-      rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
-
+      if (isEmpty(allCurrentPropositions)) return null;
+      const filteredPropos = allCurrentPropositions.filter(
+        prop =>
+          get(prop, ['objects', '0', 'object', 'author_permlink']) === currWobject.author_permlink,
+      );
       return isGetWobject ? (
         <Loading />
       ) : (
-        <PropositionMainObjectCard
-          intl={intl}
-          wobject={parentWobj}
-          currentProposition={currPropos}
-          goToProducts={goToProducts}
-          maxReward={maxReward}
-          minReward={minReward}
-          rewardPrise={rewardPrise}
-          rewardMax={rewardMax}
-        />
+        map(filteredPropos, propos => {
+          if (!isEmpty(propos)) {
+            return (
+              <Proposition
+                proposition={propos}
+                wobj={wobject}
+                wobjPrice={wobject.reward}
+                assignCommentPermlink={wobject.permlink}
+                assignProposition={assignPropositionHandler}
+                discardProposition={discardProposition}
+                authorizedUserName={userName}
+                loading={loadingAssignDiscard}
+                key={`${wobject.author_permlink}`}
+                assigned={wobject.assigned}
+                history={history}
+                isAssign={isAssign}
+                match={match}
+                user={user}
+              />
+            );
+          }
+
+          return null;
+        })
       );
     }
 
-    minReward = get(currentProposition, ['min_reward'], 0);
-    maxReward = get(currentProposition, ['max_reward'], 0);
-    rewardPrise = `${minReward.toFixed(2)} USD`;
-    rewardMax = `${maxReward.toFixed(2)} USD`;
+    if (isEmpty(currPropos)) return null;
+
+    const minReward = get(currentProposition, ['min_reward'], 0);
+    const maxReward = get(currentProposition, ['max_reward'], 0);
+    const rewardPrise = `${minReward.toFixed(2)} USD`;
+    const rewardMax = `${maxReward.toFixed(2)} USD`;
 
     return (
       <PropositionMainObjectCard
@@ -163,37 +196,6 @@ const PropositionList = ({
       return !proposObj.includes(get(listItem, '_id')) && getListRow(listItem);
     });
   };
-
-  const renderPropositions = () =>
-    map(allCurrentPropositions, propos =>
-      map(propos.objects, wobj => {
-        const wobjId = get(wobj, ['object', '_id'], '');
-        return map(listItems, listItem => {
-          const listItemId = get(listItem, '_id', '');
-          if (isEqual(listItemId, wobjId)) {
-            return (
-              <Proposition
-                proposition={propos}
-                wobj={wobj.object}
-                wobjPrice={wobj.reward}
-                assignCommentPermlink={wobj.permlink}
-                assignProposition={assignPropositionHandler}
-                discardProposition={discardProposition}
-                authorizedUserName={userName}
-                loading={loadingAssignDiscard}
-                key={`${wobj.object.author_permlink}`}
-                assigned={wobj.assigned}
-                history={history}
-                isAssign={isAssign}
-                match={match}
-                user={user}
-              />
-            );
-          }
-          return null;
-        });
-      }),
-    );
 
   return (
     <React.Fragment>

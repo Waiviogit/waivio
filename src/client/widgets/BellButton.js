@@ -4,13 +4,15 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 
+import './widgetsStyle.less';
+
 import { getAuthenticatedUserName } from '../reducers';
 import { bellNotifications } from '../user/userActions';
 import { wobjectBellNotification } from '../object/wobjActions';
 
 const BellButton = ({ bellUserNotifications, authUserName, user, wobj, bellWobjNotification }) => {
   const type = !isEmpty(wobj) ? wobj : user;
-  const bellStyle = type.bell ? 'filled' : 'outlined';
+  const bellStyle = type.bell ? 'bell' : 'bell-active';
 
   const bellNotification = () => {
     if (!isEmpty(wobj.author_permlink)) {
@@ -21,7 +23,11 @@ const BellButton = ({ bellUserNotifications, authUserName, user, wobj, bellWobjN
 
   return (
     <div onClick={bellNotification} className="UserHeader__bell" role="presentation">
-      {type.bellLoading ? <Icon type="loading" /> : <Icon type="bell" theme={bellStyle} />}
+      {type.bellLoading ? (
+        <Icon type="loading" />
+      ) : (
+        <Icon type="bell" theme="filled" className={bellStyle} />
+      )}
     </div>
   );
 };

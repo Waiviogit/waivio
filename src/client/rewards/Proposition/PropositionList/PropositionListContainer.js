@@ -34,8 +34,8 @@ const PropositionListContainer = ({
   const [proposition, setProposition] = useState([]);
   const [isAssign, setIsAssign] = useState(false);
   const parentPermlink = get(wobject, 'parent.author_permlink', '');
-  const requiredObject = get(wobject, ['parent', 'author_permlink']) || get(wobject, ['parent']);
-  const primaryObject = get(wobject, ['author_permlink']);
+  const primaryObject = match.params.name;
+  const requiredObject = parentPermlink || get(wobject, ['parent']);
 
   const getPropositions = reqData => {
     ApiClient.getPropositions(reqData).then(data => {
@@ -50,7 +50,6 @@ const PropositionListContainer = ({
 
   useEffect(() => {
     if (wobject && userName) {
-      const isParentList = get(listItems[0], 'parent', {});
       const reqData = {
         userName,
         match,
@@ -58,16 +57,13 @@ const PropositionListContainer = ({
       };
 
       if (isEmpty(wobject.parent)) {
-        if (!isEmpty(isParentList)) {
-          reqData.requiredObject = primaryObject;
-        }
+        reqData.requiredObject = primaryObject;
       } else {
         reqData.requiredObject = requiredObject;
       }
-
       getPropositions(reqData);
     }
-  }, [wobject, userName, listItems]);
+  }, [wobject.author_permlink, userName, listItems]);
 
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {

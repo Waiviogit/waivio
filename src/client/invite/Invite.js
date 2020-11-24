@@ -1,34 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Helmet from 'react-helmet';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Input } from 'antd';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Affix from '../components/Utils/Affix';
-import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
-import { getAuthenticatedUserName } from '../reducers';
-import FacebookShare from '../components/Button/FacebookShare';
-import TwitterShare from '../components/Button/TwitterShare';
-import EmailShare from '../components/Button/EmailShare';
-import { REFERRAL_PERCENT } from '../helpers/constants';
+import { getAuthenticatedUserName, getIsUserInWaivioBlackList, isGuestUser } from '../reducers';
+import InviteGuestUser from './InviteGuestUser';
+import InviteHiveUser from './InviteHiveUser';
 import './Invite.less';
-import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 @requiresLogin
 @injectIntl
 @connect(state => ({
   authenticatedUserName: getAuthenticatedUserName(state),
+  isGuest: isGuestUser(state),
+  isBlackListUser: getIsUserInWaivioBlackList(state),
 }))
 export default class Invite extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     authenticatedUserName: PropTypes.string,
+    isGuest: PropTypes.bool,
+    isBlackListUser: PropTypes.bool,
   };
 
   static defaultProps = {
     authenticatedUserName: '',
+    isGuest: false,
+    isBlackListUser: false,
   };
 
   constructor(props) {
@@ -47,9 +46,11 @@ export default class Invite extends React.Component {
   }
 
   createInviteURL() {
-    const { authenticatedUserName } = this.props;
+    const { authenticatedUserName, isGuest } = this.props;
     if (typeof window !== 'undefined') {
-      const inviteURL = `${window.location.protocol}//${window.location.host}/i/@${authenticatedUserName}`;
+      const inviteURL = isGuest
+        ? `${window.location.protocol}//${window.location.host}/i/@${authenticatedUserName}`
+        : `https://www.waivio.com?ref=${authenticatedUserName}`;
       this.setState({ inviteURL });
     }
   }
@@ -58,80 +59,44 @@ export default class Invite extends React.Component {
     this.setState({ copied: true });
   }
 
+  handleRenderComponents = buttonLabel => {
+    const { intl, isGuest, authenticatedUserName, isBlackListUser } = this.props;
+    const { inviteURL } = this.state;
+
+    const data = {
+      intl,
+      buttonLabel,
+      inviteURL,
+      handleCopyClick: this.handleCopyClick,
+      authenticatedUserName,
+    };
+    if (isBlackListUser) {
+      return (
+        <FormattedMessage
+          id="referrals_instructions_is_blacklist"
+          defaultMessage="Your account {username} is listed in the Waivio’s blacklist or in other blacklists trusted by Waivio and you are not eligible to participate in the Referral program."
+          values={{
+            username: (
+              <Link to={`/@${authenticatedUserName}`}>
+                <span className="is-blacklist__referral-username">{authenticatedUserName}</span>
+              </Link>
+            ),
+          }}
+        />
+      );
+    } else if (isGuest) {
+      return <InviteGuestUser data={data} />;
+    }
+    return <InviteHiveUser data={data} />;
+  };
+
   render() {
-    const { intl } = this.props;
     const buttonLabel = this.state.copied ? (
       <FormattedMessage id="invite_copied" defaultMessage="Copied" />
     ) : (
       <FormattedMessage id="invite_copy_link" defaultMessage="Copy link" />
     );
-    return (
-      <div className="shifted">
-        <Helmet>
-          <title>{intl.formatMessage({ id: 'invite', defaultMessage: 'Invite' })} - Waivio</title>
-        </Helmet>
-        <div className="settings-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
-            <div className="left">
-              <LeftSidebar />
-            </div>
-          </Affix>
-          <div className="center">
-            <MobileNavigation />
-            <div className="Invite">
-              <div className="Invite__icon-container" />
-              <h1 className="Invite__title">
-                <FormattedMessage id="invite_title" defaultMessage="Don't use Waivio alone!" />
-              </h1>
-              <p className="Invite__description">
-                <FormattedMessage
-                  id="invite_info"
-                  defaultMessage="Onboard new users on Waivio today using the link below and get {percent}% of their rewards for {days} days."
-                  values={{
-                    percent: REFERRAL_PERCENT / 100,
-                    days: 30,
-                  }}
-                />
-              </p>
-              <div className="Invite__input-container">
-                <div className="Invite__input-wrapper">
-                  <Input className="Invite__input" value={this.state.inviteURL} readOnly />
-                  <CopyToClipboard text={this.state.inviteURL} onCopy={this.handleCopyClick}>
-                    <span className="Invite__input__copy">{buttonLabel}</span>
-                  </CopyToClipboard>
-                </div>
-              </div>
-              <div className="Invite__social">
-                <FacebookShare url={this.state.inviteURL} />
-                <TwitterShare
-                  url={this.state.inviteURL}
-                  text={intl.formatMessage(
-                    {
-                      id: 'invite_share',
-                      defaultMessage: 'Join me today on Waivio and get rewarded to blog {link}',
-                    },
-                    {
-                      link: '',
-                    },
-                  )}
-                />
-                <EmailShare
-                  url={this.state.inviteURL}
-                  text={intl.formatMessage(
-                    {
-                      id: 'invite_share',
-                      defaultMessage: 'Join me today on Waivio and get rewarded to blog {link}',
-                    },
-                    {
-                      link: this.state.inviteURL,
-                    },
-                  )}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+
+    return this.handleRenderComponents(buttonLabel);
   }
 }

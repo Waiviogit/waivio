@@ -156,14 +156,16 @@ class UserDynamicList extends React.Component {
   };
 
   handleChangeSorting = sorting => {
-    this.props
-      .dispatchChangeFollowSorting(sorting)
-      .then(() => {
-        this.handleSorting(sorting);
-      })
-      .catch(err => {
-        message.error(err.message);
-      });
+    if (this.props.sort !== sorting) {
+      this.props
+        .dispatchChangeFollowSorting(sorting)
+        .then(() => {
+          this.handleSorting(sorting);
+        })
+        .catch(err => {
+          message.error(err.message);
+        });
+    }
   };
 
   handleSorting(sorting) {

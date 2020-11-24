@@ -166,8 +166,7 @@ export function createPermlink(title, author, parent_author, parent_permlink) {
         return checkPermLinkLength(permlink);
       })
       .catch(() => {
-        const prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
-        permlink = s + prefix;
+        permlink = s;
         return checkPermLinkLength(permlink);
       });
   }

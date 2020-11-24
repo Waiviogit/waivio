@@ -5,6 +5,7 @@ import LANGUAGES from '../translations/languages';
 export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'default_name');
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 export const getObjectAvatar = (wobj = {}) => wobj.avatar || get(wobj, ['parent', 'avatar'], '');
+export const getObjectType = (wobj = {}) => get(wobj, 'object_type') || get(wobj, 'type');
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 
@@ -115,22 +116,23 @@ export const parseWobjectField = (wobject, fieldName) => {
   }
 };
 
-export const parseButtonsField = wobject =>
-  get(wobject, 'button', []).map(btn => {
-    if (btn) {
-      try {
-        return {
-          ...btn,
-          id: TYPES_OF_MENU_ITEM.BUTTON,
-          body: JSON.parse(btn.body),
-        };
-      } catch (err) {
-        return null;
-      }
-    }
+export const parseButtonsField = wobject => {
+  const buttons = get(wobject, 'button');
 
-    return null;
+  if (!buttons) return [];
+
+  return buttons.map(btn => {
+    try {
+      return {
+        ...btn,
+        id: TYPES_OF_MENU_ITEM.BUTTON,
+        body: JSON.parse(btn.body),
+      };
+    } catch (err) {
+      return null;
+    }
   });
+};
 
 export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;

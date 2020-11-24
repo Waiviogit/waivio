@@ -5,7 +5,6 @@ import { Button, Form, Input } from 'antd';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 
-import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
 import { getSettingsSite, getWebsiteLoading } from '../../../reducers';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
@@ -25,29 +24,41 @@ const WebsitesSettings = ({
 }) => {
   const { getFieldDecorator } = form;
   const [beneficiaryAccount, setBeneficiaryAccount] = useState('');
+  const [beneficiaryPercent, setBeneficiaryPercent] = useState(1);
   const host = match.params.site;
 
   useEffect(() => {
-    getWebSettings(host);
+    getWebSettings(host).then(res => {
+      const percent = get(res, ['value', 'beneficiary', 'percent']) / 100;
+      const account = get(res, ['value', 'beneficiary', 'account']);
+
+      setBeneficiaryPercent(percent);
+      setBeneficiaryAccount(account);
+    });
   }, []);
-
-  useEffect(() => {
-    const beneficiaryAcc = get(settings, ['beneficiary', 'account']);
-
-    if (beneficiaryAcc) setBeneficiaryAccount(beneficiaryAcc);
-  }, [settings]);
 
   const handleChange = (e, fieldsName) =>
     form.setFieldsValue({ [fieldsName]: e.currentTarget.value });
+
+  const resetBeneficiaryUser = () => {
+    setBeneficiaryAccount('');
+    setBeneficiaryPercent(0);
+  };
+
+  const handleChangePercent = e => {
+    const value = e.currentTarget.value;
+
+    if (value <= 100 && value >= 1) setBeneficiaryPercent(value);
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const percent = values.beneficiaryPercent || get(settings, ['beneficiary', 'percent']);
-        const account = beneficiaryAccount || get(settings, ['beneficiary', 'account']);
-        const tag = values.googleAnalyticsTag || get(settings, 'googleAnalyticsTag');
-        const beneficiary = account && percent ? { account, percent } : {};
+        const percent = (beneficiaryPercent || 1) * 100;
+        const account = beneficiaryAccount || 'waivio';
+        const tag = values.googleAnalyticsTag || get(settings, 'googleAnalyticsTag', '');
+        const beneficiary = { account, percent };
 
         saveWebSettings(host, tag, beneficiary);
       }
@@ -58,7 +69,6 @@ const WebsitesSettings = ({
 
   return (
     <div className="center">
-      <MobileNavigation />
       <h1>
         <FormattedMessage id="settings" defaultMessage="Settings" />
       </h1>
@@ -83,6 +93,12 @@ const WebsitesSettings = ({
               />
             </Input.Group>,
           )}
+          <p>
+            {intl.formatMessage({
+              id: 'website_performance',
+              defaultMessage: 'You can monitor website performance using Google Analytics.',
+            })}
+          </p>
         </Form.Item>
         <h3>{intl.formatMessage({ id: 'beneficiary', defaultMessage: 'Beneficiary' })}</h3>
         <p>
@@ -103,7 +119,7 @@ const WebsitesSettings = ({
             {beneficiaryAccount ? (
               <SelectUserForAutocomplete
                 account={beneficiaryAccount}
-                resetUser={() => setBeneficiaryAccount('')}
+                resetUser={resetBeneficiaryUser}
               />
             ) : (
               <SearchUsersAutocomplete
@@ -127,8 +143,8 @@ const WebsitesSettings = ({
                     id: 'enter_percentage',
                     defaultMessage: 'Enter percentage',
                   })}
-                  defaultValue={get(settings, ['beneficiary', 'percent'])}
-                  onChange={e => handleChange(e, 'beneficiaryPercent')}
+                  onChange={handleChangePercent}
+                  value={beneficiaryPercent}
                   required={beneficiaryAccount}
                 />
               </Input.Group>,

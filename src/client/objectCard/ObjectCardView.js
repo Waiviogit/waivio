@@ -27,7 +27,7 @@ const ObjectCardView = ({
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
     setTags([wObject.object_type, ...objectTags]);
-  }, [wObject, setTags]);
+  }, [wObject.author_permlink, setTags]);
 
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 

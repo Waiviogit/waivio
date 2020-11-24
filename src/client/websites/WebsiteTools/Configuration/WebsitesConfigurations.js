@@ -305,7 +305,6 @@ export const WebsitesConfigurations = ({
               defaultMessage: 'Select colors',
             })}
           </Button>
-          <p>Select the initial map focus for the mobile site.</p>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={loading}>
@@ -338,8 +337,8 @@ export const WebsitesConfigurations = ({
       >
         {showMap && (
           <Map
-            center={get(mapState, [showMap, 'center'])}
-            zoom={get(mapState, [showMap, 'zoom'])}
+            center={get(mapState, [showMap, 'center'], [50.879, 4.6997])}
+            zoom={get(mapState, [showMap, 'zoom'], 6)}
             height={400}
             provider={mapProvider}
             onBoundsChanged={state => setMapBounds(state)}

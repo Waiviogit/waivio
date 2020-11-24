@@ -20,6 +20,7 @@ export default {
   WebsiteSettings: loableComponent(import('../../client/settings/WebsiteSettings')),
   NotificationSettings: loableComponent(import('../../client/settings/NotificationSettings')),
   ProfileSettings: loableComponent(import('../../client/settings/ProfileSettings')),
+  SettingsMain: loableComponent(import('../../client/settings/SettingsMain')),
   Invite: loableComponent(import('../../client/invite/Invite')),
   User: loableComponent(import('../../client/user/User')),
   Wobj: loableComponent(import('../../client/object/Wobj/WobjectContainer')),
