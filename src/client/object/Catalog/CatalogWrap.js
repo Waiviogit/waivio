@@ -42,7 +42,7 @@ const CatalogWrap = props => {
         setLoadingNestedWobject(true);
         const pathUrl = getLastPermlinksFromHash(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
-          setLists(get(wObject, 'listItems', []));
+          setLists(sortListItemsBy(get(wObject, 'listItems', [])), sortBy);
           setNestedWobj(wObject);
           setLoadingNestedWobject(false);
         });

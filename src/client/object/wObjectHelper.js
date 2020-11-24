@@ -57,8 +57,6 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
     case 'by-name-desc':
       comparator = (a, b) => (getObjectName(a) < getObjectName(b) ? 1 : -1);
       break;
-    case 'custom':
-      break;
     case 'by-name-asc':
       comparator = (a, b) => (getObjectName(a) > getObjectName(b) ? 1 : -1);
       break;
