@@ -45,7 +45,7 @@ const PropositionList = ({
         setIsGetWobject(false);
       });
     }
-  }, [wobject]);
+  }, [wobject.author_permlink]);
   const renderPropositions = () =>
     map(allCurrentPropositions, propos =>
       map(propos.objects, wobj => {

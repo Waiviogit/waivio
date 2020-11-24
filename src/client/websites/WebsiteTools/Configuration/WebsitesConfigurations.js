@@ -337,8 +337,8 @@ export const WebsitesConfigurations = ({
       >
         {showMap && (
           <Map
-            center={get(mapState, [showMap, 'center'])}
-            zoom={get(mapState, [showMap, 'zoom'])}
+            center={get(mapState, [showMap, 'center'], [50.879, 4.6997])}
+            zoom={get(mapState, [showMap, 'zoom'], 6)}
             height={400}
             provider={mapProvider}
             onBoundsChanged={state => setMapBounds(state)}

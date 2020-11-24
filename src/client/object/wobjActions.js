@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions';
 import { message } from 'antd';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 import { getIsAuthenticated, getAuthenticatedUserName, getLocale, isGuestUser } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
@@ -9,6 +9,7 @@ import { getChangedField } from '../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { APPEND_WAIVIO_OBJECT } from './appendActions';
 import { BELL_USER_NOTIFICATION } from '../user/userActions';
+import { isPostCashout } from '../vendor/steemitHelpers';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -207,18 +208,24 @@ export const getChangedWobjectField = (
   });
 };
 
-export const voteAppends = (author, permlink, weight = 10000, name = '', isNew = false) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const voteAppends = (
+  author,
+  permlink,
+  weight = 10000,
+  name = '',
+  isNew = false,
+  type = '',
+) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const wobj = get(state, ['object', 'wobject'], {});
   const post = wobj.fields.find(field => field.permlink === permlink) || null;
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
   const fieldName = name || post.name;
-  const currentMethod = isGuest ? 'vote' : 'appendVote';
+  const currentHieUserMethod =
+    !isEmpty(type) || isPostCashout(post) || weight % 5 ? 'appendVote' : 'vote';
+  const currentMethod = isGuest ? 'vote' : currentHieUserMethod;
+
   if (!getIsAuthenticated(state)) return null;
 
   dispatch({

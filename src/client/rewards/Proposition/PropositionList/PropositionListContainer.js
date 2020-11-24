@@ -64,7 +64,7 @@ const PropositionListContainer = ({
       }
       getPropositions(reqData);
     }
-  }, [wobject, userName, listItems]);
+  }, [wobject.author_permlink, userName, listItems]);
 
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {
