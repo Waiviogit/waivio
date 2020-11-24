@@ -44,7 +44,7 @@ class StoryFooter extends React.Component {
     onActionInitiated: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
     userName: PropTypes.string,
-    getSocialInfoPostAction: PropTypes.func.,
+    getSocialInfoPostAction: PropTypes.func,
     handleEditClick: PropTypes.func.isRequired,
     handleFollowClick: PropTypes.func.isRequired,
     toggleBookmark: PropTypes.func.isRequired,
