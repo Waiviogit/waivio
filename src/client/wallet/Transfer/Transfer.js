@@ -138,7 +138,7 @@ export default class Transfer extends React.Component {
   };
 
   state = {
-    currency: '',
+    currency: 'HIVE',
     oldAmount: undefined,
     searchBarValue: '',
     searchName: '',
