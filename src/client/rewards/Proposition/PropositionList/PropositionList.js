@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { get, map, isEmpty, isEqual } from 'lodash';
+import { get, map, isEmpty, isEqual, some, filter, size } from 'lodash';
 import Proposition from '../Proposition';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import Loading from '../../../components/Icon/Loading';
@@ -46,7 +46,7 @@ const PropositionList = ({
     });
   });
 
-  if (!hasType(wobject, 'list')) {
+  if (!hasType(wobject, 'list') && size(filteredPropos)) {
     filteredPropos = [filteredPropos.sort((a, b) => b.reward - a.reward)[0]];
   }
 
@@ -61,7 +61,7 @@ const PropositionList = ({
 
   const renderPropositions = () =>
     map(filteredPropos, propos =>
-      map(propos.objects, wobj => (
+      map(get(propos, 'objects', []), wobj => (
         <Proposition
           proposition={propos}
           wobj={wobj.object}
@@ -84,9 +84,11 @@ const PropositionList = ({
   const handleCurrentProposition = (currPropos, currWobject) => {
     if (!isEmpty(currWobject.parent)) {
       if (isEmpty(allCurrentPropositions)) return null;
-      const filtPropos = allCurrentPropositions.filter(prop =>
-        prop.objects.some(obj => obj.object.author_permlink === currWobject.author_permlink),
-      );
+      const filtPropos = filter(allCurrentPropositions, prop => {
+        const objs = get(prop, 'objects', []);
+
+        return objs.some(obj => obj.object.author_permlink === currWobject.author_permlink);
+      });
 
       return isGetWobject ? (
         <Loading />
@@ -195,11 +197,15 @@ const PropositionList = ({
       );
     }
 
-    const renderedItems = listItems.filter(listItem =>
-      filteredPropos.some(prop =>
-        prop.objects.some(obj => listItem.author_permlink !== obj.object.author_permlink),
-      ),
-    );
+    const renderedItems = size(filteredPropos)
+      ? filter(listItems, listItem =>
+          some(filteredPropos, prop =>
+            get(prop, 'objects', []).some(
+              obj => listItem.author_permlink !== get(obj, ['object', 'author_permlink']),
+            ),
+          ),
+        )
+      : listItems;
 
     return map(renderedItems, listItem => {
       const proposObj = getPropositionObjectsData('_id');
