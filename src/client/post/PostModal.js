@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import VisibilitySensor from 'react-visibility-sensor';
-import { getSocialInfoPost } from '../../waivioApi/ApiClient';
 import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
 import PostContent from './PostContent';
 import Comments from '../comments/Comments';
@@ -21,12 +20,16 @@ class PostModal extends React.Component {
     currentShownPost: PropTypes.shape(),
     shownPostContents: PropTypes.shape(),
     author: PropTypes.shape(),
+    isGuest: PropTypes.bool.isRequired,
+    username: PropTypes.string.isRequired,
+    getSocialInfoPost: PropTypes.func,
   };
 
   static defaultProps = {
     currentShownPost: {},
     shownPostContents: {},
     author: {},
+    getSocialInfoPost: () => {},
   };
 
   static pushURLState(title, url) {
@@ -44,7 +47,6 @@ class PostModal extends React.Component {
     this.state = {
       commentsVisible: false,
       previousURL,
-      socialInfoPost: {},
     };
 
     this.handleCommentsVisibility = this.handleCommentsVisibility.bind(this);
@@ -70,7 +72,7 @@ class PostModal extends React.Component {
       title,
       replaceBotWithGuestName(dropCategory(url), currentShownPost.guestInfo),
     );
-    getSocialInfoPost(authorName, permlink).then(res => this.setState({ socialInfoPost: res }));
+    this.props.getSocialInfoPost(authorName, permlink);
   }
 
   componentWillUnmount() {
@@ -100,19 +102,21 @@ class PostModal extends React.Component {
       currentShownPost,
       author: authorDetails,
       shownPostContents,
+      isGuest,
+      username,
     } = this.props;
-    const { socialInfoPost } = this.state;
     const { permlink, title, url } = currentShownPost;
-    const { tags, cities, userTwitter, wobjectsTwitter } = socialInfoPost;
+    const { tags, cities, userTwitter, wobjectsTwitter } = shownPostContents;
     const author = currentShownPost.guestInfo
       ? currentShownPost.guestInfo.userId
       : currentShownPost.author;
+    const postName = isGuest ? '' : username;
     const baseURL = window ? window.location.origin : 'https://waivio.com';
     const postURL = `${baseURL}${replaceBotWithGuestName(
       dropCategory(url),
       currentShownPost.guestInfo,
-    )}`;
-    const hashtags = !isEmpty(socialInfoPost) ? [...tags, ...cities] : [];
+    )}?ref=${postName}`;
+    const hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
     const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
     const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
     const shareTextSocialTwitter = `"${encodeURIComponent(

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal, message, Select, Form } from 'antd';
 import { filter, isEmpty } from 'lodash';
-import { getAppendData, getObjectName } from '../../../helpers/wObjectHelper';
+import { getAppendData, getObjectName, getObjectType } from '../../../helpers/wObjectHelper';
 import {
   getAuthenticatedUserName,
   getFollowingObjectsList,
@@ -96,9 +96,10 @@ class AddItemModal extends Component {
           locale: objectValues.locale,
         };
         const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
+        const objectType = getObjectType(selectedItem);
 
         this.props
-          .appendObject(appendData, {
+          .appendObject(appendData, objectType, {
             votePower: isManualSelected ? votePercent * 100 : null,
             follow: objectValues.follow,
           })

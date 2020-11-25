@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty } from 'lodash';
-import { getSocialInfoPost } from '../../../waivioApi/ApiClient';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
@@ -41,6 +40,9 @@ const propTypes = {
   handlePostPopoverMenuClick: PropTypes.func,
   ownPost: PropTypes.bool,
   children: PropTypes.node.isRequired,
+  isGuest: PropTypes.bool.isRequired,
+  username: PropTypes.string.isRequired,
+  getSocialInfoPost: PropTypes.func,
 };
 
 const defaultProps = {
@@ -49,6 +51,7 @@ const defaultProps = {
   saving: false,
   ownPost: false,
   handlePostPopoverMenuClick: () => {},
+  getSocialInfoPost: () => {},
 };
 
 const PostPopoverMenu = ({
@@ -61,6 +64,9 @@ const PostPopoverMenu = ({
   handlePostPopoverMenuClick,
   ownPost,
   children,
+  isGuest,
+  username,
+  getSocialInfoPost,
 }) => {
   const { isReported, isSaved } = postState;
   const {
@@ -77,31 +83,37 @@ const PostPopoverMenu = ({
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = window ? window.location.origin : 'https://waivio.com';
 
-  const handleShare = async isTwitter => {
+  const handleShare = isTwitter => {
     const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;
     const permlink = get(post, 'permlink', '');
-    const socialInfoPost = await getSocialInfoPost(authorPost, permlink);
-    const hashtags = !isEmpty(socialInfoPost)
-      ? [...socialInfoPost.tags, ...socialInfoPost.cities]
-      : [];
-    const authorTwitter = !isEmpty(socialInfoPost.userTwitter)
-      ? `by@${socialInfoPost.userTwitter}`
-      : '';
-    const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
-      ? `@${socialInfoPost.wobjectsTwitter}`
-      : '';
-    const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
+    getSocialInfoPost(authorPost, permlink).then(res => {
+      const socialInfoPost = res.value;
+      const hashtags = !isEmpty(socialInfoPost)
+        ? [...socialInfoPost.tags, ...socialInfoPost.cities]
+        : [];
+      const authorTwitter = !isEmpty(socialInfoPost.userTwitter)
+        ? `by@${socialInfoPost.userTwitter}`
+        : '';
+      const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
+        ? `@${socialInfoPost.wobjectsTwitter}`
+        : '';
+      const postName = isGuest ? '' : username;
+      const postURL = `${baseURL}${replaceBotWithGuestName(
+        dropCategory(url),
+        guestInfo,
+      )}?ref=${postName}`;
 
-    if (isTwitter) {
-      const shareTextSocialTwitter = `"${encodeURIComponent(
-        title,
-      )}" ${authorTwitter} ${objectTwitter}`;
-      const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
-      window.open(twitterShareURL);
-    } else {
-      const facebookShareURL = getFacebookShareURL(postURL);
-      window.open(facebookShareURL);
-    }
+      if (isTwitter) {
+        const shareTextSocialTwitter = `"${encodeURIComponent(
+          title,
+        )}" ${authorTwitter} ${objectTwitter}`;
+        const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
+        window.open(twitterShareURL);
+      } else {
+        const facebookShareURL = getFacebookShareURL(postURL);
+        window.open(facebookShareURL);
+      }
+    });
   };
 
   const activePost = !isPostCashout(post);
@@ -172,7 +184,7 @@ const PostPopoverMenu = ({
   return (
     <Popover
       placement="bottomRight"
-      trigger="hover"
+      trigger="click"
       content={
         <React.Fragment>
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
