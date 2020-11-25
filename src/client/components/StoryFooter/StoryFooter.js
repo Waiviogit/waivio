@@ -225,7 +225,7 @@ class StoryFooter extends React.Component {
             />
           )}
         </div>
-        {this.state.sliderVisible && !postState.isLiked && (
+        {this.state.sliderVisible && (!postState.isLiked || !postState.isReported) && (
           <Slider
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
