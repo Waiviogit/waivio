@@ -8,7 +8,7 @@ import Loading from '../../../components/Icon/Loading';
 import CatalogBreadcrumb from '../../../object/Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import CatalogSorting from '../../../object/Catalog/CatalogSorting/CatalogSorting';
 import OBJ_TYPE from '../../../object/const/objectTypes';
-import { parseWobjectField } from '../../../helpers/wObjectHelper';
+import { hasType, parseWobjectField } from '../../../helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
 import PropositionMainObjectCard from '../PropositionMainObjectCard';
@@ -37,6 +37,18 @@ const PropositionList = ({
   isCatalogWrap,
 }) => {
   const [isGetWobject, setIsGetWobject] = useState(false);
+  let filteredPropos = allCurrentPropositions.filter(prop => {
+    const objects = get(prop, ['objects'], []);
+    return listItems.some(listItem => {
+      const listItemId = get(listItem, '_id', '');
+
+      return objects.some(wobj => get(wobj, ['object', '_id'], '') === listItemId);
+    });
+  });
+
+  if (!hasType(wobject, 'list')) {
+    filteredPropos = [filteredPropos.sort((a, b) => b.reward - a.reward)[0]];
+  }
 
   useEffect(() => {
     if (!isEmpty(wobject.parent)) {
@@ -47,57 +59,39 @@ const PropositionList = ({
     }
   }, [wobject.author_permlink]);
 
-  const renderPropositions = () => {
-    const filteredPropos = allCurrentPropositions.filter(prop => {
-      const objects = get(prop, ['objects'], []);
-      console.log(objects);
-      return listItems.some(listItem =>
-        objects.some(wobj => get(wobj, 'object', '_id', '') === get(listItem, '_id', '')));
-    });
-
-    console.log(filteredPropos);
-    return map(allCurrentPropositions, propos =>
-      map(propos.objects, wobj => {
-        const wobjId = get(wobj, ['object', '_id'], '');
-        return map(listItems, listItem => {
-          const listItemId = get(listItem, '_id', '');
-          if (isEqual(listItemId, wobjId)) {
-            return (
-              <Proposition
-                proposition={propos}
-                wobj={wobj.object}
-                wobjPrice={wobj.reward}
-                assignCommentPermlink={wobj.permlink}
-                assignProposition={assignPropositionHandler}
-                discardProposition={discardProposition}
-                authorizedUserName={userName}
-                loading={loadingAssignDiscard}
-                key={`${wobj.object.author_permlink}`}
-                assigned={wobj.assigned}
-                history={history}
-                isAssign={isAssign}
-                match={match}
-                user={user}
-              />
-            );
-          }
-          return null;
-        });
-      }),
-    )
-  };
+  const renderPropositions = () =>
+    map(filteredPropos, propos =>
+      map(propos.objects, wobj => (
+        <Proposition
+          proposition={propos}
+          wobj={wobj.object}
+          wobjPrice={wobj.reward}
+          assignCommentPermlink={wobj.permlink}
+          assignProposition={assignPropositionHandler}
+          discardProposition={discardProposition}
+          authorizedUserName={userName}
+          loading={loadingAssignDiscard}
+          key={`${wobj.object.author_permlink}`}
+          assigned={wobj.assigned}
+          history={history}
+          isAssign={isAssign}
+          match={match}
+          user={user}
+        />
+      )),
+    );
 
   const handleCurrentProposition = (currPropos, currWobject) => {
     if (!isEmpty(currWobject.parent)) {
       if (isEmpty(allCurrentPropositions)) return null;
-      const filteredPropos = allCurrentPropositions.filter(prop =>
+      const filtPropos = allCurrentPropositions.filter(prop =>
         prop.objects.some(obj => obj.object.author_permlink === currWobject.author_permlink),
       );
 
       return isGetWobject ? (
         <Loading />
       ) : (
-        map(filteredPropos, propos => {
+        map(filtPropos, propos => {
           if (!isEmpty(propos)) {
             return (
               <Proposition
@@ -201,7 +195,13 @@ const PropositionList = ({
       );
     }
 
-    return map(listItems, listItem => {
+    const renderedItems = listItems.filter(listItem =>
+      filteredPropos.some(prop =>
+        prop.objects.some(obj => listItem.author_permlink !== obj.object.author_permlink),
+      ),
+    );
+
+    return map(renderedItems, listItem => {
       const proposObj = getPropositionObjectsData('_id');
       return !proposObj.includes(get(listItem, '_id')) && getListRow(listItem);
     });
