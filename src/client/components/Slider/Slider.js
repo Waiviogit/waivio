@@ -125,7 +125,10 @@ export default class Slider extends React.Component {
     const currentText = isPostCashout ? (
       textForCashoutPost
     ) : (
-      <FormattedMessage id="like_slider_info" defaultMessage="Your vote will be worth." />
+      <span>
+        <FormattedMessage id="like_slider_info" defaultMessage="Your vote will be worth." /> {oprtr}
+        {<USDDisplay value={this.getCurrentValue()} />}.
+      </span>
     );
 
     return (
@@ -139,10 +142,7 @@ export default class Slider extends React.Component {
           />
         )}
         <div className="Slider__info">
-          <h3>
-            {currentText} {oprtr}
-            {<USDDisplay value={this.getCurrentValue()} />}.
-          </h3>
+          <h3>{currentText}</h3>
         </div>
         <Transfer />
       </div>
