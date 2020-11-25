@@ -153,7 +153,7 @@ class StoryFooter extends React.Component {
         this.handleFlagClick(post, postState);
         break;
       case 'edit':
-        handleEditClick.edit(post);
+        handleEditClick(post);
         break;
       default:
     }
