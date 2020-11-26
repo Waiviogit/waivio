@@ -6,6 +6,9 @@ const ReferralDetailsView = ({ isAuthenticated, data }) => {
   const {
     detailTitle,
     detailDescription,
+    detailsAdditionTextOffers,
+    detailsAdditionTextUsers,
+    detailsAdditionTextSessions,
     detailsCommissionsTitle,
     detailsCommissionsDescription,
     detailsCommissionsExample,
@@ -15,8 +18,6 @@ const ReferralDetailsView = ({ isAuthenticated, data }) => {
     detailsCommissionsWaivioIndex,
     detailsCommissionsReferrals,
     detailsCommissionsPayments,
-    detailsReferralPeriod,
-    detailsReferralSessions,
     detailsReferralPartners,
   } = referralDetailContent(data);
 
@@ -26,6 +27,11 @@ const ReferralDetailsView = ({ isAuthenticated, data }) => {
         <div className="ReferralDetail">
           <h2 className="ReferralDetail__title">{detailTitle}</h2>
           <div className="ReferralDetail__description">{detailDescription}</div>
+
+          <div className="ReferralDetail__addition-offers-text">{detailsAdditionTextOffers}</div>
+          <div className="ReferralDetail__addition-users-text">{detailsAdditionTextUsers}</div>
+          <div className="ReferralDetail__addition-session-text">{detailsAdditionTextSessions}</div>
+          <div className="ReferralDetail__referral-partners">{detailsReferralPartners}</div>
           <div className="ReferralDetail__commissions-title">{detailsCommissionsTitle}</div>
           <div className="ReferralDetail__commissions-description">
             {detailsCommissionsDescription}
@@ -47,9 +53,6 @@ const ReferralDetailsView = ({ isAuthenticated, data }) => {
             </div>
           </div>
           <div className="ReferralDetail__commissions-payments">{detailsCommissionsPayments}</div>
-          <div className="ReferralDetail__referral-period">{detailsReferralPeriod}</div>
-          <div className="ReferralDetail__referral-sessions">{detailsReferralSessions}</div>
-          <div className="ReferralDetail__referral-partners">{detailsReferralPartners}</div>
         </div>
       )}
     </React.Fragment>
