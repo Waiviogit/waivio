@@ -1,4 +1,4 @@
-import { get, some, filter, isEmpty, compact } from 'lodash';
+import { get, some, filter, isEmpty, compact, size } from 'lodash';
 import { addressFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 
@@ -145,12 +145,12 @@ export const parseAddress = wobject => {
   ).join(', ');
 };
 
-export const getLastPermlinksFromHash = url =>
-  url
+export const getLastPermlinksFromHash = url => url
     .split('/')
     .pop()
     .replace('#', '');
-export const getPermlinksFromHash = url => url.replace('#', '').split('/');
+
+export const getPermlinksFromHash = url => url ? url.replace('#', '').split('/') : [];
 
 export const getMenuItems = (wobject, menuType, objType) => {
   const listItems = get(wobject, 'listItem', []).filter(item => item.type === menuType);
@@ -172,6 +172,7 @@ export const compareBreadcrumb = wobj => ({
   name: getObjectName(wobj),
   title: getObjectTitle(wobj),
   path: wobj.defaultShowLink,
+  type: getObjectType(wobj) !== 'page' ? 'menu' : getObjectType(wobj),
 });
 
 export const sortWobjectsByHash = (wobjects, permlinks) =>
@@ -185,7 +186,18 @@ export const createNewHash = (currPermlink, permlinks) => {
   const findIndex = permlinks.findIndex(el => el === currPermlink);
   const hashPermlinks = [...permlinks];
 
-  hashPermlinks.splice(findIndex + 1);
+  if(findIndex >= 0) hashPermlinks.splice(findIndex + 1);
+  else hashPermlinks.push(currPermlink);
 
-  return hashPermlinks.join('/');
+  return  hashPermlinks.join('/');
 };
+
+export const createNewPath = (wobj, type) => {
+  let currType = type;
+
+  if(hasType(wobj, 'list') && type !== 'page') currType = 'list';
+  if(!hasType(wobj, 'list') && type !== 'page') currType = 'menu';
+
+  return `/object/${wobj.author_permlink}/${currType}`;
+}
+

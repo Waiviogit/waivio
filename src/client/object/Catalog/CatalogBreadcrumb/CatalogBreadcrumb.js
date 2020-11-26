@@ -6,7 +6,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { isEmpty, map, size, get } from 'lodash';
 import {
   compareBreadcrumb,
-  createNewHash,
+  createNewHash, createNewPath,
   getPermlinksFromHash,
   hasType,
   sortWobjectsByHash,
@@ -20,7 +20,7 @@ import './CatalogBreadcrumb.less';
 const CatalogBreadcrumb = ({
   setBreadCrumbs,
   wobject,
-  location: { hash },
+  location,
   intl,
   locale,
   nestedWobject,
@@ -70,7 +70,7 @@ const CatalogBreadcrumb = ({
         setBreadCrumbs(currBredcrumb);
       });
     } else {
-      const usedObj = hash ? nestedWobject : wobject;
+      const usedObj = location.hash ? nestedWobject : wobject;
       handleChangeBreadCrumbs(usedObj);
     }
   }, [location.hash, wobject]);
@@ -96,7 +96,7 @@ const CatalogBreadcrumb = ({
                 <Link
                   className="CustomBreadCrumbs__link"
                   to={{
-                    pathname: location.pathname,
+                    pathname: createNewPath(wobject, crumb.type),
                     hash: createNewHash(crumb.id, permlinks),
                   }}
                   title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
