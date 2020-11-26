@@ -12,7 +12,7 @@ import {
   createNewHash,
   getPermlinksFromHash,
   hasType,
-  parseWobjectField
+  parseWobjectField,
 } from '../../../helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
@@ -156,9 +156,7 @@ const PropositionList = ({
 
     const permlinks = getPermlinksFromHash(location.hash);
     const hash = createNewHash(listItem.author_permlink, permlinks);
-    const path = hasType(listItem, 'page')
-      ? `/object/${wobject.author_permlink}/page#${hash}`
-      : '';
+    const path = hasType(listItem, 'page') ? `/object/${wobject.author_permlink}/page#${hash}` : '';
 
     let item;
 

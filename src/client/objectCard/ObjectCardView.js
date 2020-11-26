@@ -8,7 +8,7 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import {getObjectName, parseAddress, getObjectAvatar, hasType, createNewHash} from '../helpers/wObjectHelper';
+import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
@@ -17,7 +17,7 @@ const ObjectCardView = ({
   intl,
   wObject,
   options: { mobileView = 'compact', ownRatesOnly = false },
-  path
+  path,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
@@ -34,7 +34,6 @@ const ObjectCardView = ({
     const objectTags = get(wObject, 'topTags', []);
     setTags([wObject.object_type, ...objectTags]);
   }, [wObject.author_permlink, setTags]);
-
 
   const avatarLayout = () => {
     let url = getObjectAvatar(wObject) || getObjectAvatar(parent);
@@ -69,7 +68,6 @@ const ObjectCardView = ({
       id: 'GoTo',
       defaultMessage: 'Go to',
     })} ${wobjName}`;
-
 
   return (
     <div key={wObject.author_permlink}>
@@ -161,6 +159,6 @@ ObjectCardView.propTypes = {
 ObjectCardView.defaultProps = {
   options: {},
   wObject: {},
-  path: ''
+  path: '',
 };
 export default injectIntl(ObjectCardView);
