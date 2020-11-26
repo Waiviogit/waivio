@@ -14,6 +14,7 @@ import {
 import { setCatalogBreadCrumbs } from '../../wobjActions';
 import { getBreadCrumbs, getSuitableLanguage, getWobjectNested } from '../../../reducers';
 import { getObjectsByIds } from '../../../../waivioApi/ApiClient';
+
 import './CatalogBreadcrumb.less';
 
 const CatalogBreadcrumb = ({

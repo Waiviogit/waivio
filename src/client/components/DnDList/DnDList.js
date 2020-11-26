@@ -51,7 +51,6 @@ class DnDList extends Component {
     this.setState({
       items,
     });
-
     this.props.onChange(items.map(item => item.id));
   }
 

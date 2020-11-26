@@ -34,20 +34,30 @@ const CatalogWrap = props => {
     isLoadingFlag,
   } = props;
 
-  const [sortBy, setSortingBy] = useState('recency');
+  const [sortBy, setSortingBy] = useState();
 
   useEffect(() => {
+    const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
+
     if (!isEmpty(wobject)) {
       if (hash) {
         setLoadingNestedWobject(true);
         const pathUrl = getLastPermlinksFromHash(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
-          setLists(sortListItemsBy(get(wObject, 'listItems', [])), sortBy);
+          setSortingBy(defaultSortBy(wObject));
+          setLists(
+            sortListItemsBy(
+              get(wObject, 'listItems', []),
+              defaultSortBy(wObject),
+              wObject.sortCustom,
+            ),
+          );
           setNestedWobj(wObject);
           setLoadingNestedWobject(false);
         });
       } else {
-        setLists(wobject.listItems);
+        setSortingBy(defaultSortBy(wobject));
+        setLists(sortListItemsBy(wobject.listItems, defaultSortBy(wobject), wobject.sortCustom));
         setLoadingNestedWobject(false);
       }
     }
