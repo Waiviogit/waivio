@@ -9,7 +9,7 @@ import { getOwnWebsite } from '../../../websites/websiteActions';
 
 import '../Sidenav.less';
 
-const SettingsSidenav = ({ match }) => {
+const SettingsSidenav = () => {
   const dispatch = useDispatch();
   const isGuest = useSelector(isGuestUser);
   // const ownWebsite = useSelector(getOwnWebsites);
@@ -18,23 +18,23 @@ const SettingsSidenav = ({ match }) => {
     websites: true,
   });
 
-  const createWebsiteConditions = value => {
-    const websiteItems = value.reduce((acc, { host }) => {
-      acc[host] = host === match.params.site;
-
-      return acc;
-    }, {});
-
-    setMenuCondition(prevState => ({ ...prevState, ...websiteItems }));
-  };
+  // const createWebsiteConditions = value => {
+  //   const websiteItems = value.reduce((acc, { host }) => {
+  //     acc[host] = host === match.params.site;
+  //
+  //     return acc;
+  //   }, {});
+  //
+  //   setMenuCondition(prevState => ({ ...prevState, ...websiteItems }));
+  // };
 
   useEffect(() => {
     if (!isGuest) dispatch(getOwnWebsite());
   }, []);
 
-  useEffect(() => {
-    createWebsiteConditions(ownWebsite);
-  }, [ownWebsite]);
+  // useEffect(() => {
+  //   createWebsiteConditions(ownWebsite);
+  // }, [ownWebsite]);
 
   const toggleMenuCondition = menuItem => {
     setMenuCondition({
