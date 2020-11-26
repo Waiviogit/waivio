@@ -8,7 +8,12 @@ import Loading from '../../../components/Icon/Loading';
 import CatalogBreadcrumb from '../../../object/Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import CatalogSorting from '../../../object/Catalog/CatalogSorting/CatalogSorting';
 import OBJ_TYPE from '../../../object/const/objectTypes';
-import { hasType, parseWobjectField } from '../../../helpers/wObjectHelper';
+import {
+  createNewHash,
+  getPermlinksFromHash,
+  hasType,
+  parseWobjectField,
+} from '../../../helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
 import PropositionMainObjectCard from '../PropositionMainObjectCard';
@@ -149,6 +154,10 @@ const PropositionList = ({
 
     if (statusNoVisibleItem.includes(status)) return null;
 
+    const permlinks = getPermlinksFromHash(location.hash);
+    const hash = createNewHash(listItem.author_permlink, permlinks);
+    const path = hasType(listItem, 'page') ? `/object/${wobject.author_permlink}/page#${hash}` : '';
+
     let item;
 
     if (isList) {
@@ -161,11 +170,11 @@ const PropositionList = ({
         if (isEqual(objPermlink, currListItemPermlink)) {
           item = handleCurrentProposition(currPropos, listItem);
         } else {
-          item = <ObjectCardView wObject={listItem} inList />;
+          item = <ObjectCardView wObject={listItem} path={path} inList />;
         }
       });
     } else {
-      item = <ObjectCardView wObject={listItem} inList />;
+      item = <ObjectCardView wObject={listItem} path={path} inList />;
     }
 
     return !isReviewPage && <div key={`category-${listItem.author_permlink}`}>{item}</div>;

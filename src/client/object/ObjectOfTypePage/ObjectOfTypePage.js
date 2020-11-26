@@ -105,8 +105,7 @@ const ObjectOfTypePage = props => {
             );
             toggleViewEditMode();
           })
-          .catch(error => {
-            console.log('err > ', error);
+          .catch(() => {
             message.error(
               intl.formatMessage({
                 id: 'couldnt_append',
