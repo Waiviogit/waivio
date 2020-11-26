@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
@@ -8,6 +8,8 @@ import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import ModalSignIn from '../../components/Navigation/ModlaSignIn/ModalSignIn';
+
 import './Details.less';
 
 const Details = ({
@@ -22,7 +24,9 @@ const Details = ({
   isReviewDetails,
   requiredObjectName,
   isEligible,
+  isAuth,
 }) => {
+  const [isShowSignInModal, setIsShowSignInModal] = useState(false);
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
@@ -53,9 +57,22 @@ const Details = ({
     return result;
   };
 
+  const handleTypeReserveButton = () => {
+    let currentType = 'primary';
+
+    if (isAuth && isEligible) {
+      currentType = 'primary';
+    } else if (!isAuth) {
+      currentType = 'default';
+    }
+
+    return currentType;
+  };
+
   const objName = getRequiredObjectName();
   const proposedWobjNewName = getProposedWobjName();
-
+  const onClick = isAuth ? reserveOnClickHandler : () => setIsShowSignInModal(true);
+  const disabled = (isAuth && !isEligible) || isInActive || isExpired;
   return (
     <Modal
       title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
@@ -83,15 +100,24 @@ const Details = ({
           objectDetails={objectDetails}
         />
       )}
+      {isShowSignInModal && (
+        <ModalSignIn
+          hideLink
+          isButton={false}
+          showModal
+          setIsShowSignInModal={setIsShowSignInModal}
+        />
+      )}
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
           <Button onClick={toggleModal}>{messageData.cancel}</Button>
+          {/* Button "Reserve" inside the reward card */}
           {!isReviewDetails ? (
             <Button
-              type="primary"
+              type={handleTypeReserveButton()}
               loading={loading}
-              disabled={!isEligible || isInActive || isExpired}
-              onClick={reserveOnClickHandler}
+              disabled={disabled}
+              onClick={onClick}
             >
               {!isCamaignReserved ? messageData.reserve : messageData.reserved}
             </Button>
@@ -128,10 +154,12 @@ Details.propTypes = {
   requiredObjectName: PropTypes.string.isRequired,
   proposedWobj: PropTypes.shape().isRequired,
   isEligible: PropTypes.bool.isRequired,
+  isAuth: PropTypes.bool,
 };
 
 Details.defaultProps = {
   loading: false,
   assigned: false,
+  isAuth: false,
 };
 export default injectIntl(Details);
