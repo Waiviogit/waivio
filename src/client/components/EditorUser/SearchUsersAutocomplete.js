@@ -30,6 +30,7 @@ class SearchUsersAutocomplete extends React.Component {
     handleSelect: () => {},
     itemsIdsToOmit: [],
     placeholder: '',
+    searchString: '',
     disabled: false,
     autoFocus: true,
     style: {},
@@ -37,7 +38,9 @@ class SearchUsersAutocomplete extends React.Component {
     value: undefined,
     onChange: undefined,
     notGuest: false,
+    setSearchString: () => {},
   };
+
   static propTypes = {
     intl: PropTypes.shape(),
     searchUsersResults: PropTypes.arrayOf(PropTypes.shape),
@@ -45,16 +48,17 @@ class SearchUsersAutocomplete extends React.Component {
     handleSelect: PropTypes.func,
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
     placeholder: PropTypes.string,
+    searchString: PropTypes.string,
     disabled: PropTypes.bool,
     autoFocus: PropTypes.bool,
     style: PropTypes.shape({}),
     isSearchUser: PropTypes.bool,
     notGuest: PropTypes.bool,
     onChange: PropTypes.func,
+    setSearchString: PropTypes.func,
   };
 
   state = {
-    searchString: '',
     isOptionSelected: false,
   };
 
@@ -71,18 +75,16 @@ class SearchUsersAutocomplete extends React.Component {
     if (typeof this.props.onChange === 'function') {
       this.props.onChange(value);
     }
-    this.setState({ searchString: value });
+    this.props.setSearchString(value);
   };
 
   handleSelect = value => {
     const selectedUsers = this.props.searchUsersResults.find(obj => obj.account === value);
-
     this.props.handleSelect(selectedUsers);
-    this.setState({ searchString: '' });
+    this.props.setSearchString('');
   };
 
   render() {
-    const { searchString } = this.state;
     const {
       intl,
       searchUsersResults,
@@ -91,6 +93,7 @@ class SearchUsersAutocomplete extends React.Component {
       autoFocus,
       style,
       isSearchUser,
+      searchString,
     } = this.props;
     const searchUsersOptions = searchString
       ? searchUsersResults
