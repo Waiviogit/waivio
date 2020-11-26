@@ -69,7 +69,7 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
 
   if (sortBy === 'custom' && sortOrder && sortOrder.length) {
     [...sortOrder].reverse().forEach(permlink => {
-      const index = resultArr.findIndex(item => item.id === permlink);
+      const index = resultArr.findIndex(item => item.author_permlink === permlink);
       if (index !== -1) {
         const [itemToMove] = resultArr.splice(index, 1);
         resultArr.unshift(itemToMove);

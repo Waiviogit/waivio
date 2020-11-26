@@ -301,7 +301,7 @@ class ObjectInfo extends React.Component {
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
 
     const menuSection = () => {
-      if (!isEditMode && !isEmpty(customSort)) {
+      if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         const buttonArray = [...menuLinks, ...menuPages, ...button];
 
         if (newsFilter) buttonArray.push({ id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter });
