@@ -165,6 +165,8 @@ export const getMenuItems = (wobject, menuType, objType) => {
     });
 };
 
+export const getListItems = wobject => get(wobject, 'listItems', []);
+
 export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};
 
 export const compareBreadcrumb = wobj => ({
