@@ -25,17 +25,9 @@ import {
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import './Proposition.less';
+import { handleRequirementFilters } from '../rewardsHelper';
 
-const handleRequirementFilters = requirementFilters => {
-  let filteredObj = {};
-  for (const key in requirementFilters) {
-    if (key !== 'expertise' && key !== 'followers' && key !== 'posts') {
-      filteredObj[key] = requirementFilters[key];
-    }
-  }
-  return filteredObj;
-};
+import './Proposition.less';
 
 const Proposition = ({
   intl,

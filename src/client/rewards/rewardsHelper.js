@@ -861,3 +861,14 @@ export const getReviewRequirements = memoize(campaign => ({
 
 export const pathNameHistoryNotify = match =>
   `${PATH_NAME_HISTORY}/${match.params.campaignId}/${match.params.permlink}/${match.params.username}`;
+
+export const handleRequirementFilters = requirementFilters => {
+  const filteredObj = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in requirementFilters) {
+    if (key !== 'expertise' && key !== 'followers' && key !== 'posts') {
+      filteredObj[key] = requirementFilters[key];
+    }
+  }
+  return filteredObj;
+};

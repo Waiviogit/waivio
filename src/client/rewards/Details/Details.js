@@ -57,17 +57,7 @@ const Details = ({
     return result;
   };
 
-  const handleTypeReserveButton = () => {
-    let currentType = 'primary';
-
-    if (isAuth && isEligible) {
-      currentType = 'primary';
-    } else if (!isAuth) {
-      currentType = 'default';
-    }
-
-    return currentType;
-  };
+  const handleTypeReserveButton = () => (isAuth ? 'primary' : 'default');
 
   const objName = getRequiredObjectName();
   const proposedWobjNewName = getProposedWobjName();
