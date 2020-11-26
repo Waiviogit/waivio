@@ -27,7 +27,6 @@ const ReferralDetailsView = ({ isAuthenticated, data }) => {
         <div className="ReferralDetail">
           <h2 className="ReferralDetail__title">{detailTitle}</h2>
           <div className="ReferralDetail__description">{detailDescription}</div>
-
           <div className="ReferralDetail__addition-offers-text">{detailsAdditionTextOffers}</div>
           <div className="ReferralDetail__addition-users-text">{detailsAdditionTextUsers}</div>
           <div className="ReferralDetail__addition-session-text">{detailsAdditionTextSessions}</div>
