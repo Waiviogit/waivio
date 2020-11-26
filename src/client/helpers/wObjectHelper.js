@@ -151,6 +151,7 @@ export const getLastPermlinksFromHash = url =>
     .pop()
     .replace('#', '');
 export const getPermlinksFromHash = url => url.replace('#', '').split('/');
+
 export const getMenuItems = (wobject, menuType, objType) => {
   const listItems = get(wobject, 'listItem', []).filter(item => item.type === menuType);
   if (isEmpty(wobject.menuItems)) return listItems;
@@ -164,4 +165,29 @@ export const getMenuItems = (wobject, menuType, objType) => {
     });
 };
 
+export const getListItems = wobject => get(wobject, 'listItems', []);
+
 export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};
+
+export const compareBreadcrumb = wobj => ({
+  id: wobj.author_permlink,
+  name: getObjectName(wobj),
+  title: getObjectTitle(wobj),
+  path: wobj.defaultShowLink,
+});
+
+export const sortWobjectsByHash = (wobjects, permlinks) =>
+  permlinks.reduce((acc, curr) => {
+    const currentWobj = wobjects.find(wobj => wobj.id === curr);
+
+    return [...acc, currentWobj];
+  }, []);
+
+export const createNewHash = (currPermlink, permlinks) => {
+  const findIndex = permlinks.findIndex(el => el === currPermlink);
+  const hashPermlinks = [...permlinks];
+
+  hashPermlinks.splice(findIndex + 1);
+
+  return hashPermlinks.join('/');
+};

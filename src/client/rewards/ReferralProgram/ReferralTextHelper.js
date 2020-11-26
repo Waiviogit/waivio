@@ -38,6 +38,24 @@ export const referralDetailContent = data => {
         }}
       />
     ),
+    detailsAdditionTextOffers: (
+      <FormattedMessage
+        id="referral_details_addition_text_offers"
+        defaultMessage="Waivio offers the same commissions to referral partners for brining existing customers to Waivio.com. The referral account will be listed as a beneficiary for referral portion of processing fees for these users for a period of 5 days from the moment of their association with the referral partner."
+      />
+    ),
+    detailsAdditionTextUsers: (
+      <FormattedMessage
+        id="referral_details_addition_text_users"
+        defaultMessage="Users will remain locked to the referral partner for the specified period and will not be re-assigned until the expiration of the set period."
+      />
+    ),
+    detailsAdditionTextSessions: (
+      <FormattedMessage
+        id="referral_details_addition_text_sessions"
+        defaultMessage="Waivio is using web sessions to track referrals."
+      />
+    ),
     detailsCommissionsTitle: (
       <FormattedMessage
         id="referrals_details_commissions_title"
@@ -123,15 +141,6 @@ export const referralDetailContent = data => {
           ),
           suspendedTimer,
         }}
-      />
-    ),
-    detailsReferralPeriod: (
-      <FormattedMessage id="referrals_details_referral_period" defaultMessage="Referral period:" />
-    ),
-    detailsReferralSessions: (
-      <FormattedMessage
-        id="referrals_details_referral_sessions"
-        defaultMessage="Waivio is using web sessions to attribute new users to referral parties. When users log in on Waivio for the first time (using Hive credentials or as a guest), the referral party is recorded and saved for a period of 90 days. During this period, the referral party will be recorded on all the rewards reserved and received by the user."
       />
     ),
     detailsReferralPartners: (

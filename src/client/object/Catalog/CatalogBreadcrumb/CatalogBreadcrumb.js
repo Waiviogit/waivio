@@ -1,40 +1,36 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Breadcrumb } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 import { isEmpty, map, size, get } from 'lodash';
 import {
-  getObjectName,
-  getObjectTitle,
+  compareBreadcrumb,
+  createNewHash,
   getPermlinksFromHash,
   hasType,
+  sortWobjectsByHash,
 } from '../../../helpers/wObjectHelper';
 import { setCatalogBreadCrumbs } from '../../wobjActions';
 import { getBreadCrumbs, getSuitableLanguage, getWobjectNested } from '../../../reducers';
 import { getObjectsByIds } from '../../../../waivioApi/ApiClient';
+
 import './CatalogBreadcrumb.less';
 
-const CatalogBreadcrumb = props => {
-  const {
-    wobject,
-    location: { hash },
-  } = props;
-
-  const dispatch = useDispatch();
-  const locale = useSelector(getSuitableLanguage);
-  const nestedWobject = useSelector(getWobjectNested);
-  const breadcrumb = useSelector(getBreadCrumbs);
-
-  const BreadCrumbSize = size(breadcrumb);
-  const currentTitle = get(breadcrumb[BreadCrumbSize - 1], 'title', '');
-  const permlinks = getPermlinksFromHash(props.location.hash);
+const CatalogBreadcrumb = ({
+  setBreadCrumbs,
+  wobject,
+  location: { hash },
+  intl,
+  locale,
+  nestedWobject,
+  breadcrumb,
+}) => {
+  const breadCrumbSize = size(breadcrumb);
+  const currentTitle = get(breadcrumb[breadCrumbSize - 1], 'title', '');
+  const permlinks = getPermlinksFromHash(location.hash);
   let currentBreadCrumbs = breadcrumb.filter(el => permlinks.includes(el.id));
-  /**
-   * @param wObject : {}
-   * Will be set breadcrumbs
-   */
+
   const handleChangeBreadCrumbs = wObject => {
     if (isEmpty(wObject)) return;
 
@@ -45,72 +41,46 @@ const CatalogBreadcrumb = props => {
       const findIndex = currentBreadCrumbs.findIndex(findWobj);
       currentBreadCrumbs.splice(findIndex + 1);
     } else {
-      currentBreadCrumbs = [
-        ...currentBreadCrumbs,
-        {
-          id: wObject.author_permlink,
-          name: getObjectName(wObject),
-          title: getObjectTitle(wObject),
-          path: wObject.defaultShowLink,
-        },
-      ];
+      currentBreadCrumbs = [...currentBreadCrumbs, compareBreadcrumb(wObject)];
     }
-    dispatch(setCatalogBreadCrumbs(currentBreadCrumbs));
-  };
 
-  // Delete next breadCrumbs when click to back
-  // eslint-disable-next-line no-shadow
-  const createNewHash = (hash, permlink) => {
-    const findIndex = permlinks.findIndex(el => el === permlink);
-    const hashPermlinks = [...permlinks];
-    hashPermlinks.splice(findIndex + 1);
-    return hashPermlinks.join('/');
+    setBreadCrumbs(currentBreadCrumbs);
   };
 
   const createBreadCrumbs = crumbs => {
-    currentBreadCrumbs = [
-      {
-        id: wobject.author_permlink,
-        name: getObjectName(wobject),
-        title: getObjectTitle(wobject),
-        path: wobject.defaultShowLink,
-      },
-      ...crumbs,
-    ];
+    currentBreadCrumbs = [compareBreadcrumb(wobject), ...crumbs];
   };
 
   useEffect(() => {
-    if (hasType(wobject, 'list')) {
-      createBreadCrumbs(currentBreadCrumbs);
-    }
+    const currentObjIsList = hasType(wobject, 'list');
+    if (currentObjIsList) createBreadCrumbs(currentBreadCrumbs);
+
     if (size(permlinks) > 1) {
       getObjectsByIds({ authorPermlinks: permlinks, locale }).then(response => {
-        const wobjectRes = response.wobjects.map(wobj => ({
-          id: wobj.author_permlink,
-          name: getObjectName(wobj),
-          title: getObjectTitle(wobj),
-          path: wobj.defaultShowLink,
-        }));
-        if (!permlinks.includes(wobject.author_permlink) && hasType(wobject, 'list')) {
-          createBreadCrumbs(wobjectRes);
-          dispatch(setCatalogBreadCrumbs(currentBreadCrumbs));
-        } else {
-          createBreadCrumbs(wobjectRes);
-          dispatch(setCatalogBreadCrumbs(wobjectRes));
-        }
+        const wobjectRes = sortWobjectsByHash(
+          response.wobjects.map(wobj => compareBreadcrumb(wobj)),
+          permlinks,
+        );
+        const currBredcrumb =
+          !permlinks.includes(wobject.author_permlink) && currentObjIsList
+            ? currentBreadCrumbs
+            : wobjectRes;
+
+        createBreadCrumbs(wobjectRes);
+        setBreadCrumbs(currBredcrumb);
       });
     } else {
       const usedObj = hash ? nestedWobject : wobject;
       handleChangeBreadCrumbs(usedObj);
     }
-  }, [props.location.hash, props.wobject]);
+  }, [location.hash, wobject]);
 
   return (
     <div className="CustomBreadCrumbs">
       <Breadcrumb separator={'>'}>
         {map(breadcrumb, (crumb, index) => (
           <Breadcrumb.Item key={`crumb-${crumb.id}`}>
-            {index === BreadCrumbSize - 1 ? (
+            {index === breadCrumbSize - 1 ? (
               <React.Fragment>
                 <span className="CustomBreadCrumbs__link">{crumb.name}</span>
                 <Link
@@ -126,17 +96,16 @@ const CatalogBreadcrumb = props => {
                 <Link
                   className="CustomBreadCrumbs__link"
                   to={{
-                    pathname: props.location.pathname,
-                    hash: createNewHash(props.location.hash, crumb.id),
+                    pathname: location.pathname,
+                    hash: createNewHash(crumb.id, permlinks),
                   }}
-                  title={`${props.intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
+                  title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
                     crumb.name
                   }`}
                 >
                   {crumb.name}
                 </Link>
-
-                {BreadCrumbSize === 1 && (
+                {breadCrumbSize === 1 && (
                   <Link
                     to={crumb.path}
                     className="CustomBreadCrumbs__obj-page-link"
@@ -154,10 +123,15 @@ const CatalogBreadcrumb = props => {
     </div>
   );
 };
+
 CatalogBreadcrumb.propTypes = {
   location: PropTypes.string,
   intl: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
+  locale: PropTypes.string.isRequired,
+  nestedWobject: PropTypes.shape({}).isRequired,
+  breadcrumb: PropTypes.shape([]).isRequired,
+  setBreadCrumbs: PropTypes.func.isRequired,
 };
 
 CatalogBreadcrumb.defaultProps = {
@@ -166,4 +140,13 @@ CatalogBreadcrumb.defaultProps = {
   breadcrumb: [],
 };
 
-export default compose(withRouter)(CatalogBreadcrumb);
+export default connect(
+  state => ({
+    locale: getSuitableLanguage(state),
+    nestedWobject: getWobjectNested(state),
+    breadcrumb: getBreadCrumbs(state),
+  }),
+  {
+    setBreadCrumbs: setCatalogBreadCrumbs,
+  },
+)(withRouter(CatalogBreadcrumb));

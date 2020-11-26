@@ -36,6 +36,8 @@ export default class Buttons extends React.Component {
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     username: PropTypes.string,
+    isGuest: PropTypes.bool.isRequired,
+    getSocialInfoPost: PropTypes.func,
   };
 
   static defaultProps = {
@@ -48,9 +50,9 @@ export default class Buttons extends React.Component {
     onLikeClick: () => {},
     onShareClick: () => {},
     onCommentClick: () => {},
-    onReportClick: () => {},
     handlePostPopoverMenuClick: () => {},
     username: '',
+    getSocialInfoPost: () => {},
   };
 
   constructor(props) {
@@ -196,6 +198,8 @@ export default class Buttons extends React.Component {
       pendingBookmark,
       saving,
       handlePostPopoverMenuClick,
+      isGuest,
+      getSocialInfoPost,
     } = this.props;
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
@@ -399,6 +403,9 @@ export default class Buttons extends React.Component {
           post={post}
           handlePostPopoverMenuClick={handlePostPopoverMenuClick}
           ownPost={ownPost}
+          isGuest={isGuest}
+          username={username}
+          getSocialInfoPost={getSocialInfoPost}
         >
           <i className="Buttons__post-menu iconfont icon-more" />
         </PostPopoverMenu>

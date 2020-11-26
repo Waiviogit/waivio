@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
@@ -40,6 +40,9 @@ const propTypes = {
   handlePostPopoverMenuClick: PropTypes.func,
   ownPost: PropTypes.bool,
   children: PropTypes.node.isRequired,
+  isGuest: PropTypes.bool.isRequired,
+  username: PropTypes.string.isRequired,
+  getSocialInfoPost: PropTypes.func,
 };
 
 const defaultProps = {
@@ -48,6 +51,7 @@ const defaultProps = {
   saving: false,
   ownPost: false,
   handlePostPopoverMenuClick: () => {},
+  getSocialInfoPost: () => {},
 };
 
 const PostPopoverMenu = ({
@@ -60,6 +64,9 @@ const PostPopoverMenu = ({
   handlePostPopoverMenuClick,
   ownPost,
   children,
+  isGuest,
+  username,
+  getSocialInfoPost,
 }) => {
   const { isReported, isSaved } = postState;
   const {
@@ -70,22 +77,45 @@ const PostPopoverMenu = ({
     author_original: authorOriginal,
     youFollows: userFollowed,
     loading,
-    tags,
-    cities,
-    userTwitter,
-    wobjectsTwitter,
   } = post;
 
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = window ? window.location.origin : 'https://waivio.com';
-  const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
-  const hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
-  const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
-  const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
-  const shareTextSocialTwitter = `"${encodeURIComponent(title)}" ${authorTwitter} ${objectTwitter}`;
-  const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
-  const facebookShareURL = getFacebookShareURL(postURL);
+
+  const handleShare = isTwitter => {
+    const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;
+    const permlink = get(post, 'permlink', '');
+    getSocialInfoPost(authorPost, permlink).then(res => {
+      const socialInfoPost = res.value;
+      const hashtags = !isEmpty(socialInfoPost)
+        ? [...socialInfoPost.tags, ...socialInfoPost.cities]
+        : [];
+      const authorTwitter = !isEmpty(socialInfoPost.userTwitter)
+        ? `by@${socialInfoPost.userTwitter}`
+        : '';
+      const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
+        ? `@${socialInfoPost.wobjectsTwitter}`
+        : '';
+      const postName = isGuest ? '' : username;
+      const postURL = `${baseURL}${replaceBotWithGuestName(
+        dropCategory(url),
+        guestInfo,
+      )}?ref=${postName}`;
+
+      if (isTwitter) {
+        const shareTextSocialTwitter = `"${encodeURIComponent(
+          title,
+        )}" ${authorTwitter} ${objectTwitter}`;
+        const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
+        window.open(twitterShareURL);
+      } else {
+        const facebookShareURL = getFacebookShareURL(postURL);
+        window.open(facebookShareURL);
+      }
+    });
+  };
+
   const activePost = !isPostCashout(post);
 
   if (userFollowed) {
@@ -99,6 +129,8 @@ const PostPopoverMenu = ({
       { username: postAuthor },
     );
   }
+
+  const isTwitter = true;
 
   let popoverMenu = [];
 
@@ -152,28 +184,36 @@ const PostPopoverMenu = ({
   return (
     <Popover
       placement="bottomRight"
-      trigger="hover"
+      trigger="click"
       content={
         <React.Fragment>
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
             {popoverMenu}
           </PopoverMenu>
           <a
+            role="presentation"
             key="share-facebook"
-            href={facebookShareURL}
             rel="noopener noreferrer"
             target="_blank"
             className="Popover__shared-link"
+            onClick={e => {
+              e.preventDefault();
+              handleShare();
+            }}
           >
             <i className="iconfont icon-facebook" />
             <FormattedMessage id="share_facebook" defaultMessage="Share to Facebook" />
           </a>
           <a
+            role="presentation"
             key="share-twitter"
-            href={twitterShareURL}
             rel="noopener noreferrer"
             target="_blank"
             className="Popover__shared-link"
+            onClick={e => {
+              e.preventDefault();
+              handleShare(isTwitter);
+            }}
           >
             <i className="iconfont icon-twitter" />
             <FormattedMessage id="share_twitter" defaultMessage="Share to Twitter" />
