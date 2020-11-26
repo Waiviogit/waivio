@@ -24,6 +24,7 @@ export const WebsitesAuthorities = ({
   isLoading,
 }) => {
   const [selectUser, setSelectUser] = useState('');
+  const [searchString, setSearchString] = useState('');
   const host = match.params.site;
 
   const addAdmin = () => {
@@ -33,6 +34,7 @@ export const WebsitesAuthorities = ({
       addWebsiteAuthorities(host, selectUser)
         .then(() => setSelectUser(null))
         .catch(() => message.error('Try again, please'));
+      setSearchString('');
     }
   };
 
@@ -83,6 +85,8 @@ export const WebsitesAuthorities = ({
                 wobjects_weight: weight,
               })
             }
+            searchString={searchString}
+            setSearchString={setSearchString}
             style={{ width: '100%' }}
           />
         )}
