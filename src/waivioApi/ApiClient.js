@@ -1509,10 +1509,10 @@ export const showMoreTagsForFilters = (category, skip = 0, limit = 10) =>
       .catch(error => reject(error));
   });
 
-export const getSocialInfoPost = (author, postPermlink, userName) =>
+export const getSocialInfoPost = (author, postPermlink) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.post}${config.social}?author=${author}&permlink=${postPermlink}&userName=${userName}`,
+      `${config.apiPrefix}${config.post}${config.social}?author=${author}&permlink=${postPermlink}`,
       {
         headers: {
           ...headers,
@@ -1650,7 +1650,7 @@ export const createWebsite = body => {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     body: JSON.stringify(body),
     method: 'PUT',
-  });
+  }).then(res => res.json());
 };
 
 export const checkAvailable = (name, parent) => {

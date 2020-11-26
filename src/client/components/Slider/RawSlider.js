@@ -13,6 +13,7 @@ class RawSlider extends React.Component {
     onChange: PropTypes.func,
     min: PropTypes.number,
     disabled: PropTypes.bool,
+    oprtr: PropTypes.string,
   };
 
   static defaultProps = {
@@ -21,6 +22,7 @@ class RawSlider extends React.Component {
     onChange: () => {},
     min: 1,
     disabled: false,
+    oprtr: '',
   };
 
   state = {
@@ -40,11 +42,11 @@ class RawSlider extends React.Component {
   }
 
   marks = {
-    1: '1%',
-    25: '25%',
-    50: '50%',
-    75: '75%',
-    100: '100%',
+    1: `${this.props.oprtr}1%`,
+    25: `${this.props.oprtr}25%`,
+    50: `${this.props.oprtr}50%`,
+    75: `${this.props.oprtr}75%`,
+    100: `${this.props.oprtr}100%`,
   };
 
   handlePresetChange = event => {
@@ -61,7 +63,7 @@ class RawSlider extends React.Component {
 
   render() {
     const { value } = this.state;
-    const { min, disabled } = this.props;
+    const { min, disabled, oprtr } = this.props;
 
     return (
       <div className="RawSlider">
@@ -80,11 +82,12 @@ class RawSlider extends React.Component {
             size="large"
             onChange={this.handlePresetChange}
           >
-            <RadioButton value={1}>1%</RadioButton>
-            <RadioButton value={25}>25%</RadioButton>
-            <RadioButton value={50}>50%</RadioButton>
-            <RadioButton value={75}>75%</RadioButton>
-            <RadioButton value={100}>100%</RadioButton>
+            {Object.keys(this.marks).map(percent => (
+              <RadioButton key={percent} value={percent}>
+                {oprtr}
+                {percent}%
+              </RadioButton>
+            ))}
           </RadioGroup>
         </div>
       </div>

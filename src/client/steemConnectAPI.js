@@ -193,7 +193,13 @@ function sc2Extended() {
           required_auths: [],
           required_posting_auths: [username],
           id: 'wobj_rating',
-          json: JSON.stringify({ author, permlink, author_permlink: authorPermlink, rate }),
+          json: JSON.stringify({
+            author,
+            permlink,
+            author_permlink: authorPermlink,
+            rate,
+            guestName: username,
+          }),
         };
 
         return this.broadcast([['custom_json', params]], cb);

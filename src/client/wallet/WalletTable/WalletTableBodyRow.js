@@ -98,24 +98,27 @@ const WalletTableBodyRow = props => {
       const receiveDescription = getTransactionDescription(transactionType, options);
 
       if (transaction.to === currentUsername) {
-        description = demoPost
-          ? validateGuestTransferTitle(
-              transaction.details,
-              transaction.username,
-              undefined,
-              transactionType,
-              tableView,
-            )
-          : receiveDescription.receivedFrom;
-        data = {
-          time: dateTableField(transaction.timestamp, isGuestPage),
-          fieldHIVE: transferAmount.currency === 'HIVE' && `${transferAmount.amount}`,
-          fieldHBD: transferAmount.currency === 'HBD' && `${transferAmount.amount}`,
-          fieldDescription: description,
-          fieldMemo: transaction.memo,
-        };
+        if (from !== to) {
+          description = demoPost
+            ? validateGuestTransferTitle(
+                transaction.details,
+                transaction.username,
+                undefined,
+                transactionType,
+                tableView,
+              )
+            : receiveDescription.receivedFrom;
+          data = {
+            time: dateTableField(transaction.timestamp, isGuestPage),
+            fieldHIVE: transferAmount.currency === 'HIVE' && `${transferAmount.amount}`,
+            fieldHBD: transferAmount.currency === 'HBD' && `${transferAmount.amount}`,
+            fieldDescription: description,
+            fieldMemo: transaction.memo,
+          };
 
-        return getCurrentRows(data);
+          return getCurrentRows(data);
+        }
+        return null;
       }
       description = receiveDescription.transferredTo;
       data = {

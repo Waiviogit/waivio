@@ -31,6 +31,7 @@ export default class Slider extends React.Component {
       url: PropTypes.string,
       author: PropTypes.string,
     }),
+    type: PropTypes.string,
   };
 
   static defaultProps = {
@@ -41,6 +42,7 @@ export default class Slider extends React.Component {
     isPostCashout: false,
     isGuestUser: false,
     post: {},
+    type: 'confirm',
   };
 
   state = {
@@ -90,8 +92,9 @@ export default class Slider extends React.Component {
 
   render() {
     const { value } = this.state;
-    const { isPostCashout, post } = this.props;
+    const { isPostCashout, post, type } = this.props;
     const isGuest = guestUserRegex.test(post.author);
+    const oprtr = type === 'flag' ? '-' : '';
     const transferMemo = isGuest
       ? {
           id: 'user_to_guest_transfer',
@@ -122,13 +125,10 @@ export default class Slider extends React.Component {
     const currentText = isPostCashout ? (
       textForCashoutPost
     ) : (
-      <FormattedMessage
-        id="like_slider_info"
-        defaultMessage="Your vote will be worth {amount}."
-        values={{
-          amount: <USDDisplay value={this.getCurrentValue()} />,
-        }}
-      />
+      <span>
+        <FormattedMessage id="like_slider_info" defaultMessage="Your vote will be worth." /> {oprtr}
+        {<USDDisplay value={this.getCurrentValue()} />}.
+      </span>
     );
 
     return (
@@ -138,6 +138,7 @@ export default class Slider extends React.Component {
             initialValue={value}
             onChange={this.handleChange}
             tipFormatter={this.formatTip}
+            oprtr={oprtr}
           />
         )}
         <div className="Slider__info">

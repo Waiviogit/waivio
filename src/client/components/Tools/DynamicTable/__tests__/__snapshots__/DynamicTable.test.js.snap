@@ -216,7 +216,7 @@ ShallowWrapper {
               averageDau
             </td>
             <td>
-              You can\`t delete this site
+              -
             </td>
           </tr>
           <tr>
@@ -239,7 +239,7 @@ ShallowWrapper {
               averageDau
             </td>
             <td>
-              You can\`t delete this site
+              -
             </td>
           </tr>
         </tbody>,
@@ -409,7 +409,7 @@ ShallowWrapper {
                 averageDau
               </td>
               <td>
-                You can\`t delete this site
+                -
               </td>
             </tr>,
             <tr>
@@ -432,7 +432,7 @@ ShallowWrapper {
                 averageDau
               </td>
               <td>
-                You can\`t delete this site
+                -
               </td>
             </tr>,
           ],
@@ -611,7 +611,7 @@ ShallowWrapper {
                   averageDau
                 </td>,
                 <td>
-                  You can\`t delete this site
+                  -
                 </td>,
               ],
             },
@@ -697,10 +697,10 @@ ShallowWrapper {
                 "key": "delete",
                 "nodeType": "host",
                 "props": Object {
-                  "children": "You can\`t delete this site",
+                  "children": "-",
                 },
                 "ref": null,
-                "rendered": "You can\`t delete this site",
+                "rendered": "-",
                 "type": "td",
               },
             ],
@@ -731,7 +731,7 @@ ShallowWrapper {
                   averageDau
                 </td>,
                 <td>
-                  You can\`t delete this site
+                  -
                 </td>,
               ],
             },
@@ -811,10 +811,10 @@ ShallowWrapper {
                 "key": "delete",
                 "nodeType": "host",
                 "props": Object {
-                  "children": "You can\`t delete this site",
+                  "children": "-",
                 },
                 "ref": null,
-                "rendered": "You can\`t delete this site",
+                "rendered": "-",
                 "type": "td",
               },
             ],
@@ -897,7 +897,7 @@ ShallowWrapper {
                 averageDau
               </td>
               <td>
-                You can\`t delete this site
+                -
               </td>
             </tr>
             <tr>
@@ -920,7 +920,7 @@ ShallowWrapper {
                 averageDau
               </td>
               <td>
-                You can\`t delete this site
+                -
               </td>
             </tr>
           </tbody>,
@@ -1090,7 +1090,7 @@ ShallowWrapper {
                   averageDau
                 </td>
                 <td>
-                  You can\`t delete this site
+                  -
                 </td>
               </tr>,
               <tr>
@@ -1113,7 +1113,7 @@ ShallowWrapper {
                   averageDau
                 </td>
                 <td>
-                  You can\`t delete this site
+                  -
                 </td>
               </tr>,
             ],
@@ -1292,7 +1292,7 @@ ShallowWrapper {
                     averageDau
                   </td>,
                   <td>
-                    You can\`t delete this site
+                    -
                   </td>,
                 ],
               },
@@ -1378,10 +1378,10 @@ ShallowWrapper {
                   "key": "delete",
                   "nodeType": "host",
                   "props": Object {
-                    "children": "You can\`t delete this site",
+                    "children": "-",
                   },
                   "ref": null,
-                  "rendered": "You can\`t delete this site",
+                  "rendered": "-",
                   "type": "td",
                 },
               ],
@@ -1412,7 +1412,7 @@ ShallowWrapper {
                     averageDau
                   </td>,
                   <td>
-                    You can\`t delete this site
+                    -
                   </td>,
                 ],
               },
@@ -1492,10 +1492,10 @@ ShallowWrapper {
                   "key": "delete",
                   "nodeType": "host",
                   "props": Object {
-                    "children": "You can\`t delete this site",
+                    "children": "-",
                   },
                   "ref": null,
-                  "rendered": "You can\`t delete this site",
+                  "rendered": "-",
                   "type": "td",
                 },
               ],

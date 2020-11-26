@@ -64,7 +64,7 @@ const PropositionListContainer = ({
       }
       getPropositions(reqData);
     }
-  }, [wobject, userName, listItems]);
+  }, [wobject.author_permlink, userName, listItems]);
 
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {
@@ -211,7 +211,7 @@ PropositionListContainer.propTypes = {
   assignPropos: PropTypes.func,
   declinePropos: PropTypes.func,
   catalogHandleSortChange: PropTypes.func,
-  catalogSort: PropTypes.string,
+  catalogSort: PropTypes.string.isRequired,
   isCatalogWrap: PropTypes.bool,
   isLoadingFlag: PropTypes.bool,
   location: PropTypes.shape().isRequired,
@@ -227,7 +227,6 @@ PropositionListContainer.defaultProps = {
   isCatalogWrap: false,
   catalogGetMenuList: () => {},
   catalogHandleSortChange: () => {},
-  catalogSort: '',
   campaigns: {},
   isLoadingPropositions: false,
   isLoadingFlag: false,

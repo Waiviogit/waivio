@@ -35,8 +35,8 @@ describe('<ManageWebsite />', () => {
     expect(shallow(<ManageWebsite {...props} manageInfo={{}} />)).toMatchSnapshot();
   });
 
-  it('handle click pay now button', () => {
-    wrapper.find('.ManageWebsites__btn-pay').simulate('click');
-    expect(props.openTransfer).toHaveBeenCalled();
-  });
+  // it('handle click pay now button', () => {
+  //   wrapper.find('.ManageWebsites__btn-pay').simulate('click');
+  //   expect(props.openTransfer).toHaveBeenCalled();
+  // });
 });

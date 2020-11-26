@@ -63,6 +63,8 @@ import {
   prepareAlbumToStore,
   prepareImageToStore,
   getDefaultAlbum,
+  getObjectType,
+  getListItems,
 } from '../../helpers/wObjectHelper';
 import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -1708,12 +1710,21 @@ export default class AppendForm extends Component {
         const buttons = parseButtonsField(wObject);
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
-        const listItems =
+        let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
             content: <DnDListItem name={item.alias || getObjectName(item)} type={item.type} />,
           })) || [];
-
+        if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
+          const menuItems = getListItems(wObject);
+          listItems =
+            menuItems.map(item => ({
+              id: item.body || item.author_permlink,
+              content: (
+                <DnDListItem name={item.alias || getObjectName(item)} type={getObjectType(item)} />
+              ),
+            })) || [];
+        }
         if (!isEmpty(buttons)) {
           buttons.forEach(btn => {
             listItems.push({
