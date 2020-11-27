@@ -68,7 +68,7 @@ const WebsitesSettings = ({
   if (isEmpty(settings)) return <Loading />;
 
   return (
-    <div className="center">
+    <div className="WebsitesSettings-middle">
       <h1>
         <FormattedMessage id="settings" defaultMessage="Settings" />
       </h1>
