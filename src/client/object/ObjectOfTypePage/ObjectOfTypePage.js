@@ -156,6 +156,7 @@ const ObjectOfTypePage = props => {
   const editorLocale = locale === 'auto' ? 'en-US' : locale;
   return (
     <React.Fragment>
+      {}
       <div className={classObjPage}>
         {isEditMode ? (
           <React.Fragment>

@@ -185,7 +185,7 @@ export const sortWobjectsByHash = (wobjects, permlinks) =>
     return [...acc, currentWobj];
   }, []);
 
-export const createNewHash = (currPermlink, permlinks, wobj = {}) => {
+export const createNewHash = (currPermlink, permlinks = [], wobj = {}) => {
   const findIndex = permlinks.findIndex(el => el === currPermlink);
   const hashPermlinks = [...permlinks];
 
