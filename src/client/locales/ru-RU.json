@@ -83,7 +83,7 @@
   "add_to_favorites": "Добавить в избранное",
   "remove_from_favorites": "Удалить из избранного",
   "like": "Нравится",
-  "like_slider_info": "Ваш голос будет стоить {amount}.",
+  "like_slider_info": "Ваш голос будет стоить",
   "dislike": "Не нравится",
   "unlike": "Не нравится",
   "and_more_amount": "и ещё {amount}",
