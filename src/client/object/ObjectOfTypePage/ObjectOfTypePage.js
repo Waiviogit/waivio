@@ -126,12 +126,7 @@ const ObjectOfTypePage = props => {
   const renderBody = () => {
     if (!isLoadingFlag) {
       if (content) {
-        return (
-          <React.Fragment>
-            <CatalogBreadcrumb wobject={wobject} intl={intl} />
-            <BodyContainer full body={content} />
-          </React.Fragment>
-        );
+        return <BodyContainer full body={content} />;
       }
 
       return (
@@ -154,8 +149,10 @@ const ObjectOfTypePage = props => {
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
   const editorLocale = locale === 'auto' ? 'en-US' : locale;
+
   return (
     <React.Fragment>
+      {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
       <div className={classObjPage}>
         {isEditMode ? (
           <React.Fragment>
@@ -174,7 +171,6 @@ const ObjectOfTypePage = props => {
                   <Loading />
                 ) : (
                   <React.Fragment>
-                    <CatalogBreadcrumb wobject={wobject} intl={intl} />
                     <BodyContainer full body={content} />
                     <div className="object-page-preview__options">
                       <LikeSection form={form} onVotePercentChange={handleVotePercentChange} />

@@ -30,7 +30,7 @@ const CatalogBreadcrumb = ({
   const breadCrumbSize = size(breadcrumb);
   const currentTitle = get(breadcrumb[breadCrumbSize - 1], 'title', '');
   const permlinks = getPermlinksFromHash(location.hash);
-  const currentObjIsList = hasType(wobject, 'list');
+  const currentObjIsListOrPage = hasType(wobject, 'list') || hasType(wobject, 'page');
 
   const addParentToBreadCrumbs = crumbs => [compareBreadcrumb(wobject), ...crumbs];
 
@@ -39,7 +39,7 @@ const CatalogBreadcrumb = ({
 
     let currentBreadCrumbs = breadcrumb.filter(el => permlinks.includes(el.id));
 
-    if (currentObjIsList) currentBreadCrumbs = addParentToBreadCrumbs(currentBreadCrumbs);
+    if (currentObjIsListOrPage) currentBreadCrumbs = addParentToBreadCrumbs(currentBreadCrumbs);
 
     const findWobj = crumb => crumb.id === wObject.author_permlink;
     const findBreadCrumbs = currentBreadCrumbs.some(findWobj);
@@ -61,7 +61,7 @@ const CatalogBreadcrumb = ({
           response.wobjects.map(wobj => compareBreadcrumb(wobj)),
           permlinks,
         );
-        const currBc = currentObjIsList ? addParentToBreadCrumbs(wobjectRes) : wobjectRes;
+        const currBc = currentObjIsListOrPage ? addParentToBreadCrumbs(wobjectRes) : wobjectRes;
 
         setBreadCrumbs(currBc);
       });
@@ -93,7 +93,7 @@ const CatalogBreadcrumb = ({
                   className="CustomBreadCrumbs__link"
                   to={{
                     pathname: createNewPath(wobject, crumb.type),
-                    hash: createNewHash(crumb.id, permlinks, wobject),
+                    hash: createNewHash(crumb.id, location.hash, wobject),
                   }}
                   title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
                     crumb.name
