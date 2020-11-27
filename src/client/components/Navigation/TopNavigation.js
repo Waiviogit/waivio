@@ -38,9 +38,18 @@ const LINKS = {
   BLOG: '/blog',
   FEED: '/feed',
 };
-const createLinkToolsUrl = objectLinks => Object.keys(objectLinks).map(key => objectLinks[key]);
+
 const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
-const TOOLS_URLS = createLinkToolsUrl(LINKS);
+const TOOLS_URLS = [
+  LINKS.TOOLS_BOOKMARKS,
+  LINKS.TOOLS_DRAFTS,
+  LINKS.TOOLS_EDIT_PROFILE,
+  LINKS.TOOLS_INVITE,
+  LINKS.TOOLS_SETTINGS,
+  LINKS.TOOLS_SETTINGS_GUESTS,
+  LINKS.TOOLS_SETTINGS_NOTIFICATIONS,
+  LINKS.WEBSITE_CREATE,
+];
 
 const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
