@@ -1,4 +1,4 @@
-import { find } from 'lodash';
+import { find, get } from 'lodash';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
@@ -39,7 +39,7 @@ const mapStateToProps = (state, { id }) => {
     isSaved: post.guestInfo
       ? bookmarks.includes(`${post.guestInfo.userId}/${post.root_permlink}`)
       : bookmarks.includes(post.id),
-    isLiked: userVote.percent > 0,
+    isLiked: userVote.percent > 0 && get(userVote, '_id', false),
     isReported: userVote.percent < 0,
   };
 

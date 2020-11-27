@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { find, truncate, get } from 'lodash';
+import { find, truncate, isEmpty } from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
 import {
@@ -32,7 +32,6 @@ import {
   followingPostAuthor,
   pendingFollowingPostAuthor,
   votePost,
-  getSocialInfoPost as getSocialInfoPostAction,
 } from './postActions';
 import { reblog } from '../app/Reblog/reblogActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
@@ -71,7 +70,6 @@ import { getProxyImageURL } from '../helpers/image';
     pendingFollowingPostAuthor,
     followingPostAuthor,
     errorFollowingPostAuthor,
-    getSocialInfoPost: getSocialInfoPostAction,
   },
 )
 class PostContent extends React.Component {
@@ -102,8 +100,6 @@ class PostContent extends React.Component {
     pendingFollowingPostAuthor: PropTypes.func.isRequired,
     followingPostAuthor: PropTypes.func.isRequired,
     errorFollowingPostAuthor: PropTypes.func.isRequired,
-    getSocialInfoPost: PropTypes.func.isRequired,
-    postSocialInfo: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -130,24 +126,9 @@ class PostContent extends React.Component {
     super(props);
 
     this.handleReportClick = this.handleReportClick.bind(this);
-    this.state = {
-      cities: [],
-      socialHashtags: [],
-      userFacebook: '',
-      userTwitter: '',
-      wobjectsFacebook: [],
-      wobjectsTwitter: [],
-    };
   }
 
   componentDidMount() {
-    const { content, getSocialInfoPost } = this.props;
-    if (!content.tags) {
-      const authorName = getAuthorName(content);
-      const postPermlink = get(content, 'permlink', '');
-      getSocialInfoPost(authorName, postPermlink);
-    }
-
     this.renderWithCommentsSettings();
   }
 
@@ -243,8 +224,9 @@ class PostContent extends React.Component {
       defaultVotePercent,
       appUrl,
       isOriginalPost,
-      postSocialInfo,
     } = this.props;
+
+    const { tags, cities, wobjectsFacebook, userFacebook } = content;
 
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
 
@@ -275,13 +257,17 @@ class PostContent extends React.Component {
         (pendingLikes[content.id].weight === 0 && postState.isReported));
 
     const { title, category, created, body, guestInfo } = content;
-    const { socialHashtags, cities } = this.state;
-    const hashtags = [...socialHashtags, ...cities];
+    let hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
+    hashtags = hashtags.map(hashtag => `#${hashtag}`);
     const authorName = getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
-    const desc = `${truncate(bodyText, { length: 143 })} ${hashtags}`;
+    const authorFacebook = !isEmpty(userFacebook) ? `by@${userFacebook}` : '';
+    const desc = `${truncate(bodyText, { length: 143 })} ${truncate(hashtags, {
+      length: 120,
+    })} @${wobjectsFacebook} ${authorFacebook}`;
+
     const image =
       postMetaImage ||
       getAvatarURL(authorName) ||
@@ -300,10 +286,10 @@ class PostContent extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <link rel="amphtml" href={ampUrl} />
-          <meta property="og:title" content={metaTitle} />
-          <meta property="og:type" content="article" />
-          <meta property="description" content={desc} />
           <meta property="og:url" content={url} />
+          <meta property="og:type" content="article" />
+          <meta property="og:title" content={metaTitle} />
+          <meta property="description" content={desc} />
           <meta property="og:image" content={getProxyImageURL(image)} />
           <meta property="og:site_name" content="Waivio" />
           <meta name="article:tag" property="article:tag" content={category} />
@@ -339,7 +325,6 @@ class PostContent extends React.Component {
           onFollowClick={this.handleFollowClick}
           onEditClick={this.handleEditClick}
           isOriginalPost={isOriginalPost}
-          postSocialInfo={postSocialInfo}
         />
       </div>
     );

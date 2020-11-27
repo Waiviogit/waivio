@@ -2,7 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 import * as PropTypes from 'prop-types';
-import { getShowPostModal, getCurrentShownPost, getUser, getPostContent } from '../reducers';
+import {
+  getShowPostModal,
+  getCurrentShownPost,
+  getUser,
+  getPostContent,
+  isGuestUser,
+  getAuthenticatedUserName,
+  getPostTags,
+  getPostCities,
+} from '../reducers';
 import { getSocialInfoPost as getSocialInfoPostAction } from './postActions';
 import { hidePostModal as hidePostModalAction } from '../app/appActions';
 import PostModal from './PostModal';
@@ -14,6 +23,10 @@ const PostModalContainer = ({
   author,
   shownPostContents,
   getSocialInfoPost,
+  isGuest,
+  userName,
+  postTags,
+  postCities,
 }) =>
   showPostModal && (
     <PostModal
@@ -23,6 +36,10 @@ const PostModalContainer = ({
       author={author}
       shownPostContents={shownPostContents}
       getSocialInfoPost={getSocialInfoPost}
+      isGuest={isGuest}
+      username={userName}
+      postTags={postTags}
+      postCities={postCities}
     />
   );
 
@@ -33,6 +50,10 @@ PostModalContainer.propTypes = {
   currentShownPost: PropTypes.shape(),
   shownPostContents: PropTypes.shape(),
   getSocialInfoPost: PropTypes.func.isRequired,
+  isGuest: PropTypes.bool,
+  userName: PropTypes.string,
+  postTags: PropTypes.shape(),
+  postCities: PropTypes.shape(),
 };
 
 PostModalContainer.defaultProps = {
@@ -40,6 +61,10 @@ PostModalContainer.defaultProps = {
   showPostModal: false,
   currentShownPost: {},
   shownPostContents: {},
+  isGuest: false,
+  userName: '',
+  postTags: [],
+  postCities: [],
 };
 
 export default connect(
@@ -52,6 +77,10 @@ export default connect(
       author: getUser(state, author),
       currentShownPost,
       shownPostContents: getPostContent(state, permlink, author),
+      isGuest: isGuestUser(state),
+      userName: getAuthenticatedUserName(state),
+      postTags: getPostTags(state, author, permlink),
+      postCities: getPostCities(state, author, permlink),
     };
   },
   {

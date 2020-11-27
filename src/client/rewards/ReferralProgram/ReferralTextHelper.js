@@ -38,6 +38,24 @@ export const referralDetailContent = data => {
         }}
       />
     ),
+    detailsAdditionTextOffers: (
+      <FormattedMessage
+        id="referral_details_addition_text_offers"
+        defaultMessage="Waivio offers the same commissions to referral partners for brining existing customers to Waivio.com. The referral account will be listed as a beneficiary for referral portion of processing fees for these users for a period of 5 days from the moment of their association with the referral partner."
+      />
+    ),
+    detailsAdditionTextUsers: (
+      <FormattedMessage
+        id="referral_details_addition_text_users"
+        defaultMessage="Users will remain locked to the referral partner for the specified period and will not be re-assigned until the expiration of the set period."
+      />
+    ),
+    detailsAdditionTextSessions: (
+      <FormattedMessage
+        id="referral_details_addition_text_sessions"
+        defaultMessage="Waivio is using web sessions to track referrals."
+      />
+    ),
     detailsCommissionsTitle: (
       <FormattedMessage
         id="referrals_details_commissions_title"
@@ -125,15 +143,6 @@ export const referralDetailContent = data => {
         }}
       />
     ),
-    detailsReferralPeriod: (
-      <FormattedMessage id="referrals_details_referral_period" defaultMessage="Referral period:" />
-    ),
-    detailsReferralSessions: (
-      <FormattedMessage
-        id="referrals_details_referral_sessions"
-        defaultMessage="Waivio is using web sessions to attribute new users to referral parties. When users log in on Waivio for the first time (using Hive credentials or as a guest), the referral party is recorded and saved for a period of 90 days. During this period, the referral party will be recorded on all the rewards reserved and received by the user."
-      />
-    ),
     detailsReferralPartners: (
       <FormattedMessage
         id="referrals_details_referral_partners"
@@ -178,16 +187,16 @@ export const referralInstructionsContent = username => ({
   instructionsConditions: (
     <FormattedMessage
       id="referrals_instructions_conditions"
-      defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
+      defaultMessage="I have read and agree to the {termsAndConditions} of the service. I also acknowledge that I am not operating any online or offline service in violation of the laws of British Columbia, Canada."
       values={{
-        ReferralAgreement: (
-          <Link to={`/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions`}>
-            <span className="is-blacklist__referral-username">Referral Agreement</span>
-          </Link>
-        ),
-        ServiceAgreement: (
-          <Link to={`/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions`}>
-            <span className="is-blacklist__referral-username">Service Agreement</span>
+        termsAndConditions: (
+          <Link to={`/object/xrj-terms-and-conditions/page`}>
+            <span className="is-blacklist__referral-username">
+              <FormattedMessage
+                id="referral_terms_conditions"
+                defaultMessage="Terms and Conditions"
+              />
+            </span>
           </Link>
         ),
       }}
@@ -204,7 +213,7 @@ export const referralInstructionsContent = username => ({
       id="referrals_instructions_accepted_title_example_links"
       defaultMessage="Simply add {link} to any Waivio page URL"
       values={{
-        link: <span style={{ fontWeight: 600 }}>?ref=[username]</span>,
+        link: <span style={{ fontWeight: 600 }}>{`?ref=${username}`}</span>,
       }}
     />
   ),
@@ -214,9 +223,9 @@ export const referralInstructionsContent = username => ({
       defaultMessage="For example:"
     />
   ),
-  acceptedConditionsFirstExampleLink: <span>http://www.waivio.com?ref=[username]</span>,
+  acceptedConditionsFirstExampleLink: <span>{`http://www.waivio.com?ref=${username}`}</span>,
   acceptedConditionsSecondExampleLink: (
-    <span>https://www.waivio.com/rewards/all?ref=[username]</span>
+    <span>{`https://www.waivio.com/rewards/all?ref=${username}`}</span>
   ),
   acceptedConditionsTitleWidget: (
     <FormattedMessage

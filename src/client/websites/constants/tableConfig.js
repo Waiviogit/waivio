@@ -80,7 +80,7 @@ export const configReportsWebsitesTableHeader = [
   {
     id: 'createdAt',
     intl: {
-      id: 'date',
+      id: 'payments_table_name_data',
       defaultMessage: 'Date',
     },
   },
@@ -101,14 +101,14 @@ export const configReportsWebsitesTableHeader = [
   {
     id: 'amount',
     intl: {
-      id: 'amount_hbd',
+      id: 'payments_table_amount_hbd',
       defaultMessage: 'Amount (HBD)',
     },
   },
   {
     id: 'balance',
     intl: {
-      id: 'balance_hbd',
+      id: 'payments_table_balance_hbd',
       defaultMessage: 'Balance (HBD)',
     },
   },
