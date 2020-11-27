@@ -28,6 +28,7 @@ export const WebsitesAdministrators = ({
   isLoading,
 }) => {
   const [selectUser, setSelectUser] = useState('');
+  const [searchString, setSearchString] = useState('');
   const host = match.params.site;
 
   const addAdmin = () => {
@@ -37,6 +38,7 @@ export const WebsitesAdministrators = ({
       addWebAdmins(host, selectUser)
         .then(() => setSelectUser(null))
         .catch(() => message.error('Try again, please'));
+      setSearchString('');
     }
   };
 
@@ -90,6 +92,8 @@ export const WebsitesAdministrators = ({
                 wobjects_weight: weight,
               })
             }
+            searchString={searchString}
+            setSearchString={setSearchString}
             style={{ width: '100%' }}
           />
         )}
