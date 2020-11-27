@@ -19,7 +19,6 @@ export const CreateWebsite = ({
   checkStatusAvailableDomain,
   availableStatus,
   createWebsite,
-  loading,
   history,
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
@@ -144,7 +143,7 @@ export const CreateWebsite = ({
           )}
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button type="primary" htmlType="submit">
             {intl.formatMessage({
               id: 'create_website',
               defaultMessage: 'Create website',
@@ -167,7 +166,6 @@ CreateWebsite.propTypes = {
   parentDomain: PropTypes.arrayOf(PropTypes.string).isRequired,
   checkStatusAvailableDomain: PropTypes.func.isRequired,
   availableStatus: PropTypes.string,
-  loading: PropTypes.bool.isRequired,
 };
 
 CreateWebsite.defaultProps = {
