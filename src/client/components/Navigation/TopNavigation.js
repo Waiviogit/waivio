@@ -25,23 +25,22 @@ const LINKS = {
   TOOLS_SETTINGS_NOTIFICATIONS: '/notification-settings',
   ABOUT: '/object/ylr-waivio/page#mwt-about-waivio',
   WEBSITE_CREATE: '/create',
+  WEBSITES_MANAGE: '/manage',
+  WEBSITES_PAYMENTS: '/payments',
+  WEBSITES_CONFIGURATION: '/configuration',
+  WEBSITES_ADMINISTRATION: '/administrations',
+  WEBSITES_MODERATORS: '/moderators',
+  WEBSITES_AUTHORITIES: '/authorities',
+  WEBSITES_OBJECT_FILTERS: '/objects-filters',
+  WEBSITES_MUTED_USER: '/muted-users',
   NOTIFICATIONS: '/notifications-list',
   USERS: PATH_NAME_DISCOVER,
   BLOG: '/blog',
   FEED: '/feed',
 };
-
+const createLinkToolsUrl = objectLinks => Object.keys(objectLinks).map(key => objectLinks[key]);
 const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
-const TOOLS_URLS = [
-  LINKS.TOOLS_BOOKMARKS,
-  LINKS.TOOLS_DRAFTS,
-  LINKS.TOOLS_EDIT_PROFILE,
-  LINKS.TOOLS_INVITE,
-  LINKS.TOOLS_SETTINGS,
-  LINKS.TOOLS_SETTINGS_GUESTS,
-  LINKS.TOOLS_SETTINGS_NOTIFICATIONS,
-  LINKS.WEBSITE_CREATE,
-];
+const TOOLS_URLS = createLinkToolsUrl(LINKS);
 
 const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
