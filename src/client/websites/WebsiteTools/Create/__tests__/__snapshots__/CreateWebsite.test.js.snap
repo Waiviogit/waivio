@@ -24,7 +24,11 @@ ShallowWrapper {
               Object {
                 "rules": Array [
                   Object {
-                    "message": "Field is required",
+                    "message": <FormattedMessage
+                      defaultMessage="Field is required"
+                      id="website_autocomplete_field_required"
+                      values={Object {}}
+                    />,
                     "required": true,
                   },
                 ],
@@ -35,11 +39,12 @@ ShallowWrapper {
               Object {
                 "rules": Array [
                   Object {
-                    "message": "Field is required",
+                    "message": <FormattedMessage
+                      defaultMessage="Field is required"
+                      id="website_domain_field_required"
+                      values={Object {}}
+                    />,
                     "required": true,
-                  },
-                  Object {
-                    "pattern": /\\[a-z,0-9\\]\\+\\$/,
                   },
                   Object {
                     "validator": [Function],

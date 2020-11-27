@@ -24,12 +24,14 @@ export const WebsiteModerators = ({
   isLoading,
 }) => {
   const [selectUser, setSelectUser] = useState(null);
+  const [searchString, setSearchString] = useState('');
   const host = match.params.site;
 
   const addModerator = () => {
     addWebModerators(host, selectUser)
       .then(() => setSelectUser(null))
       .catch(() => message.error('Try again, please'));
+    setSearchString('');
   };
 
   useEffect(() => {
@@ -81,6 +83,8 @@ export const WebsiteModerators = ({
                 wobjects_weight: weight,
               })
             }
+            searchString={searchString}
+            setSearchString={setSearchString}
             style={{ width: '100%' }}
           />
         )}
