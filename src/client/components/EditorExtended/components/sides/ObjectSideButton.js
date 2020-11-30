@@ -23,9 +23,7 @@ const objectSearchInput = props => {
       (hasType(selectedObject, OBJECT_TYPES.LIST) || hasType(selectedObject, OBJECT_TYPES.PAGE)) &&
       props.match.params[0] === OBJECT_TYPES.PAGE
     ) {
-      const currNestType = hasType(selectedObject, OBJECT_TYPES.LIST) ? 'menu' : 'page';
-
-      currUrl = `/object/${props.match.params.name}/${currNestType}#${createNewHash(
+      currUrl = `/object/${props.match.params.name}/page#${createNewHash(
         selectedObject.author_permlink,
         props.location.hash,
       )}`;
