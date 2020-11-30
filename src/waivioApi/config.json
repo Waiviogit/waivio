@@ -114,5 +114,6 @@
   "authorities": "/authorities",
   "moderators": "/moderators",
   "filters": "/filters",
-  "settings": "/settings"
+  "settings": "/settings",
+  "related": "/related"
 }
