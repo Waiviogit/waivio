@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { EditorState, Modifier } from 'draft-js';
+
 import Cube from '../../../../../../public/images/icons/cube.png';
 import { Entity } from '../../util/constants';
 import SearchObjectsAutocomplete from '../../../../../client/components/EditorObject/SearchObjectsAutocomplete';
 import * as apiConfig from '../../../../../waivioApi/config.json';
+import { createNewHash, hasType } from '../../../../helpers/wObjectHelper';
+import OBJECT_TYPES from '../../../../../client/object/const/objectTypes';
 
 const objectSearchInput = props => {
   const handleSelectObject = selectedObject => {
@@ -13,9 +17,21 @@ const objectSearchInput = props => {
     const editorState = props.getEditorState();
     let contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
+    let currUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objectName}`;
+
+    if (
+      (hasType(selectedObject, OBJECT_TYPES.LIST) || hasType(selectedObject, OBJECT_TYPES.PAGE)) &&
+      props.match.params[0] === OBJECT_TYPES.PAGE
+    ) {
+      currUrl = `/object/${props.match.params.name}/page#${createNewHash(
+        selectedObject.author_permlink,
+        props.location.hash,
+      )}`;
+    }
+
     const contentStateWithEntity = contentState.createEntity(Entity.OBJECT, 'IMMUTABLE', {
       object: selectedObject,
-      url: `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objectName}`,
+      url: currUrl,
     });
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     contentState = Modifier.insertText(
@@ -50,6 +66,15 @@ objectSearchInput.propTypes = {
   setEditorState: PropTypes.func.isRequired,
   getEditorState: PropTypes.func.isRequired,
   handleHashtag: PropTypes.func.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      0: PropTypes.string,
+      name: PropTypes.string,
+    }),
+  }).isRequired,
+  location: PropTypes.shape({
+    hash: PropTypes.string,
+  }).isRequired,
 };
 
 @injectIntl
@@ -88,4 +113,4 @@ class ObjectSideButton extends Component {
   }
 }
 
-export default ObjectSideButton;
+export default withRouter(ObjectSideButton);
