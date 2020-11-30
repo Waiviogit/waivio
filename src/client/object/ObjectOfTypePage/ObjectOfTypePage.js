@@ -14,6 +14,7 @@ import {
   getAppendData,
   getLastPermlinksFromHash,
   getObjectName,
+  hasType,
 } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
@@ -22,6 +23,7 @@ import {
   getIsAppendLoading,
   getLoadingFlag,
   getLocale,
+  getWobjectNested,
 } from '../../reducers';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
@@ -30,6 +32,7 @@ import { setLoadedNestedWobject, setNestedWobject } from '../wobjActions';
 import Loading from '../../components/Icon/Loading';
 
 import './ObjectOfTypePage.less';
+import CatalogWrap from '../Catalog/CatalogWrap';
 
 const ObjectOfTypePage = props => {
   const { isLoadingFlag } = props;
@@ -142,6 +145,7 @@ const ObjectOfTypePage = props => {
         </React.Fragment>
       );
     }
+
     return <Loading />;
   };
 
@@ -152,75 +156,78 @@ const ObjectOfTypePage = props => {
 
   return (
     <React.Fragment>
-      {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
-      <div className={classObjPage}>
-        {isEditMode ? (
-          <React.Fragment>
-            {isReadyToPublish ? (
-              <div className="object-page-preview">
-                <div className="object-page-preview__header">
-                  <div>Preview</div>
-                  <IconButton
-                    className="object-page-preview__close-btn"
-                    disabled={isAppending}
-                    icon={<Icon type="close" />}
-                    onClick={handleReadyPublishClick}
-                  />
-                </div>
-                {isLoadingFlag ? (
-                  <Loading />
+      {hasType(props.nestedWobject, 'list') ? (
+        <CatalogWrap />
+      ) : (
+        <React.Fragment>
+          {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
+          <div className={classObjPage}>
+            {isEditMode ? (
+              <React.Fragment>
+                {isReadyToPublish ? (
+                  <div className="object-page-preview">
+                    <div className="object-page-preview__header">
+                      <div>Preview</div>
+                      <IconButton
+                        className="object-page-preview__close-btn"
+                        disabled={isAppending}
+                        icon={<Icon type="close" />}
+                        onClick={handleReadyPublishClick}
+                      />
+                    </div>
+                    {
+                      <React.Fragment>
+                        <BodyContainer full body={content} />
+                        <div className="object-page-preview__options">
+                          <LikeSection form={form} onVotePercentChange={handleVotePercentChange} />
+                          {followingList.includes(wobject.author_permlink) ? null : (
+                            <FollowObjectForm form={form} />
+                          )}
+                        </div>
+                        <div className="object-of-type-page__row align-center">
+                          <Button
+                            htmlType="submit"
+                            disabled={form.getFieldError('like')}
+                            loading={isAppending}
+                            onClick={handleSubmit}
+                            size="large"
+                          >
+                            {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
+                          </Button>
+                        </div>
+                      </React.Fragment>
+                    }
+                  </div>
                 ) : (
-                  <React.Fragment>
-                    <BodyContainer full body={content} />
-                    <div className="object-page-preview__options">
-                      <LikeSection form={form} onVotePercentChange={handleVotePercentChange} />
-                      {followingList.includes(wobject.author_permlink) ? null : (
-                        <FollowObjectForm form={form} />
-                      )}
-                    </div>
-                    <div className="object-of-type-page__row align-center">
-                      <Button
-                        htmlType="submit"
-                        disabled={form.getFieldError('like')}
-                        loading={isAppending}
-                        onClick={handleSubmit}
-                        size="large"
-                      >
-                        {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
-                      </Button>
-                    </div>
-                  </React.Fragment>
+                  <div className="object-of-type-page__editor-wrapper">
+                    <Editor
+                      enabled={!isAppending}
+                      withTitle={false}
+                      initialContent={{ body: contentForPublish }}
+                      locale={editorLocale}
+                      onChange={handleChangeContent}
+                      displayTitle={false}
+                    />
+                  </div>
                 )}
-              </div>
+              </React.Fragment>
             ) : (
-              <div className="object-of-type-page__editor-wrapper">
-                <Editor
-                  enabled={!isAppending}
-                  withTitle={false}
-                  initialContent={{ body: contentForPublish }}
-                  locale={editorLocale}
-                  onChange={handleChangeContent}
-                  displayTitle={false}
-                />
-              </div>
+              <React.Fragment>{renderBody()}</React.Fragment>
             )}
-          </React.Fragment>
-        ) : (
-          <React.Fragment>{renderBody()}</React.Fragment>
-        )}
-      </div>
-
-      {isEditMode && !isReadyToPublish && (
-        <div className="object-of-type-page__row align-center">
-          <Button
-            htmlType="button"
-            disabled={!content}
-            onClick={handleReadyPublishClick}
-            size="large"
-          >
-            {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
-          </Button>
-        </div>
+          </div>
+          {isEditMode && !isReadyToPublish && (
+            <div className="object-of-type-page__row align-center">
+              <Button
+                htmlType="button"
+                disabled={!content}
+                onClick={handleReadyPublishClick}
+                size="large"
+              >
+                {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
+              </Button>
+            </div>
+          )}
+        </React.Fragment>
       )}
     </React.Fragment>
   );
@@ -243,6 +250,7 @@ ObjectOfTypePage.propTypes = {
 
   /* passed */
   wobject: PropTypes.shape(),
+  nestedWobject: PropTypes.shape(),
   isEditMode: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,
   toggleViewEditMode: PropTypes.func.isRequired,
@@ -250,6 +258,7 @@ ObjectOfTypePage.propTypes = {
 
 ObjectOfTypePage.defaultProps = {
   wobject: {},
+  nestedWobject: {},
   location: '',
   isAppending: false,
   isLoadingFlag: false,
@@ -263,6 +272,7 @@ const mapStateToProps = state => ({
   isAppending: getIsAppendLoading(state),
   followingList: getFollowingObjectsList(state),
   isLoadingFlag: getLoadingFlag(state),
+  nestedWobject: getWobjectNested(state),
 });
 const mapDispatchToProps = {
   appendPageContent: appendObject,
