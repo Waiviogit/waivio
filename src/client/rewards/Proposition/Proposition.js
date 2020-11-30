@@ -178,6 +178,20 @@ const Proposition = ({
   const requiredObjectAuthorPermlink = get(proposition, ['required_object', 'author_permlink']);
 
   const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
+
+  const handleReserveOnClick = value => {
+    console.log('value: ', value);
+    const isWidget = new URLSearchParams(location.search).get('display');
+    if (isWidget) {
+      window.open(`${location.origin}${location.pathname}`);
+      /* Todo: записывать пермлинк нажатой карточки в сессию.
+         Todo: Потом после перехода на новую вкладку, здесь же проверять:
+         Todo: если карточка с таким id есть то каким-то образом открывать ее, возможно через функцию toggleModalDetails(value)
+       */
+    } else {
+      return toggleModalDetails(value);
+    }
+  };
   return (
     <div className="Proposition">
       <div className="Proposition__header">
@@ -225,7 +239,7 @@ const Proposition = ({
                   type="primary"
                   loading={loading}
                   disabled={loading || proposition.isReservedSiblingObj}
-                  onClick={toggleModalDetails}
+                  onClick={handleReserveOnClick}
                 >
                   {intl.formatMessage({
                     id: 'reserve',

@@ -953,6 +953,7 @@ class Rewards extends React.Component {
     const campaignsObjectsForMap =
       campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
+    const isWidget = sessionStorage.getItem('isWidget');
 
     return (
       <div className="Rewards">
@@ -987,7 +988,7 @@ class Rewards extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              <MobileNavigation />
+              {!isWidget && <MobileNavigation />}
               {renderedRoutes}
             </div>
             {(match.url === PATH_NAME_PAYABLES || match.url === PATH_NAME_RECEIVABLES) && (

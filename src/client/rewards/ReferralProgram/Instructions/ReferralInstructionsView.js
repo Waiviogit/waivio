@@ -65,6 +65,20 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
           </Modal>
         </div>
 
+        <div>
+          {/* eslint-disable-next-line no-template-curly-in-string,jsx-a11y/iframe-has-title,react/no-unescaped-entities */}
+          <iframe
+            className="waivio"
+            src="http://localhost:3000/rewards/active/?display=widget"
+            height="1000"
+            width="850"
+            frameBorder="0"
+          >
+            {/* eslint-disable-next-line react/no-unescaped-entities */}
+            Can't load Rewards widget.
+          </iframe>
+        </div>
+
         <div className="ReferralInstructions__wrap-conditions">
           <Checkbox checked={currentStatus} id="agreeButton" onChange={handleAgreeRulesCheckbox} />
           <label

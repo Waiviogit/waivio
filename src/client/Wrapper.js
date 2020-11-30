@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isEqual } from 'lodash';
 import url from 'url';
 import { connect, batch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
@@ -144,12 +145,23 @@ class Wrapper extends React.PureComponent {
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
 
+  state = {
+    prevtLocationPath: '',
+  };
+
   componentDidMount() {
     const { location } = this.props;
     const ref = new URLSearchParams(location.search).get('ref');
+    const isWidget = new URLSearchParams(location.search).get('display');
     if (ref) {
       sessionStorage.setItem('refUser', ref);
     }
+    if (isWidget) {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ prevtLocationPath: location.pathname });
+      sessionStorage.setItem('isWidget', `/?display=${isWidget}`);
+    }
+
     this.props.login().then(() => {
       batch(() => {
         this.props.getNotifications();
@@ -163,6 +175,20 @@ class Wrapper extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { locale } = this.props;
+    const { prevtLocationPath } = this.state;
+
+    const widgetLink = sessionStorage.getItem('isWidget');
+
+    // eslint-disable-next-line consistent-return
+    this.setState(() => {
+      if (widgetLink && !isEqual(prevtLocationPath, location.pathname)) {
+        const newUrl = `${location.pathname}${widgetLink}`;
+        const filteredUrl = newUrl.replace(/\/{2,}/g, '/');
+        if (prevtLocationPath && location.pathname !== '/') {
+          return history.pushState('', '', filteredUrl);
+        }
+      }
+    });
 
     if (locale !== nextProps.locale) {
       this.loadLocale(nextProps.locale);
@@ -263,6 +289,7 @@ class Wrapper extends React.PureComponent {
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
+    const isWidget = new URLSearchParams(location.search).get('display');
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -274,19 +301,29 @@ class Wrapper extends React.PureComponent {
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-              <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
-              </Layout.Header>
+              {!isWidget && (
+                <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
+                  <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
+                </Layout.Header>
+              )}
               <div className="content">
-                <TopNavigation
-                  authenticated={isAuthenticated}
-                  userName={username}
-                  location={history.location}
-                />
+                {!isWidget && (
+                  <TopNavigation
+                    authenticated={isAuthenticated}
+                    userName={username}
+                    location={history.location}
+                  />
+                )}
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
-                <NotificationPopup />
-                <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
-                {isNewUser && <WelcomeModal location={history.location.pathname} />}
+                {!isWidget && (
+                  <React.Fragment>
+                    <NotificationPopup />
+                    <BBackTop
+                      className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
+                    />
+                    {isNewUser && <WelcomeModal location={history.location.pathname} />}
+                  </React.Fragment>
+                )}
               </div>
             </Layout>
           </AppSharedContext.Provider>

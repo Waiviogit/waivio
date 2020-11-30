@@ -1,5 +1,6 @@
 import { isEmpty } from 'lodash';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
@@ -20,6 +21,7 @@ const rewardText = {
 const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
   const isCorrectFilter = !!rewardText[filterKey];
   const objName = getObjectName(reqObject);
+
   const breadCrumbText = `${
     isCorrectFilter ? getBreadCrumbText(intl, location, filterKey, rewardText, match) : ''
   } ${
@@ -36,7 +38,9 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
       <Breadcrumb separator={'>'}>
         {objName ? (
           <React.Fragment>
-            <Breadcrumb.Item href={`/rewards/${filterKey}`}>{breadCrumbText}</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link to={`/rewards/${filterKey}`}>{breadCrumbText}</Link>
+            </Breadcrumb.Item>
             <Breadcrumb.Item>{objName}</Breadcrumb.Item>
           </React.Fragment>
         ) : (
