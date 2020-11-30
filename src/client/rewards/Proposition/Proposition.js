@@ -180,14 +180,11 @@ const Proposition = ({
   const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
 
   const handleReserveOnClick = value => {
-    console.log('value: ', value);
     const isWidget = new URLSearchParams(location.search).get('display');
     if (isWidget) {
-      window.open(`${location.origin}${location.pathname}`);
-      /* Todo: записывать пермлинк нажатой карточки в сессию.
-         Todo: Потом после перехода на новую вкладку, здесь же проверять:
-         Todo: если карточка с таким id есть то каким-то образом открывать ее, возможно через функцию toggleModalDetails(value)
-       */
+      const newWindow = window.open();
+      newWindow.opener = null;
+      newWindow.location = `${location.origin}${location.pathname}`;
     } else {
       return toggleModalDetails(value);
     }
