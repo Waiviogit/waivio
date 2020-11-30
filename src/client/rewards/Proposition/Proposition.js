@@ -179,12 +179,16 @@ const Proposition = ({
 
   const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
 
+  const handleNewWindow = () => {
+    const newWindow = window.open();
+    newWindow.opener = null;
+    newWindow.location = `${location.origin}${location.pathname}`;
+  };
+
   const handleReserveOnClick = value => {
     const isWidget = new URLSearchParams(location.search).get('display');
     if (isWidget) {
-      const newWindow = window.open();
-      newWindow.opener = null;
-      newWindow.location = `${location.origin}${location.pathname}`;
+      handleNewWindow();
     } else {
       return toggleModalDetails(value);
     }
