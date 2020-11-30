@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Col } from 'antd';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import GalleryItem from './GalleryItem';
+import Loading from '../../components/Icon/Loading';
 import './GalleryAlbum.less';
 
 const AlbumFeed = ({ pictures, loadMoreContent, hasMore, handleOpenLightbox, isFetching }) => (
@@ -10,6 +11,7 @@ const AlbumFeed = ({ pictures, loadMoreContent, hasMore, handleOpenLightbox, isF
     loadMore={loadMoreContent}
     hasMore={hasMore}
     elementIsScrollable={false}
+    loader={<Loading />}
     loadingMore={isFetching}
     threshold={1500}
   >
