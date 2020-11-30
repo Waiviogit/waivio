@@ -33,8 +33,6 @@ class Album extends React.Component {
     const pictures = album.items;
     const hasMore = album.hasMore ? album.hasMore : false;
     const getMoreRelatedPhoto = () => {
-      console.log('kk');
-      console.log(album.body);
       return album.body === 'Related' ? this.props.getMoreRelatedAlbum(permlink) : () => {};
     };
 
