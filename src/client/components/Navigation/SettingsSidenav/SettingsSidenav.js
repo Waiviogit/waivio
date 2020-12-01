@@ -50,28 +50,30 @@ const SettingsSidenav = ({ match }) => {
         configItem={personalSettings}
         toggleMenuCondition={toggleMenuCondition}
       />
-      <React.Fragment>
-        <SettingsItem
-          condition={menuCondition.websites}
-          configItem={websiteSettings}
-          toggleMenuCondition={toggleMenuCondition}
-        />
-        {ownWebsite.map(({ host }) => (
+      {!isGuest && (
+        <React.Fragment>
           <SettingsItem
-            key={host}
-            condition={menuCondition[host]}
-            configItem={{
-              tab: {
-                name: host,
-                id: host,
-                defaultMessage: host,
-              },
-              settings: currentWebsiteSettings(host),
-            }}
+            condition={menuCondition.websites}
+            configItem={websiteSettings}
             toggleMenuCondition={toggleMenuCondition}
           />
-        ))}
-      </React.Fragment>
+          {ownWebsite.map(({ host }) => (
+            <SettingsItem
+              key={host}
+              condition={menuCondition[host]}
+              configItem={{
+                tab: {
+                  name: host,
+                  id: host,
+                  defaultMessage: host,
+                },
+                settings: currentWebsiteSettings(host),
+              }}
+              toggleMenuCondition={toggleMenuCondition}
+            />
+          ))}
+        </React.Fragment>
+      )}
     </ul>
   );
 };
