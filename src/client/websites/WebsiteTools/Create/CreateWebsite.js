@@ -24,6 +24,7 @@ export const CreateWebsite = ({
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [searchString, setSearchString] = useState('');
+  const [saveWebsite, setWebSiteSave] = useState(false);
   const template = getFieldValue('parent');
   const subDomain = getFieldValue('domain');
   const domainNamesList = Object.keys(parentDomain);
@@ -56,10 +57,12 @@ export const CreateWebsite = ({
   const handleSubmit = e => {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
-      if (!err && available)
+      if (!err && available) {
         createWebsite(values, history)
           .then(() => form.resetFields())
           .catch(error => message.error(error));
+        setWebSiteSave(true);
+      }
     });
   };
 
@@ -144,7 +147,7 @@ export const CreateWebsite = ({
           )}
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button type="primary" htmlType="submit" loading={saveWebsite && loading}>
             {intl.formatMessage({
               id: 'create_website',
               defaultMessage: 'Create website',

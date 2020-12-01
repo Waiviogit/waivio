@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Input, Form, Modal, Avatar } from 'antd';
@@ -28,6 +29,7 @@ export const WebsitesConfigurations = ({
   match,
   config,
   saveWebConfig,
+  location,
   // getMapsCoordinates,
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
@@ -52,7 +54,7 @@ export const WebsitesConfigurations = ({
 
   useEffect(() => {
     getWebConfig(host);
-  }, []);
+  }, [location.pathname]);
 
   // useEffect(() => {
   //   if (!isEmpty(config)) getMapsCoordinates(get(mapState, ['desktopMap', 'center']), 38000);
@@ -66,11 +68,12 @@ export const WebsitesConfigurations = ({
     setImage('');
   };
 
-  const handleModalState = key =>
+  const handleModalState = key => {
     setModalState({
       type: key,
       method: value => setImage(value[0].src),
     });
+  };
 
   const closeLogoModal = () => {
     const key = modalsState.type;
@@ -111,7 +114,6 @@ export const WebsitesConfigurations = ({
             aboutObject: get(aboutObject, 'author_permlink', ''),
           },
         };
-
         saveWebConfig(host, configurationObj);
       }
     });
@@ -394,6 +396,7 @@ WebsitesConfigurations.propTypes = {
       site: PropTypes.string,
     }),
   }).isRequired,
+  location: PropTypes.shape().isRequired,
 };
 
 export default connect(
@@ -406,4 +409,4 @@ export default connect(
     saveWebConfig: saveWebConfiguration,
     getMapsCoordinates: getCoordinatesForMap,
   },
-)(Form.create()(injectIntl(WebsitesConfigurations)));
+)(Form.create()(withRouter(injectIntl(WebsitesConfigurations))));

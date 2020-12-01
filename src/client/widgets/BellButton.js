@@ -12,7 +12,7 @@ import { wobjectBellNotification } from '../object/wobjActions';
 
 const BellButton = ({ bellUserNotifications, authUserName, user, wobj, bellWobjNotification }) => {
   const type = !isEmpty(wobj) ? wobj : user;
-  const bellStyle = type.bell ? 'bell' : 'bell-active';
+  const bellStyle = type.bell ? 'bell-active' : 'bell';
 
   const bellNotification = () => {
     if (!isEmpty(wobj.author_permlink)) {
