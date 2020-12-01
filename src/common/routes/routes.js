@@ -1,6 +1,5 @@
 import Views from '../routes/components';
 import createNestedRouts from '../routes/helper';
-import Page from '../../client/feed/Page';
 import Post from '../../client/post/Post';
 import Wrapper from '../../client/Wrapper';
 import URL from './constants';
@@ -8,6 +7,37 @@ import URL from './constants';
 const routes = {
   component: Wrapper,
   routes: [
+    {
+      path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
+      component: Views.MainPage,
+      routes: [
+        {
+          path: '/confirmation',
+          exact: true,
+          component: Views.ConfirmationModal,
+        },
+        {
+          path: '/notifications-list',
+          component: Views.Notifications,
+        },
+        {
+          path: '/rewards-list',
+          component: Views.RewardsList,
+        },
+        {
+          path: '/feed/:name',
+          component: Views.ObjectFeed,
+        },
+        {
+          path: '/blog/@:name',
+          component: Views.UserProfile,
+        },
+        {
+          path: '/:sortBy(trending|created|hot)?/:category?',
+          component: Views.SubFeed,
+        },
+      ],
+    },
     {
       path: '/bookmarks',
       exact: true,
@@ -400,39 +430,39 @@ const routes = {
       path: '/exit',
       component: Views.ExitPage,
     },
-    {
-      path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-      component: Page,
-      exact: true,
-      pathScope: '',
-      routes: [
-        {
-          path: '/confirmation',
-          exact: true,
-          component: Views.ConfirmationModal,
-        },
-        {
-          path: '/notifications-list',
-          component: Views.Notifications,
-        },
-        {
-          path: '/rewards-list',
-          component: Views.RewardsList,
-        },
-        {
-          path: '/feed/:name',
-          component: Views.ObjectFeed,
-        },
-        {
-          path: '/blog/@:name',
-          component: Views.UserProfile,
-        },
-        {
-          path: '/:sortBy(trending|created|hot)?/:category?',
-          component: Views.SubFeed,
-        },
-      ],
-    },
+    // {
+    //   path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
+    //   component: Page,
+    //   exact: true,
+    //   pathScope: '',
+    //   routes: [
+    //     {
+    //       path: '/confirmation',
+    //       exact: true,
+    //       component: Views.ConfirmationModal,
+    //     },
+    //     {
+    //       path: '/notifications-list',
+    //       component: Views.Notifications,
+    //     },
+    //     {
+    //       path: '/rewards-list',
+    //       component: Views.RewardsList,
+    //     },
+    //     {
+    //       path: '/feed/:name',
+    //       component: Views.ObjectFeed,
+    //     },
+    //     {
+    //       path: '/blog/@:name',
+    //       component: Views.UserProfile,
+    //     },
+    //     {
+    //       path: '/:sortBy(trending|created|hot)?/:category?',
+    //       component: Views.SubFeed,
+    //     },
+    //   ],
+    // },
     {
       path: '*',
       component: Views.Error404,

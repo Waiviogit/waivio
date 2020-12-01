@@ -113,6 +113,7 @@ export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
 export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);
 export const getIsMobile = state => fromApp.getIsMobile(state.app);
 export const getWeightValue = (state, weight) => fromApp.getWeightValue(state.app, weight);
+export const getMainPage = state => fromApp.getMainPage(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 

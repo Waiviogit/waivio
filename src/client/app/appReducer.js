@@ -21,6 +21,7 @@ const initialState = {
   currentShownPost: {},
   screenSize: 'large',
   isMobile: false,
+  mainPage: 'waivio',
 };
 
 export default (state = initialState, action) => {
@@ -103,15 +104,6 @@ export default (state = initialState, action) => {
         },
       };
     case appTypes.GET_CRYPTO_PRICE_HISTORY.SUCCESS: {
-      // const usdPriceHistoryByClose = map(usdPriceHistory.Data, data => data.close);
-      // const btcPriceHistoryByClose = map(btcPriceHistory.Data, data => data.close);
-      // const priceDetails = getCryptoPriceIncreaseDetails(
-      //   usdPriceHistoryByClose,
-      //   btcPriceHistoryByClose,
-      // );
-      // const btcAPIError = btcPriceHistory.Response === 'Error';
-      // const usdAPIError = usdPriceHistory.Response === 'Error';
-
       return {
         ...state,
         cryptosPriceHistory: {
@@ -136,6 +128,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isMobile: mobileUserAgents.test(navigator.userAgent),
+      };
+    case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS:
+      return {
+        ...state,
+        mainPage: action.payload.mainPage,
       };
     default:
       return state;
@@ -168,3 +165,4 @@ export const getWeightValue = (state, weight) => {
 };
 export const getTranslationByKey = (state, key, defaultMessage = '') =>
   get(getTranslations(state), key, defaultMessage);
+export const getMainPage = state => state.mainPage;
