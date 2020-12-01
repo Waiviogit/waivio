@@ -8,12 +8,7 @@ import Loading from '../../../components/Icon/Loading';
 import CatalogBreadcrumb from '../../../object/Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import CatalogSorting from '../../../object/Catalog/CatalogSorting/CatalogSorting';
 import OBJ_TYPE from '../../../object/const/objectTypes';
-import {
-  createNewHash,
-  getPermlinksFromHash,
-  hasType,
-  parseWobjectField,
-} from '../../../helpers/wObjectHelper';
+import { createNewHash, hasType, parseWobjectField } from '../../../helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
 import PropositionMainObjectCard from '../PropositionMainObjectCard';
@@ -154,8 +149,7 @@ const PropositionList = ({
 
     if (statusNoVisibleItem.includes(status)) return null;
 
-    const permlinks = getPermlinksFromHash(location.hash);
-    const hash = createNewHash(listItem.author_permlink, permlinks);
+    const hash = createNewHash(listItem.author_permlink, location.hash);
     const path = hasType(listItem, 'page') ? `/object/${wobject.author_permlink}/page#${hash}` : '';
 
     let item;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Form, Input } from 'antd';
@@ -21,6 +22,7 @@ const WebsitesSettings = ({
   match,
   getWebSettings,
   settings,
+  location,
 }) => {
   const { getFieldDecorator } = form;
   const [beneficiaryAccount, setBeneficiaryAccount] = useState('');
@@ -35,7 +37,7 @@ const WebsitesSettings = ({
       setBeneficiaryPercent(percent);
       setBeneficiaryAccount(account);
     });
-  }, []);
+  }, [location.pathname]);
 
   const handleChange = (e, fieldsName) =>
     form.setFieldsValue({ [fieldsName]: e.currentTarget.value });
@@ -68,7 +70,7 @@ const WebsitesSettings = ({
   if (isEmpty(settings)) return <Loading />;
 
   return (
-    <div className="center">
+    <div className="WebsitesSettings-middle">
       <h1>
         <FormattedMessage id="settings" defaultMessage="Settings" />
       </h1>
@@ -167,6 +169,7 @@ WebsitesSettings.propTypes = {
   form: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
   settings: PropTypes.shape({}).isRequired,
+  location: PropTypes.shape().isRequired,
   saveWebSettings: PropTypes.func.isRequired,
   getWebSettings: PropTypes.func.isRequired,
   match: PropTypes.shape({
@@ -189,4 +192,4 @@ export default connect(
     saveWebSettings: saveWebsiteSettings,
     getWebSettings: getWebsiteSettings,
   },
-)(Form.create()(injectIntl(WebsitesSettings)));
+)(Form.create()(withRouter(injectIntl(WebsitesSettings))));

@@ -323,7 +323,7 @@ export const addWebAuthorities = (host, account) => (dispatch, getState, { steem
     payload: account,
   });
 
-  steemConnectAPI.addWebsiteAuthorities(userName, host, [account.name]).then(() =>
+  return steemConnectAPI.addWebsiteAuthorities(userName, host, [account.name]).then(() =>
     dispatch({
       type: ADD_WEBSITE_AUTHORITIES.SUCCESS,
       payload: account,
