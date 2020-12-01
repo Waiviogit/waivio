@@ -43,20 +43,13 @@ const SettingsSidenav = ({ match }) => {
     });
   };
 
-  return (
-    <ul className="Sidenav">
+  const ownRenderWebSite = !isGuest && (
+    <React.Fragment>
       <SettingsItem
-        condition={menuCondition.personal}
-        configItem={personalSettings}
+        condition={menuCondition.websites}
+        configItem={websiteSettings}
         toggleMenuCondition={toggleMenuCondition}
       />
-      {!isGuest && (
-        <SettingsItem
-          condition={menuCondition.websites}
-          configItem={websiteSettings}
-          toggleMenuCondition={toggleMenuCondition}
-        />
-      )}
       {ownWebsite.map(({ host }) => (
         <SettingsItem
           key={host}
@@ -72,6 +65,17 @@ const SettingsSidenav = ({ match }) => {
           toggleMenuCondition={toggleMenuCondition}
         />
       ))}
+    </React.Fragment>
+  );
+
+  return (
+    <ul className="Sidenav">
+      <SettingsItem
+        condition={menuCondition.personal}
+        configItem={personalSettings}
+        toggleMenuCondition={toggleMenuCondition}
+      />
+      {ownRenderWebSite}
     </ul>
   );
 };
