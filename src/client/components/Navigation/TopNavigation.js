@@ -97,9 +97,7 @@ const TopNavigation = ({ location: { pathname } }) => {
               <Link
                 to={`${LINKS.TOOLS_DRAFTS}`}
                 className={classNames('TopNavigation__link', {
-                  'TopNavigation__link--active': TOOLS_URLS.some(feedUrl =>
-                    pathname.includes(feedUrl),
-                  ),
+                  'TopNavigation__link--active': TOOLS_URLS.some(feedUrl => feedUrl === pathname),
                 })}
               >
                 <FormattedMessage id="tools" defaultMessage="Tools" />
