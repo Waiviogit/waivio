@@ -166,3 +166,5 @@ export const getCampaignNames = state => state.campaignNames;
 export const getHistoryCampaigns = state => state.historyCampaigns;
 export const getHistorySponsors = state => state.historySponsors;
 export const getHasMoreHistory = state => state.hasMoreHistory;
+
+export const getIsDetailsModalStatus = state => state.isOpenedDetailsModal;

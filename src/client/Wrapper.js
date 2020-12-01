@@ -157,6 +157,9 @@ class Wrapper extends React.PureComponent {
       sessionStorage.setItem('refUser', ref);
     }
     if (isWidget) {
+      /* Check on new tab from widget:
+        the page, when switching to a new tab, should not remain a widget
+      */
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ prevtLocationPath: location.pathname });
       sessionStorage.setItem('isWidget', `/?display=${isWidget}`);

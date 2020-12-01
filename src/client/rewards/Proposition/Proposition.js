@@ -1,14 +1,19 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get, includes, filter, some } from 'lodash';
+import { isEmpty, get, includes, filter, some, map, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
-import { getAuthenticatedUser, getCommentContent, getIsAuthenticated } from '../../reducers';
+import {
+  getAuthenticatedUser,
+  getCommentContent,
+  getIsAuthenticated,
+  getIsDetailsModalStatus,
+} from '../../reducers';
 import {
   ASSIGNED,
   GUIDE_HISTORY,
@@ -49,6 +54,8 @@ const Proposition = ({
   sortFraudDetection,
   isAuth,
 }) => {
+  const isWidget = new URLSearchParams(location.search).get('display');
+  const sessionCurrentId = sessionStorage.getItem('currentObjId');
   const requirementFilters = get(proposition, ['requirement_filters'], {});
   const filteredRequirementFilters = handleRequirementFilters(requirementFilters);
   const isEligible = Object.values(filteredRequirementFilters).every(item => item === true);
@@ -179,6 +186,21 @@ const Proposition = ({
 
   const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
 
+  /*
+    Widget logic in useEffect for open detail modal window in new tab, like after click on Reserve button.
+    In handleReserveOnClick function save current pressed _id from wObject and then compare between session wObject _id and current from proposition.
+    And when it have coincidence, session with currentObjId will be cleared
+  */
+  useEffect(() => {
+    if (sessionCurrentId) {
+      const currentWobjId = get(proposedWobj, ['_id'], '');
+      if (isEqual(currentWobjId, sessionCurrentId)) {
+        setModalDetailsOpen(!isModalDetailsOpen);
+        sessionStorage.removeItem('currentObjId');
+      }
+    }
+  }, [proposition]);
+
   const handleNewWindow = () => {
     const newWindow = window.open();
     newWindow.opener = null;
@@ -186,8 +208,9 @@ const Proposition = ({
   };
 
   const handleReserveOnClick = value => {
-    const isWidget = new URLSearchParams(location.search).get('display');
     if (isWidget) {
+      const currentObjId = get(proposedWobj, ['_id'], '');
+      sessionStorage.setItem('currentObjId', currentObjId);
       handleNewWindow();
     } else {
       return toggleModalDetails(value);
@@ -304,6 +327,7 @@ Proposition.propTypes = {
   match: PropTypes.shape(),
   sortFraudDetection: PropTypes.string,
   isAuth: PropTypes.bool,
+  currentDetailsModalStatus: PropTypes.bool,
 };
 
 Proposition.defaultProps = {
@@ -317,6 +341,7 @@ Proposition.defaultProps = {
   discardProposition: () => {},
   sortFraudDetection: 'reservation',
   isAuth: false,
+  currentDetailsModalStatus: false,
 };
 
 export default connect(
@@ -329,6 +354,7 @@ export default connect(
         ? getCommentContent(state, ownProps.authorizedUserName, ownProps.assignCommentPermlink)
         : {},
     isAuth: getIsAuthenticated(state),
+    currentDetailsModalStatus: getIsDetailsModalStatus(state),
   }),
   {
     getSingleComment,
