@@ -54,8 +54,13 @@ const Proposition = ({
   sortFraudDetection,
   isAuth,
 }) => {
+  const currentProposId = get(proposition, ['_id'], '');
+  const currentWobjId = get(wobj, ['_id'], '');
+
   const isWidget = new URLSearchParams(location.search).get('display');
-  const sessionCurrentId = sessionStorage.getItem('currentObjId');
+  const sessionCurrentProposjId = sessionStorage.getItem('currentProposId');
+  const sessionCurrentWobjjId = sessionStorage.getItem('currentWobjId');
+
   const requirementFilters = get(proposition, ['requirement_filters'], {});
   const filteredRequirementFilters = handleRequirementFilters(requirementFilters);
   const isEligible = Object.values(filteredRequirementFilters).every(item => item === true);
@@ -188,15 +193,17 @@ const Proposition = ({
 
   /*
     Widget logic in useEffect for open detail modal window in new tab, like after click on Reserve button.
-    In handleReserveOnClick function save current pressed _id from wObject and then compare between session wObject _id and current from proposition.
-    And when it have coincidence, session with currentObjId will be cleared
+    In handleReserveOnClick function save current pressed _id from wObject and proposition and then compare
+      (sessionCurrentProposjId === currentProposId && sessionCurrentWobjjId === currentWobjId).
+    When coincidence, current pressed reward card's modal window will be opened and session with
+      currentProposId and currentWobjId will be cleared
   */
   useEffect(() => {
-    if (sessionCurrentId) {
-      const currentWobjId = get(proposedWobj, ['_id'], '');
-      if (isEqual(currentWobjId, sessionCurrentId)) {
+    if (sessionCurrentProposjId && sessionCurrentWobjjId) {
+      if (sessionCurrentProposjId === currentProposId && sessionCurrentWobjjId === currentWobjId) {
         setModalDetailsOpen(!isModalDetailsOpen);
-        sessionStorage.removeItem('currentObjId');
+        sessionStorage.removeItem('currentProposId');
+        sessionStorage.removeItem('currentWobjId');
       }
     }
   }, [proposition]);
@@ -209,8 +216,8 @@ const Proposition = ({
 
   const handleReserveOnClick = value => {
     if (isWidget) {
-      const currentObjId = get(proposedWobj, ['_id'], '');
-      sessionStorage.setItem('currentObjId', currentObjId);
+      sessionStorage.setItem('currentProposId', currentProposId);
+      sessionStorage.setItem('currentWobjId', currentWobjId);
       handleNewWindow();
     } else {
       return toggleModalDetails(value);
