@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -9,6 +9,7 @@ import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import ModalSignIn from '../../components/Navigation/ModlaSignIn/ModalSignIn';
+import { openNewTab } from '../rewardsHelper';
 
 import './Details.less';
 
@@ -25,8 +26,10 @@ const Details = ({
   requiredObjectName,
   isEligible,
   isAuth,
+  history,
 }) => {
   const [isShowSignInModal, setIsShowSignInModal] = useState(false);
+  const isWidget = new URLSearchParams(location.search).get('display');
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
@@ -57,10 +60,17 @@ const Details = ({
     return result;
   };
 
-  const handleTypeReserveButton = () => (isAuth ? 'primary' : 'default');
-
   const objName = getRequiredObjectName();
   const proposedWobjNewName = getProposedWobjName();
+
+  // eslint-disable-next-line no-underscore-dangle
+  const writeReviewUrl = `/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`;
+
+  const handleWriteReviewBtn = () =>
+    isWidget ? openNewTab(writeReviewUrl) : history.push(writeReviewUrl);
+
+  const handleTypeReserveButton = () => (isAuth ? 'primary' : 'default');
+
   const onClick = isAuth ? reserveOnClickHandler : () => setIsShowSignInModal(true);
   const disabled = (isAuth && !isEligible) || isInActive || isExpired;
   return (
@@ -112,17 +122,12 @@ const Details = ({
               {!isCamaignReserved ? messageData.reserve : messageData.reserved}
             </Button>
           ) : (
-            <Link
-              // eslint-disable-next-line no-underscore-dangle
-              to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
-            >
-              <Button type="primary">
-                {intl.formatMessage({
-                  id: 'campaign_buttons_write_review',
-                  defaultMessage: `Write review`,
-                })}
-              </Button>
-            </Link>
+            <Button type="primary" onClick={handleWriteReviewBtn}>
+              {intl.formatMessage({
+                id: 'campaign_buttons_write_review',
+                defaultMessage: `Write review`,
+              })}
+            </Button>
           )}
           {objectDetails.count_reservation_days &&
             `${messageData.forDays} ${objectDetails.count_reservation_days} ${messageData.days}`}
@@ -145,6 +150,7 @@ Details.propTypes = {
   proposedWobj: PropTypes.shape().isRequired,
   isEligible: PropTypes.bool.isRequired,
   isAuth: PropTypes.bool,
+  history: PropTypes.shape().isRequired,
 };
 
 Details.defaultProps = {
@@ -152,4 +158,4 @@ Details.defaultProps = {
   assigned: false,
   isAuth: false,
 };
-export default injectIntl(Details);
+export default withRouter(injectIntl(Details));

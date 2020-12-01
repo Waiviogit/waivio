@@ -30,7 +30,7 @@ import {
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import { handleRequirementFilters } from '../rewardsHelper';
+import { handleRequirementFilters, openNewTab } from '../rewardsHelper';
 
 import './Proposition.less';
 
@@ -82,8 +82,11 @@ const Proposition = ({
   const parentPermlink = isMessages ? permlink : propositionActivationPermlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
+
   const toggleModalDetails = ({ value }) => {
-    if (value) setReviewDetails(value);
+    if (value) {
+      setReviewDetails(value);
+    }
     setModalDetailsOpen(!isModalDetailsOpen);
   };
 
@@ -208,17 +211,11 @@ const Proposition = ({
     }
   }, [proposition]);
 
-  const handleNewWindow = () => {
-    const newWindow = window.open();
-    newWindow.opener = null;
-    newWindow.location = `${location.origin}${location.pathname}`;
-  };
-
   const handleReserveOnClick = value => {
     if (isWidget) {
       sessionStorage.setItem('currentProposId', currentProposId);
       sessionStorage.setItem('currentWobjId', currentWobjId);
-      handleNewWindow();
+      openNewTab(`${location.origin}${location.pathname}`);
     } else {
       return toggleModalDetails(value);
     }

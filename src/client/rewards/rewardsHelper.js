@@ -872,3 +872,10 @@ export const handleRequirementFilters = requirementFilters => {
   }
   return filteredObj;
 };
+
+export const openNewTab = url => {
+  const newWindow = window.open();
+  newWindow.opener = null;
+  newWindow.location = url;
+  newWindow.target = '_blank';
+};
