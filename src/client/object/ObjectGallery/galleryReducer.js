@@ -53,7 +53,6 @@ export default (state = defaultState, action) => {
       };
     }
     case galleryActions.GET_MORE_RELATED_PHOTOS.SUCCESS: {
-      console.log('jrf');
       return {
         ...state,
         relatedAlbum: {
