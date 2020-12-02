@@ -24,7 +24,6 @@ import {
 } from './reducers';
 import {
   login,
-  logout,
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './auth/authActions';
@@ -37,16 +36,15 @@ import {
   getCurrentAppSettings,
 } from './app/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
-import Topnav from './components/Navigation/Topnav';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
-import { PATH_NAME_ACTIVE } from '../common/constants/rewards';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
+import Header from './components/LayoutComponents/Header';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -67,7 +65,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
   }),
   {
     login,
-    logout,
     getNotifications,
     getRate,
     getRewardFund,
@@ -89,7 +86,6 @@ class Wrapper extends React.PureComponent {
     translations: PropTypes.shape(),
     username: PropTypes.string,
     login: PropTypes.func,
-    logout: PropTypes.func,
     getRewardFund: PropTypes.func,
     getCurrentAppSettings: PropTypes.func,
     getRate: PropTypes.func,
@@ -150,7 +146,6 @@ class Wrapper extends React.PureComponent {
     super(props);
 
     this.loadLocale = this.loadLocale.bind(this);
-    this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
 
   // eslint-disable-next-line camelcase
@@ -202,55 +197,6 @@ class Wrapper extends React.PureComponent {
     this.props.setUsedLocale(lang);
   }
 
-  handleMenuItemClick(key) {
-    switch (key) {
-      case 'logout':
-        this.props.logout();
-        break;
-      case 'activity':
-        this.props.history.push('/activity');
-        break;
-      case 'replies':
-        this.props.history.push('/replies');
-        break;
-      case 'bookmarks':
-        this.props.history.push('/bookmarks');
-        break;
-      case 'drafts':
-        this.props.history.push('/drafts');
-        break;
-      case 'settings':
-        this.props.history.push('/settings');
-        break;
-      case 'feed':
-        this.props.history.push('/');
-        break;
-      case 'news':
-        this.props.history.push('/trending');
-        break;
-      case 'objects':
-        this.props.history.push('/objects');
-        break;
-      case 'wallet':
-        this.props.history.push(`/@${this.props.username}/transfers`);
-        break;
-      case 'my-profile':
-        this.props.history.push(`/@${this.props.username}`);
-        break;
-      case 'rewards':
-        this.props.history.push(PATH_NAME_ACTIVE);
-        break;
-      case 'discover':
-        this.props.history.push(`/discover-objects/hashtag`);
-        break;
-      case 'tools':
-        this.props.history.push(`/drafts`);
-        break;
-      default:
-        break;
-    }
-  }
-
   getAntdLocale = language => {
     switch (language.id) {
       case 'ru-RU':
@@ -288,7 +234,7 @@ class Wrapper extends React.PureComponent {
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
+                <Header username={user.name} />
               </Layout.Header>
               <div className="content">
                 <TopNavigation

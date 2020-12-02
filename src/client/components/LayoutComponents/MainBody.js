@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Page from '../../feed/Page';
 
-const MainPage = ({ currPage, route }) => {
+const MainBody = ({ currPage, route }) => {
   switch (currPage) {
     case 'dining':
       return <div>dining</div>;
@@ -12,9 +12,10 @@ const MainPage = ({ currPage, route }) => {
       return <Page route={route} />;
   }
 };
-MainPage.propTypes = {
+
+MainBody.propTypes = {
   currPage: PropTypes.string.isRequired,
   route: PropTypes.shape({}).isRequired,
 };
 
-export default MainPage;
+export default MainBody;

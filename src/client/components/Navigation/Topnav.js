@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, forEach, debounce, get, isUndefined, size, filter, includes, map } from 'lodash';
+import { isEmpty, forEach, debounce, size, map } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Icon, Input, Menu } from 'antd';
+import { AutoComplete, Icon, Input } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -13,32 +13,22 @@ import {
   searchObjectTypesAutoCompete,
   searchUsersAutoCompete,
 } from '../../search/searchActions';
-import { getUserMetadata } from '../../user/usersActions';
 import {
   getIsStartSearchAutoComplete,
-  getAuthenticatedUserMetaData,
   getAutoCompleteSearchResults,
-  getIsLoadingNotifications,
-  getNotifications,
   getSearchObjectsResults,
   getSearchUsersResults,
   searchObjectTypesResults,
 } from '../../reducers';
-import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
-import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import Popover from '../Popover';
-import Notifications from './Notifications/Notifications';
-import LanguageSettings from './LanguageSettings';
 import ObjectAvatar from '../ObjectAvatar';
-import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
 import { pendingSearch } from '../../search/Search';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
+import HeaderButton from '../HeaderButton/HeaderButton';
 
 import './Topnav.less';
 
@@ -50,16 +40,12 @@ import './Topnav.less';
     searchByObject: getSearchObjectsResults(state),
     searchByUser: getSearchUsersResults(state),
     searchByObjectType: searchObjectTypesResults(state),
-    notifications: getNotifications(state),
-    userMetaData: getAuthenticatedUserMetaData(state),
-    loadingNotifications: getIsLoadingNotifications(state),
     isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
   }),
   {
     searchObjectsAutoCompete,
     setActiveFilters: setFiltersAndLoad,
     searchAutoComplete,
-    getUserMetadata,
     searchUsersAutoCompete,
     searchObjectTypesAutoCompete,
     resetSearchAutoCompete,
@@ -76,16 +62,10 @@ class Topnav extends React.Component {
       PropTypes.shape(),
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
-    notifications: PropTypes.arrayOf(PropTypes.shape()),
-    userMetaData: PropTypes.shape(),
-    loadingNotifications: PropTypes.bool,
     searchAutoComplete: PropTypes.func.isRequired,
-    getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
     setActiveFilters: PropTypes.func.isRequired,
     /* passed props */
-    username: PropTypes.string,
-    onMenuItemClick: PropTypes.func,
     searchObjectsAutoCompete: PropTypes.func.isRequired,
     searchUsersAutoCompete: PropTypes.func.isRequired,
     searchObjectTypesAutoCompete: PropTypes.func.isRequired,
@@ -99,11 +79,6 @@ class Topnav extends React.Component {
     searchByObject: [],
     searchByUser: [],
     searchByObjectType: [],
-    notifications: [],
-    username: undefined,
-    onMenuItemClick: () => {},
-    userMetaData: {},
-    loadingNotifications: false,
     isStartSearchAutoComplete: false,
   };
 
@@ -125,20 +100,13 @@ class Topnav extends React.Component {
 
     this.state = {
       searchBarActive: false,
-      popoverVisible: false,
       searchBarValue: '',
-      notificationsPopoverVisible: false,
       searchData: '',
       currentItem: 'All',
       dropdownOpen: false,
       selectColor: false,
     };
-    this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
-    this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
-    this.handleNotificationsPopoverVisibleChange = this.handleNotificationsPopoverVisibleChange.bind(
-      this,
-    );
-    this.handleCloseNotificationsPopover = this.handleCloseNotificationsPopover.bind(this);
+
     this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
     this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
     this.handleSearchForInput = this.handleSearchForInput.bind(this);
@@ -177,12 +145,9 @@ class Topnav extends React.Component {
         countArr.push(obj);
       });
     }
-    if (objectTypesCount) {
-      countArr.push({ name: 'Types', count: objectTypesCount, type: 'type' });
-    }
-    if (usersCount) {
-      countArr.push({ name: 'Users', count: usersCount, type: 'user' });
-    }
+    if (objectTypesCount) countArr.push({ name: 'Types', count: objectTypesCount, type: 'type' });
+
+    if (usersCount) countArr.push({ name: 'Users', count: usersCount, type: 'user' });
 
     return countArr;
   };
@@ -203,178 +168,6 @@ class Topnav extends React.Component {
     searchString => this.props.searchObjectTypesAutoCompete(searchString),
     300,
   );
-
-  handleMoreMenuSelect(key) {
-    this.setState({ popoverVisible: false }, () => {
-      this.props.onMenuItemClick(key);
-    });
-  }
-
-  handleMoreMenuVisibleChange(visible) {
-    this.setState({ popoverVisible: visible });
-  }
-
-  handleNotificationsPopoverVisibleChange(visible) {
-    if (visible) {
-      this.setState({ notificationsPopoverVisible: visible });
-    } else {
-      this.handleCloseNotificationsPopover();
-    }
-  }
-
-  handleCloseNotificationsPopover() {
-    this.setState({
-      notificationsPopoverVisible: false,
-    });
-  }
-
-  menuForLoggedOut = () => {
-    const { location } = this.props;
-    const { searchBarActive } = this.state;
-    const next = location.pathname.length > 1 ? location.pathname : '';
-
-    return (
-      <div
-        className={classNames('Topnav__menu-container Topnav__menu-logged-out', {
-          'Topnav__mobile-hidden': searchBarActive,
-        })}
-      >
-        <Menu className="Topnav__menu-container__menu" mode="horizontal">
-          <Menu.Item key="login">
-            <ModalSignIn next={next} />
-          </Menu.Item>
-          <Menu.Item key="language">
-            <LanguageSettings />
-          </Menu.Item>
-        </Menu>
-      </div>
-    );
-  };
-
-  menuForLoggedIn = () => {
-    const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
-    const { searchBarActive, notificationsPopoverVisible, popoverVisible } = this.state;
-    const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
-    const notificationsCount = isUndefined(lastSeenTimestamp)
-      ? size(notifications)
-      : size(
-          filter(
-            notifications,
-            notification =>
-              lastSeenTimestamp < notification.timestamp &&
-              includes(PARSED_NOTIFICATIONS, notification.type),
-          ),
-        );
-    const displayBadge = notificationsCount > 0;
-    const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
-
-    return (
-      <div
-        className={classNames('Topnav__menu-container', {
-          'Topnav__mobile-hidden': searchBarActive,
-        })}
-      >
-        <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
-          <Menu.Item key="write">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
-              mouseEnterDelay={1}
-              overlayClassName="Topnav__notifications-tooltip"
-            >
-              <Link to="/editor" className="Topnav__link Topnav__link--action">
-                <i className="iconfont icon-write" />
-              </Link>
-            </BTooltip>
-          </Menu.Item>
-          <Menu.Item key="notifications" className="Topnav__item--badge">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-              overlayClassName="Topnav__notifications-tooltip"
-              mouseEnterDelay={1}
-            >
-              <Popover
-                placement="bottomRight"
-                trigger="click"
-                content={
-                  <Notifications
-                    notifications={notifications}
-                    onNotificationClick={this.handleCloseNotificationsPopover}
-                    currentAuthUsername={username}
-                    lastSeenTimestamp={lastSeenTimestamp}
-                    loadingNotifications={loadingNotifications}
-                    getUpdatedUserMetadata={this.props.getUserMetadata}
-                  />
-                }
-                visible={notificationsPopoverVisible}
-                onVisibleChange={this.handleNotificationsPopoverVisibleChange}
-                overlayClassName="Notifications__popover-overlay"
-                title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-              >
-                <a className="Topnav__link Topnav__link--light Topnav__link--action">
-                  {displayBadge ? (
-                    <div className="Topnav__notifications-count">{notificationsCountDisplay}</div>
-                  ) : (
-                    <i className="iconfont icon-remind" />
-                  )}
-                </a>
-              </Popover>
-            </BTooltip>
-          </Menu.Item>
-          <Menu.Item key="user" className="Topnav__item-user">
-            <Link className="Topnav__user" to={`/@${username}`} onClick={Topnav.handleScrollToTop}>
-              <Avatar username={username} size={36} />
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="more" className="Topnav__menu--icon">
-            <Popover
-              placement="bottom"
-              trigger="click"
-              visible={popoverVisible}
-              onVisibleChange={this.handleMoreMenuVisibleChange}
-              overlayStyle={{ position: 'fixed' }}
-              content={
-                <PopoverMenu onSelect={this.handleMoreMenuSelect}>
-                  <PopoverMenuItem key="feed" topNav>
-                    <FormattedMessage id="feed" defaultMessage=" My Feed" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="rewards" topNav>
-                    <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="discover" topNav>
-                    <FormattedMessage id="menu_discover" defaultMessage="Discover" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="tools" topNav>
-                    <FormattedMessage id="menu_tools" defaultMessage="Tools" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="my-profile" topNav>
-                    <FormattedMessage id="my_profile" defaultMessage="Profile" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="wallet" topNav>
-                    <FormattedMessage id="wallet" defaultMessage="Wallet" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="settings" topNav>
-                    <FormattedMessage id="settings" defaultMessage="Settings" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="logout" topNav>
-                    <FormattedMessage id="logout" defaultMessage="Logout" />
-                  </PopoverMenuItem>
-                </PopoverMenu>
-              }
-            >
-              <a className="Topnav__link">
-                <Icon type="caret-down" />
-                <Icon type="bars" />
-              </a>
-            </Popover>
-          </Menu.Item>
-        </Menu>
-      </div>
-    );
-  };
-
-  content = () => (this.props.username ? this.menuForLoggedIn() : this.menuForLoggedOut());
 
   handleMobileSearchButtonClick = () => {
     const { searchBarActive } = this.state;
@@ -405,11 +198,13 @@ class Topnav extends React.Component {
       this.props.searchByUser.some(item => item.account === inpValue);
     const waivioValue = `waivio_${value}`;
     let pathname = '';
+
     if (checkIsUserExist(value)) {
       pathname = `/@${value}`;
     } else if (checkIsUserExist(waivioValue)) {
       pathname = `/@${waivioValue}`;
     }
+
     this.props.resetSearchAutoCompete();
     this.props.history.push({
       pathname,
@@ -417,6 +212,7 @@ class Topnav extends React.Component {
         query: value,
       },
     });
+
     if (this.props.searchByUser.some(item => item.account === value)) {
       this.setState({
         searchBarValue: '',
@@ -835,7 +631,7 @@ class Topnav extends React.Component {
                 })}
               />
             </button>
-            {this.content()}
+            <HeaderButton />
           </div>
         </div>
       </div>
