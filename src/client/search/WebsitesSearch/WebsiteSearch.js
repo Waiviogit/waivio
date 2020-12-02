@@ -5,9 +5,9 @@ import { injectIntl } from 'react-intl';
 
 import './WebsiteSearch.less';
 
-const WebsiteSearch = ({ currPage, username, intl }) => {
+const WebsiteSearch = ({ intl }) => {
   return (
-    <AutoComplete className="WebsiteSearch">
+    <AutoComplete className="WebsiteSearch" allowClear>
       <Input.Search
         size="large"
         placeholder={intl.formatMessage({
@@ -20,8 +20,6 @@ const WebsiteSearch = ({ currPage, username, intl }) => {
 };
 
 WebsiteSearch.propTypes = {
-  currPage: PropTypes.string.isRequired,
-  username: PropTypes.string.isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
