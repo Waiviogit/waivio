@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -25,6 +25,7 @@ const Details = ({
   requiredObjectName,
   isEligible,
   isAuth,
+  history,
 }) => {
   const [isShowSignInModal, setIsShowSignInModal] = useState(false);
   const localizer = (id, defaultMessage, variablesData) =>
@@ -63,6 +64,18 @@ const Details = ({
   const proposedWobjNewName = getProposedWobjName();
   const onClick = isAuth ? reserveOnClickHandler : () => setIsShowSignInModal(true);
   const disabled = (isAuth && !isEligible) || isInActive || isExpired;
+
+  // eslint-disable-next-line no-underscore-dangle
+  const writeReviewUrl = `/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`;
+
+  const handleWriteReviewBtn = () => {
+    if (isAuth) {
+      history.push(writeReviewUrl);
+    } else {
+      setIsShowSignInModal(true);
+    }
+  };
+
   return (
     <Modal
       title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
@@ -112,17 +125,12 @@ const Details = ({
               {!isCamaignReserved ? messageData.reserve : messageData.reserved}
             </Button>
           ) : (
-            <Link
-              // eslint-disable-next-line no-underscore-dangle
-              to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
-            >
-              <Button type="primary">
-                {intl.formatMessage({
-                  id: 'campaign_buttons_write_review',
-                  defaultMessage: `Write review`,
-                })}
-              </Button>
-            </Link>
+            <Button type={handleTypeReserveButton()} onClick={handleWriteReviewBtn}>
+              {intl.formatMessage({
+                id: 'campaign_buttons_write_review',
+                defaultMessage: `Write review`,
+              })}
+            </Button>
           )}
           {objectDetails.count_reservation_days &&
             `${messageData.forDays} ${objectDetails.count_reservation_days} ${messageData.days}`}
@@ -145,6 +153,7 @@ Details.propTypes = {
   proposedWobj: PropTypes.shape().isRequired,
   isEligible: PropTypes.bool.isRequired,
   isAuth: PropTypes.bool,
+  history: PropTypes.shape().isRequired,
 };
 
 Details.defaultProps = {
@@ -152,4 +161,4 @@ Details.defaultProps = {
   assigned: false,
   isAuth: false,
 };
-export default injectIntl(Details);
+export default withRouter(injectIntl(Details));

@@ -8,7 +8,7 @@ import store from 'store';
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
-import { getUrl } from '../client/rewards/rewardsHelper';
+import { getSessionData, getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
 import { IS_ACTIVE, IS_RESERVED } from '../common/constants/rewards';
 
@@ -681,6 +681,7 @@ export const getPropositions = ({
   isMap,
   primaryObject,
   locale = 'en-US',
+  authenticated,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -692,6 +693,16 @@ export const getPropositions = ({
       sort,
     };
 
+    const isWidget = getSessionData('isWidget');
+    const isWidgetInUrl = new URLSearchParams(location.search).get('display');
+    const isWidgetUsername = getSessionData('userName');
+
+    if ((authenticated && !isEmpty(userName)) || (!authenticated && !isEmpty(userName))) {
+      reqData.userName = userName;
+    } else if (!authenticated && isWidget && isWidgetInUrl && isWidgetUsername) {
+      reqData.userName = isWidgetUsername;
+    }
+
     if (!isEmpty(area)) {
       reqData.area = area;
       reqData.radius = radius;
@@ -702,7 +713,7 @@ export const getPropositions = ({
     }
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!isEmpty(types)) reqData.types = types;
-    if (!isEmpty(userName)) reqData.userName = userName;
+    // if (!isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;

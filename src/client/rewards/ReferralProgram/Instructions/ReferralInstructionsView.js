@@ -69,7 +69,7 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
           {/* eslint-disable-next-line no-template-curly-in-string,jsx-a11y/iframe-has-title,react/no-unescaped-entities */}
           <iframe
             className="waivio"
-            src="http://localhost:3000/rewards/all/?display=widget"
+            src="http://localhost:3000/rewards/all/?userName=vallon&ref=vallon&display=widget"
             height="1000"
             width="850"
             frameBorder="0"

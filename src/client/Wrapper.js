@@ -154,8 +154,12 @@ class Wrapper extends React.PureComponent {
     const { location } = this.props;
     const ref = new URLSearchParams(location.search).get('ref');
     const isWidget = new URLSearchParams(location.search).get('display');
+    const userName = new URLSearchParams(location.search).get('userName');
     if (ref) {
       setSessionData('refUser', ref);
+    }
+    if (userName) {
+      setSessionData('userName', userName);
     }
     if (isWidget) {
       /* Check on new tab from widget:
@@ -163,7 +167,7 @@ class Wrapper extends React.PureComponent {
       */
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ prevtLocationPath: location.pathname });
-      setSessionData('isWidget', `/?display=${isWidget}`);
+      setSessionData('isWidget', isWidget);
     }
 
     this.props.login().then(() => {
@@ -182,11 +186,20 @@ class Wrapper extends React.PureComponent {
     const { prevtLocationPath } = this.state;
 
     const widgetLink = getSessionData('isWidget');
+    const userName = getSessionData('userName');
 
     // eslint-disable-next-line consistent-return
     this.setState(() => {
       if (widgetLink && !isEqual(prevtLocationPath, location.pathname)) {
-        const newUrl = `${location.pathname}${widgetLink}`;
+        // const newUrl = `${location.pathname}/?display=${widgetLink}`;
+        let newUrl = '';
+
+        if (userName) {
+          newUrl = `${location.pathname}/?userName=${userName}&display=${widgetLink}`;
+        } else {
+          newUrl = `${location.pathname}/?display=${widgetLink}`;
+        }
+
         const filteredUrl = newUrl.replace(/\/{2,}/g, '/');
         if (prevtLocationPath && location.pathname !== '/') {
           return history.pushState('', '', filteredUrl);

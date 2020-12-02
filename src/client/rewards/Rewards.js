@@ -73,7 +73,7 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import { getRewardsGeneralCounts } from '../rewards/rewardsActions';
+import { getRewardsGeneralCounts } from './rewardsActions';
 import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
@@ -213,14 +213,21 @@ class Rewards extends React.Component {
 
     const { area } = this.state;
     if (username && !url) this.getPropositionsByStatus({ username, sort, area });
-    if (!authenticated && match.params.filterKey === 'all')
-      this.getPropositions({ username, match, activeFilters, sort, area });
+    const linkForReserveEligible = `/rewards/active/${match.params.campaignParent}/`;
+    const fromWidgetUrl = isEqual(linkForReserveEligible, match.url);
+    if (
+      (!authenticated && match.params.filterKey === 'all') ||
+      match.params.filterKey === 'active' ||
+      match.params.filterKey === 'reserved' ||
+      fromWidgetUrl
+    )
+      this.getPropositions({ username, match, activeFilters, sort, area, authenticated });
   }
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
-    const { username, authenticated } = this.props;
-    const { sortAll, sortEligible, sortReserved, url, area } = this.state;
+    const { username } = this.props;
+    const { sortAll, sortEligible, sortReserved, area } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
     if (this.state.currentLocation !== nextProps.location.search) {
       this.setState({
@@ -233,10 +240,7 @@ class Rewards extends React.Component {
     }
     if (username !== nextProps.username) {
       const userName = username || nextProps.username;
-
       this.getPropositionsByStatus({ username: userName, sort, area });
-    } else if (!authenticated && url && this.props.match.params.filterKey !== 'all') {
-      this.props.history.push(`/rewards/all`);
     }
 
     if (match.path !== this.props.match.path) this.setState({ activePayableFilters: [] });
@@ -399,6 +403,7 @@ class Rewards extends React.Component {
 
   getPropositionsByStatus = ({ username, sort, area }) => {
     const { pendingUpdate, match } = this.props;
+    // const isWidget = new URLSearchParams(location.search).get('display');
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
       // eslint-disable-next-line camelcase
@@ -409,6 +414,9 @@ class Rewards extends React.Component {
         eligible: 'active',
         all: 'all',
       };
+      console.log('match: ', match);
+      console.log('location: ', location);
+      console.log('tabType: ', tabType);
       this.setState({
         sponsors: newSponsors,
         hasMore,
@@ -424,7 +432,12 @@ class Rewards extends React.Component {
         !match.params.campaignParent
       ) {
         if (match.params.filterKey !== rewardsTab[tabType]) {
+          // isWidget
+          //   ? this.props.history.push(`${location.pathname}${location.search}`)
+          //   : this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+
           this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+          // this.props.history.push(`/rewards/all/?userName=vallon&display=widget`);
         }
         if (tabType === 'reserved') {
           this.setState({
@@ -442,7 +455,17 @@ class Rewards extends React.Component {
   };
 
   getPropositions = (
-    { username, match, area, sort, radius, activeFilters, limit, isRequestWithoutRequiredObject },
+    {
+      username,
+      match,
+      area,
+      sort,
+      radius,
+      activeFilters,
+      limit,
+      isRequestWithoutRequiredObject,
+      authenticated,
+    },
     isMap,
     firstMapLoad,
   ) => {
@@ -463,6 +486,7 @@ class Rewards extends React.Component {
         isMap,
         isRequestWithoutRequiredObject,
         locale: usedLocale,
+        authenticated,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
@@ -662,7 +686,6 @@ class Rewards extends React.Component {
       propositionsUniq = uniqBy(propositions, 'required_object._id');
     }
     const actualPropositions = isEmpty(messages) ? propositionsUniq : messages;
-
     const getMessageHistory = async () => {
       const path = match.params[0];
       const {
