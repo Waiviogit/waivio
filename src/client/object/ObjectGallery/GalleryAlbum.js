@@ -13,14 +13,17 @@ const GalleryAlbum = ({ album }) => {
   const getRelatedAlbumCount = item => get(item, 'count');
   const getAlbumCount = filterItems ? filterItems.length : 0;
   const albumCount = getRelatedAlbumCount(album) ? getRelatedAlbumCount(album) : getAlbumCount;
-  const getImagePath = item => getProxyImageURL(item, 'preview');
 
   return (
     <div className="GalleryAlbum">
       <Card
         hoverable
         cover={
-          <img alt="example" src={getImagePath(albumItem.body)} className="GalleryAlbum__image" />
+          <img
+            alt="example"
+            src={getProxyImageURL(albumItem.body, 'preview')}
+            className="GalleryAlbum__image"
+          />
         }
       >
         <Card.Meta title={`${album.body} (${albumCount})`} />

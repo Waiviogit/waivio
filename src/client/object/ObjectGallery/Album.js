@@ -35,7 +35,6 @@ class Album extends React.Component {
     const hasMore = album.hasMore ? album.hasMore : false;
     const getMoreRelatedPhoto = () =>
       album.body === 'Related' ? this.props.getMoreRelatedAlbum(permlink) : () => {};
-    const getImagePath = item => getProxyImageURL(item, 'preview');
 
     return (
       <div className="GalleryAlbum">
@@ -48,7 +47,6 @@ class Album extends React.Component {
                 pictures={pictures}
                 loadMoreContent={getMoreRelatedPhoto}
                 isFetching={album.isFetching}
-                getImagePath={getImagePath}
               />
             </Row>
           ) : (
@@ -59,10 +57,11 @@ class Album extends React.Component {
         </Card>
         {isOpen && (
           <Lightbox
-            mainSrc={getImagePath(pictures[photoIndex].body)}
-            nextSrc={getImagePath(pictures[(photoIndex + 1) % pictures.length].body)}
-            prevSrc={getImagePath(
+            mainSrc={getProxyImageURL(pictures[photoIndex].body, 'preview')}
+            nextSrc={getProxyImageURL(pictures[(photoIndex + 1) % pictures.length].body, 'preview')}
+            prevSrc={getProxyImageURL(
               pictures[(photoIndex + pictures.length - 1) % pictures.length].body,
+              'preview',
             )}
             onCloseRequest={() => this.setState({ isOpen: false })}
             onMovePrevRequest={() =>
