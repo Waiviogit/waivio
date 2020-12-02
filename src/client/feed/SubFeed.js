@@ -156,13 +156,14 @@ class SubFeed extends React.Component {
     }
     content = uniq(content);
     const empty = isEmpty(content);
-    const displayEmptyFeed = empty && fetched && loaded && !isFetching && !failed;
+    const displayEmptyFeed = empty && !fetched && loaded && !isFetching && !failed;
     const ready = loaded && fetched && !isFetching;
 
     return (
       <div>
         {isAuthHomeFeed && <LetsGetStarted />}
         {empty && <ScrollToTop />}
+        {displayEmptyFeed && <EmptyFeed />}
         <Feed
           content={content}
           isFetching={isFetching}
@@ -171,7 +172,6 @@ class SubFeed extends React.Component {
           showPostModal={this.props.showPostModal}
         />
         {ready && failed && <FetchFailed />}
-        {displayEmptyFeed && <EmptyFeed />}
         <PostModal />
       </div>
     );
