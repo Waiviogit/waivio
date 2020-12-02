@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Topnav from '../Navigation/Topnav';
-import HeaderButtons from '../HeaderButton/HeaderButton';
+import WebsiteHeader from '../../websites/WebsiteLayoutComponents/WebsiteHeader';
 
 const Header = ({ currPage, username }) => {
-  switch (currPage) {
+  switch ('dining') {
     case 'dining':
-      return <HeaderButtons />;
+      return <WebsiteHeader />;
 
     default:
       return <Topnav username={username} />;
