@@ -1,4 +1,4 @@
-import { max } from 'lodash';
+import { max, get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
@@ -9,6 +9,9 @@ const GalleryAlbum = ({ album }) => {
   const albumItem = max(filterItems, item => item.weight) || {
     body: '/images/icons/no-image.png',
   };
+  const getRelatedAlbumCount = item => get(item, 'count');
+  const getAlbumCount = filterItems ? filterItems.length : 0;
+  const albumCount = getRelatedAlbumCount(album) ? getRelatedAlbumCount(album) : getAlbumCount;
 
   return (
     <div className="GalleryAlbum">
@@ -16,7 +19,7 @@ const GalleryAlbum = ({ album }) => {
         hoverable
         cover={<img alt="example" src={albumItem.body} className="GalleryAlbum__image" />}
       >
-        <Card.Meta title={`${album.body} (${filterItems ? filterItems.length : 0})`} />
+        <Card.Meta title={`${album.body} (${albumCount})`} />
       </Card>
     </div>
   );
