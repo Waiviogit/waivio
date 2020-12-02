@@ -73,7 +73,7 @@ ShallowWrapper {
             ],
             Array [
               Object {
-                "defaultMessage": "Create website",
+                "defaultMessage": "Create new website",
                 "id": "create_website",
               },
             ],
@@ -269,27 +269,15 @@ ShallowWrapper {
               }
               onChange={[Function]}
             />
-            <Form
-              className="ManageWebsites__createWebsite"
-              colon={true}
-              hideRequiredMark={false}
-              id="CreateWebsite"
-              layout="horizontal"
-              onSubmit={[Function]}
+            <button
+              className="ManageWebsites__button"
             >
-              <FormItem
-                hasFeedback={false}
+              <UNDEFINED
+                to="/create"
               >
-                <Button
-                  block={false}
-                  ghost={false}
-                  htmlType="submit"
-                  loading={false}
-                  onClick={[Function]}
-                  type="primary"
-                />
-              </FormItem>
-            </Form>
+                 
+              </UNDEFINED>
+            </button>
           </div>
         </div>,
         <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
@@ -455,27 +443,15 @@ ShallowWrapper {
                 }
                 onChange={[Function]}
               />
-              <Form
-                className="ManageWebsites__createWebsite"
-                colon={true}
-                hideRequiredMark={false}
-                id="CreateWebsite"
-                layout="horizontal"
-                onSubmit={[Function]}
+              <button
+                className="ManageWebsites__button"
               >
-                <FormItem
-                  hasFeedback={false}
+                <UNDEFINED
+                  to="/create"
                 >
-                  <Button
-                    block={false}
-                    ghost={false}
-                    htmlType="submit"
-                    loading={false}
-                    onClick={[Function]}
-                    type="primary"
-                  />
-                </FormItem>
-              </Form>
+                   
+                </UNDEFINED>
+              </button>
             </div>,
           ],
           "className": "center ManageWebsites",
@@ -871,27 +847,15 @@ ShallowWrapper {
                   }
                   onChange={[Function]}
                 />,
-                <Form
-                  className="ManageWebsites__createWebsite"
-                  colon={true}
-                  hideRequiredMark={false}
-                  id="CreateWebsite"
-                  layout="horizontal"
-                  onSubmit={[Function]}
+                <button
+                  className="ManageWebsites__button"
                 >
-                  <FormItem
-                    hasFeedback={false}
+                  <UNDEFINED
+                    to="/create"
                   >
-                    <Button
-                      block={false}
-                      ghost={false}
-                      htmlType="submit"
-                      loading={false}
-                      onClick={[Function]}
-                      type="primary"
-                    />
-                  </FormItem>
-                </Form>,
+                     
+                  </UNDEFINED>
+                </button>,
               ],
               "className": "Settings__section",
             },
@@ -974,64 +938,46 @@ ShallowWrapper {
               Object {
                 "instance": null,
                 "key": undefined,
-                "nodeType": "class",
+                "nodeType": "host",
                 "props": Object {
-                  "children": <FormItem
-                    hasFeedback={false}
+                  "children": <UNDEFINED
+                    to="/create"
                   >
-                    <Button
-                      block={false}
-                      ghost={false}
-                      htmlType="submit"
-                      loading={false}
-                      onClick={[Function]}
-                      type="primary"
-                    />
-                  </FormItem>,
-                  "className": "ManageWebsites__createWebsite",
-                  "colon": true,
-                  "hideRequiredMark": false,
-                  "id": "CreateWebsite",
-                  "layout": "horizontal",
-                  "onSubmit": [Function],
+                     
+                  </UNDEFINED>,
+                  "className": "ManageWebsites__button",
                 },
                 "ref": null,
                 "rendered": Object {
                   "instance": null,
                   "key": undefined,
-                  "nodeType": "class",
+                  "nodeType": "function",
                   "props": Object {
-                    "children": <Button
-                      block={false}
-                      ghost={false}
-                      htmlType="submit"
-                      loading={false}
-                      onClick={[Function]}
-                      type="primary"
-                    />,
-                    "hasFeedback": false,
+                    "children": Array [
+                      undefined,
+                      " ",
+                    ],
+                    "to": "/create",
                   },
                   "ref": null,
-                  "rendered": Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "class",
-                    "props": Object {
-                      "block": false,
-                      "children": undefined,
-                      "ghost": false,
-                      "htmlType": "submit",
-                      "loading": false,
+                  "rendered": Array [
+                    undefined,
+                    " ",
+                  ],
+                  "type": Object {
+                    "$$typeof": Symbol(react.forward_ref),
+                    "displayName": "Link",
+                    "propTypes": Object {
+                      "innerRef": [Function],
                       "onClick": [Function],
-                      "type": "primary",
+                      "replace": [Function],
+                      "target": [Function],
+                      "to": [Function],
                     },
-                    "ref": null,
-                    "rendered": null,
-                    "type": [Function],
+                    "render": [Function],
                   },
-                  "type": [Function],
                 },
-                "type": [Function],
+                "type": "button",
               },
             ],
             "type": "div",
@@ -1212,27 +1158,15 @@ ShallowWrapper {
                 }
                 onChange={[Function]}
               />
-              <Form
-                className="ManageWebsites__createWebsite"
-                colon={true}
-                hideRequiredMark={false}
-                id="CreateWebsite"
-                layout="horizontal"
-                onSubmit={[Function]}
+              <button
+                className="ManageWebsites__button"
               >
-                <FormItem
-                  hasFeedback={false}
+                <UNDEFINED
+                  to="/create"
                 >
-                  <Button
-                    block={false}
-                    ghost={false}
-                    htmlType="submit"
-                    loading={false}
-                    onClick={[Function]}
-                    type="primary"
-                  />
-                </FormItem>
-              </Form>
+                   
+                </UNDEFINED>
+              </button>
             </div>
           </div>,
           <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
@@ -1398,27 +1332,15 @@ ShallowWrapper {
                   }
                   onChange={[Function]}
                 />
-                <Form
-                  className="ManageWebsites__createWebsite"
-                  colon={true}
-                  hideRequiredMark={false}
-                  id="CreateWebsite"
-                  layout="horizontal"
-                  onSubmit={[Function]}
+                <button
+                  className="ManageWebsites__button"
                 >
-                  <FormItem
-                    hasFeedback={false}
+                  <UNDEFINED
+                    to="/create"
                   >
-                    <Button
-                      block={false}
-                      ghost={false}
-                      htmlType="submit"
-                      loading={false}
-                      onClick={[Function]}
-                      type="primary"
-                    />
-                  </FormItem>
-                </Form>
+                     
+                  </UNDEFINED>
+                </button>
               </div>,
             ],
             "className": "center ManageWebsites",
@@ -1814,27 +1736,15 @@ ShallowWrapper {
                     }
                     onChange={[Function]}
                   />,
-                  <Form
-                    className="ManageWebsites__createWebsite"
-                    colon={true}
-                    hideRequiredMark={false}
-                    id="CreateWebsite"
-                    layout="horizontal"
-                    onSubmit={[Function]}
+                  <button
+                    className="ManageWebsites__button"
                   >
-                    <FormItem
-                      hasFeedback={false}
+                    <UNDEFINED
+                      to="/create"
                     >
-                      <Button
-                        block={false}
-                        ghost={false}
-                        htmlType="submit"
-                        loading={false}
-                        onClick={[Function]}
-                        type="primary"
-                      />
-                    </FormItem>
-                  </Form>,
+                       
+                    </UNDEFINED>
+                  </button>,
                 ],
                 "className": "Settings__section",
               },
@@ -1917,64 +1827,46 @@ ShallowWrapper {
                 Object {
                   "instance": null,
                   "key": undefined,
-                  "nodeType": "class",
+                  "nodeType": "host",
                   "props": Object {
-                    "children": <FormItem
-                      hasFeedback={false}
+                    "children": <UNDEFINED
+                      to="/create"
                     >
-                      <Button
-                        block={false}
-                        ghost={false}
-                        htmlType="submit"
-                        loading={false}
-                        onClick={[Function]}
-                        type="primary"
-                      />
-                    </FormItem>,
-                    "className": "ManageWebsites__createWebsite",
-                    "colon": true,
-                    "hideRequiredMark": false,
-                    "id": "CreateWebsite",
-                    "layout": "horizontal",
-                    "onSubmit": [Function],
+                       
+                    </UNDEFINED>,
+                    "className": "ManageWebsites__button",
                   },
                   "ref": null,
                   "rendered": Object {
                     "instance": null,
                     "key": undefined,
-                    "nodeType": "class",
+                    "nodeType": "function",
                     "props": Object {
-                      "children": <Button
-                        block={false}
-                        ghost={false}
-                        htmlType="submit"
-                        loading={false}
-                        onClick={[Function]}
-                        type="primary"
-                      />,
-                      "hasFeedback": false,
+                      "children": Array [
+                        undefined,
+                        " ",
+                      ],
+                      "to": "/create",
                     },
                     "ref": null,
-                    "rendered": Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "class",
-                      "props": Object {
-                        "block": false,
-                        "children": undefined,
-                        "ghost": false,
-                        "htmlType": "submit",
-                        "loading": false,
+                    "rendered": Array [
+                      undefined,
+                      " ",
+                    ],
+                    "type": Object {
+                      "$$typeof": Symbol(react.forward_ref),
+                      "displayName": "Link",
+                      "propTypes": Object {
+                        "innerRef": [Function],
                         "onClick": [Function],
-                        "type": "primary",
+                        "replace": [Function],
+                        "target": [Function],
+                        "to": [Function],
                       },
-                      "ref": null,
-                      "rendered": null,
-                      "type": [Function],
+                      "render": [Function],
                     },
-                    "type": [Function],
                   },
-                  "type": [Function],
+                  "type": "button",
                 },
               ],
               "type": "div",
@@ -2097,7 +1989,7 @@ ShallowWrapper {
             ],
             Array [
               Object {
-                "defaultMessage": "Create website",
+                "defaultMessage": "Create new website",
                 "id": "create_website",
               },
             ],

@@ -3,12 +3,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getAuthenticatedUserName } from '../reducers';
 import withAuthAction from '../auth/withAuthActions';
+import { bellNotifications } from '../user/userActions';
+import { wobjectBellNotification } from '../object/wobjActions';
 import Follow from '../components/Button/Follow';
 
 @withAuthAction
-@connect(state => ({
-  authenticatedUserName: getAuthenticatedUserName(state),
-}))
+@connect(
+  state => ({
+    authenticatedUserName: getAuthenticatedUserName(state),
+  }),
+  {
+    bellNotifications,
+    wobjectBellNotification,
+  },
+)
 class FollowButton extends React.Component {
   static propTypes = {
     secondary: PropTypes.bool,
@@ -24,6 +32,8 @@ class FollowButton extends React.Component {
     user: PropTypes.shape(),
     top: PropTypes.bool,
     wobj: PropTypes.shape(),
+    bellNotifications: PropTypes.func,
+    wobjectBellNotification: PropTypes.func,
   };
 
   static defaultProps = {
@@ -41,6 +51,8 @@ class FollowButton extends React.Component {
     top: false,
     wobj: {},
     following: false,
+    bellNotifications: () => {},
+    wobjectBellNotification: () => {},
   };
 
   constructor(props) {
@@ -51,12 +63,15 @@ class FollowButton extends React.Component {
   }
 
   followClick() {
-    const { following, followingType, user, top, wobj } = this.props;
+    const { following, followingType, user, top, wobj, authenticatedUserName } = this.props;
 
     switch (followingType) {
       case 'wobject':
         if (following) {
           this.props.unfollowObject(wobj.author_permlink, wobj.name, wobj.object_type);
+          if (wobj.bell) {
+            this.props.wobjectBellNotification(wobj.author_permlink);
+          }
         } else {
           this.props.followObject(wobj.author_permlink, wobj.name, wobj.object_type);
         }
@@ -64,6 +79,9 @@ class FollowButton extends React.Component {
       case 'user':
         if (following) {
           this.props.unfollowUser(user.name, top);
+          if (user.bell) {
+            this.props.bellNotifications(authenticatedUserName, user.name);
+          }
         } else {
           this.props.followUser(user.name, top);
         }
