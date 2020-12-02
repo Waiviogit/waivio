@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Card, Row } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { FormattedMessage } from 'react-intl';
+import { getProxyImageURL } from '../../helpers/image';
 
 import AlbumFeed from './AlbumFeed';
 
@@ -32,9 +33,9 @@ class Album extends React.Component {
     const { isOpen, photoIndex } = this.state;
     const pictures = album.items;
     const hasMore = album.hasMore ? album.hasMore : false;
-    const getMoreRelatedPhoto = () => {
-      return album.body === 'Related' ? this.props.getMoreRelatedAlbum(permlink) : () => {};
-    };
+    const getMoreRelatedPhoto = () =>
+      album.body === 'Related' ? this.props.getMoreRelatedAlbum(permlink) : () => {};
+    const getImagePath = item => getProxyImageURL(item, 'preview');
 
     return (
       <div className="GalleryAlbum">
@@ -47,6 +48,7 @@ class Album extends React.Component {
                 pictures={pictures}
                 loadMoreContent={getMoreRelatedPhoto}
                 isFetching={album.isFetching}
+                getImagePath={getImagePath}
               />
             </Row>
           ) : (
@@ -57,9 +59,11 @@ class Album extends React.Component {
         </Card>
         {isOpen && (
           <Lightbox
-            mainSrc={pictures[photoIndex].body}
-            nextSrc={pictures[(photoIndex + 1) % pictures.length].body}
-            prevSrc={pictures[(photoIndex + pictures.length - 1) % pictures.length].body}
+            mainSrc={getImagePath(pictures[photoIndex].body)}
+            nextSrc={getImagePath(pictures[(photoIndex + 1) % pictures.length].body)}
+            prevSrc={getImagePath(
+              pictures[(photoIndex + pictures.length - 1) % pictures.length].body,
+            )}
             onCloseRequest={() => this.setState({ isOpen: false })}
             onMovePrevRequest={() =>
               this.setState({

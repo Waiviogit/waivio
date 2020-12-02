@@ -6,7 +6,14 @@ import GalleryItem from './GalleryItem';
 import Loading from '../../components/Icon/Loading';
 import './GalleryAlbum.less';
 
-const AlbumFeed = ({ pictures, loadMoreContent, hasMore, handleOpenLightbox, isFetching }) => (
+const AlbumFeed = ({
+  pictures,
+  loadMoreContent,
+  hasMore,
+  handleOpenLightbox,
+  isFetching,
+  getImagePath,
+}) => (
   <ReduxInfiniteScroll
     loadMore={loadMoreContent}
     hasMore={hasMore}
@@ -17,7 +24,12 @@ const AlbumFeed = ({ pictures, loadMoreContent, hasMore, handleOpenLightbox, isF
   >
     {pictures.map((image, idx) => (
       <Col span={12} key={image.body}>
-        <GalleryItem image={image} handleOpenLightbox={handleOpenLightbox} idx={idx} />
+        <GalleryItem
+          image={image}
+          handleOpenLightbox={handleOpenLightbox}
+          idx={idx}
+          getImagePath={getImagePath}
+        />
       </Col>
     ))}
   </ReduxInfiniteScroll>
@@ -29,6 +41,7 @@ AlbumFeed.propTypes = {
   hasMore: PropTypes.bool.isRequired,
   handleOpenLightbox: PropTypes.func.isRequired,
   isFetching: PropTypes.bool,
+  getImagePath: PropTypes.func.isRequired,
 };
 
 AlbumFeed.defaultProps = {
