@@ -42,6 +42,7 @@ import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
+import { getSessionData, removeSessionData, setSessionData } from './rewards/rewardsHelper';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -154,7 +155,7 @@ class Wrapper extends React.PureComponent {
     const ref = new URLSearchParams(location.search).get('ref');
     const isWidget = new URLSearchParams(location.search).get('display');
     if (ref) {
-      sessionStorage.setItem('refUser', ref);
+      setSessionData('refUser', ref);
     }
     if (isWidget) {
       /* Check on new tab from widget:
@@ -162,7 +163,7 @@ class Wrapper extends React.PureComponent {
       */
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ prevtLocationPath: location.pathname });
-      sessionStorage.setItem('isWidget', `/?display=${isWidget}`);
+      setSessionData('isWidget', `/?display=${isWidget}`);
     }
 
     this.props.login().then(() => {
@@ -180,7 +181,7 @@ class Wrapper extends React.PureComponent {
     const { locale } = this.props;
     const { prevtLocationPath } = this.state;
 
-    const widgetLink = sessionStorage.getItem('isWidget');
+    const widgetLink = getSessionData('isWidget');
 
     // eslint-disable-next-line consistent-return
     this.setState(() => {
@@ -204,11 +205,11 @@ class Wrapper extends React.PureComponent {
     } else {
       document.body.classList.remove('nightmode');
     }
-    const refName = sessionStorage.getItem('refUser');
+    const refName = getSessionData('refUser');
     if (this.props.isAuthenticated && refName) {
       const currentRefName = handleRefName(refName);
       this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
-      sessionStorage.removeItem('refUser');
+      removeSessionData('refUser');
     }
   }
 

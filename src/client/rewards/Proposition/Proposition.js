@@ -30,7 +30,12 @@ import {
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import { handleRequirementFilters, openNewTab } from '../rewardsHelper';
+import {
+  handleRequirementFilters,
+  openNewTab,
+  removeSessionData,
+  setSessionData,
+} from '../rewardsHelper';
 
 import './Proposition.less';
 
@@ -205,16 +210,15 @@ const Proposition = ({
     if (sessionCurrentProposjId && sessionCurrentWobjjId) {
       if (sessionCurrentProposjId === currentProposId && sessionCurrentWobjjId === currentWobjId) {
         setModalDetailsOpen(!isModalDetailsOpen);
-        sessionStorage.removeItem('currentProposId');
-        sessionStorage.removeItem('currentWobjId');
+        removeSessionData('currentProposId', 'currentWobjId');
       }
     }
   }, [proposition]);
 
   const handleReserveOnClick = value => {
     if (isWidget) {
-      sessionStorage.setItem('currentProposId', currentProposId);
-      sessionStorage.setItem('currentWobjId', currentWobjId);
+      setSessionData('currentProposId', currentProposId);
+      setSessionData('currentWobjId', currentWobjId);
       openNewTab(`${location.origin}${location.pathname}`);
     } else {
       return toggleModalDetails(value);

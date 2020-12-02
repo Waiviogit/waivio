@@ -879,3 +879,18 @@ export const openNewTab = url => {
   newWindow.location = url;
   newWindow.target = '_blank';
 };
+
+export const getProposOrWobjId = item => get(item, ['_id'], '');
+
+export const setSessionData = (key, value) => sessionStorage.setItem(key, value);
+
+export const getSessionData = key => sessionStorage.getItem(key);
+
+export const removeSessionData = (item1, item2) => {
+  if (item1 && item2) {
+    sessionStorage.removeItem(`${item1}`);
+    sessionStorage.removeItem(`${item2}`);
+  } else {
+    sessionStorage.removeItem(`${item1}`);
+  }
+};

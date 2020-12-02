@@ -15,6 +15,9 @@ import {
   buttonsTitle,
   getPopoverDataMessages,
   openNewTab,
+  getProposOrWobjId,
+  removeSessionData,
+  setSessionData,
 } from '../rewardsHelper';
 import {
   GUIDE_HISTORY,
@@ -142,8 +145,8 @@ export default class CampaignButtons extends React.Component {
     const sessionCurrentProposjId = sessionStorage.getItem('currentProposIdReserved');
     const sessionCurrentWobjjId = sessionStorage.getItem('currentWobjIdReserved');
 
-    const currentProposIdReserved = get(proposition, ['_id'], '');
-    const currentWobjIdReserved = get(proposedWobj, ['_id'], '');
+    const currentProposIdReserved = getProposOrWobjId(proposition);
+    const currentWobjIdReserved = getProposOrWobjId(proposedWobj);
 
     if (sessionCurrentProposjId && sessionCurrentWobjjId) {
       if (
@@ -151,8 +154,7 @@ export default class CampaignButtons extends React.Component {
         sessionCurrentWobjjId === currentWobjIdReserved
       ) {
         this.props.toggleModalDetails({ value: true });
-        sessionStorage.removeItem('currentProposIdReserved');
-        sessionStorage.removeItem('currentWobjIdReserved');
+        removeSessionData('currentProposIdReserved', 'currentWobjIdReserved');
       }
     }
 
@@ -389,11 +391,11 @@ export default class CampaignButtons extends React.Component {
   openModalDetails = () => {
     const { proposition, proposedWobj } = this.props;
     const isWidget = new URLSearchParams(location.search).get('display');
-    const currentProposIdReserved = get(proposition, ['_id'], '');
-    const currentWobjIdReserved = get(proposedWobj, ['_id'], '');
+    const currentProposIdReserved = getProposOrWobjId(proposition);
+    const currentWobjIdReserved = getProposOrWobjId(proposedWobj);
 
-    sessionStorage.setItem('currentProposIdReserved', currentProposIdReserved);
-    sessionStorage.setItem('currentWobjIdReserved', currentWobjIdReserved);
+    setSessionData('currentProposIdReserved', currentProposIdReserved);
+    setSessionData('currentWobjIdReserved', currentWobjIdReserved);
 
     if (isWidget) {
       openNewTab(`${location.origin}${location.pathname}`);
