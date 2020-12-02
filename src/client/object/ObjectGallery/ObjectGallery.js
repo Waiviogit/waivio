@@ -4,12 +4,17 @@ import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { Icon, Col, Row } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty } from 'lodash';
-import { getAlbums } from './galleryActions';
+import { isEmpty, size } from 'lodash';
+import { getAlbums, getRelatedAlbum } from './galleryActions';
 import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
 import CreateAlbum from './CreateAlbum';
-import { getIsObjectAlbumsLoading, getObjectAlbums, getIsAuthenticated } from '../../reducers';
+import {
+  getIsObjectAlbumsLoading,
+  getObjectAlbums,
+  getIsAuthenticated,
+  getRelatedPhotos,
+} from '../../reducers';
 import IconButton from '../../components/IconButton';
 
 import './ObjectGallery.less';
@@ -20,9 +25,11 @@ import './ObjectGallery.less';
     loading: getIsObjectAlbumsLoading(state),
     albums: getObjectAlbums(state),
     isAuthenticated: getIsAuthenticated(state),
+    relatedAlbum: getRelatedPhotos(state),
   }),
   {
     getAlbums,
+    getRelatedAlbum,
   },
 )
 export default class ObjectGallery extends Component {
@@ -32,10 +39,14 @@ export default class ObjectGallery extends Component {
     isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     getAlbums: PropTypes.func,
+    getRelatedAlbum: PropTypes.func,
+    relatedAlbum: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     getAlbums: () => {},
+    getRelatedAlbum: () => {},
+    getMoreRelatedAlbum: () => {},
   };
 
   state = {
@@ -44,9 +55,10 @@ export default class ObjectGallery extends Component {
   };
 
   componentDidMount() {
-    const { match, albums } = this.props;
+    const { match, albums, relatedAlbum } = this.props;
 
     if (isEmpty(albums)) this.props.getAlbums(match.params.name);
+    if (!size(relatedAlbum)) this.props.getRelatedAlbum(match.params.name, 10);
   }
 
   handleToggleModal = () =>
@@ -56,9 +68,10 @@ export default class ObjectGallery extends Component {
 
   render() {
     const { showModal } = this.state;
-    const { match, albums, loading, isAuthenticated } = this.props;
+    const { match, albums, loading, isAuthenticated, relatedAlbum } = this.props;
     if (loading) return <Loading center />;
-    const empty = isEmpty(albums);
+    const albumsForRender = [...albums, relatedAlbum];
+    const empty = isEmpty(albumsForRender);
 
     return (
       <div className="ObjectGallery">
@@ -79,7 +92,7 @@ export default class ObjectGallery extends Component {
         {!empty ? (
           <div className="ObjectGallery__cardWrap">
             <Row gutter={24}>
-              {albums.map(album => (
+              {albumsForRender.map(album => (
                 <Col span={12} key={album.id}>
                   <Link
                     replace
