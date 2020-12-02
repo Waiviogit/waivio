@@ -2,6 +2,7 @@ import { max, get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
+import { getProxyImageURL } from '../../helpers/image';
 import './GalleryAlbum.less';
 
 const GalleryAlbum = ({ album }) => {
@@ -17,7 +18,13 @@ const GalleryAlbum = ({ album }) => {
     <div className="GalleryAlbum">
       <Card
         hoverable
-        cover={<img alt="example" src={albumItem.body} className="GalleryAlbum__image" />}
+        cover={
+          <img
+            alt="example"
+            src={getProxyImageURL(albumItem.body, 'preview')}
+            className="GalleryAlbum__image"
+          />
+        }
       >
         <Card.Meta title={`${album.body} (${albumCount})`} />
       </Card>
