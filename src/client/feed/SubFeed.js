@@ -60,6 +60,7 @@ class SubFeed extends React.Component {
     getUserFeedContent: PropTypes.func,
     getMoreUserFeedContent: PropTypes.func,
     getMoreFeedContent: PropTypes.func,
+    history: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -71,16 +72,21 @@ class SubFeed extends React.Component {
   state = { isAuthHomeFeed: false };
 
   componentDidMount() {
-    const { authenticated, loaded, user, match, feed } = this.props;
+    const { authenticated, loaded, user, match, feed, history } = this.props;
     const category = match.params.category;
 
     if (!loaded && Cookie.get('access_token')) return;
+
     if (match.url === '/' && authenticated) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ isAuthHomeFeed: true });
       const fetched = getUserFeedFetchedFromState(user.name, feed);
       if (fetched) return;
-      this.props.getUserFeedContent(user.name);
+      this.props.getUserFeedContent(user.name).then(res => {
+        if (res.value.message) {
+          history.push('/trending');
+        }
+      });
     } else {
       const sortBy = match.params.sortBy || 'trending';
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
