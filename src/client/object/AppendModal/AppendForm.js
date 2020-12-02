@@ -595,9 +595,13 @@ export default class AppendForm extends Component {
         field: this.getWobjectField(image),
         body: this.getWobjectBody(image),
       };
+      const following = form.getFieldValue('follow');
 
       /* eslint-disable no-await-in-loop */
-      const response = await this.props.appendObject(postData);
+      const response = await this.props.appendObject(postData, {
+        votePower: data.votePower,
+        follow: following,
+      });
 
       await new Promise(resolve => setTimeout(resolve, 2000));
 

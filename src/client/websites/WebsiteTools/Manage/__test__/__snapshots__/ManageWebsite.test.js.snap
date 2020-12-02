@@ -37,7 +37,7 @@ ShallowWrapper {
             ],
             Array [
               Object {
-                "defaultMessage": "Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
+                "defaultMessage": "* Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
                 "id": "manage_website_info_dau",
               },
             ],
@@ -69,6 +69,12 @@ ShallowWrapper {
               Object {
                 "defaultMessage": "Websites",
                 "id": "websites",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Create new website",
+                "id": "create_website",
               },
             ],
           ],
@@ -263,6 +269,15 @@ ShallowWrapper {
               }
               onChange={[Function]}
             />
+            <button
+              className="ManageWebsites__button"
+            >
+              <UNDEFINED
+                to="/create"
+              >
+                 
+              </UNDEFINED>
+            </button>
           </div>
         </div>,
         <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
@@ -428,6 +443,15 @@ ShallowWrapper {
                 }
                 onChange={[Function]}
               />
+              <button
+                className="ManageWebsites__button"
+              >
+                <UNDEFINED
+                  to="/create"
+                >
+                   
+                </UNDEFINED>
+              </button>
             </div>,
           ],
           "className": "center ManageWebsites",
@@ -823,6 +847,15 @@ ShallowWrapper {
                   }
                   onChange={[Function]}
                 />,
+                <button
+                  className="ManageWebsites__button"
+                >
+                  <UNDEFINED
+                    to="/create"
+                  >
+                     
+                  </UNDEFINED>
+                </button>,
               ],
               "className": "Settings__section",
             },
@@ -901,6 +934,50 @@ ShallowWrapper {
                 "ref": null,
                 "rendered": null,
                 "type": [Function],
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": <UNDEFINED
+                    to="/create"
+                  >
+                     
+                  </UNDEFINED>,
+                  "className": "ManageWebsites__button",
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "function",
+                  "props": Object {
+                    "children": Array [
+                      undefined,
+                      " ",
+                    ],
+                    "to": "/create",
+                  },
+                  "ref": null,
+                  "rendered": Array [
+                    undefined,
+                    " ",
+                  ],
+                  "type": Object {
+                    "$$typeof": Symbol(react.forward_ref),
+                    "displayName": "Link",
+                    "propTypes": Object {
+                      "innerRef": [Function],
+                      "onClick": [Function],
+                      "replace": [Function],
+                      "target": [Function],
+                      "to": [Function],
+                    },
+                    "render": [Function],
+                  },
+                },
+                "type": "button",
               },
             ],
             "type": "div",
@@ -1081,6 +1158,15 @@ ShallowWrapper {
                 }
                 onChange={[Function]}
               />
+              <button
+                className="ManageWebsites__button"
+              >
+                <UNDEFINED
+                  to="/create"
+                >
+                   
+                </UNDEFINED>
+              </button>
             </div>
           </div>,
           <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
@@ -1246,6 +1332,15 @@ ShallowWrapper {
                   }
                   onChange={[Function]}
                 />
+                <button
+                  className="ManageWebsites__button"
+                >
+                  <UNDEFINED
+                    to="/create"
+                  >
+                     
+                  </UNDEFINED>
+                </button>
               </div>,
             ],
             "className": "center ManageWebsites",
@@ -1641,6 +1736,15 @@ ShallowWrapper {
                     }
                     onChange={[Function]}
                   />,
+                  <button
+                    className="ManageWebsites__button"
+                  >
+                    <UNDEFINED
+                      to="/create"
+                    >
+                       
+                    </UNDEFINED>
+                  </button>,
                 ],
                 "className": "Settings__section",
               },
@@ -1719,6 +1823,50 @@ ShallowWrapper {
                   "ref": null,
                   "rendered": null,
                   "type": [Function],
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": <UNDEFINED
+                      to="/create"
+                    >
+                       
+                    </UNDEFINED>,
+                    "className": "ManageWebsites__button",
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "function",
+                    "props": Object {
+                      "children": Array [
+                        undefined,
+                        " ",
+                      ],
+                      "to": "/create",
+                    },
+                    "ref": null,
+                    "rendered": Array [
+                      undefined,
+                      " ",
+                    ],
+                    "type": Object {
+                      "$$typeof": Symbol(react.forward_ref),
+                      "displayName": "Link",
+                      "propTypes": Object {
+                        "innerRef": [Function],
+                        "onClick": [Function],
+                        "replace": [Function],
+                        "target": [Function],
+                        "to": [Function],
+                      },
+                      "render": [Function],
+                    },
+                  },
+                  "type": "button",
                 },
               ],
               "type": "div",
@@ -1805,7 +1953,7 @@ ShallowWrapper {
             ],
             Array [
               Object {
-                "defaultMessage": "Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
+                "defaultMessage": "* Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
                 "id": "manage_website_info_dau",
               },
             ],
@@ -1837,6 +1985,12 @@ ShallowWrapper {
               Object {
                 "defaultMessage": "Websites",
                 "id": "websites",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Create new website",
+                "id": "create_website",
               },
             ],
           ],

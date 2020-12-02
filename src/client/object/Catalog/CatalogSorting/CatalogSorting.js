@@ -3,7 +3,6 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import SortSelector from '../../../components/SortSelector/SortSelector';
-import CatalogBreadcrumb from '../CatalogBreadcrumb/CatalogBreadcrumb';
 
 const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
   currWobject && currWobject[objectFields.sorting] && currWobject[objectFields.sorting].length ? (
@@ -55,7 +54,7 @@ CatalogSorting.propTypes = {
   handleSortChange: PropTypes.func.isRequired,
 };
 
-CatalogBreadcrumb.defaultProps = {
+CatalogSorting.defaultProps = {
   sort: [],
   currWobject: {},
 };

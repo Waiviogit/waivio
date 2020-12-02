@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
-import { getAuthenticatedUser, getCommentContent } from '../../reducers';
+import { getAuthenticatedUser, getCommentContent, getIsAuthenticated } from '../../reducers';
 import {
   ASSIGNED,
   GUIDE_HISTORY,
@@ -25,6 +25,8 @@ import {
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
+import { handleRequirementFilters } from '../rewardsHelper';
+
 import './Proposition.less';
 
 const Proposition = ({
@@ -45,9 +47,11 @@ const Proposition = ({
   users,
   wobjPrice,
   sortFraudDetection,
+  isAuth,
 }) => {
   const requirementFilters = get(proposition, ['requirement_filters'], {});
-  const isEligible = Object.values(requirementFilters).every(item => item === true);
+  const filteredRequirementFilters = handleRequirementFilters(requirementFilters);
+  const isEligible = Object.values(filteredRequirementFilters).every(item => item === true);
   const proposedWobj = wobj;
   const requiredObject = get(proposition, ['required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
@@ -60,7 +64,6 @@ const Proposition = ({
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
-  const propositionUsers = get(proposition, ['users']);
   const guideName = get(proposition, ['guide', 'name']);
   const parentAuthor = isMessages ? get(proposition, ['users', '0', 'rootName']) : guideName;
   const propositionActivationPermlink = get(proposition, ['activation_permlink']);
@@ -102,7 +105,6 @@ const Proposition = ({
       }),
     );
   };
-
   const [isReserved, setReservation] = useState(false);
   const userData = get(users, ['user', 'name', 'alias'], '');
   const reserveOnClickHandler = () => {
@@ -176,7 +178,6 @@ const Proposition = ({
   const requiredObjectAuthorPermlink = get(proposition, ['required_object', 'author_permlink']);
 
   const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
-
   return (
     <div className="Proposition">
       <div className="Proposition__header">
@@ -268,6 +269,7 @@ const Proposition = ({
         proposedWobj={proposedWobj}
         isEligible={isEligible}
         match={match}
+        isAuth={isAuth}
       />
     </div>
   );
@@ -286,6 +288,7 @@ Proposition.propTypes = {
   users: PropTypes.shape(),
   match: PropTypes.shape(),
   sortFraudDetection: PropTypes.string,
+  isAuth: PropTypes.bool,
 };
 
 Proposition.defaultProps = {
@@ -298,6 +301,7 @@ Proposition.defaultProps = {
   assignProposition: () => {},
   discardProposition: () => {},
   sortFraudDetection: 'reservation',
+  isAuth: false,
 };
 
 export default connect(
@@ -309,6 +313,7 @@ export default connect(
       !isEmpty(state.comments.comments)
         ? getCommentContent(state, ownProps.authorizedUserName, ownProps.assignCommentPermlink)
         : {},
+    isAuth: getIsAuthenticated(state),
   }),
   {
     getSingleComment,

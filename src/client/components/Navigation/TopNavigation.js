@@ -25,6 +25,14 @@ const LINKS = {
   TOOLS_SETTINGS_NOTIFICATIONS: '/notification-settings',
   ABOUT: '/object/ylr-waivio/page#mwt-about-waivio',
   WEBSITE_CREATE: '/create',
+  WEBSITES_MANAGE: '/manage',
+  WEBSITES_PAYMENTS: '/payments',
+  WEBSITES_CONFIGURATION: '/configuration',
+  WEBSITES_ADMINISTRATION: '/administrations',
+  WEBSITES_MODERATORS: '/moderators',
+  WEBSITES_AUTHORITIES: '/authorities',
+  WEBSITES_OBJECT_FILTERS: '/objects-filters',
+  WEBSITES_MUTED_USER: '/muted-users',
   NOTIFICATIONS: '/notifications-list',
   USERS: PATH_NAME_DISCOVER,
   BLOG: '/blog',
@@ -89,9 +97,7 @@ const TopNavigation = ({ location: { pathname } }) => {
               <Link
                 to={`${LINKS.TOOLS_DRAFTS}`}
                 className={classNames('TopNavigation__link', {
-                  'TopNavigation__link--active': TOOLS_URLS.some(feedUrl =>
-                    pathname.includes(feedUrl),
-                  ),
+                  'TopNavigation__link--active': TOOLS_URLS.some(feedUrl => feedUrl === pathname),
                 })}
               >
                 <FormattedMessage id="tools" defaultMessage="Tools" />

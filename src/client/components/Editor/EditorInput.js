@@ -10,9 +10,9 @@ import EditorToolbar from './EditorToolbar';
 import ImageSetter from '../ImageSetter/ImageSetter';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
-import './EditorInput.less';
 import FormattedLink from '../EditorObject/FormattedLink';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
+import './EditorInput.less';
 
 class EditorInput extends React.Component {
   static propTypes = {

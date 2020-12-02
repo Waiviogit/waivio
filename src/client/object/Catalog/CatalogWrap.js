@@ -12,11 +12,12 @@ import {
   getSuitableLanguage,
   getWobjectNested,
   getLoadingFlag,
+  getObject,
 } from '../../reducers';
 import { getLastPermlinksFromHash } from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import { setLoadedNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
-import { getObject } from '../../../waivioApi/ApiClient';
+import * as ApiClient from '../../../waivioApi/ApiClient';
 import './CatalogWrap.less';
 
 const CatalogWrap = props => {
@@ -33,7 +34,6 @@ const CatalogWrap = props => {
     setLoadingNestedWobject,
     isLoadingFlag,
   } = props;
-
   const [sortBy, setSortingBy] = useState();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const CatalogWrap = props => {
       if (hash) {
         setLoadingNestedWobject(true);
         const pathUrl = getLastPermlinksFromHash(hash);
-        getObject(pathUrl, userName, locale).then(wObject => {
+        ApiClient.getObject(pathUrl, userName, locale).then(wObject => {
           setSortingBy(defaultSortBy(wObject));
           setLists(
             sortListItemsBy(
@@ -131,6 +131,7 @@ CatalogWrap.defaultProps = {
 const mapStateToProps = state => ({
   listItems: getObjectLists(state),
   wobjectNested: getWobjectNested(state),
+  wobject: getObject(state),
   locale: getSuitableLanguage(state),
   isLoadingFlag: getLoadingFlag(state),
 });

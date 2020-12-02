@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, message } from 'antd';
 import { connect } from 'react-redux';
@@ -22,8 +23,10 @@ export const WebsitesAuthorities = ({
   addWebsiteAuthorities,
   deleteWebsiteAuthorities,
   isLoading,
+  location,
 }) => {
   const [selectUser, setSelectUser] = useState('');
+  const [searchString, setSearchString] = useState('');
   const host = match.params.site;
 
   const addAdmin = () => {
@@ -33,12 +36,13 @@ export const WebsitesAuthorities = ({
       addWebsiteAuthorities(host, selectUser)
         .then(() => setSelectUser(null))
         .catch(() => message.error('Try again, please'));
+      setSearchString('');
     }
   };
 
   useEffect(() => {
     getWebAuthority(host);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <div className="WebsitesAuthorities">
@@ -83,6 +87,8 @@ export const WebsitesAuthorities = ({
                 wobjects_weight: weight,
               })
             }
+            searchString={searchString}
+            setSearchString={setSearchString}
             style={{ width: '100%' }}
           />
         )}
@@ -143,6 +149,7 @@ WebsitesAuthorities.propTypes = {
     }),
   }).isRequired,
   isLoading: PropTypes.bool.isRequired,
+  location: PropTypes.shape().isRequired,
 };
 
 WebsitesAuthorities.defaultProps = {
@@ -159,4 +166,4 @@ export default connect(
     addWebsiteAuthorities: addWebAuthorities,
     deleteWebsiteAuthorities: deleteWebAuthorities,
   },
-)(injectIntl(WebsitesAuthorities));
+)(withRouter(injectIntl(WebsitesAuthorities)));

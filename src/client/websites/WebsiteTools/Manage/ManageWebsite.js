@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 import { Button } from 'antd';
+import { Link } from 'react-router-dom';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
 import { getAuthenticatedUserName, getManage, getWebsiteLoading } from '../../../reducers';
@@ -89,7 +90,7 @@ export const ManageWebsite = props => {
               {props.intl.formatMessage({
                 id: 'manage_website_info_dau',
                 defaultMessage:
-                  'Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.',
+                  '* Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.',
               })}
             </p>
           </div>
@@ -138,6 +139,14 @@ export const ManageWebsite = props => {
               onChange={onChangeCheckbox}
               deleteItem={props.deleteWebsite}
             />
+            <button className="ManageWebsites__button">
+              <Link to={`/create`}>
+                {props.intl.formatMessage({
+                  id: 'create_website',
+                  defaultMessage: `Create new website`,
+                })}{' '}
+              </Link>
+            </button>
           </div>
         </div>
       )}

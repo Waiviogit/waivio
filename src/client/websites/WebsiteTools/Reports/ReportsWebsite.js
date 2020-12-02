@@ -53,7 +53,10 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
       ) : (
         <div className="center">
           <h1>
-            <FormattedMessage id="reports_for_websites" defaultMessage="Reports for websites:" />
+            <FormattedMessage
+              id="payments_reports_websites"
+              defaultMessage="Reports for websites:"
+            />
           </h1>
           <Form onSubmit={handleSubmit}>
             <Form.Item>
@@ -122,7 +125,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
                 disabled={!form.isFieldsTouched(['parent', 'startDate', 'endDate'])}
               >
                 {intl.formatMessage({
-                  id: 'generate_report',
+                  id: 'payments_generate_report',
                   defaultMessage: 'Generate report',
                 })}
               </Button>
