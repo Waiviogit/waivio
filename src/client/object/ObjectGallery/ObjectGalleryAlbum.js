@@ -100,20 +100,22 @@ export default class ObjectGalleryAlbum extends Component {
                 </Link>
                 <FormattedMessage id="back_to_albums" defaultMessage="Back to albums" />
               </div>
-              <div className="ObjectGallery__addImage">
-                <a role="presentation" onClick={this.handleToggleModal}>
-                  <Icon type="plus-circle" className="proposition-line__icon" />
-                </a>
-                <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
-                <CreateImage
-                  albums={album}
-                  selectedAlbum={album[0]}
-                  showModal={showModal}
-                  hideModal={this.handleToggleModal}
-                  onImageUpload={this.props.onImageUpload}
-                  onImageInvalid={this.props.onImageInvalid}
-                />
-              </div>
+              {album[0].body !== 'Related' && (
+                <div className="ObjectGallery__addImage">
+                  <a role="presentation" onClick={this.handleToggleModal}>
+                    <Icon type="plus-circle" className="proposition-line__icon" />
+                  </a>
+                  <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
+                  <CreateImage
+                    albums={album}
+                    selectedAlbum={album[0]}
+                    showModal={showModal}
+                    hideModal={this.handleToggleModal}
+                    onImageUpload={this.props.onImageUpload}
+                    onImageInvalid={this.props.onImageInvalid}
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}

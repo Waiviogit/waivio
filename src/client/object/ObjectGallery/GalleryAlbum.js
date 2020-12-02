@@ -7,25 +7,17 @@ import './GalleryAlbum.less';
 
 const GalleryAlbum = ({ album }) => {
   const filterItems = album.items;
-  const albumItem = max(filterItems, item => item.weight) || {
-    body: '/images/icons/no-image.png',
-  };
+  const albumItem = max(filterItems, item => item.weight);
   const getRelatedAlbumCount = item => get(item, 'count');
   const getAlbumCount = filterItems ? filterItems.length : 0;
   const albumCount = getRelatedAlbumCount(album) ? getRelatedAlbumCount(album) : getAlbumCount;
+  const imagePath = albumItem
+    ? getImagePath(album, albumItem.body, 'preview')
+    : '/images/icons/no-image.png';
 
   return (
     <div className="GalleryAlbum">
-      <Card
-        hoverable
-        cover={
-          <img
-            alt="example"
-            src={getImagePath(album, albumItem.body, 'preview')}
-            className="GalleryAlbum__image"
-          />
-        }
-      >
+      <Card hoverable cover={<img alt="example" src={imagePath} className="GalleryAlbum__image" />}>
         <Card.Meta title={`${album.body} (${albumCount})`} />
       </Card>
     </div>
