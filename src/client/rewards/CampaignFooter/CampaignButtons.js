@@ -10,7 +10,12 @@ import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
-import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
+import {
+  popoverDataHistory,
+  buttonsTitle,
+  getPopoverDataMessages,
+  openNewTab,
+} from '../rewardsHelper';
 import {
   GUIDE_HISTORY,
   MESSAGES,
@@ -77,6 +82,7 @@ export default class CampaignButtons extends React.Component {
     getFraudSuspicion: PropTypes.func,
     userFollowed: PropTypes.bool,
     objectFollowed: PropTypes.bool,
+    proposedWobj: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -132,6 +138,24 @@ export default class CampaignButtons extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { proposition, proposedWobj } = this.props;
+    const sessionCurrentProposjId = sessionStorage.getItem('currentProposIdReserved');
+    const sessionCurrentWobjjId = sessionStorage.getItem('currentWobjIdReserved');
+
+    const currentProposIdReserved = get(proposition, ['_id'], '');
+    const currentWobjIdReserved = get(proposedWobj, ['_id'], '');
+
+    if (sessionCurrentProposjId && sessionCurrentWobjjId) {
+      if (
+        sessionCurrentProposjId === currentProposIdReserved &&
+        sessionCurrentWobjjId === currentWobjIdReserved
+      ) {
+        this.props.toggleModalDetails({ value: true });
+        sessionStorage.removeItem('currentProposIdReserved');
+        sessionStorage.removeItem('currentWobjIdReserved');
+      }
+    }
+
     if (nextProps.postState.isReblogging !== this.props.postState.isReblogging) {
       this.setState({
         shareModalLoading: nextProps.postState.isReblogging,
@@ -363,7 +387,19 @@ export default class CampaignButtons extends React.Component {
   };
 
   openModalDetails = () => {
-    this.props.toggleModalDetails({ value: true });
+    const { proposition, proposedWobj } = this.props;
+    const isWidget = new URLSearchParams(location.search).get('display');
+    const currentProposIdReserved = get(proposition, ['_id'], '');
+    const currentWobjIdReserved = get(proposedWobj, ['_id'], '');
+
+    sessionStorage.setItem('currentProposIdReserved', currentProposIdReserved);
+    sessionStorage.setItem('currentWobjIdReserved', currentWobjIdReserved);
+
+    if (isWidget) {
+      openNewTab(`${location.origin}${location.pathname}`);
+    } else {
+      this.props.toggleModalDetails({ value: true });
+    }
   };
 
   getPopoverMenu = () => {
