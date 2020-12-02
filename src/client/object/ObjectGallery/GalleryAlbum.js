@@ -2,7 +2,7 @@ import { max, get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
-import { getProxyImageURL } from '../../helpers/image';
+import { getImagePath } from '../../helpers/image';
 import './GalleryAlbum.less';
 
 const GalleryAlbum = ({ album }) => {
@@ -21,7 +21,7 @@ const GalleryAlbum = ({ album }) => {
         cover={
           <img
             alt="example"
-            src={getProxyImageURL(albumItem.body, 'preview')}
+            src={getImagePath(album, albumItem.body, 'preview')}
             className="GalleryAlbum__image"
           />
         }

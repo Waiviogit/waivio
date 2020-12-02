@@ -39,7 +39,13 @@ class WobjMenuWrapper extends React.Component {
     const section = key === 'reviews' ? '' : `/${key}`;
     history.push(`${match.url.replace(/\/$/, '')}${section}`);
 
-    if (key === 'gallery' && isEmpty(wobject.galleryAlbum) && isEmpty(albums)) {
+    if (
+      key === 'gallery' &&
+      (isEmpty(wobject.galleryAlbum) ||
+        (!isEmpty(wobject.galleryAlbum) &&
+          !wobject.galleryAlbum.some(item => item.body === 'Related'))) &&
+      (isEmpty(albums) || (!isEmpty(albums) && !albums.some(item => item.body === 'Related')))
+    ) {
       this.props.appendAlbum();
     }
   };
