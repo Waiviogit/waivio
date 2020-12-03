@@ -1,6 +1,6 @@
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
-import { has, setWith, isEmpty } from 'lodash';
+import { has, setWith, isEmpty, get } from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
@@ -101,7 +101,7 @@ export default class ObjectGalleryAlbum extends Component {
                 </Link>
                 <FormattedMessage id="back_to_albums" defaultMessage="Back to albums" />
               </div>
-              {selectedAlbum.body !== 'Related' && (
+              {get(selectedAlbum, 'body', '') !== 'Related' && (
                 <div className="ObjectGallery__addImage">
                   <a role="presentation" onClick={this.handleToggleModal}>
                     <Icon type="plus-circle" className="proposition-line__icon" />
