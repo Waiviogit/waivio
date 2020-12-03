@@ -101,7 +101,7 @@ export default class ObjectGalleryAlbum extends Component {
                 </Link>
                 <FormattedMessage id="back_to_albums" defaultMessage="Back to albums" />
               </div>
-              {selectedAlbum.body !== 'Related' && (
+              {selectedAlbum && selectedAlbum.body !== 'Related' && (
                 <div className="ObjectGallery__addImage">
                   <a role="presentation" onClick={this.handleToggleModal}>
                     <Icon type="plus-circle" className="proposition-line__icon" />
