@@ -3,8 +3,8 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
-import { Button, Form } from 'antd';
-import { useHistory } from 'react-router-dom';
+import { Button } from 'antd';
+import { Link } from 'react-router-dom';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
 import { getAuthenticatedUserName, getManage, getWebsiteLoading } from '../../../reducers';
@@ -25,7 +25,6 @@ import Transfer from '../../../wallet/Transfer/Transfer';
 import './ManageWebsite.less';
 
 export const ManageWebsite = props => {
-  const history = useHistory();
   const { prices, accountBalance, websites, dataForPayments } = props.manageInfo;
 
   useEffect(() => {
@@ -40,10 +39,6 @@ export const ManageWebsite = props => {
     } else {
       props.suspendWebsite(appId);
     }
-  };
-
-  const handleClickCreate = () => {
-    history.push('/create');
   };
 
   const handleClickPayNow = () => {
@@ -144,16 +139,14 @@ export const ManageWebsite = props => {
               onChange={onChangeCheckbox}
               deleteItem={props.deleteWebsite}
             />
-            <Form className="ManageWebsites__createWebsite" id="CreateWebsite">
-              <Form.Item>
-                <Button type="primary" htmlType="submit" onClick={handleClickCreate}>
-                  {props.intl.formatMessage({
-                    id: 'create_website',
-                    defaultMessage: 'Create website',
-                  })}
-                </Button>
-              </Form.Item>
-            </Form>
+            <button className="ManageWebsites__button">
+              <Link to={`/create`}>
+                {props.intl.formatMessage({
+                  id: 'create_website',
+                  defaultMessage: `Create new website`,
+                })}{' '}
+              </Link>
+            </button>
           </div>
         </div>
       )}

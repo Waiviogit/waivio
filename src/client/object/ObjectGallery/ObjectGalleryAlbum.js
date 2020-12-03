@@ -14,9 +14,10 @@ import {
   getIsObjectAlbumsLoading,
   getObject,
   getObjectAlbums,
+  getRelatedPhotos,
 } from '../../reducers';
 import withEditor from '../../components/Editor/withEditor';
-import { getAlbums } from './galleryActions';
+import { getAlbums, getRelatedAlbum, getMoreRelatedAlbum } from './galleryActions';
 
 import './ObjectGallery.less';
 
@@ -29,8 +30,9 @@ import './ObjectGallery.less';
     loading: getIsObjectAlbumsLoading(state),
     albums: getObjectAlbums(state),
     isAuthenticated: getIsAuthenticated(state),
+    relatedAlbum: getRelatedPhotos(state),
   }),
-  { getAlbums },
+  { getAlbums, getRelatedAlbum, moreRelatedAlbum: getMoreRelatedAlbum },
 )
 export default class ObjectGalleryAlbum extends Component {
   static propTypes = {
@@ -41,6 +43,13 @@ export default class ObjectGalleryAlbum extends Component {
     onImageUpload: PropTypes.func.isRequired,
     onImageInvalid: PropTypes.func.isRequired,
     getAlbums: PropTypes.func.isRequired,
+    getRelatedAlbum: PropTypes.func.isRequired,
+    moreRelatedAlbum: PropTypes.func,
+    relatedAlbum: PropTypes.shape().isRequired,
+  };
+
+  static defaultProps = {
+    moreRelatedAlbum: () => {},
   };
 
   state = {
@@ -50,6 +59,8 @@ export default class ObjectGalleryAlbum extends Component {
 
   componentDidMount() {
     if (isEmpty(this.props.albums)) this.props.getAlbums(this.props.match.params.name);
+    if (isEmpty(this.props.relatedAlbum))
+      this.props.getRelatedAlbum(this.props.match.params.name, 30);
   }
 
   handleToggleModal = () =>
@@ -67,13 +78,15 @@ export default class ObjectGalleryAlbum extends Component {
     });
 
   render() {
-    const { loading, match, albums, isAuthenticated } = this.props;
+    const { loading, match, albums, isAuthenticated, relatedAlbum, moreRelatedAlbum } = this.props;
     const { showModal } = this.state;
+    const albumsForRender = [...albums, relatedAlbum];
+    const albumPermlink = match.params.name;
 
     if (loading) return <Loading center />;
 
     const albumId = match.params.itemId;
-    const allAlbums = this.validatedAlbums(albums);
+    const allAlbums = this.validatedAlbums(albumsForRender);
     const album = allAlbums.filter(albm => albm.id === albumId);
 
     return (
@@ -105,7 +118,12 @@ export default class ObjectGalleryAlbum extends Component {
           </div>
         )}
         {album && album[0] ? (
-          <Album key={album[0].body + album[0].weight} album={album[0]} />
+          <Album
+            key={album[0].body + album[0].weight}
+            album={album[0]}
+            getMoreRelatedAlbum={moreRelatedAlbum}
+            permlink={albumPermlink}
+          />
         ) : (
           <div className="ObjectGallery__emptyText">
             <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
