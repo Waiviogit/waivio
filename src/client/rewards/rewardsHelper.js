@@ -894,3 +894,18 @@ export const removeSessionData = (item1, item2) => {
     sessionStorage.removeItem(`${item1}`);
   }
 };
+
+export const widgetUrlConstructor = (widgetLink, userName, ref) => {
+  let currUrl = `${location.pathname}`;
+
+  if (widgetLink) {
+    currUrl += `?display=${widgetLink}`;
+  }
+  if (userName) {
+    currUrl += `&userName=${userName}`;
+  }
+  if (ref) {
+    currUrl += `&ref=${ref}`;
+  }
+  return currUrl;
+};

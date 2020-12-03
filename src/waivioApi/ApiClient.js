@@ -699,7 +699,7 @@ export const getPropositions = ({
 
     if ((authenticated && !isEmpty(userName)) || (!authenticated && !isEmpty(userName))) {
       reqData.userName = userName;
-    } else if (!authenticated && isWidget && isWidgetInUrl && isWidgetUsername) {
+    } else if (!authenticated && isWidget && isWidgetUsername && !isWidgetInUrl) {
       reqData.userName = isWidgetUsername;
     }
 

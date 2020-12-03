@@ -42,7 +42,12 @@ import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
-import { getSessionData, removeSessionData, setSessionData } from './rewards/rewardsHelper';
+import {
+  getSessionData,
+  removeSessionData,
+  setSessionData,
+  widgetUrlConstructor,
+} from './rewards/rewardsHelper';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -187,22 +192,14 @@ class Wrapper extends React.PureComponent {
 
     const widgetLink = getSessionData('isWidget');
     const userName = getSessionData('userName');
+    const ref = getSessionData('refUser');
 
     // eslint-disable-next-line consistent-return
     this.setState(() => {
       if (widgetLink && !isEqual(prevtLocationPath, location.pathname)) {
-        // const newUrl = `${location.pathname}/?display=${widgetLink}`;
-        let newUrl = '';
-
-        if (userName) {
-          newUrl = `${location.pathname}/?userName=${userName}&display=${widgetLink}`;
-        } else {
-          newUrl = `${location.pathname}/?display=${widgetLink}`;
-        }
-
-        const filteredUrl = newUrl.replace(/\/{2,}/g, '/');
+        const newUrl = widgetUrlConstructor(widgetLink, userName, ref);
         if (prevtLocationPath && location.pathname !== '/') {
-          return history.pushState('', '', filteredUrl);
+          return history.pushState('', '', newUrl);
         }
       }
     });

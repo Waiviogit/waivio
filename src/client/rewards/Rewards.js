@@ -403,7 +403,7 @@ class Rewards extends React.Component {
 
   getPropositionsByStatus = ({ username, sort, area }) => {
     const { pendingUpdate, match } = this.props;
-    // const isWidget = new URLSearchParams(location.search).get('display');
+    const isWidget = new URLSearchParams(location.search).get('display');
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
       // eslint-disable-next-line camelcase
@@ -414,39 +414,37 @@ class Rewards extends React.Component {
         eligible: 'active',
         all: 'all',
       };
-      console.log('match: ', match);
-      console.log('location: ', location);
-      console.log('tabType: ', tabType);
+
       this.setState({
         sponsors: newSponsors,
         hasMore,
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      const filterKey = match.params.filterKey;
-      if (
-        !pendingUpdate &&
-        filterKey &&
-        filterKey !== PAYABLES &&
-        filterKey !== RECEIVABLES &&
-        !match.params.campaignParent
-      ) {
-        if (match.params.filterKey !== rewardsTab[tabType]) {
-          // isWidget
-          //   ? this.props.history.push(`${location.pathname}${location.search}`)
-          //   : this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
 
-          this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
-          // this.props.history.push(`/rewards/all/?userName=vallon&display=widget`);
-        }
-        if (tabType === 'reserved') {
-          this.setState({
-            propositionsReserved: campaigns,
-          });
+      if (!isWidget) {
+        const filterKey = match.params.filterKey;
+        if (
+          !pendingUpdate &&
+          filterKey &&
+          filterKey !== PAYABLES &&
+          filterKey !== RECEIVABLES &&
+          !match.params.campaignParent
+        ) {
+          if (match.params.filterKey !== rewardsTab[tabType]) {
+            this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+          }
+          if (tabType === 'reserved') {
+            this.setState({
+              propositionsReserved: campaigns,
+            });
+          } else {
+            this.setState({
+              propositions: campaigns,
+            });
+          }
         } else {
-          this.setState({
-            propositions: campaigns,
-          });
+          this.setState({ url: this.props.match.url });
         }
       } else {
         this.setState({ url: this.props.match.url });

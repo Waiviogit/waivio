@@ -89,6 +89,7 @@ const Proposition = ({
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
 
   const toggleModalDetails = ({ value }) => {
+    console.log('value: ', value);
     if (value) {
       setReviewDetails(value);
     }
@@ -224,6 +225,7 @@ const Proposition = ({
       return toggleModalDetails(value);
     }
   };
+
   return (
     <div className="Proposition">
       <div className="Proposition__header">
@@ -316,6 +318,7 @@ const Proposition = ({
         isEligible={isEligible}
         match={match}
         isAuth={isAuth}
+        authorizedUserName={authorizedUserName}
       />
     </div>
   );
