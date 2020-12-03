@@ -48,9 +48,7 @@ class ObjectInfo extends React.Component {
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool,
-    albums: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
-    appendAlbum: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -92,14 +90,6 @@ class ObjectInfo extends React.Component {
   handleSelectField = field => () => this.setState({ selectedField: field });
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
-
-  handleToggleModalAddPhoto = () => {
-    const { albums, appendAlbum } = this.props;
-    if (isEmpty(albums)) {
-      appendAlbum();
-    }
-    this.handleToggleModal();
-  };
 
   listItem = (name, content) => {
     const { wobject, userName, isEditMode } = this.props;

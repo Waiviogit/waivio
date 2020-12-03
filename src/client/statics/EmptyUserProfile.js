@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const EmptyUserProfile = () => (
-  <div className="text-center">
+  <div className="feed_empty">
     <h3>
       <FormattedMessage
         id="empty_user_profile"

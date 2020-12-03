@@ -146,7 +146,7 @@ export const getUserFeedContent = ({ userName, limit = 20 }) => (dispatch, getSt
   const user_languages = getUserLocalesArray(getState);
   const locale = getLocale(state);
 
-  dispatch({
+  return dispatch({
     type: GET_USER_FEED_CONTENT.ACTION,
     payload: ApiClient.getUserFeedContent(userName, limit, user_languages, locale),
     meta: {
