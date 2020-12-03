@@ -88,6 +88,7 @@ export default class ObjectGalleryAlbum extends Component {
     const albumId = match.params.itemId;
     const allAlbums = this.validatedAlbums(albumsForRender);
     const album = allAlbums.filter(albm => albm.id === albumId);
+    const selectedAlbum = album[0];
 
     return (
       <div className="ObjectGallery">
@@ -100,7 +101,7 @@ export default class ObjectGalleryAlbum extends Component {
                 </Link>
                 <FormattedMessage id="back_to_albums" defaultMessage="Back to albums" />
               </div>
-              {album[0].body !== 'Related' && (
+              {selectedAlbum.body !== 'Related' && (
                 <div className="ObjectGallery__addImage">
                   <a role="presentation" onClick={this.handleToggleModal}>
                     <Icon type="plus-circle" className="proposition-line__icon" />
@@ -108,7 +109,7 @@ export default class ObjectGalleryAlbum extends Component {
                   <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
                   <CreateImage
                     albums={album}
-                    selectedAlbum={album[0]}
+                    selectedAlbum={selectedAlbum}
                     showModal={showModal}
                     hideModal={this.handleToggleModal}
                     onImageUpload={this.props.onImageUpload}
@@ -119,10 +120,10 @@ export default class ObjectGalleryAlbum extends Component {
             </div>
           </div>
         )}
-        {album && album[0] ? (
+        {album && selectedAlbum ? (
           <Album
-            key={album[0].body + album[0].weight}
-            album={album[0]}
+            key={selectedAlbum.body + selectedAlbum.weight}
+            album={selectedAlbum}
             getMoreRelatedAlbum={moreRelatedAlbum}
             permlink={albumPermlink}
           />

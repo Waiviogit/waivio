@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
 import { getImagePath } from '../../helpers/image';
+import DEFAULTS from '../../object/const/defaultValues';
 import './GalleryAlbum.less';
 
 const GalleryAlbum = ({ album }) => {
@@ -13,7 +14,7 @@ const GalleryAlbum = ({ album }) => {
   const albumCount = getRelatedAlbumCount(album) ? getRelatedAlbumCount(album) : getAlbumCount;
   const imagePath = albumItem
     ? getImagePath(album, albumItem.body, 'preview')
-    : '/images/icons/no-image.png';
+    : DEFAULTS.ALBUM_COVER;
 
   return (
     <div className="GalleryAlbum">
