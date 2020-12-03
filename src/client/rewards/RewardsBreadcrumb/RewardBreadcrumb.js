@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
 import classNames from 'classnames';
 import { getObjectName } from '../../helpers/wObjectHelper';
-import { getBreadCrumbText } from '../rewardsHelper';
+import { getBreadCrumbText, getSessionData, widgetUrlConstructor } from '../rewardsHelper';
 import '../Rewards.less';
 
 const rewardText = {
@@ -21,6 +21,13 @@ const rewardText = {
 const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
   const isCorrectFilter = !!rewardText[filterKey];
   const objName = getObjectName(reqObject);
+  const widgetLink = getSessionData('isWidget');
+  const userName = getSessionData('userName');
+  const ref = getSessionData('refUser');
+  const widgetUrl = widgetUrlConstructor(widgetLink, userName, ref);
+
+  let url = `/rewards/${filterKey}`;
+  if (widgetLink) url += `/${widgetUrl}`;
 
   const breadCrumbText = `${
     isCorrectFilter ? getBreadCrumbText(intl, location, filterKey, rewardText, match) : ''
@@ -39,7 +46,7 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
         {objName ? (
           <React.Fragment>
             <Breadcrumb.Item>
-              <Link to={`/rewards/${filterKey}`}>{breadCrumbText}</Link>
+              <Link to={url}>{breadCrumbText}</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>{objName}</Breadcrumb.Item>
           </React.Fragment>

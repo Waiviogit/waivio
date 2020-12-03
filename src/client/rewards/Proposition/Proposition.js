@@ -89,7 +89,6 @@ const Proposition = ({
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
 
   const toggleModalDetails = ({ value }) => {
-    console.log('value: ', value);
     if (value) {
       setReviewDetails(value);
     }

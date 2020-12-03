@@ -694,12 +694,11 @@ export const getPropositions = ({
     };
 
     const isWidget = getSessionData('isWidget');
-    const isWidgetInUrl = new URLSearchParams(location.search).get('display');
     const isWidgetUsername = getSessionData('userName');
 
     if ((authenticated && !isEmpty(userName)) || (!authenticated && !isEmpty(userName))) {
       reqData.userName = userName;
-    } else if (!authenticated && isWidget && isWidgetUsername && !isWidgetInUrl) {
+    } else if (!authenticated && isWidget && isWidgetUsername) {
       reqData.userName = isWidgetUsername;
     }
 

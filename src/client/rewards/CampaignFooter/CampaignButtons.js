@@ -18,6 +18,7 @@ import {
   getProposOrWobjId,
   removeSessionData,
   setSessionData,
+  getSessionData,
 } from '../rewardsHelper';
 import {
   GUIDE_HISTORY,
@@ -390,6 +391,7 @@ export default class CampaignButtons extends React.Component {
 
   openModalDetails = () => {
     const { proposition, proposedWobj } = this.props;
+    const userName = getSessionData('userName');
     const isWidget = new URLSearchParams(location.search).get('display');
     const currentProposIdReserved = getProposOrWobjId(proposition);
     const currentWobjIdReserved = getProposOrWobjId(proposedWobj);
@@ -398,7 +400,7 @@ export default class CampaignButtons extends React.Component {
     setSessionData('currentWobjIdReserved', currentWobjIdReserved);
 
     if (isWidget) {
-      openNewTab(`${location.origin}${location.pathname}`);
+      openNewTab(`${location.origin}${location.pathname}/?userName=${userName}`);
     } else {
       this.props.toggleModalDetails({ value: true });
     }

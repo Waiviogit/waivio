@@ -197,7 +197,7 @@ class Wrapper extends React.PureComponent {
     // eslint-disable-next-line consistent-return
     this.setState(() => {
       if (widgetLink && !isEqual(prevtLocationPath, location.pathname)) {
-        const newUrl = widgetUrlConstructor(widgetLink, userName, ref);
+        const newUrl = widgetUrlConstructor(widgetLink, userName, ref, location.pathname);
         if (prevtLocationPath && location.pathname !== '/') {
           return history.pushState('', '', newUrl);
         }

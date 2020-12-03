@@ -895,8 +895,12 @@ export const removeSessionData = (item1, item2) => {
   }
 };
 
-export const widgetUrlConstructor = (widgetLink, userName, ref) => {
-  let currUrl = `${location.pathname}`;
+export const widgetUrlConstructor = (widgetLink, userName, ref, pathname) => {
+  let currUrl = '';
+
+  if (pathname) {
+    currUrl += pathname;
+  }
 
   if (widgetLink) {
     currUrl += `?display=${widgetLink}`;

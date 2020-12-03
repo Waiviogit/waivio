@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-// import { isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -10,7 +10,7 @@ import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import ModalSignIn from '../../components/Navigation/ModlaSignIn/ModalSignIn';
-// import { getSessionData } from '../rewardsHelper';
+import { getSessionData } from '../rewardsHelper';
 
 import './Details.less';
 
@@ -28,7 +28,7 @@ const Details = ({
   isEligible,
   isAuth,
   history,
-  // authorizedUserName,
+  authorizedUserName,
 }) => {
   const [isShowSignInModal, setIsShowSignInModal] = useState(false);
   const localizer = (id, defaultMessage, variablesData) =>
@@ -71,34 +71,33 @@ const Details = ({
   // eslint-disable-next-line no-underscore-dangle
   const writeReviewUrl = `/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`;
 
-  const handleWriteReviewBtn = () => {
-    console.log('isModalDetailsOpen: ', isModalDetailsOpen);
-    if (isAuth) {
-      history.push(writeReviewUrl);
-    } else {
-      setIsShowSignInModal(true);
-    }
-  };
-
-  // const handleWriteReviewBtnNew = () => {
-  //   const userName = getSessionData('userName');
-  //   console.log('URL username: ', userName);
-  //   console.log('authorizedUserName: ', authorizedUserName);
-  //   console.log('proposedWobj: ', proposedWobj);
+  // const handleWriteReviewBtn = () => {
   //   if (isAuth) {
-  //     if (userName) {
-  //       if (isEqual(userName, authorizedUserName)) {
-  //         history.push(writeReviewUrl);
-  //       } else {
-  //         history.push(`/object/${proposedWobj.author_permlink}`);
-  //       }
-  //     } else {
-  //       history.push(writeReviewUrl);
-  //     }
+  //     history.push(writeReviewUrl);
   //   } else {
   //     setIsShowSignInModal(true);
   //   }
   // };
+
+  const handleWriteReviewBtn = () => {
+    const userName = getSessionData('userName');
+    console.log('URL username: ', userName);
+    console.log('authorizedUserName: ', authorizedUserName);
+    console.log('proposedWobj: ', proposedWobj);
+    if (isAuth) {
+      if (userName) {
+        if (isEqual(userName, authorizedUserName)) {
+          history.push(writeReviewUrl);
+        } else {
+          history.push(`/object/${proposedWobj.author_permlink}`);
+        }
+      } else {
+        history.push(writeReviewUrl);
+      }
+    } else {
+      setIsShowSignInModal(true);
+    }
+  };
 
   return (
     <Modal
@@ -178,7 +177,7 @@ Details.propTypes = {
   isEligible: PropTypes.bool.isRequired,
   isAuth: PropTypes.bool,
   history: PropTypes.shape().isRequired,
-  // authorizedUserName: PropTypes.string.isRequired,
+  authorizedUserName: PropTypes.string.isRequired,
 };
 
 Details.defaultProps = {
