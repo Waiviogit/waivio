@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Card, Row } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { FormattedMessage } from 'react-intl';
-import { getProxyImageURL } from '../../helpers/image';
+import { getImagePath } from '../../helpers/image';
 
 import AlbumFeed from './AlbumFeed';
 
@@ -47,6 +47,7 @@ class Album extends React.Component {
                 pictures={pictures}
                 loadMoreContent={getMoreRelatedPhoto}
                 isFetching={album.isFetching}
+                album={album}
               />
             </Row>
           ) : (
@@ -57,9 +58,14 @@ class Album extends React.Component {
         </Card>
         {isOpen && (
           <Lightbox
-            mainSrc={getProxyImageURL(pictures[photoIndex].body, 'preview')}
-            nextSrc={getProxyImageURL(pictures[(photoIndex + 1) % pictures.length].body, 'preview')}
-            prevSrc={getProxyImageURL(
+            mainSrc={getImagePath(album, pictures[photoIndex].body, 'preview')}
+            nextSrc={getImagePath(
+              album,
+              pictures[(photoIndex + 1) % pictures.length].body,
+              'preview',
+            )}
+            prevSrc={getImagePath(
+              album,
               pictures[(photoIndex + pictures.length - 1) % pictures.length].body,
               'preview',
             )}
