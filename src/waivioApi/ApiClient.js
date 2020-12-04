@@ -1634,6 +1634,20 @@ export const getStatusSponsoredRewards = (referral, userName, type = 'referral_s
       .catch(error => reject(error));
   });
 
+export const getRelatedPhotos = (authorPermlink, limit, skip) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.related}?limit=${limit}&skip=${skip}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 //websites
 
 export const getDomainList = () => {

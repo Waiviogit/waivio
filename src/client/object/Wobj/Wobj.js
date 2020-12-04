@@ -23,7 +23,6 @@ const Wobj = ({
   isEditMode,
   toggleViewEditMode,
   route,
-  appendAlbum,
   handleFollowClick,
   objectName,
 }) => {
@@ -83,7 +82,6 @@ const Wobj = ({
           onFollowClick={handleFollowClick}
           toggleViewEditMode={toggleViewEditMode}
           albumsAndImagesCount={albumsAndImagesCount}
-          appendAlbum={appendAlbum}
         />
         <div className="shifted">
           <div className="container feed-layout">
@@ -98,7 +96,6 @@ const Wobj = ({
                   wobject={wobject}
                   userName={userName}
                   history={history}
-                  appendAlbum={appendAlbum}
                 />
               </div>
             </Affix>
@@ -135,7 +132,6 @@ Wobj.propTypes = {
   history: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
   toggleViewEditMode: PropTypes.func,
-  appendAlbum: PropTypes.func,
   handleFollowClick: PropTypes.func,
   objectName: PropTypes.string.isRequired,
 };
@@ -143,7 +139,6 @@ Wobj.propTypes = {
 Wobj.defaultProps = {
   wobject: {},
   toggleViewEditMode: () => {},
-  appendAlbum: () => {},
   handleFollowClick: () => {},
 };
 

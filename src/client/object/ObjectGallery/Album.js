@@ -1,20 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, Row, Col } from 'antd';
+import { Card, Row } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { FormattedMessage } from 'react-intl';
+import { getImagePath } from '../../helpers/image';
 
-import GalleryItem from './GalleryItem';
+import AlbumFeed from './AlbumFeed';
 
 import './GalleryAlbum.less';
 
 class Album extends React.Component {
   static propTypes = {
     album: PropTypes.shape(),
+    getMoreRelatedAlbum: PropTypes.func,
+    permlink: PropTypes.string.isRequired,
   };
   static defaultProps = {
     album: {},
     wobjMainer: {},
+    getMoreRelatedAlbum: () => {},
+    isFetching: false,
   };
   state = {
     isOpen: false,
@@ -24,23 +29,26 @@ class Album extends React.Component {
   handleOpenLightbox = photoIndex => this.setState({ isOpen: true, photoIndex });
 
   render() {
-    const { album } = this.props;
+    const { album, permlink } = this.props;
     const { isOpen, photoIndex } = this.state;
     const pictures = album.items;
+    const hasMore = album.hasMore ? album.hasMore : false;
+    const getMoreRelatedPhoto = () =>
+      album.body === 'Related' ? this.props.getMoreRelatedAlbum(permlink) : () => {};
+
     return (
       <div className="GalleryAlbum">
         <Card title={album.body}>
           {pictures && pictures.length > 0 ? (
             <Row gutter={24}>
-              {pictures.map((image, idx) => (
-                <Col span={12} key={image.body}>
-                  <GalleryItem
-                    image={image}
-                    handleOpenLightbox={this.handleOpenLightbox}
-                    idx={idx}
-                  />
-                </Col>
-              ))}
+              <AlbumFeed
+                hasMore={hasMore}
+                handleOpenLightbox={this.handleOpenLightbox}
+                pictures={pictures}
+                loadMoreContent={getMoreRelatedPhoto}
+                isFetching={album.isFetching}
+                album={album}
+              />
             </Row>
           ) : (
             <div className="ObjectGallery__emptyText">
@@ -50,9 +58,17 @@ class Album extends React.Component {
         </Card>
         {isOpen && (
           <Lightbox
-            mainSrc={pictures[photoIndex].body}
-            nextSrc={pictures[(photoIndex + 1) % pictures.length].body}
-            prevSrc={pictures[(photoIndex + pictures.length - 1) % pictures.length].body}
+            mainSrc={getImagePath(album, pictures[photoIndex].body, 'preview')}
+            nextSrc={getImagePath(
+              album,
+              pictures[(photoIndex + 1) % pictures.length].body,
+              'preview',
+            )}
+            prevSrc={getImagePath(
+              album,
+              pictures[(photoIndex + pictures.length - 1) % pictures.length].body,
+              'preview',
+            )}
             onCloseRequest={() => this.setState({ isOpen: false })}
             onMovePrevRequest={() =>
               this.setState({

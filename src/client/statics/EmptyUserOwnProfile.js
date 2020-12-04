@@ -2,8 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
+import './EmptyFeed.less';
+
 const EmptyUserProfile = () => (
-  <div className="text-center">
+  <div className="feed_empty">
     <h3>
       <FormattedMessage
         id="empty_user_own_profile"

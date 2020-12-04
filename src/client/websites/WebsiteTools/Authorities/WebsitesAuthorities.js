@@ -67,7 +67,7 @@ export const WebsitesAuthorities = ({
         {intl.formatMessage({
           id: 'author_rules',
           defaultMessage:
-            'This mechanism can be used to add controlled lists of objects to the website, while ensuring their accuracy..',
+            'This mechanism can be used to add controlled lists of objects to the website, while ensuring their accuracy.',
         })}
       </p>
       <h3>
