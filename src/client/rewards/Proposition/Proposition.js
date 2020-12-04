@@ -93,9 +93,7 @@ const Proposition = ({
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
 
   const toggleModalDetails = ({ value }) => {
-    console.log('toggleModalDetails');
     if (value) {
-      console.log('toggleModalDetails inside: ', value);
       setReviewDetails(value);
     }
     setModalDetailsOpen(!isModalDetailsOpen);
@@ -223,7 +221,7 @@ const Proposition = ({
     /* This check need for widget. When user isAuth, there is another render and we lose flag
        for open modal window for widget
     */
-    if (isAuth && isOpenWriteReviewModal !== isModalDetailsOpen) {
+    if (isReservedLink && isAuth && isOpenWriteReviewModal !== isModalDetailsOpen) {
       setReviewDetails(isOpenWriteReviewModal);
       setModalDetailsOpen(isOpenWriteReviewModal);
     }
