@@ -10,7 +10,7 @@ import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import ModalSignIn from '../../components/Navigation/ModlaSignIn/ModalSignIn';
-import { getSessionData, removeSessionData } from '../rewardsHelper';
+import { clearAllSessionData, getSessionData } from '../rewardsHelper';
 
 import './Details.less';
 
@@ -79,14 +79,11 @@ const Details = ({
     if (isAuth) {
       if (userName) {
         if (isEqual(userName, authorizedUserName)) {
-          removeSessionData('userName', 'isWidget');
-          removeSessionData('currentProposId', 'currentWobjId');
           history.push(writeReviewUrl);
         } else {
-          removeSessionData('userName', 'isWidget');
-          removeSessionData('currentProposId', 'currentWobjId');
           history.push(`/object/${proposedWobj.author_permlink}`);
         }
+        clearAllSessionData();
       } else {
         history.push(writeReviewUrl);
       }
@@ -97,9 +94,8 @@ const Details = ({
 
   // Todo: десь, при нажатии на cancel зависает виджет
   const handleCancelModalBtn = value => {
+    clearAllSessionData();
     if (!isWidget && isReserved) {
-      removeSessionData('userName', 'isWidget');
-      removeSessionData('currentProposId', 'currentWobjId');
       removeToggleFlag();
       history.push(`/object/${proposedWobj.author_permlink}`);
     }

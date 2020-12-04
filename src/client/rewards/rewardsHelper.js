@@ -913,3 +913,9 @@ export const widgetUrlConstructor = (widgetLink, userName, ref, pathname) => {
   }
   return currUrl;
 };
+
+export const clearAllSessionData = () => {
+  removeSessionData('userName', 'isWidget');
+  removeSessionData('currentProposId', 'currentWobjId');
+  removeSessionData('currentProposIdReserved', 'currentWobjIdReserved');
+};

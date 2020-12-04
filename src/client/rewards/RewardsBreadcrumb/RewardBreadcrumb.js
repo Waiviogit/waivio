@@ -26,6 +26,8 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
   const ref = getSessionData('refUser');
   const widgetUrl = widgetUrlConstructor(widgetLink, userName, ref);
 
+  console.log('widgetLink: ', widgetLink);
+
   let url = `/rewards/${filterKey}`;
   if (widgetLink) url += `/${widgetUrl}`;
 
