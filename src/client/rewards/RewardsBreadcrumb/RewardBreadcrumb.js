@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
@@ -18,21 +18,19 @@ const rewardText = {
   messages: { id: 'messages', defaultMessage: 'Messages' },
 };
 
-const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
+const RewardBreadcrumb = ({ intl, filterKey, reqObject, match }) => {
   const isCorrectFilter = !!rewardText[filterKey];
   const objName = getObjectName(reqObject);
-  const widgetLink = getSessionData('isWidget');
+  const isWidget = new URLSearchParams(location.search).get('display');
   const userName = getSessionData('userName');
   const ref = getSessionData('refUser');
-  const widgetUrl = widgetUrlConstructor(widgetLink, userName, ref);
-
-  console.log('widgetLink: ', widgetLink);
+  const widgetUrl = widgetUrlConstructor(isWidget, userName, ref);
 
   let url = `/rewards/${filterKey}`;
-  if (widgetLink) url += `/${widgetUrl}`;
+  if (isWidget) url += `/${widgetUrl}`;
 
   const breadCrumbText = `${
-    isCorrectFilter ? getBreadCrumbText(intl, location, filterKey, rewardText, match) : ''
+    isCorrectFilter ? getBreadCrumbText(intl, location.pathname, filterKey, rewardText, match) : ''
   } ${
     filterKey !== 'history'
       ? intl.formatMessage({
@@ -64,15 +62,13 @@ RewardBreadcrumb.propTypes = {
   intl: PropTypes.shape().isRequired,
   reqObject: PropTypes.shape(),
   filterKey: PropTypes.string,
-  location: PropTypes.string,
   match: PropTypes.shape(),
 };
 
 RewardBreadcrumb.defaultProps = {
   filterKey: '',
   reqObject: {},
-  location: '',
   match: {},
 };
 
-export default injectIntl(RewardBreadcrumb);
+export default withRouter(injectIntl(RewardBreadcrumb));

@@ -10,7 +10,7 @@ import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import ModalSignIn from '../../components/Navigation/ModlaSignIn/ModalSignIn';
-import { clearAllSessionData, getSessionData } from '../rewardsHelper';
+import { clearAllSessionProposition, getSessionData } from '../rewardsHelper';
 
 import './Details.less';
 
@@ -74,6 +74,9 @@ const Details = ({
 
   // eslint-disable-next-line no-underscore-dangle
   const writeReviewUrl = `/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`;
+  const toCurrentWobjLink = `/object/${proposedWobj.author_permlink}`;
+
+  //  removeSessionData('userName', 'isWidget');
 
   const handleWriteReviewBtn = () => {
     if (isAuth) {
@@ -81,9 +84,9 @@ const Details = ({
         if (isEqual(userName, authorizedUserName)) {
           history.push(writeReviewUrl);
         } else {
-          history.push(`/object/${proposedWobj.author_permlink}`);
+          history.push(toCurrentWobjLink);
         }
-        clearAllSessionData();
+        clearAllSessionProposition();
       } else {
         history.push(writeReviewUrl);
       }
@@ -94,7 +97,7 @@ const Details = ({
 
   // Todo: десь, при нажатии на cancel зависает виджет
   const handleCancelModalBtn = value => {
-    clearAllSessionData();
+    clearAllSessionProposition();
     if (!isWidget && isReserved) {
       removeToggleFlag();
       history.push(`/object/${proposedWobj.author_permlink}`);
@@ -135,6 +138,8 @@ const Details = ({
           isButton={false}
           showModal
           setIsShowSignInModal={setIsShowSignInModal}
+          toCurrentWobjLink={toCurrentWobjLink}
+          history={history}
         />
       )}
       <div className="Details__footer">

@@ -171,6 +171,7 @@ const History = ({
       getHistory(userName, sortForFilters, filters, true);
     }
   };
+
   return (
     <div className="history">
       <FilteredRewardsList

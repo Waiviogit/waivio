@@ -16,6 +16,7 @@ import SocialButtons from '../SocialButtons/SocialButtons';
 import SignUpButton from '../SignUpButton/SignUpButton';
 
 import './ModalSignIn.less';
+import { getSessionData, removeSessionData } from '../../../rewards/rewardsHelper';
 
 const ModalSignIn = ({
   next,
@@ -25,12 +26,16 @@ const ModalSignIn = ({
   hideLink,
   isButton,
   setIsShowSignInModal,
+  toCurrentWobjLink,
+  history,
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const isWidget = getSessionData('isWidget');
 
   useEffect(() => {
     if (showModal) setIsModalOpen(true);
@@ -202,7 +207,13 @@ const ModalSignIn = ({
   };
 
   const memoizedOnModalClose = useCallback(() => {
-    onModalClose();
+    if (isWidget) {
+      onModalClose();
+      removeSessionData('userName', 'isWidget');
+      history.push(toCurrentWobjLink);
+    } else {
+      onModalClose();
+    }
   }, []);
 
   return (
@@ -231,6 +242,8 @@ ModalSignIn.propTypes = {
   hideLink: PropTypes.bool,
   isButton: PropTypes.bool,
   setIsShowSignInModal: PropTypes.func,
+  toCurrentWobjLink: PropTypes.string,
+  history: PropTypes.shape(),
 };
 
 ModalSignIn.defaultProps = {
@@ -240,6 +253,8 @@ ModalSignIn.defaultProps = {
   hideLink: false,
   isButton: false,
   setIsShowSignInModal: () => {},
+  toCurrentWobjLink: '',
+  history: {},
 };
 
 export default injectIntl(ModalSignIn);

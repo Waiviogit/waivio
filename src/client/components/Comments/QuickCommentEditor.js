@@ -1,13 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Input, Icon, Modal } from 'antd';
 import _ from 'lodash';
 import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
 import ImageSetter from '../ImageSetter/ImageSetter';
+import { getIsAuthenticated } from '../../reducers';
 import './QuickCommentEditor.less';
 
 @withEditor
+@connect(state => ({
+  isAuth: getIsAuthenticated(state),
+}))
 class QuickCommentEditor extends React.Component {
   static propTypes = {
     parentPost: PropTypes.shape().isRequired,
@@ -15,6 +20,7 @@ class QuickCommentEditor extends React.Component {
     isLoading: PropTypes.bool,
     inputValue: PropTypes.string.isRequired,
     onSubmit: PropTypes.func,
+    isAuth: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -23,6 +29,7 @@ class QuickCommentEditor extends React.Component {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     onSubmit: () => {},
+    isAuth: false,
   };
 
   constructor(props) {
@@ -83,8 +90,8 @@ class QuickCommentEditor extends React.Component {
 
   render() {
     const { currentImage, imageUploading, commentMsg, isModal, isLoadingImage } = this.state;
-    const { username, isLoading } = this.props;
-
+    const { username, isLoading, isAuth } = this.props;
+    console.log('isAuth: ', isAuth);
     const setImage = (
       <label htmlFor={this.props.parentPost.id}>
         {imageUploading ? (
@@ -101,36 +108,38 @@ class QuickCommentEditor extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="QuickComment">
-          {Boolean(username) && (
-            <div className="QuickComment__avatar">
-              <Avatar username={username} size={34} />
-            </div>
-          )}
-          <Input.TextArea
-            className="CommentArea"
-            autoSize
-            value={commentMsg}
-            disabled={imageUploading || isLoading}
-            onPressEnter={this.handleSubmit}
-            onChange={this.handleMsgChange}
-          />
-          {_.isEmpty(currentImage) && setImage}
-          {isLoading ? (
-            <Icon
-              type="loading"
-              className="QuickComment__send-comment QuickComment__send-comment--loader"
+        {isAuth && (
+          <div className="QuickComment">
+            {Boolean(username) && (
+              <div className="QuickComment__avatar">
+                <Avatar username={username} size={34} />
+              </div>
+            )}
+            <Input.TextArea
+              className="CommentArea"
+              autoSize
+              value={commentMsg}
+              disabled={imageUploading || isLoading}
+              onPressEnter={this.handleSubmit}
+              onChange={this.handleMsgChange}
             />
-          ) : (
-            <span
-              role="presentation"
-              onClick={this.handleSubmit}
-              className="QuickComment__send-comment"
-            >
-              <img src={'/images/icons/send.svg'} alt="send" />
-            </span>
-          )}
-        </div>
+            {_.isEmpty(currentImage) && setImage}
+            {isLoading ? (
+              <Icon
+                type="loading"
+                className="QuickComment__send-comment QuickComment__send-comment--loader"
+              />
+            ) : (
+              <span
+                role="presentation"
+                onClick={this.handleSubmit}
+                className="QuickComment__send-comment"
+              >
+                <img src={'/images/icons/send.svg'} alt="send" />
+              </span>
+            )}
+          </div>
+        )}
         {!_.isEmpty(currentImage) && (
           <div className="QuickComment__img-preview">
             <div
