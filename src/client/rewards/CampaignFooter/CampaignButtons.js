@@ -37,22 +37,30 @@ import {
   setDataForSingleReport,
   getBlacklist,
   getFraudSuspicion,
+  setToggleFlag,
 } from '../rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
+import { getIsOpenWriteReviewModal } from '../../reducers';
 import '../../components/StoryFooter/Buttons.less';
 
 @injectIntl
 @withAuthActions
-@connect(null, {
-  rejectReview,
-  changeBlackAndWhiteLists,
-  setDataForSingleReport,
-  getBlacklist,
-  changeReward,
-  reinstateReward,
-  getFraudSuspicion,
-})
+@connect(
+  state => ({
+    isOpenWriteReviewModal: getIsOpenWriteReviewModal(state),
+  }),
+  {
+    rejectReview,
+    changeBlackAndWhiteLists,
+    setDataForSingleReport,
+    getBlacklist,
+    changeReward,
+    reinstateReward,
+    getFraudSuspicion,
+    setToggleFlag,
+  },
+)
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -83,6 +91,7 @@ export default class CampaignButtons extends React.Component {
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
     sortFraudDetection: PropTypes.string,
     getFraudSuspicion: PropTypes.func,
+    setToggleFlag: PropTypes.func,
     userFollowed: PropTypes.bool,
     objectFollowed: PropTypes.bool,
     proposedWobj: PropTypes.shape().isRequired,
@@ -105,6 +114,7 @@ export default class CampaignButtons extends React.Component {
     getMessageHistory: () => {},
     onActionInitiated: () => {},
     getFraudSuspicion: () => {},
+    setToggleFlag: () => {},
     blacklistUsers: [],
     sortFraudDetection: 'reservation',
     userFollowed: false,
@@ -153,9 +163,9 @@ export default class CampaignButtons extends React.Component {
         sessionCurrentProposjId === currentProposIdReserved &&
         sessionCurrentWobjjId === currentWobjIdReserved
       ) {
-        console.log('componentWillReceiveProps');
-        this.props.toggleModalDetails({ value: true });
         removeSessionData('currentProposIdReserved', 'currentWobjIdReserved');
+        this.props.setToggleFlag();
+        this.props.toggleModalDetails({ value: true });
       }
     }
 
@@ -397,8 +407,6 @@ export default class CampaignButtons extends React.Component {
 
     setSessionData('currentProposIdReserved', currentProposIdReserved);
     setSessionData('currentWobjIdReserved', currentWobjIdReserved);
-
-    console.log('location: ', location);
 
     if (isWidget) {
       openNewTab(`${location.origin}${location.pathname}?toReserved=reserved`);

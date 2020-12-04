@@ -12,7 +12,7 @@ import {
   getAuthenticatedUser,
   getCommentContent,
   getIsAuthenticated,
-  getIsDetailsModalStatus,
+  getIsOpenWriteReviewModal,
 } from '../../reducers';
 import {
   ASSIGNED,
@@ -27,6 +27,7 @@ import {
   reserveActivatedCampaign,
   getCurrentHivePrice,
 } from '../../../waivioApi/ApiClient';
+import { removeToggleFlag } from '../rewardsActions';
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
@@ -58,11 +59,14 @@ const Proposition = ({
   wobjPrice,
   sortFraudDetection,
   isAuth,
+  removeToggleFlag,
+  isOpenWriteReviewModal,
 }) => {
   const currentProposId = get(proposition, ['_id'], '');
   const currentWobjId = get(wobj, ['_id'], '');
 
   const isWidget = new URLSearchParams(location.search).get('display');
+  const isReservedLink = new URLSearchParams(location.search).get('toReserved');
   const sessionCurrentProposjId = sessionStorage.getItem('currentProposId');
   const sessionCurrentWobjjId = sessionStorage.getItem('currentWobjId');
 
@@ -89,7 +93,9 @@ const Proposition = ({
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
 
   const toggleModalDetails = ({ value }) => {
+    console.log('toggleModalDetails');
     if (value) {
+      console.log('toggleModalDetails inside: ', value);
       setReviewDetails(value);
     }
     setModalDetailsOpen(!isModalDetailsOpen);
@@ -213,6 +219,14 @@ const Proposition = ({
         removeSessionData('currentProposId', 'currentWobjId');
       }
     }
+
+    /* This check need for widget. When user isAuth, there is another render and we lose flag
+       for open modal window for widget
+    */
+    if (isAuth && isOpenWriteReviewModal !== isModalDetailsOpen) {
+      setReviewDetails(isOpenWriteReviewModal);
+      setModalDetailsOpen(isOpenWriteReviewModal);
+    }
   }, [proposition]);
 
   const handleReserveOnClick = value => {
@@ -318,6 +332,8 @@ const Proposition = ({
         match={match}
         isAuth={isAuth}
         authorizedUserName={authorizedUserName}
+        removeToggleFlag={removeToggleFlag}
+        isOpenWriteReviewModal={isOpenWriteReviewModal}
       />
     </div>
   );
@@ -328,6 +344,7 @@ Proposition.propTypes = {
   wobj: PropTypes.shape().isRequired,
   assignProposition: PropTypes.func,
   discardProposition: PropTypes.func,
+  removeToggleFlag: PropTypes.func,
   loading: PropTypes.bool,
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,
@@ -337,7 +354,7 @@ Proposition.propTypes = {
   match: PropTypes.shape(),
   sortFraudDetection: PropTypes.string,
   isAuth: PropTypes.bool,
-  currentDetailsModalStatus: PropTypes.bool,
+  isOpenWriteReviewModal: PropTypes.bool,
 };
 
 Proposition.defaultProps = {
@@ -349,9 +366,10 @@ Proposition.defaultProps = {
   match: {},
   assignProposition: () => {},
   discardProposition: () => {},
+  removeToggleFlag: () => {},
   sortFraudDetection: 'reservation',
   isAuth: false,
-  currentDetailsModalStatus: false,
+  isOpenWriteReviewModal: false,
 };
 
 export default connect(
@@ -364,9 +382,10 @@ export default connect(
         ? getCommentContent(state, ownProps.authorizedUserName, ownProps.assignCommentPermlink)
         : {},
     isAuth: getIsAuthenticated(state),
-    currentDetailsModalStatus: getIsDetailsModalStatus(state),
+    isOpenWriteReviewModal: getIsOpenWriteReviewModal(state),
   }),
   {
     getSingleComment,
+    removeToggleFlag,
   },
 )(injectIntl(Proposition));

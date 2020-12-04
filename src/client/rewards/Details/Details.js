@@ -29,6 +29,7 @@ const Details = ({
   isAuth,
   history,
   authorizedUserName,
+  removeToggleFlag,
 }) => {
   const [isShowSignInModal, setIsShowSignInModal] = useState(false);
   const isWidget = new URLSearchParams(location.search).get('display');
@@ -78,10 +79,12 @@ const Details = ({
     if (isAuth) {
       if (userName) {
         if (isEqual(userName, authorizedUserName)) {
-          removeSessionData('userName');
+          removeSessionData('userName', 'isWidget');
+          removeSessionData('currentProposId', 'currentWobjId');
           history.push(writeReviewUrl);
         } else {
-          removeSessionData('userName');
+          removeSessionData('userName', 'isWidget');
+          removeSessionData('currentProposId', 'currentWobjId');
           history.push(`/object/${proposedWobj.author_permlink}`);
         }
       } else {
@@ -95,7 +98,9 @@ const Details = ({
   // Todo: десь, при нажатии на cancel зависает виджет
   const handleCancelModalBtn = value => {
     if (!isWidget && isReserved) {
-      removeSessionData('userName');
+      removeSessionData('userName', 'isWidget');
+      removeSessionData('currentProposId', 'currentWobjId');
+      removeToggleFlag();
       history.push(`/object/${proposedWobj.author_permlink}`);
     }
     return toggleModal(value);
@@ -107,7 +112,7 @@ const Details = ({
       closable
       onCancel={handleCancelModalBtn}
       maskClosable={false}
-      visible={isModalDetailsOpen}
+      visible={!isWidget && isModalDetailsOpen}
       wrapClassName="Details"
       footer={null}
       width={768}
@@ -180,11 +185,13 @@ Details.propTypes = {
   isAuth: PropTypes.bool,
   history: PropTypes.shape().isRequired,
   authorizedUserName: PropTypes.string.isRequired,
+  removeToggleFlag: PropTypes.func,
 };
 
 Details.defaultProps = {
   loading: false,
   assigned: false,
   isAuth: false,
+  removeToggleFlag: () => {},
 };
 export default withRouter(injectIntl(Details));

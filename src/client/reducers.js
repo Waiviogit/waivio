@@ -320,7 +320,8 @@ export const getCampaignNames = state => fromRewards.getCampaignNames(state.rewa
 export const getHistoryCampaigns = state => fromRewards.getHistoryCampaigns(state.rewards);
 export const getHistorySponsors = state => fromRewards.getHistorySponsors(state.rewards);
 export const getHasMoreHistory = state => fromRewards.getHasMoreHistory(state.rewards);
-export const getIsDetailsModalStatus = state => fromRewards.getIsDetailsModalStatus(state.rewards);
+export const getIsOpenWriteReviewModal = state =>
+  fromRewards.getIsOpenWriteReviewModal(state.rewards);
 
 export const getCampaignServerPercent = state =>
   fromReferral.getCampaignServerPercent(state.referral);
