@@ -16,7 +16,11 @@ import SocialButtons from '../SocialButtons/SocialButtons';
 import SignUpButton from '../SignUpButton/SignUpButton';
 
 import './ModalSignIn.less';
-import { getSessionData, removeSessionData } from '../../../rewards/rewardsHelper';
+import {
+  clearAllSessionProposition,
+  getSessionData,
+  removeSessionData,
+} from '../../../rewards/rewardsHelper';
 
 const ModalSignIn = ({
   next,
@@ -210,6 +214,7 @@ const ModalSignIn = ({
     if (isWidget) {
       onModalClose();
       removeSessionData('userName', 'isWidget');
+      clearAllSessionProposition();
       history.push(toCurrentWobjLink);
     } else {
       onModalClose();
