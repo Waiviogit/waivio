@@ -210,6 +210,9 @@ class Wrapper extends React.PureComponent {
   }
 
   componentDidUpdate() {
+    const widgetLink = getSessionData('isWidget');
+    const userName = getSessionData('userName');
+
     if (this.props.nightmode) {
       document.body.classList.add('nightmode');
     } else {
@@ -220,6 +223,9 @@ class Wrapper extends React.PureComponent {
       const currentRefName = handleRefName(refName);
       this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
       removeSessionData('refUser');
+    }
+    if (this.props.isAuthenticated && widgetLink && userName) {
+      removeSessionData('userName', 'isWidget');
     }
   }
 

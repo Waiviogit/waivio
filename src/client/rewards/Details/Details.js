@@ -76,8 +76,6 @@ const Details = ({
   const writeReviewUrl = `/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`;
   const toCurrentWobjLink = `/object/${proposedWobj.author_permlink}`;
 
-  //  removeSessionData('userName', 'isWidget');
-
   const handleWriteReviewBtn = () => {
     if (isAuth) {
       if (userName) {
@@ -95,7 +93,6 @@ const Details = ({
     }
   };
 
-  // Todo: десь, при нажатии на cancel зависает виджет
   const handleCancelModalBtn = value => {
     clearAllSessionProposition();
     if (!isWidget && isReserved) {
