@@ -91,7 +91,6 @@ class QuickCommentEditor extends React.Component {
   render() {
     const { currentImage, imageUploading, commentMsg, isModal, isLoadingImage } = this.state;
     const { username, isLoading, isAuth } = this.props;
-    console.log('isAuth: ', isAuth);
     const setImage = (
       <label htmlFor={this.props.parentPost.id}>
         {imageUploading ? (

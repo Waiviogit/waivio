@@ -132,7 +132,6 @@ const ImageSetter = ({
         };
         let newImage = {};
         const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
-          console.log('currentLinkSrc: ', currentLinkSrc);
           newImage = {
             src: currentLinkSrc,
             name: currentLinkName,
