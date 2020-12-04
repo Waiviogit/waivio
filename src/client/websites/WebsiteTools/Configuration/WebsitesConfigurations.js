@@ -103,7 +103,6 @@ export const WebsitesConfigurations = ({
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log('-- colors --', colors);
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const configuration = getConfigFieldsValue(config.configurationFields, values);
@@ -118,7 +117,6 @@ export const WebsitesConfigurations = ({
             aboutObject: get(aboutObject, 'author_permlink', ''),
           },
         };
-        console.log('-- configurationObj --', configurationObj.configuration.colors);
         saveWebConfig(host, configurationObj);
       }
     });
@@ -126,7 +124,6 @@ export const WebsitesConfigurations = ({
 
   const handleClickOk = () => {
     const formValues = form.getFieldsValue();
-    console.log('-- formValues --', formValues);
     setColors(getConfigFieldsValue(config.colors, formValues));
     setShowSelectColor(false);
   };
