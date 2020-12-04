@@ -404,6 +404,7 @@ class Rewards extends React.Component {
   getPropositionsByStatus = ({ username, sort, area }) => {
     const { pendingUpdate, match } = this.props;
     const isWidget = new URLSearchParams(location.search).get('display');
+    const isReserved = new URLSearchParams(location.search).get('toReserved');
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
       // eslint-disable-next-line camelcase
@@ -422,7 +423,7 @@ class Rewards extends React.Component {
         loadingCampaigns: false,
       });
 
-      if (!isWidget) {
+      if (!isWidget && !isReserved) {
         const filterKey = match.params.filterKey;
         if (
           !pendingUpdate &&

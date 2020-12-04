@@ -10,7 +10,7 @@ import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import ModalSignIn from '../../components/Navigation/ModlaSignIn/ModalSignIn';
-import { getSessionData } from '../rewardsHelper';
+import { getSessionData, removeSessionData } from '../rewardsHelper';
 
 import './Details.less';
 
@@ -31,6 +31,9 @@ const Details = ({
   authorizedUserName,
 }) => {
   const [isShowSignInModal, setIsShowSignInModal] = useState(false);
+  const isWidget = new URLSearchParams(location.search).get('display');
+  const isReserved = new URLSearchParams(location.search).get('toReserved');
+  const userName = getSessionData('userName');
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
@@ -71,39 +74,38 @@ const Details = ({
   // eslint-disable-next-line no-underscore-dangle
   const writeReviewUrl = `/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`;
 
-  // const handleWriteReviewBtn = () => {
-  //   if (isAuth) {
-  //     history.push(writeReviewUrl);
-  //   } else {
-  //     setIsShowSignInModal(true);
-  //   }
-  // };
-
   const handleWriteReviewBtn = () => {
-    const userName = getSessionData('userName');
-    console.log('URL username: ', userName);
-    console.log('authorizedUserName: ', authorizedUserName);
-    console.log('proposedWobj: ', proposedWobj);
     if (isAuth) {
       if (userName) {
         if (isEqual(userName, authorizedUserName)) {
+          removeSessionData('userName');
           history.push(writeReviewUrl);
         } else {
+          removeSessionData('userName');
           history.push(`/object/${proposedWobj.author_permlink}`);
         }
       } else {
         history.push(writeReviewUrl);
       }
     } else {
-      setIsShowSignInModal(true);
+      setIsShowSignInModal(!isShowSignInModal);
     }
+  };
+
+  // Todo: десь, при нажатии на cancel зависает виджет
+  const handleCancelModalBtn = value => {
+    if (!isWidget && isReserved) {
+      removeSessionData('userName');
+      history.push(`/object/${proposedWobj.author_permlink}`);
+    }
+    return toggleModal(value);
   };
 
   return (
     <Modal
       title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
       closable
-      onCancel={toggleModal}
+      onCancel={handleCancelModalBtn}
       maskClosable={false}
       visible={isModalDetailsOpen}
       wrapClassName="Details"
@@ -136,7 +138,7 @@ const Details = ({
       )}
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
-          <Button onClick={toggleModal}>{messageData.cancel}</Button>
+          <Button onClick={handleCancelModalBtn}>{messageData.cancel}</Button>
           {/* Button "Reserve" inside the reward card */}
           {!isReviewDetails ? (
             <Button

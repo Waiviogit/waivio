@@ -696,12 +696,14 @@ export const getPropositions = ({
     const isWidget = getSessionData('isWidget');
     const isWidgetUsername = getSessionData('userName');
 
-    if ((authenticated && !isEmpty(userName)) || (!authenticated && !isEmpty(userName))) {
+    if (
+      (authenticated && !isEmpty(userName)) ||
+      (!authenticated && !isEmpty(userName) && !isWidgetUsername)
+    ) {
       reqData.userName = userName;
     } else if (!authenticated && isWidget && isWidgetUsername) {
       reqData.userName = isWidgetUsername;
     }
-
     if (!isEmpty(area)) {
       reqData.area = area;
       reqData.radius = radius;
