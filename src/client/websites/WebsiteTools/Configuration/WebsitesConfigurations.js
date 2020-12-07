@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Input, Form, Modal, Avatar } from 'antd';
+import { Button, Input, Form, Modal, Avatar, message } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import Map from 'pigeon-maps';
@@ -123,6 +123,12 @@ export const WebsitesConfigurations = ({
           },
         };
         saveWebConfig(host, configurationObj);
+        message.success(
+          intl.formatMessage({
+            id: 'website_save_webconfig_success',
+            defaultMessage: 'Website successfully updated',
+          }),
+        );
       }
     });
   };
@@ -386,7 +392,10 @@ export const WebsitesConfigurations = ({
                           type="text"
                           defaultValue={getSelectedColor(color)}
                           onChange={e => {
-                            const val = e.currentTarget.value === '' ? ' ' : e.currentTarget.value;
+                            const val =
+                              e.currentTarget.value.trim() === ''
+                                ? ' '
+                                : e.currentTarget.value.trim();
                             form.setFieldsValue({
                               [color]: val,
                             });
