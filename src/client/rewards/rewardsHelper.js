@@ -918,3 +918,11 @@ export const clearAllSessionProposition = () => {
   removeSessionData('currentProposId', 'currentWobjId');
   removeSessionData('currentProposIdReserved', 'currentWobjIdReserved');
 };
+
+export const filterSponsorsName = location =>
+  new URLSearchParams(location.search).getAll('sponsorName');
+export const filterSelectedRewardsType = location =>
+  new URLSearchParams(location.search).getAll('rewardsType');
+
+export const handleFilters = (setFilterValue, filterSponsorNames, key) =>
+  map(filterSponsorNames, sponsorName => setFilterValue(sponsorName, key));
