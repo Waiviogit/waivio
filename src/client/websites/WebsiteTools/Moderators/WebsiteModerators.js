@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, message } from 'antd';
 import { connect } from 'react-redux';
@@ -22,19 +23,22 @@ export const WebsiteModerators = ({
   addWebModerators,
   delWebModerators,
   isLoading,
+  location,
 }) => {
-  const [selectUser, setSelectUser] = useState(null);
+  const [selectUser, setSelectUser] = useState('');
+  const [searchString, setSearchString] = useState('');
   const host = match.params.site;
 
   const addModerator = () => {
     addWebModerators(host, selectUser)
       .then(() => setSelectUser(null))
       .catch(() => message.error('Try again, please'));
+    setSearchString('');
   };
 
   useEffect(() => {
     getWebMods(host);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <div className="WebsiteModerators">
@@ -81,6 +85,8 @@ export const WebsiteModerators = ({
                 wobjects_weight: weight,
               })
             }
+            searchString={searchString}
+            setSearchString={setSearchString}
             style={{ width: '100%' }}
           />
         )}
@@ -95,7 +101,7 @@ export const WebsiteModerators = ({
         <FormattedMessage id="add" defaultMessage="Add" />
       </Button>
       <h3>
-        <FormattedMessage id="website_administrators" defaultMessage="Website administrators" />:
+        <FormattedMessage id="website_moderators" defaultMessage="Website moderators" />:
       </h3>
       <div className="WebsiteModerators__user-table">
         {isEmpty(moderators) ? (
@@ -133,6 +139,7 @@ WebsiteModerators.propTypes = {
     }),
   }).isRequired,
   isLoading: PropTypes.string.isRequired,
+  location: PropTypes.shape().isRequired,
 };
 
 WebsiteModerators.defaultProps = {
@@ -149,4 +156,4 @@ export default connect(
     addWebModerators: addWebsiteModerators,
     delWebModerators: deleteWebModerators,
   },
-)(injectIntl(WebsiteModerators));
+)(withRouter(injectIntl(WebsiteModerators)));

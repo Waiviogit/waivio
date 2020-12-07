@@ -9,6 +9,7 @@ import { withRouter } from 'react-router';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
+import listofObjTypesWithAlbum from '../../../common/constants/listofObjTypesWithAlbum';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
 import { getSuitableLanguage, getObjectTypesList, getAuthenticatedUserName } from '../../reducers';
@@ -16,8 +17,9 @@ import { notify } from '../../app/Notification/notificationActions';
 import { getObjectTypes } from '../../objectTypes/objectTypesActions';
 import { appendObject } from '../../object/appendActions';
 import { createWaivioObject } from '../../object/wobjectsActions';
+import { addAlbumToStore } from '../../object/ObjectGallery/galleryActions';
 import DEFAULTS from '../../object/const/defaultValues';
-import { getAppendData } from '../../helpers/wObjectHelper';
+import { getAppendData, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
 
 import './CreateObject.less';
 
@@ -35,6 +37,7 @@ import './CreateObject.less';
     createWaivioObject,
     getObjectTypes,
     notify,
+    addAlbumToStore,
   },
 )
 class CreateObject extends React.Component {
@@ -60,6 +63,7 @@ class CreateObject extends React.Component {
     onCreateObject: PropTypes.func,
     onCloseModal: PropTypes.func,
     history: PropTypes.shape({ push: PropTypes.func }).isRequired,
+    addAlbumToStore: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -150,6 +154,20 @@ class CreateObject extends React.Component {
                 ),
                 { votePower: null, follow: false, isLike: false },
               );
+            }
+            const isObjType = type => listofObjTypesWithAlbum.some(item => item === type);
+            if (isObjType(objData.type)) {
+              const formData = {
+                galleryAlbum: 'Photos',
+              };
+              const data = prepareAlbumData(formData, this.props.username, {
+                author: parentAuthor,
+                author_permlink: parentPermlink,
+              });
+              const album = prepareAlbumToStore(data);
+
+              const { author } = this.props.appendObject(data);
+              this.props.addAlbumToStore({ ...album, author });
             }
             this.props.notify(
               this.props.intl.formatMessage({

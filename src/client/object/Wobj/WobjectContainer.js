@@ -16,7 +16,12 @@ import {
 } from '../../reducers';
 import OBJECT_TYPE from '../const/objectTypes';
 import { clearObjectFromStore, getObject } from '../wobjectsActions';
-import { getAlbums, resetGallery, addAlbumToStore } from '../ObjectGallery/galleryActions';
+import {
+  getAlbums,
+  resetGallery,
+  addAlbumToStore,
+  clearRelatedPhoto,
+} from '../ObjectGallery/galleryActions';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
 import { setCatalogBreadCrumbs, setNestedWobject } from '../wobjActions';
@@ -47,6 +52,7 @@ import NotFound from '../../statics/NotFound';
     getAlbums,
     appendObject,
     addAlbumToStore,
+    clearRelatedPhoto,
   },
 )
 export default class WobjectContainer extends React.Component {
@@ -71,6 +77,7 @@ export default class WobjectContainer extends React.Component {
     getAlbums: PropTypes.func,
     appendObject: PropTypes.func,
     addAlbumToStore: PropTypes.func,
+    clearRelatedPhoto: PropTypes.func,
   };
 
   static defaultProps = {
@@ -86,6 +93,8 @@ export default class WobjectContainer extends React.Component {
     setNestedWobject: () => {},
     appendObject: () => {},
     addAlbumToStore: () => {},
+    getRelatedAlbum: () => {},
+    clearRelatedPhoto: () => {},
   };
 
   static fetchData({ store, match }) {
@@ -125,6 +134,7 @@ export default class WobjectContainer extends React.Component {
     this.props.clearObjectFromStore();
     this.props.setCatalogBreadCrumbs([]);
     this.props.setNestedWobject({});
+    this.props.clearRelatedPhoto();
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));

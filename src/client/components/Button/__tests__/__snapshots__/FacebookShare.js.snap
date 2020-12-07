@@ -28,7 +28,7 @@ ShallowWrapper {
         />
       </div>,
       "className": "ShareButton",
-      "href": "https://facebook.com/sharer/sharer.php?u=",
+      "href": "https://facebook.com/sharer.php?u=",
       "rel": "noopener noreferrer",
       "target": "_blank",
     },
@@ -73,7 +73,7 @@ ShallowWrapper {
           />
         </div>,
         "className": "ShareButton",
-        "href": "https://facebook.com/sharer/sharer.php?u=",
+        "href": "https://facebook.com/sharer.php?u=",
         "rel": "noopener noreferrer",
         "target": "_blank",
       },

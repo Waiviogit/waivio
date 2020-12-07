@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { take, get } from 'lodash';
+import { take, get, isEmpty } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Icon, Modal } from 'antd';
@@ -36,6 +36,8 @@ export default class Buttons extends React.Component {
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     username: PropTypes.string,
+    isGuest: PropTypes.bool.isRequired,
+    getSocialInfoPost: PropTypes.func,
   };
 
   static defaultProps = {
@@ -48,9 +50,9 @@ export default class Buttons extends React.Component {
     onLikeClick: () => {},
     onShareClick: () => {},
     onCommentClick: () => {},
-    onReportClick: () => {},
     handlePostPopoverMenuClick: () => {},
     username: '',
+    getSocialInfoPost: () => {},
   };
 
   constructor(props) {
@@ -196,6 +198,8 @@ export default class Buttons extends React.Component {
       pendingBookmark,
       saving,
       handlePostPopoverMenuClick,
+      isGuest,
+      getSocialInfoPost,
     } = this.props;
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
@@ -211,17 +215,49 @@ export default class Buttons extends React.Component {
     );
     const ratio = voteRshares > 0 ? totalPayout / voteRshares : 0;
 
-    const upVotesPreview = votes =>
-      take(votes, 10).map(vote => (
-        <p key={vote.voter}>
-          <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
-          {(vote.rshares_weight || vote.rshares) * ratio > 0.01 && (
-            <span style={{ opacity: '0.5' }}>
-              <USDDisplay value={(vote.rshares_weight || vote.rshares) * ratio} />
-            </span>
+    const upVotesPreview = votes => {
+      const sponsors = [];
+      const currentUpvotes = [];
+      take(votes, 10).map(vote => {
+        if (vote.sponsor) {
+          sponsors.push(<Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>);
+        } else {
+          currentUpvotes.push(
+            <p key={vote.voter}>
+              <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
+              {vote.rshares * ratio > 0.01 && (
+                <span style={{ opacity: '0.5' }}>
+                  <USDDisplay value={vote.rshares * ratio} />
+                </span>
+              )}
+            </p>,
+          );
+        }
+        return null;
+      });
+
+      return (
+        <React.Fragment>
+          {!isEmpty(sponsors) && (
+            <React.Fragment>
+              <div className="Buttons__sponsor-vote">
+                <FormattedMessage id="vote_sponsor" defaultMessage="Sponsor:" />
+              </div>
+              {sponsors.map(sponsor => sponsor)}
+            </React.Fragment>
           )}
-        </p>
-      ));
+
+          {!isEmpty(currentUpvotes) && (
+            <React.Fragment>
+              <div className="Buttons__upvotes">
+                <FormattedMessage id="vote_upvotes" defaultMessage="Upvotes:" />
+              </div>
+              {currentUpvotes.map(upvote => upvote)}
+            </React.Fragment>
+          )}
+        </React.Fragment>
+      );
+    };
 
     const upVotesDiff = upVotes.length - upVotesPreview(upVotes).length;
     const upVotesMore = upVotesDiff > 0 && (
@@ -264,7 +300,6 @@ export default class Buttons extends React.Component {
         </span>
       );
     }
-
     return (
       <div className="Buttons">
         <React.Fragment>
@@ -368,6 +403,9 @@ export default class Buttons extends React.Component {
           post={post}
           handlePostPopoverMenuClick={handlePostPopoverMenuClick}
           ownPost={ownPost}
+          isGuest={isGuest}
+          username={username}
+          getSocialInfoPost={getSocialInfoPost}
         >
           <i className="Buttons__post-menu iconfont icon-more" />
         </PostPopoverMenu>

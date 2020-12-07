@@ -11,6 +11,7 @@ import ObjectLightbox from '../components/ObjectLightbox';
 import ObjectType from './ObjectType';
 import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
+import BellButton from '../widgets/BellButton';
 import DEFAULTS from '../object/const/defaultValues';
 import { objectFields } from '../../common/constants/listOfFields';
 import {
@@ -92,6 +93,7 @@ const WobjHeader = ({
                         ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
                         : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
                     </Button>
+                    {wobject.youFollows && <BellButton wobj={wobject} />}
                   </React.Fragment>
                 )}
               </div>

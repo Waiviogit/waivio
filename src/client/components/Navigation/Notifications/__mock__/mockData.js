@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export const NOTIFICATION_CAMPAIGN_RESERVATION = {
   type: 'campaignReservation',
   campaignName: 'test activation 2',
@@ -10,6 +9,8 @@ export const NOTIFICATION_CAMPAIGN_RESERVATION = {
 export const CLAIM_REWARD = {
   type: 'claimReward',
   account: 'test',
+  rewardHIVE: 'test reward',
   rewardHBD: 'test reward',
+  rewardHP: 'test reward',
   timestamp: 1600948177,
 };

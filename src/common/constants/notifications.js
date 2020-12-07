@@ -21,6 +21,8 @@ export const CLAIM_REWARD = 'claimReward';
 export const BELL_POST = 'bellPost';
 export const BELL_REBLOG = 'bellReblog';
 export const BELL_FOLLOW = 'bellFollow';
+export const BELL_WOBJECT_REWARDS = 'bellWobjectRewards';
+export const BELL_WOBJECT_POST = 'bellWobjectPost';
 export const CAMPAIGN_MESSAGE = 'campaignMessage';
 export const LIKE = 'like';
 export const MY_LIKE = 'myLike';
@@ -57,6 +59,8 @@ export const PARSED_NOTIFICATIONS = [
   MY_COMMENT,
   MY_POST,
   CAMPAIGN_RESERVATION,
+  BELL_WOBJECT_REWARDS,
+  BELL_WOBJECT_POST,
 ];
 
 export const BUSY_API_TYPES = {

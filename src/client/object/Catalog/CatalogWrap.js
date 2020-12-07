@@ -12,11 +12,12 @@ import {
   getSuitableLanguage,
   getWobjectNested,
   getLoadingFlag,
+  getObject,
 } from '../../reducers';
 import { getLastPermlinksFromHash } from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import { setLoadedNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
-import { getObject } from '../../../waivioApi/ApiClient';
+import * as ApiClient from '../../../waivioApi/ApiClient';
 import './CatalogWrap.less';
 
 const CatalogWrap = props => {
@@ -33,21 +34,30 @@ const CatalogWrap = props => {
     setLoadingNestedWobject,
     isLoadingFlag,
   } = props;
-
-  const [sortBy, setSortingBy] = useState('recency');
+  const [sortBy, setSortingBy] = useState();
 
   useEffect(() => {
+    const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
+
     if (!isEmpty(wobject)) {
       if (hash) {
         setLoadingNestedWobject(true);
         const pathUrl = getLastPermlinksFromHash(hash);
-        getObject(pathUrl, userName, locale).then(wObject => {
-          setLists(get(wObject, 'listItems', []));
+        ApiClient.getObject(pathUrl, userName, locale).then(wObject => {
+          setSortingBy(defaultSortBy(wObject));
+          setLists(
+            sortListItemsBy(
+              get(wObject, 'listItems', []),
+              defaultSortBy(wObject),
+              wObject.sortCustom,
+            ),
+          );
           setNestedWobj(wObject);
           setLoadingNestedWobject(false);
         });
       } else {
-        setLists(wobject.listItems);
+        setSortingBy(defaultSortBy(wobject));
+        setLists(sortListItemsBy(wobject.listItems, defaultSortBy(wobject), wobject.sortCustom));
         setLoadingNestedWobject(false);
       }
     }
@@ -121,6 +131,7 @@ CatalogWrap.defaultProps = {
 const mapStateToProps = state => ({
   listItems: getObjectLists(state),
   wobjectNested: getWobjectNested(state),
+  wobject: getObject(state),
   locale: getSuitableLanguage(state),
   isLoadingFlag: getLoadingFlag(state),
 });

@@ -7,6 +7,7 @@ ShallowWrapper {
     isCashout={true}
     onCancel={[Function]}
     onConfirm={[Function]}
+    type="confirm"
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -207,6 +208,7 @@ ShallowWrapper {
     isCashout={false}
     onCancel={[Function]}
     onConfirm={[Function]}
+    type="confirm"
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -231,7 +233,7 @@ ShallowWrapper {
             className="iconfont icon-success"
           />
           <FormattedMessage
-            defaultMessage="Confirm"
+            defaultMessage="confirm"
             id="confirm"
             values={Object {}}
           />
@@ -264,7 +266,7 @@ ShallowWrapper {
               className="iconfont icon-success"
             />,
             <FormattedMessage
-              defaultMessage="Confirm"
+              defaultMessage="confirm"
               id="confirm"
               values={Object {}}
             />,
@@ -290,7 +292,7 @@ ShallowWrapper {
             "key": undefined,
             "nodeType": "class",
             "props": Object {
-              "defaultMessage": "Confirm",
+              "defaultMessage": "confirm",
               "id": "confirm",
               "values": Object {},
             },
@@ -366,7 +368,7 @@ ShallowWrapper {
               className="iconfont icon-success"
             />
             <FormattedMessage
-              defaultMessage="Confirm"
+              defaultMessage="confirm"
               id="confirm"
               values={Object {}}
             />
@@ -399,7 +401,7 @@ ShallowWrapper {
                 className="iconfont icon-success"
               />,
               <FormattedMessage
-                defaultMessage="Confirm"
+                defaultMessage="confirm"
                 id="confirm"
                 values={Object {}}
               />,
@@ -425,7 +427,7 @@ ShallowWrapper {
               "key": undefined,
               "nodeType": "class",
               "props": Object {
-                "defaultMessage": "Confirm",
+                "defaultMessage": "confirm",
                 "id": "confirm",
                 "values": Object {},
               },

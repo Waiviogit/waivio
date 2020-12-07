@@ -10,7 +10,6 @@ import {
 } from '../helpers/apiHelpers';
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
-import { getTransferHistory, getTransferHistoryTableView } from '../../waivioApi/ApiClient';
 import { guestUserRegex } from '../helpers/regexHelpers';
 // eslint-disable-next-line no-duplicate-imports
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -272,7 +271,7 @@ export const getUserTransactionHistory = (username, limit, operationNum) => disp
   dispatch({
     type: GET_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, limit, operationNum)
+      promise: ApiClient.getTransferHistory(username, limit, operationNum)
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
@@ -295,7 +294,7 @@ export const getUserTableTransactionHistory = (
   dispatch({
     type: GET_TABLE_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistoryTableView(
+      promise: ApiClient.getTransferHistoryTableView(
         username,
         limit,
         tableView,
@@ -320,7 +319,7 @@ export const getMoreUserTransactionHistory = (username, limit, operationNum) => 
   dispatch({
     type: GET_MORE_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, limit, operationNum)
+      promise: ApiClient.getTransferHistory(username, limit, operationNum)
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
@@ -349,7 +348,7 @@ export const getMoreTableUserTransactionHistory = (
   dispatch({
     type: GET_MORE_TABLE_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistoryTableView(
+      promise: ApiClient.getTransferHistoryTableView(
         username,
         limit,
         tableView,

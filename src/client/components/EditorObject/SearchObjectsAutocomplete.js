@@ -177,11 +177,19 @@ class SearchObjectsAutocomplete extends Component {
 
     return searchObjectsOptions;
   };
+
+  getListItemAuthorPermlink = item => get(item, 'author_permlink', '');
+
   searchObjectListed = searchObjectPermlink => {
     const parentListItems = get(this.props.parentObject, 'listItems', []);
     return (
-      parentListItems.some(item => get(item, 'author_permlink', '') === searchObjectPermlink) &&
-      parentListItems.some(item => getObjectName(item).toLowerCase() === this.state.searchString)
+      parentListItems.some(item => this.getListItemAuthorPermlink(item) === searchObjectPermlink) &&
+      (parentListItems.some(
+        item => getObjectName(item).toLowerCase() === this.state.searchString,
+      ) ||
+        parentListItems.some(item =>
+          this.state.searchString.includes(this.getListItemAuthorPermlink(item)),
+        ))
     );
   };
   render() {

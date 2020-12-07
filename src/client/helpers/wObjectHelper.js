@@ -5,6 +5,7 @@ import LANGUAGES from '../translations/languages';
 export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'default_name');
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 export const getObjectAvatar = (wobj = {}) => wobj.avatar || get(wobj, ['parent', 'avatar'], '');
+export const getObjectType = (wobj = {}) => get(wobj, 'object_type') || get(wobj, 'type');
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 
@@ -115,22 +116,23 @@ export const parseWobjectField = (wobject, fieldName) => {
   }
 };
 
-export const parseButtonsField = wobject =>
-  get(wobject, 'button', []).map(btn => {
-    if (btn) {
-      try {
-        return {
-          ...btn,
-          id: TYPES_OF_MENU_ITEM.BUTTON,
-          body: JSON.parse(btn.body),
-        };
-      } catch (err) {
-        return null;
-      }
-    }
+export const parseButtonsField = wobject => {
+  const buttons = get(wobject, 'button');
 
-    return null;
+  if (!buttons) return [];
+
+  return buttons.map(btn => {
+    try {
+      return {
+        ...btn,
+        id: TYPES_OF_MENU_ITEM.BUTTON,
+        body: JSON.parse(btn.body),
+      };
+    } catch (err) {
+      return null;
+    }
   });
+};
 
 export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;
@@ -148,7 +150,9 @@ export const getLastPermlinksFromHash = url =>
     .split('/')
     .pop()
     .replace('#', '');
-export const getPermlinksFromHash = url => url.replace('#', '').split('/');
+
+export const getPermlinksFromHash = url => (url ? url.replace('#', '').split('/') : []);
+
 export const getMenuItems = (wobject, menuType, objType) => {
   const listItems = get(wobject, 'listItem', []).filter(item => item.type === menuType);
   if (isEmpty(wobject.menuItems)) return listItems;
@@ -162,4 +166,43 @@ export const getMenuItems = (wobject, menuType, objType) => {
     });
 };
 
-export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos');
+export const getListItems = wobject => get(wobject, 'listItems', []);
+
+export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};
+
+export const compareBreadcrumb = wobj => ({
+  id: wobj.author_permlink,
+  name: getObjectName(wobj),
+  title: getObjectTitle(wobj),
+  path: wobj.defaultShowLink,
+  type: getObjectType(wobj) !== 'page' ? 'menu' : getObjectType(wobj),
+});
+
+export const sortWobjectsByHash = (wobjects, permlinks) =>
+  permlinks.reduce((acc, curr) => {
+    const currentWobj = wobjects.find(wobj => wobj.id === curr);
+
+    return [...acc, currentWobj];
+  }, []);
+
+export const createNewHash = (currPermlink, hash, wobj = {}) => {
+  const permlinks = getPermlinksFromHash(hash);
+  const findIndex = permlinks.findIndex(el => el === currPermlink);
+  const hashPermlinks = [...permlinks];
+
+  if (currPermlink === wobj.author_permlink) return '';
+
+  if (findIndex >= 0) hashPermlinks.splice(findIndex + 1);
+  else hashPermlinks.push(currPermlink);
+
+  return hashPermlinks.join('/');
+};
+
+export const createNewPath = (wobj, type) => {
+  let currType = type;
+
+  if (hasType(wobj, 'list') && type !== 'page') currType = 'list';
+  if (!hasType(wobj, 'list') && type !== 'page') currType = 'menu';
+
+  return `/object/${wobj.author_permlink}/${currType}`;
+};

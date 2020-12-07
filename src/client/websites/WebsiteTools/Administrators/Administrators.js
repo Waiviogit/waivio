@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, message } from 'antd';
 import { connect } from 'react-redux';
@@ -26,8 +27,10 @@ export const WebsitesAdministrators = ({
   addWebAdmins,
   deleteWebAdmins,
   isLoading,
+  location,
 }) => {
   const [selectUser, setSelectUser] = useState('');
+  const [searchString, setSearchString] = useState('');
   const host = match.params.site;
 
   const addAdmin = () => {
@@ -37,12 +40,13 @@ export const WebsitesAdministrators = ({
       addWebAdmins(host, selectUser)
         .then(() => setSelectUser(null))
         .catch(() => message.error('Try again, please'));
+      setSearchString('');
     }
   };
 
   useEffect(() => {
     getWebAdmins(host);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <div className="WebsitesAdministrators">
@@ -60,7 +64,7 @@ export const WebsitesAdministrators = ({
         {intl.formatMessage({
           id: 'certain_objects_appear',
           defaultMessage:
-            'But sometimes it is essential that certain objects appear on the website exactly as intended by the site operators. To do this, the website owner may grant administrative privileges to',
+            'But sometimes it is essential that certain objects appear on the website exactly as intended by the site operators. To do this, the website owner may grant administrative privileges to some Hive users.',
         })}
       </p>
       <p>
@@ -90,6 +94,8 @@ export const WebsitesAdministrators = ({
                 wobjects_weight: weight,
               })
             }
+            searchString={searchString}
+            setSearchString={setSearchString}
             style={{ width: '100%' }}
           />
         )}
@@ -111,7 +117,7 @@ export const WebsitesAdministrators = ({
         {isEmpty(admins) ? (
           <FormattedMessage
             id={'web_admins_empty'}
-            defaultMessage={"You don't have administratives."}
+            defaultMessage={"You don't have administrators."}
           />
         ) : (
           admins.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
@@ -146,6 +152,7 @@ WebsitesAdministrators.propTypes = {
     }),
   }).isRequired,
   isLoading: PropTypes.bool.isRequired,
+  location: PropTypes.shape().isRequired,
 };
 
 WebsitesAdministrators.defaultProps = {
@@ -162,4 +169,4 @@ export default connect(
     addWebAdmins: addWebAdministrator,
     deleteWebAdmins: deleteWebAdministrator,
   },
-)(injectIntl(WebsitesAdministrators));
+)(withRouter(injectIntl(WebsitesAdministrators)));

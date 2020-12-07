@@ -11,6 +11,7 @@ import {
   SET_WOBJECT_NESTED,
   SET_LIST_ITEMS,
   SET_LOADING_NESTED_WOBJECT,
+  BELL_WOBJECT_NOTIFICATION,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 
@@ -282,7 +283,7 @@ export default function wobjectReducer(state = initialState, action) {
     case SET_WOBJECT_NESTED: {
       return {
         ...state,
-        isLoadingFlag: action.payload,
+        isLoadingFlag: false,
         nestedWobject: action.payload,
       };
     }
@@ -298,6 +299,37 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         lists: action.lists,
+      };
+    }
+
+    case BELL_WOBJECT_NOTIFICATION.SUCCESS: {
+      return {
+        ...state,
+        wobject: {
+          ...state.wobject,
+          bell: action.payload.subscribe,
+          bellLoading: false,
+        },
+      };
+    }
+
+    case BELL_WOBJECT_NOTIFICATION.START: {
+      return {
+        ...state,
+        wobject: {
+          ...state.wobject,
+          bellLoading: true,
+        },
+      };
+    }
+
+    case BELL_WOBJECT_NOTIFICATION.ERROR: {
+      return {
+        ...state,
+        wobject: {
+          ...state.wobject,
+          bellLoading: false,
+        },
       };
     }
 

@@ -8,7 +8,7 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import { getObjectName, parseAddress, getObjectAvatar } from '../helpers/wObjectHelper';
+import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
@@ -17,19 +17,23 @@ const ObjectCardView = ({
   intl,
   wObject,
   options: { mobileView = 'compact', ownRatesOnly = false },
+  path,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject);
   const parent = get(wObject, 'parent', {});
+  const parentLink = get(parent, 'defaultShowLink');
+  const objName = getObjectName(wObject);
+  const parentName = getObjectName(parent);
+  let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
+  pathName = hasType(wObject, 'page') ? path : pathName;
 
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
     setTags([wObject.object_type, ...objectTags]);
-  }, [wObject, setTags]);
-
-  const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
+  }, [wObject.author_permlink, setTags]);
 
   const avatarLayout = () => {
     let url = getObjectAvatar(wObject) || getObjectAvatar(parent);
@@ -50,8 +54,7 @@ const ObjectCardView = ({
       />
     );
   };
-  const objName = getObjectName(wObject);
-  const parentName = getObjectName(parent);
+
   const description = wObject.description && (
     <div className="ObjectCardView__title" title={wObject.description}>
       {truncate(wObject.description, {
@@ -65,8 +68,6 @@ const ObjectCardView = ({
       id: 'GoTo',
       defaultMessage: 'Go to',
     })} ${wobjName}`;
-
-  const parentLink = get(parent, 'defaultShowLink');
 
   return (
     <div key={wObject.author_permlink}>
@@ -147,6 +148,7 @@ const ObjectCardView = ({
 ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   wObject: PropTypes.shape(),
+  path: PropTypes.string,
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -157,5 +159,6 @@ ObjectCardView.propTypes = {
 ObjectCardView.defaultProps = {
   options: {},
   wObject: {},
+  path: '',
 };
 export default injectIntl(ObjectCardView);

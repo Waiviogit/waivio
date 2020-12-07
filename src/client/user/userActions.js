@@ -7,8 +7,6 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
-// eslint-disable-next-line no-duplicate-imports
-import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { createCommentPermlink } from '../vendor/steemitHelpers';
 import { getObjectName } from '../helpers/wObjectHelper';
 
@@ -65,7 +63,7 @@ export const GET_FOLLOWING_ERROR = '@user/GET_FOLLOWING_ERROR';
 
 export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
   const state = getState();
-  const user = getAuthenticatedUserName(state);
+  const user = store.getAuthenticatedUserName(state);
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -93,8 +91,8 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   const state = getState();
   const skip = 0;
   const limit = state.auth.user.objects_following_count;
-  const authUserName = getAuthenticatedUserName(state);
-  const locale = getLocale(state);
+  const authUserName = store.getAuthenticatedUserName(state);
+  const locale = store.getLocale(state);
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -112,7 +110,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
 export const GET_FOLLOWING_UPDATES = createAsyncActionType('@user/GET_FOLLOWING_UPDATES');
 export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
   const state = getState();
-  const locale = getLocale(state);
+  const locale = store.getLocale(state);
   const isUpdatesFetched = store.getFollowingUpdatesFetched(state);
   const userName = store.getAuthenticatedUserName(state);
   if (!isUpdatesFetched && userName) {
@@ -173,7 +171,7 @@ export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SU
 export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
 
 export const getRecommendedObj = () => (dispatch, getState) => {
-  const locale = getLocale(getState());
+  const locale = store.getLocale(getState());
 
   return dispatch({
     type: GET_RECOMMENDED_OBJECTS,

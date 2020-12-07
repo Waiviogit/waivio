@@ -13,12 +13,6 @@ ShallowWrapper {
           "calls": Array [
             Array [
               Object {
-                "defaultMessage": "Create new website",
-                "id": "manage_website",
-              },
-            ],
-            Array [
-              Object {
                 "defaultMessage": "Prices",
                 "id": "prices",
               },
@@ -43,6 +37,12 @@ ShallowWrapper {
             ],
             Array [
               Object {
+                "defaultMessage": "* Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
+                "id": "manage_website_info_dau",
+              },
+            ],
+            Array [
+              Object {
                 "defaultMessage": "Account balance (HBD)",
                 "id": "manage_account_balance",
               },
@@ -55,8 +55,26 @@ ShallowWrapper {
             ],
             Array [
               Object {
+                "defaultMessage": "Daily active users are averaged over the last 7 days.",
+                "id": "manage_website_info_dau_averaged",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.",
+                "id": "manage_website_info_account_balance",
+              },
+            ],
+            Array [
+              Object {
                 "defaultMessage": "Websites",
-                "id": "manage_websites",
+                "id": "websites",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Create new website",
+                "id": "create_website",
               },
             ],
           ],
@@ -97,32 +115,898 @@ ShallowWrapper {
     "nodeType": "host",
     "props": Object {
       "children": Array [
-        <HelmetWrapper
-          defer={true}
-          encodeSpecialCharacters={true}
-        >
-          <title>
-             
-            - Waivio
-          </title>
-        </HelmetWrapper>,
         <div
-          className="settings-layout container"
+          className="center ManageWebsites"
         >
-          <Affix
-            className="leftContainer"
-            stickPosition={77}
+          <h1>
+            <FormattedMessage
+              defaultMessage="Websites management"
+              id="website_management"
+              values={Object {}}
+            />
+          </h1>
+          <div
+            className="Settings__section"
           >
-            <div
-              className="left"
-            >
-              <LeftSidebar />
+            <h3
+              className="ManageWebsites__title"
+            />
+            <div>
+              <span
+                className="ManageWebsites__dot"
+              >
+                •
+              </span>
             </div>
-          </Affix>
+            <div>
+              <span
+                className="ManageWebsites__dot"
+              >
+                •
+              </span>
+            </div>
+            <p />
+          </div>
+          <div
+            className="Settings__section"
+          >
+            <h3
+              className="ManageWebsites__title"
+            >
+              <Button
+                block={false}
+                className="ManageWebsites__btn-pay"
+                ghost={false}
+                htmlType="button"
+                loading={false}
+                onClick={[Function]}
+                type="primary"
+              />
+            </h3>
+            <InjectIntl(DynamicTable)
+              bodyConfig={
+                Array [
+                  Object {},
+                ]
+              }
+              header={
+                Array [
+                  Object {
+                    "id": "paid",
+                    "intl": Object {
+                      "defaultMessage": "Paid (HBD)",
+                      "id": "paid_hbd",
+                    },
+                  },
+                  Object {
+                    "id": "avgDau",
+                    "intl": Object {
+                      "defaultMessage": "Average DAU*",
+                      "id": "average_dau",
+                    },
+                  },
+                  Object {
+                    "id": "dailyCost",
+                    "intl": Object {
+                      "defaultMessage": "Daily cost(HBD)",
+                      "id": "daily_cost",
+                    },
+                  },
+                  Object {
+                    "id": "remainingDays",
+                    "intl": Object {
+                      "defaultMessage": "Days remaining",
+                      "id": "days_remaning",
+                    },
+                  },
+                ]
+              }
+            />
+            <p />
+            <p />
+          </div>
+          <div
+            className="Settings__section"
+          >
+            <h3
+              className="ManageWebsites__title"
+            />
+            <InjectIntl(DynamicTable)
+              bodyConfig={
+                Array [
+                  Object {},
+                ]
+              }
+              deleteItem={[MockFunction]}
+              header={
+                Array [
+                  Object {
+                    "id": "active",
+                    "intl": Object {
+                      "defaultMessage": "Active",
+                      "id": "active",
+                    },
+                    "type": "checkbox",
+                  },
+                  Object {
+                    "id": "name",
+                    "intl": Object {
+                      "defaultMessage": "Website",
+                      "id": "website",
+                    },
+                  },
+                  Object {
+                    "id": "parent",
+                    "intl": Object {
+                      "defaultMessage": "Template",
+                      "id": "template",
+                    },
+                  },
+                  Object {
+                    "id": "status",
+                    "intl": Object {
+                      "defaultMessage": "Status",
+                      "id": "status",
+                    },
+                  },
+                  Object {
+                    "id": "averageDau",
+                    "intl": Object {
+                      "defaultMessage": "Average DAU*",
+                      "id": "average_dau",
+                    },
+                  },
+                  Object {
+                    "checkShowItem": [Function],
+                    "id": "delete",
+                    "intl": Object {
+                      "defaultMessage": "Actions",
+                      "id": "actions",
+                    },
+                    "type": "delete",
+                  },
+                ]
+              }
+              onChange={[Function]}
+            />
+            <button
+              className="ManageWebsites__button"
+            >
+              <UNDEFINED
+                to="/create"
+              >
+                 
+              </UNDEFINED>
+            </button>
+          </div>
+        </div>,
+        <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
+      ],
+      "className": "shifted",
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <h1>
+              <FormattedMessage
+                defaultMessage="Websites management"
+                id="website_management"
+                values={Object {}}
+              />
+            </h1>,
+            <div
+              className="Settings__section"
+            >
+              <h3
+                className="ManageWebsites__title"
+              />
+              <div>
+                <span
+                  className="ManageWebsites__dot"
+                >
+                  •
+                </span>
+              </div>
+              <div>
+                <span
+                  className="ManageWebsites__dot"
+                >
+                  •
+                </span>
+              </div>
+              <p />
+            </div>,
+            <div
+              className="Settings__section"
+            >
+              <h3
+                className="ManageWebsites__title"
+              >
+                <Button
+                  block={false}
+                  className="ManageWebsites__btn-pay"
+                  ghost={false}
+                  htmlType="button"
+                  loading={false}
+                  onClick={[Function]}
+                  type="primary"
+                />
+              </h3>
+              <InjectIntl(DynamicTable)
+                bodyConfig={
+                  Array [
+                    Object {},
+                  ]
+                }
+                header={
+                  Array [
+                    Object {
+                      "id": "paid",
+                      "intl": Object {
+                        "defaultMessage": "Paid (HBD)",
+                        "id": "paid_hbd",
+                      },
+                    },
+                    Object {
+                      "id": "avgDau",
+                      "intl": Object {
+                        "defaultMessage": "Average DAU*",
+                        "id": "average_dau",
+                      },
+                    },
+                    Object {
+                      "id": "dailyCost",
+                      "intl": Object {
+                        "defaultMessage": "Daily cost(HBD)",
+                        "id": "daily_cost",
+                      },
+                    },
+                    Object {
+                      "id": "remainingDays",
+                      "intl": Object {
+                        "defaultMessage": "Days remaining",
+                        "id": "days_remaning",
+                      },
+                    },
+                  ]
+                }
+              />
+              <p />
+              <p />
+            </div>,
+            <div
+              className="Settings__section"
+            >
+              <h3
+                className="ManageWebsites__title"
+              />
+              <InjectIntl(DynamicTable)
+                bodyConfig={
+                  Array [
+                    Object {},
+                  ]
+                }
+                deleteItem={[MockFunction]}
+                header={
+                  Array [
+                    Object {
+                      "id": "active",
+                      "intl": Object {
+                        "defaultMessage": "Active",
+                        "id": "active",
+                      },
+                      "type": "checkbox",
+                    },
+                    Object {
+                      "id": "name",
+                      "intl": Object {
+                        "defaultMessage": "Website",
+                        "id": "website",
+                      },
+                    },
+                    Object {
+                      "id": "parent",
+                      "intl": Object {
+                        "defaultMessage": "Template",
+                        "id": "template",
+                      },
+                    },
+                    Object {
+                      "id": "status",
+                      "intl": Object {
+                        "defaultMessage": "Status",
+                        "id": "status",
+                      },
+                    },
+                    Object {
+                      "id": "averageDau",
+                      "intl": Object {
+                        "defaultMessage": "Average DAU*",
+                        "id": "average_dau",
+                      },
+                    },
+                    Object {
+                      "checkShowItem": [Function],
+                      "id": "delete",
+                      "intl": Object {
+                        "defaultMessage": "Actions",
+                        "id": "actions",
+                      },
+                      "type": "delete",
+                    },
+                  ]
+                }
+                onChange={[Function]}
+              />
+              <button
+                className="ManageWebsites__button"
+              >
+                <UNDEFINED
+                  to="/create"
+                >
+                   
+                </UNDEFINED>
+              </button>
+            </div>,
+          ],
+          "className": "center ManageWebsites",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <FormattedMessage
+                defaultMessage="Websites management"
+                id="website_management"
+                values={Object {}}
+              />,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Websites management",
+                "id": "website_management",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "h1",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <h3
+                  className="ManageWebsites__title"
+                />,
+                <div>
+                  <span
+                    className="ManageWebsites__dot"
+                  >
+                    •
+                  </span>
+                </div>,
+                <div>
+                  <span
+                    className="ManageWebsites__dot"
+                  >
+                    •
+                  </span>
+                </div>,
+                <p />,
+              ],
+              "className": "Settings__section",
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                  "className": "ManageWebsites__title",
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "h3",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": Array [
+                    <span
+                      className="ManageWebsites__dot"
+                    >
+                      •
+                    </span>,
+                    undefined,
+                  ],
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": "•",
+                      "className": "ManageWebsites__dot",
+                    },
+                    "ref": null,
+                    "rendered": "•",
+                    "type": "span",
+                  },
+                  undefined,
+                ],
+                "type": "div",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": Array [
+                    <span
+                      className="ManageWebsites__dot"
+                    >
+                      •
+                    </span>,
+                    undefined,
+                  ],
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": "•",
+                      "className": "ManageWebsites__dot",
+                    },
+                    "ref": null,
+                    "rendered": "•",
+                    "type": "span",
+                  },
+                  undefined,
+                ],
+                "type": "div",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "p",
+              },
+            ],
+            "type": "div",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <h3
+                  className="ManageWebsites__title"
+                >
+                  <Button
+                    block={false}
+                    className="ManageWebsites__btn-pay"
+                    ghost={false}
+                    htmlType="button"
+                    loading={false}
+                    onClick={[Function]}
+                    type="primary"
+                  />
+                </h3>,
+                <InjectIntl(DynamicTable)
+                  bodyConfig={
+                    Array [
+                      Object {},
+                    ]
+                  }
+                  header={
+                    Array [
+                      Object {
+                        "id": "paid",
+                        "intl": Object {
+                          "defaultMessage": "Paid (HBD)",
+                          "id": "paid_hbd",
+                        },
+                      },
+                      Object {
+                        "id": "avgDau",
+                        "intl": Object {
+                          "defaultMessage": "Average DAU*",
+                          "id": "average_dau",
+                        },
+                      },
+                      Object {
+                        "id": "dailyCost",
+                        "intl": Object {
+                          "defaultMessage": "Daily cost(HBD)",
+                          "id": "daily_cost",
+                        },
+                      },
+                      Object {
+                        "id": "remainingDays",
+                        "intl": Object {
+                          "defaultMessage": "Days remaining",
+                          "id": "days_remaning",
+                        },
+                      },
+                    ]
+                  }
+                />,
+                <p />,
+                <p />,
+              ],
+              "className": "Settings__section",
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": Array [
+                    undefined,
+                    <Button
+                      block={false}
+                      className="ManageWebsites__btn-pay"
+                      ghost={false}
+                      htmlType="button"
+                      loading={false}
+                      onClick={[Function]}
+                      type="primary"
+                    />,
+                  ],
+                  "className": "ManageWebsites__title",
+                },
+                "ref": null,
+                "rendered": Array [
+                  undefined,
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "block": false,
+                      "children": undefined,
+                      "className": "ManageWebsites__btn-pay",
+                      "ghost": false,
+                      "htmlType": "button",
+                      "loading": false,
+                      "onClick": [Function],
+                      "type": "primary",
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                ],
+                "type": "h3",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "bodyConfig": Array [
+                    Object {},
+                  ],
+                  "header": Array [
+                    Object {
+                      "id": "paid",
+                      "intl": Object {
+                        "defaultMessage": "Paid (HBD)",
+                        "id": "paid_hbd",
+                      },
+                    },
+                    Object {
+                      "id": "avgDau",
+                      "intl": Object {
+                        "defaultMessage": "Average DAU*",
+                        "id": "average_dau",
+                      },
+                    },
+                    Object {
+                      "id": "dailyCost",
+                      "intl": Object {
+                        "defaultMessage": "Daily cost(HBD)",
+                        "id": "daily_cost",
+                      },
+                    },
+                    Object {
+                      "id": "remainingDays",
+                      "intl": Object {
+                        "defaultMessage": "Days remaining",
+                        "id": "days_remaning",
+                      },
+                    },
+                  ],
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "p",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "p",
+              },
+            ],
+            "type": "div",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <h3
+                  className="ManageWebsites__title"
+                />,
+                <InjectIntl(DynamicTable)
+                  bodyConfig={
+                    Array [
+                      Object {},
+                    ]
+                  }
+                  deleteItem={[MockFunction]}
+                  header={
+                    Array [
+                      Object {
+                        "id": "active",
+                        "intl": Object {
+                          "defaultMessage": "Active",
+                          "id": "active",
+                        },
+                        "type": "checkbox",
+                      },
+                      Object {
+                        "id": "name",
+                        "intl": Object {
+                          "defaultMessage": "Website",
+                          "id": "website",
+                        },
+                      },
+                      Object {
+                        "id": "parent",
+                        "intl": Object {
+                          "defaultMessage": "Template",
+                          "id": "template",
+                        },
+                      },
+                      Object {
+                        "id": "status",
+                        "intl": Object {
+                          "defaultMessage": "Status",
+                          "id": "status",
+                        },
+                      },
+                      Object {
+                        "id": "averageDau",
+                        "intl": Object {
+                          "defaultMessage": "Average DAU*",
+                          "id": "average_dau",
+                        },
+                      },
+                      Object {
+                        "checkShowItem": [Function],
+                        "id": "delete",
+                        "intl": Object {
+                          "defaultMessage": "Actions",
+                          "id": "actions",
+                        },
+                        "type": "delete",
+                      },
+                    ]
+                  }
+                  onChange={[Function]}
+                />,
+                <button
+                  className="ManageWebsites__button"
+                >
+                  <UNDEFINED
+                    to="/create"
+                  >
+                     
+                  </UNDEFINED>
+                </button>,
+              ],
+              "className": "Settings__section",
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                  "className": "ManageWebsites__title",
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "h3",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "bodyConfig": Array [
+                    Object {},
+                  ],
+                  "deleteItem": [MockFunction],
+                  "header": Array [
+                    Object {
+                      "id": "active",
+                      "intl": Object {
+                        "defaultMessage": "Active",
+                        "id": "active",
+                      },
+                      "type": "checkbox",
+                    },
+                    Object {
+                      "id": "name",
+                      "intl": Object {
+                        "defaultMessage": "Website",
+                        "id": "website",
+                      },
+                    },
+                    Object {
+                      "id": "parent",
+                      "intl": Object {
+                        "defaultMessage": "Template",
+                        "id": "template",
+                      },
+                    },
+                    Object {
+                      "id": "status",
+                      "intl": Object {
+                        "defaultMessage": "Status",
+                        "id": "status",
+                      },
+                    },
+                    Object {
+                      "id": "averageDau",
+                      "intl": Object {
+                        "defaultMessage": "Average DAU*",
+                        "id": "average_dau",
+                      },
+                    },
+                    Object {
+                      "checkShowItem": [Function],
+                      "id": "delete",
+                      "intl": Object {
+                        "defaultMessage": "Actions",
+                        "id": "actions",
+                      },
+                      "type": "delete",
+                    },
+                  ],
+                  "onChange": [Function],
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": <UNDEFINED
+                    to="/create"
+                  >
+                     
+                  </UNDEFINED>,
+                  "className": "ManageWebsites__button",
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "function",
+                  "props": Object {
+                    "children": Array [
+                      undefined,
+                      " ",
+                    ],
+                    "to": "/create",
+                  },
+                  "ref": null,
+                  "rendered": Array [
+                    undefined,
+                    " ",
+                  ],
+                  "type": Object {
+                    "$$typeof": Symbol(react.forward_ref),
+                    "displayName": "Link",
+                    "propTypes": Object {
+                      "innerRef": [Function],
+                      "onClick": [Function],
+                      "replace": [Function],
+                      "target": [Function],
+                      "to": [Function],
+                    },
+                    "render": [Function],
+                  },
+                },
+                "type": "button",
+              },
+            ],
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {},
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
           <div
             className="center ManageWebsites"
           >
-            <withRouter(MobileNavigation) />
             <h1>
               <FormattedMessage
                 defaultMessage="Websites management"
@@ -150,9 +1034,7 @@ ShallowWrapper {
                   •
                 </span>
               </div>
-              <p>
-                Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.
-              </p>
+              <p />
             </div>
             <div
               className="Settings__section"
@@ -209,12 +1091,8 @@ ShallowWrapper {
                   ]
                 }
               />
-              <p>
-                Daily active users are averaged over the last 7 days.
-              </p>
-              <p>
-                ** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.
-              </p>
+              <p />
+              <p />
             </div>
             <div
               className="Settings__section"
@@ -280,1134 +1158,15 @@ ShallowWrapper {
                 }
                 onChange={[Function]}
               />
-            </div>
-          </div>
-        </div>,
-        <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
-      ],
-      "className": "shifted",
-    },
-    "ref": null,
-    "rendered": Array [
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "children": <title>
-             
-            - Waivio
-          </title>,
-          "defer": true,
-          "encodeSpecialCharacters": true,
-        },
-        "ref": null,
-        "rendered": Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "host",
-          "props": Object {
-            "children": Array [
-              undefined,
-              " ",
-              "- Waivio",
-            ],
-          },
-          "ref": null,
-          "rendered": Array [
-            undefined,
-            " ",
-            "- Waivio",
-          ],
-          "type": "title",
-        },
-        "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "host",
-        "props": Object {
-          "children": Array [
-            <Affix
-              className="leftContainer"
-              stickPosition={77}
-            >
-              <div
-                className="left"
+              <button
+                className="ManageWebsites__button"
               >
-                <LeftSidebar />
-              </div>
-            </Affix>,
-            <div
-              className="center ManageWebsites"
-            >
-              <withRouter(MobileNavigation) />
-              <h1>
-                <FormattedMessage
-                  defaultMessage="Websites management"
-                  id="website_management"
-                  values={Object {}}
-                />
-              </h1>
-              <div
-                className="Settings__section"
-              >
-                <h3
-                  className="ManageWebsites__title"
-                />
-                <div>
-                  <span
-                    className="ManageWebsites__dot"
-                  >
-                    •
-                  </span>
-                </div>
-                <div>
-                  <span
-                    className="ManageWebsites__dot"
-                  >
-                    •
-                  </span>
-                </div>
-                <p>
-                  Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.
-                </p>
-              </div>
-              <div
-                className="Settings__section"
-              >
-                <h3
-                  className="ManageWebsites__title"
+                <UNDEFINED
+                  to="/create"
                 >
-                  <Button
-                    block={false}
-                    className="ManageWebsites__btn-pay"
-                    ghost={false}
-                    htmlType="button"
-                    loading={false}
-                    onClick={[Function]}
-                    type="primary"
-                  />
-                </h3>
-                <InjectIntl(DynamicTable)
-                  bodyConfig={
-                    Array [
-                      Object {},
-                    ]
-                  }
-                  header={
-                    Array [
-                      Object {
-                        "id": "paid",
-                        "intl": Object {
-                          "defaultMessage": "Paid (HBD)",
-                          "id": "paid_hbd",
-                        },
-                      },
-                      Object {
-                        "id": "avgDau",
-                        "intl": Object {
-                          "defaultMessage": "Average DAU*",
-                          "id": "average_dau",
-                        },
-                      },
-                      Object {
-                        "id": "dailyCost",
-                        "intl": Object {
-                          "defaultMessage": "Daily cost(HBD)",
-                          "id": "daily_cost",
-                        },
-                      },
-                      Object {
-                        "id": "remainingDays",
-                        "intl": Object {
-                          "defaultMessage": "Days remaining",
-                          "id": "days_remaning",
-                        },
-                      },
-                    ]
-                  }
-                />
-                <p>
-                  Daily active users are averaged over the last 7 days.
-                </p>
-                <p>
-                  ** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.
-                </p>
-              </div>
-              <div
-                className="Settings__section"
-              >
-                <h3
-                  className="ManageWebsites__title"
-                />
-                <InjectIntl(DynamicTable)
-                  bodyConfig={
-                    Array [
-                      Object {},
-                    ]
-                  }
-                  deleteItem={[MockFunction]}
-                  header={
-                    Array [
-                      Object {
-                        "id": "active",
-                        "intl": Object {
-                          "defaultMessage": "Active",
-                          "id": "active",
-                        },
-                        "type": "checkbox",
-                      },
-                      Object {
-                        "id": "name",
-                        "intl": Object {
-                          "defaultMessage": "Website",
-                          "id": "website",
-                        },
-                      },
-                      Object {
-                        "id": "parent",
-                        "intl": Object {
-                          "defaultMessage": "Template",
-                          "id": "template",
-                        },
-                      },
-                      Object {
-                        "id": "status",
-                        "intl": Object {
-                          "defaultMessage": "Status",
-                          "id": "status",
-                        },
-                      },
-                      Object {
-                        "id": "averageDau",
-                        "intl": Object {
-                          "defaultMessage": "Average DAU*",
-                          "id": "average_dau",
-                        },
-                      },
-                      Object {
-                        "checkShowItem": [Function],
-                        "id": "delete",
-                        "intl": Object {
-                          "defaultMessage": "Actions",
-                          "id": "actions",
-                        },
-                        "type": "delete",
-                      },
-                    ]
-                  }
-                  onChange={[Function]}
-                />
-              </div>
-            </div>,
-          ],
-          "className": "settings-layout container",
-        },
-        "ref": null,
-        "rendered": Array [
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "class",
-            "props": Object {
-              "children": <div
-                className="left"
-              >
-                <LeftSidebar />
-              </div>,
-              "className": "leftContainer",
-              "stickPosition": 77,
-            },
-            "ref": null,
-            "rendered": Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "host",
-              "props": Object {
-                "children": <LeftSidebar />,
-                "className": "left",
-              },
-              "ref": null,
-              "rendered": Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "function",
-                "props": Object {},
-                "ref": null,
-                "rendered": null,
-                "type": [Function],
-              },
-              "type": "div",
-            },
-            "type": [Function],
-          },
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "host",
-            "props": Object {
-              "children": Array [
-                <withRouter(MobileNavigation) />,
-                <h1>
-                  <FormattedMessage
-                    defaultMessage="Websites management"
-                    id="website_management"
-                    values={Object {}}
-                  />
-                </h1>,
-                <div
-                  className="Settings__section"
-                >
-                  <h3
-                    className="ManageWebsites__title"
-                  />
-                  <div>
-                    <span
-                      className="ManageWebsites__dot"
-                    >
-                      •
-                    </span>
-                  </div>
-                  <div>
-                    <span
-                      className="ManageWebsites__dot"
-                    >
-                      •
-                    </span>
-                  </div>
-                  <p>
-                    Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.
-                  </p>
-                </div>,
-                <div
-                  className="Settings__section"
-                >
-                  <h3
-                    className="ManageWebsites__title"
-                  >
-                    <Button
-                      block={false}
-                      className="ManageWebsites__btn-pay"
-                      ghost={false}
-                      htmlType="button"
-                      loading={false}
-                      onClick={[Function]}
-                      type="primary"
-                    />
-                  </h3>
-                  <InjectIntl(DynamicTable)
-                    bodyConfig={
-                      Array [
-                        Object {},
-                      ]
-                    }
-                    header={
-                      Array [
-                        Object {
-                          "id": "paid",
-                          "intl": Object {
-                            "defaultMessage": "Paid (HBD)",
-                            "id": "paid_hbd",
-                          },
-                        },
-                        Object {
-                          "id": "avgDau",
-                          "intl": Object {
-                            "defaultMessage": "Average DAU*",
-                            "id": "average_dau",
-                          },
-                        },
-                        Object {
-                          "id": "dailyCost",
-                          "intl": Object {
-                            "defaultMessage": "Daily cost(HBD)",
-                            "id": "daily_cost",
-                          },
-                        },
-                        Object {
-                          "id": "remainingDays",
-                          "intl": Object {
-                            "defaultMessage": "Days remaining",
-                            "id": "days_remaning",
-                          },
-                        },
-                      ]
-                    }
-                  />
-                  <p>
-                    Daily active users are averaged over the last 7 days.
-                  </p>
-                  <p>
-                    ** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.
-                  </p>
-                </div>,
-                <div
-                  className="Settings__section"
-                >
-                  <h3
-                    className="ManageWebsites__title"
-                  />
-                  <InjectIntl(DynamicTable)
-                    bodyConfig={
-                      Array [
-                        Object {},
-                      ]
-                    }
-                    deleteItem={[MockFunction]}
-                    header={
-                      Array [
-                        Object {
-                          "id": "active",
-                          "intl": Object {
-                            "defaultMessage": "Active",
-                            "id": "active",
-                          },
-                          "type": "checkbox",
-                        },
-                        Object {
-                          "id": "name",
-                          "intl": Object {
-                            "defaultMessage": "Website",
-                            "id": "website",
-                          },
-                        },
-                        Object {
-                          "id": "parent",
-                          "intl": Object {
-                            "defaultMessage": "Template",
-                            "id": "template",
-                          },
-                        },
-                        Object {
-                          "id": "status",
-                          "intl": Object {
-                            "defaultMessage": "Status",
-                            "id": "status",
-                          },
-                        },
-                        Object {
-                          "id": "averageDau",
-                          "intl": Object {
-                            "defaultMessage": "Average DAU*",
-                            "id": "average_dau",
-                          },
-                        },
-                        Object {
-                          "checkShowItem": [Function],
-                          "id": "delete",
-                          "intl": Object {
-                            "defaultMessage": "Actions",
-                            "id": "actions",
-                          },
-                          "type": "delete",
-                        },
-                      ]
-                    }
-                    onChange={[Function]}
-                  />
-                </div>,
-              ],
-              "className": "center ManageWebsites",
-            },
-            "ref": null,
-            "rendered": Array [
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "function",
-                "props": Object {},
-                "ref": null,
-                "rendered": null,
-                "type": [Function],
-              },
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": <FormattedMessage
-                    defaultMessage="Websites management"
-                    id="website_management"
-                    values={Object {}}
-                  />,
-                },
-                "ref": null,
-                "rendered": Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "class",
-                  "props": Object {
-                    "defaultMessage": "Websites management",
-                    "id": "website_management",
-                    "values": Object {},
-                  },
-                  "ref": null,
-                  "rendered": null,
-                  "type": [Function],
-                },
-                "type": "h1",
-              },
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": Array [
-                    <h3
-                      className="ManageWebsites__title"
-                    />,
-                    <div>
-                      <span
-                        className="ManageWebsites__dot"
-                      >
-                        •
-                      </span>
-                    </div>,
-                    <div>
-                      <span
-                        className="ManageWebsites__dot"
-                      >
-                        •
-                      </span>
-                    </div>,
-                    <p>
-                      Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.
-                    </p>,
-                  ],
-                  "className": "Settings__section",
-                },
-                "ref": null,
-                "rendered": Array [
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": undefined,
-                      "className": "ManageWebsites__title",
-                    },
-                    "ref": null,
-                    "rendered": null,
-                    "type": "h3",
-                  },
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": Array [
-                        <span
-                          className="ManageWebsites__dot"
-                        >
-                          •
-                        </span>,
-                        undefined,
-                      ],
-                    },
-                    "ref": null,
-                    "rendered": Array [
-                      Object {
-                        "instance": null,
-                        "key": undefined,
-                        "nodeType": "host",
-                        "props": Object {
-                          "children": "•",
-                          "className": "ManageWebsites__dot",
-                        },
-                        "ref": null,
-                        "rendered": "•",
-                        "type": "span",
-                      },
-                      undefined,
-                    ],
-                    "type": "div",
-                  },
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": Array [
-                        <span
-                          className="ManageWebsites__dot"
-                        >
-                          •
-                        </span>,
-                        undefined,
-                      ],
-                    },
-                    "ref": null,
-                    "rendered": Array [
-                      Object {
-                        "instance": null,
-                        "key": undefined,
-                        "nodeType": "host",
-                        "props": Object {
-                          "children": "•",
-                          "className": "ManageWebsites__dot",
-                        },
-                        "ref": null,
-                        "rendered": "•",
-                        "type": "span",
-                      },
-                      undefined,
-                    ],
-                    "type": "div",
-                  },
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": "Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
-                    },
-                    "ref": null,
-                    "rendered": "Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
-                    "type": "p",
-                  },
-                ],
-                "type": "div",
-              },
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": Array [
-                    <h3
-                      className="ManageWebsites__title"
-                    >
-                      <Button
-                        block={false}
-                        className="ManageWebsites__btn-pay"
-                        ghost={false}
-                        htmlType="button"
-                        loading={false}
-                        onClick={[Function]}
-                        type="primary"
-                      />
-                    </h3>,
-                    <InjectIntl(DynamicTable)
-                      bodyConfig={
-                        Array [
-                          Object {},
-                        ]
-                      }
-                      header={
-                        Array [
-                          Object {
-                            "id": "paid",
-                            "intl": Object {
-                              "defaultMessage": "Paid (HBD)",
-                              "id": "paid_hbd",
-                            },
-                          },
-                          Object {
-                            "id": "avgDau",
-                            "intl": Object {
-                              "defaultMessage": "Average DAU*",
-                              "id": "average_dau",
-                            },
-                          },
-                          Object {
-                            "id": "dailyCost",
-                            "intl": Object {
-                              "defaultMessage": "Daily cost(HBD)",
-                              "id": "daily_cost",
-                            },
-                          },
-                          Object {
-                            "id": "remainingDays",
-                            "intl": Object {
-                              "defaultMessage": "Days remaining",
-                              "id": "days_remaning",
-                            },
-                          },
-                        ]
-                      }
-                    />,
-                    <p>
-                      Daily active users are averaged over the last 7 days.
-                    </p>,
-                    <p>
-                      ** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.
-                    </p>,
-                  ],
-                  "className": "Settings__section",
-                },
-                "ref": null,
-                "rendered": Array [
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": Array [
-                        undefined,
-                        <Button
-                          block={false}
-                          className="ManageWebsites__btn-pay"
-                          ghost={false}
-                          htmlType="button"
-                          loading={false}
-                          onClick={[Function]}
-                          type="primary"
-                        />,
-                      ],
-                      "className": "ManageWebsites__title",
-                    },
-                    "ref": null,
-                    "rendered": Array [
-                      undefined,
-                      Object {
-                        "instance": null,
-                        "key": undefined,
-                        "nodeType": "class",
-                        "props": Object {
-                          "block": false,
-                          "children": undefined,
-                          "className": "ManageWebsites__btn-pay",
-                          "ghost": false,
-                          "htmlType": "button",
-                          "loading": false,
-                          "onClick": [Function],
-                          "type": "primary",
-                        },
-                        "ref": null,
-                        "rendered": null,
-                        "type": [Function],
-                      },
-                    ],
-                    "type": "h3",
-                  },
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "class",
-                    "props": Object {
-                      "bodyConfig": Array [
-                        Object {},
-                      ],
-                      "header": Array [
-                        Object {
-                          "id": "paid",
-                          "intl": Object {
-                            "defaultMessage": "Paid (HBD)",
-                            "id": "paid_hbd",
-                          },
-                        },
-                        Object {
-                          "id": "avgDau",
-                          "intl": Object {
-                            "defaultMessage": "Average DAU*",
-                            "id": "average_dau",
-                          },
-                        },
-                        Object {
-                          "id": "dailyCost",
-                          "intl": Object {
-                            "defaultMessage": "Daily cost(HBD)",
-                            "id": "daily_cost",
-                          },
-                        },
-                        Object {
-                          "id": "remainingDays",
-                          "intl": Object {
-                            "defaultMessage": "Days remaining",
-                            "id": "days_remaning",
-                          },
-                        },
-                      ],
-                    },
-                    "ref": null,
-                    "rendered": null,
-                    "type": [Function],
-                  },
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": "Daily active users are averaged over the last 7 days.",
-                    },
-                    "ref": null,
-                    "rendered": "Daily active users are averaged over the last 7 days.",
-                    "type": "p",
-                  },
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": "** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.",
-                    },
-                    "ref": null,
-                    "rendered": "** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.",
-                    "type": "p",
-                  },
-                ],
-                "type": "div",
-              },
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": Array [
-                    <h3
-                      className="ManageWebsites__title"
-                    />,
-                    <InjectIntl(DynamicTable)
-                      bodyConfig={
-                        Array [
-                          Object {},
-                        ]
-                      }
-                      deleteItem={[MockFunction]}
-                      header={
-                        Array [
-                          Object {
-                            "id": "active",
-                            "intl": Object {
-                              "defaultMessage": "Active",
-                              "id": "active",
-                            },
-                            "type": "checkbox",
-                          },
-                          Object {
-                            "id": "name",
-                            "intl": Object {
-                              "defaultMessage": "Website",
-                              "id": "website",
-                            },
-                          },
-                          Object {
-                            "id": "parent",
-                            "intl": Object {
-                              "defaultMessage": "Template",
-                              "id": "template",
-                            },
-                          },
-                          Object {
-                            "id": "status",
-                            "intl": Object {
-                              "defaultMessage": "Status",
-                              "id": "status",
-                            },
-                          },
-                          Object {
-                            "id": "averageDau",
-                            "intl": Object {
-                              "defaultMessage": "Average DAU*",
-                              "id": "average_dau",
-                            },
-                          },
-                          Object {
-                            "checkShowItem": [Function],
-                            "id": "delete",
-                            "intl": Object {
-                              "defaultMessage": "Actions",
-                              "id": "actions",
-                            },
-                            "type": "delete",
-                          },
-                        ]
-                      }
-                      onChange={[Function]}
-                    />,
-                  ],
-                  "className": "Settings__section",
-                },
-                "ref": null,
-                "rendered": Array [
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": undefined,
-                      "className": "ManageWebsites__title",
-                    },
-                    "ref": null,
-                    "rendered": null,
-                    "type": "h3",
-                  },
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "class",
-                    "props": Object {
-                      "bodyConfig": Array [
-                        Object {},
-                      ],
-                      "deleteItem": [MockFunction],
-                      "header": Array [
-                        Object {
-                          "id": "active",
-                          "intl": Object {
-                            "defaultMessage": "Active",
-                            "id": "active",
-                          },
-                          "type": "checkbox",
-                        },
-                        Object {
-                          "id": "name",
-                          "intl": Object {
-                            "defaultMessage": "Website",
-                            "id": "website",
-                          },
-                        },
-                        Object {
-                          "id": "parent",
-                          "intl": Object {
-                            "defaultMessage": "Template",
-                            "id": "template",
-                          },
-                        },
-                        Object {
-                          "id": "status",
-                          "intl": Object {
-                            "defaultMessage": "Status",
-                            "id": "status",
-                          },
-                        },
-                        Object {
-                          "id": "averageDau",
-                          "intl": Object {
-                            "defaultMessage": "Average DAU*",
-                            "id": "average_dau",
-                          },
-                        },
-                        Object {
-                          "checkShowItem": [Function],
-                          "id": "delete",
-                          "intl": Object {
-                            "defaultMessage": "Actions",
-                            "id": "actions",
-                          },
-                          "type": "delete",
-                        },
-                      ],
-                      "onChange": [Function],
-                    },
-                    "ref": null,
-                    "rendered": null,
-                    "type": [Function],
-                  },
-                ],
-                "type": "div",
-              },
-            ],
-            "type": "div",
-          },
-        ],
-        "type": "div",
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "function",
-        "props": Object {},
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-    ],
-    "type": "div",
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "host",
-      "props": Object {
-        "children": Array [
-          <HelmetWrapper
-            defer={true}
-            encodeSpecialCharacters={true}
-          >
-            <title>
-               
-              - Waivio
-            </title>
-          </HelmetWrapper>,
-          <div
-            className="settings-layout container"
-          >
-            <Affix
-              className="leftContainer"
-              stickPosition={77}
-            >
-              <div
-                className="left"
-              >
-                <LeftSidebar />
-              </div>
-            </Affix>
-            <div
-              className="center ManageWebsites"
-            >
-              <withRouter(MobileNavigation) />
-              <h1>
-                <FormattedMessage
-                  defaultMessage="Websites management"
-                  id="website_management"
-                  values={Object {}}
-                />
-              </h1>
-              <div
-                className="Settings__section"
-              >
-                <h3
-                  className="ManageWebsites__title"
-                />
-                <div>
-                  <span
-                    className="ManageWebsites__dot"
-                  >
-                    •
-                  </span>
-                </div>
-                <div>
-                  <span
-                    className="ManageWebsites__dot"
-                  >
-                    •
-                  </span>
-                </div>
-                <p>
-                  Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.
-                </p>
-              </div>
-              <div
-                className="Settings__section"
-              >
-                <h3
-                  className="ManageWebsites__title"
-                >
-                  <Button
-                    block={false}
-                    className="ManageWebsites__btn-pay"
-                    ghost={false}
-                    htmlType="button"
-                    loading={false}
-                    onClick={[Function]}
-                    type="primary"
-                  />
-                </h3>
-                <InjectIntl(DynamicTable)
-                  bodyConfig={
-                    Array [
-                      Object {},
-                    ]
-                  }
-                  header={
-                    Array [
-                      Object {
-                        "id": "paid",
-                        "intl": Object {
-                          "defaultMessage": "Paid (HBD)",
-                          "id": "paid_hbd",
-                        },
-                      },
-                      Object {
-                        "id": "avgDau",
-                        "intl": Object {
-                          "defaultMessage": "Average DAU*",
-                          "id": "average_dau",
-                        },
-                      },
-                      Object {
-                        "id": "dailyCost",
-                        "intl": Object {
-                          "defaultMessage": "Daily cost(HBD)",
-                          "id": "daily_cost",
-                        },
-                      },
-                      Object {
-                        "id": "remainingDays",
-                        "intl": Object {
-                          "defaultMessage": "Days remaining",
-                          "id": "days_remaning",
-                        },
-                      },
-                    ]
-                  }
-                />
-                <p>
-                  Daily active users are averaged over the last 7 days.
-                </p>
-                <p>
-                  ** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.
-                </p>
-              </div>
-              <div
-                className="Settings__section"
-              >
-                <h3
-                  className="ManageWebsites__title"
-                />
-                <InjectIntl(DynamicTable)
-                  bodyConfig={
-                    Array [
-                      Object {},
-                    ]
-                  }
-                  deleteItem={[MockFunction]}
-                  header={
-                    Array [
-                      Object {
-                        "id": "active",
-                        "intl": Object {
-                          "defaultMessage": "Active",
-                          "id": "active",
-                        },
-                        "type": "checkbox",
-                      },
-                      Object {
-                        "id": "name",
-                        "intl": Object {
-                          "defaultMessage": "Website",
-                          "id": "website",
-                        },
-                      },
-                      Object {
-                        "id": "parent",
-                        "intl": Object {
-                          "defaultMessage": "Template",
-                          "id": "template",
-                        },
-                      },
-                      Object {
-                        "id": "status",
-                        "intl": Object {
-                          "defaultMessage": "Status",
-                          "id": "status",
-                        },
-                      },
-                      Object {
-                        "id": "averageDau",
-                        "intl": Object {
-                          "defaultMessage": "Average DAU*",
-                          "id": "average_dau",
-                        },
-                      },
-                      Object {
-                        "checkShowItem": [Function],
-                        "id": "delete",
-                        "intl": Object {
-                          "defaultMessage": "Actions",
-                          "id": "actions",
-                        },
-                        "type": "delete",
-                      },
-                    ]
-                  }
-                  onChange={[Function]}
-                />
-              </div>
+                   
+                </UNDEFINED>
+              </button>
             </div>
           </div>,
           <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
@@ -1419,91 +1178,327 @@ ShallowWrapper {
         Object {
           "instance": null,
           "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "children": <title>
-               
-              - Waivio
-            </title>,
-            "defer": true,
-            "encodeSpecialCharacters": true,
-          },
-          "ref": null,
-          "rendered": Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "host",
-            "props": Object {
-              "children": Array [
-                undefined,
-                " ",
-                "- Waivio",
-              ],
-            },
-            "ref": null,
-            "rendered": Array [
-              undefined,
-              " ",
-              "- Waivio",
-            ],
-            "type": "title",
-          },
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
           "nodeType": "host",
           "props": Object {
             "children": Array [
-              <Affix
-                className="leftContainer"
-                stickPosition={77}
-              >
-                <div
-                  className="left"
-                >
-                  <LeftSidebar />
-                </div>
-              </Affix>,
+              <h1>
+                <FormattedMessage
+                  defaultMessage="Websites management"
+                  id="website_management"
+                  values={Object {}}
+                />
+              </h1>,
               <div
-                className="center ManageWebsites"
+                className="Settings__section"
               >
-                <withRouter(MobileNavigation) />
-                <h1>
-                  <FormattedMessage
-                    defaultMessage="Websites management"
-                    id="website_management"
-                    values={Object {}}
-                  />
-                </h1>
-                <div
-                  className="Settings__section"
+                <h3
+                  className="ManageWebsites__title"
+                />
+                <div>
+                  <span
+                    className="ManageWebsites__dot"
+                  >
+                    •
+                  </span>
+                </div>
+                <div>
+                  <span
+                    className="ManageWebsites__dot"
+                  >
+                    •
+                  </span>
+                </div>
+                <p />
+              </div>,
+              <div
+                className="Settings__section"
+              >
+                <h3
+                  className="ManageWebsites__title"
                 >
+                  <Button
+                    block={false}
+                    className="ManageWebsites__btn-pay"
+                    ghost={false}
+                    htmlType="button"
+                    loading={false}
+                    onClick={[Function]}
+                    type="primary"
+                  />
+                </h3>
+                <InjectIntl(DynamicTable)
+                  bodyConfig={
+                    Array [
+                      Object {},
+                    ]
+                  }
+                  header={
+                    Array [
+                      Object {
+                        "id": "paid",
+                        "intl": Object {
+                          "defaultMessage": "Paid (HBD)",
+                          "id": "paid_hbd",
+                        },
+                      },
+                      Object {
+                        "id": "avgDau",
+                        "intl": Object {
+                          "defaultMessage": "Average DAU*",
+                          "id": "average_dau",
+                        },
+                      },
+                      Object {
+                        "id": "dailyCost",
+                        "intl": Object {
+                          "defaultMessage": "Daily cost(HBD)",
+                          "id": "daily_cost",
+                        },
+                      },
+                      Object {
+                        "id": "remainingDays",
+                        "intl": Object {
+                          "defaultMessage": "Days remaining",
+                          "id": "days_remaning",
+                        },
+                      },
+                    ]
+                  }
+                />
+                <p />
+                <p />
+              </div>,
+              <div
+                className="Settings__section"
+              >
+                <h3
+                  className="ManageWebsites__title"
+                />
+                <InjectIntl(DynamicTable)
+                  bodyConfig={
+                    Array [
+                      Object {},
+                    ]
+                  }
+                  deleteItem={[MockFunction]}
+                  header={
+                    Array [
+                      Object {
+                        "id": "active",
+                        "intl": Object {
+                          "defaultMessage": "Active",
+                          "id": "active",
+                        },
+                        "type": "checkbox",
+                      },
+                      Object {
+                        "id": "name",
+                        "intl": Object {
+                          "defaultMessage": "Website",
+                          "id": "website",
+                        },
+                      },
+                      Object {
+                        "id": "parent",
+                        "intl": Object {
+                          "defaultMessage": "Template",
+                          "id": "template",
+                        },
+                      },
+                      Object {
+                        "id": "status",
+                        "intl": Object {
+                          "defaultMessage": "Status",
+                          "id": "status",
+                        },
+                      },
+                      Object {
+                        "id": "averageDau",
+                        "intl": Object {
+                          "defaultMessage": "Average DAU*",
+                          "id": "average_dau",
+                        },
+                      },
+                      Object {
+                        "checkShowItem": [Function],
+                        "id": "delete",
+                        "intl": Object {
+                          "defaultMessage": "Actions",
+                          "id": "actions",
+                        },
+                        "type": "delete",
+                      },
+                    ]
+                  }
+                  onChange={[Function]}
+                />
+                <button
+                  className="ManageWebsites__button"
+                >
+                  <UNDEFINED
+                    to="/create"
+                  >
+                     
+                  </UNDEFINED>
+                </button>
+              </div>,
+            ],
+            "className": "center ManageWebsites",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <FormattedMessage
+                  defaultMessage="Websites management"
+                  id="website_management"
+                  values={Object {}}
+                />,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Websites management",
+                  "id": "website_management",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "h1",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
                   <h3
                     className="ManageWebsites__title"
-                  />
+                  />,
                   <div>
                     <span
                       className="ManageWebsites__dot"
                     >
                       •
                     </span>
-                  </div>
+                  </div>,
                   <div>
                     <span
                       className="ManageWebsites__dot"
                     >
                       •
                     </span>
-                  </div>
-                  <p>
-                    Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.
-                  </p>
-                </div>
-                <div
-                  className="Settings__section"
-                >
+                  </div>,
+                  <p />,
+                ],
+                "className": "Settings__section",
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": undefined,
+                    "className": "ManageWebsites__title",
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": "h3",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": Array [
+                      <span
+                        className="ManageWebsites__dot"
+                      >
+                        •
+                      </span>,
+                      undefined,
+                    ],
+                  },
+                  "ref": null,
+                  "rendered": Array [
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": "•",
+                        "className": "ManageWebsites__dot",
+                      },
+                      "ref": null,
+                      "rendered": "•",
+                      "type": "span",
+                    },
+                    undefined,
+                  ],
+                  "type": "div",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": Array [
+                      <span
+                        className="ManageWebsites__dot"
+                      >
+                        •
+                      </span>,
+                      undefined,
+                    ],
+                  },
+                  "ref": null,
+                  "rendered": Array [
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": "•",
+                        "className": "ManageWebsites__dot",
+                      },
+                      "ref": null,
+                      "rendered": "•",
+                      "type": "span",
+                    },
+                    undefined,
+                  ],
+                  "type": "div",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": undefined,
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": "p",
+                },
+              ],
+              "type": "div",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
                   <h3
                     className="ManageWebsites__title"
                   >
@@ -1516,7 +1511,7 @@ ShallowWrapper {
                       onClick={[Function]}
                       type="primary"
                     />
-                  </h3>
+                  </h3>,
                   <InjectIntl(DynamicTable)
                     bodyConfig={
                       Array [
@@ -1555,20 +1550,134 @@ ShallowWrapper {
                         },
                       ]
                     }
-                  />
-                  <p>
-                    Daily active users are averaged over the last 7 days.
-                  </p>
-                  <p>
-                    ** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.
-                  </p>
-                </div>
-                <div
-                  className="Settings__section"
-                >
+                  />,
+                  <p />,
+                  <p />,
+                ],
+                "className": "Settings__section",
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": Array [
+                      undefined,
+                      <Button
+                        block={false}
+                        className="ManageWebsites__btn-pay"
+                        ghost={false}
+                        htmlType="button"
+                        loading={false}
+                        onClick={[Function]}
+                        type="primary"
+                      />,
+                    ],
+                    "className": "ManageWebsites__title",
+                  },
+                  "ref": null,
+                  "rendered": Array [
+                    undefined,
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "class",
+                      "props": Object {
+                        "block": false,
+                        "children": undefined,
+                        "className": "ManageWebsites__btn-pay",
+                        "ghost": false,
+                        "htmlType": "button",
+                        "loading": false,
+                        "onClick": [Function],
+                        "type": "primary",
+                      },
+                      "ref": null,
+                      "rendered": null,
+                      "type": [Function],
+                    },
+                  ],
+                  "type": "h3",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "bodyConfig": Array [
+                      Object {},
+                    ],
+                    "header": Array [
+                      Object {
+                        "id": "paid",
+                        "intl": Object {
+                          "defaultMessage": "Paid (HBD)",
+                          "id": "paid_hbd",
+                        },
+                      },
+                      Object {
+                        "id": "avgDau",
+                        "intl": Object {
+                          "defaultMessage": "Average DAU*",
+                          "id": "average_dau",
+                        },
+                      },
+                      Object {
+                        "id": "dailyCost",
+                        "intl": Object {
+                          "defaultMessage": "Daily cost(HBD)",
+                          "id": "daily_cost",
+                        },
+                      },
+                      Object {
+                        "id": "remainingDays",
+                        "intl": Object {
+                          "defaultMessage": "Days remaining",
+                          "id": "days_remaning",
+                        },
+                      },
+                    ],
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": undefined,
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": "p",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": undefined,
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": "p",
+                },
+              ],
+              "type": "div",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
                   <h3
                     className="ManageWebsites__title"
-                  />
+                  />,
                   <InjectIntl(DynamicTable)
                     bodyConfig={
                       Array [
@@ -1626,225 +1735,91 @@ ShallowWrapper {
                       ]
                     }
                     onChange={[Function]}
-                  />
-                </div>
-              </div>,
-            ],
-            "className": "settings-layout container",
-          },
-          "ref": null,
-          "rendered": Array [
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "class",
-              "props": Object {
-                "children": <div
-                  className="left"
-                >
-                  <LeftSidebar />
-                </div>,
-                "className": "leftContainer",
-                "stickPosition": 77,
-              },
-              "ref": null,
-              "rendered": Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": <LeftSidebar />,
-                  "className": "left",
-                },
-                "ref": null,
-                "rendered": Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "function",
-                  "props": Object {},
-                  "ref": null,
-                  "rendered": null,
-                  "type": [Function],
-                },
-                "type": "div",
-              },
-              "type": [Function],
-            },
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "host",
-              "props": Object {
-                "children": Array [
-                  <withRouter(MobileNavigation) />,
-                  <h1>
-                    <FormattedMessage
-                      defaultMessage="Websites management"
-                      id="website_management"
-                      values={Object {}}
-                    />
-                  </h1>,
-                  <div
-                    className="Settings__section"
+                  />,
+                  <button
+                    className="ManageWebsites__button"
                   >
-                    <h3
-                      className="ManageWebsites__title"
-                    />
-                    <div>
-                      <span
-                        className="ManageWebsites__dot"
-                      >
-                        •
-                      </span>
-                    </div>
-                    <div>
-                      <span
-                        className="ManageWebsites__dot"
-                      >
-                        •
-                      </span>
-                    </div>
-                    <p>
-                      Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.
-                    </p>
-                  </div>,
-                  <div
-                    className="Settings__section"
-                  >
-                    <h3
-                      className="ManageWebsites__title"
+                    <UNDEFINED
+                      to="/create"
                     >
-                      <Button
-                        block={false}
-                        className="ManageWebsites__btn-pay"
-                        ghost={false}
-                        htmlType="button"
-                        loading={false}
-                        onClick={[Function]}
-                        type="primary"
-                      />
-                    </h3>
-                    <InjectIntl(DynamicTable)
-                      bodyConfig={
-                        Array [
-                          Object {},
-                        ]
-                      }
-                      header={
-                        Array [
-                          Object {
-                            "id": "paid",
-                            "intl": Object {
-                              "defaultMessage": "Paid (HBD)",
-                              "id": "paid_hbd",
-                            },
-                          },
-                          Object {
-                            "id": "avgDau",
-                            "intl": Object {
-                              "defaultMessage": "Average DAU*",
-                              "id": "average_dau",
-                            },
-                          },
-                          Object {
-                            "id": "dailyCost",
-                            "intl": Object {
-                              "defaultMessage": "Daily cost(HBD)",
-                              "id": "daily_cost",
-                            },
-                          },
-                          Object {
-                            "id": "remainingDays",
-                            "intl": Object {
-                              "defaultMessage": "Days remaining",
-                              "id": "days_remaning",
-                            },
-                          },
-                        ]
-                      }
-                    />
-                    <p>
-                      Daily active users are averaged over the last 7 days.
-                    </p>
-                    <p>
-                      ** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.
-                    </p>
-                  </div>,
-                  <div
-                    className="Settings__section"
-                  >
-                    <h3
-                      className="ManageWebsites__title"
-                    />
-                    <InjectIntl(DynamicTable)
-                      bodyConfig={
-                        Array [
-                          Object {},
-                        ]
-                      }
-                      deleteItem={[MockFunction]}
-                      header={
-                        Array [
-                          Object {
-                            "id": "active",
-                            "intl": Object {
-                              "defaultMessage": "Active",
-                              "id": "active",
-                            },
-                            "type": "checkbox",
-                          },
-                          Object {
-                            "id": "name",
-                            "intl": Object {
-                              "defaultMessage": "Website",
-                              "id": "website",
-                            },
-                          },
-                          Object {
-                            "id": "parent",
-                            "intl": Object {
-                              "defaultMessage": "Template",
-                              "id": "template",
-                            },
-                          },
-                          Object {
-                            "id": "status",
-                            "intl": Object {
-                              "defaultMessage": "Status",
-                              "id": "status",
-                            },
-                          },
-                          Object {
-                            "id": "averageDau",
-                            "intl": Object {
-                              "defaultMessage": "Average DAU*",
-                              "id": "average_dau",
-                            },
-                          },
-                          Object {
-                            "checkShowItem": [Function],
-                            "id": "delete",
-                            "intl": Object {
-                              "defaultMessage": "Actions",
-                              "id": "actions",
-                            },
-                            "type": "delete",
-                          },
-                        ]
-                      }
-                      onChange={[Function]}
-                    />
-                  </div>,
+                       
+                    </UNDEFINED>
+                  </button>,
                 ],
-                "className": "center ManageWebsites",
+                "className": "Settings__section",
               },
               "ref": null,
               "rendered": Array [
                 Object {
                   "instance": null,
                   "key": undefined,
-                  "nodeType": "function",
-                  "props": Object {},
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": undefined,
+                    "className": "ManageWebsites__title",
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": "h3",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "bodyConfig": Array [
+                      Object {},
+                    ],
+                    "deleteItem": [MockFunction],
+                    "header": Array [
+                      Object {
+                        "id": "active",
+                        "intl": Object {
+                          "defaultMessage": "Active",
+                          "id": "active",
+                        },
+                        "type": "checkbox",
+                      },
+                      Object {
+                        "id": "name",
+                        "intl": Object {
+                          "defaultMessage": "Website",
+                          "id": "website",
+                        },
+                      },
+                      Object {
+                        "id": "parent",
+                        "intl": Object {
+                          "defaultMessage": "Template",
+                          "id": "template",
+                        },
+                      },
+                      Object {
+                        "id": "status",
+                        "intl": Object {
+                          "defaultMessage": "Status",
+                          "id": "status",
+                        },
+                      },
+                      Object {
+                        "id": "averageDau",
+                        "intl": Object {
+                          "defaultMessage": "Average DAU*",
+                          "id": "average_dau",
+                        },
+                      },
+                      Object {
+                        "checkShowItem": [Function],
+                        "id": "delete",
+                        "intl": Object {
+                          "defaultMessage": "Actions",
+                          "id": "actions",
+                        },
+                        "type": "delete",
+                      },
+                    ],
+                    "onChange": [Function],
+                  },
                   "ref": null,
                   "rendered": null,
                   "type": [Function],
@@ -1854,477 +1829,44 @@ ShallowWrapper {
                   "key": undefined,
                   "nodeType": "host",
                   "props": Object {
-                    "children": <FormattedMessage
-                      defaultMessage="Websites management"
-                      id="website_management"
-                      values={Object {}}
-                    />,
+                    "children": <UNDEFINED
+                      to="/create"
+                    >
+                       
+                    </UNDEFINED>,
+                    "className": "ManageWebsites__button",
                   },
                   "ref": null,
                   "rendered": Object {
                     "instance": null,
                     "key": undefined,
-                    "nodeType": "class",
+                    "nodeType": "function",
                     "props": Object {
-                      "defaultMessage": "Websites management",
-                      "id": "website_management",
-                      "values": Object {},
+                      "children": Array [
+                        undefined,
+                        " ",
+                      ],
+                      "to": "/create",
                     },
                     "ref": null,
-                    "rendered": null,
-                    "type": [Function],
-                  },
-                  "type": "h1",
-                },
-                Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "host",
-                  "props": Object {
-                    "children": Array [
-                      <h3
-                        className="ManageWebsites__title"
-                      />,
-                      <div>
-                        <span
-                          className="ManageWebsites__dot"
-                        >
-                          •
-                        </span>
-                      </div>,
-                      <div>
-                        <span
-                          className="ManageWebsites__dot"
-                        >
-                          •
-                        </span>
-                      </div>,
-                      <p>
-                        Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.
-                      </p>,
+                    "rendered": Array [
+                      undefined,
+                      " ",
                     ],
-                    "className": "Settings__section",
+                    "type": Object {
+                      "$$typeof": Symbol(react.forward_ref),
+                      "displayName": "Link",
+                      "propTypes": Object {
+                        "innerRef": [Function],
+                        "onClick": [Function],
+                        "replace": [Function],
+                        "target": [Function],
+                        "to": [Function],
+                      },
+                      "render": [Function],
+                    },
                   },
-                  "ref": null,
-                  "rendered": Array [
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "host",
-                      "props": Object {
-                        "children": undefined,
-                        "className": "ManageWebsites__title",
-                      },
-                      "ref": null,
-                      "rendered": null,
-                      "type": "h3",
-                    },
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "host",
-                      "props": Object {
-                        "children": Array [
-                          <span
-                            className="ManageWebsites__dot"
-                          >
-                            •
-                          </span>,
-                          undefined,
-                        ],
-                      },
-                      "ref": null,
-                      "rendered": Array [
-                        Object {
-                          "instance": null,
-                          "key": undefined,
-                          "nodeType": "host",
-                          "props": Object {
-                            "children": "•",
-                            "className": "ManageWebsites__dot",
-                          },
-                          "ref": null,
-                          "rendered": "•",
-                          "type": "span",
-                        },
-                        undefined,
-                      ],
-                      "type": "div",
-                    },
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "host",
-                      "props": Object {
-                        "children": Array [
-                          <span
-                            className="ManageWebsites__dot"
-                          >
-                            •
-                          </span>,
-                          undefined,
-                        ],
-                      },
-                      "ref": null,
-                      "rendered": Array [
-                        Object {
-                          "instance": null,
-                          "key": undefined,
-                          "nodeType": "host",
-                          "props": Object {
-                            "children": "•",
-                            "className": "ManageWebsites__dot",
-                          },
-                          "ref": null,
-                          "rendered": "•",
-                          "type": "span",
-                        },
-                        undefined,
-                      ],
-                      "type": "div",
-                    },
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "host",
-                      "props": Object {
-                        "children": "Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
-                      },
-                      "ref": null,
-                      "rendered": "Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
-                      "type": "p",
-                    },
-                  ],
-                  "type": "div",
-                },
-                Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "host",
-                  "props": Object {
-                    "children": Array [
-                      <h3
-                        className="ManageWebsites__title"
-                      >
-                        <Button
-                          block={false}
-                          className="ManageWebsites__btn-pay"
-                          ghost={false}
-                          htmlType="button"
-                          loading={false}
-                          onClick={[Function]}
-                          type="primary"
-                        />
-                      </h3>,
-                      <InjectIntl(DynamicTable)
-                        bodyConfig={
-                          Array [
-                            Object {},
-                          ]
-                        }
-                        header={
-                          Array [
-                            Object {
-                              "id": "paid",
-                              "intl": Object {
-                                "defaultMessage": "Paid (HBD)",
-                                "id": "paid_hbd",
-                              },
-                            },
-                            Object {
-                              "id": "avgDau",
-                              "intl": Object {
-                                "defaultMessage": "Average DAU*",
-                                "id": "average_dau",
-                              },
-                            },
-                            Object {
-                              "id": "dailyCost",
-                              "intl": Object {
-                                "defaultMessage": "Daily cost(HBD)",
-                                "id": "daily_cost",
-                              },
-                            },
-                            Object {
-                              "id": "remainingDays",
-                              "intl": Object {
-                                "defaultMessage": "Days remaining",
-                                "id": "days_remaning",
-                              },
-                            },
-                          ]
-                        }
-                      />,
-                      <p>
-                        Daily active users are averaged over the last 7 days.
-                      </p>,
-                      <p>
-                        ** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.
-                      </p>,
-                    ],
-                    "className": "Settings__section",
-                  },
-                  "ref": null,
-                  "rendered": Array [
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "host",
-                      "props": Object {
-                        "children": Array [
-                          undefined,
-                          <Button
-                            block={false}
-                            className="ManageWebsites__btn-pay"
-                            ghost={false}
-                            htmlType="button"
-                            loading={false}
-                            onClick={[Function]}
-                            type="primary"
-                          />,
-                        ],
-                        "className": "ManageWebsites__title",
-                      },
-                      "ref": null,
-                      "rendered": Array [
-                        undefined,
-                        Object {
-                          "instance": null,
-                          "key": undefined,
-                          "nodeType": "class",
-                          "props": Object {
-                            "block": false,
-                            "children": undefined,
-                            "className": "ManageWebsites__btn-pay",
-                            "ghost": false,
-                            "htmlType": "button",
-                            "loading": false,
-                            "onClick": [Function],
-                            "type": "primary",
-                          },
-                          "ref": null,
-                          "rendered": null,
-                          "type": [Function],
-                        },
-                      ],
-                      "type": "h3",
-                    },
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "class",
-                      "props": Object {
-                        "bodyConfig": Array [
-                          Object {},
-                        ],
-                        "header": Array [
-                          Object {
-                            "id": "paid",
-                            "intl": Object {
-                              "defaultMessage": "Paid (HBD)",
-                              "id": "paid_hbd",
-                            },
-                          },
-                          Object {
-                            "id": "avgDau",
-                            "intl": Object {
-                              "defaultMessage": "Average DAU*",
-                              "id": "average_dau",
-                            },
-                          },
-                          Object {
-                            "id": "dailyCost",
-                            "intl": Object {
-                              "defaultMessage": "Daily cost(HBD)",
-                              "id": "daily_cost",
-                            },
-                          },
-                          Object {
-                            "id": "remainingDays",
-                            "intl": Object {
-                              "defaultMessage": "Days remaining",
-                              "id": "days_remaning",
-                            },
-                          },
-                        ],
-                      },
-                      "ref": null,
-                      "rendered": null,
-                      "type": [Function],
-                    },
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "host",
-                      "props": Object {
-                        "children": "Daily active users are averaged over the last 7 days.",
-                      },
-                      "ref": null,
-                      "rendered": "Daily active users are averaged over the last 7 days.",
-                      "type": "p",
-                    },
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "host",
-                      "props": Object {
-                        "children": "** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.",
-                      },
-                      "ref": null,
-                      "rendered": "** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.",
-                      "type": "p",
-                    },
-                  ],
-                  "type": "div",
-                },
-                Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "host",
-                  "props": Object {
-                    "children": Array [
-                      <h3
-                        className="ManageWebsites__title"
-                      />,
-                      <InjectIntl(DynamicTable)
-                        bodyConfig={
-                          Array [
-                            Object {},
-                          ]
-                        }
-                        deleteItem={[MockFunction]}
-                        header={
-                          Array [
-                            Object {
-                              "id": "active",
-                              "intl": Object {
-                                "defaultMessage": "Active",
-                                "id": "active",
-                              },
-                              "type": "checkbox",
-                            },
-                            Object {
-                              "id": "name",
-                              "intl": Object {
-                                "defaultMessage": "Website",
-                                "id": "website",
-                              },
-                            },
-                            Object {
-                              "id": "parent",
-                              "intl": Object {
-                                "defaultMessage": "Template",
-                                "id": "template",
-                              },
-                            },
-                            Object {
-                              "id": "status",
-                              "intl": Object {
-                                "defaultMessage": "Status",
-                                "id": "status",
-                              },
-                            },
-                            Object {
-                              "id": "averageDau",
-                              "intl": Object {
-                                "defaultMessage": "Average DAU*",
-                                "id": "average_dau",
-                              },
-                            },
-                            Object {
-                              "checkShowItem": [Function],
-                              "id": "delete",
-                              "intl": Object {
-                                "defaultMessage": "Actions",
-                                "id": "actions",
-                              },
-                              "type": "delete",
-                            },
-                          ]
-                        }
-                        onChange={[Function]}
-                      />,
-                    ],
-                    "className": "Settings__section",
-                  },
-                  "ref": null,
-                  "rendered": Array [
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "host",
-                      "props": Object {
-                        "children": undefined,
-                        "className": "ManageWebsites__title",
-                      },
-                      "ref": null,
-                      "rendered": null,
-                      "type": "h3",
-                    },
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "class",
-                      "props": Object {
-                        "bodyConfig": Array [
-                          Object {},
-                        ],
-                        "deleteItem": [MockFunction],
-                        "header": Array [
-                          Object {
-                            "id": "active",
-                            "intl": Object {
-                              "defaultMessage": "Active",
-                              "id": "active",
-                            },
-                            "type": "checkbox",
-                          },
-                          Object {
-                            "id": "name",
-                            "intl": Object {
-                              "defaultMessage": "Website",
-                              "id": "website",
-                            },
-                          },
-                          Object {
-                            "id": "parent",
-                            "intl": Object {
-                              "defaultMessage": "Template",
-                              "id": "template",
-                            },
-                          },
-                          Object {
-                            "id": "status",
-                            "intl": Object {
-                              "defaultMessage": "Status",
-                              "id": "status",
-                            },
-                          },
-                          Object {
-                            "id": "averageDau",
-                            "intl": Object {
-                              "defaultMessage": "Average DAU*",
-                              "id": "average_dau",
-                            },
-                          },
-                          Object {
-                            "checkShowItem": [Function],
-                            "id": "delete",
-                            "intl": Object {
-                              "defaultMessage": "Actions",
-                              "id": "actions",
-                            },
-                            "type": "delete",
-                          },
-                        ],
-                        "onChange": [Function],
-                      },
-                      "ref": null,
-                      "rendered": null,
-                      "type": [Function],
-                    },
-                  ],
-                  "type": "div",
+                  "type": "button",
                 },
               ],
               "type": "div",
@@ -2387,12 +1929,6 @@ ShallowWrapper {
           "calls": Array [
             Array [
               Object {
-                "defaultMessage": "Create new website",
-                "id": "manage_website",
-              },
-            ],
-            Array [
-              Object {
                 "defaultMessage": "Prices",
                 "id": "prices",
               },
@@ -2417,6 +1953,12 @@ ShallowWrapper {
             ],
             Array [
               Object {
+                "defaultMessage": "* Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.",
+                "id": "manage_website_info_dau",
+              },
+            ],
+            Array [
+              Object {
                 "defaultMessage": "Account balance (HBD)",
                 "id": "manage_account_balance",
               },
@@ -2429,14 +1971,26 @@ ShallowWrapper {
             ],
             Array [
               Object {
+                "defaultMessage": "Daily active users are averaged over the last 7 days.",
+                "id": "manage_website_info_dau_averaged",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.",
+                "id": "manage_website_info_account_balance",
+              },
+            ],
+            Array [
+              Object {
                 "defaultMessage": "Websites",
-                "id": "manage_websites",
+                "id": "websites",
               },
             ],
             Array [
               Object {
                 "defaultMessage": "Create new website",
-                "id": "manage_website",
+                "id": "create_website",
               },
             ],
           ],
@@ -2463,32 +2017,9 @@ ShallowWrapper {
     "nodeType": "host",
     "props": Object {
       "children": Array [
-        <HelmetWrapper
-          defer={true}
-          encodeSpecialCharacters={true}
-        >
-          <title>
-             
-            - Waivio
-          </title>
-        </HelmetWrapper>,
-        <div
-          className="settings-layout container"
-        >
-          <Affix
-            className="leftContainer"
-            stickPosition={77}
-          >
-            <div
-              className="left"
-            >
-              <LeftSidebar />
-            </div>
-          </Affix>
-          <Loading
-            center={true}
-          />
-        </div>,
+        <Loading
+          center={true}
+        />,
         <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
       ],
       "className": "shifted",
@@ -2498,110 +2029,13 @@ ShallowWrapper {
       Object {
         "instance": null,
         "key": undefined,
-        "nodeType": "class",
+        "nodeType": "function",
         "props": Object {
-          "children": <title>
-             
-            - Waivio
-          </title>,
-          "defer": true,
-          "encodeSpecialCharacters": true,
+          "center": true,
         },
         "ref": null,
-        "rendered": Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "host",
-          "props": Object {
-            "children": Array [
-              undefined,
-              " ",
-              "- Waivio",
-            ],
-          },
-          "ref": null,
-          "rendered": Array [
-            undefined,
-            " ",
-            "- Waivio",
-          ],
-          "type": "title",
-        },
+        "rendered": null,
         "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "host",
-        "props": Object {
-          "children": Array [
-            <Affix
-              className="leftContainer"
-              stickPosition={77}
-            >
-              <div
-                className="left"
-              >
-                <LeftSidebar />
-              </div>
-            </Affix>,
-            <Loading
-              center={true}
-            />,
-          ],
-          "className": "settings-layout container",
-        },
-        "ref": null,
-        "rendered": Array [
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "class",
-            "props": Object {
-              "children": <div
-                className="left"
-              >
-                <LeftSidebar />
-              </div>,
-              "className": "leftContainer",
-              "stickPosition": 77,
-            },
-            "ref": null,
-            "rendered": Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "host",
-              "props": Object {
-                "children": <LeftSidebar />,
-                "className": "left",
-              },
-              "ref": null,
-              "rendered": Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "function",
-                "props": Object {},
-                "ref": null,
-                "rendered": null,
-                "type": [Function],
-              },
-              "type": "div",
-            },
-            "type": [Function],
-          },
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "function",
-            "props": Object {
-              "center": true,
-            },
-            "ref": null,
-            "rendered": null,
-            "type": [Function],
-          },
-        ],
-        "type": "div",
       },
       Object {
         "instance": null,
@@ -2622,32 +2056,9 @@ ShallowWrapper {
       "nodeType": "host",
       "props": Object {
         "children": Array [
-          <HelmetWrapper
-            defer={true}
-            encodeSpecialCharacters={true}
-          >
-            <title>
-               
-              - Waivio
-            </title>
-          </HelmetWrapper>,
-          <div
-            className="settings-layout container"
-          >
-            <Affix
-              className="leftContainer"
-              stickPosition={77}
-            >
-              <div
-                className="left"
-              >
-                <LeftSidebar />
-              </div>
-            </Affix>
-            <Loading
-              center={true}
-            />
-          </div>,
+          <Loading
+            center={true}
+          />,
           <withRouter(InjectIntl(Connect(Form(Transfer)))) />,
         ],
         "className": "shifted",
@@ -2657,110 +2068,13 @@ ShallowWrapper {
         Object {
           "instance": null,
           "key": undefined,
-          "nodeType": "class",
+          "nodeType": "function",
           "props": Object {
-            "children": <title>
-               
-              - Waivio
-            </title>,
-            "defer": true,
-            "encodeSpecialCharacters": true,
+            "center": true,
           },
           "ref": null,
-          "rendered": Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "host",
-            "props": Object {
-              "children": Array [
-                undefined,
-                " ",
-                "- Waivio",
-              ],
-            },
-            "ref": null,
-            "rendered": Array [
-              undefined,
-              " ",
-              "- Waivio",
-            ],
-            "type": "title",
-          },
+          "rendered": null,
           "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "host",
-          "props": Object {
-            "children": Array [
-              <Affix
-                className="leftContainer"
-                stickPosition={77}
-              >
-                <div
-                  className="left"
-                >
-                  <LeftSidebar />
-                </div>
-              </Affix>,
-              <Loading
-                center={true}
-              />,
-            ],
-            "className": "settings-layout container",
-          },
-          "ref": null,
-          "rendered": Array [
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "class",
-              "props": Object {
-                "children": <div
-                  className="left"
-                >
-                  <LeftSidebar />
-                </div>,
-                "className": "leftContainer",
-                "stickPosition": 77,
-              },
-              "ref": null,
-              "rendered": Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": <LeftSidebar />,
-                  "className": "left",
-                },
-                "ref": null,
-                "rendered": Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "function",
-                  "props": Object {},
-                  "ref": null,
-                  "rendered": null,
-                  "type": [Function],
-                },
-                "type": "div",
-              },
-              "type": [Function],
-            },
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "function",
-              "props": Object {
-                "center": true,
-              },
-              "ref": null,
-              "rendered": null,
-              "type": [Function],
-            },
-          ],
-          "type": "div",
         },
         Object {
           "instance": null,

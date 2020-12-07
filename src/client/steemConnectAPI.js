@@ -15,7 +15,10 @@ function broadcast(operations, isReview, actionAuthor) {
       operation = 'add_referral_agent';
     } else if (operations[0][1].json.includes('reblog')) {
       operation = `waivio_guest_reblog`;
-    } else if (operations[0][1].json.includes('bell_notifications')) {
+    } else if (
+      operations[0][1].json.includes('bell_notifications') ||
+      operations[0][1].id === 'bell_notifications'
+    ) {
       operation = `waivio_guest_bell`;
     } else {
       operation = `waivio_guest_${operations[0][1].id}`;
@@ -138,6 +141,25 @@ function sc2Extended() {
       },
     },
     {
+      bellNotificationsWobject(follower, following, subscribe, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [follower],
+          id: 'bell_notifications',
+          json: JSON.stringify([
+            'bell_wobject',
+            {
+              follower,
+              following,
+              subscribe,
+            },
+          ]),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       activateWebsite(userName, host, subscribe, cb) {
         const params = {
           required_auths: [],
@@ -171,7 +193,13 @@ function sc2Extended() {
           required_auths: [],
           required_posting_auths: [username],
           id: 'wobj_rating',
-          json: JSON.stringify({ author, permlink, author_permlink: authorPermlink, rate }),
+          json: JSON.stringify({
+            author,
+            permlink,
+            author_permlink: authorPermlink,
+            rate,
+            guestName: username,
+          }),
         };
 
         return this.broadcast([['custom_json', params]], cb);

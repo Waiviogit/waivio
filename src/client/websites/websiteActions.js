@@ -29,9 +29,22 @@ export const getParentDomainList = () => ({
   payload: { promise: getDomainList().then(r => r) },
 });
 
+export const GET_OWN_WEBSITE = createAsyncActionType('@website/GET_OWN_WEBSITE');
+
+export const getOwnWebsite = () => (dispatch, getState) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  return dispatch({
+    type: GET_OWN_WEBSITE.ACTION,
+    payload: {
+      promise: getWebsites(userName),
+    },
+  });
+};
+
 export const CREATE_NEW_WEBSITE = createAsyncActionType('@website/CREATE_NEW_WEBSITE');
 
-export const createNewWebsite = formData => (dispatch, getState) => {
+export const createNewWebsite = (formData, history) => (dispatch, getState, { busyAPI }) => {
   const state = getState();
   const domainList = getParentDomain(state);
   const owner = getAuthenticatedUserName(state);
@@ -44,7 +57,18 @@ export const createNewWebsite = formData => (dispatch, getState) => {
   return dispatch({
     type: CREATE_NEW_WEBSITE.ACTION,
     payload: {
-      promise: createWebsite(body),
+      promise: createWebsite(body).then(res => {
+        const { block_num: blockNum } = res.result;
+        const creator = getAuthenticatedUserName(state);
+
+        busyAPI.sendAsync(subscribeMethod, [creator, blockNum, subscribeTypes.posts]);
+        busyAPI.subscribe((response, mess) => {
+          if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
+            dispatch(getOwnWebsite());
+            history.push(`/${formData.domain}.${formData.parent}/configuration`);
+          }
+        });
+      }),
     },
   });
 };
@@ -122,6 +146,7 @@ export const deleteWebsite = item => (dispatch, getState, { busyAPI }) => {
         mess.notification.blockParsed === res.result.block_num
       ) {
         dispatch(getManageInfo(name));
+        dispatch(getOwnWebsite());
       }
     });
   });
@@ -139,20 +164,6 @@ export const getReportsWebsiteInfo = (formData = {}) => (dispatch, getState) => 
     },
   });
 };
-
-export const GET_OWN_WEBSITE = createAsyncActionType('@website/GET_OWN_WEBSITE');
-
-export const getOwnWebsite = () => (dispatch, getState) => {
-  const userName = getAuthenticatedUserName(getState());
-
-  dispatch({
-    type: GET_OWN_WEBSITE.ACTION,
-    payload: {
-      promise: getWebsites(userName),
-    },
-  });
-};
-
 export const GET_WEBSITE_CONFIGURATIONS = createAsyncActionType(
   '@website/GET_WEBSITE_CONFIGURATIONS',
 );
@@ -304,18 +315,18 @@ export const getWebAuthorities = host => (dispatch, getState) => {
 
 export const ADD_WEBSITE_AUTHORITIES = createAsyncActionType('@website/ADD_WEBSITE_AUTHORITIES');
 
-export const addWebAuthorities = (host, name) => (dispatch, getState, { steemConnectAPI }) => {
+export const addWebAuthorities = (host, account) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = getAuthenticatedUserName(getState());
 
   dispatch({
     type: ADD_WEBSITE_AUTHORITIES.START,
-    payload: name,
+    payload: account,
   });
 
-  steemConnectAPI.addWebsiteAuthorities(userName, host, [name]).then(() =>
+  return steemConnectAPI.addWebsiteAuthorities(userName, host, [account.name]).then(() =>
     dispatch({
       type: ADD_WEBSITE_AUTHORITIES.SUCCESS,
-      payload: name,
+      payload: account,
     }),
   );
 };

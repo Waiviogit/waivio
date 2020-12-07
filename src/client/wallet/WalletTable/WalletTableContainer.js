@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form } from 'antd';
 import { injectIntl } from 'react-intl';
-import { get, size, isEmpty } from 'lodash';
+import { get, size, isEmpty, filter } from 'lodash';
 import moment from 'moment';
 
 import {
@@ -247,9 +247,13 @@ class WalletTableContainer extends React.Component {
       totalVestingFundSteem,
     } = this.props;
 
+    const filteredTransacions = filter(transactions, transaction =>
+      transaction.type === 'transfer' && transaction.from === transaction.to ? null : transaction,
+    );
+
     if (
-      (!this.state.isEmptyPeriod && !isEmpty(transactions)) ||
-      (this.state.isEmptyPeriod && !isEmpty(transactions))
+      (!this.state.isEmptyPeriod && !isEmpty(filteredTransacions)) ||
+      (this.state.isEmptyPeriod && !isEmpty(filteredTransacions))
     ) {
       return (
         <WalletTable
@@ -263,7 +267,7 @@ class WalletTableContainer extends React.Component {
           totalVestingFundSteem={totalVestingFundSteem}
         />
       );
-    } else if (!this.state.isEmptyPeriod && isEmpty(transactions)) {
+    } else if (!this.state.isEmptyPeriod && isEmpty(filteredTransacions)) {
       return (
         <div className="WalletTable__empty-table">
           {intl.formatMessage({

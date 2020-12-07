@@ -278,10 +278,10 @@ const posts = (state = initialState, action) => {
           ...state.list,
           [getPostKey(action.meta)]: {
             ...state.list[getPostKey(action.meta)],
-            tags: [...action.payload.tags],
-            cities: [...action.payload.cities],
-            wobjectsTwitter: [...action.payload.wobjectsTwitter],
-            wobjectsFacebook: [...action.payload.wobjectsFacebook],
+            tags: action.payload.tags,
+            cities: action.payload.cities,
+            wobjectsTwitter: action.payload.wobjectsTwitter,
+            wobjectsFacebook: action.payload.wobjectsFacebook,
             userFacebook: action.payload.userFacebook,
             userTwitter: action.payload.userTwitter,
           },
@@ -310,3 +310,9 @@ export const getIsPostLoaded = (state, author, permlink) =>
 export const getIsPostFailed = (state, author, permlink) =>
   get(state, ['postsStates', `${author}/${permlink}`, 'failed']);
 export const getLastPostId = state => state.lastId;
+export const getPostTags = (state, author, permlink) => {
+  get(state, ['list', `${author}/${permlink}`, 'tags']);
+};
+export const getPostCities = (state, author, permlink) => {
+  get(state, ['list', `${author}/${permlink}`, 'cities']);
+};

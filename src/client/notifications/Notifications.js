@@ -42,6 +42,8 @@ import NotificationPostBell from '../components/Navigation/Notifications/Notific
 import NotificationReblogBell from '../components/Navigation/Notifications/NotificationReblogBell';
 import NotificationFollowBell from '../components/Navigation/Notifications/NotificationFollowBell';
 import NotificationCampaignReservation from '../components/Navigation/Notifications/NotificationCampaignReservation';
+import NotificationWobjectRewardsBell from '../components/Navigation/Notifications/NotificationWobjectRewardsBell';
+import NotificationWobjectPostBell from '../components/Navigation/Notifications/NotificationWobjectPostBell';
 
 import './Notifications.less';
 
@@ -346,6 +348,24 @@ class Notifications extends React.Component {
               case notificationConstants.CAMPAIGN_RESERVATION:
                 return (
                   <NotificationCampaignReservation
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_WOBJECT_REWARDS:
+                return (
+                  <NotificationWobjectRewardsBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_WOBJECT_POST:
+                return (
+                  <NotificationWobjectPostBell
                     key={key}
                     notification={notification}
                     read={read}

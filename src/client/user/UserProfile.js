@@ -19,7 +19,6 @@ import {
 } from '../helpers/stateHelpers';
 import { getUserAccountHistory } from '../wallet/walletActions';
 import { getUserProfileBlogPosts } from '../feed/feedActions';
-import { getSocialInfoPost } from '../post/postActions';
 import { showPostModal } from '../app/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
@@ -38,7 +37,6 @@ import PostModal from '../post/PostModalContainer';
     getUserProfileBlogPosts,
     showPostModal,
     getUserAccountHistory,
-    getSocialInfoPost,
   },
 )
 export default class UserProfile extends React.Component {
@@ -54,7 +52,6 @@ export default class UserProfile extends React.Component {
     usersAccountHistory: PropTypes.shape(),
     isGuest: PropTypes.bool,
     history: PropTypes.shape(),
-    getSocialInfoPost: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -119,11 +116,9 @@ export default class UserProfile extends React.Component {
           showPostModal={this.props.showPostModal}
           isGuest={isGuest}
           history={history}
-          getSocialInfoPost={this.props.getSocialInfoPost}
-        >
-          {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
-          {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
-        </Feed>
+        />
+        {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
+        {!isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
         {<PostModal userName={authenticatedUser.name} />}
       </div>
     );

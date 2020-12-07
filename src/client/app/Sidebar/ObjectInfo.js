@@ -27,10 +27,8 @@ import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
-import IconButton from '../../components/IconButton';
 import { getIsAuthenticated, getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
-import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
@@ -50,9 +48,7 @@ class ObjectInfo extends React.Component {
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool,
-    albums: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
-    appendAlbum: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -94,14 +90,6 @@ class ObjectInfo extends React.Component {
   handleSelectField = field => () => this.setState({ selectedField: field });
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
-
-  handleToggleModalAddPhoto = () => {
-    const { albums, appendAlbum } = this.props;
-    if (isEmpty(albums)) {
-      appendAlbum();
-    }
-    this.handleToggleModal();
-  };
 
   listItem = (name, content) => {
     const { wobject, userName, isEditMode } = this.props;
@@ -257,14 +245,11 @@ class ObjectInfo extends React.Component {
     });
 
   render() {
-    const { wobject, userName, albums, isAuthenticated } = this.props;
+    const { wobject, userName, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
-    const { showModal, selectedField } = this.state;
     const { newsFilter } = wobject;
     const website = parseWobjectField(wobject, 'website');
     const wobjName = getObjectName(wobject);
-    const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
-    const photosCount = get(wobject, 'photos_count', 0);
     const tagCategories = get(wobject, 'tagCategory', []);
     const map = parseWobjectField(wobject, 'map');
     const parent = get(wobject, 'parent');
@@ -292,7 +277,6 @@ class ObjectInfo extends React.Component {
     const phones = get(wobject, 'phone', []);
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const allAlbums = this.validatedAlbums(albums);
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
     const menuLinks = getMenuItems(wobject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
     const menuPages = getMenuItems(wobject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
@@ -301,7 +285,7 @@ class ObjectInfo extends React.Component {
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
 
     const menuSection = () => {
-      if (!isEditMode && !isEmpty(customSort)) {
+      if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         const buttonArray = [...menuLinks, ...menuPages, ...button];
 
         if (newsFilter) buttonArray.push({ id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter });
@@ -387,38 +371,9 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
-        {isRenderGallery && (!isEmpty(pictures) || accessExtend) && (
-          <div className="field-info">
-            {accessExtend && (
-              <div className="proposition-line">
-                <Link
-                  to={{ pathname: `/object/${wobject.author_permlink}/gallery` }}
-                  onClick={() => this.handleSelectField('gallery')}
-                >
-                  <IconButton
-                    icon={<Icon type="plus-circle" />}
-                    onClick={this.handleToggleModalAddPhoto}
-                  />
-                  <div
-                    className={`icon-button__text ${
-                      selectedField === 'gallery' ? 'field-selected' : ''
-                    }`}
-                  >
-                    <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
-                  </div>
-                </Link>
-                <span className="proposition-line__text">{photosCount}</span>
-                {showModal && (
-                  <CreateImage
-                    albums={allAlbums}
-                    showModal={showModal}
-                    hideModal={this.handleToggleModal}
-                  />
-                )}
-              </div>
-            )}
-            {pictures && <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />}
-          </div>
+        {this.listItem(
+          objectFields.galleryItem,
+          pictures && <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />,
         )}
         {this.listItem(
           objectFields.price,
