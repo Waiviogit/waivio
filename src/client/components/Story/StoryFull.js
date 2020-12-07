@@ -34,7 +34,7 @@ import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../user/userActions';
 import { UNASSIGNED } from '../../../common/constants/rewards';
-import { getProxyImageURL } from '../../helpers/image';
+import { getImagePathPost } from '../../helpers/image';
 import './StoryFull.less';
 
 @injectIntl
@@ -269,7 +269,7 @@ class StoryFull extends React.Component {
     });
     const { open, index } = this.state.lightbox;
     const getImagePath = item =>
-      item.includes('waivio.nyc3.digitaloceanspaces') ? item : getProxyImageURL(item, 'preview');
+      item.includes('waivio.nyc3.digitaloceanspaces') ? item : getImagePathPost(item);
     const parsedBody = getHtml(post.body, {}, 'text');
     this.images = extractImageTags(parsedBody).map(image => ({
       ...image,

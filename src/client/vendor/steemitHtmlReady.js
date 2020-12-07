@@ -8,7 +8,7 @@ import steemEmbed from './embedMedia';
 import xmldom from 'xmldom';
 import linksRe from './steemitLinks';
 import { validateAccountName } from './ChainValidation';
-import { getProxyImageURL } from '../helpers/image';
+import { getImagePathPost } from '../helpers/image';
 
 const noop = () => {};
 const DOMParser = new xmldom.DOMParser({
@@ -172,12 +172,8 @@ function proxifyImages(doc) {
   if (!doc) return;
   [...doc.getElementsByTagName('img')].forEach(node => {
     const url = node.getAttribute('src');
-    console.log(url);
     if (!linksRe.local.test(url)) {
-      node.setAttribute(
-        'src',
-        url.includes('waivio.nyc3.digitaloceanspaces') ? url : getProxyImageURL(url),
-      );
+      node.setAttribute('src', getProxyImageURL(url));
     }
   });
 }
