@@ -1,11 +1,22 @@
 .ReportsWebsite {
   &__data-piker-wrapper {
     display: flex;
+    justify-content: space-between;
+
+    @media screen and (max-width: 568px) {
+      flex-wrap: wrap;
+    }
 
     .ant-form-item-children {
       display: flex;
       align-items: center;
       margin-left: 30px;
+
+      @media screen and (max-width: 1200px) {
+        &:last-child {
+          margin-left: 0;
+        }
+      }
 
       .ant-calendar-picker {
         margin-left: 20px;
