@@ -18,9 +18,8 @@ import {
   saveWebConfiguration,
 } from '../../websiteActions';
 import { getConfigFieldsValue } from '../../helper';
-
-import './WebsitesConfigurations.less';
 import Loading from '../../../components/Icon/Loading';
+import './WebsitesConfigurations.less';
 
 export const WebsitesConfigurations = ({
   intl,
@@ -38,24 +37,30 @@ export const WebsitesConfigurations = ({
   const [showMap, setShowMap] = useState('');
   const [showSelectColor, setShowSelectColor] = useState('');
   const [colors, setColors] = useState('');
+  const [aboutObj, setAbtObject] = useState(null);
   const [image, setImage] = useState('');
   const mobileLogo = getFieldValue('mobileLogo') || get(config, 'mobileLogo');
   const desktopLogo = getFieldValue('desktopLogo') || get(config, 'desktopLogo');
+
   const logoState = {
     mobileLogo,
     desktopLogo,
   };
+
   const mapState = {
     mobileMap: getFieldValue('mobileMap') || get(config, 'mobileMap'),
     desktopMap: getFieldValue('desktopMap') || get(config, 'desktopMap'),
   };
-  const aboutObject = getFieldValue('aboutObject') || get(config, 'aboutObject');
+
   const host = match.params.site;
 
   useEffect(() => {
-    getWebConfig(host);
+    getWebConfig(host).then(response => {
+      setAbtObject(response.value.aboutObject);
+    });
     return () => {
       setColors('');
+      setAbtObject(null);
     };
   }, [location.pathname]);
 
@@ -114,7 +119,7 @@ export const WebsitesConfigurations = ({
               ...config.colors,
               ...colors,
             },
-            aboutObject: get(aboutObject, 'author_permlink', ''),
+            aboutObject: get(aboutObj, 'author_permlink', ''),
           },
         };
         saveWebConfig(host, configurationObj);
@@ -200,23 +205,27 @@ export const WebsitesConfigurations = ({
                 </span>
               </h3>
               {getFieldDecorator('aboutObject')(
-                aboutObject ? (
+                aboutObj ? (
                   <div>
                     <div className="Transfer__search-content-wrap-current">
                       <div className="Transfer__search-content-wrap-current-user">
-                        <ObjectAvatar item={aboutObject} size={40} />
-                        <div className="Transfer__search-content">{getObjectName(aboutObject)}</div>
+                        <ObjectAvatar item={aboutObj} size={40} />
+                        <div className="Transfer__search-content">{getObjectName(aboutObj)}</div>
                       </div>
                       <span
                         role="presentation"
-                        onClick={() => form.setFieldsValue({ aboutObject: null })}
+                        onClick={() => {
+                          setAbtObject(null);
+                        }}
                         className="iconfont icon-delete"
                       />
                     </div>
                   </div>
                 ) : (
                   <SearchObjectsAutocomplete
-                    handleSelect={value => form.setFieldsValue({ aboutObject: value })}
+                    handleSelect={value => {
+                      setAbtObject(value);
+                    }}
                   />
                 ),
               )}
