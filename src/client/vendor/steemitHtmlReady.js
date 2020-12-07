@@ -172,7 +172,6 @@ function proxifyImages(doc) {
   if (!doc) return;
   [...doc.getElementsByTagName('img')].forEach(node => {
     const url = node.getAttribute('src');
-    console.log(url);
     if (!linksRe.local.test(url)) {
       node.setAttribute(
         'src',
