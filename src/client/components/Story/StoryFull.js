@@ -268,10 +268,12 @@ class StoryFull extends React.Component {
       else linkedObjects.push(wobj);
     });
     const { open, index } = this.state.lightbox;
+    const getImagePath = item =>
+      item.includes('waivio.nyc3.digitaloceanspaces') ? item : getProxyImageURL(item, 'preview');
     const parsedBody = getHtml(post.body, {}, 'text');
     this.images = extractImageTags(parsedBody).map(image => ({
       ...image,
-      src: getProxyImageURL(image.src, 'preview'),
+      src: getImagePath(image.src),
     }));
     const body = this.images.reduce(
       (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
@@ -420,12 +422,14 @@ class StoryFull extends React.Component {
         {open && (
           <Lightbox
             imageTitle={this.images[index].alt}
-            mainSrc={this.images[index].src}
-            nextSrc={imagesArraySize > 1 && this.images[(index + 1) % imagesArraySize].src}
-            prevSrc={
+            mainSrc={getImagePath(this.images[index].src)}
+            nextSrc={getImagePath(
+              imagesArraySize > 1 && this.images[(index + 1) % imagesArraySize].src,
+            )}
+            prevSrc={getImagePath(
               imagesArraySize > 1 &&
-              this.images[(index + (imagesArraySize - 1)) % imagesArraySize].src
-            }
+                this.images[(index + (imagesArraySize - 1)) % imagesArraySize].src,
+            )}
             onCloseRequest={() => {
               this.setState({
                 lightbox: {
