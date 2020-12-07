@@ -1,11 +1,40 @@
 .WebsiteSearch {
-  width: 50%;
+  width: 30%;
+
+  &__search-type.ant-select-dropdown-menu-item {
+    border: 1px solid #7c92a0;
+    border-radius: 4px !important;
+    padding: 5px !important;
+    margin: 5px;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  &__search-type--active.ant-select-dropdown-menu-item {
+    color: orange;
+    border-color: orange;
+  }
+
+  &__dropdown {
+    .ant-select-dropdown-menu-item-group:first-child {
+      .ant-select-dropdown-menu-item-group-title {
+        display: none;
+      }
+
+      .ant-select-dropdown-menu-item-group-list {
+        display: flex !important;
+        flex-wrap: wrap;
+      }
+    }
+  }
 
   .ant-input {
     border: none;
     border-radius: 0;
     border-bottom: 1px solid black;
-    padding: 0 0 0 30px !important;
+    padding: 0 30px !important;
   }
 
   .ant-input-affix-wrapper {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, forEach, debounce, size, map } from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { isEmpty, debounce, size, map } from 'lodash';
+import { injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AutoComplete, Icon, Input } from 'antd';
@@ -20,15 +20,15 @@ import {
   getSearchUsersResults,
   searchObjectTypesResults,
 } from '../../reducers';
-import Avatar from '../Avatar';
-import ObjectAvatar from '../ObjectAvatar';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
-import WeightTag from '../WeightTag';
 import { pendingSearch } from '../../search/Search';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
 import HeaderButton from '../HeaderButton/HeaderButton';
+import { getTranformSearchCountData } from '../../search/helpers';
+import UserSearchItem from '../../search/SearchItems/UserSearchItem';
+import ObjectSearchItem from '../../search/SearchItems/ObjectSearchItem';
 
 import './Topnav.less';
 
@@ -119,38 +119,6 @@ class Topnav extends React.Component {
       this.handleClearSearchData();
     }
   }
-
-  getTranformSearchCountData = searchResults => {
-    const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
-
-    const countArr = [];
-
-    if (!isEmpty(wobjectsCounts)) {
-      const wobjList = listOfObjectTypes.reduce((acc, i) => {
-        const index = wobjectsCounts.findIndex(obj => obj.object_type === i);
-
-        if (index >= 0) {
-          acc.push(wobjectsCounts[index]);
-        }
-
-        return acc;
-      }, []);
-
-      forEach(wobjList, current => {
-        const obj = {};
-
-        obj.name = current.object_type;
-        obj.count = current.count;
-        obj.type = 'wobject';
-        countArr.push(obj);
-      });
-    }
-    if (objectTypesCount) countArr.push({ name: 'Types', count: objectTypesCount, type: 'type' });
-
-    if (usersCount) countArr.push({ name: 'Users', count: usersCount, type: 'user' });
-
-    return countArr;
-  };
 
   debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
 
@@ -356,39 +324,16 @@ class Topnav extends React.Component {
           size(accounts),
         )}
       >
-        {map(
-          accounts,
-          option =>
-            option && (
-              <AutoComplete.Option
-                marker={Topnav.markers.USER}
-                key={`user${option.account}`}
-                value={`user${option.account}`}
-                className="Topnav__search-autocomplete"
-              >
-                <div className="Topnav__search-content-wrap">
-                  <Avatar username={option.account} size={40} />
-                  <div className="Topnav__search-content">{option.account}</div>
-                  <span className="Topnav__search-expertize">
-                    <WeightTag weight={option.wobjects_weight} />
-                    &middot;
-                    <span className="Topnav__search-follow-counter">{option.followers_count}</span>
-                  </span>
-                </div>
-                <div className="Topnav__search-content-small">
-                  {option.youFollows && !option.followsYou && (
-                    <FormattedMessage id="following_user" defaultMessage="following" />
-                  )}
-                  {!option.youFollows && option.followsYou && (
-                    <FormattedMessage id="follows you" defaultMessage="follows you" />
-                  )}
-                  {option.youFollows && option.followsYou && (
-                    <FormattedMessage id="mutual_follow" defaultMessage="mutual following" />
-                  )}
-                </div>
-              </AutoComplete.Option>
-            ),
-        )}
+        {map(accounts, option => (
+          <AutoComplete.Option
+            marker={Topnav.markers.USER}
+            key={`user${option.account}`}
+            value={`user${option.account}`}
+            className="Topnav__search-autocomplete"
+          >
+            <UserSearchItem user={option} />
+          </AutoComplete.Option>
+        ))}
       </AutoComplete.OptGroup>
     );
   }
@@ -405,30 +350,16 @@ class Topnav extends React.Component {
           size(wobjects),
         )}
       >
-        {map(wobjects, option => {
-          const wobjName = getObjectName(option);
-          const parent = option.parent;
-
-          return wobjName ? (
-            <AutoComplete.Option
-              marker={Topnav.markers.WOBJ}
-              key={`wobj${wobjName}`}
-              value={`wobj${option.defaultShowLink}`}
-              className="Topnav__search-autocomplete"
-            >
-              <div className="Topnav__search-content-wrap">
-                <ObjectAvatar item={option} size={40} />
-                <div>
-                  <div className="Topnav__search-content">{wobjName}</div>
-                  {parent && (
-                    <div className="Topnav__search-content-small">{getObjectName(parent)}</div>
-                  )}
-                </div>
-              </div>
-              <div className="Topnav__search-content-small">{option.object_type}</div>
-            </AutoComplete.Option>
-          ) : null;
-        })}
+        {map(wobjects, option => (
+          <AutoComplete.Option
+            marker={Topnav.markers.WOBJ}
+            key={`wobj${getObjectName(option)}`}
+            value={`wobj${option.defaultShowLink}`}
+            className="Topnav__search-autocomplete"
+          >
+            <ObjectSearchItem wobj={option} />
+          </AutoComplete.Option>
+        ))}
       </AutoComplete.OptGroup>
     );
   }
@@ -490,7 +421,7 @@ class Topnav extends React.Component {
   }
 
   searchSelectBar = searchResults => {
-    const options = this.getTranformSearchCountData(searchResults);
+    const options = getTranformSearchCountData(searchResults, listOfObjectTypes);
 
     return (
       <AutoComplete.OptGroup key={Topnav.markers.SELECT_BAR} label=" ">

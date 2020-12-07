@@ -17,6 +17,8 @@ const initialState = {
   isStartSearchUser: false,
   isStartSearchObject: false,
   isClearSearchObjects: false,
+  websiteSearchType: 'All',
+  websiteSearchResult: [],
 };
 
 export default (state = initialState, action) => {
@@ -313,6 +315,20 @@ export default (state = initialState, action) => {
         beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
       };
     }
+
+    case searchActions.WEBSITE_SEARCH_TYPE: {
+      return {
+        ...state,
+        websiteSearchType: action.payload,
+      };
+    }
+
+    case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.SUCCESS: {
+      return {
+        ...state,
+        websiteSearchResult: action.payload,
+      };
+    }
     default:
       return state;
   }
@@ -330,3 +346,5 @@ export const getIsStartSearchAutoComplete = state => state.isStartSearchAutoComp
 export const getIsStartSearchUser = state => state.isStartSearchUser;
 export const getIsStartSearchObject = state => state.isStartSearchObject;
 export const getIsClearSearchObjects = state => state.isClearSearchObjects;
+export const getWebsiteSearchType = state => state.websiteSearchType;
+export const getWebsiteSearchResult = state => state.websiteSearchResult;

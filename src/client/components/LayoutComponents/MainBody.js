@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Page from '../../feed/Page';
+import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody';
 
 const MainBody = ({ currPage, route }) => {
-  switch (currPage) {
+  switch ('dining') {
     case 'dining':
-      return <div>dining</div>;
+      return <WebsiteBody />;
 
     default:
       return <Page route={route} />;

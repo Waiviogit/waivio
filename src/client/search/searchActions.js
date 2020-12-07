@@ -9,6 +9,7 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   getLocale,
+  getWebsiteSearchType,
 } from '../reducers';
 import { replacer } from '../helpers/parser';
 
@@ -109,6 +110,28 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
   }).catch(error => console.log('Object search >', error.message));
 };
 
+export const SEARCH_OBJECTS_FOR_WEBSITE = createAsyncActionType(
+  '@search/SEARCH_OBJECTS_FOR_WEBSITE',
+);
+
+export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight') => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const objType = getWebsiteSearchType(state);
+  const userName = getAuthenticatedUserName(state);
+
+  dispatch({
+    type: SEARCH_OBJECTS_FOR_WEBSITE.ACTION,
+    payload: ApiClient.searchObjects(searchString, objType, false, 15, locale, {
+      userName,
+      sort,
+    }),
+  });
+};
+
 export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
   dispatch,
   getState,
@@ -130,6 +153,7 @@ export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
     });
   }
 };
+
 export const searchUsersForDiscoverPage = (userName, limit) => (dispatch, getState) => {
   const search = replacer(userName, '@');
   const user = getAuthenticatedUserName(getState());
@@ -241,3 +265,10 @@ export const clearBeneficiariesUsers = () => dispatch =>
   dispatch({
     type: CLEAR_BENEFICIARIES_USERS.ACTION,
   });
+
+export const WEBSITE_SEARCH_TYPE = '@search/WEBSITE_SEARCH_TYPE';
+
+export const setWebsiteSearchType = payload => ({
+  type: WEBSITE_SEARCH_TYPE,
+  payload,
+});

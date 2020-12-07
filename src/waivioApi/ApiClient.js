@@ -259,10 +259,19 @@ export const getContent = (author, permlink = '', locale, follower) =>
       .catch(error => reject(error));
   });
 
-export const searchObjects = (searchString, objType = '', forParent, limit = 15, locale) => {
-  const requestBody = { search_string: searchString, limit };
+export const searchObjects = (
+  searchString,
+  objType = '',
+  forParent,
+  limit = 15,
+  locale,
+  body = {},
+) => {
+  const requestBody = { search_string: searchString, limit, ...body };
+
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
+
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers: { ...headers, locale, app: config.appName },
     method: 'POST',
