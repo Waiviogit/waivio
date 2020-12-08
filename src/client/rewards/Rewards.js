@@ -311,14 +311,16 @@ class Rewards extends React.Component {
     }
   };
 
-  setFilterValue = (filterValue, key) => {
+  setFilterValue = (filterValue, key, fromUrl) => {
     const activeFilters = { ...this.state.activeFilters };
     if (includes(activeFilters[key], filterValue)) {
       handleRemoveSearchLink(filterValue);
       remove(activeFilters[key], f => f === filterValue);
     } else {
       activeFilters[key].push(filterValue);
-      handleAddSearchLink(filterValue);
+      if (!fromUrl) {
+        handleAddSearchLink(filterValue);
+      }
     }
     if (!this.state.url) {
       this.setState({ activeFilters, url: this.props.match.url });

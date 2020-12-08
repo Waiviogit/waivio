@@ -919,8 +919,19 @@ export const clearAllSessionProposition = () => {
   removeSessionData('currentProposIdReserved', 'currentWobjIdReserved');
 };
 
-export const filterSponsorsName = location =>
-  new URLSearchParams(location.search).getAll('sponsorName');
+export const filterSponsorsName = location => {
+  const searchParams = new URLSearchParams(location.search);
+  const arr = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const pair of searchParams.entries()) {
+    const key = pair[0];
+    if (key.match(/sponsorName/)) {
+      arr.push(pair);
+      console.log(pair);
+    }
+  }
+  return arr;
+};
 
 export const filterSelectedRewardsType = location =>
   new URLSearchParams(location.search).getAll('rewardsType');
@@ -928,7 +939,7 @@ export const filterSelectedRewardsType = location =>
 export const isHasSearchKey = key => new URLSearchParams(location.search).has(key);
 
 export const handleFilters = (setFilterValue, filterSponsorNames, value) =>
-  map(filterSponsorNames, sponsorName => setFilterValue(sponsorName, value));
+  map(filterSponsorNames, sponsorName => setFilterValue(sponsorName[1], value, true));
 
 export const handleLinkSlash = url => url.replace(/\/{2,}/g, '/');
 
@@ -949,5 +960,3 @@ export const handleRemoveSearchLink = filterValue => {
     }
   });
 };
-
-// export const historyPush = () => history.pushState('', '', `${location.href}&${searchParams.toString()}`)
