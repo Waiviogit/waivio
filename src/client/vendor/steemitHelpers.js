@@ -9,7 +9,6 @@ import { Client } from '@hiveio/dhive';
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
-import { getContent } from '../../waivioApi/ApiClient';
 
 const dmp = new diff_match_patch();
 /**

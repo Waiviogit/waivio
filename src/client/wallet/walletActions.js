@@ -11,7 +11,6 @@ import {
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { guestUserRegex } from '../helpers/regexHelpers';
-// eslint-disable-next-line no-duplicate-imports
 import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
