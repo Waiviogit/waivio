@@ -53,6 +53,8 @@ import {
   getActiveFilters,
   getSortChanged,
   getSort,
+  handleRemoveSearchLink,
+  handleAddSearchLink,
 } from './rewardsHelper';
 import {
   MESSAGES,
@@ -249,6 +251,12 @@ class Rewards extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    const lastLinkChar = location.href;
+    if (!location.search && lastLinkChar.slice(-1) === '?') {
+      const a = lastLinkChar.substring(0, lastLinkChar.length - 1);
+      history.pushState('', '', a);
+    }
+
     if (this.props.match.url !== prevProps.match.url) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ url: this.props.match.url });
@@ -306,9 +314,11 @@ class Rewards extends React.Component {
   setFilterValue = (filterValue, key) => {
     const activeFilters = { ...this.state.activeFilters };
     if (includes(activeFilters[key], filterValue)) {
+      handleRemoveSearchLink(filterValue);
       remove(activeFilters[key], f => f === filterValue);
     } else {
       activeFilters[key].push(filterValue);
+      handleAddSearchLink(filterValue);
     }
     if (!this.state.url) {
       this.setState({ activeFilters, url: this.props.match.url });

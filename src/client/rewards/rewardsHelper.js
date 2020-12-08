@@ -921,8 +921,33 @@ export const clearAllSessionProposition = () => {
 
 export const filterSponsorsName = location =>
   new URLSearchParams(location.search).getAll('sponsorName');
+
 export const filterSelectedRewardsType = location =>
   new URLSearchParams(location.search).getAll('rewardsType');
 
-export const handleFilters = (setFilterValue, filterSponsorNames, key) =>
-  map(filterSponsorNames, sponsorName => setFilterValue(sponsorName, key));
+export const isHasSearchKey = key => new URLSearchParams(location.search).has(key);
+
+export const handleFilters = (setFilterValue, filterSponsorNames, value) =>
+  map(filterSponsorNames, sponsorName => setFilterValue(sponsorName, value));
+
+export const handleLinkSlash = url => url.replace(/\/{2,}/g, '/');
+
+export const handleAddSearchLink = filterValue => {
+  const searchParams = new URLSearchParams(location.search);
+  const date = new Date();
+  const uniq = date.getMilliseconds();
+  searchParams.append(`sponsorName${uniq}`, filterValue);
+  history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+};
+
+export const handleRemoveSearchLink = filterValue => {
+  const searchParams = new URLSearchParams(location.search);
+  searchParams.forEach((value, key) => {
+    if (value === filterValue) {
+      searchParams.delete(key);
+      history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+    }
+  });
+};
+
+// export const historyPush = () => history.pushState('', '', `${location.href}&${searchParams.toString()}`)
