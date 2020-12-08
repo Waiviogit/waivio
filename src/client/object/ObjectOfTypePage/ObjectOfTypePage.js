@@ -19,6 +19,7 @@ import {
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
 import {
+  getBreadCrumbs,
   getFollowingObjectsList,
   getIsAppendLoading,
   getLoadingFlag,
@@ -83,7 +84,7 @@ const ObjectOfTypePage = props => {
     e.preventDefault();
 
     props.form.validateFieldsAndScroll((err, values) => {
-      const { appendPageContent, userName, toggleViewEditMode } = props;
+      const { appendPageContent, userName, toggleViewEditMode, nestedWobject, breadcrumb } = props;
       const { follow } = values;
       if (!err) {
         const pageContentField = {
@@ -91,7 +92,9 @@ const ObjectOfTypePage = props => {
           body: content,
           locale,
         };
-        const postData = getAppendData(userName, wobject, '', pageContentField);
+        const wobj = breadcrumb.length > 1 ? nestedWobject : wobject;
+
+        const postData = getAppendData(userName, wobj, '', pageContentField);
         appendPageContent(postData, { follow, votePercent: votePercent * 100 })
           .then(() => {
             message.success(
@@ -254,6 +257,7 @@ ObjectOfTypePage.propTypes = {
   isEditMode: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,
   toggleViewEditMode: PropTypes.func.isRequired,
+  breadcrumb: PropTypes.shape(),
 };
 
 ObjectOfTypePage.defaultProps = {
@@ -265,6 +269,7 @@ ObjectOfTypePage.defaultProps = {
   locale: 'en-US',
   followingList: [],
   setLoadingNestedWobject: () => {},
+  breadcrumb: [],
 };
 
 const mapStateToProps = state => ({
@@ -273,6 +278,7 @@ const mapStateToProps = state => ({
   followingList: getFollowingObjectsList(state),
   isLoadingFlag: getLoadingFlag(state),
   nestedWobject: getWobjectNested(state),
+  breadcrumb: getBreadCrumbs(state),
 });
 const mapDispatchToProps = {
   appendPageContent: appendObject,
