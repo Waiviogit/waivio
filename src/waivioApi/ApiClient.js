@@ -692,7 +692,9 @@ export const getPropositions = ({
       primaryObject,
       sort,
     };
-
+    const searchParams = new URLSearchParams(location.search);
+    const mapX = searchParams.get('mapX');
+    const mapY = searchParams.get('mapY');
     const isWidget = getSessionData('isWidget');
     const isWidgetUsername = getSessionData('userName');
 
@@ -709,8 +711,12 @@ export const getPropositions = ({
       reqData.radius = radius;
     }
     if (!isEmpty(area) && isEmpty(requiredObject)) {
-      reqData.area = area;
-      if (radius) reqData.radius = radius;
+      if (mapX && mapY) {
+        reqData.area = [+mapX, mapY];
+      } else {
+        reqData.area = area;
+        if (radius) reqData.radius = radius;
+      }
     }
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!isEmpty(types)) reqData.types = types;

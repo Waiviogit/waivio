@@ -950,6 +950,20 @@ export const handleAddSearchLink = filterValue => {
   history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
 };
 
+export const handleAddMapCoordinates = coordinates => {
+  const searchParams = new URLSearchParams(location.search);
+  if (!searchParams.get('mapX') && !searchParams.get('mapY')) {
+    searchParams.append('mapX', coordinates[0]);
+    searchParams.append('mapY', coordinates[1]);
+  } else {
+    searchParams.delete('mapX');
+    searchParams.delete('mapY');
+    searchParams.append('mapX', coordinates[0]);
+    searchParams.append('mapY', coordinates[1]);
+  }
+  history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+};
+
 export const handleRemoveSearchLink = filterValue => {
   const searchParams = new URLSearchParams(location.search);
   searchParams.forEach((value, key) => {

@@ -230,6 +230,7 @@ class Rewards extends React.Component {
     const { match } = nextProps;
     const { username } = this.props;
     const { sortAll, sortEligible, sortReserved, area } = this.state;
+
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
     if (this.state.currentLocation !== nextProps.location.search) {
       this.setState({
@@ -253,8 +254,8 @@ class Rewards extends React.Component {
   componentDidUpdate(prevProps) {
     const lastLinkChar = location.href;
     if (!location.search && lastLinkChar.slice(-1) === '?') {
-      const a = lastLinkChar.substring(0, lastLinkChar.length - 1);
-      history.pushState('', '', a);
+      const currLink = lastLinkChar.substring(0, lastLinkChar.length - 1);
+      history.pushState('', '', currLink);
     }
 
     if (this.props.match.url !== prevProps.match.url) {
@@ -267,7 +268,6 @@ class Rewards extends React.Component {
     const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
-
     if (!isSecondaryObjectsCards || (isSecondaryObjectsCards && !firstMapLoad)) {
       this.getPropositions(
         { username, match, area: coordinates, radius, activeFilters, limit },
@@ -862,7 +862,6 @@ class Rewards extends React.Component {
 
   moveToCoordinates = objects => {
     const { userLocation } = this.props;
-
     if (!isEmpty(objects)) {
       return get(objects, ['0', 'map', 'coordinates']) || get(objects, ['1', 'map', 'coordinates']);
     }
