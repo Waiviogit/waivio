@@ -72,7 +72,9 @@ const Proposition = ({
 
   const requirementFilters = get(proposition, ['requirement_filters'], {});
   const filteredRequirementFilters = handleRequirementFilters(requirementFilters);
-  const isEligible = Object.values(filteredRequirementFilters).every(item => item === true);
+  const isEligible = isAuth
+    ? Object.values(requirementFilters).every(item => item === true)
+    : Object.values(filteredRequirementFilters).every(item => item === true);
   const proposedWobj = wobj;
   const requiredObject = get(proposition, ['required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
