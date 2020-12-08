@@ -140,71 +140,10 @@ function slug(text) {
  * https://github.com/steemit/steemit.com/blob/ded8ecfcc9caf2d73b6ef12dbd0191bd9dbf990b/app/redux/TransactionSaga.js
  */
 
-export function createPermlink(title, author, parent_author, parent_permlink, isPost) {
+export function createPermlink(title, author, parent_author, parent_permlink) {
   let permlink;
   if (title && title.trim() !== '') {
     let s = slug(title);
-    console.log(s);
-    if (isPost) {
-      console.log(isPost);
-      getContent(author, s)
-        .then(res => res.some(item => item.author_permlink === s))
-        .then(response => {
-          console.log(response);
-          if (s === '') {
-            s = base58.encode(secureRandom.randomBuffer(4));
-          }
-          if (author.startsWith(GUEST_PREFIX) || author.startsWith(BXY_GUEST_PREFIX)) {
-            const prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
-            permlink = prefix + s;
-            return Promise.resolve(checkPermLinkLength(permlink));
-          }
-
-          return steemAPI
-            .sendAsync('get_content', [author, s])
-            .then(content => {
-              if (content.body !== '') {
-                // make sure slug is unique
-              }
-              permlink = s;
-              return checkPermLinkLength(permlink);
-            })
-            .catch(() => {
-              permlink = s;
-              return checkPermLinkLength(permlink);
-            });
-        })
-        .catch(() => {
-          if (s === '') {
-            s = base58.encode(secureRandom.randomBuffer(4));
-          }
-          if (author.startsWith(GUEST_PREFIX) || author.startsWith(BXY_GUEST_PREFIX)) {
-            const prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
-            permlink = prefix + s;
-            return Promise.resolve(checkPermLinkLength(permlink));
-          }
-
-          return steemAPI
-            .sendAsync('get_content', [author, s])
-            .then(content => {
-              let prefix;
-              if (content.body !== '') {
-                // make sure slug is unique
-                prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
-              } else {
-                prefix = '';
-              }
-              permlink = prefix + s;
-              return checkPermLinkLength(permlink);
-            })
-            .catch(() => {
-              const prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
-              permlink = prefix + s;
-              return checkPermLinkLength(permlink);
-            });
-        });
-    }
-
     if (s === '') {
       s = base58.encode(secureRandom.randomBuffer(4));
     }
@@ -228,8 +167,7 @@ export function createPermlink(title, author, parent_author, parent_permlink, is
         return checkPermLinkLength(permlink);
       })
       .catch(() => {
-        const prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
-        permlink = prefix + s;
+        permlink = s;
         return checkPermLinkLength(permlink);
       });
   }
