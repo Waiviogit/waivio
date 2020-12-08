@@ -3,25 +3,26 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { findKey, find, get, isEmpty, map, includes, filter, size } from 'lodash';
+import { findKey, find, get, isEmpty, map, includes, filter, size, isEqual } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
-import Comments from '../../comments/Comments';
-import { ASSIGNED, IS_RESERVED } from '../../../common/constants/rewards';
-import CommentsMessages from './Comments';
+import CommentsMessages from './CommentsMessages';
+import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE, IS_ALL } from '../../../common/constants/rewards';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import {
   getRate,
   getAppUrl,
+  getLocale,
   isGuestUser,
   getCommentsFromReserved,
   getAuthenticatedUserName,
 } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
-import { getReservedComments } from '../../comments/commentsActions';
+import { getReservedComments, sendCommentMessages } from '../../comments/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
+import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
 import './CampaignFooter.less';
 
 @injectIntl
@@ -33,9 +34,12 @@ import './CampaignFooter.less';
     reservedComments: getCommentsFromReserved(state),
     userName: getAuthenticatedUserName(state),
     isGuest: isGuestUser(state),
+    locale: getLocale(state),
+    follower: getAuthenticatedUserName(state),
   }),
   {
     getReservedComments,
+    sendCommentMessages,
   },
 )
 class CampaignFooter extends React.Component {
@@ -45,7 +49,7 @@ class CampaignFooter extends React.Component {
     postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     proposedWobj: PropTypes.shape().isRequired,
-    proposition: PropTypes.shape().isRequired,
+    proposition: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
@@ -76,6 +80,10 @@ class CampaignFooter extends React.Component {
     reservedComments: PropTypes.shape(),
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
+    sendCommentMessages: PropTypes.func,
+    sortFraudDetection: PropTypes.string,
+    locale: PropTypes.string,
+    follower: PropTypes.string,
   };
 
   static defaultProps = {
@@ -102,6 +110,11 @@ class CampaignFooter extends React.Component {
     reservedComments: {},
     userName: '',
     isGuest: false,
+    sendCommentMessages: () => {},
+    proposition: {},
+    sortFraudDetection: 'reservation',
+    locale: 'en-US',
+    follower: '',
   };
 
   constructor(props) {
@@ -118,52 +131,56 @@ class CampaignFooter extends React.Component {
       loading: false,
       currentPost: {},
       currentPostReserved: {},
+      commentFromText: '',
+      commentSubmitted: false,
+      loadingComments: false,
+      userFollowed: this.props.postState.userFollowed,
+      objectFollowed: this.props.postState.objectFollowed,
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
 
-    this.isReserved = this.props.match.params.filterKey === IS_RESERVED;
+    this.isReserved = !isEmpty(this.props.match)
+      ? this.props.match.params.filterKey === IS_RESERVED ||
+        this.props.match.params.filterKey === IS_ALL ||
+        includes(this.props.match.path, 'object')
+      : '';
   }
 
-  componentWillMount() {
-    const { user, post, defaultVotePercent } = this.props;
+  componentDidMount() {
+    const { user, post, defaultVotePercent, proposition, locale, follower } = this.props;
     if (user) {
       const userVote = find(post.active_votes, { voter: user.name }) || {};
 
       if (userVote.percent && userVote.percent > 0) {
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
           sliderValue: userVote.percent / 100,
         });
       } else {
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
           sliderValue: defaultVotePercent / 100,
         });
       }
     }
-  }
-
-  componentDidMount() {
-    const { proposition, match } = this.props;
     const currentUser = this.getCurrentUser();
     const author = this.isReserved
-      ? get(currentUser, ['0', 'name'])
-      : get(proposition, ['users', '0', 'name']);
+      ? get(currentUser, ['0', 'rootName'])
+      : get(proposition, ['users', '0', 'rootName']);
     const permlink = this.isReserved
       ? get(currentUser, ['0', 'permlink'])
       : get(proposition, ['users', '0', 'permlink']);
     this.getReservedComments();
-
     if (!isEmpty(author) && !isEmpty(permlink)) {
-      getContent(author, permlink).then(res => this.setState({ currentPost: res }));
+      getContent(author, permlink, locale, follower).then(res =>
+        this.setState({ currentPost: res }),
+      );
     }
-    const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
+    const reservationsTime =
+      get(currentUser, ['0', 'createdAt']) || get(currentUser, ['createdAt']);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      daysLeft: getDaysLeft(
-        isRewards
-          ? get(proposition, ['objects', '0', 'reservationCreated'])
-          : get(currentUser, ['0', 'createdAt']),
-        proposition.count_reservation_days,
-      ),
+      daysLeft: getDaysLeft(reservationsTime, proposition.count_reservation_days),
     });
   }
 
@@ -176,16 +193,19 @@ class CampaignFooter extends React.Component {
         usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
       );
     } else {
-      currentUser = filter(proposition.users, usersItem => usersItem.name === userName);
+      currentUser = get(proposition, ['users']);
     }
 
     return currentUser;
   };
 
   getReservedComments = () => {
-    const { proposition, isGuest } = this.props;
+    const { proposition } = this.props;
     const currentUser = this.getCurrentUser();
-    const author = isGuest ? get(currentUser, ['0', 'rootName']) : get(currentUser, ['0', 'name']);
+    const currentUserName = get(currentUser, ['0', 'name']);
+    const author = includes(currentUserName, 'waivio')
+      ? get(currentUser, ['0', 'rootName'])
+      : get(currentUser, ['0', 'name']);
     const permlink = get(currentUser, ['0', 'permlink']);
     const { campaign_server: category } = proposition;
     if (!isEmpty(author) && !isEmpty(permlink)) {
@@ -219,7 +239,7 @@ class CampaignFooter extends React.Component {
   };
 
   handleFollowClick() {
-    const { userFollowed } = this.props.postState;
+    const { userFollowed } = this.state;
     const { proposition } = this.props;
 
     if (userFollowed) {
@@ -227,15 +247,17 @@ class CampaignFooter extends React.Component {
     } else {
       this.props.followUser(proposition.guideName);
     }
+    this.setState(prevState => ({ userFollowed: !prevState.userFollowed }));
   }
 
   handleFollowObjectClick() {
-    const { objectFollowed } = this.props.postState;
+    const { objectFollowed } = this.state;
     if (objectFollowed) {
       this.props.unfollowObject(this.props.requiredObjectPermlink);
     } else {
       this.props.followObject(this.props.requiredObjectPermlink);
     }
+    this.setState(prevState => ({ objectFollowed: !prevState.objectFollowed }));
   }
 
   clickMenuItem(key) {
@@ -265,7 +287,7 @@ class CampaignFooter extends React.Component {
           id: 'discarded_successfully',
           defaultMessage: 'Reservation released. It will be available for reservation soon.',
         }),
-        this.props.history.push('/rewards/active'),
+        this.props.history.push(PATH_NAME_ACTIVE),
       );
     });
   };
@@ -326,13 +348,107 @@ class CampaignFooter extends React.Component {
     }
   };
 
+  onCommentSend = () => {
+    const { match, getMessageHistory, isGuest } = this.props;
+    return isGuest || !match.params[0] ? this.getReservedComments() : getMessageHistory();
+  };
+
+  handleSubmitComment = (parentP, commentValue) => {
+    const { proposition } = this.props;
+    const currentUser = this.getCurrentUser();
+    const parentAuthorIfGuest =
+      get(currentUser, ['0', 'rootName']) || get(currentUser, ['rootName']);
+    const parentPermlinkIfGuest = !this.isReserved
+      ? get(proposition, ['users', '0', 'permlink'])
+      : get(currentUser, ['0', 'permlink']);
+    const { intl } = this.props;
+    const parentComment = parentP;
+    if (parentComment.author_original) parentComment.author = parentComment.author_original;
+    this.setState({ loadingComments: true });
+    const commentObj = get(parentComment, ['firstAppeal']);
+    return this.props
+      .sendCommentMessages(
+        parentComment,
+        commentValue,
+        false,
+        commentObj,
+        parentAuthorIfGuest,
+        parentPermlinkIfGuest,
+      )
+      .then(() => {
+        setTimeout(() => {
+          this.onCommentSend().then(() => {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_sent',
+                defaultMessage: 'Comment submitted',
+              }),
+            );
+            this.setState({ loadingComments: false, commentFromText: '', commentSubmitted: true });
+          });
+        }, 12000);
+      })
+      .catch(() => {
+        this.setState({ commentFromText: commentValue, loadingComments: false });
+        return {
+          error: true,
+        };
+      });
+  };
+
+  handleNotificationComments = (
+    commentsArr,
+    hasComments,
+    postAll,
+    rootComment,
+    isNotifyComment,
+  ) => {
+    const { match, user, getMessageHistory, isGuest, proposition } = this.props;
+    const { commentsVisible } = this.state;
+
+    const currentFilteredComments =
+      hasComments && !commentsVisible && isNotifyComment
+        ? filter(
+            commentsArr,
+            comment => isEqual(match.params.permlink, comment.permlink) && comment,
+          )
+        : commentsArr;
+
+    const isShow = (!commentsVisible && isNotifyComment) || commentsVisible;
+
+    const reversedComments = currentFilteredComments.reverse();
+
+    return map(reversedComments, currentComment => (
+      <div key={currentComment.post_id}>
+        <CommentsMessages
+          show={isShow}
+          user={user}
+          post={postAll}
+          getMessageHistory={getMessageHistory}
+          currentComment={currentComment}
+          getReservedComments={this.getReservedComments}
+          parent={rootComment}
+          matchPath={match.params[0]}
+          match={match}
+          isGuest={isGuest}
+          proposition={proposition}
+        />
+      </div>
+    ));
+  };
+
   render() {
     const {
-      commentsVisible,
       modalVisible,
       daysLeft,
       sliderVisible,
+      currentPost,
       currentPostReserved,
+      commentFormText,
+      commentSubmitted,
+      loadingComments,
+      userFollowed,
+      objectFollowed,
     } = this.state;
     const {
       post,
@@ -354,29 +470,28 @@ class CampaignFooter extends React.Component {
       getMessageHistory,
       blacklistUsers,
       reservedComments,
+      sortFraudDetection,
     } = this.props;
-    const isRewards =
-      match.params.filterKey === 'reserved' ||
-      match.params.filterKey === 'all' ||
-      includes(match.path, 'object');
+    const isRewards = !isEmpty(match)
+      ? match.params.filterKey === 'reserved' ||
+        match.params.filterKey === 'all' ||
+        includes(match.path, 'object')
+      : '';
     const propositionStatus = isRewards
       ? get(proposition, ['status'])
       : get(proposition, ['users', '0', 'status']);
-    const postCurrent = proposition.conversation;
     const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedComments);
+    const postCurrent = proposition.conversation;
     const commentsAll = get(postCurrent, ['all']) || reservedComments;
+    const postAll = postCurrent || { all: commentsAll };
     const rootKey = findKey(commentsAll, ['depth', 2]);
+    const rootComment = commentsAll[rootKey];
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
     const numberOfComments = postCurrent
       ? size(commentsAll) - 1
       : size(currentPostReserved.content) - 1;
-    const currentUser = this.getCurrentUser();
-    const parentAuthor = get(currentUser, ['0', 'rootName']);
-    const parentPermlink = !this.isReserved
-      ? get(proposition, ['users', '0', 'permlink'])
-      : get(currentUser, ['0', 'permlink']);
-
+    const isNotifyComment = Boolean(this.props.match.params.campaignId);
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -409,6 +524,9 @@ class CampaignFooter extends React.Component {
               numberOfComments={numberOfComments}
               getMessageHistory={getMessageHistory}
               blacklistUsers={blacklistUsers}
+              sortFraudDetection={sortFraudDetection}
+              userFollowed={userFollowed}
+              objectFollowed={objectFollowed}
             />
           )}
         </div>
@@ -419,29 +537,21 @@ class CampaignFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {hasComments &&
-          map(commentsArr, currentComment => (
-            <div key={currentComment.post_id}>
-              <CommentsMessages
-                show={commentsVisible}
-                user={user}
-                post={postCurrent}
-                getMessageHistory={getMessageHistory}
-                currentComment={currentComment}
-              />
-            </div>
-          ))}
+        {this.handleNotificationComments(
+          commentsArr,
+          hasComments,
+          postAll,
+          rootComment,
+          isNotifyComment,
+        )}
         {!singlePostVew && (
-          <Comments
-            show={commentsVisible}
-            isQuickComments={!singlePostVew}
-            post={this.state.currentPost}
-            getMessageHistory={getMessageHistory}
-            match={match}
-            history
-            parentAuthorIfGuest={parentAuthor}
-            parentPermlinkIfGuest={parentPermlink}
-            getReservedComments={this.getReservedComments}
+          <QuickCommentEditor
+            parentPost={currentPost}
+            username={user.name}
+            onSubmit={this.handleSubmitComment}
+            isLoading={loadingComments}
+            inputValue={commentFormText}
+            submitted={commentSubmitted}
           />
         )}
         <Modal

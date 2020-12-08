@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import take from 'lodash/take';
+import { take, get, isEmpty } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Icon, Modal } from 'antd';
@@ -25,7 +25,6 @@ export default class Buttons extends React.Component {
     postState: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
-    onReportClick: PropTypes.func.isRequired,
     ownPost: PropTypes.bool,
     pendingLike: PropTypes.bool,
     pendingFlag: PropTypes.bool,
@@ -37,6 +36,8 @@ export default class Buttons extends React.Component {
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     username: PropTypes.string,
+    isGuest: PropTypes.bool.isRequired,
+    getSocialInfoPost: PropTypes.func,
   };
 
   static defaultProps = {
@@ -49,9 +50,9 @@ export default class Buttons extends React.Component {
     onLikeClick: () => {},
     onShareClick: () => {},
     onCommentClick: () => {},
-    onReportClick: () => {},
     handlePostPopoverMenuClick: () => {},
     username: '',
+    getSocialInfoPost: () => {},
   };
 
   constructor(props) {
@@ -75,7 +76,6 @@ export default class Buttons extends React.Component {
     this.handleShareCancel = this.handleShareCancel.bind(this);
     this.handleShowReactions = this.handleShowReactions.bind(this);
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
-    this.onFlagClick = this.onFlagClick.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
   }
 
@@ -94,15 +94,8 @@ export default class Buttons extends React.Component {
     });
   }
 
-  onFlagClick() {
-    if (this.props.post.append_field_name) {
-      this.props.onReportClick(this.props.post, this.props.postState, true);
-    } else {
-      this.props.handlePostPopoverMenuClick('report');
-    }
-  }
-
-  handleReject = () => this.props.onActionInitiated(() => this.onFlagClick());
+  handleReject = () =>
+    this.props.onActionInitiated(() => this.props.handlePostPopoverMenuClick('report'));
 
   handleLikeClick() {
     this.props.onActionInitiated(() => this.props.onLikeClick());
@@ -205,6 +198,8 @@ export default class Buttons extends React.Component {
       pendingBookmark,
       saving,
       handlePostPopoverMenuClick,
+      isGuest,
+      getSocialInfoPost,
     } = this.props;
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
@@ -220,17 +215,49 @@ export default class Buttons extends React.Component {
     );
     const ratio = voteRshares > 0 ? totalPayout / voteRshares : 0;
 
-    const upVotesPreview = votes =>
-      take(votes, 10).map(vote => (
-        <p key={vote.voter}>
-          <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
-          {(vote.rshares_weight || vote.rshares) * ratio > 0.01 && (
-            <span style={{ opacity: '0.5' }}>
-              <USDDisplay value={(vote.rshares_weight || vote.rshares) * ratio} />
-            </span>
+    const upVotesPreview = votes => {
+      const sponsors = [];
+      const currentUpvotes = [];
+      take(votes, 10).map(vote => {
+        if (vote.sponsor) {
+          sponsors.push(<Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>);
+        } else {
+          currentUpvotes.push(
+            <p key={vote.voter}>
+              <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
+              {vote.rshares * ratio > 0.01 && (
+                <span style={{ opacity: '0.5' }}>
+                  <USDDisplay value={vote.rshares * ratio} />
+                </span>
+              )}
+            </p>,
+          );
+        }
+        return null;
+      });
+
+      return (
+        <React.Fragment>
+          {!isEmpty(sponsors) && (
+            <React.Fragment>
+              <div className="Buttons__sponsor-vote">
+                <FormattedMessage id="vote_sponsor" defaultMessage="Sponsor:" />
+              </div>
+              {sponsors.map(sponsor => sponsor)}
+            </React.Fragment>
           )}
-        </p>
-      ));
+
+          {!isEmpty(currentUpvotes) && (
+            <React.Fragment>
+              <div className="Buttons__upvotes">
+                <FormattedMessage id="vote_upvotes" defaultMessage="Upvotes:" />
+              </div>
+              {currentUpvotes.map(upvote => upvote)}
+            </React.Fragment>
+          )}
+        </React.Fragment>
+      );
+    };
 
     const upVotesDiff = upVotes.length - upVotesPreview(upVotes).length;
     const upVotesMore = upVotesDiff > 0 && (
@@ -273,7 +300,6 @@ export default class Buttons extends React.Component {
         </span>
       );
     }
-
     return (
       <div className="Buttons">
         <React.Fragment>
@@ -377,13 +403,13 @@ export default class Buttons extends React.Component {
           post={post}
           handlePostPopoverMenuClick={handlePostPopoverMenuClick}
           ownPost={ownPost}
+          isGuest={isGuest}
+          username={username}
+          getSocialInfoPost={getSocialInfoPost}
         >
           <i className="Buttons__post-menu iconfont icon-more" />
         </PostPopoverMenu>
-        {!(
-          this.props.post.reblogged_users &&
-          this.props.post.reblogged_users.includes(this.props.username)
-        ) &&
+        {!get(post, 'reblogged_users', []).includes(this.props.username) &&
           this.state.shareModalVisible && (
             <Modal
               title={intl.formatMessage({

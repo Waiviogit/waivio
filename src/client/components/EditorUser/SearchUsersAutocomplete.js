@@ -27,6 +27,7 @@ class SearchUsersAutocomplete extends React.Component {
     intl: {},
     searchUsersResults: [],
     searchUsers: () => {},
+    setSearchString: () => {},
     handleSelect: () => {},
     itemsIdsToOmit: [],
     placeholder: '',
@@ -43,6 +44,7 @@ class SearchUsersAutocomplete extends React.Component {
     searchUsersResults: PropTypes.arrayOf(PropTypes.shape),
     searchUsers: PropTypes.func,
     handleSelect: PropTypes.func,
+    setSearchString: PropTypes.func,
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
     placeholder: PropTypes.string,
     disabled: PropTypes.bool,
@@ -72,6 +74,7 @@ class SearchUsersAutocomplete extends React.Component {
       this.props.onChange(value);
     }
     this.setState({ searchString: value });
+    this.props.setSearchString(value);
   };
 
   handleSelect = value => {
@@ -79,6 +82,7 @@ class SearchUsersAutocomplete extends React.Component {
 
     this.props.handleSelect(selectedUsers);
     this.setState({ searchString: '' });
+    this.props.setSearchString('');
   };
 
   render() {
@@ -104,6 +108,7 @@ class SearchUsersAutocomplete extends React.Component {
             </AutoComplete.Option>
           ))
       : [];
+
     return (
       <AutoComplete
         onChange={this.handleChange}

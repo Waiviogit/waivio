@@ -44,6 +44,54 @@
   }
 }
 
+.referrals-main-styles {
+  padding: 0 15px;
+  color: @black;
+  width: auto;
+
+  @media @small {
+    width: 700px;
+  }
+}
+
+.referrals-link-button {
+  cursor: pointer;
+  color: @orange-hot;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: @neon-carrot;
+  }
+
+  &:active {
+    color: @burnt-orange;
+  }
+}
+
+.wallet-table-btn {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: -15px;
+  cursor: pointer;
+  color: @orange-hot;
+  transition: all 0.3s ease;
+  margin-right: 20px;
+  padding: 10px 0 35px;
+
+  &:hover {
+    color: @neon-carrot;
+  }
+
+  &:active {
+    color: @burnt-orange;
+  }
+
+  @media @small {
+    padding: 0;
+  }
+}
+
 .view-as-link(@color: @orange-hot, @color-hover: #ff9130) {
   color: @color;
   text-decoration: none;
@@ -124,8 +172,6 @@
 }
 
 .menu-item-link {
-  font-size: 14px !important;
-  font-weight: 500;
   color: #99aab5 !important;
   height: 30px !important;
   line-height: 30px !important;

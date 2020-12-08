@@ -4,12 +4,12 @@ import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
+import hivesigner from 'hivesigner';
 
-import sc2 from 'sc2-sdk';
 import { waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../client/store';
-import routes from '../../common/routes';
 import renderSsrPage from '../renderers/ssrRenderer';
+import routes from '../../common/routes/routes';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
@@ -28,7 +28,7 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      const sc2Api = sc2.Initialize({
+      const sc2Api = new hivesigner.Client({
         app: process.env.STEEMCONNECT_CLIENT_ID,
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,

@@ -4,6 +4,11 @@ exports[`<TwitterShare /> should render without exploding 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <TwitterShare
+    hashtags={
+      Array [
+        "hashtags",
+      ]
+    }
     text="text"
     url="url"
   />,
@@ -29,7 +34,7 @@ ShallowWrapper {
         />
       </div>,
       "className": "ShareButton",
-      "href": "https://twitter.com/intent/tweet/?text=text&url=url",
+      "href": "https://twitter.com/intent/tweet?text=text&url=url&hashtags=hashtags",
       "rel": "noopener noreferrer",
       "target": "_blank",
     },
@@ -74,7 +79,7 @@ ShallowWrapper {
           />
         </div>,
         "className": "ShareButton",
-        "href": "https://twitter.com/intent/tweet/?text=text&url=url",
+        "href": "https://twitter.com/intent/tweet?text=text&url=url&hashtags=hashtags",
         "rel": "noopener noreferrer",
         "target": "_blank",
       },

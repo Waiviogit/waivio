@@ -71,9 +71,8 @@ export default class ReduxInfiniteScroll extends React.Component {
           ? window.pageXOffset
           : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
       let elTotalWidth = leftPosition(el) + el.offsetWidth;
-      let currentRightPosition = elTotalWidth - windowScrollLeft - window.innerWidth;
 
-      return currentRightPosition;
+      return elTotalWidth - windowScrollLeft - window.innerWidth;
     }
 
     let windowScrollTop =
@@ -81,9 +80,8 @@ export default class ReduxInfiniteScroll extends React.Component {
         ? window.pageYOffset
         : (document.documentElement || document.body.parentNode || document.body).scrollTop;
     let elTotalHeight = topPosition(el) + el.offsetHeight;
-    let currentBottomPosition = elTotalHeight - windowScrollTop - window.innerHeight;
 
-    return currentBottomPosition;
+    return elTotalHeight - windowScrollTop - window.innerHeight;
   }
 
   scrollListener() {
@@ -108,9 +106,7 @@ export default class ReduxInfiniteScroll extends React.Component {
   }
 
   _renderOptions() {
-    const allItems = this.props.children.concat(this.props.items);
-
-    return allItems;
+    return this.props.children.concat(this.props.items);
   }
 
   _totalItemsSize() {
@@ -127,7 +123,7 @@ export default class ReduxInfiniteScroll extends React.Component {
   renderLoader() {
     return this.props.loadingMore || (this.props.hasMore && this.props.showLoader)
       ? this.props.loader
-      : undefined;
+      : null;
   }
 
   _assignHolderClass() {

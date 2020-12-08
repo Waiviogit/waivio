@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal } from 'antd';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, get } from 'lodash';
 import { withRouter } from 'react-router';
 
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
+import listofObjTypesWithAlbum from '../../../common/constants/listofObjTypesWithAlbum';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
 import { getSuitableLanguage, getObjectTypesList, getAuthenticatedUserName } from '../../reducers';
@@ -16,9 +17,10 @@ import { notify } from '../../app/Notification/notificationActions';
 import { getObjectTypes } from '../../objectTypes/objectTypesActions';
 import { appendObject } from '../../object/appendActions';
 import { createWaivioObject } from '../../object/wobjectsActions';
+import { addAlbumToStore } from '../../object/ObjectGallery/galleryActions';
 import DEFAULTS from '../../object/const/defaultValues';
-import { getAppendData } from '../../helpers/wObjectHelper';
-import { getServerWObj } from '../../adapters';
+import { getAppendData, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
+
 import './CreateObject.less';
 
 @injectIntl
@@ -35,6 +37,7 @@ import './CreateObject.less';
     createWaivioObject,
     getObjectTypes,
     notify,
+    addAlbumToStore,
   },
 )
 class CreateObject extends React.Component {
@@ -60,6 +63,7 @@ class CreateObject extends React.Component {
     onCreateObject: PropTypes.func,
     onCloseModal: PropTypes.func,
     history: PropTypes.shape({ push: PropTypes.func }).isRequired,
+    addAlbumToStore: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -121,6 +125,9 @@ class CreateObject extends React.Component {
           parentAuthor: selectedType.author,
           parentPermlink: selectedType.permlink,
         };
+        const parentObject =
+          get(this.props.parentObject, 'parent.author_permlink') ||
+          get(this.props.parentObject, 'author_permlink');
 
         this.props
           .createWaivioObject(objData)
@@ -130,22 +137,37 @@ class CreateObject extends React.Component {
               this.props.appendObject(
                 getAppendData(
                   this.props.username,
-                  getServerWObj({
+                  {
                     id: parentPermlink,
                     author: parentAuthor,
                     creator: this.props.username,
                     name: values.name,
                     locale: values.locale,
-                  }),
+                    author_permlink: parentPermlink,
+                  },
                   '',
                   {
                     name: objectFields.parent,
-                    body: this.props.parentObject.author_permlink,
+                    body: parentObject,
                     locale: values.locale,
                   },
                 ),
                 { votePower: null, follow: false, isLike: false },
               );
+            }
+            const isObjType = type => listofObjTypesWithAlbum.some(item => item === type);
+            if (isObjType(objData.type)) {
+              const formData = {
+                galleryAlbum: 'Photos',
+              };
+              const data = prepareAlbumData(formData, this.props.username, {
+                author: parentAuthor,
+                author_permlink: parentPermlink,
+              });
+              const album = prepareAlbumToStore(data);
+
+              const { author } = this.props.appendObject(data);
+              this.props.addAlbumToStore({ ...album, author });
             }
             this.props.notify(
               this.props.intl.formatMessage({
@@ -173,6 +195,7 @@ class CreateObject extends React.Component {
                 rank: 1,
                 type: objData.type,
                 background: '',
+                author_permlink: parentPermlink,
               },
               { locale: values.locale },
             );
@@ -246,6 +269,8 @@ class CreateObject extends React.Component {
           >
             <Form.Item>
               {getFieldDecorator(objectFields.name, {
+                getValueFromEvent:
+                  defaultObjectType === 'hashtag' ? e => e.target.value.toLowerCase() : null,
                 initialValue: '',
                 rules: [
                   {
@@ -298,7 +323,7 @@ class CreateObject extends React.Component {
                   },
                 ],
               })(
-                <Select disabled={loading} style={{ width: '100%' }}>
+                <Select disabled={loading} style={{ width: '100%' }} className="languageOptions">
                   {languageOptions}
                 </Select>,
               )}

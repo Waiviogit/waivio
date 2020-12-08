@@ -1,20 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-
+import { connect } from 'react-redux';
 import { getSelectedBlockNode } from '../util';
+import { getIsClearSearchObjects } from '../../../reducers';
+
 import './addbutton.less';
 
 /**
  * Implementation of the medium-link side `+` button to insert various rich blocks
  * like Images/Embeds/Videos.
  */
+@connect(state => ({
+  isClearSearchObjects: getIsClearSearchObjects(state),
+}))
 export default class AddButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       style: {},
-      visible: false,
+      visible: true,
       isOpen: false,
       isControlElem: false,
     };
@@ -36,6 +41,10 @@ export default class AddButton extends React.Component {
     const selectionState = editorState.getSelection();
     const block = contentState.getBlockForKey(selectionState.anchorKey);
     const bkey = block.getKey();
+
+    if (this.props.isClearSearchObjects) {
+      this.setState({ isOpen: false });
+    }
 
     if (block.getType() !== this.blockType) {
       this.blockType = block.getType();
@@ -165,10 +174,12 @@ AddButton.propTypes = {
   focus: PropTypes.func,
   sideButtons: PropTypes.arrayOf(PropTypes.object),
   handleHashtag: PropTypes.func.isRequired,
+  isClearSearchObjects: PropTypes.bool,
 };
 
 AddButton.defaultProps = {
   focus: () => {},
   sideButtons: [],
   withTitleLine: false,
+  isClearSearchObjects: false,
 };

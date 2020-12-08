@@ -1,0 +1,1538 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<DynamicTable /> should render without exploding 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <DynamicTable
+    bodyConfig={
+      Array [
+        Object {
+          "active": "active",
+          "averageDau": "averageDau",
+          "host": "id-host.com",
+          "name": "name",
+          "parent": "parent",
+          "status": "pending",
+        },
+        Object {
+          "active": "active",
+          "averageDau": "averageDau",
+          "name": "name",
+          "parent": "parent",
+          "status": "active",
+        },
+        Object {
+          "active": "active",
+          "averageDau": "averageDau",
+          "host": "rest.com",
+          "name": "name",
+          "parent": "parent",
+          "pending": Array [
+            "checkbox",
+          ],
+          "status": "active",
+        },
+      ]
+    }
+    deleteItem={[MockFunction]}
+    header={
+      Array [
+        Object {
+          "id": "active",
+          "intl": Object {
+            "defaultMessage": "Active",
+            "id": "active",
+          },
+          "type": "checkbox",
+        },
+        Object {
+          "id": "name",
+          "intl": Object {
+            "defaultMessage": "Website",
+            "id": "website",
+          },
+        },
+        Object {
+          "id": "parent",
+          "intl": Object {
+            "defaultMessage": "Template",
+            "id": "template",
+          },
+        },
+        Object {
+          "id": "status",
+          "intl": Object {
+            "defaultMessage": "Status",
+            "id": "status",
+          },
+        },
+        Object {
+          "id": "averageDau",
+          "intl": Object {
+            "defaultMessage": "Average DAU*",
+            "id": "average_dau",
+          },
+        },
+        Object {
+          "checkShowItem": [Function],
+          "id": "delete",
+          "intl": Object {
+            "defaultMessage": "Actions",
+            "id": "actions",
+          },
+          "type": "delete",
+        },
+      ]
+    }
+    intl={
+      Object {
+        "formatMessage": [MockFunction] {
+          "calls": Array [
+            Array [
+              Object {
+                "defaultMessage": "Active",
+                "id": "active",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Website",
+                "id": "website",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Template",
+                "id": "template",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Status",
+                "id": "status",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Average DAU*",
+                "id": "average_dau",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Actions",
+                "id": "actions",
+              },
+            ],
+            Array [
+              Object {
+                "defaultMessage": "Delete",
+                "id": "delete",
+              },
+            ],
+          ],
+        },
+      }
+    }
+    manageInfo={Object {}}
+    onChange={[MockFunction]}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <thead>
+          <tr>
+            <th />
+            <th />
+            <th />
+            <th />
+            <th />
+            <th />
+          </tr>
+        </thead>,
+        <tbody>
+          <tr>
+            <td>
+              <Checkbox
+                checked={undefined}
+                className="DynamicTable__checkbox"
+                data-key="check/id-host.com"
+                indeterminate={false}
+                onChange={[Function]}
+              />
+            </td>
+            <td>
+              name
+            </td>
+            <td>
+              parent
+            </td>
+            <td>
+              pending
+            </td>
+            <td>
+              averageDau
+            </td>
+            <td>
+              <a
+                className="DynamicTable__delete"
+                onClick={[Function]}
+                role="presentation"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <Checkbox
+                checked={undefined}
+                className="DynamicTable__checkbox"
+                data-key="check/undefined"
+                indeterminate={false}
+                onChange={[Function]}
+              />
+            </td>
+            <td>
+              name
+            </td>
+            <td>
+              parent
+            </td>
+            <td>
+              active
+            </td>
+            <td>
+              averageDau
+            </td>
+            <td>
+              -
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <Loading
+                center={true}
+                data-test="loading/rest.com"
+              />
+            </td>
+            <td>
+              name
+            </td>
+            <td>
+              parent
+            </td>
+            <td>
+              active
+            </td>
+            <td>
+              averageDau
+            </td>
+            <td>
+              -
+            </td>
+          </tr>
+        </tbody>,
+      ],
+      "className": "DynamicTable",
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": <tr>
+            <th />
+            <th />
+            <th />
+            <th />
+            <th />
+            <th />
+          </tr>,
+        },
+        "ref": null,
+        "rendered": Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <th />,
+              <th />,
+              <th />,
+              <th />,
+              <th />,
+              <th />,
+            ],
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": "active",
+              "nodeType": "host",
+              "props": Object {
+                "children": undefined,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "th",
+            },
+            Object {
+              "instance": null,
+              "key": "name",
+              "nodeType": "host",
+              "props": Object {
+                "children": undefined,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "th",
+            },
+            Object {
+              "instance": null,
+              "key": "parent",
+              "nodeType": "host",
+              "props": Object {
+                "children": undefined,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "th",
+            },
+            Object {
+              "instance": null,
+              "key": "status",
+              "nodeType": "host",
+              "props": Object {
+                "children": undefined,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "th",
+            },
+            Object {
+              "instance": null,
+              "key": "averageDau",
+              "nodeType": "host",
+              "props": Object {
+                "children": undefined,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "th",
+            },
+            Object {
+              "instance": null,
+              "key": "delete",
+              "nodeType": "host",
+              "props": Object {
+                "children": undefined,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "th",
+            },
+          ],
+          "type": "tr",
+        },
+        "type": "thead",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <tr>
+              <td>
+                <Checkbox
+                  checked={undefined}
+                  className="DynamicTable__checkbox"
+                  data-key="check/id-host.com"
+                  indeterminate={false}
+                  onChange={[Function]}
+                />
+              </td>
+              <td>
+                name
+              </td>
+              <td>
+                parent
+              </td>
+              <td>
+                pending
+              </td>
+              <td>
+                averageDau
+              </td>
+              <td>
+                <a
+                  className="DynamicTable__delete"
+                  onClick={[Function]}
+                  role="presentation"
+                />
+              </td>
+            </tr>,
+            <tr>
+              <td>
+                <Checkbox
+                  checked={undefined}
+                  className="DynamicTable__checkbox"
+                  data-key="check/undefined"
+                  indeterminate={false}
+                  onChange={[Function]}
+                />
+              </td>
+              <td>
+                name
+              </td>
+              <td>
+                parent
+              </td>
+              <td>
+                active
+              </td>
+              <td>
+                averageDau
+              </td>
+              <td>
+                -
+              </td>
+            </tr>,
+            <tr>
+              <td>
+                <Loading
+                  center={true}
+                  data-test="loading/rest.com"
+                />
+              </td>
+              <td>
+                name
+              </td>
+              <td>
+                parent
+              </td>
+              <td>
+                active
+              </td>
+              <td>
+                averageDau
+              </td>
+              <td>
+                -
+              </td>
+            </tr>,
+          ],
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <td>
+                  <Checkbox
+                    checked={undefined}
+                    className="DynamicTable__checkbox"
+                    data-key="check/id-host.com"
+                    indeterminate={false}
+                    onChange={[Function]}
+                  />
+                </td>,
+                <td>
+                  name
+                </td>,
+                <td>
+                  parent
+                </td>,
+                <td>
+                  pending
+                </td>,
+                <td>
+                  averageDau
+                </td>,
+                <td>
+                  <a
+                    className="DynamicTable__delete"
+                    onClick={[Function]}
+                    role="presentation"
+                  />
+                </td>,
+              ],
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": "active",
+                "nodeType": "host",
+                "props": Object {
+                  "children": <Checkbox
+                    checked={undefined}
+                    className="DynamicTable__checkbox"
+                    data-key="check/id-host.com"
+                    indeterminate={false}
+                    onChange={[Function]}
+                  />,
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "checked": undefined,
+                    "className": "DynamicTable__checkbox",
+                    "data-key": "check/id-host.com",
+                    "indeterminate": false,
+                    "onChange": [Function],
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "name",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "name",
+                },
+                "ref": null,
+                "rendered": "name",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "parent",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "parent",
+                },
+                "ref": null,
+                "rendered": "parent",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "status",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "pending",
+                },
+                "ref": null,
+                "rendered": "pending",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "averageDau",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "averageDau",
+                },
+                "ref": null,
+                "rendered": "averageDau",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "delete",
+                "nodeType": "host",
+                "props": Object {
+                  "children": <a
+                    className="DynamicTable__delete"
+                    onClick={[Function]}
+                    role="presentation"
+                  />,
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": undefined,
+                    "className": "DynamicTable__delete",
+                    "onClick": [Function],
+                    "role": "presentation",
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": "a",
+                },
+                "type": "td",
+              },
+            ],
+            "type": "tr",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <td>
+                  <Checkbox
+                    checked={undefined}
+                    className="DynamicTable__checkbox"
+                    data-key="check/undefined"
+                    indeterminate={false}
+                    onChange={[Function]}
+                  />
+                </td>,
+                <td>
+                  name
+                </td>,
+                <td>
+                  parent
+                </td>,
+                <td>
+                  active
+                </td>,
+                <td>
+                  averageDau
+                </td>,
+                <td>
+                  -
+                </td>,
+              ],
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": "active",
+                "nodeType": "host",
+                "props": Object {
+                  "children": <Checkbox
+                    checked={undefined}
+                    className="DynamicTable__checkbox"
+                    data-key="check/undefined"
+                    indeterminate={false}
+                    onChange={[Function]}
+                  />,
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "checked": undefined,
+                    "className": "DynamicTable__checkbox",
+                    "data-key": "check/undefined",
+                    "indeterminate": false,
+                    "onChange": [Function],
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "name",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "name",
+                },
+                "ref": null,
+                "rendered": "name",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "parent",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "parent",
+                },
+                "ref": null,
+                "rendered": "parent",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "status",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "active",
+                },
+                "ref": null,
+                "rendered": "active",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "averageDau",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "averageDau",
+                },
+                "ref": null,
+                "rendered": "averageDau",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "delete",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "-",
+                },
+                "ref": null,
+                "rendered": "-",
+                "type": "td",
+              },
+            ],
+            "type": "tr",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <td>
+                  <Loading
+                    center={true}
+                    data-test="loading/rest.com"
+                  />
+                </td>,
+                <td>
+                  name
+                </td>,
+                <td>
+                  parent
+                </td>,
+                <td>
+                  active
+                </td>,
+                <td>
+                  averageDau
+                </td>,
+                <td>
+                  -
+                </td>,
+              ],
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": "active",
+                "nodeType": "host",
+                "props": Object {
+                  "children": <Loading
+                    center={true}
+                    data-test="loading/rest.com"
+                  />,
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "function",
+                  "props": Object {
+                    "center": true,
+                    "data-test": "loading/rest.com",
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "name",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "name",
+                },
+                "ref": null,
+                "rendered": "name",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "parent",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "parent",
+                },
+                "ref": null,
+                "rendered": "parent",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "status",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "active",
+                },
+                "ref": null,
+                "rendered": "active",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "averageDau",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "averageDau",
+                },
+                "ref": null,
+                "rendered": "averageDau",
+                "type": "td",
+              },
+              Object {
+                "instance": null,
+                "key": "delete",
+                "nodeType": "host",
+                "props": Object {
+                  "children": "-",
+                },
+                "ref": null,
+                "rendered": "-",
+                "type": "td",
+              },
+            ],
+            "type": "tr",
+          },
+        ],
+        "type": "tbody",
+      },
+    ],
+    "type": "table",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <thead>
+            <tr>
+              <th />
+              <th />
+              <th />
+              <th />
+              <th />
+              <th />
+            </tr>
+          </thead>,
+          <tbody>
+            <tr>
+              <td>
+                <Checkbox
+                  checked={undefined}
+                  className="DynamicTable__checkbox"
+                  data-key="check/id-host.com"
+                  indeterminate={false}
+                  onChange={[Function]}
+                />
+              </td>
+              <td>
+                name
+              </td>
+              <td>
+                parent
+              </td>
+              <td>
+                pending
+              </td>
+              <td>
+                averageDau
+              </td>
+              <td>
+                <a
+                  className="DynamicTable__delete"
+                  onClick={[Function]}
+                  role="presentation"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <Checkbox
+                  checked={undefined}
+                  className="DynamicTable__checkbox"
+                  data-key="check/undefined"
+                  indeterminate={false}
+                  onChange={[Function]}
+                />
+              </td>
+              <td>
+                name
+              </td>
+              <td>
+                parent
+              </td>
+              <td>
+                active
+              </td>
+              <td>
+                averageDau
+              </td>
+              <td>
+                -
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <Loading
+                  center={true}
+                  data-test="loading/rest.com"
+                />
+              </td>
+              <td>
+                name
+              </td>
+              <td>
+                parent
+              </td>
+              <td>
+                active
+              </td>
+              <td>
+                averageDau
+              </td>
+              <td>
+                -
+              </td>
+            </tr>
+          </tbody>,
+        ],
+        "className": "DynamicTable",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": <tr>
+              <th />
+              <th />
+              <th />
+              <th />
+              <th />
+              <th />
+            </tr>,
+          },
+          "ref": null,
+          "rendered": Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <th />,
+                <th />,
+                <th />,
+                <th />,
+                <th />,
+                <th />,
+              ],
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": "active",
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "th",
+              },
+              Object {
+                "instance": null,
+                "key": "name",
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "th",
+              },
+              Object {
+                "instance": null,
+                "key": "parent",
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "th",
+              },
+              Object {
+                "instance": null,
+                "key": "status",
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "th",
+              },
+              Object {
+                "instance": null,
+                "key": "averageDau",
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "th",
+              },
+              Object {
+                "instance": null,
+                "key": "delete",
+                "nodeType": "host",
+                "props": Object {
+                  "children": undefined,
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "th",
+              },
+            ],
+            "type": "tr",
+          },
+          "type": "thead",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <tr>
+                <td>
+                  <Checkbox
+                    checked={undefined}
+                    className="DynamicTable__checkbox"
+                    data-key="check/id-host.com"
+                    indeterminate={false}
+                    onChange={[Function]}
+                  />
+                </td>
+                <td>
+                  name
+                </td>
+                <td>
+                  parent
+                </td>
+                <td>
+                  pending
+                </td>
+                <td>
+                  averageDau
+                </td>
+                <td>
+                  <a
+                    className="DynamicTable__delete"
+                    onClick={[Function]}
+                    role="presentation"
+                  />
+                </td>
+              </tr>,
+              <tr>
+                <td>
+                  <Checkbox
+                    checked={undefined}
+                    className="DynamicTable__checkbox"
+                    data-key="check/undefined"
+                    indeterminate={false}
+                    onChange={[Function]}
+                  />
+                </td>
+                <td>
+                  name
+                </td>
+                <td>
+                  parent
+                </td>
+                <td>
+                  active
+                </td>
+                <td>
+                  averageDau
+                </td>
+                <td>
+                  -
+                </td>
+              </tr>,
+              <tr>
+                <td>
+                  <Loading
+                    center={true}
+                    data-test="loading/rest.com"
+                  />
+                </td>
+                <td>
+                  name
+                </td>
+                <td>
+                  parent
+                </td>
+                <td>
+                  active
+                </td>
+                <td>
+                  averageDau
+                </td>
+                <td>
+                  -
+                </td>
+              </tr>,
+            ],
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <td>
+                    <Checkbox
+                      checked={undefined}
+                      className="DynamicTable__checkbox"
+                      data-key="check/id-host.com"
+                      indeterminate={false}
+                      onChange={[Function]}
+                    />
+                  </td>,
+                  <td>
+                    name
+                  </td>,
+                  <td>
+                    parent
+                  </td>,
+                  <td>
+                    pending
+                  </td>,
+                  <td>
+                    averageDau
+                  </td>,
+                  <td>
+                    <a
+                      className="DynamicTable__delete"
+                      onClick={[Function]}
+                      role="presentation"
+                    />
+                  </td>,
+                ],
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": "active",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": <Checkbox
+                      checked={undefined}
+                      className="DynamicTable__checkbox"
+                      data-key="check/id-host.com"
+                      indeterminate={false}
+                      onChange={[Function]}
+                    />,
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "checked": undefined,
+                      "className": "DynamicTable__checkbox",
+                      "data-key": "check/id-host.com",
+                      "indeterminate": false,
+                      "onChange": [Function],
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "name",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "name",
+                  },
+                  "ref": null,
+                  "rendered": "name",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "parent",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "parent",
+                  },
+                  "ref": null,
+                  "rendered": "parent",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "status",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "pending",
+                  },
+                  "ref": null,
+                  "rendered": "pending",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "averageDau",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "averageDau",
+                  },
+                  "ref": null,
+                  "rendered": "averageDau",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "delete",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": <a
+                      className="DynamicTable__delete"
+                      onClick={[Function]}
+                      role="presentation"
+                    />,
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": undefined,
+                      "className": "DynamicTable__delete",
+                      "onClick": [Function],
+                      "role": "presentation",
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": "a",
+                  },
+                  "type": "td",
+                },
+              ],
+              "type": "tr",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <td>
+                    <Checkbox
+                      checked={undefined}
+                      className="DynamicTable__checkbox"
+                      data-key="check/undefined"
+                      indeterminate={false}
+                      onChange={[Function]}
+                    />
+                  </td>,
+                  <td>
+                    name
+                  </td>,
+                  <td>
+                    parent
+                  </td>,
+                  <td>
+                    active
+                  </td>,
+                  <td>
+                    averageDau
+                  </td>,
+                  <td>
+                    -
+                  </td>,
+                ],
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": "active",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": <Checkbox
+                      checked={undefined}
+                      className="DynamicTable__checkbox"
+                      data-key="check/undefined"
+                      indeterminate={false}
+                      onChange={[Function]}
+                    />,
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "checked": undefined,
+                      "className": "DynamicTable__checkbox",
+                      "data-key": "check/undefined",
+                      "indeterminate": false,
+                      "onChange": [Function],
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "name",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "name",
+                  },
+                  "ref": null,
+                  "rendered": "name",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "parent",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "parent",
+                  },
+                  "ref": null,
+                  "rendered": "parent",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "status",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "active",
+                  },
+                  "ref": null,
+                  "rendered": "active",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "averageDau",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "averageDau",
+                  },
+                  "ref": null,
+                  "rendered": "averageDau",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "delete",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "-",
+                  },
+                  "ref": null,
+                  "rendered": "-",
+                  "type": "td",
+                },
+              ],
+              "type": "tr",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <td>
+                    <Loading
+                      center={true}
+                      data-test="loading/rest.com"
+                    />
+                  </td>,
+                  <td>
+                    name
+                  </td>,
+                  <td>
+                    parent
+                  </td>,
+                  <td>
+                    active
+                  </td>,
+                  <td>
+                    averageDau
+                  </td>,
+                  <td>
+                    -
+                  </td>,
+                ],
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": "active",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": <Loading
+                      center={true}
+                      data-test="loading/rest.com"
+                    />,
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "function",
+                    "props": Object {
+                      "center": true,
+                      "data-test": "loading/rest.com",
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "name",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "name",
+                  },
+                  "ref": null,
+                  "rendered": "name",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "parent",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "parent",
+                  },
+                  "ref": null,
+                  "rendered": "parent",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "status",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "active",
+                  },
+                  "ref": null,
+                  "rendered": "active",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "averageDau",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "averageDau",
+                  },
+                  "ref": null,
+                  "rendered": "averageDau",
+                  "type": "td",
+                },
+                Object {
+                  "instance": null,
+                  "key": "delete",
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "-",
+                  },
+                  "ref": null,
+                  "rendered": "-",
+                  "type": "td",
+                },
+              ],
+              "type": "tr",
+            },
+          ],
+          "type": "tbody",
+        },
+      ],
+      "type": "table",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+    Symbol(enzyme.__providerValues__): undefined,
+  },
+  Symbol(enzyme.__providerValues__): Map {},
+}
+`;

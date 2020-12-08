@@ -30,7 +30,6 @@ const CreateAlbum = ({
       const { author } = await appendObjectDispatch(data);
       await addAlbumToStoreDispatch({ ...album, author });
       hideModal();
-      // this.handleToggleModal();
       message.success(
         intl.formatMessage(
           {
@@ -49,7 +48,6 @@ const CreateAlbum = ({
           defaultMessage: "Couldn't create the album.",
         }),
       );
-      console.log('err', err);
     }
   };
 

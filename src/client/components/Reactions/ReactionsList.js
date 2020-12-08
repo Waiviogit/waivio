@@ -3,21 +3,19 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
 import InfiniteSroll from 'react-infinite-scroller';
-import { take, isNil } from 'lodash';
-import { FormattedNumber } from 'react-intl';
+import { take, isNil, isEmpty } from 'lodash';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import UserCard from '../UserCard';
 import USDDisplay from '../Utils/USDDisplay';
 import { checkFollowing } from '../../../waivioApi/ApiClient';
 import { followUser, unfollowUser } from '../../user/usersActions';
-import { getIsAuthenticated, getObjectAdmins, getObjectModerators } from '../../reducers';
+import { getIsAuthenticated } from '../../reducers';
 
 import './ReactionsList.less';
 
 @connect(
   state => ({
     isAuth: getIsAuthenticated(state),
-    moderatorsList: getObjectModerators(state),
-    adminsList: getObjectAdmins(state),
   }),
   {
     unfollow: unfollowUser,
@@ -28,8 +26,6 @@ export default class UserList extends React.Component {
   static propTypes = {
     votes: PropTypes.arrayOf(PropTypes.shape()),
     ratio: PropTypes.number,
-    moderatorsList: PropTypes.arrayOf(PropTypes.string),
-    adminsList: PropTypes.arrayOf(PropTypes.string),
     name: PropTypes.string,
     unfollow: PropTypes.func,
     follow: PropTypes.func,
@@ -39,8 +35,6 @@ export default class UserList extends React.Component {
   static defaultProps = {
     votes: [],
     ratio: 0,
-    moderatorsList: [],
-    adminsList: [],
     name: '',
     unfollow: () => {},
     follow: () => {},
@@ -53,7 +47,7 @@ export default class UserList extends React.Component {
   };
 
   componentDidMount() {
-    const { votes, moderatorsList, adminsList, name, isAuth } = this.props;
+    const { votes, name, isAuth } = this.props;
     const usersList = votes.map(vote => vote.voter);
 
     if (isAuth) {
@@ -64,8 +58,6 @@ export default class UserList extends React.Component {
           return {
             ...vote,
             name: vote.voter,
-            admin: adminsList.includes(vote.voter),
-            moderator: moderatorsList.includes(vote.voter),
             youFollows: follow[vote.voter],
             pending: false,
           };
@@ -129,20 +121,70 @@ export default class UserList extends React.Component {
     });
   };
 
+  renderUserCards = (vote, ratio, isSponsor) => (
+    <UserCard
+      key={vote.voter}
+      user={vote}
+      follow={this.followUser}
+      unfollow={this.unfollowUser}
+      showFollow={false}
+      alt={
+        <span>
+          {Boolean(ratio) && (
+            <React.Fragment>
+              <USDDisplay value={this.voteValue(vote, ratio)} />
+              <span className="ReactionsList__bullet" />
+            </React.Fragment>
+          )}
+          {isSponsor ? (
+            <FormattedMessage id="sponsor" defaultMessage="Sponsor" />
+          ) : (
+            <FormattedNumber
+              style="percent" // eslint-disable-line react/style-prop-object
+              value={vote.percent / 10000}
+              maximumFractionDigits={2}
+            />
+          )}
+        </span>
+      }
+    />
+  );
+
+  voteValue = (vote, ratio) => vote.rshares * ratio || 0;
+
+  upVotesModalPreview = (usersList, noOfItemsToShow) => {
+    const { ratio } = this.props;
+    const sponsors = [];
+    const currentUpvotes = [];
+
+    // eslint-disable-next-line array-callback-return
+    take(usersList, noOfItemsToShow).map(vote => {
+      if (vote.sponsor) {
+        sponsors.push(vote);
+      } else {
+        currentUpvotes.push(vote);
+      }
+    });
+
+    return (
+      <React.Fragment>
+        {!isEmpty(sponsors) && sponsors.map(vote => this.renderUserCards(vote, ratio, true))}
+        {!isEmpty(currentUpvotes) &&
+          currentUpvotes.map(vote => this.renderUserCards(vote, ratio, false))}
+      </React.Fragment>
+    );
+  };
+
   render() {
-    const { votes, ratio, isAuth, adminsList, moderatorsList } = this.props;
+    const { votes, isAuth } = this.props;
     const defaultPageItems = 20;
     const noOfItemsToShow = defaultPageItems * this.state.page;
-    const voteValue = vote => (vote.rshares_weight || vote.rshares) * ratio || 0;
     const votesList = votes.map(vote => ({
       ...vote,
       name: vote.voter,
-      admin: adminsList.includes(vote.voter),
-      moderator: moderatorsList.includes(vote.voter),
       pending: false,
       youFollows: false,
     }));
-
     const currentVoterList =
       isAuth && this.state.usersList.length ? this.state.usersList : votesList;
     const moderators = currentVoterList.filter(v => v.moderator);
@@ -159,28 +201,7 @@ export default class UserList extends React.Component {
           useWindow={false}
         >
           <div className="ReactionsList__content">
-            {take(usersList, noOfItemsToShow).map(vote => (
-              <UserCard
-                key={vote.voter}
-                user={vote}
-                admin={vote.admin}
-                moderator={vote.moderator}
-                follow={this.followUser}
-                unfollow={this.unfollowUser}
-                showFollow={false}
-                alt={
-                  <span>
-                    <USDDisplay value={voteValue(vote)} />
-                    <span className="ReactionsList__bullet" />
-                    <FormattedNumber
-                      style="percent" // eslint-disable-line react/style-prop-object
-                      value={vote.percent / 10000}
-                      maximumFractionDigits={2}
-                    />
-                  </span>
-                }
-              />
-            ))}
+            {this.upVotesModalPreview(usersList, noOfItemsToShow)}
           </div>
         </InfiniteSroll>
       </Scrollbars>

@@ -1,4 +1,4 @@
-import { find } from 'lodash';
+import { find, get } from 'lodash';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
@@ -10,19 +10,22 @@ import {
   getPendingLikes,
   getRebloggedList,
   getPendingReblogs,
-  getFollowingList,
-  getPendingFollows,
   getIsEditorSaving,
   getVotingPower,
   getRewardFund,
   getVotePercent,
   getShowNSFWPosts,
 } from '../reducers';
-import { votePost } from '../post/postActions';
+import {
+  errorFollowingPostAuthor,
+  followingPostAuthor,
+  pendingFollowingPostAuthor,
+  votePost,
+} from '../post/postActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
 import { editPost } from '../post/Write/editorActions';
 import { reblog } from '../app/Reblog/reblogActions';
-import { followUser, unfollowUser } from '../user/userActions';
+import { unfollowUser, followUser } from '../user/usersActions';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);
@@ -36,9 +39,8 @@ const mapStateToProps = (state, { id }) => {
     isSaved: post.guestInfo
       ? bookmarks.includes(`${post.guestInfo.userId}/${post.root_permlink}`)
       : bookmarks.includes(post.id),
-    isLiked: userVote.percent > 0,
+    isLiked: userVote.percent > 0 && get(userVote, '_id', false),
     isReported: userVote.percent < 0,
-    userFollowed: getFollowingList(state).includes(post.author),
   };
 
   const pendingVote = getPendingLikes(state)[post.id];
@@ -54,7 +56,6 @@ const mapStateToProps = (state, { id }) => {
     postState,
     pendingLike,
     pendingFlag,
-    pendingFollow: getPendingFollows(state).includes(post.author),
     pendingBookmark: getPendingBookmarks(state).includes(post.id),
     saving: getIsEditorSaving(state),
     ownPost: post.guestInfo ? post.guestInfo.userId === user.name : user.name === post.author,
@@ -73,4 +74,7 @@ export default connect(mapStateToProps, {
   followUser,
   unfollowUser,
   push,
+  followingPostAuthor,
+  pendingFollowingPostAuthor,
+  errorFollowingPostAuthor,
 })(Story);

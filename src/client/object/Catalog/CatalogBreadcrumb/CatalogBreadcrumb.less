@@ -1,0 +1,62 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.CustomBreadCrumbs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  background: @white;
+  border: @base-border;
+  border-radius: @border-radius-base;
+  min-height: 58px;
+  padding: 12px;
+  margin-bottom: 10px;
+  word-break: break-word;
+
+  &__link {
+    display: flex;
+    align-items: center;
+
+    i {
+      color: @primary-color;
+      width: 15px !important;
+    }
+
+    &:hover {
+      color: @orange-hot !important;
+    }
+  }
+
+  &__title {
+    font-weight: 500;
+  }
+
+  span {
+    cursor: default;
+  }
+
+  .ant-breadcrumb {
+    display: flex;
+    align-items: center;
+
+    span {
+      display: flex;
+    }
+
+    & > span:last-child {
+      .ant-breadcrumb-link {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      a.CustomBreadCrumbs__obj-page-link {
+        color: @primary-color;
+      }
+
+      font-weight: 500;
+    }
+  }
+}
+
+@import 'CatalogBreadcrumb-nightmode.less';

@@ -36,7 +36,7 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
-    case actions.GET_ACCOUNT.SUCCESS:
+    case actions.GET_ACCOUNT.SUCCESS: {
       return {
         ...state,
         users: {
@@ -50,6 +50,7 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
+    }
     case actions.GET_ACCOUNT.ERROR:
       return {
         ...state,
@@ -143,7 +144,6 @@ export default function usersReducer(state = initialState, action) {
           ...state.users,
           [action.meta.username]: {
             ...state.users[action.meta.username],
-            followers_count: state.users[action.meta.username].followers_count - 1,
             youFollows: false,
             pending: false,
           },
@@ -244,6 +244,7 @@ export default function usersReducer(state = initialState, action) {
         },
       };
     }
+
     case actions.FOLLOW_USER.SUCCESS: {
       if (action.meta.top) {
         const findExperts = state.topExperts.list.findIndex(
@@ -264,13 +265,14 @@ export default function usersReducer(state = initialState, action) {
         };
       }
 
+      const currentUser = state.users[action.meta.username];
+
       return {
         ...state,
         users: {
           ...state.users,
           [action.meta.username]: {
-            ...state.users[action.meta.username],
-            followers_count: state.users[action.meta.username].followers_count + 1,
+            ...currentUser,
             youFollows: true,
             pending: false,
           },

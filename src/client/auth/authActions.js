@@ -1,4 +1,5 @@
 import Cookie from 'js-cookie';
+import { get } from 'lodash';
 import { createAction } from 'redux-actions';
 import {
   getAuthenticatedUserName,
@@ -37,6 +38,8 @@ export const RELOAD_ERROR = '@auth/RELOAD_ERROR';
 
 export const LOGOUT = '@auth/LOGOUT';
 
+export const CHANGE_SORTING_FOLLOW = '@auth/CHANGE_SORTING';
+
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BALANCE');
@@ -50,6 +53,7 @@ export const getAuthGuestBalance = () => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
+
   if (isGuest) {
     return dispatch({
       type: UPDATE_GUEST_BALANCE.ACTION,
@@ -59,6 +63,38 @@ export const getAuthGuestBalance = () => (dispatch, getState) => {
   return dispatch({ type: UPDATE_GUEST_BALANCE.ERROR });
 };
 
+export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
+  const state = getState();
+  let accessToken = Cookie.get('access_token');
+
+  if (state.auth.isGuestUser) {
+    accessToken = getGuestAccessToken();
+    clearGuestAuthData();
+    if (window) {
+      if (window.FB) {
+        window.FB.getLoginStatus(res => {
+          if (res.status === 'connected') window.FB.logout();
+        });
+      }
+
+      if (window.gapi && window.gapi.auth2) {
+        const authInstance = window.gapi.auth2.getAuthInstance();
+
+        if (authInstance.isSignedIn && authInstance.isSignedIn.get()) authInstance.signOut();
+      }
+    }
+  } else {
+    steemConnectAPI.revokeToken();
+    Cookie.remove('access_token');
+  }
+  busyAPI.sendAsync('unsubscribe', [accessToken]);
+  history.push('/');
+
+  dispatch({
+    type: LOGOUT,
+  });
+};
+
 export const login = (accessToken = '', socialNetwork = '', regData = '') => async (
   dispatch,
   getState,
@@ -66,10 +102,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 ) => {
   const state = getState();
   let promise = Promise.resolve(null);
-  let isGuest = null;
-
   const guestAccessToken = getGuestAccessToken();
-  isGuest = Boolean(guestAccessToken);
+  const isGuest = Boolean(guestAccessToken);
 
   if (isUserLoaded(state)) {
     promise = Promise.resolve(null);
@@ -92,9 +126,9 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         reject(e);
       }
     });
-  } else if (!steemConnectAPI.options.accessToken && !isGuest) {
+  } else if (!steemConnectAPI.accessToken && !isGuest) {
     promise = Promise.reject(new Error('There is not accessToken present'));
-  } else if (isGuest || steemConnectAPI.options.accessToken) {
+  } else if (isGuest || steemConnectAPI.accessToken) {
     promise = new Promise(async (resolve, reject) => {
       try {
         const scUserData = await steemConnectAPI.me();
@@ -139,38 +173,6 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
     },
   });
 
-export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
-  const state = getState();
-  let accessToken = Cookie.get('access_token');
-
-  if (state.auth.isGuestUser) {
-    accessToken = getGuestAccessToken();
-    clearGuestAuthData();
-    if (window) {
-      if (window.FB) {
-        window.FB.getLoginStatus(res => {
-          if (res.status === 'connected') window.FB.logout();
-        });
-      }
-
-      if (window.gapi && window.gapi.auth2) {
-        const authInstance = window.gapi.auth2.getAuthInstance();
-
-        if (authInstance.isSignedIn && authInstance.isSignedIn.get()) authInstance.signOut();
-      }
-    }
-  } else {
-    steemConnectAPI.revokeToken();
-    Cookie.remove('access_token');
-  }
-  busyAPI.sendAsync('unsubscribe', [accessToken]);
-  history.push('/');
-
-  dispatch({
-    type: LOGOUT,
-  });
-};
-
 export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   let accessToken = Cookie.get('access_token');
   let method = 'login';
@@ -208,10 +210,18 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   });
 };
 
+export const changeSorting = sorting => dispatch => {
+  dispatch({
+    type: CHANGE_SORTING_FOLLOW,
+    payload: sorting,
+  });
+  return Promise.resolve();
+};
+
 export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
   // eslint-disable-next-line camelcase
-  const json_metadata = JSON.parse(state.auth.user.posting_json_metadata);
+  const json_metadata = JSON.parse(get(state, ['auth', 'user', 'posting_json_metadata']));
 
   json_metadata.profile = { ...json_metadata.profile, ...values };
 

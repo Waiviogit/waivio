@@ -12,14 +12,8 @@ import WeightTag from '../components/WeightTag';
 import { changeCounterFollow, followUser, unfollowUser } from './usersActions';
 import { getAuthenticatedUserName, isGuestUser, getAuthorizationUserFollowSort } from '../reducers';
 import { changeSorting } from '../auth/authActions';
+import { SORT_OPTIONS } from '../../common/constants/waivioFiltres';
 import './UserDynamicList.less';
-
-const SORT_OPTIONS = {
-  RANK: 'rank',
-  ALPHABET: 'alphabet',
-  FOLLOWERS: 'followers',
-  RECENCY: 'recency',
-};
 
 class UserDynamicList extends React.Component {
   static propTypes = {
@@ -32,7 +26,7 @@ class UserDynamicList extends React.Component {
     authUser: PropTypes.string,
     isGuest: PropTypes.bool.isRequired,
     changeCounterFollow: PropTypes.func.isRequired,
-    sort: PropTypes.string,
+    sort: PropTypes.string.isRequired,
     match: PropTypes.shape({
       params: PropTypes.shape({
         name: PropTypes.string,
@@ -43,7 +37,6 @@ class UserDynamicList extends React.Component {
     authUser: '',
     showAuthorizedUser: false,
     userName: '',
-    sort: '',
   };
   constructor(props) {
     super(props);
@@ -51,7 +44,6 @@ class UserDynamicList extends React.Component {
       loading: false,
       hasMore: true,
       users: [],
-      sort: '',
     };
 
     this.handleLoadMore = this.handleLoadMore.bind(this);
@@ -98,7 +90,7 @@ class UserDynamicList extends React.Component {
             })),
           )
           .catch(err => {
-            console.error(err.message);
+            message.error(err.message);
           });
       },
     );
@@ -164,14 +156,16 @@ class UserDynamicList extends React.Component {
   };
 
   handleChangeSorting = sorting => {
-    this.props
-      .dispatchChangeFollowSorting(sorting)
-      .then(() => {
-        this.handleSorting(sorting);
-      })
-      .catch(err => {
-        message.error(err.message);
-      });
+    if (this.props.sort !== sorting) {
+      this.props
+        .dispatchChangeFollowSorting(sorting)
+        .then(() => {
+          this.handleSorting(sorting);
+        })
+        .catch(err => {
+          message.error(err.message);
+        });
+    }
   };
 
   handleSorting(sorting) {
@@ -205,7 +199,7 @@ class UserDynamicList extends React.Component {
 
     return (
       <React.Fragment>
-        <div>
+        <div className="sortSelector">
           <SortSelector sort={sort} onChange={this.handleChangeSorting}>
             <SortSelector.Item key={SORT_OPTIONS.RANK}>
               <FormattedMessage id="rank" defaultMessage="Rank" />
@@ -246,7 +240,7 @@ class UserDynamicList extends React.Component {
           </ReduxInfiniteScroll>
           {empty && (
             <div className="UserDynamicList__empty">
-              <FormattedMessage id="list_empty" defaultMessage="No data" />
+              <FormattedMessage id="empty_follow_list" defaultMessage="This list is empty" />
             </div>
           )}
         </div>

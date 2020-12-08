@@ -8,35 +8,32 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationChangeStatus = ({ notification, read, onClick }) => {
-  // eslint-disable-next-line camelcase
   const statusUrl = `/object/${notification.author_permlink}/updates/status`;
-
+  const currentClass = classNames('Notification', {
+    'Notification--unread': !read,
+  });
   return (
-    <Link
-      to={statusUrl}
-      onClick={onClick}
-      className={classNames('Notification', {
-        'Notification--unread': !read,
-      })}
-    >
-      <Avatar username={notification.author} size={40} />
-      <div className="Notification__text">
-        <div className="Notification__text__message">
-          <FormattedMessage
-            id="status_change"
-            defaultMessage="{username} marked {restaurant} as {status}"
-            values={{
-              username: <span className="username">{notification.author}</span>,
-              restaurant: <span className="object_name">{notification.object_name}</span>,
-              status: <span className="newStatus">{notification.newStatus}</span>,
-            }}
-          />
+    notification.newStatus && (
+      <Link to={statusUrl} onClick={onClick} className={currentClass}>
+        <Avatar username={notification.author} size={40} />
+        <div className="Notification__text">
+          <div className="Notification__text__message">
+            <FormattedMessage
+              id="status_change"
+              defaultMessage="{username} marked {restaurant} as {status}"
+              values={{
+                username: <span className="username">{notification.author}</span>,
+                restaurant: <span className="object_name">{notification.object_name}</span>,
+                status: <span className="newStatus">{notification.newStatus}</span>,
+              }}
+            />
+          </div>
+          <div className="Notification__text__date">
+            <FormattedRelative value={epochToUTC(notification.timestamp)} />
+          </div>
         </div>
-        <div className="Notification__text__date">
-          <FormattedRelative value={epochToUTC(notification.timestamp)} />
-        </div>
-      </div>
-    </Link>
+      </Link>
+    )
   );
 };
 

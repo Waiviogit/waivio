@@ -1,5 +1,5 @@
 import React from 'react';
-import { map } from 'lodash';
+import { map, get, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -17,8 +17,13 @@ import {
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
-import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
-import AppendFormFooter from '../AppendFormFooter';
+import {
+  generatePermlink,
+  prepareImageToStore,
+  getObjectName,
+  getDefaultAlbum,
+} from '../../helpers/wObjectHelper';
+import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import './CreateImage.less';
 import { getVoteValue } from '../../helpers/user';
@@ -51,7 +56,18 @@ class CreateImage extends React.Component {
     isValidLink: false,
     votePercent: this.props.defaultVotePercent / 100,
     voteWorth: 0,
+    currentAlbum: null,
   };
+
+  componentDidMount() {
+    const { currentAlbum } = this.state;
+    const { albums } = this.props;
+    if (isEmpty(currentAlbum)) {
+      const defaultAlbum = getDefaultAlbum(albums);
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ currentAlbum: defaultAlbum });
+    }
+  }
 
   getWobjectData = () => {
     const { currentUsername, wObject } = this.props;
@@ -61,7 +77,7 @@ class CreateImage extends React.Component {
     data.parentPermlink = wObject.author_permlink;
     data.title = '';
     data.lastUpdated = Date.now();
-    data.wobjectName = getField(wObject, objectFields.name);
+    data.wobjectName = getObjectName(wObject);
     data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
 
     return data;
@@ -91,24 +107,36 @@ class CreateImage extends React.Component {
   };
 
   getWobjectBody = image => {
-    const { selectedAlbum, currentUsername, intl } = this.props;
+    const { currentUsername, intl } = this.props;
+    const album = this.getImageAlbum();
+
     return intl.formatMessage(
       {
         id: 'append_new_image',
-        defaultMessage: `@{user} added a new image to album {album} <br /> {image.response.image}`,
+        defaultMessage: `@{user} added a new image to album {album}`,
       },
       {
         user: currentUsername,
-        album: selectedAlbum.body,
+        album,
         url: image.src,
       },
     );
   };
 
+  getImageAlbum = () => {
+    const { currentAlbum } = this.state;
+    const { albums } = this.props;
+    let albumName = '';
+    const album = albums.find(item => item.id === currentAlbum);
+    albumName = get(album, 'body');
+    return albumName;
+  };
+
   handleSubmit = e => {
     e.preventDefault();
 
-    const { selectedAlbum, hideModal, intl } = this.props;
+    const { hideModal, intl } = this.props;
+    const album = this.getImageAlbum();
 
     this.props.form.validateFields(err => {
       if (!err) {
@@ -122,10 +150,10 @@ class CreateImage extends React.Component {
               intl.formatMessage(
                 {
                   id: 'added_image_to_album',
-                  defaultMessage: `@{user} added a new image to album {album} <br /> {url}`,
+                  defaultMessage: `@{user} added a new image to album {album}`,
                 },
                 {
-                  album: selectedAlbum.body,
+                  album,
                 },
               ),
             );
@@ -214,13 +242,13 @@ class CreateImage extends React.Component {
       const response = await this.props.appendObject(postData);
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      if (response.value.transactionId) {
+      if (response.transactionId) {
         const filteredFileList = this.state.fileList.filter(file => file.uid !== image.uid);
         this.setState({ fileList: filteredFileList }, async () => {
           const img = prepareImageToStore(postData);
           await addImageToAlbumStore({
             ...img,
-            author: response.value.author,
+            author: get(response, ['value', 'author']),
             id: form.getFieldValue('id'),
           });
         });
@@ -242,7 +270,12 @@ class CreateImage extends React.Component {
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
     const { fileList, uploadingList, loading } = this.state;
-    const isLoading = !uploadingList.length ? loading : Boolean(uploadingList.length);
+    const uploadingListLength = uploadingList.length;
+    const isLoading = !uploadingListLength ? loading : Boolean(uploadingListLength); // must be uploadingList.length
+    const defaultAlbum = getDefaultAlbum(albums);
+    const albumInitialValue = selectedAlbum
+      ? selectedAlbum.id || selectedAlbum.body
+      : defaultAlbum.id || defaultAlbum.body;
 
     return (
       <Modal
@@ -259,7 +292,7 @@ class CreateImage extends React.Component {
         <Form className="CreateImage" layout="vertical">
           <Form.Item>
             {form.getFieldDecorator('id', {
-              initialValue: selectedAlbum ? selectedAlbum.id : 'Choose an album',
+              initialValue: albumInitialValue,
               rules: [
                 {
                   required: true,
@@ -273,9 +306,15 @@ class CreateImage extends React.Component {
                 },
               ],
             })(
-              <Select disabled={loading}>
+              <Select
+                disabled={loading || selectedAlbum}
+                onSelect={value => this.setState(() => ({ currentAlbum: value }))}
+              >
                 {map(albums, album => (
-                  <Select.Option key={`${album.id}${album.bogy}`} value={album.id}>
+                  <Select.Option
+                    key={`${album.id || album.weight}${album.body}`}
+                    value={album.id || album.body}
+                  >
                     {album.body}
                   </Select.Option>
                 ))}
@@ -341,7 +380,7 @@ CreateImage.propTypes = {
   addImageToAlbumStore: PropTypes.func,
   rewardFund: PropTypes.shape(),
   rate: PropTypes.number,
-  defaultVotePercent: PropTypes.number.isRequired,
+  defaultVotePercent: PropTypes.number,
 };
 
 CreateImage.defaultProps = {
@@ -353,6 +392,7 @@ CreateImage.defaultProps = {
   addImageToAlbumStore: () => {},
   rewardFund: {},
   rate: 0,
+  defaultVotePercent: 100,
 };
 
 export default injectIntl(Form.create()(CreateImage));

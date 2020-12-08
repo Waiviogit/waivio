@@ -1,4 +1,4 @@
-import { filter, maxBy, map, isEmpty, get, toLower } from 'lodash';
+import { map, isEmpty, get, toLower } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -17,7 +17,6 @@ import {
   isBannedPost,
   replaceBotWithGuestName,
 } from '../../helpers/postHelpers';
-import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
 import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
@@ -27,12 +26,12 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './Story.less';
 
 @injectIntl
 @withRouter
-@withAuthActions
 class Story extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -43,7 +42,6 @@ class Story extends React.Component {
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     showNSFWPosts: PropTypes.bool.isRequired,
-    onActionInitiated: PropTypes.func.isRequired,
     pendingLike: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
@@ -62,6 +60,9 @@ class Story extends React.Component {
     push: PropTypes.func,
     pendingFlag: PropTypes.bool,
     location: PropTypes.shape().isRequired,
+    followingPostAuthor: PropTypes.func.isRequired,
+    pendingFollowingPostAuthor: PropTypes.func.isRequired,
+    errorFollowingPostAuthor: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -94,7 +95,6 @@ class Story extends React.Component {
     };
 
     this.getDisplayStoryPreview = this.getDisplayStoryPreview.bind(this);
-    this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
     this.handleShowStoryPreview = this.handleShowStoryPreview.bind(this);
     this.handlePostModalDisplay = this.handlePostModalDisplay.bind(this);
     this.handlePreviewClickPostModalDisplay = this.handlePreviewClickPostModalDisplay.bind(this);
@@ -119,19 +119,8 @@ class Story extends React.Component {
   }
 
   getObjectLayout = wobj => {
-    const pathName = `/object/${wobj.author_permlink}`;
-    let name = '';
-
-    if (wobj.objectName) {
-      name = wobj.objectName;
-    } else {
-      const nameFields = filter(wobj.fields, o => o.name === 'name');
-      const nameField = maxBy(nameFields, 'weight') || {
-        body: wobj.default_name,
-      };
-
-      if (nameField) name = nameField.body;
-    }
+    const pathName = wobj.defaultShowLink;
+    const name = getObjectName(wobj);
 
     return (
       <Link
@@ -159,6 +148,7 @@ class Story extends React.Component {
 
       if (i < 5) {
         i += 1;
+
         return this.getObjectLayout(wobj);
       }
 
@@ -174,37 +164,25 @@ class Story extends React.Component {
     return returnData;
   };
 
-  getWeighForUpdates = weight => {
-    if (this.props.post.append_field_name) {
-      if (weight > 9998) return weight - 1;
-
-      return weight + 1;
-    }
-
-    return weight;
-  };
-
-  handleLikeClick(post, postState, weight = 10000) {
+  handleClickVote(post, postState, weight, type) {
     const { sliderMode, defaultVotePercent, votePost } = this.props;
-    const author = post.guestInfo && !post.depth ? post.root_author : post.author;
+    const author = post.root_author;
 
-    if (sliderMode && !postState.isLiked) {
+    if (sliderMode && !postState[type]) {
       votePost(post.id, author, post.permlink, weight);
-    } else if (postState.isLiked) {
+    } else if (postState[type]) {
       votePost(post.id, author, post.permlink, 0);
     } else {
       votePost(post.id, author, post.permlink, defaultVotePercent);
     }
   }
 
-  handleReportClick(post, postState, isRejectField) {
-    let weight = postState.isReported ? 0 : -10000;
-    if (isRejectField) {
-      weight = postState.isReported ? 0 : 9999;
-    }
+  handleLikeClick(post, postState, weight = 10000) {
+    this.handleClickVote(post, postState, weight, 'isLiked');
+  }
 
-    const author = post.author_original || post.author;
-    this.props.votePost(post.id, author, post.permlink, weight);
+  handleReportClick(post, postState, weight) {
+    this.handleClickVote(post, postState, -weight, 'isReported');
   }
 
   handleShareClick(post) {
@@ -212,46 +190,30 @@ class Story extends React.Component {
   }
 
   handleFollowClick(post) {
-    const { userFollowed } = this.props.postState;
+    const postId = `${post.author}/${post.permlink}`;
 
-    if (userFollowed) {
-      this.props.unfollowUser(post.author);
-    } else {
-      this.props.followUser(post.author);
+    this.props.pendingFollowingPostAuthor(postId);
+
+    if (post.youFollows) {
+      return this.props
+        .unfollowUser(post.author)
+        .then(() => this.props.followingPostAuthor(postId))
+        .catch(() => this.props.errorFollowingPostAuthor(postId));
     }
+
+    return this.props
+      .followUser(post.author)
+      .then(() => this.props.followingPostAuthor(postId))
+      .catch(() => this.props.errorFollowingPostAuthor(postId));
   }
 
-  handleEditClick(post) {
+  handleEditClick = post => {
     const { intl } = this.props;
 
     if (post.depth === 0) return this.props.editPost(post, intl);
 
     return this.props.push(`${post.url}-edit`);
-  }
-
-  clickMenuItem(key) {
-    const { post, postState } = this.props;
-
-    switch (key) {
-      case 'follow':
-        this.handleFollowClick(post);
-        break;
-      case 'save':
-        this.props.toggleBookmark(`${post.author}/${post.root_permlink}`);
-        break;
-      case 'report':
-        this.handleReportClick(post, postState);
-        break;
-      case 'edit':
-        this.handleEditClick(post);
-        break;
-      default:
-    }
-  }
-
-  handlePostPopoverMenuClick(key) {
-    this.props.onActionInitiated(this.clickMenuItem.bind(this, key));
-  }
+  };
 
   handleShowStoryPreview() {
     this.setState({
@@ -262,20 +224,8 @@ class Story extends React.Component {
   handlePostModalDisplay(e) {
     e.preventDefault();
     const { post } = this.props;
-    const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
-    const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
-    const postURL = replaceBotWithGuestName(`/@${post.id}`, post.guestInfo);
 
-    if (isReplyPreview) {
-      this.props.history.push(postURL);
-    } else if (openInNewTab) {
-      if (window) {
-        const url = `${window.location.origin}${postURL}`;
-        window.open(url);
-      }
-    } else {
-      this.props.showPostModal(post);
-    }
+    this.props.showPostModal(post);
   }
 
   handlePreviewClickPostModalDisplay(e) {
@@ -295,6 +245,7 @@ class Story extends React.Component {
     } else if (openInNewTab && showPostModal) {
       if (window) {
         const url = `${window.location.origin}${postURL}`;
+
         window.open(url);
       }
     } else if (showPostModal) {
@@ -382,86 +333,90 @@ class Story extends React.Component {
         </div>
       );
     }
+
     return (
-      <div className="Story" id={`${author}-${post.permlink}`}>
-        {rebloggedUI}
-        <div className="Story__content">
-          <div className="Story__header">
-            <Link to={`/@${author}`}>
-              <Avatar username={author} size={40} />
-            </Link>
-            <div className="Story__header__text">
-              <span className="Story__header__flex">
-                <h4>
-                  <Link to={`/@${author}`}>
-                    <span className="username">{author}</span>
-                  </Link>
-                </h4>
-                <WeightTag weight={post.author_wobjects_weight} />
-              </span>
-              <span>
-                <BTooltip
-                  title={
-                    <span>
-                      <FormattedDate value={post.createdAt} />{' '}
-                      <FormattedTime value={post.createdAt} />
+      post.depth >= 0 && (
+        <div className="Story" id={`${author}-${post.permlink}`}>
+          {rebloggedUI}
+          <div className="Story__content">
+            <div className="Story__header">
+              <Link to={`/@${author}`}>
+                <Avatar username={author} size={40} />
+              </Link>
+              <div className="Story__header__text">
+                <span className="Story__header__flex">
+                  <h4>
+                    <Link to={`/@${author}`}>
+                      <span className="username">{author}</span>
+                    </Link>
+                  </h4>
+                  <WeightTag weight={post.author_wobjects_weight} />
+                </span>
+                <span>
+                  <BTooltip
+                    title={
+                      <span>
+                        <FormattedDate value={`${post.created}Z`} />{' '}
+                        <FormattedTime value={`${post.created}Z`} />
+                      </span>
+                    }
+                  >
+                    <span className="Story__date">
+                      <FormattedRelative value={`${post.created}Z`} />
                     </span>
-                  }
-                >
-                  <span className="Story__date">
-                    <FormattedRelative value={post.createdAt} />
-                  </span>
-                </BTooltip>
-                <PostedFrom post={post} />
-              </span>
-            </div>
-            <div className="Story__topics">
-              <div className="Story__published">
-                <div className="PostWobject__wrap">
-                  {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
+                  </BTooltip>
+                  <PostedFrom post={post} />
+                </span>
+              </div>
+              <div className="Story__topics">
+                <div className="Story__published">
+                  <div className="PostWobject__wrap">
+                    {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="Story__content">
-            <a
-              href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
-              rel="noopener noreferrer"
-              target="_blank"
-              onClick={this.handlePostModalDisplay}
-              className="Story__content__title"
-            >
-              <h2>
-                {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
-                {post.title || post.root_title}
-              </h2>
-            </a>
-            {this.renderStoryPreview()}
-          </div>
-          <div className="Story__footer">
-            <StoryFooter
-              user={user}
-              post={post}
-              postState={postState}
-              pendingLike={pendingLike}
-              pendingFlag={pendingFlag}
-              rewardFund={rewardFund}
-              ownPost={ownPost}
-              singlePostVew={singlePostVew}
-              sliderMode={sliderMode}
-              defaultVotePercent={defaultVotePercent}
-              onLikeClick={this.handleLikeClick}
-              onReportClick={this.handleReportClick}
-              onShareClick={this.handleShareClick}
-              onEditClick={this.handleEditClick}
-              pendingFollow={pendingFollow}
-              pendingBookmark={pendingBookmark}
-              saving={saving}
-              handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
-            />
+            <div className="Story__content">
+              <a
+                href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
+                rel="noopener noreferrer"
+                target="_blank"
+                onClick={this.handlePostModalDisplay}
+                className="Story__content__title"
+              >
+                <h2>
+                  {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
+                  {post.title || post.root_title}
+                </h2>
+              </a>
+              {this.renderStoryPreview()}
+            </div>
+            <div className="Story__footer">
+              <StoryFooter
+                user={user}
+                post={post}
+                postState={postState}
+                pendingLike={pendingLike}
+                pendingFlag={pendingFlag}
+                rewardFund={rewardFund}
+                ownPost={ownPost}
+                singlePostVew={singlePostVew}
+                sliderMode={sliderMode}
+                defaultVotePercent={defaultVotePercent}
+                onLikeClick={this.handleLikeClick}
+                onReportClick={this.handleReportClick}
+                onShareClick={this.handleShareClick}
+                pendingFollow={pendingFollow}
+                pendingBookmark={pendingBookmark}
+                saving={saving}
+                handleFollowClick={this.handleFollowClick}
+                toggleBookmark={this.props.toggleBookmark}
+                handleEditClick={this.handleEditClick}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )
     );
   }
 }

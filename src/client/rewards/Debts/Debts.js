@@ -7,6 +7,7 @@ import PaymentCard from '../PaymentCard/PaymentCard';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { sortDebtObjsData, getCurrentUSDPrice, payablesFilterData } from '../rewardsHelper';
 import FilterModal from '../FilterModal';
+import { PATH_NAME_PAYABLES } from '../../../common/constants/rewards';
 import './Debts.less';
 
 const Debts = ({
@@ -51,7 +52,7 @@ const Debts = ({
   const currentUSDPrice = getCurrentUSDPrice();
 
   const createFilterData = () =>
-    componentLocation === '/rewards/payables'
+    componentLocation === PATH_NAME_PAYABLES
       ? { payables: payablesFilterData(componentLocation) }
       : { receivables: payablesFilterData(componentLocation) };
 

@@ -7,6 +7,7 @@ import User from './User';
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
 import * as store from '../../reducers';
 import { getRandomExperts } from '../../user/usersActions';
+import { PATH_NAME_DISCOVER } from '../../../common/constants/rewards';
 import './InterestingPeople.less';
 import './SidebarContentBlock.less';
 
@@ -47,7 +48,7 @@ class InterestingPeople extends React.Component {
           {randomExperts &&
             randomExperts.map(user => <User key={user.name} user={user} showFollow={false} />)}
           <h4 className="InterestingPeople__more">
-            <Link to={'/discover'}>
+            <Link to={PATH_NAME_DISCOVER}>
               <FormattedMessage id="discover_more_people" defaultMessage="Discover More People" />
             </Link>
           </h4>

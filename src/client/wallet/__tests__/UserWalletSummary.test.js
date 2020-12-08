@@ -10,7 +10,7 @@ describe('(Component) UserWalletSummary', () => {
           balance: '100',
           vesting_shares: '0',
           savings_balance: '100 HIVE',
-          savings_sbd_balance: '1000 HIVE',
+          savings_hbd_balance: '1000 HIVE',
         },
         estAccountValue: '100.00 HIVE',
         totalVestingShares: '100 HIVE',

@@ -3,13 +3,12 @@ import getSlug from 'speakingurl';
 import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
 import * as steem from 'steem';
-import { get } from 'lodash';
-import * as dsteem from '@hivechain/dsteem';
+import { get, size } from 'lodash';
+import { Client } from '@hiveio/dhive';
 
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
-import { getContent } from '../../waivioApi/ApiClient';
 
 const dmp = new diff_match_patch();
 /**
@@ -121,9 +120,10 @@ export const calculateVotePowerForSlider = async (name, voteWeight, author, perm
 };
 
 function checkPermLinkLength(permlink) {
-  if (permlink.length > 255) {
+  const length = size(permlink);
+  if (length > 255) {
     // STEEMIT_MAX_PERMLINK_LENGTH
-    permlink = permlink.substring(permlink.length - 255, permlink.length);
+    permlink = permlink.substring(length - 255, length);
   }
   // only letters numbers and dashes shall survive
   permlink = permlink.toLowerCase().replace(/[^a-z0-9-]+/g, '');
@@ -165,9 +165,9 @@ export function createPermlink(title, author, parent_author, parent_permlink) {
         permlink = prefix + s;
         return checkPermLinkLength(permlink);
       })
-      .catch(err => {
-        console.warn('Error while getting content', err);
-        return permlink;
+      .catch(() => {
+        permlink = s;
+        return checkPermLinkLength(permlink);
       });
   }
   // comments: re-parentauthor-parentpermlink-time
@@ -279,7 +279,7 @@ export const calculateEstAccountValue = (
   );
   return (
     parseFloat(steemRate) * (parseFloat(user.balance) + parseFloat(steemPower)) +
-    parseFloat(user.sbd_balance) * parseFloat(sbdRate)
+    parseFloat(user.hbd_balance) * parseFloat(sbdRate)
   );
 };
 
@@ -302,6 +302,10 @@ export const roundNumberToThousands = number => {
   return number;
 };
 
-export const dSteem = new dsteem.Client('https://anyx.io');
+export const dHive = new Client(['https://anyx.io/'], {
+  timeout: 8 * 1000,
+  failoverThreshold: 4,
+  rebrandedApi: true,
+});
 
 export const calcReputation = rep => steem.formatter.reputation(rep);

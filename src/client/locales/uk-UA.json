@@ -852,5 +852,13 @@
   "failed_to_get_campaign_data": "Не вдалося отримати дані кампанії: {error}",
   "history_and_sponsor_communications": "Історія та спонсорські комунікації",
   "reservations": "Резервації",
-  "history_of_reservations": "Історія резервування"
+  "history_of_reservations": "Історія резервування",
+  "rewards_from_sponsors_you_are_following:": "Нагороди від спонсорів, за якими ви стежите:",
+  "no_rewards_posted_by_sponsors_you_are_following": "Жодних нагород від спонсорів, за якими ви стежите",
+  "review_reinstated": "Огляд відновлено",
+  "fraud_detection": "Виявлення шахрайства",
+  "fraud_detection_assistant": "Помічник з виявлення шахрайства",
+  "disclaimer": "Застереження",
+  "fraud_detection_disclaimer": "Це експериментальна послуга з обмеженим обсягом, яка надається \"як є\" без гарантії застосовності для виявлення ймовірних спроб шахрайства. Усі подання завжди повинні бути вручну перевірені та підтверджені спонсором кампанії."
+
 }

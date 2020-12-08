@@ -9,13 +9,14 @@ import DiscoverContent from './DiscoverContent';
 import Affix from '../components/Utils/Affix';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { resetSearchUsersForDiscoverPage } from '../search/searchActions';
+import { PATH_NAME_DISCOVER } from '../../common/constants/rewards';
 
 import './Discover.less';
 
 const Discover = ({ intl, match, history }) => {
   const dispatch = useDispatch();
   const handleDeleteTag = () => {
-    history.push('/discover');
+    history.push(PATH_NAME_DISCOVER);
     dispatch(resetSearchUsersForDiscoverPage());
   };
 

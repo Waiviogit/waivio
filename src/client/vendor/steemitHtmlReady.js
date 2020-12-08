@@ -5,11 +5,10 @@
  */
 
 import steemEmbed from './embedMedia';
-import slice from 'lodash/slice';
 import xmldom from 'xmldom';
 import linksRe from './steemitLinks';
 import { validateAccountName } from './ChainValidation';
-import { getProxyImageURL } from '../helpers/image';
+import { getImagePathPost } from '../helpers/image';
 
 const noop = () => {};
 const DOMParser = new xmldom.DOMParser({
@@ -90,7 +89,6 @@ export default function(html, { mutate = true, resolveIframe } = {}) {
     const doc = DOMParser.parseFromString(html, 'text/html');
     traverse(doc, state);
     if (mutate) proxifyImages(doc);
-    // console.log('state', state)
     if (!mutate) return state;
     return { html: doc ? XMLSerializer.serializeToString(doc) : '', ...state };
   } catch (error) {
@@ -103,7 +101,6 @@ export default function(html, { mutate = true, resolveIframe } = {}) {
 function traverse(node, state, depth = 0) {
   if (!node || !node.childNodes) return;
   Array(...node.childNodes).forEach(child => {
-    // console.log(depth, 'child.tag,data', child.tagName, child.data)
     const tag = child.tagName ? child.tagName.toLowerCase() : null;
     if (tag) state.htmltags.add(tag);
 
@@ -272,12 +269,11 @@ function isEmbedable(child, links, images, resolveIframe) {
     if (embed && embed.id) {
       const domString = resolveIframe
         ? embed.embed
-        : `${slice(data, 0, foundLinks.index)}~~~ embed:${embed.id} ${embed.provider_name} ${
+        : `${data.slice(0, foundLinks.index)}~~~ embed:${embed.id} ${embed.provider_name} ${
             embed.url
-          } ~~~${slice(data, foundLinks.index + foundLinks[0].length, data.length)}`;
+          } ~~~${data.slice(foundLinks.index + foundLinks[0].length, data.length)}`;
       const v = DOMParser.parseFromString(domString);
       child.parentNode.replaceChild(v, child);
-      // console.trace('embed.embed', v);
       if (links) links.add(embed.url);
       if (images) images.add(`https://img.youtube.com/vi/${embed.id}/0.jpg`);
       return true;

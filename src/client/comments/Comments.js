@@ -35,22 +35,8 @@ import { notify } from '../app/Notification/notificationActions';
       {
         getComments: commentsActions.getComments,
         voteComment: (id, percent, vote) => commentsActions.likeComment(id, percent, vote),
-        sendComment: (
-          parentPost,
-          body,
-          isUpdating,
-          originalPost,
-          parentAuthorIfGuest,
-          parentPermlinkIfGuest,
-        ) =>
-          commentsActions.sendComment(
-            parentPost,
-            body,
-            isUpdating,
-            originalPost,
-            parentAuthorIfGuest,
-            parentPermlinkIfGuest,
-          ),
+        sendComment: (parentPost, body, isUpdating, originalPost) =>
+          commentsActions.sendComment(parentPost, body, isUpdating, originalPost),
         notify,
       },
       dispatch,
@@ -61,7 +47,7 @@ export default class Comments extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     user: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
-    defaultVotePercent: PropTypes.number.isRequired,
+    defaultVotePercent: PropTypes.number,
     sliderMode: PropTypes.bool,
     username: PropTypes.string,
     post: PropTypes.shape(),
@@ -79,12 +65,7 @@ export default class Comments extends React.Component {
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
-    getMessageHistory: PropTypes.func,
-    getReservedComments: PropTypes.func,
-    match: PropTypes.shape(),
-    history: PropTypes.bool,
-    parentAuthorIfGuest: PropTypes.string,
-    parentPermlinkIfGuest: PropTypes.string,
+    isUpdating: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -96,16 +77,12 @@ export default class Comments extends React.Component {
     pendingVotes: [],
     show: false,
     isQuickComments: false,
-    match: {},
     notify: () => {},
     getComments: () => {},
     voteComment: () => {},
     sendComment: () => {},
-    getMessageHistory: () => {},
-    history: false,
-    getReservedComments: () => {},
-    parentAuthorIfGuest: {},
-    parentPermlinkIfGuest: {},
+    isUpdating: false,
+    defaultVotePercent: 100,
   };
 
   state = {
@@ -177,15 +154,10 @@ export default class Comments extends React.Component {
       sliderMode,
       rewardFund,
       defaultVotePercent,
-      getMessageHistory,
-      history,
-      parentAuthorIfGuest,
-      parentPermlinkIfGuest,
-      getReservedComments,
+      isUpdating,
     } = this.props;
-    const postId = post.append_field_name ? `${post.author_original}/${post.permlink}` : post.id;
+    const postId = isUpdating ? `${post.author}/${post.permlink}` : post.id;
     let rootLevelComments = [];
-
     const parentNode = comments.childrenById[postId];
 
     if (parentNode instanceof Array) {
@@ -221,12 +193,6 @@ export default class Comments extends React.Component {
           onLikeClick={this.handleLikeClick}
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}
-          getMessageHistory={getMessageHistory}
-          match={this.props.match}
-          history={history}
-          parentAuthorIfGuest={parentAuthorIfGuest}
-          parentPermlinkIfGuest={parentPermlinkIfGuest}
-          getReservedComments={getReservedComments}
         />
       )
     );

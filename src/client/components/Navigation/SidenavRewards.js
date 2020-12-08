@@ -10,13 +10,20 @@ import {
   getHasReceivables,
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
+  getAuthenticatedUserName,
 } from '../../reducers';
-import { MESSAGES, HISTORY } from '../../../common/constants/rewards';
+import {
+  MESSAGES,
+  HISTORY,
+  PATH_NAME_HISTORY,
+  FRAUD_DETECTION,
+} from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import './Sidenav.less';
 
 @injectIntl
 @connect(state => ({
+  authUserName: getAuthenticatedUserName(state),
   autoCompleteSearchResults: getAutoCompleteSearchResults(state),
   authenticated: getIsAuthenticated(state),
   isGuest: isGuestUser(state),
@@ -32,6 +39,7 @@ export default class SidenavRewards extends React.Component {
     hasReceivables: PropTypes.bool,
     countTookPartCampaigns: PropTypes.number,
     createdCampaignsCount: PropTypes.number,
+    authUserName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -39,6 +47,7 @@ export default class SidenavRewards extends React.Component {
     hasReceivables: false,
     countTookPartCampaigns: 0,
     createdCampaignsCount: 0,
+    authUserName: '',
   };
 
   constructor(props) {
@@ -53,6 +62,7 @@ export default class SidenavRewards extends React.Component {
       menuCondition: {
         rewards: true,
         campaigns: true,
+        referrals: true,
       },
     };
   }
@@ -75,6 +85,7 @@ export default class SidenavRewards extends React.Component {
       hasReceivables,
       countTookPartCampaigns,
       createdCampaignsCount,
+      authUserName,
     } = this.props;
     const { menuCondition } = this.state;
     return (
@@ -161,7 +172,7 @@ export default class SidenavRewards extends React.Component {
                   {!!countTookPartCampaigns && (
                     <li>
                       <NavLink
-                        to={`/rewards/history`}
+                        to={PATH_NAME_HISTORY}
                         className="sidenav-discover-objects__item"
                         activeClassName="Sidenav__item--active"
                       >
@@ -300,6 +311,18 @@ export default class SidenavRewards extends React.Component {
                   </li>
                   <li>
                     <NavLink
+                      to={'/rewards/fraud-detection'}
+                      className="sidenav-discover-objects__item"
+                      activeClassName="Sidenav__item--active"
+                    >
+                      {intl.formatMessage({
+                        id: FRAUD_DETECTION,
+                        defaultMessage: 'Fraud detection',
+                      })}
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
                       to={`/rewards/blacklist`}
                       className="sidenav-discover-objects__item"
                       activeClassName="Sidenav__item--active"
@@ -310,6 +333,71 @@ export default class SidenavRewards extends React.Component {
                       })}
                     </NavLink>
                   </li>
+                </React.Fragment>
+              )}
+
+              {!isGuest && (
+                <React.Fragment>
+                  <div
+                    className="Sidenav__title-wrap"
+                    onClick={() => this.toggleMenuCondition('referrals')}
+                    role="presentation"
+                  >
+                    <div className="Sidenav__title-item">
+                      {intl.formatMessage({
+                        id: 'referrals',
+                        defaultMessage: `Referrals`,
+                      })}
+                      :
+                    </div>
+                    <div className="Sidenav__title-icon">
+                      {!menuCondition.referrals ? (
+                        <i className="iconfont icon-addition" />
+                      ) : (
+                        <i className="iconfont icon-offline" />
+                      )}
+                    </div>
+                  </div>
+                  {menuCondition.referrals && (
+                    <React.Fragment>
+                      <li>
+                        <NavLink
+                          to={`/rewards/referral-details/${authUserName}`}
+                          className="sidenav-discover-objects__item"
+                          activeClassName="Sidenav__item--active"
+                        >
+                          {intl.formatMessage({
+                            id: 'referrals_details',
+                            defaultMessage: `Details`,
+                          })}
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to={`/rewards/referral-instructions/${authUserName}`}
+                          className="sidenav-discover-objects__item"
+                          activeClassName="Sidenav__item--active"
+                        >
+                          {intl.formatMessage({
+                            id: 'referrals_instructions',
+                            defaultMessage: `Instructions`,
+                          })}
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to={`/rewards/referral-status/${authUserName}`}
+                          className="sidenav-discover-objects__item"
+                          activeClassName="Sidenav__item--active"
+                        >
+                          {intl.formatMessage({
+                            id: 'referrals_status',
+                            defaultMessage: `Status`,
+                          })}
+                        </NavLink>
+                      </li>
+                    </React.Fragment>
+                  )}
                 </React.Fragment>
               )}
             </React.Fragment>

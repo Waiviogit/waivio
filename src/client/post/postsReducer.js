@@ -3,7 +3,6 @@ import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
 import { getPostKey } from '../helpers/stateHelpers';
-import { FAKE_REBLOG_POST } from './postActions';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -157,9 +156,7 @@ const posts = (state = initialState, action) => {
           ? state.list[key].reblogged_by
           : action.payload.reblogged_by;
       }
-      const lastId =
-        // eslint-disable-next-line no-underscore-dangle
-        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
+      const lastId = get(action.payload, [action.payload.length - 1, '_id']);
 
       return {
         ...state,
@@ -197,13 +194,13 @@ const posts = (state = initialState, action) => {
           },
         },
       };
-    case postsActions.LIKE_POST_START:
+    case postsActions.LIKE_POST.START:
       return {
         ...state,
         pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
       };
 
-    case postsActions.LIKE_POST_ERROR:
+    case postsActions.LIKE_POST.ERROR:
       return {
         ...state,
         pendingLikes: omit(state.pendingLikes, action.meta.postId),
@@ -213,34 +210,8 @@ const posts = (state = initialState, action) => {
         ...state,
         list: getPostsList(state.list, action),
       };
-    case postsActions.FAKE_LIKE_POST_START:
-      return {
-        ...state,
-        pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
-      };
-    case postsActions.FAKE_LIKE_POST_SUCCESS: {
-      if (action.payload.isFakeLikeOk) {
-        const updatedPost = { ...state.list[action.meta.postPermlink] };
 
-        updatedPost.active_votes = updatedPost.active_votes.filter(
-          vote => vote.voter !== action.meta.voter,
-        );
-        updatedPost.active_votes.push(action.meta);
-        return {
-          ...state,
-          list: { ...state.list, [action.meta.postPermlink]: updatedPost },
-          pendingLikes: {},
-        };
-      }
-      return state;
-    }
-    case postsActions.FAKE_LIKE_POST_ERROR:
-      return {
-        ...state,
-        pendingLikes: omit(state.pendingLikes, action.meta.postId),
-      };
-
-    case FAKE_REBLOG_POST: {
+    case postsActions.FAKE_REBLOG_POST: {
       const rebloggedPost = state.list[action.payload.postId];
       return {
         ...state,
@@ -254,6 +225,69 @@ const posts = (state = initialState, action) => {
       };
     }
 
+    case postsActions.FOLLOWING_POST_AUTHOR.START: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            loading: true,
+          },
+        },
+      };
+    }
+
+    case postsActions.FOLLOWING_POST_AUTHOR.SUCCESS: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            youFollows: !post.youFollows,
+            loading: false,
+          },
+        },
+      };
+    }
+
+    case postsActions.FOLLOWING_POST_AUTHOR.ERROR: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            loading: false,
+          },
+        },
+      };
+    }
+
+    case postsActions.GET_SOCIAL_INFO_POST.SUCCESS: {
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [getPostKey(action.meta)]: {
+            ...state.list[getPostKey(action.meta)],
+            tags: action.payload.tags,
+            cities: action.payload.cities,
+            wobjectsTwitter: action.payload.wobjectsTwitter,
+            wobjectsFacebook: action.payload.wobjectsFacebook,
+            userFacebook: action.payload.userFacebook,
+            userTwitter: action.payload.userTwitter,
+          },
+        },
+      };
+    }
     default:
       return state;
   }
@@ -263,10 +297,10 @@ export default posts;
 
 export const getPosts = state => state.list;
 export const getPostContent = (state, permlink, author) =>
-  Object.values(state.list).find(post =>
-    post.guestInfo
-      ? post.permlink === permlink && post.guestInfo.userId === author
-      : post.permlink === permlink && post.author === author,
+  Object.values(state.list).find(
+    post =>
+      post.permlink === permlink &&
+      (post.author === author || get(post, ['guestInfo', 'userId']) === author),
   );
 export const getPendingLikes = state => state.pendingLikes;
 export const getIsPostFetching = (state, author, permlink) =>
@@ -276,3 +310,9 @@ export const getIsPostLoaded = (state, author, permlink) =>
 export const getIsPostFailed = (state, author, permlink) =>
   get(state, ['postsStates', `${author}/${permlink}`, 'failed']);
 export const getLastPostId = state => state.lastId;
+export const getPostTags = (state, author, permlink) => {
+  get(state, ['list', `${author}/${permlink}`, 'tags']);
+};
+export const getPostCities = (state, author, permlink) => {
+  get(state, ['list', `${author}/${permlink}`, 'cities']);
+};

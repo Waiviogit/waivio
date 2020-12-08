@@ -7,9 +7,8 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
-import { getFieldWithMaxWeight } from '../object/wObjectHelper';
-import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { createCommentPermlink } from '../vendor/steemitHelpers';
+import { getObjectName } from '../helpers/wObjectHelper';
 
 require('isomorphic-fetch');
 
@@ -64,7 +63,7 @@ export const GET_FOLLOWING_ERROR = '@user/GET_FOLLOWING_ERROR';
 
 export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
   const state = getState();
-  const user = getAuthenticatedUserName(state);
+  const user = store.getAuthenticatedUserName(state);
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -92,8 +91,8 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   const state = getState();
   const skip = 0;
   const limit = state.auth.user.objects_following_count;
-  const authUserName = getAuthenticatedUserName(state);
-  const locale = getLocale(state);
+  const authUserName = store.getAuthenticatedUserName(state);
+  const locale = store.getLocale(state);
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -111,13 +110,14 @@ export const getFollowingObjects = username => (dispatch, getState) => {
 export const GET_FOLLOWING_UPDATES = createAsyncActionType('@user/GET_FOLLOWING_UPDATES');
 export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
   const state = getState();
+  const locale = store.getLocale(state);
   const isUpdatesFetched = store.getFollowingUpdatesFetched(state);
   const userName = store.getAuthenticatedUserName(state);
   if (!isUpdatesFetched && userName) {
     dispatch({
       type: GET_FOLLOWING_UPDATES.ACTION,
       payload: {
-        promise: ApiClient.getFollowingUpdates(userName, count),
+        promise: ApiClient.getFollowingUpdates(locale, userName, count),
       },
     });
   }
@@ -170,13 +170,16 @@ export const GET_RECOMMENDED_OBJECTS_START = '@user/GET_RECOMMENDED_OBJECTS_STAR
 export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SUCCESS';
 export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
 
-export const getRecommendedObj = () => dispatch =>
-  dispatch({
+export const getRecommendedObj = () => (dispatch, getState) => {
+  const locale = store.getLocale(getState());
+
+  return dispatch({
     type: GET_RECOMMENDED_OBJECTS,
     payload: {
-      promise: ApiClient.getRecommendedObjects(),
+      promise: ApiClient.getRecommendedObjects(locale),
     },
   });
+};
 
 export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS');
 
@@ -216,7 +219,6 @@ export const assignProposition = ({
   objPermlink,
   appName,
   primaryObjectName,
-  secondaryObjectName,
   amount,
   proposition,
   proposedWobj,
@@ -224,7 +226,7 @@ export const assignProposition = ({
   currencyId,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
-  const proposedWobjName = proposedWobj.name;
+  const proposedWobjName = getObjectName(proposedWobj);
   const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
   const primaryObjectPermlink = get(proposition, ['required_object', 'author_permlink']);
   const detailsBody = getDetailsBody({
@@ -232,7 +234,6 @@ export const assignProposition = ({
     proposedWobjName,
     proposedWobjAuthorPermlink,
     primaryObjectName,
-    secondaryObjectName,
   });
   const commentOp = [
     'comment',
@@ -242,7 +243,7 @@ export const assignProposition = ({
       author: username,
       permlink: resPermlink,
       title: 'Rewards reservations',
-      body: `<p>User ${userName} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
+      body: `<p>User ${userName} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.author_permlink}">${proposedWobjName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
         app: appName,
         waivioRewards: {
@@ -272,6 +273,7 @@ export const rejectReview = ({
   reservationPermlink,
   objPermlink,
   appName,
+  guideName,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const commentOp = [
     'comment',
@@ -281,7 +283,7 @@ export const rejectReview = ({
       author: companyAuthor,
       permlink: createCommentPermlink(username, reservationPermlink),
       title: 'Reject review',
-      body: `Sponsor ${username} (@${username}) has rejected the review `,
+      body: `Sponsor ${guideName} (@${guideName}) has rejected the review `,
       json_metadata: JSON.stringify({
         app: appName,
         waivioRewards: {
@@ -300,6 +302,41 @@ export const rejectReview = ({
           type: SET_PENDING_UPDATE.START,
         }),
       )
+      .catch(error => reject(error));
+  });
+};
+
+export const reinstateReward = ({ companyAuthor, username, reservationPermlink, appName }) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const commentOp = [
+    'comment',
+    {
+      parent_author: username,
+      parent_permlink: reservationPermlink,
+      author: companyAuthor,
+      permlink: createCommentPermlink(username, reservationPermlink),
+      title: 'Reinstate reward',
+      body: `Sponsor ${companyAuthor} (@${companyAuthor}) has reinstated the reward `,
+      json_metadata: JSON.stringify({
+        app: appName,
+        waivioRewards: {
+          type: 'restore_reservation_by_guide',
+        },
+      }),
+    },
+  ];
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => {
+        resolve('SUCCESS');
+        return dispatch({
+          type: SET_PENDING_UPDATE.START,
+        });
+      })
       .catch(error => reject(error));
   });
 };
@@ -415,9 +452,9 @@ export const activateCampaign = (company, campaignPermlink) => (
   const rewardFund = store.getRewardFund(state);
   const recentClaims = rewardFund.recent_claims;
   const rewardBalance = rewardFund.reward_balance.replace(' HIVE', '');
-  const proposedWobjName = getFieldWithMaxWeight(company.objects[0], 'name');
+  const proposedWobjName = getObjectName(company.objects[0]);
   const proposedAuthorPermlink = company.objects[0].author_permlink;
-  const primaryObjectName = getFieldWithMaxWeight(company.requiredObject, 'name');
+  const primaryObjectName = getObjectName(company.requiredObject);
   const processingFees = company.commissionAgreement * 100;
   const expiryDate = moment(company.expired_at).format('YYYY-MM-DD');
   const alias = get(company, ['guide', 'alias']);

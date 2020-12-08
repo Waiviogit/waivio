@@ -119,9 +119,9 @@ describe('<UserMenu />', () => {
       wrapper.update();
     });
 
-    const followed = wrapper.find('[data-key="followed"]');
+    const followed = wrapper.find('[data-key="following"]');
     followed.simulate('click');
-    expect(wrapper.find('UserMenu').state('current')).toBe('followed');
+    expect(wrapper.find('UserMenu').state('current')).toBe('following');
   });
 
   it('should have expertise data-key', () => {

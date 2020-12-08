@@ -1,9 +1,9 @@
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
-import { has, setWith } from 'lodash';
+import { has, setWith, isEmpty, get } from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
 import Album from './Album';
@@ -13,25 +13,27 @@ import {
   getIsAuthenticated,
   getIsObjectAlbumsLoading,
   getObject,
-  getObjectAdmins,
   getObjectAlbums,
-  getObjectModerators,
+  getRelatedPhotos,
 } from '../../reducers';
 import withEditor from '../../components/Editor/withEditor';
-import { calculateApprovePercent } from '../../helpers/wObjectHelper';
+import { getAlbums, getRelatedAlbum, getMoreRelatedAlbum } from './galleryActions';
 
 import './ObjectGallery.less';
 
 @withEditor
-@connect(state => ({
-  currentUsername: getAuthenticatedUserName(state),
-  wObject: getObject(state),
-  loading: getIsObjectAlbumsLoading(state),
-  albums: getObjectAlbums(state),
-  isAuthenticated: getIsAuthenticated(state),
-  moderatorsList: getObjectAdmins(state),
-  adminsList: getObjectModerators(state),
-}))
+@withRouter
+@connect(
+  state => ({
+    currentUsername: getAuthenticatedUserName(state),
+    wObject: getObject(state),
+    loading: getIsObjectAlbumsLoading(state),
+    albums: getObjectAlbums(state),
+    isAuthenticated: getIsAuthenticated(state),
+    relatedAlbum: getRelatedPhotos(state),
+  }),
+  { getAlbums, getRelatedAlbum, moreRelatedAlbum: getMoreRelatedAlbum },
+)
 export default class ObjectGalleryAlbum extends Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
@@ -40,14 +42,26 @@ export default class ObjectGalleryAlbum extends Component {
     isAuthenticated: PropTypes.bool.isRequired,
     onImageUpload: PropTypes.func.isRequired,
     onImageInvalid: PropTypes.func.isRequired,
-    admins: PropTypes.arrayOf(PropTypes.string).isRequired,
-    moderators: PropTypes.arrayOf(PropTypes.string).isRequired,
+    getAlbums: PropTypes.func.isRequired,
+    getRelatedAlbum: PropTypes.func.isRequired,
+    moreRelatedAlbum: PropTypes.func,
+    relatedAlbum: PropTypes.shape().isRequired,
+  };
+
+  static defaultProps = {
+    moreRelatedAlbum: () => {},
   };
 
   state = {
     photoIndex: 0,
     showModal: false,
   };
+
+  componentDidMount() {
+    if (isEmpty(this.props.albums)) this.props.getAlbums(this.props.match.params.name);
+    if (isEmpty(this.props.relatedAlbum))
+      this.props.getRelatedAlbum(this.props.match.params.name, 30);
+  }
 
   handleToggleModal = () =>
     this.setState(prevState => ({
@@ -64,18 +78,17 @@ export default class ObjectGalleryAlbum extends Component {
     });
 
   render() {
-    const { loading, match, albums, isAuthenticated, admins, moderators } = this.props;
+    const { loading, match, albums, isAuthenticated, relatedAlbum, moreRelatedAlbum } = this.props;
     const { showModal } = this.state;
+    const albumsForRender = [...albums, relatedAlbum];
+    const albumPermlink = match.params.name;
 
     if (loading) return <Loading center />;
 
     const albumId = match.params.itemId;
-    const allAlbums = this.validatedAlbums(albums);
-    const album = allAlbums.filter(
-      albm =>
-        albm.id === albumId &&
-        calculateApprovePercent(albm.active_votes, albm.weight, { admins, moderators }),
-    );
+    const allAlbums = this.validatedAlbums(albumsForRender);
+    const album = allAlbums.filter(albm => albm.id === albumId);
+    const selectedAlbum = album[0];
 
     return (
       <div className="ObjectGallery">
@@ -88,28 +101,31 @@ export default class ObjectGalleryAlbum extends Component {
                 </Link>
                 <FormattedMessage id="back_to_albums" defaultMessage="Back to albums" />
               </div>
-              <div className="ObjectGallery__addImage">
-                <a role="presentation" onClick={this.handleToggleModal}>
-                  <Icon type="plus-circle" className="proposition-line__icon" />
-                </a>
-                <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
-                <CreateImage
-                  albums={albums}
-                  selectedAlbum={album[0]}
-                  showModal={showModal}
-                  hideModal={this.handleToggleModal}
-                  onImageUpload={this.props.onImageUpload}
-                  onImageInvalid={this.props.onImageInvalid}
-                />
-              </div>
+              {get(selectedAlbum, 'body', '') !== 'Related' && (
+                <div className="ObjectGallery__addImage">
+                  <a role="presentation" onClick={this.handleToggleModal}>
+                    <Icon type="plus-circle" className="proposition-line__icon" />
+                  </a>
+                  <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
+                  <CreateImage
+                    albums={album}
+                    selectedAlbum={selectedAlbum}
+                    showModal={showModal}
+                    hideModal={this.handleToggleModal}
+                    onImageUpload={this.props.onImageUpload}
+                    onImageInvalid={this.props.onImageInvalid}
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
-        {album && album[0] ? (
+        {album && selectedAlbum ? (
           <Album
-            key={album[0].body + album[0].weight}
-            album={album[0]}
-            wobjMainer={{ admins, moderators }}
+            key={selectedAlbum.body + selectedAlbum.weight}
+            album={selectedAlbum}
+            getMoreRelatedAlbum={moreRelatedAlbum}
+            permlink={albumPermlink}
           />
         ) : (
           <div className="ObjectGallery__emptyText">

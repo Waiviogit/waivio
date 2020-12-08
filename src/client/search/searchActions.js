@@ -17,6 +17,8 @@ export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE
 export const RESET_AUTO_COMPLETE_SEARCH = '@search/RESET_AUTO_COMPLETE_SEARCH';
 export const SEARCH_OBJECTS = createAsyncActionType('@search/SEARCH_OBJECTS');
 export const CLEAR_SEARCH_OBJECTS_RESULT = '@search/CLEAR_SEARCH_OBJECTS_RESULT';
+export const RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS =
+  '@search/RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS';
 export const SEARCH_USERS = createAsyncActionType('@search/SEARCH_USERS');
 export const SEARCH_OBJECT_TYPES = createAsyncActionType('@search/SEARCH_OBJECT_TYPES');
 export const SEARCH_USERS_FOR_DISCOVER_PAGE = createAsyncActionType(
@@ -94,11 +96,12 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
 ) => {
   const state = getState();
   const usedLocale = getSuitableLanguage(state);
+  const locale = getLocale(state);
   const search = replacer(searchString, '@');
 
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
-    payload: ApiClient.searchObjects(search, objType, forParent).then(result => ({
+    payload: ApiClient.searchObjects(search, objType, forParent, 15, locale).then(result => ({
       result,
       search,
       locale: usedLocale,
@@ -209,6 +212,11 @@ export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch 
 export const clearSearchObjectsResults = () => dispatch =>
   dispatch({
     type: CLEAR_SEARCH_OBJECTS_RESULT,
+  });
+
+export const resetToInitialIsClearSearchObj = () => dispatch =>
+  dispatch({
+    type: RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS,
   });
 
 export const saveBeneficiariesUsers = payload => dispatch =>

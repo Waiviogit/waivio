@@ -28,7 +28,7 @@ describe('fromPosts', () => {
         ],
         pendingLikes: 'pendingLikes',
         postsStates: {
-          'author/permlink}': {
+          'author/permlink': {
             fetching: 'fetching',
             loaded: 'loaded',
             failed: 'failed',

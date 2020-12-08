@@ -692,6 +692,7 @@ export default class MediumDraftEditor extends React.Component {
               focus={this.focus}
               blockButtons={blockButtons}
               inlineButtons={inlineButtons}
+              intl={this.props.intl}
             />
           )}
           {isCursorLink && (

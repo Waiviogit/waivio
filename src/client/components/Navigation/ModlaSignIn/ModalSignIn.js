@@ -3,19 +3,29 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { batch, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import { isEmpty } from 'lodash';
 import SteemConnect from '../../../steemConnectAPI';
 import { login, busyLogin, getAuthGuestBalance } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
-import { getRate, getRewardFund } from './../../../app/appActions';
-import { getRebloggedList } from './../../../app/Reblog/reblogActions';
+import { getRate, getRewardFund } from '../../../app/appActions';
+import { getRebloggedList } from '../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
+import SignUpButton from '../SignUpButton/SignUpButton';
 
 import './ModalSignIn.less';
 
-const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }) => {
+const ModalSignIn = ({
+  next,
+  intl,
+  showModal,
+  handleLoginModalCancel,
+  hideLink,
+  isButton,
+  setIsShowSignInModal,
+}) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
@@ -28,7 +38,11 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
 
   const responseSocial = async (response, socialNetwork) => {
     setIsLoading(true);
-    if (response) {
+    if (response.error || (socialNetwork === 'facebook' && isEmpty(response.id))) {
+      setIsLoading(false);
+      setIsShowSignInModal(false);
+      setIsModalOpen(false);
+    } else if (isModalOpen && response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
       const res = await isUserRegistered(id, socialNetwork);
       if (res) {
@@ -101,7 +115,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
             <p className="ModalSignIn__rules">
               {intl.formatMessage({
                 id: 'sing_in_modal_message',
-                defaultMessage: 'Waivio is powered by Hive open social blockchain',
+                defaultMessage: 'Waivio is powered by the Hive open social blockchain',
               })}
             </p>
             <p className="ModalSignIn__title ModalSignIn__title--lined">
@@ -120,7 +134,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
               />
               {intl.formatMessage({
                 id: 'signin_with_steemIt',
-                defaultMessage: 'SteemConnect',
+                defaultMessage: 'HiveSinger',
               })}
             </a>
             <p className="ModalSignIn__title ModalSignIn__title--lined">
@@ -182,6 +196,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
 
   const onModalClose = () => {
     setIsModalOpen(false);
+    setIsShowSignInModal(false);
     setIsFormVisible(false);
     handleLoginModalCancel();
   };
@@ -192,15 +207,14 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
 
   return (
     <React.Fragment>
-      {!hideLink && (
-        <a role="presentation" onClick={() => setIsModalOpen(true)}>
-          {intl.formatMessage({
-            id: 'signin',
-            defaultMessage: 'Sign in',
-          })}
-        </a>
-      )}
-      <Modal width={480} visible={isModalOpen} onCancel={memoizedOnModalClose} footer={null}>
+      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={setIsModalOpen} />}
+      <Modal
+        width={480}
+        visible={isModalOpen}
+        onCancel={!isLoading ? memoizedOnModalClose : null}
+        footer={null}
+        closable={!isLoading}
+      >
         {isFormVisible ? renderGuestSignUpForm() : renderSignIn()}
       </Modal>
     </React.Fragment>
@@ -215,6 +229,8 @@ ModalSignIn.propTypes = {
   showModal: PropTypes.bool,
   handleLoginModalCancel: PropTypes.func,
   hideLink: PropTypes.bool,
+  isButton: PropTypes.bool,
+  setIsShowSignInModal: PropTypes.func,
 };
 
 ModalSignIn.defaultProps = {
@@ -222,6 +238,8 @@ ModalSignIn.defaultProps = {
   showModal: false,
   handleLoginModalCancel: () => {},
   hideLink: false,
+  isButton: false,
+  setIsShowSignInModal: () => {},
 };
 
 export default injectIntl(ModalSignIn);

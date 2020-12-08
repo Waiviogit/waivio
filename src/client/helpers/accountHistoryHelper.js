@@ -5,11 +5,13 @@ export const ACTIONS_DISPLAY_LIMIT = 100;
 
 export const getVoteFilterType = actionDetails => {
   let voteType = accountHistoryConstants.UNVOTED;
+
   if (actionDetails.weight > 0) {
     voteType = accountHistoryConstants.UPVOTED;
   } else if (actionDetails.weight < 0) {
     voteType = accountHistoryConstants.DOWNVOTED;
   }
+
   return voteType;
 };
 
@@ -17,18 +19,21 @@ export const getCustomJSONFilterType = actionDetails => {
   const actionJSON = JSON.parse(actionDetails.json);
   const customActionType = actionJSON[0];
   const customActionDetails = actionJSON[1];
+
   if (customActionType === accountHistoryConstants.FOLLOW) {
     if (customActionDetails.type_operation === 'follow_wobject') {
       return `+${accountHistoryConstants.FOLLOWED}`;
     } else if (customActionDetails.type_operation === 'unfollow_wobject') {
       return `-${accountHistoryConstants.UNFOLLOWED}`;
     }
+
     return '';
   } else if (customActionType === accountHistoryConstants.REBLOG) {
     return accountHistoryConstants.REBLOGGED;
   } else if (customActionType === accountHistoryConstants.FOLLOW_WOBJECT) {
     return accountHistoryConstants.FOLLOWED;
   }
+
   return '';
 };
 
@@ -53,6 +58,7 @@ export const getMessageForSearchFilter = (currentUsername, actionType, actionDet
       if (actionDetails.to === currentUsername) {
         return accountHistoryConstants.RECEIVED;
       }
+
       return accountHistoryConstants.TRANSFERRED;
     default:
       return actionType;
@@ -61,13 +67,16 @@ export const getMessageForSearchFilter = (currentUsername, actionType, actionDet
 
 export const stringMatchesFilters = (string, filters = []) => {
   let filterMatches = false;
+
   for (let i = 0; i < filters.length; i += 1) {
     const currentFilter = filters[i];
+
     if (includes(string, currentFilter)) {
       filterMatches = true;
       break;
     }
   }
+
   return filterMatches;
 };
 
@@ -92,8 +101,10 @@ export const actionsFilter = (action, accountHistoryFilter, currentUsername) => 
 export const getTimeFromLastAction = (username, accountHistory) => {
   const actionsHistory = get(accountHistory, username, []);
   const actions = [];
+
   actionsHistory.map(action => {
     const type = action.op[0];
+
     switch (type) {
       case accountHistoryConstants.ACCOUNT_CREATE:
       case accountHistoryConstants.ACCOUNT_CREATE_WITH_DELEGATION:
@@ -115,5 +126,6 @@ export const getTimeFromLastAction = (username, accountHistory) => {
     }
   });
   const lastActionElement = first(actions);
+
   return get(lastActionElement, 'timestamp', null);
 };

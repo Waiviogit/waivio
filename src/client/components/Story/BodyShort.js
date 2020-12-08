@@ -11,8 +11,7 @@ function decodeEntities(body) {
 }
 
 const BodyShort = props => {
-  let body = striptags(remarkable.render(striptags(decodeEntities(props.body))));
-  body = body.replace(/(?:https?|ftp):\/\/[\S]+/g, '');
+  const body = striptags(remarkable.render(striptags(decodeEntities(props.body))));
 
   // If body consists of whitespace characters only skip it.
   if (!body.replace(/\s/g, '').length) {

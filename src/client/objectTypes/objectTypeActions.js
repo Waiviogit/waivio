@@ -5,10 +5,12 @@ import {
   getObjectTypeSorting,
   getUserLocation,
   getQueryString,
-  getSuitableLanguage,
+  getLocale,
   getAuthenticatedUserName,
+  getActiveFiltersTags,
 } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { createFilterBody } from '../discoverObjects/helper';
 
 export const GET_OBJECT_TYPE = createAsyncActionType('@objectType/GET_OBJECT_TYPE');
 export const GET_OBJECT_TYPE_MAP = createAsyncActionType('@objectType/GET_OBJECT_TYPE_MAP');
@@ -32,25 +34,31 @@ export const getObjectType = (
   actionType,
   filters,
   { limit = 30, skip = 0, simplified = false } = {},
+  filterBody,
 ) => (dispatch, getState) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
-  const usedLocale = getSuitableLanguage(state);
   const sort = getObjectTypeSorting(state);
+  const locale = getLocale(state);
 
   const preparedData = {
     wobjects_count: limit,
     simplified,
     wobjects_skip: skip,
-    filter: filters,
+    filter: {
+      ...filters,
+      tagCategory: filterBody,
+    },
     sort,
+    locale,
   };
+
   if (username) preparedData.userName = username;
   dispatch({
     type: actionType,
     payload: ApiClient.getObjectType(objectTypeName, preparedData),
     meta: {
-      locale: usedLocale,
+      locale,
     },
   });
 };
@@ -59,16 +67,33 @@ export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode)
   dispatch,
   getState,
 ) => {
-  const filters = { rating: [], map: { radius, coordinates } };
-  const typeName = getTypeName(getState());
+  const state = getState();
+  const typeName = getTypeName(state);
   const actionType = GET_OBJECT_TYPE_MAP.ACTION;
+  const activeFilters = getActiveFilters(state);
+  const filterBody = createFilterBody(getActiveFiltersTags(state));
+  const searchString = new URLSearchParams(getQueryString(state)).get('search');
+  const filters = { rating: [], map: { radius, coordinates }, ...activeFilters };
+
+  if (!typeName) return null;
+
+  if (searchString) filters.searchString = searchString;
+
   const getLimit = () => {
     let limit = 50;
+
     if (isFullscreenMode) limit = 200;
+
     return limit;
   };
   return dispatch(
-    getObjectType(typeName, actionType, filters, { limit: getLimit(), skip: 0, simplified: true }),
+    getObjectType(
+      typeName,
+      actionType,
+      filters,
+      { limit: getLimit(), skip: 0, simplified: true },
+      filterBody,
+    ),
   );
 };
 
@@ -77,13 +102,15 @@ export const getObjectTypeByStateFilters = (
   { skip = 0, limit = 15, simplified = false } = {},
 ) => (dispatch, getState) => {
   const state = getState();
-  const activeFilters = { ...getActiveFilters(state) };
+  const activeFilters = getActiveFilters(state);
+  const filterBody = createFilterBody(getActiveFiltersTags(state));
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
   const sort = getObjectTypeSorting(state);
 
   // if use sort by proximity, require to use map filter
   if (sort === 'proximity' && !activeFilters.map) {
     const userLocation = getUserLocation(state);
+
     activeFilters.map = {
       coordinates: [Number(userLocation.lat), Number(userLocation.lon)],
       radius: 50000000,
@@ -93,11 +120,15 @@ export const getObjectTypeByStateFilters = (
     activeFilters.searchString = searchString;
   }
   const actionType = GET_OBJECT_TYPE.ACTION;
-  return dispatch(getObjectType(typeName, actionType, activeFilters, { limit, skip, simplified }));
+
+  return dispatch(
+    getObjectType(typeName, actionType, activeFilters, { limit, skip, simplified }, filterBody),
+  );
 };
 
 export const clearType = () => dispatch => {
   dispatch({ type: CLEAR_OBJECT_TYPE });
+
   return Promise.resolve();
 };
 
@@ -106,12 +137,14 @@ export const setActiveFilters = filters => dispatch => {
     type: UPDATE_ACTIVE_FILTERS,
     payload: filters,
   });
+
   return Promise.resolve();
 };
 
 export const setFiltersAndLoad = filters => (dispatch, getState) => {
   dispatch(setActiveFilters(filters)).then(() => {
     const typeName = getTypeName(getState());
+
     if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
   });
 };
@@ -121,12 +154,14 @@ export const changeSorting = sorting => dispatch => {
     type: CHANGE_SORTING,
     payload: sorting,
   });
+
   return Promise.resolve();
 };
 
 export const changeSortingAndLoad = sorting => (dispatch, getState) => {
   dispatch(changeSorting(sorting)).then(() => {
     const typeName = getTypeName(getState());
+
     if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
   });
 };
@@ -134,5 +169,35 @@ export const changeSortingAndLoad = sorting => (dispatch, getState) => {
 export const resetUpdatedFlag = () => dispatch => {
   dispatch({
     type: RESET_UPDATED_STATE,
+  });
+};
+
+export const SHOW_MORE_TAGS_FOR_FILTERS = createAsyncActionType(
+  '@objectType/SHOW_MORE_TAGS_FOR_FILTERS',
+);
+
+export const showMoreTags = (category, skip, limit) => dispatch =>
+  dispatch({
+    type: SHOW_MORE_TAGS_FOR_FILTERS.ACTION,
+    payload: ApiClient.showMoreTagsForFilters(category, skip, limit),
+    meta: category,
+  });
+
+export const SET_ACTIVE_TAGS_FILTERS = '@objectType/SET_ACTIVE_TAGS_FILTERS';
+
+export const setActiveTagsFilters = filters => dispatch => {
+  dispatch({
+    type: SET_ACTIVE_TAGS_FILTERS,
+    payload: filters,
+  });
+
+  return Promise.resolve();
+};
+
+export const setTagsFiltersAndLoad = filters => (dispatch, getState) => {
+  dispatch(setActiveTagsFilters(filters)).then(() => {
+    const typeName = getTypeName(getState());
+
+    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
   });
 };

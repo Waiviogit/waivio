@@ -1,0 +1,17 @@
+@import (reference) '../styles/modules/variables.less';
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/mixins.less';
+
+.UserWallet {
+  &__view-btn {
+    .wallet-table-btn();
+  }
+
+  &__empty-transactions-list {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+}

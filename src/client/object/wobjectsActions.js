@@ -4,7 +4,7 @@ import { getAlbums } from './ObjectGallery/galleryActions';
 import { createPermlink } from '../vendor/steemitHelpers';
 import { generateRandomString } from '../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
-import { getLocale, getUsedLocale } from '../reducers';
+import { getAuthenticatedUserName, getLocale, getUsedLocale } from '../reducers';
 import { WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
@@ -15,6 +15,7 @@ export const CLEAR_OBJECT = '@objects/CLEAR_OBJECT';
 
 export const getObject = (authorPermlink, user) => (dispatch, getState) => {
   const usedLocale = getUsedLocale(getState());
+
   return dispatch({
     type: GET_OBJECT,
     payload: ApiClient.getObject(authorPermlink, user, usedLocale).catch(() =>
@@ -43,16 +44,17 @@ export const GET_FEED_CONTENT_BY_OBJECT = createAsyncActionType(
 export const getFeedContentByObject = object => (dispatch, getState) => {
   const state = getState();
   const locale = getLocale(state);
+  const name = getAuthenticatedUserName(state);
 
   return dispatch({
     type: GET_FEED_CONTENT_BY_OBJECT.ACTION,
-    payload: ApiClient.getFeedContentByObject(object, 10, '', locale),
+    payload: ApiClient.getFeedContentByObject(object, 10, '', locale, name),
   }).catch(() => {});
 };
 
 export const getObjectInfo = (authorPermlink, username, requiredField) => dispatch => {
-  dispatch(getObject(authorPermlink, username, requiredField));
   dispatch(getAlbums(authorPermlink));
+  dispatch(getObject(authorPermlink, username, requiredField));
 };
 
 export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
@@ -68,19 +70,20 @@ export const createWaivioObject = postData => (dispatch, getState) => {
   const { votePower, follow, ...wobj } = postData;
 
   if (wobj.type === 'hashtag') {
+    const hashtagName = wobj.name.toLowerCase();
     return dispatch({
       type: CREATE_WOBJECT,
       payload: {
         promise: new Promise((resolve, reject) =>
-          ApiClient.getObject(wobj.name, auth.user.name)
+          ApiClient.getObject(hashtagName, auth.user.name)
             .then(() => reject('object_exist'))
             .catch(() => {
               const requestBody = {
                 author: auth.user.name,
-                title: `${wobj.name} - waivio object`,
-                body: `Waivio object "${wobj.name}" has been created`,
-                permlink: wobj.name,
-                objectName: wobj.name,
+                title: `${hashtagName} - waivio object`,
+                body: `Waivio object "${hashtagName}" has been created`,
+                permlink: hashtagName,
+                objectName: hashtagName,
                 locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
                 type: wobj.type,
                 isExtendingOpen: Boolean(wobj.isExtendingOpen),

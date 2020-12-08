@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const SignUpButton = ({ isButton, setIsModalOpen }) =>
   isButton ? (
-    <button onClick={() => setIsModalOpen(true)} className="ModalSignUp__button">
+    <button onClick={() => setIsModalOpen(true)} className="ModalSignIn__button">
       <FormattedMessage id="signin" defaultMessage="Sign in" />
     </button>
   ) : (

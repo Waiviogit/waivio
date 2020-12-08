@@ -7,7 +7,7 @@ describe('<BBackTop />', () => {
   it('renders without exploding', () => {
     const props = {
       className: 'comments',
-      isModal: 42,
+      isModal: false,
     };
     const wrapper = shallow(<BBackTop {...props} />);
     act(() => {

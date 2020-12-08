@@ -1,35 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, FormattedRelative } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
-
-const selectCurrectValue = (transactionDetails, currentPays, openPays, currentUsername) => {
-  const userEqual = currentUsername === transactionDetails.current_owner;
-  const currentValue = userEqual
-    ? {
-        transfer: currentPays,
-        received: openPays,
-      }
-    : {
-        transfer: openPays,
-        received: currentPays,
-      };
-
-  return (
-    <span className="UserWalletTransactions__transfer">
-      {'- '}
-      {currentValue.transfer}
-      &ensp;
-      <span className="UserWalletTransactions__received">
-        {'+ '}
-        {currentValue.received}
-      </span>
-    </span>
-  );
-};
+import { getTransactionDescription, selectCurrectFillOrderValue } from './WalletHelper';
 
 const WalletFillOrderTransferred = ({
   transactionDetails,
@@ -38,8 +13,17 @@ const WalletFillOrderTransferred = ({
   openPays,
   exchanger,
   currentUsername,
+  transactionType,
 }) => {
   const url = `/@${exchanger}`;
+  const currentOrderValue = selectCurrectFillOrderValue(
+    transactionDetails,
+    currentPays,
+    openPays,
+    currentUsername,
+  );
+  const options = { url, exchanger };
+  const description = getTransactionDescription(transactionType, options);
   return (
     <React.Fragment>
       <div className="UserWalletTransactions__transaction">
@@ -48,20 +32,16 @@ const WalletFillOrderTransferred = ({
         </div>
         <div className="UserWalletTransactions__content">
           <div className="UserWalletTransactions__content-recipient">
-            <div>
-              <FormattedMessage
-                id="exchange_with"
-                defaultMessage="Exchange with {exchanger}"
-                values={{
-                  exchanger: (
-                    <Link to={url}>
-                      <span className="username">{exchanger}</span>
-                    </Link>
-                  ),
-                }}
-              />
-            </div>
-            {selectCurrectValue(transactionDetails, currentPays, openPays, currentUsername)}
+            <div>{description.fillOrder}</div>
+            <span className="UserWalletTransactions__transfer">
+              {'- '}
+              {currentOrderValue.transfer}
+              &ensp;
+              <span className="UserWalletTransactions__received">
+                {'+ '}
+                {currentOrderValue.received}
+              </span>
+            </span>
           </div>
           <span className="UserWalletTransactions__timestamp">
             <BTooltip
@@ -84,6 +64,7 @@ const WalletFillOrderTransferred = ({
 
 WalletFillOrderTransferred.propTypes = {
   transactionDetails: PropTypes.shape().isRequired,
+  transactionType: PropTypes.string.isRequired,
   timestamp: PropTypes.number,
   currentPays: PropTypes.element,
   openPays: PropTypes.element,

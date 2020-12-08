@@ -7,16 +7,15 @@ import WeightTag from '../components/WeightTag';
 import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
 import { addressFields, objectFields, websiteFields } from '../../common/constants/listOfFields';
-import { parseWobjectField } from '../helpers/wObjectHelper';
+import { getObjectName, parseWobjectField } from '../helpers/wObjectHelper';
 
 import './WaivioObject.less';
 
 const WaivioObject = ({ wobj, unfollow, follow }) => {
-  const { default_name: defaultName, name } = wobj;
   const address = parseWobjectField(wobj, 'address');
   const website = parseWobjectField(wobj, 'website');
 
-  const objectName = name || defaultName;
+  const objectName = getObjectName(wobj);
   const websiteTitle = get(website, [websiteFields.title]) || objectFields.website;
   let websiteLink = get(website, [websiteFields.link]);
   if (
@@ -27,7 +26,7 @@ const WaivioObject = ({ wobj, unfollow, follow }) => {
     websiteLink = `http://${websiteLink}`;
   }
   const location = get(address, [addressFields.city]);
-  const pathName = `/object/${wobj.author_permlink}`;
+  const pathName = wobj.defaultShowLink;
 
   return (
     <div key={wobj.author_permlink} className="WaivioObject__user">

@@ -22,7 +22,6 @@ const DiscoverObjects = ({ intl, history, match }) => {
   }, []);
 
   const isTypeChosen = Boolean(match.params.typeName);
-  const { pathname, search } = history.location;
   return (
     <div className="shifted">
       <Helmet>
@@ -55,9 +54,10 @@ const DiscoverObjects = ({ intl, history, match }) => {
             <DiscoverObjectsContent
               history={history}
               match={match}
+              location={history.location}
               typeName={match.params.typeName}
-              key={pathname + search}
               intl={intl}
+              key={match.params.typeName}
             />
           ) : (
             <ObjectsContainer />

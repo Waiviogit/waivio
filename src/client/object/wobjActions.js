@@ -1,14 +1,15 @@
 import { createAction } from 'redux-actions';
 import { message } from 'antd';
-import {
-  getIsAuthenticated,
-  getAuthenticatedUserName,
-  getObjectAlbums,
-  getObject,
-} from '../reducers';
+import { get, isEmpty } from 'lodash';
+
+import { getIsAuthenticated, getAuthenticatedUserName, getLocale, isGuestUser } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
-import { mapObjectAppends } from './wObjectHelper';
+import { getChangedField } from '../../waivioApi/ApiClient';
+import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
+import { APPEND_WAIVIO_OBJECT } from './appendActions';
+import { BELL_USER_NOTIFICATION } from '../user/userActions';
+import { isPostCashout } from '../vendor/steemitHelpers';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -157,26 +158,6 @@ export const rateObject = (author, permlink, authorPermlink, rate) => (
   });
 };
 
-export const GET_OBJECT_APPENDS = createAsyncActionType('@wobj/GET_OBJECT_APPENDS');
-
-export const getObjectAppends = (author, permlink, category = 'waivio-object') => (
-  dispatch,
-  getState,
-  { steemAPI },
-) => {
-  const state = getState();
-  const wobject = getObject(state);
-  const albums = getObjectAlbums(state);
-
-  return dispatch({
-    type: GET_OBJECT_APPENDS.ACTION,
-    payload: steemAPI
-      .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
-      .then(apiRes => apiRes.content && mapObjectAppends(apiRes.content, wobject, albums)),
-    meta: { sortBy: 'comments', category: author, limit: 10 },
-  });
-};
-
 export const VOTE_APPEND_START = '@wobj/VOTE_APPEND_START';
 export const VOTE_APPEND_SUCCESS = '@wobj/VOTE_APPEND_SUCCESS';
 export const VOTE_APPEND_ERROR = '@wobj/VOTE_APPEND_ERROR';
@@ -191,69 +172,97 @@ export const sendCommentAppend = (permlink, comment) => dispatch =>
     },
   });
 
-export const voteAppends = (postId, author, permlink, weight = 10000, type) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
-  const { auth, object } = getState();
-  const post = object.wobject.fields.find(field => field.permlink === permlink);
-  const voter = auth.user.name;
-  const voteData = {
-    postId,
-    voter,
-    weight,
-    permlink,
-    postPermlink: postId,
-    percent: weight,
-    type,
-  };
+export const GET_CHANGED_WOBJECT_FIELD = createAsyncActionType('@wobj/GET_CHANGED_WOBJECT_FIELD');
 
-  if (!auth.isAuthenticated) {
-    return null;
-  }
+export const getChangedWobjectField = (
+  authorPermlink,
+  fieldName,
+  author,
+  permlink,
+  blockNum,
+  isNew = false,
+) => (dispatch, getState, { busyAPI }) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const voter = getAuthenticatedUserName(state);
+
+  busyAPI.sendAsync(subscribeMethod, [voter, blockNum, subscribeTypes.votes]);
+  busyAPI.subscribe((response, mess) => {
+    if (subscribeTypes.votes === mess.type && mess.notification.blockParsed === blockNum) {
+      dispatch({
+        type: GET_CHANGED_WOBJECT_FIELD.ACTION,
+        payload: {
+          promise: getChangedField(authorPermlink, fieldName, author, permlink, locale).then(
+            res => {
+              dispatch({
+                type: APPEND_WAIVIO_OBJECT.SUCCESS,
+              });
+
+              return res;
+            },
+          ),
+        },
+        meta: { isNew },
+      });
+    }
+  });
+};
+
+export const voteAppends = (
+  author,
+  permlink,
+  weight = 10000,
+  name = '',
+  isNew = false,
+  type = '',
+) => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const wobj = get(state, ['object', 'wobject'], {});
+  const post = wobj.fields.find(field => field.permlink === permlink) || null;
+  const voter = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
+  const fieldName = name || post.name;
+  const currentHieUserMethod =
+    !isEmpty(type) || isPostCashout(post) || weight % 5 ? 'appendVote' : 'vote';
+  const currentMethod = isGuest ? 'vote' : currentHieUserMethod;
+
+  if (!getIsAuthenticated(state)) return null;
 
   dispatch({
     type: VOTE_APPEND_START,
     payload: {
       post,
       permlink,
-      postId,
     },
   });
 
-  return steemConnectAPI
-    .vote(voter, post.author_original || author, post.permlink, weight)
-    .then(() =>
-      dispatch({
-        type: VOTE_APPEND_SUCCESS,
-        payload: {
-          post,
+  return steemConnectAPI[currentMethod](voter, author, permlink, weight)
+    .then(async data => {
+      const res = isGuest ? await data.json() : data.result;
+
+      return dispatch(
+        getChangedWobjectField(
+          wobj.author_permlink,
+          fieldName,
+          author,
           permlink,
-          ...voteData,
-        },
-      }),
-    )
+          res.block_num,
+          isNew,
+        ),
+      );
+    })
     .catch(e => {
       message.error(e.error_description);
-      dispatch({
+
+      return dispatch({
         type: VOTE_APPEND_ERROR,
         payload: {
           post,
-          postId,
           permlink,
         },
       });
     });
 };
-
-export const SET_NEW_PARENT = 'SET_NEW_PARENT';
-
-export const changeParent = parent => dispatch =>
-  dispatch({
-    type: SET_NEW_PARENT,
-    payload: { parent },
-  });
 
 export const FOLLOW_OBJECT = createAsyncActionType('FOLLOW_OBJECT');
 export const UNFOLLOW_OBJECT = createAsyncActionType('UNFOLLOW_OBJECT');
@@ -305,4 +314,58 @@ export const unfollowWobject = (permlink, name, type) => (
       permlink,
     },
   });
+};
+
+export const SET_CATALOG_BREADCRUMBS = '@wobj/SET_CATALOG_BREADCRUMBS';
+export const SET_WOBJECT_NESTED = '@wobj/SET_WOBJECT_NESTED';
+export const SET_LOADING_NESTED_WOBJECT = '@wobj/SET_LOADING_NESTED_WOBJECT';
+export const SET_LIST_ITEMS = '@wobj/SET_LIST_ITEMS';
+
+export const setCatalogBreadCrumbs = payload => ({
+  type: SET_CATALOG_BREADCRUMBS,
+  payload,
+});
+
+export const setNestedWobject = payload => ({
+  type: SET_WOBJECT_NESTED,
+  payload,
+});
+
+export const setLoadedNestedWobject = payload => ({
+  type: SET_LOADING_NESTED_WOBJECT,
+  payload,
+});
+
+export const setListItems = lists => ({
+  type: SET_LIST_ITEMS,
+  lists,
+});
+
+export const BELL_WOBJECT_NOTIFICATION = createAsyncActionType('@wobj/BELL_WOBJECT_NOTIFICATION');
+
+export const wobjectBellNotification = followingWobj => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+  const subscribe = !get(state, ['object', 'wobject', 'bell']);
+  dispatch({
+    type: BELL_WOBJECT_NOTIFICATION.START,
+  });
+  steemConnectAPI
+    .bellNotificationsWobject(username, followingWobj, subscribe)
+    .then(() =>
+      dispatch({
+        type: BELL_WOBJECT_NOTIFICATION.SUCCESS,
+        payload: { subscribe },
+      }),
+    )
+    .catch(err => {
+      message.error(err.message);
+      return dispatch({
+        type: BELL_USER_NOTIFICATION.ERROR,
+      });
+    });
 };

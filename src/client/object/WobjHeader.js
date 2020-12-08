@@ -5,15 +5,21 @@ import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
+
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
 import ObjectType from './ObjectType';
 import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
+import BellButton from '../widgets/BellButton';
 import DEFAULTS from '../object/const/defaultValues';
-import OBJECT_TYPES from '../object/const/objectTypes';
 import { objectFields } from '../../common/constants/listOfFields';
-import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
+import {
+  accessTypesArr,
+  haveAccess,
+  getObjectName,
+  parseWobjectField,
+} from '../helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from './wobjActions';
 
 import '../components/ObjectHeader.less';
@@ -25,7 +31,6 @@ const WobjHeader = ({
   intl,
   toggleViewEditMode,
   authenticated,
-  isMobile,
   followWobj,
   unfollowWobj,
 }) => {
@@ -35,7 +40,10 @@ const WobjHeader = ({
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
   const parent = get(wobject, 'parent', {});
-  const parentName = parent.name || parent.default_name;
+  const parentName = getObjectName(parent);
+  const status = parseWobjectField(wobject, 'status');
+  const name = getObjectName(wobject);
+  const isHashtag = wobject.object_type === 'hashtag';
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -46,17 +54,7 @@ const WobjHeader = ({
     </div>
   );
 
-  const getLink = () => {
-    const link = `/object/${wobject.author_permlink}`;
-    if (isEditMode) return null;
-    if (isMobile) return `${link}/about`;
-    if (wobject.object_type === OBJECT_TYPES.LIST || wobject.object_type === OBJECT_TYPES.PAGE)
-      return `${link}/${wobject.object_type}`;
-
-    return `${link}/reviews`;
-  };
-  const name = wobject.name || wobject.default_name;
-  const isHashtag = wobject.object_type === 'hashtag';
+  const statusFields = status ? getStatusLayout(status) : descriptionShort;
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -65,7 +63,7 @@ const WobjHeader = ({
         <div className="ObjectHeader__user">
           {parentName && (
             <Link
-              to={`/object/${wobject.parent.author_permlink}`}
+              to={parent.defaultShowLink}
               title={`${intl.formatMessage({
                 id: 'GoTo',
                 defaultMessage: 'Go to',
@@ -89,13 +87,14 @@ const WobjHeader = ({
                   followingType="wobject"
                 />
                 {accessExtend && authenticated && (
-                  <Link to={getLink()}>
+                  <React.Fragment>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode
                         ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
                         : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
                     </Button>
-                  </Link>
+                    {wobject.youFollows && <BellButton wobj={wobject} />}
+                  </React.Fragment>
                 )}
               </div>
             </div>
@@ -108,21 +107,18 @@ const WobjHeader = ({
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
-              {/* eslint-disable-next-line no-nested-ternary */}
               {!isHashtag && canEdit && !descriptionShort ? (
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
-                  objName={wobject.name}
+                  objName={name}
                 />
-              ) : wobject.status ? (
-                getStatusLayout(wobject.status)
               ) : (
-                descriptionShort
+                statusFields
               )}
             </div>
           </div>
-          {canEdit && !wobject[objectFields.background] && (
+          {canEdit && !wobject[objectFields.background] && !isHashtag && (
             <div className="ObjectHeader__user__addCover">
               <Proposition
                 objectID={wobject.author_permlink}
@@ -144,7 +140,6 @@ WobjHeader.propTypes = {
   wobject: PropTypes.shape(),
   username: PropTypes.string,
   toggleViewEditMode: PropTypes.func,
-  isMobile: PropTypes.bool,
   followWobj: PropTypes.func,
   unfollowWobj: PropTypes.func,
 };
@@ -164,7 +159,8 @@ WobjHeader.defaultProps = {
 const mapStateToProps = state => ({ isMobile: state.app.screenSize !== 'large' });
 
 export default injectIntl(
-  connect(mapStateToProps, { followWobj: followWobject, unfollowWobj: unfollowWobject })(
-    WobjHeader,
-  ),
+  connect(mapStateToProps, {
+    followWobj: followWobject,
+    unfollowWobj: unfollowWobject,
+  })(WobjHeader),
 );

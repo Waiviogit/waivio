@@ -1,0 +1,98 @@
+import { objMenuTypes, supportedObjectFields } from '../constants/listOfFields';
+
+export default {
+  WOBJ: {
+    tabs: [
+      'about',
+      'gallery',
+      'updates',
+      'reviews',
+      'followers',
+      'expertise',
+      'menu',
+      'page',
+      'list',
+    ].join('|'),
+    filters: [...supportedObjectFields, ...objMenuTypes, 'album'].join('|'),
+  },
+  USER: {
+    tabs: [
+      'comments',
+      'followers',
+      'following',
+      'reblogs',
+      'transfers',
+      'activity',
+      'expertise',
+      'about',
+    ].join('|'),
+  },
+  FEED: {
+    tabs: ['trending', 'created', 'hot', 'promoted', 'feed', 'blog', 'notifications-list'].join(
+      '|',
+    ),
+  },
+  REWARDS: {
+    tabs: [
+      'create',
+      'manage',
+      'match-bot',
+      'edit',
+      'history',
+      'guideHistory',
+      'messages',
+      'reports',
+      'fraud-detection',
+      'receivables',
+    ].join('|'),
+    sideBar: [
+      'all',
+      'create',
+      'manage',
+      'payables',
+      'reports',
+      'guideHistory',
+      'messages',
+      'match',
+      'blacklist',
+      'details',
+      'createDuplicate',
+      'active',
+      'reserved',
+      'history',
+      'promoted',
+      'created',
+      'receivables',
+      'match-bot',
+    ].join('|'),
+  },
+  SETTINGS: {
+    tabs: [
+      'bookmarks',
+      'drafts',
+      'edit-profile',
+      'settings',
+      'invite',
+      'guests-settings',
+      'notification-settings',
+      'create',
+      'manage',
+      'payments',
+    ].join('|'),
+  },
+  WEBSITES: {
+    tabs: [
+      'configuration',
+      'settings',
+      'administrations',
+      'moderators',
+      'authorities',
+      'objects',
+      'objects-filters',
+      'muted-users',
+    ].join('|'),
+  },
+  REFERRAL: {
+    tabs: ['referral-details', 'referral-instructions', 'referral-status'].join('|'),
+  },
+};

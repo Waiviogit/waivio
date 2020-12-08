@@ -1,41 +1,45 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, get } from 'lodash';
 import { Checkbox } from 'antd';
 import getDetailsMessages from './detailsMessagesData';
 import DetailsPostRequirments from './DetailsPostRequirments';
-import { getWeightValue } from '../../reducers';
+import { getWeightValue, getIsAuthenticated } from '../../reducers';
 import './Details.less';
 
 const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, minExpertise }) => {
+  const isAuthenticated = useSelector(getIsAuthenticated);
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const requirementFilters = get(objectDetails, ['requirement_filters'], {});
-  const frequency = requirementFilters.frequency && requirementFilters.not_same_assigns;
+  const frequency =
+    requirementFilters.frequency &&
+    (requirementFilters.not_same_assigns || requirementFilters.freeReservation);
+  const getChecked = useCallback(param => (isAuthenticated ? param : null), []);
   return (
     <div className="Details__text-wrap">
       <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
       <div className="Details__text mv3">{messageData.eligibilityCriteriaParticipate}</div>
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row">
-          <Checkbox checked={requirementFilters.expertise} disabled />
+          <Checkbox checked={getChecked(requirementFilters.expertise)} disabled />
           <div>{`${messageData.minimumWaivioExpertise}: ${minExpertise.toFixed(2)}`}</div>
         </div>
         <div className="Details__criteria-row">
-          <Checkbox checked={requirementFilters.followers} disabled />
+          <Checkbox checked={getChecked(requirementFilters.followers)} disabled />
           <div>{`${messageData.minimumNumberFollowers}: ${objectDetails.userRequirements.minFollowers}`}</div>
         </div>
         <div className="Details__criteria-row">
-          <Checkbox checked={requirementFilters.posts} disabled />
+          <Checkbox checked={getChecked(requirementFilters.posts)} disabled />
           <div>{`${messageData.minimumNumberPosts}: ${objectDetails.userRequirements.minPosts}`}</div>
         </div>
         {!!objectDetails.frequency_assign && (
           <div className="Details__criteria-row">
-            <Checkbox checked={frequency} disabled />
+            <Checkbox checked={getChecked(frequency)} disabled />
             <div>
               {messageData.receivedRewardFrom}
               <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
@@ -48,7 +52,10 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
           </div>
         )}
         <div className="Details__criteria-row">
-          <Checkbox checked={objectDetails.requirement_filters.not_blacklisted} disabled />
+          <Checkbox
+            checked={getChecked(objectDetails.requirement_filters.not_blacklisted)}
+            disabled
+          />
           <div>
             {messageData.accountNotBlacklisted}
             <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
@@ -64,7 +71,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
       />
       <div className="Details__text fw6 mv3">{messageData.reward}:</div>
       <span>
-        {messageData.amountRewardDetermined}(
+        {messageData.amountRewardDetermined} (
         <Link to={`/@${objectDetails.guide.name}`}>{`@${objectDetails.guide.name}`}</Link>
         {!isEmpty(objectDetails.match_bots) &&
           objectDetails.match_bots.map(bot => (
@@ -75,7 +82,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
               </Link>
             </React.Fragment>
           ))}
-        ){messageData.countTowardsPaymentRewards}
+        ) {messageData.countTowardsPaymentRewards}
       </span>
       <div className="Details__text fw6 mv3">{messageData.legal}:</div>
       <span>

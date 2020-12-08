@@ -1,21 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
-// import Hero from '../components/Hero';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
+import { getObjectAlbums } from '../reducers';
 
 @withRouter
+@connect(state => ({
+  albums: getObjectAlbums(state),
+}))
 class WobjMenuWrapper extends React.Component {
   static propTypes = {
     match: PropTypes.shape(),
     location: PropTypes.shape(),
     history: PropTypes.shape(),
     wobject: PropTypes.shape().isRequired,
-    username: PropTypes.string.isRequired,
+    username: PropTypes.string,
     albumsAndImagesCount: PropTypes.number,
+    albums: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
@@ -23,6 +28,8 @@ class WobjMenuWrapper extends React.Component {
     match: {},
     location: {},
     history: {},
+    albums: [],
+    username: '',
   };
 
   onChange = key => {
@@ -89,7 +96,6 @@ const WobjHero = ({
           </React.Fragment>
         )}
       />
-      {/* <Route render={() => (authenticated ? <Hero /> : <div />)} /> */}
     </Switch>
   </React.Fragment>
 );

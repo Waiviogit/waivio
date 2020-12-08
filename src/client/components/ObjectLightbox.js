@@ -5,9 +5,10 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import { get } from 'lodash';
 import ObjectAvatar from './ObjectAvatar';
-import AppendModal from '../object/AppendModal';
+import AppendModal from '../object/AppendModal/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
 import DEFAULTS from '../object/const/defaultValues';
+import { getProxyImageURL } from '../helpers/image';
 
 export default class ObjectLightbox extends Component {
   static propTypes = {
@@ -24,7 +25,6 @@ export default class ObjectLightbox extends Component {
 
   state = {
     open: false,
-    parent: {},
   };
 
   handleAvatarClick = () => this.setState({ open: true });
@@ -33,9 +33,10 @@ export default class ObjectLightbox extends Component {
 
   render() {
     const { wobject, size, accessExtend } = this.props;
-    const imageUrl = wobject.avatar;
     const objectName = wobject.name || wobject.default_name;
-    const currentImage = imageUrl || get(wobject.parent, 'avatar') || DEFAULTS.AVATAR;
+    let currentImage = wobject.avatar || get(wobject, ['parent', 'avatar']);
+    if (currentImage) currentImage = getProxyImageURL(currentImage, 'preview');
+    else currentImage = DEFAULTS.AVATAR;
 
     return (
       <React.Fragment>
@@ -59,7 +60,7 @@ export default class ObjectLightbox extends Component {
         ) : (
           <React.Fragment>
             <a role="presentation" onClick={this.handleAvatarClick}>
-              <ObjectAvatar item={wobject} parent={this.state.parent} size={size} />
+              <ObjectAvatar item={wobject} size={size} />
             </a>
             {this.state.open && (
               <Lightbox mainSrc={currentImage} onCloseRequest={this.handleCloseRequest} />

@@ -24,7 +24,7 @@ const Payout = ({ intl, post }) => {
           <USDDisplay value={currentPayout} />
         </span>
       </BTooltip>
-      {post.percent_steem_dollars === 0 && (
+      {post.percent_hbd === 0 && (
         <BTooltip
           title={intl.formatMessage({
             id: 'reward_option_100',
@@ -40,7 +40,9 @@ const Payout = ({ intl, post }) => {
 
 Payout.propTypes = {
   intl: PropTypes.shape().isRequired,
-  post: PropTypes.shape().isRequired,
+  post: PropTypes.shape({
+    percent_hbd: PropTypes.number,
+  }).isRequired,
 };
 
 export default injectIntl(Payout);

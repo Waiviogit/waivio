@@ -8,6 +8,7 @@ const SERVER_PORT = process.env.PORT || 3000;
 const CONTENT_PORT = IS_DEV ? SERVER_PORT + 1 : SERVER_PORT;
 
 let CALLBACK_HOST_URL = 'www.waivio.com';
+
 switch (process.env.NODE_ENV) {
   case 'development':
     CALLBACK_HOST_URL = 'localhost:3000';

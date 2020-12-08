@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
+import { has, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
-import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { AppSharedContext } from '../../Wrapper';
+
 import './Campaign.less';
 
 const Campaign = ({
@@ -13,30 +13,33 @@ const Campaign = ({
   filterKey,
   history,
   intl,
-  rewardPriceCatalogWrap,
-  rewardMaxCatalogWrap,
+  rewardPricePassed,
+  rewardMaxPassed,
 }) => {
-  const { usedLocale } = useContext(AppSharedContext);
-  const requiredObject = proposition.campaigns
-    ? getClientWObj(proposition, usedLocale)
-    : getClientWObj(proposition.required_object, usedLocale);
-  const minReward = proposition.campaigns
-    ? proposition.campaigns.min_reward
-    : proposition.min_reward;
-  const maxReward = proposition.campaigns
-    ? proposition.campaigns.max_reward
-    : proposition.max_reward;
+  const requiredObject = has(proposition, ['campaigns'])
+    ? proposition
+    : get(proposition, ['required_object'], {});
+  const minReward = has(proposition, ['campaigns'])
+    ? get(proposition, ['campaigns', 'min_reward'], 0)
+    : get(proposition, ['min_reward'], 0);
+  const maxReward = has(proposition, ['campaigns'])
+    ? get(proposition, ['campaigns', 'max_reward'], 0)
+    : get(proposition, ['max_reward'], 0);
   const rewardPrice = minReward ? `${minReward.toFixed(2)} USD` : '';
   const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
   const goToProducts = () => {
-    history.push(`/rewards/${filterKey}/${requiredObject.id}`);
+    history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
   };
   return (
     <div className="Campaign">
-      <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
+      <ObjectCardView
+        wObject={requiredObject}
+        key={requiredObject.id}
+        passedParent={requiredObject.parent}
+      />
       <div className="Campaign__button" role="presentation" onClick={goToProducts}>
         <Button type="primary" size="large">
-          {!rewardMax && !rewardMaxCatalogWrap ? (
+          {!rewardMax && !rewardMaxPassed ? (
             <React.Fragment>
               <span>
                 {intl.formatMessage({
@@ -45,7 +48,7 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{rewardPrice || rewardPriceCatalogWrap}</span>
+                <span className="fw6 ml1">{rewardPrice || rewardPricePassed}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -58,7 +61,7 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{`${rewardMax || rewardMaxCatalogWrap}`}</span>
+                <span className="fw6 ml1">{rewardMax || rewardMaxPassed}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -74,14 +77,14 @@ Campaign.propTypes = {
   intl: PropTypes.shape().isRequired,
   filterKey: PropTypes.string,
   history: PropTypes.shape().isRequired,
-  rewardPriceCatalogWrap: PropTypes.string,
-  rewardMaxCatalogWrap: PropTypes.string,
+  rewardPricePassed: PropTypes.string,
+  rewardMaxPassed: PropTypes.string,
 };
 
 Campaign.defaultProps = {
   proposition: {},
-  rewardPriceCatalogWrap: '',
-  rewardMaxCatalogWrap: '',
+  rewardPricePassed: '',
+  rewardMaxPassed: '',
   filterKey: '',
 };
 

@@ -1,29 +1,31 @@
 import React from 'react';
-import _ from 'lodash';
+import { get, has } from 'lodash';
 import PropTypes from 'prop-types';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
+import { getObjectName } from '../../helpers/wObjectHelper';
+import { getProxyImageURL } from '../../helpers/image';
+
 import './ObjectSearchCard.less';
 
 const ObjectSearchCard = props => {
-  const { object, name, type, parentElement } = props;
-  const parentString = getFieldWithMaxWeight(object.parent, objectFields.name);
-  const titleSrting = getFieldWithMaxWeight(object, objectFields.title);
-  const description = getFieldWithMaxWeight(object, objectFields.description);
+  const { object, type, parentElement } = props;
+  const parent = get(object, objectFields.parent);
+  const parentString = getObjectName(parent);
+  const titleSrting = get(object, objectFields.title, '');
+  const description = get(object, objectFields.description, '');
+  let avatar = get(object, ['avatar']) || get(parent, 'avatar');
+  if (avatar) avatar = getProxyImageURL(avatar, 'preview');
+
   return (
     <div className="object-search-card">
-      {_.has(object, 'avatar') ? (
-        <img
-          className="object-search-card__content-avatar"
-          src={object.avatar}
-          alt={object.title || ''}
-        />
+      {has(object, 'avatar') ? (
+        <img className="object-search-card__content-avatar" src={avatar} alt={titleSrting} />
       ) : (
         <ObjectAvatar item={object} size={40} />
       )}
       <div className="object-search-card__content-info">
-        <div className="object-search-card__content-name">{name}</div>
+        <div className="object-search-card__content-name">{getObjectName(object)}</div>
         <div className={`object-search-card__content-text${parentElement ? '-nav' : ''}`}>
           {parentString || titleSrting || description || ''}
         </div>
@@ -35,7 +37,6 @@ const ObjectSearchCard = props => {
 
 ObjectSearchCard.propTypes = {
   object: PropTypes.shape(),
-  name: PropTypes.string,
   type: PropTypes.string,
   parentElement: PropTypes.string,
 };

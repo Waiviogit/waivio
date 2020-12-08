@@ -12,6 +12,7 @@ ShallowWrapper {
     from="hellosteem"
     timestamp="0"
     to="hellosteem"
+    transactionType="transfer_to_vesting"
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -41,20 +42,20 @@ ShallowWrapper {
           <div
             className="UserWalletTransactions__content-recipient"
           >
-            <div>
+            <UNDEFINED>
               <FormattedMessage
                 defaultMessage="Powered up "
                 id="powered_up"
                 values={Object {}}
               />
-            </div>
-            <span
-              className="UserWalletTransactions__payout"
-            >
-              <span>
-                0 HIVE
+              <span
+                className="UserWalletTransactions__payout"
+              >
+                <span>
+                  0 HIVE
+                </span>
               </span>
-            </span>
+            </UNDEFINED>
           </div>
           <span
             className="UserWalletTransactions__timestamp"
@@ -116,20 +117,20 @@ ShallowWrapper {
             <div
               className="UserWalletTransactions__content-recipient"
             >
-              <div>
+              <UNDEFINED>
                 <FormattedMessage
                   defaultMessage="Powered up "
                   id="powered_up"
                   values={Object {}}
                 />
-              </div>
-              <span
-                className="UserWalletTransactions__payout"
-              >
-                <span>
-                  0 HIVE
+                <span
+                  className="UserWalletTransactions__payout"
+                >
+                  <span>
+                    0 HIVE
+                  </span>
                 </span>
-              </span>
+              </UNDEFINED>
             </div>,
             <span
               className="UserWalletTransactions__timestamp"
@@ -162,39 +163,46 @@ ShallowWrapper {
             "key": undefined,
             "nodeType": "host",
             "props": Object {
-              "children": Array [
-                <div>
-                  <FormattedMessage
-                    defaultMessage="Powered up "
-                    id="powered_up"
-                    values={Object {}}
-                  />
-                </div>,
+              "children": <UNDEFINED>
+                <FormattedMessage
+                  defaultMessage="Powered up "
+                  id="powered_up"
+                  values={Object {}}
+                />
                 <span
                   className="UserWalletTransactions__payout"
                 >
                   <span>
                     0 HIVE
                   </span>
-                </span>,
-              ],
+                </span>
+              </UNDEFINED>,
               "className": "UserWalletTransactions__content-recipient",
             },
             "ref": null,
-            "rendered": Array [
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": <FormattedMessage
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "children": Array [
+                  <FormattedMessage
                     defaultMessage="Powered up "
                     id="powered_up"
                     values={Object {}}
                   />,
-                },
-                "ref": null,
-                "rendered": Object {
+                  <span
+                    className="UserWalletTransactions__payout"
+                  >
+                    <span>
+                      0 HIVE
+                    </span>
+                  </span>,
+                ],
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
                   "instance": null,
                   "key": undefined,
                   "nodeType": "class",
@@ -207,33 +215,33 @@ ShallowWrapper {
                   "rendered": null,
                   "type": [Function],
                 },
-                "type": "div",
-              },
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "host",
-                "props": Object {
-                  "children": <span>
-                    0 HIVE
-                  </span>,
-                  "className": "UserWalletTransactions__payout",
-                },
-                "ref": null,
-                "rendered": Object {
+                Object {
                   "instance": null,
                   "key": undefined,
                   "nodeType": "host",
                   "props": Object {
-                    "children": "0 HIVE",
+                    "children": <span>
+                      0 HIVE
+                    </span>,
+                    "className": "UserWalletTransactions__payout",
                   },
                   "ref": null,
-                  "rendered": "0 HIVE",
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": "0 HIVE",
+                    },
+                    "ref": null,
+                    "rendered": "0 HIVE",
+                    "type": "span",
+                  },
                   "type": "span",
                 },
-                "type": "span",
-              },
-            ],
+              ],
+              "type": Symbol(react.fragment),
+            },
             "type": "div",
           },
           Object {
@@ -335,20 +343,20 @@ ShallowWrapper {
             <div
               className="UserWalletTransactions__content-recipient"
             >
-              <div>
+              <UNDEFINED>
                 <FormattedMessage
                   defaultMessage="Powered up "
                   id="powered_up"
                   values={Object {}}
                 />
-              </div>
-              <span
-                className="UserWalletTransactions__payout"
-              >
-                <span>
-                  0 HIVE
+                <span
+                  className="UserWalletTransactions__payout"
+                >
+                  <span>
+                    0 HIVE
+                  </span>
                 </span>
-              </span>
+              </UNDEFINED>
             </div>
             <span
               className="UserWalletTransactions__timestamp"
@@ -410,20 +418,20 @@ ShallowWrapper {
               <div
                 className="UserWalletTransactions__content-recipient"
               >
-                <div>
+                <UNDEFINED>
                   <FormattedMessage
                     defaultMessage="Powered up "
                     id="powered_up"
                     values={Object {}}
                   />
-                </div>
-                <span
-                  className="UserWalletTransactions__payout"
-                >
-                  <span>
-                    0 HIVE
+                  <span
+                    className="UserWalletTransactions__payout"
+                  >
+                    <span>
+                      0 HIVE
+                    </span>
                   </span>
-                </span>
+                </UNDEFINED>
               </div>,
               <span
                 className="UserWalletTransactions__timestamp"
@@ -456,39 +464,46 @@ ShallowWrapper {
               "key": undefined,
               "nodeType": "host",
               "props": Object {
-                "children": Array [
-                  <div>
-                    <FormattedMessage
-                      defaultMessage="Powered up "
-                      id="powered_up"
-                      values={Object {}}
-                    />
-                  </div>,
+                "children": <UNDEFINED>
+                  <FormattedMessage
+                    defaultMessage="Powered up "
+                    id="powered_up"
+                    values={Object {}}
+                  />
                   <span
                     className="UserWalletTransactions__payout"
                   >
                     <span>
                       0 HIVE
                     </span>
-                  </span>,
-                ],
+                  </span>
+                </UNDEFINED>,
                 "className": "UserWalletTransactions__content-recipient",
               },
               "ref": null,
-              "rendered": Array [
-                Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "host",
-                  "props": Object {
-                    "children": <FormattedMessage
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "function",
+                "props": Object {
+                  "children": Array [
+                    <FormattedMessage
                       defaultMessage="Powered up "
                       id="powered_up"
                       values={Object {}}
                     />,
-                  },
-                  "ref": null,
-                  "rendered": Object {
+                    <span
+                      className="UserWalletTransactions__payout"
+                    >
+                      <span>
+                        0 HIVE
+                      </span>
+                    </span>,
+                  ],
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
                     "instance": null,
                     "key": undefined,
                     "nodeType": "class",
@@ -501,33 +516,33 @@ ShallowWrapper {
                     "rendered": null,
                     "type": [Function],
                   },
-                  "type": "div",
-                },
-                Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "host",
-                  "props": Object {
-                    "children": <span>
-                      0 HIVE
-                    </span>,
-                    "className": "UserWalletTransactions__payout",
-                  },
-                  "ref": null,
-                  "rendered": Object {
+                  Object {
                     "instance": null,
                     "key": undefined,
                     "nodeType": "host",
                     "props": Object {
-                      "children": "0 HIVE",
+                      "children": <span>
+                        0 HIVE
+                      </span>,
+                      "className": "UserWalletTransactions__payout",
                     },
                     "ref": null,
-                    "rendered": "0 HIVE",
+                    "rendered": Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": "0 HIVE",
+                      },
+                      "ref": null,
+                      "rendered": "0 HIVE",
+                      "type": "span",
+                    },
                     "type": "span",
                   },
-                  "type": "span",
-                },
-              ],
+                ],
+                "type": Symbol(react.fragment),
+              },
               "type": "div",
             },
             Object {

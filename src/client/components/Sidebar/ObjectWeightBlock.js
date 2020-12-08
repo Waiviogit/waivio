@@ -14,11 +14,12 @@ class ObjectWeightBlock extends React.Component {
   static propTypes = {
     username: PropTypes.string.isRequired,
     authUser: PropTypes.string,
-    locale: PropTypes.string.isRequired,
+    locale: PropTypes.string,
   };
 
   static defaultProps = {
     authUser: '',
+    locale: 'en-US',
   };
 
   state = {

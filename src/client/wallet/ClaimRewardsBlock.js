@@ -44,8 +44,8 @@ class ClaimRewardsBlock extends Component {
     const { user } = this.props;
     const {
       name,
-      reward_steem_balance: steemBalance,
-      reward_sbd_balance: sbdBalance,
+      reward_hive_balance: hiveBalance,
+      reward_hbd_balance: hbdBalance,
       reward_vesting_balance: vestingBalance,
     } = user;
 
@@ -53,7 +53,7 @@ class ClaimRewardsBlock extends Component {
       loading: true,
     });
 
-    SteemConnect.claimRewardBalance(name, steemBalance, sbdBalance, vestingBalance)
+    SteemConnect.claimRewardBalance(name, hiveBalance, hbdBalance, vestingBalance)
       .then(
         () =>
           this.setState({
@@ -90,9 +90,9 @@ class ClaimRewardsBlock extends Component {
   render() {
     const { user, intl } = this.props;
     const { rewardClaimed } = this.state;
-    const rewardSteem = parseFloat(user.reward_steem_balance);
-    const rewardSbd = parseFloat(user.reward_sbd_balance);
-    const rewardSP = parseFloat(user.reward_vesting_steem);
+    const rewardSteem = parseFloat(user.reward_hive_balance);
+    const rewardSbd = parseFloat(user.reward_hbd_balance);
+    const rewardSP = parseFloat(user.reward_vesting_hive);
     const userHasRewards = rewardSteem > 0 || rewardSbd > 0 || rewardSP > 0;
 
     const buttonText = rewardClaimed

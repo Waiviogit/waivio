@@ -4,15 +4,13 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal, message, Select, Form } from 'antd';
 import { filter, isEmpty } from 'lodash';
-import { getAppendData } from '../../../helpers/wObjectHelper';
-import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
+import { getAppendData, getObjectName, getObjectType } from '../../../helpers/wObjectHelper';
 import {
   getAuthenticatedUserName,
   getFollowingObjectsList,
   getSuitableLanguage,
 } from '../../../reducers';
 import { appendObject } from '../../appendActions';
-import { objectFields } from '../../../../common/constants/listOfFields';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
 import LikeSection from '../../../object/LikeSection';
@@ -88,18 +86,20 @@ class AddItemModal extends Component {
       if (!err && !this.state.isLoading) {
         this.setState({ isLoading: true });
         const langReadable = filter(LANGUAGES, { id: objectValues.locale })[0].name;
-        const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${selectedItem.id}`;
-        const bodyMsg = `@${currentUserName} added list-item (${langReadable}):\n[${selectedItem.name} (type: ${selectedItem.type})](${objectUrl})`;
+        const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${selectedItem.author_permlink}`;
+        const bodyMsg = `@${currentUserName} added list-item (${langReadable}):\n[${getObjectName(
+          selectedItem,
+        )} (type: ${selectedItem.object_type || selectedItem.type})](${objectUrl})`;
         const fieldContent = {
           name: 'listItem',
-          body: selectedItem.id,
+          body: selectedItem.author_permlink,
           locale: objectValues.locale,
         };
-
         const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
+        const objectType = getObjectType(selectedItem);
 
         this.props
-          .appendObject(appendData, {
+          .appendObject(appendData, objectType, {
             votePower: isManualSelected ? votePercent * 100 : null,
             follow: objectValues.follow,
           })
@@ -116,8 +116,7 @@ class AddItemModal extends Component {
               this.handleToggleModal();
             }
           })
-          .catch(error => {
-            console.log(`Add list item error:`, error);
+          .catch(() => {
             this.setState({ isLoading: false });
             message.error(
               intl.formatMessage({
@@ -143,7 +142,7 @@ class AddItemModal extends Component {
     const { intl, wobject, itemsIdsToOmit, form, followingList } = this.props;
     const { getFieldDecorator } = form;
 
-    const listName = getFieldWithMaxWeight(wobject, objectFields.name);
+    const listName = getObjectName(wobject);
     const itemType = ['list'].includes(selectedItem && selectedItem.type)
       ? intl.formatMessage({
           id: 'list',
@@ -246,10 +245,12 @@ class AddItemModal extends Component {
         <SearchObjectsAutocomplete
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={itemsIdsToOmit}
+          parentObject={wobject}
+          addItem
         />
         <CreateObject
           onCreateObject={this.handleCreateObject}
-          parentObject={wobject.parent || {}}
+          parentObject={wobject.parent || wobject || {}}
         />{' '}
       </React.Fragment>
     );

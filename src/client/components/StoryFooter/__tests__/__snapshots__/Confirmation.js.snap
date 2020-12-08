@@ -1,11 +1,214 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Confirmation /> should render without exploding 1`] = `
+exports[`<Confirmation /> should render without exploding when post is cashout 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Confirmation
+    isCashout={true}
     onCancel={[Function]}
     onConfirm={[Function]}
+    type="confirm"
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        false,
+        <a
+          onClick={[Function]}
+          role="presentation"
+        >
+          <i
+            className="iconfont icon-delete"
+          />
+          <FormattedMessage
+            defaultMessage="Cancel"
+            id="cancel"
+            values={Object {}}
+          />
+        </a>,
+      ],
+      "className": "Confirmation",
+    },
+    "ref": null,
+    "rendered": Array [
+      false,
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <i
+              className="iconfont icon-delete"
+            />,
+            <FormattedMessage
+              defaultMessage="Cancel"
+              id="cancel"
+              values={Object {}}
+            />,
+          ],
+          "onClick": [Function],
+          "role": "presentation",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "iconfont icon-delete",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "i",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "defaultMessage": "Cancel",
+              "id": "cancel",
+              "values": Object {},
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+        ],
+        "type": "a",
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          false,
+          <a
+            onClick={[Function]}
+            role="presentation"
+          >
+            <i
+              className="iconfont icon-delete"
+            />
+            <FormattedMessage
+              defaultMessage="Cancel"
+              id="cancel"
+              values={Object {}}
+            />
+          </a>,
+        ],
+        "className": "Confirmation",
+      },
+      "ref": null,
+      "rendered": Array [
+        false,
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <i
+                className="iconfont icon-delete"
+              />,
+              <FormattedMessage
+                defaultMessage="Cancel"
+                id="cancel"
+                values={Object {}}
+              />,
+            ],
+            "onClick": [Function],
+            "role": "presentation",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "iconfont icon-delete",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "i",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Cancel",
+                "id": "cancel",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+          ],
+          "type": "a",
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+    Symbol(enzyme.__providerValues__): undefined,
+  },
+  Symbol(enzyme.__providerValues__): Map {},
+}
+`;
+
+exports[`<Confirmation /> should render without exploding when post isn\`t cashout 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Confirmation
+    isCashout={false}
+    onCancel={[Function]}
+    onConfirm={[Function]}
+    type="confirm"
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -30,7 +233,7 @@ ShallowWrapper {
             className="iconfont icon-success"
           />
           <FormattedMessage
-            defaultMessage="Confirm"
+            defaultMessage="confirm"
             id="confirm"
             values={Object {}}
           />
@@ -63,7 +266,7 @@ ShallowWrapper {
               className="iconfont icon-success"
             />,
             <FormattedMessage
-              defaultMessage="Confirm"
+              defaultMessage="confirm"
               id="confirm"
               values={Object {}}
             />,
@@ -89,7 +292,7 @@ ShallowWrapper {
             "key": undefined,
             "nodeType": "class",
             "props": Object {
-              "defaultMessage": "Confirm",
+              "defaultMessage": "confirm",
               "id": "confirm",
               "values": Object {},
             },
@@ -165,7 +368,7 @@ ShallowWrapper {
               className="iconfont icon-success"
             />
             <FormattedMessage
-              defaultMessage="Confirm"
+              defaultMessage="confirm"
               id="confirm"
               values={Object {}}
             />
@@ -198,7 +401,7 @@ ShallowWrapper {
                 className="iconfont icon-success"
               />,
               <FormattedMessage
-                defaultMessage="Confirm"
+                defaultMessage="confirm"
                 id="confirm"
                 values={Object {}}
               />,
@@ -224,7 +427,7 @@ ShallowWrapper {
               "key": undefined,
               "nodeType": "class",
               "props": Object {
-                "defaultMessage": "Confirm",
+                "defaultMessage": "confirm",
                 "id": "confirm",
                 "values": Object {},
               },

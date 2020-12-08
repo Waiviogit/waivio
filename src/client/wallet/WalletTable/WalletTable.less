@@ -1,0 +1,148 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/mixins.less';
+
+.WalletTable {
+  border: 1px solid @black;
+  text-align: center;
+  text-transform: capitalize;
+  border-collapse: collapse;
+  margin-top: 20px;
+  position: relative;
+  width: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @media @medium, @large {
+    overflow: visible;
+    width: 100%;
+  }
+
+  &__empty-table {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto;
+    font-weight: 600;
+    font-size: 18px;
+    transition: 0.5s;
+  }
+
+  &__bright {
+    margin-left: 44.5% !important;
+  }
+
+  &__title-wrap {
+    display: flex;
+    align-items: baseline;
+  }
+
+  &__star-flag {
+    color: @red-danger;
+    font-size: 25px;
+    line-height: 5px;
+  }
+
+  &__from {
+    color: @black;
+    font-weight: 500;
+    margin-bottom: -10px !important;
+  }
+
+  &__till {
+    color: @black;
+    font-weight: 500;
+    margin-bottom: -10px !important;
+  }
+
+  &__back-btn {
+    .wallet-table-btn();
+  }
+
+  &__submit {
+    display: block;
+    margin-top: 15px;
+  }
+
+  &__main-content {
+    display: contents;
+  }
+
+  & span.username {
+    transition: 0.5s;
+
+    &:hover {
+      color: @orange-hot;
+    }
+  }
+
+  &__loader {
+    width: 100%;
+    margin: 5px auto;
+    position: absolute;
+  }
+
+  & table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  & th {
+    border: 1px solid @black;
+    vertical-align: top;
+    color: @black;
+    font-weight: 600;
+  }
+
+  & td {
+    font-size: 15px;
+    border: 1px solid @black;
+    color: @black;
+    word-wrap: break-word;
+    text-transform: none;
+  }
+
+  & td:nth-child(2) {
+    text-align: end;
+    padding-right: 38px;
+  }
+
+  & td:nth-child(3) {
+    text-align: end;
+    padding-right: 38px;
+  }
+
+  & td:nth-child(4) {
+    text-align: end;
+    padding-right: 38px;
+  }
+
+  &__date {
+    width: 120px;
+  }
+
+  &__HIVE {
+    width: 120px;
+  }
+
+  &__HP {
+    width: 120px;
+  }
+
+  &__HBD {
+    width: 120px;
+  }
+
+  &__description {
+    width: 400px;
+  }
+
+  &__memo {
+    width: 500px;
+  }
+}
+
+.ant-form-explain {
+  margin-bottom: -30px;
+}
+
+@import './WalletTable-nightmode';

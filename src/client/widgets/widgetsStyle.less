@@ -47,3 +47,29 @@
     border-bottom: 1px solid #f87007;
   }
 }
+
+.SelectUserForAutocomplete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border: 1px solid @white-gainsboro;
+  background: @white;
+  border-radius: 5px;
+
+  &__user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bolder;
+
+    span {
+      display: inline-block;
+      margin-left: 5px;
+    }
+  }
+
+  .iconfont.icon-delete {
+    cursor: pointer;
+  }
+}

@@ -6,11 +6,10 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
-import enUS from 'antd/lib/locale-provider/en_US';
-import ruRU from 'antd/lib/locale-provider/ru_RU';
-import ukUA from 'antd/lib/locale-provider/uk_UA';
-import Cookie from 'js-cookie';
-import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
+import enUS from 'antd/es/locale/en_US';
+import ruRU from 'antd/es/locale/ru_RU';
+import ukUA from 'antd/es/locale/uk_UA';
+import { findLanguage, getRequestLocale, loadLanguage } from './translations';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -20,6 +19,8 @@ import {
   getTranslations,
   getNightmode,
   isGuestUser,
+  getIsOpenWalletTable,
+  getIsAuthFetching,
 } from './reducers';
 import {
   login,
@@ -27,17 +28,19 @@ import {
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './auth/authActions';
-import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
+import { getNotifications } from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
-import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import Topnav from './components/Navigation/Topnav';
-import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
+import { PATH_NAME_ACTIVE } from '../common/constants/rewards';
 import ErrorBoundary from './widgets/ErrorBoundary';
+import Loading from './components/Icon/Loading';
+import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
+import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -52,22 +55,20 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     locale: getLocale(state),
     nightmode: getNightmode(state),
     isNewUser: state.settings.newUser,
-    followingList: state.user.following.list,
-    followingObjectsList: state.user.followingObjects.list,
     isGuest: isGuestUser(state),
+    isOpenWalletTable: getIsOpenWalletTable(state),
+    loadingFetching: getIsAuthFetching(state),
   }),
   {
     login,
     logout,
-    getFollowing,
-    getFollowingObjects,
     getNotifications,
     getRate,
     getRewardFund,
     busyLogin,
-    getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
     dispatchGetAuthGuestBalance,
+    handleRefAuthUser,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -82,17 +83,19 @@ class Wrapper extends React.PureComponent {
     username: PropTypes.string,
     login: PropTypes.func,
     logout: PropTypes.func,
-    getFollowing: PropTypes.func,
-    getFollowingObjects: PropTypes.func,
     getRewardFund: PropTypes.func,
-    getRebloggedList: PropTypes.func,
     getRate: PropTypes.func,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
-    isNewUser: PropTypes.bool.isRequired,
+    isNewUser: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
+    isOpenWalletTable: PropTypes.bool,
+    loadingFetching: PropTypes.bool,
+    location: PropTypes.shape(),
+    handleRefAuthUser: PropTypes.func,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -101,10 +104,7 @@ class Wrapper extends React.PureComponent {
     username: '',
     login: () => {},
     logout: () => {},
-    getFollowing: () => {},
-    getFollowingObjects: () => {},
     getRewardFund: () => {},
-    getRebloggedList: () => {},
     getRate: () => {},
     getTrendingTopics: () => {},
     getNotifications: () => {},
@@ -113,6 +113,11 @@ class Wrapper extends React.PureComponent {
     nightmode: false,
     dispatchGetAuthGuestBalance: () => {},
     isGuest: false,
+    isNewUser: false,
+    isOpenWalletTable: false,
+    loadingFetching: true,
+    location: {},
+    handleRefAuthUser: () => {},
   };
 
   static fetchData({ store, req }) {
@@ -127,11 +132,9 @@ class Wrapper extends React.PureComponent {
     }
     const lang = loadLanguage(activeLocale);
 
-    return Promise.all([
-      store.dispatch(login()),
-      store.dispatch(setAppUrl(appUrl)),
-      store.dispatch(setUsedLocale(lang)),
-    ]);
+    store.dispatch(login());
+
+    return Promise.all([store.dispatch(setAppUrl(appUrl)), store.dispatch(setUsedLocale(lang))]);
   }
 
   constructor(props) {
@@ -141,29 +144,23 @@ class Wrapper extends React.PureComponent {
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
 
-  // eslint-disable-next-line consistent-return
   componentDidMount() {
+    const { location } = this.props;
+    const ref = new URLSearchParams(location.search).get('ref');
+    if (ref) {
+      sessionStorage.setItem('refUser', ref);
+    }
     this.props.login().then(() => {
       batch(() => {
-        this.props.getFollowing();
-        this.props.getFollowingObjects();
         this.props.getNotifications();
         this.props.busyLogin();
         this.props.getRewardFund();
-        this.props.getRebloggedList();
-        this.props.getRate();
         this.props.dispatchGetAuthGuestBalance();
+        this.props.getRate();
       });
-    });
-
-    batch(() => {
-      this.props.getRewardFund();
-      this.props.getRebloggedList();
-      this.props.getRate();
     });
   }
 
-  // eslint-disable-next-line consistent-return
   componentWillReceiveProps(nextProps) {
     const { locale } = this.props;
 
@@ -172,22 +169,22 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  // eslint-disable-next-line consistent-return
   componentDidUpdate() {
     if (this.props.nightmode) {
       document.body.classList.add('nightmode');
     } else {
       document.body.classList.remove('nightmode');
     }
+    const refName = sessionStorage.getItem('refUser');
+    if (this.props.isAuthenticated && refName) {
+      const currentRefName = handleRefName(refName);
+      this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
+      sessionStorage.removeItem('refUser');
+    }
   }
 
   async loadLocale(locale) {
-    let activeLocale = locale;
-    if (activeLocale === 'auto') {
-      activeLocale = Cookie.get('language') || getBrowserLocale();
-    }
-
-    const lang = await loadLanguage(activeLocale);
+    const lang = await loadLanguage(locale);
 
     this.props.setUsedLocale(lang);
   }
@@ -228,7 +225,13 @@ class Wrapper extends React.PureComponent {
         this.props.history.push(`/@${this.props.username}`);
         break;
       case 'rewards':
-        this.props.history.push('/rewards/active');
+        this.props.history.push(PATH_NAME_ACTIVE);
+        break;
+      case 'discover':
+        this.props.history.push(`/discover-objects/hashtag`);
+        break;
+      case 'tools':
+        this.props.history.push(`/drafts`);
         break;
       default:
         break;
@@ -255,8 +258,9 @@ class Wrapper extends React.PureComponent {
       history,
       username,
       isNewUser,
+      isOpenWalletTable,
+      loadingFetching,
     } = this.props;
-
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
 
@@ -279,10 +283,9 @@ class Wrapper extends React.PureComponent {
                   userName={username}
                   location={history.location}
                 />
-                {renderRoutes(this.props.route.routes)}
-                <PowerUpOrDown />
+                {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />
-                <BBackTop className="primary-modal" />
+                <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
                 {isNewUser && <WelcomeModal location={history.location.pathname} />}
               </div>
             </Layout>

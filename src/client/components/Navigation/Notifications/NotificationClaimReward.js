@@ -8,7 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationClaimReward = ({ notification, read, onClick }) => {
-  const url = `/@${notification.account}`;
+  const url = `/@${notification.account}/transfers`;
 
   return (
     <Link
@@ -23,9 +23,11 @@ const NotificationClaimReward = ({ notification, read, onClick }) => {
         <div className="Notification__text__message">
           <FormattedMessage
             id="claim_reward_notify"
-            defaultMessage="{account} claim reward {rewardHBD}"
+            defaultMessage="You claim reward {rewardHIVE}, {rewardHBD}, {rewardHP}"
             values={{
               account: <span className="username">{notification.account}</span>,
+              rewardHIVE: <span>{notification.rewardHive}</span>,
+              rewardHP: <span>{notification.rewardHP}</span>,
               rewardHBD: <span>{notification.rewardHBD}</span>,
             }}
           />
@@ -42,6 +44,8 @@ NotificationClaimReward.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
     account: PropTypes.string,
+    rewardHive: PropTypes.string,
+    rewardHP: PropTypes.string,
     rewardHBD: PropTypes.string,
     timestamp: PropTypes.number,
   }),

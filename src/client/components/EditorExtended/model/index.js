@@ -154,7 +154,7 @@ export const addNewBlockAt = (
       isBackward: false,
     }),
   });
-  return EditorState.push(editorState, newContent, 'split-block');
+  return EditorState.moveFocusToEnd(EditorState.push(editorState, newContent, 'split-block'));
 };
 
 /**

@@ -88,8 +88,8 @@ class PostPreviewModal extends Component {
   };
 
   throttledUpdate = () => {
-    const { body, linkedObjects } = this.state;
-    const { topics, settings, titleValue } = this.props;
+    const { body } = this.state;
+    const { topics, settings, titleValue, linkedObjects } = this.props;
     const postData = {
       body,
       titleValue,

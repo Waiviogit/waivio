@@ -8,15 +8,14 @@ import {
   getFollowingUsersUpdatesMore,
 } from '../../../user/userActions';
 import SidebarMenu from '../SidebarMenu/SidebarMenu';
-import { getClientWObj } from '../../../adapters';
 import Loading from '../../Icon/Loading';
+import { getObjectName } from '../../../helpers/wObjectHelper';
 
 const itemsCount = 5;
 const usersSection = 'People';
 function buildFollowingUpdatesMenuConfig(updates) {
   const config = {};
   const { usersUpdates, objectsUpdates } = updates;
-
   if (usersUpdates.users && usersUpdates.users.length) {
     config[usersSection] = {
       name: usersSection,
@@ -44,14 +43,15 @@ function buildFollowingUpdatesMenuConfig(updates) {
         isCollapsed: !(objects[0] && objects[0].last_posts_count),
         hasMore,
         items: objects.map(followingObject => {
-          const clientObj = getClientWObj(followingObject);
+          const name = getObjectName(followingObject) || followingObject.author_permlink;
+          const intlId = followingObject.author_permlink;
+          const meta = followingObject.last_posts_count > 0 ? followingObject.last_posts_count : '';
+          const linkTo = `/feed/${followingObject.author_permlink}?category=${followingObject.object_type}&name=${followingObject.name}`;
           return {
-            name: clientObj.name || clientObj.id,
-            intlId: clientObj.name || clientObj.id,
-            meta: clientObj.last_posts_count > 0 ? clientObj.last_posts_count : '',
-            linkTo: `/feed/${clientObj.id}?category=${
-              clientObj.object_type
-            }&name=${clientObj.name || clientObj.id}`,
+            name,
+            intlId,
+            meta,
+            linkTo,
             isUntranslatable: true,
           };
         }),
@@ -83,6 +83,7 @@ const FollowingUpdates = () => {
       dispatch(getFollowingObjectsUpdatesMore(menuSectionName, itemsCount));
     }
   };
+
   return (
     !isEmpty(menuConfig) &&
     (followingUpdates.isFetching ? (

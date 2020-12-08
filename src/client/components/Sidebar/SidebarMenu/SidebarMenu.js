@@ -1,16 +1,19 @@
 import React, { useReducer } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { mapValues } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
-import { getIsAuthenticated } from '../../../reducers';
+import { getIsAuthenticated, getAuthenticatedUserName } from '../../../reducers';
+import { getObject } from '../../../object/wobjectsActions';
 
 import './SidebarMenu.less';
 
 const actionType = { TOGGLE_BLOCK: 'toggleBlock' };
+
 function sidebarMenuReducer(state, action) {
   const { type, section } = action;
+
   switch (type) {
     case actionType.TOGGLE_BLOCK:
       return {
@@ -27,18 +30,26 @@ function sidebarMenuReducer(state, action) {
 const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
   // redux store
   const authenticated = useSelector(getIsAuthenticated);
+  const authenticatedUserName = useSelector(getAuthenticatedUserName);
   // local state
-  const [menuState, dispatch] = useReducer(
+  const [menuState, setMenuState] = useReducer(
     sidebarMenuReducer,
     mapValues(menuConfig, menuSection => ({ isCollapsed: menuSection.isCollapsed })),
   );
 
+  const dispatch = useDispatch();
+
   const toggleBlock = section => () =>
-    dispatch({ type: actionType.TOGGLE_BLOCK, section: section.name });
+    setMenuState({ type: actionType.TOGGLE_BLOCK, section: section.name });
 
   const checkIsActive = (match, location) => {
     if (!match) return false;
+
     return match.url !== '' && location.pathname.includes(match.url);
+  };
+
+  const handleGetObject = (permlink, key) => {
+    if (key === 'list') dispatch(getObject(permlink, authenticatedUserName));
   };
 
   const getSectionTitle = menuSection =>
@@ -86,8 +97,14 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
               id: sectionItem.intlId,
               defaultMessage: sectionItem.name,
             });
+
         return linkTo ? (
-          <li className="collapsible-block__item" key={`sectionItem-${sectionItem.name}`}>
+          <li
+            className="collapsible-block__item"
+            key={`sectionItem-${sectionItem.name}`}
+            onClick={() => handleGetObject(sectionItem.intlId, menuSection.name)}
+            role="presentation"
+          >
             <NavLink
               to={linkTo}
               className="sidenav-discover-objects__item"

@@ -1,57 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { FormattedMessage, FormattedRelative } from 'react-intl';
+import { FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
-
-const getSavingsTransactionMessage = (transactionType, transactionDetails, amount) => {
-  switch (transactionType) {
-    case 'cancel_transfer_from_savings':
-      return (
-        <FormattedMessage
-          id="cancel_transfer_from_savings"
-          defaultMessage="Cancel transfer from savings (request {requestId})"
-          values={{
-            requestId: transactionDetails.request_id,
-          }}
-        />
-      );
-    case 'transfer_to_savings':
-      return (
-        <FormattedMessage
-          id="transfer_to_savings"
-          defaultMessage="Transfer to savings {amount} to {username}"
-          values={{
-            amount,
-            username: (
-              <Link to={`/@${transactionDetails.to}`}>
-                <span className="username">{transactionDetails.to}</span>
-              </Link>
-            ),
-          }}
-        />
-      );
-    case 'transfer_from_savings':
-      return (
-        <FormattedMessage
-          id="transfer_from_savings"
-          defaultMessage="Transfer from savings {amount} to {username}"
-          values={{
-            amount,
-            username: (
-              <Link to={`/@${transactionDetails.from}`}>
-                <span className="username">{transactionDetails.from}</span>
-              </Link>
-            ),
-          }}
-        />
-      );
-    default:
-      return null;
-  }
-};
+import { getSavingsTransactionMessage } from './WalletHelper';
 
 const SavingsTransaction = ({ timestamp, transactionType, transactionDetails, amount }) => (
   <div className="UserWalletTransactions__transaction">

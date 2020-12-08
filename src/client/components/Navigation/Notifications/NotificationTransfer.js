@@ -22,7 +22,7 @@ const NotificationTransfer = ({ notification, read, onClick, currentAuthUsername
         <div className="Notification__text__message">
           <FormattedMessage
             id="notification_transfer_username_amount"
-            defaultMessage="{username} transfered {amount} to you"
+            defaultMessage="{username} transferred {amount} to you"
             values={{
               username: <span className="username">{notification.from}</span>,
               amount: notification.amount,

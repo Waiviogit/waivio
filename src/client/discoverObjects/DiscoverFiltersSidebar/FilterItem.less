@@ -1,0 +1,26 @@
+@import (reference) '../../styles/custom.less';
+
+.FilterItem {
+  &__show-more {
+    cursor: pointer;
+    text-decoration: underline;
+    color: @black;
+    transition: 0.5s;
+
+    &:hover {
+      color: @neon-carrot;
+    }
+  }
+}
+
+.nightmode {
+  .FilterItem {
+    &__show-more {
+      color: @white;
+
+      &:hover {
+        color: @neon-carrot;
+      }
+    }
+  }
+}

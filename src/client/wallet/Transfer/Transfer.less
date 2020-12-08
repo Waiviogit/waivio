@@ -1,0 +1,216 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.Transfer__search-autocomplete.ant-select-dropdown-menu-item-active {
+  background-color: @white;
+
+  &:hover {
+    background-color: @white-darker;
+  }
+}
+
+.Transfer {
+  &__amount-wrap {
+    margin-top: 20px;
+  }
+
+  &__info-text {
+    margin-bottom: 15px;
+  }
+
+  &__search-content-wrap {
+    display: flex;
+    align-items: center;
+
+    &-current {
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid @white-gainsboro;
+      border-radius: 5px;
+      padding: 15px;
+
+      &-user {
+        display: flex;
+      }
+    }
+  }
+
+  &__delete-icon {
+    color: @grey-darkGrey;
+    margin-right: -15px;
+    margin-top: -24px;
+    font-size: 20px !important;
+  }
+
+  &__search-content {
+    margin-left: 10px;
+    max-width: calc(100vw - 210px);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    @media @small, @medium, @large {
+      max-width: 350px;
+    }
+  }
+
+  input.ant-input {
+    height: 38px !important;
+  }
+
+  .ant-form-item-label {
+    label {
+      font-weight: bold;
+    }
+  }
+
+  @-moz-document url-prefix() {
+    .ant-input-group > .ant-input:first-child {
+      width: 35% !important;
+    }
+
+    @media (max-width: 767px) {
+      .ant-input-group > .ant-input:first-child {
+        width: 50% !important;
+      }
+
+      .ant-input-group > .ant-input:last-child {
+        width: 50% !important;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 800px) {
+      .ant-input-group > .ant-input:first-child {
+        width: 65% !important;
+      }
+    }
+  }
+
+  .balance {
+    border-bottom: 1px dotted rgb(160, 159, 159);
+    cursor: pointer;
+  }
+
+  &__amount {
+    display: flex !important;
+
+    &__type {
+      width: 100%;
+
+      &-steem {
+        padding-top: 4px !important;
+        height: 38px !important;
+        width: 50%;
+      }
+
+      &-sbd {
+        padding-top: 4px !important;
+        height: 38px !important;
+        width: 50%;
+      }
+    }
+
+    &__input {
+      border-right: 0 !important;
+      width: 100% !important;
+      margin-bottom: 15px !important;
+
+      @media @small {
+        width: 50% !important;
+      }
+
+      &:focus,
+      &:hover {
+        outline: none !important;
+        box-shadow: none !important;
+        .ant-input-group-wrapper {
+          .Transfer__usd-value {
+            border: @border-width-base @border-style-base @primary-color;
+            border-right: 0;
+          }
+          .ant-input-group-addon {
+            border: @border-width-base @border-style-base @primary-color;
+          }
+        }
+      }
+    }
+
+    .ant-input-group-wrapper {
+      top: 0 !important;
+
+      @-moz-document url-prefix() {
+        .ant-input-group > .ant-input:first-child {
+          width: 50% !important;
+        }
+
+        @media (min-width: 768px) and (max-width: 800px) {
+          .ant-input-group > .ant-input:first-child {
+            width: 65% !important;
+          }
+        }
+      }
+
+      .ant-input-group {
+        display: flex !important;
+
+        .ant-input-group-addon {
+          text-align: right;
+          width: 160px !important;
+          position: relative;
+        }
+
+        .ant-radio-group {
+          position: relative;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+    }
+  }
+
+  .has-error {
+    .Transfer__amount {
+      .Transfer__usd-value {
+        //border: @border-width-base @border-style-base @red-6 !important;
+        border-right: 0 !important;
+        border-left: 0 !important;
+      }
+      .ant-input-group-addon {
+        border: @border-width-base @border-style-base @red-6 !important;
+      }
+    }
+  }
+
+  &__usd-value {
+    border-left: 0 !important;
+    border-radius: 0 !important;
+    //pointer-events: none;
+    text-align: right;
+    color: @blue-heather !important;
+    width: 100% !important;
+
+    @media @medium {
+      min-width: 105px !important;
+      width: 236px !important;
+    }
+  }
+
+  .ant-form-explain {
+    margin: 0;
+  }
+}
+
+.ant-select-auto-complete.ant-select .ant-select-selection--single {
+  height: 30px !important;
+  border: none !important;
+}
+
+.ant-row .ant-form-item {
+  margin-bottom: -5px;
+}
+
+.ant-form-item {
+  margin-bottom: 8px;
+}
+
+@import './Transfer-nightmode';

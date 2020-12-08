@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { forEach } from 'lodash';
+import { forEach, get } from 'lodash';
 import { handleErrors } from '../../../waivioApi/ApiClient';
 import { zoomAndRadiusArray, ZOOM } from '../../../common/constants/map';
 
@@ -47,4 +47,31 @@ export const getZoom = radius => {
     }
   });
   return zoom;
+};
+
+export const getParsedMap = wobject => {
+  const json = wobject.map || get(wobject, ['parent', 'map']);
+  try {
+    return JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
+};
+
+export const getDistanceBetweenTwoPoints = ({ lat1, long1, lat2, long2 }) => {
+  const EarthRadius = 6372795;
+  const LatitudeInRadians1 = (lat1 * Math.PI) / 180;
+  const LatitudeInRadians2 = (lat2 * Math.PI) / 180;
+  const deltaLatitude = ((lat2 - lat1) * Math.PI) / 180;
+  const deltaLongitude = ((long2 - long1) * Math.PI) / 180;
+  const a =
+    Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
+    Math.cos(LatitudeInRadians1) *
+      Math.cos(LatitudeInRadians2) *
+      Math.sin(deltaLongitude / 2) *
+      Math.sin(deltaLongitude / 2);
+  const c = Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = EarthRadius * c;
+
+  return distance;
 };

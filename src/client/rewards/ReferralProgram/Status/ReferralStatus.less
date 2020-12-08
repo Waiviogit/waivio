@@ -1,0 +1,37 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/mixins.less';
+
+.ReferralStatus {
+  padding: 0 15px;
+  color: @black;
+  width: auto;
+
+  @media @small {
+    width: 550px;
+  }
+
+  &__title {
+    padding-bottom: 10px;
+  }
+
+  &__description {
+    padding-bottom: 20px;
+  }
+
+  &__container {
+    display: flex;
+    justify-content: space-between;
+
+    .status-count {
+      font-weight: 600;
+    }
+  }
+
+  &__total-count {
+    margin-top: -10px;
+    padding-bottom: 10px;
+  }
+}
+
+@import 'ReferralStatus-nightmode';

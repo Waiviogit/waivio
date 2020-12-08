@@ -16,7 +16,6 @@ import requiresLogin from '../auth/requiresLogin';
 import NotificationReply from '../components/Navigation/Notifications/NotificationReply';
 import NotificationMention from '../components/Navigation/Notifications/NotificationMention';
 import NotificationFollowing from '../components/Navigation/Notifications/NotificationFollowing';
-import NotificationVote from '../components/Navigation/Notifications/NotificationVote';
 import NotificationReblog from '../components/Navigation/Notifications/NotificationReblog';
 import NotificationTransfer from '../components/Navigation/Notifications/NotificationTransfer';
 import NotificationVoteWitness from '../components/Navigation/Notifications/NotificationVoteWitness';
@@ -34,7 +33,17 @@ import NotificationTransferVesting from '../components/Navigation/Notifications/
 import NotificationChangeRecoveryAccount from '../components/Navigation/Notifications/NotificationChangeRecoveryAccount';
 import NotificationTransferFromSavings from '../components/Navigation/Notifications/NotificationTransferFromSavings';
 import NotificationClaimReward from '../components/Navigation/Notifications/NotificationClaimReward';
-import NotificationCustomerSupport from '../components/Navigation/Notifications/NotificationCustomerSupport';
+import NotificationCampaignMessage from '../components/Navigation/Notifications/NotificationCampaignMessage';
+import NotificationLikes from '../components/Navigation/Notifications/NotificationLikes';
+import NotificationMyLike from '../components/Navigation/Notifications/NotificationMyLike';
+import NotificationMyComment from '../components/Navigation/Notifications/NotificationMyComment';
+import NotificationMyPost from '../components/Navigation/Notifications/NotificationMyPost';
+import NotificationPostBell from '../components/Navigation/Notifications/NotificationPostBell';
+import NotificationReblogBell from '../components/Navigation/Notifications/NotificationReblogBell';
+import NotificationFollowBell from '../components/Navigation/Notifications/NotificationFollowBell';
+import NotificationCampaignReservation from '../components/Navigation/Notifications/NotificationCampaignReservation';
+import NotificationWobjectRewardsBell from '../components/Navigation/Notifications/NotificationWobjectRewardsBell';
+import NotificationWobjectPostBell from '../components/Navigation/Notifications/NotificationWobjectPostBell';
 
 import './Notifications.less';
 
@@ -130,15 +139,6 @@ class Notifications extends React.Component {
                 return <NotificationFollowing key={key} notification={notification} read={read} />;
               case notificationConstants.MENTION:
                 return <NotificationMention key={key} notification={notification} read={read} />;
-              case notificationConstants.VOTE:
-                return (
-                  <NotificationVote
-                    key={key}
-                    notification={notification}
-                    read={read}
-                    currentAuthUsername={currentAuthUsername}
-                  />
-                );
               case notificationConstants.REBLOG:
                 return (
                   <NotificationReblog
@@ -149,7 +149,14 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.TRANSFER:
-                return <NotificationTransfer key={key} notification={notification} read={read} />;
+                return (
+                  <NotificationTransfer
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
               case notificationConstants.WITNESS_VOTE:
                 return (
                   <NotificationVoteWitness key={key} notification={notification} read={read} />
@@ -266,14 +273,103 @@ class Notifications extends React.Component {
                     onClick={this.handleNotificationsClick}
                   />
                 );
-              case notificationConstants.CUSTOMER_SUPPORT:
+              case notificationConstants.CAMPAIGN_MESSAGE:
                 return (
-                  <NotificationCustomerSupport
+                  <NotificationCampaignMessage
                     key={key}
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
-                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
+              case notificationConstants.LIKE:
+                return (
+                  <NotificationLikes
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.MY_LIKE:
+                return (
+                  <NotificationMyLike
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.MY_COMMENT:
+                return (
+                  <NotificationMyComment
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.MY_POST:
+                return (
+                  <NotificationMyPost
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_POST:
+                return (
+                  <NotificationPostBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_REBLOG:
+                return (
+                  <NotificationReblogBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_FOLLOW:
+                return (
+                  <NotificationFollowBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CAMPAIGN_RESERVATION:
+                return (
+                  <NotificationCampaignReservation
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_WOBJECT_REWARDS:
+                return (
+                  <NotificationWobjectRewardsBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_WOBJECT_POST:
+                return (
+                  <NotificationWobjectPostBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               default:

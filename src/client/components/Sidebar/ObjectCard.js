@@ -5,23 +5,24 @@ import { isEmpty } from 'lodash';
 
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './ObjectCard.less';
 
 const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow }) => {
   if (!isEmpty(wobject)) {
-    const name = wobject.name || wobject.default_name;
-    const pathname = `/object/${wobject.author_permlink}`;
+    const name = getObjectName(wobject);
+    const pathname = wobject.defaultShowLink;
 
     return (
       <div key={wobject.author_permlink} className="ObjectCard">
         <div className="ObjectCard__top">
           <div className="ObjectCard__links">
-            <Link to={{ pathname }} title={name} target={isNewWindow ? '_blank' : null}>
+            <Link to={pathname} title={name} target={isNewWindow ? '_blank' : null}>
               <ObjectAvatar item={wobject} size={34} />
             </Link>
             <Link
-              to={{ pathname }}
+              to={pathname}
               title={name}
               className={`ObjectCard__name ${showFollow ? 'ObjectCard__name-short' : ''}`}
             >
@@ -50,7 +51,7 @@ const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow })
 };
 
 ObjectCard.propTypes = {
-  wobject: PropTypes.shape().isRequired,
+  wobject: PropTypes.shape(),
   alt: PropTypes.node,
   showFollow: PropTypes.bool,
   isNewWindow: PropTypes.bool,
@@ -64,6 +65,7 @@ ObjectCard.defaultProps = {
   isNewWindow: false,
   unfollow: () => {},
   follow: () => {},
+  wobject: {},
 };
 
 export default ObjectCard;

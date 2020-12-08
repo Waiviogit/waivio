@@ -25,6 +25,7 @@
   "campaignApiPrefix": "/campaigns-api",
   "objectsBotApiPrefix": "/objects-bot",
   "currenciesApiPrefix": "/currencies-api",
+  "telegramApiPrefix": "/telegram-api",
   "objectsBot": {
     "appendObject": "/append-object",
     "createObject": "/create-object"
@@ -35,6 +36,7 @@
   "blacklist": "/blacklist",
   "blog": "/blog",
   "campaign": "/campaign",
+  "reviewCheck": "/review-check",
   "campaigns": "/campaigns",
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",
@@ -67,6 +69,7 @@
   "rejectReservation": "/validate_reject_reservation",
   "reservation": "/validate_reservation",
   "reserved": "/reserved",
+  "rewards": "/rewards",
   "search": "/search",
   "searchObjects": "/wobjectSearch",
   "suitableUsers": "/suitable_users",
@@ -94,5 +97,23 @@
   "finalConfirmTransaction": "/confirm-transaction",
   "getWithdrawData": "/get-withdraw-data",
   "setPendingStatus": "/set-pending-transfer",
-  "reservationCurrency": "/reservationCurrency"
+  "reservationCurrency": "/reservationCurrency",
+  "getField": "/getField",
+  "showMoreTags": "/showMoreTags",
+  "setSentryNotify": "/sentry",
+  "sentryAppName": "waivio",
+  "referrals": "/referrals",
+  "social": "/social-info",
+  "sites": "/sites",
+  "getParents": "/getParents",
+  "create": "/create",
+  "checkAvailable": "/checkAvailable",
+  "managePage": "/manage",
+  "configuration": "/configuration",
+  "administrators": "/administrators",
+  "authorities": "/authorities",
+  "moderators": "/moderators",
+  "filters": "/filters",
+  "settings": "/settings",
+  "related": "/related"
 }

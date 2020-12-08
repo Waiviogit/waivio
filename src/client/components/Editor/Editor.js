@@ -14,7 +14,6 @@ import requiresLogin from '../../auth/requiresLogin';
 import withEditor from './withEditor';
 import EditorInput from './EditorInput';
 import LinkedObjects from './LinkedObjects';
-import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
@@ -203,11 +202,10 @@ class Editor extends React.Component {
               influence: { value: obj.percent, max: obj.percent + influenceRemain },
             }
           : {
-              ...getClientWObj({
-                author_permlink: obj.author_permlink,
-                fields: [{ name: 'name', body: obj.objectName }],
-                isNew: true,
-              }),
+              author_permlink: obj.author_permlink,
+              name: 'name',
+              body: obj.objectName,
+              isNew: true,
               influence: { value: obj.percent, max: obj.percent + influenceRemain },
             },
       );
@@ -274,10 +272,10 @@ class Editor extends React.Component {
 
   handleAddLinkedObject(wObject) {
     const selectedObj = wObject.isNew
-      ? getClientWObj({
+      ? {
           ...wObject,
           author_permlink: wObject.author_permlink.replace(' ', '-'),
-        })
+        }
       : wObject;
     this.setState(prevState => {
       if (prevState.linkedObjects.some(obj => obj.id === wObject.id)) return prevState;

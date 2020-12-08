@@ -1,20 +1,32 @@
 import React, { Component } from 'react';
+import { startsWith } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { EditorState, AtomicBlockUtils } from 'draft-js';
-import { Input } from 'antd';
+import { Input, message } from 'antd';
 import Play from '../../../../../../public/images/icons/play.png';
 import { ATOMIC_TYPES } from '../../util/constants';
 
 const videoLinkInput = props => {
   const handleAddVideoLink = link => {
-    let editorState = props.getEditorState();
-    const content = editorState.getCurrentContent();
-    const contentWithEntity = content.createEntity(ATOMIC_TYPES.VIDEO, 'IMMUTABLE', { src: link });
-    const entityKey = contentWithEntity.getLastCreatedEntityKey();
-    editorState = EditorState.push(editorState, contentWithEntity, 'change-block-type');
-    props.setEditorState(AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, ' '));
-    props.close();
+    if (startsWith(link, 'http')) {
+      let editorState = props.getEditorState();
+      const content = editorState.getCurrentContent();
+      const contentWithEntity = content.createEntity(ATOMIC_TYPES.VIDEO, 'IMMUTABLE', {
+        src: link,
+      });
+      const entityKey = contentWithEntity.getLastCreatedEntityKey();
+      editorState = EditorState.push(editorState, contentWithEntity, 'change-block-type');
+      props.setEditorState(AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, ' '));
+      props.close();
+    } else {
+      message.error(
+        props.intl.formatMessage({
+          id: 'imageSetter_invalid_link',
+          defaultMessage: 'The link is invalid',
+        }),
+      );
+    }
   };
   return (
     <Input.Search

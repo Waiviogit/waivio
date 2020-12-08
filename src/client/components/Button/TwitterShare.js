@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { getTwitterShareURL } from '../../helpers/socialProfiles';
 import './ShareButton.less';
 
-const TwitterShare = ({ url, text }) => (
+const TwitterShare = ({ url, text, hashtags }) => (
   <a
     className="ShareButton"
-    href={getTwitterShareURL(text, url)}
+    href={getTwitterShareURL(text, url, hashtags)}
     rel="noopener noreferrer"
     target="_blank"
   >
@@ -19,11 +19,13 @@ const TwitterShare = ({ url, text }) => (
 TwitterShare.propTypes = {
   url: PropTypes.string,
   text: PropTypes.string,
+  hashtags: PropTypes.arrayOf(PropTypes.string),
 };
 
 TwitterShare.defaultProps = {
   url: '',
   text: '',
+  hashtags: [],
 };
 
 export default TwitterShare;

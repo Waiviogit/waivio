@@ -1,57 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { truncate } from 'lodash';
-import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
+import { FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { getAuthenticatedUserName } from '../reducers';
 import { epochToUTC } from '../helpers/formatter';
-
-const validateTitle = (details, username) => {
-  const postPermlink = details && details.post_permlink;
-  const postParentAuthor = details && details.post_parent_author;
-  const postParentPermlink = details && details.post_parent_permlink;
-  const title = details && details.title;
-  const post = details && postParentAuthor === '';
-
-  const urlComment = `/@${postParentAuthor}/${postParentPermlink}#@${username}/${postPermlink}`;
-
-  if (post) {
-    const urlPost = `/@${username}/${postPermlink}`;
-    return (
-      <FormattedMessage
-        id="review_author_rewards"
-        defaultMessage="Author rewards: {title}"
-        values={{
-          title: (
-            <Link to={urlPost}>
-              <span className="username">{truncate(title, { length: 30 })}</span>
-            </Link>
-          ),
-        }}
-      />
-    );
-  }
-  return (
-    <FormattedMessage
-      id="comments_author_rewards"
-      defaultMessage="Author rewards for comments: {title}"
-      values={{
-        title: (
-          <Link to={urlComment}>
-            <span className="username">{truncate(title, { length: 15 })}</span>
-          </Link>
-        ),
-      }}
-    />
-  );
-};
+import { getTransactionDescription, validateGuestTransferTitle } from './WalletHelper';
 
 const ReceiveTransaction = ({
   from,
+  to,
   memo,
   amount,
   timestamp,
@@ -59,9 +19,13 @@ const ReceiveTransaction = ({
   details,
   type,
   username,
+  isMobile,
+  transactionType,
 }) => {
   const userName = useSelector(getAuthenticatedUserName);
   const demoPost = type === 'demo_post';
+  const options = { from };
+  const description = getTransactionDescription(transactionType, options);
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__avatar">
@@ -70,28 +34,16 @@ const ReceiveTransaction = ({
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           <div>
-            {demoPost ? (
-              validateTitle(details, username)
-            ) : (
-              <FormattedMessage
-                id="received_from"
-                defaultMessage="Received from {username}"
-                values={{
-                  username: (
-                    <Link to={`/@${from}`}>
-                      <span className="username">{from}</span>
-                    </Link>
-                  ),
-                }}
-              />
-            )}
+            {demoPost
+              ? validateGuestTransferTitle(details, username, isMobile, transactionType)
+              : description.receivedFrom}
           </div>
           <div
             className={classNames('UserWalletTransactions__received', {
               'UserWalletTransactions__received-self': userName === from,
             })}
           >
-            {'+ '}
+            {from !== to && '+ '}
             {amount}
           </div>
         </div>
@@ -131,24 +83,29 @@ const ReceiveTransaction = ({
 
 ReceiveTransaction.propTypes = {
   from: PropTypes.string,
+  to: PropTypes.string,
   memo: PropTypes.string,
   amount: PropTypes.element,
-  timestamp: PropTypes.number,
+  timestamp: PropTypes.string,
   isGuestPage: PropTypes.bool,
   details: PropTypes.shape(),
   type: PropTypes.string,
   username: PropTypes.string,
+  isMobile: PropTypes.bool,
+  transactionType: PropTypes.string.isRequired,
 };
 
 ReceiveTransaction.defaultProps = {
   from: '',
+  to: '',
   memo: '',
   amount: <span />,
-  timestamp: 0,
+  timestamp: '',
   isGuestPage: false,
-  details: null,
+  details: {},
   type: '',
   username: '',
+  isMobile: false,
 };
 
 export default ReceiveTransaction;

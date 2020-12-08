@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
+import { get, includes } from 'lodash';
 import { useSelector, shallowEqual } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { getAuthenticatedUser } from '../../reducers';
@@ -9,8 +9,10 @@ import './QuickPostEditor.less';
 
 const QuickPostEditor = ({ history }) => {
   const user = useSelector(getAuthenticatedUser, shallowEqual);
+  const pathName = get(history, ['location', 'pathname'], '/');
 
-  const isVisible = !['/notifications-list'].includes(get(history, ['location', 'pathname'], '/'));
+  const isVisible =
+    !includes(pathName, 'notifications-list') && !includes(pathName, 'rewards-list');
   const handleOnClick = () => {
     history.push('/editor');
   };

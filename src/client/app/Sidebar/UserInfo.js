@@ -19,7 +19,7 @@ import {
   getAllUsers,
   getUsersAccountHistory,
 } from '../../reducers';
-import { calculateDownVote, calcReputation, dSteem } from '../../vendor/steemitHelpers';
+import { calculateDownVote, calcReputation, dHive } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
@@ -75,14 +75,14 @@ class UserInfo extends React.Component {
       !match.params.name.startsWith(GUEST_PREFIX) &&
       !match.params.name.startsWith(BXY_GUEST_PREFIX)
     ) {
-      dSteem.rc.getRCMana(match.params.name).then(res => {
+      dHive.rc.getRCMana(match.params.name).then(res => {
         this.setState({
           rc_percentage: res.percentage,
         });
       });
-      dSteem.database.getAccounts([match.params.name]).then(res => {
+      dHive.database.getAccounts([match.params.name]).then(res => {
         this.setState({
-          voting_mana: dSteem.rc.calculateVPMana(res[0]).percentage,
+          voting_mana: dHive.rc.calculateVPMana(res[0]).percentage,
         });
       });
     }
@@ -90,18 +90,16 @@ class UserInfo extends React.Component {
 
   render() {
     const { intl, user, rewardFund, rate, usersAccountHistory } = this.props;
+    const isGuestPage = guestUserRegex.test(user && user.name);
     let metadata = {};
     let location = null;
     let profile = {};
     let website = null;
     let about = null;
-    let lastActive = null;
+    const lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
     let email;
 
-    const isGuestPage = guestUserRegex.test(user && user.name);
-
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
-      lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
       metadata = getMetadata(user);
       profile = get(metadata, 'profile', {});
       location = metadata && get(profile, 'location');

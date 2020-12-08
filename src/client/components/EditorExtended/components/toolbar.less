@@ -49,8 +49,9 @@
 @toolbar-color: #323845;
 
 .md-editor-toolbar {
+  margin-top: 15px;
   background: @toolbar-color;
-  color: #fff;
+  color: @white;
   cursor: auto;
   border-radius: 4px;
   z-index: 2;
@@ -58,30 +59,18 @@
   transition: all 0.1s ease;
   visibility: hidden;
   box-shadow: 0 1px 3px 0 #747171;
-  // background-image: linear-gradient(to bottom,rgba(49,49,47,.99),#262625);
-
-  // transition: top 75ms ease-out,left 75ms ease-out;
+  -webkit-box-shadow: none;
 
   &.md-editor-toolbar--isopen {
     visibility: visible;
-    // transition: top 75ms ease-out,left 75ms ease-out;
-    // animation: pop-upwards 180ms forwards linear;
   }
 
   &.md-editor-toolbar--linkinput {
-    // display:block;
     animation: pop-downwards 200ms forwards linear;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: 50%;
-    margin-left: -5px;
-    border-bottom: 5px solid @toolbar-color;
-    border-right: 5px solid transparent;
-    border-left: 5px solid transparent;
+    background: @white;
+    width: 96.5% !important;
+    margin-left: 12px;
+    height: 36px;
   }
 
   .md-url-input {
@@ -89,21 +78,22 @@
     border-radius: 4px;
     display: block;
     width: 100%;
-    padding: 5px 11px 5px 5px;
-    border: none;
-    background: @toolbar-color;
-    color: #fff;
-    font-size: 0.9em;
+    padding: 5px 11px;
+    border: 1px solid @orange-hot;
+    background: @white;
+    color: @black;
+    font-size: 13px;
     font-weight: 100;
+    height: 36px;
 
     &:focus {
       outline: none;
-      // border-color: #50FF4D;
-      // background-color: #eee;
     }
   }
 
   .md-url-input-close {
+    z-index: 5;
+    color: @toolbar-color;
     position: absolute;
     right: 8px;
     top: 2.5px;
@@ -113,12 +103,12 @@
 }
 
 .md-editor-toolbar-edit-link {
-  padding: 4px 5px;
+  padding: 4px 5px 4px 12px;
   font-size: 0.8em;
-  width: 320px;
+  width: 235px;
 
   a {
-    color: #fff;
+    color: @white;
     text-decoration: none;
   }
 
@@ -133,29 +123,23 @@
   button {
     background: none;
     border: none;
-    color: #fff;
-    float: right;
-    display: inline-block;
+    color: @white;
     padding: 0 5px;
     margin: 5px 0;
     cursor: pointer;
 
     &.md-editor-toolbar-edit-button {
-      border-right: 1px solid #fff;
+      border-right: 1px solid @white;
     }
   }
 }
 
 .md-RichEditor-controls {
   font-family: 'Helvetica', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   display: inline-block;
-  border-right: 1px solid #555;
+  border-right: 1px solid @normal-grey;
   position: relative;
-
-  &.md-RichEditor-show-link-input {
-    padding: 6px 10px;
-  }
 
   &:last-child {
     border-right: none;
@@ -163,13 +147,13 @@
 
   .md-RichEditor-linkButton {
     padding: 0 5px;
-    color: #fff;
+    color: @white;
     text-decoration: none;
   }
 }
 
 .md-RichEditor-styleButton {
-  color: #fff;
+  color: @white;
   cursor: pointer;
   display: inline-block;
   padding: 6px 10px;
@@ -211,3 +195,5 @@
     border-bottom-left-radius: 5px;
   }
 }
+
+@import 'toolbar-nightmode';

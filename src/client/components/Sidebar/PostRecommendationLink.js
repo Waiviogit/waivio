@@ -1,25 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { head } from 'lodash';
 import { Link } from 'react-router-dom';
+import classNames from 'classnames';
 import { FormattedMessage, FormattedNumber, FormattedRelative } from 'react-intl';
+
 import { getFromMetadata } from '../../helpers/parser';
 import { getProxyImageURL } from '../../helpers/image';
-import { getContentImages } from '../../helpers/postHelpers';
 
 const PostRecommendationLink = ({ post, navigateToPost, navigateToPostComments }) => {
   const images = getFromMetadata(post.json_metadata, 'image');
-  const firstImage = _.head(images);
+  const firstImage = head(images);
   let imagePath = '';
 
-  if (images && firstImage) {
-    imagePath = getProxyImageURL(firstImage, 'preview');
-  } else {
-    const contentImages = getContentImages(post.body);
-    if (contentImages.length) {
-      imagePath = getProxyImageURL(contentImages[0], 'preview');
-    }
-  }
+  if (images && firstImage) imagePath = getProxyImageURL(firstImage, 'preview');
+
+  const containerClassList = classNames('PostRecommendation__link__post-title', {
+    'PostRecommendation__link__post-title--no-image': !imagePath,
+  });
 
   return (
     <div className="PostRecommendation__link" key={post.id}>
@@ -34,7 +32,7 @@ const PostRecommendationLink = ({ post, navigateToPost, navigateToPostComments }
         <Link
           to={`/@${post.author}/${post.permlink}`}
           onClick={() => navigateToPost(post.author)}
-          className="PostRecommendation__link__post-title"
+          className={containerClassList}
         >
           {post.title}
         </Link>
@@ -61,15 +59,17 @@ const PostRecommendationLink = ({ post, navigateToPost, navigateToPostComments }
           </Link>
         )}
       </div>
-      <div className="PostRecommendation__link__image-container">
-        <Link
-          to={`/${post.category}/@${post.author}/${post.permlink}`}
-          onClick={() => navigateToPost(post.author)}
-          className="PostRecommendation__link__post-title"
-        >
-          <img alt="" src={imagePath} className="PostRecommendation__link__image" />
-        </Link>
-      </div>
+      {imagePath && (
+        <div className="PostRecommendation__link__image-container">
+          <Link
+            to={`/${post.category}/@${post.author}/${post.permlink}`}
+            onClick={() => navigateToPost(post.author)}
+            className="PostRecommendation__link__post-title"
+          >
+            <img alt="" src={imagePath} className="PostRecommendation__link__image" />
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

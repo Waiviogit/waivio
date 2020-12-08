@@ -4,7 +4,7 @@ import { Button, Modal, Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { isEmpty, map, get } from 'lodash';
+import { isEmpty, map, get, every } from 'lodash';
 import { getTextByFilterKey, getSort } from './rewardsHelper';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
@@ -12,7 +12,13 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
 import FilterModal from './FilterModal';
-import { REWARDS_TYPES_MESSAGES, CAMPAIGNS_TYPES_MESSAGES } from '../../common/constants/rewards';
+import {
+  REWARDS_TYPES_MESSAGES,
+  CAMPAIGNS_TYPES_MESSAGES,
+  PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_MESSAGES,
+  PATH_NAME_HISTORY,
+} from '../../common/constants/rewards';
 
 const FilteredRewardsList = props => {
   const {
@@ -37,6 +43,7 @@ const FilteredRewardsList = props => {
     campaignsLayoutWrapLayout,
     handleLoadMore,
     sponsors,
+    messagesCampaigns,
     activeFilters,
     setFilterValue,
     campaignsTypes,
@@ -50,7 +57,6 @@ const FilteredRewardsList = props => {
     blacklistUsers,
     pendingUpdate,
   } = props;
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
   const sort = getSort(
@@ -63,16 +69,23 @@ const FilteredRewardsList = props => {
     sortMessages,
   );
 
-  const historyLocation = '/rewards/history';
-  const messagesLocation = '/rewards/messages';
-  const guideHistoryLocation = '/rewards/guideHistory';
+  const historyLocation = PATH_NAME_HISTORY;
+  const messagesLocation = PATH_NAME_MESSAGES;
+  const guideHistoryLocation = PATH_NAME_GUIDE_HISTORY;
+  const notifyHistoryLocation = `${historyLocation}/${match.params.campaignId}/${match.params.permlink}/${match.params.username}`;
+  const messageHistoryLocation = `${messagesLocation}/${match.params.campaignId}/${match.params.permlink}`;
+
+  const arrLocations = [
+    historyLocation,
+    messagesLocation,
+    guideHistoryLocation,
+    notifyHistoryLocation,
+    messageHistoryLocation,
+  ];
+  const IsRequiredObjectWrap =
+    !match.params.campaignParent && every(arrLocations, arrLocation => location !== arrLocation);
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
-  const IsRequiredObjectWrap =
-    !match.params.campaignParent &&
-    location !== historyLocation &&
-    location !== messagesLocation &&
-    location !== guideHistoryLocation;
 
   const getFiltersForTags = useMemo(() => {
     if (location === historyLocation) {
@@ -147,7 +160,6 @@ const FilteredRewardsList = props => {
       },
     ];
   }, [location, intl]);
-
   return !loadingCampaigns && !pendingUpdate ? (
     <React.Fragment>
       <RewardBreadcrumb
@@ -158,6 +170,7 @@ const FilteredRewardsList = props => {
             ? propositions[0].required_object
             : null
         }
+        match={match}
         location={location}
       />
       {isSearchAreaFilter && (
@@ -175,7 +188,7 @@ const FilteredRewardsList = props => {
           </Link>
         </div>
       ) : (
-        <SortSelector sort={sort} onChange={handleSortChange}>
+        <SortSelector sort={sort} onChange={handleSortChange} match={match}>
           {map(sortRewards, item => (
             <SortSelector.Item key={item.key}>
               <FormattedMessage id={item.id} defaultMessage={item.defaultMessage}>
@@ -280,9 +293,14 @@ const FilteredRewardsList = props => {
             caseStatus: CAMPAIGNS_TYPES_MESSAGES,
             rewards: Object.values(REWARDS_TYPES_MESSAGES),
           }}
+          filtersGuideHistory={{
+            rewards: Object.values(REWARDS_TYPES_MESSAGES),
+            messagesCampaigns,
+          }}
           setFilterValue={setFilterValue}
           match={match}
           activeHistoryFilters={activeHistoryFilters}
+          activeGuideHistoryFilters={activeGuideHistoryFilters}
           setActiveMessagesFilters={setActiveMessagesFilters}
         />
       </Modal>
@@ -322,6 +340,7 @@ FilteredRewardsList.defaultProps = {
   pendingUpdate: false,
   location: '',
   filterKey: '',
+  messagesCampaigns: [],
 };
 
 FilteredRewardsList.propTypes = {
@@ -358,6 +377,7 @@ FilteredRewardsList.propTypes = {
   activeGuideHistoryFilters: PropTypes.shape(),
   setActiveMessagesFilters: PropTypes.func,
   pendingUpdate: PropTypes.bool,
+  messagesCampaigns: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default FilteredRewardsList;

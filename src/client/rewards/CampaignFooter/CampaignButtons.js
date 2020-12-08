@@ -5,18 +5,31 @@ import { Icon, Button, message, Modal, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { map, get, includes } from 'lodash';
+import { map, get, includes, isEmpty, some, every } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
 import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
-import { GUIDE_HISTORY, MESSAGES, ASSIGNED, HISTORY } from '../../../common/constants/rewards';
+import {
+  GUIDE_HISTORY,
+  MESSAGES,
+  ASSIGNED,
+  HISTORY,
+  IS_RESERVED,
+  IS_ALL,
+  FRAUD_DETECTION,
+} from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
-import { rejectReview, changeReward } from '../../user/userActions';
+import { rejectReview, changeReward, reinstateReward } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
+import {
+  changeBlackAndWhiteLists,
+  setDataForSingleReport,
+  getBlacklist,
+  getFraudSuspicion,
+} from '../rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
 import '../../components/StoryFooter/Buttons.less';
@@ -29,6 +42,8 @@ import '../../components/StoryFooter/Buttons.less';
   setDataForSingleReport,
   getBlacklist,
   changeReward,
+  reinstateReward,
+  getFraudSuspicion,
 })
 export default class CampaignButtons extends React.Component {
   static propTypes = {
@@ -51,12 +66,17 @@ export default class CampaignButtons extends React.Component {
     toggleModal: PropTypes.func,
     rejectReview: PropTypes.func.isRequired,
     changeReward: PropTypes.func.isRequired,
+    reinstateReward: PropTypes.func.isRequired,
     changeBlackAndWhiteLists: PropTypes.func.isRequired,
     numberOfComments: PropTypes.number,
     getMessageHistory: PropTypes.func,
     setDataForSingleReport: PropTypes.func.isRequired,
     getBlacklist: PropTypes.func.isRequired,
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
+    sortFraudDetection: PropTypes.string,
+    getFraudSuspicion: PropTypes.func,
+    userFollowed: PropTypes.bool,
+    objectFollowed: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -75,7 +95,11 @@ export default class CampaignButtons extends React.Component {
     numberOfComments: null,
     getMessageHistory: () => {},
     onActionInitiated: () => {},
+    getFraudSuspicion: () => {},
     blacklistUsers: [],
+    sortFraudDetection: 'reservation',
+    userFollowed: false,
+    objectFollowed: false,
   };
 
   constructor(props) {
@@ -99,7 +123,7 @@ export default class CampaignButtons extends React.Component {
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
 
-    this.matchParams = this.props.match.params[0];
+    this.matchParams = !isEmpty(this.props.match) ? this.props.match.params[0] : '';
   }
 
   componentDidMount() {
@@ -154,6 +178,22 @@ export default class CampaignButtons extends React.Component {
     });
   }
 
+  updatePage = () => {
+    const { user, sortFraudDetection } = this.props;
+
+    if (this.matchParams === FRAUD_DETECTION) {
+      const requestData = {
+        guideName: user.name,
+        fraudSuspicion: true,
+        sort: sortFraudDetection,
+      };
+
+      return this.props.getFraudSuspicion(requestData);
+    }
+
+    return this.props.getMessageHistory();
+  };
+
   handleRejectClick = () => {
     const { proposition } = this.props;
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
@@ -161,26 +201,56 @@ export default class CampaignButtons extends React.Component {
     const companyPermlink = get(proposition, 'activation_permlink');
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const objPermlink = get(proposition, ['users', '0', 'object_permlink']);
-    const userName = get(proposition, ['users', '0', 'name']);
+    const userName = get(proposition, ['users', '0', 'rootName']);
+    const guideName = get(proposition, ['guideName']);
     return this.props
       .rejectReview({
         companyAuthor,
         companyPermlink,
         username: userName,
+        guideName,
         reservationPermlink,
         objPermlink,
         appName,
       })
       .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'review_rejected',
-            defaultMessage: 'Review rejected',
-          }),
-        );
+        setTimeout(() => {
+          this.updatePage();
+          message.success(
+            this.props.intl.formatMessage({
+              id: 'review_rejected',
+              defaultMessage: 'Review rejected',
+            }),
+          );
+        }, 8000);
+      })
+      .catch(e => message.error(e.message));
+  };
+
+  handleReinstateReward = () => {
+    const { proposition } = this.props;
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+    const companyAuthor = get(proposition, ['guide', 'name']);
+    const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
+    const username = get(proposition, ['users', '0', 'rootName']);
+    return this.props
+      .reinstateReward({
+        companyAuthor,
+        username,
+        reservationPermlink,
+        appName,
       })
       .then(() => {
-        setTimeout(() => this.props.getMessageHistory(), 8000);
+        setTimeout(() => {
+          this.props.getMessageHistory().then(() => {
+            message.success(
+              this.props.intl.formatMessage({
+                id: 'review_reinstated',
+                defaultMessage: 'Review reinstated',
+              }),
+            );
+          });
+        }, 8000);
       })
       .catch(e => message.error(e.message));
   };
@@ -299,7 +369,8 @@ export default class CampaignButtons extends React.Component {
   getPopoverMenu = () => {
     const { propositionStatus } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) {
+    const matchParams = [MESSAGES, GUIDE_HISTORY, FRAUD_DETECTION];
+    if (includes(matchParams, this.matchParams)) {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
@@ -328,12 +399,14 @@ export default class CampaignButtons extends React.Component {
       proposition,
       user,
       toggleModal,
+      userFollowed,
+      objectFollowed,
     } = this.props;
     const { isUserInBlacklist } = this.state;
 
-    const followText = this.getFollowText(postState.userFollowed, `@${propositionGuideName}`);
+    const followText = this.getFollowText(userFollowed, `@${propositionGuideName}`);
 
-    const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectName);
+    const followObjText = this.getFollowText(objectFollowed, requiredObjectName);
 
     let popoverMenu = [];
 
@@ -375,10 +448,8 @@ export default class CampaignButtons extends React.Component {
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
-    const userName =
-      this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY
-        ? propositionUserName
-        : user.name;
+    const matchParams = [MESSAGES, GUIDE_HISTORY, FRAUD_DETECTION];
+    const userName = includes(matchParams, this.matchParams) ? propositionUserName : user.name;
     const toggleModalReport = e => {
       e.preventDefault();
       e.stopPropagation();
@@ -396,7 +467,8 @@ export default class CampaignButtons extends React.Component {
     };
 
     const closeModalReport = () => this.setState({ isModalReportOpen: false });
-    const isHistory = match.path === '/rewards/(history|guideHistory|messages)';
+    const history = ['history', 'guideHistory', 'messages'];
+    const isHistory = some(history, item => includes(match.path, item));
 
     return (
       <Popover
@@ -457,6 +529,17 @@ export default class CampaignButtons extends React.Component {
                       return (
                         <PopoverMenuItem key={item.key}>
                           <div role="presentation" onClick={this.handleRejectClick}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'reinstate_reward':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <div role="presentation" onClick={this.handleReinstateReward}>
                             {intl.formatMessage({
                               id: item.id,
                               defaultMessage: item.defaultMessage,
@@ -547,24 +630,27 @@ export default class CampaignButtons extends React.Component {
     );
   }
 
+  getPropositionStatus = proposition => {
+    const { match } = this.props;
+    const isReserved = !isEmpty(match)
+      ? match.params.filterKey === IS_RESERVED ||
+        match.params.filterKey === IS_ALL ||
+        includes(match.path, 'object')
+      : '';
+    if (isReserved) return ASSIGNED;
+    return get(proposition, ['users', '0', 'status'], '');
+  };
+
   render() {
-    const {
-      intl,
-      numberOfComments,
-      daysLeft,
-      propositionStatus,
-      user,
-      proposition,
-      match,
-    } = this.props;
+    const { intl, numberOfComments, daysLeft, propositionStatus, user, proposition } = this.props;
     const { value, isOpenModalEnterAmount, isLoading } = this.state;
     const isAssigned = get(proposition, ['objects', '0', ASSIGNED]);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
-    const isReserved = match.params.filterKey === 'reserved' || includes(match.path, 'object');
-    const status = isReserved ? ASSIGNED : get(proposition, ['users', '0', 'status'], '');
+    const status = this.getPropositionStatus(proposition);
     const buttonsTitleForRender = buttonsTitle[status] || buttonsTitle.default;
+    const matchParams = [GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
 
     return (
       <div className="Buttons">
@@ -596,8 +682,7 @@ export default class CampaignButtons extends React.Component {
           {this.renderPostPopoverMenu()}
         </div>
         {(isAssigned || status === ASSIGNED) &&
-          this.matchParams !== GUIDE_HISTORY &&
-          this.matchParams !== MESSAGES && (
+          every(matchParams, item => item !== this.matchParams) && (
             <React.Fragment>
               <Button type="primary" onClick={this.openModalDetails}>
                 {intl.formatMessage({
@@ -607,7 +692,7 @@ export default class CampaignButtons extends React.Component {
               </Button>
             </React.Fragment>
           )}
-        {(this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) && (
+        {some(matchParams, item => item === this.matchParams) && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">

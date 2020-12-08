@@ -4,7 +4,6 @@ exports[`(Component) UserWalletSummary with default prop values renders and matc
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <UserWalletSummary
-    balance={0}
     estAccountValue="100.00 HIVE"
     isGuest={false}
     loading={false}
@@ -18,7 +17,7 @@ ShallowWrapper {
       Object {
         "balance": "100",
         "savings_balance": "100 HIVE",
-        "savings_sbd_balance": "1000 HIVE",
+        "savings_hbd_balance": "1000 HIVE",
         "vesting_shares": "0",
       }
     }
@@ -60,7 +59,7 @@ ShallowWrapper {
           >
             <span>
               <FormattedNumber
-                value={0}
+                value={100}
               />
                HIVE
             </span>
@@ -249,7 +248,7 @@ ShallowWrapper {
             >
               <span>
                 <FormattedNumber
-                  value={0}
+                  value={100}
                 />
                  HIVE
               </span>
@@ -307,7 +306,7 @@ ShallowWrapper {
             "props": Object {
               "children": <span>
                 <FormattedNumber
-                  value={0}
+                  value={100}
                 />
                  HIVE
               </span>,
@@ -321,7 +320,7 @@ ShallowWrapper {
               "props": Object {
                 "children": Array [
                   <FormattedNumber
-                    value={0}
+                    value={100}
                   />,
                   " HIVE",
                 ],
@@ -333,7 +332,7 @@ ShallowWrapper {
                   "key": undefined,
                   "nodeType": "class",
                   "props": Object {
-                    "value": 0,
+                    "value": 100,
                   },
                   "ref": null,
                   "rendered": null,
@@ -1250,7 +1249,7 @@ ShallowWrapper {
             >
               <span>
                 <FormattedNumber
-                  value={0}
+                  value={100}
                 />
                  HIVE
               </span>
@@ -1439,7 +1438,7 @@ ShallowWrapper {
               >
                 <span>
                   <FormattedNumber
-                    value={0}
+                    value={100}
                   />
                    HIVE
                 </span>
@@ -1497,7 +1496,7 @@ ShallowWrapper {
               "props": Object {
                 "children": <span>
                   <FormattedNumber
-                    value={0}
+                    value={100}
                   />
                    HIVE
                 </span>,
@@ -1511,7 +1510,7 @@ ShallowWrapper {
                 "props": Object {
                   "children": Array [
                     <FormattedNumber
-                      value={0}
+                      value={100}
                     />,
                     " HIVE",
                   ],
@@ -1523,7 +1522,7 @@ ShallowWrapper {
                     "key": undefined,
                     "nodeType": "class",
                     "props": Object {
-                      "value": 0,
+                      "value": 100,
                     },
                     "ref": null,
                     "rendered": null,

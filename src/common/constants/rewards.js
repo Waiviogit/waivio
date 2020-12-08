@@ -35,10 +35,62 @@ export const GUIDE_HISTORY = 'guideHistory';
 
 export const MESSAGES = 'messages';
 
+export const FRAUD_DETECTION = 'fraud-detection';
+
 export const HISTORY = 'history';
 
 export const ASSIGNED = 'assigned';
+export const UNASSIGNED = 'unassigned';
 
 export const IS_RESERVED = 'reserved';
+export const IS_ALL = 'all';
+export const IS_ACTIVE = 'active';
+export const CAMPAIGNS = 'campaigns';
+export const PAYABLES = 'payables';
+export const RECEIVABLES = 'receivables';
+
+export const PATH_NAME_GUIDE_HISTORY = '/rewards/guideHistory';
+export const PATH_NAME_MESSAGES = '/rewards/messages';
+export const PATH_NAME_HISTORY = '/rewards/history';
+export const PATH_NAME_ACTIVE = '/rewards/active';
+export const PATH_NAME_RECEIVABLES = '/rewards/receivables';
+export const PATH_NAME_DISCOVER = '/discover';
+export const PATH_NAME_CREATE = '/rewards/create';
+export const PATH_NAME_MATCH_BOT = '/rewards/match-bot';
+export const PATH_NAME_MANAGE = '/rewards/manage';
+export const PATH_NAME_PAYABLES = '/rewards/payables';
+export const PATH_NAME_BLACKLIST = '/rewards/blacklist';
+
+export const CAMPAIGN_STATUS = {
+  inactive: 'inactive',
+  expired: 'expired',
+  deleted: 'deleted',
+  onHold: 'onHold',
+  active: 'active',
+  pending: 'pending',
+  payed: 'payed',
+  reachedLimit: 'reachedLimit',
+};
+
+export const isDisabledStatus = [
+  CAMPAIGN_STATUS.inactive,
+  CAMPAIGN_STATUS.expired,
+  CAMPAIGN_STATUS.deleted,
+  CAMPAIGN_STATUS.onHold,
+  CAMPAIGN_STATUS.active,
+];
+
+export const isCheckedStatus = [
+  CAMPAIGN_STATUS.active,
+  CAMPAIGN_STATUS.payed,
+  CAMPAIGN_STATUS.reachedLimit,
+];
+
+export const isInactiveStatus = [
+  CAMPAIGN_STATUS.inactive,
+  CAMPAIGN_STATUS.expired,
+  CAMPAIGN_STATUS.deleted,
+  CAMPAIGN_STATUS.onHold,
+];
 
 export default null;

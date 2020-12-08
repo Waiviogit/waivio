@@ -24,6 +24,8 @@ import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
+import websiteReducer, * as fromWebsite from './websites/websiteReducer';
+import referralReducer, * as fromReferral from '../client/rewards/ReferralProgram/ReferralReducer';
 
 export default history =>
   combineReducers({
@@ -50,6 +52,8 @@ export default history =>
     gallery: galleryReducer,
     map: mapReducer,
     rewards: rewardsReducer,
+    referral: referralReducer,
+    website: websiteReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -66,6 +70,8 @@ export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUser
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
 export const getAuthenticatedUserPrivateEmail = state =>
   fromAuth.getAuthenticatedUserPrivateEmail(state.auth);
+export const getAuthorizationUserFollowSort = state =>
+  fromAuth.getAuthorizationUserFollowSort(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, permlink, author) =>
@@ -78,6 +84,10 @@ export const getIsPostLoaded = (state, author, permlink) =>
 export const getIsPostFailed = (state, author, permlink) =>
   fromPosts.getIsPostFailed(state.posts, author, permlink);
 export const getLastPostId = state => fromPosts.getLastPostId(state.posts);
+export const getPostTags = (state, author, permlink) =>
+  fromPosts.getPostTags(state.posts, author, permlink);
+export const getPostCities = (state, author, permlink) =>
+  fromPosts.getPostCities(state.posts, author, permlink);
 
 export const getDraftPosts = state => fromEditor.getDraftPosts(state.editor);
 export const getIsEditorLoading = state => fromEditor.getIsEditorLoading(state.editor);
@@ -161,15 +171,25 @@ export const getTransferAmount = state => fromWallet.getTransferAmount(state.wal
 export const getTransferCurrency = state => fromWallet.getTransferCurrency(state.wallet);
 export const getTransferMemo = state => fromWallet.getTransferMemo(state.wallet);
 export const getTransferApp = state => fromWallet.getTransferApp(state.wallet);
+export const getTransferIsTip = state => fromWallet.getTransferIsTip(state.wallet);
 export const getIsPowerUpOrDownVisible = state =>
   fromWallet.getIsPowerUpOrDownVisible(state.wallet);
 export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);
 export const getStatusWithdraw = state => fromWallet.getStatusWithdraw(state.wallet);
 export const hasMoreGuestActions = state => fromWallet.hasMoreGuestActions(state.wallet);
 export const getIsErrorLoading = state => fromWallet.getIsErrorLoading(state.wallet);
+export const getIsErrorLoadingTable = state => fromWallet.getIsErrorLoadingTable(state.wallet);
 export const getOperationNum = state => fromWallet.getOperationNum(state.wallet);
+export const getTableOperationNum = state => fromWallet.getTableOperationNum(state.wallet);
 export const getIsloadingMoreTransactions = state =>
   fromWallet.getIsloadingMoreTransactions(state.wallet);
+export const getIsloadingMoreTableTransactions = state =>
+  fromWallet.getIsloadingMoreTableTransactions(state.wallet);
+export const getIsloadingTableTransactions = state =>
+  fromWallet.getIsloadingTableTransactions(state.wallet);
+export const getIsOpenWalletTable = state => fromWallet.getIsOpenWalletTable(state.wallet);
+export const getIsTransactionsHistoryLoading = state =>
+  fromWallet.getIsTransactionsHistoryLoading(state.wallet);
 
 export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
 export const getLocale = state => fromSettings.getLocale(state.settings);
@@ -190,7 +210,9 @@ export const getTotalVestingShares = state => fromWallet.getTotalVestingShares(s
 export const getTotalVestingFundSteem = state => fromWallet.getTotalVestingFundSteem(state.wallet);
 export const getUsersTransactions = state => fromWallet.getUsersTransactions(state.wallet);
 export const getTransactions = state => fromWallet.getTransactions(state.wallet);
+export const getTableTransactions = state => fromWallet.getTableTransactions(state.wallet);
 export const getUserHasMore = state => fromWallet.getUserHasMore(state.wallet);
+export const getUserHasMoreTable = state => fromWallet.getUserHasMoreTable(state.wallet);
 export const getUsersAccountHistory = state => fromWallet.getUsersAccountHistory(state.wallet);
 export const getUsersAccountHistoryLoading = state =>
   fromWallet.getUsersAccountHistoryLoading(state.wallet);
@@ -224,6 +246,7 @@ export const getIsStartSearchAutoComplete = state =>
   fromSearch.getIsStartSearchAutoComplete(state.search);
 export const getIsStartSearchUser = state => fromSearch.getIsStartSearchUser(state.search);
 export const getIsStartSearchObject = state => fromSearch.getIsStartSearchObject(state.search);
+export const getIsClearSearchObjects = state => fromSearch.getIsClearSearchObjects(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
@@ -233,6 +256,13 @@ export const getObjectModerators = state => fromObject.getObjectModerators(state
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
 export const getObjectTagCategory = state => fromObject.getObjectTagCategory(state.object);
+export const getWobjectIsFailed = state => fromObject.getWobjectIsFailed(state.object);
+export const getWobjectIsFatching = state => fromObject.getWobjectIsFatching(state.object);
+
+export const getBreadCrumbs = state => fromObject.getBreadCrumbs(state.object);
+export const getWobjectNested = state => fromObject.getWobjectNested(state.object);
+export const getObjectLists = state => fromObject.getObjectLists(state.object);
+export const getLoadingFlag = state => fromObject.getLoadingFlag(state.object);
 
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>
@@ -253,12 +283,15 @@ export const getActiveFilters = state => fromObjectType.getActiveFilters(state.o
 export const getTypeName = state => fromObjectType.getTypeName(state.objectType);
 export const getHasMap = state => fromObjectType.getHasMap(state.objectType);
 export const getObjectTypeSorting = state => fromObjectType.getSorting(state.objectType);
+export const getFiltersTags = state => fromObjectType.getFiltersTags(state.objectType);
+export const getActiveFiltersTags = state => fromObjectType.getActiveFiltersTags(state.objectType);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 
 export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
+export const getRelatedPhotos = state => fromGallery.getRelatedPhotos(state.gallery);
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
 export const getObjectsMap = state => fromMap.getObjectsMap(state.map);
@@ -273,6 +306,50 @@ export const getCountTookPartCampaigns = state =>
 export const getCreatedCampaignsCount = state =>
   fromRewards.getCreatedCampaignsCount(state.rewards);
 export const getCommentsFromReserved = state => fromRewards.getCommentsFromReserved(state.rewards);
+export const getSponsorsRewards = state => fromRewards.getSponsorsRewards(state.rewards);
+export const getFraudSuspicionDataState = state =>
+  fromRewards.getFraudSuspicionDataState(state.rewards);
+export const getHasMoreFollowingRewards = state =>
+  fromRewards.getHasMoreFollowingRewards(state.rewards);
+export const getHasMoreFraudSuspicionData = state =>
+  fromRewards.getHasMoreFraudSuspicionData(state.rewards);
+export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
+export const getIsLoadingRewardsHistory = state =>
+  fromRewards.getIsLoadingRewardsHistory(state.rewards);
+export const getCampaignNames = state => fromRewards.getCampaignNames(state.rewards);
+export const getHistoryCampaigns = state => fromRewards.getHistoryCampaigns(state.rewards);
+export const getHistorySponsors = state => fromRewards.getHistorySponsors(state.rewards);
+export const getHasMoreHistory = state => fromRewards.getHasMoreHistory(state.rewards);
+
+export const getCampaignServerPercent = state =>
+  fromReferral.getCampaignServerPercent(state.referral);
+export const getIndexAbsolutePercent = state =>
+  fromReferral.getIndexAbsolutePercent(state.referral);
+export const getIndexServerPercent = state => fromReferral.getIndexServerPercent(state.referral);
+export const getReferralDuration = state => fromReferral.getReferralDuration(state.referral);
+export const getReferralServerPercent = state =>
+  fromReferral.getReferralServerPercent(state.referral);
+export const getSuspendedTimer = state => fromReferral.getSuspendedTimer(state.referral);
+export const getIsStartLoadingReferralDetails = state =>
+  fromReferral.getIsStartLoadingReferralDetails(state.referral);
+export const getIsUserInWaivioBlackList = state =>
+  fromReferral.getIsUserInWaivioBlackList(state.referral);
+export const getReferralStatus = state => fromReferral.getReferralStatus(state.referral);
+export const getReferralList = state => fromReferral.getReferralList(state.referral);
+export const getIsChangedRuleSelection = state =>
+  fromReferral.getIsChangedRuleSelection(state.referral);
+export const getIsUsersCards = state => fromReferral.getIsUsersCards(state.referral);
+export const getIsHasMoreCards = state => fromReferral.getIsHasMoreCards(state.referral);
+export const getCurrentUserCards = state => fromReferral.getCurrentUserCards(state.referral);
+export const getIsErrorLoadingUserCards = state =>
+  fromReferral.getIsErrorLoadingUserCards(state.referral);
+export const getIsLoadingMoreUserCards = state =>
+  fromReferral.getIsLoadingMoreUserCards(state.referral);
+export const getIsStartChangeRules = state => fromReferral.getIsStartChangeRules(state.referral);
+export const getIsStartGetReferralInfo = state =>
+  fromReferral.getIsStartGetReferralInfo(state.referral);
+export const getStatusSponsoredHistory = state =>
+  fromReferral.getStatusSponsoredHistory(state.referral);
 
 // common selectors
 
@@ -281,8 +358,25 @@ export const getQueryString = state => state.router.location.search;
 
 export const getSuitableLanguage = state => {
   const settingsLocale = getLocale(state);
+
   if (settingsLocale !== 'auto') return settingsLocale;
 
   const usedLocale = getUsedLocale(state);
+
   return usedLocale || 'en-US';
 };
+
+// website
+export const getParentDomain = state => fromWebsite.getParentDomain(state.website);
+export const getDomainAvailableStatus = state =>
+  fromWebsite.getDomainAvailableStatus(state.website);
+export const getWebsiteLoading = state => fromWebsite.getWebsiteLoading(state.website);
+export const getManage = state => fromWebsite.getManage(state.website);
+export const getReports = state => fromWebsite.getReports(state.website);
+export const getOwnWebsites = state => fromWebsite.getOwnWebsites(state.website);
+export const getConfiguration = state => fromWebsite.getConfiguration(state.website);
+export const getAdministrators = state => fromWebsite.getAdministrators(state.website);
+export const getModerators = state => fromWebsite.getModerators(state.website);
+export const getAuthorities = state => fromWebsite.getAuthorities(state.website);
+export const getTagsSite = state => fromWebsite.getTagsSite(state.website);
+export const getSettingsSite = state => fromWebsite.getSettingsSite(state.website);

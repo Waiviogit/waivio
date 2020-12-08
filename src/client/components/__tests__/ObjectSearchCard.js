@@ -45,12 +45,4 @@ describe('<ObjectSearchCard />', () => {
   it('contentName should not be undefined', () => {
     expect(contentName).not.toBeUndefined();
   });
-
-  it('Should have text into contentType block', () => {
-    expect(contentType.text()).toBe('type');
-  });
-
-  it('Should have text into contentType block', () => {
-    expect(contentName.text()).toBe('name');
-  });
 });

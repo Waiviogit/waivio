@@ -3,19 +3,36 @@
 exports[`(Component) ReceiveTransaction with default prop values renders and matches snapshot 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <MemoryRouter>
+  Symbol(enzyme.__unrendered__): <Provider
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+  >
     <ReceiveTransaction
       amount={
         <span>
           0 HIVE
         </span>
       }
+      details={Object {}}
       from="hellosteem"
       isGuestPage={false}
+      isMobile={false}
       memo="Test Memo"
       timestamp="0"
+      to=""
+      transactionType=""
+      type="transfer"
+      username=""
     />
-  </MemoryRouter>,
+  </Provider>,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
     "checkPropTypes": [Function],
@@ -28,7 +45,7 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "class",
+    "nodeType": "function",
     "props": Object {
       "children": <ReceiveTransaction
         amount={
@@ -36,40 +53,43 @@ ShallowWrapper {
             0 HIVE
           </span>
         }
+        details={Object {}}
         from="hellosteem"
         isGuestPage={false}
+        isMobile={false}
         memo="Test Memo"
         timestamp="0"
+        to=""
+        transactionType=""
+        type="transfer"
+        username=""
       />,
-      "history": Object {
-        "action": "POP",
-        "block": [Function],
-        "canGo": [Function],
-        "createHref": [Function],
-        "entries": Array [
-          Object {
-            "hash": "",
-            "key": "f7sqmm",
-            "pathname": "/",
-            "search": "",
-            "state": undefined,
-          },
-        ],
-        "go": [Function],
-        "goBack": [Function],
-        "goForward": [Function],
-        "index": 0,
-        "length": 1,
-        "listen": [Function],
-        "location": Object {
-          "hash": "",
-          "key": "f7sqmm",
-          "pathname": "/",
-          "search": "",
-          "state": undefined,
+      "value": Object {
+        "store": Object {
+          "clearActions": [Function],
+          "dispatch": [Function],
+          "getActions": [Function],
+          "getState": [Function],
+          "replaceReducer": [Function],
+          "subscribe": [Function],
         },
-        "push": [Function],
-        "replace": [Function],
+        "subscription": Subscription {
+          "handleChangeWrapper": [Function],
+          "listeners": Object {
+            "notify": [Function],
+          },
+          "onStateChange": [Function],
+          "parentSub": undefined,
+          "store": Object {
+            "clearActions": [Function],
+            "dispatch": [Function],
+            "getActions": [Function],
+            "getState": [Function],
+            "replaceReducer": [Function],
+            "subscribe": [Function],
+          },
+          "unsubscribe": null,
+        },
       },
     },
     "ref": null,
@@ -81,22 +101,46 @@ ShallowWrapper {
         "amount": <span>
           0 HIVE
         </span>,
+        "details": Object {},
         "from": "hellosteem",
         "isGuestPage": false,
+        "isMobile": false,
         "memo": "Test Memo",
         "timestamp": "0",
+        "to": "",
+        "transactionType": "",
+        "type": "transfer",
+        "username": "",
       },
       "ref": null,
       "rendered": null,
       "type": [Function],
     },
-    "type": [Function],
+    "type": Object {
+      "$$typeof": Symbol(react.provider),
+      "_context": Object {
+        "$$typeof": Symbol(react.context),
+        "Consumer": Object {
+          "$$typeof": Symbol(react.context),
+          "_calculateChangedBits": null,
+          "_context": [Circular],
+        },
+        "Provider": [Circular],
+        "_calculateChangedBits": null,
+        "_currentRenderer": null,
+        "_currentRenderer2": null,
+        "_currentValue": null,
+        "_currentValue2": null,
+        "_threadCount": 0,
+        "displayName": "ReactRedux",
+      },
+    },
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "class",
+      "nodeType": "function",
       "props": Object {
         "children": <ReceiveTransaction
           amount={
@@ -104,40 +148,43 @@ ShallowWrapper {
               0 HIVE
             </span>
           }
+          details={Object {}}
           from="hellosteem"
           isGuestPage={false}
+          isMobile={false}
           memo="Test Memo"
           timestamp="0"
+          to=""
+          transactionType=""
+          type="transfer"
+          username=""
         />,
-        "history": Object {
-          "action": "POP",
-          "block": [Function],
-          "canGo": [Function],
-          "createHref": [Function],
-          "entries": Array [
-            Object {
-              "hash": "",
-              "key": "f7sqmm",
-              "pathname": "/",
-              "search": "",
-              "state": undefined,
-            },
-          ],
-          "go": [Function],
-          "goBack": [Function],
-          "goForward": [Function],
-          "index": 0,
-          "length": 1,
-          "listen": [Function],
-          "location": Object {
-            "hash": "",
-            "key": "f7sqmm",
-            "pathname": "/",
-            "search": "",
-            "state": undefined,
+        "value": Object {
+          "store": Object {
+            "clearActions": [Function],
+            "dispatch": [Function],
+            "getActions": [Function],
+            "getState": [Function],
+            "replaceReducer": [Function],
+            "subscribe": [Function],
           },
-          "push": [Function],
-          "replace": [Function],
+          "subscription": Subscription {
+            "handleChangeWrapper": [Function],
+            "listeners": Object {
+              "notify": [Function],
+            },
+            "onStateChange": [Function],
+            "parentSub": undefined,
+            "store": Object {
+              "clearActions": [Function],
+              "dispatch": [Function],
+              "getActions": [Function],
+              "getState": [Function],
+              "replaceReducer": [Function],
+              "subscribe": [Function],
+            },
+            "unsubscribe": null,
+          },
         },
       },
       "ref": null,
@@ -149,16 +196,40 @@ ShallowWrapper {
           "amount": <span>
             0 HIVE
           </span>,
+          "details": Object {},
           "from": "hellosteem",
           "isGuestPage": false,
+          "isMobile": false,
           "memo": "Test Memo",
           "timestamp": "0",
+          "to": "",
+          "transactionType": "",
+          "type": "transfer",
+          "username": "",
         },
         "ref": null,
         "rendered": null,
         "type": [Function],
       },
-      "type": [Function],
+      "type": Object {
+        "$$typeof": Symbol(react.provider),
+        "_context": Object {
+          "$$typeof": Symbol(react.context),
+          "Consumer": Object {
+            "$$typeof": Symbol(react.context),
+            "_calculateChangedBits": null,
+            "_context": [Circular],
+          },
+          "Provider": [Circular],
+          "_calculateChangedBits": null,
+          "_currentRenderer": null,
+          "_currentRenderer2": null,
+          "_currentValue": null,
+          "_currentValue2": null,
+          "_threadCount": 0,
+          "displayName": "ReactRedux",
+        },
+      },
     },
   ],
   Symbol(enzyme.__options__): Object {
@@ -187,6 +258,5 @@ ShallowWrapper {
     Symbol(enzyme.__providerValues__): undefined,
   },
   Symbol(enzyme.__providerValues__): Map {},
-  Symbol(enzyme.__childContext__): null,
 }
 `;

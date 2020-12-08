@@ -8,7 +8,7 @@ import { getRate, getRewardFund, getWeightValue } from '../reducers';
 import WeightDisplay from './Utils/WeightDisplay';
 
 const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
-  const isValidWeight = !isNaN(weight);
+  const isValidWeight = isNaN(weight);
   const isFullParams = rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
   const tagTitle = intl.formatMessage({
     id: 'total_ralated_payout',
@@ -19,7 +19,7 @@ const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
     const expertize = weightValue > 0 ? weightValue : 0;
     return (
       <span className="Weight" title={tagTitle}>
-        {isNaN(isValidWeight) ? (
+        {isValidWeight ? (
           <Icon type="loading" className="text-icon-right" />
         ) : (
           <Tag>

@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Progress } from 'antd';
+
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
-// import EditorObject from '../EditorObject/EditorObject';
 import CreateObject from '../../post/CreateObjectModal/CreateObject';
-import './LinkedObjects.less';
 import ObjectCardView from '../../objectCard/ObjectCardView';
+
+import './LinkedObjects.less';
 
 const LinkedObjects = ({
   title,

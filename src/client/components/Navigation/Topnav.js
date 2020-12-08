@@ -37,6 +37,8 @@ import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
 import { pendingSearch } from '../../search/Search';
+import { getObjectName } from '../../helpers/wObjectHelper';
+import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
 
 import './Topnav.less';
 
@@ -55,6 +57,7 @@ import './Topnav.less';
   }),
   {
     searchObjectsAutoCompete,
+    setActiveFilters: setFiltersAndLoad,
     searchAutoComplete,
     getUserMetadata,
     searchUsersAutoCompete,
@@ -79,6 +82,7 @@ class Topnav extends React.Component {
     searchAutoComplete: PropTypes.func.isRequired,
     getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
+    setActiveFilters: PropTypes.func.isRequired,
     /* passed props */
     username: PropTypes.string,
     onMenuItemClick: PropTypes.func,
@@ -332,28 +336,28 @@ class Topnav extends React.Component {
               overlayStyle={{ position: 'fixed' }}
               content={
                 <PopoverMenu onSelect={this.handleMoreMenuSelect}>
-                  <PopoverMenuItem key="my-profile">
-                    <FormattedMessage id="my_profile" defaultMessage="My profile" />
+                  <PopoverMenuItem key="feed" topNav>
+                    <FormattedMessage id="feed" defaultMessage=" My Feed" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="feed">
-                    <FormattedMessage id="feed" defaultMessage="Feed" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="rewards">
+                  <PopoverMenuItem key="rewards" topNav>
                     <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="news" fullScreenHidden>
-                    <FormattedMessage id="news" defaultMessage="News" />
+                  <PopoverMenuItem key="discover" topNav>
+                    <FormattedMessage id="menu_discover" defaultMessage="Discover" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="objects" fullScreenHidden>
-                    <FormattedMessage id="objects" defaultMessage="Objects" />
+                  <PopoverMenuItem key="tools" topNav>
+                    <FormattedMessage id="menu_tools" defaultMessage="Tools" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="wallet">
+                  <PopoverMenuItem key="my-profile" topNav>
+                    <FormattedMessage id="my_profile" defaultMessage="Profile" />
+                  </PopoverMenuItem>
+                  <PopoverMenuItem key="wallet" topNav>
                     <FormattedMessage id="wallet" defaultMessage="Wallet" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="settings">
+                  <PopoverMenuItem key="settings" topNav>
                     <FormattedMessage id="settings" defaultMessage="Settings" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="logout">
+                  <PopoverMenuItem key="logout" topNav>
                     <FormattedMessage id="logout" defaultMessage="Logout" />
                   </PopoverMenuItem>
                 </PopoverMenu>
@@ -434,6 +438,7 @@ class Topnav extends React.Component {
     switch (searchData.type) {
       case 'wobject':
         redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchBarValue}`;
+        this.props.setActiveFilters({ searchString: searchBarValue });
         break;
       case 'user':
         redirectUrl = `/discover/${searchBarValue.replace('@', '')}`;
@@ -496,14 +501,14 @@ class Topnav extends React.Component {
         return;
       }
     }
-    let redirectUrl = '';
 
+    let redirectUrl = '';
     switch (data.props.marker) {
       case Topnav.markers.USER:
         redirectUrl = `/@${value.replace('user', '')}`;
         break;
       case Topnav.markers.WOBJ:
-        redirectUrl = `/object/${value.replace('wobj', '')}`;
+        redirectUrl = value.replace('wobj', '');
         break;
       default:
         redirectUrl = `/discover-objects/${value.replace('type', '')}`;
@@ -605,14 +610,14 @@ class Topnav extends React.Component {
         )}
       >
         {map(wobjects, option => {
-          const wobjName = option.name || option.default_name;
+          const wobjName = getObjectName(option);
           const parent = option.parent;
 
           return wobjName ? (
             <AutoComplete.Option
               marker={Topnav.markers.WOBJ}
               key={`wobj${wobjName}`}
-              value={`wobj${option.author_permlink}`}
+              value={`wobj${option.defaultShowLink}`}
               className="Topnav__search-autocomplete"
             >
               <div className="Topnav__search-content-wrap">
@@ -620,9 +625,7 @@ class Topnav extends React.Component {
                 <div>
                   <div className="Topnav__search-content">{wobjName}</div>
                   {parent && (
-                    <div className="Topnav__search-content-small">
-                      {parent.name || parent.default_name}
-                    </div>
+                    <div className="Topnav__search-content-small">{getObjectName(parent)}</div>
                   )}
                 </div>
               </div>

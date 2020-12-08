@@ -10,15 +10,12 @@ import {
   getFeed,
   getPosts,
   getBookmarks as getBookmarksSelector,
-  getObject,
   getLocale,
   getReadLanguages,
-  getObjectAlbums,
   getLastPostId,
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { mapObjectAppends } from '../object/wObjectHelper';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
@@ -48,23 +45,20 @@ const getUserLocalesArray = getState => {
   return locales;
 };
 
-export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => (
-  dispatch,
-  getState,
-) => {
+export const getFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, getState) => {
   const state = getState();
   const user_languages = getUserLocalesArray(getState);
   const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
 
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
-    payload: ApiClient.getFeedContent(sortBy, {
+    payload: ApiClient.getFeedContent(sortBy, locale, follower, {
       category: sortBy,
       tag: category,
       skip: 0,
       limit,
       user_languages,
-      locale,
     }),
     meta: {
       sortBy,
@@ -81,19 +75,19 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   const user_languages = getUserLocalesArray(getState);
   const locale = getLocale(state);
   const lastId = getLastPostId(state);
+  const follower = getAuthenticatedUserName(state);
 
   if (!feedContent.length) return Promise.resolve(null);
 
   return dispatch({
     type: GET_MORE_FEED_CONTENT.ACTION,
-    payload: ApiClient.getFeedContent(sortBy, {
+    payload: ApiClient.getFeedContent(sortBy, locale, follower, {
       category: sortBy,
       tag: category,
       skip: feedContent.length,
       limit,
       user_languages,
       lastId,
-      locale,
     }),
     meta: {
       sortBy,
@@ -112,6 +106,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
   let userBlogPosts = [];
   const state = getState();
   const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
 
   if (!initialLoad) {
     const feed = getFeed(state);
@@ -129,6 +124,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
     type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
     payload: ApiClient.getUserProfileBlog(
       userName,
+      follower,
       {
         startAuthor,
         startPermlink,
@@ -150,7 +146,7 @@ export const getUserFeedContent = ({ userName, limit = 20 }) => (dispatch, getSt
   const user_languages = getUserLocalesArray(getState);
   const locale = getLocale(state);
 
-  dispatch({
+  return dispatch({
     type: GET_USER_FEED_CONTENT.ACTION,
     payload: ApiClient.getUserFeedContent(userName, limit, user_languages, locale),
     meta: {
@@ -195,31 +191,15 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
     meta: { sortBy: 'comments', category: username, limit },
   });
 
-export const getObjectComments = (author, permlink, category = 'waivio-object') => (
-  dispatch,
-  getState,
-  { steemAPI },
-) => {
-  const state = getState();
-  const wobject = getObject(state);
-  const albums = getObjectAlbums(state);
-  return dispatch({
-    type: GET_USER_COMMENTS.ACTION,
-    payload: steemAPI
-      .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
-      .then(apiRes => mapObjectAppends(apiRes.content, wobject, albums)),
-    meta: { sortBy: 'comments', category: author, limit: 10 },
-  });
-};
-
 export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, getState) => {
   const state = getState();
   const readLanguages = getUserLocalesArray(getState);
   const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
 
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
-    payload: ApiClient.getFeedContentByObject(object, limit, readLanguages, locale),
+    payload: ApiClient.getFeedContentByObject(object, limit, readLanguages, locale, follower),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
 };
@@ -325,12 +305,14 @@ export const getMoreReplies = () => (dispatch, getState, { steemAPI }) => {
  * @param bookmarks from localStorage only contain author and permlink
  * @returns Promise - bookmarksData
  */
-async function getBookmarksData(bookmarks) {
+async function getBookmarksData(bookmarks, locale, follower) {
   const bookmarksData = [];
   for (let idx = 0; idx < bookmarks.length; idx += 1) {
     const [author, permlink] = bookmarks[idx].split('/');
-    const postData = ApiClient.getContent(author, permlink);
-    bookmarksData.push(postData);
+    if (author !== 'undefined' && permlink !== 'undefined') {
+      const postData = ApiClient.getContent(author, permlink, locale, follower);
+      bookmarksData.push(postData);
+    }
   }
   return Promise.all(bookmarksData.sort((a, b) => a.timestamp - b.timestamp).reverse());
 }
@@ -339,16 +321,18 @@ export const getBookmarks = () => (dispatch, getState) => {
   const state = getState();
   const loaded = get(getFeed(state), ['bookmarks', 'all', 'list'], []);
   const bookmarks = getBookmarksSelector(state);
-  if (loaded.length && loaded.length === bookmarks.length) {
-    return;
-  }
+  const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
+  if (loaded.length && loaded.length === bookmarks.length) return;
+
   dispatch({
     type: GET_BOOKMARKS.ACTION,
-    payload: getBookmarksData(bookmarks).then(posts => posts.filter(post => post.id !== 0)),
+    payload: getBookmarksData(bookmarks, locale, follower).then(posts =>
+      posts.filter(post => post.id !== 0),
+    ),
     meta: {
       sortBy: 'bookmarks',
       category: 'all',
-      once: true,
     },
   });
 };

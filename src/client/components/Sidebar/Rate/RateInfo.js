@@ -4,20 +4,18 @@ import PropTypes from 'prop-types';
 import { Rate } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
+
 import { averageRate, rateCount } from './rateHelper';
 import { ratePercent } from '../../../../common/constants/listOfFields';
-import { getObjectAdmins, getObjectModerators, getRatingFields } from '../../../reducers';
+import { getRatingFields } from '../../../reducers';
 import BTooltip from '../../BTooltip';
 import RateObjectModal from './RateObjectModal';
-import { calculateApprovePercent } from '../../../helpers/wObjectHelper';
 
 import './RateInfo.less';
 
 @injectIntl
 @connect(state => ({
   ratingFields: getRatingFields(state),
-  moderators: getObjectAdmins(state),
-  admins: getObjectModerators(state),
 }))
 class RateInfo extends React.Component {
   static propTypes = {
@@ -25,9 +23,6 @@ class RateInfo extends React.Component {
     ratingFields: PropTypes.arrayOf(PropTypes.shape()),
     authorPermlink: PropTypes.string.isRequired,
     intl: PropTypes.shape().isRequired,
-    locale: PropTypes.string.isRequired,
-    admins: PropTypes.arrayOf(PropTypes.string).isRequired,
-    moderators: PropTypes.arrayOf(PropTypes.string).isRequired,
   };
 
   static defaultProps = {
@@ -63,8 +58,8 @@ class RateInfo extends React.Component {
 
   rateDescription = field => {
     const { intl } = this.props;
-
     const yourVote = this.getInitialRateValue(field);
+
     if (yourVote) {
       return (
         <React.Fragment>
@@ -78,18 +73,13 @@ class RateInfo extends React.Component {
   };
 
   render() {
-    const { ratingFields, username, admins, moderators } = this.props;
+    const { ratingFields, username } = this.props;
     const rankingList = sortBy(ratingFields, ['body']);
-    const actualRankingList = rankingList.filter(
-      rate =>
-        calculateApprovePercent(rate.active_votes, rate.weight, { admins, moderators }) >= 70 &&
-        rate.locale === this.props.locale,
-    );
 
     return (
       <React.Fragment>
-        {actualRankingList &&
-          actualRankingList.map(field => (
+        {rankingList &&
+          rankingList.map(field => (
             <div className="RateInfo__header" key={field.permlink}>
               <div>{field.body}</div>
               <div className="RateInfo__stars">

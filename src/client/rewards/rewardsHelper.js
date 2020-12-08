@@ -1,9 +1,22 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, map, get, reduce, round } from 'lodash';
+import { isEmpty, map, get, reduce, round, memoize, includes } from 'lodash';
 import moment from 'moment';
-import { getFieldWithMaxWeight } from '../object/wObjectHelper';
-import { REWARD, MESSAGES, GUIDE_HISTORY, HISTORY } from '../../common/constants/rewards';
+import {
+  REWARD,
+  MESSAGES,
+  GUIDE_HISTORY,
+  HISTORY,
+  PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_MESSAGES,
+  PATH_NAME_PAYABLES,
+  PATH_NAME_HISTORY,
+  IS_ACTIVE,
+  IS_ALL,
+  IS_RESERVED,
+} from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
+import { getObjectName } from '../helpers/wObjectHelper';
+import { getCryptosPriceHistory } from '../reducers';
 
 export const displayLimit = 10;
 
@@ -17,6 +30,7 @@ export const preparePropositionReqData = ({
   limit = 10,
   sort,
   isRequestWithoutRequiredObject,
+  locale,
   ...args
 }) => {
   const reqData = {
@@ -24,6 +38,7 @@ export const preparePropositionReqData = ({
     userName: username,
     match,
     sort,
+    locale,
   };
   if (!isRequestWithoutRequiredObject)
     reqData.requiredObject = match.params.campaignParent || match.params.name;
@@ -148,20 +163,19 @@ export const formatDate = (intl, date) => {
   }
 };
 
-export const convertDigits = (number, isHive) =>
-  parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
+export const convertDigits = (number, isHive) => {
+  if (number) {
+    return parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
+  }
+  return 0;
+};
 
 export const getCurrentUSDPrice = () => {
-  const cryptosPriceHistory = useSelector(state => state.app.cryptosPriceHistory);
+  const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
 
   if (isEmpty(cryptosPriceHistory)) return !cryptosPriceHistory;
-  const currentUSDPrice =
-    cryptosPriceHistory &&
-    cryptosPriceHistory.hive &&
-    cryptosPriceHistory.hive.usdPriceHistory &&
-    cryptosPriceHistory.hive.usdPriceHistory.usd;
 
-  return currentUSDPrice;
+  return get(cryptosPriceHistory, ['hive', 'usdPriceHistory', 'usd']);
 };
 
 export const getDaysLeft = (reserveDate, daysCount) => {
@@ -171,9 +185,10 @@ export const getDaysLeft = (reserveDate, daysCount) => {
 };
 
 export const getFrequencyAssign = objectDetails => {
-  const requiredObjectName = getFieldWithMaxWeight(objectDetails.requiredObject, 'name');
+  const requiredObjectName = getObjectName(objectDetails.required_object);
+  const requiredObjectAuthorPermlink = get(objectDetails, ['requiredObject', 'author_permlink']);
   return objectDetails.frequency_assign
-    ? `<ul><li>User did not receive a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/object/${objectDetails.requiredObject.author_permlink}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
+    ? `<ul><li>User did not receive a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/object/${requiredObjectAuthorPermlink}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
     : '';
 };
 
@@ -209,7 +224,7 @@ export const getDescription = objectDetails =>
 const getFollowingObjects = objectDetails =>
   !isEmpty(objectDetails.objects)
     ? map(objectDetails.objects, obj => ({
-        name: getFieldWithMaxWeight(obj.object || obj, 'name'),
+        name: getObjectName(obj.object || obj),
         permlink: obj.author_permlink || obj.object.author_permlink,
       }))
     : '';
@@ -236,7 +251,7 @@ export const getMinExpertise = ({
       2,
     );
   }
-  return '';
+  return 0;
 };
 
 export const getMinExpertisePrepared = ({ minExpertise, rewardFund, rate }) =>
@@ -253,7 +268,6 @@ export const getDetailsBody = ({
   proposedWobjName,
   proposedAuthorPermlink,
   primaryObjectName,
-  secondaryObjectName,
   rate,
   recentClaims,
   rewardBalance,
@@ -279,10 +293,10 @@ export const getDetailsBody = ({
   const frequencyAssign = getFrequencyAssign(proposition);
   const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> or referenced accounts.</li></ul>`;
   const receiptPhoto = getReceiptPhoto(proposition);
-  const linkToFollowingObjects = secondaryObjectName
+  const linkToFollowingObjects = proposedWobjName
     ? `<li>Link to <a href='/object/${proposedAuthorPermlink}'>${proposedWobjName}</a></li>`
     : `<li>Link to one of the following objects: ${links}</li>`;
-  const proposedWobj = secondaryObjectName
+  const proposedWobj = proposedWobjName
     ? `of <a href="/object/${proposedAuthorPermlink}">${proposedWobjName}</a>`
     : '';
   const postRequirements = `<p><b>Post requirements:</b></p>
@@ -324,7 +338,6 @@ export const sortDebtObjsData = (items, sortBy) => {
 
 export const getProcessingFee = data => {
   if (!data || isEmpty(data)) return null;
-
   const amounts = {
     share: get(data, ['details', 'commissionWeight']) || '',
     hive: get(data, ['amount']) || '',
@@ -341,7 +354,7 @@ export const getProcessingFee = data => {
     case 'referral_server_fee':
       return {
         name: 'Referral',
-        account: 'waivio.referrals',
+        account: data.userName,
         ...amounts,
       };
     case 'campaign_server_fee':
@@ -356,7 +369,7 @@ export const getProcessingFee = data => {
 };
 
 export const payablesFilterData = location => {
-  if (location.pathname === '/rewards/payables') {
+  if (location.pathname === PATH_NAME_PAYABLES) {
     return [
       {
         filterName: 'days',
@@ -764,18 +777,22 @@ export const buttonsTitle = {
   },
 };
 
-export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
-  if (location === '/rewards/messages') {
+export const getBreadCrumbText = (intl, location, filterKey, rewardText, match) => {
+  const messageCrumb = [
+    PATH_NAME_MESSAGES,
+    `${PATH_NAME_MESSAGES}/${match.params.campaignId}/${match.params.permlink}`,
+  ];
+  if (includes(messageCrumb, location)) {
     return intl.formatMessage({
       id: MESSAGES,
       defaultMessage: 'Messages',
     });
-  } else if (location === '/rewards/history') {
+  } else if (location === PATH_NAME_HISTORY) {
     return intl.formatMessage({
       id: 'history_and_sponsor_communications',
       defaultMessage: 'History and sponsor communications',
     });
-  } else if (location === '/rewards/guideHistory') {
+  } else if (location === PATH_NAME_GUIDE_HISTORY) {
     return intl.formatMessage({
       id: 'history_of_reservations',
       defaultMessage: 'History of reservations',
@@ -802,7 +819,15 @@ export const getActiveFilters = ({
   }
 };
 
-export const getSortChanged = ({ path, sortHistory, sortMessages, sortGuideHistory }) => {
+export const getSortChanged = ({
+  path,
+  sortHistory,
+  sortMessages,
+  sortGuideHistory,
+  sortAll,
+  sortEligible,
+  sortReserved,
+}) => {
   switch (path) {
     case HISTORY:
       return sortHistory;
@@ -810,7 +835,40 @@ export const getSortChanged = ({ path, sortHistory, sortMessages, sortGuideHisto
       return sortMessages;
     case GUIDE_HISTORY:
       return sortGuideHistory;
+    case IS_ACTIVE:
+      return sortEligible;
+    case IS_ALL:
+      return sortAll;
+    case IS_RESERVED:
+      return sortReserved;
     default:
       return '';
   }
+};
+
+export const getReviewRequirements = memoize(campaign => ({
+  postRequirements: {
+    minPhotos: get(campaign, ['requirements', 'minPhotos'], 0),
+    secondaryObject: get(campaign, ['secondaryObject'], {}),
+    requiredObject: get(campaign, ['requiredObject'], {}),
+  },
+  authorRequirements: {
+    minExpertise: get(campaign, ['userRequirements', 'minExpertise'], 0), // todo: check backend key
+    minFollowers: get(campaign, ['userRequirements', 'minFollowers'], 0),
+    minPosts: get(campaign, ['userRequirements', 'minPosts'], 0),
+  },
+}));
+
+export const pathNameHistoryNotify = match =>
+  `${PATH_NAME_HISTORY}/${match.params.campaignId}/${match.params.permlink}/${match.params.username}`;
+
+export const handleRequirementFilters = requirementFilters => {
+  const filteredObj = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in requirementFilters) {
+    if (key !== 'expertise' && key !== 'followers' && key !== 'posts') {
+      filteredObj[key] = requirementFilters[key];
+    }
+  }
+  return filteredObj;
 };

@@ -2,6 +2,18 @@
   "moduleNameMapper": {
     "\\.((s)css|less)$": "identity-obj-proxy"
   },
+  "transform": {
+    "\\.(js|jsx)$": "babel-jest",
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/fileTransformer.js"
+  },
   "setupTestFrameworkScriptFile": "<rootDir>/setupTests.js",
-  "testURL": "http://localhost/"
+  "testURL": "http://localhost/",
+  "coverageThreshold": {
+    "global": {
+      "branches": 9,
+      "functions": 20,
+      "lines": 34,
+      "statements": 34
+    }
+  }
 }

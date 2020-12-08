@@ -55,19 +55,23 @@ class CustomMarker extends React.Component {
 
   image = () => {
     const { isMarked } = this.props;
+
     if (isMarked) return this.isHover() ? pinHoverMarked : pinMarked;
+
     return this.isHover() ? pinHover : pin;
   };
 
   handleClick = event => {
     event.stopPropagation();
     event.nativeEvent.stopImmediatePropagation();
+
     return this.props.onClick && this.props.onClick(this.eventParameters(event));
   };
 
   handleDoubleClick = event => {
     event.stopPropagation();
     event.nativeEvent.stopImmediatePropagation();
+
     return this.props.onDoubleClick && this.props.onDoubleClick(this.eventParameters(event));
   };
 

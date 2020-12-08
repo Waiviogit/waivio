@@ -1,0 +1,92 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.nightmode {
+  .Withdraw {
+    &__title-footer {
+      color: @white;
+    }
+
+    &__wrapper-footer {
+      color: @black;
+    }
+
+    &__button-footer {
+      background-color: @orange-hot;
+
+      &:hover {
+        background-color: @neon-carrot;
+      }
+
+      &:disabled {
+        color: @blue-baliHai;
+        background-color: @grey-iron;
+
+        &:hover {
+          background-color: @grey-iron;
+        }
+      }
+    }
+
+    &__input-text {
+      background: transparent;
+      color: @white;
+      border-color: @normal-grey;
+    }
+
+    &__switcher-button {
+      border: 1px solid @normal-grey;
+      color: @blue-botticelli;
+      background-color: transparent;
+
+      &--border-radius {
+        border-right-color: transparent;
+
+        &:first-child {
+          border-left: 1px solid @normal-grey;
+        }
+
+        &:last-child {
+          border-right: 1px solid @normal-grey;
+        }
+      }
+
+      &--active {
+        color: @orange-hot;
+        border-color: @orange-hot;
+      }
+
+      &--active-radius {
+        color: @orange-hot;
+        border-color: @orange-hot;
+        border-right: 1px solid @orange-hot;
+
+        &:first-child {
+          border-radius: 4px 0 0 4px;
+          border-left: 1px solid @orange-hot;
+
+          @media @small {
+            border-radius: 0;
+          }
+        }
+
+        &:last-child {
+          border-radius: 0 4px 4px 0;
+          border-right: 1px solid @orange-hot;
+        }
+      }
+    }
+
+    &__qr-button {
+      background-color: @white;
+      border: 1px solid @normal-grey;
+      color: @normal-grey;
+      transition: 0.3s;
+    }
+
+    &__input {
+      border: 1px solid @normal-grey;
+      background-color: transparent;
+    }
+  }
+}

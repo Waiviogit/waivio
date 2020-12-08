@@ -1,17 +1,26 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { get, map, uniq } from 'lodash';
+import { get, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import FilteredRewardsList from '../FilteredRewardsList';
-import { getBlacklist } from '../rewardsActions';
-import * as ApiClient from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../reducers';
+import { getBlacklist, getMoreRewardsHistory, getRewardsHistory } from '../rewardsActions';
+import {
+  getAuthenticatedUserName,
+  getCampaignNames,
+  getHasMoreHistory,
+  getHistoryCampaigns,
+  getHistorySponsors,
+  getIsLoadingRewardsHistory,
+} from '../../reducers';
 import {
   REWARDS_TYPES_MESSAGES,
   CAMPAIGNS_TYPES_MESSAGES,
+  PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_HISTORY,
 } from '../../../common/constants/rewards';
+import { pathNameHistoryNotify } from '../rewardsHelper';
 
 const History = ({
   intl,
@@ -20,26 +29,35 @@ const History = ({
   activeHistoryFilters,
   activeGuideHistoryFilters,
   messagesSponsors,
+  messagesCampaigns,
   setMessagesSponsors,
+  setMessagesCampaigns,
   match,
+  usedLocale,
   setSortValue,
   sortHistory,
   sortMessages,
   sortGuideHistory,
   setActiveMessagesFilters,
+  location,
+  getUserBlackList,
+  userName,
+  getCurrentRewardsHistory,
+  isLoadingHistory,
+  campaignNames,
+  historyCampaigns,
+  historySponsors,
+  hasMoreHistory,
+  getMoreHistory,
 }) => {
-  const location = useLocation();
-  const dispatch = useDispatch();
-  const isHistory = location.pathname === '/rewards/history';
-  const isGuideHistory = location.pathname === '/rewards/guideHistory';
+  const isHistory = location.pathname === PATH_NAME_HISTORY;
+  const isHistoryNotify = location.pathname === pathNameHistoryNotify(match);
+  const isGuideHistory = location.pathname === PATH_NAME_GUIDE_HISTORY;
 
-  const [loadingCampaigns, setLoadingCampaigns] = useState(false);
-  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
   const [blacklistUsers, setBlacklistUsers] = useState([]);
-  const userName = useSelector(getAuthenticatedUserName);
-  const useLoader = true;
+  const [loadingCampaigns, setLoadingCampaigns] = useState(false);
+
   const sortForFilters = useMemo(() => {
     if (isHistory) {
       return sortHistory;
@@ -49,61 +67,63 @@ const History = ({
     return sortMessages;
   }, [isHistory, isGuideHistory, sortHistory, sortGuideHistory, sortMessages]);
 
-  const getHistory = useCallback(
-    async (username, sortChanged, activeFilters, withLoader, loadMore = false) => {
-      const rewards = map(activeFilters.rewards, item =>
-        Object.keys(REWARDS_TYPES_MESSAGES).find(key => REWARDS_TYPES_MESSAGES[key] === item),
-      );
-      const caseStatus = Object.keys(CAMPAIGNS_TYPES_MESSAGES).find(
-        key => CAMPAIGNS_TYPES_MESSAGES[key] === activeFilters.caseStatus,
-      );
-      try {
-        setHasMore(false);
-        const requestData = {
-          onlyWithMessages: true,
-          sort: sortChanged,
-          rewards,
-          status: activeFilters.status,
-        };
-        requestData.skip = loadMore ? messages.length : 0;
-        if (isHistory) {
-          requestData.guideNames = activeFilters.messagesSponsors;
-          requestData.userName = username;
-        }
-        if (!isHistory) {
-          requestData.caseStatus = caseStatus;
-          requestData.guideName = username;
-        }
-        if (isGuideHistory) {
-          requestData.guideName = username;
-          requestData.guideNames = activeFilters.messagesSponsors;
-          requestData.onlyWithMessages = false;
-        }
+  const reservationPermlink = match.params.campaignId;
+  const currentNotifyAuthor = match.params.username;
 
-        if (withLoader) {
-          await setLoadingCampaigns(true);
-        }
-        const data = await ApiClient.getHistory(requestData);
-        setLoadingCampaigns(false);
-        setMessages(loadMore ? messages.concat(data.campaigns) : data.campaigns);
-        setMessagesSponsors(
-          !isGuideHistory ? uniq(messagesSponsors.concat(data.sponsors)) : data.sponsors,
-        );
-        setLoading(false);
-        setHasMore(data.hasMore);
-      } finally {
-        await setLoadingCampaigns(false);
-      }
-    },
-    [
-      JSON.stringify(activeMessagesFilters),
-      JSON.stringify(activeHistoryFilters),
-      JSON.stringify(activeGuideHistoryFilters),
-      messagesSponsors,
-      hasMore,
-      messagesSponsors,
-    ],
-  );
+  const getHistory = (username, sortChanged, activeFilters, isLoadMore = false) => {
+    const rewards = map(activeFilters.rewards, item =>
+      Object.keys(REWARDS_TYPES_MESSAGES).find(key => REWARDS_TYPES_MESSAGES[key] === item),
+    );
+
+    const caseStatus = Object.keys(CAMPAIGNS_TYPES_MESSAGES).find(
+      key => CAMPAIGNS_TYPES_MESSAGES[key] === activeFilters.caseStatus,
+    );
+
+    const requestData = {
+      onlyWithMessages: true,
+      sort: sortChanged,
+      rewards,
+      status: activeFilters.status,
+      locale: usedLocale,
+    };
+
+    if (isHistory) {
+      requestData.guideNames = activeFilters.messagesSponsors;
+      requestData.userName = username;
+    }
+
+    if (!isHistory) {
+      requestData.caseStatus = caseStatus;
+      requestData.guideName = username;
+      requestData.reservationPermlink = reservationPermlink;
+    }
+
+    if (isHistoryNotify) {
+      requestData.notifyAuthor = currentNotifyAuthor;
+    }
+
+    if (isGuideHistory) {
+      requestData.guideName = username;
+      requestData.campaignNames = activeFilters.messagesCampaigns;
+      requestData.onlyWithMessages = false;
+    }
+
+    if (!isLoadMore) {
+      setLoadingCampaigns(true);
+      getCurrentRewardsHistory(requestData).then(() => setLoadingCampaigns(false));
+    } else {
+      requestData.skip = size(historyCampaigns);
+      getMoreHistory(requestData);
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoadingHistory) {
+      setMessagesSponsors(historySponsors);
+      setMessagesCampaigns(campaignNames);
+      setLoading(false);
+    }
+  }, [isLoadingHistory]);
 
   const filters = useMemo(() => {
     if (isHistory) {
@@ -124,15 +144,15 @@ const History = ({
     sortChanged => {
       setLoadingCampaigns(true);
       setSortValue(sortChanged);
-      getHistory(userName, sortChanged, filters, useLoader);
+      getHistory(userName, sortChanged, filters);
     },
-    [setSortValue, getHistory, userName, filters, useLoader],
+    [setSortValue, getHistory, userName, filters],
   );
 
   useEffect(() => {
-    if (userName) getHistory(userName, sortForFilters, filters, useLoader);
+    if (userName) getHistory(userName, sortForFilters, filters);
     if (!isHistory) {
-      dispatch(getBlacklist(userName)).then(data => {
+      getUserBlackList(userName).then(data => {
         const blacklist = get(data, ['value', 'blackList', 'blackList']);
         const blacklistNames = map(blacklist, user => user.name);
         setBlacklistUsers(blacklistNames);
@@ -146,12 +166,11 @@ const History = ({
     userName,
   ]);
 
-  const handleLoadMore = useCallback(() => {
-    if (hasMore) {
-      setLoading(true);
-      getHistory(userName, sortForFilters, filters, false, true);
+  const handleLoadMore = () => {
+    if (hasMoreHistory && !isLoadingHistory) {
+      getHistory(userName, sortForFilters, filters, true);
     }
-  }, [filters, getHistory, hasMore, sortForFilters, userName]);
+  };
 
   return (
     <div className="history">
@@ -162,10 +181,11 @@ const History = ({
           campaignsLayoutWrapLayout,
           loadingCampaigns,
           loading,
-          hasMore,
-          messages,
+          hasMore: hasMoreHistory,
+          messages: historyCampaigns,
           handleSortChange,
           sponsors: messagesSponsors,
+          messagesCampaigns,
           tabType: 'history',
           location: location.pathname,
           sortHistory,
@@ -194,12 +214,24 @@ History.propTypes = {
   activeHistoryFilters: PropTypes.shape().isRequired,
   activeGuideHistoryFilters: PropTypes.shape().isRequired,
   messagesSponsors: PropTypes.arrayOf(PropTypes.string),
+  messagesCampaigns: PropTypes.arrayOf(PropTypes.string),
   setMessagesSponsors: PropTypes.func.isRequired,
+  setMessagesCampaigns: PropTypes.func.isRequired,
   setSortValue: PropTypes.func,
   sortHistory: PropTypes.string,
   sortGuideHistory: PropTypes.string,
   sortMessages: PropTypes.string,
   setActiveMessagesFilters: PropTypes.func,
+  getUserBlackList: PropTypes.func,
+  usedLocale: PropTypes.string,
+  userName: PropTypes.string,
+  isLoadingHistory: PropTypes.bool,
+  campaignNames: PropTypes.shape(),
+  historyCampaigns: PropTypes.shape(),
+  historySponsors: PropTypes.shape(),
+  hasMoreHistory: PropTypes.bool,
+  getCurrentRewardsHistory: PropTypes.func,
+  getMoreHistory: PropTypes.func,
 };
 
 History.defaultProps = {
@@ -208,7 +240,33 @@ History.defaultProps = {
   sortMessages: 'inquiryDate',
   sortGuideHistory: 'reservation',
   messagesSponsors: [],
+  messagesCampaigns: [],
+  usedLocale: 'en-US',
   setActiveMessagesFilters: () => {},
+  getUserBlackList: () => {},
+  userName: '',
+  isLoadingHistory: false,
+  campaignNames: [],
+  historyCampaigns: [],
+  historySponsors: [],
+  hasMoreHistory: false,
+  getCurrentRewardsHistory: () => {},
+  getMoreHistory: () => {},
 };
 
-export default injectIntl(History);
+const mapStateToProps = state => ({
+  userName: getAuthenticatedUserName(state),
+  isLoadingHistory: getIsLoadingRewardsHistory(state),
+  campaignNames: getCampaignNames(state),
+  historyCampaigns: getHistoryCampaigns(state),
+  historySponsors: getHistorySponsors(state),
+  hasMoreHistory: getHasMoreHistory(state),
+});
+
+const mapDispatchToProps = {
+  getUserBlackList: getBlacklist,
+  getCurrentRewardsHistory: getRewardsHistory,
+  getMoreHistory: getMoreRewardsHistory,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(History)));

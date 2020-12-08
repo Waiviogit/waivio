@@ -82,12 +82,24 @@ export const defaultAccountLimit = 500;
 const getSteemAccountHistory = (account, from = -1, limit = defaultAccountLimit) =>
   SteemAPI.sendAsync('get_account_history', [account, from, limit]);
 
-const getGuestAccountHistory = (account, from = 0, limit = 10) =>
-  getGuestPaymentsHistory(account, { skip: from, limit });
+const getGuestAccountHistory = (
+  account,
+  from = 0,
+  limit = 10,
+  tableView = false,
+  startDate,
+  endDate,
+) => getGuestPaymentsHistory(account, { skip: from, limit }, tableView, startDate, endDate);
 
-export const getAccountHistory = (account, { from, limit, isGuest = false }) => {
+export const getAccountHistory = (
+  account,
+  { from, limit, isGuest = false },
+  tableView,
+  startDate,
+  endDate,
+) => {
   if (isGuest) {
-    return getGuestAccountHistory(account, from, limit);
+    return getGuestAccountHistory(account, from, limit, tableView, startDate, endDate);
   }
 
   return getSteemAccountHistory(account, from, limit);
@@ -129,3 +141,9 @@ export const currentUserFollowersUser = (currentUsername, username) =>
     'get_following',
     [username, currentUsername, 'blog', 1],
   ]);
+
+export const createQuery = params =>
+  Object.keys(params).reduce(
+    (acc, value) => (acc ? `${acc}&${value}=${params[value]}` : `${value}=${params[value]}`),
+    '',
+  );

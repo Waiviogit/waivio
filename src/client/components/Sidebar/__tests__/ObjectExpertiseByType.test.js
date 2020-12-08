@@ -1,4 +1,5 @@
 import React from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { mountWithIntl } from 'enzyme-react-intl';
 import { act } from 'react-dom/test-utils';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -24,6 +25,9 @@ describe('ObjectExpertiseByType component', () => {
         <ObjectExpertiseByType {...props} />
       </Router>,
     );
+    act(() => {
+      wrapper.update();
+    });
   });
 
   afterEach(() => jest.clearAllMocks());

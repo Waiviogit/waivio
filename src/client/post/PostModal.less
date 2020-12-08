@@ -9,9 +9,14 @@
   display: none;
 }
 
+.ant-popover {
+  @media @medium {
+    z-index: 1330 !important;
+  }
+}
+
 .PostModal {
   .ant-modal {
-    top: 40px !important;
     animation: 0s !important;
 
     &.zoom-leave {
@@ -52,7 +57,7 @@
     &__link {
       align-items: center;
       display: flex;
-      color: @black;
+      color: @blue-botticelli;
       font-size: 20px !important;
       font-weight: bold;
 

@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4';
-import { fromPairs, get, attempt, isError, includes, unescape, split, isEmpty } from 'lodash';
+import { fromPairs, get, attempt, isError, includes, unescape, split, isEmpty, size } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex, botNameRegex } from './regexHelpers';
@@ -13,6 +13,7 @@ import {
 } from '../../common/constants/waivio';
 import { rewardsValues } from '../../common/constants/rewards';
 import * as apiConfig from '../../waivioApi/config.json';
+import { getObjectName } from './wObjectHelper';
 
 const appVersion = require('../../../package.json').version;
 
@@ -177,6 +178,7 @@ export function getInitialState(props) {
     permlink: null,
     originalBody: null,
     titleValue: '',
+    currentRawContent: [],
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts.find(d => d.draftId === draftId);
@@ -215,3 +217,13 @@ export function isContentValid(markdownContent) {
   const { postBody } = splitPostContent(markdownContent);
   return Boolean(postBody.trim());
 }
+
+export function getPostHashtags(items) {
+  if (!size(items)) return [];
+  const sortedItems = items.sort((a, b) => b.weight - a.weight);
+  const postItems = sortedItems.slice(0, 3);
+  return postItems.map(item => getObjectName(item));
+}
+
+export const getAuthorName = post =>
+  post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;

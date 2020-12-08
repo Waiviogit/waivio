@@ -14,7 +14,7 @@ const TabPane = Tabs.TabPane;
 const ObjectsContainer = ({ history }) => {
   const handleSelectObject = selected => {
     if (selected) {
-      history.push(`/object/${selected.id}`);
+      history.push(`/object/${selected.author_permlink}`);
     }
   };
 

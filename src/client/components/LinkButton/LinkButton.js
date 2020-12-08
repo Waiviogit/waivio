@@ -5,9 +5,10 @@ import { withRouter } from 'react-router';
 import './LinkButton.less';
 
 const LinkButton = props => {
-  const { block, history, to, className, size, type, onClick, children } = props;
+  const { block, history, to, className, size, type, onClick, children, key } = props;
   return (
     <Button
+      key={key}
       block={block}
       className={`${type === 'default' ? 'LinkButton' : ''} ${className}`}
       size={size}
@@ -31,6 +32,7 @@ LinkButton.propTypes = {
   size: PropTypes.oneOf(['small', 'large', 'default']),
   type: PropTypes.oneOf(['primary', 'ghost', 'dashed', 'danger', 'link', 'default']),
   onClick: PropTypes.func,
+  key: PropTypes.string,
 };
 LinkButton.defaultProps = {
   block: true,
@@ -38,6 +40,7 @@ LinkButton.defaultProps = {
   size: 'default',
   type: 'default',
   onClick: () => {},
+  key: '',
 };
 
 export default withRouter(LinkButton);

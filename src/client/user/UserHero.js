@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import UserHeader from '../components/UserHeader';
-import UserHeaderLoading from '../components/UserHeaderLoading';
 import UserMenu from '../components/UserMenu';
 import Hero from '../components/Hero';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
@@ -80,24 +79,20 @@ const UserHero = ({
           path="/@:name"
           render={() => (
             <div>
-              {user.fetching ? (
-                <UserHeaderLoading />
-              ) : (
-                <UserHeader
-                  user={user}
-                  username={username}
-                  vestingShares={parseFloat(user.vesting_shares)}
-                  isSameUser={isSameUser}
-                  coverImage={coverImage}
-                  hasCover={hasCover}
-                  isFollowing={isFollowing}
-                  onTransferClick={onTransferClick}
-                  isActive={isUserActive(user)}
-                  rewardFund={rewardFund}
-                  rate={rate}
-                  isGuest={isGuest}
-                />
-              )}
+              <UserHeader
+                user={user}
+                username={username}
+                vestingShares={parseFloat(user.vesting_shares)}
+                isSameUser={isSameUser}
+                coverImage={coverImage}
+                hasCover={hasCover}
+                isFollowing={isFollowing}
+                onTransferClick={onTransferClick}
+                isActive={isUserActive(user)}
+                rewardFund={rewardFund}
+                rate={rate}
+                isGuest={isGuest}
+              />
               <UserMenuWrapper followers={followersCount} following={followingCount} />
             </div>
           )}

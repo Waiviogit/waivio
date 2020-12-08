@@ -2,23 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
-import { forEach, get, has, keyBy, isEqual, isEmpty } from 'lodash';
+import { forEach, get, has, isEmpty, isEqual, keyBy, includes } from 'lodash';
 import { Input, message } from 'antd';
 import {
-  Editor as MediumDraftEditor,
   createEditorState,
-  fromMarkdown,
+  Editor as MediumDraftEditor,
   Entity,
   findLinkEntities,
+  fromMarkdown,
 } from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
 import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
-import { getClientWObj } from '../../adapters';
 import ObjectLink, { findObjEntities } from './components/entities/objectlink';
 import Link from './components/entities/link';
+import { handlePastedLink, QUERY_APP } from './util/editorHelper';
 
 const SIDE_BUTTONS = [
   {
@@ -50,7 +50,6 @@ const defaultDecorators = new CompositeDecorator([
   },
 ]);
 
-@injectIntl
 class Editor extends React.Component {
   static propTypes = {
     // passed props:
@@ -63,11 +62,15 @@ class Editor extends React.Component {
     onChange: PropTypes.func,
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
+    displayTitle: PropTypes.bool,
+    draftId: PropTypes.string,
   };
   static defaultProps = {
     intl: {},
     onChange: () => {},
     handleHashtag: () => {},
+    displayTitle: true,
+    draftId: '',
   };
 
   static MAX_LENGTH = 255;
@@ -97,10 +100,12 @@ class Editor extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
-      this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
-      const rawContent = fromMarkdown(nextProps.initialContent);
-      this.handleContentChange(createEditorState(rawContent));
-      this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
+      setTimeout(() => {
+        this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
+        const rawContent = fromMarkdown(nextProps.initialContent);
+        this.handleContentChange(createEditorState(rawContent));
+        this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
+      }, 0);
     }
   }
 
@@ -109,10 +114,49 @@ class Editor extends React.Component {
     this.setState({ editorEnabled: true });
   };
 
+  getCurrentLinkPermlink = value => {
+    const data = get(value, 'data.url', '');
+    const currentSeparator = data.split('/');
+    return get(currentSeparator, '[4]', []);
+  };
+
+  // eslint-disable-next-line consistent-return
+  getCurrentLoadObjects = (response, value) => {
+    const loadObjects = keyBy(response.wobjects, 'author_permlink');
+    if (value.type === Entity.OBJECT) {
+      return loadObjects[get(value, 'data.object.id')];
+    } else if (value.type === Entity.LINK) {
+      return loadObjects[this.getCurrentLinkPermlink(value)];
+    }
+  };
+
   restoreObjects = async rawContent => {
+    const { draftId } = this.props;
+    const isReview = includes(draftId, 'review');
     const objectIds = Object.values(rawContent.entityMap)
-      .filter(entity => entity.type === Entity.OBJECT && has(entity, 'data.object.id'))
-      .map(entity => get(entity, 'data.object.id', ''));
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .filter(entity => {
+        if (entity.type === Entity.OBJECT) {
+          return has(entity, 'data.object.id');
+        }
+        if (!isReview && entity.type === Entity.LINK) {
+          const string = get(entity, 'data.url', '');
+          const queryString = string.match(handlePastedLink(QUERY_APP));
+          if (queryString) {
+            return has(entity, 'data.url');
+          }
+          return null;
+        }
+      })
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .map(entity => {
+        if (entity.type === Entity.OBJECT) {
+          return get(entity, 'data.object.id', '');
+        }
+        if (!isReview && entity.type === Entity.LINK) {
+          return this.getCurrentLinkPermlink(entity);
+        }
+      });
 
     if (objectIds.length) {
       const response = await getObjectsByIds({
@@ -120,16 +164,14 @@ class Editor extends React.Component {
         locale: this.props.locale,
         requiredFields: ['rating'],
       });
-      const loadObjects = keyBy(response.wobjects, 'author_permlink');
+
       const entityMap = {};
       forEach(rawContent.entityMap, (value, key) => {
-        const loadedObject =
-          value.type === Entity.OBJECT && loadObjects[get(value, 'data.object.id')];
+        const loadedObject = this.getCurrentLoadObjects(response, value);
+
         entityMap[key] = {
           ...value,
-          data: loadedObject
-            ? { ...value.data, object: getClientWObj(loadedObject, this.props.locale) }
-            : { ...value.data },
+          data: loadedObject ? { ...value.data, object: loadedObject } : { ...value.data },
         };
       });
       const rawContentUpdated = {
@@ -137,10 +179,20 @@ class Editor extends React.Component {
         entityMap,
       };
 
-      this.handleContentChange(createEditorState(rawContentUpdated));
+      setTimeout(
+        () =>
+          this.handleContentChange(
+            EditorState.moveFocusToEnd(createEditorState(rawContentUpdated)),
+          ),
+        0,
+      );
     }
     // eslint-disable-next-line no-unused-expressions
-    !isEmpty(rawContent.blocks) && this.handleContentChange(createEditorState(rawContent));
+    !isEmpty(rawContent.blocks) &&
+      setTimeout(
+        () => this.handleContentChange(EditorState.moveFocusToEnd(createEditorState(rawContent))),
+        0,
+      );
   };
 
   handleContentChange = editorState => {
@@ -165,14 +217,16 @@ class Editor extends React.Component {
     const { editorState, isMounted, editorEnabled, titleValue } = this.state;
     return (
       <div className="waiv-editor-wrap">
-        <Input.TextArea
-          maxLength={Editor.MAX_LENGTH}
-          autoSize
-          className="md-RichEditor-title"
-          value={titleValue}
-          placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
-          onChange={event => this.validateLength(event)}
-        />
+        {this.props.displayTitle && (
+          <Input.TextArea
+            maxLength={Editor.MAX_LENGTH}
+            autoSize
+            className="md-RichEditor-title"
+            value={titleValue}
+            placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
+            onChange={event => this.validateLength(event)}
+          />
+        )}
         <div className="waiv-editor">
           {isMounted && (
             <MediumDraftEditor
@@ -196,4 +250,4 @@ class Editor extends React.Component {
   }
 }
 
-export default Editor;
+export default injectIntl(Editor);

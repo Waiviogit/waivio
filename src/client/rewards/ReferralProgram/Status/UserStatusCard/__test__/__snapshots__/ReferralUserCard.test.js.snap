@@ -1,0 +1,602 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReferralUserCard should create ReferralUserCard's snapshot 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <IntlProvider
+    locale="en"
+  >
+    <div
+      className="ReferralUserCard"
+      onClick={[Function]}
+      role="presentation"
+    >
+      <div
+        className="ReferralUserCard__content"
+      >
+        <Avatar
+          size={40}
+          username="vallon"
+        />
+        <div
+          className="ReferralUserCard__content__left"
+        >
+          <div
+            className="ReferralUserCard__alias"
+          >
+            
+          </div>
+          <div
+            className="ReferralUserCard__wrap"
+          >
+            <div
+              className="ReferralUserCard__name"
+            >
+              @vallon
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="ReferralUserCard__right"
+      >
+        <div
+          className="ReferralUserCard__days"
+        >
+          277 days
+        </div>
+        <div
+          className="ReferralUserCard__arrow"
+        >
+          <img
+            alt="User status card"
+            src="/images/icons/arrowSmall.svg"
+          />
+        </div>
+      </div>
+    </div>
+  </IntlProvider>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <div
+          className="ReferralUserCard__content"
+        >
+          <Avatar
+            size={40}
+            username="vallon"
+          />
+          <div
+            className="ReferralUserCard__content__left"
+          >
+            <div
+              className="ReferralUserCard__alias"
+            >
+              
+            </div>
+            <div
+              className="ReferralUserCard__wrap"
+            >
+              <div
+                className="ReferralUserCard__name"
+              >
+                @vallon
+              </div>
+            </div>
+          </div>
+        </div>,
+        <div
+          className="ReferralUserCard__right"
+        >
+          <div
+            className="ReferralUserCard__days"
+          >
+            277 days
+          </div>
+          <div
+            className="ReferralUserCard__arrow"
+          >
+            <img
+              alt="User status card"
+              src="/images/icons/arrowSmall.svg"
+            />
+          </div>
+        </div>,
+      ],
+      "className": "ReferralUserCard",
+      "onClick": [Function],
+      "role": "presentation",
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <Avatar
+              size={40}
+              username="vallon"
+            />,
+            <div
+              className="ReferralUserCard__content__left"
+            >
+              <div
+                className="ReferralUserCard__alias"
+              >
+                
+              </div>
+              <div
+                className="ReferralUserCard__wrap"
+              >
+                <div
+                  className="ReferralUserCard__name"
+                >
+                  @vallon
+                </div>
+              </div>
+            </div>,
+          ],
+          "className": "ReferralUserCard__content",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {
+              "size": 40,
+              "username": "vallon",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <div
+                  className="ReferralUserCard__alias"
+                >
+                  
+                </div>,
+                <div
+                  className="ReferralUserCard__wrap"
+                >
+                  <div
+                    className="ReferralUserCard__name"
+                  >
+                    @vallon
+                  </div>
+                </div>,
+              ],
+              "className": "ReferralUserCard__content__left",
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": "",
+                  "className": "ReferralUserCard__alias",
+                },
+                "ref": null,
+                "rendered": "",
+                "type": "div",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": <div
+                    className="ReferralUserCard__name"
+                  >
+                    @vallon
+                  </div>,
+                  "className": "ReferralUserCard__wrap",
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "@vallon",
+                    "className": "ReferralUserCard__name",
+                  },
+                  "ref": null,
+                  "rendered": "@vallon",
+                  "type": "div",
+                },
+                "type": "div",
+              },
+            ],
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <div
+              className="ReferralUserCard__days"
+            >
+              277 days
+            </div>,
+            <div
+              className="ReferralUserCard__arrow"
+            >
+              <img
+                alt="User status card"
+                src="/images/icons/arrowSmall.svg"
+              />
+            </div>,
+          ],
+          "className": "ReferralUserCard__right",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": "277 days",
+              "className": "ReferralUserCard__days",
+            },
+            "ref": null,
+            "rendered": "277 days",
+            "type": "div",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <img
+                alt="User status card"
+                src="/images/icons/arrowSmall.svg"
+              />,
+              "className": "ReferralUserCard__arrow",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "alt": "User status card",
+                "src": "/images/icons/arrowSmall.svg",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "img",
+            },
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <div
+            className="ReferralUserCard__content"
+          >
+            <Avatar
+              size={40}
+              username="vallon"
+            />
+            <div
+              className="ReferralUserCard__content__left"
+            >
+              <div
+                className="ReferralUserCard__alias"
+              >
+                
+              </div>
+              <div
+                className="ReferralUserCard__wrap"
+              >
+                <div
+                  className="ReferralUserCard__name"
+                >
+                  @vallon
+                </div>
+              </div>
+            </div>
+          </div>,
+          <div
+            className="ReferralUserCard__right"
+          >
+            <div
+              className="ReferralUserCard__days"
+            >
+              277 days
+            </div>
+            <div
+              className="ReferralUserCard__arrow"
+            >
+              <img
+                alt="User status card"
+                src="/images/icons/arrowSmall.svg"
+              />
+            </div>
+          </div>,
+        ],
+        "className": "ReferralUserCard",
+        "onClick": [Function],
+        "role": "presentation",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <Avatar
+                size={40}
+                username="vallon"
+              />,
+              <div
+                className="ReferralUserCard__content__left"
+              >
+                <div
+                  className="ReferralUserCard__alias"
+                >
+                  
+                </div>
+                <div
+                  className="ReferralUserCard__wrap"
+                >
+                  <div
+                    className="ReferralUserCard__name"
+                  >
+                    @vallon
+                  </div>
+                </div>
+              </div>,
+            ],
+            "className": "ReferralUserCard__content",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "size": 40,
+                "username": "vallon",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <div
+                    className="ReferralUserCard__alias"
+                  >
+                    
+                  </div>,
+                  <div
+                    className="ReferralUserCard__wrap"
+                  >
+                    <div
+                      className="ReferralUserCard__name"
+                    >
+                      @vallon
+                    </div>
+                  </div>,
+                ],
+                "className": "ReferralUserCard__content__left",
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "",
+                    "className": "ReferralUserCard__alias",
+                  },
+                  "ref": null,
+                  "rendered": "",
+                  "type": "div",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": <div
+                      className="ReferralUserCard__name"
+                    >
+                      @vallon
+                    </div>,
+                    "className": "ReferralUserCard__wrap",
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": "@vallon",
+                      "className": "ReferralUserCard__name",
+                    },
+                    "ref": null,
+                    "rendered": "@vallon",
+                    "type": "div",
+                  },
+                  "type": "div",
+                },
+              ],
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <div
+                className="ReferralUserCard__days"
+              >
+                277 days
+              </div>,
+              <div
+                className="ReferralUserCard__arrow"
+              >
+                <img
+                  alt="User status card"
+                  src="/images/icons/arrowSmall.svg"
+                />
+              </div>,
+            ],
+            "className": "ReferralUserCard__right",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": "277 days",
+                "className": "ReferralUserCard__days",
+              },
+              "ref": null,
+              "rendered": "277 days",
+              "type": "div",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <img
+                  alt="User status card"
+                  src="/images/icons/arrowSmall.svg"
+                />,
+                "className": "ReferralUserCard__arrow",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "alt": "User status card",
+                  "src": "/images/icons/arrowSmall.svg",
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "img",
+              },
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+    Symbol(enzyme.__providerValues__): undefined,
+  },
+  Symbol(enzyme.__providerValues__): Map {},
+  Symbol(enzyme.__childContext__): Object {
+    "intl": Object {
+      "defaultFormats": Object {},
+      "defaultLocale": "en",
+      "formatDate": [Function],
+      "formatHTMLMessage": [Function],
+      "formatMessage": [Function],
+      "formatNumber": [Function],
+      "formatPlural": [Function],
+      "formatRelative": [Function],
+      "formatTime": [Function],
+      "formats": Object {},
+      "formatters": Object {
+        "getDateTimeFormat": [Function],
+        "getMessageFormat": [Function],
+        "getNumberFormat": [Function],
+        "getPluralFormat": [Function],
+        "getRelativeFormat": [Function],
+      },
+      "locale": "en",
+      "messages": Object {},
+      "now": [Function],
+      "onError": [Function],
+      "textComponent": "span",
+      "timeZone": null,
+    },
+  },
+}
+`;

@@ -5,12 +5,10 @@ import { bindActionCreators } from 'redux';
 import {
   getAuthenticatedUser,
   getCommentsPendingVotes,
-  getFollowingList,
   getPendingFollows,
   getVotingPower,
   getRewardFund,
   getVotePercent,
-  getFollowingObjectsList,
   getPendingFollowingObjects,
 } from '../../reducers';
 import { likeComment } from '../../comments/commentsActions';
@@ -18,13 +16,16 @@ import { followUser, unfollowUser } from '../../user/userActions';
 import { followObject, unfollowObject } from '../../object/wobjActions';
 import CampaignFooter from './CampaignFooter';
 
-const mapStateToProps = (state, { post, requiredObjectPermlink, proposition }) => {
+const mapStateToProps = (
+  state,
+  { post, requiredObjectPermlink, proposition, userFollowing, objectFollowing },
+) => {
   const user = getAuthenticatedUser(state);
   const userVote = _.find(post.active_votes, { voter: user.name }) || {};
   const postState = {
     isLiked: userVote.percent > 0,
-    userFollowed: getFollowingList(state).includes(proposition.guideName),
-    objectFollowed: getFollowingObjectsList(state).includes(requiredObjectPermlink),
+    userFollowed: userFollowing,
+    objectFollowed: objectFollowing,
   };
   const pendingVote = getCommentsPendingVotes(state).find(comment => comment.id === post.id);
   const pendingLike =

@@ -12,7 +12,7 @@ export const getUserAccount = name => (dispatch, getState) => {
     type: GET_ACCOUNT.ACTION,
     payload: ApiClient.getUserAccount(name, false, authUser),
     meta: { username: name },
-  }).catch(() => {});
+  });
 };
 
 export const GET_RANDOM_EXPERTS = '@users/GET_RANDOM_EXPERTS';
@@ -70,10 +70,12 @@ export const unfollowUser = (username, top = false) => (
     return Promise.reject('User is not authenticated');
   }
 
+  const authUser = getAuthenticatedUserName(state);
+
   return dispatch({
     type: UNFOLLOW_USER.ACTION,
     payload: {
-      promise: steemConnectAPI.unfollow(getAuthenticatedUserName(state), username),
+      promise: steemConnectAPI.unfollow(authUser, username),
     },
     meta: {
       username,
@@ -90,10 +92,12 @@ export const followUser = (username, top = false) => (dispatch, getState, { stee
     return Promise.reject('User is not authenticated');
   }
 
+  const authUser = getAuthenticatedUserName(state);
+
   return dispatch({
     type: FOLLOW_USER.ACTION,
     payload: {
-      promise: steemConnectAPI.follow(getAuthenticatedUserName(state), username),
+      promise: steemConnectAPI.follow(authUser, username),
     },
     meta: {
       username,
@@ -121,9 +125,13 @@ export const CHANGE_COUNTER = '@users/CHANGE_COUNTER';
 
 export const changeCounterFollow = (username, type, follow = false) => (dispatch, getState) => {
   const state = getState();
-  const userName = getUser(state, username);
+  const user = getUser(state, username);
+  const authUserName = getAuthenticatedUserName(state);
+
+  if (authUserName !== username) return null;
+
   const key = type === 'user' ? 'users_following_count' : 'objects_following_count';
-  const counter = follow ? userName[key] + 1 : userName[key] - 1;
+  const counter = follow ? user[key] + 1 : user[key] - 1;
 
   return dispatch({
     type: CHANGE_COUNTER,

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { truncate } from 'lodash';
 import { getVisibleSelectionRect } from 'draft-js';
 
 const getRelativeParent = element => {
@@ -99,10 +100,7 @@ export default class LinkEditComponent extends React.Component {
   };
 
   render() {
-    let url = this.props.url;
-    if (url.length > 30) {
-      url = `${url.slice(0, 30)}...`;
-    }
+    const url = this.props.url;
     return (
       <div
         className="md-editor-toolbar md-editor-toolbar--isopen md-editor-toolbar-edit-link"
@@ -112,14 +110,8 @@ export default class LinkEditComponent extends React.Component {
         }}
       >
         <a href={this.props.url} title={this.props.url} target="_blank" rel="noopener noreferrer">
-          {url}
+          {truncate(url, { length: 30 })}
         </a>
-        <button className="md-editor-toolbar-unlink-button" onClick={this.removeLink}>
-          Unlink
-        </button>
-        <button className="md-editor-toolbar-edit-button" onClick={this.editLink}>
-          Edit
-        </button>
       </div>
     );
   }

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { connect } from 'react-redux';
 
-import { getLocale } from '../reducers';
+import { getLocale, getUser } from '../reducers';
 import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 
@@ -12,22 +12,18 @@ import './UserExpertise.less';
 
 const TabPane = Tabs.TabPane;
 
-@connect(state => ({
+@connect((state, ownProps) => ({
   locale: getLocale(state),
+  user: getUser(state, ownProps.match.params.name),
 }))
 export default class UserExpertise extends React.Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
+    user: PropTypes.shape().isRequired,
   };
 
   static limit = 30;
-
-  state = {
-    objCount: 0,
-    hashtagsCount: 0,
-    tagCount: 0,
-  };
 
   fetcher = (skip, authUser, isOnlyHashtags) => {
     const { match, locale } = this.props;
@@ -43,17 +39,8 @@ export default class UserExpertise extends React.Component {
     );
   };
 
-  objectCount = (count, isOnlyHashtags) => {
-    const { hashtagsCount, objCount } = this.state;
-    if (isOnlyHashtags && hashtagsCount !== count) {
-      this.setState({ hashtagsCount: count });
-    } else if (!isOnlyHashtags && objCount !== count) {
-      this.setState({ objCount: count });
-    }
-  };
-
   render() {
-    const { objCount, hashtagsCount } = this.state;
+    const { wobjectsExpCount, hashtagsExpCount } = this.props.user;
 
     return (
       <div className="UserExpertise">
@@ -64,9 +51,9 @@ export default class UserExpertise extends React.Component {
                 <span className="UserExpertise__item">
                   <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />
                 </span>
-                {!!hashtagsCount && (
+                {!!hashtagsExpCount && (
                   <span className="UserExpertise__badge">
-                    <FormattedNumber value={hashtagsCount} />
+                    <FormattedNumber value={hashtagsExpCount} />
                   </span>
                 )}
               </React.Fragment>
@@ -77,7 +64,6 @@ export default class UserExpertise extends React.Component {
               isOnlyHashtags
               limit={UserExpertise.limit}
               fetcher={this.fetcher}
-              handleObjectCount={this.objectCount}
               expertize
             />
           </TabPane>
@@ -87,21 +73,16 @@ export default class UserExpertise extends React.Component {
                 <span className="UserExpertise__item">
                   <FormattedMessage id="objects" defaultMessage="Objects" />
                 </span>
-                {!!objCount && (
+                {!!wobjectsExpCount && (
                   <span className="UserExpertise__badge">
-                    <FormattedNumber value={objCount} />
+                    <FormattedNumber value={wobjectsExpCount} />
                   </span>
                 )}
               </React.Fragment>
             }
             key="2"
           >
-            <ObjectDynamicList
-              limit={UserExpertise.limit}
-              fetcher={this.fetcher}
-              handleObjectCount={this.objectCount}
-              expertize
-            />
+            <ObjectDynamicList limit={UserExpertise.limit} fetcher={this.fetcher} expertize />
           </TabPane>
         </Tabs>
       </div>

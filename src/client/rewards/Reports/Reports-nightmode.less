@@ -1,6 +1,12 @@
 @import (reference) '../../styles/custom.less';
 
 .nightmode {
+  .CreateReportForm {
+    &__label {
+      color: @white;
+    }
+  }
+
   .ant-calendar-time-picker-btn-disabled {
     color: #f5f5f5 !important;
     cursor: not-allowed;
@@ -133,7 +139,7 @@
 
   .ant-calendar-date {
     color: @white-smoke;
-    background: @normal-grey;
+    background: none;
   }
 
   .ant-calendar-date:hover {
@@ -142,6 +148,10 @@
 
   .ant-calendar-last-month-cell .ant-calendar-date {
     color: @normal-grey;
+  }
+
+  .ant-calendar-disabled-cell .ant-calendar-date {
+    background: @normal-grey;
   }
 
   .ant-calendar-input-wrap {
@@ -162,7 +172,7 @@
   }
 
   .ant-checkbox-inner {
-    background-color: @grey-nero;
+    background-color: @grey-gondola;
   }
 
   .ant-calendar-cell.ant-calendar-next-month-btn-day > .ant-calendar-date {
@@ -172,6 +182,10 @@
   .has-error .ant-input,
   .has-error .ant-input:hover {
     background-color: @grey-nero;
+  }
+
+  .ant-select-dropdown-menu {
+    background: @grey-nero;
   }
 
   .ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
@@ -188,5 +202,11 @@
 
   .ant-select-selection__clear > i {
     color: @blue-heather;
+  }
+
+  .ant-calendar-ok-btn {
+    color: @white-smoke;
+    background: @orange-hot;
+    border: none;
   }
 }

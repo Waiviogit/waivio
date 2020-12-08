@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { intersection } from 'lodash';
-import SocialLink from './SocialLink';
 import socialProfiles, { transform } from '../helpers/socialProfiles';
 
 const SocialLinks = ({ profile }) => {
@@ -17,11 +16,21 @@ const SocialLinks = ({ profile }) => {
   return (
     <div>
       {availableProfiles.map(socialProfile => (
-        <SocialLink
-          key={socialProfile.id}
-          profile={socialProfile}
-          url={transform(socialProfile.id, profile[socialProfile.id])}
-        />
+        <div key={socialProfile.id}>
+          <i
+            className={`iconfont text-icon icon-${socialProfile.icon}`}
+            style={{
+              color: socialProfile.color,
+            }}
+          />
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={transform(socialProfile.id, profile[socialProfile.id])}
+          >
+            {socialProfile.name}
+          </a>
+        </div>
       ))}
     </div>
   );

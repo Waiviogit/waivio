@@ -125,7 +125,6 @@ class AdvanceSettings extends Component {
               )}
             </React.Fragment>
           )}
-
           {isGuest && (
             <div>
               <div className="rewards-settings__guest">

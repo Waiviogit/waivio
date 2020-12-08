@@ -3,10 +3,15 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { find, truncate } from 'lodash';
+import { find, truncate, isEmpty } from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
-import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
+import {
+  dropCategory,
+  isBannedPost,
+  replaceBotWithGuestName,
+  getAuthorName,
+} from '../helpers/postHelpers';
 import {
   getAuthenticatedUser,
   getBookmarks,
@@ -15,7 +20,6 @@ import {
   getRebloggedList,
   getPendingReblogs,
   getFollowingList,
-  getPendingFollows,
   getIsEditorSaving,
   getVotingPower,
   getRewardFund,
@@ -23,7 +27,12 @@ import {
   getAppUrl,
 } from '../reducers';
 import { editPost } from './Write/editorActions';
-import { votePost } from './postActions';
+import {
+  errorFollowingPostAuthor,
+  followingPostAuthor,
+  pendingFollowingPostAuthor,
+  votePost,
+} from './postActions';
 import { reblog } from '../app/Reblog/reblogActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
 import { followUser, unfollowUser } from '../user/userActions';
@@ -44,7 +53,6 @@ import { getProxyImageURL } from '../helpers/image';
     reblogList: getRebloggedList(state),
     pendingReblogs: getPendingReblogs(state),
     followingList: getFollowingList(state),
-    pendingFollows: getPendingFollows(state),
     saving: getIsEditorSaving(state),
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),
@@ -59,6 +67,9 @@ import { getProxyImageURL } from '../helpers/image';
     followUser,
     unfollowUser,
     push,
+    pendingFollowingPostAuthor,
+    followingPostAuthor,
+    errorFollowingPostAuthor,
   },
 )
 class PostContent extends React.Component {
@@ -71,7 +82,6 @@ class PostContent extends React.Component {
     reblogList: PropTypes.arrayOf(PropTypes.string),
     pendingReblogs: PropTypes.arrayOf(PropTypes.string),
     followingList: PropTypes.arrayOf(PropTypes.string),
-    pendingFollows: PropTypes.arrayOf(PropTypes.string),
     pendingBookmarks: PropTypes.arrayOf(PropTypes.string).isRequired,
     saving: PropTypes.bool.isRequired,
     rewardFund: PropTypes.shape().isRequired,
@@ -87,6 +97,9 @@ class PostContent extends React.Component {
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
     isOriginalPost: PropTypes.string,
+    pendingFollowingPostAuthor: PropTypes.func.isRequired,
+    followingPostAuthor: PropTypes.func.isRequired,
+    errorFollowingPostAuthor: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -106,6 +119,7 @@ class PostContent extends React.Component {
     unfollowUser: () => {},
     push: () => {},
     isOriginalPost: '',
+    postSocialInfo: {},
   };
 
   constructor(props) {
@@ -144,9 +158,6 @@ class PostContent extends React.Component {
     }
   };
 
-  getAuthorName = post =>
-    post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
-
   handleLikeClick = (post, postState, weight = 10000) => {
     const { sliderMode, defaultVotePercent } = this.props;
     const authorName = post.guestInfo ? post.root_author : post.author;
@@ -172,13 +183,22 @@ class PostContent extends React.Component {
   handleSaveClick = post => this.props.toggleBookmark(post.id);
 
   handleFollowClick = post => {
-    const authorName = this.getAuthorName(post);
-    const isFollowed = this.props.followingList.includes(authorName);
-    if (isFollowed) {
-      this.props.unfollowUser(authorName);
-    } else {
-      this.props.followUser(authorName);
+    const authorName = getAuthorName(post);
+    const postId = `${post.author}/${post.permlink}`;
+
+    this.props.pendingFollowingPostAuthor(postId);
+
+    if (post.youFollows) {
+      return this.props
+        .unfollowUser(authorName)
+        .then(() => this.props.followingPostAuthor(postId))
+        .catch(() => this.props.errorFollowingPostAuthor(postId));
     }
+
+    return this.props
+      .followUser(authorName)
+      .then(() => this.props.followingPostAuthor(postId))
+      .catch(() => this.props.errorFollowingPostAuthor(postId));
   };
 
   handleEditClick = post => {
@@ -196,7 +216,6 @@ class PostContent extends React.Component {
       reblogList,
       pendingReblogs,
       followingList,
-      pendingFollows,
       bookmarks,
       pendingBookmarks,
       saving,
@@ -206,6 +225,8 @@ class PostContent extends React.Component {
       appUrl,
       isOriginalPost,
     } = this.props;
+
+    const { tags, cities, wobjectsFacebook, userFacebook } = content;
 
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
 
@@ -223,9 +244,8 @@ class PostContent extends React.Component {
         : bookmarks.includes(content.id),
       isLiked: userVote.percent > 0,
       isReported: userVote.percent < 0,
-      userFollowed: followingList.includes(this.getAuthorName(content)),
+      userFollowed: followingList.includes(getAuthorName(content)),
     };
-
     const pendingLike =
       pendingLikes[content.id] &&
       (pendingLikes[content.id].weight > 0 ||
@@ -237,11 +257,17 @@ class PostContent extends React.Component {
         (pendingLikes[content.id].weight === 0 && postState.isReported));
 
     const { title, category, created, body, guestInfo } = content;
-    const authorName = this.getAuthorName(content);
+    let hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
+    hashtags = hashtags.map(hashtag => `#${hashtag}`);
+    const authorName = getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
-    const desc = `${truncate(bodyText, { length: 143 })} by ${authorName}`;
+    const authorFacebook = !isEmpty(userFacebook) ? `by@${userFacebook}` : '';
+    const desc = `${truncate(bodyText, { length: 143 })} ${truncate(hashtags, {
+      length: 120,
+    })} @${wobjectsFacebook} ${authorFacebook}`;
+
     const image =
       postMetaImage ||
       getAvatarURL(authorName) ||
@@ -260,13 +286,12 @@ class PostContent extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <link rel="amphtml" href={ampUrl} />
-          <meta name="description" property="description" content={desc} />
-          <meta name="og:title" property="og:title" content={metaTitle} />
-          <meta name="og:type" property="og:type" content="article" />
-          <meta name="og:url" property="og:url" content={url} />
-          <meta name="og:image" property="og:image" content={getProxyImageURL(image)} />
-          <meta name="og:description" property="og:description" content={desc} />
-          <meta name="og:site_name" property="og:site_name" content="Waivio" />
+          <meta property="og:url" content={url} />
+          <meta property="og:type" content="article" />
+          <meta property="og:title" content={metaTitle} />
+          <meta property="description" content={desc} />
+          <meta property="og:image" content={getProxyImageURL(image)} />
+          <meta property="og:site_name" content="Waivio" />
           <meta name="article:tag" property="article:tag" content={category} />
           <meta name="article:published_time" property="article:published_time" content={created} />
           <meta
@@ -287,7 +312,6 @@ class PostContent extends React.Component {
           commentCount={content.children}
           pendingLike={pendingLike}
           pendingFlag={pendingFlag}
-          pendingFollow={pendingFollows.includes(authorName)}
           pendingBookmark={pendingBookmarks.includes(content.id)}
           saving={saving}
           rewardFund={rewardFund}

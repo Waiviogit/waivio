@@ -10,7 +10,6 @@ import {
 } from '../helpers/apiHelpers';
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
-import { getTransferHistory } from '../../waivioApi/ApiClient';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
@@ -24,8 +23,14 @@ export const GET_MORE_USER_ACCOUNT_HISTORY = createAsyncActionType(
   '@users/GET_MORE_USER_ACCOUNT_HISTORY',
 );
 export const GET_TRANSACTIONS_HISTORY = createAsyncActionType('@wallet/GET_TRANSACTIONS_HISTORY');
+export const GET_TABLE_TRANSACTIONS_HISTORY = createAsyncActionType(
+  '@wallet/GET_TABLE_TRANSACTIONS_HISTORY',
+);
 export const GET_MORE_TRANSACTIONS_HISTORY = createAsyncActionType(
   '@wallet/GET_MORE_TRANSACTIONS_HISTORY',
+);
+export const GET_MORE_TABLE_TRANSACTIONS_HISTORY = createAsyncActionType(
+  '@wallet/GET_MORE_TABLE_TRANSACTIONS_HISTORY',
 );
 
 export const GET_USER_EST_ACCOUNT_VALUE = createAsyncActionType(
@@ -45,7 +50,14 @@ export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
 
 export const SET_PENDING_TRANSFER = '@wallet/SET_PENDING_TRANSFER';
 
-export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '', app) => dispatch =>
+export const openTransfer = (
+  userName,
+  amount = 0,
+  currency = 'HIVE',
+  memo = '',
+  app,
+  tip = false,
+) => dispatch =>
   dispatch({
     type: OPEN_TRANSFER,
     payload: {
@@ -54,6 +66,7 @@ export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '',
       currency,
       memo,
       app,
+      tip,
     },
   });
 
@@ -136,12 +149,25 @@ export const getGlobalProperties = () => dispatch =>
     },
   });
 
-export const getMoreUserAccountHistory = (username, start, limit) => dispatch => {
+export const getMoreUserAccountHistory = (
+  username,
+  start,
+  limit,
+  tableView,
+  startDate,
+  endDate,
+) => dispatch => {
   const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
   return dispatch({
     type: GET_MORE_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
-      promise: getAccountHistory(username, { from: start, limit, isGuest }).then(userActions => {
+      promise: getAccountHistory(
+        username,
+        { from: start, limit, isGuest },
+        tableView,
+        startDate,
+        endDate,
+      ).then(userActions => {
         const parsedUserActions = getParsedUserActions(userActions, isGuest);
         return {
           username,
@@ -218,22 +244,24 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   }
 };
 
-export const getUserAccountHistory = username => dispatch => {
+export const getUserAccountHistory = (username, tableView, startDate, endDate) => dispatch => {
   const isGuest = guestUserRegex.test(username);
   return dispatch({
     type: GET_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
-      promise: getAccountHistory(username, { isGuest }).then(userActions => {
-        const parsedUserActions = getParsedUserActions(userActions, isGuest);
+      promise: getAccountHistory(username, { isGuest }, tableView, startDate, endDate).then(
+        userActions => {
+          const parsedUserActions = getParsedUserActions(userActions, isGuest);
 
-        return {
-          username,
-          userWalletTransactions: parsedUserActions.userWalletTransactions,
-          userAccountHistory: parsedUserActions.userAccountHistory,
-          balance: get(userActions, ['payable'], null),
-          hasMoreGuestActions: get(userActions, ['hasMore'], false),
-        };
-      }),
+          return {
+            username,
+            userWalletTransactions: parsedUserActions.userWalletTransactions,
+            userAccountHistory: parsedUserActions.userAccountHistory,
+            balance: get(userActions, ['payable'], null),
+            hasMoreGuestActions: get(userActions, ['hasMore'], false),
+          };
+        },
+      ),
     },
   });
 };
@@ -242,12 +270,43 @@ export const getUserTransactionHistory = (username, limit, operationNum) => disp
   dispatch({
     type: GET_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, limit, operationNum)
+      promise: ApiClient.getTransferHistory(username, limit, operationNum)
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
           operationNum: data.operationNum,
           hasMore: data.hasMore,
+        }))
+        .catch(error => error),
+    },
+  });
+
+export const getUserTableTransactionHistory = (
+  username,
+  limit,
+  tableView,
+  startDate,
+  endDate,
+  types,
+  operationNum,
+) => dispatch =>
+  dispatch({
+    type: GET_TABLE_TRANSACTIONS_HISTORY.ACTION,
+    payload: {
+      promise: ApiClient.getTransferHistoryTableView(
+        username,
+        limit,
+        tableView,
+        startDate,
+        endDate,
+        types,
+        operationNum,
+      )
+        .then(data => ({
+          username,
+          tableTransactionsHistory: data.wallet,
+          operationNumTable: data.operationNum,
+          hasMoreTable: data.hasMore,
         }))
         .catch(error => console.log(error)),
     },
@@ -259,19 +318,55 @@ export const getMoreUserTransactionHistory = (username, limit, operationNum) => 
   dispatch({
     type: GET_MORE_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, limit, operationNum)
+      promise: ApiClient.getTransferHistory(username, limit, operationNum)
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
           operationNum: data.operationNum,
           hasMore: data.hasMore,
         }))
-        .catch(error => {
-          console.log(error);
-          return dispatch({
+        .catch(() =>
+          dispatch({
             type: GET_ERROR_LOADING_TRANSACTIONS,
-          });
-        }),
+          }),
+        ),
+    },
+  });
+
+export const GET_ERROR_LOADING_TABLE_TRANSACTIONS = '@wallet/GET_ERROR_LOADING_TRANSACTIONS';
+
+export const getMoreTableUserTransactionHistory = (
+  username,
+  limit,
+  tableView,
+  startDate,
+  endDate,
+  types,
+  operationNum,
+) => dispatch =>
+  dispatch({
+    type: GET_MORE_TABLE_TRANSACTIONS_HISTORY.ACTION,
+    payload: {
+      promise: ApiClient.getTransferHistoryTableView(
+        username,
+        limit,
+        tableView,
+        startDate,
+        endDate,
+        types,
+        operationNum,
+      )
+        .then(data => ({
+          username,
+          tableTransactionsHistory: data.wallet,
+          operationNumTable: data.operationNum,
+          hasMoreTable: data.hasMore,
+        }))
+        .catch(() =>
+          dispatch({
+            type: GET_ERROR_LOADING_TABLE_TRANSACTIONS,
+          }),
+        ),
     },
   });
 
@@ -280,6 +375,27 @@ export const CLEAR_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TRANSACTIONS_HISTORY';
 export const clearTransactionsHistory = () => dispatch =>
   dispatch({
     type: CLEAR_TRANSACTIONS_HISTORY,
+  });
+
+export const CLEAR_TABLE_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TABLE_TRANSACTIONS_HISTORY';
+
+export const clearTransactionsTableHistory = () => dispatch =>
+  dispatch({
+    type: CLEAR_TABLE_TRANSACTIONS_HISTORY,
+  });
+
+export const OPEN_WALLET_TABLE = '@wallet/OPEN_WALLET_TABLE';
+
+export const openWalletTable = () => dispatch =>
+  dispatch({
+    type: OPEN_WALLET_TABLE,
+  });
+
+export const CLOSE_WALLET_TABLE = '@wallet/CLOSE_WALLET_TABLE';
+
+export const closeWalletTable = () => dispatch =>
+  dispatch({
+    type: CLOSE_WALLET_TABLE,
   });
 
 export const OPEN_WITHDRAW = '@wallet/OPEN_WITHDRAW';

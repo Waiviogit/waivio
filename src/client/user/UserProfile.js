@@ -9,6 +9,7 @@ import {
   getAuthenticatedUser,
   getFeed,
   getUsersAccountHistory,
+  isGuestUser,
 } from '../reducers';
 import {
   getFeedLoadingFromState,
@@ -30,6 +31,7 @@ import PostModal from '../post/PostModalContainer';
     authenticatedUser: getAuthenticatedUser(state),
     feed: getFeed(state),
     usersAccountHistory: getUsersAccountHistory(state),
+    isGuest: isGuestUser(state),
   }),
   {
     getUserProfileBlogPosts,
@@ -48,6 +50,8 @@ export default class UserProfile extends React.Component {
     getUserProfileBlogPosts: PropTypes.func,
     getUserAccountHistory: PropTypes.func,
     usersAccountHistory: PropTypes.shape(),
+    isGuest: PropTypes.bool,
+    history: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -56,6 +60,8 @@ export default class UserProfile extends React.Component {
     getUserProfileBlogPosts: () => {},
     getUserAccountHistory: () => {},
     usersAccountHistory: {},
+    isGuest: false,
+    history: {},
   };
 
   componentDidMount() {
@@ -87,7 +93,7 @@ export default class UserProfile extends React.Component {
   }
 
   render() {
-    const { authenticated, authenticatedUser, feed, limit } = this.props;
+    const { authenticated, authenticatedUser, feed, limit, isGuest, history } = this.props;
     const username = this.props.match.params.name;
     const isOwnProfile = authenticated && username === authenticatedUser.name;
     const content = getFeedFromState('blog', username, feed);
@@ -95,7 +101,10 @@ export default class UserProfile extends React.Component {
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
     const loadMoreContentAction = () =>
-      this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
+      this.props.getUserProfileBlogPosts(username, {
+        limit,
+        initialLoad: false,
+      });
 
     return (
       <div className="profile">
@@ -105,11 +114,12 @@ export default class UserProfile extends React.Component {
           hasMore={hasMore}
           loadMoreContent={loadMoreContentAction}
           showPostModal={this.props.showPostModal}
-        >
-          {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
-          {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
-        </Feed>
-        {<PostModal />}
+          isGuest={isGuest}
+          history={history}
+        />
+        {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
+        {!isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
+        {<PostModal userName={authenticatedUser.name} />}
       </div>
     );
   }

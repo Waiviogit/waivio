@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Helmet from 'react-helmet';
 import { isEmpty, get, throttle } from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
@@ -17,10 +16,7 @@ import EditorInput from '../components/Editor/EditorInput';
 import { remarkable } from '../components/Story/Body';
 import BodyContainer from '../containers/Story/BodyContainer';
 import Action from '../components/Button/Action';
-import Affix from '../components/Utils/Affix';
-import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
-import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
 import { getGuestAvatarUrl } from '../../waivioApi/ApiClient';
 import { getAvatarURL } from '../components/Avatar';
@@ -170,6 +166,7 @@ export default class ProfileSettings extends React.Component {
               }),
             },
           ];
+
           SteemConnectAPI.broadcast([profileDateEncoded])
             .then(() => {
               reload();
@@ -306,206 +303,190 @@ export default class ProfileSettings extends React.Component {
     ));
 
     return (
-      <div className="shifted">
-        <Helmet>
-          <title>
-            {intl.formatMessage({ id: 'edit_profile', defaultMessage: 'Edit profile' })} - Waivio
-          </title>
-        </Helmet>
-        <div className="settings-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
-            <div className="left">
-              <LeftSidebar />
-            </div>
-          </Affix>
-          <div className="center">
-            <MobileNavigation />
-            <h1>
-              <FormattedMessage id="edit_profile" defaultMessage="Edit Profile" />
-            </h1>
-            <Form onSubmit={this.handleSubmit}>
-              <div className="Settings">
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="profile_name" defaultMessage="Name" />
-                  </h3>
-                  <div className="Settings__section__inputs">
-                    <FormItem>
-                      {getFieldDecorator('name')(
-                        <Input
-                          size="large"
-                          placeholder={intl.formatMessage({
-                            id: 'profile_name_placeholder',
-                            defaultMessage: 'Name to display on your profile',
-                          })}
-                        />,
-                      )}
-                    </FormItem>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="profile_about" defaultMessage="About me" />
-                  </h3>
-                  <div className="Settings__section__inputs">
-                    <FormItem>
-                      {getFieldDecorator('about')(
-                        <Input.TextArea
-                          autoSize={{ minRows: 2, maxRows: 6 }}
-                          placeholder={intl.formatMessage({
-                            id: 'profile_about_placeholder',
-                            defaultMessage: 'Few words about you',
-                          })}
-                        />,
-                      )}
-                    </FormItem>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="profile_location" defaultMessage="Location" />
-                    <FormattedMessage id="public_field" defaultMessage=" (public)" />
-                  </h3>
-                  <div className="Settings__section__inputs">
-                    <FormItem>
-                      {getFieldDecorator('location')(
-                        <Input
-                          size="large"
-                          placeholder={intl.formatMessage({
-                            id: 'profile_location_placeholder',
-                            defaultMessage: 'Your location',
-                          })}
-                        />,
-                      )}
-                    </FormItem>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="profile_email" defaultMessage="Email" />
-                    <FormattedMessage id="public_field" defaultMessage=" (public)" />
-                  </h3>
-                  <div className="Settings__section__inputs">
-                    <FormItem>
-                      {getFieldDecorator('email')(
-                        <Input
-                          size="large"
-                          placeholder={intl.formatMessage({
-                            id: 'profile_email_placeholder',
-                            defaultMessage: 'Your email',
-                          })}
-                        />,
-                      )}
-                    </FormItem>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="profile_website" defaultMessage="Website" />
-                    <FormattedMessage id="public_field" defaultMessage=" (public)" />
-                  </h3>
-                  <div className="Settings__section__inputs">
-                    <FormItem>
-                      {getFieldDecorator('website')(
-                        <Input
-                          size="large"
-                          placeholder={intl.formatMessage({
-                            id: 'profile_website_placeholder',
-                            defaultMessage: 'Your website URL',
-                          })}
-                        />,
-                      )}
-                    </FormItem>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="profile_picture" defaultMessage="Profile picture" />
-                  </h3>
-                  <div className="Settings__section__inputs">
-                    <FormItem>
-                      {getFieldDecorator('profile_image')(
-                        <div className="Settings__profile-image">
-                          <Avatar
-                            size="large"
-                            icon="user"
-                            src={`${profilePicture}?${lastAccountUpdate}`}
-                          />
-                          <Button type="primary" onClick={this.onOpenChangeAvatarModal}>
-                            {intl.formatMessage({
-                              id: 'profile_change_avatar',
-                              defaultMessage: 'Change avatar',
-                            })}
-                          </Button>
-                        </div>,
-                      )}
-                    </FormItem>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="profile_cover" defaultMessage="Cover picture" />
-                  </h3>
-                  <div className="Settings__section__inputs">
-                    <FormItem>
-                      {getFieldDecorator('cover_image')(
-                        <div className="Settings__profile-image">
-                          <Avatar size="large" shape="square" icon="picture" src={coverPicture} />
-                          <Button type="primary" onClick={this.onOpenChangeCoverModal}>
-                            {intl.formatMessage({
-                              id: 'profile_change_cover',
-                              defaultMessage: 'Change cover',
-                            })}
-                          </Button>
-                        </div>,
-                      )}
-                    </FormItem>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage
-                      id="profile_social_profiles"
-                      defaultMessage="Social profiles"
-                    />
-                  </h3>
-                  <div className="Settings__section__inputs">{socialInputs}</div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="profile_signature" defaultMessage="Signature" />
-                  </h3>
-                  <div className="Settings__section__inputs">
-                    {getFieldDecorator('signature', {
-                      initialValue: '',
-                    })(
-                      <EditorInput
-                        rows={6}
-                        onChange={this.handleSignatureChange}
-                        onImageUpload={this.props.onImageUpload}
-                        onImageInvalid={this.props.onImageInvalid}
-                        inputId={'profile-inputfile'}
+      <div>
+        <div className="center">
+          <h1>
+            <FormattedMessage id="edit_profile" defaultMessage="Edit Profile" />
+          </h1>
+          <Form onSubmit={this.handleSubmit}>
+            <div className="Settings">
+              <div className="Settings__section">
+                <h3>
+                  <FormattedMessage id="profile_name" defaultMessage="Name" />
+                </h3>
+                <div className="Settings__section__inputs">
+                  <FormItem>
+                    {getFieldDecorator('name')(
+                      <Input
+                        size="large"
+                        placeholder={intl.formatMessage({
+                          id: 'profile_name_placeholder',
+                          defaultMessage: 'Name to display on your profile',
+                        })}
                       />,
                     )}
-                    {bodyHTML && (
-                      <Form.Item label={<FormattedMessage id="preview" defaultMessage="Preview" />}>
-                        <BodyContainer full body={bodyHTML} />
-                      </Form.Item>
-                    )}
-                  </div>
+                  </FormItem>
                 </div>
-                <Action
-                  primary
-                  big
-                  type="submit"
-                  disabled={!form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
-                  loading={this.state.isLoading}
-                >
-                  <FormattedMessage id="save" defaultMessage="Save" />
-                </Action>
               </div>
-            </Form>
-          </div>
+              <div className="Settings__section">
+                <h3>
+                  <FormattedMessage id="profile_about" defaultMessage="About me" />
+                </h3>
+                <div className="Settings__section__inputs">
+                  <FormItem>
+                    {getFieldDecorator('about')(
+                      <Input.TextArea
+                        autoSize={{ minRows: 2, maxRows: 6 }}
+                        placeholder={intl.formatMessage({
+                          id: 'profile_about_placeholder',
+                          defaultMessage: 'Few words about you',
+                        })}
+                      />,
+                    )}
+                  </FormItem>
+                </div>
+              </div>
+              <div className="Settings__section">
+                <h3>
+                  <FormattedMessage id="profile_location" defaultMessage="Location" />
+                  <FormattedMessage id="public_field" defaultMessage=" (public)" />
+                </h3>
+                <div className="Settings__section__inputs">
+                  <FormItem>
+                    {getFieldDecorator('location')(
+                      <Input
+                        size="large"
+                        placeholder={intl.formatMessage({
+                          id: 'profile_location_placeholder',
+                          defaultMessage: 'Your location',
+                        })}
+                      />,
+                    )}
+                  </FormItem>
+                </div>
+              </div>
+              <div className="Settings__section">
+                <h3>
+                  <FormattedMessage id="profile_email" defaultMessage="Email" />
+                  <FormattedMessage id="public_field" defaultMessage=" (public)" />
+                </h3>
+                <div className="Settings__section__inputs">
+                  <FormItem>
+                    {getFieldDecorator('email')(
+                      <Input
+                        size="large"
+                        placeholder={intl.formatMessage({
+                          id: 'profile_email_placeholder',
+                          defaultMessage: 'Your email',
+                        })}
+                      />,
+                    )}
+                  </FormItem>
+                </div>
+              </div>
+              <div className="Settings__section">
+                <h3>
+                  <FormattedMessage id="profile_website" defaultMessage="Website" />
+                  <FormattedMessage id="public_field" defaultMessage=" (public)" />
+                </h3>
+                <div className="Settings__section__inputs">
+                  <FormItem>
+                    {getFieldDecorator('website')(
+                      <Input
+                        size="large"
+                        placeholder={intl.formatMessage({
+                          id: 'profile_website_placeholder',
+                          defaultMessage: 'Your website URL',
+                        })}
+                      />,
+                    )}
+                  </FormItem>
+                </div>
+              </div>
+              <div className="Settings__section">
+                <h3>
+                  <FormattedMessage id="profile_picture" defaultMessage="Profile picture" />
+                </h3>
+                <div className="Settings__section__inputs">
+                  <FormItem>
+                    {getFieldDecorator('profile_image')(
+                      <div className="Settings__profile-image">
+                        <Avatar
+                          size="large"
+                          icon="user"
+                          src={`${profilePicture}?${lastAccountUpdate}`}
+                        />
+                        <Button type="primary" onClick={this.onOpenChangeAvatarModal}>
+                          {intl.formatMessage({
+                            id: 'profile_change_avatar',
+                            defaultMessage: 'Change avatar',
+                          })}
+                        </Button>
+                      </div>,
+                    )}
+                  </FormItem>
+                </div>
+              </div>
+              <div className="Settings__section">
+                <h3>
+                  <FormattedMessage id="profile_cover" defaultMessage="Cover picture" />
+                </h3>
+                <div className="Settings__section__inputs">
+                  <FormItem>
+                    {getFieldDecorator('cover_image')(
+                      <div className="Settings__profile-image">
+                        <Avatar size="large" shape="square" icon="picture" src={coverPicture} />
+                        <Button type="primary" onClick={this.onOpenChangeCoverModal}>
+                          {intl.formatMessage({
+                            id: 'profile_change_cover',
+                            defaultMessage: 'Change cover',
+                          })}
+                        </Button>
+                      </div>,
+                    )}
+                  </FormItem>
+                </div>
+              </div>
+              <div className="Settings__section">
+                <h3>
+                  <FormattedMessage id="profile_social_profiles" defaultMessage="Social profiles" />
+                </h3>
+                <div className="Settings__section__inputs">{socialInputs}</div>
+              </div>
+              <div className="Settings__section">
+                <h3>
+                  <FormattedMessage id="profile_signature" defaultMessage="Signature" />
+                </h3>
+                <div className="Settings__section__inputs">
+                  {getFieldDecorator('signature', {
+                    initialValue: '',
+                  })(
+                    <EditorInput
+                      rows={6}
+                      onChange={this.handleSignatureChange}
+                      onImageUpload={this.props.onImageUpload}
+                      onImageInvalid={this.props.onImageInvalid}
+                      inputId={'profile-inputfile'}
+                    />,
+                  )}
+                  {bodyHTML && (
+                    <Form.Item label={<FormattedMessage id="preview" defaultMessage="Preview" />}>
+                      <BodyContainer full body={bodyHTML} />
+                    </Form.Item>
+                  )}
+                </div>
+              </div>
+              <Action
+                primary
+                big
+                type="submit"
+                disabled={!form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
+                loading={this.state.isLoading}
+              >
+                <FormattedMessage id="save" defaultMessage="Save" />
+              </Action>
+            </div>
+          </Form>
         </div>
         <Modal
           wrapClassName="Settings__modal"
@@ -532,6 +513,7 @@ export default class ProfileSettings extends React.Component {
               onImageLoaded={isAvatar ? this.getAvatar : this.getCover}
               onLoadingImage={this.onLoadingImage}
               isRequired
+              isMultiple={false}
             />
           )}
         </Modal>

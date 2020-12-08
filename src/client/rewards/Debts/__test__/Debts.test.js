@@ -1,13 +1,17 @@
 import React from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { mountWithIntl } from 'enzyme-react-intl';
 import { act } from 'react-dom/test-utils';
+import { IntlProvider } from 'react-intl';
+import { mount } from 'enzyme';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+
 import Debts from '../Debts';
 import { mockDataDebts } from '../__mock__/mockData';
 
 jest.mock('../../PaymentCard/PaymentCard', () => () => <div className="PaymentCard" />);
 
 describe('Debts', () => {
+  const mockStore = configureStore();
   let wrapper;
 
   beforeEach(() => {
@@ -18,9 +22,17 @@ describe('Debts', () => {
       },
       currentSteemPrice: 0.2,
       componentLocation: '/rewards/payables',
+      activeFilters: [{}],
+      setPayablesFilterValue: () => {},
     };
 
-    wrapper = mountWithIntl(<Debts {...props} />);
+    wrapper = mount(
+      <Provider store={mockStore()}>
+        <IntlProvider locale="en">
+          <Debts {...props} />
+        </IntlProvider>
+      </Provider>,
+    );
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -35,7 +47,13 @@ describe('Debts', () => {
       componentLocation: '/rewards',
     };
 
-    const component = mountWithIntl(<Debts {...props} />);
+    const component = mount(
+      <Provider store={mockStore()}>
+        <IntlProvider locale="en">
+          <Debts {...props} />
+        </IntlProvider>
+      </Provider>,
+    );
     const container = component.find('.PaymentCard');
     expect(container).toHaveLength(3);
   });
@@ -47,7 +65,13 @@ describe('Debts', () => {
       componentLocation: '/rewards',
     };
 
-    const component = mountWithIntl(<Debts {...props} />);
+    const component = mount(
+      <Provider store={mockStore()}>
+        <IntlProvider locale="en">
+          <Debts {...props} />
+        </IntlProvider>
+      </Provider>,
+    );
     const container = component.find('.Debts');
     expect(container).toHaveLength(1);
   });
@@ -77,7 +101,13 @@ describe('Debts', () => {
   });
 
   it('should render 3 cards', () => {
-    wrapper = mountWithIntl(<Debts {...mockDataDebts} />);
+    wrapper = mount(
+      <Provider store={mockStore()}>
+        <IntlProvider locale="en">
+          <Debts {...mockDataDebts} />
+        </IntlProvider>
+      </Provider>,
+    );
     act(() => {
       wrapper.update();
     });

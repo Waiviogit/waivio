@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
 import classNames from 'classnames';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { getObjectName } from '../../helpers/wObjectHelper';
 import { getBreadCrumbText } from '../rewardsHelper';
 import '../Rewards.less';
 
@@ -17,11 +17,11 @@ const rewardText = {
   messages: { id: 'messages', defaultMessage: 'Messages' },
 };
 
-const RewardBreadcrumb = ({ intl, filterKey, reqObject, location }) => {
+const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
   const isCorrectFilter = !!rewardText[filterKey];
-  const objName = !isEmpty(reqObject) ? getFieldWithMaxWeight(reqObject, 'name') : null;
+  const objName = getObjectName(reqObject);
   const breadCrumbText = `${
-    isCorrectFilter ? getBreadCrumbText(intl, location, filterKey, rewardText) : ''
+    isCorrectFilter ? getBreadCrumbText(intl, location, filterKey, rewardText, match) : ''
   } ${
     filterKey !== 'history'
       ? intl.formatMessage({
@@ -52,12 +52,14 @@ RewardBreadcrumb.propTypes = {
   reqObject: PropTypes.shape(),
   filterKey: PropTypes.string,
   location: PropTypes.string,
+  match: PropTypes.shape(),
 };
 
 RewardBreadcrumb.defaultProps = {
   filterKey: '',
   reqObject: {},
   location: '',
+  match: {},
 };
 
 export default injectIntl(RewardBreadcrumb);

@@ -108,6 +108,7 @@ class QuickCommentEditor extends React.Component {
             </div>
           )}
           <Input.TextArea
+            className="CommentArea"
             autoSize
             value={commentMsg}
             disabled={imageUploading || isLoading}

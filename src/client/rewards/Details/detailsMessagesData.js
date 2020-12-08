@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 export default (localizer, objectData) => ({
   seekHonestReviews: localizer('rewards_details_seek_honest_reviews', 'We seek honest reviews'),
   rewardReviews: localizer('rewards_details_reward_for_reviews', 'Reward for reviews'),
@@ -37,7 +39,7 @@ export default (localizer, objectData) => ({
     'rewards_details_account_not_blacklisted',
     'User account is not blacklisted by ',
   ),
-  referencedAccounts: localizer('rewards_details_referenced_accounts.', 'or referenced accounts.'),
+  referencedAccounts: localizer('rewards_details_referenced_accounts', 'or referenced accounts.'),
   postRequirements: localizer('rewards_details_post_requirements', 'Post requirements'),
   reviewEligibleAward: localizer(
     'rewards_details_review_eligible_award',
@@ -47,7 +49,7 @@ export default (localizer, objectData) => ({
     'rewards_details_minimum_original_photos',
     'Minimum {minPhotos} original photos of',
     {
-      minPhotos: objectData.requirements.minPhotos,
+      minPhotos: get(objectData, ['requirements', 'minPhotos']),
     },
   ),
   photoReceipt: localizer(
@@ -66,7 +68,7 @@ export default (localizer, objectData) => ({
   reward: localizer('rewards_details_reward', 'Reward'),
   amountRewardDetermined: localizer(
     'rewards_details_amount_reward_determined',
-    'The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Steem Power) and direct payments (liquid HIVE). Only upvotes from registered accounts',
+    'The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (HIVE Power) and direct payments (liquid HIVE). Only upvotes from registered accounts',
   ),
   countTowardsPaymentRewards: localizer(
     'rewards_details_count_towards_payment_rewards',

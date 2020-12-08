@@ -152,7 +152,7 @@ export const getAppUrl = state => state.appUrl;
 export const getUsedLocale = state => state.usedLocale;
 export const getScreenSize = state => state.screenSize;
 export const getTranslations = state => state.translations;
-export const getCryptosPriceHistory = state => state.cryptosPriceHistory;
+export const getCryptosPriceHistory = state => get(state, 'cryptosPriceHistory');
 export const getShowPostModal = state => state.showPostModal;
 export const getCurrentShownPost = state => state.currentShownPost;
 export const getIsMobile = state => state.isMobile;

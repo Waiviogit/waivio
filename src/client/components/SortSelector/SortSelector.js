@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty, get } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
@@ -12,12 +13,14 @@ export default class SortSelector extends React.Component {
     sort: PropTypes.string,
     children: PropTypes.node,
     onChange: PropTypes.func,
+    match: PropTypes.shape(),
   };
 
   static defaultProps = {
-    sort: null,
+    sort: 'recency',
     children: null,
     onChange: () => {},
+    match: {},
   };
 
   constructor(props) {
@@ -47,35 +50,41 @@ export default class SortSelector extends React.Component {
   }
 
   render() {
-    const { sort } = this.props;
+    const { sort, match } = this.props;
     const { visible } = this.state;
-
     const currentSort = React.Children.map(this.props.children, c => c).find(
       c => c.key === `.$${sort}`,
     );
 
+    const exclusion =
+      !isEmpty(get(match, 'params.campaignId', '')) &&
+      !isEmpty(get(match, 'params.permlink', '')) &&
+      (!isEmpty(get(match, 'params.username', '')) || get(match, 'params[0]', '') === 'messages');
+
     return (
-      <div className="SortSelector">
-        <span className="SortSelector__title">
-          <FormattedMessage id="sort_by" defaultMessage="Sort by" />
-        </span>
-        <Popover
-          trigger="click"
-          placement="bottom"
-          visible={visible}
-          onVisibleChange={this.handleVisibleChange}
-          content={
-            <PopoverMenu bold onSelect={this.handleSelect}>
-              {this.props.children}
-            </PopoverMenu>
-          }
-        >
-          <span className="SortSelector__current">
-            {currentSort && currentSort.props && currentSort.props.children}
-            <i className="iconfont icon-unfold" />
+      !exclusion && (
+        <div className="SortSelector">
+          <span className="SortSelector__title">
+            <FormattedMessage id="sort_by" defaultMessage="Sort by" />
           </span>
-        </Popover>
-      </div>
+          <Popover
+            trigger="click"
+            placement="bottom"
+            visible={visible}
+            onVisibleChange={this.handleVisibleChange}
+            content={
+              <PopoverMenu bold onSelect={this.handleSelect}>
+                {this.props.children}
+              </PopoverMenu>
+            }
+          >
+            <span className="SortSelector__current">
+              {currentSort && currentSort.props && currentSort.props.children}
+              <i className="iconfont icon-unfold" />
+            </span>
+          </Popover>
+        </div>
+      )
     );
   }
 }

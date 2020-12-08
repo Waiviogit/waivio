@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty, includes } from 'lodash';
+import { isEmpty, includes, get } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
@@ -14,7 +14,7 @@ import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import { guestUserRegex } from '../../helpers/regexHelpers';
-import Transfer from '../../wallet/Transfer';
+import Transfer from '../../wallet/Transfer/Transfer';
 import './Payment.less';
 
 // eslint-disable-next-line no-shadow
@@ -26,24 +26,16 @@ const Payment = ({
   hiveBeneficiaryAccount,
   openLinkModal,
   openTransf,
+  history,
 }) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
   const { reservationPermlink } = match.params;
-
-  const getRequestParams = () => {
-    if (reservationPermlink || includes(match.path, 'payables')) {
-      return {
-        sponsor: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
-        user: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
-      };
-    }
-
-    return {
-      sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
-      user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
-    };
-  };
+  const payables = get(match, ['params', '0']) === 'payables';
+  const getRequestParams = () => ({
+    sponsor: reservationPermlink || payables ? userName : match.params.userName,
+    user: reservationPermlink || payables ? match.params.userName : userName,
+  });
 
   const isReceiverGuest = guestUserRegex.test(match.params.userName);
   const pathRecivables = includes(match.path, 'receivables');
@@ -52,19 +44,22 @@ const Payment = ({
   const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
-
-  useEffect(() => {
+  const getPayables = () => {
     getLenders(getRequestParams())
       .then(data => {
         setSponsors(data.histories);
         setPayable(data.payable);
       })
       .catch(e => console.log(e));
+  };
+
+  useEffect(() => {
+    getPayables();
   }, []);
 
   let titleName;
   let isPayables;
-  if (includes(match.path, 'payables')) {
+  if (get(match, ['params', '0']) === 'payables') {
     titleName = intl.formatMessage({
       id: 'payment_page_payables',
       defaultMessage: 'Payables',
@@ -142,7 +137,7 @@ const Payment = ({
           match={match}
         />
       )}
-      <Transfer />
+      <Transfer history={history} getPayables={getPayables} />
     </div>
   );
 };
@@ -150,6 +145,7 @@ const Payment = ({
 Payment.propTypes = {
   intl: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
+  history: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
   isGuest: PropTypes.bool,
   hiveBeneficiaryAccount: PropTypes.string,

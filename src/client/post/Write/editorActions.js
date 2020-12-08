@@ -3,6 +3,7 @@ import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
+import { isEmpty } from 'lodash';
 import { REFERRAL_PERCENT } from '../../helpers/constants';
 import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
 import { jsonParse } from '../../helpers/formatter';
@@ -130,6 +131,8 @@ const broadcastComment = (
   authUsername,
   beneficiaries,
   isReview,
+  isGuest,
+  hiveBeneficiaryAccount,
 ) => {
   const operations = [];
   const commentOp = [
@@ -145,23 +148,22 @@ const broadcastComment = (
     },
   ];
   operations.push(commentOp);
-
   if (isUpdating) return steemConnectAPI.broadcast(operations);
-
+  const guestHivePresent = hiveBeneficiaryAccount && isGuest ? 5000 : 0;
   const commentOptionsConfig = {
     author,
     permlink,
     allow_votes: true,
     allow_curation_rewards: true,
     max_accepted_payout: '1000000.000 HBD',
-    percent_steem_dollars: 10000,
+    percent_hbd: isGuest ? guestHivePresent : 10000,
     extensions: [],
   };
 
   if (reward === rewardsValues.none) {
     commentOptionsConfig.max_accepted_payout = '0.000 HBD';
   } else if (reward === rewardsValues.all) {
-    commentOptionsConfig.percent_steem_dollars = 0;
+    commentOptionsConfig.percent_hbd = 0;
   }
 
   if (referral && referral !== authUsername) {
@@ -189,12 +191,20 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations, isReview);
 };
 
-export function createPost(postData, beneficiaries, isReview) {
+export function createPost(postData, beneficiaries, isReview, campaign, intl) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
 
   return (dispatch, getState, { steemConnectAPI }) => {
+    if (isReview) {
+      // eslint-disable-next-line no-param-reassign
+      postData.body += `\n***\n${intl.formatMessage({
+        id: `check_review_post_add_text`,
+        defaultMessage: 'This review was sponsored in part by',
+      })} ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
+    }
+
     const {
       parentAuthor,
       parentPermlink,
@@ -208,9 +218,12 @@ export function createPost(postData, beneficiaries, isReview) {
       draftId,
       isUpdating,
     } = postData;
+
+    const isPost = !isEmpty(postData);
+
     const getPermLink = isUpdating
       ? Promise.resolve(postData.permlink)
-      : createPermlink(title, author, parentAuthor, parentPermlink);
+      : createPermlink(title, author, parentAuthor, parentPermlink, isPost);
     const state = getState();
     const authUser = state.auth.user;
     const isGuest = state.auth.isGuestUser;
@@ -260,6 +273,8 @@ export function createPost(postData, beneficiaries, isReview) {
         authUser.name,
         currentBeneficiaries,
         isReview,
+        isGuest,
+        hiveBeneficiaryAccount,
       )
         .then(result => {
           if (draftId) {
@@ -275,7 +290,7 @@ export function createPost(postData, beneficiaries, isReview) {
             }
             if (result.status === 200) {
               dispatch(notify(publicMessage, 'success'));
-              dispatch(push('/'));
+              dispatch(push(`/@${author}`));
             }
           } else {
             setTimeout(() => dispatch(push(`/@${author}`)), 3000);

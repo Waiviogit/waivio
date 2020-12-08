@@ -1,17 +1,18 @@
 import { Icon } from 'antd';
 import React from 'react';
-import _ from 'lodash';
+import { size } from 'lodash';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import ObjectCard from './ObjectCard';
-import './InterestingObjects.less';
-import './SidebarContentBlock.less';
 import { getRecommendedObjects } from '../../reducers';
 import { getRecommendedObj } from '../../user/userActions';
 import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
 import WeightTag from '../WeightTag';
+
+import './InterestingObjects.less';
+import './SidebarContentBlock.less';
 
 @connect(
   state => ({
@@ -31,11 +32,13 @@ class InterestingObjects extends React.Component {
   };
 
   componentDidMount() {
-    if (_.size(this.props.recommendedObjects) < 5) this.props.getRecommendedObj();
+    if (size(this.props.recommendedObjects) < 5) this.props.getRecommendedObj();
   }
+
   render() {
     const { recommendedObjects } = this.props;
-    return _.size(recommendedObjects) >= 5 ? (
+
+    return size(recommendedObjects) >= 5 ? (
       <div className="InterestingObjects SidebarContentBlock">
         <h4 className="SidebarContentBlock__title">
           <Icon type="codepen" className="SidebarContentBlock__icon" />

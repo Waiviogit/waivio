@@ -4,7 +4,6 @@ import {
   getTransferMemo,
   getTransferAmount,
   getTransferCurrency,
-  getGuestUserBalance,
   getIsTransferVisible,
   getUsersTransactions,
   getTotalVestingShares,
@@ -42,15 +41,7 @@ describe('fromWallet', () => {
       usersAccountHistoryLoading: 'usersAccountHistoryLoading',
       loadingEstAccountValue: 'loadingEstAccountValue',
       loadingGlobalProperties: 'loadingGlobalProperties',
-      usersAccountHistory: {
-        'user-username': [
-          {},
-          {},
-          {
-            actionCount: 2,
-          },
-        ],
-      },
+      usersAccountHistory: { username: [{ actionCount: 0 }] },
       loadingMoreUsersAccountHistory: 'loadingMoreUsersAccountHistory',
       accountHistoryFilter: 'accountHistoryFilter',
       currentDisplayedActions: 'currentDisplayedActions',
@@ -119,17 +110,17 @@ describe('fromWallet', () => {
     expect(getLoadingGlobalProperties(state)).toEqual('loadingGlobalProperties');
   });
 
-  it('Should return loadingMoreUsersAccountHistory', () => {
+  it('Should return getLoadingMoreUsersAccountHistory', () => {
     expect(getLoadingMoreUsersAccountHistory(state)).toEqual('loadingMoreUsersAccountHistory');
   });
 
-  it('Should return loadingMoreUsersAccountHistory', () => {
-    expect(getUserHasMoreAccountHistory(state, username)).toEqual(true);
+  it('Should return loadingMoreUsersAccountHistory if actionCount === 0', () => {
+    expect(getUserHasMoreAccountHistory(state, username)).toEqual(false);
   });
 
-  it('Should return loadingMoreUsersAccountHistory', () => {
-    state.wallet.usersAccountHistory['user-username'][2].actionCount = 1;
-    expect(getUserHasMoreAccountHistory(state, username)).toEqual(false);
+  it('Should return loadingMoreUsersAccountHistory if actionCount === 2', () => {
+    const currState = { wallet: { usersAccountHistory: { username: [{ actionCount: 2 }] } } };
+    expect(getUserHasMoreAccountHistory(currState, username)).toEqual(true);
   });
 
   it('Should return accountHistoryFilter', () => {
@@ -142,9 +133,5 @@ describe('fromWallet', () => {
 
   it('Should return currentFilteredActions', () => {
     expect(getCurrentFilteredActions(state)).toEqual('currentFilteredActions');
-  });
-
-  it('Should return balance', () => {
-    expect(getGuestUserBalance(state)).toEqual('balance');
   });
 });

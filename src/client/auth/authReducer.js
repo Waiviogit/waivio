@@ -8,13 +8,14 @@ import {
 
 const initialState = {
   isAuthenticated: false,
-  isFetching: false,
+  isFetching: true,
   isReloading: false,
   loaded: false,
   user: {},
   userMetaData: {},
   privateEmail: '',
   isGuestUser: false,
+  sort: 'recency',
 };
 
 export default (state = initialState, action) => {
@@ -83,7 +84,7 @@ export default (state = initialState, action) => {
       };
 
     case types.LOGOUT:
-      return initialState;
+      return { ...initialState, isFetching: false };
 
     case GET_USER_METADATA.SUCCESS:
       return {
@@ -128,6 +129,13 @@ export default (state = initialState, action) => {
       };
     }
 
+    case types.CHANGE_SORTING_FOLLOW: {
+      return {
+        ...state,
+        sort: action.payload,
+      };
+    }
+
     case types.UPDATE_PROFILE_ERROR:
       return state;
 
@@ -154,4 +162,7 @@ export const getAuthenticatedUserAvatar = state => {
   }
   return undefined;
 };
+export const getAuthorizationUserFollowSort = state => state.sort;
+export const getHasMap = state => state.map;
+
 export const isGuestUser = state => state.isGuestUser;

@@ -6,12 +6,12 @@ import { isEmpty, map, filter, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../Create-Edit/ReviewItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import { setDataForGlobalReport } from '../rewardsActions';
 import { getAuthenticatedUser, getUsedLocale } from '../../reducers';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 @injectIntl
 @connect(
@@ -129,7 +129,7 @@ class ReportsForm extends Component {
     const objectsNamesAndPermlinks =
       objects && objects.length
         ? map(objects, obj => ({
-            name: getFieldWithMaxWeight(obj, 'name'),
+            name: getObjectName(obj),
             permlink: obj.author_permlink,
           }))
         : [];

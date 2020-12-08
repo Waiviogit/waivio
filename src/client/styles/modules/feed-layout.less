@@ -35,6 +35,12 @@
       min-height: 150px !important;
     }
 
+    &__wobj {
+      @media @small {
+        display: block;
+      }
+    }
+
     @media @medium {
       display: block;
     }
@@ -48,6 +54,31 @@
 
     @media @small {
       display: block;
+    }
+
+    &__wobj {
+      @media @medium {
+        display: block;
+      }
+    }
+  }
+
+  .wobjRightContainer {
+    float: right;
+    display: none;
+    width: @right-width;
+    padding-left: 20px;
+
+    @media @medium {
+      display: block;
+    }
+
+    &--right {
+      display: none;
+
+      @media @medium {
+        display: none;
+      }
     }
   }
 
@@ -63,6 +94,23 @@
       width: calc(100% - (@left-width + @right-width + 2 * @margin));
       margin-left: @margin;
     }
+
+    &--page {
+      @media @small, @medium {
+        margin-left: 0;
+        width: calc(100% - (@left-width + @margin));
+      }
+    }
+  }
+}
+
+.table-wrap {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  .display-table {
+    width: 100%;
   }
 }
 

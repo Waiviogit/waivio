@@ -12,8 +12,8 @@ const AuthorRewardMessage = ({
   totalVestingFundSteem,
 }) => {
   const rewards = [
-    { payout: actionDetails.sbd_payout, currency: 'HBD' },
-    { payout: actionDetails.steem_payout, currency: 'HIVE' },
+    { payout: actionDetails.hbd_payout, currency: 'HBD' },
+    { payout: actionDetails.hive_payout, currency: 'HIVE' },
     { payout: actionDetails.vesting_payout, currency: 'HP' },
   ];
 

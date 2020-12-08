@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import { message } from 'antd';
 import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
 import { getAuthenticatedUser, getSuitableLanguage } from '../../reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
-import { getClientWObj } from '../../adapters';
 import * as api from '../../../waivioApi/ApiClient';
 import { voteObject, followObject } from '../../object/wobjActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
@@ -50,28 +50,35 @@ export default function withEditor(WrappedComponent) {
       const { locale } = this.props.locale;
       return api
         .getObjectsByIds({ authorPermlinks: objectIds, locale })
-        .then(res => res.map(obj => getClientWObj(obj, locale)));
+        .then(res => res.map(obj => obj));
     };
 
-    handleImageUpload = (blob, callback, errorCallback) => {
+    handleImageUpload = (blob, callback, errorCallback, linkMethod = false) => {
       const {
         intl: { formatMessage },
       } = this.props;
       message.info(
         formatMessage({ id: 'notify_uploading_image', defaultMessage: 'Uploading image' }),
       );
+
       const formData = new FormData();
+      const currentMethod = linkMethod ? 'imageUrl' : 'file';
+      formData.append(currentMethod, blob);
 
-      formData.append('file', blob);
+      const currentLocation = window.location.hostname;
 
-      return fetch(`https://www.waivio.com/api/image`, {
-        method: 'POST',
-        body: formData,
-      })
-        .then(res => res.json())
-        .then(res => {
-          callback(res.image, blob.name);
-        })
+      let url;
+      if (currentLocation === 'waiviodev.com') {
+        url = `https://waiviodev.com/api/image`;
+      } else if (currentLocation === 'waivio') {
+        url = `https://waivio.com/api/image`;
+      } else {
+        url = `https://www.waivio.com/api/image`;
+      }
+
+      return axios
+        .post(url, formData)
+        .then(res => callback(res.data.image, blob.name))
         .catch(() => {
           errorCallback();
           message.error(

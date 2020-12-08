@@ -1,4 +1,4 @@
-import { isEmpty, map, includes } from 'lodash';
+import { isEmpty, map, includes, get, size } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -9,12 +9,16 @@ import moment from 'moment';
 import { Form, message } from 'antd';
 import { createCampaign, getCampaignById, getObjectsByIds } from '../../../waivioApi/ApiClient';
 import CreateFormRenderer from './CreateFormRenderer';
-import { getClientWObj } from '../../adapters';
 import { AppSharedContext } from '../../Wrapper';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../../waivioApi/config';
 import { getRate, getRewardFund } from '../../reducers';
 import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
+import {
+  PATH_NAME_MANAGE,
+  CAMPAIGN_STATUS,
+  isDisabledStatus,
+} from '../../../common/constants/rewards';
 import './CreateReward.less';
 
 @withRouter
@@ -24,6 +28,8 @@ import './CreateReward.less';
   state => ({
     rate: getRate(state),
     rewardFund: getRewardFund(state),
+    createDuplicate: false,
+    campaign: {},
   }),
   {},
 )
@@ -37,7 +43,6 @@ class CreateRewardForm extends React.Component {
     match: PropTypes.shape().isRequired,
     currentSteemDollarPrice: PropTypes.number,
     /* from context */
-    usedLocale: PropTypes.string,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
   };
@@ -93,37 +98,48 @@ class CreateRewardForm extends React.Component {
       this.setState({ loading: true });
 
       const campaign = await getCampaignById(this.props.match.params.campaignId);
-
       const isExpired = campaign.status === 'expired';
-
       const expiredAt = isExpired
         ? moment(new Date().toISOString())
         : moment(new Date(campaign.expired_at));
-
-      const isDuplicate = this.props.match.path.includes('createDuplicate');
-
-      const isPending = campaign.status === 'pending';
-
+      const matchPath = get(this.props.match, ['path', 'params', '0']);
+      const isDuplicate = includes(matchPath, 'createDuplicate');
+      const isDisabled =
+        includes(isDisabledStatus, campaign.status) || campaign.status !== CAMPAIGN_STATUS.pending;
       let combinedObjects;
       let sponsors;
-      const secondaryObjectsPermlinks = campaign.objects
+
+      const secondaryObjectsPermlinks = !isEmpty(campaign.objects)
         ? map(campaign.objects, obj => obj.author_permlink)
         : [];
+
+      let authorPermlinks = [];
+
+      const agreementObject = get(campaign, 'agreementObjects[0]', '');
+
       if (!isEmpty(campaign.match_bots)) {
+        authorPermlinks = [
+          ...campaign.match_bots,
+          campaign.requiredObject.author_permlink,
+          ...secondaryObjectsPermlinks,
+        ];
+
+        // eslint-disable-next-line no-unused-expressions
+        agreementObject && authorPermlinks.push(agreementObject);
+
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [
-            ...campaign.match_bots,
-            campaign.requiredObject.author_permlink,
-            ...secondaryObjectsPermlinks,
-          ],
+          authorPermlinks,
         });
 
         sponsors = combinedObjects.wobjects.filter(wobj =>
           includes(campaign.match_bots, wobj.author_permlink),
         );
       } else {
+        authorPermlinks = [campaign.requiredObject.author_permlink, ...secondaryObjectsPermlinks];
+        // eslint-disable-next-line no-unused-expressions
+        agreementObject && authorPermlinks.push(agreementObject);
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [campaign.requiredObject.author_permlink, ...secondaryObjectsPermlinks],
+          authorPermlinks,
         });
       }
 
@@ -133,6 +149,10 @@ class CreateRewardForm extends React.Component {
 
       const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
         includes(secondaryObjectsPermlinks, wobj.author_permlink),
+      );
+
+      const agreementObjects = combinedObjects.wobjects.find(
+        wobj => wobj.author_permlink === campaign.agreementObjects[0],
       );
 
       const rewardFundRecentClaims = rewardFund.recent_claims;
@@ -146,24 +166,20 @@ class CreateRewardForm extends React.Component {
         rate,
       });
 
-      Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
+      Promise.all([primaryObject, secondaryObjects, agreementObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
+          campaign,
           iAgree: true,
           loading: false,
-          campaignName: `${
-            this.props.match.path.includes('createDuplicate')
-              ? `Copy ${campaign.name}`
-              : campaign.name
-          }`,
+          campaignName: `${this.state.createDuplicate ? `Copy ${campaign.name}` : campaign.name}`,
           campaignType: campaign.type,
-          budget: campaign.budget,
-          reward: campaign.reward,
-          primaryObject: getClientWObj(values[0], this.props.usedLocale),
-          secondaryObjectsList: values[1].map(obj => getClientWObj(obj, this.props.usedLocale)),
-          sponsorsList: !isEmpty(sponsors)
-            ? values[2].map(obj => getClientWObj(obj, this.props.usedLocale))
-            : [],
+          budget: campaign.budget.toString(),
+          reward: campaign.reward.toString(),
+          primaryObject: values[0],
+          secondaryObjectsList: values[1].map(obj => obj),
+          pageObjects: !isEmpty(values[2]) ? [values[2]] : [],
+          sponsorsList: !isEmpty(sponsors) ? values[2] : [],
           reservationPeriod: campaign.count_reservation_days,
           receiptPhoto: campaign.requirements.receiptPhoto,
           minExpertise,
@@ -182,7 +198,7 @@ class CreateRewardForm extends React.Component {
           usersLegalNotice: campaign.usersLegalNotice,
           expiredAt,
           isDuplicate,
-          isPending,
+          isDisabled,
         });
         if (campaign.match_bots.length) {
           this.setState({
@@ -194,6 +210,13 @@ class CreateRewardForm extends React.Component {
       });
     }
   };
+
+  componentDidUpdate() {
+    const { campaign, createDuplicate } = this.state;
+    if (createDuplicate)
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ campaignName: `Copy ${campaign.name}`, createDuplicate: false });
+  }
 
   checkOptionFields = () => {
     const { setFieldsValue, getFieldValue } = this.props.form;
@@ -210,8 +233,8 @@ class CreateRewardForm extends React.Component {
   prepareSubmitData = (data, userName) => {
     const { campaignId, pageObjects, isDuplicate } = this.state;
     const { rate, rewardFund } = this.props;
-    const objects = map(data.secondaryObject, o => o.id);
-    const agreementObjects = pageObjects.length !== 0 ? map(pageObjects, o => o.id) : [];
+    const objects = map(data.secondaryObject, o => o.author_permlink);
+    const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const minExpertise = Number(data.minExpertise);
@@ -257,7 +280,7 @@ class CreateRewardForm extends React.Component {
   };
 
   manageRedirect = () => {
-    this.props.history.push('/rewards/manage');
+    this.props.history.push(PATH_NAME_MANAGE);
   };
 
   handleSetState = (stateData, callbackData) => {
@@ -324,7 +347,7 @@ class CreateRewardForm extends React.Component {
     },
 
     handleAddPageObject: obj => {
-      this.setState({ pageObjects: [...this.state.pageObjects, obj] }, () =>
+      this.setState({ pageObjects: [obj] }, () =>
         this.props.form.setFieldsValue({ agreement: this.state.pageObjects }),
       );
     },
@@ -353,10 +376,10 @@ class CreateRewardForm extends React.Component {
     getObjectsToOmit: () => {
       const objectsToOmit = [];
       if (!isEmpty(this.state.primaryObject)) {
-        objectsToOmit.push(this.state.primaryObject.id);
+        objectsToOmit.push(this.state.primaryObject.author_permlink);
       }
       if (!isEmpty(this.state.secondaryObjectsList)) {
-        map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.id));
+        map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.author_permlink));
       }
       return objectsToOmit;
     },
@@ -402,6 +425,10 @@ class CreateRewardForm extends React.Component {
     handleSelectChange: () => {},
   };
 
+  handleCreateDuplicate = () => {
+    this.setState({ createDuplicate: true });
+  };
+
   render() {
     const { user, currentSteemDollarPrice, form, match } = this.props;
     const {
@@ -431,7 +458,7 @@ class CreateRewardForm extends React.Component {
       campaignId,
       iAgree,
       eligibleDays,
-      isPending,
+      isDisabled,
       isDuplicate,
     } = this.state;
     return (
@@ -468,8 +495,9 @@ class CreateRewardForm extends React.Component {
         campaignId={campaignId}
         iAgree={iAgree}
         eligibleDays={eligibleDays}
-        isPending={isPending}
+        isDisabled={isDisabled}
         isDuplicate={isDuplicate}
+        handleCreateDuplicate={this.handleCreateDuplicate}
       />
     );
   }

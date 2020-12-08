@@ -8,6 +8,7 @@ import { findRoot } from '../helpers/commentHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { POST_AUTHOR_FOR_REWARDS_COMMENTS } from '../../common/constants/waivio';
 import { sendCommentAppend } from '../object/wobjActions';
+import { getAuthenticatedUserName, getLocale } from '../reducers';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -28,12 +29,17 @@ export const FAKE_LIKE_COMMENT = createAsyncActionType('@comments/FAKE_LIKE_COMM
 export const GET_RESERVED_COMMENTS = '@comments/GET_RESERVED_COMMENTS';
 export const GET_RESERVED_COMMENTS_SUCCESS = '@comments/GET_RESERVED_COMMENTS_SUCCESS';
 
-export const getSingleComment = (author, permlink, focus = false) => dispatch =>
-  dispatch({
+export const getSingleComment = (author, permlink, focus = false) => (dispatch, getState) => {
+  const state = getState;
+  const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
+
+  return dispatch({
     type: GET_SINGLE_COMMENT.ACTION,
-    payload: ApiClient.getContent(author, permlink).then(res => res),
+    payload: ApiClient.getContent(author, permlink, locale, follower).then(res => res),
     meta: { focus },
   });
+};
 
 export const getFakeSingleComment = (
   parentAuthor,
@@ -109,6 +115,7 @@ export const getComments = postId => (dispatch, getState) => {
   const listFields = get(object, ['wobject', 'fields'], null);
   const matchPost = listFields && listFields.find(field => field.permlink === postId);
   const content = posts.list[postId] || comments.comments[postId] || matchPost;
+  const locale = getLocale(getState());
   if (content) {
     // eslint-disable-next-line camelcase
     const { category, permlink } = content;
@@ -122,11 +129,13 @@ export const getComments = postId => (dispatch, getState) => {
     dispatch({
       type: GET_COMMENTS,
       payload: {
-        promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        })),
+        promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(
+          apiRes => ({
+            rootCommentsList: getRootCommentsList(apiRes),
+            commentsChildrenList: getCommentsChildrenLists(apiRes),
+            content: apiRes.content,
+          }),
+        ),
       },
       meta: {
         id: postId,
@@ -135,7 +144,112 @@ export const getComments = postId => (dispatch, getState) => {
   }
 };
 
-export const sendComment = (
+export const sendComment = (parentPost, body, isUpdating = false, originalComment) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const { category, id, permlink: parentPermlink } = parentPost;
+  let parentAuthor;
+
+  if (isUpdating) {
+    parentAuthor = parentPost.author;
+  } else if (parentPost.root_author && parentPost.guestInfo) {
+    parentAuthor = parentPost.root_author;
+  } else {
+    parentAuthor = parentPost.author;
+  }
+  const guestParentAuthor = get(parentPost, ['guestInfo', 'userId']);
+  const { auth, comments } = getState();
+
+  if (!auth.isAuthenticated) {
+    return dispatch(notify('You have to be logged in to comment', 'error'));
+  }
+
+  if (!body || !body.length) {
+    return dispatch(notify("Message can't be empty", 'error'));
+  }
+
+  const author = isUpdating ? originalComment.author : auth.user.name;
+  const permlink = isUpdating
+    ? originalComment.permlink
+    : createCommentPermlink(parentAuthor, parentPermlink);
+  const currCategory = category ? [category] : [];
+  const jsonMetadata = createPostMetadata(
+    body,
+    currCategory,
+    isUpdating && jsonParse(originalComment.json_metadata),
+  );
+
+  const newBody =
+    isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+
+  let rootPostId = null;
+  if (parentPost.parent_author) {
+    const { comments: commentsState } = comments;
+    const commentsWithBotAuthor = {};
+    Object.values(commentsState).forEach(val => {
+      commentsWithBotAuthor[`${val.author}/${val.permlink}`] = val;
+    });
+    rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
+  }
+  return dispatch({
+    type: SEND_COMMENT,
+    payload: {
+      promise: steemConnectAPI
+        .comment(
+          parentAuthor,
+          parentPermlink,
+          author,
+          permlink,
+          '',
+          newBody,
+          jsonMetadata,
+          parentPost.root_author,
+        )
+        .then(() => {
+          dispatch(
+            getFakeSingleComment(
+              guestParentAuthor || parentAuthor,
+              parentPermlink,
+              author,
+              permlink,
+              newBody,
+              jsonMetadata,
+              !isUpdating,
+            ),
+          );
+          if (parentPost.name) {
+            dispatch(sendCommentAppend(parentPost.permlink));
+          }
+          setTimeout(
+            () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),
+            auth.isGuestUser ? 6000 : 2000,
+          );
+
+          if (window.analytics) {
+            window.analytics.track('Comment', {
+              category: 'comment',
+              label: 'submit',
+              value: 3,
+            });
+          }
+        })
+        .catch(err => {
+          dispatch(notify(err.error.message || err.error_description, 'error'));
+          dispatch(SEND_COMMENT_ERROR);
+        }),
+    },
+    meta: {
+      parentId: parentPost.id,
+      rootPostId,
+      isEditing: isUpdating,
+      isReplyToComment: parentPost.id !== id,
+    },
+  });
+};
+
+export const sendCommentMessages = (
   parentPost,
   body,
   isUpdating = false,
@@ -147,14 +261,12 @@ export const sendComment = (
   let parentAuthor;
   if (isUpdating) {
     parentAuthor = originalComment.parent_author;
-  } else if (parentPost.root_author && parentPost.guestInfo) {
+  } else if (parentPost.guestInfo) {
     parentAuthor = parentAuthorIfGuest;
   } else {
     parentAuthor = parentPost.author;
   }
-  const guestParentAuthor = parentPost.guestInfo && parentPost.guestInfo.userId;
   const { auth, comments } = getState();
-
   if (!auth.isAuthenticated) {
     return dispatch(notify('You have to be logged in to comment', 'error'));
   }
@@ -190,6 +302,8 @@ export const sendComment = (
     rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
   }
 
+  const rootAuthor = parentPost.guestInfo ? get(parentPost, ['author']) : parentPost.root_author;
+
   return dispatch({
     type: SEND_COMMENT,
     payload: {
@@ -202,36 +316,8 @@ export const sendComment = (
           '',
           newBody,
           jsonMetadata,
-          parentPost.root_author,
+          rootAuthor,
         )
-        .then(() => {
-          dispatch(
-            getFakeSingleComment(
-              guestParentAuthor || parentAuthor,
-              parentPermlink,
-              author,
-              permlink,
-              newBody,
-              jsonMetadata,
-              !isUpdating,
-            ),
-          );
-          if (parentPost.append_field_name) {
-            dispatch(sendCommentAppend(parentPost.permlink));
-          }
-          setTimeout(
-            () => dispatch(getSingleComment(author, permlink, !isUpdating)),
-            auth.isGuestUser ? 6000 : 2000,
-          );
-
-          if (window.analytics) {
-            window.analytics.track('Comment', {
-              category: 'comment',
-              label: 'submit',
-              value: 3,
-            });
-          }
-        })
         .catch(err => {
           dispatch(notify(err.error.message || err.error_description, 'error'));
           dispatch(SEND_COMMENT_ERROR);
@@ -280,14 +366,19 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
   });
 };
 
-export const getReservedComments = ({ category, author, permlink }) => dispatch =>
-  dispatch({
+export const getReservedComments = ({ category, author, permlink }) => (dispatch, getState) => {
+  const locale = getLocale(getState());
+
+  return dispatch({
     type: GET_RESERVED_COMMENTS,
     payload: {
-      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
-        rootCommentsList: getRootCommentsList(apiRes),
-        commentsChildrenList: getCommentsChildrenLists(apiRes),
-        content: apiRes.content,
-      })),
+      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(
+        apiRes => ({
+          rootCommentsList: getRootCommentsList(apiRes),
+          commentsChildrenList: getCommentsChildrenLists(apiRes),
+          content: apiRes.content,
+        }),
+      ),
     },
   });
+};

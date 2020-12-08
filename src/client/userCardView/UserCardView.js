@@ -4,26 +4,29 @@ import { Link } from 'react-router-dom';
 import './UserCardView.less';
 import Avatar from '../components/Avatar';
 
-const UserCardView = ({ user }) => (
-  <React.Fragment>
-    <div className="UserCardView">
-      <div className="UserCardView__content">
-        <div className="UserCardView__content-row">
-          <Avatar username={user.name || user.account} size={80} />
-          <div className="UserCardView__content--name-wrap">
-            <Link
-              to={`/@${user.name || user.account}`}
-              title={user.name || user.account}
-              className="UserCardView__content--user-name"
-            >
-              {user.name || user.account}
-            </Link>
+const UserCardView = ({ user }) => {
+  const userName = user.name || user.account;
+  return (
+    <React.Fragment>
+      <div className="UserCardView">
+        <div className="UserCardView__content">
+          <div className="UserCardView__content-row">
+            <Avatar username={userName} size={80} />
+            <div className="UserCardView__content--name-wrap">
+              <Link
+                to={`/@${userName}`}
+                title={userName}
+                className="UserCardView__content--user-name"
+              >
+                {userName}
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </React.Fragment>
-);
+    </React.Fragment>
+  );
+};
 
 UserCardView.propTypes = {
   user: PropTypes.shape().isRequired,

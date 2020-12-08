@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
@@ -13,6 +13,7 @@ import {
   getUserLocation,
   getHasMap,
   getIsMapModalOpen,
+  getFiltersTags,
 } from '../../reducers';
 import { setFiltersAndLoad, getObjectTypeMap } from '../../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
@@ -20,7 +21,7 @@ import { getCoordinates } from '../../user/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
 import FiltersContainer from './FiltersContainer';
 import '../../components/Sidebar/SidebarContentBlock.less';
-import { DEFAULT_ZOOM } from '../../../common/constants/map';
+import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { getWobjectsForMap } from '../../object/wObjectHelper';
 
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
@@ -32,6 +33,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const activeFilters = useSelector(getActiveFilters);
   const hasMap = useSelector(getHasMap);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
+  const tagsFilters = useSelector(getFiltersTags);
 
   if (isEmpty(userLocation)) {
     dispatch(getCoordinates());
@@ -41,6 +43,15 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
   const setMapArea = ({ radius, coordinates }) =>
     dispatch(getObjectTypeMap({ radius, coordinates }, isFullscreenMode));
+
+  useEffect(() => {
+    setMapArea({
+      radius: DEFAULT_RADIUS,
+      coordinates: [+userLocation.lat, +userLocation.lon],
+      isMap: true,
+      firstMapLoad: true,
+    });
+  }, [history.location.search]);
 
   const handleMapSearchClick = map => {
     setSearchArea(map);
@@ -52,34 +63,36 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   };
 
   const wobjectsForMap = useMemo(() => getWobjectsForMap(wobjects), [wobjects]);
-
   const isTypeHasFilters = memoize(isNeedFilters);
-  return isTypeHasFilters(objectType) ? (
-    <div className="discover-objects-filters">
-      {hasMap ? (
-        <MapWrap
-          wobjects={wobjectsForMap}
-          onMarkerClick={handleMapMarkerClick}
-          getAreaSearchData={setSearchArea}
-          setMapArea={setMapArea}
-          userLocation={userLocation}
-          customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
-          onCustomControlClick={handleMapSearchClick}
-          match={match}
-          zoomMap={DEFAULT_ZOOM}
-        />
-      ) : null}
-      {!isEmpty(filters) ? (
-        <div className="SidebarContentBlock">
-          <div className="SidebarContentBlock__title">
-            <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
-            {intl.formatMessage({ id: 'filters', defaultMessage: 'Filter' })}
+
+  return (
+    isTypeHasFilters(objectType) && (
+      <div className="discover-objects-filters">
+        {hasMap && (
+          <MapWrap
+            wobjects={wobjectsForMap}
+            onMarkerClick={handleMapMarkerClick}
+            getAreaSearchData={setSearchArea}
+            setMapArea={setMapArea}
+            userLocation={userLocation}
+            customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
+            onCustomControlClick={handleMapSearchClick}
+            match={match}
+            zoomMap={DEFAULT_ZOOM}
+          />
+        )}
+        {(!isEmpty(filters) || !isEmpty(tagsFilters)) && (
+          <div className="SidebarContentBlock">
+            <div className="SidebarContentBlock__title">
+              <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
+              {intl.formatMessage({ id: 'filters', defaultMessage: 'Filter' })}
+            </div>
+            <FiltersContainer filters={filters} tagsFilters={tagsFilters} />
           </div>
-          <FiltersContainer intl={intl} filters={filters} />
-        </div>
-      ) : null}
-    </div>
-  ) : null;
+        )}
+      </div>
+    )
+  );
 };
 
 DiscoverFiltersSidebar.propTypes = {

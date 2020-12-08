@@ -1,4 +1,4 @@
-import { getAuthenticatedUserName } from '../reducers';
+import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
@@ -88,10 +88,64 @@ export const GET_REWARDS_GENERAL_COUNTS = createAsyncActionType(
   '@rewards/GET_REWARDS_GENERAL_COUNTS',
 );
 
-export const getRewardsGeneralCounts = ({ userName, sort }) => dispatch =>
-  dispatch({
+export const getRewardsGeneralCounts = ({ userName, sort, match, area }) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const locale = getLocale(state);
+
+  return dispatch({
     type: GET_REWARDS_GENERAL_COUNTS.ACTION,
     payload: {
-      promise: ApiClient.getRewardsGeneralCounts({ userName, sort }),
+      promise: ApiClient.getRewardsGeneralCounts({ userName, sort, match, area, locale }),
     },
   });
+};
+
+export const GET_FOLLOWING_SPONSORS_REWARDS = createAsyncActionType(
+  '@rewards/GET_FOLLOWING_SPONSORS_REWARDS',
+);
+
+export const getFollowingSponsorsRewards = skip => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  return dispatch({
+    type: GET_FOLLOWING_SPONSORS_REWARDS.ACTION,
+    payload: ApiClient.getFollowingSponsorsRewards({ userName, skip }),
+  });
+};
+
+export const CLEAR_FOLLOWING_SPONSORS_REWARDS = createAsyncActionType(
+  '@rewards/CLEAR_FOLLOWING_SPONSORS_REWARDS',
+);
+
+export const clearFollowingSponsorsRewards = () => dispatch =>
+  dispatch({
+    type: CLEAR_FOLLOWING_SPONSORS_REWARDS.ACTION,
+  });
+
+export const GET_FRAUD_SUSPICION = createAsyncActionType('@rewards/GET_FRAUD_SUSPICION');
+
+export const getFraudSuspicion = ({ fraudSuspicion, sort, skip }) => (dispatch, getState) => {
+  const state = getState();
+  const guideName = getAuthenticatedUserName(state);
+  return dispatch({
+    type: GET_FRAUD_SUSPICION.ACTION,
+    payload: ApiClient.getHistory({ guideName, fraudSuspicion, sort, skip }),
+  });
+};
+
+export const GET_REWARDS_HISTORY = createAsyncActionType('@rewards/GET_REWARDS_HISTORY');
+
+export const getRewardsHistory = requestData => ({
+  type: GET_REWARDS_HISTORY.ACTION,
+  payload: ApiClient.getHistory(requestData),
+});
+
+export const GET_MORE_REWARDS_HISTORY = createAsyncActionType('@rewards/GET_MORE_REWARDS_HISTORY');
+
+export const getMoreRewardsHistory = requestData => ({
+  type: GET_MORE_REWARDS_HISTORY.ACTION,
+  payload: ApiClient.getHistory(requestData),
+});

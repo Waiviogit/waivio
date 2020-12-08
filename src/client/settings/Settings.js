@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
@@ -24,14 +23,10 @@ import { reload } from '../auth/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Action from '../components/Button/Action';
 import Loading from '../components/Icon/Loading';
-import Affix from '../components/Utils/Affix';
-import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RawSlider from '../components/Slider/RawSlider';
 import requiresLogin from '../auth/requiresLogin';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
-import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-
 import './Settings.less';
 
 @requiresLogin
@@ -210,7 +205,6 @@ export default class Settings extends React.Component {
 
   render() {
     const {
-      intl,
       reloading,
       locale: initialLocale,
       readLanguages,
@@ -252,219 +246,187 @@ export default class Settings extends React.Component {
     });
 
     return (
-      <div className="shifted">
-        <Helmet>
-          <title>
-            {intl.formatMessage({ id: 'settings', defaultMessage: 'Settings' })} - Waivio
-          </title>
-        </Helmet>
-        <div className="settings-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
-            <div className="left">
-              <LeftSidebar />
+      <div className="center">
+        <h1>
+          <FormattedMessage id="settings" defaultMessage="Settings" />
+        </h1>
+        {reloading ? (
+          <Loading center={false} />
+        ) : (
+          <div className="Settings">
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="voting_power" defaultMessage="Voting Power" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="voting_power_info"
+                  defaultMessage="You can enable Voting Power slider to specify exact percentage of your Voting Power to use for like."
+                />
+              </p>
+              <Radio.Group
+                defaultValue={initialVotingPower}
+                value={votingPower}
+                onChange={this.handleVotingPowerChange}
+              >
+                <Radio value={false}>
+                  <FormattedMessage id="voting_power_off" defaultMessage="Disable slider" />
+                </Radio>
+                <Radio value={Boolean(true)}>
+                  <FormattedMessage id="voting_power_on" defaultMessage="Enable slider" />
+                </Radio>
+              </Radio.Group>
             </div>
-          </Affix>
-          <div className="center">
-            <MobileNavigation />
-            <h1>
-              <FormattedMessage id="settings" defaultMessage="Settings" />
-            </h1>
-            {reloading ? (
-              <Loading center={false} />
-            ) : (
-              <div className="Settings">
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="voting_power" defaultMessage="Voting Power" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="voting_power_info"
-                      defaultMessage="You can enable Voting Power slider to specify exact percentage of your Voting Power to use for like."
-                    />
-                  </p>
-                  <Radio.Group
-                    defaultValue={initialVotingPower}
-                    value={votingPower}
-                    onChange={this.handleVotingPowerChange}
-                  >
-                    <Radio value={false}>
-                      <FormattedMessage id="voting_power_off" defaultMessage="Disable slider" />
-                    </Radio>
-                    <Radio value={Boolean(true)}>
-                      <FormattedMessage id="voting_power_on" defaultMessage="Enable slider" />
-                    </Radio>
-                  </Radio.Group>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="vote_percent" defaultMessage="Default vote percent" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="vote_percent_info"
-                      defaultMessage="You can select your default vote value. It will be used as default value in voting slider and as value used for vote when voting slider is disabled."
-                    />
-                  </p>
-                  <div className="Settings__section__component">
-                    <RawSlider
-                      initialValue={this.state.votePercent}
-                      onChange={this.handleVotePercentChange}
-                    />
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="language" defaultMessage="Interface language" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="language_info"
-                      defaultMessage="Select the preferred language of the website and objects"
-                    />
-                  </p>
-                  <Select
-                    defaultValue={initialLocale}
-                    value={locale}
-                    style={{ width: '100%', maxWidth: 240 }}
-                    onChange={this.handleLocaleChange}
-                  >
-                    {languageOptions}
-                  </Select>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage
-                      id="post_languages"
-                      defaultMessage="Content language preferences"
-                    />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="post_languages_info"
-                      defaultMessage="Content from the blockchain (posts, comments) will be filtered according to these preferences"
-                    />
-                  </p>
-                  <Select
-                    mode="multiple"
-                    defaultValue={initialLanguages}
-                    style={{ width: '100%' }}
-                    onChange={this.handleReadLanguageChange}
-                  >
-                    {LANGUAGES.map(lang => (
-                      <Select.Option key={lang.id} value={lang.id}>
-                        {getLanguageText(lang)}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="nsfw_posts" defaultMessage="NSFW Posts" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="display_nsfw_posts_details"
-                      defaultMessage="You can enable all posts tagged with NSFW to be shown as default."
-                    />
-                  </p>
-                  <div className="Settings__section__checkbox">
-                    <Checkbox
-                      name="nsfw_posts"
-                      defaultChecked={initialShowNSFWPosts}
-                      checked={showNSFWPosts}
-                      onChange={this.handleShowNSFWPosts}
-                    >
-                      <FormattedMessage
-                        id="display_nsfw_posts"
-                        defaultMessage="Display NSFW Posts"
-                      />
-                    </Checkbox>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="nightmode" defaultMessage="Nightmode" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="nightmode_details"
-                      defaultMessage="You can enable this option for a more eye-friendly experience at night."
-                    />
-                  </p>
-                  <div className="Settings__section__checkbox">
-                    <Checkbox
-                      name="nightmode"
-                      defaultChecked={initialNightmode}
-                      checked={nightmode}
-                      onChange={this.handleNightmode}
-                    >
-                      <FormattedMessage id="use_nightmode" defaultMessage="Use Nightmode" />
-                    </Checkbox>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="upvote_setting_details"
-                      defaultMessage="Enable this option to automatically like your own posts."
-                    />
-                  </p>
-                  <div className="Settings__section__checkbox">
-                    <Checkbox
-                      name="upvote_setting"
-                      checked={!isGuest ? upvoteSetting : false}
-                      onChange={this.handleUpvoteSettingChange}
-                      disabled={isGuest}
-                    >
-                      <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
-                    </Checkbox>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="enable_exit_page" defaultMessage="Enable exit page" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="enable_exit_page_details"
-                      defaultMessage="Enable this option to use the exit page when clicking on an external link."
-                    />
-                  </p>
-                  <div className="Settings__section__checkbox">
-                    <Checkbox
-                      name="exit_page_setting"
-                      checked={exitPageSetting}
-                      onChange={this.handleExitPageSettingChange}
-                    >
-                      <FormattedMessage id="enable_exit_page" defaultMessage="Enable exit page" />
-                    </Checkbox>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage
-                      id="linked_hive_account"
-                      defaultMessage="Linked Hive account"
-                    />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="linked_hive_account_details"
-                      defaultMessage="Registered Hive account becomes the recipient for all your author rewards, other rewards, and your transfers."
-                    />
-                  </p>
-                </div>
-                <Action primary big loading={loading} onClick={this.handleSave}>
-                  <FormattedMessage id="save" defaultMessage="Save" />
-                </Action>
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="vote_percent" defaultMessage="Default vote percent" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="vote_percent_info"
+                  defaultMessage="You can select your default vote value. It will be used as default value in voting slider and as value used for vote when voting slider is disabled."
+                />
+              </p>
+              <div className="Settings__section__component">
+                <RawSlider
+                  initialValue={this.state.votePercent}
+                  onChange={this.handleVotePercentChange}
+                />
               </div>
-            )}
+            </div>
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="language" defaultMessage="Interface language" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="language_info"
+                  defaultMessage="Select the preferred language of the website and objects"
+                />
+              </p>
+              <Select
+                defaultValue={initialLocale}
+                value={locale}
+                style={{ width: '100%', maxWidth: 240 }}
+                onChange={this.handleLocaleChange}
+              >
+                {languageOptions}
+              </Select>
+            </div>
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage
+                  id="post_languages"
+                  defaultMessage="Content language preferences"
+                />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="post_languages_info"
+                  defaultMessage="Content from the blockchain (posts, comments) will be filtered according to these preferences"
+                />
+              </p>
+              <Select
+                mode="multiple"
+                defaultValue={initialLanguages}
+                style={{ width: '100%' }}
+                onChange={this.handleReadLanguageChange}
+              >
+                {LANGUAGES.map(lang => (
+                  <Select.Option key={lang.id} value={lang.id}>
+                    {getLanguageText(lang)}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="nsfw_posts" defaultMessage="NSFW Posts" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="display_nsfw_posts_details"
+                  defaultMessage="You can enable all posts tagged with NSFW to be shown as default."
+                />
+              </p>
+              <div className="Settings__section__checkbox">
+                <Checkbox
+                  name="nsfw_posts"
+                  defaultChecked={initialShowNSFWPosts}
+                  checked={showNSFWPosts}
+                  onChange={this.handleShowNSFWPosts}
+                >
+                  <FormattedMessage id="display_nsfw_posts" defaultMessage="Display NSFW Posts" />
+                </Checkbox>
+              </div>
+            </div>
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="nightmode" defaultMessage="Nightmode" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="nightmode_details"
+                  defaultMessage="You can enable this option for a more eye-friendly experience at night."
+                />
+              </p>
+              <div className="Settings__section__checkbox">
+                <Checkbox
+                  name="nightmode"
+                  defaultChecked={initialNightmode}
+                  checked={nightmode}
+                  onChange={this.handleNightmode}
+                >
+                  <FormattedMessage id="use_nightmode" defaultMessage="Use Nightmode" />
+                </Checkbox>
+              </div>
+            </div>
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="upvote_setting_details"
+                  defaultMessage="Enable this option to automatically like your own posts."
+                />
+              </p>
+              <div className="Settings__section__checkbox">
+                <Checkbox
+                  name="upvote_setting"
+                  checked={!isGuest ? upvoteSetting : false}
+                  onChange={this.handleUpvoteSettingChange}
+                  disabled={isGuest}
+                >
+                  <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
+                </Checkbox>
+              </div>
+            </div>
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="enable_exit_page" defaultMessage="Enable exit page" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="enable_exit_page_details"
+                  defaultMessage="Enable this option to use the exit page when clicking on an external link."
+                />
+              </p>
+              <div className="Settings__section__checkbox">
+                <Checkbox
+                  name="exit_page_setting"
+                  checked={exitPageSetting}
+                  onChange={this.handleExitPageSettingChange}
+                >
+                  <FormattedMessage id="enable_exit_page" defaultMessage="Enable exit page" />
+                </Checkbox>
+              </div>
+            </div>
+            <Action primary big loading={loading} onClick={this.handleSave}>
+              <FormattedMessage id="save" defaultMessage="Save" />
+            </Action>
           </div>
-        </div>
+        )}
       </div>
     );
   }

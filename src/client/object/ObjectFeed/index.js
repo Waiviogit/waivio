@@ -5,21 +5,27 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import ObjectFeed from './ObjectFeed';
-import { getIsAuthenticated, getSuitableLanguage } from '../../reducers';
+import { getIsAuthenticated, getObjectFetchingState } from '../../reducers';
 import IconButton from '../../components/IconButton';
-import { getClientWObj } from '../../adapters';
+import { getObjectName } from '../../helpers/wObjectHelper';
+import Loading from '../../components/Icon/Loading';
 
 const propTypes = {
   history: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
+  isPageMode: PropTypes.bool,
 };
 
-const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
+const defaultProps = {
+  isPageMode: false,
+};
+
+const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) => {
   /* redux store */
   const isAuthenticated = useSelector(getIsAuthenticated);
-  const usedLocale = useSelector(getSuitableLanguage);
+  const isFetching = useSelector(getObjectFetchingState);
 
   const handleCreatePost = () => {
     if (wobject && wobject.author_permlink) {
@@ -28,9 +34,9 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
         `[${wobject.name || wobject.default_name}](${wobject.author_permlink})`,
       );
       if (!isEmpty(wobject.parent)) {
-        const parentObject = getClientWObj(wobject.parent, usedLocale);
+        const parentObject = wobject.parent;
         redirectUrl += `&object=${encodeURIComponent(
-          `[${parentObject.name}](${parentObject.author_permlink})`,
+          `[${getObjectName(parentObject)}](${parentObject.author_permlink})`,
         )}`;
       }
       history.push(redirectUrl);
@@ -39,7 +45,7 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
 
   return (
     <React.Fragment>
-      {isAuthenticated && (
+      {isAuthenticated && !isPageMode && (
         <div className="object-feed__row justify-end">
           <IconButton
             icon={<Icon type="plus-circle" />}
@@ -48,17 +54,22 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
           />
         </div>
       )}
-      <ObjectFeed
-        match={match}
-        userName={userName}
-        history={history}
-        handleCreatePost={handleCreatePost}
-        wobject={wobject}
-      />
+      {isFetching ? (
+        <Loading />
+      ) : (
+        <ObjectFeed
+          match={match}
+          userName={userName}
+          history={history}
+          handleCreatePost={handleCreatePost}
+          wobject={wobject}
+        />
+      )}
     </React.Fragment>
   );
 };
 
 ObjectFeedContainer.propTypes = propTypes;
+ObjectFeedContainer.defaultProps = defaultProps;
 
 export default ObjectFeedContainer;

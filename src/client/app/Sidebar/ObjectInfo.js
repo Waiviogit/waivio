@@ -1,17 +1,5 @@
 import React from 'react';
-import {
-  isEmpty,
-  size,
-  compact,
-  uniqBy,
-  get,
-  orderBy,
-  pickBy,
-  identity,
-  filter,
-  iteratee,
-  includes,
-} from 'lodash';
+import { isEmpty, get, pickBy, identity, has, setWith, uniq } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -22,41 +10,29 @@ import {
   haveAccess,
   hasType,
   accessTypesArr,
-  calculateApprovePercent,
-  getApprovedField,
-  addActiveVotesInField,
+  parseWobjectField,
+  parseAddress,
+  getObjectName,
+  parseButtonsField,
+  getMenuItems,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
-import {
-  getFieldWithMaxWeight,
-  getFieldsCount,
-  getInnerFieldWithMaxWeight,
-  sortListItemsBy,
-  combineObjectMenu,
-  getFieldsByName,
-} from '../../object/wObjectHelper';
+import { getFieldsCount, getLink, getExposedFieldsByObjType } from '../../object/wObjectHelper';
 import {
   objectFields,
   TYPES_OF_MENU_ITEM,
-  addressFields,
   linkFields,
-  getAllowedFieldsByObjType,
 } from '../../../common/constants/listOfFields';
-import URL from '../../../common/constants/routing';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
-import IconButton from '../../components/IconButton';
-import { getIsAuthenticated, getObjectAlbums, getSuitableLanguage } from '../../reducers';
+import { getIsAuthenticated, getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
-import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
-import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
-import ExpandingBlock from './ExpandingBlock';
 
 import './ObjectInfo.less';
 
@@ -64,7 +40,6 @@ import './ObjectInfo.less';
 @connect(state => ({
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
-  usedLocale: getSuitableLanguage(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -73,8 +48,6 @@ class ObjectInfo extends React.Component {
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool,
-    albums: PropTypes.arrayOf(PropTypes.shape()),
-    usedLocale: PropTypes.string,
     history: PropTypes.shape().isRequired,
   };
 
@@ -85,21 +58,12 @@ class ObjectInfo extends React.Component {
     center: [],
     albums: [],
     isAuthenticated: false,
-    usedLocale: 'en-US',
   };
 
   state = {
     selectedField: null,
     showModal: false,
     showMore: {},
-    parentWobj: null,
-  };
-
-  getLink = link => {
-    if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
-      return `http://${link}`;
-    }
-    return link;
   };
 
   getFieldLayout = (fieldName, params) => {
@@ -119,6 +83,7 @@ class ObjectInfo extends React.Component {
       default:
         break;
     }
+
     return null;
   };
 
@@ -126,188 +91,181 @@ class ObjectInfo extends React.Component {
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
-  renderCategoryItems = (categoryItems, category) => {
-    if (!isEmpty(categoryItems)) {
-      const categoryItemsWithVotes = categoryItems
-        .map(item => addActiveVotesInField(this.props.wobject, item, category))
-        .filter(
-          item => calculateApprovePercent(item.active_votes, item.weight, this.props.wobject) >= 70,
-        );
-      const onlyFiveItems = categoryItemsWithVotes.filter((f, i) => i < 5);
-      const tagArray = this.state.showMore[category] ? categoryItemsWithVotes : onlyFiveItems;
+  listItem = (name, content) => {
+    const { wobject, userName, isEditMode } = this.props;
+    const fieldsCount = getFieldsCount(wobject, name);
+    const exposedFields = getExposedFieldsByObjType(wobject);
+    const shouldDisplay = exposedFields.includes(name);
+    const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
 
-      return (
-        <div>
-          {tagArray.map(item => (
-            <Tag key={`${category}/${item.name}`} color="orange">
-              <Link to={`/object/${item.name}`}>{item.name}</Link>
-            </Tag>
-          ))}
-          {categoryItemsWithVotes.length > 5 && !this.state.showMore[category] && (
-            <span
-              role="presentation"
-              className="show-more"
-              onClick={() =>
-                this.setState({
-                  showMore: {
-                    [category]: true,
-                  },
-                })
-              }
-            >
-              <FormattedMessage id="show_more" defaultMessage="Show more" />
-              ...
-            </span>
-          )}
-        </div>
-      );
-    }
-
-    return null;
-  };
-
-  renderTagCategories = tagCategories => {
-    const filteredTagCategories =
-      tagCategories &&
-      tagCategories.filter(
-        category =>
-          calculateApprovePercent(category.active_votes, category.weight, this.props.wobject) >=
-            70 &&
-          category.categoryItems &&
-          category.categoryItems.filter(item => {
-            const itemWithLike = addActiveVotesInField(this.props.wobject, item);
-            return (
-              calculateApprovePercent(
-                itemWithLike.active_votes,
-                itemWithLike.weight,
-                this.props.wobject,
-              ) >= 70
-            );
-          }).length,
-      );
-    if (filteredTagCategories) {
-      return filteredTagCategories.map(item => (
-        <div key={item.id}>
-          {`${item.body}:`}
-          <br />
-          {this.renderCategoryItems(item.categoryItems, item.id)}
-        </div>
-      ));
-    }
-    return null;
-  };
-
-  renderParent = () => {
-    const parent = get(this.props.wobject, 'parent');
     return (
-      parent && <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
+      shouldDisplay &&
+      (content || accessExtend) && (
+        <div className="field-info">
+          <React.Fragment>
+            {accessExtend && (
+              <div className="field-info__title">
+                <Proposition
+                  objectID={wobject.author_permlink}
+                  fieldName={name}
+                  objName={getObjectName(wobject)}
+                  handleSelectField={this.handleSelectField}
+                  selectedField={this.state.selectedField}
+                  linkTo={
+                    name === objectFields.pageContent
+                      ? `/object/${wobject.author_permlink}/${OBJECT_TYPE.PAGE}`
+                      : ''
+                  }
+                />
+                {fieldsCount}
+              </div>
+            )}
+            {content && (
+              <div
+                className={`field-info__content ${name}-field-${isEditMode ? 'edit' : 'view'}`}
+                data-test={`${name}-field-view`}
+              >
+                {content}
+              </div>
+            )}
+          </React.Fragment>
+        </div>
+      )
     );
   };
 
-  render() {
-    const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
-    const isEditMode = isAuthenticated ? this.props.isEditMode : false;
-    const { showModal, selectedField } = this.state;
-    const { website, newsFilter } = wobject;
-    const renderFields = getAllowedFieldsByObjType(wobject.type);
-    const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
-    const isRenderMenu = isRenderGallery;
-    const isHashtag = wobject.object_type === 'hashtag';
+  renderCategoryItems = (categoryItems = [], category) => {
+    const { object_type: type } = this.props.wobject;
+    const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
+    const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
-    let names = [];
-    let addressArr = [];
-    let address = '';
-    let description = '';
-    let price = '';
-    let workTime = '';
-    let avatar = '';
-    let short = '';
-    let background = '';
-    let photosCount = 0;
-    let tagCategories = [];
-    let phones = [];
-    let email = '';
-    let menuItems = [];
-    let menuLists = null;
-    let menuPages = null;
-    const button = getApprovedField(wobject, 'button', usedLocale);
-    const map = getApprovedField(wobject, 'map', usedLocale);
-    const parent = getApprovedField(wobject, 'parent');
-    const status = getApprovedField(wobject, 'status', usedLocale);
-    const pictures =
-      wobject.preview_gallery &&
-      wobject.preview_gallery.filter(
-        picture =>
-          calculateApprovePercent(picture.active_votes, picture.weight, this.props.wobject) >= 70,
-      );
-    if (size(wobject) > 0) {
-      names = getFieldsByName(wobject, objectFields.name)
-        .filter(
-          nameFld =>
-            nameFld.body !== (wobject.name || wobject.default_name) &&
-            calculateApprovePercent(nameFld.active_votes, nameFld.weight, this.props.wobject) >= 70,
-        )
-        .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
+    return (
+      <div>
+        {tagArray.map(item => (
+          <Tag key={`${category}/${item.body}`} color="orange">
+            <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
+          </Tag>
+        ))}
+        {categoryItems.length > 5 && !this.state.showMore[category] && (
+          <span
+            role="presentation"
+            className="show-more"
+            onClick={() =>
+              this.setState({
+                showMore: {
+                  [category]: true,
+                },
+              })
+            }
+          >
+            <FormattedMessage id="show_more" defaultMessage="Show more" />
+            ...
+          </span>
+        )}
+      </div>
+    );
+  };
 
-      const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
-      addressArr = adressFields
-        ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
-        : [];
-      address = compact(addressArr).join(', ');
-      description = getApprovedField(wobject, 'description', usedLocale);
-      avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
-      background = getFieldWithMaxWeight(wobject, objectFields.background);
+  renderTagCategories = tagCategories =>
+    tagCategories.map(item => (
+      <div key={item.id}>
+        {`${item.body}:`}
+        <br />
+        {item.items && this.renderCategoryItems(item.items, item.body)}
+      </div>
+    ));
 
-      short = getFieldWithMaxWeight(wobject, objectFields.title);
-
-      workTime = getFieldWithMaxWeight(wobject, objectFields.workTime);
-
-      email = getFieldWithMaxWeight(wobject, objectFields.email);
-
-      price = getFieldWithMaxWeight(wobject, objectFields.price);
-
-      menuItems = uniqBy(get(wobject, 'menuItems', []), 'author_permlink');
-      menuItems = menuItems.map(item => {
-        const matchField = get(wobject, 'fields', []).find(
-          field => field.body === item.author_permlink,
+  getMenuSectionLink = (item = {}) => {
+    const { wobject, location } = this.props;
+    let menuItem = (
+      <LinkButton
+        className={classNames('menu-btn', {
+          active: location.hash.slice(1).split('/')[0] === item.body,
+        })}
+        to={`/object/${wobject.author_permlink}/menu#${item.body || item.author_permlink}`}
+      >
+        {item.alias || getObjectName(item)}
+      </LinkButton>
+    );
+    switch (item.id) {
+      case TYPES_OF_MENU_ITEM.BUTTON:
+        menuItem = (
+          <Button
+            className="LinkButton menu-btn field-button"
+            href={getLink(item.body.link)}
+            target={'_blank'}
+            block
+          >
+            {item.body.title}
+          </Button>
         );
-        const activeVotes = matchField ? matchField.active_votes : [];
-
-        return {
-          ...item,
-          active_votes: [...activeVotes],
-        };
-      });
-      menuLists =
-        menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
-          ? menuItems.filter(
-              item =>
-                calculateApprovePercent(item.active_votes, item.weight, this.props.wobject) >= 70,
-            )
-          : null;
-      menuPages =
-        menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.PAGE)
-          ? menuItems.filter(
-              item =>
-                item.object_type === OBJECT_TYPE.PAGE &&
-                calculateApprovePercent(item.active_votes, item.weight, this.props.wobject) >= 70,
-            )
-          : null;
-
-      photosCount = wobject.photos_count;
-
-      tagCategories = wobject.tagCategories;
-
-      const filteredPhones = get(wobject, 'fields', []).filter(
-        field =>
-          field.name === objectFields.phone &&
-          calculateApprovePercent(field.active_votes, field.weight, this.props.wobject) >= 70,
-      );
-      phones = orderBy(filteredPhones, ['weight'], ['desc']);
+        break;
+      case TYPES_OF_MENU_ITEM.PAGE:
+        menuItem = (
+          <LinkButton
+            className={classNames('menu-btn', {
+              active: location.hash.slice(1).split('/')[0] === item.body,
+            })}
+            to={`/object/${wobject.author_permlink}/page#${item.body || item.author_permlink}`}
+          >
+            {item.alias || getObjectName(item)}
+          </LinkButton>
+        );
+        break;
+      case TYPES_OF_MENU_ITEM.NEWS:
+        menuItem = (
+          <LinkButton
+            className={classNames('menu-btn', {
+              active: location.pathname === `/object/${wobject.author_permlink}`,
+            })}
+            to={`/object/${wobject.author_permlink}`}
+          >
+            <FormattedMessage id="news" defaultMessage="News" />
+          </LinkButton>
+        );
+        break;
+      default:
+        break;
     }
 
-    const linkField = getInnerFieldWithMaxWeight(wobject, objectFields.link);
-    let profile = linkField
+    return (
+      <div className="object-sidebar__menu-item" key={item.permlink}>
+        {menuItem}
+      </div>
+    );
+  };
+
+  validatedAlbums = albums =>
+    albums.map(album => {
+      if (!has(album, 'active_votes') && !has(album, 'weight')) {
+        setWith(album, '[active_votes]', []);
+        setWith(album, '[weight]', 0);
+      }
+      return album;
+    });
+
+  render() {
+    const { wobject, userName, isAuthenticated } = this.props;
+    const isEditMode = isAuthenticated ? this.props.isEditMode : false;
+    const { newsFilter } = wobject;
+    const website = parseWobjectField(wobject, 'website');
+    const wobjName = getObjectName(wobject);
+    const tagCategories = get(wobject, 'tagCategory', []);
+    const map = parseWobjectField(wobject, 'map');
+    const parent = get(wobject, 'parent');
+    const status = parseWobjectField(wobject, 'status');
+    const address = parseAddress(wobject);
+    const description = get(wobject, 'description');
+    const price = get(wobject, 'price');
+    const avatar = get(wobject, 'avatar');
+    const background = get(wobject, 'background');
+    const pictures = get(wobject, 'preview_gallery');
+    const short = get(wobject, 'title');
+    const email = get(wobject, 'email');
+    const workTime = get(wobject, 'workTime');
+    const linkField = parseWobjectField(wobject, 'link');
+    const customSort = get(wobject, 'sortCustom', []);
+    const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
           twitter: linkField[linkFields.linkTwitter] || '',
@@ -316,160 +274,82 @@ class ObjectInfo extends React.Component {
           github: linkField[linkFields.linkGitHub] || '',
         }
       : {};
-
-    profile = pickBy(profile, identity);
+    const phones = get(wobject, 'phone', []);
+    const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const album = filter(albums, iteratee(['id', wobject.author_permlink]));
-    const hasGalleryImg =
-      wobject.fields &&
-      wobject.fields.filter(
-        field =>
-          field.name === objectFields.galleryItem &&
-          calculateApprovePercent(field.active_votes, field.weight, this.props.wobject) >= 70,
-      );
+    const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
+    const menuLinks = getMenuItems(wobject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
+    const menuPages = getMenuItems(wobject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
+    const button = parseButtonsField(wobject);
+    const isList = hasType(wobject, OBJECT_TYPE.LIST);
+    const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
 
-    const isRenderMap =
-      map && map.latitude && map.longitude && isCoordinatesValid(map.latitude, map.longitude);
-    // name - name of field OR type of menu-item (TYPES_OF_MENU_ITEM)
-    const listItem = (name, content) => {
-      const fieldsCount = getFieldsCount(wobject, name);
-      const shouldDisplay = renderFields.includes(name) || includes(TYPES_OF_MENU_ITEM, name);
+    const menuSection = () => {
+      if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
+        const buttonArray = [...menuLinks, ...menuPages, ...button];
 
-      return (
-        shouldDisplay &&
-        (content || accessExtend) && (
-          <div className="field-info">
-            <React.Fragment>
-              {accessExtend && (
-                <div className="field-info__title">
-                  <Proposition
-                    objectID={wobject.author_permlink}
-                    fieldName={name}
-                    objName={wobject.name || wobject.default_name}
-                    handleSelectField={this.handleSelectField}
-                    selectedField={selectedField}
-                    linkTo={
-                      name === objectFields.pageContent
-                        ? `/object/${wobject.author_permlink}/${OBJECT_TYPE.PAGE}`
-                        : ''
-                    }
-                  />
-                  {fieldsCount}
-                </div>
-              )}
-              {content && (
-                <div
-                  className={`field-info__content ${name}-field-${isEditMode ? 'edit' : 'view'}`}
-                  data-test={`${name}-field-view`}
-                >
-                  {content}
-                </div>
-              )}
-            </React.Fragment>
-          </div>
-        )
-      );
-    };
+        if (newsFilter) buttonArray.push({ id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter });
 
-    const getMenuSectionLink = item => {
-      let menuItem = (
-        <LinkButton
-          className={classNames('menu-btn', {
-            active: location.hash.slice(1).split('/')[0] === item.author_permlink,
-          })}
-          to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.author_permlink}`}
-        >
-          {item.alias || item.name || getFieldWithMaxWeight(item, objectFields.name)}
-        </LinkButton>
-      );
-      switch (item.id) {
-        case TYPES_OF_MENU_ITEM.BUTTON:
-          menuItem = (
-            <Button
-              className="LinkButton menu-btn field-button"
-              href={this.getLink(item.link)}
-              target={'_blank'}
-              block
-            >
-              {item.title}
-            </Button>
+        const sortButtons = customSort.reduce((acc, curr) => {
+          const currentLink = buttonArray.find(
+            btn =>
+              btn.body === curr ||
+              btn.author_permlink === curr ||
+              btn.permlink === curr ||
+              btn.id === curr,
           );
-          break;
-        case TYPES_OF_MENU_ITEM.NEWS:
-          menuItem = (
-            <LinkButton
-              className={classNames('menu-btn', {
-                active: location.pathname === `/object/${wobject.author_permlink}`,
-              })}
-              to={`/object/${wobject.author_permlink}`}
-            >
-              <FormattedMessage id="news" defaultMessage="News" />
-            </LinkButton>
-          );
-          break;
-        default:
-          break;
+
+          return currentLink ? [...acc, currentLink] : acc;
+        }, []);
+        return uniq([...sortButtons, ...buttonArray]).map(item =>
+          this.getMenuSectionLink({ id: item.id || item.name, ...item }),
+        );
       }
+
       return (
-        <div className="object-sidebar__menu-item" key={item.id || item.author_permlink}>
-          {menuItem}
-        </div>
+        <React.Fragment>
+          {isEditMode && !isList && (
+            <div className="object-sidebar__section-title">
+              <FormattedMessage id="menu" defaultMessage="Menu" />
+            </div>
+          )}
+          {!isList && (
+            <div className="object-sidebar__menu-items">
+              <React.Fragment>
+                {this.listItem(
+                  TYPES_OF_MENU_ITEM.LIST,
+                  !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
+                )}
+                {this.listItem(
+                  TYPES_OF_MENU_ITEM.PAGE,
+                  !isEmpty(menuPages) &&
+                    menuPages.map(page =>
+                      this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.PAGE, ...page }),
+                    ),
+                )}
+                {this.listItem(
+                  objectFields.button,
+                  !isEmpty(button) &&
+                    button.map(btn => this.getMenuSectionLink({ id: btn.name, ...btn })),
+                )}
+                {this.listItem(
+                  objectFields.newsFilter,
+                  newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+                )}
+                {this.listItem(objectFields.sorting, null)}
+              </React.Fragment>
+            </div>
+          )}
+        </React.Fragment>
       );
     };
-    const menuSection = (
-      <React.Fragment>
-        {isEditMode && (
-          <div className="object-sidebar__section-title">
-            <FormattedMessage id="menu" defaultMessage="Menu" />
-          </div>
-        )}
-        <div className="object-sidebar__menu-items">
-          <React.Fragment>
-            {isEditMode &&
-              listItem(
-                TYPES_OF_MENU_ITEM.LIST,
-                menuLists && menuLists.map(item => getMenuSectionLink(item)),
-              )}
-            {listItem(
-              TYPES_OF_MENU_ITEM.PAGE,
-              menuPages && menuPages.map(item => getMenuSectionLink(item)),
-            )}
-            {listItem(
-              objectFields.button,
-              button &&
-                button.title &&
-                button.link &&
-                getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...button }),
-            )}
-            {listItem(
-              objectFields.newsFilter,
-              newsFilter && getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
-            )}
-          </React.Fragment>
-          {!isEditMode &&
-            menuLists &&
-            sortListItemsBy(
-              combineObjectMenu(
-                menuLists.map(menuItem => getClientWObj(menuItem, usedLocale)),
-                {
-                  button,
-                  news: Boolean(newsFilter),
-                },
-              ),
-              !isEmpty(wobject.sortCustom) ? 'custom' : '',
-              wobject && wobject.sortCustom,
-            ).map(item => getMenuSectionLink(item))}
-          {!isEmpty(menuLists) && listItem(objectFields.sorting, null)}
-        </div>
-      </React.Fragment>
-    );
 
     const listSection = (
       <React.Fragment>
         <div className="object-sidebar__section-title">
           <FormattedMessage id="list" defaultMessage="List" />
         </div>
-        {listItem(objectFields.sorting, null)}
+        {this.listItem(objectFields.sorting, null)}
       </React.Fragment>
     );
 
@@ -480,72 +360,31 @@ class ObjectInfo extends React.Component {
             <FormattedMessage id="about" defaultMessage="About" />
           </div>
         )}
-        {listItem(
-          objectFields.name,
-          !isEditMode && names.length > 0 && (
-            <React.Fragment>
-              <span className="field-icon">{'\u2217'}</span>
-              <ExpandingBlock className="object-sidebar__names" entities={names} minLines={4} />
-            </React.Fragment>
-          ),
-        )}
-        {listItem(
+        {this.listItem(objectFields.name, null)}
+        {this.listItem(
           objectFields.description,
           description && <DescriptionInfo description={description} />,
         )}
-        {listItem(
+        {this.listItem(
           objectFields.rating,
-          <RateInfo
-            username={userName}
-            authorPermlink={wobject.author_permlink}
-            locale={this.props.usedLocale}
-          />,
+          <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
         )}
-        {listItem(objectFields.tagCategory, this.renderTagCategories(tagCategories))}
-        {listItem(objectFields.categoryItem, null)}
-        {isRenderGallery && (hasGalleryImg || accessExtend) ? (
-          <div className="field-info">
-            {accessExtend && (
-              <div className="proposition-line">
-                <Link
-                  to={{ pathname: `/object/${wobject.author_permlink}/gallery` }}
-                  onClick={() => this.handleSelectField('gallery')}
-                >
-                  <IconButton icon={<Icon type="plus-circle" />} onClick={this.handleToggleModal} />
-                  <div
-                    className={`icon-button__text ${
-                      selectedField === 'gallery' ? 'field-selected' : ''
-                    }`}
-                  >
-                    <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
-                  </div>
-                </Link>
-                <span className="proposition-line__text">{photosCount}</span>
-                {showModal && (
-                  <CreateImage
-                    albums={albums}
-                    selectedAlbum={album[0]}
-                    showModal={showModal}
-                    hideModal={this.handleToggleModal}
-                  />
-                )}
-              </div>
-            )}
-            {hasGalleryImg && (
-              <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
-            )}
-          </div>
-        ) : null}
-        {listItem(
+        {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
+        {this.listItem(objectFields.categoryItem, null)}
+        {this.listItem(
+          objectFields.galleryItem,
+          pictures && <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />,
+        )}
+        {this.listItem(
           objectFields.price,
-          price ? (
+          price && (
             <React.Fragment>
               {!isEditMode && <span className="field-icon">$</span>}
               <span className="price-value">{price}</span>
             </React.Fragment>
-          ) : null,
+          ),
         )}
-        {listItem(
+        {this.listItem(
           objectFields.workTime,
           workTime && (
             <div className="field-work-time">
@@ -554,7 +393,7 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
-        {listItem(
+        {this.listItem(
           objectFields.address,
           address && (
             <React.Fragment>
@@ -575,7 +414,7 @@ class ObjectInfo extends React.Component {
             </React.Fragment>
           ),
         )}
-        {listItem(
+        {this.listItem(
           objectFields.map,
           isRenderMap && (
             <MapObjectInfo
@@ -587,77 +426,59 @@ class ObjectInfo extends React.Component {
             />
           ),
         )}
-        {listItem(
+        {this.listItem(
           objectFields.website,
           website && website.title && website.link && (
             <div className="field-website">
               <span className="field-website__title">
                 <i className="iconfont icon-link text-icon link" />
-                <a target="_blank" rel="noopener noreferrer" href={this.getLink(website.link)}>
+                <a target="_blank" rel="noopener noreferrer" href={getLink(website.link)}>
                   {website.title}
                 </a>
               </span>
             </div>
           ),
         )}
-        {listItem(
+        {this.listItem(
           objectFields.phone,
           <div className="field-info">
-            {accessExtend ? (
-              <React.Fragment>
-                {phones.length <= 3 ? (
-                  phones
-                    .slice(0, 3)
-                    .map(({ body, number }) =>
-                      this.getFieldLayout(objectFields.phone, { body, number }),
-                    )
-                ) : (
-                  <React.Fragment>
-                    {phones
-                      .slice(0, 2)
-                      .map(({ body, number }) =>
-                        this.getFieldLayout(objectFields.phone, { body, number }),
-                      )}
-                    <Link
-                      to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
-                      onClick={() => this.handleSelectField(objectFields.phone)}
-                    >
-                      <FormattedMessage id="show_more_tags" defaultMessage="show more">
-                        {value => <div className="phone">{value}</div>}
-                      </FormattedMessage>
-                    </Link>
-                  </React.Fragment>
-                )}
-              </React.Fragment>
+            {phones.length <= 3 || accessExtend ? (
+              phones
+                .slice(0, 3)
+                .map(({ body, number }) =>
+                  this.getFieldLayout(objectFields.phone, { body, number }),
+                )
             ) : (
               <React.Fragment>
                 {phones
-                  .slice(0, 3)
+                  .slice(0, 2)
                   .map(({ body, number }) =>
                     this.getFieldLayout(objectFields.phone, { body, number }),
                   )}
+                <Link
+                  to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
+                  onClick={() => this.handleSelectField(objectFields.phone)}
+                >
+                  <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                    {value => <div className="phone">{value}</div>}
+                  </FormattedMessage>
+                </Link>
               </React.Fragment>
             )}
           </div>,
         )}
-        {listItem(
+        {this.listItem(
           objectFields.email,
           email && (
             <div className="field-info">
-              {accessExtend ? (
-                <div className="email">
-                  <Icon type="mail" className="text-icon email" /> {email}
-                </div>
-              ) : (
-                <React.Fragment>
-                  <Icon type="mail" className="text-icon email" />
-                  <a href={`mailto:${email}`}> {email}</a>
-                </React.Fragment>
-              )}
+              <div className="email">
+                <Icon type="mail" className="text-icon email" />
+                {accessExtend ? email : <a href={`mailto:${email}`}> {email}</a>}
+              </div>
             </div>
           ),
         )}
-        {listItem(objectFields.link, <SocialLinks profile={profile} />)}
+        {this.listItem(objectFields.link, <SocialLinks profile={pickBy(profile, identity)} />)}
       </React.Fragment>
     );
 
@@ -666,24 +487,24 @@ class ObjectInfo extends React.Component {
         <div className="object-sidebar__section-title">
           <FormattedMessage id="settings" defaultMessage="Settings" />
         </div>
-        {listItem(
+        {this.listItem(
           objectFields.avatar,
-          avatar ? (
+          avatar && (
             <div className="field-avatar">
               <img src={avatar} alt="pic" />
             </div>
-          ) : null,
+          ),
         )}
-        {!isHashtag && listItem(objectFields.title, short)}
-        {listItem(
+        {this.listItem(objectFields.title, short)}
+        {this.listItem(
           objectFields.background,
-          background ? (
+          background && (
             <div className="field-background">
               <img src={background} alt="pic" />
             </div>
-          ) : null,
+          ),
         )}
-        {listItem(
+        {this.listItem(
           objectFields.status,
           status && status.title && (
             <div className="field-status">
@@ -691,53 +512,22 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
+        {this.listItem(objectFields.authority, null)}
       </React.Fragment>
     );
 
     return (
       <React.Fragment>
-        {wobject && (wobject.name || wobject.default_name) && (
+        {wobject && wobjName && (
           <div className="object-sidebar">
-            {!isHashtag && listItem(objectFields.parent, parent ? this.renderParent(parent) : null)}
-            {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
-            {!isHashtag && isRenderMenu && menuSection}
+            {this.listItem(
+              objectFields.parent,
+              parent && (
+                <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
+              ),
+            )}
+            {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
-            {isHashtag && isRenderGallery && (hasGalleryImg || accessExtend) ? (
-              <div className="field-info">
-                {accessExtend && (
-                  <div className="proposition-line">
-                    <Link
-                      to={{ pathname: `/object/${wobject.author_permlink}/gallery` }}
-                      onClick={() => this.handleSelectField('gallery')}
-                    >
-                      <IconButton
-                        icon={<Icon type="plus-circle" />}
-                        onClick={this.handleToggleModal}
-                      />
-                      <div
-                        className={`icon-button__text ${
-                          selectedField === 'gallery' ? 'field-selected' : ''
-                        }`}
-                      >
-                        <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
-                      </div>
-                    </Link>
-                    <span className="proposition-line__text">{photosCount}</span>
-                    {showModal && (
-                      <CreateImage
-                        albums={albums}
-                        selectedAlbum={album[0]}
-                        showModal={showModal}
-                        hideModal={this.handleToggleModal}
-                      />
-                    )}
-                  </div>
-                )}
-                {hasGalleryImg && (
-                  <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
-                )}
-              </div>
-            ) : null}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
           </div>

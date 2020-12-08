@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
-import { get, head, isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import { currentUserFollowersUser } from '../helpers/apiHelpers';
 import {
   getAllUsers,
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
+  getIsOpenWalletTable,
   getIsUserFailed,
   getIsUserLoaded,
   getRate,
@@ -30,6 +30,8 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import NotFound from '../statics/NotFound';
 import { getMetadata } from '../helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import DEFAULTS from '../object/const/defaultValues';
+import Loading from '../components/Icon/Loading';
 
 @connect(
   (state, ownProps) => ({
@@ -43,6 +45,7 @@ import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
     rewardFund: getRewardFund(state),
     rate: getRate(state),
     allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
+    isOpenWalletTable: getIsOpenWalletTable(state),
   }),
   {
     getUserAccount,
@@ -66,6 +69,7 @@ export default class User extends React.Component {
     usersAccountHistory: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
+    isOpenWalletTable: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -74,20 +78,11 @@ export default class User extends React.Component {
     failed: false,
     getUserAccount: () => {},
     openTransfer: () => {},
-  };
-
-  static fetchData({ store, match }) {
-    return store.dispatch(getUserAccount(match.params.name));
-  }
-
-  state = {
-    isFollowing: false,
+    isOpenWalletTable: false,
   };
 
   componentDidMount() {
     const {
-      authenticated,
-      authenticatedUserName,
       usersAccountHistory,
       // eslint-disable-next-line no-shadow
       getUserAccountHistory,
@@ -96,36 +91,7 @@ export default class User extends React.Component {
 
     this.props.getUserAccount(match.params.name);
 
-    if (authenticated) {
-      currentUserFollowersUser(authenticatedUserName, match.params.name).then(resp => {
-        const result = head(resp);
-        const followingUsername = get(result, 'following', null);
-        const isFollowing = authenticatedUserName === followingUsername;
-        this.setState({
-          isFollowing,
-        });
-      });
-    }
-    if (isEmpty(usersAccountHistory[match.params.name])) {
-      getUserAccountHistory(match.params.name);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const diffUsername = this.props.match.params.name !== nextProps.match.params.name;
-    const diffAuthUsername = this.props.authenticatedUserName !== nextProps.authenticatedUserName;
-    if (diffUsername || diffAuthUsername) {
-      currentUserFollowersUser(nextProps.authenticatedUserName, nextProps.match.params.name).then(
-        resp => {
-          const result = head(resp);
-          const followingUsername = get(result, 'following', null);
-          const isFollowing = nextProps.authenticatedUserName === followingUsername;
-          this.setState({
-            isFollowing,
-          });
-        },
-      );
-    }
+    if (isEmpty(usersAccountHistory[match.params.name])) getUserAccountHistory(match.params.name);
   }
 
   componentDidUpdate(prevProps) {
@@ -151,8 +117,8 @@ export default class User extends React.Component {
       rewardFund,
       rate,
       user,
+      isOpenWalletTable,
     } = this.props;
-    const { isFollowing } = this.state;
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
     if (!isEmpty(user) && !user.id && !user.fetching)
@@ -179,18 +145,17 @@ export default class User extends React.Component {
     }
     const hasCover = !!coverImage;
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
-    const image =
-      getAvatarURL(username) ||
-      'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
+    const image = getAvatarURL(username) || DEFAULTS.AVATAR;
     const canonicalUrl = `https://www.waivio.com/@${username}`;
     const url = `${waivioHost}/@${username}`;
     const title = `${displayedUsername} - Waivio`;
     const isSameUser = authenticated && authenticatedUser.name === username;
-
     const isAboutPage = match.params['0'] === 'about';
-
     const isGuest =
       match.params.name.startsWith(GUEST_PREFIX) || match.params.name.startsWith(BXY_GUEST_PREFIX);
+    const currentClassName = isOpenWalletTable
+      ? 'display-table'
+      : classNames('center', { pa3: isAboutPage });
 
     return (
       <div className="main-panel">
@@ -224,14 +189,15 @@ export default class User extends React.Component {
           />
         </Helmet>
         <ScrollToTopOnMount />
-        {user && (
+        {user.fetching ? (
+          <Loading style={{ marginTop: '130px' }} />
+        ) : (
           <UserHero
             authenticated={authenticated}
             user={user}
             username={displayedUsername}
             isSameUser={isSameUser}
             coverImage={coverImage}
-            isFollowing={isFollowing}
             hasCover={hasCover}
             onFollowClick={this.handleFollowClick}
             onTransferClick={this.handleTransferClick}
@@ -241,19 +207,21 @@ export default class User extends React.Component {
           />
         )}
         <div className="shifted">
-          <div className="feed-layout container">
-            <Affix className="leftContainer leftContainer__user" stickPosition={72}>
-              <div className={classNames('left', { 'display-none': isAboutPage })}>
-                <LeftSidebar />
-              </div>
-            </Affix>
-            <Affix className="rightContainer" stickPosition={72}>
-              <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
-            </Affix>
+          <div className={`feed-layout ${isOpenWalletTable ? 'table-wrap' : 'container'}`}>
+            {!isOpenWalletTable && (
+              <React.Fragment>
+                <Affix className="leftContainer leftContainer__user" stickPosition={72}>
+                  <div className={classNames('left', { 'display-none': isAboutPage })}>
+                    <LeftSidebar />
+                  </div>
+                </Affix>
+                <Affix className="rightContainer" stickPosition={72}>
+                  <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
+                </Affix>
+              </React.Fragment>
+            )}
             {loaded && (
-              <div className={classNames('center', { pa3: isAboutPage })}>
-                {renderRoutes(this.props.route.routes)}
-              </div>
+              <div className={currentClassName}>{renderRoutes(this.props.route.routes)}</div>
             )}
           </div>
         </div>

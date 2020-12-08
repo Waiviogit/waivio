@@ -34,37 +34,6 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
             },
             { username: displayUsername ? notification.author : '' },
           );
-    case notificationConstants.VOTE: {
-      let message = intl.formatMessage(
-        {
-          id: 'notification_unvoted_username_post',
-          defaultMessage: '{username} unvoted your post',
-        },
-        {
-          username: displayUsername ? notification.voter : '',
-        },
-      );
-
-      if (notification.weight > 0) {
-        message = intl.formatMessage(
-          {
-            id: 'notification_upvoted_username_post',
-            defaultMessage: '{username} upvoted your post',
-          },
-          { username: displayUsername ? notification.voter : '' },
-        );
-      } else if (notification.weight < 0) {
-        message = intl.formatMessage(
-          {
-            id: 'notification_downvoted_username_post',
-            defaultMessage: '{username} downvoted your post',
-          },
-          { username: displayUsername ? notification.voter : '' },
-        );
-      }
-
-      return message;
-    }
     case notificationConstants.REBLOG:
       return intl.formatMessage(
         {
@@ -162,11 +131,12 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
         {
           id: 'suspended_status',
           defaultMessage:
-            'After {days} day(s) {sponsor} campaigns will be blocked, please pay the debt for the review',
+            'Warning: in {days} day(s) all {sponsor} campaigns will be suspended because the accounts payable for {reviewAuthor}',
         },
         {
           days: notification.days,
           sponsor: notification.sponsor,
+          reviewAuthor: notification.reviewAuthor,
         },
       );
     case notificationConstants.WITHDRAW_ROUTE:
@@ -248,11 +218,75 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           rewardHBD: notification.rewardHBD,
         },
       );
-    case notificationConstants.CUSTOMER_SUPPORT:
+    case notificationConstants.CAMPAIGN_MESSAGE:
       return intl.formatMessage(
         {
           id: 'customer_support',
           defaultMessage: '{author} asked about {campaignName}',
+        },
+        {
+          author: notification.author,
+          campaignName: notification.campaignName,
+        },
+      );
+    case notificationConstants.LIKE:
+      return intl.formatMessage(
+        {
+          id: 'like_post_notify_priority',
+          defaultMessage: "{voter} liked your post '{postTitle}'",
+        },
+        {
+          voter: notification.voter,
+          postTitle: notification.postTitle,
+        },
+      );
+    case notificationConstants.MY_LIKE:
+      return intl.formatMessage(
+        {
+          id: 'my_like_notify',
+          defaultMessage: 'You liked {post}',
+        },
+        {
+          post: notification.title,
+        },
+      );
+    case notificationConstants.MY_COMMENT:
+      return intl.formatMessage(
+        {
+          id: 'my_comment_notify',
+          defaultMessage: 'You replied to {parentAuthor}',
+        },
+        {
+          parentAuthor: notification.parentAuthor,
+        },
+      );
+    case notificationConstants.MY_POST:
+      return intl.formatMessage(
+        {
+          id: 'my_post_notify',
+          defaultMessage: 'You created post {post}',
+        },
+        {
+          post: notification.title,
+        },
+      );
+    case notificationConstants.CAMPAIGN_RESERVATION:
+      if (notification.isReleased) {
+        return intl.formatMessage(
+          {
+            id: 'notification_campaign_released_reservation',
+            defaultMessage: '{author} released a reservation for {campaignName}',
+          },
+          {
+            author: notification.author,
+            campaignName: notification.campaignName,
+          },
+        );
+      }
+      return intl.formatMessage(
+        {
+          id: 'notification_campaign_reserved_reservation',
+          defaultMessage: '{author} made a reservation for {campaignName}',
         },
         {
           author: notification.author,
@@ -275,7 +309,6 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.follower}`;
     case notificationConstants.MENTION:
       return `/@${notification.author}/${notification.permlink}`;
-    case notificationConstants.VOTE:
     case notificationConstants.REBLOG:
       return `/@${currentAuthUsername}/${notification.permlink}`;
     case notificationConstants.TRANSFER:
@@ -308,8 +341,16 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.from}/transfers`;
     case notificationConstants.CLAIM_REWARD:
       return `/@${notification.account}`;
-    case notificationConstants.CUSTOMER_SUPPORT:
-      return `/@${currentAuthUsername}/${notification.permlink}`;
+    case notificationConstants.CAMPAIGN_MESSAGE:
+      return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.LIKE:
+      return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.MY_LIKE:
+      return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.MY_COMMENT:
+      return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.MY_POST:
+      return `/@${notification.author}/${notification.permlink}`;
     default:
       return '/notifications-list';
   }
@@ -323,8 +364,6 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.follower;
     case notificationConstants.MENTION:
       return notification.author;
-    case notificationConstants.VOTE:
-      return notification.voter;
     case notificationConstants.TRANSFER:
       return notification.from;
     case notificationConstants.REBLOG:
@@ -356,7 +395,17 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.from;
     case notificationConstants.CLAIM_REWARD:
       return notification.account;
-    case notificationConstants.CUSTOMER_SUPPORT:
+    case notificationConstants.CAMPAIGN_MESSAGE:
+      return notification.author;
+    case notificationConstants.LIKE:
+      return notification.voter;
+    case notificationConstants.MY_LIKE:
+      return notification.author;
+    case notificationConstants.MY_COMMENT:
+      return notification.author;
+    case notificationConstants.MY_POST:
+      return notification.author;
+    case notificationConstants.CAMPAIGN_RESERVATION:
       return notification.author;
     default:
       return currentAuthUsername;

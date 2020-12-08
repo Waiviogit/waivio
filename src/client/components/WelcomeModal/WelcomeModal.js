@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { message, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { size } from 'lodash';
 
 import WeightTag from '../WeightTag';
 import Avatar from '../Avatar';
@@ -14,52 +15,44 @@ import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common
 import { setUsersStatus } from '../../settings/settingsActions';
 import { getUserFeedContent } from '../../feed/feedActions';
 import { followUser, unfollowUser } from '../../user/usersActions';
-import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getLocale,
+  isGuestUser,
+} from '../../reducers';
 import { getRecommendTopic, getUsers } from '../../../waivioApi/ApiClient';
 
 import './WelcomeModal.less';
 
-const WelcomeModal = ({
-  isAuthorization,
-  intl,
-  userName,
-  followingList,
-  followingObjectsList,
-  location,
-  isGuest,
-}) => {
+const WelcomeModal = ({ isAuthorization, intl, userName, location, isGuest, locale }) => {
   const dispatch = useDispatch();
   const [isOpenTopicsModal, setIsOpenTopicsModal] = useState(false);
   const [isOpenUsersModal, setIsOpenUsersModal] = useState(false);
   const [users, setUsers] = useState([]);
   const [wobjs, setWobjs] = useState([]);
-  const followingKeysList = Object.keys(followingList);
-  const haveFollowing = Boolean(followingKeysList.length) || Boolean(followingObjectsList.length);
+  const isSuccess = res => (isGuest && res.value.ok) || !res.message;
 
   useEffect(() => {
-    if (haveFollowing) {
-      dispatch(setUsersStatus());
-    } else {
-      const userList = Object.values(newUserRecommendExperts).reduce(
-        (arr, acc) => [...acc, ...arr],
-        [],
-      );
-      const topicList = Object.values(newUserRecommendTopics).reduce(
-        (arr, acc) => [...acc, ...arr],
-        [],
-      );
+    const userList = Object.values(newUserRecommendExperts).reduce(
+      (arr, acc) => [...acc, ...arr],
+      [],
+    );
+    const topicList = Object.values(newUserRecommendTopics).reduce(
+      (arr, acc) => [...acc, ...arr],
+      [],
+    );
 
-      getRecommendTopic(topicList.length, 'en-US', 0, topicList).then(res => {
-        if (res && res.wobjects) setWobjs(res.wobjects);
-      });
-      getUsers({ listUsers: userList, limit: userList.length }).then(res => {
-        if (res && res.users) setUsers(res.users);
-      });
-    }
+    getRecommendTopic(size(topicList), locale, 0, topicList).then(res => {
+      if (res && res.wobjects) setWobjs(res.wobjects);
+    });
+    getUsers({ listUsers: userList, limit: size(userList), locale }).then(res => {
+      if (res && res.users) setUsers(res.users);
+    });
   }, []);
 
   useEffect(() => {
-    if (isAuthorization && wobjs.length && users.length) {
+    if (isAuthorization && size(wobjs) && size(users)) {
       setIsOpenTopicsModal(true);
     }
   }, [isAuthorization, wobjs, users]);
@@ -74,7 +67,7 @@ const WelcomeModal = ({
 
     setUsers([...usersArray]);
     dispatch(unfollowUser(name)).then(res => {
-      if ((res.value.ok && isGuest) || !res.message) {
+      if (isSuccess(res)) {
         usersArray.splice(matchUserIndex, 1, {
           ...usersArray[matchUserIndex],
           youFollows: false,
@@ -103,7 +96,7 @@ const WelcomeModal = ({
 
     setUsers([...usersArray]);
     dispatch(followUser(name)).then(res => {
-      if ((isGuest && res.value.ok) || !res.message) {
+      if (isSuccess(res)) {
         usersArray.splice(matchUserIndex, 1, {
           ...usersArray[matchUserIndex],
           youFollows: true,
@@ -131,7 +124,7 @@ const WelcomeModal = ({
 
     setWobjs([...wobjectsArray]);
     dispatch(unfollowWobject(permlink)).then(res => {
-      if ((res.value.ok && isGuest) || !res.message) {
+      if (isSuccess(res)) {
         wobjectsArray.splice(matchWobjIndex, 1, {
           ...wobjectsArray[matchWobjIndex],
           youFollows: false,
@@ -160,7 +153,7 @@ const WelcomeModal = ({
 
     setWobjs([...wobjectsArray]);
     dispatch(followWobject(permlink)).then(res => {
-      if ((isGuest && res.value.ok) || !res.message) {
+      if (isSuccess(res)) {
         wobjectsArray.splice(matchWobjectIndex, 1, {
           ...wobjectsArray[matchWobjectIndex],
           youFollows: true,
@@ -380,33 +373,27 @@ const WelcomeModal = ({
 
 WelcomeModal.propTypes = {
   isAuthorization: PropTypes.bool.isRequired,
-  followingObjectsList: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.shape({})),
-    PropTypes.string,
-  ]),
-  followingList: PropTypes.shape({}).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
   userName: PropTypes.string,
   location: PropTypes.string,
   isGuest: PropTypes.bool,
+  locale: PropTypes.string,
 };
 
 WelcomeModal.defaultProps = {
-  followingObjectsList: [{}],
-  followingList: {},
   userName: '',
   location: '',
   isGuest: false,
+  locale: 'en-US',
 };
 
 const mapStateToProps = state => ({
-  isAuthorization: state.auth.isAuthenticated,
-  followingList: state.user.following.list,
-  followingObjectsList: state.user.followingObjects.list,
+  isAuthorization: getIsAuthenticated(state),
   userName: getAuthenticatedUserName(state),
   isGuest: isGuestUser(state),
+  locale: getLocale(state),
 });
 
 export default injectIntl(connect(mapStateToProps, null)(WelcomeModal));
