@@ -927,7 +927,6 @@ export const filterSponsorsName = location => {
     const key = pair[0];
     if (key.match(/sponsorName/)) {
       arr.push(pair);
-      console.log(pair);
     }
   }
   return arr;
