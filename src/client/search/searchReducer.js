@@ -19,6 +19,7 @@ const initialState = {
   isClearSearchObjects: false,
   websiteSearchType: 'All',
   websiteSearchResult: [],
+  searchUsersResults: [],
 };
 
 export default (state = initialState, action) => {
@@ -77,6 +78,7 @@ export default (state = initialState, action) => {
         autoCompleteSearchResults: [],
         searchObjectsResults: [],
         searchUsersResults: [],
+        websiteSearchResult: [],
       };
     }
     case searchActions.SEARCH_OBJECTS.START:
@@ -102,17 +104,27 @@ export default (state = initialState, action) => {
         searchObjectTypesResults: isEmpty(search) ? [] : result,
       };
     }
+
     case searchActions.SEARCH_USERS.START:
       return {
         ...state,
         isStartSearchUser: true,
       };
+
     case searchActions.SEARCH_USERS.SUCCESS: {
       const { result, search } = action.payload;
 
       return {
         ...state,
         searchUsersResults: isEmpty(search) ? [] : result,
+        isStartSearchUser: false,
+      };
+    }
+
+    case searchActions.SEARCH_USERS_LOADING_MORE.SUCCESS: {
+      return {
+        ...state,
+        searchUsersResults: [...state.searchUsersResults, ...result],
         isStartSearchUser: false,
       };
     }

@@ -21,6 +21,7 @@ export const CLEAR_SEARCH_OBJECTS_RESULT = '@search/CLEAR_SEARCH_OBJECTS_RESULT'
 export const RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS =
   '@search/RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS';
 export const SEARCH_USERS = createAsyncActionType('@search/SEARCH_USERS');
+export const SEARCH_USERS_LOADING_MORE = createAsyncActionType('@search/SEARCH_USERS_LOADING_MORE');
 export const SEARCH_OBJECT_TYPES = createAsyncActionType('@search/SEARCH_OBJECT_TYPES');
 export const SEARCH_USERS_FOR_DISCOVER_PAGE = createAsyncActionType(
   '@search/SEARCH_USERS_FOR_DISCOVER_PAGE',
@@ -149,6 +150,22 @@ export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
             search,
           }))
           .catch(console.log),
+      },
+    });
+  }
+};
+
+export const searchUsersAutoCompeteLoadingMore = (userName, limit, notGuest = false) => (
+  dispatch,
+  getState,
+) => {
+  const user = getAuthenticatedUserName(getState());
+
+  if (userName) {
+    dispatch({
+      type: SEARCH_USERS_LOADING_MORE.ACTION,
+      payload: {
+        promise: ApiClient.searchUsers(userName, user, limit, notGuest)
       },
     });
   }

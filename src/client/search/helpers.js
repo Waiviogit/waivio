@@ -1,4 +1,5 @@
 import { forEach, isEmpty } from 'lodash';
+import classNames from 'classnames';
 
 export const getTranformSearchCountData = (searchResults, listOfObjectTypes) => {
   const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
@@ -42,5 +43,10 @@ export const getTranformSearchCountData = (searchResults, listOfObjectTypes) => 
 
   return countArr;
 };
+
+export const getActiveItemClassList = (curr, type, className) =>
+  classNames(className, {
+    [`${className}--active`]: type === curr,
+  });
 
 export default null;

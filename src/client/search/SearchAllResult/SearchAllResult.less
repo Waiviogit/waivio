@@ -1,0 +1,35 @@
+.SearchAllResult {
+  width: 40%;
+  padding: 0 25px 0 0;
+
+  &__type-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__type {
+    font-size: 25px;
+    padding: 0 5px;
+    border-right: 1px solid black;
+    height: 25px;
+    line-height: 25px;
+    cursor: pointer;
+    transition: 0.5s;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+
+    &:hover {
+      color: orange;
+    }
+
+    &--active {
+      color: orange;
+    }
+
+    &:last-child {
+      border: none;
+    }
+  }
+}

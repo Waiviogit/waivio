@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { AutoComplete, Icon, Input } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { map, isEmpty } from 'lodash';
+import { map, isEmpty, debounce } from 'lodash';
 import classNames from 'classnames';
 
 import {
   getAutoCompleteSearchResults,
   getIsStartSearchAutoComplete,
   getSearchObjectsResults,
-  getSearchUsersResults,
   getWebsiteSearchType,
   searchObjectTypesResults,
 } from '../../reducers';
@@ -55,7 +54,7 @@ const WebsiteSearch = props => {
   };
 
   useEffect(() => {
-    currentSearchMethod(searchString);
+    if (searchString) currentSearchMethod(searchString);
   }, [props.searchType]);
 
   const compareSearchResult = () => {
@@ -151,13 +150,16 @@ const WebsiteSearch = props => {
     return result;
   };
 
+  const handleSearchAutocomplete = useCallback(debounce(value => currentSearchMethod(value), 300), [props.searchType])
+
   const handleSearch = value => {
     if (value) {
-      currentSearchMethod(value);
+      handleSearchAutocomplete(value);
     } else props.resetSearchAutoCompete();
 
     setSearchString(value);
   };
+
 
   const handleResetAutocomplete = () => {
     setSearchString('');
@@ -212,7 +214,6 @@ export default connect(
   state => ({
     autoCompleteSearchResults: getAutoCompleteSearchResults(state),
     searchByObject: getSearchObjectsResults(state),
-    searchByUser: getSearchUsersResults(state),
     searchByObjectType: searchObjectTypesResults(state),
     isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
     searchType: getWebsiteSearchType(state),
