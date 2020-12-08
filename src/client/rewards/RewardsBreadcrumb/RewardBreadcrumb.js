@@ -29,8 +29,6 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject, match }) => {
   let url = `/rewards/${filterKey}`;
   if (isWidget) url += `/${widgetUrl}`;
 
-  // removeSessionData('userName', 'isWidget');
-
   const breadCrumbText = `${
     isCorrectFilter ? getBreadCrumbText(intl, location.pathname, filterKey, rewardText, match) : ''
   } ${

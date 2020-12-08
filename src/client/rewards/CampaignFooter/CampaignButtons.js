@@ -41,26 +41,20 @@ import {
 } from '../rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
-import { getIsOpenWriteReviewModal } from '../../reducers';
 import '../../components/StoryFooter/Buttons.less';
 
 @injectIntl
 @withAuthActions
-@connect(
-  state => ({
-    isOpenWriteReviewModal: getIsOpenWriteReviewModal(state),
-  }),
-  {
-    rejectReview,
-    changeBlackAndWhiteLists,
-    setDataForSingleReport,
-    getBlacklist,
-    changeReward,
-    reinstateReward,
-    getFraudSuspicion,
-    setToggleFlag,
-  },
-)
+@connect(null, {
+  rejectReview,
+  changeBlackAndWhiteLists,
+  setDataForSingleReport,
+  getBlacklist,
+  changeReward,
+  reinstateReward,
+  getFraudSuspicion,
+  setToggleFlag,
+})
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,

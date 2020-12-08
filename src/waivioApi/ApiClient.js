@@ -720,7 +720,6 @@ export const getPropositions = ({
     }
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!isEmpty(types)) reqData.types = types;
-    // if (!isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;

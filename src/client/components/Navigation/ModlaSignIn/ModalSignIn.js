@@ -14,13 +14,13 @@ import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import SignUpButton from '../SignUpButton/SignUpButton';
-
-import './ModalSignIn.less';
 import {
   clearAllSessionProposition,
   getSessionData,
   removeSessionData,
 } from '../../../rewards/rewardsHelper';
+
+import './ModalSignIn.less';
 
 const ModalSignIn = ({
   next,
