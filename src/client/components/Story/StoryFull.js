@@ -332,6 +332,7 @@ class StoryFull extends React.Component {
         </div>
       );
     }
+
     return (
       <div className="StoryFull">
         {replyUI}
@@ -422,14 +423,12 @@ class StoryFull extends React.Component {
         {open && (
           <Lightbox
             imageTitle={this.images[index].alt}
-            mainSrc={getImagePath(this.images[index].src)}
-            nextSrc={getImagePath(
-              imagesArraySize > 1 && this.images[(index + 1) % imagesArraySize].src,
-            )}
-            prevSrc={getImagePath(
+            mainSrc={this.images[index].src}
+            nextSrc={imagesArraySize > 1 && this.images[(index + 1) % imagesArraySize].src}
+            prevSrc={
               imagesArraySize > 1 &&
-                this.images[(index + (imagesArraySize - 1)) % imagesArraySize].src,
-            )}
+              this.images[(index + (imagesArraySize - 1)) % imagesArraySize].src
+            }
             onCloseRequest={() => {
               this.setState({
                 lightbox: {
