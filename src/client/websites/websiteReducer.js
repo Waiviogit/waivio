@@ -133,10 +133,18 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.GET_WEBSITE_CONFIGURATIONS.START: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+
     case websiteAction.GET_WEBSITE_CONFIGURATIONS.SUCCESS: {
       return {
         ...state,
         configurationWebsite: action.payload,
+        loading: false,
       };
     }
 
