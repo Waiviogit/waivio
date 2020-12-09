@@ -237,11 +237,11 @@ class Wrapper extends React.PureComponent {
                 <Header username={user.name} />
               </Layout.Header>
               <div className="content">
-                {/*<TopNavigation*/}
-                {/*  authenticated={isAuthenticated}*/}
-                {/*  userName={username}*/}
-                {/*  location={history.location}*/}
-                {/*/>*/}
+                <TopNavigation
+                  authenticated={isAuthenticated}
+                  userName={username}
+                  location={history.location}
+                />
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />

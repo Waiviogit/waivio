@@ -401,7 +401,7 @@ const routes = {
     },
     {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-      component: Views.MainBody,
+      component: Views.MainPage,
       routes: [
         {
           path: '/confirmation',

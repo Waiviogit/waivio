@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 
 import MapOS from '../../../components/Maps/Map';
 import {

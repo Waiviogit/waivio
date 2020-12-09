@@ -250,6 +250,7 @@ export const getIsStartSearchObject = state => fromSearch.getIsStartSearchObject
 export const getIsClearSearchObjects = state => fromSearch.getIsClearSearchObjects(state.search);
 export const getWebsiteSearchType = state => fromSearch.getWebsiteSearchType(state.search);
 export const getWebsiteSearchResult = state => fromSearch.getWebsiteSearchResult(state.search);
+export const getHasMoreObjects = state => fromSearch.getHasMoreObjects(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
@@ -294,6 +295,7 @@ export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.a
 export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
+export const getRelatedPhotos = state => fromGallery.getRelatedPhotos(state.gallery);
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
 export const getObjectsMap = state => fromMap.getObjectsMap(state.map);

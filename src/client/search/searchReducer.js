@@ -91,7 +91,8 @@ export default (state = initialState, action) => {
       const { result, search } = action.payload;
       return {
         ...state,
-        searchObjectsResults: isEmpty(search) ? [] : result,
+        searchObjectsResults: isEmpty(search) ? [] : get(result, 'wobjects', []),
+        hasMoreObjects: get(result, 'hasMore', false),
         isStartSearchObject: false,
       };
     }
@@ -370,3 +371,4 @@ export const getIsStartSearchObject = state => state.isStartSearchObject;
 export const getIsClearSearchObjects = state => state.isClearSearchObjects;
 export const getWebsiteSearchType = state => state.websiteSearchType;
 export const getWebsiteSearchResult = state => state.websiteSearchResult;
+export const getHasMoreObjects = state => state.hasMoreObjects;
