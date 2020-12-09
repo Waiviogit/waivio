@@ -155,8 +155,11 @@ class Topnav extends React.Component {
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
 
-    const countArr = [];
-
+    const wobjectAllCount = wobjectsCounts
+      ? wobjectsCounts.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
+      : null;
+    const countAllSearch = objectTypesCount + usersCount + wobjectAllCount;
+    const countArr = [{ name: 'All', count: countAllSearch }];
     if (!isEmpty(wobjectsCounts)) {
       const wobjList = listOfObjectTypes.reduce((acc, i) => {
         const index = wobjectsCounts.findIndex(obj => obj.object_type === i);

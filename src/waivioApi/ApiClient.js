@@ -8,7 +8,7 @@ import store from 'store';
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
-import { getUrl } from '../client/rewards/rewardsHelper';
+import { getSessionData, getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
 import { IS_RESERVED } from '../common/constants/rewards';
 
@@ -681,6 +681,7 @@ export const getPropositions = ({
   isMap,
   primaryObject,
   locale = 'en-US',
+  authenticated,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -691,18 +692,34 @@ export const getPropositions = ({
       primaryObject,
       sort,
     };
+    const searchParams = new URLSearchParams(location.search);
+    const mapX = searchParams.get('mapX');
+    const mapY = searchParams.get('mapY');
+    const isWidget = getSessionData('isWidget');
+    const isWidgetUsername = getSessionData('userName');
 
+    if (
+      (authenticated && !isEmpty(userName)) ||
+      (!authenticated && !isEmpty(userName) && !isWidgetUsername)
+    ) {
+      reqData.userName = userName;
+    } else if (!authenticated && isWidget && isWidgetUsername) {
+      reqData.userName = isWidgetUsername;
+    }
     if (!isEmpty(area)) {
       reqData.area = area;
       reqData.radius = radius;
     }
     if (!isEmpty(area) && isEmpty(requiredObject)) {
-      reqData.area = area;
-      if (radius) reqData.radius = radius;
+      if (mapX && mapY) {
+        reqData.area = [+mapX, mapY];
+      } else {
+        reqData.area = area;
+        if (radius) reqData.radius = radius;
+      }
     }
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!isEmpty(types)) reqData.types = types;
-    if (!isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
@@ -1805,6 +1822,15 @@ export const getSettingsWebsite = host =>
   fetch(`${config.apiPrefix}${config.sites}${config.settings}?host=${host}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getCurrentAppSettings = () =>
+  fetch(`${config.apiPrefix}${config.sites}`, {
+    headers,
+    method: 'POST',
   })
     .then(res => res.json())
     .then(res => res)

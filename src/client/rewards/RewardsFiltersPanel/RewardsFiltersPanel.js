@@ -1,9 +1,14 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { Checkbox } from 'antd';
-import { map, includes } from 'lodash';
+import { map, includes, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { payablesFilterData } from '../rewardsHelper';
+import {
+  filterSelectedRewardsType,
+  filterSponsorsName,
+  handleFilters,
+  payablesFilterData,
+} from '../rewardsHelper';
 import {
   REWARDS_TYPES_MESSAGES,
   CAMPAIGNS_TYPES_MESSAGES,
@@ -58,15 +63,31 @@ const RewardsFiltersPanel = ({
     ),
     [handleChange],
   );
+
   const guideHistoryNotifyName = new URLSearchParams(location.search).get('campaign');
   const guideHistoryNotifyFilterReleased = new URLSearchParams(location.search).get('released');
   const guideHistoryNotifyFilterReserved = new URLSearchParams(location.search).get('reserved');
+
+  // Filters for widget:
+  const filterSponsorNames = filterSponsorsName(location);
+  const filterRewardsType = filterSelectedRewardsType(location);
+
   useEffect(() => {
-    if (guideHistoryNotifyName) setActiveMessagesFilters(guideHistoryNotifyName, campaignDataKey);
-    if (guideHistoryNotifyFilterReleased)
+    if (guideHistoryNotifyName) {
+      setActiveMessagesFilters(guideHistoryNotifyName, campaignDataKey);
+    }
+    if (guideHistoryNotifyFilterReleased) {
       setActiveMessagesFilters(guideHistoryNotifyFilterReleased, 'rewards');
-    if (guideHistoryNotifyFilterReserved)
+    }
+    if (guideHistoryNotifyFilterReserved) {
       setActiveMessagesFilters(guideHistoryNotifyFilterReserved, 'rewards');
+    }
+    if (!isEmpty(filterSponsorNames)) {
+      handleFilters(setFilterValue, filterSponsorNames, 'guideNames');
+    }
+    if (!isEmpty(filterRewardsType)) {
+      handleFilters(setFilterValue, filterRewardsType, 'types');
+    }
   }, [location.search]);
 
   const filterPaymentLayout = useCallback(

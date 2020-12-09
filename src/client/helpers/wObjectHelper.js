@@ -206,3 +206,5 @@ export const createNewPath = (wobj, type) => {
 
   return `/object/${wobj.author_permlink}/${currType}`;
 };
+
+export const isPhotosAlbumExist = albums => albums.some(album => album.body === 'Photos');

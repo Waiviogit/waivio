@@ -25,7 +25,7 @@ import OBJECT_TYPE from './const/objectTypes';
 import { AppSharedContext } from '../Wrapper';
 import AppendCard from './AppendCard/AppendCard';
 import Loading from '../components/Icon/Loading';
-import { getObjectName } from '../helpers/wObjectHelper';
+import { getObjectName, isPhotosAlbumExist } from '../helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from './wObjectHelper';
 
 import './WobjHistory.less';
@@ -54,6 +54,8 @@ class WobjHistory extends React.Component {
     }).isRequired,
     rate: PropTypes.number.isRequired,
     appendLoading: PropTypes.bool,
+    albums: PropTypes.shape(),
+    appendAlbum: PropTypes.func,
   };
 
   static defaultProps = {
@@ -62,6 +64,8 @@ class WobjHistory extends React.Component {
     appendLoading: false,
     comments: {},
     object: {},
+    albums: [],
+    appendAlbum: () => {},
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -105,6 +109,10 @@ class WobjHistory extends React.Component {
   };
 
   handleToggleModal = () => {
+    const { match, albums, appendAlbum } = this.props;
+    if (match.params[1] === objectFields.galleryItem && isPhotosAlbumExist(albums)) {
+      appendAlbum();
+    }
     this.setState({ showModal: !this.state.showModal });
   };
 

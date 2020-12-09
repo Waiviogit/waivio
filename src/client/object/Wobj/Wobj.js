@@ -25,6 +25,7 @@ const Wobj = ({
   route,
   handleFollowClick,
   objectName,
+  appendAlbum,
 }) => {
   const waivioHost = global.postOrigin || 'https://www.waivio.com';
   const image = wobject.avatar || DEFAULTS.AVATAR;
@@ -82,6 +83,7 @@ const Wobj = ({
           onFollowClick={handleFollowClick}
           toggleViewEditMode={toggleViewEditMode}
           albumsAndImagesCount={albumsAndImagesCount}
+          appendAlbum={appendAlbum}
         />
         <div className="shifted">
           <div className="container feed-layout">
@@ -96,6 +98,7 @@ const Wobj = ({
                   wobject={wobject}
                   userName={userName}
                   history={history}
+                  appendAlbum={appendAlbum}
                 />
               </div>
             </Affix>
@@ -114,6 +117,7 @@ const Wobj = ({
                 userName,
                 match,
                 toggleViewEditMode,
+                appendAlbum,
               })}
             </div>
           </div>
@@ -134,12 +138,14 @@ Wobj.propTypes = {
   toggleViewEditMode: PropTypes.func,
   handleFollowClick: PropTypes.func,
   objectName: PropTypes.string.isRequired,
+  appendAlbum: PropTypes.func,
 };
 
 Wobj.defaultProps = {
   wobject: {},
   toggleViewEditMode: () => {},
   handleFollowClick: () => {},
+  appendAlbum: () => {},
 };
 
 export default Wobj;
