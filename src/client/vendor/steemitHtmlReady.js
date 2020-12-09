@@ -173,7 +173,7 @@ function proxifyImages(doc) {
   [...doc.getElementsByTagName('img')].forEach(node => {
     const url = node.getAttribute('src');
     if (!linksRe.local.test(url)) {
-      node.setAttribute('src', getProxyImageURL(url));
+      node.setAttribute('src', getImagePathPost(url));
     }
   });
 }

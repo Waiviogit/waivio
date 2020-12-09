@@ -1827,4 +1827,13 @@ export const getSettingsWebsite = host =>
     .then(res => res)
     .catch(e => e);
 
+export const getCurrentAppSettings = () =>
+  fetch(`${config.apiPrefix}${config.sites}`, {
+    headers,
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;

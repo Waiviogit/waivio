@@ -93,7 +93,6 @@ const ObjectOfTypePage = props => {
           locale,
         };
         const wobj = breadcrumb.length > 1 ? nestedWobject : wobject;
-
         const postData = getAppendData(userName, wobj, '', pageContentField);
         appendPageContent(postData, { follow, votePercent: votePercent * 100 })
           .then(() => {

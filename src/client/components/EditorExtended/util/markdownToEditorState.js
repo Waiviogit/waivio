@@ -2,6 +2,7 @@ import { parse } from '@textlint/markdown-to-ast';
 import { last } from 'lodash';
 import { ATOMIC_TYPES, Block, Entity } from './constants';
 import { isYoutube, isVimeo, isDTube, isThreeSpeak, getSrc } from './videoHelper';
+import { getImagePathPost } from '../../../helpers/image';
 
 const defaultInlineStyles = {
   Strong: {
@@ -139,7 +140,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   };
 
   const addImage = child => {
-    data.src = child.url;
+    data.src = getImagePathPost(child.url);
     data.alt = child.alt || '';
     text = child.alt || '';
   };

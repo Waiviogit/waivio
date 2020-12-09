@@ -91,3 +91,11 @@ export const hidePostModal = createAction(HIDE_POST_MODAL);
 
 export const SET_IS_MOBILE = '@app/SET_IS_MOBILE';
 export const setIsMobile = createAction(SET_IS_MOBILE);
+
+export const GET_CURRENT_APP_SETTINGS = createAsyncActionType('@app/GET_CURRENT_APP_SETTINGS');
+export const getCurrentAppSettings = () => ({
+  type: GET_CURRENT_APP_SETTINGS.ACTION,
+  payload: {
+    promise: ApiClient.getCurrentAppSettings(),
+  },
+});
