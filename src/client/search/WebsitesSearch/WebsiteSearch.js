@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { AutoComplete, Icon, Input } from 'antd';
 import { connect } from 'react-redux';
@@ -150,7 +150,10 @@ const WebsiteSearch = props => {
     return result;
   };
 
-  const handleSearchAutocomplete = useCallback(debounce(value => currentSearchMethod(value), 300), [props.searchType])
+  const handleSearchAutocomplete = useCallback(
+    debounce(value => currentSearchMethod(value), 300),
+    [props.searchType],
+  );
 
   const handleSearch = value => {
     if (value) {
@@ -159,7 +162,6 @@ const WebsiteSearch = props => {
 
     setSearchString(value);
   };
-
 
   const handleResetAutocomplete = () => {
     setSearchString('');

@@ -17,6 +17,9 @@ export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM'
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
 export const RESET_AUTO_COMPLETE_SEARCH = '@search/RESET_AUTO_COMPLETE_SEARCH';
 export const SEARCH_OBJECTS = createAsyncActionType('@search/SEARCH_OBJECTS');
+export const SEARCH_OBJECTS_LOADING_MORE = createAsyncActionType(
+  '@search/SEARCH_OBJECTS_LOADING_MORE',
+);
 export const CLEAR_SEARCH_OBJECTS_RESULT = '@search/CLEAR_SEARCH_OBJECTS_RESULT';
 export const RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS =
   '@search/RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS';
@@ -111,6 +114,23 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
   }).catch(error => console.log('Object search >', error.message));
 };
 
+export const searchObjectsAutoCompeteLoadingMore = (searchString, objType, forParent) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const locale = getLocale(state);
+
+  dispatch({
+    type: SEARCH_OBJECTS_LOADING_MORE.ACTION,
+    payload: ApiClient.searchObjects(searchString, objType, forParent, 15, locale).then(result => ({
+      result,
+      search: searchString,
+      locale,
+    })),
+  }).catch(error => console.log('Object search >', error.message));
+};
+
 export const SEARCH_OBJECTS_FOR_WEBSITE = createAsyncActionType(
   '@search/SEARCH_OBJECTS_FOR_WEBSITE',
 );
@@ -165,7 +185,7 @@ export const searchUsersAutoCompeteLoadingMore = (userName, limit, notGuest = fa
     dispatch({
       type: SEARCH_USERS_LOADING_MORE.ACTION,
       payload: {
-        promise: ApiClient.searchUsers(userName, user, limit, notGuest)
+        promise: ApiClient.searchUsers(userName, user, limit, notGuest),
       },
     });
   }

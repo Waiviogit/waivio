@@ -1,6 +1,7 @@
 import { compact, concat, get, isEmpty, map, sortBy, remove, findIndex } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
+import { SEARCH_OBJECTS_LOADING_MORE } from './searchActions';
 
 const initialState = {
   loading: true,
@@ -91,6 +92,15 @@ export default (state = initialState, action) => {
       return {
         ...state,
         searchObjectsResults: isEmpty(search) ? [] : result,
+        isStartSearchObject: false,
+      };
+    }
+
+    case searchActions.SEARCH_OBJECTS_LOADING_MORE.SUCCESS: {
+      const { result, search } = action.payload;
+      return {
+        ...state,
+        searchObjectsResults: [...state.searchObjectsResults, ...result],
         isStartSearchObject: false,
       };
     }
