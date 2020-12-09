@@ -83,7 +83,7 @@ class SubFeed extends React.Component {
       const fetched = getUserFeedFetchedFromState(user.name, feed);
       if (fetched) return;
       this.props.getUserFeedContent(user.name).then(res => {
-        if (res.value.message) {
+        if (res.value.message && history.action !== 'PUSH') {
           history.push('/trending');
         }
       });
