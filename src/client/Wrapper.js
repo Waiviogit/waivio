@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isEqual } from 'lodash';
 import url from 'url';
 import { connect, batch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
@@ -47,6 +48,12 @@ import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
+import {
+  getSessionData,
+  removeSessionData,
+  setSessionData,
+  widgetUrlConstructor,
+} from './rewards/rewardsHelper';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -153,15 +160,34 @@ class Wrapper extends React.PureComponent {
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
 
-  // eslint-disable-next-line camelcase
+  // eslint-disable-next-line camelcase,react/sort-comp
   UNSAFE_componentWillMount() {
     this.props.getCurrentAppSettings();
   }
 
+  state = {
+    prevtLocationPath: '',
+  };
+
   componentDidMount() {
     const { location } = this.props;
     const ref = new URLSearchParams(location.search).get('ref');
-    if (ref) sessionStorage.setItem('refUser', ref);
+    const isWidget = new URLSearchParams(location.search).get('display');
+    const userName = new URLSearchParams(location.search).get('userName');
+    if (ref) {
+      setSessionData('refUser', ref);
+    }
+    if (userName) {
+      setSessionData('userName', userName);
+    }
+    if (isWidget) {
+      /* Check on new tab from widget:
+        the page, when switching to a new tab, should not remain a widget
+      */
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ prevtLocationPath: location.pathname });
+      setSessionData('isWidget', isWidget);
+    }
 
     this.props.login().then(() => {
       batch(() => {
@@ -176,6 +202,21 @@ class Wrapper extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { locale } = this.props;
+    const { prevtLocationPath } = this.state;
+
+    const widgetLink = getSessionData('isWidget');
+    const userName = getSessionData('userName');
+    const ref = getSessionData('refUser');
+
+    // eslint-disable-next-line consistent-return
+    this.setState(() => {
+      if (widgetLink && !isEqual(prevtLocationPath, location.pathname)) {
+        const newUrl = widgetUrlConstructor(widgetLink, userName, ref, location.pathname);
+        if (prevtLocationPath && location.pathname !== '/') {
+          return history.pushState('', '', newUrl);
+        }
+      }
+    });
 
     if (locale !== nextProps.locale) {
       this.loadLocale(nextProps.locale);
@@ -183,16 +224,22 @@ class Wrapper extends React.PureComponent {
   }
 
   componentDidUpdate() {
+    const widgetLink = getSessionData('isWidget');
+    const userName = getSessionData('userName');
+
     if (this.props.nightmode) {
       document.body.classList.add('nightmode');
     } else {
       document.body.classList.remove('nightmode');
     }
-    const refName = sessionStorage.getItem('refUser');
+    const refName = getSessionData('refUser');
     if (this.props.isAuthenticated && refName) {
       const currentRefName = handleRefName(refName);
       this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
-      sessionStorage.removeItem('refUser');
+      removeSessionData('refUser');
+    }
+    if (this.props.isAuthenticated && widgetLink && userName) {
+      removeSessionData('userName', 'isWidget');
     }
   }
 
@@ -276,6 +323,7 @@ class Wrapper extends React.PureComponent {
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
+    const isWidget = new URLSearchParams(location.search).get('display');
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -287,19 +335,29 @@ class Wrapper extends React.PureComponent {
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-              <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
-              </Layout.Header>
+              {!isWidget && (
+                <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
+                  <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
+                </Layout.Header>
+              )}
               <div className="content">
-                <TopNavigation
-                  authenticated={isAuthenticated}
-                  userName={username}
-                  location={history.location}
-                />
+                {!isWidget && (
+                  <TopNavigation
+                    authenticated={isAuthenticated}
+                    userName={username}
+                    location={history.location}
+                  />
+                )}
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
-                <NotificationPopup />
-                <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
-                {isNewUser && <WelcomeModal location={history.location.pathname} />}
+                {!isWidget && (
+                  <React.Fragment>
+                    <NotificationPopup />
+                    <BBackTop
+                      className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
+                    />
+                    {isNewUser && <WelcomeModal location={history.location.pathname} />}
+                  </React.Fragment>
+                )}
               </div>
             </Layout>
           </AppSharedContext.Provider>

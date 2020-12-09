@@ -1,11 +1,12 @@
 import { isEmpty } from 'lodash';
 import React from 'react';
+import { withRouter, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
 import classNames from 'classnames';
 import { getObjectName } from '../../helpers/wObjectHelper';
-import { getBreadCrumbText } from '../rewardsHelper';
+import { getBreadCrumbText, getSessionData, widgetUrlConstructor } from '../rewardsHelper';
 import '../Rewards.less';
 
 const rewardText = {
@@ -17,11 +18,19 @@ const rewardText = {
   messages: { id: 'messages', defaultMessage: 'Messages' },
 };
 
-const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
+const RewardBreadcrumb = ({ intl, filterKey, reqObject, match }) => {
   const isCorrectFilter = !!rewardText[filterKey];
   const objName = getObjectName(reqObject);
+  const isWidget = new URLSearchParams(location.search).get('display');
+  const userName = getSessionData('userName');
+  const ref = getSessionData('refUser');
+  const widgetUrl = widgetUrlConstructor(isWidget, userName, ref);
+
+  let url = `/rewards/${filterKey}`;
+  if (isWidget) url += `/${widgetUrl}`;
+
   const breadCrumbText = `${
-    isCorrectFilter ? getBreadCrumbText(intl, location, filterKey, rewardText, match) : ''
+    isCorrectFilter ? getBreadCrumbText(intl, location.pathname, filterKey, rewardText, match) : ''
   } ${
     filterKey !== 'history'
       ? intl.formatMessage({
@@ -36,7 +45,9 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
       <Breadcrumb separator={'>'}>
         {objName ? (
           <React.Fragment>
-            <Breadcrumb.Item href={`/rewards/${filterKey}`}>{breadCrumbText}</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link to={url}>{breadCrumbText}</Link>
+            </Breadcrumb.Item>
             <Breadcrumb.Item>{objName}</Breadcrumb.Item>
           </React.Fragment>
         ) : (
@@ -51,15 +62,13 @@ RewardBreadcrumb.propTypes = {
   intl: PropTypes.shape().isRequired,
   reqObject: PropTypes.shape(),
   filterKey: PropTypes.string,
-  location: PropTypes.string,
   match: PropTypes.shape(),
 };
 
 RewardBreadcrumb.defaultProps = {
   filterKey: '',
   reqObject: {},
-  location: '',
   match: {},
 };
 
-export default injectIntl(RewardBreadcrumb);
+export default withRouter(injectIntl(RewardBreadcrumb));

@@ -872,3 +872,104 @@ export const handleRequirementFilters = requirementFilters => {
   }
   return filteredObj;
 };
+
+export const openNewTab = url => {
+  const newWindow = window.open();
+  newWindow.opener = null;
+  newWindow.location = url;
+  newWindow.target = '_blank';
+};
+
+export const getProposOrWobjId = item => get(item, ['_id'], '');
+
+export const setSessionData = (key, value) => sessionStorage.setItem(key, value);
+
+export const getSessionData = key => sessionStorage.getItem(key);
+
+export const removeSessionData = (item1, item2) => {
+  if (item1 && item2) {
+    sessionStorage.removeItem(`${item1}`);
+    sessionStorage.removeItem(`${item2}`);
+  } else {
+    sessionStorage.removeItem(`${item1}`);
+  }
+};
+
+export const widgetUrlConstructor = (widgetLink, userName, ref, pathname) => {
+  let currUrl = '';
+
+  if (pathname) {
+    currUrl += pathname;
+  }
+
+  if (widgetLink) {
+    currUrl += `?display=${widgetLink}`;
+  }
+  if (userName) {
+    currUrl += `&userName=${userName}`;
+  }
+  if (ref) {
+    currUrl += `&ref=${ref}`;
+  }
+  return currUrl;
+};
+
+export const clearAllSessionProposition = () => {
+  removeSessionData('currentProposId', 'currentWobjId');
+  removeSessionData('currentProposIdReserved', 'currentWobjIdReserved');
+};
+
+export const filterSponsorsName = location => {
+  const searchParams = new URLSearchParams(location.search);
+  const arr = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const pair of searchParams.entries()) {
+    const key = pair[0];
+    if (key.match(/sponsorName/)) {
+      arr.push(pair);
+    }
+  }
+  return arr;
+};
+
+export const filterSelectedRewardsType = location =>
+  new URLSearchParams(location.search).getAll('rewardsType');
+
+export const isHasSearchKey = key => new URLSearchParams(location.search).has(key);
+
+export const handleFilters = (setFilterValue, filterSponsorNames, value) =>
+  map(filterSponsorNames, sponsorName => setFilterValue(sponsorName[1], value, true));
+
+export const handleLinkSlash = url => url.replace(/\/{2,}/g, '/');
+
+export const handleAddSearchLink = filterValue => {
+  const searchParams = new URLSearchParams(location.search);
+  const date = new Date();
+  const uniq = date.getMilliseconds();
+  searchParams.append(`sponsorName${uniq}`, filterValue);
+  history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+};
+
+export const handleAddMapCoordinates = coordinates => {
+  const searchParams = new URLSearchParams(location.search);
+  if (!searchParams.get('mapX') && !searchParams.get('mapY')) {
+    searchParams.append('mapX', coordinates[0]);
+    searchParams.append('mapY', coordinates[1]);
+  } else {
+    searchParams.delete('mapX');
+    searchParams.delete('mapY');
+    searchParams.append('mapX', coordinates[0]);
+    searchParams.append('mapY', coordinates[1]);
+  }
+  history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+};
+
+export const handleRemoveSearchLink = filterValue => {
+  const searchParams = new URLSearchParams(location.search);
+  searchParams.forEach((value, key) => {
+    if (value === filterValue) {
+      searchParams.delete(key);
+      history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+    }
+  });
+};

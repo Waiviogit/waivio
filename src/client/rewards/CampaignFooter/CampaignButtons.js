@@ -10,7 +10,15 @@ import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
-import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
+import {
+  popoverDataHistory,
+  buttonsTitle,
+  getPopoverDataMessages,
+  openNewTab,
+  getProposOrWobjId,
+  removeSessionData,
+  setSessionData,
+} from '../rewardsHelper';
 import {
   GUIDE_HISTORY,
   MESSAGES,
@@ -29,6 +37,7 @@ import {
   setDataForSingleReport,
   getBlacklist,
   getFraudSuspicion,
+  setToggleFlag,
 } from '../rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
@@ -44,6 +53,7 @@ import '../../components/StoryFooter/Buttons.less';
   changeReward,
   reinstateReward,
   getFraudSuspicion,
+  setToggleFlag,
 })
 export default class CampaignButtons extends React.Component {
   static propTypes = {
@@ -75,8 +85,10 @@ export default class CampaignButtons extends React.Component {
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
     sortFraudDetection: PropTypes.string,
     getFraudSuspicion: PropTypes.func,
+    setToggleFlag: PropTypes.func,
     userFollowed: PropTypes.bool,
     objectFollowed: PropTypes.bool,
+    proposedWobj: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -96,6 +108,7 @@ export default class CampaignButtons extends React.Component {
     getMessageHistory: () => {},
     onActionInitiated: () => {},
     getFraudSuspicion: () => {},
+    setToggleFlag: () => {},
     blacklistUsers: [],
     sortFraudDetection: 'reservation',
     userFollowed: false,
@@ -132,6 +145,24 @@ export default class CampaignButtons extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { proposition, proposedWobj } = this.props;
+    const sessionCurrentProposjId = sessionStorage.getItem('currentProposIdReserved');
+    const sessionCurrentWobjjId = sessionStorage.getItem('currentWobjIdReserved');
+
+    const currentProposIdReserved = getProposOrWobjId(proposition);
+    const currentWobjIdReserved = getProposOrWobjId(proposedWobj);
+
+    if (sessionCurrentProposjId && sessionCurrentWobjjId) {
+      if (
+        sessionCurrentProposjId === currentProposIdReserved &&
+        sessionCurrentWobjjId === currentWobjIdReserved
+      ) {
+        removeSessionData('currentProposIdReserved', 'currentWobjIdReserved');
+        this.props.setToggleFlag();
+        this.props.toggleModalDetails({ value: true });
+      }
+    }
+
     if (nextProps.postState.isReblogging !== this.props.postState.isReblogging) {
       this.setState({
         shareModalLoading: nextProps.postState.isReblogging,
@@ -363,7 +394,19 @@ export default class CampaignButtons extends React.Component {
   };
 
   openModalDetails = () => {
-    this.props.toggleModalDetails({ value: true });
+    const { proposition, proposedWobj } = this.props;
+    const isWidget = new URLSearchParams(location.search).get('display');
+    const currentProposIdReserved = getProposOrWobjId(proposition);
+    const currentWobjIdReserved = getProposOrWobjId(proposedWobj);
+
+    setSessionData('currentProposIdReserved', currentProposIdReserved);
+    setSessionData('currentWobjIdReserved', currentWobjIdReserved);
+
+    if (isWidget) {
+      openNewTab(`${location.origin}${location.pathname}?toReserved=reserved`);
+    } else {
+      this.props.toggleModalDetails({ value: true });
+    }
   };
 
   getPopoverMenu = () => {
