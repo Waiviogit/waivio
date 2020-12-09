@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { get, isArray, isEmpty } from 'lodash';
@@ -18,13 +19,14 @@ export const WebsiteObjectFilters = ({
   getWebTags,
   categories,
   saveCategoryForSite,
+  location,
 }) => {
   const [currentTags, setCurrentTags] = useState(null);
   const host = match.params.site;
 
   useEffect(() => {
     getWebTags(host);
-  }, []);
+  }, [location.pathname]);
 
   if (isEmpty(categories)) return <Loading />;
 
@@ -98,6 +100,7 @@ WebsiteObjectFilters.propTypes = {
   getWebTags: PropTypes.func.isRequired,
   saveCategoryForSite: PropTypes.func.isRequired,
   categories: PropTypes.shape({}).isRequired,
+  location: PropTypes.shape().isRequired,
 };
 
 export default connect(
@@ -109,4 +112,4 @@ export default connect(
     getWebTags: getWebsiteTags,
     saveCategoryForSite: saveTagsCategoryForSite,
   },
-)(injectIntl(WebsiteObjectFilters));
+)(withRouter(injectIntl(WebsiteObjectFilters)));

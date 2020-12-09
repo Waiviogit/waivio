@@ -293,6 +293,7 @@ export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.a
 export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
+export const getRelatedPhotos = state => fromGallery.getRelatedPhotos(state.gallery);
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
 export const getObjectsMap = state => fromMap.getObjectsMap(state.map);

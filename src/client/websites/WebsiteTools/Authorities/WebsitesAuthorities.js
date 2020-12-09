@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, message } from 'antd';
 import { connect } from 'react-redux';
@@ -22,6 +23,7 @@ export const WebsitesAuthorities = ({
   addWebsiteAuthorities,
   deleteWebsiteAuthorities,
   isLoading,
+  location,
 }) => {
   const [selectUser, setSelectUser] = useState('');
   const [searchString, setSearchString] = useState('');
@@ -40,7 +42,7 @@ export const WebsitesAuthorities = ({
 
   useEffect(() => {
     getWebAuthority(host);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <div className="WebsitesAuthorities">
@@ -65,7 +67,7 @@ export const WebsitesAuthorities = ({
         {intl.formatMessage({
           id: 'author_rules',
           defaultMessage:
-            'This mechanism can be used to add controlled lists of objects to the website, while ensuring their accuracy..',
+            'This mechanism can be used to add controlled lists of objects to the website, while ensuring their accuracy.',
         })}
       </p>
       <h3>
@@ -147,6 +149,7 @@ WebsitesAuthorities.propTypes = {
     }),
   }).isRequired,
   isLoading: PropTypes.bool.isRequired,
+  location: PropTypes.shape().isRequired,
 };
 
 WebsitesAuthorities.defaultProps = {
@@ -163,4 +166,4 @@ export default connect(
     addWebsiteAuthorities: addWebAuthorities,
     deleteWebsiteAuthorities: deleteWebAuthorities,
   },
-)(injectIntl(WebsitesAuthorities));
+)(withRouter(injectIntl(WebsitesAuthorities)));

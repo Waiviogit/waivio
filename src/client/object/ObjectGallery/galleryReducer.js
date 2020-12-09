@@ -4,6 +4,7 @@ const defaultState = {
   albumsLoading: true,
   error: null,
   albums: [],
+  relatedAlbum: {},
 };
 
 export default (state = defaultState, action) => {
@@ -26,6 +27,41 @@ export default (state = defaultState, action) => {
         error: null,
         albumsLoading: false,
       };
+    case galleryActions.GET_RELATED_PHOTOS.START:
+      return {
+        ...state,
+        error: null,
+      };
+    case galleryActions.GET_RELATED_PHOTOS.ERROR:
+      return {
+        ...state,
+        error: action.message,
+        albumsLoading: false,
+      };
+    case galleryActions.GET_RELATED_PHOTOS.SUCCESS: {
+      return {
+        ...state,
+        relatedAlbum: action.payload,
+      };
+    }
+    case galleryActions.GET_MORE_RELATED_PHOTOS.START: {
+      return {
+        ...state,
+        isFetching: true,
+        isLoaded: false,
+        failed: false,
+      };
+    }
+    case galleryActions.GET_MORE_RELATED_PHOTOS.SUCCESS: {
+      return {
+        ...state,
+        relatedAlbum: {
+          ...state.relatedAlbum,
+          hasMore: Boolean(action.payload.items.length === action.meta.limit),
+          items: [...state.relatedAlbum.items, ...action.payload.items],
+        },
+      };
+    }
     case galleryActions.ADD_ALBUM: {
       return {
         ...state,
@@ -46,6 +82,13 @@ export default (state = defaultState, action) => {
     case galleryActions.RESET_GALLERY: {
       return defaultState;
     }
+
+    case galleryActions.CLEAR_RELATED_PHOTO: {
+      return {
+        ...state,
+        relatedAlbum: {},
+      };
+    }
     default:
       return state;
   }
@@ -53,3 +96,4 @@ export default (state = defaultState, action) => {
 
 export const getObjectAlbums = state => state.albums;
 export const getIsObjectAlbumsLoading = state => state.albumsLoading;
+export const getRelatedPhotos = state => state.relatedAlbum;

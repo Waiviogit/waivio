@@ -2,13 +2,16 @@ import _ from 'lodash';
 import { createAction } from 'redux-actions';
 
 import { createAsyncActionType } from '../../helpers/stateHelpers';
-import { getWobjectGallery } from '../../../waivioApi/ApiClient';
-import { getLocale } from '../../reducers';
+import { getWobjectGallery, getRelatedPhotos } from '../../../waivioApi/ApiClient';
+import { getLocale, getRelatedPhotos as relatedPhotos } from '../../reducers';
 
 export const GET_ALBUMS = createAsyncActionType('@gallery/GET_ALBUMS');
+export const GET_RELATED_PHOTOS = createAsyncActionType('@gallery/GET_RELATED_PHOTOS');
+export const GET_MORE_RELATED_PHOTOS = createAsyncActionType('@gallery/GET_MORE_RELATED_PHOTOS');
 export const ADD_ALBUM = '@gallery/ADD_ALBUM';
 export const ADD_IMAGE = '@gallery/ADD_IMAGE';
 export const RESET_GALLERY = '@gallery/RESET_GALLERY';
+export const CLEAR_RELATED_PHOTO = '@gallery/CLEAR_RELATED_PHOTO';
 
 export const getAlbums = authorPermlink => (dispatch, getState) => {
   const locale = getLocale(getState());
@@ -26,6 +29,35 @@ export const getAlbums = authorPermlink => (dispatch, getState) => {
     },
   }).catch(() => {});
 };
+
+export const getRelatedAlbum = (authorPermlink, limit = 30, skip = 0) => dispatch =>
+  dispatch({
+    type: GET_RELATED_PHOTOS.ACTION,
+    payload: {
+      promise: getRelatedPhotos(authorPermlink, limit, skip),
+    },
+  });
+
+export const getMoreRelatedAlbum = (authorPermlink, limit = 30) => (dispatch, getState) => {
+  const state = getState();
+  const relatedPhotoContent = relatedPhotos(state);
+  const skip = relatedPhotoContent.items.length;
+  return dispatch({
+    type: GET_MORE_RELATED_PHOTOS.ACTION,
+    payload: {
+      promise: getRelatedPhotos(authorPermlink, limit, skip),
+    },
+    meta: {
+      limit,
+    },
+  });
+};
+
+export const clearRelatedPhoto = () => dispatch =>
+  dispatch({
+    type: CLEAR_RELATED_PHOTO,
+    paeload: {},
+  });
 
 export const addAlbumToStore = createAction(ADD_ALBUM);
 export const addImageToAlbumStore = createAction(ADD_IMAGE);
