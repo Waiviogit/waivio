@@ -18,7 +18,7 @@ class MapWrap extends React.Component {
     userLocation: PropTypes.shape().isRequired,
     customControl: PropTypes.node,
     onCustomControlClick: PropTypes.func,
-    setMapArea: PropTypes.func,
+    setMapArea: PropTypes.func.isRequired,
     match: PropTypes.shape().isRequired,
     primaryObjectCoordinates: PropTypes.arrayOf(PropTypes.number),
     zoomMap: PropTypes.number,
