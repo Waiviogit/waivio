@@ -8,7 +8,7 @@ import steemEmbed from './embedMedia';
 import xmldom from 'xmldom';
 import linksRe from './steemitLinks';
 import { validateAccountName } from './ChainValidation';
-import { getProxyImageURL } from '../helpers/image';
+import { getImagePathPost } from '../helpers/image';
 
 const noop = () => {};
 const DOMParser = new xmldom.DOMParser({
@@ -173,7 +173,7 @@ function proxifyImages(doc) {
   [...doc.getElementsByTagName('img')].forEach(node => {
     const url = node.getAttribute('src');
     if (!linksRe.local.test(url)) {
-      node.setAttribute('src', getProxyImageURL(url));
+      node.setAttribute('src', getImagePathPost(url));
     }
   });
 }

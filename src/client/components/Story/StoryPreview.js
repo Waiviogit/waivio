@@ -77,7 +77,6 @@ const StoryPreview = ({ post, isUpdates }) => {
   }
 
   const videoPreviewResult = post.body.match(videoPreviewRegex);
-
   if (!embeds[0] && videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
 
