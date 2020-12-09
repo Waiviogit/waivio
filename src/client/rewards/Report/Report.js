@@ -8,7 +8,7 @@ import ReportTableRewards from './ReportTable/ReportTableRewards/ReportTableRewa
 import ReportTableFees from './ReportTable/ReportTableFees/ReportTableFees';
 import './Report.less';
 
-const Report = ({ intl, toggleModal, isModalReportOpen }) => (
+const Report = ({ intl, closeModalReport, isModalReportOpen }) => (
   <Modal
     title={
       <div className="Report__modal-title">
@@ -20,7 +20,7 @@ const Report = ({ intl, toggleModal, isModalReportOpen }) => (
     }
     zIndex={10000}
     closable
-    onCancel={toggleModal}
+    onCancel={closeModalReport}
     maskClosable={false}
     visible={isModalReportOpen}
     wrapClassName="Report"
@@ -30,13 +30,13 @@ const Report = ({ intl, toggleModal, isModalReportOpen }) => (
     <ReportHeader />
     <ReportTableRewards />
     <ReportTableFees />
-    <ReportFooter toggleModal={toggleModal} />
+    <ReportFooter toggleModal={closeModalReport} />
   </Modal>
 );
 
 Report.propTypes = {
   intl: PropTypes.shape().isRequired,
-  toggleModal: PropTypes.func.isRequired,
+  closeModalReport: PropTypes.func.isRequired,
   isModalReportOpen: PropTypes.bool.isRequired,
 };
 
