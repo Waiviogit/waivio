@@ -12,6 +12,7 @@ const MainPage = ({ currPage, route }) => {
       return <Page route={route} />;
   }
 };
+
 MainPage.propTypes = {
   currPage: PropTypes.string.isRequired,
   route: PropTypes.shape({}).isRequired,
