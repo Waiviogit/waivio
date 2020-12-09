@@ -466,15 +466,20 @@ export default class CampaignButtons extends React.Component {
         .catch(() => console.log(e));
     };
 
-    const closeModalReport = () => this.setState({ isModalReportOpen: false });
+    const closeModalReport = () =>
+      this.setState({ isModalReportOpen: !this.state.isModalReportOpen });
     const history = ['history', 'guideHistory', 'messages'];
     const isHistory = some(history, item => includes(match.path, item));
+    const isVisiblePopover =
+      this.state.isModalReportOpen && !this.state.visible
+        ? this.state.isModalReportOpen
+        : this.state.visible;
 
     return (
       <Popover
         placement="bottomRight"
         trigger="click"
-        visible={this.state.visible}
+        visible={isVisiblePopover}
         onVisibleChange={this.handleVisibleChange}
         content={
           <PopoverMenu hide={this.hide} onSelect={handlePostPopoverMenuClick} bold={false}>
@@ -521,7 +526,7 @@ export default class CampaignButtons extends React.Component {
                           </div>
                           <Report
                             isModalReportOpen={this.state.isModalReportOpen}
-                            toggleModal={closeModalReport}
+                            closeModalReport={closeModalReport}
                           />
                         </PopoverMenuItem>
                       );
