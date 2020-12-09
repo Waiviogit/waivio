@@ -65,16 +65,20 @@ const Proposition = ({
   const currentProposId = get(proposition, ['_id'], '');
   const currentWobjId = get(wobj, ['_id'], '');
 
-  const isWidget = new URLSearchParams(location.search).get('display');
-  const isReservedLink = new URLSearchParams(location.search).get('toReserved');
+  const searchParams = new URLSearchParams(location.search);
+
+  const isWidget = searchParams.get('display');
+  const isReservedLink = searchParams.get('toReserved');
   const sessionCurrentProposjId = sessionStorage.getItem('currentProposId');
   const sessionCurrentWobjjId = sessionStorage.getItem('currentWobjId');
+
+  const handleCurrentEligibleParam = obj => Object.values(obj).every(item => item === true);
 
   const requirementFilters = get(proposition, ['requirement_filters'], {});
   const filteredRequirementFilters = handleRequirementFilters(requirementFilters);
   const isEligible = isAuth
-    ? Object.values(requirementFilters).every(item => item === true)
-    : Object.values(filteredRequirementFilters).every(item => item === true);
+    ? handleCurrentEligibleParam(requirementFilters)
+    : handleCurrentEligibleParam(filteredRequirementFilters);
   const proposedWobj = wobj;
   const requiredObject = get(proposition, ['required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);

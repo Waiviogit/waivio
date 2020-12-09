@@ -20,6 +20,7 @@ import {
   isEqual,
   findIndex,
   sortBy,
+  every,
 } from 'lodash';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import {
@@ -217,10 +218,10 @@ class Rewards extends React.Component {
     if (username && !url) this.getPropositionsByStatus({ username, sort, area });
     const linkForReserveEligible = `/rewards/active/${match.params.campaignParent}/`;
     const fromWidgetUrl = isEqual(linkForReserveEligible, match.url);
+    const keys = ['active', 'reserved'];
     if (
       (!authenticated && match.params.filterKey === 'all') ||
-      match.params.filterKey === 'active' ||
-      match.params.filterKey === 'reserved' ||
+      every(keys, key => match.params.filterKey !== key) ||
       fromWidgetUrl
     )
       this.getPropositions({ username, match, activeFilters, sort, area, authenticated });
@@ -415,8 +416,9 @@ class Rewards extends React.Component {
 
   getPropositionsByStatus = ({ username, sort, area }) => {
     const { pendingUpdate, match } = this.props;
-    const isWidget = new URLSearchParams(location.search).get('display');
-    const isReserved = new URLSearchParams(location.search).get('toReserved');
+    const searchParams = new URLSearchParams(location.search);
+    const isWidget = searchParams.get('display');
+    const isReserved = searchParams.get('toReserved');
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
       // eslint-disable-next-line camelcase
@@ -437,11 +439,12 @@ class Rewards extends React.Component {
 
       if (!isWidget && !isReserved) {
         const filterKey = match.params.filterKey;
+        const arrFilterKey = [PAYABLES, RECEIVABLES];
+
         if (
           !pendingUpdate &&
           filterKey &&
-          filterKey !== PAYABLES &&
-          filterKey !== RECEIVABLES &&
+          every(arrFilterKey, key => filterKey !== key) &&
           !match.params.campaignParent
         ) {
           if (match.params.filterKey !== rewardsTab[tabType]) {
