@@ -39,8 +39,11 @@ export const WebsitesConfigurations = ({
   const [colors, setColors] = useState('');
   const [aboutObj, setAbtObject] = useState(null);
   const [image, setImage] = useState('');
+  const [settingMap, setSettingMap] = useState({});
   const mobileLogo = getFieldValue('mobileLogo') || get(config, 'mobileLogo');
   const desktopLogo = getFieldValue('desktopLogo') || get(config, 'desktopLogo');
+
+  const { center, zoom, bounds } = settingMap;
 
   const logoState = {
     mobileLogo,
@@ -94,8 +97,8 @@ export const WebsitesConfigurations = ({
   const getSelectedColor = type => `${get(colors, [type]) || get(config, ['colors', type], '')}`;
 
   const setMapBounds = state => {
+    // eslint-disable-next-line no-shadow
     const { center, zoom, bounds } = state;
-
     form.setFieldsValue({
       [showMap]: {
         topPoint: bounds.ne,
@@ -105,6 +108,95 @@ export const WebsitesConfigurations = ({
       },
     });
   };
+
+  // eslint-disable-next-line consistent-return
+  const incrementZoom = () => {
+    if (zoom >= 18) return null;
+    form.setFieldsValue({
+      [showMap]: {
+        topPoint: bounds.ne,
+        bottomPoint: bounds.sw,
+        center,
+        zoom: zoom + 1,
+      },
+    });
+  };
+
+  // eslint-disable-next-line consistent-return
+  const decrementZoom = () => {
+    if (zoom <= 1) return null;
+    form.setFieldsValue({
+      [showMap]: {
+        topPoint: bounds.ne,
+        bottomPoint: bounds.sw,
+        center,
+        zoom: zoom - 1,
+      },
+    });
+  };
+
+  const showUserPosition = position => {
+    const updateCenter = [position.coords.latitude, position.coords.longitude];
+    form.setFieldsValue({
+      [showMap]: {
+        topPoint: bounds.ne,
+        bottomPoint: bounds.sw,
+        center: updateCenter,
+        zoom,
+      },
+    });
+  };
+
+  const setCoordinates = () => {
+    if (navigator && navigator.geolocation) {
+      const positionGPS = navigator.geolocation.getCurrentPosition(showUserPosition);
+      if (positionGPS) {
+        form.setFieldsValue({
+          [showMap]: {
+            topPoint: bounds.ne,
+            bottomPoint: bounds.sw,
+            center: positionGPS,
+            zoom,
+          },
+        });
+      }
+    }
+  };
+
+  const setPosition = () => {
+    setCoordinates();
+  };
+
+  const onBoundsChanged = state => {
+    setSettingMap(state);
+    setMapBounds(state);
+  };
+
+  const zoomButtonsLayout = () => (
+    <div className="MapConfigurationControl">
+      <div className="MapConfigurationControl__zoom">
+        <div
+          role="presentation"
+          className="MapConfigurationControl__zoom__button"
+          onClick={incrementZoom}
+        >
+          +
+        </div>
+        <div
+          role="presentation"
+          className="MapConfigurationControl__zoom__button"
+          onClick={decrementZoom}
+        >
+          -
+        </div>
+      </div>
+      <div className="MapConfigurationControl__gps">
+        <div role="presentation" className="MapConfigurationZoom__locateGPS" onClick={setPosition}>
+          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+        </div>
+      </div>
+    </div>
+  );
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -361,13 +453,18 @@ export const WebsitesConfigurations = ({
             visible={showMap}
           >
             {showMap && (
-              <Map
-                center={get(mapState, [showMap, 'center'], [50.879, 4.6997])}
-                zoom={get(mapState, [showMap, 'zoom'], 6)}
-                height={400}
-                provider={mapProvider}
-                onBoundsChanged={state => setMapBounds(state)}
-              />
+              <div className="MapWrap">
+                {zoomButtonsLayout()}
+                <Map
+                  center={get(mapState, [showMap, 'center'], [50.879, 4.6997])}
+                  zoom={get(mapState, [showMap, 'zoom'], 6)}
+                  height={400}
+                  provider={mapProvider}
+                  onBoundsChanged={state => {
+                    onBoundsChanged(state);
+                  }}
+                />
+              </div>
             )}
           </Modal>
           <Modal
