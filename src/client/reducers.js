@@ -113,6 +113,7 @@ export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
 export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);
 export const getIsMobile = state => fromApp.getIsMobile(state.app);
 export const getWeightValue = (state, weight) => fromApp.getWeightValue(state.app, weight);
+export const getMainPage = state => fromApp.getMainPage(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 
@@ -247,6 +248,7 @@ export const getIsStartSearchAutoComplete = state =>
 export const getIsStartSearchUser = state => fromSearch.getIsStartSearchUser(state.search);
 export const getIsStartSearchObject = state => fromSearch.getIsStartSearchObject(state.search);
 export const getIsClearSearchObjects = state => fromSearch.getIsClearSearchObjects(state.search);
+export const getHasMoreObjects = state => fromSearch.getHasMoreObjects(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
@@ -320,6 +322,8 @@ export const getCampaignNames = state => fromRewards.getCampaignNames(state.rewa
 export const getHistoryCampaigns = state => fromRewards.getHistoryCampaigns(state.rewards);
 export const getHistorySponsors = state => fromRewards.getHistorySponsors(state.rewards);
 export const getHasMoreHistory = state => fromRewards.getHasMoreHistory(state.rewards);
+export const getIsOpenWriteReviewModal = state =>
+  fromRewards.getIsOpenWriteReviewModal(state.rewards);
 
 export const getCampaignServerPercent = state =>
   fromReferral.getCampaignServerPercent(state.referral);

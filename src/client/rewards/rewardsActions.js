@@ -149,3 +149,15 @@ export const getMoreRewardsHistory = requestData => ({
   type: GET_MORE_REWARDS_HISTORY.ACTION,
   payload: ApiClient.getHistory(requestData),
 });
+
+export const SET_TOGGLE_FLAG = '@rewards/SET_TOGGLE_FLAG';
+
+export const setToggleFlag = () => ({
+  type: SET_TOGGLE_FLAG,
+});
+
+export const REMOVE_TOGGLE_FLAG = '@rewards/REMOVE_TOGGLE_FLAG';
+
+export const removeToggleFlag = () => ({
+  type: REMOVE_TOGGLE_FLAG,
+});

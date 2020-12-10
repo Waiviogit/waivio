@@ -11,12 +11,12 @@ const menuSections = {
   HIVE: 'Hive',
   PERSONAL: 'Personal',
 };
-const getMenuConfig = ({ isAuthenticated }) => ({
+const getMenuConfig = () => ({
   [menuSections.HIVE]: {
     name: menuSections.HIVE,
     intlId: 'hive',
     isCollapsible: true,
-    isCollapsed: isAuthenticated,
+    isCollapsed: false,
     items: [
       {
         name: 'Trending',

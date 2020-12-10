@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { get, has } from 'lodash';
+import { get, has, isEmpty } from 'lodash';
 import steemEmbed from '../../vendor/embedMedia';
 import PostFeedEmbed from './PostFeedEmbed';
 import BodyShort from './BodyShort';
@@ -28,7 +28,13 @@ const StoryPreview = ({ post, isUpdates }) => {
   const field = get(jsonMetadata, ['wobj', 'field'], {});
   let imagePath = '';
 
-  if (jsonMetadata && jsonMetadata.image && jsonMetadata.image[0]) {
+  if (
+    !isEmpty(jsonMetadata) &&
+    !isEmpty(jsonMetadata.image) &&
+    jsonMetadata.image[0].includes('waivio.nyc3.digitaloceanspaces')
+  ) {
+    imagePath = jsonMetadata.image[0];
+  } else if (jsonMetadata && jsonMetadata.image && jsonMetadata.image[0]) {
     imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
   } else if (
     [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(field.name)
@@ -46,8 +52,13 @@ const StoryPreview = ({ post, isUpdates }) => {
     (post.name === objectFields.avatar ||
       post.name === objectFields.galleryItem ||
       post.name === objectFields.background)
-  )
-    imagePath = getProxyImageURL(post.body, 'preview');
+  ) {
+    if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
+      imagePath = post.body;
+    } else {
+      imagePath = getProxyImageURL(post.body, 'preview');
+    }
+  }
 
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
@@ -66,7 +77,6 @@ const StoryPreview = ({ post, isUpdates }) => {
   }
 
   const videoPreviewResult = post.body.match(videoPreviewRegex);
-
   if (!embeds[0] && videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
 
@@ -93,7 +103,6 @@ const StoryPreview = ({ post, isUpdates }) => {
       embeds[0].thumbnail = getProxyImageURL(embeds[0].thumbnail, 'preview');
     }
   }
-
   const hasVideo = embeds && embeds[0] && true;
   const preview = {
     text: () => (

@@ -23,9 +23,9 @@ const Wobj = ({
   isEditMode,
   toggleViewEditMode,
   route,
-  appendAlbum,
   handleFollowClick,
   objectName,
+  appendAlbum,
 }) => {
   const waivioHost = global.postOrigin || 'https://www.waivio.com';
   const image = wobject.avatar || DEFAULTS.AVATAR;
@@ -117,6 +117,7 @@ const Wobj = ({
                 userName,
                 match,
                 toggleViewEditMode,
+                appendAlbum,
               })}
             </div>
           </div>
@@ -135,16 +136,16 @@ Wobj.propTypes = {
   history: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
   toggleViewEditMode: PropTypes.func,
-  appendAlbum: PropTypes.func,
   handleFollowClick: PropTypes.func,
   objectName: PropTypes.string.isRequired,
+  appendAlbum: PropTypes.func,
 };
 
 Wobj.defaultProps = {
   wobject: {},
   toggleViewEditMode: () => {},
-  appendAlbum: () => {},
   handleFollowClick: () => {},
+  appendAlbum: () => {},
 };
 
 export default Wobj;

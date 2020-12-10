@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { isEqual } from 'lodash';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -9,6 +10,7 @@ import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import ModalSignIn from '../../components/Navigation/ModlaSignIn/ModalSignIn';
+import { clearAllSessionProposition, getSessionData } from '../rewardsHelper';
 
 import './Details.less';
 
@@ -25,8 +27,14 @@ const Details = ({
   requiredObjectName,
   isEligible,
   isAuth,
+  history,
+  authorizedUserName,
+  removeToggleFlag,
 }) => {
   const [isShowSignInModal, setIsShowSignInModal] = useState(false);
+  const isWidget = new URLSearchParams(location.search).get('display');
+  const isReserved = new URLSearchParams(location.search).get('toReserved');
+  const userName = getSessionData('userName');
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
@@ -63,13 +71,44 @@ const Details = ({
   const proposedWobjNewName = getProposedWobjName();
   const onClick = isAuth ? reserveOnClickHandler : () => setIsShowSignInModal(true);
   const disabled = (isAuth && !isEligible) || isInActive || isExpired;
+
+  // eslint-disable-next-line no-underscore-dangle
+  const writeReviewUrl = `/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`;
+  const toCurrentWobjLink = `/object/${proposedWobj.author_permlink}`;
+
+  const handleWriteReviewBtn = () => {
+    if (isAuth) {
+      if (userName) {
+        if (isEqual(userName, authorizedUserName)) {
+          history.push(writeReviewUrl);
+        } else {
+          history.push(toCurrentWobjLink);
+        }
+        clearAllSessionProposition();
+      } else {
+        history.push(writeReviewUrl);
+      }
+    } else {
+      setIsShowSignInModal(!isShowSignInModal);
+    }
+  };
+
+  const handleCancelModalBtn = value => {
+    clearAllSessionProposition();
+    if (!isWidget && isReserved) {
+      removeToggleFlag();
+      history.push(`/object/${proposedWobj.author_permlink}`);
+    }
+    return toggleModal(value);
+  };
+
   return (
     <Modal
       title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
       closable
-      onCancel={toggleModal}
+      onCancel={handleCancelModalBtn}
       maskClosable={false}
-      visible={isModalDetailsOpen}
+      visible={!isWidget && isModalDetailsOpen}
       wrapClassName="Details"
       footer={null}
       width={768}
@@ -96,11 +135,13 @@ const Details = ({
           isButton={false}
           showModal
           setIsShowSignInModal={setIsShowSignInModal}
+          toCurrentWobjLink={toCurrentWobjLink}
+          history={history}
         />
       )}
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
-          <Button onClick={toggleModal}>{messageData.cancel}</Button>
+          <Button onClick={handleCancelModalBtn}>{messageData.cancel}</Button>
           {/* Button "Reserve" inside the reward card */}
           {!isReviewDetails ? (
             <Button
@@ -112,17 +153,12 @@ const Details = ({
               {!isCamaignReserved ? messageData.reserve : messageData.reserved}
             </Button>
           ) : (
-            <Link
-              // eslint-disable-next-line no-underscore-dangle
-              to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
-            >
-              <Button type="primary">
-                {intl.formatMessage({
-                  id: 'campaign_buttons_write_review',
-                  defaultMessage: `Write review`,
-                })}
-              </Button>
-            </Link>
+            <Button type={handleTypeReserveButton()} onClick={handleWriteReviewBtn}>
+              {intl.formatMessage({
+                id: 'campaign_buttons_write_review',
+                defaultMessage: `Write review`,
+              })}
+            </Button>
           )}
           {objectDetails.count_reservation_days &&
             `${messageData.forDays} ${objectDetails.count_reservation_days} ${messageData.days}`}
@@ -145,11 +181,15 @@ Details.propTypes = {
   proposedWobj: PropTypes.shape().isRequired,
   isEligible: PropTypes.bool.isRequired,
   isAuth: PropTypes.bool,
+  history: PropTypes.shape().isRequired,
+  authorizedUserName: PropTypes.string.isRequired,
+  removeToggleFlag: PropTypes.func,
 };
 
 Details.defaultProps = {
   loading: false,
   assigned: false,
   isAuth: false,
+  removeToggleFlag: () => {},
 };
-export default injectIntl(Details);
+export default withRouter(injectIntl(Details));

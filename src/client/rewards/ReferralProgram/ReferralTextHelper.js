@@ -223,7 +223,7 @@ export const referralInstructionsContent = username => ({
       defaultMessage="For example:"
     />
   ),
-  acceptedConditionsFirstExampleLink: <span>{`http://www.waivio.com?ref=${username}`}</span>,
+  acceptedConditionsFirstExampleLink: <span>{`https://www.waivio.com?ref=${username}`}</span>,
   acceptedConditionsSecondExampleLink: (
     <span>{`https://www.waivio.com/rewards/all?ref=${username}`}</span>
   ),

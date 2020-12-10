@@ -48,9 +48,9 @@ class ObjectInfo extends React.Component {
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool,
-    albums: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
     appendAlbum: PropTypes.func.isRequired,
+    albums: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -93,16 +93,8 @@ class ObjectInfo extends React.Component {
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
-  handleToggleModalAddPhoto = () => {
-    const { albums, appendAlbum } = this.props;
-    if (isEmpty(albums)) {
-      appendAlbum();
-    }
-    this.handleToggleModal();
-  };
-
   listItem = (name, content) => {
-    const { wobject, userName, isEditMode } = this.props;
+    const { wobject, userName, isEditMode, albums, appendAlbum } = this.props;
     const fieldsCount = getFieldsCount(wobject, name);
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
@@ -126,6 +118,8 @@ class ObjectInfo extends React.Component {
                       ? `/object/${wobject.author_permlink}/${OBJECT_TYPE.PAGE}`
                       : ''
                   }
+                  albums={albums}
+                  appendAlbum={appendAlbum}
                 />
                 {fieldsCount}
               </div>

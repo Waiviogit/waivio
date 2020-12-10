@@ -1,6 +1,5 @@
 import Views from '../routes/components';
 import createNestedRouts from '../routes/helper';
-import Page from '../../client/feed/Page';
 import Post from '../../client/post/Post';
 import Wrapper from '../../client/Wrapper';
 import URL from './constants';
@@ -402,9 +401,7 @@ const routes = {
     },
     {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-      component: Page,
-      exact: true,
-      pathScope: '',
+      component: Views.MainPage,
       routes: [
         {
           path: '/confirmation',

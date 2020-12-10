@@ -8,6 +8,8 @@ import {
   GET_FRAUD_SUSPICION,
   GET_REWARDS_HISTORY,
   GET_MORE_REWARDS_HISTORY,
+  SET_TOGGLE_FLAG,
+  REMOVE_TOGGLE_FLAG,
 } from './rewardsActions';
 import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
 
@@ -29,6 +31,7 @@ const initialState = {
   historyCampaigns: [],
   historySponsors: [],
   hasMoreHistory: false,
+  isOpenWriteReviewModal: false,
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -140,6 +143,18 @@ const rewardsReducer = (state = initialState, action) => {
         isLoadingRewardsHistory: false,
       };
     }
+    case SET_TOGGLE_FLAG: {
+      return {
+        ...state,
+        isOpenWriteReviewModal: true,
+      };
+    }
+    case REMOVE_TOGGLE_FLAG: {
+      return {
+        ...state,
+        isOpenWriteReviewModal: false,
+      };
+    }
     default:
       return state;
   }
@@ -166,3 +181,5 @@ export const getCampaignNames = state => state.campaignNames;
 export const getHistoryCampaigns = state => state.historyCampaigns;
 export const getHistorySponsors = state => state.historySponsors;
 export const getHasMoreHistory = state => state.hasMoreHistory;
+
+export const getIsOpenWriteReviewModal = state => state.isOpenWriteReviewModal;

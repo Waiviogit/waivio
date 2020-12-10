@@ -116,10 +116,9 @@ export default class UserProfile extends React.Component {
           showPostModal={this.props.showPostModal}
           isGuest={isGuest}
           history={history}
-        >
-          {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
-          {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
-        </Feed>
+        />
+        {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
+        {!isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
         {<PostModal userName={authenticatedUser.name} />}
       </div>
     );
