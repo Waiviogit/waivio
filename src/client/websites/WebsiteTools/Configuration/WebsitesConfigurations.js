@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
-import { getConfiguration, getWebsiteLoading } from '../../../reducers';
+import { getConfiguration, getUserLocation, getWebsiteLoading } from '../../../reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import { getObjectName } from '../../../helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';
@@ -20,6 +20,7 @@ import {
 import { getConfigFieldsValue } from '../../helper';
 import Loading from '../../../components/Icon/Loading';
 import './WebsitesConfigurations.less';
+import { getCoordinates } from '../../../user/userActions';
 
 export const WebsitesConfigurations = ({
   intl,
@@ -30,7 +31,9 @@ export const WebsitesConfigurations = ({
   config,
   saveWebConfig,
   location,
-  // getMapsCoordinates,
+  // eslint-disable-next-line no-shadow
+  getCoordinates,
+  userLocation,
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [modalsState, setModalState] = useState({});
@@ -40,10 +43,12 @@ export const WebsitesConfigurations = ({
   const [aboutObj, setAbtObject] = useState(null);
   const [image, setImage] = useState('');
   const [settingMap, setSettingMap] = useState({});
+
   const mobileLogo = getFieldValue('mobileLogo') || get(config, 'mobileLogo');
   const desktopLogo = getFieldValue('desktopLogo') || get(config, 'desktopLogo');
 
   const { center, zoom, bounds } = settingMap;
+  const { lat, lon } = userLocation;
 
   const logoState = {
     mobileLogo,
@@ -58,6 +63,7 @@ export const WebsitesConfigurations = ({
   const host = match.params.site;
 
   useEffect(() => {
+    getCoordinates();
     getWebConfig(host).then(response => {
       setAbtObject(response.value.aboutObject);
     });
@@ -66,6 +72,21 @@ export const WebsitesConfigurations = ({
       setAbtObject(null);
     };
   }, [location.pathname]);
+
+  const setCoordinates = () => {
+    // eslint-disable-next-line no-shadow
+    const { bounds } = settingMap;
+    // eslint-disable-next-line react/prop-types
+    const updateCenter = [lat, lon];
+    form.setFieldsValue({
+      [showMap]: {
+        topPoint: bounds.ne,
+        bottomPoint: bounds.sw,
+        center: updateCenter,
+        zoom,
+      },
+    });
+  };
 
   // useEffect(() => {
   //   if (!isEmpty(config)) getMapsCoordinates(get(mapState, ['desktopMap', 'center']), 38000);
@@ -111,55 +132,29 @@ export const WebsitesConfigurations = ({
 
   // eslint-disable-next-line consistent-return
   const incrementZoom = () => {
-    if (zoom >= 18) return null;
-    form.setFieldsValue({
-      [showMap]: {
-        topPoint: bounds.ne,
-        bottomPoint: bounds.sw,
-        center,
-        zoom: zoom + 1,
-      },
-    });
+    if (zoom <= 18) {
+      form.setFieldsValue({
+        [showMap]: {
+          topPoint: bounds.ne,
+          bottomPoint: bounds.sw,
+          center,
+          zoom: zoom + 1,
+        },
+      });
+    }
   };
 
   // eslint-disable-next-line consistent-return
   const decrementZoom = () => {
-    if (zoom <= 1) return null;
-    form.setFieldsValue({
-      [showMap]: {
-        topPoint: bounds.ne,
-        bottomPoint: bounds.sw,
-        center,
-        zoom: zoom - 1,
-      },
-    });
-  };
-
-  const showUserPosition = position => {
-    const updateCenter = [position.coords.latitude, position.coords.longitude];
-    form.setFieldsValue({
-      [showMap]: {
-        topPoint: bounds.ne,
-        bottomPoint: bounds.sw,
-        center: updateCenter,
-        zoom,
-      },
-    });
-  };
-
-  const setCoordinates = () => {
-    if (navigator && navigator.geolocation) {
-      const positionGPS = navigator.geolocation.getCurrentPosition(showUserPosition);
-      if (positionGPS) {
-        form.setFieldsValue({
-          [showMap]: {
-            topPoint: bounds.ne,
-            bottomPoint: bounds.sw,
-            center: positionGPS,
-            zoom,
-          },
-        });
-      }
+    if (zoom >= 1) {
+      form.setFieldsValue({
+        [showMap]: {
+          topPoint: bounds.ne,
+          bottomPoint: bounds.sw,
+          center,
+          zoom: zoom - 1,
+        },
+      });
     }
   };
 
@@ -344,8 +339,8 @@ export const WebsitesConfigurations = ({
               )(
                 <div className="WebsitesConfigurations__map">
                   <Map
-                    center={get(mapState, ['desktopMap', 'center'], [])}
-                    zoom={get(mapState, ['desktopMap', 'zoom'], 0)}
+                    center={get(mapState, ['desktopMap', 'center'], [lat, lon])}
+                    zoom={get(mapState, ['desktopMap', 'zoom'], 10)}
                     minZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
                     maxZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
                     provider={mapProvider}
@@ -377,8 +372,8 @@ export const WebsitesConfigurations = ({
               )(
                 <div className="WebsitesConfigurations__map">
                   <Map
-                    center={get(mapState, ['mobileMap', 'center'], [])}
-                    zoom={get(mapState, ['mobileMap', 'zoom'], 0)}
+                    center={get(mapState, ['mobileMap', 'center'], [+lat, +lon])}
+                    zoom={get(mapState, ['mobileMap', 'zoom'], 10)}
                     minZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
                     maxZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
                     height={200}
@@ -456,8 +451,8 @@ export const WebsitesConfigurations = ({
               <div className="MapWrap">
                 {zoomButtonsLayout()}
                 <Map
-                  center={get(mapState, [showMap, 'center'], [50.879, 4.6997])}
-                  zoom={get(mapState, [showMap, 'zoom'], 6)}
+                  center={get(mapState, [showMap, 'center'], [+lat, +lon])}
+                  zoom={get(mapState, [showMap, 'zoom'], 8)}
                   height={400}
                   provider={mapProvider}
                   onBoundsChanged={state => {
@@ -519,22 +514,28 @@ WebsitesConfigurations.propTypes = {
   loading: PropTypes.bool.isRequired,
   getWebConfig: PropTypes.func.isRequired,
   saveWebConfig: PropTypes.func.isRequired,
+  getCoordinates: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       site: PropTypes.string,
     }),
   }).isRequired,
   location: PropTypes.shape().isRequired,
+  userLocation: PropTypes.shape().isRequired,
+  lat: PropTypes.number.isRequired,
+  lon: PropTypes.number.isRequired,
 };
 
 export default connect(
   state => ({
     loading: getWebsiteLoading(state),
     config: getConfiguration(state),
+    userLocation: getUserLocation(state),
   }),
   {
     getWebConfig: getWebConfiguration,
     saveWebConfig: saveWebConfiguration,
     getMapsCoordinates: getCoordinatesForMap,
+    getCoordinates,
   },
 )(Form.create()(withRouter(injectIntl(WebsitesConfigurations))));
