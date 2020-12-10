@@ -19,8 +19,8 @@ import {
 } from '../../websiteActions';
 import { getConfigFieldsValue } from '../../helper';
 import Loading from '../../../components/Icon/Loading';
-import './WebsitesConfigurations.less';
 import { getCoordinates } from '../../../user/userActions';
+import './WebsitesConfigurations.less';
 
 export const WebsitesConfigurations = ({
   intl,
@@ -76,7 +76,6 @@ export const WebsitesConfigurations = ({
   const setCoordinates = () => {
     // eslint-disable-next-line no-shadow
     const { bounds } = settingMap;
-    // eslint-disable-next-line react/prop-types
     const updateCenter = [lat, lon];
     form.setFieldsValue({
       [showMap]: {
@@ -130,7 +129,6 @@ export const WebsitesConfigurations = ({
     });
   };
 
-  // eslint-disable-next-line consistent-return
   const incrementZoom = () => {
     if (zoom <= 18) {
       form.setFieldsValue({
@@ -144,7 +142,6 @@ export const WebsitesConfigurations = ({
     }
   };
 
-  // eslint-disable-next-line consistent-return
   const decrementZoom = () => {
     if (zoom >= 1) {
       form.setFieldsValue({
