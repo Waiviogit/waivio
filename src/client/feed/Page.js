@@ -56,7 +56,7 @@ class Page extends React.Component {
   render() {
     const { authenticated, history, wobject, match } = this.props;
     const isPageMode = true;
-    const sortBy = match.params.sortBy || 'trending';
+    const sortBy = authenticated ? match.params.sortBy : match.params.sortBy || 'trending';
 
     return (
       <div>
