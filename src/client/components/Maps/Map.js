@@ -22,6 +22,7 @@ import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
 import { getObjectAvatar, getObjectName } from '../../helpers/wObjectHelper';
 import DEFAULTS from '../../object/const/defaultValues';
+import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
 import './Map.less';
 
 const defaultCoords = {
@@ -280,6 +281,7 @@ class MapOS extends React.Component {
   };
 
   handleMarkerClick = ({ payload, anchor }) => {
+    handleAddMapCoordinates(anchor);
     if (this.state.infoboxData && this.state.infoboxData.coordinates === anchor) {
       this.setState({ infoboxData: null });
     }

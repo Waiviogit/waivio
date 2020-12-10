@@ -20,6 +20,7 @@ import {
   isEqual,
   findIndex,
   sortBy,
+  every,
 } from 'lodash';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import {
@@ -53,6 +54,8 @@ import {
   getActiveFilters,
   getSortChanged,
   getSort,
+  handleRemoveSearchLink,
+  handleAddSearchLink,
 } from './rewardsHelper';
 import {
   MESSAGES,
@@ -73,7 +76,7 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import { getRewardsGeneralCounts } from '../rewards/rewardsActions';
+import { getRewardsGeneralCounts } from './rewardsActions';
 import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
@@ -213,14 +216,22 @@ class Rewards extends React.Component {
 
     const { area } = this.state;
     if (username && !url) this.getPropositionsByStatus({ username, sort, area });
-    if (!authenticated && match.params.filterKey === 'all')
-      this.getPropositions({ username, match, activeFilters, sort, area });
+    const linkForReserveEligible = `/rewards/active/${match.params.campaignParent}/`;
+    const fromWidgetUrl = isEqual(linkForReserveEligible, match.url);
+    const keys = ['active', 'reserved'];
+    if (
+      (!authenticated && match.params.filterKey === 'all') ||
+      every(keys, key => match.params.filterKey !== key) ||
+      fromWidgetUrl
+    )
+      this.getPropositions({ username, match, activeFilters, sort, area, authenticated });
   }
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
-    const { username, authenticated } = this.props;
-    const { sortAll, sortEligible, sortReserved, url, area } = this.state;
+    const { username } = this.props;
+    const { sortAll, sortEligible, sortReserved, area } = this.state;
+
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
     if (this.state.currentLocation !== nextProps.location.search) {
       this.setState({
@@ -233,10 +244,7 @@ class Rewards extends React.Component {
     }
     if (username !== nextProps.username) {
       const userName = username || nextProps.username;
-
       this.getPropositionsByStatus({ username: userName, sort, area });
-    } else if (!authenticated && url && this.props.match.params.filterKey !== 'all') {
-      this.props.history.push(`/rewards/all`);
     }
 
     if (match.path !== this.props.match.path) this.setState({ activePayableFilters: [] });
@@ -245,6 +253,12 @@ class Rewards extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    const lastLinkChar = location.href;
+    if (!location.search && lastLinkChar.slice(-1) === '?') {
+      const currLink = lastLinkChar.substring(0, lastLinkChar.length - 1);
+      history.pushState('', '', currLink);
+    }
+
     if (this.props.match.url !== prevProps.match.url) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ url: this.props.match.url });
@@ -255,7 +269,6 @@ class Rewards extends React.Component {
     const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
-
     if (!isSecondaryObjectsCards || (isSecondaryObjectsCards && !firstMapLoad)) {
       this.getPropositions(
         { username, match, area: coordinates, radius, activeFilters, limit },
@@ -299,12 +312,16 @@ class Rewards extends React.Component {
     }
   };
 
-  setFilterValue = (filterValue, key) => {
+  setFilterValue = (filterValue, key, fromUrl) => {
     const activeFilters = { ...this.state.activeFilters };
     if (includes(activeFilters[key], filterValue)) {
+      handleRemoveSearchLink(filterValue);
       remove(activeFilters[key], f => f === filterValue);
     } else {
       activeFilters[key].push(filterValue);
+      if (!fromUrl) {
+        handleAddSearchLink(filterValue);
+      }
     }
     if (!this.state.url) {
       this.setState({ activeFilters, url: this.props.match.url });
@@ -399,6 +416,9 @@ class Rewards extends React.Component {
 
   getPropositionsByStatus = ({ username, sort, area }) => {
     const { pendingUpdate, match } = this.props;
+    const searchParams = new URLSearchParams(location.search);
+    const isWidget = searchParams.get('display');
+    const isReserved = searchParams.get('toReserved');
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
       // eslint-disable-next-line camelcase
@@ -409,31 +429,38 @@ class Rewards extends React.Component {
         eligible: 'active',
         all: 'all',
       };
+
       this.setState({
         sponsors: newSponsors,
         hasMore,
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      const filterKey = match.params.filterKey;
-      if (
-        !pendingUpdate &&
-        filterKey &&
-        filterKey !== PAYABLES &&
-        filterKey !== RECEIVABLES &&
-        !match.params.campaignParent
-      ) {
-        if (match.params.filterKey !== rewardsTab[tabType]) {
-          this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
-        }
-        if (tabType === 'reserved') {
-          this.setState({
-            propositionsReserved: campaigns,
-          });
+
+      if (!isWidget && !isReserved) {
+        const filterKey = match.params.filterKey;
+        const arrFilterKey = [PAYABLES, RECEIVABLES];
+
+        if (
+          !pendingUpdate &&
+          filterKey &&
+          every(arrFilterKey, key => filterKey !== key) &&
+          !match.params.campaignParent
+        ) {
+          if (match.params.filterKey !== rewardsTab[tabType]) {
+            this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+          }
+          if (tabType === 'reserved') {
+            this.setState({
+              propositionsReserved: campaigns,
+            });
+          } else {
+            this.setState({
+              propositions: campaigns,
+            });
+          }
         } else {
-          this.setState({
-            propositions: campaigns,
-          });
+          this.setState({ url: this.props.match.url });
         }
       } else {
         this.setState({ url: this.props.match.url });
@@ -442,7 +469,17 @@ class Rewards extends React.Component {
   };
 
   getPropositions = (
-    { username, match, area, sort, radius, activeFilters, limit, isRequestWithoutRequiredObject },
+    {
+      username,
+      match,
+      area,
+      sort,
+      radius,
+      activeFilters,
+      limit,
+      isRequestWithoutRequiredObject,
+      authenticated,
+    },
     isMap,
     firstMapLoad,
   ) => {
@@ -463,6 +500,7 @@ class Rewards extends React.Component {
         isMap,
         isRequestWithoutRequiredObject,
         locale: usedLocale,
+        authenticated,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
@@ -662,7 +700,6 @@ class Rewards extends React.Component {
       propositionsUniq = uniqBy(propositions, 'required_object._id');
     }
     const actualPropositions = isEmpty(messages) ? propositionsUniq : messages;
-
     const getMessageHistory = async () => {
       const path = match.params[0];
       const {
@@ -828,7 +865,6 @@ class Rewards extends React.Component {
 
   moveToCoordinates = objects => {
     const { userLocation } = this.props;
-
     if (!isEmpty(objects)) {
       return get(objects, ['0', 'map', 'coordinates']) || get(objects, ['1', 'map', 'coordinates']);
     }
@@ -953,6 +989,7 @@ class Rewards extends React.Component {
     const campaignsObjectsForMap =
       campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
+    const isWidget = sessionStorage.getItem('isWidget');
 
     return (
       <div className="Rewards">
@@ -987,7 +1024,7 @@ class Rewards extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              <MobileNavigation />
+              {!isWidget && <MobileNavigation />}
               {renderedRoutes}
             </div>
             {(match.url === PATH_NAME_PAYABLES || match.url === PATH_NAME_RECEIVABLES) && (

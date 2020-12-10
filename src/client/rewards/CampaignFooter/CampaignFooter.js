@@ -471,6 +471,7 @@ class CampaignFooter extends React.Component {
       blacklistUsers,
       reservedComments,
       sortFraudDetection,
+      proposedWobj,
     } = this.props;
     const isRewards = !isEmpty(match)
       ? match.params.filterKey === 'reserved' ||
@@ -527,6 +528,7 @@ class CampaignFooter extends React.Component {
               sortFraudDetection={sortFraudDetection}
               userFollowed={userFollowed}
               objectFollowed={objectFollowed}
+              proposedWobj={proposedWobj}
             />
           )}
         </div>

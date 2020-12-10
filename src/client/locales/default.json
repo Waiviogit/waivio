@@ -592,6 +592,8 @@
   "postalCode": "Postal code",
   "stateProvince": "State/Province",
   "menu_item_placeholder": "Menu item name",
+  "list_title": "List title",
+  "page_title": "Page title",
   "newSteemAcc": "Account with Hive wallet",
   "instAccountCreation": "Instant Account Creation",
   "bonusDelegation": "BONUS: 15 SP delegation (for 90 days)",

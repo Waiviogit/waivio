@@ -1,14 +1,19 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get, includes, filter, some } from 'lodash';
+import { isEmpty, get, includes, filter, some, map, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
-import { getAuthenticatedUser, getCommentContent, getIsAuthenticated } from '../../reducers';
+import {
+  getAuthenticatedUser,
+  getCommentContent,
+  getIsAuthenticated,
+  getIsOpenWriteReviewModal,
+} from '../../reducers';
 import {
   ASSIGNED,
   GUIDE_HISTORY,
@@ -22,10 +27,16 @@ import {
   reserveActivatedCampaign,
   getCurrentHivePrice,
 } from '../../../waivioApi/ApiClient';
+import { removeToggleFlag } from '../rewardsActions';
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import { handleRequirementFilters } from '../rewardsHelper';
+import {
+  handleRequirementFilters,
+  openNewTab,
+  removeSessionData,
+  setSessionData,
+} from '../rewardsHelper';
 
 import './Proposition.less';
 
@@ -48,10 +59,26 @@ const Proposition = ({
   wobjPrice,
   sortFraudDetection,
   isAuth,
+  removeToggleFlag,
+  isOpenWriteReviewModal,
 }) => {
+  const currentProposId = get(proposition, ['_id'], '');
+  const currentWobjId = get(wobj, ['_id'], '');
+
+  const searchParams = new URLSearchParams(location.search);
+
+  const isWidget = searchParams.get('display');
+  const isReservedLink = searchParams.get('toReserved');
+  const sessionCurrentProposjId = sessionStorage.getItem('currentProposId');
+  const sessionCurrentWobjjId = sessionStorage.getItem('currentWobjId');
+
+  const handleCurrentEligibleParam = obj => Object.values(obj).every(item => item === true);
+
   const requirementFilters = get(proposition, ['requirement_filters'], {});
   const filteredRequirementFilters = handleRequirementFilters(requirementFilters);
-  const isEligible = Object.values(filteredRequirementFilters).every(item => item === true);
+  const isEligible = isAuth
+    ? handleCurrentEligibleParam(requirementFilters)
+    : handleCurrentEligibleParam(filteredRequirementFilters);
   const proposedWobj = wobj;
   const requiredObject = get(proposition, ['required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
@@ -70,8 +97,11 @@ const Proposition = ({
   const parentPermlink = isMessages ? permlink : propositionActivationPermlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
+
   const toggleModalDetails = ({ value }) => {
-    if (value) setReviewDetails(value);
+    if (value) {
+      setReviewDetails(value);
+    }
     setModalDetailsOpen(!isModalDetailsOpen);
   };
 
@@ -178,6 +208,41 @@ const Proposition = ({
   const requiredObjectAuthorPermlink = get(proposition, ['required_object', 'author_permlink']);
 
   const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
+
+  /*
+    Widget logic in useEffect for open detail modal window in new tab, like after click on Reserve button.
+    In handleReserveOnClick function save current pressed _id from wObject and proposition and then compare
+      (sessionCurrentProposjId === currentProposId && sessionCurrentWobjjId === currentWobjId).
+    When coincidence, current pressed reward card's modal window will be opened and session with
+      currentProposId and currentWobjId will be cleared
+  */
+  useEffect(() => {
+    if (sessionCurrentProposjId && sessionCurrentWobjjId) {
+      if (sessionCurrentProposjId === currentProposId && sessionCurrentWobjjId === currentWobjId) {
+        setModalDetailsOpen(!isModalDetailsOpen);
+        removeSessionData('currentProposId', 'currentWobjId');
+      }
+    }
+
+    /* This check need for widget. When user isAuth, there is another render and we lose flag
+       for open modal window for widget
+    */
+    if (isReservedLink && isAuth && isOpenWriteReviewModal !== isModalDetailsOpen) {
+      setReviewDetails(isOpenWriteReviewModal);
+      setModalDetailsOpen(isOpenWriteReviewModal);
+    }
+  }, [proposition]);
+
+  const handleReserveOnClick = value => {
+    if (isWidget) {
+      setSessionData('currentProposId', currentProposId);
+      setSessionData('currentWobjId', currentWobjId);
+      openNewTab(`${location.origin}${location.pathname}`);
+    } else {
+      return toggleModalDetails(value);
+    }
+  };
+
   return (
     <div className="Proposition">
       <div className="Proposition__header">
@@ -225,7 +290,7 @@ const Proposition = ({
                   type="primary"
                   loading={loading}
                   disabled={loading || proposition.isReservedSiblingObj}
-                  onClick={toggleModalDetails}
+                  onClick={handleReserveOnClick}
                 >
                   {intl.formatMessage({
                     id: 'reserve',
@@ -270,6 +335,9 @@ const Proposition = ({
         isEligible={isEligible}
         match={match}
         isAuth={isAuth}
+        authorizedUserName={authorizedUserName}
+        removeToggleFlag={removeToggleFlag}
+        isOpenWriteReviewModal={isOpenWriteReviewModal}
       />
     </div>
   );
@@ -280,6 +348,7 @@ Proposition.propTypes = {
   wobj: PropTypes.shape().isRequired,
   assignProposition: PropTypes.func,
   discardProposition: PropTypes.func,
+  removeToggleFlag: PropTypes.func,
   loading: PropTypes.bool,
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,
@@ -289,6 +358,7 @@ Proposition.propTypes = {
   match: PropTypes.shape(),
   sortFraudDetection: PropTypes.string,
   isAuth: PropTypes.bool,
+  isOpenWriteReviewModal: PropTypes.bool,
 };
 
 Proposition.defaultProps = {
@@ -300,8 +370,10 @@ Proposition.defaultProps = {
   match: {},
   assignProposition: () => {},
   discardProposition: () => {},
+  removeToggleFlag: () => {},
   sortFraudDetection: 'reservation',
   isAuth: false,
+  isOpenWriteReviewModal: false,
 };
 
 export default connect(
@@ -314,8 +386,10 @@ export default connect(
         ? getCommentContent(state, ownProps.authorizedUserName, ownProps.assignCommentPermlink)
         : {},
     isAuth: getIsAuthenticated(state),
+    isOpenWriteReviewModal: getIsOpenWriteReviewModal(state),
   }),
   {
     getSingleComment,
+    removeToggleFlag,
   },
 )(injectIntl(Proposition));
