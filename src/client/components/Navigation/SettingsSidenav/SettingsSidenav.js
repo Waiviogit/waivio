@@ -2,39 +2,39 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { personalSettings } from './constants';
+import { currentWebsiteSettings, personalSettings, websiteSettings } from './constants';
 import SettingsItem from './SettingsItem';
-import { isGuestUser } from '../../../reducers';
+import { getOwnWebsites, isGuestUser } from '../../../reducers';
 import { getOwnWebsite } from '../../../websites/websiteActions';
 
 import '../Sidenav.less';
 
-const SettingsSidenav = () => {
+const SettingsSidenav = ({ match }) => {
   const dispatch = useDispatch();
   const isGuest = useSelector(isGuestUser);
-  // const ownWebsite = useSelector(getOwnWebsites);
+  const ownWebsite = useSelector(getOwnWebsites);
   const [menuCondition, setMenuCondition] = useState({
     personal: true,
     websites: true,
   });
 
-  // const createWebsiteConditions = value => {
-  //   const websiteItems = value.reduce((acc, { host }) => {
-  //     acc[host] = host === match.params.site;
-  //
-  //     return acc;
-  //   }, {});
-  //
-  //   setMenuCondition(prevState => ({ ...prevState, ...websiteItems }));
-  // };
+  const createWebsiteConditions = value => {
+    const websiteItems = value.reduce((acc, { host }) => {
+      acc[host] = host === match.params.site;
+
+      return acc;
+    }, {});
+
+    setMenuCondition(prevState => ({ ...prevState, ...websiteItems }));
+  };
 
   useEffect(() => {
     if (!isGuest) dispatch(getOwnWebsite());
   }, []);
 
-  // useEffect(() => {
-  //   createWebsiteConditions(ownWebsite);
-  // }, [ownWebsite]);
+  useEffect(() => {
+    createWebsiteConditions(ownWebsite);
+  }, [ownWebsite]);
 
   const toggleMenuCondition = menuItem => {
     setMenuCondition({
@@ -50,29 +50,28 @@ const SettingsSidenav = () => {
         configItem={personalSettings}
         toggleMenuCondition={toggleMenuCondition}
       />
-
-      {/* {!isGuest && ( */}
-      {/*  <SettingsItem */}
-      {/*    condition={menuCondition.websites} */}
-      {/*    configItem={websiteSettings} */}
-      {/*    toggleMenuCondition={toggleMenuCondition} */}
-      {/*  /> */}
-      {/* )} */}
-      {/* {ownWebsite.map(({ host }) => ( */}
-      {/*  <SettingsItem */}
-      {/*    key={host} */}
-      {/*    condition={menuCondition[host]} */}
-      {/*    configItem={{ */}
-      {/*      tab: { */}
-      {/*        name: host, */}
-      {/*        id: host, */}
-      {/*        defaultMessage: host, */}
-      {/*      }, */}
-      {/*      settings: currentWebsiteSettings(host), */}
-      {/*    }} */}
-      {/*    toggleMenuCondition={toggleMenuCondition} */}
-      {/*  /> */}
-      {/* ))} */}
+      {!isGuest && (
+        <SettingsItem
+          condition={menuCondition.websites}
+          configItem={websiteSettings}
+          toggleMenuCondition={toggleMenuCondition}
+        />
+      )}
+      {ownWebsite.map(({ host }) => (
+        <SettingsItem
+          key={host}
+          condition={menuCondition[host]}
+          configItem={{
+            tab: {
+              name: host,
+              id: host,
+              defaultMessage: host,
+            },
+            settings: currentWebsiteSettings(host),
+          }}
+          toggleMenuCondition={toggleMenuCondition}
+        />
+      ))}
     </ul>
   );
 };
