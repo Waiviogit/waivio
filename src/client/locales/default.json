@@ -490,6 +490,7 @@
   "object_field_tagCategory": "Tag category",
   "object_field_categoryItem": "Tag",
   "object_field_pageLink": "Page",
+  "object_field_pageItem": " Page item",
   "object_field_authority": "Authority",
   "field_error": "{field} is required",
   "object_link_required": "Link to new object is required",

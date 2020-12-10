@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { some, find } from 'lodash';
+import { some, find, get } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormattedDate, FormattedRelative, FormattedTime, injectIntl } from 'react-intl';
@@ -103,11 +103,17 @@ const AppendCard = props => {
     showSlider(false);
     props.voteAppends(props.post.author, props.post.permlink, sliderValue * 100);
   }
-
-  const fieldName = {
+  let fieldName = {
     id: `object_field_${props.post.name}`,
     defaultMessage: props.post.name,
   };
+
+  if (get(props.post, 'type') === 'menuPage') {
+    fieldName = {
+      id: `object_field_${props.post.type}`,
+      defaultMessage: props.post.type,
+    };
+  }
 
   return (
     <div className="Story">
