@@ -339,7 +339,7 @@ export const WebsitesConfigurations = ({
               )(
                 <div className="WebsitesConfigurations__map">
                   <Map
-                    center={get(mapState, ['desktopMap', 'center'], [lat, lon])}
+                    center={get(mapState, ['desktopMap', 'center'], [+lat, +lon])}
                     zoom={get(mapState, ['desktopMap', 'zoom'], 10)}
                     minZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
                     maxZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
