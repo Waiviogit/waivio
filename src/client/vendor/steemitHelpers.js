@@ -85,7 +85,7 @@ export const calculatePayout = post => {
   return payoutDetails;
 };
 
-export const isPostCashout = post => Date.parse(post.cashout_time) < Date.now();
+export const isPostCashout = post => Date.parse(get(post, 'cashout_time')) < Date.now();
 
 export const calculateVotePowerForSlider = async (name, voteWeight, author, permlink) => {
   const account = (await steemAPI.sendAsync('get_accounts', [[name]]))[0];
