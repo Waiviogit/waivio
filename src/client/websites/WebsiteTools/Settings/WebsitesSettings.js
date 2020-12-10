@@ -59,7 +59,7 @@ const WebsitesSettings = ({
       if (!err) {
         const percent = (beneficiaryPercent || 1) * 100;
         const account = beneficiaryAccount || 'waivio';
-        const tag = values.googleAnalyticsTag || get(settings, 'googleAnalyticsTag', '');
+        const tag = values.googleAnalyticsTag || settings.googleAnalyticsTag || '';
         const beneficiary = { account, percent };
 
         saveWebSettings(host, tag, beneficiary);
@@ -168,7 +168,9 @@ WebsitesSettings.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
-  settings: PropTypes.shape({}).isRequired,
+  settings: PropTypes.shape({
+    googleAnalyticsTag: PropTypes.string,
+  }).isRequired,
   location: PropTypes.shape().isRequired,
   saveWebSettings: PropTypes.func.isRequired,
   getWebSettings: PropTypes.func.isRequired,

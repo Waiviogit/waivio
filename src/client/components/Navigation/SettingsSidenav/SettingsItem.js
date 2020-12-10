@@ -47,7 +47,7 @@ const SettingsItem = ({ toggleMenuCondition, condition, configItem }) => {
 
 SettingsItem.propTypes = {
   toggleMenuCondition: PropTypes.func.isRequired,
-  condition: PropTypes.bool.isRequired,
+  condition: PropTypes.bool,
   configItem: PropTypes.shape({
     tab: PropTypes.shape({
       name: PropTypes.string,
@@ -56,6 +56,10 @@ SettingsItem.propTypes = {
     }),
     settings: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,
+};
+
+SettingsItem.defaultProps = {
+  condition: false,
 };
 
 export default SettingsItem;
