@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
-import { getConfiguration, getWebsiteLoading } from '../../../reducers';
+import { getConfiguration, getUserLocation, getWebsiteLoading } from '../../../reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import { getObjectName } from '../../../helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';
@@ -19,6 +19,7 @@ import {
 } from '../../websiteActions';
 import { getConfigFieldsValue } from '../../helper';
 import Loading from '../../../components/Icon/Loading';
+import { getCoordinates } from '../../../user/userActions';
 import './WebsitesConfigurations.less';
 
 export const WebsitesConfigurations = ({
@@ -30,7 +31,9 @@ export const WebsitesConfigurations = ({
   config,
   saveWebConfig,
   location,
-  // getMapsCoordinates,
+  // eslint-disable-next-line no-shadow
+  getCoordinates,
+  userLocation,
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [modalsState, setModalState] = useState({});
@@ -39,8 +42,13 @@ export const WebsitesConfigurations = ({
   const [colors, setColors] = useState('');
   const [aboutObj, setAbtObject] = useState(null);
   const [image, setImage] = useState('');
+  const [settingMap, setSettingMap] = useState({});
+
   const mobileLogo = getFieldValue('mobileLogo') || get(config, 'mobileLogo');
   const desktopLogo = getFieldValue('desktopLogo') || get(config, 'desktopLogo');
+
+  const { center, zoom, bounds } = settingMap;
+  const { lat, lon } = userLocation;
 
   const logoState = {
     mobileLogo,
@@ -55,6 +63,7 @@ export const WebsitesConfigurations = ({
   const host = match.params.site;
 
   useEffect(() => {
+    getCoordinates();
     getWebConfig(host).then(response => {
       setAbtObject(response.value.aboutObject);
     });
@@ -63,6 +72,20 @@ export const WebsitesConfigurations = ({
       setAbtObject(null);
     };
   }, [location.pathname]);
+
+  const setCoordinates = () => {
+    // eslint-disable-next-line no-shadow
+    const { bounds } = settingMap;
+    const updateCenter = [lat, lon];
+    form.setFieldsValue({
+      [showMap]: {
+        topPoint: bounds.ne,
+        bottomPoint: bounds.sw,
+        center: updateCenter,
+        zoom,
+      },
+    });
+  };
 
   // useEffect(() => {
   //   if (!isEmpty(config)) getMapsCoordinates(get(mapState, ['desktopMap', 'center']), 38000);
@@ -94,8 +117,8 @@ export const WebsitesConfigurations = ({
   const getSelectedColor = type => `${get(colors, [type]) || get(config, ['colors', type], '')}`;
 
   const setMapBounds = state => {
+    // eslint-disable-next-line no-shadow
     const { center, zoom, bounds } = state;
-
     form.setFieldsValue({
       [showMap]: {
         topPoint: bounds.ne,
@@ -105,6 +128,67 @@ export const WebsitesConfigurations = ({
       },
     });
   };
+
+  const incrementZoom = () => {
+    if (zoom <= 18) {
+      form.setFieldsValue({
+        [showMap]: {
+          topPoint: bounds.ne,
+          bottomPoint: bounds.sw,
+          center,
+          zoom: zoom + 1,
+        },
+      });
+    }
+  };
+
+  const decrementZoom = () => {
+    if (zoom >= 1) {
+      form.setFieldsValue({
+        [showMap]: {
+          topPoint: bounds.ne,
+          bottomPoint: bounds.sw,
+          center,
+          zoom: zoom - 1,
+        },
+      });
+    }
+  };
+
+  const setPosition = () => {
+    setCoordinates();
+  };
+
+  const onBoundsChanged = state => {
+    setSettingMap(state);
+    setMapBounds(state);
+  };
+
+  const zoomButtonsLayout = () => (
+    <div className="MapConfigurationControl">
+      <div className="MapConfigurationControl__zoom">
+        <div
+          role="presentation"
+          className="MapConfigurationControl__zoom__button"
+          onClick={incrementZoom}
+        >
+          +
+        </div>
+        <div
+          role="presentation"
+          className="MapConfigurationControl__zoom__button"
+          onClick={decrementZoom}
+        >
+          -
+        </div>
+      </div>
+      <div className="MapConfigurationControl__gps">
+        <div role="presentation" className="MapConfigurationZoom__locateGPS" onClick={setPosition}>
+          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+        </div>
+      </div>
+    </div>
+  );
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -252,8 +336,8 @@ export const WebsitesConfigurations = ({
               )(
                 <div className="WebsitesConfigurations__map">
                   <Map
-                    center={get(mapState, ['desktopMap', 'center'], [])}
-                    zoom={get(mapState, ['desktopMap', 'zoom'], 0)}
+                    center={get(mapState, ['desktopMap', 'center'], [+lat, +lon])}
+                    zoom={get(mapState, ['desktopMap', 'zoom'], 10)}
                     minZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
                     maxZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
                     provider={mapProvider}
@@ -285,8 +369,8 @@ export const WebsitesConfigurations = ({
               )(
                 <div className="WebsitesConfigurations__map">
                   <Map
-                    center={get(mapState, ['mobileMap', 'center'], [])}
-                    zoom={get(mapState, ['mobileMap', 'zoom'], 0)}
+                    center={get(mapState, ['mobileMap', 'center'], [+lat, +lon])}
+                    zoom={get(mapState, ['mobileMap', 'zoom'], 10)}
                     minZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
                     maxZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
                     height={200}
@@ -361,13 +445,18 @@ export const WebsitesConfigurations = ({
             visible={showMap}
           >
             {showMap && (
-              <Map
-                center={get(mapState, [showMap, 'center'], [50.879, 4.6997])}
-                zoom={get(mapState, [showMap, 'zoom'], 6)}
-                height={400}
-                provider={mapProvider}
-                onBoundsChanged={state => setMapBounds(state)}
-              />
+              <div className="MapWrap">
+                {zoomButtonsLayout()}
+                <Map
+                  center={get(mapState, [showMap, 'center'], [+lat, +lon])}
+                  zoom={get(mapState, [showMap, 'zoom'], 8)}
+                  height={400}
+                  provider={mapProvider}
+                  onBoundsChanged={state => {
+                    onBoundsChanged(state);
+                  }}
+                />
+              </div>
             )}
           </Modal>
           <Modal
@@ -422,22 +511,28 @@ WebsitesConfigurations.propTypes = {
   loading: PropTypes.bool.isRequired,
   getWebConfig: PropTypes.func.isRequired,
   saveWebConfig: PropTypes.func.isRequired,
+  getCoordinates: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       site: PropTypes.string,
     }),
   }).isRequired,
   location: PropTypes.shape().isRequired,
+  userLocation: PropTypes.shape().isRequired,
+  lat: PropTypes.number.isRequired,
+  lon: PropTypes.number.isRequired,
 };
 
 export default connect(
   state => ({
     loading: getWebsiteLoading(state),
     config: getConfiguration(state),
+    userLocation: getUserLocation(state),
   }),
   {
     getWebConfig: getWebConfiguration,
     saveWebConfig: saveWebConfiguration,
     getMapsCoordinates: getCoordinatesForMap,
+    getCoordinates,
   },
 )(Form.create()(withRouter(injectIntl(WebsitesConfigurations))));

@@ -569,7 +569,7 @@ export default class CampaignButtons extends React.Component {
                           </div>
                           <Report
                             isModalReportOpen={this.state.isModalReportOpen}
-                            closeModalReport={closeModalReport}
+                            toggleModal={closeModalReport}
                           />
                         </PopoverMenuItem>
                       );
