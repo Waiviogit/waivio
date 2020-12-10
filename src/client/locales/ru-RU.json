@@ -629,6 +629,8 @@
   "postalCode": "Почтовый индекс",
   "stateProvince": "Штат/Провинция",
   "menu_item_placeholder": "Название пункта меню",
+  "list_title": "Название списка",
+  "page_title": "Название страницы",
   "newSteemAcc": "Аккаунт c Hive кошельком",
   "instAccountCreation": "Мгновенное Создание Аккаунта",
   "bonusDelegation": "БОНУС: 15 SP делегирование (на 90 дней)",

@@ -252,6 +252,7 @@ class Wrapper extends React.PureComponent {
   handleMenuItemClick(key) {
     switch (key) {
       case 'logout':
+        this.props.history.push('/trending');
         this.props.logout();
         break;
       case 'activity':
