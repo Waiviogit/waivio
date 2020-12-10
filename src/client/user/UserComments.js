@@ -70,6 +70,7 @@ export default class UserProfilePosts extends React.Component {
           hasMore={hasMore}
           loadMoreContent={loadMoreContentAction}
           showPostModal={this.props.showPostModal}
+          userComments
         />
         <PostModal />
       </React.Fragment>
