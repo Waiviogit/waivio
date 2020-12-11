@@ -93,15 +93,15 @@ const PostPopoverMenu = ({
         : [];
       const authorTwitter = !isEmpty(socialInfoPost.userTwitter)
         ? `by@${socialInfoPost.userTwitter}`
-        : '';
+        : `by ${postAuthor}`;
       const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
         ? `@${socialInfoPost.wobjectsTwitter}`
         : '';
-      const postName = isGuest ? '' : username;
+      const postName = isGuest ? '' : `?ref=${username}`;
       const postURL = `${baseURL}${replaceBotWithGuestName(
         dropCategory(url),
         guestInfo,
-      )}?ref=${postName}`;
+      )}${postName}`;
 
       if (isTwitter) {
         const shareTextSocialTwitter = `"${encodeURIComponent(
