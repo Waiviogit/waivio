@@ -117,7 +117,7 @@ class PostModal extends React.Component {
       currentShownPost.guestInfo,
     )}${postName}`;
     const hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
-    const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : `by ${author}`;
+    const authorTwitter = !isEmpty(userTwitter) ? `by @${userTwitter}` : `by ${author}`;
     const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
     const shareTextSocialTwitter = `"${encodeURIComponent(
       title,

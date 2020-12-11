@@ -42,7 +42,7 @@ class StoryFooter extends React.Component {
     onReportClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onActionInitiated: PropTypes.func.isRequired,
-    isGuest: PropTypes.bool,
+    isGuest: PropTypes.bool.isRequired,
     userName: PropTypes.string,
     getSocialInfoPostAction: PropTypes.func,
     handleEditClick: PropTypes.func.isRequired,
@@ -63,7 +63,6 @@ class StoryFooter extends React.Component {
     onShareClick: () => {},
     handlePostPopoverMenuClick: () => {},
     onReportClick: () => {},
-    isGuest: false,
     userName: '',
     getSocialInfoPostAction: () => {},
   };
@@ -222,6 +221,7 @@ class StoryFooter extends React.Component {
               handlePostPopoverMenuClick={this.handlePopoverClick}
               username={this.props.userName}
               getSocialInfoPost={getSocialInfoPostAction}
+              isGuest={this.props.isGuest}
             />
           )}
         </div>
