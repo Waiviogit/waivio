@@ -92,7 +92,7 @@ const PostPopoverMenu = ({
         ? [...socialInfoPost.tags, ...socialInfoPost.cities]
         : [];
       const authorTwitter = !isEmpty(socialInfoPost.userTwitter)
-        ? `by@${socialInfoPost.userTwitter}`
+        ? `by @${socialInfoPost.userTwitter}`
         : `by ${postAuthor}`;
       const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
         ? `@${socialInfoPost.wobjectsTwitter}`

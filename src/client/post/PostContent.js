@@ -263,7 +263,7 @@ class PostContent extends React.Component {
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
-    const authorFacebook = !isEmpty(userFacebook) ? `by@${userFacebook}` : '';
+    const authorFacebook = !isEmpty(userFacebook) ? `by @${userFacebook}` : '';
     const desc = `${truncate(bodyText, { length: 143 })} ${truncate(hashtags, {
       length: 120,
     })} @${wobjectsFacebook} ${authorFacebook}`;
