@@ -522,6 +522,8 @@ export default class AppendForm extends Component {
     const data = prepareAlbumData(formData, user.name, wObject);
     const album = prepareAlbumToStore(data);
 
+    this.setState({ loading: true });
+
     try {
       const { author } = await this.props.appendObject(data);
 
@@ -539,6 +541,7 @@ export default class AppendForm extends Component {
         ),
       );
     } catch (err) {
+      this.setState({ loading: false });
       message.error(
         this.props.intl.formatMessage({
           id: 'gallery_add_album_failure',
