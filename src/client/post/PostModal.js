@@ -110,14 +110,14 @@ class PostModal extends React.Component {
     const author = currentShownPost.guestInfo
       ? currentShownPost.guestInfo.userId
       : currentShownPost.author;
-    const postName = isGuest ? '' : username;
+    const postName = isGuest ? '' : `?ref=${username}`;
     const baseURL = window ? window.location.origin : 'https://waivio.com';
     const postURL = `${baseURL}${replaceBotWithGuestName(
       dropCategory(url),
       currentShownPost.guestInfo,
-    )}?ref=${postName}`;
+    )}${postName}`;
     const hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
-    const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : '';
+    const authorTwitter = !isEmpty(userTwitter) ? `by@${userTwitter}` : `by ${author}`;
     const objectTwitter = !isEmpty(wobjectsTwitter) ? `@${wobjectsTwitter}` : '';
     const shareTextSocialTwitter = `"${encodeURIComponent(
       title,
