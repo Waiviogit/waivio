@@ -9,7 +9,9 @@ import classNames from 'classnames';
 import {
   getAutoCompleteSearchResults,
   getIsStartSearchAutoComplete,
+  getSearchFiltersTagCategory,
   getSearchObjectsResults,
+  getSearchSort,
   getWebsiteSearchType,
   searchObjectTypesResults,
 } from '../../reducers';
@@ -18,6 +20,7 @@ import {
   searchAutoComplete,
   searchUsersAutoCompete,
   searchWebsiteObjectsAutoCompete,
+  setWebsiteSearchString,
   setWebsiteSearchType,
 } from '../searchActions';
 import { getTranformSearchCountData } from '../helpers';
@@ -43,19 +46,20 @@ const WebsiteSearch = props => {
     });
 
   const currentSearchMethod = value => {
+    props.setWebsiteSearchString(value);
     switch (props.searchType) {
       case 'user':
         return props.searchUsersAutoCompete(value);
       case 'All':
         return props.searchAutoComplete(value);
       default:
-        return props.searchWebsiteObjectsAutoCompete(value);
+        return props.searchWebsiteObjectsAutoCompete(value, props.sort);
     }
   };
 
   useEffect(() => {
     if (searchString) currentSearchMethod(searchString);
-  }, [props.searchType]);
+  }, [props.searchType, props.sort, props.activeFilters]);
 
   const compareSearchResult = () => {
     const { users, wobjects } = props.autoCompleteSearchResults;
@@ -203,9 +207,12 @@ WebsiteSearch.propTypes = {
   searchAutoComplete: PropTypes.func.isRequired,
   resetSearchAutoCompete: PropTypes.func.isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
+  setWebsiteSearchString: PropTypes.func.isRequired,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchUsersAutoCompete: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
+  activeFilters: PropTypes.shape({}).isRequired,
+  sort: PropTypes.string.isRequired,
   autoCompleteSearchResults: PropTypes.shape({
     users: PropTypes.arrayOf,
     wobjects: PropTypes.arrayOf,
@@ -219,6 +226,8 @@ export default connect(
     searchByObjectType: searchObjectTypesResults(state),
     isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
     searchType: getWebsiteSearchType(state),
+    sort: getSearchSort(state),
+    activeFilters: getSearchFiltersTagCategory(state),
   }),
   {
     searchAutoComplete,
@@ -226,5 +235,6 @@ export default connect(
     setWebsiteSearchType,
     searchWebsiteObjectsAutoCompete,
     searchUsersAutoCompete,
+    setWebsiteSearchString,
   },
 )(injectIntl(WebsiteSearch));

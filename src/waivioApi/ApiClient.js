@@ -266,8 +266,9 @@ export const searchObjects = (
   limit = 15,
   locale,
   body = {},
+  skip,
 ) => {
-  const requestBody = { search_string: searchString, limit, ...body };
+  const requestBody = { search_string: searchString, limit, skip, ...body };
 
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
@@ -281,10 +282,10 @@ export const searchObjects = (
     .then(res => res.json());
 };
 
-export const searchUsers = (searchString, username, limit = 15, notGuest = false) =>
+export const searchUsers = (searchString, username, limit = 15, notGuest = false, skip = 0) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}&notGuest=${notGuest}`,
+      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}&skip=${skip}&notGuest=${notGuest}`,
       {
         headers: {
           ...headers,
@@ -1823,6 +1824,15 @@ export const getCurrentAppSettings = () =>
   fetch(`${config.apiPrefix}${config.sites}`, {
     headers,
     method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getObjectTypeFilters = type =>
+  fetch(`${config.apiPrefix}${config.objectType}${config.tagForFilter}?objectType=${type}`, {
+    headers,
+    method: 'GET',
   })
     .then(res => res.json())
     .then(res => res)

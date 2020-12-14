@@ -7,6 +7,6 @@ export const SORT_OPTIONS = {
 
 export const SORT_OPTIONS_WOBJ = {
   WEIGHT: 'weight',
-  PROXIMITY: 'proximity',
+  RECENCY: 'createdAt',
 };
 export default null;

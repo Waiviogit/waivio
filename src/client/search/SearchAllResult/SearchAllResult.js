@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, size } from 'lodash';
+import { isEmpty, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 
@@ -9,51 +9,78 @@ import UserCard from '../../components/UserCard';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import {
+  getHasMoreObjects,
+  getSearchFilters,
+  getSearchSort,
   getSearchUsersResults,
-  getTagsSite,
   getWebsiteSearchResult,
+  getWebsiteSearchString,
   getWebsiteSearchType,
 } from '../../reducers';
 import { getActiveItemClassList } from '../helpers';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import {
+  getFilterForSearch,
   searchObjectsAutoCompeteLoadingMore,
   searchUsersAutoCompeteLoadingMore,
+  setSearchSortType,
+  setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../searchActions';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
-import { getWebsiteTags } from '../../websites/websiteActions';
 
 import './SearchAllResult.less';
 
 const SearchAllResult = props => {
-  const [sort, setSortType] = useState('weight');
   const filterTypes = ['restaurant', 'dish', 'drink', 'user'];
   const isUsersSearch = props.searchType === 'user';
-  const listResults = isUsersSearch ? props.searchByUser : props.searchResult;
-  const hasMore = !(size(listResults) % 15);
 
   useEffect(() => {
-    // getWebsiteTags('lucyk.dining.pp.ua');
-  });
+    if (filterTypes.includes(props.searchType) && !isUsersSearch)
+      props.getFilterForSearch(props.searchType);
+  }, [props.searchType]);
 
-  const currRenderList = isUsersSearch
-    ? props.searchByUser &&
-      props.searchByUser.map(user => (
-        <UserCard key={user.account} user={{ ...user, name: user.account }} />
-      ))
-    : props.searchResult &&
-      props.searchResult.map(obj => <ObjectCardView wObject={obj} key={getObjectName(obj)} />);
+  const currentListState = () => {
+    switch (props.searchType) {
+      case 'user':
+        return {
+          list: map(props.searchByUser, user => (
+            <UserCard key={user.account} user={{ ...user, name: user.account }} />
+          )),
+          loadingMore: () =>
+            props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser)),
+          hasMore: false,
+        };
 
-  const menu = (
-    <Menu onClick={() => {}}>
-      <Menu.Item key="1">1st menu item</Menu.Item>
-      <Menu.Item key="2">2nd menu item</Menu.Item>
-      <Menu.Item key="3">3rd menu item</Menu.Item>
+      default:
+        return {
+          list: map(props.searchResult, obj => (
+            <ObjectCardView wObject={obj} key={getObjectName(obj)} />
+          )),
+          loadingMore: () =>
+            props.searchObjectsAutoCompeteLoadingMore(
+              props.searchString,
+              props.searchType,
+              size(props.searchResult),
+            ),
+          hasMore: props.hasMore,
+        };
+    }
+  };
+
+  const currRenderListState = currentListState();
+
+  const menu = filter => (
+    <Menu onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}>
+      <Menu.Item key={null}>show all</Menu.Item>
+      {filter.tags.map(tag => (
+        <Menu.Item key={tag}>{tag}</Menu.Item>
+      ))}
     </Menu>
   );
+
   return (
     <div className="SearchAllResult">
       <div className="SearchAllResult__type-wrap">
@@ -70,39 +97,39 @@ const SearchAllResult = props => {
       </div>
       {!isUsersSearch && (
         <React.Fragment>
-          <div>
-            <Dropdown overlay={menu} trigger={['click']}>
-              <Button>
-                Button <Icon type="down" />
-              </Button>
-            </Dropdown>
+          <div className="SearchAllResult__filters">
+            {props.filters.map(filter => (
+              <Dropdown key={filter.tagCategory} overlay={menu(filter)} trigger={['click']}>
+                <Button>
+                  {filter.tagCategory} <Icon type="down" />
+                </Button>
+              </Dropdown>
+            ))}
           </div>
-          <SortSelector sort={sort} onChange={setSortType}>
+          <SortSelector sort={props.sort} onChange={props.setSearchSortType}>
             <SortSelector.Item key={SORT_OPTIONS_WOBJ.WEIGHT}>
               {props.intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
             </SortSelector.Item>
-            <SortSelector.Item key={SORT_OPTIONS_WOBJ.PROXIMITY}>
-              {props.intl.formatMessage({ id: 'proximity', defaultMessage: 'Proximity' })}
+            <SortSelector.Item key={SORT_OPTIONS_WOBJ.RECENCY}>
+              {props.intl.formatMessage({ id: 'recency', defaultMessage: 'Recency' })}
             </SortSelector.Item>
           </SortSelector>
         </React.Fragment>
       )}
 
-      {isEmpty(currRenderList) ? (
+      {isEmpty(currRenderListState.list) ? (
         <div>List is empty</div>
       ) : (
         <ReduxInfiniteScroll
           className="Feed"
-          loadMore={() => {
-            props.searchObjectsAutoCompeteLoadingMore('su');
-          }}
+          loadMore={currRenderListState.loadingMore}
           loader={<Loading />}
           loadingMore={false}
-          hasMore={hasMore}
+          hasMore={currRenderListState.hasMore}
           elementIsScrollable={false}
           threshold={1500}
         >
-          {currRenderList}
+          {currRenderListState.list}
         </ReduxInfiniteScroll>
       )}
     </div>
@@ -119,11 +146,17 @@ SearchAllResult.propTypes = {
   setWebsiteSearchType: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
+  setWebsiteSearchFilter: PropTypes.func.isRequired,
+  setSearchSortType: PropTypes.func.isRequired,
+  getFilterForSearch: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}).isRequired,
   searchByUser: PropTypes.arrayOf.isRequired,
   searchResult: PropTypes.arrayOf.isRequired,
   searchType: PropTypes.string.isRequired,
-  filters: PropTypes.shape({}).isRequired,
+  searchString: PropTypes.string.isRequired,
+  hasMore: PropTypes.bool.isRequired,
+  filters: PropTypes.arrayOf.isRequired,
+  sort: PropTypes.string.isRequired,
 };
 
 export default connect(
@@ -131,12 +164,17 @@ export default connect(
     searchType: getWebsiteSearchType(state),
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
-    filters: getTagsSite(state),
+    hasMore: getHasMoreObjects(state),
+    filters: getSearchFilters(state),
+    searchString: getWebsiteSearchString(state),
+    sort: getSearchSort(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,
     setWebsiteSearchType,
     searchObjectsAutoCompeteLoadingMore,
-    getWebsiteTags,
+    getFilterForSearch,
+    setWebsiteSearchFilter,
+    setSearchSortType,
   },
 )(injectIntl(SearchAllResult));

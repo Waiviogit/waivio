@@ -24,7 +24,7 @@ const WebsiteBody = props => {
 
   return (
     <div className="WebsiteBody topnav-layout">
-      <SearchAllResult />
+      {props.searchType !== 'All' && <SearchAllResult/>}
       <div className="WebsiteBody__map">
         {!isEmpty(props.userLocation) && (
           <MapOS
@@ -53,6 +53,7 @@ WebsiteBody.propTypes = {
   }).isRequired,
   getCoordinates: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}).isRequired,
+  searchType: PropTypes.string.isRequired,
 };
 
 export default connect(

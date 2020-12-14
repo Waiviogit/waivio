@@ -251,6 +251,11 @@ export const getIsClearSearchObjects = state => fromSearch.getIsClearSearchObjec
 export const getWebsiteSearchType = state => fromSearch.getWebsiteSearchType(state.search);
 export const getWebsiteSearchResult = state => fromSearch.getWebsiteSearchResult(state.search);
 export const getHasMoreObjects = state => fromSearch.getHasMoreObjects(state.search);
+export const getSearchFilters = state => fromSearch.getSearchFilters(state.search);
+export const getWebsiteSearchString = state => fromSearch.getWebsiteSearchString(state.search);
+export const getSearchFiltersTagCategory = state =>
+  fromSearch.getSearchFiltersTagCategory(state.search);
+export const getSearchSort = state => fromSearch.getSearchSort(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
