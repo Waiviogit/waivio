@@ -258,7 +258,7 @@ const Proposition = ({
       </div>
       <div
         className={classNames('Proposition__footer', {
-          'justify-end': isReserved || !isEligible,
+          'justify-end': isReserved,
         })}
       >
         {/*Temporary fix until changes on backend will be made*/}
@@ -284,7 +284,7 @@ const Proposition = ({
           />
         ) : (
           <React.Fragment>
-            {isEligible && !isReserved && !assigned && (
+            {!isReserved && !assigned && (
               <div className="Proposition__footer-button">
                 <Button
                   type="primary"
