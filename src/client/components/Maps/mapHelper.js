@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import { forEach, get } from 'lodash';
+// eslint-disable-next-line no-unused-vars
 import { handleErrors } from '../../../waivioApi/ApiClient';
 import { zoomAndRadiusArray, ZOOM } from '../../../common/constants/map';
 
@@ -19,17 +20,11 @@ export const isCoordinatesValid = (lat, lng) =>
   String(lng).match(regexCoordsLongitude);
 
 export const getUserCoordinatesByIpAdress = () =>
-  new Promise((resolve, reject) => {
-    fetch('https://extreme-ip-lookup.com/json/', {
-      method: 'GET',
-    })
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(result => {
-        resolve(result);
-      })
-      .catch(error => reject(error));
-  });
+  fetch('https://extreme-ip-lookup.com/json/', {
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(result => result);
 
 export const calculateAreaRadius = (zoom, weight, center) =>
   Math.abs(((earthAraund * Math.cos(center[0])) / 2 ** zoom + 8) * 1.2);

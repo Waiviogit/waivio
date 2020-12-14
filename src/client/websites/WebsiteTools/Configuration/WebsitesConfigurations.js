@@ -1,15 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Input, Form, Modal, Avatar, message } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, map } from 'lodash';
 import Map from 'pigeon-maps';
+import Overlay from 'pigeon-overlay';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
-import { getConfiguration, getUserLocation, getWebsiteLoading } from '../../../reducers';
+import {
+  getConfiguration,
+  getObjectsMap,
+  getUserLocation,
+  getWebsiteLoading,
+} from '../../../reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
-import { getObjectName } from '../../../helpers/wObjectHelper';
+import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';
 import mapProvider from '../../../helpers/mapProvider';
 import {
@@ -19,6 +25,9 @@ import {
 } from '../../websiteActions';
 import { getConfigFieldsValue } from '../../helper';
 import Loading from '../../../components/Icon/Loading';
+import { getParsedMap, getRadius } from '../../../components/Maps/mapHelper';
+import CustomMarker from '../../../components/Maps/CustomMarker';
+import DEFAULTS from '../../../object/const/defaultValues';
 import { getCoordinates } from '../../../user/userActions';
 import './WebsitesConfigurations.less';
 
@@ -31,6 +40,9 @@ export const WebsitesConfigurations = ({
   config,
   saveWebConfig,
   location,
+  wobjects,
+  // eslint-disable-next-line react/prop-types
+  getMapsCoordinates,
   // eslint-disable-next-line no-shadow
   getCoordinates,
   userLocation,
@@ -43,12 +55,15 @@ export const WebsitesConfigurations = ({
   const [aboutObj, setAbtObject] = useState(null);
   const [image, setImage] = useState('');
   const [settingMap, setSettingMap] = useState({});
+  const [infoboxData, setInfoboxData] = useState(null);
 
   const mobileLogo = getFieldValue('mobileLogo') || get(config, 'mobileLogo');
   const desktopLogo = getFieldValue('desktopLogo') || get(config, 'desktopLogo');
 
   const { center, zoom, bounds } = settingMap;
-  const { lat, lon } = userLocation;
+
+  const latitude = +userLocation.lat;
+  const longitude = +userLocation.lon;
 
   const logoState = {
     mobileLogo,
@@ -60,13 +75,48 @@ export const WebsitesConfigurations = ({
     desktopMap: getFieldValue('desktopMap') || get(config, 'desktopMap'),
   };
 
+  const setMapBounds = state => {
+    // eslint-disable-next-line no-shadow
+    const { center, zoom, bounds } = state;
+    form.setFieldsValue({
+      [showMap]: {
+        topPoint: bounds.ne,
+        bottomPoint: bounds.sw,
+        center,
+        zoom,
+      },
+    });
+  };
+
+  const onBoundsChanged = state => {
+    // eslint-disable-next-line no-shadow
+    const [lat, lon] = state.center;
+
+    // eslint-disable-next-line no-shadow
+    const reqGetMapsCoordinates = (latitude, longitude) => {
+      const radius = getRadius(get(mapState, ['desktopMap', 'zoom'], 10));
+      getMapsCoordinates([+latitude, +longitude], radius).then(result => {
+        console.log('-- result --', result);
+      });
+    };
+
+    useCallback(() => {
+      reqGetMapsCoordinates(lat, lon);
+    }, [lat, lon]);
+
+    setSettingMap(state);
+    setMapBounds(state);
+  };
+
   const host = match.params.site;
 
   useEffect(() => {
     getCoordinates();
+
     getWebConfig(host).then(response => {
       setAbtObject(response.value.aboutObject);
     });
+
     return () => {
       setColors('');
       setAbtObject(null);
@@ -76,20 +126,17 @@ export const WebsitesConfigurations = ({
   const setCoordinates = () => {
     // eslint-disable-next-line no-shadow
     const { bounds } = settingMap;
-    const updateCenter = [lat, lon];
+    // eslint-disable-next-line react/prop-types,no-shadow
+    const center = [latitude, longitude];
     form.setFieldsValue({
       [showMap]: {
         topPoint: bounds.ne,
         bottomPoint: bounds.sw,
-        center: updateCenter,
+        center,
         zoom,
       },
     });
   };
-
-  // useEffect(() => {
-  //   if (!isEmpty(config)) getMapsCoordinates(get(mapState, ['desktopMap', 'center']), 38000);
-  // }, [config]);
 
   const handleSubmitLogoModal = () => {
     form.setFieldsValue({
@@ -115,19 +162,6 @@ export const WebsitesConfigurations = ({
   };
 
   const getSelectedColor = type => `${get(colors, [type]) || get(config, ['colors', type], '')}`;
-
-  const setMapBounds = state => {
-    // eslint-disable-next-line no-shadow
-    const { center, zoom, bounds } = state;
-    form.setFieldsValue({
-      [showMap]: {
-        topPoint: bounds.ne,
-        bottomPoint: bounds.sw,
-        center,
-        zoom,
-      },
-    });
-  };
 
   const incrementZoom = () => {
     if (zoom <= 18) {
@@ -159,9 +193,69 @@ export const WebsitesConfigurations = ({
     setCoordinates();
   };
 
-  const onBoundsChanged = state => {
-    setSettingMap(state);
-    setMapBounds(state);
+  const handleMarkerClick = ({ payload, anchor }) => {
+    if (infoboxData && infoboxData.coordinates === anchor) {
+      setInfoboxData(null);
+    }
+    setInfoboxData({ wobject: payload, coordinates: anchor });
+  };
+
+  const closeInfobox = () => {
+    setInfoboxData(null);
+  };
+
+  const goToWebsite = wobjPermlink => {
+    const campaignParent = get(match, ['params', 'campaignParent']);
+    const filterKey = get(match, ['params', 'filterKey']);
+    history.push(
+      campaignParent ? `/object/${wobjPermlink}` : `/rewards/${filterKey}/${wobjPermlink}`,
+    );
+  };
+
+  const getMarkers = () =>
+    !isEmpty(wobjects) &&
+    map(wobjects, wobject => {
+      const parsedMap = getParsedMap(wobject);
+      const latVal = get(parsedMap, ['latitude']);
+      const lngVal = get(parsedMap, ['longitude']);
+      const isMarked =
+        Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
+        // eslint-disable-next-line react/prop-types
+        match.path.includes('rewards');
+
+      return latVal && lngVal ? (
+        <CustomMarker
+          key={`obj${wobject.author_permlink}`}
+          isMarked={isMarked}
+          anchor={[+latVal, +lngVal]}
+          payload={wobject}
+          onClick={handleMarkerClick}
+          onDoubleClick={closeInfobox}
+        />
+      ) : null;
+    });
+
+  const getOverlayLayout = () => {
+    const defaultAvatar = DEFAULTS.AVATAR;
+    const wobj = infoboxData.wobject;
+    const avatar = getObjectAvatar(wobj);
+    const wobjPermlink = get(infoboxData, ['wobject', 'author_permlink']);
+
+    return (
+      <Overlay anchor={infoboxData.coordinates} offset={[-12, 35]}>
+        <div
+          role="presentation"
+          className="MapOS__overlay-wrap"
+          onMouseLeave={closeInfobox}
+          onClick={() => goToWebsite(wobjPermlink)}
+        >
+          <img src={avatar || defaultAvatar} width={35} height={35} alt="" />
+          <div role="presentation" className="MapOS__overlay-wrap-name">
+            {getObjectName(wobj)}
+          </div>
+        </div>
+      </Overlay>
+    );
   };
 
   const zoomButtonsLayout = () => (
@@ -222,6 +316,8 @@ export const WebsitesConfigurations = ({
     setColors(getConfigFieldsValue(config.colors, formValues));
     setShowSelectColor(false);
   };
+
+  const markersLayout = getMarkers(wobjects);
 
   return (
     <React.Fragment>
@@ -336,7 +432,7 @@ export const WebsitesConfigurations = ({
               )(
                 <div className="WebsitesConfigurations__map">
                   <Map
-                    center={get(mapState, ['desktopMap', 'center'], [+lat, +lon])}
+                    center={get(mapState, ['desktopMap', 'center'], [latitude, longitude])}
                     zoom={get(mapState, ['desktopMap', 'zoom'], 10)}
                     minZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
                     maxZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
@@ -369,7 +465,7 @@ export const WebsitesConfigurations = ({
               )(
                 <div className="WebsitesConfigurations__map">
                   <Map
-                    center={get(mapState, ['mobileMap', 'center'], [+lat, +lon])}
+                    center={get(mapState, ['mobileMap', 'center'], [latitude, longitude])}
                     zoom={get(mapState, ['mobileMap', 'zoom'], 10)}
                     minZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
                     maxZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
@@ -448,7 +544,7 @@ export const WebsitesConfigurations = ({
               <div className="MapWrap">
                 {zoomButtonsLayout()}
                 <Map
-                  center={get(mapState, [showMap, 'center'], [+lat, +lon])}
+                  center={get(mapState, [showMap, 'center'], [latitude, longitude])}
                   zoom={get(mapState, [showMap, 'zoom'], 8)}
                   height={400}
                   provider={mapProvider}
@@ -456,6 +552,8 @@ export const WebsitesConfigurations = ({
                     onBoundsChanged(state);
                   }}
                 />
+                {markersLayout}
+                {infoboxData && getOverlayLayout()}
               </div>
             )}
           </Modal>
@@ -518,15 +616,15 @@ WebsitesConfigurations.propTypes = {
     }),
   }).isRequired,
   location: PropTypes.shape().isRequired,
+  wobjects: PropTypes.shape().isRequired,
   userLocation: PropTypes.shape().isRequired,
-  lat: PropTypes.number.isRequired,
-  lon: PropTypes.number.isRequired,
 };
 
 export default connect(
   state => ({
     loading: getWebsiteLoading(state),
     config: getConfiguration(state),
+    wobjects: getObjectsMap(state),
     userLocation: getUserLocation(state),
   }),
   {

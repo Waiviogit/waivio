@@ -148,6 +148,7 @@ export const getFollowingObjectsUpdatesByType = (state, objType) =>
   fromUser.getFollowingObjectsUpdatesByType(state.user, objType);
 export const getFollowingUpdatesFetched = state => fromUser.getFollowingUpdatesFetched(state.user);
 export const getPendingUpdate = state => fromUser.getPendingUpdate(state.user);
+export const getIsLoadingUserLocation = state => fromUser.getIsLoadingUserLocation(state.user);
 
 export const getUser = (state, username) => fromUsers.getUser(state.users, username);
 export const getIsUserFetching = (state, username) =>

@@ -33,6 +33,7 @@ const initialState = {
   loadingNotifications: false,
   fetchFollowListError: false,
   pendingUpdate: false,
+  isLoadingUserLocation: false,
 };
 
 const filterRecommendedObjects = (objects, count = 5) => {
@@ -119,11 +120,20 @@ export default function userReducer(state = initialState, action) {
         fetchFollowListError: false,
       };
 
-    case userActions.GET_USER_LOCATION.SUCCESS:
+    case userActions.GET_USER_LOCATION.START: {
+      return {
+        ...state,
+        isLoadingUserLocation: true,
+      };
+    }
+
+    case userActions.GET_USER_LOCATION.SUCCESS: {
       return {
         ...state,
         location: action.payload,
+        isLoadingUserLocation: false,
       };
+    }
 
     case userActions.GET_FOLLOWING_UPDATES.START:
       return {
@@ -359,3 +369,4 @@ export const getFollowingObjectsUpdatesByType = (state, objType) =>
   get(state, ['followingUpdates', 'objectsUpdates', objType, 'related_wobjects'], []);
 export const getFollowingUpdatesFetched = state => state.followingUpdates.fetched;
 export const getPendingUpdate = state => state.pendingUpdate;
+export const getIsLoadingUserLocation = state => state.isLoadingUserLocation;
