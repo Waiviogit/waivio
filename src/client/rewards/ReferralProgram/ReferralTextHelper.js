@@ -8,6 +8,7 @@ import {
   handleOffersReward,
   handleProcessingFees,
 } from './ReferralHelper';
+import { openNewTab } from '../rewardsHelper';
 
 // eslint-disable-next-line import/prefer-default-export
 export const referralDetailContent = data => {
@@ -245,11 +246,13 @@ export const referralInstructionsContent = username => ({
       defaultMessage="See {text}"
       values={{
         text: (
-          <Link to={`/rewards/all`}>
-            <span className="an-example__text-link">
-              <FormattedMessage id="widget_addition_text" defaultMessage="an example." />
-            </span>
-          </Link>
+          <span
+            role="presentation"
+            className="ReferralInstructions__an-example__text-link"
+            onClick={() => openNewTab(`/rewards/all?display=widget`)}
+          >
+            <FormattedMessage id="widget_addition_text" defaultMessage="an example." />
+          </span>
         ),
       }}
     />
