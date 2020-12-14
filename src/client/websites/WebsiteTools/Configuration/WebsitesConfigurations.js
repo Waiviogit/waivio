@@ -4,10 +4,16 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Input, Form, Modal, Avatar, message } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, map } from 'lodash';
 import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
-import { getConfiguration, getUserLocation, getWebsiteLoading } from '../../../reducers';
+import {
+  getAuthenticatedUserName,
+  getConfiguration,
+  getObjectsMap,
+  getUserLocation,
+  getWebsiteLoading,
+} from '../../../reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import { getObjectName } from '../../../helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';
@@ -21,6 +27,10 @@ import { getConfigFieldsValue } from '../../helper';
 import Loading from '../../../components/Icon/Loading';
 import { getCoordinates } from '../../../user/userActions';
 import './WebsitesConfigurations.less';
+import { getParsedMap } from '../../../components/Maps/mapHelper';
+import CustomMarker from '../../../components/Maps/CustomMarker';
+import { getPropositions } from '../../../../waivioApi/ApiClient';
+import { getPropositionsForMap } from '../../../components/Maps/mapActions';
 
 export const WebsitesConfigurations = ({
   intl,
@@ -34,6 +44,9 @@ export const WebsitesConfigurations = ({
   // eslint-disable-next-line no-shadow
   getCoordinates,
   userLocation,
+  wobjects,
+  userName,
+  getMapPropositions,
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [modalsState, setModalState] = useState({});
@@ -49,6 +62,21 @@ export const WebsitesConfigurations = ({
 
   const { center, zoom, bounds } = settingMap;
   const { lat, lon } = userLocation;
+
+  useEffect(() => {
+    if (lat && lon) {
+      const reqData = {
+        firstMapLoad: true,
+        simplified: true,
+        userName,
+        match,
+        area: [+lat, +lon],
+      };
+      getPropositions(reqData).then(data => {
+        getMapPropositions(data.campaigns);
+      });
+    }
+  }, [lat, lon]);
 
   const logoState = {
     mobileLogo,
@@ -223,6 +251,28 @@ export const WebsitesConfigurations = ({
     setShowSelectColor(false);
   };
 
+  const getMarkers = wObjects =>
+    !isEmpty(wobjects) &&
+    map(wObjects, wobject => {
+      const parsedMap = getParsedMap(get(wobject, ['required_object'], {}));
+      const latitude = get(parsedMap, ['latitude']);
+      const longitude = get(parsedMap, ['longitude']);
+      const isMarked =
+        Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
+        match.path.includes('rewards');
+
+      return latitude && longitude ? (
+        <CustomMarker
+          key={`obj${wobject.author_permlink}`}
+          isMarked={isMarked}
+          anchor={[+latitude, +longitude]}
+          payload={wobject}
+        />
+      ) : null;
+    });
+
+  const markersLayout = getMarkers(wobjects);
+
   return (
     <React.Fragment>
       {!loading ? (
@@ -343,7 +393,10 @@ export const WebsitesConfigurations = ({
                     provider={mapProvider}
                     height={200}
                     width={160}
-                  />
+                    mouseEvents={false}
+                  >
+                    {markersLayout}
+                  </Map>
                   <Button type="primary" onClick={() => setShowMap('desktopMap')}>
                     {intl.formatMessage({
                       id: 'select_area',
@@ -376,7 +429,10 @@ export const WebsitesConfigurations = ({
                     height={200}
                     width={160}
                     provider={mapProvider}
-                  />
+                    mouseEvents={false}
+                  >
+                    {markersLayout}
+                  </Map>
                   <Button type="primary" onClick={() => setShowMap('mobileMap')}>
                     {intl.formatMessage({
                       id: 'select_area',
@@ -455,7 +511,9 @@ export const WebsitesConfigurations = ({
                   onBoundsChanged={state => {
                     onBoundsChanged(state);
                   }}
-                />
+                >
+                  {markersLayout}
+                </Map>
               </div>
             )}
           </Modal>
@@ -512,15 +570,19 @@ WebsitesConfigurations.propTypes = {
   getWebConfig: PropTypes.func.isRequired,
   saveWebConfig: PropTypes.func.isRequired,
   getCoordinates: PropTypes.func.isRequired,
+  getMapPropositions: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       site: PropTypes.string,
     }),
+    path: PropTypes.string.isRequired,
   }).isRequired,
   location: PropTypes.shape().isRequired,
   userLocation: PropTypes.shape().isRequired,
   lat: PropTypes.number.isRequired,
   lon: PropTypes.number.isRequired,
+  userName: PropTypes.string.isRequired,
+  wobjects: PropTypes.shape().isRequired,
 };
 
 export default connect(
@@ -528,11 +590,14 @@ export default connect(
     loading: getWebsiteLoading(state),
     config: getConfiguration(state),
     userLocation: getUserLocation(state),
+    wobjects: getObjectsMap(state),
+    userName: getAuthenticatedUserName(state),
   }),
   {
     getWebConfig: getWebConfiguration,
     saveWebConfig: saveWebConfiguration,
     getMapsCoordinates: getCoordinatesForMap,
     getCoordinates,
+    getMapPropositions: getPropositionsForMap,
   },
 )(Form.create()(withRouter(injectIntl(WebsitesConfigurations))));
