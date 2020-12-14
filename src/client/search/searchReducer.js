@@ -111,7 +111,8 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        searchUsersResults: isEmpty(search) ? [] : result,
+        searchUsersResults: isEmpty(search) ? [] : get(result, 'users', []),
+        hasMoreUsers: get(result, 'hasMore', []),
         isStartSearchUser: false,
       };
     }
@@ -332,3 +333,4 @@ export const getIsStartSearchUser = state => state.isStartSearchUser;
 export const getIsStartSearchObject = state => state.isStartSearchObject;
 export const getIsClearSearchObjects = state => state.isClearSearchObjects;
 export const getHasMoreObjects = state => state.hasMoreObjects;
+export const getHasMoreUsers = state => state.hasMoreUsers;

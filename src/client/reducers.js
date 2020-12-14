@@ -249,6 +249,7 @@ export const getIsStartSearchUser = state => fromSearch.getIsStartSearchUser(sta
 export const getIsStartSearchObject = state => fromSearch.getIsStartSearchObject(state.search);
 export const getIsClearSearchObjects = state => fromSearch.getIsClearSearchObjects(state.search);
 export const getHasMoreObjects = state => fromSearch.getHasMoreObjects(state.search);
+export const getHasMoreUsers = state => fromSearch.getHasMoreUsers(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
