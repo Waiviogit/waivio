@@ -48,7 +48,7 @@ export const WebsitesConfigurations = ({
   userName,
   getMapPropositions,
 }) => {
-  const { getFieldDecorator, getFieldValue } = form;
+  const { getFieldDecorator, getFieldValue, resetFields } = form;
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');
   const [showSelectColor, setShowSelectColor] = useState('');
@@ -87,6 +87,7 @@ export const WebsitesConfigurations = ({
     mobileMap: getFieldValue('mobileMap') || get(config, 'mobileMap'),
     desktopMap: getFieldValue('desktopMap') || get(config, 'desktopMap'),
   };
+  console.log('mapState: ', mapState);
 
   const host = match.params.site;
 
@@ -100,6 +101,11 @@ export const WebsitesConfigurations = ({
       setAbtObject(null);
     };
   }, [location.pathname]);
+
+  const closeMapModal = () => {
+    resetFields(showMap);
+    setShowMap('');
+  };
 
   const setCoordinates = () => {
     // eslint-disable-next-line no-shadow
@@ -496,7 +502,7 @@ export const WebsitesConfigurations = ({
             wrapClassName="Settings__modal"
             title={`Select area`}
             closable
-            onCancel={() => setShowMap('')}
+            onCancel={closeMapModal}
             onOk={() => setShowMap('')}
             visible={showMap}
           >
