@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
@@ -24,8 +24,8 @@ const WebsiteBody = props => {
   });
 
   const mapClassList = classNames('WebsiteBody__map', {
-    'WebsiteBody__hideMap': props.searchType !== 'All',
-  })
+    WebsiteBody__hideMap: props.searchType !== 'All',
+  });
 
   return (
     <div className="WebsiteBody topnav-layout">
@@ -59,6 +59,7 @@ WebsiteBody.propTypes = {
   getCoordinates: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}).isRequired,
   searchType: PropTypes.string.isRequired,
+  searchResult: PropTypes.arrayOf.isRequired,
 };
 
 export default connect(

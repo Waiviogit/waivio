@@ -22,6 +22,7 @@ import {
   isGuestUser,
   getIsOpenWalletTable,
   getIsAuthFetching,
+  getMainPage,
 } from './reducers';
 import {
   login,
@@ -69,6 +70,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isGuest: isGuestUser(state),
     isOpenWalletTable: getIsOpenWalletTable(state),
     loadingFetching: getIsAuthFetching(state),
+    currentPage: getMainPage(state),
   }),
   {
     login,
@@ -92,6 +94,7 @@ class Wrapper extends React.PureComponent {
     usedLocale: PropTypes.string,
     translations: PropTypes.shape(),
     username: PropTypes.string,
+    currentPage: PropTypes.string.isRequired,
     login: PropTypes.func,
     getRewardFund: PropTypes.func,
     getCurrentAppSettings: PropTypes.func,
@@ -266,6 +269,7 @@ class Wrapper extends React.PureComponent {
       isNewUser,
       isOpenWalletTable,
       loadingFetching,
+      currentPage,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
@@ -287,7 +291,7 @@ class Wrapper extends React.PureComponent {
                 </Layout.Header>
               )}
               <div className="content">
-                {!isWidget && (
+                {(!isWidget || currentPage === 'waivio') && (
                   <TopNavigation
                     authenticated={isAuthenticated}
                     userName={username}

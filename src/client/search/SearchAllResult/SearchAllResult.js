@@ -31,9 +31,9 @@ import {
 } from '../searchActions';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
+import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 
 import './SearchAllResult.less';
-import {setMapFullscreenMode} from "../../components/Maps/mapActions";
 
 const SearchAllResult = props => {
   const filterTypes = ['restaurant', 'dish', 'drink', 'Users'];
@@ -119,7 +119,12 @@ const SearchAllResult = props => {
         </React.Fragment>
       )}
       <div className="SearchAllResult__buttonWrap">
-        <Button icon="compass" size="large" className="map-btn" onClick={() => props.setMapFullscreenMode(true)}>
+        <Button
+          icon="compass"
+          size="large"
+          className="map-btn"
+          onClick={() => props.setMapFullscreenMode(true)}
+        >
           {props.intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
         </Button>
       </div>
@@ -152,7 +157,6 @@ SearchAllResult.propTypes = {
   setWebsiteSearchType: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
-  setWebsiteSearchFilter: PropTypes.func.isRequired,
   setSearchSortType: PropTypes.func.isRequired,
   getFilterForSearch: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}).isRequired,
@@ -163,7 +167,9 @@ SearchAllResult.propTypes = {
   hasMore: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
-  setMapFullscreenMode: PropTypes.func.isRequired
+  setMapFullscreenMode: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
+  setWebsiteSearchFilter: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -184,6 +190,6 @@ export default connect(
     getFilterForSearch,
     setWebsiteSearchFilter,
     setSearchSortType,
-    setMapFullscreenMode
+    setMapFullscreenMode,
   },
 )(injectIntl(SearchAllResult));

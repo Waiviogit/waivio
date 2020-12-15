@@ -5,7 +5,7 @@ import Page from '../../feed/Page';
 import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody';
 
 const MainBody = ({ currPage, route }) => {
-  switch ('dining') {
+  switch (currPage) {
     case 'dining':
       return <WebsiteBody />;
 

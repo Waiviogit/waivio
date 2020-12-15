@@ -7,7 +7,7 @@ import WebsiteHeader from '../../websites/WebsiteLayoutComponents/Header/Website
 import { getAuthenticatedUserName, getMainPage, getCurrPage, getObject } from '../../reducers';
 
 const Header = ({ mainPage, username, currPage, wobject }) => {
-  switch ('dining') {
+  switch (mainPage) {
     case 'dining':
       return <WebsiteHeader currPage={currPage} wobj={wobject} />;
 

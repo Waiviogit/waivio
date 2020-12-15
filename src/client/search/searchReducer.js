@@ -1,7 +1,6 @@
 import { compact, concat, get, isEmpty, map, sortBy, remove, findIndex } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
-import { SET_SEARCH_SORT } from './searchActions';
 
 const initialState = {
   loading: true,
