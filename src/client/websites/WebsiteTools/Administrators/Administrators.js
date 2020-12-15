@@ -37,12 +37,7 @@ export const WebsitesAdministrators = ({
     if (admins.includes(selectUser.name)) {
       message.error('This user in admins list');
     } else {
-      addWebAdmins(host, selectUser)
-        .then(() => {
-          setSelectUser(null);
-          getWebAdmins(host);
-        })
-        .catch(() => message.error('Try again, please'));
+      addWebAdmins(host, selectUser);
       setSearchString('');
     }
   };
@@ -50,6 +45,12 @@ export const WebsitesAdministrators = ({
   useEffect(() => {
     getWebAdmins(host);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setSelectUser(null);
+    }
+  }, [isLoading]);
 
   return (
     <div className="WebsitesAdministrators">
