@@ -34,7 +34,10 @@ export const WebsitesAuthorities = ({
       message.error('This user in admins list');
     } else {
       addWebsiteAuthorities(host, selectUser)
-        .then(() => setSelectUser(null))
+        .then(() => {
+          setSelectUser(null);
+          getWebAuthority(host);
+        })
         .catch(() => message.error('Try again, please'));
       setSearchString('');
     }

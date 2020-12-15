@@ -38,7 +38,10 @@ export const WebsitesAdministrators = ({
       message.error('This user in admins list');
     } else {
       addWebAdmins(host, selectUser)
-        .then(() => setSelectUser(null))
+        .then(() => {
+          setSelectUser(null);
+          getWebAdmins(host);
+        })
         .catch(() => message.error('Try again, please'));
       setSearchString('');
     }

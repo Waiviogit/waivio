@@ -31,7 +31,10 @@ export const WebsiteModerators = ({
 
   const addModerator = () => {
     addWebModerators(host, selectUser)
-      .then(() => setSelectUser(null))
+      .then(() => {
+        setSelectUser(null);
+        getWebMods(host);
+      })
       .catch(() => message.error('Try again, please'));
     setSearchString('');
   };
