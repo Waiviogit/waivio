@@ -26,11 +26,11 @@ import {
 import { getConfigFieldsValue } from '../../helper';
 import Loading from '../../../components/Icon/Loading';
 import { getCoordinates } from '../../../user/userActions';
-import './WebsitesConfigurations.less';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
 import { getPropositions } from '../../../../waivioApi/ApiClient';
 import { getPropositionsForMap } from '../../../components/Maps/mapActions';
+import './WebsitesConfigurations.less';
 
 export const WebsitesConfigurations = ({
   intl,
