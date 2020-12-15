@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import store from 'store';
 import { filter, get, includes, isUndefined, size } from 'lodash';
 import { Icon, Menu } from 'antd';
 import { Link } from 'react-router-dom';
@@ -24,6 +25,7 @@ import { PATH_NAME_ACTIVE } from '../../../common/constants/rewards';
 import { logout } from '../../auth/authActions';
 import ModalSignIn from '../Navigation/ModlaSignIn/ModalSignIn';
 import LanguageSettings from '../Navigation/LanguageSettings';
+import { setCurrentPage } from '../../app/appActions';
 
 const HeaderButtons = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -116,6 +118,11 @@ const HeaderButtons = props => {
   const handleMoreMenuSelect = key => {
     setPopoverVisible(false);
     handleMenuItemClick(key);
+
+    if (props.isWebsite) {
+      props.setCurrentPage(key);
+      store.set('currentPage', key);
+    }
   };
 
   if (!username) {
@@ -241,7 +248,9 @@ HeaderButtons.propTypes = {
   notifications: PropTypes.arrayOf(PropTypes.shape()),
   userMetaData: PropTypes.shape(),
   loadingNotifications: PropTypes.bool,
+  isWebsite: PropTypes.bool,
   getUserMetadata: PropTypes.func.isRequired,
+  setCurrentPage: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
@@ -258,6 +267,7 @@ HeaderButtons.defaultProps = {
   userMetaData: {},
   loadingNotifications: false,
   isStartSearchAutoComplete: false,
+  isWebsite: false,
 };
 
 export default connect(
@@ -270,5 +280,6 @@ export default connect(
   {
     getUserMetadata,
     logout,
+    setCurrentPage,
   },
 )(withRouter(injectIntl(HeaderButtons)));

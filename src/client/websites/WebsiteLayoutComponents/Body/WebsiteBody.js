@@ -24,11 +24,11 @@ const WebsiteBody = props => {
 
   return (
     <div className="WebsiteBody topnav-layout">
-      {props.searchType !== 'All' && <SearchAllResult/>}
+      {props.searchType !== 'All' && <SearchAllResult />}
       <div className="WebsiteBody__map">
         {!isEmpty(props.userLocation) && (
           <MapOS
-            wobjects={[]}
+            wobjects={props.searchResult}
             heigth={'93vh'}
             width={'100vw'}
             userLocation={props.userLocation}

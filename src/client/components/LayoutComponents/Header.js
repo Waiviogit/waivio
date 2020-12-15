@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 
 import Topnav from '../Navigation/Topnav';
 import WebsiteHeader from '../../websites/WebsiteLayoutComponents/Header/WebsiteHeader';
-import { getAuthenticatedUserName, getMainPage } from '../../reducers';
+import { getAuthenticatedUserName, getMainPage, getCurrPage, getObject } from '../../reducers';
 
-const Header = ({ currPage, username }) => {
+const Header = ({ mainPage, username, currPage, wobject }) => {
   switch ('dining') {
     case 'dining':
-      return <WebsiteHeader />;
+      return <WebsiteHeader currPage={currPage} wobj={wobject} />;
 
     default:
       return <Topnav username={username} />;
@@ -17,11 +17,15 @@ const Header = ({ currPage, username }) => {
 };
 
 Header.propTypes = {
+  mainPage: PropTypes.string.isRequired,
   currPage: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
+  wobject: PropTypes.shape({}).isRequired,
 };
 
 export default connect(state => ({
   username: getAuthenticatedUserName(state),
-  currPage: getMainPage(state),
+  mainPage: getMainPage(state),
+  currPage: getCurrPage(state),
+  wobject: getObject(state),
 }))(Header);

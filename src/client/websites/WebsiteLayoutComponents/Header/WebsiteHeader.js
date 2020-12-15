@@ -1,29 +1,39 @@
 import React from 'react';
+import store from 'store';
+import { FormattedMessage } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 
 import './WebsiteHeader.less';
+import { getObjectType } from '../../../helpers/wObjectHelper';
 
-const WebsiteHeader = ({ location }) => {
+const WebsiteHeader = ({ currPage, wobj, history }) => {
   const isMainPage = location.pathname === '/';
+  let currentPage = currPage || store.get('currentPage');
+
+  if (location.pathname.includes('object')) {
+    currentPage = getObjectType(wobj);
+  }
 
   return (
     <div className="WebsiteHeader">
       <div className="topnav-layout">
         {isMainPage ? (
-          <WebsiteSearch />
+          <WebsiteSearch history={history} />
         ) : (
           <React.Fragment>
-            <Link className="WebsiteHeader__link" to={'/'}>
+            <Link className="WebsiteHeader__link left" to={'/'}>
               {'< Back'}
             </Link>
-            {/*<span className={'center'}>{location.pathname}</span>*/}
+            <span className="center WebsiteHeader__title">
+              {currentPage && <FormattedMessage id={currentPage} defaultMessage={currentPage} />}
+            </span>
           </React.Fragment>
         )}
         <div className="right">
-          <HeaderButton />
+          <HeaderButton isWebsite />
         </div>
       </div>
     </div>
@@ -31,9 +41,9 @@ const WebsiteHeader = ({ location }) => {
 };
 
 WebsiteHeader.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-  }).isRequired,
+  currPage: PropTypes.string.isRequired,
+  wobj: PropTypes.shape().isRequired,
+  history: PropTypes.shape().isRequired,
 };
 
 export default withRouter(WebsiteHeader);

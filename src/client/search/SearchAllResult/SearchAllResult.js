@@ -41,7 +41,7 @@ const SearchAllResult = props => {
     if (filterTypes.includes(props.searchType) && !isUsersSearch)
       props.getFilterForSearch(props.searchType);
   }, [props.searchType]);
-
+  console.log(props.searchByUser);
   const currentListState = () => {
     switch (props.searchType) {
       case 'user':

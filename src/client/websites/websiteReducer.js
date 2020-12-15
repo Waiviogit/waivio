@@ -56,7 +56,7 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {
-      const websites = get(action.payload, 'websites').map(website => ({
+      const websites = get(action.payload, 'websites', []).map(website => ({
         ...website,
         checked: website.status === 'active',
         pending: [],

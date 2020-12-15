@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { AutoComplete, Icon, Input } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { map, isEmpty, debounce } from 'lodash';
+import { map, isEmpty, debounce, get } from 'lodash';
 import classNames from 'classnames';
 
 import {
@@ -61,6 +61,8 @@ const WebsiteSearch = props => {
     if (searchString) currentSearchMethod(searchString);
   }, [props.searchType, props.sort, props.activeFilters]);
 
+  const handleClickSearchItem = url => props.history.push(url);
+
   const compareSearchResult = () => {
     const { users, wobjects } = props.autoCompleteSearchResults;
     let result = [];
@@ -114,6 +116,7 @@ const WebsiteSearch = props => {
                 key={`wobj${getObjectName(option)}`}
                 value={`wobj${option.defaultShowLink}`}
                 className="Topnav__search-autocomplete"
+                onClick={() => handleClickSearchItem(get(option, 'defaultShowLink'))}
               >
                 <ObjectSearchItem wobj={option} isWebsite />
               </AutoComplete.Option>
@@ -142,6 +145,7 @@ const WebsiteSearch = props => {
                 key={`user${option.account}`}
                 value={`user${option.account}`}
                 className="Topnav__search-autocomplete"
+                onClick={() => handleClickSearchItem(get(option, `@${option.account}`))}
               >
                 <UserSearchItem user={option} />
               </AutoComplete.Option>
@@ -213,6 +217,9 @@ WebsiteSearch.propTypes = {
   searchType: PropTypes.string.isRequired,
   activeFilters: PropTypes.shape({}).isRequired,
   sort: PropTypes.string.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
   autoCompleteSearchResults: PropTypes.shape({
     users: PropTypes.arrayOf,
     wobjects: PropTypes.arrayOf,
