@@ -212,7 +212,6 @@ class MapOS extends React.Component {
 
   getMarkers = () => {
     const { wobjects, match } = this.props;
-
     return (
       !isEmpty(wobjects) &&
       map(wobjects, wobject => {

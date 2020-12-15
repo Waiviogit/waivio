@@ -729,7 +729,6 @@ export const getPropositions = ({
     const url = getUrl(match);
 
     if (isMap && match.params.filterKey === IS_RESERVED) return;
-
     fetch(url, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
