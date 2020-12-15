@@ -1,5 +1,5 @@
 import { message } from 'antd';
-
+import { get } from 'lodash';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
   checkAvailable,
@@ -315,6 +315,31 @@ export const getWebAuthorities = host => (dispatch, getState) => {
 
 export const ADD_WEBSITE_AUTHORITIES = createAsyncActionType('@website/ADD_WEBSITE_AUTHORITIES');
 
+export const getChangesInAuthorities = (blockNum, username, host) => (
+  dispatch,
+  getState,
+  { busyAPI },
+) => {
+  busyAPI.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
+  busyAPI.subscribe((response, mess) => {
+    if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
+      getWebsiteAuthorities(host, username)
+        .then(res => {
+          dispatch({
+            type: ADD_WEBSITE_AUTHORITIES.SUCCESS,
+            payload: res,
+          });
+          return res;
+        })
+        .catch(() =>
+          dispatch({
+            type: ADD_WEBSITE_AUTHORITIES.ERROR,
+          }),
+        );
+    }
+  });
+};
+
 export const addWebAuthorities = (host, account) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = getAuthenticatedUserName(getState());
 
@@ -323,12 +348,22 @@ export const addWebAuthorities = (host, account) => (dispatch, getState, { steem
     payload: account,
   });
 
-  return steemConnectAPI.addWebsiteAuthorities(userName, host, [account.name]).then(() =>
-    dispatch({
-      type: ADD_WEBSITE_AUTHORITIES.SUCCESS,
-      payload: account,
-    }),
-  );
+  steemConnectAPI
+    .addWebsiteAuthorities(userName, host, [account.name])
+    .then(async res => {
+      if (!res.message) {
+        const data = await res.result;
+        return dispatch(getChangesInAuthorities(get(data, 'block_num'), userName, host));
+      }
+      return dispatch({
+        type: ADD_WEBSITE_AUTHORITIES.ERROR,
+      });
+    })
+    .catch(() =>
+      dispatch({
+        type: ADD_WEBSITE_AUTHORITIES.ERROR,
+      }),
+    );
 };
 
 export const DELETE_WEBSITE_AUTHORITIES = createAsyncActionType(
