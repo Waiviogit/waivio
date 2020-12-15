@@ -87,7 +87,6 @@ export const WebsitesConfigurations = ({
     mobileMap: getFieldValue('mobileMap') || get(config, 'mobileMap'),
     desktopMap: getFieldValue('desktopMap') || get(config, 'desktopMap'),
   };
-  console.log('mapState: ', mapState);
 
   const host = match.params.site;
 
