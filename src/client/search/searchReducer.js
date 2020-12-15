@@ -17,6 +17,12 @@ const initialState = {
   isStartSearchUser: false,
   isStartSearchObject: false,
   isClearSearchObjects: false,
+  websiteSearchType: 'All',
+  websiteSearchResult: [],
+  searchUsersResults: [],
+  websiteSearchString: '',
+  tagCategory: [],
+  sort: 'weight',
 };
 
 export default (state = initialState, action) => {
@@ -75,6 +81,7 @@ export default (state = initialState, action) => {
         autoCompleteSearchResults: [],
         searchObjectsResults: [],
         searchUsersResults: [],
+        websiteSearchResult: [],
       };
     }
     case searchActions.SEARCH_OBJECTS.START:
@@ -91,6 +98,7 @@ export default (state = initialState, action) => {
         isStartSearchObject: false,
       };
     }
+
     case searchActions.SEARCH_OBJECTS.ERROR: {
       return initialState;
     }
@@ -101,11 +109,13 @@ export default (state = initialState, action) => {
         searchObjectTypesResults: isEmpty(search) ? [] : result,
       };
     }
+
     case searchActions.SEARCH_USERS.START:
       return {
         ...state,
         isStartSearchUser: true,
       };
+
     case searchActions.SEARCH_USERS.SUCCESS: {
       const { result, search } = action.payload;
 
@@ -113,6 +123,14 @@ export default (state = initialState, action) => {
         ...state,
         searchUsersResults: isEmpty(search) ? [] : get(result, 'users', []),
         hasMoreUsers: get(result, 'hasMore', []),
+        isStartSearchUser: false,
+      };
+    }
+
+    case searchActions.SEARCH_USERS_LOADING_MORE.SUCCESS: {
+      return {
+        ...state,
+        searchUsersResults: [...state.searchUsersResults, ...action.payload.result],
         isStartSearchUser: false,
       };
     }
@@ -315,6 +333,93 @@ export default (state = initialState, action) => {
         beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
       };
     }
+
+    case searchActions.WEBSITE_SEARCH_TYPE: {
+      return {
+        ...state,
+        websiteSearchType: action.payload,
+      };
+    }
+
+    case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.SUCCESS: {
+      return {
+        ...state,
+        websiteSearchResult: action.payload.wobjects,
+        hasMoreObjectsForWebsite: action.payload.hasMore,
+      };
+    }
+
+    case searchActions.SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.SUCCESS: {
+      const { result } = action.payload;
+      return {
+        ...state,
+        websiteSearchResult: [...state.websiteSearchResult, ...result.wobjects],
+        hasMoreObjectsForWebsite: action.payload.hasMore,
+        isStartSearchObject: false,
+      };
+    }
+
+    case searchActions.GET_FILTER_FOR_SEARCH.SUCCESS: {
+      return {
+        ...state,
+        filters: action.payload,
+        tagCategory: [],
+      };
+    }
+
+    case searchActions.SET_WEBSITE_SEARCH_FILTER: {
+      const { category, tag } = action.payload;
+      let tagCategories = [...state.tagCategory];
+      const currentCategory = tagCategories.find(
+        currCategory => currCategory.categoryName === category,
+      );
+
+      if (!currentCategory) {
+        return {
+          ...state,
+          tagCategory: [
+            ...tagCategories,
+            {
+              categoryName: category,
+              tags: [tag],
+            },
+          ],
+        };
+      }
+
+      const isChecked = !currentCategory.tags.includes(tag);
+
+      tagCategories = tagCategories.filter(categ => categ.tagCategory === category);
+
+      if (isChecked)
+        tagCategories = [
+          ...tagCategories,
+          {
+            categoryName: category,
+            tags: [tag],
+          },
+        ];
+
+      return {
+        ...state,
+        tagCategory: [...tagCategories],
+      };
+    }
+
+    case searchActions.SET_WEBSITE_SEARCH_STRING: {
+      return {
+        ...state,
+        websiteSearchString: action.payload,
+      };
+    }
+
+    case searchActions.SET_SEARCH_SORT: {
+      return {
+        ...state,
+        sort: action.payload,
+      };
+    }
+
     default:
       return state;
   }
@@ -334,3 +439,9 @@ export const getIsStartSearchObject = state => state.isStartSearchObject;
 export const getIsClearSearchObjects = state => state.isClearSearchObjects;
 export const getHasMoreObjects = state => state.hasMoreObjects;
 export const getHasMoreUsers = state => state.hasMoreUsers;
+export const getWebsiteSearchType = state => state.websiteSearchType;
+export const getWebsiteSearchResult = state => state.websiteSearchResult;
+export const getSearchFilters = state => get(state, 'filters', []);
+export const getSearchFiltersTagCategory = state => get(state, 'tagCategory', []);
+export const getWebsiteSearchString = state => get(state, 'websiteSearchString', []);
+export const getSearchSort = state => get(state, 'sort', '');

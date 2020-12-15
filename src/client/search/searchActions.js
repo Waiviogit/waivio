@@ -1,4 +1,4 @@
-import { each, concat, reverse, sortBy } from 'lodash';
+import { each, concat, reverse, sortBy, isEmpty } from 'lodash';
 import { message } from 'antd';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
@@ -9,6 +9,9 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   getLocale,
+  getWebsiteSearchType,
+  getSearchFiltersTagCategory,
+  getSearchSort,
 } from '../reducers';
 import { replacer } from '../helpers/parser';
 
@@ -16,10 +19,14 @@ export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM'
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
 export const RESET_AUTO_COMPLETE_SEARCH = '@search/RESET_AUTO_COMPLETE_SEARCH';
 export const SEARCH_OBJECTS = createAsyncActionType('@search/SEARCH_OBJECTS');
+export const SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE = createAsyncActionType(
+  '@search/SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE',
+);
 export const CLEAR_SEARCH_OBJECTS_RESULT = '@search/CLEAR_SEARCH_OBJECTS_RESULT';
 export const RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS =
   '@search/RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS';
 export const SEARCH_USERS = createAsyncActionType('@search/SEARCH_USERS');
+export const SEARCH_USERS_LOADING_MORE = createAsyncActionType('@search/SEARCH_USERS_LOADING_MORE');
 export const SEARCH_OBJECT_TYPES = createAsyncActionType('@search/SEARCH_OBJECT_TYPES');
 export const SEARCH_USERS_FOR_DISCOVER_PAGE = createAsyncActionType(
   '@search/SEARCH_USERS_FOR_DISCOVER_PAGE',
@@ -109,6 +116,66 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
   }).catch(error => console.log('Object search >', error.message));
 };
 
+export const searchObjectsAutoCompeteLoadingMore = (
+  searchString,
+  objType,
+  skip,
+  forParent = false,
+) => (dispatch, getState) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const userName = getAuthenticatedUserName(state);
+  const tagsFilter = getSearchFiltersTagCategory(state);
+  const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
+  const sort = getSearchSort(state);
+
+  dispatch({
+    type: SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.ACTION,
+    payload: ApiClient.searchObjects(
+      searchString,
+      objType,
+      forParent,
+      15,
+      locale,
+      {
+        userName,
+        sort,
+        ...tagCategory,
+      },
+      skip,
+    ).then(result => ({
+      result,
+      search: searchString,
+      locale,
+    })),
+  }).catch(error => console.log('Object search >', error.message));
+};
+
+export const SEARCH_OBJECTS_FOR_WEBSITE = createAsyncActionType(
+  '@search/SEARCH_OBJECTS_FOR_WEBSITE',
+);
+
+export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight') => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const objType = getWebsiteSearchType(state);
+  const userName = getAuthenticatedUserName(state);
+  const tagsFilter = getSearchFiltersTagCategory(state);
+  const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
+
+  dispatch({
+    type: SEARCH_OBJECTS_FOR_WEBSITE.ACTION,
+    payload: ApiClient.searchObjects(searchString, objType, false, 15, locale, {
+      userName,
+      sort,
+      ...tagCategory,
+    }),
+  });
+};
+
 export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
   dispatch,
   getState,
@@ -130,6 +197,20 @@ export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
     });
   }
 };
+
+export const searchUsersAutoCompeteLoadingMore = (userName, skip) => (dispatch, getState) => {
+  const user = getAuthenticatedUserName(getState());
+
+  if (userName) {
+    dispatch({
+      type: SEARCH_USERS_LOADING_MORE.ACTION,
+      payload: {
+        promise: ApiClient.searchUsers(userName, user, 15, false, skip),
+      },
+    });
+  }
+};
+
 export const searchUsersForDiscoverPage = (userName, limit) => (dispatch, getState) => {
   const search = replacer(userName, '@');
   const user = getAuthenticatedUserName(getState());
@@ -241,3 +322,41 @@ export const clearBeneficiariesUsers = () => dispatch =>
   dispatch({
     type: CLEAR_BENEFICIARIES_USERS.ACTION,
   });
+
+export const WEBSITE_SEARCH_TYPE = '@search/WEBSITE_SEARCH_TYPE';
+
+export const setWebsiteSearchType = payload => ({
+  type: WEBSITE_SEARCH_TYPE,
+  payload,
+});
+
+export const SET_WEBSITE_SEARCH_FILTER = '@search/SET_WEBSITE_SEARCH_FILTER';
+
+export const setWebsiteSearchFilter = (category, tag) => ({
+  type: SET_WEBSITE_SEARCH_FILTER,
+  payload: {
+    category,
+    tag,
+  },
+});
+
+export const GET_FILTER_FOR_SEARCH = createAsyncActionType('@search/GET_FILTER_FOR_SEARCH');
+
+export const getFilterForSearch = type => ({
+  type: GET_FILTER_FOR_SEARCH.ACTION,
+  payload: ApiClient.getObjectTypeFilters(type),
+});
+
+export const SET_WEBSITE_SEARCH_STRING = '@search/SET_WEBSITE_SEARCH_STRING';
+
+export const setWebsiteSearchString = searchString => ({
+  type: SET_WEBSITE_SEARCH_STRING,
+  payload: searchString,
+});
+
+export const SET_SEARCH_SORT = '@search/SET_SEARCH_SORT';
+
+export const setSearchSortType = sort => ({
+  type: SET_SEARCH_SORT,
+  payload: sort,
+});

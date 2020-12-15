@@ -22,6 +22,7 @@ const initialState = {
   screenSize: 'large',
   isMobile: false,
   mainPage: 'waivio',
+  currPage: '',
 };
 
 export default (state = initialState, action) => {
@@ -134,6 +135,11 @@ export default (state = initialState, action) => {
         ...state,
         mainPage: action.payload.mainPage,
       };
+    case appTypes.SET_CURRENT_PAGE:
+      return {
+        ...state,
+        currPage: action.payload,
+      };
     default:
       return state;
   }
@@ -166,3 +172,4 @@ export const getWeightValue = (state, weight) => {
 export const getTranslationByKey = (state, key, defaultMessage = '') =>
   get(getTranslations(state), key, defaultMessage);
 export const getMainPage = state => state.mainPage;
+export const getCurrPage = state => state.currPage;

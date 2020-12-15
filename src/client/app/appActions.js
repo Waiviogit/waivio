@@ -99,3 +99,10 @@ export const getCurrentAppSettings = () => ({
     promise: ApiClient.getCurrentAppSettings(),
   },
 });
+
+export const SET_CURRENT_PAGE = '@app/SET_CURRENT_PAGE';
+
+export const setCurrentPage = page => ({
+  type: SET_CURRENT_PAGE,
+  payload: page,
+});

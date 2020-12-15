@@ -2,20 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Page from '../../feed/Page';
+import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody';
 
-const MainPage = ({ currPage, route }) => {
+const MainBody = ({ currPage, route }) => {
   switch (currPage) {
     case 'dining':
-      return <div>dining</div>;
+      return <WebsiteBody />;
 
     default:
       return <Page route={route} />;
   }
 };
 
-MainPage.propTypes = {
+MainBody.propTypes = {
   currPage: PropTypes.string.isRequired,
   route: PropTypes.shape({}).isRequired,
 };
 
-export default MainPage;
+export default MainBody;
