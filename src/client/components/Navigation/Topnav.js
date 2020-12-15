@@ -562,7 +562,7 @@ class Topnav extends React.Component {
                 })}
               />
             </button>
-            <HeaderButton />
+            <HeaderButton searchBarActive={this.state.searchBarActive} />
           </div>
         </div>
       </div>

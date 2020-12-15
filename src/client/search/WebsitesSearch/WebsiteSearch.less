@@ -1,8 +1,15 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
 .WebsiteSearch {
-  width: 38%;
+  width: 55%;
+
+  @media @small {
+    width: 38%;
+  }
 
   &__search-type.ant-select-dropdown-menu-item {
-    border: 1px solid #7c92a0;
+    border: 1px solid @blue-gullGray;
     border-radius: 4px !important;
     padding: 5px !important;
     margin: 5px;
@@ -13,8 +20,8 @@
   }
 
   &__search-type--active.ant-select-dropdown-menu-item {
-    color: orange;
-    border-color: orange;
+    color: @orange-hot;
+    border-color: @orange-hot;
   }
 
   &__dropdown {
@@ -33,7 +40,7 @@
   .ant-input {
     border: none;
     border-radius: 0;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid @black;
     padding: 0 30px !important;
   }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import store from 'store';
+import classNames from 'classnames';
 import { filter, get, includes, isUndefined, size } from 'lodash';
 import { Icon, Menu } from 'antd';
 import { Link } from 'react-router-dom';
@@ -142,7 +143,11 @@ const HeaderButtons = props => {
   }
 
   return (
-    <div className="Topnav__menu-container">
+    <div
+      className={classNames('Topnav__menu-container', {
+        'Topnav__mobile-hidden': props.searchBarActive,
+      })}
+    >
       <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
         <Menu.Item key="write">
           <BTooltip
@@ -259,6 +264,7 @@ HeaderButtons.propTypes = {
     pathname: PropTypes.string,
   }).isRequired,
   username: PropTypes.string,
+  searchBarActive: PropTypes.bool,
 };
 
 HeaderButtons.defaultProps = {
@@ -268,6 +274,7 @@ HeaderButtons.defaultProps = {
   loadingNotifications: false,
   isStartSearchAutoComplete: false,
   isWebsite: false,
+  searchBarActive: false,
 };
 
 export default connect(
