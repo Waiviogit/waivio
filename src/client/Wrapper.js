@@ -291,7 +291,7 @@ class Wrapper extends React.PureComponent {
                 </Layout.Header>
               )}
               <div className="content">
-                {(!isWidget || currentPage === 'waivio') && (
+                {!isWidget && currentPage === 'waivio' && (
                   <TopNavigation
                     authenticated={isAuthenticated}
                     userName={username}
