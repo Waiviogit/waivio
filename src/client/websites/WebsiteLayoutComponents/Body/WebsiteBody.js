@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { connect } from 'react-redux';
 
 import MapOS from '../../../components/Maps/Map';
@@ -22,10 +23,14 @@ const WebsiteBody = props => {
     if (isEmpty(props.userLocation)) props.getCoordinates();
   });
 
+  const mapClassList = classNames('WebsiteBody__map', {
+    'WebsiteBody__hideMap': props.searchType !== 'All',
+  })
+
   return (
     <div className="WebsiteBody topnav-layout">
       {props.searchType !== 'All' && <SearchAllResult />}
-      <div className="WebsiteBody__map">
+      <div className={mapClassList}>
         {!isEmpty(props.userLocation) && (
           <MapOS
             wobjects={props.searchResult}

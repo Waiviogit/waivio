@@ -10,6 +10,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import {
   getHasMoreObjects,
+  getHasMoreUsers,
   getSearchFilters,
   getSearchSort,
   getSearchUsersResults,
@@ -32,19 +33,20 @@ import SortSelector from '../../components/SortSelector/SortSelector';
 import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
 
 import './SearchAllResult.less';
+import {setMapFullscreenMode} from "../../components/Maps/mapActions";
 
 const SearchAllResult = props => {
-  const filterTypes = ['restaurant', 'dish', 'drink', 'user'];
-  const isUsersSearch = props.searchType === 'user';
+  const filterTypes = ['restaurant', 'dish', 'drink', 'Users'];
+  const isUsersSearch = props.searchType === 'Users';
 
   useEffect(() => {
     if (filterTypes.includes(props.searchType) && !isUsersSearch)
       props.getFilterForSearch(props.searchType);
   }, [props.searchType]);
-  console.log(props.searchByUser);
+
   const currentListState = () => {
     switch (props.searchType) {
-      case 'user':
+      case 'Users':
         return {
           list: map(props.searchByUser, user => (
             <UserCard key={user.account} user={{ ...user, name: user.account }} />
@@ -75,7 +77,7 @@ const SearchAllResult = props => {
   const menu = filter => (
     <Menu onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}>
       <Menu.Item key={null}>show all</Menu.Item>
-      {filter.tags.map(tag => (
+      {map(filter.tags, tag => (
         <Menu.Item key={tag}>{tag}</Menu.Item>
       ))}
     </Menu>
@@ -98,7 +100,7 @@ const SearchAllResult = props => {
       {!isUsersSearch && (
         <React.Fragment>
           <div className="SearchAllResult__filters">
-            {props.filters.map(filter => (
+            {map(props.filters, filter => (
               <Dropdown key={filter.tagCategory} overlay={menu(filter)} trigger={['click']}>
                 <Button>
                   {filter.tagCategory} <Icon type="down" />
@@ -116,7 +118,11 @@ const SearchAllResult = props => {
           </SortSelector>
         </React.Fragment>
       )}
-
+      <div className="SearchAllResult__buttonWrap">
+        <Button icon="compass" size="large" className="map-btn" onClick={() => props.setMapFullscreenMode(true)}>
+          {props.intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+        </Button>
+      </div>
       {isEmpty(currRenderListState.list) ? (
         <div>List is empty</div>
       ) : (
@@ -157,6 +163,7 @@ SearchAllResult.propTypes = {
   hasMore: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
+  setMapFullscreenMode: PropTypes.func.isRequired
 };
 
 export default connect(
@@ -165,6 +172,7 @@ export default connect(
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
     hasMore: getHasMoreObjects(state),
+    hasMoreUsers: getHasMoreUsers(state),
     filters: getSearchFilters(state),
     searchString: getWebsiteSearchString(state),
     sort: getSearchSort(state),
@@ -176,5 +184,6 @@ export default connect(
     getFilterForSearch,
     setWebsiteSearchFilter,
     setSearchSortType,
+    setMapFullscreenMode
   },
 )(injectIntl(SearchAllResult));

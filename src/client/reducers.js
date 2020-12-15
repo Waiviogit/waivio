@@ -252,6 +252,7 @@ export const getIsClearSearchObjects = state => fromSearch.getIsClearSearchObjec
 export const getWebsiteSearchType = state => fromSearch.getWebsiteSearchType(state.search);
 export const getWebsiteSearchResult = state => fromSearch.getWebsiteSearchResult(state.search);
 export const getHasMoreObjects = state => fromSearch.getHasMoreObjects(state.search);
+export const getHasMoreUsers = state => fromSearch.getHasMoreUsers(state.search);
 export const getSearchFilters = state => fromSearch.getSearchFilters(state.search);
 export const getWebsiteSearchString = state => fromSearch.getWebsiteSearchString(state.search);
 export const getSearchFiltersTagCategory = state =>
@@ -330,6 +331,8 @@ export const getCampaignNames = state => fromRewards.getCampaignNames(state.rewa
 export const getHistoryCampaigns = state => fromRewards.getHistoryCampaigns(state.rewards);
 export const getHistorySponsors = state => fromRewards.getHistorySponsors(state.rewards);
 export const getHasMoreHistory = state => fromRewards.getHasMoreHistory(state.rewards);
+export const getIsOpenWriteReviewModal = state =>
+  fromRewards.getIsOpenWriteReviewModal(state.rewards);
 
 export const getCampaignServerPercent = state =>
   fromReferral.getCampaignServerPercent(state.referral);

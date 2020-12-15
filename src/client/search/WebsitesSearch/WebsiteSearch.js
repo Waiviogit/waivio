@@ -48,7 +48,7 @@ const WebsiteSearch = props => {
   const currentSearchMethod = value => {
     props.setWebsiteSearchString(value);
     switch (props.searchType) {
-      case 'user':
+      case 'Users':
         return props.searchUsersAutoCompete(value);
       case 'All':
         return props.searchAutoComplete(value);

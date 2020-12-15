@@ -8,6 +8,7 @@ import AppendModal from '../../object/AppendModal/AppendModal';
 import IconButton from '../IconButton';
 import { objectFields } from '../../../common/constants/listOfFields';
 import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
+import { isPhotosAlbumExist } from '../../helpers/wObjectHelper';
 import './Proposition.less';
 
 class Proposition extends React.Component {
@@ -16,7 +17,11 @@ class Proposition extends React.Component {
   };
 
   handleToggleModal = () => {
-    if (this.props.fieldName !== objectFields.pageContent) {
+    const { fieldName, albums, appendAlbum } = this.props;
+    if (fieldName !== objectFields.pageContent) {
+      if (fieldName === objectFields.galleryItem && !isPhotosAlbumExist(albums)) {
+        appendAlbum();
+      }
       this.setState({ showModal: !this.state.showModal });
     }
   };
@@ -87,6 +92,8 @@ Proposition.propTypes = {
   handleSelectField: PropTypes.func,
   selectedField: PropTypes.string,
   linkTo: PropTypes.string,
+  albums: PropTypes.shape(),
+  appendAlbum: PropTypes.func,
 };
 
 Proposition.defaultProps = {
@@ -95,6 +102,8 @@ Proposition.defaultProps = {
   selectedField: '',
   linkTo: '',
   objName: '',
+  albums: [],
+  appendAlbum: () => {},
 };
 
 export default injectIntl(Proposition);

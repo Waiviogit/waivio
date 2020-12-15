@@ -54,8 +54,9 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, history, wobject } = this.props;
+    const { authenticated, history, wobject, match } = this.props;
     const isPageMode = true;
+    const sortBy = authenticated ? match.params.sortBy : match.params.sortBy || 'trending';
 
     return (
       <div>
@@ -86,6 +87,7 @@ class Page extends React.Component {
               {renderRoutes(this.props.route.routes, {
                 isPageMode,
                 wobject,
+                sortBy,
               })}
             </div>
           </div>

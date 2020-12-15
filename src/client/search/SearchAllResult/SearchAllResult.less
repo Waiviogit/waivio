@@ -1,3 +1,6 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
 .SearchAllResult {
   width: 40%;
   padding: 0 25px 0 0;
@@ -6,6 +9,17 @@
     display: flex;
     justify-content: space-evenly;
     padding: 0 0 15px;
+  }
+
+  &__buttonWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0 0;
+
+    @media @small {
+      display: none;
+    }
   }
 
   &__type-wrap {
@@ -17,7 +31,7 @@
   &__type {
     font-size: 25px;
     padding: 0 5px;
-    border-right: 1px solid black;
+    border-right: 1px solid @black;
     height: 25px;
     line-height: 25px;
     cursor: pointer;
@@ -28,11 +42,11 @@
     }
 
     &:hover {
-      color: orange;
+      color: @orange-hot;
     }
 
     &--active {
-      color: orange;
+      color: @orange-hot;
     }
 
     &:last-child {

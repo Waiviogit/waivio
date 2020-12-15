@@ -171,7 +171,6 @@ const FilteredRewardsList = props => {
             : null
         }
         match={match}
-        location={location}
       />
       {isSearchAreaFilter && (
         <Tag className="ttc" key="search-area-filter" closable onClose={resetMapFilter}>

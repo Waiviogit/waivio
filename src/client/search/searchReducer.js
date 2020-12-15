@@ -122,7 +122,8 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        searchUsersResults: isEmpty(search) ? [] : result,
+        searchUsersResults: isEmpty(search) ? [] : get(result, 'users', []),
+        hasMoreUsers: get(result, 'hasMore', []),
         isStartSearchUser: false,
       };
     }
@@ -437,9 +438,10 @@ export const getIsStartSearchAutoComplete = state => state.isStartSearchAutoComp
 export const getIsStartSearchUser = state => state.isStartSearchUser;
 export const getIsStartSearchObject = state => state.isStartSearchObject;
 export const getIsClearSearchObjects = state => state.isClearSearchObjects;
+export const getHasMoreObjects = state => state.hasMoreObjects;
+export const getHasMoreUsers = state => state.hasMoreUsers;
 export const getWebsiteSearchType = state => state.websiteSearchType;
 export const getWebsiteSearchResult = state => state.websiteSearchResult;
-export const getHasMoreObjects = state => state.hasMoreObjectsForWebsite;
 export const getSearchFilters = state => get(state, 'filters', []);
 export const getSearchFiltersTagCategory = state => get(state, 'tagCategory', []);
 export const getWebsiteSearchString = state => get(state, 'websiteSearchString', []);

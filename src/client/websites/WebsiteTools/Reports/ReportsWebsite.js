@@ -30,7 +30,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
     form.validateFields((err, values) => {
       if (!err) {
         const formData = {
-          ...(values.parent && values.parent !== 'All' ? { parent: values.parent } : {}),
+          ...(values.host && values.host !== 'All' ? { host: values.host } : {}),
           ...(values.startDate
             ? {
                 startDate: moment(values.startDate)
@@ -68,7 +68,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
                   })}
                 </span>
               </h3>
-              {getFieldDecorator('parent')(
+              {getFieldDecorator('host')(
                 <AutoComplete>
                   <AutoComplete.Option key={'all'} value={''}>
                     {intl.formatMessage({
@@ -122,7 +122,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
               <Button
                 type="primary"
                 htmlType="submit"
-                disabled={!form.isFieldsTouched(['parent', 'startDate', 'endDate'])}
+                disabled={!form.isFieldsTouched(['host', 'startDate', 'endDate'])}
               >
                 {intl.formatMessage({
                   id: 'payments_generate_report',

@@ -64,7 +64,6 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
             <p>{terminateReferralInfo}</p>
           </Modal>
         </div>
-
         <div className="ReferralInstructions__wrap-conditions">
           <Checkbox checked={currentStatus} id="agreeButton" onChange={handleAgreeRulesCheckbox} />
           <label

@@ -30,6 +30,7 @@ class MapWrap extends React.Component {
     customControl: null,
     onCustomControlClick: () => {},
     primaryObjectCoordinates: [],
+    setMapArea: () => {},
     zoomMap: 0,
   };
 

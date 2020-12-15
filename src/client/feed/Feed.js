@@ -4,6 +4,7 @@ import { size } from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import StoryContainer from './StoryContainer';
 import StoryLoading from '../components/Story/StoryLoading';
+import Loading from '../components/Icon/Loading';
 import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 
 import './Feed.less';
@@ -16,6 +17,7 @@ const Feed = ({
   showPostModal,
   isGuest,
   history,
+  userComments,
 }) => {
   if (isGuest && !size(content) && !isFetching && !history.location.pathname.includes('blog')) {
     return <QuickPostEditor history={history} />;
@@ -25,7 +27,7 @@ const Feed = ({
     <ReduxInfiniteScroll
       className="Feed"
       loadMore={loadMoreContent}
-      loader={<StoryLoading />}
+      loader={userComments ? <Loading /> : <StoryLoading />}
       loadingMore={isFetching}
       hasMore={hasMore}
       elementIsScrollable={false}
@@ -46,6 +48,7 @@ Feed.propTypes = {
   isGuest: PropTypes.bool,
   loadMoreContent: PropTypes.func,
   history: PropTypes.shape(),
+  userComments: PropTypes.bool,
 };
 
 Feed.defaultProps = {
@@ -56,6 +59,7 @@ Feed.defaultProps = {
   loadMoreContent: () => {},
   showPostModal: () => {},
   history: {},
+  userComments: false,
 };
 
 export default Feed;

@@ -522,6 +522,8 @@ export default class AppendForm extends Component {
     const data = prepareAlbumData(formData, user.name, wObject);
     const album = prepareAlbumToStore(data);
 
+    this.setState({ loading: true });
+
     try {
       const { author } = await this.props.appendObject(data);
 
@@ -539,6 +541,7 @@ export default class AppendForm extends Component {
         ),
       );
     } catch (err) {
+      this.setState({ loading: false });
       message.error(
         this.props.intl.formatMessage({
           id: 'gallery_add_album_failure',
@@ -1094,6 +1097,8 @@ export default class AppendForm extends Component {
       case TYPES_OF_MENU_ITEM.LIST: {
         const objectType =
           currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : OBJECT_TYPE.PAGE;
+        const defaultTitle = currentField === TYPES_OF_MENU_ITEM.LIST ? 'List title' : 'Page title';
+        const titleId = currentField === TYPES_OF_MENU_ITEM.LIST ? 'list_title' : 'page_title';
 
         return (
           <React.Fragment>
@@ -1103,8 +1108,8 @@ export default class AppendForm extends Component {
                   className="AppendForm__input"
                   disabled={loading}
                   placeholder={intl.formatMessage({
-                    id: 'menu_item_placeholder',
-                    defaultMessage: 'Menu item name',
+                    id: titleId,
+                    defaultMessage: defaultTitle,
                   })}
                 />,
               )}
