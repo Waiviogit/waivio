@@ -130,7 +130,8 @@ export default (state = initialState, action) => {
     case searchActions.SEARCH_USERS_LOADING_MORE.SUCCESS: {
       return {
         ...state,
-        searchUsersResults: [...state.searchUsersResults, ...action.payload.result],
+        searchUsersResults: [...state.searchUsersResults, ...get(action.payload, 'users', [])],
+        hasMoreUsers: get(action.payload, 'hasMore', []),
         isStartSearchUser: false,
       };
     }
