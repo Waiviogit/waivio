@@ -48,9 +48,8 @@ const PropositionListContainer = ({
       setCurrentProposition(currentPropos[0]);
     });
   };
-
   useEffect(() => {
-    if (wobject && userName) {
+    if (wobject) {
       const reqData = {
         userName,
         match,
@@ -64,7 +63,7 @@ const PropositionListContainer = ({
       }
       getPropositions(reqData);
     }
-  }, [wobject.author_permlink, userName, listItems]);
+  }, [wobject.author_permlink, listItems]);
 
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {
