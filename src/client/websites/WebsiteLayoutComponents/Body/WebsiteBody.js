@@ -29,7 +29,7 @@ const WebsiteBody = props => {
     WebsiteBody__hideMap: props.searchType !== 'All',
   });
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
-  const currentLogo = isMobile ? props.configuration.desktopLogo : props.configuration.mobileLogo;
+  const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
 
   return (
     <div className="WebsiteBody topnav-layout">
