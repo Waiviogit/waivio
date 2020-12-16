@@ -56,7 +56,7 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {
-      const websites = get(action.payload, 'websites').map(website => ({
+      const websites = get(action.payload, 'websites', []).map(website => ({
         ...website,
         checked: website.status === 'active',
         pending: [],
@@ -199,7 +199,7 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.ADD_WEBSITE_ADMINISTRATOR.SUCCESS: {
       return {
         ...state,
-        administrators: [...state.administrators, action.payload],
+        administrators: action.payload,
         loading: false,
       };
     }
@@ -234,7 +234,7 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.ADD_WEBSITE_MODERATORS.SUCCESS: {
       return {
         ...state,
-        moderators: [...state.moderators, action.payload],
+        moderators: action.payload,
         loading: false,
       };
     }
@@ -270,7 +270,7 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.ADD_WEBSITE_AUTHORITIES.SUCCESS: {
       return {
         ...state,
-        authorities: [...state.authorities, action.payload],
+        authorities: action.payload,
         loading: false,
       };
     }

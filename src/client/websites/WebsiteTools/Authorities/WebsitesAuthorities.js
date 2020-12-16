@@ -33,9 +33,7 @@ export const WebsitesAuthorities = ({
     if (authorities.includes(selectUser.name)) {
       message.error('This user in admins list');
     } else {
-      addWebsiteAuthorities(host, selectUser)
-        .then(() => setSelectUser(null))
-        .catch(() => message.error('Try again, please'));
+      addWebsiteAuthorities(host, selectUser);
       setSearchString('');
     }
   };
@@ -43,6 +41,12 @@ export const WebsitesAuthorities = ({
   useEffect(() => {
     getWebAuthority(host);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setSelectUser(null);
+    }
+  }, [isLoading]);
 
   return (
     <div className="WebsitesAuthorities">

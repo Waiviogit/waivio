@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, message } from 'antd';
+import { Button } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
@@ -30,15 +30,19 @@ export const WebsiteModerators = ({
   const host = match.params.site;
 
   const addModerator = () => {
-    addWebModerators(host, selectUser)
-      .then(() => setSelectUser(null))
-      .catch(() => message.error('Try again, please'));
+    addWebModerators(host, selectUser);
     setSearchString('');
   };
 
   useEffect(() => {
     getWebMods(host);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setSelectUser(null);
+    }
+  }, [isLoading]);
 
   return (
     <div className="WebsiteModerators">

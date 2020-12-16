@@ -114,6 +114,8 @@ export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.ap
 export const getIsMobile = state => fromApp.getIsMobile(state.app);
 export const getWeightValue = (state, weight) => fromApp.getWeightValue(state.app, weight);
 export const getMainPage = state => fromApp.getMainPage(state.app);
+export const getCurrPage = state => fromApp.getCurrPage(state.app);
+export const getCurrentHost = state => fromApp.getCurrentHost(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 
@@ -248,7 +250,15 @@ export const getIsStartSearchAutoComplete = state =>
 export const getIsStartSearchUser = state => fromSearch.getIsStartSearchUser(state.search);
 export const getIsStartSearchObject = state => fromSearch.getIsStartSearchObject(state.search);
 export const getIsClearSearchObjects = state => fromSearch.getIsClearSearchObjects(state.search);
+export const getWebsiteSearchType = state => fromSearch.getWebsiteSearchType(state.search);
+export const getWebsiteSearchResult = state => fromSearch.getWebsiteSearchResult(state.search);
 export const getHasMoreObjects = state => fromSearch.getHasMoreObjects(state.search);
+export const getHasMoreUsers = state => fromSearch.getHasMoreUsers(state.search);
+export const getSearchFilters = state => fromSearch.getSearchFilters(state.search);
+export const getWebsiteSearchString = state => fromSearch.getWebsiteSearchString(state.search);
+export const getSearchFiltersTagCategory = state =>
+  fromSearch.getSearchFiltersTagCategory(state.search);
+export const getSearchSort = state => fromSearch.getSearchSort(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
