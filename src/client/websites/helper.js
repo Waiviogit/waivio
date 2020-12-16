@@ -1,4 +1,5 @@
 import { get, isArray } from 'lodash';
+import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const getAvailableStatus = status => {
   switch (status) {
@@ -26,6 +27,33 @@ export const getConfigFieldsValue = (obj, values) => {
     }),
     {},
   );
+};
+
+export const getChangesInAccessOption = (
+  blockNum,
+  username,
+  host,
+  currentActionType,
+  processingFunction,
+) => (dispatch, getState, { busyAPI }) => {
+  busyAPI.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
+  busyAPI.subscribe((response, mess) => {
+    if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
+      processingFunction(host, username)
+        .then(res => {
+          dispatch({
+            type: currentActionType.SUCCESS,
+            payload: res,
+          });
+          return res;
+        })
+        .catch(() =>
+          dispatch({
+            type: currentActionType.ERROR,
+          }),
+        );
+    }
+  });
 };
 
 export default null;

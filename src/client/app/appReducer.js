@@ -134,6 +134,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         mainPage: action.payload.mainPage,
+        host: action.payload.host,
       };
     case appTypes.SET_CURRENT_PAGE:
       return {
@@ -172,4 +173,5 @@ export const getWeightValue = (state, weight) => {
 export const getTranslationByKey = (state, key, defaultMessage = '') =>
   get(getTranslations(state), key, defaultMessage);
 export const getMainPage = state => state.mainPage;
+export const getCurrentHost = state => state.host;
 export const getCurrPage = state => state.currPage;
