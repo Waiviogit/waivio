@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
-import { batch, useDispatch } from 'react-redux';
+import hivesigner from 'hivesigner';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import SteemConnect from '../../../steemConnectAPI';
 import { login, busyLogin, getAuthGuestBalance } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
@@ -13,6 +13,7 @@ import { getRebloggedList } from '../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
+import { getCurrentHost } from '../../../reducers';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import {
   clearAllSessionProposition,
@@ -38,7 +39,11 @@ const ModalSignIn = ({
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const host = useSelector(getCurrentHost);
+  const hiveSinger = new hivesigner.Client({
+    app: process.env.STEEMCONNECT_CLIENT_ID,
+    callbackURL: `https://${host}/callback`,
+  });
   const isWidget = getSessionData('isWidget');
 
   useEffect(() => {
@@ -135,7 +140,7 @@ const ModalSignIn = ({
                 })}
               </span>
             </p>
-            <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignIn__signin">
+            <a role="button" href={hiveSinger.getLoginURL(next)} className="ModalSignIn__signin">
               <img
                 src="/images/icons/logo-hive.svg"
                 alt="hive"
