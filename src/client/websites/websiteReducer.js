@@ -268,7 +268,6 @@ export default function websiteReducer(state = initialState, action) {
     }
 
     case websiteAction.ADD_WEBSITE_AUTHORITIES.SUCCESS: {
-      console.log('action.payload: ', action.payload);
       return {
         ...state,
         authorities: action.payload,
