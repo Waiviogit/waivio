@@ -53,7 +53,7 @@ const SearchAllResult = props => {
           )),
           loadingMore: () =>
             props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser)),
-          hasMore: false,
+          hasMore: props.hasMoreUsers,
         };
 
       default:
@@ -133,7 +133,7 @@ const SearchAllResult = props => {
       ) : (
         <ReduxInfiniteScroll
           className="Feed"
-          loadMore={currRenderListState.loadingMore}
+          loadMore={() => currRenderListState.loadingMore()}
           loader={<Loading />}
           loadingMore={false}
           hasMore={currRenderListState.hasMore}
@@ -165,6 +165,7 @@ SearchAllResult.propTypes = {
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
   hasMore: PropTypes.bool.isRequired,
+  hasMoreUsers: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
   setMapFullscreenMode: PropTypes.func.isRequired,
