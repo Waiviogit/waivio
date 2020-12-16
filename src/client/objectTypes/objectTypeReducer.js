@@ -49,6 +49,7 @@ const objectType = (state = initialState, action) => {
       const hasMap = !isEmpty(
         filter(relatedWobjects, object => get(object, ['map']) || get(object, ['parent', 'map'])),
       );
+
       return {
         ...state,
         data,

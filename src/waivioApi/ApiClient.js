@@ -259,10 +259,20 @@ export const getContent = (author, permlink = '', locale, follower) =>
       .catch(error => reject(error));
   });
 
-export const searchObjects = (searchString, objType = '', forParent, limit = 15, locale) => {
-  const requestBody = { search_string: searchString, limit };
+export const searchObjects = (
+  searchString,
+  objType = '',
+  forParent,
+  limit = 15,
+  locale,
+  body = {},
+  skip,
+) => {
+  const requestBody = { search_string: searchString, limit, skip, ...body };
+
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
+
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers: { ...headers, locale, app: config.appName },
     method: 'POST',
@@ -272,10 +282,10 @@ export const searchObjects = (searchString, objType = '', forParent, limit = 15,
     .then(res => res.json());
 };
 
-export const searchUsers = (searchString, username, limit = 15, notGuest = false) =>
+export const searchUsers = (searchString, username, limit = 15, notGuest = false, skip = 0) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}&notGuest=${notGuest}`,
+      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}&skip=${skip}&notGuest=${notGuest}`,
       {
         headers: {
           ...headers,
@@ -1830,6 +1840,15 @@ export const getCurrentAppSettings = () =>
   fetch(`${config.apiPrefix}${config.sites}`, {
     headers,
     method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getObjectTypeFilters = type =>
+  fetch(`${config.apiPrefix}${config.objectType}${config.tagForFilter}?objectType=${type}`, {
+    headers,
+    method: 'GET',
   })
     .then(res => res.json())
     .then(res => res)
