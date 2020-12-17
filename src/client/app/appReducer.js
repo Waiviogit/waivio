@@ -23,6 +23,7 @@ const initialState = {
   isMobile: false,
   mainPage: 'waivio',
   currPage: '',
+  configuration: [],
 };
 
 export default (state = initialState, action) => {
@@ -135,6 +136,7 @@ export default (state = initialState, action) => {
         ...state,
         mainPage: action.payload.mainPage,
         host: action.payload.host,
+        configuration: action.payload.configuration,
       };
     case appTypes.SET_CURRENT_PAGE:
       return {
@@ -175,3 +177,4 @@ export const getTranslationByKey = (state, key, defaultMessage = '') =>
 export const getMainPage = state => state.mainPage;
 export const getCurrentHost = state => state.host;
 export const getCurrPage = state => state.currPage;
+export const getConfigurationValues = state => state.configuration;

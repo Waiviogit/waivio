@@ -116,6 +116,7 @@ export const getWeightValue = (state, weight) => fromApp.getWeightValue(state.ap
 export const getMainPage = state => fromApp.getMainPage(state.app);
 export const getCurrPage = state => fromApp.getCurrPage(state.app);
 export const getCurrentHost = state => fromApp.getCurrentHost(state.app);
+export const getConfigurationValues = state => fromApp.getConfigurationValues(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 
