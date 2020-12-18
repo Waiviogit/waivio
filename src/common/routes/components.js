@@ -107,6 +107,9 @@ export default {
   WebsiteObjectFilters: loableComponent(
     import('../../client/websites/WebsiteTools/ObjectsFilters/WebsiteObjectFilters'),
   ),
+  WebsiteObjects: loableComponent(
+    import('../../client/websites/WebsiteTools/Objects/WebsiteObjects'),
+  ),
   WebsiteRestrictions: loableComponent(
     import('../../client/websites/WebsiteTools/Restrictions/WebsiteRestrictions'),
   ),

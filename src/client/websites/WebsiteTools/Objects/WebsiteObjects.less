@@ -1,0 +1,51 @@
+.MapWrap {
+  position: relative;
+
+  &__new-aria-btn {
+    position: absolute;
+    z-index: 100;
+    top: 85%;
+    left: 5%;
+
+    & i {
+      font-size: 35px;
+      color: #f87007;
+    }
+  }
+
+  .WebsiteObjectsControl {
+    position: absolute;
+    z-index: 200;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    align-items: flex-end;
+    top: 70%;
+    left: 93%;
+
+    &__gps {
+      cursor: pointer;
+      z-index: 100;
+      margin-bottom: 5px;
+    }
+
+    &__zoom {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      z-index: 100;
+
+      &__button {
+        width: 25px;
+        height: 25px;
+        text-align: center;
+        background-color: #ffffff;
+        border: 1px solid #e9e7e7;
+
+        &:hover {
+          background-color: #e9e7e7;
+        }
+      }
+    }
+  }
+}
