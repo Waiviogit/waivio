@@ -23,6 +23,7 @@ const initialState = {
   isMobile: false,
   mainPage: 'waivio',
   currPage: '',
+  currMap: { center: [], zoom: 6 },
 };
 
 export default (state = initialState, action) => {
@@ -130,12 +131,19 @@ export default (state = initialState, action) => {
         ...state,
         isMobile: mobileUserAgents.test(navigator.userAgent),
       };
-    case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS:
+    case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
+      const { mainPage, host, configuration } = action.payload;
       return {
         ...state,
-        mainPage: action.payload.mainPage,
-        host: action.payload.host,
+        mainPage,
+        host,
+        configuration,
+        currMap: {
+          center: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
+          zoom: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),
+        },
       };
+    }
     case appTypes.SET_CURRENT_PAGE:
       return {
         ...state,
@@ -175,3 +183,5 @@ export const getTranslationByKey = (state, key, defaultMessage = '') =>
 export const getMainPage = state => state.mainPage;
 export const getCurrentHost = state => state.host;
 export const getCurrPage = state => state.currPage;
+export const getMapForMainPage = state => state.currMap;
+export const getWebsiteConfiguration = state => state.configuration;

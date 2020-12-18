@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get, map, isEqual, debounce, has, size } from 'lodash';
+import { isEmpty, get, map, isEqual, debounce, has, size, isArray } from 'lodash';
 import React, { createRef } from 'react';
 import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
@@ -51,7 +51,9 @@ class MapOS extends React.Component {
     this.state = {
       infoboxData: false,
       zoom: this.props.match.params.filterKey === IS_RESERVED ? DEFAULT_ZOOM : props.zoomMap,
-      center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+      center: isArray(this.props.userLocation)
+        ? this.props.userLocation
+        : [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
       radius: DEFAULT_RADIUS,
     };
