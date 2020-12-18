@@ -1519,5 +1519,7 @@
   "vote_sponsor": "Sponsor:",
   "vote_upvotes": "Upvotes:",
   "flag": "Flag",
-  "find_restaurants_and_dishes": "Find restaurants and dishes"
+  "find_restaurants_and_dishes": "Find restaurants and dishes",
+  "unhide_post": "Unhide post",
+  "hide_post": "Hide post"
 }

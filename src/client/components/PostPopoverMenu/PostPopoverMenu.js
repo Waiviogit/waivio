@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty } from 'lodash';
+import { ReactSVG } from 'react-svg';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
@@ -26,11 +27,13 @@ const propTypes = {
       userId: PropTypes.string,
     }),
     author: PropTypes.string,
+    isHide: PropTypes.bool,
     url: PropTypes.string,
     title: PropTypes.string,
     author_original: PropTypes.string,
     youFollows: PropTypes.bool,
     loading: PropTypes.bool,
+    loadingHide: PropTypes.bool,
     wobjects: PropTypes.shape(),
     tags: PropTypes.shape(),
     cities: PropTypes.shape(),
@@ -78,7 +81,6 @@ const PostPopoverMenu = ({
     youFollows: userFollowed,
     loading,
   } = post;
-
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = window ? window.location.origin : 'https://waivio.com';
@@ -150,6 +152,21 @@ const PostPopoverMenu = ({
       <PopoverMenuItem key="follow" disabled={loading}>
         {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="hide" disabled={loading}>
+        {post.loadingHide ? (
+          <Icon type="loading" />
+        ) : (
+          <ReactSVG
+            className={`hide-button ${post.isHide ? 'hide-button--fill' : ''}`}
+            wrapper="span"
+            src="/images/icons/eye-hide.svg"
+          />
+        )}
+        <FormattedMessage
+          id={post.isHide ? 'unhide_post' : 'hide_post'}
+          defaultMessage={post.isHide ? 'Unhide post' : 'Hide post'}
+        />
       </PopoverMenuItem>,
     ];
   }
