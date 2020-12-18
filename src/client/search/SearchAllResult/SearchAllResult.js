@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty, map, size } from 'lodash';
@@ -19,8 +19,6 @@ import {
   getWebsiteSearchType,
 } from '../../reducers';
 import { getActiveItemClassList } from '../helpers';
-import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
-import Loading from '../../components/Icon/Loading';
 import {
   getFilterForSearch,
   searchObjectsAutoCompeteLoadingMore,
@@ -36,6 +34,7 @@ import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 import './SearchAllResult.less';
 
 const SearchAllResult = props => {
+  const [isScrolled, setIsScrolled] = useState(false);
   const filterTypes = ['restaurant', 'dish', 'drink', 'Users'];
   const isUsersSearch = props.searchType === 'Users';
 
@@ -44,6 +43,12 @@ const SearchAllResult = props => {
       props.getFilterForSearch(props.searchType);
   }, [props.searchType]);
 
+  useEffect(() => {
+    if (isScrolled) {
+      props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser));
+    }
+  }, [isScrolled]);
+
   const currentListState = () => {
     switch (props.searchType) {
       case 'Users':
@@ -51,8 +56,6 @@ const SearchAllResult = props => {
           list: map(props.searchByUser, user => (
             <UserCard key={user.account} user={{ ...user, name: user.account }} />
           )),
-          loadingMore: () =>
-            props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser)),
           hasMore: props.hasMoreUsers,
         };
 
@@ -69,6 +72,15 @@ const SearchAllResult = props => {
             ),
           hasMore: props.hasMore,
         };
+    }
+  };
+
+  const getEndScroll = e => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
     }
   };
 
@@ -97,52 +109,40 @@ const SearchAllResult = props => {
           </span>
         ))}
       </div>
-      {!isUsersSearch && (
-        <React.Fragment>
-          <div className="SearchAllResult__filters">
-            {map(props.filters, filter => (
-              <Dropdown key={filter.tagCategory} overlay={menu(filter)} trigger={['click']}>
-                <Button>
-                  {filter.tagCategory} <Icon type="down" />
-                </Button>
-              </Dropdown>
-            ))}
-          </div>
-          <SortSelector sort={props.sort} onChange={props.setSearchSortType}>
-            <SortSelector.Item key={SORT_OPTIONS_WOBJ.WEIGHT}>
-              {props.intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
-            </SortSelector.Item>
-            <SortSelector.Item key={SORT_OPTIONS_WOBJ.RECENCY}>
-              {props.intl.formatMessage({ id: 'recency', defaultMessage: 'Recency' })}
-            </SortSelector.Item>
-          </SortSelector>
-        </React.Fragment>
-      )}
-      <div className="SearchAllResult__buttonWrap">
-        <Button
-          icon="compass"
-          size="large"
-          className="map-btn"
-          onClick={() => props.setMapFullscreenMode(true)}
-        >
-          {props.intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
-        </Button>
+      <div className="SearchAllResult__main-wrap" onScroll={getEndScroll}>
+        {!isUsersSearch && (
+          <React.Fragment>
+            <div className="SearchAllResult__filters">
+              {map(props.filters, filter => (
+                <Dropdown key={filter.tagCategory} overlay={menu(filter)} trigger={['click']}>
+                  <Button>
+                    {filter.tagCategory} <Icon type="down" />
+                  </Button>
+                </Dropdown>
+              ))}
+            </div>
+            <SortSelector sort={props.sort} onChange={props.setSearchSortType}>
+              <SortSelector.Item key={SORT_OPTIONS_WOBJ.WEIGHT}>
+                {props.intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
+              </SortSelector.Item>
+              <SortSelector.Item key={SORT_OPTIONS_WOBJ.RECENCY}>
+                {props.intl.formatMessage({ id: 'recency', defaultMessage: 'Recency' })}
+              </SortSelector.Item>
+            </SortSelector>
+          </React.Fragment>
+        )}
+        <div className="SearchAllResult__buttonWrap">
+          <Button
+            icon="compass"
+            size="large"
+            className="map-btn"
+            onClick={() => props.setMapFullscreenMode(true)}
+          >
+            {props.intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+          </Button>
+        </div>
+        {isEmpty(currRenderListState.list) ? <div>List is empty</div> : currRenderListState.list}
       </div>
-      {isEmpty(currRenderListState.list) ? (
-        <div>List is empty</div>
-      ) : (
-        <ReduxInfiniteScroll
-          className="Feed"
-          loadMore={() => currRenderListState.loadingMore()}
-          loader={<Loading />}
-          loadingMore={false}
-          hasMore={currRenderListState.hasMore}
-          elementIsScrollable={false}
-          threshold={1500}
-        >
-          {currRenderListState.list}
-        </ReduxInfiniteScroll>
-      )}
     </div>
   );
 };
