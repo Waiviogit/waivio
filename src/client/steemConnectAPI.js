@@ -446,6 +446,21 @@ function sc2Extended() {
 
         return this.broadcast([['custom_json', params]], cb);
       },
+      hidePost(username, author, permlink, action, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'hide_post',
+          json: JSON.stringify({
+            author,
+            permlink,
+            action,
+            ...(isGuest ? { guestName: username } : {}),
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
     },
   );
 }
