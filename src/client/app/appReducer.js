@@ -24,6 +24,7 @@ const initialState = {
   mainPage: 'waivio',
   currPage: '',
   currMap: { center: [], zoom: 6 },
+  configuration: [],
 };
 
 export default (state = initialState, action) => {
@@ -183,5 +184,6 @@ export const getTranslationByKey = (state, key, defaultMessage = '') =>
 export const getMainPage = state => state.mainPage;
 export const getCurrentHost = state => state.host;
 export const getCurrPage = state => state.currPage;
+export const getConfigurationValues = state => state.configuration;
 export const getMapForMainPage = state => state.currMap;
 export const getWebsiteConfiguration = state => state.configuration;

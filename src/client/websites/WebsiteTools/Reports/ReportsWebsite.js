@@ -70,7 +70,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
               </h3>
               {getFieldDecorator('host')(
                 <AutoComplete>
-                  <AutoComplete.Option key={'all'} value={''}>
+                  <AutoComplete.Option key={'all'}>
                     {intl.formatMessage({
                       id: 'all',
                       defaultMessage: 'All',

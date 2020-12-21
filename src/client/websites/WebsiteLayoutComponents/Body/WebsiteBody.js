@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import MapOS from '../../../components/Maps/Map';
 import {
   getMapForMainPage,
+  getConfigurationValues,
+  getScreenSize,
   getSearchUsersResults,
   getUserLocation,
   getWebsiteSearchResult,
@@ -30,10 +32,18 @@ const WebsiteBody = props => {
   useEffect(() => {
     if (isEmpty(props.userLocation)) props.getCoordinates();
   });
+  const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
+  const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
 
   return (
     <div className="WebsiteBody topnav-layout">
       {props.searchType !== 'All' && <SearchAllResult />}
+      <img
+        className="WebsiteBody__logo"
+        srcSet={currentLogo}
+        alt="pacific dining gifts"
+        styleName="brain-image"
+      />
       <div className={mapClassList}>
         {!isEmpty(currMapCoordinates) && (
           <MapOS
@@ -64,6 +74,8 @@ WebsiteBody.propTypes = {
   userLocation: PropTypes.shape({}).isRequired,
   searchType: PropTypes.string.isRequired,
   searchResult: PropTypes.arrayOf.isRequired,
+  configuration: PropTypes.arrayOf.isRequired,
+  screenSize: PropTypes.string.isRequired,
   configCoordinates: PropTypes.arrayOf.isRequired,
 };
 
@@ -74,6 +86,8 @@ export default connect(
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
     configCoordinates: getMapForMainPage(state),
+    configuration: getConfigurationValues(state),
+    screenSize: getScreenSize(state),
   }),
   {
     getCoordinates,
