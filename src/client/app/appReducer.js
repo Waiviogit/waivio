@@ -23,6 +23,7 @@ const initialState = {
   isMobile: false,
   mainPage: 'waivio',
   currPage: '',
+  currMap: { center: [], zoom: 6 },
   configuration: [],
 };
 
@@ -131,13 +132,19 @@ export default (state = initialState, action) => {
         ...state,
         isMobile: mobileUserAgents.test(navigator.userAgent),
       };
-    case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS:
+    case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
+      const { mainPage, host, configuration } = action.payload;
       return {
         ...state,
-        mainPage: action.payload.mainPage,
-        host: action.payload.host,
-        configuration: action.payload.configuration,
+        mainPage,
+        host,
+        configuration,
+        currMap: {
+          center: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
+          zoom: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),
+        },
       };
+    }
     case appTypes.SET_CURRENT_PAGE:
       return {
         ...state,
@@ -178,3 +185,5 @@ export const getMainPage = state => state.mainPage;
 export const getCurrentHost = state => state.host;
 export const getCurrPage = state => state.currPage;
 export const getConfigurationValues = state => state.configuration;
+export const getMapForMainPage = state => state.currMap;
+export const getWebsiteConfiguration = state => state.configuration;
