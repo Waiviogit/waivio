@@ -9,7 +9,7 @@ import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
-import { getSocialInfoPost } from '../../post/postActions';
+import { getSocialInfoPost, handleHidePost } from '../../post/postActions';
 
 import './StoryFooter.less';
 import withAuthActions from '../../auth/withAuthActions';
@@ -22,6 +22,7 @@ import withAuthActions from '../../auth/withAuthActions';
   }),
   {
     getSocialInfoPostAction: getSocialInfoPost,
+    handleHidePost,
   },
 )
 class StoryFooter extends React.Component {
@@ -48,6 +49,7 @@ class StoryFooter extends React.Component {
     handleEditClick: PropTypes.func.isRequired,
     handleFollowClick: PropTypes.func.isRequired,
     toggleBookmark: PropTypes.func.isRequired,
+    handleHidePost: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -153,6 +155,9 @@ class StoryFooter extends React.Component {
         break;
       case 'edit':
         handleEditClick(post);
+        break;
+      case 'hide':
+        this.props.handleHidePost(post);
         break;
       default:
     }

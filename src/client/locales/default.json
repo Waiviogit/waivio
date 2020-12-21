@@ -1520,6 +1520,8 @@
   "vote_upvotes": "Upvotes:",
   "flag": "Flag",
   "find_restaurants_and_dishes": "Find restaurants and dishes",
+  "unhide_post": "Unhide post",
+  "hide_post": "Hide post",
   "website_objects_heading": "Select objects",
   "website_objects_description": "All objects (restaurants, dishes, drinks) located in the areas specified on the map will appear on the website. If you want to have more control over the list of objects, you can use the Authorities to do so.",
   "website_object_rules_of_selections": "Press {plusSymbol} to add a new area. Click & drag corners to resize. Click {cancelSymbol} to remove the area. Zoom in for controls."
