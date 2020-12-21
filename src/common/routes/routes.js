@@ -399,15 +399,6 @@ const routes = {
       path: '/exit',
       component: Views.ExitPage,
     },
-    { path: `/:sortBy(trending|created|hot|feed)/:category?`,
-      component: Views.Page,
-      routes: [
-        {
-          path: '/:sortBy(trending|created|hot|feed)?/:category?',
-          component: Views.SubFeed,
-        },
-      ]
-    },
     {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
       component: Views.MainBody,

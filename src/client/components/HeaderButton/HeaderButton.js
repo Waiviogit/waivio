@@ -88,7 +88,7 @@ const HeaderButtons = props => {
         history.push('/settings');
         break;
       case 'feed':
-        history.push('/my-feed');
+        history.push('/');
         break;
       case 'news':
         history.push('/trending');
