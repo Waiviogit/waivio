@@ -1522,5 +1522,7 @@
   "vote_sponsor": "Спонсор:",
   "vote_upvotes": "Лайки:",
   "flag": "Пожаловаться",
-  "find_restaurants_and_dishes": "Найти рестораны и блюда"
+  "find_restaurants_and_dishes": "Найти рестораны и блюда",
+  "unhide_post": "Показать пост",
+  "hide_post": "Скрыть пост"
 }

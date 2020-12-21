@@ -288,6 +288,38 @@ const posts = (state = initialState, action) => {
         },
       };
     }
+
+    case postsActions.HIDE_POST.START: {
+      const key = getPostKey(action.meta.post);
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [key]: {
+            ...action.meta.post,
+            loadingHide: true,
+          },
+        },
+      };
+    }
+
+    case postsActions.HIDE_POST.SUCCESS: {
+      const key = getPostKey(action.meta.post);
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [key]: {
+            ...state.list[key],
+            isHide: !action.meta.post.isHide,
+            loadingHide: false,
+          },
+        },
+      };
+    }
+
     default:
       return state;
   }
