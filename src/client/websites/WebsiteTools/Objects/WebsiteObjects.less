@@ -1,3 +1,5 @@
+@import (reference) '../../../styles/custom.less';
+
 .WebsiteObjects {
   &__explanations {
     margin-bottom: 10px;
@@ -15,8 +17,8 @@
 
     & i {
       font-size: 35px;
-      color: #f87007;
-      background: #ffffff;
+      color: @orange-hot;
+      background: @white;
       border-radius: 50%;
     }
   }
@@ -47,12 +49,12 @@
         width: 25px;
         height: 25px;
         text-align: center;
-        background-color: #ffffff;
-        border: 1px solid #e9e7e7;
-        color: #000000;
+        background-color: @white;
+        border: 1px solid @border-color-base;
+        color: @black;
 
         &:hover {
-          background-color: #e9e7e7;
+          background-color: @primary-color;
         }
       }
     }
