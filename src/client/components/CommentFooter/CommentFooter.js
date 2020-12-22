@@ -31,6 +31,7 @@ export default class CommentFooter extends React.Component {
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
     onReplyClick: PropTypes.func,
+    handleHideComment: PropTypes.func,
     onEditClick: PropTypes.func,
     isGuest: PropTypes.bool,
   };
@@ -47,6 +48,7 @@ export default class CommentFooter extends React.Component {
     onDislikeClick: () => {},
     onReplyClick: () => {},
     onEditClick: () => {},
+    handleHideComment: () => {},
     isGuest: false,
   };
 
@@ -96,7 +98,20 @@ export default class CommentFooter extends React.Component {
 
   handleDislikeClick = () => this.props.onDislikeClick(this.props.comment.id);
 
+  handleHideComment = () => this.props.handleHideComment(this.props.comment);
+
   handleSliderCancel = () => this.setState({ sliderVisible: false });
+
+  handleClickPopoverMenu = key => {
+    switch (key) {
+      case 'flag':
+        return this.handleDislikeClick();
+      case 'hide':
+        return this.handleHideComment();
+      default:
+        return () => {};
+    }
+  };
 
   handleSliderChange = async value => {
     const { isGuest, user, comment } = this.props;
@@ -137,6 +152,7 @@ export default class CommentFooter extends React.Component {
                 defaultVotePercent={defaultVotePercent}
                 onLikeClick={this.handleLikeClick}
                 onDislikeClick={this.handleDislikeClick}
+                handlePopoverClick={this.handleClickPopoverMenu}
                 onReplyClick={this.props.onReplyClick}
                 onEditClick={this.props.onEditClick}
               />
