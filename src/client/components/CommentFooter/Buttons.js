@@ -12,6 +12,7 @@ import ReactionsModal from '../Reactions/ReactionsModal';
 import withAuthActions from '../../auth/withAuthActions';
 import USDDisplay from '../Utils/USDDisplay';
 import PayoutDetail from '../PayoutDetail';
+import CommentPopover from './Popover/CommentPopover';
 
 @injectIntl
 @withAuthActions
@@ -35,6 +36,7 @@ class Buttons extends React.Component {
     onDislikeClick: PropTypes.func,
     onReplyClick: PropTypes.func,
     onEditClick: PropTypes.func,
+    handlePopoverClick: PropTypes.func,
   };
 
   static defaultProps = {
@@ -47,6 +49,7 @@ class Buttons extends React.Component {
     onReplyClick: () => {},
     onEditClick: () => {},
     onActionInitiated: () => {},
+    handlePopoverClick: () => {},
   };
 
   constructor(props) {
@@ -93,19 +96,15 @@ class Buttons extends React.Component {
       editing,
       replying,
     } = this.props;
-
     const pendingVote = find(pendingVotes, { id: comment.id });
     const pendingLike = pendingVote && (pendingVote.percent > 0 || pendingVote.vote === 'like');
     const pendingDisLike =
       pendingVote && (pendingVote.percent < 0 || pendingVote.vote === 'dislike');
-
     const payout = calculatePayout(comment);
-
     const upVotes = getUpvotes(comment.active_votes).sort(sortVotes);
     const downVotes = getDownvotes(comment.active_votes)
       .sort(sortVotes)
       .reverse();
-
     const totalPayout =
       parseFloat(comment.pending_payout_value) +
       parseFloat(comment.total_payout_value) +
@@ -131,19 +130,9 @@ class Buttons extends React.Component {
         { amount: upVotesDiff },
       );
 
-    const downVotesPreview = take(downVotes, 10).map(vote => <p key={vote.voter}>{vote.voter}</p>);
-    const downVotesDiff = downVotes.length - downVotesPreview.length;
-    const downVotesMore =
-      downVotesDiff > 0 &&
-      intl.formatMessage(
-        { id: 'and_more_amount', defaultMessage: 'and {amount} more' },
-        { amount: downVotesDiff },
-      );
-
     const userVote = find(comment.active_votes, { voter: user.name });
 
     const userUpVoted = userVote && userVote.percent > 0;
-    const userDownVoted = userVote && userVote.percent < 0;
 
     let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
     if (userUpVoted) {
@@ -196,40 +185,6 @@ class Buttons extends React.Component {
             </BTooltip>
           </span>
         )}
-        <BTooltip title={intl.formatMessage({ id: 'dislike', defaultMessage: 'Dislike' })}>
-          <a
-            role="presentation"
-            className={classNames('CommentFooter__link', {
-              'CommentFooter__link--active': userDownVoted,
-            })}
-            onClick={this.handleDislikeClick}
-          >
-            {pendingDisLike ? (
-              <Icon type="loading" />
-            ) : (
-              <i className="iconfont icon-praise_fill Comment__icon_dislike" />
-            )}
-          </a>
-        </BTooltip>
-        {downVotes.length > 0 && (
-          <span
-            className="CommentFooter__count"
-            role="presentation"
-            onClick={this.handleShowReactions}
-          >
-            <BTooltip
-              title={
-                <div>
-                  {downVotesPreview}
-                  {downVotesMore}
-                </div>
-              }
-            >
-              <FormattedNumber value={downVotes.length} />
-              <span />
-            </BTooltip>
-          </span>
-        )}
         {payoutValue >= 0.005 && (
           <React.Fragment>
             <span className="CommentFooter__bullet" />
@@ -269,6 +224,14 @@ class Buttons extends React.Component {
             </a>
           </span>
         )}
+        <span className="CommentFooter__link CommentFooter__popover">
+          <CommentPopover
+            comment={{ ...comment, pendingDisLike }}
+            handlePopoverClick={this.props.handlePopoverClick}
+          >
+            <i className="iconfont icon-more" />
+          </CommentPopover>
+        </span>
         <ReactionsModal
           visible={this.state.reactionsModalVisible}
           upVotes={upVotes}

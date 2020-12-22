@@ -8,7 +8,14 @@ import { findRoot } from '../helpers/commentHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { POST_AUTHOR_FOR_REWARDS_COMMENTS } from '../../common/constants/waivio';
 import { sendCommentAppend } from '../object/wobjActions';
-import { getAuthenticatedUserName, getLocale } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getCommentsList,
+  getIsAuthenticated,
+  getLocale,
+  isGuestUser,
+} from '../reducers';
+import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -30,7 +37,7 @@ export const GET_RESERVED_COMMENTS = '@comments/GET_RESERVED_COMMENTS';
 export const GET_RESERVED_COMMENTS_SUCCESS = '@comments/GET_RESERVED_COMMENTS_SUCCESS';
 
 export const getSingleComment = (author, permlink, focus = false) => (dispatch, getState) => {
-  const state = getState;
+  const state = getState();
   const locale = getLocale(state);
   const follower = getAuthenticatedUserName(state);
 
@@ -111,7 +118,9 @@ const getCommentsChildrenLists = apiRes => {
  * preventing loading icon to be dispalyed
  */
 export const getComments = postId => (dispatch, getState) => {
-  const { posts, comments, object } = getState();
+  const state = getState();
+  const { posts, comments, object } = state;
+  const userName = getAuthenticatedUserName(state);
   const listFields = get(object, ['wobject', 'fields'], null);
   const matchPost = listFields && listFields.find(field => field.permlink === postId);
   const content = posts.list[postId] || comments.comments[postId] || matchPost;
@@ -129,13 +138,17 @@ export const getComments = postId => (dispatch, getState) => {
     dispatch({
       type: GET_COMMENTS,
       payload: {
-        promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(
-          apiRes => ({
-            rootCommentsList: getRootCommentsList(apiRes),
-            commentsChildrenList: getCommentsChildrenLists(apiRes),
-            content: apiRes.content,
-          }),
-        ),
+        promise: ApiClient.getPostCommentsFromApi({
+          category,
+          author,
+          permlink,
+          locale,
+          userName,
+        }).then(apiRes => ({
+          rootCommentsList: getRootCommentsList(apiRes),
+          commentsChildrenList: getCommentsChildrenLists(apiRes),
+          content: apiRes.content,
+        })),
       },
       meta: {
         id: postId,
@@ -335,27 +348,36 @@ export const sendCommentMessages = (
 export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount = 0) => (
   dispatch,
   getState,
-  { steemConnectAPI },
+  { steemConnectAPI, busyAPI },
 ) => {
-  const { auth, comments } = getState();
+  const state = getState();
+  const comments = getCommentsList(state);
+  const isAuthenticated = getIsAuthenticated(state);
 
-  if (!auth.isAuthenticated) {
-    return;
-  }
+  if (!isAuthenticated) return;
 
-  const voter = auth.user.name;
-  const { author, permlink } = comments.comments[commentId];
-  const TYPE = auth.isGuestUser ? FAKE_LIKE_COMMENT.ACTION : LIKE_COMMENT.ACTION;
+  const voter = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
+  const { author, permlink } = comments[commentId];
 
   dispatch({
-    type: TYPE,
+    type: LIKE_COMMENT.ACTION,
     payload: {
-      promise: steemConnectAPI.vote(voter, author, permlink, weight).then(data => {
-        if (data.status === 200) {
-          return { voter, rshares: '0', percent: weight, reputation: 0 };
-        }
-        dispatch(getSingleComment(author, permlink));
-        return data;
+      promise: steemConnectAPI.vote(voter, author, permlink, weight).then(async data => {
+        const res = isGuest ? await data.json() : data.result;
+        if (data.status !== 200 && isGuest) throw new Error(data.message);
+
+        busyAPI.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
+        busyAPI.subscribe((response, mess) => {
+          if (
+            subscribeTypes.votes === mess.type &&
+            mess.notification.blockParsed === res.block_num
+          ) {
+            dispatch(getSingleComment(author, permlink));
+          }
+        });
+
+        return res;
       }),
     },
     meta: { commentId, voter, weight, vote, isRetry: retryCount > 0, percent: weight },
@@ -367,18 +389,42 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
 };
 
 export const getReservedComments = ({ category, author, permlink }) => (dispatch, getState) => {
-  const locale = getLocale(getState());
+  const state = getState();
+  const locale = getLocale(state);
+  const userName = getAuthenticatedUserName(getState());
 
   return dispatch({
     type: GET_RESERVED_COMMENTS,
     payload: {
-      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(
-        apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        }),
-      ),
+      promise: ApiClient.getPostCommentsFromApi({
+        category,
+        author,
+        permlink,
+        locale,
+        userName,
+      }).then(apiRes => ({
+        rootCommentsList: getRootCommentsList(apiRes),
+        commentsChildrenList: getCommentsChildrenLists(apiRes),
+        content: apiRes.content,
+      })),
+    },
+  });
+};
+
+export const HIDE_COMMENT = createAsyncActionType('@comments/HIDE_COMMENT');
+
+export const handleHideComment = comment => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const action = comment.isHide ? 'unhide' : 'hide';
+
+  return dispatch({
+    type: HIDE_COMMENT.ACTION,
+    payload: {
+      promise: steemConnectAPI.hideComment(userName, comment.author, comment.permlink, action),
+    },
+    meta: {
+      comment,
     },
   });
 };

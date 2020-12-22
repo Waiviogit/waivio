@@ -44,6 +44,7 @@ class Comments extends React.Component {
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
     onSendComment: PropTypes.func,
+    handleHideComment: PropTypes.func,
   };
 
   static defaultProps = {
@@ -61,6 +62,7 @@ class Comments extends React.Component {
     onLikeClick: () => {},
     onDislikeClick: () => {},
     onSendComment: () => {},
+    handleHideComment: () => {},
   };
 
   constructor(props) {
@@ -224,6 +226,7 @@ class Comments extends React.Component {
       username,
       sliderMode,
       rewardFund,
+      handleHideComment,
       defaultVotePercent,
     } = this.props;
     const { sort } = this.state;
@@ -308,6 +311,7 @@ class Comments extends React.Component {
               defaultVotePercent={defaultVotePercent}
               onLikeClick={onLikeClick}
               onDislikeClick={onDislikeClick}
+              handleHideComment={handleHideComment}
               onSendComment={this.props.onSendComment}
             />
           ))}
