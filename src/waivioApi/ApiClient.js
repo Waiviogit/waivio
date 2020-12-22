@@ -10,7 +10,8 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getSessionData, getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
-import { IS_RESERVED } from '../common/constants/rewards';
+import { IS_ACTIVE, IS_RESERVED } from '../common/constants/rewards';
+import user from '../client/helpers/user';
 
 let headers = {
   Accept: 'application/json',
@@ -1318,9 +1319,13 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPerm
     .catch(err => err);
 };
 
-export const getPostCommentsFromApi = ({ category, author, permlink, locale }) =>
+export const getPostCommentsFromApi = ({ category, author, permlink, locale, userName }) =>
   fetch(
-    `${config.apiPrefix}${config.postComments}?author=${author}&permlink=${permlink}&category=${category}`,
+    `${config.apiPrefix}${
+      config.postComments
+    }?author=${author}&permlink=${permlink}&category=${category}${
+      userName ? `&userName=${userName}` : ''
+    }`,
     {
       headers: {
         ...headers,

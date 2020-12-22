@@ -38,6 +38,7 @@ import { notify } from '../app/Notification/notificationActions';
         sendComment: (parentPost, body, isUpdating, originalPost) =>
           commentsActions.sendComment(parentPost, body, isUpdating, originalPost),
         notify,
+        handleHideComment: commentsActions.handleHideComment,
       },
       dispatch,
     ),
@@ -65,6 +66,7 @@ export default class Comments extends React.Component {
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
+    handleHideComment: PropTypes.func,
     isUpdating: PropTypes.bool,
   };
 
@@ -81,6 +83,7 @@ export default class Comments extends React.Component {
     getComments: () => {},
     voteComment: () => {},
     sendComment: () => {},
+    handleHideComment: () => {},
     isUpdating: false,
     defaultVotePercent: 100,
   };
@@ -193,6 +196,7 @@ export default class Comments extends React.Component {
           onLikeClick={this.handleLikeClick}
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}
+          handleHideComment={this.props.handleHideComment}
         />
       )
     );

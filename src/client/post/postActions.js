@@ -173,6 +173,7 @@ export const handleHidePost = post => (dispatch, getState, { steemConnectAPI }) 
   const state = getState();
   const userName = getAuthenticatedUserName(state);
   const action = post.isHide ? 'unhide' : 'hide';
+
   return dispatch({
     type: HIDE_POST.ACTION,
     payload: {

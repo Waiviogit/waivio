@@ -4,12 +4,18 @@ import { connect } from 'react-redux';
 
 import Topnav from '../Navigation/Topnav';
 import WebsiteHeader from '../../websites/WebsiteLayoutComponents/Header/WebsiteHeader';
-import { getAuthenticatedUserName, getMainPage, getCurrPage, getObject } from '../../reducers';
+import {
+  getAuthenticatedUserName,
+  getMainPage,
+  getCurrPage,
+  getObject,
+  getWebsiteConfiguration,
+} from '../../reducers';
 
-const Header = ({ mainPage, username, currPage, wobject }) => {
+const Header = ({ mainPage, username, currPage, wobject, configuration }) => {
   switch (mainPage) {
     case 'dining':
-      return <WebsiteHeader currPage={currPage} wobj={wobject} />;
+      return <WebsiteHeader currPage={currPage} wobj={wobject} config={configuration} />;
 
     default:
       return <Topnav username={username} />;
@@ -21,6 +27,7 @@ Header.propTypes = {
   currPage: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   wobject: PropTypes.shape({}).isRequired,
+  configuration: PropTypes.shape({}).isRequired,
 };
 
 export default connect(state => ({
@@ -28,4 +35,5 @@ export default connect(state => ({
   mainPage: getMainPage(state),
   currPage: getCurrPage(state),
   wobject: getObject(state),
+  configuration: getWebsiteConfiguration(state),
 }))(Header);

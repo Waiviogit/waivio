@@ -1,24 +1,36 @@
 import React from 'react';
 import store from 'store';
 import { FormattedMessage } from 'react-intl';
+import { get } from 'lodash';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
-
-import './WebsiteHeader.less';
 import { getObjectType } from '../../../helpers/wObjectHelper';
 
-const WebsiteHeader = ({ currPage, wobj, history }) => {
+import './WebsiteHeader.less';
+
+const WebsiteHeader = ({ currPage, wobj, history, config }) => {
   const isMainPage = location.pathname === '/';
   let currentPage = currPage || store.get('currentPage');
 
-  if (location.pathname.includes('object')) {
+  if (location.pathname.includes('/object/')) {
     currentPage = getObjectType(wobj);
   }
 
+  if (location.pathname.includes('/@')) {
+    currentPage = 'Profile';
+  }
+
+  if (location.pathname.includes('/editor')) {
+    currentPage = 'Editor';
+  }
+
   return (
-    <div className="WebsiteHeader">
+    <div
+      className="WebsiteHeader"
+      style={{ backgroundColor: `#${get(config, ['colors', 'header'], '')}` }}
+    >
       <div className="topnav-layout">
         {isMainPage ? (
           <WebsiteSearch history={history} />
@@ -44,6 +56,7 @@ WebsiteHeader.propTypes = {
   currPage: PropTypes.string.isRequired,
   wobj: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
+  config: PropTypes.shape().isRequired,
 };
 
 export default withRouter(WebsiteHeader);

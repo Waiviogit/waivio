@@ -219,6 +219,11 @@ const routes = {
               component: Views.WebsiteObjectFilters,
             },
             {
+              path: '/objects',
+              exact: true,
+              component: Views.WebsiteObjects,
+            },
+            {
               path: '/muted-users',
               exact: true,
               component: Views.WebsiteRestrictions,
