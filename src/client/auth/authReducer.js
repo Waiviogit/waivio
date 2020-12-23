@@ -149,7 +149,7 @@ export const getIsAuthFetching = state => state.isFetching;
 export const getIsLoaded = state => state.loaded;
 export const getIsReloading = state => state.isReloading;
 export const getAuthenticatedUser = state => state.user;
-export const getAuthenticatedUserName = state => get(state, ['user', 'name'], '');
+export const getAuthenticatedUserName = state => state.user.name;
 export const getAuthenticateduserMetaData = state => state.userMetaData;
 export const getAuthenticatedUserNotificationsSettings = state =>
   get(state, ['userMetaData', 'settings', 'userNotifications'], {});

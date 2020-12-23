@@ -120,6 +120,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
     startAuthor = lastPost.author;
     startPermlink = lastPost.permlink;
   }
+
   return dispatch({
     type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
     payload: ApiClient.getUserProfileBlog(
