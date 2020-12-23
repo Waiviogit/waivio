@@ -5,10 +5,15 @@ import find from 'lodash/find';
 import Slider from '../Slider/Slider';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
-import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
+import {
+  calculateVotePowerForSlider,
+  isFlaggedPost,
+  isPostCashout,
+} from '../../vendor/steemitHelpers';
 import { isGuestUser } from '../../reducers';
 
 import './CommentFooter.less';
+import { getDownvotes } from '../../helpers/voteHelpers';
 
 @connect(state => ({
   isGuest: isGuestUser(state),
@@ -58,6 +63,8 @@ export default class CommentFooter extends React.Component {
     voteWorth: 0,
     replyFormVisible: false,
     isLiked: false,
+    isFlagged: false,
+    sliderType: 'confirm',
   };
 
   componentWillMount() {
@@ -80,9 +87,12 @@ export default class CommentFooter extends React.Component {
   handleLikeClick = () => {
     const { sliderMode, comment } = this.props;
     const { isLiked } = this.state;
-    if (sliderMode && !isLiked) {
+    if (sliderMode || (isPostCashout(this.props.comment) && !isLiked)) {
       if (!this.state.sliderVisible) {
-        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
+        this.setState(prevState => ({
+          sliderVisible: !prevState.sliderVisible,
+          sliderType: 'Confirm',
+        }));
       }
     } else {
       this.props.onLikeClick(comment.id);
@@ -90,17 +100,35 @@ export default class CommentFooter extends React.Component {
     }
   };
 
+  handleDislikeClick = () => {
+    const isReported = getDownvotes(this.props.comment.active_votes).some(
+      ({ voter }) => voter === this.props.user.name,
+    );
+
+    if (this.props.sliderMode && !isReported) {
+      if (!this.state.sliderVisible) {
+        this.setState(prevState => ({
+          sliderVisible: !prevState.sliderVisible,
+          sliderType: 'flag',
+        }));
+      }
+    } else {
+      this.props.onDislikeClick(this.props.comment.id);
+    }
+  };
+
   handleLikeConfirm = () => {
-    this.setState({ sliderVisible: false, isLiked: true }, () => {
-      this.props.onLikeClick(this.props.comment.id, this.state.sliderValue * 100);
+    const confirmMethod =
+      this.state.sliderType === 'Confirm' ? this.props.onLikeClick : this.props.onDislikeClick;
+
+    this.setState({ sliderVisible: false }, () => {
+      confirmMethod(this.props.comment.id, this.state.sliderValue * 100);
     });
   };
 
-  handleDislikeClick = () => this.props.onDislikeClick(this.props.comment.id);
-
   handleHideComment = () => this.props.handleHideComment(this.props.comment);
 
-  handleSliderCancel = () => this.setState({ sliderVisible: false });
+  handleSliderCancel = () => this.setState({ sliderVisible: false, sliderType: 'Confirm' });
 
   handleClickPopoverMenu = key => {
     switch (key) {
@@ -132,14 +160,21 @@ export default class CommentFooter extends React.Component {
       replying,
       pendingVotes,
     } = this.props;
-    const { sliderVisible, isLiked } = this.state;
+    const { sliderVisible, isLiked, sliderType } = this.state;
+    const isCashout = isPostCashout(comment);
+    const isFlagged = isFlaggedPost(comment.active_votes, user.name);
 
     return (
       <div className="CommentFooter">
         {!comment.isFakeComment && (
           <React.Fragment>
-            {sliderVisible && !isLiked && (
-              <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
+            {sliderVisible && (!isLiked || !isFlagged) && (
+              <Confirmation
+                onConfirm={this.handleLikeConfirm}
+                onCancel={this.handleSliderCancel}
+                isCashout={isCashout}
+                type={sliderType}
+              />
             )}
             {(!sliderVisible || isLiked) && (
               <Buttons

@@ -6,7 +6,7 @@ import { injectIntl, FormattedNumber, FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 import { getUpvotes, getDownvotes } from '../../helpers/voteHelpers';
 import { sortVotes } from '../../helpers/sortHelpers';
-import { calculatePayout } from '../../vendor/steemitHelpers';
+import { calculatePayout, isPostCashout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import withAuthActions from '../../auth/withAuthActions';
@@ -101,10 +101,12 @@ class Buttons extends React.Component {
     const pendingDisLike =
       pendingVote && (pendingVote.percent < 0 || pendingVote.vote === 'dislike');
     const payout = calculatePayout(comment);
+    const ownPost = comment.author === user.name;
     const upVotes = getUpvotes(comment.active_votes).sort(sortVotes);
     const downVotes = getDownvotes(comment.active_votes)
       .sort(sortVotes)
       .reverse();
+    const isFlagged = getDownvotes(comment.active_votes).some(({ voter }) => voter === user.name);
     const totalPayout =
       parseFloat(comment.pending_payout_value) +
       parseFloat(comment.total_payout_value) +
@@ -224,14 +226,17 @@ class Buttons extends React.Component {
             </a>
           </span>
         )}
-        <span className="CommentFooter__link CommentFooter__popover">
-          <CommentPopover
-            comment={{ ...comment, pendingDisLike }}
-            handlePopoverClick={this.props.handlePopoverClick}
-          >
-            <i className="iconfont icon-more" />
-          </CommentPopover>
-        </span>
+        {(!isPostCashout(comment) || !ownPost) && (
+          <span className="CommentFooter__link CommentFooter__popover">
+            <CommentPopover
+              comment={{ ...comment, pendingDisLike, isFlagged }}
+              handlePopoverClick={this.props.handlePopoverClick}
+              own={ownPost}
+            >
+              <i className="iconfont icon-more" />
+            </CommentPopover>
+          </span>
+        )}
         <ReactionsModal
           visible={this.state.reactionsModalVisible}
           upVotes={upVotes}

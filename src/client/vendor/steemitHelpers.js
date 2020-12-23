@@ -9,6 +9,7 @@ import { Client } from '@hiveio/dhive';
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import { getDownvotes } from '../helpers/voteHelpers';
 
 const dmp = new diff_match_patch();
 /**
@@ -86,6 +87,8 @@ export const calculatePayout = post => {
 };
 
 export const isPostCashout = post => Date.parse(get(post, 'cashout_time')) < Date.now();
+export const isFlaggedPost = (votes, name) =>
+  getDownvotes(votes).some(({ voter }) => voter === name);
 
 export const calculateVotePowerForSlider = async (name, voteWeight, author, permlink) => {
   const account = (await steemAPI.sendAsync('get_accounts', [[name]]))[0];
