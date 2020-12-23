@@ -118,7 +118,7 @@ export default class UserProfile extends React.Component {
           history={history}
         />
         {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
-        {!isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
+        {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
         {<PostModal userName={authenticatedUser.name} />}
       </div>
     );
