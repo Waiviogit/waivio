@@ -17,6 +17,7 @@ import {
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from './commentsActions';
 import { notify } from '../app/Notification/notificationActions';
+import { getDownvotes } from '../helpers/voteHelpers';
 
 @connect(
   state => ({
@@ -38,6 +39,7 @@ import { notify } from '../app/Notification/notificationActions';
         sendComment: (parentPost, body, isUpdating, originalPost) =>
           commentsActions.sendComment(parentPost, body, isUpdating, originalPost),
         notify,
+        handleHideComment: commentsActions.handleHideComment,
       },
       dispatch,
     ),
@@ -65,6 +67,7 @@ export default class Comments extends React.Component {
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
+    handleHideComment: PropTypes.func,
     isUpdating: PropTypes.bool,
   };
 
@@ -81,6 +84,7 @@ export default class Comments extends React.Component {
     getComments: () => {},
     voteComment: () => {},
     sendComment: () => {},
+    handleHideComment: () => {},
     isUpdating: false,
     defaultVotePercent: 100,
   };
@@ -130,16 +134,19 @@ export default class Comments extends React.Component {
     }
   };
 
-  handleDislikeClick = id => {
-    const { commentsList, pendingVotes, user } = this.props;
+  handleDislikeClick = (id, weight = 10000) => {
+    const { commentsList, pendingVotes, user, sliderMode, defaultVotePercent } = this.props;
     if (pendingVotes[id]) return;
+    const isFlagged = getDownvotes(commentsList[id].active_votes).some(
+      ({ voter }) => voter === user.name,
+    );
 
-    const userVote = find(commentsList[id].active_votes, { voter: user.name }) || {};
-
-    if (userVote.percent < 0) {
+    if (sliderMode && !isFlagged) {
+      this.props.voteComment(id, -weight, 'dislike');
+    } else if (isFlagged) {
       this.props.voteComment(id, 0, 'dislike');
     } else {
-      this.props.voteComment(id, -10000, 'dislike');
+      this.props.voteComment(id, -defaultVotePercent, 'dislike');
     }
   };
 
@@ -193,6 +200,7 @@ export default class Comments extends React.Component {
           onLikeClick={this.handleLikeClick}
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}
+          handleHideComment={this.props.handleHideComment}
         />
       )
     );

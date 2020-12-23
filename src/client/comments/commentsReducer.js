@@ -168,6 +168,36 @@ export default (state = initialState, action) => {
         isFetching: isFetching(state.isFetching, action),
         isLoaded: isLoaded(state.isLoaded, action),
       };
+    case commentsTypes.HIDE_COMMENT.START: {
+      const key = getPostKey(action.meta.comment);
+
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          [key]: {
+            ...action.meta.comment,
+            loadingHide: true,
+          },
+        },
+      };
+    }
+
+    case commentsTypes.HIDE_COMMENT.SUCCESS: {
+      const key = getPostKey(action.meta.comment);
+
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          [key]: {
+            ...state.comments[key],
+            isHide: !action.meta.comment.isHide,
+            loadingHide: false,
+          },
+        },
+      };
+    }
 
     case commentsTypes.LIKE_COMMENT.START:
     case commentsTypes.LIKE_COMMENT.ERROR:

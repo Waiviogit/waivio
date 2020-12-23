@@ -2,6 +2,7 @@
 @import (reference) '../../../styles/modules/variables.less';
 
 .WebsiteBody {
+  position: relative;
   display: flex;
   flex-direction: column;
 
@@ -11,6 +12,20 @@
 
   &__map {
     width: 100%;
+  }
+
+  &__logo {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    top: 84%;
+    left: 4%;
+    max-width: 100px;
+
+    @media @small {
+      top: 90%;
+      left: 4%;
+    }
   }
 
   &__hideMap {

@@ -7,6 +7,9 @@ import { connect } from 'react-redux';
 
 import MapOS from '../../../components/Maps/Map';
 import {
+  getMapForMainPage,
+  getConfigurationValues,
+  getScreenSize,
   getSearchUsersResults,
   getUserLocation,
   getWebsiteSearchResult,
@@ -19,24 +22,35 @@ import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import './WebsiteBody.less';
 
 const WebsiteBody = props => {
-  useEffect(() => {
-    if (isEmpty(props.userLocation)) props.getCoordinates();
-  });
-
   const mapClassList = classNames('WebsiteBody__map', {
     WebsiteBody__hideMap: props.searchType !== 'All',
   });
+  const currMapCoordinates = isEmpty(props.configCoordinates.center)
+    ? props.userLocation
+    : props.configCoordinates.center;
+
+  useEffect(() => {
+    if (isEmpty(props.userLocation)) props.getCoordinates();
+  });
+  const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
+  const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
 
   return (
     <div className="WebsiteBody topnav-layout">
       {props.searchType !== 'All' && <SearchAllResult />}
+      <img
+        className="WebsiteBody__logo"
+        srcSet={currentLogo}
+        alt="pacific dining gifts"
+        styleName="brain-image"
+      />
       <div className={mapClassList}>
-        {!isEmpty(props.userLocation) && (
+        {!isEmpty(currMapCoordinates) && (
           <MapOS
             wobjects={props.searchResult}
             heigth={'93vh'}
             width={'100vw'}
-            userLocation={props.userLocation}
+            userLocation={currMapCoordinates}
             onMarkerClick={() => {}}
             setArea={() => {}}
             customControl={null}
@@ -44,7 +58,7 @@ const WebsiteBody = props => {
             setMapArea={() => {}}
             getAreaSearchData={() => {}}
             primaryObjectCoordinates={[]}
-            zoomMap={6}
+            zoomMap={props.configCoordinates.zoom}
           />
         )}
       </div>
@@ -60,6 +74,9 @@ WebsiteBody.propTypes = {
   userLocation: PropTypes.shape({}).isRequired,
   searchType: PropTypes.string.isRequired,
   searchResult: PropTypes.arrayOf.isRequired,
+  configuration: PropTypes.arrayOf.isRequired,
+  screenSize: PropTypes.string.isRequired,
+  configCoordinates: PropTypes.arrayOf.isRequired,
 };
 
 export default connect(
@@ -68,6 +85,9 @@ export default connect(
     searchType: getWebsiteSearchType(state),
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
+    configCoordinates: getMapForMainPage(state),
+    configuration: getConfigurationValues(state),
+    screenSize: getScreenSize(state),
   }),
   {
     getCoordinates,
