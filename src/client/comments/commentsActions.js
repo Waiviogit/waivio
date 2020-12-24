@@ -104,9 +104,9 @@ const getRootCommentsList = apiRes =>
 const getCommentsChildrenLists = apiRes => {
   const listsById = {};
   Object.keys(apiRes.content).forEach(commentKey => {
-    listsById[getPostKey(apiRes.content[commentKey])] = apiRes.content[
-      commentKey
-    ].replies.map(childKey => getPostKey(apiRes.content[childKey]));
+    listsById[getPostKey(apiRes.content[commentKey])] = apiRes.content[commentKey].replies.map(
+      childKey => apiRes.content[childKey] && getPostKey(apiRes.content[childKey]),
+    );
   });
   return listsById;
 };
@@ -144,11 +144,13 @@ export const getComments = postId => (dispatch, getState) => {
           permlink,
           locale,
           userName,
-        }).then(apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        })),
+        })
+          .then(apiRes => ({
+            rootCommentsList: getRootCommentsList(apiRes),
+            commentsChildrenList: getCommentsChildrenLists(apiRes),
+            content: apiRes.content,
+          }))
+          .catch(e => console.log(e)),
       },
       meta: {
         id: postId,

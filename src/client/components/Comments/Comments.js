@@ -195,9 +195,8 @@ class Comments extends React.Component {
 
   commentsToRender(rootLevelComments, rootLinkedComment) {
     const { nRenderedComments, sort } = this.state;
-
     const filteredComments = sortComments(rootLevelComments, sort)
-      .filter(comment => comment.id !== (rootLinkedComment && rootLinkedComment.id))
+      .filter(comment => comment && comment.id !== (rootLinkedComment && rootLinkedComment.id))
       .slice(
         0,
         rootLinkedComment ? nRenderedComments - this.SHOW_COMMENTS_INCREMENT : nRenderedComments,
