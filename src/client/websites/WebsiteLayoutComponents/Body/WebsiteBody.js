@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -34,15 +34,19 @@ const WebsiteBody = props => {
   });
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
+  const aboutObject = get(props, ['configuration', 'aboutObject']);
+  const currLink = aboutObject ? `/object/${aboutObject}` : '/';
 
   return (
     <div className="WebsiteBody topnav-layout">
       {props.searchType !== 'All' && <SearchAllResult />}
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <img
         className="WebsiteBody__logo"
         srcSet={currentLogo}
         alt="pacific dining gifts"
         styleName="brain-image"
+        onClick={() => props.history.push(currLink)}
       />
       <div className={mapClassList}>
         {!isEmpty(currMapCoordinates) && (
@@ -69,6 +73,9 @@ const WebsiteBody = props => {
 WebsiteBody.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
+  }).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
   }).isRequired,
   getCoordinates: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}).isRequired,
