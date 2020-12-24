@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { find } from 'lodash';
+import { find, size } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
@@ -113,7 +113,7 @@ export default class Comments extends React.Component {
     const newNestedComments = nestedComments;
     commentsIdArray.forEach(commentId => {
       const nestedCommentArray = commentsObj.childrenById[commentId];
-      if (nestedCommentArray.length) {
+      if (size(nestedCommentArray)) {
         newNestedComments[commentId] = nestedCommentArray.map(id => commentsObj.comments[id]);
         this.getNestedComments(commentsObj, nestedCommentArray, newNestedComments);
       }
