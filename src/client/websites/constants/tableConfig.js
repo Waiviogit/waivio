@@ -28,6 +28,7 @@ export const configBalanceTableHeader = [
     },
   },
 ];
+
 export const configUsersWebsitesTableHeader = [
   {
     id: 'active',
@@ -73,9 +74,10 @@ export const configUsersWebsitesTableHeader = [
     },
     type: 'delete',
     checkShowItem: (item, getBody) =>
-      item.status === 'pending' ? getBody(item, { type: 'delete' }) : '-',
+      ['pending', 'inactive'].includes(item.status) ? getBody(item, { type: 'delete' }) : '-',
   },
 ];
+
 export const configReportsWebsitesTableHeader = [
   {
     id: 'createdAt',
@@ -85,7 +87,8 @@ export const configReportsWebsitesTableHeader = [
     },
   },
   {
-    id: 'type',
+    id: 'message',
+    style: { textAlign: 'left', padding: '0 0 0 5px' },
     intl: {
       id: 'action',
       defaultMessage: 'Action',

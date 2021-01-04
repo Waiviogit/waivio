@@ -60,7 +60,7 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
           if (data.status !== 200 && isGuest) throw new Error(data.message);
           if (window.analytics)
             window.analytics.track('Vote', { category: 'vote', label: 'submit', value: 1 });
-
+          console.log(res);
           busyAPI.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
           busyAPI.subscribe((response, mess) => {
             if (

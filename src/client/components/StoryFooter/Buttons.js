@@ -148,13 +148,12 @@ export default class Buttons extends React.Component {
   }
 
   rebloggedUsersTitle = () => {
-    // eslint-disable-next-line camelcase
-    const { reblogged_users } = this.props.post;
+    const { reblogged_users: rebloggedUsers } = this.props.post;
     const maxUserCount = 3;
 
     return (
       <span>
-        {reblogged_users.map(
+        {rebloggedUsers.map(
           (user, index) =>
             index >= 0 &&
             index < maxUserCount && (
@@ -163,7 +162,7 @@ export default class Buttons extends React.Component {
               </p>
             ),
         )}
-        {reblogged_users.length > 3 && (
+        {rebloggedUsers.length > 3 && (
           <p>
             {this.props.intl.formatMessage(
               {
@@ -171,7 +170,7 @@ export default class Buttons extends React.Component {
                 defaultMessage: `and {amount} more`,
               },
               {
-                amount: reblogged_users.length - maxUserCount,
+                amount: rebloggedUsers.length - maxUserCount,
               },
             )}
           </p>
