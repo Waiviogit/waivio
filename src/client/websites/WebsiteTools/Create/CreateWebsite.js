@@ -4,10 +4,15 @@ import PropTypes from 'prop-types';
 import { AutoComplete, Button, Checkbox, Input, Form, message } from 'antd';
 import { connect } from 'react-redux';
 import { debounce, get, isEmpty } from 'lodash';
+import { withRouter } from 'react-router-dom';
 
 import validateRules from '../../constants/validateRules';
 import { checkAvailableDomain, createNewWebsite, getParentDomainList } from '../../websiteActions';
-import { getDomainAvailableStatus, getParentDomain, getWebsiteLoading } from '../../../reducers';
+import {
+  getCreateWebsiteLoading,
+  getDomainAvailableStatus,
+  getParentDomain,
+} from '../../../reducers';
 
 import './CreateWebsite.less';
 
@@ -24,7 +29,6 @@ export const CreateWebsite = ({
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
   const [searchString, setSearchString] = useState('');
-  const [saveWebsite, setWebSiteSave] = useState(false);
   const template = getFieldValue('parent');
   const subDomain = getFieldValue('domain');
   const domainNamesList = Object.keys(parentDomain);
@@ -61,7 +65,6 @@ export const CreateWebsite = ({
         createWebsite(values, history)
           .then(() => form.resetFields())
           .catch(error => message.error(error));
-        setWebSiteSave(true);
       }
     });
   };
@@ -147,7 +150,7 @@ export const CreateWebsite = ({
           )}
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={saveWebsite && loading}>
+          <Button type="primary" htmlType="submit" loading={loading}>
             {intl.formatMessage({
               id: 'create_website',
               defaultMessage: 'Create website',
@@ -181,11 +184,11 @@ export default connect(
   state => ({
     parentDomain: getParentDomain(state),
     availableStatus: getDomainAvailableStatus(state),
-    loading: getWebsiteLoading(state),
+    loading: getCreateWebsiteLoading(state),
   }),
   {
     getDomainList: getParentDomainList,
     checkStatusAvailableDomain: checkAvailableDomain,
     createWebsite: createNewWebsite,
   },
-)(Form.create()(injectIntl(CreateWebsite)));
+)(Form.create()(withRouter(injectIntl(CreateWebsite))));

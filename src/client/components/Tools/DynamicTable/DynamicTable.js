@@ -7,7 +7,8 @@ import Loading from '../../Icon/Loading';
 
 import './DynamicTable.less';
 
-export const DynamicTable = ({ header, bodyConfig, intl, onChange, deleteItem }) => {
+export const DynamicTable = ({ header, bodyConfig, intl, onChange, deleteItem, emptyTitle }) => {
+  console.log(emptyTitle);
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type))
       return <Loading data-test={`loading/${item.host}`} />;
@@ -48,17 +49,18 @@ export const DynamicTable = ({ header, bodyConfig, intl, onChange, deleteItem })
         {isEmpty(bodyConfig) ? (
           <tr>
             <td colSpan={size(header)}>
-              {intl.formatMessage({
-                id: 'empty_dynamic_table',
-                defaultMessage: "You haven't had any payments yet",
-              })}
+              {emptyTitle ||
+                intl.formatMessage({
+                  id: 'empty_dynamic_table',
+                  defaultMessage: "You haven't had any payments yet",
+                })}
             </td>
           </tr>
         ) : (
           bodyConfig.map(item => (
             <tr key={get(item, '_id')}>
               {header.map(head => (
-                <td key={head.id}>
+                <td key={head.id} style={head.style || {}}>
                   {head.checkShowItem
                     ? head.checkShowItem(item, getTdBodyType)
                     : getTdBodyType(item, head)}
@@ -78,6 +80,7 @@ DynamicTable.propTypes = {
   bodyConfig: PropTypes.arrayOf(PropTypes.shape()),
   onChange: PropTypes.func,
   deleteItem: PropTypes.func,
+  emptyTitle: PropTypes.string,
 };
 
 DynamicTable.defaultProps = {
@@ -86,6 +89,7 @@ DynamicTable.defaultProps = {
   bodyConfig: [],
   onChange: () => {},
   deleteItem: () => {},
+  emptyTitle: '',
 };
 
 export default injectIntl(DynamicTable);

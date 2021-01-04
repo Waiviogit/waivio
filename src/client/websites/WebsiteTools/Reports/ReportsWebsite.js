@@ -4,7 +4,7 @@ import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, AutoComplete, DatePicker, Button } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
+import { isEmpty, map } from 'lodash';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
 import Loading from '../../../components/Icon/Loading';
@@ -18,6 +18,15 @@ import './ReportsWebsite.less';
 const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => {
   const { getFieldDecorator } = form;
   const formatDate = selectFormatDate(locale);
+  const mappedPayments = map(reportsInfo.payments, payment => {
+    const message =
+      payment.type === 'transfer' ? 'Payment to waivio.hosting' : `${payment.host} hosting fee`;
+
+    return {
+      ...payment,
+      message,
+    };
+  });
 
   useEffect(() => {
     getReportsInfo();
@@ -30,7 +39,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
     form.validateFields((err, values) => {
       if (!err) {
         const formData = {
-          ...(values.host && values.host !== 'All' ? { host: values.host } : {}),
+          ...(values.host && values.host !== 'all' ? { host: values.host } : {}),
           ...(values.startDate
             ? {
                 startDate: moment(values.startDate)
@@ -64,7 +73,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
                 <span className="ant-form-item-required">
                   {intl.formatMessage({
                     id: 'select_website_template',
-                    defaultMessage: 'Select website template:',
+                    defaultMessage: 'Select the website:',
                   })}
                 </span>
               </h3>
@@ -84,6 +93,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
                 </AutoComplete>,
               )}
             </Form.Item>
+            <h3>Select the period:</h3>
             <div className="ReportsWebsite__data-piker-wrapper">
               <Form.Item>
                 {intl.formatMessage({
@@ -131,7 +141,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
               </Button>
             </Form.Item>
           </Form>
-          <DynamicTbl header={configReportsWebsitesTableHeader} bodyConfig={reportsInfo.payments} />
+          <DynamicTbl header={configReportsWebsitesTableHeader} bodyConfig={mappedPayments} />
         </div>
       )}
     </div>

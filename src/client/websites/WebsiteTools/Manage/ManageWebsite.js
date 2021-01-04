@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
@@ -26,6 +26,7 @@ import './ManageWebsite.less';
 
 export const ManageWebsite = props => {
   const { prices, accountBalance, websites, dataForPayments } = props.manageInfo;
+  const [modalState, setModalState] = useState({});
 
   useEffect(() => {
     props.getManageInfo(props.userName);
@@ -34,11 +35,8 @@ export const ManageWebsite = props => {
   const onChangeCheckbox = (e, item) => {
     const appId = get(item, 'host');
 
-    if (e.target.checked) {
-      props.activateWebsite(appId);
-    } else {
-      props.suspendWebsite(appId);
-    }
+    if (e.target.checked) props.activateWebsite(appId);
+    else props.suspendWebsite(appId);
   };
 
   const handleClickPayNow = () => {
@@ -137,13 +135,17 @@ export const ManageWebsite = props => {
               header={configUsersWebsitesTableHeader}
               bodyConfig={websites}
               onChange={onChangeCheckbox}
-              deleteItem={props.deleteWebsite}
+              deleteItem={hostInfo => setModalState({ visible: true, hostInfo })}
+              emptyTitle={props.intl.formatMessage({
+                id: 'manage_website_empty_table',
+                defaultMessage: "You don't have any websites.",
+              })}
             />
             <button className="ManageWebsites__button">
               <Link to={`/create`}>
                 {props.intl.formatMessage({
                   id: 'create_website',
-                  defaultMessage: `Create new website`,
+                  defaultMessage: 'Create new website',
                 })}{' '}
               </Link>
             </button>
@@ -151,6 +153,31 @@ export const ManageWebsite = props => {
         </div>
       )}
       <Transfer />
+      <Modal
+        visible={modalState.visible}
+        title={props.intl.formatMessage(
+          {
+            id: 'delete_website_modal_title',
+            defaultMessage: 'Delete {host} website',
+          },
+          {
+            host: get(modalState, ['hostInfo', 'host'], ''),
+          },
+        )}
+        onCancel={() => setModalState({})}
+        onOk={() => {
+          props.deleteWebsite(modalState.hostInfo);
+          setModalState({
+            visible: false,
+          });
+        }}
+      >
+        {props.intl.formatMessage({
+          id: 'delete_website_modal_body',
+          defaultMessage:
+            'Warning: All configuration data and website pages will be removed. The name of the website will be no longer protected.',
+        })}
+      </Modal>
     </div>
   );
 };
