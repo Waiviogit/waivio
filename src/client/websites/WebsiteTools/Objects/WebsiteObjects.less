@@ -9,17 +9,52 @@
 .MapWrap {
   position: relative;
 
+  &__cancel {
+    z-index: 2;
+    color: @red-danger;
+    float: right;
+    margin: -7px -3px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
   &__new-aria-btn {
     position: absolute;
     z-index: 100;
     top: 85%;
-    left: 3%;
+    left: 15px;
 
     & i {
       font-size: 35px;
       color: @orange-hot;
       background: @white;
       border-radius: 50%;
+    }
+  }
+
+  &__agree-areas {
+    position: absolute;
+    z-index: 100;
+    top: 85%;
+    left: 55px;
+
+    & i {
+      font-size: 35px;
+      color: @orange-hot;
+      background: @white;
+      border-radius: 50%;
+    }
+  }
+
+  &__loading {
+    position: absolute;
+    z-index: 100;
+    top: 85%;
+    left: 55px;
+
+    & i {
+      font-size: 35px;
+      color: @orange-hot;
     }
   }
 
