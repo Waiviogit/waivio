@@ -41,125 +41,133 @@ const WebsiteObjects = props => {
   const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
   const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
 
-  // const getCurrentSizeArea = (zoom) => {
-  //   let st = {
-  //     border: '2px solid red',
-  //     width: '472px',
-  //     height: '400px'
-  //   }
-  //
-  //   // width - 35.63
-  //   // height - 30.90
-  //
-  //   if (zoom > 10 && zoom <= 11) {
-  //     st = {
-  //       ...st,
-  //       width: '472px'
-  //     };
-  //   } else if (zoom > 9 && zoom <= 10) {
-  //     st = {
-  //       ...st,
-  //       width: '356.37px'
-  //     };
-  //   } else if (zoom > 8 && zoom <= 9) {
-  //     st = {
-  //       ...st,
-  //       width: '320.74px'
-  //     };
-  //   } else if (zoom > 7 && zoom <= 8) {
-  //     st = {
-  //       ...st,
-  //       width: '285.11px'
-  //     };
-  //   } else if (zoom > 6 && zoom <= 7) {
-  //     st = {
-  //       ...st,
-  //       width: '249.48px'
-  //     };
-  //   } else if (zoom > 5 && zoom <= 6) {
-  //     st = {
-  //       ...st,
-  //       width: '213.85px'
-  //     };
-  //   } else if (zoom > 4 && zoom <= 5) {
-  //     st = {
-  //       ...st,
-  //       width: '178.22px'
-  //     };
-  //   } else if (zoom > 3 && zoom <= 4) {
-  //     st = {
-  //       ...st,
-  //       width: '114.87px'
-  //     };
-  //   } else if (zoom > 2 && zoom <= 3) {
-  //     st = {
-  //       ...st,
-  //       width: '79.24px'
-  //     };
-  //   } else if (zoom > 1 && zoom <= 2) {
-  //     st = {
-  //       ...st,
-  //       width: '43.61px'
-  //     };
-  //   }
-  //   return st;
-  // }
-
   let currStyle = {
     border: '2px solid red',
     width: '300px',
     height: '250px',
   };
 
+  // switch (currentZoom) {
+  //   case (currentZoom < 4 && currentZoom > 0): {
+  //     currStyle = {
+  //       ...currStyle,
+  //       transform: 'scale(0.2)',
+  //       marginLeft: -150,
+  //       marginTop: -140,
+  //       // width: '114.87px'
+  //     };
+  //     break;
+  //   }
+  //   case (currentZoom === 4): {
+  //     currStyle = {
+  //       ...currStyle,
+  //       transform: 'scale(0.2)',
+  //       marginLeft: -150,
+  //       marginTop: -140,
+  //       // width: '114.87px'
+  //     };
+  //     break;
+  //   }
+  //   case (currentZoom === 5): {
+  //     currStyle = {
+  //       ...currStyle,
+  //       transform: 'scale(0.3)',
+  //       marginLeft: -150,
+  //       marginTop: -140,
+  //       // width: '178.22px'
+  //     };
+  //     break;
+  //   }
+  //   case (currentZoom === 6): {
+  //     currStyle = {
+  //       ...currStyle,
+  //       transform: 'scale(0.4)',
+  //       marginLeft: -150,
+  //       marginTop: -140,
+  //       // width: '213.85px'
+  //     };
+  //     break;
+  //   }
+  //   case (currentZoom === 7): {
+  //     currStyle = {
+  //       ...currStyle,
+  //       transform: 'scale(0.5)',
+  //       marginLeft: -150,
+  //       marginTop: -140,
+  //       // width: '249.48px'
+  //     };
+  //     break;
+  //   }
+  //   case (currentZoom === 8): {
+  //     currStyle = {
+  //       ...currStyle,
+  //       transform: 'scale(0.6)',
+  //       marginLeft: -100,
+  //       marginTop: -90,
+  //       // width: '285.11px'
+  //     };
+  //     break;
+  //   }
+  //   case (): {
+  //
+  //     break;
+  //   }
+  //   case (): {
+  //
+  //     break;
+  //   }
+  //   case (): {
+  //
+  //     break;
+  //   }
+  //   case (): {
+  //
+  //     break;
+  //   }
+  //   case (): {
+  //
+  //     break;
+  //   }
+  //   case (): {
+  //
+  //     break;
+  //   }
+  //   case (): {
+  //
+  //     break;
+  //   }
+  //   case (): {
+  //
+  //     break;
+  //   }
+  //   case (): {
+  //
+  //     break;
+  //   }
+  //   case (): {
+  //
+  //     break;
+  //   }
+  //   default: {
+  //     return currStyle;
+  //   }
+  // }
+
   if (currentZoom < 4 && currentZoom > 0) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.2)',
-      marginLeft: -150,
-      marginTop: -140,
-      // width: '114.87px'
-    };
-  } else if (currentZoom === 4) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.2)',
-      marginLeft: -150,
-      marginTop: -140,
-      // width: '114.87px'
-    };
-  } else if (currentZoom === 5) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.3)',
-      marginLeft: -150,
-      marginTop: -140,
-      // width: '178.22px'
-    };
-  } else if (currentZoom === 6) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.4)',
-      marginLeft: -150,
-      marginTop: -140,
-      // width: '213.85px'
-    };
-  } else if (currentZoom === 7) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.5)',
-      marginLeft: -150,
-      marginTop: -140,
-      // width: '249.48px'
-    };
-  } else if (currentZoom === 8) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.6)',
-      marginLeft: -100,
-      marginTop: -90,
-      // width: '285.11px'
-    };
-  } else if (currentZoom === 9) {
+    console.log('a');
+  }
+  // else if (currentZoom === 4) {
+  //
+  // } else if (currentZoom === 5) {
+  //
+  // } else if (currentZoom === 6) {
+  //
+  // } else if (currentZoom === 7) {
+  //
+  // } else if (currentZoom === 8) {
+  //
+  // }
+  else if (currentZoom === 9) {
     currStyle = {
       ...currStyle,
       transform: 'scale(0.7)',
