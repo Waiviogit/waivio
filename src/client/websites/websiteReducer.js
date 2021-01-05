@@ -17,6 +17,8 @@ const initialState = {
   loading: false,
   loadingWebsite: false,
   settings: {},
+  selectedAreas: [],
+  isLoadingAreas: false,
 };
 
 export default function websiteReducer(state = initialState, action) {
@@ -291,6 +293,20 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.SET_WEBSITE_OBJECTS_COORDINATES.START: {
+      return {
+        ...state,
+        isLoadingAreas: true,
+      };
+    }
+
+    case websiteAction.SET_WEBSITE_OBJECTS_COORDINATES.SUCCESS: {
+      return {
+        ...state,
+        isLoadingAreas: false,
+      };
+    }
+
     default: {
       return state;
     }
@@ -310,3 +326,4 @@ export const getModerators = state => get(state, 'moderators', {});
 export const getAuthorities = state => get(state, 'authorities', {});
 export const getTagsSite = state => get(state, 'tags', {});
 export const getSettingsSite = state => get(state, 'settings', {});
+export const getIsLoadingAreas = state => state.isLoadingAreas;

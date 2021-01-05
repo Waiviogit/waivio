@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
+import { Icon, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import Map from 'pigeon-maps';
+import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../helpers/mapProvider';
-import { getUserLocation } from '../../../reducers';
+import { getAuthenticatedUserName, getIsLoadingAreas, getUserLocation } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
+import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
+import { getCurrStyleAfterZoom } from '../../helper';
 import './WebsiteObjects.less';
 
 const WebsiteObjects = props => {
   const [currentCenter, setCurrentCenter] = useState([]);
   const [currentZoom, setCurrentZoom] = useState(11);
+  const [showMap, setShowMap] = useState(false);
+  const [modalMapData, setModalMapData] = useState([]);
 
   useEffect(() => {
     if (isEmpty(props.userLocation)) {
@@ -21,15 +26,45 @@ const WebsiteObjects = props => {
     }
   });
 
+  useEffect(() => {
+    props
+      .getWebsiteObjectsCoordinates(props.match.params.site)
+      .then(res => {
+        setModalMapData(res.value);
+      })
+      .catch(err => console.error('Error: ', err));
+  }, []);
+
   const startOwnLocation = [+props.userLocation.lat, +props.userLocation.lon];
   const setMapCenter = () => (isEmpty(currentCenter) ? startOwnLocation : currentCenter);
 
   const setPosition = () => setCurrentCenter(startOwnLocation);
-  const incrementZoom = () => setCurrentZoom(currentZoom + 1);
-  const decrementZoom = () => setCurrentZoom(currentZoom - 1);
+  const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
+  const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
 
+  const currStyle = getCurrStyleAfterZoom(currentZoom);
+
+  const handleModalOkButton = currData => {
+    setModalMapData([...modalMapData, currData]);
+    setShowMap(!showMap);
+  };
+
+  const saveCurrentAreas = () => {
+    const params = {
+      host: props.match.params.site,
+      userName: props.authUserName,
+      mapCoordinates: modalMapData,
+    };
+
+    props.setWebsiteObjectsCoordinates(params);
+  };
+
+  const removeArea = id =>
+    setModalMapData(modalMapData.filter(area => !isEqual(+id, area.center[0])));
+
+  const currClassName = showMap ? 'WebsiteObjectsControl modal-view' : 'WebsiteObjectsControl';
   const zoomButtonsLayout = () => (
-    <div className="WebsiteObjectsControl">
+    <div className={currClassName}>
       <div className="WebsiteObjectsControl__gps">
         <div role="presentation" className="WebsiteObjectsControl__locateGPS" onClick={setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
@@ -54,6 +89,38 @@ const WebsiteObjects = props => {
     </div>
   );
 
+  const modalMap = () => {
+    let currData = {};
+
+    return (
+      <Modal
+        title={`Select area`}
+        closable
+        onCancel={() => setShowMap(!showMap)}
+        onOk={() => handleModalOkButton(currData)}
+        visible={showMap}
+      >
+        {zoomButtonsLayout()}
+        {!isEmpty(props.userLocation) && (
+          <Map
+            center={setMapCenter()}
+            zoom={currentZoom}
+            height={400}
+            provider={mapProvider}
+            onBoundsChanged={data => {
+              currData = {
+                topPoint: data.bounds.ne,
+                bottomPoint: data.bounds.sw,
+                center: data.center,
+                zoom: data.zoom,
+              };
+            }}
+          />
+        )}
+      </Modal>
+    );
+  };
+
   return (
     <div className="WebsiteObjects">
       <h1 className="WebsiteObjects__heading">
@@ -71,10 +138,23 @@ const WebsiteObjects = props => {
       </p>
 
       <div className="MapWrap">
-        <div className="MapWrap__new-aria-btn">
+        <div
+          role="presentation"
+          className="MapWrap__new-aria-btn"
+          onClick={() => setShowMap(!showMap)}
+        >
           <Icon type="plus-circle" theme="filled" />
         </div>
-        {zoomButtonsLayout()}
+        {props.isLoadingAreas ? (
+          <div role="presentation" className="MapWrap__loading">
+            <Icon type="loading" />
+          </div>
+        ) : (
+          <div role="presentation" className="MapWrap__agree-areas" onClick={saveCurrentAreas}>
+            <Icon type="check-circle" theme="filled" />
+          </div>
+        )}
+        {!showMap && zoomButtonsLayout()}
         {!isEmpty(props.userLocation) && (
           <Map
             center={setMapCenter()}
@@ -83,12 +163,31 @@ const WebsiteObjects = props => {
             provider={mapProvider}
             onBoundsChanged={({ center, zoom }) => {
               setCurrentCenter(center);
-              setCurrentZoom(zoom);
+              setCurrentZoom(Math.round(zoom));
             }}
-          />
+          >
+            {!isEmpty(modalMapData) &&
+              modalMapData.map(area => {
+                const id = area.center[0];
+                return (
+                  <Overlay key={id} anchor={area.center}>
+                    <div className="MapWrap__rect" style={currStyle}>
+                      <span
+                        id={id}
+                        role="presentation"
+                        className="MapWrap__cancel"
+                        onClick={event => removeArea(event.target.id)}
+                      >
+                        &#9746;
+                      </span>
+                    </div>
+                  </Overlay>
+                );
+              })}
+          </Map>
         )}
       </div>
-
+      {showMap && modalMap()}
       <p className="WebsiteObjects__rules-selections">
         <FormattedMessage
           id="website_object_rules_of_selections"
@@ -118,13 +217,25 @@ WebsiteObjects.propTypes = {
     lon: PropTypes.string,
   }).isRequired,
   getCoordinates: PropTypes.func.isRequired,
+  authUserName: PropTypes.string.isRequired,
+  setWebsiteObjectsCoordinates: PropTypes.func.isRequired,
+  getWebsiteObjectsCoordinates: PropTypes.func.isRequired,
+  isLoadingAreas: PropTypes.bool,
+};
+
+WebsiteObjects.defaultProps = {
+  isLoadingAreas: false,
 };
 
 export default connect(
   state => ({
     userLocation: getUserLocation(state),
+    authUserName: getAuthenticatedUserName(state),
+    isLoadingAreas: getIsLoadingAreas(state),
   }),
   {
     getCoordinates,
+    setWebsiteObjectsCoordinates,
+    getWebsiteObjectsCoordinates,
   },
 )(withRouter(injectIntl(WebsiteObjects)));

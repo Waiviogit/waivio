@@ -1859,4 +1859,23 @@ export const getObjectTypeFilters = type =>
     .then(res => res)
     .catch(e => e);
 
+export const setWebsiteObjCoordinates = (params = {}) =>
+  fetch(`${config.apiPrefix}${config.sites}/map`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'PUT',
+    body: JSON.stringify(params),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getWebsiteObjCoordinates = host =>
+  fetch(`${config.apiPrefix}${config.sites}/map?host=${host}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;
