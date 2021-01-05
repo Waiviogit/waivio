@@ -303,15 +303,6 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         isLoadingAreas: false,
-        selectedAreas: [...state.selectedAreas, action.payload],
-      };
-    }
-
-    case websiteAction.GET_WEBSITE_OBJECTS_COORDINATES.SUCCESS: {
-      console.log('action.payload: ', action.payload);
-      return {
-        ...state,
-        selectedAreas: action.payload,
       };
     }
 
@@ -333,5 +324,4 @@ export const getModerators = state => get(state, 'moderators', {});
 export const getAuthorities = state => get(state, 'authorities', {});
 export const getTagsSite = state => get(state, 'tags', {});
 export const getSettingsSite = state => get(state, 'settings', {});
-export const getSelectedAreas = state => state.selectedAreas;
 export const getIsLoadingAreas = state => state.isLoadingAreas;

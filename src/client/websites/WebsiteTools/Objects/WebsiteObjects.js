@@ -4,16 +4,11 @@ import { Icon, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty, isEqual, size } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../helpers/mapProvider';
-import {
-  getAuthenticatedUserName,
-  getIsLoadingAreas,
-  getSelectedAreas,
-  getUserLocation,
-} from '../../../reducers';
+import { getAuthenticatedUserName, getIsLoadingAreas, getUserLocation } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
 import './WebsiteObjects.less';
@@ -23,19 +18,13 @@ const WebsiteObjects = props => {
   const [currentZoom, setCurrentZoom] = useState(11);
   const [showMap, setShowMap] = useState(false);
   const [modalMapData, setModalMapData] = useState([]);
-  const [isNewArea, setIsNewArea] = useState(false);
 
   useEffect(() => {
     if (isEmpty(props.userLocation)) {
       props.getCoordinates();
     }
-    if (size(modalMapData) !== size(props.selectedAreas)) {
-      setIsNewArea(true);
-    } else {
-      setIsNewArea(false);
-    }
   });
-
+  console.log('currentZoom: ', currentZoom);
   useEffect(() => {
     props
       .getWebsiteObjectsCoordinates(props.match.params.site)
@@ -49,8 +38,183 @@ const WebsiteObjects = props => {
   const setMapCenter = () => (isEmpty(currentCenter) ? startOwnLocation : currentCenter);
 
   const setPosition = () => setCurrentCenter(startOwnLocation);
-  const incrementZoom = () => setCurrentZoom(currentZoom + 1);
-  const decrementZoom = () => setCurrentZoom(currentZoom - 1);
+  const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
+  const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
+
+  // const getCurrentSizeArea = (zoom) => {
+  //   let st = {
+  //     border: '2px solid red',
+  //     width: '472px',
+  //     height: '400px'
+  //   }
+  //
+  //   // width - 35.63
+  //   // height - 30.90
+  //
+  //   if (zoom > 10 && zoom <= 11) {
+  //     st = {
+  //       ...st,
+  //       width: '472px'
+  //     };
+  //   } else if (zoom > 9 && zoom <= 10) {
+  //     st = {
+  //       ...st,
+  //       width: '356.37px'
+  //     };
+  //   } else if (zoom > 8 && zoom <= 9) {
+  //     st = {
+  //       ...st,
+  //       width: '320.74px'
+  //     };
+  //   } else if (zoom > 7 && zoom <= 8) {
+  //     st = {
+  //       ...st,
+  //       width: '285.11px'
+  //     };
+  //   } else if (zoom > 6 && zoom <= 7) {
+  //     st = {
+  //       ...st,
+  //       width: '249.48px'
+  //     };
+  //   } else if (zoom > 5 && zoom <= 6) {
+  //     st = {
+  //       ...st,
+  //       width: '213.85px'
+  //     };
+  //   } else if (zoom > 4 && zoom <= 5) {
+  //     st = {
+  //       ...st,
+  //       width: '178.22px'
+  //     };
+  //   } else if (zoom > 3 && zoom <= 4) {
+  //     st = {
+  //       ...st,
+  //       width: '114.87px'
+  //     };
+  //   } else if (zoom > 2 && zoom <= 3) {
+  //     st = {
+  //       ...st,
+  //       width: '79.24px'
+  //     };
+  //   } else if (zoom > 1 && zoom <= 2) {
+  //     st = {
+  //       ...st,
+  //       width: '43.61px'
+  //     };
+  //   }
+  //   return st;
+  // }
+
+  let currStyle = {
+    border: '2px solid red',
+    width: '300px',
+    height: '250px',
+  };
+
+  if (currentZoom < 4 && currentZoom > 0) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.2)',
+      marginLeft: -150,
+      marginTop: -140,
+      // width: '114.87px'
+    };
+  } else if (currentZoom === 4) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.2)',
+      marginLeft: -150,
+      marginTop: -140,
+      // width: '114.87px'
+    };
+  } else if (currentZoom === 5) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.3)',
+      marginLeft: -150,
+      marginTop: -140,
+      // width: '178.22px'
+    };
+  } else if (currentZoom === 6) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.4)',
+      marginLeft: -150,
+      marginTop: -140,
+      // width: '213.85px'
+    };
+  } else if (currentZoom === 7) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.5)',
+      marginLeft: -150,
+      marginTop: -140,
+      // width: '249.48px'
+    };
+  } else if (currentZoom === 8) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.6)',
+      marginLeft: -100,
+      marginTop: -90,
+      // width: '285.11px'
+    };
+  } else if (currentZoom === 9) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.7)',
+      marginLeft: -70,
+      marginTop: -60,
+    };
+  } else if (currentZoom === 10) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.8)',
+      marginLeft: -50,
+      marginTop: -40,
+    };
+  } else if (currentZoom === 11) {
+    currStyle = {
+      ...currStyle,
+      marginLeft: 0,
+      marginTop: 0,
+    };
+  } else if (currentZoom === 12) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(1.5)',
+    };
+  } else if (currentZoom === 13) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(2)',
+    };
+  } else if (currentZoom === 14) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(2.5)',
+    };
+  } else if (currentZoom === 15) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(2.5)',
+    };
+  } else if (currentZoom === 16) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(2.5)',
+    };
+  } else if (currentZoom === 17) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(2.5)',
+    };
+  } else if (currentZoom === 18) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(2.5)',
+    };
+  }
 
   const handleModalOkButton = currData => {
     setModalMapData([...modalMapData, currData]);
@@ -64,14 +228,15 @@ const WebsiteObjects = props => {
       mapCoordinates: modalMapData,
     };
 
-    props.setWebsiteObjectsCoordinates(params).then(() => setIsNewArea(false));
+    props.setWebsiteObjectsCoordinates(params);
   };
 
   const removeArea = id =>
     setModalMapData(modalMapData.filter(area => !isEqual(+id, area.center[0])));
 
+  const currClassName = showMap ? 'WebsiteObjectsControl modal-view' : 'WebsiteObjectsControl';
   const zoomButtonsLayout = () => (
-    <div className="WebsiteObjectsControl">
+    <div className={currClassName}>
       <div className="WebsiteObjectsControl__gps">
         <div role="presentation" className="WebsiteObjectsControl__locateGPS" onClick={setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
@@ -157,13 +322,11 @@ const WebsiteObjects = props => {
             <Icon type="loading" />
           </div>
         ) : (
-          isNewArea && (
-            <div role="presentation" className="MapWrap__agree-areas" onClick={saveCurrentAreas}>
-              <Icon type="check-circle" theme="filled" />
-            </div>
-          )
+          <div role="presentation" className="MapWrap__agree-areas" onClick={saveCurrentAreas}>
+            <Icon type="check-circle" theme="filled" />
+          </div>
         )}
-        {zoomButtonsLayout()}
+        {!showMap && zoomButtonsLayout()}
         {!isEmpty(props.userLocation) && (
           <Map
             center={setMapCenter()}
@@ -172,7 +335,7 @@ const WebsiteObjects = props => {
             provider={mapProvider}
             onBoundsChanged={({ center, zoom }) => {
               setCurrentCenter(center);
-              setCurrentZoom(zoom);
+              setCurrentZoom(Math.round(zoom));
             }}
           >
             {!isEmpty(modalMapData) &&
@@ -180,7 +343,7 @@ const WebsiteObjects = props => {
                 const id = area.center[0];
                 return (
                   <Overlay key={id} anchor={area.center}>
-                    <div style={{ border: '2px solid red', width: '80px', height: '60px' }}>
+                    <div style={currStyle}>
                       <span
                         id={id}
                         role="presentation"
@@ -231,12 +394,10 @@ WebsiteObjects.propTypes = {
   authUserName: PropTypes.string.isRequired,
   setWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   getWebsiteObjectsCoordinates: PropTypes.func.isRequired,
-  selectedAreas: PropTypes.shape(),
   isLoadingAreas: PropTypes.bool,
 };
 
 WebsiteObjects.defaultProps = {
-  selectedAreas: [],
   isLoadingAreas: false,
 };
 
@@ -244,7 +405,6 @@ export default connect(
   state => ({
     userLocation: getUserLocation(state),
     authUserName: getAuthenticatedUserName(state),
-    selectedAreas: getSelectedAreas(state),
     isLoadingAreas: getIsLoadingAreas(state),
   }),
   {
