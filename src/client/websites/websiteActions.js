@@ -67,8 +67,8 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
         busyAPI.sendAsync(subscribeMethod, [creator, blockNum, subscribeTypes.posts]);
         busyAPI.subscribe((response, mess) => {
           if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
-            dispatch(getOwnWebsite());
             history.push(`/${formData.domain}.${formData.parent}/configuration`);
+            dispatch(getOwnWebsite());
           }
         });
       }),

@@ -15,6 +15,7 @@ const initialState = {
   authorities: [],
   tags: {},
   loading: false,
+  loadingWebsite: false,
   settings: {},
   selectedAreas: [],
   isLoadingAreas: false,
@@ -48,13 +49,13 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.CREATE_NEW_WEBSITE.START: {
       return {
         ...state,
-        loading: true,
+        loadingWebsite: true,
       };
     }
     case websiteAction.CREATE_NEW_WEBSITE.SUCCESS: {
       return {
         ...state,
-        loading: false,
+        loadingWebsite: false,
       };
     }
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {
@@ -315,6 +316,7 @@ export default function websiteReducer(state = initialState, action) {
 export const getParentDomain = state => get(state, 'parentDomain', []);
 export const getDomainAvailableStatus = state => get(state, 'domainAvailableStatus', []);
 export const getWebsiteLoading = state => get(state, 'loading');
+export const getCreateWebsiteLoading = state => get(state, 'loadingWebsite');
 export const getManage = state => get(state, 'manage');
 export const getReports = state => get(state, 'reports');
 export const getOwnWebsites = state => get(state, 'ownWebsites', []);

@@ -10,9 +10,9 @@ import Comments from '../../../client/comments/Comments';
 import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
 import { getSocialInfoPost, handleHidePost } from '../../post/postActions';
+import withAuthActions from '../../auth/withAuthActions';
 
 import './StoryFooter.less';
-import withAuthActions from '../../auth/withAuthActions';
 
 @withAuthActions
 @connect(
@@ -168,9 +168,11 @@ class StoryFooter extends React.Component {
 
   handleSliderChange = async value => {
     const { user, isGuest, post } = this.props;
-    const voteWorth = isGuest
-      ? 0
-      : await calculateVotePowerForSlider(user.name, value, post.root_author, post.permlink);
+    const voteWorth =
+      isGuest || isPostCashout(post)
+        ? 0
+        : await calculateVotePowerForSlider(user.name, value, post.root_author, post.permlink);
+
     this.setState({ sliderValue: value, voteWorth });
   };
 

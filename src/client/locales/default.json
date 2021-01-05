@@ -1480,7 +1480,7 @@
   "empty_transaction_list": "You don't have any transactions yet",
   "empty_table_transaction_list": "You did not have any transactions during this period",
   "create_new_website": "Create new website",
-  "select_website_template": "Select website template:",
+  "select_website": "Select the website:",
   "name_website": "Specify name for your website:",
   "info_level_domain_name": "It will be used as a second level domain name.",
   "available": "Available",
@@ -1488,7 +1488,7 @@
   "create_website": "Create new website",
   "prices": "Prices:",
   "prices_per_active_user": "{price} HBD per day per active user;",
-  "prices_min_value": "Minimum {price} HBD per day.",
+  "prices_min_value": "Minimum {price} HBD per day ((including active and inactive websites)(including active and inactive websites)).",
   "manage_account_balance": "Account balance (HBD)",
   "pay_now": "Pay now",
   "websites": "Websites:",
@@ -1514,8 +1514,8 @@
   "daily_cost": "Daily cost (HBD)",
   "days_remaning": "Days remaining (est)**",
   "website": "Website",
-  "website_management": "Websites management",
-  "empty_dynamic_table": "Table has been empty yet",
+  "website_management": "Manage websites",
+  "empty_dynamic_table": "No records",
   "vote_sponsor": "Sponsor:",
   "vote_upvotes": "Upvotes:",
   "flag": "Flag",
@@ -1524,5 +1524,8 @@
   "hide_post": "Hide post",
   "website_objects_heading": "Select objects",
   "website_objects_description": "All objects (restaurants, dishes, drinks) located in the areas specified on the map will appear on the website. If you want to have more control over the list of objects, you can use the Authorities to do so.",
-  "website_object_rules_of_selections": "Press {plusSymbol} to add a new area. Click & drag corners to resize. Click {cancelSymbol} to remove the area. Zoom in for controls."
+  "website_object_rules_of_selections": "Press {plusSymbol} to add a new area. Click & drag corners to resize. Click {cancelSymbol} to remove the area. Zoom in for controls.",
+  "manage_website_empty_table": "You don't have any websites.",
+  "delete_website_modal_body": "Warning: All configuration data and website pages will be removed. The name of the website will be no longer protected.",
+  "delete_website_modal_title": "Delete {host} website"
 }
