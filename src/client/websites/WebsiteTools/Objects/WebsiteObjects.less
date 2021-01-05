@@ -9,11 +9,29 @@
 .MapWrap {
   position: relative;
 
+  &__rect {
+    border: 2px solid @red-danger;
+    width: 300px;
+    height: 250px;
+    margin-left: -150px !important;
+    margin-top: -125px !important;
+  }
+
+  &__cancel {
+    z-index: 2;
+    color: @red-danger;
+    float: right;
+    margin: -10px -3px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 23px;
+  }
+
   &__new-aria-btn {
     position: absolute;
     z-index: 100;
     top: 85%;
-    left: 3%;
+    left: 15px;
 
     & i {
       font-size: 35px;
@@ -23,40 +41,71 @@
     }
   }
 
-  .WebsiteObjectsControl {
+  &__agree-areas {
     position: absolute;
-    z-index: 200;
-    display: flex;
-    justify-content: flex-end;
-    flex-direction: column;
-    align-items: flex-end;
-    top: 70%;
-    left: 93%;
+    z-index: 100;
+    top: 85%;
+    left: 55px;
 
-    &__gps {
-      cursor: pointer;
-      z-index: 100;
-      margin-bottom: 5px;
+    & i {
+      font-size: 35px;
+      color: @orange-hot;
+      background: @white;
+      border-radius: 50%;
     }
+  }
 
-    &__zoom {
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      z-index: 100;
+  &__loading {
+    position: absolute;
+    z-index: 100;
+    top: 85%;
+    left: 55px;
 
-      &__button {
-        width: 25px;
-        height: 25px;
-        text-align: center;
-        background-color: @white;
-        border: 1px solid @border-color-base;
-        color: @black;
+    & i {
+      font-size: 35px;
+      color: @orange-hot;
+    }
+  }
+}
 
-        &:hover {
-          background-color: @primary-color;
-        }
+.WebsiteObjectsControl {
+  position: absolute;
+  z-index: 200;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  top: 70%;
+  left: 93%;
+
+  &__gps {
+    cursor: pointer;
+    z-index: 100;
+    margin-bottom: 5px;
+  }
+
+  &__zoom {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    z-index: 100;
+
+    &__button {
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      background-color: @white;
+      border: 1px solid @border-color-base;
+      color: @black;
+
+      &:hover {
+        background-color: @primary-color;
       }
     }
   }
+}
+
+.modal-view {
+  top: 67%;
+  left: 89%;
 }
