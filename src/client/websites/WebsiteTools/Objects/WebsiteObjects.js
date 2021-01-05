@@ -47,127 +47,49 @@ const WebsiteObjects = props => {
     height: '250px',
   };
 
-  // switch (currentZoom) {
-  //   case (currentZoom < 4 && currentZoom > 0): {
-  //     currStyle = {
-  //       ...currStyle,
-  //       transform: 'scale(0.2)',
-  //       marginLeft: -150,
-  //       marginTop: -140,
-  //       // width: '114.87px'
-  //     };
-  //     break;
-  //   }
-  //   case (currentZoom === 4): {
-  //     currStyle = {
-  //       ...currStyle,
-  //       transform: 'scale(0.2)',
-  //       marginLeft: -150,
-  //       marginTop: -140,
-  //       // width: '114.87px'
-  //     };
-  //     break;
-  //   }
-  //   case (currentZoom === 5): {
-  //     currStyle = {
-  //       ...currStyle,
-  //       transform: 'scale(0.3)',
-  //       marginLeft: -150,
-  //       marginTop: -140,
-  //       // width: '178.22px'
-  //     };
-  //     break;
-  //   }
-  //   case (currentZoom === 6): {
-  //     currStyle = {
-  //       ...currStyle,
-  //       transform: 'scale(0.4)',
-  //       marginLeft: -150,
-  //       marginTop: -140,
-  //       // width: '213.85px'
-  //     };
-  //     break;
-  //   }
-  //   case (currentZoom === 7): {
-  //     currStyle = {
-  //       ...currStyle,
-  //       transform: 'scale(0.5)',
-  //       marginLeft: -150,
-  //       marginTop: -140,
-  //       // width: '249.48px'
-  //     };
-  //     break;
-  //   }
-  //   case (currentZoom === 8): {
-  //     currStyle = {
-  //       ...currStyle,
-  //       transform: 'scale(0.6)',
-  //       marginLeft: -100,
-  //       marginTop: -90,
-  //       // width: '285.11px'
-  //     };
-  //     break;
-  //   }
-  //   case (): {
-  //
-  //     break;
-  //   }
-  //   case (): {
-  //
-  //     break;
-  //   }
-  //   case (): {
-  //
-  //     break;
-  //   }
-  //   case (): {
-  //
-  //     break;
-  //   }
-  //   case (): {
-  //
-  //     break;
-  //   }
-  //   case (): {
-  //
-  //     break;
-  //   }
-  //   case (): {
-  //
-  //     break;
-  //   }
-  //   case (): {
-  //
-  //     break;
-  //   }
-  //   case (): {
-  //
-  //     break;
-  //   }
-  //   case (): {
-  //
-  //     break;
-  //   }
-  //   default: {
-  //     return currStyle;
-  //   }
-  // }
-
   if (currentZoom < 4 && currentZoom > 0) {
-    console.log('a');
-  }
-  // else if (currentZoom === 4) {
-  //
-  // } else if (currentZoom === 5) {
-  //
-  // } else if (currentZoom === 6) {
-  //
-  // } else if (currentZoom === 7) {
-  //
-  // } else if (currentZoom === 8) {
-  //
-  // }
-  else if (currentZoom === 9) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.2)',
+      marginLeft: -150,
+      marginTop: -140,
+    };
+  } else if (currentZoom === 4) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.2)',
+      marginLeft: -150,
+      marginTop: -140,
+    };
+  } else if (currentZoom === 5) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.3)',
+      marginLeft: -150,
+      marginTop: -140,
+    };
+  } else if (currentZoom === 6) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.4)',
+      marginLeft: -150,
+      marginTop: -140,
+    };
+  } else if (currentZoom === 7) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.5)',
+      marginLeft: -150,
+      marginTop: -140,
+    };
+  } else if (currentZoom === 8) {
+    currStyle = {
+      ...currStyle,
+      transform: 'scale(0.6)',
+      marginLeft: -100,
+      marginTop: -90,
+    };
+  } else if (currentZoom === 9) {
     currStyle = {
       ...currStyle,
       transform: 'scale(0.7)',
