@@ -9,9 +9,17 @@
 .MapWrap {
   position: relative;
 
+  &__rect {
+    border: 2px solid @red-danger;
+    width: 300px;
+    height: 250px;
+    margin-left: -150px !important;
+    margin-top: -125px !important;
+  }
+
   &__cancel {
     z-index: 2;
-    color: #f5222d;
+    color: @red-danger;
     float: right;
     margin: -10px -3px;
     font-weight: 700;

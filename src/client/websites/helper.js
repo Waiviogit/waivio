@@ -56,4 +56,90 @@ export const getChangesInAccessOption = (
   });
 };
 
+// eslint-disable-next-line consistent-return
+export const getCurrStyleAfterZoom = currentZoom => {
+  if (currentZoom < 4 && currentZoom > 0) {
+    return {
+      transform: 'scale(0.2)',
+      marginLeft: -150,
+      marginTop: -140,
+    };
+  } else if (currentZoom === 4) {
+    return {
+      transform: 'scale(0.2)',
+      marginLeft: -150,
+      marginTop: -140,
+    };
+  } else if (currentZoom === 5) {
+    return {
+      transform: 'scale(0.3)',
+      marginLeft: -150,
+      marginTop: -140,
+    };
+  } else if (currentZoom === 6) {
+    return {
+      transform: 'scale(0.4)',
+      marginLeft: -150,
+      marginTop: -140,
+    };
+  } else if (currentZoom === 7) {
+    return {
+      transform: 'scale(0.5)',
+      marginLeft: -150,
+      marginTop: -140,
+    };
+  } else if (currentZoom === 8) {
+    return {
+      transform: 'scale(0.6)',
+      marginLeft: -100,
+      marginTop: -90,
+    };
+  } else if (currentZoom === 9) {
+    return {
+      transform: 'scale(0.7)',
+      marginLeft: -70,
+      marginTop: -60,
+    };
+  } else if (currentZoom === 10) {
+    return {
+      transform: 'scale(0.8)',
+      marginLeft: -50,
+      marginTop: -40,
+    };
+  } else if (currentZoom === 11) {
+    return {
+      marginLeft: 0,
+      marginTop: 0,
+    };
+  } else if (currentZoom === 12) {
+    return {
+      transform: 'scale(1.5)',
+    };
+  } else if (currentZoom === 13) {
+    return {
+      transform: 'scale(2)',
+    };
+  } else if (currentZoom === 14) {
+    return {
+      transform: 'scale(2.5)',
+    };
+  } else if (currentZoom === 15) {
+    return {
+      transform: 'scale(2.5)',
+    };
+  } else if (currentZoom === 16) {
+    return {
+      transform: 'scale(2.5)',
+    };
+  } else if (currentZoom === 17) {
+    return {
+      transform: 'scale(2.5)',
+    };
+  } else if (currentZoom === 18) {
+    return {
+      transform: 'scale(2.5)',
+    };
+  }
+};
+
 export default null;

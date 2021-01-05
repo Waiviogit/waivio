@@ -11,6 +11,7 @@ import mapProvider from '../../../helpers/mapProvider';
 import { getAuthenticatedUserName, getIsLoadingAreas, getUserLocation } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
+import { getCurrStyleAfterZoom } from '../../helper';
 import './WebsiteObjects.less';
 
 const WebsiteObjects = props => {
@@ -24,7 +25,7 @@ const WebsiteObjects = props => {
       props.getCoordinates();
     }
   });
-  console.log('currentZoom: ', currentZoom);
+
   useEffect(() => {
     props
       .getWebsiteObjectsCoordinates(props.match.params.site)
@@ -41,110 +42,7 @@ const WebsiteObjects = props => {
   const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
   const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
 
-  let currStyle = {
-    border: '2px solid red',
-    width: '300px',
-    height: '250px',
-  };
-
-  if (currentZoom < 4 && currentZoom > 0) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.2)',
-      marginLeft: -150,
-      marginTop: -140,
-    };
-  } else if (currentZoom === 4) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.2)',
-      marginLeft: -150,
-      marginTop: -140,
-    };
-  } else if (currentZoom === 5) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.3)',
-      marginLeft: -150,
-      marginTop: -140,
-    };
-  } else if (currentZoom === 6) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.4)',
-      marginLeft: -150,
-      marginTop: -140,
-    };
-  } else if (currentZoom === 7) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.5)',
-      marginLeft: -150,
-      marginTop: -140,
-    };
-  } else if (currentZoom === 8) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.6)',
-      marginLeft: -100,
-      marginTop: -90,
-    };
-  } else if (currentZoom === 9) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.7)',
-      marginLeft: -70,
-      marginTop: -60,
-    };
-  } else if (currentZoom === 10) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(0.8)',
-      marginLeft: -50,
-      marginTop: -40,
-    };
-  } else if (currentZoom === 11) {
-    currStyle = {
-      ...currStyle,
-      marginLeft: 0,
-      marginTop: 0,
-    };
-  } else if (currentZoom === 12) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(1.5)',
-    };
-  } else if (currentZoom === 13) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(2)',
-    };
-  } else if (currentZoom === 14) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(2.5)',
-    };
-  } else if (currentZoom === 15) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(2.5)',
-    };
-  } else if (currentZoom === 16) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(2.5)',
-    };
-  } else if (currentZoom === 17) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(2.5)',
-    };
-  } else if (currentZoom === 18) {
-    currStyle = {
-      ...currStyle,
-      transform: 'scale(2.5)',
-    };
-  }
+  const currStyle = getCurrStyleAfterZoom(currentZoom);
 
   const handleModalOkButton = currData => {
     setModalMapData([...modalMapData, currData]);
@@ -273,7 +171,7 @@ const WebsiteObjects = props => {
                 const id = area.center[0];
                 return (
                   <Overlay key={id} anchor={area.center}>
-                    <div style={currStyle}>
+                    <div className="MapWrap__rect" style={currStyle}>
                       <span
                         id={id}
                         role="presentation"
@@ -289,9 +187,7 @@ const WebsiteObjects = props => {
           </Map>
         )}
       </div>
-
       {showMap && modalMap()}
-
       <p className="WebsiteObjects__rules-selections">
         <FormattedMessage
           id="website_object_rules_of_selections"
