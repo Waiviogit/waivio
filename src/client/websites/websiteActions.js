@@ -18,6 +18,8 @@ import {
   getWebsitesReports,
   saveTagCategoryForSite,
   saveWebsitesConfiguration,
+  setWebsiteObjCoordinates,
+  getWebsiteObjCoordinates,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, getOwnWebsites, getParentDomain } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
@@ -65,8 +67,8 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
         busyAPI.sendAsync(subscribeMethod, [creator, blockNum, subscribeTypes.posts]);
         busyAPI.subscribe((response, mess) => {
           if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
-            dispatch(getOwnWebsite());
             history.push(`/${formData.domain}.${formData.parent}/configuration`);
+            dispatch(getOwnWebsite());
           }
         });
       }),
@@ -490,5 +492,27 @@ export const getWebsiteSettings = host => ({
   type: GET_WEBSITE_SETTINGS.ACTION,
   payload: {
     promise: getSettingsWebsite(host),
+  },
+});
+
+export const SET_WEBSITE_OBJECTS_COORDINATES = createAsyncActionType(
+  '@website/SET_WEBSITE_OBJECTS_COORDINATES',
+);
+
+export const setWebsiteObjectsCoordinates = params => ({
+  type: SET_WEBSITE_OBJECTS_COORDINATES.ACTION,
+  payload: {
+    promise: setWebsiteObjCoordinates(params),
+  },
+});
+
+export const GET_WEBSITE_OBJECTS_COORDINATES = createAsyncActionType(
+  '@website/GET_WEBSITE_OBJECTS_COORDINATES',
+);
+
+export const getWebsiteObjectsCoordinates = params => ({
+  type: GET_WEBSITE_OBJECTS_COORDINATES.ACTION,
+  payload: {
+    promise: getWebsiteObjCoordinates(params),
   },
 });

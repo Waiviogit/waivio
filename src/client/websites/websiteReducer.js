@@ -15,7 +15,10 @@ const initialState = {
   authorities: [],
   tags: {},
   loading: false,
+  loadingWebsite: false,
   settings: {},
+  selectedAreas: [],
+  isLoadingAreas: false,
 };
 
 export default function websiteReducer(state = initialState, action) {
@@ -46,13 +49,13 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.CREATE_NEW_WEBSITE.START: {
       return {
         ...state,
-        loading: true,
+        loadingWebsite: true,
       };
     }
     case websiteAction.CREATE_NEW_WEBSITE.SUCCESS: {
       return {
         ...state,
-        loading: false,
+        loadingWebsite: false,
       };
     }
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {
@@ -290,6 +293,20 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.SET_WEBSITE_OBJECTS_COORDINATES.START: {
+      return {
+        ...state,
+        isLoadingAreas: true,
+      };
+    }
+
+    case websiteAction.SET_WEBSITE_OBJECTS_COORDINATES.SUCCESS: {
+      return {
+        ...state,
+        isLoadingAreas: false,
+      };
+    }
+
     default: {
       return state;
     }
@@ -299,6 +316,7 @@ export default function websiteReducer(state = initialState, action) {
 export const getParentDomain = state => get(state, 'parentDomain', []);
 export const getDomainAvailableStatus = state => get(state, 'domainAvailableStatus', []);
 export const getWebsiteLoading = state => get(state, 'loading');
+export const getCreateWebsiteLoading = state => get(state, 'loadingWebsite');
 export const getManage = state => get(state, 'manage');
 export const getReports = state => get(state, 'reports');
 export const getOwnWebsites = state => get(state, 'ownWebsites', []);
@@ -308,3 +326,4 @@ export const getModerators = state => get(state, 'moderators', {});
 export const getAuthorities = state => get(state, 'authorities', {});
 export const getTagsSite = state => get(state, 'tags', {});
 export const getSettingsSite = state => get(state, 'settings', {});
+export const getIsLoadingAreas = state => state.isLoadingAreas;
