@@ -279,7 +279,6 @@ class PostContent extends React.Component {
     const url = `${waivioHost}${replaceBotWithGuestName(dropCategory(content.url), guestInfo)}`;
     const ampUrl = `${url}/amp`;
     const metaTitle = `${title} - Waivio`;
-
     return (
       <div>
         <Helmet>
@@ -302,7 +301,10 @@ class PostContent extends React.Component {
           <meta name="twitter:site" property="twitter:site" content={'@waivio'} />
           <meta name="twitter:title" property="twitter:title" content={metaTitle} />
           <meta name="twitter:description" property="twitter:description" content={desc} />
-          <meta name="twitter:image" property="twitter:image" content={image} />
+          <meta
+            name="twitter:image"
+            content="https://farm6.staticflickr.com/5510/14338202952_93595258ff_z.jpg"
+          />
         </Helmet>
         <StoryFull
           user={user}

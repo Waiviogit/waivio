@@ -56,11 +56,7 @@ const Wobj = ({
           <meta name="og:image:height" property="og:image:height" content="600" />
           <meta name="og:description" property="og:description" content={desc} />
           <meta name="og:site_name" property="og:site_name" content="Waivio" />
-          <meta
-            name="twitter:card"
-            property="twitter:card"
-            content={image ? 'summary_large_image' : 'summary'}
-          />
+          <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta name="twitter:site" property="twitter:site" content={'@waivio'} />
           <meta name="twitter:title" property="twitter:title" content={objectName} />
           <meta name="twitter:description" property="twitter:description" content={desc} />
