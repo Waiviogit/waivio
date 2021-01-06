@@ -301,10 +301,7 @@ class PostContent extends React.Component {
           <meta name="twitter:site" property="twitter:site" content={'@waivio'} />
           <meta name="twitter:title" property="twitter:title" content={metaTitle} />
           <meta name="twitter:description" property="twitter:description" content={desc} />
-          <meta
-            name="twitter:image"
-            content="https://farm6.staticflickr.com/5510/14338202952_93595258ff_z.jpg"
-          />
+          <meta name="twitter:image" property="twitter:image" content={image} />
         </Helmet>
         <StoryFull
           user={user}
