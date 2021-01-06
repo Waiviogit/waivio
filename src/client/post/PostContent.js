@@ -285,6 +285,13 @@ class PostContent extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <link rel="amphtml" href={ampUrl} />
+
+          <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+          <meta name="twitter:site" content={'@waivio'} />
+          <meta name="twitter:title" content={metaTitle} />
+          <meta name="twitter:description" content={desc} />
+          <meta name="twitter:image" content={image} />
+
           <meta property="og:url" content={url} />
           <meta property="og:type" content="article" />
           <meta property="og:title" content={metaTitle} />
@@ -293,15 +300,6 @@ class PostContent extends React.Component {
           <meta property="og:site_name" content="Waivio" />
           <meta name="article:tag" property="article:tag" content={category} />
           <meta name="article:published_time" property="article:published_time" content={created} />
-          <meta
-            name="twitter:card"
-            property="twitter:card"
-            content={image ? 'summary_large_image' : 'summary'}
-          />
-          <meta name="twitter:site" property="twitter:site" content={'@waivio'} />
-          <meta name="twitter:title" property="twitter:title" content={metaTitle} />
-          <meta name="twitter:description" property="twitter:description" content={desc} />
-          <meta name="twitter:image" property="twitter:image" content={image} />
         </Helmet>
         <StoryFull
           user={user}
