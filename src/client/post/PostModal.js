@@ -110,7 +110,7 @@ class PostModal extends React.Component {
     const author = currentShownPost.guestInfo
       ? currentShownPost.guestInfo.userId
       : currentShownPost.author;
-    const postName = isGuest ? '' : `?ref=${username}`;
+    const postName = !isGuest && username ? `?ref=${username}` : '';
     const baseURL = window ? window.location.origin : 'https://waivio.com';
     const postURL = `${baseURL}${replaceBotWithGuestName(
       dropCategory(url),
