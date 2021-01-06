@@ -74,7 +74,7 @@ export const parseLink = (appUrl, secureLinks) => (tagName, attribs) => {
   const attys = {};
 
   const linkUrl = url.parse(href);
-  console.log(linkUrl);
+
   const linkWebsiteUrl = url.format({
     protocol: linkUrl.protocol,
     host: linkUrl.host,
