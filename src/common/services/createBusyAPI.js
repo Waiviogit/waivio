@@ -13,10 +13,7 @@ function createBusyAPI() {
       });
     });
 
-  client.ws.onclose = () => {
-    console.log('Socket closing, reconnect');
-    createBusyAPI();
-  };
+  if (client.ws.readyState === 1) createBusyAPI();
 
   return client;
 }
