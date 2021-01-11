@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
-import { forEach, get, has, isEmpty, isEqual, keyBy, includes } from 'lodash';
+import { forEach, get, has, isEmpty, isEqual, keyBy, includes, map } from 'lodash';
 import { Input, message } from 'antd';
 import {
   createEditorState,
@@ -64,6 +64,7 @@ class Editor extends React.Component {
     handleHashtag: PropTypes.func,
     displayTitle: PropTypes.bool,
     draftId: PropTypes.string,
+    linkedObjects: PropTypes.shape(),
   };
   static defaultProps = {
     intl: {},
@@ -71,6 +72,7 @@ class Editor extends React.Component {
     handleHashtag: () => {},
     displayTitle: true,
     draftId: '',
+    linkedObjects: [],
   };
 
   static MAX_LENGTH = 255;
@@ -83,6 +85,7 @@ class Editor extends React.Component {
       editorEnabled: false,
       editorState: EditorState.createEmpty(defaultDecorators),
       titleValue: '',
+      currLinkedObjects: [],
     };
 
     this.onChange = editorState => {
@@ -109,6 +112,13 @@ class Editor extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.linkedObjects !== prevProps.linkedObjects) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ ...this.state, currLinkedObjects: this.props.linkedObjects });
+    }
+  }
+
   setFocusAfterMount = () => {
     setTimeout(() => this.refsEditor.current.focus(), 0);
     this.setState({ editorEnabled: true });
@@ -132,6 +142,7 @@ class Editor extends React.Component {
 
   restoreObjects = async rawContent => {
     const { draftId } = this.props;
+    const { currLinkedObjects } = this.state;
     const isReview = includes(draftId, 'review');
     const objectIds = Object.values(rawContent.entityMap)
       // eslint-disable-next-line array-callback-return,consistent-return
@@ -167,11 +178,22 @@ class Editor extends React.Component {
 
       const entityMap = {};
       forEach(rawContent.entityMap, (value, key) => {
+        let currObj = false;
         const loadedObject = this.getCurrentLoadObjects(response, value);
+        if (!isEmpty(currLinkedObjects)) {
+          map(currLinkedObjects, obj => {
+            if (isEqual(obj.author_permlink, loadedObject.author_permlink)) {
+              currObj = loadedObject;
+            }
+          });
+        } else {
+          currObj = loadedObject;
+        }
 
         entityMap[key] = {
           ...value,
-          data: loadedObject ? { ...value.data, object: loadedObject } : { ...value.data },
+          // data: loadedObject ? { ...value.data, object: loadedObject } : { ...value.data },
+          data: currObj ? { ...value.data, object: currObj } : { ...value.data },
         };
       });
       const rawContentUpdated = {
