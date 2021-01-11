@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, get, size } from 'lodash';
 import DiscoverUser from './DiscoverUser';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import { followUser, getTopExperts as getTopExpertsApi, unfollowUser } from '../user/usersActions';
@@ -139,25 +139,23 @@ class DiscoverContent extends React.Component {
         />
       </div>
     );
-    const mapSearchUsersList =
-      searchUsersList &&
-      searchUsersList.result &&
-      searchUsersList.result.map(user => ({
-        name: user.account,
-        ...user,
-      }));
-    const searchUsers =
-      mapSearchUsersList && mapSearchUsersList.length
-        ? mapSearchUsersList.map(expert => (
-            <DiscoverUser
-              user={expert}
-              key={expert.name}
-              unfollow={this.unfollowTopUser}
-              follow={this.followTopUser}
-              isReblogged
-            />
-          ))
-        : noUserError;
+
+    const mapSearchUsersList = get(searchUsersList, 'result', []).map(user => ({
+      name: user.account,
+      ...user,
+    }));
+
+    const searchUsers = size(mapSearchUsersList)
+      ? mapSearchUsersList.map(expert => (
+          <DiscoverUser
+            user={expert}
+            key={expert.name}
+            unfollow={this.unfollowTopUser}
+            follow={this.followTopUser}
+            isReblogged
+          />
+        ))
+      : noUserError;
     const renderItem = searchUsersList.loading ? <Loading /> : searchUsers;
 
     return (
