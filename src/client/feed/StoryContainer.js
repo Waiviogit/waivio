@@ -1,4 +1,3 @@
-import { find, get } from 'lodash';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
@@ -26,12 +25,14 @@ import { toggleBookmark } from '../bookmarks/bookmarksActions';
 import { editPost } from '../post/Write/editorActions';
 import { reblog } from '../app/Reblog/reblogActions';
 import { unfollowUser, followUser } from '../user/usersActions';
+import { getDownvotes, getUpvotes } from '../helpers/voteHelpers';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);
   const post = getPosts(state)[id];
+  const isLiked = getUpvotes(post.active_votes).some(vote => vote.voter === user.name);
+  const isReported = getDownvotes(post.active_votes).some(vote => vote.voter === user.name);
 
-  const userVote = find(post.active_votes, { voter: user.name }) || {};
   const bookmarks = getBookmarks(state);
   const postState = {
     isReblogged: getRebloggedList(state).includes(post.id),
@@ -39,8 +40,8 @@ const mapStateToProps = (state, { id }) => {
     isSaved: post.guestInfo
       ? bookmarks.includes(`${post.guestInfo.userId}/${post.root_permlink}`)
       : bookmarks.includes(post.id),
-    isLiked: userVote.percent > 0 && get(userVote, '_id', false),
-    isReported: userVote.percent < 0,
+    isLiked,
+    isReported,
   };
 
   const pendingVote = getPendingLikes(state)[post.id];

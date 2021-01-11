@@ -150,7 +150,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         usersForDiscoverPage: {
-          result,
+          result: result.users,
           loading: false,
         },
       };

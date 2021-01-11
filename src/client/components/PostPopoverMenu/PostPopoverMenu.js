@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty } from 'lodash';
@@ -9,6 +10,8 @@ import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import { getFacebookShareURL, getTwitterShareURL } from '../../helpers/socialProfiles';
 import { isPostCashout } from '../../vendor/steemitHelpers';
+import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
+import { getSocialInfoPost as getSocialInfoPostAction } from '../../post/postActions';
 
 import './PostPopoverMenu.less';
 
@@ -44,7 +47,7 @@ const propTypes = {
   ownPost: PropTypes.bool,
   children: PropTypes.node.isRequired,
   isGuest: PropTypes.bool.isRequired,
-  username: PropTypes.string.isRequired,
+  userName: PropTypes.string.isRequired,
   getSocialInfoPost: PropTypes.func,
 };
 
@@ -68,7 +71,7 @@ const PostPopoverMenu = ({
   ownPost,
   children,
   isGuest,
-  username,
+  userName,
   getSocialInfoPost,
 }) => {
   const { isReported, isSaved } = postState;
@@ -99,7 +102,7 @@ const PostPopoverMenu = ({
       const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
         ? `@${socialInfoPost.wobjectsTwitter}`
         : '';
-      const postName = isGuest ? '' : `?ref=${username}`;
+      const postName = !isGuest && userName ? `?ref=${userName}` : '';
       const postURL = `${baseURL}${replaceBotWithGuestName(
         dropCategory(url),
         guestInfo,
@@ -246,4 +249,12 @@ const PostPopoverMenu = ({
 PostPopoverMenu.propTypes = propTypes;
 PostPopoverMenu.defaultProps = defaultProps;
 
-export default PostPopoverMenu;
+export default connect(
+  state => ({
+    isGuest: isGuestUser(state),
+    userName: getAuthenticatedUserName(state),
+  }),
+  {
+    getSocialInfoPost: getSocialInfoPostAction,
+  },
+)(PostPopoverMenu);

@@ -13,6 +13,8 @@ function createBusyAPI() {
       });
     });
 
+  if (client.ws.readyState === 1) createBusyAPI();
+
   return client;
 }
 
