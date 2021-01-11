@@ -109,8 +109,8 @@ const WebsiteObjects = props => {
             provider={mapProvider}
             onBoundsChanged={data => {
               currData = {
-                topPoint: data.bounds.ne,
-                bottomPoint: data.bounds.sw,
+                topPoint: [data.bounds.ne[1], data.bounds.ne[0]],
+                bottomPoint: [data.bounds.sw[1], data.bounds.sw[0]],
                 center: data.center,
                 zoom: data.zoom,
               };
