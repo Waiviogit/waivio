@@ -1878,4 +1878,14 @@ export const getWebsiteObjCoordinates = host =>
     .then(res => res)
     .catch(e => e);
 
+export const getWebsiteObjectsWithCoordinates = (params = {}) =>
+  fetch(`${config.apiPrefix}${config.sites}/map`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'POST',
+    body: JSON.stringify(params),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;
