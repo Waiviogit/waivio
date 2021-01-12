@@ -185,7 +185,6 @@ class Editor extends React.Component {
 
         entityMap[key] = {
           ...value,
-          // data: loadedObject ? { ...value.data, object: loadedObject } : { ...value.data },
           data: currObj ? { ...value.data, object: currObj } : { ...value.data },
         };
       });
