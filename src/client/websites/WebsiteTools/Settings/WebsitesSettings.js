@@ -50,7 +50,7 @@ const WebsitesSettings = ({
   const handleChangePercent = e => {
     const value = e.currentTarget.value;
 
-    if (value <= 100 && value >= 1) setBeneficiaryPercent(value);
+    if (value <= 100 && value >= 0) setBeneficiaryPercent(value);
   };
 
   const handleSubmit = e => {
