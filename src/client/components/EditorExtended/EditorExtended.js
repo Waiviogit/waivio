@@ -85,7 +85,6 @@ class Editor extends React.Component {
       editorEnabled: false,
       editorState: EditorState.createEmpty(defaultDecorators),
       titleValue: '',
-      currLinkedObjects: [],
     };
 
     this.onChange = editorState => {
@@ -102,6 +101,7 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    sessionStorage.setItem('linkedObjects', JSON.stringify(this.props.linkedObjects));
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
       setTimeout(() => {
         this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
@@ -109,13 +109,6 @@ class Editor extends React.Component {
         this.handleContentChange(createEditorState(rawContent));
         this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
       }, 0);
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.linkedObjects !== prevProps.linkedObjects) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ ...this.state, currLinkedObjects: this.props.linkedObjects });
     }
   }
 
@@ -142,7 +135,7 @@ class Editor extends React.Component {
 
   restoreObjects = async rawContent => {
     const { draftId } = this.props;
-    const { currLinkedObjects } = this.state;
+    const currLinkedObjects = JSON.parse(sessionStorage.getItem('linkedObjects')) || [];
     const isReview = includes(draftId, 'review');
     const objectIds = Object.values(rawContent.entityMap)
       // eslint-disable-next-line array-callback-return,consistent-return
