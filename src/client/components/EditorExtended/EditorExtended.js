@@ -171,7 +171,7 @@ class Editor extends React.Component {
 
       const entityMap = {};
       forEach(rawContent.entityMap, (value, key) => {
-        let currObj = false;
+        let currObj = null;
         const loadedObject = this.getCurrentLoadObjects(response, value);
         if (!isEmpty(currLinkedObjects)) {
           map(currLinkedObjects, obj => {
