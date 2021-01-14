@@ -1878,8 +1878,7 @@ export const getWebsiteObjCoordinates = host =>
     .then(res => res)
     .catch(e => e);
 
-export const getWebsiteObjectsWithCoordinates = (params = {}, accessToken) => {
-  console.log('accessToken: ', accessToken);
+export const getWebsiteObjectsWithCoordinates = (params = {}, accessToken) =>
   fetch(`${config.apiPrefix}${config.sites}/map`, {
     headers: { ...headers, 'access-token': accessToken },
     method: 'POST',
@@ -1888,6 +1887,5 @@ export const getWebsiteObjectsWithCoordinates = (params = {}, accessToken) => {
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
-};
 
 export default null;
