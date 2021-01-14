@@ -11,7 +11,7 @@ import mapProvider from '../../../helpers/mapProvider';
 import { getAuthenticatedUserName, getIsLoadingAreas, getUserLocation } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
-import { getCurrStyleAfterZoom } from '../../helper';
+// import { getCurrStyleAfterZoom } from '../../helper';
 import './WebsiteObjects.less';
 
 const WebsiteObjects = props => {
@@ -35,6 +35,58 @@ const WebsiteObjects = props => {
       .catch(err => console.error('Error: ', err));
   }, []);
 
+  // const tile2lng = (x, z) => (x / Math.pow(2, z)) * 360 - 180;
+  // const tile2lat = (y, z) => {
+  //   // eslint-disable-next-line no-restricted-properties
+  //   const n = Math.PI - (2 * Math.PI * y) / Math.pow(2, z);
+  //   return (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+  // };
+
+  // eslint-disable-next-line no-restricted-properties
+  const lng2tile = (lon, zoom) => ((lon + 180) / 360) * Math.pow(2, zoom);
+  const lat2tile = (lat, zoom) =>
+    ((1 -
+      Math.log(Math.tan((lat * Math.PI) / 180) + 1 / Math.cos((lat * Math.PI) / 180)) / Math.PI) /
+      2) *
+    2 ** zoom;
+
+  // const absoluteMinMax = [
+  //   // eslint-disable-next-line no-restricted-properties
+  //   tile2lat(Math.pow(2, 10), 10),
+  //   tile2lat(0, 10),
+  //   tile2lng(0, 10),
+  //   // eslint-disable-next-line no-restricted-properties
+  //   tile2lng(Math.pow(2, 10), 10),
+  // ];
+  //
+  // const pixelToLatLng = (pixel, center, zoom) => {
+  //   const pointDiff = [(pixel[0] - 600 / 2) / 256.0, (pixel[1] - 400 / 2) / 256.0];
+  //
+  //   const tileX = lng2tile(center[1], zoom) + pointDiff[0];
+  //   const tileY = lat2tile(center[0], zoom) + pointDiff[1];
+  //
+  //   return [
+  //     Math.max(absoluteMinMax[0], Math.min(absoluteMinMax[1], tile2lat(tileY, zoom))),
+  //     Math.max(absoluteMinMax[2], Math.min(absoluteMinMax[3], tile2lng(tileX, zoom))),
+  //   ];
+  // };
+
+  const latLngToPixel = (latLng, center, zoom) => {
+    const tileCenterX = lng2tile(center[1], zoom);
+
+    const tileX = lng2tile(latLng[1], zoom);
+
+    return [(tileX - tileCenterX) * 256.0 + 600 / 2];
+  };
+
+  const lonLngToPixel = (lonLng, center, zoom) => {
+    const tileCenterY = lat2tile(center[0], zoom);
+
+    const tileY = lat2tile(lonLng[0], zoom);
+
+    return [(tileY - tileCenterY) * 256.0 + 400 / 2];
+  };
+
   const startOwnLocation = [+props.userLocation.lat, +props.userLocation.lon];
   const setMapCenter = () => (isEmpty(currentCenter) ? startOwnLocation : currentCenter);
 
@@ -42,13 +94,34 @@ const WebsiteObjects = props => {
   const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
   const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
 
-  const currStyle = getCurrStyleAfterZoom(currentZoom);
+  // const currStyle = getCurrStyleAfterZoom(currentZoom);
 
+  // const currStyle = {}
+  const [currStyle, setCurrStyle] = useState({ width: 300, height: 250 });
   const handleModalOkButton = currData => {
+    console.log('currData: ', currData);
+    const width = latLngToPixel(
+      [+currData.topPoint[1], +currData.topPoint[0]],
+      currentCenter,
+      currentZoom,
+    );
+    const height = lonLngToPixel(
+      [+currData.bottomPoint[1], +currData.bottomPoint[0]],
+      currentCenter,
+      currentZoom,
+    );
+
+    setCurrStyle({ width, height });
+    // currStyle.width = width;
+    // currStyle.height = height;
+    // console.log('width: ', width)
+    console.log('height: ', height);
+
     setModalMapData([...modalMapData, currData]);
     setShowMap(!showMap);
   };
-
+  // Todo: осмотреть useCallback()
+  console.log('currStyle: ', currStyle);
   const saveCurrentAreas = () => {
     const params = {
       host: props.match.params.site,
