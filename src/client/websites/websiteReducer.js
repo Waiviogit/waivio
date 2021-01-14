@@ -19,6 +19,8 @@ const initialState = {
   settings: {},
   selectedAreas: [],
   isLoadingAreas: false,
+  wobjectsPoint: [],
+  wobjectsPointHasMore: false,
 };
 
 export default function websiteReducer(state = initialState, action) {
@@ -307,6 +309,14 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.GET_WEBSITE_OBJECTS_WITH_COORDINATES.SUCCESS: {
+      return {
+        ...state,
+        wobjectsPoint: action.payload.wobjects,
+        wobjectsPointHasMore: action.payload.hasMore,
+      };
+    }
+
     default: {
       return state;
     }
@@ -327,3 +337,4 @@ export const getAuthorities = state => get(state, 'authorities', {});
 export const getTagsSite = state => get(state, 'tags', {});
 export const getSettingsSite = state => get(state, 'settings', {});
 export const getIsLoadingAreas = state => state.isLoadingAreas;
+export const getWobjectsPoint = state => state.wobjectsPoint;

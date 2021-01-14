@@ -20,6 +20,7 @@ import {
   saveWebsitesConfiguration,
   setWebsiteObjCoordinates,
   getWebsiteObjCoordinates,
+  getWebsiteObjectsWithCoordinates,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, getOwnWebsites, getParentDomain } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
@@ -514,5 +515,16 @@ export const getWebsiteObjectsCoordinates = params => ({
   type: GET_WEBSITE_OBJECTS_COORDINATES.ACTION,
   payload: {
     promise: getWebsiteObjCoordinates(params),
+  },
+});
+
+export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
+  '@website/GET_WEBSITE_OBJECTS_WITH_COORDINATES',
+);
+
+export const getWebsiteObjWithCoordinates = params => ({
+  type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
+  payload: {
+    promise: getWebsiteObjectsWithCoordinates(params),
   },
 });
