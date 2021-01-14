@@ -4,7 +4,7 @@ import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-
+import Cookie from 'js-cookie';
 import MapOS from '../../../components/Maps/Map';
 import {
   getMapForMainPage,
@@ -15,6 +15,7 @@ import {
   getWebsiteSearchResult,
   getWebsiteSearchType,
   getWobjectsPoint,
+  isGuestUser,
 } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteSearchType } from '../../../search/searchActions';
@@ -41,7 +42,10 @@ const WebsiteBody = props => {
     if (isEmpty(props.userLocation)) props.getCoordinates();
 
     if (!isEmpty(boundsParams.topPoint) && !isEmpty(boundsParams.bottomPoint)) {
-      props.getWebsiteObjWithCoordinates(boundsParams);
+      const accessToken = props.isGuest
+        ? localStorage.getItem('accessToken')
+        : Cookie.get('access_token');
+      props.getWebsiteObjWithCoordinates(boundsParams, accessToken);
     }
   }, [props.userLocation, boundsParams]);
 
@@ -110,10 +114,12 @@ WebsiteBody.propTypes = {
   configCoordinates: PropTypes.arrayOf.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
+  isGuest: PropTypes.bool,
 };
 
 WebsiteBody.defaultProps = {
   wobjectsPoint: [],
+  isGuest: false,
 };
 
 export default connect(
@@ -126,6 +132,7 @@ export default connect(
     configuration: getConfigurationValues(state),
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),
+    isGuest: isGuestUser(state),
   }),
   {
     getCoordinates,
