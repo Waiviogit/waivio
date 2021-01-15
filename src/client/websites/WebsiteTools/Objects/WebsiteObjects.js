@@ -11,7 +11,7 @@ import mapProvider from '../../../helpers/mapProvider';
 import { getAuthenticatedUserName, getIsLoadingAreas, getUserLocation } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
-import { getCurrStyleAfterZoom } from '../../helper';
+// import { getCurrStyleAfterZoom } from '../../helper';
 import './WebsiteObjects.less';
 
 const WebsiteObjects = props => {
@@ -76,7 +76,7 @@ const WebsiteObjects = props => {
 
     const tileX = lng2tile(latLng[1], zoom);
 
-    return [(tileX - tileCenterX) * 256.0 + 600 / 2];
+    return (tileX - tileCenterX) * 256.0 + 600 / 2;
   };
 
   const lonLngToPixel = (lonLng, center, zoom) => {
@@ -84,7 +84,7 @@ const WebsiteObjects = props => {
 
     const tileY = lat2tile(lonLng[0], zoom);
 
-    return [(tileY - tileCenterY) * 256.0 + 400 / 2];
+    return (tileY - tileCenterY) * 256.0 + 400 / 2;
   };
 
   const startOwnLocation = [+props.userLocation.lat, +props.userLocation.lon];
@@ -94,7 +94,7 @@ const WebsiteObjects = props => {
   const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
   const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
 
-  let currStyle = { width: 300, height: 250 };
+  const [currStyle, setCurrStyle] = useState({ width: 300, height: 250 });
   const handleModalOkButton = currData => {
     const width = latLngToPixel(
       [+currData.topPoint[1], +currData.topPoint[0]],
@@ -106,23 +106,24 @@ const WebsiteObjects = props => {
       currentCenter,
       currentZoom,
     );
-    currStyle.width = `${width}px`;
-    currStyle.height = `${height}px`;
+
+    setCurrStyle({ width, height });
+
     setModalMapData([...modalMapData, currData]);
     setShowMap(!showMap);
   };
 
-  useEffect(() => {
-    const additionalStyles = getCurrStyleAfterZoom(currentZoom);
-    // eslint-disable-next-line array-callback-return
-    Object.entries(additionalStyles).map(([auxKey, value]) => {
-      currStyle = {
-        ...currStyle,
-        [auxKey]: value,
-      };
-    });
-    console.log('currStyle: ', currStyle);
-  }, [currentZoom]);
+  console.log('currStyle: ', currStyle);
+  // useEffect(() => {
+  //   const additionalStyles = getCurrStyleAfterZoom(currentZoom);
+  //   // eslint-disable-next-line array-callback-return
+  //   Object.entries(additionalStyles).map(([auxKey, value]) => {
+  //     currStyle = {
+  //       ...currStyle,
+  //       [auxKey]: value,
+  //     };
+  //   });
+  // }, [currentZoom]);
 
   const saveCurrentAreas = () => {
     const params = {
@@ -169,7 +170,7 @@ const WebsiteObjects = props => {
 
     return (
       <Modal
-        title={`Select area`}
+        title={`Preview selected area`}
         closable
         onCancel={() => setShowMap(!showMap)}
         onOk={() => handleModalOkButton(currData)}
