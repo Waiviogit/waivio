@@ -11,7 +11,7 @@ import mapProvider from '../../../helpers/mapProvider';
 import { getAuthenticatedUserName, getIsLoadingAreas, getUserLocation } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
-// import { getCurrStyleAfterZoom } from '../../helper';
+import { getCurrStyleAfterZoom } from '../../helper';
 import './WebsiteObjects.less';
 
 const WebsiteObjects = props => {
@@ -94,12 +94,8 @@ const WebsiteObjects = props => {
   const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
   const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
 
-  // const currStyle = getCurrStyleAfterZoom(currentZoom);
-
-  // const currStyle = {}
-  const [currStyle, setCurrStyle] = useState({ width: 300, height: 250 });
+  let currStyle = { width: 300, height: 250 };
   const handleModalOkButton = currData => {
-    console.log('currData: ', currData);
     const width = latLngToPixel(
       [+currData.topPoint[1], +currData.topPoint[0]],
       currentCenter,
@@ -110,18 +106,24 @@ const WebsiteObjects = props => {
       currentCenter,
       currentZoom,
     );
-
-    setCurrStyle({ width, height });
-    // currStyle.width = width;
-    // currStyle.height = height;
-    // console.log('width: ', width)
-    console.log('height: ', height);
-
+    currStyle.width = `${width}px`;
+    currStyle.height = `${height}px`;
     setModalMapData([...modalMapData, currData]);
     setShowMap(!showMap);
   };
-  // Todo: осмотреть useCallback()
-  console.log('currStyle: ', currStyle);
+
+  useEffect(() => {
+    const additionalStyles = getCurrStyleAfterZoom(currentZoom);
+    // eslint-disable-next-line array-callback-return
+    Object.entries(additionalStyles).map(([auxKey, value]) => {
+      currStyle = {
+        ...currStyle,
+        [auxKey]: value,
+      };
+    });
+    console.log('currStyle: ', currStyle);
+  }, [currentZoom]);
+
   const saveCurrentAreas = () => {
     const params = {
       host: props.match.params.site,
@@ -173,13 +175,13 @@ const WebsiteObjects = props => {
         onOk={() => handleModalOkButton(currData)}
         visible={showMap}
       >
-        {zoomButtonsLayout()}
         {!isEmpty(props.userLocation) && (
           <Map
             center={setMapCenter()}
             zoom={currentZoom}
             height={400}
             provider={mapProvider}
+            mouseEvents={false}
             onBoundsChanged={data => {
               currData = {
                 topPoint: [data.bounds.ne[1], data.bounds.ne[0]],
