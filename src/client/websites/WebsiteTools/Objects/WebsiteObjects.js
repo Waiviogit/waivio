@@ -95,25 +95,7 @@ const WebsiteObjects = props => {
   const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
 
   const [currStyle, setCurrStyle] = useState({ width: 300, height: 250 });
-  const handleModalOkButton = currData => {
-    const width = latLngToPixel(
-      [+currData.topPoint[1], +currData.topPoint[0]],
-      currentCenter,
-      currentZoom,
-    );
-    const height = lonLngToPixel(
-      [+currData.bottomPoint[1], +currData.bottomPoint[0]],
-      currentCenter,
-      currentZoom,
-    );
 
-    setCurrStyle({ width, height });
-
-    setModalMapData([...modalMapData, currData]);
-    setShowMap(!showMap);
-  };
-
-  console.log('currStyle: ', currStyle);
   // useEffect(() => {
   //   const additionalStyles = getCurrStyleAfterZoom(currentZoom);
   //   // eslint-disable-next-line array-callback-return
@@ -124,16 +106,6 @@ const WebsiteObjects = props => {
   //     };
   //   });
   // }, [currentZoom]);
-
-  const saveCurrentAreas = () => {
-    const params = {
-      host: props.match.params.site,
-      userName: props.authUserName,
-      mapCoordinates: modalMapData,
-    };
-
-    props.setWebsiteObjectsCoordinates(params);
-  };
 
   const removeArea = id =>
     setModalMapData(modalMapData.filter(area => !isEqual(+id, area.center[0])));
@@ -164,6 +136,43 @@ const WebsiteObjects = props => {
       </div>
     </div>
   );
+
+  const saveCurrentAreas = data => {
+    const params = {
+      host: props.match.params.site,
+      userName: props.authUserName,
+      mapCoordinates: data,
+    };
+    props.setWebsiteObjectsCoordinates(params);
+  };
+
+  const handleModalOkButton = currData => {
+    const width = latLngToPixel(
+      [+currData.topPoint[1], +currData.topPoint[0]],
+      currentCenter,
+      currentZoom,
+    );
+    const height = lonLngToPixel(
+      [+currData.bottomPoint[1], +currData.bottomPoint[0]],
+      currentCenter,
+      currentZoom,
+    );
+
+    setCurrStyle({ width, height });
+
+    // const a = {width: currStyle.width, height: currStyle.height}
+    // const obj = [...modalMapData, Object.assign(currData, {width: currStyle.width, height: currStyle.height})];
+    // console.log('obj: ', obj)
+
+    // setModalMapData([...modalMapData, Object.assign(currData, {width: currStyle.width, height: currStyle.height})]);
+    // setModalMapData([...modalMapData, currData]);
+    const data = [
+      ...modalMapData,
+      Object.assign(currData, { width: `${width}px`, height: `${height}px` }),
+    ];
+    setShowMap(!showMap);
+    saveCurrentAreas(data);
+  };
 
   const modalMap = () => {
     let currData = {};
@@ -197,6 +206,44 @@ const WebsiteObjects = props => {
     );
   };
 
+  useEffect(() => {
+    if (currentZoom < 4 && currentZoom > 0) {
+      setCurrStyle({ ...currStyle, transform: 'scale(0.2)', marginLeft: -150, marginTop: -140 });
+    } else if (currentZoom === 4) {
+      setCurrStyle({ ...currStyle, transform: 'scale(0.2)', marginLeft: -150, marginTop: -140 });
+    } else if (currentZoom === 5) {
+      setCurrStyle({ ...currStyle, transform: 'scale(0.3)', marginLeft: -150, marginTop: -140 });
+    } else if (currentZoom === 6) {
+      setCurrStyle({ ...currStyle, transform: 'scale(0.4)', marginLeft: -150, marginTop: -140 });
+    } else if (currentZoom === 7) {
+      setCurrStyle({ ...currStyle, transform: 'scale(0.5)', marginLeft: -150, marginTop: -140 });
+    } else if (currentZoom === 8) {
+      setCurrStyle({ ...currStyle, transform: 'scale(0.6)', marginLeft: -100, marginTop: -90 });
+    } else if (currentZoom === 9) {
+      setCurrStyle({ ...currStyle, transform: 'scale(0.7)', marginLeft: -70, marginTop: -60 });
+    } else if (currentZoom === 10) {
+      setCurrStyle({ ...currStyle, transform: 'scale(0.8)', marginLeft: -50, marginTop: -40 });
+    } else if (currentZoom === 11) {
+      setCurrStyle({ ...currStyle, marginLeft: 0, marginTop: 0 });
+    } else if (currentZoom === 12) {
+      setCurrStyle({ ...currStyle, transform: 'scale(1.5)' });
+    } else if (currentZoom === 13) {
+      setCurrStyle({ ...currStyle, transform: 'scale(2)' });
+    } else if (currentZoom === 14) {
+      setCurrStyle({ ...currStyle, transform: 'scale(2.5)' });
+    } else if (currentZoom === 15) {
+      setCurrStyle({ ...currStyle, transform: 'scale(2.5)' });
+    } else if (currentZoom === 16) {
+      setCurrStyle({ ...currStyle, transform: 'scale(2.5)' });
+    } else if (currentZoom === 17) {
+      setCurrStyle({ ...currStyle, transform: 'scale(2.5)' });
+    } else if (currentZoom === 18) {
+      setCurrStyle({ ...currStyle, transform: 'scale(2.5)' });
+    }
+  }, [currentZoom]);
+
+  console.log('modalMapData: ', modalMapData);
+  console.log('currStyle: ', currStyle);
   return (
     <div className="WebsiteObjects">
       <h1 className="WebsiteObjects__heading">
@@ -221,15 +268,17 @@ const WebsiteObjects = props => {
         >
           <Icon type="plus-circle" theme="filled" />
         </div>
-        {props.isLoadingAreas ? (
-          <div role="presentation" className="MapWrap__loading">
-            <Icon type="loading" />
-          </div>
-        ) : (
-          <div role="presentation" className="MapWrap__agree-areas" onClick={saveCurrentAreas}>
-            <Icon type="check-circle" theme="filled" />
-          </div>
-        )}
+
+        {/* {props.isLoadingAreas ? ( */}
+        {/*  <div role="presentation" className="MapWrap__loading"> */}
+        {/*    <Icon type="loading" /> */}
+        {/*  </div> */}
+        {/* ) : ( */}
+        {/*  <div role="presentation" className="MapWrap__agree-areas" onClick={saveCurrentAreas}> */}
+        {/*    <Icon type="check-circle" theme="filled" /> */}
+        {/*  </div> */}
+        {/* )} */}
+
         {!showMap && zoomButtonsLayout()}
         {!isEmpty(props.userLocation) && (
           <Map
@@ -296,7 +345,7 @@ WebsiteObjects.propTypes = {
   authUserName: PropTypes.string.isRequired,
   setWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   getWebsiteObjectsCoordinates: PropTypes.func.isRequired,
-  isLoadingAreas: PropTypes.bool,
+  // isLoadingAreas: PropTypes.bool,
 };
 
 WebsiteObjects.defaultProps = {
