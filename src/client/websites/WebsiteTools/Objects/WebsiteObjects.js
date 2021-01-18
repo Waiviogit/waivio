@@ -43,41 +43,12 @@ const WebsiteObjects = props => {
       .catch(err => console.error('Error: ', err));
   }, []);
 
-  // const tile2lng = (x, z) => (x / Math.pow(2, z)) * 360 - 180;
-  // const tile2lat = (y, z) => {
-  //   // eslint-disable-next-line no-restricted-properties
-  //   const n = Math.PI - (2 * Math.PI * y) / Math.pow(2, z);
-  //   return (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
-  // };
-
-  // eslint-disable-next-line no-restricted-properties
-  const lng2tile = (lon, zoom) => ((lon + 180) / 360) * Math.pow(2, zoom);
+  const lng2tile = (lon, zoom) => ((lon + 180) / 360) * zoom ** 2;
   const lat2tile = (lat, zoom) =>
     ((1 -
       Math.log(Math.tan((lat * Math.PI) / 180) + 1 / Math.cos((lat * Math.PI) / 180)) / Math.PI) /
       2) *
     2 ** zoom;
-
-  // const absoluteMinMax = [
-  //   // eslint-disable-next-line no-restricted-properties
-  //   tile2lat(Math.pow(2, 10), 10),
-  //   tile2lat(0, 10),
-  //   tile2lng(0, 10),
-  //   // eslint-disable-next-line no-restricted-properties
-  //   tile2lng(Math.pow(2, 10), 10),
-  // ];
-  //
-  // const pixelToLatLng = (pixel, center, zoom) => {
-  //   const pointDiff = [(pixel[0] - 600 / 2) / 256.0, (pixel[1] - 400 / 2) / 256.0];
-  //
-  //   const tileX = lng2tile(center[1], zoom) + pointDiff[0];
-  //   const tileY = lat2tile(center[0], zoom) + pointDiff[1];
-  //
-  //   return [
-  //     Math.max(absoluteMinMax[0], Math.min(absoluteMinMax[1], tile2lat(tileY, zoom))),
-  //     Math.max(absoluteMinMax[2], Math.min(absoluteMinMax[3], tile2lng(tileX, zoom))),
-  //   ];
-  // };
 
   const latLngToPixel = (latLng, center, zoom) => {
     const tileCenterX = lng2tile(center[1], zoom);
@@ -103,17 +74,6 @@ const WebsiteObjects = props => {
   const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
 
   const [currStyle, setCurrStyle] = useState({ width: 300, height: 250 });
-
-  // useEffect(() => {
-  //   const additionalStyles = getCurrStyleAfterZoom(currentZoom);
-  //   // eslint-disable-next-line array-callback-return
-  //   Object.entries(additionalStyles).map(([auxKey, value]) => {
-  //     currStyle = {
-  //       ...currStyle,
-  //       [auxKey]: value,
-  //     };
-  //   });
-  // }, [currentZoom]);
 
   const currClassName = showMap ? 'WebsiteObjectsControl modal-view' : 'WebsiteObjectsControl';
   const zoomButtonsLayout = () => (
@@ -168,15 +128,7 @@ const WebsiteObjects = props => {
       currentCenter,
       currentZoom,
     );
-
     setCurrStyle({ width, height });
-
-    // const a = {width: currStyle.width, height: currStyle.height}
-    // const obj = [...modalMapData, Object.assign(currData, {width: currStyle.width, height: currStyle.height})];
-    // console.log('obj: ', obj)
-
-    // setModalMapData([...modalMapData, Object.assign(currData, {width: currStyle.width, height: currStyle.height})]);
-    // setModalMapData([...modalMapData, currData]);
     const data = [
       ...modalMapData,
       Object.assign(currData, { width: `${width}px`, height: `${height}px` }),
@@ -187,10 +139,12 @@ const WebsiteObjects = props => {
 
   const modalMap = () => {
     let currData = {};
-
     return (
       <Modal
-        title={`Select area`}
+        title={props.intl.formatMessage({
+          id: 'website_objects_area',
+          defaultMessage: 'Select area',
+        })}
         closable
         onCancel={() => setShowMap(!showMap)}
         onOk={() => handleModalOkButton(currData)}
@@ -202,7 +156,6 @@ const WebsiteObjects = props => {
             zoom={currentZoom}
             height={400}
             provider={mapProvider}
-            // mouseEvents={false}
             onBoundsChanged={data => {
               currData = {
                 topPoint: [data.bounds.ne[1], data.bounds.ne[0]],
@@ -219,37 +172,117 @@ const WebsiteObjects = props => {
 
   useEffect(() => {
     if (currentZoom < 4 && currentZoom > 0) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.2)' });
+      setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.2)',
+        marginLeft: -205,
+        marginTop: -128,
+      });
     } else if (currentZoom === 4) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.2)' });
+      setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.2)',
+        marginLeft: -225,
+        marginTop: -135,
+      });
     } else if (currentZoom === 5) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.3)' });
+      setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.3)',
+        marginLeft: -266,
+        marginTop: -153,
+      });
     } else if (currentZoom === 6) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.4)' });
+      setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.4)',
+        marginLeft: -202,
+        marginTop: -118,
+      });
     } else if (currentZoom === 7) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.5)' });
+      setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.5)',
+        marginLeft: -210,
+        marginTop: -115,
+      });
     } else if (currentZoom === 8) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.6)' });
+      setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.6)',
+        marginLeft: -183,
+        marginTop: -120,
+      });
     } else if (currentZoom === 9) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.7)' });
+      setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.7)',
+        marginLeft: -190,
+        marginTop: -120,
+      });
     } else if (currentZoom === 10) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.8)' });
+      setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.8)',
+        marginLeft: -190,
+        marginTop: -125,
+      });
     } else if (currentZoom === 11) {
-      setCurrStyle({ ...currStyle });
+      setCurrStyle({
+        ...currStyle,
+        marginLeft: -183,
+        marginTop: -123,
+        zoom: 1.1,
+      });
     } else if (currentZoom === 12) {
-      setCurrStyle({ ...currStyle, transform: 'scale(1.5)' });
+      setCurrStyle({
+        ...currStyle,
+        marginLeft: -195,
+        marginTop: -130,
+        zoom: 1.2,
+      });
     } else if (currentZoom === 13) {
-      setCurrStyle({ ...currStyle, transform: 'scale(2)' });
+      setCurrStyle({
+        ...currStyle,
+        marginLeft: -120,
+        marginTop: -83,
+        zoom: 1.3,
+      });
     } else if (currentZoom === 14) {
-      setCurrStyle({ ...currStyle, transform: 'scale(2.5)' });
+      setCurrStyle({
+        ...currStyle,
+        marginLeft: -121,
+        marginTop: -81,
+        zoom: 1.4,
+      });
     } else if (currentZoom === 15) {
-      setCurrStyle({ ...currStyle, transform: 'scale(2.5)' });
+      setCurrStyle({
+        ...currStyle,
+        marginLeft: -132,
+        marginTop: -85,
+        zoom: 1.5,
+      });
     } else if (currentZoom === 16) {
-      setCurrStyle({ ...currStyle, transform: 'scale(2.5)' });
+      setCurrStyle({
+        ...currStyle,
+        marginLeft: -140,
+        marginTop: -85,
+        zoom: 1.6,
+      });
     } else if (currentZoom === 17) {
-      setCurrStyle({ ...currStyle, transform: 'scale(2.5)' });
+      setCurrStyle({
+        ...currStyle,
+        marginLeft: -150,
+        marginTop: -80,
+        zoom: 1.7,
+      });
     } else if (currentZoom === 18) {
-      setCurrStyle({ ...currStyle, transform: 'scale(2.5)' });
+      setCurrStyle({
+        ...currStyle,
+        marginLeft: -130,
+        marginTop: -80,
+        zoom: 1.8,
+      });
     }
   }, [currentZoom]);
 
@@ -278,16 +311,6 @@ const WebsiteObjects = props => {
           <Icon type="plus-circle" theme="filled" />
         </div>
 
-        {/* {props.isLoadingAreas ? ( */}
-        {/*  <div role="presentation" className="MapWrap__loading"> */}
-        {/*    <Icon type="loading" /> */}
-        {/*  </div> */}
-        {/* ) : ( */}
-        {/*  <div role="presentation" className="MapWrap__agree-areas" onClick={saveCurrentAreas}> */}
-        {/*    <Icon type="check-circle" theme="filled" /> */}
-        {/*  </div> */}
-        {/* )} */}
-
         {!showMap && zoomButtonsLayout()}
         {!isEmpty(props.userLocation) && (
           <Map
@@ -303,7 +326,6 @@ const WebsiteObjects = props => {
             {!isEmpty(modalMapData) &&
               modalMapData.map(area => {
                 const id = area.center[0];
-                console.log('area: ', area);
                 return (
                   <Overlay key={id} anchor={area.center}>
                     <div
