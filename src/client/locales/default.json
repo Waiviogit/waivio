@@ -1527,5 +1527,6 @@
   "website_object_rules_of_selections": "Press {plusSymbol} to add a new area. Click & drag corners to resize. Click {cancelSymbol} to remove the area. Zoom in for controls.",
   "manage_website_empty_table": "You don't have any websites.",
   "delete_website_modal_body": "Warning: All configuration data and website pages will be removed. The name of the website will be no longer protected.",
-  "delete_website_modal_title": "Delete {host} website"
+  "delete_website_modal_title": "Delete {host} website",
+  "unmuted": "Unmuted"
 }

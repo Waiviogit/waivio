@@ -116,5 +116,7 @@
   "filters": "/filters",
   "settings": "/settings",
   "related": "/related",
-  "tagForFilter": "/tags-for-filter"
+  "tagForFilter": "/tags-for-filter",
+  "map": "/map",
+  "restrictions": "/restrictions"
 }

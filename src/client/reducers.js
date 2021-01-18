@@ -399,3 +399,6 @@ export const getAuthorities = state => fromWebsite.getAuthorities(state.website)
 export const getTagsSite = state => fromWebsite.getTagsSite(state.website);
 export const getSettingsSite = state => fromWebsite.getSettingsSite(state.website);
 export const getIsLoadingAreas = state => fromWebsite.getIsLoadingAreas(state.website);
+export const getRestrictions = state => fromWebsite.getRestrictions(state.website);
+export const getMuteLoading = state => fromWebsite.getMuteLoading(state.website);
+export const getUnmutedUsers = state => fromWebsite.getUnmutedUsers(state.website);

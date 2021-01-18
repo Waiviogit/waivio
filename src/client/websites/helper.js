@@ -35,6 +35,7 @@ export const getChangesInAccessOption = (
   host,
   currentActionType,
   processingFunction,
+  meta,
 ) => (dispatch, getState, { busyAPI }) => {
   busyAPI.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
   busyAPI.subscribe((response, mess) => {
@@ -44,6 +45,7 @@ export const getChangesInAccessOption = (
           dispatch({
             type: currentActionType.SUCCESS,
             payload: res,
+            meta,
           });
           return res;
         })
