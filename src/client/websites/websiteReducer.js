@@ -17,7 +17,7 @@ const initialState = {
   loading: false,
   loadingWebsite: false,
   settings: {},
-  selectedAreas: [],
+  areas: [],
   isLoadingAreas: false,
 };
 
@@ -304,6 +304,7 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         isLoadingAreas: false,
+        areas: action.payload,
       };
     }
 
@@ -327,3 +328,4 @@ export const getAuthorities = state => get(state, 'authorities', {});
 export const getTagsSite = state => get(state, 'tags', {});
 export const getSettingsSite = state => get(state, 'settings', {});
 export const getIsLoadingAreas = state => state.isLoadingAreas;
+export const getIsUsersAreas = state => state.areas;

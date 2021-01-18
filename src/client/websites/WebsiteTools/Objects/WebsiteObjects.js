@@ -8,7 +8,12 @@ import { isEmpty, isEqual } from 'lodash';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../helpers/mapProvider';
-import { getAuthenticatedUserName, getIsLoadingAreas, getUserLocation } from '../../../reducers';
+import {
+  getAuthenticatedUserName,
+  getIsLoadingAreas,
+  getIsUsersAreas,
+  getUserLocation,
+} from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
 // import { getCurrStyleAfterZoom } from '../../helper';
@@ -24,7 +29,10 @@ const WebsiteObjects = props => {
     if (isEmpty(props.userLocation)) {
       props.getCoordinates();
     }
-  });
+    if (!isEqual(props.usersSelectedAreas, modalMapData)) {
+      setModalMapData(props.usersSelectedAreas);
+    }
+  }, [props.userLocation, props.usersSelectedAreas]);
 
   useEffect(() => {
     props
@@ -107,9 +115,6 @@ const WebsiteObjects = props => {
   //   });
   // }, [currentZoom]);
 
-  const removeArea = id =>
-    setModalMapData(modalMapData.filter(area => !isEqual(+id, area.center[0])));
-
   const currClassName = showMap ? 'WebsiteObjectsControl modal-view' : 'WebsiteObjectsControl';
   const zoomButtonsLayout = () => (
     <div className={currClassName}>
@@ -146,6 +151,12 @@ const WebsiteObjects = props => {
     props.setWebsiteObjectsCoordinates(params);
   };
 
+  const removeArea = id => {
+    const filteredAreas = modalMapData.filter(area => !isEqual(+id, area.center[0]));
+    setModalMapData(filteredAreas);
+    saveCurrentAreas(filteredAreas);
+  };
+
   const handleModalOkButton = currData => {
     const width = latLngToPixel(
       [+currData.topPoint[1], +currData.topPoint[0]],
@@ -179,7 +190,7 @@ const WebsiteObjects = props => {
 
     return (
       <Modal
-        title={`Preview selected area`}
+        title={`Select area`}
         closable
         onCancel={() => setShowMap(!showMap)}
         onOk={() => handleModalOkButton(currData)}
@@ -191,7 +202,7 @@ const WebsiteObjects = props => {
             zoom={currentZoom}
             height={400}
             provider={mapProvider}
-            mouseEvents={false}
+            // mouseEvents={false}
             onBoundsChanged={data => {
               currData = {
                 topPoint: [data.bounds.ne[1], data.bounds.ne[0]],
@@ -208,23 +219,23 @@ const WebsiteObjects = props => {
 
   useEffect(() => {
     if (currentZoom < 4 && currentZoom > 0) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.2)', marginLeft: -150, marginTop: -140 });
+      setCurrStyle({ ...currStyle, transform: 'scale(0.2)' });
     } else if (currentZoom === 4) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.2)', marginLeft: -150, marginTop: -140 });
+      setCurrStyle({ ...currStyle, transform: 'scale(0.2)' });
     } else if (currentZoom === 5) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.3)', marginLeft: -150, marginTop: -140 });
+      setCurrStyle({ ...currStyle, transform: 'scale(0.3)' });
     } else if (currentZoom === 6) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.4)', marginLeft: -150, marginTop: -140 });
+      setCurrStyle({ ...currStyle, transform: 'scale(0.4)' });
     } else if (currentZoom === 7) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.5)', marginLeft: -150, marginTop: -140 });
+      setCurrStyle({ ...currStyle, transform: 'scale(0.5)' });
     } else if (currentZoom === 8) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.6)', marginLeft: -100, marginTop: -90 });
+      setCurrStyle({ ...currStyle, transform: 'scale(0.6)' });
     } else if (currentZoom === 9) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.7)', marginLeft: -70, marginTop: -60 });
+      setCurrStyle({ ...currStyle, transform: 'scale(0.7)' });
     } else if (currentZoom === 10) {
-      setCurrStyle({ ...currStyle, transform: 'scale(0.8)', marginLeft: -50, marginTop: -40 });
+      setCurrStyle({ ...currStyle, transform: 'scale(0.8)' });
     } else if (currentZoom === 11) {
-      setCurrStyle({ ...currStyle, marginLeft: 0, marginTop: 0 });
+      setCurrStyle({ ...currStyle });
     } else if (currentZoom === 12) {
       setCurrStyle({ ...currStyle, transform: 'scale(1.5)' });
     } else if (currentZoom === 13) {
@@ -242,8 +253,6 @@ const WebsiteObjects = props => {
     }
   }, [currentZoom]);
 
-  console.log('modalMapData: ', modalMapData);
-  console.log('currStyle: ', currStyle);
   return (
     <div className="WebsiteObjects">
       <h1 className="WebsiteObjects__heading">
@@ -294,9 +303,13 @@ const WebsiteObjects = props => {
             {!isEmpty(modalMapData) &&
               modalMapData.map(area => {
                 const id = area.center[0];
+                console.log('area: ', area);
                 return (
                   <Overlay key={id} anchor={area.center}>
-                    <div className="MapWrap__rect" style={currStyle}>
+                    <div
+                      className="MapWrap__rect"
+                      style={{ ...currStyle, width: area.width, height: area.height }}
+                    >
                       <span
                         id={id}
                         role="presentation"
@@ -345,11 +358,13 @@ WebsiteObjects.propTypes = {
   authUserName: PropTypes.string.isRequired,
   setWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   getWebsiteObjectsCoordinates: PropTypes.func.isRequired,
+  usersSelectedAreas: PropTypes.shape(),
   // isLoadingAreas: PropTypes.bool,
 };
 
 WebsiteObjects.defaultProps = {
   isLoadingAreas: false,
+  usersSelectedAreas: [],
 };
 
 export default connect(
@@ -357,6 +372,7 @@ export default connect(
     userLocation: getUserLocation(state),
     authUserName: getAuthenticatedUserName(state),
     isLoadingAreas: getIsLoadingAreas(state),
+    usersSelectedAreas: getIsUsersAreas(state),
   }),
   {
     getCoordinates,

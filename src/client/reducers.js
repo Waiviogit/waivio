@@ -399,3 +399,4 @@ export const getAuthorities = state => fromWebsite.getAuthorities(state.website)
 export const getTagsSite = state => fromWebsite.getTagsSite(state.website);
 export const getSettingsSite = state => fromWebsite.getSettingsSite(state.website);
 export const getIsLoadingAreas = state => fromWebsite.getIsLoadingAreas(state.website);
+export const getIsUsersAreas = state => fromWebsite.getIsUsersAreas(state.website);
