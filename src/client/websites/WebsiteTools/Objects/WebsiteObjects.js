@@ -19,6 +19,7 @@ const WebsiteObjects = props => {
   const [currentZoom, setCurrentZoom] = useState(11);
   const [showMap, setShowMap] = useState(false);
   const [modalMapData, setModalMapData] = useState([]);
+  const [currStyle, setCurrStyle] = useState({ width: 300, height: 250 });
 
   useEffect(() => {
     if (isEmpty(props.userLocation)) {
@@ -38,25 +39,29 @@ const WebsiteObjects = props => {
       .catch(err => console.error('Error: ', err));
   }, []);
 
-  const lng2tile = (lon, zoom) => ((lon + 180) / 360) * zoom ** 2;
-  const lat2tile = (lat, zoom) =>
+  useEffect(() => {
+    getCurrStyleAfterZoom(currentZoom, setCurrStyle, currStyle);
+  }, [currentZoom]);
+
+  const getLongitudeToTile = (lon, zoom) => ((lon + 180) / 360) * zoom ** 2;
+  const getLatitudeToTile = (lat, zoom) =>
     ((1 -
       Math.log(Math.tan((lat * Math.PI) / 180) + 1 / Math.cos((lat * Math.PI) / 180)) / Math.PI) /
       2) *
     2 ** zoom;
 
   const latLngToPixel = (latLng, center, zoom) => {
-    const tileCenterX = lng2tile(center[1], zoom);
+    const tileCenterX = getLongitudeToTile(center[1], zoom);
 
-    const tileX = lng2tile(latLng[1], zoom);
+    const tileX = getLongitudeToTile(latLng[1], zoom);
 
     return (tileX - tileCenterX) * 256.0 + 600 / 2;
   };
 
   const lonLngToPixel = (lonLng, center, zoom) => {
-    const tileCenterY = lat2tile(center[0], zoom);
+    const tileCenterY = getLatitudeToTile(center[0], zoom);
 
-    const tileY = lat2tile(lonLng[0], zoom);
+    const tileY = getLatitudeToTile(lonLng[0], zoom);
 
     return (tileY - tileCenterY) * 256.0 + 400 / 2;
   };
@@ -67,8 +72,6 @@ const WebsiteObjects = props => {
   const setPosition = () => setCurrentCenter(startOwnLocation);
   const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
   const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
-
-  const [currStyle, setCurrStyle] = useState({ width: 300, height: 250 });
 
   const currClassName = showMap ? 'WebsiteObjectsControl modal-view' : 'WebsiteObjectsControl';
   const zoomButtonsLayout = () => (
@@ -164,10 +167,6 @@ const WebsiteObjects = props => {
       </Modal>
     );
   };
-
-  useEffect(() => {
-    getCurrStyleAfterZoom(currentZoom, setCurrStyle, currStyle);
-  }, [currentZoom]);
 
   return (
     <div className="WebsiteObjects">

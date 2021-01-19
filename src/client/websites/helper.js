@@ -57,118 +57,135 @@ export const getChangesInAccessOption = (
 };
 
 export const getCurrStyleAfterZoom = (currentZoom, setCurrStyle, currStyle) => {
-  if (currentZoom < 4 && currentZoom > 0) {
-    setCurrStyle({
-      ...currStyle,
-      transform: 'scale(0.2)',
-      marginLeft: -205,
-      marginTop: -128,
-    });
-  } else if (currentZoom === 4) {
-    setCurrStyle({
-      ...currStyle,
-      transform: 'scale(0.2)',
-      marginLeft: -225,
-      marginTop: -135,
-    });
-  } else if (currentZoom === 5) {
-    setCurrStyle({
-      ...currStyle,
-      transform: 'scale(0.3)',
-      marginLeft: -266,
-      marginTop: -153,
-    });
-  } else if (currentZoom === 6) {
-    setCurrStyle({
-      ...currStyle,
-      transform: 'scale(0.4)',
-      marginLeft: -202,
-      marginTop: -118,
-    });
-  } else if (currentZoom === 7) {
-    setCurrStyle({
-      ...currStyle,
-      transform: 'scale(0.5)',
-      marginLeft: -210,
-      marginTop: -115,
-    });
-  } else if (currentZoom === 8) {
-    setCurrStyle({
-      ...currStyle,
-      transform: 'scale(0.6)',
-      marginLeft: -183,
-      marginTop: -120,
-    });
-  } else if (currentZoom === 9) {
-    setCurrStyle({
-      ...currStyle,
-      transform: 'scale(0.7)',
-      marginLeft: -190,
-      marginTop: -120,
-    });
-  } else if (currentZoom === 10) {
-    setCurrStyle({
-      ...currStyle,
-      transform: 'scale(0.8)',
-      marginLeft: -190,
-      marginTop: -125,
-    });
-  } else if (currentZoom === 11) {
-    setCurrStyle({
-      ...currStyle,
-      marginLeft: -183,
-      marginTop: -123,
-      zoom: 1.1,
-    });
-  } else if (currentZoom === 12) {
-    setCurrStyle({
-      ...currStyle,
-      marginLeft: -195,
-      marginTop: -130,
-      zoom: 1.2,
-    });
-  } else if (currentZoom === 13) {
-    setCurrStyle({
-      ...currStyle,
-      marginLeft: -120,
-      marginTop: -83,
-      zoom: 1.3,
-    });
-  } else if (currentZoom === 14) {
-    setCurrStyle({
-      ...currStyle,
-      marginLeft: -121,
-      marginTop: -81,
-      zoom: 1.4,
-    });
-  } else if (currentZoom === 15) {
-    setCurrStyle({
-      ...currStyle,
-      marginLeft: -132,
-      marginTop: -85,
-      zoom: 1.5,
-    });
-  } else if (currentZoom === 16) {
-    setCurrStyle({
-      ...currStyle,
-      marginLeft: -140,
-      marginTop: -85,
-      zoom: 1.6,
-    });
-  } else if (currentZoom === 17) {
-    setCurrStyle({
-      ...currStyle,
-      marginLeft: -150,
-      marginTop: -80,
-      zoom: 1.7,
-    });
-  } else if (currentZoom === 18) {
-    setCurrStyle({
-      ...currStyle,
-      marginLeft: -130,
-      marginTop: -80,
-      zoom: 1.8,
-    });
+  switch (currentZoom) {
+    case 4: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.2)',
+        marginLeft: -225,
+        marginTop: -135,
+      });
+    }
+    case 5: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.3)',
+        marginLeft: -266,
+        marginTop: -153,
+      });
+    }
+    case 6: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.4)',
+        marginLeft: -202,
+        marginTop: -118,
+      });
+    }
+    case 7: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.5)',
+        marginLeft: -210,
+        marginTop: -115,
+      });
+    }
+    case 8: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.6)',
+        marginLeft: -183,
+        marginTop: -120,
+      });
+    }
+    case 9: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.7)',
+        marginLeft: -190,
+        marginTop: -120,
+      });
+    }
+    case 10: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.8)',
+        marginLeft: -190,
+        marginTop: -125,
+      });
+    }
+    case 11: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -183,
+        marginTop: -123,
+        zoom: 1.1,
+      });
+    }
+    case 12: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -195,
+        marginTop: -130,
+        zoom: 1.2,
+      });
+    }
+    case 13: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -120,
+        marginTop: -83,
+        zoom: 1.3,
+      });
+    }
+    case 14: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -121,
+        marginTop: -81,
+        zoom: 1.4,
+      });
+    }
+    case 15: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -132,
+        marginTop: -85,
+        zoom: 1.5,
+      });
+    }
+    case 16: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -140,
+        marginTop: -85,
+        zoom: 1.6,
+      });
+    }
+    case 17: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -150,
+        marginTop: -80,
+        zoom: 1.7,
+      });
+    }
+    case 18: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -130,
+        marginTop: -80,
+        zoom: 1.8,
+      });
+    }
+    default: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.2)',
+        marginLeft: -205,
+        marginTop: -128,
+      });
+    }
   }
 };
 
