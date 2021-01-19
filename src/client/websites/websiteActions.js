@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { get } from 'lodash';
+import { get, size } from 'lodash';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
   checkAvailable,
@@ -20,6 +20,7 @@ import {
   saveWebsitesConfiguration,
   setWebsiteObjCoordinates,
   getWebsiteObjCoordinates,
+  getRestrictionsInfo,
   getWebsiteObjectsWithCoordinates,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, getOwnWebsites, getParentDomain } from '../reducers';
@@ -528,3 +529,42 @@ export const getWebsiteObjWithCoordinates = params => ({
     promise: getWebsiteObjectsWithCoordinates(params),
   },
 });
+
+export const GET_WEBSITE_RESTRICTIONS = createAsyncActionType('@website/GET_WEBSITE_RESTRICTIONS');
+
+export const getWebsiteRestrictions = (host, userName) => ({
+  type: GET_WEBSITE_RESTRICTIONS.ACTION,
+  payload: {
+    promise: getRestrictionsInfo(host, userName),
+  },
+});
+
+export const MUTE_USER = createAsyncActionType('@website/MUTE_USER');
+export const UNMUTE_USER = createAsyncActionType('@website/UNMUTE_USER');
+
+export const muteUser = (follower, following, action, host) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const type = size(action) ? MUTE_USER : UNMUTE_USER;
+  dispatch({
+    type: type.START,
+    meta: following,
+  });
+
+  return steemConnectAPI.muteUser(follower, following, action).then(data => {
+    dispatch(
+      getChangesInAccessOption(
+        get(data, ['result', 'block_num']),
+        follower,
+        host,
+        type,
+        getRestrictionsInfo,
+        {
+          following,
+        },
+      ),
+    );
+  });
+};
