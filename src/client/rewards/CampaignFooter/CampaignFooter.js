@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
 import { findKey, find, get, isEmpty, map, includes, filter, size, isEqual } from 'lodash';
 import Slider from '../../components/Slider/Slider';
@@ -84,6 +84,7 @@ class CampaignFooter extends React.Component {
     sortFraudDetection: PropTypes.string,
     locale: PropTypes.string,
     follower: PropTypes.string,
+    fraudNumbers: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -115,6 +116,7 @@ class CampaignFooter extends React.Component {
     sortFraudDetection: 'reservation',
     locale: 'en-US',
     follower: '',
+    fraudNumbers: [],
   };
 
   constructor(props) {
@@ -472,6 +474,7 @@ class CampaignFooter extends React.Component {
       reservedComments,
       sortFraudDetection,
       proposedWobj,
+      fraudNumbers,
     } = this.props;
     const isRewards = !isEmpty(match)
       ? match.params.filterKey === 'reserved' ||
@@ -554,6 +557,15 @@ class CampaignFooter extends React.Component {
             isLoading={loadingComments}
             inputValue={commentFormText}
             submitted={commentSubmitted}
+          />
+        )}
+        {!isEmpty(fraudNumbers) && (
+          <FormattedMessage
+            id="fraud_codes"
+            defaultMessage="Codes: {codes}"
+            values={{
+              codes: fraudNumbers.join(', '),
+            }}
           />
         )}
         <Modal
