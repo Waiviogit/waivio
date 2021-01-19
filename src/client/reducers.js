@@ -403,3 +403,4 @@ export const getRestrictions = state => fromWebsite.getRestrictions(state.websit
 export const getMuteLoading = state => fromWebsite.getMuteLoading(state.website);
 export const getUnmutedUsers = state => fromWebsite.getUnmutedUsers(state.website);
 export const getWobjectsPoint = state => fromWebsite.getWobjectsPoint(state.website);
+export const getIsUsersAreas = state => fromWebsite.getIsUsersAreas(state.website);

@@ -1534,5 +1534,6 @@
   "mute": "Mute",
   "website_mute_list": "Website moderators can mute users. Posts, comments, and the profile content of muted users are not accessible on the website. The website owner can also mute users, but only the moderator who has muted a user can unmute them.",
   "muted_users": "Muted users",
-  "fraud_codes": "Codes: {codes}"
+  "fraud_codes": "Codes: {codes}",
+  "website_objects_area": "Select area"
 }

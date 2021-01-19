@@ -61,89 +61,136 @@ export const getChangesInAccessOption = (
   });
 };
 
-// eslint-disable-next-line consistent-return
-export const getCurrStyleAfterZoom = currentZoom => {
-  if (currentZoom < 4 && currentZoom > 0) {
-    return {
-      transform: 'scale(0.2)',
-      marginLeft: -150,
-      marginTop: -140,
-    };
-  } else if (currentZoom === 4) {
-    return {
-      transform: 'scale(0.2)',
-      marginLeft: -150,
-      marginTop: -140,
-    };
-  } else if (currentZoom === 5) {
-    return {
-      transform: 'scale(0.3)',
-      marginLeft: -150,
-      marginTop: -140,
-    };
-  } else if (currentZoom === 6) {
-    return {
-      transform: 'scale(0.4)',
-      marginLeft: -150,
-      marginTop: -140,
-    };
-  } else if (currentZoom === 7) {
-    return {
-      transform: 'scale(0.5)',
-      marginLeft: -150,
-      marginTop: -140,
-    };
-  } else if (currentZoom === 8) {
-    return {
-      transform: 'scale(0.6)',
-      marginLeft: -100,
-      marginTop: -90,
-    };
-  } else if (currentZoom === 9) {
-    return {
-      transform: 'scale(0.7)',
-      marginLeft: -70,
-      marginTop: -60,
-    };
-  } else if (currentZoom === 10) {
-    return {
-      transform: 'scale(0.8)',
-      marginLeft: -50,
-      marginTop: -40,
-    };
-  } else if (currentZoom === 11) {
-    return {
-      marginLeft: 0,
-      marginTop: 0,
-    };
-  } else if (currentZoom === 12) {
-    return {
-      transform: 'scale(1.5)',
-    };
-  } else if (currentZoom === 13) {
-    return {
-      transform: 'scale(2)',
-    };
-  } else if (currentZoom === 14) {
-    return {
-      transform: 'scale(2.5)',
-    };
-  } else if (currentZoom === 15) {
-    return {
-      transform: 'scale(2.5)',
-    };
-  } else if (currentZoom === 16) {
-    return {
-      transform: 'scale(2.5)',
-    };
-  } else if (currentZoom === 17) {
-    return {
-      transform: 'scale(2.5)',
-    };
-  } else if (currentZoom === 18) {
-    return {
-      transform: 'scale(2.5)',
-    };
+export const getCurrStyleAfterZoom = (currentZoom, setCurrStyle, currStyle) => {
+  switch (currentZoom) {
+    case 4: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.2)',
+        marginLeft: -225,
+        marginTop: -135,
+      });
+    }
+    case 5: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.3)',
+        marginLeft: -266,
+        marginTop: -153,
+      });
+    }
+    case 6: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.4)',
+        marginLeft: -202,
+        marginTop: -118,
+      });
+    }
+    case 7: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.5)',
+        marginLeft: -210,
+        marginTop: -115,
+      });
+    }
+    case 8: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.6)',
+        marginLeft: -183,
+        marginTop: -120,
+      });
+    }
+    case 9: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.7)',
+        marginLeft: -190,
+        marginTop: -120,
+      });
+    }
+    case 10: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.8)',
+        marginLeft: -190,
+        marginTop: -125,
+      });
+    }
+    case 11: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -183,
+        marginTop: -123,
+        zoom: 1.1,
+      });
+    }
+    case 12: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -195,
+        marginTop: -130,
+        zoom: 1.2,
+      });
+    }
+    case 13: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -120,
+        marginTop: -83,
+        zoom: 1.3,
+      });
+    }
+    case 14: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -121,
+        marginTop: -81,
+        zoom: 1.4,
+      });
+    }
+    case 15: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -132,
+        marginTop: -85,
+        zoom: 1.5,
+      });
+    }
+    case 16: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -140,
+        marginTop: -85,
+        zoom: 1.6,
+      });
+    }
+    case 17: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -150,
+        marginTop: -80,
+        zoom: 1.7,
+      });
+    }
+    case 18: {
+      return setCurrStyle({
+        ...currStyle,
+        marginLeft: -130,
+        marginTop: -80,
+        zoom: 1.8,
+      });
+    }
+    default: {
+      return setCurrStyle({
+        ...currStyle,
+        transform: 'scale(0.2)',
+        marginLeft: -205,
+        marginTop: -128,
+      });
+    }
   }
 };
 

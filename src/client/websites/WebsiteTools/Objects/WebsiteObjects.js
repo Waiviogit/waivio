@@ -8,7 +8,7 @@ import { isEmpty, isEqual } from 'lodash';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../helpers/mapProvider';
-import { getAuthenticatedUserName, getIsLoadingAreas, getUserLocation } from '../../../reducers';
+import { getAuthenticatedUserName, getIsUsersAreas, getUserLocation } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
 import { getCurrStyleAfterZoom } from '../../helper';
@@ -19,12 +19,16 @@ const WebsiteObjects = props => {
   const [currentZoom, setCurrentZoom] = useState(11);
   const [showMap, setShowMap] = useState(false);
   const [modalMapData, setModalMapData] = useState([]);
+  const [currStyle, setCurrStyle] = useState({ width: 300, height: 250 });
 
   useEffect(() => {
     if (isEmpty(props.userLocation)) {
       props.getCoordinates();
     }
-  });
+    if (!isEqual(props.usersSelectedAreas, modalMapData)) {
+      setModalMapData(props.usersSelectedAreas);
+    }
+  }, [props.userLocation, props.usersSelectedAreas]);
 
   useEffect(() => {
     props
@@ -35,32 +39,39 @@ const WebsiteObjects = props => {
       .catch(err => console.error('Error: ', err));
   }, []);
 
+  useEffect(() => {
+    getCurrStyleAfterZoom(currentZoom, setCurrStyle, currStyle);
+  }, [currentZoom]);
+
+  const getLongitudeToTile = (lon, zoom) => ((lon + 180) / 360) * zoom ** 2;
+  const getLatitudeToTile = (lat, zoom) =>
+    ((1 -
+      Math.log(Math.tan((lat * Math.PI) / 180) + 1 / Math.cos((lat * Math.PI) / 180)) / Math.PI) /
+      2) *
+    2 ** zoom;
+
+  const latLngToPixel = (latLng, center, zoom) => {
+    const tileCenterX = getLongitudeToTile(center[1], zoom);
+
+    const tileX = getLongitudeToTile(latLng[1], zoom);
+
+    return (tileX - tileCenterX) * 256.0 + 600 / 2;
+  };
+
+  const lonLngToPixel = (lonLng, center, zoom) => {
+    const tileCenterY = getLatitudeToTile(center[0], zoom);
+
+    const tileY = getLatitudeToTile(lonLng[0], zoom);
+
+    return (tileY - tileCenterY) * 256.0 + 400 / 2;
+  };
+
   const startOwnLocation = [+props.userLocation.lat, +props.userLocation.lon];
   const setMapCenter = () => (isEmpty(currentCenter) ? startOwnLocation : currentCenter);
 
   const setPosition = () => setCurrentCenter(startOwnLocation);
   const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
   const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
-
-  const currStyle = getCurrStyleAfterZoom(currentZoom);
-
-  const handleModalOkButton = currData => {
-    setModalMapData([...modalMapData, currData]);
-    setShowMap(!showMap);
-  };
-
-  const saveCurrentAreas = () => {
-    const params = {
-      host: props.match.params.site,
-      userName: props.authUserName,
-      mapCoordinates: modalMapData,
-    };
-
-    props.setWebsiteObjectsCoordinates(params);
-  };
-
-  const removeArea = id =>
-    setModalMapData(modalMapData.filter(area => !isEqual(+id, area.center[0])));
 
   const currClassName = showMap ? 'WebsiteObjectsControl modal-view' : 'WebsiteObjectsControl';
   const zoomButtonsLayout = () => (
@@ -89,18 +100,54 @@ const WebsiteObjects = props => {
     </div>
   );
 
+  const saveCurrentAreas = data => {
+    const params = {
+      host: props.match.params.site,
+      userName: props.authUserName,
+      mapCoordinates: data,
+    };
+    props.setWebsiteObjectsCoordinates(params);
+  };
+
+  const removeArea = id => {
+    const filteredAreas = modalMapData.filter(area => !isEqual(+id, area.center[0]));
+    setModalMapData(filteredAreas);
+    saveCurrentAreas(filteredAreas);
+  };
+
+  const handleModalOkButton = currData => {
+    const width = latLngToPixel(
+      [+currData.topPoint[1], +currData.topPoint[0]],
+      currentCenter,
+      currentZoom,
+    );
+    const height = lonLngToPixel(
+      [+currData.bottomPoint[1], +currData.bottomPoint[0]],
+      currentCenter,
+      currentZoom,
+    );
+    setCurrStyle({ width, height });
+    const data = [
+      ...modalMapData,
+      Object.assign(currData, { width: `${width}px`, height: `${height}px` }),
+    ];
+    setShowMap(!showMap);
+    saveCurrentAreas(data);
+  };
+
   const modalMap = () => {
     let currData = {};
-
     return (
       <Modal
-        title={`Select area`}
+        title={props.intl.formatMessage({
+          id: 'website_objects_area',
+          defaultMessage: 'Select area',
+        })}
         closable
         onCancel={() => setShowMap(!showMap)}
         onOk={() => handleModalOkButton(currData)}
         visible={showMap}
       >
-        {zoomButtonsLayout()}
         {!isEmpty(props.userLocation) && (
           <Map
             center={setMapCenter()}
@@ -136,7 +183,6 @@ const WebsiteObjects = props => {
             'All objects (restaurants, dishes, drinks) located in the areas specified on the map will appear on the website. If you want to have more control over the list of objects, you can use the Authorities to do so.',
         })}
       </p>
-
       <div className="MapWrap">
         <div
           role="presentation"
@@ -145,15 +191,6 @@ const WebsiteObjects = props => {
         >
           <Icon type="plus-circle" theme="filled" />
         </div>
-        {props.isLoadingAreas ? (
-          <div role="presentation" className="MapWrap__loading">
-            <Icon type="loading" />
-          </div>
-        ) : (
-          <div role="presentation" className="MapWrap__agree-areas" onClick={saveCurrentAreas}>
-            <Icon type="check-circle" theme="filled" />
-          </div>
-        )}
         {!showMap && zoomButtonsLayout()}
         {!isEmpty(props.userLocation) && (
           <Map
@@ -171,7 +208,10 @@ const WebsiteObjects = props => {
                 const id = area.center[0];
                 return (
                   <Overlay key={id} anchor={area.center}>
-                    <div className="MapWrap__rect" style={currStyle}>
+                    <div
+                      className="MapWrap__rect"
+                      style={{ ...currStyle, width: area.width, height: area.height }}
+                    >
                       <span
                         id={id}
                         role="presentation"
@@ -220,18 +260,18 @@ WebsiteObjects.propTypes = {
   authUserName: PropTypes.string.isRequired,
   setWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   getWebsiteObjectsCoordinates: PropTypes.func.isRequired,
-  isLoadingAreas: PropTypes.bool,
+  usersSelectedAreas: PropTypes.shape(),
 };
 
 WebsiteObjects.defaultProps = {
-  isLoadingAreas: false,
+  usersSelectedAreas: [],
 };
 
 export default connect(
   state => ({
     userLocation: getUserLocation(state),
     authUserName: getAuthenticatedUserName(state),
-    isLoadingAreas: getIsLoadingAreas(state),
+    usersSelectedAreas: getIsUsersAreas(state),
   }),
   {
     getCoordinates,

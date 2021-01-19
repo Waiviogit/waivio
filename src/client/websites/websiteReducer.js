@@ -17,7 +17,7 @@ const initialState = {
   loading: false,
   loadingWebsite: false,
   settings: {},
-  selectedAreas: [],
+  areas: [],
   isLoadingAreas: false,
   restrictions: null,
   muteLoading: false,
@@ -309,6 +309,7 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         isLoadingAreas: false,
+        areas: action.payload,
       };
     }
 
@@ -383,3 +384,4 @@ export const getMuteLoading = state => get(state, 'muteLoading', {});
 export const getUnmutedUsers = state => get(state, 'unmuteUsers', []);
 export const getIsLoadingAreas = state => state.isLoadingAreas;
 export const getWobjectsPoint = state => state.wobjectsPoint;
+export const getIsUsersAreas = state => state.areas;
