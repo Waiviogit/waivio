@@ -1530,5 +1530,5 @@
   "manage_website_empty_table": "У вас нет веб-сайтов.",
   "delete_website_modal_body": "Предупреждение: все данные конфигурации и страницы веб-сайта будут удалены. Имя веб-сайта больше не будет защищено.",
   "delete_website_modal_title": "Удалить веб-сайт {host}",
-  "fraud_codes": "Коды: "
+  "fraud_codes": "Коды: {codes}"
 }

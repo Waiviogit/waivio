@@ -146,7 +146,7 @@ const FraudDetection = ({
               loader={<Loading />}
             >
               {map(fraudSuspicionData, proposition => {
-                const fraudNumbers = get(proposition.users[0], '[fraudCodes]', []);
+                const fraudNumbers = get(proposition.users[0], ['fraudCodes'], []);
                 return map(
                   proposition.objects,
                   wobj =>
