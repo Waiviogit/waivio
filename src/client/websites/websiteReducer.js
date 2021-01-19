@@ -17,8 +17,13 @@ const initialState = {
   loading: false,
   loadingWebsite: false,
   settings: {},
-  selectedAreas: [],
+  areas: [],
   isLoadingAreas: false,
+  restrictions: null,
+  muteLoading: false,
+  unmuteUsers: [],
+  wobjectsPoint: [],
+  wobjectsPointHasMore: false,
 };
 
 export default function websiteReducer(state = initialState, action) {
@@ -304,6 +309,54 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         isLoadingAreas: false,
+        areas: action.payload,
+      };
+    }
+
+    case websiteAction.GET_WEBSITE_OBJECTS_WITH_COORDINATES.SUCCESS: {
+      return {
+        ...state,
+        wobjectsPoint: action.payload.wobjects,
+        wobjectsPointHasMore: action.payload.hasMore,
+      };
+    }
+
+    case websiteAction.GET_WEBSITE_RESTRICTIONS.SUCCESS: {
+      return {
+        ...state,
+        restrictions: action.payload,
+      };
+    }
+
+    case websiteAction.MUTE_USER.START: {
+      return {
+        ...state,
+        muteLoading: true,
+      };
+    }
+
+    case websiteAction.MUTE_USER.SUCCESS: {
+      return {
+        ...state,
+        muteLoading: false,
+      };
+    }
+
+    case websiteAction.UNMUTE_USER.START: {
+      const unmuteUsers = [...state.unmuteUsers, ...action.meta];
+
+      return {
+        ...state,
+        unmuteUsers,
+      };
+    }
+
+    case websiteAction.UNMUTE_USER.SUCCESS: {
+      const unmuteUsers = state.unmuteUsers.filter(user => user.name === action.meta);
+
+      return {
+        ...state,
+        unmuteUsers,
       };
     }
 
@@ -326,4 +379,9 @@ export const getModerators = state => get(state, 'moderators', {});
 export const getAuthorities = state => get(state, 'authorities', {});
 export const getTagsSite = state => get(state, 'tags', {});
 export const getSettingsSite = state => get(state, 'settings', {});
+export const getRestrictions = state => get(state, 'restrictions', {});
+export const getMuteLoading = state => get(state, 'muteLoading', {});
+export const getUnmutedUsers = state => get(state, 'unmuteUsers', []);
 export const getIsLoadingAreas = state => state.isLoadingAreas;
+export const getWobjectsPoint = state => state.wobjectsPoint;
+export const getIsUsersAreas = state => state.areas;

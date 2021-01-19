@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
-import { forEach, get, has, isEmpty, isEqual, keyBy, includes } from 'lodash';
+import { forEach, get, has, isEmpty, isEqual, keyBy, includes, map } from 'lodash';
 import { Input, message } from 'antd';
 import {
   createEditorState,
@@ -64,6 +64,7 @@ class Editor extends React.Component {
     handleHashtag: PropTypes.func,
     displayTitle: PropTypes.bool,
     draftId: PropTypes.string,
+    linkedObjects: PropTypes.shape(),
   };
   static defaultProps = {
     intl: {},
@@ -71,6 +72,7 @@ class Editor extends React.Component {
     handleHashtag: () => {},
     displayTitle: true,
     draftId: '',
+    linkedObjects: [],
   };
 
   static MAX_LENGTH = 255;
@@ -99,6 +101,7 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    sessionStorage.setItem('linkedObjects', JSON.stringify(this.props.linkedObjects));
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
       setTimeout(() => {
         this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
@@ -132,6 +135,7 @@ class Editor extends React.Component {
 
   restoreObjects = async rawContent => {
     const { draftId } = this.props;
+    const currLinkedObjects = JSON.parse(sessionStorage.getItem('linkedObjects')) || [];
     const isReview = includes(draftId, 'review');
     const objectIds = Object.values(rawContent.entityMap)
       // eslint-disable-next-line array-callback-return,consistent-return
@@ -167,11 +171,21 @@ class Editor extends React.Component {
 
       const entityMap = {};
       forEach(rawContent.entityMap, (value, key) => {
+        let currObj = null;
         const loadedObject = this.getCurrentLoadObjects(response, value);
+        if (!isEmpty(currLinkedObjects)) {
+          map(currLinkedObjects, obj => {
+            if (isEqual(obj.author_permlink, loadedObject.author_permlink)) {
+              currObj = loadedObject;
+            }
+          });
+        } else {
+          currObj = loadedObject;
+        }
 
         entityMap[key] = {
           ...value,
-          data: loadedObject ? { ...value.data, object: loadedObject } : { ...value.data },
+          data: currObj ? { ...value.data, object: currObj } : { ...value.data },
         };
       });
       const rawContentUpdated = {

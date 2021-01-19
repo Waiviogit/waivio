@@ -72,7 +72,12 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
 
           return res;
         })
-        .catch(e => message.error(e)),
+        .catch(() => {
+          message.error('Something went wrong');
+          dispatch({
+            type: LIKE_POST.ERROR,
+          });
+        }),
     },
     meta: { postId, voter, weight },
   });

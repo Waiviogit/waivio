@@ -169,10 +169,10 @@ class MapOS extends React.Component {
     setMapArea(reqParams);
   };
 
-  onBoundsChanged = debounce(({ center, zoom }) => {
+  onBoundsChanged = debounce(({ center, zoom, bounds }) => {
     this.setState({ radius: this.calculateRadius(zoom) });
-    const { setArea } = this.props;
-
+    const { setArea, handleOnBoundsChanged } = this.props;
+    handleOnBoundsChanged(bounds);
     setArea({ center, zoom });
     this.setState({ center, zoom });
   }, 1000);
@@ -474,6 +474,7 @@ MapOS.propTypes = {
   resetUpdatedFlag: PropTypes.func,
   primaryObjectCoordinates: PropTypes.arrayOf(PropTypes.number),
   zoomMap: PropTypes.number,
+  handleOnBoundsChanged: PropTypes.func,
 };
 
 MapOS.defaultProps = {
@@ -490,6 +491,7 @@ MapOS.defaultProps = {
   onCustomControlClick: () => {},
   primaryObjectCoordinates: [],
   resetUpdatedFlag: () => {},
+  handleOnBoundsChanged: () => {},
   zoomMap: 0,
 };
 

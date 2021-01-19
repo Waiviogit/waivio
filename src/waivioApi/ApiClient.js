@@ -1870,9 +1870,34 @@ export const setWebsiteObjCoordinates = (params = {}) =>
     .catch(e => e);
 
 export const getWebsiteObjCoordinates = host =>
-  fetch(`${config.apiPrefix}${config.sites}/map?host=${host}`, {
+  fetch(`${config.apiPrefix}${config.sites}${config.map}?host=${host}`, {
     headers,
     method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getRestrictionsInfo = (host, userName) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.restrictions}?host=${host}&userName=${userName}`,
+    {
+      headers: {
+        ...headers,
+        'access-token': Cookie.get('access_token'),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getWebsiteObjectsWithCoordinates = (params = {}, accessToken) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.map}`, {
+    headers: { ...headers, 'access-token': accessToken },
+    method: 'POST',
+    body: JSON.stringify(params),
   })
     .then(res => res.json())
     .then(res => res)
