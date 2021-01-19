@@ -1,21 +1,23 @@
-import { Client } from 'busyjs';
 import apiConfig from '../../waivioApi/routes';
 
 function createBusyAPI() {
-  const client = new Client(`wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`);
+  const socket = new WebSocket(`wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`);
 
-  client.sendAsync = (message, params) =>
-    new Promise((resolve, reject) => {
-      client.call(message, params, (err, result) => {
-        if (err !== null) return reject(err);
+  socket.sendAsync = (message, params) =>
+    socket.send(
+      JSON.stringify({
+        method: message,
+        params,
+      }),
+    );
 
-        return resolve(result);
-      });
-    });
+  socket.subscribe = callback => {
+    socket.addEventListener('message', e => callback(null, JSON.parse(e.data)));
+  };
 
-  if (client.ws.readyState === 1) createBusyAPI();
+  if (socket.readyState === socket.CLOSED) createBusyAPI();
 
-  return client;
+  return socket;
 }
 
 export default createBusyAPI;

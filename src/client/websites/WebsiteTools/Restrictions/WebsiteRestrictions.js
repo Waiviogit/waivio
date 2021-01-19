@@ -152,7 +152,7 @@ export const WebsiteRestrictions = ({
                 'also add users to their whitelist to override any other blacklist.',
             })}
           </p>
-          <Link to="/rewards/blacklist">
+          <Link to="/rewards/blacklist" className="WebsiteRestrictions__link">
             {intl.formatMessage({
               id: 'website_manage_black_list',
               defaultMessage: 'Manage blacklist/whitelist',

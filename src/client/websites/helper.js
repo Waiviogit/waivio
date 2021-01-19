@@ -1,4 +1,6 @@
 import { get, isArray } from 'lodash';
+import { message } from 'antd';
+
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const getAvailableStatus = status => {
@@ -49,11 +51,12 @@ export const getChangesInAccessOption = (
           });
           return res;
         })
-        .catch(() =>
+        .catch(() => {
+          message.error('Something went wrong');
           dispatch({
             type: currentActionType.ERROR,
-          }),
-        );
+          });
+        });
     }
   });
 };
