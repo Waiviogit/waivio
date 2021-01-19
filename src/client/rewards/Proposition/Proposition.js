@@ -65,7 +65,6 @@ const Proposition = ({
 }) => {
   const currentProposId = get(proposition, ['_id'], '');
   const currentWobjId = get(wobj, ['_id'], '');
-  console.log('fraudNumbers: ', fraudNumbers);
 
   const searchParams = new URLSearchParams(location.search);
 
