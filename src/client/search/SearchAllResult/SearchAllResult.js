@@ -45,7 +45,17 @@ const SearchAllResult = props => {
 
   useEffect(() => {
     if (isScrolled) {
-      props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser));
+      switch (props.searchType) {
+        case 'Users':
+          props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser));
+          break;
+        default:
+          props.searchObjectsAutoCompeteLoadingMore(
+            props.searchString,
+            props.searchType,
+            size(props.searchResult),
+          );
+      }
     }
   }, [isScrolled]);
 
@@ -64,12 +74,6 @@ const SearchAllResult = props => {
           list: map(props.searchResult, obj => (
             <ObjectCardView wObject={obj} key={getObjectName(obj)} />
           )),
-          loadingMore: () =>
-            props.searchObjectsAutoCompeteLoadingMore(
-              props.searchString,
-              props.searchType,
-              size(props.searchResult),
-            ),
           hasMore: props.hasMore,
         };
     }

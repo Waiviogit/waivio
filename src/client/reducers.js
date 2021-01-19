@@ -402,3 +402,4 @@ export const getIsLoadingAreas = state => fromWebsite.getIsLoadingAreas(state.we
 export const getRestrictions = state => fromWebsite.getRestrictions(state.website);
 export const getMuteLoading = state => fromWebsite.getMuteLoading(state.website);
 export const getUnmutedUsers = state => fromWebsite.getUnmutedUsers(state.website);
+export const getWobjectsPoint = state => fromWebsite.getWobjectsPoint(state.website);

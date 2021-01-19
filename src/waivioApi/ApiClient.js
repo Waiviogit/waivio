@@ -1893,4 +1893,14 @@ export const getRestrictionsInfo = (host, userName) =>
     .then(res => res)
     .catch(e => e);
 
+export const getWebsiteObjectsWithCoordinates = (params = {}, accessToken) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.map}`, {
+    headers: { ...headers, 'access-token': accessToken },
+    method: 'POST',
+    body: JSON.stringify(params),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;

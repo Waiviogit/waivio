@@ -22,6 +22,8 @@ const initialState = {
   restrictions: null,
   muteLoading: false,
   unmuteUsers: [],
+  wobjectsPoint: [],
+  wobjectsPointHasMore: false,
 };
 
 export default function websiteReducer(state = initialState, action) {
@@ -310,6 +312,14 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.GET_WEBSITE_OBJECTS_WITH_COORDINATES.SUCCESS: {
+      return {
+        ...state,
+        wobjectsPoint: action.payload.wobjects,
+        wobjectsPointHasMore: action.payload.hasMore,
+      };
+    }
+
     case websiteAction.GET_WEBSITE_RESTRICTIONS.SUCCESS: {
       return {
         ...state,
@@ -372,3 +382,4 @@ export const getRestrictions = state => get(state, 'restrictions', {});
 export const getMuteLoading = state => get(state, 'muteLoading', {});
 export const getUnmutedUsers = state => get(state, 'unmuteUsers', []);
 export const getIsLoadingAreas = state => state.isLoadingAreas;
+export const getWobjectsPoint = state => state.wobjectsPoint;
