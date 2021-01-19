@@ -476,6 +476,23 @@ function sc2Extended() {
 
         return this.broadcast([['custom_json', params]], cb);
       },
+      muteUser(follower, following, action, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [follower],
+          id: 'follow',
+          json: JSON.stringify([
+            'follow',
+            {
+              follower,
+              following,
+              what: [...action],
+            },
+          ]),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
     },
   );
 }

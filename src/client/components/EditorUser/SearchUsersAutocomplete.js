@@ -38,6 +38,7 @@ class SearchUsersAutocomplete extends React.Component {
     value: undefined,
     onChange: undefined,
     notGuest: false,
+    className: '',
   };
   static propTypes = {
     intl: PropTypes.shape(),
@@ -53,6 +54,7 @@ class SearchUsersAutocomplete extends React.Component {
     isSearchUser: PropTypes.bool,
     notGuest: PropTypes.bool,
     onChange: PropTypes.func,
+    className: PropTypes.string,
   };
 
   state = {
@@ -95,6 +97,7 @@ class SearchUsersAutocomplete extends React.Component {
       autoFocus,
       style,
       isSearchUser,
+      className,
     } = this.props;
     const searchUsersOptions = searchString
       ? searchUsersResults
@@ -118,8 +121,8 @@ class SearchUsersAutocomplete extends React.Component {
         placeholder={
           !this.props.placeholder
             ? intl.formatMessage({
-                id: 'objects_auto_complete_placeholder',
-                defaultMessage: 'Find objects',
+                id: 'users_auto_complete_placeholder',
+                defaultMessage: 'Find users',
               })
             : this.props.placeholder
         }
@@ -127,6 +130,7 @@ class SearchUsersAutocomplete extends React.Component {
         autoFocus={autoFocus}
         disabled={disabled}
         style={style}
+        className={className}
       >
         {isSearchUser ? pendingSearch(searchString, intl) : searchUsersOptions}
       </AutoComplete>

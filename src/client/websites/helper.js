@@ -1,4 +1,6 @@
 import { get, isArray } from 'lodash';
+import { message } from 'antd';
+
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const getAvailableStatus = status => {
@@ -35,6 +37,7 @@ export const getChangesInAccessOption = (
   host,
   currentActionType,
   processingFunction,
+  meta,
 ) => (dispatch, getState, { busyAPI }) => {
   busyAPI.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
   busyAPI.subscribe((response, mess) => {
@@ -44,14 +47,16 @@ export const getChangesInAccessOption = (
           dispatch({
             type: currentActionType.SUCCESS,
             payload: res,
+            meta,
           });
           return res;
         })
-        .catch(() =>
+        .catch(() => {
+          message.error('Something went wrong');
           dispatch({
             type: currentActionType.ERROR,
-          }),
-        );
+          });
+        });
     }
   });
 };
