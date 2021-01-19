@@ -145,8 +145,9 @@ const FraudDetection = ({
               loadingMore={loading}
               loader={<Loading />}
             >
-              {map(fraudSuspicionData, proposition =>
-                map(
+              {map(fraudSuspicionData, proposition => {
+                const fraudNumbers = get(proposition.users[0], '[fraudCodes]', []);
+                return map(
                   proposition.objects,
                   wobj =>
                     wobj.object &&
@@ -164,10 +165,11 @@ const FraudDetection = ({
                         match={match}
                         blacklistUsers={blacklistUsers}
                         sortFraudDetection={sortFraudDetection}
+                        fraudNumbers={fraudNumbers}
                       />
                     ),
-                ),
-              )}
+                );
+              })}
             </ReduxInfiniteScroll>
           </div>
         </React.Fragment>
