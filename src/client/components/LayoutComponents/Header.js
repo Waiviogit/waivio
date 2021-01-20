@@ -13,7 +13,7 @@ import {
 } from '../../reducers';
 
 const Header = ({ mainPage, username, currPage, wobject, configuration }) => {
-  switch ('mainPage') {
+  switch (mainPage) {
     case 'dining':
       return <WebsiteHeader currPage={currPage} wobj={wobject} config={configuration} />;
 

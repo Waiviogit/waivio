@@ -11,13 +11,19 @@ import {
   isPostCashout,
 } from '../../vendor/steemitHelpers';
 import { isGuestUser } from '../../reducers';
+import { getDownvotes } from '../../helpers/voteHelpers';
+import { muteAuthorComment } from '../../comments/commentsActions';
 
 import './CommentFooter.less';
-import { getDownvotes } from '../../helpers/voteHelpers';
 
-@connect(state => ({
-  isGuest: isGuestUser(state),
-}))
+@connect(
+  state => ({
+    isGuest: isGuestUser(state),
+  }),
+  {
+    muteAuthorComment,
+  },
+)
 export default class CommentFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
@@ -39,6 +45,7 @@ export default class CommentFooter extends React.Component {
     handleHideComment: PropTypes.func,
     onEditClick: PropTypes.func,
     isGuest: PropTypes.bool,
+    muteAuthorComment: PropTypes.func,
   };
 
   static defaultProps = {
@@ -54,6 +61,7 @@ export default class CommentFooter extends React.Component {
     onReplyClick: () => {},
     onEditClick: () => {},
     handleHideComment: () => {},
+    muteAuthorComment: () => {},
     isGuest: false,
   };
 
@@ -128,6 +136,8 @@ export default class CommentFooter extends React.Component {
 
   handleHideComment = () => this.props.handleHideComment(this.props.comment);
 
+  muteAuthorPost = () => this.props.muteAuthorComment(this.props.comment);
+
   handleSliderCancel = () => this.setState({ sliderVisible: false, sliderType: 'Confirm' });
 
   handleClickPopoverMenu = key => {
@@ -136,6 +146,8 @@ export default class CommentFooter extends React.Component {
         return this.handleDislikeClick();
       case 'hide':
         return this.handleHideComment();
+      case 'mute':
+        return this.muteAuthorPost();
       default:
         return () => {};
     }

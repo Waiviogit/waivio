@@ -370,7 +370,50 @@ export default function usersReducer(state = initialState, action) {
         users: {
           [action.payload.following]: {
             ...state.users[action.payload.following],
-            bellLoading: false,
+            muteLoading: false,
+          },
+        },
+      };
+    }
+
+    case actions.MUTE_CURRENT_USER.SUCCESS: {
+      const { user } = action.meta;
+
+      return {
+        ...state,
+        users: {
+          [user]: {
+            ...state.users[user],
+            muted: !state.users[user].muted,
+            muteLoading: false,
+          },
+        },
+      };
+    }
+
+    case actions.MUTE_CURRENT_USER.START: {
+      const { user } = action.meta;
+
+      return {
+        ...state,
+        users: {
+          [user]: {
+            ...state.users[user],
+            muteLoading: true,
+          },
+        },
+      };
+    }
+
+    case actions.MUTE_CURRENT_USER.ERROR: {
+      const { user } = action.meta;
+
+      return {
+        ...state,
+        users: {
+          [user]: {
+            ...state.users[user],
+            muteLoading: false,
           },
         },
       };

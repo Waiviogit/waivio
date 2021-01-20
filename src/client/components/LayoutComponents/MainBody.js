@@ -7,7 +7,7 @@ import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody
 import { getMainPage } from '../../reducers';
 
 const MainBody = ({ currPage, route }) => {
-  switch ('currPage') {
+  switch (currPage) {
     case 'dining':
       return <WebsiteBody />;
 

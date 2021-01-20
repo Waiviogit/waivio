@@ -52,6 +52,7 @@ class StoryFull extends React.Component {
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number,
     onActionInitiated: PropTypes.func.isRequired,
+    muteAuthorPost: PropTypes.func.isRequired,
     signature: PropTypes.string,
     pendingLike: PropTypes.bool,
     pendingFlag: PropTypes.bool,
@@ -142,6 +143,9 @@ class StoryFull extends React.Component {
         break;
       case 'edit':
         this.props.onEditClick(post);
+        break;
+      case 'mute':
+        this.props.muteAuthorPost(post);
         break;
       default:
     }
