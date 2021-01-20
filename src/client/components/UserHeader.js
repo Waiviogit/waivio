@@ -5,6 +5,8 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { get } from 'lodash';
 import urlParse from 'url-parse';
+import { Icon } from 'antd';
+import { ReactSVG } from 'react-svg';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { getUserRankKey, getUserRank, getVoteValue } from '../helpers/user';
@@ -13,9 +15,11 @@ import FollowButton from '../widgets/FollowButton';
 import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
-import { unfollowUser, followUser } from '../user/usersActions';
+import { unfollowUser, followUser, muteUser } from '../user/usersActions';
 import { getIsMobile } from '../reducers';
 import BellButton from '../widgets/BellButton';
+import Popover from './Popover';
+import PopoverMenu, { PopoverMenuItem } from './PopoverMenu/PopoverMenu';
 
 import './UserHeader.less';
 
@@ -35,6 +39,7 @@ const UserHeader = ({
   follow,
   isGuest,
   isMobile,
+  handleMuteUser,
 }) => {
   const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
   let metadata = {};
@@ -42,6 +47,8 @@ const UserHeader = ({
   let website = null;
   let about = null;
   let lastActive;
+
+  const handlePopoverClick = () => handleMuteUser(user);
 
   if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
     lastActive = intl.formatRelative(Date.parse(user.updatedAt));
@@ -113,6 +120,38 @@ const UserHeader = ({
                       followingType="user"
                     />
                     {user.youFollows && <BellButton user={user} />}
+                    <Popover
+                      placement="bottomRight"
+                      trigger="click"
+                      content={
+                        <React.Fragment>
+                          <PopoverMenu onSelect={handlePopoverClick} bold={false}>
+                            {[
+                              <PopoverMenuItem key="mute">
+                                {user.muteLoading ? (
+                                  <Icon type="loading" />
+                                ) : (
+                                  <ReactSVG
+                                    className={`hide-button ${
+                                      user.muted ? 'hide-button--fill' : ''
+                                    }`}
+                                    wrapper="span"
+                                    src="/images/icons/mute-user.svg"
+                                  />
+                                )}
+                                <FormattedMessage
+                                  id={user.muted ? 'unmute' : 'mute'}
+                                  defaultMessage={user.muted ? 'Unmute' : 'Mute'}
+                                />{' '}
+                                {username}
+                              </PopoverMenuItem>,
+                            ]}
+                          </PopoverMenu>
+                        </React.Fragment>
+                      }
+                    >
+                      <Icon type="ellipsis" className="UserHeader__ellipsis" />
+                    </Popover>
                   </div>
                 )}
               </div>
@@ -199,6 +238,7 @@ UserHeader.propTypes = {
   }).isRequired,
   intl: PropTypes.shape().isRequired,
   unfollow: PropTypes.func.isRequired,
+  handleMuteUser: PropTypes.func.isRequired,
   follow: PropTypes.func.isRequired,
   isGuest: PropTypes.bool,
   isMobile: PropTypes.bool.isRequired,
@@ -225,6 +265,7 @@ export default injectIntl(
     {
       unfollow: unfollowUser,
       follow: followUser,
+      handleMuteUser: muteUser,
     },
   )(UserHeader),
 );

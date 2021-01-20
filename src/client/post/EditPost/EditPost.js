@@ -477,6 +477,7 @@ class EditPost extends Component {
               handleHashtag={this.handleHashtag}
               displayTitle
               draftId={draftId}
+              linkedObjects={linkedObjects}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">

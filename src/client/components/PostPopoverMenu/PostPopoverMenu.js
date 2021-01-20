@@ -37,6 +37,8 @@ const propTypes = {
     youFollows: PropTypes.bool,
     loading: PropTypes.bool,
     loadingHide: PropTypes.bool,
+    loadingMute: PropTypes.bool,
+    isMute: PropTypes.bool,
     wobjects: PropTypes.shape(),
     tags: PropTypes.shape(),
     cities: PropTypes.shape(),
@@ -170,6 +172,22 @@ const PostPopoverMenu = ({
           id={post.isHide ? 'unhide_post' : 'hide_post'}
           defaultMessage={post.isHide ? 'Unhide post' : 'Hide post'}
         />
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="mute" disabled={loading}>
+        {post.loadingMute ? (
+          <Icon type="loading" />
+        ) : (
+          <ReactSVG
+            className={`hide-button ${post.isMute ? 'hide-button--fill' : ''}`}
+            wrapper="span"
+            src="/images/icons/mute-user.svg"
+          />
+        )}
+        <FormattedMessage
+          id={post.isMute ? 'unmute' : 'mute'}
+          defaultMessage={post.isMute ? 'Unmute' : 'Mute'}
+        />{' '}
+        {post.author}
       </PopoverMenuItem>,
     ];
   }

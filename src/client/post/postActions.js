@@ -72,7 +72,12 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
 
           return res;
         })
-        .catch(e => message.error(e)),
+        .catch(() => {
+          message.error('Something went wrong');
+          dispatch({
+            type: LIKE_POST.ERROR,
+          });
+        }),
     },
     meta: { postId, voter, weight },
   });
@@ -177,6 +182,24 @@ export const handleHidePost = post => (dispatch, getState, { steemConnectAPI }) 
     type: HIDE_POST.ACTION,
     payload: {
       promise: steemConnectAPI.hidePost(userName, post.author, post.permlink, action),
+    },
+    meta: {
+      post,
+    },
+  });
+};
+
+export const MUTE_POSTS_AUTHOR = createAsyncActionType('MUTE_POSTS_AUTHOR');
+
+export const muteAuthorPost = post => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const action = post.isMute ? [] : ['ignore'];
+
+  return dispatch({
+    type: MUTE_POSTS_AUTHOR.ACTION,
+    payload: {
+      promise: steemConnectAPI.muteUser(userName, post.author, action),
     },
     meta: {
       post,

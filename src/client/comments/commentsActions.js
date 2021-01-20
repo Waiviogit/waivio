@@ -430,3 +430,21 @@ export const handleHideComment = comment => (dispatch, getState, { steemConnectA
     },
   });
 };
+
+export const MUTE_AUTHOR_COMMENT = createAsyncActionType('@comments/MUTE_AUTHOR_COMMENT');
+
+export const muteAuthorComment = comment => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const action = comment.isMute ? [] : ['ignore'];
+
+  return dispatch({
+    type: MUTE_AUTHOR_COMMENT.ACTION,
+    payload: {
+      promise: steemConnectAPI.muteUser(userName, comment.author, action),
+    },
+    meta: {
+      comment,
+    },
+  });
+};

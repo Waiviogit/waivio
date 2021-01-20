@@ -61,6 +61,7 @@ const Proposition = ({
   isAuth,
   removeToggleFlag,
   isOpenWriteReviewModal,
+  fraudNumbers,
 }) => {
   const currentProposId = get(proposition, ['_id'], '');
   const currentWobjId = get(wobj, ['_id'], '');
@@ -281,6 +282,7 @@ const Proposition = ({
             sortFraudDetection={sortFraudDetection}
             userFollowing={proposition.guide.youFollows}
             objectFollowing={proposition.required_object.followsObject}
+            fraudNumbers={fraudNumbers}
           />
         ) : (
           <React.Fragment>
@@ -359,6 +361,7 @@ Proposition.propTypes = {
   sortFraudDetection: PropTypes.string,
   isAuth: PropTypes.bool,
   isOpenWriteReviewModal: PropTypes.bool,
+  fraudNumbers: PropTypes.shape(),
 };
 
 Proposition.defaultProps = {
@@ -374,6 +377,7 @@ Proposition.defaultProps = {
   sortFraudDetection: 'reservation',
   isAuth: false,
   isOpenWriteReviewModal: false,
+  fraudNumbers: [],
 };
 
 export default connect(
