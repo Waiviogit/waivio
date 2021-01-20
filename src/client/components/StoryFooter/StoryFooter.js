@@ -9,7 +9,7 @@ import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
-import { getSocialInfoPost, handleHidePost } from '../../post/postActions';
+import { getSocialInfoPost, handleHidePost, muteAuthorPost } from '../../post/postActions';
 import withAuthActions from '../../auth/withAuthActions';
 
 import './StoryFooter.less';
@@ -23,6 +23,7 @@ import './StoryFooter.less';
   {
     getSocialInfoPostAction: getSocialInfoPost,
     handleHidePost,
+    muteAuthorPost,
   },
 )
 class StoryFooter extends React.Component {
@@ -43,6 +44,7 @@ class StoryFooter extends React.Component {
     onReportClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onActionInitiated: PropTypes.func.isRequired,
+    muteAuthorPost: PropTypes.func.isRequired,
     isGuest: PropTypes.bool.isRequired,
     userName: PropTypes.string,
     getSocialInfoPostAction: PropTypes.func,
@@ -158,6 +160,9 @@ class StoryFooter extends React.Component {
         break;
       case 'hide':
         this.props.handleHidePost(post);
+        break;
+      case 'mute':
+        this.props.muteAuthorPost(post);
         break;
       default:
     }

@@ -1489,7 +1489,7 @@
   "create_website": "Create new website",
   "prices": "Prices:",
   "prices_per_active_user": "{price} HBD per day per active user;",
-  "prices_min_value": "Minimum {price} HBD per day ((including active and inactive websites)(including active and inactive websites)).",
+  "prices_min_value": "Minimum {price} HBD per day (including active and inactive websites).",
   "manage_account_balance": "Account balance (HBD)",
   "pay_now": "Pay now",
   "websites": "Websites:",

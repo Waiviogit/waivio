@@ -30,6 +30,7 @@ import { editPost } from './Write/editorActions';
 import {
   errorFollowingPostAuthor,
   followingPostAuthor,
+  muteAuthorPost,
   pendingFollowingPostAuthor,
   votePost,
 } from './postActions';
@@ -62,6 +63,7 @@ import { getProxyImageURL } from '../helpers/image';
   {
     editPost,
     votePost,
+    muteAuthorPost,
     reblog,
     toggleBookmark,
     followUser,
@@ -91,6 +93,7 @@ class PostContent extends React.Component {
     sliderMode: PropTypes.bool,
     editPost: PropTypes.func,
     toggleBookmark: PropTypes.func,
+    muteAuthorPost: PropTypes.func.isRequired,
     votePost: PropTypes.func,
     reblog: PropTypes.func,
     followUser: PropTypes.func,
@@ -321,6 +324,7 @@ class PostContent extends React.Component {
           onSaveClick={this.handleSaveClick}
           onFollowClick={this.handleFollowClick}
           onEditClick={this.handleEditClick}
+          muteAuthorPost={this.props.muteAuthorPost}
           isOriginalPost={isOriginalPost}
         />
       </div>

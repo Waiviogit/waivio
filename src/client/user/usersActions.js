@@ -150,3 +150,21 @@ export const updateUserMetadata = metadata => dispatch =>
     type: UPDATE_USER_METADATA,
     payload: metadata,
   });
+
+export const MUTE_CURRENT_USER = createAsyncActionType('@auth/MUTE_CURRENT_USER');
+
+export const muteUser = user => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const action = user.muted ? [] : ['ignore'];
+
+  return dispatch({
+    type: MUTE_CURRENT_USER.ACTION,
+    payload: {
+      promise: steemConnectAPI.muteUser(userName, user.name, action),
+    },
+    meta: {
+      user: user.name,
+    },
+  });
+};
