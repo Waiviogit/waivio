@@ -28,9 +28,18 @@
     .UserHeader__handle,
     .UserHeader__user__username,
     .UserHeader__follows-you {
-      color: #ffffff !important;
+      color: @white !important;
       text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
     }
+  }
+
+  &__ellipsis {
+    display: flex;
+    align-items: center;
+    color: @white;
+    font-size: 25px;
+    margin-left: 5px;
+    cursor: pointer;
   }
 
   &__info-mobile {
@@ -39,7 +48,7 @@
     }
 
     width: 100%;
-    background-color: #fafbfc;
+    background-color: @white-ghostWhite;
     display: flex;
     flex-direction: column;
     padding: 10px;
@@ -171,7 +180,7 @@
 .UserHeader__handle {
   position: relative;
   top: -30px;
-  color: #99aab5;
+  color: @blue-botticelli;
 
   &-rank-container {
     display: flex;

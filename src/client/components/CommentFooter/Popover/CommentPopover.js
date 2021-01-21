@@ -30,6 +30,22 @@ const CommentPopover = ({ comment, children, handlePopoverClick, own }) => {
           defaultMessage={comment.isHide ? 'Unhide comment' : 'Hide comment'}
         />
       </PopoverMenuItem>,
+      <PopoverMenuItem key="mute" disabled={pendingDisLike}>
+        {comment.loadingMute ? (
+          <Icon type="loading" />
+        ) : (
+          <ReactSVG
+            className={`hide-button ${comment.isMute ? 'hide-button--fill' : ''}`}
+            wrapper="span"
+            src="/images/icons/mute-user.svg"
+          />
+        )}
+        <FormattedMessage
+          id={comment.isMute ? 'unmute' : 'mute'}
+          defaultMessage={comment.isMute ? 'Unmute' : 'Mute'}
+        />{' '}
+        {comment.author}
+      </PopoverMenuItem>,
     ];
   }
 
@@ -75,6 +91,8 @@ CommentPopover.propTypes = {
     pendingDisLike: PropTypes.bool,
     loadingHide: PropTypes.bool,
     isFlagged: PropTypes.bool,
+    loadingMute: PropTypes.bool,
+    isMute: PropTypes.bool,
   }).isRequired,
   children: PropTypes.node.isRequired,
   handlePopoverClick: PropTypes.func.isRequired,

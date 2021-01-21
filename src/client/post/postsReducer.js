@@ -320,6 +320,37 @@ const posts = (state = initialState, action) => {
       };
     }
 
+    case postsActions.MUTE_POSTS_AUTHOR.START: {
+      const key = getPostKey(action.meta.post);
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [key]: {
+            ...action.meta.post,
+            loadingMute: true,
+          },
+        },
+      };
+    }
+
+    case postsActions.MUTE_POSTS_AUTHOR.SUCCESS: {
+      const key = getPostKey(action.meta.post);
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [key]: {
+            ...state.list[key],
+            isMute: !action.meta.post.isMute,
+            loadingMute: false,
+          },
+        },
+      };
+    }
+
     default:
       return state;
   }

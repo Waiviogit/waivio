@@ -199,6 +199,37 @@ export default (state = initialState, action) => {
       };
     }
 
+    case commentsTypes.MUTE_AUTHOR_COMMENT.START: {
+      const key = getPostKey(action.meta.comment);
+
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          [key]: {
+            ...action.meta.comment,
+            loadingMute: true,
+          },
+        },
+      };
+    }
+
+    case commentsTypes.MUTE_AUTHOR_COMMENT.SUCCESS: {
+      const key = getPostKey(action.meta.comment);
+
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          [key]: {
+            ...state.comments[key],
+            isMute: !action.meta.comment.isMute,
+            loadingMute: false,
+          },
+        },
+      };
+    }
+
     case commentsTypes.LIKE_COMMENT.START:
     case commentsTypes.LIKE_COMMENT.ERROR:
     case commentsTypes.FAKE_LIKE_COMMENT.START:
