@@ -78,7 +78,7 @@ const WebsiteBody = props => {
 
   const handleMarkerClick = ({ payload, anchor }) => {
     handleAddMapCoordinates(anchor);
-    if (infoboxData && infoboxData.coordinates === anchor) {
+    if (infoboxData && get(infoboxData, 'coordinates', []) === anchor) {
       setInfoboxData({ infoboxData: null });
     }
     setInfoboxData({ wobject: payload, coordinates: anchor });
@@ -90,9 +90,7 @@ const WebsiteBody = props => {
       const parsedMap = getParsedMap(wobject);
       const latitude = get(parsedMap, ['latitude']);
       const longitude = get(parsedMap, ['longitude']);
-      const isMarked =
-        Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
-        props.match.path.includes('rewards');
+      const isMarked = get(wobject, 'campaigns') || !isEmpty(get(wobject, 'propositions'));
 
       return latitude && longitude ? (
         <CustomMarker
@@ -208,13 +206,11 @@ WebsiteBody.propTypes = {
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
-  match: PropTypes.shape(),
 };
 
 WebsiteBody.defaultProps = {
   wobjectsPoint: [],
   isGuest: false,
-  match: {},
 };
 
 export default connect(
