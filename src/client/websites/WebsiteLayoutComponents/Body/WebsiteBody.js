@@ -123,7 +123,7 @@ const WebsiteBody = props => {
   };
 
   return (
-    <div className="WebsiteBody topnav-layout">
+    <div className="WebsiteBody">
       {props.searchType !== 'All' && <SearchAllResult />}
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <img
