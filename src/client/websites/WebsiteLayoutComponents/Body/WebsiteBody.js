@@ -125,15 +125,15 @@ const WebsiteBody = props => {
   return (
     <div className="WebsiteBody">
       {props.searchType !== 'All' && <SearchAllResult />}
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-      <img
-        className="WebsiteBody__logo"
-        srcSet={currentLogo}
-        alt="pacific dining gifts"
-        styleName="brain-image"
-        onClick={() => props.history.push(currLink)}
-      />
       <div className={mapClassList}>
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+        <img
+          className="WebsiteBody__logo"
+          srcSet={currentLogo}
+          alt="your logo"
+          styleName="brain-image"
+          onClick={() => props.history.push(currLink)}
+        />
         {!isEmpty(currMapCoordinates) && (
           <Map
             center={currMapCoordinates}
