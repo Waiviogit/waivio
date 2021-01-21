@@ -8,7 +8,6 @@ import Cookie from 'js-cookie';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import {
-  getMapForMainPage,
   getConfigurationValues,
   getScreenSize,
   getSearchUsersResults,
@@ -38,12 +37,11 @@ const WebsiteBody = props => {
     skip: 0,
   });
   const [infoboxData, setInfoboxData] = useState(null);
+  const [currentZoom, setCurrentZoom] = useState(11);
+  const [currentCenter, setCurrentCenter] = useState([]);
   const mapClassList = classNames('WebsiteBody__map', {
     WebsiteBody__hideMap: props.searchType !== 'All',
   });
-  const currMapCoordinates = isEmpty(props.configCoordinates.center)
-    ? props.userLocation
-    : props.configCoordinates.center;
 
   useEffect(() => {
     if (isEmpty(props.userLocation)) props.getCoordinates();
@@ -54,6 +52,8 @@ const WebsiteBody = props => {
       props.getWebsiteObjWithCoordinates(boundsParams, accessToken);
     }
   }, [props.userLocation, boundsParams]);
+
+  const currMapCoordinates = [+props.userLocation.lat, +props.userLocation.lon];
 
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
@@ -68,6 +68,12 @@ const WebsiteBody = props => {
         bottomPoint: [data.sw[1], data.sw[0]],
       });
     }
+  };
+
+  const onBoundsChanged = ({ center, zoom, bounds }) => {
+    setCurrentCenter(center);
+    setCurrentZoom(zoom);
+    handleOnBoundsChanged(bounds);
   };
 
   const handleMarkerClick = ({ payload, anchor }) => {
@@ -121,6 +127,35 @@ const WebsiteBody = props => {
       </Overlay>
     );
   };
+  const setMapCenter = () => (isEmpty(currentCenter) ? currMapCoordinates : currentCenter);
+  const setPosition = () => setCurrentCenter(currMapCoordinates);
+  const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
+  const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
+  const zoomButtonsLayout = () => (
+    <div className="WebsiteBodyControl">
+      <div className="WebsiteBodyControl__gps">
+        <div role="presentation" className="WebsiteBodyControl__locateGPS" onClick={setPosition}>
+          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+        </div>
+      </div>
+      <div className="WebsiteBodyControl__zoom">
+        <div
+          role="presentation"
+          className="WebsiteBodyControl__zoom__button"
+          onClick={incrementZoom}
+        >
+          +
+        </div>
+        <div
+          role="presentation"
+          className="WebsiteBodyControl__zoom__button"
+          onClick={decrementZoom}
+        >
+          -
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="WebsiteBody">
@@ -134,16 +169,20 @@ const WebsiteBody = props => {
           styleName="brain-image"
           onClick={() => props.history.push(currLink)}
         />
-        {!isEmpty(currMapCoordinates) && (
-          <Map
-            center={currMapCoordinates}
-            zoom={props.configCoordinates.zoom}
-            provider={mapProvider}
-            onBoundsChanged={data => handleOnBoundsChanged(data.bounds)}
-          >
-            {markersLayout}
-            {infoboxData && getOverlayLayout()}
-          </Map>
+        {!isEmpty(props.userLocation) && (
+          <React.Fragment>
+            {zoomButtonsLayout()}
+            <Map
+              center={setMapCenter()}
+              zoom={currentZoom}
+              provider={mapProvider}
+              onBoundsChanged={data => onBoundsChanged(data)}
+              onClick={() => setInfoboxData(null)}
+            >
+              {markersLayout}
+              {infoboxData && getOverlayLayout()}
+            </Map>
+          </React.Fragment>
         )}
       </div>
     </div>
@@ -158,12 +197,14 @@ WebsiteBody.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   getCoordinates: PropTypes.func.isRequired,
-  userLocation: PropTypes.shape({}).isRequired,
+  userLocation: PropTypes.shape({
+    lat: PropTypes.string,
+    lon: PropTypes.string,
+  }).isRequired,
   searchType: PropTypes.string.isRequired,
   searchResult: PropTypes.arrayOf.isRequired,
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
-  configCoordinates: PropTypes.arrayOf.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
@@ -182,7 +223,6 @@ export default connect(
     searchType: getWebsiteSearchType(state),
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
-    configCoordinates: getMapForMainPage(state),
     configuration: getConfigurationValues(state),
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),

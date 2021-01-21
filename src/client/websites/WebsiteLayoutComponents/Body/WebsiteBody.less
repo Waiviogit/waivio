@@ -65,3 +65,40 @@
     }
   }
 }
+
+.WebsiteBodyControl {
+  position: absolute;
+  z-index: 200;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  top: 83%;
+  left: 96%;
+
+  &__gps {
+    cursor: pointer;
+    z-index: 100;
+    margin-bottom: 5px;
+  }
+
+  &__zoom {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    z-index: 100;
+
+    &__button {
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      background-color: @white;
+      border: 1px solid @border-color-base;
+      color: @black;
+
+      &:hover {
+        background-color: @primary-color;
+      }
+    }
+  }
+}
