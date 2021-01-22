@@ -31,6 +31,7 @@ import {
   getSuitableLanguage,
   isGuestUser,
   getBeneficiariesUsers,
+  getCurrentHost,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { createPostMetadata, getInitialState, getObjectUrl } from '../../helpers/postHelpers';
@@ -77,6 +78,7 @@ const getLinkedObjects = contentStateRaw => {
     upvoteSetting: getUpvoteSetting(state),
     isGuest: isGuestUser(state),
     beneficiaries: getBeneficiariesUsers(state),
+    host: getCurrentHost(state),
   }),
   {
     createPost,
@@ -102,6 +104,7 @@ class EditPost extends Component {
     beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
     getSocialInfoPostAction: PropTypes.func,
+    host: PropTypes.string.isRequired,
   };
   static defaultProps = {
     upvoteSetting: false,
@@ -399,6 +402,7 @@ class EditPost extends Component {
 
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const oldMetadata = currDraft && currDraft.jsonMetadata;
+
     const waivioData = {
       wobjects: linkedObjects
         .filter(obj => objPercentage[obj.id].percent > 0)
@@ -415,8 +419,8 @@ class EditPost extends Component {
       oldMetadata,
       waivioData,
       campaignId,
+      this.props.host,
     );
-
     if (originalBody) {
       postData.originalBody = originalBody;
     }
