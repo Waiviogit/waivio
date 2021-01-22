@@ -33,7 +33,7 @@ const WebsiteBody = props => {
   const [boundsParams, setBoundsParams] = useState({
     topPoint: [],
     bottomPoint: [],
-    limit: 100,
+    limit: 10,
     skip: 0,
   });
   const [infoboxData, setInfoboxData] = useState(null);
@@ -72,7 +72,7 @@ const WebsiteBody = props => {
 
   const onBoundsChanged = ({ center, zoom, bounds }) => {
     setCurrentCenter(center);
-    setCurrentZoom(zoom);
+    setCurrentZoom(Math.round(zoom));
     handleOnBoundsChanged(bounds);
   };
 
@@ -174,12 +174,15 @@ const WebsiteBody = props => {
               center={setMapCenter()}
               zoom={currentZoom}
               provider={mapProvider}
-              onBoundsChanged={data => onBoundsChanged(data)}
+              onBoundsChanged={data => {
+                onBoundsChanged(data);
+              }}
               onClick={() => setInfoboxData(null)}
             >
               {markersLayout}
               {infoboxData && getOverlayLayout()}
             </Map>
+            )
           </React.Fragment>
         )}
       </div>
