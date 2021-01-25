@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -15,11 +15,12 @@ import FollowButton from '../widgets/FollowButton';
 import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
-import { unfollowUser, followUser, muteUser } from '../user/usersActions';
+import { unfollowUser, followUser } from '../user/usersActions';
 import { getIsMobile } from '../reducers';
 import BellButton from '../widgets/BellButton';
 import Popover from './Popover';
 import PopoverMenu, { PopoverMenuItem } from './PopoverMenu/PopoverMenu';
+import MuteModal from '../widgets/MuteModal';
 
 import './UserHeader.less';
 
@@ -39,8 +40,8 @@ const UserHeader = ({
   follow,
   isGuest,
   isMobile,
-  handleMuteUser,
 }) => {
+  const [visible, setVisible] = useState(false);
   const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
   let metadata = {};
   let location = null;
@@ -48,7 +49,7 @@ const UserHeader = ({
   let about = null;
   let lastActive;
 
-  const handlePopoverClick = () => handleMuteUser(user);
+  const handleMuteCurrUser = () => setVisible(true);
 
   if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
     lastActive = intl.formatRelative(Date.parse(user.updatedAt));
@@ -125,7 +126,7 @@ const UserHeader = ({
                       trigger="click"
                       content={
                         <React.Fragment>
-                          <PopoverMenu onSelect={handlePopoverClick} bold={false}>
+                          <PopoverMenu onSelect={handleMuteCurrUser} bold={false} trigger="hover">
                             {[
                               <PopoverMenuItem key="mute">
                                 {user.muteLoading ? (
@@ -218,6 +219,12 @@ const UserHeader = ({
           </div>
         </div>
       </div>
+      <MuteModal
+        item={user}
+        username={username}
+        visible={visible}
+        setVisibleMuteModal={setVisible}
+      />
     </div>
   );
 };
@@ -238,7 +245,6 @@ UserHeader.propTypes = {
   }).isRequired,
   intl: PropTypes.shape().isRequired,
   unfollow: PropTypes.func.isRequired,
-  handleMuteUser: PropTypes.func.isRequired,
   follow: PropTypes.func.isRequired,
   isGuest: PropTypes.bool,
   isMobile: PropTypes.bool.isRequired,
@@ -265,7 +271,6 @@ export default injectIntl(
     {
       unfollow: unfollowUser,
       follow: followUser,
-      handleMuteUser: muteUser,
     },
   )(UserHeader),
 );

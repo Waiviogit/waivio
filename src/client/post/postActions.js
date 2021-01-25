@@ -194,7 +194,7 @@ export const MUTE_POSTS_AUTHOR = createAsyncActionType('MUTE_POSTS_AUTHOR');
 export const muteAuthorPost = post => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
-  const action = post.isMute ? [] : ['ignore'];
+  const action = post.muted ? [] : ['ignore'];
 
   return dispatch({
     type: MUTE_POSTS_AUTHOR.ACTION,
