@@ -33,7 +33,7 @@ const WebsiteBody = props => {
   const [boundsParams, setBoundsParams] = useState({
     topPoint: [],
     bottomPoint: [],
-    limit: 10,
+    limit: 50,
     skip: 0,
   });
   const [infoboxData, setInfoboxData] = useState(null);
