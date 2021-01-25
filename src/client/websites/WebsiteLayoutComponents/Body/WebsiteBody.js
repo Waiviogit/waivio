@@ -9,6 +9,7 @@ import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import {
   getConfigurationValues,
+  getMapForMainPage,
   getScreenSize,
   getSearchUsersResults,
   getUserLocation,
@@ -43,6 +44,15 @@ const WebsiteBody = props => {
     WebsiteBody__hideMap: props.searchType !== 'All',
   });
 
+  const currMapCoordinates = isEmpty(props.configCoordinates.center)
+    ? props.userLocation
+    : props.configCoordinates.center;
+
+  useEffect(() => {
+    setCurrentZoom(props.configCoordinates.zoom);
+    setCurrentCenter(currMapCoordinates);
+  }, []);
+
   useEffect(() => {
     if (isEmpty(props.userLocation)) props.getCoordinates();
     if (!isEmpty(boundsParams.topPoint) && !isEmpty(boundsParams.bottomPoint)) {
@@ -52,8 +62,6 @@ const WebsiteBody = props => {
       props.getWebsiteObjWithCoordinates(boundsParams, accessToken);
     }
   }, [props.userLocation, boundsParams]);
-
-  const currMapCoordinates = [+props.userLocation.lat, +props.userLocation.lon];
 
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
@@ -70,9 +78,14 @@ const WebsiteBody = props => {
     }
   };
 
+  const [currBounds, setCurrBounds] = useState([]);
   const onBoundsChanged = ({ center, zoom, bounds }) => {
     setCurrentCenter(center);
     setCurrentZoom(Math.round(zoom));
+
+    setCurrBounds(bounds);
+    console.log('currBounds: ', currBounds);
+
     handleOnBoundsChanged(bounds);
   };
 
@@ -106,7 +119,6 @@ const WebsiteBody = props => {
   const currentWobject = !isEmpty(props.searchResult) ? props.searchResult : props.wobjectsPoint;
 
   const markersLayout = getMarkers(currentWobject);
-
   const getOverlayLayout = () => {
     const currentWobj = infoboxData;
     const avatar = getObjectAvatar(currentWobj.wobject);
@@ -125,14 +137,18 @@ const WebsiteBody = props => {
       </Overlay>
     );
   };
-  const setMapCenter = () => (isEmpty(currentCenter) ? currMapCoordinates : currentCenter);
-  const setPosition = () => setCurrentCenter(currMapCoordinates);
+  // const setMapCenter = () => (isEmpty(currentCenter) ? currMapCoordinates : currentCenter);
+  // const setPosition = () => setCurrentCenter(currMapCoordinates);
   const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
   const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
   const zoomButtonsLayout = () => (
     <div className="WebsiteBodyControl">
       <div className="WebsiteBodyControl__gps">
-        <div role="presentation" className="WebsiteBodyControl__locateGPS" onClick={setPosition}>
+        <div
+          role="presentation"
+          className="WebsiteBodyControl__locateGPS"
+          onClick={() => setCurrentCenter(currMapCoordinates)}
+        >
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
       </div>
@@ -171,7 +187,7 @@ const WebsiteBody = props => {
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
-              center={setMapCenter()}
+              center={currentCenter}
               zoom={currentZoom}
               provider={mapProvider}
               onBoundsChanged={data => {
@@ -209,6 +225,7 @@ WebsiteBody.propTypes = {
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
+  configCoordinates: PropTypes.arrayOf.isRequired,
 };
 
 WebsiteBody.defaultProps = {
@@ -226,6 +243,7 @@ export default connect(
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),
     isGuest: isGuestUser(state),
+    configCoordinates: getMapForMainPage(state),
   }),
   {
     getCoordinates,
