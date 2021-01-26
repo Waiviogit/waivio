@@ -96,7 +96,7 @@ export const GET_CURRENT_APP_SETTINGS = createAsyncActionType('@app/GET_CURRENT_
 export const getCurrentAppSettings = () => ({
   type: GET_CURRENT_APP_SETTINGS.ACTION,
   payload: {
-    promise: ApiClient.getCurrentAppSettings(),
+    promise: ApiClient.getCurrentAppSettings().catch(e => console.log(e)),
   },
 });
 
