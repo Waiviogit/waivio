@@ -87,7 +87,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
     steemConnectAPI.revokeToken();
     Cookie.remove('access_token');
   }
-  busyAPI.sendAsync('unsubscribe', [accessToken]);
+  busyAPI.instance.sendAsync('unsubscribe', [accessToken]);
   history.push('/');
 
   dispatch({
@@ -191,7 +191,7 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
     return dispatch({ type: BUSY_LOGIN.ERROR });
   }
 
-  busyAPI.subscribe((response, message) => {
+  busyAPI.instance.subscribe((response, message) => {
     const type = message && message.type;
 
     if (type === BUSY_API_TYPES.notification && message.notification) {
@@ -205,7 +205,7 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
     type: BUSY_LOGIN.ACTION,
     meta: targetUsername,
     payload: {
-      promise: busyAPI.sendAsync(method, [accessToken]),
+      promise: busyAPI.instance.sendAsync(method, [accessToken]),
     },
   });
 };

@@ -46,6 +46,7 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   const isGuest = auth.isGuestUser;
   const post = posts.list[postId];
   const voter = auth.user.name;
+  const websocketCallback = () => dispatch(getContent(author, post.permlink, true));
 
   if (!auth.isAuthenticated) return null;
 
@@ -60,15 +61,9 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
           if (data.status !== 200 && isGuest) throw new Error(data.message);
           if (window.analytics)
             window.analytics.track('Vote', { category: 'vote', label: 'submit', value: 1 });
-          busyAPI.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
-          busyAPI.subscribe((response, mess) => {
-            if (
-              subscribeTypes.votes === mess.type &&
-              mess.notification.blockParsed === res.block_num
-            ) {
-              dispatch(getContent(author, post.permlink, true));
-            }
-          });
+
+          busyAPI.instance.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
+          busyAPI.instance.subscribeBlock(subscribeTypes.votes, res.block_num, websocketCallback);
 
           return res;
         })
