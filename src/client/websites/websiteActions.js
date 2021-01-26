@@ -66,8 +66,8 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
         const { block_num: blockNum } = res.result;
         const creator = getAuthenticatedUserName(state);
 
-        busyAPI.sendAsync(subscribeMethod, [creator, blockNum, subscribeTypes.posts]);
-        busyAPI.subscribe((response, mess) => {
+        busyAPI.instance.sendAsync(subscribeMethod, [creator, blockNum, subscribeTypes.posts]);
+        busyAPI.instance.subscribe((response, mess) => {
           if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
             history.push(`/${formData.domain}.${formData.parent}/configuration`);
             dispatch(getOwnWebsite());
@@ -108,8 +108,8 @@ export const activateWebsite = id => (dispatch, getState, { steemConnectAPI, bus
 
   dispatch({ type: CHANGE_STATUS_WEBSITE, id });
   steemConnectAPI.activateWebsite(name, id).then(res => {
-    busyAPI.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
-    busyAPI.subscribe((response, mess) => {
+    busyAPI.instance.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
+    busyAPI.instance.subscribe((response, mess) => {
       if (
         subscribeTypes.posts === mess.type &&
         mess.notification.blockParsed === res.result.block_num
@@ -125,8 +125,8 @@ export const suspendWebsite = id => (dispatch, getState, { steemConnectAPI, busy
 
   dispatch({ type: CHANGE_STATUS_WEBSITE, id });
   steemConnectAPI.suspendWebsite(name, id).then(res => {
-    busyAPI.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
-    busyAPI.subscribe((response, mess) => {
+    busyAPI.instance.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
+    busyAPI.instance.subscribe((response, mess) => {
       if (
         subscribeTypes.posts === mess.type &&
         mess.notification.blockParsed === res.result.block_num
@@ -144,8 +144,8 @@ export const deleteWebsite = item => (dispatch, getState, { busyAPI }) => {
 
   dispatch({ type: DELETE_WEBSITE, id: item.host });
   deleteSite(name, item.host).then(res => {
-    busyAPI.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
-    busyAPI.subscribe((response, mess) => {
+    busyAPI.instance.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
+    busyAPI.instance.subscribe((response, mess) => {
       if (
         subscribeTypes.posts === mess.type &&
         mess.notification.blockParsed === res.result.block_num

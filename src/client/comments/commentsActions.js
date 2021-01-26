@@ -369,8 +369,8 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
         const res = isGuest ? await data.json() : data.result;
         if (data.status !== 200 && isGuest) throw new Error(data.message);
 
-        busyAPI.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
-        busyAPI.subscribe((response, mess) => {
+        busyAPI.instance.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
+        busyAPI.instance.subscribe((response, mess) => {
           if (
             subscribeTypes.votes === mess.type &&
             mess.notification.blockParsed === res.block_num
