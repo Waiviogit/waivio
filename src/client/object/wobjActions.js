@@ -185,27 +185,23 @@ export const getChangedWobjectField = (
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
+  const subscribeCallback = () =>
+    dispatch({
+      type: GET_CHANGED_WOBJECT_FIELD.ACTION,
+      payload: {
+        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale).then(res => {
+          dispatch({
+            type: APPEND_WAIVIO_OBJECT.SUCCESS,
+          });
+
+          return res;
+        }),
+      },
+      meta: { isNew },
+    });
 
   busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNum, subscribeTypes.votes]);
-  busyAPI.instance.subscribe((response, mess) => {
-    if (subscribeTypes.votes === mess.type && mess.notification.blockParsed === blockNum) {
-      dispatch({
-        type: GET_CHANGED_WOBJECT_FIELD.ACTION,
-        payload: {
-          promise: getChangedField(authorPermlink, fieldName, author, permlink, locale).then(
-            res => {
-              dispatch({
-                type: APPEND_WAIVIO_OBJECT.SUCCESS,
-              });
-
-              return res;
-            },
-          ),
-        },
-        meta: { isNew },
-      });
-    }
-  });
+  busyAPI.instance.subscribeBlock(subscribeTypes.votes, blockNum, subscribeCallback);
 };
 
 export const voteAppends = (
