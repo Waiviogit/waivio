@@ -1,5 +1,16 @@
 import uuidv4 from 'uuid/v4';
-import { fromPairs, get, attempt, isError, includes, unescape, split, isEmpty, size } from 'lodash';
+import {
+  fromPairs,
+  get,
+  attempt,
+  isError,
+  includes,
+  unescape,
+  split,
+  isEmpty,
+  size,
+  isNil,
+} from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex, botNameRegex } from './regexHelpers';
@@ -151,16 +162,19 @@ export function getObjectUrl(objPermlink) {
 }
 
 export function getInitialState(props) {
+  const search = props.location.search.replace(/ & /, ' ');
+  const initObjects = new URLSearchParams(search).getAll('object');
+
   let state = {
     campaign: props.campaignId ? { id: props.campaignId } : null,
     draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
       title: '',
-      body: props.initObjects
-        ? props.initObjects.reduce((acc, curr) => {
+      body: initObjects
+        ? initObjects.reduce((acc, curr) => {
             const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
-            if (matches[1] && matches[2]) {
+            if (!isNil(matches) && matches[1] && matches[2]) {
               return `${acc}[${matches[1]}](${getObjectUrl(matches[2])})\n`;
             }
             return acc;
