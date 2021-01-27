@@ -367,17 +367,11 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
     payload: {
       promise: steemConnectAPI.vote(voter, author, permlink, weight).then(async data => {
         const res = isGuest ? await data.json() : data.result;
+        const subscribeCallback = () => dispatch(getSingleComment(author, permlink));
         if (data.status !== 200 && isGuest) throw new Error(data.message);
 
-        busyAPI.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
-        busyAPI.subscribe((response, mess) => {
-          if (
-            subscribeTypes.votes === mess.type &&
-            mess.notification.blockParsed === res.block_num
-          ) {
-            dispatch(getSingleComment(author, permlink));
-          }
-        });
+        busyAPI.instance.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
+        busyAPI.instance.subscribeBlock(subscribeTypes.votes, res.block_num, subscribeCallback);
 
         return res;
       }),

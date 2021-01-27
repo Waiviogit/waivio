@@ -89,6 +89,7 @@ export const WebsitesConfigurations = ({
   };
 
   const host = match.params.site;
+  console.log('host: ', host);
 
   useEffect(() => {
     getCoordinates();

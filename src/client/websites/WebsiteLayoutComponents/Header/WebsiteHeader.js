@@ -31,7 +31,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config }) => {
       className="WebsiteHeader"
       style={{ backgroundColor: `#${get(config, ['colors', 'header'], '')}` }}
     >
-      <div className="topnav-layout">
+      <div className="topnav-layout isWebsiteView">
         {isMainPage ? (
           <WebsiteSearch history={history} />
         ) : (
