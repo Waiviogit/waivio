@@ -990,6 +990,10 @@ class Rewards extends React.Component {
       campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
     const isWidget = sessionStorage.getItem('isWidget');
+    const classNamesAffix = isWidget ? 'leftContainer isWidget' : 'leftContainer';
+    const classNamesContainer = isWidget
+      ? 'feed-layout container isWidget-container'
+      : 'feed-layout container';
 
     return (
       <div className="Rewards">
@@ -1017,8 +1021,8 @@ class Rewards extends React.Component {
           </Helmet>
           <ScrollToTop />
           <ScrollToTopOnMount />
-          <div className="feed-layout container">
-            <Affix className="leftContainer" stickPosition={77}>
+          <div className={classNamesContainer}>
+            <Affix className={classNamesAffix} stickPosition={77}>
               <div className="left">
                 <LeftSidebar />
               </div>
