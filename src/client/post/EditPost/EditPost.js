@@ -74,7 +74,6 @@ const getLinkedObjects = contentStateRaw => {
     imageLoading: getIsImageUploading(state),
     campaignId: new URLSearchParams(props.location.search).get('campaign'),
     draftId: new URLSearchParams(props.location.search).get('draft'),
-    initObjects: new URLSearchParams(props.location.search).getAll('object'),
     upvoteSetting: getUpvoteSetting(state),
     isGuest: isGuestUser(state),
     beneficiaries: getBeneficiariesUsers(state),

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { isEmpty, get, map } from 'lodash';
+import { isEmpty, get, map, debounce, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -9,6 +9,7 @@ import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import {
   getConfigurationValues,
+  getMapForMainPage,
   getScreenSize,
   getSearchUsersResults,
   getUserLocation,
@@ -33,15 +34,22 @@ const WebsiteBody = props => {
   const [boundsParams, setBoundsParams] = useState({
     topPoint: [],
     bottomPoint: [],
-    limit: 10,
+    limit: 50,
     skip: 0,
   });
   const [infoboxData, setInfoboxData] = useState(null);
-  const [currentZoom, setCurrentZoom] = useState(11);
-  const [currentCenter, setCurrentCenter] = useState([]);
+  const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const mapClassList = classNames('WebsiteBody__map', {
     WebsiteBody__hideMap: props.searchType !== 'All',
   });
+
+  const currMapCoordinates = isEmpty(props.configCoordinates.center)
+    ? props.userLocation
+    : props.configCoordinates.center;
+
+  useEffect(() => {
+    setArea({ center: currMapCoordinates, zoom: props.configCoordinates.zoom, bounds: [] });
+  }, []);
 
   useEffect(() => {
     if (isEmpty(props.userLocation)) props.getCoordinates();
@@ -53,14 +61,12 @@ const WebsiteBody = props => {
     }
   }, [props.userLocation, boundsParams]);
 
-  const currMapCoordinates = [+props.userLocation.lat, +props.userLocation.lon];
-
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
   const aboutObject = get(props, ['configuration', 'aboutObject']);
   const currLink = aboutObject ? `/object/${aboutObject}` : '/';
 
-  const handleOnBoundsChanged = data => {
+  const handleOnBoundsChanged = debounce(data => {
     if (!isEmpty(data)) {
       setBoundsParams({
         ...boundsParams,
@@ -68,13 +74,14 @@ const WebsiteBody = props => {
         bottomPoint: [data.sw[1], data.sw[0]],
       });
     }
-  };
+  }, 800);
 
-  const onBoundsChanged = ({ center, zoom, bounds }) => {
-    setCurrentCenter(center);
-    setCurrentZoom(Math.round(zoom));
-    handleOnBoundsChanged(bounds);
-  };
+  const onBoundsChanged = debounce(({ center, zoom, bounds }) => {
+    setArea({ center, zoom, bounds });
+    if (!isEqual(bounds, area.bounds)) {
+      handleOnBoundsChanged(bounds);
+    }
+  }, 300);
 
   const handleMarkerClick = ({ payload, anchor }) => {
     handleAddMapCoordinates(anchor);
@@ -106,7 +113,6 @@ const WebsiteBody = props => {
   const currentWobject = !isEmpty(props.searchResult) ? props.searchResult : props.wobjectsPoint;
 
   const markersLayout = getMarkers(currentWobject);
-
   const getOverlayLayout = () => {
     const currentWobj = infoboxData;
     const avatar = getObjectAvatar(currentWobj.wobject);
@@ -125,14 +131,18 @@ const WebsiteBody = props => {
       </Overlay>
     );
   };
-  const setMapCenter = () => (isEmpty(currentCenter) ? currMapCoordinates : currentCenter);
-  const setPosition = () => setCurrentCenter(currMapCoordinates);
-  const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
-  const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
+
+  const incrementZoom = () => setArea({ ...area, zoom: area.zoom + 1 });
+  const decrementZoom = () => setArea({ ...area, zoom: area.zoom - 1 });
+
   const zoomButtonsLayout = () => (
     <div className="WebsiteBodyControl">
       <div className="WebsiteBodyControl__gps">
-        <div role="presentation" className="WebsiteBodyControl__locateGPS" onClick={setPosition}>
+        <div
+          role="presentation"
+          className="WebsiteBodyControl__locateGPS"
+          onClick={() => setArea({ ...area, center: currMapCoordinates })}
+        >
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
       </div>
@@ -171,12 +181,10 @@ const WebsiteBody = props => {
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
-              center={setMapCenter()}
-              zoom={currentZoom}
+              center={area.center}
+              zoom={area.zoom}
               provider={mapProvider}
-              onBoundsChanged={data => {
-                onBoundsChanged(data);
-              }}
+              onBoundsChanged={data => onBoundsChanged(data)}
               onClick={() => setInfoboxData(null)}
             >
               {markersLayout}
@@ -209,6 +217,7 @@ WebsiteBody.propTypes = {
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
+  configCoordinates: PropTypes.arrayOf.isRequired,
 };
 
 WebsiteBody.defaultProps = {
@@ -226,6 +235,7 @@ export default connect(
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),
     isGuest: isGuestUser(state),
+    configCoordinates: getMapForMainPage(state),
   }),
   {
     getCoordinates,

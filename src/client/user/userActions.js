@@ -186,19 +186,28 @@ export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS'
 export const getNotifications = username => (dispatch, getState, { busyAPI }) => {
   const state = getState();
 
+  dispatch({ type: GET_NOTIFICATIONS.START });
+
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 
   const targetUsername = username || store.getAuthenticatedUserName(state);
 
-  return dispatch({
-    type: GET_NOTIFICATIONS.ACTION,
-    meta: targetUsername,
-    payload: {
-      promise: busyAPI.sendAsync('get_notifications', [targetUsername]),
-    },
+  busyAPI.instance.sendAsync('get_notifications', [targetUsername]);
+  busyAPI.instance.subscribe((response, mess) => {
+    if (mess.type === 'get_notifications' && mess.result) {
+      return dispatch({
+        type: GET_NOTIFICATIONS.SUCCESS,
+        meta: targetUsername,
+        payload: mess.result,
+      });
+    }
+
+    return null;
   });
+
+  return null;
 };
 
 export const GET_USER_LOCATION = createAsyncActionType('@user/GET_USER_LOCATION');

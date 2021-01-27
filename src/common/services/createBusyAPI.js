@@ -1,14 +1,19 @@
 import apiConfig from '../../waivioApi/routes';
 
-function createBusyAPI() {
+const socketStore = {
+  websocket: undefined,
+  get instance() {
+    return this.websocket;
+  },
+  set instance(instance) {
+    this.websocket = instance;
+  },
+};
+
+const socketFactory = () => {
   const socket = new WebSocket(`wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`);
 
   socket.sendAsync = (message, params) => {
-    if (socket.readyState === socket.CLOSED) {
-      const client = createBusyAPI();
-      client.sendAsync(message, params);
-    }
-
     socket.send(
       JSON.stringify({
         method: message,
@@ -17,11 +22,34 @@ function createBusyAPI() {
     );
   };
 
-  socket.subscribe = callback => {
-    socket.addEventListener('message', e => callback(null, JSON.parse(e.data)));
+  socket.subscribeBlock = (type, blockNum, callback) => {
+    const listener = e => {
+      const data = JSON.parse(e.data);
+      if (type === data.type && data.notification.blockParsed === blockNum) {
+        socket.removeEventListener('message', listener);
+        callback();
+      }
+    };
+
+    socket.addEventListener('message', listener);
   };
 
+  socket.subscribe = callback => {
+    const handler = e => callback(null, JSON.parse(e.data));
+    socket.addEventListener('message', handler);
+  };
+
+  socket.addEventListener('close', () => {
+    socketStore.instance = socketFactory();
+  });
+
   return socket;
+};
+
+function createBusyAPI() {
+  socketStore.instance = socketFactory();
+
+  return socketStore;
 }
 
 export default createBusyAPI;

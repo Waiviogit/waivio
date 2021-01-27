@@ -1841,14 +1841,15 @@ export const getSettingsWebsite = host =>
     .then(res => res)
     .catch(e => e);
 
-export const getCurrentAppSettings = () =>
-  fetch(`${config.apiPrefix}${config.sites}`, {
+export const getCurrentAppSettings = () => {
+  return fetch(`${config.apiPrefix}${config.sites}`, {
     headers,
     method: 'POST',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
 export const getObjectTypeFilters = type =>
   fetch(`${config.apiPrefix}${config.objectType}${config.tagForFilter}?objectType=${type}`, {
