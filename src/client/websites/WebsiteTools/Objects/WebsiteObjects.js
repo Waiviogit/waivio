@@ -136,6 +136,13 @@ const WebsiteObjects = props => {
     saveCurrentAreas(data);
   };
 
+  const drawArea = (item, block, key) =>
+    typeof item === 'object' && (
+      <Overlay key={key} anchor={item}>
+        {block}
+      </Overlay>
+    );
+
   return (
     <div className="WebsiteObjects">
       <h1 className="WebsiteObjects__heading">
@@ -177,32 +184,26 @@ const WebsiteObjects = props => {
               currAreaData.map(data =>
                 Object.values(data).map((item, index) => {
                   console.log('index: ', index);
-                  if (index === 1) {
-                    return (
-                      typeof item === 'object' && (
-                        <Overlay key={uuidv4()} anchor={item}>
-                          <span
-                            id={data.removeAreaID}
-                            role="presentation"
-                            className="MapWrap__cancel"
-                            onClick={event => removeArea(event.target.id)}
-                          >
-                            &#9746;
-                          </span>
-                        </Overlay>
-                      )
-                    );
-                  }
-                  return (
-                    typeof item === 'object' && (
-                      <Overlay key={uuidv4()} anchor={item}>
-                        <div
-                          className="MapWrap__area"
-                          style={{ width: '10px', height: '10px', background: 'red' }}
-                        />
-                      </Overlay>
-                    )
+                  const rect = (
+                    <div
+                      className="MapWrap__area"
+                      style={{ width: '10px', height: '10px', background: 'red' }}
+                    />
                   );
+                  const removeBtn = (
+                    <span
+                      id={data.removeAreaID}
+                      role="presentation"
+                      className="MapWrap__cancel"
+                      onClick={event => removeArea(event.target.id)}
+                    >
+                      &#9746;
+                    </span>
+                  );
+                  if (index === 1) {
+                    return drawArea(item, removeBtn, uuidv4());
+                  }
+                  return drawArea(item, rect, uuidv4());
                 }),
               )}
           </Map>
