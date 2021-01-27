@@ -49,8 +49,8 @@ export const getChangeOnConfirmReferral = (username, isGuestName, blockNum) => (
   getState,
   { busyAPI },
 ) => {
-  busyAPI.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
-  busyAPI.subscribe((response, mess) => {
+  busyAPI.instance.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
+  busyAPI.instance.subscribe((response, mess) => {
     if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
       dispatch({
         type: REFERRAL_GET_ADDITION_FIELDS.ACTION,
@@ -104,8 +104,8 @@ export const getChangeOnRejectReferral = (username, isGuestName, blockNum) => (
   getState,
   { busyAPI },
 ) => {
-  busyAPI.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
-  busyAPI.subscribe((response, mess) => {
+  busyAPI.instance.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
+  busyAPI.instance.subscribe((response, mess) => {
     if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
       dispatch({
         type: REFERRAL_GET_ADDITION_FIELDS.ACTION,

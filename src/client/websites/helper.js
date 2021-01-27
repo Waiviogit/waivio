@@ -39,8 +39,8 @@ export const getChangesInAccessOption = (
   processingFunction,
   meta,
 ) => (dispatch, getState, { busyAPI }) => {
-  busyAPI.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
-  busyAPI.subscribe((response, mess) => {
+  busyAPI.instance.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
+  busyAPI.instance.subscribe((response, mess) => {
     if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
       processingFunction(host, username)
         .then(res => {

@@ -4,7 +4,21 @@
 .WebsiteBody {
   position: relative;
   display: flex;
+  height: 100%;
   flex-direction: column;
+
+  &__overlay-wrap {
+    display: flex;
+    align-items: center;
+    padding: 3px;
+    background-color: @white;
+    border: 1px solid @black;
+    cursor: pointer;
+
+    &-name {
+      margin-left: 3px;
+    }
+  }
 
   @media @small {
     flex-direction: row;
@@ -12,29 +26,32 @@
 
   &__map {
     width: 100%;
+    height: 94vh;
   }
 
   &__logo {
     position: absolute;
     z-index: 2;
     display: flex;
-    top: 84%;
-    left: 4%;
-    max-width: 100px;
+    top: 79%;
+    left: 5%;
+    max-width: 150px;
     cursor: pointer;
 
     @media @small {
-      top: 90%;
-      left: 4%;
+      top: 83%;
+      left: 5%;
     }
   }
 
   &__hideMap {
+    position: relative;
     display: none;
 
     @media @small {
       display: block;
-      width: 100%;
+      width: 60%;
+      margin-left: 39%;
     }
   }
 
@@ -45,6 +62,43 @@
     @media @small {
       width: 40%;
       padding: 0 25px 0 0;
+    }
+  }
+}
+
+.WebsiteBodyControl {
+  position: absolute;
+  z-index: 200;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  top: 83%;
+  left: 96%;
+
+  &__gps {
+    cursor: pointer;
+    z-index: 100;
+    margin-bottom: 5px;
+  }
+
+  &__zoom {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    z-index: 100;
+
+    &__button {
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      background-color: @white;
+      border: 1px solid @border-color-base;
+      color: @black;
+
+      &:hover {
+        background-color: @primary-color;
+      }
     }
   }
 }

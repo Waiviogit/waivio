@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -93,12 +94,27 @@ export const SET_IS_MOBILE = '@app/SET_IS_MOBILE';
 export const setIsMobile = createAction(SET_IS_MOBILE);
 
 export const GET_CURRENT_APP_SETTINGS = createAsyncActionType('@app/GET_CURRENT_APP_SETTINGS');
-export const getCurrentAppSettings = () => ({
-  type: GET_CURRENT_APP_SETTINGS.ACTION,
-  payload: {
-    promise: ApiClient.getCurrentAppSettings(),
-  },
-});
+
+export const getCurrentAppSettings = () => dispatch => {
+  dispatch({ type: GET_CURRENT_APP_SETTINGS.START });
+
+  ApiClient.getCurrentAppSettings()
+    .then(res => {
+      if (res.redirect) {
+        window.location.replace(res.redirect);
+        return null;
+      }
+
+      return dispatch({
+        type: GET_CURRENT_APP_SETTINGS.SUCCESS,
+        payload: res,
+      });
+    })
+    .catch(e => {
+      message.error(e.message);
+      return dispatch({ type: GET_CURRENT_APP_SETTINGS.ERROR });
+    });
+};
 
 export const SET_CURRENT_PAGE = '@app/SET_CURRENT_PAGE';
 
