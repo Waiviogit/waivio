@@ -7,6 +7,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
+import classNames from 'classnames';
 import {
   isEmpty,
   map,
@@ -990,10 +991,6 @@ class Rewards extends React.Component {
       campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
     const isWidget = sessionStorage.getItem('isWidget');
-    const classNamesAffix = isWidget ? 'leftContainer isWidget' : 'leftContainer';
-    const classNamesContainer = isWidget
-      ? 'feed-layout container isWidget-container'
-      : 'feed-layout container';
 
     return (
       <div className="Rewards">
@@ -1021,8 +1018,8 @@ class Rewards extends React.Component {
           </Helmet>
           <ScrollToTop />
           <ScrollToTopOnMount />
-          <div className={classNamesContainer}>
-            <Affix className={classNamesAffix} stickPosition={77}>
+          <div className={classNames('feed-layout container', { 'isWidget-container': isWidget })}>
+            <Affix className={classNames('leftContainer', { isWidget })} stickPosition={77}>
               <div className="left">
                 <LeftSidebar />
               </div>
