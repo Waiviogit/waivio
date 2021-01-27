@@ -15,11 +15,10 @@ import { getCurrStyleAfterZoom } from '../../helper';
 import './WebsiteObjects.less';
 
 const WebsiteObjects = props => {
-  const [currentCenter, setCurrentCenter] = useState([]);
-  const [currentZoom, setCurrentZoom] = useState(11);
   const [showMap, setShowMap] = useState(false);
   const [modalMapData, setModalMapData] = useState([]);
   const [currStyle, setCurrStyle] = useState({ width: 300, height: 250 });
+  const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
 
   useEffect(() => {
     if (isEmpty(props.userLocation)) {
@@ -40,8 +39,8 @@ const WebsiteObjects = props => {
   }, []);
 
   useEffect(() => {
-    getCurrStyleAfterZoom(currentZoom, setCurrStyle, currStyle);
-  }, [currentZoom]);
+    getCurrStyleAfterZoom(area.zoom, setCurrStyle, currStyle);
+  }, [area.zoom]);
 
   const getLongitudeToTile = (lon, zoom) => ((lon + 180) / 360) * zoom ** 2;
   const getLatitudeToTile = (lat, zoom) =>
@@ -65,13 +64,18 @@ const WebsiteObjects = props => {
 
     return (tileY - tileCenterY) * 256.0 + 400 / 2;
   };
-
+  console.log('area: ', area);
   const startOwnLocation = [+props.userLocation.lat, +props.userLocation.lon];
-  const setMapCenter = () => (isEmpty(currentCenter) ? startOwnLocation : currentCenter);
+  // const setMapCenter = () => (isEmpty(currentCenter) ? startOwnLocation : currentCenter);
+  const setMapCenter = () => (isEmpty(area.center) ? startOwnLocation : area.center);
 
-  const setPosition = () => setCurrentCenter(startOwnLocation);
-  const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
-  const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
+  // const setPosition = () => setCurrentCenter(startOwnLocation);
+  const setPosition = () => setArea({ ...area, center: startOwnLocation });
+  // const incrementZoom = () => setCurrentZoom(Math.round(currentZoom) + 1);
+  // const decrementZoom = () => setCurrentZoom(Math.round(currentZoom) - 1);
+
+  const incrementZoom = () => setArea({ ...area, zoom: area.zoom + 1 });
+  const decrementZoom = () => setArea({ ...area, zoom: area.zoom - 1 });
 
   const currClassName = showMap ? 'WebsiteObjectsControl modal-view' : 'WebsiteObjectsControl';
   const zoomButtonsLayout = () => (
@@ -110,7 +114,7 @@ const WebsiteObjects = props => {
   };
 
   const removeArea = id => {
-    const filteredAreas = modalMapData.filter(area => !isEqual(+id, area.center[0]));
+    const filteredAreas = modalMapData.filter(currArea => !isEqual(+id, currArea.center[0]));
     setModalMapData(filteredAreas);
     saveCurrentAreas(filteredAreas);
   };
@@ -118,13 +122,13 @@ const WebsiteObjects = props => {
   const handleModalOkButton = currData => {
     const width = latLngToPixel(
       [+currData.topPoint[1], +currData.topPoint[0]],
-      currentCenter,
-      currentZoom,
+      area.center,
+      area.zoom,
     );
     const height = lonLngToPixel(
       [+currData.bottomPoint[1], +currData.bottomPoint[0]],
-      currentCenter,
-      currentZoom,
+      area.center,
+      area.zoom,
     );
     setCurrStyle({ width, height });
     const data = [
@@ -151,7 +155,7 @@ const WebsiteObjects = props => {
         {!isEmpty(props.userLocation) && (
           <Map
             center={setMapCenter()}
-            zoom={currentZoom}
+            zoom={area.zoom}
             height={400}
             provider={mapProvider}
             onBoundsChanged={data => {
@@ -195,22 +199,23 @@ const WebsiteObjects = props => {
         {!isEmpty(props.userLocation) && (
           <Map
             center={setMapCenter()}
-            zoom={currentZoom}
+            zoom={area.zoom}
             height={400}
             provider={mapProvider}
-            onBoundsChanged={({ center, zoom }) => {
-              setCurrentCenter(center);
-              setCurrentZoom(Math.round(zoom));
+            onBoundsChanged={({ center, zoom, bounds }) => {
+              // setCurrentCenter(center);
+              setArea({ center, zoom, bounds });
+              // setCurrentZoom(Math.round(zoom));
             }}
           >
             {!isEmpty(modalMapData) &&
-              modalMapData.map(area => {
-                const id = area.center[0];
+              modalMapData.map(currArea => {
+                const id = currArea.center[0];
                 return (
-                  <Overlay key={id} anchor={area.center}>
+                  <Overlay key={id} anchor={currArea.center}>
                     <div
                       className="MapWrap__rect"
-                      style={{ ...currStyle, width: area.width, height: area.height }}
+                      style={{ ...currStyle, width: currArea.width, height: currArea.height }}
                     >
                       <span
                         id={id}
@@ -221,6 +226,7 @@ const WebsiteObjects = props => {
                         &#9746;
                       </span>
                     </div>
+                    <div className="MapWrap__dots" />
                   </Overlay>
                 );
               })}
