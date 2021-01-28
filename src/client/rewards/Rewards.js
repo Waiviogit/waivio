@@ -7,6 +7,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
+import classNames from 'classnames';
 import {
   isEmpty,
   map,
@@ -1017,8 +1018,8 @@ class Rewards extends React.Component {
           </Helmet>
           <ScrollToTop />
           <ScrollToTopOnMount />
-          <div className="feed-layout container">
-            <Affix className="leftContainer" stickPosition={77}>
+          <div className={classNames('feed-layout container', { 'isWidget-container': isWidget })}>
+            <Affix className={classNames('leftContainer', { isWidget })} stickPosition={77}>
               <div className="left">
                 <LeftSidebar />
               </div>

@@ -35,14 +35,14 @@ const CommentPopover = ({ comment, children, handlePopoverClick, own }) => {
           <Icon type="loading" />
         ) : (
           <ReactSVG
-            className={`hide-button ${comment.isMute ? 'hide-button--fill' : ''}`}
+            className={`hide-button ${comment.muted ? 'hide-button--fill' : ''}`}
             wrapper="span"
             src="/images/icons/mute-user.svg"
           />
         )}
         <FormattedMessage
-          id={comment.isMute ? 'unmute' : 'mute'}
-          defaultMessage={comment.isMute ? 'Unmute' : 'Mute'}
+          id={comment.muted ? 'unmute' : 'mute'}
+          defaultMessage={comment.muted ? 'Unmute' : 'Mute'}
         />{' '}
         {comment.author}
       </PopoverMenuItem>,
@@ -92,7 +92,7 @@ CommentPopover.propTypes = {
     loadingHide: PropTypes.bool,
     isFlagged: PropTypes.bool,
     loadingMute: PropTypes.bool,
-    isMute: PropTypes.bool,
+    muted: PropTypes.bool,
   }).isRequired,
   children: PropTypes.node.isRequired,
   handlePopoverClick: PropTypes.func.isRequired,

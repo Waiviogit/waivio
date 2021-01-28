@@ -10,6 +10,7 @@ import {
   getFeed,
   getUsersAccountHistory,
   isGuestUser,
+  getUser,
 } from '../reducers';
 import {
   getFeedLoadingFromState,
@@ -23,15 +24,17 @@ import { showPostModal } from '../app/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
 import PostModal from '../post/PostModalContainer';
+import EmptyMutedUserProfile from '../statics/MutedContent';
 
 @withRouter
 @connect(
-  state => ({
+  (state, ownProps) => ({
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     feed: getFeed(state),
     usersAccountHistory: getUsersAccountHistory(state),
     isGuest: isGuestUser(state),
+    user: getUser(state, ownProps.match.params.name),
   }),
   {
     getUserProfileBlogPosts,
@@ -52,6 +55,7 @@ export default class UserProfile extends React.Component {
     usersAccountHistory: PropTypes.shape(),
     isGuest: PropTypes.bool,
     history: PropTypes.shape(),
+    user: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -62,6 +66,7 @@ export default class UserProfile extends React.Component {
     usersAccountHistory: {},
     isGuest: false,
     history: {},
+    user: {},
   };
 
   componentDidMount() {
@@ -93,7 +98,7 @@ export default class UserProfile extends React.Component {
   }
 
   render() {
-    const { authenticated, authenticatedUser, feed, limit, isGuest, history } = this.props;
+    const { authenticated, authenticatedUser, feed, limit, isGuest, history, user } = this.props;
     const username = this.props.match.params.name;
     const isOwnProfile = authenticated && username === authenticatedUser.name;
     const content = getFeedFromState('blog', username, feed);
@@ -105,6 +110,9 @@ export default class UserProfile extends React.Component {
         limit,
         initialLoad: false,
       });
+
+    if (!isEmpty(user.mutedBy))
+      return <EmptyMutedUserProfile user={user} authName={authenticatedUser.name} />;
 
     return (
       <div className="profile">
