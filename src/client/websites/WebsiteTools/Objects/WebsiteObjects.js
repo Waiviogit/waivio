@@ -47,18 +47,162 @@ const WebsiteObjects = props => {
         // eslint-disable-next-line array-callback-return
         value.map(currValue => {
           const topPoint = currValue.topPoint;
-          const buttonPoint = currValue.bottomPoint;
+          const bottomPoint = currValue.bottomPoint;
           const center = currValue.center;
 
+          // Main red points
+          const topLeftPoint = [topPoint[1], bottomPoint[0]];
+          const topMiddlePoint = [topPoint[1], (bottomPoint[0] + topPoint[0]) / 2];
+          const topRightPoint = [topPoint[1], topPoint[0]];
+          const rightMiddlePoint = [(bottomPoint[1] + topPoint[1]) / 2, topPoint[0]];
+          const bottomRightPoint = [bottomPoint[1], topPoint[0]];
+          const bottomMiddlePoint = [bottomPoint[1], (bottomPoint[0] + topPoint[0]) / 2];
+          const bottomLeftPoint = [bottomPoint[1], bottomPoint[0]];
+          const leftMiddlePoint = [(bottomPoint[1] + topPoint[1]) / 2, bottomPoint[0]];
+
+          // Additionally points between main points
+          const topQuarterLeft = [
+            (topLeftPoint[0] + topMiddlePoint[0]) / 2,
+            (topLeftPoint[1] + topMiddlePoint[1]) / 2,
+          ];
+          const topQuarterRight = [
+            (topRightPoint[0] + topMiddlePoint[0]) / 2,
+            (topRightPoint[1] + topMiddlePoint[1]) / 2,
+          ];
+
+          const leftQuarterTop = [
+            (topLeftPoint[0] + leftMiddlePoint[0]) / 2,
+            (topLeftPoint[1] + leftMiddlePoint[1]) / 2,
+          ];
+          const leftQuarterButton = [
+            (leftMiddlePoint[0] + bottomLeftPoint[0]) / 2,
+            (leftMiddlePoint[1] + bottomLeftPoint[1]) / 2,
+          ];
+
+          const bottomQuarterLeft = [
+            (bottomMiddlePoint[0] + bottomLeftPoint[0]) / 2,
+            (bottomMiddlePoint[1] + bottomLeftPoint[1]) / 2,
+          ];
+          const bottomQuarterRight = [
+            (bottomMiddlePoint[0] + bottomRightPoint[0]) / 2,
+            (bottomMiddlePoint[1] + bottomRightPoint[1]) / 2,
+          ];
+
+          const rightQuarterTop = [
+            (rightMiddlePoint[0] + topRightPoint[0]) / 2,
+            (rightMiddlePoint[1] + topRightPoint[1]) / 2,
+          ];
+          const rightQuarterBottom = [
+            (rightMiddlePoint[0] + bottomRightPoint[0]) / 2,
+            (rightMiddlePoint[1] + bottomRightPoint[1]) / 2,
+          ];
+
+          // Additionally points between additionally points
+          // Top points
+          const additionallyTopLeftQuarterLeft = [
+            (topLeftPoint[0] + topQuarterLeft[0]) / 2,
+            (topLeftPoint[1] + topQuarterLeft[1]) / 2,
+          ];
+          const additionallyTopLeftQuarterRight = [
+            (topQuarterLeft[0] + topMiddlePoint[0]) / 2,
+            (topQuarterLeft[1] + topMiddlePoint[1]) / 2,
+          ];
+          const additionallyTopRightQuarterLeft = [
+            (topQuarterRight[0] + topMiddlePoint[0]) / 2,
+            (topQuarterRight[1] + topMiddlePoint[1]) / 2,
+          ];
+          const additionallyTopRightQuarterRight = [
+            (topQuarterRight[0] + topRightPoint[0]) / 2,
+            (topQuarterRight[1] + topRightPoint[1]) / 2,
+          ];
+
+          // Right points
+          const additionallyRightTopQuarterTop = [
+            (topRightPoint[0] + rightQuarterTop[0]) / 2,
+            (topRightPoint[1] + rightQuarterTop[1]) / 2,
+          ];
+          const additionallyRightTopQuarterBottom = [
+            (rightMiddlePoint[0] + rightQuarterTop[0]) / 2,
+            (rightMiddlePoint[1] + rightQuarterTop[1]) / 2,
+          ];
+          const additionallyRightBottomQuarterTop = [
+            (rightMiddlePoint[0] + rightQuarterBottom[0]) / 2,
+            (rightMiddlePoint[1] + rightQuarterBottom[1]) / 2,
+          ];
+          const additionallyRightBottomQuarterBottom = [
+            (rightQuarterBottom[0] + bottomRightPoint[0]) / 2,
+            (rightQuarterBottom[1] + bottomRightPoint[1]) / 2,
+          ];
+
+          // Bottom points
+          const additionallyBottomRightQuarterRight = [
+            (bottomQuarterRight[0] + bottomRightPoint[0]) / 2,
+            (bottomQuarterRight[1] + bottomRightPoint[1]) / 2,
+          ];
+          const additionallyBottomRightQuarterLeft = [
+            (bottomQuarterRight[0] + bottomMiddlePoint[0]) / 2,
+            (bottomQuarterRight[1] + bottomMiddlePoint[1]) / 2,
+          ];
+          const additionallyBottomLeftQuarterRight = [
+            (bottomQuarterLeft[0] + bottomMiddlePoint[0]) / 2,
+            (bottomQuarterLeft[1] + bottomMiddlePoint[1]) / 2,
+          ];
+          const additionallyBottomLeftQuarterLeft = [
+            (bottomQuarterLeft[0] + bottomLeftPoint[0]) / 2,
+            (bottomQuarterLeft[1] + bottomLeftPoint[1]) / 2,
+          ];
+
+          // Left points
+          const additionallyLeftBottomQuarterBottom = [
+            (leftQuarterButton[0] + bottomLeftPoint[0]) / 2,
+            (leftQuarterButton[1] + bottomLeftPoint[1]) / 2,
+          ];
+          const additionallyLeftBottomQuarterTop = [
+            (leftQuarterButton[0] + leftMiddlePoint[0]) / 2,
+            (leftQuarterButton[1] + leftMiddlePoint[1]) / 2,
+          ];
+          const additionallyLeftTopQuarterBottom = [
+            (leftQuarterTop[0] + leftMiddlePoint[0]) / 2,
+            (leftQuarterTop[1] + leftMiddlePoint[1]) / 2,
+          ];
+          const additionallyLeftTopQuarterTop = [
+            (leftQuarterTop[0] + topLeftPoint[0]) / 2,
+            (leftQuarterTop[1] + topLeftPoint[1]) / 2,
+          ];
+
           const data = {
-            topLeftPoint: [topPoint[1], buttonPoint[0]],
-            topMiddlePoint: [topPoint[1], (buttonPoint[0] + topPoint[0]) / 2],
-            topRightPoint: [topPoint[1], topPoint[0]],
-            rightMiddlePoint: [(buttonPoint[1] + topPoint[1]) / 2, topPoint[0]],
-            buttonRightPoint: [buttonPoint[1], topPoint[0]],
-            buttonMiddlePoint: [buttonPoint[1], (buttonPoint[0] + topPoint[0]) / 2],
-            buttonLeftPoint: [buttonPoint[1], buttonPoint[0]],
-            leftMiddlePoint: [(buttonPoint[1] + topPoint[1]) / 2, buttonPoint[0]],
+            topLeftPoint,
+            topMiddlePoint,
+            topRightPoint,
+            rightMiddlePoint,
+            bottomRightPoint,
+            bottomMiddlePoint,
+            bottomLeftPoint,
+            leftMiddlePoint,
+            topQuarterLeft,
+            topQuarterRight,
+            leftQuarterTop,
+            leftQuarterButton,
+            bottomQuarterLeft,
+            bottomQuarterRight,
+            rightQuarterTop,
+            rightQuarterBottom,
+            additionallyTopLeftQuarterLeft,
+            additionallyTopLeftQuarterRight,
+            additionallyTopRightQuarterLeft,
+            additionallyTopRightQuarterRight,
+            additionallyRightTopQuarterTop,
+            additionallyRightTopQuarterBottom,
+            additionallyRightBottomQuarterTop,
+            additionallyRightBottomQuarterBottom,
+            additionallyBottomRightQuarterRight,
+            additionallyBottomRightQuarterLeft,
+            additionallyBottomLeftQuarterRight,
+            additionallyBottomLeftQuarterLeft,
+            additionallyLeftBottomQuarterBottom,
+            additionallyLeftBottomQuarterTop,
+            additionallyLeftTopQuarterBottom,
+            additionallyLeftTopQuarterTop,
             id: uuidv4(),
             removeAreaID: center[0],
           };
@@ -154,13 +298,9 @@ const WebsiteObjects = props => {
     </span>
   );
 
-  const rectangle = (width = '10px', margin = '0 0 0 0', height = '2px') => (
+  const rectangle = (width = '5px', margin = '0 0 0 0', height = '5px') => (
     <div className="MapWrap__area" style={{ width, height, margin, background: 'red' }} />
   );
-
-  useEffect(() => {
-    console.log('zoom: ', area.zoom);
-  }, [area.zoom]);
 
   return (
     <div className="WebsiteObjects">
@@ -203,68 +343,10 @@ const WebsiteObjects = props => {
               currAreaData.map(data =>
                 Object.values(data).map((item, index) => {
                   const removeBtn = removeButton(data.removeAreaID);
-                  // const zoom = area.zoom;
-                  if (index === 2) {
+                  if (index === 2 && area.zoom > 7) {
                     return drawArea(item, removeBtn, uuidv4());
                   }
                   return drawArea(item, rectangle(), uuidv4());
-                  // switch (index) {
-                  //   case 0: {
-                  //     switch (zoom) {
-                  //       case 18: {
-                  //         return drawArea(item, rectangle('72829px'), uuidv4());
-                  //       }
-                  //       case 17: {
-                  //         return drawArea(item, rectangle('36413px'), uuidv4());
-                  //       }
-                  //       case 16: {
-                  //         return drawArea(item, rectangle('18220px'), uuidv4());
-                  //       }
-                  //       case 15: {
-                  //         return drawArea(item, rectangle('9115px'), uuidv4());
-                  //       }
-                  //       case 14: {
-                  //         return drawArea(item, rectangle('4563px'), uuidv4());
-                  //       }
-                  //       case 13: {
-                  //         return drawArea(item, rectangle('2287px'), uuidv4());
-                  //       }
-                  //       case 12: {
-                  //         return drawArea(item, rectangle('1148px', '0 0 0 0'), uuidv4());
-                  //       }
-                  //       case 11: {
-                  //         return drawArea(item, rectangle('581px'), uuidv4());
-                  //       }
-                  //       case 10: {
-                  //         return drawArea(item, rectangle('295px'), uuidv4());
-                  //       }
-                  //       case 9: {
-                  //         return drawArea(item, rectangle('154px'), uuidv4());
-                  //       }
-                  //       case 8: {
-                  //         return drawArea(item, rectangle('82px'), uuidv4());
-                  //       }
-                  //       case 7: {
-                  //         return drawArea(item, rectangle('47px'), uuidv4());
-                  //       }
-                  //       case 6: {
-                  //         return drawArea(item, rectangle('10px'), uuidv4());
-                  //       }
-                  //       case 5: {
-                  //         return drawArea(item, rectangle('10px'), uuidv4());
-                  //       }
-                  //       default: {
-                  //         return drawArea(item, rectangle(), uuidv4());
-                  //       }
-                  //     }
-                  //   }
-                  //   case 2: {
-                  //     return drawArea(item, removeBtn, uuidv4());
-                  //   }
-                  //   default: {
-                  //     return drawArea(item, rectangle(), uuidv4());
-                  //   }
-                  // }
                 }),
               )}
           </Map>
