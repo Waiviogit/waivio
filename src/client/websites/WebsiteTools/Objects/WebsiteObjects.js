@@ -50,340 +50,336 @@ const WebsiteObjects = props => {
       .then(res => {
         const { value } = res;
         setMapData(value);
-        const arrData = [];
-
-        // eslint-disable-next-line array-callback-return
-        value.map(currValue => {
-          const topPoint = currValue.topPoint;
-          const bottomPoint = currValue.bottomPoint;
-          const center = currValue.center;
-
-          // Main points
-          const topLeftPoint = calculatePointCoords(
-            false,
-            false,
-            false,
-            topPoint[1],
-            bottomPoint[0],
-          );
-          const topMiddlePoint = calculatePointCoords(
-            true,
-            false,
-            true,
-            topPoint[1],
-            bottomPoint[0],
-            topPoint[0],
-          );
-          const topRightPoint = calculatePointCoords(false, false, false, topPoint[1], topPoint[0]);
-          const rightMiddlePoint = calculatePointCoords(
-            true,
-            true,
-            false,
-            bottomPoint[1],
-            topPoint[1],
-            topPoint[0],
-          );
-          const bottomRightPoint = calculatePointCoords(
-            false,
-            false,
-            false,
-            bottomPoint[1],
-            topPoint[0],
-          );
-          const bottomMiddlePoint = calculatePointCoords(
-            true,
-            false,
-            true,
-            bottomPoint[1],
-            bottomPoint[0],
-            topPoint[0],
-          );
-          const bottomLeftPoint = calculatePointCoords(
-            false,
-            false,
-            false,
-            bottomPoint[1],
-            bottomPoint[0],
-          );
-          const leftMiddlePoint = calculatePointCoords(
-            true,
-            true,
-            false,
-            bottomPoint[1],
-            topPoint[1],
-            bottomPoint[0],
-          );
-
-          // Additionally points between main points
-          const topQuarterLeft = calculatePointCoords(
-            true,
-            true,
-            true,
-            topLeftPoint[0],
-            topMiddlePoint[0],
-            topLeftPoint[1],
-            topMiddlePoint[1],
-          );
-          const topQuarterRight = calculatePointCoords(
-            true,
-            true,
-            true,
-            topRightPoint[0],
-            topMiddlePoint[0],
-            topRightPoint[1],
-            topMiddlePoint[1],
-          );
-          const leftQuarterTop = calculatePointCoords(
-            true,
-            true,
-            true,
-            topLeftPoint[0],
-            leftMiddlePoint[0],
-            topLeftPoint[1],
-            leftMiddlePoint[1],
-          );
-          const leftQuarterButton = calculatePointCoords(
-            true,
-            true,
-            true,
-            leftMiddlePoint[0],
-            bottomLeftPoint[0],
-            leftMiddlePoint[1],
-            bottomLeftPoint[1],
-          );
-          const bottomQuarterLeft = calculatePointCoords(
-            true,
-            true,
-            true,
-            bottomMiddlePoint[0],
-            bottomLeftPoint[0],
-            bottomMiddlePoint[1],
-            bottomLeftPoint[1],
-          );
-          const bottomQuarterRight = calculatePointCoords(
-            true,
-            true,
-            true,
-            bottomMiddlePoint[0],
-            bottomRightPoint[0],
-            bottomMiddlePoint[1],
-            bottomRightPoint[1],
-          );
-
-          const rightQuarterTop = calculatePointCoords(
-            true,
-            true,
-            true,
-            rightMiddlePoint[0],
-            topRightPoint[0],
-            rightMiddlePoint[1],
-            topRightPoint[1],
-          );
-          const rightQuarterBottom = calculatePointCoords(
-            true,
-            true,
-            true,
-            rightMiddlePoint[0],
-            bottomRightPoint[0],
-            rightMiddlePoint[1],
-            bottomRightPoint[1],
-          );
-
-          // Additionally points between additionally points
-          // Top points
-          const additionallyTopLeftQuarterLeft = calculatePointCoords(
-            true,
-            true,
-            true,
-            topLeftPoint[0],
-            topQuarterLeft[0],
-            topLeftPoint[1],
-            topQuarterLeft[1],
-          );
-          const additionallyTopLeftQuarterRight = calculatePointCoords(
-            true,
-            true,
-            true,
-            topQuarterLeft[0],
-            topMiddlePoint[0],
-            topQuarterLeft[1],
-            topMiddlePoint[1],
-          );
-          const additionallyTopRightQuarterLeft = calculatePointCoords(
-            true,
-            true,
-            true,
-            topQuarterRight[0],
-            topMiddlePoint[0],
-            topQuarterRight[1],
-            topMiddlePoint[1],
-          );
-          const additionallyTopRightQuarterRight = calculatePointCoords(
-            true,
-            true,
-            true,
-            topQuarterRight[0],
-            topRightPoint[0],
-            topQuarterRight[1],
-            topRightPoint[1],
-          );
-
-          // Right points
-          const additionallyRightTopQuarterTop = calculatePointCoords(
-            true,
-            true,
-            true,
-            topRightPoint[0],
-            rightQuarterTop[0],
-            topRightPoint[1],
-            rightQuarterTop[1],
-          );
-          const additionallyRightTopQuarterBottom = calculatePointCoords(
-            true,
-            true,
-            true,
-            rightMiddlePoint[0],
-            rightQuarterTop[0],
-            rightMiddlePoint[1],
-            rightQuarterTop[1],
-          );
-          const additionallyRightBottomQuarterTop = calculatePointCoords(
-            true,
-            true,
-            true,
-            rightMiddlePoint[0],
-            rightQuarterBottom[0],
-            rightMiddlePoint[1],
-            rightQuarterBottom[1],
-          );
-          const additionallyRightBottomQuarterBottom = calculatePointCoords(
-            true,
-            true,
-            true,
-            rightQuarterBottom[0],
-            bottomRightPoint[0],
-            rightQuarterBottom[1],
-            bottomRightPoint[1],
-          );
-
-          // Bottom points
-          const additionallyBottomRightQuarterRight = calculatePointCoords(
-            true,
-            true,
-            true,
-            bottomQuarterRight[0],
-            bottomRightPoint[0],
-            bottomQuarterRight[1],
-            bottomRightPoint[1],
-          );
-          const additionallyBottomRightQuarterLeft = calculatePointCoords(
-            true,
-            true,
-            true,
-            bottomQuarterRight[0],
-            bottomMiddlePoint[0],
-            bottomQuarterRight[1],
-            bottomMiddlePoint[1],
-          );
-          const additionallyBottomLeftQuarterRight = calculatePointCoords(
-            true,
-            true,
-            true,
-            bottomQuarterLeft[0],
-            bottomMiddlePoint[0],
-            bottomQuarterLeft[1],
-            bottomMiddlePoint[1],
-          );
-          const additionallyBottomLeftQuarterLeft = calculatePointCoords(
-            true,
-            true,
-            true,
-            bottomQuarterLeft[0],
-            bottomLeftPoint[0],
-            bottomQuarterLeft[1],
-            bottomLeftPoint[1],
-          );
-
-          // Left points
-          const additionallyLeftBottomQuarterBottom = calculatePointCoords(
-            true,
-            true,
-            true,
-            leftQuarterButton[0],
-            bottomLeftPoint[0],
-            leftQuarterButton[1],
-            bottomLeftPoint[1],
-          );
-          const additionallyLeftBottomQuarterTop = calculatePointCoords(
-            true,
-            true,
-            true,
-            leftQuarterButton[0],
-            leftMiddlePoint[0],
-            leftQuarterButton[1],
-            leftMiddlePoint[1],
-          );
-          const additionallyLeftTopQuarterBottom = calculatePointCoords(
-            true,
-            true,
-            true,
-            leftQuarterTop[0],
-            leftMiddlePoint[0],
-            leftQuarterTop[1],
-            leftMiddlePoint[1],
-          );
-          const additionallyLeftTopQuarterTop = calculatePointCoords(
-            true,
-            true,
-            true,
-            leftQuarterTop[0],
-            topLeftPoint[0],
-            leftQuarterTop[1],
-            topLeftPoint[1],
-          );
-
-          const data = {
-            topLeftPoint,
-            topMiddlePoint,
-            topRightPoint,
-            rightMiddlePoint,
-            bottomRightPoint,
-            bottomMiddlePoint,
-            bottomLeftPoint,
-            leftMiddlePoint,
-            topQuarterLeft,
-            topQuarterRight,
-            leftQuarterTop,
-            leftQuarterButton,
-            bottomQuarterLeft,
-            bottomQuarterRight,
-            rightQuarterTop,
-            rightQuarterBottom,
-            additionallyTopLeftQuarterLeft,
-            additionallyTopLeftQuarterRight,
-            additionallyTopRightQuarterLeft,
-            additionallyTopRightQuarterRight,
-            additionallyRightTopQuarterTop,
-            additionallyRightTopQuarterBottom,
-            additionallyRightBottomQuarterTop,
-            additionallyRightBottomQuarterBottom,
-            additionallyBottomRightQuarterRight,
-            additionallyBottomRightQuarterLeft,
-            additionallyBottomLeftQuarterRight,
-            additionallyBottomLeftQuarterLeft,
-            additionallyLeftBottomQuarterBottom,
-            additionallyLeftBottomQuarterTop,
-            additionallyLeftTopQuarterBottom,
-            additionallyLeftTopQuarterTop,
-            id: uuidv4(),
-            removeAreaID: center[0],
-          };
-          arrData.push(data);
-        });
-        setCurrAreaData(arrData);
       })
       .catch(err => console.error('Error: ', err));
   }, []);
+
+  useEffect(() => {
+    const arrData = [];
+    // eslint-disable-next-line array-callback-return
+    mapData.map(currValue => {
+      const topPoint = currValue.topPoint;
+      const bottomPoint = currValue.bottomPoint;
+      const center = currValue.center;
+
+      // Main points
+      const topLeftPoint = calculatePointCoords(false, false, false, topPoint[1], bottomPoint[0]);
+      const topMiddlePoint = calculatePointCoords(
+        true,
+        false,
+        true,
+        topPoint[1],
+        bottomPoint[0],
+        topPoint[0],
+      );
+      const topRightPoint = calculatePointCoords(false, false, false, topPoint[1], topPoint[0]);
+      const rightMiddlePoint = calculatePointCoords(
+        true,
+        true,
+        false,
+        bottomPoint[1],
+        topPoint[1],
+        topPoint[0],
+      );
+      const bottomRightPoint = calculatePointCoords(
+        false,
+        false,
+        false,
+        bottomPoint[1],
+        topPoint[0],
+      );
+      const bottomMiddlePoint = calculatePointCoords(
+        true,
+        false,
+        true,
+        bottomPoint[1],
+        bottomPoint[0],
+        topPoint[0],
+      );
+      const bottomLeftPoint = calculatePointCoords(
+        false,
+        false,
+        false,
+        bottomPoint[1],
+        bottomPoint[0],
+      );
+      const leftMiddlePoint = calculatePointCoords(
+        true,
+        true,
+        false,
+        bottomPoint[1],
+        topPoint[1],
+        bottomPoint[0],
+      );
+
+      // Additionally points between main points
+      const topQuarterLeft = calculatePointCoords(
+        true,
+        true,
+        true,
+        topLeftPoint[0],
+        topMiddlePoint[0],
+        topLeftPoint[1],
+        topMiddlePoint[1],
+      );
+      const topQuarterRight = calculatePointCoords(
+        true,
+        true,
+        true,
+        topRightPoint[0],
+        topMiddlePoint[0],
+        topRightPoint[1],
+        topMiddlePoint[1],
+      );
+      const leftQuarterTop = calculatePointCoords(
+        true,
+        true,
+        true,
+        topLeftPoint[0],
+        leftMiddlePoint[0],
+        topLeftPoint[1],
+        leftMiddlePoint[1],
+      );
+      const leftQuarterButton = calculatePointCoords(
+        true,
+        true,
+        true,
+        leftMiddlePoint[0],
+        bottomLeftPoint[0],
+        leftMiddlePoint[1],
+        bottomLeftPoint[1],
+      );
+      const bottomQuarterLeft = calculatePointCoords(
+        true,
+        true,
+        true,
+        bottomMiddlePoint[0],
+        bottomLeftPoint[0],
+        bottomMiddlePoint[1],
+        bottomLeftPoint[1],
+      );
+      const bottomQuarterRight = calculatePointCoords(
+        true,
+        true,
+        true,
+        bottomMiddlePoint[0],
+        bottomRightPoint[0],
+        bottomMiddlePoint[1],
+        bottomRightPoint[1],
+      );
+
+      const rightQuarterTop = calculatePointCoords(
+        true,
+        true,
+        true,
+        rightMiddlePoint[0],
+        topRightPoint[0],
+        rightMiddlePoint[1],
+        topRightPoint[1],
+      );
+      const rightQuarterBottom = calculatePointCoords(
+        true,
+        true,
+        true,
+        rightMiddlePoint[0],
+        bottomRightPoint[0],
+        rightMiddlePoint[1],
+        bottomRightPoint[1],
+      );
+
+      // Additionally points between additionally points
+      // Top points
+      const additionallyTopLeftQuarterLeft = calculatePointCoords(
+        true,
+        true,
+        true,
+        topLeftPoint[0],
+        topQuarterLeft[0],
+        topLeftPoint[1],
+        topQuarterLeft[1],
+      );
+      const additionallyTopLeftQuarterRight = calculatePointCoords(
+        true,
+        true,
+        true,
+        topQuarterLeft[0],
+        topMiddlePoint[0],
+        topQuarterLeft[1],
+        topMiddlePoint[1],
+      );
+      const additionallyTopRightQuarterLeft = calculatePointCoords(
+        true,
+        true,
+        true,
+        topQuarterRight[0],
+        topMiddlePoint[0],
+        topQuarterRight[1],
+        topMiddlePoint[1],
+      );
+      const additionallyTopRightQuarterRight = calculatePointCoords(
+        true,
+        true,
+        true,
+        topQuarterRight[0],
+        topRightPoint[0],
+        topQuarterRight[1],
+        topRightPoint[1],
+      );
+
+      // Right points
+      const additionallyRightTopQuarterTop = calculatePointCoords(
+        true,
+        true,
+        true,
+        topRightPoint[0],
+        rightQuarterTop[0],
+        topRightPoint[1],
+        rightQuarterTop[1],
+      );
+      const additionallyRightTopQuarterBottom = calculatePointCoords(
+        true,
+        true,
+        true,
+        rightMiddlePoint[0],
+        rightQuarterTop[0],
+        rightMiddlePoint[1],
+        rightQuarterTop[1],
+      );
+      const additionallyRightBottomQuarterTop = calculatePointCoords(
+        true,
+        true,
+        true,
+        rightMiddlePoint[0],
+        rightQuarterBottom[0],
+        rightMiddlePoint[1],
+        rightQuarterBottom[1],
+      );
+      const additionallyRightBottomQuarterBottom = calculatePointCoords(
+        true,
+        true,
+        true,
+        rightQuarterBottom[0],
+        bottomRightPoint[0],
+        rightQuarterBottom[1],
+        bottomRightPoint[1],
+      );
+
+      // Bottom points
+      const additionallyBottomRightQuarterRight = calculatePointCoords(
+        true,
+        true,
+        true,
+        bottomQuarterRight[0],
+        bottomRightPoint[0],
+        bottomQuarterRight[1],
+        bottomRightPoint[1],
+      );
+      const additionallyBottomRightQuarterLeft = calculatePointCoords(
+        true,
+        true,
+        true,
+        bottomQuarterRight[0],
+        bottomMiddlePoint[0],
+        bottomQuarterRight[1],
+        bottomMiddlePoint[1],
+      );
+      const additionallyBottomLeftQuarterRight = calculatePointCoords(
+        true,
+        true,
+        true,
+        bottomQuarterLeft[0],
+        bottomMiddlePoint[0],
+        bottomQuarterLeft[1],
+        bottomMiddlePoint[1],
+      );
+      const additionallyBottomLeftQuarterLeft = calculatePointCoords(
+        true,
+        true,
+        true,
+        bottomQuarterLeft[0],
+        bottomLeftPoint[0],
+        bottomQuarterLeft[1],
+        bottomLeftPoint[1],
+      );
+
+      // Left points
+      const additionallyLeftBottomQuarterBottom = calculatePointCoords(
+        true,
+        true,
+        true,
+        leftQuarterButton[0],
+        bottomLeftPoint[0],
+        leftQuarterButton[1],
+        bottomLeftPoint[1],
+      );
+      const additionallyLeftBottomQuarterTop = calculatePointCoords(
+        true,
+        true,
+        true,
+        leftQuarterButton[0],
+        leftMiddlePoint[0],
+        leftQuarterButton[1],
+        leftMiddlePoint[1],
+      );
+      const additionallyLeftTopQuarterBottom = calculatePointCoords(
+        true,
+        true,
+        true,
+        leftQuarterTop[0],
+        leftMiddlePoint[0],
+        leftQuarterTop[1],
+        leftMiddlePoint[1],
+      );
+      const additionallyLeftTopQuarterTop = calculatePointCoords(
+        true,
+        true,
+        true,
+        leftQuarterTop[0],
+        topLeftPoint[0],
+        leftQuarterTop[1],
+        topLeftPoint[1],
+      );
+
+      const data = {
+        topLeftPoint,
+        topMiddlePoint,
+        topRightPoint,
+        rightMiddlePoint,
+        bottomRightPoint,
+        bottomMiddlePoint,
+        bottomLeftPoint,
+        leftMiddlePoint,
+        topQuarterLeft,
+        topQuarterRight,
+        leftQuarterTop,
+        leftQuarterButton,
+        bottomQuarterLeft,
+        bottomQuarterRight,
+        rightQuarterTop,
+        rightQuarterBottom,
+        additionallyTopLeftQuarterLeft,
+        additionallyTopLeftQuarterRight,
+        additionallyTopRightQuarterLeft,
+        additionallyTopRightQuarterRight,
+        additionallyRightTopQuarterTop,
+        additionallyRightTopQuarterBottom,
+        additionallyRightBottomQuarterTop,
+        additionallyRightBottomQuarterBottom,
+        additionallyBottomRightQuarterRight,
+        additionallyBottomRightQuarterLeft,
+        additionallyBottomLeftQuarterRight,
+        additionallyBottomLeftQuarterLeft,
+        additionallyLeftBottomQuarterBottom,
+        additionallyLeftBottomQuarterTop,
+        additionallyLeftTopQuarterBottom,
+        additionallyLeftTopQuarterTop,
+        id: uuidv4(),
+        removeAreaID: center[0],
+      };
+      arrData.push(data);
+    });
+    setCurrAreaData(arrData);
+  }, [mapData]);
 
   const startOwnLocation = [+props.userLocation.lat, +props.userLocation.lon];
 
@@ -441,8 +437,6 @@ const WebsiteObjects = props => {
         bottomPoint: area.bounds.bottomPoint,
         center: area.center,
         zoom: area.zoom,
-        width: 'empty', // Todo: Удалить это поле когда перед залитием на стейджн. Боре нужно у себя тоже это поле не принимать
-        height: 'empty', // Todo: Удалить это поле когда перед залитием на стейджн. Боре нужно у себя тоже это поле не принимать
       },
     ];
     saveCurrentAreas(data);
