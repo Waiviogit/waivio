@@ -53,7 +53,7 @@ const WebsiteBody = props => {
 
   useEffect(() => {
     if (isEmpty(props.userLocation)) props.getCoordinates();
-    if (!isEmpty(boundsParams.topPoint) && !isEmpty(boundsParams.bottomPoint)) {
+    if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0]) {
       const accessToken = props.isGuest
         ? localStorage.getItem('accessToken')
         : Cookie.get('access_token');
@@ -67,7 +67,7 @@ const WebsiteBody = props => {
   const currLink = aboutObject ? `/object/${aboutObject}` : '/';
 
   const handleOnBoundsChanged = debounce(data => {
-    if (!isEmpty(data)) {
+    if (!isEmpty(data) && data.ne[0] && data.sw[0]) {
       setBoundsParams({
         ...boundsParams,
         topPoint: [data.ne[1], data.ne[0]],
@@ -169,14 +169,16 @@ const WebsiteBody = props => {
     <div className="WebsiteBody">
       {props.searchType !== 'All' && <SearchAllResult />}
       <div className={mapClassList}>
-        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-        <img
-          className="WebsiteBody__logo"
-          srcSet={currentLogo}
-          alt="your logo"
-          styleName="brain-image"
-          onClick={() => props.history.push(currLink)}
-        />
+        {currentLogo && (
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+          <img
+            className="WebsiteBody__logo"
+            srcSet={currentLogo}
+            alt="your logo"
+            styleName="brain-image"
+            onClick={() => props.history.push(currLink)}
+          />
+        )}
         {!isEmpty(props.userLocation) && (
           <React.Fragment>
             {zoomButtonsLayout()}

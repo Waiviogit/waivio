@@ -11,6 +11,7 @@ import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
 import { getSocialInfoPost, handleHidePost, muteAuthorPost } from '../../post/postActions';
 import withAuthActions from '../../auth/withAuthActions';
+import MuteModal from '../../widgets/MuteModal';
 
 import './StoryFooter.less';
 
@@ -80,6 +81,7 @@ class StoryFooter extends React.Component {
       commentsVisible: !props.post.children,
       sliderValue: 100,
       voteWorth: 0,
+      visible: false,
     };
   }
 
@@ -142,6 +144,9 @@ class StoryFooter extends React.Component {
 
   handleSliderCancel = () => this.setState({ sliderVisible: false, sliderType: 'Confirm' });
 
+  handleMutePostAuthor = post =>
+    post.muted ? this.props.muteAuthorPost(post) : this.setState({ visible: true });
+
   handlePostPopoverMenuClick = key => {
     const { post, postState, handleEditClick, handleFollowClick, toggleBookmark } = this.props;
 
@@ -162,7 +167,7 @@ class StoryFooter extends React.Component {
         this.props.handleHidePost(post);
         break;
       case 'mute':
-        this.props.muteAuthorPost(post);
+        this.handleMutePostAuthor(post);
         break;
       default:
     }
@@ -250,6 +255,13 @@ class StoryFooter extends React.Component {
         {!singlePostVew && (
           <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
         )}
+        <MuteModal
+          item={post}
+          type={'post'}
+          visible={this.state.visible}
+          setVisibleMuteModal={state => this.setState({ visible: state })}
+          username={post.author}
+        />
       </div>
     );
   }

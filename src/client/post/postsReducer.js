@@ -344,7 +344,7 @@ const posts = (state = initialState, action) => {
           ...state.list,
           [key]: {
             ...state.list[key],
-            isMute: !action.meta.post.isMute,
+            muted: !action.meta.post.muted,
             loadingMute: false,
           },
         },

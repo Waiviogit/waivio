@@ -223,7 +223,7 @@ export default (state = initialState, action) => {
           ...state.comments,
           [key]: {
             ...state.comments[key],
-            isMute: !action.meta.comment.isMute,
+            muted: !action.meta.comment.muted,
             loadingMute: false,
           },
         },
