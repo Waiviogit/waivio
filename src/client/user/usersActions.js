@@ -163,6 +163,9 @@ export const muteUserBlog = user => (dispatch, getState, { steemConnectAPI }) =>
     payload: {
       promise: steemConnectAPI.muteUser(userName, user.name, action),
     },
-    meta: user.name,
+    meta: {
+      muted: user.name,
+      userName,
+    },
   });
 };

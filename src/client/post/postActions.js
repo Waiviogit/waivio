@@ -203,6 +203,7 @@ export const muteAuthorPost = post => (dispatch, getState, { steemConnectAPI }) 
     },
     meta: {
       post,
+      userName,
     },
   });
 };

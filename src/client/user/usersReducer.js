@@ -380,8 +380,8 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         users: {
-          [action.meta]: {
-            ...state.users[action.meta],
+          [action.meta.muted]: {
+            ...state.users[action.meta.muted],
             muteLoading: true,
           },
         },
@@ -389,12 +389,19 @@ export default function usersReducer(state = initialState, action) {
     }
 
     case actions.MUTE_CURRENT_USER.SUCCESS: {
+      const user = state.users[action.meta.muted];
+      const muted = !user.muted;
+      const mutedBy = muted
+        ? [...user.mutedBy, action.meta.userName]
+        : user.mutedBy.filter(usr => usr !== action.meta.userName);
+
       return {
         ...state,
         users: {
-          [action.meta]: {
-            ...state.users[action.meta],
-            muted: !state.users[action.meta].muted,
+          [action.meta.muted]: {
+            ...user,
+            muted,
+            mutedBy,
             muteLoading: false,
           },
         },
@@ -405,8 +412,8 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         users: {
-          [action.meta]: {
-            ...state.users[action.meta],
+          [action.meta.muted]: {
+            ...state.users[action.meta.muted],
             muteLoading: false,
           },
         },
