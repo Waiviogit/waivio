@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { get } from 'lodash';
+import { get, isEmpty, includes } from 'lodash';
 import urlParse from 'url-parse';
-import { Icon } from 'antd';
-import { ReactSVG } from 'react-svg';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { getUserRankKey, getUserRank, getVoteValue } from '../helpers/user';
@@ -15,11 +13,11 @@ import FollowButton from '../widgets/FollowButton';
 import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
-import { unfollowUser, followUser, muteUser } from '../user/usersActions';
-import { getIsMobile } from '../reducers';
+import { unfollowUser, followUser, muteUserBlog } from '../user/usersActions';
+import { getAuthenticatedUserName, getIsMobile } from '../reducers';
 import BellButton from '../widgets/BellButton';
-import Popover from './Popover';
-import PopoverMenu, { PopoverMenuItem } from './PopoverMenu/PopoverMenu';
+import MuteModal from '../widgets/MuteModal';
+import UserPopoverMenu from './UserPopoverMenu';
 
 import './UserHeader.less';
 
@@ -39,16 +37,21 @@ const UserHeader = ({
   follow,
   isGuest,
   isMobile,
-  handleMuteUser,
+  authUserName,
+  handleMuteUserBlog,
 }) => {
+  const [visible, setVisible] = useState(false);
   const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
+  const mutedByModerator = !isEmpty(user.mutedBy) && !includes(user.mutedBy, authUserName);
+  const mutedLabelText = mutedByModerator ? 'Blocked' : 'Muted';
+
   let metadata = {};
   let location = null;
   let website = null;
   let about = null;
   let lastActive;
 
-  const handlePopoverClick = () => handleMuteUser(user);
+  const handleMuteCurrUser = () => setVisible(true);
 
   if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
     lastActive = intl.formatRelative(Date.parse(user.updatedAt));
@@ -120,38 +123,16 @@ const UserHeader = ({
                       followingType="user"
                     />
                     {user.youFollows && <BellButton user={user} />}
-                    <Popover
-                      placement="bottomRight"
-                      trigger="click"
-                      content={
-                        <React.Fragment>
-                          <PopoverMenu onSelect={handlePopoverClick} bold={false}>
-                            {[
-                              <PopoverMenuItem key="mute">
-                                {user.muteLoading ? (
-                                  <Icon type="loading" />
-                                ) : (
-                                  <ReactSVG
-                                    className={`hide-button ${
-                                      user.muted ? 'hide-button--fill' : ''
-                                    }`}
-                                    wrapper="span"
-                                    src="/images/icons/mute-user.svg"
-                                  />
-                                )}
-                                <FormattedMessage
-                                  id={user.muted ? 'unmute' : 'mute'}
-                                  defaultMessage={user.muted ? 'Unmute' : 'Mute'}
-                                />{' '}
-                                {username}
-                              </PopoverMenuItem>,
-                            ]}
-                          </PopoverMenu>
-                        </React.Fragment>
-                      }
-                    >
-                      <Icon type="ellipsis" className="UserHeader__ellipsis" />
-                    </Popover>
+                    {includes(user.mutedBy, authUserName) && (
+                      <span className="UserHeader__muteCard">{mutedLabelText}</span>
+                    )}
+                    {!mutedByModerator && (
+                      <UserPopoverMenu
+                        user={user}
+                        handleMuteCurrUser={handleMuteCurrUser}
+                        handleUnMuteUserBlog={handleMuteUserBlog}
+                      />
+                    )}
                   </div>
                 )}
               </div>
@@ -218,6 +199,12 @@ const UserHeader = ({
           </div>
         </div>
       </div>
+      <MuteModal
+        item={user}
+        username={username}
+        visible={visible}
+        setVisibleMuteModal={setVisible}
+      />
     </div>
   );
 };
@@ -229,6 +216,7 @@ UserHeader.propTypes = {
   vestingShares: PropTypes.number,
   isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
+  authUserName: PropTypes.string,
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   isActive: PropTypes.bool.isRequired,
@@ -238,15 +226,16 @@ UserHeader.propTypes = {
   }).isRequired,
   intl: PropTypes.shape().isRequired,
   unfollow: PropTypes.func.isRequired,
-  handleMuteUser: PropTypes.func.isRequired,
   follow: PropTypes.func.isRequired,
   isGuest: PropTypes.bool,
+  handleMuteUserBlog: PropTypes.func,
   isMobile: PropTypes.bool.isRequired,
 };
 
 UserHeader.defaultProps = {
   user: {},
   username: '',
+  authUserName: '',
   handle: '',
   vestingShares: 0,
   isSameUser: false,
@@ -254,6 +243,7 @@ UserHeader.defaultProps = {
   hasCover: false,
   isFollowing: false,
   onTransferClick: () => {},
+  handleMuteUserBlog: () => {},
   isGuest: false,
 };
 
@@ -261,11 +251,12 @@ export default injectIntl(
   connect(
     state => ({
       isMobile: getIsMobile(state),
+      authUserName: getAuthenticatedUserName(state),
     }),
     {
       unfollow: unfollowUser,
       follow: followUser,
-      handleMuteUser: muteUser,
+      handleMuteUserBlog: muteUserBlog,
     },
   )(UserHeader),
 );

@@ -53,7 +53,7 @@ const WebsiteBody = props => {
 
   useEffect(() => {
     if (isEmpty(props.userLocation)) props.getCoordinates();
-    if (!isEmpty(boundsParams.topPoint) && !isEmpty(boundsParams.bottomPoint)) {
+    if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0]) {
       const accessToken = props.isGuest
         ? localStorage.getItem('accessToken')
         : Cookie.get('access_token');
