@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import Feed from '../feed/Feed';
 import PostModal from '../post/PostModalContainer';
-import { getAuthenticatedUserName, getFeed, isGuestUser } from '../reducers';
+import { getAuthenticatedUserName, getFeed, getUser, isGuestUser } from '../reducers';
 import {
   getFeedFromState,
   getFeedLoadingFromState,
@@ -11,12 +12,14 @@ import {
 } from '../helpers/stateHelpers';
 import { showPostModal } from '../app/appActions';
 import { getUserComments, getMoreUserComments } from '../feed/feedActions';
+import EmptyMutedUserProfile from '../statics/MutedContent';
 
 @connect(
-  state => ({
+  (state, ownProps) => ({
     feed: getFeed(state),
     isGuest: isGuestUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
+    user: getUser(state, ownProps.match.params.name),
   }),
   {
     getUserComments,
@@ -28,10 +31,12 @@ export default class UserProfilePosts extends React.Component {
   static propTypes = {
     feed: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
+    user: PropTypes.shape(),
     showPostModal: PropTypes.func.isRequired,
     limit: PropTypes.number,
     getUserComments: PropTypes.func,
     getMoreUserComments: PropTypes.func,
+    authenticatedUserName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -40,6 +45,7 @@ export default class UserProfilePosts extends React.Component {
     getMoreUserComments: () => {},
     isGuest: false,
     authenticatedUserName: '',
+    user: {},
   };
 
   static skip = 0;
@@ -52,7 +58,7 @@ export default class UserProfilePosts extends React.Component {
   }
 
   render() {
-    const { feed, match, limit } = this.props;
+    const { feed, match, limit, authenticatedUserName, user } = this.props;
     const username = match.params.name;
     const content = getFeedFromState('comments', username, feed);
     const isFetching = getFeedLoadingFromState('comments', username, feed);
@@ -61,6 +67,9 @@ export default class UserProfilePosts extends React.Component {
       this.props.getMoreUserComments({ username, skip: UserProfilePosts.skip, limit });
       UserProfilePosts.skip += this.props.limit;
     };
+
+    if (!isEmpty(user.mutedBy))
+      return <EmptyMutedUserProfile user={user} authName={authenticatedUserName} />;
 
     return (
       <React.Fragment>

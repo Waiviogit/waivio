@@ -35,6 +35,9 @@ import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../user/userActions';
 import { UNASSIGNED } from '../../../common/constants/rewards';
 import { getImagePathPost } from '../../helpers/image';
+import MuteModal from '../../widgets/MuteModal';
+import { muteAuthorPost } from '../../post/postActions';
+
 import './StoryFull.less';
 
 @injectIntl
@@ -42,6 +45,7 @@ import './StoryFull.less';
 @withAuthActions
 @connect(null, {
   assignProposition,
+  muteAuthorPost,
 })
 class StoryFull extends React.Component {
   static propTypes = {
@@ -92,6 +96,7 @@ class StoryFull extends React.Component {
     onEditClick: () => {},
     assignProposition: () => {},
     declineProposition: () => {},
+    setVisibleMuteModal: () => {},
     postState: {},
     isOriginalPost: '',
     defaultVotePercent: 0,
@@ -108,6 +113,7 @@ class StoryFull extends React.Component {
         index: 0,
       },
       loadingAssign: false,
+      visible: false,
     };
 
     this.images = [];
@@ -128,6 +134,9 @@ class StoryFull extends React.Component {
     }
   }
 
+  handleMutePostAuthor = post =>
+    post.muted ? this.props.muteAuthorPost(post) : this.setState({ visible: true });
+
   clickMenuItem(key) {
     const { post, postState } = this.props;
 
@@ -145,7 +154,7 @@ class StoryFull extends React.Component {
         this.props.onEditClick(post);
         break;
       case 'mute':
-        this.props.muteAuthorPost(post);
+        this.handleMutePostAuthor(post);
         break;
       default:
     }
@@ -548,9 +557,15 @@ class StoryFull extends React.Component {
           sliderMode={sliderMode}
           defaultVotePercent={defaultVotePercent}
           onLikeClick={onLikeClick}
-          handlePostPopoverMenuClick={this.handleClick}
           onShareClick={onShareClick}
           onEditClick={onEditClick}
+        />
+        <MuteModal
+          item={post}
+          type={'post'}
+          visible={this.state.visible}
+          setVisibleMuteModal={state => this.setState({ visible: state })}
+          username={post.author}
         />
       </div>
     );
