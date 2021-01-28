@@ -51,13 +51,13 @@ const WebsiteObjects = props => {
           const center = currValue.center;
 
           const data = {
-            topLeftPoint: [buttonPoint[1], buttonPoint[0]],
-            topRightPoint: [topPoint[1], topPoint[0]],
-            buttonLeftPoint: [topPoint[1], buttonPoint[0]],
-            buttonRightPoint: [buttonPoint[1], topPoint[0]],
+            topLeftPoint: [topPoint[1], buttonPoint[0]],
             topMiddlePoint: [topPoint[1], (buttonPoint[0] + topPoint[0]) / 2],
-            buttonMiddlePoint: [buttonPoint[1], (buttonPoint[0] + topPoint[0]) / 2],
+            topRightPoint: [topPoint[1], topPoint[0]],
             rightMiddlePoint: [(buttonPoint[1] + topPoint[1]) / 2, topPoint[0]],
+            buttonRightPoint: [buttonPoint[1], topPoint[0]],
+            buttonMiddlePoint: [buttonPoint[1], (buttonPoint[0] + topPoint[0]) / 2],
+            buttonLeftPoint: [buttonPoint[1], buttonPoint[0]],
             leftMiddlePoint: [(buttonPoint[1] + topPoint[1]) / 2, buttonPoint[0]],
             id: uuidv4(),
             removeAreaID: center[0],
@@ -143,6 +143,25 @@ const WebsiteObjects = props => {
       </Overlay>
     );
 
+  const removeButton = id => (
+    <span
+      id={id}
+      role="presentation"
+      className="MapWrap__cancel"
+      onClick={event => removeArea(event.target.id)}
+    >
+      &#9746;
+    </span>
+  );
+
+  const rectangle = (width = '10px', margin = '0 0 0 0', height = '2px') => (
+    <div className="MapWrap__area" style={{ width, height, margin, background: 'red' }} />
+  );
+
+  useEffect(() => {
+    console.log('zoom: ', area.zoom);
+  }, [area.zoom]);
+
   return (
     <div className="WebsiteObjects">
       <h1 className="WebsiteObjects__heading">
@@ -183,27 +202,69 @@ const WebsiteObjects = props => {
             {!isEmpty(currAreaData) &&
               currAreaData.map(data =>
                 Object.values(data).map((item, index) => {
-                  console.log('index: ', index);
-                  const rect = (
-                    <div
-                      className="MapWrap__area"
-                      style={{ width: '10px', height: '10px', background: 'red' }}
-                    />
-                  );
-                  const removeBtn = (
-                    <span
-                      id={data.removeAreaID}
-                      role="presentation"
-                      className="MapWrap__cancel"
-                      onClick={event => removeArea(event.target.id)}
-                    >
-                      &#9746;
-                    </span>
-                  );
-                  if (index === 1) {
+                  const removeBtn = removeButton(data.removeAreaID);
+                  // const zoom = area.zoom;
+                  if (index === 2) {
                     return drawArea(item, removeBtn, uuidv4());
                   }
-                  return drawArea(item, rect, uuidv4());
+                  return drawArea(item, rectangle(), uuidv4());
+                  // switch (index) {
+                  //   case 0: {
+                  //     switch (zoom) {
+                  //       case 18: {
+                  //         return drawArea(item, rectangle('72829px'), uuidv4());
+                  //       }
+                  //       case 17: {
+                  //         return drawArea(item, rectangle('36413px'), uuidv4());
+                  //       }
+                  //       case 16: {
+                  //         return drawArea(item, rectangle('18220px'), uuidv4());
+                  //       }
+                  //       case 15: {
+                  //         return drawArea(item, rectangle('9115px'), uuidv4());
+                  //       }
+                  //       case 14: {
+                  //         return drawArea(item, rectangle('4563px'), uuidv4());
+                  //       }
+                  //       case 13: {
+                  //         return drawArea(item, rectangle('2287px'), uuidv4());
+                  //       }
+                  //       case 12: {
+                  //         return drawArea(item, rectangle('1148px', '0 0 0 0'), uuidv4());
+                  //       }
+                  //       case 11: {
+                  //         return drawArea(item, rectangle('581px'), uuidv4());
+                  //       }
+                  //       case 10: {
+                  //         return drawArea(item, rectangle('295px'), uuidv4());
+                  //       }
+                  //       case 9: {
+                  //         return drawArea(item, rectangle('154px'), uuidv4());
+                  //       }
+                  //       case 8: {
+                  //         return drawArea(item, rectangle('82px'), uuidv4());
+                  //       }
+                  //       case 7: {
+                  //         return drawArea(item, rectangle('47px'), uuidv4());
+                  //       }
+                  //       case 6: {
+                  //         return drawArea(item, rectangle('10px'), uuidv4());
+                  //       }
+                  //       case 5: {
+                  //         return drawArea(item, rectangle('10px'), uuidv4());
+                  //       }
+                  //       default: {
+                  //         return drawArea(item, rectangle(), uuidv4());
+                  //       }
+                  //     }
+                  //   }
+                  //   case 2: {
+                  //     return drawArea(item, removeBtn, uuidv4());
+                  //   }
+                  //   default: {
+                  //     return drawArea(item, rectangle(), uuidv4());
+                  //   }
+                  // }
                 }),
               )}
           </Map>
