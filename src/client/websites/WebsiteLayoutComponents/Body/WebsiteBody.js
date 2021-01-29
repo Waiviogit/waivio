@@ -171,6 +171,10 @@ const WebsiteBody = props => {
     </div>
   );
 
+  const currentCenter = isEmpty(area.center)
+    ? [+props.userLocation.lat, +props.userLocation.lon]
+    : area.center;
+
   return (
     <div className="WebsiteBody">
       {props.searchType !== 'All' && <SearchAllResult />}
@@ -185,11 +189,11 @@ const WebsiteBody = props => {
             onClick={() => props.history.push(currLink)}
           />
         )}
-        {!isEmpty(props.userLocation) && !isEmpty(area.center) && (
+        {!isEmpty(currentCenter) && (
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
-              center={area.center}
+              center={currentCenter}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
