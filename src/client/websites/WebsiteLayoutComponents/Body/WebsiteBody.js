@@ -48,11 +48,17 @@ const WebsiteBody = props => {
     : props.configCoordinates.center;
 
   useEffect(() => {
-    setArea({ center: currMapCoordinates, zoom: props.configCoordinates.zoom, bounds: [] });
+    if (isEmpty(props.userLocation))
+      props.getCoordinates().then(({ value }) => {
+        setArea({
+          center: [+value.lat, +value.lon],
+          zoom: props.configCoordinates.zoom,
+          bounds: [],
+        });
+      });
   }, []);
 
   useEffect(() => {
-    if (isEmpty(props.userLocation)) props.getCoordinates();
     if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0]) {
       const accessToken = props.isGuest
         ? localStorage.getItem('accessToken')
@@ -77,7 +83,7 @@ const WebsiteBody = props => {
   }, 800);
 
   const onBoundsChanged = debounce(({ center, zoom, bounds }) => {
-    setArea({ center, zoom, bounds });
+    if (!isEmpty(center)) setArea({ center, zoom, bounds });
     if (!isEqual(bounds, area.bounds)) {
       handleOnBoundsChanged(bounds);
     }
@@ -179,7 +185,7 @@ const WebsiteBody = props => {
             onClick={() => props.history.push(currLink)}
           />
         )}
-        {!isEmpty(props.userLocation) && (
+        {!isEmpty(props.userLocation) && !isEmpty(area.center) && (
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map

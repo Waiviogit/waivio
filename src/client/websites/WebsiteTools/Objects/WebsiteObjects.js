@@ -5,13 +5,14 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import uuidv4 from 'uuid/v4';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual, map } from 'lodash';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../helpers/mapProvider';
 import { getAuthenticatedUserName, getIsUsersAreas, getUserLocation } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
+
 import './WebsiteObjects.less';
 
 const WebsiteObjects = props => {
@@ -57,11 +58,11 @@ const WebsiteObjects = props => {
   useEffect(() => {
     const arrData = [];
     // eslint-disable-next-line array-callback-return
-    mapData.map(currValue => {
+    map(mapData, currValue => {
       const topPoint = currValue.topPoint;
       const bottomPoint = currValue.bottomPoint;
       const center = currValue.center;
-
+      const zoom = currValue.zoom;
       // Main points
       const topLeftPoint = calculatePointCoords(false, false, false, topPoint[1], bottomPoint[0]);
       const topMiddlePoint = calculatePointCoords(
@@ -376,7 +377,7 @@ const WebsiteObjects = props => {
         id: uuidv4(),
         removeAreaID: center[0],
       };
-      arrData.push(data);
+      arrData.push({ ...data, zoom });
     });
     setCurrAreaData(arrData);
   }, [mapData]);
@@ -505,7 +506,9 @@ const WebsiteObjects = props => {
               currAreaData.map(data =>
                 Object.values(data).map((item, index) => {
                   const removeBtn = removeButton(data.removeAreaID);
-                  if (index === 2 && area.zoom > 7) {
+                  const differenceZoom = Math.abs(data.zoom - area.zoom);
+
+                  if (index === 2 && differenceZoom < 2) {
                     return getArea(item, removeBtn, uuidv4());
                   }
                   return getArea(item, rectangle(), uuidv4());
