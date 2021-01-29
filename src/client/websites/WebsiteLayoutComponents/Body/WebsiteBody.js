@@ -48,10 +48,14 @@ const WebsiteBody = props => {
     : props.configCoordinates.center;
 
   useEffect(() => {
-    if (isEmpty(props.userLocation)) props.getCoordinates().then(({ value }) => {
-      setArea({ center: [+value.lat, +value.lon,], zoom: props.configCoordinates.zoom, bounds: [] });
-    })
-
+    if (isEmpty(props.userLocation))
+      props.getCoordinates().then(({ value }) => {
+        setArea({
+          center: [+value.lat, +value.lon],
+          zoom: props.configCoordinates.zoom,
+          bounds: [],
+        });
+      });
   }, []);
 
   useEffect(() => {
@@ -79,7 +83,7 @@ const WebsiteBody = props => {
   }, 800);
 
   const onBoundsChanged = debounce(({ center, zoom, bounds }) => {
-    if(!isEmpty(center)) setArea({ center, zoom, bounds });
+    if (!isEmpty(center)) setArea({ center, zoom, bounds });
     if (!isEqual(bounds, area.bounds)) {
       handleOnBoundsChanged(bounds);
     }

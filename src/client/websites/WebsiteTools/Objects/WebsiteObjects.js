@@ -62,7 +62,7 @@ const WebsiteObjects = props => {
       const topPoint = currValue.topPoint;
       const bottomPoint = currValue.bottomPoint;
       const center = currValue.center;
-
+      const zoom = currValue.zoom;
       // Main points
       const topLeftPoint = calculatePointCoords(false, false, false, topPoint[1], bottomPoint[0]);
       const topMiddlePoint = calculatePointCoords(
@@ -377,7 +377,7 @@ const WebsiteObjects = props => {
         id: uuidv4(),
         removeAreaID: center[0],
       };
-      arrData.push(data);
+      arrData.push({ ...data, zoom });
     });
     setCurrAreaData(arrData);
   }, [mapData]);
@@ -506,7 +506,9 @@ const WebsiteObjects = props => {
               currAreaData.map(data =>
                 Object.values(data).map((item, index) => {
                   const removeBtn = removeButton(data.removeAreaID);
-                  if (index === 2 && area.zoom > 7) {
+                  const differenceZoom = Math.abs(data.zoom - area.zoom);
+
+                  if (index === 2 && differenceZoom < 2) {
                     return getArea(item, removeBtn, uuidv4());
                   }
                   return getArea(item, rectangle(), uuidv4());
