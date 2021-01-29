@@ -5,13 +5,14 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import uuidv4 from 'uuid/v4';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual, map } from 'lodash';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../helpers/mapProvider';
 import { getAuthenticatedUserName, getIsUsersAreas, getUserLocation } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
+
 import './WebsiteObjects.less';
 
 const WebsiteObjects = props => {
@@ -57,7 +58,7 @@ const WebsiteObjects = props => {
   useEffect(() => {
     const arrData = [];
     // eslint-disable-next-line array-callback-return
-    mapData.map(currValue => {
+    map(mapData, currValue => {
       const topPoint = currValue.topPoint;
       const bottomPoint = currValue.bottomPoint;
       const center = currValue.center;
