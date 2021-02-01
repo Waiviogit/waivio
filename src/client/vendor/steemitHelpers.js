@@ -10,6 +10,7 @@ import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getDownvotes } from '../helpers/voteHelpers';
+import { getContent } from '../../waivioApi/ApiClient';
 
 const dmp = new diff_match_patch();
 /**
@@ -154,18 +155,17 @@ export function createPermlink(title, author, parent_author, parent_permlink) {
       permlink = prefix + s;
       return Promise.resolve(checkPermLinkLength(permlink));
     }
-
-    return steemAPI
-      .sendAsync('get_content', [author, s])
+    return getContent(author, s)
       .then(content => {
-        let prefix;
+        let prefix = '';
+
         if (content.body !== '') {
           // make sure slug is unique
           prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
-        } else {
-          prefix = '';
         }
+
         permlink = prefix + s;
+
         return checkPermLinkLength(permlink);
       })
       .catch(() => {
