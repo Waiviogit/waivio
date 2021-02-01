@@ -224,6 +224,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
     const getPermLink = isUpdating
       ? Promise.resolve(postData.permlink)
       : createPermlink(title, author, parentAuthor, parentPermlink, isPost);
+
     const state = getState();
     const authUser = state.auth.user;
     const isGuest = state.auth.isGuestUser;
