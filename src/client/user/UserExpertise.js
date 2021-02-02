@@ -5,7 +5,7 @@ import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { connect } from 'react-redux';
 
 import { getLocale, getUser } from '../reducers';
-import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
+import { getExpertiseCounters, getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 
 import './UserExpertise.less';
@@ -25,6 +25,20 @@ export default class UserExpertise extends React.Component {
 
   static limit = 30;
 
+  state = {
+    wobjectsExpCount: 0,
+    hashtagsExpCount: 0,
+  };
+
+  componentDidMount() {
+    getExpertiseCounters(this.props.user.name).then(({ hashtagsExpCount, wobjectsExpCount }) =>
+      this.setState({
+        hashtagsExpCount,
+        wobjectsExpCount,
+      }),
+    );
+  }
+
   fetcher = (skip, authUser, isOnlyHashtags) => {
     const { match, locale } = this.props;
 
@@ -40,7 +54,7 @@ export default class UserExpertise extends React.Component {
   };
 
   render() {
-    const { wobjectsExpCount, hashtagsExpCount } = this.props.user;
+    const { wobjectsExpCount, hashtagsExpCount } = this.state;
 
     return (
       <div className="UserExpertise">

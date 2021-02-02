@@ -118,5 +118,6 @@
   "related": "/related",
   "tagForFilter": "/tags-for-filter",
   "map": "/map",
-  "restrictions": "/restrictions"
+  "restrictions": "/restrictions",
+  "expertiseCounters": "/expertise-counters"
 }
