@@ -91,9 +91,10 @@ const WebsiteBody = props => {
 
   const handleMarkerClick = ({ payload, anchor }) => {
     handleAddMapCoordinates(anchor);
-    if (infoboxData && get(infoboxData, 'coordinates', []) === anchor) {
+    if (get(infoboxData, 'coordinates', []) === anchor) {
       setInfoboxData({ infoboxData: null });
     }
+
     setInfoboxData({ wobject: payload, coordinates: anchor });
   };
 
@@ -121,19 +122,20 @@ const WebsiteBody = props => {
   const markersLayout = getMarkers(currentWobject);
   const getOverlayLayout = () => {
     const currentWobj = infoboxData;
-    const avatar = getObjectAvatar(currentWobj.wobject);
-    const defaultAvatar = DEFAULTS.AVATAR;
+    const avatar = getObjectAvatar(currentWobj.wobject) || DEFAULTS.AVATAR;
+    const name = getObjectName(currentWobj.wobject);
 
     return (
       <Overlay anchor={infoboxData.coordinates} offset={[-12, 35]}>
-        <div role="presentation" className="WebsiteBody__overlay-wrap">
-          <img src={avatar || defaultAvatar} width={35} height={35} alt="" />
-          <div role="presentation" className="MapOS__overlay-wrap-name">
-            <Link to={`/object/${currentWobj.wobject.author_permlink}`}>
-              {getObjectName(currentWobj.wobject)}
-            </Link>
-          </div>
-        </div>
+        <Link
+          role="presentation"
+          className="WebsiteBody__overlay-wrap"
+          to={`/object/${currentWobj.wobject.author_permlink}`}
+          onMouseLeave={() => setInfoboxData(null)}
+        >
+          <img src={avatar} width={35} height={35} alt={name} />
+          <span className="MapOS__overlay-wrap-name">{name}</span>
+        </Link>
       </Overlay>
     );
   };
@@ -197,12 +199,10 @@ const WebsiteBody = props => {
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
-              onClick={() => setInfoboxData(null)}
             >
               {markersLayout}
               {infoboxData && getOverlayLayout()}
             </Map>
-            )
           </React.Fragment>
         )}
       </div>

@@ -23,6 +23,7 @@ import {
 import { followWobject, unfollowWobject } from './wobjActions';
 
 import '../components/ObjectHeader.less';
+import { getIsWaivio } from '../reducers';
 
 const WobjHeader = ({
   isEditMode,
@@ -33,6 +34,7 @@ const WobjHeader = ({
   authenticated,
   followWobj,
   unfollowWobj,
+  isWaivio,
 }) => {
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
@@ -86,7 +88,7 @@ const WobjHeader = ({
                   wobj={wobject}
                   followingType="wobject"
                 />
-                {accessExtend && authenticated && (
+                {accessExtend && authenticated && isWaivio && (
                   <React.Fragment>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode
@@ -142,6 +144,7 @@ WobjHeader.propTypes = {
   toggleViewEditMode: PropTypes.func,
   followWobj: PropTypes.func,
   unfollowWobj: PropTypes.func,
+  isWaivio: PropTypes.bool,
 };
 
 WobjHeader.defaultProps = {
@@ -152,11 +155,15 @@ WobjHeader.defaultProps = {
   username: '',
   toggleViewEditMode: () => {},
   isMobile: false,
+  isWaivio: true,
   followWobj: () => {},
   unfollowWobj: () => {},
 };
 
-const mapStateToProps = state => ({ isMobile: state.app.screenSize !== 'large' });
+const mapStateToProps = state => ({
+  isMobile: state.app.screenSize !== 'large',
+  isWaivio: getIsWaivio(state),
+});
 
 export default injectIntl(
   connect(mapStateToProps, {

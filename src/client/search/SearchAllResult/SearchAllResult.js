@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, map, size } from 'lodash';
+import { isEmpty, map, size, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Dropdown, Icon, Menu } from 'antd';
+import classNames from 'classnames';
 
 import UserCard from '../../components/UserCard';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -12,6 +13,7 @@ import {
   getHasMoreObjects,
   getHasMoreUsers,
   getSearchFilters,
+  getSearchFiltersTagCategory,
   getSearchSort,
   getSearchUsersResults,
   getWebsiteSearchResult,
@@ -90,14 +92,30 @@ const SearchAllResult = props => {
 
   const currRenderListState = currentListState();
 
-  const menu = filter => (
-    <Menu onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}>
-      <Menu.Item key={null}>show all</Menu.Item>
-      {map(filter.tags, tag => (
-        <Menu.Item key={tag}>{tag}</Menu.Item>
-      ))}
-    </Menu>
-  );
+  const getCurrentName = category => {
+    const currentActiveCategory = props.activeFilters.find(item => item.categoryName === category);
+
+    return get(currentActiveCategory, 'tags', [])[0];
+  };
+
+  const menu = filter => {
+    const currentTagCheck = tag => getCurrentName(filter.tagCategory) === tag;
+    const menuItemClassList = tag =>
+      classNames({
+        'SearchAllResult__active-tag': currentTagCheck(tag),
+      });
+
+    return (
+      <Menu onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}>
+        <Menu.Item key={'all'}>show all</Menu.Item>
+        {map(filter.tags, tag => (
+          <Menu.Item className={menuItemClassList(tag)} key={tag}>
+            {tag}
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
+  };
 
   return (
     <div className="SearchAllResult">
@@ -120,7 +138,7 @@ const SearchAllResult = props => {
               {map(props.filters, filter => (
                 <Dropdown key={filter.tagCategory} overlay={menu(filter)} trigger={['click']}>
                   <Button>
-                    {filter.tagCategory} <Icon type="down" />
+                    {getCurrentName(filter.tagCategory) || filter.tagCategory} <Icon type="down" />
                   </Button>
                 </Dropdown>
               ))}
@@ -165,6 +183,7 @@ SearchAllResult.propTypes = {
   getFilterForSearch: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}).isRequired,
   searchByUser: PropTypes.arrayOf.isRequired,
+  activeFilters: PropTypes.arrayOf.isRequired,
   searchResult: PropTypes.arrayOf.isRequired,
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
@@ -173,7 +192,6 @@ SearchAllResult.propTypes = {
   filters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
   setMapFullscreenMode: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/no-unused-prop-types
   setWebsiteSearchFilter: PropTypes.func.isRequired,
 };
 
@@ -187,6 +205,7 @@ export default connect(
     filters: getSearchFilters(state),
     searchString: getWebsiteSearchString(state),
     sort: getSearchSort(state),
+    activeFilters: getSearchFiltersTagCategory(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,
