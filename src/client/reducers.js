@@ -119,6 +119,7 @@ export const getCurrentHost = state => fromApp.getCurrentHost(state.app);
 export const getMapForMainPage = state => fromApp.getMapForMainPage(state.app);
 export const getWebsiteConfiguration = state => fromApp.getWebsiteConfiguration(state.app);
 export const getConfigurationValues = state => fromApp.getConfigurationValues(state.app);
+export const getIsWaivio = state => fromApp.getIsWaivio(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 

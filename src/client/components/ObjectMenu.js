@@ -14,6 +14,7 @@ class ObjectMenu extends React.Component {
     fieldsCount: PropTypes.number,
     accessExtend: PropTypes.bool,
     wobject: PropTypes.shape(),
+    isWaivio: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -22,6 +23,7 @@ class ObjectMenu extends React.Component {
     followers: 0,
     fieldsCount: 0,
     accessExtend: true,
+    isWaivio: true,
     wobject: {},
   };
 
@@ -114,7 +116,7 @@ class ObjectMenu extends React.Component {
                 <FormattedMessage id="gallery" defaultMessage="Gallery" />
               </li>
             )}
-            {this.props.accessExtend && (
+            {this.props.accessExtend && this.props.isWaivio && (
               <li
                 className={this.getItemClasses(ObjectMenu.TAB_NAME.UPDATES)}
                 onClick={this.handleClick}
