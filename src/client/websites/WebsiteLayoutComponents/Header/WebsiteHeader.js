@@ -1,6 +1,6 @@
 import React from 'react';
 import store from 'store';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { get, upperFirst } from 'lodash';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -10,7 +10,7 @@ import { getObjectType } from '../../../helpers/wObjectHelper';
 
 import './WebsiteHeader.less';
 
-const WebsiteHeader = ({ currPage, wobj, history, config }) => {
+const WebsiteHeader = ({ currPage, wobj, history, config, intl }) => {
   const isMainPage = location.pathname === '/';
   let currentPage = currPage || store.get('currentPage');
 
@@ -41,7 +41,12 @@ const WebsiteHeader = ({ currPage, wobj, history, config }) => {
             </Link>
             {currentPage && (
               <span className="center WebsiteHeader__title">
-                {<FormattedMessage id={currentPage} defaultMessage={upperFirst(currentPage)} />}
+                {upperFirst(
+                  intl.formatMessage({
+                    id: currentPage,
+                    defaultMessage: currentPage,
+                  }),
+                )}
               </span>
             )}
           </React.Fragment>
@@ -59,6 +64,7 @@ WebsiteHeader.propTypes = {
   wobj: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   config: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default withRouter(WebsiteHeader);
+export default withRouter(injectIntl(WebsiteHeader));
