@@ -39,13 +39,14 @@ const WebsiteBody = props => {
   });
   const [infoboxData, setInfoboxData] = useState(null);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
+  const currentUserLocationCenter = [+props.userLocation.lat, +props.userLocation.lon];
+  const configDesktopMap = get(props.configuration, ['desktopMap', 'center']);
+  const currentCenter = isEmpty(configDesktopMap)
+    ? [+props.userLocation.lat, +props.userLocation.lon]
+    : configDesktopMap;
   const mapClassList = classNames('WebsiteBody__map', {
     WebsiteBody__hideMap: props.searchType !== 'All',
   });
-
-  const currMapCoordinates = isEmpty(props.configCoordinates.center)
-    ? props.userLocation
-    : props.configCoordinates.center;
 
   useEffect(() => {
     if (isEmpty(props.userLocation))
@@ -149,7 +150,7 @@ const WebsiteBody = props => {
         <div
           role="presentation"
           className="WebsiteBodyControl__locateGPS"
-          onClick={() => setArea({ ...area, center: currMapCoordinates })}
+          onClick={() => setArea({ ...area, center: currentUserLocationCenter })}
         >
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
@@ -172,10 +173,6 @@ const WebsiteBody = props => {
       </div>
     </div>
   );
-
-  const currentCenter = isEmpty(area.center)
-    ? [+props.userLocation.lat, +props.userLocation.lon]
-    : area.center;
 
   return (
     <div className="WebsiteBody">

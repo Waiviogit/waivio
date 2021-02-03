@@ -4,6 +4,8 @@ import { injectIntl } from 'react-intl';
 import { get, upperFirst } from 'lodash';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
+
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import { getObjectType } from '../../../helpers/wObjectHelper';
@@ -37,7 +39,11 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl }) => {
         ) : (
           <React.Fragment>
             <Link className="WebsiteHeader__link left" to={'/'}>
-              {'< Back'}
+              <Icon type="left" />{' '}
+              {intl.formatMessage({
+                id: 'back',
+                defaultMessage: 'Back',
+              })}
             </Link>
             {currentPage && (
               <span className="center WebsiteHeader__title">
@@ -51,7 +57,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl }) => {
             )}
           </React.Fragment>
         )}
-        <div className="right">
+        <div className="right WebsiteHeader__button-block">
           <HeaderButton isWebsite />
         </div>
       </div>
