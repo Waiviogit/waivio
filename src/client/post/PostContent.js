@@ -289,19 +289,20 @@ class PostContent extends React.Component {
           <link rel="canonical" href={canonicalUrl} />
           <link rel="amphtml" href={ampUrl} />
 
-          <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta name="twitter:site" content={'@waivio'} />
-          <meta name="twitter:title" content={metaTitle} />
-          <meta name="twitter:description" content={desc} />
-          <meta name="twitter:image" content={image} />
-
+          <meta property="fb:app_id" content="754038848413420" />
           <meta property="og:url" content={url} />
           <meta property="og:type" content="article" />
           <meta property="og:title" content={metaTitle} />
           <meta property="description" content={desc} />
+          <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+          <meta name="twitter:site" content={'@waivio'} />
+          <meta name="twitter:title" content={metaTitle} />
+          <meta name="twitter:description" content={desc} />
           <meta property="og:image" content={getProxyImageURL(image)} />
+          <meta name="twitter:image" content={getProxyImageURL(image)} />
           <meta property="og:site_name" content="Waivio" />
           <meta name="article:tag" property="article:tag" content={category} />
+          <link rel="image_src" href={getProxyImageURL(image)} />
           <meta name="article:published_time" property="article:published_time" content={created} />
         </Helmet>
         <StoryFull
