@@ -1,10 +1,10 @@
-import { size, union, map } from 'lodash';
 import React from 'react';
 import { message } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
+import { union, map, get } from 'lodash';
 
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import ObjectCard from '../components/Sidebar/ObjectCard';
@@ -18,9 +18,7 @@ import './ObjectDynamicList.less';
 
 class ObjectDynamicList extends React.Component {
   static propTypes = {
-    limit: PropTypes.number.isRequired,
     fetcher: PropTypes.func.isRequired,
-    handleObjectCount: PropTypes.func,
     isOnlyHashtags: PropTypes.bool,
     expertize: PropTypes.bool,
     unfollowWobj: PropTypes.func,
@@ -28,6 +26,7 @@ class ObjectDynamicList extends React.Component {
     changeCounterFollow: PropTypes.func,
     isGuest: PropTypes.bool,
     authUser: PropTypes.string,
+    limit: PropTypes.string,
     match: PropTypes.shape({
       params: PropTypes.shape({
         name: PropTypes.string,
@@ -36,7 +35,6 @@ class ObjectDynamicList extends React.Component {
   };
 
   static defaultProps = {
-    handleObjectCount: () => {},
     isOnlyHashtags: false,
     expertize: false,
     unfollowWobj: () => {},
@@ -44,6 +42,7 @@ class ObjectDynamicList extends React.Component {
     changeCounterFollow: () => {},
     isGuest: false,
     authUser: '',
+    limit: 15,
   };
 
   state = {
@@ -53,7 +52,7 @@ class ObjectDynamicList extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { fetcher, limit, handleObjectCount, isOnlyHashtags, authUser } = this.props;
+    const { fetcher, isOnlyHashtags, authUser, limit } = this.props;
     const { wobjects } = this.state;
 
     this.setState(
@@ -62,24 +61,13 @@ class ObjectDynamicList extends React.Component {
       },
       () => {
         fetcher(wobjects.length, authUser, isOnlyHashtags).then(newWobjects => {
-          if (newWobjects.wobjects_count) {
-            this.setState(
-              state => ({
-                loading: false,
-                hasMore: size(newWobjects.wobjects) === limit,
-                wobjects: union(state.wobjects, newWobjects.wobjects),
-              }),
-              () => {
-                handleObjectCount(newWobjects.wobjects_count, isOnlyHashtags);
-              },
-            );
-          } else {
-            this.setState(state => ({
-              loading: false,
-              hasMore: newWobjects.length === limit,
-              wobjects: union(state.wobjects, newWobjects),
-            }));
-          }
+          const wobjs = get(newWobjects, 'wobjects') || newWobjects;
+
+          this.setState(state => ({
+            loading: false,
+            hasMore: newWobjects.hasMore || newWobjects.length === limit,
+            wobjects: union(state.wobjects, wobjs),
+          }));
         });
       },
     );

@@ -370,12 +370,13 @@ export default (state = initialState, action) => {
 
     case searchActions.SET_WEBSITE_SEARCH_FILTER: {
       const { category, tag } = action.payload;
+      const showAllResult = tag === 'all';
       let tagCategories = [...state.tagCategory];
       const currentCategory = tagCategories.find(
         currCategory => currCategory.categoryName === category,
       );
 
-      if (!currentCategory) {
+      if (!currentCategory && !showAllResult) {
         return {
           ...state,
           tagCategory: [
@@ -392,7 +393,7 @@ export default (state = initialState, action) => {
 
       tagCategories = tagCategories.filter(categ => categ.tagCategory === category);
 
-      if (isChecked)
+      if (isChecked && !showAllResult)
         tagCategories = [
           ...tagCategories,
           {

@@ -25,6 +25,7 @@ const initialState = {
   currPage: '',
   currMap: { center: [], zoom: 6 },
   configuration: [],
+  isWaivio: true,
 };
 
 export default (state = initialState, action) => {
@@ -143,6 +144,7 @@ export default (state = initialState, action) => {
           center: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
           zoom: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),
         },
+        isWaivio: mainPage === 'waivio',
       };
     }
     case appTypes.SET_CURRENT_PAGE:
@@ -187,3 +189,4 @@ export const getCurrPage = state => state.currPage;
 export const getConfigurationValues = state => state.configuration;
 export const getMapForMainPage = state => state.currMap;
 export const getWebsiteConfiguration = state => state.configuration;
+export const getIsWaivio = state => state.isWaivio;

@@ -1,7 +1,7 @@
 import React from 'react';
 import store from 'store';
-import { FormattedMessage } from 'react-intl';
-import { get } from 'lodash';
+import { injectIntl } from 'react-intl';
+import { get, upperFirst } from 'lodash';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
@@ -10,7 +10,7 @@ import { getObjectType } from '../../../helpers/wObjectHelper';
 
 import './WebsiteHeader.less';
 
-const WebsiteHeader = ({ currPage, wobj, history, config }) => {
+const WebsiteHeader = ({ currPage, wobj, history, config, intl }) => {
   const isMainPage = location.pathname === '/';
   let currentPage = currPage || store.get('currentPage');
 
@@ -39,9 +39,16 @@ const WebsiteHeader = ({ currPage, wobj, history, config }) => {
             <Link className="WebsiteHeader__link left" to={'/'}>
               {'< Back'}
             </Link>
-            <span className="center WebsiteHeader__title">
-              {currentPage && <FormattedMessage id={currentPage} defaultMessage={currentPage} />}
-            </span>
+            {currentPage && (
+              <span className="center WebsiteHeader__title">
+                {upperFirst(
+                  intl.formatMessage({
+                    id: currentPage,
+                    defaultMessage: currentPage,
+                  }),
+                )}
+              </span>
+            )}
           </React.Fragment>
         )}
         <div className="right">
@@ -57,6 +64,7 @@ WebsiteHeader.propTypes = {
   wobj: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   config: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default withRouter(WebsiteHeader);
+export default withRouter(injectIntl(WebsiteHeader));

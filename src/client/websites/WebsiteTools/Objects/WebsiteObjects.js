@@ -469,8 +469,8 @@ const WebsiteObjects = props => {
     <div className="WebsiteObjects">
       <h1 className="WebsiteObjects__heading">
         {props.intl.formatMessage({
-          id: 'website_objects_heading',
-          defaultMessage: 'Select objects',
+          id: 'specify_areas',
+          defaultMessage: 'Specify areas',
         })}
       </h1>
       <p className="WebsiteObjects__explanations">
@@ -520,7 +520,7 @@ const WebsiteObjects = props => {
       <p className="WebsiteObjects__rules-selections">
         <FormattedMessage
           id="website_object_rules_of_selections"
-          defaultMessage="Press {plusSymbol} to add a new area. Click & drag corners to resize. Click {cancelSymbol} to remove the area. Zoom in for controls."
+          defaultMessage="Press {plusSymbol} to add a new area. Click {cancelSymbol} to remove the area. Zoom in for controls."
           values={{
             plusSymbol: <span style={{ color: '#f87007' }}>+</span>,
             cancelSymbol: <span style={{ color: '#f87007' }}>X</span>,
