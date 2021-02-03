@@ -1,10 +1,10 @@
-import { union, map } from 'lodash';
 import React from 'react';
 import { message } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
+import { union, map, get } from 'lodash';
 
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import ObjectCard from '../components/Sidebar/ObjectCard';
@@ -26,6 +26,7 @@ class ObjectDynamicList extends React.Component {
     changeCounterFollow: PropTypes.func,
     isGuest: PropTypes.bool,
     authUser: PropTypes.string,
+    limit: PropTypes.string,
     match: PropTypes.shape({
       params: PropTypes.shape({
         name: PropTypes.string,
@@ -41,6 +42,7 @@ class ObjectDynamicList extends React.Component {
     changeCounterFollow: () => {},
     isGuest: false,
     authUser: '',
+    limit: 15,
   };
 
   state = {
@@ -50,7 +52,7 @@ class ObjectDynamicList extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { fetcher, isOnlyHashtags, authUser } = this.props;
+    const { fetcher, isOnlyHashtags, authUser, limit } = this.props;
     const { wobjects } = this.state;
 
     this.setState(
@@ -59,10 +61,12 @@ class ObjectDynamicList extends React.Component {
       },
       () => {
         fetcher(wobjects.length, authUser, isOnlyHashtags).then(newWobjects => {
+          const wobjs = get(newWobjects, 'wobjects') || newWobjects;
+
           this.setState(state => ({
             loading: false,
-            hasMore: newWobjects.hasMore,
-            wobjects: union(state.wobjects, newWobjects.wobjects),
+            hasMore: newWobjects.hasMore || newWobjects.length === limit,
+            wobjects: union(state.wobjects, wobjs),
           }));
         });
       },
