@@ -119,6 +119,7 @@ export const getCurrentHost = state => fromApp.getCurrentHost(state.app);
 export const getMapForMainPage = state => fromApp.getMapForMainPage(state.app);
 export const getWebsiteConfiguration = state => fromApp.getWebsiteConfiguration(state.app);
 export const getConfigurationValues = state => fromApp.getConfigurationValues(state.app);
+export const getIsWaivio = state => fromApp.getIsWaivio(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 
@@ -262,6 +263,8 @@ export const getWebsiteSearchString = state => fromSearch.getWebsiteSearchString
 export const getSearchFiltersTagCategory = state =>
   fromSearch.getSearchFiltersTagCategory(state.search);
 export const getSearchSort = state => fromSearch.getSearchSort(state.search);
+export const getWebsiteSearchResultLoading = state =>
+  fromSearch.getWebsiteSearchResultLoading(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);

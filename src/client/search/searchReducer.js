@@ -342,11 +342,28 @@ export default (state = initialState, action) => {
       };
     }
 
+    case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.START: {
+      return {
+        ...state,
+        websiteSearchResultLoading: true,
+      };
+    }
+
     case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.SUCCESS: {
       return {
         ...state,
         websiteSearchResult: action.payload.wobjects,
         hasMoreObjectsForWebsite: action.payload.hasMore,
+        websiteSearchResultLoading: false,
+      };
+    }
+
+    case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.ERROR: {
+      return {
+        ...state,
+        websiteSearchResult: [],
+        hasMoreObjectsForWebsite: false,
+        websiteSearchResultLoading: false,
       };
     }
 
@@ -370,12 +387,13 @@ export default (state = initialState, action) => {
 
     case searchActions.SET_WEBSITE_SEARCH_FILTER: {
       const { category, tag } = action.payload;
+      const showAllResult = tag === 'all';
       let tagCategories = [...state.tagCategory];
       const currentCategory = tagCategories.find(
         currCategory => currCategory.categoryName === category,
       );
 
-      if (!currentCategory) {
+      if (!currentCategory && !showAllResult) {
         return {
           ...state,
           tagCategory: [
@@ -390,9 +408,9 @@ export default (state = initialState, action) => {
 
       const isChecked = !currentCategory.tags.includes(tag);
 
-      tagCategories = tagCategories.filter(categ => categ.tagCategory === category);
+      tagCategories = tagCategories.filter(categ => categ.categoryName !== category);
 
-      if (isChecked)
+      if (isChecked && !showAllResult) {
         tagCategories = [
           ...tagCategories,
           {
@@ -400,6 +418,7 @@ export default (state = initialState, action) => {
             tags: [tag],
           },
         ];
+      }
 
       return {
         ...state,
@@ -446,3 +465,4 @@ export const getSearchFilters = state => get(state, 'filters', []);
 export const getSearchFiltersTagCategory = state => get(state, 'tagCategory', []);
 export const getWebsiteSearchString = state => get(state, 'websiteSearchString', []);
 export const getSearchSort = state => get(state, 'sort', '');
+export const getWebsiteSearchResultLoading = state => get(state, 'websiteSearchResultLoading', '');

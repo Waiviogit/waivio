@@ -41,7 +41,7 @@ class ObjectWeightBlock extends React.Component {
       .then(response => {
         this.setState({
           wObjects: response.wobjects,
-          wObjectsCount: response.wobjects_count,
+          hasMore: response.hasMore,
           loading: false,
         });
       })
@@ -53,11 +53,9 @@ class ObjectWeightBlock extends React.Component {
 
   render() {
     const { username } = this.props;
-    const { wObjects, loading, wObjectsCount } = this.state;
+    const { wObjects, loading, hasMore } = this.state;
 
-    if (loading) {
-      return <RightSidebarLoading />;
-    }
+    if (loading) return <RightSidebarLoading />;
 
     return wObjects.length ? (
       <div className="ObjectWeightBlock SidebarContentBlock">
@@ -75,7 +73,7 @@ class ObjectWeightBlock extends React.Component {
                 alt={<WeightTag weight={wobject.user_weight} />}
               />
             ))}
-          {wObjectsCount > 5 && (
+          {hasMore && (
             <React.Fragment>
               <h4 className="ObjectWeightBlock__more">
                 <Link to={`/@${username}/expertise`}>

@@ -48,12 +48,18 @@ const WebsiteBody = props => {
     : props.configCoordinates.center;
 
   useEffect(() => {
-    setArea({ center: currMapCoordinates, zoom: props.configCoordinates.zoom, bounds: [] });
+    if (isEmpty(props.userLocation))
+      props.getCoordinates().then(({ value }) => {
+        setArea({
+          center: [+value.lat, +value.lon],
+          zoom: props.configCoordinates.zoom,
+          bounds: [],
+        });
+      });
   }, []);
 
   useEffect(() => {
-    if (isEmpty(props.userLocation)) props.getCoordinates();
-    if (!isEmpty(boundsParams.topPoint) && !isEmpty(boundsParams.bottomPoint)) {
+    if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0]) {
       const accessToken = props.isGuest
         ? localStorage.getItem('accessToken')
         : Cookie.get('access_token');
@@ -67,7 +73,7 @@ const WebsiteBody = props => {
   const currLink = aboutObject ? `/object/${aboutObject}` : '/';
 
   const handleOnBoundsChanged = debounce(data => {
-    if (!isEmpty(data)) {
+    if (!isEmpty(data) && data.ne[0] && data.sw[0]) {
       setBoundsParams({
         ...boundsParams,
         topPoint: [data.ne[1], data.ne[0]],
@@ -77,7 +83,7 @@ const WebsiteBody = props => {
   }, 800);
 
   const onBoundsChanged = debounce(({ center, zoom, bounds }) => {
-    setArea({ center, zoom, bounds });
+    if (!isEmpty(center)) setArea({ center, zoom, bounds });
     if (!isEqual(bounds, area.bounds)) {
       handleOnBoundsChanged(bounds);
     }
@@ -85,9 +91,10 @@ const WebsiteBody = props => {
 
   const handleMarkerClick = ({ payload, anchor }) => {
     handleAddMapCoordinates(anchor);
-    if (infoboxData && get(infoboxData, 'coordinates', []) === anchor) {
+    if (get(infoboxData, 'coordinates', []) === anchor) {
       setInfoboxData({ infoboxData: null });
     }
+
     setInfoboxData({ wobject: payload, coordinates: anchor });
   };
 
@@ -115,19 +122,20 @@ const WebsiteBody = props => {
   const markersLayout = getMarkers(currentWobject);
   const getOverlayLayout = () => {
     const currentWobj = infoboxData;
-    const avatar = getObjectAvatar(currentWobj.wobject);
-    const defaultAvatar = DEFAULTS.AVATAR;
+    const avatar = getObjectAvatar(currentWobj.wobject) || DEFAULTS.AVATAR;
+    const name = getObjectName(currentWobj.wobject);
 
     return (
       <Overlay anchor={infoboxData.coordinates} offset={[-12, 35]}>
-        <div role="presentation" className="WebsiteBody__overlay-wrap">
-          <img src={avatar || defaultAvatar} width={35} height={35} alt="" />
-          <div role="presentation" className="MapOS__overlay-wrap-name">
-            <Link to={`/object/${currentWobj.wobject.author_permlink}`}>
-              {getObjectName(currentWobj.wobject)}
-            </Link>
-          </div>
-        </div>
+        <Link
+          role="presentation"
+          className="WebsiteBody__overlay-wrap"
+          to={`/object/${currentWobj.wobject.author_permlink}`}
+          onMouseLeave={() => setInfoboxData(null)}
+        >
+          <img src={avatar} width={35} height={35} alt={name} />
+          <span className="MapOS__overlay-wrap-name">{name}</span>
+        </Link>
       </Overlay>
     );
   };
@@ -165,32 +173,36 @@ const WebsiteBody = props => {
     </div>
   );
 
+  const currentCenter = isEmpty(area.center)
+    ? [+props.userLocation.lat, +props.userLocation.lon]
+    : area.center;
+
   return (
     <div className="WebsiteBody">
       {props.searchType !== 'All' && <SearchAllResult />}
       <div className={mapClassList}>
-        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-        <img
-          className="WebsiteBody__logo"
-          srcSet={currentLogo}
-          alt="your logo"
-          styleName="brain-image"
-          onClick={() => props.history.push(currLink)}
-        />
-        {!isEmpty(props.userLocation) && (
+        {currentLogo && (
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+          <img
+            className="WebsiteBody__logo"
+            srcSet={currentLogo}
+            alt="your logo"
+            styleName="brain-image"
+            onClick={() => props.history.push(currLink)}
+          />
+        )}
+        {!isEmpty(currentCenter) && (
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
-              center={area.center}
+              center={currentCenter}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
-              onClick={() => setInfoboxData(null)}
             >
               {markersLayout}
               {infoboxData && getOverlayLayout()}
             </Map>
-            )
           </React.Fragment>
         )}
       </div>

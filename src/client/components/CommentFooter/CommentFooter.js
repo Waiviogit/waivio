@@ -12,6 +12,7 @@ import {
 } from '../../vendor/steemitHelpers';
 import { isGuestUser } from '../../reducers';
 import { getDownvotes } from '../../helpers/voteHelpers';
+import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorComment } from '../../comments/commentsActions';
 
 import './CommentFooter.less';
@@ -44,8 +45,8 @@ export default class CommentFooter extends React.Component {
     onReplyClick: PropTypes.func,
     handleHideComment: PropTypes.func,
     onEditClick: PropTypes.func,
-    isGuest: PropTypes.bool,
     muteAuthorComment: PropTypes.func,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -73,6 +74,7 @@ export default class CommentFooter extends React.Component {
     isLiked: false,
     isFlagged: false,
     sliderType: 'confirm',
+    visible: false,
   };
 
   componentWillMount() {
@@ -136,9 +138,10 @@ export default class CommentFooter extends React.Component {
 
   handleHideComment = () => this.props.handleHideComment(this.props.comment);
 
-  muteAuthorPost = () => this.props.muteAuthorComment(this.props.comment);
-
   handleSliderCancel = () => this.setState({ sliderVisible: false, sliderType: 'Confirm' });
+
+  handleMutePostAuthor = post =>
+    post.muted ? this.props.muteAuthorComment(post) : this.setState({ visible: true });
 
   handleClickPopoverMenu = key => {
     switch (key) {
@@ -147,7 +150,7 @@ export default class CommentFooter extends React.Component {
       case 'hide':
         return this.handleHideComment();
       case 'mute':
-        return this.muteAuthorPost();
+        return this.handleMutePostAuthor(this.props.comment);
       default:
         return () => {};
     }
@@ -214,6 +217,13 @@ export default class CommentFooter extends React.Component {
             isPostCashout={isPostCashout(comment)}
           />
         )}
+        <MuteModal
+          item={comment}
+          type="comment"
+          visible={this.state.visible}
+          setVisibleMuteModal={state => this.setState({ visible: state })}
+          username={comment.author}
+        />
       </div>
     );
   }

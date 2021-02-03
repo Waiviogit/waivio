@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { currentWebsiteSettings, personalSettings, websiteSettings } from './constants';
 import SettingsItem from './SettingsItem';
-import { getOwnWebsites, isGuestUser } from '../../../reducers';
+import { getIsWaivio, getOwnWebsites, isGuestUser } from '../../../reducers';
 import { getOwnWebsite } from '../../../websites/websiteActions';
 
 import '../Sidenav.less';
@@ -13,6 +13,7 @@ const SettingsSidenav = ({ match }) => {
   const dispatch = useDispatch();
   const isGuest = useSelector(isGuestUser);
   const ownWebsite = useSelector(getOwnWebsites);
+  const isWaivio = useSelector(getIsWaivio);
   const [menuCondition, setMenuCondition] = useState({
     personal: true,
     websites: true,
@@ -29,7 +30,7 @@ const SettingsSidenav = ({ match }) => {
   };
 
   useEffect(() => {
-    if (!isGuest) dispatch(getOwnWebsite());
+    if (!isGuest && isWaivio) dispatch(getOwnWebsite());
   }, []);
 
   useEffect(() => {
@@ -50,28 +51,30 @@ const SettingsSidenav = ({ match }) => {
         configItem={personalSettings}
         toggleMenuCondition={toggleMenuCondition}
       />
-      {!isGuest && (
-        <SettingsItem
-          condition={menuCondition.websites}
-          configItem={websiteSettings}
-          toggleMenuCondition={toggleMenuCondition}
-        />
+      {!isGuest && isWaivio && (
+        <React.Fragment>
+          <SettingsItem
+            condition={menuCondition.websites}
+            configItem={websiteSettings}
+            toggleMenuCondition={toggleMenuCondition}
+          />
+          {ownWebsite.map(({ host }) => (
+            <SettingsItem
+              key={host}
+              condition={menuCondition[host]}
+              configItem={{
+                tab: {
+                  name: host,
+                  id: host,
+                  defaultMessage: host,
+                },
+                settings: currentWebsiteSettings(host),
+              }}
+              toggleMenuCondition={toggleMenuCondition}
+            />
+          ))}
+        </React.Fragment>
       )}
-      {ownWebsite.map(({ host }) => (
-        <SettingsItem
-          key={host}
-          condition={menuCondition[host]}
-          configItem={{
-            tab: {
-              name: host,
-              id: host,
-              defaultMessage: host,
-            },
-            settings: currentWebsiteSettings(host),
-          }}
-          toggleMenuCondition={toggleMenuCondition}
-        />
-      ))}
     </ul>
   );
 };

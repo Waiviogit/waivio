@@ -38,7 +38,7 @@ const propTypes = {
     loading: PropTypes.bool,
     loadingHide: PropTypes.bool,
     loadingMute: PropTypes.bool,
-    isMute: PropTypes.bool,
+    muted: PropTypes.bool,
     wobjects: PropTypes.shape(),
     tags: PropTypes.shape(),
     cities: PropTypes.shape(),
@@ -178,14 +178,14 @@ const PostPopoverMenu = ({
           <Icon type="loading" />
         ) : (
           <ReactSVG
-            className={`hide-button ${post.isMute ? 'hide-button--fill' : ''}`}
+            className={`hide-button ${post.muted ? 'hide-button--fill' : ''}`}
             wrapper="span"
             src="/images/icons/mute-user.svg"
           />
         )}
         <FormattedMessage
-          id={post.isMute ? 'unmute' : 'mute'}
-          defaultMessage={post.isMute ? 'Unmute' : 'Mute'}
+          id={post.muted ? 'unmute' : 'mute'}
+          defaultMessage={post.muted ? 'Unmute' : 'Mute'}
         />{' '}
         {post.author}
       </PopoverMenuItem>,

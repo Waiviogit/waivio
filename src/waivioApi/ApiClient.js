@@ -1904,4 +1904,14 @@ export const getWebsiteObjectsWithCoordinates = (params = {}, accessToken) =>
     .then(res => res)
     .catch(e => e);
 
+export const getExpertiseCounters = userName => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.expertiseCounters}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
 export default null;

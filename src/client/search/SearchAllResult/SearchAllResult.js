@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, map, size } from 'lodash';
+import { isEmpty, map, size, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Dropdown, Icon, Menu } from 'antd';
+import classNames from 'classnames';
 
 import UserCard from '../../components/UserCard';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -11,10 +12,13 @@ import { getObjectName } from '../../helpers/wObjectHelper';
 import {
   getHasMoreObjects,
   getHasMoreUsers,
+  getIsStartSearchUser,
   getSearchFilters,
+  getSearchFiltersTagCategory,
   getSearchSort,
   getSearchUsersResults,
   getWebsiteSearchResult,
+  getWebsiteSearchResultLoading,
   getWebsiteSearchString,
   getWebsiteSearchType,
 } from '../../reducers';
@@ -32,6 +36,7 @@ import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 
 import './SearchAllResult.less';
+import Loading from '../../components/Icon/Loading';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -67,6 +72,7 @@ const SearchAllResult = props => {
             <UserCard key={user.account} user={{ ...user, name: user.account }} />
           )),
           hasMore: props.hasMoreUsers,
+          loading: props.usersLoading,
         };
 
       default:
@@ -75,6 +81,7 @@ const SearchAllResult = props => {
             <ObjectCardView wObject={obj} key={getObjectName(obj)} />
           )),
           hasMore: props.hasMore,
+          loading: props.loading,
         };
     }
   };
@@ -90,13 +97,39 @@ const SearchAllResult = props => {
 
   const currRenderListState = currentListState();
 
-  const menu = filter => (
-    <Menu onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}>
-      <Menu.Item key={null}>show all</Menu.Item>
-      {map(filter.tags, tag => (
-        <Menu.Item key={tag}>{tag}</Menu.Item>
-      ))}
-    </Menu>
+  const getCurrentName = category => {
+    const currentActiveCategory = props.activeFilters.find(item => item.categoryName === category);
+
+    return get(currentActiveCategory, 'tags', [])[0];
+  };
+
+  const menu = filter => {
+    const currentTagCheck = tag => getCurrentName(filter.tagCategory) === tag;
+    const menuItemClassList = tag =>
+      classNames({
+        'SearchAllResult__active-tag': currentTagCheck(tag),
+      });
+
+    return (
+      <Menu onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}>
+        <Menu.Item key={'all'}>show all</Menu.Item>
+        {map(filter.tags, tag => (
+          <Menu.Item className={menuItemClassList(tag)} key={tag}>
+            {tag}
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
+  };
+  const currentList = isEmpty(currRenderListState.list) ? (
+    <div>
+      {props.intl.formatMessage({
+        id: 'search_no_result',
+        defaultMessage: 'No results were found for this request',
+      })}
+    </div>
+  ) : (
+    currRenderListState.list
   );
 
   return (
@@ -120,7 +153,7 @@ const SearchAllResult = props => {
               {map(props.filters, filter => (
                 <Dropdown key={filter.tagCategory} overlay={menu(filter)} trigger={['click']}>
                   <Button>
-                    {filter.tagCategory} <Icon type="down" />
+                    {getCurrentName(filter.tagCategory) || filter.tagCategory} <Icon type="down" />
                   </Button>
                 </Dropdown>
               ))}
@@ -145,7 +178,7 @@ const SearchAllResult = props => {
             {props.intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
           </Button>
         </div>
-        {isEmpty(currRenderListState.list) ? <div>List is empty</div> : currRenderListState.list}
+        {currRenderListState.loading ? <Loading /> : currentList}
       </div>
     </div>
   );
@@ -165,11 +198,14 @@ SearchAllResult.propTypes = {
   getFilterForSearch: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}).isRequired,
   searchByUser: PropTypes.arrayOf.isRequired,
+  activeFilters: PropTypes.arrayOf.isRequired,
   searchResult: PropTypes.arrayOf.isRequired,
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
   hasMore: PropTypes.bool.isRequired,
   hasMoreUsers: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  usersLoading: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
   setMapFullscreenMode: PropTypes.func.isRequired,
@@ -187,6 +223,9 @@ export default connect(
     filters: getSearchFilters(state),
     searchString: getWebsiteSearchString(state),
     sort: getSearchSort(state),
+    activeFilters: getSearchFiltersTagCategory(state),
+    loading: getWebsiteSearchResultLoading(state),
+    usersLoading: getIsStartSearchUser(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,

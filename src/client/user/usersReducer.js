@@ -376,43 +376,44 @@ export default function usersReducer(state = initialState, action) {
       };
     }
 
-    case actions.MUTE_CURRENT_USER.SUCCESS: {
-      const { user } = action.meta;
-
-      return {
-        ...state,
-        users: {
-          [user]: {
-            ...state.users[user],
-            muted: !state.users[user].muted,
-            muteLoading: false,
-          },
-        },
-      };
-    }
-
     case actions.MUTE_CURRENT_USER.START: {
-      const { user } = action.meta;
-
       return {
         ...state,
         users: {
-          [user]: {
-            ...state.users[user],
+          [action.meta.muted]: {
+            ...state.users[action.meta.muted],
             muteLoading: true,
           },
         },
       };
     }
 
-    case actions.MUTE_CURRENT_USER.ERROR: {
-      const { user } = action.meta;
+    case actions.MUTE_CURRENT_USER.SUCCESS: {
+      const user = state.users[action.meta.muted];
+      const muted = !user.muted;
+      const mutedBy = muted
+        ? [...user.mutedBy, action.meta.userName]
+        : user.mutedBy.filter(usr => usr !== action.meta.userName);
 
       return {
         ...state,
         users: {
-          [user]: {
-            ...state.users[user],
+          [action.meta.muted]: {
+            ...user,
+            muted,
+            mutedBy,
+            muteLoading: false,
+          },
+        },
+      };
+    }
+
+    case actions.MUTE_CURRENT_USER.ERROR: {
+      return {
+        ...state,
+        users: {
+          [action.meta.muted]: {
+            ...state.users[action.meta.muted],
             muteLoading: false,
           },
         },
