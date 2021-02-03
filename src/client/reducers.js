@@ -263,6 +263,8 @@ export const getWebsiteSearchString = state => fromSearch.getWebsiteSearchString
 export const getSearchFiltersTagCategory = state =>
   fromSearch.getSearchFiltersTagCategory(state.search);
 export const getSearchSort = state => fromSearch.getSearchSort(state.search);
+export const getWebsiteSearchResultLoading = state =>
+  fromSearch.getWebsiteSearchResultLoading(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);

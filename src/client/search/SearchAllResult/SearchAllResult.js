@@ -12,11 +12,13 @@ import { getObjectName } from '../../helpers/wObjectHelper';
 import {
   getHasMoreObjects,
   getHasMoreUsers,
+  getIsStartSearchUser,
   getSearchFilters,
   getSearchFiltersTagCategory,
   getSearchSort,
   getSearchUsersResults,
   getWebsiteSearchResult,
+  getWebsiteSearchResultLoading,
   getWebsiteSearchString,
   getWebsiteSearchType,
 } from '../../reducers';
@@ -34,6 +36,7 @@ import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 
 import './SearchAllResult.less';
+import Loading from '../../components/Icon/Loading';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -69,6 +72,7 @@ const SearchAllResult = props => {
             <UserCard key={user.account} user={{ ...user, name: user.account }} />
           )),
           hasMore: props.hasMoreUsers,
+          loading: props.usersLoading,
         };
 
       default:
@@ -77,6 +81,7 @@ const SearchAllResult = props => {
             <ObjectCardView wObject={obj} key={getObjectName(obj)} />
           )),
           hasMore: props.hasMore,
+          loading: props.loading,
         };
     }
   };
@@ -116,6 +121,16 @@ const SearchAllResult = props => {
       </Menu>
     );
   };
+  const currentList = isEmpty(currRenderListState.list) ? (
+    <div>
+      {props.intl.formatMessage({
+        id: 'search_no_result',
+        defaultMessage: 'No results were found for this request',
+      })}
+    </div>
+  ) : (
+    currRenderListState.list
+  );
 
   return (
     <div className="SearchAllResult">
@@ -163,7 +178,7 @@ const SearchAllResult = props => {
             {props.intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
           </Button>
         </div>
-        {isEmpty(currRenderListState.list) ? <div>List is empty</div> : currRenderListState.list}
+        {currRenderListState.loading ? <Loading /> : currentList}
       </div>
     </div>
   );
@@ -189,6 +204,8 @@ SearchAllResult.propTypes = {
   searchString: PropTypes.string.isRequired,
   hasMore: PropTypes.bool.isRequired,
   hasMoreUsers: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  usersLoading: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
   setMapFullscreenMode: PropTypes.func.isRequired,
@@ -206,6 +223,8 @@ export default connect(
     searchString: getWebsiteSearchString(state),
     sort: getSearchSort(state),
     activeFilters: getSearchFiltersTagCategory(state),
+    loading: getWebsiteSearchResultLoading(state),
+    usersLoading: getIsStartSearchUser(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,

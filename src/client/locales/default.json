@@ -1538,5 +1538,6 @@
   "fraud_codes": "Codes: {codes}",
   "website_objects_area": "Select area",
   "areas": "Areas",
-  "specify_areas": "Specify areas"
+  "specify_areas": "Specify areas",
+  "search_no_result": "No results were found for this request"
 }

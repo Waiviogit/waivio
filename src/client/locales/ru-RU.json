@@ -1540,5 +1540,7 @@
   "fraud_codes": "Коды: {codes}",
   "website_objects_area": "Выберите территорию",
   "areas": "Ареи",
-  "specify_areas": "Укажите области"
+  "specify_areas": "Укажите области",
+  "search_no_result": "По данному запросу результатов не найдено"
+
 }
