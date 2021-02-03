@@ -209,6 +209,7 @@ SearchAllResult.propTypes = {
   filters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
   setMapFullscreenMode: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
   setWebsiteSearchFilter: PropTypes.func.isRequired,
 };
 
