@@ -1525,7 +1525,7 @@
   "hide_post": "Hide post",
   "website_objects_heading": "Select objects",
   "website_objects_description": "All objects (restaurants, dishes, drinks) located in the areas specified on the map will appear on the website. If you want to have more control over the list of objects, you can use the Authorities to do so.",
-  "website_object_rules_of_selections": "Press {plusSymbol} to add a new area. Click & drag corners to resize. Click {cancelSymbol} to remove the area. Zoom in for controls.",
+  "website_object_rules_of_selections": "Press {plusSymbol} to add a new area. Click {cancelSymbol} to remove the area. Zoom in for controls.",
   "manage_website_empty_table": "You don't have any websites.",
   "delete_website_modal_body": "Warning: All configuration data and website pages will be removed. The name of the website will be no longer protected.",
   "delete_website_modal_title": "Delete {host} website",
@@ -1536,5 +1536,7 @@
   "website_mute_list": "Website moderators can mute users. Posts, comments, and the profile content of muted users are not accessible on the website. The website owner can also mute users, but only the moderator who has muted a user can unmute them.",
   "muted_users": "Muted users",
   "fraud_codes": "Codes: {codes}",
-  "website_objects_area": "Select area"
+  "website_objects_area": "Select area",
+  "areas": "Areas",
+  "specify_areas": "Specify areas"
 }

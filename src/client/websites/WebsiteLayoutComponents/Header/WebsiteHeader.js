@@ -1,7 +1,7 @@
 import React from 'react';
 import store from 'store';
 import { FormattedMessage } from 'react-intl';
-import { get } from 'lodash';
+import { get, upperFirst } from 'lodash';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
@@ -39,9 +39,11 @@ const WebsiteHeader = ({ currPage, wobj, history, config }) => {
             <Link className="WebsiteHeader__link left" to={'/'}>
               {'< Back'}
             </Link>
-            <span className="center WebsiteHeader__title">
-              {currentPage && <FormattedMessage id={currentPage} defaultMessage={currentPage} />}
-            </span>
+            {currentPage && (
+              <span className="center WebsiteHeader__title">
+                {<FormattedMessage id={currentPage} defaultMessage={upperFirst(currentPage)} />}
+              </span>
+            )}
           </React.Fragment>
         )}
         <div className="right">

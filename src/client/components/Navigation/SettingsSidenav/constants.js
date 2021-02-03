@@ -95,8 +95,8 @@ export const currentWebsiteSettings = site => [
   },
   {
     to: `/${site}/objects`,
-    id: 'objects',
-    defaultMessage: 'objects',
+    id: 'areas',
+    defaultMessage: 'Areas',
   },
   {
     to: `/${site}/objects-filters`,

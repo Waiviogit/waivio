@@ -19,6 +19,7 @@ import {
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
   getIsLoadingNotifications,
+  getIsWaivio,
   getNotifications,
 } from '../../reducers';
 import { getUserMetadata } from '../../user/usersActions';
@@ -41,6 +42,39 @@ const HeaderButtons = props => {
     location,
   } = props;
   const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
+  let popoverItems = [
+    <PopoverMenuItem key="rewards" topNav>
+      <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
+    </PopoverMenuItem>,
+    <PopoverMenuItem key="tools" topNav>
+      <FormattedMessage id="menu_tools" defaultMessage="Tools" />
+    </PopoverMenuItem>,
+    <PopoverMenuItem key="my-profile" topNav>
+      <FormattedMessage id="my_profile" defaultMessage="Profile" />
+    </PopoverMenuItem>,
+    <PopoverMenuItem key="wallet" topNav>
+      <FormattedMessage id="wallet" defaultMessage="Wallet" />
+    </PopoverMenuItem>,
+    <PopoverMenuItem key="settings" topNav>
+      <FormattedMessage id="settings" defaultMessage="Settings" />
+    </PopoverMenuItem>,
+    <PopoverMenuItem key="logout" topNav>
+      <FormattedMessage id="logout" defaultMessage="Logout" />
+    </PopoverMenuItem>,
+  ];
+
+  if (props.isWaivio) {
+    popoverItems = [
+      <PopoverMenuItem key="feed" topNav>
+        <FormattedMessage id="feed" defaultMessage="My Feed" />
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="discover" topNav>
+        <FormattedMessage id="menu_discover" defaultMessage="Discover" />
+      </PopoverMenuItem>,
+      ...popoverItems,
+    ];
+  }
+
   const notificationsCount = isUndefined(lastSeenTimestamp)
     ? size(notifications)
     : size(
@@ -208,34 +242,7 @@ const HeaderButtons = props => {
             visible={popoverVisible}
             onVisibleChange={handleMoreMenuVisibleChange}
             overlayStyle={{ position: 'fixed' }}
-            content={
-              <PopoverMenu onSelect={handleMoreMenuSelect}>
-                <PopoverMenuItem key="feed" topNav>
-                  <FormattedMessage id="feed" defaultMessage=" My Feed" />
-                </PopoverMenuItem>
-                <PopoverMenuItem key="rewards" topNav>
-                  <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
-                </PopoverMenuItem>
-                <PopoverMenuItem key="discover" topNav>
-                  <FormattedMessage id="menu_discover" defaultMessage="Discover" />
-                </PopoverMenuItem>
-                <PopoverMenuItem key="tools" topNav>
-                  <FormattedMessage id="menu_tools" defaultMessage="Tools" />
-                </PopoverMenuItem>
-                <PopoverMenuItem key="my-profile" topNav>
-                  <FormattedMessage id="my_profile" defaultMessage="Profile" />
-                </PopoverMenuItem>
-                <PopoverMenuItem key="wallet" topNav>
-                  <FormattedMessage id="wallet" defaultMessage="Wallet" />
-                </PopoverMenuItem>
-                <PopoverMenuItem key="settings" topNav>
-                  <FormattedMessage id="settings" defaultMessage="Settings" />
-                </PopoverMenuItem>
-                <PopoverMenuItem key="logout" topNav>
-                  <FormattedMessage id="logout" defaultMessage="Logout" />
-                </PopoverMenuItem>
-              </PopoverMenu>
-            }
+            content={<PopoverMenu onSelect={handleMoreMenuSelect}>{popoverItems}</PopoverMenu>}
           >
             <a className="Topnav__link">
               <Icon type="caret-down" />
@@ -265,6 +272,7 @@ HeaderButtons.propTypes = {
   }).isRequired,
   username: PropTypes.string,
   searchBarActive: PropTypes.bool,
+  isWaivio: PropTypes.bool,
 };
 
 HeaderButtons.defaultProps = {
@@ -275,6 +283,7 @@ HeaderButtons.defaultProps = {
   isStartSearchAutoComplete: false,
   isWebsite: false,
   searchBarActive: false,
+  isWaivio: true,
 };
 
 export default connect(
@@ -283,6 +292,7 @@ export default connect(
     username: getAuthenticatedUserName(state),
     notifications: getNotifications(state),
     loadingNotifications: getIsLoadingNotifications(state),
+    isWaivio: getIsWaivio(state),
   }),
   {
     getUserMetadata,
