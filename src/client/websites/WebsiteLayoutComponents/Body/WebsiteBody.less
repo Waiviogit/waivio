@@ -27,6 +27,13 @@
   &__map {
     width: 100%;
     height: 94vh;
+    transition: 0.3s;
+    margin-left: 0;
+    display: none;
+
+    @media @small {
+      display: block;
+    }
   }
 
   &__logo {
@@ -61,7 +68,6 @@
 
     @media @small {
       width: 40%;
-      padding: 0 25px 0 0;
     }
   }
 }

@@ -7,13 +7,46 @@
   width: 60%;
   height: 100%;
   padding: 0 20px 0 0;
+  left: 0;
+  transition: 0.3s;
+
+  @media @small {
+    left: -40%;
+  }
+
+  &__toggle-button {
+    display: none;
+
+    @media @small {
+      display: inline-block;
+      width: 20px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      color: @blue-botticelli;
+      position: absolute;
+      border: 1px solid @white-gainsboro;
+      border-radius: 4px;
+      right: -40px;
+      top: 10px;
+      background: @white;
+      cursor: pointer;
+    }
+  }
+
+  &__show {
+    left: 0;
+  }
 
   &__main-wrap {
     overflow-y: scroll;
     overflow-x: hidden;
     background: @white;
     padding: 10px;
-    height: 94%;
+
+    @media @small {
+      height: 94%;
+    }
   }
 
   &__filters {

@@ -17,12 +17,13 @@ const initialState = {
   isStartSearchUser: false,
   isStartSearchObject: false,
   isClearSearchObjects: false,
-  websiteSearchType: 'All',
+  websiteSearchType: 'restaurant',
   websiteSearchResult: [],
   searchUsersResults: [],
   websiteSearchString: '',
   tagCategory: [],
   sort: 'weight',
+  showSearchResult: false,
 };
 
 export default (state = initialState, action) => {
@@ -440,6 +441,13 @@ export default (state = initialState, action) => {
       };
     }
 
+    case searchActions.SET_SHOW_RESULT: {
+      return {
+        ...state,
+        showSearchResult: action.payload,
+      };
+    }
+
     default:
       return state;
   }
@@ -466,3 +474,4 @@ export const getSearchFiltersTagCategory = state => get(state, 'tagCategory', []
 export const getWebsiteSearchString = state => get(state, 'websiteSearchString', []);
 export const getSearchSort = state => get(state, 'sort', '');
 export const getWebsiteSearchResultLoading = state => get(state, 'websiteSearchResultLoading', '');
+export const getShowSearchResult = state => get(state, 'showSearchResult', '');

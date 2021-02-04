@@ -17,6 +17,7 @@ import {
   getSearchFiltersTagCategory,
   getSearchSort,
   getSearchUsersResults,
+  getShowSearchResult,
   getWebsiteSearchResult,
   getWebsiteSearchResultLoading,
   getWebsiteSearchString,
@@ -28,6 +29,7 @@ import {
   searchObjectsAutoCompeteLoadingMore,
   searchUsersAutoCompeteLoadingMore,
   setSearchSortType,
+  setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../searchActions';
@@ -42,6 +44,9 @@ const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
   const filterTypes = ['restaurant', 'dish', 'drink', 'Users'];
   const isUsersSearch = props.searchType === 'Users';
+  const searchResultClassList = classNames('SearchAllResult', {
+    SearchAllResult__show: props.isShowResult,
+  });
 
   useEffect(() => {
     if (filterTypes.includes(props.searchType) && !isUsersSearch)
@@ -133,7 +138,14 @@ const SearchAllResult = props => {
   );
 
   return (
-    <div className="SearchAllResult">
+    <div className={searchResultClassList}>
+      <div
+        className="SearchAllResult__toggle-button"
+        role="presentation"
+        onClick={() => props.setShowSearchResult(!props.isShowResult)}
+      >
+        <Icon type={props.isShowResult ? 'left' : 'right'} />
+      </div>
       <div className="SearchAllResult__type-wrap">
         {filterTypes.map(type => (
           <span
@@ -206,11 +218,13 @@ SearchAllResult.propTypes = {
   hasMoreUsers: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   usersLoading: PropTypes.bool.isRequired,
+  isShowResult: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
   setMapFullscreenMode: PropTypes.func.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   setWebsiteSearchFilter: PropTypes.func.isRequired,
+  setShowSearchResult: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -226,6 +240,7 @@ export default connect(
     activeFilters: getSearchFiltersTagCategory(state),
     loading: getWebsiteSearchResultLoading(state),
     usersLoading: getIsStartSearchUser(state),
+    isShowResult: getShowSearchResult(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,
@@ -235,5 +250,6 @@ export default connect(
     setWebsiteSearchFilter,
     setSearchSortType,
     setMapFullscreenMode,
+    setShowSearchResult,
   },
 )(injectIntl(SearchAllResult));

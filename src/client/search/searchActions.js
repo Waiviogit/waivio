@@ -360,3 +360,10 @@ export const setSearchSortType = sort => ({
   type: SET_SEARCH_SORT,
   payload: sort,
 });
+
+export const SET_SHOW_RESULT = '@search/SET_SHOW_RESULT';
+
+export const setShowSearchResult = payload => ({
+  type: SET_SHOW_RESULT,
+  payload,
+});

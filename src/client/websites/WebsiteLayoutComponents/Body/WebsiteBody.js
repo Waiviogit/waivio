@@ -12,9 +12,9 @@ import {
   getMapForMainPage,
   getScreenSize,
   getSearchUsersResults,
+  getShowSearchResult,
   getUserLocation,
   getWebsiteSearchResult,
-  getWebsiteSearchType,
   getWobjectsPoint,
   isGuestUser,
 } from '../../../reducers';
@@ -45,7 +45,7 @@ const WebsiteBody = props => {
     ? [+props.userLocation.lat, +props.userLocation.lon]
     : configDesktopMap;
   const mapClassList = classNames('WebsiteBody__map', {
-    WebsiteBody__hideMap: props.searchType !== 'All',
+    WebsiteBody__hideMap: props.isShowResult,
   });
 
   useEffect(() => {
@@ -183,7 +183,7 @@ const WebsiteBody = props => {
 
   return (
     <div className="WebsiteBody">
-      {props.searchType !== 'All' && <SearchAllResult />}
+      <SearchAllResult />
       <div className={mapClassList}>
         {currentLogo && (
           // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -226,7 +226,7 @@ WebsiteBody.propTypes = {
     lat: PropTypes.string,
     lon: PropTypes.string,
   }).isRequired,
-  searchType: PropTypes.string.isRequired,
+  isShowResult: PropTypes.string.isRequired,
   searchResult: PropTypes.arrayOf.isRequired,
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
@@ -244,7 +244,7 @@ WebsiteBody.defaultProps = {
 export default connect(
   state => ({
     userLocation: getUserLocation(state),
-    searchType: getWebsiteSearchType(state),
+    isShowResult: getShowSearchResult(state),
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
     configuration: getConfigurationValues(state),
