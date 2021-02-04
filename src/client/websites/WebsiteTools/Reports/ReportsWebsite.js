@@ -5,6 +5,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, AutoComplete, DatePicker, Button } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, map } from 'lodash';
+import classNames from 'classnames';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
 import Loading from '../../../components/Icon/Loading';
@@ -93,7 +94,9 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
                 </AutoComplete>,
               )}
             </Form.Item>
-            <h3>Select the period:</h3>
+            <h3>
+              <FormattedMessage id="select_period" defaultMessage="Select the period:" />
+            </h3>
             <div className="ReportsWebsite__data-piker-wrapper">
               <Form.Item>
                 {intl.formatMessage({
@@ -133,6 +136,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
                 type="primary"
                 htmlType="submit"
                 disabled={!form.isFieldsTouched(['host', 'startDate', 'endDate'])}
+                className={classNames({ ReportsWebsite__button: locale === 'ru-RU' })}
               >
                 {intl.formatMessage({
                   id: 'payments_generate_report',
