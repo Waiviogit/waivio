@@ -56,6 +56,8 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
     });
   };
 
+  const classNameButton = classNames({ ReportsWebsite__button: locale === 'ru-RU' });
+
   return (
     <div className="shifted">
       {isEmpty(reportsInfo) ? (
@@ -136,7 +138,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
                 type="primary"
                 htmlType="submit"
                 disabled={!form.isFieldsTouched(['host', 'startDate', 'endDate'])}
-                className={classNames({ ReportsWebsite__button: locale === 'ru-RU' })}
+                className={classNameButton}
               >
                 {intl.formatMessage({
                   id: 'payments_generate_report',
