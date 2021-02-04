@@ -51,8 +51,9 @@ const WebsiteBody = props => {
   useEffect(() => {
     if (isEmpty(props.userLocation))
       props.getCoordinates().then(({ value }) => {
+        const center = configDesktopMap || [+value.lat, +value.lon];
         setArea({
-          center: [+value.lat, +value.lon],
+          center,
           zoom: props.configCoordinates.zoom,
           bounds: [],
         });
@@ -150,7 +151,13 @@ const WebsiteBody = props => {
         <div
           role="presentation"
           className="WebsiteBodyControl__locateGPS"
-          onClick={() => setArea({ ...area, center: currentUserLocationCenter })}
+          onClick={() =>
+            setArea({
+              ...area,
+              zoom: props.configCoordinates.zoom,
+              center: currentUserLocationCenter,
+            })
+          }
         >
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
@@ -192,7 +199,7 @@ const WebsiteBody = props => {
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
-              center={currentCenter}
+              center={area.center}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}

@@ -58,7 +58,7 @@ const WebsiteSearch = props => {
   };
 
   useEffect(() => {
-    if (searchString) currentSearchMethod(searchString);
+    if (!isAllResult) currentSearchMethod(searchString);
   }, [props.searchType, props.sort, props.activeFilters]);
 
   const handleClickSearchItem = url => props.history.push(url);
@@ -164,16 +164,14 @@ const WebsiteSearch = props => {
   );
 
   const handleSearch = value => {
-    if (value) {
-      handleSearchAutocomplete(value);
-    } else props.resetSearchAutoCompete();
-
+    handleSearchAutocomplete(value);
     setSearchString(value);
   };
 
   const handleResetAutocomplete = () => {
     setSearchString('');
     props.resetSearchAutoCompete();
+    handleSearchAutocomplete('');
   };
 
   return (
