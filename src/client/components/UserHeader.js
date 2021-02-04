@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { get, isEmpty, includes } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import urlParse from 'url-parse';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -14,7 +14,7 @@ import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
 import { unfollowUser, followUser, muteUserBlog } from '../user/usersActions';
-import { getAuthenticatedUserName, getIsMobile } from '../reducers';
+import { getIsMobile } from '../reducers';
 import BellButton from '../widgets/BellButton';
 import MuteModal from '../widgets/MuteModal';
 import UserPopoverMenu from './UserPopoverMenu';
@@ -37,12 +37,11 @@ const UserHeader = ({
   follow,
   isGuest,
   isMobile,
-  authUserName,
   handleMuteUserBlog,
 }) => {
   const [visible, setVisible] = useState(false);
   const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
-  const mutedByModerator = !isEmpty(user.mutedBy) && !includes(user.mutedBy, authUserName);
+  const mutedByModerator = !isEmpty(user.mutedBy);
   const mutedLabelText = mutedByModerator ? 'Blocked' : 'Muted';
 
   let metadata = {};
@@ -123,9 +122,7 @@ const UserHeader = ({
                       followingType="user"
                     />
                     {user.youFollows && <BellButton user={user} />}
-                    {includes(user.mutedBy, authUserName) && (
-                      <span className="UserHeader__muteCard">{mutedLabelText}</span>
-                    )}
+                    {user.muted && <span className="UserHeader__muteCard">{mutedLabelText}</span>}
                     {!mutedByModerator && (
                       <UserPopoverMenu
                         user={user}
@@ -216,7 +213,6 @@ UserHeader.propTypes = {
   vestingShares: PropTypes.number,
   isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
-  authUserName: PropTypes.string,
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   isActive: PropTypes.bool.isRequired,
@@ -251,7 +247,6 @@ export default injectIntl(
   connect(
     state => ({
       isMobile: getIsMobile(state),
-      authUserName: getAuthenticatedUserName(state),
     }),
     {
       unfollow: unfollowUser,
