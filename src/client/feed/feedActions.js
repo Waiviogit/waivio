@@ -185,12 +185,18 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
   });
 };
 
-export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink }) => dispatch =>
+export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink }) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const follower = getAuthenticatedUserName(state);
   dispatch({
     type: GET_USER_COMMENTS.ACTION,
-    payload: ApiClient.getUserCommentsFromApi(username, skip, limit, start_permlink),
+    payload: ApiClient.getUserCommentsFromApi(username, skip, limit, start_permlink, follower),
     meta: { sortBy: 'comments', category: username, limit },
   });
+};
 
 export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, getState) => {
   const state = getState();
@@ -242,6 +248,7 @@ export const getMoreUserComments = ({ username, skip = 20, limit = 20 }) => (
   const state = getState();
   const feed = getFeed(state);
   const posts = getPosts(state);
+  const follower = getAuthenticatedUserName(state);
 
   const feedContent = getFeedFromState('comments', username, feed);
   const isLoading = getFeedLoadingFromState('comments', username, feed);
@@ -256,7 +263,7 @@ export const getMoreUserComments = ({ username, skip = 20, limit = 20 }) => (
 
   return dispatch({
     type: GET_MORE_USER_COMMENTS.ACTION,
-    payload: ApiClient.getUserCommentsFromApi(username, skip, limit, startPermlink),
+    payload: ApiClient.getUserCommentsFromApi(username, skip, limit, startPermlink, follower),
     meta: { sortBy: 'comments', category: username, limit },
   });
 };
