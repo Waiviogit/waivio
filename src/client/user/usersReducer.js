@@ -391,9 +391,6 @@ export default function usersReducer(state = initialState, action) {
     case actions.MUTE_CURRENT_USER.SUCCESS: {
       const user = state.users[action.meta.muted];
       const muted = !user.muted;
-      const mutedBy = muted
-        ? [...user.mutedBy, action.meta.userName]
-        : user.mutedBy.filter(usr => usr !== action.meta.userName);
 
       return {
         ...state,
@@ -401,7 +398,6 @@ export default function usersReducer(state = initialState, action) {
           [action.meta.muted]: {
             ...user,
             muted,
-            mutedBy,
             muteLoading: false,
           },
         },
