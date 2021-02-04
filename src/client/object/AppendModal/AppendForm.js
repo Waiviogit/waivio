@@ -169,7 +169,7 @@ export default class AppendForm extends Component {
     selectedCategory: [],
     currentTags: [],
     fileList: [],
-    currentAlbum: [],
+    currentAlbum: '',
     currentImages: [],
   };
 
@@ -185,7 +185,7 @@ export default class AppendForm extends Component {
     if (isEmpty(currentAlbum)) {
       const defaultAlbum = getDefaultAlbum(albums);
       // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({ currentAlbum: defaultAlbum });
+      this.setState({ currentAlbum: defaultAlbum.id });
     }
     this.calculateVoteWorth(this.state.votePercent);
   };
@@ -560,7 +560,7 @@ export default class AppendForm extends Component {
     this.appendImages()
       .then(() => {
         hideModal();
-        this.setState({ fileList: [], uploadingList: [], loading: false, currentAlbum: [] });
+        this.setState({ fileList: [], uploadingList: [], loading: false, currentAlbum: '' });
         message.success(
           intl.formatMessage(
             {
@@ -658,7 +658,7 @@ export default class AppendForm extends Component {
     const { currentAlbum } = this.state;
     const { albums } = this.props;
     let albumName = '';
-    const album = albums.find(item => item.id === currentAlbum.id);
+    const album = albums.find(item => item.id === currentAlbum);
 
     albumName = get(album, 'body');
 
