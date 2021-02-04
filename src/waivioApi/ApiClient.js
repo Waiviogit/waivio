@@ -1302,15 +1302,27 @@ export const sendPendingTransfer = async ({ sponsor, userName, amount, transacti
     .catch(err => err);
 };
 
-export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPermlink) => {
+export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPermlink, follower) => {
   let res;
   if (startPermlink) {
     res = fetch(
       `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}&start_permlink=${startPermlink}`,
+      {
+        headers: {
+          app: config.appName,
+          follower,
+        },
+      },
     );
   } else {
     res = fetch(
       `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}`,
+      {
+        headers: {
+          app: config.appName,
+          follower,
+        },
+      },
     );
   }
   return res
