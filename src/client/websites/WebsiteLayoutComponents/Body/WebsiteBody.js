@@ -12,9 +12,9 @@ import {
   getMapForMainPage,
   getScreenSize,
   getSearchUsersResults,
+  getShowSearchResult,
   getUserLocation,
   getWebsiteSearchResult,
-  getWebsiteSearchType,
   getWobjectsPoint,
   isGuestUser,
 } from '../../../reducers';
@@ -39,19 +39,21 @@ const WebsiteBody = props => {
   });
   const [infoboxData, setInfoboxData] = useState(null);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
+  const currentUserLocationCenter = [+props.userLocation.lat, +props.userLocation.lon];
+  const configDesktopMap = get(props.configuration, ['desktopMap', 'center']);
+  const currentCenter = isEmpty(configDesktopMap)
+    ? [+props.userLocation.lat, +props.userLocation.lon]
+    : configDesktopMap;
   const mapClassList = classNames('WebsiteBody__map', {
-    WebsiteBody__hideMap: props.searchType !== 'All',
+    WebsiteBody__hideMap: props.isShowResult,
   });
-
-  const currMapCoordinates = isEmpty(props.configCoordinates.center)
-    ? props.userLocation
-    : props.configCoordinates.center;
 
   useEffect(() => {
     if (isEmpty(props.userLocation))
       props.getCoordinates().then(({ value }) => {
+        const center = configDesktopMap || [+value.lat, +value.lon];
         setArea({
-          center: [+value.lat, +value.lon],
+          center,
           zoom: props.configCoordinates.zoom,
           bounds: [],
         });
@@ -149,7 +151,13 @@ const WebsiteBody = props => {
         <div
           role="presentation"
           className="WebsiteBodyControl__locateGPS"
-          onClick={() => setArea({ ...area, center: currMapCoordinates })}
+          onClick={() =>
+            setArea({
+              ...area,
+              zoom: props.configCoordinates.zoom,
+              center: currentUserLocationCenter,
+            })
+          }
         >
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
@@ -173,13 +181,9 @@ const WebsiteBody = props => {
     </div>
   );
 
-  const currentCenter = isEmpty(area.center)
-    ? [+props.userLocation.lat, +props.userLocation.lon]
-    : area.center;
-
   return (
     <div className="WebsiteBody">
-      {props.searchType !== 'All' && <SearchAllResult />}
+      <SearchAllResult />
       <div className={mapClassList}>
         {currentLogo && (
           // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -195,7 +199,7 @@ const WebsiteBody = props => {
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
-              center={currentCenter}
+              center={area.center}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
@@ -222,7 +226,7 @@ WebsiteBody.propTypes = {
     lat: PropTypes.string,
     lon: PropTypes.string,
   }).isRequired,
-  searchType: PropTypes.string.isRequired,
+  isShowResult: PropTypes.string.isRequired,
   searchResult: PropTypes.arrayOf.isRequired,
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
@@ -240,7 +244,7 @@ WebsiteBody.defaultProps = {
 export default connect(
   state => ({
     userLocation: getUserLocation(state),
-    searchType: getWebsiteSearchType(state),
+    isShowResult: getShowSearchResult(state),
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
     configuration: getConfigurationValues(state),
