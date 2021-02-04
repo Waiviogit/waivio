@@ -560,7 +560,7 @@ export default class AppendForm extends Component {
     this.appendImages()
       .then(() => {
         hideModal();
-        this.setState({ fileList: [], uploadingList: [], loading: false });
+        this.setState({ fileList: [], uploadingList: [], loading: false, currentAlbum: [] });
         message.success(
           intl.formatMessage(
             {
@@ -658,7 +658,7 @@ export default class AppendForm extends Component {
     const { currentAlbum } = this.state;
     const { albums } = this.props;
     let albumName = '';
-    const album = albums.find(item => item.id === currentAlbum);
+    const album = albums.find(item => item.id === currentAlbum.id);
 
     albumName = get(album, 'body');
 
@@ -765,9 +765,7 @@ export default class AppendForm extends Component {
           }),
         );
       }
-    }
-
-    if (currentField !== objectFields.newsFilter) {
+    } else if (currentField !== objectFields.newsFilter) {
       this.props.form.validateFieldsAndScroll((err, values) => {
         const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
           if (field.body === values.rating) {
