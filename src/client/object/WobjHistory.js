@@ -110,7 +110,7 @@ class WobjHistory extends React.Component {
 
   handleToggleModal = () => {
     const { match, albums, appendAlbum } = this.props;
-    if (match.params[1] === objectFields.galleryItem && isPhotosAlbumExist(albums)) {
+    if (match.params[1] === objectFields.galleryItem && !isPhotosAlbumExist(albums)) {
       appendAlbum();
     }
     this.setState({ showModal: !this.state.showModal });

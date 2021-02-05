@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, includes } from 'lodash';
 import urlParse from 'url-parse';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -14,7 +14,7 @@ import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
 import { unfollowUser, followUser, muteUserBlog } from '../user/usersActions';
-import { getIsMobile } from '../reducers';
+import { getAuthenticatedUserName, getIsMobile } from '../reducers';
 import BellButton from '../widgets/BellButton';
 import MuteModal from '../widgets/MuteModal';
 import UserPopoverMenu from './UserPopoverMenu';
@@ -37,11 +37,12 @@ const UserHeader = ({
   follow,
   isGuest,
   isMobile,
+  authUserName,
   handleMuteUserBlog,
 }) => {
   const [visible, setVisible] = useState(false);
   const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
-  const mutedByModerator = !isEmpty(user.mutedBy);
+  const mutedByModerator = !isEmpty(user.mutedBy) && !includes(user.mutedBy, authUserName);
   const mutedLabelText = mutedByModerator ? 'Blocked' : 'Muted';
 
   let metadata = {};
@@ -226,6 +227,7 @@ UserHeader.propTypes = {
   isGuest: PropTypes.bool,
   handleMuteUserBlog: PropTypes.func,
   isMobile: PropTypes.bool.isRequired,
+  authUserName: PropTypes.string,
 };
 
 UserHeader.defaultProps = {
@@ -247,6 +249,7 @@ export default injectIntl(
   connect(
     state => ({
       isMobile: getIsMobile(state),
+      authUserName: getAuthenticatedUserName(state),
     }),
     {
       unfollow: unfollowUser,

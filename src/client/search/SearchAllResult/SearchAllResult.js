@@ -127,7 +127,7 @@ const SearchAllResult = props => {
     );
   };
   const currentList = isEmpty(currRenderListState.list) ? (
-    <div>
+    <div className="SearchAllResult__empty">
       {props.intl.formatMessage({
         id: 'search_no_result',
         defaultMessage: 'No results were found for this request',

@@ -977,7 +977,10 @@
   "sidenav_user_websites": "Веб-сайты:",
   "sidenav_user_create": "Создать",
   "sidenav_user_manage": "Управлять",
-  "sidenav_user_payments": "Платежи",
+  "sidenav_user_payments": "Отчеты",
+  "sidenav_user_configuration": "Конфигурация",
+  "sidenav_user_settings": "Настройки",
+  "sidenav_user_administrations": "Администраторы",
   "posts": "Посты",
   "payment_card_your_payment_history_with_user": "Ваша история платежей с '{username}'",
   "object_info": "Еще...",
@@ -1483,7 +1486,8 @@
   "empty_transaction_list": "У вас еще нет транзакций",
   "empty_table_transaction_list": "У вас не было транзакций в этот период",
   "create_new_website": "Создайте новый веб-сайт",
-  "website_create_alerts_info": "Я прочитал и согласен с условиями Соглашения о предоставлении услуг веб-хостинга.",
+  "website_create_alerts_info": "Я прочитал и согласен с условиями",
+  "web_hosting_service": "Соглашения о предоставлении услуг веб-хостинга",
   "select_website": "Выберите сайт:",
   "name_website": "Укажите название для вашего сайта:",
   "info_level_domain_name": "Оно будет использоваться как доменное имя второго уровня.",
@@ -1539,8 +1543,12 @@
   "muted_users": "Отключенные пользователи",
   "fraud_codes": "Коды: {codes}",
   "website_objects_area": "Выберите территорию",
-  "areas": "Ареи",
+  "areas": "Области",
   "specify_areas": "Укажите области",
-  "search_no_result": "По данному запросу результатов не найдено"
-
+  "search_no_result": "По данному запросу результатов не найдено",
+  "moderators": "Модераторы",
+  "authorities": "Власти",
+  "objects_filters": "Фильтры объектов",
+  "select_website_template": "Выберите сайт:",
+  "select_period": "Выберите период:"
 }
