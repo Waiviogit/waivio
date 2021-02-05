@@ -145,7 +145,7 @@ export const deleteWebsite = item => (dispatch, getState, { busyAPI }) => {
 
   dispatch({ type: DELETE_WEBSITE, id: item.host });
 
-  deleteSite(name, item.host)
+  return deleteSite(name, item.host)
     .then(res => {
       if (res.result) {
         busyAPI.instance.sendAsync(subscribeMethod, [
@@ -163,9 +163,10 @@ export const deleteWebsite = item => (dispatch, getState, { busyAPI }) => {
           }
         });
       } else {
-        message.error(res.message);
         dispatch({ type: DELETE_WEBSITE_ERROR, id: item.host });
       }
+
+      return res;
     })
     .catch(e => {
       message.error(e.message);

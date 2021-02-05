@@ -369,11 +369,11 @@ export default function websiteReducer(state = initialState, action) {
         checked: website.status === 'active',
         pending: [],
       }));
-      console.log(websites);
+
       return {
         ...state,
         manage: {
-          ...action.payload,
+          ...state.manage,
           websites,
         },
       };
