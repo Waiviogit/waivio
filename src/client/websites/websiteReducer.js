@@ -363,6 +363,22 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.DELETE_WEBSITE_ERROR: {
+      const websites = get(state, ['manage', 'websites'], []).map(website => ({
+        ...website,
+        checked: website.status === 'active',
+        pending: [],
+      }));
+      console.log(websites);
+      return {
+        ...state,
+        manage: {
+          ...action.payload,
+          websites,
+        },
+      };
+    }
+
     default: {
       return state;
     }
