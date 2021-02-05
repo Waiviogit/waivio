@@ -99,7 +99,12 @@ import './AppendForm.less';
     categories: getObjectTagCategory(state),
     albums: getObjectAlbums(state),
   }),
-  { appendObject, rateObject, addImageToAlbumStore },
+  {
+    appendObject,
+    rateObject,
+    addAlbum: addAlbumToStore,
+    addImageToAlbum: addImageToAlbumStore,
+  },
 )
 @Form.create()
 @withEditor
@@ -127,6 +132,8 @@ export default class AppendForm extends Component {
     categories: PropTypes.arrayOf(PropTypes.shape()),
     selectedAlbum: PropTypes.shape(),
     albums: PropTypes.arrayOf(PropTypes.shape()),
+    addImageToAlbum: PropTypes.func,
+    addAlbum: PropTypes.func,
   };
 
   static defaultProps = {
@@ -152,6 +159,8 @@ export default class AppendForm extends Component {
     categories: [],
     selectedAlbum: null,
     albums: [],
+    addImageToAlbum: () => {},
+    addAlbum: () => {},
   };
 
   state = {
@@ -518,7 +527,7 @@ export default class AppendForm extends Component {
   };
 
   handleCreateAlbum = async formData => {
-    const { user, wObject, hideModal } = this.props;
+    const { user, wObject, hideModal, addAlbum } = this.props;
     const data = prepareAlbumData(formData, user.name, wObject);
     const album = prepareAlbumToStore(data);
 
@@ -527,7 +536,7 @@ export default class AppendForm extends Component {
     try {
       const { author } = await this.props.appendObject(data);
 
-      await addAlbumToStore({ ...album, author });
+      await addAlbum({ ...album, author });
       hideModal();
       message.success(
         this.props.intl.formatMessage(
@@ -585,7 +594,7 @@ export default class AppendForm extends Component {
   };
 
   appendImages = async () => {
-    const { form } = this.props;
+    const { form, addImageToAlbum } = this.props;
     const { currentImages } = this.state;
 
     const data = this.getWobjectData();
@@ -614,7 +623,7 @@ export default class AppendForm extends Component {
         this.setState({ fileList: filteredFileList }, async () => {
           const img = prepareImageToStore(postData);
 
-          await addImageToAlbumStore({
+          await addImageToAlbum({
             ...img,
             author: get(response, ['value', 'author']),
             id: form.getFieldValue('id'),
