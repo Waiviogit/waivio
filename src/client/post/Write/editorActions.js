@@ -3,7 +3,6 @@ import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
-import { isEmpty } from 'lodash';
 import { REFERRAL_PERCENT } from '../../helpers/constants';
 import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
 import { jsonParse } from '../../helpers/formatter';
@@ -16,6 +15,7 @@ import {
   getAuthenticatedUserName,
   getHiveBeneficiaryAccount,
   getTranslationByKey,
+  getLocale,
 } from '../../reducers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
@@ -219,20 +219,20 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
       isUpdating,
     } = postData;
 
-    const isPost = !isEmpty(postData);
-
-    const getPermLink = isUpdating
-      ? Promise.resolve(postData.permlink)
-      : createPermlink(title, author, parentAuthor, parentPermlink, isPost);
-
     const state = getState();
     const authUser = state.auth.user;
     const isGuest = state.auth.isGuestUser;
     const hiveBeneficiaryAccount = getHiveBeneficiaryAccount(state);
+    const locale = getLocale(state);
+    const follower = getAuthenticatedUserName(state);
     const newBody =
       isUpdating && !isGuest && !isReview
         ? getBodyPatchIfSmaller(postData.originalBody, body)
         : body;
+
+    const getPermLink = isUpdating
+      ? Promise.resolve(postData.permlink)
+      : createPermlink(title, author, parentAuthor, parentPermlink, locale, follower);
 
     const guestBeneficiary = hiveBeneficiaryAccount
       ? [{ account: hiveBeneficiaryAccount, weight: 9700 }, ...beneficiaries]
