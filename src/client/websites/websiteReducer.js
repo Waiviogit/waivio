@@ -341,6 +341,11 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.MUTE_USER.SUCCESS: {
       return {
         ...state,
+        restrictions: {
+          ...state.restrictions,
+          mutedUsers: action.payload.mutedUsers,
+          mutedCount: action.payload.mutedCount,
+        },
         muteLoading: false,
       };
     }
@@ -359,6 +364,11 @@ export default function websiteReducer(state = initialState, action) {
 
       return {
         ...state,
+        restrictions: {
+          ...state.restrictions,
+          mutedUsers: action.payload.mutedUsers,
+          mutedCount: action.payload.mutedCount,
+        },
         unmuteUsers,
       };
     }
