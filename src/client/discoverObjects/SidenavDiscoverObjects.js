@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, shallowEqual } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { size, ceil } from 'lodash';
 import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '../reducers';
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 import { PATH_NAME_DISCOVER } from '../../common/constants/rewards';
 
 const typesLimit = 5;
-const SidenavDiscoverObjects = ({ withTitle }) => {
+const SidenavDiscoverObjects = ({ withTitle, intl }) => {
   // redux-store
   const { pathname } = useSelector(getCurrentLocation);
   const isLoading = useSelector(getObjectTypesLoading);
@@ -50,7 +50,11 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
             role="presentation"
           >
             <div className="Sidenav__title-item">
-              <FormattedMessage id="objects" defaultMessage="Objects" />:
+              {intl.formatMessage({
+                id: 'objects',
+                defaultMessage: 'Objects',
+              })}
+              :
             </div>
             <div className="Sidenav__title-icon">
               {!menuCondition.objects ? (
@@ -117,7 +121,11 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
             role="presentation"
           >
             <div className="Sidenav__title-item">
-              <FormattedMessage id="users" defaultMessage="Users" />:
+              {intl.formatMessage({
+                id: 'users',
+                defaultMessage: 'Users',
+              })}
+              :
             </div>
             <div className="Sidenav__title-icon">
               {!menuCondition.users ? (
@@ -160,10 +168,13 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
 };
 
 SidenavDiscoverObjects.propTypes = {
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
   withTitle: PropTypes.bool,
 };
 SidenavDiscoverObjects.defaultProps = {
   withTitle: true,
 };
 
-export default SidenavDiscoverObjects;
+export default injectIntl(SidenavDiscoverObjects);

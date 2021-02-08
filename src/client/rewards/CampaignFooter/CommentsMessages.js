@@ -51,6 +51,8 @@ const CommentsMessages = memo(
       post,
     ]);
 
+    if (!commentObj) return null;
+
     const {
       author,
       created: commentCreated,
@@ -78,7 +80,7 @@ const CommentsMessages = memo(
     const currentUser = filter(proposition.users, usersItem => usersItem.name === user.name);
 
     const commentAuthor = useMemo(() => {
-      if (commentObj.guestInfo) {
+      if (get(commentObj, 'guestInfo')) {
         return get(commentObj, ['guestInfo', 'userId'], '');
       } else if (includes(commentObj.author, 'guest')) {
         return get(currentUser, ['0', 'name']) || get(proposition, ['users', '0', 'name']);

@@ -1549,5 +1549,6 @@
   "authorities": "Власти",
   "objects_filters": "Фильтры объектов",
   "select_website_template": "Выберите сайт:",
-  "select_period": "Выберите период:"
+  "select_period": "Выберите период:",
+  "insufficient_balance": "Недостаточно средств на балансе."
 }

@@ -8,7 +8,6 @@ import Loading from '../../Icon/Loading';
 import './DynamicTable.less';
 
 export const DynamicTable = ({ header, bodyConfig, intl, onChange, deleteItem, emptyTitle }) => {
-  console.log(emptyTitle);
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type))
       return <Loading data-test={`loading/${item.host}`} />;

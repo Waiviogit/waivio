@@ -3,7 +3,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
-import { Button, Modal } from 'antd';
+import { Button, Modal, message } from 'antd';
 import { Link } from 'react-router-dom';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
@@ -166,7 +166,15 @@ export const ManageWebsite = props => {
         )}
         onCancel={() => setModalState({})}
         onOk={() => {
-          props.deleteWebsite(modalState.hostInfo);
+          props.deleteWebsite(modalState.hostInfo).then(res => {
+            if (res.message)
+              message.error(
+                props.intl.formatMessage({
+                  id: 'insufficient_balance',
+                  defaultMessage: 'Insufficient funds on the balance sheet.',
+                }),
+              );
+          });
           setModalState({
             visible: false,
           });

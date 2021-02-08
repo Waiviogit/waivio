@@ -138,23 +138,40 @@ export const suspendWebsite = id => (dispatch, getState, { steemConnectAPI, busy
 };
 
 export const DELETE_WEBSITE = '@website/DELETE_WEBSITE';
+export const DELETE_WEBSITE_ERROR = '@website/DELETE_WEBSITE_ERROR';
 
 export const deleteWebsite = item => (dispatch, getState, { busyAPI }) => {
   const name = getAuthenticatedUserName(getState());
 
   dispatch({ type: DELETE_WEBSITE, id: item.host });
-  deleteSite(name, item.host).then(res => {
-    busyAPI.instance.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
-    busyAPI.instance.subscribe((response, mess) => {
-      if (
-        subscribeTypes.posts === mess.type &&
-        mess.notification.blockParsed === res.result.block_num
-      ) {
-        dispatch(getManageInfo(name));
-        dispatch(getOwnWebsite());
+
+  return deleteSite(name, item.host)
+    .then(res => {
+      if (res.result) {
+        busyAPI.instance.sendAsync(subscribeMethod, [
+          name,
+          res.result.block_num,
+          subscribeTypes.posts,
+        ]);
+        busyAPI.instance.subscribe((response, mess) => {
+          if (
+            subscribeTypes.posts === mess.type &&
+            mess.notification.blockParsed === res.result.block_num
+          ) {
+            dispatch(getManageInfo(name));
+            dispatch(getOwnWebsite());
+          }
+        });
+      } else {
+        dispatch({ type: DELETE_WEBSITE_ERROR, id: item.host });
       }
+
+      return res;
+    })
+    .catch(e => {
+      message.error(e.message);
+      dispatch({ type: DELETE_WEBSITE_ERROR, id: item.host });
     });
-  });
 };
 
 export const GET_REPORTS_PAGE = createAsyncActionType('@website/GET_REPORTS_PAGE');
