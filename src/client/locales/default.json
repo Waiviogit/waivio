@@ -1531,7 +1531,7 @@
   "manage_website_empty_table": "You don't have any websites.",
   "delete_website_modal_body": "Warning: All configuration data and website pages will be removed. The name of the website will be no longer protected.",
   "delete_website_modal_title": "Delete {host} website",
-  "unmuted": "Unmuted",
+  "unmute": "Unmute",
   "website_black_list": "Website administrators can add users to blacklists. All object updates and votes on updates from blacklisted users are ignored. The website owner can also add users to their blacklist. They can also add users to their whitelist to override any other blacklist.",
   "website_manage_black_list": "Manage blacklist/whitelist",
   "mute": "Mute",

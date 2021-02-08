@@ -341,6 +341,10 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.MUTE_USER.SUCCESS: {
       return {
         ...state,
+        restrictions: {
+          ...state.restrictions,
+          ...action.payload,
+        },
         muteLoading: false,
       };
     }
@@ -359,6 +363,10 @@ export default function websiteReducer(state = initialState, action) {
 
       return {
         ...state,
+        restrictions: {
+          ...state.restrictions,
+          ...action.payload,
+        },
         unmuteUsers,
       };
     }

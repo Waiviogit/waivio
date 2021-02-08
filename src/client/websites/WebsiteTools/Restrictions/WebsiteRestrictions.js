@@ -61,7 +61,7 @@ export const WebsiteRestrictions = ({
                 onClick={() => handleMuteUser(authUser, [user.name], [], host)}
                 loading={unmutedUsers.includes(user.name)}
               >
-                {intl.formatMessage({ id: 'unmuted', defaultMessage: 'Unmuted' })}
+                {intl.formatMessage({ id: 'unmute', defaultMessage: 'Unmute' })}
               </Action>
             ) : (
               <div className="WebsiteRestrictions__blocked">

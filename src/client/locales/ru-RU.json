@@ -1551,6 +1551,8 @@
   "select_website_template": "Выберите сайт:",
   "select_period": "Выберите период:",
   "insufficient_balance": "Недостаточно средств на балансе.",
+  "unmute": "Включить",
+  "insufficient_balance": "Недостаточно средств на балансе.",
   "desktop_logo": "Настольный логотип",
   "website_change_logo": "Изменить логотип",
   "mobile_logo": "Мобильный логотип",
