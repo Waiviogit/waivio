@@ -1548,5 +1548,6 @@
   "web_hosting_service": "Web Hosting Service Agreement",
   "select_website_template": "Select the website:",
   "select_period": "Select the period",
-  "insufficient_balance": "Insufficient funds on the balance sheet."
+  "insufficient_balance": "Insufficient funds on the balance sheet.",
+  "unmute": "Unmute"
 }

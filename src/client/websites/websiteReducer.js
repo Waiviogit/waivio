@@ -339,12 +339,14 @@ export default function websiteReducer(state = initialState, action) {
     }
 
     case websiteAction.MUTE_USER.SUCCESS: {
+      const { mutedUsers, mutedCount } = action.payload;
+
       return {
         ...state,
         restrictions: {
           ...state.restrictions,
-          mutedUsers: action.payload.mutedUsers,
-          mutedCount: action.payload.mutedCount,
+          mutedUsers,
+          mutedCount,
         },
         muteLoading: false,
       };
@@ -361,13 +363,14 @@ export default function websiteReducer(state = initialState, action) {
 
     case websiteAction.UNMUTE_USER.SUCCESS: {
       const unmuteUsers = state.unmuteUsers.filter(user => user.name === action.meta);
+      const { mutedUsers, mutedCount } = action.payload;
 
       return {
         ...state,
         restrictions: {
           ...state.restrictions,
-          mutedUsers: action.payload.mutedUsers,
-          mutedCount: action.payload.mutedCount,
+          mutedUsers,
+          mutedCount,
         },
         unmuteUsers,
       };
