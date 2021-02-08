@@ -45,7 +45,6 @@ import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { getObjectName } from '../../helpers/wObjectHelper';
-import { getSocialInfoPost } from '../postActions';
 
 import './EditPost.less';
 
@@ -82,7 +81,6 @@ const getLinkedObjects = contentStateRaw => {
   {
     createPost,
     saveDraft,
-    getSocialInfoPostAction: getSocialInfoPost,
   },
 )
 class EditPost extends Component {
@@ -102,7 +100,6 @@ class EditPost extends Component {
     isGuest: PropTypes.bool,
     beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
-    getSocialInfoPostAction: PropTypes.func,
     host: PropTypes.string.isRequired,
   };
   static defaultProps = {
@@ -116,7 +113,6 @@ class EditPost extends Component {
     saveDraft: () => {},
     isGuest: false,
     beneficiaries: [],
-    getSocialInfoPostAction: () => {},
   };
 
   constructor(props) {
@@ -160,39 +156,32 @@ class EditPost extends Component {
     this.setState({ isReview });
     const postPermlink = get(currDraft, 'permlink');
     if (isReview) {
-      let isPublicReview = '';
-      this.props.getSocialInfoPostAction(userName, postPermlink).then(data => {
-        if (isEqual(data.value.message, 'Post not found')) {
-          isPublicReview = '';
-        } else {
-          isPublicReview = postPermlink;
-        }
-        getReviewCheckInfo({ campaignId, locale, userName, isPublicReview })
-          .then(campaignData => {
-            this.setState({
-              campaign: campaignData,
-            });
-          })
-          .then(() => {
-            const delay = 350;
-            if (this.state.linkedObjects.length === 2) {
-              setTimeout(() => this.getReviewTitle(), delay);
-            } else {
-              setTimeout(() => this.getReviewTitle(), delay * 2);
-            }
-          })
-          .catch(error => {
-            message.error(
-              this.props.intl.formatMessage(
-                {
-                  id: 'imageSetter_link_is_already_added',
-                  defaultMessage: `Failed to get campaign data: {error}`,
-                },
-                { error },
-              ),
-            );
+      const isPublicReview = postPermlink;
+      getReviewCheckInfo({ campaignId, locale, userName, isPublicReview })
+        .then(campaignData => {
+          this.setState({
+            campaign: campaignData,
           });
-      });
+        })
+        .then(() => {
+          const delay = 350;
+          if (this.state.linkedObjects.length === 2) {
+            setTimeout(() => this.getReviewTitle(), delay);
+          } else {
+            setTimeout(() => this.getReviewTitle(), delay * 2);
+          }
+        })
+        .catch(error => {
+          message.error(
+            this.props.intl.formatMessage(
+              {
+                id: 'imageSetter_link_is_already_added',
+                defaultMessage: `Failed to get campaign data: {error}`,
+              },
+              { error },
+            ),
+          );
+        });
     }
   }
 
@@ -206,21 +195,14 @@ class EditPost extends Component {
       this.props.draftId !== prevProps.draftId &&
       has(currDraft, ['jsonMetadata', 'campaignId'])
     ) {
-      let isPublicReview = '';
-      this.props.getSocialInfoPostAction(userName, postPermlink).then(data => {
-        if (isEqual(data.value.message, 'Post not found')) {
-          isPublicReview = '';
-        } else {
-          isPublicReview = postPermlink;
-        }
-        getReviewCheckInfo({ campaignId, locale, userName, isPublicReview })
-          .then(campaignData => {
-            this.setState({
-              campaign: campaignData,
-            });
-          })
-          .catch(error => console.log('Failed to get campaign data:', error));
-      });
+      const isPublicReview = postPermlink;
+      getReviewCheckInfo({ campaignId, locale, userName, isPublicReview })
+        .then(campaignData => {
+          this.setState({
+            campaign: campaignData,
+          });
+        })
+        .catch(error => console.log('Failed to get campaign data:', error));
 
       getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
         .then(campaignData => {
