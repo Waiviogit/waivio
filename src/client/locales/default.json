@@ -1596,5 +1596,6 @@
   "dish": "Dish",
   "drink": "Drink",
   "mute_users": "Mute users",
-  "mute_empty": "Empty table"
+  "mute_empty": "Empty table",
+  "get_campaign_data_error": "Failed to get campaign data"
 }
