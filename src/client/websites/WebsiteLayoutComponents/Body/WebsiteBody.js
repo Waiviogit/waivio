@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isEmpty, get, map, debounce, isEqual } from 'lodash';
+import { Tag } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -11,6 +12,7 @@ import {
   getConfigurationValues,
   getMapForMainPage,
   getScreenSize,
+  getSearchFiltersTagCategory,
   getSearchUsersResults,
   getShowSearchResult,
   getUserLocation,
@@ -19,7 +21,7 @@ import {
   isGuestUser,
 } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
-import { setWebsiteSearchType } from '../../../search/searchActions';
+import { setWebsiteSearchFilter, setWebsiteSearchType } from '../../../search/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import { getWebsiteObjWithCoordinates } from '../../websiteActions';
 import mapProvider from '../../../helpers/mapProvider';
@@ -50,15 +52,23 @@ const WebsiteBody = props => {
   });
 
   useEffect(() => {
-    if (isEmpty(props.userLocation))
+    if (isEmpty(props.userLocation)) {
       props.getCoordinates().then(({ value }) => {
         const center = configDesktopMap || [+value.lat, +value.lon];
+
         setArea({
           center,
           zoom: props.configCoordinates.zoom,
           bounds: [],
         });
       });
+    } else {
+      setArea({
+        center: currentCenter,
+        zoom: props.configCoordinates.zoom,
+        bounds: [],
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -116,6 +126,7 @@ const WebsiteBody = props => {
           anchor={[+latitude, +longitude]}
           payload={wobject}
           onClick={handleMarkerClick}
+          onDoubleClick={() => setInfoboxData(null)}
         />
       ) : null;
     });
@@ -134,10 +145,11 @@ const WebsiteBody = props => {
           role="presentation"
           className="WebsiteBody__overlay-wrap"
           to={`/object/${currentWobj.wobject.author_permlink}`}
-          onMouseLeave={() => setInfoboxData(null)}
         >
           <img src={avatar} width={35} height={35} alt={name} />
-          <span className="MapOS__overlay-wrap-name">{name}</span>
+          <span data-anchor={name} className="MapOS__overlay-wrap-name">
+            {name}
+          </span>
         </Link>
       </Overlay>
     );
@@ -196,7 +208,7 @@ const WebsiteBody = props => {
             onClick={() => props.history.push(currLink)}
           />
         )}
-        {!isEmpty(currentCenter) && (
+        {!isEmpty(area.center) && (
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
@@ -204,7 +216,23 @@ const WebsiteBody = props => {
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
+              onClick={({ event }) => {
+                if (!get(event, 'target.dataset.anchor')) setInfoboxData(null);
+              }}
             >
+              <div className="WebsiteBody__filters-list">
+                {props.activeFilters.map(filter =>
+                  filter.tags.map(tag => (
+                    <Tag
+                      key={tag}
+                      closable
+                      onClose={() => props.setWebsiteSearchFilter(filter.categoryName, 'all')}
+                    >
+                      {tag}
+                    </Tag>
+                  )),
+                )}
+              </div>
               {markersLayout}
               {infoboxData && getOverlayLayout()}
             </Map>
@@ -232,9 +260,11 @@ WebsiteBody.propTypes = {
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
+  setWebsiteSearchFilter: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
   configCoordinates: PropTypes.arrayOf.isRequired,
+  activeFilters: PropTypes.arrayOf.isRequired,
 };
 
 WebsiteBody.defaultProps = {
@@ -253,10 +283,12 @@ export default connect(
     wobjectsPoint: getWobjectsPoint(state),
     isGuest: isGuestUser(state),
     configCoordinates: getMapForMainPage(state),
+    activeFilters: getSearchFiltersTagCategory(state),
   }),
   {
     getCoordinates,
     setWebsiteSearchType,
     getWebsiteObjWithCoordinates,
+    setWebsiteSearchFilter,
   },
 )(withRouter(WebsiteBody));

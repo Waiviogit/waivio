@@ -29,11 +29,7 @@
     height: 94vh;
     transition: 0.3s;
     margin-left: 0;
-    display: none;
-
-    @media @small {
-      display: block;
-    }
+    display: block;
   }
 
   &__logo {
@@ -56,10 +52,10 @@
 
   &__hideMap {
     position: relative;
-    display: none;
+    display: block;
+    margin-left: 0;
 
     @media @small {
-      display: block;
       width: 60%;
       margin-left: 39%;
     }
@@ -73,6 +69,15 @@
       width: 40%;
     }
   }
+
+  &__filters-list {
+    margin: 15px;
+    display: flex;
+
+    @media @small {
+      display: none;
+    }
+  }
 }
 
 .WebsiteBodyControl {
@@ -83,7 +88,11 @@
   flex-direction: column;
   align-items: flex-end;
   top: 83%;
-  left: 96%;
+  left: 90%;
+
+  @media @small {
+    left: 94%;
+  }
 
   &__gps {
     cursor: pointer;

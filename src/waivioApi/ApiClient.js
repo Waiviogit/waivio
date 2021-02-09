@@ -286,7 +286,8 @@ export const searchObjects = (
 export const searchUsers = (searchString, username, limit = 15, notGuest = false, skip = 0) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}&skip=${skip}&notGuest=${notGuest}`,
+      `${config.apiPrefix}${config.users}${config.search}?${searchString &&
+        `searchString=${searchString}&`}limit=${limit}&skip=${skip}&notGuest=${notGuest}`,
       {
         headers: {
           ...headers,
