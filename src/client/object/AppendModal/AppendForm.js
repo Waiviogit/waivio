@@ -691,66 +691,6 @@ export default class AppendForm extends Component {
     );
   };
 
-  handleCreateTag = () => {
-    const { hideModal, intl, user } = this.props;
-    const { categoryItem, selectedCategory } = this.state;
-    const currentLocale = this.props.form.getFieldValue('currentLocale');
-    const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
-
-    this.props.form.validateFields(err => {
-      if (!err) {
-        this.setState({ loading: true });
-        this.appendTag(categoryItem)
-          .then(() => {
-            hideModal();
-            this.setState({ categoryItem: null, loading: false });
-            message.success(
-              intl.formatMessage(
-                {
-                  id: 'added_tags_to_category',
-                  defaultMessage: `@{user} added a new #tag ({language}) to {category} category`,
-                },
-                {
-                  user: user.name,
-                  language: langReadable,
-                  category: selectedCategory.body,
-                },
-              ),
-            );
-          })
-          .catch(error => {
-            console.error(error.message);
-            message.error(
-              intl.formatMessage({
-                id: 'couldnt_upload_image',
-                defaultMessage: "Couldn't add item to the category.",
-              }),
-            );
-            this.setState({ loading: false });
-          });
-      } else {
-        console.error(err);
-      }
-    });
-  };
-
-  appendTag = async categoryItem => {
-    const data = this.getWobjectData();
-
-    /* eslint-disable no-restricted-syntax */
-    const postData = {
-      ...data,
-      permlink: `${data.author}-${generatePermlink()}`,
-      field: {
-        ...this.getWobjectField(categoryItem),
-        tagCategory: this.state.selectedCategory.body,
-      },
-      body: this.getWobjectBody(),
-    };
-
-    await this.props.appendObject(postData, { votePower: postData.votePower });
-  };
-
   handleSubmit = event => {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
@@ -813,7 +753,6 @@ export default class AppendForm extends Component {
 
   checkRequiredField = (form, currentField) => {
     let formFields = null;
-
     switch (currentField) {
       case objectFields.address:
         formFields = form.getFieldsValue(Object.values(addressFields));
@@ -844,7 +783,7 @@ export default class AppendForm extends Component {
 
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
-  isDuplicate = (currentLocale, currentField) => {
+  isDuplicate = (currentLocale, currentField, currentCategory) => {
     const { form, wObject, user } = this.props;
     const currentValue = form.getFieldValue(currentField);
     const filtered = wObject.fields.filter(
@@ -873,6 +812,11 @@ export default class AppendForm extends Component {
 
     if (currentField === objectFields.name) return filtered.some(f => f.body === currentValue);
 
+    if (currentField === objectFields.categoryItem) {
+      const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
+      return selectedTagCategory.some(item => item.body === currentValue);
+    }
+
     return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
   };
 
@@ -888,10 +832,11 @@ export default class AppendForm extends Component {
     const { intl, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
+    const currentCategory = form.getFieldValue('tagCategory');
     const formFields = form.getFieldsValue();
 
     const isDuplicated = formFields[rule.field]
-      ? this.isDuplicate(currentLocale, currentField)
+      ? this.isDuplicate(currentLocale, currentField, currentCategory)
       : false;
 
     if (isDuplicated) {
