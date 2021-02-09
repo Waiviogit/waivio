@@ -202,7 +202,7 @@ class EditPost extends Component {
             campaign: campaignData,
           });
         })
-        .catch(error => console.log('Failed to get campaign data:', error));
+        .catch(error => message.error('Failed to get campaign data:', error));
 
       getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
         .then(campaignData => {
@@ -210,7 +210,7 @@ class EditPost extends Component {
             campaign: campaignData,
           });
         })
-        .catch(error => console.log('Failed to get campaign data:', error));
+        .catch(error => message.error('Failed to get campaign data:', error));
     }
   }
 
