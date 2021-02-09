@@ -186,7 +186,7 @@ class EditPost extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { locale, userName } = this.props;
+    const { locale, userName, intl } = this.props;
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const postPermlink = get(currDraft, 'permlink');
     const campaignId = get(currDraft, ['jsonMetadata', 'campaignId']);
@@ -202,7 +202,14 @@ class EditPost extends Component {
             campaign: campaignData,
           });
         })
-        .catch(error => message.error('Failed to get campaign data:', error));
+        .catch(() =>
+          message.error(
+            intl.formatMessage({
+              id: 'get_campaign_data_error',
+              defaultMessage: 'Failed to get campaign data',
+            }),
+          ),
+        );
 
       getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
         .then(campaignData => {
@@ -210,7 +217,14 @@ class EditPost extends Component {
             campaign: campaignData,
           });
         })
-        .catch(error => message.error('Failed to get campaign data:', error));
+        .catch(() =>
+          message.error(
+            intl.formatMessage({
+              id: 'get_campaign_data_error',
+              defaultMessage: 'Failed to get campaign data',
+            }),
+          ),
+        );
     }
   }
 
