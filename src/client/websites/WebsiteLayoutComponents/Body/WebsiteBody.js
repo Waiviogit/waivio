@@ -43,18 +43,20 @@ const WebsiteBody = props => {
   const [infoboxData, setInfoboxData] = useState(null);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const currentUserLocationCenter = [+props.userLocation.lat, +props.userLocation.lon];
-  const configDesktopMap = get(props.configuration, ['desktopMap', 'center']);
-  const currentCenter = isEmpty(configDesktopMap)
+  const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
+  const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
+  const configMap = isMobile
+    ? get(props.configuration, ['mobileMap', 'center'])
+    : get(props.configuration, ['desktopMap', 'center']);
+
+  const currentCenter = isEmpty(configMap)
     ? [+props.userLocation.lat, +props.userLocation.lon]
-    : configDesktopMap;
-  const mapClassList = classNames('WebsiteBody__map', {
-    WebsiteBody__hideMap: props.isShowResult,
-  });
+    : configMap;
 
   useEffect(() => {
     if (isEmpty(props.userLocation)) {
       props.getCoordinates().then(({ value }) => {
-        const center = configDesktopMap || [+value.lat, +value.lon];
+        const center = configMap || [+value.lat, +value.lon];
 
         setArea({
           center,
@@ -80,7 +82,6 @@ const WebsiteBody = props => {
     }
   }, [props.userLocation, boundsParams]);
 
-  const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
   const aboutObject = get(props, ['configuration', 'aboutObject']);
   const currLink = aboutObject ? `/object/${aboutObject}` : '/';
