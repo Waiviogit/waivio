@@ -35,10 +35,9 @@ import {
 } from '../searchActions';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
-import { setMapFullscreenMode } from '../../components/Maps/mapActions';
+import Loading from '../../components/Icon/Loading';
 
 import './SearchAllResult.less';
-import Loading from '../../components/Icon/Loading';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -164,7 +163,7 @@ const SearchAllResult = props => {
             <div className="SearchAllResult__filters">
               {map(props.filters, filter => (
                 <Dropdown key={filter.tagCategory} overlay={menu(filter)} trigger={['click']}>
-                  <Button>
+                  <Button className="SearchAllResult__filters-button">
                     {getCurrentName(filter.tagCategory) || filter.tagCategory} <Icon type="down" />
                   </Button>
                 </Dropdown>
@@ -184,8 +183,8 @@ const SearchAllResult = props => {
           <Button
             icon="compass"
             size="large"
-            className="map-btn"
-            onClick={() => props.setMapFullscreenMode(true)}
+            className="SearchAllResult__showMap"
+            onClick={() => props.setShowSearchResult(false)}
           >
             {props.intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
           </Button>
@@ -221,7 +220,6 @@ SearchAllResult.propTypes = {
   isShowResult: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
-  setMapFullscreenMode: PropTypes.func.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
@@ -249,7 +247,6 @@ export default connect(
     getFilterForSearch,
     setWebsiteSearchFilter,
     setSearchSortType,
-    setMapFullscreenMode,
     setShowSearchResult,
   },
 )(injectIntl(SearchAllResult));

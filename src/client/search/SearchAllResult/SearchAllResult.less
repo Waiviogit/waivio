@@ -3,12 +3,12 @@
 
 .SearchAllResult {
   position: absolute;
-  z-index: 2;
   width: 60%;
   height: 100%;
   padding: 0 20px 0 0;
-  left: 0;
   transition: 0.3s;
+  left: -100%;
+  z-index: 201;
 
   @media @small {
     left: -40%;
@@ -53,6 +53,19 @@
     display: flex;
     justify-content: space-evenly;
     padding: 0 0 15px;
+  }
+
+  &__filters-button {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin: 0;
+    }
+
+    i {
+      margin-top: 4px;
+    }
   }
 
   &__buttonWrap {
@@ -106,5 +119,18 @@
 
   &__empty {
     text-align: center;
+  }
+
+  &__showMap {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin: 0;
+    }
+
+    i {
+      margin-top: 4px;
+    }
   }
 }
