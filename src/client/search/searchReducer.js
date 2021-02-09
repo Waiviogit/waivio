@@ -118,11 +118,11 @@ export default (state = initialState, action) => {
       };
 
     case searchActions.SEARCH_USERS.SUCCESS: {
-      const { result, search } = action.payload;
+      const { result } = action.payload;
 
       return {
         ...state,
-        searchUsersResults: isEmpty(search) ? [] : get(result, 'users', []),
+        searchUsersResults: get(result, 'users', []),
         hasMoreUsers: get(result, 'hasMore', []),
         isStartSearchUser: false,
       };
