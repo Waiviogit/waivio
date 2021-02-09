@@ -62,7 +62,9 @@ export const WebsiteObjectFilters = ({
       </p>
       {Object.keys(categories).map(topic => (
         <div key={topic}>
-          <h2>{topic}</h2>
+          <h2>
+            <FormattedMessage id={topic} defaultMessage={topic} />
+          </h2>
           <div>
             {Object.keys(categories[topic]).map(category => (
               <div key={category} className="WebsiteObjectFilters__category">

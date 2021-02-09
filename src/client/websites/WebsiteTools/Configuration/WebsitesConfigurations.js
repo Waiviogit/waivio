@@ -321,7 +321,12 @@ export const WebsitesConfigurations = ({
                   </Button>
                 </div>,
               )}
-              <p>Desktop logo will appear on the home page of the desktop version of the site.</p>
+              <p>
+                <FormattedMessage
+                  id="desktop_logo_description"
+                  defaultMessage="Desktop logo will appear on the homepage of the desktop version of the site."
+                />
+              </p>
             </Form.Item>
             <Form.Item>
               <h3>
@@ -346,7 +351,12 @@ export const WebsitesConfigurations = ({
                   </Button>
                 </div>,
               )}
-              <p>Mobile logo will appear on the home page of the mobile version of the site.</p>
+              <p>
+                <FormattedMessage
+                  id="mobile_logo_description"
+                  defaultMessage="Mobile logo will appear on the home page of the mobile version of the site."
+                />
+              </p>
             </Form.Item>
             <Form.Item>
               <h3>
@@ -382,7 +392,12 @@ export const WebsitesConfigurations = ({
                   />
                 ),
               )}
-              <p>About object will be opened when visitors click on the logo on the home page.</p>
+              <p>
+                <FormattedMessage
+                  id="about_object_description"
+                  defaultMessage="About object will be opened when visitors click on the logo on the home page."
+                />
+              </p>
             </Form.Item>
             <Form.Item>
               <h3>
@@ -418,7 +433,12 @@ export const WebsitesConfigurations = ({
                   </Button>
                 </div>,
               )}
-              <p>Select the initial map focus for the desktop site.</p>
+              <p>
+                <FormattedMessage
+                  id="desktop_map_description"
+                  defaultMessage="Select the initial map focus for the desktop site."
+                />
+              </p>
             </Form.Item>
             <Form.Item>
               <h3>
@@ -454,7 +474,12 @@ export const WebsitesConfigurations = ({
                   </Button>
                 </div>,
               )}
-              <p>Select the initial map focus for the mobile site.</p>
+              <p>
+                <FormattedMessage
+                  id="mobile_map_description"
+                  defaultMessage="Select the initial map focus for the mobile site."
+                />
+              </p>
             </Form.Item>
             <Form.Item>
               <h3>
