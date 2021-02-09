@@ -20,6 +20,7 @@ import {
   FRAUD_DETECTION,
 } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
+
 import './Sidenav.less';
 
 @injectIntl

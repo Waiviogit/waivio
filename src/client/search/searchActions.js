@@ -183,19 +183,16 @@ export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
   const search = replacer(userName, '@');
   const user = getAuthenticatedUserName(getState());
 
-  if (search) {
-    dispatch({
-      type: SEARCH_USERS.ACTION,
-      payload: {
-        promise: ApiClient.searchUsers(search, user, limit, notGuest)
-          .then(result => ({
-            result,
-            search,
-          }))
-          .catch(console.log),
-      },
-    });
-  }
+  dispatch({
+    type: SEARCH_USERS.ACTION,
+    payload: {
+      promise: ApiClient.searchUsers(search, user, limit, notGuest)
+        .then(result => ({
+          result,
+        }))
+        .catch(console.log),
+    },
+  });
 };
 
 export const searchUsersAutoCompeteLoadingMore = (userName, skip) => (dispatch, getState) => {
