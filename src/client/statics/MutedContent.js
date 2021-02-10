@@ -6,7 +6,8 @@ import './EmptyFeed.less';
 
 const EmptyMutedUserProfile = ({ user, authName }) => {
   let message = '';
-  if (user.mutedBy.includes(authName)) message = <div>Muted by you</div>;
+  if ((user.muted && isEmpty(user.mutedBy)) || user.mutedBy.includes(authName))
+    message = <div>Muted by you</div>;
   else if (!isEmpty(user.mutedBy)) message = <div>Blocked by a website moderator</div>;
 
   return <div className="feed_empty">{message}</div>;
@@ -15,6 +16,7 @@ const EmptyMutedUserProfile = ({ user, authName }) => {
 EmptyMutedUserProfile.propTypes = {
   user: PropTypes.shape({
     mutedBy: PropTypes.arrayOf(PropTypes.string),
+    muted: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   authName: PropTypes.string.isRequired,
 };

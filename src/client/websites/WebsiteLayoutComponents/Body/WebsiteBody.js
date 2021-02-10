@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isEmpty, get, map, debounce, isEqual } from 'lodash';
+import { Helmet } from 'react-helmet';
 import { Tag } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -83,25 +84,31 @@ const WebsiteBody = props => {
   }, [props.userLocation, boundsParams]);
 
   const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
-  const aboutObject = get(props, ['configuration', 'aboutObject']);
-  const currLink = aboutObject ? `/object/${aboutObject}` : '/';
+  const aboutObject = get(props, ['configuration', 'aboutObject'], {});
+  const logoLink = get(props, ['configuration', 'aboutObject', 'defaultShowLink'], '/');
 
-  const handleOnBoundsChanged = debounce(data => {
-    if (!isEmpty(data) && data.ne[0] && data.sw[0]) {
-      setBoundsParams({
-        ...boundsParams,
-        topPoint: [data.ne[1], data.ne[0]],
-        bottomPoint: [data.sw[1], data.sw[0]],
-      });
-    }
-  }, 800);
+  const handleOnBoundsChanged = useCallback(
+    debounce(data => {
+      if (!isEmpty(data) && data.ne[0] && data.sw[0]) {
+        setBoundsParams({
+          ...boundsParams,
+          topPoint: [data.ne[1], data.ne[0]],
+          bottomPoint: [data.sw[1], data.sw[0]],
+        });
+      }
+    }, 800),
+    [],
+  );
 
-  const onBoundsChanged = debounce(({ center, zoom, bounds }) => {
-    if (!isEmpty(center)) setArea({ center, zoom, bounds });
-    if (!isEqual(bounds, area.bounds)) {
-      handleOnBoundsChanged(bounds);
-    }
-  }, 300);
+  const onBoundsChanged = useCallback(
+    debounce(({ center, zoom, bounds }) => {
+      if (!isEmpty(center)) setArea({ center, zoom, bounds });
+      if (!isEqual(bounds, area.bounds)) {
+        handleOnBoundsChanged(bounds);
+      }
+    }, 500),
+    [],
+  );
 
   const handleMarkerClick = ({ payload, anchor }) => {
     handleAddMapCoordinates(anchor);
@@ -197,6 +204,14 @@ const WebsiteBody = props => {
 
   return (
     <div className="WebsiteBody">
+      <Helmet>
+        <title>{getObjectName(aboutObject)}</title>
+        <meta
+          property="twitter:description"
+          content="Waivio is an open distributed attention marketplace for business"
+        />
+        <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
+      </Helmet>
       <SearchAllResult />
       <div className={mapClassList}>
         {currentLogo && (
@@ -206,7 +221,7 @@ const WebsiteBody = props => {
             srcSet={currentLogo}
             alt="your logo"
             styleName="brain-image"
-            onClick={() => props.history.push(currLink)}
+            onClick={() => props.history.push(logoLink)}
           />
         )}
         {!isEmpty(area.center) && (

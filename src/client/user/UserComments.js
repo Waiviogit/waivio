@@ -68,7 +68,7 @@ export default class UserProfilePosts extends React.Component {
       UserProfilePosts.skip += this.props.limit;
     };
 
-    if (!isEmpty(user.mutedBy))
+    if (!isEmpty(user.mutedBy) || user.muted)
       return <EmptyMutedUserProfile user={user} authName={authenticatedUserName} />;
 
     return (
