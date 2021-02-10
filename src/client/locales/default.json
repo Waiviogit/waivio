@@ -1597,5 +1597,8 @@
   "drink": "Drink",
   "mute_users": "Mute users",
   "mute_empty": "Empty table",
+  "website_owner_moderators": "The website owner may grant moderator privileges to some Hive users.",
+  "muted": "Muted",
+  "blacklisted": "Blacklisted",
   "get_campaign_data_error": "Failed to get campaign data"
 }
