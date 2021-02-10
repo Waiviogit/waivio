@@ -224,7 +224,7 @@
   "editor": "Editor",
   "preview": "Preview",
   "reward": "Reward",
-  "rewards": "rewards",
+  "rewards": "Rewards",
   "reward_option_100": "100% Hive Power",
   "reward_option_50": "50% HBD and 50% HP",
   "reward_option_0": "Declined",
@@ -1598,5 +1598,8 @@
   "drink": "Drink",
   "mute_users": "Mute users",
   "mute_empty": "Empty table",
+  "website_owner_moderators": "The website owner may grant moderator privileges to some Hive users.",
+  "muted": "Muted",
+  "blacklisted": "Blacklisted",
   "get_campaign_data_error": "Failed to get campaign data"
 }

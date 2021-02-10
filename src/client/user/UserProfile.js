@@ -111,7 +111,7 @@ export default class UserProfile extends React.Component {
         initialLoad: false,
       });
 
-    if (!isEmpty(user.mutedBy))
+    if (!isEmpty(user.mutedBy) || user.muted)
       return <EmptyMutedUserProfile user={user} authName={authenticatedUser.name} />;
 
     return (
