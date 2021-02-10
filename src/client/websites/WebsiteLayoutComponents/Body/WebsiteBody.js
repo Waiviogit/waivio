@@ -17,6 +17,7 @@ import {
   getShowSearchResult,
   getUserLocation,
   getWebsiteSearchResult,
+  getWebsiteSearchType,
   getWebsiteSearchString,
   getWobjectsPoint,
   isGuestUser,
@@ -142,7 +143,13 @@ const WebsiteBody = props => {
 
   let currentWobject = props.wobjectsPoint;
 
-  if (!activeFilterIsEmpty || props.searchString || (!isMobile && props.isShowResult)) {
+  if (
+    (!activeFilterIsEmpty ||
+      props.searchString ||
+      (!isMobile && props.isShowResult) ||
+      (isMobile && props.searchType)) &&
+    props.searchType !== 'Users'
+  ) {
     currentWobject = props.searchResult;
   }
 
@@ -284,6 +291,7 @@ WebsiteBody.propTypes = {
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
+  searchType: PropTypes.string.isRequired,
   configCoordinates: PropTypes.arrayOf.isRequired,
   activeFilters: PropTypes.arrayOf.isRequired,
   searchString: PropTypes.string,
@@ -306,6 +314,7 @@ export default connect(
     isGuest: isGuestUser(state),
     configCoordinates: getMapForMainPage(state),
     activeFilters: getSearchFiltersTagCategory(state),
+    searchType: getWebsiteSearchType(state),
     searchString: getWebsiteSearchString(state),
   }),
   {
