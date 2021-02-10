@@ -49,4 +49,15 @@ export const getActiveItemClassList = (curr, type, className) =>
     [`${className}--active`]: type === curr,
   });
 
+export const userToggleFollow = (userList, userName, obj) => {
+  const findExpert = userList.findIndex(user => user.account === userName);
+
+  userList.splice(findExpert, 1, {
+    ...userList[findExpert],
+    ...obj,
+  });
+
+  return userList;
+};
+
 export default null;

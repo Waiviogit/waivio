@@ -1,6 +1,7 @@
 import { compact, concat, get, isEmpty, map, sortBy, remove, findIndex } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
+import { userToggleFollow } from './helpers';
 
 const initialState = {
   loading: true,
@@ -185,34 +186,10 @@ export default (state = initialState, action) => {
         isClearSearchObjects: false,
       };
     }
-    case searchActions.UNFOLLOW_SEARCH_USER.SUCCESS: {
-      const findExperts = state.usersForDiscoverPage.result.findIndex(
-        user => user.account === action.meta.username,
-      );
-
-      state.usersForDiscoverPage.result.splice(findExperts, 1, {
-        ...state.usersForDiscoverPage.result[findExperts],
-        pending: false,
-        youFollows: false,
-      });
-
-      return {
-        ...state,
-        usersForDiscoverPage: {
-          ...state.usersForDiscoverPage,
-          result: [...state.usersForDiscoverPage.result],
-        },
-      };
-    }
 
     case searchActions.UNFOLLOW_SEARCH_USER.START: {
-      const findExperts = state.usersForDiscoverPage.result.findIndex(
-        user => user.account === action.meta.username,
-      );
-
-      state.usersForDiscoverPage.result.splice(findExperts, 1, {
-        ...state.usersForDiscoverPage.result[findExperts],
-        pending: true,
+      userToggleFollow(state.usersForDiscoverPage.result, action.meta.username, {
+        youFollows: true,
       });
 
       return {
@@ -223,14 +200,22 @@ export default (state = initialState, action) => {
         },
       };
     }
+    case searchActions.UNFOLLOW_SEARCH_USER.SUCCESS: {
+      userToggleFollow(state.usersForDiscoverPage.result, action.meta.username, {
+        youFollows: false,
+        pending: false,
+      });
 
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
     case searchActions.UNFOLLOW_SEARCH_USER.ERROR: {
-      const findExperts = state.usersForDiscoverPage.result.findIndex(
-        user => user.account === action.meta.username,
-      );
-
-      state.usersForDiscoverPage.result.splice(findExperts, 1, {
-        ...state.usersForDiscoverPage.result[findExperts],
+      userToggleFollow(state.usersForDiscoverPage.result, action.meta.username, {
         pending: false,
       });
 
@@ -244,12 +229,7 @@ export default (state = initialState, action) => {
     }
 
     case searchActions.FOLLOW_SEARCH_USER.START: {
-      const findExperts = state.usersForDiscoverPage.result.findIndex(
-        user => user.account === action.meta.username,
-      );
-
-      state.usersForDiscoverPage.result.splice(findExperts, 1, {
-        ...state.usersForDiscoverPage.result[findExperts],
+      userToggleFollow(state.usersForDiscoverPage.result, action.meta.username, {
         pending: true,
       });
 
@@ -262,12 +242,7 @@ export default (state = initialState, action) => {
       };
     }
     case searchActions.FOLLOW_SEARCH_USER.SUCCESS: {
-      const findExperts = state.usersForDiscoverPage.result.findIndex(
-        user => user.account === action.meta.username,
-      );
-
-      state.usersForDiscoverPage.result.splice(findExperts, 1, {
-        ...state.usersForDiscoverPage.result[findExperts],
+      userToggleFollow(state.usersForDiscoverPage.result, action.meta.username, {
         youFollows: true,
         pending: false,
       });
@@ -280,14 +255,8 @@ export default (state = initialState, action) => {
         },
       };
     }
-
     case searchActions.FOLLOW_SEARCH_USER.ERROR: {
-      const findExperts = state.usersForDiscoverPage.result.findIndex(
-        user => user.account === action.meta.username,
-      );
-
-      state.usersForDiscoverPage.result.splice(findExperts, 1, {
-        ...state.usersForDiscoverPage.result[findExperts],
+      userToggleFollow(state.usersForDiscoverPage.result, action.meta.username, {
         pending: false,
       });
 
@@ -297,6 +266,70 @@ export default (state = initialState, action) => {
           ...state.usersForDiscoverPage,
           result: [...state.usersForDiscoverPage.result],
         },
+      };
+    }
+
+    case searchActions.UNFOLLOW_SEARCH_USER_WEBSITE.START: {
+      userToggleFollow(state.searchUsersResults, action.meta.username, {
+        pending: true,
+      });
+
+      return {
+        ...state,
+        searchUsersResults: [...state.searchUsersResults],
+      };
+    }
+    case searchActions.UNFOLLOW_SEARCH_USER_WEBSITE.SUCCESS: {
+      userToggleFollow(state.searchUsersResults, action.meta.username, {
+        pending: false,
+        youFollows: false,
+      });
+
+      return {
+        ...state,
+        searchUsersResults: [...state.searchUsersResults],
+      };
+    }
+    case searchActions.UNFOLLOW_SEARCH_USER_WEBSITE.ERROR: {
+      userToggleFollow(state.searchUsersResults, action.meta.username, {
+        pending: false,
+      });
+
+      return {
+        ...state,
+        searchUsersResults: [...state.searchUsersResults],
+      };
+    }
+
+    case searchActions.FOLLOW_SEARCH_USER_WEBSITE.START: {
+      userToggleFollow(state.searchUsersResults, action.meta.username, {
+        pending: true,
+      });
+
+      return {
+        ...state,
+        searchUsersResults: [...state.searchUsersResults],
+      };
+    }
+    case searchActions.FOLLOW_SEARCH_USER_WEBSITE.SUCCESS: {
+      userToggleFollow(state.searchUsersResults, action.meta.username, {
+        pending: false,
+        youFollows: true,
+      });
+
+      return {
+        ...state,
+        searchUsersResults: [...state.searchUsersResults],
+      };
+    }
+    case searchActions.FOLLOW_SEARCH_USER_WEBSITE.ERROR: {
+      userToggleFollow(state.searchUsersResults, action.meta.username, {
+        pending: false,
+      });
+
+      return {
+        ...state,
+        searchUsersResults: [...state.searchUsersResults],
       };
     }
 
@@ -349,7 +382,6 @@ export default (state = initialState, action) => {
         websiteSearchResultLoading: true,
       };
     }
-
     case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.SUCCESS: {
       return {
         ...state,
@@ -358,7 +390,6 @@ export default (state = initialState, action) => {
         websiteSearchResultLoading: false,
       };
     }
-
     case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.ERROR: {
       return {
         ...state,
@@ -367,7 +398,6 @@ export default (state = initialState, action) => {
         websiteSearchResultLoading: false,
       };
     }
-
     case searchActions.SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.SUCCESS: {
       const { result } = action.payload;
       return {
