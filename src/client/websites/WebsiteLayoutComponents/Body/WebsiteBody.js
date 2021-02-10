@@ -14,10 +14,10 @@ import {
   getMapForMainPage,
   getScreenSize,
   getSearchFiltersTagCategory,
-  getSearchUsersResults,
   getShowSearchResult,
   getUserLocation,
   getWebsiteSearchResult,
+  getWebsiteSearchString,
   getWobjectsPoint,
   isGuestUser,
 } from '../../../reducers';
@@ -46,6 +46,7 @@ const WebsiteBody = props => {
   const currentUserLocationCenter = [+props.userLocation.lat, +props.userLocation.lon];
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
+  const activeFilterIsEmpty = isEmpty(props.activeFilters);
   const configMap = isMobile
     ? get(props.configuration, ['mobileMap', 'center'])
     : get(props.configuration, ['desktopMap', 'center']);
@@ -139,7 +140,11 @@ const WebsiteBody = props => {
       ) : null;
     });
 
-  const currentWobject = !isEmpty(props.searchResult) ? props.searchResult : props.wobjectsPoint;
+  let currentWobject = props.wobjectsPoint;
+
+  if (!activeFilterIsEmpty || props.searchString || (!isMobile && props.isShowResult)) {
+    currentWobject = props.searchResult;
+  }
 
   const markersLayout = getMarkers(currentWobject);
   const getOverlayLayout = () => {
@@ -281,11 +286,13 @@ WebsiteBody.propTypes = {
   isGuest: PropTypes.bool,
   configCoordinates: PropTypes.arrayOf.isRequired,
   activeFilters: PropTypes.arrayOf.isRequired,
+  searchString: PropTypes.string,
 };
 
 WebsiteBody.defaultProps = {
   wobjectsPoint: [],
   isGuest: false,
+  searchString: '',
 };
 
 export default connect(
@@ -293,13 +300,13 @@ export default connect(
     userLocation: getUserLocation(state),
     isShowResult: getShowSearchResult(state),
     searchResult: getWebsiteSearchResult(state),
-    searchByUser: getSearchUsersResults(state),
     configuration: getConfigurationValues(state),
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),
     isGuest: isGuestUser(state),
     configCoordinates: getMapForMainPage(state),
     activeFilters: getSearchFiltersTagCategory(state),
+    searchString: getWebsiteSearchString(state),
   }),
   {
     getCoordinates,
