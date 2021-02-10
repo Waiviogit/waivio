@@ -12,6 +12,7 @@ import {
   getWebsiteSearchType,
   getSearchFiltersTagCategory,
   getSearchSort,
+  getIsWaivio,
 } from '../reducers';
 import { replacer } from '../helpers/parser';
 
@@ -226,6 +227,9 @@ export const searchUsersForDiscoverPage = (userName, limit) => (dispatch, getSta
 };
 
 export const UNFOLLOW_SEARCH_USER = createAsyncActionType('@users/UNFOLLOW_SEARCH_USER');
+export const UNFOLLOW_SEARCH_USER_WEBSITE = createAsyncActionType(
+  '@users/UNFOLLOW_SEARCH_USER_WEBSITE',
+);
 
 export const unfollowSearchUser = username => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
@@ -234,8 +238,10 @@ export const unfollowSearchUser = username => (dispatch, getState, { steemConnec
     return Promise.reject('User is not authenticated');
   }
 
+  const isWaivio = getIsWaivio(state);
+
   return dispatch({
-    type: UNFOLLOW_SEARCH_USER.ACTION,
+    type: isWaivio ? UNFOLLOW_SEARCH_USER.ACTION : UNFOLLOW_SEARCH_USER_WEBSITE.ACTION,
     payload: {
       promise: steemConnectAPI.unfollow(getAuthenticatedUserName(state), username),
     },
@@ -244,17 +250,20 @@ export const unfollowSearchUser = username => (dispatch, getState, { steemConnec
     },
   });
 };
+
 export const FOLLOW_SEARCH_USER = createAsyncActionType('@user/FOLLOW_SEARCH_USER');
+export const FOLLOW_SEARCH_USER_WEBSITE = createAsyncActionType('@user/FOLLOW_SEARCH_USER_WEBSITE');
 
 export const followSearchUser = username => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
+  const isWaivio = getIsWaivio(state);
 
   if (!getIsAuthenticated(state)) {
     return Promise.reject('User is not authenticated');
   }
 
   return dispatch({
-    type: FOLLOW_SEARCH_USER.ACTION,
+    type: isWaivio ? FOLLOW_SEARCH_USER.ACTION : FOLLOW_SEARCH_USER_WEBSITE.ACTION,
     payload: {
       promise: steemConnectAPI.follow(getAuthenticatedUserName(state), username),
     },

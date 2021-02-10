@@ -25,6 +25,7 @@ import {
 } from '../../reducers';
 import { getActiveItemClassList } from '../helpers';
 import {
+  followSearchUser,
   getFilterForSearch,
   searchObjectsAutoCompeteLoadingMore,
   searchUsersAutoCompeteLoadingMore,
@@ -32,6 +33,7 @@ import {
   setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
+  unfollowSearchUser,
 } from '../searchActions';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
@@ -73,7 +75,12 @@ const SearchAllResult = props => {
       case 'Users':
         return {
           list: map(props.searchByUser, user => (
-            <UserCard key={user.account} user={{ ...user, name: user.account }} />
+            <UserCard
+              key={user.account}
+              user={{ ...user, name: user.account }}
+              unfollow={props.unfollowSearchUser}
+              follow={props.followSearchUser}
+            />
           )),
           hasMore: props.hasMoreUsers,
           loading: props.usersLoading,
@@ -223,6 +230,8 @@ SearchAllResult.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
+  unfollowSearchUser: PropTypes.func.isRequired,
+  followSearchUser: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -248,5 +257,7 @@ export default connect(
     setWebsiteSearchFilter,
     setSearchSortType,
     setShowSearchResult,
+    unfollowSearchUser,
+    followSearchUser,
   },
 )(injectIntl(SearchAllResult));
