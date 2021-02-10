@@ -15,7 +15,7 @@ import './WebsiteHeader.less';
 const WebsiteHeader = ({ currPage, wobj, history, config, intl }) => {
   const isMainPage = location.pathname === '/';
   let currentPage = currPage || store.get('currentPage');
-  const backgroundColor = get(config, ['colors', 'hover']) || 'fafbfc';
+  const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
 
   if (location.pathname.includes('/object/')) {
     currentPage = getObjectType(wobj);
