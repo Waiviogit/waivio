@@ -143,7 +143,7 @@ function slug(text) {
  * https://github.com/steemit/steemit.com/blob/ded8ecfcc9caf2d73b6ef12dbd0191bd9dbf990b/app/redux/TransactionSaga.js
  */
 
-export function createPermlink(title, author, parent_author, parent_permlink) {
+export function createPermlink(title, author, parent_author, parent_permlink, locale, follower) {
   let permlink;
   if (title && title.trim() !== '') {
     let s = slug(title);
@@ -155,7 +155,7 @@ export function createPermlink(title, author, parent_author, parent_permlink) {
       permlink = prefix + s;
       return Promise.resolve(checkPermLinkLength(permlink));
     }
-    return getContent(author, s)
+    return getContent(author, s, locale, follower)
       .then(content => {
         let prefix = '';
 

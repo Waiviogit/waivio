@@ -61,7 +61,7 @@ export const WebsiteRestrictions = ({
                 onClick={() => handleMuteUser(authUser, [user.name], [], host)}
                 loading={unmutedUsers.includes(user.name)}
               >
-                {intl.formatMessage({ id: 'unmuted', defaultMessage: 'Unmuted' })}
+                {intl.formatMessage({ id: 'unmute', defaultMessage: 'Unmute' })}
               </Action>
             ) : (
               <div className="WebsiteRestrictions__blocked">
@@ -86,7 +86,13 @@ export const WebsiteRestrictions = ({
   return (
     <div className="WebsiteRestrictions">
       <Tabs defaultActiveKey="1">
-        <Tabs.TabPane tab={`Muted ${get(restrictions, 'mutedCount', 0)}`} key="1">
+        <Tabs.TabPane
+          tab={`${intl.formatMessage({
+            id: 'muted',
+            defaultMessage: 'Muted',
+          })} ${get(restrictions, 'mutedCount', 0)}`}
+          key="1"
+        >
           <p>
             {intl.formatMessage({
               id: 'website_mute_list',
@@ -142,7 +148,13 @@ export const WebsiteRestrictions = ({
           </SortSelector>
           {tableUsers(mutedUsers)}
         </Tabs.TabPane>
-        <Tabs.TabPane tab={`Blacklisted ${get(restrictions, 'blacklistedCount', 0)}`} key="2">
+        <Tabs.TabPane
+          tab={`${intl.formatMessage({
+            id: 'blacklisted',
+            defaultMessage: 'Blacklisted',
+          })} ${get(restrictions, 'blacklistedCount', 0)}`}
+          key="2"
+        >
           <p>
             {intl.formatMessage({
               id: 'website_black_list',

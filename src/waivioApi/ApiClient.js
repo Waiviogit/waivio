@@ -286,7 +286,8 @@ export const searchObjects = (
 export const searchUsers = (searchString, username, limit = 15, notGuest = false, skip = 0) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}&skip=${skip}&notGuest=${notGuest}`,
+      `${config.apiPrefix}${config.users}${config.search}?${searchString &&
+        `searchString=${searchString}&`}limit=${limit}&skip=${skip}&notGuest=${notGuest}`,
       {
         headers: {
           ...headers,
@@ -1302,15 +1303,27 @@ export const sendPendingTransfer = async ({ sponsor, userName, amount, transacti
     .catch(err => err);
 };
 
-export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPermlink) => {
+export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPermlink, follower) => {
   let res;
   if (startPermlink) {
     res = fetch(
       `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}&start_permlink=${startPermlink}`,
+      {
+        headers: {
+          app: config.appName,
+          follower,
+        },
+      },
     );
   } else {
     res = fetch(
       `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}`,
+      {
+        headers: {
+          app: config.appName,
+          follower,
+        },
+      },
     );
   }
   return res

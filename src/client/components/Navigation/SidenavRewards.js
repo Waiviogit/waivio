@@ -20,6 +20,7 @@ import {
   FRAUD_DETECTION,
 } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
+
 import './Sidenav.less';
 
 @injectIntl
@@ -104,7 +105,7 @@ export default class SidenavRewards extends React.Component {
             <div className="Sidenav__title-item">
               {intl.formatMessage({
                 id: 'rewards',
-                defaultMessage: `rewards`,
+                defaultMessage: 'Rewards',
               })}
               :
             </div>

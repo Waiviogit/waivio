@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isEmpty, get, map, debounce, isEqual } from 'lodash';
+import { Helmet } from 'react-helmet';
+import { Tag } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -11,15 +13,16 @@ import {
   getConfigurationValues,
   getMapForMainPage,
   getScreenSize,
+  getSearchFiltersTagCategory,
   getSearchUsersResults,
+  getShowSearchResult,
   getUserLocation,
   getWebsiteSearchResult,
-  getWebsiteSearchType,
   getWobjectsPoint,
   isGuestUser,
 } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
-import { setWebsiteSearchType } from '../../../search/searchActions';
+import { setWebsiteSearchFilter, setWebsiteSearchType } from '../../../search/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import { getWebsiteObjWithCoordinates } from '../../websiteActions';
 import mapProvider from '../../../helpers/mapProvider';
@@ -28,6 +31,7 @@ import CustomMarker from '../../../components/Maps/CustomMarker';
 import DEFAULTS from '../../../object/const/defaultValues';
 import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
+
 import './WebsiteBody.less';
 
 const WebsiteBody = props => {
@@ -39,23 +43,35 @@ const WebsiteBody = props => {
   });
   const [infoboxData, setInfoboxData] = useState(null);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
-  const mapClassList = classNames('WebsiteBody__map', {
-    WebsiteBody__hideMap: props.searchType !== 'All',
-  });
+  const currentUserLocationCenter = [+props.userLocation.lat, +props.userLocation.lon];
+  const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
+  const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
+  const configMap = isMobile
+    ? get(props.configuration, ['mobileMap', 'center'])
+    : get(props.configuration, ['desktopMap', 'center']);
 
-  const currMapCoordinates = isEmpty(props.configCoordinates.center)
-    ? props.userLocation
-    : props.configCoordinates.center;
+  const currentCenter = isEmpty(configMap)
+    ? [+props.userLocation.lat, +props.userLocation.lon]
+    : configMap;
 
   useEffect(() => {
-    if (isEmpty(props.userLocation))
+    if (isEmpty(props.userLocation)) {
       props.getCoordinates().then(({ value }) => {
+        const center = configMap || [+value.lat, +value.lon];
+
         setArea({
-          center: [+value.lat, +value.lon],
+          center,
           zoom: props.configCoordinates.zoom,
           bounds: [],
         });
       });
+    } else {
+      setArea({
+        center: currentCenter,
+        zoom: props.configCoordinates.zoom,
+        bounds: [],
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -67,27 +83,32 @@ const WebsiteBody = props => {
     }
   }, [props.userLocation, boundsParams]);
 
-  const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
-  const aboutObject = get(props, ['configuration', 'aboutObject']);
-  const currLink = aboutObject ? `/object/${aboutObject}` : '/';
+  const aboutObject = get(props, ['configuration', 'aboutObject'], {});
+  const logoLink = get(props, ['configuration', 'aboutObject', 'defaultShowLink'], '/');
 
-  const handleOnBoundsChanged = debounce(data => {
-    if (!isEmpty(data) && data.ne[0] && data.sw[0]) {
-      setBoundsParams({
-        ...boundsParams,
-        topPoint: [data.ne[1], data.ne[0]],
-        bottomPoint: [data.sw[1], data.sw[0]],
-      });
-    }
-  }, 800);
+  const handleOnBoundsChanged = useCallback(
+    debounce(data => {
+      if (!isEmpty(data) && data.ne[0] && data.sw[0]) {
+        setBoundsParams({
+          ...boundsParams,
+          topPoint: [data.ne[1], data.ne[0]],
+          bottomPoint: [data.sw[1], data.sw[0]],
+        });
+      }
+    }, 800),
+    [],
+  );
 
-  const onBoundsChanged = debounce(({ center, zoom, bounds }) => {
-    if (!isEmpty(center)) setArea({ center, zoom, bounds });
-    if (!isEqual(bounds, area.bounds)) {
-      handleOnBoundsChanged(bounds);
-    }
-  }, 300);
+  const onBoundsChanged = useCallback(
+    debounce(({ center, zoom, bounds }) => {
+      if (!isEmpty(center)) setArea({ center, zoom, bounds });
+      if (!isEqual(bounds, area.bounds)) {
+        handleOnBoundsChanged(bounds);
+      }
+    }, 500),
+    [],
+  );
 
   const handleMarkerClick = ({ payload, anchor }) => {
     handleAddMapCoordinates(anchor);
@@ -113,6 +134,7 @@ const WebsiteBody = props => {
           anchor={[+latitude, +longitude]}
           payload={wobject}
           onClick={handleMarkerClick}
+          onDoubleClick={() => setInfoboxData(null)}
         />
       ) : null;
     });
@@ -131,10 +153,11 @@ const WebsiteBody = props => {
           role="presentation"
           className="WebsiteBody__overlay-wrap"
           to={`/object/${currentWobj.wobject.author_permlink}`}
-          onMouseLeave={() => setInfoboxData(null)}
         >
           <img src={avatar} width={35} height={35} alt={name} />
-          <span className="MapOS__overlay-wrap-name">{name}</span>
+          <span data-anchor={name} className="MapOS__overlay-wrap-name">
+            {name}
+          </span>
         </Link>
       </Overlay>
     );
@@ -149,7 +172,13 @@ const WebsiteBody = props => {
         <div
           role="presentation"
           className="WebsiteBodyControl__locateGPS"
-          onClick={() => setArea({ ...area, center: currMapCoordinates })}
+          onClick={() =>
+            setArea({
+              ...area,
+              zoom: props.configCoordinates.zoom,
+              center: currentUserLocationCenter,
+            })
+          }
         >
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
@@ -173,13 +202,17 @@ const WebsiteBody = props => {
     </div>
   );
 
-  const currentCenter = isEmpty(area.center)
-    ? [+props.userLocation.lat, +props.userLocation.lon]
-    : area.center;
-
   return (
     <div className="WebsiteBody">
-      {props.searchType !== 'All' && <SearchAllResult />}
+      <Helmet>
+        <title>{getObjectName(aboutObject)}</title>
+        <meta
+          property="twitter:description"
+          content="Waivio is an open distributed attention marketplace for business"
+        />
+        <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
+      </Helmet>
+      <SearchAllResult />
       <div className={mapClassList}>
         {currentLogo && (
           // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -188,18 +221,34 @@ const WebsiteBody = props => {
             srcSet={currentLogo}
             alt="your logo"
             styleName="brain-image"
-            onClick={() => props.history.push(currLink)}
+            onClick={() => props.history.push(logoLink)}
           />
         )}
-        {!isEmpty(currentCenter) && (
+        {!isEmpty(area.center) && (
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
-              center={currentCenter}
+              center={area.center}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
+              onClick={({ event }) => {
+                if (!get(event, 'target.dataset.anchor')) setInfoboxData(null);
+              }}
             >
+              <div className="WebsiteBody__filters-list">
+                {props.activeFilters.map(filter =>
+                  filter.tags.map(tag => (
+                    <Tag
+                      key={tag}
+                      closable
+                      onClose={() => props.setWebsiteSearchFilter(filter.categoryName, 'all')}
+                    >
+                      {tag}
+                    </Tag>
+                  )),
+                )}
+              </div>
               {markersLayout}
               {infoboxData && getOverlayLayout()}
             </Map>
@@ -222,14 +271,16 @@ WebsiteBody.propTypes = {
     lat: PropTypes.string,
     lon: PropTypes.string,
   }).isRequired,
-  searchType: PropTypes.string.isRequired,
+  isShowResult: PropTypes.string.isRequired,
   searchResult: PropTypes.arrayOf.isRequired,
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
+  setWebsiteSearchFilter: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
   configCoordinates: PropTypes.arrayOf.isRequired,
+  activeFilters: PropTypes.arrayOf.isRequired,
 };
 
 WebsiteBody.defaultProps = {
@@ -240,7 +291,7 @@ WebsiteBody.defaultProps = {
 export default connect(
   state => ({
     userLocation: getUserLocation(state),
-    searchType: getWebsiteSearchType(state),
+    isShowResult: getShowSearchResult(state),
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
     configuration: getConfigurationValues(state),
@@ -248,10 +299,12 @@ export default connect(
     wobjectsPoint: getWobjectsPoint(state),
     isGuest: isGuestUser(state),
     configCoordinates: getMapForMainPage(state),
+    activeFilters: getSearchFiltersTagCategory(state),
   }),
   {
     getCoordinates,
     setWebsiteSearchType,
     getWebsiteObjWithCoordinates,
+    setWebsiteSearchFilter,
   },
 )(withRouter(WebsiteBody));

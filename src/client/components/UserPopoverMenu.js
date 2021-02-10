@@ -1,17 +1,14 @@
 import React from 'react';
 import { Icon } from 'antd';
-import { useSelector } from 'react-redux';
 import { ReactSVG } from 'react-svg';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { includes } from 'lodash';
-import { getAuthenticatedUserName } from '../reducers';
 import PopoverMenu, { PopoverMenuItem } from './PopoverMenu/PopoverMenu';
+
 import Popover from './Popover';
 
 const UserPopoverMenu = ({ handleMuteCurrUser, user, handleUnMuteUserBlog }) => {
-  const authUserName = useSelector(getAuthenticatedUserName);
-  const currentUserMuted = includes(user.mutedBy, authUserName);
+  const currentUserMuted = user.muted;
   const handlePopoverClick = key => {
     switch (key) {
       case 'mute':

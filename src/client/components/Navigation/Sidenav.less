@@ -54,9 +54,15 @@
 
     &-item {
       font-weight: 800;
-      text-transform: capitalize;
       cursor: pointer;
       color: @black;
+
+      span {
+        display: block;
+        overflow: hidden;
+        width: 150px;
+        text-overflow: ellipsis;
+      }
     }
 
     &-icon {

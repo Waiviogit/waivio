@@ -341,6 +341,10 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.MUTE_USER.SUCCESS: {
       return {
         ...state,
+        restrictions: {
+          ...state.restrictions,
+          ...action.payload,
+        },
         muteLoading: false,
       };
     }
@@ -359,7 +363,27 @@ export default function websiteReducer(state = initialState, action) {
 
       return {
         ...state,
+        restrictions: {
+          ...state.restrictions,
+          ...action.payload,
+        },
         unmuteUsers,
+      };
+    }
+
+    case websiteAction.DELETE_WEBSITE_ERROR: {
+      const websites = get(state, ['manage', 'websites'], []).map(website => ({
+        ...website,
+        checked: website.status === 'active',
+        pending: [],
+      }));
+
+      return {
+        ...state,
+        manage: {
+          ...state.manage,
+          websites,
+        },
       };
     }
 

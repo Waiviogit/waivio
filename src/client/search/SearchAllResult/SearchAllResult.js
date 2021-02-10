@@ -17,6 +17,7 @@ import {
   getSearchFiltersTagCategory,
   getSearchSort,
   getSearchUsersResults,
+  getShowSearchResult,
   getWebsiteSearchResult,
   getWebsiteSearchResultLoading,
   getWebsiteSearchString,
@@ -28,20 +29,23 @@ import {
   searchObjectsAutoCompeteLoadingMore,
   searchUsersAutoCompeteLoadingMore,
   setSearchSortType,
+  setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../searchActions';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
-import { setMapFullscreenMode } from '../../components/Maps/mapActions';
+import Loading from '../../components/Icon/Loading';
 
 import './SearchAllResult.less';
-import Loading from '../../components/Icon/Loading';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
   const filterTypes = ['restaurant', 'dish', 'drink', 'Users'];
   const isUsersSearch = props.searchType === 'Users';
+  const searchResultClassList = classNames('SearchAllResult', {
+    SearchAllResult__show: props.isShowResult,
+  });
 
   useEffect(() => {
     if (filterTypes.includes(props.searchType) && !isUsersSearch)
@@ -122,7 +126,7 @@ const SearchAllResult = props => {
     );
   };
   const currentList = isEmpty(currRenderListState.list) ? (
-    <div>
+    <div className="SearchAllResult__empty">
       {props.intl.formatMessage({
         id: 'search_no_result',
         defaultMessage: 'No results were found for this request',
@@ -133,7 +137,14 @@ const SearchAllResult = props => {
   );
 
   return (
-    <div className="SearchAllResult">
+    <div className={searchResultClassList}>
+      <div
+        className="SearchAllResult__toggle-button"
+        role="presentation"
+        onClick={() => props.setShowSearchResult(!props.isShowResult)}
+      >
+        <Icon type={props.isShowResult ? 'left' : 'right'} />
+      </div>
       <div className="SearchAllResult__type-wrap">
         {filterTypes.map(type => (
           <span
@@ -152,7 +163,7 @@ const SearchAllResult = props => {
             <div className="SearchAllResult__filters">
               {map(props.filters, filter => (
                 <Dropdown key={filter.tagCategory} overlay={menu(filter)} trigger={['click']}>
-                  <Button>
+                  <Button className="SearchAllResult__filters-button">
                     {getCurrentName(filter.tagCategory) || filter.tagCategory} <Icon type="down" />
                   </Button>
                 </Dropdown>
@@ -172,8 +183,8 @@ const SearchAllResult = props => {
           <Button
             icon="compass"
             size="large"
-            className="map-btn"
-            onClick={() => props.setMapFullscreenMode(true)}
+            className="SearchAllResult__showMap"
+            onClick={() => props.setShowSearchResult(false)}
           >
             {props.intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
           </Button>
@@ -206,11 +217,12 @@ SearchAllResult.propTypes = {
   hasMoreUsers: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   usersLoading: PropTypes.bool.isRequired,
+  isShowResult: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
-  setMapFullscreenMode: PropTypes.func.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   setWebsiteSearchFilter: PropTypes.func.isRequired,
+  setShowSearchResult: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -226,6 +238,7 @@ export default connect(
     activeFilters: getSearchFiltersTagCategory(state),
     loading: getWebsiteSearchResultLoading(state),
     usersLoading: getIsStartSearchUser(state),
+    isShowResult: getShowSearchResult(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,
@@ -234,6 +247,6 @@ export default connect(
     getFilterForSearch,
     setWebsiteSearchFilter,
     setSearchSortType,
-    setMapFullscreenMode,
+    setShowSearchResult,
   },
 )(injectIntl(SearchAllResult));

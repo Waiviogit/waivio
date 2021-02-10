@@ -52,10 +52,10 @@ const ModalSignIn = ({
 
   const responseSocial = async (response, socialNetwork) => {
     setIsLoading(true);
+
     if (response.error || (socialNetwork === 'facebook' && isEmpty(response.id))) {
       setIsLoading(false);
       setIsShowSignInModal(false);
-      setIsModalOpen(false);
     } else if (isModalOpen && response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
       const res = await isUserRegistered(id, socialNetwork);

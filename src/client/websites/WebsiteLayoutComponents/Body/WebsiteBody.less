@@ -27,6 +27,9 @@
   &__map {
     width: 100%;
     height: 94vh;
+    transition: 0.3s;
+    margin-left: 0;
+    display: block;
   }
 
   &__logo {
@@ -37,8 +40,12 @@
     left: 5%;
     max-width: 150px;
     cursor: pointer;
+    width: 80px;
+    height: 80px;
 
     @media @small {
+      width: 150px;
+      height: 80px;
       top: 83%;
       left: 5%;
     }
@@ -46,10 +53,10 @@
 
   &__hideMap {
     position: relative;
-    display: none;
+    display: block;
+    margin-left: 0;
 
     @media @small {
-      display: block;
       width: 60%;
       margin-left: 39%;
     }
@@ -61,7 +68,15 @@
 
     @media @small {
       width: 40%;
-      padding: 0 25px 0 0;
+    }
+  }
+
+  &__filters-list {
+    margin: 15px;
+    display: flex;
+
+    @media @small {
+      display: none;
     }
   }
 }
@@ -74,7 +89,11 @@
   flex-direction: column;
   align-items: flex-end;
   top: 83%;
-  left: 96%;
+  left: 90%;
+
+  @media @small {
+    left: 94%;
+  }
 
   &__gps {
     cursor: pointer;

@@ -183,32 +183,27 @@ export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
   const search = replacer(userName, '@');
   const user = getAuthenticatedUserName(getState());
 
-  if (search) {
-    dispatch({
-      type: SEARCH_USERS.ACTION,
-      payload: {
-        promise: ApiClient.searchUsers(search, user, limit, notGuest)
-          .then(result => ({
-            result,
-            search,
-          }))
-          .catch(console.log),
-      },
-    });
-  }
+  dispatch({
+    type: SEARCH_USERS.ACTION,
+    payload: {
+      promise: ApiClient.searchUsers(search, user, limit, notGuest)
+        .then(result => ({
+          result,
+        }))
+        .catch(console.log),
+    },
+  });
 };
 
 export const searchUsersAutoCompeteLoadingMore = (userName, skip) => (dispatch, getState) => {
   const user = getAuthenticatedUserName(getState());
 
-  if (userName) {
-    dispatch({
-      type: SEARCH_USERS_LOADING_MORE.ACTION,
-      payload: {
-        promise: ApiClient.searchUsers(userName, user, 15, false, skip),
-      },
-    });
-  }
+  dispatch({
+    type: SEARCH_USERS_LOADING_MORE.ACTION,
+    payload: {
+      promise: ApiClient.searchUsers(userName, user, 15, false, skip),
+    },
+  });
 };
 
 export const searchUsersForDiscoverPage = (userName, limit) => (dispatch, getState) => {
@@ -359,4 +354,11 @@ export const SET_SEARCH_SORT = '@search/SET_SEARCH_SORT';
 export const setSearchSortType = sort => ({
   type: SET_SEARCH_SORT,
   payload: sort,
+});
+
+export const SET_SHOW_RESULT = '@search/SET_SHOW_RESULT';
+
+export const setShowSearchResult = payload => ({
+  type: SET_SHOW_RESULT,
+  payload,
 });

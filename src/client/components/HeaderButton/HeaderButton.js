@@ -162,6 +162,7 @@ const HeaderButtons = props => {
 
   if (!username) {
     const next = location.pathname.length > 1 ? location.pathname : '';
+
     return (
       <div className={'Topnav__menu-container Topnav__menu-logged-out'}>
         <Menu className="Topnav__menu-container__menu" mode="horizontal">

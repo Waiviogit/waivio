@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Input, Form, Modal, Avatar, message } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, get, map } from 'lodash';
+import { isEmpty, get, map, trim } from 'lodash';
 import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import {
@@ -52,7 +52,7 @@ export const WebsitesConfigurations = ({
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');
   const [showSelectColor, setShowSelectColor] = useState('');
-  const [colors, setColors] = useState('');
+  const [colors, setColors] = useState(null);
   const [aboutObj, setAbtObject] = useState(null);
   const [image, setImage] = useState('');
   const [settingMap, setSettingMap] = useState({});
@@ -89,12 +89,12 @@ export const WebsitesConfigurations = ({
   };
 
   const host = match.params.site;
-  console.log('host: ', host);
 
   useEffect(() => {
     getCoordinates();
     getWebConfig(host).then(response => {
       setAbtObject(response.value.aboutObject);
+      setColors(response.value.colors);
     });
     return () => {
       setColors('');
@@ -108,22 +108,16 @@ export const WebsitesConfigurations = ({
   };
 
   const setCoordinates = () => {
-    // eslint-disable-next-line no-shadow
-    const { bounds } = settingMap;
     const updateCenter = [lat, lon];
     form.setFieldsValue({
       [showMap]: {
-        topPoint: bounds.ne,
-        bottomPoint: bounds.sw,
+        topPoint: settingMap.bounds.ne,
+        bottomPoint: settingMap.bounds.sw,
         center: updateCenter,
         zoom,
       },
     });
   };
-
-  // useEffect(() => {
-  //   if (!isEmpty(config)) getMapsCoordinates(get(mapState, ['desktopMap', 'center']), 38000);
-  // }, [config]);
 
   const handleSubmitLogoModal = () => {
     form.setFieldsValue({
@@ -148,7 +142,7 @@ export const WebsitesConfigurations = ({
     setImage('');
   };
 
-  const getSelectedColor = type => `${get(colors, [type]) || get(config, ['colors', type], '')}`;
+  const getSelectedColor = type => get(colors, [type], '');
 
   const setMapBounds = state => {
     // eslint-disable-next-line no-shadow
@@ -327,7 +321,12 @@ export const WebsitesConfigurations = ({
                   </Button>
                 </div>,
               )}
-              <p>Desktop logo will appear on the home page of the desktop version of the site.</p>
+              <p>
+                <FormattedMessage
+                  id="desktop_logo_description"
+                  defaultMessage="Desktop logo will appear on the homepage of the desktop version of the site."
+                />
+              </p>
             </Form.Item>
             <Form.Item>
               <h3>
@@ -352,7 +351,12 @@ export const WebsitesConfigurations = ({
                   </Button>
                 </div>,
               )}
-              <p>Mobile logo will appear on the home page of the mobile version of the site.</p>
+              <p>
+                <FormattedMessage
+                  id="mobile_logo_description"
+                  defaultMessage="Mobile logo will appear on the home page of the mobile version of the site."
+                />
+              </p>
             </Form.Item>
             <Form.Item>
               <h3>
@@ -388,7 +392,12 @@ export const WebsitesConfigurations = ({
                   />
                 ),
               )}
-              <p>About object will be opened when visitors click on the logo on the home page.</p>
+              <p>
+                <FormattedMessage
+                  id="about_object_description"
+                  defaultMessage="About object will be opened when visitors click on the logo on the home page."
+                />
+              </p>
             </Form.Item>
             <Form.Item>
               <h3>
@@ -424,7 +433,12 @@ export const WebsitesConfigurations = ({
                   </Button>
                 </div>,
               )}
-              <p>Select the initial map focus for the desktop site.</p>
+              <p>
+                <FormattedMessage
+                  id="desktop_map_description"
+                  defaultMessage="Select the initial map focus for the desktop site."
+                />
+              </p>
             </Form.Item>
             <Form.Item>
               <h3>
@@ -460,7 +474,12 @@ export const WebsitesConfigurations = ({
                   </Button>
                 </div>,
               )}
-              <p>Select the initial map focus for the mobile site.</p>
+              <p>
+                <FormattedMessage
+                  id="mobile_map_description"
+                  defaultMessage="Select the initial map focus for the mobile site."
+                />
+              </p>
             </Form.Item>
             <Form.Item>
               <h3>
@@ -477,7 +496,11 @@ export const WebsitesConfigurations = ({
                   <div key={color}>
                     <span
                       className="WebsitesConfigurations__colors"
-                      style={{ backgroundColor: `#${getSelectedColor(color)}` }}
+                      style={{
+                        backgroundColor: getSelectedColor(color)
+                          ? `#${getSelectedColor(color)}`
+                          : 'transparent',
+                      }}
                     />
                     <b>{color}</b>
                   </div>
@@ -558,10 +581,8 @@ export const WebsitesConfigurations = ({
                           type="text"
                           defaultValue={getSelectedColor(color)}
                           onChange={e => {
-                            const val =
-                              e.currentTarget.value.trim() === ''
-                                ? ' '
-                                : e.currentTarget.value.trim();
+                            const val = trim(e.currentTarget.value);
+
                             form.setFieldsValue({
                               [color]: val,
                             });

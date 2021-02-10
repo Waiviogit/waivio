@@ -42,7 +42,6 @@ import { getHtml } from '../components/Story/Body';
 import { jsonParse } from '../helpers/formatter';
 import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
-import { getProxyImageURL } from '../helpers/image';
 
 @injectIntl
 @connect(
@@ -293,16 +292,19 @@ class PostContent extends React.Component {
           <meta property="og:url" content={url} />
           <meta property="og:type" content="article" />
           <meta property="og:title" content={metaTitle} />
+          <meta property="og:description" content={desc} />
           <meta property="description" content={desc} />
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta name="twitter:site" content={'@waivio'} />
           <meta name="twitter:title" content={metaTitle} />
           <meta name="twitter:description" content={desc} />
-          <meta property="og:image" content={getProxyImageURL(image)} />
-          <meta name="twitter:image" content={getProxyImageURL(image)} />
+          <meta property="og:image:url" content={image} />
+          <meta property="og:image:width" content="680" />
+          <meta property="og:image:height" content="555" />
+          <meta name="twitter:image:src" content={image} />
           <meta property="og:site_name" content="Waivio" />
           <meta name="article:tag" property="article:tag" content={category} />
-          <link rel="image_src" href={getProxyImageURL(image)} />
+          <link rel="image_src" href={image} />
           <meta name="article:published_time" property="article:published_time" content={created} />
         </Helmet>
         <StoryFull

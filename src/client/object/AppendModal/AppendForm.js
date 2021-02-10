@@ -99,7 +99,12 @@ import './AppendForm.less';
     categories: getObjectTagCategory(state),
     albums: getObjectAlbums(state),
   }),
-  { appendObject, rateObject, addImageToAlbumStore },
+  {
+    appendObject,
+    rateObject,
+    addAlbum: addAlbumToStore,
+    addImageToAlbum: addImageToAlbumStore,
+  },
 )
 @Form.create()
 @withEditor
@@ -127,6 +132,8 @@ export default class AppendForm extends Component {
     categories: PropTypes.arrayOf(PropTypes.shape()),
     selectedAlbum: PropTypes.shape(),
     albums: PropTypes.arrayOf(PropTypes.shape()),
+    addImageToAlbum: PropTypes.func,
+    addAlbum: PropTypes.func,
   };
 
   static defaultProps = {
@@ -152,6 +159,8 @@ export default class AppendForm extends Component {
     categories: [],
     selectedAlbum: null,
     albums: [],
+    addImageToAlbum: () => {},
+    addAlbum: () => {},
   };
 
   state = {
@@ -169,7 +178,7 @@ export default class AppendForm extends Component {
     selectedCategory: [],
     currentTags: [],
     fileList: [],
-    currentAlbum: [],
+    currentAlbum: '',
     currentImages: [],
   };
 
@@ -185,7 +194,7 @@ export default class AppendForm extends Component {
     if (isEmpty(currentAlbum)) {
       const defaultAlbum = getDefaultAlbum(albums);
       // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({ currentAlbum: defaultAlbum });
+      this.setState({ currentAlbum: defaultAlbum.id });
     }
     this.calculateVoteWorth(this.state.votePercent);
   };
@@ -518,7 +527,7 @@ export default class AppendForm extends Component {
   };
 
   handleCreateAlbum = async formData => {
-    const { user, wObject, hideModal } = this.props;
+    const { user, wObject, hideModal, addAlbum } = this.props;
     const data = prepareAlbumData(formData, user.name, wObject);
     const album = prepareAlbumToStore(data);
 
@@ -527,7 +536,7 @@ export default class AppendForm extends Component {
     try {
       const { author } = await this.props.appendObject(data);
 
-      await addAlbumToStore({ ...album, author });
+      await addAlbum({ ...album, author });
       hideModal();
       message.success(
         this.props.intl.formatMessage(
@@ -560,7 +569,7 @@ export default class AppendForm extends Component {
     this.appendImages()
       .then(() => {
         hideModal();
-        this.setState({ fileList: [], uploadingList: [], loading: false });
+        this.setState({ fileList: [], uploadingList: [], loading: false, currentAlbum: '' });
         message.success(
           intl.formatMessage(
             {
@@ -585,7 +594,7 @@ export default class AppendForm extends Component {
   };
 
   appendImages = async () => {
-    const { form } = this.props;
+    const { form, addImageToAlbum } = this.props;
     const { currentImages } = this.state;
 
     const data = this.getWobjectData();
@@ -614,7 +623,7 @@ export default class AppendForm extends Component {
         this.setState({ fileList: filteredFileList }, async () => {
           const img = prepareImageToStore(postData);
 
-          await addImageToAlbumStore({
+          await addImageToAlbum({
             ...img,
             author: get(response, ['value', 'author']),
             id: form.getFieldValue('id'),
@@ -682,66 +691,6 @@ export default class AppendForm extends Component {
     );
   };
 
-  handleCreateTag = () => {
-    const { hideModal, intl, user } = this.props;
-    const { categoryItem, selectedCategory } = this.state;
-    const currentLocale = this.props.form.getFieldValue('currentLocale');
-    const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
-
-    this.props.form.validateFields(err => {
-      if (!err) {
-        this.setState({ loading: true });
-        this.appendTag(categoryItem)
-          .then(() => {
-            hideModal();
-            this.setState({ categoryItem: null, loading: false });
-            message.success(
-              intl.formatMessage(
-                {
-                  id: 'added_tags_to_category',
-                  defaultMessage: `@{user} added a new #tag ({language}) to {category} category`,
-                },
-                {
-                  user: user.name,
-                  language: langReadable,
-                  category: selectedCategory.body,
-                },
-              ),
-            );
-          })
-          .catch(error => {
-            console.error(error.message);
-            message.error(
-              intl.formatMessage({
-                id: 'couldnt_upload_image',
-                defaultMessage: "Couldn't add item to the category.",
-              }),
-            );
-            this.setState({ loading: false });
-          });
-      } else {
-        console.error(err);
-      }
-    });
-  };
-
-  appendTag = async categoryItem => {
-    const data = this.getWobjectData();
-
-    /* eslint-disable no-restricted-syntax */
-    const postData = {
-      ...data,
-      permlink: `${data.author}-${generatePermlink()}`,
-      field: {
-        ...this.getWobjectField(categoryItem),
-        tagCategory: this.state.selectedCategory.body,
-      },
-      body: this.getWobjectBody(),
-    };
-
-    await this.props.appendObject(postData, { votePower: postData.votePower });
-  };
-
   handleSubmit = event => {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
@@ -765,9 +714,7 @@ export default class AppendForm extends Component {
           }),
         );
       }
-    }
-
-    if (currentField !== objectFields.newsFilter) {
+    } else if (currentField !== objectFields.newsFilter) {
       this.props.form.validateFieldsAndScroll((err, values) => {
         const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
           if (field.body === values.rating) {
@@ -806,7 +753,6 @@ export default class AppendForm extends Component {
 
   checkRequiredField = (form, currentField) => {
     let formFields = null;
-
     switch (currentField) {
       case objectFields.address:
         formFields = form.getFieldsValue(Object.values(addressFields));
@@ -837,7 +783,7 @@ export default class AppendForm extends Component {
 
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
-  isDuplicate = (currentLocale, currentField) => {
+  isDuplicate = (currentLocale, currentField, currentCategory) => {
     const { form, wObject, user } = this.props;
     const currentValue = form.getFieldValue(currentField);
     const filtered = wObject.fields.filter(
@@ -866,6 +812,11 @@ export default class AppendForm extends Component {
 
     if (currentField === objectFields.name) return filtered.some(f => f.body === currentValue);
 
+    if (currentField === objectFields.categoryItem) {
+      const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
+      return selectedTagCategory.some(item => item.body === currentValue);
+    }
+
     return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
   };
 
@@ -881,10 +832,11 @@ export default class AppendForm extends Component {
     const { intl, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
+    const currentCategory = form.getFieldValue('tagCategory');
     const formFields = form.getFieldsValue();
 
     const isDuplicated = formFields[rule.field]
-      ? this.isDuplicate(currentLocale, currentField)
+      ? this.isDuplicate(currentLocale, currentField, currentCategory)
       : false;
 
     if (isDuplicated) {

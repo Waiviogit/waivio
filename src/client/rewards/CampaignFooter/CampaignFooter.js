@@ -421,7 +421,7 @@ class CampaignFooter extends React.Component {
     const reversedComments = currentFilteredComments.reverse();
 
     return map(reversedComments, currentComment => (
-      <div key={currentComment.post_id}>
+      <div key={get(currentComment, 'post_id')}>
         <CommentsMessages
           show={isShow}
           user={user}

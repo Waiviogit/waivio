@@ -123,9 +123,7 @@ const UserHeader = ({
                       followingType="user"
                     />
                     {user.youFollows && <BellButton user={user} />}
-                    {includes(user.mutedBy, authUserName) && (
-                      <span className="UserHeader__muteCard">{mutedLabelText}</span>
-                    )}
+                    {user.muted && <span className="UserHeader__muteCard">{mutedLabelText}</span>}
                     {!mutedByModerator && (
                       <UserPopoverMenu
                         user={user}
@@ -216,7 +214,6 @@ UserHeader.propTypes = {
   vestingShares: PropTypes.number,
   isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
-  authUserName: PropTypes.string,
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   isActive: PropTypes.bool.isRequired,
@@ -230,6 +227,7 @@ UserHeader.propTypes = {
   isGuest: PropTypes.bool,
   handleMuteUserBlog: PropTypes.func,
   isMobile: PropTypes.bool.isRequired,
+  authUserName: PropTypes.string,
 };
 
 UserHeader.defaultProps = {

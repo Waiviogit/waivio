@@ -1,7 +1,7 @@
 import { forEach, isEmpty } from 'lodash';
 import classNames from 'classnames';
 
-export const getTranformSearchCountData = (searchResults, listOfObjectTypes) => {
+export const getTranformSearchCountData = (searchResults, listOfObjectTypes, withAll = false) => {
   const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
 
   const countArr = [];
@@ -31,7 +31,7 @@ export const getTranformSearchCountData = (searchResults, listOfObjectTypes) => 
 
   if (usersCount) countArr.push({ name: 'Users', count: usersCount, type: 'user' });
 
-  if (countArr.length) {
+  if (countArr.length && withAll) {
     const calcAllResult = countArr.reduce((acc, curr) => acc + curr.count, 0);
 
     countArr.unshift({
