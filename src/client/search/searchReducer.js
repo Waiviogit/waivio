@@ -18,7 +18,7 @@ const initialState = {
   isStartSearchUser: false,
   isStartSearchObject: false,
   isClearSearchObjects: false,
-  websiteSearchType: 'restaurant',
+  websiteSearchType: '',
   websiteSearchResult: [],
   searchUsersResults: [],
   websiteSearchString: '',
@@ -475,6 +475,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         showSearchResult: action.payload,
+        websiteSearchType: state.websiteSearchType || 'restaurant',
       };
     }
 

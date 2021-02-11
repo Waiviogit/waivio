@@ -18,8 +18,15 @@ const Feed = ({
   isGuest,
   history,
   userComments,
+  isOwnProfile,
 }) => {
-  if (isGuest && !size(content) && !isFetching && !history.location.pathname.includes('blog')) {
+  if (
+    isGuest &&
+    isOwnProfile &&
+    !size(content) &&
+    !isFetching &&
+    !history.location.pathname.includes('blog')
+  ) {
     return <QuickPostEditor history={history} />;
   }
 
@@ -49,6 +56,7 @@ Feed.propTypes = {
   loadMoreContent: PropTypes.func,
   history: PropTypes.shape(),
   userComments: PropTypes.bool,
+  isOwnProfile: PropTypes.bool,
 };
 
 Feed.defaultProps = {
@@ -60,6 +68,7 @@ Feed.defaultProps = {
   showPostModal: () => {},
   history: {},
   userComments: false,
+  isOwnProfile: false,
 };
 
 export default Feed;
