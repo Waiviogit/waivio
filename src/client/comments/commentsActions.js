@@ -19,10 +19,7 @@ import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTyp
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
-export const GET_COMMENTS = '@comments/GET_COMMENTS';
-export const GET_COMMENTS_START = '@comments/GET_COMMENTS_START';
-export const GET_COMMENTS_SUCCESS = '@comments/GET_COMMENTS_SUCCESS';
-export const GET_COMMENTS_ERROR = '@comments/GET_COMMENTS_ERROR';
+export const GET_COMMENTS = createAsyncActionType('@comments/GET_COMMENTS');
 
 export const SEND_COMMENT = '@comments/SEND_COMMENT';
 export const SEND_COMMENT_START = '@comments/SEND_COMMENT_START';
@@ -136,7 +133,7 @@ export const getComments = postId => (dispatch, getState) => {
     }
 
     dispatch({
-      type: GET_COMMENTS,
+      type: GET_COMMENTS.ACTION,
       payload: {
         promise: ApiClient.getPostCommentsFromApi({
           category,
