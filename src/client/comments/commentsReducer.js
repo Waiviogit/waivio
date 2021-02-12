@@ -25,7 +25,7 @@ const childrenById = (state = initialState.childrenById, action) => {
         [commentKey]: oldComments,
       };
     }
-    case commentsTypes.GET_COMMENTS_SUCCESS:
+    case commentsTypes.GET_COMMENTS.SUCCESS:
       return {
         ...state,
         ...action.payload.commentsChildrenList,
@@ -64,7 +64,7 @@ const comments = (state = {}, action) => {
         [commentKey]: comment,
       };
     }
-    case commentsTypes.GET_COMMENTS_SUCCESS:
+    case commentsTypes.GET_COMMENTS.SUCCESS:
       return {
         ...state,
         ...mapCommentsBasedOnId(action.payload.content, action),
@@ -76,10 +76,10 @@ const comments = (state = {}, action) => {
 
 const isFetching = (state = initialState.isFetching, action) => {
   switch (action.type) {
-    case commentsTypes.GET_COMMENTS_START:
+    case commentsTypes.GET_COMMENTS.START:
       return true;
-    case commentsTypes.GET_COMMENTS_SUCCESS:
-    case commentsTypes.GET_COMMENTS_ERROR:
+    case commentsTypes.GET_COMMENTS.SUCCESS:
+    case commentsTypes.GET_COMMENTS.ERROR:
       return false;
     default:
       return state;
@@ -88,10 +88,10 @@ const isFetching = (state = initialState.isFetching, action) => {
 
 const fetchingPostId = (state = initialState.fetchingPostId, action) => {
   switch (action.type) {
-    case commentsTypes.GET_COMMENTS_START:
+    case commentsTypes.GET_COMMENTS.START:
       return action.meta.id;
-    case commentsTypes.GET_COMMENTS_SUCCESS:
-    case commentsTypes.GET_COMMENTS_ERROR:
+    case commentsTypes.GET_COMMENTS.SUCCESS:
+    case commentsTypes.GET_COMMENTS.ERROR:
       return '';
     default:
       return state;
@@ -100,10 +100,10 @@ const fetchingPostId = (state = initialState.fetchingPostId, action) => {
 
 const isLoaded = (state = initialState.isLoaded, action) => {
   switch (action.type) {
-    case commentsTypes.GET_COMMENTS_START:
+    case commentsTypes.GET_COMMENTS.START:
       return false;
-    case commentsTypes.GET_COMMENTS_SUCCESS:
-    case commentsTypes.GET_COMMENTS_ERROR:
+    case commentsTypes.GET_COMMENTS.SUCCESS:
+    case commentsTypes.GET_COMMENTS.ERROR:
       return true;
     default:
       return state;
@@ -157,9 +157,9 @@ export default (state = initialState, action) => {
         pendingVotes: pendingVotes(state.pendingVotes, action),
       };
     }
-    case commentsTypes.GET_COMMENTS_START:
-    case commentsTypes.GET_COMMENTS_SUCCESS:
-    case commentsTypes.GET_COMMENTS_ERROR:
+    case commentsTypes.GET_COMMENTS.START:
+    case commentsTypes.GET_COMMENTS.SUCCESS:
+    case commentsTypes.GET_COMMENTS.ERROR:
       return {
         ...state,
         comments: comments(state.comments, action),
