@@ -4,19 +4,19 @@ import cookieParser from 'cookie-parser';
 import Handlebars from 'handlebars';
 import paths from '../../scripts/paths';
 import createSsrHandler from './handlers/createSsrHandler';
-import createAmpHandler from './handlers/createAmpHandler';
+// import createAmpHandler from './handlers/createAmpHandler';
 import steemAPI from './steemAPI';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
 const template = Handlebars.compile(indexHtml);
 
-const ampIndexPath = `${paths.templates}/amp_index.hbs`;
-const ampIndexHtml = fs.readFileSync(ampIndexPath, 'utf-8');
-const ampTemplate = Handlebars.compile(ampIndexHtml);
+// const ampIndexPath = `${paths.templates}/amp_index.hbs`;
+// const ampIndexHtml = fs.readFileSync(ampIndexPath, 'utf-8');
+// const ampTemplate = Handlebars.compile(ampIndexHtml);
 
 const ssrHandler = createSsrHandler(template);
-const ampHandler = createAmpHandler(ampTemplate);
+// const ampHandler = createAmpHandler(ampTemplate);
 
 const CACHE_AGE = 1000 * 60 * 60 * 24 * 7;
 
@@ -76,7 +76,7 @@ app.get('/i/:parent/@:referral/:permlink', async (req, res) => {
   }
 });
 
-app.get('/@:author/:permlink/amp', ampHandler);
+app.get('/@:author/:permlink/amp', ssrHandler);
 app.get('/object/:authorPermlink/:menu', ssrHandler);
 app.get('/:category/@:author/:permlink/amp', (req, res) => {
   const { author, permlink } = req.params;

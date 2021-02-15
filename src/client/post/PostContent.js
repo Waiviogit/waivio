@@ -298,6 +298,7 @@ class PostContent extends React.Component {
           <meta name="twitter:site" content={'@waivio'} />
           <meta name="twitter:title" content={metaTitle} />
           <meta name="twitter:description" content={desc} />
+          <meta property="og:image" content={image} />
           <meta property="og:image:url" content={image} />
           <meta property="og:image:width" content="680" />
           <meta property="og:image:height" content="555" />
