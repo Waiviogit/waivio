@@ -399,6 +399,21 @@ function sc2Extended() {
       },
     },
     {
+      websitesReferral(account, host, owner, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [owner],
+          id: 'website_referral_payments',
+          json: JSON.stringify({
+            account,
+            host,
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       /*
         "agent" - field we get from link ?ref="agent_name".
          If guest agent, we send in agent name like before and in "isGuest" field write his name, not bool.
