@@ -85,9 +85,10 @@ const WebsiteBody = props => {
     }
   }, [props.userLocation, boundsParams]);
 
-  const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
-  const logoLink = get(props, ['configuration', 'aboutObject', 'defaultShowLink'], '/');
+  const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
+  const currentLogo = configLogo || getObjectAvatar(aboutObject);
+  const logoLink = get(aboutObject, ['defaultShowLink'], '/');
 
   const handleOnBoundsChanged = useCallback(
     debounce(data => {

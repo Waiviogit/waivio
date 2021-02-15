@@ -4,7 +4,7 @@ import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, AutoComplete, DatePicker, Button } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, ceil } from 'lodash';
 import classNames from 'classnames';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
@@ -25,6 +25,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
 
     return {
       ...payment,
+      balance: ceil(payment.balance, 3),
       message,
     };
   });
@@ -59,11 +60,11 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
   const classNameButton = classNames({ ReportsWebsite__button: locale === 'ru-RU' });
 
   return (
-    <div className="shifted">
+    <React.Fragment>
       {isEmpty(reportsInfo) ? (
         <Loading />
       ) : (
-        <div className="center">
+        <React.Fragment>
           <h1>
             <FormattedMessage
               id="payments_reports_websites"
@@ -148,9 +149,9 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
             </Form.Item>
           </Form>
           <DynamicTbl header={configReportsWebsitesTableHeader} bodyConfig={mappedPayments} />
-        </div>
+        </React.Fragment>
       )}
-    </div>
+    </React.Fragment>
   );
 };
 

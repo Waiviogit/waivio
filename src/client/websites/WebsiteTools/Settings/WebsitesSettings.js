@@ -9,7 +9,11 @@ import { get, isEmpty } from 'lodash';
 import { getSettingsSite, getWebsiteLoading } from '../../../reducers';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
-import { getWebsiteSettings, saveWebsiteSettings } from '../../websiteActions';
+import {
+  getWebsiteSettings,
+  referralUserForWebsite,
+  saveWebsiteSettings,
+} from '../../websiteActions';
 import Loading from '../../../components/Icon/Loading';
 
 import './WebsitesSettings.less';
@@ -23,19 +27,24 @@ const WebsitesSettings = ({
   getWebSettings,
   settings,
   location,
+  referralUserForWeb,
 }) => {
   const { getFieldDecorator } = form;
   const [beneficiaryAccount, setBeneficiaryAccount] = useState('');
   const [beneficiaryPercent, setBeneficiaryPercent] = useState(1);
+  const [referralAccount, setReferralAccount] = useState('');
+
   const host = match.params.site;
 
   useEffect(() => {
     getWebSettings(host).then(res => {
       const percent = get(res, ['value', 'beneficiary', 'percent']) / 100;
       const account = get(res, ['value', 'beneficiary', 'account']);
+      const referral = get(res, ['value', 'referralCommissionAcc']);
 
       setBeneficiaryPercent(percent);
       setBeneficiaryAccount(account);
+      setReferralAccount(referral);
     });
   }, [location.pathname]);
 
@@ -63,6 +72,7 @@ const WebsitesSettings = ({
         const beneficiary = { account, percent };
 
         saveWebSettings(host, tag, beneficiary);
+        if (referralAccount) referralUserForWeb(referralAccount, host);
       }
     });
   };
@@ -153,6 +163,27 @@ const WebsitesSettings = ({
             )}
           </Form.Item>
         </div>
+        <div className="WebsitesSettings__benefic-block">
+          <Form.Item>
+            <h3>
+              {intl.formatMessage({
+                id: 'referral_payments',
+                defaultMessage: 'Referral payments:',
+              })}
+            </h3>
+            {referralAccount ? (
+              <SelectUserForAutocomplete
+                account={referralAccount}
+                resetUser={() => setReferralAccount('')}
+              />
+            ) : (
+              <SearchUsersAutocomplete
+                handleSelect={({ account }) => setReferralAccount(account)}
+                style={{ width: '100%' }}
+              />
+            )}
+          </Form.Item>
+        </div>
         <Button type="primary" htmlType="submit" loading={loading}>
           {intl.formatMessage({
             id: 'save',
@@ -174,6 +205,7 @@ WebsitesSettings.propTypes = {
   location: PropTypes.shape().isRequired,
   saveWebSettings: PropTypes.func.isRequired,
   getWebSettings: PropTypes.func.isRequired,
+  referralUserForWeb: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       site: PropTypes.string,
@@ -193,5 +225,6 @@ export default connect(
   {
     saveWebSettings: saveWebsiteSettings,
     getWebSettings: getWebsiteSettings,
+    referralUserForWeb: referralUserForWebsite,
   },
 )(Form.create()(withRouter(injectIntl(WebsitesSettings))));
