@@ -8,9 +8,13 @@
   box-shadow: inset 0 0 5px 0 #7d5d5d4a;
 
   &__link {
-    font-size: 25px;
+    font-size: 20px;
     transition: 0.5s;
     color: @regent-gray;
+
+    @media @small {
+      font-size: 25px;
+    }
   }
 
   &__title {

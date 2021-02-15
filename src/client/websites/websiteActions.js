@@ -447,7 +447,7 @@ export const saveWebsiteSettings = (host, googleAnalyticsTag, beneficiary) => (
     payload: {
       promise: steemConnectAPI.saveWebsiteSettings(
         userName,
-        currentWebsite.id,
+        get(currentWebsite, 'id'),
         googleAnalyticsTag,
         beneficiary,
       ),
@@ -584,4 +584,16 @@ export const muteUser = (follower, following, action, host) => (
       ),
     );
   });
+};
+
+export const REFERRAL_USER = createAsyncActionType('@website/REFERRAL_USER');
+
+export const referralUserForWebsite = (account, host) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const owner = getAuthenticatedUserName(getState());
+
+  return steemConnectAPI.websitesReferral(account, host, owner);
 };
