@@ -16,7 +16,6 @@ import {
   getRelatedPhotos,
 } from '../../reducers';
 import IconButton from '../../components/IconButton';
-import { isPhotosAlbumExist } from '../../helpers/wObjectHelper';
 
 import './ObjectGallery.less';
 
@@ -42,7 +41,6 @@ export default class ObjectGallery extends Component {
     getAlbums: PropTypes.func,
     getRelatedAlbum: PropTypes.func,
     relatedAlbum: PropTypes.shape().isRequired,
-    appendAlbum: PropTypes.func,
   };
 
   static defaultProps = {
@@ -58,11 +56,10 @@ export default class ObjectGallery extends Component {
   };
 
   componentDidMount() {
-    const { match, albums, relatedAlbum, appendAlbum } = this.props;
+    const { match, albums, relatedAlbum } = this.props;
 
     if (isEmpty(albums)) this.props.getAlbums(match.params.name);
     if (!size(relatedAlbum)) this.props.getRelatedAlbum(match.params.name, 10);
-    if (!isPhotosAlbumExist(albums)) appendAlbum();
   }
 
   handleToggleModal = () =>
