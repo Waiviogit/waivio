@@ -159,7 +159,7 @@ export function createPermlink(title, author, parent_author, parent_permlink, lo
       .then(content => {
         let prefix = '';
 
-        if (content.body !== '') {
+        if (content.body) {
           // make sure slug is unique
           prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
         }
