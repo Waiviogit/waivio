@@ -287,7 +287,7 @@ class Wrapper extends React.PureComponent {
                 </Layout.Header>
               )}
               <div className="content">
-                {!isWidget && !location.hostname.includes('waivio') && (
+                {!isWidget && location.hostname.includes('waivio') && (
                   <TopNavigation
                     authenticated={isAuthenticated}
                     userName={username}

@@ -1601,5 +1601,9 @@
   "website_owner_moderators": "The website owner may grant moderator privileges to some Hive users.",
   "muted": "Muted",
   "blacklisted": "Blacklisted",
-  "get_campaign_data_error": "Failed to get campaign data"
+  "get_campaign_data_error": "Failed to get campaign data",
+  "referral_payments": "Referral payments",
+  "referral_rules": "The website owner may receive referral commissions when users claim their rewards through the website.",
+  "referral_payments_acc": "Account for referral payments:",
+  "referral_terms": "The terms for referral commissions are defined by the Campaign Management Services used by sponsors to launch their campaigns."
 }

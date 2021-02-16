@@ -5,7 +5,10 @@ import { injectIntl } from 'react-intl';
 
 import './Settings.less';
 
-const WebsiteSettings = ({ route }) => <div className="center">{renderRoutes(route.routes)}</div>;
+const WebsiteSettings = ({ route }) => {
+  console.log(route.routes);
+  return <div className="center">{renderRoutes(route.routes)}</div>;
+};
 
 WebsiteSettings.propTypes = {
   route: PropTypes.shape({
