@@ -113,11 +113,6 @@ const routes = {
           component: Views.Drafts,
         },
         {
-          path: '/drafts',
-          exact: true,
-          component: Views.Drafts,
-        },
-        {
           path: '/replies',
           exact: true,
           component: Views.Replies,

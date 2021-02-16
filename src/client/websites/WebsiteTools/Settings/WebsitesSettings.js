@@ -66,13 +66,13 @@ const WebsitesSettings = ({
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const percent = (beneficiaryPercent || 1) * 100;
+        const percent = (beneficiaryPercent || 3) * 100;
         const account = beneficiaryAccount || 'waivio';
         const tag = values.googleAnalyticsTag || settings.googleAnalyticsTag || '';
         const beneficiary = { account, percent };
 
         saveWebSettings(host, tag, beneficiary);
-        if (referralAccount) referralUserForWeb(referralAccount, host);
+        referralUserForWeb(referralAccount, host);
       }
     });
   };
@@ -163,12 +163,22 @@ const WebsitesSettings = ({
             )}
           </Form.Item>
         </div>
+        <h3>
+          {intl.formatMessage({ id: 'referral_payments', defaultMessage: 'Referral payments' })}
+        </h3>
+        <p>
+          {intl.formatMessage({
+            id: 'referral_rules',
+            defaultMessage:
+              'The website owner may receive referral commissions when users claim their rewards through the website.',
+          })}
+        </p>
         <div className="WebsitesSettings__benefic-block">
           <Form.Item>
             <h3>
               {intl.formatMessage({
-                id: 'referral_payments',
-                defaultMessage: 'Referral payments:',
+                id: 'referral_payments_acc',
+                defaultMessage: 'Account for referral payments:',
               })}
             </h3>
             {referralAccount ? (
@@ -184,6 +194,13 @@ const WebsitesSettings = ({
             )}
           </Form.Item>
         </div>
+        <p className="WebsitesSettings__referral-terms">
+          {intl.formatMessage({
+            id: 'referral_terms',
+            defaultMessage:
+              'The terms for referral commissions are defined by the Campaign Management Services used by sponsors to launch their campaigns.',
+          })}
+        </p>
         <Button type="primary" htmlType="submit" loading={loading}>
           {intl.formatMessage({
             id: 'save',

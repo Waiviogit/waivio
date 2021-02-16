@@ -36,7 +36,6 @@ export default class ObjectFeed extends React.Component {
     /* from connect */
     feed: PropTypes.shape().isRequired,
     getObjectPosts: PropTypes.func,
-    usedLocale: PropTypes.string,
     getMoreObjectPosts: PropTypes.func,
     showPostModal: PropTypes.func.isRequired,
     readLocales: PropTypes.arrayOf(PropTypes.string),
@@ -63,16 +62,14 @@ export default class ObjectFeed extends React.Component {
   state = {
     loadingAssignDiscard: false,
     isAssign: false,
-    allPropositions: [],
     loadingPropositions: false,
     needUpdate: true,
     propositions: [],
   };
 
   componentDidMount() {
-    const { match, limit, readLocales, wobject } = this.props;
+    const { match, limit, readLocales } = this.props;
     const { name } = match.params;
-    const wobjectId = get(wobject, '_id');
 
     this.props.getObjectPosts({
       object: name,
@@ -80,16 +77,10 @@ export default class ObjectFeed extends React.Component {
       readLanguages: readLocales,
       limit,
     });
-
-    if (wobjectId) {
-      this.mountedId = wobjectId;
-    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, limit, usedLocale } = this.props;
-    const nextPropswobjectId = get(nextProps, ['wobject', '_id']);
-    const thisPropsWobjectId = get(this.props, ['wobject', '_id']);
+    const { match, limit } = this.props;
     const nextName = get(nextProps, ['match', 'params', 'name']);
     const objectPosts = get(nextProps, ['feed', 'objectPosts', nextName]);
 
@@ -103,31 +94,7 @@ export default class ObjectFeed extends React.Component {
 
       window.scrollTo(0, 0);
     }
-
-    if (
-      (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) ||
-      nextPropswobjectId === this.mountedId
-    ) {
-      const requiredObject =
-        get(nextProps.wobject, ['parent', 'author_permlink']) || get(nextProps.wobject, ['parent']);
-      const primaryObject = get(nextProps.wobject, ['author_permlink']);
-      const reqData = {
-        userName: nextProps.userName,
-        match: nextProps.match,
-        locale: usedLocale,
-      };
-      if (requiredObject) {
-        reqData.requiredObject = requiredObject;
-      } else {
-        reqData.primaryObject = primaryObject;
-      }
-      this.getPropositions(reqData);
-    }
-
-    this.mountedId = null;
   }
-
-  mountedId = null;
 
   getPropositions = reqData => {
     const { match } = this.props;
@@ -137,6 +104,7 @@ export default class ObjectFeed extends React.Component {
         data.campaigns,
         obj => obj.required_object.author_permlink === match.params.name,
       );
+
       this.setState({
         allPropositions: data.campaigns,
         currentProposition,

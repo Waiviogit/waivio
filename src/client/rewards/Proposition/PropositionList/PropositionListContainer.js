@@ -171,30 +171,28 @@ const PropositionListContainer = ({
   };
 
   return (
-    <React.Fragment>
-      <PropositionList
-        isCatalogWrap={isCatalogWrap}
-        catalogHandleSortChange={catalogHandleSortChange}
-        catalogSort={catalogSort}
-        wobject={wobject}
-        allCurrentPropositions={allCurrentPropositions}
-        currentProposition={currentProposition}
-        goToProducts={goToProducts}
-        discardProposition={discardProposition}
-        assignPropositionHandler={assignPropositionHandler}
-        user={user}
-        loadingAssignDiscard={loadingAssignDiscard}
-        isAssign={isAssign}
-        match={match}
-        userName={userName}
-        history={history}
-        isLoadingFlag={isLoadingFlag}
-        parentPermlink={parentPermlink}
-        location={location}
-        locale={locale}
-        listItems={listItems}
-      />
-    </React.Fragment>
+    <PropositionList
+      isCatalogWrap={isCatalogWrap}
+      catalogHandleSortChange={catalogHandleSortChange}
+      catalogSort={catalogSort}
+      wobject={wobject}
+      allCurrentPropositions={allCurrentPropositions}
+      currentProposition={currentProposition}
+      goToProducts={goToProducts}
+      discardProposition={discardProposition}
+      assignPropositionHandler={assignPropositionHandler}
+      user={user}
+      loadingAssignDiscard={loadingAssignDiscard}
+      isAssign={isAssign}
+      match={match}
+      userName={userName}
+      history={history}
+      isLoadingFlag={isLoadingFlag}
+      parentPermlink={parentPermlink}
+      location={location}
+      locale={locale}
+      listItems={listItems}
+    />
   );
 };
 
