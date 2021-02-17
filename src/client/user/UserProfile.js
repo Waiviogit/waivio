@@ -97,6 +97,13 @@ export default class UserProfile extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { match, limit, user } = this.props;
+    if (prevProps.user.muted !== user.muted) {
+      this.props.getUserProfileBlogPosts(match.name, { limit, initialLoad: true });
+    }
+  }
+
   render() {
     const { authenticated, authenticatedUser, feed, limit, isGuest, history, user } = this.props;
     const username = this.props.match.params.name;
