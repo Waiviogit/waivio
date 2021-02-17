@@ -104,7 +104,7 @@ export default class SidenavRewards extends React.Component {
           >
             <div className="Sidenav__title-item">
               {intl.formatMessage({
-                id: 'rewards',
+                id: 'sidenav_rewards',
                 defaultMessage: 'Rewards',
               })}
               :

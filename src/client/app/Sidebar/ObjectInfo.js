@@ -27,7 +27,7 @@ import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
-import { getIsAuthenticated, getObjectAlbums } from '../../reducers';
+import { getIsAuthenticated, getIsWaivio, getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
@@ -40,6 +40,7 @@ import './ObjectInfo.less';
 @connect(state => ({
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
+  isWaivio: getIsWaivio(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -48,6 +49,7 @@ class ObjectInfo extends React.Component {
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool,
+    isWaivio: PropTypes.bool,
     history: PropTypes.shape().isRequired,
     appendAlbum: PropTypes.func.isRequired,
     albums: PropTypes.shape(),
@@ -60,6 +62,7 @@ class ObjectInfo extends React.Component {
     center: [],
     albums: [],
     isAuthenticated: false,
+    isWaivio: true,
   };
 
   state = {
@@ -427,6 +430,7 @@ class ObjectInfo extends React.Component {
               width={270}
               wobject={wobject}
               history={this.props.history}
+              isWaivio={this.props.isWaivio}
             />
           ),
         )}
