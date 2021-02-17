@@ -7,7 +7,6 @@ import './Settings.less';
 
 const WebsiteSettings = ({ route }) => <div className="center">{renderRoutes(route.routes)}</div>;
 
-
 WebsiteSettings.propTypes = {
   route: PropTypes.shape({
     routes: PropTypes.arrayOf(PropTypes.string),
