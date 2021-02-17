@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 
@@ -73,6 +73,13 @@ const WebsitesSettings = ({
 
         saveWebSettings(host, tag, beneficiary);
         referralUserForWeb(referralAccount, host);
+
+        message.success(
+          intl.formatMessage({
+            id: 'settings_updated_successfully',
+            defaultMessage: 'Settings updated successfully',
+          }),
+        );
       }
     });
   };
