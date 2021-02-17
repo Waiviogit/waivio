@@ -6,7 +6,6 @@ import { injectIntl } from 'react-intl';
 import './Settings.less';
 
 const WebsiteSettings = ({ route }) => {
-  console.log(route.routes);
   return <div className="center">{renderRoutes(route.routes)}</div>;
 };
 
