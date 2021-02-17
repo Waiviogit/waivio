@@ -57,20 +57,28 @@ const WebsiteBody = props => {
     : configMap;
 
   useEffect(() => {
+    const query = new URLSearchParams(props.location.search);
+    let queryCenter = query.get('center');
+    let zoom = props.configCoordinates.zoom;
+
+    if (queryCenter) {
+      queryCenter = queryCenter.split(',').map(item => Number(item));
+      zoom = 15;
+    }
+
+    const center = queryCenter || currentCenter;
     if (isEmpty(props.userLocation)) {
       props.getCoordinates().then(({ value }) => {
-        const center = configMap || [+value.lat, +value.lon];
-
         setArea({
-          center,
-          zoom: props.configCoordinates.zoom,
+          center: center || [+value.lat, +value.lon],
+          zoom,
           bounds: [],
         });
       });
     } else {
       setArea({
-        center: currentCenter,
-        zoom: props.configCoordinates.zoom,
+        center,
+        zoom,
         bounds: [],
       });
     }
@@ -99,7 +107,7 @@ const WebsiteBody = props => {
           bottomPoint: [data.sw[1], data.sw[0]],
         });
       }
-    }, 800),
+    }, 300),
     [],
   );
 
@@ -109,7 +117,7 @@ const WebsiteBody = props => {
       if (!isEqual(bounds, area.bounds)) {
         handleOnBoundsChanged(bounds);
       }
-    }, 500),
+    }, 300),
     [],
   );
 
@@ -275,6 +283,7 @@ const WebsiteBody = props => {
 WebsiteBody.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
+    search: PropTypes.string,
   }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,

@@ -51,7 +51,7 @@ class MapObjectInfo extends React.Component {
   }
 
   handleClick = () => {
-    if (!isEmpty(this.state.infoboxData)) {
+    if (location.hostname.includes('waivio') && !isEmpty(this.state.infoboxData)) {
       this.setState({ infoboxData: null });
     }
   };
@@ -77,10 +77,14 @@ class MapObjectInfo extends React.Component {
   };
 
   handleMarkerClick = ({ payload, anchor }) => {
-    if (this.state.infoboxData && this.state.infoboxData.coordinates === anchor) {
-      this.setState({ infoboxData: null });
+    if (this.props.isWaivio) {
+      if (this.state.infoboxData && this.state.infoboxData.coordinates === anchor) {
+        this.setState({ infoboxData: null });
+      }
+      this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
+    } else {
+      this.props.history.push(`/?center=${anchor.join(',')}`);
     }
-    this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
   };
 
   getOverlayLayout = () => {
@@ -231,12 +235,14 @@ MapObjectInfo.defaultProps = {
   isFullscreenMode: false,
   setMapFullscreenMode: () => {},
   width: 0,
+  isWaivio: true,
 };
 
 MapObjectInfo.propTypes = {
   mapHeigth: PropTypes.number,
   center: PropTypes.arrayOf(PropTypes.number),
   isFullscreenMode: PropTypes.bool,
+  isWaivio: PropTypes.bool,
   setMapFullscreenMode: PropTypes.func,
   // eslint-disable-next-line react/forbid-prop-types
   wobject: PropTypes.object.isRequired,
