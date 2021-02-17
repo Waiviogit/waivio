@@ -112,10 +112,7 @@ export const WebsitesAuthorities = ({
       </h3>
       <div className="WebsitesAuthorities__user-table">
         {isEmpty(authorities) ? (
-          <FormattedMessage
-            id={'web_authorities_empty'}
-            defaultMessage={"You don't have authorities."}
-          />
+          <FormattedMessage id={'web_authorities_empty'} defaultMessage={'No authorities added.'} />
         ) : (
           authorities.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
             <div key={id} className="WebsitesAuthorities__user">

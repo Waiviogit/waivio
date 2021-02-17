@@ -89,7 +89,7 @@ const WebsitesSettings = ({
           <h3>
             {intl.formatMessage({
               id: 'google_analytic_tag',
-              defaultMessage: 'Google Analytic tag',
+              defaultMessage: 'Google Analytics tracking code:',
             })}
           </h3>
           {getFieldDecorator('googleAnalyticsTag')(

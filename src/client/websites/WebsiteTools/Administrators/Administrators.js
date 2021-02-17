@@ -119,10 +119,7 @@ export const WebsitesAdministrators = ({
       </h3>
       <div className="WebsitesAdministrators__user-table">
         {isEmpty(admins) ? (
-          <FormattedMessage
-            id={'web_admins_empty'}
-            defaultMessage={"You don't have administrators."}
-          />
+          <FormattedMessage id={'web_admins_empty'} defaultMessage={'No administrators added.'} />
         ) : (
           admins.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
             <div key={id} className="WebsitesAdministrators__user">
