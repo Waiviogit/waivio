@@ -48,13 +48,10 @@ const WebsiteBody = props => {
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const activeFilterIsEmpty = isEmpty(props.activeFilters);
+  const checkArrayNoContainNaN = array => array.every(coordinate => !isNaN(coordinate));
   const configMap = isMobile
     ? get(props.configuration, ['mobileMap', 'center'])
     : get(props.configuration, ['desktopMap', 'center']);
-
-  const currentCenter = isEmpty(configMap)
-    ? [+props.userLocation.lat, +props.userLocation.lon]
-    : configMap;
 
   useEffect(() => {
     const query = new URLSearchParams(props.location.search);
@@ -66,11 +63,12 @@ const WebsiteBody = props => {
       zoom = 15;
     }
 
-    const center = queryCenter || currentCenter;
-    if (isEmpty(props.userLocation)) {
+    const center = queryCenter || configMap;
+
+    if (isEmpty(center)) {
       props.getCoordinates().then(({ value }) => {
         setArea({
-          center: center || [+value.lat, +value.lon],
+          center: [+value.lat, +value.lon],
           zoom,
           bounds: [],
         });
@@ -245,7 +243,7 @@ const WebsiteBody = props => {
             onClick={() => props.history.push(logoLink)}
           />
         )}
-        {!isEmpty(area.center) && (
+        {!isEmpty(area.center) && checkArrayNoContainNaN(area.center) && (
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
