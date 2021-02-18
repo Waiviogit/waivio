@@ -13,7 +13,10 @@ import {
 } from '../../reducers';
 
 const Header = ({ username, currPage, wobject, configuration }) => {
-  if (typeof location !== 'undefined' && location.hostname.includes('dining') || typeof location !== 'undefined' && location.hostname.includes('localhost'))
+  if (
+    (typeof location !== 'undefined' && location.hostname.includes('dining')) ||
+    (typeof location !== 'undefined' && location.hostname.includes('localhost'))
+  )
     return <WebsiteHeader currPage={currPage} wobj={wobject} config={configuration} />;
 
   return <Topnav username={username} />;
