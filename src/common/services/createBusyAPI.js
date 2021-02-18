@@ -1,8 +1,5 @@
 import apiConfig from '../../waivioApi/routes';
 
-if (typeof WebSocket !== 'undefined') {
-}
-
 const socketStore = {
   websocket: undefined,
   get instance() {
