@@ -891,11 +891,13 @@ export const setSessionData = (key, value) =>
 export const getSessionData = key => isSessionStorage && sessionStorage.getItem(key);
 
 export const removeSessionData = (item1, item2) => {
-  if (isSessionStorage && item1 && item2) {
-    sessionStorage.removeItem(`${item1}`);
-    sessionStorage.removeItem(`${item2}`);
-  } else if (isSessionStorage) {
-    sessionStorage.removeItem(`${item1}`);
+  if (isSessionStorage) {
+    if (item1 && item2) {
+      sessionStorage.removeItem(`${item1}`);
+      sessionStorage.removeItem(`${item2}`);
+    } else {
+      sessionStorage.removeItem(`${item1}`);
+    }
   }
 };
 
