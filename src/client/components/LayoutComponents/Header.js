@@ -19,7 +19,7 @@ const Header = ({ username, currPage, wobject, configuration }) => {
     hostname = location.hostname;
   }
 
-  if (hostname.includes('dining') || hostname.includes('localhost'))
+  if (hostname.includes('dining'))
     return <WebsiteHeader currPage={currPage} wobj={wobject} config={configuration} />;
 
   return <Topnav username={username} />;
