@@ -12,18 +12,14 @@ import {
   getWebsiteConfiguration,
 } from '../../reducers';
 
-const Header = ({ mainPage, username, currPage, wobject, configuration }) => {
-  switch (mainPage) {
-    case 'dining':
-      return <WebsiteHeader currPage={currPage} wobj={wobject} config={configuration} />;
+const Header = ({ username, currPage, wobject, configuration }) => {
+  if (location.hostname.includes('dining'))
+    return <WebsiteHeader currPage={currPage} wobj={wobject} config={configuration} />;
 
-    default:
-      return <Topnav username={username} />;
-  }
+  return <Topnav username={username} />;
 };
 
 Header.propTypes = {
-  mainPage: PropTypes.string.isRequired,
   currPage: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   wobject: PropTypes.shape({}).isRequired,

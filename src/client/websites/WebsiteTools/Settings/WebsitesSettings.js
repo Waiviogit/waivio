@@ -2,14 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 
 import { getSettingsSite, getWebsiteLoading } from '../../../reducers';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
-import { getWebsiteSettings, saveWebsiteSettings } from '../../websiteActions';
+import {
+  getWebsiteSettings,
+  referralUserForWebsite,
+  saveWebsiteSettings,
+} from '../../websiteActions';
 import Loading from '../../../components/Icon/Loading';
 
 import './WebsitesSettings.less';
@@ -23,19 +27,24 @@ const WebsitesSettings = ({
   getWebSettings,
   settings,
   location,
+  referralUserForWeb,
 }) => {
   const { getFieldDecorator } = form;
   const [beneficiaryAccount, setBeneficiaryAccount] = useState('');
   const [beneficiaryPercent, setBeneficiaryPercent] = useState(1);
+  const [referralAccount, setReferralAccount] = useState('');
+
   const host = match.params.site;
 
   useEffect(() => {
     getWebSettings(host).then(res => {
       const percent = get(res, ['value', 'beneficiary', 'percent']) / 100;
       const account = get(res, ['value', 'beneficiary', 'account']);
+      const referral = get(res, ['value', 'referralCommissionAcc']);
 
       setBeneficiaryPercent(percent);
       setBeneficiaryAccount(account);
+      setReferralAccount(referral);
     });
   }, [location.pathname]);
 
@@ -57,12 +66,20 @@ const WebsitesSettings = ({
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const percent = (beneficiaryPercent || 1) * 100;
+        const percent = (beneficiaryPercent || 3) * 100;
         const account = beneficiaryAccount || 'waivio';
         const tag = values.googleAnalyticsTag || settings.googleAnalyticsTag || '';
         const beneficiary = { account, percent };
 
         saveWebSettings(host, tag, beneficiary);
+        referralUserForWeb(referralAccount, host);
+
+        message.success(
+          intl.formatMessage({
+            id: 'settings_updated_successfully',
+            defaultMessage: 'Settings updated successfully',
+          }),
+        );
       }
     });
   };
@@ -79,7 +96,7 @@ const WebsitesSettings = ({
           <h3>
             {intl.formatMessage({
               id: 'google_analytic_tag',
-              defaultMessage: 'Google Analytic tag',
+              defaultMessage: 'Google Analytics tracking code:',
             })}
           </h3>
           {getFieldDecorator('googleAnalyticsTag')(
@@ -153,6 +170,44 @@ const WebsitesSettings = ({
             )}
           </Form.Item>
         </div>
+        <h3>
+          {intl.formatMessage({ id: 'referral_payments', defaultMessage: 'Referral payments' })}
+        </h3>
+        <p>
+          {intl.formatMessage({
+            id: 'referral_rules',
+            defaultMessage:
+              'The website owner may receive referral commissions when users claim their rewards through the website.',
+          })}
+        </p>
+        <div className="WebsitesSettings__benefic-block">
+          <Form.Item>
+            <h3>
+              {intl.formatMessage({
+                id: 'referral_payments_acc',
+                defaultMessage: 'Account for referral payments:',
+              })}
+            </h3>
+            {referralAccount ? (
+              <SelectUserForAutocomplete
+                account={referralAccount}
+                resetUser={() => setReferralAccount('')}
+              />
+            ) : (
+              <SearchUsersAutocomplete
+                handleSelect={({ account }) => setReferralAccount(account)}
+                style={{ width: '100%' }}
+              />
+            )}
+          </Form.Item>
+        </div>
+        <p className="WebsitesSettings__referral-terms">
+          {intl.formatMessage({
+            id: 'referral_terms',
+            defaultMessage:
+              'The terms for referral commissions are defined by the Campaign Management Services used by sponsors to launch their campaigns.',
+          })}
+        </p>
         <Button type="primary" htmlType="submit" loading={loading}>
           {intl.formatMessage({
             id: 'save',
@@ -174,6 +229,7 @@ WebsitesSettings.propTypes = {
   location: PropTypes.shape().isRequired,
   saveWebSettings: PropTypes.func.isRequired,
   getWebSettings: PropTypes.func.isRequired,
+  referralUserForWeb: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       site: PropTypes.string,
@@ -193,5 +249,6 @@ export default connect(
   {
     saveWebSettings: saveWebsiteSettings,
     getWebSettings: getWebsiteSettings,
+    referralUserForWeb: referralUserForWebsite,
   },
 )(Form.create()(withRouter(injectIntl(WebsitesSettings))));

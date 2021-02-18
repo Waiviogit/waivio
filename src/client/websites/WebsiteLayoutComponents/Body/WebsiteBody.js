@@ -32,6 +32,7 @@ import CustomMarker from '../../../components/Maps/CustomMarker';
 import DEFAULTS from '../../../object/const/defaultValues';
 import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
+import { getCurrentAppSettings } from '../../../app/appActions';
 
 import './WebsiteBody.less';
 
@@ -43,37 +44,42 @@ const WebsiteBody = props => {
     skip: 0,
   });
   const [infoboxData, setInfoboxData] = useState(null);
+  const host = props.match.site;
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const currentUserLocationCenter = [+props.userLocation.lat, +props.userLocation.lon];
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const activeFilterIsEmpty = isEmpty(props.activeFilters);
-  const configMap = isMobile
-    ? get(props.configuration, ['mobileMap', 'center'])
-    : get(props.configuration, ['desktopMap', 'center']);
 
-  const currentCenter = isEmpty(configMap)
-    ? [+props.userLocation.lat, +props.userLocation.lon]
-    : configMap;
+  const getCenter = config =>
+    isMobile ? get(config, ['mobileMap', 'center']) : get(config, ['desktopMap', 'center']);
+
+  const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
+
+  const getCoordinatesForMap = async () => {
+    const query = new URLSearchParams(props.location.search);
+    let queryCenter = query.get('center');
+
+    if (queryCenter) {
+      queryCenter = queryCenter.split(',').map(item => Number(item));
+
+      setCurrMapConfig(queryCenter, 15);
+    } else {
+      const currLocation = await props.getCoordinates();
+      const response = await props.getCurrentAppSettings(host);
+      const config = get(response, 'configuration', []);
+      const zoom = config.zoom || 6;
+      let center = getCenter(config);
+      center = isEmpty(center)
+        ? [+get(currLocation, ['value', 'lat']), +get(currLocation, ['value', 'lon'])]
+        : center;
+
+      setCurrMapConfig(center, zoom);
+    }
+  };
 
   useEffect(() => {
-    if (isEmpty(props.userLocation)) {
-      props.getCoordinates().then(({ value }) => {
-        const center = configMap || [+value.lat, +value.lon];
-
-        setArea({
-          center,
-          zoom: props.configCoordinates.zoom,
-          bounds: [],
-        });
-      });
-    } else {
-      setArea({
-        center: currentCenter,
-        zoom: props.configCoordinates.zoom,
-        bounds: [],
-      });
-    }
+    getCoordinatesForMap();
   }, []);
 
   useEffect(() => {
@@ -85,9 +91,10 @@ const WebsiteBody = props => {
     }
   }, [props.userLocation, boundsParams]);
 
-  const currentLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
-  const logoLink = get(props, ['configuration', 'aboutObject', 'defaultShowLink'], '/');
+  const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
+  const currentLogo = configLogo || getObjectAvatar(aboutObject);
+  const logoLink = get(aboutObject, ['defaultShowLink'], '/');
 
   const handleOnBoundsChanged = useCallback(
     debounce(data => {
@@ -98,7 +105,7 @@ const WebsiteBody = props => {
           bottomPoint: [data.sw[1], data.sw[0]],
         });
       }
-    }, 800),
+    }, 300),
     [],
   );
 
@@ -108,7 +115,7 @@ const WebsiteBody = props => {
       if (!isEqual(bounds, area.bounds)) {
         handleOnBoundsChanged(bounds);
       }
-    }, 500),
+    }, 300),
     [],
   );
 
@@ -236,7 +243,7 @@ const WebsiteBody = props => {
             onClick={() => props.history.push(logoLink)}
           />
         )}
-        {!isEmpty(area.center) && (
+        {!isEmpty(area.center) && !isEmpty(props.configuration) && (
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
@@ -274,6 +281,10 @@ const WebsiteBody = props => {
 WebsiteBody.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
+    search: PropTypes.string,
+  }).isRequired,
+  match: PropTypes.shape({
+    site: PropTypes.string,
   }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
@@ -288,6 +299,7 @@ WebsiteBody.propTypes = {
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
+  getCurrentAppSettings: PropTypes.func.isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
@@ -322,5 +334,6 @@ export default connect(
     setWebsiteSearchType,
     getWebsiteObjWithCoordinates,
     setWebsiteSearchFilter,
+    getCurrentAppSettings,
   },
 )(withRouter(WebsiteBody));

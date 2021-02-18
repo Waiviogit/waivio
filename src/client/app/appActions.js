@@ -98,17 +98,19 @@ export const GET_CURRENT_APP_SETTINGS = createAsyncActionType('@app/GET_CURRENT_
 export const getCurrentAppSettings = () => dispatch => {
   dispatch({ type: GET_CURRENT_APP_SETTINGS.START });
 
-  ApiClient.getCurrentAppSettings()
+  return ApiClient.getCurrentAppSettings()
     .then(res => {
       if (res.redirect) {
         window.location.replace(res.redirect);
         return null;
       }
 
-      return dispatch({
+      dispatch({
         type: GET_CURRENT_APP_SETTINGS.SUCCESS,
         payload: res,
       });
+
+      return res;
     })
     .catch(e => {
       message.error(e.message);

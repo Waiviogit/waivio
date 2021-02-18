@@ -124,7 +124,6 @@ const PropositionList = ({
     }
 
     if (isEmpty(currPropos)) return null;
-
     const minReward = get(currentProposition, ['min_reward'], 0);
     const maxReward = get(currentProposition, ['max_reward'], 0);
     const rewardPrise = `${get(currentProposition, ['reward'], 0).toFixed(2)} USD`;
@@ -212,9 +211,11 @@ const PropositionList = ({
     });
   };
 
+  const currObj = isEmpty(wobject) ? get(currentProposition, 'required_object', {}) : wobject;
+
   return (
     <React.Fragment>
-      {handleCurrentProposition(currentProposition, wobject)}
+      {handleCurrentProposition(currentProposition, currObj)}
       {isLoadingFlag ? (
         <Loading />
       ) : (

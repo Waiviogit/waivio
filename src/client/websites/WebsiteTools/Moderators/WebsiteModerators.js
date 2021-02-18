@@ -109,7 +109,7 @@ export const WebsiteModerators = ({
       </h3>
       <div className="WebsiteModerators__user-table">
         {isEmpty(moderators) ? (
-          <FormattedMessage id={'web_mods_empty'} defaultMessage={"You don't have moderators."} />
+          <FormattedMessage id={'web_mods_empty'} defaultMessage={'No moderators added.'} />
         ) : (
           moderators.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
             <div key={id} className="WebsitesAdministrators__user">

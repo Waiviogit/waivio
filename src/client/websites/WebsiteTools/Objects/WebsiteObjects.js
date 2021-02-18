@@ -20,7 +20,7 @@ const WebsiteObjects = props => {
   const [currAreaData, setCurrAreaData] = useState([]);
   const [area, setArea] = useState({
     center: [],
-    zoom: 11,
+    zoom: 8,
     bounds: { topPoint: [], bottomPoint: [] },
   });
 
@@ -37,23 +37,25 @@ const WebsiteObjects = props => {
   };
 
   useEffect(() => {
-    if (isEmpty(props.userLocation)) {
-      props.getCoordinates();
-    }
-    if (!isEqual(props.usersSelectedAreas, mapData)) {
-      setMapData(props.usersSelectedAreas);
-    }
-  }, [props.userLocation, props.usersSelectedAreas]);
+    if (!isEqual(props.usersSelectedAreas, mapData)) setMapData(props.usersSelectedAreas);
+  }, [props.usersSelectedAreas]);
 
   useEffect(() => {
+    if (isEmpty(props.userLocation)) props.getCoordinates();
+
     props
       .getWebsiteObjectsCoordinates(props.match.params.site)
       .then(res => {
         const { value } = res;
         setMapData(value);
+        setArea({
+          center: [],
+          zoom: 8,
+          bounds: { topPoint: [], bottomPoint: [] },
+        });
       })
       .catch(err => console.error('Error: ', err));
-  }, []);
+  }, [props.match.params.site]);
 
   useEffect(() => {
     const arrData = [];
@@ -379,6 +381,7 @@ const WebsiteObjects = props => {
       };
       arrData.push({ ...data, zoom });
     });
+
     setCurrAreaData(arrData);
   }, [mapData]);
 

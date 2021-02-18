@@ -14,9 +14,9 @@ import {
   getObjectAlbums,
   getIsAuthenticated,
   getRelatedPhotos,
+  getIsWaivio,
 } from '../../reducers';
 import IconButton from '../../components/IconButton';
-import { isPhotosAlbumExist } from '../../helpers/wObjectHelper';
 
 import './ObjectGallery.less';
 
@@ -27,6 +27,7 @@ import './ObjectGallery.less';
     albums: getObjectAlbums(state),
     isAuthenticated: getIsAuthenticated(state),
     relatedAlbum: getRelatedPhotos(state),
+    isWaivio: getIsWaivio(state),
   }),
   {
     getAlbums,
@@ -37,12 +38,12 @@ export default class ObjectGallery extends Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     loading: PropTypes.bool.isRequired,
+    isWaivio: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     getAlbums: PropTypes.func,
     getRelatedAlbum: PropTypes.func,
     relatedAlbum: PropTypes.shape().isRequired,
-    appendAlbum: PropTypes.func,
   };
 
   static defaultProps = {
@@ -58,11 +59,10 @@ export default class ObjectGallery extends Component {
   };
 
   componentDidMount() {
-    const { match, albums, relatedAlbum, appendAlbum } = this.props;
+    const { match, albums, relatedAlbum } = this.props;
 
     if (isEmpty(albums)) this.props.getAlbums(match.params.name);
     if (!size(relatedAlbum)) this.props.getRelatedAlbum(match.params.name, 10);
-    if (!isPhotosAlbumExist(albums)) appendAlbum();
   }
 
   handleToggleModal = () =>
@@ -72,14 +72,14 @@ export default class ObjectGallery extends Component {
 
   render() {
     const { showModal } = this.state;
-    const { match, albums, loading, isAuthenticated, relatedAlbum } = this.props;
+    const { match, albums, loading, isAuthenticated, relatedAlbum, isWaivio } = this.props;
     if (loading) return <Loading center />;
     const albumsForRender = [...albums, relatedAlbum];
     const empty = isEmpty(albumsForRender);
 
     return (
       <div className="ObjectGallery">
-        {isAuthenticated && (
+        {isAuthenticated && isWaivio && (
           <div className="ObjectGallery__empty">
             <div className="ObjectGallery__addAlbum">
               <IconButton
