@@ -48,10 +48,9 @@ const WebsiteBody = props => {
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const activeFilterIsEmpty = isEmpty(props.activeFilters);
-  // const configMap = isMobile
-  //   ? get(props.configuration, ['mobileMap', 'center'])
-  //   : get(props.configuration, ['desktopMap', 'center']);
-  const configMap = [];
+  const configMap = isMobile
+    ? get(props.configuration, ['mobileMap', 'center'])
+    : get(props.configuration, ['desktopMap', 'center']);
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
 
   useEffect(() => {
