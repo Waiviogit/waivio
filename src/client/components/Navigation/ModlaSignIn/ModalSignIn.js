@@ -39,7 +39,12 @@ const ModalSignIn = ({
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const host = useSelector(getCurrentHost);
+  let host = useSelector(getCurrentHost);
+
+  if (!host && typeof location !== 'undefined') {
+    host = location.host;
+  }
+
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: `https://${host}/callback`,
