@@ -882,15 +882,17 @@ export const openNewTab = url => {
 
 export const getProposOrWobjId = item => get(item, ['_id'], '');
 
-export const setSessionData = (key, value) => sessionStorage.setItem(key, value);
+export const setSessionData = (key, value) =>
+  typeof sessionStorage !== 'undefined' && sessionStorage.setItem(key, value);
 
-export const getSessionData = key => sessionStorage.getItem(key);
+export const getSessionData = key =>
+  typeof sessionStorage !== 'undefined' && sessionStorage.getItem(key);
 
 export const removeSessionData = (item1, item2) => {
-  if (item1 && item2) {
+  if (typeof sessionStorage !== 'undefined' && item1 && item2) {
     sessionStorage.removeItem(`${item1}`);
     sessionStorage.removeItem(`${item2}`);
-  } else {
+  } else if (typeof sessionStorage !== 'undefined') {
     sessionStorage.removeItem(`${item1}`);
   }
 };
@@ -935,7 +937,8 @@ export const filterSponsorsName = location => {
 export const filterSelectedRewardsType = location =>
   new URLSearchParams(location.search).getAll('rewardsType');
 
-export const isHasSearchKey = key => new URLSearchParams(location.search).has(key);
+export const isHasSearchKey = key =>
+  typeof location && 'undefined' && new URLSearchParams(location.search).has(key);
 
 export const handleFilters = (setFilterValue, filterSponsorNames, value) =>
   map(filterSponsorNames, sponsorName => setFilterValue(sponsorName[1], value, true));
@@ -943,15 +946,17 @@ export const handleFilters = (setFilterValue, filterSponsorNames, value) =>
 export const handleLinkSlash = url => url.replace(/\/{2,}/g, '/');
 
 export const handleAddSearchLink = filterValue => {
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = typeof location && 'undefined' && new URLSearchParams(location.search);
   const date = new Date();
   const uniq = date.getMilliseconds();
   searchParams.append(`sponsorName${uniq}`, filterValue);
-  history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+  history.pushState(
+    `${typeof location !== 'undefined' ? location.pathname : {}}?${searchParams.toString()}`,
+  );
 };
 
 export const handleAddMapCoordinates = coordinates => {
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = typeof location && 'undefined' && new URLSearchParams(location.search);
   if (!searchParams.get('mapX') && !searchParams.get('mapY')) {
     searchParams.append('mapX', coordinates[0]);
     searchParams.append('mapY', coordinates[1]);
@@ -961,15 +966,21 @@ export const handleAddMapCoordinates = coordinates => {
     searchParams.append('mapX', coordinates[0]);
     searchParams.append('mapY', coordinates[1]);
   }
-  history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+  if (typeof location !== 'undefined') {
+    history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+  }
 };
 
 export const handleRemoveSearchLink = filterValue => {
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = typeof location !== 'undefined' && new URLSearchParams(location.search);
   searchParams.forEach((value, key) => {
     if (value === filterValue) {
       searchParams.delete(key);
-      history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+      history.pushState(
+        '',
+        '',
+        `${typeof location !== 'undefined' ? location.pathname : {}}?${searchParams.toString()}`,
+      );
     }
   });
 };

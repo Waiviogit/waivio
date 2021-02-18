@@ -11,44 +11,49 @@ const socketStore = {
 };
 
 const socketFactory = () => {
-  const socket = new WebSocket(`wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`);
+  let socket = {};
 
-  socket.sendAsync = (message, params) => {
-    socket.send(
-      JSON.stringify({
-        method: message,
-        params,
-      }),
-    );
-  };
+  if (typeof WebSocket !== 'undefined') {
+    socket = new WebSocket(`wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`);
 
-  socket.subscribeBlock = (type, blockNum, callback) => {
-    const listener = e => {
-      const data = JSON.parse(e.data);
-      if (type === data.type && data.notification.blockParsed === blockNum) {
-        socket.removeEventListener('message', listener);
-        callback();
-      }
+    socket.sendAsync = (message, params) => {
+      socket.send(
+        JSON.stringify({
+          method: message,
+          params,
+        }),
+      );
     };
 
-    socket.addEventListener('message', listener);
-  };
+    socket.subscribeBlock = (type, blockNum, callback) => {
+      const listener = e => {
+        const data = JSON.parse(e.data);
+        if (type === data.type && data.notification.blockParsed === blockNum) {
+          socket.removeEventListener('message', listener);
+          callback();
+        }
+      };
 
-  socket.subscribe = callback => {
-    const handler = e => callback(null, JSON.parse(e.data));
-    socket.addEventListener('message', handler);
-  };
+      socket.addEventListener('message', listener);
+    };
 
-  socket.addEventListener('close', () => {
-    socketStore.instance = socketFactory();
-  });
+    socket.subscribe = callback => {
+      const handler = e => callback(null, JSON.parse(e.data));
+      socket.addEventListener('message', handler);
+    };
+
+    socket.addEventListener('close', () => {
+      socketStore.instance = socketFactory();
+    });
+  }
 
   return socket;
 };
 
 function createBusyAPI() {
-  socketStore.instance = socketFactory();
-
+  if (typeof document !== 'undefined') {
+    socketStore.instance = socketFactory();
+  }
   return socketStore;
 }
 
