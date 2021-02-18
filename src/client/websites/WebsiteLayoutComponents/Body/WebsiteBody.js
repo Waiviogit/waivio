@@ -48,7 +48,6 @@ const WebsiteBody = props => {
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const activeFilterIsEmpty = isEmpty(props.activeFilters);
-  const checkArrayNoContainNaN = array => array.every(coordinate => !isNaN(coordinate));
   const configMap = isMobile
     ? get(props.configuration, ['mobileMap', 'center'])
     : get(props.configuration, ['desktopMap', 'center']);
@@ -238,7 +237,7 @@ const WebsiteBody = props => {
             onClick={() => props.history.push(logoLink)}
           />
         )}
-        {!isEmpty(area.center) && checkArrayNoContainNaN(area.center) && (
+        {!isEmpty(area.center) && (
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
