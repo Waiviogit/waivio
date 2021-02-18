@@ -48,9 +48,14 @@ const WebsiteObjects = props => {
       .then(res => {
         const { value } = res;
         setMapData(value);
+        setArea({
+          center: [],
+          zoom: 8,
+          bounds: { topPoint: [], bottomPoint: [] },
+        });
       })
       .catch(err => console.error('Error: ', err));
-  }, []);
+  }, [props.match.params.site]);
 
   useEffect(() => {
     const arrData = [];

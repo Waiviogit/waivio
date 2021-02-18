@@ -55,31 +55,26 @@ const WebsiteBody = props => {
 
   useEffect(() => {
     const query = new URLSearchParams(props.location.search);
-    let queryCenter = query.get('center');
+    const queryCenter = query.get('center');
     let zoom = props.configCoordinates.zoom;
+    let center = configMap;
 
     if (queryCenter) {
-      queryCenter = queryCenter.split(',').map(item => Number(item));
+      center = queryCenter.split(',').map(item => Number(item));
       zoom = 15;
     }
 
-    const center = queryCenter || configMap;
-
     if (isEmpty(center)) {
       props.getCoordinates().then(({ value }) => {
-        setArea({
-          center: [+value.lat, +value.lon],
-          zoom,
-          bounds: [],
-        });
-      });
-    } else {
-      setArea({
-        center,
-        zoom,
-        bounds: [],
+        center = [+value.lat, +value.lon];
       });
     }
+
+    setArea({
+      center,
+      zoom,
+      bounds: [],
+    });
   }, []);
 
   useEffect(() => {

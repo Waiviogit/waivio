@@ -14,6 +14,7 @@ import {
   getObjectAlbums,
   getIsAuthenticated,
   getRelatedPhotos,
+  getIsWaivio,
 } from '../../reducers';
 import IconButton from '../../components/IconButton';
 
@@ -26,6 +27,7 @@ import './ObjectGallery.less';
     albums: getObjectAlbums(state),
     isAuthenticated: getIsAuthenticated(state),
     relatedAlbum: getRelatedPhotos(state),
+    isWaivio: getIsWaivio(state),
   }),
   {
     getAlbums,
@@ -36,6 +38,7 @@ export default class ObjectGallery extends Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     loading: PropTypes.bool.isRequired,
+    isWaivio: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     getAlbums: PropTypes.func,
@@ -69,14 +72,14 @@ export default class ObjectGallery extends Component {
 
   render() {
     const { showModal } = this.state;
-    const { match, albums, loading, isAuthenticated, relatedAlbum } = this.props;
+    const { match, albums, loading, isAuthenticated, relatedAlbum, isWaivio } = this.props;
     if (loading) return <Loading center />;
     const albumsForRender = [...albums, relatedAlbum];
     const empty = isEmpty(albumsForRender);
 
     return (
       <div className="ObjectGallery">
-        {isAuthenticated && (
+        {isAuthenticated && isWaivio && (
           <div className="ObjectGallery__empty">
             <div className="ObjectGallery__addAlbum">
               <IconButton
