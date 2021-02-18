@@ -13,7 +13,7 @@ import {
 } from '../../reducers';
 
 const Header = ({ username, currPage, wobject, configuration }) => {
-  if (location.hostname.includes('dining') || location.hostname.includes('localhost'))
+  if (location.hostname.includes('dining'))
     return <WebsiteHeader currPage={currPage} wobj={wobject} config={configuration} />;
 
   return <Topnav username={username} />;
