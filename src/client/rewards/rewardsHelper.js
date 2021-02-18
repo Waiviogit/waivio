@@ -955,7 +955,7 @@ export const handleAddSearchLink = filterValue => {
 };
 
 export const handleAddMapCoordinates = coordinates => {
-  const searchParams = typeof location && 'undefined' && new URLSearchParams(location.search);
+  const searchParams = isLocation && new URLSearchParams(location.search);
   if (!searchParams.get('mapX') && !searchParams.get('mapY')) {
     searchParams.append('mapX', coordinates[0]);
     searchParams.append('mapY', coordinates[1]);
