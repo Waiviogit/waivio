@@ -21,7 +21,7 @@ const initialState = {
   currentShownPost: {},
   screenSize: 'large',
   isMobile: false,
-  mainPage: 'dining',
+  mainPage: 'waivio',
   currPage: '',
   currMap: { center: [], zoom: 6 },
   configuration: [],
@@ -144,7 +144,7 @@ export default (state = initialState, action) => {
           center: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
           zoom: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),
         },
-        isWaivio: mainPage === 'dining',
+        isWaivio: mainPage === 'waivio',
       };
     }
     case appTypes.SET_CURRENT_PAGE:

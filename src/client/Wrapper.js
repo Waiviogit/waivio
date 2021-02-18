@@ -253,11 +253,10 @@ class Wrapper extends React.PureComponent {
       isNewUser,
       isOpenWalletTable,
       loadingFetching,
-      location,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
-    const isWidget = new URLSearchParams(location.search).get('display');
+    const isWidget = new URLSearchParams(this.props.location.search).get('display');
 
     let hostname = 'waivio';
     if (typeof location !== 'undefined') {
@@ -280,7 +279,7 @@ class Wrapper extends React.PureComponent {
                 </Layout.Header>
               )}
               <div className="content">
-                {!isWidget && hostname && hostname.includes('waivio') && (
+                {!isWidget && hostname.includes('waivio') && (
                   <TopNavigation
                     authenticated={isAuthenticated}
                     userName={username}

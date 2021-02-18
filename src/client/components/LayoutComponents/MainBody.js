@@ -11,9 +11,7 @@ const MainBody = ({ route }) => {
     hostname = location.hostname;
   }
 
-  hostname.includes('dining');
-  if (location.hostname.includes('dining') || location.hostname.includes('localhost'))
-    return <WebsiteBody />;
+  if (hostname.includes('dining') || hostname.includes('localhost')) return <WebsiteBody />;
 
   return <Page route={route} />;
 };
