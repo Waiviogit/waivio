@@ -5,6 +5,7 @@ import { Button, message } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import classNames from 'classnames';
 
 import { getAdministrators, getWebsiteLoading } from '../../../reducers';
 import {
@@ -32,6 +33,7 @@ export const WebsitesAdministrators = ({
   const [selectUser, setSelectUser] = useState('');
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
+  const emptyAdmins = isEmpty(admins);
 
   const addAdmin = () => {
     if (admins.includes(selectUser.name)) {
@@ -117,8 +119,12 @@ export const WebsitesAdministrators = ({
       <h3>
         <FormattedMessage id="website_administrators" defaultMessage="Website administrators" />:
       </h3>
-      <div className="WebsitesAdministrators__user-table">
-        {isEmpty(admins) ? (
+      <div
+        className={classNames('WebsitesAdministrators__user-table', {
+          'WebsitesAdministrators__table-empty': emptyAdmins,
+        })}
+      >
+        {emptyAdmins ? (
           <FormattedMessage id={'web_admins_empty'} defaultMessage={'No administrators added.'} />
         ) : (
           admins.map(({ name, _id: id, wobjects_weight: weight, loading }) => (

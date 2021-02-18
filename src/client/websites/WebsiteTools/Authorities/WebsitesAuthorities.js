@@ -5,6 +5,7 @@ import { Button, message } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import classNames from 'classnames';
 
 import { getAuthorities, getWebsiteLoading } from '../../../reducers';
 import { addWebAuthorities, deleteWebAuthorities, getWebAuthorities } from '../../websiteActions';
@@ -28,6 +29,7 @@ export const WebsitesAuthorities = ({
   const [selectUser, setSelectUser] = useState('');
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
+  const emptyAuthorities = isEmpty(authorities);
 
   const addAdmin = () => {
     if (authorities.includes(selectUser.name)) {
@@ -110,8 +112,12 @@ export const WebsitesAuthorities = ({
       <h3>
         <FormattedMessage id="trust_authorities" defaultMessage="Trusted authorities" />:
       </h3>
-      <div className="WebsitesAuthorities__user-table">
-        {isEmpty(authorities) ? (
+      <div
+        className={classNames('WebsitesAuthorities__user-table', {
+          'WebsitesAuthorities__table-empty': emptyAuthorities,
+        })}
+      >
+        {emptyAuthorities ? (
           <FormattedMessage id={'web_authorities_empty'} defaultMessage={'No authorities added.'} />
         ) : (
           authorities.map(({ name, _id: id, wobjects_weight: weight, loading }) => (

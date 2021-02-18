@@ -5,6 +5,7 @@ import { Button } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import classNames from 'classnames';
 
 import { getModerators, getWebsiteLoading } from '../../../reducers';
 import { addWebsiteModerators, deleteWebModerators, getWebModerators } from '../../websiteActions';
@@ -28,6 +29,7 @@ export const WebsiteModerators = ({
   const [selectUser, setSelectUser] = useState('');
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
+  const emptyModerators = isEmpty(moderators);
 
   const addModerator = () => {
     addWebModerators(host, selectUser);
@@ -107,8 +109,12 @@ export const WebsiteModerators = ({
       <h3>
         <FormattedMessage id="website_moderators" defaultMessage="Website moderators" />:
       </h3>
-      <div className="WebsiteModerators__user-table">
-        {isEmpty(moderators) ? (
+      <div
+        className={classNames('WebsiteModerators__user-table', {
+          'WebsiteModerators__user-empty': emptyModerators,
+        })}
+      >
+        {emptyModerators ? (
           <FormattedMessage id={'web_mods_empty'} defaultMessage={'No moderators added.'} />
         ) : (
           moderators.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
