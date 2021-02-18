@@ -29,13 +29,7 @@ import {
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './auth/authActions';
 import { getNotifications } from './user/userActions';
-import {
-  getRate,
-  getRewardFund,
-  setUsedLocale,
-  setAppUrl,
-  getCurrentAppSettings,
-} from './app/appActions';
+import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
@@ -79,7 +73,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     setUsedLocale,
     dispatchGetAuthGuestBalance,
     handleRefAuthUser,
-    getCurrentAppSettings,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -94,7 +87,6 @@ class Wrapper extends React.PureComponent {
     username: PropTypes.string,
     login: PropTypes.func,
     getRewardFund: PropTypes.func,
-    getCurrentAppSettings: PropTypes.func,
     getRate: PropTypes.func,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
@@ -114,7 +106,6 @@ class Wrapper extends React.PureComponent {
     translations: {},
     username: '',
     login: () => {},
-    getCurrentAppSettings: () => {},
     logout: () => {},
     getRewardFund: () => {},
     getRate: () => {},
@@ -153,11 +144,6 @@ class Wrapper extends React.PureComponent {
     super(props);
 
     this.loadLocale = this.loadLocale.bind(this);
-  }
-
-  // eslint-disable-next-line camelcase,react/sort-comp
-  UNSAFE_componentWillMount() {
-    this.props.getCurrentAppSettings();
   }
 
   state = {
