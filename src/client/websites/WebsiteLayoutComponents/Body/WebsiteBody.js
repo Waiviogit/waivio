@@ -48,32 +48,26 @@ const WebsiteBody = props => {
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const activeFilterIsEmpty = isEmpty(props.activeFilters);
-  const configMap = isMobile
-    ? get(props.configuration, ['mobileMap', 'center'])
-    : get(props.configuration, ['desktopMap', 'center']);
+  // const configMap = isMobile
+  //   ? get(props.configuration, ['mobileMap', 'center'])
+  //   : get(props.configuration, ['desktopMap', 'center']);
+  const configMap = [];
+  const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
 
   useEffect(() => {
     const query = new URLSearchParams(props.location.search);
     const queryCenter = query.get('center');
-    let zoom = props.configCoordinates.zoom;
     let center = configMap;
+    let zoom = props.configCoordinates.zoom || 6;
 
     if (queryCenter) {
       center = queryCenter.split(',').map(item => Number(item));
       zoom = 15;
     }
 
-    if (isEmpty(center)) {
-      props.getCoordinates().then(({ value }) => {
-        center = [+value.lat, +value.lon];
-      });
-    }
-
-    setArea({
-      center,
-      zoom,
-      bounds: [],
-    });
+    if (isEmpty(center))
+      props.getCoordinates().then(({ value }) => setCurrMapConfig([+value.lat, +value.lon], zoom));
+    else setCurrMapConfig(center, zoom);
   }, [props.configCoordinates]);
 
   useEffect(() => {
