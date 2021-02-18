@@ -32,6 +32,7 @@ import CustomMarker from '../../../components/Maps/CustomMarker';
 import DEFAULTS from '../../../object/const/defaultValues';
 import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
+import { getCurrentAppSettings } from '../../../app/appActions';
 
 import './WebsiteBody.less';
 
@@ -43,45 +44,41 @@ const WebsiteBody = props => {
     skip: 0,
   });
   const [infoboxData, setInfoboxData] = useState(null);
+  const host = props.match.site;
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const currentUserLocationCenter = [+props.userLocation.lat, +props.userLocation.lon];
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const activeFilterIsEmpty = isEmpty(props.activeFilters);
-  const configMap = isMobile
-    ? get(props.configuration, ['mobileMap', 'center'])
-    : get(props.configuration, ['desktopMap', 'center']);
 
-  const currentCenter = isEmpty(configMap)
-    ? [+props.userLocation.lat, +props.userLocation.lon]
-    : configMap;
+  const getCenter = config =>
+    isMobile ? get(config, ['mobileMap', 'center']) : get(config, ['desktopMap', 'center']);
 
-  useEffect(() => {
+  const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
+
+  const getCoordinatesForMap = async () => {
     const query = new URLSearchParams(props.location.search);
     let queryCenter = query.get('center');
-    let zoom = props.configCoordinates.zoom;
 
     if (queryCenter) {
       queryCenter = queryCenter.split(',').map(item => Number(item));
-      zoom = 15;
-    }
 
-    const center = queryCenter || currentCenter;
-    if (isEmpty(props.userLocation)) {
-      props.getCoordinates().then(({ value }) => {
-        setArea({
-          center: center || [+value.lat, +value.lon],
-          zoom,
-          bounds: [],
-        });
-      });
+      setCurrMapConfig(queryCenter, 15);
     } else {
-      setArea({
-        center,
-        zoom,
-        bounds: [],
-      });
+      const currLocation = await props.getCoordinates();
+      const response = await props.getCurrentAppSettings(host);
+      const config = get(response, 'configuration', []);
+      const zoom = config.zoom || 6;
+      let center = getCenter(config);
+
+      center = isEmpty(center) ? [+currLocation.lat, +currLocation.lon] : center;
+
+      setCurrMapConfig(center, zoom);
     }
+  };
+
+  useEffect(() => {
+    getCoordinatesForMap();
   }, []);
 
   useEffect(() => {
@@ -245,7 +242,7 @@ const WebsiteBody = props => {
             onClick={() => props.history.push(logoLink)}
           />
         )}
-        {!isEmpty(area.center) && (
+        {!isEmpty(area.center) && !isEmpty(props.configuration) && (
           <React.Fragment>
             {zoomButtonsLayout()}
             <Map
@@ -285,6 +282,9 @@ WebsiteBody.propTypes = {
     pathname: PropTypes.string,
     search: PropTypes.string,
   }).isRequired,
+  match: PropTypes.shape({
+    site: PropTypes.string,
+  }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -298,6 +298,7 @@ WebsiteBody.propTypes = {
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
+  getCurrentAppSettings: PropTypes.func.isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
@@ -332,5 +333,6 @@ export default connect(
     setWebsiteSearchType,
     getWebsiteObjWithCoordinates,
     setWebsiteSearchFilter,
+    getCurrentAppSettings,
   },
 )(withRouter(WebsiteBody));

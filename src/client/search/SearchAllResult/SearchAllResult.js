@@ -197,6 +197,7 @@ const SearchAllResult = props => {
           </Button>
         </div>
         {currRenderListState.loading ? <Loading /> : currentList}
+        <div className="SearchAllResult__loader">{isScrolled && <Loading />}</div>
       </div>
     </div>
   );
