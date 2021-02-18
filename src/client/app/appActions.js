@@ -101,7 +101,9 @@ export const getCurrentAppSettings = () => dispatch => {
   return ApiClient.getCurrentAppSettings()
     .then(res => {
       if (res.redirect) {
-        window.location.replace(res.redirect);
+        if (typeof window !== 'undefined') {
+          window.location.replace(res.redirect);
+        }
         return null;
       }
 

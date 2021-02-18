@@ -304,6 +304,7 @@ WebsiteBody.propTypes = {
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
   searchType: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
   configCoordinates: PropTypes.arrayOf.isRequired,
   activeFilters: PropTypes.arrayOf.isRequired,
   searchString: PropTypes.string,

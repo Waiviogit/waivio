@@ -51,8 +51,9 @@ const socketFactory = () => {
 };
 
 function createBusyAPI() {
-  socketStore.instance = socketFactory();
-
+  if (typeof document !== 'undefined') {
+    socketStore.instance = socketFactory();
+  }
   return socketStore;
 }
 

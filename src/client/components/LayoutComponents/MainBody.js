@@ -5,8 +5,13 @@ import Page from '../../feed/Page';
 import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody';
 
 const MainBody = ({ route }) => {
-  if (location.hostname.includes('dining') || location.hostname.includes('localhost'))
-    return <WebsiteBody />;
+  let hostname = '';
+
+  if (typeof location !== 'undefined') {
+    hostname = location.hostname;
+  }
+
+  if (hostname.includes('dining') || hostname.includes('localhost')) return <WebsiteBody />;
 
   return <Page route={route} />;
 };
