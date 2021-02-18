@@ -30,7 +30,7 @@ const SettingsSidenav = ({ match }) => {
   };
 
   useEffect(() => {
-    if (!isGuest && isWaivio) dispatch(getOwnWebsite());
+    if (!isGuest) dispatch(getOwnWebsite());
   }, []);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const SettingsSidenav = ({ match }) => {
         configItem={personalSettings}
         toggleMenuCondition={toggleMenuCondition}
       />
-      {!isGuest && isWaivio && (
+      {!isGuest && (
         <React.Fragment>
           <SettingsItem
             condition={menuCondition.websites}
