@@ -58,7 +58,6 @@ const WebsiteBody = props => {
     const queryCenter = query.get('center');
     let center = configMap;
     let zoom = props.configCoordinates.zoom || 6;
-
     if (queryCenter) {
       center = queryCenter.split(',').map(item => Number(item));
       zoom = 15;
@@ -67,7 +66,7 @@ const WebsiteBody = props => {
     if (isEmpty(center))
       props.getCoordinates().then(({ value }) => setCurrMapConfig([+value.lat, +value.lon], zoom));
     else setCurrMapConfig(center, zoom);
-  }, [props.configCoordinates]);
+  }, [configMap]);
 
   useEffect(() => {
     if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0]) {
