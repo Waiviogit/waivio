@@ -74,7 +74,7 @@ const WebsiteBody = props => {
       zoom,
       bounds: [],
     });
-  }, []);
+  }, [props.configCoordinates]);
 
   useEffect(() => {
     if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0]) {
