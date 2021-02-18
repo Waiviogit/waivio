@@ -18,6 +18,9 @@ import config from '../../waivioApi/routes';
 import { getObjectName } from '../helpers/wObjectHelper';
 import { getCryptosPriceHistory } from '../reducers';
 
+const isLocation = typeof location !== 'undefined';
+const isSessionStorage = typeof sessionStorage !== 'undefined';
+
 export const displayLimit = 10;
 
 export const rewardPostContainerData = {
@@ -882,16 +885,19 @@ export const openNewTab = url => {
 
 export const getProposOrWobjId = item => get(item, ['_id'], '');
 
-export const setSessionData = (key, value) => sessionStorage.setItem(key, value);
+export const setSessionData = (key, value) =>
+  isSessionStorage && sessionStorage.setItem(key, value);
 
-export const getSessionData = key => sessionStorage.getItem(key);
+export const getSessionData = key => isSessionStorage && sessionStorage.getItem(key);
 
 export const removeSessionData = (item1, item2) => {
-  if (item1 && item2) {
-    sessionStorage.removeItem(`${item1}`);
-    sessionStorage.removeItem(`${item2}`);
-  } else {
-    sessionStorage.removeItem(`${item1}`);
+  if (isSessionStorage) {
+    if (item1 && item2) {
+      sessionStorage.removeItem(`${item1}`);
+      sessionStorage.removeItem(`${item2}`);
+    } else {
+      sessionStorage.removeItem(`${item1}`);
+    }
   }
 };
 
@@ -935,7 +941,7 @@ export const filterSponsorsName = location => {
 export const filterSelectedRewardsType = location =>
   new URLSearchParams(location.search).getAll('rewardsType');
 
-export const isHasSearchKey = key => new URLSearchParams(location.search).has(key);
+export const isHasSearchKey = key => isLocation && new URLSearchParams(location.search).has(key);
 
 export const handleFilters = (setFilterValue, filterSponsorNames, value) =>
   map(filterSponsorNames, sponsorName => setFilterValue(sponsorName[1], value, true));
@@ -943,15 +949,15 @@ export const handleFilters = (setFilterValue, filterSponsorNames, value) =>
 export const handleLinkSlash = url => url.replace(/\/{2,}/g, '/');
 
 export const handleAddSearchLink = filterValue => {
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = isLocation && new URLSearchParams(location.search);
   const date = new Date();
   const uniq = date.getMilliseconds();
   searchParams.append(`sponsorName${uniq}`, filterValue);
-  history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+  history.pushState(`${isLocation ? location.pathname : ''}?${searchParams.toString()}`);
 };
 
 export const handleAddMapCoordinates = coordinates => {
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = isLocation && new URLSearchParams(location.search);
   if (!searchParams.get('mapX') && !searchParams.get('mapY')) {
     searchParams.append('mapX', coordinates[0]);
     searchParams.append('mapY', coordinates[1]);
@@ -961,15 +967,21 @@ export const handleAddMapCoordinates = coordinates => {
     searchParams.append('mapX', coordinates[0]);
     searchParams.append('mapY', coordinates[1]);
   }
-  history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+  if (isLocation) {
+    history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+  }
 };
 
 export const handleRemoveSearchLink = filterValue => {
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = isLocation && new URLSearchParams(location.search);
   searchParams.forEach((value, key) => {
     if (value === filterValue) {
       searchParams.delete(key);
-      history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+      history.pushState(
+        '',
+        '',
+        `${isLocation ? location.pathname : ''}?${searchParams.toString()}`,
+      );
     }
   });
 };

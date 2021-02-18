@@ -8,7 +8,8 @@ import SidenavDiscoverObjects from '../../discoverObjects/SidenavDiscoverObjects
 import URL from '../../../common/routes/constants';
 
 const LeftSidebar = () => {
-  const isWidget = new URLSearchParams(location.search).get('display');
+  const isWidget =
+    typeof location !== 'undefined' && new URLSearchParams(location.search).get('display');
   return (
     !isWidget && (
       <Switch>

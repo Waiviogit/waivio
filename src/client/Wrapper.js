@@ -152,9 +152,10 @@ class Wrapper extends React.PureComponent {
 
   componentDidMount() {
     const { location } = this.props;
-    const ref = new URLSearchParams(location.search).get('ref');
-    const isWidget = new URLSearchParams(location.search).get('display');
-    const userName = new URLSearchParams(location.search).get('userName');
+    const querySelectorSearchParams = new URLSearchParams(location.search);
+    const ref = querySelectorSearchParams.get('ref');
+    const isWidget = querySelectorSearchParams.get('display');
+    const userName = querySelectorSearchParams.get('userName');
     if (ref) {
       setSessionData('refUser', ref);
     }
@@ -182,7 +183,7 @@ class Wrapper extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { locale } = this.props;
+    const { locale, location } = this.props;
     const { prevtLocationPath } = this.state;
 
     const widgetLink = getSessionData('isWidget');
@@ -255,7 +256,12 @@ class Wrapper extends React.PureComponent {
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
-    const isWidget = new URLSearchParams(location.search).get('display');
+    const isWidget = new URLSearchParams(this.props.location.search).get('display');
+
+    let hostname = 'waivio';
+    if (typeof location !== 'undefined') {
+      hostname = location.hostname;
+    }
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -273,7 +279,7 @@ class Wrapper extends React.PureComponent {
                 </Layout.Header>
               )}
               <div className="content">
-                {!isWidget && location.hostname.includes('waivio') && (
+                {!isWidget && hostname.includes('waivio') && (
                   <TopNavigation
                     authenticated={isAuthenticated}
                     userName={username}
