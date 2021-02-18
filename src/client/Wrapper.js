@@ -253,10 +253,16 @@ class Wrapper extends React.PureComponent {
       isNewUser,
       isOpenWalletTable,
       loadingFetching,
+      location,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
-    const isWidget = new URLSearchParams(this.props.location.search).get('display');
+    const isWidget = new URLSearchParams(location.search).get('display');
+
+    let hostname = 'waivio';
+    if (typeof location !== 'undefined') {
+      hostname = location.hostname;
+    }
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -274,14 +280,13 @@ class Wrapper extends React.PureComponent {
                 </Layout.Header>
               )}
               <div className="content">
-                {!isWidget &&
-                  (typeof location !== 'undefined' ? location.hostname.includes('waivio') : {}) && (
-                    <TopNavigation
-                      authenticated={isAuthenticated}
-                      userName={username}
-                      location={history.location}
-                    />
-                  )}
+                {!isWidget && hostname && hostname.includes('waivio') && (
+                  <TopNavigation
+                    authenticated={isAuthenticated}
+                    userName={username}
+                    location={history.location}
+                  />
+                )}
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 {!isWidget && (
                   <React.Fragment>
