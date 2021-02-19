@@ -16,6 +16,7 @@ import {
   getHiveBeneficiaryAccount,
   getTranslationByKey,
   getLocale,
+  getCurrentHost,
 } from '../../reducers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
@@ -205,6 +206,8 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
       })} ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
     }
 
+    const host = getCurrentHost(getState());
+
     const {
       parentAuthor,
       parentPermlink,
@@ -265,7 +268,10 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
         author,
         title,
         newBody,
-        jsonMetadata,
+        {
+          ...jsonMetadata,
+          host,
+        },
         reward,
         beneficiary,
         !isUpdating && !isGuest && upvote,
