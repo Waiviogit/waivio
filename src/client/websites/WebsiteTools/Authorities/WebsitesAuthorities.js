@@ -30,7 +30,7 @@ export const WebsitesAuthorities = ({
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
   const emptyAuthorities = isEmpty(authorities);
-  const authoritiesClassName = classNames('WebsitesAuthorities__user-table', {
+  const authoritiesClassList = classNames('WebsitesAuthorities__user-table', {
     'WebsitesAuthorities__table-empty': emptyAuthorities,
   });
 
@@ -115,7 +115,7 @@ export const WebsitesAuthorities = ({
       <h3>
         <FormattedMessage id="trust_authorities" defaultMessage="Trusted authorities" />:
       </h3>
-      <div className={authoritiesClassName}>
+      <div className={authoritiesClassList}>
         {emptyAuthorities ? (
           <FormattedMessage id={'web_authorities_empty'} defaultMessage={'No authorities added.'} />
         ) : (

@@ -34,7 +34,7 @@ export const WebsitesAdministrators = ({
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
   const emptyAdmins = isEmpty(admins);
-  const adminsClassName = classNames('WebsitesAdministrators__user-table', {
+  const adminsClassList = classNames('WebsitesAdministrators__user-table', {
     'WebsitesAdministrators__table-empty': emptyAdmins,
   });
 
@@ -122,7 +122,7 @@ export const WebsitesAdministrators = ({
       <h3>
         <FormattedMessage id="website_administrators" defaultMessage="Website administrators" />:
       </h3>
-      <div className={adminsClassName}>
+      <div className={adminsClassList}>
         {emptyAdmins ? (
           <FormattedMessage id={'web_admins_empty'} defaultMessage={'No administrators added.'} />
         ) : (

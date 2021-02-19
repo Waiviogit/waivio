@@ -30,7 +30,7 @@ export const WebsiteModerators = ({
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
   const emptyModerators = isEmpty(moderators);
-  const moderatorsClassName = classNames('WebsiteModerators__user-table', {
+  const moderatorsClassList = classNames('WebsiteModerators__user-table', {
     'WebsiteModerators__user-empty': emptyModerators,
   });
 
@@ -112,7 +112,7 @@ export const WebsiteModerators = ({
       <h3>
         <FormattedMessage id="website_moderators" defaultMessage="Website moderators" />:
       </h3>
-      <div className={moderatorsClassName}>
+      <div className={moderatorsClassList}>
         {emptyModerators ? (
           <FormattedMessage id={'web_mods_empty'} defaultMessage={'No moderators added.'} />
         ) : (
