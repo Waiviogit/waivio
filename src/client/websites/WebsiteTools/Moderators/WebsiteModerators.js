@@ -31,7 +31,7 @@ export const WebsiteModerators = ({
   const host = match.params.site;
   const emptyModerators = isEmpty(moderators);
   const moderatorsClassList = classNames('WebsiteModerators__user-table', {
-    'WebsiteModerators__user-empty': emptyModerators,
+    'WebsiteModerators__table-empty': emptyModerators,
   });
 
   const addModerator = () => {
