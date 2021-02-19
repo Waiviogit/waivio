@@ -4,11 +4,13 @@ import { ReactSVG } from 'react-svg';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import PopoverMenu, { PopoverMenuItem } from './PopoverMenu/PopoverMenu';
+import withAuthAction from '../auth/withAuthActions';
 
 import Popover from './Popover';
 
-const UserPopoverMenu = ({ handleMuteCurrUser, user, handleUnMuteUserBlog }) => {
+const UserPopoverMenu = ({ handleMuteCurrUser, user, handleUnMuteUserBlog, onActionInitiated }) => {
   const currentUserMuted = user.muted;
+
   const handlePopoverClick = key => {
     switch (key) {
       case 'mute':
@@ -19,13 +21,16 @@ const UserPopoverMenu = ({ handleMuteCurrUser, user, handleUnMuteUserBlog }) => 
         return null;
     }
   };
+
+  const handlePopoverChoice = key => onActionInitiated(() => handlePopoverClick(key));
+
   return (
     <Popover
       placement="bottomRight"
-      trigger="click"
+      trigger="hover"
       content={
         <React.Fragment>
-          <PopoverMenu onSelect={handlePopoverClick} bold={false} trigger="hover">
+          <PopoverMenu onSelect={handlePopoverChoice} bold={false} trigger="hover">
             {[
               <PopoverMenuItem key={currentUserMuted ? 'unmute' : 'mute'}>
                 {user.muteLoading ? (
@@ -57,12 +62,14 @@ UserPopoverMenu.propTypes = {
   user: PropTypes.shape(),
   handleMuteCurrUser: PropTypes.func,
   handleUnMuteUserBlog: PropTypes.func,
+  onActionInitiated: PropTypes.func,
 };
 
 UserPopoverMenu.defaultProps = {
   user: {},
   handleMuteCurrUser: () => {},
   handleUnMuteUserBlog: () => {},
+  onActionInitiated: () => {},
 };
 
-export default UserPopoverMenu;
+export default withAuthAction(UserPopoverMenu);

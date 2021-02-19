@@ -76,6 +76,8 @@ class MapObjectInfo extends React.Component {
     ) : null;
   };
 
+  setQueryInUrl = anchor => this.props.history.push(`/?center=${anchor.join(',')}`);
+
   handleMarkerClick = ({ payload, anchor }) => {
     if (this.props.isWaivio) {
       if (this.state.infoboxData && this.state.infoboxData.coordinates === anchor) {
@@ -83,7 +85,7 @@ class MapObjectInfo extends React.Component {
       }
       this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
     } else {
-      this.props.history.push(`/?center=${anchor.join(',')}`);
+      this.setQueryInUrl(anchor);
     }
   };
 
@@ -159,7 +161,11 @@ class MapObjectInfo extends React.Component {
   closeModal = () => {
     if (this.props.isFullscreenMode) this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
   };
-  openModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+
+  openModal = () => {
+    if (this.props.isWaivio) this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+    else this.setQueryInUrl(this.props.center);
+  };
 
   zoomButtonsLayout = () => (
     <div className="MapOS__zoom">
