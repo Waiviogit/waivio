@@ -30,6 +30,9 @@ export const WebsitesAuthorities = ({
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
   const emptyAuthorities = isEmpty(authorities);
+  const authoritiesClassName = classNames('WebsitesAuthorities__user-table', {
+    'WebsitesAuthorities__table-empty': emptyAuthorities,
+  });
 
   const addAdmin = () => {
     if (authorities.includes(selectUser.name)) {
@@ -112,11 +115,7 @@ export const WebsitesAuthorities = ({
       <h3>
         <FormattedMessage id="trust_authorities" defaultMessage="Trusted authorities" />:
       </h3>
-      <div
-        className={classNames('WebsitesAuthorities__user-table', {
-          'WebsitesAuthorities__table-empty': emptyAuthorities,
-        })}
-      >
+      <div className={authoritiesClassName}>
         {emptyAuthorities ? (
           <FormattedMessage id={'web_authorities_empty'} defaultMessage={'No authorities added.'} />
         ) : (

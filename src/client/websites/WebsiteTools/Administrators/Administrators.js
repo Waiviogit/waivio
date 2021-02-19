@@ -34,6 +34,9 @@ export const WebsitesAdministrators = ({
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
   const emptyAdmins = isEmpty(admins);
+  const adminsClassName = classNames('WebsitesAdministrators__user-table', {
+    'WebsitesAdministrators__table-empty': emptyAdmins,
+  });
 
   const addAdmin = () => {
     if (admins.includes(selectUser.name)) {
@@ -119,11 +122,7 @@ export const WebsitesAdministrators = ({
       <h3>
         <FormattedMessage id="website_administrators" defaultMessage="Website administrators" />:
       </h3>
-      <div
-        className={classNames('WebsitesAdministrators__user-table', {
-          'WebsitesAdministrators__table-empty': emptyAdmins,
-        })}
-      >
+      <div className={adminsClassName}>
         {emptyAdmins ? (
           <FormattedMessage id={'web_admins_empty'} defaultMessage={'No administrators added.'} />
         ) : (
