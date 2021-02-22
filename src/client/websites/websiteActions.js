@@ -1,5 +1,7 @@
 import { message } from 'antd';
 import { get, size } from 'lodash';
+import Cookie from 'js-cookie';
+
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
   checkAvailable,
@@ -23,7 +25,12 @@ import {
   getRestrictionsInfo,
   getWebsiteObjectsWithCoordinates,
 } from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName, getOwnWebsites, getParentDomain } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getOwnWebsites,
+  getParentDomain,
+  isGuestUser,
+} from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { getChangesInAccessOption } from './helper';
 
@@ -540,12 +547,17 @@ export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
   '@website/GET_WEBSITE_OBJECTS_WITH_COORDINATES',
 );
 
-export const getWebsiteObjWithCoordinates = params => ({
-  type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
-  payload: {
-    promise: getWebsiteObjectsWithCoordinates(params),
-  },
-});
+export const getWebsiteObjWithCoordinates = params => (dispatch, getState) => {
+  const isGuest = isGuestUser(getState());
+  const accessToken = isGuest ? localStorage.getItem('accessToken') : Cookie.get('access_token');
+
+  return dispatch({
+    type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
+    payload: {
+      promise: getWebsiteObjectsWithCoordinates(params, accessToken),
+    },
+  });
+};
 
 export const GET_WEBSITE_RESTRICTIONS = createAsyncActionType('@website/GET_WEBSITE_RESTRICTIONS');
 

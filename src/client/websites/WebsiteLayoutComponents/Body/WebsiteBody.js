@@ -7,7 +7,6 @@ import { Tag } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import Cookie from 'js-cookie';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import {
@@ -21,7 +20,6 @@ import {
   getWebsiteSearchType,
   getWebsiteSearchString,
   getWobjectsPoint,
-  isGuestUser,
   getReservCounter,
 } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
@@ -86,12 +84,8 @@ const WebsiteBody = props => {
   }, []);
 
   useEffect(() => {
-    if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0]) {
-      const accessToken = props.isGuest
-        ? localStorage.getItem('accessToken')
-        : Cookie.get('access_token');
-      props.getWebsiteObjWithCoordinates(boundsParams, accessToken);
-    }
+    if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0])
+      props.getWebsiteObjWithCoordinates(boundsParams);
   }, [props.userLocation, boundsParams]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
@@ -115,9 +109,7 @@ const WebsiteBody = props => {
   const onBoundsChanged = useCallback(
     debounce(({ center, zoom, bounds }) => {
       if (!isEmpty(center)) setArea({ center, zoom, bounds });
-      if (!isEqual(bounds, area.bounds)) {
-        handleOnBoundsChanged(bounds);
-      }
+      if (!isEqual(bounds, area.bounds)) handleOnBoundsChanged(bounds);
     }, 300),
     [],
   );
@@ -311,7 +303,6 @@ WebsiteBody.propTypes = {
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
-  isGuest: PropTypes.bool,
   searchType: PropTypes.string.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   configCoordinates: PropTypes.arrayOf.isRequired,
@@ -322,7 +313,6 @@ WebsiteBody.propTypes = {
 
 WebsiteBody.defaultProps = {
   wobjectsPoint: [],
-  isGuest: false,
   searchString: '',
 };
 
@@ -334,7 +324,6 @@ export default connect(
     configuration: getConfigurationValues(state),
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),
-    isGuest: isGuestUser(state),
     configCoordinates: getMapForMainPage(state),
     activeFilters: getSearchFiltersTagCategory(state),
     searchType: getWebsiteSearchType(state),
