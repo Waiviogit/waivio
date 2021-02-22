@@ -2,6 +2,7 @@ import { message } from 'antd';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../reducers';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
@@ -126,3 +127,16 @@ export const setCurrentPage = page => ({
   type: SET_CURRENT_PAGE,
   payload: page,
 });
+
+export const GET_RESERVED_COUNTER = createAsyncActionType('@app/GET_RESERVED_COUNTER');
+
+export const getReservedCounter = () => (dispatch, getState) => {
+  const authUser = getAuthenticatedUserName(getState());
+
+  if (!authUser) return null;
+
+  return dispatch({
+    type: GET_RESERVED_COUNTER.ACTION,
+    payload: ApiClient.getReservedCounter(authUser),
+  });
+};

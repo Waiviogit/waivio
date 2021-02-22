@@ -1927,4 +1927,17 @@ export const getExpertiseCounters = userName => {
     .catch(e => e);
 };
 
+export const getReservedCounter = userName => {
+  return fetch(
+    `${config.campaignApiPrefix}${config.campaigns}${config.reserved}${config.count}?userName=${userName}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
 export default null;

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isEmpty, get, map, debounce, isEqual } from 'lodash';
 import { Helmet } from 'react-helmet';
+import { FormattedMessage } from 'react-intl';
 import { Tag } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -21,6 +22,7 @@ import {
   getWebsiteSearchString,
   getWobjectsPoint,
   isGuestUser,
+  getReservCounter,
 } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteSearchFilter, setWebsiteSearchType } from '../../../search/searchActions';
@@ -32,7 +34,7 @@ import CustomMarker from '../../../components/Maps/CustomMarker';
 import DEFAULTS from '../../../object/const/defaultValues';
 import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
-import { getCurrentAppSettings } from '../../../app/appActions';
+import { getCurrentAppSettings, getReservedCounter } from '../../../app/appActions';
 
 import './WebsiteBody.less';
 
@@ -79,6 +81,7 @@ const WebsiteBody = props => {
   };
 
   useEffect(() => {
+    props.getReservedCounter();
     getCoordinatesForMap();
   }, []);
 
@@ -245,6 +248,11 @@ const WebsiteBody = props => {
         )}
         {!isEmpty(area.center) && !isEmpty(props.configuration) && (
           <React.Fragment>
+            {Boolean(props.counter) && (
+              <Link to="/rewards/reserved" className="WebsiteBody__reserved">
+                <FormattedMessage id="reserved" defaultMessage="Reserved" />: {props.counter}
+              </Link>
+            )}
             {zoomButtonsLayout()}
             <Map
               center={area.center}
@@ -301,6 +309,7 @@ WebsiteBody.propTypes = {
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
+  getReservedCounter: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   isGuest: PropTypes.bool,
   searchType: PropTypes.string.isRequired,
@@ -308,6 +317,7 @@ WebsiteBody.propTypes = {
   configCoordinates: PropTypes.arrayOf.isRequired,
   activeFilters: PropTypes.arrayOf.isRequired,
   searchString: PropTypes.string,
+  counter: PropTypes.number.isRequired,
 };
 
 WebsiteBody.defaultProps = {
@@ -329,6 +339,7 @@ export default connect(
     activeFilters: getSearchFiltersTagCategory(state),
     searchType: getWebsiteSearchType(state),
     searchString: getWebsiteSearchString(state),
+    counter: getReservCounter(state),
   }),
   {
     getCoordinates,
@@ -336,5 +347,6 @@ export default connect(
     getWebsiteObjWithCoordinates,
     setWebsiteSearchFilter,
     getCurrentAppSettings,
+    getReservedCounter,
   },
 )(withRouter(WebsiteBody));

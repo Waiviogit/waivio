@@ -119,5 +119,6 @@
   "tagForFilter": "/tags-for-filter",
   "map": "/map",
   "restrictions": "/restrictions",
-  "expertiseCounters": "/expertise-counters"
+  "expertiseCounters": "/expertise-counters",
+  "count": "/count"
 }
