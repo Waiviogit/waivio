@@ -20,4 +20,4 @@ const createNestedRouts = ({ pathScope, ...route }, path = '') => {
   return mappedRoute;
 };
 
-export default createNestedRouts;
+export default null;

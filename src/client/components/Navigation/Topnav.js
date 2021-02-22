@@ -22,11 +22,10 @@ import {
 } from '../../reducers';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
-import { pendingSearch } from '../../search/Search';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
 import HeaderButton from '../HeaderButton/HeaderButton';
-import { getTranformSearchCountData } from '../../search/helpers';
+import {getTranformSearchCountData, pendingSearch} from '../../search/helpers';
 import UserSearchItem from '../../search/SearchItems/UserSearchItem';
 import ObjectSearchItem from '../../search/SearchItems/ObjectSearchItem';
 

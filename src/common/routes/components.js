@@ -34,7 +34,6 @@ export default {
   UserActivity: loableComponent(import('../../client/activity/UserActivity')),
   Discover: loableComponent(import('../../client/discover/Discover')),
   Objects: loableComponent(import('../../client/objects/Objects')),
-  Search: loableComponent(import('../../client/search/Search')),
   Notifications: loableComponent(import('../../client/notifications/Notifications')),
   RewardsList: loableComponent(import('../../client/rewards/RewardsList/RewardsList')),
   Error404: loableComponent(import('../../client/statics/Error404')),

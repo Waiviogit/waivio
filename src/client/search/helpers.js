@@ -1,5 +1,7 @@
 import { forEach, isEmpty } from 'lodash';
 import classNames from 'classnames';
+import {AutoComplete, Icon} from "antd";
+import React from "react";
 
 export const getTranformSearchCountData = (searchResults, listOfObjectTypes, withAll = false) => {
   const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
@@ -58,6 +60,25 @@ export const userToggleFollow = (userList, userName, obj) => {
   });
 
   return userList;
+};
+
+export const pendingSearch = (searchString, intl) => {
+  const downBar = (
+    <AutoComplete.Option disabled key="all" className="Topnav__search-pending">
+      <div className="pending-status">
+        {intl.formatMessage(
+          {
+            id: 'search_all_results_for',
+            defaultMessage: 'Search all results for {search}...',
+          },
+          { search: searchString },
+        )}
+        {<span> &nbsp;</span>}
+        {<Icon type="loading" />}
+      </div>
+    </AutoComplete.Option>
+  );
+  return [downBar];
 };
 
 export default null;
