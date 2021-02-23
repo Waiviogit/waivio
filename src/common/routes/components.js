@@ -34,7 +34,6 @@ export default {
   UserActivity: loableComponent(import('../../client/activity/UserActivity')),
   Discover: loableComponent(import('../../client/discover/Discover')),
   Objects: loableComponent(import('../../client/objects/Objects')),
-  Search: loableComponent(import('../../client/search/Search')),
   Notifications: loableComponent(import('../../client/notifications/Notifications')),
   RewardsList: loableComponent(import('../../client/rewards/RewardsList/RewardsList')),
   Error404: loableComponent(import('../../client/statics/Error404')),
@@ -113,6 +112,8 @@ export default {
   WebsiteRestrictions: loableComponent(
     import('../../client/websites/WebsiteTools/Restrictions/WebsiteRestrictions'),
   ),
-  MainBody: loableComponent(import('../../client/components/LayoutComponents/MainBody')),
   Page: loableComponent(import('../../client/feed/Page')),
+  WebsiteBody: loableComponent(
+    import('../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody'),
+  ),
 };
