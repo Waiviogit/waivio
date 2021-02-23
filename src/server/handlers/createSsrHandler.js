@@ -9,8 +9,8 @@ import hivesigner from 'hivesigner';
 import { waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../client/store';
 import renderSsrPage from '../renderers/ssrRenderer';
-import {regOrigin, regReferer} from "../../common/constants/validation";
-import switchRoutes from "../../common/routes/configs/switchRoutes";
+import { regOrigin, regReferer } from '../../common/constants/validation';
+import switchRoutes from '../../common/routes/switchRoutes';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
@@ -38,12 +38,9 @@ export default function createSsrHandler(template) {
       const { origin, referer } = req.headers;
       let hostname = '';
 
-      if(origin || referer) {
-        hostname = origin
-          ? origin.replace(regOrigin, '')
-          : referer.replace(regReferer, '');
+      if (origin || referer) {
+        hostname = origin ? origin.replace(regOrigin, '') : referer.replace(regReferer, '');
       }
-
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
@@ -75,7 +72,9 @@ export default function createSsrHandler(template) {
 
       if (context.status) res.status(context.status);
 
-      return res.send(renderSsrPage(store, content, assets, template, req.hostname !== 'waivio.com'));
+      return res.send(
+        renderSsrPage(store, content, assets, template, req.hostname !== 'waivio.com'),
+      );
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
       return res.send(renderSsrPage(null, null, assets, template, req.hostname !== 'waivio.com'));

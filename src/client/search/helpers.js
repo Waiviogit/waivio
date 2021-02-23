@@ -1,7 +1,7 @@
 import { forEach, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import {AutoComplete, Icon} from "antd";
-import React from "react";
+import { AutoComplete, Icon } from 'antd';
+import React from 'react';
 
 export const getTranformSearchCountData = (searchResults, listOfObjectTypes, withAll = false) => {
   const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;

@@ -15,7 +15,7 @@ import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
 import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './SearchObjectsAutocomplete.less';
-import {pendingSearch} from "../../search/helpers";
+import { pendingSearch } from '../../search/helpers';
 
 @injectIntl
 @connect(

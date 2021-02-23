@@ -112,6 +112,8 @@ export default {
   WebsiteRestrictions: loableComponent(
     import('../../client/websites/WebsiteTools/Restrictions/WebsiteRestrictions'),
   ),
-  MainBody: loableComponent(import('../../client/components/LayoutComponents/MainBody')),
   Page: loableComponent(import('../../client/feed/Page')),
+  WebsiteBody: loableComponent(
+    import('../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody'),
+  ),
 };

@@ -1,12 +1,17 @@
 import Views from '../components';
 import Post from '../../../client/post/Post';
-import Wrapper from '../../../client/Wrapper';
 import URL from '../constants';
-import {createNestedRouts} from "../helper";
+import createNestedRouts from '../helper';
+import WebsiteWrapper from '../../../client/WebsiteWrapper';
 
 const routes = {
-  component: Wrapper,
+  component: WebsiteWrapper,
   routes: [
+    {
+      path: '/',
+      exact: true,
+      component: Views.WebsiteBody,
+    },
     {
       path: [
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
@@ -239,7 +244,7 @@ const routes = {
     },
     {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-      component: Views.MainBody,
+      component: Views.Page,
       routes: [
         {
           path: '/confirmation',

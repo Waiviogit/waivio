@@ -9,7 +9,7 @@ import { getIsStartSearchUser, getSearchUsersResults } from '../../reducers';
 import Avatar from '../Avatar';
 
 import './SearchUsersAutocomplete.less';
-import {pendingSearch} from "../../search/helpers";
+import { pendingSearch } from '../../search/helpers';
 
 @injectIntl
 @connect(
