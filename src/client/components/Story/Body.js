@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
-import { isUndefined, filter } from 'lodash';
+import { isUndefined, filter, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
@@ -99,26 +99,26 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       );
       section = section.substring(`${id} ${type} ${link} ~~~`.length);
     }
-    if (extractedLinks) {
+    if (!isEmpty(extractedLinks)) {
       const uniqueLinks = extractedLinks.reduce(
         (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
         [],
       );
-      for (let a = 0; a < uniqueLinks.length; a += 1) {
-        let link = uniqueLinks[a];
+      // eslint-disable-next-line no-loop-func
+      uniqueLinks.forEach(item => {
+        let link = item;
         if (link.includes('3speak.co')) {
           const type = 'video';
           const embed = getEmbed(link);
+          link = link.substring(` ${type} ${link}`.length);
 
           sections.push(
             ReactDOMServer.renderToString(
-              <PostFeedEmbed key={`embed-a-${a}`} inPost embed={embed} />,
+              <PostFeedEmbed key={`embed-a-${item}`} inPost embed={embed} />,
             ),
           );
-
-          link = link.substring(` ${type} ${link}`.length);
         }
-      }
+      });
     }
 
     if (section !== '') {
