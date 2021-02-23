@@ -13,9 +13,6 @@ import {
 import { reload } from '../auth/authActions';
 import { getBookmarks } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
-import Affix from '../components/Utils/Affix';
-import LeftSidebar from '../app/Sidebar/LeftSidebar';
-import RightSidebar from '../app/Sidebar/RightSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import PostModal from '../post/PostModalContainer';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
@@ -67,46 +64,32 @@ export default class Bookmarks extends React.Component {
     const noBookmarks = !reloading && !isFetching && !content.length;
 
     return (
-      <div className="shifted">
+      <React.Fragment>
         <Helmet>
           <title>
             {intl.formatMessage({ id: 'bookmarks', defaultMessage: 'Bookmarks' })} - Waivio
           </title>
         </Helmet>
-        <div className="feed-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
-            <div className="left">
-              <LeftSidebar />
-            </div>
-          </Affix>
-          <Affix className="rightContainer" stickPosition={77}>
-            <div className="right">
-              <RightSidebar />
-            </div>
-          </Affix>
-          <div className="center">
-            <MobileNavigation />
-            {noBookmarks ? (
-              <div className="container">
-                <h3 className="text-center">
-                  <FormattedMessage
-                    id="bookmarks_empty"
-                    defaultMessage="You don't have any story saved."
-                  />
-                </h3>
-              </div>
-            ) : (
-              <Feed
-                content={content}
-                isFetching={isFetching}
-                hasMore={hasMore}
-                showPostModal={this.props.showPostModal}
+        <MobileNavigation />
+        {noBookmarks ? (
+          <div className="container">
+            <h3 className="text-center">
+              <FormattedMessage
+                id="bookmarks_empty"
+                defaultMessage="You don't have any story saved."
               />
-            )}
+            </h3>
           </div>
-        </div>
+        ) : (
+          <Feed
+            content={content}
+            isFetching={isFetching}
+            hasMore={hasMore}
+            showPostModal={this.props.showPostModal}
+          />
+        )}
         <PostModal />
-      </div>
+      </React.Fragment>
     );
   }
 }

@@ -28,6 +28,11 @@ const routes = {
           exact: true,
           component: Views.HistoryCampaign,
         },
+        {
+          path: '/:filterKey/:campaignParent?',
+          exact: true,
+          component: Views.RewardsComponent,
+        },
       ],
     },
     {

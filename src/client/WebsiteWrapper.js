@@ -27,7 +27,13 @@ import {
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './auth/authActions';
 import { getNotifications } from './user/userActions';
-import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
+import {
+  getRate,
+  getRewardFund,
+  setUsedLocale,
+  setAppUrl,
+  getCurrentAppSettings,
+} from './app/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import { guestUserRegex } from './helpers/regexHelpers';
@@ -60,6 +66,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     setUsedLocale,
     dispatchGetAuthGuestBalance,
     getWebsiteObjWithCoordinates,
+    getCurrentAppSettings,
   },
 )
 class WebsiteWrapper extends React.PureComponent {
@@ -75,6 +82,7 @@ class WebsiteWrapper extends React.PureComponent {
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
+    getCurrentAppSettings: PropTypes.func,
     nightmode: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
@@ -88,6 +96,7 @@ class WebsiteWrapper extends React.PureComponent {
     login: () => {},
     logout: () => {},
     getRewardFund: () => {},
+    getCurrentAppSettings: () => {},
     getRate: () => {},
     getTrendingTopics: () => {},
     getNotifications: () => {},
@@ -129,6 +138,7 @@ class WebsiteWrapper extends React.PureComponent {
   };
 
   componentDidMount() {
+    this.props.getCurrentAppSettings();
     this.props.login().then(() => {
       batch(() => {
         this.props.getNotifications();

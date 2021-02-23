@@ -74,7 +74,7 @@ SteemEmbed.get = function(url, options) {
       type: 'video',
       url: url,
       provider_name: '3Speak',
-      thumbnail: `https://img.3speakcontent.online/${permlink}/thumbnail.png`,
+      thumbnail: `https://img.3speakcontent.co/${permlink}/thumbnail.png`,
       id: threeSpeakId,
       embed: this.threeSpeak(url, threeSpeakId, options),
     };
@@ -166,7 +166,7 @@ SteemEmbed.dTube = function(url, id, options) {
 };
 
 SteemEmbed.is3Speak = function(url) {
-  const p = /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/;
+  const p = /^https:\/\/3speak\.co\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/;
   return url.match(p) ? RegExp.$2 : false;
 };
 
@@ -176,7 +176,7 @@ SteemEmbed.threeSpeak = function(url, authorPermlink, options) {
     options.width +
     '" height="' +
     options.height +
-    '" src="https://3speak.online/embed?v=' +
+    '" src="https://3speak.co/embed?v=' +
     authorPermlink +
     '" allowfullscreen></iframe>'
   );
