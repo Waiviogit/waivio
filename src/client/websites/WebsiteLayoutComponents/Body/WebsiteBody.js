@@ -56,9 +56,6 @@ const WebsiteBody = props => {
   const getZoom = config =>
     isMobile ? get(config, ['mobileMap', 'zoom']) : get(config, ['desktopMap', 'zoom']);
 
-  const getZoom = config =>
-    isMobile ? get(config, ['mobileMap', 'zoom']) : get(config, ['desktopMap', 'zoom']);
-
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
 
   const getCoordinatesForMap = async () => {
