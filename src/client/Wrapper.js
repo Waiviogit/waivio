@@ -270,7 +270,7 @@ class Wrapper extends React.PureComponent {
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               {!isWidget && (
                 <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                  <Topnav username={user.name} />;
+                  <Topnav username={user.name} />
                 </Layout.Header>
               )}
               <div className="content">

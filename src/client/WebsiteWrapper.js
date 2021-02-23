@@ -33,7 +33,6 @@ import BBackTop from './components/BBackTop';
 import { guestUserRegex } from './helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
-import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
 import { getWebsiteObjWithCoordinates } from './websites/websiteActions';
 
@@ -60,7 +59,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     busyLogin,
     setUsedLocale,
     dispatchGetAuthGuestBalance,
-    handleRefAuthUser,
     getWebsiteObjWithCoordinates,
   },
 )
@@ -100,7 +98,6 @@ class WebsiteWrapper extends React.PureComponent {
     isOpenWalletTable: false,
     loadingFetching: true,
     location: {},
-    handleRefAuthUser: () => {},
   };
 
   static fetchData({ store, req }) {
