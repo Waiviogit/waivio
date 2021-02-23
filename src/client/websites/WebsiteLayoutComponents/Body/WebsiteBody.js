@@ -33,7 +33,7 @@ import CustomMarker from '../../../components/Maps/CustomMarker';
 import DEFAULTS from '../../../object/const/defaultValues';
 import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
-import { getReservedCounter } from '../../../app/appActions';
+import { getReservedCounter, putUserCoordinates } from '../../../app/appActions';
 
 import './WebsiteBody.less';
 
@@ -46,15 +46,18 @@ const WebsiteBody = props => {
   });
   const [infoboxData, setInfoboxData] = useState(null);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
-  const currentUserLocationCenter = [+props.userLocation.lat, +props.userLocation.lon];
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const activeFilterIsEmpty = isEmpty(props.activeFilters);
 
-  const getCenter = config =>
-    isMobile ? get(config, ['mobileMap', 'center']) : get(config, ['desktopMap', 'center']);
-  const getZoom = config =>
-    isMobile ? get(config, ['mobileMap', 'zoom']) : get(config, ['desktopMap', 'zoom']);
+  const getCenter = () =>
+    isMobile
+      ? get(props.configuration, ['mobileMap', 'center'])
+      : get(props.configuration, ['desktopMap', 'center']);
+  const getZoom = () =>
+    isMobile
+      ? get(props.configuration, ['mobileMap', 'zoom'])
+      : get(props.configuration, ['desktopMap', 'zoom']);
 
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
 
@@ -68,11 +71,11 @@ const WebsiteBody = props => {
       setCurrMapConfig(queryCenter, 15);
     } else {
       const currLocation = await props.getCoordinates();
-      const zoom = getZoom(props.configuration) || 6;
-      let center = getCenter(props.configuration);
+      const zoom = getZoom() || 6;
+      let center = getCenter();
 
       center = isEmpty(center)
-        ? [+get(currLocation, ['value', 'lat']), +get(currLocation, ['value', 'lon'])]
+        ? [get(currLocation, ['value', 'lat']), get(currLocation, ['value', 'lon'])]
         : center;
 
       setCurrMapConfig(center, zoom);
@@ -181,19 +184,34 @@ const WebsiteBody = props => {
   const incrementZoom = () => setArea({ ...area, zoom: area.zoom + 1 });
   const decrementZoom = () => setArea({ ...area, zoom: area.zoom - 1 });
 
+  const setCurrentLocation = () => {
+    const nav = navigator.geolocation;
+    nav.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        setArea({
+          ...area,
+          zoom: 11,
+          center: [latitude, longitude],
+        });
+        props.putUserCoordinates({ latitude, longitude });
+      },
+      () =>
+        setArea({
+          ...area,
+          zoom: 11,
+          center: [props.userLocation.lat, props.userLocation.lon],
+        }),
+    );
+  };
+
   const zoomButtonsLayout = () => (
     <div className="WebsiteBodyControl">
       <div className="WebsiteBodyControl__gps">
         <div
           role="presentation"
           className="WebsiteBodyControl__locateGPS"
-          onClick={() =>
-            setArea({
-              ...area,
-              zoom: props.configCoordinates.zoom,
-              center: currentUserLocationCenter,
-            })
-          }
+          onClick={setCurrentLocation}
         >
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
@@ -302,6 +320,7 @@ WebsiteBody.propTypes = {
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
+  putUserCoordinates: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   searchType: PropTypes.string.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
@@ -339,5 +358,6 @@ export default connect(
     getWebsiteObjWithCoordinates,
     setWebsiteSearchFilter,
     getReservedCounter,
+    putUserCoordinates,
   },
 )(withRouter(WebsiteBody));

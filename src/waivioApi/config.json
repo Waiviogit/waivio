@@ -120,5 +120,6 @@
   "map": "/map",
   "restrictions": "/restrictions",
   "expertiseCounters": "/expertise-counters",
-  "count": "/count"
+  "count": "/count",
+  "geoIp": "/geo-ip"
 }

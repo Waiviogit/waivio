@@ -140,3 +140,10 @@ export const getReservedCounter = () => (dispatch, getState) => {
     payload: ApiClient.getReservedCounter(authUser),
   });
 };
+
+export const PUT_USER_COORDINATES = createAsyncActionType('@app/PUT_USER_COORDINATES');
+
+export const putUserCoordinates = params => ({
+  type: PUT_USER_COORDINATES.ACTION,
+  payload: ApiClient.putUserCoordinates(params),
+});
