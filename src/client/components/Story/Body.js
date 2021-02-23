@@ -11,6 +11,7 @@ import sanitizeConfig from '../../vendor/SanitizeConfig';
 import { imageRegex, rewriteRegex, videoPreviewRegex } from '../../helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
+import { extractLinks } from '../../helpers/parser';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import './Body.less';
@@ -85,6 +86,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   const splittedBody = parsedBody.split('~~~ embed:');
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
+    const extractedLinks = extractLinks(section);
     const match = section.match(/^([A-Za-z0-9./_-]+) ([A-Za-z0-9]+) (\S+) ~~~/);
     if (match && match.length >= 4) {
       const id = match[1];
@@ -97,6 +99,28 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       );
       section = section.substring(`${id} ${type} ${link} ~~~`.length);
     }
+    if (extractedLinks) {
+      const uniqueLinks = extractedLinks.reduce(
+        (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
+        [],
+      );
+      for (let a = 0; a < uniqueLinks.length; a += 1) {
+        let link = uniqueLinks[a];
+        if (link.includes('3speak.co')) {
+          const type = 'video';
+          const embed = getEmbed(link);
+
+          sections.push(
+            ReactDOMServer.renderToString(
+              <PostFeedEmbed key={`embed-a-${a}`} inPost embed={embed} />,
+            ),
+          );
+
+          link = link.substring(` ${type} ${link}`.length);
+        }
+      }
+    }
+
     if (section !== '') {
       sections.push(section);
     }
