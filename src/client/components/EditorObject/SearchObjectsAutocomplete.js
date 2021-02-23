@@ -12,8 +12,8 @@ import {
 import { getIsStartSearchObject, getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
-import { pendingSearch } from '../../search/Search';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import { pendingSearch } from '../../search/helpers';
 
 import './SearchObjectsAutocomplete.less';
 

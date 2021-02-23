@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEqual } from 'lodash';
 import url from 'url';
 import { connect, batch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
@@ -19,7 +18,6 @@ import {
   getUsedLocale,
   getTranslations,
   getNightmode,
-  isGuestUser,
   getIsOpenWalletTable,
   getIsAuthFetching,
 } from './reducers';
@@ -32,20 +30,11 @@ import { getNotifications } from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
-import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from './helpers/regexHelpers';
-import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
-import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
-import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
-import {
-  getSessionData,
-  removeSessionData,
-  setSessionData,
-  widgetUrlConstructor,
-} from './rewards/rewardsHelper';
-import Topnav from './components/Navigation/Topnav';
+import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
+import { getWebsiteObjWithCoordinates } from './websites/websiteActions';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -59,8 +48,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     translations: getTranslations(state),
     locale: getLocale(state),
     nightmode: getNightmode(state),
-    isNewUser: state.settings.newUser,
-    isGuest: isGuestUser(state),
     isOpenWalletTable: getIsOpenWalletTable(state),
     loadingFetching: getIsAuthFetching(state),
   }),
@@ -72,16 +59,13 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     busyLogin,
     setUsedLocale,
     dispatchGetAuthGuestBalance,
-    handleRefAuthUser,
+    getWebsiteObjWithCoordinates,
   },
 )
-class Wrapper extends React.PureComponent {
+class WebsiteWrapper extends React.PureComponent {
   static propTypes = {
     route: PropTypes.shape().isRequired,
-    user: PropTypes.shape().isRequired,
-    isAuthenticated: PropTypes.bool.isRequired,
     locale: PropTypes.string.isRequired,
-    history: PropTypes.shape().isRequired,
     usedLocale: PropTypes.string,
     translations: PropTypes.shape(),
     username: PropTypes.string,
@@ -92,13 +76,9 @@ class Wrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
-    isNewUser: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
     loadingFetching: PropTypes.bool,
-    location: PropTypes.shape(),
-    handleRefAuthUser: PropTypes.func,
-    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -115,12 +95,9 @@ class Wrapper extends React.PureComponent {
     busyLogin: () => {},
     nightmode: false,
     dispatchGetAuthGuestBalance: () => {},
-    isGuest: false,
-    isNewUser: false,
     isOpenWalletTable: false,
     loadingFetching: true,
     location: {},
-    handleRefAuthUser: () => {},
   };
 
   static fetchData({ store, req }) {
@@ -136,6 +113,7 @@ class Wrapper extends React.PureComponent {
     const lang = loadLanguage(activeLocale);
 
     store.dispatch(login());
+    store.dispatch(getWebsiteObjWithCoordinates());
 
     return Promise.all([store.dispatch(setAppUrl(appUrl)), store.dispatch(setUsedLocale(lang))]);
   }
@@ -151,26 +129,6 @@ class Wrapper extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { location } = this.props;
-    const querySelectorSearchParams = new URLSearchParams(location.search);
-    const ref = querySelectorSearchParams.get('ref');
-    const isWidget = querySelectorSearchParams.get('display');
-    const userName = querySelectorSearchParams.get('userName');
-    if (ref) {
-      setSessionData('refUser', ref);
-    }
-    if (userName) {
-      setSessionData('userName', userName);
-    }
-    if (isWidget) {
-      /* Check on new tab from widget:
-        the page, when switching to a new tab, should not remain a widget
-      */
-      // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({ prevtLocationPath: location.pathname });
-      setSessionData('isWidget', isWidget);
-    }
-
     this.props.login().then(() => {
       batch(() => {
         this.props.getNotifications();
@@ -183,46 +141,12 @@ class Wrapper extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { locale, location } = this.props;
-    const { prevtLocationPath } = this.state;
-
-    const widgetLink = getSessionData('isWidget');
-    const userName = getSessionData('userName');
-    const ref = getSessionData('refUser');
-
-    // eslint-disable-next-line consistent-return
-    this.setState(() => {
-      if (widgetLink && !isEqual(prevtLocationPath, location.pathname)) {
-        const newUrl = widgetUrlConstructor(widgetLink, userName, ref, location.pathname);
-        if (prevtLocationPath && location.pathname !== '/') {
-          return history.pushState('', '', newUrl);
-        }
-      }
-    });
-
-    if (locale !== nextProps.locale) {
-      this.loadLocale(nextProps.locale);
-    }
+    if (this.props.locale !== nextProps.locale) this.loadLocale(nextProps.locale);
   }
 
   componentDidUpdate() {
-    const widgetLink = getSessionData('isWidget');
-    const userName = getSessionData('userName');
-
-    if (this.props.nightmode) {
-      document.body.classList.add('nightmode');
-    } else {
-      document.body.classList.remove('nightmode');
-    }
-    const refName = getSessionData('refUser');
-    if (this.props.isAuthenticated && refName) {
-      const currentRefName = handleRefName(refName);
-      this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
-      removeSessionData('refUser');
-    }
-    if (this.props.isAuthenticated && widgetLink && userName) {
-      removeSessionData('userName', 'isWidget');
-    }
+    if (this.props.nightmode) document.body.classList.add('nightmode');
+    else document.body.classList.remove('nightmode');
   }
 
   async loadLocale(locale) {
@@ -243,20 +167,9 @@ class Wrapper extends React.PureComponent {
   };
 
   render() {
-    const {
-      user,
-      isAuthenticated,
-      usedLocale,
-      translations,
-      history,
-      username,
-      isNewUser,
-      isOpenWalletTable,
-      loadingFetching,
-    } = this.props;
+    const { usedLocale, translations, username, isOpenWalletTable, loadingFetching } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
-    const isWidget = new URLSearchParams(this.props.location.search).get('display');
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -268,29 +181,13 @@ class Wrapper extends React.PureComponent {
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-              {!isWidget && (
-                <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                  <Topnav username={user.name} />
-                </Layout.Header>
-              )}
+              <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
+                <WebsiteHeader />
+              </Layout.Header>
               <div className="content">
-                {!isWidget && (
-                  <TopNavigation
-                    authenticated={isAuthenticated}
-                    userName={username}
-                    location={history.location}
-                  />
-                )}
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
-                {!isWidget && (
-                  <React.Fragment>
-                    <NotificationPopup />
-                    <BBackTop
-                      className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
-                    />
-                    {isNewUser && <WelcomeModal location={history.location.pathname} />}
-                  </React.Fragment>
-                )}
+                <NotificationPopup />
+                <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
               </div>
             </Layout>
           </AppSharedContext.Provider>
@@ -300,4 +197,4 @@ class Wrapper extends React.PureComponent {
   }
 }
 
-export default ErrorBoundary(Wrapper);
+export default ErrorBoundary(WebsiteWrapper);

@@ -6,7 +6,6 @@ import { injectIntl } from 'react-intl';
 import { debounce } from 'lodash';
 
 import {
-  getAutoCompleteSearchResults,
   getIsStartSearchAutoComplete,
   getSearchFiltersTagCategory,
   getSearchObjectsResults,
@@ -100,15 +99,10 @@ WebsiteSearch.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
-  autoCompleteSearchResults: PropTypes.shape({
-    users: PropTypes.arrayOf,
-    wobjects: PropTypes.arrayOf,
-  }).isRequired,
 };
 
 export default connect(
   state => ({
-    autoCompleteSearchResults: getAutoCompleteSearchResults(state),
     searchByObject: getSearchObjectsResults(state),
     searchByObjectType: searchObjectTypesResults(state),
     isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
