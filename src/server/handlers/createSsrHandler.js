@@ -9,7 +9,6 @@ import hivesigner from 'hivesigner';
 import { waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../client/store';
 import renderSsrPage from '../renderers/ssrRenderer';
-import { regOrigin, regReferer } from '../../common/constants/validation';
 import switchRoutes from '../../common/routes/switchRoutes';
 
 // eslint-disable-next-line import/no-dynamic-require
@@ -34,13 +33,7 @@ export default function createSsrHandler(template) {
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
-
-      const { origin, referer } = req.headers;
-      let hostname = '';
-
-      if (origin || referer) {
-        hostname = origin ? origin.replace(regOrigin, '') : referer.replace(regReferer, '');
-      }
+      const hostname = req.hostname;
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
