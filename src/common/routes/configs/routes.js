@@ -103,6 +103,11 @@ const routes = {
       pathScope: '',
       routes: [
         {
+          path: '/bookmarks',
+          exact: true,
+          component: Views.Bookmarks,
+        },
+        {
           path: '/drafts',
           exact: true,
           component: Views.Drafts,

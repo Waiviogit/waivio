@@ -21,6 +21,7 @@ import {
   getWebsiteSearchString,
   getWobjectsPoint,
   getReservCounter,
+  getIsAuthenticated,
 } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteSearchFilter, setWebsiteSearchType } from '../../../search/searchActions';
@@ -32,7 +33,7 @@ import CustomMarker from '../../../components/Maps/CustomMarker';
 import DEFAULTS from '../../../object/const/defaultValues';
 import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
-import { getCurrentAppSettings, getReservedCounter } from '../../../app/appActions';
+import { getReservedCounter } from '../../../app/appActions';
 
 import './WebsiteBody.less';
 
@@ -44,7 +45,6 @@ const WebsiteBody = props => {
     skip: 0,
   });
   const [infoboxData, setInfoboxData] = useState(null);
-  const host = props.match.site;
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const currentUserLocationCenter = [+props.userLocation.lat, +props.userLocation.lon];
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
@@ -68,10 +68,8 @@ const WebsiteBody = props => {
       setCurrMapConfig(queryCenter, 15);
     } else {
       const currLocation = await props.getCoordinates();
-      const response = await props.getCurrentAppSettings(host);
-      const config = get(response, 'configuration', []);
-      const zoom = getZoom(config) || 6;
-      let center = getCenter(config);
+      const zoom = getZoom(props.configuration) || 6;
+      let center = getCenter(props.configuration);
 
       center = isEmpty(center)
         ? [+get(currLocation, ['value', 'lat']), +get(currLocation, ['value', 'lon'])]
@@ -82,7 +80,7 @@ const WebsiteBody = props => {
   };
 
   useEffect(() => {
-    props.getReservedCounter();
+    if (props.isAuth) props.getReservedCounter();
     getCoordinatesForMap();
   }, []);
 
@@ -243,7 +241,7 @@ const WebsiteBody = props => {
         )}
         {!isEmpty(area.center) && !isEmpty(props.configuration) && (
           <React.Fragment>
-            {Boolean(props.counter) && (
+            {Boolean(props.counter) && props.isAuth && (
               <Link to="/rewards/reserved" className="WebsiteBody__reserved">
                 <FormattedMessage id="reserved" defaultMessage="Reserved" />: {props.counter}
               </Link>
@@ -302,7 +300,6 @@ WebsiteBody.propTypes = {
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
-  getCurrentAppSettings: PropTypes.func.isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
@@ -312,11 +309,13 @@ WebsiteBody.propTypes = {
   activeFilters: PropTypes.arrayOf.isRequired,
   searchString: PropTypes.string,
   counter: PropTypes.number.isRequired,
+  isAuth: PropTypes.bool,
 };
 
 WebsiteBody.defaultProps = {
   wobjectsPoint: [],
   searchString: '',
+  isAuth: false,
 };
 
 export default connect(
@@ -332,13 +331,13 @@ export default connect(
     searchType: getWebsiteSearchType(state),
     searchString: getWebsiteSearchString(state),
     counter: getReservCounter(state),
+    isAuth: getIsAuthenticated(state),
   }),
   {
     getCoordinates,
     setWebsiteSearchType,
     getWebsiteObjWithCoordinates,
     setWebsiteSearchFilter,
-    getCurrentAppSettings,
     getReservedCounter,
   },
 )(withRouter(WebsiteBody));
