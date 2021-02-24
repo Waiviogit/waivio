@@ -33,7 +33,11 @@ import CustomMarker from '../../../components/Maps/CustomMarker';
 import DEFAULTS from '../../../object/const/defaultValues';
 import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
-import { getReservedCounter, putUserCoordinates } from '../../../app/appActions';
+import {
+  getCurrentAppSettings,
+  getReservedCounter,
+  putUserCoordinates,
+} from '../../../app/appActions';
 
 import './WebsiteBody.less';
 
@@ -47,17 +51,13 @@ const WebsiteBody = props => {
   const [infoboxData, setInfoboxData] = useState(null);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
+  const getCurrentConfig = config =>
+    isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const activeFilterIsEmpty = isEmpty(props.activeFilters);
 
-  const getCenter = () =>
-    isMobile
-      ? get(props.configuration, ['mobileMap', 'center'])
-      : get(props.configuration, ['desktopMap', 'center']);
-  const getZoom = () =>
-    isMobile
-      ? get(props.configuration, ['mobileMap', 'zoom'])
-      : get(props.configuration, ['desktopMap', 'zoom']);
+  const getCenter = config => get(getCurrentConfig(config), 'center');
+  const getZoom = config => get(getCurrentConfig(config), 'zoom');
 
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
 
@@ -71,9 +71,10 @@ const WebsiteBody = props => {
       setCurrMapConfig(queryCenter, 15);
     } else {
       const currLocation = await props.getCoordinates();
-      const zoom = getZoom() || 6;
-      let center = getCenter();
-
+      const res = await props.getCurrentAppSettings();
+      const siteConfig = get(res, 'configuration');
+      const zoom = getZoom(siteConfig) || 6;
+      let center = getCenter(siteConfig);
       center = isEmpty(center)
         ? [get(currLocation, ['value', 'lat']), get(currLocation, ['value', 'lon'])]
         : center;
@@ -321,6 +322,7 @@ WebsiteBody.propTypes = {
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   putUserCoordinates: PropTypes.func.isRequired,
+  getCurrentAppSettings: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   searchType: PropTypes.string.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
@@ -359,5 +361,6 @@ export default connect(
     setWebsiteSearchFilter,
     getReservedCounter,
     putUserCoordinates,
+    getCurrentAppSettings,
   },
 )(withRouter(WebsiteBody));
