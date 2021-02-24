@@ -5,7 +5,6 @@ import { message } from 'antd';
 import * as store from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
 import { createCommentPermlink } from '../vendor/steemitHelpers';
 import { getObjectName } from '../helpers/wObjectHelper';
@@ -212,11 +211,10 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
 
 export const GET_USER_LOCATION = createAsyncActionType('@user/GET_USER_LOCATION');
 
-export const getCoordinates = () => dispatch =>
-  dispatch({
-    type: GET_USER_LOCATION.ACTION,
-    payload: getUserCoordinatesByIpAdress(),
-  });
+export const getCoordinates = () => ({
+  type: GET_USER_LOCATION.ACTION,
+  payload: ApiClient.getUserCoordinatesByIpAdress(),
+});
 
 // region Campaigns
 export const SET_PENDING_UPDATE = createAsyncActionType('@user/SET_PANDING_UPDATE');

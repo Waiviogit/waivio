@@ -1,23 +1,22 @@
-import Views from '../routes/components';
-import createNestedRouts from '../routes/helper';
-import Post from '../../client/post/Post';
-import Wrapper from '../../client/Wrapper';
-import URL from './constants';
+import Views from '../components';
+import Post from '../../../client/post/Post';
+import URL from '../constants';
+import createNestedRouts from '../helper';
+import WebsiteWrapper from '../../../client/WebsiteWrapper';
 
 const routes = {
-  component: Wrapper,
+  component: WebsiteWrapper,
   routes: [
     {
-      path: '/bookmarks',
+      path: '/',
       exact: true,
-      component: Views.Bookmarks,
+      component: Views.WebsiteBody,
     },
     {
       path: [
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
         `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
         `/rewards/(${URL.REFERRAL.tabs})/:userName?/:table?`,
-        '/rewards/blacklist/:listType?',
         '/rewards/:filterKey/:campaignParent?',
       ],
       pathScope: '/rewards',
@@ -25,88 +24,33 @@ const routes = {
       component: Views.Rewards,
       routes: [
         {
-          path: '/manage',
-          exact: true,
-          component: Views.ManageCampaign,
-        },
-        {
-          path: '/receivables',
-          exact: true,
-          component: Views.ReceivablesCampaign,
-        },
-        {
-          path: '/payables',
-          exact: true,
-          component: Views.PayablesCampaign,
-        },
-        {
-          path: '/reports',
-          exact: true,
-          component: Views.Reports,
-        },
-        {
-          path: '/(payables|receivables)/@:userName/:reservationPermlink?',
-          exact: true,
-          component: Views.PaymentCampaign,
-        },
-        {
-          path: '/match-bot',
-          exact: true,
-          component: Views.MatchBotCampaign,
-        },
-        {
           path: '/(history|guideHistory|messages)/:campaignId?/:permlink?/:username?',
           exact: true,
           component: Views.HistoryCampaign,
-        },
-        {
-          path: '/fraud-detection',
-          exact: true,
-          component: Views.FraudDetection,
-        },
-        {
-          path: '/blacklist/:listType?',
-          exact: true,
-          component: Views.BlacklistCampaign,
-        },
-        {
-          path: '/(details|createDuplicate|create)/:campaignId?',
-          exact: true,
-          component: Views.CreateRewardForm,
-        },
-        {
-          path: '/referral-details/:userName',
-          exact: true,
-          component: Views.ReferralDetails,
-        },
-        {
-          path: '/referral-instructions/:userName',
-          exact: true,
-          component: Views.ReferralInstructions,
-        },
-        {
-          path: '/referral-status/:userName',
-          exact: true,
-          component: Views.ReferralStatus,
-        },
-        {
-          path: '/referral-status/:userName/:table?',
-          exact: true,
-          component: Views.SponsoredRewards,
         },
         {
           path: '/:filterKey/:campaignParent?',
           exact: true,
           component: Views.RewardsComponent,
         },
+        {
+          path: '/receivables',
+          exact: true,
+          component: Views.ReceivablesCampaign,
+        },
       ],
     },
     {
-      path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],
+      path: [`/(${URL.SETTINGS.tabs})`],
       exact: true,
       component: Views.SettingsMain,
       pathScope: '',
       routes: [
+        {
+          path: '/bookmarks',
+          exact: true,
+          component: Views.Bookmarks,
+        },
         {
           path: '/drafts',
           exact: true,
@@ -161,69 +105,6 @@ const routes = {
           path: '/notification-settings',
           exact: true,
           component: Views.NotificationSettings,
-        },
-        {
-          path: '/create',
-          exact: true,
-          component: Views.CreateWebsite,
-        },
-        {
-          path: '/manage',
-          exact: true,
-          component: Views.ManageWebsite,
-        },
-        {
-          path: '/payments',
-          exact: true,
-          component: Views.ReportsWebsite,
-        },
-        {
-          path: `/:site/(${URL.WEBSITES.tabs})`,
-          pathScope: '/:site',
-          exact: true,
-          component: Views.WebsiteSettings,
-          routes: [
-            {
-              path: '/configuration',
-              exact: true,
-              component: Views.WebsitesConfigurations,
-            },
-            {
-              path: '/administrations',
-              exact: true,
-              component: Views.WebsitesAdministrators,
-            },
-            {
-              path: '/moderators',
-              exact: true,
-              component: Views.WebsiteModerators,
-            },
-            {
-              path: '/authorities',
-              exact: true,
-              component: Views.WebsitesAuthorities,
-            },
-            {
-              path: '/settings',
-              exact: true,
-              component: Views.WebsitesSettings,
-            },
-            {
-              path: '/objects-filters',
-              exact: true,
-              component: Views.WebsiteObjectFilters,
-            },
-            {
-              path: '/objects',
-              exact: true,
-              component: Views.WebsiteObjects,
-            },
-            {
-              path: '/muted-users',
-              exact: true,
-              component: Views.WebsiteRestrictions,
-            },
-          ],
         },
       ],
     },
@@ -322,11 +203,6 @@ const routes = {
           component: Views.ObjectGalleryAlbum,
         },
         {
-          path: `/updates/(${URL.WOBJ.filters})?`,
-          exact: true,
-          component: Views.WobjHistory,
-        },
-        {
           path: '/(list|menu)',
           exact: true,
           component: Views.CatalogWrap,
@@ -339,27 +215,8 @@ const routes = {
       ],
     },
     {
-      path: '/discover-objects/:typeName?',
-      exact: true,
-      component: Views.DiscoverObjects,
-    },
-    {
-      path: '/discover/:search?',
-      exact: true,
-      component: Views.Discover,
-    },
-    {
-      path: '/objects',
-      component: Views.Objects,
-    },
-    {
       path: '/:category?/@:author/:permlink/:original?',
       component: Post,
-    },
-    {
-      path: '/bookmarks',
-      exact: true,
-      component: Views.Bookmarks,
     },
     {
       path: '/drafts',
@@ -392,16 +249,12 @@ const routes = {
       exact: true,
     },
     {
-      path: '/search',
-      component: Views.Search,
-    },
-    {
       path: '/exit',
       component: Views.ExitPage,
     },
     {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-      component: Views.MainBody,
+      component: Views.Page,
       routes: [
         {
           path: '/confirmation',

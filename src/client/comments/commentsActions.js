@@ -6,7 +6,6 @@ import { createPostMetadata } from '../helpers/postHelpers';
 import { createAsyncActionType, getPostKey } from '../helpers/stateHelpers';
 import { findRoot } from '../helpers/commentHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { POST_AUTHOR_FOR_REWARDS_COMMENTS } from '../../common/constants/waivio';
 import { sendCommentAppend } from '../object/wobjActions';
 import {
   getAuthenticatedUserName,
@@ -125,12 +124,7 @@ export const getComments = postId => (dispatch, getState) => {
   if (content) {
     // eslint-disable-next-line camelcase
     const { category, permlink } = content;
-    let author;
-    if (content.guestInfo && content.root_author !== POST_AUTHOR_FOR_REWARDS_COMMENTS) {
-      author = content.root_author;
-    } else {
-      author = content.author;
-    }
+    const author = content.author;
 
     dispatch({
       type: GET_COMMENTS.ACTION,

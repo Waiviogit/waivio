@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { currentWebsiteSettings, personalSettings, websiteSettings } from './constants';
 import SettingsItem from './SettingsItem';
 import { getIsWaivio, getOwnWebsites, isGuestUser } from '../../../reducers';
-import { getOwnWebsite } from '../../../websites/websiteActions';
 
 import '../Sidenav.less';
 
 const SettingsSidenav = ({ match }) => {
-  const dispatch = useDispatch();
   const isGuest = useSelector(isGuestUser);
   const ownWebsite = useSelector(getOwnWebsites);
   const isWaivio = useSelector(getIsWaivio);
@@ -28,10 +26,6 @@ const SettingsSidenav = ({ match }) => {
 
     setMenuCondition(prevState => ({ ...prevState, ...websiteItems }));
   };
-
-  useEffect(() => {
-    if (!isGuest && isWaivio) dispatch(getOwnWebsite());
-  }, []);
 
   useEffect(() => {
     createWebsiteConditions(ownWebsite);

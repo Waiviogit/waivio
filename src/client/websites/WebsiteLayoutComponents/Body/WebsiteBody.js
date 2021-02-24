@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isEmpty, get, map, debounce, isEqual } from 'lodash';
 import { Helmet } from 'react-helmet';
+import { FormattedMessage } from 'react-intl';
 import { Tag } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import Cookie from 'js-cookie';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import {
@@ -20,7 +20,8 @@ import {
   getWebsiteSearchType,
   getWebsiteSearchString,
   getWobjectsPoint,
-  isGuestUser,
+  getReservCounter,
+  getIsAuthenticated,
 } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteSearchFilter, setWebsiteSearchType } from '../../../search/searchActions';
@@ -32,7 +33,11 @@ import CustomMarker from '../../../components/Maps/CustomMarker';
 import DEFAULTS from '../../../object/const/defaultValues';
 import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
-import { getCurrentAppSettings } from '../../../app/appActions';
+import {
+  getCurrentAppSettings,
+  getReservedCounter,
+  putUserCoordinates,
+} from '../../../app/appActions';
 
 import './WebsiteBody.less';
 
@@ -44,15 +49,15 @@ const WebsiteBody = props => {
     skip: 0,
   });
   const [infoboxData, setInfoboxData] = useState(null);
-  const host = props.match.site;
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
-  const currentUserLocationCenter = [+props.userLocation.lat, +props.userLocation.lon];
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
+  const getCurrentConfig = config =>
+    isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const activeFilterIsEmpty = isEmpty(props.activeFilters);
 
-  const getCenter = config =>
-    isMobile ? get(config, ['mobileMap', 'center']) : get(config, ['desktopMap', 'center']);
+  const getCenter = config => get(getCurrentConfig(config), 'center');
+  const getZoom = config => get(getCurrentConfig(config), 'zoom');
 
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
 
@@ -66,12 +71,12 @@ const WebsiteBody = props => {
       setCurrMapConfig(queryCenter, 15);
     } else {
       const currLocation = await props.getCoordinates();
-      const response = await props.getCurrentAppSettings(host);
-      const config = get(response, 'configuration', []);
-      const zoom = config.zoom || 6;
-      let center = getCenter(config);
+      const res = await props.getCurrentAppSettings();
+      const siteConfig = get(res, 'configuration');
+      const zoom = getZoom(siteConfig) || 6;
+      let center = getCenter(siteConfig);
       center = isEmpty(center)
-        ? [+get(currLocation, ['value', 'lat']), +get(currLocation, ['value', 'lon'])]
+        ? [get(currLocation, ['value', 'lat']), get(currLocation, ['value', 'lon'])]
         : center;
 
       setCurrMapConfig(center, zoom);
@@ -79,16 +84,13 @@ const WebsiteBody = props => {
   };
 
   useEffect(() => {
+    if (props.isAuth) props.getReservedCounter();
     getCoordinatesForMap();
   }, []);
 
   useEffect(() => {
-    if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0]) {
-      const accessToken = props.isGuest
-        ? localStorage.getItem('accessToken')
-        : Cookie.get('access_token');
-      props.getWebsiteObjWithCoordinates(boundsParams, accessToken);
-    }
+    if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0])
+      props.getWebsiteObjWithCoordinates(boundsParams);
   }, [props.userLocation, boundsParams]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
@@ -112,9 +114,7 @@ const WebsiteBody = props => {
   const onBoundsChanged = useCallback(
     debounce(({ center, zoom, bounds }) => {
       if (!isEmpty(center)) setArea({ center, zoom, bounds });
-      if (!isEqual(bounds, area.bounds)) {
-        handleOnBoundsChanged(bounds);
-      }
+      if (!isEqual(bounds, area.bounds)) handleOnBoundsChanged(bounds);
     }, 300),
     [],
   );
@@ -185,19 +185,34 @@ const WebsiteBody = props => {
   const incrementZoom = () => setArea({ ...area, zoom: area.zoom + 1 });
   const decrementZoom = () => setArea({ ...area, zoom: area.zoom - 1 });
 
+  const setCurrentLocation = () => {
+    const nav = navigator.geolocation;
+    nav.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        setArea({
+          ...area,
+          zoom: 11,
+          center: [latitude, longitude],
+        });
+        props.putUserCoordinates({ latitude, longitude });
+      },
+      () =>
+        setArea({
+          ...area,
+          zoom: 11,
+          center: [props.userLocation.lat, props.userLocation.lon],
+        }),
+    );
+  };
+
   const zoomButtonsLayout = () => (
     <div className="WebsiteBodyControl">
       <div className="WebsiteBodyControl__gps">
         <div
           role="presentation"
           className="WebsiteBodyControl__locateGPS"
-          onClick={() =>
-            setArea({
-              ...area,
-              zoom: props.configCoordinates.zoom,
-              center: currentUserLocationCenter,
-            })
-          }
+          onClick={setCurrentLocation}
         >
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
@@ -245,6 +260,11 @@ const WebsiteBody = props => {
         )}
         {!isEmpty(area.center) && !isEmpty(props.configuration) && (
           <React.Fragment>
+            {Boolean(props.counter) && props.isAuth && (
+              <Link to="/rewards/reserved" className="WebsiteBody__reserved">
+                <FormattedMessage id="reserved" defaultMessage="Reserved" />: {props.counter}
+              </Link>
+            )}
             {zoomButtonsLayout()}
             <Map
               center={area.center}
@@ -299,21 +319,24 @@ WebsiteBody.propTypes = {
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
-  getCurrentAppSettings: PropTypes.func.isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
+  getReservedCounter: PropTypes.func.isRequired,
+  putUserCoordinates: PropTypes.func.isRequired,
+  getCurrentAppSettings: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
-  isGuest: PropTypes.bool,
   searchType: PropTypes.string.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   configCoordinates: PropTypes.arrayOf.isRequired,
   activeFilters: PropTypes.arrayOf.isRequired,
   searchString: PropTypes.string,
+  counter: PropTypes.number.isRequired,
+  isAuth: PropTypes.bool,
 };
 
 WebsiteBody.defaultProps = {
   wobjectsPoint: [],
-  isGuest: false,
   searchString: '',
+  isAuth: false,
 };
 
 export default connect(
@@ -324,17 +347,20 @@ export default connect(
     configuration: getConfigurationValues(state),
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),
-    isGuest: isGuestUser(state),
     configCoordinates: getMapForMainPage(state),
     activeFilters: getSearchFiltersTagCategory(state),
     searchType: getWebsiteSearchType(state),
     searchString: getWebsiteSearchString(state),
+    counter: getReservCounter(state),
+    isAuth: getIsAuthenticated(state),
   }),
   {
     getCoordinates,
     setWebsiteSearchType,
     getWebsiteObjWithCoordinates,
     setWebsiteSearchFilter,
+    getReservedCounter,
+    putUserCoordinates,
     getCurrentAppSettings,
   },
 )(withRouter(WebsiteBody));
