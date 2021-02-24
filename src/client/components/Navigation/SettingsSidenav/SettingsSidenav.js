@@ -28,7 +28,7 @@ const SettingsSidenav = ({ match }) => {
   };
 
   useEffect(() => {
-    createWebsiteConditions(ownWebsite);
+    if (!isGuest && isWaivio) createWebsiteConditions(ownWebsite);
   }, [ownWebsite]);
 
   const toggleMenuCondition = menuItem => {
