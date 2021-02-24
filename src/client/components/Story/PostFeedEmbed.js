@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import './PostFeedEmbed.less';
 
 export default class PostFeedEmbed extends React.Component {
@@ -10,10 +11,14 @@ export default class PostFeedEmbed extends React.Component {
       embed: PropTypes.string,
     }).isRequired,
     inPost: PropTypes.bool,
+    isModal: PropTypes.bool,
+    is3Speak: PropTypes.bool,
   };
 
   static defaultProps = {
     inPost: false,
+    isModal: false,
+    is3Speak: false,
   };
 
   constructor(props) {
@@ -28,10 +33,15 @@ export default class PostFeedEmbed extends React.Component {
     this.setState({ showIframe: true });
   };
 
-  renderWithIframe = embed => (
-    // eslint-disable-next-line react/no-danger
-    <div className="PostFeedEmbed__container" dangerouslySetInnerHTML={{ __html: embed }} />
-  );
+  renderWithIframe = (embed, isModal, is3Speak) => {
+    const postFeedEmbedClassList = classNames('PostFeedEmbed__container', {
+      'PostFeedEmbed__container-3speak': isModal && is3Speak,
+    });
+    return (
+      // eslint-disable-next-line react/no-danger
+      <div className={postFeedEmbedClassList} dangerouslySetInnerHTML={{ __html: embed }} />
+    );
+  };
 
   renderThumbFirst(thumb) {
     return (
@@ -45,7 +55,7 @@ export default class PostFeedEmbed extends React.Component {
   }
 
   render() {
-    const { embed, inPost } = this.props;
+    const { embed, inPost, isModal, is3Speak } = this.props;
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
 
     if (
@@ -56,7 +66,7 @@ export default class PostFeedEmbed extends React.Component {
     ) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
-      return this.renderWithIframe(embed.embed);
+      return this.renderWithIframe(embed.embed, isModal, is3Speak);
     }
     return <div />;
   }

@@ -40,7 +40,7 @@ const getEmbed = link => {
 
 // Should return text(html) if returnType is text
 // Should return Object(React Compatible) if returnType is Object
-export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}) {
+export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}, isModal) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
@@ -114,7 +114,13 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
 
           sections.push(
             ReactDOMServer.renderToString(
-              <PostFeedEmbed key={`embed-a-${item}`} inPost embed={embed} />,
+              <PostFeedEmbed
+                key={`embed-a-${item}`}
+                inPost
+                embed={embed}
+                isModal={isModal}
+                is3Speak
+              />,
             ),
           );
         }
@@ -135,7 +141,7 @@ const Body = props => {
     rewriteLinks: props.rewriteLinks,
     secureLinks: props.exitPageSetting,
   };
-  const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options);
+  const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options, props.isModal);
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
 };
@@ -147,12 +153,14 @@ Body.propTypes = {
   body: PropTypes.string,
   jsonMetadata: PropTypes.string,
   full: PropTypes.bool,
+  isModal: PropTypes.bool,
 };
 
 Body.defaultProps = {
   body: '',
   jsonMetadata: '',
   full: false,
+  isModal: false,
 };
 
 export default Body;

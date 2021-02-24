@@ -344,6 +344,11 @@ const routes = {
       component: Views.DiscoverObjects,
     },
     {
+      path: '/discover/:search?',
+      exact: true,
+      component: Views.Discover,
+    },
+    {
       path: '/objects',
       component: Views.Objects,
     },
