@@ -207,7 +207,6 @@ class Rewards extends React.Component {
     if (!size(userLocation)) {
       try {
         const coords = await this.props.getCoordinates();
-        console.log(coords);
         const { latitude, longitude } = coords.value;
         // eslint-disable-next-line react/no-did-mount-set-state
         await this.setState({ area: [latitude, longitude] });
