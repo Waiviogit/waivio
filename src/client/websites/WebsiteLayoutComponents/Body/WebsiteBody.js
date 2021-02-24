@@ -75,8 +75,9 @@ const WebsiteBody = props => {
       const siteConfig = get(res, 'configuration');
       const zoom = getZoom(siteConfig) || 6;
       let center = getCenter(siteConfig);
+
       center = isEmpty(center)
-        ? [get(currLocation, ['value', 'lat']), get(currLocation, ['value', 'lon'])]
+        ? [get(currLocation, ['value', 'latitude']), get(currLocation, ['value', 'longitude'])]
         : center;
 
       setCurrMapConfig(center, zoom);
