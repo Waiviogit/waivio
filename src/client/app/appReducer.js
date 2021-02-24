@@ -24,7 +24,7 @@ const initialState = {
   mainPage: 'waivio',
   currPage: '',
   currMap: { center: [], zoom: 6 },
-  configuration: [],
+  configuration: {},
   isWaivio: true,
   reservedCounter: 0,
 };

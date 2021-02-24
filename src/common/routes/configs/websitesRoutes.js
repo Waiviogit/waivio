@@ -33,6 +33,11 @@ const routes = {
           exact: true,
           component: Views.RewardsComponent,
         },
+        {
+          path: '/receivables',
+          exact: true,
+          component: Views.ReceivablesCampaign,
+        },
       ],
     },
     {

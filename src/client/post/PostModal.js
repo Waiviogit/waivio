@@ -64,11 +64,11 @@ class PostModal extends React.Component {
       document.body.classList.add('post-modal');
     }
     const { currentShownPost } = this.props;
-    const { title, url, author, guestInfo } = currentShownPost;
+    const { title, author, guestInfo } = currentShownPost;
     const authorName = get(currentShownPost, ['guestInfo', 'userId'], '') || author;
     const permlink = get(currentShownPost, 'permlink', '');
     const userPostURL = `@${author}/${permlink}`;
-    const guestUserPostURL = replaceBotWithGuestName(dropCategory(url), currentShownPost.guestInfo);
+    const guestUserPostURL = `@${authorName}/${permlink}`;
     const postURL = isEmpty(guestInfo) ? userPostURL : guestUserPostURL;
     PostModal.pushURLState(title, postURL);
     this.props.getSocialInfoPost(authorName, permlink);

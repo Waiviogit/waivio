@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
-import { useSelector } from 'react-redux';
-
+import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -12,29 +11,33 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { getSettingsTitle } from './common/helpers';
 import RightSidebar from '../app/Sidebar/RightSidebar';
-import { getOwnWebsites } from '../reducers';
+import { getIsAuthenticated, getIsWaivio, getOwnWebsites, isGuestUser } from '../reducers';
+import * as websiteAction from '../websites/websiteActions';
 
 import './Settings.less';
 
-const SettingsMain = ({ route, intl, match, history }) => {
-  const myWebsites = useSelector(getOwnWebsites);
-  const host = match.params.site;
+const SettingsMain = props => {
+  const host = props.match.params.site;
   const title = host ? `- ${host} ` : '';
-  const isBookmark = match.url.includes('bookmarks');
+  const isBookmark = props.match.url.includes('bookmarks');
   const containerClassList = classNames('container', {
     'feed-layout': isBookmark,
     'settings-layout': !isBookmark,
   });
-  console.log(myWebsites);
+
   useEffect(() => {
-    if (!myWebsites.some(website => website.host === host) && host) history.push('/');
-  }, [myWebsites]);
+    if (!props.auth) history.push('/');
+    else if (!props.isGuest && props.isWaivio)
+      props.getOwnWebsites().then(({ value }) => {
+        if (!value.some(website => website.host === host) && host) props.history.push('/');
+      });
+  }, [props.auth]);
 
   return (
     <div className="shifted">
       <Helmet>
         <title>
-          {intl.formatMessage(getSettingsTitle(match))} {title} - Waivio
+          {props.intl.formatMessage(getSettingsTitle(props.match))} {title} - Waivio
         </title>
       </Helmet>
       <div className={containerClassList}>
@@ -52,7 +55,7 @@ const SettingsMain = ({ route, intl, match, history }) => {
         )}
         <div className="center">
           <MobileNavigation />
-          {renderRoutes(route.routes)}
+          {renderRoutes(props.route.routes)}
         </div>
       </div>
     </div>
@@ -76,6 +79,20 @@ SettingsMain.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
+  auth: PropTypes.bool.isRequired,
+  isGuest: PropTypes.bool.isRequired,
+  isWaivio: PropTypes.bool.isRequired,
+  getOwnWebsites: PropTypes.func.isRequired,
 };
 
-export default injectIntl(SettingsMain);
+export default connect(
+  state => ({
+    myWebsites: getOwnWebsites(state),
+    auth: getIsAuthenticated(state),
+    isGuest: isGuestUser(state),
+    isWaivio: getIsWaivio(state),
+  }),
+  {
+    getOwnWebsites: websiteAction.getOwnWebsite,
+  },
+)(injectIntl(SettingsMain));
