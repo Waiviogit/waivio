@@ -155,7 +155,7 @@ class StoryFooter extends React.Component {
         handleFollowClick(post);
         break;
       case 'save':
-        toggleBookmark(`${post.author}/${post.root_permlink}`);
+        toggleBookmark(`${post.author}/${post.permlink}`);
         break;
       case 'report':
         this.handleFlagClick(post, postState);

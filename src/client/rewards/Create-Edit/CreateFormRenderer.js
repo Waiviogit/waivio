@@ -165,7 +165,7 @@ const CreateFormRenderer = props => {
         className={loading && 'CreateReward__loading'}
       >
         <Form.Item>
-          {!isEmpty(match.params) ? (
+          {currentItemId ? (
             <div
               role="presentation"
               className="CreateReward__createDuplicate"

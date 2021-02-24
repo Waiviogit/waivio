@@ -1,5 +1,6 @@
 import React from 'react';
 import store from 'store';
+import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { get, upperFirst } from 'lodash';
 import { Link, withRouter } from 'react-router-dom';
@@ -9,22 +10,24 @@ import { Icon } from 'antd';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import { getObjectType } from '../../../helpers/wObjectHelper';
+import { getConfigurationValues, getCurrPage, getObject } from '../../../reducers';
 
 import './WebsiteHeader.less';
 
-const WebsiteHeader = ({ currPage, wobj, history, config, intl }) => {
-  const isMainPage = location.pathname === '/';
+const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
+  const pathName = location.pathname;
+  const isMainPage = pathName === '/';
   let currentPage = currPage || store.get('currentPage');
   const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
-  if (location.pathname.includes('/object/')) {
+  if (pathName.includes('/object/')) {
     currentPage = getObjectType(wobj);
   }
 
-  if (location.pathname.includes('/@')) {
+  if (pathName.includes('/@')) {
     currentPage = 'Profile';
   }
 
-  if (location.pathname.includes('/editor')) {
+  if (pathName.includes('/editor')) {
     currentPage = 'Editor';
   }
 
@@ -65,9 +68,16 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl }) => {
 WebsiteHeader.propTypes = {
   currPage: PropTypes.string.isRequired,
   wobj: PropTypes.shape().isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }).isRequired,
   history: PropTypes.shape().isRequired,
-  config: PropTypes.shape().isRequired,
+  config: PropTypes.arrayOf.isRequired,
   intl: PropTypes.shape().isRequired,
 };
 
-export default withRouter(injectIntl(WebsiteHeader));
+export default connect(state => ({
+  currPage: getCurrPage(state),
+  config: getConfigurationValues(state),
+  wobj: getObject(state),
+}))(withRouter(injectIntl(WebsiteHeader)));

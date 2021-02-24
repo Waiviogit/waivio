@@ -46,11 +46,11 @@ const WebsiteObjects = props => {
     props
       .getWebsiteObjectsCoordinates(props.match.params.site)
       .then(res => {
-        const { value } = res;
-        setMapData(value);
+        const { coordinates, center, zoom } = res.value;
+        setMapData(coordinates);
         setArea({
-          center: [],
-          zoom: 8,
+          center,
+          zoom,
           bounds: { topPoint: [], bottomPoint: [] },
         });
       })

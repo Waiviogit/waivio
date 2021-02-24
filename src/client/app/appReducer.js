@@ -24,8 +24,9 @@ const initialState = {
   mainPage: 'waivio',
   currPage: '',
   currMap: { center: [], zoom: 6 },
-  configuration: [],
+  configuration: {},
   isWaivio: true,
+  reservedCounter: 0,
 };
 
 export default (state = initialState, action) => {
@@ -147,11 +148,19 @@ export default (state = initialState, action) => {
         isWaivio: mainPage === 'waivio',
       };
     }
+
     case appTypes.SET_CURRENT_PAGE:
       return {
         ...state,
         currPage: action.payload,
       };
+
+    case appTypes.GET_RESERVED_COUNTER.SUCCESS:
+      return {
+        ...state,
+        reservedCounter: action.payload.count,
+      };
+
     default:
       return state;
   }
@@ -190,3 +199,4 @@ export const getConfigurationValues = state => state.configuration;
 export const getMapForMainPage = state => state.currMap;
 export const getWebsiteConfiguration = state => state.configuration;
 export const getIsWaivio = state => state.isWaivio;
+export const getReservCounter = state => state.reservedCounter;

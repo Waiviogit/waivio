@@ -80,6 +80,32 @@
       display: none;
     }
   }
+
+  &__reserved {
+    display: inline-block;
+    position: absolute;
+    z-index: 2;
+    right: 5%;
+    top: 3%;
+    text-align: center;
+    line-height: 30px;
+    background: @orange-hot;
+    border: 1px solid @orange-hot;
+    font-weight: bold;
+    color: @white;
+    border-radius: 4px;
+    padding: 0 10px;
+    cursor: pointer;
+
+    &:hover {
+      background: @orange-hot;
+      color: @white;
+    }
+
+    span {
+      font-weight: normal;
+    }
+  }
 }
 
 .WebsiteBodyControl {

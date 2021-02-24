@@ -102,6 +102,7 @@ class PostContent extends React.Component {
     pendingFollowingPostAuthor: PropTypes.func.isRequired,
     followingPostAuthor: PropTypes.func.isRequired,
     errorFollowingPostAuthor: PropTypes.func.isRequired,
+    isModal: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -122,6 +123,7 @@ class PostContent extends React.Component {
     push: () => {},
     isOriginalPost: '',
     postSocialInfo: {},
+    isModal: false,
   };
 
   constructor(props) {
@@ -226,6 +228,7 @@ class PostContent extends React.Component {
       defaultVotePercent,
       appUrl,
       isOriginalPost,
+      isModal,
     } = this.props;
 
     const { tags, cities, wobjectsFacebook, userFacebook } = content;
@@ -266,9 +269,10 @@ class PostContent extends React.Component {
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
     const authorFacebook = !isEmpty(userFacebook) ? `by @${userFacebook}` : '';
+    const wobjectFacebook = !isEmpty(wobjectsFacebook) ? `@${wobjectsFacebook}` : '';
     const desc = `${truncate(bodyText, { length: 143 })} ${truncate(hashtags, {
       length: 120,
-    })} @${wobjectsFacebook} ${authorFacebook}`;
+    })} ${wobjectFacebook} ${authorFacebook}`;
 
     const image =
       postMetaImage ||
@@ -330,6 +334,7 @@ class PostContent extends React.Component {
           onEditClick={this.handleEditClick}
           muteAuthorPost={this.props.muteAuthorPost}
           isOriginalPost={isOriginalPost}
+          isModal={isModal}
         />
       </div>
     );

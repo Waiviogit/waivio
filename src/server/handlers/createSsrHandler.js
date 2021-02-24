@@ -9,7 +9,7 @@ import hivesigner from 'hivesigner';
 import { waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../client/store';
 import renderSsrPage from '../renderers/ssrRenderer';
-import routes from '../../common/routes/routes';
+import switchRoutes from '../../common/routes/switchRoutes';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
@@ -33,13 +33,14 @@ export default function createSsrHandler(template) {
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
-      if (req.cookies.access_token) {
-        sc2Api.setAccessToken(req.cookies.access_token);
-      }
+      const hostname = req.hostname;
+
+      if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
       const store = getStore(sc2Api, waivioAPI, req.url);
-
+      const routes = switchRoutes(hostname);
       const branch = matchRoutes(routes, req.url.split('?')[0]);
+
       const promises = branch.map(({ route, match }) => {
         const fetchData = route.component.fetchData;
         if (fetchData instanceof Function) {
@@ -53,6 +54,7 @@ export default function createSsrHandler(template) {
       if (res.headersSent) return null;
 
       const context = {};
+
       const content = renderToString(
         <Provider store={store}>
           <StaticRouter location={req.url} context={context}>
@@ -60,9 +62,8 @@ export default function createSsrHandler(template) {
           </StaticRouter>
         </Provider>,
       );
-      if (context.status) {
-        res.status(context.status);
-      }
+
+      if (context.status) res.status(context.status);
 
       return res.send(
         renderSsrPage(store, content, assets, template, req.hostname !== 'waivio.com'),

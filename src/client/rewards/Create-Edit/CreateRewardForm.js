@@ -213,7 +213,7 @@ class CreateRewardForm extends React.Component {
 
   componentDidUpdate() {
     const { campaign, createDuplicate } = this.state;
-    if (createDuplicate)
+    if (createDuplicate && campaign)
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ campaignName: `Copy ${campaign.name}`, createDuplicate: false });
   }

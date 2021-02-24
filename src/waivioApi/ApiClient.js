@@ -1927,4 +1927,38 @@ export const getExpertiseCounters = userName => {
     .catch(e => e);
 };
 
+export const getReservedCounter = userName => {
+  return fetch(
+    `${config.campaignApiPrefix}${config.campaigns}${config.reserved}${config.count}?userName=${userName}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const getUserCoordinatesByIpAdress = () => {
+  return fetch(`${config.apiPrefix}${config.geoIp}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const putUserCoordinates = params => {
+  return fetch(`${config.apiPrefix}${config.geoIp}`, {
+    headers,
+    body: JSON.stringify(params),
+    method: 'PUT',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
 export default null;

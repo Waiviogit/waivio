@@ -1,17 +1,12 @@
-import Views from '../routes/components';
-import createNestedRouts from '../routes/helper';
-import Post from '../../client/post/Post';
-import Wrapper from '../../client/Wrapper';
-import URL from './constants';
+import Views from '../components';
+import Post from '../../../client/post/Post';
+import Wrapper from '../../../client/Wrapper';
+import URL from '../constants';
+import createNestedRouts from '../helper';
 
 const routes = {
   component: Wrapper,
   routes: [
-    {
-      path: '/bookmarks',
-      exact: true,
-      component: Views.Bookmarks,
-    },
     {
       path: [
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
@@ -107,6 +102,11 @@ const routes = {
       component: Views.SettingsMain,
       pathScope: '',
       routes: [
+        {
+          path: '/bookmarks',
+          exact: true,
+          component: Views.Bookmarks,
+        },
         {
           path: '/drafts',
           exact: true,
@@ -392,16 +392,12 @@ const routes = {
       exact: true,
     },
     {
-      path: '/search',
-      component: Views.Search,
-    },
-    {
       path: '/exit',
       component: Views.ExitPage,
     },
     {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-      component: Views.MainBody,
+      component: Views.Page,
       routes: [
         {
           path: '/confirmation',

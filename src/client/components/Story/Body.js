@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
-import { isUndefined, filter } from 'lodash';
+import { isUndefined, filter, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
@@ -11,6 +11,7 @@ import sanitizeConfig from '../../vendor/SanitizeConfig';
 import { imageRegex, rewriteRegex, videoPreviewRegex } from '../../helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
+import { extractLinks } from '../../helpers/parser';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import './Body.less';
@@ -39,7 +40,7 @@ const getEmbed = link => {
 
 // Should return text(html) if returnType is text
 // Should return Object(React Compatible) if returnType is Object
-export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}) {
+export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}, isModal) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
@@ -85,6 +86,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   const splittedBody = parsedBody.split('~~~ embed:');
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
+    const extractedLinks = extractLinks(section);
     const match = section.match(/^([A-Za-z0-9./_-]+) ([A-Za-z0-9]+) (\S+) ~~~/);
     if (match && match.length >= 4) {
       const id = match[1];
@@ -97,6 +99,34 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       );
       section = section.substring(`${id} ${type} ${link} ~~~`.length);
     }
+    if (!isEmpty(extractedLinks)) {
+      const uniqueLinks = extractedLinks.reduce(
+        (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
+        [],
+      );
+      // eslint-disable-next-line no-loop-func
+      uniqueLinks.forEach(item => {
+        let link = item;
+        if (link.includes('3speak.co')) {
+          const type = 'video';
+          const embed = getEmbed(link);
+          link = link.substring(` ${type} ${link}`.length);
+
+          sections.push(
+            ReactDOMServer.renderToString(
+              <PostFeedEmbed
+                key={`embed-a-${item}`}
+                inPost
+                embed={embed}
+                isModal={isModal}
+                is3Speak
+              />,
+            ),
+          );
+        }
+      });
+    }
+
     if (section !== '') {
       sections.push(section);
     }
@@ -111,7 +141,7 @@ const Body = props => {
     rewriteLinks: props.rewriteLinks,
     secureLinks: props.exitPageSetting,
   };
-  const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options);
+  const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options, props.isModal);
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
 };
@@ -123,12 +153,14 @@ Body.propTypes = {
   body: PropTypes.string,
   jsonMetadata: PropTypes.string,
   full: PropTypes.bool,
+  isModal: PropTypes.bool,
 };
 
 Body.defaultProps = {
   body: '',
   jsonMetadata: '',
   full: false,
+  isModal: false,
 };
 
 export default Body;
