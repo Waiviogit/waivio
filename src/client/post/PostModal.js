@@ -126,6 +126,7 @@ class PostModal extends React.Component {
 
     const facebookShareURL = getFacebookShareURL(postURL);
     const signature = get(authorDetails, 'posting_json_metadata.profile.signature', null);
+    const isModal = !isEmpty(currentShownPost);
 
     return (
       <Modal
@@ -172,7 +173,7 @@ class PostModal extends React.Component {
             <i className="iconfont icon-facebook PostModal__icon" />
           </a>
         </div>
-        <PostContent content={shownPostContents} signature={signature} />
+        <PostContent content={shownPostContents} signature={signature} isModal={isModal} />
         <VisibilitySensor onChange={this.handleCommentsVisibility}>
           {!isBannedPost(shownPostContents) && (
             <div id="comments">
