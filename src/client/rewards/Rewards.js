@@ -795,8 +795,8 @@ class Rewards extends React.Component {
     const filterKey = get(match, ['params', 'filterKey']);
     const objUrl = `/object/${wobjPermlink}`;
 
-    if (isWaivio) {
-      this.props.history.push(campaignParent ? objUrl : `/rewards/${filterKey}/${wobjPermlink}`);
+    if (isWaivio || !campaignParent) {
+      this.props.history.push(`/rewards/${filterKey}/${wobjPermlink}`);
     } else {
       this.props.setMapFullscreenMode(false);
       this.props.history.push(objUrl);

@@ -56,7 +56,6 @@ export const WebsitesConfigurations = ({
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const aboutObj = get(config, 'aboutObject');
-  console.log(aboutObj);
   const { lat, lon } = userLocation;
 
   useEffect(() => {
