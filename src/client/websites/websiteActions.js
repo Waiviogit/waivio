@@ -211,13 +211,15 @@ export const SAVE_WEBSITE_CONFIGURATIONS = createAsyncActionType(
 export const saveWebConfiguration = (host, configuration) => (dispatch, getState) => {
   const userName = getAuthenticatedUserName(getState());
 
-  dispatch({
+  return dispatch({
     type: SAVE_WEBSITE_CONFIGURATIONS.ACTION,
     payload: {
       promise: saveWebsitesConfiguration({
         userName,
         host,
-        ...configuration,
+        configuration: {
+          ...configuration,
+        },
       }),
     },
   });

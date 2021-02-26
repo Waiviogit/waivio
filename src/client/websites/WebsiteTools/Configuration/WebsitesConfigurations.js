@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Input, Form, Modal, Avatar, message } from 'antd';
+import { Button, Form, Modal, Avatar, message, Icon } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, get, map, trim } from 'lodash';
+import { isEmpty, get, map } from 'lodash';
 import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import {
@@ -23,44 +23,40 @@ import {
   getWebConfiguration,
   saveWebConfiguration,
 } from '../../websiteActions';
-import { getConfigFieldsValue } from '../../helper';
 import Loading from '../../../components/Icon/Loading';
 import { getCoordinates } from '../../../user/userActions';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
 import { getPropositions } from '../../../../waivioApi/ApiClient';
 import { getPropositionsForMap } from '../../../components/Maps/mapActions';
+import MapControllers from '../../../widgets/MapControllers';
+
 import './WebsitesConfigurations.less';
 
 export const WebsitesConfigurations = ({
   intl,
-  form,
   loading,
   getWebConfig,
   match,
   config,
   saveWebConfig,
   location,
-  // eslint-disable-next-line no-shadow
-  getCoordinates,
+  getCurrentUserCoordinates,
   userLocation,
   wobjects,
   userName,
   getMapPropositions,
 }) => {
-  const { getFieldDecorator, getFieldValue, resetFields } = form;
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');
-  const [showSelectColor, setShowSelectColor] = useState('');
-  const [colors, setColors] = useState(null);
-  const [aboutObj, setAbtObject] = useState(null);
   const [image, setImage] = useState('');
   const [settingMap, setSettingMap] = useState({});
-
-  const mobileLogo = getFieldValue('mobileLogo') || get(config, 'mobileLogo');
-  const desktopLogo = getFieldValue('desktopLogo') || get(config, 'desktopLogo');
-
-  const { center, zoom, bounds } = settingMap;
+  const [paramsSaving, setParamsSaving] = useState(false);
+  const host = match.params.site;
+  const mobileLogo = get(config, 'mobileLogo');
+  const desktopLogo = get(config, 'desktopLogo');
+  const aboutObj = get(config, 'aboutObject');
+  console.log(aboutObj);
   const { lat, lon } = userLocation;
 
   useEffect(() => {
@@ -78,54 +74,55 @@ export const WebsitesConfigurations = ({
     }
   }, [lat, lon]);
 
-  const logoState = {
-    mobileLogo,
-    desktopLogo,
-  };
-
-  const mapState = {
-    mobileMap: getFieldValue('mobileMap') || get(config, 'mobileMap'),
-    desktopMap: getFieldValue('desktopMap') || get(config, 'desktopMap'),
-  };
-
-  const host = match.params.site;
-
   useEffect(() => {
-    getCoordinates();
-    getWebConfig(host).then(response => {
-      setAbtObject(response.value.aboutObject);
-      setColors(response.value.colors);
-    });
-    return () => {
-      setColors('');
-      setAbtObject(null);
-    };
+    getCurrentUserCoordinates();
+    getWebConfig(host);
   }, [location.pathname]);
 
-  const closeMapModal = () => {
-    resetFields(showMap);
-    setShowMap('');
+  const mapState = {
+    mobileMap: get(config, 'mobileMap'),
+    desktopMap: get(config, 'desktopMap'),
   };
 
-  const setCoordinates = () => {
-    const updateCenter = [lat, lon];
-    form.setFieldsValue({
-      [showMap]: {
-        topPoint: settingMap.bounds.ne,
-        bottomPoint: settingMap.bounds.sw,
-        center: updateCenter,
-        zoom,
-      },
+  const handleSubmit = param => {
+    setParamsSaving(true);
+
+    return saveWebConfig(host, param).then(() => {
+      setParamsSaving(false);
+      setModalState({});
+      setImage('');
+      setShowMap('');
+      setSettingMap({});
+      message.success(
+        intl.formatMessage({
+          id: 'website_save_webconfig_success',
+          defaultMessage: 'Website successfully updated',
+        }),
+      );
     });
   };
 
-  const handleSubmitLogoModal = () => {
-    form.setFieldsValue({
+  const closeMapModal = () => {
+    setShowMap('');
+    setSettingMap({});
+  };
+
+  const setCoordinates = () =>
+    setSettingMap({
+      ...settingMap,
+      center: [lat, lon],
+      zoom: settingMap.zoom,
+    });
+
+  const handleSubmitLogoModal = () =>
+    handleSubmit({
       [modalsState.type]: image,
     });
-    setModalState({});
-    setImage('');
-  };
+
+  const handleSubmitMap = () =>
+    handleSubmit({
+      [showMap]: settingMap,
+    });
 
   const handleModalState = key => {
     setModalState({
@@ -135,121 +132,36 @@ export const WebsitesConfigurations = ({
   };
 
   const closeLogoModal = () => {
-    const key = modalsState.type;
-
-    form.setFieldsValue({ [key]: logoState[key] });
     setModalState({});
     setImage('');
   };
 
-  const getSelectedColor = type => get(colors, [type], '');
-
-  const setMapBounds = state => {
-    // eslint-disable-next-line no-shadow
-    const { center, zoom, bounds } = state;
-    form.setFieldsValue({
-      [showMap]: {
-        topPoint: bounds.ne,
-        bottomPoint: bounds.sw,
-        center,
-        zoom,
-      },
-    });
-  };
-
   const incrementZoom = () => {
-    if (zoom <= 18) {
-      form.setFieldsValue({
-        [showMap]: {
-          topPoint: bounds.ne,
-          bottomPoint: bounds.sw,
-          center,
-          zoom: zoom + 1,
-        },
+    if (settingMap.zoom <= 18) {
+      setSettingMap({
+        ...settingMap,
+        zoom: settingMap.zoom + 1,
       });
     }
   };
 
   const decrementZoom = () => {
-    if (zoom >= 1) {
-      form.setFieldsValue({
-        [showMap]: {
-          topPoint: bounds.ne,
-          bottomPoint: bounds.sw,
-          center,
-          zoom: zoom - 1,
-        },
+    if (settingMap.zoom >= 1) {
+      setSettingMap({
+        ...settingMap,
+        zoom: settingMap.zoom - 1,
       });
     }
   };
 
-  const setPosition = () => {
-    setCoordinates();
-  };
+  const setPosition = () => setCoordinates();
 
-  const onBoundsChanged = state => {
-    setSettingMap(state);
-    setMapBounds(state);
-  };
-
-  const zoomButtonsLayout = () => (
-    <div className="MapConfigurationControl">
-      <div className="MapConfigurationControl__zoom">
-        <div
-          role="presentation"
-          className="MapConfigurationControl__zoom__button"
-          onClick={incrementZoom}
-        >
-          +
-        </div>
-        <div
-          role="presentation"
-          className="MapConfigurationControl__zoom__button"
-          onClick={decrementZoom}
-        >
-          -
-        </div>
-      </div>
-      <div className="MapConfigurationControl__gps">
-        <div role="presentation" className="MapConfigurationZoom__locateGPS" onClick={setPosition}>
-          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
-        </div>
-      </div>
-    </div>
-  );
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        const configuration = getConfigFieldsValue(config.configurationFields, values);
-        const configurationObj = {
-          configuration: {
-            ...config,
-            ...configuration,
-            colors: {
-              ...config.colors,
-              ...colors,
-            },
-            aboutObject: get(aboutObj, 'author_permlink', ''),
-          },
-        };
-        saveWebConfig(host, configurationObj);
-        message.success(
-          intl.formatMessage({
-            id: 'website_save_webconfig_success',
-            defaultMessage: 'Website successfully updated',
-          }),
-        );
-      }
+  const onBoundsChanged = state =>
+    setSettingMap({
+      ...state,
+      topPoint: state.bounds.ne,
+      bottomPoint: state.bounds.sw,
     });
-  };
-
-  const handleClickOk = () => {
-    const formValues = form.getFieldsValue();
-    setColors(getConfigFieldsValue(config.colors, formValues));
-    setShowSelectColor(false);
-  };
 
   const getMarkers = wObjects =>
     !isEmpty(wobjects) &&
@@ -293,34 +205,28 @@ export const WebsitesConfigurations = ({
           <h1>
             <FormattedMessage id="website_configuration" defaultMessage="Website configuration" />
           </h1>
-          <Form
-            className="WebsitesConfigurations"
-            id="WebsitesConfigurations"
-            onSubmit={handleSubmit}
-          >
+          <Form className="WebsitesConfigurations" id="WebsitesConfigurations">
             <Form.Item>
               <h3>
-                <span className="ant-form-item-required">
-                  {intl.formatMessage({
-                    id: 'desktop_logo',
-                    defaultMessage: 'Desktop logo',
-                  })}
-                </span>
+                {intl.formatMessage({
+                  id: 'desktop_logo',
+                  defaultMessage: 'Desktop logo',
+                })}
               </h3>
-              {getFieldDecorator(
-                'desktopLogo',
-                {},
-              )(
-                <div className="Settings__profile-image">
-                  <Avatar size="large" icon="user" src={desktopLogo} />
-                  <Button type="primary" onClick={() => handleModalState('desktopLogo')}>
-                    {intl.formatMessage({
-                      id: 'website_change_logo',
-                      defaultMessage: 'Change logo',
-                    })}
-                  </Button>
-                </div>,
-              )}
+              <div className="Settings__profile-image">
+                <Avatar
+                  icon="picture"
+                  shape="square"
+                  src={desktopLogo}
+                  className="WebsitesConfigurations__avatar WebsitesConfigurations__avatar--desktop"
+                />
+                <Button type="primary" onClick={() => handleModalState('desktopLogo')}>
+                  {intl.formatMessage({
+                    id: 'website_change_logo',
+                    defaultMessage: 'Change logo',
+                  })}
+                </Button>
+              </div>
               <p>
                 <FormattedMessage
                   id="desktop_logo_description"
@@ -330,27 +236,25 @@ export const WebsitesConfigurations = ({
             </Form.Item>
             <Form.Item>
               <h3>
-                <span className="ant-form-item-required">
-                  {intl.formatMessage({
-                    id: 'mobile_logo',
-                    defaultMessage: 'Mobile logo',
-                  })}
-                </span>
+                {intl.formatMessage({
+                  id: 'mobile_logo',
+                  defaultMessage: 'Mobile logo',
+                })}
               </h3>
-              {getFieldDecorator(
-                'mobileLogo',
-                {},
-              )(
-                <div className="Settings__profile-image">
-                  <Avatar size="large" icon="user" src={mobileLogo} />
-                  <Button type="primary" onClick={() => handleModalState('mobileLogo')}>
-                    {intl.formatMessage({
-                      id: 'website_change_logo',
-                      defaultMessage: 'Change logo',
-                    })}
-                  </Button>
-                </div>,
-              )}
+              <div className="Settings__profile-image">
+                <Avatar
+                  icon="picture"
+                  shape="square"
+                  src={mobileLogo}
+                  className="WebsitesConfigurations__avatar WebsitesConfigurations__avatar--mobile"
+                />
+                <Button type="primary" onClick={() => handleModalState('mobileLogo')}>
+                  {intl.formatMessage({
+                    id: 'website_change_logo',
+                    defaultMessage: 'Change logo',
+                  })}
+                </Button>
+              </div>
               <p>
                 <FormattedMessage
                   id="mobile_logo_description"
@@ -360,37 +264,37 @@ export const WebsitesConfigurations = ({
             </Form.Item>
             <Form.Item>
               <h3>
-                <span className="ant-form-item-required">
-                  {intl.formatMessage({
-                    id: 'about_object',
-                    defaultMessage: 'About object:',
-                  })}
-                </span>
+                {intl.formatMessage({
+                  id: 'about_object',
+                  defaultMessage: 'About object:',
+                })}
               </h3>
-              {getFieldDecorator('aboutObject')(
-                aboutObj ? (
-                  <div>
-                    <div className="Transfer__search-content-wrap-current">
-                      <div className="Transfer__search-content-wrap-current-user">
-                        <ObjectAvatar item={aboutObj} size={40} />
-                        <div className="Transfer__search-content">{getObjectName(aboutObj)}</div>
-                      </div>
+              {aboutObj ? (
+                <div>
+                  <div className="Transfer__search-content-wrap-current">
+                    <div className="Transfer__search-content-wrap-current-user">
+                      <ObjectAvatar item={aboutObj} size={40} />
+                      <div className="Transfer__search-content">{getObjectName(aboutObj)}</div>
+                    </div>
+                    {paramsSaving ? (
+                      <Icon type={'loading'} />
+                    ) : (
                       <span
                         role="presentation"
-                        onClick={() => {
-                          setAbtObject(null);
-                        }}
+                        onClick={() =>
+                          handleSubmit({
+                            aboutObject: null,
+                          })
+                        }
                         className="iconfont icon-delete"
                       />
-                    </div>
+                    )}
                   </div>
-                ) : (
-                  <SearchObjectsAutocomplete
-                    handleSelect={value => {
-                      setAbtObject(value);
-                    }}
-                  />
-                ),
+                </div>
+              ) : (
+                <SearchObjectsAutocomplete
+                  handleSelect={value => handleSubmit({ aboutObject: value.author_permlink })}
+                />
               )}
               <p>
                 <FormattedMessage
@@ -401,38 +305,31 @@ export const WebsitesConfigurations = ({
             </Form.Item>
             <Form.Item>
               <h3>
-                <span className="ant-form-item-required">
-                  {intl.formatMessage({
-                    id: 'desktop_map_default_view',
-                    defaultMessage: 'Desktop map - default view:',
-                  })}
-                </span>
+                {intl.formatMessage({
+                  id: 'desktop_map_default_view',
+                  defaultMessage: 'Desktop map - default view:',
+                })}
               </h3>
-              {getFieldDecorator(
-                'desktopMap',
-                {},
-              )(
-                <div className="WebsitesConfigurations__map">
-                  <Map
-                    center={get(mapState, ['desktopMap', 'center'], [+lat, +lon])}
-                    zoom={get(mapState, ['desktopMap', 'zoom'], 10)}
-                    minZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
-                    maxZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
-                    provider={mapProvider}
-                    height={200}
-                    width={160}
-                    mouseEvents={false}
-                  >
-                    {markersLayout}
-                  </Map>
-                  <Button type="primary" onClick={() => setShowMap('desktopMap')}>
-                    {intl.formatMessage({
-                      id: 'select_area',
-                      defaultMessage: 'Select area',
-                    })}
-                  </Button>
-                </div>,
-              )}
+              <div className="WebsitesConfigurations__map">
+                <Map
+                  center={get(mapState, ['desktopMap', 'center'], [+lat, +lon])}
+                  zoom={get(mapState, ['desktopMap', 'zoom'], 10)}
+                  minZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
+                  maxZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
+                  provider={mapProvider}
+                  height={200}
+                  width={320}
+                  mouseEvents={false}
+                >
+                  {markersLayout}
+                </Map>
+                <Button type="primary" onClick={() => setShowMap('desktopMap')}>
+                  {intl.formatMessage({
+                    id: 'select_area',
+                    defaultMessage: 'Select area',
+                  })}
+                </Button>
+              </div>
               <p>
                 <FormattedMessage
                   id="desktop_map_description"
@@ -442,84 +339,37 @@ export const WebsitesConfigurations = ({
             </Form.Item>
             <Form.Item>
               <h3>
-                <span className="ant-form-item-required">
-                  {intl.formatMessage({
-                    id: 'mobile_map_default_view',
-                    defaultMessage: 'Mobile map - default view:',
-                  })}
-                </span>
+                {intl.formatMessage({
+                  id: 'mobile_map_default_view',
+                  defaultMessage: 'Mobile map - default view:',
+                })}
               </h3>
-              {getFieldDecorator(
-                'mobileMap',
-                {},
-              )(
-                <div className="WebsitesConfigurations__map">
-                  <Map
-                    center={get(mapState, ['mobileMap', 'center'], [+lat, +lon])}
-                    zoom={get(mapState, ['mobileMap', 'zoom'], 10)}
-                    minZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
-                    maxZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
-                    height={200}
-                    width={160}
-                    provider={mapProvider}
-                    mouseEvents={false}
-                  >
-                    {markersLayout}
-                  </Map>
-                  <Button type="primary" onClick={() => setShowMap('mobileMap')}>
-                    {intl.formatMessage({
-                      id: 'select_area',
-                      defaultMessage: 'Select area',
-                    })}
-                  </Button>
-                </div>,
-              )}
+              <div className="WebsitesConfigurations__map">
+                <Map
+                  center={get(mapState, ['mobileMap', 'center'], [+lat, +lon])}
+                  zoom={get(mapState, ['mobileMap', 'zoom'], 10)}
+                  minZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
+                  maxZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
+                  height={200}
+                  width={120}
+                  provider={mapProvider}
+                  mouseEvents={false}
+                >
+                  {markersLayout}
+                </Map>
+                <Button type="primary" onClick={() => setShowMap('mobileMap')}>
+                  {intl.formatMessage({
+                    id: 'select_area',
+                    defaultMessage: 'Select area',
+                  })}
+                </Button>
+              </div>
               <p>
                 <FormattedMessage
                   id="mobile_map_description"
                   defaultMessage="Select the initial map focus for the mobile site."
                 />
               </p>
-            </Form.Item>
-            <Form.Item>
-              <h3>
-                <span className="ant-form-item-required">
-                  {intl.formatMessage({
-                    id: 'website_colors',
-                    defaultMessage: 'Website colors',
-                  })}
-                </span>
-              </h3>
-              <div />
-              <div className="WebsitesConfigurations__colors-wrap">
-                {Object.keys(get(config, 'colors', {})).map(color => (
-                  <div key={color}>
-                    <span
-                      className="WebsitesConfigurations__colors"
-                      style={{
-                        backgroundColor: getSelectedColor(color)
-                          ? `#${getSelectedColor(color)}`
-                          : 'transparent',
-                      }}
-                    />
-                    <b>{color}</b>
-                  </div>
-                ))}
-              </div>
-              <Button type="primary" onClick={() => setShowSelectColor(true)}>
-                {intl.formatMessage({
-                  id: 'select_colors',
-                  defaultMessage: 'Select colors',
-                })}
-              </Button>
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                {intl.formatMessage({
-                  id: 'save',
-                  defaultMessage: 'Save',
-                })}
-              </Button>
             </Form.Item>
           </Form>
           <Modal
@@ -529,6 +379,9 @@ export const WebsitesConfigurations = ({
             onCancel={closeLogoModal}
             onOk={handleSubmitLogoModal}
             visible={!isEmpty(modalsState)}
+            okButtonProps={{
+              loading: paramsSaving,
+            }}
           >
             {!isEmpty(modalsState) && (
               <ImageSetter onImageLoaded={modalsState.method} isRequired isMultiple={false} />
@@ -539,60 +392,32 @@ export const WebsitesConfigurations = ({
             title={`Select area`}
             closable
             onCancel={closeMapModal}
-            onOk={() => setShowMap('')}
+            onOk={handleSubmitMap}
             visible={showMap}
+            okButtonProps={{
+              loading: paramsSaving,
+            }}
           >
             {showMap && (
               <div className="MapWrap">
-                {zoomButtonsLayout()}
+                <MapControllers
+                  decrementZoom={decrementZoom}
+                  incrementZoom={incrementZoom}
+                  setPosition={setPosition}
+                />
                 <Map
-                  center={get(mapState, [showMap, 'center'], [+lat, +lon])}
-                  zoom={get(mapState, [showMap, 'zoom'], 8)}
+                  center={
+                    get(settingMap, 'center') || get(mapState, [showMap, 'center'], [+lat, +lon])
+                  }
+                  zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], 8)}
                   height={getCurrentScreenSize()}
                   provider={mapProvider}
-                  onBoundsChanged={state => {
-                    onBoundsChanged(state);
-                  }}
+                  onBoundsChanged={state => onBoundsChanged(state, showMap)}
                 >
                   {markersLayout}
                 </Map>
               </div>
             )}
-          </Modal>
-          <Modal
-            wrapClassName="Settings__modal"
-            title={`Select color`}
-            closable
-            onCancel={() => {
-              setShowSelectColor(false);
-            }}
-            onOk={handleClickOk}
-            visible={showSelectColor}
-          >
-            {showSelectColor &&
-              Object.keys(get(config, 'colors', {})).map(color => (
-                <div className="WebsitesConfigurations__select-color" key={color}>
-                  {color}:{' '}
-                  <span>
-                    #
-                    {getFieldDecorator(color)(
-                      <Input.Group>
-                        <Input
-                          type="text"
-                          defaultValue={getSelectedColor(color)}
-                          onChange={e => {
-                            const val = trim(e.currentTarget.value);
-
-                            form.setFieldsValue({
-                              [color]: val,
-                            });
-                          }}
-                        />
-                      </Input.Group>,
-                    )}
-                  </span>
-                </div>
-              ))}
           </Modal>
         </React.Fragment>
       ) : (
@@ -604,12 +429,11 @@ export const WebsitesConfigurations = ({
 
 WebsitesConfigurations.propTypes = {
   intl: PropTypes.shape().isRequired,
-  form: PropTypes.shape().isRequired,
   config: PropTypes.arrayOf.isRequired,
   loading: PropTypes.bool.isRequired,
   getWebConfig: PropTypes.func.isRequired,
   saveWebConfig: PropTypes.func.isRequired,
-  getCoordinates: PropTypes.func.isRequired,
+  getCurrentUserCoordinates: PropTypes.func.isRequired,
   getMapPropositions: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -637,7 +461,7 @@ export default connect(
     getWebConfig: getWebConfiguration,
     saveWebConfig: saveWebConfiguration,
     getMapsCoordinates: getCoordinatesForMap,
-    getCoordinates,
+    getCurrentUserCoordinates: getCoordinates,
     getMapPropositions: getPropositionsForMap,
   },
-)(Form.create()(withRouter(injectIntl(WebsitesConfigurations))));
+)(withRouter(injectIntl(WebsitesConfigurations)));
