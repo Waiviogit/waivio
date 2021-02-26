@@ -94,7 +94,7 @@ WebsiteSearch.propTypes = {
   searchUsersAutoCompete: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
-  activeFilters: PropTypes.shape({}).isRequired,
+  activeFilters: PropTypes.arrayOf.isRequired,
   sort: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,

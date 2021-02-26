@@ -31,7 +31,7 @@ import mapProvider from '../../../helpers/mapProvider';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
 import DEFAULTS from '../../../object/const/defaultValues';
-import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
+import { getCurrentPoint, getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
 import {
   getCurrentAppSettings,
@@ -50,6 +50,7 @@ const WebsiteBody = props => {
   });
   const [infoboxData, setInfoboxData] = useState(null);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
+  let queryCenter = props.query.get('center');
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const getCurrentConfig = config =>
     isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
@@ -61,13 +62,12 @@ const WebsiteBody = props => {
 
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
 
+  if (queryCenter) {
+    queryCenter = queryCenter.split(',').map(item => Number(item));
+  }
+
   const getCoordinatesForMap = async () => {
-    const query = new URLSearchParams(props.location.search);
-    let queryCenter = query.get('center');
-
-    if (queryCenter) {
-      queryCenter = queryCenter.split(',').map(item => Number(item));
-
+    if (!isEmpty(queryCenter)) {
       setCurrMapConfig(queryCenter, 15);
     } else {
       const currLocation = await props.getCoordinates();
@@ -91,7 +91,18 @@ const WebsiteBody = props => {
 
   useEffect(() => {
     if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0])
-      props.getWebsiteObjWithCoordinates(boundsParams);
+      props.getWebsiteObjWithCoordinates(boundsParams).then(res => {
+        if (!isEmpty(queryCenter)) {
+          const { wobjects } = res.value;
+          const currentPoint = getCurrentPoint(wobjects, queryCenter);
+
+          props.history.push('/');
+          setInfoboxData({
+            wobject: currentPoint,
+            coordinates: queryCenter,
+          });
+        }
+      });
   }, [props.userLocation, boundsParams]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
@@ -162,13 +173,24 @@ const WebsiteBody = props => {
   }
 
   const markersLayout = getMarkers(currentWobject);
+
   const getOverlayLayout = () => {
     const currentWobj = infoboxData;
     const avatar = getObjectAvatar(currentWobj.wobject) || DEFAULTS.AVATAR;
     const name = getObjectName(currentWobj.wobject);
+    const getFirstOffsetNumber = () => {
+      const lengthMoreThanOrSame = number => name.length <= number;
+
+      if (lengthMoreThanOrSame(15)) return 65;
+      if (lengthMoreThanOrSame(20)) return 100;
+      if (lengthMoreThanOrSame(35)) return 120;
+
+      return 170;
+    };
+    const firstOffsetNumber = getFirstOffsetNumber();
 
     return (
-      <Overlay anchor={infoboxData.coordinates} offset={[-12, 35]}>
+      <Overlay anchor={infoboxData.coordinates} offset={[firstOffsetNumber, 75]}>
         <Link
           role="presentation"
           className="WebsiteBody__overlay-wrap"
@@ -193,7 +215,6 @@ const WebsiteBody = props => {
         const { latitude, longitude } = position.coords;
         setArea({
           ...area,
-          zoom: 11,
           center: [latitude, longitude],
         });
         props.putUserCoordinates({ latitude, longitude });
@@ -201,7 +222,6 @@ const WebsiteBody = props => {
       () =>
         setArea({
           ...area,
-          zoom: 11,
           center: [props.userLocation.lat, props.userLocation.lon],
         }),
     );
@@ -276,19 +296,21 @@ const WebsiteBody = props => {
                 if (!get(event, 'target.dataset.anchor')) setInfoboxData(null);
               }}
             >
-              <div className="WebsiteBody__filters-list">
-                {props.activeFilters.map(filter =>
-                  filter.tags.map(tag => (
-                    <Tag
-                      key={tag}
-                      closable
-                      onClose={() => props.setWebsiteSearchFilter(filter.categoryName, 'all')}
-                    >
-                      {tag}
-                    </Tag>
-                  )),
-                )}
-              </div>
+              {!isEmpty(props.activeFilters) && (
+                <div className="WebsiteBody__filters-list">
+                  {props.activeFilters.map(filter =>
+                    filter.tags.map(tag => (
+                      <Tag
+                        key={tag}
+                        closable
+                        onClose={() => props.setWebsiteSearchFilter(filter.categoryName, 'all')}
+                      >
+                        {tag}
+                      </Tag>
+                    )),
+                  )}
+                </div>
+              )}
               {markersLayout}
               {infoboxData && getOverlayLayout()}
             </Map>
@@ -332,6 +354,10 @@ WebsiteBody.propTypes = {
   searchString: PropTypes.string,
   counter: PropTypes.number.isRequired,
   isAuth: PropTypes.bool,
+  query: PropTypes.shape({
+    get: PropTypes.func,
+    delete: PropTypes.func,
+  }).isRequired,
 };
 
 WebsiteBody.defaultProps = {
@@ -341,7 +367,7 @@ WebsiteBody.defaultProps = {
 };
 
 export default connect(
-  state => ({
+  (state, ownProps) => ({
     userLocation: getUserLocation(state),
     isShowResult: getShowSearchResult(state),
     searchResult: getWebsiteSearchResult(state),
@@ -354,6 +380,7 @@ export default connect(
     searchString: getWebsiteSearchString(state),
     counter: getReservCounter(state),
     isAuth: getIsAuthenticated(state),
+    query: new URLSearchParams(ownProps.location.search),
   }),
   {
     getCoordinates,

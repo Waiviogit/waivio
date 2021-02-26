@@ -55,14 +55,10 @@ const PropositionListContainer = ({
         locale,
       };
 
-      if (isEmpty(wobject.parent)) {
-        reqData.requiredObject = primaryObject;
-      } else {
-        reqData.requiredObject = requiredObject;
-      }
+      reqData.requiredObject = isEmpty(wobject.parent) ? primaryObject : requiredObject;
       getPropositions(reqData);
     }
-  }, [wobject.author_permlink, listItems]);
+  }, [wobject.author_permlink, listItems, match.params.name]);
 
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {

@@ -25,6 +25,7 @@ const initialState = {
   tagCategory: [],
   sort: 'weight',
   showSearchResult: false,
+  allSearchLoadingMore: false,
 };
 
 export default (state = initialState, action) => {
@@ -129,12 +130,20 @@ export default (state = initialState, action) => {
       };
     }
 
+    case searchActions.SEARCH_USERS_LOADING_MORE.START: {
+      return {
+        ...state,
+        allSearchLoadingMore: true,
+      };
+    }
+
     case searchActions.SEARCH_USERS_LOADING_MORE.SUCCESS: {
       return {
         ...state,
         searchUsersResults: [...state.searchUsersResults, ...get(action.payload, 'users', [])],
         hasMoreUsers: get(action.payload, 'hasMore', []),
         isStartSearchUser: false,
+        allSearchLoadingMore: false,
       };
     }
 
@@ -398,6 +407,13 @@ export default (state = initialState, action) => {
         websiteSearchResultLoading: false,
       };
     }
+    case searchActions.SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.START: {
+      return {
+        ...state,
+        allSearchLoadingMore: true,
+      };
+    }
+
     case searchActions.SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.SUCCESS: {
       const { result } = action.payload;
       return {
@@ -405,6 +421,7 @@ export default (state = initialState, action) => {
         websiteSearchResult: [...state.websiteSearchResult, ...result.wobjects],
         hasMoreObjectsForWebsite: action.payload.hasMore,
         isStartSearchObject: false,
+        allSearchLoadingMore: false,
       };
     }
 
@@ -506,3 +523,4 @@ export const getWebsiteSearchString = state => get(state, 'websiteSearchString',
 export const getSearchSort = state => get(state, 'sort', '');
 export const getWebsiteSearchResultLoading = state => get(state, 'websiteSearchResultLoading', '');
 export const getShowSearchResult = state => get(state, 'showSearchResult', '');
+export const getAllSearchLoadingMore = state => get(state, 'allSearchLoadingMore', '');

@@ -9,7 +9,7 @@ import { Icon } from 'antd';
 
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
-import { getObjectType } from '../../../helpers/wObjectHelper';
+import { getObjectMap, getObjectType } from '../../../helpers/wObjectHelper';
 import { getConfigurationValues, getCurrPage, getObject } from '../../../reducers';
 
 import './WebsiteHeader.less';
@@ -17,10 +17,14 @@ import './WebsiteHeader.less';
 const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
   const pathName = location.pathname;
   const isMainPage = pathName === '/';
+  let hrefBachButton = '/';
   let currentPage = currPage || store.get('currentPage');
   const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
   if (pathName.includes('/object/')) {
+    const map = getObjectMap(wobj);
     currentPage = getObjectType(wobj);
+
+    if (map) hrefBachButton = `/?center=${map.latitude},${map.longitude}`;
   }
 
   if (pathName.includes('/@')) {
@@ -38,7 +42,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
           <WebsiteSearch history={history} />
         ) : (
           <React.Fragment>
-            <Link className="WebsiteHeader__link left" to={'/'}>
+            <Link className="WebsiteHeader__link left" to={hrefBachButton}>
               <Icon type="left" />{' '}
               {intl.formatMessage({
                 id: 'back',

@@ -371,6 +371,15 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.SAVE_WEBSITE_CONFIGURATIONS.SUCCESS: {
+      return {
+        ...state,
+        configurationWebsite: {
+          ...action.payload,
+        },
+      };
+    }
+
     case websiteAction.DELETE_WEBSITE_ERROR: {
       const websites = get(state, ['manage', 'websites'], []).map(website => ({
         ...website,
