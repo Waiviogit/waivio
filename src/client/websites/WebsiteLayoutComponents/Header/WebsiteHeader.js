@@ -76,8 +76,12 @@ WebsiteHeader.propTypes = {
     pathname: PropTypes.string,
   }).isRequired,
   history: PropTypes.shape().isRequired,
-  config: PropTypes.arrayOf.isRequired,
+  config: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+};
+
+WebsiteHeader.defaultProps = {
+  config: {},
 };
 
 export default connect(state => ({

@@ -16,9 +16,6 @@ import {
   getSearchFiltersTagCategory,
   getShowSearchResult,
   getUserLocation,
-  getWebsiteSearchResult,
-  getWebsiteSearchType,
-  getWebsiteSearchString,
   getWobjectsPoint,
   getReservCounter,
   getIsAuthenticated,
@@ -26,7 +23,6 @@ import {
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteSearchFilter, setWebsiteSearchType } from '../../../search/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
-import { getWebsiteObjWithCoordinates } from '../../websiteActions';
 import mapProvider from '../../../helpers/mapProvider';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
@@ -40,13 +36,12 @@ import {
 } from '../../../app/appActions';
 
 import './WebsiteBody.less';
+import { getWebsiteObjWithCoordinates } from '../../websiteActions';
 
 const WebsiteBody = props => {
   const [boundsParams, setBoundsParams] = useState({
     topPoint: [],
     bottomPoint: [],
-    limit: 50,
-    skip: 0,
   });
   const [infoboxData, setInfoboxData] = useState(null);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
@@ -55,7 +50,6 @@ const WebsiteBody = props => {
   const getCurrentConfig = config =>
     isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
-  const activeFilterIsEmpty = isEmpty(props.activeFilters);
 
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
@@ -90,8 +84,9 @@ const WebsiteBody = props => {
   }, []);
 
   useEffect(() => {
-    if (boundsParams.topPoint[0] && boundsParams.bottomPoint[0])
-      props.getWebsiteObjWithCoordinates(boundsParams).then(res => {
+    const { topPoint, bottomPoint } = boundsParams;
+    if (!isEmpty(topPoint) && !isEmpty(bottomPoint))
+      props.getWebsiteObjWithCoordinates({ topPoint, bottomPoint }, 50).then(res => {
         if (!isEmpty(queryCenter)) {
           const { wobjects } = res.value;
           const currentPoint = getCurrentPoint(wobjects, queryCenter);
@@ -160,19 +155,7 @@ const WebsiteBody = props => {
       ) : null;
     });
 
-  let currentWobject = props.wobjectsPoint;
-
-  if (
-    (!activeFilterIsEmpty ||
-      props.searchString ||
-      (!isMobile && props.isShowResult) ||
-      (isMobile && props.searchType)) &&
-    props.searchType !== 'Users'
-  ) {
-    currentWobject = props.searchResult;
-  }
-
-  const markersLayout = getMarkers(currentWobject);
+  const markersLayout = getMarkers(props.wobjectsPoint);
 
   const getOverlayLayout = () => {
     const currentWobj = infoboxData;
@@ -338,7 +321,6 @@ WebsiteBody.propTypes = {
     lon: PropTypes.string,
   }).isRequired,
   isShowResult: PropTypes.string.isRequired,
-  searchResult: PropTypes.arrayOf.isRequired,
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
@@ -347,11 +329,9 @@ WebsiteBody.propTypes = {
   putUserCoordinates: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
-  searchType: PropTypes.string.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   configCoordinates: PropTypes.arrayOf.isRequired,
   activeFilters: PropTypes.arrayOf.isRequired,
-  searchString: PropTypes.string,
   counter: PropTypes.number.isRequired,
   isAuth: PropTypes.bool,
   query: PropTypes.shape({
@@ -370,14 +350,11 @@ export default connect(
   (state, ownProps) => ({
     userLocation: getUserLocation(state),
     isShowResult: getShowSearchResult(state),
-    searchResult: getWebsiteSearchResult(state),
     configuration: getConfigurationValues(state),
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),
     configCoordinates: getMapForMainPage(state),
     activeFilters: getSearchFiltersTagCategory(state),
-    searchType: getWebsiteSearchType(state),
-    searchString: getWebsiteSearchString(state),
     counter: getReservCounter(state),
     isAuth: getIsAuthenticated(state),
     query: new URLSearchParams(ownProps.location.search),
