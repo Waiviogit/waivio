@@ -5,11 +5,13 @@ import { isEmpty, map, size, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 import classNames from 'classnames';
+import { ReactSVG } from 'react-svg';
 
 import UserCard from '../../components/UserCard';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import {
+  getAllSearchLoadingMore,
   getHasMoreObjects,
   getHasMoreUsers,
   getIsStartSearchUser,
@@ -38,6 +40,7 @@ import {
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
 import Loading from '../../components/Icon/Loading';
+import Campaign from '../../rewards/Campaign/Campaign';
 
 import './SearchAllResult.less';
 
@@ -88,9 +91,13 @@ const SearchAllResult = props => {
 
       default:
         return {
-          list: map(props.searchResult, obj => (
-            <ObjectCardView wObject={obj} key={getObjectName(obj)} />
-          )),
+          list: map(props.searchResult, obj =>
+            obj.campaigns ? (
+              <Campaign proposition={obj} />
+            ) : (
+              <ObjectCardView wObject={obj} key={getObjectName(obj)} />
+            ),
+          ),
           hasMore: props.hasMore,
           loading: props.loading,
         };
@@ -176,14 +183,19 @@ const SearchAllResult = props => {
                 </Dropdown>
               ))}
             </div>
-            <SortSelector sort={props.sort} onChange={props.setSearchSortType}>
-              <SortSelector.Item key={SORT_OPTIONS_WOBJ.WEIGHT}>
-                {props.intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
-              </SortSelector.Item>
-              <SortSelector.Item key={SORT_OPTIONS_WOBJ.RECENCY}>
-                {props.intl.formatMessage({ id: 'recency', defaultMessage: 'Recency' })}
-              </SortSelector.Item>
-            </SortSelector>
+            <div className="SearchAllResult__sortWrap">
+              <span className="SearchAllResult__reload">
+                <ReactSVG wrapper="span" src="/images/icons/redo-alt-solid.svg" /> Reload
+              </span>
+              <SortSelector sort={props.sort} onChange={props.setSearchSortType}>
+                <SortSelector.Item key={SORT_OPTIONS_WOBJ.WEIGHT}>
+                  {props.intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
+                </SortSelector.Item>
+                <SortSelector.Item key={SORT_OPTIONS_WOBJ.RECENCY}>
+                  {props.intl.formatMessage({ id: 'recency', defaultMessage: 'Recency' })}
+                </SortSelector.Item>
+              </SortSelector>
+            </div>
           </React.Fragment>
         )}
         <div className="SearchAllResult__buttonWrap">
@@ -197,7 +209,7 @@ const SearchAllResult = props => {
           </Button>
         </div>
         {currRenderListState.loading ? <Loading /> : currentList}
-        <div className="SearchAllResult__loader">{isScrolled && <Loading />}</div>
+        <div className="SearchAllResult__loader">{props.loadingMore && <Loading />}</div>
       </div>
     </div>
   );
@@ -224,6 +236,7 @@ SearchAllResult.propTypes = {
   hasMore: PropTypes.bool.isRequired,
   hasMoreUsers: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
+  loadingMore: PropTypes.bool.isRequired,
   usersLoading: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
@@ -249,6 +262,7 @@ export default connect(
     loading: getWebsiteSearchResultLoading(state),
     usersLoading: getIsStartSearchUser(state),
     isShowResult: getShowSearchResult(state),
+    loadingMore: getAllSearchLoadingMore(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,

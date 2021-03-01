@@ -1,44 +1,25 @@
 import { message } from 'antd';
-import { get, size } from 'lodash';
-import Cookie from 'js-cookie';
+import { get, isEmpty, size } from 'lodash';
 
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
-  checkAvailable,
-  createWebsite,
-  deleteSite,
-  getDomainList,
-  getInfoForManagePage,
-  getObjectType,
-  getSettingsWebsite,
-  getTagCategoryForSite,
-  getWebsiteAdministrators,
-  getWebsiteAuthorities,
-  getWebsiteModerators,
-  getWebsites,
-  getWebsitesConfiguration,
-  getWebsitesReports,
-  saveTagCategoryForSite,
-  saveWebsitesConfiguration,
-  setWebsiteObjCoordinates,
-  getWebsiteObjCoordinates,
-  getRestrictionsInfo,
-  getWebsiteObjectsWithCoordinates,
-} from '../../waivioApi/ApiClient';
-import {
   getAuthenticatedUserName,
+  getLocale,
   getOwnWebsites,
   getParentDomain,
-  isGuestUser,
+  getSearchFiltersTagCategory,
+  getWebsiteSearchString,
+  getWebsiteSearchType,
 } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { getChangesInAccessOption } from './helper';
+import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 
 export const getParentDomainList = () => ({
   type: GET_PARENT_DOMAIN.ACTION,
-  payload: { promise: getDomainList().then(r => r) },
+  payload: { promise: ApiClient.getDomainList().then(r => r) },
 });
 
 export const GET_OWN_WEBSITE = createAsyncActionType('@website/GET_OWN_WEBSITE');
@@ -49,7 +30,7 @@ export const getOwnWebsite = () => (dispatch, getState) => {
   return dispatch({
     type: GET_OWN_WEBSITE.ACTION,
     payload: {
-      promise: getWebsites(userName),
+      promise: ApiClient.getWebsites(userName),
     },
   });
 };
@@ -69,7 +50,7 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
   return dispatch({
     type: CREATE_NEW_WEBSITE.ACTION,
     payload: {
-      promise: createWebsite(body).then(res => {
+      promise: ApiClient.createWebsite(body).then(res => {
         const { block_num: blockNum } = res.result;
         const creator = getAuthenticatedUserName(state);
 
@@ -90,7 +71,7 @@ export const CHECK_AVAILABLE_DOMAIN = createAsyncActionType('@website/CHECK_AVAI
 export const checkAvailableDomain = (name, parent) => ({
   type: CHECK_AVAILABLE_DOMAIN.ACTION,
   payload: {
-    promise: checkAvailable(name, parent)
+    promise: ApiClient.checkAvailable(name, parent)
       .then(r => r.status)
       .catch(e => e),
   },
@@ -101,7 +82,7 @@ export const GET_INFO_FOR_MANAGE_PAGE = createAsyncActionType('@website/GET_INFO
 export const getManageInfo = name => ({
   type: GET_INFO_FOR_MANAGE_PAGE.ACTION,
   payload: {
-    promise: getInfoForManagePage(name)
+    promise: ApiClient.getInfoForManagePage(name)
       .then(r => r.json())
       .then(r => r)
       .catch(e => message.error(e.message)),
@@ -152,7 +133,7 @@ export const deleteWebsite = item => (dispatch, getState, { busyAPI }) => {
 
   dispatch({ type: DELETE_WEBSITE, id: item.host });
 
-  return deleteSite(name, item.host)
+  return ApiClient.deleteSite(name, item.host)
     .then(res => {
       if (res.result) {
         busyAPI.instance.sendAsync(subscribeMethod, [
@@ -189,7 +170,7 @@ export const getReportsWebsiteInfo = (formData = {}) => (dispatch, getState) => 
   dispatch({
     type: GET_REPORTS_PAGE.ACTION,
     payload: {
-      promise: getWebsitesReports({ userName, ...formData }),
+      promise: ApiClient.getWebsitesReports({ userName, ...formData }),
     },
   });
 };
@@ -200,7 +181,7 @@ export const GET_WEBSITE_CONFIGURATIONS = createAsyncActionType(
 export const getWebConfiguration = site => ({
   type: GET_WEBSITE_CONFIGURATIONS.ACTION,
   payload: {
-    promise: getWebsitesConfiguration(site),
+    promise: ApiClient.getWebsitesConfiguration(site),
   },
 });
 
@@ -211,13 +192,15 @@ export const SAVE_WEBSITE_CONFIGURATIONS = createAsyncActionType(
 export const saveWebConfiguration = (host, configuration) => (dispatch, getState) => {
   const userName = getAuthenticatedUserName(getState());
 
-  dispatch({
+  return dispatch({
     type: SAVE_WEBSITE_CONFIGURATIONS.ACTION,
     payload: {
-      promise: saveWebsitesConfiguration({
+      promise: ApiClient.saveWebsitesConfiguration({
         userName,
         host,
-        ...configuration,
+        configuration: {
+          ...configuration,
+        },
       }),
     },
   });
@@ -233,7 +216,7 @@ export const getWebAdministrators = host => (dispatch, getState) => {
   dispatch({
     type: GET_WEBSITE_ADMINISTRATORS.ACTION,
     payload: {
-      promise: getWebsiteAdministrators(host, userName),
+      promise: ApiClient.getWebsiteAdministrators(host, userName),
     },
   });
 };
@@ -261,7 +244,7 @@ export const addWebAdministrator = (host, account) => (dispatch, getState, { ste
             userName,
             host,
             ADD_WEBSITE_ADMINISTRATOR,
-            getWebsiteAdministrators,
+            ApiClient.getWebsiteAdministrators,
           ),
         );
       }
@@ -304,7 +287,7 @@ export const getWebModerators = host => (dispatch, getState) => {
   dispatch({
     type: GET_WEBSITE_MODERATORS.ACTION,
     payload: {
-      promise: getWebsiteModerators(host, userName),
+      promise: ApiClient.getWebsiteModerators(host, userName),
     },
   });
 };
@@ -334,7 +317,7 @@ export const addWebsiteModerators = (host, account) => (
             userName,
             host,
             ADD_WEBSITE_MODERATORS,
-            getWebsiteModerators,
+            ApiClient.getWebsiteModerators,
           ),
         );
       }
@@ -377,7 +360,7 @@ export const getWebAuthorities = host => (dispatch, getState) => {
   dispatch({
     type: GET_WEBSITE_AUTHORITIES.ACTION,
     payload: {
-      promise: getWebsiteAuthorities(host, userName),
+      promise: ApiClient.getWebsiteAuthorities(host, userName),
     },
   });
 };
@@ -403,7 +386,7 @@ export const addWebAuthorities = (host, account) => (dispatch, getState, { steem
             userName,
             host,
             ADD_WEBSITE_AUTHORITIES,
-            getWebsiteAuthorities,
+            ApiClient.getWebsiteAuthorities,
           ),
         );
       }
@@ -471,7 +454,7 @@ export const getWebsiteTags = host => (dispatch, getState) => {
   dispatch({
     type: GET_WEBSITE_TAGS.ACTION,
     payload: {
-      promise: getTagCategoryForSite(host, userName),
+      promise: ApiClient.getTagCategoryForSite(host, userName),
     },
   });
 };
@@ -483,7 +466,7 @@ export const saveTagsCategoryForSite = (host, objectsFilter) => (dispatch, getSt
   dispatch({
     type: GET_WEBSITE_TAGS.ACTION,
     payload: {
-      promise: saveTagCategoryForSite(host, userName, objectsFilter),
+      promise: ApiClient.saveTagCategoryForSite(host, userName, objectsFilter),
     },
   });
 };
@@ -496,7 +479,7 @@ export const getCoordinatesForMap = (coordinates, radius) => (dispatch, getState
   return dispatch({
     type: GET_COORDINATES_FOG_MAP.ACTION,
     payload: {
-      promise: getObjectType('restaurant', {
+      promise: ApiClient.getObjectType('restaurant', {
         simplified: true,
         userName,
         wobjects_count: 50,
@@ -517,7 +500,7 @@ export const GET_WEBSITE_SETTINGS = createAsyncActionType('@website/GET_WEBSITE_
 export const getWebsiteSettings = host => ({
   type: GET_WEBSITE_SETTINGS.ACTION,
   payload: {
-    promise: getSettingsWebsite(host),
+    promise: ApiClient.getSettingsWebsite(host),
   },
 });
 
@@ -528,7 +511,7 @@ export const SET_WEBSITE_OBJECTS_COORDINATES = createAsyncActionType(
 export const setWebsiteObjectsCoordinates = params => ({
   type: SET_WEBSITE_OBJECTS_COORDINATES.ACTION,
   payload: {
-    promise: setWebsiteObjCoordinates(params),
+    promise: ApiClient.setWebsiteObjCoordinates(params),
   },
 });
 
@@ -539,7 +522,7 @@ export const GET_WEBSITE_OBJECTS_COORDINATES = createAsyncActionType(
 export const getWebsiteObjectsCoordinates = params => ({
   type: GET_WEBSITE_OBJECTS_COORDINATES.ACTION,
   payload: {
-    promise: getWebsiteObjCoordinates(params),
+    promise: ApiClient.getWebsiteObjCoordinates(params),
   },
 });
 
@@ -547,15 +530,22 @@ export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
   '@website/GET_WEBSITE_OBJECTS_WITH_COORDINATES',
 );
 
-export const getWebsiteObjWithCoordinates = params => (dispatch, getState) => {
-  const isGuest = isGuestUser(getState());
-  const accessToken = isGuest ? localStorage.getItem('accessToken') : Cookie.get('access_token');
+export const getWebsiteObjWithCoordinates = (box = {}, limit = 50) => (dispatch, getState) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const searchString = getWebsiteSearchString(state);
+  const objType = getWebsiteSearchType(state);
+  const userName = getAuthenticatedUserName(state);
+  const tagsFilter = getSearchFiltersTagCategory(state);
+  const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
 
   return dispatch({
     type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
-    payload: {
-      promise: getWebsiteObjectsWithCoordinates(params, accessToken),
-    },
+    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, {
+      userName,
+      ...tagCategory,
+      box,
+    }),
   });
 };
 
@@ -564,7 +554,7 @@ export const GET_WEBSITE_RESTRICTIONS = createAsyncActionType('@website/GET_WEBS
 export const getWebsiteRestrictions = (host, userName) => ({
   type: GET_WEBSITE_RESTRICTIONS.ACTION,
   payload: {
-    promise: getRestrictionsInfo(host, userName),
+    promise: ApiClient.getRestrictionsInfo(host, userName),
   },
 });
 
@@ -589,7 +579,7 @@ export const muteUser = (follower, following, action, host) => (
         follower,
         host,
         type,
-        getRestrictionsInfo,
+        ApiClient.getRestrictionsInfo,
         {
           following,
         },

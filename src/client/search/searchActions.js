@@ -156,7 +156,7 @@ export const SEARCH_OBJECTS_FOR_WEBSITE = createAsyncActionType(
   '@search/SEARCH_OBJECTS_FOR_WEBSITE',
 );
 
-export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight') => (
+export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', limit = 15) => (
   dispatch,
   getState,
 ) => {
@@ -167,9 +167,9 @@ export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight') =
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
 
-  dispatch({
+  return dispatch({
     type: SEARCH_OBJECTS_FOR_WEBSITE.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, false, 15, locale, {
+    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, {
       userName,
       sort,
       ...tagCategory,

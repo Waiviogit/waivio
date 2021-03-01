@@ -94,11 +94,15 @@ WebsiteSearch.propTypes = {
   searchUsersAutoCompete: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
-  activeFilters: PropTypes.shape({}).isRequired,
+  activeFilters: PropTypes.arrayOf,
   sort: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
+};
+
+WebsiteSearch.defaultProps = {
+  activeFilters: [],
 };
 
 export default connect(
