@@ -114,6 +114,7 @@ const Wobj = ({
                 match,
                 toggleViewEditMode,
                 appendAlbum,
+                route,
               })}
             </div>
           </div>

@@ -231,6 +231,19 @@ class ObjectInfo extends React.Component {
           </LinkButton>
         );
         break;
+      case TYPES_OF_MENU_ITEM.BLOG:
+        menuItem = (
+          <LinkButton
+            className={classNames('menu-btn', {
+              active:
+                location.pathname === `/object/${wobject.author_permlink}/blog/@${item.permlink}`,
+            })}
+            to={`/object/${wobject.author_permlink}/blog/@${item.permlink}`}
+          >
+            {item.blogTitle}
+          </LinkButton>
+        );
+        break;
       default:
         break;
     }
@@ -290,6 +303,7 @@ class ObjectInfo extends React.Component {
     const button = parseButtonsField(wobject);
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
+    const blogsList = get(wobject, 'blog', []);
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
@@ -342,6 +356,13 @@ class ObjectInfo extends React.Component {
                 {this.listItem(
                   objectFields.newsFilter,
                   newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+                )}
+                {this.listItem(
+                  objectFields.blog,
+                  !isEmpty(blogsList) &&
+                    blogsList.map(blog =>
+                      this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BLOG, ...blog }),
+                    ),
                 )}
                 {this.listItem(objectFields.sorting, null)}
               </React.Fragment>

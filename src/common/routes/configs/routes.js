@@ -331,6 +331,11 @@ const routes = {
           exact: true,
           component: Views.ObjectOfTypePage,
         },
+        {
+          path: '/blog/@:author',
+          exact: true,
+          component: Views.UserBlog,
+        },
       ],
     },
     {
