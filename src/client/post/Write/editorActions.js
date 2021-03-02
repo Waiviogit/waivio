@@ -251,8 +251,8 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
     }
 
     const guestBeneficiary = [{ account, weight }, secondBeneficiary];
-    console.log(guestBeneficiary);
     const currentBeneficiaries = isGuest ? guestBeneficiary : beneficiaries;
+
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
 
     let referral;
