@@ -12,7 +12,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import {
   getAllSearchLoadingMore,
-  getHasMoreObjects,
+  getHasMoreObjectsForWebsite,
   getHasMoreUsers,
   getIsStartSearchUser,
   getSearchFilters,
@@ -51,27 +51,9 @@ const SearchAllResult = props => {
   const searchResultClassList = classNames('SearchAllResult', {
     SearchAllResult__show: props.isShowResult,
   });
-
-  useEffect(() => {
-    if (filterTypes.includes(props.searchType) && !isUsersSearch)
-      props.getFilterForSearch(props.searchType);
-  }, [props.searchType]);
-
-  useEffect(() => {
-    if (isScrolled) {
-      switch (props.searchType) {
-        case 'Users':
-          props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser));
-          break;
-        default:
-          props.searchObjectsAutoCompeteLoadingMore(
-            props.searchString,
-            props.searchType,
-            size(props.searchResult),
-          );
-      }
-    }
-  }, [isScrolled]);
+  const sortWrapClassList = classNames('SearchAllResult__sortWrap', {
+    'SearchAllResult__sortWrap--withoutReload': !props.showReload,
+  });
 
   const currentListState = () => {
     switch (props.searchType) {
@@ -93,7 +75,7 @@ const SearchAllResult = props => {
         return {
           list: map(props.searchResult, obj =>
             obj.campaigns ? (
-              <Campaign proposition={obj} />
+              <Campaign proposition={obj} key="all" />
             ) : (
               <ObjectCardView wObject={obj} key={getObjectName(obj)} />
             ),
@@ -104,16 +86,34 @@ const SearchAllResult = props => {
     }
   };
 
-  const getEndScroll = e => {
-    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (bottom) {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
-  };
+  useEffect(() => {
+    if (filterTypes.includes(props.searchType) && !isUsersSearch)
+      props.getFilterForSearch(props.searchType);
+  }, [props.searchType]);
 
   const currRenderListState = currentListState();
+
+  useEffect(() => {
+    if (isScrolled && currRenderListState.hasMore && !props.showReload) {
+      switch (props.searchType) {
+        case 'Users':
+          props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser));
+          break;
+        default:
+          props.searchObjectsAutoCompeteLoadingMore(
+            props.searchString,
+            props.searchType,
+            size(props.searchResult),
+          );
+      }
+    }
+  }, [isScrolled]);
+
+  const getEndScroll = e => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom) setIsScrolled(true);
+    else setIsScrolled(false);
+  };
 
   const getCurrentName = category => {
     const currentActiveCategory = props.activeFilters.find(item => item.categoryName === category);
@@ -183,10 +183,16 @@ const SearchAllResult = props => {
                 </Dropdown>
               ))}
             </div>
-            <div className="SearchAllResult__sortWrap">
-              <span className="SearchAllResult__reload">
-                <ReactSVG wrapper="span" src="/images/icons/redo-alt-solid.svg" /> Reload
-              </span>
+            <div className={sortWrapClassList}>
+              {props.showReload && (
+                <span
+                  className="SearchAllResult__reload"
+                  role="presentation"
+                  onClick={props.reloadSearchList}
+                >
+                  <ReactSVG wrapper="span" src="/images/icons/redo-alt-solid.svg" /> Reload
+                </span>
+              )}
               <SortSelector sort={props.sort} onChange={props.setSearchSortType}>
                 <SortSelector.Item key={SORT_OPTIONS_WOBJ.WEIGHT}>
                   {props.intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
@@ -209,7 +215,17 @@ const SearchAllResult = props => {
           </Button>
         </div>
         {currRenderListState.loading ? <Loading /> : currentList}
-        <div className="SearchAllResult__loader">{props.loadingMore && <Loading />}</div>
+        {props.showReload ? (
+          <div
+            className="SearchAllResult__listReload"
+            role="presentation"
+            onClick={props.reloadSearchList}
+          >
+            <ReactSVG wrapper="span" src="/images/icons/redo-alt-solid.svg" /> <span>Reload</span>
+          </div>
+        ) : (
+          <div className="SearchAllResult__loader">{props.loadingMore && <Loading />}</div>
+        )}
       </div>
     </div>
   );
@@ -246,6 +262,8 @@ SearchAllResult.propTypes = {
   setShowSearchResult: PropTypes.func.isRequired,
   unfollowSearchUser: PropTypes.func.isRequired,
   followSearchUser: PropTypes.func.isRequired,
+  reloadSearchList: PropTypes.func.isRequired,
+  showReload: PropTypes.bool.isRequired,
 };
 
 export default connect(
@@ -253,7 +271,7 @@ export default connect(
     searchType: getWebsiteSearchType(state),
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
-    hasMore: getHasMoreObjects(state),
+    hasMore: getHasMoreObjectsForWebsite(state),
     hasMoreUsers: getHasMoreUsers(state),
     filters: getSearchFilters(state),
     searchString: getWebsiteSearchString(state),

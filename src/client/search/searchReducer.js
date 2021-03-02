@@ -26,6 +26,8 @@ const initialState = {
   sort: 'weight',
   showSearchResult: false,
   allSearchLoadingMore: false,
+  hasMoreObjectsForWebsite: false,
+  websiteMap: {},
 };
 
 export default (state = initialState, action) => {
@@ -425,6 +427,15 @@ export default (state = initialState, action) => {
       };
     }
 
+    case searchActions.SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.ERROR: {
+      return {
+        ...state,
+        hasMoreObjectsForWebsite: false,
+        isStartSearchObject: false,
+        allSearchLoadingMore: false,
+      };
+    }
+
     case searchActions.GET_FILTER_FOR_SEARCH.SUCCESS: {
       return {
         ...state,
@@ -496,6 +507,20 @@ export default (state = initialState, action) => {
       };
     }
 
+    case searchActions.SET_OWNER_BENEFICIARY: {
+      return {
+        ...state,
+        beneficiariesUsers: action.payload,
+      };
+    }
+
+    case searchActions.SET_MAP_FOR_SEARCH: {
+      return {
+        ...state,
+        websiteMap: action.payload,
+      };
+    }
+
     default:
       return state;
   }
@@ -524,3 +549,5 @@ export const getSearchSort = state => get(state, 'sort', '');
 export const getWebsiteSearchResultLoading = state => get(state, 'websiteSearchResultLoading', '');
 export const getShowSearchResult = state => get(state, 'showSearchResult', '');
 export const getAllSearchLoadingMore = state => get(state, 'allSearchLoadingMore', '');
+export const getWebsiteMap = state => get(state, 'websiteMap', '');
+export const getHasMoreObjectsForWebsite = state => get(state, 'hasMoreObjectsForWebsite');

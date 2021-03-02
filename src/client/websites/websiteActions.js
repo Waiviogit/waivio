@@ -8,7 +8,6 @@ import {
   getOwnWebsites,
   getParentDomain,
   getSearchFiltersTagCategory,
-  getWebsiteSearchString,
   getWebsiteSearchType,
 } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
@@ -530,11 +529,13 @@ export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
   '@website/GET_WEBSITE_OBJECTS_WITH_COORDINATES',
 );
 
-export const getWebsiteObjWithCoordinates = (box = {}, limit = 50) => (dispatch, getState) => {
+export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 50) => (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const locale = getLocale(state);
-  const searchString = getWebsiteSearchString(state);
-  const objType = getWebsiteSearchType(state);
+  const objType = getWebsiteSearchType(state) || 'restaurant';
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
@@ -599,3 +600,10 @@ export const referralUserForWebsite = (account, host) => (
 
   return steemConnectAPI.websitesReferral(account, host, owner);
 };
+
+export const SET_SHOW_RELOAD = '@website/SET_SHOW_RELOAD';
+
+export const setShowReload = payload => ({
+  type: SET_SHOW_RELOAD,
+  payload,
+});

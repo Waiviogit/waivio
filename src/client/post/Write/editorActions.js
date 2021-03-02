@@ -2,6 +2,7 @@ import { batch } from 'react-redux';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
+import { orderBy } from 'lodash';
 import { createAction } from 'redux-actions';
 import { REFERRAL_PERCENT } from '../../helpers/constants';
 import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
@@ -287,7 +288,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
         permlink,
         referral,
         authUser.name,
-        currentBeneficiaries,
+        orderBy(currentBeneficiaries, ['account'], ['asc']),
         isReview,
         isGuest,
         hiveBeneficiaryAccount,
