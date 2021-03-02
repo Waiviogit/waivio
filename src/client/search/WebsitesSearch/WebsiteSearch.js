@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import { AutoComplete, Icon, Input } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 
 import {
   getIsStartSearchAutoComplete,
   getSearchFiltersTagCategory,
   getSearchObjectsResults,
   getSearchSort,
+  getShowSearchResult,
+  getWebsiteMap,
   getWebsiteSearchType,
   searchObjectTypesResults,
 } from '../../reducers';
@@ -37,8 +39,8 @@ const WebsiteSearch = props => {
   };
 
   useEffect(() => {
-    currentSearchMethod(searchString);
-  }, [props.searchType, props.sort, props.activeFilters]);
+    if (props.isShowResult && !isEmpty(props.searchMap)) currentSearchMethod(searchString);
+  }, [props.searchType, props.sort, props.activeFilters, props.searchMap]);
 
   const handleSearchAutocomplete = useCallback(
     debounce(value => currentSearchMethod(value), 300),
@@ -96,6 +98,8 @@ WebsiteSearch.propTypes = {
   searchType: PropTypes.string.isRequired,
   activeFilters: PropTypes.arrayOf,
   sort: PropTypes.string.isRequired,
+  isShowResult: PropTypes.string.isRequired,
+  searchMap: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -113,6 +117,8 @@ export default connect(
     searchType: getWebsiteSearchType(state),
     sort: getSearchSort(state),
     activeFilters: getSearchFiltersTagCategory(state),
+    isShowResult: getShowSearchResult(state),
+    searchMap: getWebsiteMap(state),
   }),
   {
     resetSearchAutoCompete,

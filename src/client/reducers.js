@@ -269,6 +269,9 @@ export const getWebsiteSearchResultLoading = state =>
   fromSearch.getWebsiteSearchResultLoading(state.search);
 export const getShowSearchResult = state => fromSearch.getShowSearchResult(state.search);
 export const getAllSearchLoadingMore = state => fromSearch.getAllSearchLoadingMore(state.search);
+export const getWebsiteMap = state => fromSearch.getWebsiteMap(state.search);
+export const getHasMoreObjectsForWebsite = state =>
+  fromSearch.getHasMoreObjectsForWebsite(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
@@ -411,3 +414,4 @@ export const getMuteLoading = state => fromWebsite.getMuteLoading(state.website)
 export const getUnmutedUsers = state => fromWebsite.getUnmutedUsers(state.website);
 export const getWobjectsPoint = state => fromWebsite.getWobjectsPoint(state.website);
 export const getIsUsersAreas = state => fromWebsite.getIsUsersAreas(state.website);
+export const getShowReloadButton = state => fromWebsite.getShowReloadButton(state.website);

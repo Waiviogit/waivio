@@ -143,6 +143,10 @@
   &__sortWrap {
     display: flex;
     justify-content: space-between;
+
+    &--withoutReload {
+      justify-content: flex-end;
+    }
   }
 
   &__reload {
@@ -158,6 +162,26 @@
         margin-right: 5px;
         margin-top: 3px;
       }
+    }
+  }
+
+  &__listReload {
+    margin-top: 10px;
+    border: 1px solid @white-gainsboro;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: 0.5s;
+
+    svg {
+      width: 15px;
+      margin: 0 5px 0 0;
+    }
+
+    &:hover {
+      color: @orange-hot;
     }
   }
 }

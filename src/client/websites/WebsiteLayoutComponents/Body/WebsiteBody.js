@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { isEmpty, get, map, debounce, isEqual } from 'lodash';
+import { isEmpty, get, map, debounce, isEqual, size } from 'lodash';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { Tag } from 'antd';
-import PropTypes from 'prop-types';
+import PropTypes, { arrayOf } from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Map from 'pigeon-maps';
@@ -19,24 +19,32 @@ import {
   getWobjectsPoint,
   getReservCounter,
   getIsAuthenticated,
+  getWebsiteSearchString,
+  getWebsiteMap,
+  getShowReloadButton,
 } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
-import { setWebsiteSearchFilter, setWebsiteSearchType } from '../../../search/searchActions';
+import {
+  setMapForSearch,
+  setWebsiteSearchFilter,
+  setWebsiteSearchType,
+} from '../../../search/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import mapProvider from '../../../helpers/mapProvider';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
 import DEFAULTS from '../../../object/const/defaultValues';
-import { getCurrentPoint, getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
+import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
 import {
   getCurrentAppSettings,
   getReservedCounter,
   putUserCoordinates,
 } from '../../../app/appActions';
+import { getWebsiteObjWithCoordinates, setShowReload } from '../../websiteActions';
+import { distanceInMBetweenEarthCoordinates } from '../../helper';
 
 import './WebsiteBody.less';
-import { getWebsiteObjWithCoordinates } from '../../websiteActions';
 
 const WebsiteBody = props => {
   const [boundsParams, setBoundsParams] = useState({
@@ -62,7 +70,9 @@ const WebsiteBody = props => {
 
   const getCoordinatesForMap = async () => {
     if (!isEmpty(queryCenter)) {
-      setCurrMapConfig(queryCenter, 15);
+      const queryZoom = props.query.get('zoom');
+
+      setCurrMapConfig(queryCenter, +queryZoom);
     } else {
       const currLocation = await props.getCoordinates();
       const res = await props.getCurrentAppSettings();
@@ -84,26 +94,58 @@ const WebsiteBody = props => {
   }, []);
 
   useEffect(() => {
-    const { topPoint, bottomPoint } = boundsParams;
-    if (!isEmpty(topPoint) && !isEmpty(bottomPoint))
-      props.getWebsiteObjWithCoordinates({ topPoint, bottomPoint }, 50).then(res => {
-        if (!isEmpty(queryCenter)) {
-          const { wobjects } = res.value;
-          const currentPoint = getCurrentPoint(wobjects, queryCenter);
-
-          props.history.push('/');
-          setInfoboxData({
-            wobject: currentPoint,
-            coordinates: queryCenter,
-          });
-        }
+    if (props.isShowResult) {
+      props.setMapForSearch({
+        coordinates: area.center,
+        ...boundsParams,
       });
-  }, [props.userLocation, boundsParams]);
+    } else {
+      props.setMapForSearch({});
+      props.setShowReload(false);
+    }
+  }, [props.isShowResult]);
+
+  useEffect(() => {
+    const { topPoint, bottomPoint } = boundsParams;
+
+    if (!isEmpty(props.searchMap)) {
+      const distance = distanceInMBetweenEarthCoordinates(props.searchMap.coordinates, area.center);
+
+      if (distance >= 300000 && !props.showReloadButton) props.setShowReload(true);
+      else props.setShowReload(false);
+    }
+
+    if (!isEmpty(topPoint) && !isEmpty(bottomPoint))
+      props
+        .getWebsiteObjWithCoordinates(props.searchString, { topPoint, bottomPoint }, 50)
+        .then(res => {
+          if (!isEmpty(queryCenter)) {
+            const { wobjects } = res.value;
+            const currentPoint = wobjects.find(
+              wobj => wobj.author_permlink === props.query.get('permlink'),
+            );
+
+            props.history.push('/');
+            setInfoboxData({
+              wobject: currentPoint,
+              coordinates: queryCenter,
+            });
+          }
+        });
+  }, [props.userLocation, boundsParams, props.searchString]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
   const currentLogo = configLogo || getObjectAvatar(aboutObject);
   const logoLink = get(aboutObject, ['defaultShowLink'], '/');
+
+  const reloadSearchList = () => {
+    props.setMapForSearch({
+      coordinates: area.center,
+      ...boundsParams,
+    });
+    props.setShowReload(false);
+  };
 
   const handleOnBoundsChanged = useCallback(
     debounce(data => {
@@ -128,10 +170,10 @@ const WebsiteBody = props => {
 
   const handleMarkerClick = ({ payload, anchor }) => {
     handleAddMapCoordinates(anchor);
-    if (get(infoboxData, 'coordinates', []) === anchor) {
-      setInfoboxData({ infoboxData: null });
-    }
 
+    if (get(infoboxData, 'coordinates', []) === anchor) setInfoboxData({ infoboxData: null });
+
+    props.history.push(`/?center=${anchor}&zoom=${area.zoom}&permlink=${payload.author_permlink}`);
     setInfoboxData({ wobject: payload, coordinates: anchor });
   };
 
@@ -161,8 +203,9 @@ const WebsiteBody = props => {
     const currentWobj = infoboxData;
     const avatar = getObjectAvatar(currentWobj.wobject) || DEFAULTS.AVATAR;
     const name = getObjectName(currentWobj.wobject);
+
     const getFirstOffsetNumber = () => {
-      const lengthMoreThanOrSame = number => name.length <= number;
+      const lengthMoreThanOrSame = number => size(name) <= number;
 
       if (lengthMoreThanOrSame(15)) return 65;
       if (lengthMoreThanOrSame(20)) return 100;
@@ -170,6 +213,7 @@ const WebsiteBody = props => {
 
       return 170;
     };
+
     const firstOffsetNumber = getFirstOffsetNumber();
 
     return (
@@ -178,6 +222,7 @@ const WebsiteBody = props => {
           role="presentation"
           className="WebsiteBody__overlay-wrap"
           to={`/object/${currentWobj.wobject.author_permlink}`}
+          onClick={() => localStorage.setItem('query', props.query)}
         >
           <img src={avatar} width={35} height={35} alt={name} />
           <span data-anchor={name} className="MapOS__overlay-wrap-name">
@@ -250,7 +295,7 @@ const WebsiteBody = props => {
         />
         <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
       </Helmet>
-      <SearchAllResult />
+      <SearchAllResult showReload={props.showReloadButton} reloadSearchList={reloadSearchList} />
       <div className={mapClassList}>
         {currentLogo && (
           // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -324,15 +369,22 @@ WebsiteBody.propTypes = {
   configuration: PropTypes.arrayOf.isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
+  searchString: PropTypes.string.isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   putUserCoordinates: PropTypes.func.isRequired,
+  setMapForSearch: PropTypes.func.isRequired,
+  setShowReload: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   // eslint-disable-next-line react/no-unused-prop-types
   configCoordinates: PropTypes.arrayOf.isRequired,
   activeFilters: PropTypes.arrayOf.isRequired,
   counter: PropTypes.number.isRequired,
+  showReloadButton: PropTypes.bool.isRequired,
+  searchMap: PropTypes.shape({
+    coordinates: arrayOf(PropTypes.number),
+  }).isRequired,
   isAuth: PropTypes.bool,
   query: PropTypes.shape({
     get: PropTypes.func,
@@ -358,6 +410,9 @@ export default connect(
     counter: getReservCounter(state),
     isAuth: getIsAuthenticated(state),
     query: new URLSearchParams(ownProps.location.search),
+    searchString: getWebsiteSearchString(state),
+    searchMap: getWebsiteMap(state),
+    showReloadButton: getShowReloadButton(state),
   }),
   {
     getCoordinates,
@@ -367,5 +422,7 @@ export default connect(
     getReservedCounter,
     putUserCoordinates,
     getCurrentAppSettings,
+    setMapForSearch,
+    setShowReload,
   },
 )(withRouter(WebsiteBody));

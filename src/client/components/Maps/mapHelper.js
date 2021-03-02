@@ -35,6 +35,8 @@ export const getZoom = radius => {
 };
 
 export const getParsedMap = wobject => {
+  if (!wobject) return null;
+
   const json = wobject.map || get(wobject, ['parent', 'map']);
   try {
     return JSON.parse(json);
