@@ -323,6 +323,16 @@ export default function websiteReducer(state = initialState, action) {
         wobjectsPointHasMore: action.payload.hasMore,
       };
     }
+    case websiteAction.GET_WEBSITE_OBJECTS_WITH_COORDINATES.ERROR: {
+      if (state.wobjectsPoint.length > 150) {
+        state.wobjectsPoint.splice(0, 50);
+      }
+      return {
+        ...state,
+        wobjectsPoint: [],
+        wobjectsPointHasMore: false,
+      };
+    }
 
     case websiteAction.GET_WEBSITE_RESTRICTIONS.SUCCESS: {
       return {
@@ -396,6 +406,13 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
 
+    case websiteAction.SET_SHOW_RELOAD: {
+      return {
+        ...state,
+        showReloadButton: action.payload,
+      };
+    }
+
     default: {
       return state;
     }
@@ -421,3 +438,4 @@ export const getUnmutedUsers = state => get(state, 'unmuteUsers', []);
 export const getIsLoadingAreas = state => state.isLoadingAreas;
 export const getWobjectsPoint = state => state.wobjectsPoint;
 export const getIsUsersAreas = state => state.areas;
+export const getShowReloadButton = state => state.showReloadButton;

@@ -13,6 +13,7 @@ import {
   getSearchFiltersTagCategory,
   getSearchSort,
   getIsWaivio,
+  getWebsiteMap,
 } from '../reducers';
 import { replacer } from '../helpers/parser';
 
@@ -129,26 +130,25 @@ export const searchObjectsAutoCompeteLoadingMore = (
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
   const sort = getSearchSort(state);
+  const { coordinates, topPoint, bottomPoint } = getWebsiteMap(state);
+  const body = {
+    userName,
+    sort,
+    ...tagCategory,
+  };
+
+  if (searchString) body.map = { coordinates, radius: 12742000 };
+  else body.box = { topPoint, bottomPoint };
 
   dispatch({
     type: SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.ACTION,
-    payload: ApiClient.searchObjects(
-      searchString,
-      objType,
-      forParent,
-      15,
-      locale,
-      {
-        userName,
-        sort,
-        ...tagCategory,
-      },
-      skip,
-    ).then(result => ({
-      result,
-      search: searchString,
-      locale,
-    })),
+    payload: ApiClient.searchObjects(searchString, objType, forParent, 15, locale, body, skip).then(
+      result => ({
+        result,
+        search: searchString,
+        locale,
+      }),
+    ),
   }).catch(error => console.log('Object search >', error.message));
 };
 
@@ -166,14 +166,19 @@ export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', l
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
+  const { coordinates, topPoint, bottomPoint } = getWebsiteMap(state);
+  const body = {
+    userName,
+    sort,
+    ...tagCategory,
+  };
+
+  if (searchString) body.map = { coordinates, radius: 12742000 };
+  else body.box = { topPoint, bottomPoint };
 
   return dispatch({
     type: SEARCH_OBJECTS_FOR_WEBSITE.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, {
-      userName,
-      sort,
-      ...tagCategory,
-    }),
+    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, body),
   });
 };
 
@@ -371,3 +376,11 @@ export const setShowSearchResult = payload => ({
   type: SET_SHOW_RESULT,
   payload,
 });
+
+export const SET_OWNER_BENEFICIARY = '@search/SET_OWNER_BENEFICIARY';
+
+export const setBeneficiaryOwner = payload => ({ type: SET_OWNER_BENEFICIARY, payload });
+
+export const SET_MAP_FOR_SEARCH = '@search/SET_MAP_FOR_SEARCH';
+
+export const setMapForSearch = payload => ({ type: SET_MAP_FOR_SEARCH, payload });

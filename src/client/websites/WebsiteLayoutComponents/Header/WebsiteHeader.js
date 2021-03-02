@@ -3,13 +3,13 @@ import store from 'store';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { get, upperFirst } from 'lodash';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
-import { getObjectMap, getObjectType } from '../../../helpers/wObjectHelper';
+import { getObjectType } from '../../../helpers/wObjectHelper';
 import { getConfigurationValues, getCurrPage, getObject } from '../../../reducers';
 
 import './WebsiteHeader.less';
@@ -17,14 +17,18 @@ import './WebsiteHeader.less';
 const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
   const pathName = location.pathname;
   const isMainPage = pathName === '/';
-  let hrefBachButton = '/';
+  let setHrefBackButton = () => history.push('/');
   let currentPage = currPage || store.get('currentPage');
   const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
-  if (pathName.includes('/object/')) {
-    const map = getObjectMap(wobj);
-    currentPage = getObjectType(wobj);
 
-    if (map) hrefBachButton = `/?center=${map.latitude},${map.longitude}`;
+  if (pathName.includes('/object/')) {
+    currentPage = getObjectType(wobj);
+    const query = localStorage.getItem('query');
+    if (query)
+      setHrefBackButton = () => {
+        history.push(`/?${query}`);
+        localStorage.removeItem('query');
+      };
   }
 
   if (pathName.includes('/@')) {
@@ -42,13 +46,17 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
           <WebsiteSearch history={history} />
         ) : (
           <React.Fragment>
-            <Link className="WebsiteHeader__link left" to={hrefBachButton}>
+            <div
+              role="presentation"
+              className="WebsiteHeader__link left"
+              onClick={setHrefBackButton}
+            >
               <Icon type="left" />{' '}
               {intl.formatMessage({
                 id: 'back',
                 defaultMessage: 'Back',
               })}
-            </Link>
+            </div>
             {currentPage && (
               <span className="center WebsiteHeader__title">
                 {upperFirst(
