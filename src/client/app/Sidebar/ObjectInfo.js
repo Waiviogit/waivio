@@ -184,6 +184,10 @@ class ObjectInfo extends React.Component {
 
   getMenuSectionLink = (item = {}) => {
     const { wobject, location } = this.props;
+    const blogPath = `/object/${wobject.author_permlink}/blog/@${item.permlink}`;
+    const blogClassesList = classNames('menu-btn', {
+      active: location.pathname === blogPath,
+    });
     let menuItem = (
       <LinkButton
         className={classNames('menu-btn', {
@@ -233,13 +237,7 @@ class ObjectInfo extends React.Component {
         break;
       case TYPES_OF_MENU_ITEM.BLOG:
         menuItem = (
-          <LinkButton
-            className={classNames('menu-btn', {
-              active:
-                location.pathname === `/object/${wobject.author_permlink}/blog/@${item.permlink}`,
-            })}
-            to={`/object/${wobject.author_permlink}/blog/@${item.permlink}`}
-          >
+          <LinkButton className={blogClassesList} to={blogPath}>
             {item.blogTitle}
           </LinkButton>
         );
