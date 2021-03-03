@@ -1607,5 +1607,9 @@
   "referral_rules": "The website owner may receive referral commissions when users claim their rewards through the website.",
   "referral_payments_acc": "Account for referral payments:",
   "referral_terms": "The terms for referral commissions are defined by the Campaign Management Services used by sponsors to launch their campaigns.",
-  "settings_updated_successfully": "Settings updated successfully"
+  "settings_updated_successfully": "Settings updated successfully",
+  "object_field_blog": "Blog",
+  "blog_title": "Blog title",
+  "add_blog_success": "You successfully have add the {blogName} blog",
+  "add_blog_failure": "Couldn't add the blog."
 }

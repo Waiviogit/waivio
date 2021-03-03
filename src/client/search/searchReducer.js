@@ -1,4 +1,15 @@
-import { compact, concat, get, isEmpty, map, sortBy, remove, findIndex } from 'lodash';
+import {
+  compact,
+  concat,
+  get,
+  isEmpty,
+  map,
+  sortBy,
+  remove,
+  findIndex,
+  isEqual,
+  uniqBy,
+} from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
 import { userToggleFollow } from './helpers';
@@ -384,6 +395,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         websiteSearchType: action.payload,
+        tagCategory: [],
       };
     }
 
@@ -417,10 +429,9 @@ export default (state = initialState, action) => {
     }
 
     case searchActions.SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.SUCCESS: {
-      const { result } = action.payload;
       return {
         ...state,
-        websiteSearchResult: [...state.websiteSearchResult, ...result.wobjects],
+        websiteSearchResult: [...state.websiteSearchResult, ...action.payload.wobjects],
         hasMoreObjectsForWebsite: action.payload.hasMore,
         isStartSearchObject: false,
         allSearchLoadingMore: false,
@@ -440,7 +451,20 @@ export default (state = initialState, action) => {
       return {
         ...state,
         filters: action.payload,
-        tagCategory: [],
+      };
+    }
+
+    case searchActions.GET_FILTER_FOR_SEARCH_MORE.SUCCESS: {
+      const currFilters = action.payload.reduce((acc, curr) => {
+        const category = state.filters.find(f => f.tagCategory === curr.tagCategory);
+        return category
+          ? [...acc, { ...category, tags: uniqBy([...category.tags, curr.tags], isEqual) }]
+          : [...acc, curr];
+      }, []);
+
+      return {
+        ...state,
+        filters: uniqBy([...state.filters, ...currFilters], 'tagCategory'),
       };
     }
 

@@ -535,10 +535,12 @@ export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 50)
 ) => {
   const state = getState();
   const locale = getLocale(state);
-  const objType = getWebsiteSearchType(state) || 'restaurant';
+  let objType = getWebsiteSearchType(state);
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
+
+  if (!objType || objType === 'Users') objType = 'restaurant';
 
   return dispatch({
     type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,

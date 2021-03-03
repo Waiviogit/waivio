@@ -17,28 +17,22 @@ import {
   getIsStartSearchUser,
   getSearchFilters,
   getSearchFiltersTagCategory,
-  getSearchSort,
   getSearchUsersResults,
   getShowSearchResult,
   getWebsiteSearchResult,
   getWebsiteSearchResultLoading,
   getWebsiteSearchString,
-  getWebsiteSearchType,
 } from '../../reducers';
 import { getActiveItemClassList } from '../helpers';
 import {
   followSearchUser,
-  getFilterForSearch,
   searchObjectsAutoCompeteLoadingMore,
   searchUsersAutoCompeteLoadingMore,
-  setSearchSortType,
   setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
   unfollowSearchUser,
 } from '../searchActions';
-import SortSelector from '../../components/SortSelector/SortSelector';
-import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
 import Loading from '../../components/Icon/Loading';
 import Campaign from '../../rewards/Campaign/Campaign';
 
@@ -50,9 +44,6 @@ const SearchAllResult = props => {
   const isUsersSearch = props.searchType === 'Users';
   const searchResultClassList = classNames('SearchAllResult', {
     SearchAllResult__show: props.isShowResult,
-  });
-  const sortWrapClassList = classNames('SearchAllResult__sortWrap', {
-    'SearchAllResult__sortWrap--withoutReload': !props.showReload,
   });
 
   const currentListState = () => {
@@ -85,11 +76,6 @@ const SearchAllResult = props => {
         };
     }
   };
-
-  useEffect(() => {
-    if (filterTypes.includes(props.searchType) && !isUsersSearch)
-      props.getFilterForSearch(props.searchType);
-  }, [props.searchType]);
 
   const currRenderListState = currentListState();
 
@@ -183,7 +169,7 @@ const SearchAllResult = props => {
                 </Dropdown>
               ))}
             </div>
-            <div className={sortWrapClassList}>
+            <div className="SearchAllResult__sortWrap">
               {props.showReload && (
                 <span
                   className="SearchAllResult__reload"
@@ -193,14 +179,6 @@ const SearchAllResult = props => {
                   <ReactSVG wrapper="span" src="/images/icons/redo-alt-solid.svg" /> Reload
                 </span>
               )}
-              <SortSelector sort={props.sort} onChange={props.setSearchSortType}>
-                <SortSelector.Item key={SORT_OPTIONS_WOBJ.WEIGHT}>
-                  {props.intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
-                </SortSelector.Item>
-                <SortSelector.Item key={SORT_OPTIONS_WOBJ.RECENCY}>
-                  {props.intl.formatMessage({ id: 'recency', defaultMessage: 'Recency' })}
-                </SortSelector.Item>
-              </SortSelector>
             </div>
           </React.Fragment>
         )}
@@ -241,8 +219,6 @@ SearchAllResult.propTypes = {
   setWebsiteSearchType: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
-  setSearchSortType: PropTypes.func.isRequired,
-  getFilterForSearch: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}).isRequired,
   searchByUser: PropTypes.arrayOf.isRequired,
   activeFilters: PropTypes.arrayOf.isRequired,
@@ -256,7 +232,6 @@ SearchAllResult.propTypes = {
   usersLoading: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
-  sort: PropTypes.string.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
@@ -268,14 +243,12 @@ SearchAllResult.propTypes = {
 
 export default connect(
   state => ({
-    searchType: getWebsiteSearchType(state),
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
     hasMore: getHasMoreObjectsForWebsite(state),
     hasMoreUsers: getHasMoreUsers(state),
     filters: getSearchFilters(state),
     searchString: getWebsiteSearchString(state),
-    sort: getSearchSort(state),
     activeFilters: getSearchFiltersTagCategory(state),
     loading: getWebsiteSearchResultLoading(state),
     usersLoading: getIsStartSearchUser(state),
@@ -286,9 +259,7 @@ export default connect(
     searchUsersAutoCompeteLoadingMore,
     setWebsiteSearchType,
     searchObjectsAutoCompeteLoadingMore,
-    getFilterForSearch,
     setWebsiteSearchFilter,
-    setSearchSortType,
     setShowSearchResult,
     unfollowSearchUser,
     followSearchUser,

@@ -24,6 +24,7 @@ import { fieldsRules } from '../const/appendFormConstants';
 import apiConfig from '../../../waivioApi/config.json';
 import {
   addressFields,
+  blogFields,
   buttonFields,
   linkFields,
   mapFields,
@@ -65,6 +66,7 @@ import {
   getDefaultAlbum,
   getObjectType,
   getListItems,
+  prepareBlogData,
 } from '../../helpers/wObjectHelper';
 import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -74,6 +76,8 @@ import { rateObject } from '../wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import DnDListItem from '../../components/DnDList/DnDListItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
+import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from '../NewsFilter/newsFilterHelper';
 import CreateObject from '../../post/CreateObjectModal/CreateObject';
@@ -81,7 +85,10 @@ import { baseUrl } from '../../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
-import { objectNameValidationRegExp } from '../../../common/constants/validation';
+import {
+  objectNameValidationRegExp,
+  blogNameValidationRegExp,
+} from '../../../common/constants/validation';
 import { addAlbumToStore, addImageToAlbumStore } from '../ObjectGallery/galleryActions';
 
 import './AppendForm.less';
@@ -180,6 +187,7 @@ export default class AppendForm extends Component {
     fileList: [],
     currentAlbum: '',
     currentImages: [],
+    selectedUserBlog: null,
   };
 
   componentDidMount = () => {
@@ -560,6 +568,40 @@ export default class AppendForm extends Component {
     }
   };
 
+  handleAddBlog = () => {
+    const { user, intl, hideModal, wObject, form } = this.props;
+    const formData = form.getFieldsValue();
+    const data = prepareBlogData(formData, user.name, wObject);
+    this.setState({ loading: true });
+
+    this.props
+      .appendObject(data)
+      .then(() => {
+        hideModal();
+        this.setState({ selectedUserBlog: null, loading: false });
+        message.success(
+          intl.formatMessage(
+            {
+              id: 'add_blog_success',
+              defaultMessage: 'You successfully have add the {blogName} blog',
+            },
+            {
+              blogName: formData.blogAccount,
+            },
+          ),
+        );
+      })
+      .catch(() => {
+        message.error(
+          intl.formatMessage({
+            id: 'add_blog_failure',
+            defaultMessage: "Couldn't add the blog.",
+          }),
+        );
+        this.setState({ loading: false });
+      });
+  };
+
   handleAddPhotoToAlbum = () => {
     const { intl, hideModal } = this.props;
     const album = this.getImageAlbum();
@@ -696,6 +738,8 @@ export default class AppendForm extends Component {
     const currentField = this.props.form.getFieldValue('currentField');
     if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
+    } else if (objectFields.blog === currentField) {
+      this.handleAddBlog();
     } else if (objectFields.newsFilter === currentField) {
       const { chosenLocale, usedLocale } = this.props;
       const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(sub =>
@@ -765,6 +809,9 @@ export default class AppendForm extends Component {
         break;
       case objectFields.button:
         formFields = form.getFieldsValue(Object.values(buttonFields));
+        break;
+      case objectFields.blog:
+        formFields = form.getFieldsValue(Object.values(blogFields));
         break;
       default:
         break;
@@ -990,6 +1037,14 @@ export default class AppendForm extends Component {
       });
       this.setState({ selectedObject: obj });
     }
+  };
+
+  handleSelectUserBlog = userBlog => {
+    this.setState({ selectedUserBlog: userBlog.account });
+  };
+
+  handleResetUserBlog = () => {
+    this.setState({ selectedUserBlog: null });
   };
 
   handleSelectCategory = value => {
@@ -1895,6 +1950,80 @@ export default class AppendForm extends Component {
                   {/*  /> */}
                   {/* </Modal> */}
                 </div>,
+              )}
+            </Form.Item>
+          </React.Fragment>
+        );
+      }
+      case objectFields.blog: {
+        const { selectedUserBlog } = this.state;
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(blogFields.title, {
+                rules: [
+                  {
+                    max: 13,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 13 characters.",
+                      },
+                      { value: 13 },
+                      {
+                        pattern: blogNameValidationRegExp,
+                        message: intl.formatMessage({
+                          id: 'validation_special_symbols',
+                          defaultMessage: 'Please dont use special simbols like "/", "?", "%", "&"',
+                        }),
+                      },
+                    ),
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'blog_title',
+                    defaultMessage: 'Blog title',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(blogFields.account, {
+                rules: [
+                  {
+                    required: true,
+                    message: {
+                      intlId: {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      intlMeta: { field: 'Account' },
+                    },
+                  },
+                  {
+                    validator: true,
+                  },
+                ],
+              })(
+                <SearchUsersAutocomplete
+                  handleSelect={this.handleSelectUserBlog}
+                  disabled={selectedUserBlog}
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                />,
+              )}
+              {selectedUserBlog && (
+                <SelectUserForAutocomplete
+                  account={selectedUserBlog}
+                  resetUser={this.handleResetUserBlog}
+                />
               )}
             </Form.Item>
           </React.Fragment>

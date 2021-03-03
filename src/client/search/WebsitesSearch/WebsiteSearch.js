@@ -9,7 +9,6 @@ import {
   getIsStartSearchAutoComplete,
   getSearchFiltersTagCategory,
   getSearchObjectsResults,
-  getSearchSort,
   getShowSearchResult,
   getWebsiteMap,
   getWebsiteSearchType,
@@ -34,13 +33,13 @@ const WebsiteSearch = props => {
       case 'Users':
         return props.searchUsersAutoCompete(value);
       default:
-        return props.searchWebsiteObjectsAutoCompete(value, props.sort);
+        return props.searchWebsiteObjectsAutoCompete(value);
     }
   };
 
   useEffect(() => {
     if (props.isShowResult && !isEmpty(props.searchMap)) currentSearchMethod(searchString);
-  }, [props.searchType, props.sort, props.activeFilters, props.searchMap]);
+  }, [props.searchType, props.activeFilters, props.searchMap]);
 
   const handleSearchAutocomplete = useCallback(
     debounce(value => currentSearchMethod(value), 300),
@@ -97,7 +96,6 @@ WebsiteSearch.propTypes = {
   setShowSearchResult: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
   activeFilters: PropTypes.arrayOf,
-  sort: PropTypes.string.isRequired,
   isShowResult: PropTypes.string.isRequired,
   searchMap: PropTypes.string.isRequired,
   history: PropTypes.shape({
@@ -115,7 +113,6 @@ export default connect(
     searchByObjectType: searchObjectTypesResults(state),
     isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
     searchType: getWebsiteSearchType(state),
-    sort: getSearchSort(state),
     activeFilters: getSearchFiltersTagCategory(state),
     isShowResult: getShowSearchResult(state),
     searchMap: getWebsiteMap(state),
