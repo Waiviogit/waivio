@@ -99,6 +99,16 @@ export const resetSearchAutoCompete = () => dispatch =>
     type: RESET_AUTO_COMPLETE_SEARCH,
   });
 
+export const GET_FILTER_FOR_SEARCH = createAsyncActionType('@search/GET_FILTER_FOR_SEARCH');
+export const GET_FILTER_FOR_SEARCH_MORE = createAsyncActionType(
+  '@search/GET_FILTER_FOR_SEARCH_MORE',
+);
+
+export const getFilterForSearch = (type, links, more = false) => ({
+  type: more ? GET_FILTER_FOR_SEARCH_MORE.ACTION : GET_FILTER_FOR_SEARCH.ACTION,
+  payload: ApiClient.getObjectTypeFilters(type, links),
+});
+
 export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
   dispatch,
   getState,
@@ -143,11 +153,12 @@ export const searchObjectsAutoCompeteLoadingMore = (
   dispatch({
     type: SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.ACTION,
     payload: ApiClient.searchObjects(searchString, objType, forParent, 15, locale, body, skip).then(
-      result => ({
-        result,
-        search: searchString,
-        locale,
-      }),
+      res => {
+        const links = res.wobjects.map(wobj => wobj.author_permlink);
+
+        dispatch(getFilterForSearch(objType, links, true));
+        return res;
+      },
     ),
   }).catch(error => console.log('Object search >', error.message));
 };
@@ -178,7 +189,14 @@ export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', l
 
   return dispatch({
     type: SEARCH_OBJECTS_FOR_WEBSITE.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, body),
+    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, body).then(
+      res => {
+        const links = res.wobjects.map(wobj => wobj.author_permlink);
+
+        dispatch(getFilterForSearch(objType, links));
+        return res;
+      },
+    ),
   });
 };
 
@@ -347,13 +365,6 @@ export const setWebsiteSearchFilter = (category, tag) => ({
     category,
     tag,
   },
-});
-
-export const GET_FILTER_FOR_SEARCH = createAsyncActionType('@search/GET_FILTER_FOR_SEARCH');
-
-export const getFilterForSearch = type => ({
-  type: GET_FILTER_FOR_SEARCH.ACTION,
-  payload: ApiClient.getObjectTypeFilters(type),
 });
 
 export const SET_WEBSITE_SEARCH_STRING = '@search/SET_WEBSITE_SEARCH_STRING';

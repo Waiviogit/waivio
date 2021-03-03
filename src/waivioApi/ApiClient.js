@@ -1864,10 +1864,14 @@ export const getCurrentAppSettings = () => {
     .catch(e => e);
 };
 
-export const getObjectTypeFilters = type =>
-  fetch(`${config.apiPrefix}${config.objectType}${config.tagForFilter}?objectType=${type}`, {
+export const getObjectTypeFilters = (objectType, wobjectLinks) =>
+  fetch(`${config.apiPrefix}${config.objectTypes}${config.tagForFilter}`, {
     headers,
-    method: 'GET',
+    method: 'POST',
+    body: JSON.stringify({
+      objectType,
+      wobjectLinks,
+    }),
   })
     .then(res => res.json())
     .then(res => res)

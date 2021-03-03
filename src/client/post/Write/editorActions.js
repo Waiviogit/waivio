@@ -277,7 +277,6 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
         parentAuthor,
         parentPermlink,
         author,
-        title,
         newBody,
         {
           ...jsonMetadata,

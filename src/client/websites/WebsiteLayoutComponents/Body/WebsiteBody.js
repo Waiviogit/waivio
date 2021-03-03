@@ -22,6 +22,7 @@ import {
   getWebsiteSearchString,
   getWebsiteMap,
   getShowReloadButton,
+  getWebsiteSearchType,
 } from '../../../reducers';
 import { getCoordinates } from '../../../user/userActions';
 import {
@@ -125,14 +126,13 @@ const WebsiteBody = props => {
               wobj => wobj.author_permlink === props.query.get('permlink'),
             );
 
-            props.history.push('/');
             setInfoboxData({
               wobject: currentPoint,
               coordinates: queryCenter,
             });
           }
         });
-  }, [props.userLocation, boundsParams, props.searchString]);
+  }, [props.userLocation, boundsParams, props.searchString, props.searchType]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
@@ -221,7 +221,7 @@ const WebsiteBody = props => {
         <Link
           role="presentation"
           className="WebsiteBody__overlay-wrap"
-          to={`/object/${currentWobj.wobject.author_permlink}`}
+          to={`/object/${get(currentWobj, ['wobject', 'author_permlink'])}`}
           onClick={() => localStorage.setItem('query', props.query)}
         >
           <img src={avatar} width={35} height={35} alt={name} />
@@ -295,7 +295,11 @@ const WebsiteBody = props => {
         />
         <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
       </Helmet>
-      <SearchAllResult showReload={props.showReloadButton} reloadSearchList={reloadSearchList} />
+      <SearchAllResult
+        showReload={props.showReloadButton}
+        reloadSearchList={reloadSearchList}
+        searchType={props.searchType}
+      />
       <div className={mapClassList}>
         {currentLogo && (
           // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -321,7 +325,10 @@ const WebsiteBody = props => {
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
               onClick={({ event }) => {
-                if (!get(event, 'target.dataset.anchor')) setInfoboxData(null);
+                if (!get(event, 'target.dataset.anchor')) {
+                  setInfoboxData(null);
+                  props.history.push('/');
+                }
               }}
             >
               {!isEmpty(props.activeFilters) && (
@@ -381,6 +388,7 @@ WebsiteBody.propTypes = {
   configCoordinates: PropTypes.arrayOf.isRequired,
   activeFilters: PropTypes.arrayOf.isRequired,
   counter: PropTypes.number.isRequired,
+  searchType: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool.isRequired,
   searchMap: PropTypes.shape({
     coordinates: arrayOf(PropTypes.number),
@@ -413,6 +421,7 @@ export default connect(
     searchString: getWebsiteSearchString(state),
     searchMap: getWebsiteMap(state),
     showReloadButton: getShowReloadButton(state),
+    searchType: getWebsiteSearchType(state),
   }),
   {
     getCoordinates,
