@@ -28,6 +28,7 @@ export const objectFields = {
   authority: 'authority',
   pageLink: 'pageLink',
   tag: 'tag',
+  blog: 'blog',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -35,6 +36,7 @@ export const TYPES_OF_MENU_ITEM = {
   PAGE: 'menuPage',
   BUTTON: 'menuButton',
   NEWS: 'menuNews',
+  BLOG: 'blog',
 };
 
 export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
@@ -103,6 +105,11 @@ export const phoneFields = {
 export const ratingFields = {
   category: 'category',
   rate: 'rate',
+};
+
+export const blogFields = {
+  title: 'blogTitle',
+  account: 'blogAccount',
 };
 
 export const ratePercent = [2, 4, 6, 8, 10];
