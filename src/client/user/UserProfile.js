@@ -56,6 +56,7 @@ export default class UserProfile extends React.Component {
     isGuest: PropTypes.bool,
     history: PropTypes.shape(),
     user: PropTypes.shape(),
+    isBlogInObject: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -67,46 +68,66 @@ export default class UserProfile extends React.Component {
     isGuest: false,
     history: {},
     user: {},
+    isBlogInObject: false,
   };
 
   componentDidMount() {
-    const { match, limit, usersAccountHistory } = this.props;
-    const { name } = match.params;
-    this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
-    if (isEmpty(usersAccountHistory[name])) {
-      this.props.getUserAccountHistory(name);
+    const { match, limit, usersAccountHistory, isBlogInObject } = this.props;
+    const { name, author } = match.params;
+    const permlink = isBlogInObject ? author : name;
+    this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
+    if (isEmpty(usersAccountHistory[permlink])) {
+      this.props.getUserAccountHistory(permlink);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, limit } = this.props;
-    const { name } = match.params;
-
-    if (name !== nextProps.match.params.name) {
+    const { match, limit, isBlogInObject } = this.props;
+    const { name, author } = match.params;
+    const permlink = isBlogInObject ? author : name;
+    if (permlink !== isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name) {
       if (
         nextProps.feed &&
         nextProps.feed.blog &&
-        !nextProps.feed.blog[nextProps.match.params.name]
+        !nextProps.feed.blog[
+          isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name
+        ]
       ) {
-        this.props.getUserProfileBlogPosts(nextProps.match.params.name, {
-          limit,
-          initialLoad: true,
-        });
+        this.props.getUserProfileBlogPosts(
+          isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name,
+          {
+            limit,
+            initialLoad: true,
+          },
+        );
       }
       window.scrollTo(0, 0);
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { match, limit, user } = this.props;
+    const { match, limit, user, isBlogInObject } = this.props;
+    const { name, author } = match.params;
+    const permlink = isBlogInObject ? author : name;
     if (prevProps.user.muted !== user.muted) {
-      this.props.getUserProfileBlogPosts(match.name, { limit, initialLoad: true });
+      this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
     }
   }
 
   render() {
-    const { authenticated, authenticatedUser, feed, limit, isGuest, history, user } = this.props;
-    const username = this.props.match.params.name;
+    const {
+      authenticated,
+      authenticatedUser,
+      feed,
+      limit,
+      isGuest,
+      history,
+      user,
+      match,
+      isBlogInObject,
+    } = this.props;
+    const { name, author } = match.params;
+    const username = isBlogInObject ? author : name;
     const isOwnProfile = authenticated && username === authenticatedUser.name;
     const content = getFeedFromState('blog', username, feed);
     const isFetching = getFeedLoadingFromState('blog', username, feed);
