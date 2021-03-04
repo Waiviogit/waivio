@@ -61,7 +61,7 @@ export const prepareBlogData = (form, currentUserName, wObject) => {
   data.body = `@${data.author} added a new blog: ${blog}.`;
   data.title = '';
 
-  data.permlink = form.blogAccount;
+  data.permlink = `${data.author}-${generatePermlink()}`;
   data.lastUpdated = Date.now();
   data.wobjectName = getObjectName(wObject);
   data.field = {
@@ -155,6 +155,8 @@ export const parseButtonsField = wobject => {
     }
   });
 };
+
+export const getBlogItems = wobject => get(wobject, 'blog', []);
 
 export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;

@@ -3,7 +3,7 @@ import { objectFields } from './listOfFields';
 
 export const objectNameValidationRegExp = /^[^!@#$%^&*(),.?":{}|<>]{0,100}$/;
 
-export const blogNameValidationRegExp = /^[^!@#$%^&*(),.?":{}|<>]{0,13}$/;
+export const blogNameValidationRegExp = /^[^!@#$%^&*(),.?":{}|<>]{0,17}$/;
 
 export const websiteTitleRegExp = /^[a-zA-Z0-9!@#$%^&*)(+=._ -]{0,100}$/;
 
