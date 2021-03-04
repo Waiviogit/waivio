@@ -412,7 +412,7 @@ const routes = {
           component: Views.ObjectFeed,
         },
         {
-          path: '/people/@:name',
+          path: '/user-blog/@:name',
           component: Views.UserProfile,
         },
         {

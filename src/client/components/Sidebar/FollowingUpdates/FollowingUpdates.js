@@ -27,7 +27,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
         name: `@${followingUser.name}`,
         intlId: `@${followingUser.name}`,
         meta: followingUser.last_posts_count > 0 ? followingUser.last_posts_count : '',
-        linkTo: `/people/@${followingUser.name}`,
+        linkTo: `/user-blog/@${followingUser.name}`,
         isUntranslatable: true,
       })),
     };

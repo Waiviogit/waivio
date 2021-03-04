@@ -35,7 +35,7 @@ const LINKS = {
   WEBSITES_MUTED_USER: '/muted-users',
   NOTIFICATIONS: '/notifications-list',
   USERS: PATH_NAME_DISCOVER,
-  BLOG: '/people',
+  BLOG: '/user-blog',
   FEED: '/feed',
 };
 
