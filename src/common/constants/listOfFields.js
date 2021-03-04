@@ -28,6 +28,7 @@ export const objectFields = {
   authority: 'authority',
   pageLink: 'pageLink',
   tag: 'tag',
+  blog: 'blog',
   form: 'form',
 };
 
@@ -36,6 +37,7 @@ export const TYPES_OF_MENU_ITEM = {
   PAGE: 'menuPage',
   BUTTON: 'menuButton',
   NEWS: 'menuNews',
+  BLOG: 'blog',
   FORM: 'formButton',
 };
 
@@ -105,6 +107,11 @@ export const phoneFields = {
 export const ratingFields = {
   category: 'category',
   rate: 'rate',
+};
+
+export const blogFields = {
+  title: 'blogTitle',
+  account: 'blogAccount',
 };
 
 export const formColumnsField = {

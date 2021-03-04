@@ -24,6 +24,7 @@ import { fieldsRules } from '../const/appendFormConstants';
 import apiConfig from '../../../waivioApi/config.json';
 import {
   addressFields,
+  blogFields,
   buttonFields,
   linkFields,
   mapFields,
@@ -67,6 +68,8 @@ import {
   getDefaultAlbum,
   getObjectType,
   getListItems,
+  prepareBlogData,
+  getBlogItems,
 } from '../../helpers/wObjectHelper';
 import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -76,6 +79,8 @@ import { rateObject } from '../wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import DnDListItem from '../../components/DnDList/DnDListItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
+import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from '../NewsFilter/newsFilterHelper';
 import CreateObject from '../../post/CreateObjectModal/CreateObject';
@@ -83,7 +88,10 @@ import { baseUrl } from '../../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
-import { objectNameValidationRegExp } from '../../../common/constants/validation';
+import {
+  objectNameValidationRegExp,
+  blogNameValidationRegExp,
+} from '../../../common/constants/validation';
 import { addAlbumToStore, addImageToAlbumStore } from '../ObjectGallery/galleryActions';
 
 import './AppendForm.less';
@@ -182,6 +190,7 @@ export default class AppendForm extends Component {
     fileList: [],
     currentAlbum: '',
     currentImages: [],
+    selectedUserBlog: [],
     formColumn: formColumnsField.middle,
     formForm: formFormFields.link,
   };
@@ -576,6 +585,40 @@ export default class AppendForm extends Component {
     }
   };
 
+  handleAddBlog = () => {
+    const { user, intl, hideModal, wObject, form } = this.props;
+    const formData = form.getFieldsValue();
+    const data = prepareBlogData(formData, user.name, wObject);
+    this.setState({ loading: true });
+
+    this.props
+      .appendObject(data)
+      .then(() => {
+        hideModal();
+        this.setState({ selectedUserBlog: null, loading: false });
+        message.success(
+          intl.formatMessage(
+            {
+              id: 'add_blog_success',
+              defaultMessage: 'You successfully have add the {blogName} blog',
+            },
+            {
+              blogName: formData.blogAccount,
+            },
+          ),
+        );
+      })
+      .catch(() => {
+        message.error(
+          intl.formatMessage({
+            id: 'add_blog_failure',
+            defaultMessage: "Couldn't add the blog.",
+          }),
+        );
+        this.setState({ loading: false });
+      });
+  };
+
   handleAddPhotoToAlbum = () => {
     const { intl, hideModal } = this.props;
     const album = this.getImageAlbum();
@@ -768,6 +811,9 @@ export default class AppendForm extends Component {
               }),
             );
           } else {
+            if (objectFields.blog === currentField) {
+              this.handleAddBlog();
+            }
             this.onSubmit(values);
           }
         } else {
@@ -796,6 +842,9 @@ export default class AppendForm extends Component {
         break;
       case objectFields.button:
         formFields = form.getFieldsValue(Object.values(buttonFields));
+        break;
+      case objectFields.blog:
+        formFields = form.getFieldsValue(Object.values(blogFields));
         break;
       default:
         break;
@@ -846,6 +895,9 @@ export default class AppendForm extends Component {
     if (currentField === objectFields.categoryItem) {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
       return selectedTagCategory.some(item => item.body === currentValue);
+    }
+    if (currentField === objectFields.blog) {
+      return filtered.some(f => this.getCurrentObjectBody(currentField).blogAccount === f.body);
     }
 
     return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
@@ -1021,6 +1073,14 @@ export default class AppendForm extends Component {
       });
       this.setState({ selectedObject: obj });
     }
+  };
+
+  handleSelectUserBlog = userBlog => {
+    this.setState({ selectedUserBlog: userBlog.account });
+  };
+
+  handleResetUserBlog = () => {
+    this.setState({ selectedUserBlog: null });
   };
 
   handleSelectCategory = value => {
@@ -1710,6 +1770,7 @@ export default class AppendForm extends Component {
         const buttons = parseButtonsField(wObject);
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
+        const blogs = getBlogItems(wObject);
         let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
@@ -1742,6 +1803,14 @@ export default class AppendForm extends Component {
                 type={objectFields.newsFilter}
               />
             ),
+          });
+        }
+        if (!isEmpty(blogs)) {
+          blogs.forEach(blog => {
+            listItems.push({
+              id: blog.permlink,
+              content: <DnDListItem type={objectFields.blog} name={blog.blogTitle} />,
+            });
           });
         }
 
@@ -1934,6 +2003,64 @@ export default class AppendForm extends Component {
                   {/*  /> */}
                   {/* </Modal> */}
                 </div>,
+              )}
+            </Form.Item>
+          </React.Fragment>
+        );
+      }
+      case objectFields.blog: {
+        const { selectedUserBlog } = this.state;
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(blogFields.title, {
+                rules: [
+                  {
+                    max: 17,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 17 characters.",
+                      },
+                      { value: 17 },
+                      {
+                        pattern: blogNameValidationRegExp,
+                        message: intl.formatMessage({
+                          id: 'validation_special_symbols',
+                          defaultMessage: 'Please dont use special simbols like "/", "?", "%", "&"',
+                        }),
+                      },
+                    ),
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'blog_title',
+                    defaultMessage: 'Blog title',
+                  })}
+                  maxLength={17}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(blogFields.account, {
+                rules: this.getFieldRules(objectFields.blog),
+              })(
+                <SearchUsersAutocomplete
+                  handleSelect={this.handleSelectUserBlog}
+                  disabled={!isEmpty(selectedUserBlog)}
+                />,
+              )}
+              {!isEmpty(selectedUserBlog) && (
+                <SelectUserForAutocomplete
+                  account={selectedUserBlog}
+                  resetUser={this.handleResetUserBlog}
+                />
               )}
             </Form.Item>
           </React.Fragment>

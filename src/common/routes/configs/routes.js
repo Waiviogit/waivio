@@ -337,6 +337,11 @@ const routes = {
           component: Views.ObjectOfTypePage,
         },
         {
+          path: '/blog/@:author',
+          exact: true,
+          component: Views.UserBlog,
+        },
+        {
           path: '/form/:permlink',
           exact: true,
           component: Views.FormPage,
@@ -422,7 +427,7 @@ const routes = {
           component: Views.ObjectFeed,
         },
         {
-          path: '/blog/@:name',
+          path: '/user-blog/@:name',
           component: Views.UserProfile,
         },
         {

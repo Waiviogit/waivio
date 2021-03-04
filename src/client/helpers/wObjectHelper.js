@@ -74,6 +74,28 @@ export const prepareAlbumData = (form, currentUsername, wObject) => {
   return data;
 };
 
+export const prepareBlogData = (form, currentUserName, wObject) => {
+  const blog = form.blogTitle || form.blogAccount;
+  const data = {};
+  data.author = currentUserName;
+  data.parentAuthor = wObject.author;
+  data.parentPermlink = wObject.author_permlink;
+  data.body = `@${data.author} added a new blog: ${blog}.`;
+  data.title = '';
+
+  data.permlink = `${data.author}-${generatePermlink()}`;
+  data.lastUpdated = Date.now();
+  data.wobjectName = getObjectName(wObject);
+  data.field = {
+    body: form.blogAccount,
+    name: form.currentField,
+    locale: form.currentLocale,
+    blogTitle: blog,
+  };
+
+  return data;
+};
+
 export const prepareAlbumToStore = data => ({
   locale: data.field.locale,
   creator: data.author,
@@ -155,6 +177,8 @@ export const parseButtonsField = wobject => {
     }
   });
 };
+
+export const getBlogItems = wobject => get(wobject, 'blog', []);
 
 export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;

@@ -722,6 +722,24 @@ export const fieldsRules = {
       validator: true,
     },
   ],
+  [objectFields.blog]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'User' },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
   formTitle: [
     {
       max: 13,

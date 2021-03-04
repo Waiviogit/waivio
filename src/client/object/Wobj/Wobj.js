@@ -125,6 +125,7 @@ const Wobj = ({
                 toggleViewEditMode,
                 appendAlbum,
                 currentForm,
+                route,
               })}
             </div>
           </div>
