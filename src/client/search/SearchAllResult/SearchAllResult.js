@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, map, size, get } from 'lodash';
+import { isEmpty, map, size, get, has } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 import classNames from 'classnames';
@@ -45,6 +45,7 @@ const SearchAllResult = props => {
   const searchResultClassList = classNames('SearchAllResult', {
     SearchAllResult__show: props.isShowResult,
   });
+  const sortWobjects = props.searchResult.sort((a, b) => has(b, 'campaigns') - has(a, 'campaigns'));
 
   const currentListState = () => {
     switch (props.searchType) {
@@ -64,9 +65,9 @@ const SearchAllResult = props => {
 
       default:
         return {
-          list: map(props.searchResult, obj =>
+          list: map(sortWobjects, obj =>
             obj.campaigns ? (
-              <Campaign proposition={obj} key="all" />
+              <Campaign proposition={obj} filterKey="all" />
             ) : (
               <ObjectCardView wObject={obj} key={getObjectName(obj)} />
             ),
