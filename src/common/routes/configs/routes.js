@@ -336,6 +336,11 @@ const routes = {
           exact: true,
           component: Views.ObjectOfTypePage,
         },
+        {
+          path: '/form/:permlink',
+          exact: true,
+          component: Views.FormPage,
+        },
       ],
     },
     {

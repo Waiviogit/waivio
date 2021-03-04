@@ -116,4 +116,5 @@ export default {
   WebsiteBody: loableComponent(
     import('../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody'),
   ),
+  FormPage: loableComponent(import('../../client/object/FormPage/FormPage')),
 };

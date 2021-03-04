@@ -184,6 +184,10 @@ class ObjectInfo extends React.Component {
 
   getMenuSectionLink = (item = {}) => {
     const { wobject, location } = this.props;
+    const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
+    const formClassesList = classNames('menu-btn', {
+      active: location.pathname === formPath,
+    });
     let menuItem = (
       <LinkButton
         className={classNames('menu-btn', {
@@ -228,6 +232,13 @@ class ObjectInfo extends React.Component {
             to={`/object/${wobject.author_permlink}`}
           >
             <FormattedMessage id="news" defaultMessage="News" />
+          </LinkButton>
+        );
+        break;
+      case TYPES_OF_MENU_ITEM.FORM:
+        menuItem = (
+          <LinkButton className={formClassesList} to={formPath}>
+            {item.title}
           </LinkButton>
         );
         break;
@@ -290,6 +301,7 @@ class ObjectInfo extends React.Component {
     const button = parseButtonsField(wobject);
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
+    const formsList = get(wobject, 'form', []);
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
@@ -342,6 +354,13 @@ class ObjectInfo extends React.Component {
                 {this.listItem(
                   objectFields.newsFilter,
                   newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+                )}
+                {this.listItem(
+                  objectFields.form,
+                  !isEmpty(formsList) &&
+                    formsList.map(form =>
+                      this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.FORM, ...form }),
+                    ),
                 )}
                 {this.listItem(objectFields.sorting, null)}
               </React.Fragment>

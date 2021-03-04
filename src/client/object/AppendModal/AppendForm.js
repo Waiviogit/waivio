@@ -35,6 +35,8 @@ import {
   statusFields,
   TYPES_OF_MENU_ITEM,
   websiteFields,
+  formColumnsField,
+  formFormFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import {
@@ -180,6 +182,8 @@ export default class AppendForm extends Component {
     fileList: [],
     currentAlbum: '',
     currentImages: [],
+    formColumn: formColumnsField.middle,
+    formForm: formFormFields.link,
   };
 
   componentDidMount = () => {
@@ -377,6 +381,8 @@ export default class AppendForm extends Component {
 
           return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
+        case objectFields.form:
+          return `@${author} added ${currentField}`;
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -427,6 +433,16 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           type: currentField,
           alias: getFieldValue('menuItemName') || this.state.selectedObject.name,
+        };
+      }
+
+      if (currentField === objectFields.form) {
+        fieldsObject = {
+          ...fieldsObject,
+          title: formValues.formTitle,
+          column: formValues.formColumn,
+          form: formValues.formForm,
+          link: formValues.formLink || formValues.formWidget,
         };
       }
 
@@ -712,6 +728,21 @@ export default class AppendForm extends Component {
             id: 'at_least_one',
             defaultMessage: 'You should add at least one object',
           }),
+        );
+      }
+    } else if (objectFields.form === currentField) {
+      const formData = this.props.form.getFieldsValue();
+      if (!isEmpty(formData.formLink) || !isEmpty(formData.formWidget)) {
+        this.onSubmit(formData);
+      } else {
+        message.error(
+          this.props.intl.formatMessage(
+            {
+              id: 'field_error',
+              defaultMessage: '{field} is required',
+            },
+            { field: 'Form' },
+          ),
         );
       }
     } else if (currentField !== objectFields.newsFilter) {
@@ -1005,6 +1036,14 @@ export default class AppendForm extends Component {
     } else {
       this.setState({ selectedCategory: category, currentTags: [] });
     }
+  };
+
+  handleSelectColumn = value => {
+    this.setState({ formColumn: value });
+  };
+
+  handleSelectForm = value => {
+    this.setState({ formForm: value });
   };
 
   getFieldRules = fieldName => {
@@ -1897,6 +1936,121 @@ export default class AppendForm extends Component {
                 </div>,
               )}
             </Form.Item>
+          </React.Fragment>
+        );
+      }
+      case objectFields.form: {
+        const { formColumn, formForm } = this.state;
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator('formTitle', {
+                rules: this.getFieldRules('formTitle'),
+              })(
+                <Input
+                  className="AppendForm__input"
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'form',
+                    defaultMessage: 'Form',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <div className="ant-form-item-label AppendForm__appendTitles">
+              <FormattedMessage id="columns" defaultMessage="Columns" />
+            </div>
+            <Form.Item>
+              {getFieldDecorator('formColumn', {
+                initialValue: formColumn,
+                rules: [
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      { field: 'Column' },
+                    ),
+                  },
+                ],
+              })(
+                <Select disabled={loading} onChange={this.handleSelectColumn}>
+                  {map(formColumnsField, column => (
+                    <Select.Option key={column} value={column}>
+                      {column}
+                    </Select.Option>
+                  ))}
+                </Select>,
+              )}
+            </Form.Item>
+            <div className="ant-form-item-label AppendForm__appendTitles">
+              <FormattedMessage id="form" defaultMessage="Form" />
+            </div>
+            <Form.Item>
+              {getFieldDecorator('formForm', {
+                initialValue: formForm,
+                rules: [
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      { field: 'Form' },
+                    ),
+                  },
+                ],
+              })(
+                <Select disabled={loading} onChange={this.handleSelectForm}>
+                  {map(formFormFields, formItem => (
+                    <Select.Option id={formItem} value={formItem}>
+                      {formItem}
+                    </Select.Option>
+                  ))}
+                </Select>,
+              )}
+            </Form.Item>
+            {formForm === formFormFields.link ? (
+              <React.Fragment>
+                <div className="ant-form-item-label AppendForm__appendTitles">
+                  <FormattedMessage id="form_link" defaultMessage="Link" />
+                </div>
+                <Form.Item>
+                  {getFieldDecorator('formLink', {
+                    rules: this.getFieldRules('formLink'),
+                  })(
+                    <Input
+                      disabled={loading}
+                      placeholder={intl.formatMessage({
+                        id: 'form_link',
+                        defaultMessage: 'Link',
+                      })}
+                    />,
+                  )}
+                </Form.Item>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <div className="ant-form-item-label AppendForm__appendTitles">
+                  <FormattedMessage id="form_widget" defaultMessage="Widget" />
+                </div>
+                <Form.Item>
+                  {getFieldDecorator('formWidget')(
+                    <Input.TextArea
+                      className="AppendForm__input"
+                      disabled={loading}
+                      placeholder={intl.formatMessage({
+                        id: 'form_widget',
+                        defaultMessage: 'Widget',
+                      })}
+                    />,
+                  )}
+                </Form.Item>
+              </React.Fragment>
+            )}
           </React.Fragment>
         );
       }

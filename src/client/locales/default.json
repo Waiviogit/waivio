@@ -1606,5 +1606,11 @@
   "referral_rules": "The website owner may receive referral commissions when users claim their rewards through the website.",
   "referral_payments_acc": "Account for referral payments:",
   "referral_terms": "The terms for referral commissions are defined by the Campaign Management Services used by sponsors to launch their campaigns.",
-  "settings_updated_successfully": "Settings updated successfully"
+  "settings_updated_successfully": "Settings updated successfully",
+  "object_field_form": "Form",
+  "form": "Form",
+  "columns": "Columns",
+  "form_link": "Link",
+  "form_widget": "Widget",
+  "form_back": "Back to reviews"
 }

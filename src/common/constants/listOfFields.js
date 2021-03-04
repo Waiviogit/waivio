@@ -28,6 +28,7 @@ export const objectFields = {
   authority: 'authority',
   pageLink: 'pageLink',
   tag: 'tag',
+  form: 'form',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -35,6 +36,7 @@ export const TYPES_OF_MENU_ITEM = {
   PAGE: 'menuPage',
   BUTTON: 'menuButton',
   NEWS: 'menuNews',
+  FORM: 'formButton',
 };
 
 export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
@@ -103,6 +105,17 @@ export const phoneFields = {
 export const ratingFields = {
   category: 'category',
   rate: 'rate',
+};
+
+export const formColumnsField = {
+  middle: 'Middle',
+  middleRight: 'Middle+Right',
+  entire: 'Entire Width',
+};
+
+export const formFormFields = {
+  link: 'Link',
+  widget: 'Widget',
 };
 
 export const ratePercent = [2, 4, 6, 8, 10];
