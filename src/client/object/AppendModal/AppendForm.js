@@ -892,10 +892,18 @@ export default class AppendForm extends Component {
       : false;
 
     if (isDuplicated) {
+      const id =
+        currentField === objectFields.blog
+          ? 'append_object_blog_validation_msg'
+          : 'append_object_validation_msg';
+      const defaultMessage =
+        currentField === objectFields.blog
+          ? 'This user has already been added to another blog'
+          : 'The field with this value already exists';
       callback(
         intl.formatMessage({
-          id: 'append_object_validation_msg',
-          defaultMessage: 'The field with this value already exists',
+          id,
+          defaultMessage,
         }),
       );
     } else {
@@ -2004,7 +2012,6 @@ export default class AppendForm extends Component {
                     id: 'blog_title',
                     defaultMessage: 'Blog title',
                   })}
-                  maxLength={17}
                 />,
               )}
             </Form.Item>

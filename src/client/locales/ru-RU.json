@@ -1614,5 +1614,7 @@
   "object_field_blog": "Блог",
   "blog_title": "Название блога",
   "add_blog_success": "Вы успешно добавили {blogName} блог",
-  "add_blog_failure": "Не удалось добавить блог."
+  "add_blog_failure": "Не удалось добавить блог.",
+  "append_object_blog_validation_msg": "Данный пользователь уже добавлен в другой блог"
+
 }
