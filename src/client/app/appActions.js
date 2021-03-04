@@ -3,6 +3,7 @@ import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../reducers';
+import { setBeneficiaryOwner } from '../search/searchActions';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
@@ -112,6 +113,16 @@ export const getCurrentAppSettings = () => dispatch => {
         type: GET_CURRENT_APP_SETTINGS.SUCCESS,
         payload: res,
       });
+      const { account, percent: weight } = res.beneficiary;
+
+      dispatch(
+        setBeneficiaryOwner([
+          {
+            account,
+            weight,
+          },
+        ]),
+      );
 
       return res;
     })
@@ -140,3 +151,10 @@ export const getReservedCounter = () => (dispatch, getState) => {
     payload: ApiClient.getReservedCounter(authUser),
   });
 };
+
+export const PUT_USER_COORDINATES = createAsyncActionType('@app/PUT_USER_COORDINATES');
+
+export const putUserCoordinates = params => ({
+  type: PUT_USER_COORDINATES.ACTION,
+  payload: ApiClient.putUserCoordinates(params),
+});

@@ -58,8 +58,8 @@ export const ManageWebsite = props => {
           <div className="Settings__section">
             <h3 className="ManageWebsites__title">
               {props.intl.formatMessage({
-                id: 'prices',
-                defaultMessage: 'Prices',
+                id: 'active_website_pricing',
+                defaultMessage: 'Active website pricing:',
               })}
             </h3>
             <div>
@@ -82,6 +82,22 @@ export const ManageWebsite = props => {
                 {
                   price: get(prices, 'minimumValue', 0),
                 },
+              )}
+            </div>
+            <h3 className="ManageWebsites__title">
+              {props.intl.formatMessage({
+                id: 'inactive_website_pricing',
+                defaultMessage: 'Inactive website pricing:',
+              })}
+            </h3>
+            <div>
+              <span className="ManageWebsites__dot">&bull;</span>
+              {props.intl.formatMessage(
+                {
+                  id: 'prices_per_day',
+                  defaultMessage: '{price} HBD per day;',
+                },
+                { price: get(prices, 'perSuspended', 0) },
               )}
             </div>
             <p>
@@ -199,6 +215,7 @@ ManageWebsite.propTypes = {
     prices: PropTypes.shape({
       perUser: PropTypes.number,
       minimumValue: PropTypes.number,
+      perSuspended: PropTypes.number,
     }),
     websites: PropTypes.arrayOf(PropTypes.shape()),
     dataForPayments: PropTypes.shape({

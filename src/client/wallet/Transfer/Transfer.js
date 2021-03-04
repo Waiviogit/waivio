@@ -665,11 +665,7 @@ export default class Transfer extends React.Component {
                 defaultMessage="Your balance: {amount}"
                 values={{
                   amount: (
-                    <span
-                      role="presentation"
-                      onClick={isChangesDisabled ? () => {} : this.handleBalanceClick}
-                      className="balance"
-                    >
+                    <span role="presentation" onClick={this.handleBalanceClick} className="balance">
                       {currentBalance}
                     </span>
                   ),

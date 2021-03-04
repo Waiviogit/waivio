@@ -16,7 +16,7 @@ export default {
     },
     {
       validator: (rule, value) => {
-        const symbol = 3;
+        const symbol = 1;
         if (value === 'www') {
           return Promise.reject(
             <FormattedMessage
@@ -31,7 +31,7 @@ export default {
           return Promise.reject(
             <FormattedMessage
               id="website_domain_available"
-              defaultMessage="The domain must contain at least 3 characters"
+              defaultMessage="The domain must contain at least 1 characters"
               values={{ symbol }}
             />,
           );

@@ -1,43 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, map, size, get } from 'lodash';
+import { isEmpty, map, size, get, has } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 import classNames from 'classnames';
+import { ReactSVG } from 'react-svg';
 
 import UserCard from '../../components/UserCard';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import {
-  getHasMoreObjects,
+  getAllSearchLoadingMore,
+  getHasMoreObjectsForWebsite,
   getHasMoreUsers,
   getIsStartSearchUser,
   getSearchFilters,
   getSearchFiltersTagCategory,
-  getSearchSort,
   getSearchUsersResults,
   getShowSearchResult,
   getWebsiteSearchResult,
   getWebsiteSearchResultLoading,
   getWebsiteSearchString,
-  getWebsiteSearchType,
 } from '../../reducers';
 import { getActiveItemClassList } from '../helpers';
 import {
   followSearchUser,
-  getFilterForSearch,
   searchObjectsAutoCompeteLoadingMore,
   searchUsersAutoCompeteLoadingMore,
-  setSearchSortType,
   setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
   unfollowSearchUser,
 } from '../searchActions';
-import SortSelector from '../../components/SortSelector/SortSelector';
-import { SORT_OPTIONS_WOBJ } from '../../../common/constants/waivioFiltres';
 import Loading from '../../components/Icon/Loading';
+import Campaign from '../../rewards/Campaign/Campaign';
 
 import './SearchAllResult.less';
 
@@ -48,27 +45,7 @@ const SearchAllResult = props => {
   const searchResultClassList = classNames('SearchAllResult', {
     SearchAllResult__show: props.isShowResult,
   });
-
-  useEffect(() => {
-    if (filterTypes.includes(props.searchType) && !isUsersSearch)
-      props.getFilterForSearch(props.searchType);
-  }, [props.searchType]);
-
-  useEffect(() => {
-    if (isScrolled) {
-      switch (props.searchType) {
-        case 'Users':
-          props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser));
-          break;
-        default:
-          props.searchObjectsAutoCompeteLoadingMore(
-            props.searchString,
-            props.searchType,
-            size(props.searchResult),
-          );
-      }
-    }
-  }, [isScrolled]);
+  const sortWobjects = props.searchResult.sort((a, b) => has(b, 'campaigns') - has(a, 'campaigns'));
 
   const currentListState = () => {
     switch (props.searchType) {
@@ -88,25 +65,42 @@ const SearchAllResult = props => {
 
       default:
         return {
-          list: map(props.searchResult, obj => (
-            <ObjectCardView wObject={obj} key={getObjectName(obj)} />
-          )),
+          list: map(sortWobjects, obj =>
+            obj.campaigns ? (
+              <Campaign proposition={obj} filterKey="all" />
+            ) : (
+              <ObjectCardView wObject={obj} key={getObjectName(obj)} />
+            ),
+          ),
           hasMore: props.hasMore,
           loading: props.loading,
         };
     }
   };
 
+  const currRenderListState = currentListState();
+
+  useEffect(() => {
+    if (isScrolled && currRenderListState.hasMore && !props.showReload) {
+      switch (props.searchType) {
+        case 'Users':
+          props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser));
+          break;
+        default:
+          props.searchObjectsAutoCompeteLoadingMore(
+            props.searchString,
+            props.searchType,
+            size(props.searchResult),
+          );
+      }
+    }
+  }, [isScrolled]);
+
   const getEndScroll = e => {
     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (bottom) {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
+    if (bottom) setIsScrolled(true);
+    else setIsScrolled(false);
   };
-
-  const currRenderListState = currentListState();
 
   const getCurrentName = category => {
     const currentActiveCategory = props.activeFilters.find(item => item.categoryName === category);
@@ -176,14 +170,17 @@ const SearchAllResult = props => {
                 </Dropdown>
               ))}
             </div>
-            <SortSelector sort={props.sort} onChange={props.setSearchSortType}>
-              <SortSelector.Item key={SORT_OPTIONS_WOBJ.WEIGHT}>
-                {props.intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
-              </SortSelector.Item>
-              <SortSelector.Item key={SORT_OPTIONS_WOBJ.RECENCY}>
-                {props.intl.formatMessage({ id: 'recency', defaultMessage: 'Recency' })}
-              </SortSelector.Item>
-            </SortSelector>
+            <div className="SearchAllResult__sortWrap">
+              {props.showReload && (
+                <span
+                  className="SearchAllResult__reload"
+                  role="presentation"
+                  onClick={props.reloadSearchList}
+                >
+                  <ReactSVG wrapper="span" src="/images/icons/redo-alt-solid.svg" /> Reload
+                </span>
+              )}
+            </div>
           </React.Fragment>
         )}
         <div className="SearchAllResult__buttonWrap">
@@ -197,7 +194,17 @@ const SearchAllResult = props => {
           </Button>
         </div>
         {currRenderListState.loading ? <Loading /> : currentList}
-        <div className="SearchAllResult__loader">{isScrolled && <Loading />}</div>
+        {props.showReload ? (
+          <div
+            className="SearchAllResult__listReload"
+            role="presentation"
+            onClick={props.reloadSearchList}
+          >
+            <ReactSVG wrapper="span" src="/images/icons/redo-alt-solid.svg" /> <span>Reload</span>
+          </div>
+        ) : (
+          <div className="SearchAllResult__loader">{props.loadingMore && <Loading />}</div>
+        )}
       </div>
     </div>
   );
@@ -213,8 +220,6 @@ SearchAllResult.propTypes = {
   setWebsiteSearchType: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
-  setSearchSortType: PropTypes.func.isRequired,
-  getFilterForSearch: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}).isRequired,
   searchByUser: PropTypes.arrayOf.isRequired,
   activeFilters: PropTypes.arrayOf.isRequired,
@@ -224,39 +229,38 @@ SearchAllResult.propTypes = {
   hasMore: PropTypes.bool.isRequired,
   hasMoreUsers: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
+  loadingMore: PropTypes.bool.isRequired,
   usersLoading: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,
   filters: PropTypes.arrayOf.isRequired,
-  sort: PropTypes.string.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   unfollowSearchUser: PropTypes.func.isRequired,
   followSearchUser: PropTypes.func.isRequired,
+  reloadSearchList: PropTypes.func.isRequired,
+  showReload: PropTypes.bool.isRequired,
 };
 
 export default connect(
   state => ({
-    searchType: getWebsiteSearchType(state),
     searchResult: getWebsiteSearchResult(state),
     searchByUser: getSearchUsersResults(state),
-    hasMore: getHasMoreObjects(state),
+    hasMore: getHasMoreObjectsForWebsite(state),
     hasMoreUsers: getHasMoreUsers(state),
     filters: getSearchFilters(state),
     searchString: getWebsiteSearchString(state),
-    sort: getSearchSort(state),
     activeFilters: getSearchFiltersTagCategory(state),
     loading: getWebsiteSearchResultLoading(state),
     usersLoading: getIsStartSearchUser(state),
     isShowResult: getShowSearchResult(state),
+    loadingMore: getAllSearchLoadingMore(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,
     setWebsiteSearchType,
     searchObjectsAutoCompeteLoadingMore,
-    getFilterForSearch,
     setWebsiteSearchFilter,
-    setSearchSortType,
     setShowSearchResult,
     unfollowSearchUser,
     followSearchUser,

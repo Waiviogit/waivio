@@ -2,6 +2,7 @@ import { batch } from 'react-redux';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
+import { orderBy } from 'lodash';
 import { createAction } from 'redux-actions';
 import { REFERRAL_PERCENT } from '../../helpers/constants';
 import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
@@ -17,6 +18,8 @@ import {
   getTranslationByKey,
   getLocale,
   getCurrentHost,
+  getIsWaivio,
+  getWebsiteBeneficiary,
 } from '../../reducers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
@@ -228,6 +231,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
     const hiveBeneficiaryAccount = getHiveBeneficiaryAccount(state);
     const locale = getLocale(state);
     const follower = getAuthenticatedUserName(state);
+    const isWaivio = getIsWaivio(state);
     const newBody =
       isUpdating && !isGuest && !isReview
         ? getBodyPatchIfSmaller(postData.originalBody, body)
@@ -237,9 +241,16 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
       ? Promise.resolve(postData.permlink)
       : createPermlink(title, author, parentAuthor, parentPermlink, locale, follower);
 
-    const guestBeneficiary = hiveBeneficiaryAccount
-      ? [{ account: hiveBeneficiaryAccount, weight: 9700 }, ...beneficiaries]
-      : [{ account: 'waivio.hpower', weight: 10000 }];
+    const account = hiveBeneficiaryAccount || 'waivio.hpower';
+    let weight = 9700;
+    let secondBeneficiary = { account: 'waivio', weight: 300 };
+
+    if (!isWaivio) {
+      secondBeneficiary = getWebsiteBeneficiary(state);
+      weight = 10000 - secondBeneficiary.weight;
+    }
+
+    const guestBeneficiary = [{ account, weight }, secondBeneficiary];
     const currentBeneficiaries = isGuest ? guestBeneficiary : beneficiaries;
 
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
@@ -278,7 +289,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
         permlink,
         referral,
         authUser.name,
-        currentBeneficiaries,
+        orderBy(currentBeneficiaries, ['account'], ['asc']),
         isReview,
         isGuest,
         hiveBeneficiaryAccount,

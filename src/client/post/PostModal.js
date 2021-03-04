@@ -64,14 +64,13 @@ class PostModal extends React.Component {
       document.body.classList.add('post-modal');
     }
     const { currentShownPost } = this.props;
-    const { title, url } = currentShownPost;
-    const authorName =
-      get(currentShownPost, ['guestInfo', 'userId'], '') || currentShownPost.author;
+    const { title, author, guestInfo } = currentShownPost;
+    const authorName = get(currentShownPost, ['guestInfo', 'userId'], '') || author;
     const permlink = get(currentShownPost, 'permlink', '');
-    PostModal.pushURLState(
-      title,
-      replaceBotWithGuestName(dropCategory(url), currentShownPost.guestInfo),
-    );
+    const userPostURL = `@${author}/${permlink}`;
+    const guestUserPostURL = `@${authorName}/${permlink}`;
+    const postURL = isEmpty(guestInfo) ? userPostURL : guestUserPostURL;
+    PostModal.pushURLState(title, postURL);
     this.props.getSocialInfoPost(authorName, permlink);
   }
 
@@ -127,6 +126,8 @@ class PostModal extends React.Component {
 
     const facebookShareURL = getFacebookShareURL(postURL);
     const signature = get(authorDetails, 'posting_json_metadata.profile.signature', null);
+    const isModal = !isEmpty(currentShownPost);
+
     return (
       <Modal
         title={null}
@@ -172,7 +173,7 @@ class PostModal extends React.Component {
             <i className="iconfont icon-facebook PostModal__icon" />
           </a>
         </div>
-        <PostContent content={shownPostContents} signature={signature} />
+        <PostContent content={shownPostContents} signature={signature} isModal={isModal} />
         <VisibilitySensor onChange={this.handleCommentsVisibility}>
           {!isBannedPost(shownPostContents) && (
             <div id="comments">

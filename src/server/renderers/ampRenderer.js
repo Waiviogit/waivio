@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { attempt, isError } from 'lodash';
 import cheerio from 'cheerio';
 import Handlebars from 'handlebars';
 import HandlebarsIntl from 'handlebars-intl';
@@ -46,9 +46,9 @@ function cleanHTML(html) {
 }
 
 function getContext(post, body, appUrl) {
-  const metadata = _.attempt(JSON.parse, post.json_metadata);
+  const metadata = attempt(JSON.parse, post.json_metadata);
   let images = [];
-  if (!_.isError(metadata) && metadata.image) images = metadata.image;
+  if (!isError(metadata) && metadata.image) images = metadata.image;
 
   const datePublished = `${post.created}Z`;
   const dateModified = `${post.last_update}Z`;
@@ -94,7 +94,6 @@ function getContext(post, body, appUrl) {
 export default function renderAmpPage(post, appUrl, template) {
   const body = cleanHTML(getHtml(post.body, post.jsonMetadata, 'text'));
   const context = getContext(post, body, appUrl);
-
   return template(context, {
     data: {
       intl: {

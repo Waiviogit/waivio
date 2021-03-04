@@ -953,7 +953,7 @@ export const handleAddSearchLink = filterValue => {
   const date = new Date();
   const uniq = date.getMilliseconds();
   searchParams.append(`sponsorName${uniq}`, filterValue);
-  history.pushState(`${isLocation ? location.pathname : ''}?${searchParams.toString()}`);
+  history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
 };
 
 export const handleAddMapCoordinates = coordinates => {

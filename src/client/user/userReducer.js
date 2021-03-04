@@ -122,7 +122,10 @@ export default function userReducer(state = initialState, action) {
     case userActions.GET_USER_LOCATION.SUCCESS:
       return {
         ...state,
-        location: action.payload,
+        location: {
+          lat: action.payload.latitude,
+          lon: action.payload.longitude,
+        },
       };
 
     case userActions.GET_FOLLOWING_UPDATES.START:

@@ -36,6 +36,7 @@ import {
   getSuitableLanguage,
   getPendingUpdate,
   getIsAuthenticated,
+  getIsWaivio,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -78,7 +79,11 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
 import { getRewardsGeneralCounts } from './rewardsActions';
-import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
+import {
+  setUpdatedFlag,
+  getPropositionsForMap,
+  setMapFullscreenMode,
+} from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
 
@@ -97,6 +102,7 @@ import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
     usedLocale: getSuitableLanguage(state),
     pendingUpdate: getPendingUpdate(state),
     authenticated: getIsAuthenticated(state),
+    isWaivio: getIsWaivio(state),
   }),
   {
     assignProposition,
@@ -108,6 +114,7 @@ import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
     getPropositionsForMap,
     getRewardsGeneralCounts,
     getCryptoPriceHistory,
+    setMapFullscreenMode,
   },
 )
 class Rewards extends React.Component {
@@ -129,8 +136,10 @@ class Rewards extends React.Component {
     getRewardsGeneralCounts: PropTypes.func.isRequired,
     pendingUpdate: PropTypes.bool,
     authenticated: PropTypes.bool,
+    isWaivio: PropTypes.bool,
     users: PropTypes.shape(),
     getCryptoPriceHistory: PropTypes.func.isRequired,
+    setMapFullscreenMode: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -140,6 +149,7 @@ class Rewards extends React.Component {
     pendingUpdate: false,
     location: {},
     authenticated: false,
+    isWaivio: true,
     users: {},
   };
 
@@ -207,9 +217,9 @@ class Rewards extends React.Component {
     if (!size(userLocation)) {
       try {
         const coords = await this.props.getCoordinates();
-        const { lat, lon } = coords.value;
+        const { latitude, longitude } = coords.value;
         // eslint-disable-next-line react/no-did-mount-set-state
-        await this.setState({ area: [+lat, +lon] });
+        await this.setState({ area: [latitude, longitude] });
       } catch (e) {
         message.error(e.error_description);
       }
@@ -780,12 +790,17 @@ class Rewards extends React.Component {
   };
 
   goToCampaign = wobjPermlink => {
-    const { match } = this.props;
+    const { match, isWaivio } = this.props;
     const campaignParent = get(match, ['params', 'campaignParent']);
     const filterKey = get(match, ['params', 'filterKey']);
-    this.props.history.push(
-      campaignParent ? `/object/${wobjPermlink}` : `/rewards/${filterKey}/${wobjPermlink}`,
-    );
+    const objUrl = `/object/${wobjPermlink}`;
+
+    if (isWaivio || !campaignParent) {
+      this.props.history.push(`/rewards/${filterKey}/${wobjPermlink}`);
+    } else {
+      this.props.setMapFullscreenMode(false);
+      this.props.history.push(objUrl);
+    }
   };
 
   handleLoadMore = () => {

@@ -76,7 +76,11 @@ class MapObjectInfo extends React.Component {
     ) : null;
   };
 
-  setQueryInUrl = anchor => this.props.history.push(`/?center=${anchor.join(',')}`);
+  setQueryInUrl = (anchor, permlink) => {
+    const url =
+      localStorage.getItem('query') || `center=${anchor.join(',')}&zoom=6&permlink=${permlink}`;
+    this.props.history.push(`/?${url}`);
+  };
 
   handleMarkerClick = ({ payload, anchor }) => {
     if (this.props.isWaivio) {
@@ -85,7 +89,7 @@ class MapObjectInfo extends React.Component {
       }
       this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
     } else {
-      this.setQueryInUrl(anchor);
+      this.setQueryInUrl(anchor, payload.author_permlink);
     }
   };
 

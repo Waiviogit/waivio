@@ -1496,7 +1496,7 @@
   "create_website": "Создать сайт",
   "prices": "Цены",
   "prices_per_active_user": "{price} HBD в день на активного пользователя;",
-  "prices_min_value": "Минимум {price} HBD в день (включая активные и неактивные сайты).",
+  "prices_min_value": "Минимум {price} HBD в день.",
   "manage_account_balance": "Остаток на счету (HBD)",
   "pay_now": "Заплатить сейчас",
   "websites": "Сайты",
@@ -1615,6 +1615,8 @@
   "blog_title": "Название блога",
   "add_blog_success": "Вы успешно добавили {blogName} блог",
   "add_blog_failure": "Не удалось добавить блог.",
-  "append_object_blog_validation_msg": "Данный пользователь уже добавлен в другой блог"
-
+  "append_object_blog_validation_msg": "Данный пользователь уже добавлен в другой блог",
+  "active_website_pricing": "Стоимость активного сайта:",
+  "prices_per_day": "{price} HBD в день;",
+  "inactive_website_pricing": "Цены на неактивный сайт:"
 }

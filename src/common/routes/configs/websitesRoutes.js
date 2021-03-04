@@ -16,7 +16,6 @@ const routes = {
       path: [
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
         `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
-        `/rewards/(${URL.REFERRAL.tabs})/:userName?/:table?`,
         '/rewards/:filterKey/:campaignParent?',
       ],
       pathScope: '/rewards',
@@ -24,9 +23,24 @@ const routes = {
       component: Views.Rewards,
       routes: [
         {
+          path: '/receivables',
+          exact: true,
+          component: Views.ReceivablesCampaign,
+        },
+        {
+          path: '/(payables|receivables)/@:userName/:reservationPermlink?',
+          exact: true,
+          component: Views.PaymentCampaign,
+        },
+        {
           path: '/(history|guideHistory|messages)/:campaignId?/:permlink?/:username?',
           exact: true,
           component: Views.HistoryCampaign,
+        },
+        {
+          path: '/:filterKey/:campaignParent?',
+          exact: true,
+          component: Views.RewardsComponent,
         },
       ],
     },

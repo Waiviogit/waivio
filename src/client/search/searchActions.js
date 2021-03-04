@@ -13,6 +13,7 @@ import {
   getSearchFiltersTagCategory,
   getSearchSort,
   getIsWaivio,
+  getWebsiteMap,
 } from '../reducers';
 import { replacer } from '../helpers/parser';
 
@@ -98,6 +99,16 @@ export const resetSearchAutoCompete = () => dispatch =>
     type: RESET_AUTO_COMPLETE_SEARCH,
   });
 
+export const GET_FILTER_FOR_SEARCH = createAsyncActionType('@search/GET_FILTER_FOR_SEARCH');
+export const GET_FILTER_FOR_SEARCH_MORE = createAsyncActionType(
+  '@search/GET_FILTER_FOR_SEARCH_MORE',
+);
+
+export const getFilterForSearch = (type, links, more = false) => ({
+  type: more ? GET_FILTER_FOR_SEARCH_MORE.ACTION : GET_FILTER_FOR_SEARCH.ACTION,
+  payload: ApiClient.getObjectTypeFilters(type, links),
+});
+
 export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
   dispatch,
   getState,
@@ -129,26 +140,26 @@ export const searchObjectsAutoCompeteLoadingMore = (
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
   const sort = getSearchSort(state);
+  const { coordinates, topPoint, bottomPoint } = getWebsiteMap(state);
+  const body = {
+    userName,
+    sort,
+    ...tagCategory,
+  };
+
+  if (searchString) body.map = { coordinates, radius: 12742000 };
+  else body.box = { topPoint, bottomPoint };
 
   dispatch({
     type: SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.ACTION,
-    payload: ApiClient.searchObjects(
-      searchString,
-      objType,
-      forParent,
-      15,
-      locale,
-      {
-        userName,
-        sort,
-        ...tagCategory,
+    payload: ApiClient.searchObjects(searchString, objType, forParent, 15, locale, body, skip).then(
+      res => {
+        const links = res.wobjects.map(wobj => wobj.author_permlink);
+
+        dispatch(getFilterForSearch(objType, links, true));
+        return res;
       },
-      skip,
-    ).then(result => ({
-      result,
-      search: searchString,
-      locale,
-    })),
+    ),
   }).catch(error => console.log('Object search >', error.message));
 };
 
@@ -156,7 +167,7 @@ export const SEARCH_OBJECTS_FOR_WEBSITE = createAsyncActionType(
   '@search/SEARCH_OBJECTS_FOR_WEBSITE',
 );
 
-export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight') => (
+export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', limit = 15) => (
   dispatch,
   getState,
 ) => {
@@ -166,14 +177,24 @@ export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight') =
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
+  const { topPoint, bottomPoint } = getWebsiteMap(state);
+  const body = {
+    userName,
+    sort,
+    box: { topPoint, bottomPoint },
+    ...tagCategory,
+  };
 
-  dispatch({
+  return dispatch({
     type: SEARCH_OBJECTS_FOR_WEBSITE.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, false, 15, locale, {
-      userName,
-      sort,
-      ...tagCategory,
-    }),
+    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, body).then(
+      res => {
+        const links = res.wobjects.map(wobj => wobj.author_permlink);
+
+        dispatch(getFilterForSearch(objType, links));
+        return res;
+      },
+    ),
   });
 };
 
@@ -344,13 +365,6 @@ export const setWebsiteSearchFilter = (category, tag) => ({
   },
 });
 
-export const GET_FILTER_FOR_SEARCH = createAsyncActionType('@search/GET_FILTER_FOR_SEARCH');
-
-export const getFilterForSearch = type => ({
-  type: GET_FILTER_FOR_SEARCH.ACTION,
-  payload: ApiClient.getObjectTypeFilters(type),
-});
-
 export const SET_WEBSITE_SEARCH_STRING = '@search/SET_WEBSITE_SEARCH_STRING';
 
 export const setWebsiteSearchString = searchString => ({
@@ -371,3 +385,11 @@ export const setShowSearchResult = payload => ({
   type: SET_SHOW_RESULT,
   payload,
 });
+
+export const SET_OWNER_BENEFICIARY = '@search/SET_OWNER_BENEFICIARY';
+
+export const setBeneficiaryOwner = payload => ({ type: SET_OWNER_BENEFICIARY, payload });
+
+export const SET_MAP_FOR_SEARCH = '@search/SET_MAP_FOR_SEARCH';
+
+export const setMapForSearch = payload => ({ type: SET_MAP_FOR_SEARCH, payload });

@@ -103,6 +103,11 @@ const routes = {
       pathScope: '',
       routes: [
         {
+          path: '/bookmarks',
+          exact: true,
+          component: Views.Bookmarks,
+        },
+        {
           path: '/drafts',
           exact: true,
           component: Views.Drafts,
@@ -342,6 +347,11 @@ const routes = {
       path: '/discover-objects/:typeName?',
       exact: true,
       component: Views.DiscoverObjects,
+    },
+    {
+      path: '/discover/:search?',
+      exact: true,
+      component: Views.Discover,
     },
     {
       path: '/objects',

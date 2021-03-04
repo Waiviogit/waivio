@@ -76,6 +76,7 @@ class StoryFull extends React.Component {
     assignProposition: PropTypes.func,
     history: PropTypes.shape(),
     isOriginalPost: PropTypes.string,
+    isModal: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -102,6 +103,7 @@ class StoryFull extends React.Component {
     defaultVotePercent: 0,
     match: {},
     history: {},
+    isModal: false,
   };
 
   constructor(props) {
@@ -269,6 +271,7 @@ class StoryFull extends React.Component {
       isOriginalPost,
       match,
       history,
+      isModal,
     } = this.props;
 
     const { loadingAssign } = this.state;
@@ -341,7 +344,12 @@ class StoryFull extends React.Component {
           }}
           onClick={this.handleContentClick}
         >
-          <BodyContainer full body={signedBody} json_metadata={post.json_metadata} />
+          <BodyContainer
+            full
+            body={signedBody}
+            json_metadata={post.json_metadata}
+            isModal={isModal}
+          />
         </div>
       );
     }

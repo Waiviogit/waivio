@@ -60,6 +60,7 @@
   "getObjects": "/wobject",
   "inactivation": "/validate_inactivation",
   "objectType": "/objectType",
+  "objectTypes": "/objectTypes",
   "objectTypesSearch": "/ObjectTypesSearch",
   "payables": "/payables",
   "payments": "/payments",
@@ -120,5 +121,6 @@
   "map": "/map",
   "restrictions": "/restrictions",
   "expertiseCounters": "/expertise-counters",
-  "count": "/count"
+  "count": "/count",
+  "geoIp": "/geo-ip"
 }

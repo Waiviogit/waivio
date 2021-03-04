@@ -92,12 +92,13 @@ class CustomMarker extends React.Component {
   };
 
   render() {
-    const { left, top, onClick } = this.props;
+    const { left, top, onClick, isMarked } = this.props;
 
     const style = {
       position: 'absolute',
       transform: `translate(${left - imageOffset.left}px, ${top - imageOffset.top}px)`,
       cursor: onClick ? 'pointer' : 'default',
+      zIndex: isMarked ? 2 : 1,
     };
 
     return (
