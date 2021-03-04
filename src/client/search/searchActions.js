@@ -177,15 +177,13 @@ export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', l
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
-  const { coordinates, topPoint, bottomPoint } = getWebsiteMap(state);
+  const { topPoint, bottomPoint } = getWebsiteMap(state);
   const body = {
     userName,
     sort,
+    box: { topPoint, bottomPoint },
     ...tagCategory,
   };
-
-  if (searchString) body.map = { coordinates, radius: 12742000 };
-  else body.box = { topPoint, bottomPoint };
 
   return dispatch({
     type: SEARCH_OBJECTS_FOR_WEBSITE.ACTION,

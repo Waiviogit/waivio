@@ -128,7 +128,7 @@ const WebsiteBody = props => {
             );
             const diffLength = Math.abs(mapPointCounter - size(res.value.wobjects));
 
-            if ((diffLength >= 10 || distance) && !props.showReloadButton)
+            if (((diffLength >= 10 && !props.searchString) || distance) && !props.showReloadButton)
               props.setShowReload(true);
             if (!distance) props.setShowReload(false);
           }
