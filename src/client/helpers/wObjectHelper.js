@@ -1,4 +1,4 @@
-import { get, some, filter, isEmpty, compact } from 'lodash';
+import { get, some, filter, isEmpty, compact, isEqual } from 'lodash';
 import { addressFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 
@@ -6,6 +6,28 @@ export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'defa
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 export const getObjectAvatar = (wobj = {}) => wobj.avatar || get(wobj, ['parent', 'avatar'], '');
 export const getObjectType = (wobj = {}) => get(wobj, 'object_type') || get(wobj, 'type');
+export const getObjectMap = (wobj = {}) => {
+  const map = get(wobj, 'map');
+
+  if (map) return JSON.parse(map);
+
+  return null;
+};
+export const getObjectMapInArray = (wobj = {}) => {
+  const objMap = getObjectMap(wobj);
+
+  if (objMap) return [+objMap.latitude, +objMap.longitude];
+
+  return null;
+};
+
+export const getCurrentPoint = (wobjects, queryCenter) =>
+  wobjects.find(wobj => {
+    const pointMap = getObjectMapInArray(wobj);
+    if (pointMap) return isEqual(pointMap, queryCenter);
+
+    return false;
+  });
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 
@@ -48,6 +70,28 @@ export const prepareAlbumData = (form, currentUsername, wObject) => {
   data.permlink = `${data.author}-${generatePermlink()}`;
   data.lastUpdated = Date.now();
   data.wobjectName = getObjectName(wObject);
+
+  return data;
+};
+
+export const prepareBlogData = (form, currentUserName, wObject) => {
+  const blog = form.blogTitle || form.blogAccount;
+  const data = {};
+  data.author = currentUserName;
+  data.parentAuthor = wObject.author;
+  data.parentPermlink = wObject.author_permlink;
+  data.body = `@${data.author} added a new blog: ${blog}.`;
+  data.title = '';
+
+  data.permlink = `${data.author}-${generatePermlink()}`;
+  data.lastUpdated = Date.now();
+  data.wobjectName = getObjectName(wObject);
+  data.field = {
+    body: form.blogAccount,
+    name: form.currentField,
+    locale: form.currentLocale,
+    blogTitle: blog,
+  };
 
   return data;
 };
@@ -133,6 +177,8 @@ export const parseButtonsField = wobject => {
     }
   });
 };
+
+export const getBlogItems = wobject => get(wobject, 'blog', []);
 
 export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;

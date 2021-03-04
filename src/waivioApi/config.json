@@ -60,6 +60,7 @@
   "getObjects": "/wobject",
   "inactivation": "/validate_inactivation",
   "objectType": "/objectType",
+  "objectTypes": "/objectTypes",
   "objectTypesSearch": "/ObjectTypesSearch",
   "payables": "/payables",
   "payments": "/payments",

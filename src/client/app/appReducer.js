@@ -135,12 +135,16 @@ export default (state = initialState, action) => {
         isMobile: mobileUserAgents.test(navigator.userAgent),
       };
     case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
-      const { mainPage, host, configuration } = action.payload;
+      const { mainPage, host, configuration, beneficiary } = action.payload;
       return {
         ...state,
         mainPage,
         host,
         configuration,
+        websiteBeneficiary: {
+          account: beneficiary.account,
+          weight: beneficiary.percent,
+        },
         currMap: {
           center: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
           zoom: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),
@@ -200,3 +204,4 @@ export const getMapForMainPage = state => state.currMap;
 export const getWebsiteConfiguration = state => state.configuration;
 export const getIsWaivio = state => state.isWaivio;
 export const getReservCounter = state => state.reservedCounter;
+export const getWebsiteBeneficiary = state => state.websiteBeneficiary;

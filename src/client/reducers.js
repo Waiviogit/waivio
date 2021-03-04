@@ -121,6 +121,7 @@ export const getWebsiteConfiguration = state => fromApp.getWebsiteConfiguration(
 export const getConfigurationValues = state => fromApp.getConfigurationValues(state.app);
 export const getIsWaivio = state => fromApp.getIsWaivio(state.app);
 export const getReservCounter = state => fromApp.getReservCounter(state.app);
+export const getWebsiteBeneficiary = state => fromApp.getWebsiteBeneficiary(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 
@@ -267,6 +268,10 @@ export const getSearchSort = state => fromSearch.getSearchSort(state.search);
 export const getWebsiteSearchResultLoading = state =>
   fromSearch.getWebsiteSearchResultLoading(state.search);
 export const getShowSearchResult = state => fromSearch.getShowSearchResult(state.search);
+export const getAllSearchLoadingMore = state => fromSearch.getAllSearchLoadingMore(state.search);
+export const getWebsiteMap = state => fromSearch.getWebsiteMap(state.search);
+export const getHasMoreObjectsForWebsite = state =>
+  fromSearch.getHasMoreObjectsForWebsite(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
@@ -409,3 +414,4 @@ export const getMuteLoading = state => fromWebsite.getMuteLoading(state.website)
 export const getUnmutedUsers = state => fromWebsite.getUnmutedUsers(state.website);
 export const getWobjectsPoint = state => fromWebsite.getWobjectsPoint(state.website);
 export const getIsUsersAreas = state => fromWebsite.getIsUsersAreas(state.website);
+export const getShowReloadButton = state => fromWebsite.getShowReloadButton(state.website);

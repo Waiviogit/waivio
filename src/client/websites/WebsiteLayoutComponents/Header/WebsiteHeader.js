@@ -3,7 +3,7 @@ import store from 'store';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { get, upperFirst } from 'lodash';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 
@@ -17,10 +17,18 @@ import './WebsiteHeader.less';
 const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
   const pathName = location.pathname;
   const isMainPage = pathName === '/';
+  let setHrefBackButton = () => history.push('/');
   let currentPage = currPage || store.get('currentPage');
   const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
+
   if (pathName.includes('/object/')) {
     currentPage = getObjectType(wobj);
+    const query = localStorage.getItem('query');
+    if (query)
+      setHrefBackButton = () => {
+        history.push(`/?${query}`);
+        localStorage.removeItem('query');
+      };
   }
 
   if (pathName.includes('/@')) {
@@ -38,13 +46,17 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
           <WebsiteSearch history={history} />
         ) : (
           <React.Fragment>
-            <Link className="WebsiteHeader__link left" to={'/'}>
+            <div
+              role="presentation"
+              className="WebsiteHeader__link left"
+              onClick={setHrefBackButton}
+            >
               <Icon type="left" />{' '}
               {intl.formatMessage({
                 id: 'back',
                 defaultMessage: 'Back',
               })}
-            </Link>
+            </div>
             {currentPage && (
               <span className="center WebsiteHeader__title">
                 {upperFirst(
@@ -72,8 +84,12 @@ WebsiteHeader.propTypes = {
     pathname: PropTypes.string,
   }).isRequired,
   history: PropTypes.shape().isRequired,
-  config: PropTypes.arrayOf.isRequired,
+  config: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+};
+
+WebsiteHeader.defaultProps = {
+  config: {},
 };
 
 export default connect(state => ({

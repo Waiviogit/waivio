@@ -14,6 +14,7 @@ import {
   getHasMap,
   getIsMapModalOpen,
   getFiltersTags,
+  getFilteredObjects,
 } from '../../reducers';
 import { setFiltersAndLoad, getObjectTypeMap } from '../../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
@@ -30,19 +31,20 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const wobjects = useSelector(getFilteredObjectsMap);
   const userLocation = useSelector(getUserLocation);
   const filters = useSelector(getAvailableFilters);
+  const filteredObjects = useSelector(getFilteredObjects);
   const activeFilters = useSelector(getActiveFilters);
   const hasMap = useSelector(getHasMap);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
   const tagsFilters = useSelector(getFiltersTags);
 
-  if (isEmpty(userLocation)) {
-    dispatch(getCoordinates());
-  }
+  if (isEmpty(userLocation)) dispatch(getCoordinates());
 
   const objectType = match.params.typeName;
   const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
-  const setMapArea = ({ radius, coordinates }) =>
-    dispatch(getObjectTypeMap({ radius, coordinates }, isFullscreenMode));
+  const setMapArea = ({ radius, coordinates }) => {
+    if (isEmpty(activeFilters))
+      dispatch(getObjectTypeMap({ radius, coordinates }, isFullscreenMode));
+  };
 
   useEffect(() => {
     setMapArea({
@@ -58,19 +60,17 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
     dispatch(setMapFullscreenMode(false));
   };
 
-  const handleMapMarkerClick = permlink => {
-    history.push(`/object/${permlink}`);
-  };
-
+  const handleMapMarkerClick = permlink => history.push(`/object/${permlink}`);
   const wobjectsForMap = useMemo(() => getWobjectsForMap(wobjects), [wobjects]);
   const isTypeHasFilters = memoize(isNeedFilters);
+  const currentObjList = !isEmpty(activeFilters) ? filteredObjects : wobjectsForMap;
 
   return (
     isTypeHasFilters(objectType) && (
       <div className="discover-objects-filters">
         {hasMap && (
           <MapWrap
-            wobjects={wobjectsForMap}
+            wobjects={currentObjList}
             onMarkerClick={handleMapMarkerClick}
             getAreaSearchData={setSearchArea}
             setMapArea={setMapArea}

@@ -16,20 +16,16 @@ const Campaign = ({
   rewardPricePassed,
   rewardMaxPassed,
 }) => {
-  const requiredObject = has(proposition, ['campaigns'])
-    ? proposition
-    : get(proposition, ['required_object'], {});
-  const minReward = has(proposition, ['campaigns'])
-    ? get(proposition, ['campaigns', 'min_reward'], 0)
-    : get(proposition, ['min_reward'], 0);
-  const maxReward = has(proposition, ['campaigns'])
-    ? get(proposition, ['campaigns', 'max_reward'], 0)
-    : get(proposition, ['max_reward'], 0);
+  const hasCampaigns = has(proposition, ['campaigns']);
+  const campaign = hasCampaigns ? get(proposition, 'campaigns') : proposition;
+  const requiredObject = hasCampaigns ? proposition : get(proposition, ['required_object'], {});
+  const minReward = get(campaign, ['min_reward'], 0);
+  const maxReward = get(campaign, ['max_reward'], 0);
   const rewardPrice = minReward ? `${minReward.toFixed(2)} USD` : '';
   const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
-  const goToProducts = () => {
+  const goToProducts = () =>
     history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
-  };
+
   return (
     <div className="Campaign">
       <ObjectCardView
