@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { isEmpty, get, map, debounce, isEqual, size } from 'lodash';
+import { isEmpty, get, map, debounce, isEqual, size, reverse } from 'lodash';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { Tag } from 'antd';
@@ -53,6 +53,7 @@ const WebsiteBody = props => {
     bottomPoint: [],
   });
   const [infoboxData, setInfoboxData] = useState(null);
+  const [mapPointCounter, setMapPointCounter] = useState(0);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   let queryCenter = props.query.get('center');
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
@@ -89,6 +90,12 @@ const WebsiteBody = props => {
     }
   };
 
+  const handelSetMapForSearch = () =>
+    props.setMapForSearch({
+      coordinates: reverse(area.center),
+      ...boundsParams,
+    });
+
   useEffect(() => {
     if (props.isAuth) props.getReservedCounter();
     getCoordinatesForMap();
@@ -96,12 +103,10 @@ const WebsiteBody = props => {
 
   useEffect(() => {
     if (props.isShowResult) {
-      props.setMapForSearch({
-        coordinates: area.center,
-        ...boundsParams,
-      });
+      handelSetMapForSearch();
     } else {
       props.setMapForSearch({});
+      setMapPointCounter(size(props.wobjectsPoint));
       props.setShowReload(false);
     }
   }, [props.isShowResult]);
@@ -109,17 +114,21 @@ const WebsiteBody = props => {
   useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
 
-    if (!isEmpty(props.searchMap)) {
-      const distance = distanceInMBetweenEarthCoordinates(props.searchMap.coordinates, area.center);
-
-      if (distance >= 300000 && !props.showReloadButton) props.setShowReload(true);
-      else props.setShowReload(false);
-    }
-
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint))
       props
         .getWebsiteObjWithCoordinates(props.searchString, { topPoint, bottomPoint }, 50)
         .then(res => {
+          if (!isEmpty(props.searchMap)) {
+            const distance = distanceInMBetweenEarthCoordinates(
+              props.searchMap.coordinates,
+              area.center,
+            );
+            const diffLength = Math.abs(mapPointCounter - size(res.value.wobjects));
+
+            if ((diffLength >= 10 || distance) && !props.showReloadButton)
+              props.setShowReload(true);
+            if (!distance) props.setShowReload(false);
+          }
           if (!isEmpty(queryCenter)) {
             const { wobjects } = res.value;
             const currentPoint = wobjects.find(
@@ -140,10 +149,7 @@ const WebsiteBody = props => {
   const logoLink = get(aboutObject, ['defaultShowLink'], '/');
 
   const reloadSearchList = () => {
-    props.setMapForSearch({
-      coordinates: area.center,
-      ...boundsParams,
-    });
+    handelSetMapForSearch();
     props.setShowReload(false);
   };
 
