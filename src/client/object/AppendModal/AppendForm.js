@@ -67,6 +67,7 @@ import {
   getObjectType,
   getListItems,
   prepareBlogData,
+  getBlogItems,
 } from '../../helpers/wObjectHelper';
 import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -187,7 +188,7 @@ export default class AppendForm extends Component {
     fileList: [],
     currentAlbum: '',
     currentImages: [],
-    selectedUserBlog: null,
+    selectedUserBlog: [],
   };
 
   componentDidMount = () => {
@@ -738,8 +739,6 @@ export default class AppendForm extends Component {
     const currentField = this.props.form.getFieldValue('currentField');
     if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
-    } else if (objectFields.blog === currentField) {
-      this.handleAddBlog();
     } else if (objectFields.newsFilter === currentField) {
       const { chosenLocale, usedLocale } = this.props;
       const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(sub =>
@@ -781,6 +780,9 @@ export default class AppendForm extends Component {
               }),
             );
           } else {
+            if (objectFields.blog === currentField) {
+              this.handleAddBlog();
+            }
             this.onSubmit(values);
           }
         } else {
@@ -862,6 +864,9 @@ export default class AppendForm extends Component {
     if (currentField === objectFields.categoryItem) {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
       return selectedTagCategory.some(item => item.body === currentValue);
+    }
+    if (currentField === objectFields.blog) {
+      return filtered.some(f => this.getCurrentObjectBody(currentField).blogAccount === f.body);
     }
 
     return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
@@ -1726,6 +1731,7 @@ export default class AppendForm extends Component {
         const buttons = parseButtonsField(wObject);
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
+        const blogs = getBlogItems(wObject);
         let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
@@ -1758,6 +1764,14 @@ export default class AppendForm extends Component {
                 type={objectFields.newsFilter}
               />
             ),
+          });
+        }
+        if (!isEmpty(blogs)) {
+          blogs.forEach(blog => {
+            listItems.push({
+              id: blog.permlink,
+              content: <DnDListItem type={objectFields.blog} name={blog.blogTitle} />,
+            });
           });
         }
 
@@ -1963,13 +1977,13 @@ export default class AppendForm extends Component {
               {getFieldDecorator(blogFields.title, {
                 rules: [
                   {
-                    max: 13,
+                    max: 17,
                     message: intl.formatMessage(
                       {
                         id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 13 characters.",
+                        defaultMessage: "Value can't be longer than 17 characters.",
                       },
-                      { value: 13 },
+                      { value: 17 },
                       {
                         pattern: blogNameValidationRegExp,
                         message: intl.formatMessage({
@@ -1990,36 +2004,20 @@ export default class AppendForm extends Component {
                     id: 'blog_title',
                     defaultMessage: 'Blog title',
                   })}
+                  maxLength={17}
                 />,
               )}
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(blogFields.account, {
-                rules: [
-                  {
-                    required: true,
-                    message: {
-                      intlId: {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      intlMeta: { field: 'Account' },
-                    },
-                  },
-                  {
-                    validator: true,
-                  },
-                ],
+                rules: this.getFieldRules(objectFields.blog),
               })(
                 <SearchUsersAutocomplete
                   handleSelect={this.handleSelectUserBlog}
-                  disabled={selectedUserBlog}
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
+                  disabled={!isEmpty(selectedUserBlog)}
                 />,
               )}
-              {selectedUserBlog && (
+              {!isEmpty(selectedUserBlog) && (
                 <SelectUserForAutocomplete
                   account={selectedUserBlog}
                   resetUser={this.handleResetUserBlog}

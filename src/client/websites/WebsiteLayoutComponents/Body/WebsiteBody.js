@@ -27,6 +27,7 @@ import {
 import { getCoordinates } from '../../../user/userActions';
 import {
   setMapForSearch,
+  setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../../../search/searchActions';
@@ -92,13 +93,15 @@ const WebsiteBody = props => {
 
   const handelSetMapForSearch = () =>
     props.setMapForSearch({
-      coordinates: reverse(area.center),
+      coordinates: reverse([...area.center]),
       ...boundsParams,
     });
 
   useEffect(() => {
     if (props.isAuth) props.getReservedCounter();
     getCoordinatesForMap();
+
+    return () => props.setShowSearchResult(false);
   }, []);
 
   useEffect(() => {
@@ -388,6 +391,7 @@ WebsiteBody.propTypes = {
   putUserCoordinates: PropTypes.func.isRequired,
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
+  setShowSearchResult: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
   // eslint-disable-next-line react/no-unused-prop-types
@@ -439,5 +443,6 @@ export default connect(
     getCurrentAppSettings,
     setMapForSearch,
     setShowReload,
+    setShowSearchResult,
   },
 )(withRouter(WebsiteBody));

@@ -184,7 +184,7 @@ class ObjectInfo extends React.Component {
 
   getMenuSectionLink = (item = {}) => {
     const { wobject, location } = this.props;
-    const blogPath = `/object/${wobject.author_permlink}/blog/@${item.permlink}`;
+    const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
     const blogClassesList = classNames('menu-btn', {
       active: location.pathname === blogPath,
     });
