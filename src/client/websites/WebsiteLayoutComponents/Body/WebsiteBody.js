@@ -224,7 +224,11 @@ const WebsiteBody = props => {
     const firstOffsetNumber = getFirstOffsetNumber();
 
     return (
-      <Overlay anchor={infoboxData.coordinates} offset={[firstOffsetNumber, 75]}>
+      <Overlay
+        anchor={infoboxData.coordinates}
+        offset={[firstOffsetNumber, 75]}
+        className="WebsiteBody__overlay"
+      >
         <Link
           role="presentation"
           className="WebsiteBody__overlay-wrap"
