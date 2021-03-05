@@ -109,7 +109,7 @@ export default class UserProfile extends React.Component {
     const { match, limit, user, isBlogInObject } = this.props;
     const { name, author } = match.params;
     const permlink = isBlogInObject ? author : name;
-    if (prevProps.user.muted !== user.muted) {
+    if (prevProps.user.muted !== user.muted || prevProps.match.url !== match.url) {
       this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
     }
   }

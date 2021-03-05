@@ -27,6 +27,7 @@ import {
 import { getCoordinates } from '../../../user/userActions';
 import {
   setMapForSearch,
+  setSearchInBox,
   setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
@@ -54,7 +55,6 @@ const WebsiteBody = props => {
     bottomPoint: [],
   });
   const [infoboxData, setInfoboxData] = useState(null);
-  const [mapPointCounter, setMapPointCounter] = useState(0);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   let queryCenter = props.query.get('center');
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
@@ -109,8 +109,8 @@ const WebsiteBody = props => {
       handelSetMapForSearch();
     } else {
       props.setMapForSearch({});
-      setMapPointCounter(size(props.wobjectsPoint));
       props.setShowReload(false);
+      props.setSearchInBox(true);
     }
   }, [props.isShowResult]);
 
@@ -126,10 +126,8 @@ const WebsiteBody = props => {
               props.searchMap.coordinates,
               area.center,
             );
-            const diffLength = Math.abs(mapPointCounter - size(res.value.wobjects));
 
-            if (((diffLength >= 10 && !props.searchString) || distance) && !props.showReloadButton)
-              props.setShowReload(true);
+            if (distance && !props.showReloadButton) props.setShowReload(true);
             if (!distance) props.setShowReload(false);
           }
           if (!isEmpty(queryCenter)) {
@@ -226,7 +224,11 @@ const WebsiteBody = props => {
     const firstOffsetNumber = getFirstOffsetNumber();
 
     return (
-      <Overlay anchor={infoboxData.coordinates} offset={[firstOffsetNumber, 75]}>
+      <Overlay
+        anchor={infoboxData.coordinates}
+        offset={[firstOffsetNumber, 75]}
+        className="WebsiteBody__overlay"
+      >
         <Link
           role="presentation"
           className="WebsiteBody__overlay-wrap"
@@ -391,6 +393,7 @@ WebsiteBody.propTypes = {
   putUserCoordinates: PropTypes.func.isRequired,
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
+  setSearchInBox: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.shape(),
@@ -444,5 +447,6 @@ export default connect(
     setMapForSearch,
     setShowReload,
     setShowSearchResult,
+    setSearchInBox,
   },
 )(withRouter(WebsiteBody));
