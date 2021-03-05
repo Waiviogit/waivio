@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, map, size, get, has } from 'lodash';
+import { isEmpty, map, size, get, has, sortBy } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 import classNames from 'classnames';
@@ -9,7 +9,6 @@ import { ReactSVG } from 'react-svg';
 
 import UserCard from '../../components/UserCard';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getObjectName } from '../../helpers/wObjectHelper';
 import {
   getAllSearchLoadingMore,
   getHasMoreObjectsForWebsite,
@@ -45,7 +44,10 @@ const SearchAllResult = props => {
   const searchResultClassList = classNames('SearchAllResult', {
     SearchAllResult__show: props.isShowResult,
   });
-  const sortWobjects = props.searchResult.sort((a, b) => has(b, 'campaigns') - has(a, 'campaigns'));
+  const sortWobjects = sortBy(
+    props.searchResult,
+    (a, b) => has(b, 'campaigns') - has(a, 'campaigns'),
+  );
 
   const currentListState = () => {
     switch (props.searchType) {
@@ -67,9 +69,9 @@ const SearchAllResult = props => {
         return {
           list: map(sortWobjects, obj =>
             obj.campaigns ? (
-              <Campaign proposition={obj} filterKey="all" />
+              <Campaign proposition={obj} filterKey="all" key={obj.author_permlink} />
             ) : (
-              <ObjectCardView wObject={obj} key={getObjectName(obj)} />
+              <ObjectCardView wObject={obj} key={obj.author_permlink} />
             ),
           ),
           hasMore: props.hasMore,

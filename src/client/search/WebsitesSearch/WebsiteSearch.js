@@ -18,6 +18,7 @@ import {
   resetSearchAutoCompete,
   searchUsersAutoCompete,
   searchWebsiteObjectsAutoCompete,
+  setSearchInBox,
   setShowSearchResult,
   setWebsiteSearchString,
 } from '../searchActions';
@@ -29,6 +30,8 @@ const WebsiteSearch = props => {
 
   const currentSearchMethod = value => {
     props.setWebsiteSearchString(value);
+    props.setSearchInBox(true);
+
     switch (props.searchType) {
       case 'Users':
         return props.searchUsersAutoCompete(value);
@@ -42,7 +45,7 @@ const WebsiteSearch = props => {
   }, [props.searchType, props.activeFilters, props.searchMap]);
 
   const handleSearchAutocomplete = useCallback(
-    debounce(value => currentSearchMethod(value), 300),
+    debounce(value => currentSearchMethod(value), 500),
     [props.searchType],
   );
 
@@ -94,6 +97,7 @@ WebsiteSearch.propTypes = {
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchUsersAutoCompete: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
+  setSearchInBox: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
   activeFilters: PropTypes.arrayOf,
   isShowResult: PropTypes.string.isRequired,
@@ -123,5 +127,6 @@ export default connect(
     searchUsersAutoCompete,
     setWebsiteSearchString,
     setShowSearchResult,
+    setSearchInBox,
   },
 )(injectIntl(WebsiteSearch));
