@@ -133,7 +133,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
       )}
     </ul>
   );
-
+  console.log(menuConfig);
   return (
     <div className="collapsible-block SidebarContentBlock__content">
       {Object.values(menuConfig).map(section =>
