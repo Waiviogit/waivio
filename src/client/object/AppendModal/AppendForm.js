@@ -87,6 +87,7 @@ import CreateObject from '../../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
+import UserForm from '../Form/UserForm';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import {
   objectNameValidationRegExp,
@@ -2069,116 +2070,16 @@ export default class AppendForm extends Component {
       case objectFields.form: {
         const { formColumn, formForm } = this.state;
         return (
-          <React.Fragment>
-            <Form.Item>
-              {getFieldDecorator('formTitle', {
-                rules: this.getFieldRules('formTitle'),
-              })(
-                <Input
-                  className="AppendForm__input"
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'form',
-                    defaultMessage: 'Form',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <div className="ant-form-item-label AppendForm__appendTitles">
-              <FormattedMessage id="columns" defaultMessage="Columns" />
-            </div>
-            <Form.Item>
-              {getFieldDecorator('formColumn', {
-                initialValue: formColumn,
-                rules: [
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Column' },
-                    ),
-                  },
-                ],
-              })(
-                <Select disabled={loading} onChange={this.handleSelectColumn}>
-                  {map(formColumnsField, column => (
-                    <Select.Option key={column} value={column}>
-                      {column}
-                    </Select.Option>
-                  ))}
-                </Select>,
-              )}
-            </Form.Item>
-            <div className="ant-form-item-label AppendForm__appendTitles">
-              <FormattedMessage id="form" defaultMessage="Form" />
-            </div>
-            <Form.Item>
-              {getFieldDecorator('formForm', {
-                initialValue: formForm,
-                rules: [
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Form' },
-                    ),
-                  },
-                ],
-              })(
-                <Select disabled={loading} onChange={this.handleSelectForm}>
-                  {map(formFormFields, formItem => (
-                    <Select.Option id={formItem} value={formItem}>
-                      {formItem}
-                    </Select.Option>
-                  ))}
-                </Select>,
-              )}
-            </Form.Item>
-            {formForm === formFormFields.link ? (
-              <React.Fragment>
-                <div className="ant-form-item-label AppendForm__appendTitles">
-                  <FormattedMessage id="form_link" defaultMessage="Link" />
-                </div>
-                <Form.Item>
-                  {getFieldDecorator('formLink', {
-                    rules: this.getFieldRules('formLink'),
-                  })(
-                    <Input
-                      disabled={loading}
-                      placeholder={intl.formatMessage({
-                        id: 'form_link',
-                        defaultMessage: 'Link',
-                      })}
-                    />,
-                  )}
-                </Form.Item>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <div className="ant-form-item-label AppendForm__appendTitles">
-                  <FormattedMessage id="form_widget" defaultMessage="Widget" />
-                </div>
-                <Form.Item>
-                  {getFieldDecorator('formWidget')(
-                    <Input.TextArea
-                      className="AppendForm__input"
-                      disabled={loading}
-                      placeholder={intl.formatMessage({
-                        id: 'form_widget',
-                        defaultMessage: 'Widget',
-                      })}
-                    />,
-                  )}
-                </Form.Item>
-              </React.Fragment>
-            )}
-          </React.Fragment>
+          <UserForm
+            formColumn={formColumn}
+            formForm={formForm}
+            form={this.props.form}
+            intl={intl}
+            loading={loading}
+            handleSelectColumn={this.handleSelectColumn}
+            handleSelectForm={this.handleSelectForm}
+            getFieldRules={this.getFieldRules}
+          />
         );
       }
       default:

@@ -1,21 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { formColumnsField } from '../../../common/constants/listOfFields';
 import './FormPage.less';
 
 const FormPage = props => {
-  const { wobject, currentForm, history } = props;
+  const { wobject, currentForm } = props;
   return (
     <div className="FormPage">
       {currentForm.column === formColumnsField.entire && (
-        <span
-          role="presentation"
-          onClick={() => history.push(`/object/${wobject.author_permlink}`)}
-          className="FormPage__back-btn"
-        >
+        <Link to={`/object/${wobject.author_permlink}`} className="FormPage__back-btn">
           <FormattedMessage id="form_back" defaultMessage="Back to reviews" />
-        </span>
+        </Link>
       )}
       <div className="FormPage__block">
         <iframe
@@ -33,7 +30,6 @@ const FormPage = props => {
 FormPage.propTypes = {
   wobject: PropTypes.shape(),
   currentForm: PropTypes.shape(),
-  history: PropTypes.shape().isRequired,
 };
 
 FormPage.defaultProps = {
