@@ -16,7 +16,6 @@ import {
   getIsStartSearchUser,
   getSearchFilters,
   getSearchFiltersTagCategory,
-  getSearchInBox,
   getSearchUsersResults,
   getShowSearchResult,
   getWebsiteSearchResult,
@@ -243,7 +242,6 @@ SearchAllResult.propTypes = {
   followSearchUser: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool.isRequired,
-  searchInBox: PropTypes.bool.isRequired,
 };
 
 export default connect(
@@ -259,7 +257,6 @@ export default connect(
     usersLoading: getIsStartSearchUser(state),
     isShowResult: getShowSearchResult(state),
     loadingMore: getAllSearchLoadingMore(state),
-    searchInBox: getSearchInBox(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,

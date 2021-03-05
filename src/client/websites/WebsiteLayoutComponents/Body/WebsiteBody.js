@@ -55,7 +55,6 @@ const WebsiteBody = props => {
     bottomPoint: [],
   });
   const [infoboxData, setInfoboxData] = useState(null);
-  const [mapPointCounter, setMapPointCounter] = useState(0);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   let queryCenter = props.query.get('center');
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
@@ -110,7 +109,6 @@ const WebsiteBody = props => {
       handelSetMapForSearch();
     } else {
       props.setMapForSearch({});
-      setMapPointCounter(size(props.wobjectsPoint));
       props.setShowReload(false);
       props.setSearchInBox(true);
     }
@@ -128,10 +126,8 @@ const WebsiteBody = props => {
               props.searchMap.coordinates,
               area.center,
             );
-            const diffLength = Math.abs(mapPointCounter - size(res.value.wobjects));
 
-            if (((diffLength >= 10 && !props.searchString) || distance) && !props.showReloadButton)
-              props.setShowReload(true);
+            if (distance && !props.showReloadButton) props.setShowReload(true);
             if (!distance) props.setShowReload(false);
           }
           if (!isEmpty(queryCenter)) {

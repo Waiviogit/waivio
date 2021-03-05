@@ -1,4 +1,4 @@
-import { isEmpty, uniqWith, isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
 import { message } from 'antd';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -84,10 +84,14 @@ export const GET_FILTER_FOR_SEARCH_MORE = createAsyncActionType(
   '@search/GET_FILTER_FOR_SEARCH_MORE',
 );
 
-export const getFilterForSearch = (type, links, more = false) => ({
-  type: more ? GET_FILTER_FOR_SEARCH_MORE.ACTION : GET_FILTER_FOR_SEARCH.ACTION,
-  payload: ApiClient.getObjectTypeFilters(type, links),
-});
+export const getFilterForSearch = (type, wobjects, more = false) => {
+  const links = wobjects.map(wobj => wobj.author_permlink);
+
+  return {
+    type: more ? GET_FILTER_FOR_SEARCH_MORE.ACTION : GET_FILTER_FOR_SEARCH.ACTION,
+    payload: ApiClient.getObjectTypeFilters(type, links),
+  };
+};
 
 export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
   dispatch,
@@ -145,8 +149,7 @@ export const searchObjectsAutoCompeteLoadingMore = (
     type: SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.ACTION,
     payload: ApiClient.searchObjects(searchString, objType, forParent, 15, locale, body, skip).then(
       async res => {
-        const links = res.wobjects.map(wobj => wobj.author_permlink);
-        dispatch(getFilterForSearch(objType, links, true));
+        dispatch(getFilterForSearch(objType, res.wobjects, true));
 
         if (!res.hasMore && inBox) {
           dispatch(setSearchInBox(false));
@@ -160,6 +163,34 @@ export const searchObjectsAutoCompeteLoadingMore = (
   }).catch(() => dispatch(setSearchInBox(false)));
 };
 
+const compareSearchResult = (searchString, wobjects) => async (dispatch, getState) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const objType = getWebsiteSearchType(state);
+  const userName = getAuthenticatedUserName(state);
+  const tagsFilter = getSearchFiltersTagCategory(state);
+  const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
+  const { coordinates } = getWebsiteMap(state);
+  const body = {
+    map: { coordinates, radius: 12742000 },
+    userName,
+    sort: 'weight',
+    ...tagCategory,
+  };
+
+  dispatch(setSearchInBox(false));
+
+  try {
+    const response = await ApiClient.searchObjects(searchString, objType, false, 15, locale, body);
+
+    if (!isEmpty(wobjects)) dispatch(getFilterForSearch(objType, wobjects));
+
+    return { wobjects: [...wobjects, ...response.wobjects], hasMore: true };
+  } catch (e) {
+    return wobjects;
+  }
+};
+
 export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', limit = 15) => (
   dispatch,
   getState,
@@ -170,7 +201,7 @@ export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', l
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
-  const { topPoint, bottomPoint, coordinates } = getWebsiteMap(state);
+  const { topPoint, bottomPoint } = getWebsiteMap(state);
   const body = {
     userName,
     sort,
@@ -181,59 +212,16 @@ export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', l
   return dispatch({
     type: SEARCH_OBJECTS_FOR_WEBSITE.ACTION,
     payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, body)
-      .then(async res => {
-        const links = res.wobjects.map(wobj => wobj.author_permlink);
-        dispatch(getFilterForSearch(objType, links));
+      .then(res => {
+        dispatch(getFilterForSearch(objType, res.wobjects));
 
         if (!res.hasMore && searchString) {
-          dispatch(setSearchInBox(false));
-          const bodyWithMap = {
-            map: { coordinates, radius: 12742000 },
-            userName,
-            sort,
-            ...tagCategory,
-          };
-
-          try {
-            const k = await ApiClient.searchObjects(
-              searchString,
-              objType,
-              false,
-              limit,
-              locale,
-              bodyWithMap,
-            );
-
-            return { wobjects: [...res.wobjects, ...k.wobjects], hasMore: true };
-          } catch (e) {
-            return res;
-          }
+          return dispatch(compareSearchResult(searchString, res.wobjects));
         }
 
         return res;
       })
-      .catch(async () => {
-        dispatch(setSearchInBox(false));
-        const bodyWithMap = {
-          map: { coordinates, radius: 12742000 },
-          userName,
-          sort,
-          ...tagCategory,
-        };
-
-        try {
-          return await ApiClient.searchObjects(
-            searchString,
-            objType,
-            false,
-            limit,
-            locale,
-            bodyWithMap,
-          );
-        } catch (e) {
-          return [];
-        }
-      }),
+      .catch(() => dispatch(compareSearchResult(searchString, []))),
   });
 };
 

@@ -96,8 +96,7 @@ export default class Post extends React.Component {
       this.props.getContent(author, permlink, false);
       this.props.getUserAccount(author);
     }
-    console.log(match.params.category);
-    console.log(content);
+
     if (!!content && match.params.category && typeof window !== 'undefined') {
       window.history.replaceState(
         {},

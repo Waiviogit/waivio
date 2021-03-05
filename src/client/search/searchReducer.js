@@ -1,12 +1,4 @@
-import {
-  get,
-  isEmpty,
-  remove,
-  findIndex,
-  isEqual,
-  uniqBy,
-  uniqWith
-} from 'lodash';
+import { get, isEmpty, remove, findIndex, isEqual, uniqBy, uniqWith } from 'lodash';
 import * as searchActions from './searchActions';
 import { userToggleFollow } from './helpers';
 
