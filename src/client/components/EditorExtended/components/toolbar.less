@@ -75,11 +75,12 @@
 
   .md-url-input {
     box-sizing: border-box;
-    border-radius: 4px;
+    border-radius: 4px 0 0 4px;
     display: block;
     width: 100%;
     padding: 5px 11px;
     border: 1px solid @orange-hot;
+    border-right: none;
     background: @white;
     color: @black;
     font-size: 13px;
@@ -89,6 +90,13 @@
     &:focus {
       outline: none;
     }
+  }
+
+  .md-url-button {
+    height: 36px;
+    border-radius: 0 4px 4px 0;
+    border: 1px solid @orange-hot;
+    border-left: none;
   }
 
   .md-url-input-close {
