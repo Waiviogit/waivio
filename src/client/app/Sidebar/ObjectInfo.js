@@ -246,7 +246,7 @@ class ObjectInfo extends React.Component {
           </LinkButton>
         );
         break;
-      case TYPES_OF_MENU_ITEM.FORM:
+      case objectFields.form:
         menuItem = (
           <LinkButton className={formClassesList} to={formPath}>
             {item.title}
@@ -378,7 +378,7 @@ class ObjectInfo extends React.Component {
                   objectFields.form,
                   !isEmpty(formsList) &&
                     formsList.map(form =>
-                      this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.FORM, ...form }),
+                      this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
                 )}
                 {this.listItem(objectFields.sorting, null)}

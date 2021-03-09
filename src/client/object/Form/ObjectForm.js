@@ -5,7 +5,7 @@ import { map } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { formColumnsField, formFormFields } from '../../../common/constants/listOfFields';
 
-const UserForm = props => {
+const ObjectForm = props => {
   const {
     form,
     intl,
@@ -130,7 +130,7 @@ const UserForm = props => {
   );
 };
 
-UserForm.propTypes = {
+ObjectForm.propTypes = {
   form: PropTypes.shape(),
   intl: PropTypes.shape(),
   loading: PropTypes.bool,
@@ -141,7 +141,7 @@ UserForm.propTypes = {
   getFieldRules: PropTypes.shape(),
 };
 
-UserForm.defaultProps = {
+ObjectForm.defaultProps = {
   form: {},
   intl: {},
   loading: false,
@@ -150,4 +150,4 @@ UserForm.defaultProps = {
   getFieldRules: () => {},
 };
 
-export default UserForm;
+export default ObjectForm;

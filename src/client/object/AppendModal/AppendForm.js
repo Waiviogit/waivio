@@ -87,7 +87,7 @@ import CreateObject from '../../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
-import UserForm from '../Form/UserForm';
+import ObjectForm from '../Form/ObjectForm';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import {
   objectNameValidationRegExp,
@@ -2070,7 +2070,7 @@ export default class AppendForm extends Component {
       case objectFields.form: {
         const { formColumn, formForm } = this.state;
         return (
-          <UserForm
+          <ObjectForm
             formColumn={formColumn}
             formForm={formForm}
             form={this.props.form}
