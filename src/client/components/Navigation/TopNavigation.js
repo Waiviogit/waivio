@@ -49,6 +49,14 @@ const TOOLS_URLS = [
   LINKS.TOOLS_SETTINGS_GUESTS,
   LINKS.TOOLS_SETTINGS_NOTIFICATIONS,
   LINKS.WEBSITE_CREATE,
+  LINKS.WEBSITES_MANAGE,
+  LINKS.WEBSITES_PAYMENTS,
+  LINKS.WEBSITES_CONFIGURATION,
+  LINKS.WEBSITES_ADMINISTRATION,
+  LINKS.WEBSITES_MODERATORS,
+  LINKS.WEBSITES_AUTHORITIES,
+  LINKS.WEBSITES_OBJECT_FILTERS,
+  LINKS.WEBSITES_MUTED_USER,
 ];
 
 const TopNavigation = ({ location: { pathname } }) => {
@@ -97,7 +105,9 @@ const TopNavigation = ({ location: { pathname } }) => {
               <Link
                 to={`${LINKS.TOOLS_DRAFTS}`}
                 className={classNames('TopNavigation__link', {
-                  'TopNavigation__link--active': TOOLS_URLS.some(feedUrl => feedUrl === pathname),
+                  'TopNavigation__link--active': TOOLS_URLS.some(feedUrl =>
+                    pathname.includes(feedUrl),
+                  ),
                 })}
               >
                 <FormattedMessage id="tools" defaultMessage="Tools" />
