@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import { Input } from 'antd';
+import { isEmpty } from 'lodash';
+import { Input, Button } from 'antd';
+import { FormattedMessage } from 'react-intl';
 
 import BlockToolbar from './blocktoolbar';
 import InlineToolbar from './inlinetoolbar';
@@ -126,12 +128,16 @@ export default class Toolbar extends React.Component {
     if (e.which === 13) {
       e.preventDefault();
       e.stopPropagation();
-      this.props.setLink(this.state.urlInputValue);
-      this.hideLinkInput();
+      this.setLink();
     } else if (e.which === 27) {
       this.hideLinkInput();
     }
   }
+
+  setLink = () => {
+    this.props.setLink(this.state.urlInputValue);
+    this.hideLinkInput();
+  };
 
   onChange(e) {
     this.setState({
@@ -233,6 +239,7 @@ export default class Toolbar extends React.Component {
   render() {
     const { editorState, editorEnabled, inlineButtons, intl } = this.props;
     const { showURLInput, urlInputValue } = this.state;
+    const isEmptyUrlInput = isEmpty(urlInputValue);
     let isOpen = true;
     if (!editorEnabled || editorState.getSelection().isCollapsed()) {
       isOpen = false;
@@ -244,11 +251,8 @@ export default class Toolbar extends React.Component {
         <div className={className} style={{ left: 0, width: '97%' }}>
           <div
             className="md-RichEditor-controls md-RichEditor-show-link-input"
-            style={{ display: 'block' }}
+            style={{ display: 'flex' }}
           >
-            <span className="md-url-input-close" role="presentation" onClick={this.hideLinkInput}>
-              &times;
-            </span>
             <Input
               ref={node => {
                 this.urlinput = node;
@@ -262,6 +266,16 @@ export default class Toolbar extends React.Component {
               })}
               value={urlInputValue}
             />
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={this.setLink}
+              className="md-url-button"
+              style={{ display: 'block' }}
+              disabled={isEmptyUrlInput}
+            >
+              <FormattedMessage id="enter" defaultMessage="Enter" />
+            </Button>
           </div>
         </div>
       );

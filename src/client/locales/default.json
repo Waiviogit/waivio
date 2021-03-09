@@ -1612,7 +1612,15 @@
   "blog_title": "Blog title",
   "add_blog_success": "You successfully have add the {blogName} blog",
   "add_blog_failure": "Couldn't add the blog.",
+  "append_object_blog_validation_msg": "This user has already been added to another blog",
   "active_website_pricing": "Active website pricing:",
   "prices_per_day": "{price} HBD per day;",
-  "inactive_website_pricing": "Inactive website pricing:"
+  "inactive_website_pricing": "Inactive website pricing:",
+  "object_field_form": "Form",
+  "form": "Form",
+  "columns": "Columns",
+  "form_link": "Link",
+  "form_widget": "Widget",
+  "form_back": "Back to reviews",
+  "enter": "Enter"
 }
