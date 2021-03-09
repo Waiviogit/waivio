@@ -213,7 +213,7 @@ ShallowWrapper {
               <span
                 className="ant-form-item-required"
               >
-                 
+
                 <a
                   href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
                   rel="noopener noreferrer"
@@ -233,7 +233,7 @@ ShallowWrapper {
               type="primary"
             />
           </FormItem>
-        </Form>,
+        </UserForm>,
       ],
       "className": "center",
     },
@@ -324,7 +324,7 @@ ShallowWrapper {
                 <span
                   className="ant-form-item-required"
                 >
-                   
+
                   <a
                     href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
                     rel="noopener noreferrer"
@@ -557,7 +557,7 @@ ShallowWrapper {
                 <span
                   className="ant-form-item-required"
                 >
-                   
+
                   <a
                     href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
                     rel="noopener noreferrer"
@@ -577,7 +577,7 @@ ShallowWrapper {
                 "children": <span
                   className="ant-form-item-required"
                 >
-                   
+
                   <a
                     href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
                     rel="noopener noreferrer"
@@ -681,7 +681,7 @@ ShallowWrapper {
               values={Object {}}
             />
           </h1>,
-          <Form
+          <UserForm
             className="CreateWebsite"
             colon={true}
             hideRequiredMark={false}
@@ -741,7 +741,7 @@ ShallowWrapper {
                 <span
                   className="ant-form-item-required"
                 >
-                   
+
                   <a
                     href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
                     rel="noopener noreferrer"
@@ -761,7 +761,7 @@ ShallowWrapper {
                 type="primary"
               />
             </FormItem>
-          </Form>,
+          </UserForm>,
         ],
         "className": "center",
       },
@@ -852,7 +852,7 @@ ShallowWrapper {
                   <span
                     className="ant-form-item-required"
                   >
-                     
+
                     <a
                       href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
                       rel="noopener noreferrer"
@@ -1085,7 +1085,7 @@ ShallowWrapper {
                   <span
                     className="ant-form-item-required"
                   >
-                     
+
                     <a
                       href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
                       rel="noopener noreferrer"
@@ -1105,7 +1105,7 @@ ShallowWrapper {
                   "children": <span
                     className="ant-form-item-required"
                   >
-                     
+
                     <a
                       href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
                       rel="noopener noreferrer"

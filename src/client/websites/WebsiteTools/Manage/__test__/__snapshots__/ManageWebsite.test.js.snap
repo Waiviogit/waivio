@@ -275,7 +275,7 @@ ShallowWrapper {
               <UNDEFINED
                 to="/create"
               >
-                 
+
               </UNDEFINED>
             </button>
           </div>
@@ -449,7 +449,7 @@ ShallowWrapper {
                 <UNDEFINED
                   to="/create"
                 >
-                   
+
                 </UNDEFINED>
               </button>
             </div>,
@@ -853,7 +853,7 @@ ShallowWrapper {
                   <UNDEFINED
                     to="/create"
                   >
-                     
+
                   </UNDEFINED>
                 </button>,
               ],
@@ -943,7 +943,7 @@ ShallowWrapper {
                   "children": <UNDEFINED
                     to="/create"
                   >
-                     
+
                   </UNDEFINED>,
                   "className": "ManageWebsites__button",
                 },
@@ -1164,7 +1164,7 @@ ShallowWrapper {
                 <UNDEFINED
                   to="/create"
                 >
-                   
+
                 </UNDEFINED>
               </button>
             </div>
@@ -1338,7 +1338,7 @@ ShallowWrapper {
                   <UNDEFINED
                     to="/create"
                   >
-                     
+
                   </UNDEFINED>
                 </button>
               </div>,
@@ -1742,7 +1742,7 @@ ShallowWrapper {
                     <UNDEFINED
                       to="/create"
                     >
-                       
+
                     </UNDEFINED>
                   </button>,
                 ],
@@ -1832,7 +1832,7 @@ ShallowWrapper {
                     "children": <UNDEFINED
                       to="/create"
                     >
-                       
+
                     </UNDEFINED>,
                     "className": "ManageWebsites__button",
                   },

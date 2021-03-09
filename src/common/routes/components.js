@@ -117,4 +117,5 @@ export default {
     import('../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody'),
   ),
   UserBlog: loableComponent(import('../../client/object/UserBlog/UserBlog')),
+  FormPage: loableComponent(import('../../client/object/FormPage/FormPage')),
 };

@@ -36,6 +36,8 @@ import {
   statusFields,
   TYPES_OF_MENU_ITEM,
   websiteFields,
+  formColumnsField,
+  formFormFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import {
@@ -85,6 +87,7 @@ import CreateObject from '../../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
+import ObjectForm from '../Form/ObjectForm';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import {
   objectNameValidationRegExp,
@@ -189,6 +192,8 @@ export default class AppendForm extends Component {
     currentAlbum: '',
     currentImages: [],
     selectedUserBlog: [],
+    formColumn: formColumnsField.middle,
+    formForm: formFormFields.link,
   };
 
   componentDidMount = () => {
@@ -386,6 +391,8 @@ export default class AppendForm extends Component {
 
           return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
+        case objectFields.form:
+          return `@${author} added ${currentField}`;
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -436,6 +443,16 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           type: currentField,
           alias: getFieldValue('menuItemName') || this.state.selectedObject.name,
+        };
+      }
+
+      if (currentField === objectFields.form) {
+        fieldsObject = {
+          ...fieldsObject,
+          title: formValues.formTitle,
+          column: formValues.formColumn,
+          form: formValues.formForm,
+          link: formValues.formLink || formValues.formWidget,
         };
       }
 
@@ -757,6 +774,21 @@ export default class AppendForm extends Component {
           }),
         );
       }
+    } else if (objectFields.form === currentField) {
+      const formData = this.props.form.getFieldsValue();
+      if (!isEmpty(formData.formLink) || !isEmpty(formData.formWidget)) {
+        this.onSubmit(formData);
+      } else {
+        message.error(
+          this.props.intl.formatMessage(
+            {
+              id: 'field_error',
+              defaultMessage: '{field} is required',
+            },
+            { field: 'Form' },
+          ),
+        );
+      }
     } else if (currentField !== objectFields.newsFilter) {
       this.props.form.validateFieldsAndScroll((err, values) => {
         const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
@@ -1065,6 +1097,14 @@ export default class AppendForm extends Component {
     } else {
       this.setState({ selectedCategory: category, currentTags: [] });
     }
+  };
+
+  handleSelectColumn = value => {
+    this.setState({ formColumn: value });
+  };
+
+  handleSelectForm = value => {
+    this.setState({ formForm: value });
   };
 
   getFieldRules = fieldName => {
@@ -2025,6 +2065,21 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
           </React.Fragment>
+        );
+      }
+      case objectFields.form: {
+        const { formColumn, formForm } = this.state;
+        return (
+          <ObjectForm
+            formColumn={formColumn}
+            formForm={formForm}
+            form={this.props.form}
+            intl={intl}
+            loading={loading}
+            handleSelectColumn={this.handleSelectColumn}
+            handleSelectForm={this.handleSelectForm}
+            getFieldRules={this.getFieldRules}
+          />
         );
       }
       default:
