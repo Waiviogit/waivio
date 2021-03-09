@@ -115,10 +115,10 @@ const PostPopoverMenu = ({
           title,
         )}" ${authorTwitter} ${objectTwitter}`;
         const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
-        window.open(twitterShareURL);
+        window.location.assign(twitterShareURL);
       } else {
         const facebookShareURL = getFacebookShareURL(postURL);
-        window.open(facebookShareURL);
+        window.location.assign(facebookShareURL);
       }
     });
   };
