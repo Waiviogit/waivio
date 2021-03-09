@@ -10,7 +10,7 @@ import './ReportTableRewards.less';
 
 const ReportTableRewards = ({ intl }) => {
   const singleReportData = useSelector(getSingleReportData);
-  const reportUser = get(singleReportData, ['user', 'name']);
+  const reportUserName = get(singleReportData, ['user', 'name']);
   const filteredHistory = filter(
     singleReportData.histories,
     obj => obj.type === 'review' || obj.type === 'beneficiary_fee',
@@ -21,7 +21,7 @@ const ReportTableRewards = ({ intl }) => {
     const benef = get(obj, ['details', 'beneficiaries']);
     const account = find(benef, ['account', userName]);
     const totalWeight = benef.reduce((sum, item) => sum + item.weight, 0);
-    const ownHive = userName === reportUser;
+    const ownHive = userName === reportUserName;
 
     return {
       account: get(obj, ['userName']) || '',
