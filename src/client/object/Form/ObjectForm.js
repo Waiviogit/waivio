@@ -27,7 +27,7 @@ const ObjectForm = props => {
             disabled={loading}
             placeholder={intl.formatMessage({
               id: 'form',
-              defaultMessage: 'Form',
+              defaultMessage: 'Form title',
             })}
           />,
         )}

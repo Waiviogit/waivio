@@ -32,6 +32,7 @@ const LINKS = {
   WEBSITES_MODERATORS: '/moderators',
   WEBSITES_AUTHORITIES: '/authorities',
   WEBSITES_OBJECT_FILTERS: '/objects-filters',
+  WEBSITES_AREAS: '/objects',
   WEBSITES_MUTED_USER: '/muted-users',
   NOTIFICATIONS: '/notifications-list',
   USERS: PATH_NAME_DISCOVER,

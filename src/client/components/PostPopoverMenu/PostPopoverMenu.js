@@ -39,7 +39,6 @@ const propTypes = {
     loadingHide: PropTypes.bool,
     loadingMute: PropTypes.bool,
     muted: PropTypes.bool,
-    wobjects: PropTypes.shape(),
     tags: PropTypes.shape(),
     cities: PropTypes.shape(),
     userTwitter: PropTypes.shape(),
