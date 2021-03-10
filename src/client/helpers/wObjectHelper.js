@@ -179,6 +179,7 @@ export const parseButtonsField = wobject => {
 };
 
 export const getBlogItems = wobject => get(wobject, 'blog', []);
+export const getFormItems = wobject => get(wobject, 'form', []);
 
 export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;

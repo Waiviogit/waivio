@@ -48,11 +48,11 @@ const Wobj = ({
           currentForm.column === formColumnsField.entire)),
   });
   const centerClassList = classNames('center', {
-    'center--page':
-      hasType(wobject, OBJECT_TYPE.PAGE) ||
-      (currentForm &&
-        (currentForm.column === formColumnsField.middleRight ||
-          currentForm.column === formColumnsField.entire)),
+    'center--page': hasType(wobject, OBJECT_TYPE.PAGE),
+    'center--form':
+      currentForm &&
+      (currentForm.column === formColumnsField.middleRight ||
+        currentForm.column === formColumnsField.entire),
   });
 
   return (
