@@ -758,7 +758,7 @@ export const fieldsRules = {
           id: 'field_error',
           defaultMessage: 'Field is required',
         },
-        intlMeta: { field: 'Short description' },
+        intlMeta: { field: 'Form title' },
       },
     },
     {

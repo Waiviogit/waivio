@@ -70,6 +70,7 @@ import {
   getListItems,
   prepareBlogData,
   getBlogItems,
+  getFormItems,
 } from '../../helpers/wObjectHelper';
 import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -392,7 +393,7 @@ export default class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         case objectFields.form:
-          return `@${author} added ${currentField}`;
+          return `@${author} added ${currentField} ${formValues.formTitle}`;
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -776,7 +777,10 @@ export default class AppendForm extends Component {
       }
     } else if (objectFields.form === currentField) {
       const formData = this.props.form.getFieldsValue();
-      if (!isEmpty(formData.formLink) || !isEmpty(formData.formWidget)) {
+      if (
+        !isEmpty(formData.formTitle) &&
+        (!isEmpty(formData.formLink) || !isEmpty(formData.formWidget))
+      ) {
         this.onSubmit(formData);
       } else {
         message.error(
@@ -1782,6 +1786,7 @@ export default class AppendForm extends Component {
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
         const blogs = getBlogItems(wObject);
+        const forms = getFormItems(wObject);
         let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
@@ -1821,6 +1826,14 @@ export default class AppendForm extends Component {
             listItems.push({
               id: blog.permlink,
               content: <DnDListItem type={objectFields.blog} name={blog.blogTitle} />,
+            });
+          });
+        }
+        if (!isEmpty(forms)) {
+          forms.forEach(form => {
+            listItems.push({
+              id: form.permlink,
+              content: <DnDListItem type={objectFields.form} name={form.title} />,
             });
           });
         }

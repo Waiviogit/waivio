@@ -1620,7 +1620,7 @@
   "prices_per_day": "{price} HBD в день;",
   "inactive_website_pricing": "Цены на неактивный сайт:",
   "object_field_form": "Форма",
-  "form": "Форма",
+  "form": "Название формы",
   "columns": "Колонки",
   "form_link": "Ссылка",
   "form_widget": "Виджет",
