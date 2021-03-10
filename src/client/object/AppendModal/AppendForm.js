@@ -194,11 +194,12 @@ export default class AppendForm extends Component {
     selectedUserBlog: [],
     formColumn: formColumnsField.middle,
     formForm: formFormFields.link,
+    itemsInSortingList: null,
   };
 
   componentDidMount = () => {
     const { currentAlbum } = this.state;
-    const { albums } = this.props;
+    const { albums, wObject } = this.props;
     if (this.props.sliderMode) {
       if (!this.state.sliderVisible) {
         // eslint-disable-next-line react/no-did-mount-set-state
@@ -209,6 +210,17 @@ export default class AppendForm extends Component {
       const defaultAlbum = getDefaultAlbum(albums);
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ currentAlbum: defaultAlbum.id });
+    }
+    if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ loading: true });
+      const res = getListItems(wObject).map(item => ({
+        ...item,
+        id: item.body || item.author_permlink,
+        itemInList: true,
+      }));
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ itemsInSortingList: res, loading: false });
     }
     this.calculateVoteWorth(this.state.votePercent);
   };
@@ -1094,6 +1106,19 @@ export default class AppendForm extends Component {
     this.setState({ selectedUserBlog: null });
   };
 
+  toggleItemInSortingList = e => {
+    const { itemsInSortingList } = this.state;
+    const itemsList = itemsInSortingList.map(item =>
+      item.id === e.target.id
+        ? {
+            ...item,
+            itemInList: e.target.checked,
+          }
+        : item,
+    );
+    this.setState({ itemsInSortingList: itemsList });
+  };
+
   handleSelectCategory = value => {
     const category = this.props.categories.find(item => item.body === value);
 
@@ -1778,24 +1803,34 @@ export default class AppendForm extends Component {
         );
       }
       case objectFields.sorting: {
+        const { itemsInSortingList } = this.state;
         const buttons = parseButtonsField(wObject);
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
         const blogs = getBlogItems(wObject);
+        const wobjType = getObjectType(wObject);
         let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
             content: <DnDListItem name={item.alias || getObjectName(item)} type={item.type} />,
           })) || [];
-        if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
-          const menuItems = getListItems(wObject);
+        if (wobjType === OBJECT_TYPE.LIST) {
           listItems =
-            menuItems.map(item => ({
-              id: item.body || item.author_permlink,
-              content: (
-                <DnDListItem name={item.alias || getObjectName(item)} type={getObjectType(item)} />
-              ),
-            })) || [];
+            (itemsInSortingList &&
+              itemsInSortingList.map(item => ({
+                id: item.body || item.author_permlink,
+                itemInList: item.itemInList,
+                content: (
+                  <DnDListItem
+                    name={item.alias || getObjectName(item)}
+                    type={getObjectType(item)}
+                    wobjType={wobjType}
+                    toggleItemInSortingList={this.toggleItemInSortingList}
+                    id={item.id}
+                  />
+                ),
+              }))) ||
+            [];
         }
         if (!isEmpty(buttons)) {
           buttons.forEach(btn => {
@@ -1844,6 +1879,7 @@ export default class AppendForm extends Component {
               listItems={listItems}
               accentColor={PRIMARY_COLOR}
               onChange={this.handleChangeSorting}
+              wobjType={wobjType}
             />
           </React.Fragment>
         );
