@@ -1617,5 +1617,6 @@
   "add_blog_failure": "Не удалось добавить блог.",
   "active_website_pricing": "Стоимость активного сайта:",
   "prices_per_day": "{price} HBD в день;",
+  "home": "Домой",
   "inactive_website_pricing": "Цены на неактивный сайт:"
 }
