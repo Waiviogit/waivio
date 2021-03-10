@@ -104,7 +104,7 @@ export default class Comments extends React.Component {
     const { post, show } = this.props;
     const postId = nextProps.post.id || nextProps.post.permlink;
 
-    if (nextProps.show && (nextProps.post.id !== post.id || !show)) {
+    if (nextProps.show && (nextProps.post.id !== post.id || !show) && post.children !== 0) {
       this.props.getComments(postId);
     }
   }

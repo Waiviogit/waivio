@@ -740,6 +740,65 @@ export const fieldsRules = {
       validator: true,
     },
   ],
+  formTitle: [
+    {
+      max: 13,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 13 characters.",
+        },
+        intlMeta: { value: 13 },
+      },
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Form title' },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  formLink: [
+    {
+      max: 255,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 255 characters.",
+        },
+        intlMeta: { value: 255 },
+      },
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Link' },
+      },
+    },
+    {
+      pattern: objectURLValidationRegExp,
+      message: {
+        intlId: {
+          id: 'website_validation',
+          defaultMessage: 'Please enter valid link',
+        },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
 };
 
 export default null;

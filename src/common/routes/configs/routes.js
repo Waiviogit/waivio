@@ -345,6 +345,11 @@ const routes = {
           exact: true,
           component: Views.UserBlog,
         },
+        {
+          path: '/form/:permlink',
+          exact: true,
+          component: Views.FormPage,
+        },
       ],
     },
     {

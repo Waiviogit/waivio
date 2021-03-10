@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import classNames from 'classnames';
+import './ReportTableRewardsRow.less';
 
 const ReportTableRewardsRow = beneficiary => {
   const weight = beneficiary.weight ? `${beneficiary.weight}%` : '';
@@ -9,6 +11,9 @@ const ReportTableRewardsRow = beneficiary => {
   const payableInDollars = beneficiary.payableInDollars
     ? `$ ${beneficiary.payableInDollars.toFixed(2)}`
     : '';
+  const ReportTableClassesList = classNames('ReportTableRewardsRow__hive', {
+    ReportTableRewardsRow__ownHive: beneficiary.ownHive,
+  });
 
   return (
     <tr>
@@ -24,7 +29,7 @@ const ReportTableRewardsRow = beneficiary => {
         <div className="ReportTableRewardsRow__hivePower">{votesAmount}</div>
       </td>
       <td>
-        <div className="ReportTableRewardsRow__hive">{amount}</div>
+        <div className={ReportTableClassesList}>{amount}</div>
       </td>
       <td>
         <div className="ReportTableRewardsRow__totalHive">{totalHive.toFixed(3)}</div>

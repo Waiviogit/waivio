@@ -29,6 +29,7 @@ export const objectFields = {
   pageLink: 'pageLink',
   tag: 'tag',
   blog: 'blog',
+  form: 'form',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -110,6 +111,17 @@ export const ratingFields = {
 export const blogFields = {
   title: 'blogTitle',
   account: 'blogAccount',
+};
+
+export const formColumnsField = {
+  middle: 'Middle',
+  middleRight: 'Middle + Right',
+  entire: 'Entire Width',
+};
+
+export const formFormFields = {
+  link: 'Link',
+  widget: 'Widget',
 };
 
 export const ratePercent = [2, 4, 6, 8, 10];
