@@ -529,7 +529,7 @@ export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
   '@website/GET_WEBSITE_OBJECTS_WITH_COORDINATES',
 );
 
-export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 50) => (
+export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70) => (
   dispatch,
   getState,
 ) => {

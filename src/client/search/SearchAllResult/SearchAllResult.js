@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, map, size, get, has, sortBy } from 'lodash';
+import { isEmpty, map, size, get, uniqWith, isEqual } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 import classNames from 'classnames';
@@ -34,6 +34,8 @@ import {
 } from '../searchActions';
 import Loading from '../../components/Icon/Loading';
 import Campaign from '../../rewards/Campaign/Campaign';
+import Proposition from '../../rewards/Proposition/Proposition';
+import { assignProposition, declineProposition } from '../../user/userActions';
 
 import './SearchAllResult.less';
 
@@ -44,12 +46,8 @@ const SearchAllResult = props => {
   const searchResultClassList = classNames('SearchAllResult', {
     SearchAllResult__show: props.isShowResult,
   });
-  const sortWobjects = sortBy(
-    props.searchResult,
-    (a, b) => has(b, 'campaigns') - has(a, 'campaigns'),
-  );
 
-  const currentListState = () => {
+  const currentListState = useCallback(() => {
     switch (props.searchType) {
       case 'Users':
         return {
@@ -67,18 +65,34 @@ const SearchAllResult = props => {
 
       default:
         return {
-          list: map(sortWobjects, obj =>
-            obj.campaigns ? (
-              <Campaign proposition={obj} filterKey="all" key={obj.author_permlink} />
-            ) : (
-              <ObjectCardView wObject={obj} key={obj.author_permlink} />
-            ),
-          ),
+          list: map(uniqWith(props.searchResult, isEqual), obj => {
+            if (!isEmpty(obj.propositions)) {
+              const proposition = obj.propositions[0];
+
+              return (
+                <Proposition
+                  proposition={proposition}
+                  wobj={obj}
+                  assigned={proposition.assigned}
+                  wobjPrice={proposition.reward}
+                  assignProposition={props.assignProposition}
+                  discardProposition={props.declineProposition}
+                  // loading={loadingAssign}
+                  key={`${obj.author_permlink}`}
+                />
+              );
+            }
+
+            if (obj.campaigns)
+              return <Campaign proposition={obj} filterKey="all" key={obj.author_permlink} />;
+
+            return <ObjectCardView wObject={obj} key={obj.author_permlink} />;
+          }),
           hasMore: props.hasMore,
           loading: props.loading,
         };
     }
-  };
+  }, [props.searchType, props.searchResult, props.searchByUser, props.loading, props.usersLoading]);
 
   const currRenderListState = currentListState();
 
@@ -242,6 +256,8 @@ SearchAllResult.propTypes = {
   followSearchUser: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool.isRequired,
+  assignProposition: PropTypes.func.isRequired,
+  declineProposition: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -266,5 +282,7 @@ export default connect(
     setShowSearchResult,
     unfollowSearchUser,
     followSearchUser,
+    declineProposition,
+    assignProposition,
   },
 )(injectIntl(SearchAllResult));
