@@ -286,6 +286,10 @@ const routes = {
       ],
     },
     {
+      path: '/:category?/@:author/:permlink/:original?',
+      component: Post,
+    },
+    {
       path: `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
       component: Views.Wobj,
       exact: true,
@@ -361,10 +365,6 @@ const routes = {
     {
       path: '/objects',
       component: Views.Objects,
-    },
-    {
-      path: '/:category?/@:author/:permlink/:original?',
-      component: Post,
     },
     {
       path: '/bookmarks',
