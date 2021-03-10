@@ -124,21 +124,19 @@ const PropositionList = ({
     }
 
     if (isEmpty(currPropos)) return null;
-    const minReward = get(currentProposition, ['min_reward'], 0);
     const maxReward = get(currentProposition, ['max_reward'], 0);
     const rewardPrise = `${get(currentProposition, ['reward'], 0).toFixed(2)} USD`;
-    const rewardMax = `${maxReward.toFixed(2)} USD`;
+    const proposSize = size(allCurrentPropositions);
 
     return (
       <PropositionMainObjectCard
         intl={intl}
         wobject={currWobject}
         currentProposition={currPropos}
-        goToProducts={goToProducts}
+        goToProducts={() => goToProducts(wobject)}
         maxReward={maxReward}
-        minReward={minReward}
         rewardPrise={rewardPrise}
-        rewardMax={rewardMax}
+        proposSize={proposSize}
       />
     );
   };

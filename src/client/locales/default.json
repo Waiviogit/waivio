@@ -1492,7 +1492,7 @@
   "create_website": "Create new website",
   "prices": "Prices:",
   "prices_per_active_user": "{price} HBD per day per active user;",
-  "prices_min_value": "Minimum {price} HBD per day (including active and inactive websites).",
+  "prices_min_value": "Minimum {price} HBD per day.",
   "manage_account_balance": "Account balance (HBD)",
   "pay_now": "Pay now",
   "websites": "Websites:",
@@ -1614,11 +1614,13 @@
   "append_object_blog_validation_msg": "This user has already been added to another blog",
   "active_website_pricing": "Active website pricing:",
   "prices_per_day": "{price} HBD per day;",
-  "inactive_website_pricing": "Inactive website pricing:",
   "object_field_form": "Form",
-  "form": "Form",
+  "form": "Form title",
   "columns": "Columns",
   "form_link": "Link",
   "form_widget": "Widget",
-  "form_back": "Back to reviews"
+  "form_back": "Back to reviews",
+  "enter": "Enter",
+  "home": "Home",
+  "inactive_website_pricing": "Inactive website pricing:"
 }
