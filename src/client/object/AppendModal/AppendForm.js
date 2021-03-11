@@ -78,7 +78,6 @@ import { getVoteValue } from '../../helpers/user';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { rateObject } from '../wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
-import DnDListItem from '../../components/DnDList/DnDListItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
@@ -1110,19 +1109,6 @@ export default class AppendForm extends Component {
     this.setState({ selectedUserBlog: null });
   };
 
-  toggleItemInSortingList = e => {
-    const { itemsInSortingList } = this.state;
-    const itemsList = itemsInSortingList.map(item =>
-      item.id === e.target.id
-        ? {
-            ...item,
-            itemInList: e.target.checked,
-          }
-        : item,
-    );
-    this.setState({ itemsInSortingList: itemsList });
-  };
-
   handleSelectCategory = value => {
     const category = this.props.categories.find(item => item.body === value);
 
@@ -1817,7 +1803,8 @@ export default class AppendForm extends Component {
         let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
-            content: <DnDListItem name={item.alias || getObjectName(item)} type={item.type} />,
+            name: item.alias || getObjectName(item),
+            type: item.type,
           })) || [];
         if (wobjType === OBJECT_TYPE.LIST) {
           listItems =
@@ -1825,15 +1812,10 @@ export default class AppendForm extends Component {
               itemsInSortingList.map(item => ({
                 id: item.body || item.author_permlink,
                 itemInList: item.itemInList,
-                content: (
-                  <DnDListItem
-                    name={item.alias || getObjectName(item)}
-                    type={getObjectType(item)}
-                    wobjType={wobjType}
-                    toggleItemInSortingList={this.toggleItemInSortingList}
-                    id={item.id}
-                  />
-                ),
+                name: item.alias || getObjectName(item),
+                type: getObjectType(item),
+                wobjType,
+                toggleItemInSortingList: this.toggleItemInSortingList,
               }))) ||
             [];
         }
@@ -1841,26 +1823,24 @@ export default class AppendForm extends Component {
           buttons.forEach(btn => {
             listItems.push({
               id: btn.permlink,
-              content: <DnDListItem name={btn.body.title} type={objectFields.button} />,
+              name: btn.body.title,
+              type: objectFields.button,
             });
           });
         }
         if (!isEmpty(wObject.newsFilter)) {
           listItems.push({
             id: TYPES_OF_MENU_ITEM.NEWS,
-            content: (
-              <DnDListItem
-                name={intl.formatMessage({ id: 'news', defaultMessage: 'News' })}
-                type={objectFields.newsFilter}
-              />
-            ),
+            name: intl.formatMessage({ id: 'news', defaultMessage: 'News' }),
+            type: objectFields.newsFilter,
           });
         }
         if (!isEmpty(blogs)) {
           blogs.forEach(blog => {
             listItems.push({
               id: blog.permlink,
-              content: <DnDListItem type={objectFields.blog} name={blog.blogTitle} />,
+              name: blog.blogTitle,
+              type: objectFields.blog,
             });
           });
         }
@@ -1868,7 +1848,8 @@ export default class AppendForm extends Component {
           forms.forEach(form => {
             listItems.push({
               id: form.permlink,
-              content: <DnDListItem type={objectFields.form} name={form.title} />,
+              name: form.title,
+              type: objectFields.form,
             });
           });
         }
