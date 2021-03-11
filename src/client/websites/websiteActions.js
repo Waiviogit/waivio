@@ -552,6 +552,12 @@ export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70)
   });
 };
 
+export const RESET_WEBSITE_OBJECTS_COORDINATES = '@website/RESET_WEBSITE_OBJECTS_COORDINATES';
+
+export const resetWebsiteObjectsCoordinates = () => ({
+  type: RESET_WEBSITE_OBJECTS_COORDINATES,
+});
+
 export const GET_WEBSITE_RESTRICTIONS = createAsyncActionType('@website/GET_WEBSITE_RESTRICTIONS');
 
 export const getWebsiteRestrictions = (host, userName) => ({

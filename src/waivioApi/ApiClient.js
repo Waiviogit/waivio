@@ -10,12 +10,13 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getSessionData, getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
-import { IS_ACTIVE, IS_RESERVED } from '../common/constants/rewards';
-import user from '../client/helpers/user';
+import { IS_RESERVED } from '../common/constants/rewards';
+import { isMobileDevice } from '../client/helpers/apiHelpers';
 
 let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
+  ...isMobileDevice(),
 };
 
 export function handleErrors(response) {

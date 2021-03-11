@@ -64,7 +64,6 @@ const Proposition = props => {
   const requiredObject = get(props.proposition, ['required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const parentObject = isEmpty(proposedWobj.parent) ? requiredObject : {};
   const requiredObjectName = getObjectName(requiredObject);
   const isMessages = !isEmpty(props.match)
     ? props.match.params[0] === MESSAGES || props.match.params[0] === GUIDE_HISTORY
@@ -175,7 +174,7 @@ const Proposition = props => {
           setModalDetailsOpen(!isModalDetailsOpen);
           setReservation(true);
           setTimeout(() => {
-            history.push('/rewards/reserved');
+            props.history.push('/rewards/reserved');
           }, 5000);
         });
       if (e.error_description || e.message) {
@@ -221,6 +220,7 @@ const Proposition = props => {
       return toggleModalDetails(value);
     }
   };
+
   return (
     <div className="Proposition">
       <div className="Proposition__header">
@@ -232,7 +232,11 @@ const Proposition = props => {
         />
       </div>
       <div className="Proposition__card">
-        <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
+        <ObjectCardView
+          passedParent={requiredObject}
+          wObject={proposedWobj}
+          key={proposedWobj.id}
+        />
       </div>
       <div
         className={classNames('Proposition__footer', {
