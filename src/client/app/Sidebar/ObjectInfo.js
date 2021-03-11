@@ -15,6 +15,8 @@ import {
   getObjectName,
   parseButtonsField,
   getMenuItems,
+  getBlogItems,
+  getFormItems,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import { getFieldsCount, getLink, getExposedFieldsByObjType } from '../../object/wObjectHelper';
@@ -188,6 +190,10 @@ class ObjectInfo extends React.Component {
     const blogClassesList = classNames('menu-btn', {
       active: location.pathname === blogPath,
     });
+    const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
+    const formClassesList = classNames('menu-btn', {
+      active: location.pathname === formPath,
+    });
     let menuItem = (
       <LinkButton
         className={classNames('menu-btn', {
@@ -239,6 +245,13 @@ class ObjectInfo extends React.Component {
         menuItem = (
           <LinkButton className={blogClassesList} to={blogPath}>
             {item.blogTitle}
+          </LinkButton>
+        );
+        break;
+      case objectFields.form:
+        menuItem = (
+          <LinkButton className={formClassesList} to={formPath}>
+            {item.title}
           </LinkButton>
         );
         break;
@@ -301,11 +314,12 @@ class ObjectInfo extends React.Component {
     const button = parseButtonsField(wobject);
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
-    const blogsList = get(wobject, 'blog', []);
+    const blogsList = getBlogItems(wobject);
+    const formsList = getFormItems(wobject);
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
-        const buttonArray = [...menuLinks, ...menuPages, ...button];
+        const buttonArray = [...menuLinks, ...menuPages, ...button, ...blogsList, ...formsList];
 
         if (newsFilter) buttonArray.push({ id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter });
 
@@ -360,6 +374,13 @@ class ObjectInfo extends React.Component {
                   !isEmpty(blogsList) &&
                     blogsList.map(blog =>
                       this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BLOG, ...blog }),
+                    ),
+                )}
+                {this.listItem(
+                  objectFields.form,
+                  !isEmpty(formsList) &&
+                    formsList.map(form =>
+                      this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
                 )}
                 {this.listItem(objectFields.sorting, null)}

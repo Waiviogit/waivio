@@ -18,31 +18,39 @@ import {
   resetSearchAutoCompete,
   searchUsersAutoCompete,
   searchWebsiteObjectsAutoCompete,
+  setSearchInBox,
   setShowSearchResult,
   setWebsiteSearchString,
 } from '../searchActions';
+import { resetWebsiteObjectsCoordinates } from '../../websites/websiteActions';
 
 import './WebsiteSearch.less';
 
 const WebsiteSearch = props => {
   const [searchString, setSearchString] = useState('');
 
-  const currentSearchMethod = value => {
-    props.setWebsiteSearchString(value);
-    switch (props.searchType) {
-      case 'Users':
-        return props.searchUsersAutoCompete(value);
-      default:
-        return props.searchWebsiteObjectsAutoCompete(value);
-    }
-  };
+  const currentSearchMethod = useCallback(
+    value => {
+      props.setWebsiteSearchString(value);
+      props.setSearchInBox(true);
+
+      switch (props.searchType) {
+        case 'Users':
+          return props.searchUsersAutoCompete(value);
+        default:
+          return props.searchWebsiteObjectsAutoCompete(value);
+      }
+    },
+    [props.searchType, searchString],
+  );
 
   useEffect(() => {
     if (props.isShowResult && !isEmpty(props.searchMap)) currentSearchMethod(searchString);
+    props.resetWebsiteObjectsCoordinates();
   }, [props.searchType, props.activeFilters, props.searchMap]);
 
   const handleSearchAutocomplete = useCallback(
-    debounce(value => currentSearchMethod(value), 300),
+    debounce(value => currentSearchMethod(value), 500),
     [props.searchType],
   );
 
@@ -94,10 +102,12 @@ WebsiteSearch.propTypes = {
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchUsersAutoCompete: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
+  setSearchInBox: PropTypes.func.isRequired,
+  resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
-  activeFilters: PropTypes.arrayOf,
-  isShowResult: PropTypes.string.isRequired,
-  searchMap: PropTypes.string.isRequired,
+  activeFilters: PropTypes.arrayOf(PropTypes.shape()),
+  isShowResult: PropTypes.bool.isRequired,
+  searchMap: PropTypes.shape().isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -123,5 +133,7 @@ export default connect(
     searchUsersAutoCompete,
     setWebsiteSearchString,
     setShowSearchResult,
+    setSearchInBox,
+    resetWebsiteObjectsCoordinates,
   },
 )(injectIntl(WebsiteSearch));

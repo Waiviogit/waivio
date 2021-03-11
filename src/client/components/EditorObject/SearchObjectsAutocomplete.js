@@ -51,6 +51,7 @@ class SearchObjectsAutocomplete extends Component {
     autoFocus: true,
     isSearchObject: false,
     addItem: false,
+    addHashtag: false,
     parentObject: {},
   };
 
@@ -76,6 +77,7 @@ class SearchObjectsAutocomplete extends Component {
     resetIsClearSearchFlag: PropTypes.func,
     parentObject: PropTypes.shape(),
     addItem: PropTypes.bool,
+    addHashtag: PropTypes.bool,
   };
 
   constructor(props) {
@@ -93,7 +95,8 @@ class SearchObjectsAutocomplete extends Component {
   }
 
   debouncedSearch = debounce(
-    (searchString, objType = '', parent) => this.props.searchObjects(searchString, objType, parent),
+    (searchString, objType = '', parent) =>
+      this.props.searchObjects(searchString, objType, parent, this.props.addHashtag),
     300,
   );
 

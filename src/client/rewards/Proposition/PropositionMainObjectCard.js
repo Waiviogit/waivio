@@ -8,42 +8,28 @@ const PropositionMainObjectCard = ({
   wobject,
   currentProposition,
   goToProducts,
-  maxReward,
-  minReward,
   rewardPrise,
-  rewardMax,
+  proposSize,
 }) => (
   <React.Fragment>
     <ObjectCardView wObject={wobject} passedParent={currentProposition} />
-    <div className="Campaign__button" role="presentation" onClick={() => goToProducts(wobject)}>
+    <div className="Campaign__button" role="presentation" onClick={goToProducts}>
       <Button type="primary" size="large">
-        {maxReward === minReward ? (
-          <React.Fragment>
-            <span>
-              {intl.formatMessage({
+        <span>
+          {proposSize <= 1
+            ? intl.formatMessage({
                 id: 'rewards_details_earn',
                 defaultMessage: 'Earn',
-              })}
-            </span>
-            <span>
-              <span className="fw6 ml1">{rewardPrise}</span>
-              <Icon type="right" />
-            </span>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <span>
-              {intl.formatMessage({
+              })
+            : intl.formatMessage({
                 id: 'rewards_details_earn_up_to',
                 defaultMessage: 'Earn up to',
               })}
-            </span>
-            <span>
-              <span className="fw6 ml1">{`${rewardMax}`}</span>
-              <Icon type="right" />
-            </span>
-          </React.Fragment>
-        )}
+        </span>
+        <span>
+          <span className="fw6 ml1">{rewardPrise}</span>
+          <Icon type="right" />
+        </span>
       </Button>
     </div>
   </React.Fragment>
@@ -54,10 +40,8 @@ PropositionMainObjectCard.propTypes = {
   wobject: PropTypes.shape(),
   currentProposition: PropTypes.arrayOf(PropTypes.shape()),
   goToProducts: PropTypes.func,
-  maxReward: PropTypes.number,
-  minReward: PropTypes.number,
   rewardPrise: PropTypes.string,
-  rewardMax: PropTypes.string,
+  proposSize: PropTypes.number,
 };
 
 PropositionMainObjectCard.defaultProps = {
@@ -65,10 +49,8 @@ PropositionMainObjectCard.defaultProps = {
   wobject: {},
   currentProposition: [],
   goToProducts: () => {},
-  maxReward: null,
-  minReward: null,
   rewardPrise: '',
-  rewardMax: '',
+  proposSize: 0,
 };
 
 export default PropositionMainObjectCard;

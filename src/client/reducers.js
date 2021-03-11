@@ -272,6 +272,7 @@ export const getAllSearchLoadingMore = state => fromSearch.getAllSearchLoadingMo
 export const getWebsiteMap = state => fromSearch.getWebsiteMap(state.search);
 export const getHasMoreObjectsForWebsite = state =>
   fromSearch.getHasMoreObjectsForWebsite(state.search);
+export const getSearchInBox = state => fromSearch.getSearchInBox(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);

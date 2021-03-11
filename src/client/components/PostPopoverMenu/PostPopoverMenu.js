@@ -39,7 +39,6 @@ const propTypes = {
     loadingHide: PropTypes.bool,
     loadingMute: PropTypes.bool,
     muted: PropTypes.bool,
-    wobjects: PropTypes.shape(),
     tags: PropTypes.shape(),
     cities: PropTypes.shape(),
     userTwitter: PropTypes.shape(),
@@ -115,10 +114,10 @@ const PostPopoverMenu = ({
           title,
         )}" ${authorTwitter} ${objectTwitter}`;
         const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
-        window.open(twitterShareURL);
+        window.location.assign(twitterShareURL);
       } else {
         const facebookShareURL = getFacebookShareURL(postURL);
-        window.open(facebookShareURL);
+        window.location.assign(facebookShareURL);
       }
     });
   };

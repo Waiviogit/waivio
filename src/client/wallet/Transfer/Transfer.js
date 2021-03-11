@@ -156,9 +156,12 @@ export default class Transfer extends React.Component {
       getCryptoPriceHistory: getCryptoPriceHistoryAction,
       to,
       amount,
+      currency,
     } = this.props;
     const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
     const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState(() => ({ currency }));
 
     if (isNull(currentHiveRate) || isNull(currentHBDRate))
       getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
@@ -531,7 +534,7 @@ export default class Transfer extends React.Component {
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
     const balance =
-      this.props.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
+      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
     const currentBalance = isGuest ? `${user.balance} HIVE` : balance;
     const isChangesDisabled = !!memo;
     const currencyPrefix = getFieldDecorator('currency', {

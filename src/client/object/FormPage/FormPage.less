@@ -1,0 +1,21 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/mixins.less';
+
+.FormPage {
+  display: contents;
+  padding: 15px;
+  width: 100%;
+  flex-direction: column;
+
+  &__back-btn {
+    .wallet-table-btn();
+    margin-bottom: 0;
+  }
+
+  &__block {
+    width: 100%;
+    padding-top: 15px;
+    height: 600px;
+  }
+}

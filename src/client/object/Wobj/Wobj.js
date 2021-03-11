@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Helmet } from 'react-helmet';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { renderRoutes } from 'react-router-config';
 import DEFAULTS from '../const/defaultValues';
 import ScrollToTopOnMount from '../../components/Utils/ScrollToTopOnMount';
@@ -13,6 +13,7 @@ import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../../components/Sidebar/ObjectsRelated/ObjectsRelated';
 import { hasType } from '../../helpers/wObjectHelper';
 import OBJECT_TYPE from '../const/objectTypes';
+import { formColumnsField } from '../../../common/constants/listOfFields';
 
 const Wobj = ({
   authenticated,
@@ -34,11 +35,22 @@ const Wobj = ({
   const albumsAndImagesCount = wobject.albums_count;
   const displayedObjectName = objectName;
   const desc = wobject.description || objectName;
+  const formsList = get(wobject, 'form', []);
+  const currentForm = formsList.find(item => item.permlink === match.params.itemId);
+  const currentColumn = get(currentForm, 'column', '');
+  const middleRightColumn = currentColumn === formColumnsField.middleRight;
+  const entireColumn = currentColumn === formColumnsField.entire;
+  const leftSidebarClassList = classNames('leftContainer leftContainer__wobj', {
+    'leftContainer--left': entireColumn,
+  });
   const rightSidebarClassList = classNames('wobjRightContainer', {
-    'wobjRightContainer--right': hasType(wobject, OBJECT_TYPE.PAGE),
+    'wobjRightContainer--right':
+      hasType(wobject, OBJECT_TYPE.PAGE) || middleRightColumn || entireColumn,
   });
   const centerClassList = classNames('center', {
     'center--page': hasType(wobject, OBJECT_TYPE.PAGE),
+    'center--middleForm': middleRightColumn,
+    'center--fullForm': entireColumn,
   });
 
   return (
@@ -83,11 +95,7 @@ const Wobj = ({
         />
         <div className="shifted">
           <div className="container feed-layout">
-            <Affix
-              key={match.params.name}
-              className="leftContainer leftContainer__wobj"
-              stickPosition={72}
-            >
+            <Affix key={match.params.name} className={leftSidebarClassList} stickPosition={72}>
               <div className="left">
                 <LeftObjectProfileSidebar
                   isEditMode={isEditMode}
@@ -114,6 +122,7 @@ const Wobj = ({
                 match,
                 toggleViewEditMode,
                 appendAlbum,
+                currentForm,
                 route,
               })}
             </div>

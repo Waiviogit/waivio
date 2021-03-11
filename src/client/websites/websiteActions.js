@@ -529,7 +529,7 @@ export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
   '@website/GET_WEBSITE_OBJECTS_WITH_COORDINATES',
 );
 
-export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 50) => (
+export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70) => (
   dispatch,
   getState,
 ) => {
@@ -551,6 +551,12 @@ export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 50)
     }),
   });
 };
+
+export const RESET_WEBSITE_OBJECTS_COORDINATES = '@website/RESET_WEBSITE_OBJECTS_COORDINATES';
+
+export const resetWebsiteObjectsCoordinates = () => ({
+  type: RESET_WEBSITE_OBJECTS_COORDINATES,
+});
 
 export const GET_WEBSITE_RESTRICTIONS = createAsyncActionType('@website/GET_WEBSITE_RESTRICTIONS');
 

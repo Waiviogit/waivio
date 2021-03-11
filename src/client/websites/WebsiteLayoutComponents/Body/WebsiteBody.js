@@ -27,6 +27,7 @@ import {
 import { getCoordinates } from '../../../user/userActions';
 import {
   setMapForSearch,
+  setSearchInBox,
   setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
@@ -54,7 +55,6 @@ const WebsiteBody = props => {
     bottomPoint: [],
   });
   const [infoboxData, setInfoboxData] = useState(null);
-  const [mapPointCounter, setMapPointCounter] = useState(0);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   let queryCenter = props.query.get('center');
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
@@ -91,7 +91,7 @@ const WebsiteBody = props => {
     }
   };
 
-  const handelSetMapForSearch = () =>
+  const handleSetMapForSearch = () =>
     props.setMapForSearch({
       coordinates: reverse([...area.center]),
       ...boundsParams,
@@ -106,11 +106,11 @@ const WebsiteBody = props => {
 
   useEffect(() => {
     if (props.isShowResult) {
-      handelSetMapForSearch();
+      handleSetMapForSearch();
     } else {
       props.setMapForSearch({});
-      setMapPointCounter(size(props.wobjectsPoint));
       props.setShowReload(false);
+      props.setSearchInBox(true);
     }
   }, [props.isShowResult]);
 
@@ -119,17 +119,15 @@ const WebsiteBody = props => {
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint))
       props
-        .getWebsiteObjWithCoordinates(props.searchString, { topPoint, bottomPoint }, 50)
+        .getWebsiteObjWithCoordinates(props.searchString, { topPoint, bottomPoint }, 70)
         .then(res => {
           if (!isEmpty(props.searchMap)) {
             const distance = distanceInMBetweenEarthCoordinates(
-              props.searchMap.coordinates,
+              reverse([...props.searchMap.coordinates]),
               area.center,
             );
-            const diffLength = Math.abs(mapPointCounter - size(res.value.wobjects));
 
-            if (((diffLength >= 10 && !props.searchString) || distance) && !props.showReloadButton)
-              props.setShowReload(true);
+            if (distance > 20 && !props.showReloadButton) props.setShowReload(true);
             if (!distance) props.setShowReload(false);
           }
           if (!isEmpty(queryCenter)) {
@@ -152,7 +150,7 @@ const WebsiteBody = props => {
   const logoLink = get(aboutObject, ['defaultShowLink'], '/');
 
   const reloadSearchList = () => {
-    handelSetMapForSearch();
+    handleSetMapForSearch();
     props.setShowReload(false);
   };
 
@@ -177,36 +175,42 @@ const WebsiteBody = props => {
     [],
   );
 
-  const handleMarkerClick = ({ payload, anchor }) => {
-    handleAddMapCoordinates(anchor);
+  const handleMarkerClick = useCallback(
+    ({ payload, anchor }) => {
+      handleAddMapCoordinates(anchor);
 
-    if (get(infoboxData, 'coordinates', []) === anchor) setInfoboxData({ infoboxData: null });
+      if (get(infoboxData, 'coordinates', []) === anchor) setInfoboxData({ infoboxData: null });
 
-    props.history.push(`/?center=${anchor}&zoom=${area.zoom}&permlink=${payload.author_permlink}`);
-    setInfoboxData({ wobject: payload, coordinates: anchor });
-  };
+      props.history.push(
+        `/?center=${anchor}&zoom=${area.zoom}&permlink=${payload.author_permlink}`,
+      );
+      setInfoboxData({ wobject: payload, coordinates: anchor });
+    },
+    [area.zoom],
+  );
 
-  const getMarkers = wObjects =>
-    !isEmpty(wObjects) &&
-    map(wObjects, wobject => {
-      const parsedMap = getParsedMap(wobject);
-      const latitude = get(parsedMap, ['latitude']);
-      const longitude = get(parsedMap, ['longitude']);
-      const isMarked = get(wobject, 'campaigns') || !isEmpty(get(wobject, 'propositions'));
+  const getMarkers = useCallback(
+    wObjects =>
+      !isEmpty(wObjects) &&
+      map(wObjects, wobject => {
+        const parsedMap = getParsedMap(wobject);
+        const latitude = get(parsedMap, ['latitude']);
+        const longitude = get(parsedMap, ['longitude']);
+        const isMarked = get(wobject, 'campaigns') || !isEmpty(get(wobject, 'propositions'));
 
-      return latitude && longitude ? (
-        <CustomMarker
-          key={`obj${wobject.author_permlink}`}
-          isMarked={isMarked}
-          anchor={[+latitude, +longitude]}
-          payload={wobject}
-          onClick={handleMarkerClick}
-          onDoubleClick={() => setInfoboxData(null)}
-        />
-      ) : null;
-    });
-
-  const markersLayout = getMarkers(props.wobjectsPoint);
+        return latitude && longitude ? (
+          <CustomMarker
+            key={get(wobject, '_id')}
+            isMarked={isMarked}
+            anchor={[+latitude, +longitude]}
+            payload={wobject}
+            onClick={handleMarkerClick}
+            onDoubleClick={() => setInfoboxData(null)}
+          />
+        ) : null;
+      }),
+    [props.wobjectsPoint],
+  );
 
   const getOverlayLayout = () => {
     const currentWobj = infoboxData;
@@ -226,11 +230,15 @@ const WebsiteBody = props => {
     const firstOffsetNumber = getFirstOffsetNumber();
 
     return (
-      <Overlay anchor={infoboxData.coordinates} offset={[firstOffsetNumber, 75]}>
+      <Overlay
+        anchor={infoboxData.coordinates}
+        offset={[firstOffsetNumber, 75]}
+        className="WebsiteBody__overlay"
+      >
         <Link
           role="presentation"
           className="WebsiteBody__overlay-wrap"
-          to={`/object/${get(currentWobj, ['wobject', 'author_permlink'])}`}
+          to={get(currentWobj, ['wobject', 'defaultShowLink'])}
           onClick={() => localStorage.setItem('query', props.query)}
         >
           <img src={avatar} width={35} height={35} alt={name} />
@@ -355,7 +363,7 @@ const WebsiteBody = props => {
                   )}
                 </div>
               )}
-              {markersLayout}
+              {getMarkers(props.wobjectsPoint)}
               {infoboxData && getOverlayLayout()}
             </Map>
           </React.Fragment>
@@ -378,11 +386,11 @@ WebsiteBody.propTypes = {
   }).isRequired,
   getCoordinates: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({
-    lat: PropTypes.string,
-    lon: PropTypes.string,
+    lat: PropTypes.number,
+    lon: PropTypes.number,
   }).isRequired,
-  isShowResult: PropTypes.string.isRequired,
-  configuration: PropTypes.arrayOf.isRequired,
+  isShowResult: PropTypes.bool.isRequired,
+  configuration: PropTypes.shape().isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   searchString: PropTypes.string.isRequired,
@@ -391,15 +399,16 @@ WebsiteBody.propTypes = {
   putUserCoordinates: PropTypes.func.isRequired,
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
+  setSearchInBox: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
-  wobjectsPoint: PropTypes.shape(),
+  wobjectsPoint: PropTypes.arrayOf(PropTypes.shape()),
   // eslint-disable-next-line react/no-unused-prop-types
-  configCoordinates: PropTypes.arrayOf.isRequired,
-  activeFilters: PropTypes.arrayOf.isRequired,
+  configCoordinates: PropTypes.arrayOf().isRequired,
+  activeFilters: PropTypes.arrayOf().isRequired,
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
-  showReloadButton: PropTypes.bool.isRequired,
+  showReloadButton: PropTypes.bool,
   searchMap: PropTypes.shape({
     coordinates: arrayOf(PropTypes.number),
   }).isRequired,
@@ -414,6 +423,7 @@ WebsiteBody.defaultProps = {
   wobjectsPoint: [],
   searchString: '',
   isAuth: false,
+  showReloadButton: false,
 };
 
 export default connect(
@@ -444,5 +454,6 @@ export default connect(
     setMapForSearch,
     setShowReload,
     setShowSearchResult,
+    setSearchInBox,
   },
 )(withRouter(WebsiteBody));

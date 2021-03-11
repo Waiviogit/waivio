@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, map, size, get, has } from 'lodash';
+import { isEmpty, map, size, get, uniqWith, isEqual } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 import classNames from 'classnames';
@@ -9,7 +9,6 @@ import { ReactSVG } from 'react-svg';
 
 import UserCard from '../../components/UserCard';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getObjectName } from '../../helpers/wObjectHelper';
 import {
   getAllSearchLoadingMore,
   getHasMoreObjectsForWebsite,
@@ -35,6 +34,8 @@ import {
 } from '../searchActions';
 import Loading from '../../components/Icon/Loading';
 import Campaign from '../../rewards/Campaign/Campaign';
+import Proposition from '../../rewards/Proposition/Proposition';
+import { assignProposition, declineProposition } from '../../user/userActions';
 
 import './SearchAllResult.less';
 
@@ -45,9 +46,8 @@ const SearchAllResult = props => {
   const searchResultClassList = classNames('SearchAllResult', {
     SearchAllResult__show: props.isShowResult,
   });
-  const sortWobjects = props.searchResult.sort((a, b) => has(b, 'campaigns') - has(a, 'campaigns'));
 
-  const currentListState = () => {
+  const currentListState = useCallback(() => {
     switch (props.searchType) {
       case 'Users':
         return {
@@ -65,18 +65,34 @@ const SearchAllResult = props => {
 
       default:
         return {
-          list: map(sortWobjects, obj =>
-            obj.campaigns ? (
-              <Campaign proposition={obj} filterKey="all" />
-            ) : (
-              <ObjectCardView wObject={obj} key={getObjectName(obj)} />
-            ),
-          ),
+          list: map(uniqWith(props.searchResult, isEqual), obj => {
+            if (!isEmpty(obj.propositions)) {
+              const proposition = obj.propositions[0];
+
+              return (
+                <Proposition
+                  proposition={proposition}
+                  wobj={obj}
+                  assigned={proposition.assigned}
+                  wobjPrice={proposition.reward}
+                  assignProposition={props.assignProposition}
+                  discardProposition={props.declineProposition}
+                  // loading={loadingAssign}
+                  key={`${obj.author_permlink}`}
+                />
+              );
+            }
+
+            if (obj.campaigns)
+              return <Campaign proposition={obj} filterKey="all" key={obj.author_permlink} />;
+
+            return <ObjectCardView wObject={obj} key={obj.author_permlink} />;
+          }),
           hasMore: props.hasMore,
           loading: props.loading,
         };
     }
-  };
+  }, [props.searchType, props.searchResult, props.searchByUser, props.loading, props.usersLoading]);
 
   const currRenderListState = currentListState();
 
@@ -163,7 +179,12 @@ const SearchAllResult = props => {
           <React.Fragment>
             <div className="SearchAllResult__filters">
               {map(props.filters, filter => (
-                <Dropdown key={filter.tagCategory} overlay={menu(filter)} trigger={['click']}>
+                <Dropdown
+                  key={filter.tagCategory}
+                  overlay={menu(filter)}
+                  trigger={['click']}
+                  disabled={isEmpty(filter.tags)}
+                >
                   <Button className="SearchAllResult__filters-button">
                     {getCurrentName(filter.tagCategory) || filter.tagCategory} <Icon type="down" />
                   </Button>
@@ -214,32 +235,37 @@ SearchAllResult.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-  }).isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
-  userLocation: PropTypes.shape({}).isRequired,
-  searchByUser: PropTypes.arrayOf.isRequired,
-  activeFilters: PropTypes.arrayOf.isRequired,
-  searchResult: PropTypes.arrayOf.isRequired,
+  userLocation: PropTypes.shape({}),
+  searchByUser: PropTypes.arrayOf().isRequired,
+  activeFilters: PropTypes.arrayOf().isRequired,
+  searchResult: PropTypes.arrayOf().isRequired,
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
   hasMore: PropTypes.bool.isRequired,
-  hasMoreUsers: PropTypes.bool.isRequired,
+  hasMoreUsers: PropTypes.bool,
   loading: PropTypes.bool.isRequired,
   loadingMore: PropTypes.bool.isRequired,
   usersLoading: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,
-  filters: PropTypes.arrayOf.isRequired,
+  filters: PropTypes.arrayOf().isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   unfollowSearchUser: PropTypes.func.isRequired,
   followSearchUser: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
-  showReload: PropTypes.bool.isRequired,
+  showReload: PropTypes.bool,
+  assignProposition: PropTypes.func.isRequired,
+  declineProposition: PropTypes.func.isRequired,
+};
+
+SearchAllResult.defaultProps = {
+  userLocation: {},
+  hasMoreUsers: false,
+  showReload: false,
 };
 
 export default connect(
@@ -264,5 +290,7 @@ export default connect(
     setShowSearchResult,
     unfollowSearchUser,
     followSearchUser,
+    declineProposition,
+    assignProposition,
   },
 )(injectIntl(SearchAllResult));

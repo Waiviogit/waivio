@@ -23,11 +23,11 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
 
   if (pathName.includes('/object/')) {
     currentPage = getObjectType(wobj);
-    const query = localStorage.getItem('query');
+    const query = store.get('query');
     if (query)
       setHrefBackButton = () => {
         history.push(`/?${query}`);
-        localStorage.removeItem('query');
+        store.remove('query');
       };
   }
 
@@ -52,10 +52,12 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
               onClick={setHrefBackButton}
             >
               <Icon type="left" />{' '}
-              {intl.formatMessage({
-                id: 'back',
-                defaultMessage: 'Back',
-              })}
+              <span>
+                {intl.formatMessage({
+                  id: 'home',
+                  defaultMessage: 'Home',
+                })}
+              </span>
             </div>
             {currentPage && (
               <span className="center WebsiteHeader__title">

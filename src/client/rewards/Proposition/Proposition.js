@@ -1,13 +1,14 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get, includes, filter, some, map, isEqual } from 'lodash';
+import { isEmpty, get, includes, filter, some } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
+import { withRouter } from 'react-router';
+
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
-import { getSingleComment } from '../../comments/commentsActions';
 import {
   getAuthenticatedUser,
   getCommentContent,
@@ -40,33 +41,12 @@ import {
 
 import './Proposition.less';
 
-const Proposition = ({
-  intl,
-  proposition,
-  assignProposition,
-  discardProposition,
-  loading,
-  wobj,
-  assigned,
-  post,
-  authorizedUserName,
-  history,
-  match,
-  getMessageHistory,
-  user,
-  blacklistUsers,
-  users,
-  wobjPrice,
-  sortFraudDetection,
-  isAuth,
-  removeToggleFlag,
-  isOpenWriteReviewModal,
-  fraudNumbers,
-}) => {
-  const currentProposId = get(proposition, ['_id'], '');
-  const currentWobjId = get(wobj, ['_id'], '');
+const Proposition = props => {
+  const currentProposId = get(props.proposition, ['_id'], '');
+  const currentWobjId = get(props.wobj, ['_id'], '');
+  const authorizedUserName = get(props.user, 'name', '');
 
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = new URLSearchParams(props.location.search);
 
   const isWidget = searchParams.get('display');
   const isReservedLink = searchParams.get('toReserved');
@@ -75,28 +55,27 @@ const Proposition = ({
 
   const handleCurrentEligibleParam = obj => Object.values(obj).every(item => item === true);
 
-  const requirementFilters = get(proposition, ['requirement_filters'], {});
+  const requirementFilters = get(props.proposition, ['requirement_filters'], {});
   const filteredRequirementFilters = handleRequirementFilters(requirementFilters);
-  const isEligible = isAuth
+  const isEligible = props.isAuth
     ? handleCurrentEligibleParam(requirementFilters)
     : handleCurrentEligibleParam(filteredRequirementFilters);
-  const proposedWobj = wobj;
-  const requiredObject = get(proposition, ['required_object']);
+  const proposedWobj = props.wobj;
+  const requiredObject = get(props.proposition, ['required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const parentObject = isEmpty(proposedWobj.parent) ? requiredObject : {};
   const requiredObjectName = getObjectName(requiredObject);
-  const isMessages = !isEmpty(match)
-    ? match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY
+  const isMessages = !isEmpty(props.match)
+    ? props.match.params[0] === MESSAGES || props.match.params[0] === GUIDE_HISTORY
     : '';
-  const propositionUserName = get(proposition, ['users', '0', 'name']);
-  const permlink = get(proposition, ['users', '0', 'permlink']);
+  const propositionUserName = get(props.proposition, ['users', '0', 'name']);
+  const permlink = get(props.proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
-  const guideName = get(proposition, ['guide', 'name']);
-  const parentAuthor = isMessages ? get(proposition, ['users', '0', 'rootName']) : guideName;
-  const propositionActivationPermlink = get(proposition, ['activation_permlink']);
+  const guideName = get(props.proposition, ['guide', 'name']);
+  const parentAuthor = isMessages ? get(props.proposition, ['users', '0', 'rootName']) : guideName;
+  const propositionActivationPermlink = get(props.proposition, ['activation_permlink']);
   const parentPermlink = isMessages ? permlink : propositionActivationPermlink;
-  const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
+  const unreservationPermlink = `reject-${props.proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
 
   const toggleModalDetails = ({ value }) => {
@@ -107,16 +86,19 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    const objects = get(proposition, ['objects']);
-    const users = get(proposition, ['users']);
+    const objects = get(props.proposition, ['objects']);
+    const users = get(props.proposition, ['users']);
     const permlinks = filter(objects, object => object.permlink);
     const reservationPermlink = get(permlinks, ['0', 'permlink']);
 
     const currentUser =
-      isMessages || match.params[0] === HISTORY
+      isMessages || props.match.params[0] === HISTORY
         ? users
-        : filter(users, usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED);
-    const activationPermlink = get(proposition, ['activation_permlink']);
+        : filter(
+            users,
+            usersItem => usersItem.name === props.user.name && usersItem.status === ASSIGNED,
+          );
+    const activationPermlink = get(props.proposition, ['activation_permlink']);
 
     const rejectData = {
       campaign_permlink: activationPermlink,
@@ -124,27 +106,30 @@ const Proposition = ({
       reservation_permlink: reservationPermlink || get(currentUser, ['0', 'permlink'], ''),
       unreservation_permlink: unreservationPermlink,
     };
+
     return rejectReservationCampaign(rejectData).then(() =>
-      discardProposition({
-        requiredObjectName,
-        companyAuthor: parentAuthor,
-        companyPermlink: parentPermlink,
-        objPermlink: obj.author_permlink,
-        reservationPermlink: rejectData.reservation_permlink,
-        unreservationPermlink,
-        type,
-      }),
+      props
+        .discardProposition({
+          requiredObjectName,
+          companyAuthor: parentAuthor,
+          companyPermlink: parentPermlink,
+          objPermlink: obj.author_permlink,
+          reservationPermlink: rejectData.reservation_permlink,
+          unreservationPermlink,
+          type,
+        })
+        .catch(e => message.error(e.error_description)),
     );
   };
   const [isReserved, setReservation] = useState(false);
-  const userData = get(users, ['user', 'name', 'alias'], '');
+  const userData = get(props.users, ['user', 'name', 'alias'], '');
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
-      if (!isEmpty(user)) {
+      if (!isEmpty(props.user)) {
         try {
-          return !isEmpty(user.posting_json_metadata)
-            ? JSON.parse(user.posting_json_metadata)
-            : JSON.parse(user.json_metadata);
+          return !isEmpty(props.user.posting_json_metadata)
+            ? JSON.parse(props.user.posting_json_metadata)
+            : JSON.parse(props.user.json_metadata);
         } catch (err) {
           message.error(
             intl.formatMessage({
@@ -158,28 +143,28 @@ const Proposition = ({
     const userName =
       userData || get(getJsonData(), ['profile', 'name'], '') || get(user, ['name'], '');
     const reserveData = {
-      campaign_permlink: proposition.activation_permlink,
-      approved_object: get(wobj, 'author_permlink'),
+      campaign_permlink: props.proposition.activation_permlink,
+      approved_object: get(props.wobj, 'author_permlink'),
       user_name: authorizedUserName,
       reservation_permlink: `reserve-${generatePermlink()}`,
     };
     getCurrentHivePrice().then(res => {
       const currencyId = res.id;
       const currentHivePrice = res.hiveCurrency;
-      const amount = (proposition.reward / currentHivePrice).toFixed(3);
-      const guideName = get(proposition, ['guide', 'name']);
+      const amount = (props.proposition.reward / currentHivePrice).toFixed(3);
+      const guideName = get(props.proposition, ['guide', 'name']);
       reserveActivatedCampaign(reserveData)
         .then(() =>
-          assignProposition({
+          props.assignProposition({
             companyAuthor: guideName,
-            companyPermlink: proposition.activation_permlink,
+            companyPermlink: props.proposition.activation_permlink,
             resPermlink: reserveData.reservation_permlink,
-            objPermlink: wobj.author_permlink,
-            companyId: proposition._id,
+            objPermlink: props.wobj.author_permlink,
+            companyId: props.proposition._id,
             primaryObjectName: requiredObjectName,
             secondaryObjectName: proposedWobj.name,
             amount,
-            proposition,
+            proposition: props.proposition,
             proposedWobj,
             userName,
             currencyId,
@@ -189,34 +174,29 @@ const Proposition = ({
           setModalDetailsOpen(!isModalDetailsOpen);
           setReservation(true);
           setTimeout(() => {
-            history.push('/rewards/reserved');
+            props.history.push('/rewards/reserved');
           }, 5000);
-        })
-        .catch(e => {
-          if (e.error_description || e.message) {
-            message.error(e.error_description || e.message);
-          } else {
-            message.error(
-              intl.formatMessage({
-                id: 'something_went_wrong',
-                defaultMessage: 'Something went wrong',
-              }),
-            );
-          }
         });
+      if (e.error_description || e.message) {
+        message.error(e.error_description || e.message);
+      } else {
+        message.error(
+          intl.formatMessage({
+            id: 'something_went_wrong',
+            defaultMessage: 'Something went wrong',
+          }),
+        );
+      }
     });
   };
-  const requiredObjectAuthorPermlink = get(proposition, ['required_object', 'author_permlink']);
+
+  const requiredObjectAuthorPermlink = get(props.proposition, [
+    'required_object',
+    'author_permlink',
+  ]);
 
   const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
 
-  /*
-    Widget logic in useEffect for open detail modal window in new tab, like after click on Reserve button.
-    In handleReserveOnClick function save current pressed _id from wObject and proposition and then compare
-      (sessionCurrentProposjId === currentProposId && sessionCurrentWobjjId === currentWobjId).
-    When coincidence, current pressed reward card's modal window will be opened and session with
-      currentProposId and currentWobjId will be cleared
-  */
   useEffect(() => {
     if (sessionCurrentProposjId && sessionCurrentWobjjId) {
       if (sessionCurrentProposjId === currentProposId && sessionCurrentWobjjId === currentWobjId) {
@@ -225,20 +205,17 @@ const Proposition = ({
       }
     }
 
-    /* This check need for widget. When user isAuth, there is another render and we lose flag
-       for open modal window for widget
-    */
-    if (isReservedLink && isAuth && isOpenWriteReviewModal !== isModalDetailsOpen) {
-      setReviewDetails(isOpenWriteReviewModal);
-      setModalDetailsOpen(isOpenWriteReviewModal);
+    if (isReservedLink && props.isAuth && props.isOpenWriteReviewModal !== isModalDetailsOpen) {
+      setReviewDetails(props.isOpenWriteReviewModal);
+      setModalDetailsOpen(props.isOpenWriteReviewModal);
     }
-  }, [proposition]);
+  }, [props.proposition]);
 
   const handleReserveOnClick = value => {
     if (isWidget) {
       setSessionData('currentProposId', currentProposId);
       setSessionData('currentWobjId', currentWobjId);
-      openNewTab(`${location.origin}${location.pathname}`);
+      openNewTab(`${props.location.origin}${props.location.pathname}`);
     } else {
       return toggleModalDetails(value);
     }
@@ -248,63 +225,64 @@ const Proposition = ({
     <div className="Proposition">
       <div className="Proposition__header">
         <CampaignCardHeader
-          campaignData={proposition}
-          isWobjAssigned={assigned}
-          wobjPrice={wobjPrice}
-          match={match}
+          campaignData={props.proposition}
+          isWobjAssigned={props.assigned}
+          wobjPrice={props.wobjPrice}
+          match={props.match}
         />
       </div>
       <div className="Proposition__card">
-        <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
+        <ObjectCardView
+          passedParent={requiredObject}
+          wObject={proposedWobj}
+          key={proposedWobj.id}
+        />
       </div>
       <div
         className={classNames('Proposition__footer', {
           'justify-end': isReserved,
         })}
       >
-        {/*Temporary fix until changes on backend will be made*/}
-        {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
-        {/* changes braked reservation process, changes reverted */}
-        {assigned || some(paramsUrl, item => includes(match.url, item)) ? (
+        {props.assigned || some(paramsUrl, item => includes(props.match.url, item)) ? (
           <CampaignFooter
-            post={post}
-            loading={loading}
+            post={props.post}
+            loading={props.loading}
             proposedWobj={proposedWobj}
             requiredObjectPermlink={requiredObjectAuthorPermlink}
             requiredObjectName={requiredObjectName}
             discardPr={discardPr}
-            proposition={proposition}
+            proposition={props.proposition}
             toggleModalDetails={toggleModalDetails}
-            history={history}
-            match={match}
-            getMessageHistory={getMessageHistory}
-            blacklistUsers={blacklistUsers}
-            sortFraudDetection={sortFraudDetection}
-            userFollowing={proposition.guide.youFollows}
-            objectFollowing={proposition.required_object.followsObject}
-            fraudNumbers={fraudNumbers}
+            history={props.history}
+            match={props.match}
+            getMessageHistory={props.getMessageHistory}
+            blacklistUsers={props.blacklistUsers}
+            sortFraudDetection={props.sortFraudDetection}
+            userFollowing={props.proposition.guide.youFollows}
+            objectFollowing={props.proposition.required_object.followsObject}
+            fraudNumbers={props.fraudNumbers}
           />
         ) : (
           <React.Fragment>
-            {!isReserved && !assigned && (
+            {!isReserved && !props.assigned && (
               <div className="Proposition__footer-button">
                 <Button
                   type="primary"
-                  loading={loading}
-                  disabled={loading || proposition.isReservedSiblingObj}
+                  loading={props.loading}
+                  disabled={props.loading || props.proposition.isReservedSiblingObj}
                   onClick={handleReserveOnClick}
                 >
-                  {intl.formatMessage({
+                  {props.intl.formatMessage({
                     id: 'reserve',
                     defaultMessage: `Reserve`,
                   })}
                 </Button>
                 <div className="Proposition__footer-button-days">
-                  {proposition.count_reservation_days &&
-                    `${intl.formatMessage({
+                  {props.proposition.count_reservation_days &&
+                    `${props.intl.formatMessage({
                       id: 'for_days',
                       defaultMessage: `for`,
-                    })} ${proposition.count_reservation_days} ${intl.formatMessage({
+                    })} ${props.proposition.count_reservation_days} ${props.intl.formatMessage({
                       id: 'days',
                       defaultMessage: `days`,
                     })}`}
@@ -313,7 +291,7 @@ const Proposition = ({
             )}
             <div className="Proposition__footer-details" onClick={toggleModalDetails}>
               <span role="presentation">
-                {intl.formatMessage({
+                {props.intl.formatMessage({
                   id: 'details',
                   defaultMessage: `Details`,
                 })}
@@ -325,21 +303,21 @@ const Proposition = ({
       </div>
       <Details
         isModalDetailsOpen={isModalDetailsOpen}
-        objectDetails={proposition}
+        objectDetails={props.proposition}
         toggleModal={toggleModalDetails}
         reserveOnClickHandler={reserveOnClickHandler}
-        loading={loading}
-        assigned={assigned}
+        loading={props.loading}
+        assigned={props.assigned}
         isReserved={isReserved}
         isReviewDetails={isReviewDetails}
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
         isEligible={isEligible}
-        match={match}
-        isAuth={isAuth}
+        match={props.match}
+        isAuth={props.isAuth}
         authorizedUserName={authorizedUserName}
         removeToggleFlag={removeToggleFlag}
-        isOpenWriteReviewModal={isOpenWriteReviewModal}
+        isOpenWriteReviewModal={props.isOpenWriteReviewModal}
       />
     </div>
   );
@@ -380,20 +358,19 @@ Proposition.defaultProps = {
   fraudNumbers: [],
 };
 
-export default connect(
-  (state, ownProps) => ({
-    user: getAuthenticatedUser(state),
-    post:
-      ownProps.authorizedUserName &&
-      ownProps.assignCommentPermlink &&
-      !isEmpty(state.comments.comments)
-        ? getCommentContent(state, ownProps.authorizedUserName, ownProps.assignCommentPermlink)
-        : {},
-    isAuth: getIsAuthenticated(state),
-    isOpenWriteReviewModal: getIsOpenWriteReviewModal(state),
-  }),
-  {
-    getSingleComment,
-    removeToggleFlag,
-  },
-)(injectIntl(Proposition));
+export default withRouter(
+  connect(
+    (state, ownProps) => ({
+      user: getAuthenticatedUser(state),
+      post:
+        ownProps.wobj.author_permlink && !isEmpty(state.comments.comments)
+          ? getCommentContent(state, getAuthenticatedUser(state), ownProps.wobj.author_permlink)
+          : {},
+      isAuth: getIsAuthenticated(state),
+      isOpenWriteReviewModal: getIsOpenWriteReviewModal(state),
+    }),
+    {
+      removeToggleFlag,
+    },
+  )(injectIntl(Proposition)),
+);

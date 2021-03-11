@@ -1,7 +1,6 @@
-import { each, concat, reverse, sortBy, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { message } from 'antd';
 import { createAsyncActionType } from '../helpers/stateHelpers';
-import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import {
   getSuitableLanguage,
@@ -14,10 +13,10 @@ import {
   getSearchSort,
   getIsWaivio,
   getWebsiteMap,
+  getSearchInBox,
 } from '../reducers';
 import { replacer } from '../helpers/parser';
 
-export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
 export const RESET_AUTO_COMPLETE_SEARCH = '@search/RESET_AUTO_COMPLETE_SEARCH';
 export const SEARCH_OBJECTS = createAsyncActionType('@search/SEARCH_OBJECTS');
@@ -42,25 +41,6 @@ export const REMOVE_BENEFICIARIES_USERS = createAsyncActionType(
   '@search/REMOVE_BENEFICIARIES_USERS',
 );
 export const CLEAR_BENEFICIARIES_USERS = createAsyncActionType('@search/CLEAR_BENEFICIARIES_USERS');
-
-export const searchAskSteem = search => dispatch =>
-  dispatch({
-    type: SEARCH_ASK_STEEM.ACTION,
-    payload: {
-      promise: Promise.all([
-        getAllSearchResultPages(search)
-          .then(response => {
-            let mergedResults = [];
-            each(response, element => {
-              mergedResults = concat(mergedResults, element.results);
-            });
-            return reverse(sortBy(mergedResults, ['type', 'created']));
-          })
-          .catch(() => []),
-        getAccountReputation(search),
-      ]),
-    },
-  });
 
 export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesLimit) => (
   dispatch,
@@ -104,12 +84,16 @@ export const GET_FILTER_FOR_SEARCH_MORE = createAsyncActionType(
   '@search/GET_FILTER_FOR_SEARCH_MORE',
 );
 
-export const getFilterForSearch = (type, links, more = false) => ({
-  type: more ? GET_FILTER_FOR_SEARCH_MORE.ACTION : GET_FILTER_FOR_SEARCH.ACTION,
-  payload: ApiClient.getObjectTypeFilters(type, links),
-});
+export const getFilterForSearch = (type, wobjects, more = false) => {
+  const links = wobjects.map(wobj => wobj.author_permlink);
 
-export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
+  return {
+    type: more ? GET_FILTER_FOR_SEARCH_MORE.ACTION : GET_FILTER_FOR_SEARCH.ACTION,
+    payload: ApiClient.getObjectTypeFilters(type, links),
+  };
+};
+
+export const searchObjectsAutoCompete = (searchString, objType, forParent, addHashtag) => (
   dispatch,
   getState,
 ) => {
@@ -117,16 +101,29 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
   const usedLocale = getSuitableLanguage(state);
   const locale = getLocale(state);
   const search = replacer(searchString, '@');
+  const body = {};
+
+  if (addHashtag) body.addHashtag = true;
 
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
-    payload: ApiClient.searchObjects(search, objType, forParent, 15, locale).then(result => ({
-      result,
-      search,
-      locale: usedLocale,
-    })),
-  }).catch(error => console.log('Object search >', error.message));
+    payload: ApiClient.searchObjects(search, objType, forParent, 15, locale, body)
+      .then(result => ({
+        result,
+        search,
+        locale: usedLocale,
+      }))
+      .catch(error => console.log('Object search >', error.message)),
+  });
 };
+
+export const SET_SEARCH_IN_BOX = '@search/SET_SEARCH_IN_BOX';
+
+export const setSearchInBox = payload => ({ type: SET_SEARCH_IN_BOX, payload });
+
+export const SEARCH_OBJECTS_FOR_WEBSITE = createAsyncActionType(
+  '@search/SEARCH_OBJECTS_FOR_WEBSITE',
+);
 
 export const searchObjectsAutoCompeteLoadingMore = (
   searchString,
@@ -140,32 +137,59 @@ export const searchObjectsAutoCompeteLoadingMore = (
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
   const sort = getSearchSort(state);
-  const { coordinates, topPoint, bottomPoint } = getWebsiteMap(state);
+  const { topPoint, bottomPoint } = getWebsiteMap(state);
+  const inBox = getSearchInBox(state);
   const body = {
     userName,
     sort,
     ...tagCategory,
   };
 
-  if (searchString) body.map = { coordinates, radius: 12742000 };
-  else body.box = { topPoint, bottomPoint };
+  if (inBox) body.box = { topPoint, bottomPoint };
 
-  dispatch({
+  return dispatch({
     type: SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.ACTION,
     payload: ApiClient.searchObjects(searchString, objType, forParent, 15, locale, body, skip).then(
-      res => {
-        const links = res.wobjects.map(wobj => wobj.author_permlink);
+      async res => {
+        dispatch(getFilterForSearch(objType, res.wobjects, true));
 
-        dispatch(getFilterForSearch(objType, links, true));
+        if (!res.hasMore && inBox) {
+          dispatch(setSearchInBox(false));
+
+          return { ...res, hasMore: true };
+        }
+
         return res;
       },
     ),
-  }).catch(error => console.log('Object search >', error.message));
+  }).catch(() => dispatch(setSearchInBox(false)));
 };
 
-export const SEARCH_OBJECTS_FOR_WEBSITE = createAsyncActionType(
-  '@search/SEARCH_OBJECTS_FOR_WEBSITE',
-);
+const compareSearchResult = (searchString, wobjects) => async (dispatch, getState) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const objType = getWebsiteSearchType(state);
+  const userName = getAuthenticatedUserName(state);
+  const tagsFilter = getSearchFiltersTagCategory(state);
+  const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
+  const body = {
+    userName,
+    sort: 'weight',
+    ...tagCategory,
+  };
+
+  dispatch(setSearchInBox(false));
+
+  try {
+    const response = await ApiClient.searchObjects(searchString, objType, false, 15, locale, body);
+
+    if (!isEmpty(wobjects)) dispatch(getFilterForSearch(objType, wobjects));
+
+    return { wobjects: [...wobjects, ...response.wobjects], hasMore: true };
+  } catch (e) {
+    return wobjects;
+  }
+};
 
 export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', limit = 15) => (
   dispatch,
@@ -187,14 +211,17 @@ export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', l
 
   return dispatch({
     type: SEARCH_OBJECTS_FOR_WEBSITE.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, body).then(
-      res => {
-        const links = res.wobjects.map(wobj => wobj.author_permlink);
+    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, body)
+      .then(res => {
+        dispatch(getFilterForSearch(objType, res.wobjects));
 
-        dispatch(getFilterForSearch(objType, links));
+        if (!res.hasMore && searchString) {
+          return dispatch(compareSearchResult(searchString, res.wobjects));
+        }
+
         return res;
-      },
-    ),
+      })
+      .catch(() => dispatch(compareSearchResult(searchString, []))),
   });
 };
 

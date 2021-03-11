@@ -1,17 +1,5 @@
-import {
-  compact,
-  concat,
-  get,
-  isEmpty,
-  map,
-  sortBy,
-  remove,
-  findIndex,
-  isEqual,
-  uniqBy,
-} from 'lodash';
+import { get, isEmpty, remove, findIndex, isEqual, uniqBy, uniqWith } from 'lodash';
 import * as searchActions from './searchActions';
-import formatter from '../helpers/steemitFormatter';
 import { userToggleFollow } from './helpers';
 
 const initialState = {
@@ -39,40 +27,11 @@ const initialState = {
   allSearchLoadingMore: false,
   hasMoreObjectsForWebsite: false,
   websiteMap: {},
+  searchInBox: true,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case searchActions.SEARCH_ASK_STEEM.START:
-      return {
-        ...state,
-        loading: true,
-        searchError: false,
-      };
-    case searchActions.SEARCH_ASK_STEEM.SUCCESS: {
-      const askSteemResults = get(action.payload, 0, []);
-      const steemLookupResults = get(action.payload, 1, []);
-      const parsedSteemLookupResults = map(steemLookupResults, accountDetails => ({
-        ...accountDetails,
-        reputation: formatter.reputation(accountDetails.reputation),
-        name: accountDetails.account,
-        type: 'user',
-      }));
-      const sortedSteemLookupResults = sortBy(parsedSteemLookupResults, 'reputation').reverse();
-      const searchResults = compact(concat(sortedSteemLookupResults, askSteemResults));
-      return {
-        ...state,
-        searchResults,
-        loading: false,
-      };
-    }
-    case searchActions.SEARCH_ASK_STEEM.ERROR:
-      return {
-        ...state,
-        searchResults: [],
-        loading: false,
-        searchError: true,
-      };
     case searchActions.AUTO_COMPLETE_SEARCH.START:
       return {
         ...state,
@@ -98,6 +57,7 @@ export default (state = initialState, action) => {
         searchObjectsResults: [],
         searchUsersResults: [],
         websiteSearchResult: [],
+        tagCategory: [],
       };
     }
     case searchActions.SEARCH_OBJECTS.START:
@@ -408,7 +368,7 @@ export default (state = initialState, action) => {
     case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.SUCCESS: {
       return {
         ...state,
-        websiteSearchResult: action.payload.wobjects,
+        websiteSearchResult: uniqWith(action.payload.wobjects, isEqual),
         hasMoreObjectsForWebsite: action.payload.hasMore,
         websiteSearchResultLoading: false,
       };
@@ -431,7 +391,10 @@ export default (state = initialState, action) => {
     case searchActions.SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.SUCCESS: {
       return {
         ...state,
-        websiteSearchResult: [...state.websiteSearchResult, ...action.payload.wobjects],
+        websiteSearchResult: uniqWith(
+          [...state.websiteSearchResult, ...action.payload.wobjects],
+          isEqual,
+        ),
         hasMoreObjectsForWebsite: action.payload.hasMore,
         isStartSearchObject: false,
         allSearchLoadingMore: false,
@@ -545,6 +508,13 @@ export default (state = initialState, action) => {
       };
     }
 
+    case searchActions.SET_SEARCH_IN_BOX: {
+      return {
+        ...state,
+        searchInBox: action.payload,
+      };
+    }
+
     default:
       return state;
   }
@@ -570,8 +540,10 @@ export const getSearchFilters = state => get(state, 'filters', []);
 export const getSearchFiltersTagCategory = state => get(state, 'tagCategory', []);
 export const getWebsiteSearchString = state => get(state, 'websiteSearchString', []);
 export const getSearchSort = state => get(state, 'sort', '');
-export const getWebsiteSearchResultLoading = state => get(state, 'websiteSearchResultLoading', '');
+export const getWebsiteSearchResultLoading = state =>
+  get(state, 'websiteSearchResultLoading', false);
 export const getShowSearchResult = state => get(state, 'showSearchResult', '');
 export const getAllSearchLoadingMore = state => get(state, 'allSearchLoadingMore', '');
 export const getWebsiteMap = state => get(state, 'websiteMap', '');
 export const getHasMoreObjectsForWebsite = state => get(state, 'hasMoreObjectsForWebsite');
+export const getSearchInBox = state => get(state, 'searchInBox', true);
