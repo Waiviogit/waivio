@@ -93,7 +93,7 @@ export const getFilterForSearch = (type, wobjects, more = false) => {
   };
 };
 
-export const searchObjectsAutoCompete = (searchString, objType, forParent, addHashtag = false) => (
+export const searchObjectsAutoCompete = (searchString, objType, forParent, addHashtag) => (
   dispatch,
   getState,
 ) => {
@@ -101,10 +101,13 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent, addHa
   const usedLocale = getSuitableLanguage(state);
   const locale = getLocale(state);
   const search = replacer(searchString, '@');
+  const body = {};
+
+  if (addHashtag) body.addHashtag = true;
 
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
-    payload: ApiClient.searchObjects(search, objType, forParent, 15, locale, { addHashtag })
+    payload: ApiClient.searchObjects(search, objType, forParent, 15, locale, body)
       .then(result => ({
         result,
         search,

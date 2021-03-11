@@ -540,7 +540,8 @@ export const getSearchFilters = state => get(state, 'filters', []);
 export const getSearchFiltersTagCategory = state => get(state, 'tagCategory', []);
 export const getWebsiteSearchString = state => get(state, 'websiteSearchString', []);
 export const getSearchSort = state => get(state, 'sort', '');
-export const getWebsiteSearchResultLoading = state => get(state, 'websiteSearchResultLoading', '');
+export const getWebsiteSearchResultLoading = state =>
+  get(state, 'websiteSearchResultLoading', false);
 export const getShowSearchResult = state => get(state, 'showSearchResult', '');
 export const getAllSearchLoadingMore = state => get(state, 'allSearchLoadingMore', '');
 export const getWebsiteMap = state => get(state, 'websiteMap', '');

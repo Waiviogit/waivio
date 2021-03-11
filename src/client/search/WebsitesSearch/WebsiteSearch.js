@@ -22,26 +22,31 @@ import {
   setShowSearchResult,
   setWebsiteSearchString,
 } from '../searchActions';
+import { resetWebsiteObjectsCoordinates } from '../../websites/websiteActions';
 
 import './WebsiteSearch.less';
 
 const WebsiteSearch = props => {
   const [searchString, setSearchString] = useState('');
 
-  const currentSearchMethod = value => {
-    props.setWebsiteSearchString(value);
-    props.setSearchInBox(true);
+  const currentSearchMethod = useCallback(
+    value => {
+      props.setWebsiteSearchString(value);
+      props.setSearchInBox(true);
 
-    switch (props.searchType) {
-      case 'Users':
-        return props.searchUsersAutoCompete(value);
-      default:
-        return props.searchWebsiteObjectsAutoCompete(value);
-    }
-  };
+      switch (props.searchType) {
+        case 'Users':
+          return props.searchUsersAutoCompete(value);
+        default:
+          return props.searchWebsiteObjectsAutoCompete(value);
+      }
+    },
+    [props.searchType, searchString],
+  );
 
   useEffect(() => {
     if (props.isShowResult && !isEmpty(props.searchMap)) currentSearchMethod(searchString);
+    props.resetWebsiteObjectsCoordinates();
   }, [props.searchType, props.activeFilters, props.searchMap]);
 
   const handleSearchAutocomplete = useCallback(
@@ -98,10 +103,11 @@ WebsiteSearch.propTypes = {
   searchUsersAutoCompete: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   setSearchInBox: PropTypes.func.isRequired,
+  resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
-  activeFilters: PropTypes.arrayOf,
-  isShowResult: PropTypes.string.isRequired,
-  searchMap: PropTypes.string.isRequired,
+  activeFilters: PropTypes.arrayOf(PropTypes.shape()),
+  isShowResult: PropTypes.bool.isRequired,
+  searchMap: PropTypes.shape().isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -128,5 +134,6 @@ export default connect(
     setWebsiteSearchString,
     setShowSearchResult,
     setSearchInBox,
+    resetWebsiteObjectsCoordinates,
   },
 )(injectIntl(WebsiteSearch));
