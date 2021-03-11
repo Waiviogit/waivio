@@ -116,8 +116,13 @@
       }
     }
 
-    &--form {
-      width: 100%;
+    &--middleForm {
+      width: calc(100% - (@right-width));
+      margin-left: @margin;
+    }
+
+    &--fullForm {
+      width: calc(100% - (@margin));
     }
   }
 }

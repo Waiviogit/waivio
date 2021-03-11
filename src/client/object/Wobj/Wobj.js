@@ -37,22 +37,20 @@ const Wobj = ({
   const desc = wobject.description || objectName;
   const formsList = get(wobject, 'form', []);
   const currentForm = formsList.find(item => item.permlink === match.params.itemId);
+  const currentColumn = get(currentForm, 'column', '');
+  const middleRightColumn = currentColumn === formColumnsField.middleRight;
+  const entireColumn = currentColumn === formColumnsField.entire;
   const leftSidebarClassList = classNames('leftContainer leftContainer__wobj', {
-    'leftContainer--left': currentForm && currentForm.column === formColumnsField.entire,
+    'leftContainer--left': entireColumn,
   });
   const rightSidebarClassList = classNames('wobjRightContainer', {
     'wobjRightContainer--right':
-      hasType(wobject, OBJECT_TYPE.PAGE) ||
-      (currentForm &&
-        (currentForm.column === formColumnsField.middleRight ||
-          currentForm.column === formColumnsField.entire)),
+      hasType(wobject, OBJECT_TYPE.PAGE) || middleRightColumn || entireColumn,
   });
   const centerClassList = classNames('center', {
     'center--page': hasType(wobject, OBJECT_TYPE.PAGE),
-    'center--form':
-      currentForm &&
-      (currentForm.column === formColumnsField.middleRight ||
-        currentForm.column === formColumnsField.entire),
+    'center--middleForm': middleRightColumn,
+    'center--fullForm': entireColumn,
   });
 
   return (

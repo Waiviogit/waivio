@@ -115,6 +115,7 @@ const ObjectForm = props => {
           <Form.Item>
             {form.getFieldDecorator('formWidget')(
               <Input.TextArea
+                autoSize={{ minRows: 4, maxRows: 100 }}
                 className="AppendForm__input"
                 disabled={loading}
                 placeholder={intl.formatMessage({
