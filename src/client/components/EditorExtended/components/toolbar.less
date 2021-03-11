@@ -75,20 +75,30 @@
 
   .md-url-input {
     box-sizing: border-box;
-    border-radius: 4px;
+    border-radius: 4px 0 0 4px;
     display: block;
     width: 100%;
     padding: 5px 11px;
-    border: 1px solid @orange-hot;
     background: @white;
     color: @black;
     font-size: 13px;
     font-weight: 100;
     height: 36px;
+    border: none;
 
     &:focus {
       outline: none;
+      border: none;
+      box-shadow: none;
     }
+    &:hover {
+      border: none;
+    }
+  }
+
+  .md-url-button {
+    height: 36px;
+    border-radius: 0 4px 4px 0;
   }
 
   .md-url-input-close {
@@ -193,6 +203,18 @@
   .md-RichEditor-styleButton:first-child {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
+  }
+}
+.md-RichEditor-show-link-input {
+  border: 1px solid @orange-hot;
+  border-radius: 4px;
+
+  &:focus {
+    box-shadow: 0 0 0 2px @orange;
+  }
+
+  &:last-child {
+    border: 1px solid @orange-hot;
   }
 }
 

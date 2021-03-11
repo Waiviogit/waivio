@@ -93,7 +93,7 @@ export const getFilterForSearch = (type, wobjects, more = false) => {
   };
 };
 
-export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
+export const searchObjectsAutoCompete = (searchString, objType, forParent, addHashtag = false) => (
   dispatch,
   getState,
 ) => {
@@ -104,14 +104,14 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
 
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
-    payload: ApiClient.searchObjects(search, objType, forParent, 15, locale)
+    payload: ApiClient.searchObjects(search, objType, forParent, 15, locale, { addHashtag })
       .then(result => ({
         result,
         search,
         locale: usedLocale,
       }))
-      .then(() => {}),
-  }).catch(error => console.log('Object search >', error.message));
+      .catch(error => console.log('Object search >', error.message)),
+  });
 };
 
 export const SET_SEARCH_IN_BOX = '@search/SET_SEARCH_IN_BOX';
@@ -134,7 +134,7 @@ export const searchObjectsAutoCompeteLoadingMore = (
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
   const sort = getSearchSort(state);
-  const { coordinates, topPoint, bottomPoint } = getWebsiteMap(state);
+  const { topPoint, bottomPoint } = getWebsiteMap(state);
   const inBox = getSearchInBox(state);
   const body = {
     userName,
@@ -142,8 +142,7 @@ export const searchObjectsAutoCompeteLoadingMore = (
     ...tagCategory,
   };
 
-  if (searchString && !inBox) body.map = { coordinates, radius: 12742000 };
-  else body.box = { topPoint, bottomPoint };
+  if (inBox) body.box = { topPoint, bottomPoint };
 
   return dispatch({
     type: SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.ACTION,
@@ -170,9 +169,7 @@ const compareSearchResult = (searchString, wobjects) => async (dispatch, getStat
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
-  const { coordinates } = getWebsiteMap(state);
   const body = {
-    map: { coordinates, radius: 12742000 },
     userName,
     sort: 'weight',
     ...tagCategory,
