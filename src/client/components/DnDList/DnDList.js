@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { isEqual } from 'lodash';
+import OBJECT_TYPE from '../../object/const/objectTypes';
 import './DnDList.less';
 
 export const getItemStyle = (isDraggingOver, isDragging, draggableStyle, accentColor) => ({
@@ -22,15 +24,18 @@ class DnDList extends Component {
     listItems: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string,
+        itemInList: PropTypes.bool,
         content: PropTypes.node,
       }),
     ).isRequired,
     accentColor: PropTypes.string,
     onChange: PropTypes.func,
+    wobjType: PropTypes.string,
   };
   static defaultProps = {
     accentColor: 'lightgreen',
     onChange: () => {},
+    wobjType: '',
   };
 
   constructor(props) {
@@ -41,17 +46,28 @@ class DnDList extends Component {
     this.onDragEnd = this.onDragEnd.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    const { listItems } = this.props;
+    if (!isEqual(prevProps.listItems, listItems)) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ items: listItems });
+    }
+  }
+
   onDragEnd(result) {
     if (!result.destination) {
       return;
     }
 
     const items = reorder(this.state.items, result.source.index, result.destination.index);
-
     this.setState({
       items,
     });
-    this.props.onChange(items.map(item => item.id));
+    let itemsList = items;
+    if (this.props.wobjType === OBJECT_TYPE.LIST) {
+      itemsList = items.filter(item => item.itemInList);
+    }
+    this.props.onChange(itemsList.map(item => item.id));
   }
 
   render() {
