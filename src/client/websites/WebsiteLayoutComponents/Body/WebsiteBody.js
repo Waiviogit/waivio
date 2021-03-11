@@ -238,7 +238,7 @@ const WebsiteBody = props => {
         <Link
           role="presentation"
           className="WebsiteBody__overlay-wrap"
-          to={`/object/${get(currentWobj, ['wobject', 'author_permlink'])}`}
+          to={get(currentWobj, ['wobject', 'defaultShowLink'])}
           onClick={() => localStorage.setItem('query', props.query)}
         >
           <img src={avatar} width={35} height={35} alt={name} />
