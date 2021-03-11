@@ -1624,5 +1624,7 @@
   "columns": "Колонки",
   "form_link": "Ссылка",
   "form_widget": "Виджет",
-  "form_back": "Назад к ревью"
+  "form_back": "Назад к ревью",
+  "paste_widget": "Вставьте код"
+
 }
