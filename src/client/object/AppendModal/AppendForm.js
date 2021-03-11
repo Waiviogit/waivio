@@ -215,13 +215,13 @@ export default class AppendForm extends Component {
     if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
-      const res = getListItems(wObject).map(item => ({
+      const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
         itemInList: true,
       }));
       // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({ itemsInSortingList: res, loading: false });
+      this.setState({ itemsInSortingList: listItems, loading: false });
     }
     this.calculateVoteWorth(this.state.votePercent);
   };

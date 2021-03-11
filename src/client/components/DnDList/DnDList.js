@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { isEqual } from 'lodash';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import './DnDList.less';
 
@@ -47,7 +48,7 @@ class DnDList extends Component {
 
   componentDidUpdate(prevProps) {
     const { listItems } = this.props;
-    if (prevProps.listItems !== listItems) {
+    if (!isEqual(prevProps.listItems, listItems)) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ items: listItems });
     }
