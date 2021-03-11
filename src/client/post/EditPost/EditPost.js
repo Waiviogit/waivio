@@ -32,6 +32,7 @@ import {
   isGuestUser,
   getBeneficiariesUsers,
   getCurrentHost,
+  getIsWaivio,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { createPostMetadata, getInitialState, getObjectUrl } from '../../helpers/postHelpers';
@@ -77,6 +78,7 @@ const getLinkedObjects = contentStateRaw => {
     isGuest: isGuestUser(state),
     beneficiaries: getBeneficiariesUsers(state),
     host: getCurrentHost(state),
+    isWaivio: getIsWaivio(state),
   }),
   {
     createPost,
@@ -97,6 +99,7 @@ class EditPost extends Component {
     imageLoading: PropTypes.bool,
     createPost: PropTypes.func,
     saveDraft: PropTypes.func,
+    isWaivio: PropTypes.bool,
     isGuest: PropTypes.bool,
     beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
@@ -112,6 +115,7 @@ class EditPost extends Component {
     createPost: () => {},
     saveDraft: () => {},
     isGuest: false,
+    isWaivio: true,
     beneficiaries: [],
   };
 
@@ -523,6 +527,7 @@ class EditPost extends Component {
                 defaultMessage: 'Search by name',
               })}
               handleSelect={this.handleObjectSelect}
+              addHashtag={!this.props.isWaivio}
             />
             <CreateObject onCreateObject={this.handleCreateObject} />
             {linkedObjects.map(wObj => (

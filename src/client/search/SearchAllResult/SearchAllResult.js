@@ -179,7 +179,12 @@ const SearchAllResult = props => {
           <React.Fragment>
             <div className="SearchAllResult__filters">
               {map(props.filters, filter => (
-                <Dropdown key={filter.tagCategory} overlay={menu(filter)} trigger={['click']}>
+                <Dropdown
+                  key={filter.tagCategory}
+                  overlay={menu(filter)}
+                  trigger={['click']}
+                  disabled={isEmpty(filter.tags)}
+                >
                   <Button className="SearchAllResult__filters-button">
                     {getCurrentName(filter.tagCategory) || filter.tagCategory} <Icon type="down" />
                   </Button>
@@ -230,34 +235,37 @@ SearchAllResult.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-  }).isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
-  userLocation: PropTypes.shape({}).isRequired,
-  searchByUser: PropTypes.arrayOf.isRequired,
-  activeFilters: PropTypes.arrayOf.isRequired,
-  searchResult: PropTypes.arrayOf.isRequired,
+  userLocation: PropTypes.shape({}),
+  searchByUser: PropTypes.arrayOf().isRequired,
+  activeFilters: PropTypes.arrayOf().isRequired,
+  searchResult: PropTypes.arrayOf().isRequired,
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
   hasMore: PropTypes.bool.isRequired,
-  hasMoreUsers: PropTypes.bool.isRequired,
+  hasMoreUsers: PropTypes.bool,
   loading: PropTypes.bool.isRequired,
   loadingMore: PropTypes.bool.isRequired,
   usersLoading: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,
-  filters: PropTypes.arrayOf.isRequired,
+  filters: PropTypes.arrayOf().isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   unfollowSearchUser: PropTypes.func.isRequired,
   followSearchUser: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
-  showReload: PropTypes.bool.isRequired,
+  showReload: PropTypes.bool,
   assignProposition: PropTypes.func.isRequired,
   declineProposition: PropTypes.func.isRequired,
+};
+
+SearchAllResult.defaultProps = {
+  userLocation: {},
+  hasMoreUsers: false,
+  showReload: false,
 };
 
 export default connect(
