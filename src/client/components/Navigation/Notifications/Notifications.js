@@ -36,10 +36,10 @@ import NotificationMyPost from './NotificationMyPost';
 import NotificationCampaignReservation from './NotificationCampaignReservation';
 import NotificationWobjectRewardsBell from './NotificationWobjectRewardsBell';
 import NotificationWobjectPostBell from './NotificationWobjectPostBell';
+import NotificationWebsiteBalance from './NotificationWebsiteBalance';
 
 import './Notification.less';
 import './Notifications.less';
-import NotificationWebsiteBalance from './NotificationWebsiteBalance';
 
 const displayLimit = 6;
 
