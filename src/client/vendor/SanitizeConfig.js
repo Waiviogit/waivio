@@ -72,7 +72,6 @@ export const parseLink = (appUrl, secureLinks) => (tagName, attribs) => {
   if (!href) href = '#';
   href = href.trim();
   const attys = {};
-
   const linkUrl = url.parse(href);
 
   const linkWebsiteUrl = url.format({
@@ -84,10 +83,6 @@ export const parseLink = (appUrl, secureLinks) => (tagName, attribs) => {
 
   if (!internalLink) {
     attys.target = '_blank';
-
-    if (secureLinks && knownDomains.indexOf(linkUrl.hostname) === -1) {
-      href = `/exit?url=${encodeURIComponent(href)}`;
-    }
   }
 
   attys.href = href;
