@@ -39,6 +39,7 @@ import NotificationWobjectPostBell from './NotificationWobjectPostBell';
 
 import './Notification.less';
 import './Notifications.less';
+import NotificationWebsiteBalance from './NotificationWebsiteBalance';
 
 const displayLimit = 6;
 
@@ -443,6 +444,16 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.WEBSITE_BALANCE:
+                return (
+                  <NotificationWebsiteBalance
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                    currentAuthUsername={currentAuthUsername}
                   />
                 );
               default:
