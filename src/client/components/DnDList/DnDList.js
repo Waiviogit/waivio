@@ -58,6 +58,8 @@ class DnDList extends Component {
     }
   }
 
+  filterItems = items => items.filter(item => item.itemInList);
+
   onDragEnd(result) {
     if (!result.destination) {
       return;
@@ -69,7 +71,7 @@ class DnDList extends Component {
     });
     let itemsList = items;
     if (this.props.wobjType === OBJECT_TYPE.LIST) {
-      itemsList = items.filter(item => item.itemInList);
+      itemsList = this.filterItems(items);
     }
     this.props.onChange(itemsList.map(item => item.id));
   }
@@ -85,6 +87,10 @@ class DnDList extends Component {
         : item,
     );
     this.setState({ items: itemsList });
+    if (this.props.wobjType === OBJECT_TYPE.LIST) {
+      const itemsListFiltered = this.filterItems(items);
+      this.props.onChange(itemsListFiltered.map(item => item.id));
+    }
   };
 
   render() {
