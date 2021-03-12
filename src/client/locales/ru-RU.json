@@ -1627,5 +1627,7 @@
   "form_link": "Ссылка",
   "form_widget": "Виджет",
   "form_back": "Назад к ревью",
-  "enter": "Ввести"
+  "enter": "Ввести",
+  "paste_widget": "Вставьте код"
+
 }

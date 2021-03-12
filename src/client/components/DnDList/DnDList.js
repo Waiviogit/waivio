@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { isEqual } from 'lodash';
 import OBJECT_TYPE from '../../object/const/objectTypes';
+import DnDListItem from './DnDListItem';
 import './DnDList.less';
 
 export const getItemStyle = (isDraggingOver, isDragging, draggableStyle, accentColor) => ({
@@ -25,7 +26,10 @@ class DnDList extends Component {
       PropTypes.shape({
         id: PropTypes.string,
         itemInList: PropTypes.bool,
-        content: PropTypes.node,
+        name: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
+        wobjType: PropTypes.string,
+        // content: PropTypes.node,
       }),
     ).isRequired,
     accentColor: PropTypes.string,
@@ -48,11 +52,13 @@ class DnDList extends Component {
 
   componentDidUpdate(prevProps) {
     const { listItems } = this.props;
-    if (!isEqual(prevProps.listItems, listItems)) {
+    if (this.props.wobjType === OBJECT_TYPE.LIST && !isEqual(prevProps.listItems, listItems)) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ items: listItems });
     }
   }
+
+  filterItems = items => items.filter(item => item.itemInList);
 
   onDragEnd(result) {
     if (!result.destination) {
@@ -65,10 +71,27 @@ class DnDList extends Component {
     });
     let itemsList = items;
     if (this.props.wobjType === OBJECT_TYPE.LIST) {
-      itemsList = items.filter(item => item.itemInList);
+      itemsList = this.filterItems(items);
     }
     this.props.onChange(itemsList.map(item => item.id));
   }
+
+  toggleItemInSortingList = e => {
+    const { items } = this.state;
+    const itemsList = items.map(item =>
+      item.id === e.target.id
+        ? {
+            ...item,
+            itemInList: e.target.checked,
+          }
+        : item,
+    );
+    this.setState({ items: itemsList });
+    if (this.props.wobjType === OBJECT_TYPE.LIST) {
+      const itemsListFiltered = this.filterItems(items);
+      this.props.onChange(itemsListFiltered.map(item => item.id));
+    }
+  };
 
   render() {
     return (
@@ -91,7 +114,19 @@ class DnDList extends Component {
                         this.props.accentColor,
                       )}
                     >
-                      {item.content}
+                      {this.props.wobjType === OBJECT_TYPE.LIST ? (
+                        <DnDListItem
+                          name={item.name}
+                          type={item.type}
+                          wobjType={item.wobjType}
+                          toggleItemInSortingList={this.toggleItemInSortingList}
+                          id={item.id}
+                          itemInList={item.itemInList}
+                        />
+                      ) : (
+                        <DnDListItem name={item.name} type={item.type} />
+                      )}
+                      {/* {item.content} */}
                     </div>
                   )}
                 </Draggable>

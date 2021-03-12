@@ -539,12 +539,16 @@ export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70)
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
+  let searchStr = searchString;
 
-  if (!objType || objType === 'Users') objType = 'restaurant';
+  if (!objType || objType === 'Users') {
+    objType = 'restaurant';
+    searchStr = '';
+  }
 
   return dispatch({
     type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, {
+    payload: ApiClient.searchObjects(searchStr, objType, false, limit, locale, {
       userName,
       ...tagCategory,
       box,

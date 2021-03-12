@@ -119,7 +119,7 @@ const WebsiteBody = props => {
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint))
       props
-        .getWebsiteObjWithCoordinates(props.searchString, { topPoint, bottomPoint }, 70)
+        .getWebsiteObjWithCoordinates(props.searchString, { topPoint, bottomPoint }, 50)
         .then(res => {
           if (!isEmpty(props.searchMap)) {
             const distance = distanceInMBetweenEarthCoordinates(

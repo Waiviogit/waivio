@@ -153,7 +153,7 @@ export const searchObjectsAutoCompeteLoadingMore = (
       async res => {
         dispatch(getFilterForSearch(objType, res.wobjects, true));
 
-        if (!res.hasMore && inBox) {
+        if (!res.hasMore && inBox && searchString) {
           dispatch(setSearchInBox(false));
 
           return { ...res, hasMore: true };

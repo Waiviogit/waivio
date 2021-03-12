@@ -46,8 +46,11 @@ const WebsiteSearch = props => {
 
   useEffect(() => {
     if (props.isShowResult && !isEmpty(props.searchMap)) currentSearchMethod(searchString);
-    props.resetWebsiteObjectsCoordinates();
   }, [props.searchType, props.activeFilters, props.searchMap]);
+
+  useEffect(() => {
+    props.resetWebsiteObjectsCoordinates();
+  }, [props.searchType, props.activeFilters, searchString]);
 
   const handleSearchAutocomplete = useCallback(
     debounce(value => currentSearchMethod(value), 500),
