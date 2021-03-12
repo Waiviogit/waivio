@@ -1619,8 +1619,9 @@
   "columns": "Columns",
   "form_link": "Link",
   "form_widget": "Widget",
-  "form_back": "Back to reviews",
   "enter": "Enter",
   "home": "Home",
-  "inactive_website_pricing": "Inactive website pricing:"
+  "inactive_website_pricing": "Inactive website pricing:",
+  "form_back": "Back to reviews",
+  "paste_widget": "Paste code"
 }
