@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, map, size, get, uniqWith, isEqual } from 'lodash';
+import { isEmpty, map, size, get, uniqBy } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Dropdown, Icon, Menu } from 'antd';
 import classNames from 'classnames';
@@ -65,7 +65,7 @@ const SearchAllResult = props => {
 
       default:
         return {
-          list: map(uniqWith(props.searchResult, isEqual), obj => {
+          list: map(uniqBy(props.searchResult, '_id'), obj => {
             if (!isEmpty(obj.propositions)) {
               const proposition = obj.propositions[0];
 
