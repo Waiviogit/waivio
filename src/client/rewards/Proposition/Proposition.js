@@ -141,7 +141,7 @@ const Proposition = props => {
       }
     };
     const userName =
-      userData || get(getJsonData(), ['profile', 'name'], '') || get(user, ['name'], '');
+      userData || get(getJsonData(), ['profile', 'name'], '') || get(props.user, ['name'], '');
     const reserveData = {
       campaign_permlink: props.proposition.activation_permlink,
       approved_object: get(props.wobj, 'author_permlink'),
@@ -176,17 +176,19 @@ const Proposition = props => {
           setTimeout(() => {
             props.history.push('/rewards/reserved');
           }, 5000);
+        })
+        .catch(e => {
+          if (e.error_description || e.message) {
+            message.error(e.error_description || e.message);
+          } else {
+            message.error(
+              intl.formatMessage({
+                id: 'something_went_wrong',
+                defaultMessage: 'Something went wrong',
+              }),
+            );
+          }
         });
-      if (e.error_description || e.message) {
-        message.error(e.error_description || e.message);
-      } else {
-        message.error(
-          intl.formatMessage({
-            id: 'something_went_wrong',
-            defaultMessage: 'Something went wrong',
-          }),
-        );
-      }
     });
   };
 

@@ -92,10 +92,13 @@ export const getFakeSingleComment = (
   });
 };
 
-const getRootCommentsList = apiRes =>
-  Object.keys(apiRes.content)
+const getRootCommentsList = apiRes => {
+  if (!apiRes) return [];
+
+  return Object.keys(apiRes.content)
     .filter(commentKey => apiRes.content[commentKey].depth === 1)
     .map(commentKey => getPostKey(apiRes.content[commentKey]));
+};
 
 const getCommentsChildrenLists = apiRes => {
   const listsById = {};

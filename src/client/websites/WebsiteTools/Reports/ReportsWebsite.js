@@ -20,8 +20,10 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
   const { getFieldDecorator } = form;
   const formatDate = selectFormatDate(locale);
   const mappedPayments = map(reportsInfo.payments, payment => {
-    const message =
+    let message =
       payment.type === 'transfer' ? 'Payment to waivio.hosting' : `${payment.host} hosting fee`;
+
+    if (payment.description) message = `${payment.host} ${payment.description}`;
 
     return {
       ...payment,

@@ -29,6 +29,7 @@ export const MY_LIKE = 'myLike';
 export const MY_COMMENT = 'myComment';
 export const MY_POST = 'myPost';
 export const CAMPAIGN_RESERVATION = 'campaignReservation';
+export const WEBSITE_BALANCE = 'webSiteBalance';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,

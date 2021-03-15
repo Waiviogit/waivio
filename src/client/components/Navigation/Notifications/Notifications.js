@@ -36,6 +36,7 @@ import NotificationMyPost from './NotificationMyPost';
 import NotificationCampaignReservation from './NotificationCampaignReservation';
 import NotificationWobjectRewardsBell from './NotificationWobjectRewardsBell';
 import NotificationWobjectPostBell from './NotificationWobjectPostBell';
+import NotificationWebsiteBalance from './NotificationWebsiteBalance';
 
 import './Notification.less';
 import './Notifications.less';
@@ -443,6 +444,16 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.WEBSITE_BALANCE:
+                return (
+                  <NotificationWebsiteBalance
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                    currentAuthUsername={currentAuthUsername}
                   />
                 );
               default:
