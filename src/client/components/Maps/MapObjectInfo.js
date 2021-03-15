@@ -77,8 +77,7 @@ class MapObjectInfo extends React.Component {
   };
 
   setQueryInUrl = (anchor, permlink) => {
-    const url =
-      localStorage.getItem('query') || `center=${anchor.join(',')}&zoom=6&permlink=${permlink}`;
+    const url = `center=${anchor.join(',')}&zoom=${this.state.zoom}&permlink=${permlink}`;
     this.props.history.push(`/?${url}`);
   };
 

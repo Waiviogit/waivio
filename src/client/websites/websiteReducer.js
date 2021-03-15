@@ -1,4 +1,4 @@
-import { get, uniqWith, isEqual } from 'lodash';
+import { get, uniqBy } from 'lodash';
 import moment from 'moment';
 import * as websiteAction from './websiteActions';
 import { getAvailableStatus } from './helper';
@@ -320,7 +320,7 @@ export default function websiteReducer(state = initialState, action) {
 
       return {
         ...state,
-        wobjectsPoint: uniqWith(state.wobjectsPoint.concat(action.payload.wobjects), isEqual),
+        wobjectsPoint: uniqBy(state.wobjectsPoint.concat(action.payload.wobjects), '_id'),
         wobjectsPointHasMore: action.payload.hasMore,
       };
     }
