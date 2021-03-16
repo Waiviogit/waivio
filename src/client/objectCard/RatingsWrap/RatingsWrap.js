@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Col, Rate, Row } from 'antd';
 import { sortBy } from 'lodash';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { averageRate } from '../../components/Sidebar/Rate/rateHelper';
 import RateObjectModal from '../../components/Sidebar/Rate/RateObjectModal';
 import './RatingsWrap.less';
@@ -14,11 +15,17 @@ const RatingsWrap = ({
   wobjName,
   username,
   mobileView,
+  overlay,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRating, setSelectedRating] = useState(null);
   const isMobile = screenSize === 'xsmall' || screenSize === 'small';
-  const sortedRatings = sortBy(ratings, ['body']);
+  const ratingTitleClassList = classNames('RatingsWrap__rate-title', {
+    'RatingsWrap__rate-title--withoutTruncate': overlay,
+  });
+  let sortedRatings = sortBy(ratings, ['body']);
+
+  if (overlay) sortedRatings = [sortedRatings[0]];
 
   const openRateModal = selectedRate => () => {
     setSelectedRating(selectedRate);
@@ -39,7 +46,9 @@ const RatingsWrap = ({
       >
         <Rate allowHalf disabled value={averageRate(sortedRatings[rateIndex])} />
       </div>
-      <div className="RatingsWrap__rate-title">{sortedRatings[rateIndex].body}</div>
+      <div className="RatingsWrap__rate-title RatingsWrap__rate-title--withoutTruncate">
+        {sortedRatings[rateIndex].body}
+      </div>
     </Col>
   );
 
@@ -50,7 +59,7 @@ const RatingsWrap = ({
           <div className="RatingsWrap__stars" role="presentation" onClick={openRateModal(rate)}>
             <Rate allowHalf disabled value={averageRate(rate)} />
           </div>
-          <div className="RatingsWrap__rate-title">{rate.body}</div>
+          <div className={ratingTitleClassList}>{rate.body}</div>
         </div>
       ))}
     </div>
@@ -94,6 +103,7 @@ const RatingsWrap = ({
 
 RatingsWrap.propTypes = {
   ownRatesOnly: PropTypes.bool,
+  overlay: PropTypes.bool,
   ratings: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   screenSize: PropTypes.string.isRequired,
   wobjId: PropTypes.string.isRequired,
@@ -104,6 +114,7 @@ RatingsWrap.propTypes = {
 
 RatingsWrap.defaultProps = {
   ownRatesOnly: false,
+  overlay: false,
   username: '',
   mobileView: 'compact',
   wobjName: '',

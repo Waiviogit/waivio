@@ -57,7 +57,29 @@ export const setGuestAuthData = (accessToken, refreshToken, expiration) => {
   store.set('refreshToken', refreshToken);
 };
 
+export const setSiteURL = url => {
+  store.set('siteURL', url);
+};
+
+export const getSiteURL = () => {
+  store.get('siteURL');
+};
+
+export const setNext = next => {
+  store.set('next', next);
+};
+
+export const getNext = () => {
+  store.get('next');
+};
+
+export const setGuestLoginData = (accessToken, provider) => {
+  store.set('accessToken', accessToken);
+  store.set('provider', provider);
+};
+
 export const getGuestAccessToken = () => store.get('accessToken');
+export const getGuestProviderName = () => store.get('provider');
 
 export const clearGuestAuthData = () => {
   store.remove('accessToken');

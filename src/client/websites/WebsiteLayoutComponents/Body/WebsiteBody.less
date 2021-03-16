@@ -36,13 +36,14 @@
     position: absolute;
     z-index: 3;
     display: flex;
-    top: 75%;
+    top: 80%;
     left: 5%;
     max-width: 150px;
     cursor: pointer;
     width: 55px;
     height: 55px;
     object-fit: cover;
+    transition: 0.3s;
 
     @media @small {
       width: 150px;
@@ -54,16 +55,17 @@
 
   &__overlay {
     z-index: 3;
+    width: inherit;
   }
 
   &__hideMap {
-    position: relative;
-    display: block;
-    margin-left: 0;
-
-    @media @small {
-      width: 60%;
-      margin-left: 39%;
+    .WebsiteBody__logo {
+      @media @small {
+        width: 150px;
+        height: 80px;
+        top: 83%;
+        left: 45%;
+      }
     }
   }
 
@@ -79,6 +81,7 @@
   &__filters-list {
     margin: 15px;
     display: flex;
+    position: absolute;
 
     @media @small {
       display: none;
@@ -100,6 +103,10 @@
     border-radius: 4px;
     padding: 0 10px;
     cursor: pointer;
+
+    &--withMobileFilters {
+      top: 6%;
+    }
 
     &:hover {
       background: @orange-hot;

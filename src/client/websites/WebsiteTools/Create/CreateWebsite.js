@@ -91,7 +91,7 @@ export const CreateWebsite = ({
             onSelect={value => {
               form.setFieldsValue({ parent: value });
             }}
-            onChange={value => handleSearchHost(value)}
+            onChange={handleSearchHost}
           >
             {showingParentList.map(domain => (
               <AutoComplete.Option key={domain} value={domain}>

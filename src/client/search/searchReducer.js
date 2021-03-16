@@ -66,7 +66,9 @@ export default (state = initialState, action) => {
         isStartSearchObject: true,
       };
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
-      const { result, search } = action.payload;
+      const result = get(action, ['payload', 'result']);
+      const search = get(action, ['payload', 'search']);
+
       return {
         ...state,
         searchObjectsResults: isEmpty(search) ? [] : get(result, 'wobjects', []),
