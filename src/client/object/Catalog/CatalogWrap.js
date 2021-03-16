@@ -14,7 +14,7 @@ import {
   getLoadingFlag,
   getObject,
 } from '../../reducers';
-import { getLastPermlinksFromHash, getListItems } from '../../helpers/wObjectHelper';
+import { getLastPermlinksFromHash, getListItems, itemsList } from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import { setLoadedNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
@@ -47,7 +47,6 @@ const CatalogWrap = props => {
           setSortingBy(defaultSortBy(wObject));
           setLists(
             sortListItemsBy(
-              // eslint-disable-next-line no-use-before-define
               itemsList(wObject.sortCustom, wObject),
               defaultSortBy(wObject),
               wObject.sortCustom,
@@ -61,7 +60,6 @@ const CatalogWrap = props => {
         // eslint-disable-next-line no-use-before-define
         setLists(
           sortListItemsBy(
-            // eslint-disable-next-line no-use-before-define
             itemsList(wobject.sortCustom, wobject),
             defaultSortBy(wobject),
             wobject.sortCustom,
@@ -74,17 +72,6 @@ const CatalogWrap = props => {
       setNestedWobj({});
     };
   }, [hash, wobject.author_permlink]);
-
-  const getSortList = (sortedList, itemsList) =>
-    itemsList.reduce((acc, item) => {
-      if (sortedList.includes(item.author_permlink)) {
-        return [...acc, item];
-      }
-      return acc;
-    }, []);
-
-  const itemsList = (sort, wobj) =>
-    sort ? getSortList(sort, getListItems(wobj)) : getListItems(wobj);
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];

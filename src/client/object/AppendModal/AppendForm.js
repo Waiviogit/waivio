@@ -1816,7 +1816,6 @@ export default class AppendForm extends Component {
                 name: item.alias || getObjectName(item),
                 type: getObjectType(item),
                 wobjType,
-                toggleItemInSortingList: this.toggleItemInSortingList,
               }))) ||
             [];
         }
