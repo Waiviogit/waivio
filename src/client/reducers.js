@@ -26,7 +26,6 @@ import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
 import websiteReducer, * as fromWebsite from './websites/websiteReducer';
 import referralReducer, * as fromReferral from '../client/rewards/ReferralProgram/ReferralReducer';
-import { stat } from 'heroku/lib/file';
 
 export default history =>
   combineReducers({
