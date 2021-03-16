@@ -67,7 +67,7 @@ export const allowedTags = `
   .trim()
   .split(/,\s*/);
 
-export const parseLink = (appUrl, secureLinks) => (tagName, attribs) => {
+export const parseLink = appUrl => (tagName, attribs) => {
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
@@ -78,10 +78,13 @@ export const parseLink = (appUrl, secureLinks) => (tagName, attribs) => {
     host: linkUrl.host,
   });
 
-  const internalLink = href.indexOf('/') === 0 || appUrl === linkWebsiteUrl;
+  const internalLink = href.indexOf('/') === 0;
 
-  if (!internalLink) {
-    attys.target = '_blank';
+  if (!internalLink) attys.target = '_blank';
+
+  if (linkWebsiteUrl.includes('waivio')) {
+    href = appUrl + linkUrl.pathname;
+    attys.target = '';
   }
 
   attys.href = href;

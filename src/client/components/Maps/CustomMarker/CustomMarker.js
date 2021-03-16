@@ -25,6 +25,7 @@ class CustomMarker extends React.Component {
     payload: PropTypes.any.isRequired,
     hover: PropTypes.bool,
     isMarked: PropTypes.bool.isRequired,
+    img: PropTypes.string,
   };
 
   static defaultProps = {
@@ -36,6 +37,7 @@ class CustomMarker extends React.Component {
     onMouseOut: () => {},
     onDoubleClick: () => {},
     onClick: () => {},
+    img: '',
   };
 
   constructor(props) {
@@ -112,7 +114,7 @@ class CustomMarker extends React.Component {
         onMouseOut={this.handleMouseOut}
         role="presentation"
       >
-        <img src={this.image()} width={29} height={34} alt="" />
+        <img src={this.props.img || this.image()} width={29} height={34} alt="" />
       </div>
     );
   }

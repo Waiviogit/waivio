@@ -87,7 +87,7 @@ const PostPopoverMenu = ({
   } = post;
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
-  const baseURL = window ? window.location.origin : 'https://waivio.com';
+  const baseURL = typeof window !== 'undefined' ? window.location.origin : 'https://waivio.com';
 
   const handleShare = isTwitter => {
     const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;

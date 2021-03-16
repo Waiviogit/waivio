@@ -167,7 +167,7 @@ class MapObjectInfo extends React.Component {
 
   openModal = () => {
     if (this.props.isWaivio) this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
-    else this.setQueryInUrl(this.props.center);
+    else this.setQueryInUrl(this.props.center, this.props.wobject.author_permlink);
   };
 
   zoomButtonsLayout = () => (
