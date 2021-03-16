@@ -13,13 +13,14 @@ import { getRebloggedList } from '../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
-import { getCurrentHost } from '../../../reducers';
+import { getCurrentHost, getWebsiteParentHost } from '../../../reducers';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import {
   clearAllSessionProposition,
   getSessionData,
   removeSessionData,
 } from '../../../rewards/rewardsHelper';
+import { setSiteURL } from '../../../helpers/localStorageHelpers';
 
 import './ModalSignIn.less';
 
@@ -40,6 +41,7 @@ const ModalSignIn = ({
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   let host = useSelector(getCurrentHost);
+  const domain = useSelector(getWebsiteParentHost);
 
   if (!host && typeof location !== 'undefined') {
     host = location.host;
@@ -220,6 +222,15 @@ const ModalSignIn = ({
     handleLoginModalCancel();
   };
 
+  const onSignUpClick = isOpen => {
+    if (isWidget && domain) {
+      setSiteURL(location.host);
+      window.location.href(domain);
+    } else {
+      setIsModalOpen(isOpen);
+    }
+  };
+
   const memoizedOnModalClose = useCallback(() => {
     if (isWidget) {
       onModalClose();
@@ -233,7 +244,7 @@ const ModalSignIn = ({
 
   return (
     <React.Fragment>
-      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={setIsModalOpen} />}
+      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={onSignUpClick} />}
       <Modal
         width={480}
         visible={isModalOpen}

@@ -118,4 +118,7 @@ export default {
   ),
   UserBlog: loableComponent(import('../../client/object/UserBlog/UserBlog')),
   FormPage: loableComponent(import('../../client/object/FormPage/FormPage')),
+  RedirectedSignIn: loableComponent(
+    import(`../../client/components/Navigation/redirectedSignIn/RedirectedSignIn`),
+  ),
 };
