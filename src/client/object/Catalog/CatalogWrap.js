@@ -1,7 +1,7 @@
 import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { get, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { sortListItemsBy } from '../wObjectHelper';
@@ -14,7 +14,7 @@ import {
   getLoadingFlag,
   getObject,
 } from '../../reducers';
-import { getLastPermlinksFromHash } from '../../helpers/wObjectHelper';
+import { getLastPermlinksFromHash, getListItems, itemsList } from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import { setLoadedNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
@@ -47,7 +47,7 @@ const CatalogWrap = props => {
           setSortingBy(defaultSortBy(wObject));
           setLists(
             sortListItemsBy(
-              get(wObject, 'listItems', []),
+              itemsList(wObject.sortCustom, wObject),
               defaultSortBy(wObject),
               wObject.sortCustom,
             ),
@@ -57,7 +57,14 @@ const CatalogWrap = props => {
         });
       } else {
         setSortingBy(defaultSortBy(wobject));
-        setLists(sortListItemsBy(wobject.listItems, defaultSortBy(wobject), wobject.sortCustom));
+        // eslint-disable-next-line no-use-before-define
+        setLists(
+          sortListItemsBy(
+            itemsList(wobject.sortCustom, wobject),
+            defaultSortBy(wobject),
+            wobject.sortCustom,
+          ),
+        );
         setLoadingNestedWobject(false);
       }
     }
@@ -72,9 +79,11 @@ const CatalogWrap = props => {
   };
 
   const handleSortChange = sortType => {
+    const currentList =
+      sortType === 'custom' ? itemsList(wobject.sortCustom, wobject) : getListItems(wobject);
     const sortOrder = wobject && wobject[objectFields.sorting];
     setSortingBy(sortType);
-    setLists(sortListItemsBy(listItems, sortType, sortOrder));
+    setLists(sortListItemsBy(currentList, sortType, sortOrder));
   };
 
   const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
