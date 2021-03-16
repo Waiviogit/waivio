@@ -20,6 +20,7 @@ import {
   getSessionData,
   removeSessionData,
 } from '../../../rewards/rewardsHelper';
+import { setSiteURL } from '../../../helpers/localStorageHelpers';
 
 import './ModalSignIn.less';
 
@@ -220,6 +221,15 @@ const ModalSignIn = ({
     handleLoginModalCancel();
   };
 
+  const onSignUpClick = isOpen => {
+    if (!location.origin.includes('waivio')) {
+      setSiteURL(location.host);
+      window.location.href('dinning.pp.ua/sign-in');
+    } else {
+      setIsModalOpen(isOpen);
+    }
+  };
+
   const memoizedOnModalClose = useCallback(() => {
     if (isWidget) {
       onModalClose();
@@ -233,7 +243,7 @@ const ModalSignIn = ({
 
   return (
     <React.Fragment>
-      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={setIsModalOpen} />}
+      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={onSignUpClick} />}
       <Modal
         width={480}
         visible={isModalOpen}

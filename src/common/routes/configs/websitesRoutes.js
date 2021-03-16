@@ -257,6 +257,11 @@ const routes = {
       component: Views.ExitPage,
     },
     {
+      path: '/sign-in',
+      exact: true,
+      component: Views.RedirectedSignIn,
+    },
+    {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
       component: Views.Page,
       routes: [
