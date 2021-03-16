@@ -26,6 +26,7 @@ import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
 import websiteReducer, * as fromWebsite from './websites/websiteReducer';
 import referralReducer, * as fromReferral from '../client/rewards/ReferralProgram/ReferralReducer';
+import { stat } from 'heroku/lib/file';
 
 export default history =>
   combineReducers({
@@ -122,6 +123,7 @@ export const getConfigurationValues = state => fromApp.getConfigurationValues(st
 export const getIsWaivio = state => fromApp.getIsWaivio(state.app);
 export const getReservCounter = state => fromApp.getReservCounter(state.app);
 export const getWebsiteBeneficiary = state => fromApp.getWebsiteBeneficiary(state.app);
+export const getWebsiteParentHost = state => fromApp.getWebsiteParentHost(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 

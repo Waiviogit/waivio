@@ -13,7 +13,7 @@ import { getRebloggedList } from '../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
-import { getCurrentHost } from '../../../reducers';
+import { getCurrentHost, getWebsiteParentHost } from '../../../reducers';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import {
   clearAllSessionProposition,
@@ -41,6 +41,7 @@ const ModalSignIn = ({
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   let host = useSelector(getCurrentHost);
+  const domain = useSelector(getWebsiteParentHost);
 
   if (!host && typeof location !== 'undefined') {
     host = location.host;
@@ -222,9 +223,9 @@ const ModalSignIn = ({
   };
 
   const onSignUpClick = isOpen => {
-    if (isWidget) {
+    if (isWidget && domain) {
       setSiteURL(location.host);
-      window.location.href('dinning.pp.ua/sign-in');
+      window.location.href(domain);
     } else {
       setIsModalOpen(isOpen);
     }

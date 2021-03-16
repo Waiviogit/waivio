@@ -135,12 +135,13 @@ export default (state = initialState, action) => {
         isMobile: mobileUserAgents.test(navigator.userAgent),
       };
     case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
-      const { mainPage, host, configuration, beneficiary } = action.payload;
+      const { mainPage, host, configuration, beneficiary, parentHost } = action.payload;
       return {
         ...state,
         mainPage,
         host,
         configuration,
+        parentHost,
         websiteBeneficiary: {
           account: beneficiary.account,
           weight: beneficiary.percent,
@@ -205,3 +206,4 @@ export const getWebsiteConfiguration = state => state.configuration;
 export const getIsWaivio = state => state.isWaivio;
 export const getReservCounter = state => state.reservedCounter;
 export const getWebsiteBeneficiary = state => state.websiteBeneficiary;
+export const getWebsiteParentHost = state => state.parentHost;
