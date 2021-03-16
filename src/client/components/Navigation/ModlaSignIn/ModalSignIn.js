@@ -222,7 +222,7 @@ const ModalSignIn = ({
   };
 
   const onSignUpClick = isOpen => {
-    if (!location.origin.includes('waivio')) {
+    if (isWidget) {
       setSiteURL(location.host);
       window.location.href('dinning.pp.ua/sign-in');
     } else {

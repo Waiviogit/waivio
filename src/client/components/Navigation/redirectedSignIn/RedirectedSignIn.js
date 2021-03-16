@@ -5,10 +5,10 @@ import { isEmpty } from 'lodash';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import { setGuestLoginData, getSiteURL, getNext } from '../../../helpers/localStorageHelpers';
-
-import './RedirectedSignIn.less';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
+
+import './RedirectedSignIn.less';
 
 const RedirectedSignIn = () => {
   const next = getNext();
