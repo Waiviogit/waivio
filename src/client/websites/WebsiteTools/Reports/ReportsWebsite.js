@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, AutoComplete, DatePicker, Button } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, map, ceil } from 'lodash';
+import { isEmpty, map, ceil, debounce } from 'lodash';
 import classNames from 'classnames';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
@@ -17,11 +17,21 @@ import { getLocale, getReports } from '../../../reducers';
 import './ReportsWebsite.less';
 
 const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => {
+  const [searchString, setSearchString] = useState('');
+  const handleSearchHost = useCallback(
+    debounce(value => setSearchString(value), 300),
+    [],
+  );
+  const showingParentList = searchString
+    ? reportsInfo.ownerAppNames.filter(host => host.includes(searchString))
+    : reportsInfo.ownerAppNames;
   const { getFieldDecorator } = form;
   const formatDate = selectFormatDate(locale);
   const mappedPayments = map(reportsInfo.payments, payment => {
-    const message =
+    let message =
       payment.type === 'transfer' ? 'Payment to waivio.hosting' : `${payment.host} hosting fee`;
+
+    if (payment.description) message = `${payment.host} ${payment.description}`;
 
     return {
       ...payment,
@@ -82,14 +92,14 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
                 </span>
               </h3>
               {getFieldDecorator('host')(
-                <AutoComplete>
+                <AutoComplete onChange={handleSearchHost}>
                   <AutoComplete.Option key={'all'}>
                     {intl.formatMessage({
                       id: 'all',
                       defaultMessage: 'All',
                     })}
                   </AutoComplete.Option>
-                  {reportsInfo.ownerAppNames.map(domain => (
+                  {showingParentList.map(domain => (
                     <AutoComplete.Option key={domain} value={domain}>
                       {domain}
                     </AutoComplete.Option>

@@ -88,7 +88,7 @@ class DnDList extends Component {
     );
     this.setState({ items: itemsList });
     if (this.props.wobjType === OBJECT_TYPE.LIST) {
-      const itemsListFiltered = this.filterItems(items);
+      const itemsListFiltered = this.filterItems(itemsList);
       this.props.onChange(itemsListFiltered.map(item => item.id));
     }
   };

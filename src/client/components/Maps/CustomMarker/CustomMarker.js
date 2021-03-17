@@ -25,6 +25,7 @@ class CustomMarker extends React.Component {
     payload: PropTypes.any.isRequired,
     hover: PropTypes.bool,
     isMarked: PropTypes.bool.isRequired,
+    currLocation: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -32,10 +33,12 @@ class CustomMarker extends React.Component {
     left: 0,
     top: 0,
     hover: false,
+    currLocation: false,
     onMouseOver: () => {},
     onMouseOut: () => {},
     onDoubleClick: () => {},
     onClick: () => {},
+    img: '',
   };
 
   constructor(props) {
@@ -92,7 +95,8 @@ class CustomMarker extends React.Component {
   };
 
   render() {
-    const { left, top, onClick, isMarked } = this.props;
+    const { left, top, onClick, isMarked, currLocation } = this.props;
+    const currentImg = currLocation ? '/images/icons/loc-removebg.png' : this.image();
 
     const style = {
       position: 'absolute',
@@ -112,7 +116,7 @@ class CustomMarker extends React.Component {
         onMouseOut={this.handleMouseOut}
         role="presentation"
       >
-        <img src={this.image()} width={29} height={34} alt="" />
+        <img src={currentImg} width={currLocation ? 50 : 29} height={34} alt="" />
       </div>
     );
   }

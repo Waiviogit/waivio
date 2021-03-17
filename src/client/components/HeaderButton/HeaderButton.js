@@ -244,6 +244,7 @@ const HeaderButtons = props => {
             onVisibleChange={handleMoreMenuVisibleChange}
             overlayStyle={{ position: 'fixed' }}
             content={<PopoverMenu onSelect={handleMoreMenuSelect}>{popoverItems}</PopoverMenu>}
+            overlayClassName="Topnav__popover"
           >
             <a className="Topnav__link">
               <Icon type="caret-down" />

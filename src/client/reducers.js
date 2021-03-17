@@ -122,6 +122,7 @@ export const getConfigurationValues = state => fromApp.getConfigurationValues(st
 export const getIsWaivio = state => fromApp.getIsWaivio(state.app);
 export const getReservCounter = state => fromApp.getReservCounter(state.app);
 export const getWebsiteBeneficiary = state => fromApp.getWebsiteBeneficiary(state.app);
+export const getWebsiteParentHost = state => fromApp.getWebsiteParentHost(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 

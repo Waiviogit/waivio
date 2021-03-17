@@ -132,7 +132,6 @@ const PropositionList = ({
       <PropositionMainObjectCard
         intl={intl}
         wobject={currWobject}
-        currentProposition={currPropos}
         goToProducts={() => goToProducts(wobject)}
         maxReward={maxReward}
         rewardPrise={rewardPrise}

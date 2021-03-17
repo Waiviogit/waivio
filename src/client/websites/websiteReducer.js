@@ -1,4 +1,4 @@
-import { get, uniqWith, isEqual } from 'lodash';
+import { get } from 'lodash';
 import moment from 'moment';
 import * as websiteAction from './websiteActions';
 import { getAvailableStatus } from './helper';
@@ -314,13 +314,9 @@ export default function websiteReducer(state = initialState, action) {
     }
 
     case websiteAction.GET_WEBSITE_OBJECTS_WITH_COORDINATES.SUCCESS: {
-      if (state.wobjectsPoint.length > 150) {
-        state.wobjectsPoint.splice(0, 50);
-      }
-
       return {
         ...state,
-        wobjectsPoint: uniqWith(state.wobjectsPoint.concat(action.payload.wobjects), isEqual),
+        wobjectsPoint: action.payload.wobjects,
         wobjectsPointHasMore: action.payload.hasMore,
       };
     }

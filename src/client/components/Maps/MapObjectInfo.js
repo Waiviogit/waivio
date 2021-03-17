@@ -77,8 +77,7 @@ class MapObjectInfo extends React.Component {
   };
 
   setQueryInUrl = (anchor, permlink) => {
-    const url =
-      localStorage.getItem('query') || `center=${anchor.join(',')}&zoom=6&permlink=${permlink}`;
+    const url = `center=${anchor.join(',')}&zoom=${this.state.zoom}&permlink=${permlink}`;
     this.props.history.push(`/?${url}`);
   };
 
@@ -168,7 +167,7 @@ class MapObjectInfo extends React.Component {
 
   openModal = () => {
     if (this.props.isWaivio) this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
-    else this.setQueryInUrl(this.props.center);
+    else this.setQueryInUrl(this.props.center, this.props.wobject.author_permlink);
   };
 
   zoomButtonsLayout = () => (

@@ -214,7 +214,18 @@ export const getMenuItems = (wobject, menuType, objType) => {
     });
 };
 
+export const getSortList = (sortedList, itemsList) =>
+  itemsList.reduce((acc, item) => {
+    if (sortedList.includes(item.author_permlink)) {
+      return [...acc, item];
+    }
+    return acc;
+  }, []);
+
 export const getListItems = wobject => get(wobject, 'listItems', []);
+
+export const itemsList = (sort, wobj) =>
+  !isEmpty(sort) ? getSortList(sort, getListItems(wobj)) : getListItems(wobj);
 
 export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};
 

@@ -1,0 +1,97 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+@wrapPadding: 15px;
+
+.ObjectOverlayCard {
+  font-size: 14px;
+  border: 1px solid @blue-hawkesBlue;
+  border-radius: 4px;
+  background: @white;
+  white-space: nowrap;
+  padding: 10px;
+  display: flex;
+  width: fit-content;
+  position: relative;
+
+  &__earn {
+    position: absolute;
+    top: -15px;
+    right: 5px;
+    border-radius: 4px;
+    background: @orange-hot;
+    color: @white;
+    border: none;
+    padding: 5px;
+
+    &:hover {
+      color: @white;
+      background: @orange-light;
+    }
+  }
+
+  &__content-row {
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+    max-height: 95px;
+  }
+
+  &__info {
+    width: 70%;
+    max-width: 70%;
+    padding: 10px;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+
+  &__avatar {
+    width: 80px;
+
+    .avatar-image {
+      width: 100%;
+      padding-top: 100%;
+      border-radius: 4px;
+      display: block !important;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      border: 1px solid #e9e7e7;
+    }
+  }
+
+  &__tag-text {
+    color: @blue-botticelli;
+    font-weight: 500;
+    font-size: 1em;
+    text-transform: capitalize;
+  }
+
+  &__price {
+    color: @blue-botticelli;
+    margin-bottom: 0.5em;
+
+    i {
+      margin-right: 5px;
+    }
+  }
+
+  &__name {
+    cursor: auto;
+    display: flex;
+    font-weight: 600;
+    align-items: center;
+
+    &-truncated {
+      margin-right: 10px;
+      color: @black;
+      font-size: 1em;
+      line-height: 1.1em;
+      white-space: normal;
+      vertical-align: middle;
+      font-weight: 600;
+    }
+  }
+}
+
+//@import 'ObjectCardView-nightmode';

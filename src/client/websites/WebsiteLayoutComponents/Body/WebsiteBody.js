@@ -36,7 +36,6 @@ import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import mapProvider from '../../../helpers/mapProvider';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
-import DEFAULTS from '../../../object/const/defaultValues';
 import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
 import {
@@ -46,6 +45,7 @@ import {
 } from '../../../app/appActions';
 import { getWebsiteObjWithCoordinates, setShowReload } from '../../websiteActions';
 import { distanceInMBetweenEarthCoordinates } from '../../helper';
+import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
 
 import './WebsiteBody.less';
 
@@ -56,6 +56,10 @@ const WebsiteBody = props => {
   });
   const [infoboxData, setInfoboxData] = useState(null);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
+  const isActiveFilters = !isEmpty(props.activeFilters);
+  const reservedButtonClassList = classNames('WebsiteBody__reserved', {
+    'WebsiteBody__reserved--withMobileFilters': isActiveFilters,
+  });
   let queryCenter = props.query.get('center');
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const getCurrentConfig = config =>
@@ -214,15 +218,15 @@ const WebsiteBody = props => {
 
   const getOverlayLayout = () => {
     const currentWobj = infoboxData;
-    const avatar = getObjectAvatar(currentWobj.wobject) || DEFAULTS.AVATAR;
     const name = getObjectName(currentWobj.wobject);
+    const wobject = get(currentWobj, 'wobject', {});
 
     const getFirstOffsetNumber = () => {
       const lengthMoreThanOrSame = number => size(name) <= number;
 
-      if (lengthMoreThanOrSame(15)) return 65;
-      if (lengthMoreThanOrSame(20)) return 100;
-      if (lengthMoreThanOrSame(35)) return 120;
+      if (lengthMoreThanOrSame(15)) return 125;
+      if (lengthMoreThanOrSame(20)) return 160;
+      if (lengthMoreThanOrSame(35)) return 180;
 
       return 170;
     };
@@ -232,20 +236,17 @@ const WebsiteBody = props => {
     return (
       <Overlay
         anchor={infoboxData.coordinates}
-        offset={[firstOffsetNumber, 75]}
+        offset={[firstOffsetNumber, 140]}
         className="WebsiteBody__overlay"
       >
-        <Link
-          role="presentation"
+        <div
           className="WebsiteBody__overlay-wrap"
-          to={get(currentWobj, ['wobject', 'defaultShowLink'])}
+          role="presentation"
+          data-anchor={wobject.author_permlink}
           onClick={() => localStorage.setItem('query', props.query)}
         >
-          <img src={avatar} width={35} height={35} alt={name} />
-          <span data-anchor={name} className="MapOS__overlay-wrap-name">
-            {name}
-          </span>
-        </Link>
+          <ObjectOverlayCard wObject={wobject} />
+        </div>
       </Overlay>
     );
   };
@@ -331,7 +332,7 @@ const WebsiteBody = props => {
         {!isEmpty(area.center) && !isEmpty(props.configuration) && (
           <React.Fragment>
             {Boolean(props.counter) && props.isAuth && (
-              <Link to="/rewards/reserved" className="WebsiteBody__reserved">
+              <Link to="/rewards/reserved" className={reservedButtonClassList}>
                 <FormattedMessage id="reserved" defaultMessage="Reserved" />: {props.counter}
               </Link>
             )}
@@ -348,7 +349,7 @@ const WebsiteBody = props => {
                 }
               }}
             >
-              {!isEmpty(props.activeFilters) && (
+              {isActiveFilters && (
                 <div className="WebsiteBody__filters-list">
                   {props.activeFilters.map(filter =>
                     filter.tags.map(tag => (
@@ -365,6 +366,10 @@ const WebsiteBody = props => {
               )}
               {getMarkers(props.wobjectsPoint)}
               {infoboxData && getOverlayLayout()}
+              <CustomMarker
+                anchor={[props.userLocation.lat, props.userLocation.lon]}
+                currLocation
+              />
             </Map>
           </React.Fragment>
         )}
