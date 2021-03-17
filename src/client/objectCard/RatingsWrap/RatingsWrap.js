@@ -24,6 +24,7 @@ const RatingsWrap = ({
   const ratingTitleClassList = classNames('RatingsWrap__rate-title', {
     'RatingsWrap__rate-title--withoutTruncate': overlay,
   });
+
   let sortedRatings = sortBy(mappedRatings, ['body']);
 
   if (overlay) sortedRatings = [mappedRatings.sort((a, b) => b.rating - a.rating)[0]];
@@ -47,9 +48,7 @@ const RatingsWrap = ({
       >
         <Rate allowHalf disabled value={averageRate(sortedRatings[rateIndex])} />
       </div>
-      <div className="RatingsWrap__rate-title RatingsWrap__rate-title--withoutTruncate">
-        {sortedRatings[rateIndex].body}
-      </div>
+      <div className={ratingTitleClassList}>{sortedRatings[rateIndex].body}</div>
     </Col>
   );
 
