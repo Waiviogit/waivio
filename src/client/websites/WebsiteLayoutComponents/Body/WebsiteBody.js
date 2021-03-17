@@ -219,6 +219,7 @@ const WebsiteBody = props => {
   const getOverlayLayout = () => {
     const currentWobj = infoboxData;
     const name = getObjectName(currentWobj.wobject);
+    const wobject = get(currentWobj, 'wobject', {});
 
     const getFirstOffsetNumber = () => {
       const lengthMoreThanOrSame = number => size(name) <= number;
@@ -238,7 +239,14 @@ const WebsiteBody = props => {
         offset={[firstOffsetNumber, 140]}
         className="WebsiteBody__overlay"
       >
-        <ObjectOverlayCard wObject={get(currentWobj, 'wobject')} />
+        <div
+          className="WebsiteBody__overlay-wrap"
+          role="presentation"
+          data-anchor={wobject.author_permlink}
+          onClick={() => localStorage.setItem('query', props.query)}
+        >
+          <ObjectOverlayCard wObject={wobject} />
+        </div>
       </Overlay>
     );
   };
@@ -335,6 +343,7 @@ const WebsiteBody = props => {
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
               onClick={({ event }) => {
+                console.log(event.target.dataset);
                 if (!get(event, 'target.dataset.anchor')) {
                   setInfoboxData(null);
                   props.history.push('/');
@@ -360,7 +369,7 @@ const WebsiteBody = props => {
               {infoboxData && getOverlayLayout()}
               <CustomMarker
                 anchor={[props.userLocation.lat, props.userLocation.lon]}
-                img={'https://svgsilh.com/svg/304291-03a9f4.svg'}
+                currLocation
               />
             </Map>
           </React.Fragment>
