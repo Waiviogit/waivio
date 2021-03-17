@@ -343,7 +343,6 @@ const WebsiteBody = props => {
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
               onClick={({ event }) => {
-                console.log(event.target.dataset);
                 if (!get(event, 'target.dataset.anchor')) {
                   setInfoboxData(null);
                   props.history.push('/');
