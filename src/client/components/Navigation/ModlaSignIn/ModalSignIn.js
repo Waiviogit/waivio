@@ -13,14 +13,13 @@ import { getRebloggedList } from '../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
-import { getCurrentHost, getWebsiteParentHost } from '../../../reducers';
+import { getCurrentHost, getIsWaivio, getWebsiteParentHost } from '../../../reducers';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import {
   clearAllSessionProposition,
   getSessionData,
   removeSessionData,
 } from '../../../rewards/rewardsHelper';
-import { setSiteURL } from '../../../helpers/localStorageHelpers';
 
 import './ModalSignIn.less';
 
@@ -42,6 +41,7 @@ const ModalSignIn = ({
   const [isLoading, setIsLoading] = useState(false);
   let host = useSelector(getCurrentHost);
   const domain = useSelector(getWebsiteParentHost);
+  const isWaivio = useSelector(getIsWaivio);
 
   if (!host && typeof location !== 'undefined') {
     host = location.host;
@@ -223,9 +223,8 @@ const ModalSignIn = ({
   };
 
   const onSignUpClick = isOpen => {
-    if (isWidget && domain) {
-      setSiteURL(location.host);
-      window.location.href(domain);
+    if (!isWaivio && domain) {
+      window.location.href = `https://${domain}/sign-in?host=${host}`;
     } else {
       setIsModalOpen(isOpen);
     }
