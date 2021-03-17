@@ -49,6 +49,7 @@ const ObjectOverlayCard = ({
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
+        data-anchor={wObject.author_permlink}
       />
     );
   };
@@ -60,9 +61,17 @@ const ObjectOverlayCard = ({
     })} ${wobjName}`;
 
   return (
-    <div className="ObjectOverlayCard" key={wObject.author_permlink}>
+    <div
+      className="ObjectOverlayCard"
+      key={wObject.author_permlink}
+      data-anchor={wObject.author_permlink}
+    >
       {wObject.campaigns && (
-        <Link className="ObjectOverlayCard__earn" to={`/rewards/all/${wObject.author_permlink}`}>
+        <Link
+          data-anchor={wObject.author_permlink}
+          className="ObjectOverlayCard__earn"
+          to={`/rewards/all/${wObject.author_permlink}`}
+        >
           {wObject.campaigns.max_reward === wObject.campaigns.min_reward
             ? intl.formatMessage({
                 id: 'rewards_details_earn',
@@ -72,7 +81,7 @@ const ObjectOverlayCard = ({
                 id: 'rewards_details_earn_up_to',
                 defaultMessage: 'Earn up to',
               })}{' '}
-          <b>
+          <b data-anchor={wObject.author_permlink}>
             {ceil(wObject.campaigns.max_reward, 2)} USD <Icon type="right" />
           </b>
         </Link>
@@ -93,6 +102,7 @@ const ObjectOverlayCard = ({
               to={pathName}
               className="ObjectOverlayCard__name-truncated"
               title={goToObjTitle(objName)}
+              data-anchor={wObject.author_permlink}
             >
               {objName}
             </Link>
