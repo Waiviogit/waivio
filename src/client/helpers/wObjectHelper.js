@@ -225,7 +225,7 @@ export const getSortList = (sortedList, itemsList) =>
 export const getListItems = wobject => get(wobject, 'listItems', []);
 
 export const itemsList = (sort, wobj) =>
-  sort ? getSortList(sort, getListItems(wobj)) : getListItems(wobj);
+  !isEmpty(sort) ? getSortList(sort, getListItems(wobj)) : getListItems(wobj);
 
 export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};
 

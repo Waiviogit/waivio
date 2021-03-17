@@ -20,12 +20,13 @@ const RatingsWrap = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRating, setSelectedRating] = useState(null);
   const isMobile = screenSize === 'xsmall' || screenSize === 'small';
+  const mappedRatings = ratings.map(d => ({ ...d, rating: averageRate(d) }));
   const ratingTitleClassList = classNames('RatingsWrap__rate-title', {
     'RatingsWrap__rate-title--withoutTruncate': overlay,
   });
-  let sortedRatings = sortBy(ratings, ['body']);
+  let sortedRatings = sortBy(mappedRatings, ['body']);
 
-  if (overlay) sortedRatings = [sortedRatings[0]];
+  if (overlay) sortedRatings = [mappedRatings.sort((a, b) => b.rating - a.rating)[0]];
 
   const openRateModal = selectedRate => () => {
     setSelectedRating(selectedRate);

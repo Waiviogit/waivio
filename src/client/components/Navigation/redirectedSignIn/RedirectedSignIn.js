@@ -32,8 +32,10 @@ const RedirectedSignIn = props => {
     } else if (response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
       const res = await isUserRegistered(id, socialNetwork);
+
       if (res) {
         setGuestLoginData(response.accessToken, socialNetwork, id);
+        window.location.href = `https://${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
       } else {
         let image = '';
 
@@ -50,9 +52,6 @@ const RedirectedSignIn = props => {
         setUserData({ ...response, image, socialNetwork });
         setIsFormVisible(true);
         setIsModalOpen(true);
-      }
-      if (!isModalOpen) {
-        window.location.href = `https://${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
       }
     }
   };
@@ -149,7 +148,7 @@ const RedirectedSignIn = props => {
   const renderGuestSignUpForm = () => (
     <React.Fragment>
       <div className="ModalGuestForm">
-        <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
+        <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} url={url} />
       </div>
     </React.Fragment>
   );
