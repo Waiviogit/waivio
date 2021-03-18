@@ -6,6 +6,7 @@
 .Proposition {
   margin-bottom: @wrapPadding;
   padding-top: 5px;
+  transition: .5s;
 
   &__header {
     border: 2px solid @orange-hot;
@@ -13,6 +14,7 @@
     border-radius: 4px 4px 0 0;
     padding: @wrapPadding;
     margin: 0 @wrapPadding;
+    transition: .5s;
   }
 
   &__footer {
@@ -25,6 +27,7 @@
     align-items: center;
     padding: @wrapPadding;
     margin: 0 @wrapPadding;
+    transition: .5s;
 
     .anticon {
       font-size: 16px;
@@ -121,6 +124,17 @@
       padding: @wrapPadding 0;
       width: 100%;
       border: none;
+    }
+  }
+
+  &--hovered {
+    &:hover {
+      cursor: pointer;
+
+      .Proposition__header,
+      .Proposition__footer {
+        background: @solitaire;
+      }
     }
   }
 }

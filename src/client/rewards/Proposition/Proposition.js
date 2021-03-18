@@ -45,7 +45,9 @@ const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');
   const currentWobjId = get(props.wobj, ['_id'], '');
   const authorizedUserName = get(props.user, 'name', '');
-
+  const propositionClassList = classNames('Proposition', {
+    'Proposition--hovered': props.hovered
+  });
   const searchParams = new URLSearchParams(props.location.search);
 
   const isWidget = searchParams.get('display');
@@ -224,7 +226,7 @@ const Proposition = props => {
   };
 
   return (
-    <div className="Proposition">
+    <div className={propositionClassList}>
       <div className="Proposition__header">
         <CampaignCardHeader
           campaignData={props.proposition}

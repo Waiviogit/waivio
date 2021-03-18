@@ -4,6 +4,7 @@ import { includes, truncate, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import classNames from 'classnames';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
@@ -19,6 +20,7 @@ const ObjectCardView = ({
   options: { mobileView = 'compact', ownRatesOnly = false },
   path,
   passedParent,
+  hovered
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
@@ -28,6 +30,9 @@ const ObjectCardView = ({
   const parentLink = get(parent, 'defaultShowLink');
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
+  const objectCardClassList = classNames('ObjectCardView', {
+    'ObjectCardView--hovered': hovered
+  });
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
   pathName = hasType(wObject, 'page') ? path : pathName;
 
@@ -71,8 +76,7 @@ const ObjectCardView = ({
     })} ${wobjName}`;
 
   return (
-    <div key={wObject.author_permlink}>
-      <div className="ObjectCardView">
+      <div className={objectCardClassList} key={wObject.author_permlink}>
         <div className="ObjectCardView__content">
           <div className="ObjectCardView__content-row">
             <Link
@@ -142,7 +146,6 @@ const ObjectCardView = ({
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
@@ -151,6 +154,7 @@ ObjectCardView.propTypes = {
   wObject: PropTypes.shape(),
   passedParent: PropTypes.shape(),
   path: PropTypes.string,
+  hovered: PropTypes.bool,
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -163,5 +167,6 @@ ObjectCardView.defaultProps = {
   wObject: {},
   path: '',
   passedParent: {},
+  hovered: false
 };
 export default injectIntl(ObjectCardView);
