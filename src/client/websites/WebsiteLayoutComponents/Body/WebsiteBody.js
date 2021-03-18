@@ -55,6 +55,7 @@ const WebsiteBody = props => {
     bottomPoint: [],
   });
   const [infoboxData, setInfoboxData] = useState(null);
+  const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const isActiveFilters = !isEmpty(props.activeFilters);
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
@@ -70,7 +71,6 @@ const WebsiteBody = props => {
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
 
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
-
   if (queryCenter) {
     queryCenter = queryCenter.split(',').map(item => Number(item));
   }
@@ -179,6 +179,8 @@ const WebsiteBody = props => {
     [],
   );
 
+  const handleHoveredCard = permlink => setHoveredCardPermlink(permlink);
+
   const handleMarkerClick = useCallback(
     ({ payload, anchor }) => {
       handleAddMapCoordinates(anchor);
@@ -210,10 +212,11 @@ const WebsiteBody = props => {
             payload={wobject}
             onClick={handleMarkerClick}
             onDoubleClick={() => setInfoboxData(null)}
+            hoveredWobj={hoveredCardPermlink === wobject.author_permlink}
           />
         ) : null;
       }),
-    [props.wobjectsPoint],
+    [props.wobjectsPoint, hoveredCardPermlink],
   );
 
   const getOverlayLayout = () => {
@@ -317,6 +320,7 @@ const WebsiteBody = props => {
         showReload={props.showReloadButton}
         reloadSearchList={reloadSearchList}
         searchType={props.searchType}
+        handleHoveredCard={handleHoveredCard}
       />
       <div className={mapClassList}>
         {currentLogo && (

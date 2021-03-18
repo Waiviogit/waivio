@@ -11,6 +11,7 @@
   border-radius: 4px;
   margin-top: 15px;
   background: @white;
+  transition: 0.5s;
 
   &__tag-text {
     color: @blue-botticelli;
@@ -95,6 +96,13 @@
   &__title {
     color: @black;
     font-size: 1em;
+  }
+
+  &--hovered {
+    &:hover {
+      background: @solitaire;
+      cursor: pointer;
+    }
   }
 }
 

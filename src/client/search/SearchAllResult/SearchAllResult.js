@@ -47,6 +47,28 @@ const SearchAllResult = props => {
     SearchAllResult__show: props.isShowResult,
   });
 
+  const switcherObjectCard = obj => {
+    if (!isEmpty(obj.propositions)) {
+      const proposition = obj.propositions[0];
+
+      return (
+        <Proposition
+          proposition={proposition}
+          wobj={obj}
+          assigned={proposition.assigned}
+          wobjPrice={proposition.reward}
+          assignProposition={props.assignProposition}
+          discardProposition={props.declineProposition}
+          hovered
+        />
+      );
+    }
+
+    if (obj.campaigns) return <Campaign proposition={obj} filterKey="all" hovered />;
+
+    return <ObjectCardView wObject={obj} hovered />;
+  };
+
   const currentListState = useCallback(() => {
     switch (props.searchType) {
       case 'Users':
@@ -65,29 +87,15 @@ const SearchAllResult = props => {
 
       default:
         return {
-          list: map(uniqBy(props.searchResult, '_id'), obj => {
-            if (!isEmpty(obj.propositions)) {
-              const proposition = obj.propositions[0];
-
-              return (
-                <Proposition
-                  proposition={proposition}
-                  wobj={obj}
-                  assigned={proposition.assigned}
-                  wobjPrice={proposition.reward}
-                  assignProposition={props.assignProposition}
-                  discardProposition={props.declineProposition}
-                  // loading={loadingAssign}
-                  key={`${obj.author_permlink}`}
-                />
-              );
-            }
-
-            if (obj.campaigns)
-              return <Campaign proposition={obj} filterKey="all" key={obj.author_permlink} />;
-
-            return <ObjectCardView wObject={obj} key={obj.author_permlink} />;
-          }),
+          list: map(uniqBy(props.searchResult, '_id'), obj => (
+            <div
+              key={obj.author_permlink}
+              onMouseOver={() => props.handleHoveredCard(obj.author_permlink)}
+              onMouseOut={() => props.handleHoveredCard('')}
+            >
+              {switcherObjectCard(obj)}
+            </div>
+          )),
           hasMore: props.hasMore,
           loading: props.loading,
         };
@@ -260,12 +268,14 @@ SearchAllResult.propTypes = {
   showReload: PropTypes.bool,
   assignProposition: PropTypes.func.isRequired,
   declineProposition: PropTypes.func.isRequired,
+  handleHoveredCard: PropTypes.func,
 };
 
 SearchAllResult.defaultProps = {
   userLocation: {},
   hasMoreUsers: false,
   showReload: false,
+  handleHoveredCard: () => {},
 };
 
 export default connect(

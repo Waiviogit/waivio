@@ -15,6 +15,7 @@ const Campaign = ({
   intl,
   rewardPricePassed,
   rewardMaxPassed,
+  hovered,
 }) => {
   const hasCampaigns = has(proposition, ['campaigns']);
   const campaign = hasCampaigns ? get(proposition, 'campaigns') : proposition;
@@ -32,6 +33,7 @@ const Campaign = ({
         wObject={requiredObject}
         key={requiredObject.id}
         passedParent={requiredObject.parent}
+        hovered={hovered}
       />
       <div className="Campaign__button" role="presentation" onClick={goToProducts}>
         <Button type="primary" size="large">
@@ -75,6 +77,7 @@ Campaign.propTypes = {
   history: PropTypes.shape().isRequired,
   rewardPricePassed: PropTypes.string,
   rewardMaxPassed: PropTypes.string,
+  hovered: PropTypes.fool,
 };
 
 Campaign.defaultProps = {
@@ -82,6 +85,7 @@ Campaign.defaultProps = {
   rewardPricePassed: '',
   rewardMaxPassed: '',
   filterKey: '',
+  hovered: false,
 };
 
 export default injectIntl(withRouter(Campaign));
