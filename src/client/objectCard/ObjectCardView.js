@@ -20,7 +20,7 @@ const ObjectCardView = ({
   options: { mobileView = 'compact', ownRatesOnly = false },
   path,
   passedParent,
-  hovered
+  hovered,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
@@ -31,7 +31,7 @@ const ObjectCardView = ({
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
   const objectCardClassList = classNames('ObjectCardView', {
-    'ObjectCardView--hovered': hovered
+    'ObjectCardView--hovered': hovered,
   });
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
   pathName = hasType(wObject, 'page') ? path : pathName;
@@ -76,76 +76,76 @@ const ObjectCardView = ({
     })} ${wobjName}`;
 
   return (
-      <div className={objectCardClassList} key={wObject.author_permlink}>
-        <div className="ObjectCardView__content">
-          <div className="ObjectCardView__content-row">
-            <Link
-              to={pathName}
-              title={goToObjTitle(objName)}
-              className="ObjectCardView__avatar"
-              key={wObject.author_permlink}
-            >
-              {avatarLayout()}
-            </Link>
-            <div className="ObjectCardView__info">
-              {parentName && (
-                <Link
-                  to={parentLink}
-                  title={goToObjTitle(parentName)}
-                  className="ObjectCardView__type"
-                >
-                  {parentName}
-                </Link>
-              )}
-              <div className="ObjectCardView__name">
-                <Link
-                  key={wObject.author_permlink}
-                  to={pathName}
-                  className="ObjectCardView__name-truncated"
-                  title={goToObjTitle(objName)}
-                >
-                  {objName}
-                </Link>
-                {!isNaN(wObject.weight) && <WeightTag weight={Number(wObject.weight)} />}
-              </div>
-              {wObject.rating && (
-                <RatingsWrap
-                  mobileView={mobileView}
-                  ownRatesOnly={ownRatesOnly}
-                  ratings={wObject.rating}
-                  screenSize={screenSize}
-                  username={username}
-                  wobjId={wObject.id || wObject.author_permlink}
-                  wobjName={objName}
-                />
-              )}
-              <span className="ObjectCardView__tag-text">
-                {wObject.price && (
-                  <span className="ObjectCardView__price" title={wObject.price}>
-                    {wObject.price}
-                  </span>
-                )}
-                {tags.map((tag, index) => (
-                  <span key={tag}>
-                    {index === 0 && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
-                  </span>
-                ))}
-              </span>
-              {address && <div className="ObjectCardView__tag-text">{address}</div>}
-              {wObject.title ? (
-                <div className="ObjectCardView__title" title={wObject.title}>
-                  {truncate(wObject.title, {
-                    length: 140,
-                    separator: ' ',
-                  })}
-                </div>
-              ) : (
-                description
-              )}
+    <div className={objectCardClassList} key={wObject.author_permlink}>
+      <div className="ObjectCardView__content">
+        <div className="ObjectCardView__content-row">
+          <Link
+            to={pathName}
+            title={goToObjTitle(objName)}
+            className="ObjectCardView__avatar"
+            key={wObject.author_permlink}
+          >
+            {avatarLayout()}
+          </Link>
+          <div className="ObjectCardView__info">
+            {parentName && (
+              <Link
+                to={parentLink}
+                title={goToObjTitle(parentName)}
+                className="ObjectCardView__type"
+              >
+                {parentName}
+              </Link>
+            )}
+            <div className="ObjectCardView__name">
+              <Link
+                key={wObject.author_permlink}
+                to={pathName}
+                className="ObjectCardView__name-truncated"
+                title={goToObjTitle(objName)}
+              >
+                {objName}
+              </Link>
+              {!isNaN(wObject.weight) && <WeightTag weight={Number(wObject.weight)} />}
             </div>
+            {wObject.rating && (
+              <RatingsWrap
+                mobileView={mobileView}
+                ownRatesOnly={ownRatesOnly}
+                ratings={wObject.rating}
+                screenSize={screenSize}
+                username={username}
+                wobjId={wObject.id || wObject.author_permlink}
+                wobjName={objName}
+              />
+            )}
+            <span className="ObjectCardView__tag-text">
+              {wObject.price && (
+                <span className="ObjectCardView__price" title={wObject.price}>
+                  {wObject.price}
+                </span>
+              )}
+              {tags.map((tag, index) => (
+                <span key={tag}>
+                  {index === 0 && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
+                </span>
+              ))}
+            </span>
+            {address && <div className="ObjectCardView__tag-text">{address}</div>}
+            {wObject.title ? (
+              <div className="ObjectCardView__title" title={wObject.title}>
+                {truncate(wObject.title, {
+                  length: 140,
+                  separator: ' ',
+                })}
+              </div>
+            ) : (
+              description
+            )}
           </div>
         </div>
       </div>
+    </div>
   );
 };
 
@@ -167,6 +167,6 @@ ObjectCardView.defaultProps = {
   wObject: {},
   path: '',
   passedParent: {},
-  hovered: false
+  hovered: false,
 };
 export default injectIntl(ObjectCardView);

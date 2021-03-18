@@ -64,11 +64,10 @@ const SearchAllResult = props => {
       );
     }
 
-    if (obj.campaigns)
-      return <Campaign proposition={obj} filterKey="all" hovered/>;
+    if (obj.campaigns) return <Campaign proposition={obj} filterKey="all" hovered />;
 
     return <ObjectCardView wObject={obj} hovered />;
-  }
+  };
 
   const currentListState = useCallback(() => {
     switch (props.searchType) {
@@ -88,13 +87,15 @@ const SearchAllResult = props => {
 
       default:
         return {
-          list: map(uniqBy(props.searchResult, '_id'), obj =>
-            <div key={obj.author_permlink}
-                 onMouseOver={() => props.handleHoveredCard(obj.author_permlink)}
-                 onMouseOut={() => props.handleHoveredCard('')}
+          list: map(uniqBy(props.searchResult, '_id'), obj => (
+            <div
+              key={obj.author_permlink}
+              onMouseOver={() => props.handleHoveredCard(obj.author_permlink)}
+              onMouseOut={() => props.handleHoveredCard('')}
             >
               {switcherObjectCard(obj)}
-            </div>),
+            </div>
+          )),
           hasMore: props.hasMore,
           loading: props.loading,
         };

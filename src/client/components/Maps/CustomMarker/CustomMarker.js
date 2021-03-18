@@ -102,13 +102,15 @@ class CustomMarker extends React.Component {
     let height = 34;
     let currentImg = this.image();
 
-    if(currLocation) {
+    if (currLocation) {
       currentImg = '/images/icons/loc-removebg.png';
       width = 50;
     }
 
-    if(hoveredWobj) {
-      currentImg = isMarked ? '/images/icons/campaings-hovered.png' : '/images/icons/object-hovered.png';
+    if (hoveredWobj) {
+      currentImg = isMarked
+        ? '/images/icons/campaings-hovered.png'
+        : '/images/icons/object-hovered.png';
       width = 40;
       height = 45;
     }
@@ -131,7 +133,7 @@ class CustomMarker extends React.Component {
         onMouseOut={this.handleMouseOut}
         role="presentation"
       >
-        <img src={currentImg} width={width} height={height} alt="" style={{transition: '0.3s'}}/>
+        <img src={currentImg} width={width} height={height} alt="" style={{ transition: '0.3s' }} />
       </div>
     );
   }

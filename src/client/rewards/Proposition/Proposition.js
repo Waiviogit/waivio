@@ -46,7 +46,7 @@ const Proposition = props => {
   const currentWobjId = get(props.wobj, ['_id'], '');
   const authorizedUserName = get(props.user, 'name', '');
   const propositionClassList = classNames('Proposition', {
-    'Proposition--hovered': props.hovered
+    'Proposition--hovered': props.hovered,
   });
   const searchParams = new URLSearchParams(props.location.search);
 

@@ -15,7 +15,7 @@ const Campaign = ({
   intl,
   rewardPricePassed,
   rewardMaxPassed,
-  hovered
+  hovered,
 }) => {
   const hasCampaigns = has(proposition, ['campaigns']);
   const campaign = hasCampaigns ? get(proposition, 'campaigns') : proposition;
@@ -28,7 +28,7 @@ const Campaign = ({
     history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
 
   return (
-    <div className={Campaign}>
+    <div className="Campaign">
       <ObjectCardView
         wObject={requiredObject}
         key={requiredObject.id}
@@ -85,7 +85,7 @@ Campaign.defaultProps = {
   rewardPricePassed: '',
   rewardMaxPassed: '',
   filterKey: '',
-  hovered: false
+  hovered: false,
 };
 
 export default injectIntl(withRouter(Campaign));
