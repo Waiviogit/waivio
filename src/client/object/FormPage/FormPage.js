@@ -16,7 +16,8 @@ const FormPage = props => {
       )}
       <div className="FormPage__block">
         <iframe
-          src={currentForm.link}
+          srcDoc={currentForm.form === 'Widget' ? currentForm.link : null}
+          src={currentForm.form !== 'Widget' ? currentForm.link : null}
           width="100%"
           height="100%"
           allowFullScreen
