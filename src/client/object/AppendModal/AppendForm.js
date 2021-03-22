@@ -218,9 +218,7 @@ export default class AppendForm extends Component {
       const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
-        itemInList:
-          (!isEmpty(sortCustom) && sortCustom.includes(item.author_permlink)) ||
-          (isEmpty(sortCustom) && true),
+        itemInList: !isEmpty(sortCustom) ? sortCustom.includes(item.author_permlink) : true,
       }));
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ itemsInSortingList: listItems, loading: false });
