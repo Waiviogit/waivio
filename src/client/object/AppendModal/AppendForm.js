@@ -195,6 +195,7 @@ export default class AppendForm extends Component {
     formColumn: formColumnsField.middle,
     formForm: formFormFields.link,
     itemsInSortingList: null,
+    newsFilterTitle: null,
   };
 
   componentDidMount = () => {
@@ -402,7 +403,7 @@ export default class AppendForm extends Component {
             }
           });
 
-          return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
+          return `@${author} added ${currentField} ${this.state.newsFilterTitle} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         case objectFields.form:
           return `@${author} added ${currentField} ${formValues.formTitle}`;
@@ -428,6 +429,13 @@ export default class AppendForm extends Component {
         body: bodyField,
         locale: currentLocale,
       };
+
+      if (currentField === objectFields.newsFilter) {
+        fieldsObject = {
+          ...fieldsObject,
+          title: this.state.newsFilterTitle,
+        };
+      }
 
       if (currentField === objectFields.phone) {
         fieldsObject = {
@@ -536,6 +544,10 @@ export default class AppendForm extends Component {
 
     allowList[rowNum] = filter(allowList[rowNum], o => o.id !== id);
     this.setState({ allowList });
+  };
+
+  handleAddNewsFilterTitle = e => {
+    this.setState({ newsFilterTitle: e.target.value });
   };
 
   handleAddObjectToIgnoreList = obj => {
