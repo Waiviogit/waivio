@@ -23,11 +23,11 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
 
   if (pathName.includes('/object/')) {
     currentPage = getObjectType(wobj);
-    const query = localStorage.getItem('query');
+    const query = store.get('query');
     if (query)
       setHrefBackButton = () => {
         history.push(`/?${query}`);
-        localStorage.removeItem('query');
+        store.remove('query');
       };
   }
 

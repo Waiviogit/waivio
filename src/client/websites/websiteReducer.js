@@ -314,10 +314,6 @@ export default function websiteReducer(state = initialState, action) {
     }
 
     case websiteAction.GET_WEBSITE_OBJECTS_WITH_COORDINATES.SUCCESS: {
-      if (state.wobjectsPoint.length > 150 && !action.meta) {
-        state.wobjectsPoint.splice(0, 50);
-      }
-
       return {
         ...state,
         wobjectsPoint: action.payload.wobjects,
@@ -326,6 +322,14 @@ export default function websiteReducer(state = initialState, action) {
     }
 
     case websiteAction.GET_WEBSITE_OBJECTS_WITH_COORDINATES.ERROR: {
+      return {
+        ...state,
+        wobjectsPoint: [],
+        wobjectsPointHasMore: false,
+      };
+    }
+
+    case websiteAction.RESET_WEBSITE_OBJECTS_COORDINATES: {
       return {
         ...state,
         wobjectsPoint: [],

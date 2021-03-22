@@ -57,6 +57,11 @@ export const setGuestAuthData = (accessToken, refreshToken, expiration) => {
   store.set('refreshToken', refreshToken);
 };
 
+export const setGuestLoginData = (accessToken, provider) => {
+  store.set('accessToken', accessToken);
+  store.set('provider', provider);
+};
+
 export const getGuestAccessToken = () => store.get('accessToken');
 
 export const clearGuestAuthData = () => {

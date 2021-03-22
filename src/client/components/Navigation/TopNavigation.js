@@ -38,6 +38,7 @@ const LINKS = {
   USERS: PATH_NAME_DISCOVER,
   BLOG: '/user-blog',
   FEED: '/feed',
+  BLACKLIST: '/blacklist',
 };
 
 const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
@@ -58,6 +59,7 @@ const TOOLS_URLS = [
   LINKS.WEBSITES_AUTHORITIES,
   LINKS.WEBSITES_OBJECT_FILTERS,
   LINKS.WEBSITES_MUTED_USER,
+  LINKS.WEBSITES_AREAS,
 ];
 
 const TopNavigation = ({ location: { pathname } }) => {
@@ -84,7 +86,8 @@ const TopNavigation = ({ location: { pathname } }) => {
               to={`${LINKS.REWARDS}/all`}
               className={classNames('TopNavigation__link', {
                 'TopNavigation__link--active':
-                  pathname.includes(LINKS.REWARDS) && !pathname.includes('list'),
+                  pathname.includes(LINKS.REWARDS) &&
+                  (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
               })}
             >
               <FormattedMessage id="rewards" defaultMessage="Rewards" />
@@ -106,9 +109,9 @@ const TopNavigation = ({ location: { pathname } }) => {
               <Link
                 to={`${LINKS.TOOLS_DRAFTS}`}
                 className={classNames('TopNavigation__link', {
-                  'TopNavigation__link--active': TOOLS_URLS.some(feedUrl =>
-                    pathname.includes(feedUrl),
-                  ),
+                  'TopNavigation__link--active':
+                    !pathname.includes(LINKS.REWARDS) &&
+                    TOOLS_URLS.some(feedUrl => pathname.includes(feedUrl)),
                 })}
               >
                 <FormattedMessage id="tools" defaultMessage="Tools" />

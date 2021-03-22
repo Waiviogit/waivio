@@ -45,7 +45,9 @@ const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');
   const currentWobjId = get(props.wobj, ['_id'], '');
   const authorizedUserName = get(props.user, 'name', '');
-
+  const propositionClassList = classNames('Proposition', {
+    'Proposition--hovered': props.hovered,
+  });
   const searchParams = new URLSearchParams(props.location.search);
 
   const isWidget = searchParams.get('display');
@@ -64,7 +66,6 @@ const Proposition = props => {
   const requiredObject = get(props.proposition, ['required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const parentObject = isEmpty(proposedWobj.parent) ? requiredObject : {};
   const requiredObjectName = getObjectName(requiredObject);
   const isMessages = !isEmpty(props.match)
     ? props.match.params[0] === MESSAGES || props.match.params[0] === GUIDE_HISTORY
@@ -142,7 +143,7 @@ const Proposition = props => {
       }
     };
     const userName =
-      userData || get(getJsonData(), ['profile', 'name'], '') || get(user, ['name'], '');
+      userData || get(getJsonData(), ['profile', 'name'], '') || get(props.user, ['name'], '');
     const reserveData = {
       campaign_permlink: props.proposition.activation_permlink,
       approved_object: get(props.wobj, 'author_permlink'),
@@ -175,19 +176,21 @@ const Proposition = props => {
           setModalDetailsOpen(!isModalDetailsOpen);
           setReservation(true);
           setTimeout(() => {
-            history.push('/rewards/reserved');
+            props.history.push('/rewards/reserved');
           }, 5000);
+        })
+        .catch(e => {
+          if (e.error_description || e.message) {
+            message.error(e.error_description || e.message);
+          } else {
+            message.error(
+              intl.formatMessage({
+                id: 'something_went_wrong',
+                defaultMessage: 'Something went wrong',
+              }),
+            );
+          }
         });
-      if (e.error_description || e.message) {
-        message.error(e.error_description || e.message);
-      } else {
-        message.error(
-          intl.formatMessage({
-            id: 'something_went_wrong',
-            defaultMessage: 'Something went wrong',
-          }),
-        );
-      }
     });
   };
 
@@ -221,8 +224,9 @@ const Proposition = props => {
       return toggleModalDetails(value);
     }
   };
+
   return (
-    <div className="Proposition">
+    <div className={propositionClassList}>
       <div className="Proposition__header">
         <CampaignCardHeader
           campaignData={props.proposition}
@@ -232,7 +236,11 @@ const Proposition = props => {
         />
       </div>
       <div className="Proposition__card">
-        <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
+        <ObjectCardView
+          passedParent={requiredObject}
+          wObject={proposedWobj}
+          key={proposedWobj.id}
+        />
       </div>
       <div
         className={classNames('Proposition__footer', {

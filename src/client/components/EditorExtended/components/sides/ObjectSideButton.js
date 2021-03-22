@@ -17,8 +17,7 @@ const objectSearchInput = props => {
     const editorState = props.getEditorState();
     let contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
-    let currUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objectName}`;
-
+    let currUrl = `${apiConfig.production.protocol}${apiConfig.production.host}${selectedObject.defaultShowLink}`;
     if (
       (hasType(selectedObject, OBJECT_TYPES.LIST) || hasType(selectedObject, OBJECT_TYPES.PAGE)) &&
       props.match.params[0] === OBJECT_TYPES.PAGE

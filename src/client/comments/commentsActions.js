@@ -92,10 +92,13 @@ export const getFakeSingleComment = (
   });
 };
 
-const getRootCommentsList = apiRes =>
-  Object.keys(apiRes.content)
+const getRootCommentsList = apiRes => {
+  if (!apiRes) return [];
+
+  return Object.keys(apiRes.content)
     .filter(commentKey => apiRes.content[commentKey].depth === 1)
     .map(commentKey => getPostKey(apiRes.content[commentKey]));
+};
 
 const getCommentsChildrenLists = apiRes => {
   const listsById = {};
@@ -124,8 +127,7 @@ export const getComments = postId => (dispatch, getState) => {
   if (content) {
     // eslint-disable-next-line camelcase
     const { category, permlink } = content;
-    const author = content.author;
-
+    const author = content.root_author ? content.root_author : content.author;
     dispatch({
       type: GET_COMMENTS.ACTION,
       payload: {

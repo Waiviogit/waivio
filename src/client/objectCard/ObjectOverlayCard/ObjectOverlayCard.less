@@ -1,52 +1,52 @@
-@import (reference) '../styles/custom.less';
-@import (reference) '../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
 
 @wrapPadding: 15px;
 
-.ObjectCardView {
-  font-size: 16px;
-  display: flex;
-  justify-content: space-between;
+.ObjectOverlayCard {
+  font-size: 14px;
   border: 1px solid @blue-hawkesBlue;
   border-radius: 4px;
-  margin-top: 15px;
   background: @white;
-  transition: 0.5s;
+  white-space: nowrap;
+  padding: 10px;
+  display: flex;
+  width: fit-content;
+  position: relative;
 
-  &__tag-text {
-    color: @blue-botticelli;
-    font-weight: 500;
-    font-size: 1em;
-    text-transform: capitalize;
-  }
+  &__earn {
+    position: absolute;
+    top: -15px;
+    right: 5px;
+    border-radius: 4px;
+    background: @orange-hot;
+    color: @white;
+    border: none;
+    padding: 5px;
 
-  &__content {
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-flow: column nowrap;
-    min-height: 80px;
-    outline: none;
-    margin: @wrapPadding;
+    &:hover {
+      color: @white;
+      background: @orange-light;
+    }
   }
 
   &__content-row {
     display: flex;
     flex-flow: row nowrap;
     width: 100%;
+    max-height: 95px;
   }
 
   &__info {
     width: 70%;
     max-width: 70%;
-    padding-left: @wrapPadding;
-    padding-bottom: 20px;
+    padding: 10px;
     word-wrap: break-word;
     word-break: break-word;
   }
 
   &__avatar {
-    width: 25%;
+    width: 80px;
 
     .avatar-image {
       width: 100%;
@@ -60,10 +60,10 @@
     }
   }
 
-  &__type {
+  &__tag-text {
     color: @blue-botticelli;
-    margin-bottom: 0.5em;
     font-weight: 500;
+    font-size: 1em;
     text-transform: capitalize;
   }
 
@@ -92,18 +92,6 @@
       font-weight: 600;
     }
   }
-
-  &__title {
-    color: @black;
-    font-size: 1em;
-  }
-
-  &--hovered {
-    &:hover {
-      background: @solitaire;
-      cursor: pointer;
-    }
-  }
 }
 
-@import 'ObjectCardView-nightmode';
+//@import 'ObjectCardView-nightmode';

@@ -13,7 +13,7 @@ import { getRebloggedList } from '../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
-import { getCurrentHost } from '../../../reducers';
+import { getCurrentHost, getIsWaivio, getWebsiteParentHost } from '../../../reducers';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import {
   clearAllSessionProposition,
@@ -40,6 +40,8 @@ const ModalSignIn = ({
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   let host = useSelector(getCurrentHost);
+  const domain = useSelector(getWebsiteParentHost);
+  const isWaivio = useSelector(getIsWaivio);
 
   if (!host && typeof location !== 'undefined') {
     host = location.host;
@@ -220,6 +222,14 @@ const ModalSignIn = ({
     handleLoginModalCancel();
   };
 
+  const onSignUpClick = isOpen => {
+    if (!isWaivio && domain) {
+      window.location.href = `https://${domain}/sign-in?host=${host}`;
+    } else {
+      setIsModalOpen(isOpen);
+    }
+  };
+
   const memoizedOnModalClose = useCallback(() => {
     if (isWidget) {
       onModalClose();
@@ -233,7 +243,7 @@ const ModalSignIn = ({
 
   return (
     <React.Fragment>
-      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={setIsModalOpen} />}
+      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={onSignUpClick} />}
       <Modal
         width={480}
         visible={isModalOpen}

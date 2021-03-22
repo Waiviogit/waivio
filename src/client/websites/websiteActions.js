@@ -539,18 +539,31 @@ export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70)
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
+  const body = {
+    userName,
+    ...tagCategory,
+    box,
+  };
+  let searchStr = searchString;
 
-  if (!objType || objType === 'Users') objType = 'restaurant';
+  if (!searchString) body.mapMarkers = true;
+
+  if (!objType || objType === 'Users') {
+    objType = 'restaurant';
+    searchStr = '';
+  }
 
   return dispatch({
     type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, {
-      userName,
-      ...tagCategory,
-      box,
-    }),
+    payload: ApiClient.searchObjects(searchStr, objType, false, limit, locale, body),
   });
 };
+
+export const RESET_WEBSITE_OBJECTS_COORDINATES = '@website/RESET_WEBSITE_OBJECTS_COORDINATES';
+
+export const resetWebsiteObjectsCoordinates = () => ({
+  type: RESET_WEBSITE_OBJECTS_COORDINATES,
+});
 
 export const GET_WEBSITE_RESTRICTIONS = createAsyncActionType('@website/GET_WEBSITE_RESTRICTIONS');
 

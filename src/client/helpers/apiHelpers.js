@@ -2,6 +2,7 @@ import SteemAPI from '../steemAPI';
 import { jsonParse } from '../helpers/formatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import { getGuestPaymentsHistory, getUserAccount } from '../../waivioApi/ApiClient';
+import { mobileUserAgents } from './regexHelpers';
 
 export const getAccount = username =>
   SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
@@ -147,3 +148,10 @@ export const createQuery = params =>
     (acc, value) => (acc ? `${acc}&${value}=${params[value]}` : `${value}=${params[value]}`),
     '',
   );
+
+export const isMobileDevice = () => {
+  if (typeof navigator !== 'undefined' && mobileUserAgents.test(navigator.userAgent))
+    return { device: 'mobile' };
+
+  return {};
+};

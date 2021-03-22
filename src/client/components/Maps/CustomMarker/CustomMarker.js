@@ -25,6 +25,8 @@ class CustomMarker extends React.Component {
     payload: PropTypes.any.isRequired,
     hover: PropTypes.bool,
     isMarked: PropTypes.bool.isRequired,
+    currLocation: PropTypes.bool,
+    hoveredWobj: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -32,10 +34,13 @@ class CustomMarker extends React.Component {
     left: 0,
     top: 0,
     hover: false,
+    currLocation: false,
+    hoveredWobj: false,
     onMouseOver: () => {},
     onMouseOut: () => {},
     onDoubleClick: () => {},
     onClick: () => {},
+    img: '',
   };
 
   constructor(props) {
@@ -92,7 +97,23 @@ class CustomMarker extends React.Component {
   };
 
   render() {
-    const { left, top, onClick, isMarked } = this.props;
+    const { left, top, onClick, isMarked, currLocation, hoveredWobj } = this.props;
+    let width = 29;
+    let height = 34;
+    let currentImg = this.image();
+
+    if (currLocation) {
+      currentImg = '/images/icons/loc-removebg.png';
+      width = 50;
+    }
+
+    if (hoveredWobj) {
+      currentImg = isMarked
+        ? '/images/icons/campaings-hovered.png'
+        : '/images/icons/object-hovered.png';
+      width = 40;
+      height = 45;
+    }
 
     const style = {
       position: 'absolute',
@@ -112,7 +133,7 @@ class CustomMarker extends React.Component {
         onMouseOut={this.handleMouseOut}
         role="presentation"
       >
-        <img src={this.image()} width={29} height={34} alt="" />
+        <img src={currentImg} width={width} height={height} alt="" style={{ transition: '0.3s' }} />
       </div>
     );
   }

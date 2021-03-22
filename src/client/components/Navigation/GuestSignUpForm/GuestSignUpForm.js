@@ -9,12 +9,13 @@ import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
 import { login } from '../../../auth/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
-import { getLocale } from '../../../reducers';
+import { getIsWaivio, getLocale } from '../../../reducers';
 import GuestSignUpFormContent from './GuestSignUpFormContent';
 import './GuestSignUpForm.less';
 
-const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
+const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
   const { getFieldDecorator, getFieldsError, getFieldError, validateFields, setFieldsValue } = form;
+  const isWaivio = useSelector(getIsWaivio);
 
   let initialLanguages = useSelector(getLocale, shallowEqual);
   initialLanguages = initialLanguages === 'auto' ? 'en-US' : initialLanguages;
@@ -94,6 +95,10 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
         };
         dispatch(login(userData.accessToken, userData.socialNetwork, regData)).then(() => {
           setIsLoading(false);
+
+          if (!isWaivio && url) {
+            window.location.href = `https://${url}/?access_token=${userData.accessToken}&socialProvider=${userData.socialNetwork}`;
+          }
         });
       } else {
         dispatch(notify(`${err.username.errors[0].message.props.defaultMessage}`, 'error'));
@@ -128,6 +133,11 @@ GuestSignUpForm.propTypes = {
   form: PropTypes.shape().isRequired,
   userData: PropTypes.shape().isRequired,
   isModalOpen: PropTypes.bool.isRequired,
+  url: PropTypes.string,
+};
+
+GuestSignUpForm.defaultProps = {
+  url: '',
 };
 
 export default Form.create({ name: 'username' })(GuestSignUpForm);
