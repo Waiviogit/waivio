@@ -119,6 +119,11 @@ const WebsiteBody = props => {
   }, [props.isShowResult]);
 
   useEffect(() => {
+    setInfoboxData(null);
+    props.history.push('/');
+  }, [props.searchType]);
+
+  useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint))
@@ -139,11 +144,12 @@ const WebsiteBody = props => {
             const currentPoint = wobjects.find(
               wobj => wobj.author_permlink === props.query.get('permlink'),
             );
-
-            setInfoboxData({
-              wobject: currentPoint,
-              coordinates: queryCenter,
-            });
+            if (currentPoint) {
+              setInfoboxData({
+                wobject: currentPoint,
+                coordinates: queryCenter,
+              });
+            }
           }
         });
   }, [props.userLocation, boundsParams, props.searchString, props.searchType]);
@@ -337,7 +343,8 @@ const WebsiteBody = props => {
           <React.Fragment>
             {Boolean(props.counter) && props.isAuth && (
               <Link to="/rewards/reserved" className={reservedButtonClassList}>
-                <FormattedMessage id="reserved" defaultMessage="Reserved" />: {props.counter}
+                <FormattedMessage id="reserved" defaultMessage="Reserved" />
+                :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
               </Link>
             )}
             {zoomButtonsLayout()}

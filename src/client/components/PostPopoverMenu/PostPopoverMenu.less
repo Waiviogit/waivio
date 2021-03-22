@@ -4,10 +4,15 @@
 
 .Popover__shared-link {
   display: block;
-  border-top: 1px solid @white-gainsboro;
   line-height: 50px !important;
   height: 50px !important;
   color: @blue-botticelli;
+  border: none;
+  background: none;
+  cursor: pointer;
+  &:focus {
+    outline: none;
+  }
 
   @media @medium {
     .menu-item-link();
