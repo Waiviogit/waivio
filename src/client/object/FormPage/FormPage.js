@@ -15,23 +15,14 @@ const FormPage = props => {
         </Link>
       )}
       <div className="FormPage__block">
-        {currentForm.form === 'Widget' ? (
-          <iframe
-            srcDoc={currentForm.link}
-            width="100%"
-            height="100%"
-            allowFullScreen
-            title={currentForm.formTitle}
-          />
-        ) : (
-          <iframe
-            src={currentForm.link}
-            width="100%"
-            height="100%"
-            allowFullScreen
-            title={currentForm.formTitle}
-          />
-        )}
+        <iframe
+          srcDoc={currentForm.form === 'Widget' ? currentForm.link : null}
+          src={currentForm.form !== 'Widget' ? currentForm.link : null}
+          width="100%"
+          height="100%"
+          allowFullScreen
+          title={currentForm.formTitle}
+        />
       </div>
     </div>
   );
