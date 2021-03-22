@@ -237,7 +237,7 @@ class ObjectInfo extends React.Component {
             })}
             to={`/object/${wobject.author_permlink}`}
           >
-            <FormattedMessage id="news" defaultMessage="News" />
+            {item.title || <FormattedMessage id="news" defaultMessage="News" />}
           </LinkButton>
         );
         break;
@@ -278,7 +278,7 @@ class ObjectInfo extends React.Component {
   render() {
     const { wobject, userName, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
-    const { newsFilter } = wobject;
+    const newsFilter = get(wobject, 'newsFilter', []);
     const website = parseWobjectField(wobject, 'website');
     const wobjName = getObjectName(wobject);
     const tagCategories = get(wobject, 'tagCategory', []);
@@ -319,9 +319,14 @@ class ObjectInfo extends React.Component {
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
-        const buttonArray = [...menuLinks, ...menuPages, ...button, ...blogsList, ...formsList];
-
-        if (newsFilter) buttonArray.push({ id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter });
+        const buttonArray = [
+          ...menuLinks,
+          ...menuPages,
+          ...button,
+          ...blogsList,
+          ...formsList,
+          ...newsFilter,
+        ];
 
         const sortButtons = customSort.reduce((acc, curr) => {
           const currentLink = buttonArray.find(
@@ -367,7 +372,10 @@ class ObjectInfo extends React.Component {
                 )}
                 {this.listItem(
                   objectFields.newsFilter,
-                  newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+                  !isEmpty(newsFilter) &&
+                    newsFilter.map(filter =>
+                      this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS, ...filter }),
+                    ),
                 )}
                 {this.listItem(
                   objectFields.blog,

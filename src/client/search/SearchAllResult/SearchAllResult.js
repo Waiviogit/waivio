@@ -266,7 +266,9 @@ SearchAllResult.propTypes = {
   followSearchUser: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
+  // eslint-disable-next-line react/no-unused-prop-types
   assignProposition: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
   declineProposition: PropTypes.func.isRequired,
   handleHoveredCard: PropTypes.func,
 };
