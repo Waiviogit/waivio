@@ -1628,6 +1628,7 @@
   "form_widget": "Виджет",
   "form_back": "Назад к ревью",
   "enter": "Ввести",
-  "paste_widget": "Вставьте код"
+  "paste_widget": "Вставьте код",
+  "news_title": "News filter"
 
 }
