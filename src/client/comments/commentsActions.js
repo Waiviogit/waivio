@@ -127,10 +127,7 @@ export const getComments = postId => (dispatch, getState) => {
   if (content) {
     // eslint-disable-next-line camelcase
     const { category, permlink } = content;
-    const author =
-      content.root_author && content.category !== 'waivio-object-type'
-        ? content.root_author
-        : content.author;
+    const author = content.guestInfo ? content.root_author : content.author;
     dispatch({
       type: GET_COMMENTS.ACTION,
       payload: {
