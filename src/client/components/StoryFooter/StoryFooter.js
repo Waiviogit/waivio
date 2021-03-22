@@ -53,6 +53,7 @@ class StoryFooter extends React.Component {
     handleFollowClick: PropTypes.func.isRequired,
     toggleBookmark: PropTypes.func.isRequired,
     handleHidePost: PropTypes.func.isRequired,
+    userComments: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -70,6 +71,7 @@ class StoryFooter extends React.Component {
     onReportClick: () => {},
     userName: '',
     getSocialInfoPostAction: () => {},
+    userComments: false,
   };
 
   constructor(props) {
@@ -206,6 +208,7 @@ class StoryFooter extends React.Component {
       saving,
       singlePostVew,
       getSocialInfoPostAction,
+      userComments,
     } = this.props;
     const isCashout = isPostCashout(post);
 
@@ -239,6 +242,7 @@ class StoryFooter extends React.Component {
               username={this.props.userName}
               getSocialInfoPost={getSocialInfoPostAction}
               isGuest={this.props.isGuest}
+              userComments={userComments}
             />
           )}
         </div>
