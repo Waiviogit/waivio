@@ -1,5 +1,5 @@
 import Cookie from 'js-cookie';
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 import { createAction } from 'redux-actions';
 import {
   getAuthenticatedUserName,
@@ -19,11 +19,7 @@ import {
 } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
 import history from '../history';
-import {
-  clearGuestAuthData,
-  getGuestAccessToken,
-  getGuestProviderName,
-} from '../helpers/localStorageHelpers';
+import { clearGuestAuthData, getGuestAccessToken } from '../helpers/localStorageHelpers';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -108,16 +104,13 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   const guestAccessToken = getGuestAccessToken();
   const isGuest = Boolean(guestAccessToken);
-  let socialProvider = socialNetwork;
-  if (isEmpty(socialProvider)) {
-    socialProvider = getGuestProviderName();
-  }
+
   if (isUserLoaded(state)) {
     promise = Promise.resolve(null);
-  } else if (accessToken && socialProvider) {
+  } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
-        const userData = await setToken(accessToken, socialProvider, regData);
+        const userData = await setToken(accessToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
         const privateEmail = await getPrivateEmail(userData.name);
 
@@ -125,7 +118,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           account: userData,
           userMetaData,
           privateEmail,
-          socialProvider,
+          socialNetwork,
           isGuestUser: true,
         });
       } catch (e) {

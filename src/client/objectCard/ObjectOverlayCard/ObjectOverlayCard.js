@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, get, isEmpty, ceil } from 'lodash';
+import { includes, get, isEmpty, has } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Icon } from 'antd';
 
 import RatingsWrap from './../RatingsWrap/RatingsWrap';
 import DEFAULTS from '../../object/const/defaultValues';
@@ -13,6 +12,7 @@ import { getObjectName, getObjectAvatar, hasType } from '../../helpers/wObjectHe
 import { getProxyImageURL } from '../../helpers/image';
 
 import './ObjectOverlayCard.less';
+import OverlayRewardsButton from './OverlayRewardsButton';
 
 const ObjectOverlayCard = ({
   intl,
@@ -26,8 +26,12 @@ const ObjectOverlayCard = ({
   const [tags, setTags] = useState([]);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const objName = getObjectName(wObject);
+  const parentLink = get(parent, 'defaultShowLink');
+  const parentName = getObjectName(parent);
+  const isProposition = has(wObject, 'propositions');
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
   pathName = hasType(wObject, 'page') ? path : pathName;
+
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
     setTags(objectTags);
@@ -49,6 +53,7 @@ const ObjectOverlayCard = ({
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
+        data-anchor={wObject.author_permlink}
       />
     );
   };
@@ -60,22 +65,13 @@ const ObjectOverlayCard = ({
     })} ${wobjName}`;
 
   return (
-    <div className="ObjectOverlayCard" key={wObject.author_permlink}>
-      {wObject.campaigns && (
-        <Link className="ObjectOverlayCard__earn" to={`/rewards/all/${wObject.author_permlink}`}>
-          {wObject.campaigns.max_reward === wObject.campaigns.min_reward
-            ? intl.formatMessage({
-                id: 'rewards_details_earn',
-                defaultMessage: 'Earn',
-              })
-            : intl.formatMessage({
-                id: 'rewards_details_earn_up_to',
-                defaultMessage: 'Earn up to',
-              })}{' '}
-          <b>
-            {ceil(wObject.campaigns.max_reward, 2)} USD <Icon type="right" />
-          </b>
-        </Link>
+    <div
+      className="ObjectOverlayCard"
+      key={wObject.author_permlink}
+      data-anchor={wObject.author_permlink}
+    >
+      {(wObject.campaigns || wObject.propositions) && (
+        <OverlayRewardsButton wObject={wObject} isPropos={isProposition} intl={intl} />
       )}
       <div className="ObjectOverlayCard__content-row">
         <Link
@@ -87,12 +83,18 @@ const ObjectOverlayCard = ({
           {avatarLayout()}
         </Link>
         <div className="ObjectOverlayCard__info">
+          {parentName && isProposition && (
+            <Link to={parentLink} title={goToObjTitle(parentName)} className="ObjectCardView__type">
+              {parentName}
+            </Link>
+          )}
           <div className="ObjectOverlayCard__name">
             <Link
               key={wObject.author_permlink}
               to={pathName}
               className="ObjectOverlayCard__name-truncated"
               title={goToObjTitle(objName)}
+              data-anchor={wObject.author_permlink}
             >
               {objName}
             </Link>

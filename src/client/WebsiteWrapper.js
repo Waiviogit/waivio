@@ -87,6 +87,13 @@ class WebsiteWrapper extends React.PureComponent {
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
     loadingFetching: PropTypes.bool,
+    location: PropTypes.shape({
+      search: PropTypes.string,
+      pathname: PropTypes.string,
+    }).isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func,
+    }).isRequired,
   };
 
   static defaultProps = {
@@ -138,8 +145,10 @@ class WebsiteWrapper extends React.PureComponent {
   };
 
   componentDidMount() {
+    const query = new URLSearchParams(this.props.location.search);
+
     this.props.getCurrentAppSettings();
-    this.props.login().then(() => {
+    this.props.login(query.get('access_token'), query.get('socialProvider')).then(() => {
       batch(() => {
         this.props.getNotifications();
         this.props.busyLogin();
@@ -147,6 +156,8 @@ class WebsiteWrapper extends React.PureComponent {
         this.props.dispatchGetAuthGuestBalance();
         this.props.getRate();
       });
+
+      if (this.props.location.pathname === '/') this.props.history.push('/');
     });
   }
 
@@ -177,10 +188,16 @@ class WebsiteWrapper extends React.PureComponent {
   };
 
   render() {
-    const { usedLocale, translations, username, isOpenWalletTable, loadingFetching } = this.props;
+    const {
+      usedLocale,
+      translations,
+      username,
+      isOpenWalletTable,
+      loadingFetching,
+      location,
+    } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
-
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
         <ConfigProvider locale={antdLocale}>
@@ -191,9 +208,11 @@ class WebsiteWrapper extends React.PureComponent {
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-              <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                <WebsiteHeader />
-              </Layout.Header>
+              {!location.pathname.includes('sign-in') && (
+                <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
+                  <WebsiteHeader />
+                </Layout.Header>
+              )}
               <div className="content">
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />

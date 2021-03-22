@@ -2,23 +2,23 @@ import React, { useState } from 'react';
 import hivesigner from 'hivesigner';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
+import PropTypes from 'prop-types';
+
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
-import { setGuestLoginData, getSiteURL, getNext } from '../../../helpers/localStorageHelpers';
+import { setGuestLoginData } from '../../../helpers/localStorageHelpers';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 
 import './RedirectedSignIn.less';
 
-const RedirectedSignIn = () => {
-  const next = getNext();
-
+const RedirectedSignIn = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const url = getSiteURL();
-
+  const query = new URLSearchParams(props.location.search);
+  const url = query.get('host');
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: `https://${url}/callback`,
@@ -32,8 +32,10 @@ const RedirectedSignIn = () => {
     } else if (response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
       const res = await isUserRegistered(id, socialNetwork);
+
       if (res) {
         setGuestLoginData(response.accessToken, socialNetwork, id);
+        window.location.href = `https://${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
       } else {
         let image = '';
 
@@ -51,15 +53,10 @@ const RedirectedSignIn = () => {
         setIsFormVisible(true);
         setIsModalOpen(true);
       }
-      if (!isModalOpen) {
-        window.location.href(`https://${url}`);
-      }
     }
   };
 
-  const handleClickLoading = () => {
-    setIsLoading(true);
-  };
+  const handleClickLoading = () => setIsLoading(true);
 
   const renderSignIn = () => (
     <React.Fragment>
@@ -90,7 +87,7 @@ const RedirectedSignIn = () => {
             </p>
             <a
               role="button"
-              href={hiveSinger.getLoginURL(next)}
+              href={hiveSinger.getLoginURL(url)}
               className="RedirectedSignIn__signin"
             >
               <img
@@ -151,7 +148,7 @@ const RedirectedSignIn = () => {
   const renderGuestSignUpForm = () => (
     <React.Fragment>
       <div className="ModalGuestForm">
-        <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
+        <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} url={url} />
       </div>
     </React.Fragment>
   );
@@ -159,8 +156,10 @@ const RedirectedSignIn = () => {
   return <div className="Wrapper">{isFormVisible ? renderGuestSignUpForm() : renderSignIn()}</div>;
 };
 
-RedirectedSignIn.propTypes = {};
-
-RedirectedSignIn.defaultProps = {};
+RedirectedSignIn.propTypes = {
+  location: PropTypes.shape({
+    search: PropTypes.string,
+  }).isRequired,
+};
 
 export default RedirectedSignIn;
