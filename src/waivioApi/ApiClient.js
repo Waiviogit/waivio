@@ -78,7 +78,7 @@ export const getObjects = ({
   }).then(res => res.json());
 };
 
-export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
+export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', limit = 30 }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
       ...headers,
@@ -88,6 +88,7 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
     method: 'POST',
     body: JSON.stringify({
       author_permlinks: authorPermlinks,
+      limit,
       locale,
     }),
   }).then(res => res.json());

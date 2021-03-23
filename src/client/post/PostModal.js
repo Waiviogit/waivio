@@ -67,11 +67,14 @@ class PostModal extends React.Component {
     const { title, author, guestInfo } = currentShownPost;
     const authorName = get(currentShownPost, ['guestInfo', 'userId'], '') || author;
     const permlink = get(currentShownPost, 'permlink', '');
+    const rootPermlink = get(currentShownPost, 'root_permlink', '');
     const userPostURL = `@${author}/${permlink}`;
     const guestUserPostURL = `@${authorName}/${permlink}`;
     const postURL = isEmpty(guestInfo) ? userPostURL : guestUserPostURL;
     PostModal.pushURLState(title, postURL);
-    this.props.getSocialInfoPost(authorName, permlink);
+    if (permlink === rootPermlink) {
+      this.props.getSocialInfoPost(authorName, permlink);
+    }
   }
 
   componentWillUnmount() {

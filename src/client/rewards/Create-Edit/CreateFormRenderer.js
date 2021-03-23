@@ -51,8 +51,8 @@ const CreateFormRenderer = props => {
     intl,
     handleCreateDuplicate,
   } = props;
-
   const currentItemId = get(match, ['params', 'campaignId']);
+  const isCreateDublicate = get(match, ['params', '0']) === 'createDuplicate';
   const messages = validatorMessagesCreator(handlers.messageFactory);
   const validators = validatorsCreator(
     user,
@@ -158,14 +158,13 @@ const CreateFormRenderer = props => {
   return (
     <div className="CreateRewardForm">
       {notEnoughMoneyWarn}
-
       <Form
         layout="vertical"
         onSubmit={handlers.handleSubmit}
         className={loading && 'CreateReward__loading'}
       >
         <Form.Item>
-          {currentItemId ? (
+          {!isCreateDublicate ? (
             <div
               role="presentation"
               className="CreateReward__createDuplicate"

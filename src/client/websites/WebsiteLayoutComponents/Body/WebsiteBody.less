@@ -89,8 +89,8 @@
   &__reserved {
     display: inline-block;
     position: absolute;
-    z-index: 2;
-    right: 5%;
+    z-index: 3;
+    right: 3%;
     top: 3%;
     text-align: center;
     line-height: 30px;
@@ -113,6 +113,14 @@
 
     span {
       font-weight: normal;
+    }
+
+    @media @small {
+      right: 7%;
+    }
+
+    @media @large {
+      right: 5%;
     }
   }
 }

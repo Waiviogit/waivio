@@ -50,6 +50,7 @@ const propTypes = {
   isGuest: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,
   getSocialInfoPost: PropTypes.func,
+  userComments: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -59,6 +60,7 @@ const defaultProps = {
   ownPost: false,
   handlePostPopoverMenuClick: () => {},
   getSocialInfoPost: () => {},
+  userComments: false,
 };
 
 const PostPopoverMenu = ({
@@ -74,6 +76,7 @@ const PostPopoverMenu = ({
   isGuest,
   userName,
   getSocialInfoPost,
+  userComments,
 }) => {
   const { isReported, isSaved } = postState;
   const {
@@ -92,34 +95,46 @@ const PostPopoverMenu = ({
   const handleShare = isTwitter => {
     const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;
     const permlink = get(post, 'permlink', '');
-    getSocialInfoPost(authorPost, permlink).then(res => {
-      const socialInfoPost = res.value;
-      const hashtags = !isEmpty(socialInfoPost)
-        ? [...socialInfoPost.tags, ...socialInfoPost.cities]
-        : [];
-      const authorTwitter = !isEmpty(socialInfoPost.userTwitter)
-        ? `by @${socialInfoPost.userTwitter}`
-        : `by ${postAuthor}`;
-      const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
-        ? `@${socialInfoPost.wobjectsTwitter}`
-        : '';
-      const postName = !isGuest && userName ? `?ref=${userName}` : '';
-      const postURL = `${baseURL}${replaceBotWithGuestName(
-        dropCategory(url),
-        guestInfo,
-      )}${postName}`;
+    if (!userComments) {
+      getSocialInfoPost(authorPost, permlink).then(res => {
+        const socialInfoPost = res.value;
+        const hashtags = !isEmpty(socialInfoPost)
+          ? [...socialInfoPost.tags, ...socialInfoPost.cities]
+          : [];
+        const authorTwitter = !isEmpty(socialInfoPost.userTwitter)
+          ? `by @${socialInfoPost.userTwitter}`
+          : `by ${postAuthor}`;
+        const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
+          ? `@${socialInfoPost.wobjectsTwitter}`
+          : '';
+        const postName = !isGuest && userName ? `?ref=${userName}` : '';
+        const postURL = `${baseURL}${replaceBotWithGuestName(
+          dropCategory(url),
+          guestInfo,
+        )}${postName}`;
 
+        if (isTwitter) {
+          const shareTextSocialTwitter = `"${encodeURIComponent(
+            title,
+          )}" ${authorTwitter} ${objectTwitter}`;
+          const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
+          window.location.assign(twitterShareURL);
+        } else {
+          const facebookShareURL = getFacebookShareURL(postURL);
+          window.location.assign(facebookShareURL);
+        }
+      });
+    } else {
+      const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
       if (isTwitter) {
-        const shareTextSocialTwitter = `"${encodeURIComponent(
-          title,
-        )}" ${authorTwitter} ${objectTwitter}`;
-        const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
+        const shareTextSocialTwitter = `"${encodeURIComponent(title)}"`;
+        const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL);
         window.location.assign(twitterShareURL);
       } else {
         const facebookShareURL = getFacebookShareURL(postURL);
         window.location.assign(facebookShareURL);
       }
-    });
+    }
   };
 
   const activePost = !isPostCashout(post);
