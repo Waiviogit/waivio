@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { isPostVideo } from './StoryHelper';
 import './PostFeedEmbed.less';
 
 export default class PostFeedEmbed extends React.Component {
@@ -58,18 +59,10 @@ export default class PostFeedEmbed extends React.Component {
   render() {
     const { embed, inPost, isModal, is3Speak } = this.props;
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
-    console.log(embed);
-    if (
-      (embed.provider_name === 'YouTube' ||
-        embed.provider_name === 'DTube' ||
-        embed.provider_name === '3Speak') &&
-      shouldRenderThumb
-    ) {
-      console.log(embed);
+    if (isPostVideo(embed.provider_name && shouldRenderThumb)) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
       const isVimeo = embed.provider_name === 'Vimeo';
-      console.log(embed);
       return this.renderWithIframe(embed.embed, isModal, is3Speak, isVimeo);
     }
     return <div />;
