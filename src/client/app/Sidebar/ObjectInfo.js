@@ -233,9 +233,11 @@ class ObjectInfo extends React.Component {
         menuItem = (
           <LinkButton
             className={classNames('menu-btn', {
-              active: location.pathname === `/object/${item.permlink}`,
+              active:
+                location.pathname ===
+                `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`,
             })}
-            to={`/object/${item.permlink}`}
+            to={`/object/${wobject.author_permlink}/newsFilter/${item.permlink}`}
           >
             {item.title || <FormattedMessage id="news" defaultMessage="News" />}
           </LinkButton>

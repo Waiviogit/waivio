@@ -301,6 +301,11 @@ const routes = {
           component: Views.ObjectPageFeed,
         },
         {
+          path: '/newsFilter/:itemId',
+          exact: true,
+          component: Views.ObjectPageFeed,
+        },
+        {
           path: '/about',
           exact: true,
           component: Views.ObjectAbout,

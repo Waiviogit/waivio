@@ -69,19 +69,21 @@ export default class ObjectFeed extends React.Component {
 
   componentDidMount() {
     const { match, limit, readLocales } = this.props;
-    const { name } = match.params;
+    const { name, itemId } = match.params;
 
     this.props.getObjectPosts({
       object: name,
       username: name,
       readLanguages: readLocales,
       limit,
+      newsPermlink: itemId,
     });
   }
 
   componentWillReceiveProps(nextProps) {
     const { match, limit } = this.props;
     const nextName = get(nextProps, ['match', 'params', 'name']);
+    const nextItemID = get(nextProps, ['match', 'params', 'itemId']);
     const objectPosts = get(nextProps, ['feed', 'objectPosts', nextName]);
 
     if (match.params.name !== nextName && isEmpty(objectPosts)) {
@@ -90,9 +92,24 @@ export default class ObjectFeed extends React.Component {
         username: nextName,
         readLanguages: nextProps.readLocales,
         limit,
+        newsPermlink: nextItemID,
       });
 
       window.scrollTo(0, 0);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { match, limit, readLocales } = this.props;
+    const { name, itemId } = match.params;
+    if (prevProps.match.params.name !== name || prevProps.match.params.itemId !== itemId) {
+      this.props.getObjectPosts({
+        object: name,
+        username: name,
+        readLanguages: readLocales,
+        limit,
+        newsPermlink: itemId,
+      });
     }
   }
 
@@ -115,19 +132,20 @@ export default class ObjectFeed extends React.Component {
 
   render() {
     const { feed, limit, handleCreatePost, userName, wobject } = this.props;
+    const { name, itemId } = this.props.match.params;
     const { loadingPropositions } = this.state;
-    const wObjectName = this.props.match.params.name;
-    const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);
+    const objectFeed = getFeedFromState('objectPosts', name, feed);
     const content = uniq(objectFeed);
-    const isFetching = getFeedLoadingFromState('objectPosts', wObjectName, feed);
-    const hasMore = getFeedHasMoreFromState('objectPosts', wObjectName, feed);
+    const isFetching = getFeedLoadingFromState('objectPosts', name, feed);
+    const hasMore = getFeedHasMoreFromState('objectPosts', name, feed);
     const skip = content.length;
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
-        username: wObjectName,
-        authorPermlink: wObjectName,
+        username: name,
+        authorPermlink: name,
         limit,
         skip,
+        newsPermlink: itemId,
       });
     };
 
