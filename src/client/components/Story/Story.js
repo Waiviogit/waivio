@@ -63,6 +63,7 @@ class Story extends React.Component {
     followingPostAuthor: PropTypes.func.isRequired,
     pendingFollowingPostAuthor: PropTypes.func.isRequired,
     errorFollowingPostAuthor: PropTypes.func.isRequired,
+    userComments: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -84,6 +85,7 @@ class Story extends React.Component {
     followUser: () => {},
     unfollowUser: () => {},
     push: () => {},
+    userComments: false,
   };
 
   constructor(props) {
@@ -295,6 +297,7 @@ class Story extends React.Component {
       sliderMode,
       defaultVotePercent,
       location,
+      userComments,
     } = this.props;
     const rebloggedUser = get(post, ['reblogged_users'], []);
     const isRebloggedPost = rebloggedUser.includes(user.name);
@@ -412,6 +415,7 @@ class Story extends React.Component {
                 handleFollowClick={this.handleFollowClick}
                 toggleBookmark={this.props.toggleBookmark}
                 handleEditClick={this.handleEditClick}
+                userComments={userComments}
               />
             </div>
           </div>
