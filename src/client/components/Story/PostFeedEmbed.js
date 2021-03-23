@@ -33,9 +33,10 @@ export default class PostFeedEmbed extends React.Component {
     this.setState({ showIframe: true });
   };
 
-  renderWithIframe = (embed, isModal, is3Speak) => {
+  renderWithIframe = (embed, isModal, is3Speak, isVimeo) => {
     const postFeedEmbedClassList = classNames('PostFeedEmbed__container', {
       'PostFeedEmbed__container-3speak': isModal && is3Speak,
+      'PostFeedEmbed__container-vimeo': isVimeo,
     });
     return (
       // eslint-disable-next-line react/no-danger
@@ -57,16 +58,19 @@ export default class PostFeedEmbed extends React.Component {
   render() {
     const { embed, inPost, isModal, is3Speak } = this.props;
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
-
+    console.log(embed);
     if (
       (embed.provider_name === 'YouTube' ||
         embed.provider_name === 'DTube' ||
         embed.provider_name === '3Speak') &&
       shouldRenderThumb
     ) {
+      console.log(embed);
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
-      return this.renderWithIframe(embed.embed, isModal, is3Speak);
+      const isVimeo = embed.provider_name === 'Vimeo';
+      console.log(embed);
+      return this.renderWithIframe(embed.embed, isModal, is3Speak, isVimeo);
     }
     return <div />;
   }
