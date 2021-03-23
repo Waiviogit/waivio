@@ -38,6 +38,7 @@ export const TYPES_OF_MENU_ITEM = {
   BUTTON: 'menuButton',
   NEWS: 'menuNews',
   BLOG: 'blog',
+  NEWS_FILTER: 'newsFilter',
 };
 
 export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
