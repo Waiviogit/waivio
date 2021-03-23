@@ -230,7 +230,6 @@ class ObjectInfo extends React.Component {
         );
         break;
       case TYPES_OF_MENU_ITEM.NEWS_FILTER:
-        console.log(item);
         menuItem = (
           <LinkButton
             className={classNames('menu-btn', {
