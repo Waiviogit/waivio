@@ -71,6 +71,7 @@ import {
   prepareBlogData,
   getBlogItems,
   getFormItems,
+  getNewsFilterItems,
 } from '../../helpers/wObjectHelper';
 import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -1813,6 +1814,7 @@ export default class AppendForm extends Component {
         const blogs = getBlogItems(wObject);
         const forms = getFormItems(wObject);
         const wobjType = getObjectType(wObject);
+        const newsFilters = getNewsFilterItems(wObject);
         let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
@@ -1840,11 +1842,13 @@ export default class AppendForm extends Component {
             });
           });
         }
-        if (!isEmpty(wObject.newsFilter)) {
-          listItems.push({
-            id: TYPES_OF_MENU_ITEM.NEWS,
-            name: intl.formatMessage({ id: 'news', defaultMessage: 'News' }),
-            type: objectFields.newsFilter,
+        if (!isEmpty(newsFilters)) {
+          newsFilters.forEach(item => {
+            listItems.push({
+              id: item.permlink,
+              name: item.title || intl.formatMessage({ id: 'news', defaultMessage: 'News' }),
+              type: objectFields.newsFilter,
+            });
           });
         }
         if (!isEmpty(blogs)) {
