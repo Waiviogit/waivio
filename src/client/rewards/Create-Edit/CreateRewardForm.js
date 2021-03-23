@@ -4,14 +4,12 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
 import { Form, message } from 'antd';
 import { createCampaign, getCampaignById, getObjectsByIds } from '../../../waivioApi/ApiClient';
 import CreateFormRenderer from './CreateFormRenderer';
 import { AppSharedContext } from '../../Wrapper';
-// eslint-disable-next-line import/extensions
-import * as apiConfig from '../../../waivioApi/config';
+import * as apiConfig from '../../../waivioApi/config.json';
 import { getRate, getRewardFund } from '../../reducers';
 import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
 import {
@@ -19,6 +17,7 @@ import {
   CAMPAIGN_STATUS,
   isDisabledStatus,
 } from '../../../common/constants/rewards';
+
 import './CreateReward.less';
 
 @withRouter
@@ -102,7 +101,7 @@ class CreateRewardForm extends React.Component {
       const expiredAt = isExpired
         ? moment(new Date().toISOString())
         : moment(new Date(campaign.expired_at));
-      const matchPath = get(this.props.match, ['path', 'params', '0']);
+      const matchPath = get(this.props.match, ['params', '0']);
       const isDuplicate = includes(matchPath, 'createDuplicate');
       const isDisabled =
         includes(isDisabledStatus, campaign.status) || campaign.status !== CAMPAIGN_STATUS.pending;
@@ -129,6 +128,7 @@ class CreateRewardForm extends React.Component {
 
         combinedObjects = await getObjectsByIds({
           authorPermlinks,
+          limit: size(authorPermlinks),
         });
 
         sponsors = combinedObjects.wobjects.filter(wobj =>
@@ -140,6 +140,7 @@ class CreateRewardForm extends React.Component {
         agreementObject && authorPermlinks.push(agreementObject);
         combinedObjects = await getObjectsByIds({
           authorPermlinks,
+          limit: size(authorPermlinks),
         });
       }
 
@@ -211,11 +212,18 @@ class CreateRewardForm extends React.Component {
     }
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { campaign, createDuplicate } = this.state;
+    const matchPath = get(this.props.match, ['params', '0']);
+
     if (createDuplicate && campaign)
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ campaignName: `Copy ${campaign.name}`, createDuplicate: false });
+    if (prevProps.match.params[0] !== matchPath) {
+      const isDuplicate = includes(matchPath, 'createDuplicate');
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ isDuplicate });
+    }
   }
 
   checkOptionFields = () => {
@@ -391,6 +399,7 @@ class CreateRewardForm extends React.Component {
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
+          console.log(values);
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
               message.success(

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getIsAuthenticated } from '../reducers';
+import { getIsAuthenticated, getIsWaivio, getWebsiteParentHost } from '../reducers';
 import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
 
 function getDisplayName(WrappedComponent) {
@@ -11,14 +11,21 @@ function getDisplayName(WrappedComponent) {
 export default function withAuthActions(WrappedComponent) {
   @connect(state => ({
     authenticated: getIsAuthenticated(state),
+    isWaivio: getIsWaivio(state),
+    domain: getWebsiteParentHost(state),
   }))
   class Wrapper extends React.Component {
     static propTypes = {
       authenticated: PropTypes.bool,
+      isWaivio: PropTypes.bool,
+      domain: PropTypes.string,
     };
 
     static defaultProps = {
       authenticated: false,
+      isWaivio: true,
+      domain: '',
+      host: '',
     };
 
     constructor(props) {
@@ -47,8 +54,10 @@ export default function withAuthActions(WrappedComponent) {
     handleActionInit(callback) {
       if (this.props.authenticated) {
         callback();
-      } else {
+      } else if (this.props.isWaivio && !this.props.domain) {
         this.displayLoginModal();
+      } else {
+        window.location.href = `https://${this.props.domain}/sign-in?host=${window.location.href}`;
       }
     }
 

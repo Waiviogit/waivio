@@ -50,6 +50,7 @@ const propTypes = {
   isGuest: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,
   getSocialInfoPost: PropTypes.func,
+  userComments: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -59,6 +60,7 @@ const defaultProps = {
   ownPost: false,
   handlePostPopoverMenuClick: () => {},
   getSocialInfoPost: () => {},
+  userComments: false,
 };
 
 const PostPopoverMenu = ({
@@ -74,6 +76,7 @@ const PostPopoverMenu = ({
   isGuest,
   userName,
   getSocialInfoPost,
+  userComments,
 }) => {
   const { isReported, isSaved } = postState;
   const {
@@ -92,34 +95,46 @@ const PostPopoverMenu = ({
   const handleShare = isTwitter => {
     const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;
     const permlink = get(post, 'permlink', '');
-    getSocialInfoPost(authorPost, permlink).then(res => {
-      const socialInfoPost = res.value;
-      const hashtags = !isEmpty(socialInfoPost)
-        ? [...socialInfoPost.tags, ...socialInfoPost.cities]
-        : [];
-      const authorTwitter = !isEmpty(socialInfoPost.userTwitter)
-        ? `by @${socialInfoPost.userTwitter}`
-        : `by ${postAuthor}`;
-      const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
-        ? `@${socialInfoPost.wobjectsTwitter}`
-        : '';
-      const postName = !isGuest && userName ? `?ref=${userName}` : '';
-      const postURL = `${baseURL}${replaceBotWithGuestName(
-        dropCategory(url),
-        guestInfo,
-      )}${postName}`;
+    if (!userComments) {
+      getSocialInfoPost(authorPost, permlink).then(res => {
+        const socialInfoPost = res.value;
+        const hashtags = !isEmpty(socialInfoPost)
+          ? [...socialInfoPost.tags, ...socialInfoPost.cities]
+          : [];
+        const authorTwitter = !isEmpty(socialInfoPost.userTwitter)
+          ? `by @${socialInfoPost.userTwitter}`
+          : `by ${postAuthor}`;
+        const objectTwitter = !isEmpty(socialInfoPost.wobjectsTwitter)
+          ? `@${socialInfoPost.wobjectsTwitter}`
+          : '';
+        const postName = !isGuest && userName ? `?ref=${userName}` : '';
+        const postURL = `${baseURL}${replaceBotWithGuestName(
+          dropCategory(url),
+          guestInfo,
+        )}${postName}`;
 
+        if (isTwitter) {
+          const shareTextSocialTwitter = `"${encodeURIComponent(
+            title,
+          )}" ${authorTwitter} ${objectTwitter}`;
+          const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
+          window.open(twitterShareURL);
+        } else {
+          const facebookShareURL = getFacebookShareURL(postURL);
+          window.open(facebookShareURL);
+        }
+      });
+    } else {
+      const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
       if (isTwitter) {
-        const shareTextSocialTwitter = `"${encodeURIComponent(
-          title,
-        )}" ${authorTwitter} ${objectTwitter}`;
-        const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
-        window.location.assign(twitterShareURL);
+        const shareTextSocialTwitter = `"${encodeURIComponent(title)}"`;
+        const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL);
+        window.open(twitterShareURL);
       } else {
         const facebookShareURL = getFacebookShareURL(postURL);
         window.location.assign(facebookShareURL);
       }
-    });
+    }
   };
 
   const activePost = !isPostCashout(post);
@@ -227,11 +242,8 @@ const PostPopoverMenu = ({
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
             {popoverMenu}
           </PopoverMenu>
-          <a
-            role="presentation"
+          <button
             key="share-facebook"
-            rel="noopener noreferrer"
-            target="_blank"
             className="Popover__shared-link"
             onClick={e => {
               e.preventDefault();
@@ -240,12 +252,9 @@ const PostPopoverMenu = ({
           >
             <i className="iconfont icon-facebook" />
             <FormattedMessage id="share_facebook" defaultMessage="Share to Facebook" />
-          </a>
-          <a
-            role="presentation"
+          </button>
+          <button
             key="share-twitter"
-            rel="noopener noreferrer"
-            target="_blank"
             className="Popover__shared-link"
             onClick={e => {
               e.preventDefault();
@@ -254,7 +263,7 @@ const PostPopoverMenu = ({
           >
             <i className="iconfont icon-twitter" />
             <FormattedMessage id="share_twitter" defaultMessage="Share to Twitter" />
-          </a>
+          </button>
         </React.Fragment>
       }
     >

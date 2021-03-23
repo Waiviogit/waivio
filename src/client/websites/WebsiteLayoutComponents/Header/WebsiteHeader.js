@@ -39,6 +39,10 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
     currentPage = 'Editor';
   }
 
+  if (pathName.includes('/rewards')) {
+    currentPage = 'Rewards';
+  }
+
   return (
     <div className="WebsiteHeader" style={{ backgroundColor: `#${backgroundColor}` }}>
       <div className="topnav-layout isWebsiteView">

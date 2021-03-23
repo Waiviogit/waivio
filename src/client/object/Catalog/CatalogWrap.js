@@ -1,7 +1,7 @@
 import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { sortListItemsBy } from '../wObjectHelper';
@@ -47,7 +47,7 @@ const CatalogWrap = props => {
           setSortingBy(defaultSortBy(wObject));
           setLists(
             sortListItemsBy(
-              itemsList(wObject.sortCustom, wObject),
+              itemsList(get(wObject, 'sortCustom', []), wObject),
               defaultSortBy(wObject),
               wObject.sortCustom,
             ),
@@ -60,7 +60,7 @@ const CatalogWrap = props => {
         // eslint-disable-next-line no-use-before-define
         setLists(
           sortListItemsBy(
-            itemsList(wobject.sortCustom, wobject),
+            itemsList(get(wobject, 'sortCustom', []), wobject),
             defaultSortBy(wobject),
             wobject.sortCustom,
           ),
@@ -80,7 +80,9 @@ const CatalogWrap = props => {
 
   const handleSortChange = sortType => {
     const currentList =
-      sortType === 'custom' ? itemsList(wobject.sortCustom, wobject) : getListItems(wobject);
+      sortType === 'custom'
+        ? itemsList(get(wobject, 'sortCustom', []), wobject)
+        : getListItems(wobject);
     const sortOrder = wobject && wobject[objectFields.sorting];
     setSortingBy(sortType);
     setLists(sortListItemsBy(currentList, sortType, sortOrder));
