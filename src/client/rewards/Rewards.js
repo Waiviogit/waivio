@@ -37,6 +37,7 @@ import {
   getPendingUpdate,
   getIsAuthenticated,
   getIsWaivio,
+  getHelmetIcon,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -103,6 +104,7 @@ import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
     pendingUpdate: getPendingUpdate(state),
     authenticated: getIsAuthenticated(state),
     isWaivio: getIsWaivio(state),
+    helmetIcon: getHelmetIcon(state),
   }),
   {
     assignProposition,
@@ -140,6 +142,7 @@ class Rewards extends React.Component {
     users: PropTypes.shape(),
     getCryptoPriceHistory: PropTypes.func.isRequired,
     setMapFullscreenMode: PropTypes.func.isRequired,
+    helmetIcon: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -1021,15 +1024,10 @@ class Rewards extends React.Component {
               })} - Waivio`}
             />
             <meta name="og:type" property="og:type" content="article" />
-            <meta
-              name="og:image"
-              property="og:image"
-              content={
-                'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
-              }
-            />
+            <meta name="og:image" property="og:image" content={this.props.helmetIcon} />
             <meta property="og:site_name" content="Waivio" />
             <meta name="robots" content={robots} />
+            <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
           </Helmet>
           <ScrollToTop />
           <ScrollToTopOnMount />

@@ -1,4 +1,4 @@
-import { isEmpty, map, includes, get, size } from 'lodash';
+import { isEmpty, map, includes, get, size, uniqBy } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -6,11 +6,16 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Form, message } from 'antd';
-import { createCampaign, getCampaignById, getObjectsByIds } from '../../../waivioApi/ApiClient';
+import {
+  createCampaign,
+  getAuthorsChildWobjects,
+  getCampaignById,
+  getObjectsByIds,
+} from '../../../waivioApi/ApiClient';
 import CreateFormRenderer from './CreateFormRenderer';
 import { AppSharedContext } from '../../Wrapper';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { getRate, getRewardFund } from '../../reducers';
+import { getLocale, getRate, getRewardFund } from '../../reducers';
 import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
 import {
   PATH_NAME_MANAGE,
@@ -29,12 +34,14 @@ import './CreateReward.less';
     rewardFund: getRewardFund(state),
     createDuplicate: false,
     campaign: {},
+    locale: getLocale(state),
   }),
   {},
 )
 class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
+    locale: PropTypes.string,
     user: PropTypes.shape(),
     form: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
@@ -47,6 +54,7 @@ class CreateRewardForm extends React.Component {
   };
   static defaultProps = {
     userName: '',
+    locale: '',
     user: {},
     usedLocale: 'en-US',
     form: {},
@@ -88,6 +96,7 @@ class CreateRewardForm extends React.Component {
     iAgree: false,
     campaignId: '',
     isDuplicate: false,
+    isOpenAddChild: false,
   };
 
   componentDidMount = async () => {
@@ -337,7 +346,9 @@ class CreateRewardForm extends React.Component {
     removeSecondaryObject: obj => {
       this.setState(
         prevState => {
-          const objectList = prevState.secondaryObjectsList.filter(el => el.id !== obj.id);
+          const objectList = prevState.secondaryObjectsList.filter(
+            el => el.author_permlink !== obj.author_permlink,
+          );
           return {
             secondaryObjectsList: objectList,
           };
@@ -363,7 +374,9 @@ class CreateRewardForm extends React.Component {
     removePageObject: obj => {
       this.setState(
         prevState => {
-          const objectList = prevState.pageObjects.filter(el => el.id !== obj.id);
+          const objectList = prevState.pageObjects.filter(
+            el => el.author_permlink !== obj.author_permlink,
+          );
           return {
             pageObjects: objectList,
           };
@@ -378,6 +391,31 @@ class CreateRewardForm extends React.Component {
           targetDays: { ...this.state.targetDays, [targetDay]: !this.state.targetDays[targetDay] },
         },
         () => this.props.form.setFieldsValue({ targetDays: this.state.targetDays }),
+      );
+    },
+
+    openModalAddChildren: () => {
+      this.setState({ isOpenAddChild: true });
+    },
+
+    closeModalAddChildren: () => {
+      this.setState({ isOpenAddChild: false });
+    },
+
+    addAllObjectChildren: async () => {
+      const children = await getAuthorsChildWobjects(
+        this.state.primaryObject.author_permlink,
+        0,
+        0,
+        this.props.locale,
+        'list',
+      );
+      await this.setState(
+        prevState => ({
+          isOpenAddChild: false,
+          secondaryObjectsList: uniqBy([...prevState.secondaryObjectsList, ...children], '_id'),
+        }),
+        () => this.props.form.setFieldsValue({ secondaryObject: this.state.secondaryObjectsList }),
       );
     },
 
@@ -399,7 +437,6 @@ class CreateRewardForm extends React.Component {
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
-          console.log(values);
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
               message.success(
@@ -425,6 +462,7 @@ class CreateRewardForm extends React.Component {
 
     messageFactory: (id, defaultMessage) => {
       const { intl } = this.props;
+
       return intl.formatMessage({
         id,
         defaultMessage,
@@ -507,6 +545,7 @@ class CreateRewardForm extends React.Component {
         isDisabled={isDisabled}
         isDuplicate={isDuplicate}
         handleCreateDuplicate={this.handleCreateDuplicate}
+        isOpenAddChild={this.state.isOpenAddChild}
       />
     );
   }

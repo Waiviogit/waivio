@@ -86,6 +86,24 @@
       }
     }
   }
+
+  &__addChild {
+    color: @orange-hot;
+    cursor: pointer;
+    transition: 0.5s;
+
+    &:hover {
+      color: @orange-light;
+    }
+  }
+
+  &__modal {
+    .ant-modal-header {
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+  }
 }
 
 .CreateReward__item-title.ant-form-item-required {

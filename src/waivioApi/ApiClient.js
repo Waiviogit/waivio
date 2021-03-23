@@ -532,10 +532,18 @@ export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
       .catch(error => reject(error));
   });
 
-export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30, locale) =>
+export const getAuthorsChildWobjects = (
+  authorPermlink,
+  skip = 0,
+  limit = 30,
+  locale,
+  excludeTypes = '',
+) =>
   new Promise((resolve, reject) =>
     fetch(
-      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.childWobjects}?limit=${limit}&skip=${skip}`,
+      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${
+        config.childWobjects
+      }?limit=${limit}&skip=${skip}${excludeTypes ? `&excludeTypes=${excludeTypes}` : ''}`,
       {
         headers: {
           ...headers,

@@ -11,7 +11,7 @@ import Affix from '../../components/Utils/Affix';
 import LeftObjectProfileSidebar from '../../app/Sidebar/LeftObjectProfileSidebar';
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../../components/Sidebar/ObjectsRelated/ObjectsRelated';
-import { hasType } from '../../helpers/wObjectHelper';
+import { getObjectAvatar, hasType } from '../../helpers/wObjectHelper';
 import OBJECT_TYPE from '../const/objectTypes';
 import { formColumnsField } from '../../../common/constants/listOfFields';
 
@@ -27,9 +27,10 @@ const Wobj = ({
   handleFollowClick,
   objectName,
   appendAlbum,
+  helmetIcon,
 }) => {
   const waivioHost = global.postOrigin || 'https://www.waivio.com';
-  const image = wobject.avatar || DEFAULTS.AVATAR;
+  const image = getObjectAvatar(wobject) || helmetIcon || DEFAULTS.FAVICON;
   const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
   const url = `${waivioHost}/object/${match.params.name}`;
   const albumsAndImagesCount = wobject.albums_count;
@@ -72,14 +73,8 @@ const Wobj = ({
           <meta name="twitter:site" property="twitter:site" content={'@waivio'} />
           <meta name="twitter:title" property="twitter:title" content={objectName} />
           <meta name="twitter:description" property="twitter:description" content={desc} />
-          <meta
-            name="twitter:image"
-            property="twitter:image"
-            content={
-              image ||
-              'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
-            }
-          />
+          <meta name="twitter:image" property="twitter:image" content={image} />
+          <link id="favicon" rel="icon" href={image} type="image/x-icon" />
         </Helmet>
         <ScrollToTopOnMount />
         <WobjHero
@@ -144,6 +139,7 @@ Wobj.propTypes = {
   toggleViewEditMode: PropTypes.func,
   handleFollowClick: PropTypes.func,
   objectName: PropTypes.string.isRequired,
+  helmetIcon: PropTypes.string.isRequired,
   appendAlbum: PropTypes.func,
 };
 

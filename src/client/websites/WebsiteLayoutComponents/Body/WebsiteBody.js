@@ -158,6 +158,7 @@ const WebsiteBody = props => {
   const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
   const currentLogo = configLogo || getObjectAvatar(aboutObject);
   const logoLink = get(aboutObject, ['defaultShowLink'], '/');
+  const description = get(aboutObject, 'description', '');
 
   const reloadSearchList = () => {
     handleSetMapForSearch();
@@ -315,7 +316,11 @@ const WebsiteBody = props => {
   return (
     <div className="WebsiteBody">
       <Helmet>
-        <title>{getObjectName(aboutObject)}</title>
+        <title>
+          {description
+            ? getObjectName(aboutObject)
+            : `${getObjectName(aboutObject)} - ${description}`}
+        </title>
         <meta
           property="twitter:description"
           content="Waivio is an open distributed attention marketplace for business"
