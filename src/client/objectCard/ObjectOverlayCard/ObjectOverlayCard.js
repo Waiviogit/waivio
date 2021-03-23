@@ -20,6 +20,7 @@ const ObjectOverlayCard = ({
   options: { mobileView = 'compact', ownRatesOnly = false },
   path,
   passedParent,
+  showParent,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
@@ -83,7 +84,7 @@ const ObjectOverlayCard = ({
           {avatarLayout()}
         </Link>
         <div className="ObjectOverlayCard__info">
-          {parentName && isProposition && (
+          {parentName && showParent && (
             <Link to={parentLink} title={goToObjTitle(parentName)} className="ObjectCardView__type">
               {parentName}
             </Link>
@@ -118,7 +119,10 @@ const ObjectOverlayCard = ({
               </span>
             )}
             {isEmpty(tags) ? (
-              <span>{wObject.object_type}</span>
+              <span>
+                {wObject.price && <span>&nbsp;&middot;&nbsp;</span>}
+                {wObject.object_type}
+              </span>
             ) : (
               tags.map((tag, index) => (
                 <span key={tag}>
@@ -138,6 +142,7 @@ ObjectOverlayCard.propTypes = {
   wObject: PropTypes.shape(),
   passedParent: PropTypes.shape(),
   path: PropTypes.string,
+  showParent: PropTypes.bool,
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -150,5 +155,6 @@ ObjectOverlayCard.defaultProps = {
   wObject: {},
   path: '',
   passedParent: {},
+  showParent: false,
 };
 export default injectIntl(ObjectOverlayCard);

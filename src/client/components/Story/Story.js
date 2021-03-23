@@ -118,23 +118,18 @@ class Story extends React.Component {
     return true;
   }
 
-  getObjectLayout = wobj => {
-    const pathName = wobj.defaultShowLink;
-    const name = getObjectName(wobj);
-
-    return (
-      <Link
-        key={wobj.author_permlink}
-        to={{ pathname: pathName }}
-        title={`${this.props.intl.formatMessage({
-          id: 'related_to_object',
-          defaultMessage: 'Related',
-        })} ${name} ${wobj.percent ? `(${wobj.percent.toFixed(2)}%)` : ''}`}
-      >
-        <ObjectAvatar item={wobj} size={40} />
-      </Link>
-    );
-  };
+  getObjectLayout = wobj => (
+    <Link
+      key={wobj.author_permlink}
+      to={wobj.defaultShowLink}
+      title={`${this.props.intl.formatMessage({
+        id: 'related_to_object',
+        defaultMessage: 'Related',
+      })} ${getObjectName(wobj)} ${wobj.percent ? `(${wobj.percent.toFixed(2)}%)` : ''}`}
+    >
+      <ObjectAvatar item={wobj} size={40} />
+    </Link>
+  );
 
   getWobjects = wobjects => {
     let i = 0;
