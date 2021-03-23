@@ -195,6 +195,10 @@ export default class AppendForm extends Component {
     formColumn: formColumnsField.middle,
     formForm: formFormFields.link,
     itemsInSortingList: null,
+    newsFilterTitle: null,
+    isSomeValueTitle: true,
+    isSomeValueLink: true,
+    isSomeValueWidget: true,
   };
 
   componentDidMount = () => {
@@ -218,7 +222,7 @@ export default class AppendForm extends Component {
       const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
-        itemInList: isEmpty(sortCustom) ? false : sortCustom.includes(item.author_permlink),
+        checkedItemInList: !isEmpty(sortCustom) ? sortCustom.includes(item.author_permlink) : true,
       }));
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ itemsInSortingList: listItems, loading: false });
@@ -402,7 +406,7 @@ export default class AppendForm extends Component {
             }
           });
 
-          return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
+          return `@${author} added ${currentField} ${this.state.newsFilterTitle} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         case objectFields.form:
           return `@${author} added ${currentField} ${formValues.formTitle}`;
@@ -428,6 +432,13 @@ export default class AppendForm extends Component {
         body: bodyField,
         locale: currentLocale,
       };
+
+      if (currentField === objectFields.newsFilter) {
+        fieldsObject = {
+          ...fieldsObject,
+          title: this.state.newsFilterTitle,
+        };
+      }
 
       if (currentField === objectFields.phone) {
         fieldsObject = {
@@ -536,6 +547,10 @@ export default class AppendForm extends Component {
 
     allowList[rowNum] = filter(allowList[rowNum], o => o.id !== id);
     this.setState({ allowList });
+  };
+
+  handleAddNewsFilterTitle = e => {
+    this.setState({ newsFilterTitle: e.target.value });
   };
 
   handleAddObjectToIgnoreList = obj => {
@@ -795,6 +810,15 @@ export default class AppendForm extends Component {
       ) {
         this.onSubmit(formData);
       } else {
+        if (isEmpty(formData.formTitle)) {
+          this.setState({ isSomeValueTitle: false });
+        }
+        if (isEmpty(formData.formLink)) {
+          this.setState({ isSomeValueLink: false });
+        }
+        if (isEmpty(formData.formWidget)) {
+          this.setState({ isSomeValueWidget: false });
+        }
         message.error(
           this.props.intl.formatMessage(
             {
@@ -1812,7 +1836,7 @@ export default class AppendForm extends Component {
             (itemsInSortingList &&
               itemsInSortingList.map(item => ({
                 id: item.body || item.author_permlink,
-                itemInList: item.itemInList,
+                checkedItemInList: item.checkedItemInList,
                 name: item.alias || getObjectName(item),
                 type: getObjectType(item),
                 wobjType,
@@ -2107,7 +2131,13 @@ export default class AppendForm extends Component {
         );
       }
       case objectFields.form: {
-        const { formColumn, formForm } = this.state;
+        const {
+          formColumn,
+          formForm,
+          isSomeValueTitle,
+          isSomeValueLink,
+          isSomeValueWidget,
+        } = this.state;
         return (
           <ObjectForm
             formColumn={formColumn}
@@ -2118,6 +2148,9 @@ export default class AppendForm extends Component {
             handleSelectColumn={this.handleSelectColumn}
             handleSelectForm={this.handleSelectForm}
             getFieldRules={this.getFieldRules}
+            isSomeValueTitle={isSomeValueTitle}
+            isSomeValueLink={isSomeValueLink}
+            isSomeValueWidget={isSomeValueWidget}
           />
         );
       }

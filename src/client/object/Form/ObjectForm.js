@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Select } from 'antd';
 import { map } from 'lodash';
+import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { formColumnsField, formFormFields } from '../../../common/constants/listOfFields';
 
@@ -15,6 +16,9 @@ const ObjectForm = props => {
     getFieldRules,
     handleSelectColumn,
     handleSelectForm,
+    isSomeValueTitle,
+    isSomeValueLink,
+    isSomeValueWidget,
   } = props;
   return (
     <React.Fragment>
@@ -23,7 +27,9 @@ const ObjectForm = props => {
           rules: getFieldRules('formTitle'),
         })(
           <Input
-            className="AppendForm__input"
+            className={classNames('AppendForm__input', {
+              'validation-error': !isSomeValueTitle,
+            })}
             disabled={loading}
             placeholder={intl.formatMessage({
               id: 'form',
@@ -99,6 +105,9 @@ const ObjectForm = props => {
             })(
               <Input
                 disabled={loading}
+                className={classNames('AppendForm__input', {
+                  'validation-error': !isSomeValueLink,
+                })}
                 placeholder={intl.formatMessage({
                   id: 'form_link',
                   defaultMessage: 'Link',
@@ -116,6 +125,9 @@ const ObjectForm = props => {
             {form.getFieldDecorator('formWidget')(
               <Input.TextArea
                 autoSize={{ minRows: 4, maxRows: 100 }}
+                className={classNames('AppendForm__input', {
+                  'validation-error': !isSomeValueWidget,
+                })}
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'paste_widget',
@@ -139,6 +151,9 @@ ObjectForm.propTypes = {
   handleSelectColumn: PropTypes.shape(),
   handleSelectForm: PropTypes.shape(),
   getFieldRules: PropTypes.shape(),
+  isSomeValueTitle: PropTypes.bool,
+  isSomeValueLink: PropTypes.bool,
+  isSomeValueWidget: PropTypes.bool,
 };
 
 ObjectForm.defaultProps = {
@@ -148,6 +163,9 @@ ObjectForm.defaultProps = {
   handleSelectColumn: () => {},
   handleSelectForm: () => {},
   getFieldRules: () => {},
+  isSomeValueTitle: true,
+  isSomeValueLink: true,
+  isSomeValueWidget: true,
 };
 
 export default ObjectForm;
