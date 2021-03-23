@@ -254,7 +254,7 @@ const WebsiteBody = props => {
           data-anchor={wobject.author_permlink}
           onClick={() => localStorage.setItem('query', props.query)}
         >
-          <ObjectOverlayCard wObject={wobject} />
+          <ObjectOverlayCard wObject={wobject} showParent={props.searchType !== 'restaurant'} />
         </div>
       </Overlay>
     );
