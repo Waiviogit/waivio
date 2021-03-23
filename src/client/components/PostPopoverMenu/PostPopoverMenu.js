@@ -114,10 +114,10 @@ const PostPopoverMenu = ({
           title,
         )}" ${authorTwitter} ${objectTwitter}`;
         const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
-        window.open(twitterShareURL);
+        window.location.assign(twitterShareURL);
       } else {
         const facebookShareURL = getFacebookShareURL(postURL);
-        window.open(facebookShareURL);
+        window.location.assign(facebookShareURL);
       }
     });
   };
@@ -227,8 +227,11 @@ const PostPopoverMenu = ({
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
             {popoverMenu}
           </PopoverMenu>
-          <button
+          <a
+            role="presentation"
             key="share-facebook"
+            rel="noopener noreferrer"
+            target="_blank"
             className="Popover__shared-link"
             onClick={e => {
               e.preventDefault();
@@ -237,9 +240,12 @@ const PostPopoverMenu = ({
           >
             <i className="iconfont icon-facebook" />
             <FormattedMessage id="share_facebook" defaultMessage="Share to Facebook" />
-          </button>
-          <button
+          </a>
+          <a
+            role="presentation"
             key="share-twitter"
+            rel="noopener noreferrer"
+            target="_blank"
             className="Popover__shared-link"
             onClick={e => {
               e.preventDefault();
@@ -248,7 +254,7 @@ const PostPopoverMenu = ({
           >
             <i className="iconfont icon-twitter" />
             <FormattedMessage id="share_twitter" defaultMessage="Share to Twitter" />
-          </button>
+          </a>
         </React.Fragment>
       }
     >
