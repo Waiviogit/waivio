@@ -233,7 +233,7 @@ class ObjectInfo extends React.Component {
           </LinkButton>
         );
         break;
-      case TYPES_OF_MENU_ITEM.NEWS_FILTER:
+      case objectFields.newsFilter:
         menuItem = (
           <LinkButton className={newsFilterClassesList} to={newsFilterPath}>
             {item.title || <FormattedMessage id="news" defaultMessage="News" />}

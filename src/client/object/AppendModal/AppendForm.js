@@ -784,10 +784,10 @@ export default class AppendForm extends Component {
       this.handleAddPhotoToAlbum();
     } else if (objectFields.newsFilter === currentField) {
       const { chosenLocale, usedLocale } = this.props;
-      const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(sub =>
-        size(sub),
-      );
-      const ignoreList = map(this.state.ignoreList, o => o.id);
+      const allowList = map(this.state.allowList, rule =>
+        map(rule, o => o.author_permlink),
+      ).filter(sub => size(sub));
+      const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
       const locale = !isEmpty(chosenLocale) ? chosenLocale : usedLocale;
 
       if (!isEmpty(allowList) || !isEmpty(ignoreList)) {
