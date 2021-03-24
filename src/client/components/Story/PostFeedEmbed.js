@@ -59,7 +59,7 @@ export default class PostFeedEmbed extends React.Component {
   render() {
     const { embed, inPost, isModal, is3Speak } = this.props;
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
-    if (isPostVideo(embed.provider_name && shouldRenderThumb)) {
+    if (isPostVideo(embed.provider_name, shouldRenderThumb)) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
       const isVimeo = embed.provider_name === 'Vimeo';
