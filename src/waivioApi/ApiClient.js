@@ -78,7 +78,7 @@ export const getObjects = ({
   }).then(res => res.json());
 };
 
-export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
+export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', limit = 30 }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
       ...headers,
@@ -88,6 +88,7 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
     method: 'POST',
     body: JSON.stringify({
       author_permlinks: authorPermlinks,
+      limit,
       locale,
     }),
   }).then(res => res.json());
@@ -539,10 +540,18 @@ export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
       .catch(error => reject(error));
   });
 
-export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30, locale) =>
+export const getAuthorsChildWobjects = (
+  authorPermlink,
+  skip = 0,
+  limit = 30,
+  locale,
+  excludeTypes = '',
+) =>
   new Promise((resolve, reject) =>
     fetch(
-      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.childWobjects}?limit=${limit}&skip=${skip}`,
+      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${
+        config.childWobjects
+      }?limit=${limit}&skip=${skip}${excludeTypes ? `&excludeTypes=${excludeTypes}` : ''}`,
       {
         headers: {
           ...headers,

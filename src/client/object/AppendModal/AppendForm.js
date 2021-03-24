@@ -76,7 +76,7 @@ import {
 import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
 import { getVoteValue } from '../../helpers/user';
-import { getExposedFieldsByObjType } from '../wObjectHelper';
+import { getExposedFieldsByObjType, sortListItemsBy } from '../wObjectHelper';
 import { rateObject } from '../wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
@@ -217,13 +217,17 @@ export default class AppendForm extends Component {
       const sortCustom = get(wObject, 'sortCustom', []);
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
+      const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
       const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
-        itemInList: isEmpty(sortCustom) ? false : sortCustom.includes(item.author_permlink),
+        checkedItemInList: !isEmpty(sortCustom) ? sortCustom.includes(item.author_permlink) : true,
       }));
       // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({ itemsInSortingList: listItems, loading: false });
+      this.setState({
+        itemsInSortingList: sortListItemsBy(listItems, defaultSortBy(wObject), wObject.sortCustom),
+        loading: false,
+      });
     }
     this.calculateVoteWorth(this.state.votePercent);
   };
@@ -1826,7 +1830,7 @@ export default class AppendForm extends Component {
             (itemsInSortingList &&
               itemsInSortingList.map(item => ({
                 id: item.body || item.author_permlink,
-                itemInList: item.itemInList,
+                checkedItemInList: item.checkedItemInList,
                 name: item.alias || getObjectName(item),
                 type: getObjectType(item),
                 wobjType,

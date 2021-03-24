@@ -339,4 +339,13 @@ export default (messageFactory, validators, userName) => ({
   createDuplicate: {
     text: messageFactory('create_duplicate', 'create a duplicate'),
   },
+  addChildrenModalTitle: {
+    text: messageFactory('add_children_modal_title', 'Add all child objects'),
+  },
+  addChildrenModalBodyFirstPart: {
+    text: messageFactory('add_children_modal_body_first_part', 'Add all objects that link to'),
+  },
+  addChildrenModalBodySecondPart: {
+    text: messageFactory('add_children_modal_body_second_part', 'add all child objects'),
+  },
 });

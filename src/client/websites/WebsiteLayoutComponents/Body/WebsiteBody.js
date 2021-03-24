@@ -118,6 +118,11 @@ const WebsiteBody = props => {
     }
   }, [props.isShowResult]);
 
+  const handleChangeType = () => {
+    setInfoboxData(null);
+    props.history.push('/');
+  };
+
   useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
 
@@ -140,18 +145,21 @@ const WebsiteBody = props => {
               wobj => wobj.author_permlink === props.query.get('permlink'),
             );
 
-            setInfoboxData({
-              wobject: currentPoint,
-              coordinates: queryCenter,
-            });
+            if (currentPoint) {
+              setInfoboxData({
+                wobject: currentPoint,
+                coordinates: queryCenter,
+              });
+            }
           }
         });
-  }, [props.userLocation, boundsParams, props.searchString, props.searchType]);
+  }, [props.userLocation, boundsParams, props.searchString, props.searchType, props.activeFilters]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
   const currentLogo = configLogo || getObjectAvatar(aboutObject);
   const logoLink = get(aboutObject, ['defaultShowLink'], '/');
+  const description = get(aboutObject, 'description', '');
 
   const reloadSearchList = () => {
     handleSetMapForSearch();
@@ -248,7 +256,7 @@ const WebsiteBody = props => {
           data-anchor={wobject.author_permlink}
           onClick={() => localStorage.setItem('query', props.query)}
         >
-          <ObjectOverlayCard wObject={wobject} />
+          <ObjectOverlayCard wObject={wobject} showParent={props.searchType !== 'restaurant'} />
         </div>
       </Overlay>
     );
@@ -309,7 +317,11 @@ const WebsiteBody = props => {
   return (
     <div className="WebsiteBody">
       <Helmet>
-        <title>{getObjectName(aboutObject)}</title>
+        <title>
+          {description
+            ? `${getObjectName(aboutObject)} - ${description}`
+            : getObjectName(aboutObject)}
+        </title>
         <meta
           property="twitter:description"
           content="Waivio is an open distributed attention marketplace for business"
@@ -321,6 +333,7 @@ const WebsiteBody = props => {
         reloadSearchList={reloadSearchList}
         searchType={props.searchType}
         handleHoveredCard={handleHoveredCard}
+        handleChangeType={handleChangeType}
       />
       <div className={mapClassList}>
         {currentLogo && (
@@ -337,7 +350,8 @@ const WebsiteBody = props => {
           <React.Fragment>
             {Boolean(props.counter) && props.isAuth && (
               <Link to="/rewards/reserved" className={reservedButtonClassList}>
-                <FormattedMessage id="reserved" defaultMessage="Reserved" />: {props.counter}
+                <FormattedMessage id="reserved" defaultMessage="Reserved" />
+                :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
               </Link>
             )}
             {zoomButtonsLayout()}

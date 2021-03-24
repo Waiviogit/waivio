@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, get, isEmpty, ceil } from 'lodash';
+import { includes, get, isEmpty, has } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Icon } from 'antd';
 
 import RatingsWrap from './../RatingsWrap/RatingsWrap';
 import DEFAULTS from '../../object/const/defaultValues';
@@ -13,6 +12,7 @@ import { getObjectName, getObjectAvatar, hasType } from '../../helpers/wObjectHe
 import { getProxyImageURL } from '../../helpers/image';
 
 import './ObjectOverlayCard.less';
+import OverlayRewardsButton from './OverlayRewardsButton';
 
 const ObjectOverlayCard = ({
   intl,
@@ -20,12 +20,16 @@ const ObjectOverlayCard = ({
   options: { mobileView = 'compact', ownRatesOnly = false },
   path,
   passedParent,
+  showParent,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const objName = getObjectName(wObject);
+  const parentLink = get(parent, 'defaultShowLink');
+  const parentName = getObjectName(parent);
+  const isProposition = has(wObject, 'propositions');
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
   pathName = hasType(wObject, 'page') ? path : pathName;
 
@@ -67,25 +71,8 @@ const ObjectOverlayCard = ({
       key={wObject.author_permlink}
       data-anchor={wObject.author_permlink}
     >
-      {wObject.campaigns && (
-        <Link
-          data-anchor={wObject.author_permlink}
-          className="ObjectOverlayCard__earn"
-          to={`/rewards/all/${wObject.author_permlink}`}
-        >
-          {wObject.campaigns.max_reward === wObject.campaigns.min_reward
-            ? intl.formatMessage({
-                id: 'rewards_details_earn',
-                defaultMessage: 'Earn',
-              })
-            : intl.formatMessage({
-                id: 'rewards_details_earn_up_to',
-                defaultMessage: 'Earn up to',
-              })}{' '}
-          <b data-anchor={wObject.author_permlink}>
-            {ceil(wObject.campaigns.max_reward, 2)} USD <Icon type="right" />
-          </b>
-        </Link>
+      {(wObject.campaigns || wObject.propositions) && (
+        <OverlayRewardsButton wObject={wObject} isPropos={isProposition} intl={intl} />
       )}
       <div className="ObjectOverlayCard__content-row">
         <Link
@@ -97,6 +84,16 @@ const ObjectOverlayCard = ({
           {avatarLayout()}
         </Link>
         <div className="ObjectOverlayCard__info">
+          {parentName && showParent && (
+            <Link
+              to={parentLink}
+              data-anchor={wObject.author_permlink}
+              title={goToObjTitle(parentName)}
+              className="ObjectCardView__type"
+            >
+              {parentName}
+            </Link>
+          )}
           <div className="ObjectOverlayCard__name">
             <Link
               key={wObject.author_permlink}
@@ -127,7 +124,10 @@ const ObjectOverlayCard = ({
               </span>
             )}
             {isEmpty(tags) ? (
-              <span>{wObject.object_type}</span>
+              <span>
+                {wObject.price && <span>&nbsp;&middot;&nbsp;</span>}
+                {wObject.object_type}
+              </span>
             ) : (
               tags.map((tag, index) => (
                 <span key={tag}>
@@ -147,6 +147,7 @@ ObjectOverlayCard.propTypes = {
   wObject: PropTypes.shape(),
   passedParent: PropTypes.shape(),
   path: PropTypes.string,
+  showParent: PropTypes.bool,
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -159,5 +160,6 @@ ObjectOverlayCard.defaultProps = {
   wObject: {},
   path: '',
   passedParent: {},
+  showParent: false,
 };
 export default injectIntl(ObjectOverlayCard);

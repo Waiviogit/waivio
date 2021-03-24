@@ -1,24 +1,28 @@
-import { isEmpty, map, includes, get, size } from 'lodash';
+import { isEmpty, map, includes, get, size, uniqBy } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
 import { Form, message } from 'antd';
-import { createCampaign, getCampaignById, getObjectsByIds } from '../../../waivioApi/ApiClient';
+import {
+  createCampaign,
+  getAuthorsChildWobjects,
+  getCampaignById,
+  getObjectsByIds,
+} from '../../../waivioApi/ApiClient';
 import CreateFormRenderer from './CreateFormRenderer';
 import { AppSharedContext } from '../../Wrapper';
-// eslint-disable-next-line import/extensions
-import * as apiConfig from '../../../waivioApi/config';
-import { getRate, getRewardFund } from '../../reducers';
+import * as apiConfig from '../../../waivioApi/config.json';
+import { getLocale, getRate, getRewardFund } from '../../reducers';
 import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
 import {
   PATH_NAME_MANAGE,
   CAMPAIGN_STATUS,
   isDisabledStatus,
 } from '../../../common/constants/rewards';
+
 import './CreateReward.less';
 
 @withRouter
@@ -30,12 +34,14 @@ import './CreateReward.less';
     rewardFund: getRewardFund(state),
     createDuplicate: false,
     campaign: {},
+    locale: getLocale(state),
   }),
   {},
 )
 class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
+    locale: PropTypes.string,
     user: PropTypes.shape(),
     form: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
@@ -48,6 +54,7 @@ class CreateRewardForm extends React.Component {
   };
   static defaultProps = {
     userName: '',
+    locale: '',
     user: {},
     usedLocale: 'en-US',
     form: {},
@@ -89,6 +96,7 @@ class CreateRewardForm extends React.Component {
     iAgree: false,
     campaignId: '',
     isDuplicate: false,
+    isOpenAddChild: false,
   };
 
   componentDidMount = async () => {
@@ -102,7 +110,7 @@ class CreateRewardForm extends React.Component {
       const expiredAt = isExpired
         ? moment(new Date().toISOString())
         : moment(new Date(campaign.expired_at));
-      const matchPath = get(this.props.match, ['path', 'params', '0']);
+      const matchPath = get(this.props.match, ['params', '0']);
       const isDuplicate = includes(matchPath, 'createDuplicate');
       const isDisabled =
         includes(isDisabledStatus, campaign.status) || campaign.status !== CAMPAIGN_STATUS.pending;
@@ -129,6 +137,7 @@ class CreateRewardForm extends React.Component {
 
         combinedObjects = await getObjectsByIds({
           authorPermlinks,
+          limit: size(authorPermlinks),
         });
 
         sponsors = combinedObjects.wobjects.filter(wobj =>
@@ -140,6 +149,7 @@ class CreateRewardForm extends React.Component {
         agreementObject && authorPermlinks.push(agreementObject);
         combinedObjects = await getObjectsByIds({
           authorPermlinks,
+          limit: size(authorPermlinks),
         });
       }
 
@@ -211,11 +221,18 @@ class CreateRewardForm extends React.Component {
     }
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { campaign, createDuplicate } = this.state;
+    const matchPath = get(this.props.match, ['params', '0']);
+
     if (createDuplicate && campaign)
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ campaignName: `Copy ${campaign.name}`, createDuplicate: false });
+    if (prevProps.match.params[0] !== matchPath) {
+      const isDuplicate = includes(matchPath, 'createDuplicate');
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ isDuplicate });
+    }
   }
 
   checkOptionFields = () => {
@@ -329,7 +346,9 @@ class CreateRewardForm extends React.Component {
     removeSecondaryObject: obj => {
       this.setState(
         prevState => {
-          const objectList = prevState.secondaryObjectsList.filter(el => el.id !== obj.id);
+          const objectList = prevState.secondaryObjectsList.filter(
+            el => el.author_permlink !== obj.author_permlink,
+          );
           return {
             secondaryObjectsList: objectList,
           };
@@ -355,7 +374,9 @@ class CreateRewardForm extends React.Component {
     removePageObject: obj => {
       this.setState(
         prevState => {
-          const objectList = prevState.pageObjects.filter(el => el.id !== obj.id);
+          const objectList = prevState.pageObjects.filter(
+            el => el.author_permlink !== obj.author_permlink,
+          );
           return {
             pageObjects: objectList,
           };
@@ -370,6 +391,31 @@ class CreateRewardForm extends React.Component {
           targetDays: { ...this.state.targetDays, [targetDay]: !this.state.targetDays[targetDay] },
         },
         () => this.props.form.setFieldsValue({ targetDays: this.state.targetDays }),
+      );
+    },
+
+    openModalAddChildren: () => {
+      this.setState({ isOpenAddChild: true });
+    },
+
+    closeModalAddChildren: () => {
+      this.setState({ isOpenAddChild: false });
+    },
+
+    addAllObjectChildren: async () => {
+      const children = await getAuthorsChildWobjects(
+        this.state.primaryObject.author_permlink,
+        0,
+        0,
+        this.props.locale,
+        'list',
+      );
+      await this.setState(
+        prevState => ({
+          isOpenAddChild: false,
+          secondaryObjectsList: uniqBy([...prevState.secondaryObjectsList, ...children], '_id'),
+        }),
+        () => this.props.form.setFieldsValue({ secondaryObject: this.state.secondaryObjectsList }),
       );
     },
 
@@ -416,6 +462,7 @@ class CreateRewardForm extends React.Component {
 
     messageFactory: (id, defaultMessage) => {
       const { intl } = this.props;
+
       return intl.formatMessage({
         id,
         defaultMessage,
@@ -498,6 +545,7 @@ class CreateRewardForm extends React.Component {
         isDisabled={isDisabled}
         isDuplicate={isDuplicate}
         handleCreateDuplicate={this.handleCreateDuplicate}
+        isOpenAddChild={this.state.isOpenAddChild}
       />
     );
   }

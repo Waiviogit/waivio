@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { isPostVideo } from './StoryHelper';
 import './PostFeedEmbed.less';
 
 export default class PostFeedEmbed extends React.Component {
@@ -13,12 +14,14 @@ export default class PostFeedEmbed extends React.Component {
     inPost: PropTypes.bool,
     isModal: PropTypes.bool,
     is3Speak: PropTypes.bool,
+    isPostPreviewModal: PropTypes.bool,
   };
 
   static defaultProps = {
     inPost: false,
     isModal: false,
     is3Speak: false,
+    isPostPreviewModal: false,
   };
 
   constructor(props) {
@@ -33,9 +36,11 @@ export default class PostFeedEmbed extends React.Component {
     this.setState({ showIframe: true });
   };
 
-  renderWithIframe = (embed, isModal, is3Speak) => {
+  renderWithIframe = (embed, isModal, is3Speak, isVimeo, isPostPreviewModal) => {
     const postFeedEmbedClassList = classNames('PostFeedEmbed__container', {
       'PostFeedEmbed__container-3speak': isModal && is3Speak,
+      'PostFeedEmbed__container-vimeo': isVimeo && !isPostPreviewModal,
+      'PostFeedEmbed__container-post-preview': isPostPreviewModal,
     });
     return (
       // eslint-disable-next-line react/no-danger
@@ -55,18 +60,13 @@ export default class PostFeedEmbed extends React.Component {
   }
 
   render() {
-    const { embed, inPost, isModal, is3Speak } = this.props;
+    const { embed, inPost, isModal, is3Speak, isPostPreviewModal } = this.props;
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
-
-    if (
-      (embed.provider_name === 'YouTube' ||
-        embed.provider_name === 'DTube' ||
-        embed.provider_name === '3Speak') &&
-      shouldRenderThumb
-    ) {
+    if (isPostVideo(embed.provider_name, shouldRenderThumb)) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
-      return this.renderWithIframe(embed.embed, isModal, is3Speak);
+      const isVimeo = embed.provider_name === 'Vimeo';
+      return this.renderWithIframe(embed.embed, isModal, is3Speak, isVimeo, isPostPreviewModal);
     }
     return <div />;
   }

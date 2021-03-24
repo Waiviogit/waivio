@@ -101,6 +101,8 @@ class CustomMarker extends React.Component {
     let width = 29;
     let height = 34;
     let currentImg = this.image();
+    let currTop = imageOffset.top;
+    let currLeft = imageOffset.left;
 
     if (currLocation) {
       currentImg = '/images/icons/loc-removebg.png';
@@ -111,13 +113,16 @@ class CustomMarker extends React.Component {
       currentImg = isMarked
         ? '/images/icons/campaings-hovered.png'
         : '/images/icons/object-hovered.png';
+
       width = 40;
       height = 45;
+      currTop = 43;
+      currLeft = 20;
     }
 
     const style = {
       position: 'absolute',
-      transform: `translate(${left - imageOffset.left}px, ${top - imageOffset.top}px)`,
+      transform: `translate(${left - currLeft}px, ${top - currTop}px)`,
       cursor: onClick ? 'pointer' : 'default',
       zIndex: isMarked ? 2 : 1,
     };
@@ -133,7 +138,7 @@ class CustomMarker extends React.Component {
         onMouseOut={this.handleMouseOut}
         role="presentation"
       >
-        <img src={currentImg} width={width} height={height} alt="" style={{ transition: '0.3s' }} />
+        <img src={currentImg} width={width} height={height} alt="" />
       </div>
     );
   }

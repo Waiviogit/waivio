@@ -25,11 +25,10 @@ class DnDList extends Component {
     listItems: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string,
-        itemInList: PropTypes.bool,
+        checkedItemInList: PropTypes.bool,
         name: PropTypes.string.isRequired,
         type: PropTypes.string.isRequired,
         wobjType: PropTypes.string,
-        // content: PropTypes.node,
       }),
     ).isRequired,
     accentColor: PropTypes.string,
@@ -58,7 +57,7 @@ class DnDList extends Component {
     }
   }
 
-  filterItems = items => items.filter(item => item.itemInList);
+  filterItems = items => items.filter(item => item.checkedItemInList);
 
   onDragEnd(result) {
     if (!result.destination) {
@@ -82,7 +81,7 @@ class DnDList extends Component {
       item.id === e.target.id
         ? {
             ...item,
-            itemInList: e.target.checked,
+            checkedItemInList: e.target.checked,
           }
         : item,
     );
@@ -121,7 +120,7 @@ class DnDList extends Component {
                           wobjType={item.wobjType}
                           toggleItemInSortingList={this.toggleItemInSortingList}
                           id={item.id}
-                          itemInList={item.itemInList}
+                          checkedItemInList={item.checkedItemInList}
                         />
                       ) : (
                         <DnDListItem name={item.name} type={item.type} />
