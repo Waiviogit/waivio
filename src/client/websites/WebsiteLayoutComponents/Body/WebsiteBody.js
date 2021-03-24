@@ -159,7 +159,7 @@ const WebsiteBody = props => {
   const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
   const currentLogo = configLogo || getObjectAvatar(aboutObject);
   const logoLink = get(aboutObject, ['defaultShowLink'], '/');
-  const description = get(aboutObject, 'description', '');
+  const description = get({}, 'description');
 
   const reloadSearchList = () => {
     handleSetMapForSearch();
@@ -319,8 +319,8 @@ const WebsiteBody = props => {
       <Helmet>
         <title>
           {description
-            ? getObjectName(aboutObject)
-            : `${getObjectName(aboutObject)} - ${description}`}
+            ? `${getObjectName(aboutObject)} - ${description}`
+            : getObjectName(aboutObject)}
         </title>
         <meta
           property="twitter:description"

@@ -1014,7 +1014,7 @@ class Rewards extends React.Component {
       <div className="Rewards">
         <div className="shifted">
           <Helmet>
-            <title>Waivio</title>
+            <title>Rewards</title>
             <meta
               name="og:title"
               property="og:title"
