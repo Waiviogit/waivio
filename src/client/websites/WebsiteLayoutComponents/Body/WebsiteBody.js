@@ -118,10 +118,10 @@ const WebsiteBody = props => {
     }
   }, [props.isShowResult]);
 
-  useEffect(() => {
+  const handleChangeType = () => {
     setInfoboxData(null);
     props.history.push('/');
-  }, [props.searchType]);
+  };
 
   useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
@@ -144,6 +144,7 @@ const WebsiteBody = props => {
             const currentPoint = wobjects.find(
               wobj => wobj.author_permlink === props.query.get('permlink'),
             );
+
             if (currentPoint) {
               setInfoboxData({
                 wobject: currentPoint,
@@ -152,7 +153,7 @@ const WebsiteBody = props => {
             }
           }
         });
-  }, [props.userLocation, boundsParams, props.searchString, props.searchType]);
+  }, [props.userLocation, boundsParams, props.searchString, props.searchType, props.activeFilters]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
@@ -332,6 +333,7 @@ const WebsiteBody = props => {
         reloadSearchList={reloadSearchList}
         searchType={props.searchType}
         handleHoveredCard={handleHoveredCard}
+        handleChangeType={handleChangeType}
       />
       <div className={mapClassList}>
         {currentLogo && (
