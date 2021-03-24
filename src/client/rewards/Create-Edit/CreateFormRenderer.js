@@ -11,7 +11,7 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import ReviewItem from './ReviewItem';
 import { validatorMessagesCreator, validatorsCreator } from './validators';
 import fieldsData from './fieldsData';
-import { getObjectName } from '../../helpers/wObjectHelper';
+import { getObjectName, getObjectType } from '../../helpers/wObjectHelper';
 
 const { Option } = Select;
 
@@ -165,7 +165,7 @@ const CreateFormRenderer = props => {
         className={loading && 'CreateReward__loading'}
       >
         <Form.Item>
-          {!isCreateDublicate ? (
+          {!isCreateDublicate && currentItemId ? (
             <div
               role="presentation"
               className="CreateReward__createDuplicate"
@@ -329,15 +329,20 @@ const CreateFormRenderer = props => {
         <Form.Item
           label={
             <span className="CreateReward__label">
-              {fields.secondaryObject.label} (
-              <span
-                role="presentation"
-                className="CreateReward__addChild"
-                onClick={handlers.openModalAddChildren}
-              >
-                {fields.addChildrenModalTitle.text}
-              </span>
-              )
+              {fields.secondaryObject.label}{' '}
+              {!isEmpty(primaryObject) && getObjectType(primaryObject) !== 'list' && (
+                <React.Fragment>
+                  (
+                  <span
+                    role="presentation"
+                    className="CreateReward__addChild"
+                    onClick={handlers.openModalAddChildren}
+                  >
+                    {fields.addChildrenModalTitle.text}
+                  </span>
+                  )
+                </React.Fragment>
+              )}
             </span>
           }
         >
