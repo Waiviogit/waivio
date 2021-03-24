@@ -4,6 +4,8 @@ import * as appTypes from './appActions';
 import * as postActions from '../post/postActions';
 import { GET_USER_METADATA } from '../user/usersActions';
 import { mobileUserAgents } from '../helpers/regexHelpers';
+import { getObjectAvatar } from '../helpers/wObjectHelper';
+import DEFAULTS from '../object/const/defaultValues';
 
 const initialState = {
   isFetching: false,
@@ -27,6 +29,7 @@ const initialState = {
   configuration: {},
   isWaivio: true,
   reservedCounter: 0,
+  helmetIcon: DEFAULTS.FAVICON,
 };
 
 export default (state = initialState, action) => {
@@ -146,6 +149,7 @@ export default (state = initialState, action) => {
           account: beneficiary.account,
           weight: beneficiary.percent,
         },
+        helmetIcon: getObjectAvatar(configuration.aboutObject),
         currMap: {
           center: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
           zoom: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),
@@ -207,3 +211,4 @@ export const getIsWaivio = state => state.isWaivio;
 export const getReservCounter = state => state.reservedCounter;
 export const getWebsiteBeneficiary = state => state.websiteBeneficiary;
 export const getWebsiteParentHost = state => state.parentHost;
+export const getHelmetIcon = state => state.helmetIcon;

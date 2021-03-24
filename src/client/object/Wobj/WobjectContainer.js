@@ -13,6 +13,7 @@ import {
   getLocale,
   getWobjectIsFailed,
   getWobjectIsFatching,
+  getHelmetIcon,
 } from '../../reducers';
 import OBJECT_TYPE from '../const/objectTypes';
 import { clearObjectFromStore, getObject } from '../wobjectsActions';
@@ -42,6 +43,7 @@ import NotFound from '../../statics/NotFound';
     wobject: getObjectState(state),
     isFetching: getObjectFetchingState(state),
     screenSize: getScreenSize(state),
+    helmetIcon: getHelmetIcon(state),
   }),
   {
     clearObjectFromStore,
@@ -74,6 +76,7 @@ export default class WobjectContainer extends React.Component {
     setNestedWobject: PropTypes.func,
     setCatalogBreadCrumbs: PropTypes.func,
     locale: PropTypes.string,
+    helmetIcon: PropTypes.string.isRequired,
     getAlbums: PropTypes.func,
     appendObject: PropTypes.func,
     addAlbumToStore: PropTypes.func,
@@ -195,6 +198,7 @@ export default class WobjectContainer extends React.Component {
           toggleViewEditMode={this.toggleViewEditMode}
           objectName={objectName}
           appendAlbum={this.appendAlbum}
+          helmetIcon={this.props.helmetIcon}
         />
       </React.Fragment>
     );

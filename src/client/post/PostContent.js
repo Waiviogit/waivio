@@ -310,6 +310,7 @@ class PostContent extends React.Component {
           <meta property="og:site_name" content="Waivio" />
           <meta name="article:tag" property="article:tag" content={category} />
           <link rel="image_src" href={image} />
+          <link id="favicon" rel="icon" href={image} type="image/x-icon" />
           <meta name="article:published_time" property="article:published_time" content={created} />
         </Helmet>
         <StoryFull
