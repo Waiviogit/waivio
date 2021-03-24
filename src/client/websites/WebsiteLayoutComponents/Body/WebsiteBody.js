@@ -319,8 +319,8 @@ const WebsiteBody = props => {
       <Helmet>
         <title>
           {description
-            ? getObjectName(aboutObject)
-            : `${getObjectName(aboutObject)} - ${description}`}
+            ? `${getObjectName(aboutObject)} - ${description}`
+            : getObjectName(aboutObject)}
         </title>
         <meta
           property="twitter:description"
