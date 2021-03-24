@@ -184,6 +184,7 @@ export default class User extends React.Component {
           <meta property="og:image:height" content="600" />
           <meta property="og:description" content={desc} />
           <meta property="og:site_name" content="Waivio" />
+          <link id="favicon" rel="icon" href={image} type="image/x-icon" />
         </Helmet>
         <ScrollToTopOnMount />
         {user.fetching ? (
