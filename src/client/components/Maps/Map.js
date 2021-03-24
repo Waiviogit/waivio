@@ -287,6 +287,11 @@ class MapOS extends React.Component {
 
   setQueryInUrl = (anchor, permlink) => {
     const url = `center=${anchor.join(',')}&zoom=${this.state.zoom}&permlink=${permlink}`;
+
+    if (this.props.isFullscreenMode) {
+      this.props.setMapFullscreenMode(false);
+    }
+
     this.props.history.push(`/?${url}`);
   };
 
@@ -340,10 +345,6 @@ class MapOS extends React.Component {
         setMapArea({ radius, coordinates: center, isMap: true });
       });
     } else {
-      if (this.props.isFullscreenMode) {
-        this.props.setMapFullscreenMode(false);
-      }
-
       this.setQueryInUrl(this.state.center, this.props.match.params.campaignParent);
     }
   };
