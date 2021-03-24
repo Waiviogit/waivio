@@ -296,7 +296,7 @@ const routes = {
       pathScope: '/object/:name',
       routes: [
         {
-          path: '',
+          path: ['', '/newsFilter/:itemId'],
           exact: true,
           component: Views.ObjectPageFeed,
         },

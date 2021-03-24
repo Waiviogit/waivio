@@ -111,7 +111,14 @@ export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
 // region Feed requests
-export const getFeedContentByObject = (name, limit = 10, user_languages, locale, follower) =>
+export const getFeedContentByObject = (
+  name,
+  limit = 10,
+  user_languages,
+  locale,
+  follower,
+  newsPermlink,
+) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.posts}`, {
       headers: {
@@ -121,7 +128,7 @@ export const getFeedContentByObject = (name, limit = 10, user_languages, locale,
         follower,
       },
       method: 'POST',
-      body: JSON.stringify({ limit, user_languages }),
+      body: JSON.stringify({ limit, user_languages, newsPermlink }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -136,6 +143,7 @@ export const getMoreFeedContentByObject = ({
   user_languages,
   lastId,
   locale,
+  newsPermlink,
 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.posts}`, {
@@ -145,7 +153,7 @@ export const getMoreFeedContentByObject = ({
         locale,
       },
       method: 'POST',
-      body: JSON.stringify({ skip, limit, user_languages, lastId }),
+      body: JSON.stringify({ skip, limit, user_languages, lastId, newsPermlink }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
