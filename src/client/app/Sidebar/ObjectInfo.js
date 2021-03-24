@@ -187,12 +187,16 @@ class ObjectInfo extends React.Component {
   getMenuSectionLink = (item = {}) => {
     const { wobject, location } = this.props;
     const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
+    const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
+    const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
     const blogClassesList = classNames('menu-btn', {
       active: location.pathname === blogPath,
     });
-    const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
     const formClassesList = classNames('menu-btn', {
       active: location.pathname === formPath,
+    });
+    const newsFilterClassesList = classNames('menu-btn', {
+      active: location.pathname === newsFilterPath,
     });
     let menuItem = (
       <LinkButton
@@ -231,12 +235,7 @@ class ObjectInfo extends React.Component {
         break;
       case TYPES_OF_MENU_ITEM.NEWS_FILTER:
         menuItem = (
-          <LinkButton
-            className={classNames('menu-btn', {
-              active: location.pathname === `/object/${item.permlink}`,
-            })}
-            to={`/object/${item.permlink}`}
-          >
+          <LinkButton className={newsFilterClassesList} to={newsFilterPath}>
             {item.title || <FormattedMessage id="news" defaultMessage="News" />}
           </LinkButton>
         );
