@@ -15,6 +15,7 @@ export default class PostFeedEmbed extends React.Component {
     isModal: PropTypes.bool,
     is3Speak: PropTypes.bool,
     isPostPreviewModal: PropTypes.bool,
+    isFullStory: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -22,6 +23,7 @@ export default class PostFeedEmbed extends React.Component {
     isModal: false,
     is3Speak: false,
     isPostPreviewModal: false,
+    isFullStory: false,
   };
 
   constructor(props) {
@@ -36,11 +38,12 @@ export default class PostFeedEmbed extends React.Component {
     this.setState({ showIframe: true });
   };
 
-  renderWithIframe = (embed, isModal, is3Speak, isVimeo, isPostPreviewModal) => {
+  renderWithIframe = (embed, isModal, is3Speak, isVimeo, isPostPreviewModal, isFullStory) => {
     const postFeedEmbedClassList = classNames('PostFeedEmbed__container', {
       'PostFeedEmbed__container-3speak': isModal && is3Speak,
       'PostFeedEmbed__container-vimeo': isVimeo && !isPostPreviewModal,
       'PostFeedEmbed__container-post-preview': isPostPreviewModal,
+      'PostFeedEmbed__container-vimeo-story-full': isVimeo && isFullStory,
     });
     return (
       // eslint-disable-next-line react/no-danger
@@ -60,13 +63,20 @@ export default class PostFeedEmbed extends React.Component {
   }
 
   render() {
-    const { embed, inPost, isModal, is3Speak, isPostPreviewModal } = this.props;
+    const { embed, inPost, isModal, is3Speak, isPostPreviewModal, isFullStory } = this.props;
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
     if (isPostVideo(embed.provider_name, shouldRenderThumb)) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
       const isVimeo = embed.provider_name === 'Vimeo';
-      return this.renderWithIframe(embed.embed, isModal, is3Speak, isVimeo, isPostPreviewModal);
+      return this.renderWithIframe(
+        embed.embed,
+        isModal,
+        is3Speak,
+        isVimeo,
+        isPostPreviewModal,
+        isFullStory,
+      );
     }
     return <div />;
   }
