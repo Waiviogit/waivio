@@ -25,6 +25,7 @@ import {
   getRewardFund,
   getVotePercent,
   getAppUrl,
+  getHelmetIcon,
 } from '../reducers';
 import { editPost } from './Write/editorActions';
 import {
@@ -58,6 +59,7 @@ import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
     rewardFund: getRewardFund(state),
     defaultVotePercent: getVotePercent(state),
     appUrl: getAppUrl(state),
+    helmetIcon: getHelmetIcon(state),
   }),
   {
     editPost,
@@ -99,6 +101,7 @@ class PostContent extends React.Component {
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
     isOriginalPost: PropTypes.string,
+    helmetIcon: PropTypes.string.isRequired,
     pendingFollowingPostAuthor: PropTypes.func.isRequired,
     followingPostAuthor: PropTypes.func.isRequired,
     errorFollowingPostAuthor: PropTypes.func.isRequired,
@@ -310,7 +313,7 @@ class PostContent extends React.Component {
           <meta property="og:site_name" content="Waivio" />
           <meta name="article:tag" property="article:tag" content={category} />
           <link rel="image_src" href={image} />
-          <link id="favicon" rel="icon" href={image} type="image/x-icon" />
+          <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
           <meta name="article:published_time" property="article:published_time" content={created} />
         </Helmet>
         <StoryFull
