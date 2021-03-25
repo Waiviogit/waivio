@@ -110,6 +110,20 @@ const editor = (state = defaultState, action) => {
         ...state,
         pendingDrafts: state.pendingDrafts.filter(id => !action.meta.ids.includes(id)),
       };
+    case editorActions.DELETE_DRAFT_OBJECT_START:
+      return {
+        ...state,
+      };
+    case editorActions.DELETE_DRAFT_OBJECT_SUCCESS: {
+      return {
+        ...state,
+        draftPosts: action.payload,
+      };
+    }
+    case editorActions.DELETE_DRAFT_OBJECT_ERROR:
+      return {
+        ...state,
+      };
     case editorActions.UPLOAD_IMG_START:
       return {
         ...state,
