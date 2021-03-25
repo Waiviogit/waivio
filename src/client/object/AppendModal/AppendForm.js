@@ -301,6 +301,15 @@ export default class AppendForm extends Component {
     }
   };
 
+  getNewsFilterTitle = stateNewsFilterTitle => {
+    const { wObject } = this.props;
+    const newsFilters = get(wObject, 'newsFilter', []);
+    const newsFilterCount = newsFilters.filter(item => item.title.includes('News')).length;
+    const newsFilterTitle = newsFilterCount === 0 ? 'News' : `News ${newsFilterCount}`;
+
+    return !isEmpty(stateNewsFilterTitle) ? newsFilterTitle : newsFilterTitle;
+  };
+
   getNewPostData = formValues => {
     const { wObject } = this.props;
     const { getFieldValue } = this.props.form;
@@ -408,7 +417,9 @@ export default class AppendForm extends Component {
             }
           });
 
-          return `@${author} added ${currentField} ${this.state.newsFilterTitle} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
+          return `@${author} added ${currentField} ${this.getNewsFilterTitle(
+            this.state.newsFilterTitle,
+          )} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         case objectFields.form:
           return `@${author} added ${currentField} ${formValues.formTitle}`;
@@ -438,7 +449,7 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.newsFilter) {
         fieldsObject = {
           ...fieldsObject,
-          title: this.state.newsFilterTitle,
+          title: this.getNewsFilterTitle(this.state.newsFilterTitle),
         };
       }
 
