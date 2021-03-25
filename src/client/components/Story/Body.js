@@ -47,6 +47,7 @@ export function getHtml(
   options = {},
   isModal,
   isPostPreviewModal,
+  full,
 ) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
@@ -108,6 +109,7 @@ export function getHtml(
             inPost
             embed={embed}
             isPostPreviewModal={isPostPreviewModal}
+            isFullStory={full}
           />,
         ),
       );
@@ -162,6 +164,7 @@ const Body = props => {
     options,
     props.isModal,
     props.isPostPreviewModal,
+    props.full,
   );
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
