@@ -39,7 +39,6 @@ export default class PostFeedEmbed extends React.Component {
   };
 
   renderWithIframe = (embed, isModal, is3Speak, isVimeo, isPostPreviewModal, isFullStory) => {
-    console.log(isFullStory);
     const postFeedEmbedClassList = classNames('PostFeedEmbed__container', {
       'PostFeedEmbed__container-3speak': isModal && is3Speak,
       'PostFeedEmbed__container-vimeo': isVimeo && !isPostPreviewModal,
