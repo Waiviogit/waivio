@@ -247,7 +247,7 @@ const WebsiteBody = props => {
     return (
       <Overlay
         anchor={infoboxData.coordinates}
-        offset={[firstOffsetNumber, 140]}
+        offset={[firstOffsetNumber, 160]}
         className="WebsiteBody__overlay"
       >
         <div
