@@ -198,7 +198,10 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
   });
 };
 
-export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, getState) => {
+export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) => (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const readLanguages = getUserLocalesArray(getState);
   const locale = getLocale(state);
@@ -206,15 +209,25 @@ export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, g
 
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
-    payload: ApiClient.getFeedContentByObject(object, limit, readLanguages, locale, follower),
+    payload: ApiClient.getFeedContentByObject(
+      object,
+      limit,
+      readLanguages,
+      locale,
+      follower,
+      newsPermlink,
+    ),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
 };
 
-export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10, skip }) => (
-  dispatch,
-  getState,
-) => {
+export const getMoreObjectPosts = ({
+  username,
+  authorPermlink,
+  limit = 10,
+  skip,
+  newsPermlink,
+}) => (dispatch, getState) => {
   const state = getState();
   const feed = getFeed(state);
   const user_languages = getUserLocalesArray(getState);
@@ -236,6 +249,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10, skip 
       user_languages,
       lastId,
       locale,
+      newsPermlink,
     }),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { Button, Modal } from 'antd';
@@ -9,8 +9,8 @@ import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
 import { getObjectName } from '../../helpers/wObjectHelper';
-import ModalSignIn from '../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { clearAllSessionProposition, getSessionData } from '../rewardsHelper';
+import withAuthActions from '../../auth/withAuthActions';
 
 import './Details.less';
 
@@ -30,8 +30,8 @@ const Details = ({
   history,
   authorizedUserName,
   removeToggleFlag,
+  onActionInitiated,
 }) => {
-  const [isShowSignInModal, setIsShowSignInModal] = useState(false);
   const isWidget = new URLSearchParams(location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const userName = getSessionData('userName');
@@ -69,7 +69,7 @@ const Details = ({
 
   const objName = getRequiredObjectName();
   const proposedWobjNewName = getProposedWobjName();
-  const onClick = isAuth ? reserveOnClickHandler : () => setIsShowSignInModal(true);
+  const onClick = () => onActionInitiated(reserveOnClickHandler);
   const disabled = (isAuth && !isEligible) || isInActive || isExpired;
 
   // eslint-disable-next-line no-underscore-dangle
@@ -88,8 +88,6 @@ const Details = ({
       } else {
         history.push(writeReviewUrl);
       }
-    } else {
-      setIsShowSignInModal(!isShowSignInModal);
     }
   };
 
@@ -127,16 +125,6 @@ const Details = ({
           requiredObjectName={requiredObjectName}
           intl={intl}
           objectDetails={objectDetails}
-        />
-      )}
-      {isShowSignInModal && (
-        <ModalSignIn
-          hideLink
-          isButton={false}
-          showModal
-          setIsShowSignInModal={setIsShowSignInModal}
-          toCurrentWobjLink={toCurrentWobjLink}
-          history={history}
         />
       )}
       <div className="Details__footer">
@@ -184,6 +172,7 @@ Details.propTypes = {
   history: PropTypes.shape().isRequired,
   authorizedUserName: PropTypes.string.isRequired,
   removeToggleFlag: PropTypes.func,
+  onActionInitiated: PropTypes.func.isRequired,
 };
 
 Details.defaultProps = {
@@ -192,4 +181,4 @@ Details.defaultProps = {
   isAuth: false,
   removeToggleFlag: () => {},
 };
-export default withRouter(injectIntl(Details));
+export default withRouter(injectIntl(withAuthActions(Details)));

@@ -1628,6 +1628,9 @@
   "form_widget": "Виджет",
   "form_back": "Назад к ревью",
   "enter": "Ввести",
-  "paste_widget": "Вставьте код"
-
+  "paste_widget": "Вставьте код",
+  "news_title": "News filter",
+  "add_children_modal_body_first_part": "Добавить все объекты, которые ссылаются на",
+  "add_children_modal_body_second_part": "в качестве родительского объекта (за исключением списков).",
+  "add_children_modal_title": "добавить все дочерние объекты"
 }

@@ -175,7 +175,10 @@ const SearchAllResult = props => {
           <span
             role="presentation"
             className={getActiveItemClassList(type, props.searchType, 'SearchAllResult__type')}
-            onClick={() => props.setWebsiteSearchType(type)}
+            onClick={() => {
+              props.setWebsiteSearchType(type);
+              props.handleChangeType();
+            }}
             key={type}
           >
             {type}
@@ -266,8 +269,11 @@ SearchAllResult.propTypes = {
   followSearchUser: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
+  // eslint-disable-next-line react/no-unused-prop-types
   assignProposition: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
   declineProposition: PropTypes.func.isRequired,
+  handleChangeType: PropTypes.func.isRequired,
   handleHoveredCard: PropTypes.func,
 };
 

@@ -183,7 +183,7 @@ class PostPreviewModal extends Component {
           >
             <BBackTop isModal target={PostPreviewModal.findScrollElement} />
             <h1 className="StoryFull__title preview">{titleValue}</h1>
-            <BodyContainer full body={body} />
+            <BodyContainer full body={body} isPostPreviewModal />
             <TagsSelector
               className="post-preview-topics"
               disabled={isPublishing}

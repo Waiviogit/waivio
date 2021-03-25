@@ -71,11 +71,12 @@ import {
   prepareBlogData,
   getBlogItems,
   getFormItems,
+  getNewsFilterItems,
 } from '../../helpers/wObjectHelper';
 import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
 import { getVoteValue } from '../../helpers/user';
-import { getExposedFieldsByObjType } from '../wObjectHelper';
+import { getExposedFieldsByObjType, sortListItemsBy } from '../wObjectHelper';
 import { rateObject } from '../wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
@@ -195,6 +196,7 @@ export default class AppendForm extends Component {
     formColumn: formColumnsField.middle,
     formForm: formFormFields.link,
     itemsInSortingList: null,
+    newsFilterTitle: null,
   };
 
   componentDidMount = () => {
@@ -215,13 +217,17 @@ export default class AppendForm extends Component {
       const sortCustom = get(wObject, 'sortCustom', []);
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
+      const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
       const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
-        itemInList: isEmpty(sortCustom) ? false : sortCustom.includes(item.author_permlink),
+        checkedItemInList: !isEmpty(sortCustom) ? sortCustom.includes(item.author_permlink) : true,
       }));
       // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({ itemsInSortingList: listItems, loading: false });
+      this.setState({
+        itemsInSortingList: sortListItemsBy(listItems, defaultSortBy(wObject), wObject.sortCustom),
+        loading: false,
+      });
     }
     this.calculateVoteWorth(this.state.votePercent);
   };
@@ -402,7 +408,7 @@ export default class AppendForm extends Component {
             }
           });
 
-          return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
+          return `@${author} added ${currentField} ${this.state.newsFilterTitle} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         case objectFields.form:
           return `@${author} added ${currentField} ${formValues.formTitle}`;
@@ -428,6 +434,13 @@ export default class AppendForm extends Component {
         body: bodyField,
         locale: currentLocale,
       };
+
+      if (currentField === objectFields.newsFilter) {
+        fieldsObject = {
+          ...fieldsObject,
+          title: this.state.newsFilterTitle,
+        };
+      }
 
       if (currentField === objectFields.phone) {
         fieldsObject = {
@@ -536,6 +549,10 @@ export default class AppendForm extends Component {
 
     allowList[rowNum] = filter(allowList[rowNum], o => o.id !== id);
     this.setState({ allowList });
+  };
+
+  handleAddNewsFilterTitle = e => {
+    this.setState({ newsFilterTitle: e.target.value });
   };
 
   handleAddObjectToIgnoreList = obj => {
@@ -771,10 +788,10 @@ export default class AppendForm extends Component {
       this.handleAddPhotoToAlbum();
     } else if (objectFields.newsFilter === currentField) {
       const { chosenLocale, usedLocale } = this.props;
-      const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(sub =>
-        size(sub),
-      );
-      const ignoreList = map(this.state.ignoreList, o => o.id);
+      const allowList = map(this.state.allowList, rule =>
+        map(rule, o => o.author_permlink),
+      ).filter(sub => size(sub));
+      const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
       const locale = !isEmpty(chosenLocale) ? chosenLocale : usedLocale;
 
       if (!isEmpty(allowList) || !isEmpty(ignoreList)) {
@@ -1801,6 +1818,7 @@ export default class AppendForm extends Component {
         const blogs = getBlogItems(wObject);
         const forms = getFormItems(wObject);
         const wobjType = getObjectType(wObject);
+        const newsFilters = getNewsFilterItems(wObject);
         let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
@@ -1812,7 +1830,7 @@ export default class AppendForm extends Component {
             (itemsInSortingList &&
               itemsInSortingList.map(item => ({
                 id: item.body || item.author_permlink,
-                itemInList: item.itemInList,
+                checkedItemInList: item.checkedItemInList,
                 name: item.alias || getObjectName(item),
                 type: getObjectType(item),
                 wobjType,
@@ -1828,11 +1846,13 @@ export default class AppendForm extends Component {
             });
           });
         }
-        if (!isEmpty(wObject.newsFilter)) {
-          listItems.push({
-            id: TYPES_OF_MENU_ITEM.NEWS,
-            name: intl.formatMessage({ id: 'news', defaultMessage: 'News' }),
-            type: objectFields.newsFilter,
+        if (!isEmpty(newsFilters)) {
+          newsFilters.forEach(item => {
+            listItems.push({
+              id: item.permlink,
+              name: item.title || intl.formatMessage({ id: 'news', defaultMessage: 'News' }),
+              type: objectFields.newsFilter,
+            });
           });
         }
         if (!isEmpty(blogs)) {

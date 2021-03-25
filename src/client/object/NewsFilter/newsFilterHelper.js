@@ -1,4 +1,4 @@
-import { Col, Icon, Row } from 'antd';
+import { Col, Icon, Input, Row } from 'antd';
 import _ from 'lodash';
 import React from 'react';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
@@ -63,7 +63,7 @@ const getAllowListLayout = self => {
                       itemsIdsToOmit={itemsIdsToOmit}
                       rowIndex={rowIndex}
                       ruleIndex={ruleIndex}
-                      style={{ width: '100%' }}
+                      style={{ width: '120%' }}
                       placeholder="Please select"
                       handleSelect={self.handleAddObjectToRule}
                     />
@@ -122,7 +122,7 @@ export const getIgnoreListLayout = self => {
             <SearchObjectsAutocomplete
               allowClear={false}
               itemsIdsToOmit={itemsIdsToOmit}
-              style={{ width: '100%' }}
+              style={{ width: '120%' }}
               placeholder="Please select"
               handleSelect={self.handleAddObjectToIgnoreList}
             />
@@ -136,6 +136,14 @@ export const getIgnoreListLayout = self => {
 
 export const getNewsFilterLayout = self => (
   <React.Fragment>
+    <Input
+      disabled={self.loading}
+      placeholder={self.props.intl.formatMessage({
+        id: 'object_field_news_title',
+        defaultMessage: 'News title',
+      })}
+      onChange={self.handleAddNewsFilterTitle}
+    />
     {getAllowListLayout(self)}
     <div className="AppendForm__appendTitles">
       {self.props.intl.formatMessage({

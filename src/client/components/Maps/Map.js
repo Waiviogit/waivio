@@ -15,6 +15,7 @@ import { getRadius, getParsedMap, getDistanceBetweenTwoPoints, getZoom } from '.
 import {
   getFilteredObjectsMap,
   getIsMapModalOpen,
+  getIsWaivio,
   getSuitableLanguage,
   getUpdatedMap,
   getUpdatedMapDiscover,
@@ -38,6 +39,7 @@ const defaultCoords = {
     usedLocale: getSuitableLanguage(state),
     mapWobjects: getFilteredObjectsMap(state),
     updated: getUpdatedMap(state) || getUpdatedMapDiscover(state),
+    isWaivio: getIsWaivio(state),
   }),
   {
     setMapFullscreenMode,
@@ -283,12 +285,26 @@ class MapOS extends React.Component {
     this.setState({ center: [position.coords.latitude, position.coords.longitude] });
   };
 
-  handleMarkerClick = ({ payload, anchor }) => {
-    handleAddMapCoordinates(anchor);
-    if (this.state.infoboxData && this.state.infoboxData.coordinates === anchor) {
-      this.setState({ infoboxData: null });
+  setQueryInUrl = (anchor, permlink) => {
+    const url = `center=${anchor.join(',')}&zoom=${this.state.zoom}&permlink=${permlink}`;
+
+    if (this.props.isFullscreenMode) {
+      this.props.setMapFullscreenMode(false);
     }
-    this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
+
+    this.props.history.push(`/?${url}`);
+  };
+
+  handleMarkerClick = ({ payload, anchor }) => {
+    if (this.props.isWaivio) {
+      handleAddMapCoordinates(anchor);
+      if (this.state.infoboxData && this.state.infoboxData.coordinates === anchor) {
+        this.setState({ infoboxData: null });
+      }
+      this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
+    } else {
+      this.setQueryInUrl(anchor, payload.author_permlink);
+    }
   };
 
   closeInfobox = () => {
@@ -321,12 +337,16 @@ class MapOS extends React.Component {
   };
 
   getMapArea = () => {
-    this.toggleModal().then(() => {
-      const { setMapArea } = this.props;
-      const { radius, center } = this.state;
+    if (this.props.isWaivio) {
+      this.toggleModal().then(() => {
+        const { setMapArea } = this.props;
+        const { radius, center } = this.state;
 
-      setMapArea({ radius, coordinates: center, isMap: true });
-    });
+        setMapArea({ radius, coordinates: center, isMap: true });
+      });
+    } else {
+      this.setQueryInUrl(this.state.center, this.props.match.params.campaignParent);
+    }
   };
 
   zoomButtonsLayout = () => (
@@ -459,9 +479,13 @@ class MapOS extends React.Component {
 MapOS.propTypes = {
   wobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   isFullscreenMode: PropTypes.bool,
+  isWaivio: PropTypes.bool,
   heigth: PropTypes.number,
   width: PropTypes.number,
   userLocation: PropTypes.shape(),
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
   customControl: PropTypes.node,
   onCustomControlClick: PropTypes.func,
   setArea: PropTypes.func,
@@ -480,6 +504,7 @@ MapOS.propTypes = {
 MapOS.defaultProps = {
   ...defaultCoords,
   isFullscreenMode: false,
+  isWaivio: false,
   markers: {},
   wobjects: [],
   heigth: 200,

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { get, has, isEmpty } from 'lodash';
+import classNames from 'classnames';
 import steemEmbed from '../../vendor/embedMedia';
 import PostFeedEmbed from './PostFeedEmbed';
 import BodyShort from './BodyShort';
@@ -22,7 +23,10 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import { videoPreviewRegex } from '../../helpers/regexHelpers';
 
-const StoryPreview = ({ post, isUpdates }) => {
+const StoryPreview = ({ post, isUpdates, isVimeo }) => {
+  const storyContentBodyClassList = classNames('Story__content__body', {
+    'Story__content__body-vimeo': isVimeo,
+  });
   if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
   const field = get(jsonMetadata, ['wobj', 'field'], {});
@@ -106,7 +110,11 @@ const StoryPreview = ({ post, isUpdates }) => {
   const hasVideo = embeds && embeds[0] && true;
   const preview = {
     text: () => (
-      <BodyShort key="text" className="Story__content__body" body={post.fullBody || post.body} />
+      <BodyShort
+        key="text"
+        className={storyContentBodyClassList}
+        body={post.fullBody || post.body}
+      />
     ),
 
     embed: () => embeds && embeds[0] && <PostFeedEmbed key="embed" embed={embeds[0]} />,
@@ -154,10 +162,12 @@ const StoryPreview = ({ post, isUpdates }) => {
 StoryPreview.propTypes = {
   post: PropTypes.shape().isRequired,
   isUpdates: PropTypes.bool,
+  isVimeo: PropTypes.bool,
 };
 
 StoryPreview.defaultProps = {
   isUpdates: false,
+  isVimeo: false,
 };
 
 export default StoryPreview;

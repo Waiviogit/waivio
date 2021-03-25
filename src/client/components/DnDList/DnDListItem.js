@@ -4,11 +4,16 @@ import { Checkbox } from 'antd';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import './DnDListItem.less';
 
-const DnDListItem = ({ name, type, wobjType, id, toggleItemInSortingList, itemInList }) => (
+const DnDListItem = ({ name, type, wobjType, id, toggleItemInSortingList, checkedItemInList }) => (
   <div className="dnd-list-item">
     <div className="dnd-list-item__ckeckbox">
       {wobjType === OBJECT_TYPE.LIST ? (
-        <Checkbox defaultChecked id={id} onChange={toggleItemInSortingList} checked={itemInList} />
+        <Checkbox
+          defaultChecked
+          id={id}
+          onChange={toggleItemInSortingList}
+          checked={checkedItemInList}
+        />
       ) : null}
       <div className="dnd-list-item__name">{name}</div>
     </div>
@@ -22,7 +27,7 @@ DnDListItem.propTypes = {
   wobjType: PropTypes.string.isRequired,
   toggleItemInSortingList: PropTypes.shape().isRequired,
   id: PropTypes.string.isRequired,
-  itemInList: PropTypes.bool.isRequired,
+  checkedItemInList: PropTypes.bool.isRequired,
 };
 
 export default DnDListItem;

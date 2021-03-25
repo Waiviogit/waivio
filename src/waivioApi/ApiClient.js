@@ -78,7 +78,7 @@ export const getObjects = ({
   }).then(res => res.json());
 };
 
-export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
+export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', limit = 30 }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
       ...headers,
@@ -88,6 +88,7 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
     method: 'POST',
     body: JSON.stringify({
       author_permlinks: authorPermlinks,
+      limit,
       locale,
     }),
   }).then(res => res.json());
@@ -110,7 +111,14 @@ export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
 // region Feed requests
-export const getFeedContentByObject = (name, limit = 10, user_languages, locale, follower) =>
+export const getFeedContentByObject = (
+  name,
+  limit = 10,
+  user_languages,
+  locale,
+  follower,
+  newsPermlink,
+) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.posts}`, {
       headers: {
@@ -120,7 +128,7 @@ export const getFeedContentByObject = (name, limit = 10, user_languages, locale,
         follower,
       },
       method: 'POST',
-      body: JSON.stringify({ limit, user_languages }),
+      body: JSON.stringify({ limit, user_languages, newsPermlink }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -135,6 +143,7 @@ export const getMoreFeedContentByObject = ({
   user_languages,
   lastId,
   locale,
+  newsPermlink,
 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.posts}`, {
@@ -144,7 +153,7 @@ export const getMoreFeedContentByObject = ({
         locale,
       },
       method: 'POST',
-      body: JSON.stringify({ skip, limit, user_languages, lastId }),
+      body: JSON.stringify({ skip, limit, user_languages, lastId, newsPermlink }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -531,10 +540,18 @@ export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
       .catch(error => reject(error));
   });
 
-export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30, locale) =>
+export const getAuthorsChildWobjects = (
+  authorPermlink,
+  skip = 0,
+  limit = 30,
+  locale,
+  excludeTypes = '',
+) =>
   new Promise((resolve, reject) =>
     fetch(
-      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.childWobjects}?limit=${limit}&skip=${skip}`,
+      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${
+        config.childWobjects
+      }?limit=${limit}&skip=${skip}${excludeTypes ? `&excludeTypes=${excludeTypes}` : ''}`,
       {
         headers: {
           ...headers,

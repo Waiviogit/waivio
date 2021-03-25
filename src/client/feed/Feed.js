@@ -41,7 +41,13 @@ const Feed = ({
       threshold={1500}
     >
       {content.map(id => (
-        <StoryContainer key={id} id={id} showPostModal={showPostModal} singlePostVew={false} />
+        <StoryContainer
+          key={id}
+          id={id}
+          showPostModal={showPostModal}
+          singlePostVew={false}
+          userComments={userComments}
+        />
       ))}
     </ReduxInfiniteScroll>
   );

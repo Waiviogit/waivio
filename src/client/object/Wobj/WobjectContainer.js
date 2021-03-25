@@ -13,6 +13,7 @@ import {
   getLocale,
   getWobjectIsFailed,
   getWobjectIsFatching,
+  getHelmetIcon,
 } from '../../reducers';
 import OBJECT_TYPE from '../const/objectTypes';
 import { clearObjectFromStore, getObject } from '../wobjectsActions';
@@ -27,7 +28,6 @@ import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../help
 import { setCatalogBreadCrumbs, setNestedWobject } from '../wobjActions';
 import { appendObject } from '../appendActions';
 import Wobj from './Wobj';
-import Error404 from '../../statics/Error404';
 import NotFound from '../../statics/NotFound';
 
 @withRouter
@@ -42,6 +42,7 @@ import NotFound from '../../statics/NotFound';
     wobject: getObjectState(state),
     isFetching: getObjectFetchingState(state),
     screenSize: getScreenSize(state),
+    helmetIcon: getHelmetIcon(state),
   }),
   {
     clearObjectFromStore,
@@ -74,6 +75,7 @@ export default class WobjectContainer extends React.Component {
     setNestedWobject: PropTypes.func,
     setCatalogBreadCrumbs: PropTypes.func,
     locale: PropTypes.string,
+    helmetIcon: PropTypes.string.isRequired,
     getAlbums: PropTypes.func,
     appendObject: PropTypes.func,
     addAlbumToStore: PropTypes.func,
@@ -166,10 +168,7 @@ export default class WobjectContainer extends React.Component {
     const { isEditMode } = this.state;
     const objectName = getObjectName(wobject);
 
-    if (failed) {
-      return <Error404 />;
-    }
-    if (!objectName && !isFetching) {
+    if (failed)
       return (
         <div className="main-panel">
           <NotFound
@@ -179,7 +178,7 @@ export default class WobjectContainer extends React.Component {
           />
         </div>
       );
-    }
+
     return (
       <React.Fragment>
         <Wobj
@@ -195,6 +194,7 @@ export default class WobjectContainer extends React.Component {
           toggleViewEditMode={this.toggleViewEditMode}
           objectName={objectName}
           appendAlbum={this.appendAlbum}
+          helmetIcon={this.props.helmetIcon}
         />
       </React.Fragment>
     );

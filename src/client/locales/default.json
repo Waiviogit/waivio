@@ -1624,5 +1624,10 @@
   "home": "Home",
   "inactive_website_pricing": "Inactive website pricing:",
   "form_back": "Back to reviews",
-  "paste_widget": "Paste code"
+  "paste_widget": "Paste code",
+  "news_title": "News filter",
+  "add_children_modal_body_first_part": "Add all objects that link to",
+  "add_children_modal_body_second_part": "as their parent object (excluding lists)",
+  "add_children_modal_title": "add all child objects",
+  "object_field_news_title": "News title"
 }
