@@ -253,6 +253,7 @@ class Story extends React.Component {
   renderStoryPreview() {
     const { post } = this.props;
     const showStoryPreview = this.getDisplayStoryPreview();
+    const isVimeo = get(post, 'body', '').includes('player.vimeo.com');
     const hiddenStoryPreviewMessage = isPostTaggedNSFW(post) && (
       <NSFWStoryPreviewMessage onClick={this.handleShowStoryPreview} />
     );
@@ -269,7 +270,7 @@ class Story extends React.Component {
         onClick={this.handlePreviewClickPostModalDisplay}
         className="Story__content__preview"
       >
-        <StoryPreview post={post} />
+        <StoryPreview post={post} isVimeo={isVimeo} />
       </a>
     ) : (
       hiddenStoryPreviewMessage
