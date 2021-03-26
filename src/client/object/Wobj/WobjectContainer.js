@@ -28,7 +28,6 @@ import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../help
 import { setCatalogBreadCrumbs, setNestedWobject } from '../wobjActions';
 import { appendObject } from '../appendActions';
 import Wobj from './Wobj';
-import Error404 from '../../statics/Error404';
 import NotFound from '../../statics/NotFound';
 
 @withRouter
@@ -169,10 +168,7 @@ export default class WobjectContainer extends React.Component {
     const { isEditMode } = this.state;
     const objectName = getObjectName(wobject);
 
-    if (failed) {
-      return <Error404 />;
-    }
-    if (!objectName && !isFetching) {
+    if (failed)
       return (
         <div className="main-panel">
           <NotFound
@@ -182,7 +178,7 @@ export default class WobjectContainer extends React.Component {
           />
         </div>
       );
-    }
+
     return (
       <React.Fragment>
         <Wobj

@@ -287,6 +287,11 @@ class MapOS extends React.Component {
 
   setQueryInUrl = (anchor, permlink) => {
     const url = `center=${anchor.join(',')}&zoom=${this.state.zoom}&permlink=${permlink}`;
+
+    if (this.props.isFullscreenMode) {
+      this.props.setMapFullscreenMode(false);
+    }
+
     this.props.history.push(`/?${url}`);
   };
 
@@ -450,7 +455,10 @@ class MapOS extends React.Component {
                 <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
               </div>
               <div role="presentation" className="MapOS__fullScreen" onClick={this.getMapArea}>
-                <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
+                <Icon
+                  type={this.props.isWaivio ? 'fullscreen-exit' : 'fullscreen'}
+                  style={{ fontSize: '25px', color: '#000000' }}
+                />
               </div>
               {customControl && typeof onCustomControlClick === 'function' ? (
                 <div

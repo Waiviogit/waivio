@@ -9,6 +9,7 @@ import {
   getAllUsers,
   getAuthenticatedUser,
   getAuthenticatedUserName,
+  getHelmetIcon,
   getIsAuthenticated,
   getIsOpenWalletTable,
   getIsUserFailed,
@@ -46,6 +47,7 @@ import Loading from '../components/Icon/Loading';
     rate: getRate(state),
     allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
     isOpenWalletTable: getIsOpenWalletTable(state),
+    helmetIcon: getHelmetIcon(state),
   }),
   {
     getUserAccount,
@@ -59,6 +61,7 @@ export default class User extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     authenticatedUser: PropTypes.shape().isRequired,
     authenticatedUserName: PropTypes.string,
+    helmetIcon: PropTypes.string.isRequired,
     match: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     loaded: PropTypes.bool,
@@ -118,6 +121,7 @@ export default class User extends React.Component {
       rate,
       user,
       isOpenWalletTable,
+      helmetIcon,
     } = this.props;
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
@@ -148,7 +152,7 @@ export default class User extends React.Component {
     const image = getAvatarURL(username) || DEFAULTS.AVATAR;
     const canonicalUrl = `https://www.waivio.com/@${username}`;
     const url = `${waivioHost}/@${username}`;
-    const title = `${displayedUsername} - Waivio`;
+    const title = displayedUsername;
     const isSameUser = authenticated && authenticatedUser.name === username;
     const isAboutPage = match.params['0'] === 'about';
     const isGuest =
@@ -163,7 +167,6 @@ export default class User extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <meta name="description" property="description" content={desc} />
-
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta name="twitter:site" content={'@waivio'} />
           <meta name="twitter:title" content={title} />
@@ -184,6 +187,7 @@ export default class User extends React.Component {
           <meta property="og:image:height" content="600" />
           <meta property="og:description" content={desc} />
           <meta property="og:site_name" content="Waivio" />
+          <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
         </Helmet>
         <ScrollToTopOnMount />
         {user.fetching ? (
