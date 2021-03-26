@@ -36,18 +36,18 @@ const getAllowListLayout = self => {
                 ruleIndex = index + 1;
                 itemsIdsToOmit.push(item.id);
                 return (
-                  <React.Fragment key={`allowList${ruleIndex}${item.id}`}>
+                  <React.Fragment key={`allowList${ruleIndex}${item.author_permlink}`}>
                     {andLayout(index, self, isMobile)}
                     <Col className="NewsFiltersRule-line-card" span={isMobile ? 24 : 6}>
                       <ObjectCard
-                        wobject={{ ...item, author_permlink: item.id }}
+                        wobject={{ ...item, author_permlink: item.author_permlink }}
                         showFollow={false}
                         isNewWindow
                       />
                       <div className="NewsFiltersRule-line-close">
                         <Icon
                           type="close-circle"
-                          onClick={() => self.deleteRuleItem(rowIndex, item.id)}
+                          onClick={() => self.deleteRuleItem(rowIndex, item.author_permlink)}
                         />
                       </div>
                     </Col>
