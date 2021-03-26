@@ -38,7 +38,7 @@ export default function createSsrHandler(template) {
       const isWaivio = req.hostname.includes('waivio');
       let settings = {};
 
-      if (isWaivio) settings = await getSettingsWebsite(hostname);
+      if (!isWaivio) settings = await getSettingsWebsite(hostname);
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
