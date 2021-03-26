@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Button, Modal, Tag } from 'antd';
+import { Modal, Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -19,6 +19,7 @@ import {
   PATH_NAME_MESSAGES,
   PATH_NAME_HISTORY,
 } from '../../common/constants/rewards';
+import ViewMapButton from '../widgets/ViewMapButton';
 
 const FilteredRewardsList = props => {
   const {
@@ -243,9 +244,7 @@ const FilteredRewardsList = props => {
         location !== messagesLocation &&
         location !== guideHistoryLocation && (
           <div className="FilteredRewardsList__filters-toggle-map tc">
-            <Button icon="compass" size="large" className="map-btn" onClick={showMap}>
-              {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
-            </Button>
+            <ViewMapButton handleClick={showMap} />
           </div>
         )}
       <div className="FilteredRewardsList">
