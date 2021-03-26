@@ -349,6 +349,7 @@ class StoryFull extends React.Component {
             body={signedBody}
             json_metadata={post.json_metadata}
             isModal={isModal}
+            isGuest={!isEmpty(post.guestInfo)}
           />
         </div>
       );
