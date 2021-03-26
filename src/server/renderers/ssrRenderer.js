@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet';
 
-export default function renderSsrPage(store, html, assets, template) {
+export default function renderSsrPage(store, html, assets, template, isWaivio, googleTag) {
   const preloadedState = store ? store.getState() : {};
 
   const helmet = Helmet.renderStatic();
@@ -22,6 +22,7 @@ export default function renderSsrPage(store, html, assets, template) {
   const production = process.env.NODE_ENV === 'production';
 
   const nightmode = preloadedState && preloadedState.settings && preloadedState.settings.nightmode;
+  const tag = isWaivio ? 'UA-152622617-1' : googleTag;
 
   return template({
     header,
@@ -29,5 +30,6 @@ export default function renderSsrPage(store, html, assets, template) {
     scripts,
     production,
     nightmode,
+    tag,
   });
 }
