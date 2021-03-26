@@ -307,7 +307,7 @@ export default class AppendForm extends Component {
     const newsFilterCount = newsFilters.filter(item => item.title.includes('News')).length;
     const newsFilterTitle = newsFilterCount === 0 ? 'News' : `News ${newsFilterCount}`;
 
-    return !isEmpty(stateNewsFilterTitle) ? newsFilterTitle : newsFilterTitle;
+    return !isEmpty(stateNewsFilterTitle) ? stateNewsFilterTitle : newsFilterTitle;
   };
 
   getNewPostData = formValues => {
