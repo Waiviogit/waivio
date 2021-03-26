@@ -227,8 +227,9 @@ export const getListItems = wobject => get(wobject, 'listItems', []);
 
 export const itemsList = (sort, wobj) =>
   !isEmpty(sort) ? getSortList(sort, getListItems(wobj)) : getListItems(wobj);
-
 export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};
+
+export const recencySortOrder = listItem => listItem.map(item => get(item, 'body', '')).reverse();
 
 export const compareBreadcrumb = wobj => ({
   id: wobj.author_permlink,

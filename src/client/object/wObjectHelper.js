@@ -50,24 +50,21 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
     case 'rank':
       comparator = (a, b) => b.weight - a.weight || (a.name >= b.name ? 1 : -1);
       break;
-    case 'recency':
-    default:
-      comparator = (a, b) => (a.createdAt < b.createdAt ? 1 : -1);
-      break;
     case 'by-name-desc':
       comparator = (a, b) => (getObjectName(a) < getObjectName(b) ? 1 : -1);
       break;
     case 'by-name-asc':
       comparator = (a, b) => (getObjectName(a) > getObjectName(b) ? 1 : -1);
       break;
+    default:
+      break;
   }
   const sorted = uniqBy(items, 'author_permlink').sort(comparator);
-  const resultArr = [
+  let resultArr = [
     ...sorted.filter(item => getObjectType(item) === 'list'),
     ...sorted.filter(item => getObjectType(item) !== 'list'),
   ];
-
-  if (sortBy === 'custom' && sortOrder && sortOrder.length) {
+  if ((sortBy === 'custom' || sortBy === 'recency') && sortOrder && sortOrder.length) {
     [...sortOrder].reverse().forEach(permlink => {
       const index = resultArr.findIndex(item => item.author_permlink === permlink);
       if (index !== -1) {
@@ -75,6 +72,12 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
         resultArr.unshift(itemToMove);
       }
     });
+  }
+  if (sortBy === 'recency') {
+    resultArr = [
+      ...resultArr.filter(item => getObjectType(item) === 'list'),
+      ...resultArr.filter(item => getObjectType(item) !== 'list'),
+    ];
   }
   return resultArr;
 };
