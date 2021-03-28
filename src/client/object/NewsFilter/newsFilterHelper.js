@@ -4,8 +4,10 @@ import React from 'react';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 
-const andLayout = (compareItems, self, isMobile) =>
-  compareItems > 0 && !isMobile ? (
+const isMobile = screenSize => screenSize === 'xsmall' || 'small';
+
+const andLayout = (compareItems, self) =>
+  compareItems > 0 && !isMobile(self.props.screenSize) ? (
     <Col className="NewsFiltersRule-line-and" span={2}>
       {self.props.intl.formatMessage({
         id: 'and',
@@ -16,7 +18,6 @@ const andLayout = (compareItems, self, isMobile) =>
 
 const getAllowListLayout = self => {
   const allowList = self.state.allowList;
-  const isMobile = self.props.screenSize === 'xsmall';
   const currObjId = self.props.wObject.author_permlink;
   return (
     <React.Fragment>
@@ -37,8 +38,11 @@ const getAllowListLayout = self => {
                 itemsIdsToOmit.push(item.id);
                 return (
                   <React.Fragment key={`allowList${ruleIndex}${item.id}`}>
-                    {andLayout(index, self, isMobile)}
-                    <Col className="NewsFiltersRule-line-card" span={isMobile ? 24 : 6}>
+                    {andLayout(index, self)}
+                    <Col
+                      className="NewsFiltersRule-line-card"
+                      span={isMobile(self.props.screenSize) ? 24 : 6}
+                    >
                       <ObjectCard
                         wobject={{ ...item, author_permlink: item.id }}
                         showFollow={false}
@@ -56,8 +60,11 @@ const getAllowListLayout = self => {
               })}
               {items.length < 5 && (
                 <React.Fragment>
-                  {andLayout(items.length, self, isMobile)}
-                  <Col className="NewsFiltersRule-line-search" span={isMobile ? 24 : 6}>
+                  {andLayout(items.length, self)}
+                  <Col
+                    className="NewsFiltersRule-line-search"
+                    span={isMobile(self.props.screenSize) ? 20 : 6}
+                  >
                     <SearchObjectsAutocomplete
                       allowClear={false}
                       itemsIdsToOmit={itemsIdsToOmit}
@@ -90,7 +97,6 @@ const getAllowListLayout = self => {
 export const getIgnoreListLayout = self => {
   const itemsIdsToOmit = [self.props.wObject.author_permlink];
   const ignoreList = self.state.ignoreList;
-  const isMobile = self.props.screenSize === 'xsmall';
 
   const layout = (
     <Row className="NewsFiltersRule-line">
@@ -98,8 +104,11 @@ export const getIgnoreListLayout = self => {
         itemsIdsToOmit.push(item.id);
         return (
           <React.Fragment key={`ignoreList${item.id}`}>
-            {andLayout(index, self, isMobile)}
-            <Col className="NewsFiltersRule-line-card" span={isMobile ? 24 : 6}>
+            {andLayout(index, self)}
+            <Col
+              className="NewsFiltersRule-line-card"
+              span={isMobile(self.props.screenSize) ? 24 : 6}
+            >
               <ObjectCard
                 wobject={{ ...item, author_permlink: item.id }}
                 showFollow={false}
@@ -117,8 +126,11 @@ export const getIgnoreListLayout = self => {
       })}
       {ignoreList.length < 20 && (
         <React.Fragment>
-          {andLayout(ignoreList.length, self, isMobile)}
-          <Col className="NewsFiltersRule-line-search" span={isMobile ? 24 : 6}>
+          {andLayout(ignoreList.length, self)}
+          <Col
+            className="NewsFiltersRule-line-search"
+            span={isMobile(self.props.screenSize) ? 20 : 6}
+          >
             <SearchObjectsAutocomplete
               allowClear={false}
               itemsIdsToOmit={itemsIdsToOmit}

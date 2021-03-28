@@ -51,6 +51,7 @@ import {
   getVotingPower,
   getObjectTagCategory,
   getObjectAlbums,
+  getScreenSize,
 } from '../../reducers';
 import LANGUAGES from '../../translations/languages';
 import { PRIMARY_COLOR } from '../../../common/constants/waivio';
@@ -110,6 +111,7 @@ import './AppendForm.less';
     ratingFields: getRatingFields(state),
     categories: getObjectTagCategory(state),
     albums: getObjectAlbums(state),
+    screenSize: getScreenSize(state),
   }),
   {
     appendObject,
@@ -146,6 +148,8 @@ export default class AppendForm extends Component {
     albums: PropTypes.arrayOf(PropTypes.shape()),
     addImageToAlbum: PropTypes.func,
     addAlbum: PropTypes.func,
+    // eslint-disable-next-line react/no-unused-prop-types
+    screenSize: PropTypes.string,
   };
 
   static defaultProps = {
@@ -173,6 +177,7 @@ export default class AppendForm extends Component {
     albums: [],
     addImageToAlbum: () => {},
     addAlbum: () => {},
+    screenSize: '',
   };
 
   state = {
