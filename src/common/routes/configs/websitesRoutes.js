@@ -271,37 +271,37 @@ const routes = {
       exact: true,
       component: Views.RedirectedSignIn,
     },
-    {
-      path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-      component: Views.Page,
-      routes: [
-        {
-          path: '/confirmation',
-          exact: true,
-          component: Views.ConfirmationModal,
-        },
-        {
-          path: '/notifications-list',
-          component: Views.Notifications,
-        },
-        {
-          path: '/rewards-list',
-          component: Views.RewardsList,
-        },
-        {
-          path: '/feed/:name',
-          component: Views.ObjectFeed,
-        },
-        {
-          path: '/blog/@:name',
-          component: Views.UserProfile,
-        },
-        {
-          path: '/:sortBy(trending|created|hot)?/:category?',
-          component: Views.SubFeed,
-        },
-      ],
-    },
+    // {
+    //   path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
+    //   component: Views.Page,
+    //   routes: [
+    //     {
+    //       path: '/confirmation',
+    //       exact: true,
+    //       component: Views.ConfirmationModal,
+    //     },
+    //     {
+    //       path: '/notifications-list',
+    //       component: Views.Notifications,
+    //     },
+    //     {
+    //       path: '/rewards-list',
+    //       component: Views.RewardsList,
+    //     },
+    //     {
+    //       path: '/feed/:name',
+    //       component: Views.ObjectFeed,
+    //     },
+    //     {
+    //       path: '/blog/@:name',
+    //       component: Views.UserProfile,
+    //     },
+    //     {
+    //       path: '/:sortBy(trending|created|hot)?/:category?',
+    //       component: Views.SubFeed,
+    //     },
+    //   ],
+    // },
     {
       path: '*',
       component: Views.Error404,

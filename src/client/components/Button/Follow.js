@@ -47,7 +47,7 @@ export class FollowPure extends React.Component {
 
     let followingText = intl.formatMessage({ id: 'follow', defaultMessage: 'Follow' });
     if (isFollowed && !(isHovered || pending)) {
-      followingText = intl.formatMessage({ id: 'followed', defaultMessage: 'Following' });
+      followingText = intl.formatMessage({ id: 'following', defaultMessage: 'Following' });
     } else if (isFollowed && isHovered && !pending) {
       followingText = intl.formatMessage({ id: 'unfollow', defaultMessage: 'Unfollow' });
     } else if (isFollowed && pending) {
@@ -55,7 +55,7 @@ export class FollowPure extends React.Component {
     } else if (!isFollowed && isHovered && !pending) {
       followingText = intl.formatMessage({ id: 'follow', defaultMessage: 'Follow' });
     } else if (!isFollowed && pending) {
-      followingText = intl.formatMessage({ id: 'followed', defaultMessage: 'Following' });
+      followingText = intl.formatMessage({ id: 'following', defaultMessage: 'Following' });
     }
 
     return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Select } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { isEmpty, map, get, includes } from 'lodash';
@@ -11,6 +11,7 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import ReviewItem from './ReviewItem';
 import { validatorMessagesCreator, validatorsCreator } from './validators';
 import fieldsData from './fieldsData';
+import { getObjectName, getObjectType } from '../../helpers/wObjectHelper';
 
 const { Option } = Select;
 
@@ -164,7 +165,7 @@ const CreateFormRenderer = props => {
         className={loading && 'CreateReward__loading'}
       >
         <Form.Item>
-          {!isCreateDublicate ? (
+          {!isCreateDublicate && currentItemId ? (
             <div
               role="presentation"
               className="CreateReward__createDuplicate"
@@ -326,7 +327,24 @@ const CreateFormRenderer = props => {
         </Form.Item>
 
         <Form.Item
-          label={<span className="CreateReward__label">{fields.secondaryObject.label}</span>}
+          label={
+            <span className="CreateReward__label">
+              {fields.secondaryObject.label}{' '}
+              {!isEmpty(primaryObject) && getObjectType(primaryObject) !== 'list' && (
+                <React.Fragment>
+                  (
+                  <span
+                    role="presentation"
+                    className="CreateReward__addChild"
+                    onClick={handlers.openModalAddChildren}
+                  >
+                    {fields.addChildrenModalTitle.text}
+                  </span>
+                  )
+                </React.Fragment>
+              )}
+            </span>
+          }
         >
           {getFieldDecorator(fields.secondaryObject.name, {
             rules: fields.secondaryObject.rules,
@@ -476,6 +494,16 @@ const CreateFormRenderer = props => {
         </Form.Item>
         {button}
       </Form>
+      <Modal
+        visible={props.isOpenAddChild}
+        title={fields.addChildrenModalTitle.text}
+        onOk={handlers.addAllObjectChildren}
+        className={'CreateReward__modal'}
+        onCancel={handlers.closeModalAddChildren}
+      >
+        {fields.addChildrenModalBodyFirstPart.text} <b>{getObjectName(primaryObject)}</b>{' '}
+        {fields.addChildrenModalBodySecondPart.text}
+      </Modal>
     </div>
   );
 };
@@ -518,6 +546,7 @@ CreateFormRenderer.defaultProps = {
   campaignId: null,
   iAgree: false,
   isDisabled: false,
+  isOpenAddChild: false,
   handleCreateDuplicate: () => {},
 };
 
@@ -555,6 +584,9 @@ CreateFormRenderer.propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     handleSelectChange: PropTypes.func.isRequired,
     messageFactory: PropTypes.func.isRequired,
+    openModalAddChildren: PropTypes.func.isRequired,
+    closeModalAddChildren: PropTypes.func.isRequired,
+    addAllObjectChildren: PropTypes.func.isRequired,
   }).isRequired,
   currentSteemPrice: PropTypes.number,
   user: PropTypes.shape(),
@@ -569,6 +601,7 @@ CreateFormRenderer.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
   isDisabled: PropTypes.bool,
+  isOpenAddChild: PropTypes.bool,
   match: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   handleCreateDuplicate: PropTypes.func,

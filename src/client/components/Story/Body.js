@@ -40,7 +40,16 @@ const getEmbed = link => {
 
 // Should return text(html) if returnType is text
 // Should return Object(React Compatible) if returnType is Object
-export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}, isModal) {
+export function getHtml(
+  body,
+  jsonMetadata = {},
+  returnType = 'Object',
+  options = {},
+  isModal,
+  isPostPreviewModal,
+  full,
+  isGuest,
+) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
@@ -95,7 +104,16 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       const embed = getEmbed(link);
 
       sections.push(
-        ReactDOMServer.renderToString(<PostFeedEmbed key={`embed-a-${i}`} inPost embed={embed} />),
+        ReactDOMServer.renderToString(
+          <PostFeedEmbed
+            key={`embed-a-${i}`}
+            inPost
+            embed={embed}
+            isPostPreviewModal={isPostPreviewModal}
+            isFullStory={full}
+            isGuest={isGuest}
+          />,
+        ),
       );
       section = section.substring(`${id} ${type} ${link} ~~~`.length);
     }
@@ -141,7 +159,16 @@ const Body = props => {
     rewriteLinks: props.rewriteLinks,
     secureLinks: props.exitPageSetting,
   };
-  const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options, props.isModal);
+  const htmlSections = getHtml(
+    props.body,
+    props.jsonMetadata,
+    'Object',
+    options,
+    props.isModal,
+    props.isPostPreviewModal,
+    props.full,
+    props.isGuest,
+  );
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
 };
@@ -154,6 +181,8 @@ Body.propTypes = {
   jsonMetadata: PropTypes.string,
   full: PropTypes.bool,
   isModal: PropTypes.bool,
+  isPostPreviewModal: PropTypes.bool,
+  isGuest: PropTypes.bool,
 };
 
 Body.defaultProps = {
@@ -161,6 +190,8 @@ Body.defaultProps = {
   jsonMetadata: '',
   full: false,
   isModal: false,
+  isPostPreviewModal: false,
+  isGuest: false,
 };
 
 export default Body;

@@ -73,3 +73,24 @@
     cursor: pointer;
   }
 }
+
+.ViewMapButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  background: @white;
+  border: 1px solid @white-gainsboro;
+  border-radius: 4px;
+  outline: none;
+
+  @media @small {
+    display: none;
+  }
+
+  i {
+    margin-right: 5px;
+  }
+}
+
+@import 'widgetsStyle-nightmode';

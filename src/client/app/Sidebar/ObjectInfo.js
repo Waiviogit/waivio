@@ -187,12 +187,16 @@ class ObjectInfo extends React.Component {
   getMenuSectionLink = (item = {}) => {
     const { wobject, location } = this.props;
     const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
+    const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
+    const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
     const blogClassesList = classNames('menu-btn', {
       active: location.pathname === blogPath,
     });
-    const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
     const formClassesList = classNames('menu-btn', {
       active: location.pathname === formPath,
+    });
+    const newsFilterClassesList = classNames('menu-btn', {
+      active: location.pathname === newsFilterPath,
     });
     let menuItem = (
       <LinkButton
@@ -229,14 +233,9 @@ class ObjectInfo extends React.Component {
           </LinkButton>
         );
         break;
-      case TYPES_OF_MENU_ITEM.NEWS:
+      case objectFields.newsFilter:
         menuItem = (
-          <LinkButton
-            className={classNames('menu-btn', {
-              active: location.pathname === `/object/${wobject.author_permlink}`,
-            })}
-            to={`/object/${wobject.author_permlink}`}
-          >
+          <LinkButton className={newsFilterClassesList} to={newsFilterPath}>
             {item.title || <FormattedMessage id="news" defaultMessage="News" />}
           </LinkButton>
         );
@@ -278,7 +277,7 @@ class ObjectInfo extends React.Component {
   render() {
     const { wobject, userName, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
-    const newsFilter = get(wobject, 'newsFilter', []);
+    const newsFilters = get(wobject, 'newsFilter', []);
     const website = parseWobjectField(wobject, 'website');
     const wobjName = getObjectName(wobject);
     const tagCategories = get(wobject, 'tagCategory', []);
@@ -325,7 +324,7 @@ class ObjectInfo extends React.Component {
           ...button,
           ...blogsList,
           ...formsList,
-          ...newsFilter,
+          ...newsFilters,
         ];
 
         const sortButtons = customSort.reduce((acc, curr) => {
@@ -372,9 +371,9 @@ class ObjectInfo extends React.Component {
                 )}
                 {this.listItem(
                   objectFields.newsFilter,
-                  !isEmpty(newsFilter) &&
-                    newsFilter.map(filter =>
-                      this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS, ...filter }),
+                  !isEmpty(newsFilters) &&
+                    newsFilters.map(filter =>
+                      this.getMenuSectionLink({ id: filter.id || filter.name, ...filter }),
                     ),
                 )}
                 {this.listItem(

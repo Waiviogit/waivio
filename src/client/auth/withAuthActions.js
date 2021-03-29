@@ -54,10 +54,11 @@ export default function withAuthActions(WrappedComponent) {
     handleActionInit(callback) {
       if (this.props.authenticated) {
         callback();
-      } else if (this.props.isWaivio && !this.props.domain) {
+      } else if (this.props.isWaivio || !this.props.domain) {
         this.displayLoginModal();
       } else {
-        window.location.href = `https://${this.props.domain}/sign-in?host=${window.location.href}`;
+        const path = window.location.pathname === '/' ? '' : window.location.pathname;
+        window.location.href = `https://${this.props.domain}/sign-in?host=${window.location.host}${path}`;
       }
     }
 

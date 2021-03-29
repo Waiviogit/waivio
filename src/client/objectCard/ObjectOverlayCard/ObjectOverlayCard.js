@@ -85,7 +85,12 @@ const ObjectOverlayCard = ({
         </Link>
         <div className="ObjectOverlayCard__info">
           {parentName && showParent && (
-            <Link to={parentLink} title={goToObjTitle(parentName)} className="ObjectCardView__type">
+            <Link
+              to={parentLink}
+              data-anchor={wObject.author_permlink}
+              title={goToObjTitle(parentName)}
+              className="ObjectCardView__type"
+            >
               {parentName}
             </Link>
           )}

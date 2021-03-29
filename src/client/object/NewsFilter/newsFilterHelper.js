@@ -139,7 +139,7 @@ export const getNewsFilterLayout = self => (
     <Input
       disabled={self.loading}
       placeholder={self.props.intl.formatMessage({
-        id: 'news_title',
+        id: 'object_field_news_title',
         defaultMessage: 'News title',
       })}
       onChange={self.handleAddNewsFilterTitle}

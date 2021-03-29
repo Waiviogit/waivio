@@ -118,10 +118,10 @@ const WebsiteBody = props => {
     }
   }, [props.isShowResult]);
 
-  useEffect(() => {
+  const handleChangeType = () => {
     setInfoboxData(null);
     props.history.push('/');
-  }, [props.searchType]);
+  };
 
   useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
@@ -144,6 +144,7 @@ const WebsiteBody = props => {
             const currentPoint = wobjects.find(
               wobj => wobj.author_permlink === props.query.get('permlink'),
             );
+
             if (currentPoint) {
               setInfoboxData({
                 wobject: currentPoint,
@@ -152,12 +153,13 @@ const WebsiteBody = props => {
             }
           }
         });
-  }, [props.userLocation, boundsParams, props.searchString, props.searchType]);
+  }, [props.userLocation, boundsParams, props.searchString, props.searchType, props.activeFilters]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
   const currentLogo = configLogo || getObjectAvatar(aboutObject);
   const logoLink = get(aboutObject, ['defaultShowLink'], '/');
+  const description = get(aboutObject, 'description', '');
 
   const reloadSearchList = () => {
     handleSetMapForSearch();
@@ -245,7 +247,7 @@ const WebsiteBody = props => {
     return (
       <Overlay
         anchor={infoboxData.coordinates}
-        offset={[firstOffsetNumber, 140]}
+        offset={[firstOffsetNumber, 160]}
         className="WebsiteBody__overlay"
       >
         <div
@@ -315,7 +317,11 @@ const WebsiteBody = props => {
   return (
     <div className="WebsiteBody">
       <Helmet>
-        <title>{getObjectName(aboutObject)}</title>
+        <title>
+          {description
+            ? `${getObjectName(aboutObject)} - ${description}`
+            : getObjectName(aboutObject)}
+        </title>
         <meta
           property="twitter:description"
           content="Waivio is an open distributed attention marketplace for business"
@@ -327,6 +333,7 @@ const WebsiteBody = props => {
         reloadSearchList={reloadSearchList}
         searchType={props.searchType}
         handleHoveredCard={handleHoveredCard}
+        handleChangeType={handleChangeType}
       />
       <div className={mapClassList}>
         {currentLogo && (

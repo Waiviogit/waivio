@@ -146,9 +146,11 @@ class WebsiteWrapper extends React.PureComponent {
 
   componentDidMount() {
     const query = new URLSearchParams(this.props.location.search);
+    const token = query.get('access_token');
+    const provider = query.get('socialProvider');
 
     this.props.getCurrentAppSettings();
-    this.props.login(query.get('access_token'), query.get('socialProvider')).then(() => {
+    this.props.login(token, provider).then(() => {
       batch(() => {
         this.props.getNotifications();
         this.props.busyLogin();
@@ -157,7 +159,15 @@ class WebsiteWrapper extends React.PureComponent {
         this.props.getRate();
       });
 
-      if (this.props.location.pathname === '/') this.props.history.push('/');
+      if (token && provider) {
+        query.delete('access_token');
+        query.delete('socialProvider');
+        let queryString = query.toString();
+
+        if (queryString) queryString = `/?${queryString}`;
+
+        this.props.history.push(`${this.props.location.pathname}${queryString}`);
+      }
     });
   }
 

@@ -1,12 +1,13 @@
 import { setTimeout } from 'timers';
 import React from 'react';
 import { Provider } from 'react-redux';
+import { get } from 'lodash';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 
-import { waivioAPI } from '../../waivioApi/ApiClient';
+import { getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../client/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../common/routes/switchRoutes';
@@ -34,6 +35,10 @@ export default function createSsrHandler(template) {
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
       const hostname = req.hostname;
+      const isWaivio = req.hostname.includes('waivio');
+      let settings = {};
+
+      if (!isWaivio) settings = await getSettingsWebsite(hostname);
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
@@ -66,11 +71,20 @@ export default function createSsrHandler(template) {
       if (context.status) res.status(context.status);
 
       return res.send(
-        renderSsrPage(store, content, assets, template, req.hostname !== 'waivio.com'),
+        renderSsrPage(
+          store,
+          content,
+          assets,
+          template,
+          isWaivio,
+          get(settings, 'googleAnalyticsTag', ''),
+        ),
       );
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
-      return res.send(renderSsrPage(null, null, assets, template, req.hostname !== 'waivio.com'));
+      return res.send(
+        renderSsrPage(null, null, assets, template, req.hostname === 'waivio.com', ''),
+      );
     }
   };
 }

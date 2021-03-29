@@ -36,6 +36,7 @@ import Loading from '../../components/Icon/Loading';
 import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import { assignProposition, declineProposition } from '../../user/userActions';
+import ViewMapButton from '../../widgets/ViewMapButton';
 
 import './SearchAllResult.less';
 
@@ -175,7 +176,10 @@ const SearchAllResult = props => {
           <span
             role="presentation"
             className={getActiveItemClassList(type, props.searchType, 'SearchAllResult__type')}
-            onClick={() => props.setWebsiteSearchType(type)}
+            onClick={() => {
+              props.setWebsiteSearchType(type);
+              props.handleChangeType();
+            }}
             key={type}
           >
             {type}
@@ -212,16 +216,7 @@ const SearchAllResult = props => {
             </div>
           </React.Fragment>
         )}
-        <div className="SearchAllResult__buttonWrap">
-          <Button
-            icon="compass"
-            size="large"
-            className="SearchAllResult__showMap"
-            onClick={() => props.setShowSearchResult(false)}
-          >
-            {props.intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
-          </Button>
-        </div>
+        <ViewMapButton handleClick={() => props.setShowSearchResult(false)} />
         {currRenderListState.loading ? <Loading /> : currentList}
         {props.showReload ? (
           <div
@@ -270,6 +265,7 @@ SearchAllResult.propTypes = {
   assignProposition: PropTypes.func.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   declineProposition: PropTypes.func.isRequired,
+  handleChangeType: PropTypes.func.isRequired,
   handleHoveredCard: PropTypes.func,
 };
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { forEach, get, isEmpty, map, size, filter } from 'lodash';
+import { forEach, get, isEmpty, map, size } from 'lodash';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -33,7 +33,6 @@ import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../user/userActions';
-import { UNASSIGNED } from '../../../common/constants/rewards';
 import { getImagePathPost } from '../../helpers/image';
 import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorPost } from '../../post/postActions';
@@ -233,21 +232,6 @@ class StoryFull extends React.Component {
       });
   };
 
-  getNewPropositions = propositions => {
-    const { user } = this.props;
-    const newPropositions = [];
-    map(propositions, proposition => {
-      const currentUser = filter(
-        proposition.users,
-        usersItem => usersItem.name === user.name && usersItem.status === UNASSIGNED,
-      );
-      if (isEmpty(proposition.users) || (!isEmpty(currentUser) && !proposition.assigned)) {
-        newPropositions.push(proposition);
-      }
-    });
-    return newPropositions;
-  };
-
   render() {
     const {
       intl,
@@ -349,6 +333,7 @@ class StoryFull extends React.Component {
             body={signedBody}
             json_metadata={post.json_metadata}
             isModal={isModal}
+            isGuest={!isEmpty(post.guestInfo)}
           />
         </div>
       );
@@ -505,10 +490,10 @@ class StoryFull extends React.Component {
                     />
                   );
                 }
-                const newPropositions = this.getNewPropositions(obj.propositions);
-                if (size(newPropositions)) {
-                  return !isEmpty(newPropositions)
-                    ? newPropositions.map(proposition => (
+
+                if (obj.propositions) {
+                  return !isEmpty(obj.propositions)
+                    ? obj.propositions.map(proposition => (
                         <Proposition
                           guide={proposition.guide}
                           proposition={proposition}
@@ -525,6 +510,7 @@ class StoryFull extends React.Component {
                       ))
                     : null;
                 }
+
                 return (
                   <div className="CardView">
                     <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />
