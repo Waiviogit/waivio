@@ -59,12 +59,47 @@
     height: 0;
     padding-bottom: 57% !important;
 
+    @media @medium {
+      padding-bottom: 53% !important;
+    }
+
     & > iframe {
       position: absolute;
       width: 100%;
-      height: 400px;
+      height: 195px;
       left: 0;
       top: 0;
+      @media @small {
+        height: 400px;
+      }
+    }
+  }
+
+  &__container-vimeo-post-preview {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    padding-bottom: 0 !important;
+    margin-bottom: -125px;
+
+    @media @small {
+      padding-bottom: 54% !important;
+      margin-bottom: 0;
+    }
+
+    @media @medium {
+      padding-bottom: 52% !important;
+    }
+
+    & > iframe {
+      position: absolute;
+      width: 100%;
+      height: 195px !important;
+      left: 0;
+      top: 0;
+      @media @small {
+        height: 400px !important;
+      }
     }
   }
 
@@ -105,15 +140,28 @@
   &__container-vimeo-story-full {
     position: relative;
     width: 100%;
-    height: 300px;
+    height: 200px;
     padding-bottom: 53% !important;
+
+    @media @small {
+      height: 300px;
+      padding-bottom: 46% !important;
+    }
+
+    @media @medium {
+      padding-bottom: 51% !important;
+    }
 
     & > iframe {
       position: absolute;
       width: 100%;
-      height: 300px;
+      height: 200px;
       left: 0;
       top: 0;
+
+      @media @small {
+        height: 300px;
+      }
     }
   }
 
