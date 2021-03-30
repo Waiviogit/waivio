@@ -1501,7 +1501,7 @@
   "website_domain_available": "The domain must contain at least {symbol} characters.",
   "website_domain_name_available": "You can`t use only www in domain name",
   "website_politics_available": "Should accept agreement",
-  "website_domain_field_required": "Field is required",
+  "website_domain_field_required": "Field is required.",
   "website_autocomplete_field_required": "Field is required",
   "payments_reports_websites": "Reports for websites:",
   "payments_generate_report": "Generate report",
