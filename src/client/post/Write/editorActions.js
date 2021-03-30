@@ -4,8 +4,13 @@ import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
 import { orderBy } from 'lodash';
 import { createAction } from 'redux-actions';
+import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { REFERRAL_PERCENT } from '../../helpers/constants';
-import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
+import {
+  addDraftMetadata,
+  deleteDraftMetadata,
+  deleteDraftMetadataObject,
+} from '../../helpers/metadata';
 import { jsonParse } from '../../helpers/formatter';
 import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
@@ -39,6 +44,8 @@ export const DELETE_DRAFT = '@editor/DELETE_DRAFT';
 export const DELETE_DRAFT_START = '@editor/DELETE_DRAFT_START';
 export const DELETE_DRAFT_SUCCESS = '@editor/DELETE_DRAFT_SUCCESS';
 export const DELETE_DRAFT_ERROR = '@editor/DELETE_DRAFT_ERROR';
+
+export const DELETE_DRAFT_OBJECT = createAsyncActionType('@editor/DELETE_DRAFT_OBJECT');
 
 export const ADD_EDITED_POST = '@editor/ADD_EDITED_POST';
 export const addEditedPost = createAction(ADD_EDITED_POST);
@@ -77,6 +84,19 @@ export const saveDraft = (draft, redirect, intl) => dispatch =>
   }).then(() => {
     if (redirect) dispatch(push(`/editor?draft=${draft.draftId}`));
   });
+export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  if (!userName) dispatch({ type: DELETE_DRAFT_OBJECT.ERROR });
+
+  return dispatch({
+    type: DELETE_DRAFT_OBJECT.ACTION,
+    payload: {
+      promise: deleteDraftMetadataObject(draftId, userName, objPermlink),
+    },
+    meta: { draftId, objPermlink },
+  });
+};
 
 export const deleteDraft = draftIds => (dispatch, getState) => {
   const state = getState();
