@@ -64,7 +64,10 @@ const getAllowListLayout = self => {
                       rowIndex={rowIndex}
                       ruleIndex={ruleIndex}
                       style={{ width: '120%' }}
-                      placeholder="Please select"
+                      placeholder={self.props.intl.formatMessage({
+                        id: 'object_fiels_news_select_placeholder',
+                        defaultMessage: 'Please select',
+                      })}
                       handleSelect={self.handleAddObjectToRule}
                     />
                   </Col>
@@ -123,7 +126,10 @@ export const getIgnoreListLayout = self => {
               allowClear={false}
               itemsIdsToOmit={itemsIdsToOmit}
               style={{ width: '120%' }}
-              placeholder="Please select"
+              placeholder={self.props.intl.formatMessage({
+                id: 'object_fiels_news_select_placeholder',
+                defaultMessage: 'Please select',
+              })}
               handleSelect={self.handleAddObjectToIgnoreList}
             />
           </Col>
