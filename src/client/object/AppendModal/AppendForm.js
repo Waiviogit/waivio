@@ -558,7 +558,7 @@ export default class AppendForm extends Component {
   deleteRuleItem = (rowNum, id) => {
     const allowList = this.state.allowList;
 
-    allowList[rowNum] = filter(allowList[rowNum], o => o.id !== id);
+    allowList[rowNum] = filter(allowList[rowNum], o => o.author_permlink !== id);
     this.setState({ allowList });
   };
 
@@ -575,8 +575,7 @@ export default class AppendForm extends Component {
 
   handleRemoveObjectFromIgnoreList = obj => {
     let ignoreList = this.state.ignoreList;
-
-    ignoreList = filter(ignoreList, o => o.id !== obj.id);
+    ignoreList = filter(ignoreList, o => o.author_permlink !== obj.author_permlink);
     this.setState({ ignoreList });
   };
 
