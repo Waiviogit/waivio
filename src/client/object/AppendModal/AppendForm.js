@@ -51,6 +51,7 @@ import {
   getVotingPower,
   getObjectTagCategory,
   getObjectAlbums,
+  getScreenSize,
 } from '../../reducers';
 import LANGUAGES from '../../translations/languages';
 import { PRIMARY_COLOR } from '../../../common/constants/waivio';
@@ -110,6 +111,7 @@ import './AppendForm.less';
     ratingFields: getRatingFields(state),
     categories: getObjectTagCategory(state),
     albums: getObjectAlbums(state),
+    screenSize: getScreenSize(state),
   }),
   {
     appendObject,
@@ -146,6 +148,7 @@ export default class AppendForm extends Component {
     albums: PropTypes.arrayOf(PropTypes.shape()),
     addImageToAlbum: PropTypes.func,
     addAlbum: PropTypes.func,
+    screenSize: PropTypes.string,
   };
 
   static defaultProps = {
@@ -173,6 +176,7 @@ export default class AppendForm extends Component {
     albums: [],
     addImageToAlbum: () => {},
     addAlbum: () => {},
+    screenSize: '',
   };
 
   state = {
@@ -301,6 +305,15 @@ export default class AppendForm extends Component {
     }
   };
 
+  getNewsFilterTitle = stateNewsFilterTitle => {
+    const { wObject } = this.props;
+    const newsFilters = get(wObject, 'newsFilter', []);
+    const newsFilterCount = newsFilters.filter(item => item.title.includes('News')).length;
+    const newsFilterTitle = newsFilterCount === 0 ? 'News' : `News ${newsFilterCount}`;
+
+    return !isEmpty(stateNewsFilterTitle) ? stateNewsFilterTitle : newsFilterTitle;
+  };
+
   getNewPostData = formValues => {
     const { wObject } = this.props;
     const { getFieldValue } = this.props.form;
@@ -408,7 +421,9 @@ export default class AppendForm extends Component {
             }
           });
 
-          return `@${author} added ${currentField} ${this.state.newsFilterTitle} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
+          return `@${author} added ${currentField} ${this.getNewsFilterTitle(
+            this.state.newsFilterTitle,
+          )} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         case objectFields.form:
           return `@${author} added ${currentField} ${formValues.formTitle}`;
@@ -438,7 +453,7 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.newsFilter) {
         fieldsObject = {
           ...fieldsObject,
-          title: this.state.newsFilterTitle,
+          title: this.getNewsFilterTitle(this.state.newsFilterTitle),
         };
       }
 
@@ -547,7 +562,7 @@ export default class AppendForm extends Component {
   deleteRuleItem = (rowNum, id) => {
     const allowList = this.state.allowList;
 
-    allowList[rowNum] = filter(allowList[rowNum], o => o.id !== id);
+    allowList[rowNum] = filter(allowList[rowNum], o => o.author_permlink !== id);
     this.setState({ allowList });
   };
 
@@ -564,8 +579,7 @@ export default class AppendForm extends Component {
 
   handleRemoveObjectFromIgnoreList = obj => {
     let ignoreList = this.state.ignoreList;
-
-    ignoreList = filter(ignoreList, o => o.id !== obj.id);
+    ignoreList = filter(ignoreList, o => o.author_permlink !== obj.author_permlink);
     this.setState({ ignoreList });
   };
 
@@ -1894,6 +1908,7 @@ export default class AppendForm extends Component {
               accentColor={PRIMARY_COLOR}
               onChange={this.handleChangeSorting}
               wobjType={wobjType}
+              screenSize={this.props.screenSize}
             />
           </React.Fragment>
         );

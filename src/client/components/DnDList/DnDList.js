@@ -34,11 +34,13 @@ class DnDList extends Component {
     accentColor: PropTypes.string,
     onChange: PropTypes.func,
     wobjType: PropTypes.string,
+    screenSize: PropTypes.string,
   };
   static defaultProps = {
     accentColor: 'lightgreen',
     onChange: () => {},
     wobjType: '',
+    screenSize: '',
   };
 
   constructor(props) {
@@ -121,9 +123,14 @@ class DnDList extends Component {
                           toggleItemInSortingList={this.toggleItemInSortingList}
                           id={item.id}
                           checkedItemInList={item.checkedItemInList}
+                          screenSize={this.props.screenSize}
                         />
                       ) : (
-                        <DnDListItem name={item.name} type={item.type} />
+                        <DnDListItem
+                          name={item.name}
+                          type={item.type}
+                          screenSize={this.props.screenSize}
+                        />
                       )}
                       {/* {item.content} */}
                     </div>
