@@ -1,5 +1,5 @@
 import { Col, Icon, Input, Row } from 'antd';
-import _ from 'lodash';
+import { map } from 'lodash';
 import React from 'react';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
@@ -21,7 +21,7 @@ const getAllowListLayout = self => {
   const currObjId = self.props.wObject.author_permlink;
   return (
     <React.Fragment>
-      {_.map(allowList, (items, rowIndex) => {
+      {map(allowList, (items, rowIndex) => {
         let ruleIndex = 0;
         const itemsIdsToOmit = [currObjId];
         return (
@@ -33,7 +33,7 @@ const getAllowListLayout = self => {
               },
             )} ${rowIndex + 1}`}</div>
             <Row className="NewsFiltersRule-line">
-              {_.map(items, (item, index) => {
+              {map(items, (item, index) => {
                 ruleIndex = index + 1;
                 itemsIdsToOmit.push(item.id);
                 return (
@@ -100,7 +100,7 @@ export const getIgnoreListLayout = self => {
 
   const layout = (
     <Row className="NewsFiltersRule-line">
-      {_.map(ignoreList, (item, index) => {
+      {map(ignoreList, (item, index) => {
         itemsIdsToOmit.push(item.id);
         return (
           <React.Fragment key={`ignoreList${item.id}`}>
