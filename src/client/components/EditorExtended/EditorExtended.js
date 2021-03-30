@@ -235,6 +235,8 @@ class Editor extends React.Component {
 
   render() {
     const { editorState, isMounted, editorEnabled, titleValue } = this.state;
+    const { initialContent } = this.props;
+    const isVimeo = get(initialContent, 'body', '').includes('player.vimeo.com');
     return (
       <div className="waiv-editor-wrap">
         {this.props.displayTitle && (
@@ -262,6 +264,7 @@ class Editor extends React.Component {
               sideButtons={SIDE_BUTTONS}
               intl={this.props.intl}
               handleHashtag={this.props.handleHashtag}
+              isVimeo={isVimeo}
             />
           )}
         </div>
