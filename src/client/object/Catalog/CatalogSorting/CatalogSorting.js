@@ -1,12 +1,13 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import SortSelector from '../../../components/SortSelector/SortSelector';
 import CatalogBreadcrumb from '../CatalogBreadcrumb/CatalogBreadcrumb';
 
-const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
-  currWobject && currWobject[objectFields.sorting] && currWobject[objectFields.sorting].length ? (
+const CatalogSorting = ({ currWobject, sort, handleSortChange, isSortCustomExist }) =>
+  !isEmpty(currWobject[objectFields.sorting]) && isSortCustomExist ? (
     <SortSelector sort={sort} onChange={handleSortChange}>
       <SortSelector.Item key="recency">
         <FormattedMessage id="recency" defaultMessage="Recency" />
@@ -53,6 +54,7 @@ CatalogSorting.propTypes = {
   sort: PropTypes.isRequired,
   currWobject: PropTypes.isRequired,
   handleSortChange: PropTypes.func.isRequired,
+  isSortCustomExist: PropTypes.bool.isRequired,
 };
 
 CatalogBreadcrumb.defaultProps = {

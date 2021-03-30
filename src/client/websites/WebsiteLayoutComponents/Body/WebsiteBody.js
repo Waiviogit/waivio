@@ -56,6 +56,7 @@ const WebsiteBody = props => {
   });
   const [infoboxData, setInfoboxData] = useState(null);
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
+  const [height, setHeight] = useState(0);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const isActiveFilters = !isEmpty(props.activeFilters);
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
@@ -66,6 +67,9 @@ const WebsiteBody = props => {
   const getCurrentConfig = config =>
     isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
+  let mapHeight = 'calc(100vh - 57px)';
+
+  if (height) mapHeight = `${height - 57}px`;
 
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
@@ -104,8 +108,14 @@ const WebsiteBody = props => {
   useEffect(() => {
     if (props.isAuth) props.getReservedCounter();
     getCoordinatesForMap();
+    const handleResize = () => setHeight(window.innerHeight);
 
-    return () => props.setShowSearchResult(false);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      props.setShowSearchResult(false);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -141,9 +151,11 @@ const WebsiteBody = props => {
           }
           if (!isEmpty(queryCenter)) {
             const { wobjects } = res.value;
-            const currentPoint = wobjects.find(
-              wobj => wobj.author_permlink === props.query.get('permlink'),
-            );
+            const queryPermlink = props.query.get('permlink');
+            const currentPoint =
+              get(infoboxData, ['wobject', 'author_permlink']) !== queryPermlink
+                ? wobjects.find(wobj => wobj.author_permlink === queryPermlink)
+                : null;
 
             if (currentPoint) {
               setInfoboxData({
@@ -227,11 +239,12 @@ const WebsiteBody = props => {
     [props.wobjectsPoint, hoveredCardPermlink],
   );
 
-  const getOverlayLayout = () => {
+  const getOverlayLayout = useCallback(() => {
+    if (!infoboxData) return null;
+
     const currentWobj = infoboxData;
     const name = getObjectName(currentWobj.wobject);
     const wobject = get(currentWobj, 'wobject', {});
-
     const getFirstOffsetNumber = () => {
       const lengthMoreThanOrSame = number => size(name) <= number;
 
@@ -260,7 +273,7 @@ const WebsiteBody = props => {
         </div>
       </Overlay>
     );
-  };
+  }, [props.query.get('permlink')]);
 
   const incrementZoom = () => setArea({ ...area, zoom: area.zoom + 1 });
   const decrementZoom = () => setArea({ ...area, zoom: area.zoom - 1 });
@@ -313,7 +326,6 @@ const WebsiteBody = props => {
       </div>
     </div>
   );
-
   return (
     <div className="WebsiteBody">
       <Helmet>
@@ -335,7 +347,7 @@ const WebsiteBody = props => {
         handleHoveredCard={handleHoveredCard}
         handleChangeType={handleChangeType}
       />
-      <div className={mapClassList}>
+      <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
           // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
           <img
