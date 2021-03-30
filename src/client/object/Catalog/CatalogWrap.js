@@ -5,7 +5,6 @@ import { isEmpty, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { sortListItemsBy } from '../wObjectHelper';
-import { objectFields } from '../../../common/constants/listOfFields';
 import AddItemModal from './AddItemModal/AddItemModal';
 import {
   getObjectLists,
@@ -14,7 +13,12 @@ import {
   getLoadingFlag,
   getObject,
 } from '../../reducers';
-import { getLastPermlinksFromHash, itemsList, recencySortOrder } from '../../helpers/wObjectHelper';
+import {
+  getLastPermlinksFromHash,
+  itemsList,
+  recencySortOrder,
+  getListItem,
+} from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import { setLoadedNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
@@ -53,12 +57,12 @@ const CatalogWrap = props => {
               defaultSortBy(wObject),
               isDefaultCustom(wObject)
                 ? wObject.sortCustom
-                : recencySortOrder(get(wObject, 'listItem', [])),
+                : recencySortOrder(getListItem(wObject)),
             ),
           );
           setNestedWobj(wObject);
           setLoadingNestedWobject(false);
-          setRecencySortList(recencySortOrder(get(wObject, 'listIem', [])));
+          setRecencySortList(recencySortOrder(getListItem(wObject)));
         });
       } else {
         setSortingBy(defaultSortBy(wobject));
@@ -67,13 +71,11 @@ const CatalogWrap = props => {
           sortListItemsBy(
             itemsList(get(wobject, 'sortCustom', []), wobject),
             defaultSortBy(wobject),
-            isDefaultCustom(wobject)
-              ? wobject.sortCustom
-              : recencySortOrder(get(wobject, 'listItem', [])),
+            isDefaultCustom(wobject) ? wobject.sortCustom : recencySortOrder(getListItem(wobject)),
           ),
         );
         setLoadingNestedWobject(false);
-        setRecencySortList(recencySortOrder(get(wobject, 'listItem', [])));
+        setRecencySortList(recencySortOrder(getListItem(wobject)));
       }
     }
     return () => {
@@ -93,8 +95,7 @@ const CatalogWrap = props => {
   const handleSortChange = sortType => {
     const currentList =
       sortType === 'custom' ? itemsList(get(wobject, 'sortCustom', []), wobject) : listItems;
-    const sortOrder =
-      sortType === 'recency' ? recencySortList : wobject && wobject[objectFields.sorting];
+    const sortOrder = sortType === 'recency' ? recencySortList : get(wobject, 'sortCustom', []);
     setSortingBy(sortType);
     setLists(sortListItemsBy(currentList, sortType, sortOrder));
   };

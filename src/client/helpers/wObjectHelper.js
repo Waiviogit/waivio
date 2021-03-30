@@ -224,6 +224,7 @@ export const getSortList = (sortedList, itemsList) =>
   }, []);
 
 export const getListItems = wobject => get(wobject, 'listItems', []);
+export const getListItem = wobject => get(wobject, 'listItem', []);
 
 export const itemsList = (sort, wobj) =>
   !isEmpty(sort) ? getSortList(sort, getListItems(wobj)) : getListItems(wobj);
