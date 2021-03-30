@@ -106,9 +106,12 @@ const WebsiteBody = props => {
     });
 
   useEffect(() => {
-    if (props.isAuth) props.getReservedCounter();
-    getCoordinatesForMap();
     const handleResize = () => setHeight(window.innerHeight);
+    setHeight(window.innerHeight);
+
+    if (props.isAuth) props.getReservedCounter();
+
+    getCoordinatesForMap();
 
     window.addEventListener('resize', handleResize);
 

@@ -13,7 +13,6 @@ import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/val
 import { objectFields } from '../../../common/constants/listOfFields';
 import FormattedLink from '../EditorObject/FormattedLink';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
-import './EditorInput.less';
 
 import './EditorInput.less';
 
