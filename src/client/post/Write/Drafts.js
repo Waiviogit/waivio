@@ -60,7 +60,7 @@ class Drafts extends React.Component {
     const { checked } = e.target;
 
     this.setState({
-      selectedDrafts: checked ? draftPosts.map(d => d.draftId) : [],
+      selectedDrafts: checked ? map(draftPosts, d => d.draftId) : [],
     });
   }
 
@@ -107,7 +107,7 @@ class Drafts extends React.Component {
             <Checkbox
               checked={isEqual(
                 selectedDrafts,
-                draftPosts.map(d => d.draftId),
+                map(draftPosts, d => d.draftId),
               )}
               onChange={this.handleCheckAll}
             />

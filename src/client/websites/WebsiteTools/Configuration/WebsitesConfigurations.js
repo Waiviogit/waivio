@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Button, Form, Modal, Avatar, message, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get, map } from 'lodash';
@@ -57,6 +58,10 @@ export const WebsitesConfigurations = ({
   const desktopLogo = get(config, 'desktopLogo');
   const aboutObj = get(config, 'aboutObject');
   const { lat, lon } = userLocation;
+  const isDesktopModalShow = showMap === 'desktopMap';
+  const mapModalClassList = classNames('WebsitesConfigurations__modal', {
+    'WebsitesConfigurations__modal--desktop': isDesktopModalShow,
+  });
 
   useEffect(() => {
     if (lat && lon) {
@@ -187,14 +192,18 @@ export const WebsitesConfigurations = ({
   const getCurrentScreenSize = () => {
     const screenWidth = window.screen.width;
     const screenHeight = window.screen.height;
+
+    if (isDesktopModalShow) return 'calc(100vh - 110px)';
+
     if (screenWidth === 375 && screenHeight === 812) {
       return 665;
     } else if (screenWidth === 414 && screenHeight === 736) {
-      return 595;
+      return 590;
     } else if (screenWidth === 375 && screenHeight === 667) {
       return 520;
     }
-    return 400;
+
+    return 600;
   };
 
   return (
@@ -387,7 +396,7 @@ export const WebsitesConfigurations = ({
             )}
           </Modal>
           <Modal
-            wrapClassName="Settings__modal"
+            wrapClassName={mapModalClassList}
             title={`Select area`}
             closable
             onCancel={closeMapModal}

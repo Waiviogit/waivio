@@ -53,7 +53,8 @@ export default class PostFeedEmbed extends React.Component {
       'PostFeedEmbed__container-3speak': isModal && is3Speak,
       'PostFeedEmbed__container-vimeo': isVimeo && !isPostPreviewModal,
       'PostFeedEmbed__container-post-preview': isPostPreviewModal,
-      'PostFeedEmbed__container-vimeo-story-full': isVimeo && isFullStory,
+      'PostFeedEmbed__container-vimeo-post-preview': isVimeo && isPostPreviewModal,
+      'PostFeedEmbed__container-vimeo-story-full': isVimeo && isFullStory && !isPostPreviewModal,
       'PostFeedEmbed__container-vimeo-story-full-guestPost': isVimeo && isFullStory && isGuest,
     });
     return (

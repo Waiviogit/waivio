@@ -14,6 +14,7 @@ import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { OrderedMap } from 'immutable';
 import { message } from 'antd';
+import classNames from 'classnames';
 
 import AddButton from './components/addbutton';
 import Toolbar, { BLOCK_BUTTONS, INLINE_BUTTONS } from './components/toolbar';
@@ -83,6 +84,7 @@ export default class MediumDraftEditor extends React.Component {
     processURL: PropTypes.func,
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
+    isVimeo: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -114,6 +116,7 @@ export default class MediumDraftEditor extends React.Component {
     handlePastedText: () => {},
     intl: {},
     handleHashtag: () => {},
+    isVimeo: false,
   };
 
   constructor(props) {
@@ -632,11 +635,15 @@ export default class MediumDraftEditor extends React.Component {
       disableToolbar,
       showLinkEditToolbar,
       toolbarConfig,
+      isVimeo,
     } = this.props;
     const showAddButton = editorEnabled;
     const editorClass = `md-RichEditor-editor Body Body--full${
       !editorEnabled ? ' md-RichEditor-readonly' : ''
     }`;
+    const RichEditorRootClassNamesList = classNames('md-RichEditor-root', {
+      'md-RichEditor-root-vimeo': isVimeo,
+    });
     let isCursorLink = false;
     if (editorEnabled && showLinkEditToolbar) {
       isCursorLink = isCursorBetweenLink(editorState);
@@ -644,7 +651,7 @@ export default class MediumDraftEditor extends React.Component {
     const blockButtons = this.configureToolbarBlockOptions(toolbarConfig);
     const inlineButtons = this.configureToolbarInlineOptions(toolbarConfig);
     return (
-      <div className="md-RichEditor-root">
+      <div className={RichEditorRootClassNamesList}>
         <div className={editorClass}>
           <Editor
             ref={node => {
