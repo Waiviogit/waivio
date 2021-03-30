@@ -35,6 +35,7 @@ const PropositionList = ({
   allCurrentPropositions,
   locale,
   isCatalogWrap,
+  isCustomExist,
 }) => {
   const [isGetWobject, setIsGetWobject] = useState(false);
   let filteredPropos = allCurrentPropositions.filter(prop => {
@@ -227,6 +228,7 @@ const PropositionList = ({
                   sort={catalogSort}
                   currWobject={wobject}
                   handleSortChange={catalogHandleSortChange}
+                  isSortCustomExist={isCustomExist}
                 />
               </div>
               {renderPropositions()}
@@ -262,6 +264,7 @@ PropositionList.propTypes = {
   listItems: PropTypes.shape(),
   location: PropTypes.shape().isRequired,
   locale: PropTypes.string.isRequired,
+  isCustomExist: PropTypes.bool,
 };
 
 PropositionList.defaultProps = {
@@ -281,6 +284,7 @@ PropositionList.defaultProps = {
   parentPermlink: '',
   isGetNested: false,
   listItems: [],
+  isCustomExist: false,
 };
 
 export default injectIntl(PropositionList);
