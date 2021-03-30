@@ -45,6 +45,8 @@ export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) 
 export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => {
   if (!items || !items.length) return [];
   if (!sortBy) return items;
+  const isCustomSorting = sortBy === 'custom';
+  const isRecencySorting = sortBy === 'recency';
   let comparator;
   switch (sortBy) {
     case 'rank':
@@ -59,21 +61,12 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
     default:
       break;
   }
-  const sorted = uniqBy(items, 'author_permlink').sort(comparator);
-
-  if ((sortBy === 'custom' || sortBy === 'recency') && sortOrder && sortOrder.length) {
-    [...sortOrder].reverse().forEach(permlink => {
-      const index = sorted.findIndex(item => item.author_permlink === permlink);
-      if (index !== -1) {
-        const [itemToMove] = sorted.splice(index, 1);
-        sorted.unshift(itemToMove);
-      }
-    });
+  let sorted = uniqBy(items, 'author_permlink').sort(comparator);
+  if ((isCustomSorting || isRecencySorting) && !isEmpty(sortOrder)) {
+    sorted = sortOrder.map(permlink => sorted.find(item => item.author_permlink === permlink));
   }
-
   const sorting = (a, b) => isList(b) - isList(a);
-  const resultArr = sortBy !== 'custom' ? sorted.sort(sorting) : sorted;
-
+  const resultArr = isCustomSorting ? sorted : sorted.sort(sorting);
   return resultArr;
 };
 
