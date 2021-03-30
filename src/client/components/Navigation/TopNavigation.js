@@ -13,6 +13,8 @@ const LINKS = {
   FEED_TRENDING: '/trending',
   FEED_HOT: '/hot',
   FEED_NEW: '/created',
+  MY_FEED_REWARDS: '/rewards-list',
+  MY_FEED_NOTIFICATIONS: '/notifications-list',
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
   DISCOVER: '/discover-objects',
@@ -41,7 +43,15 @@ const LINKS = {
   BLACKLIST: '/blacklist',
 };
 
-const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
+const FEED_URLS = [
+  LINKS.FEED_HOT,
+  LINKS.FEED_NEW,
+  LINKS.FEED_TRENDING,
+  LINKS.MY_FEED_REWARDS,
+  LINKS.MY_FEED_NOTIFICATIONS,
+  LINKS.BLOG,
+  LINKS.FEED,
+];
 const TOOLS_URLS = [
   LINKS.TOOLS_BOOKMARKS,
   LINKS.TOOLS_DRAFTS,
@@ -50,6 +60,9 @@ const TOOLS_URLS = [
   LINKS.TOOLS_SETTINGS,
   LINKS.TOOLS_SETTINGS_GUESTS,
   LINKS.TOOLS_SETTINGS_NOTIFICATIONS,
+];
+const WEBSITE_URLS = [
+  LINKS.TOOLS_SETTINGS,
   LINKS.WEBSITE_CREATE,
   LINKS.WEBSITES_MANAGE,
   LINKS.WEBSITES_PAYMENTS,
@@ -111,7 +124,8 @@ const TopNavigation = ({ location: { pathname } }) => {
                 className={classNames('TopNavigation__link', {
                   'TopNavigation__link--active':
                     !pathname.includes(LINKS.REWARDS) &&
-                    TOOLS_URLS.some(feedUrl => pathname.includes(feedUrl)),
+                    (TOOLS_URLS.some(item => pathname === item) ||
+                      WEBSITE_URLS.some(item => pathname.includes(item))),
                 })}
               >
                 <FormattedMessage id="tools" defaultMessage="Tools" />
