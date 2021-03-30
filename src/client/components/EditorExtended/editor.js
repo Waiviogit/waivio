@@ -259,6 +259,7 @@ export default class MediumDraftEditor extends React.Component {
     const firstBlock = content.getFirstBlock();
     if (firstBlock.getKey() === key) {
       if (firstBlock.getType().indexOf(Block.ATOMIC) === 0) {
+        console.log(Block.ATOMIC);
         e.preventDefault();
         const newBlock = new ContentBlock({
           type: Block.UNSTYLED,
@@ -408,13 +409,14 @@ export default class MediumDraftEditor extends React.Component {
     } */
     const block = getCurrentBlock(editorState);
     const currentBlockType = block.getType();
-    // if (command === KEY_COMMANDS.deleteBlock()) {
-    //   if (currentBlockType.indexOf(Block.ATOMIC) === 0 && block.getText().length === 0) {
-    //     this.onChange(resetBlockWithType(editorState, Block.UNSTYLED, { text: '' }));
-    //     return HANDLED;
-    //   }
-    //   return NOT_HANDLED;
-    // }
+
+    if (command === KEY_COMMANDS.delete()) {
+      if (currentBlockType.indexOf(Block.ATOMIC) === 0) {
+        this.onChange(resetBlockWithType(editorState, Block.UNSTYLED, { text: '' }));
+        return HANDLED;
+      }
+      return NOT_HANDLED;
+    }
     if (command.indexOf(`${KEY_COMMANDS.changeType()}`) === 0) {
       let newBlockType = command.split(':')[1];
       // const currentBlockType = block.getType();
