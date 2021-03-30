@@ -6,8 +6,8 @@ import { objectFields } from '../../../../common/constants/listOfFields';
 import SortSelector from '../../../components/SortSelector/SortSelector';
 import CatalogBreadcrumb from '../CatalogBreadcrumb/CatalogBreadcrumb';
 
-const CatalogSorting = ({ currWobject, sort, handleSortChange, isCustomExist }) =>
-  !isEmpty(currWobject[objectFields.sorting]) && isCustomExist ? (
+const CatalogSorting = ({ currWobject, sort, handleSortChange, isSortCustomExist }) =>
+  !isEmpty(currWobject[objectFields.sorting]) && isSortCustomExist ? (
     <SortSelector sort={sort} onChange={handleSortChange}>
       <SortSelector.Item key="recency">
         <FormattedMessage id="recency" defaultMessage="Recency" />
@@ -54,7 +54,7 @@ CatalogSorting.propTypes = {
   sort: PropTypes.isRequired,
   currWobject: PropTypes.isRequired,
   handleSortChange: PropTypes.func.isRequired,
-  isCustomExist: PropTypes.bool.isRequired,
+  isSortCustomExist: PropTypes.bool.isRequired,
 };
 
 CatalogBreadcrumb.defaultProps = {

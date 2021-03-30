@@ -4,7 +4,7 @@ import {
   objectFields,
   sortingMenuName,
 } from '../../common/constants/listOfFields';
-import { getObjectName, getObjectType } from '../helpers/wObjectHelper';
+import { getObjectName, isList } from '../helpers/wObjectHelper';
 
 export const getListItems = (wobj, { uniq } = { uniq: false, isMappedToClientWobject: false }) => {
   let items = [];
@@ -60,25 +60,20 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
       break;
   }
   const sorted = uniqBy(items, 'author_permlink').sort(comparator);
-  let resultArr = [
-    ...sorted.filter(item => getObjectType(item) === 'list'),
-    ...sorted.filter(item => getObjectType(item) !== 'list'),
-  ];
+
   if ((sortBy === 'custom' || sortBy === 'recency') && sortOrder && sortOrder.length) {
     [...sortOrder].reverse().forEach(permlink => {
-      const index = resultArr.findIndex(item => item.author_permlink === permlink);
+      const index = sorted.findIndex(item => item.author_permlink === permlink);
       if (index !== -1) {
-        const [itemToMove] = resultArr.splice(index, 1);
-        resultArr.unshift(itemToMove);
+        const [itemToMove] = sorted.splice(index, 1);
+        sorted.unshift(itemToMove);
       }
     });
   }
-  if (sortBy === 'recency') {
-    resultArr = [
-      ...resultArr.filter(item => getObjectType(item) === 'list'),
-      ...resultArr.filter(item => getObjectType(item) !== 'list'),
-    ];
-  }
+
+  const sorting = (a, b) => isList(b) - isList(a);
+  const resultArr = sortBy !== 'custom' ? sorted.sort(sorting) : sorted;
+
   return resultArr;
 };
 
