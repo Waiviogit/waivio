@@ -5,14 +5,16 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Icon, Input, Form, Modal } from 'antd';
 import Dropzone from 'react-dropzone';
 import { HotKeys } from 'react-hotkeys';
+import { size } from 'lodash';
 import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../helpers/image';
 import EditorToolbar from './EditorToolbar';
 import ImageSetter from '../ImageSetter/ImageSetter';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
-import './EditorInput.less';
 import FormattedLink from '../EditorObject/FormattedLink';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
+
+import './EditorInput.less';
 
 class EditorInput extends React.Component {
   static propTypes = {
@@ -143,11 +145,12 @@ class EditorInput extends React.Component {
     const startPos = this.input.selectionStart;
     const endPos = this.input.selectionEnd;
     const wObjText = `[${displayName}](${document.location.origin}/object/${authPermlink})\n`;
+    const wobjTextLenghth = size(wObjText);
     const newValue = `${value.substring(0, startPos)}${wObjText}${value.substring(
       endPos,
-      value.length,
+      size(value),
     )}`;
-    this.setValue(newValue, startPos + wObjText.length, startPos + wObjText.length);
+    this.setValue(newValue, startPos + wobjTextLenghth, startPos + wobjTextLenghth);
   }
 
   insertCode(type, params) {
