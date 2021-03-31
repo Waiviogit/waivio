@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { map, filter, find, get } from 'lodash';
+import { map, filter, find, get, reduce } from 'lodash';
 import { useSelector } from 'react-redux';
 import ReportTableRewardsRow from '../ReportTableRewards/ReportTableRewardsRow';
 import ReportTableRewardsRowTotal from './ReportTableRewardsRowTotal';
@@ -16,22 +16,31 @@ const ReportTableRewards = ({ intl }) => {
     obj => obj.type === 'review' || obj.type === 'beneficiary_fee',
   );
 
-  const beneficiaries = map(filteredHistory, obj => {
-    const userName = get(obj, ['userName']);
-    const benef = get(obj, ['details', 'beneficiaries']);
-    const account = find(benef, ['account', userName]);
-    const totalWeight = benef.reduce((sum, item) => sum + item.weight, 0);
-    const ownHive = userName === reportUserName;
+  const beneficiaries = reduce(
+    filteredHistory,
+    (acc, obj) => {
+      const userName = get(obj, ['userName']);
+      const benef = get(obj, ['details', 'beneficiaries']);
+      const account = find(benef, ['account', userName]);
+      const totalWeight = benef.reduce((sum, item) => sum + item.weight, 0);
+      const ownHive = userName === reportUserName;
+      const sponsorsReview = acc.find(f => f.account === account.account);
 
-    return {
-      account: get(obj, ['userName']) || '',
-      weight: account ? account.weight / 100 : (10000 - totalWeight) / 100,
-      votesAmount: get(obj, ['details', 'votesAmount']) || null,
-      amount: get(obj, ['amount']) || null,
-      payableInDollars: get(obj, ['details', 'payableInDollars']) || null,
-      ownHive,
-    };
-  });
+      return [
+        ...acc,
+        {
+          id: get(obj, '_id'),
+          account: get(obj, ['userName']) || '',
+          weight: account && !sponsorsReview ? account.weight / 100 : (10000 - totalWeight) / 100,
+          votesAmount: get(obj, ['details', 'votesAmount']) || null,
+          amount: get(obj, ['amount']) || null,
+          payableInDollars: get(obj, ['details', 'payableInDollars']) || null,
+          ownHive,
+        },
+      ];
+    },
+    [],
+  );
 
   const totalUSD = Number(
     map(beneficiaries, benef => benef.payableInDollars).reduce((sum, usd) => sum + usd, 0),
@@ -90,7 +99,7 @@ const ReportTableRewards = ({ intl }) => {
         </thead>
         <tbody>
           {map(beneficiaries, beneficiary => (
-            <ReportTableRewardsRow key={beneficiary.account} {...beneficiary} />
+            <ReportTableRewardsRow key={beneficiary.id} {...beneficiary} />
           ))}
           <ReportTableRewardsRowTotal totalUSD={totalUSD} totalHive={totalHive} />
         </tbody>
