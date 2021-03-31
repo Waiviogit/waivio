@@ -63,7 +63,9 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
   }
   let sorted = uniqBy(items, 'author_permlink').sort(comparator);
   if ((isCustomSorting || isRecencySorting) && !isEmpty(sortOrder)) {
-    sorted = sortOrder.map(permlink => sorted.find(item => item.author_permlink === permlink));
+    sorted = sortOrder
+      .map(permlink => sorted.find(item => item.author_permlink === permlink))
+      .filter(item => item);
   }
   const sorting = (a, b) => isList(b) - isList(a);
   const resultArr = isCustomSorting ? sorted : sorted.sort(sorting);
