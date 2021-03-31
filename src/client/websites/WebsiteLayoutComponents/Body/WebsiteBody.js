@@ -141,9 +141,11 @@ const WebsiteBody = props => {
           }
           if (!isEmpty(queryCenter)) {
             const { wobjects } = res.value;
-            const currentPoint = wobjects.find(
-              wobj => wobj.author_permlink === props.query.get('permlink'),
-            );
+            const queryPermlink = props.query.get('permlink');
+            const currentPoint =
+              get(infoboxData, ['wobject', 'author_permlink']) !== queryPermlink
+                ? wobjects.find(wobj => wobj.author_permlink === queryPermlink)
+                : null;
 
             if (currentPoint) {
               setInfoboxData({
@@ -227,11 +229,12 @@ const WebsiteBody = props => {
     [props.wobjectsPoint, hoveredCardPermlink],
   );
 
-  const getOverlayLayout = () => {
+  const getOverlayLayout = useCallback(() => {
+    if (!infoboxData) return null;
+
     const currentWobj = infoboxData;
     const name = getObjectName(currentWobj.wobject);
     const wobject = get(currentWobj, 'wobject', {});
-
     const getFirstOffsetNumber = () => {
       const lengthMoreThanOrSame = number => size(name) <= number;
 
@@ -260,7 +263,7 @@ const WebsiteBody = props => {
         </div>
       </Overlay>
     );
-  };
+  }, [props.query.get('permlink')]);
 
   const incrementZoom = () => setArea({ ...area, zoom: area.zoom + 1 });
   const decrementZoom = () => setArea({ ...area, zoom: area.zoom - 1 });

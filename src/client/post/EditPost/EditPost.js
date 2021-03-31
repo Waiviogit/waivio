@@ -34,7 +34,7 @@ import {
   getCurrentHost,
   getIsWaivio,
 } from '../../reducers';
-import { createPost, saveDraft } from '../Write/editorActions';
+import { createPost, saveDraft, deleteDraftMetadataObj } from '../Write/editorActions';
 import { createPostMetadata, getInitialState, getObjectUrl } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
@@ -83,6 +83,7 @@ const getLinkedObjects = contentStateRaw => {
   {
     createPost,
     saveDraft,
+    deleteDraftMetadataObj,
   },
 )
 class EditPost extends Component {
@@ -104,6 +105,7 @@ class EditPost extends Component {
     beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
     host: PropTypes.string.isRequired,
+    deleteDraftMetadataObj: PropTypes.func,
   };
   static defaultProps = {
     upvoteSetting: false,
@@ -117,6 +119,7 @@ class EditPost extends Component {
     isGuest: false,
     isWaivio: true,
     beneficiaries: [],
+    deleteDraftMetadataObj: () => {},
   };
 
   constructor(props) {
@@ -295,13 +298,14 @@ class EditPost extends Component {
     this.setState({ topics }, this.handleUpdateState);
   };
 
-  handleSettingsChange = updatedValue =>
+  handleSettingsChange = updatedValue => {
     this.setState(
       prevState => ({
         settings: { ...prevState.settings, ...updatedValue },
       }),
       this.handleUpdateState,
     );
+  };
 
   handlePercentChange = percentage => {
     this.setState({ objPercentage: percentage }, this.handleUpdateState);
@@ -316,8 +320,8 @@ class EditPost extends Component {
     this.props.createPost(postData, this.props.beneficiaries, isReview, campaign, intl);
   }
 
-  handleToggleLinkedObject(objId, isLinked, uniqId) {
-    const { linkedObjects, objPercentage, topics } = this.state;
+  handleToggleLinkedObject(objId, isLinked, uniqId, permlink) {
+    const { linkedObjects, objPercentage, topics, draftId } = this.state;
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObj = indexOf(linkedObjects, currentObj);
     const switchableObjPermlink = currentObj.author_permlink;
@@ -334,6 +338,8 @@ class EditPost extends Component {
       objPercentage: setObjPercents(linkedObjects, updPercentage),
       topics,
     });
+    this.props.deleteDraftMetadataObj(draftId, permlink);
+    sessionStorage.setItem('linkedObjects', JSON.stringify(linkedObjects));
   }
 
   handleObjectSelect(object) {
@@ -355,6 +361,7 @@ class EditPost extends Component {
         ),
       };
     });
+    sessionStorage.setItem('linkedObjects', JSON.stringify(this.state.linkedObjects));
   }
 
   handleCreateObject(object) {
@@ -530,14 +537,17 @@ class EditPost extends Component {
               addHashtag={!this.props.isWaivio}
             />
             <CreateObject onCreateObject={this.handleCreateObject} />
-            {linkedObjects.map(wObj => (
-              <PostObjectCard
-                isLinked={get(objPercentage, [wObj.id, 'percent'], 0) > 0}
-                wObject={wObj}
-                onToggle={this.handleToggleLinkedObject}
-                key={wObj.id}
-              />
-            ))}
+            {linkedObjects.map(
+              wObj =>
+                !wObj.isNotLinked && (
+                  <PostObjectCard
+                    isLinked={get(objPercentage, [wObj.id, 'percent'], 0) > 0}
+                    wObject={wObj}
+                    onToggle={this.handleToggleLinkedObject}
+                    key={wObj.id}
+                  />
+                ),
+            )}
           </div>
           <div className="rightContainer">
             <div className="right">
