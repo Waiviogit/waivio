@@ -79,15 +79,13 @@ class ObjectInfo extends React.Component {
     switch (fieldName) {
       case objectFields.phone:
         return (
-          <React.Fragment>
-            <span>
-              <Icon type="phone" className="text-icon tel" />
-              {Boolean(params.body) && body}
-              <a href={`tel:${params.number}`} className="phone-number">
-                {params.number}
-              </a>
-            </span>
-          </React.Fragment>
+          <span>
+            <Icon type="phone" className="text-icon tel" />
+            {Boolean(params.body) && body}
+            <a href={`tel:${params.number}`} className="phone-number">
+              {params.number}
+            </a>
+          </span>
         );
       default:
         break;
