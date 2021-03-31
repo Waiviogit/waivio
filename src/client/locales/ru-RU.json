@@ -1505,7 +1505,7 @@
   "website_domain_available": "Домен должен содержать не менее {symbol} символов.",
   "website_domain_name_available": "Вы не можете использовать только www в доменном имени",
   "website_politics_available": "Следует принять соглашение",
-  "website_domain_field_required": "Поле обязательное для заполнения ",
+  "website_domain_field_required": "Поле обязательное для заполнения. ",
   "website_autocomplete_field_required": "Поле, обязательное для заполнения ",
   "payments_reports_websites": "Отчеты для сайтов:",
   "payments_generate_report": "Сгенерировать отчет",

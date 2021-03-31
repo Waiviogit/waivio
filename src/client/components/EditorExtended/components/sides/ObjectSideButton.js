@@ -2,18 +2,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
+import { size } from 'lodash';
 import { EditorState, Modifier } from 'draft-js';
 
 import Cube from '../../../../../../public/images/icons/cube.png';
 import { Entity } from '../../util/constants';
 import SearchObjectsAutocomplete from '../../../../../client/components/EditorObject/SearchObjectsAutocomplete';
 import * as apiConfig from '../../../../../waivioApi/config.json';
-import { createNewHash, hasType } from '../../../../helpers/wObjectHelper';
+import { createNewHash, getObjectName, hasType } from '../../../../helpers/wObjectHelper';
 import OBJECT_TYPES from '../../../../../client/object/const/objectTypes';
 
 const objectSearchInput = props => {
   const handleSelectObject = selectedObject => {
     const objectName = selectedObject.author_permlink;
+    const name = getObjectName(selectedObject);
     const editorState = props.getEditorState();
     let contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
@@ -33,18 +35,12 @@ const objectSearchInput = props => {
       url: currUrl,
     });
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    contentState = Modifier.insertText(
-      contentState,
-      selectionState,
-      String(selectedObject.name),
-      null,
-      entityKey,
-    );
+    contentState = Modifier.insertText(contentState, selectionState, String(name), null, entityKey);
 
     const newEditorState = EditorState.push(editorState, contentState, 'insert-characters');
     const newSelection = selectionState.merge({
-      anchorOffset: selectedObject.name.length,
-      focusOffset: selectedObject.name.length,
+      anchorOffset: size(name),
+      focusOffset: size(name),
     });
     if (selectedObject.type === 'hashtag' || selectedObject.object_type === 'hashtag')
       props.handleHashtag(objectName);
@@ -57,6 +53,7 @@ const objectSearchInput = props => {
       style={{ height: '36px' }}
       handleSelect={handleSelectObject}
       canCreateNewObject={false}
+      addHashtag
     />
   );
 };
