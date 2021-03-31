@@ -307,8 +307,9 @@ export default class AppendForm extends Component {
 
   getNewsFilterTitle = stateNewsFilterTitle => {
     const { wObject } = this.props;
-    const newsFilters = get(wObject, 'newsFilter', []);
-    const newsFilterCount = newsFilters.filter(item => item.title.includes('News')).length;
+    const getItem = item => get(item, 'title', '');
+    const newsFilterTitles = get(wObject, 'newsFilter', []).map(item => getItem(item));
+    const newsFilterCount = newsFilterTitles.filter(item => item.includes('News')).length;
     const newsFilterTitle = newsFilterCount === 0 ? 'News' : `News ${newsFilterCount}`;
 
     return !isEmpty(stateNewsFilterTitle) ? stateNewsFilterTitle : newsFilterTitle;
