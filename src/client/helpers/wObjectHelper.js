@@ -232,7 +232,7 @@ export const itemsList = (sort, wobj) =>
 
 export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};
 
-export const recencySortOrder = listItem => listItem.map(item => get(item, 'body', ''));
+export const recencySortOrder = listItem => listItem.map(item => get(item, 'body', '')).reverse();
 
 export const compareBreadcrumb = wobj => ({
   id: wobj.author_permlink,
