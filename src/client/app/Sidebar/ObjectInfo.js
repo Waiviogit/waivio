@@ -82,7 +82,7 @@ class ObjectInfo extends React.Component {
           <React.Fragment>
             <span>
               <Icon type="phone" className="text-icon tel" />
-              {Boolean(params.body) && <React.Fragment>{body}</React.Fragment>}
+              {Boolean(params.body) && body}
               <a href={`tel:${params.number}`} className="phone-number">
                 {params.number}
               </a>

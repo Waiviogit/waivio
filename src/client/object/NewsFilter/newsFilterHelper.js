@@ -4,7 +4,7 @@ import React from 'react';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 
-const isMobile = screenSize => screenSize === ('xsmall' || 'small');
+const isMobile = screenSize => screenSize === 'xsmall' || screenSize === 'small';
 
 const andLayout = (compareItems, self) =>
   compareItems > 0 && !isMobile(self.props.screenSize) ? (
