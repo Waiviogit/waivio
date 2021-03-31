@@ -17,7 +17,6 @@ import { guestUserRegex } from '../../helpers/regexHelpers';
 import Transfer from '../../wallet/Transfer/Transfer';
 import './Payment.less';
 
-// eslint-disable-next-line no-shadow
 const Payment = ({
   match,
   intl,

@@ -99,6 +99,7 @@ const ObjectForm = props => {
             })(
               <Input
                 disabled={loading}
+                className="AppendForm__input"
                 placeholder={intl.formatMessage({
                   id: 'form_link',
                   defaultMessage: 'Link',
@@ -113,9 +114,23 @@ const ObjectForm = props => {
             <FormattedMessage id="form_widget" defaultMessage="Widget" />
           </div>
           <Form.Item>
-            {form.getFieldDecorator('formWidget')(
+            {form.getFieldDecorator('formWidget', {
+              rules: [
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Widget' },
+                  ),
+                },
+              ],
+            })(
               <Input.TextArea
                 autoSize={{ minRows: 4, maxRows: 100 }}
+                className="AppendForm__input"
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'paste_widget',

@@ -30,7 +30,9 @@ export const getFieldsCount = (wObject, fieldName) => {
       fields.filter(field => field.name === objectFields.listItem && field.type === fieldName),
     );
 
-  return size(fields.filter(field => field.name === fieldName));
+  return size(
+    fields.filter(field => field.name === fieldName || field.name === TYPES_OF_MENU_ITEM.FORM),
+  );
 };
 
 export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
@@ -63,7 +65,9 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
   }
   let sorted = uniqBy(items, 'author_permlink').sort(comparator);
   if ((isCustomSorting || isRecencySorting) && !isEmpty(sortOrder)) {
-    sorted = sortOrder.map(permlink => sorted.find(item => item.author_permlink === permlink));
+    sorted = sortOrder
+      .map(permlink => sorted.find(item => item.author_permlink === permlink))
+      .filter(item => item);
   }
   const sorting = (a, b) => isList(b) - isList(a);
   const resultArr = isCustomSorting ? sorted : sorted.sort(sorting);
@@ -82,13 +86,14 @@ export const getLink = link => {
 
 export const getExposedFieldsByObjType = wobj => {
   const exposedFields = get(wobj, 'exposedFields', []);
-  const renderedFields = exposedFields.includes('listItem')
+  let renderedFields = exposedFields.includes('listItem')
     ? [
         ...exposedFields.filter(f => f !== objectFields.listItem),
         TYPES_OF_MENU_ITEM.PAGE,
         TYPES_OF_MENU_ITEM.LIST,
       ]
     : exposedFields;
+  renderedFields = renderedFields.map(item => (item === 'form' ? 'formField' : item));
 
   return renderedFields.sort();
 };
