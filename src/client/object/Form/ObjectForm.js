@@ -99,7 +99,6 @@ const ObjectForm = props => {
             })(
               <Input
                 disabled={loading}
-                className="AppendForm__input"
                 placeholder={intl.formatMessage({
                   id: 'form_link',
                   defaultMessage: 'Link',
@@ -130,7 +129,6 @@ const ObjectForm = props => {
             })(
               <Input.TextArea
                 autoSize={{ minRows: 4, maxRows: 100 }}
-                className="AppendForm__input"
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'paste_widget',
