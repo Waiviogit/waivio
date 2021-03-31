@@ -23,6 +23,9 @@
       &-alias {
         font-weight: bold;
         color: @black-text-basic;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
       }
 
       &-row {
@@ -84,6 +87,15 @@
       height: 25px;
       width: 25px;
       margin-left: 15px;
+    }
+  }
+
+  &__notPayedPeriod {
+    margin-right: 10px;
+    font-weight: 500;
+
+    &--expired {
+      color: @orange-hot;
     }
   }
 }

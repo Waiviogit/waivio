@@ -21,9 +21,7 @@ const RatingsWrap = ({
   const [selectedRating, setSelectedRating] = useState(null);
   const isMobile = screenSize === 'xsmall' || screenSize === 'small';
   const mappedRatings = ratings.map(d => ({ ...d, rating: averageRate(d) }));
-  const ratingTitleClassList = classNames('RatingsWrap__rate-title', {
-    'RatingsWrap__rate-title--withoutTruncate': overlay,
-  });
+  const ratingTitleClassList = classNames('RatingsWrap__rate-title');
 
   let sortedRatings = sortBy(mappedRatings, ['body']);
 
