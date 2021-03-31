@@ -163,7 +163,6 @@ ObjectForm.defaultProps = {
   handleSelectColumn: () => {},
   handleSelectForm: () => {},
   getFieldRules: () => {},
-  isSomeValueTitle: true,
 };
 
 export default ObjectForm;
