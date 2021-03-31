@@ -29,7 +29,7 @@ export const objectFields = {
   pageLink: 'pageLink',
   tag: 'tag',
   blog: 'blog',
-  form: 'form',
+  form: 'formField',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -38,6 +38,7 @@ export const TYPES_OF_MENU_ITEM = {
   BUTTON: 'menuButton',
   NEWS: 'menuNews',
   BLOG: 'blog',
+  FORM: 'form',
 };
 
 export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
