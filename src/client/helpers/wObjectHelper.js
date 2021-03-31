@@ -229,6 +229,7 @@ export const getListItem = wobject => get(wobject, 'listItem', []);
 
 export const itemsList = (sort, wobj) =>
   !isEmpty(sort) ? getSortList(sort, getListItems(wobj)) : getListItems(wobj);
+
 export const getDefaultAlbum = albums => albums.find(item => item.body === 'Photos') || {};
 
 export const recencySortOrder = listItem => listItem.map(item => get(item, 'body', ''));

@@ -91,16 +91,16 @@ const CatalogWrap = props => {
     setLists(sortListItemsBy(currentList, 'recency', currentRecencySortList));
     setRecencySortList(currentRecencySortList);
   };
+  const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
 
   const handleSortChange = sortType => {
     const currentList =
-      sortType === 'custom' ? itemsList(get(wobject, 'sortCustom', []), wobject) : listItems;
-    const sortOrder = sortType === 'recency' ? recencySortList : get(wobject, 'sortCustom', []);
+      sortType === 'custom' ? itemsList(get(obj, 'sortCustom', []), obj) : listItems;
+    const sortOrder = sortType === 'recency' ? recencySortList : get(obj, 'sortCustom', []);
     setSortingBy(sortType);
     setLists(sortListItemsBy(currentList, sortType, sortOrder));
   };
 
-  const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
   const isSortCustomExist = !isEmpty(get(obj, 'sortCustom', []));
   return (
     <div>
