@@ -361,7 +361,10 @@ class EditPost extends Component {
         ),
       };
     });
-    this.setState({ linkedObjects: [...this.state.linkedObjects, object] });
+    this.setState({
+      linkedObjects: [...this.state.linkedObjects, object],
+      objPercentage: setObjPercents([...this.state.linkedObjects, object], 33),
+    });
     sessionStorage.setItem('linkedObjects', JSON.stringify(this.state.linkedObjects));
   }
 
