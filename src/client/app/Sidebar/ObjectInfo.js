@@ -74,18 +74,18 @@ class ObjectInfo extends React.Component {
   };
 
   getFieldLayout = (fieldName, params) => {
+    const { body } = params;
+
     switch (fieldName) {
       case objectFields.phone:
         return (
-          <div key={params.number} className="flex">
-            <div className="self-start">
-              <Icon type="phone" className="text-icon tel" />
-            </div>
-            <div className="flex flex-column">
-              {Boolean(params.body) && <div className="phone-title">{params.body}</div>}
-              <a href={`tel:${params.number}`}>{params.number}</a>
-            </div>
-          </div>
+          <span>
+            <Icon type="phone" className="text-icon tel" />
+            {Boolean(params.body) && body}
+            <a href={`tel:${params.number}`} className="phone-number">
+              {params.number}
+            </a>
+          </span>
         );
       default:
         break;
@@ -496,7 +496,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.phone,
-          <div className="field-info">
+          <React.Fragment>
             {phones.length <= 3 || accessExtend ? (
               phones
                 .slice(0, 3)
@@ -520,7 +520,7 @@ class ObjectInfo extends React.Component {
                 </Link>
               </React.Fragment>
             )}
-          </div>,
+          </React.Fragment>,
         )}
         {this.listItem(
           objectFields.email,
