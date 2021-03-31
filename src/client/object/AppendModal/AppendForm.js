@@ -323,7 +323,7 @@ export default class AppendForm extends Component {
     const { body, preview, currentField, currentLocale, like, follow, ...rest } = formValues;
     let fieldBody = [];
     const postData = [];
-
+    console.log(currentField);
     switch (currentField) {
       case objectFields.name:
       case objectFields.authority:
@@ -373,6 +373,7 @@ export default class AppendForm extends Component {
         fieldBody.push(JSON.stringify(rest));
         break;
     }
+    console.log(fieldBody);
 
     const getAppendMsg = (author, appendValue) => {
       const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
@@ -429,7 +430,7 @@ export default class AppendForm extends Component {
           )} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         case objectFields.form:
-          return `@${author} added ${currentField} ${formValues.formTitle}`;
+          return `@${author} added form ${formValues.formTitle}`;
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -493,6 +494,7 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.form) {
         fieldsObject = {
           ...fieldsObject,
+          name: 'form',
           title: formValues.formTitle,
           column: formValues.formColumn,
           form: formValues.formForm,
@@ -821,33 +823,6 @@ export default class AppendForm extends Component {
           }),
         );
       }
-    } else if (objectFields.form === currentField) {
-      const formData = this.props.form.getFieldsValue();
-      if (
-        !isEmpty(formData.formTitle) &&
-        (!isEmpty(formData.formLink) || !isEmpty(formData.formWidget))
-      ) {
-        this.onSubmit(formData);
-      } else {
-        if (isEmpty(formData.formTitle)) {
-          this.setState({ isSomeValueTitle: false });
-        }
-        if (isEmpty(formData.formLink)) {
-          this.setState({ isSomeValueLink: false });
-        }
-        if (isEmpty(formData.formWidget)) {
-          this.setState({ isSomeValueWidget: false });
-        }
-        message.error(
-          this.props.intl.formatMessage(
-            {
-              id: 'field_error',
-              defaultMessage: '{field} is required',
-            },
-            { field: 'Form' },
-          ),
-        );
-      }
     } else if (currentField !== objectFields.newsFilter) {
       this.props.form.validateFieldsAndScroll((err, values) => {
         const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
@@ -863,7 +838,36 @@ export default class AppendForm extends Component {
 
           if (objectFields.galleryAlbum === currentField) {
             this.handleCreateAlbum(values);
-          } else if (err || this.checkRequiredField(form, currentField)) {
+          }
+          // }else if (objectFields.form === currentField) {
+          //   const formData = this.props.form.getFieldsValue();
+          //   if (
+          //     !isEmpty(formData.formTitle) &&
+          //     (!isEmpty(formData.formLink) || !isEmpty(formData.formWidget))
+          //   ) {
+          //     this.onSubmit(formData);
+          //   } else {
+          //     if (isEmpty(formData.formTitle)) {
+          //       this.setState({ isSomeValueTitle: false });
+          //     }
+          //     if (isEmpty(formData.formLink)) {
+          //       this.setState({ isSomeValueLink: false });
+          //     }
+          //     if (isEmpty(formData.formWidget)) {
+          //       this.setState({ isSomeValueWidget: false });
+          //     }
+          //     message.error(
+          //       this.props.intl.formatMessage(
+          //         {
+          //           id: 'field_error',
+          //           defaultMessage: '{field} is required',
+          //         },
+          //         { field: 'Form' },
+          //       ),
+          //     );
+          //   }
+          // }
+          else if (err || this.checkRequiredField(form, currentField)) {
             message.error(
               this.props.intl.formatMessage({
                 id: 'append_validate_common_message',
@@ -923,9 +927,10 @@ export default class AppendForm extends Component {
 
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
-  isDuplicate = (currentLocale, currentField, currentCategory) => {
+  isDuplicate = (currentLocale, currentField) => {
     const { form, wObject, user } = this.props;
     const currentValue = form.getFieldValue(currentField);
+    const currentCategory = form.getFieldValue('tagCategory');
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
@@ -975,11 +980,9 @@ export default class AppendForm extends Component {
     const { intl, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
-    const currentCategory = form.getFieldValue('tagCategory');
     const formFields = form.getFieldsValue();
-
     const isDuplicated = formFields[rule.field]
-      ? this.isDuplicate(currentLocale, currentField, currentCategory)
+      ? this.isDuplicate(currentLocale, currentField)
       : false;
 
     if (isDuplicated) {
@@ -1001,7 +1004,6 @@ export default class AppendForm extends Component {
       );
     } else {
       const fields = form.getFieldsValue();
-
       if (fields[currentField]) {
         const triggerValue = fields[currentField];
 
@@ -2154,13 +2156,7 @@ export default class AppendForm extends Component {
         );
       }
       case objectFields.form: {
-        const {
-          formColumn,
-          formForm,
-          isSomeValueTitle,
-          isSomeValueLink,
-          isSomeValueWidget,
-        } = this.state;
+        const { formColumn, formForm } = this.state;
         return (
           <ObjectForm
             formColumn={formColumn}
@@ -2171,9 +2167,6 @@ export default class AppendForm extends Component {
             handleSelectColumn={this.handleSelectColumn}
             handleSelectForm={this.handleSelectForm}
             getFieldRules={this.getFieldRules}
-            isSomeValueTitle={isSomeValueTitle}
-            isSomeValueLink={isSomeValueLink}
-            isSomeValueWidget={isSomeValueWidget}
           />
         );
       }

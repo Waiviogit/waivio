@@ -761,6 +761,7 @@ export const fieldsRules = {
         intlMeta: { field: 'Form title' },
       },
     },
+    { transform: value => value && value.trim() },
     {
       validator: true,
     },

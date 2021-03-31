@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Select } from 'antd';
 import { map } from 'lodash';
-import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { formColumnsField, formFormFields } from '../../../common/constants/listOfFields';
 
@@ -16,9 +15,6 @@ const ObjectForm = props => {
     getFieldRules,
     handleSelectColumn,
     handleSelectForm,
-    isSomeValueTitle,
-    isSomeValueLink,
-    isSomeValueWidget,
   } = props;
   return (
     <React.Fragment>
@@ -27,9 +23,7 @@ const ObjectForm = props => {
           rules: getFieldRules('formTitle'),
         })(
           <Input
-            className={classNames('AppendForm__input', {
-              'validation-error': !isSomeValueTitle,
-            })}
+            className="AppendForm__input"
             disabled={loading}
             placeholder={intl.formatMessage({
               id: 'form',
@@ -105,9 +99,7 @@ const ObjectForm = props => {
             })(
               <Input
                 disabled={loading}
-                className={classNames('AppendForm__input', {
-                  'validation-error': !isSomeValueLink,
-                })}
+                className="AppendForm__input"
                 placeholder={intl.formatMessage({
                   id: 'form_link',
                   defaultMessage: 'Link',
@@ -122,12 +114,23 @@ const ObjectForm = props => {
             <FormattedMessage id="form_widget" defaultMessage="Widget" />
           </div>
           <Form.Item>
-            {form.getFieldDecorator('formWidget')(
+            {form.getFieldDecorator('formWidget', {
+              rules: [
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Widget' },
+                  ),
+                },
+              ],
+            })(
               <Input.TextArea
                 autoSize={{ minRows: 4, maxRows: 100 }}
-                className={classNames('AppendForm__input', {
-                  'validation-error': !isSomeValueWidget,
-                })}
+                className="AppendForm__input"
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'paste_widget',
@@ -151,9 +154,6 @@ ObjectForm.propTypes = {
   handleSelectColumn: PropTypes.shape(),
   handleSelectForm: PropTypes.shape(),
   getFieldRules: PropTypes.shape(),
-  isSomeValueTitle: PropTypes.bool,
-  isSomeValueLink: PropTypes.bool,
-  isSomeValueWidget: PropTypes.bool,
 };
 
 ObjectForm.defaultProps = {
@@ -164,8 +164,6 @@ ObjectForm.defaultProps = {
   handleSelectForm: () => {},
   getFieldRules: () => {},
   isSomeValueTitle: true,
-  isSomeValueLink: true,
-  isSomeValueWidget: true,
 };
 
 export default ObjectForm;
