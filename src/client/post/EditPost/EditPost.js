@@ -278,7 +278,7 @@ class EditPost extends Component {
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
       '_id',
     );
-    const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
+    const isLinkedObjectsChanged = !isEqual(this.state.linkedObjects, linkedObjects);
     if (isLinkedObjectsChanged) {
       const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
       nextState.linkedObjects = linkedObjects;
@@ -286,7 +286,6 @@ class EditPost extends Component {
     }
     if (
       this.state.content !== nextState.content ||
-      isLinkedObjectsChanged ||
       this.state.titleValue !== nextState.titleValue
     ) {
       this.setState(nextState, this.handleUpdateState);
