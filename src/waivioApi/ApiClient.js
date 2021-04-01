@@ -980,7 +980,7 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
       .catch(error => reject(error));
   });
 
-export const getLenders = ({ sponsor, user, globalReport, filters }) => {
+export const getLenders = ({ sponsor, user, globalReport, filters }, skip = 0, limit = 30) => {
   const getBody = obj => {
     let preparedObject;
 
@@ -1015,12 +1015,14 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
           preparedObject.days = obj.days || obj.moreDays || obj.otherDays;
         if (obj.payable) preparedObject.payable = obj.payable;
       }
-      return preparedObject;
+      return { ...preparedObject, skip, limit };
     }
     return {
       userName: user,
       sponsor,
       globalReport,
+      skip,
+      limit,
     };
   };
 

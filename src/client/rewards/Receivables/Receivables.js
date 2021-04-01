@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { map } from 'lodash';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Debts from '../Debts/Debts';
 
@@ -13,7 +13,7 @@ const ReceivablesContainer = ({
   setPayablesFilterValue,
 }) => {
   const payableFilters = {};
-  _.map(filterData, f => {
+  map(filterData, f => {
     payableFilters[f.filterName] = f.value;
   });
   const [sponsors, setSponsors] = useState({});
@@ -22,7 +22,9 @@ const ReceivablesContainer = ({
       user: userName,
       filters: payableFilters,
     })
-      .then(data => setSponsors(data))
+      .then(data => {
+        setSponsors(data);
+      })
       .catch(e => console.log(e));
   }, [filterData, userName]);
   return (
