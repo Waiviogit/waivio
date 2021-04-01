@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { isEmpty, map } from 'lodash';
 import { Modal, Tag } from 'antd';
-import PaymentCard from '../PaymentCard/PaymentCard';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { sortDebtObjsData, getCurrentUSDPrice, payablesFilterData } from '../rewardsHelper';
 import FilterModal from '../FilterModal';
 import { PATH_NAME_PAYABLES } from '../../../common/constants/rewards';
+import PaymentList from '../Payment/PaymentList';
+
 import './Debts.less';
 
 const Debts = ({
@@ -16,6 +17,7 @@ const Debts = ({
   componentLocation,
   activeFilters,
   setPayablesFilterValue,
+  handleLoadingMore,
 }) => {
   const [sort, setSort] = useState('amount');
   const [sortedDebtObjsData, setSortedDebtObjsData] = useState([]);
@@ -98,18 +100,13 @@ const Debts = ({
             {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
           </span>
         </div>
-        {map(renderData, debtObjData => {
-          const name = debtObjData.userName || debtObjData.guideName;
-          return (
-            <PaymentCard
-              key={name}
-              paymentInfo={debtObjData}
-              path={`${componentLocation}/@${name}`}
-            />
-          );
-        })}
+        <PaymentList
+          renderData={renderData}
+          debtObjsData={debtObjsData}
+          componentLocation={componentLocation}
+          handleLoadingMore={handleLoadingMore}
+        />
       </div>
-
       <Modal
         className="Debts__filters-modal"
         footer={null}
@@ -138,10 +135,13 @@ Debts.propTypes = {
   componentLocation: PropTypes.string.isRequired,
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setPayablesFilterValue: PropTypes.func,
+  handleLoadingMore: PropTypes.func,
 };
 
 Debts.defaultProps = {
   setPayablesFilterValue: () => {},
+  handleLoadingMore: () => {},
+  loading: false,
 };
 
 export default injectIntl(Debts);
