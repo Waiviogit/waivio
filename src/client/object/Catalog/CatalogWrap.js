@@ -122,6 +122,7 @@ const CatalogWrap = props => {
           location={location}
           listItems={listItems}
           isSortCustomExist={isSortCustomExist}
+          wObj={obj}
         />
       </React.Fragment>
     </div>

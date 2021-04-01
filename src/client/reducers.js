@@ -350,6 +350,7 @@ export const getHistorySponsors = state => fromRewards.getHistorySponsors(state.
 export const getHasMoreHistory = state => fromRewards.getHasMoreHistory(state.rewards);
 export const getIsOpenWriteReviewModal = state =>
   fromRewards.getIsOpenWriteReviewModal(state.rewards);
+export const getExpiredPayment = state => fromRewards.getExpiredPayment(state.rewards);
 
 export const getCampaignServerPercent = state =>
   fromReferral.getCampaignServerPercent(state.referral);

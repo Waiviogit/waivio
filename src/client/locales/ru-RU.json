@@ -1634,5 +1634,6 @@
   "add_children_modal_body_second_part": "в качестве родительского объекта (за исключением списков).",
   "add_children_modal_title": "добавить все дочерние объекты",
   "object_field_news_title": "Название новостного фильтра",
+  "over": "Больше",
   "object_fiels_news_select_placeholder": "Выберите правило"
 }

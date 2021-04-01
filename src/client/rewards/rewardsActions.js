@@ -161,3 +161,10 @@ export const REMOVE_TOGGLE_FLAG = '@rewards/REMOVE_TOGGLE_FLAG';
 export const removeToggleFlag = () => ({
   type: REMOVE_TOGGLE_FLAG,
 });
+
+export const CHECK_EXPIRED_PAYMENTS = createAsyncActionType('@rewards/CHECK_EXPIRED_PAYMENTS');
+
+export const checkExpiredPayment = name => ({
+  type: CHECK_EXPIRED_PAYMENTS.ACTION,
+  payload: ApiClient.checkExpiredPayment(name).then(data => data.warning),
+});

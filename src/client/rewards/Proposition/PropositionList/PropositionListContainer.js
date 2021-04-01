@@ -28,6 +28,7 @@ const PropositionListContainer = ({
   location,
   listItems,
   isSortCustomExist,
+  wObj,
 }) => {
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [currentProposition, setCurrentProposition] = useState([]);
@@ -191,6 +192,7 @@ const PropositionListContainer = ({
       locale={locale}
       listItems={listItems}
       isCustomExist={isSortCustomExist}
+      wObj={wObj}
     />
   );
 };
@@ -212,6 +214,7 @@ PropositionListContainer.propTypes = {
   location: PropTypes.shape().isRequired,
   listItems: PropTypes.shape(),
   isSortCustomExist: PropTypes.bool,
+  wObj: PropTypes.shape().isRequired,
 };
 
 PropositionListContainer.defaultProps = {
