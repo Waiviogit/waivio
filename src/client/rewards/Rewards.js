@@ -79,7 +79,7 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import { getRewardsGeneralCounts } from './rewardsActions';
+import { checkExpiredPayment, getRewardsGeneralCounts } from './rewardsActions';
 import {
   setUpdatedFlag,
   getPropositionsForMap,
@@ -117,12 +117,14 @@ import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
     getRewardsGeneralCounts,
     getCryptoPriceHistory,
     setMapFullscreenMode,
+    checkExpiredPayment,
   },
 )
 class Rewards extends React.Component {
   static propTypes = {
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
+    checkExpiredPayment: PropTypes.func.isRequired,
     userLocation: PropTypes.shape(),
     getCoordinates: PropTypes.func.isRequired,
     history: PropTypes.shape().isRequired,
@@ -211,6 +213,8 @@ class Rewards extends React.Component {
     } = this.props;
     const { sortAll, sortEligible, sortReserved, url, activeFilters } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
+
+    if (authenticated) this.props.checkExpiredPayment(username);
 
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ currentLocation: location.search });
