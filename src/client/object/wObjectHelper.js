@@ -86,13 +86,14 @@ export const getLink = link => {
 
 export const getExposedFieldsByObjType = wobj => {
   const exposedFields = get(wobj, 'exposedFields', []);
-  const renderedFields = exposedFields.includes('listItem')
+  let renderedFields = exposedFields.includes('listItem')
     ? [
         ...exposedFields.filter(f => f !== objectFields.listItem),
         TYPES_OF_MENU_ITEM.PAGE,
         TYPES_OF_MENU_ITEM.LIST,
       ]
     : exposedFields;
+  renderedFields = renderedFields.map(item => (item === 'form' ? 'formField' : item));
 
   return renderedFields.sort();
 };

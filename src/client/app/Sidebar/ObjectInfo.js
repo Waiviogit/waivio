@@ -247,7 +247,7 @@ class ObjectInfo extends React.Component {
           </LinkButton>
         );
         break;
-      case TYPES_OF_MENU_ITEM.FORM:
+      case objectFields.form:
         menuItem = (
           <LinkButton className={formClassesList} to={formPath}>
             {item.title}
@@ -314,7 +314,10 @@ class ObjectInfo extends React.Component {
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
-    const formsList = getFormItems(wobject);
+    const formsList = getFormItems(wobject).map(item => ({
+      ...item,
+      id: 'formField',
+    }));
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
@@ -384,10 +387,10 @@ class ObjectInfo extends React.Component {
                     ),
                 )}
                 {this.listItem(
-                  TYPES_OF_MENU_ITEM.FORM,
+                  objectFields.form,
                   !isEmpty(formsList) &&
                     formsList.map(form =>
-                      this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.FORM, ...form }),
+                      this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
                 )}
                 {this.listItem(objectFields.sorting, null)}
