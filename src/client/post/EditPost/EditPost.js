@@ -111,11 +111,11 @@ class EditPost extends Component {
     draftId: '',
     publishing: false,
     saving: false,
+    isWaivio: true,
     imageLoading: false,
     createPost: () => {},
     saveDraft: () => {},
     isGuest: false,
-    isWaivio: true,
     beneficiaries: [],
   };
 

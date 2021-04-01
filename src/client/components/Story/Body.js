@@ -48,6 +48,7 @@ export function getHtml(
   isModal,
   isPostPreviewModal,
   full,
+  isGuest,
 ) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
@@ -110,6 +111,7 @@ export function getHtml(
             embed={embed}
             isPostPreviewModal={isPostPreviewModal}
             isFullStory={full}
+            isGuest={isGuest}
           />,
         ),
       );
@@ -165,6 +167,7 @@ const Body = props => {
     props.isModal,
     props.isPostPreviewModal,
     props.full,
+    props.isGuest,
   );
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
@@ -179,6 +182,7 @@ Body.propTypes = {
   full: PropTypes.bool,
   isModal: PropTypes.bool,
   isPostPreviewModal: PropTypes.bool,
+  isGuest: PropTypes.bool,
 };
 
 Body.defaultProps = {
@@ -187,6 +191,7 @@ Body.defaultProps = {
   full: false,
   isModal: false,
   isPostPreviewModal: false,
+  isGuest: false,
 };
 
 export default Body;

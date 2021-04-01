@@ -122,5 +122,6 @@
   "restrictions": "/restrictions",
   "expertiseCounters": "/expertise-counters",
   "count": "/count",
-  "geoIp": "/geo-ip"
+  "geoIp": "/geo-ip",
+  "payableWarning": "/payable-warning"
 }

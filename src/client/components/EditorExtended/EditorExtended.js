@@ -107,7 +107,7 @@ class Editor extends React.Component {
         this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
         const rawContent = fromMarkdown(nextProps.initialContent);
         this.handleContentChange(createEditorState(rawContent));
-        this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
+        this.restoreObjects(rawContent, true).then(() => this.setFocusAfterMount());
       }, 0);
     }
   }
@@ -133,10 +133,13 @@ class Editor extends React.Component {
     }
   };
 
-  restoreObjects = async rawContent => {
+  restoreObjects = async (rawContent, newObject) => {
     const { draftId } = this.props;
     const currLinkedObjects = JSON.parse(sessionStorage.getItem('linkedObjects')) || [];
     const isReview = includes(draftId, 'review');
+    const isLinked = string =>
+      currLinkedObjects.some(item => item.defaultShowLink.includes(string));
+
     const objectIds = Object.values(rawContent.entityMap)
       // eslint-disable-next-line array-callback-return,consistent-return
       .filter(entity => {
@@ -154,13 +157,21 @@ class Editor extends React.Component {
       })
       // eslint-disable-next-line array-callback-return,consistent-return
       .map(entity => {
-        if (entity.type === Entity.OBJECT) {
+        if (
+          entity.type === Entity.OBJECT &&
+          (isLinked(get(entity, ['data', 'object', 'id'], '')) || newObject)
+        ) {
           return get(entity, 'data.object.id', '');
         }
-        if (!isReview && entity.type === Entity.LINK) {
+        if (
+          !isReview &&
+          entity.type === Entity.LINK &&
+          (isLinked(get(entity, 'data.url', '')) || newObject)
+        ) {
           return this.getCurrentLinkPermlink(entity);
         }
-      });
+      })
+      .filter(item => item);
 
     if (objectIds.length) {
       const response = await getObjectsByIds({
@@ -173,7 +184,7 @@ class Editor extends React.Component {
       forEach(rawContent.entityMap, (value, key) => {
         let currObj = null;
         const loadedObject = this.getCurrentLoadObjects(response, value);
-        if (!isEmpty(currLinkedObjects)) {
+        if (!isEmpty(currLinkedObjects) && !isEmpty(loadedObject)) {
           map(currLinkedObjects, obj => {
             if (isEqual(obj.author_permlink, loadedObject.author_permlink)) {
               currObj = loadedObject;
@@ -229,6 +240,8 @@ class Editor extends React.Component {
 
   render() {
     const { editorState, isMounted, editorEnabled, titleValue } = this.state;
+    const { initialContent } = this.props;
+    const isVimeo = get(initialContent, 'body', '').includes('player.vimeo.com');
     return (
       <div className="waiv-editor-wrap">
         {this.props.displayTitle && (
@@ -256,6 +269,7 @@ class Editor extends React.Component {
               sideButtons={SIDE_BUTTONS}
               intl={this.props.intl}
               handleHashtag={this.props.handleHashtag}
+              isVimeo={isVimeo}
             />
           )}
         </div>

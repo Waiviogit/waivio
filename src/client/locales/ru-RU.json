@@ -1505,7 +1505,7 @@
   "website_domain_available": "Домен должен содержать не менее {symbol} символов.",
   "website_domain_name_available": "Вы не можете использовать только www в доменном имени",
   "website_politics_available": "Следует принять соглашение",
-  "website_domain_field_required": "Поле обязательное для заполнения ",
+  "website_domain_field_required": "Поле обязательное для заполнения. ",
   "website_autocomplete_field_required": "Поле, обязательное для заполнения ",
   "payments_reports_websites": "Отчеты для сайтов:",
   "payments_generate_report": "Сгенерировать отчет",
@@ -1621,7 +1621,7 @@
   "prices_per_day": "{price} HBD в день;",
   "home": "Домой",
   "inactive_website_pricing": "Цены на неактивный сайт:",
-  "object_field_form": "Форма",
+  "object_field_formField": "Форма",
   "form": "Название формы",
   "columns": "Колонки",
   "form_link": "Ссылка",
@@ -1632,5 +1632,8 @@
   "news_title": "News filter",
   "add_children_modal_body_first_part": "Добавить все объекты, которые ссылаются на",
   "add_children_modal_body_second_part": "в качестве родительского объекта (за исключением списков).",
-  "add_children_modal_title": "добавить все дочерние объекты"
+  "add_children_modal_title": "добавить все дочерние объекты",
+  "object_field_news_title": "Название новостного фильтра",
+  "over": "Больше",
+  "object_fiels_news_select_placeholder": "Выберите правило"
 }

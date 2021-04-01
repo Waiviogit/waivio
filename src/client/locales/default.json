@@ -1318,7 +1318,7 @@
   "min_amount": "min. amount: {input} USD",
   "settings_notify": "settings",
   "notify_list_message": "You can now receive instant mobile notifications via the Telegram app when someone replies to or re-blogs your post on Hive, mentions you, follows you, transfers funds to you, and so on.",
-  "notify_list_message_telegram": "Open the Telegram chart with {link} and enter the Hive usernames to subscribes.",
+  "notify_list_message_telegram": "Open the Telegram chart with {link} and enter the Hive usernames to subscribe.",
   "my_actions": "My actions",
   "editor_search_elements": "Attach hashtags, objects, pages, etc.",
   "editor_search_object_by_name": "Search by name",
@@ -1502,7 +1502,7 @@
   "website_domain_available": "The domain must contain at least {symbol} characters.",
   "website_domain_name_available": "You can`t use only www in domain name",
   "website_politics_available": "Should accept agreement",
-  "website_domain_field_required": "Field is required",
+  "website_domain_field_required": "Field is required.",
   "website_autocomplete_field_required": "Field is required",
   "payments_reports_websites": "Reports for websites:",
   "payments_generate_report": "Generate report",
@@ -1615,7 +1615,7 @@
   "append_object_blog_validation_msg": "This user has already been added to another blog",
   "active_website_pricing": "Active website pricing:",
   "prices_per_day": "{price} HBD per day;",
-  "object_field_form": "Form",
+  "object_field_formField": "Form",
   "form": "Form title",
   "columns": "Columns",
   "form_link": "Link",
@@ -1629,5 +1629,8 @@
   "add_children_modal_body_first_part": "Add all objects that link to",
   "add_children_modal_body_second_part": "as their parent object (excluding lists)",
   "add_children_modal_title": "add all child objects",
-  "object_field_news_title": "News title"
+  "object_field_news_title": "News title",
+  "over": "Over",
+  "object_fiels_news_select_placeholder": "Please select",
+  "object_field_form": "Form"
 }

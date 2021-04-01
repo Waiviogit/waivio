@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import SteemConnect from '../steemConnectAPI';
 import { getAuthenticatedUserMetadata, updateUserMetadata } from '../../waivioApi/ApiClient';
 
@@ -35,6 +36,42 @@ export const addDraftMetadata = draft =>
       }).catch(e => e.message),
     )
     .then(() => draft);
+
+export const deleteDraftMetadataObject = (draftId, userName, objPermlink) => {
+  const getFilteredDrafts = metadata =>
+    get(metadata, 'drafts', {}).map(draft => {
+      if (draft.draftId === draftId) {
+        return {
+          ...draft,
+          jsonMetadata: {
+            ...draft.jsonMetadata,
+            wobj: {
+              ...draft.jsonMetadata.wobj,
+              wobjects: draft.jsonMetadata.wobj.wobjects.map(item => {
+                if (item.author_permlink === objPermlink) {
+                  return {
+                    ...item,
+                    isNotLinked: true,
+                  };
+                }
+                return item;
+              }),
+            },
+          },
+        };
+      }
+      return draft;
+    });
+
+  return getMetadata(userName)
+    .then(metadata =>
+      updateUserMetadata(userName, {
+        ...metadata,
+        drafts: getFilteredDrafts(metadata),
+      }),
+    )
+    .then(resp => resp.user_metadata.drafts);
+};
 
 export const deleteDraftMetadata = (draftIds, userName) =>
   getMetadata(userName)

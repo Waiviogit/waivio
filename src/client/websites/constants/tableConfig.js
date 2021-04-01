@@ -44,6 +44,11 @@ export const configUsersWebsitesTableHeader = [
       id: 'website',
       defaultMessage: 'Website',
     },
+    style: {
+      overflow: 'hidden',
+      maxWidth: '150px',
+      textOverflow: 'ellipsis',
+    },
   },
   {
     id: 'parent',
@@ -88,7 +93,13 @@ export const configReportsWebsitesTableHeader = [
   },
   {
     id: 'message',
-    style: { textAlign: 'left', padding: '0 0 0 5px' },
+    style: {
+      textAlign: 'left',
+      padding: '0 0 0 5px',
+      overflow: 'hidden',
+      maxWidth: '150px',
+      textOverflow: 'ellipsis',
+    },
     intl: {
       id: 'action',
       defaultMessage: 'Action',

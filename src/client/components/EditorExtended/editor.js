@@ -14,6 +14,7 @@ import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { OrderedMap } from 'immutable';
 import { message } from 'antd';
+import classNames from 'classnames';
 
 import AddButton from './components/addbutton';
 import Toolbar, { BLOCK_BUTTONS, INLINE_BUTTONS } from './components/toolbar';
@@ -83,6 +84,7 @@ export default class MediumDraftEditor extends React.Component {
     processURL: PropTypes.func,
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
+    isVimeo: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -114,6 +116,7 @@ export default class MediumDraftEditor extends React.Component {
     handlePastedText: () => {},
     intl: {},
     handleHashtag: () => {},
+    isVimeo: false,
   };
 
   constructor(props) {
@@ -259,6 +262,7 @@ export default class MediumDraftEditor extends React.Component {
     const firstBlock = content.getFirstBlock();
     if (firstBlock.getKey() === key) {
       if (firstBlock.getType().indexOf(Block.ATOMIC) === 0) {
+        console.log(Block.ATOMIC);
         e.preventDefault();
         const newBlock = new ContentBlock({
           type: Block.UNSTYLED,
@@ -408,13 +412,14 @@ export default class MediumDraftEditor extends React.Component {
     } */
     const block = getCurrentBlock(editorState);
     const currentBlockType = block.getType();
-    // if (command === KEY_COMMANDS.deleteBlock()) {
-    //   if (currentBlockType.indexOf(Block.ATOMIC) === 0 && block.getText().length === 0) {
-    //     this.onChange(resetBlockWithType(editorState, Block.UNSTYLED, { text: '' }));
-    //     return HANDLED;
-    //   }
-    //   return NOT_HANDLED;
-    // }
+
+    if (command === KEY_COMMANDS.delete()) {
+      if (currentBlockType.indexOf(Block.ATOMIC) === 0) {
+        this.onChange(resetBlockWithType(editorState, Block.UNSTYLED, { text: '' }));
+        return HANDLED;
+      }
+      return NOT_HANDLED;
+    }
     if (command.indexOf(`${KEY_COMMANDS.changeType()}`) === 0) {
       let newBlockType = command.split(':')[1];
       // const currentBlockType = block.getType();
@@ -630,11 +635,15 @@ export default class MediumDraftEditor extends React.Component {
       disableToolbar,
       showLinkEditToolbar,
       toolbarConfig,
+      isVimeo,
     } = this.props;
     const showAddButton = editorEnabled;
     const editorClass = `md-RichEditor-editor Body Body--full${
       !editorEnabled ? ' md-RichEditor-readonly' : ''
     }`;
+    const RichEditorRootClassNamesList = classNames('md-RichEditor-root', {
+      'md-RichEditor-root-vimeo': isVimeo,
+    });
     let isCursorLink = false;
     if (editorEnabled && showLinkEditToolbar) {
       isCursorLink = isCursorBetweenLink(editorState);
@@ -642,7 +651,7 @@ export default class MediumDraftEditor extends React.Component {
     const blockButtons = this.configureToolbarBlockOptions(toolbarConfig);
     const inlineButtons = this.configureToolbarInlineOptions(toolbarConfig);
     return (
-      <div className="md-RichEditor-root">
+      <div className={RichEditorRootClassNamesList}>
         <div className={editorClass}>
           <Editor
             ref={node => {

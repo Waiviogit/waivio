@@ -27,6 +27,8 @@ const PropositionListContainer = ({
   isLoadingFlag,
   location,
   listItems,
+  isSortCustomExist,
+  wObj,
 }) => {
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [currentProposition, setCurrentProposition] = useState([]);
@@ -189,6 +191,8 @@ const PropositionListContainer = ({
       location={location}
       locale={locale}
       listItems={listItems}
+      isCustomExist={isSortCustomExist}
+      wObj={wObj}
     />
   );
 };
@@ -209,6 +213,8 @@ PropositionListContainer.propTypes = {
   isLoadingFlag: PropTypes.bool,
   location: PropTypes.shape().isRequired,
   listItems: PropTypes.shape(),
+  isSortCustomExist: PropTypes.bool,
+  wObj: PropTypes.shape().isRequired,
 };
 
 PropositionListContainer.defaultProps = {
@@ -225,6 +231,7 @@ PropositionListContainer.defaultProps = {
   isLoadingFlag: false,
   currentHash: '',
   listItems: [],
+  isSortCustomExist: false,
 };
 
 export default connect(

@@ -98,6 +98,10 @@ class PostModal extends React.Component {
     this.props.hidePostModal();
   }
 
+  handleShare = shareLink => {
+    window.location.assign(shareLink);
+  };
+
   render() {
     const {
       showPostModal,
@@ -160,18 +164,28 @@ class PostModal extends React.Component {
             <i className="iconfont icon-send PostModal__icon" />
           </Link>
           <a
-            href={twitterShareURL}
+            role="presentation"
+            key="share-twitter"
             rel="noopener noreferrer"
             target="_blank"
             className="PostModal__action"
+            onClick={e => {
+              e.preventDefault();
+              this.handleShare(twitterShareURL);
+            }}
           >
             <i className="iconfont icon-twitter PostModal__icon" />
           </a>
           <a
-            href={facebookShareURL}
+            role="presentation"
+            key="share-facebook"
             rel="noopener noreferrer"
             target="_blank"
             className="PostModal__action"
+            onClick={e => {
+              e.preventDefault();
+              this.handleShare(facebookShareURL);
+            }}
           >
             <i className="iconfont icon-facebook PostModal__icon" />
           </a>

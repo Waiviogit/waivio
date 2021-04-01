@@ -5,7 +5,6 @@ import { isEmpty, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { sortListItemsBy } from '../wObjectHelper';
-import { objectFields } from '../../../common/constants/listOfFields';
 import AddItemModal from './AddItemModal/AddItemModal';
 import {
   getObjectLists,
@@ -14,7 +13,13 @@ import {
   getLoadingFlag,
   getObject,
 } from '../../reducers';
-import { getLastPermlinksFromHash, getListItems, itemsList } from '../../helpers/wObjectHelper';
+import {
+  getLastPermlinksFromHash,
+  itemsList,
+  recencySortOrder,
+  getListItem,
+  getListItems,
+} from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import { setLoadedNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
@@ -35,9 +40,11 @@ const CatalogWrap = props => {
     isLoadingFlag,
   } = props;
   const [sortBy, setSortingBy] = useState();
+  const [recencySortList, setRecencySortList] = useState();
 
   useEffect(() => {
     const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
+    const isDefaultCustom = obj => defaultSortBy(obj) === 'custom';
 
     if (!isEmpty(wobject)) {
       if (hash) {
@@ -49,11 +56,14 @@ const CatalogWrap = props => {
             sortListItemsBy(
               itemsList(get(wObject, 'sortCustom', []), wObject),
               defaultSortBy(wObject),
-              wObject.sortCustom,
+              isDefaultCustom(wObject)
+                ? wObject.sortCustom
+                : recencySortOrder(getListItem(wObject)),
             ),
           );
           setNestedWobj(wObject);
           setLoadingNestedWobject(false);
+          setRecencySortList(recencySortOrder(getListItem(wObject)));
         });
       } else {
         setSortingBy(defaultSortBy(wobject));
@@ -62,10 +72,11 @@ const CatalogWrap = props => {
           sortListItemsBy(
             itemsList(get(wobject, 'sortCustom', []), wobject),
             defaultSortBy(wobject),
-            wobject.sortCustom,
+            isDefaultCustom(wobject) ? wobject.sortCustom : recencySortOrder(getListItem(wobject)),
           ),
         );
         setLoadingNestedWobject(false);
+        setRecencySortList(recencySortOrder(getListItem(wobject)));
       }
     }
     return () => {
@@ -75,20 +86,23 @@ const CatalogWrap = props => {
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
-    setLists(sortListItemsBy(currentList, 'recency'));
+    const currentRecencySortList = isEmpty(recencySortList)
+      ? [listItem.author_permlink]
+      : [listItem.author_permlink, ...recencySortList];
+    setLists(sortListItemsBy(currentList, 'recency', currentRecencySortList));
+    setRecencySortList(currentRecencySortList);
   };
+  const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
 
   const handleSortChange = sortType => {
     const currentList =
-      sortType === 'custom'
-        ? itemsList(get(wobject, 'sortCustom', []), wobject)
-        : getListItems(wobject);
-    const sortOrder = wobject && wobject[objectFields.sorting];
+      sortType === 'custom' ? itemsList(get(obj, 'sortCustom', []), obj) : getListItems(obj);
+    const sortOrder = sortType === 'recency' ? recencySortList : get(obj, 'sortCustom', []);
     setSortingBy(sortType);
     setLists(sortListItemsBy(currentList, sortType, sortOrder));
   };
 
-  const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
+  const isSortCustomExist = !isEmpty(get(obj, 'sortCustom', []));
   return (
     <div>
       <React.Fragment>
@@ -107,6 +121,8 @@ const CatalogWrap = props => {
           isLoadingFlag={isLoadingFlag}
           location={location}
           listItems={listItems}
+          isSortCustomExist={isSortCustomExist}
+          wObj={obj}
         />
       </React.Fragment>
     </div>

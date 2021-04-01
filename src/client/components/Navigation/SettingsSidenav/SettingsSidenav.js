@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { map } from 'lodash';
 import PropTypes from 'prop-types';
 
 import { currentWebsiteSettings, personalSettings, websiteSettings } from './constants';
@@ -52,7 +53,7 @@ const SettingsSidenav = ({ match }) => {
             configItem={websiteSettings}
             toggleMenuCondition={toggleMenuCondition}
           />
-          {ownWebsite.map(({ host }) => (
+          {map(ownWebsite, ({ host }) => (
             <SettingsItem
               key={host}
               condition={menuCondition[host]}

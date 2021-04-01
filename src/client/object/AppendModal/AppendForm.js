@@ -51,6 +51,7 @@ import {
   getVotingPower,
   getObjectTagCategory,
   getObjectAlbums,
+  getScreenSize,
 } from '../../reducers';
 import LANGUAGES from '../../translations/languages';
 import { PRIMARY_COLOR } from '../../../common/constants/waivio';
@@ -110,6 +111,7 @@ import './AppendForm.less';
     ratingFields: getRatingFields(state),
     categories: getObjectTagCategory(state),
     albums: getObjectAlbums(state),
+    screenSize: getScreenSize(state),
   }),
   {
     appendObject,
@@ -146,6 +148,7 @@ export default class AppendForm extends Component {
     albums: PropTypes.arrayOf(PropTypes.shape()),
     addImageToAlbum: PropTypes.func,
     addAlbum: PropTypes.func,
+    screenSize: PropTypes.string,
   };
 
   static defaultProps = {
@@ -173,6 +176,7 @@ export default class AppendForm extends Component {
     albums: [],
     addImageToAlbum: () => {},
     addAlbum: () => {},
+    screenSize: '',
   };
 
   state = {
@@ -223,9 +227,12 @@ export default class AppendForm extends Component {
         id: item.body || item.author_permlink,
         checkedItemInList: !isEmpty(sortCustom) ? sortCustom.includes(item.author_permlink) : true,
       }));
+      let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), wObject.sortCustom);
+      const sorting = listItems.filter(item => !wObject.sortCustom.includes(item.author_permlink));
+      sortedListItems = [...sortedListItems, ...sorting];
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
-        itemsInSortingList: sortListItemsBy(listItems, defaultSortBy(wObject), wObject.sortCustom),
+        itemsInSortingList: sortedListItems,
         loading: false,
       });
     }
@@ -301,13 +308,23 @@ export default class AppendForm extends Component {
     }
   };
 
+  getNewsFilterTitle = stateNewsFilterTitle => {
+    const { wObject } = this.props;
+    const getItem = item => get(item, 'title', 'News');
+    const newsFilterTitles = get(wObject, 'newsFilter', []).map(item => getItem(item));
+    const newsFilterCount = newsFilterTitles.filter(item => !isEmpty(item) && item.includes('News'))
+      .length;
+    const newsFilterTitle = newsFilterCount === 0 ? 'News' : `News ${newsFilterCount}`;
+
+    return !isEmpty(stateNewsFilterTitle) ? stateNewsFilterTitle : newsFilterTitle;
+  };
+
   getNewPostData = formValues => {
     const { wObject } = this.props;
     const { getFieldValue } = this.props.form;
     const { body, preview, currentField, currentLocale, like, follow, ...rest } = formValues;
     let fieldBody = [];
     const postData = [];
-
     switch (currentField) {
       case objectFields.name:
       case objectFields.authority:
@@ -408,10 +425,12 @@ export default class AppendForm extends Component {
             }
           });
 
-          return `@${author} added ${currentField} ${this.state.newsFilterTitle} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
+          return `@${author} added ${currentField} ${this.getNewsFilterTitle(
+            this.state.newsFilterTitle,
+          )} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         case objectFields.form:
-          return `@${author} added ${currentField} ${formValues.formTitle}`;
+          return `@${author} added form ${formValues.formTitle}`;
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -438,7 +457,7 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.newsFilter) {
         fieldsObject = {
           ...fieldsObject,
-          title: this.state.newsFilterTitle,
+          title: this.getNewsFilterTitle(this.state.newsFilterTitle),
         };
       }
 
@@ -475,6 +494,7 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.form) {
         fieldsObject = {
           ...fieldsObject,
+          name: 'form',
           title: formValues.formTitle,
           column: formValues.formColumn,
           form: formValues.formForm,
@@ -547,7 +567,7 @@ export default class AppendForm extends Component {
   deleteRuleItem = (rowNum, id) => {
     const allowList = this.state.allowList;
 
-    allowList[rowNum] = filter(allowList[rowNum], o => o.id !== id);
+    allowList[rowNum] = filter(allowList[rowNum], o => o.author_permlink !== id);
     this.setState({ allowList });
   };
 
@@ -564,8 +584,7 @@ export default class AppendForm extends Component {
 
   handleRemoveObjectFromIgnoreList = obj => {
     let ignoreList = this.state.ignoreList;
-
-    ignoreList = filter(ignoreList, o => o.id !== obj.id);
+    ignoreList = filter(ignoreList, o => o.author_permlink !== obj.author_permlink);
     this.setState({ ignoreList });
   };
 
@@ -804,24 +823,6 @@ export default class AppendForm extends Component {
           }),
         );
       }
-    } else if (objectFields.form === currentField) {
-      const formData = this.props.form.getFieldsValue();
-      if (
-        !isEmpty(formData.formTitle) &&
-        (!isEmpty(formData.formLink) || !isEmpty(formData.formWidget))
-      ) {
-        this.onSubmit(formData);
-      } else {
-        message.error(
-          this.props.intl.formatMessage(
-            {
-              id: 'field_error',
-              defaultMessage: '{field} is required',
-            },
-            { field: 'Form' },
-          ),
-        );
-      }
     } else if (currentField !== objectFields.newsFilter) {
       this.props.form.validateFieldsAndScroll((err, values) => {
         const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
@@ -897,9 +898,10 @@ export default class AppendForm extends Component {
 
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
-  isDuplicate = (currentLocale, currentField, currentCategory) => {
+  isDuplicate = (currentLocale, currentField) => {
     const { form, wObject, user } = this.props;
     const currentValue = form.getFieldValue(currentField);
+    const currentCategory = form.getFieldValue('tagCategory');
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
@@ -949,11 +951,9 @@ export default class AppendForm extends Component {
     const { intl, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
-    const currentCategory = form.getFieldValue('tagCategory');
     const formFields = form.getFieldsValue();
-
     const isDuplicated = formFields[rule.field]
-      ? this.isDuplicate(currentLocale, currentField, currentCategory)
+      ? this.isDuplicate(currentLocale, currentField)
       : false;
 
     if (isDuplicated) {
@@ -975,7 +975,6 @@ export default class AppendForm extends Component {
       );
     } else {
       const fields = form.getFieldsValue();
-
       if (fields[currentField]) {
         const triggerValue = fields[currentField];
 
@@ -1894,6 +1893,7 @@ export default class AppendForm extends Component {
               accentColor={PRIMARY_COLOR}
               onChange={this.handleChangeSorting}
               wobjType={wobjType}
+              screenSize={this.props.screenSize}
             />
           </React.Fragment>
         );

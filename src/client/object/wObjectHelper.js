@@ -4,7 +4,7 @@ import {
   objectFields,
   sortingMenuName,
 } from '../../common/constants/listOfFields';
-import { getObjectName, getObjectType } from '../helpers/wObjectHelper';
+import { getObjectName, isList } from '../helpers/wObjectHelper';
 
 export const getListItems = (wobj, { uniq } = { uniq: false, isMappedToClientWobject: false }) => {
   let items = [];
@@ -30,7 +30,9 @@ export const getFieldsCount = (wObject, fieldName) => {
       fields.filter(field => field.name === objectFields.listItem && field.type === fieldName),
     );
 
-  return size(fields.filter(field => field.name === fieldName));
+  return size(
+    fields.filter(field => field.name === fieldName || field.name === TYPES_OF_MENU_ITEM.FORM),
+  );
 };
 
 export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
@@ -45,14 +47,12 @@ export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) 
 export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => {
   if (!items || !items.length) return [];
   if (!sortBy) return items;
+  const isCustomSorting = sortBy === 'custom';
+  const isRecencySorting = sortBy === 'recency';
   let comparator;
   switch (sortBy) {
     case 'rank':
       comparator = (a, b) => b.weight - a.weight || (a.name >= b.name ? 1 : -1);
-      break;
-    case 'recency':
-    default:
-      comparator = (a, b) => (a.createdAt < b.createdAt ? 1 : -1);
       break;
     case 'by-name-desc':
       comparator = (a, b) => (getObjectName(a) < getObjectName(b) ? 1 : -1);
@@ -60,22 +60,17 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
     case 'by-name-asc':
       comparator = (a, b) => (getObjectName(a) > getObjectName(b) ? 1 : -1);
       break;
+    default:
+      break;
   }
-  const sorted = uniqBy(items, 'author_permlink').sort(comparator);
-  const resultArr = [
-    ...sorted.filter(item => getObjectType(item) === 'list'),
-    ...sorted.filter(item => getObjectType(item) !== 'list'),
-  ];
-
-  if (sortBy === 'custom' && sortOrder && sortOrder.length) {
-    [...sortOrder].reverse().forEach(permlink => {
-      const index = resultArr.findIndex(item => item.author_permlink === permlink);
-      if (index !== -1) {
-        const [itemToMove] = resultArr.splice(index, 1);
-        resultArr.unshift(itemToMove);
-      }
-    });
+  let sorted = uniqBy(items, 'author_permlink').sort(comparator);
+  if ((isCustomSorting || isRecencySorting) && !isEmpty(sortOrder)) {
+    sorted = sortOrder
+      .map(permlink => sorted.find(item => item.author_permlink === permlink))
+      .filter(item => item);
   }
+  const sorting = (a, b) => isList(b) - isList(a);
+  const resultArr = isCustomSorting ? sorted : sorted.sort(sorting);
   return resultArr;
 };
 
