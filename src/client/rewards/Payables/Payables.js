@@ -24,15 +24,20 @@ const PayablesContainer = ({
   );
 
   useEffect(() => {
-    getLenders({
-      sponsor: userName,
-      filters: payableFilters,
-    })
+    getLenders(
+      {
+        sponsor: userName,
+        filters: payableFilters,
+      },
+      0,
+      15,
+    )
       .then(data => setLenders(data))
       .catch(e => console.log(e));
   }, [filterData]);
 
-  const handleLoadingMore = () => getLenders(
+  const handleLoadingMore = () =>
+    getLenders(
       {
         sponsor: userName,
         filters: payableFilters,

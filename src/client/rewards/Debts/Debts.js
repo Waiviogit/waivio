@@ -7,7 +7,7 @@ import SortSelector from '../../components/SortSelector/SortSelector';
 import { sortDebtObjsData, getCurrentUSDPrice, payablesFilterData } from '../rewardsHelper';
 import FilterModal from '../FilterModal';
 import { PATH_NAME_PAYABLES } from '../../../common/constants/rewards';
-import PaymentList from "../Payment/PaymentList";
+import PaymentList from '../Payment/PaymentList';
 
 import './Debts.less';
 
@@ -100,7 +100,12 @@ const Debts = ({
             {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
           </span>
         </div>
-        <PaymentList renderData={renderData} debtObjsData={debtObjsData} componentLocation={componentLocation} handleLoadingMore={handleLoadingMore}/>
+        <PaymentList
+          renderData={renderData}
+          debtObjsData={debtObjsData}
+          componentLocation={componentLocation}
+          handleLoadingMore={handleLoadingMore}
+        />
       </div>
       <Modal
         className="Debts__filters-modal"
