@@ -1631,5 +1631,6 @@
   "add_children_modal_title": "add all child objects",
   "object_field_news_title": "News title",
   "over": "Over",
-  "object_fiels_news_select_placeholder": "Please select"
+  "object_fiels_news_select_placeholder": "Please select",
+  "object_field_form": "Form"
 }
