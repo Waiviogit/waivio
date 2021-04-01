@@ -250,9 +250,11 @@ export default function usersReducer(state = initialState, action) {
         const findExperts = state.topExperts.list.findIndex(
           user => user.name === action.meta.username,
         );
+
         state.topExperts.list.splice(findExperts, 1, {
           ...state.topExperts.list[findExperts],
           youFollows: true,
+          muted: false,
           pending: false,
         });
 
@@ -275,6 +277,7 @@ export default function usersReducer(state = initialState, action) {
             ...currentUser,
             youFollows: true,
             pending: false,
+            muted: false,
           },
         },
       };
@@ -399,6 +402,7 @@ export default function usersReducer(state = initialState, action) {
             ...user,
             muted,
             muteLoading: false,
+            youFollows: muted ? false : user.youFollows,
           },
         },
       };
