@@ -18,6 +18,7 @@ const Debts = ({
   activeFilters,
   setPayablesFilterValue,
   handleLoadingMore,
+                 loading
 }) => {
   const [sort, setSort] = useState('amount');
   const [sortedDebtObjsData, setSortedDebtObjsData] = useState([]);
@@ -105,6 +106,7 @@ const Debts = ({
           debtObjsData={debtObjsData}
           componentLocation={componentLocation}
           handleLoadingMore={handleLoadingMore}
+          loading={loading}
         />
       </div>
       <Modal
@@ -136,6 +138,7 @@ Debts.propTypes = {
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setPayablesFilterValue: PropTypes.func,
   handleLoadingMore: PropTypes.func,
+  loading: PropTypes.bool,
 };
 
 Debts.defaultProps = {

@@ -36,7 +36,7 @@ const PaymentCard = props => {
         </div>
       </div>
       <div className="PaymentCard__end-wrap">
-        <span className={notPayedPeriodClassList}>{props.paymentInfo.notPayedPeriod}d</span>
+        {<span className={notPayedPeriodClassList}>{props.paymentInfo.notPayedPeriod}d</span>}
         <div className="PaymentCard__content-name-wrap-row-pay">
           <TransferButton payable={props.paymentInfo.payable} name={name} match={props.match} />
           <div className="PaymentCard__end-wrap-icon">
