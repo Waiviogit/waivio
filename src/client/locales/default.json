@@ -1614,7 +1614,7 @@
   "append_object_blog_validation_msg": "This user has already been added to another blog",
   "active_website_pricing": "Active website pricing:",
   "prices_per_day": "{price} HBD per day;",
-  "object_field_form": "Form",
+  "object_field_formField": "Form",
   "form": "Form title",
   "columns": "Columns",
   "form_link": "Link",
@@ -1629,6 +1629,9 @@
   "add_children_modal_body_second_part": "as their parent object (excluding lists)",
   "add_children_modal_title": "add all child objects",
   "object_field_news_title": "News title",
+  "over": "Over",
+  "object_fiels_news_select_placeholder": "Please select",
+  "object_field_form": "Form"
   "object_fiels_news_select_placeholder": "Please select",
   "all_rewards": "All rewards",
   "eligible_rewards": "Eligible rewards",

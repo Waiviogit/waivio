@@ -12,6 +12,7 @@ import {
   getCreatedCampaignsCount,
   getAuthenticatedUserName,
   getIsWaivio,
+  getExpiredPayment,
 } from '../../reducers';
 import {
   MESSAGES,
@@ -33,6 +34,7 @@ import './Sidenav.less';
   countTookPartCampaigns: getCountTookPartCampaigns(state),
   createdCampaignsCount: getCreatedCampaignsCount(state),
   isWaivio: getIsWaivio(state),
+  isExpired: getExpiredPayment(state),
 }))
 export default class SidenavRewards extends React.Component {
   static propTypes = {
@@ -41,6 +43,7 @@ export default class SidenavRewards extends React.Component {
     isGuest: PropTypes.bool.isRequired,
     hasReceivables: PropTypes.bool,
     isWaivio: PropTypes.bool,
+    isExpired: PropTypes.bool,
     countTookPartCampaigns: PropTypes.number,
     createdCampaignsCount: PropTypes.number,
     authUserName: PropTypes.string,
@@ -49,6 +52,7 @@ export default class SidenavRewards extends React.Component {
   static defaultProps = {
     autoCompleteSearchResults: {},
     hasReceivables: false,
+    isExpired: false,
     isWaivio: true,
     countTookPartCampaigns: 0,
     createdCampaignsCount: 0,
@@ -92,6 +96,7 @@ export default class SidenavRewards extends React.Component {
       createdCampaignsCount,
       authUserName,
       isWaivio,
+      isExpired,
     } = this.props;
     const { menuCondition } = this.state;
     return (
@@ -265,6 +270,7 @@ export default class SidenavRewards extends React.Component {
                                 id: 'sidenav_rewards_payables',
                                 defaultMessage: `Payables`,
                               })}
+                              {isExpired && <span className={'Sidenav__expired'}> (!)</span>}
                             </NavLink>
                           </li>
                         </React.Fragment>

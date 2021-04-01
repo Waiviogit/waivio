@@ -18,6 +18,7 @@ import {
   itemsList,
   recencySortOrder,
   getListItem,
+  getListItems,
 } from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import { setLoadedNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
@@ -95,7 +96,7 @@ const CatalogWrap = props => {
 
   const handleSortChange = sortType => {
     const currentList =
-      sortType === 'custom' ? itemsList(get(obj, 'sortCustom', []), obj) : listItems;
+      sortType === 'custom' ? itemsList(get(obj, 'sortCustom', []), obj) : getListItems(obj);
     const sortOrder = sortType === 'recency' ? recencySortList : get(obj, 'sortCustom', []);
     setSortingBy(sortType);
     setLists(sortListItemsBy(currentList, sortType, sortOrder));
@@ -121,6 +122,7 @@ const CatalogWrap = props => {
           location={location}
           listItems={listItems}
           isSortCustomExist={isSortCustomExist}
+          wObj={obj}
         />
       </React.Fragment>
     </div>

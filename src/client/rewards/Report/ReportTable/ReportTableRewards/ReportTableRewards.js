@@ -1,20 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { map, filter, find, get, reduce } from 'lodash';
+import { map, filter, find, get, reduce, isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 import ReportTableRewardsRow from '../ReportTableRewards/ReportTableRewardsRow';
 import ReportTableRewardsRowTotal from './ReportTableRewardsRowTotal';
 import { getSingleReportData } from '../../../../reducers';
+
 import './ReportTableRewards.less';
 
 const ReportTableRewards = ({ intl }) => {
   const singleReportData = useSelector(getSingleReportData);
   const reportUserName = get(singleReportData, ['user', 'name']);
+  const getPayableInDollars = item => get(item, ['details', 'payableInDollars']);
   const filteredHistory = filter(
     singleReportData.histories,
     obj => obj.type === 'review' || obj.type === 'beneficiary_fee',
-  );
+  ).sort((a, b) => getPayableInDollars(b) - getPayableInDollars(a));
 
   const beneficiaries = reduce(
     filteredHistory,
@@ -24,17 +26,16 @@ const ReportTableRewards = ({ intl }) => {
       const account = find(benef, ['account', userName]);
       const totalWeight = benef.reduce((sum, item) => sum + item.weight, 0);
       const ownHive = userName === reportUserName;
-      const sponsorsReview = acc.find(f => f.account === account.account);
 
       return [
         ...acc,
         {
           id: get(obj, '_id'),
-          account: get(obj, ['userName']) || '',
-          weight: account && !sponsorsReview ? account.weight / 100 : (10000 - totalWeight) / 100,
+          account: get(obj, ['userName'], ''),
+          weight: account && !isEmpty(acc) ? account.weight / 100 : (10000 - totalWeight) / 100,
           votesAmount: get(obj, ['details', 'votesAmount']) || null,
           amount: get(obj, ['amount']) || null,
-          payableInDollars: get(obj, ['details', 'payableInDollars']) || null,
+          payableInDollars: getPayableInDollars(obj),
           ownHive,
         },
       ];

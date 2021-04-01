@@ -103,9 +103,7 @@ const Debts = ({
           return (
             <PaymentCard
               key={name}
-              name={name}
-              payable={debtObjData.payable}
-              alias={debtObjData.alias}
+              paymentInfo={debtObjData}
               path={`${componentLocation}/@${name}`}
             />
           );

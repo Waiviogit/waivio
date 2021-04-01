@@ -10,7 +10,6 @@
   background: @white;
   white-space: nowrap;
   padding: 10px;
-  display: flex;
   width: fit-content;
   position: relative;
 
@@ -49,6 +48,7 @@
     display: flex;
     flex-flow: row nowrap;
     width: 100%;
+    max-width: 300px;
   }
 
   &__info {
@@ -75,6 +75,7 @@
   }
 
   &__tag-text {
+    display: flex;
     color: @blue-botticelli;
     font-weight: 500;
     font-size: 1em;
@@ -82,8 +83,12 @@
   }
 
   &__price {
+    display: inline-block;
     color: @blue-botticelli;
     margin-bottom: 0.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50%;
 
     i {
       margin-right: 5px;

@@ -113,7 +113,20 @@ const ObjectForm = props => {
             <FormattedMessage id="form_widget" defaultMessage="Widget" />
           </div>
           <Form.Item>
-            {form.getFieldDecorator('formWidget')(
+            {form.getFieldDecorator('formWidget', {
+              rules: [
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Widget' },
+                  ),
+                },
+              ],
+            })(
               <Input.TextArea
                 autoSize={{ minRows: 4, maxRows: 100 }}
                 disabled={loading}

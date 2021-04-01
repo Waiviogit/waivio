@@ -138,7 +138,8 @@ class Editor extends React.Component {
     const currLinkedObjects = JSON.parse(sessionStorage.getItem('linkedObjects')) || [];
     const isReview = includes(draftId, 'review');
     const isLinked = string =>
-      currLinkedObjects.some(item => string.includes(item.defaultShowLink));
+      currLinkedObjects.some(item => item.defaultShowLink.includes(string));
+
     const objectIds = Object.values(rawContent.entityMap)
       // eslint-disable-next-line array-callback-return,consistent-return
       .filter(entity => {
@@ -156,7 +157,10 @@ class Editor extends React.Component {
       })
       // eslint-disable-next-line array-callback-return,consistent-return
       .map(entity => {
-        if (entity.type === Entity.OBJECT) {
+        if (
+          entity.type === Entity.OBJECT &&
+          (isLinked(get(entity, ['data', 'object', 'id'], '')) || newObject)
+        ) {
           return get(entity, 'data.object.id', '');
         }
         if (
@@ -166,7 +170,8 @@ class Editor extends React.Component {
         ) {
           return this.getCurrentLinkPermlink(entity);
         }
-      });
+      })
+      .filter(item => item);
 
     if (objectIds.length) {
       const response = await getObjectsByIds({

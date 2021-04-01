@@ -381,12 +381,12 @@ export const payablesFilterData = location => {
       },
       {
         filterName: 'moreDays',
-        value: 15,
+        value: 14,
         defaultMessage: `Over {value} days`,
       },
       {
         filterName: 'otherDays',
-        value: 30,
+        value: 21,
         defaultMessage: `Over {value} days`,
       },
       {
