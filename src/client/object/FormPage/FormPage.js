@@ -19,9 +19,13 @@ const FormPage = props => {
           srcDoc={currentForm.form === 'Widget' ? currentForm.link : null}
           src={currentForm.form !== 'Widget' ? currentForm.link : null}
           width="100%"
-          height="100%"
+          height="600px"
           allowFullScreen
           title={currentForm.formTitle}
+          frameBorder="0"
+          allowTransparency
+          allowscriptaccess="always"
+          scrolling="no"
         />
       </div>
     </div>
