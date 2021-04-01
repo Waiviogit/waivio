@@ -35,7 +35,7 @@ export const GUIDE_HISTORY = 'guideHistory';
 
 export const MESSAGES = 'messages';
 
-export const FRAUD_DETECTION = 'fraud-detection';
+export const FRAUD_DETECTION = 'fraud_detection';
 
 export const HISTORY = 'history';
 
