@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
+import { isNumber } from 'lodash';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
 import Avatar from '../../components/Avatar';
@@ -36,7 +37,9 @@ const PaymentCard = props => {
         </div>
       </div>
       <div className="PaymentCard__end-wrap">
-        {<span className={notPayedPeriodClassList}>{props.paymentInfo.notPayedPeriod}d</span>}
+        {isNumber(props.paymentInfo.notPayedPeriod) && (
+          <span className={notPayedPeriodClassList}>{props.paymentInfo.notPayedPeriod}d</span>
+        )}
         <div className="PaymentCard__content-name-wrap-row-pay">
           <TransferButton payable={props.paymentInfo.payable} name={name} match={props.match} />
           <div className="PaymentCard__end-wrap-icon">

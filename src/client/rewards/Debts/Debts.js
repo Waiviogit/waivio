@@ -18,7 +18,7 @@ const Debts = ({
   activeFilters,
   setPayablesFilterValue,
   handleLoadingMore,
-                 loading
+  loading,
 }) => {
   const [sort, setSort] = useState('amount');
   const [sortedDebtObjsData, setSortedDebtObjsData] = useState([]);

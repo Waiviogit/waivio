@@ -10,6 +10,7 @@ import {
   GET_MORE_REWARDS_HISTORY,
   SET_TOGGLE_FLAG,
   REMOVE_TOGGLE_FLAG,
+  CHECK_EXPIRED_PAYMENTS,
 } from './rewardsActions';
 import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
 
@@ -32,6 +33,7 @@ const initialState = {
   historySponsors: [],
   hasMoreHistory: false,
   isOpenWriteReviewModal: false,
+  expiredPayment: false,
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -155,6 +157,12 @@ const rewardsReducer = (state = initialState, action) => {
         isOpenWriteReviewModal: false,
       };
     }
+    case CHECK_EXPIRED_PAYMENTS.SUCCESS: {
+      return {
+        ...state,
+        expiredPayment: action.payload,
+      };
+    }
     default:
       return state;
   }
@@ -183,3 +191,4 @@ export const getHistorySponsors = state => state.historySponsors;
 export const getHasMoreHistory = state => state.hasMoreHistory;
 
 export const getIsOpenWriteReviewModal = state => state.isOpenWriteReviewModal;
+export const getExpiredPayment = state => state.expiredPayment;

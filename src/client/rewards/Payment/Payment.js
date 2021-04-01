@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty, includes, get } from 'lodash';
+import { isEmpty, includes, get, isNumber } from 'lodash';
+import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
@@ -29,6 +30,7 @@ const Payment = ({
 }) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
+  const [notPayedPeriod, setNotPayedPeriod] = useState(0);
   const { reservationPermlink } = match.params;
   const payables = get(match, ['params', '0']) === 'payables';
   const getRequestParams = () => ({
@@ -43,11 +45,16 @@ const Payment = ({
   const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
+  const notPayedPeriodClassList = classNames('Payment__notPayedPeriod', {
+    'Payment__notPayedPeriod--expired': notPayedPeriod >= 21,
+  });
+
   const getPayables = () => {
     getLenders(getRequestParams())
       .then(data => {
         setSponsors(data.histories);
         setPayable(data.payable);
+        setNotPayedPeriod(data.notPayedPeriod);
       })
       .catch(e => console.log(e));
   };
@@ -108,6 +115,16 @@ const Payment = ({
             ''
           )}
         </div>
+        {isNumber(notPayedPeriod) && isPayables && (
+          <span className={notPayedPeriodClassList}>
+            (
+            {intl.formatMessage({
+              id: 'over',
+              defaultMessage: 'over',
+            })}{' '}
+            {notPayedPeriod} d)
+          </span>
+        )}
       </div>
       <div className="Payment__information-row">
         <div className="Payment__information-row-important">

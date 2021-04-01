@@ -1634,5 +1634,6 @@
   "add_children_modal_title": "добавить все дочерние объекты",
   "object_field_news_title": "Название новостного фильтра",
   "payables_empty": "Кредиторская задолженность пуста",
+  "over": "Больше",
   "object_fiels_news_select_placeholder": "Выберите правило"
 }

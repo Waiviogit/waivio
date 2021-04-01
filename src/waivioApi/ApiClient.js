@@ -1985,4 +1985,16 @@ export const putUserCoordinates = params => {
     .catch(e => e);
 };
 
+export const checkExpiredPayment = userName =>
+  fetch(
+    `${config.campaignApiPrefix}${config.payments}${config.payableWarning}?userName=${userName}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;
