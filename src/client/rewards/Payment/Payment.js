@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty, includes, get } from 'lodash';
+import { isEmpty, includes, get, isNumber } from 'lodash';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -115,14 +115,14 @@ const Payment = ({
             ''
           )}
         </div>
-        {notPayedPeriod && (
+        {isNumber(notPayedPeriod) && isPayables && (
           <span className={notPayedPeriodClassList}>
             (
             {intl.formatMessage({
               id: 'over',
               defaultMessage: 'over',
             })}{' '}
-            {notPayedPeriod})
+            {notPayedPeriod} d)
           </span>
         )}
       </div>
