@@ -13,6 +13,7 @@ const PayablesContainer = ({
   setPayablesFilterValue,
 }) => {
   const [lenders, setLenders] = useState({});
+  const [loading, setLoading] = useState(false);
   const payableFilters = reduce(
     filterData,
     (acc, f) => {
@@ -24,6 +25,7 @@ const PayablesContainer = ({
   );
 
   useEffect(() => {
+    setLoading(true);
     getLenders(
       {
         sponsor: userName,
@@ -32,7 +34,10 @@ const PayablesContainer = ({
       0,
       15,
     )
-      .then(data => setLenders(data))
+      .then(data => {
+        setLenders(data);
+        setLoading(false);
+      })
       .catch(e => console.log(e));
   }, [filterData]);
 
@@ -61,6 +66,7 @@ const PayablesContainer = ({
       activeFilters={filterData}
       setPayablesFilterValue={setPayablesFilterValue}
       handleLoadingMore={handleLoadingMore}
+      loading={loading}
     />
   );
 };
