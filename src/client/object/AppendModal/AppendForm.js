@@ -227,9 +227,12 @@ export default class AppendForm extends Component {
         id: item.body || item.author_permlink,
         checkedItemInList: !isEmpty(sortCustom) ? sortCustom.includes(item.author_permlink) : true,
       }));
+      let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), wObject.sortCustom);
+      const sorting = listItems.filter(item => !wObject.sortCustom.includes(item.author_permlink));
+      sortedListItems = [...sortedListItems, ...sorting];
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
-        itemsInSortingList: sortListItemsBy(listItems, defaultSortBy(wObject), wObject.sortCustom),
+        itemsInSortingList: sortedListItems,
         loading: false,
       });
     }
