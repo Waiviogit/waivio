@@ -25,14 +25,16 @@ export const getListItems = (wobj, { uniq } = { uniq: false, isMappedToClientWob
 export const getFieldsCount = (wObject, fieldName) => {
   const fields = get(wObject, 'fields', []);
 
+  if (fieldName === objectFields.form) {
+    return size(fields.filter(field => field.name === TYPES_OF_MENU_ITEM.FORM));
+  }
+
   if (sortingMenuName[fieldName])
     return size(
       fields.filter(field => field.name === objectFields.listItem && field.type === fieldName),
     );
 
-  return size(
-    fields.filter(field => field.name === fieldName || field.name === TYPES_OF_MENU_ITEM.FORM),
-  );
+  return size(fields.filter(field => field.name === fieldName));
 };
 
 export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
