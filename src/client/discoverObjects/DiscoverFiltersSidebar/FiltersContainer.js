@@ -66,7 +66,8 @@ const FiltersContainer = ({
   };
 
   const isCollapsed = name => collapsedFilters.includes(name);
-
+  console.log(filters);
+  console.log(tagsFilters);
   return (
     <div className="SidebarContentBlock__content">
       <div className="collapsible-block">

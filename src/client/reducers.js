@@ -126,6 +126,7 @@ export const getWebsiteParentHost = state => fromApp.getWebsiteParentHost(state.
 export const getHelmetIcon = state => fromApp.getHelmetIcon(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
+export const getTags = state => fromFeed.getTags(state.feed);
 
 export const getComments = state => fromComments.getComments(state.comments);
 export const getCommentsList = state => fromComments.getCommentsList(state.comments);

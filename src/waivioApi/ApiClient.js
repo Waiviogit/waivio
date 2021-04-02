@@ -182,6 +182,7 @@ export const getUserProfileBlog = (
   follower,
   { startAuthor = '', startPermlink = '', limit = 10, skip },
   locale = 'en-US',
+  tags,
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
@@ -197,6 +198,7 @@ export const getUserProfileBlog = (
         skip,
         start_author: startAuthor,
         start_permlink: startPermlink,
+        tagsCondition: tags,
       }),
     })
       .then(res => res.json())

@@ -97,10 +97,11 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   });
 };
 
-export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true }) => (
-  dispatch,
-  getState,
-) => {
+export const getUserProfileBlogPosts = (
+  userName,
+  { limit = 10, initialLoad = true },
+  tags = [],
+) => (dispatch, getState) => {
   let startAuthor = '';
   let startPermlink = '';
   let userBlogPosts = [];
@@ -133,6 +134,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
         skip: userBlogPosts.length,
       },
       locale,
+      tags,
     ),
     meta: {
       sortBy: 'blog',

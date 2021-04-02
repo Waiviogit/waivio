@@ -16,6 +16,7 @@ const initialState = {
   bookmarks: {},
   replies: {},
   promoted: {},
+  tags: [],
 };
 
 const feedIdsList = (state = [], action) => {
@@ -39,6 +40,10 @@ const feedIdsList = (state = [], action) => {
       }
       return [];
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
+      if (action && action.payload) {
+        return mapPostsKeys(action.payload.posts);
+      }
+      return [];
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
@@ -90,6 +95,14 @@ const feedCategory = (state = {}, action) => {
         list: feedIdsList(state.list, action),
       };
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        isLoaded: true,
+        failed: false,
+        hasMore: Boolean(action.payload.posts.length === action.meta.limit),
+        list: feedIdsList(state.list, action),
+      };
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
@@ -215,6 +228,7 @@ const feed = (state = initialState, action) => {
       return {
         ...state,
         [action.meta.sortBy]: feedSortBy(state[action.meta.sortBy], action),
+        tags: action.payload.tags,
       };
     case TOGGLE_BOOKMARK:
       return {
@@ -235,3 +249,4 @@ const feed = (state = initialState, action) => {
 export default feed;
 
 export const getFeed = state => state;
+export const getTags = state => state.tags;

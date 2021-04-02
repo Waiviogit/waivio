@@ -24,6 +24,7 @@ import UserSidebar from './UserSidebar';
   locale: store.getLocale(state),
   isGuest: store.isGuestUser(state),
   feed: store.getFeed(state),
+  filters: store.getTags(state),
 }))
 export default class RightSidebar extends React.Component {
   static propTypes = {
@@ -35,6 +36,7 @@ export default class RightSidebar extends React.Component {
     locale: PropTypes.string,
     isGuest: PropTypes.bool,
     feed: PropTypes.shape().isRequired,
+    filters: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -45,6 +47,7 @@ export default class RightSidebar extends React.Component {
     authenticated: false,
     isAuthFetching: false,
     isGuest: false,
+    filters: [],
   };
 
   render() {
@@ -57,6 +60,7 @@ export default class RightSidebar extends React.Component {
       locale,
       isGuest,
       feed,
+      filters,
     } = this.props;
 
     const content = getFeedFromState('blog', authUserName, feed);
@@ -85,6 +89,7 @@ export default class RightSidebar extends React.Component {
                 match={match}
                 authUserName={authUserName}
                 locale={locale}
+                filters={filters}
               />
             )}
           />
