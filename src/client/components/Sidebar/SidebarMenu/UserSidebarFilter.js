@@ -13,7 +13,7 @@ const UserSidebarFilter = ({ intl, username }) => {
   const [selectedFields, setSelectedFields] = useState([]);
   const dispatch = useDispatch();
   const filters = useSelector(getTags);
-  console.log(username);
+
   const handleOnChangeCheckbox = e => {
     const { value, checked } = e.target;
     let checkedFilters;
