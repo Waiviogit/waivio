@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { get, size, reduce } from 'lodash';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Debts from '../Debts/Debts';
 
@@ -12,19 +12,51 @@ const PayablesContainer = ({
   location,
   setPayablesFilterValue,
 }) => {
-  const payableFilters = {};
-  _.map(filterData, f => {
-    payableFilters[f.filterName] = f.value;
-  });
   const [lenders, setLenders] = useState({});
+  const [loading, setLoading] = useState(false);
+  const payableFilters = reduce(
+    filterData,
+    (acc, f) => {
+      acc[f.filterName] = f.value;
+
+      return acc;
+    },
+    {},
+  );
+
   useEffect(() => {
-    getLenders({
-      sponsor: userName,
-      filters: payableFilters,
-    })
-      .then(data => setLenders(data))
+    setLoading(true);
+    getLenders(
+      {
+        sponsor: userName,
+        filters: payableFilters,
+      },
+      0,
+      15,
+    )
+      .then(data => {
+        setLenders(data);
+        setLoading(false);
+      })
       .catch(e => console.log(e));
   }, [filterData]);
+
+  const handleLoadingMore = () =>
+    getLenders(
+      {
+        sponsor: userName,
+        filters: payableFilters,
+      },
+      size(lenders.histories),
+      10,
+    ).then(data => {
+      setLenders({
+        ...lenders,
+        histories: [...get(lenders, 'histories', []), ...data.histories],
+        hasMore: data.hasMore,
+      });
+    });
+
   return (
     <Debts
       userName={userName}
@@ -33,6 +65,8 @@ const PayablesContainer = ({
       componentLocation={location.pathname}
       activeFilters={filterData}
       setPayablesFilterValue={setPayablesFilterValue}
+      handleLoadingMore={handleLoadingMore}
+      loading={loading}
     />
   );
 };

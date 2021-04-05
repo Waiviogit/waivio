@@ -12,6 +12,7 @@ import {
   omitBy,
   isNil,
   size,
+  uniqBy,
 } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
@@ -227,9 +228,9 @@ export default class AppendForm extends Component {
         id: item.body || item.author_permlink,
         checkedItemInList: !isEmpty(sortCustom) ? sortCustom.includes(item.author_permlink) : true,
       }));
-      let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), wObject.sortCustom);
-      const sorting = listItems.filter(item => !wObject.sortCustom.includes(item.author_permlink));
-      sortedListItems = [...sortedListItems, ...sorting];
+      let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), sortCustom);
+      const sorting = listItems.filter(item => !sortCustom.includes(item.author_permlink));
+      sortedListItems = uniqBy([...sortedListItems, ...sorting], '_id');
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
         itemsInSortingList: sortedListItems,
