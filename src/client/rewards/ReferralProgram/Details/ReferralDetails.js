@@ -37,6 +37,7 @@ const ReferralDetail = props => {
     suspendedTimer,
     username,
   } = props;
+
   useEffect(() => {
     getReferralDetails();
   }, []);

@@ -83,6 +83,7 @@ export const getFakeSingleComment = (
       },
     });
   });
+
   dispatch({
     type: GET_SINGLE_COMMENT.ACTION,
     payload: {
@@ -102,11 +103,13 @@ const getRootCommentsList = apiRes => {
 
 const getCommentsChildrenLists = apiRes => {
   const listsById = {};
+
   Object.keys(apiRes.content).forEach(commentKey => {
     listsById[getPostKey(apiRes.content[commentKey])] = apiRes.content[commentKey].replies.map(
       childKey => apiRes.content[childKey] && getPostKey(apiRes.content[childKey]),
     );
   });
+
   return listsById;
 };
 
@@ -124,10 +127,12 @@ export const getComments = postId => (dispatch, getState) => {
   const matchPost = listFields && listFields.find(field => field.permlink === postId);
   const content = posts.list[postId] || comments.comments[postId] || matchPost;
   const locale = getLocale(getState());
+
   if (content) {
     // eslint-disable-next-line camelcase
     const { category, permlink } = content;
     const author = content.guestInfo ? content.root_author : content.author;
+
     dispatch({
       type: GET_COMMENTS.ACTION,
       payload: {
@@ -143,7 +148,7 @@ export const getComments = postId => (dispatch, getState) => {
             commentsChildrenList: getCommentsChildrenLists(apiRes),
             content: apiRes.content,
           }))
-          .catch(e => console.log(e)),
+          .catch(e => console.error(e)),
       },
       meta: {
         id: postId,
@@ -193,14 +198,17 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
 
   let rootPostId = null;
+
   if (parentPost.parent_author) {
     const { comments: commentsState } = comments;
     const commentsWithBotAuthor = {};
+
     Object.values(commentsState).forEach(val => {
       commentsWithBotAuthor[`${val.author}/${val.permlink}`] = val;
     });
     rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
   }
+
   return dispatch({
     type: SEND_COMMENT,
     payload: {
@@ -267,6 +275,7 @@ export const sendCommentMessages = (
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const { category, id, permlink: parentPermlink } = parentPost;
   let parentAuthor;
+
   if (isUpdating) {
     parentAuthor = originalComment.parent_author;
   } else if (parentPost.guestInfo) {
@@ -275,6 +284,7 @@ export const sendCommentMessages = (
     parentAuthor = parentPost.author;
   }
   const { auth, comments } = getState();
+
   if (!auth.isAuthenticated) {
     return dispatch(notify('You have to be logged in to comment', 'error'));
   }
@@ -301,9 +311,11 @@ export const sendCommentMessages = (
     isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
 
   let rootPostId = null;
+
   if (parentPost.parent_author) {
     const { comments: commentsState } = comments;
     const commentsWithBotAuthor = {};
+
     Object.values(commentsState).forEach(val => {
       commentsWithBotAuthor[`${val.author}/${val.permlink}`] = val;
     });
@@ -361,6 +373,7 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
       promise: steemConnectAPI.vote(voter, author, permlink, weight).then(async data => {
         const res = isGuest ? await data.json() : data.result;
         const subscribeCallback = () => dispatch(getSingleComment(author, permlink));
+
         if (data.status !== 200 && isGuest) throw new Error(data.message);
 
         busyAPI.instance.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);

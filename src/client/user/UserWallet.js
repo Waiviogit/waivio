@@ -173,6 +173,7 @@ class Wallet extends Component {
   componentWillUnmount() {
     const { isCurrentUser, authenticatedUserName, history } = this.props;
     const username = isCurrentUser ? authenticatedUserName : this.props.match.params.name;
+
     if (history.location.pathname !== `/@${username}/transfers/table`) {
       this.props.clearTransactionsHistory();
     }
@@ -180,6 +181,7 @@ class Wallet extends Component {
 
   tableButton = () => {
     const { intl, user } = this.props;
+
     return (
       <span
         className="UserWallet__view-btn"
@@ -242,6 +244,7 @@ class Wallet extends Component {
         />
       );
     }
+
     return (
       <div className="UserWallet__empty-transactions-list">
         <FormattedMessage

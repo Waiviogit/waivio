@@ -19,6 +19,7 @@ describe('(Component) NotificationSettings', () => {
         </IntlProvider>
       </Provider>,
     );
+
     expect(wrapper).toMatchSnapshot();
   });
 });

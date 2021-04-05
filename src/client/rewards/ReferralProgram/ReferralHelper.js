@@ -12,6 +12,7 @@ export const handleProcessingFees = (staticValue, currentValue) =>
 export const handleRefName = refName => refName.replace(/^"(.+(?="$))"$/, '$1');
 export const handleStatusDaysLeft = days => {
   const currentValue = String(days);
+
   return currentValue.split('-').join('');
 };
 export const getPrymaryObjectLink = sponsor =>
@@ -36,6 +37,7 @@ export const handleLoadMoreUserStatusCards = ({
   let skip = 0;
   const limit = 10;
   const userCardsLength = size(currentUserCards);
+
   if (userCardsLength >= limit) {
     skip = userCardsLength;
   }
@@ -59,10 +61,12 @@ export const widget = username =>
 
 export const getCopyTextButtonResult = (setIsCopyButton, username) => {
   const reservoir = document.createElement('textarea');
+
   reservoir.value = widget(username);
   document.body.appendChild(reservoir);
   reservoir.select();
   document.execCommand('copy');
   document.body.removeChild(reservoir);
+
   return setIsCopyButton(true);
 };

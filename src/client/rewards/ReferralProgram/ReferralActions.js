@@ -60,6 +60,7 @@ export const getChangeOnConfirmReferral = (username, isGuestName, blockNum) => (
               dispatch({
                 type: REFERRAL_CONFIRM_RULES.SUCCESS,
               });
+
               return {
                 referralStatus: res.referralStatus,
                 referralList: res.referral,
@@ -85,14 +86,17 @@ export const referralConfirmRules = (username, isGuest) => (
     .then(async res => {
       if (!res.message) {
         const data = isGuest ? await res.json() : await res.result;
+
         return dispatch(getChangeOnConfirmReferral(username, isGuest, get(data, 'block_num')));
       }
+
       return dispatch({
         type: REFERRAL_CONFIRM_RULES.ERROR,
       });
     })
     .catch(err => {
       message.error(err.message);
+
       return dispatch({
         type: REFERRAL_CONFIRM_RULES.ERROR,
       });
@@ -115,6 +119,7 @@ export const getChangeOnRejectReferral = (username, isGuestName, blockNum) => (
               dispatch({
                 type: REFERRAL_REJECT_RULES.SUCCESS,
               });
+
               return {
                 referralStatus: res.referralStatus,
                 referralList: res.referral,
@@ -140,14 +145,17 @@ export const referralRejectRules = (username, isGuest) => (
     .then(async res => {
       if (!res.message) {
         const data = isGuest ? await res.json() : await res.result;
+
         return dispatch(getChangeOnRejectReferral(username, isGuest, get(data, 'block_num')));
       }
+
       return dispatch({
         type: REFERRAL_REJECT_RULES.ERROR,
       });
     })
     .catch(err => {
       message.error(err.message);
+
       return dispatch({
         type: REFERRAL_REJECT_RULES.ERROR,
       });

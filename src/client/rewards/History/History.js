@@ -64,6 +64,7 @@ const History = ({
     } else if (isGuideHistory) {
       return sortGuideHistory;
     }
+
     return sortMessages;
   }, [isHistory, isGuideHistory, sortHistory, sortGuideHistory, sortMessages]);
 
@@ -131,6 +132,7 @@ const History = ({
     } else if (isGuideHistory) {
       return activeGuideHistoryFilters;
     }
+
     return activeMessagesFilters;
   }, [
     isHistory,
@@ -155,6 +157,7 @@ const History = ({
       getUserBlackList(userName).then(data => {
         const blacklist = get(data, ['value', 'blackList', 'blackList']);
         const blacklistNames = map(blacklist, user => user.name);
+
         setBlacklistUsers(blacklistNames);
       });
     }

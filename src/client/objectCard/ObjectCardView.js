@@ -34,10 +34,12 @@ const ObjectCardView = ({
     'ObjectCardView--hovered': hovered,
   });
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
+
   pathName = hasType(wObject, 'page') ? path : pathName;
 
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
+
     setTags([wObject.object_type, ...objectTags]);
   }, [wObject.author_permlink, setTags]);
 

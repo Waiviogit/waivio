@@ -215,6 +215,7 @@ export default class Buttons extends React.Component {
     const upVotesPreview = votes => {
       const sponsors = [];
       const currentUpvotes = [];
+
       take(votes, 10).map(vote => {
         if (vote.sponsor) {
           sponsors.push(<Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>);
@@ -230,6 +231,7 @@ export default class Buttons extends React.Component {
             </p>,
           );
         }
+
         return null;
       });
 
@@ -297,6 +299,7 @@ export default class Buttons extends React.Component {
         </span>
       );
     }
+
     return (
       <div className="Buttons">
         <React.Fragment>

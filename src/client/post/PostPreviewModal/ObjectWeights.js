@@ -24,17 +24,20 @@ class ObjectWeight extends React.PureComponent {
   handlePercentChange = percent => {
     const { percentMax } = this.props;
     const percentValue = percent < percentMax ? percent : percentMax;
+
     this.setState({ percent: percentValue });
   };
 
   handleAfterPercentChange = percent => {
     const { objId, onPercentChange } = this.props;
+
     onPercentChange(objId, percent);
   };
 
   render() {
     const { percent } = this.state;
     const { objId, objName } = this.props;
+
     return (
       <div key={objId} className="object-weights__item">
         <div className="obj-item-name">{`${objName} ${percent}%`}</div>
@@ -61,9 +64,11 @@ const ObjectWeights = ({
   const [weightBuffer, setWeightBuffer] = useState(
     Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100),
   );
+
   useEffect(() => {
     setWeightBuffer(Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100));
   }, [objPercentage]);
+
   return (
     <div className="object-weights">
       <div className="object-weights__header">

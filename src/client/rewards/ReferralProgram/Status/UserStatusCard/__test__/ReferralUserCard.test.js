@@ -22,6 +22,7 @@ describe('ReferralUserCard', () => {
   it('should simulate click on user card', () => {
     wrapper = shallow(<IntlProvider locale="en">{ReferralUserCard(props)}</IntlProvider>);
     const container = wrapper.find('.ReferralUserCard');
+
     container.simulate('click');
     expect(mockData.history.push).toHaveBeenCalled();
   });

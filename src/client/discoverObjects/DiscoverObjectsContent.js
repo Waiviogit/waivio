@@ -228,9 +228,11 @@ class DiscoverObjectsContent extends Component {
       history,
       location,
     } = this.props;
+
     e.preventDefault();
     if (filter === 'rating') {
       const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, false);
+
       dispatchSetActiveFilters(updatedFilters);
 
       changeUrl({ ...activeTagsFilters, ...updatedFilters }, history, location);
@@ -241,6 +243,7 @@ class DiscoverObjectsContent extends Component {
         filter,
         false,
       );
+
       this.props.setTagsFiltersAndLoad(updateTagsFilter);
       changeUrl({ ...activeFilters, ...updateTagsFilter }, history, location);
     }
@@ -249,6 +252,7 @@ class DiscoverObjectsContent extends Component {
   resetMapFilter = () => {
     const { activeFilters, dispatchSetActiveFilters } = this.props;
     const updatedFilters = omit(activeFilters, ['map']);
+
     dispatchSetActiveFilters(updatedFilters);
   };
 
@@ -278,6 +282,7 @@ class DiscoverObjectsContent extends Component {
     currencyId,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+
     this.setState({ loadingAssign: true });
     this.props
       .assignProposition({
@@ -378,7 +383,7 @@ class DiscoverObjectsContent extends Component {
         </SortSelector.Item>
       </SortSelector>
     ) : (
-      <SortSelector sort="weight" onChange={e => console.log('onSortChange', e)}>
+      <SortSelector sort="weight">
         <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
           {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
         </SortSelector.Item>
@@ -454,6 +459,7 @@ class DiscoverObjectsContent extends Component {
                 const maxReward = get(wObj, ['campaigns', 'max_reward']);
                 const rewardMaxPassed =
                   maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
+
                 return (
                   <Campaign
                     proposition={wObj}
@@ -483,6 +489,7 @@ class DiscoverObjectsContent extends Component {
                   />
                 ));
               }
+
               return (
                 <ObjectCardView
                   key={wObj.id}

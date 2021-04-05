@@ -146,6 +146,7 @@ class PostContent extends React.Component {
   renderWithCommentsSettings = () => {
     const { hash, pathname } = window.location;
     const { content } = this.props;
+
     // PostContent renders only when content is loaded so it's good moment to scroll to comments.
     if (hash.indexOf('comments') !== -1 || /#@[a-zA-Z0-9-.]+\/[a-zA-Z0-9-]+/.test(hash)) {
       if (
@@ -161,6 +162,7 @@ class PostContent extends React.Component {
         );
 
       const el = document.getElementById('comments');
+
       if (el) el.scrollIntoView({ block: 'start' });
     }
   };
@@ -210,7 +212,9 @@ class PostContent extends React.Component {
 
   handleEditClick = post => {
     const { intl } = this.props;
+
     if (post.depth === 0) return this.props.editPost(post, intl);
+
     return this.props.push(`${post.url}-edit`);
   };
 
@@ -266,6 +270,7 @@ class PostContent extends React.Component {
 
     const { title, category, created, body, guestInfo } = content;
     let hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
+
     hashtags = hashtags.map(hashtag => `#${hashtag}`);
     const authorName = getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
@@ -288,6 +293,7 @@ class PostContent extends React.Component {
     const url = `${waivioHost}${replaceBotWithGuestName(dropCategory(content.url), guestInfo)}`;
     const ampUrl = `${url}/amp`;
     const metaTitle = `${title} - Waivio`;
+
     return (
       <div>
         <Helmet>

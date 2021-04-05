@@ -10,6 +10,7 @@ describe('(Component) ObjectCardViewwith default props', () => {
         <ObjectCardView />
       </IntlProvider>,
     );
+
     expect(wrapper).toMatchSnapshot();
   });
 });

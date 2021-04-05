@@ -11,6 +11,7 @@ export default function createAmpHandler(template) {
         req.params.author,
         req.params.permlink,
       ]);
+
       if (result.id === 0) return res.sendStatus(404);
       const appUrl = url.format({
         protocol: req.protocol,
@@ -18,9 +19,11 @@ export default function createAmpHandler(template) {
       });
 
       const page = renderAmpPage(result, appUrl, template);
+
       return res.send(page);
     } catch (error) {
       debug('Error while parsing AMP response', error);
+
       return res.status(500).send('500 Internal Server Error');
     }
   };

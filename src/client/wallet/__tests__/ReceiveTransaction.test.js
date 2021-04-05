@@ -26,6 +26,7 @@ describe('(Component) ReceiveTransaction', () => {
           <ReceiveTransaction {...props} />
         </Provider>,
       );
+
       expect(wrapper).toMatchSnapshot();
     });
   });

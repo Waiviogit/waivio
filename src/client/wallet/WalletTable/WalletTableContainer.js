@@ -277,6 +277,7 @@ class WalletTableContainer extends React.Component {
         </div>
       );
     }
+
     return (
       <div className="WalletTable__empty-table">
         {intl.formatMessage({
@@ -300,6 +301,7 @@ class WalletTableContainer extends React.Component {
     const currentUsername = get(user, 'name', '');
     const isGuestPage = guestUserRegex.test(currentUsername);
     const transactions = this.getCurrentTransactions(isGuestPage, tableTransactionsHistory);
+
     return (
       <React.Fragment>
         <TableFilter

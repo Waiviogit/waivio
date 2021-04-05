@@ -38,7 +38,7 @@ const PayablesContainer = ({
         setLenders(data);
         setLoading(false);
       })
-      .catch(e => console.log(e));
+      .catch(e => console.error(e));
   }, [filterData]);
 
   const handleLoadingMore = () =>

@@ -66,6 +66,7 @@ const ModalSignIn = ({
     } else if (isModalOpen && response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
       const res = await isUserRegistered(id, socialNetwork);
+
       if (res) {
         dispatch(login(response.accessToken, socialNetwork)).then(() => {
           setIsLoading(false);

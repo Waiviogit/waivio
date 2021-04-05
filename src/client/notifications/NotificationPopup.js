@@ -52,6 +52,7 @@ class NotificationPopup extends Component {
       const { latestNotification, currentAuthUsername } = nextProps;
       const key = `open${Date.now()}`;
       const username = getNotificationsAvatar(latestNotification, '');
+
       notification.open({
         message: (
           <a
@@ -90,6 +91,7 @@ class NotificationPopup extends Component {
 
   navigateToNotification(latestNotification) {
     const { history, currentAuthUsername } = this.props;
+
     history.push(getNotificationsLink(latestNotification, currentAuthUsername));
   }
 

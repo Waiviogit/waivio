@@ -47,10 +47,12 @@ export default class Invite extends React.Component {
 
   createInviteURL() {
     const { authenticatedUserName, isGuest } = this.props;
+
     if (typeof window !== 'undefined') {
       const inviteURL = isGuest
         ? `${window.location.protocol}//${window.location.host}/i/@${authenticatedUserName}`
         : `https://www.waivio.com?ref=${authenticatedUserName}`;
+
       this.setState({ inviteURL });
     }
   }
@@ -70,6 +72,7 @@ export default class Invite extends React.Component {
       handleCopyClick: this.handleCopyClick,
       authenticatedUserName,
     };
+
     if (isBlackListUser) {
       return (
         <FormattedMessage
@@ -87,6 +90,7 @@ export default class Invite extends React.Component {
     } else if (isGuest) {
       return <InviteGuestUser data={data} />;
     }
+
     return <InviteHiveUser data={data} />;
   };
 

@@ -10,6 +10,7 @@ import './Notification.less';
 const NotificationReply = ({ notification, currentAuthUsername, read, onClick }) => {
   const { permlink, parent_permlink: parentPermlink, author, timestamp, reply } = notification;
   const commentURL = `/@${currentAuthUsername}/${parentPermlink}/#@${author}/${permlink}`;
+
   return (
     <Link
       to={commentURL}

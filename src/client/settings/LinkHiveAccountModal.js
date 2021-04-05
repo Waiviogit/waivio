@@ -62,6 +62,7 @@ const LinkHiveAccountModal = ({
         notGuest
       />
     );
+
   return (
     <Modal
       visible={showModal}

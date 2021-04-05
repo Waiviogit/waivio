@@ -35,6 +35,7 @@ const TransferButton = ({
     }
     openTransf(name, payableForRender, currency, memo, app);
   };
+
   return (
     <React.Fragment>
       {pathRecivables && payable < 0 && (

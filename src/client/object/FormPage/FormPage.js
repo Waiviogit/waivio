@@ -7,6 +7,7 @@ import './FormPage.less';
 
 const FormPage = props => {
   const { wobject, currentForm } = props;
+
   return (
     <div className="FormPage">
       {currentForm.column === formColumnsField.entire && (

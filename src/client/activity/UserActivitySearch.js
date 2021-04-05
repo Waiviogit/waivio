@@ -184,6 +184,7 @@ class UserActivitySearch extends React.Component {
         if (isChecked) {
           return filterArray.concat(filterValues[filter].value);
         }
+
         return filterArray;
       },
       [],

@@ -22,6 +22,7 @@ const PaymentList = props => {
       >
         {map(props.renderData, debtObjData => {
           const name = debtObjData.userName || debtObjData.guideName;
+
           return (
             <PaymentCard
               key={name}

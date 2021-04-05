@@ -9,7 +9,7 @@ if (typeof window !== 'undefined' && window.analytics) {
       window.analytics.page({ url: location.pathname });
     });
   } catch (err) {
-    console.log('Logging error', err);
+    console.error('Logging error', err);
   }
 }
 

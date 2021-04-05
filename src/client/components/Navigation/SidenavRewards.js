@@ -78,6 +78,7 @@ export default class SidenavRewards extends React.Component {
 
   toggleMenuCondition = menuItem => {
     const { menuCondition } = this.state;
+
     this.setState({
       menuCondition: {
         ...menuCondition,
@@ -99,6 +100,7 @@ export default class SidenavRewards extends React.Component {
       isExpired,
     } = this.props;
     const { menuCondition } = this.state;
+
     return (
       <React.Fragment>
         <ul className="Sidenav">

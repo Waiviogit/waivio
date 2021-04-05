@@ -46,6 +46,7 @@ const CatalogBreadcrumb = ({
 
     if (findBreadCrumbs) {
       const findIndex = currentBreadCrumbs.findIndex(findWobj);
+
       currentBreadCrumbs.splice(findIndex + 1);
     } else {
       currentBreadCrumbs = [...currentBreadCrumbs, compareBreadcrumb(wObject)];
@@ -67,6 +68,7 @@ const CatalogBreadcrumb = ({
       });
     } else {
       const usedObj = location.hash ? nestedWobject : wobject;
+
       handleChangeBreadCrumbs(usedObj);
     }
   }, [location.hash, wobject]);

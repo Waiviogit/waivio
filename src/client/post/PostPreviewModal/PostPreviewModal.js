@@ -97,6 +97,7 @@ class PostPreviewModal extends Component {
       linkedObjects,
       ...settings,
     };
+
     this.props.onUpdate(postData);
   };
 
@@ -130,6 +131,7 @@ class PostPreviewModal extends Component {
       ...objPercentage,
       [objId]: { percent },
     };
+
     onPercentChange(nextObjPercentage);
   };
 

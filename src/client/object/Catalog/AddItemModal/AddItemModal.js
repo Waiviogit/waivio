@@ -83,6 +83,7 @@ class AddItemModal extends Component {
     form.validateFields((err, values) => {
       const isManualSelected = isModalOpen && !isEmpty(values);
       const objectValues = isManualSelected ? values : createdObjectValues;
+
       if (!err && !this.state.isLoading) {
         this.setState({ isLoading: true });
         const langReadable = filter(LANGUAGES, { id: objectValues.locale })[0].name;

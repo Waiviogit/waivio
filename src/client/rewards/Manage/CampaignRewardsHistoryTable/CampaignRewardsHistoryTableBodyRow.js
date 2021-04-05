@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash';
 
 const CampaignRewardsHistoryTableBodyRow = ({ currentItem }) => {
   const payed = isEmpty(currentItem.payed) ? 0 : currentItem.payed;
+
   return (
     <React.Fragment>
       <tr>

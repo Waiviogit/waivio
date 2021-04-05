@@ -27,13 +27,15 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink
       userName: sponsor.userName,
       reservationPermlink: sponsor.details.reservation_permlink,
     };
+
     getReport(requestParams)
       .then(data => {
         dispatch(setDataForSingleReport(data));
       })
       .then(() => setModalReportOpen(!isModalReportOpen))
-      .catch(e => console.log(e));
+      .catch(e => console.error(e));
   };
+
   useEffect(() => {
     if (reservationPermlink === sponsor.details.reservation_permlink) {
       toggleModalReport();

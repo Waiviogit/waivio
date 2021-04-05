@@ -41,6 +41,7 @@ class Replies extends React.Component {
 
   componentDidMount() {
     const { authenticated } = this.props;
+
     if (authenticated) {
       this.props.getReplies();
     }
@@ -100,10 +101,5 @@ const mapStateToProps = state => ({
 });
 
 export default requiresLogin(
-  injectIntl(
-    connect(
-      mapStateToProps,
-      { getReplies, getMoreReplies, showPostModal },
-    )(Replies),
-  ),
+  injectIntl(connect(mapStateToProps, { getReplies, getMoreReplies, showPostModal })(Replies)),
 );

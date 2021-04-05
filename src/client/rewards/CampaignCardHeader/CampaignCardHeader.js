@@ -23,6 +23,7 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
   } HIVE`;
   const rewardPriceUsd = `${campainReward.toFixed(2)} USD`;
   const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
+
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">

@@ -78,6 +78,7 @@ export const pendingSearch = (searchString, intl) => {
       </div>
     </AutoComplete.Option>
   );
+
   return [downBar];
 };
 

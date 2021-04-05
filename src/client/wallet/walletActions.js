@@ -88,6 +88,7 @@ const parseSteemUserActions = userActions => {
 
     userAccountHistory.push(actionDetails);
   });
+
   return {
     userWalletTransactions,
     userAccountHistory,
@@ -131,6 +132,7 @@ const parseGuestActions = actions => {
 const getParsedUserActions = (userActions, isGuest) => {
   if (isGuest) {
     const userWalletTransactions = parseGuestActions(get(userActions, ['histories'], []));
+
     return {
       userWalletTransactions,
       userAccountHistory: userWalletTransactions.length
@@ -138,6 +140,7 @@ const getParsedUserActions = (userActions, isGuest) => {
         : [{ actionCount: 0 }],
     };
   }
+
   return parseSteemUserActions(userActions);
 };
 
@@ -158,6 +161,7 @@ export const getMoreUserAccountHistory = (
   endDate,
 ) => dispatch => {
   const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
+
   return dispatch({
     type: GET_MORE_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
@@ -169,6 +173,7 @@ export const getMoreUserAccountHistory = (
         endDate,
       ).then(userActions => {
         const parsedUserActions = getParsedUserActions(userActions, isGuest);
+
         return {
           username,
           userWalletTransactions: parsedUserActions.userWalletTransactions,
@@ -212,6 +217,7 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
 
   if (isEmpty(lastDisplayedAction)) {
     dispatch(setInitialCurrentDisplayedActions(username));
+
     return;
   }
 
@@ -231,6 +237,7 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
     const filteredMoreActions = filter(moreActions, userAction =>
       actionsFilter(userAction, accountHistoryFilter, username),
     );
+
     dispatch(
       addMoreActionsToCurrentDisplayedActions({
         moreActions,
@@ -240,12 +247,14 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   } else {
     const lastActionCount = last(currentUsersActions).actionCount;
     const limit = lastActionCount < defaultAccountLimit ? lastActionCount : defaultAccountLimit;
+
     dispatch(getMoreUserAccountHistory(username, lastActionCount, limit));
   }
 };
 
 export const getUserAccountHistory = (username, tableView, startDate, endDate) => dispatch => {
   const isGuest = guestUserRegex.test(username);
+
   return dispatch({
     type: GET_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
@@ -308,7 +317,7 @@ export const getUserTableTransactionHistory = (
           operationNumTable: data.operationNum,
           hasMoreTable: data.hasMore,
         }))
-        .catch(error => console.log(error)),
+        .catch(error => console.error(error)),
     },
   });
 

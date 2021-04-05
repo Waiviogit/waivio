@@ -123,6 +123,7 @@ const SearchAllResult = props => {
 
   const getEndScroll = e => {
     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+
     if (bottom) setIsScrolled(true);
     else setIsScrolled(false);
   };

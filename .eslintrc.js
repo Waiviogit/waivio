@@ -31,7 +31,7 @@ module.exports = {
         ],
       },
     ],
-    'no-console': OFF,
+    'no-console': [ERROR, { allow: ["warn", "error"] }],
     'global-require': OFF,
     // Allow mixed linebreaks locally, but commit only LF.
     'linebreak-style': process.env.CI ? ['error', 'unix'] : OFF,
@@ -44,10 +44,10 @@ module.exports = {
         'render'
       ]
     }],
-    // "padding-line-between-statements": [2,
-    //   { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
-    //   { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
-    //   { "blankLine": "always", "prev": "*", "next": "return" }
-    // ]
+    "padding-line-between-statements": [2,
+      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+      { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
+      { "blankLine": "always", "prev": "*", "next": "return" }
+    ]
   },
 };

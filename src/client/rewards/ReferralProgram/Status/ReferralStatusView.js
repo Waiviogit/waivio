@@ -32,6 +32,7 @@ const ReferralStatusView = ({ propsData }) => {
       isLoadingMoreUserCards,
       getMoreUserCards,
     };
+
     return handleLoadMoreUserStatusCards(values);
   };
 

@@ -21,6 +21,7 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
 }
 
 const accessToken = Cookie.get('access_token');
+
 if (accessToken) {
   steemConnectAPI.setAccessToken(accessToken);
 }
@@ -57,8 +58,10 @@ const render = async Component => {
     if (width < 400) return 'xsmall';
     if (width < 768) return 'small';
     if (width < 998) return 'medium';
+
     return 'large';
   };
+
   store.dispatch(setUsedLocale(lang));
   store.dispatch(setScreenSize(screenSize(window.screen.width)));
   window.addEventListener('resize', () =>

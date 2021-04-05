@@ -45,6 +45,7 @@ class Manage extends React.Component {
 
   componentDidMount() {
     const { userName } = this.props;
+
     if (userName) {
       ApiClient.getCampaignsByGuideName(userName).then(data => {
         this.setState({
@@ -57,6 +58,7 @@ class Manage extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { userName } = this.props;
+
     if (userName !== prevProps.userName) {
       ApiClient.getCampaignsByGuideName(userName).then(data => {
         this.setState({
@@ -69,6 +71,7 @@ class Manage extends React.Component {
 
   balanceContent = () => {
     const { intl } = this.props;
+
     return (
       <React.Fragment>
         <div>
@@ -84,6 +87,7 @@ class Manage extends React.Component {
 
   rewardsCampaignContent = () => {
     const { intl } = this.props;
+
     return (
       <React.Fragment>
         <div>

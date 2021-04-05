@@ -18,6 +18,7 @@ const BellButton = ({ bellUserNotifications, authUserName, user, wobj, bellWobjN
     if (!isEmpty(wobj.author_permlink)) {
       return bellWobjNotification(wobj.author_permlink);
     }
+
     return bellUserNotifications(authUserName, user.name);
   };
 

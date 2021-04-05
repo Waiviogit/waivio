@@ -13,9 +13,11 @@ import { getObjectName } from '../../../helpers/wObjectHelper';
 
 const itemsCount = 5;
 const usersSection = 'People';
+
 function buildFollowingUpdatesMenuConfig(updates) {
   const config = {};
   const { usersUpdates, objectsUpdates } = updates;
+
   if (usersUpdates.users && usersUpdates.users.length) {
     config[usersSection] = {
       name: usersSection,
@@ -36,6 +38,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
   if (!isEmpty(objectsUpdates)) {
     Object.values(objectsUpdates).forEach(objectsGroup => {
       const { object_type: objType, related_wobjects: objects, hasMore } = objectsGroup;
+
       config[objType] = {
         name: objType,
         intlId: objType,
@@ -47,6 +50,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
           const intlId = followingObject.author_permlink;
           const meta = followingObject.last_posts_count > 0 ? followingObject.last_posts_count : '';
           const linkTo = `/feed/${followingObject.author_permlink}?category=${followingObject.object_type}&name=${followingObject.name}`;
+
           return {
             name,
             intlId,

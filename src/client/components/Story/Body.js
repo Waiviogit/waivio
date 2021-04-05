@@ -51,6 +51,7 @@ export function getHtml(
   isGuest,
 ) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
+
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
   let parsedBody = body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
@@ -65,6 +66,7 @@ export function getHtml(
 
   if (videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
+
     if (videoLink) parsedBody = parsedBody.replace(videoPreviewResult[0], videoLink);
   }
 
@@ -72,6 +74,7 @@ export function getHtml(
   parsedBody = remarkable.render(parsedBody);
 
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
+
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
 
   if (options.rewriteLinks) {
@@ -93,10 +96,12 @@ export function getHtml(
   const sections = [];
 
   const splittedBody = parsedBody.split('~~~ embed:');
+
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
     const extractedLinks = extractLinks(section);
     const match = section.match(/^([A-Za-z0-9./_-]+) ([A-Za-z0-9]+) (\S+) ~~~/);
+
     if (match && match.length >= 4) {
       const id = match[1];
       const type = match[2];
@@ -122,12 +127,15 @@ export function getHtml(
         (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
         [],
       );
+
       // eslint-disable-next-line no-loop-func
       uniqueLinks.forEach(item => {
         let link = item;
+
         if (link.includes('3speak.co')) {
           const type = 'video';
           const embed = getEmbed(link);
+
           link = link.substring(` ${type} ${link}`.length);
 
           sections.push(
@@ -149,6 +157,7 @@ export function getHtml(
       sections.push(section);
     }
   }
+
   // eslint-disable-next-line react/no-danger
   return <div dangerouslySetInnerHTML={{ __html: sections.join('') }} />;
 }

@@ -68,6 +68,7 @@ class CreateTag extends React.Component {
       let currentTags = await getObjectsByIds({
         authorPermlinks: this.props.categories[0].categoryItems.map(tag => tag.name),
       });
+
       currentTags = currentTags.wobjects.map(tag => tag);
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ currentTags });
@@ -79,6 +80,7 @@ class CreateTag extends React.Component {
   getFieldRules = fieldName => {
     const { intl } = this.props;
     const rules = fieldsRules[fieldName] || [];
+
     return rules.map(rule => {
       if (has(rule, 'message')) {
         return {
@@ -89,6 +91,7 @@ class CreateTag extends React.Component {
       if (has(rule, 'validator')) {
         return { validator: this.validateFieldValue };
       }
+
       return rule;
     });
   };
@@ -113,6 +116,7 @@ class CreateTag extends React.Component {
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === 'categoryItem',
     );
+
     if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
       callback(
         intl.formatMessage({
@@ -136,6 +140,7 @@ class CreateTag extends React.Component {
     const currentLocale = this.props.form.getFieldValue('currentLocale');
     const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
     const { categoryItem, selectedCategory } = this.state;
+
     return `@${currentUsername} added #tag ${categoryItem.author_permlink} (${langReadable}) into ${selectedCategory.body} category`;
   };
 
@@ -146,6 +151,7 @@ class CreateTag extends React.Component {
     const { categoryItem, selectedCategory } = this.state;
     const currentLocale = this.props.form.getFieldValue('currentLocale');
     const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
+
     this.props.form.validateFields(err => {
       if (!err) {
         this.setState({ loading: true });
@@ -186,6 +192,7 @@ class CreateTag extends React.Component {
   getWobjectData = () => {
     const { currentUsername, wObject } = this.props;
     const data = {};
+
     data.author = currentUsername;
     data.parentAuthor = wObject.author;
     data.parentPermlink = wObject.author_permlink;
@@ -230,10 +237,12 @@ class CreateTag extends React.Component {
 
   handleSelectCategory = async value => {
     const category = this.props.categories.find(item => item.body === value);
+
     if (!isEmpty(category.categoryItems)) {
       let currentTags = await getObjectsByIds({
         authorPermlinks: category.categoryItems.map(tag => tag.name),
       });
+
       currentTags = currentTags.wobjects.map(tag => tag);
       this.setState({ selectedCategory: category, currentTags });
     } else {

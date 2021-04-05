@@ -47,21 +47,25 @@ const Details = ({
 
   const getRequiredObjectName = () => {
     let result;
+
     if (requiredObjectName.includes('&')) {
       result = requiredObjectName.replace('&', '%26');
     } else {
       result = requiredObjectName;
     }
+
     return result;
   };
 
   const getProposedWobjName = () => {
     let result;
+
     if (proposedWobjName && proposedWobjName.toString().includes('&')) {
       result = proposedWobjName.replace('&', '%26');
     } else {
       result = proposedWobjName;
     }
+
     return result;
   };
 
@@ -97,6 +101,7 @@ const Details = ({
       removeToggleFlag();
       history.push(`/object/${proposedWobj.author_permlink}`);
     }
+
     return toggleModal(value);
   };
 

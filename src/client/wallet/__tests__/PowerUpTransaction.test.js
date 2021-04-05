@@ -13,6 +13,7 @@ describe('(Component) PowerUpTransactionFrom', () => {
         transactionType: 'transfer_to_vesting',
       };
       const wrapper = shallow(<PowerUpTransactionFrom {...props} />);
+
       expect(wrapper).toMatchSnapshot();
     });
   });

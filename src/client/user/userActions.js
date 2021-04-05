@@ -98,6 +98,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   }
 
   const targetUsername = username || authUserName;
+
   return dispatch({
     type: GET_FOLLOWING_OBJECTS,
     payload: {
@@ -112,6 +113,7 @@ export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
   const locale = store.getLocale(state);
   const isUpdatesFetched = store.getFollowingUpdatesFetched(state);
   const userName = store.getAuthenticatedUserName(state);
+
   if (!isUpdatesFetched && userName) {
     dispatch({
       type: GET_FOLLOWING_UPDATES.ACTION,
@@ -261,6 +263,7 @@ export const assignProposition = ({
       }),
     },
   ];
+
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
@@ -300,6 +303,7 @@ export const rejectReview = ({
       }),
     },
   ];
+
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
@@ -335,11 +339,13 @@ export const reinstateReward = ({ companyAuthor, username, reservationPermlink, 
       }),
     },
   ];
+
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => {
         resolve('SUCCESS');
+
         return dispatch({
           type: SET_PENDING_UPDATE.START,
         });
@@ -392,6 +398,7 @@ export const changeReward = ({
       }),
     },
   ];
+
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
@@ -436,6 +443,7 @@ export const declineProposition = ({
       }),
     },
   ];
+
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
@@ -537,6 +545,7 @@ export const bellNotifications = (follower, following) => (
 ) => {
   const state = getState();
   const subscribe = !get(state, ['users', 'users', following, 'bell']);
+
   dispatch({
     type: BELL_USER_NOTIFICATION.START,
     payload: { following },
@@ -546,6 +555,7 @@ export const bellNotifications = (follower, following) => (
     .then(res => {
       if (res.message) {
         message.error(res.message);
+
         return dispatch({
           type: BELL_USER_NOTIFICATION.ERROR,
           payload: { following },
@@ -559,6 +569,7 @@ export const bellNotifications = (follower, following) => (
     })
     .catch(err => {
       message.error(err.message);
+
       return dispatch({
         type: BELL_USER_NOTIFICATION.ERROR,
         payload: { following },

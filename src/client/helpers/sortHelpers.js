@@ -54,13 +54,16 @@ export function sortStrings(stringsArr, sortType = 'asc') {
   const sorted = stringsArr.sort((a, b) => {
     const lowerA = a.toLowerCase();
     const lowerB = b.toLowerCase();
+
     if (lowerA > lowerB) {
       return 1;
     } else if (lowerA < lowerB) {
       return -1;
     }
+
     return 0;
   });
+
   return sortType === 'asc' ? sorted : sorted.reverse();
 }
 

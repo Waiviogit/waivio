@@ -160,6 +160,7 @@ export default class Transfer extends React.Component {
     } = this.props;
     const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
     const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
+
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState(() => ({ currency }));
 

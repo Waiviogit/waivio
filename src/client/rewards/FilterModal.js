@@ -33,6 +33,7 @@ const FilterModal = ({
     if (name === 'messagesSponsors') return 'sponsors';
     if (name === 'messagesCampaigns') return 'campaigns';
     if (name === 'caseStatus') return 'Case status';
+
     return name;
   };
 
@@ -46,11 +47,13 @@ const FilterModal = ({
 
   const handleOnChangeCheckbox = e => {
     const { name: filterValue, value: filter } = e.target;
+
     if (isPayables) {
       const settedValue = find(
         Object.values(filters)[0],
         value => value.filterName === filterValue,
       );
+
       setFilterValue(settedValue);
     } else if (history) {
       setActiveMessagesFilters(filterValue, filter);
@@ -62,6 +65,7 @@ const FilterModal = ({
   const renderValues = (filterName, filterValues) =>
     map(sortStrings(filterValues), value => {
       const isChecked = get(activeFilters, [filterName], []).some(active => active === value);
+
       return (
         <div key={`${filterName}_${value}`} className="collapsible-block__item">
           <Checkbox
@@ -79,6 +83,7 @@ const FilterModal = ({
   const filtersCheked = useMemo(() => {
     if (isHistory) return activeHistoryFilters;
     if (isMessages) return activeMessagesFilters;
+
     return activeGuideHistoryFilters;
   }, [
     isHistory,
@@ -95,6 +100,7 @@ const FilterModal = ({
         filterName !== 'caseStatus'
           ? get(filtersCheked, [filterName], []).some(active => active === value)
           : filtersCheked.caseStatus === value;
+
       return (
         <div key={`${filterName}_${value}`} className="collapsible-block__item">
           <Checkbox
@@ -114,6 +120,7 @@ const FilterModal = ({
       const isChecked = Object.values(activePayablesFilters).some(
         active => active.filterName === value.filterName,
       );
+
       return (
         <div key={`${filterName}_${value.filterName}`} className="collapsible-block__item">
           <Checkbox
@@ -137,6 +144,7 @@ const FilterModal = ({
     if (isHistory) return filtersHistory;
     if (isMessages) return filtersMessages;
     if (isGuideHistory) return filtersGuideHistory;
+
     return filters;
   }, [
     isHistory,

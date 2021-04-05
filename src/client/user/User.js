@@ -123,8 +123,10 @@ export default class User extends React.Component {
       isOpenWalletTable,
       helmetIcon,
     } = this.props;
+
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
+
     if (!isEmpty(user) && !user.id && !user.fetching)
       return (
         <div className="main-panel">
@@ -142,6 +144,7 @@ export default class User extends React.Component {
     let desc = `Posts by ${username}`;
     let displayedUsername = username;
     let coverImage = null;
+
     if (profile) {
       desc = profile.about || `Posts by ${username}`;
       displayedUsername = profile.name || username || '';

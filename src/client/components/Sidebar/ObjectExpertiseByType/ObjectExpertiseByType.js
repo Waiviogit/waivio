@@ -26,6 +26,7 @@ const ObjectExpertiseByType = ({ match, intl }) => {
         setObjectsState({ experts: [...data], loading: false });
       })
       .catch(() => setObjectsState({ ...initialState, loading: false }));
+
     return () => setObjectsState(initialState);
   }, [match.params.typeName]);
 

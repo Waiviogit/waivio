@@ -20,6 +20,7 @@ const SponsoredRewards = props => {
 
   const data = { username };
   const { sponsoredRewardsTitle } = sponsoredRewardsMainContent(data);
+
   return (
     <SponsoredRewardsView
       intl={intl}

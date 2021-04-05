@@ -30,6 +30,7 @@ class ExpandingBlock extends Component {
     if (typeof entity === 'string') {
       return <div key={entity}>{entity}</div>;
     }
+
     return entity;
   };
 

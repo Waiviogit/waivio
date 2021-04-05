@@ -31,6 +31,7 @@ describe('<SkeletonCustom />', () => {
 
   it('Should not be undefined <Skeleton/>', () => {
     const skeleton = div.find('div');
+
     expect(skeleton).not.toBeUndefined();
   });
 

@@ -23,9 +23,10 @@ const Reports = ({ intl, userName }) => {
       .then(data => {
         setSponsors(data.histories);
         const hive = currency ? getIsHive(currency) : isHive;
+
         setIsHive(hive);
       })
-      .catch(e => console.log(e));
+      .catch(e => console.error(e));
   };
 
   useEffect(() => {

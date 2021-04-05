@@ -22,6 +22,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
   }, []);
 
   const isTypeChosen = Boolean(match.params.typeName);
+
   return (
     <div className="shifted">
       <Helmet>

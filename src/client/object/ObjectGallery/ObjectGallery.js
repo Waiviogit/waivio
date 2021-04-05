@@ -73,6 +73,7 @@ export default class ObjectGallery extends Component {
   render() {
     const { showModal } = this.state;
     const { match, albums, loading, isAuthenticated, relatedAlbum, isWaivio } = this.props;
+
     if (loading) return <Loading center />;
     const albumsForRender = [...albums, relatedAlbum];
     const empty = isEmpty(albumsForRender);

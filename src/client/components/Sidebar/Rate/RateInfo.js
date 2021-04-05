@@ -41,6 +41,7 @@ class RateInfo extends React.Component {
   getInitialRateValue = field => {
     const { username } = this.props;
     const voter = field.rating_votes && field.rating_votes.find(rate => rate.voter === username);
+
     return voter ? ratePercent.indexOf(voter.rate) + 1 : 0;
   };
 
@@ -69,6 +70,7 @@ class RateInfo extends React.Component {
         </React.Fragment>
       );
     }
+
     return null;
   };
 

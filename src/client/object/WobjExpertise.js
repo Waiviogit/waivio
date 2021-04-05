@@ -20,6 +20,7 @@ export default class WobjExpertise extends React.Component {
         skip.length,
         WobjExpertise.limit,
       );
+
       resolve({ users: data.users, hasMore: data.users.length === WobjExpertise.limit });
     });
   };

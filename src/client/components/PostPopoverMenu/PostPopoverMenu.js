@@ -95,6 +95,7 @@ const PostPopoverMenu = ({
   const handleShare = isTwitter => {
     const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;
     const permlink = get(post, 'permlink', '');
+
     if (!userComments) {
       getSocialInfoPost(authorPost, permlink).then(res => {
         const socialInfoPost = res.value;
@@ -118,20 +119,25 @@ const PostPopoverMenu = ({
             title,
           )}" ${authorTwitter} ${objectTwitter}`;
           const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
+
           window.location.assign(twitterShareURL);
         } else {
           const facebookShareURL = getFacebookShareURL(postURL);
+
           window.location.assign(facebookShareURL);
         }
       });
     } else {
       const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
+
       if (isTwitter) {
         const shareTextSocialTwitter = `"${encodeURIComponent(title)}"`;
         const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL);
+
         window.location.assign(twitterShareURL);
       } else {
         const facebookShareURL = getFacebookShareURL(postURL);
+
         window.location.assign(facebookShareURL);
       }
     }

@@ -237,6 +237,7 @@ export const addWebAdministrator = (host, account) => (dispatch, getState, { ste
     .then(async res => {
       if (!res.message) {
         const data = await res.result;
+
         return dispatch(
           getChangesInAccessOption(
             get(data, 'block_num'),
@@ -247,6 +248,7 @@ export const addWebAdministrator = (host, account) => (dispatch, getState, { ste
           ),
         );
       }
+
       return dispatch({
         type: ADD_WEBSITE_ADMINISTRATOR.ERROR,
       });
@@ -310,6 +312,7 @@ export const addWebsiteModerators = (host, account) => (
     .then(async res => {
       if (!res.message) {
         const data = await res.result;
+
         return dispatch(
           getChangesInAccessOption(
             get(data, 'block_num'),
@@ -320,6 +323,7 @@ export const addWebsiteModerators = (host, account) => (
           ),
         );
       }
+
       return dispatch({
         type: ADD_WEBSITE_MODERATORS.ERROR,
       });
@@ -379,6 +383,7 @@ export const addWebAuthorities = (host, account) => (dispatch, getState, { steem
     .then(async res => {
       if (!res.message) {
         const data = await res.result;
+
         return dispatch(
           getChangesInAccessOption(
             get(data, 'block_num'),
@@ -389,6 +394,7 @@ export const addWebAuthorities = (host, account) => (dispatch, getState, { steem
           ),
         );
       }
+
       return dispatch({
         type: ADD_WEBSITE_AUTHORITIES.ERROR,
       });
@@ -583,6 +589,7 @@ export const muteUser = (follower, following, action, host) => (
   { steemConnectAPI },
 ) => {
   const type = size(action) ? MUTE_USER : UNMUTE_USER;
+
   dispatch({
     type: type.START,
     meta: following,

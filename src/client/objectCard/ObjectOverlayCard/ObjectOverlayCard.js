@@ -31,10 +31,12 @@ const ObjectOverlayCard = ({
   const parentName = getObjectName(parent);
   const isProposition = has(wObject, 'propositions');
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
+
   pathName = hasType(wObject, 'page') ? path : pathName;
 
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
+
     setTags(objectTags);
   }, [wObject.author_permlink]);
 

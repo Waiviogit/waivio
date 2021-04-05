@@ -7,6 +7,7 @@ import { ratePercent } from '../../../../common/constants/listOfFields';
 function getInitialRateValue(field, currUser) {
   const voter =
     field && field.rating_votes && field.rating_votes.find(rate => rate.voter === currUser);
+
   return voter ? ratePercent.indexOf(voter.rate) + 1 : 0;
 }
 

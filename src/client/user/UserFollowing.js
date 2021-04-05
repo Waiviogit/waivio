@@ -63,12 +63,15 @@ export default class UserFollowing extends React.Component {
       this.props.sort,
     );
     const users = response.users;
+
     UserFollowing.skip += UserFollowing.limit;
+
     return { users, hasMore: response.hasMore };
   }
 
   objectFetcher = skip => {
     const { match, authUser, locale } = this.props;
+
     return getWobjectFollowing(match.params.name, skip, UserFollowing.limit, authUser, locale);
   };
 

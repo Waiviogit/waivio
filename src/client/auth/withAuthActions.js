@@ -58,6 +58,7 @@ export default function withAuthActions(WrappedComponent) {
         this.displayLoginModal();
       } else {
         const path = window.location.pathname === '/' ? '' : window.location.pathname;
+
         window.location.href = `https://${this.props.domain}/sign-in?host=${window.location.host}${path}`;
       }
     }
