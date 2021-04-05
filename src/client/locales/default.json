@@ -1617,8 +1617,8 @@
   "object_field_formField": "Form",
   "form": "Form title",
   "columns": "Columns",
-  "form_link": "Link",
-  "form_widget": "Widget",
+  "Link": "Link",
+  "Widget": "Widget",
   "enter": "Enter",
   "home": "Home",
   "inactive_website_pricing": "Inactive website pricing:",
@@ -1632,5 +1632,8 @@
   "over": "Over",
   "object_fiels_news_select_placeholder": "Please select",
   "object_field_form": "Form",
-  "payables_empty": "Payables is empty"
+  "payables_empty": "Payables is empty",
+  "middle": "Middle",
+  "middle_right": "Middle + Right",
+  "entire": "Entire Width"
 }

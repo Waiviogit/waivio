@@ -116,8 +116,8 @@ export const blogFields = {
 
 export const formColumnsField = {
   middle: 'Middle',
-  middleRight: 'Middle + Right',
-  entire: 'Entire Width',
+  middle_right: 'Middle + Right',
+  entire: 'Entire',
 };
 
 export const formFormFields = {

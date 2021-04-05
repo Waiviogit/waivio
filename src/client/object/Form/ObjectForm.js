@@ -52,9 +52,12 @@ const ObjectForm = props => {
           ],
         })(
           <Select disabled={loading} onChange={handleSelectColumn}>
-            {map(formColumnsField, column => (
-              <Select.Option key={column} value={column}>
-                {column}
+            {map(Object.keys(formColumnsField), column => (
+              <Select.Option key={formColumnsField[column]} value={formColumnsField[column]}>
+                {intl.formatMessage({
+                  id: column,
+                  defaultMessage: formColumnsField[column],
+                })}
               </Select.Option>
             ))}
           </Select>,
@@ -82,7 +85,10 @@ const ObjectForm = props => {
           <Select disabled={loading} onChange={handleSelectForm}>
             {map(formFormFields, formItem => (
               <Select.Option id={formItem} value={formItem}>
-                {formItem}
+                {intl.formatMessage({
+                  id: formItem,
+                  defaultMessage: formItem,
+                })}
               </Select.Option>
             ))}
           </Select>,
@@ -91,7 +97,7 @@ const ObjectForm = props => {
       {formForm === formFormFields.link ? (
         <React.Fragment>
           <div className="ant-form-item-label AppendForm__appendTitles">
-            <FormattedMessage id="form_link" defaultMessage="Link" />
+            <FormattedMessage id="Link" defaultMessage="Link" />
           </div>
           <Form.Item>
             {form.getFieldDecorator('formLink', {
@@ -100,7 +106,7 @@ const ObjectForm = props => {
               <Input
                 disabled={loading}
                 placeholder={intl.formatMessage({
-                  id: 'form_link',
+                  id: 'Link',
                   defaultMessage: 'Link',
                 })}
               />,
@@ -110,7 +116,7 @@ const ObjectForm = props => {
       ) : (
         <React.Fragment>
           <div className="ant-form-item-label AppendForm__appendTitles">
-            <FormattedMessage id="form_widget" defaultMessage="Widget" />
+            <FormattedMessage id="Widget" defaultMessage="Widget" />
           </div>
           <Form.Item>
             {form.getFieldDecorator('formWidget', {
@@ -131,7 +137,7 @@ const ObjectForm = props => {
                 autoSize={{ minRows: 4, maxRows: 100 }}
                 disabled={loading}
                 placeholder={intl.formatMessage({
-                  id: 'paste_widget',
+                  id: 'Widget',
                   defaultMessage: 'Paste code',
                 })}
               />,

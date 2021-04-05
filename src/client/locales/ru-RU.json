@@ -1623,8 +1623,8 @@
   "object_field_formField": "Форма",
   "form": "Название формы",
   "columns": "Колонки",
-  "form_link": "Ссылка",
-  "form_widget": "Виджет",
+  "Link": "Ссылка",
+  "Widget": "Виджет",
   "form_back": "Назад к ревью",
   "enter": "Ввести",
   "paste_widget": "Вставьте код",
@@ -1635,5 +1635,8 @@
   "object_field_news_title": "Название новостного фильтра",
   "payables_empty": "Кредиторская задолженность пуста",
   "over": "Больше",
-  "object_fiels_news_select_placeholder": "Выберите правило"
+  "object_fiels_news_select_placeholder": "Выберите правило",
+  "middle": "Средняя",
+  "middle_right": "Средняя + Правая",
+  "entire": "Полная ширина"
 }
