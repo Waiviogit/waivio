@@ -67,7 +67,6 @@ const CatalogWrap = props => {
         });
       } else {
         setSortingBy(defaultSortBy(wobject));
-        // eslint-disable-next-line no-use-before-define
         setLists(
           sortListItemsBy(
             itemsList(get(wobject, 'sortCustom', []), wobject),

@@ -89,6 +89,12 @@
   .balance {
     border-bottom: 1px dotted rgb(160, 159, 159);
     cursor: pointer;
+
+    &--disabled {
+      cursor: not-allowed;
+      color: @silver;
+      border-bottom: 1px dotted @silver;
+    }
   }
 
   &__amount {
