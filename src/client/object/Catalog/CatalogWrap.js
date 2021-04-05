@@ -43,7 +43,7 @@ const CatalogWrap = props => {
   const [recencySortList, setRecencySortList] = useState();
 
   useEffect(() => {
-    const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
+    const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'rank' : 'custom');
     const isDefaultCustom = obj => defaultSortBy(obj) === 'custom';
 
     if (!isEmpty(wobject)) {
