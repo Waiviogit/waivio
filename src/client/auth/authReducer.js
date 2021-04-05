@@ -22,6 +22,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case types.LOGIN_START:
       if (action.meta && action.meta.refresh) return state;
+
       return {
         ...state,
         isFetching: true,
@@ -156,10 +157,13 @@ export const getAuthenticatedUserNotificationsSettings = state =>
 export const getAuthenticatedUserPrivateEmail = state => state.privateEmail;
 export const getAuthenticatedUserAvatar = state => {
   let jsonMetadata = get(state, 'user.posting_json_metadata');
+
   if (jsonMetadata) {
     jsonMetadata = JSON.parse(state.user.posting_json_metadata);
+
     return get(jsonMetadata, 'profile.profile_image');
   }
+
   return undefined;
 };
 export const getAuthorizationUserFollowSort = state => state.sort;

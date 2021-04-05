@@ -60,6 +60,7 @@ export const getAuthGuestBalance = () => (dispatch, getState) => {
       payload: getGuestPaymentsHistory(userName),
     });
   }
+
   return dispatch({ type: UPDATE_GUEST_BALANCE.ERROR });
 };
 
@@ -215,6 +216,7 @@ export const changeSorting = sorting => dispatch => {
     type: CHANGE_SORTING_FOLLOW,
     payload: sorting,
   });
+
   return Promise.resolve();
 };
 

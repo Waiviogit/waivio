@@ -106,6 +106,7 @@ export const validatorsCreator = (
 
   checkMinExpertise: (rule, value, callback) => {
     const dec = String(value).indexOf('.');
+
     if (value.length > dec + 3) {
       callback(messages.minExpertiseValue);
     } else if (value < 0 && value !== '') {
@@ -149,6 +150,7 @@ export const validatorsCreator = (
 
   compareBudgetValues: (rule, value, callback) => {
     const userUSDBalance = parseFloat(user.balance);
+
     if (value > 0 && value < 0.001) callback(messages.budgetLess);
     if (value <= 0 && value !== '') callback(messages.budgetToZero);
     else if (userUSDBalance < value) callback(messages.budgetToSteemBalance);
@@ -157,6 +159,7 @@ export const validatorsCreator = (
 
   compareRewardAndBudget: (rule, value, callback) => {
     const budgetValue = Number(getFieldValue('budget'));
+
     if (value > 0 && value < 0.001) callback(messages.rewardsLess);
     if (value <= 0 && value !== '') callback(messages.rewardToZero);
     else if (budgetValue < value) callback(messages.rewardToBudget);

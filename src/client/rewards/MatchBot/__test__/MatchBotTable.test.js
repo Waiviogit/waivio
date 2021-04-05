@@ -27,6 +27,7 @@ describe('MatchBotTable', () => {
       wrapper.update();
     });
     const component = wrapper.find('table');
+
     expect(component).toHaveLength(1);
   });
 
@@ -35,6 +36,7 @@ describe('MatchBotTable', () => {
       wrapper.update();
     });
     const component = wrapper.find('th');
+
     expect(component).toHaveLength(6);
   });
 
@@ -43,6 +45,7 @@ describe('MatchBotTable', () => {
       wrapper.update();
     });
     const component = wrapper.find('.basicWidth');
+
     expect(component).toHaveLength(3);
   });
 
@@ -51,6 +54,7 @@ describe('MatchBotTable', () => {
       wrapper.update();
     });
     const component = wrapper.find('.sponsorWidth');
+
     expect(component).toHaveLength(1);
   });
 
@@ -59,6 +63,7 @@ describe('MatchBotTable', () => {
       wrapper.update();
     });
     const component = wrapper.find('.dateWidth');
+
     expect(component).toHaveLength(1);
   });
 
@@ -67,6 +72,7 @@ describe('MatchBotTable', () => {
       wrapper.update();
     });
     const component = wrapper.find('.notesWidth');
+
     expect(component).toHaveLength(1);
   });
 });

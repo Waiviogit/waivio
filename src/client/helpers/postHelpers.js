@@ -49,8 +49,10 @@ export const replaceBotWithGuestName = (url, guestInfo) => {
     if (url.match(botNameRegex)[0] === `@${POST_AUTHOR_FOR_REWARDS_COMMENTS}`) {
       return url;
     }
+
     return guestInfo && guestInfo.userId ? url.replace(botNameRegex, `@${guestInfo.userId}`) : url;
   }
+
   return null;
 };
 
@@ -74,6 +76,7 @@ export function getAppData(post) {
         version,
       };
     }
+
     return {};
   } catch (error) {
     return {};
@@ -151,6 +154,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, cam
 export function splitPostContent(markdownContent, { bodyKey } = { bodyKey: 'postBody' }) {
   const regExp = new RegExp('^(.*)\n'); // eslint-disable-line
   const postBody = markdownContent.replace(regExp, '');
+
   return {
     [bodyKey]: postBody || '',
   };
@@ -158,6 +162,7 @@ export function splitPostContent(markdownContent, { bodyKey } = { bodyKey: 'post
 
 export function getObjectUrl(objPermlink) {
   if (!objPermlink) return '';
+
   return `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objPermlink}`;
 }
 
@@ -174,9 +179,11 @@ export function getInitialState(props) {
       body: initObjects
         ? initObjects.reduce((acc, curr) => {
             const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
+
             if (!isNil(matches) && matches[1] && matches[2]) {
               return `${acc}[${matches[1]}](${getObjectUrl(matches[2])})\n`;
             }
+
             return acc;
           }, '')
         : '',
@@ -198,9 +205,11 @@ export function getInitialState(props) {
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts.find(d => d.draftId === draftId);
+
   if (draftId && draftPost) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
+
     state = {
       campaign: draftPost.campaignId ? { id: draftPost.campaignId } : null,
       draftId: props.draftId,
@@ -231,6 +240,7 @@ export function getInitialState(props) {
 
 export function isContentValid(markdownContent) {
   const { postBody } = splitPostContent(markdownContent);
+
   return Boolean(postBody.trim());
 }
 
@@ -238,6 +248,7 @@ export function getPostHashtags(items) {
   if (!size(items)) return [];
   const sortedItems = items.sort((a, b) => b.weight - a.weight);
   const postItems = sortedItems.slice(0, 3);
+
   return postItems.map(item => getObjectName(item));
 }
 

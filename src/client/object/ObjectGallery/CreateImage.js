@@ -62,8 +62,10 @@ class CreateImage extends React.Component {
   componentDidMount() {
     const { currentAlbum } = this.state;
     const { albums } = this.props;
+
     if (isEmpty(currentAlbum)) {
       const defaultAlbum = getDefaultAlbum(albums);
+
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ currentAlbum: defaultAlbum });
     }
@@ -72,6 +74,7 @@ class CreateImage extends React.Component {
   getWobjectData = () => {
     const { currentUsername, wObject } = this.props;
     const data = {};
+
     data.author = currentUsername;
     data.parentAuthor = wObject.author;
     data.parentPermlink = wObject.author_permlink;
@@ -98,6 +101,7 @@ class CreateImage extends React.Component {
 
   getWobjectField = image => {
     const { form } = this.props;
+
     return {
       name: 'galleryItem',
       body: image.src,
@@ -128,7 +132,9 @@ class CreateImage extends React.Component {
     const { albums } = this.props;
     let albumName = '';
     const album = albums.find(item => item.id === currentAlbum);
+
     albumName = get(album, 'body');
+
     return albumName;
   };
 
@@ -177,6 +183,7 @@ class CreateImage extends React.Component {
     }
 
     const isAllowed = ALLOWED_IMG_FORMATS.includes(`${file.type.split('/')[1]}`);
+
     if (!isAllowed) {
       message.error(
         this.props.intl.formatMessage(
@@ -189,10 +196,12 @@ class CreateImage extends React.Component {
           },
         ),
       );
+
       return;
     }
 
     const maxSizeByte = MAX_IMG_SIZE[objectFields.background];
+
     if (file.size > maxSizeByte) {
       message.error(
         this.props.intl.formatMessage(
@@ -205,6 +214,7 @@ class CreateImage extends React.Component {
           },
         ),
       );
+
       return;
     }
 
@@ -229,6 +239,7 @@ class CreateImage extends React.Component {
     const { currentImages } = this.state;
 
     const data = this.getWobjectData();
+
     /* eslint-disable no-restricted-syntax */
     for (const image of currentImages) {
       const postData = {
@@ -240,12 +251,15 @@ class CreateImage extends React.Component {
 
       /* eslint-disable no-await-in-loop */
       const response = await this.props.appendObject(postData);
+
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       if (response.transactionId) {
         const filteredFileList = this.state.fileList.filter(file => file.uid !== image.uid);
+
         this.setState({ fileList: filteredFileList }, async () => {
           const img = prepareImageToStore(postData);
+
           await addImageToAlbumStore({
             ...img,
             author: get(response, ['value', 'author']),

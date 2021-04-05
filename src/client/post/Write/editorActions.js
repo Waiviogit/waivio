@@ -87,6 +87,7 @@ export const saveDraft = (draft, redirect, intl) => dispatch =>
 export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+
   if (!userName) dispatch({ type: DELETE_DRAFT_OBJECT.ERROR });
 
   return dispatch({
@@ -101,6 +102,7 @@ export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getSt
 export const deleteDraft = draftIds => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+
   if (!userName) dispatch({ type: DELETE_DRAFT_ERROR });
 
   return dispatch({
@@ -131,6 +133,7 @@ export const editPost = (
     reward,
     title,
   };
+
   dispatch(saveDraft(draft, true, intl));
 };
 
@@ -171,6 +174,7 @@ const broadcastComment = (
       json_metadata: JSON.stringify(jsonMetadata),
     },
   ];
+
   operations.push(commentOp);
   if (isUpdating) return steemConnectAPI.broadcast(operations);
   const guestHivePresent = hiveBeneficiaryAccount && isGuest ? 5000 : 0;
@@ -276,9 +280,11 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
 
     let referral;
+
     if (Cookie.get('referral')) {
       const accountCreatedDaysAgo =
         (new Date().getTime() - new Date(`${authUser.created}Z`).getTime()) / 1000 / 60 / 60 / 24;
+
       if (accountCreatedDaysAgo < 30) {
         referral = Cookie.get('referral');
       }
@@ -323,6 +329,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
           }
           if (isGuest) {
             const publicMessage = getTranslationByKey(state, 'post_publication');
+
             if (upvote) {
               steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
             }
@@ -350,10 +357,12 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
           }
 
           dispatch(clearBeneficiariesUsers());
+
           return result;
         })
         .catch(err => {
           let errorText = 'Error';
+
           dispatch({
             type: CREATE_POST_ERROR,
             payload: err,

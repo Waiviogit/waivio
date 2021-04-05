@@ -14,6 +14,7 @@ export function getCryptoDetails(cryptoQuery) {
     const matchesCryptoId = crypto.id === cryptoQuery;
     const matchesCryptoName = formattedCryptoName === cryptoQuery;
     const matchesCryptoSymbol = formattedCryptoSymbol === cryptoQuery;
+
     return matchesCryptoId || matchesCryptoName || matchesCryptoSymbol;
   });
 
@@ -22,6 +23,7 @@ export function getCryptoDetails(cryptoQuery) {
 
 export const getCurrentDaysOfTheWeek = currentLocale => {
   const date = new Date();
+
   date.setDate(date.getDate() - 7);
   const daysOfTheWeek = [];
   const locale = currentLocale === 'auto' ? window.navigator.language : currentLocale;
@@ -29,6 +31,7 @@ export const getCurrentDaysOfTheWeek = currentLocale => {
   for (let i = 0; i < 7; i += 1) {
     date.setDate(date.getDate() + 1);
     const dateLocale = date.toLocaleString(locale, { weekday: 'short' });
+
     daysOfTheWeek.push(dateLocale);
   }
 
@@ -38,6 +41,7 @@ export const getCurrentDaysOfTheWeek = currentLocale => {
 function getPriceDifferencePercentage(currentCryptoPrice, previousCryptoPrice) {
   const priceDifference = currentCryptoPrice - previousCryptoPrice;
   const priceIncrease = priceDifference / currentCryptoPrice;
+
   return Math.abs(priceIncrease);
 }
 

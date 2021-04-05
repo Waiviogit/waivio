@@ -48,6 +48,7 @@ describe('ObjectExpertiseByType component', () => {
       wrapper.update();
     });
     const component = wrapper.find('.SidebarContentBlock');
+
     expect(component).toHaveLength(1);
   });
 
@@ -56,6 +57,7 @@ describe('ObjectExpertiseByType component', () => {
       wrapper.update();
     });
     const objectCard = wrapper.find('.UserCard');
+
     expect(objectCard).toHaveLength(5);
   });
 
@@ -64,6 +66,7 @@ describe('ObjectExpertiseByType component', () => {
       wrapper.update();
     });
     const buttons = wrapper.find('.ObjectExpertiseByType__more');
+
     expect(buttons).toHaveLength(1);
   });
 
@@ -80,6 +83,7 @@ describe('ObjectExpertiseByType component', () => {
       wrapper.update();
     });
     const modal = wrapper.find('#ObjectExpertiseByType__Modal').childAt(0);
+
     expect(modal.prop('visible')).toBe(true);
   });
 
@@ -103,6 +107,7 @@ describe('ObjectExpertiseByType component', () => {
     });
 
     const userCards = wrapper.find('#ObjectExpertiseByType__Modal').find('.UserCard');
+
     expect(userCards).toHaveLength(8);
   });
 });

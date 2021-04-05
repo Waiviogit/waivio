@@ -49,6 +49,7 @@ class CryptoChart extends React.Component {
 
   toggleDisplayChart() {
     const chartWidth = this.chartContainer.clientWidth;
+
     this.setState(state => ({
       ...state,
       displayChart: !state.displayChart,
@@ -68,7 +69,9 @@ class CryptoChart extends React.Component {
     const priceDifference = _.get(priceDetails, 'usd_24h_change', 0);
     const usdIncrease = priceDifference ? priceDifference >= 0 : false;
     let usdPriceDifferencePercent = priceDifference;
+
     if (usdPriceDifferencePercent) usdPriceDifferencePercent /= 100;
+
     return (
       <div className="CryptoTrendingCharts__chart-value">
         <span className="CryptoTrendingCharts__usd-price">
@@ -110,7 +113,9 @@ class CryptoChart extends React.Component {
     const priceDifference = _.get(priceDetails, 'btc_24h_change', 0);
     const btcIncrease = priceDifference >= 0;
     let btcPriceDifferencePercent = priceDifference;
+
     if (btcPriceDifferencePercent) btcPriceDifferencePercent /= 100;
+
     return (
       <div className="CryptoTrendingCharts__chart-value">
         <span className="CryptoTrendingCharts__btc-price">

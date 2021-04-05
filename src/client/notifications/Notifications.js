@@ -125,6 +125,7 @@ class Notifications extends React.Component {
           {_.map(notifications, (notification, index) => {
             const key = `${index}${notification.timestamp}`;
             const read = lastSeenTimestamp >= notification.timestamp;
+
             switch (notification.type) {
               case notificationConstants.REPLY:
                 return (

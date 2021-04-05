@@ -65,6 +65,7 @@ const EmailConfirmation = ({
 
   const handleSendConfirmation = (changeEmail = '') => {
     const type = changeEmail === 'pullEmail' ? changeEmail : confirmationType;
+
     setIsLoading(true);
 
     sendEmailConfirmation(userName, type, currentEmail, isGuest)

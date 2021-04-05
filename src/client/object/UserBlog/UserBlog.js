@@ -4,6 +4,7 @@ import UserProfile from '../../user/UserProfile';
 
 const UserBlog = props => {
   const { match } = props;
+
   return (
     <div>
       <UserProfile match={match} isBlogInObject />

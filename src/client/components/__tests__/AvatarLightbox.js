@@ -73,6 +73,7 @@ describe('<AvatarLightbox />', () => {
       username: 'username',
       size: 50,
     };
+
     expect(wrapper.find('Avatar').props()).toEqual(AvatarPros);
   });
 

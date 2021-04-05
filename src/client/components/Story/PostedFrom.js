@@ -7,6 +7,7 @@ import './PostedFrom.less';
 
 const PostedFrom = ({ post }) => {
   const { appName, version } = getAppData(post);
+
   if (!appName) {
     return null;
   }

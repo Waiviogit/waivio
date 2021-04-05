@@ -69,6 +69,7 @@ const ObjectExpertise = ({ username, wobject }) => {
       </div>
     );
   }
+
   return renderExperts;
 };
 

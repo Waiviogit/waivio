@@ -6,6 +6,7 @@ import Hero from '../Hero';
 describe('<Hero />', () => {
   it('renders without exploding', () => {
     const wrapper = mount(<Hero />);
+
     act(() => {
       wrapper.update();
     });

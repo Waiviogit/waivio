@@ -59,6 +59,7 @@ class WalletSidebar extends React.Component {
   handleOpenTransfer = () => {
     const { match, user, isCurrentUser, hiveBeneficiaryAccount, isGuest } = this.props;
     const username = match.params.name === user.name || isCurrentUser ? '' : match.params.name;
+
     if (!hiveBeneficiaryAccount && isGuest) this.props.openLinkHiveAccountModal(true);
     this.props.openTransfer(username);
   };

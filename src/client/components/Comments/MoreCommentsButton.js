@@ -9,6 +9,7 @@ const MoreCommentsButton = ({ comments, visibleComments, isQuickComments, onClic
   if (comments === 0 || visibleComments >= comments) {
     return null;
   }
+
   return (
     <button
       className={classNames('MoreCommentsButton', { 'quick-comments': isQuickComments })}

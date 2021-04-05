@@ -86,6 +86,7 @@ export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode)
 
     return limit;
   };
+
   return dispatch(
     getObjectType(
       typeName,

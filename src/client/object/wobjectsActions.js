@@ -71,6 +71,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
 
   if (wobj.type === 'hashtag') {
     const hashtagName = wobj.name.toLowerCase();
+
     return dispatch({
       type: CREATE_WOBJECT,
       payload: {
@@ -91,6 +92,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
                 parentAuthor: wobj.parentAuthor,
                 parentPermlink: wobj.parentPermlink,
               };
+
               return ApiClient.postCreateWaivioObject(requestBody).then(response => {
                 if (follow) {
                   dispatch(followObject(response.permlink));
@@ -124,6 +126,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
             parentAuthor: wobj.parentAuthor,
             parentPermlink: wobj.parentPermlink,
           };
+
           return ApiClient.postCreateWaivioObject(requestBody).then(response => {
             if (follow) {
               dispatch(followObject(response.permlink));

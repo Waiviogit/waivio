@@ -52,6 +52,7 @@ class EditorObject extends React.Component {
         </div>
       );
     }
+
     return layout;
   };
 
@@ -59,6 +60,7 @@ class EditorObject extends React.Component {
     const { intl, wObject, handleRemoveObject, isLinkedObjectsValid } = this.props;
     const pathName = `/object/${wObject.id}`;
     const ratings = this.getObjectRatings();
+
     return (
       <React.Fragment>
         <div

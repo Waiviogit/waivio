@@ -21,6 +21,7 @@ export default function requiresLogin(WrappedComponent) {
     if (!authenticated) {
       return <Error401 />;
     }
+
     return <WrappedComponent userName={userName} {...props} />;
   };
 

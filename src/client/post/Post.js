@@ -76,6 +76,7 @@ export default class Post extends React.Component {
 
   static fetchData({ store, match }) {
     const { author, permlink } = match.params;
+
     return Promise.all([
       store.dispatch(getUserAccount(author)),
       store.dispatch(getContent(author, permlink)),
@@ -111,6 +112,7 @@ export default class Post extends React.Component {
     const { author: prevAuthor, permlink: prevPermlink } = this.props.match.params;
 
     const shouldUpdate = author !== prevAuthor || permlink !== prevPermlink;
+
     if (shouldUpdate && !nextProps.fetching) {
       this.setState({ commentsVisible: false }, () => {
         this.props.getContent(author, permlink, false);

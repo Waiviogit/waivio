@@ -27,6 +27,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   const storyContentBodyClassList = classNames('Story__content__body', {
     'Story__content__body-vimeo': isVimeo,
   });
+
   if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
   const field = get(jsonMetadata, ['wobj', 'field'], {});
@@ -46,6 +47,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     imagePath = getProxyImageURL(jsonMetadata.wobj.field.body, 'preview');
   } else {
     const contentImages = getContentImages(post.body);
+
     if (contentImages.length) {
       imagePath = getProxyImageURL(contentImages[0], 'preview');
     }
@@ -72,6 +74,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     const permlink = get(video, 'info.permlink', '');
     const dTubeEmbedUrl = `https://emb.d.tube/#!/${author}/${permlink}/true`;
     const dTubeIFrame = `<iframe width="100%" height="340" src="${dTubeEmbedUrl}" allowFullScreen></iframe>`;
+
     embeds[0] = {
       type: 'video',
       provider_name: 'DTube',
@@ -81,6 +84,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   }
 
   const videoPreviewResult = post.body.match(videoPreviewRegex);
+
   if (!embeds[0] && videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
 
@@ -156,6 +160,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   } else {
     bodyData.push(preview.text());
   }
+
   return <div>{bodyData}</div>;
 };
 

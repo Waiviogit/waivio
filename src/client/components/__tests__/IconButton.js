@@ -43,6 +43,7 @@ describe('<IconButton />', () => {
 
   it('Should have caption div with txt same as caption prop', () => {
     const caption = wrapper.find('.icon-button__text');
+
     expect(caption.text()).toBe('caption');
   });
 });

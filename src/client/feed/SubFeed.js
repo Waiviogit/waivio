@@ -83,6 +83,7 @@ class SubFeed extends React.Component {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ isAuthHomeFeed: true });
       const fetched = getUserFeedFetchedFromState(user.name, feed);
+
       if (fetched) return;
       this.props.getUserFeedContent(user.name).then(res => {
         if (res.value.message && history.action !== 'PUSH') {
@@ -91,6 +92,7 @@ class SubFeed extends React.Component {
       });
     } else {
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
+
       if (fetched) return;
       this.props.getFeedContent(sortBy, category);
     }
@@ -115,11 +117,13 @@ class SubFeed extends React.Component {
         (isAuthenticated && !wasAuthenticated))
     ) {
       const fetching = getUserFeedLoadingFromState(user.name, feed);
+
       if (!fetching) {
         this.props.getUserFeedContent(user.name);
       }
     } else if (oldSortBy !== newSortBy || oldCategory !== newCategory || (!wasLoaded && isLoaded)) {
       const fetching = getFeedLoadingFromState(newSortBy || 'trending', newCategory, feed);
+
       if (!fetching) {
         this.props.getFeedContent(newSortBy || 'trending', newCategory);
       }

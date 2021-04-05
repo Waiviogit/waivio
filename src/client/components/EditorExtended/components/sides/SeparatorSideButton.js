@@ -24,6 +24,7 @@ class SeparatorSideButton extends Component {
     const content = editorState.getCurrentContent();
     const contentWithEntity = content.createEntity(ATOMIC_TYPES.SEPARATOR, 'IMMUTABLE', {});
     const entityKey = contentWithEntity.getLastCreatedEntityKey();
+
     editorState = EditorState.push(editorState, contentWithEntity, 'create-entity');
     this.props.setEditorState(AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, '***'));
     this.props.close();

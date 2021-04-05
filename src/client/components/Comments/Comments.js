@@ -97,6 +97,7 @@ class Comments extends React.Component {
       this.setState(prevState => {
         const nRenderedComments =
           prevState.nRenderedComments >= 3 ? prevState.nRenderedComments + 1 : 3;
+
         return { nRenderedComments };
       });
     }
@@ -130,9 +131,11 @@ class Comments extends React.Component {
 
   handleImageInserted = (blob, callback, errorCallback) => {
     const { authenticated, username } = this.props;
+
     if (!authenticated) return;
 
     const formData = new FormData();
+
     formData.append('files', blob);
 
     fetch(`https://busy-img.herokuapp.com/@${username}/uploads`, {
@@ -146,6 +149,7 @@ class Comments extends React.Component {
 
   handleImageInvalid = () => {
     const { formatMessage } = this.props.intl;
+
     this.props.notify(
       formatMessage(
         {
@@ -166,6 +170,7 @@ class Comments extends React.Component {
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
 
     this.setState({ showCommentFormLoading: true });
+
     return this.props
       .onSendComment(parentPost, commentValue)
       .then(() => {
@@ -187,6 +192,7 @@ class Comments extends React.Component {
           showCommentFormLoading: false,
           commentFormText: commentValue,
         });
+
         return {
           error: true,
         };
@@ -203,6 +209,7 @@ class Comments extends React.Component {
       );
 
     const result = rootLinkedComment ? [rootLinkedComment, ...filteredComments] : filteredComments;
+
     return this.props.isQuickComments ? result.reverse() : result;
   }
 

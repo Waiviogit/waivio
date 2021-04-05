@@ -5,6 +5,7 @@ import BTooltip from '../BTooltip';
 
 describe('<BTooltip />', () => {
   let props;
+
   beforeEach(() => {
     props = {
       title: 'title',
@@ -14,6 +15,7 @@ describe('<BTooltip />', () => {
   afterEach(() => jest.clearAllMocks());
   it('renders without exploding', () => {
     const wrapper = shallow(<BTooltip {...props} />);
+
     act(() => {
       wrapper.update();
     });
@@ -22,6 +24,7 @@ describe('<BTooltip />', () => {
 
   it('Should render Tooltip', () => {
     const wrapper = mount(<BTooltip {...props} />);
+
     act(() => {
       wrapper.update();
     });

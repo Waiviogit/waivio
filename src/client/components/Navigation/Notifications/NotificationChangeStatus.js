@@ -12,6 +12,7 @@ const NotificationChangeStatus = ({ notification, read, onClick }) => {
   const currentClass = classNames('Notification', {
     'Notification--unread': !read,
   });
+
   return (
     notification.newStatus && (
       <Link to={statusUrl} onClick={onClick} className={currentClass}>

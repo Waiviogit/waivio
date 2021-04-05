@@ -55,6 +55,7 @@ describe('Debts', () => {
       </Provider>,
     );
     const container = component.find('.PaymentCard');
+
     expect(container).toHaveLength(3);
   });
 
@@ -73,6 +74,7 @@ describe('Debts', () => {
       </Provider>,
     );
     const container = component.find('.Debts');
+
     expect(container).toHaveLength(1);
   });
 
@@ -81,6 +83,7 @@ describe('Debts', () => {
       wrapper.update();
     });
     const container = wrapper.find('.Debts');
+
     expect(container).toHaveLength(1);
   });
 
@@ -89,6 +92,7 @@ describe('Debts', () => {
       wrapper.update();
     });
     const container = wrapper.find('.Debts__information-row');
+
     expect(container).toHaveLength(1);
   });
 
@@ -97,6 +101,7 @@ describe('Debts', () => {
       wrapper.update();
     });
     const container = wrapper.find('.Debts__information-row-total-title');
+
     expect(container).toHaveLength(1);
   });
 
@@ -112,6 +117,7 @@ describe('Debts', () => {
       wrapper.update();
     });
     const container = wrapper.find('.PaymentCard');
+
     expect(container).toHaveLength(3);
   });
 });

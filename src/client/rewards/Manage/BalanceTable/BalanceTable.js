@@ -9,6 +9,7 @@ const BalanceTable = props => {
   const payable = budgetTotal.sum_payable ? budgetTotal.sum_payable.toFixed(3) : '0.000';
   const reserved = budgetTotal.sum_reserved ? budgetTotal.sum_reserved.toFixed(3) : '0.000';
   const remaining = budgetTotal.remaining ? budgetTotal.remaining.toFixed(3) : '0.000';
+
   return (
     <table className="BalanceTable">
       <thead>

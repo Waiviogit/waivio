@@ -34,6 +34,7 @@ const editor = (state = defaultState, action) => {
       };
     case authActions.LOGIN_SUCCESS:
       if (action.meta && action.meta.refresh) return state;
+
       return {
         ...state,
         draftPosts: get(action, ['payload', 'userMetaData', 'drafts'], defaultState.draftPosts),
@@ -45,6 +46,7 @@ const editor = (state = defaultState, action) => {
           draftPosts: action.payload.drafts,
         };
       }
+
       return state;
     case editorActions.NEW_POST:
       return {

@@ -21,6 +21,7 @@ class ImageBlock extends React.Component {
     const key = block.getKey();
     const editorState = getEditorState();
     const currentBlock = getCurrentBlock(editorState);
+
     if (currentBlock.getKey() === key) {
       return;
     }
@@ -30,6 +31,7 @@ class ImageBlock extends React.Component {
       anchorOffset: 0,
       focusOffset: 0,
     });
+
     setEditorState(EditorState.forceSelection(editorState, newSelection));
   };
 
@@ -37,6 +39,7 @@ class ImageBlock extends React.Component {
     const { block } = this.props;
     const data = block.getData();
     const src = data.get('src');
+
     if (src !== null) {
       return (
         <div
@@ -48,6 +51,7 @@ class ImageBlock extends React.Component {
         </div>
       );
     }
+
     return <EditorBlock {...this.props} />;
   }
 }

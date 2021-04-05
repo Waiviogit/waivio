@@ -49,6 +49,7 @@ export const getChangesInAccessOption = (
             payload: res,
             meta,
           });
+
           return res;
         })
         .catch(() => {

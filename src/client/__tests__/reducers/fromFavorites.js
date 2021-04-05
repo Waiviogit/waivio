@@ -9,6 +9,7 @@ describe('fromFavorites', () => {
         categories: 'categories',
       },
     };
+
     expect(getFavoriteCategories(state)).toEqual('categories');
   });
 });

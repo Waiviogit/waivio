@@ -127,6 +127,7 @@ class MapOS extends React.Component {
     const { match } = this.props;
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
+
     if (prevPropsMatch === IS_RESERVED && propsMatch !== prevPropsMatch) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ zoom: 0 });
@@ -174,6 +175,7 @@ class MapOS extends React.Component {
   onBoundsChanged = debounce(({ center, zoom, bounds }) => {
     this.setState({ radius: this.calculateRadius(zoom) });
     const { setArea, handleOnBoundsChanged } = this.props;
+
     handleOnBoundsChanged(bounds);
     setArea({ center, zoom });
     this.setState({ center, zoom });
@@ -218,6 +220,7 @@ class MapOS extends React.Component {
 
   getMarkers = () => {
     const { wobjects, match } = this.props;
+
     return (
       !isEmpty(wobjects) &&
       map(wobjects, wobject => {

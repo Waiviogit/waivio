@@ -69,6 +69,7 @@ class LikeSection extends React.Component {
   calculateVoteWorth = value => {
     const { user, rewardFund, rate, onVotePercentChange } = this.props;
     const voteWorth = ceil((calculateVotePower(user, rewardFund, rate) * value) / 100, 3);
+
     this.setState({ votePercent: value, voteWorth });
 
     onVotePercentChange(value);

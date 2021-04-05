@@ -19,6 +19,7 @@ describe('(Component) UserWalletSummary', () => {
         loadingGlobalProperties: false,
       };
       const wrapper = shallow(<UserWalletSummary {...props} />);
+
       expect(wrapper).toMatchSnapshot();
     });
   });

@@ -40,10 +40,12 @@ export default (state = initialState, action) => {
     case searchActions.AUTO_COMPLETE_SEARCH.SUCCESS: {
       const { result, search } = action.payload;
       const { followingUsersList } = action.meta;
+
       result.users.forEach(user => {
         // eslint-disable-next-line no-param-reassign
         user.isFollowing = followingUsersList.includes(user.account);
       });
+
       return {
         ...state,
         autoCompleteSearchResults: isEmpty(search) ? [] : result,
@@ -82,6 +84,7 @@ export default (state = initialState, action) => {
     }
     case searchActions.SEARCH_OBJECT_TYPES.SUCCESS: {
       const { result, search } = action.payload;
+
       return {
         ...state,
         searchObjectTypesResults: isEmpty(search) ? [] : result,
@@ -133,6 +136,7 @@ export default (state = initialState, action) => {
     }
     case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.SUCCESS: {
       const { result } = action.payload;
+
       return {
         ...state,
         usersForDiscoverPage: {
@@ -320,6 +324,7 @@ export default (state = initialState, action) => {
     case searchActions.SAVE_BENEFICIARIES_USERS.ACTION: {
       const key = action.payload;
       const newBeneficiariesUsers = [...state.beneficiariesUsers, { account: key, weight: 0 }];
+
       return {
         ...state,
         beneficiariesUsers: newBeneficiariesUsers,
@@ -330,7 +335,9 @@ export default (state = initialState, action) => {
       const { name, percent } = action.payload;
       const newBeneficiariesUsers = [...state.beneficiariesUsers];
       const benefIndex = findIndex(newBeneficiariesUsers, user => user.account === name);
+
       newBeneficiariesUsers[benefIndex].weight = percent * 100;
+
       return {
         ...state,
         beneficiariesUsers: newBeneficiariesUsers,
@@ -339,7 +346,9 @@ export default (state = initialState, action) => {
 
     case searchActions.REMOVE_BENEFICIARIES_USERS.ACTION: {
       const newBeneficiarieUsers = [...state.beneficiariesUsers];
+
       remove(newBeneficiarieUsers, user => user.account === action.payload);
+
       return {
         ...state,
         beneficiariesUsers: newBeneficiarieUsers,
@@ -422,6 +431,7 @@ export default (state = initialState, action) => {
     case searchActions.GET_FILTER_FOR_SEARCH_MORE.SUCCESS: {
       const currFilters = action.payload.reduce((acc, curr) => {
         const category = state.filters.find(f => f.tagCategory === curr.tagCategory);
+
         return category
           ? [...acc, { ...category, tags: uniqBy([...category.tags, curr.tags], isEqual) }]
           : [...acc, curr];

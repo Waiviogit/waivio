@@ -8,6 +8,7 @@ import { getTransactionDescription } from './WalletHelper';
 const WalletCancelOrder = ({ timestamp, openPays, currentPays, transactionType }) => {
   const options = { openPays };
   const description = getTransactionDescription(transactionType, options);
+
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-container">

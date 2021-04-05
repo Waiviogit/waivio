@@ -13,6 +13,7 @@ export default e => {
     if (e.shiftKey) {
       return unlink();
     }
+
     return showLinkInput();
   }
   if (e.altKey === true && !e.ctrlKey) {
@@ -52,6 +53,7 @@ export default e => {
         return getDefaultKeyBinding(e);
     }
   }
+
   // if (e.keyCode === 46 && !e.ctrlKey) {
   //   return KEY_COMMANDS.deleteBlock();
   // }

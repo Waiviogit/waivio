@@ -39,6 +39,7 @@ describe('<ActionLink />', () => {
 
   it('Should have smth with the same text as children prop', () => {
     const children = wrapper.find('.Action');
+
     expect(children.text()).toBe('some text');
   });
 
@@ -89,6 +90,7 @@ describe('<ActionLink />', () => {
       primary: false,
       small: false,
     };
+
     expect(ActionLink.defaultProps).toEqual(defaultProps);
   });
 });

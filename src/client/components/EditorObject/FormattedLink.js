@@ -24,6 +24,7 @@ class FormattedLink extends React.Component {
     e.preventDefault();
     const { form, handleCloseModal } = this.props;
     const values = form.getFieldsValue();
+
     this.props.addLink('object', { title: values.linkTitle, url: values.url });
     form.resetFields();
     handleCloseModal();

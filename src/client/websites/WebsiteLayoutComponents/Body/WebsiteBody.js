@@ -76,6 +76,7 @@ const WebsiteBody = props => {
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
 
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
+
   if (queryCenter) {
     queryCenter = queryCenter.split(',').map(item => Number(item));
   }
@@ -108,6 +109,7 @@ const WebsiteBody = props => {
 
   useEffect(() => {
     const handleResize = () => setHeight(window.innerHeight);
+
     setHeight(window.innerHeight);
 
     if (props.isAuth) props.getReservedCounter();
@@ -284,9 +286,11 @@ const WebsiteBody = props => {
 
   const setCurrentLocation = () => {
     const nav = navigator.geolocation;
+
     nav.getCurrentPosition(
       position => {
         const { latitude, longitude } = position.coords;
+
         setArea({
           ...area,
           center: [latitude, longitude],

@@ -21,6 +21,7 @@ Get currentBlock in the editorState.
 export const getCurrentBlock = editorState => {
   const selectionState = editorState.getSelection();
   const contentState = editorState.getCurrentContent();
+
   return contentState.getBlockForKey(selectionState.getStartKey());
 };
 
@@ -31,6 +32,7 @@ of the given `newType`.
 
 export const addNewBlock = (editorState, newType = Block.UNSTYLED, initialData = {}) => {
   const selectionState = editorState.getSelection();
+
   if (!selectionState.isCollapsed()) {
     return editorState;
   }
@@ -38,6 +40,7 @@ export const addNewBlock = (editorState, newType = Block.UNSTYLED, initialData =
   const key = selectionState.getStartKey();
   const blockMap = contentState.getBlockMap();
   const currentBlock = getCurrentBlock(editorState);
+
   if (!currentBlock) {
     return editorState;
   }
@@ -56,6 +59,7 @@ export const addNewBlock = (editorState, newType = Block.UNSTYLED, initialData =
 
     return EditorState.push(editorState, newContentState, 'change-block-type');
   }
+
   return editorState;
 };
 
@@ -79,6 +83,7 @@ export const resetBlockWithType = (editorState, newType = Block.UNSTYLED, overri
       focusOffset: 0,
     }),
   });
+
   return EditorState.push(editorState, newContentState, 'change-block-type');
 };
 
@@ -93,6 +98,7 @@ export const updateDataOfBlock = (editorState, block, newData) => {
   const newContentState = contentState.merge({
     blockMap: contentState.getBlockMap().set(block.getKey(), newBlock),
   });
+
   return EditorState.push(editorState, newContentState, 'change-block-data');
 };
 
@@ -112,6 +118,7 @@ export const addNewBlockAt = (
   const content = editorState.getCurrentContent();
   const blockMap = content.getBlockMap();
   const block = blockMap.get(pivotBlockKey);
+
   if (!block) {
     throw new Error(`The pivot key - ${pivotBlockKey} is not present in blockMap.`);
   }
@@ -154,6 +161,7 @@ export const addNewBlockAt = (
       isBackward: false,
     }),
   });
+
   return EditorState.moveFocusToEnd(EditorState.push(editorState, newContent, 'split-block'));
 };
 
@@ -165,11 +173,13 @@ export const isCursorBetweenLink = editorState => {
   const selection = editorState.getSelection();
   const content = editorState.getCurrentContent();
   const currentBlock = getCurrentBlock(editorState);
+
   if (!currentBlock) {
     return ret;
   }
   let entityKey = null;
   let blockKey = null;
+
   if (currentBlock.getType() !== Block.ATOMIC && selection.isCollapsed()) {
     if (currentBlock.getLength() > 0) {
       if (selection.getAnchorOffset() > 0) {
@@ -177,6 +187,7 @@ export const isCursorBetweenLink = editorState => {
         blockKey = currentBlock.getKey();
         if (entityKey !== null) {
           const entity = content.getEntity(entityKey);
+
           if (entity.getType() === Entity.LINK) {
             ret = {
               entityKey,
@@ -188,5 +199,6 @@ export const isCursorBetweenLink = editorState => {
       }
     }
   }
+
   return ret;
 };

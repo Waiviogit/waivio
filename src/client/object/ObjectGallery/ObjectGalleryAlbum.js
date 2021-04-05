@@ -74,6 +74,7 @@ export default class ObjectGalleryAlbum extends Component {
         setWith(album, '[active_votes]', []);
         setWith(album, '[weight]', 0);
       }
+
       return album;
     });
 

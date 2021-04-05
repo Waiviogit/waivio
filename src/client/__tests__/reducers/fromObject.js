@@ -40,6 +40,7 @@ describe('fromObject', () => {
 
   it('Should return rating fields', () => {
     const ratingField = [{ name: 'rating' }];
+
     expect(getRatingFields(state)).toEqual(ratingField);
   });
 

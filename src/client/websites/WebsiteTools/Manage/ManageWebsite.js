@@ -41,6 +41,7 @@ export const ManageWebsite = props => {
 
   const handleClickPayNow = () => {
     let memo = get(dataForPayments, 'memo');
+
     memo = JSON.parse(memo);
 
     props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'HBD', memo.id);

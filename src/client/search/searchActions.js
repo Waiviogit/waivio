@@ -113,7 +113,7 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent, addHa
         search,
         locale: usedLocale,
       }))
-      .catch(error => console.log('Object search >', error.message)),
+      .catch(error => console.error('Object search >', error.message)),
   });
 };
 
@@ -239,7 +239,7 @@ export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
         .then(result => ({
           result,
         }))
-        .catch(console.log),
+        .catch(() => message.error('Something went wrong')),
     },
   });
 };

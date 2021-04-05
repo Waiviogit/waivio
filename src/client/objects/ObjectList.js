@@ -100,6 +100,7 @@ export default class ObjectList extends React.Component {
   unFollow = permlink => {
     const matchWobjIndex = this.state.wobjs.findIndex(wobj => wobj.author_permlink === permlink);
     const wobjectsArray = [...this.state.wobjs];
+
     wobjectsArray.splice(matchWobjIndex, 1, {
       ...wobjectsArray[matchWobjIndex],
       pending: true,

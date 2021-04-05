@@ -32,6 +32,7 @@ const isVideoLink = url => isYoutube(url) || isVimeo(url) || isDTube(url) || isT
 
 const normalizeMd = content => {
   const regExp = new RegExp('<center>|</center>', 'g');
+
   return content.replace(regExp, '');
 };
 
@@ -39,6 +40,7 @@ const getBlockStyleForMd = (node, blockStyles) => {
   const style = node.type;
   const ordered = node.ordered;
   const depth = node.depth;
+
   if (style === 'List' && ordered) {
     return 'ordered-list-item';
   } else if (style === 'Header') {
@@ -53,6 +55,7 @@ const getBlockStyleForMd = (node, blockStyles) => {
   } else if (node.type === 'Paragraph' && node.raw && isVideoLink(node.raw)) {
     return 'atomic';
   }
+
   return blockStyles[style];
 };
 
@@ -82,6 +85,7 @@ const splitMdBlocks = md => {
   // one syntax where there's an block level opening
   // and closing symbol with content in the middle.
   const splitMdWithCodeBlocks = joinCodeBlocks(splitMd);
+
   return splitMdWithCodeBlocks;
 };
 
@@ -106,6 +110,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   const addObject = child => {
     const entityKey = Object.keys(entityMap).length;
     const urlParts = child.url.split('/');
+
     entityMap[entityKey] = {
       type: Entity.OBJECT,
       mutability: 'IMMUTABLE',
@@ -125,6 +130,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
 
   const addLink = child => {
     const entityKey = Object.keys(entityMap).length;
+
     entityMap[entityKey] = {
       type: Entity.LINK,
       mutability: 'MUTABLE',
@@ -152,6 +158,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
     const url = getSrc({ src });
 
     const entityKey = Object.keys(entityMap).length;
+
     entityMap[entityKey] = {
       type: ATOMIC_TYPES.VIDEO,
       mutability: 'IMMUTABLE',
@@ -169,6 +176,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
 
   const addSeparator = child => {
     const entityKey = Object.keys(entityMap).length;
+
     entityMap[entityKey] = {
       type: ATOMIC_TYPES.SEPARATOR,
       mutability: 'IMMUTABLE',
@@ -184,6 +192,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   const parseChildren = (child, style) => {
     // RegEx: [[ embed url=<anything> ]]
     const objectLinkRegEx = /^(https?):\/\/[^\s$\/?#]*\/(object)\/[a-z0-9-]+$/; // eslint-disable-line
+
     switch (child.type) {
       case 'Link':
         if (objectLinkRegEx.test(child.url)) {
@@ -209,13 +218,16 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
 
     if (!isVideoLink(child.raw) && child.children && style) {
       const rawLength = getRawLength(child.children);
+
       addInlineStyleRange(text.length, rawLength, style.type);
       const newStyle = inlineStyles[child.type];
+
       child.children.forEach(grandChild => {
         parseChildren(grandChild, newStyle);
       });
     } else if (!isVideoLink(child.raw) && child.children) {
       const newStyle = inlineStyles[child.type];
+
       child.children.forEach(grandChild => {
         parseChildren(grandChild, newStyle);
       });
@@ -232,13 +244,16 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
 
   astString.children.forEach(child => {
     const style = inlineStyles[child.type];
+
     parseChildren(child, style);
   });
 
   // add block style if it exists
   let blockStyle = 'unstyled';
+
   if (astString.children[0]) {
     const style = getBlockStyleForMd(astString.children[0], blockStyles);
+
     if (style) {
       blockStyle = style;
     }
@@ -257,6 +272,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
 function mdToDraftjs({ body } = { body: '' }, extraStyles) {
   const blocks = [];
   let entityMap = {};
+
   if (body) {
     const paragraphs = splitMdBlocks(normalizeMd(body));
 
@@ -285,6 +301,7 @@ function mdToDraftjs({ body } = { body: '' }, extraStyles) {
       };
     }
   }
+
   return {
     blocks,
     entityMap,

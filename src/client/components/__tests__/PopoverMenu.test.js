@@ -5,6 +5,7 @@ import PopoverMenu from '../PopoverMenu/PopoverMenu';
 describe('(Component) PopoverMenu', () => {
   it('renders and matches snapshot', () => {
     const wrapper = shallow(<PopoverMenu />);
+
     expect(wrapper).toMatchSnapshot();
   });
 });

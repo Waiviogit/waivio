@@ -24,6 +24,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
   if (pathName.includes('/object/')) {
     currentPage = getObjectType(wobj);
     const query = store.get('query');
+
     if (query)
       setHrefBackButton = () => {
         history.push(`/?${query}`);

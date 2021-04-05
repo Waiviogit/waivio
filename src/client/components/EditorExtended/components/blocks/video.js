@@ -5,6 +5,7 @@ import './video.less';
 
 const Video = ({ entityData }) => {
   const src = getSource(entityData);
+
   if (src) {
     return (
       <div className="PostFeedEmbed__container">
