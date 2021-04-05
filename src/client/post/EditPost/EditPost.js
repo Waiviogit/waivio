@@ -55,6 +55,7 @@ const getLinkedObjects = contentStateRaw => {
       (entity.type === Entity.OBJECT && has(entity, 'data.object.type')) ||
       has(entity, 'data.object.object_type'),
   );
+
   return uniqWith(
     objEntities.map(entity => entity.data.object),
     isEqual,
@@ -269,12 +270,14 @@ class EditPost extends Component {
     }
   }, 500);
 
-  handleChangeContent(rawContent, title) {
+  handleChangeContent(rawContent, title, type) {
+    console.log(type);
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
       '_id',
     );
+
     const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
     if (isLinkedObjectsChanged) {
       const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
@@ -408,7 +411,7 @@ class EditPost extends Component {
         .map(obj => ({
           objectName: getObjectName(obj),
           author_permlink: obj.author_permlink,
-          percent: objPercentage[obj.id].percent,
+          percent: get(objPercentage, [obj.id, 'percent']),
         })),
     };
 
