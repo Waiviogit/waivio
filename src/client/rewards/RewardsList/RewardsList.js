@@ -10,7 +10,7 @@ import {
   getSponsorsRewards,
   getHasMoreFollowingRewards,
   getIsLoading,
-} from '../../reducers';
+} from '../../store/reducers';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import './RewardsList.less';

@@ -7,7 +7,7 @@ import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
-import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
+import { getHiveBeneficiaryAccount, isGuestUser } from '../../store/reducers';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import { PATH_NAME_RECEIVABLES, PATH_NAME_PAYABLES } from '../../../common/constants/rewards';

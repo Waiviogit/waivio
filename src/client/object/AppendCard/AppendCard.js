@@ -17,7 +17,7 @@ import {
   getVotePercent,
   getVotingPower,
   isGuestUser,
-} from '../../reducers';
+} from '../../store/reducers';
 import { getAppendDownvotes, getAppendUpvotes } from '../../helpers/voteHelpers';
 import { voteAppends } from '../wobjActions';
 import Payout from '../../components/StoryFooter/Payout';

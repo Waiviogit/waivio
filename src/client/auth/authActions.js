@@ -6,9 +6,9 @@ import {
   getIsAuthenticated,
   getIsLoaded,
   isGuestUser,
-} from '../reducers';
+} from '../store/reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
-import { addNewNotification } from '../app/appActions';
+import { addNewNotification } from '../store/appStore/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../helpers/getToken';

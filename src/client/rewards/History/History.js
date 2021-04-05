@@ -13,7 +13,7 @@ import {
   getHistoryCampaigns,
   getHistorySponsors,
   getIsLoadingRewardsHistory,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   REWARDS_TYPES_MESSAGES,
   CAMPAIGNS_TYPES_MESSAGES,

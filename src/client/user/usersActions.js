@@ -1,6 +1,6 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName, getIsAuthenticated, getUser } from '../reducers';
+import { getAuthenticatedUserName, getIsAuthenticated, getUser } from '../store/reducers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 

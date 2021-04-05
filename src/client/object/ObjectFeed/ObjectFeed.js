@@ -5,14 +5,14 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { isEmpty, uniq, get, filter } from 'lodash';
 import PropositionContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import Feed from '../../feed/Feed';
-import { getFeed, getReadLanguages, getSuitableLanguage } from '../../reducers';
+import { getFeed, getReadLanguages, getSuitableLanguage } from '../../store/reducers';
 import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../../helpers/stateHelpers';
 import { getObjectPosts, getMoreObjectPosts } from '../../feed/feedActions';
-import { showPostModal } from '../../app/appActions';
+import { showPostModal } from '../../store/appStore/appActions';
 import PostModal from '../../post/PostModalContainer';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';

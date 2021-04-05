@@ -13,9 +13,7 @@ import {
   getFollowingObjectsList,
   getSuitableLanguage,
   getVotePercent,
-  getRewardFund,
-  getRate,
-} from '../../reducers';
+} from '../../store/reducers';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
@@ -28,6 +26,7 @@ import { getLanguageText } from '../../translations';
 import { getVoteValue } from '../../helpers/user';
 
 import './CreateTag.less';
+import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
 @connect(
   state => ({

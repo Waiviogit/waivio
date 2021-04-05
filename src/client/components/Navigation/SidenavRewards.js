@@ -11,9 +11,8 @@ import {
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
   getAuthenticatedUserName,
-  getIsWaivio,
   getExpiredPayment,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   MESSAGES,
   HISTORY,
@@ -23,6 +22,7 @@ import {
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 
 import './Sidenav.less';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 @injectIntl
 @connect(state => ({

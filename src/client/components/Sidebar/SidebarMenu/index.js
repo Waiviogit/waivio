@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import SidebarMenu from './SidebarMenu';
 import FollowingUpdates from '../FollowingUpdates/FollowingUpdates';
-import { getIsAuthenticated } from '../../../reducers';
+import { getIsAuthenticated } from '../../../store/reducers';
 import ModalSignIn from '../../Navigation/ModlaSignIn/ModalSignIn';
 
 const menuSections = {

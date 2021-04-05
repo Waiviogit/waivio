@@ -7,8 +7,9 @@ import { isEmpty, get } from 'lodash';
 import { Checkbox } from 'antd';
 import getDetailsMessages from './detailsMessagesData';
 import DetailsPostRequirments from './DetailsPostRequirments';
-import { getWeightValue, getIsAuthenticated } from '../../reducers';
+import { getIsAuthenticated } from '../../store/reducers';
 import './Details.less';
+import { getWeightValue } from '../../store/appStore/appSelectors';
 
 const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, minExpertise }) => {
   const isAuthenticated = useSelector(getIsAuthenticated);

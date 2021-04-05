@@ -10,7 +10,7 @@ import {
   getRewardSetting,
   getExitPageSetting,
   getIsSettingsLoading,
-} from '../../reducers';
+} from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

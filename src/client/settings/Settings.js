@@ -17,7 +17,7 @@ import {
   getExitPageSetting,
   isGuestUser,
   getAuthenticatedUser,
-} from '../reducers';
+} from '../store/reducers';
 import { saveSettings } from './settingsActions';
 import { reload } from '../auth/authActions';
 import { notify } from '../app/Notification/notificationActions';

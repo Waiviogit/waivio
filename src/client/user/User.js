@@ -9,16 +9,13 @@ import {
   getAllUsers,
   getAuthenticatedUser,
   getAuthenticatedUserName,
-  getHelmetIcon,
   getIsAuthenticated,
   getIsOpenWalletTable,
   getIsUserFailed,
   getIsUserLoaded,
-  getRate,
-  getRewardFund,
   getUser,
   getUsersAccountHistory,
-} from '../reducers';
+} from '../store/reducers';
 import { getUserAccountHistory, openTransfer } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';
 import { getAvatarURL } from '../components/Avatar';
@@ -33,6 +30,7 @@ import { getMetadata } from '../helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import DEFAULTS from '../object/const/defaultValues';
 import Loading from '../components/Icon/Loading';
+import { getHelmetIcon, getRate, getRewardFund } from '../store/appStore/appSelectors';
 
 @connect(
   (state, ownProps) => ({

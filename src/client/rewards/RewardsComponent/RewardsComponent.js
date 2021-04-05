@@ -1,7 +1,7 @@
 import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuthenticatedUserName, getPendingUpdate } from '../../reducers';
+import { getAuthenticatedUserName, getPendingUpdate } from '../../store/reducers';
 import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
 import { pendingUpdateSuccess } from '../../user/userActions';

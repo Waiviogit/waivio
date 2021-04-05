@@ -2,7 +2,7 @@ import { get, keyBy, orderBy, slice } from 'lodash';
 import * as authActions from '../auth/authActions';
 import * as userActions from './userActions';
 import * as wobjActions from '../object/wobjActions';
-import * as appTypes from '../app/appActions';
+import * as appTypes from '../store/appStore/appActions';
 
 const initialState = {
   recommendedObjects: [],

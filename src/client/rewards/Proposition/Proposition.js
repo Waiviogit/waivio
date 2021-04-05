@@ -14,7 +14,7 @@ import {
   getCommentContent,
   getIsAuthenticated,
   getIsOpenWriteReviewModal,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   ASSIGNED,
   GUIDE_HISTORY,

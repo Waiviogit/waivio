@@ -11,10 +11,9 @@ import {
   getPendingReblogs,
   getIsEditorSaving,
   getVotingPower,
-  getRewardFund,
   getVotePercent,
   getShowNSFWPosts,
-} from '../reducers';
+} from '../store/reducers';
 import {
   errorFollowingPostAuthor,
   followingPostAuthor,
@@ -26,6 +25,7 @@ import { editPost } from '../post/Write/editorActions';
 import { reblog } from '../app/Reblog/reblogActions';
 import { unfollowUser, followUser } from '../user/usersActions';
 import { getDownvotes, getUpvotes } from '../helpers/voteHelpers';
+import { getRewardFund } from '../store/appStore/appSelectors';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);

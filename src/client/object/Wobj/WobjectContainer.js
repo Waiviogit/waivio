@@ -8,13 +8,11 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   getObject as getObjectState,
-  getScreenSize,
   getObjectFetchingState,
   getLocale,
   getWobjectIsFailed,
   getWobjectIsFatching,
-  getHelmetIcon,
-} from '../../reducers';
+} from '../../store/reducers';
 import OBJECT_TYPE from '../const/objectTypes';
 import { clearObjectFromStore, getObject } from '../wobjectsActions';
 import {
@@ -29,6 +27,7 @@ import { setCatalogBreadCrumbs, setNestedWobject } from '../wobjActions';
 import { appendObject } from '../appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
+import { getHelmetIcon, getScreenSize } from '../../store/appStore/appSelectors';
 
 @withRouter
 @connect(

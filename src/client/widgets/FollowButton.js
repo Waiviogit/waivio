@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getAuthenticatedUserName } from '../reducers';
+import { getAuthenticatedUserName } from '../store/reducers';
 import withAuthAction from '../auth/withAuthActions';
 import { bellNotifications } from '../user/userActions';
 import { wobjectBellNotification } from '../object/wobjActions';

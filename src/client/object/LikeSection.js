@@ -5,17 +5,12 @@ import { connect } from 'react-redux';
 import { ceil } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
-import {
-  getAuthenticatedUser,
-  getRate,
-  getRewardFund,
-  getVotePercent,
-  getVotingPower,
-} from '../reducers';
+import { getAuthenticatedUser, getVotePercent, getVotingPower } from '../store/reducers';
 import { calculateVotePower } from '../helpers/user';
 import USDDisplay from '../components/Utils/USDDisplay';
 
 import './LikeSection.less';
+import { getRate, getRewardFund } from '../store/appStore/appSelectors';
 
 @injectIntl
 @connect(state => ({

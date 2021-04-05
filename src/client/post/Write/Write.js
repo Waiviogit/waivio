@@ -21,7 +21,7 @@ import {
   getIsEditorSaving,
   getUpvoteSetting,
   getRewardSetting,
-} from '../../reducers';
+} from '../../store/reducers';
 
 import { createPost, saveDraft, newPost } from './editorActions';
 import Editor from '../../components/Editor/Editor';

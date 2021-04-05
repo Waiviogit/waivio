@@ -10,10 +10,8 @@ import {
   getAuthenticatedUserName,
   getObject,
   getObjectAlbums,
-  getRate,
-  getRewardFund,
   getVotePercent,
-} from '../../reducers';
+} from '../../store/reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
@@ -27,6 +25,7 @@ import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import './CreateImage.less';
 import { getVoteValue } from '../../helpers/user';
+import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
 @connect(
   state => ({

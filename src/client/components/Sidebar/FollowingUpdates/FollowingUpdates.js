@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
-import * as store from '../../../reducers';
+import * as store from '../../../store/reducers';
 import {
   getFollowingUpdates,
   getFollowingObjectsUpdatesMore,

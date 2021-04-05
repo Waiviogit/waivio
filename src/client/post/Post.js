@@ -15,7 +15,7 @@ import {
   getIsAuthFetching,
   getSuitableLanguage,
   getAuthenticatedUserName,
-} from '../reducers';
+} from '../store/reducers';
 import { getContent } from './postActions';
 import { getUserAccount } from '../user/usersActions';
 import Error404 from '../statics/Error404';

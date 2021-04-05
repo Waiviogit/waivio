@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import * as store from '../../reducers';
+import * as store from '../../store/reducers';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import InterestingObjects from '../../components/Sidebar/InterestingObjects';
 import SignUp from '../../components/Sidebar/SignUp';

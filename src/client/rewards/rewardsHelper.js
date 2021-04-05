@@ -16,7 +16,7 @@ import {
 } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
 import { getObjectName } from '../helpers/wObjectHelper';
-import { getCryptosPriceHistory } from '../reducers';
+import { getCryptosPriceHistory } from '../store/appStore/appSelectors';
 
 const isLocation = typeof location !== 'undefined';
 const isSessionStorage = typeof sessionStorage !== 'undefined';

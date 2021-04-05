@@ -11,19 +11,18 @@ import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE, IS_ALL } from '../../../common
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import {
-  getRate,
-  getAppUrl,
   getLocale,
   isGuestUser,
   getCommentsFromReserved,
   getAuthenticatedUserName,
-} from '../../reducers';
+} from '../../store/reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import { getReservedComments, sendCommentMessages } from '../../comments/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
 import './CampaignFooter.less';
+import { getAppUrl, getRate } from '../../store/appStore/appSelectors';
 
 @injectIntl
 @withAuthActions

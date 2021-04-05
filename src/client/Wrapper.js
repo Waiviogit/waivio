@@ -16,20 +16,18 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   getLocale,
-  getUsedLocale,
-  getTranslations,
   getNightmode,
   isGuestUser,
   getIsOpenWalletTable,
   getIsAuthFetching,
-} from './reducers';
+} from './store/reducers';
 import {
   login,
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './auth/authActions';
 import { getNotifications } from './user/userActions';
-import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
+import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
@@ -46,6 +44,7 @@ import {
   widgetUrlConstructor,
 } from './rewards/rewardsHelper';
 import Topnav from './components/Navigation/Topnav';
+import { getTranslations, getUsedLocale } from './store/appStore/appSelectors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 

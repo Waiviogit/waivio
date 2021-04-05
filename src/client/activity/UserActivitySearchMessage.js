@@ -8,7 +8,7 @@ import {
   getCurrentDisplayedActions,
   getCurrentFilteredActions,
   getAccountHistoryFilter,
-} from '../reducers';
+} from '../store/reducers';
 
 const UserActivitySearchMessage = ({
   loadingMoreUsersAccountHistory,

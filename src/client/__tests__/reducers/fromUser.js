@@ -16,7 +16,7 @@ import {
   getIsFetchingFollowingList,
   getFollowingUpdatesFetched,
   getFollowingObjectsUpdatesByType,
-} from '../../reducers';
+} from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

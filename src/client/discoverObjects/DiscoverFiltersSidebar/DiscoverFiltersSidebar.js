@@ -15,7 +15,7 @@ import {
   getIsMapModalOpen,
   getFiltersTags,
   getFilteredObjects,
-} from '../../reducers';
+} from '../../store/reducers';
 import { setFiltersAndLoad, getObjectTypeMap } from '../../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 import { getCoordinates } from '../../user/userActions';

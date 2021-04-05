@@ -29,7 +29,7 @@ import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
-import { getIsAuthenticated, getIsWaivio, getObjectAlbums } from '../../reducers';
+import { getIsAuthenticated, getObjectAlbums } from '../../store/reducers';
 import DescriptionInfo from './DescriptionInfo';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
@@ -37,6 +37,7 @@ import ObjectCard from '../../components/Sidebar/ObjectCard';
 import LinkButton from '../../components/LinkButton/LinkButton';
 
 import './ObjectInfo.less';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 @withRouter
 @connect(state => ({

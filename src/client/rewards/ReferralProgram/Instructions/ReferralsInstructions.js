@@ -16,7 +16,7 @@ import {
   getIsUserInWaivioBlackList,
   getReferralStatus,
   isGuestUser,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { referralInstructionsContent } from '../ReferralTextHelper';
 import ReferralsInstructionsView from './ReferralInstructionsView';
 import { getCopyTextButtonResult, widget } from '../ReferralHelper';

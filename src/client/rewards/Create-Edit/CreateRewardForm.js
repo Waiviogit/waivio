@@ -15,7 +15,7 @@ import {
 import CreateFormRenderer from './CreateFormRenderer';
 import { AppSharedContext } from '../../Wrapper';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { getLocale, getRate, getRewardFund } from '../../reducers';
+import { getLocale } from '../../store/reducers';
 import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
 import {
   PATH_NAME_MANAGE,
@@ -24,6 +24,7 @@ import {
 } from '../../../common/constants/rewards';
 
 import './CreateReward.less';
+import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
 @withRouter
 @Form.create()

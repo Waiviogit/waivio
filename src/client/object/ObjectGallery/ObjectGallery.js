@@ -14,11 +14,11 @@ import {
   getObjectAlbums,
   getIsAuthenticated,
   getRelatedPhotos,
-  getIsWaivio,
-} from '../../reducers';
+} from '../../store/reducers';
 import IconButton from '../../components/IconButton';
 
 import './ObjectGallery.less';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 @injectIntl
 @connect(

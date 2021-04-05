@@ -5,7 +5,7 @@ import Map from 'pigeon-maps';
 import { connect } from 'react-redux';
 import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
-import { getUserLocation } from '../../reducers';
+import { getUserLocation } from '../../store/reducers';
 import { getCoordinates } from '../../user/userActions';
 import mapProvider from '../../helpers/mapProvider';
 import './Map.less';

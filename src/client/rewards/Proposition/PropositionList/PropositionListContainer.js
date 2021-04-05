@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { filter, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { message } from 'antd';
-import { getAuthenticatedUser, getLocale } from '../../../reducers';
+import { getAuthenticatedUser, getLocale } from '../../../store/reducers';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
 import { assignProposition, declineProposition } from '../../../user/userActions';

@@ -1,6 +1,6 @@
 import { orderBy } from 'lodash';
 import { connect } from 'react-redux';
-import { getDraftPosts, getIsLoaded } from '../../reducers';
+import { getDraftPosts, getIsLoaded } from '../../store/reducers';
 import LastDrafts from '../../components/Sidebar/LastDrafts';
 
 const mapStateToProps = state => {

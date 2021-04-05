@@ -4,8 +4,9 @@ import { getAlbums } from './ObjectGallery/galleryActions';
 import { createPermlink } from '../vendor/steemitHelpers';
 import { generateRandomString } from '../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
-import { getAuthenticatedUserName, getLocale, getUsedLocale } from '../reducers';
+import { getAuthenticatedUserName, getLocale } from '../store/reducers';
 import { WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
+import { getUsedLocale } from '../store/appStore/appSelectors';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';

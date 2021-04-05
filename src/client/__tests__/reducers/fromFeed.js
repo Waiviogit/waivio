@@ -1,4 +1,4 @@
-import { getFeed } from '../../reducers';
+import { getFeed } from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

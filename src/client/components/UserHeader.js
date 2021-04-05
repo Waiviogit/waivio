@@ -14,12 +14,13 @@ import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
 import { unfollowUser, followUser, muteUserBlog } from '../user/usersActions';
-import { getAuthenticatedUserName, getIsMobile } from '../reducers';
+import { getAuthenticatedUserName } from '../store/reducers';
 import BellButton from '../widgets/BellButton';
 import MuteModal from '../widgets/MuteModal';
 import UserPopoverMenu from './UserPopoverMenu';
 
 import './UserHeader.less';
+import { getIsMobile } from '../store/appStore/appSelectors';
 
 const UserHeader = ({
   username,

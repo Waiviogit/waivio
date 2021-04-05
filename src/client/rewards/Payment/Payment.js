@@ -11,7 +11,7 @@ import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
+import { getHiveBeneficiaryAccount, isGuestUser } from '../../store/reducers';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import { guestUserRegex } from '../../helpers/regexHelpers';

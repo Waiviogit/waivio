@@ -10,20 +10,16 @@ import { connect } from 'react-redux';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import {
-  getConfigurationValues,
-  getMapForMainPage,
-  getScreenSize,
   getSearchFiltersTagCategory,
   getShowSearchResult,
   getUserLocation,
   getWobjectsPoint,
-  getReservCounter,
   getIsAuthenticated,
   getWebsiteSearchString,
   getWebsiteMap,
   getShowReloadButton,
   getWebsiteSearchType,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { getCoordinates } from '../../../user/userActions';
 import {
   setMapForSearch,
@@ -42,12 +38,18 @@ import {
   getCurrentAppSettings,
   getReservedCounter,
   putUserCoordinates,
-} from '../../../app/appActions';
+} from '../../../store/appStore/appActions';
 import { getWebsiteObjWithCoordinates, setShowReload } from '../../websiteActions';
 import { distanceInMBetweenEarthCoordinates } from '../../helper';
 import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
 
 import './WebsiteBody.less';
+import {
+  getConfigurationValues,
+  getMapForMainPage,
+  getReserveCounter,
+  getScreenSize,
+} from '../../../store/appStore/appSelectors';
 
 const WebsiteBody = props => {
   const [boundsParams, setBoundsParams] = useState({
@@ -478,7 +480,7 @@ export default connect(
     wobjectsPoint: getWobjectsPoint(state),
     configCoordinates: getMapForMainPage(state),
     activeFilters: getSearchFiltersTagCategory(state),
-    counter: getReservCounter(state),
+    counter: getReserveCounter(state),
     isAuth: getIsAuthenticated(state),
     query: new URLSearchParams(ownProps.location.search),
     searchString: getWebsiteSearchString(state),

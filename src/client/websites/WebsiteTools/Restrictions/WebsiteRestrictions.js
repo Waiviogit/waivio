@@ -12,7 +12,7 @@ import {
   getRestrictions,
   getUnmutedUsers,
   getWebsiteLoading,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { getWebsiteRestrictions, muteUser } from '../../websiteActions';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import Action from '../../../components/Button/Action';

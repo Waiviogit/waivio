@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getIsAuthenticated } from '../../reducers';
+import { getIsAuthenticated } from '../../store/reducers';
 import { getCryptoDetails } from '../../helpers/cryptosHelper';
 import InterestingObjects from './InterestingObjects';
 import CryptoTrendingCharts from './CryptoTrendingCharts';

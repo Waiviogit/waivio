@@ -7,14 +7,14 @@ import {
   getCommentsPendingVotes,
   getPendingFollows,
   getVotingPower,
-  getRewardFund,
   getVotePercent,
   getPendingFollowingObjects,
-} from '../../reducers';
+} from '../../store/reducers';
 import { likeComment } from '../../comments/commentsActions';
 import { followUser, unfollowUser } from '../../user/userActions';
 import { followObject, unfollowObject } from '../../object/wobjActions';
 import CampaignFooter from './CampaignFooter';
+import { getRewardFund } from '../../store/appStore/appSelectors';
 
 const mapStateToProps = (
   state,

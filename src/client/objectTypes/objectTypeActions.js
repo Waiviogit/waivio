@@ -8,7 +8,7 @@ import {
   getLocale,
   getAuthenticatedUserName,
   getActiveFiltersTags,
-} from '../reducers';
+} from '../store/reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createFilterBody } from '../discoverObjects/helper';
 

@@ -11,7 +11,7 @@ import {
   getUsersAccountHistory,
   isGuestUser,
   getUser,
-} from '../reducers';
+} from '../store/reducers';
 import {
   getFeedLoadingFromState,
   getFeedFetchedFromState,
@@ -20,7 +20,7 @@ import {
 } from '../helpers/stateHelpers';
 import { getUserAccountHistory } from '../wallet/walletActions';
 import { getUserProfileBlogPosts } from '../feed/feedActions';
-import { showPostModal } from '../app/appActions';
+import { showPostModal } from '../store/appStore/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
 import PostModal from '../post/PostModalContainer';

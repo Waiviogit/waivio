@@ -13,7 +13,7 @@ import {
   getLocale,
   getReadLanguages,
   getLastPostId,
-} from '../reducers';
+} from '../store/reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
 

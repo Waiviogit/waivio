@@ -1,17 +1,17 @@
 import {
-  getRate,
   getAppUrl,
-  getIsFetching,
-  getUsedLocale,
-  getScreenSize,
-  getRewardFund,
-  getTranslations,
-  getShowPostModal,
-  getIsBannerClosed,
-  getCurrentShownPost,
   getCryptosPriceHistory,
+  getCurrentShownPost,
+  getIsBannerClosed,
+  getIsFetching,
   getIsTrendingTopicsLoading,
-} from '../../reducers';
+  getRate,
+  getRewardFund,
+  getScreenSize,
+  getShowPostModal,
+  getTranslations,
+  getUsedLocale,
+} from '../../store/appStore/appSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

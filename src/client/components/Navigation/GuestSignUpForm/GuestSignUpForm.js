@@ -9,9 +9,10 @@ import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
 import { login } from '../../../auth/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
-import { getIsWaivio, getLocale } from '../../../reducers';
+import { getLocale } from '../../../store/reducers';
 import GuestSignUpFormContent from './GuestSignUpFormContent';
 import './GuestSignUpForm.less';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
 
 const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
   const { getFieldDecorator, getFieldsError, getFieldError, validateFields, setFieldsValue } = form;

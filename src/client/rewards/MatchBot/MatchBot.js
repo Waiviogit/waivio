@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { Button, message, Modal, Slider, Switch, Tooltip } from 'antd';
 import { setMatchBotVotingPower } from '../rewardsActions';
-import { getAuthenticatedUser } from '../../reducers';
+import { getAuthenticatedUser } from '../../store/reducers';
 import CreateRule from './CreateRule/CreateRule';
 import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import MatchBotTable from './MatchBotTable/MatchBotTable';

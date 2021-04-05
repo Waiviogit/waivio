@@ -4,7 +4,11 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import requiresLogin from '../auth/requiresLogin';
-import { getAuthenticatedUserName, getIsUserInWaivioBlackList, isGuestUser } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getIsUserInWaivioBlackList,
+  isGuestUser,
+} from '../store/reducers';
 import InviteGuestUser from './InviteGuestUser';
 import InviteHiveUser from './InviteHiveUser';
 import './Invite.less';

@@ -2,12 +2,13 @@ import moment from 'moment';
 import { get } from 'lodash';
 import { message } from 'antd';
 
-import * as store from '../reducers';
+import * as store from '../store/reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
+import { getDetailsBody, rewardPostContainerData } from '../rewards/rewardsHelper';
 import { createCommentPermlink } from '../vendor/steemitHelpers';
 import { getObjectName } from '../helpers/wObjectHelper';
+import { getRate, getRewardFund } from '../store/appStore/appSelectors';
 
 require('isomorphic-fetch');
 
@@ -463,8 +464,8 @@ export const activateCampaign = (company, campaignPermlink) => (
 ) => {
   const state = getState();
   const username = store.getAuthenticatedUserName(state);
-  const rate = store.getRate(state);
-  const rewardFund = store.getRewardFund(state);
+  const rate = getRate(state);
+  const rewardFund = getRewardFund(state);
   const recentClaims = rewardFund.recent_claims;
   const rewardBalance = rewardFund.reward_balance.replace(' HIVE', '');
   const proposedWobjName = getObjectName(company.objects[0]);

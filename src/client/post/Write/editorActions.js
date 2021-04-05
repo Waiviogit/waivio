@@ -20,12 +20,14 @@ import { clearBeneficiariesUsers } from '../../search/searchActions';
 import {
   getAuthenticatedUserName,
   getHiveBeneficiaryAccount,
-  getTranslationByKey,
   getLocale,
+} from '../../store/reducers';
+import {
   getCurrentHost,
   getIsWaivio,
+  getTranslationByKey,
   getWebsiteBeneficiary,
-} from '../../reducers';
+} from '../../store/appStore/appSelectors';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';

@@ -8,7 +8,7 @@ import {
   getHasMoreFraudSuspicionData,
   getFraudSuspicionDataState,
   getAuthenticatedUser,
-} from '../../reducers';
+} from '../../store/reducers';
 import { getBlacklist, getFraudSuspicion } from '../rewardsActions';
 import Proposition from '../Proposition/Proposition';
 import SortSelector from '../../components/SortSelector/SortSelector';

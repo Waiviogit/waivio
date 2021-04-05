@@ -10,8 +10,9 @@ import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAuto
 import ReviewItem from '../Create-Edit/ReviewItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import { setDataForGlobalReport } from '../rewardsActions';
-import { getAuthenticatedUser, getUsedLocale } from '../../reducers';
+import { getAuthenticatedUser } from '../../store/reducers';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import { getUsedLocale } from '../../store/appStore/appSelectors';
 
 @injectIntl
 @connect(

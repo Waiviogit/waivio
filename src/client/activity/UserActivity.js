@@ -15,7 +15,7 @@ import {
   getLoadingGlobalProperties,
   getAccountHistoryFilter,
   getCurrentDisplayedActions,
-} from '../reducers';
+} from '../store/reducers';
 import {
   getGlobalProperties,
   getUserEstAccountValue,

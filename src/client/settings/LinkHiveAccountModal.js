@@ -7,7 +7,7 @@ import { Modal } from 'antd';
 import PolicyConfirmation from '../components/PolicyConfirmation/PolicyConfirmation';
 import SearchUsersAutocomplete from '../components/EditorUser/SearchUsersAutocomplete';
 import Avatar from '../components/Avatar';
-import { getAuthenticatedUserName, isGuestUser } from '../reducers';
+import { getAuthenticatedUserName, isGuestUser } from '../store/reducers';
 
 import './Settings.less';
 

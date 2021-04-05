@@ -5,7 +5,10 @@ import { isEqual } from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Checkbox, Form, InputNumber, message } from 'antd';
 import { updateProfile, reload } from '../auth/authActions';
-import { getAuthenticatedUserNotificationsSettings, getAuthenticatedUserName } from '../reducers';
+import {
+  getAuthenticatedUserNotificationsSettings,
+  getAuthenticatedUserName,
+} from '../store/reducers';
 import withEditor from '../components/Editor/withEditor';
 import Action from '../components/Button/Action';
 import requiresLogin from '../auth/requiresLogin';

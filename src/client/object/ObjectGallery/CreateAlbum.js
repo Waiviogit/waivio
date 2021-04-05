@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { objectNameValidationRegExp } from '../../../common/constants/validation';
 import { prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
-import { getAuthenticatedUserName, getIsAppendLoading, getObject } from '../../reducers';
+import { getAuthenticatedUserName, getIsAppendLoading, getObject } from '../../store/reducers';
 import { appendObject } from '../appendActions';
 import { addAlbumToStore } from './galleryActions';
 import './CreateAlbum.less';

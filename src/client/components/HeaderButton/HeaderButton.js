@@ -19,15 +19,15 @@ import {
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
   getIsLoadingNotifications,
-  getIsWaivio,
   getNotifications,
-} from '../../reducers';
+} from '../../store/reducers';
 import { getUserMetadata } from '../../user/usersActions';
 import { PATH_NAME_ACTIVE } from '../../../common/constants/rewards';
 import { logout } from '../../auth/authActions';
 import ModalSignIn from '../Navigation/ModlaSignIn/ModalSignIn';
 import LanguageSettings from '../Navigation/LanguageSettings';
-import { setCurrentPage } from '../../app/appActions';
+import { setCurrentPage } from '../../store/appStore/appActions';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 const HeaderButtons = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);

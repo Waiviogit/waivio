@@ -12,7 +12,7 @@ import {
   isGuestUser,
   getAuthorizationUserFollowSort,
   getLocale,
-} from '../reducers';
+} from '../store/reducers';
 import { notify } from '../app/Notification/notificationActions';
 import './UserFollowing.less';
 

@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { getIsAuthenticated, getAuthenticatedUserName, getFeed } from '../reducers';
+import { getIsAuthenticated, getAuthenticatedUserName, getFeed } from '../store/reducers';
 import {
   getFeedFromState,
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
 } from '../helpers/stateHelpers';
-import { showPostModal } from '../app/appActions';
+import { showPostModal } from '../store/appStore/appActions';
 import { getReplies, getMoreReplies } from '../feed/feedActions';
 import Feed from '../feed/Feed';
 import Loading from '../components/Icon/Loading';

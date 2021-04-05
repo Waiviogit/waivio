@@ -1,4 +1,4 @@
-import { getBookmarks, getPendingBookmarks } from '../../reducers';
+import { getBookmarks, getPendingBookmarks } from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

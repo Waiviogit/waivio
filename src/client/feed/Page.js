@@ -6,7 +6,7 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { getFeedContent } from './feedActions';
-import { getIsAuthenticated, getIsLoaded, getObject as getObjectState } from '../reducers';
+import { getIsAuthenticated, getIsLoaded, getObject as getObjectState } from '../store/reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';

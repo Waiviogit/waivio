@@ -13,7 +13,7 @@ import {
   getReferralDuration,
   getReferralServerPercent,
   getSuspendedTimer,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { getUserReferralDetails } from '../ReferralActions';
 import ReferralDetailsView from './ReferralDetailsView';
 

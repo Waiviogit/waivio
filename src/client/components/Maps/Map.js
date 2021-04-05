@@ -15,11 +15,10 @@ import { getRadius, getParsedMap, getDistanceBetweenTwoPoints, getZoom } from '.
 import {
   getFilteredObjectsMap,
   getIsMapModalOpen,
-  getIsWaivio,
   getSuitableLanguage,
   getUpdatedMap,
   getUpdatedMapDiscover,
-} from '../../reducers';
+} from '../../store/reducers';
 import { setMapFullscreenMode, resetUpdatedFlag } from './mapActions';
 import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
@@ -27,6 +26,7 @@ import { getObjectAvatar, getObjectName } from '../../helpers/wObjectHelper';
 import DEFAULTS from '../../object/const/defaultValues';
 import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
 import './Map.less';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 const defaultCoords = {
   centerLat: 37.0902,

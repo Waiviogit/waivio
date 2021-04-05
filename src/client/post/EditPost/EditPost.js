@@ -31,9 +31,7 @@ import {
   getSuitableLanguage,
   isGuestUser,
   getBeneficiariesUsers,
-  getCurrentHost,
-  getIsWaivio,
-} from '../../reducers';
+} from '../../store/reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { createPostMetadata, getInitialState, getObjectUrl } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
@@ -48,6 +46,7 @@ import CreateObject from '../CreateObjectModal/CreateObject';
 import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './EditPost.less';
+import { getCurrentHost, getIsWaivio } from '../../store/appStore/appSelectors';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(

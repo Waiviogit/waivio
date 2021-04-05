@@ -17,7 +17,7 @@ import {
   getIsLoaded,
   isGuestUser,
   getUsersAccountHistory,
-} from '../reducers';
+} from '../store/reducers';
 import { getUserAccountHistory } from '../wallet/walletActions';
 import HorizontalBarChart from '../components/HorizontalBarChart';
 import LetsGetStartedIcon from './LetsGetStartedIcon';

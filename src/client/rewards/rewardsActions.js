@@ -1,4 +1,4 @@
-import { getAuthenticatedUserName, getLocale } from '../reducers';
+import { getAuthenticatedUserName, getLocale } from '../store/reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
