@@ -270,8 +270,7 @@ class EditPost extends Component {
     }
   }, 500);
 
-  handleChangeContent(rawContent, title, type) {
-    console.log(type);
+  handleChangeContent(rawContent, title) {
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
