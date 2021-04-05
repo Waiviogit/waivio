@@ -43,7 +43,7 @@ const CatalogWrap = props => {
   const [recencySortList, setRecencySortList] = useState();
 
   useEffect(() => {
-    const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
+    const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'rank' : 'custom');
     const isDefaultCustom = obj => defaultSortBy(obj) === 'custom';
 
     if (!isEmpty(wobject)) {
@@ -68,7 +68,6 @@ const CatalogWrap = props => {
         });
       } else {
         setSortingBy(defaultSortBy(wobject));
-        // eslint-disable-next-line no-use-before-define
         setLists(
           sortListItemsBy(
             itemsList(get(wobject, 'sortCustom', []), wobject),

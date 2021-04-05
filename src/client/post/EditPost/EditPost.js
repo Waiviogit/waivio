@@ -285,6 +285,7 @@ class EditPost extends Component {
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
       '_id',
     );
+
     const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
 
     if (isLinkedObjectsChanged) {
@@ -425,7 +426,7 @@ class EditPost extends Component {
         .map(obj => ({
           objectName: getObjectName(obj),
           author_permlink: obj.author_permlink,
-          percent: objPercentage[obj.id].percent,
+          percent: get(objPercentage, [obj.id, 'percent']),
         })),
     };
 
