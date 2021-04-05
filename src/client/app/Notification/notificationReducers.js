@@ -5,6 +5,7 @@ const notifications = (state = [], action) => {
   switch (action.type) {
     case SHOW_NOTIFICATION:
       message[action.payload.context](action.payload.text);
+
       return state;
     default:
       return state;

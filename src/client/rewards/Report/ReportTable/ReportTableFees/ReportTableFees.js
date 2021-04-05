@@ -16,6 +16,7 @@ const ReportTableFees = ({ intl }) => {
     singleReportData.histories,
     (result, obj) => {
       const fee = getProcessingFee(obj);
+
       return fee ? [...result, fee] : result;
     },
     [],

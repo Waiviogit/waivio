@@ -9,6 +9,7 @@ import './Notification.less';
 
 const NotificationTransfer = ({ notification, read, onClick, currentAuthUsername }) => {
   const transferUrl = `/@${currentAuthUsername}/transfers`;
+
   return (
     <Link
       to={transferUrl}

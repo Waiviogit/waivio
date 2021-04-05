@@ -2,6 +2,7 @@ import { calculateVoteValue, calculateVotingPower } from '../vendor/steemitHelpe
 
 export const getUserRank = vests => {
   let rank = 'Plankton';
+
   if (vests >= 1000000000) {
     rank = 'Whale';
   } else if (vests >= 100000000) {
@@ -11,11 +12,13 @@ export const getUserRank = vests => {
   } else if (vests >= 1000000) {
     rank = 'Minnow';
   }
+
   return rank;
 };
 
 export const getUserRankKey = vests => {
   let rank = 'plankton';
+
   if (vests >= 1000000000) {
     rank = 'whale';
   } else if (vests >= 100000000) {
@@ -25,6 +28,7 @@ export const getUserRankKey = vests => {
   } else if (vests >= 1000000) {
     rank = 'minnow';
   }
+
   return `rank_${rank}`;
 };
 

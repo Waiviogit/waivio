@@ -24,6 +24,7 @@ describe('fromObjectTypes', () => {
       stocks: 'stocks',
       service: 'service',
     };
+
     expect(getObjectTypesList(state)).toEqual(exp);
   });
 });

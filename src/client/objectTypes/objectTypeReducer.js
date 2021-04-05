@@ -33,6 +33,7 @@ const objectType = (state = initialState, action) => {
       } = action.payload;
       const filteredRelatedWobjects = relatedWobjects.filter(wObj => {
         const wobjStatus = parseWobjectField(wObj, 'status');
+
         return (
           !wobjStatus || (wobjStatus.title !== 'unavailable' && wobjStatus.title !== 'relisted')
         );

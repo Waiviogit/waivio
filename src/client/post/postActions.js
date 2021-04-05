@@ -154,6 +154,7 @@ export const errorFollowingPostAuthor = postId => dispatch =>
 export const getSocialInfoPost = (author, permlink) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+
   return dispatch({
     type: GET_SOCIAL_INFO_POST.ACTION,
     payload: {

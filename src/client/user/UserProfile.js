@@ -75,6 +75,7 @@ export default class UserProfile extends React.Component {
     const { match, limit, usersAccountHistory, isBlogInObject } = this.props;
     const { name, author } = match.params;
     const permlink = isBlogInObject ? author : name;
+
     this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
     if (isEmpty(usersAccountHistory[permlink])) {
       this.props.getUserAccountHistory(permlink);
@@ -85,6 +86,7 @@ export default class UserProfile extends React.Component {
     const { match, limit, isBlogInObject } = this.props;
     const { name, author } = match.params;
     const permlink = isBlogInObject ? author : name;
+
     if (permlink !== isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name) {
       if (
         nextProps.feed &&
@@ -109,6 +111,7 @@ export default class UserProfile extends React.Component {
     const { match, limit, user, isBlogInObject } = this.props;
     const { name, author } = match.params;
     const permlink = isBlogInObject ? author : name;
+
     if (prevProps.user.muted !== user.muted || prevProps.match.url !== match.url) {
       this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
     }

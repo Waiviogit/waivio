@@ -46,6 +46,7 @@ describe('(Component) UserWalletTransactions', () => {
         ,
       </Provider>,
     );
+
     expect(wrapper).toMatchSnapshot();
   });
 });

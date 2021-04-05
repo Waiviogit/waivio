@@ -70,6 +70,7 @@ class LetsGetStarted extends React.Component {
       // eslint-disable-next-line array-callback-return,consistent-return
       accountHistory.map(item => {
         const historyElement = item.op[0];
+
         if (historyElement === accountHistoryConstants.VOTE) {
           return hasLikes.push(historyElement);
         }
@@ -152,9 +153,11 @@ class LetsGetStarted extends React.Component {
       actionsArray,
       (total, current) => {
         let newTotal = total;
+
         if (current) {
           newTotal = total + 1;
         }
+
         return newTotal;
       },
       0,

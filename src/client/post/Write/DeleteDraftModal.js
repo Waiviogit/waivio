@@ -34,6 +34,7 @@ class DeleteDraftModal extends React.Component {
 
   deleteDraft = () => {
     const { intl, draftIds, onDelete } = this.props;
+
     this.setState({ loading: true });
     this.props.deleteDraft(draftIds).then(() => {
       this.props.notify(

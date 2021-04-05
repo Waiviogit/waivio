@@ -14,7 +14,9 @@ export const SET_USER_STATUS = createAsyncActionType('@app/SET_USER_STATUS');
 export const saveSettings = settings => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+
   if (!userName) return dispatch({ type: SAVE_SETTINGS_ERROR });
+
   return dispatch({
     type: SAVE_SETTINGS,
     payload: {

@@ -9,6 +9,7 @@ import './Notification.less';
 
 const NotificationTransferFrom = ({ notification, read, onClick }) => {
   const transferUrl = `/@${notification.to}/transfers`;
+
   return (
     <Link
       to={transferUrl}

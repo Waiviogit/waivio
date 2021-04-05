@@ -27,6 +27,7 @@ const ErrorBoundary = ComposedComponent => {
 
     render() {
       const { hasError } = this.state;
+
       return !hasError ? (
         <ComposedComponent {...this.props} />
       ) : (

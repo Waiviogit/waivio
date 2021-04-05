@@ -9,6 +9,7 @@ const Error401 = ({ staticContext }) => {
   if (staticContext) {
     staticContext.status = 401; // eslint-disable-line no-param-reassign
   }
+
   return (
     <div className="ErrorPage container">
       <h1>

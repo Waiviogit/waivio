@@ -14,6 +14,7 @@ class UserActionIcon extends React.Component {
 
   getIcon() {
     const { actionType, actionDetails, currentUsername } = this.props;
+
     switch (actionType) {
       case accountHistoryConstants.ACCOUNT_CREATE_WITH_DELEGATION:
       case accountHistoryConstants.ACCOUNT_CREATE:
@@ -27,8 +28,10 @@ class UserActionIcon extends React.Component {
           } else if (actionDetails.weight < 0) {
             return 'icon-praise_fill UserActivityActions__icon__dislike';
           }
+
           return 'icon-praise';
         }
+
         return null;
       case accountHistoryConstants.CUSTOM_JSON: {
         try {
@@ -73,6 +76,7 @@ class UserActionIcon extends React.Component {
         if (currentUsername === actionDetails.author) {
           return 'icon-message_fill';
         }
+
         return null;
       case accountHistoryConstants.DELETE_COMMENT:
         return 'icon-message';
@@ -85,6 +89,7 @@ class UserActionIcon extends React.Component {
 
   getAvatarUsername() {
     const { actionType, actionDetails } = this.props;
+
     switch (actionType) {
       case accountHistoryConstants.COMMENT:
         return actionDetails.author;
@@ -93,11 +98,13 @@ class UserActionIcon extends React.Component {
           const actionJSON = JSON.parse(actionDetails.json);
           const customActionType = actionJSON[0];
           const customActionDetails = actionJSON[1];
+
           if (customActionType === accountHistoryConstants.REBLOG) {
             return customActionDetails.account;
           } else if (customActionType === accountHistoryConstants.FOLLOW) {
             return customActionDetails.follower;
           }
+
           return null;
         } catch (err) {
           return 'icon-barrage';
@@ -116,6 +123,7 @@ class UserActionIcon extends React.Component {
   getTypeOperation = () => {
     const { actionDetails } = this.props;
     const customActionDetails = JSON.parse(actionDetails.json)[1];
+
     return customActionDetails.type_operation;
   };
 

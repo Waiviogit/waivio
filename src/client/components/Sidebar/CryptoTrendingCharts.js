@@ -77,6 +77,7 @@ class CryptoTrendingCharts extends React.Component {
       const hasAPIError =
         !(_.isUndefined(cryptoAPIDetails) || _.isNull(cryptoAPIDetails)) &&
         (cryptoAPIDetails.usdAPIError || _.isEmpty(cryptoAPIDetails.usdPriceHistory));
+
       if (hasAPIError) {
         apiErrors.push(cryptoDetails);
       }

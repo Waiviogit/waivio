@@ -26,6 +26,7 @@ const RewardsList = ({
 }) => {
   useEffect(() => {
     getFollowingRewards();
+
     return () => {
       clearFollowingRewards();
     };
@@ -34,6 +35,7 @@ const RewardsList = ({
   const handleLoadMore = () => {
     if (hasMoreFollowingRewards) {
       const skip = followingRewards.length;
+
       getFollowingRewards(skip);
     }
   };

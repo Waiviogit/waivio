@@ -71,6 +71,7 @@ const getMenuConfig = () => ({
 
 const SidebarMenuContainer = props => {
   const isAuthenticated = useSelector(getIsAuthenticated);
+
   return (
     <React.Fragment>
       <SidebarMenu menuConfig={getMenuConfig({ isAuthenticated })} {...props} />

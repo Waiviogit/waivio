@@ -28,7 +28,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run linc && npm run prettier-check"
+      "pre-commit": "npm run eslint-autofix && npm run prettier-check"
     }
   },
   "keywords": [

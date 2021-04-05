@@ -34,8 +34,9 @@ const ReceivablesContainer = ({
         setLoading(false);
         setSponsors(data);
       })
-      .catch(e => console.log(e));
+      .catch(e => console.error(e));
   }, [filterData, userName]);
+
   return (
     <Debts
       userName={userName}

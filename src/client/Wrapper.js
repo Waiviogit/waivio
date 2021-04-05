@@ -130,6 +130,7 @@ class Wrapper extends React.PureComponent {
     });
     const state = store.getState();
     let activeLocale = getLocale(state);
+
     if (activeLocale === 'auto') {
       activeLocale = req.cookies.language || getRequestLocale(req.get('Accept-Language'));
     }
@@ -156,6 +157,7 @@ class Wrapper extends React.PureComponent {
     const ref = querySelectorSearchParams.get('ref');
     const isWidget = querySelectorSearchParams.get('display');
     const userName = querySelectorSearchParams.get('userName');
+
     if (ref) {
       setSessionData('refUser', ref);
     }
@@ -194,6 +196,7 @@ class Wrapper extends React.PureComponent {
     this.setState(() => {
       if (widgetLink && !isEqual(prevtLocationPath, location.pathname)) {
         const newUrl = widgetUrlConstructor(widgetLink, userName, ref, location.pathname);
+
         if (prevtLocationPath && location.pathname !== '/') {
           return history.pushState('', '', newUrl);
         }
@@ -215,8 +218,10 @@ class Wrapper extends React.PureComponent {
       document.body.classList.remove('nightmode');
     }
     const refName = getSessionData('refUser');
+
     if (this.props.isAuthenticated && refName) {
       const currentRefName = handleRefName(refName);
+
       this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
       removeSessionData('refUser');
     }

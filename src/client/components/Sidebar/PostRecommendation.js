@@ -43,6 +43,7 @@ class PostRecommendation extends Component {
 
   componentWillMount() {
     const { location, isAuthFetching } = this.props;
+
     if (!isAuthFetching && location.pathname !== '/') {
       this.getRecommendations();
     }
@@ -67,9 +68,11 @@ class PostRecommendation extends Component {
 
   getPostsByAuthor = author => {
     const { follower } = this.props;
+
     getUserProfileBlog(author, follower, { limit: 4 }, this.props.locale)
       .then(result => {
         const recommendedPosts = result || [];
+
         this.setState({
           recommendedPosts,
           loading: false,

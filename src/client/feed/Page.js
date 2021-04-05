@@ -25,6 +25,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 class Page extends React.Component {
   static fetchData({ store, match }) {
     const { sortBy, category } = match.params;
+
     return store.dispatch(getFeedContent({ sortBy, category, limit: 10 }));
   }
 
@@ -44,6 +45,7 @@ class Page extends React.Component {
 
   handleSortChange = key => {
     const { category } = this.props.match.params;
+
     if (category) {
       this.props.history.push(`/${key}/${category}`);
     } else {

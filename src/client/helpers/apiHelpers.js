@@ -8,7 +8,9 @@ export const getAccount = username =>
   SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
     if (result.length) {
       const userAccount = result[0];
+
       userAccount.posting_json_metadata = jsonParse(result[0].posting_json_metadata);
+
       return userAccount;
     }
     throw new Error('User Not Found');
@@ -17,8 +19,10 @@ export const getAccount = username =>
 export const getFollowingCount = async (username, isGuest = false) => {
   if (isGuest) {
     const res = await getUserAccount(username, true);
+
     return { following_count: res.users_following_count };
   }
+
   return SteemAPI.sendAsync('call', ['follow_api', 'get_follow_count', [username]]);
 };
 
@@ -40,13 +44,17 @@ export const getFollowing = async (
 ) => {
   if (isGuest) {
     const res = await getUserAccount(username, true);
+
     if (res.message) {
       throw new Error(res);
     }
     let index = startForm ? res.users_follow.indexOf(startForm) : 0;
+
     index = index === -1 ? 0 : index;
+
     return res.users_follow.slice(index, limit + index);
   }
+
   return SteemAPI.sendAsync('call', [
     'follow_api',
     'get_following',
@@ -73,8 +81,10 @@ export const getAllFollowing = (username, isGuest) =>
       const currentList = await currentListP;
       const startForm = currentList[currentList.length - 1] || '';
       const followers = await getFollowing(username, startForm, 'blog', value, isGuest);
+
       return currentList.slice(0, currentList.length - 1).concat(followers);
     }, []);
+
     resolve(list);
   });
 

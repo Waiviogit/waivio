@@ -159,12 +159,14 @@ export default class MediumDraftEditor extends React.Component {
 
     if (event.length === 0) {
       console.error('no image found');
+
       return;
     }
 
     // Only support one image
     if (event.length > 1) {
       console.error('only support one image');
+
       return;
     }
 
@@ -177,6 +179,7 @@ export default class MediumDraftEditor extends React.Component {
         name: fileName,
         id: uuidv4(),
       };
+
       uploadedImages.push(newImage);
     };
 
@@ -184,6 +187,7 @@ export default class MediumDraftEditor extends React.Component {
     await encodeImageFileAsURL(image, insertImage);
 
     const currentImage = uploadedImages[0];
+
     // Add empty block after image
     this.onChange(addNewBlockAt(this.props.editorState, key, Block.UNSTYLED, {}));
     this.onChange(
@@ -214,6 +218,7 @@ export default class MediumDraftEditor extends React.Component {
         name: fileName,
         id: uuidv4(),
       };
+
       uploadedImages.push(newImage);
     };
 
@@ -239,6 +244,7 @@ export default class MediumDraftEditor extends React.Component {
         }),
       );
     });
+
     return HANDLED;
   };
 
@@ -248,6 +254,7 @@ export default class MediumDraftEditor extends React.Component {
   onTab(e) {
     const { editorState } = this.props;
     const newEditorState = RichUtils.onTab(e, editorState, 2);
+
     if (newEditorState !== editorState) {
       this.onChange(newEditorState);
     }
@@ -260,9 +267,9 @@ export default class MediumDraftEditor extends React.Component {
     const key = selection.getAnchorKey();
     const currentBlock = content.getBlockForKey(key);
     const firstBlock = content.getFirstBlock();
+
     if (firstBlock.getKey() === key) {
       if (firstBlock.getType().indexOf(Block.ATOMIC) === 0) {
-        console.log(Block.ATOMIC);
         e.preventDefault();
         const newBlock = new ContentBlock({
           type: Block.UNSTYLED,
@@ -281,10 +288,12 @@ export default class MediumDraftEditor extends React.Component {
             isBackward: false,
           }),
         });
+
         this.onChange(EditorState.push(editorState, newContent, 'insert-characters'));
       }
     } else if (currentBlock.getType().indexOf(Block.ATOMIC) === 0) {
       const blockBefore = content.getBlockBefore(key);
+
       if (!blockBefore) {
         return;
       }
@@ -296,6 +305,7 @@ export default class MediumDraftEditor extends React.Component {
         focusOffset: blockBefore.getLength(),
         isBackward: false,
       });
+
       this.onChange(EditorState.forceSelection(editorState, newSelection));
     }
   };
@@ -309,6 +319,7 @@ export default class MediumDraftEditor extends React.Component {
     const content = editorState.getCurrentContent();
     let entityKey = null;
     let newUrl = url;
+
     if (this.props.processURL) {
       newUrl = this.props.processURL(url);
     } else if (url.indexOf('http') !== 0 && url.indexOf('mailto:') !== 0) {
@@ -320,6 +331,7 @@ export default class MediumDraftEditor extends React.Component {
     }
     if (newUrl !== '') {
       const contentWithEntity = content.createEntity(E.LINK, 'MUTABLE', { url: newUrl });
+
       editorState = EditorState.push(editorState, contentWithEntity, 'create-entity');
       entityKey = contentWithEntity.getLastCreatedEntityKey();
     }
@@ -337,6 +349,7 @@ export default class MediumDraftEditor extends React.Component {
    */
   configureToolbarBlockOptions(toolbarConfig) {
     const { blockButtons } = this.props;
+
     return toolbarConfig && toolbarConfig.block
       ? toolbarConfig.block
           .map(type => blockButtons.find(button => button.style === type))
@@ -356,6 +369,7 @@ export default class MediumDraftEditor extends React.Component {
    */
   configureToolbarInlineOptions(toolbarConfig) {
     const { inlineButtons } = this.props;
+
     return toolbarConfig && toolbarConfig.inline
       ? toolbarConfig.inline
           .map(type => inlineButtons.find(button => button.style === type))
@@ -379,8 +393,10 @@ export default class MediumDraftEditor extends React.Component {
   */
   handleKeyCommand(command) {
     const { editorState } = this.props;
+
     if (this.props.handleKeyCommand) {
       const behaviour = this.props.handleKeyCommand(command);
+
       if (behaviour === HANDLED || behaviour === true) {
         return HANDLED;
       }
@@ -390,18 +406,24 @@ export default class MediumDraftEditor extends React.Component {
         // For some reason, scroll is jumping sometimes for the below code.
         // Debug and fix it later.
         const isCursorLink = isCursorBetweenLink(editorState);
+
         if (isCursorLink) {
           this.editLinkAfterSelection(isCursorLink.blockKey, isCursorLink.entityKey);
+
           return HANDLED;
         }
         this.toolbar.handleLinkInput(null, true);
+
         return HANDLED;
       }
+
       return NOT_HANDLED;
     } else if (command === KEY_COMMANDS.unlink()) {
       const isCursorLink = isCursorBetweenLink(editorState);
+
       if (isCursorLink) {
         this.removeLink(isCursorLink.blockKey, isCursorLink.entityKey);
+
         return HANDLED;
       }
     }
@@ -416,12 +438,15 @@ export default class MediumDraftEditor extends React.Component {
     if (command === KEY_COMMANDS.delete()) {
       if (currentBlockType.indexOf(Block.ATOMIC) === 0) {
         this.onChange(resetBlockWithType(editorState, Block.UNSTYLED, { text: '' }));
+
         return HANDLED;
       }
+
       return NOT_HANDLED;
     }
     if (command.indexOf(`${KEY_COMMANDS.changeType()}`) === 0) {
       let newBlockType = command.split(':')[1];
+
       // const currentBlockType = block.getType();
       if (currentBlockType === Block.ATOMIC) {
         return HANDLED;
@@ -432,10 +457,12 @@ export default class MediumDraftEditor extends React.Component {
         newBlockType = Block.BLOCKQUOTE;
       }
       this.onChange(RichUtils.toggleBlockType(editorState, newBlockType));
+
       return HANDLED;
     } else if (command.indexOf(`${KEY_COMMANDS.toggleInline()}`) === 0) {
       const inline = command.split(':')[1];
       this._toggleInlineStyle(inline); // eslint-disable-line
+
       return HANDLED;
     }
     if (
@@ -446,10 +473,13 @@ export default class MediumDraftEditor extends React.Component {
       return HANDLED;
     }
     const newState = RichUtils.handleKeyCommand(editorState, command);
+
     if (newState) {
       this.onChange(newState);
+
       return HANDLED;
     }
+
     return NOT_HANDLED;
   }
 
@@ -475,13 +505,16 @@ export default class MediumDraftEditor extends React.Component {
   handleReturn(e) {
     if (this.props.handleReturn) {
       const behavior = this.props.handleReturn(e);
+
       if (behavior === HANDLED || behavior === true) {
         return HANDLED;
       }
     }
     const { editorState } = this.props;
+
     if (isSoftNewlineEvent(e)) {
       this.onChange(RichUtils.insertSoftNewline(editorState));
+
       return HANDLED;
     }
     if (!e.altKey && !e.metaKey && !e.ctrlKey) {
@@ -490,6 +523,7 @@ export default class MediumDraftEditor extends React.Component {
 
       if (blockType.indexOf(Block.ATOMIC) === 0 || blockType === Block.STORY_TITLE) {
         this.onChange(addNewBlockAt(editorState, currentBlock.getKey()));
+
         return HANDLED;
       }
 
@@ -505,6 +539,7 @@ export default class MediumDraftEditor extends React.Component {
           case Block.H3:
           case Block.H1:
             this.onChange(resetBlockWithType(editorState, Block.UNSTYLED));
+
             return HANDLED;
           default:
             return NOT_HANDLED;
@@ -516,12 +551,16 @@ export default class MediumDraftEditor extends React.Component {
       if (selection.isCollapsed() && currentBlock.getLength() === selection.getStartOffset()) {
         if (this.props.continuousBlocks.indexOf(blockType) < 0) {
           this.onChange(addNewBlockAt(editorState, currentBlock.getKey()));
+
           return HANDLED;
         }
+
         return NOT_HANDLED;
       }
+
       return NOT_HANDLED;
     }
+
     return NOT_HANDLED;
   }
 
@@ -531,6 +570,7 @@ export default class MediumDraftEditor extends React.Component {
   */
   _toggleBlockType(blockType) {
     const type = RichUtils.getCurrentBlockType(this.props.editorState);
+
     if (type.indexOf(`${Block.ATOMIC}:`) === 0) {
       return;
     }
@@ -550,9 +590,11 @@ export default class MediumDraftEditor extends React.Component {
     const content = editorState.getCurrentContent();
     const block = content.getBlockForKey(blockKey);
     const oldSelection = editorState.getSelection();
+
     block.findEntityRanges(
       character => {
         const eKey = character.getEntity();
+
         return eKey === entityKey;
       },
       (start, end) => {
@@ -566,6 +608,7 @@ export default class MediumDraftEditor extends React.Component {
           RichUtils.toggleLink(editorState, selection, null),
           oldSelection,
         );
+
         this.onChange(newEditorState, this.focus);
       },
     );
@@ -578,9 +621,11 @@ export default class MediumDraftEditor extends React.Component {
     const { editorState } = this.props;
     const content = editorState.getCurrentContent();
     const block = content.getBlockForKey(blockKey);
+
     block.findEntityRanges(
       character => {
         const eKey = character.getEntity();
+
         return eKey === entityKey;
       },
       (start, end) => {
@@ -591,6 +636,7 @@ export default class MediumDraftEditor extends React.Component {
           focusOffset: end,
         });
         const newEditorState = EditorState.forceSelection(editorState, selection);
+
         this.onChange(newEditorState);
         setTimeout(() => {
           if (this.toolbar) {
@@ -607,9 +653,11 @@ export default class MediumDraftEditor extends React.Component {
    */
   handlePastedText = (text, html, es) => {
     const currentBlock = getCurrentBlock(this.props.editorState);
+
     if (currentBlock.getType() === Block.IMAGE) {
       const { editorState } = this.props;
       const content = editorState.getCurrentContent();
+
       this.onChange(
         EditorState.push(
           editorState,
@@ -622,6 +670,7 @@ export default class MediumDraftEditor extends React.Component {
     if (this.props.handlePastedText && this.props.handlePastedText(text, html, es) === HANDLED) {
       return HANDLED;
     }
+
     return NOT_HANDLED;
   };
 
@@ -645,11 +694,13 @@ export default class MediumDraftEditor extends React.Component {
       'md-RichEditor-root-vimeo': isVimeo,
     });
     let isCursorLink = false;
+
     if (editorEnabled && showLinkEditToolbar) {
       isCursorLink = isCursorBetweenLink(editorState);
     }
     const blockButtons = this.configureToolbarBlockOptions(toolbarConfig);
     const inlineButtons = this.configureToolbarInlineOptions(toolbarConfig);
+
     return (
       <div className={RichEditorRootClassNamesList}>
         <div className={editorClass}>

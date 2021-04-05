@@ -140,6 +140,7 @@ class EditPost extends Component {
       return getInitialState(nextProps);
     } else if (nextProps.draftId === null && prevState.draftId) {
       const nextState = getInitialState(nextProps);
+
       nextProps.history.replace({
         pathname: nextProps.location.pathname,
         search: `draft=${nextState.draftId}`,
@@ -147,6 +148,7 @@ class EditPost extends Component {
 
       return nextState;
     }
+
     return null;
   }
 
@@ -157,11 +159,14 @@ class EditPost extends Component {
     const campaignId =
       campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
+
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ isReview });
     const postPermlink = get(currDraft, 'permlink');
+
     if (isReview) {
       const isPublicReview = postPermlink;
+
       getReviewCheckInfo({ campaignId, locale, userName, isPublicReview })
         .then(campaignData => {
           this.setState({
@@ -170,6 +175,7 @@ class EditPost extends Component {
         })
         .then(() => {
           const delay = 350;
+
           if (this.state.linkedObjects.length === 2) {
             setTimeout(() => this.getReviewTitle(), delay);
           } else {
@@ -201,6 +207,7 @@ class EditPost extends Component {
       has(currDraft, ['jsonMetadata', 'campaignId'])
     ) {
       const isPublicReview = postPermlink;
+
       getReviewCheckInfo({ campaignId, locale, userName, isPublicReview })
         .then(campaignData => {
           this.setState({
@@ -240,9 +247,11 @@ class EditPost extends Component {
     const reviewTitle = `Review: ${getObjectName(requiredObj)}, ${getObjectName(secondObj)}`;
 
     const topics = [];
+
     if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
       topics.push(requiredObj.author_permlink || secondObj.author_permlink);
     }
+
     return this.setState({
       draftContent: {
         title: reviewTitle,
@@ -278,8 +287,10 @@ class EditPost extends Component {
     );
 
     const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
+
     if (isLinkedObjectsChanged) {
       const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
+
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
@@ -315,6 +326,7 @@ class EditPost extends Component {
     const postData = this.buildPost();
     const isReview =
       !isEmpty(this.state.campaign) || includes(get(history, ['location', 'search']), 'review');
+
     this.props.createPost(postData, this.props.beneficiaries, isReview, campaign, intl);
   }
 
@@ -324,6 +336,7 @@ class EditPost extends Component {
     const switchableObj = indexOf(linkedObjects, currentObj);
     const switchableObjPermlink = currentObj.author_permlink;
     const indexSwitchableHashtag = topics.indexOf(switchableObjPermlink);
+
     if (!isLinked) {
       linkedObjects.splice(switchableObj, 1);
       topics.splice(indexSwitchableHashtag, 1);
@@ -332,6 +345,7 @@ class EditPost extends Component {
       ...objPercentage,
       [objId || uniqId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
+
     this.setState({
       objPercentage: setObjPercents(linkedObjects, updPercentage),
       topics,
@@ -343,6 +357,7 @@ class EditPost extends Component {
       const objName = getObjectName(object).toLowerCase();
       const objPermlink = object.author_permlink;
       const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
+
       return {
         draftContent: {
           title: this.state.titleValue,
@@ -380,6 +395,7 @@ class EditPost extends Component {
     } = this.state;
     const currentObject = get(linkedObjects, '[0]', {});
     const objName = currentObject.author_permlink;
+
     if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
       this.setState(prevState => ({ topics: uniqWith([...prevState.topics, objName], isEqual) }));
     }
@@ -425,6 +441,7 @@ class EditPost extends Component {
     if (originalBody) {
       postData.originalBody = originalBody;
     }
+
     return postData;
   }
 
@@ -437,6 +454,7 @@ class EditPost extends Component {
 
     const draft = this.buildPost();
     const postBody = draft.originalBody || draft.body;
+
     if (!postBody) return;
 
     const redirect = this.props.draftId !== this.state.draftId;
@@ -469,6 +487,7 @@ class EditPost extends Component {
       isGuest,
       draftId,
     } = this.props;
+
     return (
       <div className="shifted">
         <div className="post-layout container">

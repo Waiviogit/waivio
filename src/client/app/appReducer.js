@@ -38,6 +38,7 @@ export default (state = initialState, action) => {
       if (action.payload && action.payload.settings && action.payload.settings.locale) {
         return { ...state, locale: action.payload.settings.locale };
       }
+
       return state;
     case appTypes.RATE_REQUEST.SUCCESS:
       return {
@@ -139,6 +140,7 @@ export default (state = initialState, action) => {
       };
     case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
       const { mainPage, host, configuration, beneficiary, parentHost } = action.payload;
+
       return {
         ...state,
         mainPage,
@@ -195,8 +197,10 @@ export const getWeightValue = (state, weight) => {
   const recentClaims = get(rewardFund, 'recent_claims');
   const rewardBalance = get(rewardFund, 'reward_balance');
   let value;
+
   if (!isEmpty(rewardFund))
     value = (weight / recentClaims) * rewardBalance.replace(' HIVE', '') * rate * 1000000;
+
   return value;
 };
 export const getTranslationByKey = (state, key, defaultMessage = '') =>

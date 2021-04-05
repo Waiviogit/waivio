@@ -208,6 +208,7 @@ class ObjectInfo extends React.Component {
         {item.alias || getObjectName(item)}
       </LinkButton>
     );
+
     switch (item.id) {
       case TYPES_OF_MENU_ITEM.BUTTON:
         menuItem = (
@@ -271,6 +272,7 @@ class ObjectInfo extends React.Component {
         setWith(album, '[active_votes]', []);
         setWith(album, '[weight]', 0);
       }
+
       return album;
     });
 
@@ -341,6 +343,7 @@ class ObjectInfo extends React.Component {
 
           return currentLink ? [...acc, currentLink] : acc;
         }, []);
+
         return uniq([...sortButtons, ...buttonArray]).map(item =>
           this.getMenuSectionLink({ id: item.id || item.name, ...item }),
         );

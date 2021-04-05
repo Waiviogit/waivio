@@ -23,8 +23,10 @@ const feedIdsList = (state = [], action) => {
     if (posts && Array.isArray(posts)) {
       return posts.map(getPostKey);
     }
+
     return [];
   };
+
   switch (action.type) {
     case feedTypes.GET_FEED_CONTENT.START:
     case feedTypes.GET_USER_FEED_CONTENT.START:
@@ -37,6 +39,7 @@ const feedIdsList = (state = [], action) => {
       if (action && action.payload) {
         return mapPostsKeys(action.payload);
       }
+
       return [];
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
@@ -46,6 +49,7 @@ const feedIdsList = (state = [], action) => {
       if (action && action.payload) {
         return mapPostsKeys(action.payload);
       }
+
       return [];
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
       return [...state, ...mapPostsKeys(action.payload)];

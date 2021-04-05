@@ -89,6 +89,7 @@ class StoryFooter extends React.Component {
 
   componentWillMount() {
     const { user, post, defaultVotePercent } = this.props;
+
     if (user) {
       const userVote = find(post.active_votes, { voter: user.name }) || {};
 

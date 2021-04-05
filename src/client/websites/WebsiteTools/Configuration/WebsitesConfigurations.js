@@ -72,6 +72,7 @@ export const WebsitesConfigurations = ({
         match,
         area: [+lat, +lon],
       };
+
       getPropositions(reqData).then(data => {
         getMapPropositions(data.campaigns);
       });

@@ -11,6 +11,7 @@ describe('(Component) ModalSignIn', () => {
           <ModalSignIn />
         </IntlProvider>,
       );
+
       expect(wrapper).toMatchSnapshot();
     });
   });

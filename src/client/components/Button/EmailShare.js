@@ -4,6 +4,7 @@ import './ShareButton.less';
 
 const EmailShare = ({ url, text }) => {
   const shareURL = `mailto:?subject=${text}&body=${url}`;
+
   return (
     <a className="ShareButton" href={shareURL}>
       <div className="ShareButton__contents ShareButton__contents__email">

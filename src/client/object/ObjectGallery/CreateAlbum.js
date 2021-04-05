@@ -28,6 +28,7 @@ const CreateAlbum = ({
 
     try {
       const { author } = await appendObjectDispatch(data);
+
       await addAlbumToStoreDispatch({ ...album, author });
       hideModal();
       message.success(

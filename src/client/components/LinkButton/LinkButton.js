@@ -6,6 +6,7 @@ import './LinkButton.less';
 
 const LinkButton = props => {
   const { block, history, to, className, size, type, onClick, children, key } = props;
+
   return (
     <Button
       key={key}

@@ -6,6 +6,7 @@ import Avatar from '../components/Avatar';
 
 const UserCardView = ({ user }) => {
   const userName = user.name || user.account;
+
   return (
     <React.Fragment>
       <div className="UserCardView">

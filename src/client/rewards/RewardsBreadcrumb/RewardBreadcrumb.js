@@ -27,6 +27,7 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject, match }) => {
   const widgetUrl = widgetUrlConstructor(isWidget, userName, ref);
 
   let url = `/rewards/${filterKey}`;
+
   if (isWidget) url += `/${widgetUrl}`;
 
   const breadCrumbText = `${

@@ -31,11 +31,13 @@ const settings = (state = initialState, action) => {
           newUser: action.payload.userMetaData.new_user,
         };
       }
+
       return state;
     case GET_USER_METADATA.SUCCESS:
       if (action.payload && action.payload.settings) {
         return { ...action.payload.settings, loading: false };
       }
+
       return { ...state, loading: false };
     case GET_USER_METADATA.START:
     case settingsTypes.SAVE_SETTINGS_START:

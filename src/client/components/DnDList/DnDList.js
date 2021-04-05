@@ -15,6 +15,7 @@ export const getItemStyle = (isDraggingOver, isDragging, draggableStyle, accentC
 export const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
+
   result.splice(endIndex, 0, removed);
 
   return result;
@@ -53,6 +54,7 @@ class DnDList extends Component {
 
   componentDidUpdate(prevProps) {
     const { listItems } = this.props;
+
     if (this.props.wobjType === OBJECT_TYPE.LIST && !isEqual(prevProps.listItems, listItems)) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ items: listItems });
@@ -67,10 +69,12 @@ class DnDList extends Component {
     }
 
     const items = reorder(this.state.items, result.source.index, result.destination.index);
+
     this.setState({
       items,
     });
     let itemsList = items;
+
     if (this.props.wobjType === OBJECT_TYPE.LIST) {
       itemsList = this.filterItems(items);
     }
@@ -87,9 +91,11 @@ class DnDList extends Component {
           }
         : item,
     );
+
     this.setState({ items: itemsList });
     if (this.props.wobjType === OBJECT_TYPE.LIST) {
       const itemsListFiltered = this.filterItems(itemsList);
+
       this.props.onChange(itemsListFiltered.map(item => item.id));
     }
   };

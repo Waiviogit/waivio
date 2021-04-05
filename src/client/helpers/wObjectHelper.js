@@ -26,6 +26,7 @@ export const isList = wobj => getObjectType(wobj) === 'list';
 export const getCurrentPoint = (wobjects, queryCenter) =>
   wobjects.find(wobj => {
     const pointMap = getObjectMapInArray(wobj);
+
     if (pointMap) return isEqual(pointMap, queryCenter);
 
     return false;
@@ -42,10 +43,12 @@ export const generateRandomString = stringLength => {
   let randomAscii;
   const asciiLow = 65;
   const asciiHigh = 90;
+
   for (let i = 0; i < stringLength; i += 1) {
     randomAscii = Math.floor(Math.random() * (asciiHigh - asciiLow) + asciiLow);
     randomString += String.fromCharCode(randomAscii);
   }
+
   return randomString;
 };
 
@@ -56,6 +59,7 @@ export const generatePermlink = () =>
 
 export const prepareAlbumData = (form, currentUsername, wObject) => {
   const data = {};
+
   data.author = currentUsername;
   data.parentAuthor = wObject.author;
   data.parentPermlink = wObject.author_permlink;
@@ -79,6 +83,7 @@ export const prepareAlbumData = (form, currentUsername, wObject) => {
 export const prepareBlogData = (form, currentUserName, wObject) => {
   const blog = form.blogTitle || form.blogAccount;
   const data = {};
+
   data.author = currentUserName;
   data.parentAuthor = wObject.author;
   data.parentPermlink = wObject.author_permlink;
@@ -126,15 +131,18 @@ export const hasType = (wobj, type) =>
 export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
   const { author, author_permlink: parentPermlink } = wObj;
   let body = bodyMsg;
+
   if (!body) {
     const langReadable = filter(LANGUAGES, {
       id: fieldContent.locale === 'auto' ? 'en-US' : fieldContent.locale,
     })[0].name;
+
     body = `@${creator} added ${fieldContent.name} (${langReadable}):\n ${fieldContent.body.replace(
       /[{}"]/g,
       '',
     )}`;
   }
+
   return {
     author: creator,
     parentAuthor: author,
@@ -190,6 +198,7 @@ export const parseAddress = wobject => {
   return compact(
     Object.values(addressFields).map(fieldName => {
       const parsedWobject = parseWobjectField(wobject, 'address');
+
       return get(parsedWobject, fieldName);
     }),
   ).join(', ');
@@ -205,6 +214,7 @@ export const getPermlinksFromHash = url => (url ? url.replace('#', '').split('/'
 
 export const getMenuItems = (wobject, menuType, objType) => {
   const listItems = get(wobject, 'listItem', []).filter(item => item.type === menuType);
+
   if (isEmpty(wobject.menuItems)) return listItems;
 
   return get(wobject, 'menuItems', [])
@@ -221,6 +231,7 @@ export const getSortList = (sortedList, itemsList) =>
     if (sortedList.includes(item.author_permlink)) {
       return [...acc, item];
     }
+
     return acc;
   }, []);
 

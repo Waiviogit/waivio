@@ -46,6 +46,7 @@ class AddImageModal extends React.Component {
       }
     });
     this.reset();
+
     return false; // for Safari
   };
 
@@ -53,6 +54,7 @@ class AddImageModal extends React.Component {
     if (e.target.files && e.target.files[0]) {
       if (!isValidImage(e.target.files[0], MAX_IMG_SIZE.background, ALLOWED_IMG_FORMATS)) {
         this.props.onImageInvalid(MAX_IMG_SIZE.background, `(${ALLOWED_IMG_FORMATS.join(', ')}) `);
+
         return;
       }
 
@@ -74,6 +76,7 @@ class AddImageModal extends React.Component {
       name: imageName,
       id: uuidv4(),
     };
+
     this.setState({ imageUploading: false, currentImage: [newImage] });
     this.props.form.setFieldsValue({ image });
   };
@@ -105,6 +108,7 @@ class AddImageModal extends React.Component {
         </div>
       );
     }
+
     return null;
   };
 

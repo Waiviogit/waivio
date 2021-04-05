@@ -10,7 +10,9 @@ import './Notification.less';
 const NotificationCampaignMessage = ({ notification, read, onClick }) => {
   const currentRoute = notification.notSponsor ? 'messages' : 'history';
   let url = `/rewards/${currentRoute}/${notification.parent_permlink}/${notification.permlink}`;
+
   if (currentRoute === 'history') url += `/${notification.author}`;
+
   return (
     <Link
       to={url}

@@ -32,6 +32,7 @@ describe('<ReputationTag />', () => {
   it('Should have Remove from favorites title with isFavorited true prop', () => {
     const formatted = Math.floor(formatter.reputationFloat(props.reputation)).toString();
     const Tag = wrapper.find('Tag');
+
     expect(Tag.text()).toBe(formatted);
   });
 });

@@ -84,6 +84,7 @@ class UserActivityActionsList extends Component {
 
   handleLoadMore = () => {
     const { user } = this.props;
+
     this.props.loadMoreCurrentUsersActions(user.name);
   };
 

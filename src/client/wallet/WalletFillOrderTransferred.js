@@ -24,6 +24,7 @@ const WalletFillOrderTransferred = ({
   );
   const options = { url, exchanger };
   const description = getTransactionDescription(transactionType, options);
+
   return (
     <React.Fragment>
       <div className="UserWalletTransactions__transaction">

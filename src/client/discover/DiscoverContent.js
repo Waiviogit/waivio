@@ -24,6 +24,7 @@ import {
 import withAuthActions from '../auth/withAuthActions';
 
 const displayLimit = 20;
+
 @withAuthActions
 @connect(
   state => ({
@@ -84,6 +85,7 @@ class DiscoverContent extends React.Component {
 
   componentDidMount() {
     const { typesList, searchString } = this.props;
+
     if (searchString) {
       this.props.searchUsersForDiscoverPage(searchString, 100);
     }

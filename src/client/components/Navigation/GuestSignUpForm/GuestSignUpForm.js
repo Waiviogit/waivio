@@ -18,6 +18,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
   const isWaivio = useSelector(getIsWaivio);
 
   let initialLanguages = useSelector(getLocale, shallowEqual);
+
   initialLanguages = initialLanguages === 'auto' ? 'en-US' : initialLanguages;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +56,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
       );
     }
     const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
+
     if (user.id) {
       callback(
         <FormattedMessage
@@ -93,6 +95,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
           locales: typeof values.locales === 'string' ? [values.locales] : values.locales,
           allowEmail: values.allow,
         };
+
         dispatch(login(userData.accessToken, userData.socialNetwork, regData)).then(() => {
           setIsLoading(false);
 

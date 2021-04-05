@@ -77,6 +77,7 @@ export default (state = defaultState, action) => {
             }
           : album,
       );
+
       return { ...state, albums };
     }
     case galleryActions.RESET_GALLERY: {

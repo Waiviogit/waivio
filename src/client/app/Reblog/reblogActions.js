@@ -13,7 +13,9 @@ const getRebloggedListAction = createAction(GET_REBLOGGED_LIST);
 const storePostId = postId => {
   const reblogged = store.get('reblogged') || [];
   const newReblogged = [...reblogged, postId];
+
   store.set('reblogged', newReblogged);
+
   return newReblogged;
 };
 
@@ -47,5 +49,6 @@ export const reblog = postId => (dispatch, getState, { steemConnectAPI }) => {
 
 export const getRebloggedList = () => dispatch => {
   const list = store.get('reblogged') || [];
+
   dispatch(getRebloggedListAction(list));
 };

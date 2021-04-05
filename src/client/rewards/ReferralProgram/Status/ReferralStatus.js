@@ -46,6 +46,7 @@ const ReferralStatus = props => {
     setSortBy,
     history,
   };
+
   return <ReferralStatusView propsData={propsData} />;
 };
 

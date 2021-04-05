@@ -71,9 +71,11 @@ class WobjHistory extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { match } = nextProps;
     const { field } = prevState;
+
     if (field !== match.params[1]) {
       return { field: match.params[1] };
     }
+
     return null;
   }
 
@@ -92,6 +94,7 @@ class WobjHistory extends React.Component {
 
   handleFieldChange = field => {
     const { object, history } = this.props;
+
     history.push(`/object/${object.author_permlink}/${field ? `updates/${field}` : 'updates'}`);
     this.setState({ field });
   };
@@ -100,6 +103,7 @@ class WobjHistory extends React.Component {
 
   handleAddBtnClick = () => {
     const { history, match, object, toggleViewEditMode } = this.props;
+
     if (match.params[1] === objectFields.pageContent) {
       toggleViewEditMode(true);
       history.push(`/object/${object.author_permlink}/${OBJECT_TYPE.PAGE}`);
@@ -110,6 +114,7 @@ class WobjHistory extends React.Component {
 
   handleToggleModal = () => {
     const { match, albums, appendAlbum } = this.props;
+
     if (match.params[1] === objectFields.galleryItem && !isPhotosAlbumExist(albums)) {
       appendAlbum();
     }
@@ -150,8 +155,10 @@ class WobjHistory extends React.Component {
     const filteredLanguages = LANGUAGES.filter(lang => {
       if (readLanguages.includes(lang.id)) {
         usedByUserLanguages.push(lang);
+
         return false;
       }
+
       return true;
     });
 

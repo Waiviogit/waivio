@@ -20,7 +20,9 @@ export default class ExitPage extends React.Component {
 
   handleCurrentUrl = url => {
     const splitedRedirectUrl = url.split('/');
+
     splitedRedirectUrl.splice(0, 3);
+
     return splitedRedirectUrl.join('/');
   };
 
@@ -32,6 +34,7 @@ export default class ExitPage extends React.Component {
     const redirectUrl = this.handleCurrentUrl(url);
 
     if (!url) return <div />;
+
     return !saveLocation ? (
       <div className="ExitPage container">
         <h1 className="ExitPage__title">

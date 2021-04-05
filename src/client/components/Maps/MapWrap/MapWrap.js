@@ -43,6 +43,7 @@ class MapWrap extends React.Component {
   getAreaSearchData = () => {
     const { zoom, center } = this.state;
     const { getAreaSearchData } = this.props;
+
     if (_.isEmpty(center)) {
       getAreaSearchData({
         radius: 500000000,
@@ -60,6 +61,7 @@ class MapWrap extends React.Component {
   handleCustomControlClick = () => {
     const { zoom, center } = this.state;
     const { onCustomControlClick } = this.props;
+
     if (_.isEmpty(center)) {
       onCustomControlClick({
         radius: 500000000,
@@ -82,6 +84,7 @@ class MapWrap extends React.Component {
       primaryObjectCoordinates,
       zoomMap,
     } = this.props;
+
     return (
       <div className="map-wrap">
         <div className="map-wrap__header">

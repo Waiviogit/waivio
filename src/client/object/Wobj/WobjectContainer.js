@@ -115,6 +115,7 @@ export default class WobjectContainer extends React.Component {
 
   componentDidMount() {
     const { match, wobject, authenticatedUserName } = this.props;
+
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
@@ -123,6 +124,7 @@ export default class WobjectContainer extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { authenticatedUserName, match, locale } = this.props;
+
     if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
       this.props.resetGallery();
       this.props.clearObjectFromStore();
@@ -151,6 +153,7 @@ export default class WobjectContainer extends React.Component {
     const album = prepareAlbumToStore(data);
 
     const { author } = this.props.appendObject(data);
+
     this.props.addAlbumToStore({ ...album, author });
   };
 

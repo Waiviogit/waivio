@@ -113,6 +113,7 @@ export const voteObject = (objCreator, objPermlink, weight = 10000) => (
   { steemConnectAPI },
 ) => {
   const { auth } = getState();
+
   if (!auth.isAuthenticated) {
     return null;
   }
@@ -347,6 +348,7 @@ export const wobjectBellNotification = followingWobj => (
   const state = getState();
   const username = getAuthenticatedUserName(state);
   const subscribe = !get(state, ['object', 'wobject', 'bell']);
+
   dispatch({
     type: BELL_WOBJECT_NOTIFICATION.START,
   });
@@ -360,6 +362,7 @@ export const wobjectBellNotification = followingWobj => (
     )
     .catch(err => {
       message.error(err.message);
+
       return dispatch({
         type: BELL_USER_NOTIFICATION.ERROR,
       });

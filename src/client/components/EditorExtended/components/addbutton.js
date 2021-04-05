@@ -52,6 +52,7 @@ export default class AddButton extends React.Component {
         setTimeout(this.findNode, 0);
       }
       this.blockKey = bkey;
+
       return;
     }
     if (this.blockKey === bkey) {
@@ -60,6 +61,7 @@ export default class AddButton extends React.Component {
           visible: true,
         });
       }
+
       return;
     }
     this.blockKey = bkey;
@@ -77,6 +79,7 @@ export default class AddButton extends React.Component {
         // save page state
         const x = window.scrollX;
         const y = window.scrollY;
+
         // do focus
         this.props.focus();
         // back previous window state
@@ -88,6 +91,7 @@ export default class AddButton extends React.Component {
   findNode() {
     // eslint-disable-next-line no-undef
     const node = getSelectedBlockNode(window);
+
     if (node === this.node) {
       return;
     }
@@ -98,6 +102,7 @@ export default class AddButton extends React.Component {
         isOpen: false,
         isControlElem: false,
       });
+
       return;
     }
     // const rect = node.getBoundingClientRect();
@@ -119,6 +124,7 @@ export default class AddButton extends React.Component {
     if (!this.state.visible) {
       return null;
     }
+
     return (
       <div className="md-side-toolbar" style={this.state.style}>
         <button
@@ -138,6 +144,7 @@ export default class AddButton extends React.Component {
               {this.props.sideButtons.map(button => {
                 const Button = button.component;
                 const extraProps = button.props ? button.props : {};
+
                 return (
                   <CSSTransition
                     key={button.title}

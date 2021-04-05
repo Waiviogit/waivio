@@ -5,6 +5,7 @@ import './IconButton.less';
 
 const IconButton = props => {
   const { icon, caption, onClick, className, disabled } = props;
+
   return (
     <div
       className={classNames('icon-button', { [className]: Boolean(className), disabled })}

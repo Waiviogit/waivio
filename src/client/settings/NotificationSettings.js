@@ -91,6 +91,7 @@ export default class NotificationSettings extends React.Component {
 
   render() {
     const { notifications } = this.state;
+
     return (
       <div className="center">
         <h1>

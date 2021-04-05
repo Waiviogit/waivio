@@ -207,6 +207,7 @@ export default class AppendForm extends Component {
   componentDidMount = () => {
     const { currentAlbum } = this.state;
     const { albums, wObject } = this.props;
+
     if (this.props.sliderMode) {
       if (!this.state.sliderVisible) {
         // eslint-disable-next-line react/no-did-mount-set-state
@@ -215,11 +216,13 @@ export default class AppendForm extends Component {
     }
     if (isEmpty(currentAlbum)) {
       const defaultAlbum = getDefaultAlbum(albums);
+
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ currentAlbum: defaultAlbum.id });
     }
     if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
       const sortCustom = get(wObject, 'sortCustom', []);
+
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
       const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
@@ -230,6 +233,7 @@ export default class AppendForm extends Component {
       }));
       let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), sortCustom);
       const sorting = listItems.filter(item => !sortCustom.includes(item.author_permlink));
+
       sortedListItems = uniqBy([...sortedListItems, ...sorting], '_id');
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
@@ -243,9 +247,11 @@ export default class AppendForm extends Component {
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
+
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
       const field = form.getFieldValue('currentField');
+
       this.setState({ loading: true });
       this.props
         .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
@@ -326,6 +332,7 @@ export default class AppendForm extends Component {
     const { body, preview, currentField, currentLocale, like, follow, ...rest } = formValues;
     let fieldBody = [];
     const postData = [];
+
     switch (currentField) {
       case objectFields.name:
       case objectFields.authority:
@@ -346,6 +353,7 @@ export default class AppendForm extends Component {
       case objectFields.newsFilter: {
         const allowList = this.state.allowList.map(o => o.map(item => item.author_permlink));
         const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
+
         fieldBody.push(JSON.stringify({ allowList, ignoreList }));
         break;
       }
@@ -378,6 +386,7 @@ export default class AppendForm extends Component {
 
     const getAppendMsg = (author, appendValue) => {
       const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
+
       switch (currentField) {
         case objectFields.avatar:
         case objectFields.background:
@@ -422,6 +431,7 @@ export default class AppendForm extends Component {
             if (!isEmpty(rule)) {
               rulesIgnore = '\nIgnore list:';
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
+
               rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${rule.author_permlink}</a>${dotOrComma}`;
             }
           });
@@ -585,6 +595,7 @@ export default class AppendForm extends Component {
 
   handleRemoveObjectFromIgnoreList = obj => {
     let ignoreList = this.state.ignoreList;
+
     ignoreList = filter(ignoreList, o => o.author_permlink !== obj.author_permlink);
     this.setState({ ignoreList });
   };
@@ -640,6 +651,7 @@ export default class AppendForm extends Component {
     const { user, intl, hideModal, wObject, form } = this.props;
     const formData = form.getFieldsValue();
     const data = prepareBlogData(formData, user.name, wObject);
+
     this.setState({ loading: true });
 
     this.props
@@ -804,6 +816,7 @@ export default class AppendForm extends Component {
   handleSubmit = event => {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
+
     if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
     } else if (objectFields.newsFilter === currentField) {
@@ -866,6 +879,7 @@ export default class AppendForm extends Component {
 
   checkRequiredField = (form, currentField) => {
     let formFields = null;
+
     switch (currentField) {
       case objectFields.address:
         formFields = form.getFieldsValue(Object.values(addressFields));
@@ -931,6 +945,7 @@ export default class AppendForm extends Component {
 
     if (currentField === objectFields.categoryItem) {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
+
       return selectedTagCategory.some(item => item.body === currentValue);
     }
     if (currentField === objectFields.blog) {
@@ -968,6 +983,7 @@ export default class AppendForm extends Component {
               id: 'append_object_validation_msg',
               defaultMessage: 'The field with this value already exists',
             };
+
       callback(
         intl.formatMessage({
           id: messages.id,
@@ -976,6 +992,7 @@ export default class AppendForm extends Component {
       );
     } else {
       const fields = form.getFieldsValue();
+
       if (fields[currentField]) {
         const triggerValue = fields[currentField];
 
@@ -1825,6 +1842,7 @@ export default class AppendForm extends Component {
             name: item.alias || getObjectName(item),
             type: item.type,
           })) || [];
+
         if (wobjType === OBJECT_TYPE.LIST) {
           listItems =
             (itemsInSortingList &&
@@ -2072,6 +2090,7 @@ export default class AppendForm extends Component {
       }
       case objectFields.blog: {
         const { selectedUserBlog } = this.state;
+
         return (
           <React.Fragment>
             <Form.Item>
@@ -2129,6 +2148,7 @@ export default class AppendForm extends Component {
       }
       case objectFields.form: {
         const { formColumn, formForm } = this.state;
+
         return (
           <ObjectForm
             formColumn={formColumn}

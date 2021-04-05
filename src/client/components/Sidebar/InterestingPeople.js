@@ -35,6 +35,7 @@ class InterestingPeople extends React.Component {
 
   render() {
     const { randomExperts } = this.props;
+
     return randomExperts.length >= 5 ? (
       <div className="InterestingPeople SidebarContentBlock">
         <h4 className="SidebarContentBlock__title">

@@ -103,6 +103,7 @@ class UserWalletTransactions extends React.Component {
       isGuest: this.isGuestPage(),
       table: false,
     };
+
     return handleLoadMoreTransactions(values);
   };
 

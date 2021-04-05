@@ -24,6 +24,7 @@ describe('settingsReducer', () => {
     const stateAfter = initialState;
     const action = {};
     const returnState = settingsReducer(stateAfter, action);
+
     expect(returnState).to.deep.eql(stateAfter);
   });
 

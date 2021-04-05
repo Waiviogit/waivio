@@ -38,6 +38,7 @@ const RewardsComponent = memo(
     const getTypeRewards = () => {
       if (match.params.filterKey === 'active') return 'active';
       if (match.params.filterKey === 'reserved') return 'reserved';
+
       return 'all';
     };
     const filterKey = getTypeRewards();
@@ -53,6 +54,7 @@ const RewardsComponent = memo(
     useEffect(() => {
       if (!userLocation.lat || !userLocation.lon || !url || loadingCampaigns) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
+
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());

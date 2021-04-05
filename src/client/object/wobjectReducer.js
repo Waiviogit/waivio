@@ -94,6 +94,7 @@ export default function wobjectReducer(state = initialState, action) {
       const matchPostIndex = state.wobject.fields.findIndex(
         field => field.permlink === action.payload.permlink,
       );
+
       if (action.payload.post) {
         state.wobject.fields.splice(matchPostIndex, 1, {
           ...action.payload.post,
@@ -108,6 +109,7 @@ export default function wobjectReducer(state = initialState, action) {
           },
         };
       }
+
       return state;
     }
 
@@ -130,6 +132,7 @@ export default function wobjectReducer(state = initialState, action) {
           },
         };
       }
+
       return state;
     }
 
@@ -145,6 +148,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...matchPost,
         children: matchPost.children + 1,
       });
+
       return {
         ...state,
         wobject: {

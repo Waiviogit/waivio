@@ -72,6 +72,7 @@ export default connect(
     const currentShownPost = getCurrentShownPost(state);
     const author = get(currentShownPost, 'author');
     const permlink = get(currentShownPost, 'permlink');
+
     return {
       showPostModal: getShowPostModal(state),
       author: getUser(state, author),

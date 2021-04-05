@@ -142,6 +142,7 @@ class SearchObjectsAutocomplete extends Component {
   renderSearchObjectsOptions = (searchString, intl) => {
     const { addItem, searchObjectsResults, itemsIdsToOmit } = this.props;
     let searchObjectsOptions = [];
+
     if (
       searchString &&
       addItem &&
@@ -157,6 +158,7 @@ class SearchObjectsAutocomplete extends Component {
           </div>
         </AutoComplete.Option>
       );
+
       return [searchObjectsOptions];
     } else if (searchString) {
       searchObjectsOptions = searchObjectsResults
@@ -175,6 +177,7 @@ class SearchObjectsAutocomplete extends Component {
             />
           </AutoComplete.Option>
         ));
+
       return searchObjectsOptions;
     }
 
@@ -185,6 +188,7 @@ class SearchObjectsAutocomplete extends Component {
 
   searchObjectListed = searchObjectPermlink => {
     const parentListItems = get(this.props.parentObject, 'listItems', []);
+
     return (
       parentListItems.some(item => this.getListItemAuthorPermlink(item) === searchObjectPermlink) &&
       (parentListItems.some(

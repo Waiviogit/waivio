@@ -19,6 +19,7 @@ const BlacklistFooter = ({ intl, users, listType, handleGetBlacklist }) => {
       await setLoading(true);
       try {
         let id = 'addUsersToBlackList';
+
         if (listType === 'whitelist') id = 'addUsersToWhiteList';
         if (listType === 'references') id = 'followAnotherBlacklist';
 
@@ -32,7 +33,7 @@ const BlacklistFooter = ({ intl, users, listType, handleGetBlacklist }) => {
         });
         await setLoading(false);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   };

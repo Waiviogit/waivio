@@ -117,9 +117,11 @@ export const sortCommentsFromSteem = (list, commentsState, sortBy = 'trending') 
   if (sortBy === 'trending') {
     compareFunc = (itemA, itemB) => {
       let compareRes = parseFloat(itemA.total_payout_value) - parseFloat(itemB.total_payout_value);
+
       if (compareRes === 0) {
         compareRes = itemA.net_votes - itemB.net_votes;
       }
+
       return compareRes;
     };
   } else if (sortBy === 'votes') {
@@ -149,6 +151,7 @@ export const getPostKey = post => {
   if (post.guestInfo) {
     return `${post.guestInfo.userId}/${post.permlink}`;
   }
+
   return `${post.author}/${post.permlink}`;
 };
 

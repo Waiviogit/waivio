@@ -13,6 +13,7 @@ function upgradeURL(url) {
 
 function cleanHTML(html) {
   const $ = cheerio.load(html);
+
   $('head').remove();
 
   // AMP requires amp-img instead of img
@@ -26,6 +27,7 @@ function cleanHTML(html) {
 
   // AMP requires amp-iframe instead of iframe
   const allowedIframeAttrs = ['src', 'frameborder', 'allowfullscreen', 'width', 'height'];
+
   $('iframe').each((i, elem) => {
     const el = $('<amp-iframe></amp-iframe>');
     const attribs = elem.attribs;
@@ -33,6 +35,7 @@ function cleanHTML(html) {
     Object.keys(attribs).forEach(key => {
       if (allowedIframeAttrs.includes(key)) {
         const value = key === 'src' ? upgradeURL(attribs[key]) : attribs[key];
+
         el.attr(key, value);
       }
     });
@@ -48,6 +51,7 @@ function cleanHTML(html) {
 function getContext(post, body, appUrl) {
   const metadata = attempt(JSON.parse, post.json_metadata);
   let images = [];
+
   if (!isError(metadata) && metadata.image) images = metadata.image;
 
   const datePublished = `${post.created}Z`;
@@ -94,6 +98,7 @@ function getContext(post, body, appUrl) {
 export default function renderAmpPage(post, appUrl, template) {
   const body = cleanHTML(getHtml(post.body, post.jsonMetadata, 'text'));
   const context = getContext(post, body, appUrl);
+
   return template(context, {
     data: {
       intl: {

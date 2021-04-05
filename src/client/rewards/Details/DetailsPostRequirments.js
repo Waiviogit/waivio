@@ -16,6 +16,7 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
   const requiredObject = get(objectDetails, ['requiredObject']);
   const description = get(objectDetails, ['description']);
   let indexItem = 1;
+
   return (
     <React.Fragment>
       <div className="Details__text fw6 mv3">{messageData.postRequirements}:</div>
