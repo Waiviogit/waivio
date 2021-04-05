@@ -105,8 +105,9 @@ class CustomMarker extends React.Component {
     let currLeft = imageOffset.left;
 
     if (currLocation) {
-      currentImg = '/images/icons/loc-removebg.png';
-      width = 50;
+      currentImg = '/images/icons/location.png';
+      width = 20;
+      height = 20;
     }
 
     if (hoveredWobj) {

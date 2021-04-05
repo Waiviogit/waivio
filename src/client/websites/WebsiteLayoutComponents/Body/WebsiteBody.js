@@ -57,6 +57,7 @@ const WebsiteBody = props => {
   const [infoboxData, setInfoboxData] = useState(null);
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
   const [height, setHeight] = useState(0);
+  const [showLocation, setShowLocation] = useState(false);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const isActiveFilters = !isEmpty(props.activeFilters);
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
@@ -290,13 +291,16 @@ const WebsiteBody = props => {
           ...area,
           center: [latitude, longitude],
         });
+        setShowLocation(true);
         props.putUserCoordinates({ latitude, longitude });
       },
-      () =>
+      () => {
+        setShowLocation(false);
         setArea({
           ...area,
           center: [props.userLocation.lat, props.userLocation.lon],
-        }),
+        });
+      },
     );
   };
 
@@ -329,6 +333,7 @@ const WebsiteBody = props => {
       </div>
     </div>
   );
+
   return (
     <div className="WebsiteBody">
       <Helmet>
@@ -399,10 +404,12 @@ const WebsiteBody = props => {
               )}
               {getMarkers(props.wobjectsPoint)}
               {infoboxData && getOverlayLayout()}
-              <CustomMarker
-                anchor={[props.userLocation.lat, props.userLocation.lon]}
-                currLocation
-              />
+              {showLocation && (
+                <CustomMarker
+                  anchor={[props.userLocation.lat, props.userLocation.lon]}
+                  currLocation
+                />
+              )}
             </Map>
           </React.Fragment>
         )}
