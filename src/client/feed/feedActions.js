@@ -38,10 +38,13 @@ const getUserLocalesArray = getState => {
   let locales = ['en-US'];
   const state = getState();
   const readLanguages = getReadLanguages(state);
+
   if (isEmpty(readLanguages)) {
     const interfaceLanguage = getLocale(state);
+
     if (interfaceLanguage && interfaceLanguage !== 'auto') locales = [interfaceLanguage];
   } else locales = readLanguages;
+
   return locales;
 };
 
@@ -111,6 +114,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
   if (!initialLoad) {
     const feed = getFeed(state);
     const posts = getPosts(state);
+
     userBlogPosts = getFeedFromState('blog', userName, feed);
 
     if (!userBlogPosts.length) return Promise.resolve(null);
@@ -191,6 +195,7 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
 ) => {
   const state = getState();
   const follower = getAuthenticatedUserName(state);
+
   dispatch({
     type: GET_USER_COMMENTS.ACTION,
     payload: ApiClient.getUserCommentsFromApi(username, skip, limit, start_permlink, follower),
@@ -329,13 +334,17 @@ export const getMoreReplies = () => (dispatch, getState, { steemAPI }) => {
  */
 async function getBookmarksData(bookmarks, locale, follower) {
   const bookmarksData = [];
+
   for (let idx = 0; idx < bookmarks.length; idx += 1) {
     const [author, permlink] = bookmarks[idx].split('/');
+
     if (author !== 'undefined' && permlink !== 'undefined') {
       const postData = ApiClient.getContent(author, permlink, locale, follower);
+
       bookmarksData.push(postData);
     }
   }
+
   return Promise.all(bookmarksData.sort((a, b) => a.timestamp - b.timestamp).reverse());
 }
 
@@ -345,6 +354,7 @@ export const getBookmarks = () => (dispatch, getState) => {
   const bookmarks = getBookmarksSelector(state);
   const locale = getLocale(state);
   const follower = getAuthenticatedUserName(state);
+
   if (loaded.length && loaded.length === bookmarks.length) return;
 
   dispatch({

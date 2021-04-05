@@ -79,6 +79,7 @@ const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const isRouteMathed =
     pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
+
   return isRouteMathed ? (
     <div className="TopNavigation">
       <div className="container menu-layout">

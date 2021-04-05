@@ -57,6 +57,7 @@ export const getCryptoPriceHistory = (symbols, refresh = false) => dispatch => {
     payload: {
       promise: ApiClient.getWalletCryptoPriceHistory(symbols).then(response => {
         const storeObject = {};
+
         Object.keys(response.current).forEach(key => {
           const {
             usd,
@@ -106,6 +107,7 @@ export const getCurrentAppSettings = () => dispatch => {
         if (typeof window !== 'undefined') {
           window.location.replace(res.redirect);
         }
+
         return null;
       }
 
@@ -128,6 +130,7 @@ export const getCurrentAppSettings = () => dispatch => {
     })
     .catch(e => {
       message.error(e.message);
+
       return dispatch({ type: GET_CURRENT_APP_SETTINGS.ERROR });
     });
 };

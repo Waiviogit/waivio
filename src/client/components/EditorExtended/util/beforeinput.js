@@ -33,22 +33,27 @@ const beforeInput = (editorState, inputString, onChange, mapping = StringToTypeM
   const selection = editorState.getSelection();
   const block = getCurrentBlock(editorState);
   const blockType = block.getType();
+
   if (blockType.indexOf(Block.ATOMIC) === 0) {
     return NOT_HANDLED;
   }
   const blockLength = block.getLength();
+
   if (selection.getAnchorOffset() > 2 || blockLength > 2) {
     return NOT_HANDLED;
   }
   const blockTo = mapping[block.getText() + inputString];
+
   if (!blockTo) {
     return NOT_HANDLED;
   }
   const finalType = blockTo.split(':');
+
   if (finalType.length < 1 || finalType.length > 3) {
     return NOT_HANDLED;
   }
   let fType = finalType[0];
+
   if (finalType.length === 1) {
     if (blockType === finalType[0]) {
       return NOT_HANDLED;
@@ -75,6 +80,7 @@ const beforeInput = (editorState, inputString, onChange, mapping = StringToTypeM
       text: '',
     }),
   );
+
   return HANDLED;
 };
 

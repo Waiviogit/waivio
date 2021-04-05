@@ -72,6 +72,7 @@ const AppendCard = props => {
     const voteWorthCalc = isGuest
       ? 0
       : await calculateVotePowerForSlider(user.name, value, post.author, post.permlink);
+
     setVoteWorth(voteWorthCalc);
     setSliderValue(value);
   }

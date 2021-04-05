@@ -9,6 +9,7 @@ const WalletLimitOrder = ({ timestamp, openPays, currentPays, transactionType })
   const arrowsIcon = '\u21C6';
   const options = { openPays, currentPays };
   const description = getTransactionDescription(transactionType, options);
+
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-container">

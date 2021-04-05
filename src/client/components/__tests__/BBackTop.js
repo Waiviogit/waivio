@@ -10,6 +10,7 @@ describe('<BBackTop />', () => {
       isModal: false,
     };
     const wrapper = shallow(<BBackTop {...props} />);
+
     act(() => {
       wrapper.update();
     });

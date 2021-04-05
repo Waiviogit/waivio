@@ -123,6 +123,7 @@ class WebsiteWrapper extends React.PureComponent {
     });
     const state = store.getState();
     let activeLocale = getLocale(state);
+
     if (activeLocale === 'auto') {
       activeLocale = req.cookies.language || getRequestLocale(req.get('Accept-Language'));
     }
@@ -208,6 +209,7 @@ class WebsiteWrapper extends React.PureComponent {
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
+
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
         <ConfigProvider locale={antdLocale}>

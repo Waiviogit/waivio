@@ -24,6 +24,7 @@ const ClaimReward = ({
     'UserWalletTransactions__payout-rewards',
   );
   const description = getTransactionDescription(transactionType);
+
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-container">

@@ -109,6 +109,7 @@ describe('fromUser', () => {
 
   it('Should return following Updates by type', () => {
     const objType = 'objType';
+
     expect(getFollowingObjectsUpdatesByType(state, objType)).toEqual('related_wobjects');
   });
 

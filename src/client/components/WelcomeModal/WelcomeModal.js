@@ -60,6 +60,7 @@ const WelcomeModal = ({ isAuthorization, intl, userName, location, isGuest, loca
   const unFollow = name => {
     const matchUserIndex = users.findIndex(user => user.name === name);
     const usersArray = [...users];
+
     usersArray.splice(matchUserIndex, 1, {
       ...usersArray[matchUserIndex],
       pending: true,
@@ -117,6 +118,7 @@ const WelcomeModal = ({ isAuthorization, intl, userName, location, isGuest, loca
   const unFollowObj = permlink => {
     const matchWobjIndex = wobjs.findIndex(wobj => wobj.author_permlink === permlink);
     const wobjectsArray = [...wobjs];
+
     wobjectsArray.splice(matchWobjIndex, 1, {
       ...wobjectsArray[matchWobjIndex],
       pending: true,

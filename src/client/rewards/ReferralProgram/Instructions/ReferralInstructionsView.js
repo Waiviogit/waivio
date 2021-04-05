@@ -41,6 +41,7 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
 
   const handleOnOk = () => {
     rejectRules(authUserName, isGuest);
+
     return handleClickOnCheckbox();
   };
 

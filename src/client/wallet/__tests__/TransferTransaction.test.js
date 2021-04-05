@@ -16,6 +16,7 @@ describe('(Component) TransferTransaction', () => {
         transactionType: 'transfer',
       };
       const wrapper = shallow(<TransferTransaction {...props} />);
+
       expect(wrapper).toMatchSnapshot();
     });
   });

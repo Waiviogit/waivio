@@ -10,9 +10,9 @@ import { getBreadCrumbText, getSessionData, widgetUrlConstructor } from '../rewa
 import '../Rewards.less';
 
 const rewardText = {
-  all: { id: 'all', defaultMessage: 'All' },
-  active: { id: 'eligible', defaultMessage: 'Eligible' },
-  reserved: { id: 'reserved', defaultMessage: 'Reserved' },
+  all: { id: 'all_rewards', defaultMessage: 'All rewards' },
+  active: { id: 'eligible_rewards', defaultMessage: 'Eligible rewards' },
+  reserved: { id: 'reserved_rewards', defaultMessage: 'Reserved rewards' },
   history: { id: 'history', defaultMessage: 'History' },
   created: { id: 'created', defaultMessage: 'Created' },
   messages: { id: 'messages', defaultMessage: 'Messages' },
@@ -27,12 +27,16 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject, match }) => {
   const widgetUrl = widgetUrlConstructor(isWidget, userName, ref);
 
   let url = `/rewards/${filterKey}`;
+
   if (isWidget) url += `/${widgetUrl}`;
 
   const breadCrumbText = `${
     isCorrectFilter ? getBreadCrumbText(intl, location.pathname, filterKey, rewardText, match) : ''
   } ${
-    filterKey !== 'history'
+    filterKey !== 'history' &&
+    filterKey !== 'all' &&
+    filterKey !== 'active' &&
+    filterKey !== 'reserved'
       ? intl.formatMessage({
           id: 'rewards',
           defaultMessage: 'rewards',

@@ -33,11 +33,13 @@ class BeneficiariesWeight extends React.PureComponent {
   handlePercentChange = percent => {
     const { percentMax } = this.props;
     const percentValue = percent < percentMax ? percent : percentMax;
+
     this.setState({ percent: percentValue });
   };
 
   handleAfterPercentChange = percent => {
     const { objName, onBenefPercentChange } = this.props;
+
     onBenefPercentChange(objName, percent);
   };
 
@@ -48,6 +50,7 @@ class BeneficiariesWeight extends React.PureComponent {
   render() {
     const { percent } = this.state;
     const { index, objName } = this.props;
+
     return (
       <div key={index} className="beneficiaries-weights__item">
         <div className="beneficiaries-weights__item-title">

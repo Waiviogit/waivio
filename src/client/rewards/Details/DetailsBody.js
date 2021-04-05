@@ -20,6 +20,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
     requirementFilters.frequency &&
     (requirementFilters.not_same_assigns || requirementFilters.freeReservation);
   const getChecked = useCallback(param => (isAuthenticated ? param : null), []);
+
   return (
     <div className="Details__text-wrap">
       <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>

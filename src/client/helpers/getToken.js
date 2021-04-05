@@ -9,6 +9,7 @@ export const setToken = async (socialToken, social, regData) => {
       social,
       regData,
     );
+
     setGuestAuthData(accessToken, refreshToken, expiration);
     store.set('socialName', social);
     store.set('guestName', userData.name);
@@ -22,9 +23,11 @@ export const setToken = async (socialToken, social, regData) => {
 // eslint-disable-next-line no-unused-vars
 export const getValidTokenData = async () => {
   const expiration = store.get('accessTokenExpiration');
+
   if (expiration && Date.now() > expiration * 1000) {
     const refreshTokenValue = store.get('refreshToken');
     const response = await refreshTokenRequest(refreshTokenValue);
+
     if (response.status === 200) {
       setGuestAuthData(response.accessToken, response.refreshToken, response.expiration);
     }
@@ -36,5 +39,6 @@ export const getValidTokenData = async () => {
 
   const token = getGuestAccessToken();
   const name = store.get('guestName');
+
   return { token, userData: { name } };
 };

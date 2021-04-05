@@ -41,6 +41,7 @@ const PropositionList = ({
   const [isGetWobject, setIsGetWobject] = useState(false);
   let filteredPropos = allCurrentPropositions.filter(prop => {
     const objects = get(prop, ['objects'], []);
+
     return listItems.some(listItem => {
       const listItemId = get(listItem, '_id', '');
 
@@ -179,6 +180,7 @@ const PropositionList = ({
     filteredPropos.reduce((acc, propos) => {
       const currentProposObjs = get(propos, 'objects', []);
       const ids = currentProposObjs.map(a => get(a, ['object', '_id'], ''));
+
       return [...acc, ...ids];
     }, []);
 

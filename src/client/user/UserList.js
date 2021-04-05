@@ -24,6 +24,7 @@ export default class UserList extends React.Component {
 
   paginate = () => {
     const page = isNumber(this.state.page) ? this.state.page + 1 : 1;
+
     this.setState({ page });
   };
 
@@ -34,6 +35,7 @@ export default class UserList extends React.Component {
     const users = this.state.search
       ? this.props.users.filter(user => user.indexOf(search) >= 0)
       : this.props.users;
+
     return (
       <ReduxInfiniteScroll
         loadMore={this.paginate}

@@ -9,6 +9,7 @@ const getRelativeParent = element => {
   }
 
   const position = window.getComputedStyle(element).getPropertyValue('position');
+
   if (position !== 'static') {
     return element;
   }
@@ -46,12 +47,15 @@ export default class LinkEditComponent extends React.Component {
         !this.hasPosition(nextState.position) ||
         blockKey !== nextProps.blockKey ||
         entityKey !== nextProps.entityKey;
+
       if (ret) {
         this.renderedOnce = false;
       }
+
       return ret;
     }
     this.renderedOnce = true;
+
     return true;
   }
 
@@ -64,6 +68,7 @@ export default class LinkEditComponent extends React.Component {
       return false;
     }
     const { top, left } = this.state.position;
+
     return position.top === top && position.left === left;
   };
 
@@ -76,6 +81,7 @@ export default class LinkEditComponent extends React.Component {
       ? relativeParent.getBoundingClientRect()
       : window.document.body.getBoundingClientRect();
     const selectionRect = getVisibleSelectionRect(window);
+
     if (!selectionRect) {
       return;
     }
@@ -84,6 +90,7 @@ export default class LinkEditComponent extends React.Component {
       left: selectionRect.left - relativeRect.left + selectionRect.width / 2,
       transform: 'translate(-50%) scale(1)',
     };
+
     this.setState({ position });
   };
 
@@ -101,6 +108,7 @@ export default class LinkEditComponent extends React.Component {
 
   render() {
     const url = this.props.url;
+
     return (
       <div
         className="md-editor-toolbar md-editor-toolbar--isopen md-editor-toolbar-edit-link"

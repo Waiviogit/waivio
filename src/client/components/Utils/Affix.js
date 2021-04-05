@@ -40,6 +40,7 @@ class Affix extends React.Component {
     this.ro = new ResizeObserver(entries => {
       entries.forEach(entry => {
         const { height } = entry.contentRect;
+
         this.relativeContainer.style.height = `${height}px`;
         this.handleScroll();
       });
@@ -125,6 +126,7 @@ class Affix extends React.Component {
 
   render() {
     const { className } = this.props;
+
     return (
       <div
         className={className}

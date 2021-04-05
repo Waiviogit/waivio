@@ -15,6 +15,7 @@ describe('(Component) ClaimReward', () => {
         transactionType: 'claim_reward_balance',
       };
       const wrapper = shallow(<ClaimReward {...props} />);
+
       expect(wrapper).toMatchSnapshot();
     });
   });

@@ -43,13 +43,14 @@ const CatalogWrap = props => {
   const [recencySortList, setRecencySortList] = useState();
 
   useEffect(() => {
-    const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
+    const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'rank' : 'custom');
     const isDefaultCustom = obj => defaultSortBy(obj) === 'custom';
 
     if (!isEmpty(wobject)) {
       if (hash) {
         setLoadingNestedWobject(true);
         const pathUrl = getLastPermlinksFromHash(hash);
+
         ApiClient.getObject(pathUrl, userName, locale).then(wObject => {
           setSortingBy(defaultSortBy(wObject));
           setLists(
@@ -67,7 +68,6 @@ const CatalogWrap = props => {
         });
       } else {
         setSortingBy(defaultSortBy(wobject));
-        // eslint-disable-next-line no-use-before-define
         setLists(
           sortListItemsBy(
             itemsList(get(wobject, 'sortCustom', []), wobject),
@@ -79,6 +79,7 @@ const CatalogWrap = props => {
         setRecencySortList(recencySortOrder(getListItem(wobject)));
       }
     }
+
     return () => {
       setNestedWobj({});
     };
@@ -89,6 +90,7 @@ const CatalogWrap = props => {
     const currentRecencySortList = isEmpty(recencySortList)
       ? [listItem.author_permlink]
       : [listItem.author_permlink, ...recencySortList];
+
     setLists(sortListItemsBy(currentList, 'recency', currentRecencySortList));
     setRecencySortList(currentRecencySortList);
   };
@@ -98,11 +100,13 @@ const CatalogWrap = props => {
     const currentList =
       sortType === 'custom' ? itemsList(get(obj, 'sortCustom', []), obj) : getListItems(obj);
     const sortOrder = sortType === 'recency' ? recencySortList : get(obj, 'sortCustom', []);
+
     setSortingBy(sortType);
     setLists(sortListItemsBy(currentList, sortType, sortOrder));
   };
 
   const isSortCustomExist = !isEmpty(get(obj, 'sortCustom', []));
+
   return (
     <div>
       <React.Fragment>

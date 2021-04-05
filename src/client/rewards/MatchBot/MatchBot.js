@@ -33,6 +33,7 @@ const MatchBot = ({ intl, userName }) => {
       .some(authName => authName === authority);
   const handleSwitcher = () => {
     const path = window.location.href;
+
     if (!isAuthority) {
       window.location = `https://hivesigner.com/authorize/waiviocampaigns?redirect_uri=${path}&callback`;
     } else {
@@ -64,6 +65,7 @@ const MatchBot = ({ intl, userName }) => {
   const handleChangeModalVisible = () => {
     if (isOverRules) {
       message.error(messageData.cannotCreateRulesMore);
+
       return;
     }
     setModalVisible(!modalVisible);
@@ -81,6 +83,7 @@ const MatchBot = ({ intl, userName }) => {
     const preparedSliderValue = {
       voting_power: sliderValue * 100,
     };
+
     dispatch(setMatchBotVotingPower(preparedSliderValue)).then(() => {
       setLoaded(false);
       handleOpenVoteModal();

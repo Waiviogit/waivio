@@ -29,6 +29,7 @@ const CampaignRewardsTableRow = ({
 
   const activateCamp = () => {
     const generatedPermlink = `activate-${rewardPostContainerData.author}-${generatePermlink()}`;
+
     setActivationPermlink(generatedPermlink);
     const activationCampaignData = {
       // eslint-disable-next-line no-underscore-dangle
@@ -36,6 +37,7 @@ const CampaignRewardsTableRow = ({
       guide_name: userName,
       permlink: generatedPermlink,
     };
+
     setLoad(true);
     validateActivationCampaign(activationCampaignData)
       .then(() => {
@@ -99,6 +101,7 @@ const CampaignRewardsTableRow = ({
       // eslint-disable-next-line no-underscore-dangle
       permlink: `deactivation-${currentItem._id}-${generatePermlink()}`,
     };
+
     setLoad(true);
     validateInactivationCampaign(inactivationCampaignData)
       .then(() => {

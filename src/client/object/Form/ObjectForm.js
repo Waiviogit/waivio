@@ -16,6 +16,7 @@ const ObjectForm = props => {
     handleSelectColumn,
     handleSelectForm,
   } = props;
+
   return (
     <React.Fragment>
       <Form.Item>

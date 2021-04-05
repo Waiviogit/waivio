@@ -9,6 +9,7 @@ export const getObjectTypes = (limit = 100, skip = 0, wobjectsCount = 0) => (
   getState,
 ) => {
   const locale = getLocale(getState());
+
   dispatch({
     type: GET_OBJECT_TYPES.ACTION,
     payload: ApiClient.getObjectTypes(limit, skip, wobjectsCount, locale),

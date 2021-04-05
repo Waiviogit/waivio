@@ -24,6 +24,7 @@ describe('<UserMenu />', () => {
 
   it(' Should call  onclick ', () => {
     const onChange = jest.fn();
+
     props = {
       defaultKey: 'comments',
       followers: 42,
@@ -40,6 +41,7 @@ describe('<UserMenu />', () => {
     });
 
     const comments = wrapper.find('[data-key="comments"]');
+
     comments.simulate('click');
     expect(onChange).toBeCalled();
   });
@@ -60,6 +62,7 @@ describe('<UserMenu />', () => {
     });
 
     const comments = wrapper.find('[data-key="comments"]');
+
     comments.simulate('click');
     expect(wrapper.find('UserMenu').state('current')).toBe('comments');
   });
@@ -80,6 +83,7 @@ describe('<UserMenu />', () => {
     });
 
     const discussions = wrapper.find('[data-key="discussions"]');
+
     discussions.simulate('click');
     expect(wrapper.find('UserMenu').state('current')).toBe('discussions');
   });
@@ -100,6 +104,7 @@ describe('<UserMenu />', () => {
     });
 
     const followers = wrapper.find('[data-key="followers"]');
+
     followers.simulate('click');
     expect(wrapper.find('UserMenu').state('current')).toBe('followers');
   });
@@ -120,6 +125,7 @@ describe('<UserMenu />', () => {
     });
 
     const followed = wrapper.find('[data-key="following"]');
+
     followed.simulate('click');
     expect(wrapper.find('UserMenu').state('current')).toBe('following');
   });
@@ -140,6 +146,7 @@ describe('<UserMenu />', () => {
     });
 
     const expertise = wrapper.find('[data-key="expertise"]');
+
     expertise.simulate('click');
     expect(wrapper.find('UserMenu').state('current')).toBe('expertise');
   });
@@ -160,6 +167,7 @@ describe('<UserMenu />', () => {
     });
 
     const transfers = wrapper.find('[data-key="transfers"]');
+
     transfers.simulate('click');
     expect(wrapper.find('UserMenu').state('current')).toBe('transfers');
   });
@@ -180,6 +188,7 @@ describe('<UserMenu />', () => {
     });
 
     const activity = wrapper.find('[data-key="activity"]');
+
     activity.simulate('click');
     expect(wrapper.find('UserMenu').state('current')).toBe('activity');
   });
@@ -200,6 +209,7 @@ describe('<UserMenu />', () => {
     });
 
     const about = wrapper.find('[data-key="about"]');
+
     about.simulate('click');
     expect(wrapper.find('UserMenu').state('current')).toBe('about');
   });

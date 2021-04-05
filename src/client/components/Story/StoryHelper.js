@@ -6,22 +6,27 @@ const getPositions = text => {
   const percentMultiplier = 100 / text.length;
   const firstEmbed = embedPos !== -1 ? embedPos * percentMultiplier : undefined;
   const firstImage = imgPos !== -1 ? imgPos * percentMultiplier : undefined;
+
   return { embed: firstEmbed, image: firstImage };
 };
 
 const postWithPicture = (tagPositions, searchPosition) => {
   const result = tagPositions.image && tagPositions.image < searchPosition;
+
   if (tagPositions.embed !== undefined) {
     return tagPositions.embed > tagPositions.image && result;
   }
+
   return result;
 };
 
 const postWithAnEmbed = (tagPositions, searchPosition) => {
   const result = tagPositions.embed && tagPositions.embed < searchPosition;
+
   if (tagPositions.image !== undefined) {
     return tagPositions.image > tagPositions.embed && result;
   }
+
   return result;
 };
 
@@ -31,6 +36,7 @@ const isPostWithPictureBeforeFirstHalf = tagPositions => postWithPicture(tagPosi
 const isPostWithEmbedBeforeFirstHalf = tagPositions => postWithAnEmbed(tagPositions, 50);
 const isPostVideo = (providerName, shouldRenderThumb) => {
   const providerNames = ['YouTube', 'DTube', '3Speak'];
+
   return providerNames.includes(providerName) && shouldRenderThumb;
 };
 

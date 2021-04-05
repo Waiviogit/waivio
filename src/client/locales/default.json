@@ -1633,6 +1633,10 @@
   "object_fiels_news_select_placeholder": "Please select",
   "object_field_form": "Form",
   "payables_empty": "Payables is empty",
+  "all_rewards": "All rewards",
+  "eligible_rewards": "Eligible rewards",
+  "reserved_rewards": "Reserved rewards"
+  "payables_empty": "Payables is empty",
   "middle": "Middle",
   "middle_right": "Middle + Right",
   "entire": "Entire Width"

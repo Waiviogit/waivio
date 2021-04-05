@@ -84,6 +84,7 @@ const CreateRule = ({
       sponsor: !isEdit ? sponsor.account : editRule.sponsor,
       voting_percent: sliderValue / 100,
     };
+
     if (!isEdit || isEnabledRule) prepareObjData.enabled = true;
     if (values.expiryDate) prepareObjData.expiredAt = values.expiryDate;
     if (values.noticeField) prepareObjData.note = values.noticeField;
@@ -131,6 +132,7 @@ const CreateRule = ({
     const prepareObjData = {
       sponsor: editRule.sponsor,
     };
+
     dispatch(deleteMatchBotRule(prepareObjData))
       .then(() => {
         handleChangeModalVisible();
@@ -161,6 +163,7 @@ const CreateRule = ({
   };
   const checkExpireDate = (rule, value, callback) => {
     const currentDay = new Date().getDate();
+
     if ((value && value.unix() * 1000 < Date.now()) || (value && value.date() === currentDay)) {
       callback(
         intl.formatMessage({

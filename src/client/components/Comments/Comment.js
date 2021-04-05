@@ -85,6 +85,7 @@ class Comment extends React.Component {
     const { hash } = window.location;
 
     const anchorLink = `#@${comment.author}/${comment.permlink}`;
+
     if (hash.indexOf(anchorLink) === 0 || (comment.focus && !this.props.isQuickComment)) {
       if (hash.endsWith('-edit')) {
         this.handleEditClick();
@@ -126,9 +127,11 @@ class Comment extends React.Component {
 
   handleImageInserted = (blob, callback, errorCallback) => {
     const { user } = this.props;
+
     if (!user.name) return;
 
     const formData = new FormData();
+
     formData.append('files', blob);
 
     fetch(`https://busy-img.herokuapp.com/@${user.name}/uploads`, {
@@ -142,6 +145,7 @@ class Comment extends React.Component {
 
   handleImageInvalid = () => {
     const { formatMessage } = this.props.intl;
+
     this.props.notify(
       formatMessage(
         {
@@ -185,6 +189,7 @@ class Comment extends React.Component {
           editOpen: false,
           commentFormText: '',
         });
+
         return true;
       })
       .catch(() => {
@@ -194,6 +199,7 @@ class Comment extends React.Component {
           editOpen: false,
           commentFormText: commentValue,
         });
+
         return {
           error: true,
         };
@@ -227,8 +233,10 @@ class Comment extends React.Component {
       isQuickComment,
     } = this.props;
     let isGuest = false;
+
     if (comment.json_metadata.includes('"social":')) {
       const jsonMetadata = JSON.parse(comment.json_metadata);
+
       comment.authorGuest = jsonMetadata.comment.userId;
       isGuest = true;
     }
@@ -245,6 +253,7 @@ class Comment extends React.Component {
       if (isQuickComment) {
         return <QuickCommentEditor {...props} />;
       }
+
       return this.state.editOpen ? (
         <EmbeddedCommentForm {...props} onClose={this.handleEditClick} />
       ) : (
@@ -273,6 +282,7 @@ class Comment extends React.Component {
 
     const avatarSize = comment.depth === 1 ? 40 : 32;
     const author = isGuest ? comment.authorGuest : comment.author;
+
     return (
       <div ref={this.setSelf} className="Comment" id={anchorId}>
         <span

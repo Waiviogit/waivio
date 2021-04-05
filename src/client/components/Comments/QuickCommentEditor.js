@@ -53,10 +53,12 @@ class QuickCommentEditor extends React.Component {
       this.setState(prevState => ({ commentMsg: `${prevState.commentMsg}\n` }));
     } else {
       const { currentImage, commentMsg } = this.state;
+
       this.setState({ isDisabledSubmit: true });
 
       if (commentMsg) {
         let imageData = commentMsg.trim();
+
         if (currentImage.length) {
           imageData += `\n![${currentImage[0].name}](${currentImage[0].src})\n`;
         }
@@ -71,6 +73,7 @@ class QuickCommentEditor extends React.Component {
 
   handleMsgChange = e => {
     const commentMsg = e.currentTarget.value;
+
     this.setState({ commentMsg });
   };
 

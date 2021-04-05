@@ -7,6 +7,7 @@ const ReportTableFeesRowTotal = ({ intl, shareAmount, hiveAmount, usdAmount }) =
   const share = shareAmount !== 0 ? `${(shareAmount / 100).toFixed(2)} %` : '';
   const usd = usdAmount !== 0 ? `$ ${usdAmount.toFixed(2)}` : '';
   const hive = hiveAmount !== 0 ? `${hiveAmount.toFixed(3)}` : '';
+
   return (
     <tr>
       <td>

@@ -92,7 +92,7 @@ const BlacklistContent = ({
       );
       clearUsers();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -113,7 +113,7 @@ const BlacklistContent = ({
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

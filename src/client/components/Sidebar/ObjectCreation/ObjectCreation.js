@@ -51,6 +51,7 @@ class ObjectCreation extends React.Component {
     const { showedTypesCount } = this.state;
     const { objectTypes } = this.props;
     const loadedObjectTypesCount = _.size(objectTypes);
+
     if (showedTypesCount <= loadedObjectTypesCount) {
       this.setState({ showedTypesCount: showedTypesCount + objTypesLimit, selectedType: '' });
     }
@@ -67,6 +68,7 @@ class ObjectCreation extends React.Component {
     const { objectTypes } = this.props;
     const isEmpty = _.size(objectTypes) === 0;
     const showedTypes = Object.keys(objectTypes).slice(0, showedTypesCount);
+
     return (
       <div className="ObjectCreation SidebarContentBlock">
         <h4 className="SidebarContentBlock__title">

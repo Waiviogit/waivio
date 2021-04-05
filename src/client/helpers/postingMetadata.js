@@ -32,12 +32,14 @@ export const postingMetadataHelper = (jsonMetadata, postingJsonMetadata) => {
 
 export const getMetadata = user => {
   let jsonMetadata = get(user, 'json_metadata', {});
+
   if (isString(jsonMetadata)) {
     jsonMetadata = attempt(JSON.parse, jsonMetadata);
     if (isError(jsonMetadata)) jsonMetadata = {};
   }
 
   let postingJsonMetadata = get(user, 'posting_json_metadata', {});
+
   if (isString(postingJsonMetadata)) {
     postingJsonMetadata = attempt(JSON.parse, postingJsonMetadata);
     if (isError(postingJsonMetadata)) postingJsonMetadata = {};

@@ -137,6 +137,7 @@ class Notifications extends React.Component {
       moreNotificationsStartIndex,
       moreNotificationsStartIndex + displayLimit,
     );
+
     this.setState({
       displayedNotifications: displayedNotifications.concat(moreNotifications),
     });
@@ -144,6 +145,7 @@ class Notifications extends React.Component {
 
   handleNotificationsClick(e) {
     const openedInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
+
     if (!openedInNewTab) {
       this.props.onNotificationClick();
     }
@@ -159,6 +161,7 @@ class Notifications extends React.Component {
     } = this.props;
     const { displayedNotifications } = this.state;
     const displayEmptyNotifications = isEmpty(notifications) && !loadingNotifications;
+
     return (
       <div className="Notifications">
         <div
@@ -172,6 +175,7 @@ class Notifications extends React.Component {
           {map(displayedNotifications, (notification, index) => {
             const key = `${index}${notification.timestamp}`;
             const read = lastSeenTimestamp >= notification.timestamp;
+
             switch (notification.type) {
               case notificationConstants.REPLY:
                 return (

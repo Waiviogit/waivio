@@ -20,6 +20,7 @@ describe('walletActions', () => {
       },
     };
     const store = mockStore({});
+
     store.dispatch(actions.openTransfer(userName, 0, 'HIVE', '', 'waivio'));
     expect(store.getActions()).toEqual([expectedAction]);
   });

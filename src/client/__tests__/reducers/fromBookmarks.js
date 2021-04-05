@@ -9,6 +9,7 @@ describe('fromBookmarks', () => {
       pendingBookmarks: 'pendingBookmarks',
     },
   };
+
   it('Should return list', () => {
     expect(getBookmarks(state)).toEqual('list');
   });

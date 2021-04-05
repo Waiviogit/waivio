@@ -48,16 +48,19 @@ describe('<TwitterShare />', () => {
       text: '',
       hashtags: [],
     };
+
     expect(TwitterShare.defaultProps).toEqual(defaultProps);
   });
 
   it('Should have smth with the same text as url prop', () => {
     const url = wrapper.find('TwitterShare');
+
     expect(url.text()).toBe('');
   });
 
   it('Should have smth with the same text as text prop', () => {
     const text = wrapper.find('TwitterShare');
+
     expect(text.text()).toBe('');
   });
 

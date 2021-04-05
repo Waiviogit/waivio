@@ -26,6 +26,7 @@ const ReceiveTransaction = ({
   const demoPost = type === 'demo_post';
   const options = { from };
   const description = getTransactionDescription(transactionType, options);
+
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__avatar">

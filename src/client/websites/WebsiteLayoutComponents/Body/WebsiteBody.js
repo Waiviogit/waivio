@@ -57,6 +57,7 @@ const WebsiteBody = props => {
   const [infoboxData, setInfoboxData] = useState(null);
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
   const [height, setHeight] = useState(0);
+  const [showLocation, setShowLocation] = useState(false);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const isActiveFilters = !isEmpty(props.activeFilters);
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
@@ -75,6 +76,7 @@ const WebsiteBody = props => {
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
 
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
+
   if (queryCenter) {
     queryCenter = queryCenter.split(',').map(item => Number(item));
   }
@@ -107,6 +109,7 @@ const WebsiteBody = props => {
 
   useEffect(() => {
     const handleResize = () => setHeight(window.innerHeight);
+
     setHeight(window.innerHeight);
 
     if (props.isAuth) props.getReservedCounter();
@@ -283,20 +286,25 @@ const WebsiteBody = props => {
 
   const setCurrentLocation = () => {
     const nav = navigator.geolocation;
+
     nav.getCurrentPosition(
       position => {
         const { latitude, longitude } = position.coords;
+
         setArea({
           ...area,
           center: [latitude, longitude],
         });
+        setShowLocation(true);
         props.putUserCoordinates({ latitude, longitude });
       },
-      () =>
+      () => {
+        setShowLocation(false);
         setArea({
           ...area,
           center: [props.userLocation.lat, props.userLocation.lon],
-        }),
+        });
+      },
     );
   };
 
@@ -329,6 +337,7 @@ const WebsiteBody = props => {
       </div>
     </div>
   );
+
   return (
     <div className="WebsiteBody">
       <Helmet>
@@ -399,10 +408,12 @@ const WebsiteBody = props => {
               )}
               {getMarkers(props.wobjectsPoint)}
               {infoboxData && getOverlayLayout()}
-              <CustomMarker
-                anchor={[props.userLocation.lat, props.userLocation.lon]}
-                currLocation
-              />
+              {showLocation && (
+                <CustomMarker
+                  anchor={[props.userLocation.lat, props.userLocation.lon]}
+                  currLocation
+                />
+              )}
             </Map>
           </React.Fragment>
         )}

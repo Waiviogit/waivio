@@ -3,18 +3,17 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './Action.less';
 
-const Action = ({ className, children, primary, small, ...restProps }) =>
-  console.log(restProps) || (
-    <a
-      {...restProps}
-      className={classNames('Action', className, {
-        'ant-btn-lg': !small,
-        'Action--primary': primary,
-      })}
-    >
-      {children}
-    </a>
-  );
+const Action = ({ className, children, primary, small, ...restProps }) => (
+  <a
+    {...restProps}
+    className={classNames('Action', className, {
+      'ant-btn-lg': !small,
+      'Action--primary': primary,
+    })}
+  >
+    {children}
+  </a>
+);
 
 Action.propTypes = {
   className: PropTypes.string,

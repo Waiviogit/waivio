@@ -57,6 +57,7 @@ const ReferralsInstructions = props => {
     if (!currentStatus) {
       return confirmRules(authUserName, isGuest);
     }
+
     return null;
   };
 
@@ -69,6 +70,7 @@ const ReferralsInstructions = props => {
   const { copyButtonText, copyButtonCopiedText } = referralInstructionsContent(authUserName);
 
   const currentCopyText = isCopyButton ? copyButtonCopiedText : copyButtonText;
+
   setTimeout(() => setIsCopyButton(false), 3000);
 
   const mainProps = {

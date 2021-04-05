@@ -24,6 +24,7 @@ const Draft = ({ draft }) => (
     </div>
   </div>
 );
+
 Draft.propTypes = {
   draft: draftType.isRequired,
 };

@@ -51,11 +51,13 @@ const ObjectOfTypePage = props => {
       setLoadingNestedWobject,
       wobject,
     } = props;
+
     setLoadingNestedWobject(true);
 
     if (!isEmpty(wobject)) {
       if (hash) {
         const pathUrl = getLastPermlinksFromHash(hash);
+
         getObject(pathUrl, userName, locale).then(wObject => {
           setCurrentContent(wObject.pageContent);
           setContent(wObject.pageContent);
@@ -86,6 +88,7 @@ const ObjectOfTypePage = props => {
     props.form.validateFieldsAndScroll((err, values) => {
       const { appendPageContent, userName, toggleViewEditMode, nestedWobject, breadcrumb } = props;
       const { follow } = values;
+
       if (!err) {
         const pageContentField = {
           name: objectFields.pageContent,
@@ -94,6 +97,7 @@ const ObjectOfTypePage = props => {
         };
         const wobj = breadcrumb.length > 1 ? nestedWobject : wobject;
         const postData = getAppendData(userName, wobj, '', pageContentField);
+
         appendPageContent(postData, { follow, votePercent: votePercent * 100 })
           .then(() => {
             message.success(

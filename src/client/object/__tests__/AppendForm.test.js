@@ -13,6 +13,7 @@ describe('(Component) AppendForm', () => {
         <AppendForm {...props} />
       </IntlProvider>,
     );
+
     expect(wrapper).toMatchSnapshot();
   });
 });

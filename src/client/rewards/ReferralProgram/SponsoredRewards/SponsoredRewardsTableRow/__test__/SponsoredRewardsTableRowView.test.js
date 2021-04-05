@@ -6,6 +6,7 @@ import * as mock from '../__mock__/mockData';
 
 describe('SponsoredRewardsTableRowView', () => {
   let wrapper;
+
   beforeEach(() => {
     wrapper = shallow(
       <IntlProvider locale="en">

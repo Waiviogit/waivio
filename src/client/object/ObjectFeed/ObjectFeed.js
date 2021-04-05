@@ -102,6 +102,7 @@ export default class ObjectFeed extends React.Component {
   componentDidUpdate(prevProps) {
     const { match, limit, readLocales } = this.props;
     const { name, itemId } = match.params;
+
     if (prevProps.match.params.name !== name || prevProps.match.params.itemId !== itemId) {
       this.props.getObjectPosts({
         object: name,
@@ -115,6 +116,7 @@ export default class ObjectFeed extends React.Component {
 
   getPropositions = reqData => {
     const { match } = this.props;
+
     this.setState({ loadingPropositions: true });
     ApiClient.getPropositions(reqData).then(data => {
       const currentProposition = filter(
@@ -161,6 +163,7 @@ export default class ObjectFeed extends React.Component {
           />
         );
       }
+
       return (
         <div
           role="presentation"

@@ -99,6 +99,7 @@ class UserDynamicList extends React.Component {
   unFollow = name => {
     const matchUserIndex = this.state.users.findIndex(user => user.name === name);
     const usersArray = [...this.state.users];
+
     usersArray.splice(matchUserIndex, 1, {
       ...usersArray[matchUserIndex],
       pending: true,
@@ -235,6 +236,7 @@ class UserDynamicList extends React.Component {
                   />
                 );
               }
+
               return null;
             })}
           </ReduxInfiniteScroll>

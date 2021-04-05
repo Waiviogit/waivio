@@ -26,6 +26,7 @@ const Debts = ({
 
   const handleSortChange = sortBy => {
     const sortedData = sortDebtObjsData(debtObjsData.histories, sortBy);
+
     setSort(sortBy);
     setSortedDebtObjsData(sortedData);
   };
@@ -47,6 +48,7 @@ const Debts = ({
 
   const getRenderData = () => {
     if (isEmpty(sortedDebtObjsData)) return debtObjsData.histories;
+
     return sortedDebtObjsData;
   };
 

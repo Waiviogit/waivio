@@ -42,6 +42,7 @@ export const getMoreRelatedAlbum = (authorPermlink, limit = 30) => (dispatch, ge
   const state = getState();
   const relatedPhotoContent = relatedPhotos(state);
   const skip = relatedPhotoContent.items.length;
+
   return dispatch({
     type: GET_MORE_RELATED_PHOTOS.ACTION,
     payload: {
