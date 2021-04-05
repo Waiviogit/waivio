@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -530,13 +531,16 @@ export default class Transfer extends React.Component {
     } = this.props;
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
+    const isChangesDisabled = !!memo;
+    const amountClassList = classNames('balance', {
+      'balance--disabled': isChangesDisabled,
+    });
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
     const currentBalance = isGuest ? `${user.balance} HIVE` : balance;
-    const isChangesDisabled = !!memo;
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.props.currency,
     })(
@@ -668,7 +672,13 @@ export default class Transfer extends React.Component {
                 defaultMessage="Your balance: {amount}"
                 values={{
                   amount: (
-                    <span role="presentation" onClick={this.handleBalanceClick} className="balance">
+                    <span
+                      role="presentation"
+                      onClick={e => {
+                        if (!isChangesDisabled) this.handleBalanceClick(e);
+                      }}
+                      className={amountClassList}
+                    >
                       {currentBalance}
                     </span>
                   ),
