@@ -7,7 +7,7 @@ import { injectIntl } from 'react-intl';
 
 import { averageRate, rateCount } from './rateHelper';
 import { ratePercent } from '../../../../common/constants/listOfFields';
-import { getRatingFields } from '../../../reducers';
+import { getRatingFields } from '../../../store/reducers';
 import BTooltip from '../../BTooltip';
 import RateObjectModal from './RateObjectModal';
 

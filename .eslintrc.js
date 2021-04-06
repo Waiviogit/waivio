@@ -18,6 +18,7 @@ module.exports = {
   },
   extends: ['airbnb', 'prettier', 'prettier/react'],
   rules: {
+    'camelcase': OFF,
     'react/jsx-filename-extension': [ERROR, { extensions: ['.js'] }],
     'no-duplicate-imports': 2,
     'react/jsx-key': 2,

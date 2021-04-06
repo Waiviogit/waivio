@@ -8,7 +8,7 @@ import {
   getIsErrorLoadingUserCards,
   getIsHasMoreCards,
   getIsLoadingMoreUserCards,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { getMoreUserStatusCards, getUserStatusCards } from '../ReferralActions';
 import ReferralStatusView from './ReferralStatusView';
 

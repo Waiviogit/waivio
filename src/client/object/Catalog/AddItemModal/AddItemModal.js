@@ -9,7 +9,7 @@ import {
   getAuthenticatedUserName,
   getFollowingObjectsList,
   getSuitableLanguage,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { appendObject } from '../../appendActions';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';

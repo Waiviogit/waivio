@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { get, includes } from 'lodash';
 import { useSelector, shallowEqual } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { getAuthenticatedUser } from '../../reducers';
+import { getAuthenticatedUser } from '../../store/reducers';
 import Avatar from '../Avatar';
 import './QuickPostEditor.less';
 

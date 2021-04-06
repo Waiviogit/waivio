@@ -15,7 +15,7 @@ import {
   getAccountHistoryFilter,
   getCurrentDisplayedActions,
   getCurrentFilteredActions,
-} from '../reducers';
+} from '../store/reducers';
 import { isWalletTransaction } from '../helpers/apiHelpers';
 import {
   setInitialCurrentDisplayedActions,

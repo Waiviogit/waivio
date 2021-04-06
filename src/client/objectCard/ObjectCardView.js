@@ -8,9 +8,10 @@ import classNames from 'classnames';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
-import { getAuthenticatedUserName, getScreenSize } from '../reducers';
+import { getAuthenticatedUserName } from '../store/reducers';
 import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
+import { getScreenSize } from '../store/appStore/appSelectors';
 
 import './ObjectCardView.less';
 

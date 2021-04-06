@@ -3,18 +3,17 @@ import { connect } from 'react-redux';
 import { get } from 'lodash';
 import * as PropTypes from 'prop-types';
 import {
-  getShowPostModal,
-  getCurrentShownPost,
   getUser,
   getPostContent,
   isGuestUser,
   getAuthenticatedUserName,
   getPostTags,
   getPostCities,
-} from '../reducers';
+} from '../store/reducers';
 import { getSocialInfoPost as getSocialInfoPostAction } from './postActions';
-import { hidePostModal as hidePostModalAction } from '../app/appActions';
+import { hidePostModal as hidePostModalAction } from '../store/appStore/appActions';
 import PostModal from './PostModal';
+import { getCurrentShownPost, getShowPostModal } from '../store/appStore/appSelectors';
 
 const PostModalContainer = ({
   showPostModal,

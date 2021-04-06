@@ -10,7 +10,8 @@ import { Icon } from 'antd';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import { getObjectType } from '../../../helpers/wObjectHelper';
-import { getConfigurationValues, getCurrPage, getObject } from '../../../reducers';
+import { getObject } from '../../../store/reducers';
+import { getConfigurationValues, getCurrPage } from '../../../store/appStore/appSelectors';
 
 import './WebsiteHeader.less';
 

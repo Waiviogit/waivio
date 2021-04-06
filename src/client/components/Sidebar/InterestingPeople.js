@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import User from './User';
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
-import * as store from '../../reducers';
+import * as store from '../../store/reducers';
 import { getRandomExperts } from '../../user/usersActions';
 import { PATH_NAME_DISCOVER } from '../../../common/constants/rewards';
 import './InterestingPeople.less';

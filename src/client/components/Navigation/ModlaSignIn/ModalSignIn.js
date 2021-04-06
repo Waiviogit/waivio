@@ -8,18 +8,22 @@ import { isEmpty } from 'lodash';
 import { login, busyLogin, getAuthGuestBalance } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
-import { getRate, getRewardFund } from '../../../app/appActions';
+import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { getRebloggedList } from '../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
-import { getCurrentHost, getIsWaivio, getWebsiteParentHost } from '../../../reducers';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import {
   clearAllSessionProposition,
   getSessionData,
   removeSessionData,
 } from '../../../rewards/rewardsHelper';
+import {
+  getCurrentHost,
+  getIsWaivio,
+  getWebsiteParentHost,
+} from '../../../store/appStore/appSelectors';
 
 import './ModalSignIn.less';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getIsAuthFetching, getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
+import { getIsAuthFetching, getIsAuthenticated, getAuthenticatedUserName } from '../store/reducers';
 import Loading from '../components/Icon/Loading';
 import Error401 from '../statics/Error401';
 

@@ -25,7 +25,7 @@ import {
   getLoadingFlag,
   getLocale,
   getWobjectNested,
-} from '../../reducers';
+} from '../../store/reducers';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { getObject } from '../../../waivioApi/ApiClient';

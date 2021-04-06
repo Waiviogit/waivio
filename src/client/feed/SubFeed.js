@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Cookie from 'js-cookie';
 import { isEmpty, isNil, uniq } from 'lodash';
-import { showPostModal } from '../app/appActions';
+import { showPostModal } from '../store/appStore/appActions';
 import {
   getFeedContent,
   getUserFeedContent,
@@ -23,7 +23,7 @@ import {
   getFeedFailedFromState,
   getUserFeedFromState,
 } from '../helpers/stateHelpers';
-import { getIsAuthenticated, getIsLoaded, getAuthenticatedUser, getFeed } from '../reducers';
+import { getIsAuthenticated, getIsLoaded, getAuthenticatedUser, getFeed } from '../store/reducers';
 import Feed from './Feed';
 import FetchFailed from '../statics/FetchFailed';
 import EmptyFeed from '../statics/EmptyFeed';

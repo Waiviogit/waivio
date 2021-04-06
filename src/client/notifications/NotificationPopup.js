@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { notification } from 'antd';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
-import { getAuthenticatedUserName, getLatestNotification } from '../reducers';
+import { getAuthenticatedUserName, getLatestNotification } from '../store/reducers';
 import {
   getNotificationsMessage,
   getNotificationsLink,

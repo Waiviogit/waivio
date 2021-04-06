@@ -31,9 +31,7 @@ import {
   getSuitableLanguage,
   isGuestUser,
   getBeneficiariesUsers,
-  getCurrentHost,
-  getIsWaivio,
-} from '../../reducers';
+} from '../../store/reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { createPostMetadata, getInitialState, getObjectUrl } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
@@ -46,6 +44,7 @@ import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import { getCurrentHost, getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './EditPost.less';
 

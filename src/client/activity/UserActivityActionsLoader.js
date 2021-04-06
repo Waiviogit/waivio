@@ -13,7 +13,7 @@ import {
   getAuthenticatedUserName,
   getUser,
   getUsersAccountHistory,
-} from '../reducers';
+} from '../store/reducers';
 import Loading from '../components/Icon/Loading';
 
 @withRouter

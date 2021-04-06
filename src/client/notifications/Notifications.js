@@ -11,7 +11,7 @@ import {
   getNotifications as getNotificationsState,
   getIsLoadingNotifications,
   getAuthenticatedUserName,
-} from '../reducers';
+} from '../store/reducers';
 import requiresLogin from '../auth/requiresLogin';
 import NotificationReply from '../components/Navigation/Notifications/NotificationReply';
 import NotificationMention from '../components/Navigation/Notifications/NotificationMention';

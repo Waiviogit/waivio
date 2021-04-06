@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 
-import './widgetsStyle.less';
-
-import { getAuthenticatedUserName } from '../reducers';
+import { getAuthenticatedUserName } from '../store/reducers';
 import { bellNotifications } from '../user/userActions';
 import { wobjectBellNotification } from '../object/wobjActions';
+
+import './widgetsStyle.less';
 
 const BellButton = ({ bellUserNotifications, authUserName, user, wobj, bellWobjNotification }) => {
   const type = !isEmpty(wobj) ? wobj : user;

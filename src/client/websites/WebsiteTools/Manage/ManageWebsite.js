@@ -7,7 +7,7 @@ import { Button, Modal, message } from 'antd';
 import { Link } from 'react-router-dom';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
-import { getAuthenticatedUserName, getManage, getWebsiteLoading } from '../../../reducers';
+import { getAuthenticatedUserName, getManage, getWebsiteLoading } from '../../../store/reducers';
 import {
   activateWebsite,
   deleteWebsite,

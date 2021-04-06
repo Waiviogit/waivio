@@ -9,7 +9,7 @@ import {
   getParentDomain,
   getSearchFiltersTagCategory,
   getWebsiteSearchType,
-} from '../reducers';
+} from '../store/reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { getChangesInAccessOption } from './helper';
 import * as ApiClient from '../../waivioApi/ApiClient';

@@ -11,13 +11,13 @@ import {
   getIsAuthenticated,
   getAuthenticatedUserName,
   getVotingPower,
-  getRewardFund,
   getVotePercent,
-} from '../reducers';
+} from '../store/reducers';
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from './commentsActions';
 import { notify } from '../app/Notification/notificationActions';
 import { getDownvotes } from '../helpers/voteHelpers';
+import { getRewardFund } from '../store/appStore/appSelectors';
 
 @connect(
   state => ({

@@ -11,9 +11,8 @@ import {
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
   getAuthenticatedUserName,
-  getIsWaivio,
   getExpiredPayment,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   MESSAGES,
   HISTORY,
@@ -21,6 +20,7 @@ import {
   FRAUD_DETECTION,
 } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './Sidenav.less';
 

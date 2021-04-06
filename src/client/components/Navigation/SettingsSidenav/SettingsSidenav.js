@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 
 import { currentWebsiteSettings, personalSettings, websiteSettings } from './constants';
 import SettingsItem from './SettingsItem';
-import { getIsWaivio, getOwnWebsites, isGuestUser } from '../../../reducers';
+import { getOwnWebsites, isGuestUser } from '../../../store/reducers';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
 
 import '../Sidenav.less';
 

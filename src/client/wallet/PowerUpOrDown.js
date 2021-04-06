@@ -10,7 +10,7 @@ import {
   getIsPowerDown,
   getTotalVestingShares,
   getTotalVestingFundSteem,
-} from '../reducers';
+} from '../store/reducers';
 import formatter from '../helpers/steemitFormatter';
 import { createQuery } from '../helpers/apiHelpers';
 

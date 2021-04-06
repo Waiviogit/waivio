@@ -6,7 +6,7 @@ import { get, isArray, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 
-import { getTagsSite, getWebsiteLoading } from '../../../reducers';
+import { getTagsSite, getWebsiteLoading } from '../../../store/reducers';
 import { getWebsiteTags, saveTagsCategoryForSite } from '../../websiteActions';
 import TagsSelector from '../../../components/TagsSelector/TagsSelector';
 import Loading from '../../../components/Icon/Loading';

@@ -5,7 +5,7 @@ import {
   getSearchObjectsResults,
   searchObjectTypesResults,
   getAutoCompleteSearchResults,
-} from '../../reducers';
+} from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

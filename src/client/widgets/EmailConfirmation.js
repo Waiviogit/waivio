@@ -10,7 +10,7 @@ import {
   getAuthenticatedUserName,
   isGuestUser,
   getAuthenticatedUserPrivateEmail,
-} from '../reducers';
+} from '../store/reducers';
 import { closeWithdraw } from '../wallet/walletActions';
 
 import './widgetsStyle.less';

@@ -8,15 +8,13 @@ import { get, isNull, isEmpty, isNaN, includes, isString } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
-import { getCryptoPriceHistory } from '../../app/appActions';
+import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import { closeTransfer, sendPendingTransfer } from '../walletActions';
 import { notify } from '../../app/Notification/notificationActions';
 import {
   getAuthenticatedUser,
-  getCryptosPriceHistory,
   getIsAuthenticated,
   getIsTransferVisible,
-  getScreenSize,
   getTransferAmount,
   getTransferCurrency,
   getTransferMemo,
@@ -29,7 +27,7 @@ import {
   getHiveBeneficiaryAccount,
   isOpenLinkModal,
   getTransferIsTip,
-} from '../../reducers';
+} from '../../store/reducers';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import { BANK_ACCOUNT } from '../../../common/constants/waivio';
@@ -40,6 +38,7 @@ import { REWARD } from '../../../common/constants/rewards';
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 import { saveSettings, openLinkHiveAccountModal } from '../../settings/settingsActions';
 import { createQuery } from '../../helpers/apiHelpers';
+import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
 
 import './Transfer.less';
 

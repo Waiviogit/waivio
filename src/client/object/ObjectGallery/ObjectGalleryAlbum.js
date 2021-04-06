@@ -15,7 +15,7 @@ import {
   getObject,
   getObjectAlbums,
   getRelatedPhotos,
-} from '../../reducers';
+} from '../../store/reducers';
 import withEditor from '../../components/Editor/withEditor';
 import { getAlbums, getRelatedAlbum, getMoreRelatedAlbum } from './galleryActions';
 

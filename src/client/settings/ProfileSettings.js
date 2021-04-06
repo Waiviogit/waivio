@@ -7,7 +7,7 @@ import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
 import SteemConnectAPI from '../steemConnectAPI';
 import { updateProfile, reload } from '../auth/authActions';
-import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
+import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../store/reducers';
 import { getMetadata } from '../helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../helpers/socialProfiles';

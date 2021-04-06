@@ -5,7 +5,7 @@ import { startCase } from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { message } from 'antd';
 import SteemConnect from '../steemConnectAPI';
-import { getAuthenticatedUser } from '../reducers';
+import { getAuthenticatedUser } from '../store/reducers';
 import { getUserAccountHistory } from './walletActions';
 import { reload } from '../auth/authActions';
 import Action from '../components/Button/Action';

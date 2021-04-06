@@ -2,7 +2,12 @@ import { createAction } from 'redux-actions';
 import { message } from 'antd';
 import { get, isEmpty } from 'lodash';
 
-import { getIsAuthenticated, getAuthenticatedUserName, getLocale, isGuestUser } from '../reducers';
+import {
+  getIsAuthenticated,
+  getAuthenticatedUserName,
+  getLocale,
+  isGuestUser,
+} from '../store/reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getChangedField } from '../../waivioApi/ApiClient';

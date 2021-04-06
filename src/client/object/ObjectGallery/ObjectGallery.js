@@ -14,9 +14,9 @@ import {
   getObjectAlbums,
   getIsAuthenticated,
   getRelatedPhotos,
-  getIsWaivio,
-} from '../../reducers';
+} from '../../store/reducers';
 import IconButton from '../../components/IconButton';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './ObjectGallery.less';
 

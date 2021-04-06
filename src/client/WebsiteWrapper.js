@@ -15,12 +15,10 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   getLocale,
-  getUsedLocale,
-  getTranslations,
   getNightmode,
   getIsOpenWalletTable,
   getIsAuthFetching,
-} from './reducers';
+} from './store/reducers';
 import {
   login,
   busyLogin,
@@ -33,7 +31,7 @@ import {
   setUsedLocale,
   setAppUrl,
   getCurrentAppSettings,
-} from './app/appActions';
+} from './store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import { guestUserRegex } from './helpers/regexHelpers';
@@ -41,6 +39,7 @@ import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
 import { getWebsiteObjWithCoordinates } from './websites/websiteActions';
+import { getTranslations, getUsedLocale } from './store/appStore/appSelectors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 

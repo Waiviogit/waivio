@@ -10,7 +10,7 @@ import RawSlider from './RawSlider';
 import Transfer from '../../wallet/Transfer/Transfer';
 import { openTransfer } from '../../wallet/walletActions';
 import { guestUserRegex } from '../../helpers/regexHelpers';
-import { isGuestUser } from '../../reducers';
+import { isGuestUser } from '../../store/reducers';
 
 import './Slider.less';
 

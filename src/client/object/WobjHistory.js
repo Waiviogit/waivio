@@ -11,10 +11,8 @@ import {
   getReadLanguages,
   getIsAuthenticated,
   getObjectAlbums,
-  getRewardFund,
-  getRate,
   getIsAppendLoading,
-} from '../reducers';
+} from '../store/reducers';
 import { objectFields, sortingMenuName } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
@@ -27,6 +25,7 @@ import AppendCard from './AppendCard/AppendCard';
 import Loading from '../components/Icon/Loading';
 import { getObjectName, isPhotosAlbumExist } from '../helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from './wObjectHelper';
+import { getRate, getRewardFund } from '../store/appStore/appSelectors';
 
 import './WobjHistory.less';
 

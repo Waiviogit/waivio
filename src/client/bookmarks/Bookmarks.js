@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { getFeed, getPosts, getPendingBookmarks, getIsReloading } from '../reducers';
+import { getFeed, getPosts, getPendingBookmarks, getIsReloading } from '../store/reducers';
 import Feed from '../feed/Feed';
 import {
   getFeedFromState,
@@ -12,7 +12,7 @@ import {
 } from '../helpers/stateHelpers';
 import { reload } from '../auth/authActions';
 import { getBookmarks } from '../feed/feedActions';
-import { showPostModal } from '../app/appActions';
+import { showPostModal } from '../store/appStore/appActions';
 import requiresLogin from '../auth/requiresLogin';
 import PostModal from '../post/PostModalContainer';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';

@@ -24,7 +24,7 @@ import {
   getIsErrorLoadingTable,
   getIsloadingTableTransactions,
   getLocale,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   openWalletTable,
   closeWalletTable,

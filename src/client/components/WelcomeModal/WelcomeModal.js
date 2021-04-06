@@ -20,7 +20,7 @@ import {
   getIsAuthenticated,
   getLocale,
   isGuestUser,
-} from '../../reducers';
+} from '../../store/reducers';
 import { getRecommendTopic, getUsers } from '../../../waivioApi/ApiClient';
 
 import './WelcomeModal.less';

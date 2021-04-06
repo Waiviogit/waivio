@@ -7,7 +7,7 @@ import Payout from './Payout';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
-import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
+import { getAuthenticatedUserName, isGuestUser } from '../../store/reducers';
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
 import { getSocialInfoPost, handleHidePost, muteAuthorPost } from '../../post/postActions';
 import withAuthActions from '../../auth/withAuthActions';

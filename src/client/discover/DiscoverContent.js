@@ -12,7 +12,7 @@ import {
   getTopExpertsHasMore,
   getObjectTypesList,
   getSearchUsersResultsForDiscoverPage,
-} from '../reducers';
+} from '../store/reducers';
 import Loading from '../components/Icon/Loading';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import {

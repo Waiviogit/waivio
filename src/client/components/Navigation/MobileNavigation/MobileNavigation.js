@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getIsAuthenticated } from '../../../reducers';
+import { getIsAuthenticated } from '../../../store/reducers';
 import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import {
   PATH_NAME_GUIDE_HISTORY,

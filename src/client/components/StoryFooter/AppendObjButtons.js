@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import { sortVotes } from '../../helpers/sortHelpers';
 import { getAppendUpvotes, getAppendDownvotes } from '../../helpers/voteHelpers';
 import BTooltip from '../BTooltip';
-import { getAuthenticatedUserName } from '../../reducers';
+import { getAuthenticatedUserName } from '../../store/reducers';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import withAuthActions from '../../auth/withAuthActions';

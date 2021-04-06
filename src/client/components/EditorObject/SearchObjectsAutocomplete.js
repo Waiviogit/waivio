@@ -9,7 +9,7 @@ import {
   resetToInitialIsClearSearchObj,
   searchObjectsAutoCompete,
 } from '../../search/searchActions';
-import { getIsStartSearchObject, getSearchObjectsResults } from '../../reducers';
+import { getIsStartSearchObject, getSearchObjectsResults } from '../../store/reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
 import { getObjectName } from '../../helpers/wObjectHelper';

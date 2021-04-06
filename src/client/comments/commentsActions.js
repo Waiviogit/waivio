@@ -13,7 +13,7 @@ import {
   getIsAuthenticated,
   getLocale,
   isGuestUser,
-} from '../reducers';
+} from '../store/reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');

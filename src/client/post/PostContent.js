@@ -22,11 +22,8 @@ import {
   getFollowingList,
   getIsEditorSaving,
   getVotingPower,
-  getRewardFund,
   getVotePercent,
-  getAppUrl,
-  getHelmetIcon,
-} from '../reducers';
+} from '../store/reducers';
 import { editPost } from './Write/editorActions';
 import {
   errorFollowingPostAuthor,
@@ -43,6 +40,7 @@ import { getHtml } from '../components/Story/Body';
 import { jsonParse } from '../helpers/formatter';
 import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
+import { getAppUrl, getHelmetIcon, getRewardFund } from '../store/appStore/appSelectors';
 
 @injectIntl
 @connect(

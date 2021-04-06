@@ -13,7 +13,7 @@ import {
   sortWobjectsByHash,
 } from '../../../helpers/wObjectHelper';
 import { setCatalogBreadCrumbs } from '../../wobjActions';
-import { getBreadCrumbs, getSuitableLanguage, getWobjectNested } from '../../../reducers';
+import { getBreadCrumbs, getSuitableLanguage, getWobjectNested } from '../../../store/reducers';
 import { getObjectsByIds } from '../../../../waivioApi/ApiClient';
 
 import './CatalogBreadcrumb.less';

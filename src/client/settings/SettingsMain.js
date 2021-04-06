@@ -11,8 +11,9 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { getSettingsTitle } from './common/helpers';
 import RightSidebar from '../app/Sidebar/RightSidebar';
-import { getIsAuthenticated, getIsWaivio, getOwnWebsites, isGuestUser } from '../reducers';
+import { getIsAuthenticated, getOwnWebsites, isGuestUser } from '../store/reducers';
 import * as websiteAction from '../websites/websiteActions';
+import { getIsWaivio } from '../store/appStore/appSelectors';
 
 import './Settings.less';
 

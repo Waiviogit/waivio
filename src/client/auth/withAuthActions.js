@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getIsAuthenticated, getIsWaivio, getWebsiteParentHost } from '../reducers';
+import { getIsAuthenticated } from '../store/reducers';
 import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
+import { getIsWaivio, getWebsiteParentHost } from '../store/appStore/appSelectors';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';

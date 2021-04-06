@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions';
 import { saveSettingsMetadata } from '../helpers/metadata';
-import { getAuthenticatedUserName } from '../reducers';
+import { getAuthenticatedUserName } from '../store/reducers';
 import { setUserStatus } from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 

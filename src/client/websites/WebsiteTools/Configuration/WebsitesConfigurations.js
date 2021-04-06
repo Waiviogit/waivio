@@ -14,7 +14,7 @@ import {
   getObjectsMap,
   getUserLocation,
   getWebsiteLoading,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import { getObjectName } from '../../../helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';

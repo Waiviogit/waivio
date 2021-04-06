@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import Feed from '../feed/Feed';
 import PostModal from '../post/PostModalContainer';
-import { getAuthenticatedUserName, getFeed, getUser, isGuestUser } from '../reducers';
+import { getAuthenticatedUserName, getFeed, getUser, isGuestUser } from '../store/reducers';
 import {
   getFeedFromState,
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
 } from '../helpers/stateHelpers';
-import { showPostModal } from '../app/appActions';
+import { showPostModal } from '../store/appStore/appActions';
 import { getUserComments, getMoreUserComments } from '../feed/feedActions';
 import EmptyMutedUserProfile from '../statics/MutedContent';
 

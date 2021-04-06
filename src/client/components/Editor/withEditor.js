@@ -5,7 +5,7 @@ import axios from 'axios';
 import { message } from 'antd';
 import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
-import { getAuthenticatedUser, getSuitableLanguage } from '../../reducers';
+import { getAuthenticatedUser, getSuitableLanguage } from '../../store/reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import * as api from '../../../waivioApi/ApiClient';
 import { voteObject, followObject } from '../../object/wobjActions';

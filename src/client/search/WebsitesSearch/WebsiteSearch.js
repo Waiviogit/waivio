@@ -13,7 +13,7 @@ import {
   getWebsiteMap,
   getWebsiteSearchType,
   searchObjectTypesResults,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   resetSearchAutoCompete,
   searchUsersAutoCompete,
