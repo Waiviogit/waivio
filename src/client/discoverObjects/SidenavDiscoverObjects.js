@@ -4,7 +4,7 @@ import { useSelector, shallowEqual } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { size, ceil } from 'lodash';
-import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '../reducers';
+import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '../store/reducers';
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 import { PATH_NAME_DISCOVER } from '../../common/constants/rewards';
 

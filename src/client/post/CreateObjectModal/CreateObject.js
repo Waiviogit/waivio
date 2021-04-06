@@ -12,7 +12,7 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import listofObjTypesWithAlbum from '../../../common/constants/listofObjTypesWithAlbum';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
-import { getSuitableLanguage, getObjectTypesList, getAuthenticatedUserName } from '../../reducers';
+import { getSuitableLanguage, getObjectTypesList } from '../../store/reducers';
 import { notify } from '../../app/Notification/notificationActions';
 import { getObjectTypes } from '../../objectTypes/objectTypesActions';
 import { appendObject } from '../../object/appendActions';
@@ -20,6 +20,7 @@ import { createWaivioObject } from '../../object/wobjectsActions';
 import { addAlbumToStore } from '../../object/ObjectGallery/galleryActions';
 import DEFAULTS from '../../object/const/defaultValues';
 import { getAppendData, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 import './CreateObject.less';
 

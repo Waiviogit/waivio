@@ -19,7 +19,7 @@ import {
   getSearchObjectsResults,
   getSearchUsersResults,
   searchObjectTypesResults,
-} from '../../reducers';
+} from '../../store/reducers';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
 import { getObjectName } from '../../helpers/wObjectHelper';

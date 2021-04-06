@@ -1,25 +1,25 @@
 import Cookie from 'js-cookie';
 import { get } from 'lodash';
 import { createAction } from 'redux-actions';
+import { createAsyncActionType } from '../../helpers/stateHelpers';
+import { addNewNotification } from '../appStore/appActions';
+import { getFollowing } from '../../user/userActions';
+import { BUSY_API_TYPES } from '../../../common/constants/notifications';
+import { setToken } from '../../helpers/getToken';
+import {
+  getGuestPaymentsHistory,
+  getPrivateEmail,
+  updateGuestProfile,
+} from '../../../waivioApi/ApiClient';
+import { notify } from '../../app/Notification/notificationActions';
+import history from '../../history';
+import { clearGuestAuthData, getGuestAccessToken } from '../../helpers/localStorageHelpers';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   getIsLoaded,
   isGuestUser,
-} from '../reducers';
-import { createAsyncActionType } from '../helpers/stateHelpers';
-import { addNewNotification } from '../app/appActions';
-import { getFollowing } from '../user/userActions';
-import { BUSY_API_TYPES } from '../../common/constants/notifications';
-import { setToken } from '../helpers/getToken';
-import {
-  getGuestPaymentsHistory,
-  getPrivateEmail,
-  updateGuestProfile,
-} from '../../waivioApi/ApiClient';
-import { notify } from '../app/Notification/notificationActions';
-import history from '../history';
-import { clearGuestAuthData, getGuestAccessToken } from '../helpers/localStorageHelpers';
+} from './authSelectors';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';

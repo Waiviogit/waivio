@@ -15,17 +15,17 @@ import DeleteDraftModal from './DeleteDraftModal';
 import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 
 import {
-  getAuthenticatedUser,
   getDraftPosts,
   getIsEditorLoading,
   getIsEditorSaving,
   getUpvoteSetting,
   getRewardSetting,
-} from '../../reducers';
+} from '../../store/reducers';
 
 import { createPost, saveDraft, newPost } from './editorActions';
 import Editor from '../../components/Editor/Editor';
 import Affix from '../../components/Utils/Affix';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 
 @injectIntl
 @withRouter

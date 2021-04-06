@@ -12,7 +12,7 @@ import {
   getCreateWebsiteLoading,
   getDomainAvailableStatus,
   getParentDomain,
-} from '../../../reducers';
+} from '../../../store/reducers';
 
 import './CreateWebsite.less';
 

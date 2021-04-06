@@ -10,9 +10,14 @@ import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
 import { changeCounterFollow, followUser, unfollowUser } from './usersActions';
-import { getAuthenticatedUserName, isGuestUser, getAuthorizationUserFollowSort } from '../reducers';
-import { changeSorting } from '../auth/authActions';
+import { changeSorting } from '../store/authStore/authActions';
 import { SORT_OPTIONS } from '../../common/constants/waivioFiltres';
+import {
+  getAuthenticatedUserName,
+  getAuthorizationUserFollowSort,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
+
 import './UserDynamicList.less';
 
 class UserDynamicList extends React.Component {

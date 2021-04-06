@@ -1617,8 +1617,8 @@
   "object_field_formField": "Form",
   "form": "Form title",
   "columns": "Columns",
-  "form_link": "Link",
-  "form_widget": "Widget",
+  "Link": "Link",
+  "Widget": "Widget",
   "enter": "Enter",
   "home": "Home",
   "inactive_website_pricing": "Inactive website pricing:",
@@ -1635,5 +1635,8 @@
   "payables_empty": "Payables is empty",
   "all_rewards": "All rewards",
   "eligible_rewards": "Eligible rewards",
-  "reserved_rewards": "Reserved rewards"
+  "reserved_rewards": "Reserved rewards",
+  "middle": "Middle",
+  "middle_right": "Middle + Right",
+  "entire": "Entire Width"
 }

@@ -5,10 +5,11 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import ObjectFeed from './ObjectFeed';
-import { getIsAuthenticated, getObjectFetchingState } from '../../reducers';
+import { getObjectFetchingState } from '../../store/reducers';
 import IconButton from '../../components/IconButton';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import Loading from '../../components/Icon/Loading';
+import { getIsAuthenticated } from '../../store/authStore/authSelectors';
 
 const propTypes = {
   history: PropTypes.shape().isRequired,

@@ -4,18 +4,20 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getCurrentFeesValue, getCurrentOfferPercent } from '../ReferralHelper';
 import {
-  getAuthenticatedUserName,
   getCampaignServerPercent,
   getIndexAbsolutePercent,
   getIndexServerPercent,
-  getIsAuthenticated,
   getIsStartLoadingReferralDetails,
   getReferralDuration,
   getReferralServerPercent,
   getSuspendedTimer,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { getUserReferralDetails } from '../ReferralActions';
 import ReferralDetailsView from './ReferralDetailsView';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 
 import './ReferralDetails.less';
 

@@ -3,7 +3,7 @@ import {
   getCommentsList,
   getCommentContent,
   getCommentsPendingVotes,
-} from '../../reducers';
+} from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

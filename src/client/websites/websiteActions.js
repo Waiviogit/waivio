@@ -3,16 +3,16 @@ import { get, isEmpty, size } from 'lodash';
 
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
-  getAuthenticatedUserName,
   getLocale,
   getOwnWebsites,
   getParentDomain,
   getSearchFiltersTagCategory,
   getWebsiteSearchType,
-} from '../reducers';
+} from '../store/reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { getChangesInAccessOption } from './helper';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 

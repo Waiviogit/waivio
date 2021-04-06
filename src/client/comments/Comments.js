@@ -4,20 +4,22 @@ import { find, size } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  getAuthenticatedUser,
   getComments,
   getCommentsList,
   getCommentsPendingVotes,
-  getIsAuthenticated,
-  getAuthenticatedUserName,
   getVotingPower,
-  getRewardFund,
   getVotePercent,
-} from '../reducers';
+} from '../store/reducers';
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from './commentsActions';
 import { notify } from '../app/Notification/notificationActions';
 import { getDownvotes } from '../helpers/voteHelpers';
+import { getRewardFund } from '../store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../store/authStore/authSelectors';
 
 @connect(
   state => ({

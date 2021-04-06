@@ -5,8 +5,10 @@ import { FormattedMessage } from 'react-intl';
 import { Icon, Progress, Slider } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import BeneficiariesFindUsers from './BeneficiariesFindUsers';
-import { getAuthenticatedUser, getBeneficiariesUsers } from '../../reducers';
+import { getBeneficiariesUsers } from '../../store/reducers';
 import { updateBeneficiariesUsers, removeBeneficiariesUsers } from '../../search/searchActions';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+
 import './AdvanceSettings.less';
 
 class BeneficiariesWeight extends React.PureComponent {

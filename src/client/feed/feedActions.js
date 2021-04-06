@@ -6,16 +6,16 @@ import {
   getFeedLoadingFromState,
 } from '../helpers/stateHelpers';
 import {
-  getAuthenticatedUserName,
   getFeed,
   getPosts,
   getBookmarks as getBookmarksSelector,
   getLocale,
   getReadLanguages,
   getLastPostId,
-} from '../reducers';
+} from '../store/reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');

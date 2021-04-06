@@ -9,17 +9,19 @@ import {
   referralRejectRules,
 } from '../ReferralActions';
 import {
-  getAuthenticatedUserName,
-  getIsAuthenticated,
   getIsStartChangeRules,
   getIsStartGetReferralInfo,
   getIsUserInWaivioBlackList,
   getReferralStatus,
-  isGuestUser,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { referralInstructionsContent } from '../ReferralTextHelper';
 import ReferralsInstructionsView from './ReferralInstructionsView';
 import { getCopyTextButtonResult, widget } from '../ReferralHelper';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../../store/authStore/authSelectors';
 
 import './ReferralsInstructions.less';
 

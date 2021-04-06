@@ -21,7 +21,7 @@ import {
   getWebsiteSearchResult,
   getWebsiteSearchResultLoading,
   getWebsiteSearchString,
-} from '../../reducers';
+} from '../../store/reducers';
 import { getActiveItemClassList } from '../helpers';
 import {
   followSearchUser,

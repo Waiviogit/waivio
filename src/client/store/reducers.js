@@ -2,30 +2,31 @@ import { combineReducers } from 'redux';
 
 import { connectRouter } from 'connected-react-router';
 
-import appReducer, * as fromApp from './app/appReducer';
-import authReducer, * as fromAuth from './auth/authReducer';
-import commentsReducer, * as fromComments from './comments/commentsReducer';
-import feedReducer, * as fromFeed from './feed/feedReducer';
-import postsReducer, * as fromPosts from './post/postsReducer';
-import userReducer, * as fromUser from './user/userReducer';
-import usersReducer, * as fromUsers from './user/usersReducer';
-import notificationReducer from './app/Notification/notificationReducers';
-import bookmarksReducer, * as fromBookmarks from './bookmarks/bookmarksReducer';
-import favoritesReducer, * as fromFavorites from './favorites/favoritesReducer';
-import editorReducer, * as fromEditor from './post/Write/editorReducer';
-import walletReducer, * as fromWallet from './wallet/walletReducer';
-import reblogReducers, * as fromReblog from './app/Reblog/reblogReducers';
-import settingsReducer, * as fromSettings from './settings/settingsReducer';
-import searchReducer, * as fromSearch from './search/searchReducer';
-import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
-import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/objectTypesReducer';
-import objectTypeReducer, * as fromObjectType from '../client/objectTypes/objectTypeReducer';
-import appendReducer, * as fromAppend from '../client/object/appendReducer';
-import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
-import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
-import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
-import websiteReducer, * as fromWebsite from './websites/websiteReducer';
-import referralReducer, * as fromReferral from '../client/rewards/ReferralProgram/ReferralReducer';
+import appReducer from './appStore/appReducer';
+import authReducer from './authStore/authReducer';
+import commentsReducer, * as fromComments from '../comments/commentsReducer';
+import feedReducer, * as fromFeed from '../feed/feedReducer';
+import postsReducer, * as fromPosts from '../post/postsReducer';
+import userReducer, * as fromUser from '../user/userReducer';
+import usersReducer, * as fromUsers from '../user/usersReducer';
+import notificationReducer from '../app/Notification/notificationReducers';
+import bookmarksReducer, * as fromBookmarks from '../bookmarks/bookmarksReducer';
+import favoritesReducer, * as fromFavorites from '../favorites/favoritesReducer';
+import editorReducer, * as fromEditor from '../post/Write/editorReducer';
+import walletReducer, * as fromWallet from '../wallet/walletReducer';
+import reblogReducers, * as fromReblog from '../app/Reblog/reblogReducers';
+import settingsReducer, * as fromSettings from '../settings/settingsReducer';
+import searchReducer, * as fromSearch from '../search/searchReducer';
+import wobjectReducer, * as fromObject from '../object/wobjectReducer';
+import objectTypesReducer, * as fromObjectTypes from '../objectTypes/objectTypesReducer';
+import objectTypeReducer, * as fromObjectType from '../objectTypes/objectTypeReducer';
+import appendReducer, * as fromAppend from '../object/appendReducer';
+import galleryReducer, * as fromGallery from '../object/ObjectGallery/galleryReducer';
+import mapReducer, * as fromMap from '../components/Maps/mapReducer';
+import rewardsReducer, * as fromRewards from '../rewards/rewardsReducer';
+import websiteReducer, * as fromWebsite from '../websites/websiteReducer';
+import referralReducer, * as fromReferral from '../rewards/ReferralProgram/ReferralReducer';
+import { getUsedLocale } from './appStore/appSelectors';
 
 export default history =>
   combineReducers({
@@ -56,23 +57,6 @@ export default history =>
     website: websiteReducer,
   });
 
-export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
-export const getIsAuthFetching = state => fromAuth.getIsAuthFetching(state.auth);
-export const getIsLoaded = state => fromAuth.getIsLoaded(state.auth);
-export const getIsReloading = state => fromAuth.getIsReloading(state.auth);
-export const getAuthenticatedUser = state => fromAuth.getAuthenticatedUser(state.auth);
-export const getAuthenticatedUserName = state => fromAuth.getAuthenticatedUserName(state.auth);
-export const getAuthenticatedUserMetaData = state =>
-  fromAuth.getAuthenticateduserMetaData(state.auth);
-export const getAuthenticatedUserNotificationsSettings = state =>
-  fromAuth.getAuthenticatedUserNotificationsSettings(state.auth);
-export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
-export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
-export const getAuthenticatedUserPrivateEmail = state =>
-  fromAuth.getAuthenticatedUserPrivateEmail(state.auth);
-export const getAuthorizationUserFollowSort = state =>
-  fromAuth.getAuthorizationUserFollowSort(state.auth);
-
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, permlink, author) =>
   fromPosts.getPostContent(state.posts, permlink, author);
@@ -96,34 +80,6 @@ export const getIsImageUploading = state => fromEditor.getIsImgLoading(state.edi
 export const getPendingDrafts = state => fromEditor.getPendingDrafts(state.editor);
 export const getIsPostEdited = (state, permlink) =>
   fromEditor.getIsPostEdited(state.editor, permlink);
-
-export const getRate = state => fromApp.getRate(state.app);
-export const getIsTrendingTopicsLoading = state => fromApp.getIsTrendingTopicsLoading(state.app);
-export const getRewardFund = state => fromApp.getRewardFund(state.app);
-export const getIsFetching = state => fromApp.getIsFetching(state.app);
-export const getIsBannerClosed = state => fromApp.getIsBannerClosed(state.app);
-export const getAppUrl = state => fromApp.getAppUrl(state.app);
-export const getUsedLocale = state => fromApp.getUsedLocale(state.app);
-export const getScreenSize = state => fromApp.getScreenSize(state.app);
-export const getTranslations = state => fromApp.getTranslations(state.app);
-export const getTranslationByKey = (state, key, defaultMessage) =>
-  fromApp.getTranslationByKey(state.app, key, defaultMessage);
-export const getCryptosPriceHistory = state => fromApp.getCryptosPriceHistory(state.app);
-export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
-export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);
-export const getIsMobile = state => fromApp.getIsMobile(state.app);
-export const getWeightValue = (state, weight) => fromApp.getWeightValue(state.app, weight);
-export const getMainPage = state => fromApp.getMainPage(state.app);
-export const getCurrPage = state => fromApp.getCurrPage(state.app);
-export const getCurrentHost = state => fromApp.getCurrentHost(state.app);
-export const getMapForMainPage = state => fromApp.getMapForMainPage(state.app);
-export const getWebsiteConfiguration = state => fromApp.getWebsiteConfiguration(state.app);
-export const getConfigurationValues = state => fromApp.getConfigurationValues(state.app);
-export const getIsWaivio = state => fromApp.getIsWaivio(state.app);
-export const getReservCounter = state => fromApp.getReservCounter(state.app);
-export const getWebsiteBeneficiary = state => fromApp.getWebsiteBeneficiary(state.app);
-export const getWebsiteParentHost = state => fromApp.getWebsiteParentHost(state.app);
-export const getHelmetIcon = state => fromApp.getHelmetIcon(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 

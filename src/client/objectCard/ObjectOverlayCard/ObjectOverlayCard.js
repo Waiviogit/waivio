@@ -7,12 +7,13 @@ import { Link } from 'react-router-dom';
 
 import RatingsWrap from './../RatingsWrap/RatingsWrap';
 import DEFAULTS from '../../object/const/defaultValues';
-import { getAuthenticatedUserName, getScreenSize } from '../../reducers';
 import { getObjectName, getObjectAvatar, hasType } from '../../helpers/wObjectHelper';
 import { getProxyImageURL } from '../../helpers/image';
+import OverlayRewardsButton from './OverlayRewardsButton';
+import { getScreenSize } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 import './ObjectOverlayCard.less';
-import OverlayRewardsButton from './OverlayRewardsButton';
 
 const ObjectOverlayCard = ({
   intl,

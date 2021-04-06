@@ -2,12 +2,14 @@ import moment from 'moment';
 import { get } from 'lodash';
 import { message } from 'antd';
 
-import * as store from '../reducers';
+import * as store from '../store/reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
+import { getDetailsBody, rewardPostContainerData } from '../rewards/rewardsHelper';
 import { createCommentPermlink } from '../vendor/steemitHelpers';
 import { getObjectName } from '../helpers/wObjectHelper';
+import { getRate, getRewardFund } from '../store/appStore/appSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../store/authStore/authSelectors';
 
 require('isomorphic-fetch');
 
@@ -20,14 +22,14 @@ export const FOLLOW_USER_ERROR = '@user/FOLLOW_USER_ERROR';
 export const followUser = username => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
 
-  if (!store.getIsAuthenticated(state)) {
+  if (!getIsAuthenticated(state)) {
     return Promise.reject('User is not authenticated');
   }
 
   return dispatch({
     type: FOLLOW_USER,
     payload: {
-      promise: steemConnectAPI.follow(store.getAuthenticatedUserName(state), username),
+      promise: steemConnectAPI.follow(getAuthenticatedUserName(state), username),
     },
     meta: {
       username,
@@ -40,14 +42,14 @@ export const UNFOLLOW_USER = createAsyncActionType('@user/UNFOLLOW_USER');
 export const unfollowUser = username => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
 
-  if (!store.getIsAuthenticated(state)) {
+  if (!getIsAuthenticated(state)) {
     return Promise.reject('User is not authenticated');
   }
 
   return dispatch({
     type: UNFOLLOW_USER.ACTION,
     payload: {
-      promise: steemConnectAPI.unfollow(store.getAuthenticatedUserName(state), username),
+      promise: steemConnectAPI.unfollow(getAuthenticatedUserName(state), username),
     },
     meta: {
       username,
@@ -62,13 +64,13 @@ export const GET_FOLLOWING_ERROR = '@user/GET_FOLLOWING_ERROR';
 
 export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
   const state = getState();
-  const user = store.getAuthenticatedUserName(state);
+  const user = getAuthenticatedUserName(state);
 
-  if (!username && !store.getIsAuthenticated(state)) {
+  if (!username && !getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
   }
 
-  const targetUsername = username || store.getAuthenticatedUserName(state);
+  const targetUsername = username || getAuthenticatedUserName(state);
 
   return dispatch({
     type: GET_FOLLOWING,
@@ -90,10 +92,10 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   const state = getState();
   const skip = 0;
   const limit = state.auth.user.objects_following_count;
-  const authUserName = store.getAuthenticatedUserName(state);
+  const authUserName = getAuthenticatedUserName(state);
   const locale = store.getLocale(state);
 
-  if (!username && !store.getIsAuthenticated(state)) {
+  if (!username && !getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
   }
 
@@ -112,7 +114,7 @@ export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
   const state = getState();
   const locale = store.getLocale(state);
   const isUpdatesFetched = store.getFollowingUpdatesFetched(state);
-  const userName = store.getAuthenticatedUserName(state);
+  const userName = getAuthenticatedUserName(state);
 
   if (!isUpdatesFetched && userName) {
     dispatch({
@@ -130,7 +132,7 @@ export const GET_FOLLOWING_OBJECTS_UPDATES = createAsyncActionType(
 export const getFollowingObjectsUpdatesMore = (objectType, count = 5) => (dispatch, getState) => {
   const state = getState();
   const followingObjects = store.getFollowingObjectsUpdatesByType(state, objectType);
-  const userName = store.getAuthenticatedUserName(state);
+  const userName = getAuthenticatedUserName(state);
 
   dispatch({
     type: GET_FOLLOWING_OBJECTS_UPDATES.ACTION,
@@ -154,7 +156,7 @@ export const GET_FOLLOWING_USERS_UPDATES = createAsyncActionType(
 export const getFollowingUsersUpdatesMore = (count = 5) => (dispatch, getState) => {
   const state = getState();
   const followingUsers = store.getFollowingUsersUpdates(state);
-  const userName = store.getAuthenticatedUserName(state);
+  const userName = getAuthenticatedUserName(state);
 
   dispatch({
     type: GET_FOLLOWING_USERS_UPDATES.ACTION,
@@ -189,11 +191,11 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
 
   dispatch({ type: GET_NOTIFICATIONS.START });
 
-  if (!username && !store.getIsAuthenticated(state)) {
+  if (!username && !getIsAuthenticated(state)) {
     return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 
-  const targetUsername = username || store.getAuthenticatedUserName(state);
+  const targetUsername = username || getAuthenticatedUserName(state);
 
   busyAPI.instance.sendAsync('get_notifications', [targetUsername]);
   busyAPI.instance.subscribe((response, mess) => {
@@ -234,7 +236,7 @@ export const assignProposition = ({
   userName,
   currencyId,
 }) => (dispatch, getState, { steemConnectAPI }) => {
-  const username = store.getAuthenticatedUserName(getState());
+  const username = getAuthenticatedUserName(getState());
   const proposedWobjName = getObjectName(proposedWobj);
   const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
   const primaryObjectPermlink = get(proposition, ['required_object', 'author_permlink']);
@@ -362,7 +364,7 @@ export const changeReward = ({
   appName,
   amount,
 }) => (dispatch, getState, { steemConnectAPI }) => {
-  const userName = store.getAuthenticatedUserName(getState());
+  const userName = getAuthenticatedUserName(getState());
   const body =
     username !== userName
       ? `Sponsor ${userName} (@${userName}) has increased the reward by ${amount} HIVE`
@@ -425,7 +427,7 @@ export const declineProposition = ({
   requiredObjectName,
   type,
 }) => (dispatch, getState, { steemConnectAPI }) => {
-  const username = store.getAuthenticatedUserName(getState());
+  const username = getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
     {
@@ -462,9 +464,9 @@ export const activateCampaign = (company, campaignPermlink) => (
   { steemConnectAPI },
 ) => {
   const state = getState();
-  const username = store.getAuthenticatedUserName(state);
-  const rate = store.getRate(state);
-  const rewardFund = store.getRewardFund(state);
+  const username = getAuthenticatedUserName(state);
+  const rate = getRate(state);
+  const rewardFund = getRewardFund(state);
   const recentClaims = rewardFund.recent_claims;
   const rewardBalance = rewardFund.reward_balance.replace(' HIVE', '');
   const proposedWobjName = getObjectName(company.objects[0]);
@@ -511,7 +513,7 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
   getState,
   { steemConnectAPI },
 ) => {
-  const username = store.getAuthenticatedUserName(getState());
+  const username = getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
     {

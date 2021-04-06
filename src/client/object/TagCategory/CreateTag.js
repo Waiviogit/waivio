@@ -9,13 +9,10 @@ import LANGUAGES from '../../translations/languages';
 import {
   getObjectTagCategory,
   getObject,
-  getAuthenticatedUserName,
   getFollowingObjectsList,
   getSuitableLanguage,
   getVotePercent,
-  getRewardFund,
-  getRate,
-} from '../../reducers';
+} from '../../store/reducers';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
@@ -26,6 +23,8 @@ import { fieldsRules } from '../const/appendFormConstants';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import { getLanguageText } from '../../translations';
 import { getVoteValue } from '../../helpers/user';
+import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 import './CreateTag.less';
 

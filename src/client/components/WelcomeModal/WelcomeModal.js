@@ -15,13 +15,13 @@ import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common
 import { setUsersStatus } from '../../settings/settingsActions';
 import { getUserFeedContent } from '../../feed/feedActions';
 import { followUser, unfollowUser } from '../../user/usersActions';
+import { getLocale } from '../../store/reducers';
+import { getRecommendTopic, getUsers } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
-  getLocale,
   isGuestUser,
-} from '../../reducers';
-import { getRecommendTopic, getUsers } from '../../../waivioApi/ApiClient';
+} from '../../store/authStore/authSelectors';
 
 import './WelcomeModal.less';
 

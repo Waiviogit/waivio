@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
 import {
-  getIsReloading,
   getLocale,
   getReadLanguages,
   getVotingPower,
@@ -15,11 +14,9 @@ import {
   getRewriteLinks,
   getUpvoteSetting,
   getExitPageSetting,
-  isGuestUser,
-  getAuthenticatedUser,
-} from '../reducers';
+} from '../store/reducers';
 import { saveSettings } from './settingsActions';
-import { reload } from '../auth/authActions';
+import { reload } from '../store/authStore/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Action from '../components/Button/Action';
 import Loading from '../components/Icon/Loading';
@@ -27,6 +24,12 @@ import RawSlider from '../components/Slider/RawSlider';
 import requiresLogin from '../auth/requiresLogin';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
+import {
+  getAuthenticatedUser,
+  getIsReloading,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
+
 import './Settings.less';
 
 @requiresLogin

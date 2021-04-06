@@ -25,20 +25,13 @@ import {
 } from 'lodash';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import {
-  getAuthenticatedUser,
   getAllUsers,
-  getAuthenticatedUserName,
-  getCryptosPriceHistory,
   getObjectsMap,
-  getIsLoaded,
   getUserLocation,
   getIsMapModalOpen,
   getSuitableLanguage,
   getPendingUpdate,
-  getIsAuthenticated,
-  getIsWaivio,
-  getHelmetIcon,
-} from '../reducers';
+} from '../store/reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
@@ -49,7 +42,7 @@ import {
   declineProposition,
   getCoordinates,
 } from '../user/userActions';
-import { getCryptoPriceHistory } from '../app/appActions';
+import { getCryptoPriceHistory } from '../store/appStore/appActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import { getPropositions } from '../../waivioApi/ApiClient';
 import {
@@ -87,6 +80,13 @@ import {
 } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
+import { getCryptosPriceHistory, getHelmetIcon, getIsWaivio } from '../store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsLoaded,
+} from '../store/authStore/authSelectors';
 
 @withRouter
 @injectIntl

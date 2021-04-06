@@ -5,15 +5,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   getAutoCompleteSearchResults,
-  getIsAuthenticated,
-  isGuestUser,
   getHasReceivables,
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
-  getAuthenticatedUserName,
-  getIsWaivio,
   getExpiredPayment,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   MESSAGES,
   HISTORY,
@@ -21,6 +17,12 @@ import {
   FRAUD_DETECTION,
 } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../store/authStore/authSelectors';
 
 import './Sidenav.less';
 

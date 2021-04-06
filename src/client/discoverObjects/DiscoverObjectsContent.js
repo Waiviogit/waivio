@@ -20,11 +20,10 @@ import {
   getHasMoreRelatedObjects,
   getAvailableFilters,
   getHasMap,
-  getAuthenticatedUserName,
   getIsMapModalOpen,
   getFiltersTags,
   getActiveFiltersTags,
-} from '../reducers';
+} from '../store/reducers';
 import {
   getObjectTypeByStateFilters,
   clearType,
@@ -48,8 +47,9 @@ import Proposition from '../rewards/Proposition/Proposition';
 import { assignProposition, declineProposition, getCoordinates } from '../user/userActions';
 import * as apiConfig from '../../waivioApi/config.json';
 import { RADIUS, ZOOM } from '../../common/constants/map';
-import { getCryptoPriceHistory } from '../app/appActions';
+import { getCryptoPriceHistory } from '../store/appStore/appActions';
 import { HBD, HIVE } from '../../common/constants/cryptos';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 const modalName = {
   FILTERS: 'filters',

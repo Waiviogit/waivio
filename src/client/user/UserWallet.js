@@ -9,15 +9,11 @@ import { HBD, HIVE } from '../../common/constants/cryptos';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
 import Loading from '../components/Icon/Loading';
 import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getCryptosPriceHistory,
   getIsErrorLoading,
   getIsloadingMoreTransactions,
   getLoadingGlobalProperties,
   getLoadingMoreUsersAccountHistory,
   getOperationNum,
-  getScreenSize,
   getStatusWithdraw,
   getTotalVestingFundSteem,
   getTotalVestingShares,
@@ -29,7 +25,7 @@ import {
   getUsersTransactions,
   hasMoreGuestActions,
   getIsTransactionsHistoryLoading,
-} from '../reducers';
+} from '../store/reducers';
 import {
   getGlobalProperties,
   getMoreUserAccountHistory,
@@ -44,6 +40,8 @@ import { guestUserRegex } from '../helpers/regexHelpers';
 import Transfer from '../wallet/Transfer/Transfer';
 import Withdraw from '../wallet/Withdraw/WithDraw';
 import PowerUpOrDown from '../wallet/PowerUpOrDown';
+import { getCryptosPriceHistory, getScreenSize } from '../store/appStore/appSelectors';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 import './UserWallet.less';
 

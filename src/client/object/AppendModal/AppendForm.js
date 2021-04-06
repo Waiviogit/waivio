@@ -44,16 +44,13 @@ import OBJECT_TYPE from '../const/objectTypes';
 import {
   getFollowingObjectsList,
   getObject,
-  getRate,
   getRatingFields,
-  getRewardFund,
   getSuitableLanguage,
   getVotePercent,
   getVotingPower,
   getObjectTagCategory,
   getObjectAlbums,
-  getScreenSize,
-} from '../../reducers';
+} from '../../store/reducers';
 import LANGUAGES from '../../translations/languages';
 import { PRIMARY_COLOR } from '../../../common/constants/waivio';
 import { getLanguageText } from '../../translations';
@@ -97,6 +94,7 @@ import {
   blogNameValidationRegExp,
 } from '../../../common/constants/validation';
 import { addAlbumToStore, addImageToAlbumStore } from '../ObjectGallery/galleryActions';
+import { getRate, getRewardFund, getScreenSize } from '../../store/appStore/appSelectors';
 
 import './AppendForm.less';
 

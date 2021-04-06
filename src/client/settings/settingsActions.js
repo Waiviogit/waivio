@@ -1,8 +1,8 @@
 import { createAction } from 'redux-actions';
 import { saveSettingsMetadata } from '../helpers/metadata';
-import { getAuthenticatedUserName } from '../reducers';
 import { setUserStatus } from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../helpers/stateHelpers';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 export const SAVE_SETTINGS = '@app/SAVE_SETTINGS';
 export const SAVE_SETTINGS_START = '@app/SAVE_SETTINGS_START';

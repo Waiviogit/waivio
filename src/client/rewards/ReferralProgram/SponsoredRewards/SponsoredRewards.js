@@ -5,8 +5,9 @@ import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import { sponsoredRewardsMainContent } from '../ReferralTextHelper';
 import { getStatusSponsoredRewards } from '../ReferralActions';
-import { getAuthenticatedUserName, getStatusSponsoredHistory } from '../../../reducers';
+import { getStatusSponsoredHistory } from '../../../store/reducers';
 import SponsoredRewardsView from './SponsoredRewardsView';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './SponsoredRewards.less';
 

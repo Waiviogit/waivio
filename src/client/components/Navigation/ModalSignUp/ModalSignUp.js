@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Modal, Form } from 'antd';
 import { batch, useDispatch } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { busyLogin, getAuthGuestBalance, login } from '../../../auth/authActions';
+import { busyLogin, getAuthGuestBalance, login } from '../../../store/authStore/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
-import { getRate, getRewardFund } from './../../../app/appActions';
+import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { getRebloggedList } from './../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import SocialButtons from '../SocialButtons/SocialButtons';
@@ -14,6 +14,7 @@ import Spinner from '../../Icon/Loading';
 import SignUpInfo from '../SignUpInfo/SignUpInfo';
 import SteemSignUpCard from '../SteemSignUpCard/SteemSignUpCard';
 import SignUpButton from '../SignUpButton/SignUpButton';
+
 import './ModalSignUp.less';
 
 const ModalSignUp = ({ isButton }) => {

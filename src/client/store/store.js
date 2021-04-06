@@ -2,10 +2,10 @@ import { createPromise } from 'redux-promise-middleware';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
-import steemAPI from './steemAPI';
-import createBusyAPI from '../common/services/createBusyAPI';
-import { createHistory } from './history';
-import errorMiddleware from './helpers/errorMiddleware';
+import steemAPI from '../steemAPI';
+import createBusyAPI from '../../common/services/createBusyAPI';
+import { createHistory } from '../history';
+import errorMiddleware from '../helpers/errorMiddleware';
 import createReducer from './reducers';
 
 export default (steemConnectAPI, waivioAPI, currUrl, historyPassed) => {

@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { getObjectTypesList } from '../reducers';
+import { getObjectTypesList } from '../store/reducers';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';

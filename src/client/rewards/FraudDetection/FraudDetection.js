@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { get, map, size } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import {
-  getAuthenticatedUserName,
-  getHasMoreFraudSuspicionData,
-  getFraudSuspicionDataState,
-  getAuthenticatedUser,
-} from '../../reducers';
+import { getHasMoreFraudSuspicionData, getFraudSuspicionDataState } from '../../store/reducers';
 import { getBlacklist, getFraudSuspicion } from '../rewardsActions';
 import Proposition from '../Proposition/Proposition';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
+
 import './FraudDetection.less';
 
 const FraudDetection = ({

@@ -10,10 +10,10 @@ import {
   isFlaggedPost,
   isPostCashout,
 } from '../../vendor/steemitHelpers';
-import { isGuestUser } from '../../reducers';
 import { getDownvotes } from '../../helpers/voteHelpers';
 import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorComment } from '../../comments/commentsActions';
+import { isGuestUser } from '../../store/authStore/authSelectors';
 
 import './CommentFooter.less';
 

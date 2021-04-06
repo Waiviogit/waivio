@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import ObjectCard from './ObjectCard';
-import { getRecommendedObjects } from '../../reducers';
+import { getRecommendedObjects } from '../../store/reducers';
 import { getRecommendedObj } from '../../user/userActions';
 import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
 import WeightTag from '../WeightTag';

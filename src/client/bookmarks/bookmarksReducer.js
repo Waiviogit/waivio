@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import * as authActions from '../auth/authActions';
+import * as authActions from '../store/authStore/authActions';
 import * as bookmarksActions from './bookmarksActions';
 import { GET_USER_METADATA } from '../user/usersActions';
 

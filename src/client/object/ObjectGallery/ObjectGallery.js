@@ -9,14 +9,10 @@ import { getAlbums, getRelatedAlbum } from './galleryActions';
 import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
 import CreateAlbum from './CreateAlbum';
-import {
-  getIsObjectAlbumsLoading,
-  getObjectAlbums,
-  getIsAuthenticated,
-  getRelatedPhotos,
-  getIsWaivio,
-} from '../../reducers';
+import { getIsObjectAlbumsLoading, getObjectAlbums, getRelatedPhotos } from '../../store/reducers';
 import IconButton from '../../components/IconButton';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../store/authStore/authSelectors';
 
 import './ObjectGallery.less';
 

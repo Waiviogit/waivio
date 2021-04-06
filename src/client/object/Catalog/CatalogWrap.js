@@ -12,7 +12,7 @@ import {
   getWobjectNested,
   getLoadingFlag,
   getObject,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   getLastPermlinksFromHash,
   itemsList,

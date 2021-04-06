@@ -9,12 +9,11 @@ import { isEmpty, get, map } from 'lodash';
 import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import {
-  getAuthenticatedUserName,
   getConfiguration,
   getObjectsMap,
   getUserLocation,
   getWebsiteLoading,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import { getObjectName } from '../../../helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';
@@ -31,6 +30,7 @@ import CustomMarker from '../../../components/Maps/CustomMarker';
 import { getPropositions } from '../../../../waivioApi/ApiClient';
 import { getPropositionsForMap } from '../../../components/Maps/mapActions';
 import MapControllers from '../../../widgets/MapControllers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './WebsitesConfigurations.less';
 
