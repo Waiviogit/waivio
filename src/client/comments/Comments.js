@@ -3,15 +3,9 @@ import PropTypes from 'prop-types';
 import { find, size } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  getComments,
-  getCommentsList,
-  getCommentsPendingVotes,
-  getVotingPower,
-  getVotePercent,
-} from '../store/reducers';
+import { getVotingPower, getVotePercent } from '../store/reducers';
 import CommentsList from '../components/Comments/Comments';
-import * as commentsActions from './commentsActions';
+import * as commentsActions from '../store/commentsStore/commentsActions';
 import { notify } from '../app/Notification/notificationActions';
 import { getDownvotes } from '../helpers/voteHelpers';
 import { getRewardFund } from '../store/appStore/appSelectors';
@@ -20,6 +14,11 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
 } from '../store/authStore/authSelectors';
+import {
+  getComments,
+  getCommentsList,
+  getCommentsPendingVotes,
+} from '../store/commentsStore/commentsSelectors';
 
 @connect(
   state => ({

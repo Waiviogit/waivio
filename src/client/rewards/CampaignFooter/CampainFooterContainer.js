@@ -3,18 +3,18 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { bindActionCreators } from 'redux';
 import {
-  getCommentsPendingVotes,
   getPendingFollows,
   getVotingPower,
   getVotePercent,
   getPendingFollowingObjects,
 } from '../../store/reducers';
-import { likeComment } from '../../comments/commentsActions';
+import { likeComment } from '../../store/commentsStore/commentsActions';
 import { followUser, unfollowUser } from '../../user/userActions';
 import { followObject, unfollowObject } from '../../object/wobjActions';
 import CampaignFooter from './CampaignFooter';
 import { getRewardFund } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { getCommentsPendingVotes } from '../../store/commentsStore/commentsSelectors';
 
 const mapStateToProps = (
   state,

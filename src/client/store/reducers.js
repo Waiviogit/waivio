@@ -4,7 +4,7 @@ import { connectRouter } from 'connected-react-router';
 
 import appReducer from './appStore/appReducer';
 import authReducer from './authStore/authReducer';
-import commentsReducer, * as fromComments from '../comments/commentsReducer';
+import commentsReducer from './commentsStore/commentsReducer';
 import feedReducer, * as fromFeed from '../feed/feedReducer';
 import postsReducer, * as fromPosts from '../post/postsReducer';
 import userReducer, * as fromUser from '../user/userReducer';
@@ -82,13 +82,6 @@ export const getIsPostEdited = (state, permlink) =>
   fromEditor.getIsPostEdited(state.editor, permlink);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
-
-export const getComments = state => fromComments.getComments(state.comments);
-export const getCommentsList = state => fromComments.getCommentsList(state.comments);
-export const getCommentContent = (state, author, permlink) =>
-  fromComments.getCommentContent(state.comments, author, permlink);
-export const getCommentsPendingVotes = state =>
-  fromComments.getCommentsPendingVotes(state.comments);
 
 export const getBookmarks = state => fromBookmarks.getBookmarks(state.bookmarks);
 export const getPendingBookmarks = state => fromBookmarks.getPendingBookmarks(state.bookmarks);

@@ -1,19 +1,20 @@
 import { get } from 'lodash';
-import { createCommentPermlink, getBodyPatchIfSmaller } from '../vendor/steemitHelpers';
-import { notify } from '../app/Notification/notificationActions';
-import { jsonParse } from '../helpers/formatter';
-import { createPostMetadata } from '../helpers/postHelpers';
-import { createAsyncActionType, getPostKey } from '../helpers/stateHelpers';
-import { findRoot } from '../helpers/commentHelpers';
-import * as ApiClient from '../../waivioApi/ApiClient';
-import { sendCommentAppend } from '../object/wobjActions';
-import { getCommentsList, getLocale } from '../store/reducers';
-import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
+import { createCommentPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
+import { notify } from '../../app/Notification/notificationActions';
+import { jsonParse } from '../../helpers/formatter';
+import { createPostMetadata } from '../../helpers/postHelpers';
+import { createAsyncActionType, getPostKey } from '../../helpers/stateHelpers';
+import { findRoot } from '../../helpers/commentHelpers';
+import * as ApiClient from '../../../waivioApi/ApiClient';
+import { sendCommentAppend } from '../../object/wobjActions';
+import { getLocale } from '../reducers';
+import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
-} from '../store/authStore/authSelectors';
+} from '../authStore/authSelectors';
+import { getCommentsList } from './commentsSelectors';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
