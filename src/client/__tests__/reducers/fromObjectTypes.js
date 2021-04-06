@@ -1,4 +1,4 @@
-import { getObjectTypesList, getObjectTypesLoading } from '../../reducers';
+import { getObjectTypesList, getObjectTypesLoading } from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 
@@ -24,6 +24,7 @@ describe('fromObjectTypes', () => {
       stocks: 'stocks',
       service: 'service',
     };
+
     expect(getObjectTypesList(state)).toEqual(exp);
   });
 });

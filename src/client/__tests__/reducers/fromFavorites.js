@@ -1,4 +1,4 @@
-import { getFavoriteCategories } from '../../reducers';
+import { getFavoriteCategories } from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 
@@ -9,6 +9,7 @@ describe('fromFavorites', () => {
         categories: 'categories',
       },
     };
+
     expect(getFavoriteCategories(state)).toEqual('categories');
   });
 });

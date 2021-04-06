@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash';
 import { getRadius, getParsedMap } from './mapHelper';
 import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
-import { getIsMapModalOpen } from '../../reducers';
+import { getIsMapModalOpen } from '../../store/reducers';
 import { getCoordinates } from '../../user/userActions';
 import mapProvider from '../../helpers/mapProvider';
 import { setMapFullscreenMode } from './mapActions';
@@ -78,6 +78,7 @@ class MapObjectInfo extends React.Component {
 
   setQueryInUrl = (anchor, permlink) => {
     const url = `center=${anchor.join(',')}&zoom=${this.state.zoom}&permlink=${permlink}`;
+
     this.props.history.push(`/?${url}`);
   };
 

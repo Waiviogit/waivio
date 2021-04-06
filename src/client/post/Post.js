@@ -12,10 +12,8 @@ import {
   getIsPostLoaded,
   getIsPostFailed,
   getUser,
-  getIsAuthFetching,
   getSuitableLanguage,
-  getAuthenticatedUserName,
-} from '../reducers';
+} from '../store/reducers';
 import { getContent } from './postActions';
 import { getUserAccount } from '../user/usersActions';
 import Error404 from '../statics/Error404';
@@ -26,6 +24,7 @@ import Affix from '../components/Utils/Affix';
 import HiddenPostMessage from './HiddenPostMessage';
 import PostRecommendation from '../components/Sidebar/PostRecommendation';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
+import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
 
 @connect(
   (state, ownProps) => ({
@@ -76,6 +75,7 @@ export default class Post extends React.Component {
 
   static fetchData({ store, match }) {
     const { author, permlink } = match.params;
+
     return Promise.all([
       store.dispatch(getUserAccount(author)),
       store.dispatch(getContent(author, permlink)),
@@ -111,6 +111,7 @@ export default class Post extends React.Component {
     const { author: prevAuthor, permlink: prevPermlink } = this.props.match.params;
 
     const shouldUpdate = author !== prevAuthor || permlink !== prevPermlink;
+
     if (shouldUpdate && !nextProps.fetching) {
       this.setState({ commentsVisible: false }, () => {
         this.props.getContent(author, permlink, false);

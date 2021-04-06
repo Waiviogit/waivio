@@ -283,6 +283,7 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           },
         );
       }
+
       return intl.formatMessage(
         {
           id: 'notification_campaign_reserved_reservation',

@@ -55,10 +55,12 @@ export default class Toolbar extends React.Component {
 
   componentWillReceiveProps(newProps) {
     const { editorState } = newProps;
+
     if (!newProps.editorEnabled) {
       return;
     }
     const selectionState = editorState.getSelection();
+
     if (selectionState.isCollapsed()) {
       if (this.state.showURLInput) {
         this.setState({
@@ -68,6 +70,7 @@ export default class Toolbar extends React.Component {
       }
     }
     const isFirstLine = this.isFirstBlockSelected(editorState);
+
     if (isFirstLine !== this.state.isFirstLine) {
       this.setState({ isFirstLine });
     }
@@ -86,11 +89,13 @@ export default class Toolbar extends React.Component {
       return;
     }
     const selectionState = this.props.editorState.getSelection();
+
     if (selectionState.isCollapsed()) {
       return;
     }
     // eslint-disable-next-line no-undef
     const nativeSelection = getSelection(window);
+
     if (!nativeSelection.rangeCount) {
       return;
     }
@@ -116,6 +121,7 @@ export default class Toolbar extends React.Component {
       selectionBoundary.left + selectionBoundary.width / 2 - parentBoundary.left;
     let left = selectionCenter - toolbarBoundary.width / 2;
     const screenLeft = parentBoundary.left + left;
+
     if (screenLeft < 0) {
       // If the toolbar would be off-screen
       // move it as far left as it can without going off-screen
@@ -152,17 +158,22 @@ export default class Toolbar extends React.Component {
     }
     const { editorState } = this.props;
     const selection = editorState.getSelection();
+
     if (selection.isCollapsed()) {
       this.props.focus();
+
       return;
     }
     const currentBlock = getCurrentBlock(editorState);
     let selectedEntity = '';
     let linkFound = false;
+
     currentBlock.findEntityRanges(
       character => {
         const entityKey = character.getEntity();
+
         selectedEntity = entityKey;
+
         return (
           entityKey !== null &&
           editorState
@@ -174,6 +185,7 @@ export default class Toolbar extends React.Component {
       (start, end) => {
         let selStart = selection.getAnchorOffset();
         let selEnd = selection.getFocusOffset();
+
         if (selection.getIsBackward()) {
           selStart = selection.getFocusOffset();
           selEnd = selection.getAnchorOffset();
@@ -184,6 +196,7 @@ export default class Toolbar extends React.Component {
             .getCurrentContent()
             .getEntity(selectedEntity)
             .getData();
+
           this.setState(
             {
               showURLInput: true,
@@ -233,6 +246,7 @@ export default class Toolbar extends React.Component {
     const firstBlock = contentState.getFirstBlock();
     const selectionStartBlock = contentState.getBlockForKey(selectionState.getStartKey());
     const selectionEndBlock = contentState.getBlockForKey(selectionState.getEndKey());
+
     return selectionStartBlock === firstBlock || selectionEndBlock === firstBlock;
   };
 
@@ -241,12 +255,15 @@ export default class Toolbar extends React.Component {
     const { showURLInput, urlInputValue } = this.state;
     const isEmptyUrlInput = isEmpty(urlInputValue);
     let isOpen = true;
+
     if (!editorEnabled || editorState.getSelection().isCollapsed()) {
       isOpen = false;
     }
     if (showURLInput) {
       let className = `md-editor-toolbar${isOpen ? ' md-editor-toolbar--isopen' : ''}`;
+
       className += ' md-editor-toolbar--linkinput';
+
       return (
         <div className={className} style={{ left: 0, width: '97%' }}>
           <div
@@ -283,6 +300,7 @@ export default class Toolbar extends React.Component {
     let hasHyperLink = false;
     let hyperlinkLabel = '#';
     let hyperlinkDescription = 'Add a link';
+
     for (let cnt = 0; cnt < inlineButtons.length; cnt += 1) {
       if (inlineButtons[cnt].style === HYPERLINK) {
         hasHyperLink = true;
@@ -295,6 +313,7 @@ export default class Toolbar extends React.Component {
         break;
       }
     }
+
     return (
       <div className={`md-editor-toolbar${isOpen ? ' md-editor-toolbar--isopen' : ''}`}>
         {this.props.blockButtons.length > 0 ? (

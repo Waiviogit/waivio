@@ -13,7 +13,7 @@ import {
   sortWobjectsByHash,
 } from '../../../helpers/wObjectHelper';
 import { setCatalogBreadCrumbs } from '../../wobjActions';
-import { getBreadCrumbs, getSuitableLanguage, getWobjectNested } from '../../../reducers';
+import { getBreadCrumbs, getSuitableLanguage, getWobjectNested } from '../../../store/reducers';
 import { getObjectsByIds } from '../../../../waivioApi/ApiClient';
 
 import './CatalogBreadcrumb.less';
@@ -46,6 +46,7 @@ const CatalogBreadcrumb = ({
 
     if (findBreadCrumbs) {
       const findIndex = currentBreadCrumbs.findIndex(findWobj);
+
       currentBreadCrumbs.splice(findIndex + 1);
     } else {
       currentBreadCrumbs = [...currentBreadCrumbs, compareBreadcrumb(wObject)];
@@ -67,6 +68,7 @@ const CatalogBreadcrumb = ({
       });
     } else {
       const usedObj = location.hash ? nestedWobject : wobject;
+
       handleChangeBreadCrumbs(usedObj);
     }
   }, [location.hash, wobject]);

@@ -20,6 +20,7 @@ const objectSearchInput = props => {
     let contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
     let currUrl = `${apiConfig.production.protocol}${apiConfig.production.host}${selectedObject.defaultShowLink}`;
+
     if (
       (hasType(selectedObject, OBJECT_TYPES.LIST) || hasType(selectedObject, OBJECT_TYPES.PAGE)) &&
       props.match.params[0] === OBJECT_TYPES.PAGE
@@ -35,6 +36,7 @@ const objectSearchInput = props => {
       url: currUrl,
     });
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+
     contentState = Modifier.insertText(contentState, selectionState, String(name), null, entityKey);
 
     const newEditorState = EditorState.push(editorState, contentState, 'insert-characters');
@@ -42,6 +44,7 @@ const objectSearchInput = props => {
       anchorOffset: size(name),
       focusOffset: size(name),
     });
+
     if (selectedObject.type === 'hashtag' || selectedObject.object_type === 'hashtag')
       props.handleHashtag(objectName);
     props.setEditorState(EditorState.forceSelection(newEditorState, newSelection));
@@ -91,6 +94,7 @@ class ObjectSideButton extends Component {
 
   render() {
     const { intl } = this.props;
+
     return (
       <button
         className="md-sb-button action-btn"

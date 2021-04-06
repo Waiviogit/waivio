@@ -4,7 +4,7 @@ import {
   GET_USER_METADATA,
   GET_USER_PRIVATE_EMAIL,
   UPDATE_USER_METADATA,
-} from '../user/usersActions';
+} from '../../user/usersActions';
 
 const initialState = {
   isAuthenticated: false,
@@ -22,6 +22,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case types.LOGIN_START:
       if (action.meta && action.meta.refresh) return state;
+
       return {
         ...state,
         isFetching: true,
@@ -143,26 +144,3 @@ export default (state = initialState, action) => {
       return state;
   }
 };
-
-export const getIsAuthenticated = state => state.isAuthenticated;
-export const getIsAuthFetching = state => state.isFetching;
-export const getIsLoaded = state => state.loaded;
-export const getIsReloading = state => state.isReloading;
-export const getAuthenticatedUser = state => state.user;
-export const getAuthenticatedUserName = state => state.user.name;
-export const getAuthenticateduserMetaData = state => state.userMetaData;
-export const getAuthenticatedUserNotificationsSettings = state =>
-  get(state, ['userMetaData', 'settings', 'userNotifications'], {});
-export const getAuthenticatedUserPrivateEmail = state => state.privateEmail;
-export const getAuthenticatedUserAvatar = state => {
-  let jsonMetadata = get(state, 'user.posting_json_metadata');
-  if (jsonMetadata) {
-    jsonMetadata = JSON.parse(state.user.posting_json_metadata);
-    return get(jsonMetadata, 'profile.profile_image');
-  }
-  return undefined;
-};
-export const getAuthorizationUserFollowSort = state => state.sort;
-export const getHasMap = state => state.map;
-
-export const isGuestUser = state => state.isGuestUser;

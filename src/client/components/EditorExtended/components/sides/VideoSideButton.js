@@ -16,6 +16,7 @@ const videoLinkInput = props => {
         src: link,
       });
       const entityKey = contentWithEntity.getLastCreatedEntityKey();
+
       editorState = EditorState.push(editorState, contentWithEntity, 'change-block-type');
       props.setEditorState(AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, ' '));
       props.close();
@@ -28,6 +29,7 @@ const videoLinkInput = props => {
       );
     }
   };
+
   return (
     <Input.Search
       className="video-link-input"
@@ -66,6 +68,7 @@ class VideoSideButton extends Component {
 
   render() {
     const { intl } = this.props;
+
     return (
       <button
         className="md-sb-button action-btn"

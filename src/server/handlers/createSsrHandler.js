@@ -8,7 +8,7 @@ import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 
 import { getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
-import getStore from '../../client/store';
+import getStore from '../../client/store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../common/routes/switchRoutes';
 
@@ -48,9 +48,11 @@ export default function createSsrHandler(template) {
 
       const promises = branch.map(({ route, match }) => {
         const fetchData = route.component.fetchData;
+
         if (fetchData instanceof Function) {
           return fetchData({ store, match, req, res });
         }
+
         return Promise.resolve(null);
       });
 
@@ -82,6 +84,7 @@ export default function createSsrHandler(template) {
       );
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
+
       return res.send(
         renderSsrPage(null, null, assets, template, req.hostname === 'waivio.com', ''),
       );

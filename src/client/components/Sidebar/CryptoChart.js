@@ -5,10 +5,11 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { FormattedNumber } from 'react-intl';
 import { LineChart } from 'react-easy-chart';
-import { getCryptosPriceHistory, getLocale, getIsMobile } from '../../reducers';
+import { getLocale } from '../../store/reducers';
 import { getCryptoDetails, getCurrentDaysOfTheWeek } from '../../helpers/cryptosHelper';
 import USDDisplay from '../Utils/USDDisplay';
 import Loading from '../Icon/Loading';
+import { getCryptosPriceHistory, getIsMobile } from '../../store/appStore/appSelectors';
 
 @connect(state => ({
   cryptosPriceHistory: getCryptosPriceHistory(state),
@@ -49,6 +50,7 @@ class CryptoChart extends React.Component {
 
   toggleDisplayChart() {
     const chartWidth = this.chartContainer.clientWidth;
+
     this.setState(state => ({
       ...state,
       displayChart: !state.displayChart,
@@ -68,7 +70,9 @@ class CryptoChart extends React.Component {
     const priceDifference = _.get(priceDetails, 'usd_24h_change', 0);
     const usdIncrease = priceDifference ? priceDifference >= 0 : false;
     let usdPriceDifferencePercent = priceDifference;
+
     if (usdPriceDifferencePercent) usdPriceDifferencePercent /= 100;
+
     return (
       <div className="CryptoTrendingCharts__chart-value">
         <span className="CryptoTrendingCharts__usd-price">
@@ -110,7 +114,9 @@ class CryptoChart extends React.Component {
     const priceDifference = _.get(priceDetails, 'btc_24h_change', 0);
     const btcIncrease = priceDifference >= 0;
     let btcPriceDifferencePercent = priceDifference;
+
     if (btcPriceDifferencePercent) btcPriceDifferencePercent /= 100;
+
     return (
       <div className="CryptoTrendingCharts__chart-value">
         <span className="CryptoTrendingCharts__btc-price">

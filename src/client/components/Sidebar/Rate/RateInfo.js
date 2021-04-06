@@ -7,7 +7,7 @@ import { injectIntl } from 'react-intl';
 
 import { averageRate, rateCount } from './rateHelper';
 import { ratePercent } from '../../../../common/constants/listOfFields';
-import { getRatingFields } from '../../../reducers';
+import { getRatingFields } from '../../../store/reducers';
 import BTooltip from '../../BTooltip';
 import RateObjectModal from './RateObjectModal';
 
@@ -41,6 +41,7 @@ class RateInfo extends React.Component {
   getInitialRateValue = field => {
     const { username } = this.props;
     const voter = field.rating_votes && field.rating_votes.find(rate => rate.voter === username);
+
     return voter ? ratePercent.indexOf(voter.rate) + 1 : 0;
   };
 
@@ -69,6 +70,7 @@ class RateInfo extends React.Component {
         </React.Fragment>
       );
     }
+
     return null;
   };
 

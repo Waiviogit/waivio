@@ -7,7 +7,7 @@ import { Button, Modal, message } from 'antd';
 import { Link } from 'react-router-dom';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
-import { getAuthenticatedUserName, getManage, getWebsiteLoading } from '../../../reducers';
+import { getManage, getWebsiteLoading } from '../../../store/reducers';
 import {
   activateWebsite,
   deleteWebsite,
@@ -21,6 +21,7 @@ import {
 import Loading from '../../../components/Icon/Loading';
 import { openTransfer } from '../../../wallet/walletActions';
 import Transfer from '../../../wallet/Transfer/Transfer';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './ManageWebsite.less';
 
@@ -41,6 +42,7 @@ export const ManageWebsite = props => {
 
   const handleClickPayNow = () => {
     let memo = get(dataForPayments, 'memo');
+
     memo = JSON.parse(memo);
 
     props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'HBD', memo.id);

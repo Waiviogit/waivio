@@ -13,7 +13,9 @@ const getRebloggedListAction = createAction(GET_REBLOGGED_LIST);
 const storePostId = postId => {
   const reblogged = store.get('reblogged') || [];
   const newReblogged = [...reblogged, postId];
+
   store.set('reblogged', newReblogged);
+
   return newReblogged;
 };
 
@@ -30,13 +32,8 @@ export const reblog = postId => (dispatch, getState, { steemConnectAPI }) => {
 
         dispatch(getRebloggedListAction(list));
         dispatch(reblogPost(postId, auth.user.name));
-        if (window.analytics) {
-          window.analytics.track('Reblog', {
-            category: 'reblog',
-            label: 'submit',
-            value: 2,
-          });
-        }
+
+        if (window.gtag) window.gtag('event', 'reblog');
 
         return result;
       }),
@@ -47,5 +44,6 @@ export const reblog = postId => (dispatch, getState, { steemConnectAPI }) => {
 
 export const getRebloggedList = () => dispatch => {
   const list = store.get('reblogged') || [];
+
   dispatch(getRebloggedListAction(list));
 };

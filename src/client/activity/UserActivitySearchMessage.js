@@ -8,7 +8,7 @@ import {
   getCurrentDisplayedActions,
   getCurrentFilteredActions,
   getAccountHistoryFilter,
-} from '../reducers';
+} from '../store/reducers';
 
 const UserActivitySearchMessage = ({
   loadingMoreUsersAccountHistory,
@@ -19,6 +19,7 @@ const UserActivitySearchMessage = ({
   const displayedActions = isEmpty(accountHistoryFilter)
     ? currentDisplayedActions
     : currentFilteredActions;
+
   if (isEmpty(displayedActions) && loadingMoreUsersAccountHistory) {
     return (
       <div className="UserActivityActions__search__container">
@@ -38,6 +39,7 @@ const UserActivitySearchMessage = ({
       </div>
     );
   }
+
   return null;
 };
 

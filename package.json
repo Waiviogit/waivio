@@ -28,7 +28,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run linc && npm run prettier-check"
+      "pre-commit": "npm run eslint-autofix && npm run prettier-check"
     }
   },
   "keywords": [
@@ -126,6 +126,7 @@
     "redux-promise-middleware": "^6.1.1",
     "redux-thunk": "^2.3.0",
     "remarkable": "1.7.1",
+    "reselect": "^4.0.0",
     "resize-observer-polyfill": "^1.4.2",
     "sanitize-html": "1.15.0",
     "secure-random": "^1.1.1",
@@ -149,7 +150,7 @@
     "css-loader": "^0.28.11",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-react-intl": "^2.0.6",
-    "eslint": "^4.3.0",
+    "eslint": "^7.23.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "^2.7.0",

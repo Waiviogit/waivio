@@ -17,15 +17,14 @@ import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpe
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { clearBeneficiariesUsers } from '../../search/searchActions';
+import { getHiveBeneficiaryAccount, getLocale } from '../../store/reducers';
 import {
-  getAuthenticatedUserName,
-  getHiveBeneficiaryAccount,
-  getTranslationByKey,
-  getLocale,
   getCurrentHost,
   getIsWaivio,
+  getTranslationByKey,
   getWebsiteBeneficiary,
-} from '../../reducers';
+} from '../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -87,6 +86,7 @@ export const saveDraft = (draft, redirect, intl) => dispatch =>
 export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+
   if (!userName) dispatch({ type: DELETE_DRAFT_OBJECT.ERROR });
 
   return dispatch({
@@ -101,6 +101,7 @@ export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getSt
 export const deleteDraft = draftIds => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+
   if (!userName) dispatch({ type: DELETE_DRAFT_ERROR });
 
   return dispatch({
@@ -131,6 +132,7 @@ export const editPost = (
     reward,
     title,
   };
+
   dispatch(saveDraft(draft, true, intl));
 };
 
@@ -171,6 +173,7 @@ const broadcastComment = (
       json_metadata: JSON.stringify(jsonMetadata),
     },
   ];
+
   operations.push(commentOp);
   if (isUpdating) return steemConnectAPI.broadcast(operations);
   const guestHivePresent = hiveBeneficiaryAccount && isGuest ? 5000 : 0;
@@ -275,9 +278,11 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
 
     let referral;
+
     if (Cookie.get('referral')) {
       const accountCreatedDaysAgo =
         (new Date().getTime() - new Date(`${authUser.created}Z`).getTime()) / 1000 / 60 / 60 / 24;
+
       if (accountCreatedDaysAgo < 30) {
         referral = Cookie.get('referral');
       }
@@ -322,6 +327,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
           }
           if (isGuest) {
             const publicMessage = getTranslationByKey(state, 'post_publication');
+
             if (upvote) {
               steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
             }
@@ -332,14 +338,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
           } else {
             setTimeout(() => dispatch(push(`/@${author}`)), 3000);
           }
-
-          if (window.analytics) {
-            window.analytics.track('Post', {
-              category: 'post',
-              label: 'submit',
-              value: 10,
-            });
-          }
+          if (window.gtag) window.gtag('event', 'publish_post');
 
           if (result.status === 429) {
             dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
@@ -349,10 +348,12 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
           }
 
           dispatch(clearBeneficiariesUsers());
+
           return result;
         })
         .catch(err => {
           let errorText = 'Error';
+
           dispatch({
             type: CREATE_POST_ERROR,
             payload: err,

@@ -7,12 +7,7 @@ import { ceil, get, upperFirst, debounce } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import store from 'store';
 
-import {
-  getAuthenticatedUser,
-  getCryptosPriceHistory,
-  getStatusWithdraw,
-  isGuestUser,
-} from '../../reducers';
+import { getStatusWithdraw } from '../../store/reducers';
 import { closeWithdraw } from '../walletActions';
 import QrModal from '../../widgets/QrModal';
 import { estimateAmount, validaveCryptoWallet } from '../../../waivioApi/ApiClient';
@@ -23,6 +18,8 @@ import {
 } from '../../../common/constants/waivio';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getUserPrivateEmail } from '../../user/usersActions';
+import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';
 
 import './Withdraw.less';
 

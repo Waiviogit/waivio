@@ -10,17 +10,18 @@ import Cookie from 'js-cookie';
 import steemConnectAPI from './steemConnectAPI';
 import { waivioAPI, sendSentryNotification } from '../waivioApi/ApiClient';
 import history from './history';
-import getStore from './store';
+import getStore from './store/store';
 import AppHost from './AppHost';
 import { getBrowserLocale, loadLanguage } from './translations';
-import { setScreenSize, setUsedLocale } from './app/appActions';
-import { getLocale } from './reducers';
+import { setScreenSize, setUsedLocale } from './store/appStore/appActions';
+import { getLocale } from './store/reducers';
 
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   navigator.serviceWorker.register('/service-worker.js');
 }
 
 const accessToken = Cookie.get('access_token');
+
 if (accessToken) {
   steemConnectAPI.setAccessToken(accessToken);
 }
@@ -57,8 +58,10 @@ const render = async Component => {
     if (width < 400) return 'xsmall';
     if (width < 768) return 'small';
     if (width < 998) return 'medium';
+
     return 'large';
   };
+
   store.dispatch(setUsedLocale(lang));
   store.dispatch(setScreenSize(screenSize(window.screen.width)));
   window.addEventListener('resize', () =>

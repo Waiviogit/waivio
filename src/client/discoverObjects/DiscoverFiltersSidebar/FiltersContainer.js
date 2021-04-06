@@ -4,7 +4,7 @@ import { map, isEmpty, size } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import { getActiveFilters, getActiveFiltersTags } from '../../reducers';
+import { getActiveFilters, getActiveFiltersTags } from '../../store/reducers';
 import {
   changeUrl,
   parseTagsFilters,

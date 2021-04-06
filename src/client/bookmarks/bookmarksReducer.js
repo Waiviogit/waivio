@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import * as authActions from '../auth/authActions';
+import * as authActions from '../store/authStore/authActions';
 import * as bookmarksActions from './bookmarksActions';
 import { GET_USER_METADATA } from '../user/usersActions';
 
@@ -12,6 +12,7 @@ const bookmarks = (state = initialState, action) => {
   switch (action.type) {
     case authActions.LOGIN_SUCCESS:
       if (action.meta && action.meta.refresh) return state;
+
       return {
         ...state,
         list: get(action, ['payload', 'userMetaData', 'bookmarks'], initialState.list),
@@ -23,6 +24,7 @@ const bookmarks = (state = initialState, action) => {
           list: action.payload.bookmarks,
         };
       }
+
       return state;
     case bookmarksActions.TOGGLE_BOOKMARK_START:
       return {

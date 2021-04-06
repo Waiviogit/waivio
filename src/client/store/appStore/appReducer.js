@@ -1,11 +1,11 @@
 import { LOCATION_CHANGE } from 'connected-react-router';
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 import * as appTypes from './appActions';
-import * as postActions from '../post/postActions';
-import { GET_USER_METADATA } from '../user/usersActions';
-import { mobileUserAgents } from '../helpers/regexHelpers';
-import { getObjectAvatar } from '../helpers/wObjectHelper';
-import DEFAULTS from '../object/const/defaultValues';
+import * as postActions from '../../post/postActions';
+import { GET_USER_METADATA } from '../../user/usersActions';
+import { mobileUserAgents } from '../../helpers/regexHelpers';
+import { getObjectAvatar } from '../../helpers/wObjectHelper';
+import DEFAULTS from '../../object/const/defaultValues';
 
 const initialState = {
   isFetching: false,
@@ -38,6 +38,7 @@ export default (state = initialState, action) => {
       if (action.payload && action.payload.settings && action.payload.settings.locale) {
         return { ...state, locale: action.payload.settings.locale };
       }
+
       return state;
     case appTypes.RATE_REQUEST.SUCCESS:
       return {
@@ -139,6 +140,7 @@ export default (state = initialState, action) => {
       };
     case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
       const { mainPage, host, configuration, beneficiary, parentHost } = action.payload;
+
       return {
         ...state,
         mainPage,
@@ -174,41 +176,3 @@ export default (state = initialState, action) => {
       return state;
   }
 };
-
-export const getRate = state => state.rate;
-export const getIsTrendingTopicsLoading = state => state.trendingTopicsLoading;
-export const getRewardFund = state => state.rewardFund;
-export const getTrendingTopics = state => state.trendingTopics;
-export const getIsFetching = state => state.isFetching;
-export const getIsBannerClosed = state => state.bannerClosed;
-export const getAppUrl = state => state.appUrl;
-export const getUsedLocale = state => state.usedLocale;
-export const getScreenSize = state => state.screenSize;
-export const getTranslations = state => state.translations;
-export const getCryptosPriceHistory = state => get(state, 'cryptosPriceHistory');
-export const getShowPostModal = state => state.showPostModal;
-export const getCurrentShownPost = state => state.currentShownPost;
-export const getIsMobile = state => state.isMobile;
-export const getWeightValue = (state, weight) => {
-  const rate = get(state, 'rate');
-  const rewardFund = get(state, 'rewardFund');
-  const recentClaims = get(rewardFund, 'recent_claims');
-  const rewardBalance = get(rewardFund, 'reward_balance');
-  let value;
-  if (!isEmpty(rewardFund))
-    value = (weight / recentClaims) * rewardBalance.replace(' HIVE', '') * rate * 1000000;
-  return value;
-};
-export const getTranslationByKey = (state, key, defaultMessage = '') =>
-  get(getTranslations(state), key, defaultMessage);
-export const getMainPage = state => state.mainPage;
-export const getCurrentHost = state => state.host;
-export const getCurrPage = state => state.currPage;
-export const getConfigurationValues = state => state.configuration;
-export const getMapForMainPage = state => state.currMap;
-export const getWebsiteConfiguration = state => state.configuration;
-export const getIsWaivio = state => state.isWaivio;
-export const getReservCounter = state => state.reservedCounter;
-export const getWebsiteBeneficiary = state => state.websiteBeneficiary;
-export const getWebsiteParentHost = state => state.parentHost;
-export const getHelmetIcon = state => state.helmetIcon;

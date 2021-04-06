@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { notification } from 'antd';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
-import { getAuthenticatedUserName, getLatestNotification } from '../reducers';
+import { getLatestNotification } from '../store/reducers';
 import {
   getNotificationsMessage,
   getNotificationsLink,
@@ -13,6 +13,8 @@ import {
 } from '../helpers/notificationsHelper';
 import { epochToUTC } from '../helpers/formatter';
 import Avatar from '../components/Avatar';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
+
 import './NotificationPopup.less';
 
 @withRouter
@@ -52,6 +54,7 @@ class NotificationPopup extends Component {
       const { latestNotification, currentAuthUsername } = nextProps;
       const key = `open${Date.now()}`;
       const username = getNotificationsAvatar(latestNotification, '');
+
       notification.open({
         message: (
           <a
@@ -90,6 +93,7 @@ class NotificationPopup extends Component {
 
   navigateToNotification(latestNotification) {
     const { history, currentAuthUsername } = this.props;
+
     history.push(getNotificationsLink(latestNotification, currentAuthUsername));
   }
 

@@ -18,6 +18,7 @@ module.exports = {
   },
   extends: ['airbnb', 'prettier', 'prettier/react'],
   rules: {
+    'camelcase': OFF,
     'react/jsx-filename-extension': [ERROR, { extensions: ['.js'] }],
     'no-duplicate-imports': 2,
     'react/jsx-key': 2,
@@ -31,7 +32,10 @@ module.exports = {
         ],
       },
     ],
-    'no-console': OFF,
+    'no-unused-vars': OFF,
+    'no-use-before-define': OFF,
+    'no-case-declarations': OFF,
+    'no-console': [ERROR, { allow: ["warn", "error"] }],
     'global-require': OFF,
     // Allow mixed linebreaks locally, but commit only LF.
     'linebreak-style': process.env.CI ? ['error', 'unix'] : OFF,
@@ -44,10 +48,17 @@ module.exports = {
         'render'
       ]
     }],
-    // "padding-line-between-statements": [2,
-    //   { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
-    //   { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
-    //   { "blankLine": "always", "prev": "*", "next": "return" }
-    // ]
+    "padding-line-between-statements": [2,
+      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+      { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
+      { "blankLine": "always", "prev": "*", "next": "return" }
+    ],
+    "sort-imports": [ERROR, {
+      "ignoreCase": false,
+      "ignoreDeclarationSort": true,
+      "ignoreMemberSort": true,
+      "allowSeparatedGroups": true,
+      "memberSyntaxSortOrder": ["single", "multiple", "all", "none"]
+    }]
   },
 };

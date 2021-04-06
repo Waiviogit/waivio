@@ -9,9 +9,10 @@ import { isEmpty, isEqual, map } from 'lodash';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../helpers/mapProvider';
-import { getAuthenticatedUserName, getIsUsersAreas, getUserLocation } from '../../../reducers';
+import { getIsUsersAreas, getUserLocation } from '../../../store/reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './WebsiteObjects.less';
 
@@ -31,8 +32,10 @@ const WebsiteObjects = props => {
       } else if (!isDivFirst && isDivSecond) {
         return [elem1, [elem2 + elem3] / 2];
       }
+
       return [(elem1 + elem2) / 2, (elem3 + elem4) / 2];
     }
+
     return [elem1, elem2];
   };
 
@@ -47,6 +50,7 @@ const WebsiteObjects = props => {
       .getWebsiteObjectsCoordinates(props.match.params.site)
       .then(res => {
         const { coordinates, center, zoom } = res.value;
+
         setMapData(coordinates);
         setArea({
           center,
@@ -59,6 +63,7 @@ const WebsiteObjects = props => {
 
   useEffect(() => {
     const arrData = [];
+
     // eslint-disable-next-line array-callback-return
     map(mapData, currValue => {
       const topPoint = currValue.topPoint;
@@ -379,6 +384,7 @@ const WebsiteObjects = props => {
         id: uuidv4(),
         removeAreaID: center[0],
       };
+
       arrData.push({ ...data, zoom });
     });
 
@@ -424,11 +430,13 @@ const WebsiteObjects = props => {
       userName: props.authUserName,
       mapCoordinates: data,
     };
+
     props.setWebsiteObjectsCoordinates(params);
   };
 
   const removeArea = id => {
     const filteredAreas = mapData.filter(currArea => !isEqual(+id, currArea.center[0]));
+
     setMapData(filteredAreas);
     saveCurrentAreas(filteredAreas);
   };
@@ -443,6 +451,7 @@ const WebsiteObjects = props => {
         zoom: area.zoom,
       },
     ];
+
     saveCurrentAreas(data);
   };
 
@@ -514,6 +523,7 @@ const WebsiteObjects = props => {
                   if (index === 2 && differenceZoom < 2) {
                     return getArea(item, removeBtn, uuidv4());
                   }
+
                   return getArea(item, rectangle(), uuidv4());
                 }),
               )}

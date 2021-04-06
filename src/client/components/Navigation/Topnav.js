@@ -19,7 +19,7 @@ import {
   getSearchObjectsResults,
   getSearchUsersResults,
   searchObjectTypesResults,
-} from '../../reducers';
+} from '../../store/reducers';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
 import { getObjectName } from '../../helpers/wObjectHelper';
@@ -222,6 +222,7 @@ class Topnav extends React.Component {
 
   handleSearch = value => {
     const { searchBarValue } = this.state;
+
     this.debouncedSearch(searchBarValue);
     if (searchBarValue === value) {
       this.debouncedSearchByUser(searchBarValue);
@@ -266,6 +267,7 @@ class Topnav extends React.Component {
     }
 
     let redirectUrl = '';
+
     switch (data.props.marker) {
       case Topnav.markers.USER:
         redirectUrl = `/@${value.replace('user', '')}`;

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Cookie from 'js-cookie';
 import { isEmpty, isNil, uniq } from 'lodash';
-import { showPostModal } from '../app/appActions';
+import { showPostModal } from '../store/appStore/appActions';
 import {
   getFeedContent,
   getUserFeedContent,
@@ -23,13 +23,18 @@ import {
   getFeedFailedFromState,
   getUserFeedFromState,
 } from '../helpers/stateHelpers';
-import { getIsAuthenticated, getIsLoaded, getAuthenticatedUser, getFeed } from '../reducers';
+import { getFeed } from '../store/reducers';
 import Feed from './Feed';
 import FetchFailed from '../statics/FetchFailed';
 import EmptyFeed from '../statics/EmptyFeed';
 import LetsGetStarted from './LetsGetStarted';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import PostModal from '../post/PostModalContainer';
+import {
+  getAuthenticatedUser,
+  getIsAuthenticated,
+  getIsLoaded,
+} from '../store/authStore/authSelectors';
 
 @withRouter
 @connect(
@@ -83,6 +88,7 @@ class SubFeed extends React.Component {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ isAuthHomeFeed: true });
       const fetched = getUserFeedFetchedFromState(user.name, feed);
+
       if (fetched) return;
       this.props.getUserFeedContent(user.name).then(res => {
         if (res.value.message && history.action !== 'PUSH') {
@@ -91,6 +97,7 @@ class SubFeed extends React.Component {
       });
     } else {
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
+
       if (fetched) return;
       this.props.getFeedContent(sortBy, category);
     }
@@ -115,11 +122,13 @@ class SubFeed extends React.Component {
         (isAuthenticated && !wasAuthenticated))
     ) {
       const fetching = getUserFeedLoadingFromState(user.name, feed);
+
       if (!fetching) {
         this.props.getUserFeedContent(user.name);
       }
     } else if (oldSortBy !== newSortBy || oldCategory !== newCategory || (!wasLoaded && isLoaded)) {
       const fetching = getFeedLoadingFromState(newSortBy || 'trending', newCategory, feed);
+
       if (!fetching) {
         this.props.getFeedContent(newSortBy || 'trending', newCategory);
       }

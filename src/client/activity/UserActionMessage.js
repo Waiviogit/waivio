@@ -157,6 +157,7 @@ class UserActionMessage extends React.Component {
             />
           );
         }
+
         return (
           <FormattedMessage
             id="account_unapprove_witness"

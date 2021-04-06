@@ -10,10 +10,10 @@ import {
   isFlaggedPost,
   isPostCashout,
 } from '../../vendor/steemitHelpers';
-import { isGuestUser } from '../../reducers';
 import { getDownvotes } from '../../helpers/voteHelpers';
 import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorComment } from '../../comments/commentsActions';
+import { isGuestUser } from '../../store/authStore/authSelectors';
 
 import './CommentFooter.less';
 
@@ -79,8 +79,10 @@ export default class CommentFooter extends React.Component {
 
   componentWillMount() {
     const { user, comment, defaultVotePercent } = this.props;
+
     if (user) {
       const userVote = find(comment.active_votes, { voter: user.name }) || {};
+
       if (userVote.percent && userVote.percent > 0) {
         this.setState({
           sliderValue: userVote.percent / 100,
@@ -97,6 +99,7 @@ export default class CommentFooter extends React.Component {
   handleLikeClick = () => {
     const { sliderMode, comment } = this.props;
     const { isLiked } = this.state;
+
     if (sliderMode || (isPostCashout(this.props.comment) && !isLiked)) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({

@@ -4,8 +4,8 @@ import { injectIntl } from 'react-intl';
 import { Icon, Tag } from 'antd';
 import { isNaN } from 'lodash';
 import { connect } from 'react-redux';
-import { getRate, getRewardFund, getWeightValue } from '../reducers';
 import WeightDisplay from './Utils/WeightDisplay';
+import { getRate, getRewardFund, getWeightValue } from '../store/appStore/appSelectors';
 
 const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
   const isValidWeight = isNaN(weight);
@@ -15,8 +15,10 @@ const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
     defaultMessage:
       'Total payout for all related posts in USD, without bidbots and upvote services',
   });
+
   if (isFullParams) {
     const expertize = weightValue > 0 ? weightValue : 0;
+
     return (
       <span className="Weight" title={tagTitle}>
         {isValidWeight ? (
@@ -29,6 +31,7 @@ const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
       </span>
     );
   }
+
   return null;
 };
 

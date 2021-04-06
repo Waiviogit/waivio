@@ -8,6 +8,7 @@ describe('sortListItemsBy', () => {
   const list3 = { id: 'id_lst3', type: 'list', name: 'list-3', weight: 88 };
 
   let items = [];
+
   beforeEach(() => {
     items = [obj1, list1, list3, obj2, list2]
       .map(item => ({ sort: Math.random(), value: item }))

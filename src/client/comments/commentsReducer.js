@@ -37,12 +37,14 @@ const childrenById = (state = initialState.childrenById, action) => {
 
 const mapCommentsBasedOnId = data => {
   const commentsList = {};
+
   Object.keys(data).forEach(key => {
     const comment = data[key];
     const newKey = getPostKey(data[key]);
 
     commentsList[newKey] = { ...comment, id: newKey };
   });
+
   return commentsList;
 };
 
@@ -128,6 +130,7 @@ const pendingVotes = (state = initialState.pendingVotes, action) => {
     case commentsTypes.GET_SINGLE_COMMENT.SUCCESS:
     case commentsTypes.FAKE_LIKE_COMMENT.SUCCESS: {
       const commentKey = getPostKey(action.payload);
+
       return state.filter(({ id }) => id !== commentKey);
     }
     default:
@@ -146,10 +149,12 @@ export default (state = initialState, action) => {
       };
     case commentsTypes.FAKE_LIKE_COMMENT.SUCCESS: {
       const comment = state.comments[action.meta.commentId];
+
       comment.active_votes = comment.active_votes.filter(vote => vote.voter !== action.meta.voter);
       comment.active_votes.push(action.payload);
       // eslint-disable-next-line no-param-reassign
       action.payload = comment;
+
       return {
         ...state,
         childrenById: childrenById(state.childrenById, action),
@@ -249,5 +254,6 @@ export const getCommentsPendingVotes = state => state.pendingVotes;
 export const getCommentContent = (state, author, permlink) =>
   Object.values(state.comments).find(post => {
     const postAuthor = post.guestInfo ? post.guestInfo.userId : post.author;
+
     return postAuthor === author && post.permlink === permlink;
   });

@@ -7,8 +7,6 @@ import { get, size, isEmpty, filter } from 'lodash';
 import moment from 'moment';
 
 import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
   getTableOperationNum,
   getTableTransactions,
   getTotalVestingFundSteem,
@@ -24,7 +22,7 @@ import {
   getIsErrorLoadingTable,
   getIsloadingTableTransactions,
   getLocale,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   openWalletTable,
   closeWalletTable,
@@ -43,6 +41,10 @@ import {
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import TableFilter from './TableFilter';
 import WalletTable from './WalletTable';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
 
 import './WalletTable.less';
 
@@ -277,6 +279,7 @@ class WalletTableContainer extends React.Component {
         </div>
       );
     }
+
     return (
       <div className="WalletTable__empty-table">
         {intl.formatMessage({
@@ -300,6 +303,7 @@ class WalletTableContainer extends React.Component {
     const currentUsername = get(user, 'name', '');
     const isGuestPage = guestUserRegex.test(currentUsername);
     const transactions = this.getCurrentTransactions(isGuestPage, tableTransactionsHistory);
+
     return (
       <React.Fragment>
         <TableFilter

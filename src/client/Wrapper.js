@@ -11,25 +11,14 @@ import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
 import { findLanguage, getRequestLocale, loadLanguage } from './translations';
-import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getIsAuthenticated,
-  getLocale,
-  getUsedLocale,
-  getTranslations,
-  getNightmode,
-  isGuestUser,
-  getIsOpenWalletTable,
-  getIsAuthFetching,
-} from './reducers';
+import { getLocale, getNightmode, getIsOpenWalletTable } from './store/reducers';
 import {
   login,
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
-} from './auth/authActions';
+} from './store/authStore/authActions';
 import { getNotifications } from './user/userActions';
-import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
+import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
@@ -46,6 +35,14 @@ import {
   widgetUrlConstructor,
 } from './rewards/rewardsHelper';
 import Topnav from './components/Navigation/Topnav';
+import { getTranslations, getUsedLocale } from './store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsAuthFetching,
+  isGuestUser,
+} from './store/authStore/authSelectors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -130,6 +127,7 @@ class Wrapper extends React.PureComponent {
     });
     const state = store.getState();
     let activeLocale = getLocale(state);
+
     if (activeLocale === 'auto') {
       activeLocale = req.cookies.language || getRequestLocale(req.get('Accept-Language'));
     }
@@ -156,6 +154,7 @@ class Wrapper extends React.PureComponent {
     const ref = querySelectorSearchParams.get('ref');
     const isWidget = querySelectorSearchParams.get('display');
     const userName = querySelectorSearchParams.get('userName');
+
     if (ref) {
       setSessionData('refUser', ref);
     }
@@ -194,6 +193,7 @@ class Wrapper extends React.PureComponent {
     this.setState(() => {
       if (widgetLink && !isEqual(prevtLocationPath, location.pathname)) {
         const newUrl = widgetUrlConstructor(widgetLink, userName, ref, location.pathname);
+
         if (prevtLocationPath && location.pathname !== '/') {
           return history.pushState('', '', newUrl);
         }
@@ -215,8 +215,10 @@ class Wrapper extends React.PureComponent {
       document.body.classList.remove('nightmode');
     }
     const refName = getSessionData('refUser');
+
     if (this.props.isAuthenticated && refName) {
       const currentRefName = handleRefName(refName);
+
       this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
       removeSessionData('refUser');
     }

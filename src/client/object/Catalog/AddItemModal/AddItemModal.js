@@ -5,11 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Button, Modal, message, Select, Form } from 'antd';
 import { filter, isEmpty } from 'lodash';
 import { getAppendData, getObjectName, getObjectType } from '../../../helpers/wObjectHelper';
-import {
-  getAuthenticatedUserName,
-  getFollowingObjectsList,
-  getSuitableLanguage,
-} from '../../../reducers';
+import { getFollowingObjectsList, getSuitableLanguage } from '../../../store/reducers';
 import { appendObject } from '../../appendActions';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
@@ -19,6 +15,8 @@ import { getLanguageText } from '../../../translations';
 import FollowObjectForm from '../../FollowObjectForm';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import apiConfig from '../../../../waivioApi/config.json';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+
 import './AddItemModal.less';
 
 @connect(
@@ -83,6 +81,7 @@ class AddItemModal extends Component {
     form.validateFields((err, values) => {
       const isManualSelected = isModalOpen && !isEmpty(values);
       const objectValues = isManualSelected ? values : createdObjectValues;
+
       if (!err && !this.state.isLoading) {
         this.setState({ isLoading: true });
         const langReadable = filter(LANGUAGES, { id: objectValues.locale })[0].name;

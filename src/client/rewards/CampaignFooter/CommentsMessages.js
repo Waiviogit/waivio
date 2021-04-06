@@ -117,6 +117,7 @@ const CommentsMessages = memo(
     const editable = author === user.name;
 
     let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
+
     if (userUpVoted) {
       likeTooltip = <span>{intl.formatMessage({ id: 'unlike', defaultMessage: 'Unlike' })}</span>;
     }
@@ -125,6 +126,7 @@ const CommentsMessages = memo(
       id => {
         const currentPost = find(post.all, obj => obj.post_id === id);
         const weight = !userVote || userVote.percent <= 0 ? 10000 : 0;
+
         dispatch(voteHistoryPost(currentPost, author, permlink, weight))
           .then(() => {
             setTimeout(() => getMessageHistory().finally(() => setPendingLike(false)), 10000);
@@ -143,6 +145,7 @@ const CommentsMessages = memo(
       id => {
         const currentPost = find(post.all, obj => obj.post_id === id);
         const weight = !userVote || userVote.percent >= 0 ? -10000 : 0;
+
         dispatch(voteHistoryPost(currentPost, author, permlink, weight))
           .then(() => {
             setTimeout(() => getMessageHistory().finally(() => setPendingDisLike(false)), 10000);
@@ -178,9 +181,12 @@ const CommentsMessages = memo(
     const handleSubmitComment = useCallback(
       (parentP, commentValue) => {
         const parentComment = parentP;
+
         if (parentComment.author_original) parentComment.author = parentComment.author_original;
         const parentAuthorIfGuest = parentComment.guestInfo ? parentComment.author : '';
+
         setLoading(true);
+
         return onSendComment(parentComment, commentValue, false, commentObj, parentAuthorIfGuest)
           .then(() => {
             setTimeout(() => {
@@ -201,6 +207,7 @@ const CommentsMessages = memo(
           .catch(() => {
             setCommentFormText(commentValue);
             setLoading(false);
+
             return {
               error: true,
             };
@@ -211,6 +218,7 @@ const CommentsMessages = memo(
 
     const getChildren = useCallback((obj, comments, index) => {
       const replyKey = get(obj, ['replies', index]);
+
       return get(comments, ['all', replyKey]);
     }, []);
 
@@ -221,6 +229,7 @@ const CommentsMessages = memo(
           ...parentP,
           permlink: parentP.parent_permlink,
         };
+
         return onSendComment(parentPostObj, commentValue, true, commentObj).then(() => {
           setTimeout(
             () =>

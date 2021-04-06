@@ -1,6 +1,7 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName, getIsAuthenticated, getUser } from '../reducers';
+import { getUser } from '../store/reducers';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../store/authStore/authSelectors';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
@@ -22,6 +23,7 @@ export const GET_RANDOM_EXPERTS_ERROR = '@users/GET_RANDOM_EXPERTS_ERROR';
 
 export const getRandomExperts = () => (dispatch, getState) => {
   const user = getAuthenticatedUserName(getState());
+
   dispatch({
     type: GET_RANDOM_EXPERTS,
     payload: ApiClient.getTopUsers(user, { isRandom: true }),
@@ -48,12 +50,14 @@ export const GET_USER_METADATA = createAsyncActionType('@users/GET_USER_METADATA
 export const getUserMetadata = () => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+
   if (userName) {
     return dispatch({
       type: GET_USER_METADATA.ACTION,
       payload: ApiClient.getAuthenticatedUserMetadata(userName),
     });
   }
+
   return dispatch({ type: GET_USER_METADATA.ERROR, payload: Promise.resolve(null) });
 };
 
@@ -118,6 +122,7 @@ export const getUserPrivateEmail = () => (dispatch, getState) => {
       payload: ApiClient.getPrivateEmail(userName),
     });
   }
+
   return dispatch({ type: GET_USER_PRIVATE_EMAIL.ERROR, payload: Promise.resolve(null) });
 };
 

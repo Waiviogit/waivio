@@ -10,6 +10,7 @@ import './Notification.less';
 const NotificationRejectUpdate = ({ notification, read, onClick }) => {
   const url = `/object/${notification.author_permlink}/updates/${notification.object_name}`;
   const parent = notification.parent_permlink && notification.parent_name;
+
   return (
     <Link
       to={url}

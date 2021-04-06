@@ -28,18 +28,23 @@ const getBlockStyle = (currentStyle, appliedBlockStyles) => {
       if (style === 'ordered-list-item') {
         return prev + 1;
       }
+
       return prev;
     }, 1);
+
     return `${counter}. `;
   }
+
   return blockStyleDict[currentStyle] || '';
 };
 
 const applyWrappingBlockStyle = (currentStyle, content) => {
   if (currentStyle in wrappingBlockStyleDict) {
     const wrappingSymbol = wrappingBlockStyleDict[currentStyle];
+
     return `${wrappingSymbol}\n${content}\n${wrappingSymbol}`;
   }
+
   return content;
 };
 
@@ -115,6 +120,7 @@ function fixWhitespacesInsideStyle(text, style) {
 
   // Temporary text that contains trimmed content wrapped into original pre- and post-texts
   const newText = `${pre}${bodyTrimmed}${post}`;
+
   // Insert leading and trailing spaces between pre-/post- contents and their respective markers
   return newText.replace(
     `${symbol}${bodyTrimmed}${symbol}`,
@@ -135,6 +141,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
   let totalOffset = 0;
 
   let isListType = false;
+
   raw.blocks.forEach((block, blockIndex) => {
     if (blockIndex !== 0) {
       returnString += '\n';
@@ -155,6 +162,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
     appliedBlockStyles.push(block.type);
 
     const appliedStyles = [];
+
     returnString += block.text.split('').reduce((text, currentChar, index) => {
       let newText = text;
       const sortedInlineStyleRanges = getInlineStyleRangesByLength(block.inlineStyleRanges);
@@ -167,6 +175,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
       // add the symbol to the md string and push the style in the applied styles stack
       stylesStartAtChar.forEach(currentStyle => {
         const symbolLength = markdownDict[currentStyle.style].length;
+
         newText += markdownDict[currentStyle.style];
         totalOffset += symbolLength;
         appliedStyles.push({
@@ -181,6 +190,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
 
       // check for entityRanges starting and add if existing
       const entitiesStartAtChar = block.entityRanges.filter(range => range.offset === index);
+
       entitiesStartAtChar.forEach(entity => {
         newText += getEntityStart(raw.entityMap[entity.key]);
       });
@@ -192,6 +202,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
       const entitiesEndAtChar = block.entityRanges.filter(
         range => range.offset + range.length - 1 === index,
       );
+
       entitiesEndAtChar.forEach(entity => {
         newText += getEntityEnd(raw.entityMap[entity.key]);
       });
@@ -199,6 +210,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
       // apply the 'ending' tags for any styles that end in the current position in order (stack)
       while (appliedStyles.length !== 0 && appliedStyles[appliedStyles.length - 1].end === index) {
         const endingStyle = appliedStyles.pop();
+
         newText += endingStyle.symbol;
 
         newText = fixWhitespacesInsideStyle(newText, endingStyle);
@@ -211,6 +223,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
     returnString = applyWrappingBlockStyle(block.type, returnString);
     returnString = applyAtomicStyle(block, raw.entityMap, returnString);
   });
+
   return returnString;
 }
 

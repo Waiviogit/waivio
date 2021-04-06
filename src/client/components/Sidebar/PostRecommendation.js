@@ -9,7 +9,8 @@ import formatter from '../../helpers/steemitFormatter';
 import Loading from '../../components/Icon/Loading';
 import PostRecommendationLink from './PostRecommendationLink';
 import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../reducers';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+
 import './PostRecommendation.less';
 import './SidebarContentBlock.less';
 
@@ -43,6 +44,7 @@ class PostRecommendation extends Component {
 
   componentWillMount() {
     const { location, isAuthFetching } = this.props;
+
     if (!isAuthFetching && location.pathname !== '/') {
       this.getRecommendations();
     }
@@ -67,9 +69,11 @@ class PostRecommendation extends Component {
 
   getPostsByAuthor = author => {
     const { follower } = this.props;
+
     getUserProfileBlog(author, follower, { limit: 4 }, this.props.locale)
       .then(result => {
         const recommendedPosts = result || [];
+
         this.setState({
           recommendedPosts,
           loading: false,

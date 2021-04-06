@@ -8,6 +8,7 @@ import { Block } from '../util/constants';
 
 export default (setEditorState, getEditorState) => contentBlock => {
   const type = contentBlock.getType();
+
   switch (type) {
     case Block.BLOCKQUOTE_CAPTION:
       return {

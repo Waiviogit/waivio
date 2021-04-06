@@ -7,10 +7,12 @@ import { isEmpty } from 'lodash';
 import getSlug from 'speakingurl';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
-import { login } from '../../../auth/authActions';
+import { login } from '../../../store/authStore/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
-import { getIsWaivio, getLocale } from '../../../reducers';
+import { getLocale } from '../../../store/reducers';
 import GuestSignUpFormContent from './GuestSignUpFormContent';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
+
 import './GuestSignUpForm.less';
 
 const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
@@ -18,6 +20,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
   const isWaivio = useSelector(getIsWaivio);
 
   let initialLanguages = useSelector(getLocale, shallowEqual);
+
   initialLanguages = initialLanguages === 'auto' ? 'en-US' : initialLanguages;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +58,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
       );
     }
     const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
+
     if (user.id) {
       callback(
         <FormattedMessage
@@ -93,6 +97,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
           locales: typeof values.locales === 'string' ? [values.locales] : values.locales,
           allowEmail: values.allow,
         };
+
         dispatch(login(userData.accessToken, userData.socialNetwork, regData)).then(() => {
           setIsLoading(false);
 

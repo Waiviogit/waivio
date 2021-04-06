@@ -15,17 +15,17 @@ import DeleteDraftModal from './DeleteDraftModal';
 import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 
 import {
-  getAuthenticatedUser,
   getDraftPosts,
   getIsEditorLoading,
   getIsEditorSaving,
   getUpvoteSetting,
   getRewardSetting,
-} from '../../reducers';
+} from '../../store/reducers';
 
 import { createPost, saveDraft, newPost } from './editorActions';
 import Editor from '../../components/Editor/Editor';
 import Affix from '../../components/Utils/Affix';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 
 @injectIntl
 @withRouter
@@ -110,6 +110,7 @@ class Write extends React.Component {
   componentWillReceiveProps(nextProps) {
     const newDraft = nextProps.draftId === null;
     const differentDraft = this.props.draftId !== nextProps.draftId;
+
     if (differentDraft && newDraft) {
       this.draftId = uuidv4();
       this.setState({
@@ -134,6 +135,7 @@ class Write extends React.Component {
       const initialReward = get(draftPost, 'reward', rewardsValues.half);
       const initialBeneficiary = get(draftPost, 'beneficiary', true);
       const initialUpvote = get(draftPost, 'upvote', upvoteSetting);
+
       this.draftId = draftId;
       this.setState({
         initialTitle,
@@ -165,6 +167,7 @@ class Write extends React.Component {
 
   onSubmit = form => {
     const data = this.getNewPostData(form);
+
     data.body = improve(data.body);
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
@@ -228,6 +231,7 @@ class Write extends React.Component {
 
   initFromDraft = (draftId, draftPost) => {
     let tags = [];
+
     if (isArray(draftPost.jsonMetadata.tags)) {
       tags = draftPost.jsonMetadata.tags;
     }

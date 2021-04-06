@@ -5,13 +5,14 @@ import axios from 'axios';
 import { message } from 'antd';
 import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
-import { getAuthenticatedUser, getSuitableLanguage } from '../../reducers';
+import { getSuitableLanguage } from '../../store/reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import * as api from '../../../waivioApi/ApiClient';
 import { voteObject, followObject } from '../../object/wobjActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
 import { generateRandomString } from '../../helpers/wObjectHelper';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -48,6 +49,7 @@ export default function withEditor(WrappedComponent) {
 
     getObjectsByAuthorPermlinks = objectIds => {
       const { locale } = this.props.locale;
+
       return api
         .getObjectsByIds({ authorPermlinks: objectIds, locale })
         .then(res => res.map(obj => obj));
@@ -57,17 +59,20 @@ export default function withEditor(WrappedComponent) {
       const {
         intl: { formatMessage },
       } = this.props;
+
       message.info(
         formatMessage({ id: 'notify_uploading_image', defaultMessage: 'Uploading image' }),
       );
 
       const formData = new FormData();
       const currentMethod = linkMethod ? 'imageUrl' : 'file';
+
       formData.append(currentMethod, blob);
 
       const currentLocation = window.location.hostname;
 
       let url;
+
       if (currentLocation === 'waiviodev.com') {
         url = `https://waiviodev.com/api/image`;
       } else if (currentLocation === 'waivio') {
@@ -92,6 +97,7 @@ export default function withEditor(WrappedComponent) {
 
     handleImageInvalid = (maxSize = MAXIMUM_UPLOAD_SIZE, allowedFormats = '') => {
       const { formatMessage } = this.props.intl;
+
       message.error(
         formatMessage(
           {
@@ -131,6 +137,7 @@ export default function withEditor(WrappedComponent) {
 
       try {
         const response = await api.postCreateWaivioObject(requestBody);
+
         await this.props.voteObject(response.author, response.permlink, obj.votePower);
 
         if (obj.follow) {

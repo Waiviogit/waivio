@@ -10,20 +10,15 @@ import { connect } from 'react-redux';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import {
-  getConfigurationValues,
-  getMapForMainPage,
-  getScreenSize,
   getSearchFiltersTagCategory,
   getShowSearchResult,
   getUserLocation,
   getWobjectsPoint,
-  getReservCounter,
-  getIsAuthenticated,
   getWebsiteSearchString,
   getWebsiteMap,
   getShowReloadButton,
   getWebsiteSearchType,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { getCoordinates } from '../../../user/userActions';
 import {
   setMapForSearch,
@@ -42,10 +37,17 @@ import {
   getCurrentAppSettings,
   getReservedCounter,
   putUserCoordinates,
-} from '../../../app/appActions';
+} from '../../../store/appStore/appActions';
 import { getWebsiteObjWithCoordinates, setShowReload } from '../../websiteActions';
 import { distanceInMBetweenEarthCoordinates } from '../../helper';
 import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
+import {
+  getConfigurationValues,
+  getMapForMainPage,
+  getReserveCounter,
+  getScreenSize,
+} from '../../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './WebsiteBody.less';
 
@@ -57,6 +59,7 @@ const WebsiteBody = props => {
   const [infoboxData, setInfoboxData] = useState(null);
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
   const [height, setHeight] = useState(0);
+  const [showLocation, setShowLocation] = useState(false);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const isActiveFilters = !isEmpty(props.activeFilters);
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
@@ -75,6 +78,7 @@ const WebsiteBody = props => {
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
 
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
+
   if (queryCenter) {
     queryCenter = queryCenter.split(',').map(item => Number(item));
   }
@@ -107,6 +111,7 @@ const WebsiteBody = props => {
 
   useEffect(() => {
     const handleResize = () => setHeight(window.innerHeight);
+
     setHeight(window.innerHeight);
 
     if (props.isAuth) props.getReservedCounter();
@@ -283,20 +288,25 @@ const WebsiteBody = props => {
 
   const setCurrentLocation = () => {
     const nav = navigator.geolocation;
+
     nav.getCurrentPosition(
       position => {
         const { latitude, longitude } = position.coords;
+
         setArea({
           ...area,
           center: [latitude, longitude],
         });
+        setShowLocation(true);
         props.putUserCoordinates({ latitude, longitude });
       },
-      () =>
+      () => {
+        setShowLocation(false);
         setArea({
           ...area,
           center: [props.userLocation.lat, props.userLocation.lon],
-        }),
+        });
+      },
     );
   };
 
@@ -329,6 +339,7 @@ const WebsiteBody = props => {
       </div>
     </div>
   );
+
   return (
     <div className="WebsiteBody">
       <Helmet>
@@ -399,10 +410,12 @@ const WebsiteBody = props => {
               )}
               {getMarkers(props.wobjectsPoint)}
               {infoboxData && getOverlayLayout()}
-              <CustomMarker
-                anchor={[props.userLocation.lat, props.userLocation.lon]}
-                currLocation
-              />
+              {showLocation && (
+                <CustomMarker
+                  anchor={[props.userLocation.lat, props.userLocation.lon]}
+                  currLocation
+                />
+              )}
             </Map>
           </React.Fragment>
         )}
@@ -473,7 +486,7 @@ export default connect(
     wobjectsPoint: getWobjectsPoint(state),
     configCoordinates: getMapForMainPage(state),
     activeFilters: getSearchFiltersTagCategory(state),
-    counter: getReservCounter(state),
+    counter: getReserveCounter(state),
     isAuth: getIsAuthenticated(state),
     query: new URLSearchParams(ownProps.location.search),
     searchString: getWebsiteSearchString(state),

@@ -17,6 +17,7 @@ export default {
     {
       validator: (rule, value) => {
         const symbol = 1;
+
         if (value === 'www') {
           return Promise.reject(
             <FormattedMessage
@@ -46,6 +47,7 @@ export default {
             />,
           );
         }
+
         return Promise.resolve();
       },
     },

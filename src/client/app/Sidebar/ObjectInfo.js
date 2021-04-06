@@ -29,12 +29,14 @@ import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
-import { getIsAuthenticated, getIsWaivio, getObjectAlbums } from '../../reducers';
+import { getObjectAlbums } from '../../store/reducers';
 import DescriptionInfo from './DescriptionInfo';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import LinkButton from '../../components/LinkButton/LinkButton';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../store/authStore/authSelectors';
 
 import './ObjectInfo.less';
 
@@ -208,6 +210,7 @@ class ObjectInfo extends React.Component {
         {item.alias || getObjectName(item)}
       </LinkButton>
     );
+
     switch (item.id) {
       case TYPES_OF_MENU_ITEM.BUTTON:
         menuItem = (
@@ -271,6 +274,7 @@ class ObjectInfo extends React.Component {
         setWith(album, '[active_votes]', []);
         setWith(album, '[weight]', 0);
       }
+
       return album;
     });
 
@@ -316,7 +320,7 @@ class ObjectInfo extends React.Component {
     const blogsList = getBlogItems(wobject);
     const formsList = getFormItems(wobject).map(item => ({
       ...item,
-      id: 'formField',
+      id: objectFields.form,
     }));
 
     const menuSection = () => {
@@ -341,6 +345,7 @@ class ObjectInfo extends React.Component {
 
           return currentLink ? [...acc, currentLink] : acc;
         }, []);
+
         return uniq([...sortButtons, ...buttonArray]).map(item =>
           this.getMenuSectionLink({ id: item.id || item.name, ...item }),
         );

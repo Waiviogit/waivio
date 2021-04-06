@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getIsAuthFetching, getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import Loading from '../components/Icon/Loading';
 import Error401 from '../statics/Error401';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsAuthFetching,
+} from '../store/authStore/authSelectors';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -21,6 +25,7 @@ export default function requiresLogin(WrappedComponent) {
     if (!authenticated) {
       return <Error401 />;
     }
+
     return <WrappedComponent userName={userName} {...props} />;
   };
 

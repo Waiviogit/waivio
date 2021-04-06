@@ -92,6 +92,7 @@ export default function walletReducer(state = initialState, action) {
       };
     case walletActions.GET_USER_ACCOUNT_HISTORY.SUCCESS: {
       const usernameKey = action.payload.username;
+
       return {
         ...state,
         usersTransactions: {
@@ -118,6 +119,7 @@ export default function walletReducer(state = initialState, action) {
       };
     case walletActions.GET_TRANSACTIONS_HISTORY.SUCCESS: {
       const usernameKey = action.payload.username;
+
       return {
         ...state,
         transactionsHistory: {
@@ -136,6 +138,7 @@ export default function walletReducer(state = initialState, action) {
       };
     case walletActions.GET_TABLE_TRANSACTIONS_HISTORY.SUCCESS: {
       const usernameKey = action.payload.username;
+
       return {
         ...state,
         tableTransactionsHistory: {
@@ -155,6 +158,7 @@ export default function walletReducer(state = initialState, action) {
     case walletActions.GET_MORE_TRANSACTIONS_HISTORY.SUCCESS: {
       const usernameKey = action.payload.username;
       const userCurrentTransactions = get(state.transactionsHistory, usernameKey, []);
+
       return {
         ...state,
         transactionsHistory: {
@@ -183,6 +187,7 @@ export default function walletReducer(state = initialState, action) {
     case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.SUCCESS: {
       const usernameKey = action.payload.username;
       const userCurrentTransactions = get(state.tableTransactionsHistory, usernameKey, []);
+
       return {
         ...state,
         tableTransactionsHistory: {
@@ -291,6 +296,7 @@ export default function walletReducer(state = initialState, action) {
       const initialFilteredActions = filter(initialActions, userAction =>
         actionsFilter(userAction, action.payload.accountHistoryFilter, action.payload.username),
       );
+
       return {
         ...state,
         accountHistoryFilter: action.payload.accountHistoryFilter,
@@ -300,6 +306,7 @@ export default function walletReducer(state = initialState, action) {
     }
     case walletActions.SET_INITIAL_CURRENT_DISPLAYED_ACTIONS: {
       const currentUserActions = state.usersAccountHistory[action.payload];
+
       return {
         ...state,
         currentDisplayedActions: slice(currentUserActions, 0, ACTIONS_DISPLAY_LIMIT),
@@ -374,6 +381,7 @@ export const getUsersAccountHistory = state => state.usersAccountHistory;
 export const getLoadingMoreUsersAccountHistory = state => state.loadingMoreUsersAccountHistory;
 export const getUserHasMoreAccountHistory = (state, username) => {
   const lastAction = last(state.usersAccountHistory[username]) || {};
+
   return lastAction.actionCount !== 1 && lastAction.actionCount !== 0;
 };
 export const getAccountHistoryFilter = state => state.accountHistoryFilter;

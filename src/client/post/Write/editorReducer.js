@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import * as editorActions from './editorActions';
 import * as postActions from '../postActions';
-import * as authActions from '../../auth/authActions';
+import * as authActions from '../../store/authStore/authActions';
 import { GET_USER_METADATA } from '../../user/usersActions';
 
 const defaultState = {
@@ -34,6 +34,7 @@ const editor = (state = defaultState, action) => {
       };
     case authActions.LOGIN_SUCCESS:
       if (action.meta && action.meta.refresh) return state;
+
       return {
         ...state,
         draftPosts: get(action, ['payload', 'userMetaData', 'drafts'], defaultState.draftPosts),
@@ -45,6 +46,7 @@ const editor = (state = defaultState, action) => {
           draftPosts: action.payload.drafts,
         };
       }
+
       return state;
     case editorActions.NEW_POST:
       return {

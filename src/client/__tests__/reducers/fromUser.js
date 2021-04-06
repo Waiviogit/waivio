@@ -16,7 +16,7 @@ import {
   getIsFetchingFollowingList,
   getFollowingUpdatesFetched,
   getFollowingObjectsUpdatesByType,
-} from '../../reducers';
+} from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 
@@ -109,6 +109,7 @@ describe('fromUser', () => {
 
   it('Should return following Updates by type', () => {
     const objType = 'objType';
+
     expect(getFollowingObjectsUpdatesByType(state, objType)).toEqual('related_wobjects');
   });
 

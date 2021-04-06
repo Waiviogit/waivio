@@ -41,6 +41,7 @@ const WalletTransaction = ({
           />
         );
       }
+
       return (
         <PowerUpTransactionTo
           amount={getTransactionCurrency(transactionDetails.amount, 'HIVE')}
@@ -67,6 +68,7 @@ const WalletTransaction = ({
           />
         );
       }
+
       return (
         <TransferTransaction
           isGuestPage={isGuestPage}

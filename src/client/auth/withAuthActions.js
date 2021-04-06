@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getIsAuthenticated, getIsWaivio, getWebsiteParentHost } from '../reducers';
 import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
+import { getIsWaivio, getWebsiteParentHost } from '../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../store/authStore/authSelectors';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -58,6 +59,7 @@ export default function withAuthActions(WrappedComponent) {
         this.displayLoginModal();
       } else {
         const path = window.location.pathname === '/' ? '' : window.location.pathname;
+
         window.location.href = `https://${this.props.domain}/sign-in?host=${window.location.host}${path}`;
       }
     }

@@ -137,6 +137,7 @@ class Buttons extends React.Component {
     const userUpVoted = userVote && userVote.percent > 0;
 
     let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
+
     if (userUpVoted) {
       likeTooltip = <span>{intl.formatMessage({ id: 'unlike', defaultMessage: 'Unlike' })}</span>;
     } else if (defaultVotePercent !== 10000) {

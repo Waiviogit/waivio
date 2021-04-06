@@ -5,14 +5,11 @@ import { connect } from 'react-redux';
 import { map, isEmpty } from 'lodash';
 import { getFollowingSponsorsRewards, clearFollowingSponsorsRewards } from '../rewardsActions';
 import Campaign from '../Campaign/Campaign';
-import {
-  getAuthenticatedUserName,
-  getSponsorsRewards,
-  getHasMoreFollowingRewards,
-  getIsLoading,
-} from '../../reducers';
+import { getSponsorsRewards, getHasMoreFollowingRewards, getIsLoading } from '../../store/reducers';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+
 import './RewardsList.less';
 
 const RewardsList = ({
@@ -26,6 +23,7 @@ const RewardsList = ({
 }) => {
   useEffect(() => {
     getFollowingRewards();
+
     return () => {
       clearFollowingRewards();
     };
@@ -34,6 +32,7 @@ const RewardsList = ({
   const handleLoadMore = () => {
     if (hasMoreFollowingRewards) {
       const skip = followingRewards.length;
+
       getFollowingRewards(skip);
     }
   };

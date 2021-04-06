@@ -41,6 +41,7 @@ describe('append reducer', () => {
   });
   it('should return loading state', () => {
     const initialState = { loading: true, error: { message: 'someError' } };
+
     expect(getIsAppendLoading(initialState)).toEqual(true);
   });
 });

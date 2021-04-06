@@ -9,7 +9,7 @@ import UserCard from '../UserCard';
 import USDDisplay from '../Utils/USDDisplay';
 import { checkFollowing } from '../../../waivioApi/ApiClient';
 import { followUser, unfollowUser } from '../../user/usersActions';
-import { getIsAuthenticated } from '../../reducers';
+import { getIsAuthenticated } from '../../store/authStore/authSelectors';
 
 import './ReactionsList.less';
 

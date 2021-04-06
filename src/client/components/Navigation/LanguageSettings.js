@@ -6,9 +6,10 @@ import Cookie from 'js-cookie';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { saveSettings, setLocale } from '../../settings/settingsActions';
-import { getUsedLocale } from '../../reducers';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
+import { getUsedLocale } from '../../store/appStore/appSelectors';
+
 import './LanguageSettings.less';
 
 @connect(

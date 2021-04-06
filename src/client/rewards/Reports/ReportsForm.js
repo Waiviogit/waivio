@@ -10,8 +10,9 @@ import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAuto
 import ReviewItem from '../Create-Edit/ReviewItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import { setDataForGlobalReport } from '../rewardsActions';
-import { getAuthenticatedUser, getUsedLocale } from '../../reducers';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import { getUsedLocale } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 
 @injectIntl
 @connect(
@@ -64,6 +65,7 @@ class ReportsForm extends Component {
 
   handleSetState = (stateData, callbackData) => {
     const { setFieldsValue } = this.props.form;
+
     this.setState({ ...stateData }, () => setFieldsValue(callbackData));
   };
 
@@ -95,6 +97,7 @@ class ReportsForm extends Component {
   removePrimaryObject = object => {
     const { objects } = this.state;
     const newObjects = filter(objects, obj => obj.id !== object.id);
+
     this.handleSetState({ objects: newObjects }, { objects: newObjects });
   };
 
@@ -149,6 +152,7 @@ class ReportsForm extends Component {
         processingFees: get(data, ['fees']) || false,
       },
     };
+
     this.setState({ preparedObject, objectsNamesAndPermlinks });
 
     return preparedObject;
@@ -156,11 +160,13 @@ class ReportsForm extends Component {
 
   disabledStartDate = date => {
     const dateTill = this.props.form.getFieldValue('till');
+
     return moment(date) > moment(dateTill);
   };
 
   disabledEndDate = date => {
     const dateFrom = this.props.form.getFieldValue('from');
+
     return moment(date).isAfter(moment()) || moment(date).isBefore(dateFrom);
   };
 

@@ -9,12 +9,9 @@ import {
   getPosts,
   getObject,
   getReadLanguages,
-  getIsAuthenticated,
   getObjectAlbums,
-  getRewardFund,
-  getRate,
   getIsAppendLoading,
-} from '../reducers';
+} from '../store/reducers';
 import { objectFields, sortingMenuName } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
@@ -27,6 +24,8 @@ import AppendCard from './AppendCard/AppendCard';
 import Loading from '../components/Icon/Loading';
 import { getObjectName, isPhotosAlbumExist } from '../helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from './wObjectHelper';
+import { getRate, getRewardFund } from '../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../store/authStore/authSelectors';
 
 import './WobjHistory.less';
 
@@ -71,9 +70,11 @@ class WobjHistory extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { match } = nextProps;
     const { field } = prevState;
+
     if (field !== match.params[1]) {
       return { field: match.params[1] };
     }
+
     return null;
   }
 
@@ -92,6 +93,7 @@ class WobjHistory extends React.Component {
 
   handleFieldChange = field => {
     const { object, history } = this.props;
+
     history.push(`/object/${object.author_permlink}/${field ? `updates/${field}` : 'updates'}`);
     this.setState({ field });
   };
@@ -100,6 +102,7 @@ class WobjHistory extends React.Component {
 
   handleAddBtnClick = () => {
     const { history, match, object, toggleViewEditMode } = this.props;
+
     if (match.params[1] === objectFields.pageContent) {
       toggleViewEditMode(true);
       history.push(`/object/${object.author_permlink}/${OBJECT_TYPE.PAGE}`);
@@ -110,6 +113,7 @@ class WobjHistory extends React.Component {
 
   handleToggleModal = () => {
     const { match, albums, appendAlbum } = this.props;
+
     if (match.params[1] === objectFields.galleryItem && !isPhotosAlbumExist(albums)) {
       appendAlbum();
     }
@@ -150,8 +154,10 @@ class WobjHistory extends React.Component {
     const filteredLanguages = LANGUAGES.filter(lang => {
       if (readLanguages.includes(lang.id)) {
         usedByUserLanguages.push(lang);
+
         return false;
       }
+
       return true;
     });
 
@@ -159,7 +165,11 @@ class WobjHistory extends React.Component {
       if (sortingMenuName[params[1]]) {
         content = content.filter(f => f.name === objectFields.listItem && f.type === params[1]);
       } else {
-        content = content.filter(f => f.name === params[1]);
+        content = content.filter(f => {
+          const type = params[1] === objectFields.form ? 'form' : params[1];
+
+          return f.name === type;
+        });
       }
     }
 

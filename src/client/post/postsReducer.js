@@ -22,10 +22,12 @@ const getPostsList = (list, action) => {
   const resultList = { ...list };
 
   const rootPost = list[action.meta.rootPostId];
+
   if (rootPost) {
     resultList[action.meta.rootPostId] = postItem(rootPost, action);
   }
   const parentPost = list[action.meta.parentId];
+
   if (parentPost) {
     resultList[action.meta.parentId] = postItem(parentPost, action);
   }
@@ -45,10 +47,13 @@ const posts = (state = initialState, action) => {
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS: {
       const commentsMoreList = {};
+
       action.payload.forEach(comment => {
         const key = getPostKey(comment);
+
         commentsMoreList[key] = { ...comment, id: key };
       });
+
       return {
         ...state,
         list: {
@@ -74,6 +79,7 @@ const posts = (state = initialState, action) => {
 
       each(action.payload, post => {
         const key = getPostKey(post);
+
         list[key] = { ...post, id: key };
         postsStates[key] = {
           fetching: false,
@@ -81,6 +87,7 @@ const posts = (state = initialState, action) => {
           failed: false,
         };
       });
+
       return {
         ...state,
         list,
@@ -104,6 +111,7 @@ const posts = (state = initialState, action) => {
 
       each(action.payload, post => {
         const key = getPostKey(post);
+
         list[key] = { ...post, id: key };
         postsStates[key] = {
           fetching: false,
@@ -124,6 +132,7 @@ const posts = (state = initialState, action) => {
     }
     case postsActions.GET_CONTENT.START:
       if (action.meta.afterLike) return state;
+
       return {
         ...state,
         postsStates: {
@@ -139,11 +148,13 @@ const posts = (state = initialState, action) => {
       let key = getPostKey(action.payload);
       let author = action.payload.author;
       let pendingLikes = state.pendingLikes;
+
       if (action.meta.afterLike) {
         const matchPost = find(
           state.list,
           post => `${post.author_original}/${post.permlink}` === key,
         );
+
         if (matchPost) {
           key = getPostKey(matchPost);
           author = matchPost.author;
@@ -151,6 +162,7 @@ const posts = (state = initialState, action) => {
         pendingLikes = omit(state.pendingLikes, key);
       }
       let rebloggedBy = '';
+
       if (state.list[key] && state.list[key].reblogged_by) {
         rebloggedBy = state.list[key].reblogged_by.length
           ? state.list[key].reblogged_by
@@ -203,7 +215,7 @@ const posts = (state = initialState, action) => {
     case postsActions.LIKE_POST.ERROR:
       return {
         ...state,
-        pendingLikes: omit(state.pendingLikes, action.meta.postId),
+        pendingLikes: omit(state.pendingLikes, get(action, 'meta.postId')),
       };
     case commentsActions.SEND_COMMENT_SUCCESS:
       return {
@@ -213,6 +225,7 @@ const posts = (state = initialState, action) => {
 
     case postsActions.FAKE_REBLOG_POST: {
       const rebloggedPost = state.list[action.payload.postId];
+
       return {
         ...state,
         list: {

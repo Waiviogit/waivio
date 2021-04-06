@@ -8,6 +8,7 @@ import { getObjectName, isList } from '../helpers/wObjectHelper';
 
 export const getListItems = (wobj, { uniq } = { uniq: false, isMappedToClientWobject: false }) => {
   let items = [];
+
   if (wobj) {
     if (wobj.listItems) {
       items = wobj.listItems;
@@ -52,6 +53,7 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
   const isCustomSorting = sortBy === 'custom';
   const isRecencySorting = sortBy === 'recency';
   let comparator;
+
   switch (sortBy) {
     case 'rank':
       comparator = (a, b) => b.weight - a.weight || (a.name >= b.name ? 1 : -1);
@@ -66,6 +68,7 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
       break;
   }
   let sorted = uniqBy(items, 'author_permlink').sort(comparator);
+
   if ((isCustomSorting || isRecencySorting) && !isEmpty(sortOrder)) {
     sorted = sortOrder
       .map(permlink => sorted.find(item => item.author_permlink === permlink))
@@ -73,6 +76,7 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
   }
   const sorting = (a, b) => isList(b) - isList(a);
   const resultArr = isCustomSorting ? sorted : sorted.sort(sorting);
+
   return resultArr;
 };
 
@@ -83,6 +87,7 @@ export const getLink = link => {
   if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
     return `http://${link}`;
   }
+
   return link;
 };
 
@@ -95,6 +100,7 @@ export const getExposedFieldsByObjType = wobj => {
         TYPES_OF_MENU_ITEM.LIST,
       ]
     : exposedFields;
+
   renderedFields = renderedFields.map(item => (item === 'form' ? 'formField' : item));
 
   return renderedFields.sort();

@@ -11,11 +11,13 @@ import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
+import { getHiveBeneficiaryAccount } from '../../store/reducers';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import Transfer from '../../wallet/Transfer/Transfer';
+import { isGuestUser } from '../../store/authStore/authSelectors';
+
 import './Payment.less';
 
 const Payment = ({
@@ -56,7 +58,7 @@ const Payment = ({
         setPayable(data.payable);
         setNotPayedPeriod(data.notPayedPeriod);
       })
-      .catch(e => console.log(e));
+      .catch(e => console.error(e));
   };
 
   useEffect(() => {
@@ -65,6 +67,7 @@ const Payment = ({
 
   let titleName;
   let isPayables;
+
   if (get(match, ['params', '0']) === 'payables') {
     titleName = intl.formatMessage({
       id: 'payment_page_payables',

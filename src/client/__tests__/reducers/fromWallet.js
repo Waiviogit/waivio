@@ -19,7 +19,7 @@ import {
   getUserHasMoreAccountHistory,
   getUsersAccountHistoryLoading,
   getLoadingMoreUsersAccountHistory,
-} from '../../reducers';
+} from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 
@@ -120,6 +120,7 @@ describe('fromWallet', () => {
 
   it('Should return loadingMoreUsersAccountHistory if actionCount === 2', () => {
     const currState = { wallet: { usersAccountHistory: { username: [{ actionCount: 2 }] } } };
+
     expect(getUserHasMoreAccountHistory(currState, username)).toEqual(true);
   });
 

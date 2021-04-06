@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import * as authTypes from '../authActions';
-import authReducer from '../authReducer';
+import * as authTypes from '../../store/authStore/authActions';
+import authReducer from '../../store/authStore/authReducer';
 
 const initialStateMock = {
   isAuthenticated: false,

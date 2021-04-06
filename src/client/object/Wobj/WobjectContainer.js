@@ -4,17 +4,12 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { isEmpty } from 'lodash';
 import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getIsAuthenticated,
   getObject as getObjectState,
-  getScreenSize,
   getObjectFetchingState,
   getLocale,
   getWobjectIsFailed,
   getWobjectIsFatching,
-  getHelmetIcon,
-} from '../../reducers';
+} from '../../store/reducers';
 import OBJECT_TYPE from '../const/objectTypes';
 import { clearObjectFromStore, getObject } from '../wobjectsActions';
 import {
@@ -29,6 +24,12 @@ import { setCatalogBreadCrumbs, setNestedWobject } from '../wobjActions';
 import { appendObject } from '../appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
+import { getHelmetIcon, getScreenSize } from '../../store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../store/authStore/authSelectors';
 
 @withRouter
 @connect(
@@ -115,6 +116,7 @@ export default class WobjectContainer extends React.Component {
 
   componentDidMount() {
     const { match, wobject, authenticatedUserName } = this.props;
+
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
@@ -123,6 +125,7 @@ export default class WobjectContainer extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { authenticatedUserName, match, locale } = this.props;
+
     if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
       this.props.resetGallery();
       this.props.clearObjectFromStore();
@@ -151,6 +154,7 @@ export default class WobjectContainer extends React.Component {
     const album = prepareAlbumToStore(data);
 
     const { author } = this.props.appendObject(data);
+
     this.props.addAlbumToStore({ ...album, author });
   };
 

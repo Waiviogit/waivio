@@ -3,7 +3,7 @@ import { createAction } from 'redux-actions';
 
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { getWobjectGallery, getRelatedPhotos } from '../../../waivioApi/ApiClient';
-import { getLocale, getRelatedPhotos as relatedPhotos } from '../../reducers';
+import { getLocale, getRelatedPhotos as relatedPhotos } from '../../store/reducers';
 
 export const GET_ALBUMS = createAsyncActionType('@gallery/GET_ALBUMS');
 export const GET_RELATED_PHOTOS = createAsyncActionType('@gallery/GET_RELATED_PHOTOS');
@@ -42,6 +42,7 @@ export const getMoreRelatedAlbum = (authorPermlink, limit = 30) => (dispatch, ge
   const state = getState();
   const relatedPhotoContent = relatedPhotos(state);
   const skip = relatedPhotoContent.items.length;
+
   return dispatch({
     type: GET_MORE_RELATED_PHOTOS.ACTION,
     payload: {

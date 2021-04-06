@@ -1,8 +1,9 @@
 import { message } from 'antd';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName, getLocale } from '../reducers';
+import { getLocale } from '../store/reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
@@ -59,8 +60,8 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
           const res = isGuest ? await data.json() : data.result;
 
           if (data.status !== 200 && isGuest) throw new Error(data.message);
-          if (window.analytics)
-            window.analytics.track('Vote', { category: 'vote', label: 'submit', value: 1 });
+
+          if (window.gtag) window.gtag('event', 'vote');
 
           busyAPI.instance.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
           busyAPI.instance.subscribeBlock(subscribeTypes.votes, res.block_num, websocketCallback);
@@ -116,13 +117,7 @@ export const voteCommentFromRewards = (postId, author, permlink, weight = 10000)
   const voter = auth.user.name;
 
   return steemConnectAPI.vote(voter, author, permlink, weight).then(res => {
-    if (window.analytics) {
-      window.analytics.track('Vote', {
-        category: 'vote',
-        label: 'submit',
-        value: 1,
-      });
-    }
+    if (window.gtag) window.gtag('event', 'vote_comment');
 
     // Delay to make sure you get the latest data (unknown issue with API)
     setTimeout(() => dispatch(getContent(author, permlink, true)), 1000);
@@ -154,6 +149,7 @@ export const errorFollowingPostAuthor = postId => dispatch =>
 export const getSocialInfoPost = (author, permlink) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+
   return dispatch({
     type: GET_SOCIAL_INFO_POST.ACTION,
     payload: {

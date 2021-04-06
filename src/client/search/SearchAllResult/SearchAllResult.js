@@ -21,7 +21,7 @@ import {
   getWebsiteSearchResult,
   getWebsiteSearchResultLoading,
   getWebsiteSearchString,
-} from '../../reducers';
+} from '../../store/reducers';
 import { getActiveItemClassList } from '../helpers';
 import {
   followSearchUser,
@@ -123,6 +123,7 @@ const SearchAllResult = props => {
 
   const getEndScroll = e => {
     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+
     if (bottom) setIsScrolled(true);
     else setIsScrolled(false);
   };

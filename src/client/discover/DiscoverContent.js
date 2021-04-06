@@ -12,7 +12,7 @@ import {
   getTopExpertsHasMore,
   getObjectTypesList,
   getSearchUsersResultsForDiscoverPage,
-} from '../reducers';
+} from '../store/reducers';
 import Loading from '../components/Icon/Loading';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import {
@@ -24,6 +24,7 @@ import {
 import withAuthActions from '../auth/withAuthActions';
 
 const displayLimit = 20;
+
 @withAuthActions
 @connect(
   state => ({
@@ -84,6 +85,7 @@ class DiscoverContent extends React.Component {
 
   componentDidMount() {
     const { typesList, searchString } = this.props;
+
     if (searchString) {
       this.props.searchUsersForDiscoverPage(searchString, 100);
     }

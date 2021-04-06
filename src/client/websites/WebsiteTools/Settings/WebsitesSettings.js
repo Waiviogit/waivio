@@ -6,7 +6,7 @@ import { Button, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 
-import { getSettingsSite, getWebsiteLoading } from '../../../reducers';
+import { getSettingsSite, getWebsiteLoading } from '../../../store/reducers';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import {

@@ -16,7 +16,7 @@ import {
 } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
 import { getObjectName } from '../helpers/wObjectHelper';
-import { getCryptosPriceHistory } from '../reducers';
+import { getCryptosPriceHistory } from '../store/appStore/appSelectors';
 
 const isLocation = typeof location !== 'undefined';
 const isSessionStorage = typeof sessionStorage !== 'undefined';
@@ -43,6 +43,7 @@ export const preparePropositionReqData = ({
     sort,
     locale,
   };
+
   if (!isRequestWithoutRequiredObject)
     reqData.requiredObject = match.params.campaignParent || match.params.name;
 
@@ -55,6 +56,7 @@ export const preparePropositionReqData = ({
 
 export const getUrl = match => {
   let url;
+
   switch (match.params.filterKey) {
     case 'active':
       url = `${config.campaignApiPrefix}${config.campaigns}${config.eligible}`;
@@ -69,6 +71,7 @@ export const getUrl = match => {
       url = `${config.campaignApiPrefix}${config.campaigns}${config.all}`;
       break;
   }
+
   return url;
 };
 
@@ -170,6 +173,7 @@ export const convertDigits = (number, isHive) => {
   if (number) {
     return parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
   }
+
   return 0;
 };
 
@@ -184,12 +188,14 @@ export const getCurrentUSDPrice = () => {
 export const getDaysLeft = (reserveDate, daysCount) => {
   const currentTime = moment(Date.now()).unix();
   const reservationTime = moment(reserveDate).unix() + daysCount * 86400;
+
   return parseInt((reservationTime - currentTime) / 86400, 10);
 };
 
 export const getFrequencyAssign = objectDetails => {
   const requiredObjectName = getObjectName(objectDetails.required_object);
   const requiredObjectAuthorPermlink = get(objectDetails, ['requiredObject', 'author_permlink']);
+
   return objectDetails.frequency_assign
     ? `<ul><li>User did not receive a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/object/${requiredObjectAuthorPermlink}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
     : '';
@@ -254,6 +260,7 @@ export const getMinExpertise = ({
       2,
     );
   }
+
   return 0;
 };
 
@@ -326,6 +333,7 @@ export const sortDebtObjsData = (items, sortBy) => {
   if (!items || !items.length) return [];
   if (!sortBy) return items;
   let comparator;
+
   switch (sortBy) {
     case 'time':
       comparator = (a, b) => (a.lastCreatedAt < b.lastCreatedAt ? 1 : -1);
@@ -396,6 +404,7 @@ export const payablesFilterData = location => {
       },
     ];
   }
+
   return [
     {
       filterName: 'days',
@@ -422,6 +431,7 @@ export const getMemo = (isReceiverGuest, pathRecivables, isOverpayment) => {
   if (isReceiverGuest) {
     return REWARD.guestReward;
   }
+
   return REWARD.userReward;
 };
 
@@ -480,6 +490,7 @@ export const getSuccessAddMessage = (userNames, listType) => {
         defaultMessage: 'Users were added to the whitelist',
       };
     }
+
     return {
       id: 'user_was_added_to_whitelist',
       defaultMessage: 'User was added to the whitelist',
@@ -492,6 +503,7 @@ export const getSuccessAddMessage = (userNames, listType) => {
       defaultMessage: 'Users were added to blacklist',
     };
   }
+
   return {
     id: 'user_was_added_to_blacklist',
     defaultMessage: 'User was added to the blacklist',
@@ -512,6 +524,7 @@ export const getSuccessDeleteMessage = (userNames, listType) => {
         defaultMessage: 'Users were deleted from the whitelist',
       };
     }
+
     return {
       id: 'user_was_deleted_from_whitelist',
       defaultMessage: 'User was deleted from the whitelist',
@@ -523,6 +536,7 @@ export const getSuccessDeleteMessage = (userNames, listType) => {
       defaultMessage: 'Users were deleted from the blacklist',
     };
   }
+
   return {
     id: 'user_was_deleted_from_blacklist',
     defaultMessage: 'User was deleted from the blacklist',
@@ -536,6 +550,7 @@ export const getNoBlacklistMessage = userNames => {
       defaultMessage: 'These users do not have blacklists',
     };
   }
+
   return {
     id: 'this_user_does_not_have_blacklists',
     defaultMessage: 'This user does not have blacklists',
@@ -552,6 +567,7 @@ export const getSort = (
   sortMessages,
 ) => {
   const key = get(match, ['params', 'filterKey']) || get(match, ['params', '0']);
+
   switch (key) {
     case 'active':
       return sortEligible;
@@ -785,6 +801,7 @@ export const getBreadCrumbText = (intl, location, filterKey, rewardText, match) 
     PATH_NAME_MESSAGES,
     `${PATH_NAME_MESSAGES}/${match.params.campaignId}/${match.params.permlink}`,
   ];
+
   if (includes(messageCrumb, location)) {
     return intl.formatMessage({
       id: MESSAGES,
@@ -801,6 +818,7 @@ export const getBreadCrumbText = (intl, location, filterKey, rewardText, match) 
       defaultMessage: 'History of reservations',
     });
   }
+
   return intl.formatMessage(rewardText[filterKey]);
 };
 
@@ -867,17 +885,20 @@ export const pathNameHistoryNotify = match =>
 
 export const handleRequirementFilters = requirementFilters => {
   const filteredObj = {};
+
   // eslint-disable-next-line no-restricted-syntax
   for (const key in requirementFilters) {
     if (key !== 'expertise' && key !== 'followers' && key !== 'posts') {
       filteredObj[key] = requirementFilters[key];
     }
   }
+
   return filteredObj;
 };
 
 export const openNewTab = url => {
   const newWindow = window.open();
+
   newWindow.opener = null;
   newWindow.location = url;
   newWindow.target = '_blank';
@@ -917,6 +938,7 @@ export const widgetUrlConstructor = (widgetLink, userName, ref, pathname) => {
   if (ref) {
     currUrl += `&ref=${ref}`;
   }
+
   return currUrl;
 };
 
@@ -928,13 +950,16 @@ export const clearAllSessionProposition = () => {
 export const filterSponsorsName = location => {
   const searchParams = new URLSearchParams(location.search);
   const arr = [];
+
   // eslint-disable-next-line no-restricted-syntax
   for (const pair of searchParams.entries()) {
     const key = pair[0];
+
     if (key.match(/sponsorName/)) {
       arr.push(pair);
     }
   }
+
   return arr;
 };
 
@@ -952,12 +977,14 @@ export const handleAddSearchLink = filterValue => {
   const searchParams = isLocation && new URLSearchParams(location.search);
   const date = new Date();
   const uniq = date.getMilliseconds();
+
   searchParams.append(`sponsorName${uniq}`, filterValue);
   history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
 };
 
 export const handleAddMapCoordinates = coordinates => {
   const searchParams = isLocation && new URLSearchParams(location.search);
+
   if (!searchParams.get('mapX') && !searchParams.get('mapY')) {
     searchParams.append('mapX', coordinates[0]);
     searchParams.append('mapY', coordinates[1]);
@@ -974,6 +1001,7 @@ export const handleAddMapCoordinates = coordinates => {
 
 export const handleRemoveSearchLink = filterValue => {
   const searchParams = isLocation && new URLSearchParams(location.search);
+
   searchParams.forEach((value, key) => {
     if (value === filterValue) {
       searchParams.delete(key);

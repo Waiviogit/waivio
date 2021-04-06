@@ -103,6 +103,7 @@ describe('ReferralHelper', () => {
 
   it('should handle ref name in handleRefName', () => {
     const name = 'vallon';
+
     value = `"${name}"`;
     expect(helper.handleRefName(value)).toEqual(name);
   });
@@ -156,6 +157,7 @@ describe('ReferralHelper', () => {
         <span> (3%), </span>
       </React.Fragment>,
     ];
+
     expect(helper.getBeneficiaresInfo(value)).toEqual(returnedData);
   });
 

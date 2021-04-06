@@ -46,6 +46,7 @@ export class FollowPure extends React.Component {
     const isDangerStyles = isFollowed && (isHovered || pending);
 
     let followingText = intl.formatMessage({ id: 'follow', defaultMessage: 'Follow' });
+
     if (isFollowed && !(isHovered || pending)) {
       followingText = intl.formatMessage({ id: 'following', defaultMessage: 'Following' });
     } else if (isFollowed && isHovered && !pending) {

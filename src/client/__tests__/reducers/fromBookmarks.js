@@ -1,4 +1,4 @@
-import { getBookmarks, getPendingBookmarks } from '../../reducers';
+import { getBookmarks, getPendingBookmarks } from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 
@@ -9,6 +9,7 @@ describe('fromBookmarks', () => {
       pendingBookmarks: 'pendingBookmarks',
     },
   };
+
   it('Should return list', () => {
     expect(getBookmarks(state)).toEqual('list');
   });

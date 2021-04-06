@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { AutoComplete } from 'antd';
 import _ from 'lodash';
 import { clearSearchObjectsResults, searchUsersAutoCompete } from '../../search/searchActions';
-import { getIsStartSearchUser, getSearchUsersResults } from '../../reducers';
+import { getIsStartSearchUser, getSearchUsersResults } from '../../store/reducers';
 import Avatar from '../Avatar';
 import { pendingSearch } from '../../search/helpers';
 

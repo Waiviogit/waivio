@@ -8,3 +8,7 @@ src/client/vendor
 assets/
 public/
 build/
+
+# Config files
+scripts/
+src/server/

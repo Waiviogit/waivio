@@ -15,6 +15,7 @@ const PostObjectCard = ({ isLinked, wObject, onToggle }) => {
     // eslint-disable-next-line no-underscore-dangle
     onToggle(wObject.id, isLinkedValue, wObject._id, wObject.author_permlink);
   };
+
   return (
     <div className="PostObjectCard">
       <div className="PostObjectCard__switch">

@@ -13,6 +13,7 @@ describe('<Follow />', () => {
       pending: false,
     };
     const wrapper = shallow(<Follow {...props} />);
+
     expect(wrapper).toMatchSnapshot();
   });
 });

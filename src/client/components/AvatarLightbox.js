@@ -31,6 +31,7 @@ export default class AvatarLightbox extends React.Component {
       username && guestUserRegex.test(username)
         ? `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}`
         : `https://images.hive.blog/u/${username}/avatar/large`;
+
     return (
       <div
         className="UserHeader__container--wrap"

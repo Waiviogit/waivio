@@ -9,14 +9,10 @@ import { getAlbums, getRelatedAlbum } from './galleryActions';
 import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
 import CreateAlbum from './CreateAlbum';
-import {
-  getIsObjectAlbumsLoading,
-  getObjectAlbums,
-  getIsAuthenticated,
-  getRelatedPhotos,
-  getIsWaivio,
-} from '../../reducers';
+import { getIsObjectAlbumsLoading, getObjectAlbums, getRelatedPhotos } from '../../store/reducers';
 import IconButton from '../../components/IconButton';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../store/authStore/authSelectors';
 
 import './ObjectGallery.less';
 
@@ -73,6 +69,7 @@ export default class ObjectGallery extends Component {
   render() {
     const { showModal } = this.state;
     const { match, albums, loading, isAuthenticated, relatedAlbum, isWaivio } = this.props;
+
     if (loading) return <Loading center />;
     const albumsForRender = [...albums, relatedAlbum];
     const empty = isEmpty(albumsForRender);

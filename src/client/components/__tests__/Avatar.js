@@ -22,6 +22,7 @@ describe('<Avatar />', () => {
         <Avatar {...props} />
       </Provider>,
     );
+
     act(() => {
       wrapper.update();
     });
@@ -45,6 +46,7 @@ describe('<Avatar />', () => {
         <Avatar {...props} />
       </Provider>,
     );
+
     act(() => {
       wrapper.update();
     });
@@ -76,6 +78,7 @@ describe('<Avatar />', () => {
         <Avatar {...props} />
       </Provider>,
     );
+
     act(() => {
       wrapper.update();
     });
@@ -109,6 +112,7 @@ describe('<Avatar />', () => {
         <Avatar {...props} />
       </Provider>,
     );
+
     act(() => {
       wrapper.update();
     });
@@ -123,6 +127,7 @@ describe('getAvatarURL', () => {
 
   it('should return waivio link', () => {
     const lastAccountUpdate = '';
+
     username = 'waivio_unsername';
     size = 50;
     authenticatedUser = {};
@@ -133,6 +138,7 @@ describe('getAvatarURL', () => {
 
   it('should return images.hive.blog link with lastAccountUpdate', () => {
     const lastAccountUpdate = `${Date.now()}`.slice(0, 10);
+
     username = 'unsername';
     size = 50;
     authenticatedUser = {

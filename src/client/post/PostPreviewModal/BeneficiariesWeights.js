@@ -5,8 +5,10 @@ import { FormattedMessage } from 'react-intl';
 import { Icon, Progress, Slider } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import BeneficiariesFindUsers from './BeneficiariesFindUsers';
-import { getAuthenticatedUser, getBeneficiariesUsers } from '../../reducers';
+import { getBeneficiariesUsers } from '../../store/reducers';
 import { updateBeneficiariesUsers, removeBeneficiariesUsers } from '../../search/searchActions';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+
 import './AdvanceSettings.less';
 
 class BeneficiariesWeight extends React.PureComponent {
@@ -33,11 +35,13 @@ class BeneficiariesWeight extends React.PureComponent {
   handlePercentChange = percent => {
     const { percentMax } = this.props;
     const percentValue = percent < percentMax ? percent : percentMax;
+
     this.setState({ percent: percentValue });
   };
 
   handleAfterPercentChange = percent => {
     const { objName, onBenefPercentChange } = this.props;
+
     onBenefPercentChange(objName, percent);
   };
 
@@ -48,6 +52,7 @@ class BeneficiariesWeight extends React.PureComponent {
   render() {
     const { percent } = this.state;
     const { index, objName } = this.props;
+
     return (
       <div key={index} className="beneficiaries-weights__item">
         <div className="beneficiaries-weights__item-title">

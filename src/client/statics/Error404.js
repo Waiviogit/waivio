@@ -9,6 +9,7 @@ const Error404 = ({ intl, staticContext }) => {
   if (staticContext) {
     staticContext.status = 404; // eslint-disable-line no-param-reassign
   }
+
   return (
     <div className="ErrorPage container">
       <Helmet>

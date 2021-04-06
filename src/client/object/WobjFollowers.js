@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getWobjectFollowers } from '../../waivioApi/ApiClient';
 import UserDynamicList from '../user/UserDynamicList';
-import { getAuthenticatedUserName, getAuthorizationUserFollowSort } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getAuthorizationUserFollowSort,
+} from '../store/authStore/authSelectors';
 
 @connect(state => ({
   user: getAuthenticatedUserName(state),
@@ -37,7 +40,9 @@ class WobjFollowers extends React.Component {
       this.props.sort,
       this.props.user,
     );
+
     WobjFollowers.skip += WobjFollowers.limit;
+
     return { users: response.wobjectFollowers, hasMore: response.length === WobjFollowers.limit };
   }
 

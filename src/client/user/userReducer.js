@@ -1,8 +1,8 @@
 import { get, keyBy, orderBy, slice } from 'lodash';
-import * as authActions from '../auth/authActions';
+import * as authActions from '../store/authStore/authActions';
 import * as userActions from './userActions';
 import * as wobjActions from '../object/wobjActions';
-import * as appTypes from '../app/appActions';
+import * as appTypes from '../store/appStore/appActions';
 
 const initialState = {
   recommendedObjects: [],
@@ -37,6 +37,7 @@ const initialState = {
 
 const filterRecommendedObjects = (objects, count = 5) => {
   const ordered = orderBy(objects, ['weight'], ['desc']);
+
   return slice(ordered, 0, count);
 };
 
@@ -69,9 +70,11 @@ export default function userReducer(state = initialState, action) {
     // eslint-disable-next-line no-case-declarations
     case userActions.GET_FOLLOWING_SUCCESS:
       const following = {};
+
       action.payload.forEach(user => {
         following[user.name] = true;
       });
+
       return {
         ...state,
         following: {
@@ -140,6 +143,7 @@ export default function userReducer(state = initialState, action) {
 
     case userActions.GET_FOLLOWING_UPDATES.SUCCESS: {
       const { users_updates: usersUpdates, wobjects_updates: objectsUpdates } = action.payload;
+
       return {
         ...state,
         followingUpdates: {
@@ -153,6 +157,7 @@ export default function userReducer(state = initialState, action) {
 
     case userActions.GET_FOLLOWING_UPDATES.ERROR: {
       const { followingUpdates } = initialState;
+
       return {
         ...state,
         followingUpdates,
@@ -161,6 +166,7 @@ export default function userReducer(state = initialState, action) {
 
     case userActions.GET_FOLLOWING_USERS_UPDATES.SUCCESS: {
       const { users, hasMore } = action.payload;
+
       return {
         ...state,
         followingUpdates: {
@@ -178,6 +184,7 @@ export default function userReducer(state = initialState, action) {
     case userActions.GET_FOLLOWING_OBJECTS_UPDATES.SUCCESS: {
       const { related_wobjects: relatedObjects, hasMore } = action.payload;
       const { objectType } = action.meta;
+
       return {
         ...state,
         followingUpdates: {

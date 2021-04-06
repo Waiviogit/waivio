@@ -1,9 +1,9 @@
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
-import { createAsyncActionType } from '../helpers/stateHelpers';
-import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../reducers';
-import { setBeneficiaryOwner } from '../search/searchActions';
+import { createAsyncActionType } from '../../helpers/stateHelpers';
+import * as ApiClient from '../../../waivioApi/ApiClient';
+import { setBeneficiaryOwner } from '../../search/searchActions';
+import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
@@ -57,6 +57,7 @@ export const getCryptoPriceHistory = (symbols, refresh = false) => dispatch => {
     payload: {
       promise: ApiClient.getWalletCryptoPriceHistory(symbols).then(response => {
         const storeObject = {};
+
         Object.keys(response.current).forEach(key => {
           const {
             usd,
@@ -106,6 +107,7 @@ export const getCurrentAppSettings = () => dispatch => {
         if (typeof window !== 'undefined') {
           window.location.replace(res.redirect);
         }
+
         return null;
       }
 
@@ -128,6 +130,7 @@ export const getCurrentAppSettings = () => dispatch => {
     })
     .catch(e => {
       message.error(e.message);
+
       return dispatch({ type: GET_CURRENT_APP_SETTINGS.ERROR });
     });
 };

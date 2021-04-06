@@ -8,29 +8,35 @@ describe('<DnDList />', () => {
     name: 'name',
     type: 'type',
   };
+
   describe('<DnDListItem />', () => {
     it('Should not be undefined', () => {
       const wrapper = mount(<DnDListItem {...props} />);
+
       expect(wrapper).not.toBeUndefined();
     });
 
     it('Block with className: dnd-list-item__name should not be undefined', () => {
       const wrapper = mount(<DnDListItem {...props} />);
+
       expect(wrapper.find('.dnd-list-item__name')).not.toBeUndefined();
     });
 
     it('Block with className: dnd-list-item__type should not be undefined', () => {
       const wrapper = mount(<DnDListItem {...props} />);
+
       expect(wrapper.find('.dnd-list-item__type')).not.toBeUndefined();
     });
 
     it('Block with className: dnd-list-item__type should have text "type"', () => {
       const wrapper = mount(<DnDListItem {...props} />);
+
       expect(wrapper.find('.dnd-list-item__type').text()).toBe('type');
     });
 
     it('Block with className: dnd-list-item__name should have text "name"', () => {
       const wrapper = mount(<DnDListItem {...props} />);
+
       expect(wrapper.find('.dnd-list-item__name').text()).toBe('name');
     });
   });
@@ -83,16 +89,19 @@ describe('<DnDList />', () => {
   describe('Function reorder', () => {
     it('Should reorder array of numbers', () => {
       const list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
       expect(reorder(list, 4, 7)).toEqual([1, 2, 3, 4, 6, 7, 8, 5, 9, 10]);
     });
 
     it('Should reorder array of strings', () => {
       const list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'k', 'l', 'm'];
+
       expect(reorder(list, 4, 7)).toEqual(['a', 'b', 'c', 'd', 'f', 'g', 'k', 'e', 'l', 'm']);
     });
 
     it('Should reorder array of strings if arg: 0, 0', () => {
       const list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'k', 'l', 'm'];
+
       expect(reorder(list, 0, 0)).toEqual(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'k', 'l', 'm']);
     });
   });
@@ -108,6 +117,7 @@ describe('<DnDList />', () => {
 
     it('Should not be undefined', () => {
       const wrapper = mount(<DnDList {...props} />);
+
       expect(wrapper).not.toBeUndefined();
     });
   });

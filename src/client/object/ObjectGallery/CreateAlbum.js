@@ -6,9 +6,11 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { objectNameValidationRegExp } from '../../../common/constants/validation';
 import { prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
-import { getAuthenticatedUserName, getIsAppendLoading, getObject } from '../../reducers';
+import { getIsAppendLoading, getObject } from '../../store/reducers';
 import { appendObject } from '../appendActions';
 import { addAlbumToStore } from './galleryActions';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+
 import './CreateAlbum.less';
 
 const CreateAlbum = ({
@@ -28,6 +30,7 @@ const CreateAlbum = ({
 
     try {
       const { author } = await appendObjectDispatch(data);
+
       await addAlbumToStoreDispatch({ ...album, author });
       hideModal();
       message.success(
