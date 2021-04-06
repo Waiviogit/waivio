@@ -32,6 +32,9 @@ module.exports = {
         ],
       },
     ],
+    'no-unused-vars': OFF,
+    'no-use-before-define': OFF,
+    'no-case-declarations': OFF,
     'no-console': [ERROR, { allow: ["warn", "error"] }],
     'global-require': OFF,
     // Allow mixed linebreaks locally, but commit only LF.
@@ -49,6 +52,13 @@ module.exports = {
       { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
       { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]},
       { "blankLine": "always", "prev": "*", "next": "return" }
-    ]
+    ],
+    "sort-imports": [ERROR, {
+      "ignoreCase": false,
+      "ignoreDeclarationSort": true,
+      "ignoreMemberSort": true,
+      "allowSeparatedGroups": true,
+      "memberSyntaxSortOrder": ["single", "multiple", "all", "none"]
+    }]
   },
 };
