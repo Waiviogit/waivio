@@ -6,7 +6,7 @@ import appReducer from './appStore/appReducer';
 import authReducer from './authStore/authReducer';
 import commentsReducer from './commentsStore/commentsReducer';
 import feedReducer, * as fromFeed from '../feed/feedReducer';
-import postsReducer, * as fromPosts from '../post/postsReducer';
+import postsReducer from './postsStore/postsReducer';
 import userReducer, * as fromUser from '../user/userReducer';
 import usersReducer, * as fromUsers from '../user/usersReducer';
 import notificationReducer from '../app/Notification/notificationReducers';
@@ -56,22 +56,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getPosts = state => fromPosts.getPosts(state.posts);
-export const getPostContent = (state, permlink, author) =>
-  fromPosts.getPostContent(state.posts, permlink, author);
-export const getPendingLikes = state => fromPosts.getPendingLikes(state.posts);
-export const getIsPostFetching = (state, author, permlink) =>
-  fromPosts.getIsPostFetching(state.posts, author, permlink);
-export const getIsPostLoaded = (state, author, permlink) =>
-  fromPosts.getIsPostLoaded(state.posts, author, permlink);
-export const getIsPostFailed = (state, author, permlink) =>
-  fromPosts.getIsPostFailed(state.posts, author, permlink);
-export const getLastPostId = state => fromPosts.getLastPostId(state.posts);
-export const getPostTags = (state, author, permlink) =>
-  fromPosts.getPostTags(state.posts, author, permlink);
-export const getPostCities = (state, author, permlink) =>
-  fromPosts.getPostCities(state.posts, author, permlink);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 

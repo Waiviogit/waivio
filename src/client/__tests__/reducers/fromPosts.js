@@ -1,11 +1,11 @@
 import {
-  getPosts,
-  getPostContent,
-  getPendingLikes,
-  getIsPostLoaded,
   getIsPostFailed,
   getIsPostFetching,
-} from '../../store/reducers';
+  getIsPostLoaded,
+  getPendingLikes,
+  getPostContent,
+  getPosts,
+} from '../../store/postsStore/postsSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

@@ -1,7 +1,7 @@
 import { LOCATION_CHANGE } from 'connected-react-router';
 import { get } from 'lodash';
 import * as appTypes from './appActions';
-import * as postActions from '../../post/postActions';
+import * as postActions from '../postsStore/postActions';
 import { GET_USER_METADATA } from '../../user/usersActions';
 import { mobileUserAgents } from '../../helpers/regexHelpers';
 import { getObjectAvatar } from '../../helpers/wObjectHelper';

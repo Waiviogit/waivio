@@ -13,7 +13,7 @@ import {
   FormattedTime,
   injectIntl,
 } from 'react-intl';
-import { voteHistoryPost } from '../../post/postActions';
+import { voteHistoryPost } from '../../store/postsStore/postActions';
 import Avatar from '../../components/Avatar';
 import BTooltip from '../../components/BTooltip';
 import BodyContainer from '../../containers/Story/BodyContainer';

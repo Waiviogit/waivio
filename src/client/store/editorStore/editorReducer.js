@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import * as editorActions from './editorActions';
-import * as postActions from '../../post/postActions';
+import * as postActions from '../postsStore/postActions';
 import * as authActions from '../authStore/authActions';
 import { GET_USER_METADATA } from '../../user/usersActions';
 
