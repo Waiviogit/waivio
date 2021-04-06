@@ -32,13 +32,8 @@ export const reblog = postId => (dispatch, getState, { steemConnectAPI }) => {
 
         dispatch(getRebloggedListAction(list));
         dispatch(reblogPost(postId, auth.user.name));
-        if (window.analytics) {
-          window.analytics.track('Reblog', {
-            category: 'reblog',
-            label: 'submit',
-            value: 2,
-          });
-        }
+
+        if (window.gtag) window.gtag('event', 'reblog');
 
         return result;
       }),

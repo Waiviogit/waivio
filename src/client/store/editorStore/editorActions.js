@@ -339,14 +339,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
           } else {
             setTimeout(() => dispatch(push(`/@${author}`)), 3000);
           }
-
-          if (window.analytics) {
-            window.analytics.track('Post', {
-              category: 'post',
-              label: 'submit',
-              value: 10,
-            });
-          }
+          if (window.gtag) window.gtag('event', 'publish_post');
 
           if (result.status === 429) {
             dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));

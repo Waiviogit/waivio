@@ -148,6 +148,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     });
   }
 
+  if (typeof window !== 'undefined' && window.gtag) window.gtag('event', 'login');
+
   return dispatch({
     type: LOGIN,
     payload: {

@@ -153,7 +153,8 @@ const Proposition = props => {
       const amount = (props.proposition.reward / currentHivePrice).toFixed(3);
       const guideName = get(props.proposition, ['guide', 'name']);
       reserveActivatedCampaign(reserveData)
-        .then(() =>
+        .then(() => {
+          if (window.gtag) window.gtag('event', 'reserve');
           props.assignProposition({
             companyAuthor: guideName,
             companyPermlink: props.proposition.activation_permlink,
@@ -167,8 +168,8 @@ const Proposition = props => {
             proposedWobj,
             userName,
             currencyId,
-          }),
-        )
+          });
+        })
         .then(() => {
           setModalDetailsOpen(!isModalDetailsOpen);
           setReservation(true);

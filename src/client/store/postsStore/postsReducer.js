@@ -215,7 +215,7 @@ const posts = (state = initialState, action) => {
     case postsActions.LIKE_POST.ERROR:
       return {
         ...state,
-        pendingLikes: omit(state.pendingLikes, action.meta.postId),
+        pendingLikes: omit(state.pendingLikes, get(action, 'meta.postId')),
       };
     case commentsActions.SEND_COMMENT_SUCCESS:
       return {
