@@ -441,7 +441,8 @@ export default class AppendForm extends Component {
           )} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         case objectFields.form:
-          return `@${author} added form ${formValues.formTitle}`;
+          return `@${author} added form: ${formValues.formTitle}, link: ${formValues.formLink ||
+            formValues.formWidget}, column: ${formValues.formColumn}`;
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -2074,14 +2075,6 @@ export default class AppendForm extends Component {
                     isMultiple
                     isRequired
                   />
-                  {/* TODO: Possible will use */}
-                  {/* <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}> */}
-                  {/*  <img */}
-                  {/*    alt="example" */}
-                  {/*    style={{ width: '100%', 'max-height': '90vh' }} */}
-                  {/*    src={previewImage} */}
-                  {/*  /> */}
-                  {/* </Modal> */}
                 </div>,
               )}
             </Form.Item>

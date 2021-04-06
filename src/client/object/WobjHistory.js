@@ -166,7 +166,11 @@ class WobjHistory extends React.Component {
       if (sortingMenuName[params[1]]) {
         content = content.filter(f => f.name === objectFields.listItem && f.type === params[1]);
       } else {
-        content = content.filter(f => f.name === params[1]);
+        content = content.filter(f => {
+          const type = params[1] === objectFields.form ? 'form' : params[1];
+
+          return f.name === type;
+        });
       }
     }
 

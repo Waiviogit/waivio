@@ -318,7 +318,7 @@ class ObjectInfo extends React.Component {
     const blogsList = getBlogItems(wobject);
     const formsList = getFormItems(wobject).map(item => ({
       ...item,
-      id: 'formField',
+      id: objectFields.form,
     }));
 
     const menuSection = () => {
