@@ -12,7 +12,7 @@ import usersReducer, * as fromUsers from '../user/usersReducer';
 import notificationReducer from '../app/Notification/notificationReducers';
 import bookmarksReducer, * as fromBookmarks from '../bookmarks/bookmarksReducer';
 import favoritesReducer, * as fromFavorites from '../favorites/favoritesReducer';
-import editorReducer, * as fromEditor from '../post/Write/editorReducer';
+import editorReducer from './editorStore/editorReducer';
 import walletReducer, * as fromWallet from '../wallet/walletReducer';
 import reblogReducers, * as fromReblog from '../app/Reblog/reblogReducers';
 import settingsReducer, * as fromSettings from '../settings/settingsReducer';
@@ -72,14 +72,6 @@ export const getPostTags = (state, author, permlink) =>
   fromPosts.getPostTags(state.posts, author, permlink);
 export const getPostCities = (state, author, permlink) =>
   fromPosts.getPostCities(state.posts, author, permlink);
-
-export const getDraftPosts = state => fromEditor.getDraftPosts(state.editor);
-export const getIsEditorLoading = state => fromEditor.getIsEditorLoading(state.editor);
-export const getIsEditorSaving = state => fromEditor.getIsEditorSaving(state.editor);
-export const getIsImageUploading = state => fromEditor.getIsImgLoading(state.editor);
-export const getPendingDrafts = state => fromEditor.getPendingDrafts(state.editor);
-export const getIsPostEdited = (state, permlink) =>
-  fromEditor.getIsPostEdited(state.editor, permlink);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 

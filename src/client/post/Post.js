@@ -7,7 +7,6 @@ import formatter from '../helpers/steemitFormatter';
 import { isBannedPost } from '../helpers/postHelpers';
 import {
   getPostContent,
-  getIsPostEdited,
   getIsPostFetching,
   getIsPostLoaded,
   getIsPostFailed,
@@ -25,6 +24,7 @@ import HiddenPostMessage from './HiddenPostMessage';
 import PostRecommendation from '../components/Sidebar/PostRecommendation';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
+import { getIsPostEdited } from '../store/editorStore/editorSelectors';
 
 @connect(
   (state, ownProps) => ({

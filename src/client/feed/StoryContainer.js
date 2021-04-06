@@ -8,7 +8,6 @@ import {
   getPendingLikes,
   getRebloggedList,
   getPendingReblogs,
-  getIsEditorSaving,
   getVotingPower,
   getVotePercent,
   getShowNSFWPosts,
@@ -20,12 +19,13 @@ import {
   votePost,
 } from '../post/postActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
-import { editPost } from '../post/Write/editorActions';
+import { editPost } from '../store/editorStore/editorActions';
 import { reblog } from '../app/Reblog/reblogActions';
 import { unfollowUser, followUser } from '../user/usersActions';
 import { getDownvotes, getUpvotes } from '../helpers/voteHelpers';
 import { getRewardFund } from '../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../store/authStore/authSelectors';
+import { getIsEditorSaving } from '../store/editorStore/editorSelectors';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);
