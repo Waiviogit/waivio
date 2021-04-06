@@ -6,7 +6,6 @@ import { FormattedMessage } from 'react-intl';
 import { isEmpty, size } from 'lodash';
 
 import {
-  getPosts,
   getObject,
   getReadLanguages,
   getObjectAlbums,
@@ -26,6 +25,7 @@ import { getObjectName, isPhotosAlbumExist } from '../helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from './wObjectHelper';
 import { getRate, getRewardFund } from '../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../store/authStore/authSelectors';
+import { getPosts } from '../store/postsStore/postsSelectors';
 
 import './WobjHistory.less';
 

@@ -7,15 +7,14 @@ import {
 } from '../helpers/stateHelpers';
 import {
   getFeed,
-  getPosts,
   getBookmarks as getBookmarksSelector,
   getLocale,
   getReadLanguages,
-  getLastPostId,
 } from '../store/reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getLastPostId, getPosts } from '../store/postsStore/postsSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');

@@ -12,7 +12,7 @@ import {
   REMOVE_TOGGLE_FLAG,
   CHECK_EXPIRED_PAYMENTS,
 } from './rewardsActions';
-import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
+import { GET_RESERVED_COMMENTS_SUCCESS } from '../store/commentsStore/commentsActions';
 
 const initialState = {
   singleReportData: {},

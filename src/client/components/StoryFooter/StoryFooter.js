@@ -8,7 +8,11 @@ import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
-import { getSocialInfoPost, handleHidePost, muteAuthorPost } from '../../post/postActions';
+import {
+  getSocialInfoPost,
+  handleHidePost,
+  muteAuthorPost,
+} from '../../store/postsStore/postActions';
 import withAuthActions from '../../auth/withAuthActions';
 import MuteModal from '../../widgets/MuteModal';
 import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';

@@ -35,7 +35,7 @@ import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../user/userActions';
 import { getImagePathPost } from '../../helpers/image';
 import MuteModal from '../../widgets/MuteModal';
-import { muteAuthorPost } from '../../post/postActions';
+import { muteAuthorPost } from '../../store/postsStore/postActions';
 
 import './StoryFull.less';
 

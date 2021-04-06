@@ -4,15 +4,15 @@ import { connectRouter } from 'connected-react-router';
 
 import appReducer from './appStore/appReducer';
 import authReducer from './authStore/authReducer';
-import commentsReducer, * as fromComments from '../comments/commentsReducer';
+import commentsReducer from './commentsStore/commentsReducer';
 import feedReducer, * as fromFeed from '../feed/feedReducer';
-import postsReducer, * as fromPosts from '../post/postsReducer';
+import postsReducer from './postsStore/postsReducer';
 import userReducer, * as fromUser from '../user/userReducer';
 import usersReducer, * as fromUsers from '../user/usersReducer';
 import notificationReducer from '../app/Notification/notificationReducers';
 import bookmarksReducer, * as fromBookmarks from '../bookmarks/bookmarksReducer';
 import favoritesReducer, * as fromFavorites from '../favorites/favoritesReducer';
-import editorReducer, * as fromEditor from '../post/Write/editorReducer';
+import editorReducer from './editorStore/editorReducer';
 import walletReducer, * as fromWallet from '../wallet/walletReducer';
 import reblogReducers, * as fromReblog from '../app/Reblog/reblogReducers';
 import settingsReducer, * as fromSettings from '../settings/settingsReducer';
@@ -57,38 +57,7 @@ export default history =>
     website: websiteReducer,
   });
 
-export const getPosts = state => fromPosts.getPosts(state.posts);
-export const getPostContent = (state, permlink, author) =>
-  fromPosts.getPostContent(state.posts, permlink, author);
-export const getPendingLikes = state => fromPosts.getPendingLikes(state.posts);
-export const getIsPostFetching = (state, author, permlink) =>
-  fromPosts.getIsPostFetching(state.posts, author, permlink);
-export const getIsPostLoaded = (state, author, permlink) =>
-  fromPosts.getIsPostLoaded(state.posts, author, permlink);
-export const getIsPostFailed = (state, author, permlink) =>
-  fromPosts.getIsPostFailed(state.posts, author, permlink);
-export const getLastPostId = state => fromPosts.getLastPostId(state.posts);
-export const getPostTags = (state, author, permlink) =>
-  fromPosts.getPostTags(state.posts, author, permlink);
-export const getPostCities = (state, author, permlink) =>
-  fromPosts.getPostCities(state.posts, author, permlink);
-
-export const getDraftPosts = state => fromEditor.getDraftPosts(state.editor);
-export const getIsEditorLoading = state => fromEditor.getIsEditorLoading(state.editor);
-export const getIsEditorSaving = state => fromEditor.getIsEditorSaving(state.editor);
-export const getIsImageUploading = state => fromEditor.getIsImgLoading(state.editor);
-export const getPendingDrafts = state => fromEditor.getPendingDrafts(state.editor);
-export const getIsPostEdited = (state, permlink) =>
-  fromEditor.getIsPostEdited(state.editor, permlink);
-
 export const getFeed = state => fromFeed.getFeed(state.feed);
-
-export const getComments = state => fromComments.getComments(state.comments);
-export const getCommentsList = state => fromComments.getCommentsList(state.comments);
-export const getCommentContent = (state, author, permlink) =>
-  fromComments.getCommentContent(state.comments, author, permlink);
-export const getCommentsPendingVotes = state =>
-  fromComments.getCommentsPendingVotes(state.comments);
 
 export const getBookmarks = state => fromBookmarks.getBookmarks(state.bookmarks);
 export const getPendingBookmarks = state => fromBookmarks.getPendingBookmarks(state.bookmarks);

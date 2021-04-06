@@ -15,22 +15,20 @@ import {
 import {
   getBookmarks,
   getPendingBookmarks,
-  getPendingLikes,
   getRebloggedList,
   getPendingReblogs,
   getFollowingList,
-  getIsEditorSaving,
   getVotingPower,
   getVotePercent,
 } from '../store/reducers';
-import { editPost } from './Write/editorActions';
+import { editPost } from '../store/editorStore/editorActions';
 import {
   errorFollowingPostAuthor,
   followingPostAuthor,
   muteAuthorPost,
   pendingFollowingPostAuthor,
   votePost,
-} from './postActions';
+} from '../store/postsStore/postActions';
 import { reblog } from '../app/Reblog/reblogActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
 import { followUser, unfollowUser } from '../user/userActions';
@@ -41,6 +39,8 @@ import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
 import { getAppUrl, getHelmetIcon, getRewardFund } from '../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../store/authStore/authSelectors';
+import { getIsEditorSaving } from '../store/editorStore/editorSelectors';
+import { getPendingLikes } from '../store/postsStore/postsSelectors';
 
 @injectIntl
 @connect(

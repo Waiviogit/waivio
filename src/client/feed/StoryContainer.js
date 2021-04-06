@@ -2,13 +2,10 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
 import {
-  getPosts,
   getBookmarks,
   getPendingBookmarks,
-  getPendingLikes,
   getRebloggedList,
   getPendingReblogs,
-  getIsEditorSaving,
   getVotingPower,
   getVotePercent,
   getShowNSFWPosts,
@@ -18,14 +15,16 @@ import {
   followingPostAuthor,
   pendingFollowingPostAuthor,
   votePost,
-} from '../post/postActions';
+} from '../store/postsStore/postActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
-import { editPost } from '../post/Write/editorActions';
+import { editPost } from '../store/editorStore/editorActions';
 import { reblog } from '../app/Reblog/reblogActions';
 import { unfollowUser, followUser } from '../user/usersActions';
 import { getDownvotes, getUpvotes } from '../helpers/voteHelpers';
 import { getRewardFund } from '../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../store/authStore/authSelectors';
+import { getIsEditorSaving } from '../store/editorStore/editorSelectors';
+import { getPendingLikes, getPosts } from '../store/postsStore/postsSelectors';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);
