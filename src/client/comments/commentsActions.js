@@ -242,13 +242,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
             auth.isGuestUser ? 6000 : 2000,
           );
 
-          if (window.analytics) {
-            window.analytics.track('Comment', {
-              category: 'comment',
-              label: 'submit',
-              value: 3,
-            });
-          }
+          if (window.gtag) window.gtag('event', 'publish_comment');
         })
         .catch(err => {
           dispatch(notify(err.error.message || err.error_description, 'error'));
