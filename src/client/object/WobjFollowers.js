@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getWobjectFollowers } from '../../waivioApi/ApiClient';
 import UserDynamicList from '../user/UserDynamicList';
-import { getAuthenticatedUserName, getAuthorizationUserFollowSort } from '../store/reducers';
+import {
+  getAuthenticatedUserName,
+  getAuthorizationUserFollowSort,
+} from '../store/authStore/authSelectors';
 
 @connect(state => ({
   user: getAuthenticatedUserName(state),

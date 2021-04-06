@@ -7,8 +7,6 @@ import { get, size, isEmpty, filter } from 'lodash';
 import moment from 'moment';
 
 import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
   getTableOperationNum,
   getTableTransactions,
   getTotalVestingFundSteem,
@@ -43,6 +41,10 @@ import {
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import TableFilter from './TableFilter';
 import WalletTable from './WalletTable';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
 
 import './WalletTable.less';
 

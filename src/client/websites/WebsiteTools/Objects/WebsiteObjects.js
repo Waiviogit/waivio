@@ -9,13 +9,10 @@ import { isEmpty, isEqual, map } from 'lodash';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../helpers/mapProvider';
-import {
-  getAuthenticatedUserName,
-  getIsUsersAreas,
-  getUserLocation,
-} from '../../../store/reducers';
+import { getIsUsersAreas, getUserLocation } from '../../../store/reducers';
 import { getCoordinates } from '../../../user/userActions';
 import { setWebsiteObjectsCoordinates, getWebsiteObjectsCoordinates } from '../../websiteActions';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './WebsiteObjects.less';
 

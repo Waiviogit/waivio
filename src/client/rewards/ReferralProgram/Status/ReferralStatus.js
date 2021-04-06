@@ -4,13 +4,13 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import {
   getCurrentUserCards,
-  getIsAuthenticated,
   getIsErrorLoadingUserCards,
   getIsHasMoreCards,
   getIsLoadingMoreUserCards,
 } from '../../../store/reducers';
 import { getMoreUserStatusCards, getUserStatusCards } from '../ReferralActions';
 import ReferralStatusView from './ReferralStatusView';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './ReferralStatus.less';
 

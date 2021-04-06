@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 
 import { estimateAmount, finalConfirmation } from '../../waivioApi/ApiClient';
 import { CRYPTO_FOR_VALIDATE_WALLET } from '../../common/constants/waivio';
-import { isGuestUser } from '../store/reducers';
+import { isGuestUser } from '../store/authStore/authSelectors';
 
 const ConfirmationModal = ({ intl, history }) => {
   const [count, calculateAmount] = useState(0);

@@ -4,21 +4,23 @@ import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Modal } from 'antd';
 import {
-  getIsReloading,
   getIsSettingsLoading,
   getRewriteLinks,
-  getAuthenticatedUserName,
   getHiveBeneficiaryAccount,
-  getAuthenticatedUserPrivateEmail,
 } from '../store/reducers';
 import { saveSettings } from './settingsActions';
-import { reload } from '../auth/authActions';
+import { reload } from '../store/authStore/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Loading from '../components/Icon/Loading';
 import requiresLogin from '../auth/requiresLogin';
 import LinkHiveAccountModal from './LinkHiveAccountModal';
 import EmailConfirmation from '../widgets/EmailConfirmation';
 import { getUserPrivateEmail } from '../user/usersActions';
+import {
+  getAuthenticatedUserName,
+  getAuthenticatedUserPrivateEmail,
+  getIsReloading,
+} from '../store/authStore/authSelectors';
 
 import './Settings.less';
 

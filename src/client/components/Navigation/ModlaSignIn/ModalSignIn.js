@@ -5,7 +5,7 @@ import hivesigner from 'hivesigner';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { login, busyLogin, getAuthGuestBalance } from '../../../auth/authActions';
+import { login, busyLogin, getAuthGuestBalance } from '../../../store/authStore/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';

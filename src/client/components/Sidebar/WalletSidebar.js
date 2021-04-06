@@ -5,13 +5,14 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { openTransfer, openPowerUpOrDown, openWithdraw } from '../../wallet/walletActions';
-import { getAuthenticatedUser, getHiveBeneficiaryAccount, isGuestUser } from '../../store/reducers';
+import { getHiveBeneficiaryAccount } from '../../store/reducers';
 import { HIVE, HBD } from '../../../common/constants/cryptos';
 import Action from '../Button/Action';
 import ClaimRewardsBlock from '../../wallet/ClaimRewardsBlock';
 import CryptoTrendingCharts from './CryptoTrendingCharts';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
 import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';
 
 import './WalletSidebar.less';
 

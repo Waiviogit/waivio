@@ -6,8 +6,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
 import SteemConnectAPI from '../steemConnectAPI';
-import { updateProfile, reload } from '../auth/authActions';
-import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../store/reducers';
+import { updateProfile, reload } from '../store/authStore/authActions';
 import { getMetadata } from '../helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../helpers/socialProfiles';
@@ -20,6 +19,12 @@ import requiresLogin from '../auth/requiresLogin';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
 import { getGuestAvatarUrl } from '../../waivioApi/ApiClient';
 import { getAvatarURL } from '../components/Avatar';
+import {
+  getAuthenticatedUser,
+  getIsReloading,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
+
 import './Settings.less';
 
 const FormItem = Form.Item;

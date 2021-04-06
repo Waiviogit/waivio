@@ -9,8 +9,6 @@ import { HBD, HIVE } from '../../common/constants/cryptos';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
 import Loading from '../components/Icon/Loading';
 import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
   getIsErrorLoading,
   getIsloadingMoreTransactions,
   getLoadingGlobalProperties,
@@ -43,6 +41,7 @@ import Transfer from '../wallet/Transfer/Transfer';
 import Withdraw from '../wallet/Withdraw/WithDraw';
 import PowerUpOrDown from '../wallet/PowerUpOrDown';
 import { getCryptosPriceHistory, getScreenSize } from '../store/appStore/appSelectors';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 import './UserWallet.less';
 

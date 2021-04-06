@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 
 import appReducer from './appStore/appReducer';
-import authReducer, * as fromAuth from '../auth/authReducer';
+import authReducer from './authStore/authReducer';
 import commentsReducer, * as fromComments from '../comments/commentsReducer';
 import feedReducer, * as fromFeed from '../feed/feedReducer';
 import postsReducer, * as fromPosts from '../post/postsReducer';
@@ -56,23 +56,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
-export const getIsAuthFetching = state => fromAuth.getIsAuthFetching(state.auth);
-export const getIsLoaded = state => fromAuth.getIsLoaded(state.auth);
-export const getIsReloading = state => fromAuth.getIsReloading(state.auth);
-export const getAuthenticatedUser = state => fromAuth.getAuthenticatedUser(state.auth);
-export const getAuthenticatedUserName = state => fromAuth.getAuthenticatedUserName(state.auth);
-export const getAuthenticatedUserMetaData = state =>
-  fromAuth.getAuthenticateduserMetaData(state.auth);
-export const getAuthenticatedUserNotificationsSettings = state =>
-  fromAuth.getAuthenticatedUserNotificationsSettings(state.auth);
-export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
-export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
-export const getAuthenticatedUserPrivateEmail = state =>
-  fromAuth.getAuthenticatedUserPrivateEmail(state.auth);
-export const getAuthorizationUserFollowSort = state =>
-  fromAuth.getAuthorizationUserFollowSort(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, permlink, author) =>

@@ -4,7 +4,6 @@ import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getIsAuthenticated } from '../../../store/reducers';
 import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import {
   PATH_NAME_GUIDE_HISTORY,
@@ -20,6 +19,7 @@ import {
   CAMPAIGNS,
 } from '../../../../common/constants/rewards';
 import { pages } from './helpers';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './MobileNavigation.less';
 

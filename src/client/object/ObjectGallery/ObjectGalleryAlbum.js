@@ -9,8 +9,6 @@ import Loading from '../../components/Icon/Loading';
 import Album from './Album';
 import CreateImage from './CreateImage';
 import {
-  getAuthenticatedUserName,
-  getIsAuthenticated,
   getIsObjectAlbumsLoading,
   getObject,
   getObjectAlbums,
@@ -18,6 +16,7 @@ import {
 } from '../../store/reducers';
 import withEditor from '../../components/Editor/withEditor';
 import { getAlbums, getRelatedAlbum, getMoreRelatedAlbum } from './galleryActions';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
 
 import './ObjectGallery.less';
 

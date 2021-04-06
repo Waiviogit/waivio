@@ -4,9 +4,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { isEmpty } from 'lodash';
 import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getIsAuthenticated,
   getObject as getObjectState,
   getObjectFetchingState,
   getLocale,
@@ -28,6 +25,11 @@ import { appendObject } from '../appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
 import { getHelmetIcon, getScreenSize } from '../../store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../store/authStore/authSelectors';
 
 @withRouter
 @connect(

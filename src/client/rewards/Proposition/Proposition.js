@@ -9,12 +9,7 @@ import { withRouter } from 'react-router';
 
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
-import {
-  getAuthenticatedUser,
-  getCommentContent,
-  getIsAuthenticated,
-  getIsOpenWriteReviewModal,
-} from '../../store/reducers';
+import { getCommentContent, getIsOpenWriteReviewModal } from '../../store/reducers';
 import {
   ASSIGNED,
   GUIDE_HISTORY,
@@ -38,6 +33,7 @@ import {
   removeSessionData,
   setSessionData,
 } from '../rewardsHelper';
+import { getAuthenticatedUser, getIsAuthenticated } from '../../store/authStore/authSelectors';
 
 import './Proposition.less';
 

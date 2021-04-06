@@ -4,14 +4,7 @@ import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Feed from '../feed/Feed';
-import {
-  getIsAuthenticated,
-  getAuthenticatedUser,
-  getFeed,
-  getUsersAccountHistory,
-  isGuestUser,
-  getUser,
-} from '../store/reducers';
+import { getFeed, getUsersAccountHistory, getUser } from '../store/reducers';
 import {
   getFeedLoadingFromState,
   getFeedFetchedFromState,
@@ -25,6 +18,11 @@ import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
 import PostModal from '../post/PostModalContainer';
 import EmptyMutedUserProfile from '../statics/MutedContent';
+import {
+  getAuthenticatedUser,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
 
 @withRouter
 @connect(

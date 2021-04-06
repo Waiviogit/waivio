@@ -9,7 +9,6 @@ import {
   getPosts,
   getObject,
   getReadLanguages,
-  getIsAuthenticated,
   getObjectAlbums,
   getIsAppendLoading,
 } from '../store/reducers';
@@ -26,6 +25,7 @@ import Loading from '../components/Icon/Loading';
 import { getObjectName, isPhotosAlbumExist } from '../helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from './wObjectHelper';
 import { getRate, getRewardFund } from '../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../store/authStore/authSelectors';
 
 import './WobjHistory.less';
 

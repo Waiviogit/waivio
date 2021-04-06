@@ -2,12 +2,7 @@ import { createAction } from 'redux-actions';
 import { message } from 'antd';
 import { get, isEmpty } from 'lodash';
 
-import {
-  getIsAuthenticated,
-  getAuthenticatedUserName,
-  getLocale,
-  isGuestUser,
-} from '../store/reducers';
+import { getLocale } from '../store/reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getChangedField } from '../../waivioApi/ApiClient';
@@ -15,6 +10,11 @@ import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTyp
 import { APPEND_WAIVIO_OBJECT } from './appendActions';
 import { BELL_USER_NOTIFICATION } from '../user/userActions';
 import { isPostCashout } from '../vendor/steemitHelpers';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';

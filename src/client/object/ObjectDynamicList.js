@@ -11,8 +11,8 @@ import ObjectCard from '../components/Sidebar/ObjectCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
 import { followWobject, unfollowWobject } from './wobjActions';
-import { getAuthenticatedUserName, isGuestUser } from '../store/reducers';
 import { changeCounterFollow } from '../user/usersActions';
+import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
 
 import './ObjectDynamicList.less';
 

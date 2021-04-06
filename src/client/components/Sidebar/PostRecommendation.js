@@ -9,7 +9,8 @@ import formatter from '../../helpers/steemitFormatter';
 import Loading from '../../components/Icon/Loading';
 import PostRecommendationLink from './PostRecommendationLink';
 import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../store/reducers';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+
 import './PostRecommendation.less';
 import './SidebarContentBlock.less';
 

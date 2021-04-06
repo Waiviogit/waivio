@@ -1,7 +1,8 @@
 import { orderBy } from 'lodash';
 import { connect } from 'react-redux';
-import { getDraftPosts, getIsLoaded } from '../../store/reducers';
+import { getDraftPosts } from '../../store/reducers';
 import LastDrafts from '../../components/Sidebar/LastDrafts';
+import { getIsLoaded } from '../../store/authStore/authSelectors';
 
 const mapStateToProps = state => {
   const sortedDrafts = orderBy(getDraftPosts(state), draft => new Date(draft.lastUpdated), [

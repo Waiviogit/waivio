@@ -7,7 +7,6 @@ import { Tabs } from 'antd';
 import { Link } from 'react-router-dom';
 
 import {
-  getAuthenticatedUserName,
   getMuteLoading,
   getRestrictions,
   getUnmutedUsers,
@@ -21,6 +20,7 @@ import { SORT_OPTIONS_WOBJ } from '../../../../common/constants/waivioFiltres';
 import UserCard from '../../../components/UserCard';
 import WeightTag from '../../../components/WeightTag';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './WebsiteRestrictions.less';
 

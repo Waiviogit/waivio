@@ -10,20 +10,12 @@ import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
 import { findLanguage, getRequestLocale, loadLanguage } from './translations';
-import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getIsAuthenticated,
-  getLocale,
-  getNightmode,
-  getIsOpenWalletTable,
-  getIsAuthFetching,
-} from './store/reducers';
+import { getLocale, getNightmode, getIsOpenWalletTable } from './store/reducers';
 import {
   login,
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
-} from './auth/authActions';
+} from './store/authStore/authActions';
 import { getNotifications } from './user/userActions';
 import {
   getRate,
@@ -40,6 +32,12 @@ import Loading from './components/Icon/Loading';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
 import { getWebsiteObjWithCoordinates } from './websites/websiteActions';
 import { getTranslations, getUsedLocale } from './store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsAuthFetching,
+} from './store/authStore/authSelectors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 

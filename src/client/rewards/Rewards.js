@@ -25,16 +25,12 @@ import {
 } from 'lodash';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import {
-  getAuthenticatedUser,
   getAllUsers,
-  getAuthenticatedUserName,
   getObjectsMap,
-  getIsLoaded,
   getUserLocation,
   getIsMapModalOpen,
   getSuitableLanguage,
   getPendingUpdate,
-  getIsAuthenticated,
 } from '../store/reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -85,6 +81,12 @@ import {
 import { RADIUS } from '../../common/constants/map';
 import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
 import { getCryptosPriceHistory, getHelmetIcon, getIsWaivio } from '../store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsLoaded,
+} from '../store/authStore/authSelectors';
 
 @withRouter
 @injectIntl

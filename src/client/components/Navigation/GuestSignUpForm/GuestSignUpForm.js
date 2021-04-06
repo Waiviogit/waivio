@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash';
 import getSlug from 'speakingurl';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
-import { login } from '../../../auth/authActions';
+import { login } from '../../../store/authStore/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
 import { getLocale } from '../../../store/reducers';
 import GuestSignUpFormContent from './GuestSignUpFormContent';
