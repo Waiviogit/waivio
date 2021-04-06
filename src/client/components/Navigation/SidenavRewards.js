@@ -334,7 +334,7 @@ export default class SidenavRewards extends React.Component {
                           activeClassName="Sidenav__item--active"
                         >
                           {intl.formatMessage({
-                            id: FRAUD_DETECTION,
+                            id: 'fraud_detection',
                             defaultMessage: 'Fraud detection',
                           })}
                         </NavLink>
