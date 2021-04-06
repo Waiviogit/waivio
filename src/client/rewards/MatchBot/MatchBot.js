@@ -5,12 +5,13 @@ import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { Button, message, Modal, Slider, Switch, Tooltip } from 'antd';
 import { setMatchBotVotingPower } from '../rewardsActions';
-import { getAuthenticatedUser } from '../../store/reducers';
 import CreateRule from './CreateRule/CreateRule';
 import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import Error401 from '../../statics/Error401';
 import getMatchBotMessageData from './matchBotMessageData';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+
 import './MatchBot.less';
 
 const MatchBot = ({ intl, userName }) => {

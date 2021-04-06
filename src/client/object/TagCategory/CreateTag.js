@@ -9,7 +9,6 @@ import LANGUAGES from '../../translations/languages';
 import {
   getObjectTagCategory,
   getObject,
-  getAuthenticatedUserName,
   getFollowingObjectsList,
   getSuitableLanguage,
   getVotePercent,
@@ -25,6 +24,7 @@ import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import { getLanguageText } from '../../translations';
 import { getVoteValue } from '../../helpers/user';
 import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 import './CreateTag.less';
 

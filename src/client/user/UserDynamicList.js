@@ -10,13 +10,13 @@ import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
 import { changeCounterFollow, followUser, unfollowUser } from './usersActions';
+import { changeSorting } from '../store/authStore/authActions';
+import { SORT_OPTIONS } from '../../common/constants/waivioFiltres';
 import {
   getAuthenticatedUserName,
-  isGuestUser,
   getAuthorizationUserFollowSort,
-} from '../store/reducers';
-import { changeSorting } from '../auth/authActions';
-import { SORT_OPTIONS } from '../../common/constants/waivioFiltres';
+  isGuestUser,
+} from '../store/authStore/authSelectors';
 
 import './UserDynamicList.less';
 

@@ -10,18 +10,14 @@ import CommentsMessages from './CommentsMessages';
 import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE, IS_ALL } from '../../../common/constants/rewards';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
-import {
-  getLocale,
-  isGuestUser,
-  getCommentsFromReserved,
-  getAuthenticatedUserName,
-} from '../../store/reducers';
+import { getLocale, getCommentsFromReserved } from '../../store/reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import { getReservedComments, sendCommentMessages } from '../../comments/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
 import { getAppUrl, getRate } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 
 import './CampaignFooter.less';
 

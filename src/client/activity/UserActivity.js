@@ -5,8 +5,6 @@ import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import {
   getUser,
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
   getTotalVestingShares,
   getTotalVestingFundSteem,
   getUsersAccountHistory,
@@ -27,6 +25,7 @@ import {
 import { getUserAccount } from '../user/usersActions';
 import Loading from '../components/Icon/Loading';
 import UserActivityActions from './UserActivityActions';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 @withRouter
 @connect(

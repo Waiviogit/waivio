@@ -1,14 +1,14 @@
 import {
-  isGuestUser,
-  getIsLoaded,
-  getIsReloading,
-  getIsAuthFetching,
-  getIsAuthenticated,
   getAuthenticatedUser,
-  getAuthenticatedUserName,
   getAuthenticatedUserAvatar,
   getAuthenticatedUserMetaData,
-} from '../../store/reducers';
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsAuthFetching,
+  getIsLoaded,
+  getIsReloading,
+  isGuestUser,
+} from '../../store/authStore/authSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

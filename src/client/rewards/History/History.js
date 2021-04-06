@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import FilteredRewardsList from '../FilteredRewardsList';
 import { getBlacklist, getMoreRewardsHistory, getRewardsHistory } from '../rewardsActions';
 import {
-  getAuthenticatedUserName,
   getCampaignNames,
   getHasMoreHistory,
   getHistoryCampaigns,
@@ -21,6 +20,7 @@ import {
   PATH_NAME_HISTORY,
 } from '../../../common/constants/rewards';
 import { pathNameHistoryNotify } from '../rewardsHelper';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 const History = ({
   intl,

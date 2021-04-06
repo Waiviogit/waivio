@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
 import {
-  getAuthenticatedUser,
   getPosts,
   getBookmarks,
   getPendingBookmarks,
@@ -26,6 +25,7 @@ import { reblog } from '../app/Reblog/reblogActions';
 import { unfollowUser, followUser } from '../user/usersActions';
 import { getDownvotes, getUpvotes } from '../helpers/voteHelpers';
 import { getRewardFund } from '../store/appStore/appSelectors';
+import { getAuthenticatedUser } from '../store/authStore/authSelectors';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);

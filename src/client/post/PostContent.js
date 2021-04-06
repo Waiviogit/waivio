@@ -13,7 +13,6 @@ import {
   getAuthorName,
 } from '../helpers/postHelpers';
 import {
-  getAuthenticatedUser,
   getBookmarks,
   getPendingBookmarks,
   getPendingLikes,
@@ -41,6 +40,7 @@ import { jsonParse } from '../helpers/formatter';
 import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
 import { getAppUrl, getHelmetIcon, getRewardFund } from '../store/appStore/appSelectors';
+import { getAuthenticatedUser } from '../store/authStore/authSelectors';
 
 @injectIntl
 @connect(

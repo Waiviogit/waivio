@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import * as settingsTypes from './settingsActions';
-import * as authTypes from '../auth/authActions';
+import * as authTypes from '../store/authStore/authActions';
 import { GET_USER_METADATA } from '../user/usersActions';
 import { rewardsValues } from '../../common/constants/rewards';
 

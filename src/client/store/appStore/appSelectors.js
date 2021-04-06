@@ -1,5 +1,6 @@
 import { get } from 'lodash';
 import { createSelector } from 'reselect';
+
 import getWeightHelper from '../../helpers/appHelper';
 
 // selector

@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import { getAuthenticatedUser } from '../store/reducers';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import { getAuthenticatedUser } from '../store/authStore/authSelectors';
 
 import './Avatar.less';
 

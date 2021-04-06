@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import * as editorActions from './editorActions';
 import * as postActions from '../postActions';
-import * as authActions from '../../auth/authActions';
+import * as authActions from '../../store/authStore/authActions';
 import { GET_USER_METADATA } from '../../user/usersActions';
 
 const defaultState = {

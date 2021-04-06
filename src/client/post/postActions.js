@@ -1,8 +1,9 @@
 import { message } from 'antd';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName, getLocale } from '../store/reducers';
+import { getLocale } from '../store/reducers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');

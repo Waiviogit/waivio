@@ -7,9 +7,6 @@ import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import {
   getAllUsers,
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getIsAuthenticated,
   getIsOpenWalletTable,
   getIsUserFailed,
   getIsUserLoaded,
@@ -31,6 +28,11 @@ import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import DEFAULTS from '../object/const/defaultValues';
 import Loading from '../components/Icon/Loading';
 import { getHelmetIcon, getRate, getRewardFund } from '../store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../store/authStore/authSelectors';
 
 @connect(
   (state, ownProps) => ({

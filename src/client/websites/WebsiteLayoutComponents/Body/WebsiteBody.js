@@ -14,7 +14,6 @@ import {
   getShowSearchResult,
   getUserLocation,
   getWobjectsPoint,
-  getIsAuthenticated,
   getWebsiteSearchString,
   getWebsiteMap,
   getShowReloadButton,
@@ -48,6 +47,7 @@ import {
   getReserveCounter,
   getScreenSize,
 } from '../../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './WebsiteBody.less';
 

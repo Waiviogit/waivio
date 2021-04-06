@@ -22,14 +22,12 @@ import {
 import requiresLogin from '../../auth/requiresLogin';
 import { getReviewCheckInfo } from '../../../waivioApi/ApiClient';
 import {
-  getAuthenticatedUser,
   getDraftPosts,
   getIsEditorLoading,
   getIsEditorSaving,
   getIsImageUploading,
   getUpvoteSetting,
   getSuitableLanguage,
-  isGuestUser,
   getBeneficiariesUsers,
 } from '../../store/reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
@@ -45,6 +43,7 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { getCurrentHost, getIsWaivio } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';
 
 import './EditPost.less';
 

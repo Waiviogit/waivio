@@ -7,14 +7,13 @@ import { createAsyncActionType, getPostKey } from '../helpers/stateHelpers';
 import { findRoot } from '../helpers/commentHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { sendCommentAppend } from '../object/wobjActions';
+import { getCommentsList, getLocale } from '../store/reducers';
+import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import {
   getAuthenticatedUserName,
-  getCommentsList,
   getIsAuthenticated,
-  getLocale,
   isGuestUser,
-} from '../store/reducers';
-import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
+} from '../store/authStore/authSelectors';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 

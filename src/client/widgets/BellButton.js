@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 
-import { getAuthenticatedUserName } from '../store/reducers';
 import { bellNotifications } from '../user/userActions';
 import { wobjectBellNotification } from '../object/wobjActions';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 import './widgetsStyle.less';
 

@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { get, includes } from 'lodash';
 import { useSelector, shallowEqual } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { getAuthenticatedUser } from '../../store/reducers';
 import Avatar from '../Avatar';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+
 import './QuickPostEditor.less';
 
 const QuickPostEditor = ({ history }) => {

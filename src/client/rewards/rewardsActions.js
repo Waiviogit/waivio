@@ -1,6 +1,7 @@
-import { getAuthenticatedUserName, getLocale } from '../store/reducers';
+import { getLocale } from '../store/reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 export const SET_MATCH_BOT_RULE = createAsyncActionType('@rewards/SET_MATCH_BOT_RULE');
 

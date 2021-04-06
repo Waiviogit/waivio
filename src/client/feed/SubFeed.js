@@ -23,13 +23,18 @@ import {
   getFeedFailedFromState,
   getUserFeedFromState,
 } from '../helpers/stateHelpers';
-import { getIsAuthenticated, getIsLoaded, getAuthenticatedUser, getFeed } from '../store/reducers';
+import { getFeed } from '../store/reducers';
 import Feed from './Feed';
 import FetchFailed from '../statics/FetchFailed';
 import EmptyFeed from '../statics/EmptyFeed';
 import LetsGetStarted from './LetsGetStarted';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import PostModal from '../post/PostModalContainer';
+import {
+  getAuthenticatedUser,
+  getIsAuthenticated,
+  getIsLoaded,
+} from '../store/authStore/authSelectors';
 
 @withRouter
 @connect(

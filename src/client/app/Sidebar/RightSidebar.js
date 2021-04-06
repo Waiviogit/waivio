@@ -15,14 +15,20 @@ import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByTyp
 import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
 import { getFeedFromState } from '../../helpers/stateHelpers';
 import UserSidebar from './UserSidebar';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsAuthFetching,
+  isGuestUser,
+} from '../../store/authStore/authSelectors';
 
 @withRouter
 @connect(state => ({
-  authenticated: store.getIsAuthenticated(state),
-  authUserName: store.getAuthenticatedUserName(state),
-  isAuthFetching: store.getIsAuthFetching(state),
+  authenticated: getIsAuthenticated(state),
+  authUserName: getAuthenticatedUserName(state),
+  isAuthFetching: getIsAuthFetching(state),
   locale: store.getLocale(state),
-  isGuest: store.isGuestUser(state),
+  isGuest: isGuestUser(state),
   feed: store.getFeed(state),
 }))
 export default class RightSidebar extends React.Component {

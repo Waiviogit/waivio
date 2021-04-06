@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { getIsAuthenticated, getAuthenticatedUserName, getFeed } from '../store/reducers';
+import { getFeed } from '../store/reducers';
 import {
   getFeedFromState,
   getFeedLoadingFromState,
@@ -18,6 +18,7 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import PostModal from '../post/PostModalContainer';
 import requiresLogin from '../auth/requiresLogin';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../store/authStore/authSelectors';
 
 class Replies extends React.Component {
   static propTypes = {

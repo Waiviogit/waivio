@@ -7,20 +7,23 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import {
-  getAuthenticatedUser,
   getFetchFollowListError,
   getFollowingFetched,
   getFollowingList,
-  getIsAuthenticated,
-  getIsAuthFetching,
   getIsFetchingFollowingList,
-  getIsLoaded,
-  isGuestUser,
   getUsersAccountHistory,
 } from '../store/reducers';
 import { getUserAccountHistory } from '../wallet/walletActions';
 import HorizontalBarChart from '../components/HorizontalBarChart';
 import LetsGetStartedIcon from './LetsGetStartedIcon';
+import {
+  getAuthenticatedUser,
+  getIsAuthenticated,
+  getIsAuthFetching,
+  getIsLoaded,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
+
 import './LetsGetStarted.less';
 
 @connect(

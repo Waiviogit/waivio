@@ -5,8 +5,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   getUser,
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
   getTotalVestingShares,
   getTotalVestingFundSteem,
   getUsersAccountHistory,
@@ -25,6 +23,7 @@ import {
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import WalletTransaction from '../wallet/WalletTransaction';
 import UserAction from './UserAction';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 @withRouter
 @connect(

@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import * as store from '../../../store/reducers';
 import {
-  getFollowingUpdates,
   getFollowingObjectsUpdatesMore,
+  getFollowingUpdates,
   getFollowingUsersUpdatesMore,
 } from '../../../user/userActions';
 import SidebarMenu from '../SidebarMenu/SidebarMenu';
 import Loading from '../../Icon/Loading';
 import { getObjectName } from '../../../helpers/wObjectHelper';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const itemsCount = 5;
 const usersSection = 'People';
@@ -70,7 +71,7 @@ const FollowingUpdates = () => {
   // redux store
   const dispatch = useDispatch();
   const followingUpdates = useSelector(store.getFollowingUpdates);
-  const userName = useSelector(store.getAuthenticatedUserName);
+  const userName = useSelector(getAuthenticatedUserName);
 
   // local state
   const [menuConfig, updateMenu] = useState({});

@@ -12,9 +12,7 @@ import {
   getIsPostLoaded,
   getIsPostFailed,
   getUser,
-  getIsAuthFetching,
   getSuitableLanguage,
-  getAuthenticatedUserName,
 } from '../store/reducers';
 import { getContent } from './postActions';
 import { getUserAccount } from '../user/usersActions';
@@ -26,6 +24,7 @@ import Affix from '../components/Utils/Affix';
 import HiddenPostMessage from './HiddenPostMessage';
 import PostRecommendation from '../components/Sidebar/PostRecommendation';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
+import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
 
 @connect(
   (state, ownProps) => ({

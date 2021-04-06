@@ -20,7 +20,6 @@ import {
   getHasMoreRelatedObjects,
   getAvailableFilters,
   getHasMap,
-  getAuthenticatedUserName,
   getIsMapModalOpen,
   getFiltersTags,
   getActiveFiltersTags,
@@ -50,6 +49,7 @@ import * as apiConfig from '../../waivioApi/config.json';
 import { RADIUS, ZOOM } from '../../common/constants/map';
 import { getCryptoPriceHistory } from '../store/appStore/appActions';
 import { HBD, HIVE } from '../../common/constants/cryptos';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 const modalName = {
   FILTERS: 'filters',

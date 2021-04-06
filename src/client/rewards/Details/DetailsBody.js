@@ -7,8 +7,8 @@ import { isEmpty, get } from 'lodash';
 import { Checkbox } from 'antd';
 import getDetailsMessages from './detailsMessagesData';
 import DetailsPostRequirments from './DetailsPostRequirments';
-import { getIsAuthenticated } from '../../store/reducers';
 import { getWeightValue } from '../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../store/authStore/authSelectors';
 
 import './Details.less';
 

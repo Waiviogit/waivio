@@ -12,15 +12,12 @@ import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import { closeTransfer, sendPendingTransfer } from '../walletActions';
 import { notify } from '../../app/Notification/notificationActions';
 import {
-  getAuthenticatedUser,
-  getIsAuthenticated,
   getIsTransferVisible,
   getTransferAmount,
   getTransferCurrency,
   getTransferMemo,
   getTransferApp,
   getTransferTo,
-  isGuestUser,
   getSearchUsersResults,
   getTotalVestingShares,
   getTotalVestingFundSteem,
@@ -39,6 +36,11 @@ import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 import { saveSettings, openLinkHiveAccountModal } from '../../settings/settingsActions';
 import { createQuery } from '../../helpers/apiHelpers';
 import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../store/authStore/authSelectors';
 
 import './Transfer.less';
 

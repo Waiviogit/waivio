@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Feed from '../feed/Feed';
 
-import { getIsAuthenticated, getAuthenticatedUser, getFeed } from '../store/reducers';
+import { getFeed } from '../store/reducers';
 
 import {
   getFeedLoadingFromState,
@@ -15,6 +15,7 @@ import { getFeedContent, getMoreFeedContent } from '../feed/feedActions';
 import PostModal from '../post/PostModalContainer';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
+import { getAuthenticatedUser, getIsAuthenticated } from '../store/authStore/authSelectors';
 
 @connect(
   state => ({

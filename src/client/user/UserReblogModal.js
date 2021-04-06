@@ -7,9 +7,9 @@ import PropTypes from 'prop-types';
 import { Modal, Tabs } from 'antd';
 import DiscoverUser from '../discover/DiscoverUser';
 import { getUsers } from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../store/reducers';
 import { followUser, unfollowUser } from './usersActions';
 import Loading from '../components/Icon/Loading';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 import './UserReblogModal.less';
 
