@@ -38,9 +38,9 @@ import { REWARD } from '../../../common/constants/rewards';
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 import { saveSettings, openLinkHiveAccountModal } from '../../settings/settingsActions';
 import { createQuery } from '../../helpers/apiHelpers';
+import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
 
 import './Transfer.less';
-import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
 
 const InputGroup = Input.Group;
 

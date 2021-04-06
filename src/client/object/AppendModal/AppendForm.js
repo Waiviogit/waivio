@@ -94,9 +94,9 @@ import {
   blogNameValidationRegExp,
 } from '../../../common/constants/validation';
 import { addAlbumToStore, addImageToAlbumStore } from '../ObjectGallery/galleryActions';
+import { getRate, getRewardFund, getScreenSize } from '../../store/appStore/appSelectors';
 
 import './AppendForm.less';
-import { getRate, getRewardFund, getScreenSize } from '../../store/appStore/appSelectors';
 
 @connect(
   state => ({

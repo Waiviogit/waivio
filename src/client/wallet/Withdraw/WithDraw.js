@@ -18,9 +18,9 @@ import {
 } from '../../../common/constants/waivio';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getUserPrivateEmail } from '../../user/usersActions';
+import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
 
 import './Withdraw.less';
-import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
 
 const Withdraw = ({
   intl,

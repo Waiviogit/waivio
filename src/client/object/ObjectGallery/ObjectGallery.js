@@ -16,9 +16,9 @@ import {
   getRelatedPhotos,
 } from '../../store/reducers';
 import IconButton from '../../components/IconButton';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './ObjectGallery.less';
-import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 @injectIntl
 @connect(

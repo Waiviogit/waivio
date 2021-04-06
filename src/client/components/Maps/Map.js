@@ -25,8 +25,9 @@ import CustomMarker from './CustomMarker';
 import { getObjectAvatar, getObjectName } from '../../helpers/wObjectHelper';
 import DEFAULTS from '../../object/const/defaultValues';
 import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
-import './Map.less';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
+
+import './Map.less';
 
 const defaultCoords = {
   centerLat: 37.0902,

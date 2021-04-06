@@ -13,9 +13,9 @@ import { getSettingsTitle } from './common/helpers';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import { getIsAuthenticated, getOwnWebsites, isGuestUser } from '../store/reducers';
 import * as websiteAction from '../websites/websiteActions';
+import { getIsWaivio } from '../store/appStore/appSelectors';
 
 import './Settings.less';
-import { getIsWaivio } from '../store/appStore/appSelectors';
 
 const SettingsMain = props => {
   const host = props.match.params.site;

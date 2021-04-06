@@ -11,9 +11,9 @@ import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName } from '../store/reducers';
 import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
+import { getScreenSize } from '../store/appStore/appSelectors';
 
 import './ObjectCardView.less';
-import { getScreenSize } from '../store/appStore/appSelectors';
 
 const ObjectCardView = ({
   intl,

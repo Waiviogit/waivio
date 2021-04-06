@@ -44,9 +44,9 @@ import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import { getCurrentHost, getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './EditPost.less';
-import { getCurrentHost, getIsWaivio } from '../../store/appStore/appSelectors';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(

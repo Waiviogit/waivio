@@ -11,9 +11,9 @@ import Action from '../Button/Action';
 import ClaimRewardsBlock from '../../wallet/ClaimRewardsBlock';
 import CryptoTrendingCharts from './CryptoTrendingCharts';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
+import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
 
 import './WalletSidebar.less';
-import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
 
 @withRouter
 @connect(

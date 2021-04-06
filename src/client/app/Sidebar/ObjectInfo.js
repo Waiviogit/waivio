@@ -35,9 +35,9 @@ import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import LinkButton from '../../components/LinkButton/LinkButton';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './ObjectInfo.less';
-import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 @withRouter
 @connect(state => ({

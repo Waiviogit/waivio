@@ -11,9 +11,9 @@ import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import { getObjectType } from '../../../helpers/wObjectHelper';
 import { getObject } from '../../../store/reducers';
+import { getConfigurationValues, getCurrPage } from '../../../store/appStore/appSelectors';
 
 import './WebsiteHeader.less';
-import { getConfigurationValues, getCurrPage } from '../../../store/appStore/appSelectors';
 
 const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
   const pathName = location.pathname;

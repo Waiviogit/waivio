@@ -7,6 +7,7 @@ import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
 import ImageSetter from '../ImageSetter/ImageSetter';
 import { getIsAuthenticated } from '../../store/reducers';
+
 import './QuickCommentEditor.less';
 
 @withEditor

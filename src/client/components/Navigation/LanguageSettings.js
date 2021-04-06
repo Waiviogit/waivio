@@ -8,8 +8,9 @@ import { getLanguageText } from '../../translations';
 import { saveSettings, setLocale } from '../../settings/settingsActions';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import './LanguageSettings.less';
 import { getUsedLocale } from '../../store/appStore/appSelectors';
+
+import './LanguageSettings.less';
 
 @connect(
   state => ({

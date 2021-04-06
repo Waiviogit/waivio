@@ -25,9 +25,9 @@ import AppendCard from './AppendCard/AppendCard';
 import Loading from '../components/Icon/Loading';
 import { getObjectName, isPhotosAlbumExist } from '../helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from './wObjectHelper';
+import { getRate, getRewardFund } from '../store/appStore/appSelectors';
 
 import './WobjHistory.less';
-import { getRate, getRewardFund } from '../store/appStore/appSelectors';
 
 @connect(state => ({
   comments: getPosts(state),

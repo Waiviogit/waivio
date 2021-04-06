@@ -18,9 +18,9 @@ import { getAuthenticatedUserName } from '../store/reducers';
 import BellButton from '../widgets/BellButton';
 import MuteModal from '../widgets/MuteModal';
 import UserPopoverMenu from './UserPopoverMenu';
+import { getIsMobile } from '../store/appStore/appSelectors';
 
 import './UserHeader.less';
-import { getIsMobile } from '../store/appStore/appSelectors';
 
 const UserHeader = ({
   username,

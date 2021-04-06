@@ -23,9 +23,10 @@ import {
 } from '../../helpers/wObjectHelper';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
-import './CreateImage.less';
 import { getVoteValue } from '../../helpers/user';
 import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
+
+import './CreateImage.less';
 
 @connect(
   state => ({

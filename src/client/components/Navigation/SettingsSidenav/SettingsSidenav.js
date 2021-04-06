@@ -6,9 +6,9 @@ import PropTypes from 'prop-types';
 import { currentWebsiteSettings, personalSettings, websiteSettings } from './constants';
 import SettingsItem from './SettingsItem';
 import { getOwnWebsites, isGuestUser } from '../../../store/reducers';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
 
 import '../Sidenav.less';
-import { getIsWaivio } from '../../../store/appStore/appSelectors';
 
 const SettingsSidenav = ({ match }) => {
   const isGuest = useSelector(isGuestUser);

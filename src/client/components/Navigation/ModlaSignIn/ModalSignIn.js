@@ -19,13 +19,13 @@ import {
   getSessionData,
   removeSessionData,
 } from '../../../rewards/rewardsHelper';
-
-import './ModalSignIn.less';
 import {
   getCurrentHost,
   getIsWaivio,
   getWebsiteParentHost,
 } from '../../../store/appStore/appSelectors';
+
+import './ModalSignIn.less';
 
 const ModalSignIn = ({
   next,

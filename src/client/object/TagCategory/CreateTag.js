@@ -24,9 +24,9 @@ import { fieldsRules } from '../const/appendFormConstants';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import { getLanguageText } from '../../translations';
 import { getVoteValue } from '../../helpers/user';
+import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
 import './CreateTag.less';
-import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
 @connect(
   state => ({

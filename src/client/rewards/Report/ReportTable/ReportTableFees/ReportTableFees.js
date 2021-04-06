@@ -7,6 +7,7 @@ import ReportTableFeesRow from '../ReportTableFees/ReportTableFeesRow';
 import ReportTableFeesRowTotal from './ReportTableFeesRowTotal';
 import { getSingleReportData } from '../../../../store/reducers';
 import { getProcessingFee } from '../../../rewardsHelper';
+
 import './ReportTableFees.less';
 
 const ReportTableFees = ({ intl }) => {

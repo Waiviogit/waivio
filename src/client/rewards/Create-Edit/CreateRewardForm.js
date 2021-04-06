@@ -22,9 +22,9 @@ import {
   CAMPAIGN_STATUS,
   isDisabledStatus,
 } from '../../../common/constants/rewards';
+import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
 import './CreateReward.less';
-import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
 @withRouter
 @Form.create()

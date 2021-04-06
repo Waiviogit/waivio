@@ -8,9 +8,9 @@ import RawSlider from '../components/Slider/RawSlider';
 import { getAuthenticatedUser, getVotePercent, getVotingPower } from '../store/reducers';
 import { calculateVotePower } from '../helpers/user';
 import USDDisplay from '../components/Utils/USDDisplay';
+import { getRate, getRewardFund } from '../store/appStore/appSelectors';
 
 import './LikeSection.less';
-import { getRate, getRewardFund } from '../store/appStore/appSelectors';
 
 @injectIntl
 @connect(state => ({

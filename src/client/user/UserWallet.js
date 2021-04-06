@@ -42,9 +42,9 @@ import { guestUserRegex } from '../helpers/regexHelpers';
 import Transfer from '../wallet/Transfer/Transfer';
 import Withdraw from '../wallet/Withdraw/WithDraw';
 import PowerUpOrDown from '../wallet/PowerUpOrDown';
+import { getCryptosPriceHistory, getScreenSize } from '../store/appStore/appSelectors';
 
 import './UserWallet.less';
-import { getCryptosPriceHistory, getScreenSize } from '../store/appStore/appSelectors';
 
 @injectIntl
 @withRouter

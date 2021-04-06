@@ -10,10 +10,10 @@ import DEFAULTS from '../../object/const/defaultValues';
 import { getAuthenticatedUserName } from '../../store/reducers';
 import { getObjectName, getObjectAvatar, hasType } from '../../helpers/wObjectHelper';
 import { getProxyImageURL } from '../../helpers/image';
-
-import './ObjectOverlayCard.less';
 import OverlayRewardsButton from './OverlayRewardsButton';
 import { getScreenSize } from '../../store/appStore/appSelectors';
+
+import './ObjectOverlayCard.less';
 
 const ObjectOverlayCard = ({
   intl,

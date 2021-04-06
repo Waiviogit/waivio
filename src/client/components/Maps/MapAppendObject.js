@@ -8,6 +8,7 @@ import Loading from '../Icon/Loading';
 import { getUserLocation } from '../../store/reducers';
 import { getCoordinates } from '../../user/userActions';
 import mapProvider from '../../helpers/mapProvider';
+
 import './Map.less';
 
 export const defaultCoords = [37.0902, 95.0235];

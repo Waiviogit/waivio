@@ -21,9 +21,9 @@ import {
   parseWobjectField,
 } from '../helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from './wobjActions';
+import { getIsWaivio } from '../store/appStore/appSelectors';
 
 import '../components/ObjectHeader.less';
-import { getIsWaivio } from '../store/appStore/appSelectors';
 
 const WobjHeader = ({
   isEditMode,

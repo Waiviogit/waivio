@@ -17,6 +17,7 @@ import {
 } from '../store/reducers';
 import { changeSorting } from '../auth/authActions';
 import { SORT_OPTIONS } from '../../common/constants/waivioFiltres';
+
 import './UserDynamicList.less';
 
 class UserDynamicList extends React.Component {

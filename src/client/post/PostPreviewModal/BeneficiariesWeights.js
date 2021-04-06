@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import BeneficiariesFindUsers from './BeneficiariesFindUsers';
 import { getAuthenticatedUser, getBeneficiariesUsers } from '../../store/reducers';
 import { updateBeneficiariesUsers, removeBeneficiariesUsers } from '../../search/searchActions';
+
 import './AdvanceSettings.less';
 
 class BeneficiariesWeight extends React.PureComponent {

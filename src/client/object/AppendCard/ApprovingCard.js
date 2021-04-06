@@ -6,9 +6,9 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { getAuthenticatedUserName } from '../../store/reducers';
+import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
 import './AppendCard.less';
-import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
 const ApprovingCard = ({ post, intl, rewardFund, rate, modal }) => {
   const isFullParams = rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;

@@ -21,8 +21,9 @@ import { getReservedComments, sendCommentMessages } from '../../comments/comment
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
-import './CampaignFooter.less';
 import { getAppUrl, getRate } from '../../store/appStore/appSelectors';
+
+import './CampaignFooter.less';
 
 @injectIntl
 @withAuthActions

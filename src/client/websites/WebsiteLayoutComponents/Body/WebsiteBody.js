@@ -42,14 +42,14 @@ import {
 import { getWebsiteObjWithCoordinates, setShowReload } from '../../websiteActions';
 import { distanceInMBetweenEarthCoordinates } from '../../helper';
 import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
-
-import './WebsiteBody.less';
 import {
   getConfigurationValues,
   getMapForMainPage,
   getReserveCounter,
   getScreenSize,
 } from '../../../store/appStore/appSelectors';
+
+import './WebsiteBody.less';
 
 const WebsiteBody = props => {
   const [boundsParams, setBoundsParams] = useState({
