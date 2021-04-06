@@ -5,7 +5,7 @@ import { connectRouter } from 'connected-react-router';
 import appReducer from './appStore/appReducer';
 import authReducer from './authStore/authReducer';
 import commentsReducer from './commentsStore/commentsReducer';
-import feedReducer, * as fromFeed from '../feed/feedReducer';
+import feedReducer from './feedStore/feedReducer';
 import postsReducer from './postsStore/postsReducer';
 import userReducer, * as fromUser from '../user/userReducer';
 import usersReducer, * as fromUsers from '../user/usersReducer';
@@ -56,8 +56,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getFeed = state => fromFeed.getFeed(state.feed);
 
 export const getBookmarks = state => fromBookmarks.getBookmarks(state.bookmarks);
 export const getPendingBookmarks = state => fromBookmarks.getPendingBookmarks(state.bookmarks);

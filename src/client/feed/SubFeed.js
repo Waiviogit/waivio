@@ -10,7 +10,7 @@ import {
   getUserFeedContent,
   getMoreFeedContent,
   getMoreUserFeedContent,
-} from './feedActions';
+} from '../store/feedStore/feedActions';
 
 import {
   getFeedFromState,
@@ -23,7 +23,6 @@ import {
   getFeedFailedFromState,
   getUserFeedFromState,
 } from '../helpers/stateHelpers';
-import { getFeed } from '../store/reducers';
 import Feed from './Feed';
 import FetchFailed from '../statics/FetchFailed';
 import EmptyFeed from '../statics/EmptyFeed';
@@ -35,6 +34,7 @@ import {
   getIsAuthenticated,
   getIsLoaded,
 } from '../store/authStore/authSelectors';
+import { getFeed } from '../store/feedStore/feedSelectors';
 
 @withRouter
 @connect(

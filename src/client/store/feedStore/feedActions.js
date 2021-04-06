@@ -4,17 +4,13 @@ import {
   createAsyncActionType,
   getFeedFromState,
   getFeedLoadingFromState,
-} from '../helpers/stateHelpers';
-import {
-  getFeed,
-  getBookmarks as getBookmarksSelector,
-  getLocale,
-  getReadLanguages,
-} from '../store/reducers';
+} from '../../helpers/stateHelpers';
+import { getBookmarks as getBookmarksSelector, getLocale, getReadLanguages } from '../reducers';
 
-import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
-import { getLastPostId, getPosts } from '../store/postsStore/postsSelectors';
+import * as ApiClient from '../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getLastPostId, getPosts } from '../postsStore/postsSelectors';
+import { getFeed } from './feedSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
