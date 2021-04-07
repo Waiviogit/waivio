@@ -1,15 +1,15 @@
 import {
-  getHasMap,
-  getTypeName,
   getActiveFilters,
-  getFilteredObjects,
-  getObjectTypeState,
   getAvailableFilters,
+  getFilteredObjects,
+  getFilteredObjectsMap,
+  getHasMap,
+  getHasMoreRelatedObjects,
   getObjectTypeLoading,
   getObjectTypeSorting,
-  getFilteredObjectsMap,
-  getHasMoreRelatedObjects,
-} from '../../store/reducers';
+  getObjectTypeState,
+  getTypeName,
+} from '../../store/objectTypeStore/objectTypeSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

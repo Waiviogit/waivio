@@ -12,13 +12,7 @@ import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { IS_RESERVED } from '../../../common/constants/rewards';
 import Loading from '../Icon/Loading';
 import { getRadius, getParsedMap, getDistanceBetweenTwoPoints, getZoom } from './mapHelper';
-import {
-  getFilteredObjectsMap,
-  getIsMapModalOpen,
-  getSuitableLanguage,
-  getUpdatedMap,
-  getUpdatedMapDiscover,
-} from '../../store/reducers';
+import { getIsMapModalOpen, getSuitableLanguage, getUpdatedMap } from '../../store/reducers';
 import { setMapFullscreenMode, resetUpdatedFlag } from './mapActions';
 import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
@@ -26,6 +20,10 @@ import { getObjectAvatar, getObjectName } from '../../helpers/wObjectHelper';
 import DEFAULTS from '../../object/const/defaultValues';
 import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
+import {
+  getFilteredObjectsMap,
+  getUpdatedMapDiscover,
+} from '../../store/objectTypeStore/objectTypeSelectors';
 
 import './Map.less';
 

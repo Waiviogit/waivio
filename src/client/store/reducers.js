@@ -19,7 +19,7 @@ import settingsReducer, * as fromSettings from '../settings/settingsReducer';
 import searchReducer, * as fromSearch from '../search/searchReducer';
 import wobjectReducer, * as fromObject from '../object/wobjectReducer';
 import objectTypesReducer from './objectTypesStore/objectTypesReducer';
-import objectTypeReducer, * as fromObjectType from '../objectTypes/objectTypeReducer';
+import objectTypeReducer from './objectTypeStore/objectTypeReducer';
 import appendReducer, * as fromAppend from '../object/appendReducer';
 import galleryReducer, * as fromGallery from '../object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../components/Maps/mapReducer';
@@ -214,24 +214,6 @@ export const getBreadCrumbs = state => fromObject.getBreadCrumbs(state.object);
 export const getWobjectNested = state => fromObject.getWobjectNested(state.object);
 export const getObjectLists = state => fromObject.getObjectLists(state.object);
 export const getLoadingFlag = state => fromObject.getLoadingFlag(state.object);
-
-export const getObjectTypeState = state => fromObjectType.getObjectType(state.objectType);
-export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading(state.objectType);
-export const getFilteredObjects = state => fromObjectType.getFilteredObjects(state.objectType);
-export const getFilteredObjectsMap = state =>
-  fromObjectType.getFilteredObjectsMap(state.objectType);
-
-export const getUpdatedMapDiscover = state =>
-  fromObjectType.getUpdatedMapDiscover(state.objectType);
-export const getHasMoreRelatedObjects = state =>
-  fromObjectType.getHasMoreRelatedObjects(state.objectType);
-export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);
-export const getActiveFilters = state => fromObjectType.getActiveFilters(state.objectType);
-export const getTypeName = state => fromObjectType.getTypeName(state.objectType);
-export const getHasMap = state => fromObjectType.getHasMap(state.objectType);
-export const getObjectTypeSorting = state => fromObjectType.getSorting(state.objectType);
-export const getFiltersTags = state => fromObjectType.getFiltersTags(state.objectType);
-export const getActiveFiltersTags = state => fromObjectType.getActiveFiltersTags(state.objectType);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 

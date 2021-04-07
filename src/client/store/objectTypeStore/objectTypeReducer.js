@@ -1,6 +1,6 @@
 import { get, isEmpty, omit, reduce, filter, uniq } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
-import { parseWobjectField } from '../helpers/wObjectHelper';
+import { parseWobjectField } from '../../helpers/wObjectHelper';
 
 const initialState = {
   data: {},
@@ -131,17 +131,3 @@ const objectType = (state = initialState, action) => {
 };
 
 export default objectType;
-
-export const getObjectType = state => state.data;
-export const getObjectTypeLoading = state => state.fetching;
-export const getFilteredObjects = state => state.filteredObjects;
-export const getFilteredObjectsMap = state => state.mapWobjects;
-export const getUpdatedMapDiscover = state => state.updated;
-export const getHasMoreRelatedObjects = state => state.hasMoreRelatedObjects;
-export const getAvailableFilters = state => state.filtersList;
-export const getActiveFilters = state => state.activeFilters;
-export const getTypeName = state => get(state, ['data', 'name'], '');
-export const getHasMap = state => state.map;
-export const getSorting = state => state.sort;
-export const getFiltersTags = state => state.tagsForFilter;
-export const getActiveFiltersTags = state => state.activeTagsFilters;
