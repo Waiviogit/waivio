@@ -18,7 +18,7 @@ import reblogReducers, * as fromReblog from '../app/Reblog/reblogReducers';
 import settingsReducer, * as fromSettings from '../settings/settingsReducer';
 import searchReducer, * as fromSearch from '../search/searchReducer';
 import wobjectReducer, * as fromObject from '../object/wobjectReducer';
-import objectTypesReducer, * as fromObjectTypes from '../objectTypes/objectTypesReducer';
+import objectTypesReducer from './objectTypesStore/objectTypesReducer';
 import objectTypeReducer, * as fromObjectType from '../objectTypes/objectTypeReducer';
 import appendReducer, * as fromAppend from '../object/appendReducer';
 import galleryReducer, * as fromGallery from '../object/ObjectGallery/galleryReducer';
@@ -214,10 +214,6 @@ export const getBreadCrumbs = state => fromObject.getBreadCrumbs(state.object);
 export const getWobjectNested = state => fromObject.getWobjectNested(state.object);
 export const getObjectLists = state => fromObject.getObjectLists(state.object);
 export const getLoadingFlag = state => fromObject.getLoadingFlag(state.object);
-
-export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
-export const getObjectTypesLoading = state =>
-  fromObjectTypes.getObjectTypesLoading(state.objectTypes);
 
 export const getObjectTypeState = state => fromObjectType.getObjectType(state.objectType);
 export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading(state.objectType);

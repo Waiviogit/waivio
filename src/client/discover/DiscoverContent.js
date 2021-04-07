@@ -10,11 +10,10 @@ import {
   getTopExperts,
   getTopExpertsLoading,
   getTopExpertsHasMore,
-  getObjectTypesList,
   getSearchUsersResultsForDiscoverPage,
 } from '../store/reducers';
 import Loading from '../components/Icon/Loading';
-import { getObjectTypes } from '../objectTypes/objectTypesActions';
+import { getObjectTypes } from '../store/objectTypesStore/objectTypesActions';
 import {
   followSearchUser,
   resetSearchUsersForDiscoverPage,
@@ -22,6 +21,7 @@ import {
   unfollowSearchUser,
 } from '../search/searchActions';
 import withAuthActions from '../auth/withAuthActions';
+import { getObjectTypesList } from '../store/objectTypesStore/objectTypesSelectors';
 
 const displayLimit = 20;
 
