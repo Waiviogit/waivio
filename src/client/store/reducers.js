@@ -22,7 +22,7 @@ import objectTypesReducer from './objectTypesStore/objectTypesReducer';
 import objectTypeReducer from './objectTypeStore/objectTypeReducer';
 import appendReducer from './appendStore/appendReducer';
 import galleryReducer from './galleryStore/galleryReducer';
-import mapReducer, * as fromMap from '../components/Maps/mapReducer';
+import mapReducer from './mapStore/mapReducer';
 import rewardsReducer, * as fromRewards from '../rewards/rewardsReducer';
 import websiteReducer, * as fromWebsite from '../websites/websiteReducer';
 import referralReducer, * as fromReferral from '../rewards/ReferralProgram/ReferralReducer';
@@ -57,10 +57,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
-export const getObjectsMap = state => fromMap.getObjectsMap(state.map);
-export const getUpdatedMap = state => fromMap.getUpdatedMap(state.map);
 
 export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
 export const getGlobalReportData = state => fromRewards.getGlobalReportData(state.rewards);

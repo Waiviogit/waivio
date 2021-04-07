@@ -40,7 +40,3 @@ const mapReducer = (state = initialState, action) => {
 };
 
 export default mapReducer;
-
-export const getIsMapModalOpen = state => state.isFullscreenMode;
-export const getUpdatedMap = state => state.updated;
-export const getObjectsMap = state => state.mapWobjects;
