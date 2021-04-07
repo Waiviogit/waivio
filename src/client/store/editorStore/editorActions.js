@@ -327,7 +327,8 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
             });
           }
           if (isGuest) {
-            const publicMessage = getTranslationByKey(state, 'post_publication');
+            const getMessage = getTranslationByKey('post_publication');
+            const publicMessage = getMessage(state);
 
             if (upvote) {
               steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
