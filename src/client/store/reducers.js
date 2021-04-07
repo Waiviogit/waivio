@@ -21,7 +21,7 @@ import wobjectReducer from './wObjectStore/wobjectReducer';
 import objectTypesReducer from './objectTypesStore/objectTypesReducer';
 import objectTypeReducer from './objectTypeStore/objectTypeReducer';
 import appendReducer from './appendStore/appendReducer';
-import galleryReducer, * as fromGallery from '../object/ObjectGallery/galleryReducer';
+import galleryReducer from './galleryStore/galleryReducer';
 import mapReducer, * as fromMap from '../components/Maps/mapReducer';
 import rewardsReducer, * as fromRewards from '../rewards/rewardsReducer';
 import websiteReducer, * as fromWebsite from '../websites/websiteReducer';
@@ -57,11 +57,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
-export const getIsObjectAlbumsLoading = state =>
-  fromGallery.getIsObjectAlbumsLoading(state.gallery);
-export const getRelatedPhotos = state => fromGallery.getRelatedPhotos(state.gallery);
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
 export const getObjectsMap = state => fromMap.getObjectsMap(state.map);

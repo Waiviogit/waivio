@@ -94,7 +94,3 @@ export default (state = defaultState, action) => {
       return state;
   }
 };
-
-export const getObjectAlbums = state => state.albums;
-export const getIsObjectAlbumsLoading = state => state.albumsLoading;
-export const getRelatedPhotos = state => state.relatedAlbum;

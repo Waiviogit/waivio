@@ -6,8 +6,8 @@ import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
-import { getObjectAlbums } from '../store/reducers';
 import { getIsWaivio } from '../store/appStore/appSelectors';
+import { getObjectAlbums } from '../store/galleryStore/gallerySelectors';
 
 @withRouter
 @connect(state => ({

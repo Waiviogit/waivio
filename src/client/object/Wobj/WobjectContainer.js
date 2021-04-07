@@ -10,7 +10,7 @@ import {
   resetGallery,
   addAlbumToStore,
   clearRelatedPhoto,
-} from '../ObjectGallery/galleryActions';
+} from '../../store/galleryStore/galleryActions';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
 import { setCatalogBreadCrumbs, setNestedWobject } from '../../store/wObjectStore/wobjActions';

@@ -17,7 +17,7 @@ import { notify } from '../../app/Notification/notificationActions';
 import { getObjectTypes } from '../../store/objectTypesStore/objectTypesActions';
 import { appendObject } from '../../store/appendStore/appendActions';
 import { createWaivioObject } from '../../store/wObjectStore/wobjectsActions';
-import { addAlbumToStore } from '../../object/ObjectGallery/galleryActions';
+import { addAlbumToStore } from '../../store/galleryStore/galleryActions';
 import DEFAULTS from '../../object/const/defaultValues';
 import { getAppendData, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';

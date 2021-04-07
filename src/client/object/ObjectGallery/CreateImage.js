@@ -6,9 +6,8 @@ import { injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { Form, Select, Modal, message } from 'antd';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
-import { getObjectAlbums } from '../../store/reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
-import * as galleryActions from './galleryActions';
+import * as galleryActions from '../../store/galleryStore/galleryActions';
 import * as appendActions from '../../store/appendStore/appendActions';
 import {
   generatePermlink,
@@ -23,6 +22,7 @@ import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import { getObject } from '../../store/wObjectStore/wObjectSelectors';
 import { getVotePercent } from '../../store/settingsStore/settingsSelectors';
+import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
 
 import './CreateImage.less';
 

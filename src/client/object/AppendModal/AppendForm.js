@@ -41,7 +41,7 @@ import {
   formFormFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
-import { getSuitableLanguage, getObjectAlbums } from '../../store/reducers';
+import { getSuitableLanguage } from '../../store/reducers';
 import LANGUAGES from '../../translations/languages';
 import { PRIMARY_COLOR } from '../../../common/constants/waivio';
 import { getLanguageText } from '../../translations';
@@ -84,7 +84,7 @@ import {
   objectNameValidationRegExp,
   blogNameValidationRegExp,
 } from '../../../common/constants/validation';
-import { addAlbumToStore, addImageToAlbumStore } from '../ObjectGallery/galleryActions';
+import { addAlbumToStore, addImageToAlbumStore } from '../../store/galleryStore/galleryActions';
 import { getRate, getRewardFund, getScreenSize } from '../../store/appStore/appSelectors';
 import { getFollowingObjectsList } from '../../store/userStore/userSelectors';
 import {
@@ -93,6 +93,7 @@ import {
   getRatingFields,
 } from '../../store/wObjectStore/wObjectSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
+import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
 
 import './AppendForm.less';
 

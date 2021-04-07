@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty, size } from 'lodash';
 
-import { getObjectAlbums } from '../store/reducers';
 import { objectFields, sortingMenuName } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
@@ -24,6 +23,7 @@ import { getPosts } from '../store/postsStore/postsSelectors';
 import { getObject } from '../store/wObjectStore/wObjectSelectors';
 import { getReadLanguages } from '../store/settingsStore/settingsSelectors';
 import { getIsAppendLoading } from '../store/appendStore/appendSelectors';
+import { getObjectAlbums } from '../store/galleryStore/gallerySelectors';
 
 import './WobjHistory.less';
 

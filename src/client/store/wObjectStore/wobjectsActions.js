@@ -1,6 +1,6 @@
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
-import { getAlbums } from '../../object/ObjectGallery/galleryActions';
+import { getAlbums } from '../galleryStore/galleryActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
 import { generateRandomString } from '../../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
