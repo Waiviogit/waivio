@@ -25,7 +25,7 @@ import galleryReducer from './galleryStore/galleryReducer';
 import mapReducer from './mapStore/mapReducer';
 import rewardsReducer from './rewardsStore/rewardsReducer';
 import websiteReducer, * as fromWebsite from '../websites/websiteReducer';
-import referralReducer, * as fromReferral from '../rewards/ReferralProgram/ReferralReducer';
+import referralReducer from './referralStore/ReferralReducer';
 import { getUsedLocale } from './appStore/appSelectors';
 import { getLocale } from './settingsStore/settingsSelectors';
 
@@ -57,36 +57,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getCampaignServerPercent = state =>
-  fromReferral.getCampaignServerPercent(state.referral);
-export const getIndexAbsolutePercent = state =>
-  fromReferral.getIndexAbsolutePercent(state.referral);
-export const getIndexServerPercent = state => fromReferral.getIndexServerPercent(state.referral);
-export const getReferralDuration = state => fromReferral.getReferralDuration(state.referral);
-export const getReferralServerPercent = state =>
-  fromReferral.getReferralServerPercent(state.referral);
-export const getSuspendedTimer = state => fromReferral.getSuspendedTimer(state.referral);
-export const getIsStartLoadingReferralDetails = state =>
-  fromReferral.getIsStartLoadingReferralDetails(state.referral);
-export const getIsUserInWaivioBlackList = state =>
-  fromReferral.getIsUserInWaivioBlackList(state.referral);
-export const getReferralStatus = state => fromReferral.getReferralStatus(state.referral);
-export const getReferralList = state => fromReferral.getReferralList(state.referral);
-export const getIsChangedRuleSelection = state =>
-  fromReferral.getIsChangedRuleSelection(state.referral);
-export const getIsUsersCards = state => fromReferral.getIsUsersCards(state.referral);
-export const getIsHasMoreCards = state => fromReferral.getIsHasMoreCards(state.referral);
-export const getCurrentUserCards = state => fromReferral.getCurrentUserCards(state.referral);
-export const getIsErrorLoadingUserCards = state =>
-  fromReferral.getIsErrorLoadingUserCards(state.referral);
-export const getIsLoadingMoreUserCards = state =>
-  fromReferral.getIsLoadingMoreUserCards(state.referral);
-export const getIsStartChangeRules = state => fromReferral.getIsStartChangeRules(state.referral);
-export const getIsStartGetReferralInfo = state =>
-  fromReferral.getIsStartGetReferralInfo(state.referral);
-export const getStatusSponsoredHistory = state =>
-  fromReferral.getStatusSponsoredHistory(state.referral);
 
 // common selectors
 

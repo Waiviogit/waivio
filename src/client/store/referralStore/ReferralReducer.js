@@ -171,23 +171,3 @@ const ReferralReducer = (state = initialState, action) => {
 };
 
 export default ReferralReducer;
-
-export const getCampaignServerPercent = state => state.campaignServerPercent;
-export const getIndexAbsolutePercent = state => state.indexAbsolutePercent;
-export const getIndexServerPercent = state => state.indexServerPercent;
-export const getReferralDuration = state => state.referralDuration;
-export const getReferralServerPercent = state => state.referralServerPercent;
-export const getSuspendedTimer = state => state.suspendedTimer;
-export const getIsStartLoadingReferralDetails = state => state.isStartLoadingReferralDetails;
-export const getIsUserInWaivioBlackList = state => state.isUserInWaivioBlackList;
-export const getReferralStatus = state => state.referralStatus;
-export const getReferralList = state => state.referral;
-export const getIsChangedRuleSelection = state => state.isChangedRuleSelection;
-export const getIsUsersCards = state => state.isGetUsersCards;
-export const getIsHasMoreCards = state => state.hasMoreCards;
-export const getCurrentUserCards = state => state.userCards;
-export const getIsErrorLoadingUserCards = state => state.isErrorLoadingMore;
-export const getIsLoadingMoreUserCards = state => state.isLoadingMoreUserCards;
-export const getIsStartChangeRules = state => state.isStartChangeRules;
-export const getIsStartGetReferralInfo = state => state.isStartGetReferralInfo;
-export const getStatusSponsoredHistory = state => state.statusSponsoredHistory;

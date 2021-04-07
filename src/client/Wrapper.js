@@ -25,7 +25,7 @@ import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
-import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
+import { handleRefAuthUser } from './store/referralStore/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
 import {
   getSessionData,
