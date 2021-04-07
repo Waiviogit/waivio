@@ -172,6 +172,7 @@ export const getRewardSetting = state => fromSettings.getRewardSetting(state.set
 export const getHiveBeneficiaryAccount = state =>
   fromSettings.getHiveBeneficiaryAccount(state.settings);
 export const isOpenLinkModal = state => fromSettings.isOpenLinkModal(state.settings);
+export const getTicketsInfo = state => fromSettings.getTicketsInfo(state.settings);
 
 export const getTotalVestingShares = state => fromWallet.getTotalVestingShares(state.wallet);
 export const getTotalVestingFundSteem = state => fromWallet.getTotalVestingFundSteem(state.wallet);

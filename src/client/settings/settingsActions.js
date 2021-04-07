@@ -1,8 +1,8 @@
 import { createAction } from 'redux-actions';
 import { saveSettingsMetadata } from '../helpers/metadata';
-import { setUserStatus } from '../../waivioApi/ApiClient';
+import { setUserStatus, getVipTicketsInfo } from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../helpers/stateHelpers';
-import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import {getAuthenticatedUserName, isGuestUser} from '../store/authStore/authSelectors';
 
 export const SAVE_SETTINGS = '@app/SAVE_SETTINGS';
 export const SAVE_SETTINGS_START = '@app/SAVE_SETTINGS_START';
@@ -48,3 +48,18 @@ export const openLinkHiveAccountModal = payload => dispatch =>
 export const SET_LOCALE = '@app/SET_LOCALE';
 
 export const setLocale = createAction(SET_LOCALE);
+
+export const GET_VIP_TICKETS_INFO = createAsyncActionType('@app/GET_VIP_TICKETS_INFO');
+
+export const getVipTickets = () => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
+
+  dispatch({
+    type: GET_VIP_TICKETS_INFO.ACTION,
+    payload: {
+      promise: getVipTicketsInfo({ userName }, isGuest),
+    },
+  });
+};

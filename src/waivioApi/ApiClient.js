@@ -12,6 +12,7 @@ import { getSessionData, getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
 import { IS_RESERVED } from '../common/constants/rewards';
 import { isMobileDevice } from '../client/helpers/apiHelpers';
+import { createQuery } from './helpers';
 
 let headers = {
   Accept: 'application/json',
@@ -1996,5 +1997,22 @@ export const checkExpiredPayment = userName =>
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+
+export const getVipTicketsInfo = (queryData, isGuest) => {
+  const queryString = createQuery(queryData);
+  return fetch(
+    `${config.apiPrefix}${config.vipTickets}?${queryString}`,
+    {
+      headers: {
+        ...headers,
+        'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token')
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
 
 export default null;

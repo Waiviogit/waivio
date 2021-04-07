@@ -18,6 +18,7 @@ const initialState = {
   postLocales: [],
   newUser: false,
   openLinkModal: false,
+  vipTicketsInfo: {},
 };
 
 const settings = (state = initialState, action) => {
@@ -102,3 +103,4 @@ export const getExitPageSetting = state => state.exitPageSetting;
 export const getRewardSetting = state => state.rewardSetting;
 export const getHiveBeneficiaryAccount = state => state.hiveBeneficiaryAccount;
 export const isOpenLinkModal = state => state.openLinkModal;
+export const getTicketsInfo = state => state.vipTicketsInfo;

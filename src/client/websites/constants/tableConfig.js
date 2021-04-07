@@ -128,4 +128,52 @@ export const configReportsWebsitesTableHeader = [
   },
 ];
 
+export const configActiveVipTicketTableHeader = [
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'purchased',
+      defaultMessage: 'Purchased',
+    },
+  },
+  {
+    id: 'ticket',
+    intl: {
+      id: 'vip_ticket',
+      defaultMessage: 'VIP ticket',
+    },
+  },
+  {
+    id: 'link',
+    intl: {
+      id: 'link',
+      defaultMessage: 'Link',
+    },
+  },
+  {
+    id: 'share',
+    intl: {
+      id: 'share',
+      defaultMessage: 'Share',
+    },
+  },
+];
+
+export const configCreateAccountsTableHeader = [
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'created',
+      defaultMessage: 'Created',
+    },
+  },
+  {
+    id: 'ticket',
+    intl: {
+      id: 'vip_ticket',
+      defaultMessage: 'VIP ticket',
+    },
+  },
+];
+
 export default null;
