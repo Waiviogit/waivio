@@ -24,13 +24,7 @@ import {
   every,
 } from 'lodash';
 import { HBD, HIVE } from '../../common/constants/cryptos';
-import {
-  getObjectsMap,
-  getUserLocation,
-  getIsMapModalOpen,
-  getSuitableLanguage,
-  getPendingUpdate,
-} from '../store/reducers';
+import { getObjectsMap, getIsMapModalOpen, getSuitableLanguage } from '../store/reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
@@ -40,7 +34,7 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
-} from '../user/userActions';
+} from '../store/userStore/userActions';
 import { getCryptoPriceHistory } from '../store/appStore/appActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import { getPropositions } from '../../waivioApi/ApiClient';
@@ -87,6 +81,7 @@ import {
   getIsLoaded,
 } from '../store/authStore/authSelectors';
 import { getAllUsers } from '../store/usersStore/usersSelectors';
+import { getPendingUpdate, getUserLocation } from '../store/userStore/userSelectors';
 
 @withRouter
 @injectIntl

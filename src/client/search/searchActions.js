@@ -4,7 +4,6 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import {
   getSuitableLanguage,
-  getFollowingList,
   getLocale,
   getWebsiteSearchType,
   getSearchFiltersTagCategory,
@@ -15,6 +14,7 @@ import {
 import { replacer } from '../helpers/parser';
 import { getIsWaivio } from '../store/appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthenticated } from '../store/authStore/authSelectors';
+import { getFollowingList } from '../store/userStore/userSelectors';
 
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
 export const RESET_AUTO_COMPLETE_SEARCH = '@search/RESET_AUTO_COMPLETE_SEARCH';

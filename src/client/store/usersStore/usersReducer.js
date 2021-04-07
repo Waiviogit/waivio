@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import * as actions from './usersActions';
 import { GET_USER_ACCOUNT_HISTORY } from '../../wallet/walletActions';
-import { BELL_USER_NOTIFICATION } from '../../user/userActions';
+import { BELL_USER_NOTIFICATION } from '../userStore/userActions';
 
 const initialState = {
   users: {},

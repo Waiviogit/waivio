@@ -32,7 +32,11 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import Campaign from '../rewards/Campaign/Campaign';
 import Proposition from '../rewards/Proposition/Proposition';
-import { assignProposition, declineProposition, getCoordinates } from '../user/userActions';
+import {
+  assignProposition,
+  declineProposition,
+  getCoordinates,
+} from '../store/userStore/userActions';
 import * as apiConfig from '../../waivioApi/config.json';
 import { RADIUS, ZOOM } from '../../common/constants/map';
 import { getCryptoPriceHistory } from '../store/appStore/appActions';

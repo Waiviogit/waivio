@@ -32,7 +32,7 @@ import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
 import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { assignProposition } from '../../user/userActions';
+import { assignProposition } from '../../store/userStore/userActions';
 import { getImagePathPost } from '../../helpers/image';
 import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorPost } from '../../store/postsStore/postActions';

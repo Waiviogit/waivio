@@ -16,7 +16,7 @@ import {
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './store/authStore/authActions';
-import { getNotifications } from './user/userActions';
+import { getNotifications } from './store/userStore/userActions';
 import {
   getRate,
   getRewardFund,

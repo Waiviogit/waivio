@@ -1,5 +1,5 @@
 import { createAsyncActionType } from '../../helpers/stateHelpers';
-import { getUserLocation, getQueryString, getLocale } from '../reducers';
+import { getQueryString, getLocale } from '../reducers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { createFilterBody } from '../../discoverObjects/helper';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
@@ -9,6 +9,7 @@ import {
   getObjectTypeSorting,
   getTypeName,
 } from './objectTypeSelectors';
+import { getUserLocation } from '../userStore/userSelectors';
 
 export const GET_OBJECT_TYPE = createAsyncActionType('@objectType/GET_OBJECT_TYPE');
 export const GET_OBJECT_TYPE_MAP = createAsyncActionType('@objectType/GET_OBJECT_TYPE_MAP');

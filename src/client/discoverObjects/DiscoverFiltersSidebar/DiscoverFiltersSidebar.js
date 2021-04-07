@@ -6,10 +6,10 @@ import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import { isEmpty, memoize } from 'lodash';
 import { isNeedFilters } from '../helper';
-import { getUserLocation, getIsMapModalOpen } from '../../store/reducers';
+import { getIsMapModalOpen } from '../../store/reducers';
 import { setFiltersAndLoad, getObjectTypeMap } from '../../store/objectTypeStore/objectTypeActions';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
-import { getCoordinates } from '../../user/userActions';
+import { getCoordinates } from '../../store/userStore/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
 import FiltersContainer from './FiltersContainer';
 import '../../components/Sidebar/SidebarContentBlock.less';
@@ -23,6 +23,7 @@ import {
   getFiltersTags,
   getHasMap,
 } from '../../store/objectTypeStore/objectTypeSelectors';
+import { getUserLocation } from '../../store/userStore/userSelectors';
 
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   // redux-store

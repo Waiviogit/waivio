@@ -30,7 +30,7 @@ import {
 } from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
-import { rejectReview, changeReward, reinstateReward } from '../../user/userActions';
+import { rejectReview, changeReward, reinstateReward } from '../../store/userStore/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
 import {
   changeBlackAndWhiteLists,

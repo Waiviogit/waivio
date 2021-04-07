@@ -5,11 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import * as notificationConstants from '../../common/constants/notifications';
 import { getUserMetadata } from '../store/usersStore/usersActions';
-import { getNotifications } from '../user/userActions';
-import {
-  getNotifications as getNotificationsState,
-  getIsLoadingNotifications,
-} from '../store/reducers';
+import { getNotifications } from '../store/userStore/userActions';
 import requiresLogin from '../auth/requiresLogin';
 import NotificationReply from '../components/Navigation/Notifications/NotificationReply';
 import NotificationMention from '../components/Navigation/Notifications/NotificationMention';
@@ -46,6 +42,7 @@ import {
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
 } from '../store/authStore/authSelectors';
+import * as userSelectors from '../store/userStore/userSelectors';
 
 import './Notifications.less';
 
@@ -395,10 +392,10 @@ class Notifications extends React.Component {
 
 export default connect(
   state => ({
-    notifications: getNotificationsState(state),
+    notifications: userSelectors.getNotifications(state),
     userMetaData: getAuthenticatedUserMetaData(state),
     currentAuthUsername: getAuthenticatedUserName(state),
-    loadingNotifications: getIsLoadingNotifications(state),
+    loadingNotifications: userSelectors.getIsLoadingNotifications(state),
   }),
   {
     getUpdatedUserMetadata: getUserMetadata,

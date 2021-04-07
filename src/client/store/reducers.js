@@ -7,7 +7,7 @@ import authReducer from './authStore/authReducer';
 import commentsReducer from './commentsStore/commentsReducer';
 import feedReducer from './feedStore/feedReducer';
 import postsReducer from './postsStore/postsReducer';
-import userReducer, * as fromUser from '../user/userReducer';
+import userReducer from './userStore/userReducer';
 import usersReducer from './usersStore/usersReducer';
 import notificationReducer from '../app/Notification/notificationReducers';
 import bookmarksReducer, * as fromBookmarks from '../bookmarks/bookmarksReducer';
@@ -62,25 +62,6 @@ export const getPendingBookmarks = state => fromBookmarks.getPendingBookmarks(st
 
 export const getRebloggedList = state => fromReblog.getRebloggedList(state.reblog);
 export const getPendingReblogs = state => fromReblog.getPendingReblogs(state.reblog);
-
-export const getFollowingList = state => fromUser.getFollowingList(state.user);
-export const getFollowingObjectsList = state => fromUser.getFollowingObjectsList(state.user);
-export const getPendingFollows = state => fromUser.getPendingFollows(state.user);
-export const getPendingFollowingObjects = state => fromUser.getPendingFollowingObjects(state.user);
-export const getIsFetchingFollowingList = state => fromUser.getIsFetchingFollowingList(state.user);
-export const getRecommendedObjects = state => fromUser.getRecommendedObjects(state.user);
-export const getFollowingFetched = state => fromUser.getFollowingFetched(state.user);
-export const getNotifications = state => fromUser.getNotifications(state.user);
-export const getIsLoadingNotifications = state => fromUser.getIsLoadingNotifications(state.user);
-export const getFetchFollowListError = state => fromUser.getFetchFollowListError(state.user);
-export const getLatestNotification = state => fromUser.getLatestNotification(state.user);
-export const getUserLocation = state => fromUser.getUserLocation(state.user);
-export const getFollowingUpdates = state => fromUser.getFollowingUpdates(state.user);
-export const getFollowingUsersUpdates = state => fromUser.getFollowingUsersUpdates(state.user);
-export const getFollowingObjectsUpdatesByType = (state, objType) =>
-  fromUser.getFollowingObjectsUpdatesByType(state.user, objType);
-export const getFollowingUpdatesFetched = state => fromUser.getFollowingUpdatesFetched(state.user);
-export const getPendingUpdate = state => fromUser.getPendingUpdate(state.user);
 
 export const getFavoriteCategories = state => fromFavorites.getFavoriteCategories(state.favorites);
 

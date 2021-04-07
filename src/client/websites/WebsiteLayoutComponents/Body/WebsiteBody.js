@@ -12,14 +12,13 @@ import Overlay from 'pigeon-overlay';
 import {
   getSearchFiltersTagCategory,
   getShowSearchResult,
-  getUserLocation,
   getWobjectsPoint,
   getWebsiteSearchString,
   getWebsiteMap,
   getShowReloadButton,
   getWebsiteSearchType,
 } from '../../../store/reducers';
-import { getCoordinates } from '../../../user/userActions';
+import { getCoordinates } from '../../../store/userStore/userActions';
 import {
   setMapForSearch,
   setSearchInBox,
@@ -48,6 +47,7 @@ import {
   getScreenSize,
 } from '../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getUserLocation } from '../../../store/userStore/userSelectors';
 
 import './WebsiteBody.less';
 

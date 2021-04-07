@@ -2,14 +2,19 @@ import moment from 'moment';
 import { get } from 'lodash';
 import { message } from 'antd';
 
-import * as store from '../store/reducers';
-import { createAsyncActionType } from '../helpers/stateHelpers';
-import * as ApiClient from '../../waivioApi/ApiClient';
-import { getDetailsBody, rewardPostContainerData } from '../rewards/rewardsHelper';
-import { createCommentPermlink } from '../vendor/steemitHelpers';
-import { getObjectName } from '../helpers/wObjectHelper';
-import { getRate, getRewardFund } from '../store/appStore/appSelectors';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../store/authStore/authSelectors';
+import * as store from '../reducers';
+import { createAsyncActionType } from '../../helpers/stateHelpers';
+import * as ApiClient from '../../../waivioApi/ApiClient';
+import { getDetailsBody, rewardPostContainerData } from '../../rewards/rewardsHelper';
+import { createCommentPermlink } from '../../vendor/steemitHelpers';
+import { getObjectName } from '../../helpers/wObjectHelper';
+import { getRate, getRewardFund } from '../appStore/appSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
+import {
+  getFollowingObjectsUpdatesByType,
+  getFollowingUpdatesFetched,
+  getFollowingUsersUpdates,
+} from './userSelectors';
 
 require('isomorphic-fetch');
 
@@ -113,7 +118,7 @@ export const GET_FOLLOWING_UPDATES = createAsyncActionType('@user/GET_FOLLOWING_
 export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
   const state = getState();
   const locale = store.getLocale(state);
-  const isUpdatesFetched = store.getFollowingUpdatesFetched(state);
+  const isUpdatesFetched = getFollowingUpdatesFetched(state);
   const userName = getAuthenticatedUserName(state);
 
   if (!isUpdatesFetched && userName) {
@@ -131,7 +136,7 @@ export const GET_FOLLOWING_OBJECTS_UPDATES = createAsyncActionType(
 );
 export const getFollowingObjectsUpdatesMore = (objectType, count = 5) => (dispatch, getState) => {
   const state = getState();
-  const followingObjects = store.getFollowingObjectsUpdatesByType(state, objectType);
+  const followingObjects = getFollowingObjectsUpdatesByType(state, objectType);
   const userName = getAuthenticatedUserName(state);
 
   dispatch({
@@ -155,7 +160,7 @@ export const GET_FOLLOWING_USERS_UPDATES = createAsyncActionType(
 );
 export const getFollowingUsersUpdatesMore = (count = 5) => (dispatch, getState) => {
   const state = getState();
-  const followingUsers = store.getFollowingUsersUpdates(state);
+  const followingUsers = getFollowingUsersUpdates(state);
   const userName = getAuthenticatedUserName(state);
 
   dispatch({
