@@ -13,8 +13,6 @@ import {
   getAuthorName,
 } from '../helpers/postHelpers';
 import {
-  getBookmarks,
-  getPendingBookmarks,
   getRebloggedList,
   getPendingReblogs,
   getVotingPower,
@@ -29,7 +27,7 @@ import {
   votePost,
 } from '../store/postsStore/postActions';
 import { reblog } from '../app/Reblog/reblogActions';
-import { toggleBookmark } from '../bookmarks/bookmarksActions';
+import { toggleBookmark } from '../store/bookmarksStore/bookmarksActions';
 import { followUser, unfollowUser } from '../store/userStore/userActions';
 import { getAvatarURL } from '../components/Avatar';
 import { getHtml } from '../components/Story/Body';
@@ -41,6 +39,7 @@ import { getAuthenticatedUser } from '../store/authStore/authSelectors';
 import { getIsEditorSaving } from '../store/editorStore/editorSelectors';
 import { getPendingLikes } from '../store/postsStore/postsSelectors';
 import { getFollowingList } from '../store/userStore/userSelectors';
+import { getBookmarks, getPendingBookmarks } from '../store/bookmarksStore/bookmarksSelectors';
 
 @injectIntl
 @connect(

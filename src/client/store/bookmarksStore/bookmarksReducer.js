@@ -1,7 +1,7 @@
 import { get } from 'lodash';
-import * as authActions from '../store/authStore/authActions';
+import * as authActions from '../authStore/authActions';
 import * as bookmarksActions from './bookmarksActions';
-import { GET_USER_METADATA } from '../store/usersStore/usersActions';
+import { GET_USER_METADATA } from '../usersStore/usersActions';
 
 const initialState = {
   list: [],
@@ -48,6 +48,3 @@ const bookmarks = (state = initialState, action) => {
 };
 
 export default bookmarks;
-
-export const getBookmarks = state => state.list;
-export const getPendingBookmarks = state => state.pendingBookmarks;

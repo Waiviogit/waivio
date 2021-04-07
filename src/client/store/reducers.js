@@ -10,7 +10,7 @@ import postsReducer from './postsStore/postsReducer';
 import userReducer from './userStore/userReducer';
 import usersReducer from './usersStore/usersReducer';
 import notificationReducer from '../app/Notification/notificationReducers';
-import bookmarksReducer, * as fromBookmarks from '../bookmarks/bookmarksReducer';
+import bookmarksReducer from './bookmarksStore/bookmarksReducer';
 import favoritesReducer, * as fromFavorites from '../favorites/favoritesReducer';
 import editorReducer from './editorStore/editorReducer';
 import walletReducer, * as fromWallet from '../wallet/walletReducer';
@@ -56,9 +56,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getBookmarks = state => fromBookmarks.getBookmarks(state.bookmarks);
-export const getPendingBookmarks = state => fromBookmarks.getPendingBookmarks(state.bookmarks);
 
 export const getRebloggedList = state => fromReblog.getRebloggedList(state.reblog);
 export const getPendingReblogs = state => fromReblog.getPendingReblogs(state.reblog);
