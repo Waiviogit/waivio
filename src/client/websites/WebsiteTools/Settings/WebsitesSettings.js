@@ -6,15 +6,15 @@ import { Button, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 
-import { getSettingsSite, getWebsiteLoading } from '../../../store/reducers';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import {
   getWebsiteSettings,
   referralUserForWebsite,
   saveWebsiteSettings,
-} from '../../websiteActions';
+} from '../../../store/websiteStore/websiteActions';
 import Loading from '../../../components/Icon/Loading';
+import { getSettingsSite, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
 
 import './WebsitesSettings.less';
 

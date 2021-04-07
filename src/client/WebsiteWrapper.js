@@ -29,7 +29,7 @@ import { guestUserRegex } from './helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
-import { getWebsiteObjWithCoordinates } from './websites/websiteActions';
+import { getWebsiteObjWithCoordinates } from './store/websiteStore/websiteActions';
 import { getTranslations, getUsedLocale } from './store/appStore/appSelectors';
 import {
   getAuthenticatedUser,

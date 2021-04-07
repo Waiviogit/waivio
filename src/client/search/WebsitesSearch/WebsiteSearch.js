@@ -13,7 +13,7 @@ import {
   setShowSearchResult,
   setWebsiteSearchString,
 } from '../../store/searchStore/searchActions';
-import { resetWebsiteObjectsCoordinates } from '../../websites/websiteActions';
+import { resetWebsiteObjectsCoordinates } from '../../store/websiteStore/websiteActions';
 import {
   getIsStartSearchAutoComplete,
   getSearchFiltersTagCategory,

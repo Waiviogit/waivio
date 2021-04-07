@@ -7,13 +7,12 @@ import { Button, Modal, message } from 'antd';
 import { Link } from 'react-router-dom';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
-import { getManage, getWebsiteLoading } from '../../../store/reducers';
 import {
   activateWebsite,
   deleteWebsite,
   getManageInfo,
   suspendWebsite,
-} from '../../websiteActions';
+} from '../../../store/websiteStore/websiteActions';
 import {
   configBalanceTableHeader,
   configUsersWebsitesTableHeader,
@@ -22,6 +21,7 @@ import Loading from '../../../components/Icon/Loading';
 import { openTransfer } from '../../../store/walletStore/walletActions';
 import Transfer from '../../../wallet/Transfer/Transfer';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getManage, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
 
 import './ManageWebsite.less';
 

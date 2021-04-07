@@ -1,7 +1,7 @@
 import { get, uniqBy } from 'lodash';
 import moment from 'moment';
 import * as websiteAction from './websiteActions';
-import { getAvailableStatus } from './helper';
+import { getAvailableStatus } from '../../websites/helper';
 
 const initialState = {
   parentDomain: [],
@@ -425,24 +425,3 @@ export default function websiteReducer(state = initialState, action) {
     }
   }
 }
-
-export const getParentDomain = state => get(state, 'parentDomain', []);
-export const getDomainAvailableStatus = state => get(state, 'domainAvailableStatus', []);
-export const getWebsiteLoading = state => get(state, 'loading');
-export const getCreateWebsiteLoading = state => get(state, 'loadingWebsite');
-export const getManage = state => get(state, 'manage');
-export const getReports = state => get(state, 'reports');
-export const getOwnWebsites = state => get(state, 'ownWebsites', []);
-export const getConfiguration = state => get(state, 'configurationWebsite', {});
-export const getAdministrators = state => get(state, 'administrators', {});
-export const getModerators = state => get(state, 'moderators', {});
-export const getAuthorities = state => get(state, 'authorities', {});
-export const getTagsSite = state => get(state, 'tags', {});
-export const getSettingsSite = state => get(state, 'settings', {});
-export const getRestrictions = state => get(state, 'restrictions', {});
-export const getMuteLoading = state => get(state, 'muteLoading', {});
-export const getUnmutedUsers = state => get(state, 'unmuteUsers', []);
-export const getIsLoadingAreas = state => state.isLoadingAreas;
-export const getWobjectsPoint = state => state.wobjectsPoint;
-export const getIsUsersAreas = state => state.areas;
-export const getShowReloadButton = state => state.showReloadButton;

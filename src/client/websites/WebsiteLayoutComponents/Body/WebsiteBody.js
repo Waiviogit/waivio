@@ -9,7 +9,6 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
-import { getWobjectsPoint, getShowReloadButton } from '../../../store/reducers';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import {
   setMapForSearch,
@@ -29,7 +28,10 @@ import {
   getReservedCounter,
   putUserCoordinates,
 } from '../../../store/appStore/appActions';
-import { getWebsiteObjWithCoordinates, setShowReload } from '../../websiteActions';
+import {
+  getWebsiteObjWithCoordinates,
+  setShowReload,
+} from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates } from '../../helper';
 import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
 import {
@@ -47,6 +49,10 @@ import {
   getWebsiteSearchString,
   getWebsiteSearchType,
 } from '../../../store/searchStore/searchSelectors';
+import {
+  getShowReloadButton,
+  getWobjectsPoint,
+} from '../../../store/websiteStore/websiteSelectors';
 
 import './WebsiteBody.less';
 

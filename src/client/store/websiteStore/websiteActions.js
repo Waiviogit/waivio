@@ -1,17 +1,14 @@
 import { message } from 'antd';
 import { get, isEmpty, size } from 'lodash';
 
-import { createAsyncActionType } from '../helpers/stateHelpers';
-import { getOwnWebsites, getParentDomain } from '../store/reducers';
-import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
-import { getChangesInAccessOption } from './helper';
-import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
-import { getLocale } from '../store/settingsStore/settingsSelectors';
-import {
-  getSearchFiltersTagCategory,
-  getWebsiteSearchType,
-} from '../store/searchStore/searchSelectors';
+import { createAsyncActionType } from '../../helpers/stateHelpers';
+import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
+import { getChangesInAccessOption } from '../../websites/helper';
+import * as ApiClient from '../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getLocale } from '../settingsStore/settingsSelectors';
+import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
+import { getOwnWebsites, getParentDomain } from './websiteSelectors';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 
