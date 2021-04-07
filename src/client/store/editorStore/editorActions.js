@@ -16,7 +16,7 @@ import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
 import { saveSettings } from '../settingsStore/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
-import { clearBeneficiariesUsers } from '../../search/searchActions';
+import { clearBeneficiariesUsers } from '../searchStore/searchActions';
 import {
   getCurrentHost,
   getIsWaivio,

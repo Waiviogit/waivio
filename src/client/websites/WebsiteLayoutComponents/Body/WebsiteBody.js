@@ -9,15 +9,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
-import {
-  getSearchFiltersTagCategory,
-  getShowSearchResult,
-  getWobjectsPoint,
-  getWebsiteSearchString,
-  getWebsiteMap,
-  getShowReloadButton,
-  getWebsiteSearchType,
-} from '../../../store/reducers';
+import { getWobjectsPoint, getShowReloadButton } from '../../../store/reducers';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import {
   setMapForSearch,
@@ -25,7 +17,7 @@ import {
   setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
-} from '../../../search/searchActions';
+} from '../../../store/searchStore/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import mapProvider from '../../../helpers/mapProvider';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
@@ -48,6 +40,13 @@ import {
 } from '../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
+import {
+  getSearchFiltersTagCategory,
+  getShowSearchResult,
+  getWebsiteMap,
+  getWebsiteSearchString,
+  getWebsiteSearchType,
+} from '../../../store/searchStore/searchSelectors';
 
 import './WebsiteBody.less';
 

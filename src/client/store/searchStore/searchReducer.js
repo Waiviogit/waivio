@@ -1,6 +1,6 @@
 import { get, isEmpty, remove, findIndex, isEqual, uniqBy, uniqWith } from 'lodash';
 import * as searchActions from './searchActions';
-import { userToggleFollow } from './helpers';
+import { userToggleFollow } from '../../search/helpers';
 
 const initialState = {
   loading: true,
@@ -531,31 +531,3 @@ export default (state = initialState, action) => {
       return state;
   }
 };
-
-export const getSearchLoading = state => state.loading;
-export const getSearchResults = state => state.searchResults;
-export const getAutoCompleteSearchResults = state => state.autoCompleteSearchResults;
-export const getSearchObjectsResults = state => state.searchObjectsResults;
-export const getSearchUsersResults = state => state.searchUsersResults;
-export const getSearchUsersResultsForDiscoverPage = state => state.usersForDiscoverPage;
-export const searchObjectTypesResults = state => state.searchObjectTypesResults;
-export const getBeneficiariesUsers = state => state.beneficiariesUsers;
-export const getIsStartSearchAutoComplete = state => state.isStartSearchAutoComplete;
-export const getIsStartSearchUser = state => state.isStartSearchUser;
-export const getIsStartSearchObject = state => state.isStartSearchObject;
-export const getIsClearSearchObjects = state => state.isClearSearchObjects;
-export const getHasMoreObjects = state => state.hasMoreObjects;
-export const getHasMoreUsers = state => state.hasMoreUsers;
-export const getWebsiteSearchType = state => state.websiteSearchType;
-export const getWebsiteSearchResult = state => state.websiteSearchResult;
-export const getSearchFilters = state => get(state, 'filters', []);
-export const getSearchFiltersTagCategory = state => get(state, 'tagCategory', []);
-export const getWebsiteSearchString = state => get(state, 'websiteSearchString', []);
-export const getSearchSort = state => get(state, 'sort', '');
-export const getWebsiteSearchResultLoading = state =>
-  get(state, 'websiteSearchResultLoading', false);
-export const getShowSearchResult = state => get(state, 'showSearchResult', '');
-export const getAllSearchLoadingMore = state => get(state, 'allSearchLoadingMore', '');
-export const getWebsiteMap = state => get(state, 'websiteMap', '');
-export const getHasMoreObjectsForWebsite = state => get(state, 'hasMoreObjectsForWebsite');
-export const getSearchInBox = state => get(state, 'searchInBox', true);

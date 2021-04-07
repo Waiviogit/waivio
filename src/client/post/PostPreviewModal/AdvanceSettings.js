@@ -6,14 +6,14 @@ import { connect } from 'react-redux';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
 import ObjectWeights from './ObjectWeights';
-import { getAutoCompleteSearchResults } from '../../store/reducers';
 import {
   resetSearchAutoCompete,
   searchAutoComplete,
   searchUsersAutoCompete,
-} from '../../search/searchActions';
+} from '../../store/searchStore/searchActions';
 import BeneficiariesWeights from './BeneficiariesWeights';
 import { getHiveBeneficiaryAccount } from '../../store/settingsStore/settingsSelectors';
+import { getAutoCompleteSearchResults } from '../../store/searchStore/searchSelectors';
 
 import './AdvanceSettings.less';
 

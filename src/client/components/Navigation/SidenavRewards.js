@@ -4,7 +4,6 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  getAutoCompleteSearchResults,
   getHasReceivables,
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
@@ -23,6 +22,7 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../../store/authStore/authSelectors';
+import { getAutoCompleteSearchResults } from '../../store/searchStore/searchSelectors';
 
 import './Sidenav.less';
 

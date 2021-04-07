@@ -11,7 +11,6 @@ import { HBD, HIVE } from '../../../common/constants/cryptos';
 import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import { closeTransfer, sendPendingTransfer } from '../../store/walletStore/walletActions';
 import { notify } from '../../app/Notification/notificationActions';
-import { getSearchUsersResults } from '../../store/reducers';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import { BANK_ACCOUNT } from '../../../common/constants/waivio';
@@ -43,6 +42,7 @@ import {
   getHiveBeneficiaryAccount,
   isOpenLinkModal,
 } from '../../store/settingsStore/settingsSelectors';
+import { getSearchUsersResults } from '../../store/searchStore/searchSelectors';
 
 import './Transfer.less';
 

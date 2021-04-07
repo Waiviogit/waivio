@@ -1,20 +1,20 @@
 import { isEmpty } from 'lodash';
 import { message } from 'antd';
-import { createAsyncActionType } from '../helpers/stateHelpers';
-import * as ApiClient from '../../waivioApi/ApiClient';
+import { createAsyncActionType } from '../../helpers/stateHelpers';
+import * as ApiClient from '../../../waivioApi/ApiClient';
+import { getSuitableLanguage } from '../reducers';
+import { replacer } from '../../helpers/parser';
+import { getIsWaivio } from '../appStore/appSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
+import { getFollowingList } from '../userStore/userSelectors';
+import { getLocale } from '../settingsStore/settingsSelectors';
 import {
-  getSuitableLanguage,
-  getWebsiteSearchType,
   getSearchFiltersTagCategory,
+  getSearchInBox,
   getSearchSort,
   getWebsiteMap,
-  getSearchInBox,
-} from '../store/reducers';
-import { replacer } from '../helpers/parser';
-import { getIsWaivio } from '../store/appStore/appSelectors';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../store/authStore/authSelectors';
-import { getFollowingList } from '../store/userStore/userSelectors';
-import { getLocale } from '../store/settingsStore/settingsSelectors';
+  getWebsiteSearchType,
+} from './searchSelectors';
 
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
 export const RESET_AUTO_COMPLETE_SEARCH = '@search/RESET_AUTO_COMPLETE_SEARCH';

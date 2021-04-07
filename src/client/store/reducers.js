@@ -16,7 +16,7 @@ import editorReducer from './editorStore/editorReducer';
 import walletReducer from './walletStore/walletReducer';
 import reblogReducers from './reblogStore/reblogReducers';
 import settingsReducer from './settingsStore/settingsReducer';
-import searchReducer, * as fromSearch from '../search/searchReducer';
+import searchReducer from './searchStore/searchReducer';
 import wobjectReducer from './wObjectStore/wobjectReducer';
 import objectTypesReducer from './objectTypesStore/objectTypesReducer';
 import objectTypeReducer from './objectTypeStore/objectTypeReducer';
@@ -57,39 +57,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getSearchLoading = state => fromSearch.getSearchLoading(state.search);
-export const getSearchResults = state => fromSearch.getSearchResults(state.search);
-export const getAutoCompleteSearchResults = state =>
-  fromSearch.getAutoCompleteSearchResults(state.search);
-export const getSearchObjectsResults = state => fromSearch.getSearchObjectsResults(state.search);
-export const getSearchUsersResults = state => fromSearch.getSearchUsersResults(state.search);
-export const getSearchUsersResultsForDiscoverPage = state =>
-  fromSearch.getSearchUsersResultsForDiscoverPage(state.search);
-export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
-export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
-export const getIsStartSearchAutoComplete = state =>
-  fromSearch.getIsStartSearchAutoComplete(state.search);
-export const getIsStartSearchUser = state => fromSearch.getIsStartSearchUser(state.search);
-export const getIsStartSearchObject = state => fromSearch.getIsStartSearchObject(state.search);
-export const getIsClearSearchObjects = state => fromSearch.getIsClearSearchObjects(state.search);
-export const getWebsiteSearchType = state => fromSearch.getWebsiteSearchType(state.search);
-export const getWebsiteSearchResult = state => fromSearch.getWebsiteSearchResult(state.search);
-export const getHasMoreObjects = state => fromSearch.getHasMoreObjects(state.search);
-export const getHasMoreUsers = state => fromSearch.getHasMoreUsers(state.search);
-export const getSearchFilters = state => fromSearch.getSearchFilters(state.search);
-export const getWebsiteSearchString = state => fromSearch.getWebsiteSearchString(state.search);
-export const getSearchFiltersTagCategory = state =>
-  fromSearch.getSearchFiltersTagCategory(state.search);
-export const getSearchSort = state => fromSearch.getSearchSort(state.search);
-export const getWebsiteSearchResultLoading = state =>
-  fromSearch.getWebsiteSearchResultLoading(state.search);
-export const getShowSearchResult = state => fromSearch.getShowSearchResult(state.search);
-export const getAllSearchLoadingMore = state => fromSearch.getAllSearchLoadingMore(state.search);
-export const getWebsiteMap = state => fromSearch.getWebsiteMap(state.search);
-export const getHasMoreObjectsForWebsite = state =>
-  fromSearch.getHasMoreObjectsForWebsite(state.search);
-export const getSearchInBox = state => fromSearch.getSearchInBox(state.search);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 
