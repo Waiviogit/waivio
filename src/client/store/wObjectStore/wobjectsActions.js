@@ -4,10 +4,10 @@ import { getAlbums } from '../../object/ObjectGallery/galleryActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
 import { generateRandomString } from '../../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
-import { getLocale } from '../reducers';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { getUsedLocale } from '../appStore/appSelectors';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getLocale } from '../settingsStore/settingsSelectors';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';

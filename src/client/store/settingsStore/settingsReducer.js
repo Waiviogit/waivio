@@ -1,8 +1,8 @@
 import { get } from 'lodash';
 import * as settingsTypes from './settingsActions';
-import * as authTypes from '../store/authStore/authActions';
-import { GET_USER_METADATA } from '../store/usersStore/usersActions';
-import { rewardsValues } from '../../common/constants/rewards';
+import * as authTypes from '../authStore/authActions';
+import { GET_USER_METADATA } from '../usersStore/usersActions';
+import { rewardsValues } from '../../../common/constants/rewards';
 
 const initialState = {
   locale: 'en-US',
@@ -88,17 +88,3 @@ const settings = (state = initialState, action) => {
 };
 
 export default settings;
-
-export const getIsLoading = state => state.loading;
-export const getLocale = state => get(state, 'locale', 'en-US');
-export const getReadLanguages = state => state.postLocales;
-export const getVotingPower = state => state.votingPower;
-export const getVotePercent = state => state.votePercent;
-export const getShowNSFWPosts = state => state.showNSFWPosts;
-export const getNightmode = state => state.nightmode;
-export const getRewriteLinks = state => !!state.rewriteLinks;
-export const getUpvoteSetting = state => state.upvoteSetting;
-export const getExitPageSetting = state => state.exitPageSetting;
-export const getRewardSetting = state => state.rewardSetting;
-export const getHiveBeneficiaryAccount = state => state.hiveBeneficiaryAccount;
-export const isOpenLinkModal = state => state.openLinkModal;

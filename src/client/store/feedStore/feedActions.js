@@ -5,13 +5,13 @@ import {
   getFeedFromState,
   getFeedLoadingFromState,
 } from '../../helpers/stateHelpers';
-import { getLocale, getReadLanguages } from '../reducers';
 
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLastPostId, getPosts } from '../postsStore/postsSelectors';
 import { getFeed } from './feedSelectors';
 import { getBookmarks as getBookmarksSelector } from '../bookmarksStore/bookmarksSelectors';
+import { getLocale, getReadLanguages } from '../settingsStore/settingsSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');

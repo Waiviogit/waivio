@@ -6,9 +6,9 @@ import { FormattedMessage } from 'react-intl';
 
 import LikeSection from '../LikeSection';
 import FollowObjectForm from '../FollowObjectForm';
-import { getVotingPower } from '../../store/reducers';
 import { getFollowingObjectsList } from '../../store/userStore/userSelectors';
 import { getObject } from '../../store/wObjectStore/wObjectSelectors';
+import { getVotingPower } from '../../store/settingsStore/settingsSelectors';
 
 const AppendFormFooter = ({ loading, form, handleSubmit, calcVote, votePercent, voteWorth }) => {
   const [isSliderVisible, setSliderVisibility] = useState(false);

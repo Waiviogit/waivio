@@ -6,7 +6,6 @@ import { injectIntl } from 'react-intl';
 import { get, size, isEmpty, filter } from 'lodash';
 import moment from 'moment';
 
-import { getLocale } from '../../store/reducers';
 import {
   openWalletTable,
   closeWalletTable,
@@ -45,6 +44,7 @@ import {
   getUsersTransactions,
   hasMoreGuestActions,
 } from '../../store/walletStore/walletSelectors';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
 
 import './WalletTable.less';
 

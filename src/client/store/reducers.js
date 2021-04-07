@@ -15,7 +15,7 @@ import favoritesReducer from './favoritesStore/favoritesReducer';
 import editorReducer from './editorStore/editorReducer';
 import walletReducer from './walletStore/walletReducer';
 import reblogReducers from './reblogStore/reblogReducers';
-import settingsReducer, * as fromSettings from '../settings/settingsReducer';
+import settingsReducer from './settingsStore/settingsReducer';
 import searchReducer, * as fromSearch from '../search/searchReducer';
 import wobjectReducer from './wObjectStore/wobjectReducer';
 import objectTypesReducer from './objectTypesStore/objectTypesReducer';
@@ -27,6 +27,7 @@ import rewardsReducer, * as fromRewards from '../rewards/rewardsReducer';
 import websiteReducer, * as fromWebsite from '../websites/websiteReducer';
 import referralReducer, * as fromReferral from '../rewards/ReferralProgram/ReferralReducer';
 import { getUsedLocale } from './appStore/appSelectors';
+import { getLocale } from './settingsStore/settingsSelectors';
 
 export default history =>
   combineReducers({
@@ -56,21 +57,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
-export const getLocale = state => fromSettings.getLocale(state.settings);
-export const getReadLanguages = state => fromSettings.getReadLanguages(state.settings);
-export const getVotingPower = state => fromSettings.getVotingPower(state.settings);
-export const getVotePercent = state => fromSettings.getVotePercent(state.settings);
-export const getShowNSFWPosts = state => fromSettings.getShowNSFWPosts(state.settings);
-export const getNightmode = state => fromSettings.getNightmode(state.settings);
-export const getRewriteLinks = state => fromSettings.getRewriteLinks(state.settings);
-export const getUpvoteSetting = state => fromSettings.getUpvoteSetting(state.settings);
-export const getExitPageSetting = state => fromSettings.getExitPageSetting(state.settings);
-export const getRewardSetting = state => fromSettings.getRewardSetting(state.settings);
-export const getHiveBeneficiaryAccount = state =>
-  fromSettings.getHiveBeneficiaryAccount(state.settings);
-export const isOpenLinkModal = state => fromSettings.isOpenLinkModal(state.settings);
 
 export const getSearchLoading = state => fromSearch.getSearchLoading(state.search);
 export const getSearchResults = state => fromSearch.getSearchResults(state.search);

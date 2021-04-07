@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { isEmpty } from 'lodash';
-import { getLocale } from '../../store/reducers';
 import OBJECT_TYPE from '../const/objectTypes';
 import { clearObjectFromStore, getObject } from '../../store/wObjectStore/wobjectsActions';
 import {
@@ -30,6 +29,7 @@ import {
   getWobjectIsFailed,
   getWobjectIsFatching,
 } from '../../store/wObjectStore/wObjectSelectors';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
 
 @withRouter
 @connect(

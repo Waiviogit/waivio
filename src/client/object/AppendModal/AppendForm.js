@@ -41,12 +41,7 @@ import {
   formFormFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
-import {
-  getSuitableLanguage,
-  getVotePercent,
-  getVotingPower,
-  getObjectAlbums,
-} from '../../store/reducers';
+import { getSuitableLanguage, getObjectAlbums } from '../../store/reducers';
 import LANGUAGES from '../../translations/languages';
 import { PRIMARY_COLOR } from '../../../common/constants/waivio';
 import { getLanguageText } from '../../translations';
@@ -97,6 +92,7 @@ import {
   getObjectTagCategory,
   getRatingFields,
 } from '../../store/wObjectStore/wObjectSelectors';
+import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
 
 import './AppendForm.less';
 

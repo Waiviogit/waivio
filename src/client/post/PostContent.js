@@ -12,7 +12,6 @@ import {
   replaceBotWithGuestName,
   getAuthorName,
 } from '../helpers/postHelpers';
-import { getVotingPower, getVotePercent } from '../store/reducers';
 import { editPost } from '../store/editorStore/editorActions';
 import {
   errorFollowingPostAuthor,
@@ -36,6 +35,7 @@ import { getPendingLikes } from '../store/postsStore/postsSelectors';
 import { getFollowingList } from '../store/userStore/userSelectors';
 import { getBookmarks, getPendingBookmarks } from '../store/bookmarksStore/bookmarksSelectors';
 import { getPendingReblogs, getRebloggedList } from '../store/reblogStore/reblogSelectors';
+import { getVotePercent, getVotingPower } from '../store/settingsStore/settingsSelectors';
 
 @injectIntl
 @connect(

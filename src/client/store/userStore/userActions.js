@@ -1,8 +1,6 @@
 import moment from 'moment';
 import { get } from 'lodash';
 import { message } from 'antd';
-
-import * as store from '../reducers';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { getDetailsBody, rewardPostContainerData } from '../../rewards/rewardsHelper';
@@ -15,6 +13,7 @@ import {
   getFollowingUpdatesFetched,
   getFollowingUsersUpdates,
 } from './userSelectors';
+import { getLocale } from '../settingsStore/settingsSelectors';
 
 require('isomorphic-fetch');
 
@@ -98,7 +97,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   const skip = 0;
   const limit = state.auth.user.objects_following_count;
   const authUserName = getAuthenticatedUserName(state);
-  const locale = store.getLocale(state);
+  const locale = getLocale(state);
 
   if (!username && !getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -117,7 +116,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
 export const GET_FOLLOWING_UPDATES = createAsyncActionType('@user/GET_FOLLOWING_UPDATES');
 export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
   const state = getState();
-  const locale = store.getLocale(state);
+  const locale = getLocale(state);
   const isUpdatesFetched = getFollowingUpdatesFetched(state);
   const userName = getAuthenticatedUserName(state);
 
@@ -179,7 +178,7 @@ export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SU
 export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
 
 export const getRecommendedObj = () => (dispatch, getState) => {
-  const locale = store.getLocale(getState());
+  const locale = getLocale(getState());
 
   return dispatch({
     type: GET_RECOMMENDED_OBJECTS,

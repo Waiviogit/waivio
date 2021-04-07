@@ -3,7 +3,8 @@ import { createAction } from 'redux-actions';
 
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { getWobjectGallery, getRelatedPhotos } from '../../../waivioApi/ApiClient';
-import { getLocale, getRelatedPhotos as relatedPhotos } from '../../store/reducers';
+import { getRelatedPhotos as relatedPhotos } from '../../store/reducers';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
 
 export const GET_ALBUMS = createAsyncActionType('@gallery/GET_ALBUMS');
 export const GET_RELATED_PHOTOS = createAsyncActionType('@gallery/GET_RELATED_PHOTOS');

@@ -2,7 +2,6 @@ import { createAction } from 'redux-actions';
 import { message } from 'antd';
 import { get, isEmpty } from 'lodash';
 
-import { getLocale } from '../reducers';
 import { getAllFollowing } from '../../helpers/apiHelpers';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { getChangedField } from '../../../waivioApi/ApiClient';
@@ -15,6 +14,7 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../authStore/authSelectors';
+import { getLocale } from '../settingsStore/settingsSelectors';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';

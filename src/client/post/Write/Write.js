@@ -14,8 +14,6 @@ import LastDraftsContainer from './LastDraftsContainer';
 import DeleteDraftModal from './DeleteDraftModal';
 import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 
-import { getUpvoteSetting, getRewardSetting } from '../../store/reducers';
-
 import { createPost, saveDraft, newPost } from '../../store/editorStore/editorActions';
 import Editor from '../../components/Editor/Editor';
 import Affix from '../../components/Utils/Affix';
@@ -25,6 +23,7 @@ import {
   getIsEditorLoading,
   getIsEditorSaving,
 } from '../../store/editorStore/editorSelectors';
+import { getRewardSetting, getUpvoteSetting } from '../../store/settingsStore/settingsSelectors';
 
 @injectIntl
 @withRouter

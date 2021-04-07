@@ -3,19 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
-import {
-  getLocale,
-  getReadLanguages,
-  getVotingPower,
-  getIsSettingsLoading,
-  getVotePercent,
-  getShowNSFWPosts,
-  getNightmode,
-  getRewriteLinks,
-  getUpvoteSetting,
-  getExitPageSetting,
-} from '../store/reducers';
-import { saveSettings } from './settingsActions';
+import { saveSettings } from '../store/settingsStore/settingsActions';
 import { reload } from '../store/authStore/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Action from '../components/Button/Action';
@@ -29,6 +17,18 @@ import {
   getIsReloading,
   isGuestUser,
 } from '../store/authStore/authSelectors';
+import {
+  getExitPageSetting,
+  getIsSettingsLoading,
+  getLocale,
+  getNightmode,
+  getReadLanguages,
+  getRewriteLinks,
+  getShowNSFWPosts,
+  getUpvoteSetting,
+  getVotePercent,
+  getVotingPower,
+} from '../store/settingsStore/settingsSelectors';
 
 import './Settings.less';
 

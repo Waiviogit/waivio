@@ -12,16 +12,16 @@ import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
 import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
 import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common/constants/waivio';
-import { setUsersStatus } from '../../settings/settingsActions';
+import { setUsersStatus } from '../../store/settingsStore/settingsActions';
 import { getUserFeedContent } from '../../store/feedStore/feedActions';
 import { followUser, unfollowUser } from '../../store/usersStore/usersActions';
-import { getLocale } from '../../store/reducers';
 import { getRecommendTopic, getUsers } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
 } from '../../store/authStore/authSelectors';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
 
 import './WelcomeModal.less';
 

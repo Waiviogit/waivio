@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { Form, Select, Modal, message } from 'antd';
 import LANGUAGES from '../../translations/languages';
-import { getSuitableLanguage, getVotePercent } from '../../store/reducers';
+import { getSuitableLanguage } from '../../store/reducers';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
@@ -21,6 +21,7 @@ import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import { getFollowingObjectsList } from '../../store/userStore/userSelectors';
 import { getObject, getObjectTagCategory } from '../../store/wObjectStore/wObjectSelectors';
+import { getVotePercent } from '../../store/settingsStore/settingsSelectors';
 
 import './CreateTag.less';
 

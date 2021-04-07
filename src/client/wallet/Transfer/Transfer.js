@@ -11,11 +11,7 @@ import { HBD, HIVE } from '../../../common/constants/cryptos';
 import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import { closeTransfer, sendPendingTransfer } from '../../store/walletStore/walletActions';
 import { notify } from '../../app/Notification/notificationActions';
-import {
-  getSearchUsersResults,
-  getHiveBeneficiaryAccount,
-  isOpenLinkModal,
-} from '../../store/reducers';
+import { getSearchUsersResults } from '../../store/reducers';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import { BANK_ACCOUNT } from '../../../common/constants/waivio';
@@ -24,7 +20,7 @@ import Avatar from '../../components/Avatar';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { REWARD } from '../../../common/constants/rewards';
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
-import { saveSettings, openLinkHiveAccountModal } from '../../settings/settingsActions';
+import { saveSettings, openLinkHiveAccountModal } from '../../store/settingsStore/settingsActions';
 import { createQuery } from '../../helpers/apiHelpers';
 import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
 import {
@@ -43,6 +39,10 @@ import {
   getTransferMemo,
   getTransferTo,
 } from '../../store/walletStore/walletSelectors';
+import {
+  getHiveBeneficiaryAccount,
+  isOpenLinkModal,
+} from '../../store/settingsStore/settingsSelectors';
 
 import './Transfer.less';
 
