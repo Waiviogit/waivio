@@ -17,8 +17,7 @@ import {
   hasType,
 } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
-import { appendObject } from '../appendActions';
-import { getIsAppendLoading } from '../../store/reducers';
+import { appendObject } from '../../store/appendStore/appendActions';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { getObject } from '../../../waivioApi/ApiClient';
@@ -32,6 +31,7 @@ import {
   getWobjectNested,
 } from '../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import { getIsAppendLoading } from '../../store/appendStore/appendSelectors';
 
 import './ObjectOfTypePage.less';
 

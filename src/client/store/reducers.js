@@ -20,7 +20,7 @@ import searchReducer from './searchStore/searchReducer';
 import wobjectReducer from './wObjectStore/wobjectReducer';
 import objectTypesReducer from './objectTypesStore/objectTypesReducer';
 import objectTypeReducer from './objectTypeStore/objectTypeReducer';
-import appendReducer, * as fromAppend from '../object/appendReducer';
+import appendReducer from './appendStore/appendReducer';
 import galleryReducer, * as fromGallery from '../object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../components/Maps/mapReducer';
 import rewardsReducer, * as fromRewards from '../rewards/rewardsReducer';
@@ -57,8 +57,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 
 export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
 export const getIsObjectAlbumsLoading = state =>

@@ -14,7 +14,7 @@ import {
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
 import { setCatalogBreadCrumbs, setNestedWobject } from '../../store/wObjectStore/wobjActions';
-import { appendObject } from '../appendActions';
+import { appendObject } from '../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
 import { getHelmetIcon, getScreenSize } from '../../store/appStore/appSelectors';

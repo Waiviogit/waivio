@@ -63,7 +63,7 @@ import {
   getFormItems,
   getNewsFilterItems,
 } from '../../helpers/wObjectHelper';
-import { appendObject } from '../appendActions';
+import { appendObject } from '../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
 import { getVoteValue } from '../../helpers/user';
 import { getExposedFieldsByObjType, sortListItemsBy } from '../wObjectHelper';

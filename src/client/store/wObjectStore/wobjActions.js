@@ -6,7 +6,7 @@ import { getAllFollowing } from '../../helpers/apiHelpers';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { getChangedField } from '../../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
-import { APPEND_WAIVIO_OBJECT } from '../../object/appendActions';
+import { APPEND_WAIVIO_OBJECT } from '../appendStore/appendActions';
 import { BELL_USER_NOTIFICATION } from '../userStore/userActions';
 import { isPostCashout } from '../../vendor/steemitHelpers';
 import {

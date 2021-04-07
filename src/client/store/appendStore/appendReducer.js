@@ -29,5 +29,3 @@ export default (state = defaultState, action) => {
       return state;
   }
 };
-
-export const getIsAppendLoading = state => state.loading;

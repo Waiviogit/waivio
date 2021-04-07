@@ -9,7 +9,7 @@ import LANGUAGES from '../../translations/languages';
 import { getSuitableLanguage } from '../../store/reducers';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { objectFields } from '../../../common/constants/listOfFields';
-import { appendObject } from '../appendActions';
+import { appendObject } from '../../store/appendStore/appendActions';
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';

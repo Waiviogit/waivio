@@ -9,7 +9,7 @@ import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/val
 import { getObjectAlbums } from '../../store/reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
-import * as appendActions from '../appendActions';
+import * as appendActions from '../../store/appendStore/appendActions';
 import {
   generatePermlink,
   prepareImageToStore,
