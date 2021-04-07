@@ -1,15 +1,15 @@
 import {
-  getUser,
-  getTopExperts,
-  getIsUserLoaded,
   getIsUserFailed,
-  getRandomExperts,
   getIsUserFetching,
-  getTopExpertsLoading,
-  getTopExpertsHasMore,
+  getIsUserLoaded,
+  getRandomExperts,
   getRandomExpertsLoaded,
   getRandomExpertsLoading,
-} from '../../store/reducers';
+  getTopExperts,
+  getTopExpertsHasMore,
+  getTopExpertsLoading,
+  getUser,
+} from '../../store/usersStore/usersSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

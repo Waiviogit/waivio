@@ -1,5 +1,5 @@
 import { each, find, omit, get } from 'lodash';
-import * as feedTypes from '../../feed/feedActions';
+import * as feedTypes from '../feedStore/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../commentsStore/commentsActions';
 import { getPostKey } from '../../helpers/stateHelpers';

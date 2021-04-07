@@ -1,8 +1,8 @@
 import { get, keyBy, orderBy, slice } from 'lodash';
-import * as authActions from '../store/authStore/authActions';
+import * as authActions from '../authStore/authActions';
 import * as userActions from './userActions';
-import * as wobjActions from '../object/wobjActions';
-import * as appTypes from '../store/appStore/appActions';
+import * as wobjActions from '../../object/wobjActions';
+import * as appTypes from '../appStore/appActions';
 
 const initialState = {
   recommendedObjects: [],
@@ -350,22 +350,3 @@ export default function userReducer(state = initialState, action) {
     }
   }
 }
-
-export const getFollowingList = state => Object.keys(state.following.list);
-export const getFollowingObjectsList = state => state.followingObjects.list;
-export const getPendingFollows = state => state.following.pendingFollows;
-export const getPendingFollowingObjects = state => state.followingObjects.pendingFollows;
-export const getIsFetchingFollowingList = state => state.following.isFetching;
-export const getRecommendedObjects = state => state.recommendedObjects;
-export const getFollowingFetched = state => state.following.fetched;
-export const getNotifications = state => state.notifications;
-export const getIsLoadingNotifications = state => state.loadingNotifications;
-export const getFetchFollowListError = state => state.fetchFollowListError;
-export const getLatestNotification = state => state.latestNotification;
-export const getUserLocation = state => state.location;
-export const getFollowingUpdates = state => state.followingUpdates;
-export const getFollowingUsersUpdates = state => state.followingUpdates.usersUpdates;
-export const getFollowingObjectsUpdatesByType = (state, objType) =>
-  get(state, ['followingUpdates', 'objectsUpdates', objType, 'related_wobjects'], []);
-export const getFollowingUpdatesFetched = state => state.followingUpdates.fetched;
-export const getPendingUpdate = state => state.pendingUpdate;

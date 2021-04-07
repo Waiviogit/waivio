@@ -8,7 +8,7 @@ import { message } from 'antd';
 import { getLocale } from '../../../store/reducers';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
-import { assignProposition, declineProposition } from '../../../user/userActions';
+import { assignProposition, declineProposition } from '../../../store/userStore/userActions';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 

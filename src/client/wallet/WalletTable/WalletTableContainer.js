@@ -12,7 +12,6 @@ import {
   getTotalVestingFundSteem,
   getTotalVestingShares,
   getTransactions,
-  getUser,
   getUserHasMoreTable,
   getUsersTransactions,
   getIsloadingMoreTableTransactions,
@@ -45,6 +44,7 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
 } from '../../store/authStore/authSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
 
 import './WalletTable.less';
 

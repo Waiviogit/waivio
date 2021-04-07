@@ -13,8 +13,8 @@ import FollowButton from '../../widgets/FollowButton';
 import { followWobject, unfollowWobject } from '../../object/wobjActions';
 import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common/constants/waivio';
 import { setUsersStatus } from '../../settings/settingsActions';
-import { getUserFeedContent } from '../../feed/feedActions';
-import { followUser, unfollowUser } from '../../user/usersActions';
+import { getUserFeedContent } from '../../store/feedStore/feedActions';
+import { followUser, unfollowUser } from '../../store/usersStore/usersActions';
 import { getLocale } from '../../store/reducers';
 import { getRecommendTopic, getUsers } from '../../../waivioApi/ApiClient';
 import {

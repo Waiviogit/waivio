@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { notification } from 'antd';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
-import { getLatestNotification } from '../store/reducers';
 import {
   getNotificationsMessage,
   getNotificationsLink,
@@ -14,6 +13,7 @@ import {
 import { epochToUTC } from '../helpers/formatter';
 import Avatar from '../components/Avatar';
 import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getLatestNotification } from '../store/userStore/userSelectors';
 
 import './NotificationPopup.less';
 

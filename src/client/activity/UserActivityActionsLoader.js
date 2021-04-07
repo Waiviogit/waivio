@@ -9,11 +9,11 @@ import {
   getCurrentFilteredActions,
   getAccountHistoryFilter,
   getUserHasMoreAccountHistory,
-  getUser,
   getUsersAccountHistory,
 } from '../store/reducers';
 import Loading from '../components/Icon/Loading';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 @withRouter
 @connect((state, ownProps) => ({

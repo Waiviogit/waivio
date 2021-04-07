@@ -21,6 +21,7 @@ import {
   getIsAuthFetching,
   isGuestUser,
 } from '../../store/authStore/authSelectors';
+import { getFeed } from '../../store/feedStore/feedSelectors';
 
 @withRouter
 @connect(state => ({
@@ -29,7 +30,7 @@ import {
   isAuthFetching: getIsAuthFetching(state),
   locale: store.getLocale(state),
   isGuest: isGuestUser(state),
-  feed: store.getFeed(state),
+  feed: getFeed(state),
 }))
 export default class RightSidebar extends React.Component {
   static propTypes = {

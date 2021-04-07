@@ -15,7 +15,7 @@ import Loading from '../components/Icon/Loading';
 import requiresLogin from '../auth/requiresLogin';
 import LinkHiveAccountModal from './LinkHiveAccountModal';
 import EmailConfirmation from '../widgets/EmailConfirmation';
-import { getUserPrivateEmail } from '../user/usersActions';
+import { getUserPrivateEmail } from '../store/usersStore/usersActions';
 import {
   getAuthenticatedUserName,
   getAuthenticatedUserPrivateEmail,

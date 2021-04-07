@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { getFeedContent } from './feedActions';
+import { getFeedContent } from '../store/feedStore/feedActions';
 import { getObject as getObjectState } from '../store/reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';

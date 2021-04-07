@@ -11,6 +11,7 @@ import PostContent from './PostContent';
 import Comments from '../comments/Comments';
 import { getFacebookShareURL, getTwitterShareURL } from '../helpers/socialProfiles';
 import BBackTop from '../components/BBackTop';
+
 import './PostModal.less';
 
 class PostModal extends React.Component {

@@ -19,7 +19,7 @@ import {
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
 import { editPost } from '../store/editorStore/editorActions';
 import { reblog } from '../app/Reblog/reblogActions';
-import { unfollowUser, followUser } from '../user/usersActions';
+import { unfollowUser, followUser } from '../store/usersStore/usersActions';
 import { getDownvotes, getUpvotes } from '../helpers/voteHelpers';
 import { getRewardFund } from '../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../store/authStore/authSelectors';

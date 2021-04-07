@@ -5,10 +5,10 @@ import { connectRouter } from 'connected-react-router';
 import appReducer from './appStore/appReducer';
 import authReducer from './authStore/authReducer';
 import commentsReducer from './commentsStore/commentsReducer';
-import feedReducer, * as fromFeed from '../feed/feedReducer';
+import feedReducer from './feedStore/feedReducer';
 import postsReducer from './postsStore/postsReducer';
-import userReducer, * as fromUser from '../user/userReducer';
-import usersReducer, * as fromUsers from '../user/usersReducer';
+import userReducer from './userStore/userReducer';
+import usersReducer from './usersStore/usersReducer';
 import notificationReducer from '../app/Notification/notificationReducers';
 import bookmarksReducer, * as fromBookmarks from '../bookmarks/bookmarksReducer';
 import favoritesReducer, * as fromFavorites from '../favorites/favoritesReducer';
@@ -18,8 +18,8 @@ import reblogReducers, * as fromReblog from '../app/Reblog/reblogReducers';
 import settingsReducer, * as fromSettings from '../settings/settingsReducer';
 import searchReducer, * as fromSearch from '../search/searchReducer';
 import wobjectReducer, * as fromObject from '../object/wobjectReducer';
-import objectTypesReducer, * as fromObjectTypes from '../objectTypes/objectTypesReducer';
-import objectTypeReducer, * as fromObjectType from '../objectTypes/objectTypeReducer';
+import objectTypesReducer from './objectTypesStore/objectTypesReducer';
+import objectTypeReducer from './objectTypeStore/objectTypeReducer';
 import appendReducer, * as fromAppend from '../object/appendReducer';
 import galleryReducer, * as fromGallery from '../object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../components/Maps/mapReducer';
@@ -57,47 +57,11 @@ export default history =>
     website: websiteReducer,
   });
 
-export const getFeed = state => fromFeed.getFeed(state.feed);
-
 export const getBookmarks = state => fromBookmarks.getBookmarks(state.bookmarks);
 export const getPendingBookmarks = state => fromBookmarks.getPendingBookmarks(state.bookmarks);
 
 export const getRebloggedList = state => fromReblog.getRebloggedList(state.reblog);
 export const getPendingReblogs = state => fromReblog.getPendingReblogs(state.reblog);
-
-export const getFollowingList = state => fromUser.getFollowingList(state.user);
-export const getFollowingObjectsList = state => fromUser.getFollowingObjectsList(state.user);
-export const getPendingFollows = state => fromUser.getPendingFollows(state.user);
-export const getPendingFollowingObjects = state => fromUser.getPendingFollowingObjects(state.user);
-export const getIsFetchingFollowingList = state => fromUser.getIsFetchingFollowingList(state.user);
-export const getRecommendedObjects = state => fromUser.getRecommendedObjects(state.user);
-export const getFollowingFetched = state => fromUser.getFollowingFetched(state.user);
-export const getNotifications = state => fromUser.getNotifications(state.user);
-export const getIsLoadingNotifications = state => fromUser.getIsLoadingNotifications(state.user);
-export const getFetchFollowListError = state => fromUser.getFetchFollowListError(state.user);
-export const getLatestNotification = state => fromUser.getLatestNotification(state.user);
-export const getUserLocation = state => fromUser.getUserLocation(state.user);
-export const getFollowingUpdates = state => fromUser.getFollowingUpdates(state.user);
-export const getFollowingUsersUpdates = state => fromUser.getFollowingUsersUpdates(state.user);
-export const getFollowingObjectsUpdatesByType = (state, objType) =>
-  fromUser.getFollowingObjectsUpdatesByType(state.user, objType);
-export const getFollowingUpdatesFetched = state => fromUser.getFollowingUpdatesFetched(state.user);
-export const getPendingUpdate = state => fromUser.getPendingUpdate(state.user);
-
-export const getUser = (state, username) => fromUsers.getUser(state.users, username);
-export const getIsUserFetching = (state, username) =>
-  fromUsers.getIsUserFetching(state.users, username);
-export const getIsUserLoaded = (state, username) =>
-  fromUsers.getIsUserLoaded(state.users, username);
-export const getIsUserFailed = (state, username) =>
-  fromUsers.getIsUserFailed(state.users, username);
-export const getTopExperts = state => fromUsers.getTopExperts(state.users);
-export const getTopExpertsLoading = state => fromUsers.getTopExpertsLoading(state.users);
-export const getTopExpertsHasMore = state => fromUsers.getTopExpertsHasMore(state.users);
-export const getRandomExperts = state => fromUsers.getRandomExperts(state.users);
-export const getRandomExpertsLoaded = state => fromUsers.getRandomExpertsLoaded(state.users);
-export const getRandomExpertsLoading = state => fromUsers.getRandomExpertsLoading(state.users);
-export const getAllUsers = state => fromUsers.getAllUsers(state.users);
 
 export const getFavoriteCategories = state => fromFavorites.getFavoriteCategories(state.favorites);
 
@@ -216,28 +180,6 @@ export const getBreadCrumbs = state => fromObject.getBreadCrumbs(state.object);
 export const getWobjectNested = state => fromObject.getWobjectNested(state.object);
 export const getObjectLists = state => fromObject.getObjectLists(state.object);
 export const getLoadingFlag = state => fromObject.getLoadingFlag(state.object);
-
-export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
-export const getObjectTypesLoading = state =>
-  fromObjectTypes.getObjectTypesLoading(state.objectTypes);
-
-export const getObjectTypeState = state => fromObjectType.getObjectType(state.objectType);
-export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading(state.objectType);
-export const getFilteredObjects = state => fromObjectType.getFilteredObjects(state.objectType);
-export const getFilteredObjectsMap = state =>
-  fromObjectType.getFilteredObjectsMap(state.objectType);
-
-export const getUpdatedMapDiscover = state =>
-  fromObjectType.getUpdatedMapDiscover(state.objectType);
-export const getHasMoreRelatedObjects = state =>
-  fromObjectType.getHasMoreRelatedObjects(state.objectType);
-export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);
-export const getActiveFilters = state => fromObjectType.getActiveFilters(state.objectType);
-export const getTypeName = state => fromObjectType.getTypeName(state.objectType);
-export const getHasMap = state => fromObjectType.getHasMap(state.objectType);
-export const getObjectTypeSorting = state => fromObjectType.getSorting(state.objectType);
-export const getFiltersTags = state => fromObjectType.getFiltersTags(state.objectType);
-export const getActiveFiltersTags = state => fromObjectType.getActiveFiltersTags(state.objectType);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 

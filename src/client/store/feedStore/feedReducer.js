@@ -1,7 +1,7 @@
 import { uniq } from 'lodash';
 import * as feedTypes from './feedActions';
-import { TOGGLE_BOOKMARK } from '../bookmarks/bookmarksActions';
-import { getPostKey } from '../helpers/stateHelpers';
+import { TOGGLE_BOOKMARK } from '../../bookmarks/bookmarksActions';
+import { getPostKey } from '../../helpers/stateHelpers';
 
 const initialState = {
   feed: {},
@@ -237,5 +237,3 @@ const feed = (state = initialState, action) => {
 };
 
 export default feed;
-
-export const getFeed = state => state;

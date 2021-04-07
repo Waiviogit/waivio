@@ -17,7 +17,6 @@ import {
   getPendingBookmarks,
   getRebloggedList,
   getPendingReblogs,
-  getFollowingList,
   getVotingPower,
   getVotePercent,
 } from '../store/reducers';
@@ -31,7 +30,7 @@ import {
 } from '../store/postsStore/postActions';
 import { reblog } from '../app/Reblog/reblogActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
-import { followUser, unfollowUser } from '../user/userActions';
+import { followUser, unfollowUser } from '../store/userStore/userActions';
 import { getAvatarURL } from '../components/Avatar';
 import { getHtml } from '../components/Story/Body';
 import { jsonParse } from '../helpers/formatter';
@@ -41,6 +40,7 @@ import { getAppUrl, getHelmetIcon, getRewardFund } from '../store/appStore/appSe
 import { getAuthenticatedUser } from '../store/authStore/authSelectors';
 import { getIsEditorSaving } from '../store/editorStore/editorSelectors';
 import { getPendingLikes } from '../store/postsStore/postsSelectors';
+import { getFollowingList } from '../store/userStore/userSelectors';
 
 @injectIntl
 @connect(
