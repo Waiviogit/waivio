@@ -1637,6 +1637,7 @@
   "eligible_rewards": "Eligible rewards",
   "reserved_rewards": "Reserved rewards",
   "middle": "Middle",
-  "middle_right": "Middle + Right",
-  "entire": "Entire Width"
+  "middleRight": "Middle + Right",
+  "entire": "Entire Width",
+  "new_accounts": "New accounts"
 }

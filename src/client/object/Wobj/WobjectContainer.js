@@ -184,23 +184,21 @@ export default class WobjectContainer extends React.Component {
       );
 
     return (
-      <React.Fragment>
-        <Wobj
-          route={route}
-          authenticated={authenticated}
-          failed={failed}
-          authenticatedUserName={authenticatedUserName}
-          match={match}
-          wobject={wobject}
-          isFetching={isFetching}
-          history={history}
-          isEditMode={isEditMode}
-          toggleViewEditMode={this.toggleViewEditMode}
-          objectName={objectName}
-          appendAlbum={this.appendAlbum}
-          helmetIcon={this.props.helmetIcon}
-        />
-      </React.Fragment>
+      <Wobj
+        route={route}
+        authenticated={authenticated}
+        failed={failed}
+        authenticatedUserName={authenticatedUserName}
+        match={match}
+        wobject={wobject}
+        isFetching={isFetching}
+        history={history}
+        isEditMode={isEditMode}
+        toggleViewEditMode={this.toggleViewEditMode}
+        objectName={objectName}
+        appendAlbum={this.appendAlbum}
+        helmetIcon={this.props.helmetIcon}
+      />
     );
   }
 }
