@@ -19,7 +19,7 @@ import {
   configUsersWebsitesTableHeader,
 } from '../../constants/tableConfig';
 import Loading from '../../../components/Icon/Loading';
-import { openTransfer } from '../../../wallet/walletActions';
+import { openTransfer } from '../../../store/walletStore/walletActions';
 import Transfer from '../../../wallet/Transfer/Transfer';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 

@@ -6,7 +6,7 @@ import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import Action from '../../components/Button/Action';
-import { openTransfer } from '../../wallet/walletActions';
+import { openTransfer } from '../../store/walletStore/walletActions';
 import { getHiveBeneficiaryAccount } from '../../store/reducers';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
 import { guestUserRegex } from '../../helpers/regexHelpers';

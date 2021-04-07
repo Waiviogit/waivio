@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
-import { openTransfer } from '../../wallet/walletActions';
+import { openTransfer } from '../../store/walletStore/walletActions';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { getHiveBeneficiaryAccount } from '../../store/reducers';

@@ -11,7 +11,7 @@ import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
 import { findLanguage, getRequestLocale, loadLanguage } from './translations';
-import { getLocale, getNightmode, getIsOpenWalletTable } from './store/reducers';
+import { getLocale, getNightmode } from './store/reducers';
 import {
   login,
   busyLogin,
@@ -43,6 +43,7 @@ import {
   getIsAuthFetching,
   isGuestUser,
 } from './store/authStore/authSelectors';
+import { getIsOpenWalletTable } from './store/walletStore/walletSelectors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 

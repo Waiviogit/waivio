@@ -12,7 +12,6 @@ import {
 } from 'react-intl';
 import urlParse from 'url-parse';
 import { calculateVotePower } from '../../helpers/user';
-import { getUsersAccountHistory } from '../../store/reducers';
 import { calculateDownVote, calcReputation, dHive } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
@@ -23,6 +22,7 @@ import { getTimeFromLastAction } from '../../helpers/accountHistoryHelper';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 import { getAllUsers, getUser } from '../../store/usersStore/usersSelectors';
+import { getUsersAccountHistory } from '../../store/walletStore/walletSelectors';
 
 @injectIntl
 @connect((state, ownProps) => ({

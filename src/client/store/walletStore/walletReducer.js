@@ -1,6 +1,6 @@
 import { get, slice, filter, concat, last, uniqWith, isEqual } from 'lodash';
 import * as walletActions from './walletActions';
-import { actionsFilter, ACTIONS_DISPLAY_LIMIT } from '../helpers/accountHistoryHelper';
+import { actionsFilter, ACTIONS_DISPLAY_LIMIT } from '../../helpers/accountHistoryHelper';
 
 const initialState = {
   transferVisible: false,
@@ -356,45 +356,3 @@ export default function walletReducer(state = initialState, action) {
       return state;
   }
 }
-
-export const getIsTransferVisible = state => state.transferVisible;
-export const getTransferTo = state => state.transferTo;
-export const getTransferAmount = state => state.amount;
-export const getTransferCurrency = state => state.currency;
-export const getTransferMemo = state => state.memo;
-export const getTransferApp = state => state.app;
-export const getTransferIsTip = state => state.isTip;
-export const getIsPowerUpOrDownVisible = state => state.powerUpOrDownVisible;
-export const getIsPowerDown = state => state.powerDown;
-export const getTotalVestingShares = state => state.totalVestingShares;
-export const getTotalVestingFundSteem = state => state.totalVestingFundSteem;
-export const getUsersTransactions = state => state.usersTransactions;
-export const getTransactions = state => state.transactionsHistory;
-export const getTableTransactions = state => state.tableTransactionsHistory;
-export const getUserHasMore = state => state.hasMore;
-export const getUserHasMoreTable = state => state.hasMoreTable;
-export const getUsersEstAccountsValues = state => state.usersEstAccountsValues;
-export const getUsersAccountHistoryLoading = state => state.usersAccountHistoryLoading;
-export const getLoadingEstAccountValue = state => state.loadingEstAccountValue;
-export const getLoadingGlobalProperties = state => state.loadingGlobalProperties;
-export const getUsersAccountHistory = state => state.usersAccountHistory;
-export const getLoadingMoreUsersAccountHistory = state => state.loadingMoreUsersAccountHistory;
-export const getUserHasMoreAccountHistory = (state, username) => {
-  const lastAction = last(state.usersAccountHistory[username]) || {};
-
-  return lastAction.actionCount !== 1 && lastAction.actionCount !== 0;
-};
-export const getAccountHistoryFilter = state => state.accountHistoryFilter;
-export const getCurrentDisplayedActions = state => state.currentDisplayedActions;
-export const getCurrentFilteredActions = state => state.currentFilteredActions;
-export const getStatusWithdraw = state => state.withdrawOpen;
-export const hasMoreGuestActions = state => state.hasMoreGuestActions;
-export const getIsErrorLoading = state => state.isErrorLoading;
-export const getIsErrorLoadingTable = state => state.isErrorLoadingTableTransactions;
-export const getOperationNum = state => state.operationNum;
-export const getTableOperationNum = state => state.operationNumTable;
-export const getIsloadingMoreTransactions = state => state.loadingMoreTransactions;
-export const getIsloadingMoreTableTransactions = state => state.loadingMoreTableTransactions;
-export const getIsloadingTableTransactions = state => state.tableTransactionsHistoryLoading;
-export const getIsOpenWalletTable = state => state.isOpenWalletTable;
-export const getIsTransactionsHistoryLoading = state => state.transactionsHistoryLoading;

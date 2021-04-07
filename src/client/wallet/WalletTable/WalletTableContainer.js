@@ -6,22 +6,7 @@ import { injectIntl } from 'react-intl';
 import { get, size, isEmpty, filter } from 'lodash';
 import moment from 'moment';
 
-import {
-  getTableOperationNum,
-  getTableTransactions,
-  getTotalVestingFundSteem,
-  getTotalVestingShares,
-  getTransactions,
-  getUserHasMoreTable,
-  getUsersTransactions,
-  getIsloadingMoreTableTransactions,
-  getLoadingMoreUsersAccountHistory,
-  getUsersAccountHistory,
-  hasMoreGuestActions,
-  getIsErrorLoadingTable,
-  getIsloadingTableTransactions,
-  getLocale,
-} from '../../store/reducers';
+import { getLocale } from '../../store/reducers';
 import {
   openWalletTable,
   closeWalletTable,
@@ -31,7 +16,7 @@ import {
   getMoreUserAccountHistory,
   clearTransactionsHistory,
   getUserAccountHistory,
-} from '../walletActions';
+} from '../../store/walletStore/walletActions';
 import {
   getDataDemoTransactions,
   handleLoadMoreTransactions,
@@ -45,6 +30,21 @@ import {
   getAuthenticatedUserName,
 } from '../../store/authStore/authSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
+import {
+  getIsErrorLoadingTable,
+  getIsloadingMoreTableTransactions,
+  getIsloadingTableTransactions,
+  getLoadingMoreUsersAccountHistory,
+  getTableOperationNum,
+  getTableTransactions,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+  getTransactions,
+  getUserHasMoreTable,
+  getUsersAccountHistory,
+  getUsersTransactions,
+  hasMoreGuestActions,
+} from '../../store/walletStore/walletSelectors';
 
 import './WalletTable.less';
 

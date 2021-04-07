@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { openTransfer, openPowerUpOrDown, openWithdraw } from '../../wallet/walletActions';
+import {
+  openTransfer,
+  openPowerUpOrDown,
+  openWithdraw,
+} from '../../store/walletStore/walletActions';
 import { getHiveBeneficiaryAccount } from '../../store/reducers';
 import { HIVE, HBD } from '../../../common/constants/cryptos';
 import Action from '../Button/Action';

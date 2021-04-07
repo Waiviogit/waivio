@@ -1,17 +1,17 @@
 import { each, get, last, findIndex, isEmpty, filter } from 'lodash';
 import { createAction } from 'redux-actions';
-import formatter from '../helpers/steemitFormatter';
-import { createAsyncActionType } from '../helpers/stateHelpers';
+import formatter from '../../helpers/steemitFormatter';
+import { createAsyncActionType } from '../../helpers/stateHelpers';
 import {
   getAccountHistory,
   getDynamicGlobalProperties,
   isWalletTransaction,
   defaultAccountLimit,
-} from '../helpers/apiHelpers';
-import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
-import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
-import { guestUserRegex } from '../helpers/regexHelpers';
-import * as ApiClient from '../../waivioApi/ApiClient';
+} from '../../helpers/apiHelpers';
+import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../../helpers/accountHistoryHelper';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../../common/constants/waivio';
+import { guestUserRegex } from '../../helpers/regexHelpers';
+import * as ApiClient from '../../../waivioApi/ApiClient';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';

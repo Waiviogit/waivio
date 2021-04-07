@@ -9,21 +9,12 @@ import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
 import { getCryptoPriceHistory } from '../../store/appStore/appActions';
-import { closeTransfer, sendPendingTransfer } from '../walletActions';
+import { closeTransfer, sendPendingTransfer } from '../../store/walletStore/walletActions';
 import { notify } from '../../app/Notification/notificationActions';
 import {
-  getIsTransferVisible,
-  getTransferAmount,
-  getTransferCurrency,
-  getTransferMemo,
-  getTransferApp,
-  getTransferTo,
   getSearchUsersResults,
-  getTotalVestingShares,
-  getTotalVestingFundSteem,
   getHiveBeneficiaryAccount,
   isOpenLinkModal,
-  getTransferIsTip,
 } from '../../store/reducers';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -41,6 +32,17 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../../store/authStore/authSelectors';
+import {
+  getIsTransferVisible,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+  getTransferAmount,
+  getTransferApp,
+  getTransferCurrency,
+  getTransferIsTip,
+  getTransferMemo,
+  getTransferTo,
+} from '../../store/walletStore/walletSelectors';
 
 import './Transfer.less';
 
