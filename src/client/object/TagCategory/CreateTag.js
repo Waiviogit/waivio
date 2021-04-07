@@ -9,7 +9,6 @@ import LANGUAGES from '../../translations/languages';
 import {
   getObjectTagCategory,
   getObject,
-  getFollowingObjectsList,
   getSuitableLanguage,
   getVotePercent,
 } from '../../store/reducers';
@@ -25,6 +24,7 @@ import { getLanguageText } from '../../translations';
 import { getVoteValue } from '../../helpers/user';
 import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getFollowingObjectsList } from '../../store/userStore/userSelectors';
 
 import './CreateTag.less';
 

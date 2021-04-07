@@ -17,14 +17,14 @@ import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpe
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { clearBeneficiariesUsers } from '../../search/searchActions';
-import { getHiveBeneficiaryAccount, getLocale } from '../../store/reducers';
+import { getHiveBeneficiaryAccount, getLocale } from '../reducers';
 import {
   getCurrentHost,
   getIsWaivio,
   getTranslationByKey,
   getWebsiteBeneficiary,
-} from '../../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+} from '../appStore/appSelectors';
+import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -327,7 +327,8 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
             });
           }
           if (isGuest) {
-            const publicMessage = getTranslationByKey(state, 'post_publication');
+            const getMessage = getTranslationByKey('post_publication');
+            const publicMessage = getMessage(state);
 
             if (upvote) {
               steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);

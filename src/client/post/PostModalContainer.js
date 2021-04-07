@@ -2,12 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 import * as PropTypes from 'prop-types';
-import { getUser, getPostContent, getPostTags, getPostCities } from '../store/reducers';
-import { getSocialInfoPost as getSocialInfoPostAction } from './postActions';
+import { getSocialInfoPost as getSocialInfoPostAction } from '../store/postsStore/postActions';
 import { hidePostModal as hidePostModalAction } from '../store/appStore/appActions';
 import PostModal from './PostModal';
 import { getCurrentShownPost, getShowPostModal } from '../store/appStore/appSelectors';
 import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
+import { getPostCities, getPostContent, getPostTags } from '../store/postsStore/postsSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 const PostModalContainer = ({
   showPostModal,
@@ -65,16 +66,17 @@ export default connect(
     const currentShownPost = getCurrentShownPost(state);
     const author = get(currentShownPost, 'author');
     const permlink = get(currentShownPost, 'permlink');
+    const getContent = getPostContent(permlink, author);
 
     return {
       showPostModal: getShowPostModal(state),
       author: getUser(state, author),
       currentShownPost,
-      shownPostContents: getPostContent(state, permlink, author),
+      shownPostContents: getContent(state),
       isGuest: isGuestUser(state),
       userName: getAuthenticatedUserName(state),
-      postTags: getPostTags(state, author, permlink),
-      postCities: getPostCities(state, author, permlink),
+      postTags: getPostTags(state, { author, permlink }),
+      postCities: getPostCities(state, { author, permlink }),
     };
   },
   {

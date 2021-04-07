@@ -1,8 +1,8 @@
 import { each, find, omit, get } from 'lodash';
-import * as feedTypes from '../feed/feedActions';
+import * as feedTypes from '../feedStore/feedActions';
 import * as postsActions from './postActions';
-import * as commentsActions from '../comments/commentsActions';
-import { getPostKey } from '../helpers/stateHelpers';
+import * as commentsActions from '../commentsStore/commentsActions';
+import { getPostKey } from '../../helpers/stateHelpers';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -370,25 +370,3 @@ const posts = (state = initialState, action) => {
 };
 
 export default posts;
-
-export const getPosts = state => state.list;
-export const getPostContent = (state, permlink, author) =>
-  Object.values(state.list).find(
-    post =>
-      post.permlink === permlink &&
-      (post.author === author || get(post, ['guestInfo', 'userId']) === author),
-  );
-export const getPendingLikes = state => state.pendingLikes;
-export const getIsPostFetching = (state, author, permlink) =>
-  get(state, ['postsStates', `${author}/${permlink}`, 'fetching']);
-export const getIsPostLoaded = (state, author, permlink) =>
-  get(state, ['postsStates', `${author}/${permlink}`, 'loaded']);
-export const getIsPostFailed = (state, author, permlink) =>
-  get(state, ['postsStates', `${author}/${permlink}`, 'failed']);
-export const getLastPostId = state => state.lastId;
-export const getPostTags = (state, author, permlink) => {
-  get(state, ['list', `${author}/${permlink}`, 'tags']);
-};
-export const getPostCities = (state, author, permlink) => {
-  get(state, ['list', `${author}/${permlink}`, 'cities']);
-};

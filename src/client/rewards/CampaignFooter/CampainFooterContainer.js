@@ -2,19 +2,15 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { bindActionCreators } from 'redux';
-import {
-  getCommentsPendingVotes,
-  getPendingFollows,
-  getVotingPower,
-  getVotePercent,
-  getPendingFollowingObjects,
-} from '../../store/reducers';
-import { likeComment } from '../../comments/commentsActions';
-import { followUser, unfollowUser } from '../../user/userActions';
+import { getVotingPower, getVotePercent } from '../../store/reducers';
+import { likeComment } from '../../store/commentsStore/commentsActions';
+import { followUser, unfollowUser } from '../../store/userStore/userActions';
 import { followObject, unfollowObject } from '../../object/wobjActions';
 import CampaignFooter from './CampaignFooter';
 import { getRewardFund } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { getCommentsPendingVotes } from '../../store/commentsStore/commentsSelectors';
+import { getPendingFollowingObjects, getPendingFollows } from '../../store/userStore/userSelectors';
 
 const mapStateToProps = (
   state,

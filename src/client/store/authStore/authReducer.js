@@ -4,7 +4,7 @@ import {
   GET_USER_METADATA,
   GET_USER_PRIVATE_EMAIL,
   UPDATE_USER_METADATA,
-} from '../../user/usersActions';
+} from '../usersStore/usersActions';
 
 const initialState = {
   isAuthenticated: false,

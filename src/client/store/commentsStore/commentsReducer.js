@@ -1,6 +1,6 @@
 import { mapValues, omit, uniq } from 'lodash';
 import * as commentsTypes from './commentsActions';
-import { getPostKey, getParentKey } from '../helpers/stateHelpers';
+import { getPostKey, getParentKey } from '../../helpers/stateHelpers';
 
 const initialState = {
   childrenById: {},
@@ -247,13 +247,3 @@ export default (state = initialState, action) => {
       return state;
   }
 };
-
-export const getComments = state => state;
-export const getCommentsList = state => state.comments;
-export const getCommentsPendingVotes = state => state.pendingVotes;
-export const getCommentContent = (state, author, permlink) =>
-  Object.values(state.comments).find(post => {
-    const postAuthor = post.guestInfo ? post.guestInfo.userId : post.author;
-
-    return postAuthor === author && post.permlink === permlink;
-  });

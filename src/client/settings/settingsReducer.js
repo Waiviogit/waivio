@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import * as settingsTypes from './settingsActions';
 import * as authTypes from '../store/authStore/authActions';
-import { GET_USER_METADATA } from '../user/usersActions';
+import { GET_USER_METADATA } from '../store/usersStore/usersActions';
 import { rewardsValues } from '../../common/constants/rewards';
 
 const initialState = {

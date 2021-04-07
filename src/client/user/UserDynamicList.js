@@ -9,7 +9,7 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
-import { changeCounterFollow, followUser, unfollowUser } from './usersActions';
+import { changeCounterFollow, followUser, unfollowUser } from '../store/usersStore/usersActions';
 import { changeSorting } from '../store/authStore/authActions';
 import { SORT_OPTIONS } from '../../common/constants/waivioFiltres';
 import {

@@ -10,9 +10,10 @@ import { getRadius, getParsedMap } from './mapHelper';
 import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
 import { getIsMapModalOpen } from '../../store/reducers';
-import { getCoordinates } from '../../user/userActions';
+import { getCoordinates } from '../../store/userStore/userActions';
 import mapProvider from '../../helpers/mapProvider';
 import { setMapFullscreenMode } from './mapActions';
+
 import './Map.less';
 
 export const defaultCoords = [37.0902, 95.0235];

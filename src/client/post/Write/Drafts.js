@@ -6,11 +6,11 @@ import { sortBy, isEqual, size, map } from 'lodash';
 import { Checkbox } from 'antd';
 import Loading from '../../components/Icon/Loading';
 import { reload } from '../../store/authStore/authActions';
-import { getDraftPosts, getPendingDrafts } from '../../store/reducers';
 import DraftRow from './DraftRow';
 import DeleteDraftModal from './DeleteDraftModal';
 import requiresLogin from '../../auth/requiresLogin';
 import { getIsReloading } from '../../store/authStore/authSelectors';
+import { getDraftPosts, getPendingDrafts } from '../../store/editorStore/editorSelectors';
 
 import './Drafts.less';
 

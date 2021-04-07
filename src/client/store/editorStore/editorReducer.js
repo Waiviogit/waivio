@@ -1,8 +1,8 @@
 import { get } from 'lodash';
 import * as editorActions from './editorActions';
-import * as postActions from '../postActions';
-import * as authActions from '../../store/authStore/authActions';
-import { GET_USER_METADATA } from '../../user/usersActions';
+import * as postActions from '../postsStore/postActions';
+import * as authActions from '../authStore/authActions';
+import { GET_USER_METADATA } from '../usersStore/usersActions';
 
 const defaultState = {
   loading: false,
@@ -142,10 +142,3 @@ const editor = (state = defaultState, action) => {
 };
 
 export default editor;
-
-export const getDraftPosts = state => state.draftPosts;
-export const getIsEditorLoading = state => state.loading;
-export const getIsEditorSaving = state => state.saving;
-export const getPendingDrafts = state => state.pendingDrafts;
-export const getIsPostEdited = (state, permlink) => state.editedPosts.includes(permlink);
-export const getIsImgLoading = state => state.loadingImg;

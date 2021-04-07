@@ -4,7 +4,6 @@ import { isEmpty, get } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
-  getUser,
   getTotalVestingShares,
   getTotalVestingFundSteem,
   getUsersAccountHistory,
@@ -24,6 +23,7 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import WalletTransaction from '../wallet/WalletTransaction';
 import UserAction from './UserAction';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 @withRouter
 @connect(

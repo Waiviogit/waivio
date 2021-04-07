@@ -35,10 +35,8 @@ export const getScreenSize = createSelector([appState], state => state.screenSiz
 
 export const getTranslations = createSelector([appState], state => state.translations);
 
-export const getTranslationByKey = createSelector(
-  getTranslations,
-  (translations, key, defaultMessage = '') => get(translations, key, defaultMessage),
-);
+export const getTranslationByKey = (key, defaultMessage = '') =>
+  createSelector(getTranslations, translations => get(translations, key, defaultMessage));
 
 export const getCryptosPriceHistory = createSelector([appState], state =>
   get(state, 'cryptosPriceHistory'),

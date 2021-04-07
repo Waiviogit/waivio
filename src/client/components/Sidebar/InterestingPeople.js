@@ -5,16 +5,17 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import User from './User';
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
-import * as store from '../../store/reducers';
-import { getRandomExperts } from '../../user/usersActions';
+import { getRandomExperts } from '../../store/usersStore/usersActions';
 import { PATH_NAME_DISCOVER } from '../../../common/constants/rewards';
+import * as usersSelectors from '../../store/usersStore/usersSelectors';
+
 import './InterestingPeople.less';
 import './SidebarContentBlock.less';
 
 @connect(
   state => ({
-    randomExperts: store.getRandomExperts(state),
-    randomExpertsLoaded: store.getRandomExpertsLoaded(state),
+    randomExperts: usersSelectors.getRandomExperts(state),
+    randomExpertsLoaded: usersSelectors.getRandomExpertsLoaded(state),
   }),
   { getRandomExperts },
 )

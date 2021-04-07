@@ -8,7 +8,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getChangedField } from '../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { APPEND_WAIVIO_OBJECT } from './appendActions';
-import { BELL_USER_NOTIFICATION } from '../user/userActions';
+import { BELL_USER_NOTIFICATION } from '../store/userStore/userActions';
 import { isPostCashout } from '../vendor/steemitHelpers';
 import {
   getAuthenticatedUserName,

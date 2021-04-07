@@ -6,13 +6,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
-import {
-  getFetchFollowListError,
-  getFollowingFetched,
-  getFollowingList,
-  getIsFetchingFollowingList,
-  getUsersAccountHistory,
-} from '../store/reducers';
+import { getUsersAccountHistory } from '../store/reducers';
 import { getUserAccountHistory } from '../wallet/walletActions';
 import HorizontalBarChart from '../components/HorizontalBarChart';
 import LetsGetStartedIcon from './LetsGetStartedIcon';
@@ -23,6 +17,12 @@ import {
   getIsLoaded,
   isGuestUser,
 } from '../store/authStore/authSelectors';
+import {
+  getFetchFollowListError,
+  getFollowingFetched,
+  getFollowingList,
+  getIsFetchingFollowingList,
+} from '../store/userStore/userSelectors';
 
 import './LetsGetStarted.less';
 

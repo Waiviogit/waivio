@@ -42,7 +42,6 @@ import {
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import {
-  getFollowingObjectsList,
   getObject,
   getRatingFields,
   getSuitableLanguage,
@@ -95,6 +94,7 @@ import {
 } from '../../../common/constants/validation';
 import { addAlbumToStore, addImageToAlbumStore } from '../ObjectGallery/galleryActions';
 import { getRate, getRewardFund, getScreenSize } from '../../store/appStore/appSelectors';
+import { getFollowingObjectsList } from '../../store/userStore/userSelectors';
 
 import './AppendForm.less';
 

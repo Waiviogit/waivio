@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import commentsReducers from '../commentsReducer';
+import commentsReducers from '../../store/commentsStore/commentsReducer';
 
 describe('commentsReducer', () => {
   it('is expected to return an object', () => {

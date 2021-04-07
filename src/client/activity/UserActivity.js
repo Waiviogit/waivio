@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import {
-  getUser,
   getTotalVestingShares,
   getTotalVestingFundSteem,
   getUsersAccountHistory,
@@ -22,10 +21,11 @@ import {
   updateAccountHistoryFilter,
   setInitialCurrentDisplayedActions,
 } from '../wallet/walletActions';
-import { getUserAccount } from '../user/usersActions';
+import { getUserAccount } from '../store/usersStore/usersActions';
 import Loading from '../components/Icon/Loading';
 import UserActivityActions from './UserActivityActions';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 @withRouter
 @connect(

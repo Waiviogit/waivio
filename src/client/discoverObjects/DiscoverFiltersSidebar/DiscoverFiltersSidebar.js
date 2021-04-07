@@ -6,24 +6,24 @@ import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import { isEmpty, memoize } from 'lodash';
 import { isNeedFilters } from '../helper';
-import {
-  getAvailableFilters,
-  getFilteredObjectsMap,
-  getActiveFilters,
-  getUserLocation,
-  getHasMap,
-  getIsMapModalOpen,
-  getFiltersTags,
-  getFilteredObjects,
-} from '../../store/reducers';
-import { setFiltersAndLoad, getObjectTypeMap } from '../../objectTypes/objectTypeActions';
+import { getIsMapModalOpen } from '../../store/reducers';
+import { setFiltersAndLoad, getObjectTypeMap } from '../../store/objectTypeStore/objectTypeActions';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
-import { getCoordinates } from '../../user/userActions';
+import { getCoordinates } from '../../store/userStore/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
 import FiltersContainer from './FiltersContainer';
 import '../../components/Sidebar/SidebarContentBlock.less';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { getWobjectsForMap } from '../../object/wObjectHelper';
+import {
+  getActiveFilters,
+  getAvailableFilters,
+  getFilteredObjects,
+  getFilteredObjectsMap,
+  getFiltersTags,
+  getHasMap,
+} from '../../store/objectTypeStore/objectTypeSelectors';
+import { getUserLocation } from '../../store/userStore/userSelectors';
 
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   // redux-store

@@ -13,12 +13,12 @@ import {
   FormattedTime,
   injectIntl,
 } from 'react-intl';
-import { voteHistoryPost } from '../../post/postActions';
+import { voteHistoryPost } from '../../store/postsStore/postActions';
 import Avatar from '../../components/Avatar';
 import BTooltip from '../../components/BTooltip';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
-import * as commentsActions from '../../comments/commentsActions';
+import * as commentsActions from '../../store/commentsStore/commentsActions';
 
 const CommentsMessages = memo(
   ({

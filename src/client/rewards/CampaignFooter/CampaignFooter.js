@@ -12,7 +12,10 @@ import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import { getLocale, getCommentsFromReserved } from '../../store/reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
-import { getReservedComments, sendCommentMessages } from '../../comments/commentsActions';
+import {
+  getReservedComments,
+  sendCommentMessages,
+} from '../../store/commentsStore/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';

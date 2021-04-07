@@ -17,7 +17,7 @@ import {
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './store/authStore/authActions';
-import { getNotifications } from './user/userActions';
+import { getNotifications } from './store/userStore/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';

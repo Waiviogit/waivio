@@ -1,11 +1,11 @@
 import {
   getDraftPosts,
+  getIsEditorLoading,
+  getIsEditorSaving,
+  getIsImageUploading,
   getIsPostEdited,
   getPendingDrafts,
-  getIsEditorSaving,
-  getIsEditorLoading,
-  getIsImageUploading,
-} from '../../store/reducers';
+} from '../../store/editorStore/editorSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

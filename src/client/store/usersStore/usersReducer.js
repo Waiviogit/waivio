@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import * as actions from './usersActions';
-import { GET_USER_ACCOUNT_HISTORY } from '../wallet/walletActions';
-import { BELL_USER_NOTIFICATION } from './userActions';
+import { GET_USER_ACCOUNT_HISTORY } from '../../wallet/walletActions';
+import { BELL_USER_NOTIFICATION } from '../userStore/userActions';
 
 const initialState = {
   users: {},
@@ -426,15 +426,3 @@ export default function usersReducer(state = initialState, action) {
     }
   }
 }
-
-export const getAllUsers = state => get(state, 'users', {});
-export const getUser = (state, username) => get(state, ['users', username], {});
-export const getIsUserFetching = (state, username) => getUser(state, username).fetching || false;
-export const getIsUserLoaded = (state, username) => getUser(state, username).loaded || false;
-export const getIsUserFailed = (state, username) => getUser(state, username).failed || false;
-export const getTopExperts = state => state.topExperts.list;
-export const getTopExpertsLoading = state => state.topExperts.isFetching;
-export const getTopExpertsHasMore = state => state.topExperts.hasMore;
-export const getRandomExperts = state => state.randomExperts.list;
-export const getRandomExpertsLoaded = state => state.randomExperts.fetched;
-export const getRandomExpertsLoading = state => state.randomExperts.isFetching;

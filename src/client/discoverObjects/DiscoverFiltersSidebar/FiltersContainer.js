@@ -4,7 +4,6 @@ import { map, isEmpty, size } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import { getActiveFilters, getActiveFiltersTags } from '../../store/reducers';
 import {
   changeUrl,
   parseTagsFilters,
@@ -15,8 +14,12 @@ import {
   setFiltersAndLoad,
   showMoreTags,
   setTagsFiltersAndLoad,
-} from '../../objectTypes/objectTypeActions';
+} from '../../store/objectTypeStore/objectTypeActions';
 import FilterItem from './FilterItem';
+import {
+  getActiveFilters,
+  getActiveFiltersTags,
+} from '../../store/objectTypeStore/objectTypeSelectors';
 
 const FiltersContainer = ({
   filters,

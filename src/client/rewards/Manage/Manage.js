@@ -7,7 +7,7 @@ import { filter, difference } from 'lodash';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
-import { activateCampaign, inactivateCampaign } from '../../user/userActions';
+import { activateCampaign, inactivateCampaign } from '../../store/userStore/userActions';
 import CampaignRewardsHistoryTable from '../Manage/CampaignRewardsHistoryTable/CampaignRewardsHistoryTable';
 import Error401 from '../../statics/Error401';
 import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';

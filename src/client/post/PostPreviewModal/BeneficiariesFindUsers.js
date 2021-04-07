@@ -9,7 +9,7 @@ import {
   searchAutoComplete,
   saveBeneficiariesUsers,
 } from '../../search/searchActions';
-import { getUserMetadata } from '../../user/usersActions';
+import { getUserMetadata } from '../../store/usersStore/usersActions';
 import { getAutoCompleteSearchResults } from '../../store/reducers';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
