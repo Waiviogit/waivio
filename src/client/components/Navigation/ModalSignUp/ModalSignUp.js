@@ -11,7 +11,7 @@ import {
   getNotifications,
 } from '../../../store/userStore/userActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
-import { getRebloggedList } from './../../../app/Reblog/reblogActions';
+import { getRebloggedList } from '../../../store/reblogStore/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import Spinner from '../../Icon/Loading';

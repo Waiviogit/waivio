@@ -1,6 +1,6 @@
 import store from 'store';
 import { createAction } from 'redux-actions';
-import { reblogPost } from '../../store/postsStore/postActions';
+import { reblogPost } from '../postsStore/postActions';
 
 export const REBLOG_POST = '@reblog/REBLOG_POST';
 export const REBLOG_POST_START = '@reblog/REBLOG_POST_START';

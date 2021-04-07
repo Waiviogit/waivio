@@ -14,7 +14,7 @@ import bookmarksReducer from './bookmarksStore/bookmarksReducer';
 import favoritesReducer from './favoritesStore/favoritesReducer';
 import editorReducer from './editorStore/editorReducer';
 import walletReducer, * as fromWallet from '../wallet/walletReducer';
-import reblogReducers, * as fromReblog from '../app/Reblog/reblogReducers';
+import reblogReducers from './reblogStore/reblogReducers';
 import settingsReducer, * as fromSettings from '../settings/settingsReducer';
 import searchReducer, * as fromSearch from '../search/searchReducer';
 import wobjectReducer from './wObjectStore/wobjectReducer';
@@ -56,9 +56,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getRebloggedList = state => fromReblog.getRebloggedList(state.reblog);
-export const getPendingReblogs = state => fromReblog.getPendingReblogs(state.reblog);
 
 export const getIsTransferVisible = state => fromWallet.getIsTransferVisible(state.wallet);
 export const getTransferTo = state => fromWallet.getTransferTo(state.wallet);

@@ -12,12 +12,7 @@ import {
   replaceBotWithGuestName,
   getAuthorName,
 } from '../helpers/postHelpers';
-import {
-  getRebloggedList,
-  getPendingReblogs,
-  getVotingPower,
-  getVotePercent,
-} from '../store/reducers';
+import { getVotingPower, getVotePercent } from '../store/reducers';
 import { editPost } from '../store/editorStore/editorActions';
 import {
   errorFollowingPostAuthor,
@@ -26,7 +21,7 @@ import {
   pendingFollowingPostAuthor,
   votePost,
 } from '../store/postsStore/postActions';
-import { reblog } from '../app/Reblog/reblogActions';
+import { reblog } from '../store/reblogStore/reblogActions';
 import { toggleBookmark } from '../store/bookmarksStore/bookmarksActions';
 import { followUser, unfollowUser } from '../store/userStore/userActions';
 import { getAvatarURL } from '../components/Avatar';
@@ -40,6 +35,7 @@ import { getIsEditorSaving } from '../store/editorStore/editorSelectors';
 import { getPendingLikes } from '../store/postsStore/postsSelectors';
 import { getFollowingList } from '../store/userStore/userSelectors';
 import { getBookmarks, getPendingBookmarks } from '../store/bookmarksStore/bookmarksSelectors';
+import { getPendingReblogs, getRebloggedList } from '../store/reblogStore/reblogSelectors';
 
 @injectIntl
 @connect(

@@ -1,13 +1,7 @@
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
-import {
-  getRebloggedList,
-  getPendingReblogs,
-  getVotingPower,
-  getVotePercent,
-  getShowNSFWPosts,
-} from '../store/reducers';
+import { getVotingPower, getVotePercent, getShowNSFWPosts } from '../store/reducers';
 import {
   errorFollowingPostAuthor,
   followingPostAuthor,
@@ -16,7 +10,7 @@ import {
 } from '../store/postsStore/postActions';
 import { toggleBookmark } from '../store/bookmarksStore/bookmarksActions';
 import { editPost } from '../store/editorStore/editorActions';
-import { reblog } from '../app/Reblog/reblogActions';
+import { reblog } from '../store/reblogStore/reblogActions';
 import { unfollowUser, followUser } from '../store/usersStore/usersActions';
 import { getDownvotes, getUpvotes } from '../helpers/voteHelpers';
 import { getRewardFund } from '../store/appStore/appSelectors';
@@ -24,6 +18,7 @@ import { getAuthenticatedUser } from '../store/authStore/authSelectors';
 import { getIsEditorSaving } from '../store/editorStore/editorSelectors';
 import { getPendingLikes, getPosts } from '../store/postsStore/postsSelectors';
 import { getBookmarks, getPendingBookmarks } from '../store/bookmarksStore/bookmarksSelectors';
+import { getPendingReblogs, getRebloggedList } from '../store/reblogStore/reblogSelectors';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);

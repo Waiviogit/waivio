@@ -29,6 +29,3 @@ const reblogReducer = (state = initialState, action) => {
 };
 
 export default reblogReducer;
-
-export const getRebloggedList = state => state.rebloggedList;
-export const getPendingReblogs = state => state.pendingReblogs;
