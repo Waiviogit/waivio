@@ -65,7 +65,7 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import { checkExpiredPayment, getRewardsGeneralCounts } from './rewardsActions';
+import { checkExpiredPayment, getRewardsGeneralCounts } from '../store/rewardsStore/rewardsActions';
 import {
   setUpdatedFlag,
   getPropositionsForMap,

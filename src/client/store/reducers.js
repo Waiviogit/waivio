@@ -23,7 +23,7 @@ import objectTypeReducer from './objectTypeStore/objectTypeReducer';
 import appendReducer from './appendStore/appendReducer';
 import galleryReducer from './galleryStore/galleryReducer';
 import mapReducer from './mapStore/mapReducer';
-import rewardsReducer, * as fromRewards from '../rewards/rewardsReducer';
+import rewardsReducer from './rewardsStore/rewardsReducer';
 import websiteReducer, * as fromWebsite from '../websites/websiteReducer';
 import referralReducer, * as fromReferral from '../rewards/ReferralProgram/ReferralReducer';
 import { getUsedLocale } from './appStore/appSelectors';
@@ -57,33 +57,6 @@ export default history =>
     referral: referralReducer,
     website: websiteReducer,
   });
-
-export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
-export const getGlobalReportData = state => fromRewards.getGlobalReportData(state.rewards);
-export const getTabType = state => fromRewards.getTabType(state.rewards);
-export const getHasReceivables = state => fromRewards.getHasReceivables(state.rewards);
-export const getCountTookPartCampaigns = state =>
-  fromRewards.getCountTookPartCampaigns(state.rewards);
-export const getCreatedCampaignsCount = state =>
-  fromRewards.getCreatedCampaignsCount(state.rewards);
-export const getCommentsFromReserved = state => fromRewards.getCommentsFromReserved(state.rewards);
-export const getSponsorsRewards = state => fromRewards.getSponsorsRewards(state.rewards);
-export const getFraudSuspicionDataState = state =>
-  fromRewards.getFraudSuspicionDataState(state.rewards);
-export const getHasMoreFollowingRewards = state =>
-  fromRewards.getHasMoreFollowingRewards(state.rewards);
-export const getHasMoreFraudSuspicionData = state =>
-  fromRewards.getHasMoreFraudSuspicionData(state.rewards);
-export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
-export const getIsLoadingRewardsHistory = state =>
-  fromRewards.getIsLoadingRewardsHistory(state.rewards);
-export const getCampaignNames = state => fromRewards.getCampaignNames(state.rewards);
-export const getHistoryCampaigns = state => fromRewards.getHistoryCampaigns(state.rewards);
-export const getHistorySponsors = state => fromRewards.getHistorySponsors(state.rewards);
-export const getHasMoreHistory = state => fromRewards.getHasMoreHistory(state.rewards);
-export const getIsOpenWriteReviewModal = state =>
-  fromRewards.getIsOpenWriteReviewModal(state.rewards);
-export const getExpiredPayment = state => fromRewards.getExpiredPayment(state.rewards);
 
 export const getCampaignServerPercent = state =>
   fromReferral.getCampaignServerPercent(state.referral);

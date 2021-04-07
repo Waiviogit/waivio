@@ -12,7 +12,7 @@ import {
   REMOVE_TOGGLE_FLAG,
   CHECK_EXPIRED_PAYMENTS,
 } from './rewardsActions';
-import { GET_RESERVED_COMMENTS_SUCCESS } from '../store/commentsStore/commentsActions';
+import { GET_RESERVED_COMMENTS_SUCCESS } from '../commentsStore/commentsActions';
 
 const initialState = {
   singleReportData: {},
@@ -172,26 +172,3 @@ const rewardsReducer = (state = initialState, action) => {
 };
 
 export default rewardsReducer;
-
-// export const getIsMapModalOpen = state => state.isFullscreenMode;
-export const getSingleReportData = state => state.singleReportData;
-export const getGlobalReportData = state => state.globalReportData;
-export const getTabType = state => state.tabType;
-export const getHasReceivables = state => state.hasReceivables;
-export const getCountTookPartCampaigns = state => state.countTookPartCampaigns;
-export const getCreatedCampaignsCount = state => state.createdCampaignsCount;
-export const getCommentsFromReserved = state => state.reservedComments;
-export const getSponsorsRewards = state => state.followingRewards;
-export const getFraudSuspicionDataState = state => state.fraudSuspicionData;
-export const getHasMoreFollowingRewards = state => state.hasMoreFollowingRewards;
-export const getHasMoreFraudSuspicionData = state => state.hasMoreFraudSuspicionData;
-export const getIsLoading = state => state.loading;
-
-export const getIsLoadingRewardsHistory = state => state.isLoadingRewardsHistory;
-export const getCampaignNames = state => state.campaignNames;
-export const getHistoryCampaigns = state => state.historyCampaigns;
-export const getHistorySponsors = state => state.historySponsors;
-export const getHasMoreHistory = state => state.hasMoreHistory;
-
-export const getIsOpenWriteReviewModal = state => state.isOpenWriteReviewModal;
-export const getExpiredPayment = state => state.expiredPayment;

@@ -10,7 +10,6 @@ import CommentsMessages from './CommentsMessages';
 import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE, IS_ALL } from '../../../common/constants/rewards';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
-import { getCommentsFromReserved } from '../../store/reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import {
   getReservedComments,
@@ -22,6 +21,7 @@ import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
 import { getAppUrl, getRate } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import { getCommentsFromReserved } from '../../store/rewardsStore/rewardsSelectors';
 
 import './CampaignFooter.less';
 

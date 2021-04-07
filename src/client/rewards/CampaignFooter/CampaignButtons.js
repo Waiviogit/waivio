@@ -38,7 +38,7 @@ import {
   getBlacklist,
   getFraudSuspicion,
   setToggleFlag,
-} from '../rewardsActions';
+} from '../../store/rewardsStore/rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
 import '../../components/StoryFooter/Buttons.less';
