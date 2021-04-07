@@ -11,7 +11,7 @@ import userReducer from './userStore/userReducer';
 import usersReducer from './usersStore/usersReducer';
 import notificationReducer from '../app/Notification/notificationReducers';
 import bookmarksReducer from './bookmarksStore/bookmarksReducer';
-import favoritesReducer, * as fromFavorites from '../favorites/favoritesReducer';
+import favoritesReducer from './favoritesStore/favoritesReducer';
 import editorReducer from './editorStore/editorReducer';
 import walletReducer, * as fromWallet from '../wallet/walletReducer';
 import reblogReducers, * as fromReblog from '../app/Reblog/reblogReducers';
@@ -59,8 +59,6 @@ export default history =>
 
 export const getRebloggedList = state => fromReblog.getRebloggedList(state.reblog);
 export const getPendingReblogs = state => fromReblog.getPendingReblogs(state.reblog);
-
-export const getFavoriteCategories = state => fromFavorites.getFavoriteCategories(state.favorites);
 
 export const getIsTransferVisible = state => fromWallet.getIsTransferVisible(state.wallet);
 export const getTransferTo = state => fromWallet.getTransferTo(state.wallet);

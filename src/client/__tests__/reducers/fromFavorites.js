@@ -1,4 +1,4 @@
-import { getFavoriteCategories } from '../../store/reducers';
+import { getFavoriteCategories } from '../../store/favoritesStore/favoritesSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 
