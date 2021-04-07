@@ -10,6 +10,7 @@ const AtomicBlock = props => {
   const content = blockProps.getEditorState().getCurrentContent();
   const entity = content.getEntity(block.getEntityAt(0));
   const type = entity.getType();
+
   switch (type) {
     case ATOMIC_TYPES.SEPARATOR:
       return <SeparatorBlock />;

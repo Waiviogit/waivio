@@ -7,13 +7,12 @@ import { connect } from 'react-redux';
 import FilteredRewardsList from '../FilteredRewardsList';
 import { getBlacklist, getMoreRewardsHistory, getRewardsHistory } from '../rewardsActions';
 import {
-  getAuthenticatedUserName,
   getCampaignNames,
   getHasMoreHistory,
   getHistoryCampaigns,
   getHistorySponsors,
   getIsLoadingRewardsHistory,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   REWARDS_TYPES_MESSAGES,
   CAMPAIGNS_TYPES_MESSAGES,
@@ -21,6 +20,7 @@ import {
   PATH_NAME_HISTORY,
 } from '../../../common/constants/rewards';
 import { pathNameHistoryNotify } from '../rewardsHelper';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 const History = ({
   intl,
@@ -64,6 +64,7 @@ const History = ({
     } else if (isGuideHistory) {
       return sortGuideHistory;
     }
+
     return sortMessages;
   }, [isHistory, isGuideHistory, sortHistory, sortGuideHistory, sortMessages]);
 
@@ -131,6 +132,7 @@ const History = ({
     } else if (isGuideHistory) {
       return activeGuideHistoryFilters;
     }
+
     return activeMessagesFilters;
   }, [
     isHistory,
@@ -155,6 +157,7 @@ const History = ({
       getUserBlackList(userName).then(data => {
         const blacklist = get(data, ['value', 'blackList', 'blackList']);
         const blacklistNames = map(blacklist, user => user.name);
+
         setBlacklistUsers(blacklistNames);
       });
     }

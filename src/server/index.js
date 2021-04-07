@@ -15,6 +15,7 @@ if (module.hot) {
       console.log('🔁  HMR Reloading `./app`...');
       server.removeListener('request', currentApp);
       const newApp = require('./app').default;
+
       server.on('request', newApp);
       currentApp = newApp;
     } catch (err) {

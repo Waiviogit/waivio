@@ -28,6 +28,7 @@ const socketFactory = () => {
     socket.subscribeBlock = (type, blockNum, callback) => {
       const listener = e => {
         const data = JSON.parse(e.data);
+
         if (type === data.type && data.notification.blockParsed === blockNum) {
           socket.removeEventListener('message', listener);
           callback();
@@ -39,6 +40,7 @@ const socketFactory = () => {
 
     socket.subscribe = callback => {
       const handler = e => callback(null, JSON.parse(e.data));
+
       socket.addEventListener('message', handler);
     };
 
@@ -54,6 +56,7 @@ function createBusyAPI() {
   if (typeof document !== 'undefined') {
     socketStore.instance = socketFactory();
   }
+
   return socketStore;
 }
 

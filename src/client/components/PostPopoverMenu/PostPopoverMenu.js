@@ -10,8 +10,8 @@ import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import { getFacebookShareURL, getTwitterShareURL } from '../../helpers/socialProfiles';
 import { isPostCashout } from '../../vendor/steemitHelpers';
-import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
-import { getSocialInfoPost as getSocialInfoPostAction } from '../../post/postActions';
+import { getSocialInfoPost as getSocialInfoPostAction } from '../../store/postsStore/postActions';
+import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 
 import './PostPopoverMenu.less';
 
@@ -95,6 +95,7 @@ const PostPopoverMenu = ({
   const handleShare = isTwitter => {
     const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;
     const permlink = get(post, 'permlink', '');
+
     if (!userComments) {
       getSocialInfoPost(authorPost, permlink).then(res => {
         const socialInfoPost = res.value;
@@ -118,20 +119,25 @@ const PostPopoverMenu = ({
             title,
           )}" ${authorTwitter} ${objectTwitter}`;
           const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
+
           window.location.assign(twitterShareURL);
         } else {
           const facebookShareURL = getFacebookShareURL(postURL);
+
           window.location.assign(facebookShareURL);
         }
       });
     } else {
       const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
+
       if (isTwitter) {
         const shareTextSocialTwitter = `"${encodeURIComponent(title)}"`;
         const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL);
+
         window.location.assign(twitterShareURL);
       } else {
         const facebookShareURL = getFacebookShareURL(postURL);
+
         window.location.assign(facebookShareURL);
       }
     }

@@ -57,6 +57,7 @@ class ObjectMenu extends React.Component {
 
   handleClick = e => {
     const key = e.currentTarget.dataset.key;
+
     this.setState({ current: key }, () => this.props.onChange(key));
   };
 

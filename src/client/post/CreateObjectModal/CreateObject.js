@@ -12,14 +12,16 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import listofObjTypesWithAlbum from '../../../common/constants/listofObjTypesWithAlbum';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
-import { getSuitableLanguage, getObjectTypesList, getAuthenticatedUserName } from '../../reducers';
+import { getSuitableLanguage } from '../../store/reducers';
 import { notify } from '../../app/Notification/notificationActions';
-import { getObjectTypes } from '../../objectTypes/objectTypesActions';
+import { getObjectTypes } from '../../store/objectTypesStore/objectTypesActions';
 import { appendObject } from '../../object/appendActions';
 import { createWaivioObject } from '../../object/wobjectsActions';
 import { addAlbumToStore } from '../../object/ObjectGallery/galleryActions';
 import DEFAULTS from '../../object/const/defaultValues';
 import { getAppendData, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getObjectTypesList } from '../../store/objectTypesStore/objectTypesSelectors';
 
 import './CreateObject.less';
 
@@ -114,6 +116,7 @@ class CreateObject extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err && !this.state.loading) {
         const selectedType = this.props.objectTypes[values.type];
+
         this.setState({ loading: true });
         const objData = {
           ...values,
@@ -156,6 +159,7 @@ class CreateObject extends React.Component {
               );
             }
             const isObjType = type => listofObjTypesWithAlbum.some(item => item === type);
+
             if (isObjType(objData.type)) {
               const formData = {
                 galleryAlbum: 'Photos',
@@ -167,6 +171,7 @@ class CreateObject extends React.Component {
               const album = prepareAlbumToStore(data);
 
               const { author } = this.props.appendObject(data);
+
               this.props.addAlbumToStore({ ...album, author });
             }
             this.props.notify(

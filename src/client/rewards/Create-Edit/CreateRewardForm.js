@@ -15,13 +15,14 @@ import {
 import CreateFormRenderer from './CreateFormRenderer';
 import { AppSharedContext } from '../../Wrapper';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { getLocale, getRate, getRewardFund } from '../../reducers';
+import { getLocale } from '../../store/reducers';
 import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
 import {
   PATH_NAME_MANAGE,
   CAMPAIGN_STATUS,
   isDisabledStatus,
 } from '../../../common/constants/rewards';
+import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
 import './CreateReward.less';
 
@@ -101,6 +102,7 @@ class CreateRewardForm extends React.Component {
 
   componentDidMount = async () => {
     const { rate, rewardFund } = this.props;
+
     if (this.props.match.params.campaignId) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
@@ -230,6 +232,7 @@ class CreateRewardForm extends React.Component {
       this.setState({ campaignName: `Copy ${campaign.name}`, createDuplicate: false });
     if (prevProps.match.params[0] !== matchPath) {
       const isDuplicate = includes(matchPath, 'createDuplicate');
+
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ isDuplicate });
     }
@@ -291,8 +294,10 @@ class CreateRewardForm extends React.Component {
       expired_at: data.expiredAt._d,
       reservation_timetable: data.targetDays,
     };
+
     if (data.description) preparedObject.description = data.description;
     if (campaignId && !isDuplicate) preparedObject.id = campaignId;
+
     return preparedObject;
   };
 
@@ -302,6 +307,7 @@ class CreateRewardForm extends React.Component {
 
   handleSetState = (stateData, callbackData) => {
     const { setFieldsValue } = this.props.form;
+
     this.setState({ ...stateData }, () => setFieldsValue(callbackData));
   };
 
@@ -318,6 +324,7 @@ class CreateRewardForm extends React.Component {
       this.setState(
         prevState => {
           const objectList = prevState.sponsorsList.filter(el => el.account !== obj.account);
+
           return {
             sponsorsList: objectList,
           };
@@ -349,6 +356,7 @@ class CreateRewardForm extends React.Component {
           const objectList = prevState.secondaryObjectsList.filter(
             el => el.author_permlink !== obj.author_permlink,
           );
+
           return {
             secondaryObjectsList: objectList,
           };
@@ -377,6 +385,7 @@ class CreateRewardForm extends React.Component {
           const objectList = prevState.pageObjects.filter(
             el => el.author_permlink !== obj.author_permlink,
           );
+
           return {
             pageObjects: objectList,
           };
@@ -410,6 +419,7 @@ class CreateRewardForm extends React.Component {
         this.props.locale,
         'list',
       );
+
       await this.setState(
         prevState => ({
           isOpenAddChild: false,
@@ -421,17 +431,20 @@ class CreateRewardForm extends React.Component {
 
     getObjectsToOmit: () => {
       const objectsToOmit = [];
+
       if (!isEmpty(this.state.primaryObject)) {
         objectsToOmit.push(this.state.primaryObject.author_permlink);
       }
       if (!isEmpty(this.state.secondaryObjectsList)) {
         map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.author_permlink));
       }
+
       return objectsToOmit;
     },
 
     handleSubmit: e => {
       const { isDuplicate } = this.state;
+
       e.preventDefault();
       this.checkOptionFields();
       this.setState({ loading: true });
@@ -447,8 +460,7 @@ class CreateRewardForm extends React.Component {
               this.setState({ loading: false });
               this.manageRedirect();
             })
-            .catch(error => {
-              console.log(error);
+            .catch(() => {
               message.error(`Campaign ${values.campaignName} has been rejected`);
               this.setState({ loading: false });
             });
@@ -508,6 +520,7 @@ class CreateRewardForm extends React.Component {
       isDisabled,
       isDuplicate,
     } = this.state;
+
     return (
       <CreateFormRenderer
         match={match}

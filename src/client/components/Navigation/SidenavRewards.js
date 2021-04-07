@@ -5,15 +5,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   getAutoCompleteSearchResults,
-  getIsAuthenticated,
-  isGuestUser,
   getHasReceivables,
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
-  getAuthenticatedUserName,
-  getIsWaivio,
   getExpiredPayment,
-} from '../../reducers';
+} from '../../store/reducers';
 import {
   MESSAGES,
   HISTORY,
@@ -21,6 +17,12 @@ import {
   FRAUD_DETECTION,
 } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../store/authStore/authSelectors';
 
 import './Sidenav.less';
 
@@ -78,6 +80,7 @@ export default class SidenavRewards extends React.Component {
 
   toggleMenuCondition = menuItem => {
     const { menuCondition } = this.state;
+
     this.setState({
       menuCondition: {
         ...menuCondition,
@@ -99,6 +102,7 @@ export default class SidenavRewards extends React.Component {
       isExpired,
     } = this.props;
     const { menuCondition } = this.state;
+
     return (
       <React.Fragment>
         <ul className="Sidenav">
@@ -330,7 +334,7 @@ export default class SidenavRewards extends React.Component {
                           activeClassName="Sidenav__item--active"
                         >
                           {intl.formatMessage({
-                            id: FRAUD_DETECTION,
+                            id: 'fraud_detection',
                             defaultMessage: 'Fraud detection',
                           })}
                         </NavLink>

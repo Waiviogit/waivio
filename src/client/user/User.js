@@ -5,22 +5,9 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import {
-  getAllUsers,
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getHelmetIcon,
-  getIsAuthenticated,
-  getIsOpenWalletTable,
-  getIsUserFailed,
-  getIsUserLoaded,
-  getRate,
-  getRewardFund,
-  getUser,
-  getUsersAccountHistory,
-} from '../reducers';
+import { getIsOpenWalletTable, getUsersAccountHistory } from '../store/reducers';
 import { getUserAccountHistory, openTransfer } from '../wallet/walletActions';
-import { getUserAccount } from './usersActions';
+import { getUserAccount } from '../store/usersStore/usersActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
 import UserHero from './UserHero';
@@ -33,6 +20,18 @@ import { getMetadata } from '../helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import DEFAULTS from '../object/const/defaultValues';
 import Loading from '../components/Icon/Loading';
+import { getHelmetIcon, getRate, getRewardFund } from '../store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../store/authStore/authSelectors';
+import {
+  getAllUsers,
+  getIsUserFailed,
+  getIsUserLoaded,
+  getUser,
+} from '../store/usersStore/usersSelectors';
 
 @connect(
   (state, ownProps) => ({
@@ -123,8 +122,10 @@ export default class User extends React.Component {
       isOpenWalletTable,
       helmetIcon,
     } = this.props;
+
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
+
     if (!isEmpty(user) && !user.id && !user.fetching)
       return (
         <div className="main-panel">
@@ -142,6 +143,7 @@ export default class User extends React.Component {
     let desc = `Posts by ${username}`;
     let displayedUsername = username;
     let coverImage = null;
+
     if (profile) {
       desc = profile.about || `Posts by ${username}`;
       displayedUsername = profile.name || username || '';

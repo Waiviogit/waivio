@@ -12,7 +12,7 @@ import {
   REMOVE_TOGGLE_FLAG,
   CHECK_EXPIRED_PAYMENTS,
 } from './rewardsActions';
-import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
+import { GET_RESERVED_COMMENTS_SUCCESS } from '../store/commentsStore/commentsActions';
 
 const initialState = {
   singleReportData: {},
@@ -71,6 +71,7 @@ const rewardsReducer = (state = initialState, action) => {
     }
     case GET_FOLLOWING_SPONSORS_REWARDS.SUCCESS: {
       const { campaigns, hasMore } = action.payload;
+
       return {
         ...state,
         loading: false,
@@ -92,6 +93,7 @@ const rewardsReducer = (state = initialState, action) => {
     }
     case GET_FRAUD_SUSPICION.SUCCESS: {
       const { campaigns, hasMore } = action.payload;
+
       return {
         ...state,
         loading: false,
@@ -130,6 +132,7 @@ const rewardsReducer = (state = initialState, action) => {
     case GET_MORE_REWARDS_HISTORY.SUCCESS: {
       const currentRewardsHistory = get(state, 'historyCampaigns', []);
       const currentHistorySponsors = get(state, 'sponsors', []);
+
       return {
         ...state,
         isLoadingRewardsHistory: false,

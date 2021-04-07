@@ -118,6 +118,7 @@ const WalletTableBodyRow = props => {
 
           return getCurrentRows(data);
         }
+
         return null;
       }
       description = receiveDescription.transferredTo;

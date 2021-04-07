@@ -40,6 +40,7 @@ const SponsoredRewardsTableRow = ({ intl, sponsor }) => {
       userName: sponsor.userName,
       reservationPermlink: get(sponsor, ['details', 'reservation_permlink'], ''),
     };
+
     getReport(requestParams)
       .then(data => {
         dispatch(setDataForSingleReport(data));

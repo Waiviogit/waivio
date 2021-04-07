@@ -52,6 +52,7 @@ describe('ReferralInstructionsView', () => {
       </BrowserRouter>,
     );
     const container = wrapper.find('Icon');
+
     container.simulate('click');
     expect(handleCopyTextButton).toHaveBeenCalled();
   });
@@ -71,6 +72,7 @@ describe('ReferralInstructionsView', () => {
     );
     const container = wrapper.find('.ReferralInstructions__is-blacklist').props().children.props
       .defaultMessage;
+
     expect(container).toBe(
       'Your account {username} is listed in the Waivio’s blacklist or in other blacklists trusted by Waivio and you are not eligible to participate in the Referral program.',
     );
@@ -91,6 +93,7 @@ describe('ReferralInstructionsView', () => {
     );
     const container = wrapper.find('.ReferralInstructions__wrap-conditions__loader').props()
       .children.props;
+
     expect(container).toEqual({ center: true });
   });
 });

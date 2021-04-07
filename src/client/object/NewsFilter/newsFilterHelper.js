@@ -19,11 +19,13 @@ const andLayout = (compareItems, self) =>
 const getAllowListLayout = self => {
   const allowList = self.state.allowList;
   const currObjId = self.props.wObject.author_permlink;
+
   return (
     <React.Fragment>
       {map(allowList, (items, rowIndex) => {
         let ruleIndex = 0;
         const itemsIdsToOmit = [currObjId];
+
         return (
           <React.Fragment key={`allowWrap${rowIndex}`}>
             <div className="NewsFiltersRule-title AppendForm__appendTitles">{`${self.props.intl.formatMessage(
@@ -36,6 +38,7 @@ const getAllowListLayout = self => {
               {map(items, (item, index) => {
                 ruleIndex = index + 1;
                 itemsIdsToOmit.push(item.id);
+
                 return (
                   <React.Fragment key={`allowList${ruleIndex}${item.author_permlink}`}>
                     {andLayout(index, self)}
@@ -105,6 +108,7 @@ export const getIgnoreListLayout = self => {
     <Row className="NewsFiltersRule-line">
       {map(ignoreList, (item, index) => {
         itemsIdsToOmit.push(item.id);
+
         return (
           <React.Fragment key={`ignoreList${item.id}`}>
             {andLayout(index, self)}
@@ -149,6 +153,7 @@ export const getIgnoreListLayout = self => {
       )}
     </Row>
   );
+
   return layout || null;
 };
 

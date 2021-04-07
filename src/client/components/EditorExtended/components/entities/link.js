@@ -3,12 +3,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Entity } from '../../util/constants';
-import { getAppUrl, getExitPageSetting } from '../../../../reducers';
+import { getExitPageSetting } from '../../../../store/reducers';
 import { parseLink } from '../../../../vendor/SanitizeConfig';
+import { getAppUrl } from '../../../../store/appStore/appSelectors';
 
 export const findLinkEntities = (contentBlock, callback, contentState) => {
   contentBlock.findEntityRanges(character => {
     const entityKey = character.getEntity();
+
     return entityKey !== null && contentState.getEntity(entityKey).getType() === Entity.LINK;
   }, callback);
 };
@@ -17,6 +19,7 @@ const Link = props => {
   const { contentState, entityKey, appUrl, exitPageSettings } = props;
   const { url } = contentState.getEntity(entityKey).getData();
   const parsed = parseLink(appUrl, exitPageSettings)('a', { href: url });
+
   return (
     <a className="md-link" {...parsed.attribs} rel="noopener noreferrer" aria-label={url}>
       {props.children}

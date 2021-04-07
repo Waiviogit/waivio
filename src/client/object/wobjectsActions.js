@@ -4,8 +4,10 @@ import { getAlbums } from './ObjectGallery/galleryActions';
 import { createPermlink } from '../vendor/steemitHelpers';
 import { generateRandomString } from '../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
-import { getAuthenticatedUserName, getLocale, getUsedLocale } from '../reducers';
+import { getLocale } from '../store/reducers';
 import { WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
+import { getUsedLocale } from '../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
@@ -71,6 +73,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
 
   if (wobj.type === 'hashtag') {
     const hashtagName = wobj.name.toLowerCase();
+
     return dispatch({
       type: CREATE_WOBJECT,
       payload: {
@@ -91,6 +94,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
                 parentAuthor: wobj.parentAuthor,
                 parentPermlink: wobj.parentPermlink,
               };
+
               return ApiClient.postCreateWaivioObject(requestBody).then(response => {
                 if (follow) {
                   dispatch(followObject(response.permlink));
@@ -124,6 +128,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
             parentAuthor: wobj.parentAuthor,
             parentPermlink: wobj.parentPermlink,
           };
+
           return ApiClient.postCreateWaivioObject(requestBody).then(response => {
             if (follow) {
               dispatch(followObject(response.permlink));

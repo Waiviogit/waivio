@@ -10,6 +10,7 @@ describe('<Action />', () => {
       primary: true,
     };
     const wrapper = shallow(<Action {...props}>Example text</Action>);
+
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -20,6 +21,7 @@ describe('<Action />', () => {
       primary: true,
     };
     const wrapper = shallow(<Action {...props}>Example text</Action>);
+
     expect(wrapper.props().className).toBe('Action Action--primary');
   });
 
@@ -30,6 +32,7 @@ describe('<Action />', () => {
       big: true,
     };
     const wrapper = shallow(<Action {...props}>Example text</Action>);
+
     expect(wrapper.props().className).toBe('Action Action--big');
   });
 
@@ -40,6 +43,7 @@ describe('<Action />', () => {
       big: true,
     };
     const wrapper = mount(<Action {...props}>Example text</Action>);
+
     expect(wrapper.find('Icon')).not.toBeUndefined();
   });
 
@@ -50,6 +54,7 @@ describe('<Action />', () => {
       big: true,
     };
     const wrapper = mount(<Action {...props}>Example text</Action>);
+
     expect(wrapper.text()).toBe('Example text');
   });
 });

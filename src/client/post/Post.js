@@ -5,19 +5,9 @@ import { get } from 'lodash';
 import VisibilitySensor from 'react-visibility-sensor';
 import formatter from '../helpers/steemitFormatter';
 import { isBannedPost } from '../helpers/postHelpers';
-import {
-  getPostContent,
-  getIsPostEdited,
-  getIsPostFetching,
-  getIsPostLoaded,
-  getIsPostFailed,
-  getUser,
-  getIsAuthFetching,
-  getSuitableLanguage,
-  getAuthenticatedUserName,
-} from '../reducers';
-import { getContent } from './postActions';
-import { getUserAccount } from '../user/usersActions';
+import { getSuitableLanguage } from '../store/reducers';
+import { getContent } from '../store/postsStore/postActions';
+import { getUserAccount } from '../store/usersStore/usersActions';
 import Error404 from '../statics/Error404';
 import Comments from '../comments/Comments';
 import Loading from '../components/Icon/Loading';
@@ -26,23 +16,35 @@ import Affix from '../components/Utils/Affix';
 import HiddenPostMessage from './HiddenPostMessage';
 import PostRecommendation from '../components/Sidebar/PostRecommendation';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
+import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
+import { getIsPostEdited } from '../store/editorStore/editorSelectors';
+import {
+  getIsPostFailed,
+  getIsPostFetching,
+  getIsPostLoaded,
+  getPostContent,
+} from '../store/postsStore/postsSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 @connect(
-  (state, ownProps) => ({
-    edited: getIsPostEdited(state, ownProps.match.params.permlink),
-    content: getPostContent(state, ownProps.match.params.permlink, ownProps.match.params.author),
-    isAuthFetching: getIsAuthFetching(state),
-    fetching: getIsPostFetching(
-      state,
-      ownProps.match.params.author,
+  (state, ownProps) => {
+    const getContentOfPost = getPostContent(
       ownProps.match.params.permlink,
-    ),
-    loaded: getIsPostLoaded(state, ownProps.match.params.author, ownProps.match.params.permlink),
-    failed: getIsPostFailed(state, ownProps.match.params.author, ownProps.match.params.permlink),
-    user: getUser(state, ownProps.match.params.author),
-    locale: getSuitableLanguage(state),
-    follower: getAuthenticatedUserName(state),
-  }),
+      ownProps.match.params.author,
+    );
+
+    return {
+      edited: getIsPostEdited(state, ownProps.match.params.permlink),
+      content: getContentOfPost(state),
+      isAuthFetching: getIsAuthFetching(state),
+      fetching: getIsPostFetching(state, ownProps.match.params),
+      loaded: getIsPostLoaded(state, ownProps.match.params.author, ownProps.match.params.permlink),
+      failed: getIsPostFailed(state, ownProps.match.params),
+      user: getUser(state, ownProps.match.params.author),
+      locale: getSuitableLanguage(state),
+      follower: getAuthenticatedUserName(state),
+    };
+  },
   { getContent, getUserAccount },
 )
 export default class Post extends React.Component {
@@ -76,6 +78,7 @@ export default class Post extends React.Component {
 
   static fetchData({ store, match }) {
     const { author, permlink } = match.params;
+
     return Promise.all([
       store.dispatch(getUserAccount(author)),
       store.dispatch(getContent(author, permlink)),
@@ -111,6 +114,7 @@ export default class Post extends React.Component {
     const { author: prevAuthor, permlink: prevPermlink } = this.props.match.params;
 
     const shouldUpdate = author !== prevAuthor || permlink !== prevPermlink;
+
     if (shouldUpdate && !nextProps.fetching) {
       this.setState({ commentsVisible: false }, () => {
         this.props.getContent(author, permlink, false);

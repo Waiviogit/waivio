@@ -16,6 +16,7 @@ const WalletProposalPay = ({
 }) => {
   const options = { receiver };
   const description = getTransactionDescription(transactionType, options);
+
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-container">

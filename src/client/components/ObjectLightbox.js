@@ -35,6 +35,7 @@ export default class ObjectLightbox extends Component {
     const { wobject, size, accessExtend } = this.props;
     const objectName = wobject.name || wobject.default_name;
     let currentImage = wobject.avatar || get(wobject, ['parent', 'avatar']);
+
     if (currentImage) currentImage = getProxyImageURL(currentImage, 'preview');
     else currentImage = DEFAULTS.AVATAR;
 

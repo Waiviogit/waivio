@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import * as store from '../../reducers';
+import * as store from '../../store/reducers';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import InterestingObjects from '../../components/Sidebar/InterestingObjects';
 import SignUp from '../../components/Sidebar/SignUp';
@@ -15,15 +15,22 @@ import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByTyp
 import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
 import { getFeedFromState } from '../../helpers/stateHelpers';
 import UserSidebar from './UserSidebar';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsAuthFetching,
+  isGuestUser,
+} from '../../store/authStore/authSelectors';
+import { getFeed } from '../../store/feedStore/feedSelectors';
 
 @withRouter
 @connect(state => ({
-  authenticated: store.getIsAuthenticated(state),
-  authUserName: store.getAuthenticatedUserName(state),
-  isAuthFetching: store.getIsAuthFetching(state),
+  authenticated: getIsAuthenticated(state),
+  authUserName: getAuthenticatedUserName(state),
+  isAuthFetching: getIsAuthFetching(state),
   locale: store.getLocale(state),
-  isGuest: store.isGuestUser(state),
-  feed: store.getFeed(state),
+  isGuest: isGuestUser(state),
+  feed: getFeed(state),
 }))
 export default class RightSidebar extends React.Component {
   static propTypes = {
@@ -64,6 +71,7 @@ export default class RightSidebar extends React.Component {
     if (isAuthFetching) {
       return <Loading />;
     }
+
     return (
       <div>
         {!authenticated && <SignUp />}

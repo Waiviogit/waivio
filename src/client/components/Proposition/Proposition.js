@@ -18,6 +18,7 @@ class Proposition extends React.Component {
 
   handleToggleModal = () => {
     const { fieldName, albums, appendAlbum } = this.props;
+
     if (fieldName !== objectFields.pageContent) {
       if (fieldName === objectFields.galleryItem && !isPhotosAlbumExist(albums)) {
         appendAlbum();
@@ -43,6 +44,7 @@ class Proposition extends React.Component {
       'field-selected': selectedField === fieldName,
     });
     let renderModal = null;
+
     switch (fieldName) {
       case objectFields.galleryAlbum:
         renderModal = <CreateAlbum showModal={showModal} hideModal={this.handleToggleModal} />;

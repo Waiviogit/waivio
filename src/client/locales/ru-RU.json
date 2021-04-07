@@ -1624,8 +1624,8 @@
   "object_field_formField": "Форма",
   "form": "Название формы",
   "columns": "Колонки",
-  "form_link": "Ссылка",
-  "form_widget": "Виджет",
+  "Link": "Ссылка",
+  "Widget": "Виджет",
   "form_back": "Назад к ревью",
   "enter": "Ввести",
   "paste_widget": "Вставьте код",
@@ -1639,5 +1639,9 @@
   "object_fiels_news_select_placeholder": "Выберите правило",
   "all_rewards": "Все вознаграждения",
   "eligible_rewards": "Доступные вознаграждения",
-  "reserved_rewards": "Резервации вознаграждения"
+  "reserved_rewards": "Резервации вознаграждения",
+  "middle": "Средняя",
+  "middleRight": "Средняя + Правая",
+  "entire": "Полная ширина",
+  "new_accounts": "Новые аккаунты"
 }

@@ -1,12 +1,14 @@
-import { getAuthenticatedUserName, getLocale } from '../reducers';
+import { getLocale } from '../store/reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 export const SET_MATCH_BOT_RULE = createAsyncActionType('@rewards/SET_MATCH_BOT_RULE');
 
 export const setMatchBotRules = ruleObj => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
+
   return dispatch({
     type: SET_MATCH_BOT_RULE.ACTION,
     payload: {
@@ -22,6 +24,7 @@ export const SET_MATCH_BOT_VOTING_POWER = createAsyncActionType(
 export const setMatchBotVotingPower = votingPower => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
+
   return dispatch({
     type: SET_MATCH_BOT_VOTING_POWER.ACTION,
     payload: {
@@ -35,6 +38,7 @@ export const DEL_MATCH_BOT_RULE = createAsyncActionType('@rewards/DEL_MATCH_BOT_
 export const deleteMatchBotRule = sponsorName => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
+
   return dispatch({
     type: DEL_MATCH_BOT_RULE.ACTION,
     payload: {
@@ -68,6 +72,7 @@ export const CHANGE_BLACK_AND_WHITE_LISTS = '@rewards/CHANGE_BLACK_AND_WHITE_LIS
 export const changeBlackAndWhiteLists = (id, user) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
+
   return dispatch({
     type: CHANGE_BLACK_AND_WHITE_LISTS,
     payload: {
@@ -110,6 +115,7 @@ export const GET_FOLLOWING_SPONSORS_REWARDS = createAsyncActionType(
 export const getFollowingSponsorsRewards = skip => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+
   return dispatch({
     type: GET_FOLLOWING_SPONSORS_REWARDS.ACTION,
     payload: ApiClient.getFollowingSponsorsRewards({ userName, skip }),
@@ -130,6 +136,7 @@ export const GET_FRAUD_SUSPICION = createAsyncActionType('@rewards/GET_FRAUD_SUS
 export const getFraudSuspicion = ({ fraudSuspicion, sort, skip }) => (dispatch, getState) => {
   const state = getState();
   const guideName = getAuthenticatedUserName(state);
+
   return dispatch({
     type: GET_FRAUD_SUSPICION.ACTION,
     payload: ApiClient.getHistory({ guideName, fraudSuspicion, sort, skip }),

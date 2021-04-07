@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
 import ObjectWeights from './ObjectWeights';
-import { getAutoCompleteSearchResults, getHiveBeneficiaryAccount } from '../../reducers';
+import { getAutoCompleteSearchResults, getHiveBeneficiaryAccount } from '../../store/reducers';
 import {
   resetSearchAutoCompete,
   searchAutoComplete,

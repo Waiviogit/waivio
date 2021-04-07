@@ -8,9 +8,10 @@ import classNames from 'classnames';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
-import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
+import { getScreenSize } from '../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 import './ObjectCardView.less';
 
@@ -34,10 +35,12 @@ const ObjectCardView = ({
     'ObjectCardView--hovered': hovered,
   });
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
+
   pathName = hasType(wObject, 'page') ? path : pathName;
 
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
+
     setTags([wObject.object_type, ...objectTags]);
   }, [wObject.author_permlink, setTags]);
 

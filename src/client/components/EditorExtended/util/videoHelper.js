@@ -18,6 +18,7 @@ export const isThreeSpeak = url => THREESPEAKMATCH_URL.test(url);
 
 export const getYoutubeSrc = url => {
   const id = url && url.match(YOUTUBEMATCH_URL)[1];
+
   return {
     srcID: id,
     srcType: 'youtube',
@@ -27,6 +28,7 @@ export const getYoutubeSrc = url => {
 
 export const getVimeoSrc = url => {
   const id = url.match(VIMEOMATCH_URL)[3];
+
   return {
     srcID: id,
     srcType: 'vimeo',
@@ -36,6 +38,7 @@ export const getVimeoSrc = url => {
 
 export const getDTubeSrc = url => {
   const id = url.match(DTUBEMATCH_URL)[4];
+
   return {
     srcID: id,
     srcType: 'dtube',
@@ -45,6 +48,7 @@ export const getDTubeSrc = url => {
 
 export const getThreeSpeakSrc = url => {
   const id = url.match(THREESPEAKMATCH_URL)[2];
+
   return {
     srcID: id,
     srcType: '3speak',
@@ -55,18 +59,22 @@ export const getThreeSpeakSrc = url => {
 export const getSrc = ({ src }) => {
   if (isYoutube(src)) {
     const { srcID } = getYoutubeSrc(src);
+
     return `${YOUTUBE_PREFIX}${srcID}`;
   }
   if (isVimeo(src)) {
     const { srcID } = getVimeoSrc(src);
+
     return `${VIMEO_PREFIX}${srcID}`;
   }
   if (isDTube(src)) {
     const { srcID } = getDTubeSrc(src);
+
     return `${DTUBE_PREFIX}${srcID}`;
   }
   if (isThreeSpeak(src)) {
     const { srcID } = getThreeSpeakSrc(src);
+
     return `${THREESPEAK_PREFIX}${srcID}`;
   }
 

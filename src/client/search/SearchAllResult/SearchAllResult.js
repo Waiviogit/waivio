@@ -21,7 +21,7 @@ import {
   getWebsiteSearchResult,
   getWebsiteSearchResultLoading,
   getWebsiteSearchString,
-} from '../../reducers';
+} from '../../store/reducers';
 import { getActiveItemClassList } from '../helpers';
 import {
   followSearchUser,
@@ -35,7 +35,7 @@ import {
 import Loading from '../../components/Icon/Loading';
 import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
-import { assignProposition, declineProposition } from '../../user/userActions';
+import { assignProposition, declineProposition } from '../../store/userStore/userActions';
 import ViewMapButton from '../../widgets/ViewMapButton';
 
 import './SearchAllResult.less';
@@ -123,6 +123,7 @@ const SearchAllResult = props => {
 
   const getEndScroll = e => {
     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+
     if (bottom) setIsScrolled(true);
     else setIsScrolled(false);
   };

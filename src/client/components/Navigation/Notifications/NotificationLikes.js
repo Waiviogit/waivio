@@ -20,6 +20,7 @@ const getCurrentTextNotification = notification => {
       />
     );
   }
+
   return (
     <FormattedMessage
       id="like_post_notify_other"

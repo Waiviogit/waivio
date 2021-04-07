@@ -23,13 +23,16 @@ export default block => {
           ? `${BASE_BLOCK_CLASS}-todo-checked`
           : `${BASE_BLOCK_CLASS}-todo-unchecked`;
       let finalClass = `${BASE_BLOCK_CLASS} ${BASE_BLOCK_CLASS}-paragraph `;
+
       finalClass += `${BASE_BLOCK_CLASS}-todo ${checkedClass}`;
+
       return finalClass;
     }
     case Block.IMAGE:
       return `${BASE_BLOCK_CLASS} ${BASE_BLOCK_CLASS}-image`;
     case Block.BLOCKQUOTE_CAPTION: {
       const cls = `${BASE_BLOCK_CLASS} ${BASE_BLOCK_CLASS}-quote`;
+
       return `${cls} md-RichEditor-blockquote ${BASE_BLOCK_CLASS}-quote-caption`;
     }
     case Block.CODE:

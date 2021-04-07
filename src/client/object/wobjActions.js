@@ -2,14 +2,19 @@ import { createAction } from 'redux-actions';
 import { message } from 'antd';
 import { get, isEmpty } from 'lodash';
 
-import { getIsAuthenticated, getAuthenticatedUserName, getLocale, isGuestUser } from '../reducers';
+import { getLocale } from '../store/reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getChangedField } from '../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { APPEND_WAIVIO_OBJECT } from './appendActions';
-import { BELL_USER_NOTIFICATION } from '../user/userActions';
+import { BELL_USER_NOTIFICATION } from '../store/userStore/userActions';
 import { isPostCashout } from '../vendor/steemitHelpers';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -113,6 +118,7 @@ export const voteObject = (objCreator, objPermlink, weight = 10000) => (
   { steemConnectAPI },
 ) => {
   const { auth } = getState();
+
   if (!auth.isAuthenticated) {
     return null;
   }
@@ -347,6 +353,7 @@ export const wobjectBellNotification = followingWobj => (
   const state = getState();
   const username = getAuthenticatedUserName(state);
   const subscribe = !get(state, ['object', 'wobject', 'bell']);
+
   dispatch({
     type: BELL_WOBJECT_NOTIFICATION.START,
   });
@@ -360,6 +367,7 @@ export const wobjectBellNotification = followingWobj => (
     )
     .catch(err => {
       message.error(err.message);
+
       return dispatch({
         type: BELL_USER_NOTIFICATION.ERROR,
       });

@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import { Icon } from 'antd';
-import { getObjectTypes } from '../../../objectTypes/objectTypesActions';
-import { getObjectTypesList } from '../../../reducers';
+import { getObjectTypes } from '../../../store/objectTypesStore/objectTypesActions';
 import Loading from '../../Icon/Loading';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
+import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
+
 import './ObjectCreation.less';
 
 const objTypesLimit = 5;
@@ -51,6 +52,7 @@ class ObjectCreation extends React.Component {
     const { showedTypesCount } = this.state;
     const { objectTypes } = this.props;
     const loadedObjectTypesCount = _.size(objectTypes);
+
     if (showedTypesCount <= loadedObjectTypesCount) {
       this.setState({ showedTypesCount: showedTypesCount + objTypesLimit, selectedType: '' });
     }
@@ -67,6 +69,7 @@ class ObjectCreation extends React.Component {
     const { objectTypes } = this.props;
     const isEmpty = _.size(objectTypes) === 0;
     const showedTypes = Object.keys(objectTypes).slice(0, showedTypesCount);
+
     return (
       <div className="ObjectCreation SidebarContentBlock">
         <h4 className="SidebarContentBlock__title">

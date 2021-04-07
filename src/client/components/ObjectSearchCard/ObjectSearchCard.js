@@ -15,6 +15,7 @@ const ObjectSearchCard = props => {
   const titleSrting = get(object, objectFields.title, '');
   const description = get(object, objectFields.description, '');
   let avatar = get(object, ['avatar']) || get(parent, 'avatar');
+
   if (avatar) avatar = getProxyImageURL(avatar, 'preview');
 
   return (

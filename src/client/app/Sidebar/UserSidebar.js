@@ -14,6 +14,7 @@ const UserSidebar = ({ authenticated, isGuest, content, authUserName, match, loc
       </React.Fragment>
     );
   }
+
   return (
     authenticated && (
       <ObjectWeightBlock username={match.params.name} authUser={authUserName} locale={locale} />

@@ -8,7 +8,8 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import Loading from '../components/Icon/Loading';
 import { followWobject, unfollowWobject } from '../object/wobjActions';
-import { getAuthenticatedUserName, getLocale, isGuestUser } from '../reducers';
+import { getLocale } from '../store/reducers';
+import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
 
 const displayLimit = 30;
 
@@ -100,6 +101,7 @@ export default class ObjectList extends React.Component {
   unFollow = permlink => {
     const matchWobjIndex = this.state.wobjs.findIndex(wobj => wobj.author_permlink === permlink);
     const wobjectsArray = [...this.state.wobjs];
+
     wobjectsArray.splice(matchWobjIndex, 1, {
       ...wobjectsArray[matchWobjIndex],
       pending: true,

@@ -6,7 +6,8 @@ import { get, isEmpty } from 'lodash';
 import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
 import ImageSetter from '../ImageSetter/ImageSetter';
-import { getIsAuthenticated } from '../../reducers';
+import { getIsAuthenticated } from '../../store/authStore/authSelectors';
+
 import './QuickCommentEditor.less';
 
 @withEditor
@@ -53,10 +54,12 @@ class QuickCommentEditor extends React.Component {
       this.setState(prevState => ({ commentMsg: `${prevState.commentMsg}\n` }));
     } else {
       const { currentImage, commentMsg } = this.state;
+
       this.setState({ isDisabledSubmit: true });
 
       if (commentMsg) {
         let imageData = commentMsg.trim();
+
         if (currentImage.length) {
           imageData += `\n![${currentImage[0].name}](${currentImage[0].src})\n`;
         }
@@ -71,6 +74,7 @@ class QuickCommentEditor extends React.Component {
 
   handleMsgChange = e => {
     const commentMsg = e.currentTarget.value;
+
     this.setState({ commentMsg });
   };
 

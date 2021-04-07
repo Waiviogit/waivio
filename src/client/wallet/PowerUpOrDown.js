@@ -5,14 +5,14 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Modal } from 'antd';
 import { closePowerUpOrDown } from './walletActions';
 import {
-  getAuthenticatedUser,
   getIsPowerUpOrDownVisible,
   getIsPowerDown,
   getTotalVestingShares,
   getTotalVestingFundSteem,
-} from '../reducers';
+} from '../store/reducers';
 import formatter from '../helpers/steemitFormatter';
 import { createQuery } from '../helpers/apiHelpers';
+import { getAuthenticatedUser } from '../store/authStore/authSelectors';
 
 import './Transfer/Transfer.less';
 
@@ -71,6 +71,7 @@ export default class PowerUpOrDown extends React.Component {
   handleBalanceClick = event => {
     const { oldAmount } = this.state;
     const value = parseFloat(event.currentTarget.innerText);
+
     this.setState({
       oldAmount: PowerUpOrDown.amountRegex.test(value) ? value : oldAmount,
     });
@@ -81,10 +82,12 @@ export default class PowerUpOrDown extends React.Component {
 
   handleContinueClick = () => {
     const { form, user, down, totalVestingShares, totalVestingFundSteem } = this.props;
+
     form.validateFields({ force: true }, (errors, values) => {
       const vests = (
         values.amount / formatter.vestToSteem(1, totalVestingShares, totalVestingFundSteem)
       ).toFixed(6);
+
       if (!errors) {
         const transferQuery = down
           ? {
@@ -101,6 +104,7 @@ export default class PowerUpOrDown extends React.Component {
           }?${createQuery(transferQuery)}`,
           '_blank',
         );
+
         win.focus();
         this.props.closePowerUpOrDown();
       }
@@ -136,6 +140,7 @@ export default class PowerUpOrDown extends React.Component {
           }),
         ),
       ]);
+
       return;
     }
 

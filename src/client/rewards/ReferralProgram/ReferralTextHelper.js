@@ -25,6 +25,7 @@ export const referralDetailContent = data => {
   } = data;
 
   const { offersReward, offersPercent, feesValue } = additionData;
+
   return {
     detailTitle: (
       <FormattedMessage id="referrals_details_title" defaultMessage="Referral program details:" />
@@ -281,6 +282,7 @@ export const referralInstructionsContent = username => ({
 
 export const referralStatusContent = data => {
   const { username, currentUserCards } = data;
+
   return {
     statusTitle: <FormattedMessage id="referral_status_title" defaultMessage="Referral status:" />,
     statusDescription: (
@@ -323,6 +325,7 @@ export const referralStatusContent = data => {
 
 export const sponsoredRewardsMainContent = data => {
   const { username } = data;
+
   return {
     sponsoredRewardsTitle: (
       <FormattedMessage

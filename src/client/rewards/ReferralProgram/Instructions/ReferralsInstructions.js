@@ -9,17 +9,19 @@ import {
   referralRejectRules,
 } from '../ReferralActions';
 import {
-  getAuthenticatedUserName,
-  getIsAuthenticated,
   getIsStartChangeRules,
   getIsStartGetReferralInfo,
   getIsUserInWaivioBlackList,
   getReferralStatus,
-  isGuestUser,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { referralInstructionsContent } from '../ReferralTextHelper';
 import ReferralsInstructionsView from './ReferralInstructionsView';
 import { getCopyTextButtonResult, widget } from '../ReferralHelper';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../../store/authStore/authSelectors';
 
 import './ReferralsInstructions.less';
 
@@ -57,6 +59,7 @@ const ReferralsInstructions = props => {
     if (!currentStatus) {
       return confirmRules(authUserName, isGuest);
     }
+
     return null;
   };
 
@@ -69,6 +72,7 @@ const ReferralsInstructions = props => {
   const { copyButtonText, copyButtonCopiedText } = referralInstructionsContent(authUserName);
 
   const currentCopyText = isCopyButton ? copyButtonCopiedText : copyButtonText;
+
   setTimeout(() => setIsCopyButton(false), 3000);
 
   const mainProps = {

@@ -5,9 +5,9 @@ import classNames from 'classnames';
 import { FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
-import { getAuthenticatedUserName } from '../reducers';
 import { epochToUTC } from '../helpers/formatter';
 import { getTransactionDescription, validateGuestTransferTitle } from './WalletHelper';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 const ReceiveTransaction = ({
   from,
@@ -26,6 +26,7 @@ const ReceiveTransaction = ({
   const demoPost = type === 'demo_post';
   const options = { from };
   const description = getTransactionDescription(transactionType, options);
+
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__avatar">

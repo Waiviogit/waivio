@@ -8,6 +8,7 @@ import { getTransactionDescription } from './WalletHelper';
 const PowerUpTransactionTo = ({ timestamp, amount, to, transactionType }) => {
   const options = { to };
   const description = getTransactionDescription(transactionType, options);
+
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-container">

@@ -3,21 +3,22 @@ import PropTypes from 'prop-types';
 import { find, size } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { getVotingPower, getVotePercent } from '../store/reducers';
+import CommentsList from '../components/Comments/Comments';
+import * as commentsActions from '../store/commentsStore/commentsActions';
+import { notify } from '../app/Notification/notificationActions';
+import { getDownvotes } from '../helpers/voteHelpers';
+import { getRewardFund } from '../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../store/authStore/authSelectors';
+import {
   getComments,
   getCommentsList,
   getCommentsPendingVotes,
-  getIsAuthenticated,
-  getAuthenticatedUserName,
-  getVotingPower,
-  getRewardFund,
-  getVotePercent,
-} from '../reducers';
-import CommentsList from '../components/Comments/Comments';
-import * as commentsActions from './commentsActions';
-import { notify } from '../app/Notification/notificationActions';
-import { getDownvotes } from '../helpers/voteHelpers';
+} from '../store/commentsStore/commentsSelectors';
 
 @connect(
   state => ({
@@ -96,6 +97,7 @@ export default class Comments extends React.Component {
   componentDidMount() {
     if (this.props.show && this.props.post.children !== 0) {
       const postId = this.props.post.id || this.props.post.permlink;
+
       this.props.getComments(postId);
     }
   }
@@ -111,13 +113,16 @@ export default class Comments extends React.Component {
 
   getNestedComments = (commentsObj, commentsIdArray, nestedComments) => {
     const newNestedComments = nestedComments;
+
     commentsIdArray.forEach(commentId => {
       const nestedCommentArray = commentsObj.childrenById[commentId];
+
       if (size(nestedCommentArray)) {
         newNestedComments[commentId] = nestedCommentArray.map(id => commentsObj.comments[id]);
         this.getNestedComments(commentsObj, nestedCommentArray, newNestedComments);
       }
     });
+
     return newNestedComments;
   };
 
@@ -136,6 +141,7 @@ export default class Comments extends React.Component {
 
   handleDislikeClick = (id, weight = 10000) => {
     const { commentsList, pendingVotes, user, sliderMode, defaultVotePercent } = this.props;
+
     if (pendingVotes[id]) return;
     const isFlagged = getDownvotes(commentsList[id].active_votes).some(
       ({ voter }) => voter === user.name,

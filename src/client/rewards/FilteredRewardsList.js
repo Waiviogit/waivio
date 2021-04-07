@@ -96,6 +96,7 @@ const FilteredRewardsList = props => {
     } else if (location === guideHistoryLocation) {
       return activeGuideHistoryFilters;
     }
+
     return activeFilters;
   }, [location, activeHistoryFilters, activeMessagesFilters, activeFilters]);
 
@@ -143,6 +144,7 @@ const FilteredRewardsList = props => {
         },
       ];
     }
+
     return [
       {
         key: 'reward',
@@ -161,6 +163,7 @@ const FilteredRewardsList = props => {
       },
     ];
   }, [location, intl]);
+
   return !loadingCampaigns && !pendingUpdate ? (
     <React.Fragment>
       <RewardBreadcrumb
@@ -228,6 +231,7 @@ const FilteredRewardsList = props => {
                 </Tag>
               );
             }
+
             return null;
           })}
           <span

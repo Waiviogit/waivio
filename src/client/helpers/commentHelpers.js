@@ -19,6 +19,7 @@ export function getLinkedComment(comments = []) {
   }
 
   const anchor = window.location.hash.replace('#', '');
+
   if (Array.isArray(comments)) {
     for (let i = 0; i < comments.length; i += 1) {
       if (getCommentAnchor(comments[i]) === anchor) {
@@ -27,13 +28,16 @@ export function getLinkedComment(comments = []) {
     }
   } else {
     const commentsKeys = Object.keys(comments);
+
     for (let i = 0; i < commentsKeys.length; i += 1) {
       const comment = comments[commentsKeys[i]];
+
       if (getCommentAnchor(comment) === anchor) {
         return comment;
       }
     }
   }
+
   return null;
 }
 
@@ -51,6 +55,7 @@ export function findTopComment(root, comments, child) {
 
   let top = child;
   const commentIds = Object.keys(comments);
+
   while (top && top.parent_permlink !== root.permlink && top.parent_author !== root.author) {
     for (let i = 0; i < commentIds.length; i += 1) {
       if (comments[commentIds[i]].permlink === top.parent_permlink) {
@@ -65,10 +70,13 @@ export function findTopComment(root, comments, child) {
 
 export function findRoot(list, post) {
   let root = { ...post };
+
   if (post && post.parent_author) {
     const parentKey = `${post.parent_author}/${post.parent_permlink}`;
+
     root = findRoot(list, list[parentKey]);
   }
+
   return root;
 }
 

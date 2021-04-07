@@ -10,19 +10,18 @@ import CommentsMessages from './CommentsMessages';
 import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE, IS_ALL } from '../../../common/constants/rewards';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
-import {
-  getRate,
-  getAppUrl,
-  getLocale,
-  isGuestUser,
-  getCommentsFromReserved,
-  getAuthenticatedUserName,
-} from '../../reducers';
+import { getLocale, getCommentsFromReserved } from '../../store/reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
-import { getReservedComments, sendCommentMessages } from '../../comments/commentsActions';
+import {
+  getReservedComments,
+  sendCommentMessages,
+} from '../../store/commentsStore/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
+import { getAppUrl, getRate } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
+
 import './CampaignFooter.less';
 
 @injectIntl
@@ -150,6 +149,7 @@ class CampaignFooter extends React.Component {
 
   componentDidMount() {
     const { user, post, defaultVotePercent, proposition, locale, follower } = this.props;
+
     if (user) {
       const userVote = find(post.active_votes, { voter: user.name }) || {};
 
@@ -172,6 +172,7 @@ class CampaignFooter extends React.Component {
     const permlink = this.isReserved
       ? get(currentUser, ['0', 'permlink'])
       : get(proposition, ['users', '0', 'permlink']);
+
     this.getReservedComments();
     if (!isEmpty(author) && !isEmpty(permlink)) {
       getContent(author, permlink, locale, follower).then(res =>
@@ -180,6 +181,7 @@ class CampaignFooter extends React.Component {
     }
     const reservationsTime =
       get(currentUser, ['0', 'createdAt']) || get(currentUser, ['createdAt']);
+
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(reservationsTime, proposition.count_reservation_days),
@@ -189,6 +191,7 @@ class CampaignFooter extends React.Component {
   getCurrentUser = () => {
     const { proposition, userName } = this.props;
     let currentUser;
+
     if (this.isReserved) {
       currentUser = filter(
         proposition.users,
@@ -210,11 +213,13 @@ class CampaignFooter extends React.Component {
       : get(currentUser, ['0', 'name']);
     const permlink = get(currentUser, ['0', 'permlink']);
     const { campaign_server: category } = proposition;
+
     if (!isEmpty(author) && !isEmpty(permlink)) {
       return this.props.getReservedComments({ category, author, permlink }).then(res => {
         this.setState({ currentPostReserved: res.value });
       });
     }
+
     return null;
   };
 
@@ -254,6 +259,7 @@ class CampaignFooter extends React.Component {
 
   handleFollowObjectClick() {
     const { objectFollowed } = this.state;
+
     if (objectFollowed) {
       this.props.unfollowObject(this.props.requiredObjectPermlink);
     } else {
@@ -264,6 +270,7 @@ class CampaignFooter extends React.Component {
 
   clickMenuItem(key) {
     const { post } = this.props;
+
     switch (key) {
       case 'follow':
         this.handleFollowClick(post);
@@ -282,6 +289,7 @@ class CampaignFooter extends React.Component {
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
+
     discardPr(proposedWobj).then(() => {
       this.toggleModal();
       message.success(
@@ -315,12 +323,14 @@ class CampaignFooter extends React.Component {
       rate,
       value * 100,
     );
+
     this.setState({ sliderValue: value, voteWorth });
   };
 
   toggleCommentsVisibility = () => {
     const { proposition, reservedComments } = this.props;
     const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedComments);
+
     if (hasComments) {
       this.setState(prevState => ({ commentsVisible: !prevState.commentsVisible }));
     }
@@ -330,6 +340,7 @@ class CampaignFooter extends React.Component {
   handleCommentClick = () => {
     const { currentPost, commentsVisible } = this.state;
     const { category, author, permlink } = currentPost;
+
     if (!commentsVisible) {
       this.props
         .getReservedComments({ category, author, permlink })
@@ -352,6 +363,7 @@ class CampaignFooter extends React.Component {
 
   onCommentSend = () => {
     const { match, getMessageHistory, isGuest } = this.props;
+
     return isGuest || !match.params[0] ? this.getReservedComments() : getMessageHistory();
   };
 
@@ -365,9 +377,11 @@ class CampaignFooter extends React.Component {
       : get(currentUser, ['0', 'permlink']);
     const { intl } = this.props;
     const parentComment = parentP;
+
     if (parentComment.author_original) parentComment.author = parentComment.author_original;
     this.setState({ loadingComments: true });
     const commentObj = get(parentComment, ['firstAppeal']);
+
     return this.props
       .sendCommentMessages(
         parentComment,
@@ -392,6 +406,7 @@ class CampaignFooter extends React.Component {
       })
       .catch(() => {
         this.setState({ commentFromText: commentValue, loadingComments: false });
+
         return {
           error: true,
         };
@@ -496,6 +511,7 @@ class CampaignFooter extends React.Component {
       ? size(commentsAll) - 1
       : size(currentPostReserved.content) - 1;
     const isNotifyComment = Boolean(this.props.match.params.campaignId);
+
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">

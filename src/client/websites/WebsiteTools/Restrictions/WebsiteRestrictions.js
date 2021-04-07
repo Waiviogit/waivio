@@ -7,12 +7,11 @@ import { Tabs } from 'antd';
 import { Link } from 'react-router-dom';
 
 import {
-  getAuthenticatedUserName,
   getMuteLoading,
   getRestrictions,
   getUnmutedUsers,
   getWebsiteLoading,
-} from '../../../reducers';
+} from '../../../store/reducers';
 import { getWebsiteRestrictions, muteUser } from '../../websiteActions';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import Action from '../../../components/Button/Action';
@@ -21,6 +20,7 @@ import { SORT_OPTIONS_WOBJ } from '../../../../common/constants/waivioFiltres';
 import UserCard from '../../../components/UserCard';
 import WeightTag from '../../../components/WeightTag';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './WebsiteRestrictions.less';
 

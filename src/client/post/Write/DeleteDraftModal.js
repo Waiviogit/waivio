@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { deleteDraft } from './editorActions';
+import { deleteDraft } from '../../store/editorStore/editorActions';
 import { notify } from '../../app/Notification/notificationActions';
 
 @injectIntl
@@ -34,6 +34,7 @@ class DeleteDraftModal extends React.Component {
 
   deleteDraft = () => {
     const { intl, draftIds, onDelete } = this.props;
+
     this.setState({ loading: true });
     this.props.deleteDraft(draftIds).then(() => {
       this.props.notify(

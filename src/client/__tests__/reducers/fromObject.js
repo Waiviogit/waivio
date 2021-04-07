@@ -5,7 +5,7 @@ import {
   getRatingFields,
   getObjectTagCategory,
   getObjectFetchingState,
-} from '../../reducers';
+} from '../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 
@@ -40,6 +40,7 @@ describe('fromObject', () => {
 
   it('Should return rating fields', () => {
     const ratingField = [{ name: 'rating' }];
+
     expect(getRatingFields(state)).toEqual(ratingField);
   });
 

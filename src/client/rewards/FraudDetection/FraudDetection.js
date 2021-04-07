@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { get, map, size } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import {
-  getAuthenticatedUserName,
-  getHasMoreFraudSuspicionData,
-  getFraudSuspicionDataState,
-  getAuthenticatedUser,
-} from '../../reducers';
+import { getHasMoreFraudSuspicionData, getFraudSuspicionDataState } from '../../store/reducers';
 import { getBlacklist, getFraudSuspicion } from '../rewardsActions';
 import Proposition from '../Proposition/Proposition';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
+
 import './FraudDetection.less';
 
 const FraudDetection = ({
@@ -55,9 +55,11 @@ const FraudDetection = ({
         fraudSuspicion: true,
         sort: sortFraudDetection,
       };
+
       getBlacklistUsers(userName).then(data => {
         const blacklist = get(data, ['value', 'blackList', 'blackList']);
         const blacklistNames = map(blacklist, blacklistUser => blacklistUser.name);
+
         setBlacklistUsers(blacklistNames);
       });
       setLoadingCampaigns(true);
@@ -78,6 +80,7 @@ const FraudDetection = ({
         sort: sortFraudDetection,
         skip: size(fraudSuspicionData),
       };
+
       getFraudSuspicionData(requestData).then(() => {
         setLoading(false);
       });
@@ -94,6 +97,7 @@ const FraudDetection = ({
         sort: sortChanged,
         skip: size(fraudSuspicionData),
       };
+
       getFraudSuspicionData(requestData).then(() => {
         setLoadingCampaigns(false);
         setLoading(false);
@@ -147,6 +151,7 @@ const FraudDetection = ({
             >
               {map(fraudSuspicionData, proposition => {
                 const fraudNumbers = get(proposition.users[0], ['fraudCodes'], []);
+
                 return map(
                   proposition.objects,
                   wobj =>

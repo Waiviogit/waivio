@@ -134,6 +134,7 @@ class EditorInput extends React.Component {
       endPos,
       value.length,
     )}`;
+
     this.setValue(newValue, startPos + imageText.length, startPos + imageText.length);
   }
 
@@ -150,6 +151,7 @@ class EditorInput extends React.Component {
       endPos,
       size(value),
     )}`;
+
     this.setValue(newValue, startPos + wobjTextLenghth, startPos + wobjTextLenghth);
   }
 
@@ -238,6 +240,7 @@ class EditorInput extends React.Component {
   handlePastedImage(e) {
     if (e.clipboardData && e.clipboardData.items) {
       const items = e.clipboardData.items;
+
       Array.from(items).forEach(item => {
         if (item.kind === 'file') {
           e.preventDefault();
@@ -246,6 +249,7 @@ class EditorInput extends React.Component {
 
           if (!isValidImage(blob)) {
             this.props.onImageInvalid();
+
             return;
           }
 
@@ -268,6 +272,7 @@ class EditorInput extends React.Component {
       this.setState({
         dropzoneActive: false,
       });
+
       return;
     }
 
@@ -276,6 +281,7 @@ class EditorInput extends React.Component {
       imageUploading: true,
     });
     let callbacksCount = 0;
+
     Array.from(files).forEach(item => {
       this.props.onImageUpload(
         item,
@@ -307,6 +313,7 @@ class EditorInput extends React.Component {
 
   handleChange(e) {
     const { value } = e.target;
+
     this.setValue(value);
   }
 
@@ -328,11 +335,13 @@ class EditorInput extends React.Component {
 
   beforeInsertImage = () => {
     const { currentImage } = this.state;
+
     this.insertImage(currentImage[0].src, currentImage[0].name, this.input);
   };
 
   handleChangeImage = e => {
     const { onImageInvalid, onImageUpload } = this.props;
+
     if (e.target.files && e.target.files[0]) {
       if (
         !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
@@ -341,6 +350,7 @@ class EditorInput extends React.Component {
           MAX_IMG_SIZE[objectFields.background],
           `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
         );
+
         return;
       }
 

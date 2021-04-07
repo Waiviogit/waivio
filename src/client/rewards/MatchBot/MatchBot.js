@@ -5,12 +5,13 @@ import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { Button, message, Modal, Slider, Switch, Tooltip } from 'antd';
 import { setMatchBotVotingPower } from '../rewardsActions';
-import { getAuthenticatedUser } from '../../reducers';
 import CreateRule from './CreateRule/CreateRule';
 import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import Error401 from '../../statics/Error401';
 import getMatchBotMessageData from './matchBotMessageData';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+
 import './MatchBot.less';
 
 const MatchBot = ({ intl, userName }) => {
@@ -33,6 +34,7 @@ const MatchBot = ({ intl, userName }) => {
       .some(authName => authName === authority);
   const handleSwitcher = () => {
     const path = window.location.href;
+
     if (!isAuthority) {
       window.location = `https://hivesigner.com/authorize/waiviocampaigns?redirect_uri=${path}&callback`;
     } else {
@@ -64,6 +66,7 @@ const MatchBot = ({ intl, userName }) => {
   const handleChangeModalVisible = () => {
     if (isOverRules) {
       message.error(messageData.cannotCreateRulesMore);
+
       return;
     }
     setModalVisible(!modalVisible);
@@ -81,6 +84,7 @@ const MatchBot = ({ intl, userName }) => {
     const preparedSliderValue = {
       voting_power: sliderValue * 100,
     };
+
     dispatch(setMatchBotVotingPower(preparedSliderValue)).then(() => {
       setLoaded(false);
       handleOpenVoteModal();

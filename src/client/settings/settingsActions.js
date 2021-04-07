@@ -1,8 +1,8 @@
 import { createAction } from 'redux-actions';
 import { saveSettingsMetadata } from '../helpers/metadata';
-import { getAuthenticatedUserName } from '../reducers';
 import { setUserStatus } from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../helpers/stateHelpers';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 export const SAVE_SETTINGS = '@app/SAVE_SETTINGS';
 export const SAVE_SETTINGS_START = '@app/SAVE_SETTINGS_START';
@@ -14,7 +14,9 @@ export const SET_USER_STATUS = createAsyncActionType('@app/SET_USER_STATUS');
 export const saveSettings = settings => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+
   if (!userName) return dispatch({ type: SAVE_SETTINGS_ERROR });
+
   return dispatch({
     type: SAVE_SETTINGS,
     payload: {

@@ -30,7 +30,7 @@ import {
 } from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
-import { rejectReview, changeReward, reinstateReward } from '../../user/userActions';
+import { rejectReview, changeReward, reinstateReward } from '../../store/userStore/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
 import {
   changeBlackAndWhiteLists,
@@ -141,6 +141,7 @@ export default class CampaignButtons extends React.Component {
 
   componentDidMount() {
     const { blacklistUsers } = this.props;
+
     this.getIsUserInBlackList(blacklistUsers);
   }
 
@@ -180,6 +181,7 @@ export default class CampaignButtons extends React.Component {
         { username: permlink },
       );
     }
+
     return this.props.intl.formatMessage(
       { id: 'campaign_buttons_follow_username', defaultMessage: 'Follow {username}' },
       { username: permlink },
@@ -234,6 +236,7 @@ export default class CampaignButtons extends React.Component {
     const objPermlink = get(proposition, ['users', '0', 'object_permlink']);
     const userName = get(proposition, ['users', '0', 'rootName']);
     const guideName = get(proposition, ['guideName']);
+
     return this.props
       .rejectReview({
         companyAuthor,
@@ -264,6 +267,7 @@ export default class CampaignButtons extends React.Component {
     const companyAuthor = get(proposition, ['guide', 'name']);
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const username = get(proposition, ['users', '0', 'rootName']);
+
     return this.props
       .reinstateReward({
         companyAuthor,
@@ -289,6 +293,7 @@ export default class CampaignButtons extends React.Component {
   getIsUserInBlackList = blacklistUsers => {
     const { proposition } = this.props;
     const isUserInBlacklist = includes(blacklistUsers, get(proposition, ['users', '0', 'name']));
+
     return this.setState({ isUserInBlacklist });
   };
 
@@ -300,6 +305,7 @@ export default class CampaignButtons extends React.Component {
 
   handleOkClick = () => {
     const { value } = this.state;
+
     if (value > 0) {
       this.setState({ isLoading: true });
       this.handleChangeReward().then(() =>
@@ -319,6 +325,7 @@ export default class CampaignButtons extends React.Component {
       const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
       const userName = get(proposition, ['users', '0', 'name']);
       const amount = this.state.value;
+
       await this.props.changeReward({
         companyAuthor,
         companyPermlink,
@@ -360,7 +367,9 @@ export default class CampaignButtons extends React.Component {
     const { isUserInBlacklist } = this.state;
     const id = isUserInBlacklist ? 'removeUsersFromBlackList' : 'addUsersToBlackList';
     const idsUsers = [];
+
     idsUsers.push(get(proposition, ['users', '0', 'name']));
+
     return this.props
       .changeBlackAndWhiteLists(id, idsUsers)
       .then(() => {
@@ -368,6 +377,7 @@ export default class CampaignButtons extends React.Component {
           this.props.getBlacklist(proposition.guideName).then(data => {
             const blacklist = get(data, ['value', 'blackList', 'blackList']);
             const blacklistNames = map(blacklist, user => user.name);
+
             this.getIsUserInBlackList(blacklistNames);
           });
         }, 7000);
@@ -389,7 +399,7 @@ export default class CampaignButtons extends React.Component {
         );
       })
       .catch(error => {
-        console.log(error);
+        console.error(error);
       });
   };
 
@@ -413,9 +423,11 @@ export default class CampaignButtons extends React.Component {
     const { propositionStatus } = this.props;
     const { isUserInBlacklist } = this.state;
     const matchParams = [MESSAGES, GUIDE_HISTORY, FRAUD_DETECTION];
+
     if (includes(matchParams, this.matchParams)) {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
+
     return popoverDataHistory[propositionStatus] || [];
   };
 
@@ -501,12 +513,13 @@ export default class CampaignButtons extends React.Component {
         userName,
         reservationPermlink,
       };
+
       getReport(requestParams)
         .then(data => {
           this.props.setDataForSingleReport(data);
         })
         .then(() => this.setState({ isModalReportOpen: !this.state.isModalReportOpen }))
-        .catch(() => console.log(e));
+        .catch(() => console.error(e));
     };
 
     const closeModalReport = () =>
@@ -685,7 +698,9 @@ export default class CampaignButtons extends React.Component {
         match.params.filterKey === IS_ALL ||
         includes(match.path, 'object')
       : '';
+
     if (isReserved) return ASSIGNED;
+
     return get(proposition, ['users', '0', 'status'], '');
   };
 

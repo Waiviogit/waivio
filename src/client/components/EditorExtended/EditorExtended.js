@@ -106,6 +106,7 @@ class Editor extends React.Component {
       setTimeout(() => {
         this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
         const rawContent = fromMarkdown(nextProps.initialContent);
+
         this.handleContentChange(createEditorState(rawContent));
         this.restoreObjects(rawContent, true).then(() => this.setFocusAfterMount());
       }, 0);
@@ -120,12 +121,14 @@ class Editor extends React.Component {
   getCurrentLinkPermlink = value => {
     const data = get(value, 'data.url', '');
     const currentSeparator = data.split('/');
+
     return get(currentSeparator, '[4]', []);
   };
 
   // eslint-disable-next-line consistent-return
   getCurrentLoadObjects = (response, value) => {
     const loadObjects = keyBy(response.wobjects, 'author_permlink');
+
     if (value.type === Entity.OBJECT) {
       return loadObjects[get(value, 'data.object.id')];
     } else if (value.type === Entity.LINK) {
@@ -149,9 +152,11 @@ class Editor extends React.Component {
         if (!isReview && entity.type === Entity.LINK) {
           const string = get(entity, 'data.url', '');
           const queryString = string.match(handlePastedLink(QUERY_APP));
+
           if (queryString) {
             return has(entity, 'data.url');
           }
+
           return null;
         }
       })
@@ -181,9 +186,11 @@ class Editor extends React.Component {
       });
 
       const entityMap = {};
+
       forEach(rawContent.entityMap, (value, key) => {
         let currObj = null;
         const loadedObject = this.getCurrentLoadObjects(response, value);
+
         if (!isEmpty(currLinkedObjects) && !isEmpty(loadedObject)) {
           map(currLinkedObjects, obj => {
             if (isEqual(obj.author_permlink, loadedObject.author_permlink)) {
@@ -242,6 +249,7 @@ class Editor extends React.Component {
     const { editorState, isMounted, editorEnabled, titleValue } = this.state;
     const { initialContent } = this.props;
     const isVimeo = get(initialContent, 'body', '').includes('player.vimeo.com');
+
     return (
       <div className="waiv-editor-wrap">
         {this.props.displayTitle && (

@@ -43,6 +43,7 @@ class DraftRow extends React.Component {
 
   handleCheck(e) {
     const { id } = this.props;
+
     this.props.onCheck(id, e.target.checked);
   }
 
@@ -51,9 +52,11 @@ class DraftRow extends React.Component {
     const { lastUpdated } = draft;
     const hasLastUpdated = !isUndefined(lastUpdated);
     let { title = '', body = '' } = draft;
+
     title = title.trim();
     body = body.replace(/\r?\n|\r|[\u200B-\u200D\uFEFF]/g, ' ').substring(0, 50);
     let draftTitle = title.length ? title : body;
+
     draftTitle = draftTitle.trim();
 
     return (

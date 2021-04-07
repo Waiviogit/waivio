@@ -6,6 +6,7 @@ export const regexCoordsLongitude = /^([+-])?((?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?
 // const zeroZoomInPixel = 78206; //  metres/pixel
 const earthAraund = 40075016.686;
 const INITIAL_RADIUS = 12100000;
+
 export const isCoordinatesValid = (lat, lng) =>
   lat &&
   lng &&
@@ -23,6 +24,7 @@ export const getRadius = zoom => Math.floor(INITIAL_RADIUS / 2.01 ** (zoom - 1))
 
 export const getZoom = radius => {
   let zoom;
+
   if (!radius) return ZOOM;
   if (radius >= zoomAndRadiusArray[0].radius) zoom = zoomAndRadiusArray[0].zoom;
   if (radius <= zoomAndRadiusArray[17].radius) zoom = zoomAndRadiusArray[17].zoom;
@@ -31,6 +33,7 @@ export const getZoom = radius => {
       zoom = value.zoom;
     }
   });
+
   return zoom;
 };
 
@@ -38,6 +41,7 @@ export const getParsedMap = wobject => {
   if (!wobject) return null;
 
   const json = wobject.map || get(wobject, ['parent', 'map']);
+
   try {
     return JSON.parse(json);
   } catch (e) {

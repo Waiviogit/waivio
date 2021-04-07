@@ -4,9 +4,6 @@ import { isEmpty, get } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
-  getUser,
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
   getTotalVestingShares,
   getTotalVestingFundSteem,
   getUsersAccountHistory,
@@ -15,7 +12,7 @@ import {
   getAccountHistoryFilter,
   getCurrentDisplayedActions,
   getCurrentFilteredActions,
-} from '../reducers';
+} from '../store/reducers';
 import { isWalletTransaction } from '../helpers/apiHelpers';
 import {
   setInitialCurrentDisplayedActions,
@@ -25,6 +22,8 @@ import {
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import WalletTransaction from '../wallet/WalletTransaction';
 import UserAction from './UserAction';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 @withRouter
 @connect(
@@ -84,6 +83,7 @@ class UserActivityActionsList extends Component {
 
   handleLoadMore = () => {
     const { user } = this.props;
+
     this.props.loadMoreCurrentUsersActions(user.name);
   };
 

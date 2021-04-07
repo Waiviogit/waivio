@@ -9,6 +9,7 @@ const PolicyConfirmation = props => {
   const handleChange = e => {
     onChange(e.target.checked);
   };
+
   return (
     <div className={classNames('policy-confirmation', { [className]: Boolean(className) })}>
       <Checkbox checked={isChecked} onChange={handleChange} disabled={disabled}>

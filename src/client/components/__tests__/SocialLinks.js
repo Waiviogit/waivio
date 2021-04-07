@@ -6,6 +6,7 @@ import SocialLinks from '../SocialLinks';
 describe('<SocialLinks />', () => {
   it('renders without exploding', () => {
     const wrapper = mount(<SocialLinks profile={{}} />);
+
     act(() => {
       wrapper.update();
     });

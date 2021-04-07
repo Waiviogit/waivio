@@ -2,6 +2,7 @@ import { isError, get, attempt, size, unescape } from 'lodash';
 
 export function getFromMetadata(jsonMetadata, key) {
   const metadata = attempt(JSON.parse, jsonMetadata);
+
   if (isError(metadata)) return null;
 
   return get(metadata, key);
@@ -16,6 +17,7 @@ function extract(body, regex) {
   const matches = [];
 
   let match;
+
   do {
     match = regex.exec(body);
     if (match) matches.push(match[1]);
@@ -34,6 +36,7 @@ export function extractImageTags(body) {
       if (size(values) === 3) {
         const key = get(values, 1);
         const value = get(values, 2);
+
         return {
           ...a,
           [key]: value,

@@ -48,6 +48,7 @@ NotificationVoteWitness.propTypes = {
   notification: PropTypes.shape({
     account: PropTypes.string,
     timestamp: PropTypes.number,
+    approve: PropTypes.bool,
   }),
   onClick: PropTypes.func,
 };

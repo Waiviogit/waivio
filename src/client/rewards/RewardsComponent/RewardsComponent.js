@@ -1,12 +1,13 @@
 import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuthenticatedUserName, getPendingUpdate } from '../../reducers';
 import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
-import { pendingUpdateSuccess } from '../../user/userActions';
+import { pendingUpdateSuccess } from '../../store/userStore/userActions';
 import { delay } from '../rewardsHelpers';
 import { getSort } from '../rewardsHelper';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getPendingUpdate } from '../../store/userStore/userSelectors';
 
 const RewardsComponent = memo(
   ({
@@ -38,6 +39,7 @@ const RewardsComponent = memo(
     const getTypeRewards = () => {
       if (match.params.filterKey === 'active') return 'active';
       if (match.params.filterKey === 'reserved') return 'reserved';
+
       return 'all';
     };
     const filterKey = getTypeRewards();
@@ -53,6 +55,7 @@ const RewardsComponent = memo(
     useEffect(() => {
       if (!userLocation.lat || !userLocation.lon || !url || loadingCampaigns) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
+
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());

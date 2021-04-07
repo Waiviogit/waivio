@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import UserActionMessage from './UserActionMessage';
-import { WOBJ_RATING } from '../../common/constants/accountHistory';
 
 const CustomJSONMessage = ({ actionDetails, actionType }) => {
   const customFollowType = actionDetails.id;
@@ -80,6 +79,7 @@ const CustomJSONMessage = ({ actionDetails, actionType }) => {
         />
       );
     }
+
     return (
       <FormattedMessage
         id="unfollowed_wobject"
@@ -94,9 +94,10 @@ const CustomJSONMessage = ({ actionDetails, actionType }) => {
         }}
       />
     );
-  } else if (customFollowType === WOBJ_RATING) {
+  } else if (customFollowType === accountHistoryConstants.WOBJ_RATING) {
     return UserActionMessage.renderDefault(actionType);
   }
+
   return null;
 };
 

@@ -49,6 +49,7 @@ const MatchBotTableRow = ({
   const setTitle = () => {
     if (!isAuthority) return messageData.authorizationRequired;
     if (!isEnabled) return messageData.successRuleActivation;
+
     return messageData.successRuleInactivation;
   };
   const title = setTitle();
@@ -61,6 +62,7 @@ const MatchBotTableRow = ({
           <Link to={`/@${rule.sponsor}`}>{` @${rule.sponsor}`}</Link>?
         </div>
       );
+
     return (
       <div>
         {messageData.successIntentionRuleInactivation}{' '}

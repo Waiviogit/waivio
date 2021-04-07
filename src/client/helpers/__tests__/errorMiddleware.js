@@ -6,6 +6,7 @@ describe('parseBlockChainError', () => {
       '( now - auth.last_root_post ) > STEEM_MIN_ROOT_COMMENT_INTERVAL: You may only post once every 5 minutes.',
     );
     let expected = 'You may only post once every 5 minutes.';
+
     expect(actual).toEqual(expected);
 
     actual = parseBlockChainError(

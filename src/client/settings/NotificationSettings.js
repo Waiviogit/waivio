@@ -4,14 +4,17 @@ import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Checkbox, Form, InputNumber, message } from 'antd';
-import { updateProfile, reload } from '../auth/authActions';
-import { getAuthenticatedUserNotificationsSettings, getAuthenticatedUserName } from '../reducers';
+import { updateProfile, reload } from '../store/authStore/authActions';
 import withEditor from '../components/Editor/withEditor';
 import Action from '../components/Button/Action';
 import requiresLogin from '../auth/requiresLogin';
 import { saveNotificationsSettings } from '../helpers/metadata';
 import { notificationType } from '../../common/constants/waivio';
-import { updateUserMetadata } from '../user/usersActions';
+import { updateUserMetadata } from '../store/usersStore/usersActions';
+import {
+  getAuthenticatedUserName,
+  getAuthenticatedUserNotificationsSettings,
+} from '../store/authStore/authSelectors';
 
 import './Settings.less';
 
@@ -91,6 +94,7 @@ export default class NotificationSettings extends React.Component {
 
   render() {
     const { notifications } = this.state;
+
     return (
       <div className="center">
         <h1>

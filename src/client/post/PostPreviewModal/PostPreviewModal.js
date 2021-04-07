@@ -99,6 +99,7 @@ class PostPreviewModal extends Component {
       linkedObjects,
       ...settings,
     };
+
     this.props.onUpdate(postData);
   };
 
@@ -132,10 +133,13 @@ class PostPreviewModal extends Component {
       ...objPercentage,
       [objId]: { percent },
     };
+
     onPercentChange(nextObjPercentage);
   };
 
   handleReviewSubmit = () => {
+    if (window.gtag) window.gtag('event', 'posted_review');
+
     this.setState({ isCheckReviewModalOpen: false }, this.props.onSubmit);
   };
 

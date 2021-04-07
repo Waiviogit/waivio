@@ -47,16 +47,19 @@ describe('<EmailShare />', () => {
       url: '',
       text: '',
     };
+
     expect(EmailShare.defaultProps).toEqual(defaultProps);
   });
 
   it('Should have smth with the same text as url prop', () => {
     const url = wrapper.find('EmailShare');
+
     expect(url.text()).toBe('');
   });
 
   it('Should have smth with the same text as text prop', () => {
     const text = wrapper.find('EmailShare');
+
     expect(text.text()).toBe('');
   });
 

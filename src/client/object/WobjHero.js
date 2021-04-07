@@ -6,7 +6,8 @@ import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
-import { getIsWaivio, getObjectAlbums } from '../reducers';
+import { getObjectAlbums } from '../store/reducers';
+import { getIsWaivio } from '../store/appStore/appSelectors';
 
 @withRouter
 @connect(state => ({
@@ -38,6 +39,7 @@ class WobjMenuWrapper extends React.Component {
   onChange = key => {
     const { match, history } = this.props;
     const section = key === 'reviews' ? '' : `/${key}`;
+
     history.push(`${match.url.replace(/\/$/, '')}${section}`);
   };
 
@@ -46,10 +48,12 @@ class WobjMenuWrapper extends React.Component {
     const current = this.props.location.pathname.split('/')[3];
     const currentKey = current || 'reviews';
     let fieldsCount = 0;
+
     if (this.props.wobject && this.props.wobject.fields && this.props.wobject.fields.length) {
       fieldsCount = this.props.wobject.fields.length + this.props.albumsAndImagesCount;
     }
     const accessExtend = haveAccess(this.props.wobject, this.props.username, accessTypesArr[0]);
+
     return (
       <ObjectMenu
         accessExtend={accessExtend}

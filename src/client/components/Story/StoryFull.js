@@ -32,10 +32,10 @@ import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
 import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { assignProposition } from '../../user/userActions';
+import { assignProposition } from '../../store/userStore/userActions';
 import { getImagePathPost } from '../../helpers/image';
 import MuteModal from '../../widgets/MuteModal';
-import { muteAuthorPost } from '../../post/postActions';
+import { muteAuthorPost } from '../../store/postsStore/postActions';
 
 import './StoryFull.less';
 
@@ -130,6 +130,7 @@ class StoryFull extends React.Component {
       document &&
       document.location.pathname !==
         replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
+
     if (hideWhiteBG) {
       document.body.classList.remove('white-bg');
     }
@@ -168,6 +169,7 @@ class StoryFull extends React.Component {
   handleContentClick(e) {
     if (e.target.tagName === 'IMG' && this.images) {
       const tags = this.contentDiv.getElementsByTagName('img');
+
       for (let i = 0; i < tags.length; i += 1) {
         if (tags[i] === e.target && this.images.length > i) {
           if (e.target.parentNode && e.target.parentNode.tagName === 'A') return;
@@ -196,6 +198,7 @@ class StoryFull extends React.Component {
     currencyId,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+
     this.setState({ loadingAssign: true });
     this.props
       .assignProposition({
@@ -263,6 +266,7 @@ class StoryFull extends React.Component {
     const linkedObjects = [];
     const authorName = get(post, ['guestInfo', 'userId'], '') || post.author;
     const imagesArraySize = size(this.images);
+
     forEach(post.wobjects, wobj => {
       if (wobj.tagged) taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
@@ -271,6 +275,7 @@ class StoryFull extends React.Component {
     const getImagePath = item =>
       item.includes('waivio.nyc3.digitaloceanspaces') ? item : getImagePathPost(item);
     const parsedBody = getHtml(post.body, {}, 'text');
+
     this.images = extractImageTags(parsedBody).map(image => ({
       ...image,
       src: getImagePath(image.src),
@@ -280,6 +285,7 @@ class StoryFull extends React.Component {
       post.body,
     );
     let signedBody = body;
+
     if (signature) signedBody = `${body}<hr>${signature}`;
 
     let replyUI = null;
@@ -317,6 +323,7 @@ class StoryFull extends React.Component {
     }
 
     let content = null;
+
     if (isPostDeleted(post)) {
       content = <StoryDeleted />;
     } else {
@@ -478,6 +485,7 @@ class StoryFull extends React.Component {
                   const maxReward = get(obj, ['campaigns', 'max_reward']);
                   const rewardMaxPassed =
                     maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
+
                   return (
                     <Campaign
                       proposition={obj}

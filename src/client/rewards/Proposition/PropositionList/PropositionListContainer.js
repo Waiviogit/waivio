@@ -5,11 +5,12 @@ import { withRouter } from 'react-router-dom';
 import { filter, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { message } from 'antd';
-import { getAuthenticatedUser, getLocale } from '../../../reducers';
+import { getLocale } from '../../../store/reducers';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
-import { assignProposition, declineProposition } from '../../../user/userActions';
+import { assignProposition, declineProposition } from '../../../store/userStore/userActions';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 
 const PropositionListContainer = ({
   wobject,
@@ -50,6 +51,7 @@ const PropositionListContainer = ({
       setCurrentProposition(currentPropos[0]);
     });
   };
+
   useEffect(() => {
     if (wobject) {
       const reqData = {
@@ -67,9 +69,11 @@ const PropositionListContainer = ({
     proposition.map(propos => {
       const updatedProposition = propos;
       const updatedPropositionId = get(updatedProposition, ['_id'], '');
+
       if (updatedPropositionId === propsId) {
         updatedProposition.objects.forEach((object, index) => {
           const objectAuthorPermlink = get(object, ['object', 'author_permlink']);
+
           updatedProposition.objects[index].assigned =
             objectAuthorPermlink === objPermlink || assigned;
         });
@@ -77,6 +81,7 @@ const PropositionListContainer = ({
       if (updatedProposition.guide.name === companyAuthor && updatedPropositionId !== propsId) {
         updatedProposition.isReservedSiblingObj = true;
       }
+
       return updatedProposition;
     });
 
@@ -96,7 +101,9 @@ const PropositionListContainer = ({
     currencyId,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+
     setLoadingAssignDiscard(true);
+
     return assignPropos({
       companyAuthor,
       companyPermlink,
@@ -119,6 +126,7 @@ const PropositionListContainer = ({
           }),
         );
         const updatedPropositions = updateProposition(companyId, true, objPermlink, companyAuthor);
+
         setLoadingAssignDiscard(false);
         setProposition(updatedPropositions);
         setIsAssign(true);
@@ -141,6 +149,7 @@ const PropositionListContainer = ({
     reservationPermlink,
   }) => {
     setLoadingAssignDiscard(true);
+
     return declinePropos({
       companyAuthor,
       companyPermlink,
@@ -151,6 +160,7 @@ const PropositionListContainer = ({
     })
       .then(() => {
         const updatedPropositions = updateProposition(companyId, false, objPermlink);
+
         setLoadingAssignDiscard(false);
         setProposition(updatedPropositions);
         setIsAssign(true);
@@ -166,6 +176,7 @@ const PropositionListContainer = ({
 
   const goToProducts = currWobject => {
     const permlink = get(currWobject, 'author_permlink');
+
     history.push(`/rewards/all/${permlink}`);
   };
 

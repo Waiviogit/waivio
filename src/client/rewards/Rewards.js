@@ -24,21 +24,7 @@ import {
   every,
 } from 'lodash';
 import { HBD, HIVE } from '../../common/constants/cryptos';
-import {
-  getAuthenticatedUser,
-  getAllUsers,
-  getAuthenticatedUserName,
-  getCryptosPriceHistory,
-  getObjectsMap,
-  getIsLoaded,
-  getUserLocation,
-  getIsMapModalOpen,
-  getSuitableLanguage,
-  getPendingUpdate,
-  getIsAuthenticated,
-  getIsWaivio,
-  getHelmetIcon,
-} from '../reducers';
+import { getObjectsMap, getIsMapModalOpen, getSuitableLanguage } from '../store/reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
@@ -48,8 +34,8 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
-} from '../user/userActions';
-import { getCryptoPriceHistory } from '../app/appActions';
+} from '../store/userStore/userActions';
+import { getCryptoPriceHistory } from '../store/appStore/appActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import { getPropositions } from '../../waivioApi/ApiClient';
 import {
@@ -87,6 +73,15 @@ import {
 } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
+import { getCryptosPriceHistory, getHelmetIcon, getIsWaivio } from '../store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsLoaded,
+} from '../store/authStore/authSelectors';
+import { getAllUsers } from '../store/usersStore/usersSelectors';
+import { getPendingUpdate, getUserLocation } from '../store/userStore/userSelectors';
 
 @withRouter
 @injectIntl
@@ -225,6 +220,7 @@ class Rewards extends React.Component {
       try {
         const coords = await this.props.getCoordinates();
         const { latitude, longitude } = coords.value;
+
         // eslint-disable-next-line react/no-did-mount-set-state
         await this.setState({ area: [latitude, longitude] });
       } catch (e) {
@@ -233,10 +229,12 @@ class Rewards extends React.Component {
     }
 
     const { area } = this.state;
+
     if (username && !url) this.getPropositionsByStatus({ username, sort, area });
     const linkForReserveEligible = `/rewards/active/${match.params.campaignParent}/`;
     const fromWidgetUrl = isEqual(linkForReserveEligible, match.url);
     const keys = ['active', 'reserved'];
+
     if (
       (!authenticated && match.params.filterKey === 'all') ||
       every(keys, key => match.params.filterKey !== key) ||
@@ -251,6 +249,7 @@ class Rewards extends React.Component {
     const { sortAll, sortEligible, sortReserved, area } = this.state;
 
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
+
     if (this.state.currentLocation !== nextProps.location.search) {
       this.setState({
         activeGuideHistoryFilters: {
@@ -262,6 +261,7 @@ class Rewards extends React.Component {
     }
     if (username !== nextProps.username) {
       const userName = username || nextProps.username;
+
       this.getPropositionsByStatus({ username: userName, sort, area });
     }
 
@@ -272,8 +272,10 @@ class Rewards extends React.Component {
 
   componentDidUpdate(prevProps) {
     const lastLinkChar = location.href;
+
     if (!location.search && lastLinkChar.slice(-1) === '?') {
       const currLink = lastLinkChar.substring(0, lastLinkChar.length - 1);
+
       history.pushState('', '', currLink);
     }
 
@@ -287,6 +289,7 @@ class Rewards extends React.Component {
     const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
+
     if (!isSecondaryObjectsCards || (isSecondaryObjectsCards && !firstMapLoad)) {
       this.getPropositions(
         { username, match, area: coordinates, radius, activeFilters, limit },
@@ -306,12 +309,14 @@ class Rewards extends React.Component {
     this.setState({ isSearchAreaFilter: true, loadingCampaigns: true });
     const { username, match } = this.props;
     const { sort, activeFilters } = this.state;
+
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
   };
 
   setSortValue = sort => {
     const { match } = this.props;
     const key = get(match, ['params', 'filterKey']) || get(match, ['params', '0']);
+
     switch (key) {
       case 'active':
         return this.setState({ sortEligible: sort });
@@ -332,6 +337,7 @@ class Rewards extends React.Component {
 
   setFilterValue = (filterValue, key, fromUrl) => {
     const activeFilters = { ...this.state.activeFilters };
+
     if (includes(activeFilters[key], filterValue)) {
       handleRemoveSearchLink(filterValue);
       remove(activeFilters[key], f => f === filterValue);
@@ -362,6 +368,7 @@ class Rewards extends React.Component {
     const { match } = this.props;
     const paramsKey = match.params[0];
     let activeFilters;
+
     switch (paramsKey) {
       case HISTORY:
         activeFilters = this.state.activeHistoryFilters;
@@ -403,6 +410,7 @@ class Rewards extends React.Component {
 
   setPayablesFilterValue = filterValue => {
     let activeFilters = [...this.state.activePayableFilters];
+
     switch (filterValue.filterName) {
       case 'payable':
         if (findIndex(activeFilters, { filterName: 'payable' }) === -1) {
@@ -437,6 +445,7 @@ class Rewards extends React.Component {
     const searchParams = new URLSearchParams(location.search);
     const isWidget = searchParams.get('display');
     const isReserved = searchParams.get('toReserved');
+
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
       // eslint-disable-next-line camelcase
@@ -502,6 +511,7 @@ class Rewards extends React.Component {
     firstMapLoad,
   ) => {
     const { usedLocale } = this.props;
+
     this.setState({ loadingCampaigns: !isMap });
     getPropositions(
       preparePropositionReqData({
@@ -523,6 +533,7 @@ class Rewards extends React.Component {
     ).then(data => {
       this.props.setUpdatedFlag();
       const sponsors = sortBy(data.sponsors);
+
       this.setState({
         area,
         radius,
@@ -549,6 +560,7 @@ class Rewards extends React.Component {
       }
       if (isMap && firstMapLoad) {
         const zoomMap = getZoom(data.radius);
+
         this.setState({
           zoomMap,
         });
@@ -559,6 +571,7 @@ class Rewards extends React.Component {
   resetMapFilter = () => {
     const { username, match } = this.props;
     const { area, sort, activeFilters } = this.state;
+
     this.setState({ loadingCampaigns: true });
     this.getPropositions({
       username,
@@ -586,7 +599,9 @@ class Rewards extends React.Component {
     currencyId,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+
     this.setState({ loadingAssignDiscard: true });
+
     return this.props
       .assignProposition({
         companyAuthor,
@@ -616,11 +631,13 @@ class Rewards extends React.Component {
           objPermlink,
           companyAuthor,
         );
+
         this.setState({
           propositions: updatedPropositions,
           loadingAssignDiscard: false,
           isAssign: true,
         });
+
         return { isAssign: true };
       })
       .catch(e => {
@@ -633,6 +650,7 @@ class Rewards extends React.Component {
   updateProposition = (propsId, isAssign, objPermlink, companyAuthor) =>
     this.state.propositions.map(proposition => {
       const updatedProposition = proposition;
+
       // eslint-disable-next-line no-underscore-dangle
       if (updatedProposition._id && updatedProposition._id === propsId) {
         updatedProposition.objects.forEach((object, index) => {
@@ -649,6 +667,7 @@ class Rewards extends React.Component {
       if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
         updatedProposition.isReservedSiblingObj = true;
       }
+
       return updatedProposition;
     });
 
@@ -663,6 +682,7 @@ class Rewards extends React.Component {
     type,
   }) => {
     this.setState({ loadingAssignDiscard: true });
+
     return this.props
       .declineProposition({
         companyAuthor,
@@ -676,11 +696,13 @@ class Rewards extends React.Component {
       })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
+
         this.setState({
           propositions: updatedPropositions,
           loadingAssignDiscard: false,
           isAssign: false,
         });
+
         return { isAssign: false };
       })
       .catch(e => {
@@ -710,6 +732,7 @@ class Rewards extends React.Component {
     const isReserved = match.params.filterKey === IS_RESERVED;
 
     let propositionsUniq;
+
     if (isReserved) {
       propositionsUniq = propositionsReserved;
     } else if (match.params.campaignParent) {
@@ -728,6 +751,7 @@ class Rewards extends React.Component {
         sortMessages,
         sortGuideHistory,
       } = this.state;
+
       try {
         const activeFilters = getActiveFilters({
           path,
@@ -736,12 +760,14 @@ class Rewards extends React.Component {
           activeGuideHistoryFilters,
         });
         const sortChanged = getSortChanged({ path, sortHistory, sortMessages, sortGuideHistory });
+
         await getHistory(userName, sortChanged, activeFilters, false);
       } catch (error) {
         messages.error(error);
       }
     };
     const { intl, user, users } = this.props;
+
     if (size(actualPropositions) !== 0) {
       if (IsRequiredObjectWrap && isEmpty(propositionsReserved) && !isReserved && !pendingUpdate) {
         return map(
@@ -793,6 +819,7 @@ class Rewards extends React.Component {
         defaultMessage: `No reward matches the criteria`,
       })}`;
     }
+
     return '';
   };
 
@@ -825,6 +852,7 @@ class Rewards extends React.Component {
     const { username, match, usedLocale } = this.props;
     const path = match.params.filterKey;
     const sortChanged = getSortChanged({ path, sortAll, sortEligible, sortReserved });
+
     if (hasMore) {
       this.setState(
         {
@@ -839,6 +867,7 @@ class Rewards extends React.Component {
             usedLocale,
             ...activeFilters,
           });
+
           reqData.skip = propositions.length;
           if (isSearchAreaFilter) reqData.radius = radius;
           getPropositions(reqData).then(newPropositions =>
@@ -881,6 +910,7 @@ class Rewards extends React.Component {
       ? map(newPropositions, proposition => {
           const propositionObject = get(proposition, ['objects', '0', 'object']);
           const propositionObjectMap = get(proposition, ['objects', '0', 'object', 'map']);
+
           return !isEmpty(propositionObjectMap) ? propositionObject : proposition.required_object;
         })
       : [primaryObjectForMap, ...secondaryObjectsWithUniqueCoordinates];
@@ -888,12 +918,14 @@ class Rewards extends React.Component {
 
   moveToCoordinates = objects => {
     const { userLocation } = this.props;
+
     if (!isEmpty(objects)) {
       return get(objects, ['0', 'map', 'coordinates']) || get(objects, ['1', 'map', 'coordinates']);
     }
     if (userLocation.lat && userLocation.lon) {
       return [Number(userLocation.lon), Number(userLocation.lat)];
     }
+
     return [];
   };
 

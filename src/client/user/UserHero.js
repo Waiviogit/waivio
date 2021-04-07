@@ -26,6 +26,7 @@ class UserMenuWrapper extends React.Component {
   onChange = key => {
     const { match, history } = this.props;
     const section = key === 'discussions' ? '' : `/${key}`;
+
     history.push(`${match.url.replace(/\/$/, '')}${section}`);
   };
 
@@ -35,6 +36,7 @@ class UserMenuWrapper extends React.Component {
     const currentKey = current || 'discussions';
     const isGuest =
       match.params.name.startsWith(GUEST_PREFIX) || match.params.name.startsWith(BXY_GUEST_PREFIX);
+
     return (
       <UserMenu
         defaultKey={currentKey}

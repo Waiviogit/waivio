@@ -9,8 +9,8 @@ import {
   searchAutoComplete,
   saveBeneficiariesUsers,
 } from '../../search/searchActions';
-import { getUserMetadata } from '../../user/usersActions';
-import { getAutoCompleteSearchResults } from '../../reducers';
+import { getUserMetadata } from '../../store/usersStore/usersActions';
+import { getAutoCompleteSearchResults } from '../../store/reducers';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 
@@ -59,7 +59,9 @@ class BeneficiariesFindUsers extends React.Component {
 
   prepareOptions = searchResults => {
     const dataSource = [];
+
     if (!isEmpty(searchResults.users)) dataSource.push(searchResults.users);
+
     return dataSource;
   };
 
@@ -95,6 +97,7 @@ class BeneficiariesFindUsers extends React.Component {
 
   renderOption = user => {
     const { Option } = AutoComplete;
+
     return (
       <Option key={user.account} text={user.wobjects_weight}>
         <div className="beneficiariesFindUsers__search-content-wrap">

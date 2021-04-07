@@ -43,6 +43,7 @@ describe('<ObjectAvatar />', () => {
         },
       },
     };
+
     wrapper = shallow(<ObjectAvatar {...currProps} />);
 
     expect(wrapper.props().style.backgroundImage).toBe(
@@ -55,6 +56,7 @@ describe('<ObjectAvatar />', () => {
       item: {},
       size: 42,
     };
+
     wrapper = shallow(<ObjectAvatar {...currProps} />);
 
     expect(wrapper.props().style.backgroundImage).toBe(`url(${DEFAULTS.AVATAR}_medium)`);
@@ -65,6 +67,7 @@ describe('<ObjectAvatar />', () => {
       item: {},
       size: 39,
     };
+
     wrapper = shallow(<ObjectAvatar {...currProps} />);
 
     expect(wrapper.props().style.backgroundImage).toBe(`url(${DEFAULTS.AVATAR}_small)`);
@@ -78,6 +81,7 @@ describe('<ObjectAvatar />', () => {
       height: `${props.size}px`,
       backgroundImage: `url(${DEFAULTS.AVATAR}_medium)`,
     };
+
     wrapper = shallow(<ObjectAvatar {...props} />);
 
     expect(wrapper.props().style).toEqual(style);

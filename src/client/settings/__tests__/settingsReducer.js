@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import settingsReducer, { getIsLoading, getLocale, getVotingPower } from '../settingsReducer';
 import * as settingsTypes from '../settingsActions';
-import * as authTypes from '../../auth/authActions';
+import * as authTypes from '../../store/authStore/authActions';
 import { rewardsValues } from '../../../common/constants/rewards';
 
 describe('settingsReducer', () => {
@@ -24,6 +24,7 @@ describe('settingsReducer', () => {
     const stateAfter = initialState;
     const action = {};
     const returnState = settingsReducer(stateAfter, action);
+
     expect(returnState).to.deep.eql(stateAfter);
   });
 

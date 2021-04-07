@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 
-import { getAuthorities, getWebsiteLoading } from '../../../reducers';
+import { getAuthorities, getWebsiteLoading } from '../../../store/reducers';
 import { addWebAuthorities, deleteWebAuthorities, getWebAuthorities } from '../../websiteActions';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import Avatar from '../../../components/Avatar';

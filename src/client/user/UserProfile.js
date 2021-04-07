@@ -4,14 +4,7 @@ import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Feed from '../feed/Feed';
-import {
-  getIsAuthenticated,
-  getAuthenticatedUser,
-  getFeed,
-  getUsersAccountHistory,
-  isGuestUser,
-  getUser,
-} from '../reducers';
+import { getUsersAccountHistory } from '../store/reducers';
 import {
   getFeedLoadingFromState,
   getFeedFetchedFromState,
@@ -19,12 +12,19 @@ import {
   getFeedFromState,
 } from '../helpers/stateHelpers';
 import { getUserAccountHistory } from '../wallet/walletActions';
-import { getUserProfileBlogPosts } from '../feed/feedActions';
-import { showPostModal } from '../app/appActions';
+import { getUserProfileBlogPosts } from '../store/feedStore/feedActions';
+import { showPostModal } from '../store/appStore/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
 import PostModal from '../post/PostModalContainer';
 import EmptyMutedUserProfile from '../statics/MutedContent';
+import {
+  getAuthenticatedUser,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
+import { getFeed } from '../store/feedStore/feedSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 @withRouter
 @connect(
@@ -75,6 +75,7 @@ export default class UserProfile extends React.Component {
     const { match, limit, usersAccountHistory, isBlogInObject } = this.props;
     const { name, author } = match.params;
     const permlink = isBlogInObject ? author : name;
+
     this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
     if (isEmpty(usersAccountHistory[permlink])) {
       this.props.getUserAccountHistory(permlink);
@@ -85,6 +86,7 @@ export default class UserProfile extends React.Component {
     const { match, limit, isBlogInObject } = this.props;
     const { name, author } = match.params;
     const permlink = isBlogInObject ? author : name;
+
     if (permlink !== isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name) {
       if (
         nextProps.feed &&
@@ -109,6 +111,7 @@ export default class UserProfile extends React.Component {
     const { match, limit, user, isBlogInObject } = this.props;
     const { name, author } = match.params;
     const permlink = isBlogInObject ? author : name;
+
     if (prevProps.user.muted !== user.muted || prevProps.match.url !== match.url) {
       this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
     }

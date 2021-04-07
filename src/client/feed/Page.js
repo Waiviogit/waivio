@@ -5,8 +5,8 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { getFeedContent } from './feedActions';
-import { getIsAuthenticated, getIsLoaded, getObject as getObjectState } from '../reducers';
+import { getFeedContent } from '../store/feedStore/feedActions';
+import { getObject as getObjectState } from '../store/reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
@@ -14,6 +14,7 @@ import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import { getIsAuthenticated, getIsLoaded } from '../store/authStore/authSelectors';
 
 @injectIntl
 @withRouter
@@ -25,6 +26,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 class Page extends React.Component {
   static fetchData({ store, match }) {
     const { sortBy, category } = match.params;
+
     return store.dispatch(getFeedContent({ sortBy, category, limit: 10 }));
   }
 
@@ -44,6 +46,7 @@ class Page extends React.Component {
 
   handleSortChange = key => {
     const { category } = this.props.match.params;
+
     if (category) {
       this.props.history.push(`/${key}/${category}`);
     } else {

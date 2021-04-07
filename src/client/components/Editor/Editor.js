@@ -115,8 +115,10 @@ class Editor extends React.Component {
     }
     // eslint-disable-next-line react/no-find-dom-node
     const select = ReactDOM.findDOMNode(this.select);
+
     if (select) {
       const selectInput = select.querySelector('input,textarea,div[contentEditable]');
+
       if (selectInput) {
         selectInput.setAttribute('autocorrect', 'off');
         selectInput.setAttribute('autocapitalize', 'none');
@@ -126,6 +128,7 @@ class Editor extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { title, topics, waivioData, body, reward, beneficiary, upvote, draftId } = this.props;
+
     if (
       title !== nextProps.title ||
       !isEqual(topics, nextProps.topics) ||
@@ -142,6 +145,7 @@ class Editor extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { waivioData } = this.props;
+
     if (!isEqual(prevProps.waivioData, waivioData)) {
       this.restoreLinkedObjects(waivioData.wobjects);
     }
@@ -157,6 +161,7 @@ class Editor extends React.Component {
     const { form } = this.props;
 
     let reward = rewardsValues.half;
+
     if (
       post.reward === rewardsValues.all ||
       post.reward === rewardsValues.half ||
@@ -190,9 +195,11 @@ class Editor extends React.Component {
   restoreLinkedObjects(wobjects) {
     if (isEmpty(wobjects)) {
       this.resetLinkedObjects();
+
       return;
     }
     const existingObjectIds = wobjects.filter(wo => !wo.isNew).map(wo => wo.author_permlink);
+
     this.props.getLinkedObjects(existingObjectIds).then(res => {
       const influenceRemain = 100 - wobjects.reduce((acc, curr) => acc + curr.percent, 0);
       const linkedObjects = wobjects.map(obj =>
@@ -209,6 +216,7 @@ class Editor extends React.Component {
               influence: { value: obj.percent, max: obj.percent + influenceRemain },
             },
       );
+
       this.setState({
         linkedObjects,
         influenceRemain,
@@ -220,7 +228,9 @@ class Editor extends React.Component {
   checkLinkedObjects() {
     const areObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
     const isInfluenceRemain = this.state.influenceRemain !== 0;
+
     this.setState({ isLinkedObjectsValid: areObjectsCreated && !isInfluenceRemain });
+
     return !areObjectsCreated || isInfluenceRemain;
   }
 
@@ -259,6 +269,7 @@ class Editor extends React.Component {
           author_permlink: obj.id,
           percent: obj.influence.value,
         }));
+
         this.props.onSubmit({ ...values, [WAIVIO_META_FIELD_NAME]: { wobjects } });
       }
     });
@@ -277,6 +288,7 @@ class Editor extends React.Component {
           author_permlink: wObject.author_permlink.replace(' ', '-'),
         }
       : wObject;
+
     this.setState(prevState => {
       if (prevState.linkedObjects.some(obj => obj.id === wObject.id)) return prevState;
       const linkedObjects = setInitialInfluence(
@@ -284,6 +296,7 @@ class Editor extends React.Component {
         selectedObj,
         prevState.influenceRemain,
       );
+
       return {
         linkedObjects,
         influenceRemain: 0,
@@ -297,8 +310,10 @@ class Editor extends React.Component {
       const linkedObjects = prevState.linkedObjects.map(obj =>
         obj.id === wObject.id ? { ...obj, isCreating: true } : obj,
       );
+
       return { linkedObjects };
     });
+
     return this.props.onCreateObject(
       wObject,
       res => {
@@ -313,6 +328,7 @@ class Editor extends React.Component {
                 }
               : obj,
           );
+
           return {
             linkedObjects,
             isLinkedObjectsValid:
@@ -326,6 +342,7 @@ class Editor extends React.Component {
           const linkedObjects = prevState.linkedObjects.map(obj =>
             obj.id === wObject.id ? { ...obj, isCreating: false } : obj,
           );
+
           return { linkedObjects };
         }, this.onUpdate);
       },
@@ -339,6 +356,7 @@ class Editor extends React.Component {
         wObject,
         prevState.influenceRemain,
       );
+
       return {
         linkedObjects: result.linkedObjects,
         influenceRemain: result.influenceRemain,
@@ -349,6 +367,7 @@ class Editor extends React.Component {
 
   handleChangeInfluence(wObj, influence) {
     const { influenceRemain, linkedObjects } = this.state;
+
     if (influenceRemain - (influence - wObj.influence.value) >= 0) {
       this.setState(
         changeObjInfluenceHandler(linkedObjects, wObj, influence, influenceRemain),
@@ -414,6 +433,7 @@ class Editor extends React.Component {
         </BTooltip>
       </div>
     );
+
     return (
       <Form className="Editor" layout="vertical" onSubmit={this.handleSubmit}>
         <Helmet>

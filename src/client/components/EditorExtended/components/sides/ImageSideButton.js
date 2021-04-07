@@ -47,6 +47,7 @@ export default class ImageSideButton extends React.Component {
 
   render() {
     const { isLoading, isModal, isOkayBtn } = this.state;
+
     return (
       <React.Fragment>
         <button

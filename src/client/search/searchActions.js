@@ -4,18 +4,17 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import {
   getSuitableLanguage,
-  getFollowingList,
-  getAuthenticatedUserName,
-  getIsAuthenticated,
   getLocale,
   getWebsiteSearchType,
   getSearchFiltersTagCategory,
   getSearchSort,
-  getIsWaivio,
   getWebsiteMap,
   getSearchInBox,
-} from '../reducers';
+} from '../store/reducers';
 import { replacer } from '../helpers/parser';
+import { getIsWaivio } from '../store/appStore/appSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../store/authStore/authSelectors';
+import { getFollowingList } from '../store/userStore/userSelectors';
 
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
 export const RESET_AUTO_COMPLETE_SEARCH = '@search/RESET_AUTO_COMPLETE_SEARCH';
@@ -113,7 +112,7 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent, addHa
         search,
         locale: usedLocale,
       }))
-      .catch(error => console.log('Object search >', error.message)),
+      .catch(error => console.error('Object search >', error.message)),
   });
 };
 
@@ -239,7 +238,7 @@ export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
         .then(result => ({
           result,
         }))
-        .catch(console.log),
+        .catch(() => message.error('Something went wrong')),
     },
   });
 };

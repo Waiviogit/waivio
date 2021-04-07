@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
-import * as store from '../../../reducers';
 import {
-  getFollowingUpdates,
   getFollowingObjectsUpdatesMore,
+  getFollowingUpdates,
   getFollowingUsersUpdatesMore,
-} from '../../../user/userActions';
+} from '../../../store/userStore/userActions';
 import SidebarMenu from '../SidebarMenu/SidebarMenu';
 import Loading from '../../Icon/Loading';
 import { getObjectName } from '../../../helpers/wObjectHelper';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import * as userSelectors from '../../../store/userStore/userSelectors';
 
 const itemsCount = 5;
 const usersSection = 'People';
+
 function buildFollowingUpdatesMenuConfig(updates) {
   const config = {};
   const { usersUpdates, objectsUpdates } = updates;
+
   if (usersUpdates.users && usersUpdates.users.length) {
     config[usersSection] = {
       name: usersSection,
@@ -36,6 +39,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
   if (!isEmpty(objectsUpdates)) {
     Object.values(objectsUpdates).forEach(objectsGroup => {
       const { object_type: objType, related_wobjects: objects, hasMore } = objectsGroup;
+
       config[objType] = {
         name: objType,
         intlId: objType,
@@ -47,6 +51,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
           const intlId = followingObject.author_permlink;
           const meta = followingObject.last_posts_count > 0 ? followingObject.last_posts_count : '';
           const linkTo = `/feed/${followingObject.author_permlink}?category=${followingObject.object_type}&name=${followingObject.name}`;
+
           return {
             name,
             intlId,
@@ -65,8 +70,8 @@ function buildFollowingUpdatesMenuConfig(updates) {
 const FollowingUpdates = () => {
   // redux store
   const dispatch = useDispatch();
-  const followingUpdates = useSelector(store.getFollowingUpdates);
-  const userName = useSelector(store.getAuthenticatedUserName);
+  const followingUpdates = useSelector(userSelectors.getFollowingUpdates);
+  const userName = useSelector(getAuthenticatedUserName);
 
   // local state
   const [menuConfig, updateMenu] = useState({});

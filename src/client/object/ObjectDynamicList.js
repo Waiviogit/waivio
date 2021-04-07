@@ -11,8 +11,8 @@ import ObjectCard from '../components/Sidebar/ObjectCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
 import { followWobject, unfollowWobject } from './wobjActions';
-import { getAuthenticatedUserName, isGuestUser } from '../reducers';
-import { changeCounterFollow } from '../user/usersActions';
+import { changeCounterFollow } from '../store/usersStore/usersActions';
+import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
 
 import './ObjectDynamicList.less';
 
@@ -76,6 +76,7 @@ class ObjectDynamicList extends React.Component {
   unFollow = permlink => {
     const matchWobjIndex = this.state.wobjects.findIndex(wobj => wobj.author_permlink === permlink);
     const wobjectsArray = [...this.state.wobjects];
+
     wobjectsArray.splice(matchWobjIndex, 1, {
       ...wobjectsArray[matchWobjIndex],
       pending: true,

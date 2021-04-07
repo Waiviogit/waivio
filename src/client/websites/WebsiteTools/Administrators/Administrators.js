@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 
-import { getAdministrators, getWebsiteLoading } from '../../../reducers';
+import { getAdministrators, getWebsiteLoading } from '../../../store/reducers';
 import {
   addWebAdministrator,
   deleteWebAdministrator,

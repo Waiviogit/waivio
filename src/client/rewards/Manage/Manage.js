@@ -7,10 +7,11 @@ import { filter, difference } from 'lodash';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
-import { activateCampaign, inactivateCampaign } from '../../user/userActions';
-import { getAuthenticatedUser, isGuestUser } from '../../reducers';
+import { activateCampaign, inactivateCampaign } from '../../store/userStore/userActions';
 import CampaignRewardsHistoryTable from '../Manage/CampaignRewardsHistoryTable/CampaignRewardsHistoryTable';
 import Error401 from '../../statics/Error401';
+import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';
+
 import './Manage.less';
 
 @injectIntl
@@ -45,6 +46,7 @@ class Manage extends React.Component {
 
   componentDidMount() {
     const { userName } = this.props;
+
     if (userName) {
       ApiClient.getCampaignsByGuideName(userName).then(data => {
         this.setState({
@@ -57,6 +59,7 @@ class Manage extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { userName } = this.props;
+
     if (userName !== prevProps.userName) {
       ApiClient.getCampaignsByGuideName(userName).then(data => {
         this.setState({
@@ -69,6 +72,7 @@ class Manage extends React.Component {
 
   balanceContent = () => {
     const { intl } = this.props;
+
     return (
       <React.Fragment>
         <div>
@@ -84,6 +88,7 @@ class Manage extends React.Component {
 
   rewardsCampaignContent = () => {
     const { intl } = this.props;
+
     return (
       <React.Fragment>
         <div>

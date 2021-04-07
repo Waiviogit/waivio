@@ -13,11 +13,13 @@ export const getProxyImageURL = (url, type) => {
   if (type === 'preview') {
     try {
       const urlEncoded = base58.encode(new Buffer(unescape(url)));
+
       return `${IMG_PROXY_PREVIEW}${IMG_PROXY_SMALL}${urlEncoded}`;
     } catch (e) {
       console.warn('\tEncode img url error. Image url:', url);
     }
   }
+
   return `${IMG_PROXY}${url}`;
 };
 
@@ -25,6 +27,7 @@ export const isValidImage = (file, maxFileSize = MAXIMUM_UPLOAD_SIZE, allowedFor
   const pattern = allowedFormats
     ? new RegExp(`^image/(${allowedFormats.join('|')})$`, 'g')
     : 'image/.*';
+
   return file.type.match(pattern) && file.size <= maxFileSize;
 };
 

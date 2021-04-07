@@ -6,21 +6,24 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
-import {
-  getAuthenticatedUser,
-  getFetchFollowListError,
-  getFollowingFetched,
-  getFollowingList,
-  getIsAuthenticated,
-  getIsAuthFetching,
-  getIsFetchingFollowingList,
-  getIsLoaded,
-  isGuestUser,
-  getUsersAccountHistory,
-} from '../reducers';
+import { getUsersAccountHistory } from '../store/reducers';
 import { getUserAccountHistory } from '../wallet/walletActions';
 import HorizontalBarChart from '../components/HorizontalBarChart';
 import LetsGetStartedIcon from './LetsGetStartedIcon';
+import {
+  getAuthenticatedUser,
+  getIsAuthenticated,
+  getIsAuthFetching,
+  getIsLoaded,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
+import {
+  getFetchFollowListError,
+  getFollowingFetched,
+  getFollowingList,
+  getIsFetchingFollowingList,
+} from '../store/userStore/userSelectors';
+
 import './LetsGetStarted.less';
 
 @connect(
@@ -70,6 +73,7 @@ class LetsGetStarted extends React.Component {
       // eslint-disable-next-line array-callback-return,consistent-return
       accountHistory.map(item => {
         const historyElement = item.op[0];
+
         if (historyElement === accountHistoryConstants.VOTE) {
           return hasLikes.push(historyElement);
         }
@@ -152,9 +156,11 @@ class LetsGetStarted extends React.Component {
       actionsArray,
       (total, current) => {
         let newTotal = total;
+
         if (current) {
           newTotal = total + 1;
         }
+
         return newTotal;
       },
       0,

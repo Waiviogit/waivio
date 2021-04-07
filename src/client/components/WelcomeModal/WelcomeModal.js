@@ -13,15 +13,15 @@ import FollowButton from '../../widgets/FollowButton';
 import { followWobject, unfollowWobject } from '../../object/wobjActions';
 import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common/constants/waivio';
 import { setUsersStatus } from '../../settings/settingsActions';
-import { getUserFeedContent } from '../../feed/feedActions';
-import { followUser, unfollowUser } from '../../user/usersActions';
+import { getUserFeedContent } from '../../store/feedStore/feedActions';
+import { followUser, unfollowUser } from '../../store/usersStore/usersActions';
+import { getLocale } from '../../store/reducers';
+import { getRecommendTopic, getUsers } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
-  getLocale,
   isGuestUser,
-} from '../../reducers';
-import { getRecommendTopic, getUsers } from '../../../waivioApi/ApiClient';
+} from '../../store/authStore/authSelectors';
 
 import './WelcomeModal.less';
 
@@ -60,6 +60,7 @@ const WelcomeModal = ({ isAuthorization, intl, userName, location, isGuest, loca
   const unFollow = name => {
     const matchUserIndex = users.findIndex(user => user.name === name);
     const usersArray = [...users];
+
     usersArray.splice(matchUserIndex, 1, {
       ...usersArray[matchUserIndex],
       pending: true,
@@ -117,6 +118,7 @@ const WelcomeModal = ({ isAuthorization, intl, userName, location, isGuest, loca
   const unFollowObj = permlink => {
     const matchWobjIndex = wobjs.findIndex(wobj => wobj.author_permlink === permlink);
     const wobjectsArray = [...wobjs];
+
     wobjectsArray.splice(matchWobjIndex, 1, {
       ...wobjectsArray[matchWobjIndex],
       pending: true,

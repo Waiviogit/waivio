@@ -11,6 +11,7 @@ import PostContent from './PostContent';
 import Comments from '../comments/Comments';
 import { getFacebookShareURL, getTwitterShareURL } from '../helpers/socialProfiles';
 import BBackTop from '../components/BBackTop';
+
 import './PostModal.less';
 
 class PostModal extends React.Component {
@@ -44,6 +45,7 @@ class PostModal extends React.Component {
     super(props);
 
     const previousURL = window ? window.location.href : '';
+
     this.state = {
       commentsVisible: false,
       previousURL,
@@ -57,6 +59,7 @@ class PostModal extends React.Component {
     if (typeof document !== 'undefined') {
       const modalContents = document.getElementsByClassName('ant-modal-wrap');
       const modalContentElement = get(modalContents, 0);
+
       if (modalContentElement) {
         modalContentElement.scrollTop = 0;
       }
@@ -71,6 +74,7 @@ class PostModal extends React.Component {
     const userPostURL = `@${author}/${permlink}`;
     const guestUserPostURL = `@${authorName}/${permlink}`;
     const postURL = isEmpty(guestInfo) ? userPostURL : guestUserPostURL;
+
     PostModal.pushURLState(title, postURL);
     if (permlink === rootPermlink) {
       this.props.getSocialInfoPost(authorName, permlink);

@@ -18,6 +18,7 @@ describe('(Component) UserExpertise', () => {
         <UserExpertise {...props} />
       </Provider>,
     );
+
     expect(wrapper).toMatchSnapshot();
   });
 });

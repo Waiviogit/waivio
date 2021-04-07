@@ -6,12 +6,12 @@ import PropTypes from 'prop-types';
 
 import PolicyConfirmation from '../components/PolicyConfirmation/PolicyConfirmation';
 import { sendEmailConfirmation } from '../../waivioApi/ApiClient';
+import { closeWithdraw } from '../wallet/walletActions';
 import {
   getAuthenticatedUserName,
-  isGuestUser,
   getAuthenticatedUserPrivateEmail,
-} from '../reducers';
-import { closeWithdraw } from '../wallet/walletActions';
+  isGuestUser,
+} from '../store/authStore/authSelectors';
 
 import './widgetsStyle.less';
 
@@ -65,6 +65,7 @@ const EmailConfirmation = ({
 
   const handleSendConfirmation = (changeEmail = '') => {
     const type = changeEmail === 'pullEmail' ? changeEmail : confirmationType;
+
     setIsLoading(true);
 
     sendEmailConfirmation(userName, type, currentEmail, isGuest)

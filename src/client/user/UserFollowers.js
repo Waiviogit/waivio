@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import UserDynamicList from './UserDynamicList';
 import { getFollowersFromAPI } from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../reducers';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 const UserFollowers = ({ match }) => {
   const limit = 50;
@@ -14,7 +14,9 @@ const UserFollowers = ({ match }) => {
   const fetcher = async () => {
     const response = await getFollowersFromAPI(match.params.name, limit, skip, sort, authUser);
     const users = response.followers;
+
     skip += limit;
+
     return { users, hasMore: response.hasMore };
   };
 

@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import * as settingsTypes from './settingsActions';
-import * as authTypes from '../auth/authActions';
-import { GET_USER_METADATA } from '../user/usersActions';
+import * as authTypes from '../store/authStore/authActions';
+import { GET_USER_METADATA } from '../store/usersStore/usersActions';
 import { rewardsValues } from '../../common/constants/rewards';
 
 const initialState = {
@@ -31,11 +31,13 @@ const settings = (state = initialState, action) => {
           newUser: action.payload.userMetaData.new_user,
         };
       }
+
       return state;
     case GET_USER_METADATA.SUCCESS:
       if (action.payload && action.payload.settings) {
         return { ...action.payload.settings, loading: false };
       }
+
       return { ...state, loading: false };
     case GET_USER_METADATA.START:
     case settingsTypes.SAVE_SETTINGS_START:

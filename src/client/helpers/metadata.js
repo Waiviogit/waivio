@@ -54,12 +54,14 @@ export const deleteDraftMetadataObject = (draftId, userName, objPermlink) => {
                     isNotLinked: true,
                   };
                 }
+
                 return item;
               }),
             },
           },
         };
       }
+
       return draft;
     });
 

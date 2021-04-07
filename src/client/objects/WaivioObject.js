@@ -18,6 +18,7 @@ const WaivioObject = ({ wobj, unfollow, follow }) => {
   const objectName = getObjectName(wobj);
   const websiteTitle = get(website, [websiteFields.title]) || objectFields.website;
   let websiteLink = get(website, [websiteFields.link]);
+
   if (
     websiteLink &&
     websiteLink.indexOf('http://') === -1 &&

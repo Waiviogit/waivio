@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { getCryptosPriceHistory } from '../../reducers';
-import { getCryptoPriceHistory, setIsMobile } from '../../app/appActions';
+import { getCryptoPriceHistory, setIsMobile } from '../../store/appStore/appActions';
 import CryptoChart from './CryptoChart';
-import './CryptoTrendingCharts.less';
-import './SidebarContentBlock.less';
 import { getCryptoDetails } from '../../helpers/cryptosHelper';
+import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
+
+import './SidebarContentBlock.less';
+import './CryptoTrendingCharts.less';
 
 @connect(
   state => ({
@@ -77,6 +78,7 @@ class CryptoTrendingCharts extends React.Component {
       const hasAPIError =
         !(_.isUndefined(cryptoAPIDetails) || _.isNull(cryptoAPIDetails)) &&
         (cryptoAPIDetails.usdAPIError || _.isEmpty(cryptoAPIDetails.usdPriceHistory));
+
       if (hasAPIError) {
         apiErrors.push(cryptoDetails);
       }

@@ -12,20 +12,19 @@ import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { IS_RESERVED } from '../../../common/constants/rewards';
 import Loading from '../Icon/Loading';
 import { getRadius, getParsedMap, getDistanceBetweenTwoPoints, getZoom } from './mapHelper';
-import {
-  getFilteredObjectsMap,
-  getIsMapModalOpen,
-  getIsWaivio,
-  getSuitableLanguage,
-  getUpdatedMap,
-  getUpdatedMapDiscover,
-} from '../../reducers';
+import { getIsMapModalOpen, getSuitableLanguage, getUpdatedMap } from '../../store/reducers';
 import { setMapFullscreenMode, resetUpdatedFlag } from './mapActions';
 import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
 import { getObjectAvatar, getObjectName } from '../../helpers/wObjectHelper';
 import DEFAULTS from '../../object/const/defaultValues';
 import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
+import {
+  getFilteredObjectsMap,
+  getUpdatedMapDiscover,
+} from '../../store/objectTypeStore/objectTypeSelectors';
+
 import './Map.less';
 
 const defaultCoords = {
@@ -127,6 +126,7 @@ class MapOS extends React.Component {
     const { match } = this.props;
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
+
     if (prevPropsMatch === IS_RESERVED && propsMatch !== prevPropsMatch) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ zoom: 0 });
@@ -174,6 +174,7 @@ class MapOS extends React.Component {
   onBoundsChanged = debounce(({ center, zoom, bounds }) => {
     this.setState({ radius: this.calculateRadius(zoom) });
     const { setArea, handleOnBoundsChanged } = this.props;
+
     handleOnBoundsChanged(bounds);
     setArea({ center, zoom });
     this.setState({ center, zoom });
@@ -218,6 +219,7 @@ class MapOS extends React.Component {
 
   getMarkers = () => {
     const { wobjects, match } = this.props;
+
     return (
       !isEmpty(wobjects) &&
       map(wobjects, wobject => {

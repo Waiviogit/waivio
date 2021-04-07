@@ -45,11 +45,13 @@ describe('<FacebookShare />', () => {
     const defaultProps = {
       url: '',
     };
+
     expect(FacebookShare.defaultProps).toEqual(defaultProps);
   });
 
   it('Should have smth with the same text as url prop', () => {
     const url = wrapper.find('FacebookShare');
+
     expect(url.text()).toBe('');
   });
 

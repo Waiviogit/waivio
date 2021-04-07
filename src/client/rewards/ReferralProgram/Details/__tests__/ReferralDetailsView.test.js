@@ -18,6 +18,7 @@ describe('ReferralDetailsView', () => {
         />
       </BrowserRouter>,
     );
+
     act(() => {
       wrapper.update();
     });

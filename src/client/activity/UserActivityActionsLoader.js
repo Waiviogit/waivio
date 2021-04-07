@@ -9,12 +9,11 @@ import {
   getCurrentFilteredActions,
   getAccountHistoryFilter,
   getUserHasMoreAccountHistory,
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getUser,
   getUsersAccountHistory,
-} from '../reducers';
+} from '../store/reducers';
 import Loading from '../components/Icon/Loading';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 @withRouter
 @connect((state, ownProps) => ({
@@ -64,6 +63,7 @@ class UserActivityActionsLoader extends React.Component {
 
   render() {
     const { loadingMoreUsersAccountHistory } = this.props;
+
     if (loadingMoreUsersAccountHistory) {
       return (
         <div>
@@ -73,6 +73,7 @@ class UserActivityActionsLoader extends React.Component {
         </div>
       );
     }
+
     return null;
   }
 }

@@ -9,10 +9,12 @@ export function parseBlockChainError(error) {
     return errorType.message;
   }
   const idx = error.indexOf(':');
+
   if (idx > 0) {
     return error.slice(idx + 1).trim();
   }
-  console.log(error);
+  console.error(error);
+
   return 'Unknown error.';
 }
 
@@ -27,6 +29,7 @@ export default function errorMiddleware({ dispatch }) {
         dispatch(notify(parseBlockChainError(action.payload.error_description), 'error'));
       }
     }
+
     return next(action);
   };
 }

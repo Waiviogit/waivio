@@ -12,7 +12,7 @@ import Loading from '../../../components/Icon/Loading';
 import { selectFormatDate } from '../../../wallet/WalletHelper';
 import { configReportsWebsitesTableHeader } from '../../constants/tableConfig';
 import { getReportsWebsiteInfo } from '../../websiteActions';
-import { getLocale, getReports } from '../../../reducers';
+import { getLocale, getReports } from '../../../store/reducers';
 
 import './ReportsWebsite.less';
 

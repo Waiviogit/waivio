@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import requiresLogin from '../auth/requiresLogin';
-import { getAuthenticatedUserName, getIsUserInWaivioBlackList, isGuestUser } from '../reducers';
+import { getIsUserInWaivioBlackList } from '../store/reducers';
 import InviteGuestUser from './InviteGuestUser';
 import InviteHiveUser from './InviteHiveUser';
+import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
+
 import './Invite.less';
 
 @requiresLogin
@@ -47,10 +49,12 @@ export default class Invite extends React.Component {
 
   createInviteURL() {
     const { authenticatedUserName, isGuest } = this.props;
+
     if (typeof window !== 'undefined') {
       const inviteURL = isGuest
         ? `${window.location.protocol}//${window.location.host}/i/@${authenticatedUserName}`
         : `https://www.waivio.com?ref=${authenticatedUserName}`;
+
       this.setState({ inviteURL });
     }
   }
@@ -70,6 +74,7 @@ export default class Invite extends React.Component {
       handleCopyClick: this.handleCopyClick,
       authenticatedUserName,
     };
+
     if (isBlackListUser) {
       return (
         <FormattedMessage
@@ -87,6 +92,7 @@ export default class Invite extends React.Component {
     } else if (isGuest) {
       return <InviteGuestUser data={data} />;
     }
+
     return <InviteHiveUser data={data} />;
   };
 
