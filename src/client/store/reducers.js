@@ -8,7 +8,7 @@ import commentsReducer from './commentsStore/commentsReducer';
 import feedReducer from './feedStore/feedReducer';
 import postsReducer from './postsStore/postsReducer';
 import userReducer, * as fromUser from '../user/userReducer';
-import usersReducer, * as fromUsers from '../user/usersReducer';
+import usersReducer from './usersStore/usersReducer';
 import notificationReducer from '../app/Notification/notificationReducers';
 import bookmarksReducer, * as fromBookmarks from '../bookmarks/bookmarksReducer';
 import favoritesReducer, * as fromFavorites from '../favorites/favoritesReducer';
@@ -81,21 +81,6 @@ export const getFollowingObjectsUpdatesByType = (state, objType) =>
   fromUser.getFollowingObjectsUpdatesByType(state.user, objType);
 export const getFollowingUpdatesFetched = state => fromUser.getFollowingUpdatesFetched(state.user);
 export const getPendingUpdate = state => fromUser.getPendingUpdate(state.user);
-
-export const getUser = (state, username) => fromUsers.getUser(state.users, username);
-export const getIsUserFetching = (state, username) =>
-  fromUsers.getIsUserFetching(state.users, username);
-export const getIsUserLoaded = (state, username) =>
-  fromUsers.getIsUserLoaded(state.users, username);
-export const getIsUserFailed = (state, username) =>
-  fromUsers.getIsUserFailed(state.users, username);
-export const getTopExperts = state => fromUsers.getTopExperts(state.users);
-export const getTopExpertsLoading = state => fromUsers.getTopExpertsLoading(state.users);
-export const getTopExpertsHasMore = state => fromUsers.getTopExpertsHasMore(state.users);
-export const getRandomExperts = state => fromUsers.getRandomExperts(state.users);
-export const getRandomExpertsLoaded = state => fromUsers.getRandomExpertsLoaded(state.users);
-export const getRandomExpertsLoading = state => fromUsers.getRandomExpertsLoading(state.users);
-export const getAllUsers = state => fromUsers.getAllUsers(state.users);
 
 export const getFavoriteCategories = state => fromFavorites.getFavoriteCategories(state.favorites);
 

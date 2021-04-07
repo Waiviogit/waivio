@@ -5,9 +5,9 @@ import { get } from 'lodash';
 import VisibilitySensor from 'react-visibility-sensor';
 import formatter from '../helpers/steemitFormatter';
 import { isBannedPost } from '../helpers/postHelpers';
-import { getUser, getSuitableLanguage } from '../store/reducers';
+import { getSuitableLanguage } from '../store/reducers';
 import { getContent } from '../store/postsStore/postActions';
-import { getUserAccount } from '../user/usersActions';
+import { getUserAccount } from '../store/usersStore/usersActions';
 import Error404 from '../statics/Error404';
 import Comments from '../comments/Comments';
 import Loading from '../components/Icon/Loading';
@@ -24,6 +24,7 @@ import {
   getIsPostLoaded,
   getPostContent,
 } from '../store/postsStore/postsSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 @connect(
   (state, ownProps) => {

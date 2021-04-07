@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Feed from '../feed/Feed';
-import { getUsersAccountHistory, getUser } from '../store/reducers';
+import { getUsersAccountHistory } from '../store/reducers';
 import {
   getFeedLoadingFromState,
   getFeedFetchedFromState,
@@ -24,6 +24,7 @@ import {
   isGuestUser,
 } from '../store/authStore/authSelectors';
 import { getFeed } from '../store/feedStore/feedSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 @withRouter
 @connect(

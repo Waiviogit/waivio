@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import * as notificationConstants from '../../common/constants/notifications';
-import { getUserMetadata } from '../user/usersActions';
+import { getUserMetadata } from '../store/usersStore/usersActions';
 import { getNotifications } from '../user/userActions';
 import {
   getNotifications as getNotificationsState,

@@ -25,7 +25,6 @@ import {
 } from 'lodash';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import {
-  getAllUsers,
   getObjectsMap,
   getUserLocation,
   getIsMapModalOpen,
@@ -87,6 +86,7 @@ import {
   getIsAuthenticated,
   getIsLoaded,
 } from '../store/authStore/authSelectors';
+import { getAllUsers } from '../store/usersStore/usersSelectors';
 
 @withRouter
 @injectIntl

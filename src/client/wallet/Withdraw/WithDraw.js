@@ -17,7 +17,7 @@ import {
   CRYPTO_LIST_FOR_WALLET,
 } from '../../../common/constants/waivio';
 import { HIVE } from '../../../common/constants/cryptos';
-import { getUserPrivateEmail } from '../../user/usersActions';
+import { getUserPrivateEmail } from '../../store/usersStore/usersActions';
 import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';
 

@@ -16,7 +16,7 @@ import Avatar from '../Avatar';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import { getIsLoadingNotifications, getNotifications } from '../../store/reducers';
-import { getUserMetadata } from '../../user/usersActions';
+import { getUserMetadata } from '../../store/usersStore/usersActions';
 import { PATH_NAME_ACTIVE } from '../../../common/constants/rewards';
 import { logout } from '../../store/authStore/authActions';
 import ModalSignIn from '../Navigation/ModlaSignIn/ModalSignIn';
