@@ -13,7 +13,7 @@ import Slider from '../../components/Slider/Slider';
 import AppendObjButtons from '../../components/StoryFooter/AppendObjButtons';
 import { getShowNSFWPosts, getVotePercent, getVotingPower } from '../../store/reducers';
 import { getAppendDownvotes, getAppendUpvotes } from '../../helpers/voteHelpers';
-import { voteAppends } from '../wobjActions';
+import { voteAppends } from '../../store/wObjectStore/wobjActions';
 import Payout from '../../components/StoryFooter/Payout';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import ApprovingCard from './ApprovingCard';

@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { getVotingPower, getVotePercent } from '../../store/reducers';
 import { likeComment } from '../../store/commentsStore/commentsActions';
 import { followUser, unfollowUser } from '../../store/userStore/userActions';
-import { followObject, unfollowObject } from '../../object/wobjActions';
+import { followObject, unfollowObject } from '../../store/wObjectStore/wobjActions';
 import CampaignFooter from './CampaignFooter';
 import { getRewardFund } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';

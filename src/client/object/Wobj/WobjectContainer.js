@@ -3,15 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { isEmpty } from 'lodash';
-import {
-  getObject as getObjectState,
-  getObjectFetchingState,
-  getLocale,
-  getWobjectIsFailed,
-  getWobjectIsFatching,
-} from '../../store/reducers';
+import { getLocale } from '../../store/reducers';
 import OBJECT_TYPE from '../const/objectTypes';
-import { clearObjectFromStore, getObject } from '../wobjectsActions';
+import { clearObjectFromStore, getObject } from '../../store/wObjectStore/wobjectsActions';
 import {
   getAlbums,
   resetGallery,
@@ -20,7 +14,7 @@ import {
 } from '../ObjectGallery/galleryActions';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
-import { setCatalogBreadCrumbs, setNestedWobject } from '../wobjActions';
+import { setCatalogBreadCrumbs, setNestedWobject } from '../../store/wObjectStore/wobjActions';
 import { appendObject } from '../appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
@@ -30,6 +24,12 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
 } from '../../store/authStore/authSelectors';
+import {
+  getObject as getObjectState,
+  getObjectFetchingState,
+  getWobjectIsFailed,
+  getWobjectIsFatching,
+} from '../../store/wObjectStore/wObjectSelectors';
 
 @withRouter
 @connect(

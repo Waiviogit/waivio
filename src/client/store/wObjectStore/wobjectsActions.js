@@ -1,13 +1,13 @@
-import * as ApiClient from '../../waivioApi/ApiClient';
-import { createAsyncActionType } from '../helpers/stateHelpers';
-import { getAlbums } from './ObjectGallery/galleryActions';
-import { createPermlink } from '../vendor/steemitHelpers';
-import { generateRandomString } from '../helpers/wObjectHelper';
+import * as ApiClient from '../../../waivioApi/ApiClient';
+import { createAsyncActionType } from '../../helpers/stateHelpers';
+import { getAlbums } from '../../object/ObjectGallery/galleryActions';
+import { createPermlink } from '../../vendor/steemitHelpers';
+import { generateRandomString } from '../../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
-import { getLocale } from '../store/reducers';
-import { WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
-import { getUsedLocale } from '../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getLocale } from '../reducers';
+import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
+import { getUsedLocale } from '../appStore/appSelectors';
+import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';

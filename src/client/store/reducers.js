@@ -17,7 +17,7 @@ import walletReducer, * as fromWallet from '../wallet/walletReducer';
 import reblogReducers, * as fromReblog from '../app/Reblog/reblogReducers';
 import settingsReducer, * as fromSettings from '../settings/settingsReducer';
 import searchReducer, * as fromSearch from '../search/searchReducer';
-import wobjectReducer, * as fromObject from '../object/wobjectReducer';
+import wobjectReducer from './wObjectStore/wobjectReducer';
 import objectTypesReducer from './objectTypesStore/objectTypesReducer';
 import objectTypeReducer from './objectTypeStore/objectTypeReducer';
 import appendReducer, * as fromAppend from '../object/appendReducer';
@@ -164,22 +164,6 @@ export const getWebsiteMap = state => fromSearch.getWebsiteMap(state.search);
 export const getHasMoreObjectsForWebsite = state =>
   fromSearch.getHasMoreObjectsForWebsite(state.search);
 export const getSearchInBox = state => fromSearch.getSearchInBox(state.search);
-
-export const getObject = state => fromObject.getObjectState(state.object);
-export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
-export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
-export const getObjectAdmins = state => fromObject.getObjectAdmins(state.object);
-export const getObjectModerators = state => fromObject.getObjectModerators(state.object);
-export const getObjectFields = state => fromObject.getObjectFields(state.object);
-export const getRatingFields = state => fromObject.getRatingFields(state.object);
-export const getObjectTagCategory = state => fromObject.getObjectTagCategory(state.object);
-export const getWobjectIsFailed = state => fromObject.getWobjectIsFailed(state.object);
-export const getWobjectIsFatching = state => fromObject.getWobjectIsFatching(state.object);
-
-export const getBreadCrumbs = state => fromObject.getBreadCrumbs(state.object);
-export const getWobjectNested = state => fromObject.getWobjectNested(state.object);
-export const getObjectLists = state => fromObject.getObjectLists(state.object);
-export const getLoadingFlag = state => fromObject.getLoadingFlag(state.object);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 

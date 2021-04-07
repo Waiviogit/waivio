@@ -6,7 +6,7 @@ import { createPostMetadata } from '../../helpers/postHelpers';
 import { createAsyncActionType, getPostKey } from '../../helpers/stateHelpers';
 import { findRoot } from '../../helpers/commentHelpers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
-import { sendCommentAppend } from '../../object/wobjActions';
+import { sendCommentAppend } from '../wObjectStore/wobjActions';
 import { getLocale } from '../reducers';
 import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
 import {

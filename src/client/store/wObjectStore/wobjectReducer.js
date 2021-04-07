@@ -13,7 +13,7 @@ import {
   SET_LOADING_NESTED_WOBJECT,
   BELL_WOBJECT_NOTIFICATION,
 } from './wobjActions';
-import { objectFields } from '../../common/constants/listOfFields';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 export const initialState = {
   wobject: {},
@@ -342,18 +342,3 @@ export default function wobjectReducer(state = initialState, action) {
     }
   }
 }
-
-export const getObjectState = state => state.wobject;
-export const getObjectFetchingState = state => state.isFetching;
-export const getObjectAuthor = state => state.author;
-export const getObjectFields = state => state.wobject.fields || [];
-export const getObjectAdmins = state => state.wobject.admins || [];
-export const getObjectModerators = state => state.wobject.moderators || [];
-export const getRatingFields = state => state.wobject.rating || [];
-export const getObjectTagCategory = state => state.wobject.tagCategory;
-export const getWobjectIsFailed = state => state.wobject.isFailed;
-export const getWobjectIsFatching = state => state.wobject.isFetching;
-export const getBreadCrumbs = state => state.breadcrumb;
-export const getWobjectNested = state => state.nestedWobject;
-export const getObjectLists = state => state.lists;
-export const getLoadingFlag = state => state.isLoadingFlag;

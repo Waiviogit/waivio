@@ -6,10 +6,11 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { objectNameValidationRegExp } from '../../../common/constants/validation';
 import { prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
-import { getIsAppendLoading, getObject } from '../../store/reducers';
+import { getIsAppendLoading } from '../../store/reducers';
 import { appendObject } from '../appendActions';
 import { addAlbumToStore } from './galleryActions';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getObject } from '../../store/wObjectStore/wObjectSelectors';
 
 import './CreateAlbum.less';
 

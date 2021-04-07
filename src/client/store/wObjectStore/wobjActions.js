@@ -2,19 +2,19 @@ import { createAction } from 'redux-actions';
 import { message } from 'antd';
 import { get, isEmpty } from 'lodash';
 
-import { getLocale } from '../store/reducers';
-import { getAllFollowing } from '../helpers/apiHelpers';
-import { createAsyncActionType } from '../helpers/stateHelpers';
-import { getChangedField } from '../../waivioApi/ApiClient';
-import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
-import { APPEND_WAIVIO_OBJECT } from './appendActions';
-import { BELL_USER_NOTIFICATION } from '../store/userStore/userActions';
-import { isPostCashout } from '../vendor/steemitHelpers';
+import { getLocale } from '../reducers';
+import { getAllFollowing } from '../../helpers/apiHelpers';
+import { createAsyncActionType } from '../../helpers/stateHelpers';
+import { getChangedField } from '../../../waivioApi/ApiClient';
+import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
+import { APPEND_WAIVIO_OBJECT } from '../../object/appendActions';
+import { BELL_USER_NOTIFICATION } from '../userStore/userActions';
+import { isPostCashout } from '../../vendor/steemitHelpers';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
-} from '../store/authStore/authSelectors';
+} from '../authStore/authSelectors';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';

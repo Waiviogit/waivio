@@ -10,7 +10,7 @@ import WeightTag from '../WeightTag';
 import Avatar from '../Avatar';
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
-import { followWobject, unfollowWobject } from '../../object/wobjActions';
+import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
 import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common/constants/waivio';
 import { setUsersStatus } from '../../settings/settingsActions';
 import { getUserFeedContent } from '../../store/feedStore/feedActions';

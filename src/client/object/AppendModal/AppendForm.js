@@ -42,12 +42,9 @@ import {
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import {
-  getObject,
-  getRatingFields,
   getSuitableLanguage,
   getVotePercent,
   getVotingPower,
-  getObjectTagCategory,
   getObjectAlbums,
 } from '../../store/reducers';
 import LANGUAGES from '../../translations/languages';
@@ -75,7 +72,7 @@ import { appendObject } from '../appendActions';
 import withEditor from '../../components/Editor/withEditor';
 import { getVoteValue } from '../../helpers/user';
 import { getExposedFieldsByObjType, sortListItemsBy } from '../wObjectHelper';
-import { rateObject } from '../wobjActions';
+import { rateObject } from '../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -95,6 +92,11 @@ import {
 import { addAlbumToStore, addImageToAlbumStore } from '../ObjectGallery/galleryActions';
 import { getRate, getRewardFund, getScreenSize } from '../../store/appStore/appSelectors';
 import { getFollowingObjectsList } from '../../store/userStore/userSelectors';
+import {
+  getObject,
+  getObjectTagCategory,
+  getRatingFields,
+} from '../../store/wObjectStore/wObjectSelectors';
 
 import './AppendForm.less';
 

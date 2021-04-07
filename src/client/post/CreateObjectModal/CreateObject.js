@@ -16,7 +16,7 @@ import { getSuitableLanguage } from '../../store/reducers';
 import { notify } from '../../app/Notification/notificationActions';
 import { getObjectTypes } from '../../store/objectTypesStore/objectTypesActions';
 import { appendObject } from '../../object/appendActions';
-import { createWaivioObject } from '../../object/wobjectsActions';
+import { createWaivioObject } from '../../store/wObjectStore/wobjectsActions';
 import { addAlbumToStore } from '../../object/ObjectGallery/galleryActions';
 import DEFAULTS from '../../object/const/defaultValues';
 import { getAppendData, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
