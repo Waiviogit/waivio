@@ -3,12 +3,19 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { map, isEmpty } from 'lodash';
-import { getFollowingSponsorsRewards, clearFollowingSponsorsRewards } from '../rewardsActions';
+import {
+  getFollowingSponsorsRewards,
+  clearFollowingSponsorsRewards,
+} from '../../store/rewardsStore/rewardsActions';
 import Campaign from '../Campaign/Campaign';
-import { getSponsorsRewards, getHasMoreFollowingRewards, getIsLoading } from '../../store/reducers';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import {
+  getHasMoreFollowingRewards,
+  getIsLoading,
+  getSponsorsRewards,
+} from '../../store/rewardsStore/rewardsSelectors';
 
 import './RewardsList.less';
 

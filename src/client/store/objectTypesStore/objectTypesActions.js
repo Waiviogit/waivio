@@ -1,6 +1,6 @@
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
-import { getLocale } from '../reducers';
+import { getLocale } from '../settingsStore/settingsSelectors';
 
 export const GET_OBJECT_TYPES = createAsyncActionType('@objectTypes/GET_OBJECT_TYPES');
 

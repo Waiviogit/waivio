@@ -12,8 +12,8 @@ import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { IS_RESERVED } from '../../../common/constants/rewards';
 import Loading from '../Icon/Loading';
 import { getRadius, getParsedMap, getDistanceBetweenTwoPoints, getZoom } from './mapHelper';
-import { getIsMapModalOpen, getSuitableLanguage, getUpdatedMap } from '../../store/reducers';
-import { setMapFullscreenMode, resetUpdatedFlag } from './mapActions';
+import { getSuitableLanguage } from '../../store/reducers';
+import { setMapFullscreenMode, resetUpdatedFlag } from '../../store/mapStore/mapActions';
 import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
 import { getObjectAvatar, getObjectName } from '../../helpers/wObjectHelper';
@@ -24,6 +24,7 @@ import {
   getFilteredObjectsMap,
   getUpdatedMapDiscover,
 } from '../../store/objectTypeStore/objectTypeSelectors';
+import { getIsMapModalOpen, getUpdatedMap } from '../../store/mapStore/mapSelectors';
 
 import './Map.less';
 

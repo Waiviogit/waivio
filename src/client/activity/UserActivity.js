@@ -4,28 +4,28 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import {
-  getTotalVestingShares,
-  getTotalVestingFundSteem,
-  getUsersAccountHistory,
-  getUsersAccountHistoryLoading,
-  getUsersEstAccountsValues,
-  getLoadingGlobalProperties,
-  getAccountHistoryFilter,
-  getCurrentDisplayedActions,
-} from '../store/reducers';
-import {
   getGlobalProperties,
   getUserEstAccountValue,
   getUserAccountHistory,
   getMoreUserAccountHistory,
   updateAccountHistoryFilter,
   setInitialCurrentDisplayedActions,
-} from '../wallet/walletActions';
+} from '../store/walletStore/walletActions';
 import { getUserAccount } from '../store/usersStore/usersActions';
 import Loading from '../components/Icon/Loading';
 import UserActivityActions from './UserActivityActions';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
 import { getUser } from '../store/usersStore/usersSelectors';
+import {
+  getAccountHistoryFilter,
+  getCurrentDisplayedActions,
+  getLoadingGlobalProperties,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+  getUsersAccountHistory,
+  getUsersAccountHistoryLoading,
+  getUsersEstAccountsValues,
+} from '../store/walletStore/walletSelectors';
 
 @withRouter
 @connect(

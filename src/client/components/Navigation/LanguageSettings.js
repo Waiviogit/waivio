@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import Cookie from 'js-cookie';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
-import { saveSettings, setLocale } from '../../settings/settingsActions';
+import { saveSettings, setLocale } from '../../store/settingsStore/settingsActions';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { getUsedLocale } from '../../store/appStore/appSelectors';

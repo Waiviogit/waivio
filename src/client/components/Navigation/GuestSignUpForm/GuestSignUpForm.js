@@ -9,9 +9,9 @@ import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
 import { login } from '../../../store/authStore/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
-import { getLocale } from '../../../store/reducers';
 import GuestSignUpFormContent from './GuestSignUpFormContent';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 
 import './GuestSignUpForm.less';
 

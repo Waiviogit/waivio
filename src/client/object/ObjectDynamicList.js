@@ -10,7 +10,7 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import ObjectCard from '../components/Sidebar/ObjectCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
-import { followWobject, unfollowWobject } from './wobjActions';
+import { followWobject, unfollowWobject } from '../store/wObjectStore/wobjActions';
 import { changeCounterFollow } from '../store/usersStore/usersActions';
 import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
 

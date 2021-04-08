@@ -21,7 +21,7 @@ import {
 } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getReviewCheckInfo } from '../../../waivioApi/ApiClient';
-import { getUpvoteSetting, getSuitableLanguage, getBeneficiariesUsers } from '../../store/reducers';
+import { getSuitableLanguage } from '../../store/reducers';
 import { createPost, saveDraft } from '../../store/editorStore/editorActions';
 import { createPostMetadata, getInitialState, getObjectUrl } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
@@ -42,6 +42,8 @@ import {
   getIsEditorSaving,
   getIsImageUploading,
 } from '../../store/editorStore/editorSelectors';
+import { getUpvoteSetting } from '../../store/settingsStore/settingsSelectors';
+import { getBeneficiariesUsers } from '../../store/searchStore/searchSelectors';
 
 import './EditPost.less';
 

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { getPendingBookmarks } from '../store/reducers';
 import Feed from '../feed/Feed';
 import {
   getFeedFromState,
@@ -19,6 +18,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 import { getIsReloading } from '../store/authStore/authSelectors';
 import { getPosts } from '../store/postsStore/postsSelectors';
 import { getFeed } from '../store/feedStore/feedSelectors';
+import { getPendingBookmarks } from '../store/bookmarksStore/bookmarksSelectors';
 
 @requiresLogin
 @injectIntl

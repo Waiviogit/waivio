@@ -5,8 +5,8 @@ import { map, reduce } from 'lodash';
 import { useSelector } from 'react-redux';
 import ReportTableFeesRow from '../ReportTableFees/ReportTableFeesRow';
 import ReportTableFeesRowTotal from './ReportTableFeesRowTotal';
-import { getSingleReportData } from '../../../../store/reducers';
 import { getProcessingFee } from '../../../rewardsHelper';
+import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
 
 import './ReportTableFees.less';
 

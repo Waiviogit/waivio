@@ -7,9 +7,9 @@ import WaivioObject from './WaivioObject';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import Loading from '../components/Icon/Loading';
-import { followWobject, unfollowWobject } from '../object/wobjActions';
-import { getLocale } from '../store/reducers';
+import { followWobject, unfollowWobject } from '../store/wObjectStore/wobjActions';
 import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
+import { getLocale } from '../store/settingsStore/settingsSelectors';
 
 const displayLimit = 30;
 

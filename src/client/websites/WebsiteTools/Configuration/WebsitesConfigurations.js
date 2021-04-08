@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import { isEmpty, get, map } from 'lodash';
 import Map from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
-import { getConfiguration, getObjectsMap, getWebsiteLoading } from '../../../store/reducers';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import { getObjectName } from '../../../helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';
@@ -17,16 +16,18 @@ import {
   getCoordinatesForMap,
   getWebConfiguration,
   saveWebConfiguration,
-} from '../../websiteActions';
+} from '../../../store/websiteStore/websiteActions';
 import Loading from '../../../components/Icon/Loading';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
 import { getPropositions } from '../../../../waivioApi/ApiClient';
-import { getPropositionsForMap } from '../../../components/Maps/mapActions';
+import { getPropositionsForMap } from '../../../store/mapStore/mapActions';
 import MapControllers from '../../../widgets/MapControllers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
+import { getObjectsMap } from '../../../store/mapStore/mapSelectors';
+import { getConfiguration, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
 
 import './WebsitesConfigurations.less';
 

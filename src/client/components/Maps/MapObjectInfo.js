@@ -9,10 +9,10 @@ import { isEmpty } from 'lodash';
 import { getRadius, getParsedMap } from './mapHelper';
 import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
-import { getIsMapModalOpen } from '../../store/reducers';
 import { getCoordinates } from '../../store/userStore/userActions';
 import mapProvider from '../../helpers/mapProvider';
-import { setMapFullscreenMode } from './mapActions';
+import { setMapFullscreenMode } from '../../store/mapStore/mapActions';
+import { getIsMapModalOpen } from '../../store/mapStore/mapSelectors';
 
 import './Map.less';
 

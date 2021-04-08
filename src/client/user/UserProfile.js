@@ -4,14 +4,13 @@ import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Feed from '../feed/Feed';
-import { getUsersAccountHistory } from '../store/reducers';
 import {
   getFeedLoadingFromState,
   getFeedFetchedFromState,
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../helpers/stateHelpers';
-import { getUserAccountHistory } from '../wallet/walletActions';
+import { getUserAccountHistory } from '../store/walletStore/walletActions';
 import { getUserProfileBlogPosts } from '../store/feedStore/feedActions';
 import { showPostModal } from '../store/appStore/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
@@ -25,6 +24,7 @@ import {
 } from '../store/authStore/authSelectors';
 import { getFeed } from '../store/feedStore/feedSelectors';
 import { getUser } from '../store/usersStore/usersSelectors';
+import { getUsersAccountHistory } from '../store/walletStore/walletSelectors';
 
 @withRouter
 @connect(
