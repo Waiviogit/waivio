@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { Button, message, Modal, Slider, Switch, Tooltip } from 'antd';
-import { setMatchBotVotingPower } from '../rewardsActions';
+import { setMatchBotVotingPower } from '../../store/rewardsStore/rewardsActions';
 import CreateRule from './CreateRule/CreateRule';
 import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import MatchBotTable from './MatchBotTable/MatchBotTable';

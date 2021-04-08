@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../Create-Edit/ReviewItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
-import { setDataForGlobalReport } from '../rewardsActions';
+import { setDataForGlobalReport } from '../../store/rewardsStore/rewardsActions';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { getUsedLocale } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';

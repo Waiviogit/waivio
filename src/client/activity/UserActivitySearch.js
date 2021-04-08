@@ -5,7 +5,7 @@ import { reduce, map } from 'lodash';
 import { connect } from 'react-redux';
 import { Checkbox } from 'antd';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
-import { updateAccountHistoryFilter } from '../wallet/walletActions';
+import { updateAccountHistoryFilter } from '../store/walletStore/walletActions';
 import { getAuthenticatedUser } from '../store/authStore/authSelectors';
 import { getUser } from '../store/usersStore/usersSelectors';
 

@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { useSelector } from 'react-redux';
 import { get, isEmpty, map } from 'lodash';
-import { getSingleReportData } from '../../../store/reducers';
+import { getSingleReportData } from '../../../store/rewardsStore/rewardsSelectors';
 
 const ReportFooter = ({ intl, toggleModal }) => {
   const singleReportData = useSelector(getSingleReportData);

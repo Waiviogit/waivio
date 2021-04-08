@@ -6,13 +6,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { sortListItemsBy } from '../wObjectHelper';
 import AddItemModal from './AddItemModal/AddItemModal';
-import {
-  getObjectLists,
-  getSuitableLanguage,
-  getWobjectNested,
-  getLoadingFlag,
-  getObject,
-} from '../../store/reducers';
+import { getSuitableLanguage } from '../../store/reducers';
 import {
   getLastPermlinksFromHash,
   itemsList,
@@ -21,8 +15,19 @@ import {
   getListItems,
 } from '../../helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
-import { setLoadedNestedWobject, setListItems, setNestedWobject } from '../wobjActions';
+import {
+  setLoadedNestedWobject,
+  setListItems,
+  setNestedWobject,
+} from '../../store/wObjectStore/wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
+import {
+  getLoadingFlag,
+  getObject,
+  getObjectLists,
+  getWobjectNested,
+} from '../../store/wObjectStore/wObjectSelectors';
+
 import './CatalogWrap.less';
 
 const CatalogWrap = props => {

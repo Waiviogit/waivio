@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { find, size } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { getVotingPower, getVotePercent } from '../store/reducers';
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from '../store/commentsStore/commentsActions';
 import { notify } from '../app/Notification/notificationActions';
@@ -19,6 +18,7 @@ import {
   getCommentsList,
   getCommentsPendingVotes,
 } from '../store/commentsStore/commentsSelectors';
+import { getVotePercent, getVotingPower } from '../store/settingsStore/settingsSelectors';
 
 @connect(
   state => ({
