@@ -191,6 +191,7 @@ class Editor extends React.Component {
         let currObj = null;
         const loadedObject = this.getCurrentLoadObjects(response, value);
 
+        currLinkedObjects.push(loadedObject);
         if (!isEmpty(currLinkedObjects) && !isEmpty(loadedObject)) {
           map(currLinkedObjects, obj => {
             if (isEqual(obj.author_permlink, loadedObject.author_permlink)) {
