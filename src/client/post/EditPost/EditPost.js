@@ -155,18 +155,10 @@ class EditPost extends Component {
 
       getReviewCheckInfo({ campaignId, locale, userName, isPublicReview })
         .then(campaignData => {
+          this.getReviewTitle(campaignData);
           this.setState({
             campaign: campaignData,
           });
-        })
-        .then(() => {
-          const delay = 350;
-
-          if (this.state.linkedObjects.length === 2) {
-            setTimeout(() => this.getReviewTitle(), delay);
-          } else {
-            setTimeout(() => this.getReviewTitle(), delay * 2);
-          }
         })
         .catch(error => {
           message.error(
@@ -226,11 +218,13 @@ class EditPost extends Component {
     }
   }
 
-  getReviewTitle = () => {
+  getReviewTitle = campaignData => {
     const { linkedObjects } = this.state;
+    const firstTitle = get(campaignData, 'requiredObject.name', '');
+    const secondTitle = get(campaignData, 'secondaryObject.name', '');
     const requiredObj = get(linkedObjects, '[0]', '');
     const secondObj = get(linkedObjects, '[1]', '');
-    const reviewTitle = `Review: ${getObjectName(requiredObj)}, ${getObjectName(secondObj)}`;
+    const reviewTitle = `Review: ${firstTitle}, ${secondTitle}`;
 
     const topics = [];
 
