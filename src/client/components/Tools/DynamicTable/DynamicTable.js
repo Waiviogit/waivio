@@ -7,7 +7,18 @@ import Loading from '../../Icon/Loading';
 
 import './DynamicTable.less';
 
-export const DynamicTable = ({ header, bodyConfig, intl, onChange, deleteItem, emptyTitle }) => {
+export const DynamicTable = ({
+  header,
+  bodyConfig,
+  intl,
+  onChange,
+  deleteItem,
+  emptyTitle,
+  buttons,
+  showMore,
+  handleShowMore,
+  loadingMore,
+}) => {
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type))
       return <Loading data-test={`loading/${item.host}`} />;
@@ -30,8 +41,18 @@ export const DynamicTable = ({ header, bodyConfig, intl, onChange, deleteItem, e
           </a>
         );
 
-      default:
-        return get(item, head.id);
+      default: {
+        let button = get(buttons, head.id);
+
+        if (typeof button === 'function') button = button(item);
+
+        return (
+          <React.Fragment>
+            {get(item, head.id)}
+            {button}
+          </React.Fragment>
+        );
+      }
     }
   };
 
@@ -69,6 +90,17 @@ export const DynamicTable = ({ header, bodyConfig, intl, onChange, deleteItem, e
           ))
         )}
       </tbody>
+      {showMore && (
+        <tr onClick={handleShowMore}>
+          <td colSpan={size(header)} className="DynamicTable__showMore">
+            {loadingMore ? (
+              <Loading />
+            ) : (
+              intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })
+            )}
+          </td>
+        </tr>
+      )}
     </table>
   );
 };
@@ -79,7 +111,11 @@ DynamicTable.propTypes = {
   bodyConfig: PropTypes.arrayOf(PropTypes.shape()),
   onChange: PropTypes.func,
   deleteItem: PropTypes.func,
+  handleShowMore: PropTypes.func,
   emptyTitle: PropTypes.string,
+  showMore: PropTypes.bool,
+  loadingMore: PropTypes.bool,
+  buttons: PropTypes.shape({}),
 };
 
 DynamicTable.defaultProps = {
@@ -87,8 +123,12 @@ DynamicTable.defaultProps = {
   header: [],
   bodyConfig: [],
   onChange: () => {},
+  handleShowMore: () => {},
   deleteItem: () => {},
   emptyTitle: '',
+  buttons: {},
+  showMore: false,
+  loadingMore: false,
 };
 
 export default injectIntl(DynamicTable);
