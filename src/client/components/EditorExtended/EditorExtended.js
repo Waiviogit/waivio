@@ -19,6 +19,7 @@ import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import ObjectLink, { findObjEntities } from './components/entities/objectlink';
 import Link from './components/entities/link';
 import { handlePastedLink, QUERY_APP } from './util/editorHelper';
+import { getNewLinkedObjectsCards } from '../../helpers/editorHelper';
 
 const SIDE_BUTTONS = [
   {
@@ -60,15 +61,18 @@ class Editor extends React.Component {
     }).isRequired,
     locale: PropTypes.string.isRequired,
     onChange: PropTypes.func,
+    handleLinkedObjectsCards: PropTypes.func,
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
     displayTitle: PropTypes.bool,
     draftId: PropTypes.string,
     linkedObjects: PropTypes.shape(),
+    linkedObjectsCards: PropTypes.shape().isRequired,
   };
   static defaultProps = {
     intl: {},
     onChange: () => {},
+    handleLinkedObjectsCards: () => {},
     handleHashtag: () => {},
     displayTitle: true,
     draftId: '',
@@ -102,6 +106,7 @@ class Editor extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     sessionStorage.setItem('linkedObjects', JSON.stringify(this.props.linkedObjects));
+    sessionStorage.setItem('linkedObjectsCards', JSON.stringify(this.props.linkedObjectsCards));
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
       setTimeout(() => {
         this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
@@ -125,7 +130,6 @@ class Editor extends React.Component {
     return get(currentSeparator, '[4]', []);
   };
 
-  // eslint-disable-next-line consistent-return
   getCurrentLoadObjects = (response, value) => {
     const loadObjects = keyBy(response.wobjects, 'author_permlink');
 
@@ -134,11 +138,16 @@ class Editor extends React.Component {
     } else if (value.type === Entity.LINK) {
       return loadObjects[this.getCurrentLinkPermlink(value)];
     }
+
+    return loadObjects;
   };
 
   restoreObjects = async (rawContent, newObject) => {
-    const { draftId } = this.props;
+    const { draftId, linkedObjectsCards, handleLinkedObjectsCards } = this.props;
     const currLinkedObjects = JSON.parse(sessionStorage.getItem('linkedObjects')) || [];
+    const linkedObjectsCardsSession =
+      JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
+    const linkedCards = linkedObjectsCards || linkedObjectsCardsSession;
     const isReview = includes(draftId, 'review');
     const isLinked = string =>
       currLinkedObjects.some(item => item.defaultShowLink.includes(string));
@@ -177,6 +186,13 @@ class Editor extends React.Component {
         }
       })
       .filter(item => item);
+    const newLinkedObjectsCards = getNewLinkedObjectsCards(
+      linkedCards,
+      objectIds,
+      Object.values(rawContent.entityMap),
+    );
+
+    handleLinkedObjectsCards(newLinkedObjectsCards);
 
     if (objectIds.length) {
       const response = await getObjectsByIds({

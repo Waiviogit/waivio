@@ -44,21 +44,9 @@ import {
 } from '../../store/editorStore/editorSelectors';
 import { getUpvoteSetting } from '../../store/settingsStore/settingsSelectors';
 import { getBeneficiariesUsers } from '../../store/searchStore/searchSelectors';
+import { getLinkedObjects } from '../../helpers/editorHelper';
 
 import './EditPost.less';
-
-const getLinkedObjects = contentStateRaw => {
-  const objEntities = Object.values(contentStateRaw.entityMap).filter(
-    entity =>
-      (entity.type === Entity.OBJECT && has(entity, 'data.object.type')) ||
-      has(entity, 'data.object.object_type'),
-  );
-
-  return uniqWith(
-    objEntities.map(entity => entity.data.object),
-    isEqual,
-  );
-};
 
 @injectIntl
 @requiresLogin
@@ -278,24 +266,27 @@ class EditPost extends Component {
   }, 500);
 
   handleChangeContent(rawContent, title) {
+    const {
+      linkedObjects: linkedObjectsState,
+      objPercentage: objPercentageState,
+      content,
+      titleValue,
+    } = this.state;
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
-    const linkedObjects = uniqBy(
-      concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
-      '_id',
-    );
+    const linkedObjects = uniqBy(concat(linkedObjectsState, getLinkedObjects(rawContent)), '_id');
 
-    const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
+    const isLinkedObjectsChanged = linkedObjectsState.length !== linkedObjects.length;
 
     if (isLinkedObjectsChanged) {
-      const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
+      const objPercentage = setObjPercents(linkedObjects, objPercentageState);
 
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
     if (
-      this.state.content !== nextState.content ||
+      content !== nextState.content ||
       isLinkedObjectsChanged ||
-      this.state.titleValue !== nextState.titleValue
+      titleValue !== nextState.titleValue
     ) {
       this.setState(nextState, this.handleUpdateState);
       this.setCurrentDraftContent(nextState, rawContent);
@@ -329,7 +320,9 @@ class EditPost extends Component {
   }
 
   handleToggleLinkedObject(objId, isLinked, uniqId) {
-    const { linkedObjects, objPercentage, topics } = this.state;
+    const { linkedObjects, objPercentage, topics, linkedObjectsCards } = this.state;
+    const prohibitedObjectCards =
+      linkedObjectsCards || JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObj = indexOf(linkedObjects, currentObj);
     const switchableObjPermlink = currentObj.author_permlink;
@@ -344,8 +337,11 @@ class EditPost extends Component {
       [objId || uniqId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
 
+    prohibitedObjectCards.push(currentObj);
+    sessionStorage.setItem('linkedObjectsCards', JSON.stringify(prohibitedObjectCards));
     this.setState({
       objPercentage: setObjPercents(linkedObjects, updPercentage),
+      linkedObjectsCards: prohibitedObjectCards,
       topics,
     });
   }
@@ -462,6 +458,7 @@ class EditPost extends Component {
 
   handleHashtag = objectName =>
     this.setState(prevState => ({ topics: uniqWith([...prevState.topics, objectName], isEqual) }));
+  handleLinkedObjectsCards = linkedObjectsCards => this.setState({ linkedObjectsCards });
 
   render() {
     const {
@@ -469,6 +466,7 @@ class EditPost extends Component {
       content,
       topics,
       linkedObjects,
+      linkedObjectsCards,
       objPercentage,
       settings,
       campaign,
@@ -486,6 +484,10 @@ class EditPost extends Component {
       draftId,
     } = this.props;
 
+    const filteredObjectsCards = linkedObjects.filter(
+      object => !find(linkedObjectsCards, { _id: object._id }),
+    );
+
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -500,6 +502,8 @@ class EditPost extends Component {
               displayTitle
               draftId={draftId}
               linkedObjects={linkedObjects}
+              linkedObjectsCards={linkedObjectsCards}
+              handleLinkedObjectsCards={this.handleLinkedObjectsCards}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">
@@ -549,7 +553,7 @@ class EditPost extends Component {
               addHashtag={!this.props.isWaivio}
             />
             <CreateObject onCreateObject={this.handleCreateObject} />
-            {linkedObjects.map(wObj => (
+            {filteredObjectsCards.map(wObj => (
               <PostObjectCard
                 isLinked={get(objPercentage, [wObj.id, 'percent'], 0) > 0}
                 wObject={wObj}
