@@ -185,7 +185,7 @@ const ModalSignIn = ({
               })}
               &ensp;
               <a
-                href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
+                href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/xrj-terms-and-conditions"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -196,7 +196,7 @@ const ModalSignIn = ({
               </a>
               ,&ensp;
               <a
-                href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/poi-privacy-policy"
+                href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/poi-privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -207,7 +207,7 @@ const ModalSignIn = ({
               </a>
               ,&ensp;
               <a
-                href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/uid-cookies-policy"
+                href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/uid-cookies-policy"
                 target="_blank"
                 rel="noopener noreferrer"
               >
