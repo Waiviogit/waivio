@@ -96,7 +96,7 @@ const WebsitesSettings = ({
           <h3>
             {intl.formatMessage({
               id: 'google_analytic_tag',
-              defaultMessage: 'Google Analytics tracking code:',
+              defaultMessage: 'Google Analytics 4 property ID:',
             })}
           </h3>
           {getFieldDecorator('googleAnalyticsTag')(
@@ -105,7 +105,7 @@ const WebsitesSettings = ({
                 type="text"
                 placeholder={intl.formatMessage({
                   id: 'paste_tag_here',
-                  defaultMessage: 'Paste tag here',
+                  defaultMessage: 'Paste Measurement ID here',
                 })}
                 defaultValue={get(settings, 'googleAnalyticsTag')}
                 onChange={e => handleChange(e, 'googleAnalyticsTag')}
@@ -115,7 +115,8 @@ const WebsitesSettings = ({
           <p>
             {intl.formatMessage({
               id: 'website_performance',
-              defaultMessage: 'You can monitor website performance using Google Analytics.',
+              defaultMessage:
+                'You can monitor website performance using Google Analytics. Please note, that Google Measurement ID should look like G-XXXXXXX.',
             })}
           </p>
         </Form.Item>
