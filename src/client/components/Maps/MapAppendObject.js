@@ -5,9 +5,10 @@ import Map from 'pigeon-maps';
 import { connect } from 'react-redux';
 import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
-import { getUserLocation } from '../../reducers';
-import { getCoordinates } from '../../user/userActions';
+import { getCoordinates } from '../../store/userStore/userActions';
 import mapProvider from '../../helpers/mapProvider';
+import { getUserLocation } from '../../store/userStore/userSelectors';
+
 import './Map.less';
 
 export const defaultCoords = [37.0902, 95.0235];

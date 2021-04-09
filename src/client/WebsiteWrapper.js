@@ -11,36 +11,34 @@ import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
 import { findLanguage, getRequestLocale, loadLanguage } from './translations';
 import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getIsAuthenticated,
-  getLocale,
-  getUsedLocale,
-  getTranslations,
-  getNightmode,
-  getIsOpenWalletTable,
-  getIsAuthFetching,
-} from './reducers';
-import {
   login,
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
-} from './auth/authActions';
-import { getNotifications } from './user/userActions';
+} from './store/authStore/authActions';
+import { getNotifications } from './store/userStore/userActions';
 import {
   getRate,
   getRewardFund,
   setUsedLocale,
   setAppUrl,
   getCurrentAppSettings,
-} from './app/appActions';
+} from './store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import { guestUserRegex } from './helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
-import { getWebsiteObjWithCoordinates } from './websites/websiteActions';
+import { getWebsiteObjWithCoordinates } from './store/websiteStore/websiteActions';
+import { getTranslations, getUsedLocale } from './store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsAuthFetching,
+} from './store/authStore/authSelectors';
+import { getIsOpenWalletTable } from './store/walletStore/walletSelectors';
+import { getLocale, getNightmode } from './store/settingsStore/settingsSelectors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 

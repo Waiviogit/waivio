@@ -6,14 +6,7 @@ import PropTypes from 'prop-types';
 import { Tabs } from 'antd';
 import { Link } from 'react-router-dom';
 
-import {
-  getAuthenticatedUserName,
-  getMuteLoading,
-  getRestrictions,
-  getUnmutedUsers,
-  getWebsiteLoading,
-} from '../../../reducers';
-import { getWebsiteRestrictions, muteUser } from '../../websiteActions';
+import { getWebsiteRestrictions, muteUser } from '../../../store/websiteStore/websiteActions';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import Action from '../../../components/Button/Action';
 import SortSelector from '../../../components/SortSelector/SortSelector';
@@ -21,6 +14,13 @@ import { SORT_OPTIONS_WOBJ } from '../../../../common/constants/waivioFiltres';
 import UserCard from '../../../components/UserCard';
 import WeightTag from '../../../components/WeightTag';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getMuteLoading,
+  getRestrictions,
+  getUnmutedUsers,
+  getWebsiteLoading,
+} from '../../../store/websiteStore/websiteSelectors';
 
 import './WebsiteRestrictions.less';
 

@@ -11,8 +11,9 @@ import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
 import Loading from '../../../components/Icon/Loading';
 import { selectFormatDate } from '../../../wallet/WalletHelper';
 import { configReportsWebsitesTableHeader } from '../../constants/tableConfig';
-import { getReportsWebsiteInfo } from '../../websiteActions';
-import { getLocale, getReports } from '../../../reducers';
+import { getReportsWebsiteInfo } from '../../../store/websiteStore/websiteActions';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import { getReports } from '../../../store/websiteStore/websiteSelectors';
 
 import './ReportsWebsite.less';
 

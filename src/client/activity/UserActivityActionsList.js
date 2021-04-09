@@ -3,28 +3,27 @@ import PropTypes from 'prop-types';
 import { isEmpty, get } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import {
-  getUser,
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getTotalVestingShares,
-  getTotalVestingFundSteem,
-  getUsersAccountHistory,
-  getLoadingMoreUsersAccountHistory,
-  getUserHasMoreAccountHistory,
-  getAccountHistoryFilter,
-  getCurrentDisplayedActions,
-  getCurrentFilteredActions,
-} from '../reducers';
 import { isWalletTransaction } from '../helpers/apiHelpers';
 import {
   setInitialCurrentDisplayedActions,
   addMoreActionsToCurrentDisplayedActions,
   loadMoreCurrentUsersActions,
-} from '../wallet/walletActions';
+} from '../store/walletStore/walletActions';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import WalletTransaction from '../wallet/WalletTransaction';
 import UserAction from './UserAction';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
+import {
+  getAccountHistoryFilter,
+  getCurrentDisplayedActions,
+  getCurrentFilteredActions,
+  getLoadingMoreUsersAccountHistory,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+  getUserHasMoreAccountHistory,
+  getUsersAccountHistory,
+} from '../store/walletStore/walletSelectors';
 
 @withRouter
 @connect(

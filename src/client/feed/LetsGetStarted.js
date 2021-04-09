@@ -6,21 +6,24 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
+import { getUserAccountHistory } from '../store/walletStore/walletActions';
+import HorizontalBarChart from '../components/HorizontalBarChart';
+import LetsGetStartedIcon from './LetsGetStartedIcon';
 import {
   getAuthenticatedUser,
+  getIsAuthenticated,
+  getIsAuthFetching,
+  getIsLoaded,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
+import {
   getFetchFollowListError,
   getFollowingFetched,
   getFollowingList,
-  getIsAuthenticated,
-  getIsAuthFetching,
   getIsFetchingFollowingList,
-  getIsLoaded,
-  isGuestUser,
-  getUsersAccountHistory,
-} from '../reducers';
-import { getUserAccountHistory } from '../wallet/walletActions';
-import HorizontalBarChart from '../components/HorizontalBarChart';
-import LetsGetStartedIcon from './LetsGetStartedIcon';
+} from '../store/userStore/userSelectors';
+import { getUsersAccountHistory } from '../store/walletStore/walletSelectors';
+
 import './LetsGetStarted.less';
 
 @connect(

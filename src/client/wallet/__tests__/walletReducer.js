@@ -1,5 +1,5 @@
-import reducer from '../walletReducer';
-import * as actions from '../walletActions';
+import reducer from '../../store/walletStore/walletReducer';
+import * as actions from '../../store/walletStore/walletActions';
 
 const reducerInitialState = {
   transferVisible: false,

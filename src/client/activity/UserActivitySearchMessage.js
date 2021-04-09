@@ -4,11 +4,11 @@ import { isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import {
-  getLoadingMoreUsersAccountHistory,
+  getAccountHistoryFilter,
   getCurrentDisplayedActions,
   getCurrentFilteredActions,
-  getAccountHistoryFilter,
-} from '../reducers';
+  getLoadingMoreUsersAccountHistory,
+} from '../store/walletStore/walletSelectors';
 
 const UserActivitySearchMessage = ({
   loadingMoreUsersAccountHistory,

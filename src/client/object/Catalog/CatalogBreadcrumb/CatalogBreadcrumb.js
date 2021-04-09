@@ -12,9 +12,10 @@ import {
   hasType,
   sortWobjectsByHash,
 } from '../../../helpers/wObjectHelper';
-import { setCatalogBreadCrumbs } from '../../wobjActions';
-import { getBreadCrumbs, getSuitableLanguage, getWobjectNested } from '../../../reducers';
+import { setCatalogBreadCrumbs } from '../../../store/wObjectStore/wobjActions';
+import { getSuitableLanguage } from '../../../store/reducers';
 import { getObjectsByIds } from '../../../../waivioApi/ApiClient';
+import { getBreadCrumbs, getWobjectNested } from '../../../store/wObjectStore/wObjectSelectors';
 
 import './CatalogBreadcrumb.less';
 
@@ -27,6 +28,8 @@ const CatalogBreadcrumb = ({
   nestedWobject,
   breadcrumb,
 }) => {
+  if (!breadcrumb) return null;
+
   const breadCrumbSize = size(breadcrumb);
   const currentTitle = get(breadcrumb[breadCrumbSize - 1], 'title', '');
   const permlinks = getPermlinksFromHash(location.hash);

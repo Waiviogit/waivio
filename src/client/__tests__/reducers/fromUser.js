@@ -1,22 +1,22 @@
 import {
-  getUserLocation,
-  getPendingUpdate,
-  getFollowingList,
-  getNotifications,
-  getPendingFollows,
-  getFollowingUpdates,
-  getFollowingFetched,
-  getRecommendedObjects,
-  getLatestNotification,
   getFetchFollowListError,
+  getFollowingFetched,
+  getFollowingList,
   getFollowingObjectsList,
-  getFollowingUsersUpdates,
-  getIsLoadingNotifications,
-  getPendingFollowingObjects,
-  getIsFetchingFollowingList,
-  getFollowingUpdatesFetched,
   getFollowingObjectsUpdatesByType,
-} from '../../reducers';
+  getFollowingUpdates,
+  getFollowingUpdatesFetched,
+  getFollowingUsersUpdates,
+  getIsFetchingFollowingList,
+  getIsLoadingNotifications,
+  getLatestNotification,
+  getNotifications,
+  getPendingFollowingObjects,
+  getPendingFollows,
+  getPendingUpdate,
+  getRecommendedObjects,
+  getUserLocation,
+} from '../../store/userStore/userSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

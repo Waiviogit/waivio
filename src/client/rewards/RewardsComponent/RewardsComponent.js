@@ -1,12 +1,13 @@
 import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuthenticatedUserName, getPendingUpdate } from '../../reducers';
 import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
-import { pendingUpdateSuccess } from '../../user/userActions';
+import { pendingUpdateSuccess } from '../../store/userStore/userActions';
 import { delay } from '../rewardsHelpers';
 import { getSort } from '../rewardsHelper';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getPendingUpdate } from '../../store/userStore/userSelectors';
 
 const RewardsComponent = memo(
   ({

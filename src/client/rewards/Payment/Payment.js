@@ -8,14 +8,16 @@ import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
-import { openTransfer } from '../../wallet/walletActions';
-import { openLinkHiveAccountModal } from '../../settings/settingsActions';
+import { openTransfer } from '../../store/walletStore/walletActions';
+import { openLinkHiveAccountModal } from '../../store/settingsStore/settingsActions';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import Transfer from '../../wallet/Transfer/Transfer';
+import { isGuestUser } from '../../store/authStore/authSelectors';
+import { getHiveBeneficiaryAccount } from '../../store/settingsStore/settingsSelectors';
+
 import './Payment.less';
 
 const Payment = ({

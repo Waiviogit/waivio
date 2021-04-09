@@ -41,19 +41,7 @@ import {
   formFormFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
-import {
-  getFollowingObjectsList,
-  getObject,
-  getRate,
-  getRatingFields,
-  getRewardFund,
-  getSuitableLanguage,
-  getVotePercent,
-  getVotingPower,
-  getObjectTagCategory,
-  getObjectAlbums,
-  getScreenSize,
-} from '../../reducers';
+import { getSuitableLanguage } from '../../store/reducers';
 import LANGUAGES from '../../translations/languages';
 import { PRIMARY_COLOR } from '../../../common/constants/waivio';
 import { getLanguageText } from '../../translations';
@@ -75,11 +63,11 @@ import {
   getFormItems,
   getNewsFilterItems,
 } from '../../helpers/wObjectHelper';
-import { appendObject } from '../appendActions';
+import { appendObject } from '../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
 import { getVoteValue } from '../../helpers/user';
 import { getExposedFieldsByObjType, sortListItemsBy } from '../wObjectHelper';
-import { rateObject } from '../wobjActions';
+import { rateObject } from '../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -96,7 +84,16 @@ import {
   objectNameValidationRegExp,
   blogNameValidationRegExp,
 } from '../../../common/constants/validation';
-import { addAlbumToStore, addImageToAlbumStore } from '../ObjectGallery/galleryActions';
+import { addAlbumToStore, addImageToAlbumStore } from '../../store/galleryStore/galleryActions';
+import { getRate, getRewardFund, getScreenSize } from '../../store/appStore/appSelectors';
+import { getFollowingObjectsList } from '../../store/userStore/userSelectors';
+import {
+  getObject,
+  getObjectTagCategory,
+  getRatingFields,
+} from '../../store/wObjectStore/wObjectSelectors';
+import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
+import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
 
 import './AppendForm.less';
 
@@ -441,7 +438,8 @@ export default class AppendForm extends Component {
           )} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         case objectFields.form:
-          return `@${author} added form ${formValues.formTitle}`;
+          return `@${author} added form: ${formValues.formTitle}, link: ${formValues.formLink ||
+            formValues.formWidget}, column: ${formValues.formColumn}`;
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -2074,14 +2072,6 @@ export default class AppendForm extends Component {
                     isMultiple
                     isRequired
                   />
-                  {/* TODO: Possible will use */}
-                  {/* <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}> */}
-                  {/*  <img */}
-                  {/*    alt="example" */}
-                  {/*    style={{ width: '100%', 'max-height': '90vh' }} */}
-                  {/*    src={previewImage} */}
-                  {/*  /> */}
-                  {/* </Modal> */}
                 </div>,
               )}
             </Form.Item>

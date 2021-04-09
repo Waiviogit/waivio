@@ -5,16 +5,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty, size } from 'lodash';
 
-import {
-  getPosts,
-  getObject,
-  getReadLanguages,
-  getIsAuthenticated,
-  getObjectAlbums,
-  getRewardFund,
-  getRate,
-  getIsAppendLoading,
-} from '../reducers';
 import { objectFields, sortingMenuName } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
@@ -27,6 +17,13 @@ import AppendCard from './AppendCard/AppendCard';
 import Loading from '../components/Icon/Loading';
 import { getObjectName, isPhotosAlbumExist } from '../helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from './wObjectHelper';
+import { getRate, getRewardFund } from '../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../store/authStore/authSelectors';
+import { getPosts } from '../store/postsStore/postsSelectors';
+import { getObject } from '../store/wObjectStore/wObjectSelectors';
+import { getReadLanguages } from '../store/settingsStore/settingsSelectors';
+import { getIsAppendLoading } from '../store/appendStore/appendSelectors';
+import { getObjectAlbums } from '../store/galleryStore/gallerySelectors';
 
 import './WobjHistory.less';
 
@@ -166,7 +163,11 @@ class WobjHistory extends React.Component {
       if (sortingMenuName[params[1]]) {
         content = content.filter(f => f.name === objectFields.listItem && f.type === params[1]);
       } else {
-        content = content.filter(f => f.name === params[1]);
+        content = content.filter(f => {
+          const type = params[1] === objectFields.form ? 'form' : params[1];
+
+          return f.name === type;
+        });
       }
     }
 

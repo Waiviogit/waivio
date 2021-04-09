@@ -8,12 +8,15 @@ import {
   clearSearchObjectsResults,
   resetToInitialIsClearSearchObj,
   searchObjectsAutoCompete,
-} from '../../search/searchActions';
-import { getIsStartSearchObject, getSearchObjectsResults } from '../../reducers';
+} from '../../store/searchStore/searchActions';
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { pendingSearch } from '../../search/helpers';
+import {
+  getIsStartSearchObject,
+  getSearchObjectsResults,
+} from '../../store/searchStore/searchSelectors';
 
 import './SearchObjectsAutocomplete.less';
 

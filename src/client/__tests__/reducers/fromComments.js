@@ -1,9 +1,9 @@
 import {
+  getCommentContent,
   getComments,
   getCommentsList,
-  getCommentContent,
   getCommentsPendingVotes,
-} from '../../reducers';
+} from '../../store/commentsStore/commentsSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

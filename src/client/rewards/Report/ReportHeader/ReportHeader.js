@@ -4,8 +4,9 @@ import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { get, map } from 'lodash';
-import { getSingleReportData } from '../../../reducers';
 import Avatar from '../../../components/Avatar';
+import { getSingleReportData } from '../../../store/rewardsStore/rewardsSelectors';
+
 import './ReportHeader.less';
 
 const ReportHeader = ({ intl }) => {

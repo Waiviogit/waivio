@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Checkbox, message, Modal } from 'antd';
-import { setMatchBotRules } from '../../rewardsActions';
+import { setMatchBotRules } from '../../../store/rewardsStore/rewardsActions';
 import { formatDate } from '../../rewardsHelper';
 import getMatchBotMessageData from '../matchBotMessageData';
 

@@ -5,23 +5,27 @@ import { FormattedMessage } from 'react-intl';
 import { isEmpty, get, size } from 'lodash';
 import DiscoverUser from './DiscoverUser';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
-import { followUser, getTopExperts as getTopExpertsApi, unfollowUser } from '../user/usersActions';
 import {
-  getTopExperts,
-  getTopExpertsLoading,
-  getTopExpertsHasMore,
-  getObjectTypesList,
-  getSearchUsersResultsForDiscoverPage,
-} from '../reducers';
+  followUser,
+  getTopExperts as getTopExpertsApi,
+  unfollowUser,
+} from '../store/usersStore/usersActions';
 import Loading from '../components/Icon/Loading';
-import { getObjectTypes } from '../objectTypes/objectTypesActions';
+import { getObjectTypes } from '../store/objectTypesStore/objectTypesActions';
 import {
   followSearchUser,
   resetSearchUsersForDiscoverPage,
   searchUsersForDiscoverPage,
   unfollowSearchUser,
-} from '../search/searchActions';
+} from '../store/searchStore/searchActions';
 import withAuthActions from '../auth/withAuthActions';
+import { getObjectTypesList } from '../store/objectTypesStore/objectTypesSelectors';
+import {
+  getTopExperts,
+  getTopExpertsHasMore,
+  getTopExpertsLoading,
+} from '../store/usersStore/usersSelectors';
+import { getSearchUsersResultsForDiscoverPage } from '../store/searchStore/searchSelectors';
 
 const displayLimit = 20;
 

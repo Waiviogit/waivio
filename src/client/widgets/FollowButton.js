@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getAuthenticatedUserName } from '../reducers';
 import withAuthAction from '../auth/withAuthActions';
-import { bellNotifications } from '../user/userActions';
-import { wobjectBellNotification } from '../object/wobjActions';
+import { bellNotifications } from '../store/userStore/userActions';
+import { wobjectBellNotification } from '../store/wObjectStore/wobjActions';
 import Follow from '../components/Button/Follow';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 @withAuthAction
 @connect(

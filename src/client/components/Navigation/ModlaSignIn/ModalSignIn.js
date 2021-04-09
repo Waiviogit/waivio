@@ -5,21 +5,29 @@ import hivesigner from 'hivesigner';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { login, busyLogin, getAuthGuestBalance } from '../../../auth/authActions';
+import { login, busyLogin, getAuthGuestBalance } from '../../../store/authStore/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
-import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
-import { getRate, getRewardFund } from '../../../app/appActions';
-import { getRebloggedList } from '../../../app/Reblog/reblogActions';
+import {
+  getFollowing,
+  getFollowingObjects,
+  getNotifications,
+} from '../../../store/userStore/userActions';
+import { getRate, getRewardFund } from '../../../store/appStore/appActions';
+import { getRebloggedList } from '../../../store/reblogStore/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
-import { getCurrentHost, getIsWaivio, getWebsiteParentHost } from '../../../reducers';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import {
   clearAllSessionProposition,
   getSessionData,
   removeSessionData,
 } from '../../../rewards/rewardsHelper';
+import {
+  getCurrentHost,
+  getIsWaivio,
+  getWebsiteParentHost,
+} from '../../../store/appStore/appSelectors';
 
 import './ModalSignIn.less';
 

@@ -108,6 +108,8 @@ class CustomMarker extends React.Component {
       currentImg = '/images/icons/location.png';
       width = 20;
       height = 20;
+      currTop = 20;
+      currLeft = 10;
     }
 
     if (hoveredWobj) {

@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Modal } from 'antd';
-import { closePowerUpOrDown } from './walletActions';
-import {
-  getAuthenticatedUser,
-  getIsPowerUpOrDownVisible,
-  getIsPowerDown,
-  getTotalVestingShares,
-  getTotalVestingFundSteem,
-} from '../reducers';
+import { closePowerUpOrDown } from '../store/walletStore/walletActions';
 import formatter from '../helpers/steemitFormatter';
 import { createQuery } from '../helpers/apiHelpers';
+import { getAuthenticatedUser } from '../store/authStore/authSelectors';
+import {
+  getIsPowerDown,
+  getIsPowerUpOrDownVisible,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+} from '../store/walletStore/walletSelectors';
 
 import './Transfer/Transfer.less';
 

@@ -9,29 +9,14 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
-import {
-  getConfigurationValues,
-  getMapForMainPage,
-  getScreenSize,
-  getSearchFiltersTagCategory,
-  getShowSearchResult,
-  getUserLocation,
-  getWobjectsPoint,
-  getReservCounter,
-  getIsAuthenticated,
-  getWebsiteSearchString,
-  getWebsiteMap,
-  getShowReloadButton,
-  getWebsiteSearchType,
-} from '../../../reducers';
-import { getCoordinates } from '../../../user/userActions';
+import { getCoordinates } from '../../../store/userStore/userActions';
 import {
   setMapForSearch,
   setSearchInBox,
   setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
-} from '../../../search/searchActions';
+} from '../../../store/searchStore/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import mapProvider from '../../../helpers/mapProvider';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
@@ -42,10 +27,32 @@ import {
   getCurrentAppSettings,
   getReservedCounter,
   putUserCoordinates,
-} from '../../../app/appActions';
-import { getWebsiteObjWithCoordinates, setShowReload } from '../../websiteActions';
+} from '../../../store/appStore/appActions';
+import {
+  getWebsiteObjWithCoordinates,
+  setShowReload,
+} from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates } from '../../helper';
 import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
+import {
+  getConfigurationValues,
+  getMapForMainPage,
+  getReserveCounter,
+  getScreenSize,
+} from '../../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getUserLocation } from '../../../store/userStore/userSelectors';
+import {
+  getSearchFiltersTagCategory,
+  getShowSearchResult,
+  getWebsiteMap,
+  getWebsiteSearchString,
+  getWebsiteSearchType,
+} from '../../../store/searchStore/searchSelectors';
+import {
+  getShowReloadButton,
+  getWobjectsPoint,
+} from '../../../store/websiteStore/websiteSelectors';
 
 import './WebsiteBody.less';
 
@@ -56,7 +63,7 @@ const WebsiteBody = props => {
   });
   const [infoboxData, setInfoboxData] = useState(null);
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
-  const [height, setHeight] = useState(0);
+  const [height, setHeight] = useState('100%');
   const [showLocation, setShowLocation] = useState(false);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const isActiveFilters = !isEmpty(props.activeFilters);
@@ -381,6 +388,7 @@ const WebsiteBody = props => {
             {zoomButtonsLayout()}
             <Map
               center={area.center}
+              height={height}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
@@ -390,6 +398,7 @@ const WebsiteBody = props => {
                   props.history.push('/');
                 }
               }}
+              animate
             >
               {isActiveFilters && (
                 <div className="WebsiteBody__filters-list">
@@ -484,7 +493,7 @@ export default connect(
     wobjectsPoint: getWobjectsPoint(state),
     configCoordinates: getMapForMainPage(state),
     activeFilters: getSearchFiltersTagCategory(state),
-    counter: getReservCounter(state),
+    counter: getReserveCounter(state),
     isAuth: getIsAuthenticated(state),
     query: new URLSearchParams(ownProps.location.search),
     searchString: getWebsiteSearchString(state),

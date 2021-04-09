@@ -3,23 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
-import {
-  getIsReloading,
-  getLocale,
-  getReadLanguages,
-  getVotingPower,
-  getIsSettingsLoading,
-  getVotePercent,
-  getShowNSFWPosts,
-  getNightmode,
-  getRewriteLinks,
-  getUpvoteSetting,
-  getExitPageSetting,
-  isGuestUser,
-  getAuthenticatedUser,
-} from '../reducers';
-import { saveSettings } from './settingsActions';
-import { reload } from '../auth/authActions';
+import { saveSettings } from '../store/settingsStore/settingsActions';
+import { reload } from '../store/authStore/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Action from '../components/Button/Action';
 import Loading from '../components/Icon/Loading';
@@ -27,6 +12,24 @@ import RawSlider from '../components/Slider/RawSlider';
 import requiresLogin from '../auth/requiresLogin';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
+import {
+  getAuthenticatedUser,
+  getIsReloading,
+  isGuestUser,
+} from '../store/authStore/authSelectors';
+import {
+  getExitPageSetting,
+  getIsSettingsLoading,
+  getLocale,
+  getNightmode,
+  getReadLanguages,
+  getRewriteLinks,
+  getShowNSFWPosts,
+  getUpvoteSetting,
+  getVotePercent,
+  getVotingPower,
+} from '../store/settingsStore/settingsSelectors';
+
 import './Settings.less';
 
 @requiresLogin

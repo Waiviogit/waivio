@@ -1,16 +1,16 @@
 import {
-  getLocale,
-  getNightmode,
-  getVotingPower,
-  getVotePercent,
-  getShowNSFWPosts,
-  getRewriteLinks,
-  getUpvoteSetting,
-  getReadLanguages,
-  getRewardSetting,
   getExitPageSetting,
   getIsSettingsLoading,
-} from '../../reducers';
+  getLocale,
+  getNightmode,
+  getReadLanguages,
+  getRewardSetting,
+  getRewriteLinks,
+  getShowNSFWPosts,
+  getUpvoteSetting,
+  getVotePercent,
+  getVotingPower,
+} from '../../store/settingsStore/settingsSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

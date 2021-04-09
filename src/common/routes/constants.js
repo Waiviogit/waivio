@@ -78,6 +78,7 @@ export default {
       'create',
       'manage',
       'payments',
+      'new-accounts',
     ].join('|'),
   },
   WEBSITES: {

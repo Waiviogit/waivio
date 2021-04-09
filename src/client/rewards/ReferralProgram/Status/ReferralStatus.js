@@ -3,14 +3,17 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import {
+  getMoreUserStatusCards,
+  getUserStatusCards,
+} from '../../../store/referralStore/ReferralActions';
+import ReferralStatusView from './ReferralStatusView';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import {
   getCurrentUserCards,
-  getIsAuthenticated,
   getIsErrorLoadingUserCards,
   getIsHasMoreCards,
   getIsLoadingMoreUserCards,
-} from '../../../reducers';
-import { getMoreUserStatusCards, getUserStatusCards } from '../ReferralActions';
-import ReferralStatusView from './ReferralStatusView';
+} from '../../../store/referralStore/referralSelectors';
 
 import './ReferralStatus.less';
 

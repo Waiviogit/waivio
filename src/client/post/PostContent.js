@@ -12,37 +12,30 @@ import {
   replaceBotWithGuestName,
   getAuthorName,
 } from '../helpers/postHelpers';
-import {
-  getAuthenticatedUser,
-  getBookmarks,
-  getPendingBookmarks,
-  getPendingLikes,
-  getRebloggedList,
-  getPendingReblogs,
-  getFollowingList,
-  getIsEditorSaving,
-  getVotingPower,
-  getRewardFund,
-  getVotePercent,
-  getAppUrl,
-  getHelmetIcon,
-} from '../reducers';
-import { editPost } from './Write/editorActions';
+import { editPost } from '../store/editorStore/editorActions';
 import {
   errorFollowingPostAuthor,
   followingPostAuthor,
   muteAuthorPost,
   pendingFollowingPostAuthor,
   votePost,
-} from './postActions';
-import { reblog } from '../app/Reblog/reblogActions';
-import { toggleBookmark } from '../bookmarks/bookmarksActions';
-import { followUser, unfollowUser } from '../user/userActions';
+} from '../store/postsStore/postActions';
+import { reblog } from '../store/reblogStore/reblogActions';
+import { toggleBookmark } from '../store/bookmarksStore/bookmarksActions';
+import { followUser, unfollowUser } from '../store/userStore/userActions';
 import { getAvatarURL } from '../components/Avatar';
 import { getHtml } from '../components/Story/Body';
 import { jsonParse } from '../helpers/formatter';
 import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
+import { getAppUrl, getHelmetIcon, getRewardFund } from '../store/appStore/appSelectors';
+import { getAuthenticatedUser } from '../store/authStore/authSelectors';
+import { getIsEditorSaving } from '../store/editorStore/editorSelectors';
+import { getPendingLikes } from '../store/postsStore/postsSelectors';
+import { getFollowingList } from '../store/userStore/userSelectors';
+import { getBookmarks, getPendingBookmarks } from '../store/bookmarksStore/bookmarksSelectors';
+import { getPendingReblogs, getRebloggedList } from '../store/reblogStore/reblogSelectors';
+import { getVotePercent, getVotingPower } from '../store/settingsStore/settingsSelectors';
 
 @injectIntl
 @connect(

@@ -1,4 +1,4 @@
-import { getIsAppendLoading } from '../../reducers';
+import { getIsAppendLoading } from '../../store/appendStore/appendSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

@@ -1,4 +1,4 @@
-import { getIsMapModalOpen } from '../../reducers';
+import { getIsMapModalOpen } from '../../store/mapStore/mapSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

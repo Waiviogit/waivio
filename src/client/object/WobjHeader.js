@@ -20,8 +20,8 @@ import {
   getObjectName,
   parseWobjectField,
 } from '../helpers/wObjectHelper';
-import { followWobject, unfollowWobject } from './wobjActions';
-import { getIsWaivio } from '../reducers';
+import { followWobject, unfollowWobject } from '../store/wObjectStore/wobjActions';
+import { getIsWaivio } from '../store/appStore/appSelectors';
 
 import '../components/ObjectHeader.less';
 

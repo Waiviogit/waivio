@@ -7,14 +7,18 @@ import { debounce, get, isEmpty } from 'lodash';
 import { withRouter } from 'react-router-dom';
 
 import validateRules from '../../constants/validateRules';
-import { checkAvailableDomain, createNewWebsite, getParentDomainList } from '../../websiteActions';
+import {
+  checkAvailableDomain,
+  createNewWebsite,
+  getParentDomainList,
+} from '../../../store/websiteStore/websiteActions';
+
+import './CreateWebsite.less';
 import {
   getCreateWebsiteLoading,
   getDomainAvailableStatus,
   getParentDomain,
-} from '../../../reducers';
-
-import './CreateWebsite.less';
+} from '../../../store/websiteStore/websiteSelectors';
 
 export const CreateWebsite = ({
   intl,

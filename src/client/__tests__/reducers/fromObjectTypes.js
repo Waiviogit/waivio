@@ -1,4 +1,7 @@
-import { getObjectTypesList, getObjectTypesLoading } from '../../reducers';
+import {
+  getObjectTypesList,
+  getObjectTypesLoading,
+} from '../../store/objectTypesStore/objectTypesSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

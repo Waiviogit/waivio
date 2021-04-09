@@ -17,23 +17,23 @@ import {
   hasType,
 } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
-import { appendObject } from '../appendActions';
-import {
-  getBreadCrumbs,
-  getFollowingObjectsList,
-  getIsAppendLoading,
-  getLoadingFlag,
-  getLocale,
-  getWobjectNested,
-} from '../../reducers';
+import { appendObject } from '../../store/appendStore/appendActions';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { getObject } from '../../../waivioApi/ApiClient';
-import { setLoadedNestedWobject, setNestedWobject } from '../wobjActions';
+import { setLoadedNestedWobject, setNestedWobject } from '../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
+import CatalogWrap from '../Catalog/CatalogWrap';
+import { getFollowingObjectsList } from '../../store/userStore/userSelectors';
+import {
+  getBreadCrumbs,
+  getLoadingFlag,
+  getWobjectNested,
+} from '../../store/wObjectStore/wObjectSelectors';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import { getIsAppendLoading } from '../../store/appendStore/appendSelectors';
 
 import './ObjectOfTypePage.less';
-import CatalogWrap from '../Catalog/CatalogWrap';
 
 const ObjectOfTypePage = props => {
   const { isLoadingFlag } = props;

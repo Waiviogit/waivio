@@ -6,7 +6,8 @@ import { get } from 'lodash';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import BlacklistContent from './BlacklistContent';
-import { getBlacklist } from '../rewardsActions';
+import { getBlacklist } from '../../store/rewardsStore/rewardsActions';
+
 import './Blacklist.less';
 
 const Blacklist = ({ intl, userName, match }) => {

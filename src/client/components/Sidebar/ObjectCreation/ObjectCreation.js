@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import { Icon } from 'antd';
-import { getObjectTypes } from '../../../objectTypes/objectTypesActions';
-import { getObjectTypesList } from '../../../reducers';
+import { getObjectTypes } from '../../../store/objectTypesStore/objectTypesActions';
 import Loading from '../../Icon/Loading';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
+import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
+
 import './ObjectCreation.less';
 
 const objTypesLimit = 5;

@@ -1,5 +1,5 @@
-import usersReducer, { initialState } from '../usersReducer';
-import * as actions from '../usersActions';
+import usersReducer, { initialState } from '../../store/usersStore/usersReducer';
+import * as actions from '../../store/usersStore/usersActions';
 import {
   stateOnGetAccountError,
   stateOnGetAccountStart,

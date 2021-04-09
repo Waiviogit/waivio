@@ -4,10 +4,16 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { AutoComplete } from 'antd';
 import _ from 'lodash';
-import { clearSearchObjectsResults, searchUsersAutoCompete } from '../../search/searchActions';
-import { getIsStartSearchUser, getSearchUsersResults } from '../../reducers';
+import {
+  clearSearchObjectsResults,
+  searchUsersAutoCompete,
+} from '../../store/searchStore/searchActions';
 import Avatar from '../Avatar';
 import { pendingSearch } from '../../search/helpers';
+import {
+  getIsStartSearchUser,
+  getSearchUsersResults,
+} from '../../store/searchStore/searchSelectors';
 
 import './SearchUsersAutocomplete.less';
 

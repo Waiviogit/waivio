@@ -5,18 +5,18 @@ import React, { Component } from 'react';
 import { Icon, Col, Row } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { isEmpty, size } from 'lodash';
-import { getAlbums, getRelatedAlbum } from './galleryActions';
+import { getAlbums, getRelatedAlbum } from '../../store/galleryStore/galleryActions';
 import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
 import CreateAlbum from './CreateAlbum';
+import IconButton from '../../components/IconButton';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../store/authStore/authSelectors';
 import {
   getIsObjectAlbumsLoading,
   getObjectAlbums,
-  getIsAuthenticated,
   getRelatedPhotos,
-  getIsWaivio,
-} from '../../reducers';
-import IconButton from '../../components/IconButton';
+} from '../../store/galleryStore/gallerySelectors';
 
 import './ObjectGallery.less';
 

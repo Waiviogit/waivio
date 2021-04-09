@@ -3,18 +3,17 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import Loading from '../components/Icon/Loading';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 import {
-  getLoadingMoreUsersAccountHistory,
+  getAccountHistoryFilter,
   getCurrentDisplayedActions,
   getCurrentFilteredActions,
-  getAccountHistoryFilter,
+  getLoadingMoreUsersAccountHistory,
   getUserHasMoreAccountHistory,
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getUser,
   getUsersAccountHistory,
-} from '../reducers';
-import Loading from '../components/Icon/Loading';
+} from '../store/walletStore/walletSelectors';
 
 @withRouter
 @connect((state, ownProps) => ({

@@ -6,15 +6,15 @@ import { Button, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 
-import { getSettingsSite, getWebsiteLoading } from '../../../reducers';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import {
   getWebsiteSettings,
   referralUserForWebsite,
   saveWebsiteSettings,
-} from '../../websiteActions';
+} from '../../../store/websiteStore/websiteActions';
 import Loading from '../../../components/Icon/Loading';
+import { getSettingsSite, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
 
 import './WebsitesSettings.less';
 
@@ -96,7 +96,7 @@ const WebsitesSettings = ({
           <h3>
             {intl.formatMessage({
               id: 'google_analytic_tag',
-              defaultMessage: 'Google Analytics tracking code:',
+              defaultMessage: 'Google Analytics 4 property ID:',
             })}
           </h3>
           {getFieldDecorator('googleAnalyticsTag')(
@@ -105,7 +105,7 @@ const WebsitesSettings = ({
                 type="text"
                 placeholder={intl.formatMessage({
                   id: 'paste_tag_here',
-                  defaultMessage: 'Paste tag here',
+                  defaultMessage: 'Paste Measurement ID here',
                 })}
                 defaultValue={get(settings, 'googleAnalyticsTag')}
                 onChange={e => handleChange(e, 'googleAnalyticsTag')}
@@ -115,7 +115,8 @@ const WebsitesSettings = ({
           <p>
             {intl.formatMessage({
               id: 'website_performance',
-              defaultMessage: 'You can monitor website performance using Google Analytics.',
+              defaultMessage:
+                'You can monitor website performance using Google Analytics. Please note, that Google Measurement ID should look like G-XXXXXXX.',
             })}
           </p>
         </Form.Item>

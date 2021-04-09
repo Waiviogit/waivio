@@ -2,7 +2,6 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import 'beautiful-react-redux/patch';
 import { message } from 'antd';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
@@ -10,11 +9,11 @@ import Cookie from 'js-cookie';
 import steemConnectAPI from './steemConnectAPI';
 import { waivioAPI, sendSentryNotification } from '../waivioApi/ApiClient';
 import history from './history';
-import getStore from './store';
+import getStore from './store/store';
 import AppHost from './AppHost';
 import { getBrowserLocale, loadLanguage } from './translations';
-import { setScreenSize, setUsedLocale } from './app/appActions';
-import { getLocale } from './reducers';
+import { setScreenSize, setUsedLocale } from './store/appStore/appActions';
+import { getLocale } from './store/settingsStore/settingsSelectors';
 
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   navigator.serviceWorker.register('/service-worker.js');

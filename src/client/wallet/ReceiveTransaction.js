@@ -5,9 +5,9 @@ import classNames from 'classnames';
 import { FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
-import { getAuthenticatedUserName } from '../reducers';
 import { epochToUTC } from '../helpers/formatter';
 import { getTransactionDescription, validateGuestTransferTitle } from './WalletHelper';
+import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 const ReceiveTransaction = ({
   from,

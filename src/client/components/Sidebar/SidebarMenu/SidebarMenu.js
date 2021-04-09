@@ -4,8 +4,11 @@ import PropTypes from 'prop-types';
 import { mapValues } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
-import { getIsAuthenticated, getAuthenticatedUserName } from '../../../reducers';
-import { getObject } from '../../../object/wobjectsActions';
+import { getObject } from '../../../store/wObjectStore/wobjectsActions';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 
 import './SidebarMenu.less';
 

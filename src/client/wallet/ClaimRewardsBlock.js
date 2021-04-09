@@ -5,10 +5,10 @@ import { startCase } from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { message } from 'antd';
 import SteemConnect from '../steemConnectAPI';
-import { getAuthenticatedUser } from '../reducers';
-import { getUserAccountHistory } from './walletActions';
-import { reload } from '../auth/authActions';
+import { getUserAccountHistory } from '../store/walletStore/walletActions';
+import { reload } from '../store/authStore/authActions';
 import Action from '../components/Button/Action';
+import { getAuthenticatedUser } from '../store/authStore/authSelectors';
 
 import './ClaimRewardsBlock.less';
 import '../components/Sidebar/SidebarContentBlock.less';

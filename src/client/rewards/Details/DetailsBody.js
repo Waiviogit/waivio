@@ -7,7 +7,9 @@ import { isEmpty, get } from 'lodash';
 import { Checkbox } from 'antd';
 import getDetailsMessages from './detailsMessagesData';
 import DetailsPostRequirments from './DetailsPostRequirments';
-import { getWeightValue, getIsAuthenticated } from '../../reducers';
+import { getWeightValue } from '../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../store/authStore/authSelectors';
+
 import './Details.less';
 
 const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, minExpertise }) => {

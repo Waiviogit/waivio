@@ -12,14 +12,16 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import listofObjTypesWithAlbum from '../../../common/constants/listofObjTypesWithAlbum';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
-import { getSuitableLanguage, getObjectTypesList, getAuthenticatedUserName } from '../../reducers';
+import { getSuitableLanguage } from '../../store/reducers';
 import { notify } from '../../app/Notification/notificationActions';
-import { getObjectTypes } from '../../objectTypes/objectTypesActions';
-import { appendObject } from '../../object/appendActions';
-import { createWaivioObject } from '../../object/wobjectsActions';
-import { addAlbumToStore } from '../../object/ObjectGallery/galleryActions';
+import { getObjectTypes } from '../../store/objectTypesStore/objectTypesActions';
+import { appendObject } from '../../store/appendStore/appendActions';
+import { createWaivioObject } from '../../store/wObjectStore/wobjectsActions';
+import { addAlbumToStore } from '../../store/galleryStore/galleryActions';
 import DEFAULTS from '../../object/const/defaultValues';
 import { getAppendData, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getObjectTypesList } from '../../store/objectTypesStore/objectTypesSelectors';
 
 import './CreateObject.less';
 

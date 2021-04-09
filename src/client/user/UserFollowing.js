@@ -6,14 +6,15 @@ import { connect } from 'react-redux';
 import UserDynamicList from './UserDynamicList';
 import { getFollowingsFromAPI, getWobjectFollowing } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
+import { notify } from '../app/Notification/notificationActions';
 import {
   getAuthenticatedUserName,
-  getUser,
-  isGuestUser,
   getAuthorizationUserFollowSort,
-  getLocale,
-} from '../reducers';
-import { notify } from '../app/Notification/notificationActions';
+  isGuestUser,
+} from '../store/authStore/authSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
+import { getLocale } from '../store/settingsStore/settingsSelectors';
+
 import './UserFollowing.less';
 
 const TabPane = Tabs.TabPane;

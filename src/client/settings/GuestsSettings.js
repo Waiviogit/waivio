@@ -3,22 +3,24 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Modal } from 'antd';
-import {
-  getIsReloading,
-  getIsSettingsLoading,
-  getRewriteLinks,
-  getAuthenticatedUserName,
-  getHiveBeneficiaryAccount,
-  getAuthenticatedUserPrivateEmail,
-} from '../reducers';
-import { saveSettings } from './settingsActions';
-import { reload } from '../auth/authActions';
+import { saveSettings } from '../store/settingsStore/settingsActions';
+import { reload } from '../store/authStore/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Loading from '../components/Icon/Loading';
 import requiresLogin from '../auth/requiresLogin';
 import LinkHiveAccountModal from './LinkHiveAccountModal';
 import EmailConfirmation from '../widgets/EmailConfirmation';
-import { getUserPrivateEmail } from '../user/usersActions';
+import { getUserPrivateEmail } from '../store/usersStore/usersActions';
+import {
+  getAuthenticatedUserName,
+  getAuthenticatedUserPrivateEmail,
+  getIsReloading,
+} from '../store/authStore/authSelectors';
+import {
+  getHiveBeneficiaryAccount,
+  getIsSettingsLoading,
+  getRewriteLinks,
+} from '../store/settingsStore/settingsSelectors';
 
 import './Settings.less';
 

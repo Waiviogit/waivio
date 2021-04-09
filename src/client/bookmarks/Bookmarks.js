@@ -3,19 +3,22 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { getFeed, getPosts, getPendingBookmarks, getIsReloading } from '../reducers';
 import Feed from '../feed/Feed';
 import {
   getFeedFromState,
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
 } from '../helpers/stateHelpers';
-import { reload } from '../auth/authActions';
-import { getBookmarks } from '../feed/feedActions';
-import { showPostModal } from '../app/appActions';
+import { reload } from '../store/authStore/authActions';
+import { getBookmarks } from '../store/feedStore/feedActions';
+import { showPostModal } from '../store/appStore/appActions';
 import requiresLogin from '../auth/requiresLogin';
 import PostModal from '../post/PostModalContainer';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import { getIsReloading } from '../store/authStore/authSelectors';
+import { getPosts } from '../store/postsStore/postsSelectors';
+import { getFeed } from '../store/feedStore/feedSelectors';
+import { getPendingBookmarks } from '../store/bookmarksStore/bookmarksSelectors';
 
 @requiresLogin
 @injectIntl

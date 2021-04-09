@@ -12,22 +12,22 @@ import {
   searchObjectsAutoCompete,
   searchObjectTypesAutoCompete,
   searchUsersAutoCompete,
-} from '../../search/searchActions';
-import {
-  getIsStartSearchAutoComplete,
-  getAutoCompleteSearchResults,
-  getSearchObjectsResults,
-  getSearchUsersResults,
-  searchObjectTypesResults,
-} from '../../reducers';
+} from '../../store/searchStore/searchActions';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
 import { getObjectName } from '../../helpers/wObjectHelper';
-import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
+import { setFiltersAndLoad } from '../../store/objectTypeStore/objectTypeActions';
 import HeaderButton from '../HeaderButton/HeaderButton';
 import { getTranformSearchCountData, pendingSearch } from '../../search/helpers';
 import UserSearchItem from '../../search/SearchItems/UserSearchItem';
 import ObjectSearchItem from '../../search/SearchItems/ObjectSearchItem';
+import {
+  getAutoCompleteSearchResults,
+  getIsStartSearchAutoComplete,
+  getSearchObjectsResults,
+  getSearchUsersResults,
+  searchObjectTypesResults,
+} from '../../store/searchStore/searchSelectors';
 
 import './Topnav.less';
 

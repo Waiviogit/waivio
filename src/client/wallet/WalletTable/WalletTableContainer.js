@@ -7,25 +7,6 @@ import { get, size, isEmpty, filter } from 'lodash';
 import moment from 'moment';
 
 import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getTableOperationNum,
-  getTableTransactions,
-  getTotalVestingFundSteem,
-  getTotalVestingShares,
-  getTransactions,
-  getUser,
-  getUserHasMoreTable,
-  getUsersTransactions,
-  getIsloadingMoreTableTransactions,
-  getLoadingMoreUsersAccountHistory,
-  getUsersAccountHistory,
-  hasMoreGuestActions,
-  getIsErrorLoadingTable,
-  getIsloadingTableTransactions,
-  getLocale,
-} from '../../reducers';
-import {
   openWalletTable,
   closeWalletTable,
   getUserTableTransactionHistory,
@@ -34,7 +15,7 @@ import {
   getMoreUserAccountHistory,
   clearTransactionsHistory,
   getUserAccountHistory,
-} from '../walletActions';
+} from '../../store/walletStore/walletActions';
 import {
   getDataDemoTransactions,
   handleLoadMoreTransactions,
@@ -43,6 +24,27 @@ import {
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import TableFilter from './TableFilter';
 import WalletTable from './WalletTable';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
+import {
+  getIsErrorLoadingTable,
+  getIsloadingMoreTableTransactions,
+  getIsloadingTableTransactions,
+  getLoadingMoreUsersAccountHistory,
+  getTableOperationNum,
+  getTableTransactions,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+  getTransactions,
+  getUserHasMoreTable,
+  getUsersAccountHistory,
+  getUsersTransactions,
+  hasMoreGuestActions,
+} from '../../store/walletStore/walletSelectors';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
 
 import './WalletTable.less';
 

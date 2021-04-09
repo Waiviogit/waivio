@@ -121,4 +121,5 @@ export default {
   RedirectedSignIn: loableComponent(
     import(`../../client/components/Navigation/redirectedSignIn/RedirectedSignIn`),
   ),
+  VipTicketsSetting: loableComponent(import(`../../client/settings/Viptickets/VipTicketsSetting`)),
 };

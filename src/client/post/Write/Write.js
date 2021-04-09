@@ -14,18 +14,16 @@ import LastDraftsContainer from './LastDraftsContainer';
 import DeleteDraftModal from './DeleteDraftModal';
 import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 
+import { createPost, saveDraft, newPost } from '../../store/editorStore/editorActions';
+import Editor from '../../components/Editor/Editor';
+import Affix from '../../components/Utils/Affix';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import {
-  getAuthenticatedUser,
   getDraftPosts,
   getIsEditorLoading,
   getIsEditorSaving,
-  getUpvoteSetting,
-  getRewardSetting,
-} from '../../reducers';
-
-import { createPost, saveDraft, newPost } from './editorActions';
-import Editor from '../../components/Editor/Editor';
-import Affix from '../../components/Utils/Affix';
+} from '../../store/editorStore/editorSelectors';
+import { getRewardSetting, getUpvoteSetting } from '../../store/settingsStore/settingsSelectors';
 
 @injectIntl
 @withRouter

@@ -3,19 +3,21 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getCurrentFeesValue, getCurrentOfferPercent } from '../ReferralHelper';
+import { getUserReferralDetails } from '../../../store/referralStore/ReferralActions';
+import ReferralDetailsView from './ReferralDetailsView';
 import {
   getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
+import {
   getCampaignServerPercent,
   getIndexAbsolutePercent,
   getIndexServerPercent,
-  getIsAuthenticated,
   getIsStartLoadingReferralDetails,
   getReferralDuration,
   getReferralServerPercent,
   getSuspendedTimer,
-} from '../../../reducers';
-import { getUserReferralDetails } from '../ReferralActions';
-import ReferralDetailsView from './ReferralDetailsView';
+} from '../../../store/referralStore/referralSelectors';
 
 import './ReferralDetails.less';
 

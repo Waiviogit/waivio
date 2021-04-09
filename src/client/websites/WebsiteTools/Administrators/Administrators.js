@@ -7,16 +7,16 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 
-import { getAdministrators, getWebsiteLoading } from '../../../reducers';
 import {
   addWebAdministrator,
   deleteWebAdministrator,
   getWebAdministrators,
-} from '../../websiteActions';
+} from '../../../store/websiteStore/websiteActions';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import Avatar from '../../../components/Avatar';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import WeightTag from '../../../components/WeightTag';
+import { getAdministrators, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
 
 import './Administrators.less';
 

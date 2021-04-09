@@ -21,20 +21,8 @@ import {
 } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getReviewCheckInfo } from '../../../waivioApi/ApiClient';
-import {
-  getAuthenticatedUser,
-  getDraftPosts,
-  getIsEditorLoading,
-  getIsEditorSaving,
-  getIsImageUploading,
-  getUpvoteSetting,
-  getSuitableLanguage,
-  isGuestUser,
-  getBeneficiariesUsers,
-  getCurrentHost,
-  getIsWaivio,
-} from '../../reducers';
-import { createPost, saveDraft } from '../Write/editorActions';
+import { getSuitableLanguage } from '../../store/reducers';
+import { createPost, saveDraft } from '../../store/editorStore/editorActions';
 import { createPostMetadata, getInitialState, getObjectUrl } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
@@ -46,6 +34,16 @@ import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import { getCurrentHost, getIsWaivio } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';
+import {
+  getDraftPosts,
+  getIsEditorLoading,
+  getIsEditorSaving,
+  getIsImageUploading,
+} from '../../store/editorStore/editorSelectors';
+import { getUpvoteSetting } from '../../store/settingsStore/settingsSelectors';
+import { getBeneficiariesUsers } from '../../store/searchStore/searchSelectors';
 
 import './EditPost.less';
 

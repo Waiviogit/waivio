@@ -5,8 +5,9 @@ import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { getAuthenticatedUser } from '../../reducers';
 import { PATH_NAME_DISCOVER } from '../../../common/constants/rewards';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+
 import './TopNavigation.less';
 
 const LINKS = {

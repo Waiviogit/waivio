@@ -4,23 +4,25 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  getAutoCompleteSearchResults,
-  getIsAuthenticated,
-  isGuestUser,
-  getHasReceivables,
-  getCountTookPartCampaigns,
-  getCreatedCampaignsCount,
-  getAuthenticatedUserName,
-  getIsWaivio,
-  getExpiredPayment,
-} from '../../reducers';
-import {
   MESSAGES,
   HISTORY,
   PATH_NAME_HISTORY,
   FRAUD_DETECTION,
 } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../store/authStore/authSelectors';
+import { getAutoCompleteSearchResults } from '../../store/searchStore/searchSelectors';
+import {
+  getCountTookPartCampaigns,
+  getCreatedCampaignsCount,
+  getExpiredPayment,
+  getHasReceivables,
+} from '../../store/rewardsStore/rewardsSelectors';
 
 import './Sidenav.less';
 
@@ -332,7 +334,7 @@ export default class SidenavRewards extends React.Component {
                           activeClassName="Sidenav__item--active"
                         >
                           {intl.formatMessage({
-                            id: FRAUD_DETECTION,
+                            id: 'fraud_detection',
                             defaultMessage: 'Fraud detection',
                           })}
                         </NavLink>

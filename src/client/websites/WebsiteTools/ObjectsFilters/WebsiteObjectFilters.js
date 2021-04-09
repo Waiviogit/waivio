@@ -6,10 +6,13 @@ import { get, isArray, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 
-import { getTagsSite, getWebsiteLoading } from '../../../reducers';
-import { getWebsiteTags, saveTagsCategoryForSite } from '../../websiteActions';
+import {
+  getWebsiteTags,
+  saveTagsCategoryForSite,
+} from '../../../store/websiteStore/websiteActions';
 import TagsSelector from '../../../components/TagsSelector/TagsSelector';
 import Loading from '../../../components/Icon/Loading';
+import { getTagsSite, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
 
 import './WebsiteObjectFilters.less';
 

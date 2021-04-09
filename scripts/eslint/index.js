@@ -14,6 +14,7 @@ const onlyChanged = process.argv[2] !== 'all';
 function lintFiles() {
   const cli = new CLIEngine({
     configFile: `${__dirname}/eslintrc.js`,
+    errorOnUnmatchedPattern: false,
   });
   const formatter = cli.getFormatter();
 
