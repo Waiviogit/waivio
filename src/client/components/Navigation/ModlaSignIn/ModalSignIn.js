@@ -7,9 +7,13 @@ import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { login, busyLogin, getAuthGuestBalance } from '../../../store/authStore/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
-import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
+import {
+  getFollowing,
+  getFollowingObjects,
+  getNotifications,
+} from '../../../store/userStore/userActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
-import { getRebloggedList } from '../../../app/Reblog/reblogActions';
+import { getRebloggedList } from '../../../store/reblogStore/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';

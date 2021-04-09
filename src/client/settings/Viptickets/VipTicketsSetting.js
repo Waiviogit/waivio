@@ -5,16 +5,7 @@ import { Input, InputNumber, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { isNumber, debounce, isEmpty, size } from 'lodash';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
-import {
-  getActiveTickets,
-  getConsumedTickets,
-  getShowMoreActiveTickets,
-  getShowMoreConsumedTickets,
-  getTicketsPrice,
-} from '../../store/reducers';
-import { addNoteInTicket, getMoreVipTickets, getVipTickets } from '../settingsActions';
 import Transfer from '../../wallet/Transfer/Transfer';
-import { openTransfer } from '../../wallet/walletActions';
 import CopyButton from '../../widgets/CopyButton/CopyButton';
 import Loading from '../../components/Icon/Loading';
 import {
@@ -22,6 +13,19 @@ import {
   configActiveVipTicketTableHeader,
   configCreateAccountsTableHeader,
 } from '../common/tablesConfig';
+import {
+  addNoteInTicket,
+  getMoreVipTickets,
+  getVipTickets,
+} from '../../store/settingsStore/settingsActions';
+import { openTransfer } from '../../store/walletStore/walletActions';
+import {
+  getActiveTickets,
+  getConsumedTickets,
+  getShowMoreActiveTickets,
+  getShowMoreConsumedTickets,
+  getTicketsPrice,
+} from '../../store/settingsStore/settingsSelectors';
 
 import './VipTicketsSetting.less';
 

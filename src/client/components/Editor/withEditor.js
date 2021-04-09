@@ -8,7 +8,7 @@ import { injectIntl } from 'react-intl';
 import { getSuitableLanguage } from '../../store/reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import * as api from '../../../waivioApi/ApiClient';
-import { voteObject, followObject } from '../../object/wobjActions';
+import { voteObject, followObject } from '../../store/wObjectStore/wobjActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
 import { generateRandomString } from '../../helpers/wObjectHelper';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';

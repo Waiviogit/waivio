@@ -10,7 +10,7 @@ import Action from '../components/Button/Action';
 import requiresLogin from '../auth/requiresLogin';
 import { saveNotificationsSettings } from '../helpers/metadata';
 import { notificationType } from '../../common/constants/waivio';
-import { updateUserMetadata } from '../user/usersActions';
+import { updateUserMetadata } from '../store/usersStore/usersActions';
 import {
   getAuthenticatedUserName,
   getAuthenticatedUserNotificationsSettings,

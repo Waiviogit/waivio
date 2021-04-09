@@ -10,7 +10,7 @@ import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import { getFacebookShareURL, getTwitterShareURL } from '../../helpers/socialProfiles';
 import { isPostCashout } from '../../vendor/steemitHelpers';
-import { getSocialInfoPost as getSocialInfoPostAction } from '../../post/postActions';
+import { getSocialInfoPost as getSocialInfoPostAction } from '../../store/postsStore/postActions';
 import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 
 import './PostPopoverMenu.less';

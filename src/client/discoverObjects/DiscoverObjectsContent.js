@@ -12,19 +12,6 @@ import {
   updateActiveTagsFilters,
 } from './helper';
 import {
-  getActiveFilters,
-  getObjectTypeSorting,
-  getObjectTypeState,
-  getObjectTypeLoading,
-  getFilteredObjects,
-  getHasMoreRelatedObjects,
-  getAvailableFilters,
-  getHasMap,
-  getIsMapModalOpen,
-  getFiltersTags,
-  getActiveFiltersTags,
-} from '../store/reducers';
-import {
   getObjectTypeByStateFilters,
   clearType,
   setFiltersAndLoad,
@@ -33,8 +20,8 @@ import {
   setActiveFilters,
   setTagsFiltersAndLoad,
   setActiveTagsFilters,
-} from '../objectTypes/objectTypeActions';
-import { setMapFullscreenMode } from '../components/Maps/mapActions';
+} from '../store/objectTypeStore/objectTypeActions';
+import { setMapFullscreenMode } from '../store/mapStore/mapActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
@@ -44,12 +31,29 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import Campaign from '../rewards/Campaign/Campaign';
 import Proposition from '../rewards/Proposition/Proposition';
-import { assignProposition, declineProposition, getCoordinates } from '../user/userActions';
+import {
+  assignProposition,
+  declineProposition,
+  getCoordinates,
+} from '../store/userStore/userActions';
 import * as apiConfig from '../../waivioApi/config.json';
 import { RADIUS, ZOOM } from '../../common/constants/map';
 import { getCryptoPriceHistory } from '../store/appStore/appActions';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import {
+  getActiveFilters,
+  getActiveFiltersTags,
+  getAvailableFilters,
+  getFilteredObjects,
+  getFiltersTags,
+  getHasMap,
+  getHasMoreRelatedObjects,
+  getObjectTypeLoading,
+  getObjectTypeSorting,
+  getObjectTypeState,
+} from '../store/objectTypeStore/objectTypeSelectors';
+import { getIsMapModalOpen } from '../store/mapStore/mapSelectors';
 
 const modalName = {
   FILTERS: 'filters',

@@ -9,6 +9,21 @@ import { ReactSVG } from 'react-svg';
 
 import UserCard from '../../components/UserCard';
 import ObjectCardView from '../../objectCard/ObjectCardView';
+import { getActiveItemClassList } from '../helpers';
+import {
+  followSearchUser,
+  searchObjectsAutoCompeteLoadingMore,
+  searchUsersAutoCompeteLoadingMore,
+  setShowSearchResult,
+  setWebsiteSearchFilter,
+  setWebsiteSearchType,
+  unfollowSearchUser,
+} from '../../store/searchStore/searchActions';
+import Loading from '../../components/Icon/Loading';
+import Campaign from '../../rewards/Campaign/Campaign';
+import Proposition from '../../rewards/Proposition/Proposition';
+import { assignProposition, declineProposition } from '../../store/userStore/userActions';
+import ViewMapButton from '../../widgets/ViewMapButton';
 import {
   getAllSearchLoadingMore,
   getHasMoreObjectsForWebsite,
@@ -21,22 +36,7 @@ import {
   getWebsiteSearchResult,
   getWebsiteSearchResultLoading,
   getWebsiteSearchString,
-} from '../../store/reducers';
-import { getActiveItemClassList } from '../helpers';
-import {
-  followSearchUser,
-  searchObjectsAutoCompeteLoadingMore,
-  searchUsersAutoCompeteLoadingMore,
-  setShowSearchResult,
-  setWebsiteSearchFilter,
-  setWebsiteSearchType,
-  unfollowSearchUser,
-} from '../searchActions';
-import Loading from '../../components/Icon/Loading';
-import Campaign from '../../rewards/Campaign/Campaign';
-import Proposition from '../../rewards/Proposition/Proposition';
-import { assignProposition, declineProposition } from '../../user/userActions';
-import ViewMapButton from '../../widgets/ViewMapButton';
+} from '../../store/searchStore/searchSelectors';
 
 import './SearchAllResult.less';
 

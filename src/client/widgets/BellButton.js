@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 
-import { bellNotifications } from '../user/userActions';
-import { wobjectBellNotification } from '../object/wobjActions';
+import { bellNotifications } from '../store/userStore/userActions';
+import { wobjectBellNotification } from '../store/wObjectStore/wobjActions';
 import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 import './widgetsStyle.less';

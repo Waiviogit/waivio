@@ -7,8 +7,7 @@ import { ceil, get, upperFirst, debounce } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import store from 'store';
 
-import { getStatusWithdraw } from '../../store/reducers';
-import { closeWithdraw } from '../walletActions';
+import { closeWithdraw } from '../../store/walletStore/walletActions';
 import QrModal from '../../widgets/QrModal';
 import { estimateAmount, validaveCryptoWallet } from '../../../waivioApi/ApiClient';
 import EmailConfirmation from '../../widgets/EmailConfirmation';
@@ -17,9 +16,10 @@ import {
   CRYPTO_LIST_FOR_WALLET,
 } from '../../../common/constants/waivio';
 import { HIVE } from '../../../common/constants/cryptos';
-import { getUserPrivateEmail } from '../../user/usersActions';
+import { getUserPrivateEmail } from '../../store/usersStore/usersActions';
 import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';
+import { getStatusWithdraw } from '../../store/walletStore/walletSelectors';
 
 import './Withdraw.less';
 

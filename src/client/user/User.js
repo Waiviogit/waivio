@@ -5,16 +5,8 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import {
-  getAllUsers,
-  getIsOpenWalletTable,
-  getIsUserFailed,
-  getIsUserLoaded,
-  getUser,
-  getUsersAccountHistory,
-} from '../store/reducers';
-import { getUserAccountHistory, openTransfer } from '../wallet/walletActions';
-import { getUserAccount } from './usersActions';
+import { getUserAccountHistory, openTransfer } from '../store/walletStore/walletActions';
+import { getUserAccount } from '../store/usersStore/usersActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
 import UserHero from './UserHero';
@@ -33,6 +25,13 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
 } from '../store/authStore/authSelectors';
+import {
+  getAllUsers,
+  getIsUserFailed,
+  getIsUserLoaded,
+  getUser,
+} from '../store/usersStore/usersSelectors';
+import { getIsOpenWalletTable, getUsersAccountHistory } from '../store/walletStore/walletSelectors';
 
 @connect(
   (state, ownProps) => ({

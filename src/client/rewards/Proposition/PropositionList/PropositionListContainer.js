@@ -5,12 +5,12 @@ import { withRouter } from 'react-router-dom';
 import { filter, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { message } from 'antd';
-import { getLocale } from '../../../store/reducers';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
-import { assignProposition, declineProposition } from '../../../user/userActions';
+import { assignProposition, declineProposition } from '../../../store/userStore/userActions';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 
 const PropositionListContainer = ({
   wobject,

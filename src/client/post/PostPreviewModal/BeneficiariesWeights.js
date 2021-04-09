@@ -5,9 +5,12 @@ import { FormattedMessage } from 'react-intl';
 import { Icon, Progress, Slider } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import BeneficiariesFindUsers from './BeneficiariesFindUsers';
-import { getBeneficiariesUsers } from '../../store/reducers';
-import { updateBeneficiariesUsers, removeBeneficiariesUsers } from '../../search/searchActions';
+import {
+  updateBeneficiariesUsers,
+  removeBeneficiariesUsers,
+} from '../../store/searchStore/searchActions';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { getBeneficiariesUsers } from '../../store/searchStore/searchSelectors';
 
 import './AdvanceSettings.less';
 

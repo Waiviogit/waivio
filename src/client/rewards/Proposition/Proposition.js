@@ -9,7 +9,6 @@ import { withRouter } from 'react-router';
 
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
-import { getCommentContent, getIsOpenWriteReviewModal } from '../../store/reducers';
 import {
   ASSIGNED,
   GUIDE_HISTORY,
@@ -23,7 +22,7 @@ import {
   reserveActivatedCampaign,
   getCurrentHivePrice,
 } from '../../../waivioApi/ApiClient';
-import { removeToggleFlag } from '../rewardsActions';
+import { removeToggleFlag } from '../../store/rewardsStore/rewardsActions';
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
@@ -34,6 +33,8 @@ import {
   setSessionData,
 } from '../rewardsHelper';
 import { getAuthenticatedUser, getIsAuthenticated } from '../../store/authStore/authSelectors';
+import { getCommentContent } from '../../store/commentsStore/commentsSelectors';
+import { getIsOpenWriteReviewModal } from '../../store/rewardsStore/rewardsSelectors';
 
 import './Proposition.less';
 

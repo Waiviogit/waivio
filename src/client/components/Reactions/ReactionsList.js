@@ -8,7 +8,7 @@ import { FormattedMessage, FormattedNumber } from 'react-intl';
 import UserCard from '../UserCard';
 import USDDisplay from '../Utils/USDDisplay';
 import { checkFollowing } from '../../../waivioApi/ApiClient';
-import { followUser, unfollowUser } from '../../user/usersActions';
+import { followUser, unfollowUser } from '../../store/usersStore/usersActions';
 import { getIsAuthenticated } from '../../store/authStore/authSelectors';
 
 import './ReactionsList.less';

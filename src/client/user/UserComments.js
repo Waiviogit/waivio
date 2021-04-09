@@ -4,16 +4,17 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import Feed from '../feed/Feed';
 import PostModal from '../post/PostModalContainer';
-import { getFeed, getUser } from '../store/reducers';
 import {
   getFeedFromState,
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
 } from '../helpers/stateHelpers';
 import { showPostModal } from '../store/appStore/appActions';
-import { getUserComments, getMoreUserComments } from '../feed/feedActions';
+import { getUserComments, getMoreUserComments } from '../store/feedStore/feedActions';
 import EmptyMutedUserProfile from '../statics/MutedContent';
 import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
+import { getFeed } from '../store/feedStore/feedSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
 
 @connect(
   (state, ownProps) => ({

@@ -10,13 +10,12 @@ import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
 import { findLanguage, getRequestLocale, loadLanguage } from './translations';
-import { getLocale, getNightmode, getIsOpenWalletTable } from './store/reducers';
 import {
   login,
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './store/authStore/authActions';
-import { getNotifications } from './user/userActions';
+import { getNotifications } from './store/userStore/userActions';
 import {
   getRate,
   getRewardFund,
@@ -30,7 +29,7 @@ import { guestUserRegex } from './helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
-import { getWebsiteObjWithCoordinates } from './websites/websiteActions';
+import { getWebsiteObjWithCoordinates } from './store/websiteStore/websiteActions';
 import { getTranslations, getUsedLocale } from './store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
@@ -38,6 +37,8 @@ import {
   getIsAuthenticated,
   getIsAuthFetching,
 } from './store/authStore/authSelectors';
+import { getIsOpenWalletTable } from './store/walletStore/walletSelectors';
+import { getLocale, getNightmode } from './store/settingsStore/settingsSelectors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 

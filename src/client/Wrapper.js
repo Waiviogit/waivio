@@ -11,13 +11,12 @@ import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
 import { findLanguage, getRequestLocale, loadLanguage } from './translations';
-import { getLocale, getNightmode, getIsOpenWalletTable } from './store/reducers';
 import {
   login,
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './store/authStore/authActions';
-import { getNotifications } from './user/userActions';
+import { getNotifications } from './store/userStore/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
@@ -26,7 +25,7 @@ import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
-import { handleRefAuthUser } from './rewards/ReferralProgram/ReferralActions';
+import { handleRefAuthUser } from './store/referralStore/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
 import {
   getSessionData,
@@ -43,6 +42,8 @@ import {
   getIsAuthFetching,
   isGuestUser,
 } from './store/authStore/authSelectors';
+import { getIsOpenWalletTable } from './store/walletStore/walletSelectors';
+import { getLocale, getNightmode } from './store/settingsStore/settingsSelectors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 

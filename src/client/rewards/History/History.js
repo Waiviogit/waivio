@@ -5,14 +5,11 @@ import { get, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import FilteredRewardsList from '../FilteredRewardsList';
-import { getBlacklist, getMoreRewardsHistory, getRewardsHistory } from '../rewardsActions';
 import {
-  getCampaignNames,
-  getHasMoreHistory,
-  getHistoryCampaigns,
-  getHistorySponsors,
-  getIsLoadingRewardsHistory,
-} from '../../store/reducers';
+  getBlacklist,
+  getMoreRewardsHistory,
+  getRewardsHistory,
+} from '../../store/rewardsStore/rewardsActions';
 import {
   REWARDS_TYPES_MESSAGES,
   CAMPAIGNS_TYPES_MESSAGES,
@@ -21,6 +18,13 @@ import {
 } from '../../../common/constants/rewards';
 import { pathNameHistoryNotify } from '../rewardsHelper';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import {
+  getCampaignNames,
+  getHasMoreHistory,
+  getHistoryCampaigns,
+  getHistorySponsors,
+  getIsLoadingRewardsHistory,
+} from '../../store/rewardsStore/rewardsSelectors';
 
 const History = ({
   intl,

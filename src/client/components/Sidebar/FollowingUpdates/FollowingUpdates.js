@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
-import * as store from '../../../store/reducers';
 import {
   getFollowingObjectsUpdatesMore,
   getFollowingUpdates,
   getFollowingUsersUpdatesMore,
-} from '../../../user/userActions';
+} from '../../../store/userStore/userActions';
 import SidebarMenu from '../SidebarMenu/SidebarMenu';
 import Loading from '../../Icon/Loading';
 import { getObjectName } from '../../../helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import * as userSelectors from '../../../store/userStore/userSelectors';
 
 const itemsCount = 5;
 const usersSection = 'People';
@@ -70,7 +70,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
 const FollowingUpdates = () => {
   // redux store
   const dispatch = useDispatch();
-  const followingUpdates = useSelector(store.getFollowingUpdates);
+  const followingUpdates = useSelector(userSelectors.getFollowingUpdates);
   const userName = useSelector(getAuthenticatedUserName);
 
   // local state

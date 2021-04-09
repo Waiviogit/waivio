@@ -6,13 +6,14 @@ import { connect } from 'react-redux';
 import UserDynamicList from './UserDynamicList';
 import { getFollowingsFromAPI, getWobjectFollowing } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
-import { getUser, getLocale } from '../store/reducers';
 import { notify } from '../app/Notification/notificationActions';
 import {
   getAuthenticatedUserName,
   getAuthorizationUserFollowSort,
   isGuestUser,
 } from '../store/authStore/authSelectors';
+import { getUser } from '../store/usersStore/usersSelectors';
+import { getLocale } from '../store/settingsStore/settingsSelectors';
 
 import './UserFollowing.less';
 

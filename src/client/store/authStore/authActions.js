@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { addNewNotification } from '../appStore/appActions';
-import { getFollowing } from '../../user/userActions';
+import { getFollowing } from '../userStore/userActions';
 import { BUSY_API_TYPES } from '../../../common/constants/notifications';
 import { setToken } from '../../helpers/getToken';
 import {

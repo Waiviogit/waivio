@@ -41,16 +41,7 @@ import {
   formFormFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
-import {
-  getFollowingObjectsList,
-  getObject,
-  getRatingFields,
-  getSuitableLanguage,
-  getVotePercent,
-  getVotingPower,
-  getObjectTagCategory,
-  getObjectAlbums,
-} from '../../store/reducers';
+import { getSuitableLanguage } from '../../store/reducers';
 import LANGUAGES from '../../translations/languages';
 import { PRIMARY_COLOR } from '../../../common/constants/waivio';
 import { getLanguageText } from '../../translations';
@@ -72,11 +63,11 @@ import {
   getFormItems,
   getNewsFilterItems,
 } from '../../helpers/wObjectHelper';
-import { appendObject } from '../appendActions';
+import { appendObject } from '../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
 import { getVoteValue } from '../../helpers/user';
 import { getExposedFieldsByObjType, sortListItemsBy } from '../wObjectHelper';
-import { rateObject } from '../wobjActions';
+import { rateObject } from '../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -93,8 +84,16 @@ import {
   objectNameValidationRegExp,
   blogNameValidationRegExp,
 } from '../../../common/constants/validation';
-import { addAlbumToStore, addImageToAlbumStore } from '../ObjectGallery/galleryActions';
+import { addAlbumToStore, addImageToAlbumStore } from '../../store/galleryStore/galleryActions';
 import { getRate, getRewardFund, getScreenSize } from '../../store/appStore/appSelectors';
+import { getFollowingObjectsList } from '../../store/userStore/userSelectors';
+import {
+  getObject,
+  getObjectTagCategory,
+  getRatingFields,
+} from '../../store/wObjectStore/wObjectSelectors';
+import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
+import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
 
 import './AppendForm.less';
 

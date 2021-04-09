@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { FormattedNumber } from 'react-intl';
 import { LineChart } from 'react-easy-chart';
-import { getLocale } from '../../store/reducers';
 import { getCryptoDetails, getCurrentDaysOfTheWeek } from '../../helpers/cryptosHelper';
 import USDDisplay from '../Utils/USDDisplay';
 import Loading from '../Icon/Loading';
 import { getCryptosPriceHistory, getIsMobile } from '../../store/appStore/appSelectors';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
 
 @connect(state => ({
   cryptosPriceHistory: getCryptosPriceHistory(state),

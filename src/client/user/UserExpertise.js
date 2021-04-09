@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { connect } from 'react-redux';
 
-import { getLocale, getUser } from '../store/reducers';
 import { getExpertiseCounters, getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
+import { getUser } from '../store/usersStore/usersSelectors';
+import { getLocale } from '../store/settingsStore/settingsSelectors';
 
 import './UserExpertise.less';
 

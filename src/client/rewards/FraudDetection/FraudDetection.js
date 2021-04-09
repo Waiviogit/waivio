@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { get, map, size } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { getHasMoreFraudSuspicionData, getFraudSuspicionDataState } from '../../store/reducers';
-import { getBlacklist, getFraudSuspicion } from '../rewardsActions';
+import { getBlacklist, getFraudSuspicion } from '../../store/rewardsStore/rewardsActions';
 import Proposition from '../Proposition/Proposition';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import Loading from '../../components/Icon/Loading';
@@ -13,6 +12,10 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
 } from '../../store/authStore/authSelectors';
+import {
+  getFraudSuspicionDataState,
+  getHasMoreFraudSuspicionData,
+} from '../../store/rewardsStore/rewardsSelectors';
 
 import './FraudDetection.less';
 

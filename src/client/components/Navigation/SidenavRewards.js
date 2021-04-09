@@ -4,13 +4,6 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  getAutoCompleteSearchResults,
-  getHasReceivables,
-  getCountTookPartCampaigns,
-  getCreatedCampaignsCount,
-  getExpiredPayment,
-} from '../../store/reducers';
-import {
   MESSAGES,
   HISTORY,
   PATH_NAME_HISTORY,
@@ -23,6 +16,13 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../../store/authStore/authSelectors';
+import { getAutoCompleteSearchResults } from '../../store/searchStore/searchSelectors';
+import {
+  getCountTookPartCampaigns,
+  getCreatedCampaignsCount,
+  getExpiredPayment,
+  getHasReceivables,
+} from '../../store/rewardsStore/rewardsSelectors';
 
 import './Sidenav.less';
 

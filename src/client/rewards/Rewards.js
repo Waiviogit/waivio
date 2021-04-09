@@ -24,14 +24,7 @@ import {
   every,
 } from 'lodash';
 import { HBD, HIVE } from '../../common/constants/cryptos';
-import {
-  getAllUsers,
-  getObjectsMap,
-  getUserLocation,
-  getIsMapModalOpen,
-  getSuitableLanguage,
-  getPendingUpdate,
-} from '../store/reducers';
+import { getSuitableLanguage } from '../store/reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
@@ -41,7 +34,7 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
-} from '../user/userActions';
+} from '../store/userStore/userActions';
 import { getCryptoPriceHistory } from '../store/appStore/appActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import { getPropositions } from '../../waivioApi/ApiClient';
@@ -72,12 +65,12 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import { checkExpiredPayment, getRewardsGeneralCounts } from './rewardsActions';
+import { checkExpiredPayment, getRewardsGeneralCounts } from '../store/rewardsStore/rewardsActions';
 import {
   setUpdatedFlag,
   getPropositionsForMap,
   setMapFullscreenMode,
-} from '../components/Maps/mapActions';
+} from '../store/mapStore/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
 import { getCryptosPriceHistory, getHelmetIcon, getIsWaivio } from '../store/appStore/appSelectors';
@@ -87,6 +80,9 @@ import {
   getIsAuthenticated,
   getIsLoaded,
 } from '../store/authStore/authSelectors';
+import { getAllUsers } from '../store/usersStore/usersSelectors';
+import { getPendingUpdate, getUserLocation } from '../store/userStore/userSelectors';
+import { getIsMapModalOpen, getObjectsMap } from '../store/mapStore/mapSelectors';
 
 @withRouter
 @injectIntl

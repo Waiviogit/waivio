@@ -13,7 +13,7 @@ import FollowButton from '../widgets/FollowButton';
 import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
-import { unfollowUser, followUser, muteUserBlog } from '../user/usersActions';
+import { unfollowUser, followUser, muteUserBlog } from '../store/usersStore/usersActions';
 import BellButton from '../widgets/BellButton';
 import MuteModal from '../widgets/MuteModal';
 import UserPopoverMenu from './UserPopoverMenu';
