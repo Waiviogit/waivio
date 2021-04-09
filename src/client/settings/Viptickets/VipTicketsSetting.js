@@ -1,33 +1,77 @@
-import React, {useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { InputNumber } from 'antd';
-import PropTypes from "prop-types";
-import {isNumber} from "lodash";
-
+import { Input, InputNumber, Modal } from 'antd';
+import PropTypes from 'prop-types';
+import { isNumber, debounce, isEmpty, size } from 'lodash';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import {
+  getActiveTickets,
+  getConsumedTickets,
+  getShowMoreActiveTickets,
+  getShowMoreConsumedTickets,
+  getTicketsPrice,
+} from '../../store/reducers';
+import { addNoteInTicket, getMoreVipTickets, getVipTickets } from '../settingsActions';
+import Transfer from '../../wallet/Transfer/Transfer';
+import { openTransfer } from '../../wallet/walletActions';
+import CopyButton from '../../widgets/CopyButton/CopyButton';
+import Loading from '../../components/Icon/Loading';
+import {
+  buttonsConfig,
   configActiveVipTicketTableHeader,
   configCreateAccountsTableHeader,
-} from '../../websites/constants/tableConfig';
-import { getTicketsInfo } from '../../store/reducers';
-import { getVipTickets } from '../settingsActions';
+} from '../common/tablesConfig';
 
-import './VipTicketsSetting.less'
+import './VipTicketsSetting.less';
 
 const VipTicketsSetting = props => {
-  const [countTickets, setCountTickets] = useState(0);
+  const [countTickets, setCountTickets] = useState(null);
+  const [activeTicketInfo, setActiveTicketInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [note, setNote] = useState(null);
+  const [showMoreLoading, setShowMoreLoading] = useState({});
 
   useEffect(() => {
-    props.getVipTickets();
+    props.getVipTickets().then(() => setLoading(false));
   }, []);
 
+  const handleNoteChange = useCallback(
+    debounce(e => setNote(e), 300),
+    [],
+  );
+  const setInformationForModal = item => {
+    setActiveTicketInfo(item);
+    setNote(item.note);
+  };
+
+  const handleSafeNote = () => {
+    setLoading(true);
+    props.addNoteInTicket(activeTicketInfo.ticket, note).then(() => {
+      props.getVipTickets().then(() => {
+        setLoading(false);
+        setActiveTicketInfo(null);
+      });
+    });
+  };
+
+  const handleShowMoreTicket = (tickets, isActive = false) => {
+    setShowMoreLoading({ [isActive ? 'active' : 'consumed']: true });
+
+    props.getMoreVipTickets(isActive, size(tickets)).then(() => {
+      setShowMoreLoading({});
+    });
+  };
+
   const handleChangeAmount = e => {
-    if(isNumber(e)) {
-      console.log(e);
-      setCountTickets(e);
-    }
-  }
+    if (!e) setCountTickets(0);
+    if (isNumber(e)) setCountTickets(e);
+  };
+
+  const handleClickPayNow = () =>
+    props.openTransfer('waivio.vip', countTickets * props.price, 'HIVE', 'vip_tickets');
+
+  if (loading && isEmpty(props.activeTickets) && isEmpty(props.consumedTickets)) return <Loading />;
 
   return (
     <div className="VipTicketsSetting">
@@ -45,23 +89,22 @@ const VipTicketsSetting = props => {
         })}
       </p>
       <p>
-        {props.intl.formatMessage(
-          {
-            id: 'create_new_account_instruction',
-            defaultMessage:
-              'When you open your first Hive account, you can do so {forFee} by confirming your mobile phone. But if you prefer an anonymous account or need additional accounts, you can do so by purchasing HiveOnBoard VIP tickets.',
-          },
-          {
-            forFee: (
-              <a href="https://hiveonboard.com/create-account">
-                {props.intl.formatMessage({
-                  id: 'for_fee',
-                  defaultMessage: 'for fee',
-                })}
-              </a>
-            ),
-          },
-        )}
+        {props.intl.formatMessage({
+          id: 'create_new_account_instruction',
+          defaultMessage: 'When you open your first Hive account, you can do so',
+        })}
+        <a href="https://hiveonboard.com/create-account" rel="noreferrer" target="_blank">
+          {' '}
+          {props.intl.formatMessage({
+            id: 'for_fee',
+            defaultMessage: 'for fee',
+          })}{' '}
+        </a>
+        {props.intl.formatMessage({
+          id: 'create_new_account_instruction_part2',
+          defaultMessage:
+            'by confirming your mobile phone. But if you prefer an anonymous account or need additional accounts, you can do so by purchasing HiveOnBoard VIP tickets',
+        })}
       </p>
       <p>
         {props.intl.formatMessage({
@@ -74,8 +117,12 @@ const VipTicketsSetting = props => {
         {props.intl.formatMessage({
           id: 'create_new_account_hive_on_board',
           defaultMessage:
-            'VIP tickets can be securely shared via email or other digital means, as they are valid for the activation of a single new account via HiveOnBoard.com.',
-        })}
+            'VIP tickets can be securely shared via email or other digital means, as they are valid for the activation of a single new account via',
+        })}{' '}
+        <a href="https://hiveonboard.com/" rel="noreferrer" target="_blank">
+          HiveOnBoard.com
+        </a>
+        .
       </p>
       <p>
         {props.intl.formatMessage({
@@ -101,10 +148,10 @@ const VipTicketsSetting = props => {
             max={10}
             onChange={handleChangeAmount}
           />
-          X 5.00 HIVE = <b>{countTickets * 5}</b> HIVE
-          <button className="VipTicketsSetting__pay">
+          X {props.price} HIVE = <b>{countTickets * props.price}</b> HIVE
+          <button className="VipTicketsSetting__pay" onClick={handleClickPayNow}>
             {props.intl.formatMessage({
-              id: 'pay_now',
+              id: 'payment_card_pay_now',
               defaultMessage: 'Pay now',
             })}
           </button>
@@ -117,31 +164,109 @@ const VipTicketsSetting = props => {
             defaultMessage: 'Active VIP tickets',
           })}
         </h3>
-        <DynamicTbl bodyConfig={[]} header={configActiveVipTicketTableHeader} />
+        <DynamicTbl
+          bodyConfig={props.activeTickets}
+          header={configActiveVipTicketTableHeader}
+          buttons={buttonsConfig(props.intl, setInformationForModal)}
+          showMore={props.showMoreActiveTickets}
+          loadingMore={showMoreLoading.active}
+          handleShowMore={() => handleShowMoreTicket(props.activeTickets, true)}
+        />
       </div>
-    <div className="VipTicketsSetting__section">
-      <div>
-        <h3>
-          {props.intl.formatMessage({
-            id: 'used_vip_tickets',
-            defaultMessage: 'Used VIP tickets',
+      <div className="VipTicketsSetting__section">
+        <div>
+          <h3>
+            {props.intl.formatMessage({
+              id: 'used_vip_tickets',
+              defaultMessage: 'Used VIP tickets',
+            })}
+          </h3>
+          <DynamicTbl
+            bodyConfig={props.consumedTickets}
+            header={configCreateAccountsTableHeader}
+            buttons={buttonsConfig(props.intl, setInformationForModal)}
+            showMore={props.showMoreConsumedTickets}
+            loadingMore={showMoreLoading.consumed}
+            handleShowMore={() => handleShowMoreTicket(props.consumedTickets)}
+          />
+        </div>
+      </div>
+      <Transfer />
+      {activeTicketInfo && (
+        <Modal
+          visible={activeTicketInfo.ticket}
+          title={props.intl.formatMessage({
+            id: 'share_ticket',
+            defaultMessage: 'Share VIP ticket',
           })}
-        </h3>
-        <DynamicTbl bodyConfig={[]} header={configCreateAccountsTableHeader} />
-      </div>
-    </div>
+          onCancel={() => setActiveTicketInfo(null)}
+          onOk={handleSafeNote}
+          okText={props.intl.formatMessage({ id: 'save', defaultMessage: 'Save' })}
+          okButtonProps={{ loading, disabled: loading || activeTicketInfo.note === note }}
+        >
+          <div className="VipTicketsSetting__modal-section">
+            <h3>
+              {props.intl.formatMessage({
+                id: 'vip_ticket',
+                defaultMessage: 'VIP ticket:',
+              })}
+            </h3>
+            <CopyButton text={activeTicketInfo.ticket} />
+          </div>
+          <div className="VipTicketsSetting__modal-section">
+            <h3>
+              {props.intl.formatMessage({
+                id: 'vip_ticket_link',
+                defaultMessage: 'VIP ticket link:',
+              })}
+            </h3>
+            <CopyButton
+              text={`https://hiveonboard.com/create-account?ticket=${activeTicketInfo.ticket}&redirect_url=https%3A%2F%2Fwww.waivio.com`}
+            />
+          </div>
+          <div className="VipTicketsSetting__modal-section">
+            <h3>
+              {props.intl.formatMessage({
+                id: 'note',
+                defaultMessage: 'Note',
+              })}
+              :
+            </h3>
+            <Input.TextArea
+              defaultValue={activeTicketInfo.note}
+              placeholder={props.intl.formatMessage({
+                id: 'note_for_self',
+                defaultMessage: 'Note for self',
+              })}
+              onChange={e => handleNoteChange(e.target.value)}
+            />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
 
 VipTicketsSetting.propTypes = {
   intl: PropTypes.shape().isRequired,
-  getVipTickets: PropTypes.func.isRequired
+  getVipTickets: PropTypes.func.isRequired,
+  openTransfer: PropTypes.func.isRequired,
+  addNoteInTicket: PropTypes.func.isRequired,
+  getMoreVipTickets: PropTypes.func.isRequired,
+  price: PropTypes.string.isRequired,
+  showMoreActiveTickets: PropTypes.bool.isRequired,
+  showMoreConsumedTickets: PropTypes.bool.isRequired,
+  consumedTickets: PropTypes.arrayOf().isRequired,
+  activeTickets: PropTypes.arrayOf().isRequired,
 };
 
 export default connect(
   state => ({
-    tickets: getTicketsInfo(state),
+    activeTickets: getActiveTickets(state),
+    consumedTickets: getConsumedTickets(state),
+    price: getTicketsPrice(state),
+    showMoreActiveTickets: getShowMoreActiveTickets(state),
+    showMoreConsumedTickets: getShowMoreConsumedTickets(state),
   }),
-  { getVipTickets },
+  { getVipTickets, openTransfer, addNoteInTicket, getMoreVipTickets },
 )(injectIntl(VipTicketsSetting));

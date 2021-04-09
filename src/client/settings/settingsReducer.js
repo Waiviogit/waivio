@@ -3,6 +3,7 @@ import * as settingsTypes from './settingsActions';
 import * as authTypes from '../store/authStore/authActions';
 import { GET_USER_METADATA } from '../user/usersActions';
 import { rewardsValues } from '../../common/constants/rewards';
+import { changeDate } from './common/helpers';
 
 const initialState = {
   locale: 'en-US',
@@ -80,6 +81,42 @@ const settings = (state = initialState, action) => {
         openLinkModal: action.payload,
       };
 
+    case settingsTypes.GET_VIP_TICKETS_INFO.SUCCESS:
+      return {
+        ...state,
+        vipTicketsInfo: {
+          ...action.payload,
+          activeTickets: changeDate(action.payload.activeTickets),
+          consumedTickets: changeDate(action.payload.consumedTickets),
+        },
+      };
+
+    case settingsTypes.GET_ACTIVE_VIP_TICKETS_INFO_MORE.SUCCESS:
+      return {
+        ...state,
+        vipTicketsInfo: {
+          ...state.vipTicketsInfo,
+          activeTickets: [
+            ...state.vipTicketsInfo.activeTickets,
+            ...changeDate(action.payload.activeTickets),
+          ],
+          hasMoreActive: action.payload.hasMoreActive,
+        },
+      };
+
+    case settingsTypes.GET_CONSUMED_VIP_TICKETS_INFO_MORE.SUCCESS:
+      return {
+        ...state,
+        vipTicketsInfo: {
+          ...state.vipTicketsInfo,
+          consumedTickets: [
+            ...state.vipTicketsInfo.consumedTickets,
+            ...changeDate(action.payload.consumedTickets),
+          ],
+          hasMoreConsumed: action.payload.hasMoreConsumed,
+        },
+      };
+
     case authTypes.LOGOUT:
       return initialState;
 
@@ -103,4 +140,9 @@ export const getExitPageSetting = state => state.exitPageSetting;
 export const getRewardSetting = state => state.rewardSetting;
 export const getHiveBeneficiaryAccount = state => state.hiveBeneficiaryAccount;
 export const isOpenLinkModal = state => state.openLinkModal;
-export const getTicketsInfo = state => state.vipTicketsInfo;
+export const getActiveTickets = state => get(state, 'vipTicketsInfo.activeTickets', []);
+export const getConsumedTickets = state => get(state, 'vipTicketsInfo.consumedTickets', []);
+export const getShowMoreActiveTickets = state => get(state, 'vipTicketsInfo.hasMoreActive', false);
+export const getShowMoreConsumedTickets = state =>
+  get(state, 'vipTicketsInfo.hasMoreConsumed', false);
+export const getTicketsPrice = state => get(state, 'vipTicketsInfo.price', []);

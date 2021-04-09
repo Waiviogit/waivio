@@ -2000,16 +2000,27 @@ export const checkExpiredPayment = userName =>
 
 export const getVipTicketsInfo = (queryData, isGuest) => {
   const queryString = createQuery(queryData);
-  return fetch(
-    `${config.apiPrefix}${config.vipTickets}?${queryString}`,
-    {
-      headers: {
-        ...headers,
-        'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token')
-      },
-      method: 'GET',
+  return fetch(`${config.apiPrefix}${config.vipTickets}?${queryString}`, {
+    headers: {
+      ...headers,
+      'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token'),
     },
-  )
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const addNoteInVipTicket = (body, isGuest) => {
+  return fetch(`${config.apiPrefix}${config.vipTickets}`, {
+    headers: {
+      ...headers,
+      'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token'),
+    },
+    body: JSON.stringify(body),
+    method: 'PATCH',
+  })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);

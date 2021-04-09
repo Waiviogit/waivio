@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import moment from 'moment';
 
 export const getSettingsTitle = match => {
   const param = get(match, ['params', '0'], '');
@@ -39,5 +40,16 @@ export const getSettingsTitle = match => {
       return { id: 'websites', defaultMessage: 'Websites' };
   }
 };
+
+export const changeDate = array =>
+  array.map(item => ({
+    ...item,
+    createdAt: moment(item.createdAt).format('DD-MMM-YYYY'),
+  }));
+
+export const getVipTicketsQuery = (isActiveTickets, skip, limit) =>
+  isActiveTickets
+    ? { activeSkip: skip, activeLimit: limit }
+    : { consumedSkip: skip, consumedLimit: limit };
 
 export default null;
