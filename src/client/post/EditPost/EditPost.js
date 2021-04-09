@@ -145,9 +145,10 @@ class EditPost extends Component {
     const campaignId =
       campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
+    const linkedObjectsCards = JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
 
     // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({ isReview });
+    this.setState({ isReview, linkedObjectsCards });
     const postPermlink = get(currDraft, 'permlink');
 
     if (isReview) {
@@ -315,8 +316,7 @@ class EditPost extends Component {
 
   handleToggleLinkedObject(objId, isLinked, uniqId) {
     const { linkedObjects, objPercentage, topics, linkedObjectsCards } = this.state;
-    const prohibitedObjectCards =
-      linkedObjectsCards || JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
+    const prohibitedObjectCards = linkedObjectsCards || [];
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObj = indexOf(linkedObjects, currentObj);
     const switchableObjPermlink = currentObj.author_permlink;

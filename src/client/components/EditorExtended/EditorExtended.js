@@ -87,12 +87,9 @@ class Editor extends React.Component {
     this.state = {
       isMounted: false,
       editorEnabled: false,
+      prevEditorState: null,
       editorState: EditorState.createEmpty(defaultDecorators),
       titleValue: '',
-    };
-
-    this.onChange = editorState => {
-      this.setState({ editorState });
     };
     this.refsEditor = React.createRef();
   }
@@ -105,7 +102,7 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    sessionStorage.setItem('linkedObjects', JSON.stringify(this.props.linkedObjects));
+    sessionStorage.setItem('linkedObjects', JSON.stringify(this.props.linkedObjects || []));
     sessionStorage.setItem('linkedObjectsCards', JSON.stringify(this.props.linkedObjectsCards));
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
       setTimeout(() => {
@@ -117,7 +114,11 @@ class Editor extends React.Component {
       }, 0);
     }
   }
+  onChange = editorState => {
+    const { editorState: prevEditorState } = this.state;
 
+    this.setState({ editorState, prevEditorState });
+  };
   setFocusAfterMount = () => {
     setTimeout(() => this.refsEditor.current.focus(), 0);
     this.setState({ editorEnabled: true });
@@ -143,6 +144,7 @@ class Editor extends React.Component {
   };
 
   restoreObjects = async (rawContent, newObject) => {
+    const { prevEditorState } = this.state;
     const { draftId, linkedObjectsCards, handleLinkedObjectsCards } = this.props;
     const currLinkedObjects = JSON.parse(sessionStorage.getItem('linkedObjects')) || [];
     const linkedObjectsCardsSession =
@@ -190,6 +192,7 @@ class Editor extends React.Component {
       linkedCards,
       objectIds,
       Object.values(rawContent.entityMap),
+      prevEditorState && Object.values(convertToRaw(prevEditorState.getCurrentContent()).entityMap),
     );
 
     handleLinkedObjectsCards(newLinkedObjectsCards);

@@ -1,9 +1,14 @@
-import { last, find, has, uniqWith, isEqual } from 'lodash';
+import { last, find, has, uniqWith, isEqual, differenceWith, head } from 'lodash';
 
 import { Entity } from '../components/EditorExtended';
 
-export const getNewLinkedObjectsCards = (prohibitObjects, objectIds, rowContent) => {
-  const lastContentAdd = last(rowContent);
+export const getNewLinkedObjectsCards = (
+  prohibitObjects,
+  objectIds,
+  rowContent,
+  prevRowContent,
+) => {
+  const lastContentAdd = head(differenceWith(rowContent, prevRowContent, isEqual));
 
   if (
     lastContentAdd &&
