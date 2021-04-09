@@ -1,8 +1,9 @@
 import { createAction } from 'redux-actions';
 import { saveSettingsMetadata } from '../../helpers/metadata';
-import { setUserStatus } from '../../../waivioApi/ApiClient';
+import { setUserStatus, getVipTicketsInfo, addNoteInVipTicket } from '../../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
+import { getVipTicketsQuery } from '../../settings/common/helpers';
 
 export const SAVE_SETTINGS = '@app/SAVE_SETTINGS';
 export const SAVE_SETTINGS_START = '@app/SAVE_SETTINGS_START';
@@ -48,3 +49,62 @@ export const openLinkHiveAccountModal = payload => dispatch =>
 export const SET_LOCALE = '@app/SET_LOCALE';
 
 export const setLocale = createAction(SET_LOCALE);
+
+export const GET_VIP_TICKETS_INFO = createAsyncActionType('@app/GET_VIP_TICKETS_INFO');
+
+export const getVipTickets = () => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
+
+  return dispatch({
+    type: GET_VIP_TICKETS_INFO.ACTION,
+    payload: {
+      promise: getVipTicketsInfo({ userName }, isGuest),
+    },
+  });
+};
+
+export const ADD_NOTE_IN_TICKET = createAsyncActionType('@app/ADD_NOTE_IN_TICKET');
+
+export const addNoteInTicket = (ticket, note) => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
+
+  return dispatch({
+    type: ADD_NOTE_IN_TICKET.ACTION,
+    payload: {
+      promise: addNoteInVipTicket({ ticket, note, userName }, isGuest),
+    },
+  });
+};
+
+export const GET_ACTIVE_VIP_TICKETS_INFO_MORE = createAsyncActionType(
+  '@app/GET_ACTIVE_VIP_TICKETS_INFO_MORE',
+);
+export const GET_CONSUMED_VIP_TICKETS_INFO_MORE = createAsyncActionType(
+  '@app/GET_CONSUMED_VIP_TICKETS_INFO_MORE',
+);
+
+export const getMoreVipTickets = (isActive, skip, limit = 10) => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
+  const currentType = isActive
+    ? GET_ACTIVE_VIP_TICKETS_INFO_MORE
+    : GET_CONSUMED_VIP_TICKETS_INFO_MORE;
+
+  return dispatch({
+    type: currentType.ACTION,
+    payload: {
+      promise: getVipTicketsInfo(
+        {
+          userName,
+          ...getVipTicketsQuery(isActive, skip, limit),
+        },
+        isGuest,
+      ),
+    },
+  });
+};

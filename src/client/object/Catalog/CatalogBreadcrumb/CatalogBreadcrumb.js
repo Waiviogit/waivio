@@ -28,6 +28,8 @@ const CatalogBreadcrumb = ({
   nestedWobject,
   breadcrumb,
 }) => {
+  if (!breadcrumb) return null;
+
   const breadCrumbSize = size(breadcrumb);
   const currentTitle = get(breadcrumb[breadCrumbSize - 1], 'title', '');
   const permlinks = getPermlinksFromHash(location.hash);

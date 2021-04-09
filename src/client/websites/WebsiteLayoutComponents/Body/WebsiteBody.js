@@ -63,7 +63,7 @@ const WebsiteBody = props => {
   });
   const [infoboxData, setInfoboxData] = useState(null);
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
-  const [height, setHeight] = useState(0);
+  const [height, setHeight] = useState('100%');
   const [showLocation, setShowLocation] = useState(false);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
   const isActiveFilters = !isEmpty(props.activeFilters);
@@ -388,6 +388,7 @@ const WebsiteBody = props => {
             {zoomButtonsLayout()}
             <Map
               center={area.center}
+              height={height}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
@@ -397,6 +398,7 @@ const WebsiteBody = props => {
                   props.history.push('/');
                 }
               }}
+              animate
             >
               {isActiveFilters && (
                 <div className="WebsiteBody__filters-list">

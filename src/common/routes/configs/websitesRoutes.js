@@ -106,6 +106,11 @@ const routes = {
           component: Views.GuestsSettings,
         },
         {
+          path: '/new-accounts',
+          exact: true,
+          component: Views.VipTicketsSetting,
+        },
+        {
           path: '/notification-settings',
           exact: true,
           component: Views.NotificationSettings,

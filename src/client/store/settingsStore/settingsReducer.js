@@ -1,8 +1,8 @@
-import { get } from 'lodash';
 import * as settingsTypes from './settingsActions';
 import * as authTypes from '../authStore/authActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
 import { rewardsValues } from '../../../common/constants/rewards';
+import { changeDate } from '../../settings/common/helpers';
 
 const initialState = {
   locale: 'en-US',
@@ -18,6 +18,7 @@ const initialState = {
   postLocales: [],
   newUser: false,
   openLinkModal: false,
+  vipTicketsInfo: {},
 };
 
 const settings = (state = initialState, action) => {
@@ -77,6 +78,42 @@ const settings = (state = initialState, action) => {
       return {
         ...state,
         openLinkModal: action.payload,
+      };
+
+    case settingsTypes.GET_VIP_TICKETS_INFO.SUCCESS:
+      return {
+        ...state,
+        vipTicketsInfo: {
+          ...action.payload,
+          activeTickets: changeDate(action.payload.activeTickets),
+          consumedTickets: changeDate(action.payload.consumedTickets),
+        },
+      };
+
+    case settingsTypes.GET_ACTIVE_VIP_TICKETS_INFO_MORE.SUCCESS:
+      return {
+        ...state,
+        vipTicketsInfo: {
+          ...state.vipTicketsInfo,
+          activeTickets: [
+            ...state.vipTicketsInfo.activeTickets,
+            ...changeDate(action.payload.activeTickets),
+          ],
+          hasMoreActive: action.payload.hasMoreActive,
+        },
+      };
+
+    case settingsTypes.GET_CONSUMED_VIP_TICKETS_INFO_MORE.SUCCESS:
+      return {
+        ...state,
+        vipTicketsInfo: {
+          ...state.vipTicketsInfo,
+          consumedTickets: [
+            ...state.vipTicketsInfo.consumedTickets,
+            ...changeDate(action.payload.consumedTickets),
+          ],
+          hasMoreConsumed: action.payload.hasMoreConsumed,
+        },
       };
 
     case authTypes.LOGOUT:

@@ -32,3 +32,23 @@ export const getHiveBeneficiaryAccount = createSelector(
 );
 
 export const isOpenLinkModal = createSelector([settingsState], state => state.openLinkModal);
+
+export const getActiveTickets = createSelector([settingsState], state =>
+  get(state, 'vipTicketsInfo.activeTickets', []),
+);
+
+export const getConsumedTickets = createSelector([settingsState], state =>
+  get(state, 'vipTicketsInfo.consumedTickets', []),
+);
+
+export const getShowMoreActiveTickets = createSelector([settingsState], state =>
+  get(state, 'vipTicketsInfo.hasMoreActive', false),
+);
+
+export const getShowMoreConsumedTickets = createSelector([settingsState], state =>
+  get(state, 'vipTicketsInfo.hasMoreConsumed', false),
+);
+
+export const getTicketsPrice = createSelector([settingsState], state =>
+  get(state, 'vipTicketsInfo.price', 0),
+);
