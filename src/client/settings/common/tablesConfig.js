@@ -14,7 +14,7 @@ export const buttonsConfig = (intl, setInformationForModal) => ({
 
     return (
       <div className="VipTicketsSetting__add-note">
-        {item.note}{' '}
+        <span className="VipTicketsSetting__note">{item.note}</span>{' '}
         <a role="presentation" onClick={() => setInformationForModal(item)}>
           ({intl.formatMessage(intlState)})
         </a>
@@ -59,7 +59,7 @@ export const configActiveVipTicketTableHeader = [
   {
     id: 'link',
     intl: {
-      id: 'link',
+      id: 'vip_ticket_table_link',
       defaultMessage: 'Link',
     },
   },
