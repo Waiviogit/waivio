@@ -73,7 +73,6 @@ const getAllowListLayout = self => {
                       itemsIdsToOmit={itemsIdsToOmit}
                       rowIndex={rowIndex}
                       ruleIndex={ruleIndex}
-                      style={{ width: '120%' }}
                       placeholder={self.props.intl.formatMessage({
                         id: 'object_fiels_news_select_placeholder',
                         defaultMessage: 'Please select',
@@ -141,7 +140,6 @@ export const getIgnoreListLayout = self => {
             <SearchObjectsAutocomplete
               allowClear={false}
               itemsIdsToOmit={itemsIdsToOmit}
-              style={{ width: '120%' }}
               placeholder={self.props.intl.formatMessage({
                 id: 'object_fiels_news_select_placeholder',
                 defaultMessage: 'Please select',
