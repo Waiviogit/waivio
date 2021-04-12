@@ -59,6 +59,8 @@ module.exports = {
       "ignoreMemberSort": true,
       "allowSeparatedGroups": true,
       "memberSyntaxSortOrder": ["single", "multiple", "all", "none"]
-    }]
+    }],
+    "no-underscore-dangle": OFF,
+    "no-plusplus": OFF,
   },
 };
