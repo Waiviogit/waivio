@@ -413,6 +413,7 @@ class EditPost extends Component {
       wobjects: linkedObjects
         .filter(obj => objPercentage[obj.id].percent > 0)
         .map(obj => ({
+          object_type: obj.object_type,
           objectName: getObjectName(obj),
           author_permlink: obj.author_permlink,
           percent: get(objPercentage, [obj.id, 'percent']),
