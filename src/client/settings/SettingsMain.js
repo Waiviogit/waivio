@@ -30,9 +30,10 @@ const SettingsMain = props => {
   useEffect(() => {
     if (!props.auth || (host && (props.isGuest || !props.isWaivio))) props.history.push('/');
 
-    props.getOwnWebsites().then(({ value }) => {
-      if (host && !value.some(website => website.host === host)) props.history.push('/');
-    });
+    if (!props.isGuest)
+      props.getOwnWebsites().then(({ value }) => {
+        if (host && !value.some(website => website.host === host)) props.history.push('/');
+      });
   }, [props.auth]);
 
   return (

@@ -109,6 +109,7 @@ const VipTicketsSetting = props => {
           defaultMessage:
             'by confirming your mobile phone. But if you prefer an anonymous account or need additional accounts, you can do so by purchasing HiveOnBoard VIP tickets',
         })}
+        .
       </p>
       <p>
         {props.intl.formatMessage({
@@ -132,7 +133,7 @@ const VipTicketsSetting = props => {
         {props.intl.formatMessage({
           id: 'create_new_account_how_used_ticket',
           defaultMessage:
-            'Once the VIP ticket has been used, it will no longer be valid and will be archived in the second table with a reference to the account created. You can delegate some Hive Power to new accounts, follow them and welcome them to the community.',
+            'Once the VIP ticket has been used, it will no longer be valid and will be archived in the second table with a reference to the account created.',
         })}
       </p>
       <div className="VipTicketsSetting__section">
@@ -212,8 +213,9 @@ const VipTicketsSetting = props => {
             <h3>
               {props.intl.formatMessage({
                 id: 'vip_ticket',
-                defaultMessage: 'VIP ticket:',
+                defaultMessage: 'VIP ticket',
               })}
+              :
             </h3>
             <CopyButton text={activeTicketInfo.ticket} />
           </div>
@@ -240,7 +242,7 @@ const VipTicketsSetting = props => {
               defaultValue={activeTicketInfo.note}
               placeholder={props.intl.formatMessage({
                 id: 'note_for_self',
-                defaultMessage: 'Note for self',
+                defaultMessage: 'Note to self',
               })}
               onChange={e => handleNoteChange(e.target.value)}
             />

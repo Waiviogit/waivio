@@ -191,6 +191,7 @@ export function getInitialState(props) {
     content: '',
     topics: [],
     linkedObjects: [],
+    linkedObjectsCards: [],
     objPercentage: {},
     settings: {
       reward: rewardsValues.half,

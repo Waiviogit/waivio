@@ -36,7 +36,11 @@ const settings = (state = initialState, action) => {
       return state;
     case GET_USER_METADATA.SUCCESS:
       if (action.payload && action.payload.settings) {
-        return { ...action.payload.settings, loading: false };
+        return {
+          ...action.payload.settings,
+          loading: false,
+          vipTicketsInfo: { ...state.vipTicketsInfo },
+        };
       }
 
       return { ...state, loading: false };

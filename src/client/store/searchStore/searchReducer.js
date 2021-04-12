@@ -1,4 +1,4 @@
-import { get, isEmpty, remove, findIndex, isEqual, uniqBy, uniqWith } from 'lodash';
+import { get, isEmpty, remove, findIndex, isEqual, uniqBy } from 'lodash';
 import * as searchActions from './searchActions';
 import { userToggleFollow } from '../../search/helpers';
 
@@ -379,7 +379,7 @@ export default (state = initialState, action) => {
     case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.SUCCESS: {
       return {
         ...state,
-        websiteSearchResult: uniqWith(action.payload.wobjects, isEqual),
+        websiteSearchResult: uniqBy(get(action, 'payload.wobjects', []), '_id'),
         hasMoreObjectsForWebsite: action.payload.hasMore,
         websiteSearchResultLoading: false,
       };
@@ -402,9 +402,9 @@ export default (state = initialState, action) => {
     case searchActions.SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.SUCCESS: {
       return {
         ...state,
-        websiteSearchResult: uniqWith(
+        websiteSearchResult: uniqBy(
           [...state.websiteSearchResult, ...action.payload.wobjects],
-          isEqual,
+          '_id',
         ),
         hasMoreObjectsForWebsite: action.payload.hasMore,
         isStartSearchObject: false,
