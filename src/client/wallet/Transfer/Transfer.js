@@ -448,9 +448,9 @@ export default class Transfer extends React.Component {
     const userName = isEmpty(searchName) ? to : searchName;
     const isCurrentUser = user.name === match.params.name;
     const guestWithBeneficiary = isGuest && hiveBeneficiaryAccount;
-    const account = guestWithBeneficiary ? hiveBeneficiaryAccount : userName;
+    const account = guestWithBeneficiary && !this.props.to ? hiveBeneficiaryAccount : userName;
 
-    if (guestWithBeneficiary && !form.getFieldValue('to')) {
+    if (guestWithBeneficiary && !form.getFieldValue('to') && !this.props.to) {
       this.props.form.setFieldsValue({
         to: hiveBeneficiaryAccount,
       });
@@ -580,7 +580,7 @@ export default class Transfer extends React.Component {
           defaultMessage: 'Additional message to include in this payment (optional)',
         });
 
-    return (isGuest && hiveBeneficiaryAccount) || !isGuest ? (
+    return (isGuest && (this.props.to || hiveBeneficiaryAccount)) || !isGuest ? (
       <Modal
         visible={visible}
         title={intl.formatMessage({ id: 'transfer_modal_title', defaultMessage: 'Transfer funds' })}
