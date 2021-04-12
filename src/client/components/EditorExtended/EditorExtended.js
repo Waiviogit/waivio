@@ -19,6 +19,7 @@ import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import ObjectLink, { findObjEntities } from './components/entities/objectlink';
 import Link from './components/entities/link';
 import { handlePastedLink, QUERY_APP } from './util/editorHelper';
+import { getNewLinkedObjectsCards } from '../../helpers/editorHelper';
 
 const SIDE_BUTTONS = [
   {
@@ -60,15 +61,17 @@ class Editor extends React.Component {
     }).isRequired,
     locale: PropTypes.string.isRequired,
     onChange: PropTypes.func,
+    handleLinkedObjectsCards: PropTypes.func,
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
     displayTitle: PropTypes.bool,
     draftId: PropTypes.string,
-    linkedObjects: PropTypes.shape(),
+    linkedObjectsCards: PropTypes.shape().isRequired,
   };
   static defaultProps = {
     intl: {},
     onChange: () => {},
+    handleLinkedObjectsCards: () => {},
     handleHashtag: () => {},
     displayTitle: true,
     draftId: '',
@@ -83,25 +86,24 @@ class Editor extends React.Component {
     this.state = {
       isMounted: false,
       editorEnabled: false,
+      prevEditorState: null,
       editorState: EditorState.createEmpty(defaultDecorators),
       titleValue: '',
-    };
-
-    this.onChange = editorState => {
-      this.setState({ editorState });
     };
     this.refsEditor = React.createRef();
   }
 
   componentDidMount() {
-    this.setState({ isMounted: true, titleValue: this.props.initialContent.title }); // eslint-disable-line
-    this.restoreObjects(fromMarkdown(this.props.initialContent)).then(() =>
-      this.setFocusAfterMount(),
-    );
+    const { handleLinkedObjectsCards, initialContent } = this.props;
+    const linkedObjectsCardsSession =
+      JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
+
+    handleLinkedObjectsCards(linkedObjectsCardsSession);
+    this.setState({ isMounted: true, titleValue: initialContent.title }); // eslint-disable-line
+    this.restoreObjects(fromMarkdown(initialContent)).then(() => this.setFocusAfterMount());
   }
 
   componentWillReceiveProps(nextProps) {
-    sessionStorage.setItem('linkedObjects', JSON.stringify(this.props.linkedObjects));
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
       setTimeout(() => {
         this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
@@ -112,7 +114,11 @@ class Editor extends React.Component {
       }, 0);
     }
   }
+  onChange = editorState => {
+    const { editorState: prevEditorState } = this.state;
 
+    this.setState({ editorState, prevEditorState });
+  };
   setFocusAfterMount = () => {
     setTimeout(() => this.refsEditor.current.focus(), 0);
     this.setState({ editorEnabled: true });
@@ -125,7 +131,6 @@ class Editor extends React.Component {
     return get(currentSeparator, '[4]', []);
   };
 
-  // eslint-disable-next-line consistent-return
   getCurrentLoadObjects = (response, value) => {
     const loadObjects = keyBy(response.wobjects, 'author_permlink');
 
@@ -134,11 +139,17 @@ class Editor extends React.Component {
     } else if (value.type === Entity.LINK) {
       return loadObjects[this.getCurrentLinkPermlink(value)];
     }
+
+    return loadObjects;
   };
 
   restoreObjects = async (rawContent, newObject) => {
-    const { draftId } = this.props;
+    const { prevEditorState } = this.state;
+    const { draftId, linkedObjectsCards, handleLinkedObjectsCards } = this.props;
     const currLinkedObjects = JSON.parse(sessionStorage.getItem('linkedObjects')) || [];
+    const linkedObjectsCardsSession =
+      JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
+    const linkedCards = linkedObjectsCards || linkedObjectsCardsSession;
     const isReview = includes(draftId, 'review');
     const isLinked = string =>
       currLinkedObjects.some(item => item.defaultShowLink.includes(string));
@@ -177,6 +188,14 @@ class Editor extends React.Component {
         }
       })
       .filter(item => item);
+    const newLinkedObjectsCards = getNewLinkedObjectsCards(
+      linkedCards,
+      objectIds,
+      Object.values(rawContent.entityMap),
+      prevEditorState && Object.values(convertToRaw(prevEditorState.getCurrentContent()).entityMap),
+    );
+
+    handleLinkedObjectsCards(newLinkedObjectsCards);
 
     if (objectIds.length) {
       const response = await getObjectsByIds({
@@ -191,6 +210,7 @@ class Editor extends React.Component {
         let currObj = null;
         const loadedObject = this.getCurrentLoadObjects(response, value);
 
+        currLinkedObjects.push(loadedObject);
         if (!isEmpty(currLinkedObjects) && !isEmpty(loadedObject)) {
           map(currLinkedObjects, obj => {
             if (isEqual(obj.author_permlink, loadedObject.author_permlink)) {
