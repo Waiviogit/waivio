@@ -275,6 +275,7 @@ class EditPost extends Component {
     if (isLinkedObjectsChanged) {
       const objPercentage = setObjPercents(linkedObjects, objPercentageState);
 
+      sessionStorage.setItem('linkedObjects', JSON.stringify(linkedObjects || []));
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
@@ -495,7 +496,6 @@ class EditPost extends Component {
               handleHashtag={this.handleHashtag}
               displayTitle
               draftId={draftId}
-              linkedObjects={linkedObjects}
               linkedObjectsCards={linkedObjectsCards}
               handleLinkedObjectsCards={this.handleLinkedObjectsCards}
             />

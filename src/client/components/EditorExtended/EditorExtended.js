@@ -66,7 +66,6 @@ class Editor extends React.Component {
     handleHashtag: PropTypes.func,
     displayTitle: PropTypes.bool,
     draftId: PropTypes.string,
-    linkedObjects: PropTypes.shape(),
     linkedObjectsCards: PropTypes.shape().isRequired,
   };
   static defaultProps = {
@@ -95,15 +94,16 @@ class Editor extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ isMounted: true, titleValue: this.props.initialContent.title }); // eslint-disable-line
-    this.restoreObjects(fromMarkdown(this.props.initialContent)).then(() =>
-      this.setFocusAfterMount(),
-    );
+    const { handleLinkedObjectsCards, initialContent } = this.props;
+    const linkedObjectsCardsSession =
+      JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
+
+    handleLinkedObjectsCards(linkedObjectsCardsSession);
+    this.setState({ isMounted: true, titleValue: initialContent.title }); // eslint-disable-line
+    this.restoreObjects(fromMarkdown(initialContent)).then(() => this.setFocusAfterMount());
   }
 
   componentWillReceiveProps(nextProps) {
-    sessionStorage.setItem('linkedObjects', JSON.stringify(this.props.linkedObjects || []));
-    sessionStorage.setItem('linkedObjectsCards', JSON.stringify(this.props.linkedObjectsCards));
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
       setTimeout(() => {
         this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
