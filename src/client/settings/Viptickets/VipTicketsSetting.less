@@ -31,7 +31,8 @@
   }
 
   &__add-note {
-    display: block;
+    display: flex;
+    justify-content: center;
     color: @regent-gray;
   }
 
@@ -41,5 +42,13 @@
     h3 {
       margin-bottom: 15px;
     }
+  }
+
+  &__note {
+    max-width: 520px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    margin-right: 5px;
   }
 }

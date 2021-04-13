@@ -164,7 +164,7 @@ export const searchObjectsAutoCompeteLoadingMore = (
   }).catch(() => dispatch(setSearchInBox(false)));
 };
 
-const compareSearchResult = (searchString, wobjects) => async (dispatch, getState) => {
+const compareSearchResult = (searchString, wobjs) => async (dispatch, getState) => {
   const state = getState();
   const locale = getLocale(state);
   const objType = getWebsiteSearchType(state);
@@ -181,12 +181,13 @@ const compareSearchResult = (searchString, wobjects) => async (dispatch, getStat
 
   try {
     const response = await ApiClient.searchObjects(searchString, objType, false, 15, locale, body);
+    const wobjects = [...wobjs, ...response.wobjects];
 
-    if (!isEmpty(wobjects)) dispatch(getFilterForSearch(objType, wobjects));
+    if (!isEmpty(response.wobjects)) dispatch(getFilterForSearch(objType, response.wobjects));
 
-    return { wobjects: [...wobjects, ...response.wobjects], hasMore: true };
+    return { wobjects, hasMore: true };
   } catch (e) {
-    return wobjects;
+    return wobjs;
   }
 };
 

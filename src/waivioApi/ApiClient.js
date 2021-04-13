@@ -2000,10 +2000,12 @@ export const checkExpiredPayment = userName =>
 
 export const getVipTicketsInfo = (queryData, isGuest) => {
   const queryString = createQuery(queryData);
+
   return fetch(`${config.apiPrefix}${config.vipTickets}?${queryString}`, {
     headers: {
       ...headers,
       'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token'),
+      ...(isGuest ? { 'waivio-auth': true } : {}),
     },
     method: 'GET',
   })
@@ -2017,6 +2019,7 @@ export const addNoteInVipTicket = (body, isGuest) => {
     headers: {
       ...headers,
       'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token'),
+      ...(isGuest ? { 'waivio-auth': true } : {}),
     },
     body: JSON.stringify(body),
     method: 'PATCH',
