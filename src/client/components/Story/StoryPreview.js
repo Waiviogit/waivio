@@ -106,11 +106,13 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
           options.thumbnail = thumbnailID && `https://img.youtube.com/vi/${thumbnailID}/0.jpg`;
         }
       }
-
-      embeds[0] = steemEmbed.get(videoLink, options);
-      embeds[0].thumbnail = getProxyImageURL(embeds[0].thumbnail, 'preview');
+      if (embeds[0]) {
+        embeds[0] = steemEmbed.get(videoLink, options);
+        embeds[0].thumbnail = getProxyImageURL(embeds[0].thumbnail, 'preview');
+      }
     }
   }
+
   const hasVideo = embeds && embeds[0] && true;
   const preview = {
     text: () => (
