@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getWobjectsExpertise } from '../../waivioApi/ApiClient';
 import UserDynamicList from '../user/UserDynamicList';
-import { getAuthenticatedUserName, getAuthorizationUserFollowSort } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getAuthorizationUserFollowSort,
+} from '../store/authStore/authSelectors';
 
 @connect(state => ({
   user: getAuthenticatedUserName(state),
@@ -13,14 +16,21 @@ export default class WobjExpertise extends React.Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     user: PropTypes.string.isRequired,
-    sort: PropTypes.string,
-  };
-
-  static defaultProps = {
-    sort: 'recency',
   };
 
   static limit = 30;
+
+  state = {
+    sort: 'rank',
+  };
+
+  handleChange = sort => {
+    this.setState({
+      sort,
+    });
+
+    return Promise.resolve();
+  };
 
   fetcher = skip => {
     const { match } = this.props;
@@ -31,7 +41,7 @@ export default class WobjExpertise extends React.Component {
         match.params.name,
         skip.length,
         WobjExpertise.limit,
-        this.props.sort,
+        this.state.sort,
       );
 
       resolve({ users: data.users, hasMore: data.users.length === WobjExpertise.limit });
@@ -39,6 +49,13 @@ export default class WobjExpertise extends React.Component {
   };
 
   render() {
-    return <UserDynamicList limit={WobjExpertise.limit} fetcher={this.fetcher} />;
+    return (
+      <UserDynamicList
+        limit={WobjExpertise.limit}
+        fetcher={this.fetcher}
+        sort={this.state.sort}
+        handleChange={this.handleChange}
+      />
+    );
   }
 }
