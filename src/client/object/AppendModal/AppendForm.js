@@ -73,7 +73,7 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getNewsFilterLayout } from '../NewsFilter/newsFilterHelper';
+import { getNewsFilterLayout } from './FormComponents/newsFilterHelper';
 import CreateObject from '../../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';

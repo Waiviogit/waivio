@@ -1,8 +1,8 @@
 import { Col, Icon, Input, Row } from 'antd';
 import { map } from 'lodash';
 import React from 'react';
-import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
-import ObjectCard from '../../components/Sidebar/ObjectCard';
+import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
+import ObjectCard from '../../../components/Sidebar/ObjectCard';
 
 const isMobile = screenSize => screenSize === 'xsmall' || screenSize === 'small';
 
@@ -170,6 +170,13 @@ export const getNewsFilterLayout = self => (
       {self.props.intl.formatMessage({
         id: 'ignoreList',
         defaultMessage: 'Ignore list',
+      })}
+    </div>
+    {getIgnoreListLayout(self)}
+    <div className="AppendForm__appendTitles">
+      {self.props.intl.formatMessage({
+        id: 'list_types',
+        defaultMessage: 'List types',
       })}
     </div>
     {getIgnoreListLayout(self)}
