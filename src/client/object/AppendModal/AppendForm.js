@@ -93,9 +93,9 @@ import {
 } from '../../store/wObjectStore/wObjectSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
 import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
+import NewsFilterForm from './FormComponents/NewsFilterForm';
 
 import './AppendForm.less';
-import NewsFilterForm from './FormComponents/NewsFilterForm';
 
 @connect(
   state => ({
