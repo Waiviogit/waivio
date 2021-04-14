@@ -73,7 +73,7 @@ const VipTicketsSetting = props => {
   };
 
   const handleClickPayNow = () =>
-    props.openTransfer('waivio.vip', countTickets * props.price, 'HIVE', 'vip_tickets');
+    props.openTransfer('waivio.vip', countTickets * props.price, 'HIVE', '', '', false, true);
 
   if (loading && isEmpty(props.activeTickets) && isEmpty(props.consumedTickets)) return <Loading />;
 

@@ -12,13 +12,13 @@ import {
   createNewWebsite,
   getParentDomainList,
 } from '../../../store/websiteStore/websiteActions';
-
-import './CreateWebsite.less';
 import {
   getCreateWebsiteLoading,
   getDomainAvailableStatus,
   getParentDomain,
 } from '../../../store/websiteStore/websiteSelectors';
+
+import './CreateWebsite.less';
 
 export const CreateWebsite = ({
   intl,

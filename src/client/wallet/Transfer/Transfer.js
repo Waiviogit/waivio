@@ -29,6 +29,7 @@ import {
 } from '../../store/authStore/authSelectors';
 import {
   getIsTransferVisible,
+  getIsVipTickets,
   getTotalVestingFundSteem,
   getTotalVestingShares,
   getTransferAmount,
@@ -68,6 +69,7 @@ const InputGroup = Input.Group;
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
+    isVipTickets: getIsVipTickets(state),
     showModal: isOpenLinkModal(state),
   }),
   {
@@ -106,11 +108,13 @@ export default class Transfer extends React.Component {
     getPayables: PropTypes.func,
     match: PropTypes.shape().isRequired,
     isTip: PropTypes.bool.isRequired,
+    isVipTickets: PropTypes.bool,
   };
 
   static defaultProps = {
     to: '',
     visible: false,
+    isVipTickets: false,
     amount: 0,
     memo: '',
     app: '',
@@ -535,7 +539,7 @@ export default class Transfer extends React.Component {
     } = this.props;
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
-    const isChangesDisabled = !!memo;
+    const isChangesDisabled = !!memo || this.props.isVipTickets;
     const amountClassList = classNames('balance', {
       'balance--disabled': isChangesDisabled,
     });

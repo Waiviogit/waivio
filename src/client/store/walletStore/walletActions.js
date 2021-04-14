@@ -57,6 +57,7 @@ export const openTransfer = (
   memo = '',
   app,
   tip = false,
+  isVipTicket = false,
 ) => dispatch =>
   dispatch({
     type: OPEN_TRANSFER,
@@ -67,6 +68,7 @@ export const openTransfer = (
       memo,
       app,
       tip,
+      isVipTicket,
     },
   });
 

@@ -69,56 +69,13 @@
     margin-top: 5px;
   }
 
-  .NewsFiltersRule-line {
-    .ObjectCard {
-      padding: 5px 0;
-      border-bottom: none;
-    }
-
-    &-and {
-      padding: 17px 10px;
-    }
-
-    &-card {
-      position: relative;
-      padding-left: 5px;
-      border: @base-border;
-      border-radius: 4px;
-      margin-bottom: 10px;
-    }
-
-    &-close {
-      position: absolute;
-      top: -12px;
-      right: -12px;
-      background-color: @white;
-
-      .anticon {
-        font-size: 23px;
-        cursor: pointer;
-
-        &:hover {
-          color: @primary-color;
-        }
-      }
-    }
-
-    &-search {
-      padding: 10px 0;
-      width: 100%;
-    }
-
-    padding: 10px 0;
-    border-bottom: @base-border;
-  }
-
   & .ant-form-item-label {
     position: relative;
     top: 8px !important;
   }
 
   & .ant-form-item-required {
-    &:before {
+    &::before {
       content: '' !important;
     }
   }
@@ -134,7 +91,6 @@
   &__appendTitles {
     font-weight: bold;
     color: @tertiary-color;
-    margin-left: 5px !important;
   }
 
   &__input {
@@ -232,6 +188,7 @@
   &__drop-down.ant-select-dropdown.ant-select-dropdown--single.ant-select-dropdown-placement-bottomLeft {
     z-index: 1300;
   }
+
   .has-error .ant-form-explain {
     margin-top: -4px;
     margin-bottom: 2px;
