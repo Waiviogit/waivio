@@ -123,5 +123,6 @@
   "expertiseCounters": "/expertise-counters",
   "count": "/count",
   "geoIp": "/geo-ip",
+  "vipTickets": "/vip-tickets",
   "payableWarning": "/payable-warning"
 }

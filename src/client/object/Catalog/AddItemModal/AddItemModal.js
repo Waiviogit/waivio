@@ -6,7 +6,7 @@ import { Button, Modal, message, Select, Form } from 'antd';
 import { filter, isEmpty } from 'lodash';
 import { getAppendData, getObjectName, getObjectType } from '../../../helpers/wObjectHelper';
 import { getSuitableLanguage } from '../../../store/reducers';
-import { appendObject } from '../../appendActions';
+import { appendObject } from '../../../store/appendStore/appendActions';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
 import LikeSection from '../../../object/LikeSection';

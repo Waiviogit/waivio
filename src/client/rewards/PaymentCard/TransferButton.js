@@ -6,12 +6,12 @@ import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import Action from '../../components/Button/Action';
-import { openTransfer } from '../../wallet/walletActions';
-import { getHiveBeneficiaryAccount } from '../../store/reducers';
-import { openLinkHiveAccountModal } from '../../settings/settingsActions';
+import { openTransfer } from '../../store/walletStore/walletActions';
+import { openLinkHiveAccountModal } from '../../store/settingsStore/settingsActions';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import { PATH_NAME_RECEIVABLES, PATH_NAME_PAYABLES } from '../../../common/constants/rewards';
 import { isGuestUser } from '../../store/authStore/authSelectors';
+import { getHiveBeneficiaryAccount } from '../../store/settingsStore/settingsSelectors';
 
 const TransferButton = ({
   match,

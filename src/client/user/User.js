@@ -5,8 +5,7 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import { getIsOpenWalletTable, getUsersAccountHistory } from '../store/reducers';
-import { getUserAccountHistory, openTransfer } from '../wallet/walletActions';
+import { getUserAccountHistory, openTransfer } from '../store/walletStore/walletActions';
 import { getUserAccount } from '../store/usersStore/usersActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
@@ -32,6 +31,7 @@ import {
   getIsUserLoaded,
   getUser,
 } from '../store/usersStore/usersSelectors';
+import { getIsOpenWalletTable, getUsersAccountHistory } from '../store/walletStore/walletSelectors';
 
 @connect(
   (state, ownProps) => ({

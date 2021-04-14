@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { isEmpty, map, get, every } from 'lodash';
 import { getTextByFilterKey, getSort } from './rewardsHelper';
-import { setMapFullscreenMode } from '../components/Maps/mapActions';
+import { setMapFullscreenMode } from '../store/mapStore/mapActions';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';

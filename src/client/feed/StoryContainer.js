@@ -2,29 +2,27 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
 import {
-  getBookmarks,
-  getPendingBookmarks,
-  getRebloggedList,
-  getPendingReblogs,
-  getVotingPower,
-  getVotePercent,
-  getShowNSFWPosts,
-} from '../store/reducers';
-import {
   errorFollowingPostAuthor,
   followingPostAuthor,
   pendingFollowingPostAuthor,
   votePost,
 } from '../store/postsStore/postActions';
-import { toggleBookmark } from '../bookmarks/bookmarksActions';
+import { toggleBookmark } from '../store/bookmarksStore/bookmarksActions';
 import { editPost } from '../store/editorStore/editorActions';
-import { reblog } from '../app/Reblog/reblogActions';
+import { reblog } from '../store/reblogStore/reblogActions';
 import { unfollowUser, followUser } from '../store/usersStore/usersActions';
 import { getDownvotes, getUpvotes } from '../helpers/voteHelpers';
 import { getRewardFund } from '../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../store/authStore/authSelectors';
 import { getIsEditorSaving } from '../store/editorStore/editorSelectors';
 import { getPendingLikes, getPosts } from '../store/postsStore/postsSelectors';
+import { getBookmarks, getPendingBookmarks } from '../store/bookmarksStore/bookmarksSelectors';
+import { getPendingReblogs, getRebloggedList } from '../store/reblogStore/reblogSelectors';
+import {
+  getShowNSFWPosts,
+  getVotePercent,
+  getVotingPower,
+} from '../store/settingsStore/settingsSelectors';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);

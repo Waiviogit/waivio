@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Modal } from 'antd';
-import {
-  getIsSettingsLoading,
-  getRewriteLinks,
-  getHiveBeneficiaryAccount,
-} from '../store/reducers';
-import { saveSettings } from './settingsActions';
+import { saveSettings } from '../store/settingsStore/settingsActions';
 import { reload } from '../store/authStore/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Loading from '../components/Icon/Loading';
@@ -21,6 +16,11 @@ import {
   getAuthenticatedUserPrivateEmail,
   getIsReloading,
 } from '../store/authStore/authSelectors';
+import {
+  getHiveBeneficiaryAccount,
+  getIsSettingsLoading,
+  getRewriteLinks,
+} from '../store/settingsStore/settingsSelectors';
 
 import './Settings.less';
 

@@ -9,22 +9,8 @@ import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
 import { getCryptoPriceHistory } from '../../store/appStore/appActions';
-import { closeTransfer, sendPendingTransfer } from '../walletActions';
+import { closeTransfer, sendPendingTransfer } from '../../store/walletStore/walletActions';
 import { notify } from '../../app/Notification/notificationActions';
-import {
-  getIsTransferVisible,
-  getTransferAmount,
-  getTransferCurrency,
-  getTransferMemo,
-  getTransferApp,
-  getTransferTo,
-  getSearchUsersResults,
-  getTotalVestingShares,
-  getTotalVestingFundSteem,
-  getHiveBeneficiaryAccount,
-  isOpenLinkModal,
-  getTransferIsTip,
-} from '../../store/reducers';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import { BANK_ACCOUNT } from '../../../common/constants/waivio';
@@ -33,7 +19,7 @@ import Avatar from '../../components/Avatar';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { REWARD } from '../../../common/constants/rewards';
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
-import { saveSettings, openLinkHiveAccountModal } from '../../settings/settingsActions';
+import { saveSettings, openLinkHiveAccountModal } from '../../store/settingsStore/settingsActions';
 import { createQuery } from '../../helpers/apiHelpers';
 import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
 import {
@@ -41,6 +27,22 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../../store/authStore/authSelectors';
+import {
+  getIsTransferVisible,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+  getTransferAmount,
+  getTransferApp,
+  getTransferCurrency,
+  getTransferIsTip,
+  getTransferMemo,
+  getTransferTo,
+} from '../../store/walletStore/walletSelectors';
+import {
+  getHiveBeneficiaryAccount,
+  isOpenLinkModal,
+} from '../../store/settingsStore/settingsSelectors';
+import { getSearchUsersResults } from '../../store/searchStore/searchSelectors';
 
 import './Transfer.less';
 
@@ -446,9 +448,9 @@ export default class Transfer extends React.Component {
     const userName = isEmpty(searchName) ? to : searchName;
     const isCurrentUser = user.name === match.params.name;
     const guestWithBeneficiary = isGuest && hiveBeneficiaryAccount;
-    const account = guestWithBeneficiary ? hiveBeneficiaryAccount : userName;
+    const account = guestWithBeneficiary && !this.props.to ? hiveBeneficiaryAccount : userName;
 
-    if (guestWithBeneficiary && !form.getFieldValue('to')) {
+    if (guestWithBeneficiary && !form.getFieldValue('to') && !this.props.to) {
       this.props.form.setFieldsValue({
         to: hiveBeneficiaryAccount,
       });
@@ -578,7 +580,7 @@ export default class Transfer extends React.Component {
           defaultMessage: 'Additional message to include in this payment (optional)',
         });
 
-    return (isGuest && hiveBeneficiaryAccount) || !isGuest ? (
+    return (isGuest && (this.props.to || hiveBeneficiaryAccount)) || !isGuest ? (
       <Modal
         visible={visible}
         title={intl.formatMessage({ id: 'transfer_modal_title', defaultMessage: 'Transfer funds' })}

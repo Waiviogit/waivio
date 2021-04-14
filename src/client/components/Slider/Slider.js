@@ -8,7 +8,7 @@ import config from '../../../waivioApi/routes';
 import USDDisplay from '../Utils/USDDisplay';
 import RawSlider from './RawSlider';
 import Transfer from '../../wallet/Transfer/Transfer';
-import { openTransfer } from '../../wallet/walletActions';
+import { openTransfer } from '../../store/walletStore/walletActions';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import { isGuestUser } from '../../store/authStore/authSelectors';
 

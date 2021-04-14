@@ -1,11 +1,11 @@
 import {
   getObject,
   getObjectAuthor,
-  getObjectFields,
-  getRatingFields,
-  getObjectTagCategory,
   getObjectFetchingState,
-} from '../../store/reducers';
+  getObjectFields,
+  getObjectTagCategory,
+  getRatingFields,
+} from '../../store/wObjectStore/wObjectSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

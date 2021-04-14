@@ -11,10 +11,10 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { getSettingsTitle } from './common/helpers';
 import RightSidebar from '../app/Sidebar/RightSidebar';
-import { getOwnWebsites } from '../store/reducers';
-import * as websiteAction from '../websites/websiteActions';
+import * as websiteAction from '../store/websiteStore/websiteActions';
 import { getIsWaivio } from '../store/appStore/appSelectors';
 import { getIsAuthenticated, isGuestUser } from '../store/authStore/authSelectors';
+import { getOwnWebsites } from '../store/websiteStore/websiteSelectors';
 
 import './Settings.less';
 
@@ -30,9 +30,10 @@ const SettingsMain = props => {
   useEffect(() => {
     if (!props.auth || (host && (props.isGuest || !props.isWaivio))) props.history.push('/');
 
-    props.getOwnWebsites().then(({ value }) => {
-      if (host && !value.some(website => website.host === host)) props.history.push('/');
-    });
+    if (!props.isGuest)
+      props.getOwnWebsites().then(({ value }) => {
+        if (host && !value.some(website => website.host === host)) props.history.push('/');
+      });
   }, [props.auth]);
 
   return (

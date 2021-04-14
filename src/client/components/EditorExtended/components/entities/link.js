@@ -3,9 +3,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Entity } from '../../util/constants';
-import { getExitPageSetting } from '../../../../store/reducers';
 import { parseLink } from '../../../../vendor/SanitizeConfig';
 import { getAppUrl } from '../../../../store/appStore/appSelectors';
+import { getExitPageSetting } from '../../../../store/settingsStore/settingsSelectors';
 
 export const findLinkEntities = (contentBlock, callback, contentState) => {
   contentBlock.findEntityRanges(character => {

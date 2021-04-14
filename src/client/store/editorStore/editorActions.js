@@ -14,10 +14,9 @@ import {
 import { jsonParse } from '../../helpers/formatter';
 import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
-import { saveSettings } from '../../settings/settingsActions';
+import { saveSettings } from '../settingsStore/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
-import { clearBeneficiariesUsers } from '../../search/searchActions';
-import { getHiveBeneficiaryAccount, getLocale } from '../reducers';
+import { clearBeneficiariesUsers } from '../searchStore/searchActions';
 import {
   getCurrentHost,
   getIsWaivio,
@@ -25,6 +24,7 @@ import {
   getWebsiteBeneficiary,
 } from '../appStore/appSelectors';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';

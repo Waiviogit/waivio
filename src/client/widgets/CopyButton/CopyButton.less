@@ -1,0 +1,34 @@
+@import (reference) '../../styles/custom.less';
+
+.CopyButton {
+  display: flex;
+  align-items: center;
+
+  &__text {
+    word-break: break-all;
+  }
+
+  &__icon {
+    cursor: pointer;
+    margin-left: 15px;
+    height: 17px;
+
+    span {
+      height: 17px;
+    }
+
+    svg {
+      width: 17px;
+    }
+  }
+}
+
+.nightmode {
+  .CopyButton {
+    &__icon {
+      svg {
+        color: @silver;
+      }
+    }
+  }
+}

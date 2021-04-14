@@ -6,6 +6,15 @@ import { injectIntl } from 'react-intl';
 import { debounce, isEmpty } from 'lodash';
 
 import {
+  resetSearchAutoCompete,
+  searchUsersAutoCompete,
+  searchWebsiteObjectsAutoCompete,
+  setSearchInBox,
+  setShowSearchResult,
+  setWebsiteSearchString,
+} from '../../store/searchStore/searchActions';
+import { resetWebsiteObjectsCoordinates } from '../../store/websiteStore/websiteActions';
+import {
   getIsStartSearchAutoComplete,
   getSearchFiltersTagCategory,
   getSearchObjectsResults,
@@ -13,16 +22,7 @@ import {
   getWebsiteMap,
   getWebsiteSearchType,
   searchObjectTypesResults,
-} from '../../store/reducers';
-import {
-  resetSearchAutoCompete,
-  searchUsersAutoCompete,
-  searchWebsiteObjectsAutoCompete,
-  setSearchInBox,
-  setShowSearchResult,
-  setWebsiteSearchString,
-} from '../searchActions';
-import { resetWebsiteObjectsCoordinates } from '../../websites/websiteActions';
+} from '../../store/searchStore/searchSelectors';
 
 import './WebsiteSearch.less';
 

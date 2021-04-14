@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import { sponsoredRewardsMainContent } from '../ReferralTextHelper';
-import { getStatusSponsoredRewards } from '../ReferralActions';
-import { getStatusSponsoredHistory } from '../../../store/reducers';
+import { getStatusSponsoredRewards } from '../../../store/referralStore/ReferralActions';
 import SponsoredRewardsView from './SponsoredRewardsView';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getStatusSponsoredHistory } from '../../../store/referralStore/referralSelectors';
 
 import './SponsoredRewards.less';
 

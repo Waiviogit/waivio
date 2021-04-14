@@ -38,6 +38,7 @@ const LINKS = {
   WEBSITES_AREAS: '/objects',
   WEBSITES_MUTED_USER: '/muted-users',
   NOTIFICATIONS: '/notifications-list',
+  NEW_ACCOUNT: '/new-accounts',
   USERS: PATH_NAME_DISCOVER,
   BLOG: '/user-blog',
   FEED: '/feed',
@@ -62,6 +63,7 @@ const TOOLS_URLS = [
   LINKS.TOOLS_SETTINGS_GUESTS,
   LINKS.TOOLS_SETTINGS_NOTIFICATIONS,
   LINKS.WEBSITE_CREATE,
+  LINKS.NEW_ACCOUNT,
 ];
 const WEBSITE_URLS = [
   LINKS.TOOLS_SETTINGS,

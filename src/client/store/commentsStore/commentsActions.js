@@ -6,8 +6,7 @@ import { createPostMetadata } from '../../helpers/postHelpers';
 import { createAsyncActionType, getPostKey } from '../../helpers/stateHelpers';
 import { findRoot } from '../../helpers/commentHelpers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
-import { sendCommentAppend } from '../../object/wobjActions';
-import { getLocale } from '../reducers';
+import { sendCommentAppend } from '../wObjectStore/wobjActions';
 import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
 import {
   getAuthenticatedUserName,
@@ -15,6 +14,7 @@ import {
   isGuestUser,
 } from '../authStore/authSelectors';
 import { getCommentsList } from './commentsSelectors';
+import { getLocale } from '../settingsStore/settingsSelectors';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 

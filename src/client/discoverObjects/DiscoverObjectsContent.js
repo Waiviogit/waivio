@@ -11,7 +11,6 @@ import {
   updateActiveFilters,
   updateActiveTagsFilters,
 } from './helper';
-import { getIsMapModalOpen } from '../store/reducers';
 import {
   getObjectTypeByStateFilters,
   clearType,
@@ -22,7 +21,7 @@ import {
   setTagsFiltersAndLoad,
   setActiveTagsFilters,
 } from '../store/objectTypeStore/objectTypeActions';
-import { setMapFullscreenMode } from '../components/Maps/mapActions';
+import { setMapFullscreenMode } from '../store/mapStore/mapActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
@@ -54,6 +53,7 @@ import {
   getObjectTypeSorting,
   getObjectTypeState,
 } from '../store/objectTypeStore/objectTypeSelectors';
+import { getIsMapModalOpen } from '../store/mapStore/mapSelectors';
 
 const modalName = {
   FILTERS: 'filters',

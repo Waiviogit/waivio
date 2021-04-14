@@ -8,15 +8,19 @@ import { connect } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
 import Album from './Album';
 import CreateImage from './CreateImage';
+import withEditor from '../../components/Editor/withEditor';
+import {
+  getAlbums,
+  getRelatedAlbum,
+  getMoreRelatedAlbum,
+} from '../../store/galleryStore/galleryActions';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
+import { getObject } from '../../store/wObjectStore/wObjectSelectors';
 import {
   getIsObjectAlbumsLoading,
-  getObject,
   getObjectAlbums,
   getRelatedPhotos,
-} from '../../store/reducers';
-import withEditor from '../../components/Editor/withEditor';
-import { getAlbums, getRelatedAlbum, getMoreRelatedAlbum } from './galleryActions';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
+} from '../../store/galleryStore/gallerySelectors';
 
 import './ObjectGallery.less';
 

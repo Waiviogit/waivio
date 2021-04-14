@@ -37,6 +37,11 @@ export const personalSettings = {
       defaultMessage: 'Notifications',
     },
     {
+      to: '/new-accounts',
+      id: 'new_accounts',
+      defaultMessage: 'New accounts',
+    },
+    {
       to: '/invite',
       id: 'invite',
       defaultMessage: 'Invite',
