@@ -835,7 +835,7 @@ export default class AppendForm extends Component {
       const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
       const locale = !isEmpty(chosenLocale) ? chosenLocale : usedLocale;
 
-      if (!isEmpty(allowList) || !isEmpty(ignoreList)) {
+      if (!isEmpty(allowList) || !isEmpty(ignoreList) || !isEmpty(this.state.typeList)) {
         this.onSubmit({ currentField, currentLocale: locale });
       } else {
         message.error(
