@@ -107,9 +107,6 @@
       padding: 10px 0;
       width: 100%;
     }
-
-    padding: 10px 0;
-    border-bottom: @base-border;
   }
 
   & .ant-form-item-label {
@@ -118,7 +115,7 @@
   }
 
   & .ant-form-item-required {
-    &:before {
+    &::before {
       content: '' !important;
     }
   }
@@ -134,7 +131,6 @@
   &__appendTitles {
     font-weight: bold;
     color: @tertiary-color;
-    margin-left: 5px !important;
   }
 
   &__input {
@@ -232,6 +228,7 @@
   &__drop-down.ant-select-dropdown.ant-select-dropdown--single.ant-select-dropdown-placement-bottomLeft {
     z-index: 1300;
   }
+
   .has-error .ant-form-explain {
     margin-top: -4px;
     margin-bottom: 2px;

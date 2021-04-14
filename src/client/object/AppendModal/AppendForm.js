@@ -73,7 +73,6 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getNewsFilterLayout } from './FormComponents/newsFilterHelper';
 import CreateObject from '../../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
@@ -96,6 +95,7 @@ import { getVotePercent, getVotingPower } from '../../store/settingsStore/settin
 import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
 
 import './AppendForm.less';
+import NewsFilterForm from './FormComponents/NewsFilterForm';
 
 @connect(
   state => ({
@@ -195,6 +195,7 @@ export default class AppendForm extends Component {
     currentAlbum: '',
     currentImages: [],
     selectedUserBlog: [],
+    typeList: [],
     formColumn: formColumnsField.middle,
     formForm: formFormFields.link,
     itemsInSortingList: null,
@@ -591,12 +592,16 @@ export default class AppendForm extends Component {
     this.setState({ ignoreList });
   };
 
-  handleRemoveObjectFromIgnoreList = obj => {
-    let ignoreList = this.state.ignoreList;
+  handleAddTypeToIgnoreTypeList = type =>
+    this.setState(prevState => ({ typeList: [...prevState.typeList, type] }));
 
-    ignoreList = filter(ignoreList, o => o.author_permlink !== obj.author_permlink);
-    this.setState({ ignoreList });
-  };
+  handleRemoveObjectFromIgnoreTypeList = type =>
+    this.setState(prevState => ({ typeList: prevState.typeList.filter(g => g !== type) }));
+
+  handleRemoveObjectFromIgnoreList = obj =>
+    this.setState(prevState => ({
+      ignoreList: filter(prevState.ignoreList, o => o.author_permlink !== obj.author_permlink),
+    }));
 
   calculateVoteWorth = value => {
     const { user, rewardFund, rate } = this.props;
@@ -1953,7 +1958,24 @@ export default class AppendForm extends Component {
         );
       }
       case objectFields.newsFilter:
-        return getNewsFilterLayout(this);
+        return (
+          <NewsFilterForm
+            handleAddNewsFilterTitle={this.handleAddNewsFilterTitle}
+            handleAddTypeToIgnoreTypeList={this.handleAddTypeToIgnoreTypeList}
+            screenSize={this.props.screenSize}
+            currObjId={get(this.props.wObject, 'author_permlink', '')}
+            allowList={this.state.allowList}
+            ignoreList={this.state.ignoreList}
+            typeList={this.state.typeList}
+            loading={this.state.loading}
+            deleteRuleItem={this.deleteRuleItem}
+            handleAddObjectToIgnoreList={this.handleAddObjectToIgnoreList}
+            handleRemoveObjectFromIgnoreTypeList={this.handleRemoveObjectFromIgnoreTypeList}
+            handleAddObjectToRule={this.handleAddObjectToRule}
+            addNewNewsFilterLine={this.addNewNewsFilterLine}
+            handleRemoveObjectFromIgnoreList={this.handleRemoveObjectFromIgnoreList}
+          />
+        );
       case objectFields.tagCategory: {
         return (
           <Form.Item>

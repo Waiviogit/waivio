@@ -77,7 +77,7 @@ const WebsiteBody = props => {
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   let mapHeight = 'calc(100vh - 57px)';
 
-  if (height) mapHeight = `${height - 57}px`;
+  if (height && isMobile) mapHeight = `${height - 57}px`;
 
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
@@ -388,7 +388,7 @@ const WebsiteBody = props => {
             {zoomButtonsLayout()}
             <Map
               center={area.center}
-              height={height}
+              height={mapHeight}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
