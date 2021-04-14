@@ -1663,5 +1663,6 @@
   "create_new_account_instruction": "When you open your first Hive account, you can do so",
   "create_new_account_instruction_part2": "by confirming your mobile phone. But if you prefer an anonymous account or need additional accounts, you can do so by purchasing HiveOnBoard VIP tickets",
   "create_new_account_protect": "In order to protect Hive from spam, the blockchain witnesses have introduced a small one-time fee for new Hive accounts.",
-  "new_accounts": "New accounts"
+  "new_accounts": "New accounts",
+  "list_types": "List types"
 }
