@@ -73,7 +73,6 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getNewsFilterLayout } from '../NewsFilter/newsFilterHelper';
 import CreateObject from '../../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
@@ -94,6 +93,7 @@ import {
 } from '../../store/wObjectStore/wObjectSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
 import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
+import NewsFilterForm from './FormComponents/NewsFilterForm';
 
 import './AppendForm.less';
 
@@ -195,6 +195,7 @@ export default class AppendForm extends Component {
     currentAlbum: '',
     currentImages: [],
     selectedUserBlog: [],
+    typeList: [],
     formColumn: formColumnsField.middle,
     formForm: formFormFields.link,
     itemsInSortingList: null,
@@ -351,7 +352,7 @@ export default class AppendForm extends Component {
         const allowList = this.state.allowList.map(o => o.map(item => item.author_permlink));
         const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
 
-        fieldBody.push(JSON.stringify({ allowList, ignoreList }));
+        fieldBody.push(JSON.stringify({ allowList, ignoreList, typeList: this.state.typeList }));
         break;
       }
       case objectFields.sorting: {
@@ -409,8 +410,13 @@ export default class AppendForm extends Component {
           return `@${author} added #tag ${this.state.selectedObject.name} (${langReadable}) into ${this.state.selectedCategory.body} category`;
         }
         case objectFields.newsFilter: {
+          const getDotOrComma = (list, index) => (list.length - 1 === index ? '.' : ', ');
           let rulesAllow = `\n`;
           let rulesIgnore = '\n';
+          const rulesTypes = this.state.typeList.reduce(
+            (acc, curr, i) => `${acc}${curr}${getDotOrComma(this.state.typeList, i)}`,
+            'Type list: ',
+          );
           let rulesCounter = 0;
 
           this.state.allowList.forEach(rule => {
@@ -426,16 +432,16 @@ export default class AppendForm extends Component {
 
           this.state.ignoreList.forEach((rule, index) => {
             if (!isEmpty(rule)) {
-              rulesIgnore = '\nIgnore list:';
-              const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
-
-              rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${rule.author_permlink}</a>${dotOrComma}`;
+              rulesIgnore = '\n Ignore list:';
+              rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${
+                rule.author_permlink
+              }</a>${getDotOrComma(this.state.ignoreList, index)}`;
             }
           });
 
           return `@${author} added ${currentField} ${this.getNewsFilterTitle(
             this.state.newsFilterTitle,
-          )} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
+          )} (${langReadable}):\n ${rulesAllow} ${rulesIgnore} ${rulesTypes}`;
         }
         case objectFields.form:
           return `@${author} added form: ${formValues.formTitle}, link: ${formValues.formLink ||
@@ -591,12 +597,16 @@ export default class AppendForm extends Component {
     this.setState({ ignoreList });
   };
 
-  handleRemoveObjectFromIgnoreList = obj => {
-    let ignoreList = this.state.ignoreList;
+  handleAddTypeToIgnoreTypeList = type =>
+    this.setState(prevState => ({ typeList: [...prevState.typeList, type] }));
 
-    ignoreList = filter(ignoreList, o => o.author_permlink !== obj.author_permlink);
-    this.setState({ ignoreList });
-  };
+  handleRemoveObjectFromIgnoreTypeList = type =>
+    this.setState(prevState => ({ typeList: prevState.typeList.filter(g => g !== type) }));
+
+  handleRemoveObjectFromIgnoreList = obj =>
+    this.setState(prevState => ({
+      ignoreList: filter(prevState.ignoreList, o => o.author_permlink !== obj.author_permlink),
+    }));
 
   calculateVoteWorth = value => {
     const { user, rewardFund, rate } = this.props;
@@ -1953,7 +1963,24 @@ export default class AppendForm extends Component {
         );
       }
       case objectFields.newsFilter:
-        return getNewsFilterLayout(this);
+        return (
+          <NewsFilterForm
+            handleAddNewsFilterTitle={this.handleAddNewsFilterTitle}
+            handleAddTypeToIgnoreTypeList={this.handleAddTypeToIgnoreTypeList}
+            screenSize={this.props.screenSize}
+            currObjId={get(this.props.wObject, 'author_permlink', '')}
+            allowList={this.state.allowList}
+            ignoreList={this.state.ignoreList}
+            typeList={this.state.typeList}
+            loading={this.state.loading}
+            deleteRuleItem={this.deleteRuleItem}
+            handleAddObjectToIgnoreList={this.handleAddObjectToIgnoreList}
+            handleRemoveObjectFromIgnoreTypeList={this.handleRemoveObjectFromIgnoreTypeList}
+            handleAddObjectToRule={this.handleAddObjectToRule}
+            addNewNewsFilterLine={this.addNewNewsFilterLine}
+            handleRemoveObjectFromIgnoreList={this.handleRemoveObjectFromIgnoreList}
+          />
+        );
       case objectFields.tagCategory: {
         return (
           <Form.Item>
