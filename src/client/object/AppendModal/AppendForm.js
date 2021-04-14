@@ -410,9 +410,13 @@ export default class AppendForm extends Component {
           return `@${author} added #tag ${this.state.selectedObject.name} (${langReadable}) into ${this.state.selectedCategory.body} category`;
         }
         case objectFields.newsFilter: {
+          const getDotOrComma = (list, index) => (list.length - 1 === index ? '.' : ', ');
           let rulesAllow = `\n`;
           let rulesIgnore = '\n';
-          let rulesTypes = '\n';
+          const rulesTypes = this.state.typeList.reduce(
+            (acc, curr, i) => `${acc}${curr}${getDotOrComma(this.state.typeList, i)}`,
+            'Type list: ',
+          );
           let rulesCounter = 0;
 
           this.state.allowList.forEach(rule => {
@@ -426,21 +430,12 @@ export default class AppendForm extends Component {
             }
           });
 
-          this.state.typeList.forEach((rule, index) => {
-            if (!isEmpty(rule)) {
-              rulesTypes = '\n Type list:';
-              const dotOrComma = this.state.typeList.length - 1 === index ? '.' : ',';
-
-              rulesTypes += `${rule}${dotOrComma}`;
-            }
-          });
-
           this.state.ignoreList.forEach((rule, index) => {
             if (!isEmpty(rule)) {
-              rulesTypes = '\n Ignore list:';
-              const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
-
-              rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${rule.author_permlink}</a>${dotOrComma}`;
+              rulesIgnore = '\n Ignore list:';
+              rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${
+                rule.author_permlink
+              }</a>${getDotOrComma(this.state.ignoreList, index)}`;
             }
           });
 
