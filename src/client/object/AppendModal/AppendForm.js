@@ -352,7 +352,7 @@ export default class AppendForm extends Component {
         const allowList = this.state.allowList.map(o => o.map(item => item.author_permlink));
         const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
 
-        fieldBody.push(JSON.stringify({ allowList, ignoreList }));
+        fieldBody.push(JSON.stringify({ allowList, ignoreList, typeList: this.state.typeList }));
         break;
       }
       case objectFields.sorting: {
@@ -412,6 +412,7 @@ export default class AppendForm extends Component {
         case objectFields.newsFilter: {
           let rulesAllow = `\n`;
           let rulesIgnore = '\n';
+          let rulesTypes = '\n';
           let rulesCounter = 0;
 
           this.state.allowList.forEach(rule => {
@@ -425,9 +426,18 @@ export default class AppendForm extends Component {
             }
           });
 
+          this.state.typeList.forEach((rule, index) => {
+            if (!isEmpty(rule)) {
+              rulesTypes = '\n Type list:';
+              const dotOrComma = this.state.typeList.length - 1 === index ? '.' : ',';
+
+              rulesTypes += `${rule}${dotOrComma}`;
+            }
+          });
+
           this.state.ignoreList.forEach((rule, index) => {
             if (!isEmpty(rule)) {
-              rulesIgnore = '\nIgnore list:';
+              rulesTypes = '\n Ignore list:';
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
 
               rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${rule.author_permlink}</a>${dotOrComma}`;
@@ -436,7 +446,7 @@ export default class AppendForm extends Component {
 
           return `@${author} added ${currentField} ${this.getNewsFilterTitle(
             this.state.newsFilterTitle,
-          )} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
+          )} (${langReadable}):\n ${rulesAllow} ${rulesIgnore} ${rulesTypes}`;
         }
         case objectFields.form:
           return `@${author} added form: ${formValues.formTitle}, link: ${formValues.formLink ||

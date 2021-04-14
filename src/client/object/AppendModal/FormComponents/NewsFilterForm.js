@@ -1,4 +1,4 @@
-import { AutoComplete, Col, Icon, Input, Row } from 'antd';
+import { AutoComplete, Icon, Input } from 'antd';
 import { map, get } from 'lodash';
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
@@ -8,22 +8,27 @@ import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchOb
 import ObjectCard from '../../../components/Sidebar/ObjectCard';
 import listOfObjectTypes from '../../../../common/constants/listOfObjectTypes';
 
+import './NewsFilterForm.less';
+
 const NewsFilterForm = props => {
   const [searchString, setSearchString] = useState('');
   const isMobile = screenSize => screenSize === 'xsmall' || screenSize === 'small';
+  const typesList = listOfObjectTypes.filter(type => !props.typeList.includes(type));
+  const handleSelect = value => {
+    props.handleAddTypeToIgnoreTypeList(value);
+    setSearchString('');
+  };
 
-  const andLayout = (compareItems, isTypes) =>
-    compareItems > 0 && !isMobile(props.screenSize) ? (
-      <Col
-        className={`NewsFiltersRule-line-and ${isTypes ? 'NewsFiltersRule-line-and--little' : ''}`}
-        span={2}
-      >
+  const andLayout = compareItems =>
+    compareItems > 0 &&
+    !isMobile(props.screenSize) && (
+      <div className={`NewsFiltersRule__line-and`}>
         {props.intl.formatMessage({
           id: 'and',
           defaultMessage: 'and',
         })}
-      </Col>
-    ) : null;
+      </div>
+    );
 
   const getAllowListLayout = () => (
     <React.Fragment>
@@ -39,55 +44,48 @@ const NewsFilterForm = props => {
                 defaultMessage: 'Filter rule',
               },
             )} ${rowIndex + 1}`}</div>
-            <Row className="NewsFiltersRule-line">
-              {map(items, (item, index) => {
-                ruleIndex = index + 1;
-                itemsIdsToOmit.push(item.author_permlink);
+            <div className="NewsFiltersRule__line">
+              <div className="NewsFiltersRule__card-wrap">
+                {map(items, (item, index) => {
+                  ruleIndex = index + 1;
+                  itemsIdsToOmit.push(item.author_permlink);
 
-                return (
-                  <React.Fragment key={`allowList${ruleIndex}${item.author_permlink}`}>
-                    {andLayout(index)}
-                    <Col
-                      className="NewsFiltersRule-line-card"
-                      span={isMobile(props.screenSize) ? 24 : 6}
-                    >
-                      <ObjectCard
-                        wobject={{ ...item, author_permlink: item.author_permlink }}
-                        showFollow={false}
-                        isNewWindow
-                      />
-                      <div className="NewsFiltersRule-line-close">
-                        <Icon
-                          type="close-circle"
-                          onClick={() => props.deleteRuleItem(rowIndex, item.author_permlink)}
+                  return (
+                    <React.Fragment key={`allowList${ruleIndex}${item.author_permlink}`}>
+                      {andLayout(index)}
+                      <div className="NewsFiltersRule__line-card">
+                        <ObjectCard
+                          wobject={{ ...item, author_permlink: item.author_permlink }}
+                          showFollow={false}
+                          isNewWindow
                         />
+                        <div className="NewsFiltersRule__line-close">
+                          <Icon
+                            type="close-circle"
+                            onClick={() => props.deleteRuleItem(rowIndex, item.author_permlink)}
+                          />
+                        </div>
                       </div>
-                    </Col>
-                  </React.Fragment>
-                );
-              })}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
               {items.length < 5 && (
-                <React.Fragment>
-                  {andLayout(items.length)}
-                  <Col
-                    className="NewsFiltersRule-line-search"
-                    span={isMobile(props.screenSize) ? 20 : 6}
-                  >
-                    <SearchObjectsAutocomplete
-                      allowClear={false}
-                      itemsIdsToOmit={itemsIdsToOmit}
-                      rowIndex={rowIndex}
-                      ruleIndex={ruleIndex}
-                      placeholder={props.intl.formatMessage({
-                        id: 'object_fiels_news_select_placeholder',
-                        defaultMessage: 'Please select',
-                      })}
-                      handleSelect={props.handleAddObjectToRule}
-                    />
-                  </Col>
-                </React.Fragment>
+                <div className="NewsFiltersRule__line-search">
+                  <SearchObjectsAutocomplete
+                    allowClear={false}
+                    itemsIdsToOmit={itemsIdsToOmit}
+                    rowIndex={rowIndex}
+                    ruleIndex={ruleIndex}
+                    placeholder={props.intl.formatMessage({
+                      id: 'object_fiels_news_select_placeholder',
+                      defaultMessage: 'Please select',
+                    })}
+                    handleSelect={props.handleAddObjectToRule}
+                  />
+                </div>
               )}
-            </Row>
+            </div>
           </React.Fragment>
         );
       })}
@@ -105,36 +103,36 @@ const NewsFilterForm = props => {
 
   const getIgnoreListLayout = () => {
     const itemsIdsToOmit = [props.currObjId];
-    const ignoreList = props.ignoreList;
 
     const layout = (
-      <Row className="NewsFiltersRule-line">
-        {map(ignoreList, (item, index) => {
-          itemsIdsToOmit.push(item.author_permlink);
+      <div className="NewsFiltersRule__line">
+        <div className="NewsFiltersRule__card-wrap">
+          {map(props.ignoreList, (item, index) => {
+            itemsIdsToOmit.push(item.author_permlink);
 
-          return (
-            <React.Fragment key={`ignoreList${item.author_permlink}`}>
-              {andLayout(index)}
-              <Col className="NewsFiltersRule-line-card" span={isMobile(props.screenSize) ? 24 : 6}>
-                <ObjectCard
-                  wobject={{ ...item, author_permlink: item.author_permlink }}
-                  showFollow={false}
-                  isNewWindow
-                />
-                <div className="NewsFiltersRule-line-close">
-                  <Icon
-                    type="close-circle"
-                    onClick={() => props.handleRemoveObjectFromIgnoreList(item)}
+            return (
+              <React.Fragment key={`ignoreList${item.author_permlink}`}>
+                {andLayout(index)}
+                <div className="NewsFiltersRule__line-card">
+                  <ObjectCard
+                    wobject={{ ...item, author_permlink: item.author_permlink }}
+                    showFollow={false}
+                    isNewWindow
                   />
+                  <div className="NewsFiltersRule__line-close">
+                    <Icon
+                      type="close-circle"
+                      onClick={() => props.handleRemoveObjectFromIgnoreList(item)}
+                    />
+                  </div>
                 </div>
-              </Col>
-            </React.Fragment>
-          );
-        })}
-        {ignoreList.length < 20 && (
+              </React.Fragment>
+            );
+          })}
+        </div>
+        {props.ignoreList.length < 20 && (
           <React.Fragment>
-            {andLayout(ignoreList.length)}
-            <Col className="NewsFiltersRule-line-search" span={isMobile(props.screenSize) ? 20 : 6}>
+            <div className="NewsFiltersRule__line-search">
               <SearchObjectsAutocomplete
                 allowClear={false}
                 itemsIdsToOmit={itemsIdsToOmit}
@@ -144,43 +142,59 @@ const NewsFilterForm = props => {
                 })}
                 handleSelect={props.handleAddObjectToIgnoreList}
               />
-            </Col>
+            </div>
           </React.Fragment>
         )}
-      </Row>
+      </div>
     );
 
     return layout || null;
   };
 
-  const getIgnoreTypesListLayout = () => {
-    const ignoreList = props.typeList;
-    const typesList = listOfObjectTypes.filter(type => !ignoreList.includes(type));
-    const handleSelect = value => {
-      props.handleAddTypeToIgnoreTypeList(value);
-      setSearchString('');
-    };
-
-    const layout = (
-      <Row className="NewsFiltersRule-line">
-        {map(ignoreList, (item, index) => (
-          <React.Fragment key={`ignoreList${item}`}>
-            {andLayout(index)}
-            <Col className="NewsFiltersRule-line-card" span={isMobile(props.screenSize) ? 24 : 6}>
-              <span>{item}</span>
-              <div className="NewsFiltersRule-line-close">
-                <Icon
-                  type="close-circle"
-                  onClick={() => props.handleRemoveObjectFromIgnoreTypeList(item)}
-                />
+  return (
+    <React.Fragment>
+      <Input
+        disabled={props.loading}
+        placeholder={props.intl.formatMessage({
+          id: 'object_field_news_title',
+          defaultMessage: 'News title',
+        })}
+        onChange={props.handleAddNewsFilterTitle}
+      />
+      {getAllowListLayout()}
+      <div className="AppendForm__appendTitles">
+        {props.intl.formatMessage({
+          id: 'ignoreList',
+          defaultMessage: 'Ignore list',
+        })}
+      </div>
+      {getIgnoreListLayout()}
+      <div className="AppendForm__appendTitles">
+        {props.intl.formatMessage({
+          id: 'list_types',
+          defaultMessage: 'List types',
+        })}
+      </div>
+      <div className="NewsFiltersRule__line">
+        <div className="NewsFiltersRule__card-wrap">
+          {map(props.typeList, (item, index) => (
+            <React.Fragment key={`ignoreList${item}`}>
+              {andLayout(index)}
+              <div className="NewsFiltersRule__line-card NewsFiltersRule__line-card--types">
+                <span>{item}</span>
+                <div className="NewsFiltersRule__line-close">
+                  <Icon
+                    type="close-circle"
+                    onClick={() => props.handleRemoveObjectFromIgnoreTypeList(item)}
+                  />
+                </div>
               </div>
-            </Col>
-          </React.Fragment>
-        ))}
-        {ignoreList.length < 20 && (
+            </React.Fragment>
+          ))}
+        </div>
+        {props.typeList.length < 20 && (
           <React.Fragment>
-            {andLayout(ignoreList.length, true)}
-            <Col className="NewsFiltersRule-line-search" span={isMobile(props.screenSize) ? 20 : 6}>
+            <div className="NewsFiltersRule__line-search">
               <AutoComplete
                 onSelect={handleSelect}
                 value={searchString}
@@ -202,40 +216,10 @@ const NewsFilterForm = props => {
                   </AutoComplete.Option>
                 ))}
               </AutoComplete>
-            </Col>
+            </div>
           </React.Fragment>
         )}
-      </Row>
-    );
-
-    return layout || null;
-  };
-
-  return (
-    <React.Fragment>
-      <Input
-        disabled={props.loading}
-        placeholder={props.intl.formatMessage({
-          id: 'object_field_news_title',
-          defaultMessage: 'News title',
-        })}
-        onChange={props.handleAddNewsFilterTitle}
-      />
-      {getAllowListLayout(props)}
-      <div className="AppendForm__appendTitles">
-        {props.intl.formatMessage({
-          id: 'ignoreList',
-          defaultMessage: 'Ignore list',
-        })}
       </div>
-      {getIgnoreListLayout(props)}
-      <div className="AppendForm__appendTitles">
-        {props.intl.formatMessage({
-          id: 'list_types',
-          defaultMessage: 'List types',
-        })}
-      </div>
-      {getIgnoreTypesListLayout(props)}
     </React.Fragment>
   );
 };
@@ -245,7 +229,6 @@ NewsFilterForm.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   screenSize: PropTypes.string.isRequired,
-  // const currObjId = props.wObject.author_permlink;
   currObjId: PropTypes.string.isRequired,
   allowList: PropTypes.arrayOf().isRequired,
   ignoreList: PropTypes.arrayOf().isRequired,
