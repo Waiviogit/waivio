@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { map, filter, find, get, reduce, isEmpty } from 'lodash';
+import { map, filter, find, get, reduce, round } from 'lodash';
 import { useSelector } from 'react-redux';
 import ReportTableRewardsRow from '../ReportTableRewards/ReportTableRewardsRow';
 import ReportTableRewardsRowTotal from './ReportTableRewardsRowTotal';
@@ -17,14 +17,16 @@ const ReportTableRewards = ({ intl }) => {
     singleReportData.histories,
     obj => obj.type === 'review' || obj.type === 'beneficiary_fee',
   ).sort((a, b) => getPayableInDollars(b) - getPayableInDollars(a));
+  const totalUSD = Number(
+    filteredHistory.reduce((sum, benef) => sum + getPayableInDollars(benef), 0),
+  );
+  const totalAmount = filteredHistory.reduce((sum, benef) => sum + benef.amount, 0);
+  const totalHive = Number(totalAmount);
 
   const beneficiaries = reduce(
     filteredHistory,
     (acc, obj) => {
       const userName = get(obj, ['userName']);
-      const benef = get(obj, ['details', 'beneficiaries']);
-      const account = find(benef, ['account', userName]);
-      const totalWeight = benef.reduce((sum, item) => sum + item.weight, 0);
       const ownHive = userName === reportUserName;
 
       return [
@@ -32,9 +34,9 @@ const ReportTableRewards = ({ intl }) => {
         {
           id: get(obj, '_id'),
           account: get(obj, ['userName'], ''),
-          weight: account && !isEmpty(acc) ? account.weight / 100 : (10000 - totalWeight) / 100,
-          votesAmount: get(obj, ['details', 'votesAmount']) || null,
-          amount: get(obj, ['amount']) || null,
+          weight: round((get(obj, ['amount']) * 100) / totalHive),
+          votesAmount: get(obj, ['details', 'votesAmount'], 0),
+          amount: get(obj, ['amount'], 0),
           payableInDollars: getPayableInDollars(obj),
           ownHive,
         },
@@ -42,19 +44,6 @@ const ReportTableRewards = ({ intl }) => {
     },
     [],
   );
-
-  const totalUSD = Number(
-    map(beneficiaries, benef => benef.payableInDollars).reduce((sum, usd) => sum + usd, 0),
-  );
-  const totalVotesAmount = map(beneficiaries, benef => benef.votesAmount).reduce(
-    (sum, amount) => sum + amount,
-    0,
-  );
-  const totalAmount = map(beneficiaries, benef => benef.amount).reduce(
-    (sum, amount) => sum + amount,
-    0,
-  );
-  const totalHive = Number(totalVotesAmount + totalAmount);
 
   return (
     <React.Fragment>
