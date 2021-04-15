@@ -63,3 +63,20 @@ export const getReviewTitle = (campaignData, linkedObjects) => {
 };
 
 export const getCurrentDraftId = (draftId, draftIdEditor) => (!draftIdEditor && !draftId) ? uuidv4() : (draftId || draftIdEditor);
+
+export const getCurrentDraftContent = (nextState, rawContent, currentRawContent) => {
+  const prevValue = Object.values(get(currentRawContent, 'entityMap', []));
+  const nextValue = Object.values(get(rawContent, 'entityMap', []));
+
+  if (!isEqual(prevValue, nextValue)) {
+    return {
+      draftContent: {
+        body: nextState.content,
+        title: nextState.titleValue,
+      },
+      currentRawContent: rawContent,
+    }
+  }
+
+  return {};
+}

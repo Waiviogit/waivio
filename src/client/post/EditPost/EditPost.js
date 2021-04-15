@@ -1,12 +1,10 @@
 import React, {useCallback} from 'react';
 import PropTypes from 'prop-types';
-import {injectIntl} from 'react-intl';
 import {Badge} from 'antd';
 import {
   debounce,
   get,
   has,
-  kebabCase,
   uniqBy,
   includes,
   find,
@@ -16,7 +14,7 @@ import {
   isEqual,
   isEmpty,
 } from 'lodash';
-import {createPostMetadata, getInitialState, getObjectUrl} from '../../helpers/postHelpers';
+import { getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
@@ -26,15 +24,12 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import {setObjPercents} from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
-import {getObjectName} from '../../helpers/wObjectHelper';
-import { getCurrentDraftId, getLinkedObjects } from '../../helpers/editorHelper';
+import { getCurrentDraftContent, getCurrentDraftId, getLinkedObjects } from '../../helpers/editorHelper';
 
 import './EditPost.less';
 
 const propTypes = {
   intl: PropTypes.shape().isRequired,
-  user: PropTypes.shape().isRequired,
-  // userName: PropTypes.string.isRequired,
   locale: PropTypes.string.isRequired,
   draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   campaignId: PropTypes.string, // eslint-disable-line
@@ -44,14 +39,15 @@ const propTypes = {
   imageLoading: PropTypes.bool,
   createPost: PropTypes.func,
   saveDraft: PropTypes.func,
+  buildPost: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   getReviewCheckInfo: PropTypes.func.isRequired,
   setUpdatedEditorData: PropTypes.func.isRequired,
+  handleObjectSelect: PropTypes.func.isRequired,
   isWaivio: PropTypes.bool,
   isGuest: PropTypes.bool,
   beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
   history: PropTypes.shape().isRequired,
-  host: PropTypes.string.isRequired,
   editor: PropTypes.shape().isRequired,
   currDraft: PropTypes.shape().isRequired,
   location: PropTypes.shape().isRequired,
@@ -90,13 +86,13 @@ const EditPost = (props) => {
     getReviewCheckInfo,
     beneficiaries,
     createPost,
-    user,
-    host,
     isWaivio,
     location,
     draftId,
+    buildPost,
+    saveDraft,
     filteredObjectsCards,
-    saveDraft: saveDraftAction,
+    handleObjectSelect,
     editor: {
       draftContent,
       content,
@@ -110,9 +106,6 @@ const EditPost = (props) => {
       titleValue,
       currentRawContent,
       draftIdEditor,
-      parentPermlink,
-      originalBody,
-      permlink,
     },
   } = props;
 
@@ -122,16 +115,14 @@ const EditPost = (props) => {
       search: `draft=${getCurrentDraftId(draftId, draftIdEditor)}`,
     });
     setEditorState(getInitialState(props));
-    const campaignId = get(campaign, 'id') ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
+    const campaignId = get(campaign, 'id') || get(currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
     const linkedObjectsCardsSession = JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
 
     setUpdatedEditorData({isReview, linkedObjectsCards: linkedObjectsCardsSession})
 
     if (isReview) {
-      const postPermlink = get(currDraft, 'permlink');
-
-      getReviewCheckInfo({campaignId, isPublicReview: postPermlink}, true)
+      getReviewCheckInfo({campaignId, isPublicReview: get(currDraft, 'permlink')}, true)
     }
   }, []);
 
@@ -148,7 +139,8 @@ const EditPost = (props) => {
 
   React.useEffect(() => {
     saveDraft();
-  }, [linkedObjects, objPercentage, content, titleValue, topics]);
+  },
+    [linkedObjects, objPercentage, content, titleValue, topics]);
 
   const setDraftId = () => {
     if (draftId && draftId !== draftIdEditor) {
@@ -165,25 +157,8 @@ const EditPost = (props) => {
     }
   };
 
-  const setCurrentDraftContent = (nextState, rawContent) => {
-    const prevValue = get(currentRawContent, 'entityMap', []);
-    const nextValue = get(rawContent, 'entityMap', []);
-
-    const prevEntityMap = Object.values(prevValue);
-    const nextEntityMap = Object.values(nextValue);
-
-    if (!isEqual(prevEntityMap, nextEntityMap)) {
-      setUpdatedEditorData({
-        draftContent: {
-          body: nextState.content,
-          title: nextState.titleValue,
-        },
-        currentRawContent: rawContent,
-      })
-    }
-  }
-
-  const handleChangeContent = useCallback(debounce((rawContent, title) => {
+  const handleChangeContent = useCallback(debounce(
+    (rawContent, title) => {
     const updatedStore = {content: toMarkdown(rawContent), titleValue: title};
 
     const updatedLinkedObjects = uniqBy(concat(linkedObjects, getLinkedObjects(rawContent)), '_id');
@@ -202,18 +177,15 @@ const EditPost = (props) => {
       isLinkedObjectsChanged ||
       titleValue !== updatedStore.titleValue
     ) {
-      setUpdatedEditorData(updatedStore);
-      setCurrentDraftContent(updatedStore, rawContent);
+      const newDraft = getCurrentDraftContent(updatedStore, rawContent, currentRawContent);
+
+      setUpdatedEditorData({...updatedStore, ...newDraft});
     }
   }, 1500), [currentRawContent, draftId, linkedObjects, linkedObjectsCards, objPercentage]);
-
-  const handleTopicsChange = updatedTopics => setUpdatedEditorData({ topics: updatedTopics });
 
   const handleSettingsChange = updatedValue => setUpdatedEditorData({
       settings: {...settings, ...updatedValue}
     });
-
-  const handlePercentChange = percentage => props.setUpdatedEditorData({objPercentage: percentage});
 
   const handleSubmit = () => {
     const postData = buildPost();
@@ -247,98 +219,14 @@ const EditPost = (props) => {
     });
   }
 
-  const handleObjectSelect = (object) => {
-    const objName = getObjectName(object).toLowerCase();
-    const objPermlink = object.author_permlink;
-    const separator = content.slice(-1) === '\n' ? '' : '\n';
-
-    setUpdatedEditorData({
-      draftContent: {
-        title: titleValue,
-        body: `${content}${separator}[${objName}](${getObjectUrl(
-          object.id || objPermlink,
-        )})&nbsp;\n`,
-      },
-      topics: uniqWith(
-        object.type === 'hashtag' ||
-        (object.object_type === 'hashtag' && [...topics, objPermlink]),
-        isEqual,
-      ),
-    });
-  }
-
   const handleCreateObject = (object) => {
     setTimeout(() => handleObjectSelect(object), 1200);
   }
-  const buildPost = () => {
-    const currentObject = get(linkedObjects, '[0]', {});
-    const objName = currentObject.author_permlink;
-
-    if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
-      setUpdatedEditorData({topics: uniqWith([...topics, objName], isEqual)});
-    }
-    const campaignId = get(campaign, '_id', null);
-    const postData = {
-      body: content,
-      lastUpdated: Date.now(),
-      isUpdating,
-      draftId,
-      ...settings,
-    };
-
-    if (titleValue) {
-      postData.title = titleValue;
-      postData.permlink = permlink || kebabCase(titleValue);
-    }
-
-    postData.parentAuthor = '';
-    postData.parentPermlink = parentPermlink;
-    postData.author = user.name || '';
-
-    const oldMetadata = currDraft && currDraft.jsonMetadata;
-
-    const waivioData = {
-      wobjects: linkedObjects && linkedObjects
-        .filter(obj => get(objPercentage, `[${obj.id}].percent`, 0) > 0)
-        .map(obj => ({
-          object_type: obj.object_type,
-          objectName: getObjectName(obj),
-          author_permlink: obj.author_permlink,
-          percent: get(objPercentage, [obj.id, 'percent']),
-        })),
-    };
-
-    postData.jsonMetadata = createPostMetadata(
-      content,
-      topics,
-      oldMetadata,
-      waivioData,
-      campaignId,
-      host,
-    );
-    if (originalBody) {
-      postData.originalBody = originalBody;
-    }
-
-    return postData;
-  }
-
-  const saveDraft = () => {
-    if (saving) return;
-
-    const draft = buildPost();
-    const postBody = draft.originalBody || draft.body;
-
-    if (!postBody) return;
-    const redirect = draftId !== draftIdEditor;
-
-    saveDraftAction(draft, redirect, intl);
-  };
 
   const handleHashtag = objectName => {
-    setUpdatedEditorData({topics: uniqWith([...topics, objectName], isEqual)});
+    setUpdatedEditorData({ topics: uniqWith([...topics, objectName], isEqual) });
   }
-  const handleLinkedObjectsCards = updatedLinkedObjectsCards => props.setUpdatedEditorData({
+  const handleLinkedObjectsCards = updatedLinkedObjectsCards => setUpdatedEditorData({
     linkedObjectsCards: updatedLinkedObjectsCards
   });
 
@@ -383,10 +271,8 @@ const EditPost = (props) => {
             reviewData={campaign}
             settings={settings}
             topics={topics}
-            onPercentChange={handlePercentChange}
             onSettingsChange={handleSettingsChange}
             onSubmit={handleSubmit}
-            onTopicsChange={handleTopicsChange}
             isGuest={isGuest}
             titleValue={titleValue}
           />
@@ -429,4 +315,4 @@ const EditPost = (props) => {
 EditPost.propTypes = propTypes;
 EditPost.defaultProps = defaultProps;
 
-export default injectIntl(EditPost);
+export default EditPost;

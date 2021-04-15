@@ -3,7 +3,7 @@ import { batch } from 'react-redux';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { orderBy } from 'lodash';
+import { get, isEqual, kebabCase, orderBy, uniqWith } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { REFERRAL_PERCENT } from '../../helpers/constants';
@@ -24,12 +24,14 @@ import {
   getTranslationByKey,
   getWebsiteBeneficiary,
 } from '../appStore/appSelectors';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
 import { getReviewCheckInfo } from "../../../waivioApi/ApiClient";
 import { getReviewTitle } from "../../helpers/editorHelper";
-import { getLinkedObjects } from "./editorSelectors";
+import { getCurrentDraft, getEditor, getEditorDraftId, getIsEditorSaving, getLinkedObjects } from "./editorSelectors";
 import { getSuitableLanguage } from "../reducers";
+import { getObjectName } from "../../helpers/wObjectHelper";
+import { createPostMetadata, getObjectUrl } from "../../helpers/postHelpers";
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -67,7 +69,19 @@ export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_STAR
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
 export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
 
-export const saveDraft = (draft, redirect, intl) => dispatch =>
+export const saveDraft = (draftId, intl) => (dispatch, getState) => {
+  const state = getState();
+  const saving = getIsEditorSaving(state);
+  const editorDraftId = getEditorDraftId(state);
+
+  if (saving) return;
+  const draft = dispatch(buildPost(draftId));
+
+  const postBody = draft.originalBody || draft.body;
+
+  if (!postBody) return;
+  const redirect = draftId !== editorDraftId;
+
   dispatch({
     type: SAVE_DRAFT,
     payload: {
@@ -86,10 +100,11 @@ export const saveDraft = (draft, redirect, intl) => dispatch =>
         throw new Error();
       }),
     },
-    meta: { postId: draft.draftId },
+    meta: {postId: draft.draftId},
   }).then(() => {
     if (redirect) dispatch(push(`/editor?draft=${draft.draftId}`));
   });
+}
 export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
@@ -412,4 +427,84 @@ export const reviewCheckInfo = ({ campaignId, isPublicReview, postPermlinkParam 
         console.log('error', error);
       });
   }
+}
+
+export const buildPost = (draftId) => (dispatch, getState) => {
+  const state = getState();
+  const host = getCurrentHost(state);
+  const user = getAuthenticatedUser(state);
+  const currDraft = getCurrentDraft(state, { draftId });
+  const {linkedObjects, topics, campaign, content, isUpdating, settings, titleValue, permlink, parentPermlink, objPercentage, originalBody} = getEditor(state);
+  const currentObject = get(linkedObjects, '[0]', {});
+  const objName = currentObject.author_permlink;
+
+  if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
+    setUpdatedEditorData({topics: uniqWith([...topics, objName], isEqual)});
+  }
+  const campaignId = get(campaign, '_id', null);
+  const postData = {
+    body: content,
+    lastUpdated: Date.now(),
+    isUpdating,
+    draftId,
+    ...settings,
+  };
+
+  if (titleValue) {
+    postData.title = titleValue;
+    postData.permlink = permlink || kebabCase(titleValue);
+  }
+
+  postData.parentAuthor = '';
+  postData.parentPermlink = parentPermlink;
+  postData.author = user.name || '';
+
+  const oldMetadata = currDraft && currDraft.jsonMetadata;
+
+  const waivioData = {
+    wobjects: linkedObjects && linkedObjects
+      .filter(obj => get(objPercentage, `[${obj.id}].percent`, 0) > 0)
+      .map(obj => ({
+        object_type: obj.object_type,
+        objectName: getObjectName(obj),
+        author_permlink: obj.author_permlink,
+        percent: get(objPercentage, [obj.id, 'percent']),
+      })),
+  };
+
+  postData.jsonMetadata = createPostMetadata(
+    content,
+    topics,
+    oldMetadata,
+    waivioData,
+    campaignId,
+    host,
+  );
+  if (originalBody) {
+    postData.originalBody = originalBody;
+  }
+
+  return postData;
+};
+
+export const handleObjectSelect = object => (dispatch, getState) => {
+  const state = getState();
+  const { content, titleValue, topics } = getEditor(state);
+  const objName = getObjectName(object).toLowerCase();
+  const objPermlink = object.author_permlink;
+  const separator = content.slice(-1) === '\n' ? '' : '\n';
+
+  dispatch(setUpdatedEditorData({
+    draftContent: {
+      title: titleValue,
+      body: `${content}${separator}[${objName}](${getObjectUrl(
+        object.id || objPermlink,
+      )})&nbsp;\n`,
+    },
+    topics: uniqWith(
+      object.type === 'hashtag' ||
+      (object.object_type === 'hashtag' && [...topics, objPermlink]),
+      isEqual,
+    ),
+  }));
 }
