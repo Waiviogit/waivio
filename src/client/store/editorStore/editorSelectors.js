@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { find, filter } from "lodash";
 
 // selector
 export const editorState = state => state.editor;
@@ -17,3 +18,31 @@ export const getIsPostEdited = createSelector(editorState, (state, permlink) =>
 );
 
 export const getIsImageUploading = createSelector([editorState], state => state.loadingImg);
+
+export const getEditor = createSelector([editorState], state => state.editor);
+
+export const getLinkedObjects = createSelector([getEditor], state => state.linkedObjects);
+
+export const getCurrentDraft = createSelector(
+  getDraftPosts,
+  (state, props) => props.draftId,
+    (draftPosts, draftId) => draftPosts.find(d => d.draftId === draftId),
+);
+
+export const getEditorLinkedObjects = createSelector(
+  getEditor,
+  state => state.linkedObjects,
+);
+
+export const getEditorLinkedObjectsCards = createSelector(
+  getEditor,
+  state => state.linkedObjectsCards,
+);
+
+export const getFilteredObjectCards = createSelector(
+  getEditorLinkedObjects,
+  getEditorLinkedObjectsCards,
+  (linkedObjects, linkedObjectsCards) => filter(linkedObjects,
+      object => !find(linkedObjectsCards, {_id: object._id}),
+    )
+);

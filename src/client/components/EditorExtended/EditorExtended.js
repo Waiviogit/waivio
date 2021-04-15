@@ -99,7 +99,7 @@ class Editor extends React.Component {
       JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
 
     handleLinkedObjectsCards(linkedObjectsCardsSession);
-    this.setState({ isMounted: true, titleValue: initialContent.title }); // eslint-disable-line
+    this.setState({ isMounted: true, titleValue: get(initialContent, 'title', '') }); // eslint-disable-line
     this.restoreObjects(fromMarkdown(initialContent)).then(() => this.setFocusAfterMount());
   }
 
@@ -196,6 +196,7 @@ class Editor extends React.Component {
     );
 
     handleLinkedObjectsCards(newLinkedObjectsCards);
+    let rawContentUpdated = rawContent;
 
     if (objectIds.length) {
       const response = await getObjectsByIds({
@@ -226,25 +227,12 @@ class Editor extends React.Component {
           data: currObj ? { ...value.data, object: currObj } : { ...value.data },
         };
       });
-      const rawContentUpdated = {
+      rawContentUpdated = {
         blocks: [...rawContent.blocks],
         entityMap,
       };
-
-      setTimeout(
-        () =>
-          this.handleContentChange(
-            EditorState.moveFocusToEnd(createEditorState(rawContentUpdated)),
-          ),
-        0,
-      );
     }
-    // eslint-disable-next-line no-unused-expressions
-    !isEmpty(rawContent.blocks) &&
-      setTimeout(
-        () => this.handleContentChange(EditorState.moveFocusToEnd(createEditorState(rawContent))),
-        0,
-      );
+    this.handleContentChange(EditorState.moveFocusToEnd(createEditorState(rawContentUpdated)));
   };
 
   handleContentChange = editorState => {

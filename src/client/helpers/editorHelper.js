@@ -1,4 +1,5 @@
-import { last, find, has, uniqWith, isEqual, differenceWith, head } from 'lodash';
+import uuidv4 from "uuid/v4";
+import { last, find, has, uniqWith, isEqual, differenceWith, head, get } from 'lodash';
 
 import { Entity } from '../components/EditorExtended';
 
@@ -38,3 +39,27 @@ export const getLinkedObjects = contentStateRaw => {
     isEqual,
   );
 };
+
+export const getReviewTitle = (campaignData, linkedObjects) => {
+  const firstTitle = get(campaignData, 'requiredObject.name', '');
+  const secondTitle = get(campaignData, 'secondaryObject.name', '');
+  const requiredObj = get(linkedObjects, '[0]', '');
+  const secondObj = get(linkedObjects, '[1]', '');
+  const reviewTitle = `Review: ${firstTitle}, ${secondTitle}`;
+
+  const topics = [];
+
+  if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
+    topics.push(requiredObj.author_permlink || secondObj.author_permlink);
+  }
+
+  return {
+    draftContent: {
+      title: reviewTitle,
+      body: this.state.draftContent.body,
+    },
+    topics,
+  };
+};
+
+export const getCurrentDraftId = (draftId, draftIdEditor) => (!draftIdEditor && !draftId) ? uuidv4() : (draftId || draftIdEditor);

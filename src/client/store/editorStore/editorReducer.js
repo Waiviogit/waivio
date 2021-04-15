@@ -13,6 +13,7 @@ const defaultState = {
   pendingDrafts: [],
   editedPosts: [],
   loadingImg: false,
+  editor: {},
 };
 
 const editor = (state = defaultState, action) => {
@@ -136,6 +137,10 @@ const editor = (state = defaultState, action) => {
         ...state,
         loadingImg: false,
       };
+    case editorActions.SET_EDITOR_STATE:
+      return { ...state, editor: action.payload };
+    case editorActions.SET_UPDATED_EDITOR_DATA:
+      return { ...state, editor: {...state.editor, ...action.payload} };
     default:
       return state;
   }

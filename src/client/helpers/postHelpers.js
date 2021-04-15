@@ -166,13 +166,13 @@ export function getObjectUrl(objPermlink) {
   return `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objPermlink}`;
 }
 
-export function getInitialState(props) {
+export function getInitialState(props, newDraftId = false) {
   const search = props.location.search.replace(/ & /, ' ');
   const initObjects = new URLSearchParams(search).getAll('object');
 
   let state = {
     campaign: props.campaignId ? { id: props.campaignId } : null,
-    draftId: props.draftId || uuidv4(),
+    draftId: props.draftId || newDraftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
       title: '',
@@ -240,7 +240,7 @@ export function getInitialState(props) {
 }
 
 export function isContentValid(markdownContent) {
-  const { postBody } = splitPostContent(markdownContent);
+  const { postBody } = markdownContent ? splitPostContent(markdownContent) : { postBody: '' };
 
   return Boolean(postBody.trim());
 }

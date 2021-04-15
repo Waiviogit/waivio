@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 import { batch } from 'react-redux';
 import assert from 'assert';
 import Cookie from 'js-cookie';
@@ -25,6 +26,10 @@ import {
 } from '../appStore/appSelectors';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
+import { getReviewCheckInfo } from "../../../waivioApi/ApiClient";
+import { getReviewTitle } from "../../helpers/editorHelper";
+import { getLinkedObjects } from "./editorSelectors";
+import { getSuitableLanguage } from "../reducers";
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -56,9 +61,11 @@ export const CREATE_WAIVIO_OBJECT = '@editor/CREATE_WAIVIO_OBJECT';
 
 export const UPLOAD_IMG_START = '@editor/UPLOAD_IMG_START';
 export const UPLOAD_IMG_FINISH = '@editor/UPLOAD_IMG_FINISH';
+export const SET_EDITOR_STATE = '@editor/SET_EDITOR_STATE';
 
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
+export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
 
 export const saveDraft = (draft, redirect, intl) => dispatch =>
   dispatch({
@@ -369,4 +376,40 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
         }),
     );
   };
+}
+
+export const SET_UPDATED_EDITOR_DATA = '@editor/SET_UPDATED_EDITOR_DATA';
+export const setUpdatedEditorData = payload => ({ type: SET_UPDATED_EDITOR_DATA, payload })
+
+export const reviewCheckInfo = ({ campaignId, isPublicReview, postPermlinkParam }, needReviewTitle = false) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const userName = getAuthenticatedUserName(state);
+    const locale = getSuitableLanguage(state);
+    const linkedObjects = getLinkedObjects(state);
+    const postPermlink = postPermlinkParam || isPublicReview;
+
+    return getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
+      .then(campaignData => {
+        const reviewedTitle = needReviewTitle ? getReviewTitle(campaignData, linkedObjects) : {};
+        const updatedEditorData = {
+          ...reviewedTitle,
+          campaign: campaignData,
+        };
+
+        dispatch(setUpdatedEditorData(updatedEditorData));
+      })
+      .catch(error => {
+        // message.error(
+        //   this.props.intl.formatMessage(
+        //     {
+        //       id: 'imageSetter_link_is_already_added',
+        //       defaultMessage: `Failed to get campaign data: {error}`,
+        //     },
+        //     { error },
+        //   ),
+        // );
+        console.log('error', error);
+      });
+  }
 }
