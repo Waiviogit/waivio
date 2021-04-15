@@ -507,14 +507,14 @@ export const getWobjectsWithUserWeight = (
   });
 };
 
-export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30) => {
+export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30, newsFilter) => {
   const actualHeader = user ? { ...headers, following: user, follower: user } : headers;
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
       headers: { ...actualHeader, app: config.appName },
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify({ skip, limit, newsFilter }),
     })
       .then(handleErrors)
       .then(res => res.json())
