@@ -1,0 +1,50 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.NewsFiltersRule {
+  &__card-wrap {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__line {
+    &-and {
+      padding: 0 10px;
+    }
+
+    &-card {
+      position: relative;
+      padding: 5px 10px;
+      border: @base-border;
+      border-radius: 4px;
+      margin: 5px 0;
+
+      &--types {
+        padding-right: 25px;
+      }
+    }
+
+    &-close {
+      position: absolute;
+      background-color: @white;
+      top: 0;
+      right: 5px;
+
+      .anticon {
+        font-size: 12px;
+        cursor: pointer;
+        transition: 0.5s;
+
+        &:hover {
+          color: @primary-color;
+        }
+      }
+    }
+
+    &-search {
+      padding: 10px 0;
+      width: 100%;
+    }
+  }
+}

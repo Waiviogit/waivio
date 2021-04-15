@@ -142,7 +142,10 @@ const SearchAllResult = props => {
       });
 
     return (
-      <Menu onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}>
+      <Menu
+        onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}
+        className="SearchAllResult__filter-list"
+      >
         <Menu.Item key={'all'}>show all</Menu.Item>
         {map(filter.tags, tag => (
           <Menu.Item className={menuItemClassList(tag)} key={tag}>

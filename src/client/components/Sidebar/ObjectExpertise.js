@@ -44,7 +44,6 @@ const ObjectExpertise = ({ username, wobject, match }) => {
                 alt={<WeightTag weight={u.weight} />}
               />
             ))}
-
           {!isUserInTopFive && user && (
             <React.Fragment>
               <div className="ObjectExpertise__dots">...</div>
@@ -56,7 +55,6 @@ const ObjectExpertise = ({ username, wobject, match }) => {
               />
             </React.Fragment>
           )}
-
           {size(users) > 5 && (
             <React.Fragment>
               <h4 className="ObjectExpertise__more">
