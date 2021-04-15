@@ -100,8 +100,8 @@ const VipTicketsSetting = props => {
         <a href="https://hiveonboard.com/create-account" rel="noreferrer" target="_blank">
           {' '}
           {props.intl.formatMessage({
-            id: 'for_fee',
-            defaultMessage: 'for fee',
+            id: 'for_free',
+            defaultMessage: 'for free',
           })}{' '}
         </a>
         {props.intl.formatMessage({
@@ -133,7 +133,7 @@ const VipTicketsSetting = props => {
         {props.intl.formatMessage({
           id: 'create_new_account_how_used_ticket',
           defaultMessage:
-            'Once the VIP ticket has been used, it will no longer be valid and will be archived in the second table with a reference to the account created.',
+            'Once the VIP ticket has been used, it will no longer be valid and will be archived in the second table.',
         })}
       </p>
       <div className="VipTicketsSetting__section">
