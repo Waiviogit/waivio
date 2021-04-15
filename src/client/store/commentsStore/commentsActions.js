@@ -130,7 +130,7 @@ export const getComments = postId => (dispatch, getState) => {
 
   if (content) {
     const { category, permlink } = content;
-    const author = content.guestInfo ? content.author : content.author;
+    const author = content.author;
 
     dispatch({
       type: GET_COMMENTS.ACTION,
