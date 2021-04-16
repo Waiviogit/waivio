@@ -4,14 +4,10 @@ import { connect } from 'react-redux';
 import { getWobjectFollowers } from '../../waivioApi/ApiClient';
 import UserDynamicList from '../user/UserDynamicList';
 import { changeSorting } from '../store/authStore/authActions';
-import {
-  getAuthenticatedUserName,
-  getAuthorizationUserFollowSort,
-} from '../store/authStore/authSelectors';
+import { getAuthorizationUserFollowSort } from '../store/authStore/authSelectors';
 
 @connect(
   state => ({
-    user: getAuthenticatedUserName(state),
     sort: getAuthorizationUserFollowSort(state),
   }),
   {
@@ -21,7 +17,6 @@ import {
 class WobjFollowers extends React.Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
-    user: PropTypes.string.isRequired,
     handleChange: PropTypes.func.isRequired,
     sort: PropTypes.string,
   };
@@ -40,13 +35,13 @@ class WobjFollowers extends React.Component {
   skip = 0;
   limit = 100;
 
-  async fetcher() {
+  async fetcher(skip, authUser) {
     const response = await getWobjectFollowers(
       this.props.match.params.name,
-      this.skip,
+      skip.length,
       WobjFollowers.limit,
       this.props.sort,
-      this.props.user,
+      authUser,
     );
 
     WobjFollowers.skip += WobjFollowers.limit;

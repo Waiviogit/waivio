@@ -170,7 +170,7 @@ class UserDynamicList extends React.Component {
   };
 
   handleSorting(sorting) {
-    const { fetcher } = this.props;
+    const { fetcher, authUser } = this.props;
 
     this.setState(
       {
@@ -178,7 +178,7 @@ class UserDynamicList extends React.Component {
         sort: sorting,
       },
       () => {
-        fetcher([], sorting)
+        fetcher([], authUser)
           .then(newUsers =>
             this.setState({
               loading: false,
