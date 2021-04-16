@@ -2,7 +2,7 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import MapOS from '../Map';
 import { getRadius } from '../mapHelper';
 import Loading from '../../Icon/Loading';
@@ -44,7 +44,7 @@ class MapWrap extends React.Component {
     const { zoom, center } = this.state;
     const { getAreaSearchData } = this.props;
 
-    if (_.isEmpty(center)) {
+    if (isEmpty(center)) {
       getAreaSearchData({
         radius: 500000000,
         coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
@@ -62,7 +62,7 @@ class MapWrap extends React.Component {
     const { zoom, center } = this.state;
     const { onCustomControlClick } = this.props;
 
-    if (_.isEmpty(center)) {
+    if (isEmpty(center)) {
       onCustomControlClick({
         radius: 500000000,
         coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
@@ -106,7 +106,7 @@ class MapWrap extends React.Component {
             })}
           </div>
         </div>
-        {_.isEmpty(userLocation) ? (
+        {isEmpty(userLocation) ? (
           <div
             className="ant-card-loading-block flex justify-center items-center"
             style={{ height: 268, width: '100%' }}

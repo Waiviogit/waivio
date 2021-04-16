@@ -1664,5 +1664,15 @@
   "create_new_account_instruction_part2": "by confirming your mobile phone. But if you prefer an anonymous account or need additional accounts, you can do so by purchasing HiveOnBoard VIP tickets",
   "create_new_account_protect": "In order to protect Hive from spam, the blockchain witnesses have introduced a small one-time fee for new Hive accounts.",
   "new_accounts": "New accounts",
+  "step": "Step",
+  "cookies_policy_modal": "Cookies Policy",
+  "privacy_policy_modal": "Privacy Policy",
+  "terms_and_conditions_modal": "Terms and Conditions",
+  "privacy_notice": "Privacy Notice",
+  "share_photos_of_the_dish": "Share photos of the dish and get the reward!",
+  "find_the_restaurant": "Find the restaurant and select the dish",
+  "reserve_rewards_few_days": "Reserve the reward for a few days",
+  "receive_restaurant_rebates": "How To Receive Restaurant Rebates",
+  "cookies_experience": "We use cookies to improve user experience. By using this site, you consent to the use of cookies. Learn more about website",
   "list_types": "List types"
 }
