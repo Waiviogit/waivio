@@ -221,7 +221,8 @@ export function getInitialState(props, newDraftId = false) {
       },
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
-      linkedObjects: [],
+      linkedObjects: draftPost.linkedObjects,
+      linkedObjectsCards: [],
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
       ),

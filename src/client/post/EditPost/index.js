@@ -23,7 +23,8 @@ import {
   createPost,
   setEditorState,
   reviewCheckInfo,
-  setUpdatedEditorData, handleObjectSelect
+  handleObjectSelect,
+  setUpdatedEditorData
 } from '../../store/editorStore/editorActions';
 
 

@@ -1,8 +1,10 @@
+import { EditorState } from "draft-js";
 import { get } from 'lodash';
 import * as editorActions from './editorActions';
 import * as postActions from '../postsStore/postActions';
 import * as authActions from '../authStore/authActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
+import { defaultDecorators } from "../../components/EditorExtended/EditorExtendedComponent/EditorExtended";
 
 const defaultState = {
   loading: false,
@@ -14,6 +16,13 @@ const defaultState = {
   editedPosts: [],
   loadingImg: false,
   editor: {},
+  editorExtended: {
+    isMounted: false,
+    editorEnabled: false,
+    prevEditorState: null,
+    editorState: EditorState.createEmpty(defaultDecorators),
+    titleValue: '',
+  },
 };
 
 const editor = (state = defaultState, action) => {

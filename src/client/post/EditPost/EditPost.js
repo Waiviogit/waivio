@@ -15,7 +15,7 @@ import {
   isEmpty,
 } from 'lodash';
 import { getInitialState } from '../../helpers/postHelpers';
-import Editor from '../../components/EditorExtended/EditorExtended';
+import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
 import {toMarkdown} from '../../components/EditorExtended';
@@ -32,7 +32,6 @@ const propTypes = {
   intl: PropTypes.shape().isRequired,
   locale: PropTypes.string.isRequired,
   draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  campaignId: PropTypes.string, // eslint-disable-line
   draftId: PropTypes.string,
   publishing: PropTypes.bool,
   saving: PropTypes.bool,
@@ -56,7 +55,6 @@ const propTypes = {
 
 const defaultProps = {
   upvoteSetting: false,
-  campaignId: '',
   draftId: '',
   publishing: false,
   saving: false,
@@ -72,27 +70,6 @@ const defaultProps = {
 
 const EditPost = (props) => {
   const {
-    history,
-    saving,
-    publishing,
-    imageLoading,
-    intl,
-    locale,
-    draftPosts,
-    isGuest,
-    setEditorState,
-    setUpdatedEditorData,
-    currDraft,
-    getReviewCheckInfo,
-    beneficiaries,
-    createPost,
-    isWaivio,
-    location,
-    draftId,
-    buildPost,
-    saveDraft,
-    filteredObjectsCards,
-    handleObjectSelect,
     editor: {
       draftContent,
       content,
@@ -110,48 +87,48 @@ const EditPost = (props) => {
   } = props;
 
   React.useEffect(() => {
-    history.replace({
-      pathname: location.pathname,
-      search: `draft=${getCurrentDraftId(draftId, draftIdEditor)}`,
+    props.history.replace({
+      pathname: props.location.pathname,
+      search: `draft=${getCurrentDraftId(props.draftId, draftIdEditor)}`,
     });
-    setEditorState(getInitialState(props));
-    const campaignId = get(campaign, 'id') || get(currDraft, ['jsonMetadata', 'campaignId']);
+    props.setEditorState(getInitialState(props));
+    const campaignId = get(campaign, 'id') || get(props.currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
     const linkedObjectsCardsSession = JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
 
-    setUpdatedEditorData({isReview, linkedObjectsCards: linkedObjectsCardsSession})
+    props.setUpdatedEditorData({isReview, linkedObjectsCards: linkedObjectsCardsSession})
 
     if (isReview) {
-      getReviewCheckInfo({campaignId, isPublicReview: get(currDraft, 'permlink')}, true)
+      props.getReviewCheckInfo({campaignId, isPublicReview: get(props.currDraft, 'permlink')}, true)
     }
   }, []);
 
   React.useEffect(() => {
-    if (has(currDraft, ['jsonMetadata', 'campaignId'])) {
-      const postPermlink = get(currDraft, 'permlink');
-      const campaignId = get(currDraft, ['jsonMetadata', 'campaignId']);
+    if (has(props.currDraft, ['jsonMetadata', 'campaignId'])) {
+      const postPermlink = get(props.currDraft, 'permlink');
+      const campaignId = get(props.currDraft, ['jsonMetadata', 'campaignId']);
 
-      getReviewCheckInfo({campaignId, isPublicReview: postPermlink});
-      getReviewCheckInfo({campaignId, postPermlink});
+      props.getReviewCheckInfo({campaignId, isPublicReview: postPermlink});
+      props.getReviewCheckInfo({campaignId, postPermlink});
     }
     setDraftId();
-  }, [draftId]);
+  }, [props.draftId]);
 
   React.useEffect(() => {
-    saveDraft();
+    props.saveDraft();
   },
     [linkedObjects, objPercentage, content, titleValue, topics]);
 
   const setDraftId = () => {
-    if (draftId && draftId !== draftIdEditor) {
-      setEditorState(getInitialState(props));
-    } else if (draftId === null && draftIdEditor) {
+    if (props.draftId && props.draftId !== draftIdEditor) {
+      props.setEditorState(getInitialState(props));
+    } else if (props.draftId === null && draftIdEditor) {
       const nextState = getInitialState(props);
 
-      setEditorState(nextState)
+      props.setEditorState(nextState)
 
-      history.replace({
-        pathname: location.pathname,
+      props.history.replace({
+        pathname: props.location.pathname,
         search: `draft=${nextState.draftId}`,
       });
     }
@@ -163,7 +140,7 @@ const EditPost = (props) => {
 
     const updatedLinkedObjects = uniqBy(concat(linkedObjects, getLinkedObjects(rawContent)), '_id');
 
-    const isLinkedObjectsChanged = (linkedObjects && updatedLinkedObjects) && linkedObjects.length !== updatedLinkedObjects.length;
+    const isLinkedObjectsChanged = !isEqual(linkedObjects, updatedLinkedObjects);
 
     if (isLinkedObjectsChanged) {
       const updatedObjPercentage = setObjPercents(linkedObjects, objPercentage);
@@ -179,20 +156,20 @@ const EditPost = (props) => {
     ) {
       const newDraft = getCurrentDraftContent(updatedStore, rawContent, currentRawContent);
 
-      setUpdatedEditorData({...updatedStore, ...newDraft});
+      props.setUpdatedEditorData({...updatedStore, ...newDraft});
     }
-  }, 1500), [currentRawContent, draftId, linkedObjects, linkedObjectsCards, objPercentage]);
+  }, 1500), [currentRawContent, props.draftId, linkedObjects, linkedObjectsCards, objPercentage]);
 
-  const handleSettingsChange = updatedValue => setUpdatedEditorData({
+  const handleSettingsChange = updatedValue => props.setUpdatedEditorData({
       settings: {...settings, ...updatedValue}
     });
 
   const handleSubmit = () => {
-    const postData = buildPost();
+    const postData = props.buildPost();
     const isReview =
-      !isEmpty(campaign) || includes(get(history, ['location', 'search']), 'review');
+      !isEmpty(campaign) || includes(get(props.history, ['location', 'search']), 'review');
 
-    createPost(postData, beneficiaries, isReview, campaign, intl);
+    props.createPost(postData, props.beneficiaries, isReview, campaign, props.intl);
   }
   const handleToggleLinkedObject = (objId, isLinked, uniqId) => {
     const prohibitedObjectCards = linkedObjectsCards || [];
@@ -212,87 +189,81 @@ const EditPost = (props) => {
 
     prohibitedObjectCards.push(currentObj);
     sessionStorage.setItem('linkedObjectsCards', JSON.stringify(prohibitedObjectCards));
-    setUpdatedEditorData({
+    props.setUpdatedEditorData({
       topics,
       linkedObjectsCards: prohibitedObjectCards,
       objPercentage: setObjPercents(linkedObjects, updPercentage),
     });
   }
 
-  const handleCreateObject = (object) => {
-    setTimeout(() => handleObjectSelect(object), 1200);
-  }
+  const handleCreateObject = (object) => props.handleObjectSelect(object);
 
   const handleHashtag = objectName => {
-    setUpdatedEditorData({ topics: uniqWith([...topics, objectName], isEqual) });
+    props.setUpdatedEditorData({ topics: uniqWith([...topics, objectName], isEqual) });
   }
-  const handleLinkedObjectsCards = updatedLinkedObjectsCards => setUpdatedEditorData({
-    linkedObjectsCards: updatedLinkedObjectsCards
-  });
 
   return (
     <div className="shifted">
       <div className="post-layout container">
         <div className="center">
           <Editor
-            enabled={!imageLoading}
+            enabled={!props.imageLoading}
             initialContent={draftContent}
-            locale={locale}
+            locale={props.locale}
             onChange={handleChangeContent}
-            intl={intl}
+            intl={props.intl}
             handleHashtag={handleHashtag}
             displayTitle
-            draftId={draftId}
+            draftId={props.draftId}
             linkedObjectsCards={linkedObjectsCards}
-            handleLinkedObjectsCards={handleLinkedObjectsCards}
           />
-          {draftPosts.some(d => d.draftId === draftId) && (
+          {props.draftPosts.some(d => d.draftId === props.draftId) && (
             <div className="edit-post__saving-badge">
-              {saving ? (
+              {props.saving ? (
                 <Badge
                   status="error"
-                  text={intl.formatMessage({id: 'saving', defaultMessage: 'Saving...'})}
+                  text={props.intl.formatMessage({id: 'saving', defaultMessage: 'Saving...'})}
                 />
               ) : (
                 <Badge
                   status="success"
-                  text={intl.formatMessage({id: 'saved', defaultMessage: 'Saved'})}
+                  text={props.intl.formatMessage({id: 'saved', defaultMessage: 'Saved'})}
                 />
               )}
             </div>
           )}
           <PostPreviewModal
             content={content}
-            isPublishing={publishing}
+            isPublishing={props.publishing}
             isUpdating={isUpdating}
             linkedObjects={linkedObjects}
             objPercentage={objPercentage}
-            onUpdate={saveDraft}
+            onUpdate={props.saveDraft}
             reviewData={campaign}
             settings={settings}
             topics={topics}
             onSettingsChange={handleSettingsChange}
             onSubmit={handleSubmit}
-            isGuest={isGuest}
+            isGuest={props.isGuest}
             titleValue={titleValue}
           />
 
           <div className="search-object-panel">
-            {intl.formatMessage({
+            {props.intl.formatMessage({
               id: 'editor_search_elements',
               defaultMessage: 'Attach hashtags, objects, pages, etc.',
             })}
           </div>
           <SearchObjectsAutocomplete
-            placeholder={intl.formatMessage({
+            placeholder={props.intl.formatMessage({
               id: 'editor_search_object_by_name',
               defaultMessage: 'Search by name',
             })}
-            handleSelect={handleObjectSelect}
-            addHashtag={!isWaivio}
+            handleSelect={props.handleObjectSelect}
+            addHashtag={!props.isWaivio}
           />
           <CreateObject onCreateObject={handleCreateObject}/>
-          {filteredObjectsCards.map(wObj => (
+          {props.filteredObjectsCards.map(wObj => (
             <PostObjectCard
               isLinked={get(objPercentage, [wObj.id, 'percent'], 0) > 0}
               wObject={wObj}

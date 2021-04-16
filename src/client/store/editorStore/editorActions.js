@@ -3,7 +3,7 @@ import { batch } from 'react-redux';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { get, isEqual, kebabCase, orderBy, uniqWith } from 'lodash';
+import { forEach, get, has, includes, isEmpty, isEqual, kebabCase, map, orderBy, uniqWith } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { REFERRAL_PERCENT } from '../../helpers/constants';
@@ -26,12 +26,22 @@ import {
 } from '../appStore/appSelectors';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
-import { getReviewCheckInfo } from "../../../waivioApi/ApiClient";
-import { getReviewTitle } from "../../helpers/editorHelper";
-import { getCurrentDraft, getEditor, getEditorDraftId, getIsEditorSaving, getLinkedObjects } from "./editorSelectors";
+import { getObjectsByIds, getReviewCheckInfo } from "../../../waivioApi/ApiClient";
+import { getCurrentLoadObjects, getNewLinkedObjectsCards, getReviewTitle } from "../../helpers/editorHelper";
+import {
+  getCurrentDraft,
+  getEditor,
+  getEditorDraftId, getEditorExtended,
+  getEditorLinkedObjects, getEditorLinkedObjectsCards,
+  getIsEditorSaving,
+  getLinkedObjects
+} from "./editorSelectors";
 import { getSuitableLanguage } from "../reducers";
 import { getObjectName } from "../../helpers/wObjectHelper";
 import { createPostMetadata, getObjectUrl } from "../../helpers/postHelpers";
+import { Entity } from "../../components/EditorExtended";
+import { handlePastedLink, QUERY_APP } from "../../components/EditorExtended/util/editorHelper";
+import { convertToRaw } from "draft-js";
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -508,3 +518,106 @@ export const handleObjectSelect = object => (dispatch, getState) => {
     ),
   }));
 }
+
+export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getState) => {
+  const isReview = includes(draftId, 'review');
+  const state = getState();
+  const linkedObjects = getEditorLinkedObjects(state);
+  const isLinked = string =>
+    linkedObjects.some(item => item.defaultShowLink.includes(string));
+
+  return Object.values(rawContent.entityMap)
+    // eslint-disable-next-line array-callback-return,consistent-return
+    .filter(entity => {
+      if (entity.type === Entity.OBJECT) {
+        return has(entity, 'data.object.id');
+      }
+      if (!isReview && entity.type === Entity.LINK) {
+        const string = get(entity, 'data.url', '');
+        const queryString = string.match(handlePastedLink(QUERY_APP));
+
+        if (queryString) {
+          return has(entity, 'data.url');
+        }
+
+        return null;
+      }
+    })
+    // eslint-disable-next-line array-callback-return,consistent-return
+    .map(entity => {
+      if (
+        entity.type === Entity.OBJECT &&
+        (isLinked(get(entity, ['data', 'object', 'id'], '')) || newObject)
+      ) {
+        return get(entity, 'data.object.id', '');
+      }
+      if (
+        !isReview &&
+        entity.type === Entity.LINK &&
+        (isLinked(get(entity, 'data.url', '')) || newObject)
+      ) {
+        return this.getCurrentLinkPermlink(entity);
+      }
+    })
+    .filter(item => item);
+};
+
+export const getRawContentEntityMap = (rawContent, response) => (dispatch, getState) => {
+  const state = getState();
+  const linkedObjects = getEditorLinkedObjects(state);
+  const entityMap = {};
+
+  forEach(rawContent.entityMap, (value, key) => {
+    let currObj = null;
+    const loadedObject = getCurrentLoadObjects(response, value);
+
+    linkedObjects.push(loadedObject);
+    if (!isEmpty(linkedObjects) && !isEmpty(loadedObject)) {
+      map(linkedObjects, obj => {
+        if (isEqual(obj.author_permlink, loadedObject.author_permlink)) {
+          currObj = loadedObject;
+        }
+      });
+    } else {
+      currObj = loadedObject;
+    }
+
+    entityMap[key] = {
+      ...value,
+      data: currObj ? { ...value.data, object: currObj } : { ...value.data },
+    };
+  });
+
+  return entityMap;
+};
+
+export const getRestoreObjects = (rawContent, newObject, draftId) => (dispatch, getState) => new Promise(async(resolve, reject) => {
+  const state = getState();
+  const { prevEditorState } = getEditorExtended(state);
+  const linkedCards = getEditorLinkedObjectsCards(state);
+
+  const objectIds = getObjectIds(rawContent, newObject, draftId)
+  const newLinkedObjectsCards = getNewLinkedObjectsCards(
+    linkedCards,
+    objectIds,
+    Object.values(rawContent.entityMap),
+    prevEditorState && Object.values(convertToRaw(prevEditorState.getCurrentContent()).entityMap),
+  );
+
+  dispatch(setUpdatedEditorData(newLinkedObjectsCards));
+  let rawContentUpdated = rawContent;
+
+  if (objectIds.length) {
+    const response = await getObjectsByIds({
+      authorPermlinks: objectIds,
+      locale: this.props.locale,
+      requiredFields: ['rating'],
+    });
+    const entityMap = getRawContentEntityMap(rawContent, response);
+
+    rawContentUpdated = { ...rawContentUpdated, entityMap };
+  }
+
+  return resolve(rawContentUpdated);
+});
+

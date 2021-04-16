@@ -1,7 +1,8 @@
 import uuidv4 from "uuid/v4";
-import { last, find, has, uniqWith, isEqual, differenceWith, head, get } from 'lodash';
+import { last, find, has, uniqWith, isEqual, differenceWith, head, get, keyBy } from 'lodash';
 
 import { Entity } from '../components/EditorExtended';
+import { handlePastedLink, QUERY_APP } from "../components/EditorExtended/util/editorHelper";
 
 export const getNewLinkedObjectsCards = (
   prohibitObjects,
@@ -80,3 +81,22 @@ export const getCurrentDraftContent = (nextState, rawContent, currentRawContent)
 
   return {};
 }
+
+export const getCurrentLinkPermlink = value => {
+  const data = get(value, 'data.url', '');
+  const currentSeparator = data.split('/');
+
+  return get(currentSeparator, '[4]', []);
+};
+
+export const getCurrentLoadObjects = (response, value) => {
+  const loadObjects = keyBy(response.wobjects, 'author_permlink');
+
+  if (value.type === Entity.OBJECT) {
+    return loadObjects[get(value, 'data.object.id')];
+  } else if (value.type === Entity.LINK) {
+    return loadObjects[this.getCurrentLinkPermlink(value)];
+  }
+
+  return loadObjects;
+};

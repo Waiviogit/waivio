@@ -48,3 +48,5 @@ export const getFilteredObjectCards = createSelector(
       object => !find(linkedObjectsCards, {_id: object._id}),
     )
 );
+
+export const getEditorExtended = createSelector([editorState], state => state.editorExtended);
