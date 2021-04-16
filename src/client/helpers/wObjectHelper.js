@@ -192,12 +192,14 @@ export const getBlogItems = wobject => get(wobject, 'blog', []);
 export const getFormItems = wobject => get(wobject, 'form', []);
 export const getNewsFilterItems = wobject => get(wobject, 'newsFilter', []);
 
-export const parseAddress = wobject => {
+export const parseAddress = (wobject, hideField = []) => {
   if (isEmpty(wobject) || !wobject.address) return null;
 
   return compact(
     Object.values(addressFields).map(fieldName => {
       const parsedWobject = parseWobjectField(wobject, 'address');
+
+      if (hideField.some(field => field === fieldName)) return null;
 
       return get(parsedWobject, fieldName);
     }),
