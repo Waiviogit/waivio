@@ -16,6 +16,7 @@ import { getUser } from '../store/usersStore/usersSelectors';
 import { getLocale } from '../store/settingsStore/settingsSelectors';
 
 import './UserFollowing.less';
+import { changeSorting } from '../store/authStore/authActions';
 
 const TabPane = Tabs.TabPane;
 
@@ -28,6 +29,7 @@ const TabPane = Tabs.TabPane;
     locale: getLocale(state),
   }),
   {
+    handleChange: changeSorting,
     notify,
   },
 )
@@ -38,6 +40,7 @@ export default class UserFollowing extends React.Component {
     authUser: PropTypes.string,
     sort: PropTypes.string,
     locale: PropTypes.string.isRequired,
+    handleChange: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -97,7 +100,12 @@ export default class UserFollowing extends React.Component {
             }
             key="1"
           >
-            <UserDynamicList limit={UserFollowing.limit} fetcher={this.fetcher} />
+            <UserDynamicList
+              limit={UserFollowing.limit}
+              fetcher={this.fetcher}
+              sort={this.props.sort}
+              handleChange={this.props.handleChange}
+            />
           </TabPane>
           <TabPane
             tab={
