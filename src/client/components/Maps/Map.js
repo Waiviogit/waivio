@@ -412,7 +412,6 @@ class MapOS extends React.Component {
           {markersLayout}
           {infoboxData && this.getOverlayLayout()}
         </Map>
-
         {this.zoomButtonsLayout()}
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
