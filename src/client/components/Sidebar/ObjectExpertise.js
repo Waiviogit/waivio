@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import UserCard from '../UserCard';
 import WeightTag from '../WeightTag';
-import { getWobjectsExpertise } from '../../../waivioApi/ApiClient';
+import { getWobjectsExpertiseWithNewsFilter } from '../../../waivioApi/ApiClient';
 import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
 
 import './ObjectExpertise.less';
@@ -17,7 +17,7 @@ const ObjectExpertise = ({ username, wobject, match }) => {
   const isUserInTopFive = users.find(u => u.name === username);
 
   useEffect(() => {
-    getWobjectsExpertise(username, wobject.author_permlink, 0, 5, match.params.itemId)
+    getWobjectsExpertiseWithNewsFilter(username, wobject.author_permlink, 0, 5, match.params.itemId)
       .then(data => {
         setExperts({ ...data, loading: false });
       })

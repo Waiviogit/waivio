@@ -10,19 +10,13 @@ import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
 import { changeCounterFollow, followUser, unfollowUser } from '../store/usersStore/usersActions';
-import { changeSorting } from '../store/authStore/authActions';
 import { SORT_OPTIONS } from '../../common/constants/waivioFiltres';
-import {
-  getAuthenticatedUserName,
-  getAuthorizationUserFollowSort,
-  isGuestUser,
-} from '../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
 
 import './UserDynamicList.less';
 
 class UserDynamicList extends React.Component {
   static propTypes = {
-    dispatchChangeFollowSorting: PropTypes.func.isRequired,
     fetcher: PropTypes.func.isRequired,
     showAuthorizedUser: PropTypes.bool,
     userName: PropTypes.string,
@@ -32,6 +26,7 @@ class UserDynamicList extends React.Component {
     isGuest: PropTypes.bool.isRequired,
     changeCounterFollow: PropTypes.func.isRequired,
     sort: PropTypes.string.isRequired,
+    handleChange: PropTypes.func.isRequired,
     match: PropTypes.shape({
       params: PropTypes.shape({
         name: PropTypes.string,
@@ -164,7 +159,7 @@ class UserDynamicList extends React.Component {
   handleChangeSorting = sorting => {
     if (this.props.sort !== sorting) {
       this.props
-        .dispatchChangeFollowSorting(sorting)
+        .handleChange(sorting)
         .then(() => {
           this.handleSorting(sorting);
         })
@@ -175,8 +170,7 @@ class UserDynamicList extends React.Component {
   };
 
   handleSorting(sorting) {
-    const { fetcher } = this.props;
-    const { users } = this.state;
+    const { fetcher, authUser } = this.props;
 
     this.setState(
       {
@@ -184,10 +178,11 @@ class UserDynamicList extends React.Component {
         sort: sorting,
       },
       () => {
-        fetcher(users, sorting)
+        fetcher([], authUser)
           .then(newUsers =>
             this.setState({
               loading: false,
+              hasMore: newUsers.hasMore,
               users: [...newUsers.users],
             }),
           )
@@ -261,13 +256,11 @@ export default withRouter(
     state => ({
       isGuest: isGuestUser(state),
       authUser: getAuthenticatedUserName(state),
-      sort: getAuthorizationUserFollowSort(state),
     }),
     {
       unfollowUser,
       followUser,
       changeCounterFollow,
-      dispatchChangeFollowSorting: changeSorting,
     },
   )(UserDynamicList),
 );
