@@ -53,6 +53,7 @@ import {
   getShowReloadButton,
   getWobjectsPoint,
 } from '../../../store/websiteStore/websiteSelectors';
+import WebsiteWelcomeModal from '../../WebsiteWelcomeModal/WebsiteWelcomeModal';
 
 import './WebsiteBody.less';
 
@@ -222,11 +223,10 @@ const WebsiteBody = props => {
       props.query.set('center', anchor);
       props.query.set('zoom', area.zoom);
       props.query.set('permlink', payload.author_permlink);
-
       props.history.push(`/?${props.query.toString()}`);
       setInfoboxData({ wobject: payload, coordinates: anchor });
     },
-    [area.zoom],
+    [area.zoom, props.location.search],
   );
 
   const getMarkers = useCallback(
@@ -431,6 +431,7 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
+      {props.isAuth && <WebsiteWelcomeModal />}
     </div>
   );
 };

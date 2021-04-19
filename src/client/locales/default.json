@@ -1665,6 +1665,8 @@
   "create_new_account_protect": "In order to protect Hive from spam, the blockchain witnesses have introduced a small one-time fee for new Hive accounts.",
   "new_accounts": "New accounts",
   "step": "Step",
+  "previous": "Previous",
+  "ok": "OK",
   "cookies_policy_modal": "Cookies Policy",
   "privacy_policy_modal": "Privacy Policy",
   "terms_and_conditions_modal": "Terms and Conditions",

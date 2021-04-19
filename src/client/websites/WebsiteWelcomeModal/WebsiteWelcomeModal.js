@@ -3,17 +3,19 @@ import { Modal, Tabs } from 'antd';
 import { injectIntl } from 'react-intl';
 import Cookie from 'js-cookie';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import './WebsiteWelcomeModal.less';
 
 const WebsiteWelcomeModal = props => {
   const [tabKey, setTabKey] = useState('1');
   const [openModal, setOpenModal] = useState(false);
-  const notShowWelcomeModal = Cookie.get('notShowWelcomeModal');
 
   useEffect(() => {
+    const notShowWelcomeModal = Cookie.get('notShowWelcomeModal');
+
     if (!notShowWelcomeModal) setOpenModal(true);
-  }, [notShowWelcomeModal]);
+  }, []);
 
   const handleOk = () => {
     if (tabKey < 3) {
@@ -118,26 +120,26 @@ const WebsiteWelcomeModal = props => {
           defaultMessage:
             'We use cookies to improve user experience. By using this site, you consent to the use of cookies. Learn more about website',
         })}{' '}
-        <a href="https://.dining.gifts/object/uid-cookies-policy/page">
+        <Link to="/object/uid-cookies-policy/page" target="_blank">
           {props.intl.formatMessage({
             id: 'cookies_policy_modal',
             defaultMessage: 'Cookies Policy',
           })}
-        </a>
+        </Link>
         ,{' '}
-        <a href="https://.dining.gifts/object/poi-privacy-policy/page">
+        <Link to="/object/poi-privacy-policy/page" target="_blank">
           {props.intl.formatMessage({
             id: 'privacy_policy_modal',
             defaultMessage: 'Privacy Policy',
           })}
-        </a>
+        </Link>
         ,{' '}
-        <a href="https://*.dining.gifts/object/xrj-terms-and-conditions/page">
+        <Link to="/object/xrj-terms-and-conditions/page" target="_blank">
           {props.intl.formatMessage({
             id: 'terms_and_conditions_modal',
             defaultMessage: 'Terms and Conditions',
           })}
-        </a>
+        </Link>
       </p>
     </Modal>
   );
