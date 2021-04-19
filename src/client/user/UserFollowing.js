@@ -14,9 +14,9 @@ import {
 } from '../store/authStore/authSelectors';
 import { getUser } from '../store/usersStore/usersSelectors';
 import { getLocale } from '../store/settingsStore/settingsSelectors';
+import { changeSorting } from '../store/authStore/authActions';
 
 import './UserFollowing.less';
-import { changeSorting } from '../store/authStore/authActions';
 
 const TabPane = Tabs.TabPane;
 
