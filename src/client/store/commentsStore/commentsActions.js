@@ -126,11 +126,12 @@ export const getComments = postId => (dispatch, getState) => {
   const listFields = get(object, ['wobject', 'fields'], null);
   const matchPost = listFields && listFields.find(field => field.permlink === postId);
   const content = posts.list[postId] || comments.comments[postId] || matchPost;
-  const locale = getLocale(getState());
+  const locale = getLocale(state);
 
   if (content) {
     const { category, permlink } = content;
-    const author = content.author;
+    const author =
+      content.guestInfo.userId === content.author ? content.root_author : content.author;
 
     dispatch({
       type: GET_COMMENTS.ACTION,
