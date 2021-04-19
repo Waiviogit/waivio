@@ -462,7 +462,6 @@ WebsiteBody.propTypes = {
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   setSearchInBox: PropTypes.func.isRequired,
-  setShowSearchResult: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape()),
   // eslint-disable-next-line react/no-unused-prop-types
