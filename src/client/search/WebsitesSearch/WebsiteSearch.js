@@ -34,6 +34,11 @@ const WebsiteSearch = props => {
       props.setWebsiteSearchString(value);
       props.setSearchInBox(true);
 
+      if (value) {
+        props.query.set('searchString', value);
+        props.history.push(`/?${props.query.toString()}`);
+      }
+
       switch (props.searchType) {
         case 'Users':
           return props.searchUsersAutoCompete(value);
@@ -43,6 +48,12 @@ const WebsiteSearch = props => {
     },
     [props.searchType, searchString],
   );
+
+  useEffect(() => {
+    const querySearch = props.query.get('searchString');
+
+    if (querySearch) setSearchString(querySearch);
+  }, []);
 
   useEffect(() => {
     if (props.isShowResult && !isEmpty(props.searchMap)) currentSearchMethod(searchString);
@@ -66,6 +77,8 @@ const WebsiteSearch = props => {
     setSearchString('');
     props.resetSearchAutoCompete();
     handleSearchAutocomplete('');
+    props.query.delete('searchString');
+    props.history.push(`/?${props.query.toString()}`);
   };
 
   return (
@@ -100,6 +113,12 @@ WebsiteSearch.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
+  query: PropTypes.shape({
+    get: PropTypes.func,
+    set: PropTypes.func,
+    delete: PropTypes.func,
+    toString: PropTypes.func,
+  }).isRequired,
   resetSearchAutoCompete: PropTypes.func.isRequired,
   setWebsiteSearchString: PropTypes.func.isRequired,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
@@ -121,7 +140,7 @@ WebsiteSearch.defaultProps = {
 };
 
 export default connect(
-  state => ({
+  (state, ownProps) => ({
     searchByObject: getSearchObjectsResults(state),
     searchByObjectType: searchObjectTypesResults(state),
     isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
@@ -129,6 +148,7 @@ export default connect(
     activeFilters: getSearchFiltersTagCategory(state),
     isShowResult: getShowSearchResult(state),
     searchMap: getWebsiteMap(state),
+    query: new URLSearchParams(ownProps.location.search),
   }),
   {
     resetSearchAutoCompete,

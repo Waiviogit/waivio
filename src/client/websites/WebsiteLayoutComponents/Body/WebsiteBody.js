@@ -126,7 +126,6 @@ const WebsiteBody = props => {
     window.addEventListener('resize', handleResize);
 
     return () => {
-      props.setShowSearchResult(false);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
@@ -220,9 +219,11 @@ const WebsiteBody = props => {
 
       if (get(infoboxData, 'coordinates', []) === anchor) setInfoboxData({ infoboxData: null });
 
-      props.history.push(
-        `/?center=${anchor}&zoom=${area.zoom}&permlink=${payload.author_permlink}`,
-      );
+      props.query.set('center', anchor);
+      props.query.set('zoom', area.zoom);
+      props.query.set('permlink', payload.author_permlink);
+
+      props.history.push(`/?${props.query.toString()}`);
       setInfoboxData({ wobject: payload, coordinates: anchor });
     },
     [area.zoom],
@@ -286,7 +287,7 @@ const WebsiteBody = props => {
         </div>
       </Overlay>
     );
-  }, [props.query.get('permlink')]);
+  }, [infoboxData]);
 
   const incrementZoom = () => setArea({ ...area, zoom: area.zoom + 1 });
   const decrementZoom = () => setArea({ ...area, zoom: area.zoom - 1 });
@@ -395,7 +396,10 @@ const WebsiteBody = props => {
               onClick={({ event }) => {
                 if (!get(event, 'target.dataset.anchor')) {
                   setInfoboxData(null);
-                  props.history.push('/');
+                  props.query.delete('center');
+                  props.query.delete('zoom');
+                  props.query.delete('permlink');
+                  props.history.push(`/?${props.query.toString()}`);
                 }
               }}
               animate
@@ -473,6 +477,7 @@ WebsiteBody.propTypes = {
   isAuth: PropTypes.bool,
   query: PropTypes.shape({
     get: PropTypes.func,
+    set: PropTypes.func,
     delete: PropTypes.func,
   }).isRequired,
 };

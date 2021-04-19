@@ -1,3 +1,5 @@
+import { uniq } from 'lodash';
+
 const socialTransformers = {
   facebook: id => `https://facebook.com/${id}`,
   twitter: id => `https://twitter.com/${id}`,
@@ -13,7 +15,7 @@ export const transform = (socialId, id) => socialTransformers[socialId](id);
 
 export const getFacebookShareURL = url => `https://facebook.com/sharer.php?u=${url}`;
 export const getTwitterShareURL = (text, url, hashtag) =>
-  `https://twitter.com/intent/tweet?text=${text}&url=${url}&hashtags=${hashtag}`;
+  `https://twitter.com/intent/tweet?text=${text}&url=${url}&hashtags=${uniq(hashtag)}`;
 
 export default [
   { id: 'facebook', icon: 'facebook', color: '#3b5998', name: 'Facebook' },

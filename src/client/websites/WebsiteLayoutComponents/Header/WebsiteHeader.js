@@ -49,7 +49,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
     <div className="WebsiteHeader" style={{ backgroundColor: `#${backgroundColor}` }}>
       <div className="topnav-layout isWebsiteView">
         {isMainPage ? (
-          <WebsiteSearch history={history} />
+          <WebsiteSearch history={history} location={location} />
         ) : (
           <React.Fragment>
             <div
