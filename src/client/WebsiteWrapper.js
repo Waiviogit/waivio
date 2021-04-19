@@ -233,7 +233,6 @@ class WebsiteWrapper extends React.PureComponent {
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
               </div>
             </Layout>
-            {isAuthenticated && <WebsiteWelcomeModal />}
           </AppSharedContext.Provider>
         </ConfigProvider>
       </IntlProvider>
