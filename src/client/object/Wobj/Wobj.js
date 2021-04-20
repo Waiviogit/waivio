@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Helmet } from 'react-helmet';
@@ -11,7 +11,7 @@ import Affix from '../../components/Utils/Affix';
 import LeftObjectProfileSidebar from '../../app/Sidebar/LeftObjectProfileSidebar';
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../../components/Sidebar/ObjectsRelated/ObjectsRelated';
-import { getObjectAvatar, hasType } from '../../helpers/wObjectHelper';
+import { getObjectAvatar, getObjectType, hasType } from '../../helpers/wObjectHelper';
 import OBJECT_TYPE from '../const/objectTypes';
 import { formColumnsField } from '../../../common/constants/listOfFields';
 
@@ -28,6 +28,8 @@ const Wobj = ({
   objectName,
   appendAlbum,
   helmetIcon,
+  isWaivio,
+  supportedObjectTypes,
 }) => {
   const waivioHost = global.postOrigin || 'https://www.waivio.com';
   const image = getObjectAvatar(wobject) || DEFAULTS.FAVICON;
@@ -53,6 +55,15 @@ const Wobj = ({
     'center--middleForm': middleRightColumn,
     'center--fullForm': entireColumn,
   });
+
+  useEffect(() => {
+    if (!isWaivio) {
+      const objectType = getObjectType(wobject);
+
+      if (!isEmpty(wobject) && supportedObjectTypes.includes(objectType) && window.gtag)
+        window.gtag('event', `view_${objectType}`);
+    }
+  }, [wobject.author_permlink]);
 
   return (
     <React.Fragment>
@@ -135,7 +146,9 @@ Wobj.propTypes = {
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
   history: PropTypes.shape().isRequired,
+  supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
   isEditMode: PropTypes.bool.isRequired,
+  isWaivio: PropTypes.bool.isRequired,
   toggleViewEditMode: PropTypes.func,
   handleFollowClick: PropTypes.func,
   objectName: PropTypes.string.isRequired,
@@ -148,6 +161,7 @@ Wobj.defaultProps = {
   toggleViewEditMode: () => {},
   handleFollowClick: () => {},
   appendAlbum: () => {},
+  supportedObjectTypes: [],
 };
 
 export default Wobj;

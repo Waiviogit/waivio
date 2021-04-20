@@ -34,6 +34,8 @@ const WebsiteSearch = props => {
       props.setWebsiteSearchString(value);
       props.setSearchInBox(true);
 
+      if (window.gtag) window.gtag('event', `view_${props.searchType}`);
+
       if (value) {
         props.query.set('searchString', value);
         props.history.push(`/?${props.query.toString()}`);
@@ -64,7 +66,9 @@ const WebsiteSearch = props => {
   }, [props.searchType, props.activeFilters, searchString]);
 
   const handleSearchAutocomplete = useCallback(
-    debounce(value => currentSearchMethod(value), 500),
+    debounce(value => {
+      currentSearchMethod(value);
+    }, 500),
     [props.searchType],
   );
 
