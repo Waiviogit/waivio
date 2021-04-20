@@ -86,7 +86,6 @@ class WebsiteWrapper extends React.PureComponent {
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
     loadingFetching: PropTypes.bool,
-    isAuthenticated: PropTypes.bool,
     location: PropTypes.shape({
       search: PropTypes.string,
       pathname: PropTypes.string,
@@ -112,7 +111,6 @@ class WebsiteWrapper extends React.PureComponent {
     nightmode: false,
     dispatchGetAuthGuestBalance: () => {},
     isOpenWalletTable: false,
-    isAuthenticated: false,
     loadingFetching: true,
     location: {},
   };
@@ -206,7 +204,6 @@ class WebsiteWrapper extends React.PureComponent {
       username,
       isOpenWalletTable,
       loadingFetching,
-      isAuthenticated,
       location,
     } = this.props;
     const language = findLanguage(usedLocale);
@@ -233,7 +230,6 @@ class WebsiteWrapper extends React.PureComponent {
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
               </div>
             </Layout>
-            {isAuthenticated && <WebsiteWelcomeModal />}
           </AppSharedContext.Provider>
         </ConfigProvider>
       </IntlProvider>

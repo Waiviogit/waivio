@@ -1668,6 +1668,8 @@
   "create_new_account_instruction": "Когда вы откроете свою первую учетную запись Hive, вы сможете это сделать",
   "list_types": "Типы списков",
   "step": "Шаг",
+  "previous": "Предыдущий",
+  "ok": "OK",
   "cookies_policy_modal": "Политика использования файлов cookie",
   "privacy_policy_modal": "Политика конфиденциальности",
   "privacy_notice": "Уведомление о конфиденциальности",
