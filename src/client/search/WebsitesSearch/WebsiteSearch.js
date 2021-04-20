@@ -34,7 +34,7 @@ const WebsiteSearch = props => {
       props.setWebsiteSearchString(value);
       props.setSearchInBox(true);
 
-      if (window.gtag) window.gtag('event', `view_${props.searchType}`);
+      if (window.gtag) window.gtag('event', `search_${props.searchType.toLowerCase()}`);
 
       if (value) {
         props.query.set('searchString', value);
@@ -48,7 +48,7 @@ const WebsiteSearch = props => {
           return props.searchWebsiteObjectsAutoCompete(value);
       }
     },
-    [props.searchType, searchString],
+    [props.searchType, searchString, props.location.search],
   );
 
   useEffect(() => {
@@ -122,6 +122,9 @@ WebsiteSearch.propTypes = {
     set: PropTypes.func,
     delete: PropTypes.func,
     toString: PropTypes.func,
+  }).isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string,
   }).isRequired,
   resetSearchAutoCompete: PropTypes.func.isRequired,
   setWebsiteSearchString: PropTypes.func.isRequired,
