@@ -289,6 +289,8 @@ class EditPost extends Component {
     }
   }
 
+  handleChangeTitle = titleValue => this.setState({ titleValue });
+
   handleTopicsChange = topics => {
     this.setState({ topics }, this.handleUpdateState);
   };
@@ -493,6 +495,7 @@ class EditPost extends Component {
               initialContent={draftContent}
               locale={locale}
               onChange={this.handleChangeContent}
+              handleChangeTitle={this.handleChangeTitle}
               intl={intl}
               handleHashtag={this.handleHashtag}
               displayTitle
