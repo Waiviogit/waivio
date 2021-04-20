@@ -91,6 +91,8 @@ export default class User extends React.Component {
       match,
     } = this.props;
 
+    if (window.gtag) window.gtag('event', 'view_user_profile');
+
     this.props.getUserAccount(match.params.name);
 
     if (isEmpty(usersAccountHistory[match.params.name])) getUserAccountHistory(match.params.name);

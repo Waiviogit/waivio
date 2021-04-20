@@ -3,25 +3,26 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { withRouter } from 'react-router';
 import UserCard from '../UserCard';
 import WeightTag from '../WeightTag';
-import { getWobjectsExpertise } from '../../../waivioApi/ApiClient';
+import { getWobjectsExpertiseWithNewsFilter } from '../../../waivioApi/ApiClient';
 import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
 
 import './ObjectExpertise.less';
 
-const ObjectExpertise = ({ username, wobject }) => {
+const ObjectExpertise = ({ username, wobject, match }) => {
   const [experts, setExperts] = useState({ user: {}, users: [], loading: true });
   const { users, user, loading } = experts;
   const isUserInTopFive = users.find(u => u.name === username);
 
   useEffect(() => {
-    getWobjectsExpertise(username, wobject.author_permlink, 0, 5)
+    getWobjectsExpertiseWithNewsFilter(username, wobject.author_permlink, 0, 5, match.params.itemId)
       .then(data => {
         setExperts({ ...data, loading: false });
       })
       .catch(() => setExperts({ user: {}, users: [], loading: false }));
-  }, [wobject.author_permlink]);
+  }, [wobject.author_permlink, match.url]);
   let renderExperts = null;
 
   if (loading) {
@@ -74,6 +75,7 @@ const ObjectExpertise = ({ username, wobject }) => {
 ObjectExpertise.propTypes = {
   username: PropTypes.string.isRequired,
   wobject: PropTypes.shape().isRequired,
+  match: PropTypes.shape().isRequired,
 };
 
-export default ObjectExpertise;
+export default withRouter(ObjectExpertise);

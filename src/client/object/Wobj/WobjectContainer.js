@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import OBJECT_TYPE from '../const/objectTypes';
 import { clearObjectFromStore, getObject } from '../../store/wObjectStore/wobjectsActions';
 import {
@@ -17,7 +17,7 @@ import { setCatalogBreadCrumbs, setNestedWobject } from '../../store/wObjectStor
 import { appendObject } from '../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
-import { getHelmetIcon, getScreenSize } from '../../store/appStore/appSelectors';
+import { getHelmetIcon, getIsWaivio, getScreenSize } from '../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -30,6 +30,7 @@ import {
   getWobjectIsFatching,
 } from '../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import { getConfiguration } from '../../store/websiteStore/websiteSelectors';
 
 @withRouter
 @connect(
@@ -44,6 +45,8 @@ import { getLocale } from '../../store/settingsStore/settingsSelectors';
     isFetching: getObjectFetchingState(state),
     screenSize: getScreenSize(state),
     helmetIcon: getHelmetIcon(state),
+    isWaivio: getIsWaivio(state),
+    supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
   }),
   {
     clearObjectFromStore,
@@ -70,6 +73,8 @@ export default class WobjectContainer extends React.Component {
     failed: PropTypes.bool,
     isFetching: PropTypes.bool,
     getObject: PropTypes.func.isRequired,
+    supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
+    isWaivio: PropTypes.bool.isRequired,
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     clearObjectFromStore: PropTypes.func,
@@ -90,6 +95,7 @@ export default class WobjectContainer extends React.Component {
     loaded: false,
     failed: false,
     isFetching: false,
+    supportedObjectTypes: [],
     wobject: {},
     clearObjectFromStore: () => {},
     setCatalogBreadCrumbs: () => {},
@@ -198,6 +204,8 @@ export default class WobjectContainer extends React.Component {
         objectName={objectName}
         appendAlbum={this.appendAlbum}
         helmetIcon={this.props.helmetIcon}
+        isWaivio={this.props.isWaivio}
+        supportedObjectTypes={this.props.supportedObjectTypes}
       />
     );
   }
