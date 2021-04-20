@@ -11,6 +11,7 @@ import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import {
+  setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
   setShowSearchResult,
@@ -56,6 +57,7 @@ import {
 import WebsiteWelcomeModal from '../../WebsiteWelcomeModal/WebsiteWelcomeModal';
 
 import './WebsiteBody.less';
+import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 
 const WebsiteBody = props => {
   const [boundsParams, setBoundsParams] = useState({
@@ -116,11 +118,18 @@ const WebsiteBody = props => {
     });
 
   useEffect(() => {
+    const query = props.location.search;
     const handleResize = () => setHeight(window.innerHeight);
 
     setHeight(window.innerHeight);
 
     if (props.isAuth) props.getReservedCounter();
+
+    if (query) {
+      const filterBody = createFilterBody(parseTagsFilters(query));
+
+      props.setFilterFromQuery(filterBody);
+    }
 
     getCoordinatesForMap();
 
@@ -346,6 +355,13 @@ const WebsiteBody = props => {
     </div>
   );
 
+  const handleSetFiltersInUrl = (category, value) => {
+    if (value === 'all') props.query.delete(category);
+    else props.query.set(category, value);
+
+    props.history.push(`?${props.query.toString()}`);
+  };
+
   return (
     <div className="WebsiteBody">
       <Helmet>
@@ -366,6 +382,7 @@ const WebsiteBody = props => {
         searchType={props.searchType}
         handleHoveredCard={handleHoveredCard}
         handleChangeType={handleChangeType}
+        handleSetFiltersInUrl={handleSetFiltersInUrl}
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
@@ -411,7 +428,11 @@ const WebsiteBody = props => {
                       <Tag
                         key={tag}
                         closable
-                        onClose={() => props.setWebsiteSearchFilter(filter.categoryName, 'all')}
+                        onClose={() => {
+                          props.setWebsiteSearchFilter(filter.categoryName, 'all');
+                          props.query.delete(filter.categoryName);
+                          props.history.push(`?${props.query.toString()}`);
+                        }}
                       >
                         {tag}
                       </Tag>
@@ -463,6 +484,7 @@ WebsiteBody.propTypes = {
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   setSearchInBox: PropTypes.func.isRequired,
+  setFilterFromQuery: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape()),
   // eslint-disable-next-line react/no-unused-prop-types
@@ -518,5 +540,6 @@ export default connect(
     setShowReload,
     setShowSearchResult,
     setSearchInBox,
+    setFilterFromQuery,
   },
 )(withRouter(WebsiteBody));

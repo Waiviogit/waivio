@@ -143,7 +143,10 @@ const SearchAllResult = props => {
 
     return (
       <Menu
-        onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}
+        onClick={e => {
+          props.setWebsiteSearchFilter(filter.tagCategory, e.key);
+          props.handleSetFiltersInUrl(filter.tagCategory, e.key);
+        }}
         className="SearchAllResult__filter-list"
       >
         <Menu.Item key={'all'}>show all</Menu.Item>
@@ -270,6 +273,7 @@ SearchAllResult.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
   declineProposition: PropTypes.func.isRequired,
   handleChangeType: PropTypes.func.isRequired,
+  handleSetFiltersInUrl: PropTypes.func.isRequired,
   handleHoveredCard: PropTypes.func,
 };
 
