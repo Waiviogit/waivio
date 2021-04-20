@@ -55,9 +55,9 @@ import {
   getWobjectsPoint,
 } from '../../../store/websiteStore/websiteSelectors';
 import WebsiteWelcomeModal from '../../WebsiteWelcomeModal/WebsiteWelcomeModal';
+import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 
 import './WebsiteBody.less';
-import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 
 const WebsiteBody = props => {
   const [boundsParams, setBoundsParams] = useState({
@@ -127,8 +127,10 @@ const WebsiteBody = props => {
 
     if (query) {
       const filterBody = createFilterBody(parseTagsFilters(query));
+      const type = props.query.get('type');
 
-      props.setFilterFromQuery(filterBody);
+      if (type) props.setWebsiteSearchType(type);
+      if (!isEmpty(filterBody)) props.setFilterFromQuery(filterBody);
     }
 
     getCoordinatesForMap();
@@ -362,6 +364,14 @@ const WebsiteBody = props => {
     props.history.push(`?${props.query.toString()}`);
   };
 
+  const handleUrlWithChangeType = type => {
+    let query = `?type=${type}`;
+
+    if (props.searchString) query = `${query}&searchString=${props.searchString}`;
+
+    props.history.push(query);
+  };
+
   return (
     <div className="WebsiteBody">
       <Helmet>
@@ -383,6 +393,7 @@ const WebsiteBody = props => {
         handleHoveredCard={handleHoveredCard}
         handleChangeType={handleChangeType}
         handleSetFiltersInUrl={handleSetFiltersInUrl}
+        handleUrlWithChangeType={handleUrlWithChangeType}
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
@@ -486,6 +497,7 @@ WebsiteBody.propTypes = {
   setSearchInBox: PropTypes.func.isRequired,
   setFilterFromQuery: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
+  setWebsiteSearchType: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape()),
   // eslint-disable-next-line react/no-unused-prop-types
   configCoordinates: PropTypes.arrayOf().isRequired,
