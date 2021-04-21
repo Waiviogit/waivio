@@ -143,7 +143,10 @@ const SearchAllResult = props => {
 
     return (
       <Menu
-        onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}
+        onClick={e => {
+          props.setWebsiteSearchFilter(filter.tagCategory, e.key);
+          props.handleSetFiltersInUrl(filter.tagCategory, e.key);
+        }}
         className="SearchAllResult__filter-list"
       >
         <Menu.Item key={'all'}>show all</Menu.Item>
@@ -180,11 +183,12 @@ const SearchAllResult = props => {
           <span
             role="presentation"
             className={getActiveItemClassList(type, props.searchType, 'SearchAllResult__type')}
+            key={type}
             onClick={() => {
               props.setWebsiteSearchType(type);
               props.handleChangeType();
+              props.handleUrlWithChangeType(type);
             }}
-            key={type}
           >
             {type}
           </span>
@@ -264,12 +268,14 @@ SearchAllResult.propTypes = {
   unfollowSearchUser: PropTypes.func.isRequired,
   followSearchUser: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
+  handleUrlWithChangeType: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types
   assignProposition: PropTypes.func.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   declineProposition: PropTypes.func.isRequired,
   handleChangeType: PropTypes.func.isRequired,
+  handleSetFiltersInUrl: PropTypes.func.isRequired,
   handleHoveredCard: PropTypes.func,
 };
 

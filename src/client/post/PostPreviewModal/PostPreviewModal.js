@@ -144,7 +144,7 @@ class PostPreviewModal extends Component {
   };
 
   handleSubmit = () => {
-    if (this.props.reviewData) {
+    if (this.props.reviewData && !this.props.isUpdating) {
       this.setState({ isCheckReviewModalOpen: true });
     } else {
       this.props.onSubmit();

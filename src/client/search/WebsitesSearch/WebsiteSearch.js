@@ -34,6 +34,8 @@ const WebsiteSearch = props => {
       props.setWebsiteSearchString(value);
       props.setSearchInBox(true);
 
+      if (window.gtag) window.gtag('event', `search_${props.searchType.toLowerCase()}`);
+
       switch (props.searchType) {
         case 'Users':
           return props.searchUsersAutoCompete(value);
@@ -41,8 +43,14 @@ const WebsiteSearch = props => {
           return props.searchWebsiteObjectsAutoCompete(value);
       }
     },
-    [props.searchType, searchString],
+    [props.searchType, searchString, props.location.search],
   );
+
+  useEffect(() => {
+    const querySearch = props.query.get('searchString');
+
+    if (querySearch) setSearchString(querySearch);
+  }, []);
 
   useEffect(() => {
     if (props.isShowResult && !isEmpty(props.searchMap)) currentSearchMethod(searchString);
@@ -53,19 +61,28 @@ const WebsiteSearch = props => {
   }, [props.searchType, props.activeFilters, searchString]);
 
   const handleSearchAutocomplete = useCallback(
-    debounce(value => currentSearchMethod(value), 500),
+    debounce(value => {
+      currentSearchMethod(value);
+    }, 500),
     [props.searchType],
   );
 
   const handleSearch = value => {
     handleSearchAutocomplete(value);
     setSearchString(value);
+
+    if (value) {
+      props.query.set('searchString', value);
+      props.history.push(`/?${props.query.toString()}`);
+    }
   };
 
   const handleResetAutocomplete = () => {
     setSearchString('');
     props.resetSearchAutoCompete();
     handleSearchAutocomplete('');
+
+    props.history.push(`/?type=${props.searchType}`);
   };
 
   return (
@@ -100,6 +117,15 @@ WebsiteSearch.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
+  query: PropTypes.shape({
+    get: PropTypes.func,
+    set: PropTypes.func,
+    delete: PropTypes.func,
+    toString: PropTypes.func,
+  }).isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string,
+  }).isRequired,
   resetSearchAutoCompete: PropTypes.func.isRequired,
   setWebsiteSearchString: PropTypes.func.isRequired,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
@@ -121,7 +147,7 @@ WebsiteSearch.defaultProps = {
 };
 
 export default connect(
-  state => ({
+  (state, ownProps) => ({
     searchByObject: getSearchObjectsResults(state),
     searchByObjectType: searchObjectTypesResults(state),
     isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
@@ -129,6 +155,7 @@ export default connect(
     activeFilters: getSearchFiltersTagCategory(state),
     isShowResult: getShowSearchResult(state),
     searchMap: getWebsiteMap(state),
+    query: new URLSearchParams(ownProps.location.search),
   }),
   {
     resetSearchAutoCompete,

@@ -62,6 +62,7 @@ class Editor extends React.Component {
     locale: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     handleLinkedObjectsCards: PropTypes.func,
+    handleChangeTitle: PropTypes.func.isRequired,
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
     displayTitle: PropTypes.bool,
@@ -254,6 +255,7 @@ class Editor extends React.Component {
 
   validateLength = event => {
     this.setState({ titleValue: event.target.value }, () => {
+      this.props.handleChangeTitle(this.state.titleValue);
       if (this.state.titleValue && this.state.titleValue.length === Editor.MAX_LENGTH) {
         message.error(
           this.props.intl.formatMessage({

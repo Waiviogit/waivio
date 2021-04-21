@@ -11,6 +11,7 @@ import Map from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import {
+  setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
   setShowSearchResult,
@@ -53,6 +54,8 @@ import {
   getShowReloadButton,
   getWobjectsPoint,
 } from '../../../store/websiteStore/websiteSelectors';
+import WebsiteWelcomeModal from '../../WebsiteWelcomeModal/WebsiteWelcomeModal';
+import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 
 import './WebsiteBody.less';
 
@@ -115,18 +118,26 @@ const WebsiteBody = props => {
     });
 
   useEffect(() => {
+    const query = props.location.search;
     const handleResize = () => setHeight(window.innerHeight);
 
     setHeight(window.innerHeight);
 
     if (props.isAuth) props.getReservedCounter();
 
+    if (query) {
+      const filterBody = createFilterBody(parseTagsFilters(query));
+      const type = props.query.get('type');
+
+      if (type) props.setWebsiteSearchType(type);
+      if (!isEmpty(filterBody)) props.setFilterFromQuery(filterBody);
+    }
+
     getCoordinatesForMap();
 
     window.addEventListener('resize', handleResize);
 
     return () => {
-      props.setShowSearchResult(false);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
@@ -220,12 +231,13 @@ const WebsiteBody = props => {
 
       if (get(infoboxData, 'coordinates', []) === anchor) setInfoboxData({ infoboxData: null });
 
-      props.history.push(
-        `/?center=${anchor}&zoom=${area.zoom}&permlink=${payload.author_permlink}`,
-      );
+      props.query.set('center', anchor);
+      props.query.set('zoom', area.zoom);
+      props.query.set('permlink', payload.author_permlink);
+      props.history.push(`/?${props.query.toString()}`);
       setInfoboxData({ wobject: payload, coordinates: anchor });
     },
-    [area.zoom],
+    [area.zoom, props.location.search],
   );
 
   const getMarkers = useCallback(
@@ -286,7 +298,7 @@ const WebsiteBody = props => {
         </div>
       </Overlay>
     );
-  }, [props.query.get('permlink')]);
+  }, [infoboxData]);
 
   const incrementZoom = () => setArea({ ...area, zoom: area.zoom + 1 });
   const decrementZoom = () => setArea({ ...area, zoom: area.zoom - 1 });
@@ -345,6 +357,21 @@ const WebsiteBody = props => {
     </div>
   );
 
+  const handleSetFiltersInUrl = (category, value) => {
+    if (value === 'all') props.query.delete(category);
+    else props.query.set(category, value);
+
+    props.history.push(`?${props.query.toString()}`);
+  };
+
+  const handleUrlWithChangeType = type => {
+    let query = `?type=${type}`;
+
+    if (props.searchString) query = `${query}&searchString=${props.searchString}`;
+
+    props.history.push(query);
+  };
+
   return (
     <div className="WebsiteBody">
       <Helmet>
@@ -365,6 +392,8 @@ const WebsiteBody = props => {
         searchType={props.searchType}
         handleHoveredCard={handleHoveredCard}
         handleChangeType={handleChangeType}
+        handleSetFiltersInUrl={handleSetFiltersInUrl}
+        handleUrlWithChangeType={handleUrlWithChangeType}
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
@@ -395,7 +424,10 @@ const WebsiteBody = props => {
               onClick={({ event }) => {
                 if (!get(event, 'target.dataset.anchor')) {
                   setInfoboxData(null);
-                  props.history.push('/');
+                  props.query.delete('center');
+                  props.query.delete('zoom');
+                  props.query.delete('permlink');
+                  props.history.push(`/?${props.query.toString()}`);
                 }
               }}
               animate
@@ -407,7 +439,11 @@ const WebsiteBody = props => {
                       <Tag
                         key={tag}
                         closable
-                        onClose={() => props.setWebsiteSearchFilter(filter.categoryName, 'all')}
+                        onClose={() => {
+                          props.setWebsiteSearchFilter(filter.categoryName, 'all');
+                          props.query.delete(filter.categoryName);
+                          props.history.push(`?${props.query.toString()}`);
+                        }}
                       >
                         {tag}
                       </Tag>
@@ -427,6 +463,7 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
+      {props.isAuth && <WebsiteWelcomeModal />}
     </div>
   );
 };
@@ -458,8 +495,9 @@ WebsiteBody.propTypes = {
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   setSearchInBox: PropTypes.func.isRequired,
-  setShowSearchResult: PropTypes.func.isRequired,
+  setFilterFromQuery: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
+  setWebsiteSearchType: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape()),
   // eslint-disable-next-line react/no-unused-prop-types
   configCoordinates: PropTypes.arrayOf().isRequired,
@@ -473,6 +511,7 @@ WebsiteBody.propTypes = {
   isAuth: PropTypes.bool,
   query: PropTypes.shape({
     get: PropTypes.func,
+    set: PropTypes.func,
     delete: PropTypes.func,
   }).isRequired,
 };
@@ -513,5 +552,6 @@ export default connect(
     setShowReload,
     setShowSearchResult,
     setSearchInBox,
+    setFilterFromQuery,
   },
 )(withRouter(WebsiteBody));
