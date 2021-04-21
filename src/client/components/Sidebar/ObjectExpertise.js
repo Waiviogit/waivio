@@ -15,9 +15,10 @@ const ObjectExpertise = ({ username, wobject, match }) => {
   const [experts, setExperts] = useState({ user: {}, users: [], loading: true });
   const { users, user, loading } = experts;
   const isUserInTopFive = users.find(u => u.name === username);
+  const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
   useEffect(() => {
-    getWobjectsExpertiseWithNewsFilter(username, wobject.author_permlink, 0, 5, match.params.itemId)
+    getWobjectsExpertiseWithNewsFilter(username, wobject.author_permlink, 0, 5, newsFilter)
       .then(data => {
         setExperts({ ...data, loading: false });
       })
