@@ -131,7 +131,7 @@ export const getComments = postId => (dispatch, getState) => {
   if (content) {
     const { category, permlink } = content;
     const author =
-      content.guestInfo.userId === content.author ? content.root_author : content.author;
+      get(content, 'guestInfo.userId') === content.author ? content.root_author : content.author;
 
     dispatch({
       type: GET_COMMENTS.ACTION,
