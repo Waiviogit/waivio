@@ -40,7 +40,11 @@ const WebsiteSearch = props => {
         case 'Users':
           return props.searchUsersAutoCompete(value);
         default:
-          return props.searchWebsiteObjectsAutoCompete(value);
+          return props.searchWebsiteObjectsAutoCompete(
+            value,
+            'weight',
+            +localStorage.getItem('limit') || 15,
+          );
       }
     },
     [props.searchType, searchString, props.location.search],
@@ -50,6 +54,8 @@ const WebsiteSearch = props => {
     const querySearch = props.query.get('searchString');
 
     if (querySearch) setSearchString(querySearch);
+
+    return () => props.resetSearchAutoCompete();
   }, []);
 
   useEffect(() => {

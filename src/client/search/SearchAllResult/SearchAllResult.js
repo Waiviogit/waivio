@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty, map, size, get, uniqBy } from 'lodash';
@@ -42,17 +42,12 @@ import './SearchAllResult.less';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [scr, setScr] = useState(0);
   const filterTypes = ['restaurant', 'dish', 'drink', 'Users'];
   const isUsersSearch = props.searchType === 'Users';
   const resultList = useRef();
   const searchResultClassList = classNames('SearchAllResult', {
     SearchAllResult__show: props.isShowResult,
   });
-
-  useEffect(() => {
-    console.log(resultList.current.scrollTo());
-  }, [])
 
   const switcherObjectCard = obj => {
     if (!isEmpty(obj.propositions)) {
@@ -96,11 +91,13 @@ const SearchAllResult = props => {
         return {
           list: map(uniqBy(props.searchResult, '_id'), obj => (
             <div
+              role="presentation"
               key={obj.author_permlink}
               onMouseOver={() => props.handleHoveredCard(obj.author_permlink)}
               onMouseOut={() => props.handleHoveredCard('')}
-              onClick={e => {
-                setScr(resultList.current.scrollTop);
+              onClick={() => {
+                localStorage.setItem('scrollTop', resultList.current.scrollTop);
+                localStorage.setItem('limit', size(props.searchResult));
               }}
             >
               {switcherObjectCard(obj)}
@@ -111,6 +108,14 @@ const SearchAllResult = props => {
         };
     }
   }, [props.searchType, props.searchResult, props.searchByUser, props.loading, props.usersLoading]);
+
+  useEffect(() => {
+    if (!isEmpty(props.searchResult) && localStorage.getItem('scrollTop')) {
+      resultList.current.scrollTo(0, +localStorage.getItem('scrollTop'));
+      localStorage.removeItem('scrollTop');
+      localStorage.removeItem('limit');
+    }
+  }, [props.searchResult]);
 
   const currRenderListState = currentListState();
 
@@ -204,7 +209,6 @@ const SearchAllResult = props => {
         ))}
       </div>
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
-        <span onClick={() => resultList.current.scrollTo(0, scr)}>scroll</span>
         {!isUsersSearch && (
           <React.Fragment>
             <div className="SearchAllResult__filters">

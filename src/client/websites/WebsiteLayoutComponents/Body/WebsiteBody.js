@@ -111,11 +111,19 @@ const WebsiteBody = props => {
     }
   };
 
-  const handleSetMapForSearch = () =>
+  const handleSetMapForSearch = () => {
+    if (!isEmpty(area.center)) {
+      props.query.set('center', area.center);
+      props.query.set('zoom', area.zoom);
+    }
+
+    props.history.push(`/?${props.query.toString()}`);
+    localStorage.setItem('query', props.query.toString());
     props.setMapForSearch({
       coordinates: reverse([...area.center]),
       ...boundsParams,
     });
+  };
 
   useEffect(() => {
     const query = props.location.search;
@@ -138,6 +146,7 @@ const WebsiteBody = props => {
     window.addEventListener('resize', handleResize);
 
     return () => {
+      props.setShowSearchResult(false);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
@@ -491,6 +500,7 @@ WebsiteBody.propTypes = {
   searchString: PropTypes.string.isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
+  setShowSearchResult: PropTypes.func.isRequired,
   putUserCoordinates: PropTypes.func.isRequired,
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
