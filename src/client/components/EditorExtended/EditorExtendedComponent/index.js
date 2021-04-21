@@ -2,17 +2,22 @@ import { connect } from "react-redux";
 
 import {
   getObjectIds,
-  getRawContentEntityMap,
   getRestoreObjects,
-  setUpdatedEditorData
+  getRawContentEntityMap,
+  setUpdatedEditorExtendedData,
 } from "../../../store/editorStore/editorActions";
 import EditorExtended from "./EditorExtended";
+import { getEditorExtended } from "../../../store/editorStore/editorSelectors";
 
-const mapDispatchToProps = (dispatch) => ({
-  setUpdatedEditorData: (data) => dispatch(setUpdatedEditorData(data)),
-  getObjectIds: (rawContent, newObject, draftId) => dispatch(getObjectIds(rawContent, newObject, draftId)),
-  getRawContentEntityMap: (rawContent, response) => dispatch(getRawContentEntityMap(rawContent, response)),
-  getRestoreObjects: (rawContent, newObject, draftId) => dispatch(getRestoreObjects(rawContent, newObject, draftId)),
+const mapStateToProps = (state) => ({
+  editorExtended: getEditorExtended(state)
 });
 
-export default connect(null, mapDispatchToProps)(EditorExtended);
+const mapDispatchToProps = (dispatch) => ({
+  getObjectIds: (rawContent, newObject, draftId) => dispatch(getObjectIds(rawContent, newObject, draftId)),
+  getRestoreObjects: (rawContent, newObject, draftId) => dispatch(getRestoreObjects(rawContent, newObject, draftId)),
+  getRawContentEntityMap: (rawContent, response) => dispatch(getRawContentEntityMap(rawContent, response)),
+  setUpdatedEditorExtendedData: data => dispatch(setUpdatedEditorExtendedData(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditorExtended);

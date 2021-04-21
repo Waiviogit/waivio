@@ -1,180 +1,130 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { get } from 'lodash';
 import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
-import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
+import { convertToRaw, EditorState } from 'draft-js';
 import {
-  createEditorState,
-  Editor as MediumDraftEditor,
-  findLinkEntities,
   fromMarkdown,
+  Editor as MediumDraftEditor,
 } from '../index';
-import ImageSideButton from '../components/sides/ImageSideButton';
-import VideoSideButton from '../components/sides/VideoSideButton';
-import SeparatorButton from '../components/sides/SeparatorSideButton';
-import ObjectSideButton from '../components/sides/ObjectSideButton';
-import { getObjectsByIds } from '../../../../waivioApi/ApiClient';
-import ObjectLink, { findObjEntities } from '../components/entities/objectlink';
-import Link from '../components/entities/link';
-import { getNewLinkedObjectsCards } from '../../../helpers/editorHelper';
-import { getObjectIds, getRawContentEntityMap } from "../../../store/editorStore/editorActions";
+import { defaultDecorators, SIDE_BUTTONS } from "../../../helpers/editorHelper";
 
-const SIDE_BUTTONS = [
-  {
-    title: 'Image',
-    component: ImageSideButton,
-  },
-  {
-    title: 'Video',
-    component: VideoSideButton,
-  },
-  {
-    title: 'Object',
-    component: ObjectSideButton,
-  },
-  {
-    title: 'Separator',
-    component: SeparatorButton,
-  },
-];
+const MAX_LENGTH = 255
 
-export const defaultDecorators = new CompositeDecorator([
-  {
-    strategy: findObjEntities,
-    component: ObjectLink,
-  },
-  {
-    strategy: findLinkEntities,
-    component: Link,
-  },
-]);
+const Editor = (props) => {
+  const {
+    editorExtended: { editorState, isMounted, editorEnabled, titleValue }
+  } = props;
+  const refsEditor = React.useRef();
 
-class Editor extends React.Component {
-  static propTypes = {
-    // passed props:
-    enabled: PropTypes.bool.isRequired,
-    initialContent: PropTypes.shape({
-      title: PropTypes.string,
-      body: PropTypes.string,
-    }).isRequired,
-    // locale: PropTypes.string.isRequired,
-    onChange: PropTypes.func,
-    // setUpdatedEditorData: PropTypes.func,
-    intl: PropTypes.shape(),
-    handleHashtag: PropTypes.func,
-    displayTitle: PropTypes.bool,
-    draftId: PropTypes.string,
-    getRestoreObjects: PropTypes.func,
-    // linkedObjectsCards: PropTypes.shape().isRequired,
-  };
-  static defaultProps = {
-    intl: {},
-    onChange: () => {},
-    setUpdatedEditorData: () => {},
-    handleHashtag: () => {},
-    displayTitle: true,
-    draftId: '',
-    linkedObjects: [],
-  };
-
-  static MAX_LENGTH = 255;
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isMounted: false,
-      editorEnabled: false,
-      prevEditorState: null,
+  React.useEffect(() => {
+    props.setUpdatedEditorExtendedData({
+      isMounted: true,
       editorState: EditorState.createEmpty(defaultDecorators),
-      titleValue: '',
-    };
-    this.refsEditor = React.createRef();
-  }
-
-  componentDidMount() {
-    const { initialContent } = this.props;
-    this.setState({ isMounted: true, titleValue: get(initialContent, 'title', '') }); // eslint-disable-line
-    this.restoreObjects(fromMarkdown(initialContent)).then(() => this.setFocusAfterMount());
-  }
-
-  onChange = editorState => {
-    const { editorState: prevEditorState } = this.state;
-
-    this.setState({ editorState, prevEditorState });
-  };
-  setFocusAfterMount = () => {
-    setTimeout(() => this.refsEditor.current.focus(), 0);
-    this.setState({ editorEnabled: true });
-  };
-
-  restoreObjects = async (rawContent, newObject) => {
-    const { getRestoreObjects, draftId } = this.props;
-    const rawContentUpdated = await getRestoreObjects(rawContent, newObject, draftId);
-
-    console.log('rawContentUpdated');
-    this.handleContentChange(EditorState.moveFocusToEnd(createEditorState(rawContentUpdated)));
-  };
-
-  handleContentChange = editorState => {
-    this.onChange(editorState);
-    this.props.onChange(convertToRaw(editorState.getCurrentContent()), this.state.titleValue);
-  };
-
-  validateLength = event => {
-    this.setState({ titleValue: event.target.value }, () => {
-      if (this.state.titleValue && this.state.titleValue.length === Editor.MAX_LENGTH) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'title_error_too_long',
-            defaultMessage: "Title can't be longer than 255 characters.",
-          }),
-        );
-      }
+      titleValue: get(props, 'initialContent.title', '')
     });
-  };
+    restoreObjects(fromMarkdown(props.initialContent)).then(() => setFocusAfterMount());
+  }, []);
 
-  render() {
-    const { editorState, isMounted, editorEnabled, titleValue } = this.state;
-    const { initialContent } = this.props;
-    const isVimeo = get(initialContent, 'body', '').includes('player.vimeo.com');
+  const onChange = useCallback(updatedEditorState => {
+    const { editorState: prevEditorState } = props.editorExtended;
+
+    props.setUpdatedEditorExtendedData({ editorState: updatedEditorState, prevEditorState });
+  }, [props.editorExtended.editorState]);
+
+  const setFocusAfterMount = useCallback(() => {
+    refsEditor.current && refsEditor.current.focus();
+    props.setUpdatedEditorExtendedData({ editorEnabled: true });
+  }, []);
+
+  const restoreObjects = useCallback((rawContent, newObject) =>
+    props.getRestoreObjects(rawContent, newObject, props.draftId),
+    [props.draftId]
+  );
+
+  const handleContentChange = useCallback(updatedEditorState => {
+    onChange(updatedEditorState);
+    props.onChange(convertToRaw(updatedEditorState.getCurrentContent()), props.editorExtended.titleValue);
+  }, [props.editorExtended.titleValue]);
+
+  const validateLength = useCallback(event => {
+    const updatedTitleValue = event.target.value;
+
+    props.setUpdatedEditorExtendedData({ titleValue: updatedTitleValue });
+    if (updatedTitleValue && updatedTitleValue.length === MAX_LENGTH) {
+      message.error(
+        props.intl.formatMessage({
+          id: 'title_error_too_long',
+          defaultMessage: "Title can't be longer than 255 characters.",
+        }),
+      );
+    }
+  }, []);
+
+    const isVimeo = get(props, 'initialContent.body', '').includes('player.vimeo.com');
 
     return (
       <div className="waiv-editor-wrap">
-        {this.props.displayTitle && (
+        {props.displayTitle && (
           <Input.TextArea
-            maxLength={Editor.MAX_LENGTH}
             autoSize
-            className="md-RichEditor-title"
             value={titleValue}
-            placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
-            onChange={event => this.validateLength(event)}
+            maxLength={MAX_LENGTH}
+            className="md-RichEditor-title"
+            onChange={event => validateLength(event)}
+            placeholder={props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
           />
         )}
         <div className="waiv-editor">
           {isMounted && (
             <MediumDraftEditor
-              ref={this.refsEditor}
-              placeholder={this.props.intl.formatMessage({
+              ref={refsEditor}
+              intl={props.intl}
+              isVimeo={isVimeo}
+              editorState={editorState}
+              sideButtons={SIDE_BUTTONS}
+              onChange={handleContentChange}
+              handleHashtag={props.handleHashtag}
+              editorEnabled={editorEnabled && props.enabled}
+              placeholder={props.intl.formatMessage({
                 id: 'story_placeholder',
                 defaultMessage: 'Write your story...',
               })}
-              editorEnabled={editorEnabled && this.props.enabled}
-              editorState={editorState}
-              beforeInput={this.handleBeforeInput}
-              onChange={this.handleContentChange}
-              sideButtons={SIDE_BUTTONS}
-              intl={this.props.intl}
-              handleHashtag={this.props.handleHashtag}
-              isVimeo={isVimeo}
             />
           )}
         </div>
       </div>
     );
   }
-}
+
+const propTypes = {
+  enabled: PropTypes.bool.isRequired,
+  initialContent: PropTypes.shape({
+    title: PropTypes.string,
+    body: PropTypes.string,
+  }).isRequired,
+  onChange: PropTypes.func,
+  intl: PropTypes.shape(),
+  draftId: PropTypes.string,
+  editorExtended: PropTypes.shape().isRequired,
+  handleHashtag: PropTypes.func,
+  displayTitle: PropTypes.bool,
+  getRestoreObjects: PropTypes.func,
+  setUpdatedEditorExtendedData: PropTypes.func.isRequired,
+};
+
+const defaultProps = {
+  intl: {},
+  onChange: () => {},
+  handleHashtag: () => {},
+  displayTitle: true,
+  draftId: '',
+  linkedObjects: [],
+  getRestoreObjects: () => {},
+};
+
+Editor.propTypes = propTypes;
+Editor.defaultProps = defaultProps;
 
 export default injectIntl(Editor);
-

@@ -4,7 +4,7 @@ import * as editorActions from './editorActions';
 import * as postActions from '../postsStore/postActions';
 import * as authActions from '../authStore/authActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
-import { defaultDecorators } from "../../components/EditorExtended/EditorExtendedComponent/EditorExtended";
+import { defaultDecorators } from "../../helpers/editorHelper";
 
 const defaultState = {
   loading: false,
@@ -149,7 +149,9 @@ const editor = (state = defaultState, action) => {
     case editorActions.SET_EDITOR_STATE:
       return { ...state, editor: action.payload };
     case editorActions.SET_UPDATED_EDITOR_DATA:
-      return { ...state, editor: {...state.editor, ...action.payload} };
+      return { ...state, editor: { ...state.editor, ...action.payload } };
+    case editorActions.SET_UPDATED_EDITOR_EXTENDED_DATA:
+      return { ...state, editorExtended: {...state.editorExtended, ...action.payload} };
     default:
       return state;
   }

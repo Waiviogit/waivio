@@ -8,9 +8,7 @@ import {
   uniqBy,
   includes,
   find,
-  indexOf,
   uniqWith,
-  concat,
   isEqual,
   isEmpty,
 } from 'lodash';
@@ -18,7 +16,7 @@ import { getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
-import {toMarkdown} from '../../components/EditorExtended';
+import { fromMarkdown, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
 import {setObjPercents} from '../../helpers/wObjInfluenceHelper';
@@ -41,6 +39,7 @@ const propTypes = {
   buildPost: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   getReviewCheckInfo: PropTypes.func.isRequired,
+  getRestoreObjects: PropTypes.func.isRequired,
   setUpdatedEditorData: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   isWaivio: PropTypes.bool,
@@ -74,8 +73,8 @@ const EditPost = (props) => {
       draftContent,
       content,
       topics,
-      linkedObjects,
-      linkedObjectsCards,
+      linkedObjects = [],
+      linkedObjectsCards = [],
       objPercentage,
       settings,
       campaign,
@@ -135,34 +134,24 @@ const EditPost = (props) => {
   };
 
   const handleChangeContent = useCallback(debounce(
-    (rawContent, title) => {
+    async (rawContent, title) => {
     const updatedStore = {content: toMarkdown(rawContent), titleValue: title};
+    const rawContentUpdated = await props.getRestoreObjects(rawContent);
+    const updatedObjPercentage = setObjPercents(linkedObjects, objPercentage);
 
-    const updatedLinkedObjects = uniqBy(concat(linkedObjects, getLinkedObjects(rawContent)), '_id');
-
-    const isLinkedObjectsChanged = !isEqual(linkedObjects, updatedLinkedObjects);
-
-    if (isLinkedObjectsChanged) {
-      const updatedObjPercentage = setObjPercents(linkedObjects, objPercentage);
-
-      sessionStorage.setItem('linkedObjects', JSON.stringify(linkedObjects || []));
-      updatedStore.linkedObjects = updatedLinkedObjects;
-      updatedStore.objPercentage = updatedObjPercentage;
-    }
+    updatedStore.linkedObjects = uniqBy(getLinkedObjects(rawContentUpdated), '_id');
+    updatedStore.objPercentage = updatedObjPercentage;
     if (
       content !== updatedStore.content ||
-      isLinkedObjectsChanged ||
       titleValue !== updatedStore.titleValue
     ) {
-      const newDraft = getCurrentDraftContent(updatedStore, rawContent, currentRawContent);
+      const newDraft = getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent);
 
-      props.setUpdatedEditorData({...updatedStore, ...newDraft});
+      props.setUpdatedEditorData({ ...updatedStore, ...newDraft });
     }
   }, 1500), [currentRawContent, props.draftId, linkedObjects, linkedObjectsCards, objPercentage]);
 
-  const handleSettingsChange = updatedValue => props.setUpdatedEditorData({
-      settings: {...settings, ...updatedValue}
-    });
+  const handleSettingsChange = updatedValue => props.setUpdatedEditorData({ settings: {...settings, ...updatedValue} });
 
   const handleSubmit = () => {
     const postData = props.buildPost();
@@ -174,12 +163,10 @@ const EditPost = (props) => {
   const handleToggleLinkedObject = (objId, isLinked, uniqId) => {
     const prohibitedObjectCards = linkedObjectsCards || [];
     const currentObj = find(linkedObjects, {_id: uniqId});
-    const switchableObj = indexOf(linkedObjects, currentObj);
     const switchableObjPermlink = currentObj.author_permlink;
     const indexSwitchableHashtag = topics.indexOf(switchableObjPermlink);
 
     if (!isLinked) {
-      linkedObjects.splice(switchableObj, 1);
       topics.splice(indexSwitchableHashtag, 1);
     }
     const updPercentage = {
@@ -191,10 +178,15 @@ const EditPost = (props) => {
     sessionStorage.setItem('linkedObjectsCards', JSON.stringify(prohibitedObjectCards));
     props.setUpdatedEditorData({
       topics,
+      linkedObjects,
       linkedObjectsCards: prohibitedObjectCards,
       objPercentage: setObjPercents(linkedObjects, updPercentage),
     });
   }
+
+  const handleObjectSelect = (object) => props.handleObjectSelect(object).then(data => {
+    handleChangeContent(fromMarkdown(data), data.title)
+  });
 
   const handleCreateObject = (object) => props.handleObjectSelect(object);
 
@@ -259,18 +251,18 @@ const EditPost = (props) => {
               id: 'editor_search_object_by_name',
               defaultMessage: 'Search by name',
             })}
-            handleSelect={props.handleObjectSelect}
+            handleSelect={handleObjectSelect}
             addHashtag={!props.isWaivio}
           />
           <CreateObject onCreateObject={handleCreateObject}/>
-          {props.filteredObjectsCards.map(wObj => (
-            <PostObjectCard
-              isLinked={get(objPercentage, [wObj.id, 'percent'], 0) > 0}
-              wObject={wObj}
-              onToggle={handleToggleLinkedObject}
-              key={wObj.id}
-            />
-          ))}
+          {props.filteredObjectsCards.map(wObj =>
+             <PostObjectCard
+                isLinked={get(objPercentage, [wObj._id, 'percent'], 0) > 0}
+                wObject={wObj}
+                onToggle={handleToggleLinkedObject}
+                key={wObj._id}
+              />
+          )}
         </div>
         <div className="rightContainer">
           <div className="right">

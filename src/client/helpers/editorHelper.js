@@ -1,14 +1,20 @@
 import uuidv4 from "uuid/v4";
 import { last, find, has, uniqWith, isEqual, differenceWith, head, get, keyBy } from 'lodash';
 
-import { Entity } from '../components/EditorExtended';
-import { handlePastedLink, QUERY_APP } from "../components/EditorExtended/util/editorHelper";
+import { CompositeDecorator } from "draft-js";
+import { Entity, findLinkEntities } from '../components/EditorExtended';
+import ObjectLink, { findObjEntities } from "../components/EditorExtended/components/entities/objectlink";
+import Link from "../components/EditorExtended/components/entities/link";
+import ImageSideButton from "../components/EditorExtended/components/sides/ImageSideButton";
+import VideoSideButton from "../components/EditorExtended/components/sides/VideoSideButton";
+import ObjectSideButton from "../components/EditorExtended/components/sides/ObjectSideButton";
+import SeparatorButton from "../components/EditorExtended/components/sides/SeparatorSideButton";
 
 export const getNewLinkedObjectsCards = (
   prohibitObjects,
   objectIds,
   rowContent,
-  prevRowContent,
+  prevRowContent = [],
 ) => {
   const lastContentAdd = head(differenceWith(rowContent, prevRowContent, isEqual));
 
@@ -95,8 +101,38 @@ export const getCurrentLoadObjects = (response, value) => {
   if (value.type === Entity.OBJECT) {
     return loadObjects[get(value, 'data.object.id')];
   } else if (value.type === Entity.LINK) {
-    return loadObjects[this.getCurrentLinkPermlink(value)];
+    return loadObjects[getCurrentLinkPermlink(value)];
   }
 
   return loadObjects;
 };
+
+export const defaultDecorators = new CompositeDecorator([
+  {
+    strategy: findObjEntities,
+    component: ObjectLink,
+  },
+  {
+    strategy: findLinkEntities,
+    component: Link,
+  },
+]);
+
+export const SIDE_BUTTONS = [
+  {
+    title: 'Image',
+    component: ImageSideButton,
+  },
+  {
+    title: 'Video',
+    component: VideoSideButton,
+  },
+  {
+    title: 'Object',
+    component: ObjectSideButton,
+  },
+  {
+    title: 'Separator',
+    component: SeparatorButton,
+  },
+];
