@@ -36,11 +36,6 @@ const WebsiteSearch = props => {
 
       if (window.gtag) window.gtag('event', `search_${props.searchType.toLowerCase()}`);
 
-      if (value) {
-        props.query.set('searchString', value);
-        props.history.push(`/?${props.query.toString()}`);
-      }
-
       switch (props.searchType) {
         case 'Users':
           return props.searchUsersAutoCompete(value);
@@ -75,14 +70,19 @@ const WebsiteSearch = props => {
   const handleSearch = value => {
     handleSearchAutocomplete(value);
     setSearchString(value);
+
+    if (value) {
+      props.query.set('searchString', value);
+      props.history.push(`/?${props.query.toString()}`);
+    }
   };
 
   const handleResetAutocomplete = () => {
     setSearchString('');
     props.resetSearchAutoCompete();
     handleSearchAutocomplete('');
-    props.query.delete('searchString');
-    props.history.push(`/?${props.query.toString()}`);
+
+    props.history.push(`/?type=${props.searchType}`);
   };
 
   return (

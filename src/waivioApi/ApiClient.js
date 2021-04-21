@@ -536,7 +536,7 @@ export const getWobjectsExpertiseWithNewsFilter = (
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
       headers: { ...actualHeader, app: config.appName },
       method: 'POST',
-      body: JSON.stringify({ skip, limit, newsFilter }),
+      body: JSON.stringify({ skip, limit, ...newsFilter }),
     })
       .then(handleErrors)
       .then(res => res.json())
