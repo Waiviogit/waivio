@@ -22,7 +22,13 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import {setObjPercents} from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
-import { getCurrentDraftContent, getCurrentDraftId, getLinkedObjects } from '../../helpers/editorHelper';
+import {
+  EDITOR_ACTION_ADD,
+  getCurrentDraftContent,
+  getCurrentDraftId,
+  getLastContentAction,
+  getLinkedObjects
+} from '../../helpers/editorHelper';
 
 import './EditPost.less';
 
@@ -135,21 +141,38 @@ const EditPost = (props) => {
 
   const handleChangeContent = useCallback(debounce(
     async (rawContent, title) => {
+    let newDraft = {};
     const updatedStore = {content: toMarkdown(rawContent), titleValue: title};
-    const rawContentUpdated = await props.getRestoreObjects(rawContent);
-    const updatedObjPercentage = setObjPercents(linkedObjects, objPercentage);
+    const getRowContent = Object.values(get(rawContent, 'entityMap', {}));
+    const getCurrentRawContent = Object.values(get(currentRawContent, 'entityMap', {}));
+    const isChangedObjects = getRowContent.length !== getCurrentRawContent.length;
 
-    updatedStore.linkedObjects = uniqBy(getLinkedObjects(rawContentUpdated), '_id');
-    updatedStore.objPercentage = updatedObjPercentage;
+    if(isChangedObjects) {
+      const rawContentUpdated = await props.getRestoreObjects(rawContent);
+      const getRawContentUpdated = Object.values(get(rawContentUpdated, 'entityMap', {}));
+
+      const { actionValue, actionType } = getLastContentAction(getRawContentUpdated, getCurrentRawContent);
+
+      // console.log(actionValue, actionType);
+      if (actionType === EDITOR_ACTION_ADD && linkedObjectsCards.find(object => object.author_permlink === actionValue.data.object.author_permlink)) {
+        const filteredObjectCards = linkedObjectsCards.filter(object => object.author_permlink !== actionValue.data.object.author_permlink)
+
+        sessionStorage.setItem('linkedObjectsCards', JSON.stringify(filteredObjectCards));
+        updatedStore.linkedObjectsCards = filteredObjectCards;
+      }
+      const updatedObjPercentage = setObjPercents(linkedObjects, objPercentage);
+
+      updatedStore.linkedObjects = uniqBy(getLinkedObjects(rawContentUpdated), '_id');
+      updatedStore.objPercentage = updatedObjPercentage;
+      newDraft = getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent);
+    }
     if (
       content !== updatedStore.content ||
       titleValue !== updatedStore.titleValue
     ) {
-      const newDraft = getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent);
-
       props.setUpdatedEditorData({ ...updatedStore, ...newDraft });
     }
-  }, 1500), [currentRawContent, props.draftId, linkedObjects, linkedObjectsCards, objPercentage]);
+  }, 1500), [currentRawContent, props.draftId, linkedObjects, objPercentage, linkedObjectsCards]);
 
   const handleSettingsChange = updatedValue => props.setUpdatedEditorData({ settings: {...settings, ...updatedValue} });
 

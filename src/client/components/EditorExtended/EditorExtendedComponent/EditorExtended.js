@@ -27,11 +27,11 @@ const Editor = (props) => {
     restoreObjects(fromMarkdown(props.initialContent)).then(() => setFocusAfterMount());
   }, []);
 
-  const onChange = useCallback(updatedEditorState => {
+  const onChange = updatedEditorState => {
     const { editorState: prevEditorState } = props.editorExtended;
 
     props.setUpdatedEditorExtendedData({ editorState: updatedEditorState, prevEditorState });
-  }, [props.editorExtended.editorState]);
+  };
 
   const setFocusAfterMount = useCallback(() => {
     refsEditor.current && refsEditor.current.focus();
@@ -43,10 +43,10 @@ const Editor = (props) => {
     [props.draftId]
   );
 
-  const handleContentChange = useCallback(updatedEditorState => {
+  const handleContentChange = updatedEditorState => {
     onChange(updatedEditorState);
     props.onChange(convertToRaw(updatedEditorState.getCurrentContent()), props.editorExtended.titleValue);
-  }, [props.editorExtended.titleValue]);
+  };
 
   const validateLength = useCallback(event => {
     const updatedTitleValue = event.target.value;

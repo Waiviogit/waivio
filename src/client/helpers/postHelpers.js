@@ -202,7 +202,7 @@ export function getInitialState(props, newDraftId = false) {
     permlink: null,
     originalBody: null,
     titleValue: '',
-    currentRawContent: [],
+    currentRawContent: {},
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts.find(d => d.draftId === draftId);

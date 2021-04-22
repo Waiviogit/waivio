@@ -1,5 +1,5 @@
 import uuidv4 from "uuid/v4";
-import { last, find, has, uniqWith, isEqual, differenceWith, head, get, keyBy } from 'lodash';
+import { last, find, has, uniqWith, isEqual, differenceWith, head, get, keyBy, filter } from 'lodash';
 
 import { CompositeDecorator } from "draft-js";
 import { Entity, findLinkEntities } from '../components/EditorExtended';
@@ -9,6 +9,9 @@ import ImageSideButton from "../components/EditorExtended/components/sides/Image
 import VideoSideButton from "../components/EditorExtended/components/sides/VideoSideButton";
 import ObjectSideButton from "../components/EditorExtended/components/sides/ObjectSideButton";
 import SeparatorButton from "../components/EditorExtended/components/sides/SeparatorSideButton";
+
+export const EDITOR_ACTION_ADD = 'add';
+export const EDITOR_ACTION_REMOVE = 'remove';
 
 export const getNewLinkedObjectsCards = (
   prohibitObjects,
@@ -72,8 +75,8 @@ export const getReviewTitle = (campaignData, linkedObjects) => {
 export const getCurrentDraftId = (draftId, draftIdEditor) => (!draftIdEditor && !draftId) ? uuidv4() : (draftId || draftIdEditor);
 
 export const getCurrentDraftContent = (nextState, rawContent, currentRawContent) => {
-  const prevValue = Object.values(get(currentRawContent, 'entityMap', []));
-  const nextValue = Object.values(get(rawContent, 'entityMap', []));
+  const prevValue = Object.values(get(currentRawContent, 'entityMap', {}));
+  const nextValue = Object.values(get(rawContent, 'entityMap', {}));
 
   if (!isEqual(prevValue, nextValue)) {
     return {
@@ -136,3 +139,35 @@ export const SIDE_BUTTONS = [
     component: SeparatorButton,
   },
 ];
+
+const getDifferOfContents = (iteratedRowContent, rowContent) => {
+  const newElement = filter(iteratedRowContent, object => {
+      const someArray = rowContent.some(rowContentItem => !isEqual(rowContentItem, object));
+
+      console.log('someArray', someArray);
+
+      return someArray;
+    }
+  );
+
+  console.log('newElement', newElement);
+
+  return newElement
+};
+
+export const getLastContentAction = (updatedRowContent, prevRowContent) => {
+  if (prevRowContent.length > updatedRowContent.length) {
+    console.log('if', prevRowContent, updatedRowContent);
+
+    return {
+      actionType: EDITOR_ACTION_REMOVE,
+      actionValue: getDifferOfContents(prevRowContent, updatedRowContent)
+    };
+  }
+  console.log('else', updatedRowContent, prevRowContent);
+
+  return {
+    actionType: EDITOR_ACTION_ADD,
+    actionValue: getDifferOfContents(updatedRowContent, prevRowContent),
+  };
+};
