@@ -15,7 +15,6 @@ export const TRANSACTION_TYPES = [
   'transfer_to_savings',
   'transfer_from_savings',
   'limit_order_cancel',
-  'limit_order_create',
   'fill_order',
   'proposal_pay',
   'user_to_guest_transfer',
