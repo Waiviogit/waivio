@@ -416,7 +416,7 @@ const WebsiteBody = props => {
             )}
             {zoomButtonsLayout()}
             <Map
-              center={area.center}
+              defaultCenter={area.center}
               height={mapHeight}
               zoom={area.zoom}
               provider={mapProvider}
