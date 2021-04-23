@@ -1,5 +1,5 @@
 import uuidv4 from "uuid/v4";
-import { last, find, has, uniqWith, isEqual, differenceWith, head, get, keyBy, filter } from 'lodash';
+import { last, find, has, uniqWith, isEqual, differenceWith, head, get, keyBy } from 'lodash';
 
 import { CompositeDecorator } from "draft-js";
 import { Entity, findLinkEntities } from '../components/EditorExtended';
@@ -140,20 +140,18 @@ export const SIDE_BUTTONS = [
   },
 ];
 
-const getDifferOfContents = (iteratedRowContent, rowContent) => {
-  return iteratedRowContent.filter((object, index) => !isEqual(object, rowContent[index]));
-};
+const getDifferOfContents = (iteratedRowContent, rowContent) => iteratedRowContent.filter((object, index) => !isEqual(object, rowContent[index]));
 
 export const getLastContentAction = (updatedRowContent, prevRowContent) => {
   if (prevRowContent.length > updatedRowContent.length) {
     return {
       actionType: EDITOR_ACTION_REMOVE,
-      actionValue: getDifferOfContents(prevRowContent, updatedRowContent)
+      actionValue: head(getDifferOfContents(prevRowContent, updatedRowContent))
     };
   }
 
   return {
     actionType: EDITOR_ACTION_ADD,
-    actionValue: getDifferOfContents(updatedRowContent, prevRowContent),
+    actionValue: head(getDifferOfContents(updatedRowContent, prevRowContent)),
   };
 };

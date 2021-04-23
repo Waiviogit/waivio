@@ -153,15 +153,15 @@ const EditPost = (props) => {
 
       const { actionValue, actionType } = getLastContentAction(getRawContentUpdated, getCurrentRawContent);
 
-      // console.log(actionValue, actionType);
+      let updatedObjPercentage = setObjPercents(linkedObjects, objPercentage);
+
       if (actionType === EDITOR_ACTION_ADD && linkedObjectsCards.find(object => object.author_permlink === actionValue.data.object.author_permlink)) {
         const filteredObjectCards = linkedObjectsCards.filter(object => object.author_permlink !== actionValue.data.object.author_permlink)
 
         sessionStorage.setItem('linkedObjectsCards', JSON.stringify(filteredObjectCards));
         updatedStore.linkedObjectsCards = filteredObjectCards;
+        updatedObjPercentage = { ...updatedObjPercentage, [actionValue.data.object._id]: {percent: 33} }
       }
-      const updatedObjPercentage = setObjPercents(linkedObjects, objPercentage);
-
       updatedStore.linkedObjects = uniqBy(getLinkedObjects(rawContentUpdated), '_id');
       updatedStore.objPercentage = updatedObjPercentage;
       newDraft = getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent);

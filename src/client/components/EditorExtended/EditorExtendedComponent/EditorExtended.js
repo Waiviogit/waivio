@@ -68,7 +68,6 @@ const Editor = (props) => {
       <div className="waiv-editor-wrap">
         {props.displayTitle && (
           <Input.TextArea
-            autoSize
             value={titleValue}
             maxLength={MAX_LENGTH}
             className="md-RichEditor-title"
