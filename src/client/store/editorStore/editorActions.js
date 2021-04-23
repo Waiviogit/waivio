@@ -603,7 +603,6 @@ export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getSt
           return getCurrentLinkPermlink(entity);
         }
       })
-      .filter(item => item)
   );
 };
 

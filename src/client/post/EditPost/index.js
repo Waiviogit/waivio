@@ -14,7 +14,6 @@ import {
   getIsImageUploading,
   getFilteredObjectCards,
 } from '../../store/editorStore/editorSelectors';
-import { getUpvoteSetting } from '../../store/settingsStore/settingsSelectors';
 import { getBeneficiariesUsers } from '../../store/searchStore/searchSelectors';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 import {
@@ -38,8 +37,6 @@ const mapStateToProps = (state, props) => {
     publishing: getIsEditorLoading(state),
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
-    campaignId: new URLSearchParams(props.location.search).get('campaign'),
-    upvoteSetting: getUpvoteSetting(state),
     isGuest: isGuestUser(state),
     beneficiaries: getBeneficiariesUsers(state),
     isWaivio: getIsWaivio(state),

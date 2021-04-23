@@ -207,7 +207,6 @@ export function getInitialState(props, newDraftId = false) {
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts.find(d => d.draftId === draftId);
 
-  // console.log('draftPost', draftPost);
   if (draftId && draftPost) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);

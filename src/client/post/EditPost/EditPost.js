@@ -56,11 +56,10 @@ const propTypes = {
   editor: PropTypes.shape().isRequired,
   currDraft: PropTypes.shape().isRequired,
   location: PropTypes.shape().isRequired,
-  filteredObjectsCards: PropTypes.array.isRequired,
+  filteredObjectsCards: PropTypes.arrayOf().isRequired,
 };
 
 const defaultProps = {
-  upvoteSetting: false,
   draftId: '',
   publishing: false,
   saving: false,
