@@ -73,30 +73,25 @@ export default class UserProfile extends React.Component {
 
   componentDidMount() {
     const { match, limit, usersAccountHistory, isBlogInObject } = this.props;
-    const { name, author } = match.params;
-    const permlink = isBlogInObject ? author : name;
+    const { name } = match.params;
 
-    this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
-    if (isEmpty(usersAccountHistory[permlink])) {
-      this.props.getUserAccountHistory(permlink);
+    this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+    if (isEmpty(usersAccountHistory[name])) {
+      this.props.getUserAccountHistory(name);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { match, limit, isBlogInObject } = this.props;
-    const { name, author } = match.params;
-    const permlink = isBlogInObject ? author : name;
+    const { name } = match.params;
 
-    if (permlink !== isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name) {
+    if (name !== nextProps.match.params.name) {
       if (
         nextProps.feed &&
         nextProps.feed.blog &&
-        !nextProps.feed.blog[
-          isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name
-        ]
+        !nextProps.feed.blog[nextProps.match.params.name]
       ) {
-        this.props.getUserProfileBlogPosts(
-          isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name,
+        this.props.getUserProfileBlogPosts(nextProps.match.params.name,
           {
             limit,
             initialLoad: true,
@@ -108,12 +103,11 @@ export default class UserProfile extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, limit, user, isBlogInObject } = this.props;
-    const { name, author } = match.params;
-    const permlink = isBlogInObject ? author : name;
+    const { match, limit, user } = this.props;
+    const { name } = match.params;
 
     if (prevProps.user.muted !== user.muted || prevProps.match.url !== match.url) {
-      this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
+      this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
     }
   }
 
@@ -127,17 +121,15 @@ export default class UserProfile extends React.Component {
       history,
       user,
       match,
-      isBlogInObject,
     } = this.props;
-    const { name, author } = match.params;
-    const username = isBlogInObject ? author : name;
-    const isOwnProfile = authenticated && username === authenticatedUser.name;
-    const content = getFeedFromState('blog', username, feed);
-    const isFetching = getFeedLoadingFromState('blog', username, feed);
-    const fetched = getFeedFetchedFromState('blog', username, feed);
-    const hasMore = getFeedHasMoreFromState('blog', username, feed);
+    const { name } = match.params;
+    const isOwnProfile = authenticated && name === authenticatedUser.name;
+    const content = getFeedFromState('blog', name, feed);
+    const isFetching = getFeedLoadingFromState('blog', name, feed);
+    const fetched = getFeedFetchedFromState('blog', name, feed);
+    const hasMore = getFeedHasMoreFromState('blog', name, feed);
     const loadMoreContentAction = () =>
-      this.props.getUserProfileBlogPosts(username, {
+      this.props.getUserProfileBlogPosts(name, {
         limit,
         initialLoad: false,
       });
