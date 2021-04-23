@@ -79,7 +79,7 @@ const EditPost = props => {
       content,
       topics,
       linkedObjects = [],
-      linkedObjectsCards = [],
+      hideLinkedObjects = [],
       objPercentage,
       settings,
       campaign,
@@ -99,10 +99,9 @@ const EditPost = props => {
     props.setEditorState(getInitialState(props));
     const campaignId = get(campaign, 'id') || get(props.currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
-    const linkedObjectsCardsSession =
-      JSON.parse(sessionStorage.getItem('linkedObjectsCards')) || [];
+    const hideLinkedObjectsSession = JSON.parse(sessionStorage.getItem('hideLinkedObjects')) || [];
 
-    props.setUpdatedEditorData({ isReview, linkedObjectsCards: linkedObjectsCardsSession });
+    props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
 
     if (isReview) {
       props.getReviewCheckInfo(
@@ -121,7 +120,7 @@ const EditPost = props => {
       props.getReviewCheckInfo({ campaignId, isPublicReview: postPermlink, intl });
       props.getReviewCheckInfo({ campaignId, postPermlink, intl });
     }
-    sessionStorage.setItem('linkedObjectsCards', JSON.stringify([]));
+    sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
     setDraftId();
     handleChangeContent(
       fromMarkdown({ title: props.editor.titleValue, body: get(props.currDraft, 'body', '') }),
@@ -180,17 +179,17 @@ const EditPost = props => {
           );
         }
         const authorPermink = get(actionValue, 'data.object.author_permlink', '');
-        const isHideObject = linkedObjectsCards.find(
+        const isHideObject = hideLinkedObjects.find(
           object => object.author_permlink === authorPermink,
         );
 
         if (actionType === EDITOR_ACTION_ADD && isHideObject) {
-          const filteredObjectCards = linkedObjectsCards.filter(
+          const filteredObjectCards = hideLinkedObjects.filter(
             object => object.author_permlink !== authorPermink,
           );
 
-          sessionStorage.setItem('linkedObjectsCards', JSON.stringify(filteredObjectCards));
-          updatedStore.linkedObjectsCards = filteredObjectCards;
+          sessionStorage.setItem('hideLinkedObjects', JSON.stringify(filteredObjectCards));
+          updatedStore.hideLinkedObjects = filteredObjectCards;
           updatedObjPercentage = {
             ...updatedObjPercentage,
             [actionValue.data.object._id]: { percent: 100 / linkedObjects.length },
@@ -208,7 +207,7 @@ const EditPost = props => {
         props.setUpdatedEditorData({ ...updatedStore, ...newDraft });
       }
     }, 1500),
-    [currentRawContent, props.draftId, linkedObjects, objPercentage, linkedObjectsCards],
+    [currentRawContent, props.draftId, linkedObjects, objPercentage, hideLinkedObjects],
   );
 
   const handleSettingsChange = updatedValue =>
@@ -222,7 +221,7 @@ const EditPost = props => {
     props.createPost(postData, props.beneficiaries, isReview, campaign, props.intl);
   };
   const handleToggleLinkedObject = (objId, isLinked, uniqId) => {
-    const prohibitedObjectCards = linkedObjectsCards || [];
+    const prohibitedObjectCards = hideLinkedObjects || [];
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObjPermlink = currentObj.author_permlink;
     const indexSwitchableHashtag = topics.indexOf(switchableObjPermlink);
@@ -236,11 +235,11 @@ const EditPost = props => {
     };
 
     prohibitedObjectCards.push(currentObj);
-    sessionStorage.setItem('linkedObjectsCards', JSON.stringify(prohibitedObjectCards));
+    sessionStorage.setItem('hideLinkedObjects', JSON.stringify(prohibitedObjectCards));
     props.setUpdatedEditorData({
       topics,
       linkedObjects,
-      linkedObjectsCards: prohibitedObjectCards,
+      hideLinkedObjects: prohibitedObjectCards,
       objPercentage: setObjPercents(linkedObjects, updPercentage),
     });
   };
@@ -269,7 +268,6 @@ const EditPost = props => {
             handleHashtag={handleHashtag}
             displayTitle
             draftId={props.draftId}
-            linkedObjectsCards={linkedObjectsCards}
           />
           {props.draftPosts.some(d => d.draftId === props.draftId) && (
             <div className="edit-post__saving-badge">

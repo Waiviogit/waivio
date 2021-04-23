@@ -35,13 +35,13 @@ export const getEditorLinkedObjects = createSelector(getEditor, state => state.l
 
 export const getEditorLinkedObjectsCards = createSelector(
   getEditor,
-  state => state.linkedObjectsCards || [],
+  state => state.hideLinkedObjects || [],
 );
 
 export const getFilteredObjectCards = createSelector(getEditor, editor =>
   filter(
     editor.linkedObjects,
-    object => object && !find(editor.linkedObjectsCards, { _id: object && object._id }),
+    object => object && !find(editor.hideLinkedObjects, { _id: object && object._id }),
   ),
 );
 

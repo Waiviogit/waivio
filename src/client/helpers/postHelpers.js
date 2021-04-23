@@ -191,7 +191,7 @@ export function getInitialState(props, newDraftId = '') {
     content: '',
     topics: [],
     linkedObjects: [],
-    linkedObjectsCards: [],
+    hideLinkedObjects: [],
     objPercentage: {},
     settings: {
       reward: rewardsValues.half,
@@ -222,7 +222,7 @@ export function getInitialState(props, newDraftId = '') {
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
       linkedObjects: draftPost.linkedObjects || [],
-      linkedObjectsCards: [],
+      hideLinkedObjects: [],
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
       ),
