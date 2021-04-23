@@ -70,8 +70,6 @@ const WebsiteSearch = props => {
 
   const handleSearch = value => {
     handleSearchAutocomplete(value);
-    setSearchString(value);
-
     if (value) props.query.set('searchString', value);
     else props.query.delete('searchString');
 
@@ -91,6 +89,7 @@ const WebsiteSearch = props => {
       <AutoComplete
         className="WebsiteSearch"
         onSearch={handleSearch}
+        onChange={value => setSearchString(value)}
         dropdownClassName={'WebsiteSearch__dropdown'}
         value={searchString}
       >
