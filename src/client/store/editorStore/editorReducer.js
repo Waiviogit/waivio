@@ -4,7 +4,7 @@ import * as editorActions from './editorActions';
 import * as postActions from '../postsStore/postActions';
 import * as authActions from '../authStore/authActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
-import { defaultDecorators } from '../../helpers/editorHelper';
+import { defaultDecorators } from '../../components/EditorExtended/model/content';
 import { createEditorState, fromMarkdown } from '../../components/EditorExtended';
 
 const defaultState = {

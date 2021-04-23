@@ -12,6 +12,7 @@ import {
   isEqual,
   isEmpty,
   reduce,
+  isNull,
 } from 'lodash';
 import { getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
@@ -136,7 +137,7 @@ const EditPost = props => {
   const setDraftId = () => {
     if (props.draftId && props.draftId !== draftIdEditor) {
       props.setEditorState(getInitialState(props));
-    } else if (props.draftId === null && draftIdEditor) {
+    } else if (isNull(props.draftId) && draftIdEditor) {
       const nextState = getInitialState(props);
 
       props.setEditorState(nextState);
@@ -178,14 +179,14 @@ const EditPost = props => {
             {},
           );
         }
-        if (
-          actionType === EDITOR_ACTION_ADD &&
-          linkedObjectsCards.find(
-            object => object.author_permlink === actionValue.data.object.author_permlink,
-          )
-        ) {
+        const authorPermink = get(actionValue, 'data.object.author_permlink', '');
+        const isHideObject = linkedObjectsCards.find(
+          object => object.author_permlink === authorPermink,
+        );
+
+        if (actionType === EDITOR_ACTION_ADD && isHideObject) {
           const filteredObjectCards = linkedObjectsCards.filter(
-            object => object.author_permlink !== actionValue.data.object.author_permlink,
+            object => object.author_permlink !== authorPermink,
           );
 
           sessionStorage.setItem('linkedObjectsCards', JSON.stringify(filteredObjectCards));

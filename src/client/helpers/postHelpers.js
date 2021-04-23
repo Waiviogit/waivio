@@ -166,7 +166,7 @@ export function getObjectUrl(objPermlink) {
   return `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objPermlink}`;
 }
 
-export function getInitialState(props, newDraftId = false) {
+export function getInitialState(props, newDraftId = '') {
   const search = props.location.search.replace(/ & /, ' ');
   const initObjects = new URLSearchParams(search).getAll('object');
 

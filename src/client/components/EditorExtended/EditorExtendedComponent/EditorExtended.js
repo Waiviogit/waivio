@@ -1,11 +1,11 @@
 import React from 'react';
-import { get } from 'lodash';
+import { get, size } from 'lodash';
 import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
 import { convertToRaw } from 'draft-js';
 import { fromMarkdown, Editor as MediumDraftEditor } from '../index';
-import { SIDE_BUTTONS } from '../../../helpers/editorHelper';
+import { SIDE_BUTTONS } from '../model/content';
 
 const MAX_LENGTH = 255;
 
@@ -30,7 +30,7 @@ const Editor = props => {
   };
 
   const setFocusAfterMount = () => {
-    refsEditor.current && refsEditor.current.focus();
+    if (refsEditor.current) refsEditor.current.focus();
     props.setUpdatedEditorExtendedData({ editorEnabled: true });
   };
 
@@ -49,7 +49,7 @@ const Editor = props => {
     const updatedTitleValue = event.target.value;
 
     props.setUpdatedEditorExtendedData({ titleValue: updatedTitleValue });
-    if (updatedTitleValue && updatedTitleValue.length === MAX_LENGTH) {
+    if (size(updatedTitleValue) === MAX_LENGTH) {
       message.error(
         props.intl.formatMessage({
           id: 'title_error_too_long',

@@ -508,19 +508,17 @@ export const buildPost = draftId => (dispatch, getState) => {
   postData.parentPermlink = parentPermlink;
   postData.author = user.name || '';
 
-  const oldMetadata = currDraft && currDraft.jsonMetadata;
+  const oldMetadata = get(currDraft, 'jsonMetadata', {});
 
   const waivioData = {
-    wobjects:
-      linkedObjects &&
-      linkedObjects
-        .filter(obj => get(objPercentage, `[${obj.id}].percent`, 0) > 0)
-        .map(obj => ({
-          object_type: obj.object_type,
-          objectName: getObjectName(obj),
-          author_permlink: obj.author_permlink,
-          percent: get(objPercentage, [obj.id, 'percent']),
-        })),
+    wobjects: linkedObjects
+      .filter(obj => get(objPercentage, `[${obj._id}].percent`, 0) > 0)
+      .map(obj => ({
+        object_type: obj.object_type,
+        objectName: getObjectName(obj),
+        author_permlink: obj.author_permlink,
+        percent: get(objPercentage, [obj._id, 'percent']),
+      })),
   };
 
   postData.jsonMetadata = createPostMetadata(

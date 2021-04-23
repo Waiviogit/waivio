@@ -50,7 +50,7 @@ export const setObjPercents = (linkedObjects, percentage) => {
 
   return {
     ...setInitialObjPercents(
-      linkedObjects && linkedObjects.filter(o => !zeroWeighted[o.id]),
+      linkedObjects.filter(o => !zeroWeighted[o._id]),
       linked,
     ),
     ...zeroWeighted,
