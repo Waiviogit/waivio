@@ -40,11 +40,7 @@ const WebsiteSearch = props => {
         case 'Users':
           return props.searchUsersAutoCompete(value);
         default:
-          return props.searchWebsiteObjectsAutoCompete(
-            value,
-            'weight',
-            +localStorage.getItem('limit') || 15,
-          );
+          return props.searchWebsiteObjectsAutoCompete(value);
       }
     },
     [props.searchType, searchString, props.location.search],
@@ -54,12 +50,11 @@ const WebsiteSearch = props => {
     const querySearch = props.query.get('searchString');
 
     if (querySearch) setSearchString(querySearch);
-
-    return () => props.resetSearchAutoCompete();
   }, []);
 
   useEffect(() => {
-    if (props.isShowResult && !isEmpty(props.searchMap)) currentSearchMethod(searchString);
+    if (props.isShowResult && !isEmpty(props.searchMap) && !localStorage.getItem('scrollTop'))
+      currentSearchMethod(searchString);
   }, [props.searchType, props.activeFilters, props.searchMap]);
 
   useEffect(() => {
@@ -69,18 +64,16 @@ const WebsiteSearch = props => {
   const handleSearchAutocomplete = useCallback(
     debounce(value => {
       currentSearchMethod(value);
-    }, 500),
+    }, 200),
     [props.searchType],
   );
 
   const handleSearch = value => {
     handleSearchAutocomplete(value);
-    setSearchString(value);
+    if (value) props.query.set('searchString', value);
+    else props.query.delete('searchString');
 
-    if (value) {
-      props.query.set('searchString', value);
-      props.history.push(`/?${props.query.toString()}`);
-    }
+    props.history.push(`/?${props.query.toString()}`);
   };
 
   const handleResetAutocomplete = () => {
@@ -96,8 +89,9 @@ const WebsiteSearch = props => {
       <AutoComplete
         className="WebsiteSearch"
         onSearch={handleSearch}
-        value={searchString}
+        onChange={value => setSearchString(value)}
         dropdownClassName={'WebsiteSearch__dropdown'}
+        value={searchString}
       >
         <Input.Search
           size="large"

@@ -97,7 +97,7 @@ const SearchAllResult = props => {
               onMouseOut={() => props.handleHoveredCard('')}
               onClick={() => {
                 localStorage.setItem('scrollTop', resultList.current.scrollTop);
-                localStorage.setItem('limit', size(props.searchResult));
+                props.setQueryInLocalStorage();
               }}
             >
               {switcherObjectCard(obj)}
@@ -112,10 +112,8 @@ const SearchAllResult = props => {
   useEffect(() => {
     if (!isEmpty(props.searchResult) && localStorage.getItem('scrollTop')) {
       resultList.current.scrollTo(0, +localStorage.getItem('scrollTop'));
-      localStorage.removeItem('scrollTop');
-      localStorage.removeItem('limit');
     }
-  }, [props.searchResult]);
+  }, []);
 
   const currRenderListState = currentListState();
 
@@ -137,6 +135,8 @@ const SearchAllResult = props => {
 
   const getEndScroll = e => {
     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+
+    localStorage.removeItem('scrollTop');
 
     if (bottom) setIsScrolled(true);
     else setIsScrolled(false);
@@ -261,6 +261,7 @@ SearchAllResult.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
+  setQueryInLocalStorage: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}),
