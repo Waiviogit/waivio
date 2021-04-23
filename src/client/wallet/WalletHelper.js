@@ -351,16 +351,16 @@ export const getCurrentRows = data => {
   const fieldClassName = get(data, 'fieldClass', null);
 
   return (
-    <React.Fragment>
-      <tr>
-        <td className={fieldClassName}>{timestamp}</td>
-        <td className={fieldClassName}>{fieldHIVE}</td>
-        <td className={fieldClassName}>{fieldHP}</td>
-        <td className={fieldClassName}>{fieldHBD}</td>
-        <td className={fieldClassName}>{fieldDescription}</td>
-        <td className={fieldClassName}>{fieldMemo}</td>
-      </tr>
-    </React.Fragment>
+    <tr>
+      <td className={fieldClassName}>{timestamp}</td>
+      <td className={fieldClassName}>{fieldHIVE}</td>
+      <td className={fieldClassName}>{fieldHP}</td>
+      <td className={fieldClassName}>{fieldHBD}</td>
+      <td className={fieldClassName}>{data.hiveUSD}</td>
+      <td className={fieldClassName}>{data.hbdUSD}</td>
+      <td className={fieldClassName}>{fieldDescription}</td>
+      <td className={fieldClassName}>{fieldMemo}</td>
+    </tr>
   );
 };
 

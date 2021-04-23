@@ -1643,7 +1643,7 @@ export const getTransferHistoryTableView = (
   types,
   operationNum = -1,
 ) => {
-  const typesQuery = types.reduce((acc, curr) => `${acc}&type=${curr}`, '');
+  const typesQuery = types.reduce((acc, curr) => `${acc}&types=${curr}`, '');
   return new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&${typesQuery}&operationNum=${operationNum}`,

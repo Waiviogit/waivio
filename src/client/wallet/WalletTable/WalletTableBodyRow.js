@@ -35,6 +35,8 @@ const WalletTableBodyRow = props => {
     fieldHBD: '',
     fieldDescription: '',
     fieldMemo: '',
+    hiveUSD: get(transaction, 'hiveUSD'),
+    hbdUSD: get(transaction, 'hbdUSD'),
   };
 
   switch (transactionType) {

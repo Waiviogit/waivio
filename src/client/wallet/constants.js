@@ -20,6 +20,16 @@ const WalletTableHeader = [
     message: 'HBD',
   },
   {
+    className: 'WalletTable__HP',
+    id: 'table_HIVE_USD',
+    message: 'HIVE/USD',
+  },
+  {
+    className: 'WalletTable__HBD',
+    id: 'table_HBD_USD',
+    message: 'HBD/USD',
+  },
+  {
     className: 'WalletTable__description',
     id: 'table_description',
     message: 'Description',

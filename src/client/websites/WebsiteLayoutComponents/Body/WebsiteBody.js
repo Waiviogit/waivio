@@ -14,7 +14,6 @@ import {
   setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
-  setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../../../store/searchStore/searchActions';
@@ -146,7 +145,6 @@ const WebsiteBody = props => {
     window.addEventListener('resize', handleResize);
 
     return () => {
-      props.setShowSearchResult(false);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
@@ -381,6 +379,8 @@ const WebsiteBody = props => {
     props.history.push(query);
   };
 
+  const setQueryInLocalStorage = () => localStorage.setItem('query', props.query.toString());
+
   return (
     <div className="WebsiteBody">
       <Helmet>
@@ -403,6 +403,7 @@ const WebsiteBody = props => {
         handleChangeType={handleChangeType}
         handleSetFiltersInUrl={handleSetFiltersInUrl}
         handleUrlWithChangeType={handleUrlWithChangeType}
+        setQueryInLocalStorage={setQueryInLocalStorage}
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
@@ -500,7 +501,6 @@ WebsiteBody.propTypes = {
   searchString: PropTypes.string.isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
-  setShowSearchResult: PropTypes.func.isRequired,
   putUserCoordinates: PropTypes.func.isRequired,
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
@@ -560,7 +560,6 @@ export default connect(
     getCurrentAppSettings,
     setMapForSearch,
     setShowReload,
-    setShowSearchResult,
     setSearchInBox,
     setFilterFromQuery,
   },
