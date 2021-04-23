@@ -1,10 +1,22 @@
 /* eslint-disable arrow-body-style */
 import { batch } from 'react-redux';
+import { message } from 'antd';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { convertToRaw } from "draft-js";
-import { forEach, get, has, includes, isEmpty, isEqual, kebabCase, map, orderBy, uniqWith } from 'lodash';
+import { convertToRaw } from 'draft-js';
+import {
+  forEach,
+  get,
+  has,
+  includes,
+  isEmpty,
+  isEqual,
+  kebabCase,
+  map,
+  orderBy,
+  uniqWith,
+} from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { REFERRAL_PERCENT } from '../../helpers/constants';
@@ -27,26 +39,28 @@ import {
 } from '../appStore/appSelectors';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
-import { getObjectsByIds, getReviewCheckInfo } from "../../../waivioApi/ApiClient";
+import { getObjectsByIds, getReviewCheckInfo } from '../../../waivioApi/ApiClient';
 import {
   getCurrentLinkPermlink,
   getCurrentLoadObjects,
   getNewLinkedObjectsCards,
-  getReviewTitle
-} from "../../helpers/editorHelper";
+  getReviewTitle,
+} from '../../helpers/editorHelper';
 import {
   getCurrentDraft,
   getEditor,
-  getEditorDraftId, getEditorExtended,
-  getEditorLinkedObjects, getEditorLinkedObjectsCards,
+  getEditorDraftId,
+  getEditorExtended,
+  getEditorLinkedObjects,
+  getEditorLinkedObjectsCards,
   getIsEditorSaving,
-  getLinkedObjects
-} from "./editorSelectors";
-import { getSuitableLanguage } from "../reducers";
-import { getObjectName } from "../../helpers/wObjectHelper";
-import { createPostMetadata, getObjectUrl } from "../../helpers/postHelpers";
-import { createEditorState, Entity, fromMarkdown } from "../../components/EditorExtended";
-import { handlePastedLink, QUERY_APP } from "../../components/EditorExtended/util/editorHelper";
+  getLinkedObjects,
+} from './editorSelectors';
+import { getSuitableLanguage } from '../reducers';
+import { getObjectName } from '../../helpers/wObjectHelper';
+import { createPostMetadata, getObjectUrl } from '../../helpers/postHelpers';
+import { createEditorState, Entity, fromMarkdown } from '../../components/EditorExtended';
+import { handlePastedLink, QUERY_APP } from '../../components/EditorExtended/util/editorHelper';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -115,11 +129,11 @@ export const saveDraft = (draftId, intl) => (dispatch, getState) => {
         throw new Error();
       }),
     },
-    meta: {postId: draft.draftId},
+    meta: { postId: draft.draftId },
   }).then(() => {
     if (redirect) dispatch(push(`/editor?draft=${draft.draftId}`));
   });
-}
+};
 export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
@@ -410,10 +424,17 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
 
 export const SET_UPDATED_EDITOR_DATA = '@editor/SET_UPDATED_EDITOR_DATA';
 export const SET_UPDATED_EDITOR_EXTENDED_DATA = '@editor/SET_UPDATED_EDITOR_EXTENDED_DATA';
-export const setUpdatedEditorData = payload => ({ type: SET_UPDATED_EDITOR_DATA, payload })
-export const setUpdatedEditorExtendedData = payload => ({ type: SET_UPDATED_EDITOR_EXTENDED_DATA, payload })
+export const setUpdatedEditorData = payload => ({ type: SET_UPDATED_EDITOR_DATA, payload });
+export const setUpdatedEditorExtendedData = payload => ({
+  type: SET_UPDATED_EDITOR_EXTENDED_DATA,
+  payload,
+});
 
-export const reviewCheckInfo = ({ campaignId, isPublicReview, postPermlinkParam }, needReviewTitle = false) => {
+export const reviewCheckInfo = (
+  { campaignId, isPublicReview, postPermlinkParam },
+  needReviewTitle = false,
+  intl,
+) => {
   return (dispatch, getState) => {
     const state = getState();
     const userName = getAuthenticatedUserName(state);
@@ -432,31 +453,42 @@ export const reviewCheckInfo = ({ campaignId, isPublicReview, postPermlinkParam 
         dispatch(setUpdatedEditorData(updatedEditorData));
       })
       .catch(error => {
-        // message.error(
-        //   this.props.intl.formatMessage(
-        //     {
-        //       id: 'imageSetter_link_is_already_added',
-        //       defaultMessage: `Failed to get campaign data: {error}`,
-        //     },
-        //     { error },
-        //   ),
-        // );
-        console.log('error', error);
+        message.error(
+          intl.formatMessage(
+            {
+              id: 'imageSetter_link_is_already_added',
+              defaultMessage: `Failed to get campaign data: {error}`,
+            },
+            { error },
+          ),
+        );
       });
-  }
-}
+  };
+};
 
-export const buildPost = (draftId) => (dispatch, getState) => {
+export const buildPost = draftId => (dispatch, getState) => {
   const state = getState();
   const host = getCurrentHost(state);
   const user = getAuthenticatedUser(state);
   const currDraft = getCurrentDraft(state, { draftId });
-  const {linkedObjects, topics, campaign, content, isUpdating, settings, titleValue, permlink, parentPermlink, objPercentage, originalBody} = getEditor(state);
+  const {
+    linkedObjects,
+    topics,
+    campaign,
+    content,
+    isUpdating,
+    settings,
+    titleValue,
+    permlink,
+    parentPermlink,
+    objPercentage,
+    originalBody,
+  } = getEditor(state);
   const currentObject = get(linkedObjects, '[0]', {});
   const objName = currentObject.author_permlink;
 
   if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
-    setUpdatedEditorData({topics: uniqWith([...topics, objName], isEqual)});
+    setUpdatedEditorData({ topics: uniqWith([...topics, objName], isEqual) });
   }
   const campaignId = get(campaign, '_id', null);
   const postData = {
@@ -479,14 +511,16 @@ export const buildPost = (draftId) => (dispatch, getState) => {
   const oldMetadata = currDraft && currDraft.jsonMetadata;
 
   const waivioData = {
-    wobjects: linkedObjects && linkedObjects
-      .filter(obj => get(objPercentage, `[${obj.id}].percent`, 0) > 0)
-      .map(obj => ({
-        object_type: obj.object_type,
-        objectName: getObjectName(obj),
-        author_permlink: obj.author_permlink,
-        percent: get(objPercentage, [obj.id, 'percent']),
-      })),
+    wobjects:
+      linkedObjects &&
+      linkedObjects
+        .filter(obj => get(objPercentage, `[${obj.id}].percent`, 0) > 0)
+        .map(obj => ({
+          object_type: obj.object_type,
+          objectName: getObjectName(obj),
+          author_permlink: obj.author_permlink,
+          percent: get(objPercentage, [obj.id, 'percent']),
+        })),
   };
 
   postData.jsonMetadata = createPostMetadata(
@@ -512,23 +546,24 @@ export const handleObjectSelect = object => (dispatch, getState) => {
   const separator = content.slice(-1) === '\n' ? '' : '\n';
   const draftContent = {
     title: titleValue,
-    body: `${content}${separator}[${objName}](${getObjectUrl(
-      object.id || objPermlink,
-    )})&nbsp;\n`,
+    body: `${content}${separator}[${objName}](${getObjectUrl(object.id || objPermlink)})&nbsp;\n`,
   };
 
-  dispatch(setUpdatedEditorExtendedData({editorState: createEditorState(fromMarkdown(draftContent))}))
-  dispatch(setUpdatedEditorData({
-    draftContent,
-    topics: uniqWith(
-      object.type === 'hashtag' ||
-      (object.object_type === 'hashtag' && [...topics, objPermlink]),
-      isEqual,
-    ),
-  }));
+  dispatch(
+    setUpdatedEditorExtendedData({ editorState: createEditorState(fromMarkdown(draftContent)) }),
+  );
+  dispatch(
+    setUpdatedEditorData({
+      draftContent,
+      topics: uniqWith(
+        object.type === 'hashtag' || (object.object_type === 'hashtag' && [...topics, objPermlink]),
+        isEqual,
+      ),
+    }),
+  );
 
   return Promise.resolve(draftContent);
-}
+};
 
 export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getState) => {
   const isReview = includes(draftId, 'review');
@@ -537,40 +572,39 @@ export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getSt
   const isLinked = string =>
     linkedObjects && linkedObjects.some(item => item.defaultShowLink.includes(string));
 
-  return Object.values(rawContent.entityMap)
-    // eslint-disable-next-line array-callback-return,consistent-return
-    .filter(entity => {
-      if (entity.type === Entity.OBJECT) {
-        return has(entity, 'data.object.id');
-      }
-      if (!isReview && entity.type === Entity.LINK) {
-        const string = get(entity, 'data.url', '');
-        const queryString = string.match(handlePastedLink(QUERY_APP));
-
-        if (queryString) {
-          return has(entity, 'data.url');
+  return (
+    Object.values(rawContent.entityMap)
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .filter(entity => {
+        if (entity.type === Entity.OBJECT) {
+          return has(entity, 'data.object.id');
         }
+        if (!isReview && entity.type === Entity.LINK) {
+          const string = get(entity, 'data.url', '');
+          const queryString = string.match(handlePastedLink(QUERY_APP));
 
-        return null;
-      }
-    })
-    // eslint-disable-next-line array-callback-return,consistent-return
-    .map(entity => {
-      if (
-        entity.type === Entity.OBJECT
-        // && (isLinked(get(entity, ['data', 'object', 'id'], '')) || newObject)
-      ) {
-        return get(entity, 'data.object.id', '');
-      }
-      if (
-        !isReview &&
-        entity.type === Entity.LINK &&
-        (isLinked(get(entity, 'data.url', '')) || newObject)
-      ) {
-        return getCurrentLinkPermlink(entity);
-      }
-    })
-    .filter(item => item);
+          if (queryString) {
+            return has(entity, 'data.url');
+          }
+
+          return null;
+        }
+      })
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .map(entity => {
+        if (entity.type === Entity.OBJECT) {
+          return get(entity, 'data.object.id', '');
+        }
+        if (
+          !isReview &&
+          entity.type === Entity.LINK &&
+          (isLinked(get(entity, 'data.url', '')) || newObject)
+        ) {
+          return getCurrentLinkPermlink(entity);
+        }
+      })
+      .filter(item => item)
+  );
 };
 
 export const getRawContentEntityMap = (rawContent, response) => (dispatch, getState) => {
@@ -614,7 +648,8 @@ export const getRestoreObjects = (rawContent, newObject, draftId) => async (disp
     linkedCards,
     objectIds,
     Object.values(rawContent.entityMap),
-    get(prevEditorState, 'getCurrentContent', false) && Object.values(convertToRaw(prevEditorState.getCurrentContent()).entityMap),
+    get(prevEditorState, 'getCurrentContent', false) &&
+      Object.values(convertToRaw(prevEditorState.getCurrentContent()).entityMap),
   );
 
   dispatch(setUpdatedEditorData(newLinkedObjectsCards));
@@ -633,4 +668,3 @@ export const getRestoreObjects = (rawContent, newObject, draftId) => async (disp
 
   return rawContentUpdated;
 };
-

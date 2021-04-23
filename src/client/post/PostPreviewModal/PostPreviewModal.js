@@ -13,7 +13,7 @@ import { isContentValid } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import { clearBeneficiariesUsers } from '../../store/searchStore/searchActions';
-import { setUpdatedEditorData } from "../../store/editorStore/editorActions";
+import { setUpdatedEditorData } from '../../store/editorStore/editorActions';
 
 import './PostPreviewModal.less';
 

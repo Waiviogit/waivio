@@ -1,6 +1,6 @@
 import { EditorState, convertFromRaw, ContentState } from 'draft-js';
 
-import { defaultDecorators } from "../../../helpers/editorHelper";
+import { defaultDecorators } from '../../../helpers/editorHelper';
 
 const createEditorState = (content = null, decorators = defaultDecorators) => {
   let initialEditorState = {};

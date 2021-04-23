@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { find, filter } from "lodash";
+import { find, filter } from 'lodash';
 
 // selector
 export const editorState = state => state.editor;
@@ -28,24 +28,21 @@ export const getEditorDraftId = createSelector([getEditor], state => state.draft
 export const getCurrentDraft = createSelector(
   getDraftPosts,
   (state, props) => props.draftId,
-    (draftPosts, draftId) => draftPosts.find(d => d.draftId === draftId),
+  (draftPosts, draftId) => draftPosts.find(d => d.draftId === draftId),
 );
 
-export const getEditorLinkedObjects = createSelector(
-  getEditor,
-  state => state.linkedObjects || []
-);
+export const getEditorLinkedObjects = createSelector(getEditor, state => state.linkedObjects || []);
 
 export const getEditorLinkedObjectsCards = createSelector(
   getEditor,
-  state => state.linkedObjectsCards || []
+  state => state.linkedObjectsCards || [],
 );
 
-export const getFilteredObjectCards = createSelector(
-  getEditor,
-  (editor) => filter(editor.linkedObjects,
-      object => object && !find(editor.linkedObjectsCards, {_id: object && object._id}),
-    ),
+export const getFilteredObjectCards = createSelector(getEditor, editor =>
+  filter(
+    editor.linkedObjects,
+    object => object && !find(editor.linkedObjectsCards, { _id: object && object._id }),
+  ),
 );
 
 export const getEditorExtended = createSelector([editorState], state => state.editorExtended);

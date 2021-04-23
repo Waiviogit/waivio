@@ -1,14 +1,16 @@
-import uuidv4 from "uuid/v4";
+import uuidv4 from 'uuid/v4';
 import { last, find, has, uniqWith, isEqual, differenceWith, head, get, keyBy } from 'lodash';
 
-import { CompositeDecorator } from "draft-js";
+import { CompositeDecorator } from 'draft-js';
 import { Entity, findLinkEntities } from '../components/EditorExtended';
-import ObjectLink, { findObjEntities } from "../components/EditorExtended/components/entities/objectlink";
-import Link from "../components/EditorExtended/components/entities/link";
-import ImageSideButton from "../components/EditorExtended/components/sides/ImageSideButton";
-import VideoSideButton from "../components/EditorExtended/components/sides/VideoSideButton";
-import ObjectSideButton from "../components/EditorExtended/components/sides/ObjectSideButton";
-import SeparatorButton from "../components/EditorExtended/components/sides/SeparatorSideButton";
+import ObjectLink, {
+  findObjEntities,
+} from '../components/EditorExtended/components/entities/objectlink';
+import Link from '../components/EditorExtended/components/entities/link';
+import ImageSideButton from '../components/EditorExtended/components/sides/ImageSideButton';
+import VideoSideButton from '../components/EditorExtended/components/sides/VideoSideButton';
+import ObjectSideButton from '../components/EditorExtended/components/sides/ObjectSideButton';
+import SeparatorButton from '../components/EditorExtended/components/sides/SeparatorSideButton';
 
 export const EDITOR_ACTION_ADD = 'add';
 export const EDITOR_ACTION_REMOVE = 'remove';
@@ -72,7 +74,8 @@ export const getReviewTitle = (campaignData, linkedObjects) => {
   };
 };
 
-export const getCurrentDraftId = (draftId, draftIdEditor) => (!draftIdEditor && !draftId) ? uuidv4() : (draftId || draftIdEditor);
+export const getCurrentDraftId = (draftId, draftIdEditor) =>
+  !draftIdEditor && !draftId ? uuidv4() : draftId || draftIdEditor;
 
 export const getCurrentDraftContent = (nextState, rawContent, currentRawContent) => {
   const prevValue = Object.values(get(currentRawContent, 'entityMap', {}));
@@ -85,11 +88,11 @@ export const getCurrentDraftContent = (nextState, rawContent, currentRawContent)
         title: nextState.titleValue,
       },
       currentRawContent: rawContent,
-    }
+    };
   }
 
   return {};
-}
+};
 
 export const getCurrentLinkPermlink = value => {
   const data = get(value, 'data.url', '');
@@ -140,13 +143,14 @@ export const SIDE_BUTTONS = [
   },
 ];
 
-const getDifferOfContents = (iteratedRowContent, rowContent) => iteratedRowContent.filter((object, index) => !isEqual(object, rowContent[index]));
+const getDifferOfContents = (iteratedRowContent, rowContent) =>
+  iteratedRowContent.filter((object, index) => !isEqual(object, rowContent[index]));
 
 export const getLastContentAction = (updatedRowContent, prevRowContent) => {
   if (prevRowContent.length > updatedRowContent.length) {
     return {
       actionType: EDITOR_ACTION_REMOVE,
-      actionValue: head(getDifferOfContents(prevRowContent, updatedRowContent))
+      actionValue: head(getDifferOfContents(prevRowContent, updatedRowContent)),
     };
   }
 

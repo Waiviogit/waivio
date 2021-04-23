@@ -1,11 +1,11 @@
-import { EditorState } from "draft-js";
+import { EditorState } from 'draft-js';
 import { get } from 'lodash';
 import * as editorActions from './editorActions';
 import * as postActions from '../postsStore/postActions';
 import * as authActions from '../authStore/authActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
-import { defaultDecorators } from "../../helpers/editorHelper";
-import { createEditorState, fromMarkdown } from "../../components/EditorExtended";
+import { defaultDecorators } from '../../helpers/editorHelper';
+import { createEditorState, fromMarkdown } from '../../components/EditorExtended';
 
 const defaultState = {
   loading: false,
@@ -155,12 +155,12 @@ const editor = (state = defaultState, action) => {
           ...state.editorExtended,
           editorState: createEditorState(fromMarkdown(action.payload.draftContent)),
           titleValue: action.payload.draftContent.title,
-        }
+        },
       };
     case editorActions.SET_UPDATED_EDITOR_DATA:
       return { ...state, editor: { ...state.editor, ...action.payload } };
     case editorActions.SET_UPDATED_EDITOR_EXTENDED_DATA:
-      return { ...state, editorExtended: {...state.editorExtended, ...action.payload} };
+      return { ...state, editorExtended: { ...state.editorExtended, ...action.payload } };
     default:
       return state;
   }

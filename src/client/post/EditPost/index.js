@@ -1,10 +1,10 @@
-import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import { injectIntl } from "react-intl";
-import EditPost from "./EditPost";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { injectIntl } from 'react-intl';
+import EditPost from './EditPost';
 import requiresLogin from '../../auth/requiresLogin';
-import { isGuestUser } from "../../store/authStore/authSelectors";
-import { getSuitableLanguage } from "../../store/reducers";
+import { isGuestUser } from '../../store/authStore/authSelectors';
+import { getSuitableLanguage } from '../../store/reducers';
 import {
   getEditor,
   getDraftPosts,
@@ -13,10 +13,10 @@ import {
   getIsEditorLoading,
   getIsImageUploading,
   getFilteredObjectCards,
-} from "../../store/editorStore/editorSelectors";
-import { getUpvoteSetting } from "../../store/settingsStore/settingsSelectors";
-import { getBeneficiariesUsers } from "../../store/searchStore/searchSelectors";
-import { getIsWaivio } from "../../store/appStore/appSelectors";
+} from '../../store/editorStore/editorSelectors';
+import { getUpvoteSetting } from '../../store/settingsStore/settingsSelectors';
+import { getBeneficiariesUsers } from '../../store/searchStore/searchSelectors';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 import {
   buildPost,
   saveDraft,
@@ -25,9 +25,8 @@ import {
   reviewCheckInfo,
   getRestoreObjects,
   handleObjectSelect,
-  setUpdatedEditorData
+  setUpdatedEditorData,
 } from '../../store/editorStore/editorActions';
-
 
 const mapStateToProps = (state, props) => {
   const draftId = new URLSearchParams(props.location.search).get('draft');
@@ -48,22 +47,25 @@ const mapStateToProps = (state, props) => {
     currDraft: getCurrentDraft(state, { draftId }),
     filteredObjectsCards: getFilteredObjectCards(state),
   };
-}
+};
 
 const mapDispatchToProps = (dispatch, props) => {
   const draftId = new URLSearchParams(props.location.search).get('draft');
 
   return {
-    setEditorState: (editorState) => dispatch(setEditorState(editorState)),
+    setEditorState: editorState => dispatch(setEditorState(editorState)),
     createPost: (postData, beneficiaries, isReview, campaign, intl) =>
       dispatch(createPost(postData, beneficiaries, isReview, campaign, intl)),
     saveDraft: () => dispatch(saveDraft(draftId, props.intl)),
     getReviewCheckInfo: (data, needReviewTitle) => dispatch(reviewCheckInfo(data, needReviewTitle)),
-    setUpdatedEditorData: (data) => dispatch(setUpdatedEditorData(data)),
+    setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
     buildPost: () => dispatch(buildPost(draftId)),
     handleObjectSelect: object => dispatch(handleObjectSelect(object)),
-    getRestoreObjects: (rawContent, newObject) => dispatch(getRestoreObjects(rawContent, newObject, draftId)),
-  }
+    getRestoreObjects: (rawContent, newObject) =>
+      dispatch(getRestoreObjects(rawContent, newObject, draftId)),
+  };
 };
 
-export default requiresLogin(withRouter(connect(mapStateToProps, mapDispatchToProps)(injectIntl(EditPost))));
+export default requiresLogin(
+  withRouter(connect(mapStateToProps, mapDispatchToProps)(injectIntl(EditPost))),
+);
