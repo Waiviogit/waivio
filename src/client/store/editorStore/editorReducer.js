@@ -5,6 +5,7 @@ import * as postActions from '../postsStore/postActions';
 import * as authActions from '../authStore/authActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
 import { defaultDecorators } from "../../helpers/editorHelper";
+import { createEditorState, fromMarkdown } from "../../components/EditorExtended";
 
 const defaultState = {
   loading: false,
@@ -147,7 +148,15 @@ const editor = (state = defaultState, action) => {
         loadingImg: false,
       };
     case editorActions.SET_EDITOR_STATE:
-      return { ...state, editor: action.payload };
+      return {
+        ...state,
+        editor: action.payload,
+        editorExtended: {
+          ...state.editorExtended,
+          editorState: createEditorState(fromMarkdown(action.payload.draftContent)),
+          titleValue: action.payload.draftContent.title,
+        }
+      };
     case editorActions.SET_UPDATED_EDITOR_DATA:
       return { ...state, editor: { ...state.editor, ...action.payload } };
     case editorActions.SET_UPDATED_EDITOR_EXTENDED_DATA:

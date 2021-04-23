@@ -142,7 +142,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
 
   let isListType = false;
 
-  raw.blocks.forEach((block, blockIndex) => {
+  raw && raw.blocks.forEach((block, blockIndex) => {
     if (blockIndex !== 0) {
       returnString += '\n';
       totalOffset = 0;

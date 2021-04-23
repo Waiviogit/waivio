@@ -11,6 +11,7 @@ import {
   uniqWith,
   isEqual,
   isEmpty,
+  reduce,
 } from 'lodash';
 import { getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
@@ -116,13 +117,14 @@ const EditPost = (props) => {
       props.getReviewCheckInfo({campaignId, isPublicReview: postPermlink});
       props.getReviewCheckInfo({campaignId, postPermlink});
     }
+    sessionStorage.setItem('linkedObjectsCards', JSON.stringify([]));
     setDraftId();
+    handleChangeContent(fromMarkdown({title: props.editor.titleValue, body: get(props.currDraft, 'body', '')}), props.editor.titleValue, true);
   }, [props.draftId]);
 
   React.useEffect(() => {
     props.saveDraft();
-  },
-    [linkedObjects, objPercentage, content, titleValue, topics]);
+  }, [linkedObjects, objPercentage, content, titleValue, topics]);
 
   const setDraftId = () => {
     if (props.draftId && props.draftId !== draftIdEditor) {
@@ -140,35 +142,43 @@ const EditPost = (props) => {
   };
 
   const handleChangeContent = useCallback(debounce(
-    async (rawContent, title) => {
+    async (rawContent, title, updateLinkedObjects = false) => {
     let newDraft = {};
     const updatedStore = {content: toMarkdown(rawContent), titleValue: title};
     const getRowContent = Object.values(get(rawContent, 'entityMap', {}));
     const getCurrentRawContent = Object.values(get(currentRawContent, 'entityMap', {}));
     const isChangedObjects = getRowContent.length !== getCurrentRawContent.length;
 
-    if(isChangedObjects) {
+    if(isChangedObjects || updateLinkedObjects) {
       const rawContentUpdated = await props.getRestoreObjects(rawContent);
       const getRawContentUpdated = Object.values(get(rawContentUpdated, 'entityMap', {}));
 
       const { actionValue, actionType } = getLastContentAction(getRawContentUpdated, getCurrentRawContent);
+      const parsedLinkedObjects = uniqBy(getLinkedObjects(rawContentUpdated), '_id');
+      let updatedObjPercentage = setObjPercents(parsedLinkedObjects, objPercentage);
 
-      let updatedObjPercentage = setObjPercents(linkedObjects, objPercentage);
+      if (updateLinkedObjects) {
+        updatedObjPercentage = reduce(updatedObjPercentage, (acc, value, key) => {
+          acc[key] = {percent: 100 / Object.keys(updatedObjPercentage).length};
 
+          return acc;
+        }, {});
+      }
       if (actionType === EDITOR_ACTION_ADD && linkedObjectsCards.find(object => object.author_permlink === actionValue.data.object.author_permlink)) {
         const filteredObjectCards = linkedObjectsCards.filter(object => object.author_permlink !== actionValue.data.object.author_permlink)
 
         sessionStorage.setItem('linkedObjectsCards', JSON.stringify(filteredObjectCards));
         updatedStore.linkedObjectsCards = filteredObjectCards;
-        updatedObjPercentage = { ...updatedObjPercentage, [actionValue.data.object._id]: {percent: 33} }
+        updatedObjPercentage = { ...updatedObjPercentage, [actionValue.data.object._id]: {percent: 100 / linkedObjects.length} }
       }
-      updatedStore.linkedObjects = uniqBy(getLinkedObjects(rawContentUpdated), '_id');
+      updatedStore.linkedObjects = parsedLinkedObjects;
       updatedStore.objPercentage = updatedObjPercentage;
       newDraft = getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent);
     }
     if (
       content !== updatedStore.content ||
-      titleValue !== updatedStore.titleValue
+      titleValue !== updatedStore.titleValue ||
+      updateLinkedObjects
     ) {
       props.setUpdatedEditorData({ ...updatedStore, ...newDraft });
     }

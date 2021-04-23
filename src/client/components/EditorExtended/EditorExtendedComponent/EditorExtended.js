@@ -1,14 +1,14 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { get } from 'lodash';
 import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
-import { convertToRaw, EditorState } from 'draft-js';
+import { convertToRaw } from 'draft-js';
 import {
   fromMarkdown,
   Editor as MediumDraftEditor,
 } from '../index';
-import { defaultDecorators, SIDE_BUTTONS } from "../../../helpers/editorHelper";
+import { SIDE_BUTTONS } from "../../../helpers/editorHelper";
 
 const MAX_LENGTH = 255
 
@@ -21,7 +21,6 @@ const Editor = (props) => {
   React.useEffect(() => {
     props.setUpdatedEditorExtendedData({
       isMounted: true,
-      editorState: EditorState.createEmpty(defaultDecorators),
       titleValue: get(props, 'initialContent.title', '')
     });
     restoreObjects(fromMarkdown(props.initialContent)).then(() => setFocusAfterMount());
@@ -33,22 +32,19 @@ const Editor = (props) => {
     props.setUpdatedEditorExtendedData({ editorState: updatedEditorState, prevEditorState });
   };
 
-  const setFocusAfterMount = useCallback(() => {
+  const setFocusAfterMount = () => {
     refsEditor.current && refsEditor.current.focus();
     props.setUpdatedEditorExtendedData({ editorEnabled: true });
-  }, []);
+  };
 
-  const restoreObjects = useCallback((rawContent, newObject) =>
-    props.getRestoreObjects(rawContent, newObject, props.draftId),
-    [props.draftId]
-  );
+  const restoreObjects = (rawContent, newObject) => props.getRestoreObjects(rawContent, newObject, props.draftId);
 
   const handleContentChange = updatedEditorState => {
     onChange(updatedEditorState);
     props.onChange(convertToRaw(updatedEditorState.getCurrentContent()), props.editorExtended.titleValue);
   };
 
-  const validateLength = useCallback(event => {
+  const validateLength = event => {
     const updatedTitleValue = event.target.value;
 
     props.setUpdatedEditorExtendedData({ titleValue: updatedTitleValue });
@@ -60,7 +56,7 @@ const Editor = (props) => {
         }),
       );
     }
-  }, []);
+  };
 
     const isVimeo = get(props, 'initialContent.body', '').includes('player.vimeo.com');
 
@@ -71,7 +67,7 @@ const Editor = (props) => {
             value={titleValue}
             maxLength={MAX_LENGTH}
             className="md-RichEditor-title"
-            onChange={event => validateLength(event)}
+            onChange={validateLength}
             placeholder={props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
           />
         )}
