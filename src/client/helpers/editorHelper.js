@@ -141,30 +141,16 @@ export const SIDE_BUTTONS = [
 ];
 
 const getDifferOfContents = (iteratedRowContent, rowContent) => {
-  const newElement = filter(iteratedRowContent, object => {
-      const someArray = rowContent.some(rowContentItem => !isEqual(rowContentItem, object));
-
-      console.log('someArray', someArray);
-
-      return someArray;
-    }
-  );
-
-  console.log('newElement', newElement);
-
-  return newElement
+  return iteratedRowContent.filter((object, index) => !isEqual(object, rowContent[index]));
 };
 
 export const getLastContentAction = (updatedRowContent, prevRowContent) => {
   if (prevRowContent.length > updatedRowContent.length) {
-    console.log('if', prevRowContent, updatedRowContent);
-
     return {
       actionType: EDITOR_ACTION_REMOVE,
       actionValue: getDifferOfContents(prevRowContent, updatedRowContent)
     };
   }
-  console.log('else', updatedRowContent, prevRowContent);
 
   return {
     actionType: EDITOR_ACTION_ADD,
