@@ -77,9 +77,9 @@ class AdvanceSettings extends Component {
     return (
       <Collapse>
         <Collapse.Panel
-          key={'advanced_settings'}
+          key={'advance_settings'}
           header={intl.formatMessage({
-            id: 'advanced_settings',
+            id: 'advance_settings',
             defaultMessage: 'Advanced settings',
           })}
         >
