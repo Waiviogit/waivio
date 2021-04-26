@@ -204,7 +204,6 @@ const SearchAllResult = props => {
             key={type}
             onClick={() => {
               props.setWebsiteSearchType(type);
-              props.handleChangeType();
               props.handleUrlWithChangeType(type);
               localStorage.removeItem('scrollTop');
             }}
@@ -294,7 +293,6 @@ SearchAllResult.propTypes = {
   assignProposition: PropTypes.func.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   declineProposition: PropTypes.func.isRequired,
-  handleChangeType: PropTypes.func.isRequired,
   handleSetFiltersInUrl: PropTypes.func.isRequired,
   handleHoveredCard: PropTypes.func,
 };
