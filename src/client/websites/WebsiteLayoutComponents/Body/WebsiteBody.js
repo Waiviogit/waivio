@@ -159,11 +159,6 @@ const WebsiteBody = props => {
     }
   }, [props.isShowResult]);
 
-  const handleChangeType = () => {
-    setInfoboxData(null);
-    props.history.push('/');
-  };
-
   useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
 
@@ -372,10 +367,11 @@ const WebsiteBody = props => {
   };
 
   const handleUrlWithChangeType = type => {
-    let query = `?type=${type}`;
+    let query = `?type=${type}&center=${area.center}&zoom=${area.zoom}`;
 
     if (props.searchString) query = `${query}&searchString=${props.searchString}`;
 
+    setInfoboxData(null);
     props.history.push(query);
   };
 
@@ -400,7 +396,6 @@ const WebsiteBody = props => {
         reloadSearchList={reloadSearchList}
         searchType={props.searchType}
         handleHoveredCard={handleHoveredCard}
-        handleChangeType={handleChangeType}
         handleSetFiltersInUrl={handleSetFiltersInUrl}
         handleUrlWithChangeType={handleUrlWithChangeType}
         setQueryInLocalStorage={setQueryInLocalStorage}

@@ -321,7 +321,7 @@ class WalletTableContainer extends React.Component {
               moment()
                 .startOf('day')
                 .unix();
-            const endDate = isToday ? date.unix() : date.endOf('day').unix();
+            const endDate = isToday ? moment().unix() : date.endOf('day').unix();
 
             this.setState({ endDate });
           }}
