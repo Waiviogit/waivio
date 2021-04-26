@@ -30,22 +30,26 @@
   }
 
   &__container {
-    position: relative;
+    //position: relative;
     width: 100%;
     height: 300px;
-    padding-bottom: 120%;
+    //padding-bottom: 120%;
+
+    @media @usmall {
+      height: 400px;
+    }
 
     @media @small {
       height: 400px;
-      padding-bottom: 55%;
+      //padding-bottom: 55%;
     }
 
     @media @medium {
-      padding-bottom: 53%;
+      //padding-bottom: 53%;
     }
 
     & > iframe {
-      position: absolute;
+      //position: absolute;
       width: 100%;
       height: 400px;
       left: 0;
@@ -57,10 +61,10 @@
     position: relative;
     width: 100%;
     height: 0;
-    padding-bottom: 57%;
+    //padding-bottom: 57%;
 
     @media @medium {
-      padding-bottom: 53%;
+      //padding-bottom: 53%;
     }
 
     & > iframe {
@@ -69,6 +73,7 @@
       height: 195px;
       left: 0;
       top: 0;
+
       @media @small {
         height: 400px;
       }
@@ -83,12 +88,12 @@
     margin-bottom: -125px;
 
     @media @small {
-      padding-bottom: 54%;
+      //padding-bottom: 54%;
       margin-bottom: 0;
     }
 
     @media @medium {
-      padding-bottom: 52%;
+      //padding-bottom: 52%;
     }
 
     & > iframe {
@@ -97,6 +102,7 @@
       height: 195px;
       left: 0;
       top: 0;
+
       @media @small {
         height: 400px;
       }
@@ -107,7 +113,7 @@
     position: relative;
     width: 100%;
     height: 0;
-    padding-bottom: 74%;
+    //padding-bottom: 74%;
 
     & > iframe {
       position: absolute;
@@ -119,21 +125,57 @@
   }
 
   &__container-vimeo {
-    position: relative;
+    //position: relative;
     width: 100%;
-    height: 0;
-    padding-bottom: 74%;
+    height: 210px;
+
+    @media @usmall {
+      height: 200px;
+      margin-bottom: 5px;
+    }
+
+    @media @xsmall {
+      height: 214px;
+    }
+
+    @media @medium {
+      height: 226px;
+    }
+
+    @media @large {
+      height: 275px;
+      margin-bottom: 5px;
+    }
 
     & > iframe {
-      position: absolute;
+      //position: absolute;
       width: 100%;
-      height: 240px;
+      height: 100%;
       left: 0;
       top: 0;
+      //padding-bottom: 25px;
+      //margin-top: -20px;
 
-      @media @large {
-        height: 300px;
-      }
+      //@media @usmall {
+      //  padding-bottom: 5px;
+      //}
+      //
+      //@media @xsmall {
+      //  padding-bottom: 0;
+      //}
+      //
+      //@media @small {
+      //  //margin-top: -48px;
+      //}
+      //
+      //@media @medium {
+      //  //margin-top: -75px;
+      //}
+      //
+      //@media @large {
+      //  height: 300px;
+      //  padding-bottom: 25px;
+      //}
     }
   }
 
@@ -141,15 +183,15 @@
     position: relative;
     width: 100%;
     height: 200px;
-    padding-bottom: 53%;
+    //padding-bottom: 53%;
 
     @media @small {
       height: 300px;
-      padding-bottom: 46%;
+      //padding-bottom: 46%;
     }
 
     @media @medium {
-      padding-bottom: 51%;
+      //padding-bottom: 51%;
     }
 
     & > iframe {
@@ -169,7 +211,7 @@
     position: relative;
     width: 100%;
     height: 0;
-    padding-bottom: 46%;
+    //padding-bottom: 46%;
 
     & > iframe {
       position: absolute;
