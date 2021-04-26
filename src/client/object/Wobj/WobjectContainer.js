@@ -31,6 +31,8 @@ import {
 } from '../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
 import { getConfiguration } from '../../store/websiteStore/websiteSelectors';
+import { getUserAccount } from '../../store/usersStore/usersActions';
+import { getContent } from '../../store/postsStore/postActions';
 
 @withRouter
 @connect(
@@ -107,7 +109,12 @@ export default class WobjectContainer extends React.Component {
   };
 
   static fetchData({ store, match }) {
-    return store.dispatch(getObject(match.params.name, getAuthenticatedUserName(store.getState())));
+    const authName = getAuthenticatedUserName(store.getState());
+
+    return Promise.all([
+      store.dispatch(getObject(match.params.name, authName)),
+      store.dispatch(getAlbums(match.params.name)),
+    ]);
   }
 
   constructor(props) {

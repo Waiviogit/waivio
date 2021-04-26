@@ -63,6 +63,8 @@ const WalletTableBodyRow = props => {
             fieldHIVE: amountHIVE,
             fieldHP: amountHP,
             fieldDescription: description.powerUpTransaction,
+            hiveUSD: get(transaction, 'hiveUSD'),
+            hbdUSD: get(transaction, 'hbdUSD'),
           };
 
           return getCurrentRows(data);

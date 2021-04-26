@@ -300,12 +300,6 @@ class Rewards extends React.Component {
     }
   };
 
-  getRequiredObjects = () =>
-    this.state.propositions &&
-    this.state.propositions
-      .filter(proposition => proposition.required_object)
-      .map(proposition => ({ ...proposition.required_object, campaigns: {} })); // add 'campaigns' prop to display objects on the map with proper marker
-
   getAreaSearchData = ({ radius, coordinates }) => {
     this.setState({ isSearchAreaFilter: true, loadingCampaigns: true });
     const { username, match } = this.props;
