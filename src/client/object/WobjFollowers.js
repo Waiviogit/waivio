@@ -33,7 +33,7 @@ class WobjFollowers extends React.Component {
   }
 
   skip = 0;
-  limit = 100;
+  // limit = 100;
 
   async fetcher(skip, authUser) {
     const response = await getWobjectFollowers(
@@ -46,7 +46,10 @@ class WobjFollowers extends React.Component {
 
     WobjFollowers.skip += WobjFollowers.limit;
 
-    return { users: response.wobjectFollowers, hasMore: response.length === WobjFollowers.limit };
+    return {
+      users: response.wobjectFollowers,
+      hasMore: response.wobjectFollowers.length === WobjFollowers.limit,
+    };
   }
 
   render() {
