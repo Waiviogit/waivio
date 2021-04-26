@@ -234,6 +234,7 @@ export function getInitialState(props, newDraftId = '') {
       isUpdating: Boolean(draftPost.isUpdating),
       permlink: draftPost.permlink || null,
       originalBody: draftPost.originalBody || null,
+      titleValue: get(draftPost, 'title', ''),
     };
   }
 

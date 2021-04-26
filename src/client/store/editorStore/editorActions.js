@@ -98,13 +98,13 @@ export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_STAR
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
 export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
 
-export const saveDraft = (draftId, intl) => (dispatch, getState) => {
+export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
   const state = getState();
   const saving = getIsEditorSaving(state);
   const editorDraftId = getEditorDraftId(state);
 
   if (saving) return;
-  const draft = dispatch(buildPost(draftId));
+  const draft = dispatch(buildPost(draftId, data));
 
   const postBody = draft.originalBody || draft.body;
 
@@ -466,7 +466,7 @@ export const reviewCheckInfo = (
   };
 };
 
-export const buildPost = draftId => (dispatch, getState) => {
+export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   const state = getState();
   const host = getCurrentHost(state);
   const user = getAuthenticatedUser(state);
@@ -483,7 +483,7 @@ export const buildPost = draftId => (dispatch, getState) => {
     parentPermlink,
     objPercentage,
     originalBody,
-  } = getEditor(state);
+  } = { ...getEditor(state), ...data };
   const currentObject = get(linkedObjects, '[0]', {});
   const objName = currentObject.author_permlink;
 

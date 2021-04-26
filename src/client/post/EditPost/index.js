@@ -53,7 +53,7 @@ const mapDispatchToProps = (dispatch, props) => {
     setEditorState: editorState => dispatch(setEditorState(editorState)),
     createPost: (postData, beneficiaries, isReview, campaign, intl) =>
       dispatch(createPost(postData, beneficiaries, isReview, campaign, intl)),
-    saveDraft: () => dispatch(saveDraft(draftId, props.intl)),
+    saveDraft: data => dispatch(saveDraft(draftId, props.intl, data)),
     getReviewCheckInfo: (data, needReviewTitle) => dispatch(reviewCheckInfo(data, needReviewTitle)),
     setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
     buildPost: () => dispatch(buildPost(draftId)),

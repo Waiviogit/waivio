@@ -86,7 +86,7 @@ const EditPost = props => {
       isUpdating,
       titleValue,
       currentRawContent,
-      draftIdEditor,
+      draftId: draftIdEditor,
     },
     intl,
   } = props;
@@ -123,15 +123,14 @@ const EditPost = props => {
     sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
     setDraftId();
     handleChangeContent(
-      fromMarkdown({ title: props.editor.titleValue, body: get(props.currDraft, 'body', '') }),
-      props.editor.titleValue,
+      fromMarkdown({
+        title: get(props.currDraft, 'title', ''),
+        body: get(props.currDraft, 'body', ''),
+      }),
+      get(props.currDraft, 'title', ''),
       true,
     );
   }, [props.draftId]);
-
-  React.useEffect(() => {
-    props.saveDraft();
-  }, [linkedObjects, objPercentage, content, titleValue, topics]);
 
   const setDraftId = () => {
     if (props.draftId && props.draftId !== draftIdEditor) {
@@ -204,7 +203,10 @@ const EditPost = props => {
         titleValue !== updatedStore.titleValue ||
         updateLinkedObjects
       ) {
-        props.setUpdatedEditorData({ ...updatedStore, ...newDraft });
+        const newData = { ...updatedStore, ...newDraft };
+
+        props.saveDraft(newData);
+        props.setUpdatedEditorData(newData);
       }
     }, 1500),
     [currentRawContent, props.draftId, linkedObjects, objPercentage, hideLinkedObjects],
