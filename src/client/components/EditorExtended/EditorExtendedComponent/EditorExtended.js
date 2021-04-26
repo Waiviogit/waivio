@@ -20,8 +20,10 @@ const Editor = props => {
       isMounted: true,
       titleValue: get(props, 'initialContent.title', ''),
     });
-    restoreObjects(fromMarkdown(props.initialContent)).then(() => setFocusAfterMount());
+    restoreObjects(fromMarkdown(props.initialContent));
   }, []);
+
+  React.useEffect(() => setFocusAfterMount(), [isMounted]);
 
   const onChange = updatedEditorState => {
     const { editorState: prevEditorState } = props.editorExtended;
@@ -65,6 +67,7 @@ const Editor = props => {
     <div className="waiv-editor-wrap">
       {props.displayTitle && (
         <Input.TextArea
+          autoSize
           value={titleValue}
           maxLength={MAX_LENGTH}
           className="md-RichEditor-title"
