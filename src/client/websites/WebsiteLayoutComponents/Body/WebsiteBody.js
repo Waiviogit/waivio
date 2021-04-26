@@ -473,7 +473,7 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
-      {props.isAuth && <WebsiteWelcomeModal />}
+      <WebsiteWelcomeModal />
     </div>
   );
 };
