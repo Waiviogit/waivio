@@ -84,7 +84,10 @@ export default class User extends React.Component {
   };
 
   static fetchData({ store, match }) {
-    return store.dispatch(getUserAccount(match.params.name));
+    return Promise.all([
+      store.dispatch(getUserAccount(match.params.name)),
+      store.dispatch(getUserAccountHistory(match.params.name)),
+    ]);
   }
 
   componentDidMount() {
