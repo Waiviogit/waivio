@@ -32,7 +32,7 @@ const Wobj = ({
   supportedObjectTypes,
 }) => {
   const waivioHost = global.postOrigin || 'https://www.waivio.com';
-  const image = getObjectAvatar(wobject) || DEFAULTS.FAVICON;
+  const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
   const url = `${waivioHost}/object/${match.params.name}`;
   const albumsAndImagesCount = wobject.albums_count;
@@ -86,6 +86,7 @@ const Wobj = ({
           <meta name="twitter:description" content={desc} />
           <meta name="twitter:image" property="twitter:image" content={image} />
           <meta property="og:site_name" content="Waivio" />
+          <link rel="image_src" href={image} />
           <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
         </Helmet>
         <ScrollToTopOnMount />

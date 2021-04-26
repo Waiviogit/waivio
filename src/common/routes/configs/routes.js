@@ -3,6 +3,8 @@ import Post from '../../../client/post/Post';
 import Wrapper from '../../../client/Wrapper';
 import URL from '../constants';
 import createNestedRouts from '../helper';
+import User from '../../../client/user/User';
+import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
 
 const routes = {
   component: Wrapper,
@@ -234,7 +236,7 @@ const routes = {
     },
     {
       path: `/@:name/(${URL.USER.tabs})?/(table)?`,
-      component: Views.User,
+      component: User,
       exact: true,
       pathScope: '/@:name',
       routes: [
@@ -296,7 +298,7 @@ const routes = {
     },
     {
       path: `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
-      component: Views.Wobj,
+      component: WobjectContainer,
       exact: true,
       pathScope: '/object/:name',
       routes: [
