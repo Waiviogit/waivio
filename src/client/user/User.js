@@ -83,19 +83,18 @@ export default class User extends React.Component {
     isOpenWalletTable: false,
   };
 
+  static fetchData({ store, match }) {
+    return store.dispatch(getUserAccount(match.params.name));
+  }
+
   componentDidMount() {
-    const {
-      usersAccountHistory,
-      // eslint-disable-next-line no-shadow
-      getUserAccountHistory,
-      match,
-    } = this.props;
+    const { name } = this.props.match.params;
 
     if (window.gtag) window.gtag('event', 'view_user_profile');
 
-    this.props.getUserAccount(match.params.name);
+    this.props.getUserAccount(name);
 
-    if (isEmpty(usersAccountHistory[match.params.name])) getUserAccountHistory(match.params.name);
+    if (isEmpty(this.props.usersAccountHistory[name])) this.props.getUserAccountHistory(name);
   }
 
   componentDidUpdate(prevProps) {
