@@ -39,7 +39,6 @@ import {
 } from './store/authStore/authSelectors';
 import { getIsOpenWalletTable } from './store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from './store/settingsStore/settingsSelectors';
-import WebsiteWelcomeModal from './websites/WebsiteWelcomeModal/WebsiteWelcomeModal';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 

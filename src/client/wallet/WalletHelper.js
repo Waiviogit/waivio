@@ -349,6 +349,8 @@ export const getCurrentRows = data => {
   const fieldDescription = get(data, 'fieldDescription', null);
   const fieldMemo = get(data, 'fieldMemo', null);
   const fieldClassName = get(data, 'fieldClass', null);
+  const hiveUSD = get(data, 'hiveUSD');
+  const hbdUSD = get(data, 'hbdUSD');
 
   return (
     <tr>
@@ -356,8 +358,8 @@ export const getCurrentRows = data => {
       <td className={fieldClassName}>{fieldHIVE}</td>
       <td className={fieldClassName}>{fieldHP}</td>
       <td className={fieldClassName}>{fieldHBD}</td>
-      <td className={fieldClassName}>{ceil(data.hiveUSD, 3)}</td>
-      <td className={fieldClassName}>{ceil(data.hbdUSD, 3)}</td>
+      <td className={fieldClassName}>{hiveUSD && ceil(hiveUSD, 3)}</td>
+      <td className={fieldClassName}>{hbdUSD && ceil(hbdUSD, 3)}</td>
       <td className={fieldClassName}>{fieldDescription}</td>
       <td className={fieldClassName}>{fieldMemo}</td>
     </tr>
