@@ -53,7 +53,8 @@ const WebsiteSearch = props => {
   }, []);
 
   useEffect(() => {
-    if (props.isShowResult && !isEmpty(props.searchMap)) currentSearchMethod(searchString);
+    if (props.isShowResult && !isEmpty(props.searchMap) && !localStorage.getItem('scrollTop'))
+      currentSearchMethod(searchString);
   }, [props.searchType, props.activeFilters, props.searchMap]);
 
   useEffect(() => {
@@ -63,18 +64,17 @@ const WebsiteSearch = props => {
   const handleSearchAutocomplete = useCallback(
     debounce(value => {
       currentSearchMethod(value);
-    }, 500),
+    }, 200),
     [props.searchType],
   );
 
   const handleSearch = value => {
     handleSearchAutocomplete(value);
-    setSearchString(value);
+    if (value) props.query.set('searchString', value);
+    else props.query.delete('searchString');
 
-    if (value) {
-      props.query.set('searchString', value);
-      props.history.push(`/?${props.query.toString()}`);
-    }
+    localStorage.removeItem('scrollTop');
+    props.history.push(`/?${props.query.toString()}`);
   };
 
   const handleResetAutocomplete = () => {
@@ -90,8 +90,9 @@ const WebsiteSearch = props => {
       <AutoComplete
         className="WebsiteSearch"
         onSearch={handleSearch}
-        value={searchString}
+        onChange={value => setSearchString(value)}
         dropdownClassName={'WebsiteSearch__dropdown'}
+        value={searchString}
       >
         <Input.Search
           size="large"

@@ -14,7 +14,6 @@ import {
   setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
-  setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../../../store/searchStore/searchActions';
@@ -111,11 +110,19 @@ const WebsiteBody = props => {
     }
   };
 
-  const handleSetMapForSearch = () =>
+  const handleSetMapForSearch = () => {
+    if (!isEmpty(area.center)) {
+      props.query.set('center', area.center);
+      props.query.set('zoom', area.zoom);
+    }
+
+    props.history.push(`/?${props.query.toString()}`);
+    localStorage.setItem('query', props.query.toString());
     props.setMapForSearch({
       coordinates: reverse([...area.center]),
       ...boundsParams,
     });
+  };
 
   useEffect(() => {
     const query = props.location.search;
@@ -151,11 +158,6 @@ const WebsiteBody = props => {
       props.setSearchInBox(true);
     }
   }, [props.isShowResult]);
-
-  const handleChangeType = () => {
-    setInfoboxData(null);
-    props.history.push('/');
-  };
 
   useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
@@ -365,12 +367,15 @@ const WebsiteBody = props => {
   };
 
   const handleUrlWithChangeType = type => {
-    let query = `?type=${type}`;
+    let query = `?type=${type}&center=${area.center}&zoom=${area.zoom}`;
 
     if (props.searchString) query = `${query}&searchString=${props.searchString}`;
 
+    setInfoboxData(null);
     props.history.push(query);
   };
+
+  const setQueryInLocalStorage = () => localStorage.setItem('query', props.query.toString());
 
   return (
     <div className="WebsiteBody">
@@ -391,9 +396,9 @@ const WebsiteBody = props => {
         reloadSearchList={reloadSearchList}
         searchType={props.searchType}
         handleHoveredCard={handleHoveredCard}
-        handleChangeType={handleChangeType}
         handleSetFiltersInUrl={handleSetFiltersInUrl}
         handleUrlWithChangeType={handleUrlWithChangeType}
+        setQueryInLocalStorage={setQueryInLocalStorage}
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
@@ -416,7 +421,7 @@ const WebsiteBody = props => {
             )}
             {zoomButtonsLayout()}
             <Map
-              center={area.center}
+              defaultCenter={area.center}
               height={mapHeight}
               zoom={area.zoom}
               provider={mapProvider}
@@ -463,7 +468,7 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
-      {props.isAuth && <WebsiteWelcomeModal />}
+      <WebsiteWelcomeModal />
     </div>
   );
 };
@@ -550,7 +555,6 @@ export default connect(
     getCurrentAppSettings,
     setMapForSearch,
     setShowReload,
-    setShowSearchResult,
     setSearchInBox,
     setFilterFromQuery,
   },

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { some } from 'lodash';
 import classNames from 'classnames';
 
 import Affix from '../components/Utils/Affix';
@@ -32,7 +33,7 @@ const SettingsMain = props => {
 
     if (!props.isGuest)
       props.getOwnWebsites().then(({ value }) => {
-        if (host && !value.some(website => website.host === host)) props.history.push('/');
+        if (host && !some(value, website => website.host === host)) props.history.push('/');
       });
   }, [props.auth]);
 

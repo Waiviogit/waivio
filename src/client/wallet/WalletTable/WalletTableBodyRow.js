@@ -35,6 +35,8 @@ const WalletTableBodyRow = props => {
     fieldHBD: '',
     fieldDescription: '',
     fieldMemo: '',
+    hiveUSD: get(transaction, 'hiveUSD'),
+    hbdUSD: get(transaction, 'hbdUSD'),
   };
 
   switch (transactionType) {
@@ -71,6 +73,8 @@ const WalletTableBodyRow = props => {
           time: dateTableField(transaction.timestamp, isGuestPage),
           fieldHP: toVestingAmount.amount,
           fieldDescription: description.powerUpTransactionFrom,
+          hiveUSD: get(transaction, 'hiveUSD'),
+          hbdUSD: get(transaction, 'hbdUSD'),
         };
 
         return getCurrentRows(data);
@@ -80,6 +84,8 @@ const WalletTableBodyRow = props => {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldHIVE: `- ${toVestingAmount.amount}`,
         fieldDescription: description.powerUpTransactionTo,
+        hiveUSD: get(transaction, 'hiveUSD'),
+        hbdUSD: get(transaction, 'hbdUSD'),
       };
 
       return getCurrentRows(data);
@@ -114,6 +120,8 @@ const WalletTableBodyRow = props => {
             fieldHBD: transferAmount.currency === 'HBD' && `${transferAmount.amount}`,
             fieldDescription: description,
             fieldMemo: transaction.memo,
+            hiveUSD: get(transaction, 'hiveUSD'),
+            hbdUSD: get(transaction, 'hbdUSD'),
           };
 
           return getCurrentRows(data);
@@ -128,6 +136,8 @@ const WalletTableBodyRow = props => {
         fieldHBD: transferAmount.currency === 'HBD' && `- ${transferAmount.amount}`,
         fieldDescription: description,
         fieldMemo: transaction.memo,
+        hiveUSD: get(transaction, 'hiveUSD'),
+        hbdUSD: get(transaction, 'hbdUSD'),
       };
 
       return getCurrentRows(data);
@@ -149,6 +159,8 @@ const WalletTableBodyRow = props => {
         fieldHP: get(claimRewardAmounts, 'HP'),
         fieldHBD: get(claimRewardAmounts, 'HBD'),
         fieldDescription: description,
+        hiveUSD: get(transaction, 'hiveUSD'),
+        hbdUSD: get(transaction, 'hbdUSD'),
       };
 
       return getCurrentRows(data);
@@ -170,6 +182,8 @@ const WalletTableBodyRow = props => {
         fieldHBD: transferToSavingAmount.currency === 'HBD' && `${transferToSavingAmount.amount}`,
         fieldDescription: description,
         fieldMemo: transaction.memo,
+        hiveUSD: get(transaction, 'hiveUSD'),
+        hbdUSD: get(transaction, 'hbdUSD'),
       };
 
       return getCurrentRows(data);
@@ -192,6 +206,8 @@ const WalletTableBodyRow = props => {
         fieldHIVE: currentPaysAmount.currency === 'HIVE' && `${currentPaysAmount.amount}`,
         fieldHBD: currentPaysAmount.currency === 'HBD' && `${currentPaysAmount.amount}`,
         fieldDescription: description,
+        hiveUSD: get(transaction, 'hiveUSD'),
+        hbdUSD: get(transaction, 'hbdUSD'),
       };
 
       return getCurrentRows(data);
@@ -224,6 +240,8 @@ const WalletTableBodyRow = props => {
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldDescription: description,
+        hiveUSD: get(transaction, 'hiveUSD'),
+        hbdUSD: get(transaction, 'hbdUSD'),
       };
       if (paysAmountReceived.currency === 'HIVE') {
         data.fieldHIVE = `${paysAmountReceived.amount}`;
@@ -266,6 +284,8 @@ const WalletTableBodyRow = props => {
           currentPaysAmount.currency === 'HBD' &&
           `${currentPaysAmount.amount}`,
         fieldDescription: description,
+        hiveUSD: get(transaction, 'hiveUSD'),
+        hbdUSD: get(transaction, 'hbdUSD'),
       };
 
       return getCurrentRows(data);
@@ -292,6 +312,8 @@ const WalletTableBodyRow = props => {
           proposalAmount.currency === 'HIVE' && `${termsOperation}${proposalAmount.amount}`,
         fieldHBD: proposalAmount.currency === 'HBD' && `${termsOperation}${proposalAmount.amount}`,
         fieldDescription: description,
+        hiveUSD: get(transaction, 'hiveUSD'),
+        hbdUSD: get(transaction, 'hbdUSD'),
       };
 
       return getCurrentRows(data);

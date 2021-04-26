@@ -314,8 +314,24 @@ class WalletTableContainer extends React.Component {
           user={user}
           getFieldDecorator={form.getFieldDecorator}
           handleOnClick={this.handleOnClick}
-          changeEndDate={value => this.setState({ endDate: moment(value).unix() })}
-          changeStartDate={value => this.setState({ startDate: moment(value).unix() })}
+          changeEndDate={value => {
+            const date = moment(value);
+            const isToday =
+              date.startOf('day').unix() ===
+              moment()
+                .startOf('day')
+                .unix();
+            const endDate = isToday ? moment().unix() : date.endOf('day').unix();
+
+            this.setState({ endDate });
+          }}
+          changeStartDate={value =>
+            this.setState({
+              startDate: moment(value)
+                .startOf('day')
+                .unix(),
+            })
+          }
         />
         {this.selectRenderElements(intl, transactions, isGuestPage, currentUsername)}
       </React.Fragment>

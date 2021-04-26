@@ -536,7 +536,7 @@ export const getWobjectsExpertiseWithNewsFilter = (
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
       headers: { ...actualHeader, app: config.appName },
       method: 'POST',
-      body: JSON.stringify({ skip, limit, newsFilter }),
+      body: JSON.stringify({ skip, limit, ...newsFilter }),
     })
       .then(handleErrors)
       .then(res => res.json())
@@ -1642,10 +1642,11 @@ export const getTransferHistoryTableView = (
   endDate,
   types,
   operationNum = -1,
-) =>
-  new Promise((resolve, reject) => {
+) => {
+  const typesQuery = types.reduce((acc, curr) => `${acc}&types=${curr}`, '');
+  return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&${types}&operationNum=${operationNum}`,
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&${typesQuery}&operationNum=${operationNum}`,
       {
         headers,
         method: 'GET',
@@ -1656,6 +1657,7 @@ export const getTransferHistoryTableView = (
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+};
 
 export const sendSentryNotification = async () => {
   try {

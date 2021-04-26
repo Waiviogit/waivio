@@ -13,6 +13,11 @@ const routes = {
       component: Views.WebsiteBody,
     },
     {
+      path: '/confirmation',
+      exact: true,
+      component: Views.ConfirmationModal,
+    },
+    {
       path: [
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
         `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
@@ -226,9 +231,9 @@ const routes = {
           component: Views.ObjectOfTypePage,
         },
         {
-          path: '/blog/@:author',
+          path: '/blog/@:name',
           exact: true,
-          component: Views.UserBlog,
+          component: Views.UserProfile,
         },
         {
           path: '/form/:permlink',
