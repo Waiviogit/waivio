@@ -125,6 +125,8 @@ const parseGuestActions = actions => {
           typeTransfer: action.type,
           details: action.details || null,
           username: action.userName,
+          hbdUSD: action.hbdUSD,
+          hiveUSD: action.hiveUSD,
         },
       ],
       actionCount: index + 1,
