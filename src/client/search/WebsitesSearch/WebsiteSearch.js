@@ -73,6 +73,7 @@ const WebsiteSearch = props => {
     if (value) props.query.set('searchString', value);
     else props.query.delete('searchString');
 
+    localStorage.removeItem('scrollTop');
     props.history.push(`/?${props.query.toString()}`);
   };
 

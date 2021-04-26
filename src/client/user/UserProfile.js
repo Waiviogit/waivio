@@ -91,12 +91,10 @@ export default class UserProfile extends React.Component {
         nextProps.feed.blog &&
         !nextProps.feed.blog[nextProps.match.params.name]
       ) {
-        this.props.getUserProfileBlogPosts(nextProps.match.params.name,
-          {
-            limit,
-            initialLoad: true,
-          },
-        );
+        this.props.getUserProfileBlogPosts(nextProps.match.params.name, {
+          limit,
+          initialLoad: true,
+        });
       }
       window.scrollTo(0, 0);
     }

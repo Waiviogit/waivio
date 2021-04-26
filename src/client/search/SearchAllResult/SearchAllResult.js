@@ -160,6 +160,7 @@ const SearchAllResult = props => {
         onClick={e => {
           props.setWebsiteSearchFilter(filter.tagCategory, e.key);
           props.handleSetFiltersInUrl(filter.tagCategory, e.key);
+          localStorage.removeItem('scrollTop');
         }}
         className="SearchAllResult__filter-list"
       >
@@ -188,7 +189,10 @@ const SearchAllResult = props => {
       <div
         className="SearchAllResult__toggle-button"
         role="presentation"
-        onClick={() => props.setShowSearchResult(!props.isShowResult)}
+        onClick={() => {
+          props.setShowSearchResult(!props.isShowResult);
+          if (isEmpty(currRenderListState.list)) localStorage.removeItem('scrollTop');
+        }}
       >
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
@@ -202,6 +206,7 @@ const SearchAllResult = props => {
               props.setWebsiteSearchType(type);
               props.handleChangeType();
               props.handleUrlWithChangeType(type);
+              localStorage.removeItem('scrollTop');
             }}
           >
             {type}
