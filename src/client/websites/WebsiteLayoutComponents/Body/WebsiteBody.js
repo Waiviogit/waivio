@@ -396,7 +396,7 @@ const WebsiteBody = props => {
         <meta name="twitter:title" content={objName} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" property="twitter:image" content={currentLogo} />
-        <meta property="og:site_name" content="Waivio" />
+        <meta property="og:site_name" content={objName} />
         <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
       </Helmet>
