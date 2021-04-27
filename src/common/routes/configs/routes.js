@@ -5,6 +5,7 @@ import URL from '../constants';
 import createNestedRouts from '../helper';
 import User from '../../../client/user/User';
 import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
+import Page from '../../../client/feed/Page';
 
 const routes = {
   component: Wrapper,
@@ -414,7 +415,7 @@ const routes = {
     },
     {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-      component: Views.Page,
+      component: Page,
       routes: [
         {
           path: '/confirmation',

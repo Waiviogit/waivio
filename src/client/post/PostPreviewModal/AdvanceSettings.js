@@ -80,7 +80,7 @@ class AdvanceSettings extends Component {
           key={'advance_settings'}
           header={intl.formatMessage({
             id: 'advance_settings',
-            defaultMessage: 'Advance settings',
+            defaultMessage: 'Advanced settings',
           })}
         >
           {!isGuest && (
