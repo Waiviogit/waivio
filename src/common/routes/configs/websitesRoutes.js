@@ -5,6 +5,7 @@ import createNestedRouts from '../helper';
 import WebsiteWrapper from '../../../client/WebsiteWrapper';
 import User from '../../../client/user/User';
 import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
+import WebsiteBody from '../../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
 
 const routes = {
   component: WebsiteWrapper,
@@ -12,7 +13,7 @@ const routes = {
     {
       path: '/',
       exact: true,
-      component: Views.WebsiteBody,
+      component: WebsiteBody,
     },
     {
       path: '/confirmation',
@@ -183,7 +184,7 @@ const routes = {
       ],
     },
     {
-      path: '/:category?/@:author/:permlink/:original?',
+      path: ['/:category?/@:author/:permlink/:original?', '/object/:name/blog/@:author/:permlink'],
       component: Post,
     },
     {

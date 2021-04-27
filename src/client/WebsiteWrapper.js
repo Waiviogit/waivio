@@ -127,10 +127,12 @@ class WebsiteWrapper extends React.PureComponent {
     }
     const lang = loadLanguage(activeLocale);
 
-    store.dispatch(login());
-    store.dispatch(getWebsiteObjWithCoordinates());
-
-    return Promise.all([store.dispatch(setAppUrl(appUrl)), store.dispatch(setUsedLocale(lang))]);
+    return Promise.all([
+      store.dispatch(setAppUrl(appUrl)),
+      store.dispatch(setUsedLocale(lang)),
+      store.dispatch(login()),
+      store.dispatch(getCurrentAppSettings()),
+    ]);
   }
 
   constructor(props) {
