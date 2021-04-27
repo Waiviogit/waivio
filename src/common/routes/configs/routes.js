@@ -294,7 +294,7 @@ const routes = {
       ],
     },
     {
-      path: '/:category?/@:author/:permlink/:original?',
+      path: ['/:category?/@:author/:permlink/:original?', '/object/:name/blog/@:author/:permlink'],
       component: Post,
     },
     {
