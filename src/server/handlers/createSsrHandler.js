@@ -35,7 +35,7 @@ export default function createSsrHandler(template) {
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
       const hostname = req.hostname;
-      const isWaivio = req.hostname.includes('waivio');
+      const isWaivio = hostname.includes('waivio');
       let settings = {};
 
       if (!isWaivio) settings = await getSettingsWebsite(hostname);
@@ -50,7 +50,7 @@ export default function createSsrHandler(template) {
         const fetchData = route.component.fetchData;
 
         if (fetchData instanceof Function) {
-          return fetchData({ store, match, req, res });
+          return fetchData({ store, match, req, res }).then(e => console.log(e));
         }
 
         return Promise.resolve(null);

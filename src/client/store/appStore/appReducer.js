@@ -159,6 +159,17 @@ export default (state = initialState, action) => {
         isWaivio: mainPage === 'waivio',
       };
     }
+    case appTypes.GET_WEBSITE_CONFIG_FOR_SSR.SUCCESS: {
+      return {
+        ...state,
+        configuration: action.payload,
+        helmetIcon: getObjectAvatar(action.payload.aboutObject),
+        currMap: {
+          center: get(action.payload, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
+          zoom: get(action.payload, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),
+        },
+      };
+    }
 
     case appTypes.SET_CURRENT_PAGE:
       return {

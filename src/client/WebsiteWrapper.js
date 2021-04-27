@@ -22,6 +22,7 @@ import {
   setUsedLocale,
   setAppUrl,
   getCurrentAppSettings,
+  getWebsiteConfigForSSR,
 } from './store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
@@ -131,7 +132,7 @@ class WebsiteWrapper extends React.PureComponent {
       store.dispatch(setAppUrl(appUrl)),
       store.dispatch(setUsedLocale(lang)),
       store.dispatch(login()),
-      store.dispatch(getCurrentAppSettings()),
+      store.dispatch(getWebsiteConfigForSSR(req.hostname)),
     ]);
   }
 
