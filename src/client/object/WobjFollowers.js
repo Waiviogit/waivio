@@ -32,6 +32,9 @@ class WobjFollowers extends React.Component {
     this.fetcher = this.fetcher.bind(this);
   }
 
+  skip = 0;
+  limit = 100;
+
   async fetcher(skip, authUser) {
     const response = await getWobjectFollowers(
       this.props.match.params.name,
