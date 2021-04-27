@@ -119,3 +119,6 @@ export const getLastContentAction = (updatedRowContent, prevRowContent) => {
     actionValue: head(getDifferOfContents(updatedRowContent, prevRowContent)),
   };
 };
+
+export const filterEditorObjects = objects =>
+  objects.filter(object => object.type === Entity.OBJECT);

@@ -51,6 +51,7 @@ const Editor = props => {
     const updatedTitleValue = event.target.value;
 
     props.setUpdatedEditorExtendedData({ titleValue: updatedTitleValue });
+    props.onChange(convertToRaw(editorState.getCurrentContent()), updatedTitleValue);
     if (size(updatedTitleValue) === MAX_LENGTH) {
       message.error(
         props.intl.formatMessage({

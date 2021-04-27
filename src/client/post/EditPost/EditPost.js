@@ -26,6 +26,7 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import CreateObject from '../CreateObjectModal/CreateObject';
 import {
   EDITOR_ACTION_ADD,
+  filterEditorObjects,
   getCurrentDraftContent,
   getCurrentDraftId,
   getLastContentAction,
@@ -153,7 +154,9 @@ const EditPost = props => {
       const updatedStore = { content: toMarkdown(rawContent), titleValue: title };
       const getRowContent = Object.values(get(rawContent, 'entityMap', {}));
       const getCurrentRawContent = Object.values(get(currentRawContent, 'entityMap', {}));
-      const isChangedObjects = getRowContent.length !== getCurrentRawContent.length;
+      const isChangedObjects =
+        filterEditorObjects(getRowContent).length !==
+        filterEditorObjects(getCurrentRawContent).length;
 
       if (isChangedObjects || updateLinkedObjects) {
         const rawContentUpdated = await props.getRestoreObjects(rawContent);

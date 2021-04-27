@@ -18,7 +18,9 @@ export default class AddButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      style: {},
+      style: {
+        top: 0,
+      },
       visible: true,
       isOpen: false,
       isControlElem: false,
