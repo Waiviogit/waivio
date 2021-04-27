@@ -20,6 +20,7 @@ import {
   getSearchObjectsResults,
   getShowSearchResult,
   getWebsiteMap,
+  getWebsiteSearchString,
   getWebsiteSearchType,
   searchObjectTypesResults,
 } from '../../store/searchStore/searchSelectors';
@@ -29,22 +30,25 @@ import './WebsiteSearch.less';
 const WebsiteSearch = props => {
   const [searchString, setSearchString] = useState('');
 
-  const currentSearchMethod = useCallback(
-    value => {
-      props.setWebsiteSearchString(value);
-      props.setSearchInBox(true);
+  const currentSearchMethod = value => {
+    props.setWebsiteSearchString(value);
+    props.setSearchInBox(true);
 
-      if (window.gtag) window.gtag('event', `search_${props.searchType.toLowerCase()}`);
+    if (value) props.query.set('searchString', value);
+    else props.query.delete('searchString');
 
-      switch (props.searchType) {
-        case 'Users':
-          return props.searchUsersAutoCompete(value);
-        default:
-          return props.searchWebsiteObjectsAutoCompete(value);
-      }
-    },
-    [props.searchType, searchString, props.location.search],
-  );
+    localStorage.removeItem('scrollTop');
+    props.history.push(`/?${props.query.toString()}`);
+
+    if (window.gtag) window.gtag('event', `search_${props.searchType.toLowerCase()}`);
+
+    switch (props.searchType) {
+      case 'Users':
+        return props.searchUsersAutoCompete(value);
+      default:
+        return props.searchWebsiteObjectsAutoCompete(value);
+    }
+  };
 
   useEffect(() => {
     const querySearch = props.query.get('searchString');
@@ -59,29 +63,19 @@ const WebsiteSearch = props => {
 
   useEffect(() => {
     props.resetWebsiteObjectsCoordinates();
-  }, [props.searchType, props.activeFilters, searchString]);
+  }, [props.searchType, props.activeFilters, props.savedSearchString]);
 
   const handleSearchAutocomplete = useCallback(
     debounce(value => {
       currentSearchMethod(value);
-    }, 200),
+    }, 500),
     [props.searchType],
   );
-
-  const handleSearch = value => {
-    handleSearchAutocomplete(value);
-    if (value) props.query.set('searchString', value);
-    else props.query.delete('searchString');
-
-    localStorage.removeItem('scrollTop');
-    props.history.push(`/?${props.query.toString()}`);
-  };
 
   const handleResetAutocomplete = () => {
     setSearchString('');
     props.resetSearchAutoCompete();
     handleSearchAutocomplete('');
-
     props.history.push(`/?type=${props.searchType}`);
   };
 
@@ -89,7 +83,7 @@ const WebsiteSearch = props => {
     <div>
       <AutoComplete
         className="WebsiteSearch"
-        onSearch={handleSearch}
+        onSearch={handleSearchAutocomplete}
         onChange={value => setSearchString(value)}
         dropdownClassName={'WebsiteSearch__dropdown'}
         value={searchString}
@@ -100,7 +94,9 @@ const WebsiteSearch = props => {
             id: 'find_restaurants_and_dishes',
             defaultMessage: 'Find restaurants and dishes',
           })}
-          onClick={() => props.setShowSearchResult(true)}
+          onClick={() => {
+            if (!props.isShowResult) props.setShowSearchResult(true);
+          }}
         />
       </AutoComplete>
       {!!searchString.length && (
@@ -135,6 +131,7 @@ WebsiteSearch.propTypes = {
   setSearchInBox: PropTypes.func.isRequired,
   resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
+  savedSearchString: PropTypes.string.isRequired,
   activeFilters: PropTypes.arrayOf(PropTypes.shape()),
   isShowResult: PropTypes.bool.isRequired,
   searchMap: PropTypes.shape().isRequired,
@@ -156,6 +153,7 @@ export default connect(
     activeFilters: getSearchFiltersTagCategory(state),
     isShowResult: getShowSearchResult(state),
     searchMap: getWebsiteMap(state),
+    savedSearchString: getWebsiteSearchString(state),
     query: new URLSearchParams(ownProps.location.search),
   }),
   {
