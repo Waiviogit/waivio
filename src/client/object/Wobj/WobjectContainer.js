@@ -107,7 +107,10 @@ export default class WobjectContainer extends React.Component {
   };
 
   static fetchData({ store, match }) {
-    return store.dispatch(getObject(match.params.name, getAuthenticatedUserName(store.getState())));
+    return Promise.all([
+      store.dispatch(getObject(match.params.name)),
+      store.dispatch(getAlbums(match.params.name)),
+    ]);
   }
 
   constructor(props) {
