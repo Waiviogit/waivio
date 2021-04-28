@@ -161,3 +161,10 @@ export const putUserCoordinates = params => ({
   type: PUT_USER_COORDINATES.ACTION,
   payload: ApiClient.putUserCoordinates(params),
 });
+
+export const GET_WEBSITE_CONFIG_FOR_SSR = createAsyncActionType('@app/GET_WEBSITE_CONFIG_FOR_SSR');
+
+export const getWebsiteConfigForSSR = host => ({
+  type: GET_WEBSITE_CONFIG_FOR_SSR.ACTION,
+  payload: ApiClient.getWebsitesConfiguration(host),
+});

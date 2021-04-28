@@ -32,7 +32,7 @@ const Wobj = ({
   supportedObjectTypes,
 }) => {
   const waivioHost = global.postOrigin || 'https://www.waivio.com';
-  const image = getObjectAvatar(wobject) || DEFAULTS.FAVICON;
+  const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
   const url = `${waivioHost}/object/${match.params.name}`;
   const albumsAndImagesCount = wobject.albums_count;
@@ -71,20 +71,22 @@ const Wobj = ({
         <Helmet>
           <title>{objectName}</title>
           <link rel="canonical" href={canonicalUrl} />
-          <meta name="og:description" property="description" content={desc} />
-          <meta name="og:title" property="og:title" content={objectName} />
-          <meta name="og:type" property="og:type" content="article" />
-          <meta name="og:url" property="og:url" content={url} />
-          <meta name="og:image" property="og:image" content={image} />
-          <meta name="og:image:width" property="og:image:width" content="600" />
-          <meta name="og:image:height" property="og:image:height" content="600" />
-          <meta name="og:description" property="og:description" content={desc} />
-          <meta name="og:site_name" property="og:site_name" content="Waivio" />
+          <meta property="description" content={desc} />
+          <meta property="og:title" content={objectName} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={url} />
+          <meta property="og:image" content={image} />
+          <meta property="og:image:url" content={image} />
+          <meta property="og:image:width" content="600" />
+          <meta property="og:image:height" content="600" />
+          <meta property="og:description" content={desc} />
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta name="twitter:site" property="twitter:site" content={'@waivio'} />
-          <meta name="twitter:title" property="twitter:title" content={objectName} />
-          <meta name="twitter:description" property="twitter:description" content={desc} />
+          <meta name="twitter:site" content={'@waivio'} />
+          <meta name="twitter:title" content={objectName} />
+          <meta name="twitter:description" content={desc} />
           <meta name="twitter:image" property="twitter:image" content={image} />
+          <meta property="og:site_name" content="Waivio" />
+          <link rel="image_src" href={image} />
           <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
         </Helmet>
         <ScrollToTopOnMount />

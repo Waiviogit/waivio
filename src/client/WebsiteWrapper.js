@@ -22,6 +22,7 @@ import {
   setUsedLocale,
   setAppUrl,
   getCurrentAppSettings,
+  getWebsiteConfigForSSR,
 } from './store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
@@ -39,7 +40,6 @@ import {
 } from './store/authStore/authSelectors';
 import { getIsOpenWalletTable } from './store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from './store/settingsStore/settingsSelectors';
-import WebsiteWelcomeModal from './websites/WebsiteWelcomeModal/WebsiteWelcomeModal';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -128,10 +128,12 @@ class WebsiteWrapper extends React.PureComponent {
     }
     const lang = loadLanguage(activeLocale);
 
-    store.dispatch(login());
-    store.dispatch(getWebsiteObjWithCoordinates());
-
-    return Promise.all([store.dispatch(setAppUrl(appUrl)), store.dispatch(setUsedLocale(lang))]);
+    return Promise.all([
+      store.dispatch(setAppUrl(appUrl)),
+      store.dispatch(setUsedLocale(lang)),
+      store.dispatch(login()),
+      store.dispatch(getWebsiteConfigForSSR(req.hostname)),
+    ]);
   }
 
   constructor(props) {

@@ -3,6 +3,9 @@ import Post from '../../../client/post/Post';
 import URL from '../constants';
 import createNestedRouts from '../helper';
 import WebsiteWrapper from '../../../client/WebsiteWrapper';
+import User from '../../../client/user/User';
+import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
+import WebsiteBody from '../../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
 
 const routes = {
   component: WebsiteWrapper,
@@ -10,7 +13,12 @@ const routes = {
     {
       path: '/',
       exact: true,
-      component: Views.WebsiteBody,
+      component: WebsiteBody,
+    },
+    {
+      path: '/confirmation',
+      exact: true,
+      component: Views.ConfirmationModal,
     },
     {
       path: [
@@ -119,7 +127,7 @@ const routes = {
     },
     {
       path: `/@:name/(${URL.USER.tabs})?/(table)?`,
-      component: Views.User,
+      component: User,
       exact: true,
       pathScope: '/@:name',
       routes: [
@@ -176,12 +184,12 @@ const routes = {
       ],
     },
     {
-      path: '/:category?/@:author/:permlink/:original?',
+      path: ['/:category?/@:author/:permlink/:original?', '/object/:name/blog/@:author/:permlink'],
       component: Post,
     },
     {
       path: `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
-      component: Views.Wobj,
+      component: WobjectContainer,
       exact: true,
       pathScope: '/object/:name',
       routes: [
@@ -226,9 +234,9 @@ const routes = {
           component: Views.ObjectOfTypePage,
         },
         {
-          path: '/blog/@:author',
+          path: '/blog/@:name',
           exact: true,
-          component: Views.UserBlog,
+          component: Views.UserProfile,
         },
         {
           path: '/form/:permlink',

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
-import { get, size, truncate, floor } from 'lodash';
+import { get, size, truncate, floor, ceil } from 'lodash';
 import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../helpers/formatter';
 import formatter from '../helpers/steemitFormatter';
@@ -349,18 +349,20 @@ export const getCurrentRows = data => {
   const fieldDescription = get(data, 'fieldDescription', null);
   const fieldMemo = get(data, 'fieldMemo', null);
   const fieldClassName = get(data, 'fieldClass', null);
+  const hiveUSD = get(data, 'hiveUSD');
+  const hbdUSD = get(data, 'hbdUSD');
 
   return (
-    <React.Fragment>
-      <tr>
-        <td className={fieldClassName}>{timestamp}</td>
-        <td className={fieldClassName}>{fieldHIVE}</td>
-        <td className={fieldClassName}>{fieldHP}</td>
-        <td className={fieldClassName}>{fieldHBD}</td>
-        <td className={fieldClassName}>{fieldDescription}</td>
-        <td className={fieldClassName}>{fieldMemo}</td>
-      </tr>
-    </React.Fragment>
+    <tr>
+      <td className={fieldClassName}>{timestamp}</td>
+      <td className={fieldClassName}>{fieldHIVE}</td>
+      <td className={fieldClassName}>{fieldHP}</td>
+      <td className={fieldClassName}>{fieldHBD}</td>
+      <td className={fieldClassName}>{hiveUSD && ceil(hiveUSD, 3)}</td>
+      <td className={fieldClassName}>{hbdUSD && ceil(hbdUSD, 3)}</td>
+      <td className={fieldClassName}>{fieldDescription}</td>
+      <td className={fieldClassName}>{fieldMemo}</td>
+    </tr>
   );
 };
 

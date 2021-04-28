@@ -14,7 +14,6 @@ import {
   setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
-  setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../../../store/searchStore/searchActions';
@@ -111,11 +110,19 @@ const WebsiteBody = props => {
     }
   };
 
-  const handleSetMapForSearch = () =>
+  const handleSetMapForSearch = () => {
+    if (!isEmpty(area.center)) {
+      props.query.set('center', area.center);
+      props.query.set('zoom', area.zoom);
+    }
+
+    props.history.push(`/?${props.query.toString()}`);
+    localStorage.setItem('query', props.query.toString());
     props.setMapForSearch({
       coordinates: reverse([...area.center]),
       ...boundsParams,
     });
+  };
 
   useEffect(() => {
     const query = props.location.search;
@@ -151,11 +158,6 @@ const WebsiteBody = props => {
       props.setSearchInBox(true);
     }
   }, [props.isShowResult]);
-
-  const handleChangeType = () => {
-    setInfoboxData(null);
-    props.history.push('/');
-  };
 
   useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
@@ -365,25 +367,37 @@ const WebsiteBody = props => {
   };
 
   const handleUrlWithChangeType = type => {
-    let query = `?type=${type}`;
+    let query = `?type=${type}&center=${area.center}&zoom=${area.zoom}`;
 
     if (props.searchString) query = `${query}&searchString=${props.searchString}`;
 
+    setInfoboxData(null);
     props.history.push(query);
   };
+
+  const setQueryInLocalStorage = () => localStorage.setItem('query', props.query.toString());
+  const objName = getObjectName(aboutObject);
 
   return (
     <div className="WebsiteBody">
       <Helmet>
-        <title>
-          {description
-            ? `${getObjectName(aboutObject)} - ${description}`
-            : getObjectName(aboutObject)}
-        </title>
-        <meta
-          property="twitter:description"
-          content="Waivio is an open distributed attention marketplace for business"
-        />
+        <title>{description ? `${objName} - ${description}` : objName}</title>
+        <meta property="description" content={description} />
+        <meta property="og:title" content={objName} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={global.postOrigin} />
+        <meta property="og:image" content={currentLogo} />
+        <meta property="og:image:url" content={currentLogo} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:description" content={description} />
+        <meta name="twitter:card" content={currentLogo ? 'summary_large_image' : 'summary'} />
+        <meta name="twitter:site" content={'@waivio'} />
+        <meta name="twitter:title" content={objName} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" property="twitter:image" content={currentLogo} />
+        <meta property="og:site_name" content={objName} />
+        <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
       </Helmet>
       <SearchAllResult
@@ -391,9 +405,9 @@ const WebsiteBody = props => {
         reloadSearchList={reloadSearchList}
         searchType={props.searchType}
         handleHoveredCard={handleHoveredCard}
-        handleChangeType={handleChangeType}
         handleSetFiltersInUrl={handleSetFiltersInUrl}
         handleUrlWithChangeType={handleUrlWithChangeType}
+        setQueryInLocalStorage={setQueryInLocalStorage}
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
@@ -463,7 +477,7 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
-      {props.isAuth && <WebsiteWelcomeModal />}
+      <WebsiteWelcomeModal />
     </div>
   );
 };
@@ -550,7 +564,6 @@ export default connect(
     getCurrentAppSettings,
     setMapForSearch,
     setShowReload,
-    setShowSearchResult,
     setSearchInBox,
     setFilterFromQuery,
   },
