@@ -15,6 +15,8 @@ import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { getIsAuthenticated, getIsLoaded } from '../store/authStore/authSelectors';
 import { getObject as getObjectState } from '../store/wObjectStore/wObjectSelectors';
+import { getObjectAvatar } from '../helpers/wObjectHelper';
+import DEFAULTS from '../object/const/defaultValues';
 
 @injectIntl
 @withRouter
@@ -60,15 +62,29 @@ class Page extends React.Component {
     const { authenticated, history, wobject, match } = this.props;
     const isPageMode = true;
     const sortBy = authenticated ? match.params.sortBy : match.params.sortBy || 'trending';
+    const description = 'Waivio is an open distributed attention marketplace for business';
 
     return (
       <div>
         <Helmet>
           <title>Waivio</title>
-          <meta
-            property="twitter:description"
-            content="Waivio is an open distributed attention marketplace for business"
-          />
+          <meta property="description" content={description} />
+          <meta property="og:title" content={'Waivio'} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={global.postOrigin} />
+          <meta property="og:image" content={DEFAULTS.WAIVIO_ICON} />
+          <meta property="og:image:url" content={DEFAULTS.WAIVIO_ICON} />
+          <meta property="og:image:width" content="600" />
+          <meta property="og:image:height" content="600" />
+          <meta property="og:description" content={description} />
+          <meta name="twitter:card" content={'summary_large_image'} />
+          <meta name="twitter:site" content={'@waivio'} />
+          <meta name="twitter:title" content={'Waivio'} />
+          <meta name="twitter:description" content={description} />
+          <meta name="twitter:image" property="twitter:image" content={DEFAULTS.WAIVIO_ICON} />
+          <meta property="og:site_name" content={'Waivio'} />
+          <link rel="image_src" href={DEFAULTS.WAIVIO_ICON} />
+          <link id="favicon" rel="icon" href={DEFAULTS.WAIVIO_ICON} type="image/x-icon" />
         </Helmet>
         <ScrollToTop />
         <ScrollToTopOnMount />

@@ -50,7 +50,7 @@ export default function createSsrHandler(template) {
         const fetchData = route.component.fetchData;
 
         if (fetchData instanceof Function) {
-          return fetchData({ store, match, req, res }).then(e => console.log(e));
+          return fetchData({ store, match, req, res });
         }
 
         return Promise.resolve(null);
