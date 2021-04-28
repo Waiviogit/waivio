@@ -301,6 +301,10 @@
   "display_post": "Mostrar publicación",
   "display_post_preview": "Mostrar vista previa de la publicación",
   "comment_hidden_message": "Este comentario está oculto actualmente debido a la baja reputación del autor o la baja calificación de los comentarios.",
-  "reveal_comment": "Revelar comentario"
-
+  "reveal_comment": "Revelar comentario",
+  "account_created_with_delegation": "{creator} creó una cuenta con delegación {account}",
+  "account_created": "{creator} creó una cuenta {account}",
+  "upvoted": "Subido",
+  "downvoted": "Downvoted",
+  "unvoted": "Votado a la baja"
 }
