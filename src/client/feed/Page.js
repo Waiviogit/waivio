@@ -85,7 +85,7 @@ class Page extends React.Component {
           <meta name="twitter:image" property="twitter:image" content={this.props.helmetIcon} />
           <meta property="og:site_name" content={'Waivio'} />
           <link rel="image_src" href={this.props.helmetIcon} />
-          <link id="favicon" rel="icon" href={'/images/favicon.ico'} type="image/x-icon" />
+          <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
         </Helmet>
         <ScrollToTop />
         <ScrollToTopOnMount />
