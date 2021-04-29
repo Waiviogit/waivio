@@ -36,8 +36,11 @@ const Editor = props => {
     props.setUpdatedEditorExtendedData({ editorEnabled: true });
   };
 
-  const restoreObjects = (rawContent, newObject) =>
-    props.getRestoreObjects(rawContent, newObject, props.draftId);
+  const restoreObjects = (rawContent, newObject) => {
+    const newLinkedObjectsCards = props.getRestoreObjects(rawContent, newObject, props.draftId);
+
+    props.setUpdatedEditorData({ hideLinkedObjects: newLinkedObjectsCards });
+  }
 
   const handleContentChange = updatedEditorState => {
     onChange(updatedEditorState);
@@ -99,18 +102,19 @@ const Editor = props => {
 };
 
 const propTypes = {
-  enabled: PropTypes.bool.isRequired,
   initialContent: PropTypes.shape({
-    title: PropTypes.string,
     body: PropTypes.string,
+    title: PropTypes.string,
   }).isRequired,
-  onChange: PropTypes.func,
   intl: PropTypes.shape(),
+  onChange: PropTypes.func,
   draftId: PropTypes.string,
-  editorExtended: PropTypes.shape().isRequired,
-  handleHashtag: PropTypes.func,
   displayTitle: PropTypes.bool,
+  handleHashtag: PropTypes.func,
   getRestoreObjects: PropTypes.func,
+  enabled: PropTypes.bool.isRequired,
+  editorExtended: PropTypes.shape().isRequired,
+  setUpdatedEditorData: PropTypes.func.isRequired,
   setUpdatedEditorExtendedData: PropTypes.func.isRequired,
 };
 

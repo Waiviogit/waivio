@@ -10,6 +10,7 @@ import {
   isEmpty,
   size,
   isNil,
+  uniqBy,
 } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
@@ -140,7 +141,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, cam
   }
   if (campaignId) metaData.campaignId = campaignId;
 
-  return metaData;
+  return { ...metaData, wobj: { wobjects: uniqBy(get(metaData, 'wobj.wobjects', []), 'author_permlink') } };
 }
 
 /**

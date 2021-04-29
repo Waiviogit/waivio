@@ -649,7 +649,6 @@ export const getRestoreObjects = (rawContent, newObject, draftId) => async (disp
       Object.values(convertToRaw(prevEditorState.getCurrentContent()).entityMap),
   );
 
-  dispatch(setUpdatedEditorData(newLinkedObjectsCards));
   let rawContentUpdated = rawContent;
 
   if (objectIds.length) {
@@ -663,5 +662,5 @@ export const getRestoreObjects = (rawContent, newObject, draftId) => async (disp
     rawContentUpdated = { ...rawContentUpdated, entityMap };
   }
 
-  return rawContentUpdated;
+  return { rawContentUpdated, newLinkedObjectsCards };
 };

@@ -111,6 +111,8 @@ const EditPost = props => {
         intl,
       );
     }
+
+    return () => sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
   }, []);
 
   React.useEffect(() => {
@@ -154,52 +156,53 @@ const EditPost = props => {
       const updatedStore = { content: toMarkdown(rawContent), titleValue: title };
       const getRowContent = Object.values(get(rawContent, 'entityMap', {}));
       const getCurrentRawContent = Object.values(get(currentRawContent, 'entityMap', {}));
-      const isChangedObjects =
-        filterEditorObjects(getRowContent).length !==
-        filterEditorObjects(getCurrentRawContent).length;
+      const isChangedObjects = !isEqual(filterEditorObjects(getRowContent), filterEditorObjects(getCurrentRawContent))
 
       if (isChangedObjects || updateLinkedObjects) {
-        const rawContentUpdated = await props.getRestoreObjects(rawContent);
+        const { rawContentUpdated } = await props.getRestoreObjects(rawContent);
         const getRawContentUpdated = Object.values(get(rawContentUpdated, 'entityMap', {}));
 
         const { actionValue, actionType } = getLastContentAction(
           getRawContentUpdated,
           getCurrentRawContent,
         );
-        const parsedLinkedObjects = uniqBy(getLinkedObjects(rawContentUpdated), '_id');
-        let updatedObjPercentage = setObjPercents(parsedLinkedObjects, objPercentage);
 
-        if (updateLinkedObjects) {
-          updatedObjPercentage = reduce(
-            updatedObjPercentage,
-            (acc, value, key) => {
-              acc[key] = { percent: 100 / Object.keys(updatedObjPercentage).length };
+        if (actionType === EDITOR_ACTION_ADD || updateLinkedObjects) {
+          const parsedLinkedObjects = uniqBy(getLinkedObjects(rawContentUpdated), '_id');
+          let updatedObjPercentage = setObjPercents(parsedLinkedObjects, objPercentage);
 
-              return acc;
-            },
-            {},
-          );
-        }
-        const authorPermink = get(actionValue, 'data.object.author_permlink', '');
-        const isHideObject = hideLinkedObjects.find(
-          object => object.author_permlink === authorPermink,
-        );
+          if (updateLinkedObjects) {
+            updatedObjPercentage = reduce(
+              updatedObjPercentage,
+              (acc, value, key) => {
+                acc[key] = {percent: 100 / Object.keys(updatedObjPercentage).length};
 
-        if (actionType === EDITOR_ACTION_ADD && isHideObject) {
-          const filteredObjectCards = hideLinkedObjects.filter(
-            object => object.author_permlink !== authorPermink,
+                return acc;
+              },
+              {},
+            );
+          }
+          const authorPermink = get(actionValue, 'data.object.author_permlink', '');
+          const isHideObject = hideLinkedObjects.find(
+            object => object.author_permlink === authorPermink,
           );
 
-          sessionStorage.setItem('hideLinkedObjects', JSON.stringify(filteredObjectCards));
-          updatedStore.hideLinkedObjects = filteredObjectCards;
-          updatedObjPercentage = {
-            ...updatedObjPercentage,
-            [actionValue.data.object._id]: { percent: 100 / linkedObjects.length },
-          };
+          if (isHideObject) {
+            const filteredObjectCards = hideLinkedObjects.filter(
+              object => object.author_permlink !== authorPermink,
+            );
+
+            sessionStorage.setItem('hideLinkedObjects', JSON.stringify(filteredObjectCards));
+            updatedStore.hideLinkedObjects = filteredObjectCards;
+            updatedObjPercentage = {
+              ...updatedObjPercentage,
+              [actionValue.data.object._id]: {percent: 100 / linkedObjects.length},
+            };
+          }
+          updatedStore.linkedObjects = parsedLinkedObjects;
+          updatedStore.objPercentage = updatedObjPercentage;
+          newDraft = getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent);
         }
-        updatedStore.linkedObjects = parsedLinkedObjects;
-        updatedStore.objPercentage = updatedObjPercentage;
-        newDraft = getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent);
       }
       if (
         content !== updatedStore.content ||
@@ -243,7 +246,7 @@ const EditPost = props => {
     sessionStorage.setItem('hideLinkedObjects', JSON.stringify(prohibitedObjectCards));
     props.setUpdatedEditorData({
       topics,
-      linkedObjects,
+      linkedObjects: linkedObjects.filter(object => object._id !== uniqId),
       hideLinkedObjects: prohibitedObjectCards,
       objPercentage: setObjPercents(linkedObjects, updPercentage),
     });

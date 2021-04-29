@@ -1,5 +1,5 @@
 import { EditorState } from 'draft-js';
-import { get } from 'lodash';
+import { get, uniqBy } from 'lodash';
 import * as editorActions from './editorActions';
 import * as postActions from '../postsStore/postActions';
 import * as authActions from '../authStore/authActions';
@@ -91,6 +91,10 @@ const editor = (state = defaultState, action) => {
       return {
         ...state,
         saving: true,
+        editor: {
+          ...state.editor,
+          linkedObjects: uniqBy(get(state, 'editor.linkedObjects', []), '_id'),
+        },
       };
     case editorActions.SAVE_DRAFT_SUCCESS:
       return {

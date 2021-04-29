@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 
 import {
   getRestoreObjects,
+  setUpdatedEditorData,
   setUpdatedEditorExtendedData,
 } from '../../../store/editorStore/editorActions';
 import EditorExtended from './EditorExtended';
@@ -14,6 +15,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getRestoreObjects: (rawContent, newObject, draftId) =>
     dispatch(getRestoreObjects(rawContent, newObject, draftId)),
+  setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
   setUpdatedEditorExtendedData: data => dispatch(setUpdatedEditorExtendedData(data)),
 });
 
