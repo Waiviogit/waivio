@@ -83,6 +83,7 @@ import {
 import { getAllUsers } from '../store/usersStore/usersSelectors';
 import { getPendingUpdate, getUserLocation } from '../store/userStore/userSelectors';
 import { getIsMapModalOpen, getObjectsMap } from '../store/mapStore/mapSelectors';
+import DEFAULTS from '../object/const/defaultValues';
 
 @withRouter
 @injectIntl
@@ -1041,10 +1042,9 @@ class Rewards extends React.Component {
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
     const isWidget = sessionStorage.getItem('isWidget');
     const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
-    const img =
-      'https://images.hive.blog/p/7ohP4GDMGPrUMp8dW6yuJTR9MKNu8P8DCXDU9qmmkDVESrRynVRHNb6opaQtSHap1Kp23L83p583HN81Nb4uK53JScz5TNGRon3X?format=match&mode=fit';
+    const img = DEFAULTS.FAVICON;
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
-    const urlCurr = `${waivioHost}/rewards/all`;
+    const urlCurr = `${waivioHost}/rewards`;
     const title = `Rewards - Waivio`;
 
     return (
@@ -1069,6 +1069,7 @@ class Rewards extends React.Component {
             <meta property="og:image:height" content="600" />
             <meta property="og:description" content={desc} />
             <meta property="og:site_name" content="Waivio" />
+            <link rel="image_src" href={img} />
             <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
           </Helmet>
           <ScrollToTop />
