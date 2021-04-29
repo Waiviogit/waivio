@@ -1044,28 +1044,34 @@ class Rewards extends React.Component {
     const img =
       'https://images.hive.blog/p/7ohP4GDMGPrUMp8dW6yuJTR9MKNu8P8DCXDU9qmmkDVESrRynVRHNb6opaQtSHap1Kp23L83p583HN81Nb4uK53JScz5TNGRon3X?format=match&mode=fit';
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
+    const urlCurr = `${waivioHost}/rewards/all`;
+    const title = `${intl.formatMessage({
+      id: 'rewards',
+      defaultMessage: 'Rewards',
+    })} - Waivio`;
 
     return (
       <div className="Rewards">
         <div className="shifted">
           <Helmet>
-            <title>Rewards</title>
-            <meta
-              property="og:title"
-              content={`${intl.formatMessage({
-                id: 'rewards',
-                defaultMessage: 'Rewards',
-              })} - Waivio`}
-            />
+            <title>{title}</title>
+            <meta property="og:title" content={title} />
+            <meta name="robots" content={robots} />
+            <link rel="canonical" href={urlCurr} />
             <meta property="description" content={desc} />
+            <meta name="twitter:card" content={'summary_large_image'} />
+            <meta name="twitter:site" content={'@waivio'} />
+            <meta name="twitter:title" content={title} />
+            <meta name="twitter:description" content={desc} />
+            <meta name="twitter:image" content={img} />
+            <meta property="og:title" content={title} />
             <meta property="og:type" content="article" />
-            <meta property="og:url" content={`${waivioHost}/rewards/all`} />
+            <meta property="og:url" content={urlCurr} />
             <meta property="og:image" content={img} />
-            <meta property="og:site_name" content="Waivio" />
             <meta property="og:image:width" content="600" />
             <meta property="og:image:height" content="600" />
             <meta property="og:description" content={desc} />
-            <meta name="robots" content={robots} />
+            <meta property="og:site_name" content="Waivio" />
             <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
           </Helmet>
           <ScrollToTop />
