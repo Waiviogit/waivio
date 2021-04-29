@@ -15,14 +15,11 @@ import './Discover.less';
 
 const Discover = ({ intl, match, history }) => {
   const dispatch = useDispatch();
-  const desc = 'All objects are located here. Discover new objects!';
+  const desc = 'All users are located here. Discover new users!';
   const image =
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
   const canonicalUrl = 'https://www.waivio.com/rewards/all';
-  const title = `${intl.formatMessage({
-    id: 'discover',
-    defaultMessage: 'Discover',
-  })} - Waivio`;
+  const title = 'Discover - Waivio';
 
   const handleDeleteTag = () => {
     history.push(PATH_NAME_DISCOVER);
