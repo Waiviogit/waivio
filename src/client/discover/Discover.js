@@ -16,6 +16,13 @@ import './Discover.less';
 const Discover = ({ intl, match, history }) => {
   const dispatch = useDispatch();
   const desc = 'All objects are located here. Discover new objects!';
+  const image =
+    'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
+  const canonicalUrl = 'https://www.waivio.com/rewards/all';
+  const title = `${intl.formatMessage({
+    id: 'discover',
+    defaultMessage: 'Discover',
+  })} - Waivio`;
 
   const handleDeleteTag = () => {
     history.push(PATH_NAME_DISCOVER);
@@ -25,37 +32,19 @@ const Discover = ({ intl, match, history }) => {
   return (
     <div className="shifted">
       <Helmet>
-        <title>
-          {intl.formatMessage({
-            id: 'discover_more_people',
-            defaultMessage: 'discover_more_people',
-          })}{' '}
-          - Waivio
-        </title>
-        <meta
-          property="og:title"
-          content={`${intl.formatMessage({
-            id: 'discover',
-            defaultMessage: 'Discover',
-          })}{' '}
-        - Waivio`}
-        />
+        <title>{title}</title>
+        <meta property="og:title" content={title} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="description" content={desc} />
+        <meta name="twitter:card" content={'summary_large_image'} />
+        <meta name="twitter:site" content={'@waivio'} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={desc} />
+        <meta name="twitter:image" content={image} />
+        <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
-        <meta
-          property="og:image"
-          content={
-            'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
-          }
-        />
-        <meta name="description" property="description" content={desc} />
-        <meta property="og:type" content="article" />
-        <meta
-          property="og:image"
-          content={
-            'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
-          }
-        />
-        <meta property="og:site_name" content="Waivio" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={image} />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={desc} />
