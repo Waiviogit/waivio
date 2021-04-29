@@ -6,6 +6,9 @@ import createNestedRouts from '../helper';
 import User from '../../../client/user/User';
 import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
 import Page from '../../../client/feed/Page';
+import Rewards from '../../../client/rewards/Rewards';
+import Discover from '../../../client/discover/Discover';
+import DiscoverObjects from '../../../client/discoverObjects/DiscoverObjects';
 
 const routes = {
   component: Wrapper,
@@ -20,7 +23,7 @@ const routes = {
       ],
       pathScope: '/rewards',
       exact: true,
-      component: Views.Rewards,
+      component: Rewards,
       routes: [
         {
           path: '/manage',
@@ -363,16 +366,12 @@ const routes = {
     {
       path: '/discover-objects/:typeName?',
       exact: true,
-      component: Views.DiscoverObjects,
+      component: DiscoverObjects,
     },
     {
       path: '/discover/:search?',
       exact: true,
-      component: Views.Discover,
-    },
-    {
-      path: '/objects',
-      component: Views.Objects,
+      component: Discover,
     },
     {
       path: '/bookmarks',

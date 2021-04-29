@@ -1045,10 +1045,7 @@ class Rewards extends React.Component {
       'https://images.hive.blog/p/7ohP4GDMGPrUMp8dW6yuJTR9MKNu8P8DCXDU9qmmkDVESrRynVRHNb6opaQtSHap1Kp23L83p583HN81Nb4uK53JScz5TNGRon3X?format=match&mode=fit';
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
     const urlCurr = `${waivioHost}/rewards/all`;
-    const title = `${intl.formatMessage({
-      id: 'rewards',
-      defaultMessage: 'Rewards',
-    })} - Waivio`;
+    const title = `Rewards - Waivio`;
 
     return (
       <div className="Rewards">
