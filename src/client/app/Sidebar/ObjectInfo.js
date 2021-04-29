@@ -84,7 +84,7 @@ class ObjectInfo extends React.Component {
           <span>
             <Icon type="phone" className="text-icon tel" />
             {Boolean(params.body) && body}
-            <a href={`tel:${params.number}`} className="phone-number">
+            <a href={`tel:${params.number}`} className={body ? 'phone-number' : ''}>
               {params.number}
             </a>
           </span>
