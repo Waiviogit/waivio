@@ -103,8 +103,7 @@ export const getCurrentLoadObjects = (response, value) => {
   return loadObjects;
 };
 
-const getDifferOfContents = (iteratedRowContent, rowContent) =>
-  iteratedRowContent.filter((object, index) => !isEqual(object, rowContent[index]));
+const getDifferOfContents = (iteratedRowContent, rowContent) =>iteratedRowContent.filter((object) => rowContent.every((item) => get(item, 'data.object.author_permlink', '') !== get(object, 'data.object.author_permlink', false)))
 
 export const getLastContentAction = (updatedRowContent, prevRowContent) => {
   if (prevRowContent.length > updatedRowContent.length) {
