@@ -1,5 +1,6 @@
 import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
@@ -35,6 +36,11 @@ const RewardsComponent = memo(
     url,
   }) => {
     const dispatch = useDispatch();
+    const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
+    const img = '';
+    const waivioHost = global.postOrigin || 'https://www.waivio.com';
+    const urlCurr = `${waivioHost}/rewards`;
+    const title = `Rewards - Waivio`;
 
     const getTypeRewards = () => {
       if (match.params.filterKey === 'active') return 'active';
@@ -67,6 +73,27 @@ const RewardsComponent = memo(
 
     return (
       <div className="Rewards">
+        <Helmet>
+          <title>{title}</title>
+          <meta property="og:title" content={title} />
+          <link rel="canonical" href={urlCurr} />
+          <meta property="description" content={desc} />
+          <meta name="twitter:card" content={'summary_large_image'} />
+          <meta name="twitter:site" content={'@waivio'} />
+          <meta name="twitter:title" content={title} />
+          <meta name="twitter:description" content={desc} />
+          <meta name="twitter:image" content={img} />
+          <meta property="og:title" content={title} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={urlCurr} />
+          <meta property="og:image" content={img} />
+          <meta property="og:image:width" content="600" />
+          <meta property="og:image:height" content="600" />
+          <meta property="og:description" content={desc} />
+          <meta property="og:site_name" content="Waivio" />
+          <link rel="image_src" href={img} />
+          <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
+        </Helmet>
         <FilteredRewardsList
           {...{
             intl,
