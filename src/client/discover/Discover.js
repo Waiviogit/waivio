@@ -15,6 +15,8 @@ import './Discover.less';
 
 const Discover = ({ intl, match, history }) => {
   const dispatch = useDispatch();
+  const desc = 'All objects are located here. Discover new objects!';
+
   const handleDeleteTag = () => {
     history.push(PATH_NAME_DISCOVER);
     dispatch(resetSearchUsersForDiscoverPage());
@@ -23,6 +25,13 @@ const Discover = ({ intl, match, history }) => {
   return (
     <div className="shifted">
       <Helmet>
+        <title>
+          {intl.formatMessage({
+            id: 'discover_more_people',
+            defaultMessage: 'discover_more_people',
+          })}{' '}
+          - Waivio
+        </title>
         <meta
           property="og:title"
           content={`${intl.formatMessage({
@@ -33,20 +42,24 @@ const Discover = ({ intl, match, history }) => {
         />
         <meta property="og:type" content="article" />
         <meta
-          name="og:image"
+          property="og:image"
+          content={
+            'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
+          }
+        />
+        <meta name="description" property="description" content={desc} />
+        <meta property="og:type" content="article" />
+        <meta
           property="og:image"
           content={
             'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
           }
         />
         <meta property="og:site_name" content="Waivio" />
-        <title>
-          {intl.formatMessage({
-            id: 'discover_more_people',
-            defaultMessage: 'discover_more_people',
-          })}{' '}
-          - Waivio
-        </title>
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:description" content={desc} />
+        <meta property="og:site_name" content="Waivio" />
       </Helmet>
       <div className="feed-layout container">
         <Affix className="leftContainer" stickPosition={77}>
