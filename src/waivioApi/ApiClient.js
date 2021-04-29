@@ -99,6 +99,7 @@ export const getObject = (authorPermlink, user, locale) => {
 
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
+      ...headers,
       app: config.appName,
       follower: user,
       locale,
