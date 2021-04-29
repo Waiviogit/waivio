@@ -114,14 +114,14 @@ const WebsiteBody = props => {
     if (!isEmpty(area.center)) {
       props.query.set('center', area.center);
       props.query.set('zoom', area.zoom);
+      props.setMapForSearch({
+        coordinates: reverse([...area.center]),
+        ...boundsParams,
+      });
     }
 
     props.history.push(`/?${props.query.toString()}`);
     localStorage.setItem('query', props.query.toString());
-    props.setMapForSearch({
-      coordinates: reverse([...area.center]),
-      ...boundsParams,
-    });
   };
 
   useEffect(() => {
