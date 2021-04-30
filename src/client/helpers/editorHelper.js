@@ -103,19 +103,42 @@ export const getCurrentLoadObjects = (response, value) => {
   return loadObjects;
 };
 
-const getDifferOfContents = (iteratedRowContent, rowContent) =>iteratedRowContent.filter((object) => rowContent.every((item) => get(item, 'data.object.author_permlink', '') !== get(object, 'data.object.author_permlink', false)))
+const getDifferOfContents = (iteratedRowContent, rowContent) => {
+  let rowContentForUpdate = [...rowContent];
+
+  return iteratedRowContent.filter((object) => {
+
+    return rowContentForUpdate.every((item) => {
+      const returnValue = get(item, 'data.object.author_permlink', '') !== get(object, 'data.object.author_permlink', false);
+
+      if (returnValue) {
+        rowContentForUpdate = rowContentForUpdate.filter(rowContentItem => !isEqual(rowContentItem, item));
+
+        return returnValue;
+      }
+
+      return returnValue;
+    })
+  })
+}
 
 export const getLastContentAction = (updatedRowContent, prevRowContent) => {
+  console.log('update and curr', updatedRowContent, prevRowContent);
   if (prevRowContent.length > updatedRowContent.length) {
     return {
       actionType: EDITOR_ACTION_REMOVE,
       actionValue: head(getDifferOfContents(prevRowContent, updatedRowContent)),
     };
+  } else if(prevRowContent.length < updatedRowContent.length) {
+    return {
+      actionType: EDITOR_ACTION_ADD,
+      actionValue: head(getDifferOfContents(updatedRowContent, prevRowContent)),
+    };
   }
 
   return {
-    actionType: EDITOR_ACTION_ADD,
-    actionValue: head(getDifferOfContents(updatedRowContent, prevRowContent)),
+    actionType: '',
+    actionValue: {},
   };
 };
 

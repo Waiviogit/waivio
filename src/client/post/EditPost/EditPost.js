@@ -152,7 +152,9 @@ const EditPost = props => {
 
   const handleChangeContent = useCallback(
     debounce(async (rawContent, title, updateLinkedObjects = false) => {
-      let newDraft = {};
+      let newDraft = {
+        currentRawContent: {},
+      };
       const updatedStore = { content: toMarkdown(rawContent), titleValue: title };
       const getRowContent = Object.values(get(rawContent, 'entityMap', {}));
       const getCurrentRawContent = Object.values(get(currentRawContent, 'entityMap', {}));
@@ -160,15 +162,18 @@ const EditPost = props => {
 
       if (isChangedObjects || updateLinkedObjects) {
         const { rawContentUpdated } = await props.getRestoreObjects(rawContent);
+
+        newDraft.currentRawContent = rawContentUpdated;
         const getRawContentUpdated = Object.values(get(rawContentUpdated, 'entityMap', {}));
 
         const { actionValue, actionType } = getLastContentAction(
           getRawContentUpdated,
           getCurrentRawContent,
         );
-
+        // console.log('last action', actionValue, actionType);
         if (actionType === EDITOR_ACTION_ADD || updateLinkedObjects) {
-          const parsedLinkedObjects = uniqBy(getLinkedObjects(rawContentUpdated), '_id');
+          // console.log('rawContentUpdated', rawContentUpdated);
+          const parsedLinkedObjects = uniqBy([ ...linkedObjects, ...getLinkedObjects(rawContentUpdated) ], '_id');
           let updatedObjPercentage = setObjPercents(parsedLinkedObjects, objPercentage);
 
           if (updateLinkedObjects) {
@@ -186,7 +191,7 @@ const EditPost = props => {
           const isHideObject = hideLinkedObjects.find(
             object => object.author_permlink === authorPermink,
           );
-
+          console.log('isHideObject', isHideObject, authorPermink, hideLinkedObjects, actionValue);
           if (isHideObject) {
             const filteredObjectCards = hideLinkedObjects.filter(
               object => object.author_permlink !== authorPermink,

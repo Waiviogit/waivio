@@ -161,10 +161,26 @@ const editor = (state = defaultState, action) => {
           titleValue: action.payload.draftContent.title,
         },
       };
-    case editorActions.SET_UPDATED_EDITOR_DATA:
-      return { ...state, editor: { ...state.editor, ...action.payload } };
+    case editorActions.SET_UPDATED_EDITOR_DATA: {
+      const updatedState = {...state, editor: {...state.editor, ...action.payload}};
+
+      return {
+        ...updatedState,
+        editor: {
+        ...updatedState.editor,
+          linkedObjects: uniqBy(get(updatedState, 'editor.linkedObjects', []), '_id')
+        }
+      }
+    }
     case editorActions.SET_UPDATED_EDITOR_EXTENDED_DATA:
-      return { ...state, editorExtended: { ...state.editorExtended, ...action.payload } };
+      return {
+        ...state,
+        editorExtended: { ...state.editorExtended, ...action.payload },
+        editor: {
+          ...state.editor,
+          linkedObjects: uniqBy(get(state, 'editor.linkedObjects', []), '_id'),
+        },
+      };
     default:
       return state;
   }
