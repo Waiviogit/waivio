@@ -9,11 +9,13 @@ import Page from '../../../client/feed/Page';
 import Rewards from '../../../client/rewards/Rewards';
 import Discover from '../../../client/discover/Discover';
 import DiscoverObjects from '../../../client/discoverObjects/DiscoverObjects';
+import RewardsComponent from '../../../client/rewards/RewardsComponent/RewardsComponent';
 
 const routes = {
   component: Wrapper,
   routes: [
     {
+      component: Rewards,
       path: [
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
         `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
@@ -23,7 +25,6 @@ const routes = {
       ],
       pathScope: '/rewards',
       exact: true,
-      component: Rewards,
       routes: [
         {
           path: '/manage',
@@ -98,7 +99,7 @@ const routes = {
         {
           path: '/:filterKey/:campaignParent?',
           exact: true,
-          component: Views.RewardsComponent,
+          component: RewardsComponent,
         },
       ],
     },

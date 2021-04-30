@@ -7,6 +7,7 @@ import User from '../../../client/user/User';
 import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
 import WebsiteBody from '../../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
 import Rewards from '../../../client/rewards/Rewards';
+import RewardsComponent from '../../../client/rewards/RewardsComponent/RewardsComponent';
 
 const routes = {
   component: WebsiteWrapper,
@@ -49,7 +50,7 @@ const routes = {
         {
           path: '/:filterKey/:campaignParent?',
           exact: true,
-          component: Views.RewardsComponent,
+          component: RewardsComponent,
         },
       ],
     },
