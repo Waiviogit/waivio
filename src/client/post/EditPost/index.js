@@ -22,7 +22,6 @@ import {
   createPost,
   setEditorState,
   reviewCheckInfo,
-  getRestoreObjects,
   handleObjectSelect,
   setUpdatedEditorData,
 } from '../../store/editorStore/editorActions';
@@ -58,8 +57,6 @@ const mapDispatchToProps = (dispatch, props) => {
     setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
     buildPost: () => dispatch(buildPost(draftId)),
     handleObjectSelect: object => dispatch(handleObjectSelect(object)),
-    getRestoreObjects: (rawContent, newObject) =>
-      dispatch(getRestoreObjects(rawContent, newObject, draftId)),
   };
 };
 

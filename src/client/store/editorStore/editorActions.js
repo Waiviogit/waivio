@@ -15,6 +15,7 @@ import {
   kebabCase,
   map,
   orderBy,
+  uniqBy,
   uniqWith,
 } from 'lodash';
 import { createAction } from 'redux-actions';
@@ -45,6 +46,7 @@ import {
   getCurrentLoadObjects,
   getNewLinkedObjectsCards,
   getReviewTitle,
+  getLinkedObjects as getLinkedObjectsHelper, getObjPercentsHideObject, getCurrentDraftContent, getFilteredLinkedObjects
 } from '../../helpers/editorHelper';
 import {
   getCurrentDraft,
@@ -61,6 +63,7 @@ import { getObjectName } from '../../helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../components/EditorExtended';
 import { handlePastedLink, QUERY_APP } from '../../components/EditorExtended/util/editorHelper';
+import { setObjPercents } from "../../helpers/wObjInfluenceHelper";
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -536,9 +539,9 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   return postData;
 };
 
-export const handleObjectSelect = object => (dispatch, getState) => {
+export const handleObjectSelect = object => async (dispatch, getState) => {
   const state = getState();
-  const { content, titleValue, topics } = getEditor(state);
+  const { content, titleValue, topics, linkedObjects, hideLinkedObjects, objPercentage, currentRawContent } = getEditor(state);
   const objName = getObjectName(object).toLowerCase();
   const objPermlink = object.author_permlink;
   const separator = content.slice(-1) === '\n' ? '' : '\n';
@@ -546,12 +549,36 @@ export const handleObjectSelect = object => (dispatch, getState) => {
     title: titleValue,
     body: `${content}${separator}[${objName}](${getObjectUrl(object.id || objPermlink)})&nbsp;\n`,
   };
+  const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
+
+  const { rawContentUpdated } = await dispatch(getRestoreObjects(fromMarkdown(draftContent)));
+  const parsedLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
+  const newLinkedObject = parsedLinkedObjects.find(item => item._id === object._id);
+  const updatedLinkedObjects = uniqBy([...linkedObjects, newLinkedObject], '_id');
+  let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
+  const isHideObject = hideLinkedObjects.find(
+    item => item.author_permlink === newLinkedObject.author_permlink,
+  );
+
+  if (isHideObject) {
+    const filteredObjectCards = hideLinkedObjects.filter(
+      item => item.author_permlink !== newLinkedObject.author_permlink,
+    );
+
+    updatedStore.hideLinkedObjects = filteredObjectCards;
+    sessionStorage.setItem('hideLinkedObjects', JSON.stringify(filteredObjectCards));
+    updatedObjPercentage = getObjPercentsHideObject(updatedLinkedObjects, isHideObject, updatedObjPercentage);
+  }
+  updatedStore.linkedObjects = getFilteredLinkedObjects(updatedLinkedObjects, updatedStore.hideLinkedObjects);
+  updatedStore.objPercentage = updatedObjPercentage;
+  const newData = {...updatedStore, ...getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent)};
 
   dispatch(
     setUpdatedEditorExtendedData({ editorState: createEditorState(fromMarkdown(draftContent)) }),
   );
   dispatch(
     setUpdatedEditorData({
+      ...newData,
       draftContent,
       topics: uniqWith(
         object.type === 'hashtag' || (object.object_type === 'hashtag' && [...topics, objPermlink]),

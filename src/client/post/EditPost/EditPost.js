@@ -5,13 +5,11 @@ import {
   debounce,
   get,
   has,
-  uniqBy,
   includes,
   find,
   uniqWith,
   isEqual,
   isEmpty,
-  reduce,
   isNull,
 } from 'lodash';
 import { getInitialState } from '../../helpers/postHelpers';
@@ -25,12 +23,7 @@ import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import {
-  EDITOR_ACTION_ADD,
-  filterEditorObjects,
-  getCurrentDraftContent,
   getCurrentDraftId,
-  getLastContentAction,
-  getLinkedObjects,
 } from '../../helpers/editorHelper';
 
 import './EditPost.less';
@@ -48,7 +41,6 @@ const propTypes = {
   buildPost: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   getReviewCheckInfo: PropTypes.func.isRequired,
-  getRestoreObjects: PropTypes.func.isRequired,
   setUpdatedEditorData: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   isWaivio: PropTypes.bool,
@@ -152,72 +144,16 @@ const EditPost = props => {
 
   const handleChangeContent = useCallback(
     debounce(async (rawContent, title, updateLinkedObjects = false) => {
-      let newDraft = {
-        currentRawContent: {},
-      };
       const updatedStore = { content: toMarkdown(rawContent), titleValue: title };
-      const getRowContent = Object.values(get(rawContent, 'entityMap', {}));
-      const getCurrentRawContent = Object.values(get(currentRawContent, 'entityMap', {}));
-      const isChangedObjects = !isEqual(filterEditorObjects(getRowContent), filterEditorObjects(getCurrentRawContent))
 
-      if (isChangedObjects || updateLinkedObjects) {
-        const { rawContentUpdated } = await props.getRestoreObjects(rawContent);
-
-        newDraft.currentRawContent = rawContentUpdated;
-        const getRawContentUpdated = Object.values(get(rawContentUpdated, 'entityMap', {}));
-
-        const { actionValue, actionType } = getLastContentAction(
-          getRawContentUpdated,
-          getCurrentRawContent,
-        );
-        // console.log('last action', actionValue, actionType);
-        if (actionType === EDITOR_ACTION_ADD || updateLinkedObjects) {
-          // console.log('rawContentUpdated', rawContentUpdated);
-          const parsedLinkedObjects = uniqBy([ ...linkedObjects, ...getLinkedObjects(rawContentUpdated) ], '_id');
-          let updatedObjPercentage = setObjPercents(parsedLinkedObjects, objPercentage);
-
-          if (updateLinkedObjects) {
-            updatedObjPercentage = reduce(
-              updatedObjPercentage,
-              (acc, value, key) => {
-                acc[key] = {percent: 100 / Object.keys(updatedObjPercentage).length};
-
-                return acc;
-              },
-              {},
-            );
-          }
-          const authorPermink = get(actionValue, 'data.object.author_permlink', '');
-          const isHideObject = hideLinkedObjects.find(
-            object => object.author_permlink === authorPermink,
-          );
-          console.log('isHideObject', isHideObject, authorPermink, hideLinkedObjects, actionValue);
-          if (isHideObject) {
-            const filteredObjectCards = hideLinkedObjects.filter(
-              object => object.author_permlink !== authorPermink,
-            );
-
-            sessionStorage.setItem('hideLinkedObjects', JSON.stringify(filteredObjectCards));
-            updatedStore.hideLinkedObjects = filteredObjectCards;
-            updatedObjPercentage = {
-              ...updatedObjPercentage,
-              [actionValue.data.object._id]: {percent: 100 / linkedObjects.length},
-            };
-          }
-          updatedStore.linkedObjects = parsedLinkedObjects;
-          updatedStore.objPercentage = updatedObjPercentage;
-          newDraft = getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent);
-        }
-      }
       if (
         content !== updatedStore.content ||
         titleValue !== updatedStore.titleValue ||
         updateLinkedObjects
       ) {
-        const newData = { ...updatedStore, ...newDraft };
 
-        props.saveDraft(newData);
-        props.setUpdatedEditorData(newData);
+        props.saveDraft(updatedStore);
+        props.setUpdatedEditorData(updatedStore);
       }
     }, 1500),
     [currentRawContent, props.draftId, linkedObjects, objPercentage, hideLinkedObjects],
@@ -257,10 +193,7 @@ const EditPost = props => {
     });
   };
 
-  const handleObjectSelect = object =>
-    props.handleObjectSelect(object).then(data => {
-      handleChangeContent(fromMarkdown(data), data.title);
-    });
+  const handleObjectSelect = object => props.handleObjectSelect(object);
 
   const handleCreateObject = object => props.handleObjectSelect(object);
 

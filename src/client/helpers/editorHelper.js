@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4';
-import { differenceWith, find, get, has, head, isEqual, keyBy, last, uniqWith } from 'lodash';
+import { differenceWith, find, get, has, head, isEqual, keyBy, last, uniqWith, reduce, size } from 'lodash';
 import { Entity } from '../components/EditorExtended';
 
 export const EDITOR_ACTION_ADD = 'add';
@@ -106,9 +106,7 @@ export const getCurrentLoadObjects = (response, value) => {
 const getDifferOfContents = (iteratedRowContent, rowContent) => {
   let rowContentForUpdate = [...rowContent];
 
-  return iteratedRowContent.filter((object) => {
-
-    return rowContentForUpdate.every((item) => {
+  return iteratedRowContent.filter((object) => rowContentForUpdate.every((item) => {
       const returnValue = get(item, 'data.object.author_permlink', '') !== get(object, 'data.object.author_permlink', false);
 
       if (returnValue) {
@@ -118,12 +116,10 @@ const getDifferOfContents = (iteratedRowContent, rowContent) => {
       }
 
       return returnValue;
-    })
-  })
+    }))
 }
 
 export const getLastContentAction = (updatedRowContent, prevRowContent) => {
-  console.log('update and curr', updatedRowContent, prevRowContent);
   if (prevRowContent.length > updatedRowContent.length) {
     return {
       actionType: EDITOR_ACTION_REMOVE,
@@ -144,3 +140,33 @@ export const getLastContentAction = (updatedRowContent, prevRowContent) => {
 
 export const filterEditorObjects = objects =>
   objects.filter(object => object.type === Entity.OBJECT);
+
+export const getObjPercentsHideObject = (linkedObjects, hideObject, objPercentage) => {
+  const actualObjPercentage = reduce(objPercentage, (result, value, key) => {
+    if(value.percent) {
+
+      result[key] = value;
+
+      return result;
+    }
+
+    return result;
+  }, {});
+
+  actualObjPercentage[hideObject._id] = { percent: 0 };
+
+  return reduce(actualObjPercentage, (result, value, key) => {
+
+    result[key] = {percent: 100 / size(actualObjPercentage)};
+
+    return result;
+  }, {});
+};
+
+export const getFilteredLinkedObjects = (linkedObjects, hiddenObjects) => {
+  if (!size(hiddenObjects) || !hiddenObjects) {
+    return linkedObjects;
+  }
+
+  return linkedObjects.filter(object => hiddenObjects.every(item => !isEqual(item, object)));
+};
