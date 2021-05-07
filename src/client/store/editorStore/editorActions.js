@@ -4,7 +4,7 @@ import { message } from 'antd';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { convertToRaw } from 'draft-js';
+import { convertToRaw, EditorState } from 'draft-js';
 import {
   forEach,
   get,
@@ -539,7 +539,7 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   return postData;
 };
 
-export const handleObjectSelect = object => async (dispatch, getState) => {
+export const handleObjectSelect = (object, isCursorToEnd) => async (dispatch, getState) => {
   const state = getState();
   const { content, titleValue, topics, linkedObjects, hideLinkedObjects, objPercentage, currentRawContent } = getEditor(state);
   const objName = getObjectName(object).toLowerCase();
@@ -554,7 +554,9 @@ export const handleObjectSelect = object => async (dispatch, getState) => {
   const { rawContentUpdated } = await dispatch(getRestoreObjects(fromMarkdown(draftContent)));
   const parsedLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
   const newLinkedObject = parsedLinkedObjects.find(item => item._id === object._id);
-  const updatedLinkedObjects = uniqBy([...linkedObjects, newLinkedObject], '_id');
+  const updatedLinkedObjects =
+    uniqBy([...uniqBy(linkedObjects, '_id'), newLinkedObject], '_id')
+    .filter(item => has(item, '_id'));
   let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
   const isHideObject = hideLinkedObjects.find(
     item => item.author_permlink === newLinkedObject.author_permlink,
@@ -572,10 +574,11 @@ export const handleObjectSelect = object => async (dispatch, getState) => {
   updatedStore.linkedObjects = getFilteredLinkedObjects(updatedLinkedObjects, updatedStore.hideLinkedObjects);
   updatedStore.objPercentage = updatedObjPercentage;
   const newData = {...updatedStore, ...getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent)};
+  const editorState = isCursorToEnd
+    ? EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent)))
+    : createEditorState(fromMarkdown(draftContent));
 
-  dispatch(
-    setUpdatedEditorExtendedData({ editorState: createEditorState(fromMarkdown(draftContent)) }),
-  );
+  dispatch(setUpdatedEditorExtendedData({ editorState }));
   dispatch(
     setUpdatedEditorData({
       ...newData,

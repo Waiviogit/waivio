@@ -48,6 +48,7 @@ const objectSearchInput = props => {
     if (selectedObject.type === 'hashtag' || selectedObject.object_type === 'hashtag')
       props.handleHashtag(objectName);
     props.setEditorState(EditorState.forceSelection(newEditorState, newSelection));
+    props.handleObjectSelect(selectedObject, true);
   };
 
   return (
@@ -62,6 +63,7 @@ const objectSearchInput = props => {
 };
 
 objectSearchInput.propTypes = {
+  handleObjectSelect: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   getEditorState: PropTypes.func.isRequired,
   handleHashtag: PropTypes.func.isRequired,

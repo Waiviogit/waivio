@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 
 import {
   getRestoreObjects,
+  handleObjectSelect,
   setUpdatedEditorData,
   setUpdatedEditorExtendedData,
 } from '../../../store/editorStore/editorActions';
@@ -16,6 +17,7 @@ const mapDispatchToProps = dispatch => ({
   getRestoreObjects: (rawContent, newObject, draftId) =>
     dispatch(getRestoreObjects(rawContent, newObject, draftId)),
   setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
+  handleObjectSelect: (object, isFocusEndCursor) => dispatch(handleObjectSelect(object, isFocusEndCursor)),
   setUpdatedEditorExtendedData: data => dispatch(setUpdatedEditorExtendedData(data)),
 });
 

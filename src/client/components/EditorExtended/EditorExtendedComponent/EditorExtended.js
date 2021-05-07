@@ -89,6 +89,7 @@ const Editor = props => {
             sideButtons={SIDE_BUTTONS}
             onChange={handleContentChange}
             handleHashtag={props.handleHashtag}
+            handleObjectSelect={props.handleObjectSelect}
             editorEnabled={editorEnabled && props.enabled}
             placeholder={props.intl.formatMessage({
               id: 'story_placeholder',
@@ -114,6 +115,7 @@ const propTypes = {
   getRestoreObjects: PropTypes.func,
   enabled: PropTypes.bool.isRequired,
   editorExtended: PropTypes.shape().isRequired,
+  handleObjectSelect: PropTypes.func.isRequired,
   setUpdatedEditorData: PropTypes.func.isRequired,
   setUpdatedEditorExtendedData: PropTypes.func.isRequired,
 };
