@@ -24,6 +24,7 @@ import {
   reviewCheckInfo,
   handleObjectSelect,
   setUpdatedEditorData,
+  firstParseLinkedObjects,
 } from '../../store/editorStore/editorActions';
 
 const mapStateToProps = (state, props) => {
@@ -50,6 +51,7 @@ const mapDispatchToProps = (dispatch, props) => {
 
   return {
     setEditorState: editorState => dispatch(setEditorState(editorState)),
+    firstParseLinkedObjects: draft => dispatch(firstParseLinkedObjects(draft)),
     createPost: (postData, beneficiaries, isReview, campaign, intl) =>
       dispatch(createPost(postData, beneficiaries, isReview, campaign, intl)),
     saveDraft: data => dispatch(saveDraft(draftId, props.intl, data)),

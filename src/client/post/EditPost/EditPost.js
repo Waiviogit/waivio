@@ -41,8 +41,9 @@ const propTypes = {
   buildPost: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   getReviewCheckInfo: PropTypes.func.isRequired,
-  setUpdatedEditorData: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
+  setUpdatedEditorData: PropTypes.func.isRequired,
+  firstParseLinkedObjects: PropTypes.func.isRequired,
   isWaivio: PropTypes.bool,
   isGuest: PropTypes.bool,
   beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
@@ -125,6 +126,7 @@ const EditPost = props => {
       get(props.currDraft, 'title', ''),
       true,
     );
+    props.firstParseLinkedObjects(props.currDraft);
   }, [props.draftId]);
 
   const setDraftId = () => {

@@ -694,3 +694,17 @@ export const getRestoreObjects = (rawContent, newObject, draftId) => async (disp
 
   return { rawContentUpdated, newLinkedObjectsCards };
 };
+
+export const firstParseLinkedObjects = (draft) => async (dispatch) => {
+  if (draft) {
+    const entities = fromMarkdown({ body: draft.body });
+    const { rawContentUpdated } = await dispatch(getRestoreObjects(entities));
+    const draftLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
+    const draftObjPercentage = setObjPercents(draftLinkedObjects);
+
+    dispatch(setUpdatedEditorData({
+      linkedObjects: draftLinkedObjects,
+      objPercentage: draftObjPercentage,
+    }));
+  }
+}
