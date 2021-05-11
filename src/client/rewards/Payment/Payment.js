@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty, includes, get, isNumber } from 'lodash';
+import { isEmpty, includes, get, isNumber, round } from 'lodash';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -108,11 +108,7 @@ const Payment = ({
                 id: 'pay',
                 defaultMessage: 'Pay',
               })}
-              {` ${
-                isPayables
-                  ? payable && payable.toFixed(3)
-                  : payableForRender && payableForRender.toFixed(3)
-              } HIVE`}
+              {` ${isPayables ? round(payable, 3) : round(payableForRender, 3)} HIVE`}
             </Action>
           ) : (
             ''

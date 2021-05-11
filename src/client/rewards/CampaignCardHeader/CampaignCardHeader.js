@@ -2,7 +2,7 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { get, includes } from 'lodash';
+import { get, includes, round } from 'lodash';
 import Avatar from '../../components/Avatar';
 import { GUIDE_HISTORY, MESSAGES, HISTORY, ASSIGNED } from '../../../common/constants/rewards';
 import { getCurrentUSDPrice } from '../rewardsHelper';
@@ -19,9 +19,9 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
       includes(match.url, GUIDE_HISTORY) ||
       includes(match.url, MESSAGES));
   const rewardPriceHive = `${
-    price ? price.toFixed(3) : (campainReward / currentUSDPrice).toFixed(3)
+    price ? round(price, 3) : round(campainReward / currentUSDPrice, 3)
   } HIVE`;
-  const rewardPriceUsd = `${campainReward.toFixed(2)} USD`;
+  const rewardPriceUsd = `${round(campainReward, 2)} USD`;
   const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
 
   return (
@@ -68,9 +68,7 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
               :
             </div>
             <div className="total-paid__currency">
-              {`${
-                campaignData.guide.totalPayed ? campaignData.guide.totalPayed.toFixed(3) : 0
-              } HIVE`}{' '}
+              {`${round(get(campaignData, 'guide.totalPayed'))} HIVE`}{' '}
               {`(${
                 campaignData.guide.liquidHivePercent ? campaignData.guide.liquidHivePercent : 'n/a'
               }%)`}

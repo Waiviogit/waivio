@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Modal } from 'antd';
+import { round } from 'lodash';
 import { closePowerUpOrDown } from '../store/walletStore/walletActions';
 import formatter from '../helpers/steemitFormatter';
 import { createQuery } from '../helpers/apiHelpers';
@@ -84,9 +85,10 @@ export default class PowerUpOrDown extends React.Component {
     const { form, user, down, totalVestingShares, totalVestingFundSteem } = this.props;
 
     form.validateFields({ force: true }, (errors, values) => {
-      const vests = (
-        values.amount / formatter.vestToSteem(1, totalVestingShares, totalVestingFundSteem)
-      ).toFixed(6);
+      const vests = round(
+        values.amount / formatter.vestToSteem(1, totalVestingShares, totalVestingFundSteem),
+        6,
+      );
 
       if (!errors) {
         const transferQuery = down
@@ -94,7 +96,7 @@ export default class PowerUpOrDown extends React.Component {
               vesting_shares: `${vests} VESTS`,
             }
           : {
-              amount: `${parseFloat(values.amount).toFixed(3)} HIVE`,
+              amount: `${round(parseFloat(values.amount), 3)} HIVE`,
               to: user.name,
             };
 

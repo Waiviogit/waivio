@@ -188,7 +188,7 @@ class Wallet extends Component {
       >
         {intl.formatMessage({
           id: 'table_view',
-          defaultMessage: 'Table view',
+          defaultMessage: 'Advanced reports',
         })}
       </span>
     );

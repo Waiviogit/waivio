@@ -1,11 +1,12 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get, includes, filter, some } from 'lodash';
+import { isEmpty, get, includes, filter, some, round } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
 import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
 
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
@@ -16,7 +17,6 @@ import {
   MESSAGES,
   FRAUD_DETECTION,
 } from '../../../common/constants/rewards';
-import { connect } from 'react-redux';
 import {
   rejectReservationCampaign,
   reserveActivatedCampaign,
@@ -150,7 +150,7 @@ const Proposition = props => {
     getCurrentHivePrice().then(res => {
       const currencyId = res.id;
       const currentHivePrice = res.hiveCurrency;
-      const amount = (props.proposition.reward / currentHivePrice).toFixed(3);
+      const amount = round(props.proposition.reward / currentHivePrice, 3);
       const guideName = get(props.proposition, ['guide', 'name']);
       reserveActivatedCampaign(reserveData)
         .then(() => {

@@ -1040,7 +1040,8 @@ class Rewards extends React.Component {
     const campaignsObjectsForMap =
       campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
-    const isWidget = sessionStorage.getItem('isWidget');
+    const isWidget =
+      typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('isWidget') : false;
     const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
     const img = DEFAULTS.FAVICON;
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
