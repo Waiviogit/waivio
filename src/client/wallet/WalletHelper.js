@@ -469,7 +469,7 @@ export const getSavingsTransactionMessage = (transactionType, transactionDetails
       return (
         <FormattedMessage
           id="transfer_to_savings"
-          defaultMessage="Transfer to savings {amount} to {username}"
+          defaultMessage="Transfer to savings {amount} from {username}"
           values={{
             amount,
             username: (

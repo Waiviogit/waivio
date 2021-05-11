@@ -126,7 +126,7 @@ const CatalogWrap = props => {
           isCatalogWrap
           currentHash={hash}
           isLoadingFlag={isLoadingFlag}
-          location={location}
+          location={props.location}
           listItems={listItems}
           isSortCustomExist={isSortCustomExist}
           wObj={obj}

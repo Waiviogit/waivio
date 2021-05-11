@@ -18,7 +18,7 @@ const rewardText = {
   messages: { id: 'messages', defaultMessage: 'Messages' },
 };
 
-const RewardBreadcrumb = ({ intl, filterKey, reqObject, match }) => {
+const RewardBreadcrumb = ({ intl, filterKey, reqObject, match, location }) => {
   const isCorrectFilter = !!rewardText[filterKey];
   const objName = getObjectName(reqObject);
   const isWidget = new URLSearchParams(location.search).get('display');
@@ -67,12 +67,14 @@ RewardBreadcrumb.propTypes = {
   reqObject: PropTypes.shape(),
   filterKey: PropTypes.string,
   match: PropTypes.shape(),
+  location: PropTypes.shape(),
 };
 
 RewardBreadcrumb.defaultProps = {
   filterKey: '',
   reqObject: {},
   match: {},
+  location: {},
 };
 
 export default withRouter(injectIntl(RewardBreadcrumb));
