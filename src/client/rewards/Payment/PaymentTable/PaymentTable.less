@@ -58,6 +58,11 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
+    overflow-wrap: break-word;
+
+    @media @small {
+      word-break: break-all;
+    }
   }
 
   &__action-items {
