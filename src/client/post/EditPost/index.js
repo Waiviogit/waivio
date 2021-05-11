@@ -33,6 +33,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     draftId,
+    campaignId: new URLSearchParams(props.location.search).get('campaign'),
     locale: getSuitableLanguage(state),
     draftPosts: getDraftPosts(state),
     publishing: getIsEditorLoading(state),
@@ -56,7 +57,7 @@ const mapDispatchToProps = (dispatch, props) => {
     createPost: (postData, beneficiaries, isReview, campaign, intl) =>
       dispatch(createPost(postData, beneficiaries, isReview, campaign, intl)),
     saveDraft: data => dispatch(saveDraft(draftId, props.intl, data)),
-    getReviewCheckInfo: (data, needReviewTitle) => dispatch(reviewCheckInfo(data, needReviewTitle)),
+    getReviewCheckInfo: (data, needReviewTitle, intl) => dispatch(reviewCheckInfo(data, needReviewTitle, intl)),
     setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
     buildPost: () => dispatch(buildPost(draftId)),
     handleObjectSelect: object => dispatch(handleObjectSelect(object)),

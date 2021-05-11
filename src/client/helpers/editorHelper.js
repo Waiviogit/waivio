@@ -42,7 +42,7 @@ export const getLinkedObjects = contentStateRaw => {
   );
 };
 
-export const getReviewTitle = (campaignData, linkedObjects) => {
+export const getReviewTitle = (campaignData, linkedObjects, body) => {
   const firstTitle = get(campaignData, 'requiredObject.name', '');
   const secondTitle = get(campaignData, 'secondaryObject.name', '');
   const requiredObj = get(linkedObjects, '[0]', {});
@@ -57,8 +57,8 @@ export const getReviewTitle = (campaignData, linkedObjects) => {
 
   return {
     draftContent: {
+      body,
       title: reviewTitle,
-      body: this.state.draftContent.body,
     },
     topics,
   };

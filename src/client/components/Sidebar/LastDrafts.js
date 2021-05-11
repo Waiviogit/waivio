@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { draftType, draftArrayType } from '../../types/drafts';
 import Loading from '../../components/Icon/Loading';
 import './LastDrafts.less';
@@ -11,7 +11,7 @@ const Draft = ({ draft }) => (
   <div className="LastDrafts__draft">
     <Link
       className="LastDrafts__draft__title"
-      to={{ pathname: '/editor', search: `?draft=${draft.draftId}` }}
+      to={{ pathname: '/editor', search: `?draft=${draft.draftId}`}}
     >
       {draft.title ? (
         draft.title
@@ -27,6 +27,10 @@ const Draft = ({ draft }) => (
 
 Draft.propTypes = {
   draft: draftType.isRequired,
+};
+
+Draft.defaultProps = {
+  saving: false,
 };
 
 const LastDrafts = ({ drafts, loaded }) => {
@@ -47,7 +51,7 @@ const LastDrafts = ({ drafts, loaded }) => {
           <FormattedMessage id="drafts_empty" defaultMessage="You don't have any draft saved" />
         )}
         {drafts.map(d => (
-          <Draft key={d.draftId} draft={d} />
+          <Draft key={d.draftId} draft={d}  />
         ))}
         {!empty && (
           <h4 className="LastDrafts__more">
@@ -71,4 +75,4 @@ LastDrafts.defaultProps = {
   loaded: false,
 };
 
-export default LastDrafts;
+export default withRouter(LastDrafts);

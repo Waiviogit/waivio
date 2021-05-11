@@ -4,7 +4,6 @@ import { Badge } from 'antd';
 import {
   debounce,
   get,
-  has,
   includes,
   find,
   uniqWith,
@@ -16,7 +15,7 @@ import { getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
-import { fromMarkdown, toMarkdown } from '../../components/EditorExtended';
+import { toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
@@ -33,13 +32,13 @@ const propTypes = {
   locale: PropTypes.string.isRequired,
   draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   draftId: PropTypes.string,
+  campaignId: PropTypes.string,
   publishing: PropTypes.bool,
   saving: PropTypes.bool,
   imageLoading: PropTypes.bool,
   createPost: PropTypes.func,
   saveDraft: PropTypes.func,
   buildPost: PropTypes.func.isRequired,
-  setClearState: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   getReviewCheckInfo: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
@@ -57,6 +56,7 @@ const propTypes = {
 
 const defaultProps = {
   draftId: '',
+  campaignId: '',
   publishing: false,
   saving: false,
   isWaivio: true,
@@ -87,12 +87,13 @@ const EditPost = props => {
   } = props;
 
   React.useEffect(() => {
+    console.log('componentDidMount');
     props.history.replace({
       pathname: props.location.pathname,
       search: `draft=${getCurrentDraftId(props.draftId, draftIdEditor)}`,
     });
     props.setEditorState(getInitialState(props));
-    const campaignId = get(campaign, 'id') || get(props.currDraft, ['jsonMetadata', 'campaignId']);
+    const campaignId = props.campaignId || get(props.currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
     const hideLinkedObjectsSession = JSON.parse(sessionStorage.getItem('hideLinkedObjects')) || [];
 
@@ -101,55 +102,38 @@ const EditPost = props => {
     if (isReview) {
       props.getReviewCheckInfo(
         { campaignId, isPublicReview: get(props.currDraft, 'permlink') },
-        true,
         intl,
+        true,
       );
     }
 
     return () => {
-      props.setClearState();
       sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
     };
   }, []);
 
   React.useEffect(() => {
-    if (has(props.currDraft, ['jsonMetadata', 'campaignId'])) {
-      const postPermlink = get(props.currDraft, 'permlink');
-      const campaignId = get(props.currDraft, ['jsonMetadata', 'campaignId']);
-
-      props.getReviewCheckInfo({ campaignId, isPublicReview: postPermlink, intl });
-      props.getReviewCheckInfo({ campaignId, postPermlink, intl });
-    }
     sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
     setDraftId();
-    handleChangeContent(
-      fromMarkdown({
-        title: get(props.currDraft, 'title', ''),
-        body: get(props.currDraft, 'body', ''),
-      }),
-      get(props.currDraft, 'title', ''),
-      true,
-    );
+    const editorData = {
+      title: get(props.currDraft, 'title', ''),
+      body: get(props.currDraft, 'body', ''),
+    };
+
+    if (editorData.title || editorData.body) props.saveDraft(editorData);
     props.firstParseLinkedObjects(props.currDraft);
-  }, [props.draftId]);
+  }, [props.draftId, props.campaignId]);
 
   const setDraftId = () => {
     if (props.draftId && props.draftId !== draftIdEditor) {
       props.setEditorState(getInitialState(props));
     } else if (isNull(props.draftId) && draftIdEditor) {
-      const nextState = getInitialState(props);
-
-      props.setEditorState(nextState);
-
-      props.history.replace({
-        pathname: props.location.pathname,
-        search: `draft=${nextState.draftId}`,
-      });
+      props.setEditorState(getInitialState(props));
     }
   };
 
   const handleChangeContent = useCallback(
-    debounce(async (rawContent, title, updateLinkedObjects = false) => {
+    debounce((rawContent, title, updateLinkedObjects = false) => {
       const updatedStore = { content: toMarkdown(rawContent), titleValue: title };
 
       if (
@@ -157,12 +141,11 @@ const EditPost = props => {
         titleValue !== updatedStore.titleValue ||
         updateLinkedObjects
       ) {
-
         props.saveDraft(updatedStore);
         props.setUpdatedEditorData(updatedStore);
       }
     }, 1500),
-    [currentRawContent, props.draftId, linkedObjects, objPercentage, hideLinkedObjects],
+    [draftIdEditor],
   );
 
   const handleSettingsChange = updatedValue =>

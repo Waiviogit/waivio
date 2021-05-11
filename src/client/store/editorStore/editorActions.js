@@ -50,7 +50,7 @@ import {
 } from '../../helpers/editorHelper';
 import {
   getCurrentDraft,
-  getEditor,
+  getEditor, getEditorDraftBody,
   getEditorDraftId,
   getEditorExtended,
   getEditorLinkedObjects,
@@ -58,7 +58,7 @@ import {
   getIsEditorSaving,
   getLinkedObjects,
 } from './editorSelectors';
-import { getSuitableLanguage } from '../reducers';
+import { getQueryString, getSuitableLanguage } from '../reducers';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../components/EditorExtended';
@@ -107,7 +107,6 @@ export const setClearState = () => ({ type: SET_CLEAR_STATE });
 export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
   const state = getState();
   const saving = getIsEditorSaving(state);
-  const editorDraftId = getEditorDraftId(state);
 
   if (saving) return;
   const draft = dispatch(buildPost(draftId, data));
@@ -115,7 +114,6 @@ export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
   const postBody = draft.originalBody || draft.body;
 
   if (!postBody) return;
-  const redirect = draftId !== editorDraftId;
 
   dispatch({
     type: SAVE_DRAFT,
@@ -136,8 +134,6 @@ export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
       }),
     },
     meta: { postId: draft.draftId },
-  }).then(() => {
-    if (redirect) dispatch(push(`/editor?draft=${draft.draftId}`));
   });
 };
 export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getState) => {
@@ -438,25 +434,33 @@ export const setUpdatedEditorExtendedData = payload => ({
 
 export const reviewCheckInfo = (
   { campaignId, isPublicReview, postPermlinkParam },
-  needReviewTitle = false,
   intl,
+  needReviewTitle = false,
 ) => {
   return (dispatch, getState) => {
     const state = getState();
     const userName = getAuthenticatedUserName(state);
     const locale = getSuitableLanguage(state);
     const linkedObjects = getLinkedObjects(state);
+    const draftBody = getEditorDraftBody(state);
     const postPermlink = postPermlinkParam || isPublicReview;
 
     return getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
       .then(campaignData => {
-        const reviewedTitle = needReviewTitle ? getReviewTitle(campaignData, linkedObjects) : {};
+        const draftId = new URLSearchParams(getQueryString(state)).get('draft');
+        const reviewedTitle = needReviewTitle ? getReviewTitle(campaignData, linkedObjects, draftBody) : {};
         const updatedEditorData = {
           ...reviewedTitle,
           campaign: campaignData,
         };
 
         dispatch(setUpdatedEditorData(updatedEditorData));
+        dispatch(setUpdatedEditorExtendedData({
+          titleValue: updatedEditorData.draftContent.title,
+          editorState: createEditorState(fromMarkdown(updatedEditorData.draftContent)),
+        }))
+        dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
+        dispatch(saveDraft(draftId, intl, { content: updatedEditorData.draftContent.body, titleValue: updatedEditorData.draftContent.title }))
       })
       .catch(error => {
         message.error(
