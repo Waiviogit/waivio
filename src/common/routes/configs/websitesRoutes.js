@@ -5,6 +5,9 @@ import createNestedRouts from '../helper';
 import WebsiteWrapper from '../../../client/WebsiteWrapper';
 import User from '../../../client/user/User';
 import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
+import WebsiteBody from '../../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
+import Rewards from '../../../client/rewards/Rewards';
+import RewardsComponent from '../../../client/rewards/RewardsComponent/RewardsComponent';
 
 const routes = {
   component: WebsiteWrapper,
@@ -12,7 +15,7 @@ const routes = {
     {
       path: '/',
       exact: true,
-      component: Views.WebsiteBody,
+      component: WebsiteBody,
     },
     {
       path: '/confirmation',
@@ -27,7 +30,7 @@ const routes = {
       ],
       pathScope: '/rewards',
       exact: true,
-      component: Views.Rewards,
+      component: Rewards,
       routes: [
         {
           path: '/receivables',
@@ -47,7 +50,7 @@ const routes = {
         {
           path: '/:filterKey/:campaignParent?',
           exact: true,
-          component: Views.RewardsComponent,
+          component: RewardsComponent,
         },
       ],
     },
@@ -183,7 +186,7 @@ const routes = {
       ],
     },
     {
-      path: '/:category?/@:author/:permlink/:original?',
+      path: ['/:category?/@:author/:permlink/:original?', '/object/:name/blog/@:author/:permlink'],
       component: Post,
     },
     {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, round, get } from 'lodash';
 import { Modal, Tag } from 'antd';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { sortDebtObjsData, getCurrentUSDPrice, payablesFilterData } from '../rewardsHelper';
@@ -70,10 +70,10 @@ const Debts = ({
               id: 'debts_total',
               defaultMessage: 'Total',
             })}
-            : {debtObjsData && debtObjsData.payable && debtObjsData.payable.toFixed(2)}
+            : {round(get(debtObjsData, 'payable'), 2)}
             {' HIVE '}
             {currentUSDPrice && debtObjsData.payable
-              ? `($${(currentUSDPrice * debtObjsData.payable).toFixed(2)})`
+              ? `($${round(currentUSDPrice * debtObjsData.payable, 2)})`
               : ''}
           </div>
         </div>

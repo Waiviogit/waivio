@@ -45,7 +45,7 @@ const CatalogWrap = props => {
     isLoadingFlag,
   } = props;
   const [sortBy, setSortingBy] = useState();
-  const [recencySortList, setRecencySortList] = useState();
+  const [recencySortList, setRecencySortList] = useState([]);
 
   useEffect(() => {
     const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'rank' : 'custom');
@@ -92,9 +92,7 @@ const CatalogWrap = props => {
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
-    const currentRecencySortList = isEmpty(recencySortList)
-      ? [listItem.author_permlink]
-      : [listItem.author_permlink, ...recencySortList];
+    const currentRecencySortList = [listItem.author_permlink, ...recencySortList];
 
     setLists(sortListItemsBy(currentList, 'recency', currentRecencySortList));
     setRecencySortList(currentRecencySortList);
@@ -128,7 +126,7 @@ const CatalogWrap = props => {
           isCatalogWrap
           currentHash={hash}
           isLoadingFlag={isLoadingFlag}
-          location={location}
+          location={props.location}
           listItems={listItems}
           isSortCustomExist={isSortCustomExist}
           wObj={obj}

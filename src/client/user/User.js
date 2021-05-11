@@ -172,7 +172,7 @@ export default class User extends React.Component {
         <Helmet>
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
-          <meta name="description" property="description" content={desc} />
+          <meta property="description" content={desc} />
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta name="twitter:site" content={'@waivio'} />
           <meta name="twitter:title" content={title} />
@@ -184,7 +184,6 @@ export default class User extends React.Component {
               'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
             }
           />
-
           <meta property="og:title" content={title} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />

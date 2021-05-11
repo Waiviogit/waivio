@@ -46,7 +46,10 @@ class WobjFollowers extends React.Component {
 
     WobjFollowers.skip += WobjFollowers.limit;
 
-    return { users: response.wobjectFollowers, hasMore: response.length === WobjFollowers.limit };
+    return {
+      users: response.wobjectFollowers,
+      hasMore: response.wobjectFollowers.length === WobjFollowers.limit,
+    };
   }
 
   render() {

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, isNaN, includes, isString } from 'lodash';
+import { get, isNull, isEmpty, isNaN, includes, isString, round } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
@@ -296,7 +296,7 @@ export default class Transfer extends React.Component {
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
-          amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
+          amount: `${round(parseFloat(values.amount), 3)} ${values.currency}`,
           memo: {},
         };
 

@@ -71,17 +71,23 @@ const SearchAllResult = props => {
     return <ObjectCardView wObject={obj} hovered />;
   };
 
+  const handleItemClick = () => {
+    localStorage.setItem('scrollTop', resultList.current.scrollTop);
+    props.setQueryInLocalStorage();
+  };
+
   const currentListState = useCallback(() => {
     switch (props.searchType) {
       case 'Users':
         return {
           list: map(props.searchByUser, user => (
-            <UserCard
-              key={user.account}
-              user={{ ...user, name: user.account }}
-              unfollow={props.unfollowSearchUser}
-              follow={props.followSearchUser}
-            />
+            <div key={user.account} role="presentation" onClick={handleItemClick}>
+              <UserCard
+                user={{ ...user, name: user.account }}
+                unfollow={props.unfollowSearchUser}
+                follow={props.followSearchUser}
+              />
+            </div>
           )),
           hasMore: props.hasMoreUsers,
           loading: props.usersLoading,
@@ -95,10 +101,7 @@ const SearchAllResult = props => {
               key={obj.author_permlink}
               onMouseOver={() => props.handleHoveredCard(obj.author_permlink)}
               onMouseOut={() => props.handleHoveredCard('')}
-              onClick={() => {
-                localStorage.setItem('scrollTop', resultList.current.scrollTop);
-                props.setQueryInLocalStorage();
-              }}
+              onClick={handleItemClick}
             >
               {switcherObjectCard(obj)}
             </div>
