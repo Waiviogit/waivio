@@ -364,7 +364,10 @@ class ReportsForm extends Component {
                   initialValue: false,
                   valuePropName: 'checked',
                 })(
-                  <Checkbox onChange={this.handleCheckboxChange}>
+                  <Checkbox
+                    onChange={this.handleCheckboxChange}
+                    className="CreateReportForm__checkbox"
+                  >
                     {intl.formatMessage({
                       id: 'include_processing_fees',
                       defaultMessage: 'Include processing fees',
