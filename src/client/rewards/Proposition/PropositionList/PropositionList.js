@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { get, map, isEmpty, isEqual, some, filter, size } from 'lodash';
+import { get, map, isEmpty, isEqual, some, filter, size, round } from 'lodash';
 import Proposition from '../Proposition';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import Loading from '../../../components/Icon/Loading';
@@ -128,7 +128,7 @@ const PropositionList = ({
 
     if (isEmpty(currPropos)) return null;
     const maxReward = get(currentProposition, ['max_reward'], 0);
-    const rewardPrise = `${get(currentProposition, ['reward'], 0).toFixed(2)} USD`;
+    const rewardPrise = `${round(get(currentProposition, ['reward'], 0), 3)} USD`;
     const proposSize = size(allCurrentPropositions);
 
     return (

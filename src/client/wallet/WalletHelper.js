@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
-import { get, size, truncate, floor, ceil } from 'lodash';
+import { get, size, truncate, floor, ceil, round } from 'lodash';
 import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../helpers/formatter';
 import formatter from '../helpers/steemitFormatter';
@@ -316,7 +316,7 @@ export const getTransactionCurrency = (amount, currency, type, tableView) => {
 
   if (tableView) {
     return {
-      amount: transactionAmount.toFixed(3),
+      amount: round(transactionAmount, 3),
       currency: transactionCurrency,
     };
   }

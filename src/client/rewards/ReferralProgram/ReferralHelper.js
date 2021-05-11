@@ -1,9 +1,9 @@
-import { size, get, reduce, map } from 'lodash';
+import { size, get, reduce, map, round } from 'lodash';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 export const getCurrentOfferPercent = value => `${100 - value}%`;
-export const handleOffersReward = value => `$${value.toFixed(2)}`;
+export const handleOffersReward = value => `$${round(value, 2)}`;
 export const handleOffersPercent = value => `${value}%`;
 export const handleFeesValue = value => `$${value}`;
 export const getCurrentFeesValue = value => value * (value / 100);

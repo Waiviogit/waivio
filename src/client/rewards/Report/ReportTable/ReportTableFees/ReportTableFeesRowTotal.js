@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { round } from 'lodash';
 import './ReportTableFees.less';
 
 const ReportTableFeesRowTotal = ({ intl, shareAmount, hiveAmount, usdAmount }) => {
-  const share = shareAmount !== 0 ? `${(shareAmount / 100).toFixed(2)} %` : '';
-  const usd = usdAmount !== 0 ? `$ ${usdAmount.toFixed(2)}` : '';
-  const hive = hiveAmount !== 0 ? `${hiveAmount.toFixed(3)}` : '';
+  const share = shareAmount !== 0 ? `${round(shareAmount / 100, 2)} %` : '';
+  const usd = usdAmount !== 0 ? `$ ${round(usdAmount, 2)}` : '';
+  const hive = hiveAmount !== 0 ? `${round(hiveAmount, 3)}` : '';
 
   return (
     <tr>
