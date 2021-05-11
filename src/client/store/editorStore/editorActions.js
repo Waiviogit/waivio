@@ -97,9 +97,12 @@ export const UPLOAD_IMG_START = '@editor/UPLOAD_IMG_START';
 export const UPLOAD_IMG_FINISH = '@editor/UPLOAD_IMG_FINISH';
 export const SET_EDITOR_STATE = '@editor/SET_EDITOR_STATE';
 
+export const SET_CLEAR_STATE = '@editor/SET_CLEAR_STATE';
+
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
 export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
+export const setClearState = () => ({ type: SET_CLEAR_STATE });
 
 export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
   const state = getState();

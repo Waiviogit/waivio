@@ -181,6 +181,8 @@ const editor = (state = defaultState, action) => {
           linkedObjects: uniqBy(get(state, 'editor.linkedObjects', []), '_id'),
         },
       };
+    case editorActions.SET_CLEAR_STATE:
+      return defaultState;
     default:
       return state;
   }

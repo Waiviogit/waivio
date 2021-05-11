@@ -39,6 +39,7 @@ const propTypes = {
   createPost: PropTypes.func,
   saveDraft: PropTypes.func,
   buildPost: PropTypes.func.isRequired,
+  setClearState: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   getReviewCheckInfo: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
@@ -105,7 +106,10 @@ const EditPost = props => {
       );
     }
 
-    return () => sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
+    return () => {
+      props.setClearState();
+      sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
+    };
   }, []);
 
   React.useEffect(() => {
