@@ -1408,7 +1408,7 @@
   "table_from_validation": "Le champ \"Tiré de\" est obligatoire",
   "table_till_validation": "Le champ \"Jusqu'à\" est obligatoire",
   "table_after_till_validation": "La date choisie doit être antérieure ou égale à la date du jour",
-  "table_view": "Vue de table",
+  "table_view": "Rapports avancés",
   "empty_table": "Veuillez sélectionner la date de début et de fin",
   "table_back": "Retour",
   "mobnav_rewards-list": "Récompenses",

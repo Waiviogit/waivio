@@ -1408,7 +1408,7 @@
   "table_from_validation": "Feld \"von\" ist erforderlich",
   "table_till_validation": "Feld \"bis\" ist erforderlich",
   "table_after_till_validation": "Das ausgewählte Datum muss vor oder gleich dem aktuellen Datum liegen",
-  "table_view": "Tabellenansicht",
+  "table_view": "Erweiterte Berichte",
   "empty_table": "Bitte, wählen Sie Start- und Enddatum",
   "table_back": "Zurück",
   "mobnav_rewards-list": "Belohnungen",
