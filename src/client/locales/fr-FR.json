@@ -370,7 +370,7 @@
   "follow_users": "Suivre les utilisateurs de {amount}",
   "like_good_posts": "Comme certains bons postes",
   "write_first_post": "Rédigez votre premier poste",
-  "complete_profile_tooltip": "Doit remplir les champs \"nom\", \"à propos\" et \"photo de profil ",
+  "complete_profile_tooltip": "Doit remplir les champs nom, à propos et photo de profil ",
   "upvote_setting_details": "Activez cette option pour aimer automatiquement vos propres messages.",
   "upvote_setting": "Comme mes postes",
   "dmca_content_removed": "Contenu supprimé en raison d'un avis DMCA",
@@ -1281,7 +1281,7 @@
   "review": "Revue",
   "review_rejected": "Révision rejetée",
   "review_author_rewards": "Récompenses pour les auteurs : {title}",
-  "comments_author_rewards": "\"L'auteur est récompensé pour ses commentaires : {title}",
+  "comments_author_rewards": "L'auteur est récompensé pour ses commentaires : {title}",
   "withdrawal_confirmations": "Confirmations de retrait",
   "email_link_details": "Toute demande de retrait doit être confirmée par courrier électronique.",
   "guests_account_settings": "Paramètres des comptes des invités",
@@ -1393,7 +1393,7 @@
   "added_field_to_wobject_status": "Vous avez ajouté avec succès le champ de statut à l'objet {wobject}.",
   "added_field_to_wobject_tagCategory": "Vous avez ajouté avec succès le champ de balise à l'objet {wobject}.",
   "added_field_to_wobject_title": "Vous avez ajouté avec succès le champ du titre à l'objet {wobject}.",
-  "added_field_to_wobject_website": "Vous avez ajouté avec succès le champ \"site web\" à l'objet {wobject}.",
+  "added_field_to_wobject_website": "Vous avez ajouté avec succès le champ site web à l'objet {wobject}.",
   "added_field_to_wobject_workTime": "Vous avez ajouté avec succès le champ des heures de travail à l'objet {wobject}.",
   "restaurant": "restaurant",
   "table_date_from": "Tiré de:",
@@ -1408,7 +1408,7 @@
   "table_from_validation": "Le champ \"Tiré de\" est obligatoire",
   "table_till_validation": "Le champ \"Jusqu'à\" est obligatoire",
   "table_after_till_validation": "La date choisie doit être antérieure ou égale à la date du jour",
-  "table_view": "Vue de table",
+  "table_view": "Rapports avancés",
   "empty_table": "Veuillez sélectionner la date de début et de fin",
   "table_back": "Retour",
   "mobnav_rewards-list": "Récompenses",
@@ -1678,3 +1678,4 @@
   "cookies_experience": "Nous utilisons des cookies pour améliorer l'expérience utilisateur. En utilisant ce site, vous consentez à l'utilisation de cookies. En savoir plus sur le site Web",
   "list_types": "Types de listes"
 }
+

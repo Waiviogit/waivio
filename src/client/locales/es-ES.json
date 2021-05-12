@@ -1408,7 +1408,7 @@
   "table_from_validation": "El campo \"desde\" es obligatorio",
   "table_till_validation": "El campo \"hasta\" es obligatorio",
   "table_after_till_validation": "La fecha seleccionada debe ser anterior o igual a la fecha actual",
-  "table_view": "Vista de tabla",
+  "table_view": "Informes avanzados",
   "empty_table": "Por favor, seleccione la fecha de inicio y finalización",
   "table_back": "Volver",
   "mobnav_rewards-list": "Recompensas",

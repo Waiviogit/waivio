@@ -1408,7 +1408,7 @@
   "table_from_validation": "フィールド \"から\" は必須です。",
   "table_till_validation": "フィールド \"まで\" は必須です。",
   "table_after_till_validation": "選択した日付は、現在の日付以前である必要があります",
-  "table_view": "テーブルビュー",
+  "table_view": "高度なレポート",
   "empty_table": "開始日と終了日を選択してください",
   "table_back": "バック",
   "mobnav_rewards-list": "報酬",
