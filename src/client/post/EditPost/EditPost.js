@@ -157,7 +157,7 @@ const EditPost = props => {
         props.setUpdatedEditorData(updatedStore);
       }
     }, 1500),
-    [props.draftId, draftIdEditor],
+    [props.draftId],
   );
 
   const handleSettingsChange = updatedValue =>
