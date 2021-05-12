@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { round } from 'lodash';
 import { roundNumberToThousands } from '../../vendor/steemitHelpers';
 
 const WeightDisplay = ({ value }) => {
-  const shortValue = round(value, 2);
+  const shortValue = value.toFixed(2);
   const formattedValue = roundNumberToThousands(shortValue);
 
   return <span>{formattedValue}</span>;

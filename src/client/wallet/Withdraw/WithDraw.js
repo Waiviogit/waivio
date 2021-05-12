@@ -18,7 +18,7 @@ import {
 import { HIVE } from '../../../common/constants/cryptos';
 import { getUserPrivateEmail } from '../../store/usersStore/usersActions';
 import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getStatusWithdraw } from '../../store/walletStore/walletSelectors';
 
 import './Withdraw.less';
@@ -27,7 +27,6 @@ const Withdraw = ({
   intl,
   visible,
   user,
-  isGuest,
   closeWithdrawModal,
   cryptosPriceHistory,
   getPrivateEmail,
@@ -47,7 +46,7 @@ const Withdraw = ({
   // const currencyAmount = get(currencyInput, ['current', 'value'], 0);
   const draftTransfer = store.get('withdrawData');
   const hivePrice = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 0);
-  const currentBalance = isGuest ? `${user.balance} HIVE` : user.balance;
+  const currentBalance = `${user.balance} HIVE`;
   const isUserCanMakeTransfer =
     Number(currentBalance && currentBalance.replace(' HIVE', '')) >= Number(hiveCount);
   // const setHiveAmount = value => {
@@ -220,6 +219,14 @@ const Withdraw = ({
               HIVE
             </span>
           </div>
+          {user.balance < hiveAmount && (
+            <p className="invalid">
+              {intl.formatMessage({
+                id: 'amount_error_funds',
+                defaultMessage: 'Insufficient funds.',
+              })}
+            </p>
+          )}
           <div className="Withdraw__subtitle">
             <FormattedMessage
               id="balance_amount"
@@ -320,7 +327,6 @@ Withdraw.propTypes = {
   intl: PropTypes.shape().isRequired,
   user: PropTypes.shape().isRequired,
   visible: PropTypes.bool.isRequired,
-  isGuest: PropTypes.bool.isRequired,
   closeWithdrawModal: PropTypes.func.isRequired,
   cryptosPriceHistory: PropTypes.shape().isRequired,
   getPrivateEmail: PropTypes.func.isRequired,
@@ -328,7 +334,6 @@ Withdraw.propTypes = {
 export default connect(
   state => ({
     user: getAuthenticatedUser(state),
-    isGuest: isGuestUser(state),
     visible: getStatusWithdraw(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
   }),
