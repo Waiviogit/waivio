@@ -114,14 +114,14 @@ const WebsiteBody = props => {
     if (!isEmpty(area.center)) {
       props.query.set('center', area.center);
       props.query.set('zoom', area.zoom);
+      props.setMapForSearch({
+        coordinates: reverse([...area.center]),
+        ...boundsParams,
+      });
     }
 
     props.history.push(`/?${props.query.toString()}`);
     localStorage.setItem('query', props.query.toString());
-    props.setMapForSearch({
-      coordinates: reverse([...area.center]),
-      ...boundsParams,
-    });
   };
 
   useEffect(() => {
@@ -217,13 +217,10 @@ const WebsiteBody = props => {
     [],
   );
 
-  const onBoundsChanged = useCallback(
-    debounce(({ center, zoom, bounds }) => {
-      if (!isEmpty(center)) setArea({ center, zoom, bounds });
-      if (!isEqual(bounds, area.bounds)) handleOnBoundsChanged(bounds);
-    }, 300),
-    [],
-  );
+  const onBoundsChanged = ({ center, zoom, bounds }) => {
+    if (!isEmpty(center)) setArea({ center, zoom, bounds });
+    if (!isEqual(bounds, area.bounds)) handleOnBoundsChanged(bounds);
+  };
 
   const handleHoveredCard = permlink => setHoveredCardPermlink(permlink);
 
@@ -430,7 +427,7 @@ const WebsiteBody = props => {
             )}
             {zoomButtonsLayout()}
             <Map
-              defaultCenter={area.center}
+              center={area.center}
               height={mapHeight}
               zoom={area.zoom}
               provider={mapProvider}

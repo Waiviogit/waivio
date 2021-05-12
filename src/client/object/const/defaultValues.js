@@ -6,5 +6,6 @@ export default {
   ALBUM_COVER: '/images/icons/no-image.png',
   WAIVIO_ICON:
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600',
-  FAVICON: '/images/icons/favicon.ico',
+  FAVICON:
+    'https://waivio.nyc3.digitaloceanspaces.com/1619696976_1592302d-13a1-4dd3-be82-86af24cc1077',
 };

@@ -15,8 +15,7 @@ import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { getIsAuthenticated, getIsLoaded } from '../store/authStore/authSelectors';
 import { getObject as getObjectState } from '../store/wObjectStore/wObjectSelectors';
-import { getObjectAvatar } from '../helpers/wObjectHelper';
-import DEFAULTS from '../object/const/defaultValues';
+import { getHelmetIcon } from '../store/appStore/appSelectors';
 
 @injectIntl
 @withRouter
@@ -24,6 +23,7 @@ import DEFAULTS from '../object/const/defaultValues';
   authenticated: getIsAuthenticated(state),
   loaded: getIsLoaded(state),
   wobject: getObjectState(state),
+  helmetIcon: getHelmetIcon(state),
 }))
 class Page extends React.Component {
   static fetchData({ store, match }) {
@@ -34,6 +34,7 @@ class Page extends React.Component {
 
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
+    helmetIcon: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     route: PropTypes.shape().isRequired,
@@ -72,8 +73,8 @@ class Page extends React.Component {
           <meta property="og:title" content={'Waivio'} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={global.postOrigin} />
-          <meta property="og:image" content={DEFAULTS.WAIVIO_ICON} />
-          <meta property="og:image:url" content={DEFAULTS.WAIVIO_ICON} />
+          <meta property="og:image" content={this.props.helmetIcon} />
+          <meta property="og:image:url" content={this.props.helmetIcon} />
           <meta property="og:image:width" content="600" />
           <meta property="og:image:height" content="600" />
           <meta property="og:description" content={description} />
@@ -81,10 +82,10 @@ class Page extends React.Component {
           <meta name="twitter:site" content={'@waivio'} />
           <meta name="twitter:title" content={'Waivio'} />
           <meta name="twitter:description" content={description} />
-          <meta name="twitter:image" property="twitter:image" content={DEFAULTS.WAIVIO_ICON} />
+          <meta name="twitter:image" property="twitter:image" content={this.props.helmetIcon} />
           <meta property="og:site_name" content={'Waivio'} />
-          <link rel="image_src" href={DEFAULTS.WAIVIO_ICON} />
-          <link id="favicon" rel="icon" href={DEFAULTS.WAIVIO_ICON} type="image/x-icon" />
+          <link rel="image_src" href={this.props.helmetIcon} />
+          <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
         </Helmet>
         <ScrollToTop />
         <ScrollToTopOnMount />

@@ -58,11 +58,22 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
+    overflow-wrap: break-word;
+    max-width: 150px;
+
+    @media @small {
+      word-break: break-all;
+      max-width: none;
+    }
   }
 
   &__action-items {
-    margin-left: 2rem;
     text-align: start;
+    margin-left: 0;
+
+    @media @small {
+      margin-left: 2rem;
+    }
   }
 
   &__balance-column {

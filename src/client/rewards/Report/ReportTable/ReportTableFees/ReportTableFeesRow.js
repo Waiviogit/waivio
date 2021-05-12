@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { round } from 'lodash';
 
 const ReportTableFeesRow = fee => {
-  const hive = fee.hive ? fee.hive.toFixed(3) : '';
-  const usd = fee.usd ? `$ ${fee.usd.toFixed(2)}` : '';
-  const share = fee.share ? `${(fee.share / 100).toFixed(2)}%` : '';
+  const hive = fee.hive ? round(fee.hive, 3) : '';
+  const usd = fee.usd ? `$ ${round(fee.usd, 2)}` : '';
+  const share = fee.share ? `${round(fee.share / 100, 2)}%` : '';
 
   return (
     <tr>

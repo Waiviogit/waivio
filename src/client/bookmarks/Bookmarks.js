@@ -73,7 +73,6 @@ export default class Bookmarks extends React.Component {
             {intl.formatMessage({ id: 'bookmarks', defaultMessage: 'Bookmarks' })} - Waivio
           </title>
         </Helmet>
-        <MobileNavigation />
         {noBookmarks ? (
           <div className="container">
             <h3 className="text-center">
