@@ -51,7 +51,6 @@ import {
 import {
   getCurrentDraft,
   getEditor, getEditorDraftBody,
-  getEditorDraftId,
   getEditorExtended,
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
@@ -98,11 +97,15 @@ export const UPLOAD_IMG_FINISH = '@editor/UPLOAD_IMG_FINISH';
 export const SET_EDITOR_STATE = '@editor/SET_EDITOR_STATE';
 
 export const SET_CLEAR_STATE = '@editor/SET_CLEAR_STATE';
+export const LEAVE_EDITOR = '@editor/LEAVE_EDITOR';
+export const SET_IS_PASTE = '@editor/SET_IS_PASTE';
 
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
 export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
 export const setClearState = () => ({ type: SET_CLEAR_STATE });
+export const leaveEditor = () => ({ type: LEAVE_EDITOR });
+export const setIsPaste = payload => ({ type: SET_IS_PASTE, payload });
 
 export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
   const state = getState();
@@ -650,21 +653,23 @@ export const getRawContentEntityMap = (rawContent, response) => (dispatch, getSt
     let currObj = null;
     const loadedObject = getCurrentLoadObjects(response, value);
 
-    linkedObjects.push(loadedObject);
-    if (!isEmpty(linkedObjects) && !isEmpty(loadedObject)) {
-      map(linkedObjects, obj => {
-        if (isEqual(obj.author_permlink, loadedObject.author_permlink)) {
-          currObj = loadedObject;
-        }
-      });
-    } else {
-      currObj = loadedObject;
-    }
+    if (loadedObject) {
+      linkedObjects.push(loadedObject);
+      if (!isEmpty(linkedObjects) && !isEmpty(loadedObject)) {
+        map(linkedObjects, obj => {
+          if (isEqual(obj.author_permlink, loadedObject.author_permlink)) {
+            currObj = loadedObject;
+          }
+        });
+      } else {
+        currObj = loadedObject;
+      }
 
-    entityMap[key] = {
-      ...value,
-      data: currObj ? { ...value.data, object: currObj } : { ...value.data },
-    };
+      entityMap[key] = {
+        ...value,
+        data: currObj ? {...value.data, object: currObj} : {...value.data},
+      };
+    }
   });
 
   return entityMap;

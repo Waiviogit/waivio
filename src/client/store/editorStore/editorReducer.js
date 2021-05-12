@@ -9,6 +9,7 @@ import { createEditorState, fromMarkdown } from '../../components/EditorExtended
 
 const defaultState = {
   loading: false,
+  isPaste: false,
   error: null,
   success: false,
   saving: false,
@@ -181,8 +182,18 @@ const editor = (state = defaultState, action) => {
           linkedObjects: uniqBy(get(state, 'editor.linkedObjects', []), '_id'),
         },
       };
+    case editorActions.SET_IS_PASTE:
+      return {
+        ...state,
+        isPaste: action.payload,
+      };
     case editorActions.SET_CLEAR_STATE:
       return defaultState;
+    case editorActions.LEAVE_EDITOR:
+      return {
+        ...defaultState,
+        draftPosts: state.draftPosts,
+      }
     default:
       return state;
   }

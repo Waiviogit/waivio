@@ -95,6 +95,7 @@ const Editor = props => {
               id: 'story_placeholder',
               defaultMessage: 'Write your story...',
             })}
+            handlePastedText={props.handlePasteTest}
           />
         )}
       </div>
@@ -112,6 +113,7 @@ const propTypes = {
   draftId: PropTypes.string,
   displayTitle: PropTypes.bool,
   handleHashtag: PropTypes.func,
+  handlePasteTest: PropTypes.func,
   getRestoreObjects: PropTypes.func,
   enabled: PropTypes.bool.isRequired,
   editorExtended: PropTypes.shape().isRequired,
@@ -124,6 +126,7 @@ const defaultProps = {
   intl: {},
   onChange: () => {},
   handleHashtag: () => {},
+  handlePasteTest: () => {},
   displayTitle: true,
   draftId: '',
   linkedObjects: [],

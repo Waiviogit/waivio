@@ -13,6 +13,8 @@ export const getIsEditorSaving = createSelector([editorState], state => state.sa
 
 export const getPendingDrafts = createSelector([editorState], state => state.pendingDrafts);
 
+export const getIsPaste = createSelector([editorState], state => state.isPaste);
+
 export const getIsPostEdited = createSelector(editorState, (state, permlink) =>
   state.editedPosts.includes(permlink),
 );

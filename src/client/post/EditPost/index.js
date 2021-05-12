@@ -7,6 +7,7 @@ import { isGuestUser } from '../../store/authStore/authSelectors';
 import { getSuitableLanguage } from '../../store/reducers';
 import {
   getEditor,
+  getIsPaste,
   getDraftPosts,
   getCurrentDraft,
   getIsEditorSaving,
@@ -19,7 +20,9 @@ import { getIsWaivio } from '../../store/appStore/appSelectors';
 import {
   buildPost,
   saveDraft,
+  setIsPaste,
   createPost,
+  leaveEditor,
   setClearState,
   setEditorState,
   reviewCheckInfo,
@@ -45,6 +48,7 @@ const mapStateToProps = (state, props) => {
     editor: getEditor(state),
     currDraft: getCurrentDraft(state, { draftId }),
     filteredObjectsCards: getFilteredObjectCards(state),
+    isPaste: getIsPaste(state),
   };
 };
 
@@ -62,6 +66,8 @@ const mapDispatchToProps = (dispatch, props) => {
     buildPost: () => dispatch(buildPost(draftId)),
     handleObjectSelect: object => dispatch(handleObjectSelect(object)),
     setClearState: () => dispatch(setClearState()),
+    leaveEditor: () => dispatch(leaveEditor()),
+    setIsPaste: payload => dispatch(setIsPaste(payload)),
   };
 };
 

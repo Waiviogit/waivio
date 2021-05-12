@@ -38,7 +38,10 @@ const propTypes = {
   imageLoading: PropTypes.bool,
   createPost: PropTypes.func,
   saveDraft: PropTypes.func,
+  isPaste: PropTypes.bool.isRequired,
   buildPost: PropTypes.func.isRequired,
+  setIsPaste: PropTypes.func.isRequired,
+  leaveEditor: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   getReviewCheckInfo: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
@@ -80,14 +83,12 @@ const EditPost = props => {
       campaign,
       isUpdating,
       titleValue,
-      currentRawContent,
       draftId: draftIdEditor,
     },
     intl,
   } = props;
 
   React.useEffect(() => {
-    console.log('componentDidMount');
     props.history.replace({
       pathname: props.location.pathname,
       search: `draft=${getCurrentDraftId(props.draftId, draftIdEditor)}`,
@@ -108,6 +109,7 @@ const EditPost = props => {
     }
 
     return () => {
+      props.leaveEditor();
       sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
     };
   }, []);
@@ -123,6 +125,16 @@ const EditPost = props => {
     if (editorData.title || editorData.body) props.saveDraft(editorData);
     props.firstParseLinkedObjects(props.currDraft);
   }, [props.draftId, props.campaignId]);
+
+  React.useEffect(() => {
+    if (props.isPaste) {
+      props.firstParseLinkedObjects({
+        title: titleValue,
+        body: content,
+      });
+      props.setIsPaste(false);
+    }
+  }, [props.isPaste]);
 
   const setDraftId = () => {
     if (props.draftId && props.draftId !== draftIdEditor) {
@@ -145,7 +157,7 @@ const EditPost = props => {
         props.setUpdatedEditorData(updatedStore);
       }
     }, 1500),
-    [draftIdEditor],
+    [props.draftId, draftIdEditor],
   );
 
   const handleSettingsChange = updatedValue =>
@@ -190,6 +202,8 @@ const EditPost = props => {
     props.setUpdatedEditorData({ topics: uniqWith([...topics, objectName], isEqual) });
   };
 
+  const handlePasteTest = () => props.setIsPaste(true);
+
   return (
     <div className="shifted">
       <div className="post-layout container">
@@ -203,6 +217,7 @@ const EditPost = props => {
             handleHashtag={handleHashtag}
             displayTitle
             draftId={props.draftId}
+            handlePasteTest={handlePasteTest}
           />
           {props.draftPosts.some(d => d.draftId === props.draftId) && (
             <div className="edit-post__saving-badge">
@@ -261,7 +276,7 @@ const EditPost = props => {
         </div>
         <div className="rightContainer">
           <div className="right">
-            <ObjectCreation />
+            <ObjectCreation onCreateObject={handleCreateObject} />
             <LastDraftsContainer />
           </div>
         </div>

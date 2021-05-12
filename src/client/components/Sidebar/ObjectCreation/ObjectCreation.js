@@ -28,6 +28,7 @@ class ObjectCreation extends React.Component {
     // loading: PropTypes.bool,
     intl: PropTypes.shape(),
     loadObjectTypes: PropTypes.func.isRequired,
+    onCreateObject: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -63,6 +64,8 @@ class ObjectCreation extends React.Component {
   };
 
   resetSelected = () => this.setState({ selectedType: '' });
+
+  createObject = object => this.props.onCreateObject(object);
 
   render() {
     const { selectedType, showedTypesCount } = this.state;
@@ -109,7 +112,7 @@ class ObjectCreation extends React.Component {
           isModalOpen={Boolean(selectedType)}
           defaultObjectType={selectedType}
           onCloseModal={this.resetSelected}
-          onCreateObject={this.resetSelected}
+          onCreateObject={this.createObject}
         />
       </div>
     );
