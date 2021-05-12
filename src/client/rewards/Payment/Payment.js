@@ -47,7 +47,9 @@ const Payment = ({
   const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
-  const notPayedPeriodClassList = classNames('Payment__notPayedPeriod', {
+  const notPayedPeriodClassList = classNames({
+    Payment__notPayedPeriod: notPayedPeriod,
+    'Payment__notPayedPeriod--hidden': !notPayedPeriod,
     'Payment__notPayedPeriod--expired': notPayedPeriod >= 21,
   });
 
@@ -113,26 +115,26 @@ const Payment = ({
           ) : (
             ''
           )}
+          {isNumber(notPayedPeriod) && isPayables && (
+            <span className={notPayedPeriodClassList}>
+              (
+              {intl.formatMessage({
+                id: 'over',
+                defaultMessage: 'over',
+              })}{' '}
+              {notPayedPeriod} d)
+            </span>
+          )}
         </div>
-        {isNumber(notPayedPeriod) && isPayables && (
-          <span className={notPayedPeriodClassList}>
-            (
-            {intl.formatMessage({
-              id: 'over',
-              defaultMessage: 'over',
-            })}{' '}
-            {notPayedPeriod} d)
-          </span>
-        )}
       </div>
-      <div className="Payment__information-row">
-        <div className="Payment__information-row-important">
+      <p className="Payment__information-row">
+        <span className="Payment__information-row-important">
           {intl.formatMessage({
             id: 'payment_page_important',
             defaultMessage: 'Important',
           })}
           :
-        </div>
+        </span>
         {intl.formatMessage(
           {
             id: 'payment_page_transfers_with_user_reward_included',
@@ -140,10 +142,10 @@ const Payment = ({
               'Only transfer with {userRewards} instructions are processed as rewards payments',
           },
           {
-            userReward,
+            userRewards: userReward,
           },
         )}
-      </div>
+      </p>
       {!isEmpty(sponsors) && (
         <PaymentTable
           sponsors={sponsors}

@@ -6,16 +6,26 @@
   flex-direction: column;
   position: absolute;
   width: 100%;
+  padding: 0 5px;
+
+  @media @small {
+    padding: 0;
+  }
 
   &__title {
     display: flex;
-    margin-bottom: 10px;
-    align-items: center;
+    font-size: 20px;
+    flex-direction: column;
+
+    @media @small {
+      font-size: 25px;
+      flex-direction: row;
+    }
 
     &-payment {
       font-weight: 500;
-      font-size: 1.7em;
-      padding-right: 10px;
+      margin: 0 15px 0 0;
+      padding-bottom: 5px;
     }
 
     &-link {
@@ -23,18 +33,21 @@
     }
 
     &-pay {
+      display: flex;
       font-size: medium;
       font-weight: 500;
-      text-decoration: underline;
+      align-items: center;
+      padding-bottom: 5px;
 
       .WalletSidebar__transfer {
         margin-bottom: 0;
+        max-width: 150px;
       }
     }
   }
 
   &__information-row {
-    display: flex;
+    padding-bottom: 5px;
 
     &-important {
       color: @orange-hot;
@@ -43,11 +56,18 @@
   }
 
   &__notPayedPeriod {
+    display: block;
     margin-left: 10px;
     font-weight: 500;
+    white-space: pre;
+
+    &--hidden {
+      display: none;
+    }
 
     &--expired {
       color: @orange-hot;
+      white-space: pre;
     }
   }
 }
