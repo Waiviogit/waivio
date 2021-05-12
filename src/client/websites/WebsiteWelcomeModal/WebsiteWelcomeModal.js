@@ -111,7 +111,7 @@ const WebsiteWelcomeModal = props => {
           <img src={'/images/tab_3.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
       </Tabs>
-      <h3>
+      <h3 className="WebsiteWelcomeModal__police-title">
         {props.intl.formatMessage({ id: 'privacy_notice', defaultMessage: 'Privacy Notice' })}:
       </h3>
       <p className="WebsiteWelcomeModal__police">
