@@ -48,7 +48,7 @@ const Withdraw = ({
   const hivePrice = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 0);
   const currentBalance = `${user.balance} HIVE`;
   const hiveAmountClassList = classNames('Withdraw__input-text Withdraw__input-text--send-input', {
-    'Withdraw__input-text--error': hiveAmount > user.balance
+    'Withdraw__input-text--error': hiveAmount > user.balance,
   });
   const isUserCanMakeTransfer =
     Number(currentBalance && currentBalance.replace(' HIVE', '')) >= Number(hiveCount);
