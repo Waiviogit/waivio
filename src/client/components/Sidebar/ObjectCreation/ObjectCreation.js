@@ -60,6 +60,7 @@ class ObjectCreation extends React.Component {
   };
 
   setObjectType = e => {
+    console.log('event', e.currentTarget.textContent);
     this.setState({ selectedType: e.currentTarget.textContent });
   };
 

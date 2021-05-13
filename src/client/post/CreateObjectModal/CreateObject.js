@@ -214,7 +214,9 @@ class CreateObject extends React.Component {
               }),
               'error',
             );
-            this.setState({ loading: false, isModalOpen: false });
+            this.setState({ loading: false, isModalOpen: false }, () => {
+              this.handleCloseModal();
+            });
           });
       }
     });
