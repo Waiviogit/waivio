@@ -23,7 +23,7 @@ const Editor = props => {
     restoreObjects(fromMarkdown(props.initialContent));
   }, []);
 
-  React.useEffect(() => setFocusAfterMount(), [isMounted]);
+  React.useEffect(() => setFocusAfterMount(), [isMounted, props.draftId]);
 
   const onChange = updatedEditorState => {
     const { editorState: prevEditorState } = props.editorExtended;
@@ -32,7 +32,6 @@ const Editor = props => {
   };
 
   const setFocusAfterMount = () => {
-    if (refsEditor.current) refsEditor.current.focus();
     props.setUpdatedEditorExtendedData({ editorEnabled: true });
   };
 
