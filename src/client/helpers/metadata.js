@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, has } from 'lodash';
 import SteemConnect from '../steemConnectAPI';
 import { getAuthenticatedUserMetadata, updateUserMetadata } from '../../waivioApi/ApiClient';
 
@@ -29,13 +29,16 @@ export const setLocaleMetadata = locale =>
 
 export const addDraftMetadata = draft =>
   getMetadata(draft.author)
-    .then(metadata =>
-      updateUserMetadata(draft.author, {
-        ...metadata,
-        drafts: [...metadata.drafts.filter(d => d.draftId !== draft.draftId), draft],
-      }).catch(e => e.message),
+    .then(metadata => {
+        updateUserMetadata(draft.author, {
+          ...metadata,
+          drafts: [...metadata.drafts.filter(d => d.draftId !== draft.draftId), draft],
+        }).catch(e => e.message);
+
+        return metadata.drafts.find(d => d.draftId === draft.draftId);
+      }
     )
-    .then(() => draft);
+    .then(newDraft => has(newDraft, 'title') ? newDraft : draft);
 
 export const deleteDraftMetadataObject = (draftId, userName, objPermlink) => {
   const getFilteredDrafts = metadata =>
