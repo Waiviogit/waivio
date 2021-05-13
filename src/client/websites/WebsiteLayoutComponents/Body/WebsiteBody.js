@@ -4,10 +4,10 @@ import { isEmpty, get, map, debounce, isEqual, size, reverse } from 'lodash';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { Tag } from 'antd';
-import PropTypes, { arrayOf } from 'prop-types';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import Map from 'pigeon-maps';
+import { Map } from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import {
@@ -36,7 +36,6 @@ import { distanceInMBetweenEarthCoordinates } from '../../helper';
 import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
 import {
   getConfigurationValues,
-  getMapForMainPage,
   getReserveCounter,
   getScreenSize,
 } from '../../../store/appStore/appSelectors';
@@ -246,7 +245,9 @@ const WebsiteBody = props => {
         const parsedMap = getParsedMap(wobject);
         const latitude = get(parsedMap, ['latitude']);
         const longitude = get(parsedMap, ['longitude']);
-        const isMarked = get(wobject, 'campaigns') || !isEmpty(get(wobject, 'propositions'));
+        const isMarked = Boolean(
+          get(wobject, 'campaigns') || !isEmpty(get(wobject, 'propositions')),
+        );
 
         return latitude && longitude ? (
           <CustomMarker
@@ -408,14 +409,9 @@ const WebsiteBody = props => {
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-          <img
-            className="WebsiteBody__logo"
-            srcSet={currentLogo}
-            alt="your logo"
-            styleName="brain-image"
-            onClick={() => props.history.push(logoLink)}
-          />
+          <Link to={logoLink}>
+            <img className="WebsiteBody__logo" src={currentLogo} alt="your logo" />
+          </Link>
         )}
         {!isEmpty(area.center) && !isEmpty(props.configuration) && (
           <React.Fragment>
@@ -428,7 +424,7 @@ const WebsiteBody = props => {
             {zoomButtonsLayout()}
             <Map
               center={area.center}
-              height={mapHeight}
+              height={Number(mapHeight)}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
@@ -442,6 +438,7 @@ const WebsiteBody = props => {
                 }
               }}
               animate
+              zoomSnap
             >
               {isActiveFilters && (
                 <div className="WebsiteBody__filters-list">
@@ -509,15 +506,13 @@ WebsiteBody.propTypes = {
   setFilterFromQuery: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
-  wobjectsPoint: PropTypes.arrayOf(PropTypes.shape()),
-  // eslint-disable-next-line react/no-unused-prop-types
-  configCoordinates: PropTypes.arrayOf().isRequired,
-  activeFilters: PropTypes.arrayOf().isRequired,
+  wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
+  activeFilters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool,
   searchMap: PropTypes.shape({
-    coordinates: arrayOf(PropTypes.number),
+    coordinates: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
   isAuth: PropTypes.bool,
   query: PropTypes.shape({
@@ -541,7 +536,6 @@ export default connect(
     configuration: getConfigurationValues(state),
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),
-    configCoordinates: getMapForMainPage(state),
     activeFilters: getSearchFiltersTagCategory(state),
     counter: getReserveCounter(state),
     isAuth: getIsAuthenticated(state),
