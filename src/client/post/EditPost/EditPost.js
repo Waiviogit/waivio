@@ -93,10 +93,11 @@ const EditPost = props => {
       pathname: props.location.pathname,
       search: `draft=${getCurrentDraftId(props.draftId, draftIdEditor)}`,
     });
-    props.setEditorState(getInitialState(props));
+    const hideLinkedObjectsSession = JSON.parse(sessionStorage.getItem('hideLinkedObjects')) || [];
+
+    props.setEditorState(getInitialState(props, hideLinkedObjectsSession));
     const campaignId = props.campaignId || get(props.currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
-    const hideLinkedObjectsSession = JSON.parse(sessionStorage.getItem('hideLinkedObjects')) || [];
 
     props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
 
@@ -115,8 +116,15 @@ const EditPost = props => {
   }, []);
 
   React.useEffect(() => {
-    sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
-    setDraftId();
+    const oldDraftId = sessionStorage.getItem('draftId');
+
+    if (oldDraftId !== props.draftId) {
+      sessionStorage.setItem('draftId', props.draftId);
+      sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
+    }
+    const hideLinkedObjectsSession = JSON.parse(sessionStorage.getItem('hideLinkedObjects')) || [];
+
+    setDraftId(hideLinkedObjectsSession);
     const editorData = {
       title: get(props.currDraft, 'title', ''),
       body: get(props.currDraft, 'body', ''),
@@ -136,11 +144,11 @@ const EditPost = props => {
     }
   }, [props.isPaste]);
 
-  const setDraftId = () => {
+  const setDraftId = (hideObjects) => {
     if (props.draftId && props.draftId !== draftIdEditor) {
-      props.setEditorState(getInitialState(props));
+      props.setEditorState(getInitialState(props, hideObjects));
     } else if (isNull(props.draftId) && draftIdEditor) {
-      props.setEditorState(getInitialState(props));
+      props.setEditorState(getInitialState(props, hideObjects));
     }
   };
 

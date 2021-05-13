@@ -167,13 +167,13 @@ export function getObjectUrl(objPermlink) {
   return `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objPermlink}`;
 }
 
-export function getInitialState(props, newDraftId = '') {
+export function getInitialState(props, hideLinkedObjectsSession = []) {
   const search = props.location.search.replace(/ & /, ' ');
   const initObjects = new URLSearchParams(search).getAll('object');
-
+  const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || []
   let state = {
     campaign: props.campaignId ? { id: props.campaignId } : null,
-    draftId: props.draftId || newDraftId || uuidv4(),
+    draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
       title: '',
@@ -192,7 +192,7 @@ export function getInitialState(props, newDraftId = '') {
     content: '',
     topics: [],
     linkedObjects: [],
-    hideLinkedObjects: [],
+    hideLinkedObjects: hideObjects,
     objPercentage: {},
     settings: {
       reward: rewardsValues.half,
@@ -223,7 +223,7 @@ export function getInitialState(props, newDraftId = '') {
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
       linkedObjects: draftPost.linkedObjects || [],
-      hideLinkedObjects: [],
+      hideLinkedObjects: hideObjects,
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
       ),
