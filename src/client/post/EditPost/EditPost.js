@@ -103,7 +103,7 @@ const EditPost = props => {
 
     if (isReview) {
       props.getReviewCheckInfo(
-        { campaignId, isPublicReview: get(props.currDraft, 'permlink') },
+        { campaignId },
         intl,
         true,
       );
