@@ -460,7 +460,7 @@ export const reviewCheckInfo = (
         dispatch(setUpdatedEditorData(updatedEditorData));
         dispatch(setUpdatedEditorExtendedData({
           titleValue: updatedEditorData.draftContent.title,
-          editorState: createEditorState(fromMarkdown(updatedEditorData.draftContent)),
+          editorState: EditorState.moveFocusToEnd(createEditorState(fromMarkdown(updatedEditorData.draftContent))),
         }))
         dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
         dispatch(saveDraft(draftId, intl, { content: updatedEditorData.draftContent.body, titleValue: updatedEditorData.draftContent.title }))
