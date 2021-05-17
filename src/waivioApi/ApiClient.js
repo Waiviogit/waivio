@@ -182,8 +182,9 @@ export const getFeedContent = (sortBy, locale, follower, queryData) => {
 export const getUserProfileBlog = (
   userName,
   follower,
-  { startAuthor = '', startPermlink = '', limit = 10, skip },
+  { limit = 10, skip },
   locale = 'en-US',
+  tagsArray,
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
@@ -197,8 +198,7 @@ export const getUserProfileBlog = (
       body: JSON.stringify({
         limit,
         skip,
-        start_author: startAuthor,
-        start_permlink: startPermlink,
+        ...(isEmpty(tagsArray) ? {} : { tagsArray }),
       }),
     })
       .then(res => res.json())
@@ -233,7 +233,7 @@ export const getMoreUserFeedContent = ({
 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
-      headers: { ...headers, app: config.appName, locale },
+      headers: { ...headers, app: config.appName, locale, follower: userName },
       method: 'POST',
       body: JSON.stringify({
         skip,

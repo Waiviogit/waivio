@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import InterestingObjects from '../../components/Sidebar/InterestingObjects';
@@ -12,7 +13,7 @@ import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
 import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
-import { getFeedFromState } from '../../helpers/stateHelpers';
+import { getFeedFromState, getFeedTagsFilterFromState } from '../../helpers/stateHelpers';
 import UserSidebar from './UserSidebar';
 import {
   getAuthenticatedUserName,
@@ -22,16 +23,23 @@ import {
 } from '../../store/authStore/authSelectors';
 import { getFeed } from '../../store/feedStore/feedSelectors';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import FilterPosts from '../../components/Sidebar/FilterPosts/FilterPosts';
+import { setProfileFilters } from '../../store/feedStore/feedActions';
 
 @withRouter
-@connect(state => ({
-  authenticated: getIsAuthenticated(state),
-  authUserName: getAuthenticatedUserName(state),
-  isAuthFetching: getIsAuthFetching(state),
-  locale: getLocale(state),
-  isGuest: isGuestUser(state),
-  feed: getFeed(state),
-}))
+@connect(
+  state => ({
+    authenticated: getIsAuthenticated(state),
+    authUserName: getAuthenticatedUserName(state),
+    isAuthFetching: getIsAuthFetching(state),
+    locale: getLocale(state),
+    isGuest: isGuestUser(state),
+    feed: getFeed(state),
+  }),
+  {
+    setProfileFilters,
+  },
+)
 export default class RightSidebar extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool,
@@ -42,6 +50,7 @@ export default class RightSidebar extends React.Component {
     locale: PropTypes.string,
     isGuest: PropTypes.bool,
     feed: PropTypes.shape().isRequired,
+    setProfileFilters: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -67,6 +76,7 @@ export default class RightSidebar extends React.Component {
     } = this.props;
 
     const content = getFeedFromState('blog', authUserName, feed);
+    const tags = getFeedTagsFilterFromState('blog', authUserName, feed);
 
     if (isAuthFetching) {
       return <Loading />;
@@ -86,14 +96,19 @@ export default class RightSidebar extends React.Component {
           <Route
             path="/@:name"
             render={() => (
-              <UserSidebar
-                authenticated={authenticated}
-                isGuest={isGuest}
-                content={content}
-                match={match}
-                authUserName={authUserName}
-                locale={locale}
-              />
+              <React.Fragment>
+                {match.url === `/@${authUserName}` && !isEmpty(tags) && (
+                  <FilterPosts tags={tags} setProfileFilters={this.props.setProfileFilters} />
+                )}
+                <UserSidebar
+                  authenticated={authenticated}
+                  isGuest={isGuest}
+                  content={content}
+                  match={match}
+                  authUserName={authUserName}
+                  locale={locale}
+                />
+              </React.Fragment>
             )}
           />
           <Route
