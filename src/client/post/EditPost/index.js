@@ -64,7 +64,7 @@ const mapDispatchToProps = (dispatch, props) => {
     getReviewCheckInfo: (data, needReviewTitle, intl) => dispatch(reviewCheckInfo(data, needReviewTitle, intl)),
     setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
     buildPost: () => dispatch(buildPost(draftId)),
-    handleObjectSelect: object => dispatch(handleObjectSelect(object)),
+    handleObjectSelect: object => dispatch(handleObjectSelect(object, false, props.intl)),
     setClearState: () => dispatch(setClearState()),
     leaveEditor: () => dispatch(leaveEditor()),
     setIsPaste: payload => dispatch(setIsPaste(payload)),

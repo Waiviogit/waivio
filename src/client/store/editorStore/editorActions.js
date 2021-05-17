@@ -17,6 +17,7 @@ import {
   orderBy,
   uniqBy,
   uniqWith,
+  size,
 } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
@@ -549,9 +550,9 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   return postData;
 };
 
-export const handleObjectSelect = (object, isCursorToEnd) => async (dispatch, getState) => {
+export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispatch, getState) => {
   const state = getState();
-  const { content, titleValue, topics, linkedObjects, hideLinkedObjects, objPercentage, currentRawContent } = getEditor(state);
+  const { content, titleValue, topics, linkedObjects, hideLinkedObjects, objPercentage, currentRawContent, draftId } = getEditor(state);
   const objName = getObjectName(object).toLowerCase();
   const objPermlink = object.author_permlink;
   const separator = content.slice(-1) === '\n' ? '' : '\n';
@@ -587,18 +588,20 @@ export const handleObjectSelect = (object, isCursorToEnd) => async (dispatch, ge
   const editorState = isCursorToEnd
     ? EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent)))
     : createEditorState(fromMarkdown(draftContent));
+  const updateTopics = uniqWith(
+    object.type === 'hashtag' || (object.object_type === 'hashtag' && [...topics, objPermlink]),
+    isEqual,
+  )
 
   dispatch(setUpdatedEditorExtendedData({ editorState }));
   dispatch(
     setUpdatedEditorData({
       ...newData,
       draftContent,
-      topics: uniqWith(
-        object.type === 'hashtag' || (object.object_type === 'hashtag' && [...topics, objPermlink]),
-        isEqual,
-      ),
+      topics: size(updateTopics) ? updateTopics : topics,
     }),
   );
+  dispatch(saveDraft(draftId, intl, { content: draftContent.body, titleValue: draftContent.title }));
 
   return Promise.resolve(draftContent);
 };
