@@ -148,16 +148,11 @@ const posts = (state = initialState, action) => {
           failed: false,
         };
       });
-      const lastId =
-        // eslint-disable-next-line no-underscore-dangle
-        action.payload[action.payload.posts.length - 1] &&
-        action.payload[action.payload.posts.length - 1]._id;
 
       return {
         ...state,
         list,
         postsStates,
-        lastId,
       };
     }
     case feedTypes.GET_FEED_CONTENT_BY_BLOG.SUCCESS: {
@@ -178,15 +173,11 @@ const posts = (state = initialState, action) => {
           failed: false,
         };
       });
-      const lastId =
-        // eslint-disable-next-line no-underscore-dangle
-        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
 
       return {
         ...state,
         list,
         postsStates,
-        lastId,
       };
     }
     case postsActions.GET_CONTENT.START:

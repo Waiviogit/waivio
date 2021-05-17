@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Checkbox } from 'antd';
 import { chunk } from 'lodash';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 
 import './FilterPosts.less';
 
@@ -12,7 +13,8 @@ const FilterPosts = ({ tags, setProfileFilters }) => {
   return (
     <div className="FilterPosts">
       <div className="FilterPosts__title">
-        <i className="iconfont icon-trysearchlist" /> Filter posts
+        <i className="iconfont icon-trysearchlist" />
+        <FormattedMessage id="filter_posts" defaultMessage="Filter posts" />
       </div>
       <div className="FilterPosts__tags-list">
         {tagsList.map(tag => (
@@ -28,7 +30,7 @@ const FilterPosts = ({ tags, setProfileFilters }) => {
             role="presentation"
             onClick={() => setShowMore(true)}
           >
-            show more
+            <FormattedMessage id="show_more" defaultMessage="show more" />
           </div>
         )}
       </div>
