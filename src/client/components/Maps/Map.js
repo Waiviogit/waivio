@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { isEmpty, get, map, isEqual, debounce, has, size, isArray } from 'lodash';
 import React, { createRef } from 'react';
-import Map from 'pigeon-maps';
+import { Map } from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';

@@ -1,0 +1,44 @@
+@import (reference) '../../../styles/custom.less';
+
+.FilterPosts {
+  border: 1px solid @white-gainsboro;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background: @white;
+
+  &__tags-list {
+    padding: 10px 15px;
+  }
+
+  &__tag {
+    .ant-checkbox-wrapper {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__showMore {
+    cursor: pointer;
+    text-decoration: underline;
+    color: @black;
+    font-weight: 500;
+    text-transform: lowercase;
+  }
+
+  &__title {
+    border-bottom: 1px solid @white-gainsboro;
+    font-size: 16px;
+    padding: 5px 16px;
+    color: @blue-baliHai;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+
+    .iconfont {
+      font-size: 22px;
+      margin-right: 5px;
+    }
+  }
+}
+
+@import 'FilterPosts-nightmode';

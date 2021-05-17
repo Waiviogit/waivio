@@ -234,11 +234,7 @@ const Proposition = props => {
         />
       </div>
       <div className="Proposition__card">
-        <ObjectCardView
-          passedParent={requiredObject}
-          wObject={proposedWobj}
-          key={proposedWobj.id}
-        />
+        <ObjectCardView passedParent={requiredObject} wObject={proposedWobj} />
       </div>
       <div
         className={classNames('Proposition__footer', {
@@ -326,7 +322,7 @@ const Proposition = props => {
 };
 
 Proposition.propTypes = {
-  proposition: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  proposition: PropTypes.shape().isRequired,
   wobj: PropTypes.shape().isRequired,
   assignProposition: PropTypes.func,
   discardProposition: PropTypes.func,
@@ -341,7 +337,7 @@ Proposition.propTypes = {
   sortFraudDetection: PropTypes.string,
   isAuth: PropTypes.bool,
   isOpenWriteReviewModal: PropTypes.bool,
-  fraudNumbers: PropTypes.shape(),
+  fraudNumbers: PropTypes.arrayOf(PropTypes.number),
 };
 
 Proposition.defaultProps = {

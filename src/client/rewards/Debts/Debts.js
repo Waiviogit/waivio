@@ -70,7 +70,7 @@ const Debts = ({
               id: 'debts_total',
               defaultMessage: 'Total',
             })}
-            : {round(get(debtObjsData, 'payable'), 2)}
+            : {get(debtObjsData, 'payable') && round(get(debtObjsData, 'payable'), 2)}
             {' HIVE '}
             {currentUSDPrice && debtObjsData.payable
               ? `($${round(currentUSDPrice * debtObjsData.payable, 2)})`

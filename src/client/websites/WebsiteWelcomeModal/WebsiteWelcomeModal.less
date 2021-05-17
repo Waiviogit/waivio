@@ -2,14 +2,13 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .WebsiteWelcomeModal {
-  p {
-    font-size: 13px;
-    padding: 5px 0;
-  }
-
   h3 {
     font-size: 14px;
     font-weight: bold;
+  }
+
+  .WebsiteWelcomeModal__police-title {
+    font-size: 15px;
   }
 
   .ant-modal-body {
@@ -17,11 +16,6 @@
   }
 
   @media @small {
-    p {
-      font-size: 16px;
-      padding: 5px 0;
-    }
-
     h3 {
       font-size: 17px;
     }
@@ -31,12 +25,16 @@
     width: 100%;
     height: 260px;
     padding-bottom: 5px;
-    margin: 0 0 7px;
+    margin: 5px 0;
 
     @media @small {
       height: 450px;
-      margin: 0 0 15px;
     }
+  }
+
+  &__paragph {
+    font-weight: 500;
+    color: @black;
   }
 
   .ant-tabs-bar.ant-tabs-top-bar {
@@ -56,5 +54,9 @@
       color: @white;
       border: 1px solid @orange-hot;
     }
+  }
+
+  &__police {
+    font-size: 13px;
   }
 }

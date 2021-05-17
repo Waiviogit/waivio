@@ -83,8 +83,8 @@ const WebsiteWelcomeModal = props => {
         {props.intl.formatMessage({ id: 'step', defaultMessage: 'Step' })} {tabKey}:
       </h3>
       <Tabs defaultActiveKey="1" activeKey={tabKey}>
-        <Tabs.TabPane key="1">
-          <p>
+        <Tabs.TabPane key="1" tab="1">
+          <p className="WebsiteWelcomeModal__paragph">
             {props.intl.formatMessage({
               id: 'find_the_restaurant',
               defaultMessage: 'Find the restaurant and select the dish',
@@ -92,8 +92,8 @@ const WebsiteWelcomeModal = props => {
           </p>
           <img src={'/images/tab_1.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
-        <Tabs.TabPane key="2">
-          <p>
+        <Tabs.TabPane key="2" tab="2">
+          <p className="WebsiteWelcomeModal__paragph">
             {props.intl.formatMessage({
               id: 'reserve_rewards_few_days',
               defaultMessage: 'Reserve the reward for a few days',
@@ -101,8 +101,8 @@ const WebsiteWelcomeModal = props => {
           </p>
           <img src={'/images/tab_2.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
-        <Tabs.TabPane key="3">
-          <p>
+        <Tabs.TabPane key="3" tab="3">
+          <p className="WebsiteWelcomeModal__paragph">
             {props.intl.formatMessage({
               id: 'share_photos_of_the_dish',
               defaultMessage: 'Share photos of the dish and get the reward!',
@@ -111,10 +111,10 @@ const WebsiteWelcomeModal = props => {
           <img src={'/images/tab_3.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
       </Tabs>
-      <h3>
+      <h3 className="WebsiteWelcomeModal__police-title">
         {props.intl.formatMessage({ id: 'privacy_notice', defaultMessage: 'Privacy Notice' })}:
       </h3>
-      <p>
+      <p className="WebsiteWelcomeModal__police">
         {props.intl.formatMessage({
           id: 'cookies_experience',
           defaultMessage:
