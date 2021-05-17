@@ -18,6 +18,7 @@ import {
   uniqBy,
   uniqWith,
   size,
+  differenceBy,
 } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
@@ -64,6 +65,7 @@ import { createPostMetadata, getObjectUrl } from '../../helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../components/EditorExtended';
 import { handlePastedLink, QUERY_APP } from '../../components/EditorExtended/util/editorHelper';
 import { setObjPercents } from "../../helpers/wObjInfluenceHelper";
+import { extractLinks } from "../../helpers/parser";
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -99,14 +101,12 @@ export const SET_EDITOR_STATE = '@editor/SET_EDITOR_STATE';
 
 export const SET_CLEAR_STATE = '@editor/SET_CLEAR_STATE';
 export const LEAVE_EDITOR = '@editor/LEAVE_EDITOR';
-export const SET_IS_PASTE = '@editor/SET_IS_PASTE';
 
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
 export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
 export const setClearState = () => ({ type: SET_CLEAR_STATE });
 export const leaveEditor = () => ({ type: LEAVE_EDITOR });
-export const setIsPaste = payload => ({ type: SET_IS_PASTE, payload });
 
 export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
   const state = getState();
@@ -722,5 +722,29 @@ export const firstParseLinkedObjects = (draft) => async (dispatch) => {
       linkedObjects: draftLinkedObjects,
       objPercentage: draftObjPercentage,
     }));
+  }
+}
+
+export const handlePasteText = html => async (dispatch, getState) => {
+  const links = extractLinks(html)
+  const objectIds = links.map(item => {
+    const itemArray = item.split('/');
+
+    return itemArray[itemArray.length - 1];
+  });
+
+  if (objectIds.length) {
+    const state = getState();
+    const locale = getLocale(state);
+    const hideLinkedObjects = getEditorLinkedObjectsCards(state);
+    const response = await getObjectsByIds({
+      locale,
+      requiredFields: ['rating'],
+      authorPermlinks: objectIds,
+    });
+    const updatedHideLinkedCards = getFilteredLinkedObjects(response.wobjects, hideLinkedObjects);
+    const filteredObjects = differenceBy(response.wobjects, updatedHideLinkedCards, '_id');
+
+    console.log('objectIds', updatedHideLinkedCards, filteredObjects);
   }
 }

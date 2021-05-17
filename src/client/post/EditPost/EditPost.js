@@ -38,9 +38,7 @@ const propTypes = {
   imageLoading: PropTypes.bool,
   createPost: PropTypes.func,
   saveDraft: PropTypes.func,
-  isPaste: PropTypes.bool.isRequired,
   buildPost: PropTypes.func.isRequired,
-  setIsPaste: PropTypes.func.isRequired,
   leaveEditor: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   getReviewCheckInfo: PropTypes.func.isRequired,
@@ -55,6 +53,7 @@ const propTypes = {
   currDraft: PropTypes.shape().isRequired,
   location: PropTypes.shape().isRequired,
   filteredObjectsCards: PropTypes.arrayOf().isRequired,
+  handlePasteText: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -134,16 +133,6 @@ const EditPost = props => {
     props.firstParseLinkedObjects(props.currDraft);
   }, [props.draftId, props.campaignId]);
 
-  React.useEffect(() => {
-    if (props.isPaste) {
-      props.firstParseLinkedObjects({
-        title: titleValue,
-        body: content,
-      });
-      props.setIsPaste(false);
-    }
-  }, [props.isPaste]);
-
   const setDraftId = (hideObjects) => {
     if (props.draftId && props.draftId !== draftIdEditor) {
       props.setEditorState(getInitialState(props, hideObjects));
@@ -164,8 +153,7 @@ const EditPost = props => {
         props.saveDraft(updatedStore);
         props.setUpdatedEditorData(updatedStore);
       }
-    }, 1500),
-    [props.draftId],
+    }, 1500), [props.draftId],
   );
 
   const handleSettingsChange = updatedValue =>
@@ -210,7 +198,7 @@ const EditPost = props => {
     props.setUpdatedEditorData({ topics: uniqWith([...topics, objectName], isEqual) });
   };
 
-  const handlePasteTest = () => props.setIsPaste(true);
+  const handlePasteText = (text, html) => props.handlePasteText(html);
 
   return (
     <div className="shifted">
@@ -225,7 +213,7 @@ const EditPost = props => {
             handleHashtag={handleHashtag}
             displayTitle
             draftId={props.draftId}
-            handlePasteTest={handlePasteTest}
+            handlePasteTest={handlePasteText}
           />
           {props.draftPosts.some(d => d.draftId === props.draftId) && (
             <div className="edit-post__saving-badge">

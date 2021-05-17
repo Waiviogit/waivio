@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { find, filter, uniqBy } from 'lodash';
+import { find, filter, uniqBy, get } from 'lodash';
 
 // selector
 export const editorState = state => state.editor;
@@ -12,8 +12,6 @@ export const getIsEditorLoading = createSelector([editorState], state => state.l
 export const getIsEditorSaving = createSelector([editorState], state => state.saving);
 
 export const getPendingDrafts = createSelector([editorState], state => state.pendingDrafts);
-
-export const getIsPaste = createSelector([editorState], state => state.isPaste);
 
 export const getIsPostEdited = createSelector(editorState, (state, permlink) =>
   state.editedPosts.includes(permlink),
@@ -35,11 +33,11 @@ export const getCurrentDraft = createSelector(
   (draftPosts, draftId) => draftPosts.find(d => d.draftId === draftId),
 );
 
-export const getEditorLinkedObjects = createSelector(getEditor, state => state.linkedObjects || []);
+export const getEditorLinkedObjects = createSelector(getEditor, state => get(state, 'linkedObjects', []));
 
 export const getEditorLinkedObjectsCards = createSelector(
   getEditor,
-  state => state.hideLinkedObjects || [],
+  state => get(state, 'hideLinkedObjects', []),
 );
 
 export const getFilteredObjectCards = createSelector(getEditor, editor =>
