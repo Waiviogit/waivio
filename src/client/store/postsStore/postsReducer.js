@@ -130,6 +130,65 @@ const posts = (state = initialState, action) => {
         lastId,
       };
     }
+    case feedTypes.GET_MORE_FEED_CONTENT_BY_BLOG.SUCCESS: {
+      const list = {
+        ...state.list,
+      };
+      const postsStates = {
+        ...state.postsStates,
+      };
+
+      each(action.payload.posts, post => {
+        const key = getPostKey(post);
+
+        list[key] = { ...post, id: key };
+        postsStates[key] = {
+          fetching: false,
+          loaded: true,
+          failed: false,
+        };
+      });
+      const lastId =
+        // eslint-disable-next-line no-underscore-dangle
+        action.payload[action.payload.posts.length - 1] &&
+        action.payload[action.payload.posts.length - 1]._id;
+
+      return {
+        ...state,
+        list,
+        postsStates,
+        lastId,
+      };
+    }
+    case feedTypes.GET_FEED_CONTENT_BY_BLOG.SUCCESS: {
+      const list = {
+        ...state.list,
+      };
+      const postsStates = {
+        ...state.postsStates,
+      };
+
+      each(action.payload.posts, post => {
+        const key = getPostKey(post);
+
+        list[key] = { ...post, id: key };
+        postsStates[key] = {
+          fetching: false,
+          loaded: true,
+          failed: false,
+        };
+      });
+      const lastId =
+        // eslint-disable-next-line no-underscore-dangle
+        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
+
+      return {
+        ...state,
+        list,
+        postsStates,
+        lastId,
+      };
+    }
     case postsActions.GET_CONTENT.START:
       if (action.meta.afterLike) return state;
 

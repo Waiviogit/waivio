@@ -16,9 +16,11 @@ const UserSidebar = ({ authenticated, isGuest, content, authUserName, match, loc
   }
 
   return (
-    authenticated && (
-      <ObjectWeightBlock username={match.params.name} authUser={authUserName} locale={locale} />
-    )
+    <React.Fragment>
+      {authenticated && (
+        <ObjectWeightBlock username={match.params.name} authUser={authUserName} locale={locale} />
+      )}
+    </React.Fragment>
   );
 };
 
