@@ -9,12 +9,17 @@ import {
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLastPostId, getPosts } from '../postsStore/postsSelectors';
-import { getFeed } from './feedSelectors';
+import { getBlogFilters, getFeed } from './feedSelectors';
 import { getBookmarks as getBookmarksSelector } from '../bookmarksStore/bookmarksSelectors';
 import { getLocale, getReadLanguages } from '../settingsStore/settingsSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
+
+export const GET_FEED_CONTENT_BY_BLOG = createAsyncActionType('@feed/GET_FEED_CONTENT_BY_BLOG');
+export const GET_MORE_FEED_CONTENT_BY_BLOG = createAsyncActionType(
+  '@feed/GET_MORE_FEED_CONTENT_BY_BLOG',
+);
 
 export const GET_USER_FEED_CONTENT = createAsyncActionType('@feed/GET_USER_FEED_CONTENT');
 export const GET_MORE_USER_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_USER_FEED_CONTENT');
@@ -100,39 +105,31 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
   dispatch,
   getState,
 ) => {
-  let startAuthor = '';
-  let startPermlink = '';
   let userBlogPosts = [];
   const state = getState();
   const locale = getLocale(state);
   const follower = getAuthenticatedUserName(state);
+  const tagsCondition = getBlogFilters(state);
 
   if (!initialLoad) {
     const feed = getFeed(state);
-    const posts = getPosts(state);
 
     userBlogPosts = getFeedFromState('blog', userName, feed);
 
     if (!userBlogPosts.length) return Promise.resolve(null);
-
-    const lastPost = posts[userBlogPosts[userBlogPosts.length - 1]];
-
-    startAuthor = lastPost.author;
-    startPermlink = lastPost.permlink;
   }
 
   return dispatch({
-    type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
+    type: initialLoad ? GET_FEED_CONTENT_BY_BLOG.ACTION : GET_MORE_FEED_CONTENT_BY_BLOG.ACTION,
     payload: ApiClient.getUserProfileBlog(
       userName,
       follower,
       {
-        startAuthor,
-        startPermlink,
         limit,
         skip: userBlogPosts.length,
       },
       locale,
+      tagsCondition,
     ),
     meta: {
       sortBy: 'blog',
@@ -364,3 +361,16 @@ export const getBookmarks = () => (dispatch, getState) => {
     },
   });
 };
+
+export const SET_PROFILE_FILTERS = '@feed/SET_PROFILE_FILTERS';
+
+export const setProfileFilters = payload => ({
+  type: SET_PROFILE_FILTERS,
+  payload,
+});
+
+export const RESET_PROFILE_FILTERS = '@feed/RESET_PROFILE_FILTERS';
+
+export const resetProfileFilters = () => ({
+  type: RESET_PROFILE_FILTERS,
+});

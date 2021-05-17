@@ -925,7 +925,7 @@
   "check_review_primaryObject": "Link to {primaryObjectName}: {primaryObjectUrl}",
   "check_review_minExpertise": "Minimum overall expertise: {minExpertise}",
   "check_review_minFollowers": "Minimum number of followers: {minFollowers}",
-  "check_review_minPosts": "Minimum number of posts: {minPosts}",
+  "rewards_details_minimum_number_posts": "Minimum number of posts",
   "check_review_agreement_part_1": "This review meets all the technical requirements of",
   "check_review_the_reservation": "the reservation",
   "check_review_agreement_part_2": "and entitles you to specified rewards. The sponsor reserves the right to review all submissions manually before paying the rewards.",
@@ -1676,6 +1676,7 @@
   "find_the_restaurant": "Find the restaurant and select the dish",
   "reserve_rewards_few_days": "Reserve the reward for a few days",
   "receive_restaurant_rebates": "How To Receive Restaurant Rebates",
+  "filter_posts": "Filter posts",
   "cookies_experience": "We use cookies to improve user experience. By using this site, you consent to the use of cookies. Learn more about website",
   "list_types": "List types"
 }

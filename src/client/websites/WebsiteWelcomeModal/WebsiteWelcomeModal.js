@@ -83,7 +83,7 @@ const WebsiteWelcomeModal = props => {
         {props.intl.formatMessage({ id: 'step', defaultMessage: 'Step' })} {tabKey}:
       </h3>
       <Tabs defaultActiveKey="1" activeKey={tabKey}>
-        <Tabs.TabPane key="1">
+        <Tabs.TabPane key="1" tab="1">
           <p className="WebsiteWelcomeModal__paragph">
             {props.intl.formatMessage({
               id: 'find_the_restaurant',
@@ -92,7 +92,7 @@ const WebsiteWelcomeModal = props => {
           </p>
           <img src={'/images/tab_1.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
-        <Tabs.TabPane key="2">
+        <Tabs.TabPane key="2" tab="2">
           <p className="WebsiteWelcomeModal__paragph">
             {props.intl.formatMessage({
               id: 'reserve_rewards_few_days',
@@ -101,7 +101,7 @@ const WebsiteWelcomeModal = props => {
           </p>
           <img src={'/images/tab_2.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
-        <Tabs.TabPane key="3">
+        <Tabs.TabPane key="3" tab="3">
           <p className="WebsiteWelcomeModal__paragph">
             {props.intl.formatMessage({
               id: 'share_photos_of_the_dish',

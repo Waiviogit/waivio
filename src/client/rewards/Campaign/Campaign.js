@@ -31,7 +31,6 @@ const Campaign = ({
     <div className="Campaign">
       <ObjectCardView
         wObject={requiredObject}
-        key={requiredObject.id}
         passedParent={requiredObject.parent}
         hovered={hovered}
       />
@@ -77,7 +76,7 @@ Campaign.propTypes = {
   history: PropTypes.shape().isRequired,
   rewardPricePassed: PropTypes.string,
   rewardMaxPassed: PropTypes.string,
-  hovered: PropTypes.fool,
+  hovered: PropTypes.bool,
 };
 
 Campaign.defaultProps = {

@@ -928,7 +928,7 @@
   "check_review_primaryObject_link": "Ссылка на ",
   "check_review_minExpertise": "Минимальная общая экспертиза: {minExpertise}",
   "check_review_minFollowers": "Минимальное количество подписчиков: {minFollowers}",
-  "check_review_minPosts": "Минимальное количество публикаций: {minPosts}",
+  "rewards_details_minimum_number_posts": "Минимальное количество публикаций",
   "check_review_agreement_part_1": "Данный обзор отвечает всем техническим требованиям",
   "check_review_the_reservation": "резервирования",
   "check_review_agreement_part_2": "и дает Вам право на указанные вознаграждения. Спонсор оставляет за собой право пересмотреть все материалы вручную перед выплатой вознаграждения.",
@@ -1675,6 +1675,7 @@
   "receive_restaurant_rebates": "Как получить скидки в ресторане",
   "terms_and_conditions_modal": "Условия и положения",
   "find_the_restaurant": "Найдите ресторан и выберите блюдо",
+  "filter_posts": "Фильтры постов",
   "cookies_experience": "Мы используем файлы cookie, чтобы улучшить взаимодействие с пользователем. Используя этот сайт, вы соглашаетесь на использование файлов cookie. Узнать больше о веб-сайте",
   "create_new_account_instruction_part2": "подтвердив свой мобильный телефон. Но если вы предпочитаете анонимную учетную запись или вам нужны дополнительные учетные записи, вы можете сделать это, купив VIP-билеты на HiveOnBoard",
   "create_new_account_protect": "Чтобы защитить Hive от спама, свидетели блокчейна ввели небольшую единовременную плату за новые учетные записи Hive."

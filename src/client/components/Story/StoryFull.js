@@ -521,7 +521,7 @@ class StoryFull extends React.Component {
 
                 return (
                   <div className="CardView">
-                    <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />
+                    <ObjectCardView wObject={obj} passedParent={obj.parent} />
                   </div>
                 );
               })}
@@ -538,7 +538,7 @@ class StoryFull extends React.Component {
               {map(taggedObjects, obj => {
                 const wobj = obj;
 
-                return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
+                return <ObjectCardView key={`${wobj._id}`} wObject={wobj} />;
               })}
             </Collapse.Panel>
           )}

@@ -1,3 +1,5 @@
+import { get, uniqBy } from 'lodash';
+
 export const getFeedFromState = (sortBy, category = 'all', state) => {
   switch (sortBy) {
     case 'feed':
@@ -71,6 +73,25 @@ export const getFeedHasMoreFromState = (sortBy, listName = 'all', feedState) => 
   }
 };
 
+export const getFeedTagsFilterFromState = (sortBy, listName = 'all', feedState) => {
+  switch (sortBy) {
+    case 'feed':
+    case 'hot':
+    case 'cashout':
+    case 'created':
+    case 'trending':
+    case 'comments':
+    case 'blog':
+    case 'bookmarks':
+    case 'replies':
+    case 'promoted':
+    case 'objectPosts':
+      return (feedState[sortBy][listName] && feedState[sortBy][listName].tags) || [];
+    default:
+      return false;
+  }
+};
+
 export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':
@@ -88,6 +109,12 @@ export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
     default:
       return false;
   }
+};
+
+export const setFilterTagsForUsersProfile = (tags, newTags) => {
+  if (tags) return uniqBy([...tags, ...newTags], 'author_permlink');
+
+  return newTags;
 };
 
 // returning the same function but different naming helps to understand the code's flow better
