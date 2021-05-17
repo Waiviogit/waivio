@@ -928,7 +928,7 @@
   "check_review_primaryObject_link": "Ссылка на ",
   "check_review_minExpertise": "Минимальная общая экспертиза: {minExpertise}",
   "check_review_minFollowers": "Минимальное количество подписчиков: {minFollowers}",
-  "check_review_minPosts": "Минимальное количество публикаций: {minPosts}",
+  "rewards_details_minimum_number_posts": "Минимальное количество публикаций: {minPosts}",
   "check_review_agreement_part_1": "Данный обзор отвечает всем техническим требованиям",
   "check_review_the_reservation": "резервирования",
   "check_review_agreement_part_2": "и дает Вам право на указанные вознаграждения. Спонсор оставляет за собой право пересмотреть все материалы вручную перед выплатой вознаграждения.",

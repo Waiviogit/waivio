@@ -925,7 +925,7 @@
   "check_review_primaryObject": "Enlace a {primaryObjectName} : {primaryObjectUrl}",
   "check_review_minExpertise": "Experiencia general mínima: {minExpertise}",
   "check_review_minFollowers": "Número mínimo de seguidores: {minFollowers}",
-  "check_review_minPosts": "Número mínimo de publicaciones: {minPosts}",
+  "rewards_details_minimum_number_posts": "Número mínimo de publicaciones:",
   "check_review_agreement_part_1": "Esta revisión cumple con todos los requisitos técnicos de",
   "check_review_the_reservation": "la reserva",
   "check_review_agreement_part_2": "y te da derecho a recompensas específicas. El patrocinador se reserva el derecho de revisar todos los envíos manualmente antes de pagar las recompensas.",

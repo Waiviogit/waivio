@@ -925,7 +925,7 @@
   "check_review_primaryObject": "Link zu {primaryObjectName}: {primaryObjectUrl}",
   "check_review_minExpertise": "Minimale Gesamtexpertise: {minExpertise}",
   "check_review_minFollowers": "Mindestanzahl von Anhängern: {minFollowers}",
-  "check_review_minPosts": "Mindestanzahl von Stellen: {minPosts}",
+  "rewards_details_minimum_number_posts": "Mindestanzahl von Stellen:",
   "check_review_agreement_part_1": "Diese Überprüfung erfüllt alle technischen Anforderungen von",
   "check_review_the_reservation": "die Reservierung",
   "check_review_agreement_part_2": "und berechtigt Sie zu bestimmten Belohnungen. Der Sponsor behält sich das Recht vor, alle Einreichungen vor der Auszahlung der Prämien manuell zu überprüfen.",

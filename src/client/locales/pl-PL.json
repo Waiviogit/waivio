@@ -925,7 +925,7 @@
   "check_review_primaryObject": "Link do {primaryObjectName} : {primaryObjectUrl}",
   "check_review_minExpertise": "Minimalna ogólna wiedza: {minExpertise}",
   "check_review_minFollowers": "Minimalna liczba obserwujących: {minFollowers}",
-  "check_review_minPosts": "Minimalna liczba postów: {minPosts}",
+  "rewards_details_minimum_number_posts": "Minimalna liczba postów:",
   "check_review_agreement_part_1": "Ta recenzja spełnia wszystkie wymagania techniczne",
   "check_review_the_reservation": "rezerwacja",
   "check_review_agreement_part_2": "i uprawnia do określonych nagród. Sponsor zastrzega sobie prawo do ręcznego przejrzenia wszystkich zgłoszeń przed wypłaceniem nagród.",
