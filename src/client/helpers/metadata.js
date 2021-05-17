@@ -38,7 +38,7 @@ export const addDraftMetadata = draft =>
         return metadata.drafts.find(d => d.draftId === draft.draftId);
       }
     )
-    .then(newDraft => has(newDraft, 'title') ? newDraft : draft);
+    .then(newDraft => ({ ...newDraft, ...draft }));
 
 export const deleteDraftMetadataObject = (draftId, userName, objPermlink) => {
   const getFilteredDrafts = metadata =>

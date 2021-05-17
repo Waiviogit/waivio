@@ -452,7 +452,8 @@ export const reviewCheckInfo = (
     return getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
       .then(campaignData => {
         const draftId = new URLSearchParams(getQueryString(state)).get('draft');
-        const reviewedTitle = needReviewTitle ? getReviewTitle(campaignData, linkedObjects, draftBody) : {};
+        const currDraft = getCurrentDraft(state, { draftId });
+        const reviewedTitle = needReviewTitle ? getReviewTitle(campaignData, linkedObjects, draftBody, get(currDraft, 'title', '')) : {};
         const updatedEditorData = {
           ...reviewedTitle,
           campaign: campaignData,
@@ -460,7 +461,7 @@ export const reviewCheckInfo = (
 
         dispatch(setUpdatedEditorData(updatedEditorData));
         dispatch(setUpdatedEditorExtendedData({
-          titleValue: updatedEditorData.draftContent.title,
+          titleValue: get(currDraft, 'title', '') || updatedEditorData.draftContent.title,
           editorState: EditorState.moveFocusToEnd(createEditorState(fromMarkdown(updatedEditorData.draftContent))),
         }))
         dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
