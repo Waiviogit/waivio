@@ -925,7 +925,7 @@
   "check_review_primaryObject": "ارتباط بـ {primaryObjectName} : {primaryObjectUrl}",
   "check_review_minExpertise": "الحد الأدنى من الخبرة الشاملة: {minExpertise}",
   "check_review_minFollowers": "الحد الأدنى لعدد المتابعين: {minFollowers}",
-  "check_review_minPosts": "الحد الأدنى لعدد المشاركات",
+  "rewards_details_minimum_number_posts": "الحد الأدنى لعدد المشاركات",
   "check_review_agreement_part_1": "هذه المراجعة تلبي جميع المتطلبات الفنية لـ",
   "check_review_the_reservation": "الحجز",
   "check_review_agreement_part_2": "ويؤهلك للحصول على مكافآت محددة. يحتفظ الراعي بالحق في مراجعة جميع عمليات الإرسال يدويًا قبل دفع المكافآت.",
