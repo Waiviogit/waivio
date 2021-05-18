@@ -925,7 +925,7 @@
   "check_review_primaryObject": "链接到{primaryObjectName} ： {primaryObjectUrl}",
   "check_review_minExpertise": "最低整体专业知识： {minExpertise}",
   "check_review_minFollowers": "最低关注人数： {minFollowers}",
-  "rewards_details_minimum_number_posts": "最低帖子数：",
+  "rewards_details_minimum_number_posts": "最低帖子数",
   "check_review_agreement_part_1": "该审查符合以下方面的所有技术要求：",
   "check_review_the_reservation": "预约",
   "check_review_agreement_part_2": "并赋予您指定奖励的权利。赞助商保留在支付奖励之前手动审查所有提交内容的权利。",

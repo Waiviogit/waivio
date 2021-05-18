@@ -925,7 +925,7 @@
   "check_review_primaryObject": "Collegamento a {primaryObjectName} : {primaryObjectUrl}",
   "check_review_minExpertise": "Competenza complessiva minima: {minExpertise}",
   "check_review_minFollowers": "Numero minimo di follower: {minFollowers}",
-  "rewards_details_minimum_number_posts": "Numero minimo di post:",
+  "rewards_details_minimum_number_posts": "Numero minimo di post",
   "check_review_agreement_part_1": "Questa recensione soddisfa tutti i requisiti tecnici di",
   "check_review_the_reservation": "la prenotazione",
   "check_review_agreement_part_2": "e ti dà diritto a premi specifici. Lo sponsor si riserva il diritto di rivedere manualmente tutti i contributi prima di pagare i premi.",

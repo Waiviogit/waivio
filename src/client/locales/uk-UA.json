@@ -925,7 +925,7 @@
   "check_review_primaryObject": "Посилання на {primaryObjectName} : {primaryObjectUrl}",
   "check_review_minExpertise": "Мінімальний загальний досвід: {minExpertise}",
   "check_review_minFollowers": "Мінімальна кількість підписників: {minFollowers}",
-  "rewards_details_minimum_number_posts": "Мінімальна кількість публікацій:",
+  "rewards_details_minimum_number_posts": "Мінімальна кількість публікацій",
   "check_review_agreement_part_1": "Цей огляд відповідає всім технічним вимогам",
   "check_review_the_reservation": "бронювання",
   "check_review_agreement_part_2": "і дає право на зазначені винагороди. Спонсор залишає за собою право переглянути всі подання вручну перед виплатою винагороди.",
