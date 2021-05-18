@@ -925,7 +925,7 @@
   "check_review_primaryObject": "Lien vers {primaryObjectName}: {primaryObjectUrl}",
   "check_review_minExpertise": "Expertise globale minimale : {minExpertise}",
   "check_review_minFollowers": "Nombre minimum d'adeptes : {minFollowers}",
-  "check_review_minPosts": "Nombre minimum de postes : {minPosts}",
+  "rewards_details_minimum_number_posts": "Nombre minimum de postes",
   "check_review_agreement_part_1": "Cet examen répond à toutes les exigences techniques de",
   "check_review_the_reservation": "la réserve",
   "check_review_agreement_part_2": "et vous donne droit à des récompenses spécifiques. Le sponsor se réserve le droit d'examiner manuellement toutes les soumissions avant de payer les récompenses.",
