@@ -48,7 +48,11 @@ import {
   getCurrentLoadObjects,
   getNewLinkedObjectsCards,
   getReviewTitle,
-  getLinkedObjects as getLinkedObjectsHelper, getObjPercentsHideObject, getCurrentDraftContent, getFilteredLinkedObjects
+  getObjPercentsHideObject,
+  getCurrentDraftContent,
+  getFilteredLinkedObjects,
+  updatedHideObjectsPaste,
+  getLinkedObjects as getLinkedObjectsHelper,
 } from '../../helpers/editorHelper';
 import {
   getCurrentDraft,
@@ -736,15 +740,25 @@ export const handlePasteText = html => async (dispatch, getState) => {
   if (objectIds.length) {
     const state = getState();
     const locale = getLocale(state);
+    const linkedObjects = getEditorLinkedObjects(state);
     const hideLinkedObjects = getEditorLinkedObjectsCards(state);
-    const response = await getObjectsByIds({
+    const { wobjects } = await getObjectsByIds({
       locale,
       requiredFields: ['rating'],
       authorPermlinks: objectIds,
     });
-    const updatedHideLinkedCards = getFilteredLinkedObjects(response.wobjects, hideLinkedObjects);
-    const filteredObjects = differenceBy(response.wobjects, updatedHideLinkedCards, '_id');
 
-    console.log('objectIds', updatedHideLinkedCards, filteredObjects);
+    const newLinkedObjects = uniqBy([...linkedObjects, ...wobjects], '_id');
+    const updatedHideLinkedObjects = size(hideLinkedObjects)
+      ? updatedHideObjectsPaste(hideLinkedObjects, wobjects)
+      : hideLinkedObjects;
+    const objectsForPercentage = differenceBy(newLinkedObjects, updatedHideLinkedObjects, '_id');
+    const objPercentage = setObjPercents(objectsForPercentage);
+
+    dispatch(setUpdatedEditorData({
+      objPercentage,
+      linkedObjects: newLinkedObjects,
+      hideLinkedObjects: updatedHideLinkedObjects,
+    }));
   }
 }

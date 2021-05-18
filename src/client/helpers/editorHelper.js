@@ -1,5 +1,18 @@
 import uuidv4 from 'uuid/v4';
-import { differenceWith, find, get, has, head, isEqual, keyBy, last, uniqWith, reduce, size } from 'lodash';
+import {
+  differenceWith,
+  find,
+  get,
+  has,
+  head,
+  isEqual,
+  keyBy,
+  last,
+  uniqWith,
+  reduce,
+  size,
+  differenceBy
+} from 'lodash';
 import { Entity } from '../components/EditorExtended';
 
 export const EDITOR_ACTION_ADD = 'add';
@@ -169,4 +182,10 @@ export const getFilteredLinkedObjects = (linkedObjects, hiddenObjects) => {
   }
 
   return linkedObjects.filter(object => hiddenObjects.every(item => !isEqual(item, object)));
+};
+
+export const updatedHideObjectsPaste = (hideLinkedObjects, pastedObjects) => {
+  const updatedHideLinkedObjects = hideLinkedObjects.filter(hideObject => pastedObjects.some(object => object._id === hideObject._id));
+
+  return differenceBy(hideLinkedObjects, updatedHideLinkedObjects, '_id');
 };
