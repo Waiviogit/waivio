@@ -65,18 +65,24 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
             <p>{terminateReferralInfo}</p>
           </Modal>
         </div>
-        <div className="ReferralInstructions__wrap-conditions">
-          <Checkbox checked={currentStatus} id="agreeButton" onChange={handleAgreeRulesCheckbox} />
-          <label
-            htmlFor="agreeButton"
-            className="ReferralInstructions__wrap-conditions__condition-content"
-          >
-            <div className="ReferralInstructions__wrap-conditions__condition-content__star-flag">
-              *
-            </div>
-            {instructionsConditions}
-          </label>
-        </div>
+        {!isBlackListUser && (
+          <div className="ReferralInstructions__wrap-conditions">
+            <Checkbox
+              checked={currentStatus}
+              id="agreeButton"
+              onChange={handleAgreeRulesCheckbox}
+            />
+            <label
+              htmlFor="agreeButton"
+              className="ReferralInstructions__wrap-conditions__condition-content"
+            >
+              <div className="ReferralInstructions__wrap-conditions__condition-content__star-flag">
+                *
+              </div>
+              {instructionsConditions}
+            </label>
+          </div>
+        )}
         {(isStartChangeRules || isStartGetReferralInfo) && (
           <div className="ReferralInstructions__wrap-conditions__loader">
             <Loading />
