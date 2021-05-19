@@ -1454,7 +1454,7 @@
   "referrals_instructions_accepted_title_widget": "वाइवियो विजेट:",
   "referrals_instructions_accepted__widget_info": "यह पृष्ठ-आकार विजेट प्रासंगिक सक्रिय पुरस्कार दिखाने के लिए डिज़ाइन किया गया है। निम्नलिखित कोड को अपने वेबपेज में पेस्ट करें:",
   "referrals_instructions_accepted__widget_example": "देखें {text}",
-  "referrals_instructions_accepted__alert": "कृपया ध्यान दें कि रेफरल समझौते के अनुसार किसी भी भ्रामक प्रचार की अनुमति नहीं है। वाइवियो किसी भी कारण से किसी भी समय रेफरल कार्यक्रम को समाप्त करने का अधिकार सुरक्षित रखता है।",
+  "referrals_instructions_accepted__alert": "कृपया ध्यान दें कि रेफरल कार्यक्रम के अनुसार किसी भी भ्रामक प्रचार की अनुमति नहीं है। Waivio किसी भी कारण से किसी भी समय रेफरल कार्यक्रम को समाप्त करने का अधिकार सुरक्षित रखता है।",
   "referrals_instructions_terminate_referral_title": "रेफरल कार्यक्रम को समाप्त करें",
   "referrals_instructions_terminate_referral_info": "यदि आप अब वाइवियो सेवा अनुबंध के नियमों और शर्तों को स्वीकार नहीं करते हैं, तो आप अब रेफ़रल कार्यक्रम में भाग नहीं ले सकते हैं। भविष्य के सभी रेफरल निलंबित कर दिए जाएंगे।",
   "copy_button": "प्रतिलिपि",
