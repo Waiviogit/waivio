@@ -11,7 +11,7 @@ import {
   uniqWith,
   reduce,
   size,
-  differenceBy
+  differenceBy,
 } from 'lodash';
 import { Entity } from '../components/EditorExtended';
 
@@ -119,18 +119,24 @@ export const getCurrentLoadObjects = (response, value) => {
 const getDifferOfContents = (iteratedRowContent, rowContent) => {
   let rowContentForUpdate = [...rowContent];
 
-  return iteratedRowContent.filter((object) => rowContentForUpdate.every((item) => {
-      const returnValue = get(item, 'data.object.author_permlink', '') !== get(object, 'data.object.author_permlink', false);
+  return iteratedRowContent.filter(object =>
+    rowContentForUpdate.every(item => {
+      const returnValue =
+        get(item, 'data.object.author_permlink', '') !==
+        get(object, 'data.object.author_permlink', false);
 
       if (returnValue) {
-        rowContentForUpdate = rowContentForUpdate.filter(rowContentItem => !isEqual(rowContentItem, item));
+        rowContentForUpdate = rowContentForUpdate.filter(
+          rowContentItem => !isEqual(rowContentItem, item),
+        );
 
         return returnValue;
       }
 
       return returnValue;
-    }))
-}
+    }),
+  );
+};
 
 export const getLastContentAction = (updatedRowContent, prevRowContent) => {
   if (prevRowContent.length > updatedRowContent.length) {
@@ -138,7 +144,7 @@ export const getLastContentAction = (updatedRowContent, prevRowContent) => {
       actionType: EDITOR_ACTION_REMOVE,
       actionValue: head(getDifferOfContents(prevRowContent, updatedRowContent)),
     };
-  } else if(prevRowContent.length < updatedRowContent.length) {
+  } else if (prevRowContent.length < updatedRowContent.length) {
     return {
       actionType: EDITOR_ACTION_ADD,
       actionValue: head(getDifferOfContents(updatedRowContent, prevRowContent)),
@@ -155,25 +161,35 @@ export const filterEditorObjects = objects =>
   objects.filter(object => object.type === Entity.OBJECT);
 
 export const getObjPercentsHideObject = (linkedObjects, hideObject, objPercentage) => {
-  const actualObjPercentage = reduce(objPercentage, (result, value, key) => {
-    if(value.percent) {
+  const actualObjPercentage = reduce(
+    objPercentage,
+    (result, value, key) => {
+      const updatedObjPercentage = { ...result };
 
-      result[key] = value;
+      if (value.percent) {
+        updatedObjPercentage[key] = value;
 
-      return result;
-    }
+        return updatedObjPercentage;
+      }
 
-    return result;
-  }, {});
+      return updatedObjPercentage;
+    },
+    {},
+  );
 
   actualObjPercentage[hideObject._id] = { percent: 0 };
 
-  return reduce(actualObjPercentage, (result, value, key) => {
+  return reduce(
+    actualObjPercentage,
+    (result, value, key) => {
+      const updateObjPercentage = { ...result };
 
-    result[key] = {percent: 100 / size(actualObjPercentage)};
+      updateObjPercentage[key] = { percent: 100 / size(actualObjPercentage) };
 
-    return result;
-  }, {});
+      return updateObjPercentage;
+    },
+    {},
+  );
 };
 
 export const getFilteredLinkedObjects = (linkedObjects, hiddenObjects) => {
@@ -185,7 +201,9 @@ export const getFilteredLinkedObjects = (linkedObjects, hiddenObjects) => {
 };
 
 export const updatedHideObjectsPaste = (hideLinkedObjects, pastedObjects) => {
-  const updatedHideLinkedObjects = hideLinkedObjects.filter(hideObject => pastedObjects.some(object => object._id === hideObject._id));
+  const updatedHideLinkedObjects = hideLinkedObjects.filter(hideObject =>
+    pastedObjects.some(object => object._id === hideObject._id),
+  );
 
   return differenceBy(hideLinkedObjects, updatedHideLinkedObjects, '_id');
 };

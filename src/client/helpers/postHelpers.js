@@ -141,7 +141,10 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, cam
   }
   if (campaignId) metaData.campaignId = campaignId;
 
-  return { ...metaData, wobj: { wobjects: uniqBy(get(metaData, 'wobj.wobjects', []), 'author_permlink') } };
+  return {
+    ...metaData,
+    wobj: { wobjects: uniqBy(get(metaData, 'wobj.wobjects', []), 'author_permlink') },
+  };
 }
 
 /**
@@ -170,7 +173,7 @@ export function getObjectUrl(objPermlink) {
 export function getInitialState(props, hideLinkedObjectsSession = []) {
   const search = props.location.search.replace(/ & /, ' ');
   const initObjects = new URLSearchParams(search).getAll('object');
-  const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || []
+  const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
   let state = {
     campaign: props.campaignId ? { id: props.campaignId } : null,
     draftId: props.draftId || uuidv4(),

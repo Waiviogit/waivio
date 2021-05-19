@@ -33,18 +33,22 @@ export const getCurrentDraft = createSelector(
   (draftPosts, draftId) => draftPosts.find(d => d.draftId === draftId),
 );
 
-export const getEditorLinkedObjects = createSelector(getEditor, state => get(state, 'linkedObjects', []));
+export const getEditorLinkedObjects = createSelector(getEditor, state =>
+  get(state, 'linkedObjects', []),
+);
 
-export const getEditorLinkedObjectsCards = createSelector(
-  getEditor,
-  state => get(state, 'hideLinkedObjects', []),
+export const getEditorLinkedObjectsCards = createSelector(getEditor, state =>
+  get(state, 'hideLinkedObjects', []),
 );
 
 export const getFilteredObjectCards = createSelector(getEditor, editor =>
-  uniqBy(filter(
-    editor.linkedObjects,
-    object => object && !find(editor.hideLinkedObjects, { _id: object && object._id }),
-  ), '_id'),
+  uniqBy(
+    filter(
+      editor.linkedObjects,
+      object => object && !find(editor.hideLinkedObjects, { _id: object && object._id }),
+    ),
+    '_id',
+  ),
 );
 
 export const getEditorExtended = createSelector([editorState], state => state.editorExtended);

@@ -1,16 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Badge } from 'antd';
-import {
-  debounce,
-  get,
-  includes,
-  find,
-  uniqWith,
-  isEqual,
-  isEmpty,
-  isNull,
-} from 'lodash';
+import { debounce, get, includes, find, uniqWith, isEqual, isEmpty, isNull } from 'lodash';
 import { getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
@@ -21,9 +12,7 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
-import {
-  getCurrentDraftId,
-} from '../../helpers/editorHelper';
+import { getCurrentDraftId } from '../../helpers/editorHelper';
 
 import './EditPost.less';
 
@@ -101,11 +90,7 @@ const EditPost = props => {
     props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
 
     if (isReview) {
-      props.getReviewCheckInfo(
-        { campaignId },
-        intl,
-        true,
-      );
+      props.getReviewCheckInfo({ campaignId }, intl, true);
     }
 
     return () => {
@@ -133,7 +118,7 @@ const EditPost = props => {
     props.firstParseLinkedObjects(props.currDraft);
   }, [props.draftId, props.campaignId]);
 
-  const setDraftId = (hideObjects) => {
+  const setDraftId = hideObjects => {
     if (props.draftId && props.draftId !== draftIdEditor) {
       props.setEditorState(getInitialState(props, hideObjects));
     } else if (isNull(props.draftId) && draftIdEditor) {
@@ -153,7 +138,8 @@ const EditPost = props => {
         props.saveDraft(updatedStore);
         props.setUpdatedEditorData(updatedStore);
       }
-    }, 1500), [props.draftId],
+    }, 1500),
+    [props.draftId],
   );
 
   const handleSettingsChange = updatedValue =>

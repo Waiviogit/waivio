@@ -11,7 +11,7 @@ const Draft = ({ draft }) => (
   <div className="LastDrafts__draft">
     <Link
       className="LastDrafts__draft__title"
-      to={{ pathname: '/editor', search: `?draft=${draft.draftId}`}}
+      to={{ pathname: '/editor', search: `?draft=${draft.draftId}` }}
     >
       {draft.title ? (
         draft.title
@@ -51,7 +51,7 @@ const LastDrafts = ({ drafts, loaded }) => {
           <FormattedMessage id="drafts_empty" defaultMessage="You don't have any draft saved" />
         )}
         {drafts.map(d => (
-          <Draft key={d.draftId} draft={d}  />
+          <Draft key={d.draftId} draft={d} />
         ))}
         {!empty && (
           <h4 className="LastDrafts__more">

@@ -39,7 +39,7 @@ const Editor = props => {
     const newLinkedObjectsCards = props.getRestoreObjects(rawContent, newObject, props.draftId);
 
     props.setUpdatedEditorData({ hideLinkedObjects: newLinkedObjectsCards });
-  }
+  };
 
   const handleContentChange = updatedEditorState => {
     onChange(updatedEditorState);

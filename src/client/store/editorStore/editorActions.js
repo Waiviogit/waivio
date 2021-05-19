@@ -56,7 +56,8 @@ import {
 } from '../../helpers/editorHelper';
 import {
   getCurrentDraft,
-  getEditor, getEditorDraftBody,
+  getEditor,
+  getEditorDraftBody,
   getEditorExtended,
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
@@ -68,8 +69,8 @@ import { getObjectName } from '../../helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../components/EditorExtended';
 import { handlePastedLink, QUERY_APP } from '../../components/EditorExtended/util/editorHelper';
-import { setObjPercents } from "../../helpers/wObjInfluenceHelper";
-import { extractLinks } from "../../helpers/parser";
+import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import { extractLinks } from '../../helpers/parser';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -457,19 +458,30 @@ export const reviewCheckInfo = (
       .then(campaignData => {
         const draftId = new URLSearchParams(getQueryString(state)).get('draft');
         const currDraft = getCurrentDraft(state, { draftId });
-        const reviewedTitle = needReviewTitle ? getReviewTitle(campaignData, linkedObjects, draftBody, get(currDraft, 'title', '')) : {};
+        const reviewedTitle = needReviewTitle
+          ? getReviewTitle(campaignData, linkedObjects, draftBody, get(currDraft, 'title', ''))
+          : {};
         const updatedEditorData = {
           ...reviewedTitle,
           campaign: campaignData,
         };
 
         dispatch(setUpdatedEditorData(updatedEditorData));
-        dispatch(setUpdatedEditorExtendedData({
-          titleValue: get(currDraft, 'title', '') || updatedEditorData.draftContent.title,
-          editorState: EditorState.moveFocusToEnd(createEditorState(fromMarkdown(updatedEditorData.draftContent))),
-        }))
+        dispatch(
+          setUpdatedEditorExtendedData({
+            titleValue: get(currDraft, 'title', '') || updatedEditorData.draftContent.title,
+            editorState: EditorState.moveFocusToEnd(
+              createEditorState(fromMarkdown(updatedEditorData.draftContent)),
+            ),
+          }),
+        );
         dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
-        dispatch(saveDraft(draftId, intl, { content: updatedEditorData.draftContent.body, titleValue: updatedEditorData.draftContent.title }))
+        dispatch(
+          saveDraft(draftId, intl, {
+            content: updatedEditorData.draftContent.body,
+            titleValue: updatedEditorData.draftContent.title,
+          }),
+        );
       })
       .catch(error => {
         message.error(
@@ -557,7 +569,16 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
 
 export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispatch, getState) => {
   const state = getState();
-  const { content, titleValue, topics, linkedObjects, hideLinkedObjects, objPercentage, currentRawContent, draftId } = getEditor(state);
+  const {
+    content,
+    titleValue,
+    topics,
+    linkedObjects,
+    hideLinkedObjects,
+    objPercentage,
+    currentRawContent,
+    draftId,
+  } = getEditor(state);
   const objName = getObjectName(object).toLowerCase();
   const objPermlink = object.author_permlink;
   const separator = content.slice(-1) === '\n' ? '' : '\n';
@@ -570,9 +591,10 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
   const { rawContentUpdated } = await dispatch(getRestoreObjects(fromMarkdown(draftContent)));
   const parsedLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
   const newLinkedObject = parsedLinkedObjects.find(item => item._id === object._id);
-  const updatedLinkedObjects =
-    uniqBy([...uniqBy(linkedObjects, '_id'), newLinkedObject], '_id')
-    .filter(item => has(item, '_id'));
+  const updatedLinkedObjects = uniqBy(
+    [...uniqBy(linkedObjects, '_id'), newLinkedObject],
+    '_id',
+  ).filter(item => has(item, '_id'));
   let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
   const isHideObject = hideLinkedObjects.find(
     item => item.author_permlink === newLinkedObject.author_permlink,
@@ -585,18 +607,28 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
 
     updatedStore.hideLinkedObjects = filteredObjectCards;
     sessionStorage.setItem('hideLinkedObjects', JSON.stringify(filteredObjectCards));
-    updatedObjPercentage = getObjPercentsHideObject(updatedLinkedObjects, isHideObject, updatedObjPercentage);
+    updatedObjPercentage = getObjPercentsHideObject(
+      updatedLinkedObjects,
+      isHideObject,
+      updatedObjPercentage,
+    );
   }
-  updatedStore.linkedObjects = getFilteredLinkedObjects(updatedLinkedObjects, updatedStore.hideLinkedObjects);
+  updatedStore.linkedObjects = getFilteredLinkedObjects(
+    updatedLinkedObjects,
+    updatedStore.hideLinkedObjects,
+  );
   updatedStore.objPercentage = updatedObjPercentage;
-  const newData = {...updatedStore, ...getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent)};
+  const newData = {
+    ...updatedStore,
+    ...getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent),
+  };
   const editorState = isCursorToEnd
     ? EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent)))
     : createEditorState(fromMarkdown(draftContent));
   const updateTopics = uniqWith(
     object.type === 'hashtag' || (object.object_type === 'hashtag' && [...topics, objPermlink]),
     isEqual,
-  )
+  );
 
   dispatch(setUpdatedEditorExtendedData({ editorState }));
   dispatch(
@@ -606,7 +638,9 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
       topics: size(updateTopics) ? updateTopics : topics,
     }),
   );
-  dispatch(saveDraft(draftId, intl, { content: draftContent.body, titleValue: draftContent.title }));
+  dispatch(
+    saveDraft(draftId, intl, { content: draftContent.body, titleValue: draftContent.title }),
+  );
 
   return Promise.resolve(draftContent);
 };
@@ -675,7 +709,7 @@ export const getRawContentEntityMap = (rawContent, response) => (dispatch, getSt
 
       entityMap[key] = {
         ...value,
-        data: currObj ? {...value.data, object: currObj} : {...value.data},
+        data: currObj ? { ...value.data, object: currObj } : { ...value.data },
       };
     }
   });
@@ -715,22 +749,24 @@ export const getRestoreObjects = (rawContent, newObject, draftId) => async (disp
   return { rawContentUpdated, newLinkedObjectsCards };
 };
 
-export const firstParseLinkedObjects = (draft) => async (dispatch) => {
+export const firstParseLinkedObjects = draft => async dispatch => {
   if (draft) {
     const entities = fromMarkdown({ body: draft.body });
     const { rawContentUpdated } = await dispatch(getRestoreObjects(entities));
     const draftLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
     const draftObjPercentage = setObjPercents(draftLinkedObjects);
 
-    dispatch(setUpdatedEditorData({
-      linkedObjects: draftLinkedObjects,
-      objPercentage: draftObjPercentage,
-    }));
+    dispatch(
+      setUpdatedEditorData({
+        linkedObjects: draftLinkedObjects,
+        objPercentage: draftObjPercentage,
+      }),
+    );
   }
-}
+};
 
 export const handlePasteText = html => async (dispatch, getState) => {
-  const links = extractLinks(html)
+  const links = extractLinks(html);
   const objectIds = links.map(item => {
     const itemArray = item.split('/');
 
@@ -755,10 +791,12 @@ export const handlePasteText = html => async (dispatch, getState) => {
     const objectsForPercentage = differenceBy(newLinkedObjects, updatedHideLinkedObjects, '_id');
     const objPercentage = setObjPercents(objectsForPercentage);
 
-    dispatch(setUpdatedEditorData({
-      objPercentage,
-      linkedObjects: newLinkedObjects,
-      hideLinkedObjects: updatedHideLinkedObjects,
-    }));
+    dispatch(
+      setUpdatedEditorData({
+        objPercentage,
+        linkedObjects: newLinkedObjects,
+        hideLinkedObjects: updatedHideLinkedObjects,
+      }),
+    );
   }
-}
+};

@@ -111,9 +111,10 @@ class CreateObject extends React.Component {
 
   handleVotePercentChange = votePercent => this.setState({ votePercent });
 
-  forceCloseObject = () => this.setState({ loading: false, isModalOpen: false }, () => {
-    this.handleCloseModal();
-  });
+  forceCloseObject = () =>
+    this.setState({ loading: false, isModalOpen: false }, () => {
+      this.handleCloseModal();
+    });
 
   handleSubmit = e => {
     e.preventDefault();

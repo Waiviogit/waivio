@@ -157,20 +157,22 @@ const editor = (state = defaultState, action) => {
         editor: action.payload,
         editorExtended: {
           ...state.editorExtended,
-          editorState: EditorState.moveFocusToEnd(createEditorState(fromMarkdown(action.payload.draftContent))),
+          editorState: EditorState.moveFocusToEnd(
+            createEditorState(fromMarkdown(action.payload.draftContent)),
+          ),
           titleValue: action.payload.draftContent.title,
         },
       };
     case editorActions.SET_UPDATED_EDITOR_DATA: {
-      const updatedState = {...state, editor: {...state.editor, ...action.payload}};
+      const updatedState = { ...state, editor: { ...state.editor, ...action.payload } };
 
       return {
         ...updatedState,
         editor: {
-        ...updatedState.editor,
-          linkedObjects: uniqBy(get(updatedState, 'editor.linkedObjects', []), '_id')
-        }
-      }
+          ...updatedState.editor,
+          linkedObjects: uniqBy(get(updatedState, 'editor.linkedObjects', []), '_id'),
+        },
+      };
     }
     case editorActions.SET_UPDATED_EDITOR_EXTENDED_DATA:
       return {
@@ -187,7 +189,7 @@ const editor = (state = defaultState, action) => {
       return {
         ...defaultState,
         draftPosts: state.draftPosts,
-      }
+      };
     default:
       return state;
   }
