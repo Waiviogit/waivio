@@ -491,6 +491,13 @@ export default (state = initialState, action) => {
       };
     }
 
+    case searchActions.SET_FILTER_FROM_QUERY: {
+      return {
+        ...state,
+        tagCategory: action.payload,
+      };
+    }
+
     case searchActions.SET_SEARCH_SORT: {
       return {
         ...state,

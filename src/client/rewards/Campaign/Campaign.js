@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { has, get } from 'lodash';
+import { has, get, round } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -22,8 +22,8 @@ const Campaign = ({
   const requiredObject = hasCampaigns ? proposition : get(proposition, ['required_object'], {});
   const minReward = get(campaign, ['min_reward'], 0);
   const maxReward = get(campaign, ['max_reward'], 0);
-  const rewardPrice = minReward ? `${minReward.toFixed(2)} USD` : '';
-  const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
+  const rewardPrice = minReward ? `${round(minReward, 2)} USD` : '';
+  const rewardMax = maxReward !== minReward ? `${round(maxReward, 2)} USD` : '';
   const goToProducts = () =>
     history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
 
@@ -31,7 +31,6 @@ const Campaign = ({
     <div className="Campaign">
       <ObjectCardView
         wObject={requiredObject}
-        key={requiredObject.id}
         passedParent={requiredObject.parent}
         hovered={hovered}
       />
@@ -77,7 +76,7 @@ Campaign.propTypes = {
   history: PropTypes.shape().isRequired,
   rewardPricePassed: PropTypes.string,
   rewardMaxPassed: PropTypes.string,
-  hovered: PropTypes.fool,
+  hovered: PropTypes.bool,
 };
 
 Campaign.defaultProps = {

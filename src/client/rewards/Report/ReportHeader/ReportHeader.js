@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { get, map } from 'lodash';
+import { get, map, round } from 'lodash';
+
 import Avatar from '../../../components/Avatar';
 import { getSingleReportData } from '../../../store/rewardsStore/rewardsSelectors';
 
@@ -15,8 +16,8 @@ const ReportHeader = ({ intl }) => {
   const reservationDate = moment(singleReportData.reservationDate).format('MMMM D, YYYY');
   const reviewDate = moment(singleReportData.reviewDate).format('MMMM D, YYYY');
   const title = singleReportData.title;
-  const rewardHive = singleReportData.rewardHive ? singleReportData.rewardHive.toFixed(3) : 0;
-  const rewardUsd = singleReportData.rewardUsd ? singleReportData.rewardUsd.toFixed(2) : 'N/A';
+  const rewardHive = singleReportData.rewardHive ? round(singleReportData.rewardHive, 3) : 0;
+  const rewardUsd = singleReportData.rewardUsd ? round(singleReportData.rewardUsd, 2) : 'N/A';
   const userAlias = singleReportData.user.alias;
   const userName = singleReportData.user.name;
   const sponsorAlias = singleReportData.sponsor.alias;

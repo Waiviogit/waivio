@@ -24,7 +24,7 @@ class CustomMarker extends React.Component {
     // eslint-disable-next-line react/forbid-prop-types
     payload: PropTypes.any.isRequired,
     hover: PropTypes.bool,
-    isMarked: PropTypes.bool.isRequired,
+    isMarked: PropTypes.bool,
     currLocation: PropTypes.bool,
     hoveredWobj: PropTypes.bool,
   };
@@ -41,6 +41,7 @@ class CustomMarker extends React.Component {
     onDoubleClick: () => {},
     onClick: () => {},
     img: '',
+    isMarked: false,
   };
 
   constructor(props) {

@@ -83,6 +83,7 @@ import {
 import { getAllUsers } from '../store/usersStore/usersSelectors';
 import { getPendingUpdate, getUserLocation } from '../store/userStore/userSelectors';
 import { getIsMapModalOpen, getObjectsMap } from '../store/mapStore/mapSelectors';
+import DEFAULTS from '../object/const/defaultValues';
 
 @withRouter
 @injectIntl
@@ -299,12 +300,6 @@ class Rewards extends React.Component {
       );
     }
   };
-
-  getRequiredObjects = () =>
-    this.state.propositions &&
-    this.state.propositions
-      .filter(proposition => proposition.required_object)
-      .map(proposition => ({ ...proposition.required_object, campaigns: {} })); // add 'campaigns' prop to display objects on the map with proper marker
 
   getAreaSearchData = ({ radius, coordinates }) => {
     this.setState({ isSearchAreaFilter: true, loadingCampaigns: true });
@@ -1045,25 +1040,37 @@ class Rewards extends React.Component {
     const campaignsObjectsForMap =
       campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
-    const isWidget = sessionStorage.getItem('isWidget');
+    const isWidget =
+      typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('isWidget') : false;
+    const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
+    const img = DEFAULTS.FAVICON;
+    const waivioHost = global.postOrigin || 'https://www.waivio.com';
+    const urlCurr = `${waivioHost}/rewards`;
+    const title = `Rewards - Waivio`;
 
     return (
       <div className="Rewards">
         <div className="shifted">
           <Helmet>
-            <title>Rewards</title>
-            <meta
-              name="og:title"
-              property="og:title"
-              content={`${intl.formatMessage({
-                id: 'rewards',
-                defaultMessage: 'Rewards',
-              })} - Waivio`}
-            />
-            <meta name="og:type" property="og:type" content="article" />
-            <meta name="og:image" property="og:image" content={this.props.helmetIcon} />
-            <meta property="og:site_name" content="Waivio" />
+            <title>{title}</title>
+            <meta property="og:title" content={title} />
             <meta name="robots" content={robots} />
+            <link rel="canonical" href={urlCurr} />
+            <meta property="description" content={desc} />
+            <meta name="twitter:card" content={'summary_large_image'} />
+            <meta name="twitter:site" content={'@waivio'} />
+            <meta name="twitter:title" content={title} />
+            <meta name="twitter:description" content={desc} />
+            <meta name="twitter:image" content={img} />
+            <meta property="og:title" content={title} />
+            <meta property="og:type" content="article" />
+            <meta property="og:url" content={urlCurr} />
+            <meta property="og:image" content={img} />
+            <meta property="og:image:width" content="600" />
+            <meta property="og:image:height" content="600" />
+            <meta property="og:description" content={desc} />
+            <meta property="og:site_name" content="Waivio" />
+            <link rel="image_src" href={img} />
             <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
           </Helmet>
           <ScrollToTop />

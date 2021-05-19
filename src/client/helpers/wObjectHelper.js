@@ -4,6 +4,8 @@ import LANGUAGES from '../translations/languages';
 
 export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'default_name');
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
+export const getObjectUrl = (wobj = {}) =>
+  get(wobj, 'defaultShowLink') || `/object/${wobj.author_permlink}`;
 export const getObjectAvatar = (wobj = {}) =>
   get(wobj, 'avatar', '') || get(wobj, ['parent', 'avatar'], '');
 export const getObjectType = (wobj = {}) => get(wobj, 'object_type') || get(wobj, 'type');
@@ -192,12 +194,14 @@ export const getBlogItems = wobject => get(wobject, 'blog', []);
 export const getFormItems = wobject => get(wobject, 'form', []);
 export const getNewsFilterItems = wobject => get(wobject, 'newsFilter', []);
 
-export const parseAddress = wobject => {
+export const parseAddress = (wobject, hideField = []) => {
   if (isEmpty(wobject) || !wobject.address) return null;
 
   return compact(
     Object.values(addressFields).map(fieldName => {
       const parsedWobject = parseWobjectField(wobject, 'address');
+
+      if (hideField.some(field => field === fieldName)) return null;
 
       return get(parsedWobject, fieldName);
     }),

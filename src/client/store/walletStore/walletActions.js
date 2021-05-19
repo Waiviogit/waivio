@@ -57,6 +57,7 @@ export const openTransfer = (
   memo = '',
   app,
   tip = false,
+  isVipTicket = false,
 ) => dispatch =>
   dispatch({
     type: OPEN_TRANSFER,
@@ -67,6 +68,7 @@ export const openTransfer = (
       memo,
       app,
       tip,
+      isVipTicket,
     },
   });
 
@@ -107,7 +109,7 @@ const parseGuestActions = actions => {
       : { from: action.userName, to: action.sponsor || 'mock' };
 
     return {
-      trx_id: action._id, // eslint-disable-line
+      trx_id: action._id,
       block: 39603148,
       trx_in_block: 1,
       op_in_trx: 0,
@@ -123,6 +125,8 @@ const parseGuestActions = actions => {
           typeTransfer: action.type,
           details: action.details || null,
           username: action.userName,
+          hbdUSD: action.hbdUSD,
+          hiveUSD: action.hiveUSD,
         },
       ],
       actionCount: index + 1,

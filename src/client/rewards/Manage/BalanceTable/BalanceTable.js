@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { isEmpty, round, get } from 'lodash';
 import './BalanceTable.less';
 
 const BalanceTable = props => {
   const { intl, budgetTotal, isGuest, guestBalance } = props;
-  const balance = budgetTotal.account_amount ? budgetTotal.account_amount.toFixed(3) : '0.000';
-  const payable = budgetTotal.sum_payable ? budgetTotal.sum_payable.toFixed(3) : '0.000';
-  const reserved = budgetTotal.sum_reserved ? budgetTotal.sum_reserved.toFixed(3) : '0.000';
-  const remaining = budgetTotal.remaining ? budgetTotal.remaining.toFixed(3) : '0.000';
+  const balance = round(get(budgetTotal, 'account_amount', 0), 3);
+  const payable = round(get(budgetTotal, 'sum_payable', 0), 3);
+  const reserved = round(get(budgetTotal, 'sum_reserved', 0), 3);
+  const remaining = round(get(budgetTotal, 'remaining', 0), 3);
 
   return (
     <table className="BalanceTable">

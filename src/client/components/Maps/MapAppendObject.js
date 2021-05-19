@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import React from 'react';
-import Map from 'pigeon-maps';
+import { Map } from 'pigeon-maps';
 import { connect } from 'react-redux';
 import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';

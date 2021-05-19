@@ -1,16 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import { get, round } from 'lodash';
 import './ReportTableRewardsRow.less';
 
 const ReportTableRewardsRow = beneficiary => {
-  const weight = beneficiary.weight ? `${beneficiary.weight}%` : '';
-  const votesAmount = beneficiary.votesAmount ? beneficiary.votesAmount.toFixed(3) : '';
-  const amount = beneficiary.amount ? beneficiary.amount.toFixed(3) : '';
+  const votesAmount = round(get(beneficiary, 'votesAmount', 0), 3);
+  const amount = round(get(beneficiary, 'amount', 0), 3);
   const totalHive = Number(votesAmount) + Number(amount);
-  const payableInDollars = beneficiary.payableInDollars
-    ? `$ ${beneficiary.payableInDollars.toFixed(2)}`
-    : '';
+  const payableInDollars = `$ ${round(get(beneficiary, 'payableInDollars', 0), 2)}`;
   const ReportTableClassesList = classNames('ReportTableRewardsRow__hive', {
     ReportTableRewardsRow__ownHive: beneficiary.ownHive,
   });
@@ -23,7 +21,7 @@ const ReportTableRewardsRow = beneficiary => {
         </div>
       </td>
       <td>
-        <div className="ReportTableRewardsRow__weigth">{weight}</div>
+        <div className="ReportTableRewardsRow__weigth">{beneficiary.weight}%</div>
       </td>
       <td>
         <div className="ReportTableRewardsRow__hivePower">{votesAmount}</div>
@@ -32,7 +30,7 @@ const ReportTableRewardsRow = beneficiary => {
         <div className={ReportTableClassesList}>{amount}</div>
       </td>
       <td>
-        <div className="ReportTableRewardsRow__totalHive">{totalHive.toFixed(3)}</div>
+        <div className="ReportTableRewardsRow__totalHive">{round(totalHive, 3)}</div>
       </td>
       <td>
         <div className="ReportTableRewardsRow__totalUsd">{payableInDollars}</div>

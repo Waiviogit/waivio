@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty, includes, get, isNumber } from 'lodash';
+import { isEmpty, includes, get, isNumber, round } from 'lodash';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -47,7 +47,9 @@ const Payment = ({
   const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
-  const notPayedPeriodClassList = classNames('Payment__notPayedPeriod', {
+  const notPayedPeriodClassList = classNames({
+    Payment__notPayedPeriod: notPayedPeriod,
+    'Payment__notPayedPeriod--hidden': !notPayedPeriod,
     'Payment__notPayedPeriod--expired': notPayedPeriod >= 21,
   });
 
@@ -108,35 +110,31 @@ const Payment = ({
                 id: 'pay',
                 defaultMessage: 'Pay',
               })}
-              {` ${
-                isPayables
-                  ? payable && payable.toFixed(3)
-                  : payableForRender && payableForRender.toFixed(3)
-              } HIVE`}
+              {` ${isPayables ? round(payable, 3) : round(payableForRender, 3)} HIVE`}
             </Action>
           ) : (
             ''
           )}
+          {isNumber(notPayedPeriod) && isPayables && (
+            <span className={notPayedPeriodClassList}>
+              (
+              {intl.formatMessage({
+                id: 'over',
+                defaultMessage: 'over',
+              })}{' '}
+              {notPayedPeriod} d)
+            </span>
+          )}
         </div>
-        {isNumber(notPayedPeriod) && isPayables && (
-          <span className={notPayedPeriodClassList}>
-            (
-            {intl.formatMessage({
-              id: 'over',
-              defaultMessage: 'over',
-            })}{' '}
-            {notPayedPeriod} d)
-          </span>
-        )}
       </div>
-      <div className="Payment__information-row">
-        <div className="Payment__information-row-important">
+      <p className="Payment__information-row">
+        <span className="Payment__information-row-important">
           {intl.formatMessage({
             id: 'payment_page_important',
             defaultMessage: 'Important',
           })}
           :
-        </div>
+        </span>
         {intl.formatMessage(
           {
             id: 'payment_page_transfers_with_user_reward_included',
@@ -144,10 +142,10 @@ const Payment = ({
               'Only transfer with {userRewards} instructions are processed as rewards payments',
           },
           {
-            userReward,
+            userRewards: userReward,
           },
         )}
-      </div>
+      </p>
       {!isEmpty(sponsors) && (
         <PaymentTable
           sponsors={sponsors}

@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+
 import Feed from '../feed/Feed';
 import {
   getFeedLoadingFromState,
@@ -11,7 +12,7 @@ import {
   getFeedFromState,
 } from '../helpers/stateHelpers';
 import { getUserAccountHistory } from '../store/walletStore/walletActions';
-import { getUserProfileBlogPosts } from '../store/feedStore/feedActions';
+import { getUserProfileBlogPosts, resetProfileFilters } from '../store/feedStore/feedActions';
 import { showPostModal } from '../store/appStore/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
@@ -22,7 +23,7 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../store/authStore/authSelectors';
-import { getFeed } from '../store/feedStore/feedSelectors';
+import { getBlogFilters, getFeed } from '../store/feedStore/feedSelectors';
 import { getUser } from '../store/usersStore/usersSelectors';
 import { getUsersAccountHistory } from '../store/walletStore/walletSelectors';
 
@@ -35,11 +36,13 @@ import { getUsersAccountHistory } from '../store/walletStore/walletSelectors';
     usersAccountHistory: getUsersAccountHistory(state),
     isGuest: isGuestUser(state),
     user: getUser(state, ownProps.match.params.name),
+    tagsCondition: getBlogFilters(state),
   }),
   {
     getUserProfileBlogPosts,
     showPostModal,
     getUserAccountHistory,
+    resetProfileFilters,
   },
 )
 export default class UserProfile extends React.Component {
@@ -49,6 +52,8 @@ export default class UserProfile extends React.Component {
     feed: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
+    resetProfileFilters: PropTypes.func.isRequired,
+    tagsCondition: PropTypes.arrayOf(PropTypes.string).isRequired,
     limit: PropTypes.number,
     getUserProfileBlogPosts: PropTypes.func,
     getUserAccountHistory: PropTypes.func,
@@ -73,48 +78,48 @@ export default class UserProfile extends React.Component {
 
   componentDidMount() {
     const { match, limit, usersAccountHistory, isBlogInObject } = this.props;
-    const { name, author } = match.params;
-    const permlink = isBlogInObject ? author : name;
+    const { name } = match.params;
 
-    this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
-    if (isEmpty(usersAccountHistory[permlink])) {
-      this.props.getUserAccountHistory(permlink);
+    this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+    if (isEmpty(usersAccountHistory[name])) {
+      this.props.getUserAccountHistory(name);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { match, limit, isBlogInObject } = this.props;
-    const { name, author } = match.params;
-    const permlink = isBlogInObject ? author : name;
+    const { name } = match.params;
 
-    if (permlink !== isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name) {
+    if (name !== nextProps.match.params.name) {
       if (
         nextProps.feed &&
         nextProps.feed.blog &&
-        !nextProps.feed.blog[
-          isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name
-        ]
+        !nextProps.feed.blog[nextProps.match.params.name]
       ) {
-        this.props.getUserProfileBlogPosts(
-          isBlogInObject ? nextProps.match.params.author : nextProps.match.params.name,
-          {
-            limit,
-            initialLoad: true,
-          },
-        );
+        this.props.getUserProfileBlogPosts(nextProps.match.params.name, {
+          limit,
+          initialLoad: true,
+        });
       }
       window.scrollTo(0, 0);
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { match, limit, user, isBlogInObject } = this.props;
-    const { name, author } = match.params;
-    const permlink = isBlogInObject ? author : name;
+    const { match, limit, user, tagsCondition } = this.props;
+    const { name } = match.params;
 
-    if (prevProps.user.muted !== user.muted || prevProps.match.url !== match.url) {
-      this.props.getUserProfileBlogPosts(permlink, { limit, initialLoad: true });
+    if (
+      prevProps.user.muted !== user.muted ||
+      prevProps.match.url !== match.url ||
+      !isEqual(tagsCondition, prevProps.tagsCondition)
+    ) {
+      this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
     }
+  }
+
+  componentWillUnmount() {
+    this.props.resetProfileFilters();
   }
 
   render() {
@@ -127,17 +132,16 @@ export default class UserProfile extends React.Component {
       history,
       user,
       match,
-      isBlogInObject,
     } = this.props;
-    const { name, author } = match.params;
-    const username = isBlogInObject ? author : name;
-    const isOwnProfile = authenticated && username === authenticatedUser.name;
-    const content = getFeedFromState('blog', username, feed);
-    const isFetching = getFeedLoadingFromState('blog', username, feed);
-    const fetched = getFeedFetchedFromState('blog', username, feed);
-    const hasMore = getFeedHasMoreFromState('blog', username, feed);
+    const { name } = match.params;
+    const isOwnProfile = authenticated && name === authenticatedUser.name;
+    const content = getFeedFromState('blog', name, feed);
+    const isFetching = getFeedLoadingFromState('blog', name, feed);
+    const fetched = getFeedFetchedFromState('blog', name, feed);
+    const hasMore = getFeedHasMoreFromState('blog', name, feed);
+
     const loadMoreContentAction = () =>
-      this.props.getUserProfileBlogPosts(username, {
+      this.props.getUserProfileBlogPosts(name, {
         limit,
         initialLoad: false,
       });

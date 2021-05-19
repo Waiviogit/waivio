@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { isEmpty, get, map, isEqual, debounce, has, size, isArray } from 'lodash';
 import React, { createRef } from 'react';
-import Map from 'pigeon-maps';
+import { Map } from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
@@ -412,7 +412,6 @@ class MapOS extends React.Component {
           {markersLayout}
           {infoboxData && this.getOverlayLayout()}
         </Map>
-
         {this.zoomButtonsLayout()}
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />

@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { round } from 'lodash';
 import './ReportTableRewards.less';
 
 const ReportTableRewardsRowTotal = ({ intl, totalUSD, totalHive }) => {
-  const totalUsd = totalUSD !== 0 ? `$ ${totalUSD.toFixed(2)}` : '';
-  const totalHIVE = totalHive !== 0 ? `${totalHive.toFixed(3)}` : '';
+  const totalUsd = totalUSD !== 0 ? `$ ${round(totalUSD, 2)}` : '';
+  const totalHIVE = totalHive !== 0 ? `${round(totalHive, 3)}` : '';
 
   return (
     <tr>

@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
@@ -33,19 +33,24 @@ const WebsitesSettings = ({
   const [beneficiaryAccount, setBeneficiaryAccount] = useState('');
   const [beneficiaryPercent, setBeneficiaryPercent] = useState(1);
   const [referralAccount, setReferralAccount] = useState('');
+  const [settingsLoading, setSettingsLoading] = useState(false);
 
   const host = match.params.site;
 
   useEffect(() => {
-    getWebSettings(host).then(res => {
-      const percent = get(res, ['value', 'beneficiary', 'percent']) / 100;
-      const account = get(res, ['value', 'beneficiary', 'account']);
-      const referral = get(res, ['value', 'referralCommissionAcc']);
+    setSettingsLoading(true);
+    getWebSettings(host)
+      .then(res => {
+        const percent = get(res, ['value', 'beneficiary', 'percent']) / 100;
+        const account = get(res, ['value', 'beneficiary', 'account']);
+        const referral = get(res, ['value', 'referralCommissionAcc']);
 
-      setBeneficiaryPercent(percent);
-      setBeneficiaryAccount(account);
-      setReferralAccount(referral);
-    });
+        setBeneficiaryPercent(percent);
+        setBeneficiaryAccount(account);
+        setReferralAccount(referral);
+        setSettingsLoading(false);
+      })
+      .catch(() => setSettingsLoading(false));
   }, [location.pathname]);
 
   const handleChange = (e, fieldsName) =>
@@ -84,7 +89,7 @@ const WebsitesSettings = ({
     });
   };
 
-  if (isEmpty(settings)) return <Loading />;
+  if (settingsLoading) return <Loading />;
 
   return (
     <div className="WebsitesSettings-middle">

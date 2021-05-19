@@ -420,3 +420,7 @@ export const setBeneficiaryOwner = payload => ({ type: SET_OWNER_BENEFICIARY, pa
 export const SET_MAP_FOR_SEARCH = '@search/SET_MAP_FOR_SEARCH';
 
 export const setMapForSearch = payload => ({ type: SET_MAP_FOR_SEARCH, payload });
+
+export const SET_FILTER_FROM_QUERY = '@search/SET_FILTER_FROM_QUERY';
+
+export const setFilterFromQuery = payload => ({ type: SET_FILTER_FROM_QUERY, payload });

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, isNaN, includes, isString } from 'lodash';
+import { get, isNull, isEmpty, isNaN, includes, isString, round } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
@@ -29,6 +29,7 @@ import {
 } from '../../store/authStore/authSelectors';
 import {
   getIsTransferVisible,
+  getIsVipTickets,
   getTotalVestingFundSteem,
   getTotalVestingShares,
   getTransferAmount,
@@ -68,6 +69,7 @@ const InputGroup = Input.Group;
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
+    isVipTickets: getIsVipTickets(state),
     showModal: isOpenLinkModal(state),
   }),
   {
@@ -106,11 +108,13 @@ export default class Transfer extends React.Component {
     getPayables: PropTypes.func,
     match: PropTypes.shape().isRequired,
     isTip: PropTypes.bool.isRequired,
+    isVipTickets: PropTypes.bool,
   };
 
   static defaultProps = {
     to: '',
     visible: false,
+    isVipTickets: false,
     amount: 0,
     memo: '',
     app: '',
@@ -292,7 +296,7 @@ export default class Transfer extends React.Component {
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
-          amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
+          amount: `${round(parseFloat(values.amount), 3)} ${values.currency}`,
           memo: {},
         };
 
@@ -535,7 +539,7 @@ export default class Transfer extends React.Component {
     } = this.props;
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
-    const isChangesDisabled = !!memo;
+    const isChangesDisabled = !!memo || this.props.isVipTickets;
     const amountClassList = classNames('balance', {
       'balance--disabled': isChangesDisabled,
     });

@@ -4,16 +4,16 @@ import { isEmpty, get, map, debounce, isEqual, size, reverse } from 'lodash';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { Tag } from 'antd';
-import PropTypes, { arrayOf } from 'prop-types';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import Map from 'pigeon-maps';
+import { Map } from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import {
+  setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
-  setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../../../store/searchStore/searchActions';
@@ -36,7 +36,6 @@ import { distanceInMBetweenEarthCoordinates } from '../../helper';
 import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
 import {
   getConfigurationValues,
-  getMapForMainPage,
   getReserveCounter,
   getScreenSize,
 } from '../../../store/appStore/appSelectors';
@@ -53,6 +52,8 @@ import {
   getShowReloadButton,
   getWobjectsPoint,
 } from '../../../store/websiteStore/websiteSelectors';
+import WebsiteWelcomeModal from '../../WebsiteWelcomeModal/WebsiteWelcomeModal';
+import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 
 import './WebsiteBody.less';
 
@@ -77,7 +78,7 @@ const WebsiteBody = props => {
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   let mapHeight = 'calc(100vh - 57px)';
 
-  if (height) mapHeight = `${height - 57}px`;
+  if (height && isMobile) mapHeight = `${height - 57}px`;
 
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
@@ -108,25 +109,41 @@ const WebsiteBody = props => {
     }
   };
 
-  const handleSetMapForSearch = () =>
-    props.setMapForSearch({
-      coordinates: reverse([...area.center]),
-      ...boundsParams,
-    });
+  const handleSetMapForSearch = () => {
+    if (!isEmpty(area.center)) {
+      props.query.set('center', area.center);
+      props.query.set('zoom', area.zoom);
+      props.setMapForSearch({
+        coordinates: reverse([...area.center]),
+        ...boundsParams,
+      });
+    }
+
+    props.history.push(`/?${props.query.toString()}`);
+    localStorage.setItem('query', props.query.toString());
+  };
 
   useEffect(() => {
+    const query = props.location.search;
     const handleResize = () => setHeight(window.innerHeight);
 
     setHeight(window.innerHeight);
 
     if (props.isAuth) props.getReservedCounter();
 
+    if (query) {
+      const filterBody = createFilterBody(parseTagsFilters(query));
+      const type = props.query.get('type');
+
+      if (type) props.setWebsiteSearchType(type);
+      if (!isEmpty(filterBody)) props.setFilterFromQuery(filterBody);
+    }
+
     getCoordinatesForMap();
 
     window.addEventListener('resize', handleResize);
 
     return () => {
-      props.setShowSearchResult(false);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
@@ -140,11 +157,6 @@ const WebsiteBody = props => {
       props.setSearchInBox(true);
     }
   }, [props.isShowResult]);
-
-  const handleChangeType = () => {
-    setInfoboxData(null);
-    props.history.push('/');
-  };
 
   useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
@@ -204,13 +216,10 @@ const WebsiteBody = props => {
     [],
   );
 
-  const onBoundsChanged = useCallback(
-    debounce(({ center, zoom, bounds }) => {
-      if (!isEmpty(center)) setArea({ center, zoom, bounds });
-      if (!isEqual(bounds, area.bounds)) handleOnBoundsChanged(bounds);
-    }, 300),
-    [],
-  );
+  const onBoundsChanged = ({ center, zoom, bounds }) => {
+    if (!isEmpty(center)) setArea({ center, zoom, bounds });
+    if (!isEqual(bounds, area.bounds)) handleOnBoundsChanged(bounds);
+  };
 
   const handleHoveredCard = permlink => setHoveredCardPermlink(permlink);
 
@@ -220,12 +229,13 @@ const WebsiteBody = props => {
 
       if (get(infoboxData, 'coordinates', []) === anchor) setInfoboxData({ infoboxData: null });
 
-      props.history.push(
-        `/?center=${anchor}&zoom=${area.zoom}&permlink=${payload.author_permlink}`,
-      );
+      props.query.set('center', anchor);
+      props.query.set('zoom', area.zoom);
+      props.query.set('permlink', payload.author_permlink);
+      props.history.push(`/?${props.query.toString()}`);
       setInfoboxData({ wobject: payload, coordinates: anchor });
     },
-    [area.zoom],
+    [area.zoom, props.location.search],
   );
 
   const getMarkers = useCallback(
@@ -235,7 +245,9 @@ const WebsiteBody = props => {
         const parsedMap = getParsedMap(wobject);
         const latitude = get(parsedMap, ['latitude']);
         const longitude = get(parsedMap, ['longitude']);
-        const isMarked = get(wobject, 'campaigns') || !isEmpty(get(wobject, 'propositions'));
+        const isMarked = Boolean(
+          get(wobject, 'campaigns') || !isEmpty(get(wobject, 'propositions')),
+        );
 
         return latitude && longitude ? (
           <CustomMarker
@@ -286,7 +298,7 @@ const WebsiteBody = props => {
         </div>
       </Overlay>
     );
-  }, [props.query.get('permlink')]);
+  }, [infoboxData]);
 
   const incrementZoom = () => setArea({ ...area, zoom: area.zoom + 1 });
   const decrementZoom = () => setArea({ ...area, zoom: area.zoom - 1 });
@@ -345,18 +357,45 @@ const WebsiteBody = props => {
     </div>
   );
 
+  const handleSetFiltersInUrl = (category, value) => {
+    if (value === 'all') props.query.delete(category);
+    else props.query.set(category, value);
+
+    props.history.push(`?${props.query.toString()}`);
+  };
+
+  const handleUrlWithChangeType = type => {
+    let query = `?type=${type}&center=${area.center}&zoom=${area.zoom}`;
+
+    if (props.searchString) query = `${query}&searchString=${props.searchString}`;
+
+    setInfoboxData(null);
+    props.history.push(query);
+  };
+
+  const setQueryInLocalStorage = () => localStorage.setItem('query', props.query.toString());
+  const objName = getObjectName(aboutObject);
+
   return (
     <div className="WebsiteBody">
       <Helmet>
-        <title>
-          {description
-            ? `${getObjectName(aboutObject)} - ${description}`
-            : getObjectName(aboutObject)}
-        </title>
-        <meta
-          property="twitter:description"
-          content="Waivio is an open distributed attention marketplace for business"
-        />
+        <title>{description ? `${objName} - ${description}` : objName}</title>
+        <meta property="description" content={description} />
+        <meta property="og:title" content={objName} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={global.postOrigin} />
+        <meta property="og:image" content={currentLogo} />
+        <meta property="og:image:url" content={currentLogo} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:description" content={description} />
+        <meta name="twitter:card" content={currentLogo ? 'summary_large_image' : 'summary'} />
+        <meta name="twitter:site" content={'@waivio'} />
+        <meta name="twitter:title" content={objName} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" property="twitter:image" content={currentLogo} />
+        <meta property="og:site_name" content={objName} />
+        <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
       </Helmet>
       <SearchAllResult
@@ -364,18 +403,15 @@ const WebsiteBody = props => {
         reloadSearchList={reloadSearchList}
         searchType={props.searchType}
         handleHoveredCard={handleHoveredCard}
-        handleChangeType={handleChangeType}
+        handleSetFiltersInUrl={handleSetFiltersInUrl}
+        handleUrlWithChangeType={handleUrlWithChangeType}
+        setQueryInLocalStorage={setQueryInLocalStorage}
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-          <img
-            className="WebsiteBody__logo"
-            srcSet={currentLogo}
-            alt="your logo"
-            styleName="brain-image"
-            onClick={() => props.history.push(logoLink)}
-          />
+          <Link to={logoLink}>
+            <img className="WebsiteBody__logo" src={currentLogo} alt="your logo" />
+          </Link>
         )}
         {!isEmpty(area.center) && !isEmpty(props.configuration) && (
           <React.Fragment>
@@ -388,17 +424,21 @@ const WebsiteBody = props => {
             {zoomButtonsLayout()}
             <Map
               center={area.center}
-              height={height}
+              height={Number(mapHeight)}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
               onClick={({ event }) => {
                 if (!get(event, 'target.dataset.anchor')) {
                   setInfoboxData(null);
-                  props.history.push('/');
+                  props.query.delete('center');
+                  props.query.delete('zoom');
+                  props.query.delete('permlink');
+                  props.history.push(`/?${props.query.toString()}`);
                 }
               }}
               animate
+              zoomSnap
             >
               {isActiveFilters && (
                 <div className="WebsiteBody__filters-list">
@@ -407,7 +447,11 @@ const WebsiteBody = props => {
                       <Tag
                         key={tag}
                         closable
-                        onClose={() => props.setWebsiteSearchFilter(filter.categoryName, 'all')}
+                        onClose={() => {
+                          props.setWebsiteSearchFilter(filter.categoryName, 'all');
+                          props.query.delete(filter.categoryName);
+                          props.history.push(`?${props.query.toString()}`);
+                        }}
                       >
                         {tag}
                       </Tag>
@@ -427,6 +471,7 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
+      <WebsiteWelcomeModal />
     </div>
   );
 };
@@ -458,21 +503,21 @@ WebsiteBody.propTypes = {
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   setSearchInBox: PropTypes.func.isRequired,
-  setShowSearchResult: PropTypes.func.isRequired,
+  setFilterFromQuery: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
-  wobjectsPoint: PropTypes.arrayOf(PropTypes.shape()),
-  // eslint-disable-next-line react/no-unused-prop-types
-  configCoordinates: PropTypes.arrayOf().isRequired,
-  activeFilters: PropTypes.arrayOf().isRequired,
+  setWebsiteSearchType: PropTypes.func.isRequired,
+  wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
+  activeFilters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool,
   searchMap: PropTypes.shape({
-    coordinates: arrayOf(PropTypes.number),
+    coordinates: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
   isAuth: PropTypes.bool,
   query: PropTypes.shape({
     get: PropTypes.func,
+    set: PropTypes.func,
     delete: PropTypes.func,
   }).isRequired,
 };
@@ -491,7 +536,6 @@ export default connect(
     configuration: getConfigurationValues(state),
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),
-    configCoordinates: getMapForMainPage(state),
     activeFilters: getSearchFiltersTagCategory(state),
     counter: getReserveCounter(state),
     isAuth: getIsAuthenticated(state),
@@ -511,7 +555,7 @@ export default connect(
     getCurrentAppSettings,
     setMapForSearch,
     setShowReload,
-    setShowSearchResult,
     setSearchInBox,
+    setFilterFromQuery,
   },
 )(withRouter(WebsiteBody));

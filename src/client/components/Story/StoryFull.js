@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { forEach, get, isEmpty, map, size } from 'lodash';
+import { forEach, get, isEmpty, map, size, round } from 'lodash';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -481,10 +481,10 @@ class StoryFull extends React.Component {
               {map(linkedObjects, obj => {
                 if (obj.campaigns) {
                   const minReward = get(obj, ['campaigns', 'min_reward']);
-                  const rewardPricePassed = minReward ? `${minReward.toFixed(2)} USD` : '';
+                  const rewardPricePassed = minReward ? `${round(minReward, 2)} USD` : '';
                   const maxReward = get(obj, ['campaigns', 'max_reward']);
                   const rewardMaxPassed =
-                    maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
+                    maxReward !== minReward ? `${round(maxReward, 2)} USD` : '';
 
                   return (
                     <Campaign
@@ -521,7 +521,7 @@ class StoryFull extends React.Component {
 
                 return (
                   <div className="CardView">
-                    <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />
+                    <ObjectCardView wObject={obj} passedParent={obj.parent} />
                   </div>
                 );
               })}
@@ -538,7 +538,7 @@ class StoryFull extends React.Component {
               {map(taggedObjects, obj => {
                 const wobj = obj;
 
-                return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
+                return <ObjectCardView key={`${wobj._id}`} wObject={wobj} />;
               })}
             </Collapse.Panel>
           )}

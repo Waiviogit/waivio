@@ -88,7 +88,7 @@
     "lodash": "^4.0.0",
     "moment": "^2.24.0",
     "npm-run-all": "^4.0.2",
-    "pigeon-maps": "^0.11.11",
+    "pigeon-maps": "0.19.5",
     "pigeon-marker": "^0.3.4",
     "pigeon-overlay": "^0.2.3",
     "prop-types": "^15.6.1",

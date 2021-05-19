@@ -99,6 +99,7 @@ export const getObject = (authorPermlink, user, locale) => {
 
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
+      ...headers,
       app: config.appName,
       follower: user,
       locale,
@@ -181,8 +182,9 @@ export const getFeedContent = (sortBy, locale, follower, queryData) => {
 export const getUserProfileBlog = (
   userName,
   follower,
-  { startAuthor = '', startPermlink = '', limit = 10, skip },
+  { limit = 10, skip },
   locale = 'en-US',
+  tagsArray,
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
@@ -196,8 +198,7 @@ export const getUserProfileBlog = (
       body: JSON.stringify({
         limit,
         skip,
-        start_author: startAuthor,
-        start_permlink: startPermlink,
+        ...(isEmpty(tagsArray) ? {} : { tagsArray }),
       }),
     })
       .then(res => res.json())
@@ -232,7 +233,7 @@ export const getMoreUserFeedContent = ({
 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
-      headers: { ...headers, app: config.appName, locale },
+      headers: { ...headers, app: config.appName, locale, follower: userName },
       method: 'POST',
       body: JSON.stringify({
         skip,
@@ -507,14 +508,36 @@ export const getWobjectsWithUserWeight = (
   });
 };
 
-export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30) => {
+export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30, sort) => {
   const actualHeader = user ? { ...headers, following: user, follower: user } : headers;
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
       headers: { ...actualHeader, app: config.appName },
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify({ skip, limit, sort }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+};
+
+export const getWobjectsExpertiseWithNewsFilter = (
+  user,
+  authorPermlink,
+  skip = 0,
+  limit = 30,
+  newsFilter,
+) => {
+  const actualHeader = user ? { ...headers, following: user, follower: user } : headers;
+
+  return new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
+      headers: { ...actualHeader, app: config.appName },
+      method: 'POST',
+      body: JSON.stringify({ skip, limit, ...newsFilter }),
     })
       .then(handleErrors)
       .then(res => res.json())
@@ -1620,10 +1643,11 @@ export const getTransferHistoryTableView = (
   endDate,
   types,
   operationNum = -1,
-) =>
-  new Promise((resolve, reject) => {
+) => {
+  const typesQuery = types.reduce((acc, curr) => `${acc}&types=${curr}`, '');
+  return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&${types}&operationNum=${operationNum}`,
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&${typesQuery}&operationNum=${operationNum}`,
       {
         headers,
         method: 'GET',
@@ -1634,6 +1658,7 @@ export const getTransferHistoryTableView = (
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+};
 
 export const sendSentryNotification = async () => {
   try {

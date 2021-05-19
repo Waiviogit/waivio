@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { Button, Form, Modal, Avatar, message, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get, map } from 'lodash';
-import Map from 'pigeon-maps';
+import { Map } from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import { getObjectName } from '../../../helpers/wObjectHelper';

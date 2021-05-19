@@ -22,6 +22,7 @@ import {
   setUsedLocale,
   setAppUrl,
   getCurrentAppSettings,
+  getWebsiteConfigForSSR,
 } from './store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
@@ -127,10 +128,12 @@ class WebsiteWrapper extends React.PureComponent {
     }
     const lang = loadLanguage(activeLocale);
 
-    store.dispatch(login());
-    store.dispatch(getWebsiteObjWithCoordinates());
-
-    return Promise.all([store.dispatch(setAppUrl(appUrl)), store.dispatch(setUsedLocale(lang))]);
+    return Promise.all([
+      store.dispatch(setAppUrl(appUrl)),
+      store.dispatch(setUsedLocale(lang)),
+      store.dispatch(login()),
+      store.dispatch(getWebsiteConfigForSSR(req.hostname)),
+    ]);
   }
 
   constructor(props) {

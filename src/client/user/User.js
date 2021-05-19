@@ -83,17 +83,21 @@ export default class User extends React.Component {
     isOpenWalletTable: false,
   };
 
+  static fetchData({ store, match }) {
+    return Promise.all([
+      store.dispatch(getUserAccount(match.params.name)),
+      store.dispatch(getUserAccountHistory(match.params.name)),
+    ]);
+  }
+
   componentDidMount() {
-    const {
-      usersAccountHistory,
-      // eslint-disable-next-line no-shadow
-      getUserAccountHistory,
-      match,
-    } = this.props;
+    const { name } = this.props.match.params;
 
-    this.props.getUserAccount(match.params.name);
+    if (window.gtag) window.gtag('event', 'view_user_profile');
 
-    if (isEmpty(usersAccountHistory[match.params.name])) getUserAccountHistory(match.params.name);
+    this.props.getUserAccount(name);
+
+    if (isEmpty(this.props.usersAccountHistory[name])) this.props.getUserAccountHistory(name);
   }
 
   componentDidUpdate(prevProps) {
@@ -168,7 +172,7 @@ export default class User extends React.Component {
         <Helmet>
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
-          <meta name="description" property="description" content={desc} />
+          <meta property="description" content={desc} />
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta name="twitter:site" content={'@waivio'} />
           <meta name="twitter:title" content={title} />
@@ -180,7 +184,6 @@ export default class User extends React.Component {
               'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
             }
           />
-
           <meta property="og:title" content={title} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />

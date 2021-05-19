@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty, map, size, get, uniqBy } from 'lodash';
@@ -44,6 +44,7 @@ const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
   const filterTypes = ['restaurant', 'dish', 'drink', 'Users'];
   const isUsersSearch = props.searchType === 'Users';
+  const resultList = useRef();
   const searchResultClassList = classNames('SearchAllResult', {
     SearchAllResult__show: props.isShowResult,
   });
@@ -70,17 +71,23 @@ const SearchAllResult = props => {
     return <ObjectCardView wObject={obj} hovered />;
   };
 
+  const handleItemClick = () => {
+    localStorage.setItem('scrollTop', resultList.current.scrollTop);
+    props.setQueryInLocalStorage();
+  };
+
   const currentListState = useCallback(() => {
     switch (props.searchType) {
       case 'Users':
         return {
           list: map(props.searchByUser, user => (
-            <UserCard
-              key={user.account}
-              user={{ ...user, name: user.account }}
-              unfollow={props.unfollowSearchUser}
-              follow={props.followSearchUser}
-            />
+            <div key={user.account} role="presentation" onClick={handleItemClick}>
+              <UserCard
+                user={{ ...user, name: user.account }}
+                unfollow={props.unfollowSearchUser}
+                follow={props.followSearchUser}
+              />
+            </div>
           )),
           hasMore: props.hasMoreUsers,
           loading: props.usersLoading,
@@ -90,9 +97,11 @@ const SearchAllResult = props => {
         return {
           list: map(uniqBy(props.searchResult, '_id'), obj => (
             <div
-              key={obj.author_permlink}
+              role="presentation"
+              key={obj._id}
               onMouseOver={() => props.handleHoveredCard(obj.author_permlink)}
               onMouseOut={() => props.handleHoveredCard('')}
+              onClick={handleItemClick}
             >
               {switcherObjectCard(obj)}
             </div>
@@ -102,6 +111,12 @@ const SearchAllResult = props => {
         };
     }
   }, [props.searchType, props.searchResult, props.searchByUser, props.loading, props.usersLoading]);
+
+  useEffect(() => {
+    if (!isEmpty(props.searchResult) && localStorage.getItem('scrollTop')) {
+      resultList.current.scrollTo(0, +localStorage.getItem('scrollTop'));
+    }
+  }, []);
 
   const currRenderListState = currentListState();
 
@@ -124,6 +139,8 @@ const SearchAllResult = props => {
   const getEndScroll = e => {
     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
 
+    localStorage.removeItem('scrollTop');
+
     if (bottom) setIsScrolled(true);
     else setIsScrolled(false);
   };
@@ -142,7 +159,14 @@ const SearchAllResult = props => {
       });
 
     return (
-      <Menu onClick={e => props.setWebsiteSearchFilter(filter.tagCategory, e.key)}>
+      <Menu
+        onClick={e => {
+          props.setWebsiteSearchFilter(filter.tagCategory, e.key);
+          props.handleSetFiltersInUrl(filter.tagCategory, e.key);
+          localStorage.removeItem('scrollTop');
+        }}
+        className="SearchAllResult__filter-list"
+      >
         <Menu.Item key={'all'}>show all</Menu.Item>
         {map(filter.tags, tag => (
           <Menu.Item className={menuItemClassList(tag)} key={tag}>
@@ -168,7 +192,10 @@ const SearchAllResult = props => {
       <div
         className="SearchAllResult__toggle-button"
         role="presentation"
-        onClick={() => props.setShowSearchResult(!props.isShowResult)}
+        onClick={() => {
+          props.setShowSearchResult(!props.isShowResult);
+          if (isEmpty(currRenderListState.list)) localStorage.removeItem('scrollTop');
+        }}
       >
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
@@ -177,17 +204,18 @@ const SearchAllResult = props => {
           <span
             role="presentation"
             className={getActiveItemClassList(type, props.searchType, 'SearchAllResult__type')}
+            key={type}
             onClick={() => {
               props.setWebsiteSearchType(type);
-              props.handleChangeType();
+              props.handleUrlWithChangeType(type);
+              localStorage.removeItem('scrollTop');
             }}
-            key={type}
           >
             {type}
           </span>
         ))}
       </div>
-      <div className="SearchAllResult__main-wrap" onScroll={getEndScroll}>
+      <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
         {!isUsersSearch && (
           <React.Fragment>
             <div className="SearchAllResult__filters">
@@ -240,12 +268,13 @@ SearchAllResult.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
+  setQueryInLocalStorage: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}),
-  searchByUser: PropTypes.arrayOf().isRequired,
-  activeFilters: PropTypes.arrayOf().isRequired,
-  searchResult: PropTypes.arrayOf().isRequired,
+  searchByUser: PropTypes.arrayOf(PropTypes.shape({})),
+  activeFilters: PropTypes.arrayOf(PropTypes.shape({})),
+  searchResult: PropTypes.arrayOf(PropTypes.shape({})),
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
   hasMore: PropTypes.bool.isRequired,
@@ -254,19 +283,17 @@ SearchAllResult.propTypes = {
   loadingMore: PropTypes.bool.isRequired,
   usersLoading: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,
-  filters: PropTypes.arrayOf().isRequired,
-  // eslint-disable-next-line react/no-unused-prop-types
+  filters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   unfollowSearchUser: PropTypes.func.isRequired,
   followSearchUser: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
+  handleUrlWithChangeType: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
-  // eslint-disable-next-line react/no-unused-prop-types
   assignProposition: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/no-unused-prop-types
   declineProposition: PropTypes.func.isRequired,
-  handleChangeType: PropTypes.func.isRequired,
+  handleSetFiltersInUrl: PropTypes.func.isRequired,
   handleHoveredCard: PropTypes.func,
 };
 
@@ -275,6 +302,9 @@ SearchAllResult.defaultProps = {
   hasMoreUsers: false,
   showReload: false,
   handleHoveredCard: () => {},
+  searchByUser: [],
+  activeFilters: [],
+  searchResult: [],
 };
 
 export default connect(

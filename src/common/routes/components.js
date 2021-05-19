@@ -22,8 +22,6 @@ export default {
   ProfileSettings: loableComponent(import('../../client/settings/ProfileSettings')),
   SettingsMain: loableComponent(import('../../client/settings/SettingsMain')),
   Invite: loableComponent(import('../../client/invite/Invite')),
-  User: loableComponent(import('../../client/user/User')),
-  Wobj: loableComponent(import('../../client/object/Wobj/WobjectContainer')),
   UserProfile: loableComponent(import('../../client/user/UserProfile')),
   UserComments: loableComponent(import('../../client/user/UserComments')),
   UserFollowers: loableComponent(import('../../client/user/UserFollowers')),
@@ -45,7 +43,7 @@ export default {
   ObjectGalleryAlbum: loableComponent(
     import('../../client/object/ObjectGallery/ObjectGalleryAlbum'),
   ),
-  WobjHistory: loableComponent(import('../../client/object/WobjHistory')),
+  WobjHistory: loableComponent(import('../../client/object/WobjHistory/WobjHistory')),
   ObjectAbout: loableComponent(import('../../client/object/ObjectAbout')),
   CatalogWrap: loableComponent(import('../../client/object/Catalog/CatalogWrap')),
   WobjExpertise: loableComponent(import('../../client/object/WobjExpertise')),
@@ -112,11 +110,9 @@ export default {
   WebsiteRestrictions: loableComponent(
     import('../../client/websites/WebsiteTools/Restrictions/WebsiteRestrictions'),
   ),
-  Page: loableComponent(import('../../client/feed/Page')),
   WebsiteBody: loableComponent(
     import('../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody'),
   ),
-  UserBlog: loableComponent(import('../../client/object/UserBlog/UserBlog')),
   FormPage: loableComponent(import('../../client/object/FormPage/FormPage')),
   RedirectedSignIn: loableComponent(
     import(`../../client/components/Navigation/redirectedSignIn/RedirectedSignIn`),

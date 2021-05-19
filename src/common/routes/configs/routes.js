@@ -3,11 +3,19 @@ import Post from '../../../client/post/Post';
 import Wrapper from '../../../client/Wrapper';
 import URL from '../constants';
 import createNestedRouts from '../helper';
+import User from '../../../client/user/User';
+import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
+import Page from '../../../client/feed/Page';
+import Rewards from '../../../client/rewards/Rewards';
+import Discover from '../../../client/discover/Discover';
+import DiscoverObjects from '../../../client/discoverObjects/DiscoverObjects';
+import RewardsComponent from '../../../client/rewards/RewardsComponent/RewardsComponent';
 
 const routes = {
   component: Wrapper,
   routes: [
     {
+      component: Rewards,
       path: [
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
         `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
@@ -17,7 +25,6 @@ const routes = {
       ],
       pathScope: '/rewards',
       exact: true,
-      component: Views.Rewards,
       routes: [
         {
           path: '/manage',
@@ -92,7 +99,7 @@ const routes = {
         {
           path: '/:filterKey/:campaignParent?',
           exact: true,
-          component: Views.RewardsComponent,
+          component: RewardsComponent,
         },
       ],
     },
@@ -234,7 +241,7 @@ const routes = {
     },
     {
       path: `/@:name/(${URL.USER.tabs})?/(table)?`,
-      component: Views.User,
+      component: User,
       exact: true,
       pathScope: '/@:name',
       routes: [
@@ -291,12 +298,12 @@ const routes = {
       ],
     },
     {
-      path: '/:category?/@:author/:permlink/:original?',
+      path: ['/:category?/@:author/:permlink/:original?', '/object/:name/blog/@:author/:permlink'],
       component: Post,
     },
     {
       path: `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
-      component: Views.Wobj,
+      component: WobjectContainer,
       exact: true,
       pathScope: '/object/:name',
       routes: [
@@ -346,9 +353,9 @@ const routes = {
           component: Views.ObjectOfTypePage,
         },
         {
-          path: '/blog/@:author',
+          path: '/blog/@:name',
           exact: true,
-          component: Views.UserBlog,
+          component: Views.UserProfile,
         },
         {
           path: '/form/:permlink',
@@ -360,16 +367,12 @@ const routes = {
     {
       path: '/discover-objects/:typeName?',
       exact: true,
-      component: Views.DiscoverObjects,
+      component: DiscoverObjects,
     },
     {
       path: '/discover/:search?',
       exact: true,
-      component: Views.Discover,
-    },
-    {
-      path: '/objects',
-      component: Views.Objects,
+      component: Discover,
     },
     {
       path: '/bookmarks',
@@ -412,7 +415,7 @@ const routes = {
     },
     {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-      component: Views.Page,
+      component: Page,
       routes: [
         {
           path: '/confirmation',

@@ -84,7 +84,7 @@ class ObjectInfo extends React.Component {
           <span>
             <Icon type="phone" className="text-icon tel" />
             {Boolean(params.body) && body}
-            <a href={`tel:${params.number}`} className="phone-number">
+            <a href={`tel:${params.number}`} className={body ? 'phone-number' : ''}>
               {params.number}
             </a>
           </span>
@@ -308,7 +308,7 @@ class ObjectInfo extends React.Component {
           github: linkField[linkFields.linkGitHub] || '',
         }
       : {};
-    const phones = get(wobject, 'phone', []);
+    const phones = get(wobject, 'phone', []) || [];
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);

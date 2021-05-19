@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import { round } from 'lodash';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
@@ -50,10 +51,10 @@ const TransferButton = ({
             id: 'pay',
             defaultMessage: 'Pay',
           })}
-          {` ${payableForRender && payableForRender.toFixed(3)} HIVE`}
+          {` ${round(payableForRender, 3)} HIVE`}
         </Action>
       )}
-      {pathRecivables && payable >= 0 && <span>{` ${payable && payable.toFixed(3)} HIVE`}</span>}
+      {pathRecivables && payable >= 0 && <span>{` ${round(payable, 3)} HIVE`}</span>}
       {match.path === PATH_NAME_PAYABLES && (
         <Action
           className="WalletSidebar__transfer"
@@ -65,7 +66,7 @@ const TransferButton = ({
             id: 'pay',
             defaultMessage: 'Pay',
           })}
-          {` ${payable && payable.toFixed(3)} HIVE`}
+          {` ${round(payable, 3)} HIVE`}
         </Action>
       )}
     </React.Fragment>

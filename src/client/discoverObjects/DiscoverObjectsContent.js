@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, omit, get, size, map } from 'lodash';
+import { isEmpty, omit, get, size, map, round } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, message, Modal, Tag } from 'antd';
 import {
@@ -459,16 +459,15 @@ class DiscoverObjectsContent extends Component {
             {filteredObjects.map(wObj => {
               if (wObj.campaigns) {
                 const minReward = get(wObj, ['campaigns', 'min_reward']);
-                const rewardPricePassed = minReward ? `${minReward.toFixed(2)} USD` : '';
+                const rewardPricePassed = minReward ? `${round(minReward, 2)} USD` : '';
                 const maxReward = get(wObj, ['campaigns', 'max_reward']);
-                const rewardMaxPassed =
-                  maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
+                const rewardMaxPassed = maxReward !== minReward ? `${round(maxReward, 2)} USD` : '';
 
                 return (
                   <Campaign
                     proposition={wObj}
                     filterKey={'all'}
-                    key={wObj.id}
+                    key={wObj._id}
                     passedParent={wObj.parent}
                     userName={userName}
                     rewardPricePassed={!rewardMaxPassed ? rewardPricePassed : null}

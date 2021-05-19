@@ -21,16 +21,10 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
   let setHrefBackButton = () => history.push('/');
   let currentPage = currPage || store.get('currentPage');
   const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
+  const query = store.get('query');
 
   if (pathName.includes('/object/')) {
     currentPage = getObjectType(wobj);
-    const query = store.get('query');
-
-    if (query)
-      setHrefBackButton = () => {
-        history.push(`/?${query}`);
-        store.remove('query');
-      };
   }
 
   if (pathName.includes('/@')) {
@@ -45,11 +39,18 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
     currentPage = 'Rewards';
   }
 
+  if (query) {
+    setHrefBackButton = () => {
+      history.push(`/?${query}`);
+      localStorage.removeItem('query');
+    };
+  }
+
   return (
     <div className="WebsiteHeader" style={{ backgroundColor: `#${backgroundColor}` }}>
       <div className="topnav-layout isWebsiteView">
         {isMainPage ? (
-          <WebsiteSearch history={history} />
+          <WebsiteSearch history={history} location={location} />
         ) : (
           <React.Fragment>
             <div
