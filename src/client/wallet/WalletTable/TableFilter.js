@@ -22,40 +22,40 @@ const TableFilter = ({
 
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
-      {/*<Form.Item*/}
-      {/*  rules={[*/}
-      {/*    {*/}
-      {/*      required: true,*/}
-      {/*    },*/}
-      {/*  ]}*/}
-      {/*  label={intl.formatMessage({*/}
-      {/*    id: 'accounts',*/}
-      {/*    defaultMessage: 'Accounts:',*/}
-      {/*  })}*/}
-      {/*>*/}
-      {/*  <div>*/}
-      {/*    {getFieldDecorator('filterAccounts', {*/}
-      {/*      rules: [*/}
-      {/*        {*/}
-      {/*          required: true,*/}
-      {/*          message: intl.formatMessage({*/}
-      {/*            id: 'table_accounts_validation',*/}
-      {/*            defaultMessage: 'Field "Accounts" is required',*/}
-      {/*          }),*/}
-      {/*        },*/}
-      {/*      ],*/}
-      {/*    })(*/}
-      {/*      <SearchUsersAutocomplete*/}
-      {/*        handleSelect={handleSelectUser}*/}
-      {/*        className="WalletTable__userSearch"*/}
-      {/*        itemsIdsToOmit={filterUsersList}*/}
-      {/*      />,*/}
-      {/*    )}*/}
-      {/*  </div>*/}
-      {/*  {filterUsersList.map(acc => (*/}
-      {/*    <SelectUserForAutocomplete key={acc} account={acc} resetUser={deleteUser} />*/}
-      {/*  ))}*/}
-      {/*</Form.Item>*/}
+      {/* <Form.Item */}
+      {/*  rules={[ */}
+      {/*    { */}
+      {/*      required: true, */}
+      {/*    }, */}
+      {/*  ]} */}
+      {/*  label={intl.formatMessage({ */}
+      {/*    id: 'accounts', */}
+      {/*    defaultMessage: 'Accounts:', */}
+      {/*  })} */}
+      {/* > */}
+      {/*  <div> */}
+      {/*    {getFieldDecorator('filterAccounts', { */}
+      {/*      rules: [ */}
+      {/*        { */}
+      {/*          required: true, */}
+      {/*          message: intl.formatMessage({ */}
+      {/*            id: 'table_accounts_validation', */}
+      {/*            defaultMessage: 'Field "Accounts" is required', */}
+      {/*          }), */}
+      {/*        }, */}
+      {/*      ], */}
+      {/*    })( */}
+      {/*      <SearchUsersAutocomplete */}
+      {/*        handleSelect={handleSelectUser} */}
+      {/*        className="WalletTable__userSearch" */}
+      {/*        itemsIdsToOmit={filterUsersList} */}
+      {/*      />, */}
+      {/*    )} */}
+      {/*  </div> */}
+      {/*  {filterUsersList.map(acc => ( */}
+      {/*    <SelectUserForAutocomplete key={acc} account={acc} resetUser={deleteUser} /> */}
+      {/*  ))} */}
+      {/* </Form.Item> */}
       <div className="WalletTable__date-wrap">
         <Form.Item
           rules={[
