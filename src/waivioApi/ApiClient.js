@@ -1636,7 +1636,7 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
   });
 
 export const getTransferHistoryTableView = (data, types, filterAcc) => {
-  const typesQuery = types.reduce((acc, curr) => `${acc}&types=${curr}`, '');
+  const typesQuery = types && types.reduce((acc, curr) => `${acc}&types=${curr}`, '');
   const filterAccounts =
     filterAcc && filterAcc.reduce((acc, curr) => `${acc}&filterAccounts=${curr}`, '');
   const query = createQuery(data);
