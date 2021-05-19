@@ -250,7 +250,7 @@ export const referralInstructionsContent = username => ({
           <span
             role="presentation"
             className="ReferralInstructions__an-example__text-link"
-            onClick={() => openNewTab(`/rewards/all?display=widget`)}
+            onClick={() => openNewTab(`/rewards/all/?display=widget!ref=${username}`)}
           >
             <FormattedMessage id="widget_addition_text" defaultMessage="an example." />
           </span>
@@ -261,7 +261,7 @@ export const referralInstructionsContent = username => ({
   acceptedConditionsAlert: (
     <FormattedMessage
       id="referrals_instructions_accepted__alert"
-      defaultMessage="Please note that any misleading promotions are not allowed in accordance with the Referral agreement. Waivio reserves the right to terminate the referral program at any time for any reason."
+      defaultMessage="Please note that any misleading promotions are not allowed in accordance with the Referral Program. Waivio reserves the right to terminate the referral program at any time for any reason."
     />
   ),
   terminateReferralTitle: (
