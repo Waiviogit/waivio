@@ -1,4 +1,4 @@
-import { get, has } from 'lodash';
+import { get } from 'lodash';
 import SteemConnect from '../steemConnectAPI';
 import { getAuthenticatedUserMetadata, updateUserMetadata } from '../../waivioApi/ApiClient';
 

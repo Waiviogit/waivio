@@ -12,11 +12,9 @@ import {
   reduce,
   size,
   differenceBy,
+  isEmpty,
 } from 'lodash';
 import { Entity } from '../components/EditorExtended';
-
-export const EDITOR_ACTION_ADD = 'add';
-export const EDITOR_ACTION_REMOVE = 'remove';
 
 export const getNewLinkedObjectsCards = (
   prohibitObjects,
@@ -116,47 +114,6 @@ export const getCurrentLoadObjects = (response, value) => {
   return loadObjects;
 };
 
-const getDifferOfContents = (iteratedRowContent, rowContent) => {
-  let rowContentForUpdate = [...rowContent];
-
-  return iteratedRowContent.filter(object =>
-    rowContentForUpdate.every(item => {
-      const returnValue =
-        get(item, 'data.object.author_permlink', '') !==
-        get(object, 'data.object.author_permlink', false);
-
-      if (returnValue) {
-        rowContentForUpdate = rowContentForUpdate.filter(
-          rowContentItem => !isEqual(rowContentItem, item),
-        );
-
-        return returnValue;
-      }
-
-      return returnValue;
-    }),
-  );
-};
-
-export const getLastContentAction = (updatedRowContent, prevRowContent) => {
-  if (prevRowContent.length > updatedRowContent.length) {
-    return {
-      actionType: EDITOR_ACTION_REMOVE,
-      actionValue: head(getDifferOfContents(prevRowContent, updatedRowContent)),
-    };
-  } else if (prevRowContent.length < updatedRowContent.length) {
-    return {
-      actionType: EDITOR_ACTION_ADD,
-      actionValue: head(getDifferOfContents(updatedRowContent, prevRowContent)),
-    };
-  }
-
-  return {
-    actionType: '',
-    actionValue: {},
-  };
-};
-
 export const filterEditorObjects = objects =>
   objects.filter(object => object.type === Entity.OBJECT);
 
@@ -168,8 +125,6 @@ export const getObjPercentsHideObject = (linkedObjects, hideObject, objPercentag
 
       if (value.percent) {
         updatedObjPercentage[key] = value;
-
-        return updatedObjPercentage;
       }
 
       return updatedObjPercentage;
@@ -193,7 +148,7 @@ export const getObjPercentsHideObject = (linkedObjects, hideObject, objPercentag
 };
 
 export const getFilteredLinkedObjects = (linkedObjects, hiddenObjects) => {
-  if (!size(hiddenObjects) || !hiddenObjects) {
+  if (isEmpty(hiddenObjects)) {
     return linkedObjects;
   }
 

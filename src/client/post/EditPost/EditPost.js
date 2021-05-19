@@ -231,7 +231,6 @@ const EditPost = props => {
             isGuest={props.isGuest}
             titleValue={titleValue}
           />
-
           <div className="search-object-panel">
             {props.intl.formatMessage({
               id: 'editor_search_elements',
