@@ -925,7 +925,7 @@
   "check_review_primaryObject": "{primaryObjectName} से लिंक करें: {primaryObjectUrl}",
   "check_review_minExpertise": "न्यूनतम समग्र विशेषज्ञता: {minExpertise}",
   "check_review_minFollowers": "अनुयायियों की न्यूनतम संख्या: {minFollowers}",
-  "check_review_minPosts": "पदों की न्यूनतम संख्या: {minPosts}",
+  "rewards_details_minimum_number_posts": "पदों की न्यूनतम संख्या",
   "check_review_agreement_part_1": "यह समीक्षा की सभी तकनीकी आवश्यकताओं को पूरा करती है",
   "check_review_the_reservation": "आरक्षण",
   "check_review_agreement_part_2": "और आपको निर्दिष्ट पुरस्कारों के लिए पात्र बनाता है। पुरस्कारों का भुगतान करने से पहले प्रायोजक के पास सभी सबमिशन की मैन्युअल रूप से समीक्षा करने का अधिकार सुरक्षित है।",

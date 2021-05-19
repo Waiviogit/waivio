@@ -1,45 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, DatePicker, Form } from 'antd';
 import PropTypes from 'prop-types';
 
 import { selectFormatDate, validateDate } from '../WalletHelper';
+import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
+import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 
 const TableFilter = ({
   intl,
   isloadingTableTransactions,
   locale,
-  history,
-  user,
   getFieldDecorator,
   handleOnClick,
   changeStartDate,
   changeEndDate,
+  // filterUsersList,
+  // handleSelectUser,
+  // deleteUser,
 }) => {
   const formatDate = selectFormatDate(locale);
 
   return (
-    <React.Fragment>
-      <span
-        className="WalletTable__back-btn"
-        role="presentation"
-        onClick={() => history.push(`/@${user.name}/transfers`)}
-      >
-        {intl.formatMessage({
-          id: 'table_back',
-          defaultMessage: 'Back',
-        })}
-      </span>
-      <Form layout="inline">
-        <Form.Item>
-          <div className="WalletTable__title-wrap">
-            <div className="WalletTable__star-flag">*</div>
-            <div className="WalletTable__from">
-              {intl.formatMessage({
-                id: 'table_date_from',
-                defaultMessage: 'From:',
-              })}
-            </div>
-          </div>
+    <Form layout="inline" className="WalletTable__tableFilter">
+      {/* <Form.Item */}
+      {/*  rules={[ */}
+      {/*    { */}
+      {/*      required: true, */}
+      {/*    }, */}
+      {/*  ]} */}
+      {/*  label={intl.formatMessage({ */}
+      {/*    id: 'accounts', */}
+      {/*    defaultMessage: 'Accounts:', */}
+      {/*  })} */}
+      {/* > */}
+      {/*  <div> */}
+      {/*    {getFieldDecorator('filterAccounts', { */}
+      {/*      rules: [ */}
+      {/*        { */}
+      {/*          required: true, */}
+      {/*          message: intl.formatMessage({ */}
+      {/*            id: 'table_accounts_validation', */}
+      {/*            defaultMessage: 'Field "Accounts" is required', */}
+      {/*          }), */}
+      {/*        }, */}
+      {/*      ], */}
+      {/*    })( */}
+      {/*      <SearchUsersAutocomplete */}
+      {/*        handleSelect={handleSelectUser} */}
+      {/*        className="WalletTable__userSearch" */}
+      {/*        itemsIdsToOmit={filterUsersList} */}
+      {/*      />, */}
+      {/*    )} */}
+      {/*  </div> */}
+      {/*  {filterUsersList.map(acc => ( */}
+      {/*    <SelectUserForAutocomplete key={acc} account={acc} resetUser={deleteUser} /> */}
+      {/*  ))} */}
+      {/* </Form.Item> */}
+      <div className="WalletTable__date-wrap">
+        <Form.Item
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+          label={intl.formatMessage({
+            id: 'table_date_from',
+            defaultMessage: 'From:',
+          })}
+        >
           <div>
             {getFieldDecorator('from', {
               rules: [
@@ -71,16 +99,17 @@ const TableFilter = ({
             )}
           </div>
         </Form.Item>
-        <Form.Item>
-          <div className="WalletTable__title-wrap">
-            <div className="WalletTable__star-flag">*</div>
-            <div className="WalletTable__till">
-              {intl.formatMessage({
-                id: 'table_date_till',
-                defaultMessage: 'Till:',
-              })}
-            </div>
-          </div>
+        <Form.Item
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+          label={intl.formatMessage({
+            id: 'table_date_till',
+            defaultMessage: 'Till:',
+          })}
+        >
           {getFieldDecorator('end', {
             rules: [
               {
@@ -110,20 +139,20 @@ const TableFilter = ({
             />,
           )}
         </Form.Item>
-        <Button
-          className="WalletTable__submit"
-          onClick={handleOnClick}
-          type="primary"
-          htmlType="submit"
-          loading={isloadingTableTransactions}
-        >
-          {intl.formatMessage({
-            id: 'append_send',
-            defaultMessage: 'Submit',
-          })}
-        </Button>
-      </Form>
-    </React.Fragment>
+      </div>
+      <Button
+        className="WalletTable__submit"
+        onClick={handleOnClick}
+        type="primary"
+        htmlType="submit"
+        loading={isloadingTableTransactions}
+      >
+        {intl.formatMessage({
+          id: 'append_send',
+          defaultMessage: 'Submit',
+        })}
+      </Button>
+    </Form>
   );
 };
 
@@ -140,9 +169,11 @@ TableFilter.propTypes = {
     name: PropTypes.string,
   }).isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
+  // filterUsersList: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleOnClick: PropTypes.func.isRequired,
   changeStartDate: PropTypes.func.isRequired,
   changeEndDate: PropTypes.func.isRequired,
+  // handleSelectUser: PropTypes.func.isRequired,
 };
 
 export default TableFilter;

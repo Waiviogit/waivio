@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import InterestingObjects from '../../components/Sidebar/InterestingObjects';
@@ -13,7 +12,7 @@ import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
 import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
-import { getFeedFromState, getFeedTagsFilterFromState } from '../../helpers/stateHelpers';
+import { getFeedFromState } from '../../helpers/stateHelpers';
 import UserSidebar from './UserSidebar';
 import {
   getAuthenticatedUserName,
@@ -76,7 +75,6 @@ export default class RightSidebar extends React.Component {
     } = this.props;
 
     const content = getFeedFromState('blog', authUserName, feed);
-    const tags = getFeedTagsFilterFromState('blog', authUserName, feed);
 
     if (isAuthFetching) {
       return <Loading />;
@@ -97,8 +95,11 @@ export default class RightSidebar extends React.Component {
             path="/@:name"
             render={() => (
               <React.Fragment>
-                {match.url === `/@${authUserName}` && !isEmpty(tags) && (
-                  <FilterPosts tags={tags} setProfileFilters={this.props.setProfileFilters} />
+                {match.url === `/@${match.params.name}` && (
+                  <FilterPosts
+                    setProfileFilters={this.props.setProfileFilters}
+                    name={match.params.name}
+                  />
                 )}
                 <UserSidebar
                   authenticated={authenticated}

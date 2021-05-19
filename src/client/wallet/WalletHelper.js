@@ -264,7 +264,7 @@ export const handleLoadMoreTransactions = ({
   }
 
   if (!isGuest && !table && !isLoadingMore) {
-    getMoreFunction(username, limit, operationNumber);
+    getMoreFunction({ username, limit, operationNumber });
   }
 };
 
@@ -351,6 +351,7 @@ export const getCurrentRows = data => {
   const fieldClassName = get(data, 'fieldClass', null);
   const hiveUSD = get(data, 'hiveUSD');
   const hbdUSD = get(data, 'hbdUSD');
+  const withdrawDeposit = get(data, 'withdrawDeposit').toUpperCase();
 
   return (
     <tr>
@@ -360,6 +361,7 @@ export const getCurrentRows = data => {
       <td className={fieldClassName}>{fieldHBD}</td>
       <td className={fieldClassName}>{hiveUSD && ceil(hiveUSD, 3)}</td>
       <td className={fieldClassName}>{hbdUSD && ceil(hbdUSD, 3)}</td>
+      <td className={fieldClassName}>{withdrawDeposit}</td>
       <td className={fieldClassName}>{fieldDescription}</td>
       <td className={fieldClassName}>{fieldMemo}</td>
     </tr>

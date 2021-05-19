@@ -1635,19 +1635,15 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
       .catch(error => reject(error));
   });
 
-export const getTransferHistoryTableView = (
-  username,
-  limit = 10,
-  tableView = true,
-  startDate,
-  endDate,
-  types,
-  operationNum = -1,
-) => {
+export const getTransferHistoryTableView = (data, types, filterAcc) => {
   const typesQuery = types.reduce((acc, curr) => `${acc}&types=${curr}`, '');
+  const filterAccounts =
+    filterAcc && filterAcc.reduce((acc, curr) => `${acc}&filterAccounts=${curr}`, '');
+  const query = createQuery(data);
+
   return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&${typesQuery}&operationNum=${operationNum}`,
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?${query}&${typesQuery}&${filterAccounts}`,
       {
         headers,
         method: 'GET',
