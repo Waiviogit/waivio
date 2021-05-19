@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { Icon, Col, Row } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty, size } from 'lodash';
+import { isEmpty, size, has } from 'lodash';
 import { getAlbums, getRelatedAlbum } from '../../store/galleryStore/galleryActions';
 import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
@@ -62,7 +62,8 @@ export default class ObjectGallery extends Component {
     const { match, albums, relatedAlbum } = this.props;
 
     if (isEmpty(albums)) this.props.getAlbums(match.params.name);
-    if (!size(relatedAlbum)) this.props.getRelatedAlbum(match.params.name, 10);
+    if (!size(relatedAlbum) || !has(relatedAlbum, 'id'))
+      this.props.getRelatedAlbum(match.params.name, 10);
   }
 
   handleToggleModal = () =>
