@@ -36,7 +36,7 @@ import ObjectCard from '../../components/Sidebar/ObjectCard';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
+import { getObjectAlbums, getRelatedPhotos } from '../../store/galleryStore/gallerySelectors';
 
 import './ObjectInfo.less';
 
@@ -45,6 +45,7 @@ import './ObjectInfo.less';
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
   isWaivio: getIsWaivio(state),
+  relatedAlbum: getRelatedPhotos(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -57,6 +58,7 @@ class ObjectInfo extends React.Component {
     history: PropTypes.shape().isRequired,
     appendAlbum: PropTypes.func.isRequired,
     albums: PropTypes.shape(),
+    relatedAlbum: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -279,7 +281,7 @@ class ObjectInfo extends React.Component {
     });
 
   render() {
-    const { wobject, userName, isAuthenticated } = this.props;
+    const { wobject, userName, isAuthenticated, relatedAlbum } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
     const website = parseWobjectField(wobject, 'website');
@@ -293,7 +295,8 @@ class ObjectInfo extends React.Component {
     const price = get(wobject, 'price');
     const avatar = get(wobject, 'avatar');
     const background = get(wobject, 'background');
-    const pictures = get(wobject, 'preview_gallery');
+
+    const pictures = [...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])];
     const short = get(wobject, 'title');
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
