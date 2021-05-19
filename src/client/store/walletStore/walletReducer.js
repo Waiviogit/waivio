@@ -140,7 +140,7 @@ export default function walletReducer(state = initialState, action) {
         tableTransactionsHistoryLoading: true,
       };
     case walletActions.GET_TABLE_TRANSACTIONS_HISTORY.SUCCESS: {
-      const usernameKey = action.payload.username;
+      const usernameKey = action.payload.userName;
 
       return {
         ...state,
