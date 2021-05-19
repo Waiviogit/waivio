@@ -191,15 +191,16 @@ class WalletTableContainer extends React.Component {
   //   const i = this.state.filterAccounts.map(user => this.handleSubmitUser(user));
   // }
 
-  handleSubmit = user => {
+  handleSubmit = () => {
     const {
       getTransactionsByInterval,
       getDemoTransactionsByInterval,
       clearTable,
       clearWalletHistory,
+      user,
     } = this.props;
     const { startDate, endDate, filterAccounts } = this.state;
-    const currentUsername = user;
+    const currentUsername = user.name;
     const isGuestPage = guestUserRegex.test(currentUsername);
     const tableView = true;
     const limit = 10;
