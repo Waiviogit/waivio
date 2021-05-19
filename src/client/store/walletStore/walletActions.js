@@ -296,7 +296,7 @@ export const getUserTransactionHistory = (username, limit, operationNum) => disp
   });
 
 export const getUserTableTransactionHistory = (
-  username,
+  userName,
   limit,
   tableView,
   types,
@@ -310,7 +310,7 @@ export const getUserTableTransactionHistory = (
     payload: {
       promise: ApiClient.getTransferHistoryTableView(
         {
-          username,
+          userName,
           limit,
           tableView,
           startDate,
@@ -321,7 +321,7 @@ export const getUserTableTransactionHistory = (
         filterAccounts,
       )
         .then(data => ({
-          username,
+          userName,
           tableTransactionsHistory: data.wallet,
           operationNumTable: data.operationNum,
           withdrawals: data.withdrawals,

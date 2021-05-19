@@ -1454,7 +1454,7 @@
   "referrals_instructions_accepted_title_widget": "Віджет Waivio:",
   "referrals_instructions_accepted__widget_info": "Цей віджет розміром сторінки призначений для показу відповідних активних нагород. Вставте такий код на свою веб-сторінку:",
   "referrals_instructions_accepted__widget_example": "Див. {text}",
-  "referrals_instructions_accepted__alert": "Зверніть увагу, що будь-які оманливі акції не дозволяються відповідно до Угоди про направлення. Waivio залишає за собою право припинити програму направлення в будь-який час з будь-якої причини.",
+  "referrals_instructions_accepted__alert": "Зверніть увагу, що будь-які оманливі акції не дозволяються відповідно до Програми рефералів. Waivio залишає за собою право припинити програму направлення в будь-який час з будь-якої причини.",
   "referrals_instructions_terminate_referral_title": "Завершіть програму рефералів",
   "referrals_instructions_terminate_referral_info": "Якщо ви більше не приймаєте умови угоди про надання послуг Waivio, ви більше не можете брати участь у програмі направлення. Усі майбутні реферали будуть призупинені.",
   "copy_button": "Копіювати",
