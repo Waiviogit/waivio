@@ -925,7 +925,7 @@
   "check_review_primaryObject": "{primaryObjectName}へのリンク： {primaryObjectUrl}",
   "check_review_minExpertise": "最低限の全体的な専門知識： {minExpertise}",
   "check_review_minFollowers": "フォロワーの最小数： {minFollowers}",
-  "check_review_minPosts": "投稿の最小数： {minPosts}",
+  "rewards_details_minimum_number_posts": "投稿の最小数",
   "check_review_agreement_part_1": "このレビューは、のすべての技術要件を満たしています",
   "check_review_the_reservation": "予約",
   "check_review_agreement_part_2": "指定された報酬を受け取る資格があります。スポンサーは、報酬を支払う前に、すべての提出物を手動で確認する権利を留保します。",
