@@ -9,7 +9,7 @@ const SelectUserForAutocomplete = ({ account, resetUser }) => (
       <Avatar username={account} size={40} />
       <span>{account}</span>
     </div>
-    <span role="presentation" onClick={resetUser} className="iconfont icon-delete" />
+    <span role="presentation" onClick={() => resetUser(account)} className="iconfont icon-delete" />
   </div>
 );
 

@@ -34,6 +34,8 @@ const initialState = {
   operationNum: -1,
   operationNumTable: -1,
   isOpenWalletTable: false,
+  withdrawals: 0,
+  deposits: 0,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -149,6 +151,8 @@ export default function walletReducer(state = initialState, action) {
         hasMoreTable: action.payload.hasMoreTable,
         operationNumTable: action.payload.operationNumTable,
         tableTransactionsHistoryLoading: false,
+        withdrawals: action.payload.withdrawals,
+        deposits: action.payload.deposits,
       };
     }
     case walletActions.GET_MORE_TRANSACTIONS_HISTORY.START:

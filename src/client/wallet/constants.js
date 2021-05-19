@@ -30,6 +30,10 @@ const WalletTableHeader = [
     message: 'HBD/USD',
   },
   {
+    className: 'WalletTable__plusmn',
+    symbol: '±',
+  },
+  {
     className: 'WalletTable__description',
     id: 'table_description',
     message: 'Description',

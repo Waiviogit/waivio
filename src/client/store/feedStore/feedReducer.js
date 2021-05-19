@@ -105,6 +105,15 @@ const feedCategory = (state = {}, action) => {
         list: feedIdsList(state.list, action),
       };
     case feedTypes.GET_FEED_CONTENT_BY_BLOG.SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        isLoaded: true,
+        failed: false,
+        hasMore: action.payload.hasMore,
+        tags: action.payload.tags,
+        list: feedIdsList(state.list, action),
+      };
     case feedTypes.GET_MORE_FEED_CONTENT_BY_BLOG.SUCCESS:
       return {
         ...state,

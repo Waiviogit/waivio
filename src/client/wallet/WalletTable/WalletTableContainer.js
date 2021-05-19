@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form } from 'antd';
 import { injectIntl } from 'react-intl';
-import { get, size, isEmpty, filter } from 'lodash';
+import { get, size, isEmpty, filter, round } from 'lodash';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 import {
   openWalletTable,
@@ -30,6 +31,8 @@ import {
 } from '../../store/authStore/authSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
 import {
+  getCurrentDeposits,
+  getCurrentWithdrawals,
   getIsErrorLoadingTable,
   getIsloadingMoreTableTransactions,
   getIsloadingTableTransactions,
@@ -70,6 +73,8 @@ import './WalletTable.less';
     isErrorLoading: getIsErrorLoadingTable(state),
     isloadingTableTransactions: getIsloadingTableTransactions(state),
     locale: getLocale(state),
+    deposits: getCurrentDeposits(state),
+    withdrawals: getCurrentWithdrawals(state),
   }),
   {
     openTable: openWalletTable,
@@ -114,6 +119,8 @@ class WalletTableContainer extends React.Component {
     isloadingTableTransactions: PropTypes.bool,
     locale: PropTypes.string.isRequired,
     history: PropTypes.shape(),
+    deposits: PropTypes.number,
+    withdrawals: PropTypes.number,
   };
 
   static defaultProps = {
@@ -139,12 +146,15 @@ class WalletTableContainer extends React.Component {
     isloadingTableTransactions: false,
     history: {},
     user: {},
+    deposits: 0,
+    withdrawals: 0,
   };
 
   state = {
     startDate: 0,
     endDate: 0,
     isEmptyPeriod: true,
+    filterAccounts: [],
   };
 
   componentDidMount() {
@@ -177,37 +187,43 @@ class WalletTableContainer extends React.Component {
     }
   };
 
-  handleSubmit = () => {
+  // createSubmit = () => {
+  //   const i = this.state.filterAccounts.map(user => this.handleSubmitUser(user));
+  // }
+
+  handleSubmit = user => {
     const {
       getTransactionsByInterval,
       getDemoTransactionsByInterval,
       clearTable,
       clearWalletHistory,
-      user,
     } = this.props;
-    const { startDate, endDate } = this.state;
-    const currentUsername = user.name;
-    const isGuestPage = guestUserRegex.test(user && user.name);
+    const { startDate, endDate, filterAccounts } = this.state;
+    const currentUsername = user;
+    const isGuestPage = guestUserRegex.test(currentUsername);
     const tableView = true;
     const limit = 10;
 
     clearWalletHistory();
 
     if (isGuestPage) {
-      getDemoTransactionsByInterval(currentUsername, tableView, startDate, endDate).then(() => {
-        this.handleRequestResultMessage(startDate, endDate);
-      });
-    } else {
-      clearTable();
-      getTransactionsByInterval(
-        currentUsername,
-        limit,
-        tableView,
-        startDate,
-        endDate,
-        TRANSACTION_TYPES,
-      ).then(() => this.handleRequestResultMessage(startDate, endDate));
+      return getDemoTransactionsByInterval(currentUsername, tableView, startDate, endDate).then(
+        () => {
+          this.handleRequestResultMessage(startDate, endDate);
+        },
+      );
     }
+    clearTable();
+
+    return getTransactionsByInterval(
+      currentUsername,
+      limit,
+      tableView,
+      TRANSACTION_TYPES,
+      startDate,
+      endDate,
+      filterAccounts,
+    ).then(() => this.handleRequestResultMessage(startDate, endDate));
   };
 
   handleOnClick = e => {
@@ -217,27 +233,60 @@ class WalletTableContainer extends React.Component {
     );
   };
 
+  // handleSubmit = () => {
+  //   Promise.allSettled(this.createSubmit()).then(r => console.log(r))
+  // }
+
+  deleteUserFromFilterAccounts = user => {
+    this.setState(preState => ({
+      filterAccounts: preState.filterAccounts.filter(acc => acc !== user),
+    }));
+  };
+
+  handleSelectUserFilterAccounts = user =>
+    this.setState(preState => ({
+      filterAccounts: [...preState.filterAccounts, user.account],
+    }));
+
   handleLoadMore = () => {
-    const currentUsername = get(this.props.user, 'name', '');
-    const isGuestPage = guestUserRegex.test(currentUsername);
-    const actions = get(this.props.usersAccountHistory, currentUsername, []);
+    const username = get(this.props.user, 'name', '');
+    const isGuestPage = guestUserRegex.test(username);
+    const actions = get(this.props.usersAccountHistory, username, []);
+    const { startDate, endDate, filterAccounts } = this.state;
+    let skip = 0;
+    const limit = 10;
+    const transferActionsLength = size(actions);
 
-    const loadMoreValues = {
-      username: currentUsername,
-      operationNumber: this.props.operationNum,
-      isLoadingMore: this.props.isloadingMoreTableTransactions,
-      demoIsLoadingMore: this.props.isloadingMoreDemoTransactions,
-      getMoreFunction: this.props.getMoreTableTransactions,
-      getMoreDemoFunction: this.props.getMoreDemoTransactions,
-      transferActions: actions,
-      isGuest: isGuestPage,
-      table: true,
-      fromDate: this.state.startDate,
-      tillDate: this.state.endDate,
-      types: TRANSACTION_TYPES,
-    };
+    if (isGuestPage) {
+      if (transferActionsLength >= limit) {
+        skip = transferActionsLength;
+      }
+      if (!this.props.isloadingMoreDemoTransactions) {
+        this.props.getMoreDemoTransactions(username, skip, limit);
+      }
+    }
 
-    return handleLoadMoreTransactions(loadMoreValues);
+    if (!isGuestPage && !this.props.isloadingMoreTableTransactions) {
+      this.props.getMoreTableTransactions({
+        username,
+        limit,
+        tableView: true,
+        startDate,
+        endDate,
+        types: TRANSACTION_TYPES,
+        operationNum: this.props.operationNum,
+        filterAccounts,
+      });
+    }
+
+    if (!isGuestPage && !this.props.isloadingMoreTableTransactions) {
+      this.props.getMoreTableTransactions({
+        username,
+        limit,
+        operationNum: this.props.operationNum,
+        filterAccounts,
+      });
+    }
   };
 
   selectRenderElements = (intl, transactions, isGuestPage, currentUsername) => {
@@ -306,14 +355,29 @@ class WalletTableContainer extends React.Component {
 
     return (
       <React.Fragment>
+        <Link to={`/@${user.name}/transfers`} className="WalletTable__back-btn">
+          {intl.formatMessage({
+            id: 'table_back',
+            defaultMessage: 'Back',
+          })}
+        </Link>
+        <h3>
+          {intl.formatMessage({
+            id: 'table_view',
+            defaultMessage: 'Advanced reports',
+          })}
+        </h3>
         <TableFilter
           intl={intl}
           isloadingTableTransactions={isloadingTableTransactions}
+          filterUsersList={this.state.filterAccounts}
           locale={locale}
           history={history}
           user={user}
           getFieldDecorator={form.getFieldDecorator}
           handleOnClick={this.handleOnClick}
+          handleSelectUser={this.handleSelectUserFilterAccounts}
+          deleteUser={this.deleteUserFromFilterAccounts}
           changeEndDate={value => {
             const date = moment(value);
             const isToday =
@@ -333,6 +397,23 @@ class WalletTableContainer extends React.Component {
             })
           }
         />
+        <div className="WalletTable__total">
+          {intl.formatMessage({
+            id: 'total',
+            defaultMessage: 'TOTAL',
+          })}
+          :{' '}
+          {intl.formatMessage({
+            id: 'Deposits',
+            defaultMessage: 'Deposits',
+          })}
+          : <b>${round(this.props.deposits, 3)}</b>.{' '}
+          {intl.formatMessage({
+            id: 'Withdrawals',
+            defaultMessage: 'Withdrawals',
+          })}
+          : <b>${round(this.props.withdrawals, 3)}</b>.
+        </div>
         {this.selectRenderElements(intl, transactions, isGuestPage, currentUsername)}
       </React.Fragment>
     );

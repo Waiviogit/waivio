@@ -218,7 +218,15 @@ export default class Buttons extends React.Component {
 
       take(votes, 10).map(vote => {
         if (vote.sponsor) {
-          sponsors.push(<Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>);
+          sponsors.push(
+            <p>
+              <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
+              <span style={{ opacity: '0.5' }}>
+                {' '}
+                <USDDisplay value={vote.rshares * ratio} />
+              </span>
+            </p>,
+          );
         } else {
           currentUpvotes.push(
             <p key={vote.voter}>

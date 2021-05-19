@@ -127,6 +127,7 @@ const parseGuestActions = actions => {
           username: action.userName,
           hbdUSD: action.hbdUSD,
           hiveUSD: action.hiveUSD,
+          withdrawDeposit: action.withdrawDeposit,
         },
       ],
       actionCount: index + 1,
@@ -298,27 +299,33 @@ export const getUserTableTransactionHistory = (
   username,
   limit,
   tableView,
+  types,
   startDate,
   endDate,
-  types,
+  filterAccounts,
   operationNum,
 ) => dispatch =>
   dispatch({
     type: GET_TABLE_TRANSACTIONS_HISTORY.ACTION,
     payload: {
       promise: ApiClient.getTransferHistoryTableView(
-        username,
-        limit,
-        tableView,
-        startDate,
-        endDate,
+        {
+          username,
+          limit,
+          tableView,
+          startDate,
+          endDate,
+          operationNum,
+        },
         types,
-        operationNum,
+        filterAccounts,
       )
         .then(data => ({
           username,
           tableTransactionsHistory: data.wallet,
           operationNumTable: data.operationNum,
+          withdrawals: data.withdrawals,
+          deposits: data.deposits,
           hasMoreTable: data.hasMore,
         }))
         .catch(error => console.error(error)),
@@ -348,7 +355,7 @@ export const getMoreUserTransactionHistory = (username, limit, operationNum) => 
 
 export const GET_ERROR_LOADING_TABLE_TRANSACTIONS = '@wallet/GET_ERROR_LOADING_TRANSACTIONS';
 
-export const getMoreTableUserTransactionHistory = (
+export const getMoreTableUserTransactionHistory = ({
   username,
   limit,
   tableView,
@@ -356,18 +363,22 @@ export const getMoreTableUserTransactionHistory = (
   endDate,
   types,
   operationNum,
-) => dispatch =>
+  filterAccounts,
+}) => dispatch =>
   dispatch({
     type: GET_MORE_TABLE_TRANSACTIONS_HISTORY.ACTION,
     payload: {
       promise: ApiClient.getTransferHistoryTableView(
-        username,
-        limit,
-        tableView,
-        startDate,
-        endDate,
+        {
+          username,
+          limit,
+          tableView,
+          startDate,
+          endDate,
+          operationNum,
+        },
         types,
-        operationNum,
+        filterAccounts,
       )
         .then(data => ({
           username,

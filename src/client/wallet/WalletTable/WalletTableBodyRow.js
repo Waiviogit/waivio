@@ -37,6 +37,7 @@ const WalletTableBodyRow = props => {
     fieldMemo: '',
     hiveUSD: get(transaction, 'hiveUSD'),
     hbdUSD: get(transaction, 'hbdUSD'),
+    withdrawDeposit: get(transaction, 'withdrawDeposit'),
   };
 
   switch (transactionType) {
@@ -65,6 +66,7 @@ const WalletTableBodyRow = props => {
             fieldDescription: description.powerUpTransaction,
             hiveUSD: get(transaction, 'hiveUSD'),
             hbdUSD: get(transaction, 'hbdUSD'),
+            withdrawDeposit: get(transaction, 'withdrawDeposit'),
           };
 
           return getCurrentRows(data);
@@ -77,6 +79,7 @@ const WalletTableBodyRow = props => {
           fieldDescription: description.powerUpTransactionFrom,
           hiveUSD: get(transaction, 'hiveUSD'),
           hbdUSD: get(transaction, 'hbdUSD'),
+          withdrawDeposit: get(transaction, 'withdrawDeposit'),
         };
 
         return getCurrentRows(data);
@@ -88,6 +91,7 @@ const WalletTableBodyRow = props => {
         fieldDescription: description.powerUpTransactionTo,
         hiveUSD: get(transaction, 'hiveUSD'),
         hbdUSD: get(transaction, 'hbdUSD'),
+        withdrawDeposit: get(transaction, 'withdrawDeposit'),
       };
 
       return getCurrentRows(data);
@@ -124,6 +128,7 @@ const WalletTableBodyRow = props => {
             fieldMemo: transaction.memo,
             hiveUSD: get(transaction, 'hiveUSD'),
             hbdUSD: get(transaction, 'hbdUSD'),
+            withdrawDeposit: get(transaction, 'withdrawDeposit'),
           };
 
           return getCurrentRows(data);
@@ -140,6 +145,7 @@ const WalletTableBodyRow = props => {
         fieldMemo: transaction.memo,
         hiveUSD: get(transaction, 'hiveUSD'),
         hbdUSD: get(transaction, 'hbdUSD'),
+        withdrawDeposit: get(transaction, 'withdrawDeposit'),
       };
 
       return getCurrentRows(data);
@@ -163,6 +169,7 @@ const WalletTableBodyRow = props => {
         fieldDescription: description,
         hiveUSD: get(transaction, 'hiveUSD'),
         hbdUSD: get(transaction, 'hbdUSD'),
+        withdrawDeposit: get(transaction, 'withdrawDeposit'),
       };
 
       return getCurrentRows(data);
@@ -186,6 +193,7 @@ const WalletTableBodyRow = props => {
         fieldMemo: transaction.memo,
         hiveUSD: get(transaction, 'hiveUSD'),
         hbdUSD: get(transaction, 'hbdUSD'),
+        withdrawDeposit: get(transaction, 'withdrawDeposit'),
       };
 
       return getCurrentRows(data);
@@ -210,6 +218,7 @@ const WalletTableBodyRow = props => {
         fieldDescription: description,
         hiveUSD: get(transaction, 'hiveUSD'),
         hbdUSD: get(transaction, 'hbdUSD'),
+        withdrawDeposit: get(transaction, 'withdrawDeposit'),
       };
 
       return getCurrentRows(data);
@@ -244,6 +253,7 @@ const WalletTableBodyRow = props => {
         fieldDescription: description,
         hiveUSD: get(transaction, 'hiveUSD'),
         hbdUSD: get(transaction, 'hbdUSD'),
+        withdrawDeposit: get(transaction, 'withdrawDeposit'),
       };
       if (paysAmountReceived.currency === 'HIVE') {
         data.fieldHIVE = `${paysAmountReceived.amount}`;
@@ -288,6 +298,7 @@ const WalletTableBodyRow = props => {
         fieldDescription: description,
         hiveUSD: get(transaction, 'hiveUSD'),
         hbdUSD: get(transaction, 'hbdUSD'),
+        withdrawDeposit: get(transaction, 'withdrawDeposit'),
       };
 
       return getCurrentRows(data);
@@ -316,6 +327,7 @@ const WalletTableBodyRow = props => {
         fieldDescription: description,
         hiveUSD: get(transaction, 'hiveUSD'),
         hbdUSD: get(transaction, 'hbdUSD'),
+        withdrawDeposit: get(transaction, 'withdrawDeposit'),
       };
 
       return getCurrentRows(data);

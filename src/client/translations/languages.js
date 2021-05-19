@@ -351,6 +351,15 @@ export default [
     translations: 'ja-JP.json',
   },
   {
+    id: 'af-ZA',
+    name: 'Afrikaans',
+    nativeName: 'Afrikaans',
+    variants: ['af', 'af-ZA'],
+    rtl: false,
+    localeData: 'af',
+    translations: 'af-ZA.json',
+  },
+  {
     id: 'zh-CN',
     name: 'Simplified Chinese',
     nativeName: '简体中文',
