@@ -81,13 +81,12 @@ const SearchAllResult = props => {
       case 'Users':
         return {
           list: map(props.searchByUser, user => (
-            <div key={user.account} role="presentation" onClick={handleItemClick}>
-              <UserCard
-                user={{ ...user, name: user.account }}
-                unfollow={props.unfollowSearchUser}
-                follow={props.followSearchUser}
-              />
-            </div>
+            <UserCard
+              user={{ ...user, name: user.account }}
+              unfollow={props.unfollowSearchUser}
+              follow={props.followSearchUser}
+              handleClick={handleItemClick}
+            />
           )),
           hasMore: props.hasMoreUsers,
           loading: props.usersLoading,
