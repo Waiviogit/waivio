@@ -370,7 +370,7 @@ export const getMoreTableUserTransactionHistory = ({
     payload: {
       promise: ApiClient.getTransferHistoryTableView(
         {
-          username,
+          userName: username,
           limit,
           tableView,
           startDate,
