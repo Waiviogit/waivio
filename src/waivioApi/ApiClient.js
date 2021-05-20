@@ -13,6 +13,7 @@ import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
 import { IS_RESERVED } from '../common/constants/rewards';
 import { isMobileDevice } from '../client/helpers/apiHelpers';
 import { createQuery } from './helpers';
+import { TRANSACTION_TYPES } from '../client/wallet/WalletHelper';
 
 let headers = {
   Accept: 'application/json',
@@ -1647,7 +1648,7 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
   });
 
 export const getTransferHistoryTableView = (data, types, filterAcc) => {
-  const typesQuery = types && types.reduce((acc, curr) => `${acc}&types=${curr}`, '');
+  const typesQuery = TRANSACTION_TYPES.reduce((acc, curr) => `${acc}&types=${curr}`, '');
   const filterAccounts =
     filterAcc && filterAcc.reduce((acc, curr) => `${acc}&filterAccounts=${curr}`, '');
   const query = createQuery(data);

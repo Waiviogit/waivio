@@ -270,7 +270,6 @@ class WalletTableContainer extends React.Component {
         tableView: true,
         startDate,
         endDate,
-        types: TRANSACTION_TYPES,
         operationNum: this.props.operationNum,
         filterAccounts,
       });
