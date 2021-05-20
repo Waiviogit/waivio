@@ -75,7 +75,10 @@ class ObjectInfo extends React.Component {
     selectedField: null,
     showModal: false,
     showMore: {},
+    countPhones: 3,
   };
+
+  incrementPhoneCount = 3;
 
   getFieldLayout = (fieldName, params) => {
     const { body } = params;
@@ -98,7 +101,12 @@ class ObjectInfo extends React.Component {
     return null;
   };
 
-  handleSelectField = field => () => this.setState({ selectedField: field });
+  handleSelectField = field => {
+    this.setState({ selectedField: field });
+    if (field === objectFields.phone) {
+      this.setState(prev => ({ countPhones: prev.countPhones + this.incrementPhoneCount }));
+    }
+  };
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
@@ -311,7 +319,7 @@ class ObjectInfo extends React.Component {
           github: linkField[linkFields.linkGitHub] || '',
         }
       : {};
-    const phones = get(wobject, 'phone', []) || [];
+    const phones = get(wobject, 'phone', []);
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
@@ -516,19 +524,21 @@ class ObjectInfo extends React.Component {
                 )
             ) : (
               <React.Fragment>
-                {phones
-                  .slice(0, 2)
-                  .map(({ body, number }) =>
+                {phones.map(
+                  ({ body, number }, index) =>
+                    index < this.state.countPhones &&
                     this.getFieldLayout(objectFields.phone, { body, number }),
-                  )}
-                <Link
-                  to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
-                  onClick={() => this.handleSelectField(objectFields.phone)}
-                >
-                  <FormattedMessage id="show_more_tags" defaultMessage="show more">
-                    {value => <div className="phone">{value}</div>}
-                  </FormattedMessage>
-                </Link>
+                )}
+                {phones.length > this.state.countPhones && (
+                  <Link
+                    to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
+                    onClick={() => this.handleSelectField(objectFields.phone)}
+                  >
+                    <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                      {value => <div className="phone">{value}</div>}
+                    </FormattedMessage>
+                  </Link>
+                )}
               </React.Fragment>
             )}
           </React.Fragment>,
