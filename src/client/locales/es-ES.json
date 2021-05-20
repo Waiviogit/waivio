@@ -1454,7 +1454,7 @@
   "referrals_instructions_accepted_title_widget": "Widget de Waivio:",
   "referrals_instructions_accepted__widget_info": "Este widget del tamaño de una página está diseñado para mostrar recompensas activas relevantes. Pegue el siguiente código en su página web:",
   "referrals_instructions_accepted__widget_example": "Ver {text}",
-  "referrals_instructions_accepted__alert": "Tenga en cuenta que las promociones engañosas no están permitidas de acuerdo con el acuerdo de recomendación. Waivio se reserva el derecho de finalizar el programa de recomendación en cualquier momento y por cualquier motivo.",
+  "referrals_instructions_accepted__alert": "Tenga en cuenta que no se permiten promociones engañosas de acuerdo con el Programa de recomendación. Waivio se reserva el derecho de finalizar el programa de recomendación en cualquier momento y por cualquier motivo.",
   "referrals_instructions_terminate_referral_title": "Terminar el programa de referidos",
   "referrals_instructions_terminate_referral_info": "Si ya no acepta los términos y condiciones del contrato de servicio de Waivio, ya no podrá participar en el programa de recomendación. Se suspenderán todas las referencias futuras.",
   "copy_button": "Dupdo",

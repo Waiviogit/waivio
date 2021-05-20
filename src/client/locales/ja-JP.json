@@ -1454,7 +1454,7 @@
   "referrals_instructions_accepted_title_widget": "Waivioウィジェット：",
   "referrals_instructions_accepted__widget_info": "このページサイズのウィジェットは、関連するアクティブな報酬を表示するように設計されています。次のコードをWebページに貼り付けます。",
   "referrals_instructions_accepted__widget_example": "{text}参照してください",
-  "referrals_instructions_accepted__alert": "紹介契約に従って、誤解を招くようなプロモーションは許可されないことに注意してください。 Waivioは、理由の如何を問わず、いつでも紹介プログラムを終了する権利を留保します。",
+  "referrals_instructions_accepted__alert": "紹介プログラムに従って、誤解を招く宣伝は許可されないことに注意してください。 Waivioは、理由の如何を問わず、いつでも紹介プログラムを終了する権利を留保します。",
   "referrals_instructions_terminate_referral_title": "紹介プログラムを終了する",
   "referrals_instructions_terminate_referral_info": "Waivioサービス契約の条件に同意しなくなった場合、紹介プログラムに参加できなくなります。今後の紹介はすべて停止されます。",
   "copy_button": "コピー",

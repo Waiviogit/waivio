@@ -1454,7 +1454,7 @@
   "referrals_instructions_accepted_title_widget": "Widget Waivio :",
   "referrals_instructions_accepted__widget_info": "Ce widget de la taille d'une page est conçu pour montrer les récompenses actives pertinentes. Collez le code suivant dans votre page web :",
   "referrals_instructions_accepted__widget_example": "Voir {text}",
-  "referrals_instructions_accepted__alert": "Veuillez noter que toute promotion trompeuse n'est pas autorisée conformément à l'accord de recommandation. Waivio se réserve le droit de mettre fin au programme de parrainage à tout moment et pour quelque raison que ce soit.",
+  "referrals_instructions_accepted__alert": "Veuillez noter que les promotions trompeuses ne sont pas autorisées conformément au programme de parrainage. Waivio se réserve le droit de mettre fin au programme de parrainage à tout moment pour quelque raison que ce soit.",
   "referrals_instructions_terminate_referral_title": "Mettre fin au programme de renvoi",
   "referrals_instructions_terminate_referral_info": "Si vous n'acceptez plus les termes et conditions de l'accord de service Waivio, vous ne pouvez plus participer au programme d'orientation. Tous les futurs renvois seront suspendus.",
   "copy_button": "Copie",
