@@ -5,7 +5,7 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import { getUserAccountHistory, openTransfer } from '../store/walletStore/walletActions';
+import { openTransfer } from '../store/walletStore/walletActions';
 import { getUserAccount } from '../store/usersStore/usersActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
@@ -41,7 +41,6 @@ import { getIsOpenWalletTable, getUsersAccountHistory } from '../store/walletSto
     user: getUser(state, ownProps.match.params.name),
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
-    usersAccountHistory: getUsersAccountHistory(state),
     rewardFund: getRewardFund(state),
     rate: getRate(state),
     allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
@@ -51,7 +50,6 @@ import { getIsOpenWalletTable, getUsersAccountHistory } from '../store/walletSto
   {
     getUserAccount,
     openTransfer,
-    getUserAccountHistory,
   },
 )
 export default class User extends React.Component {
@@ -67,8 +65,6 @@ export default class User extends React.Component {
     failed: PropTypes.bool,
     getUserAccount: PropTypes.func,
     openTransfer: PropTypes.func,
-    getUserAccountHistory: PropTypes.func.isRequired,
-    usersAccountHistory: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
     isOpenWalletTable: PropTypes.bool,
@@ -84,10 +80,7 @@ export default class User extends React.Component {
   };
 
   static fetchData({ store, match }) {
-    return Promise.all([
-      store.dispatch(getUserAccount(match.params.name)),
-      store.dispatch(getUserAccountHistory(match.params.name)),
-    ]);
+    return Promise.all([store.dispatch(getUserAccount(match.params.name))]);
   }
 
   componentDidMount() {
@@ -96,8 +89,6 @@ export default class User extends React.Component {
     if (window.gtag) window.gtag('event', 'view_user_profile');
 
     this.props.getUserAccount(name);
-
-    if (isEmpty(this.props.usersAccountHistory[name])) this.props.getUserAccountHistory(name);
   }
 
   componentDidUpdate(prevProps) {

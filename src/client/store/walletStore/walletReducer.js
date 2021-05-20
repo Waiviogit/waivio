@@ -210,8 +210,8 @@ export default function walletReducer(state = initialState, action) {
         operationNumTable: action.payload.operationNumTable,
         loadingMoreTableTransactions: false,
         isErrorLoadingTableTransactions: false,
-        deposits: state.deposits + action.payload.deposits,
-        withdrawals: state.deposits + action.payload.withdrawals,
+        deposits: state.deposits ? state.deposits + action.payload.deposits : 0,
+        withdrawals: state.withdrawals ? state.withdrawals + action.payload.withdrawals : 0,
       };
     }
     case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.ERROR:

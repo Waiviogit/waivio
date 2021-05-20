@@ -385,10 +385,12 @@ export const getMoreTableUserTransactionHistory = ({
         filterAccounts,
       )
         .then(data => ({
-          username,
+          userName: username,
           tableTransactionsHistory: data.wallet,
           operationNumTable: data.operationNum,
           hasMoreTable: data.hasMore,
+          withdrawals: data.withdrawals,
+          deposits: data.deposits,
         }))
         .catch(() =>
           dispatch({
