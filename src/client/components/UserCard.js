@@ -7,7 +7,7 @@ import Avatar from '../components/Avatar';
 
 import './UserCard.less';
 
-const UserCard = ({ user, alt, showFollow, unfollow, follow, withoutLine }) => {
+const UserCard = ({ user, alt, showFollow, unfollow, follow, withoutLine, handleClick }) => {
   const cardView = showFollow ? 'UserCard__left' : 'UserCard__sidebar';
   const weightBlock = showFollow ? 'UserCard__alt BlockWeight' : 'UserCard__short';
   const followersCountBlock = showFollow ? 'reblogged' : 'rebloggedFollowersNone';
@@ -17,7 +17,7 @@ const UserCard = ({ user, alt, showFollow, unfollow, follow, withoutLine }) => {
 
   return (
     user && (
-      <div className={userCardClassList}>
+      <div className={userCardClassList} role="presentation" onClick={handleClick}>
         <div className={cardView}>
           <div className="UserCard__wrap">
             <Link to={`/@${user.name}`}>
@@ -59,6 +59,7 @@ UserCard.propTypes = {
   withoutLine: PropTypes.bool,
   unfollow: PropTypes.func,
   follow: PropTypes.func,
+  handleClick: PropTypes.func,
 };
 
 UserCard.defaultProps = {
@@ -69,6 +70,7 @@ UserCard.defaultProps = {
   authUser: '',
   unfollow: () => {},
   follow: () => {},
+  handleClick: () => {},
 };
 
 export default UserCard;
