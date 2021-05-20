@@ -101,11 +101,16 @@ class ObjectInfo extends React.Component {
     return null;
   };
 
-  handleSelectField = field => {
+  handleSelectField = field => () => {
     this.setState({ selectedField: field });
-    if (field === objectFields.phone) {
-      this.setState(prev => ({ countPhones: prev.countPhones + this.incrementPhoneCount }));
-    }
+  };
+
+  handleShowMorePhones = field => {
+    this.setState(prev => ({
+      countPhones: prev.countPhones + this.incrementPhoneCount,
+    }));
+
+    return this.handleSelectField(field);
   };
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
@@ -532,7 +537,7 @@ class ObjectInfo extends React.Component {
                 {phones.length > this.state.countPhones && (
                   <Link
                     to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
-                    onClick={() => this.handleSelectField(objectFields.phone)}
+                    onClick={() => this.handleShowMorePhones(objectFields.phone)}
                   >
                     <FormattedMessage id="show_more_tags" defaultMessage="show more">
                       {value => <div className="phone">{value}</div>}
