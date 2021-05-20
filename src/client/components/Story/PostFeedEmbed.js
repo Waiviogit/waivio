@@ -12,20 +12,10 @@ export default class PostFeedEmbed extends React.Component {
       embed: PropTypes.string,
     }).isRequired,
     inPost: PropTypes.bool,
-    isModal: PropTypes.bool,
-    is3Speak: PropTypes.bool,
-    isPostPreviewModal: PropTypes.bool,
-    isFullStory: PropTypes.bool,
-    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
     inPost: false,
-    isModal: false,
-    is3Speak: false,
-    isPostPreviewModal: false,
-    isFullStory: false,
-    isGuest: false,
   };
 
   constructor(props) {
@@ -40,22 +30,9 @@ export default class PostFeedEmbed extends React.Component {
     this.setState({ showIframe: true });
   };
 
-  renderWithIframe = (
-    embed,
-    isModal,
-    is3Speak,
-    isVimeo,
-    isPostPreviewModal,
-    isFullStory,
-    isGuest,
-  ) => {
+  renderWithIframe = (embed, isVimeo) => {
     const postFeedEmbedClassList = classNames('PostFeedEmbed__container', {
-      'PostFeedEmbed__container-3speak': isModal && is3Speak,
-      'PostFeedEmbed__container-vimeo': isVimeo && !isPostPreviewModal,
-      'PostFeedEmbed__container-post-preview': isPostPreviewModal,
-      'PostFeedEmbed__container-vimeo-post-preview': isVimeo && isPostPreviewModal,
-      'PostFeedEmbed__container-vimeo-story-full': isVimeo && isFullStory && !isPostPreviewModal,
-      'PostFeedEmbed__container-vimeo-story-full-guestPost': isVimeo && isFullStory && isGuest,
+      'PostFeedEmbed__container-vimeo': isVimeo,
     });
 
     return (
@@ -76,15 +53,7 @@ export default class PostFeedEmbed extends React.Component {
   }
 
   render() {
-    const {
-      embed,
-      inPost,
-      isModal,
-      is3Speak,
-      isPostPreviewModal,
-      isFullStory,
-      isGuest,
-    } = this.props;
+    const { embed, inPost } = this.props;
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
 
     if (isPostVideo(embed.provider_name, shouldRenderThumb)) {
@@ -92,15 +61,7 @@ export default class PostFeedEmbed extends React.Component {
     } else if (embed.embed) {
       const isVimeo = embed.provider_name === 'Vimeo';
 
-      return this.renderWithIframe(
-        embed.embed,
-        isModal,
-        is3Speak,
-        isVimeo,
-        isPostPreviewModal,
-        isFullStory,
-        isGuest,
-      );
+      return this.renderWithIframe(embed.embed, isVimeo);
     }
 
     return <div />;
