@@ -76,9 +76,6 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
               htmlFor="agreeButton"
               className="ReferralInstructions__wrap-conditions__condition-content"
             >
-              <div className="ReferralInstructions__wrap-conditions__condition-content__star-flag">
-                *
-              </div>
               {instructionsConditions}
             </label>
           </div>
