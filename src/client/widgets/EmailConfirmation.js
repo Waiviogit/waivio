@@ -68,7 +68,7 @@ const EmailConfirmation = ({
     setIsLoading(true);
 
     if (!isSettings)
-      return handleSubmit().then(r => {
+      return handleSubmit().then(() => {
         handleClose(false);
         setIsLoading(false);
       });
