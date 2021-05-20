@@ -1454,7 +1454,7 @@
   "referrals_instructions_accepted_title_widget": "Waivio小部件：",
   "referrals_instructions_accepted__widget_info": "此页面大小的窗口小部件旨在显示相关的有效奖励。将以下代码粘贴到您的网页中：",
   "referrals_instructions_accepted__widget_example": "参见{text}",
-  "referrals_instructions_accepted__alert": "请注意，根据推荐协议，任何具有误导性的促销活动都是不允许的。 Waivio保留随时出于任何原因终止推荐计划的权利。",
+  "referrals_instructions_accepted__alert": "请注意，根据推荐计划，任何令人误解的促销活动都是不允许的。 Waivio保留随时出于任何原因终止推荐计划的权利。",
   "referrals_instructions_terminate_referral_title": "终止推荐程序",
   "referrals_instructions_terminate_referral_info": "如果您不再接受Waivio服务协议的条款和条件，则不能再参加推荐计划。以后所有的转介都将被暂停。",
   "copy_button": "复制",
