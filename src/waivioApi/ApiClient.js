@@ -1485,6 +1485,17 @@ export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
   ).then(res => res.json());
 };
 
+export const confirmWithDraw = (userName, transactionData) => {
+  return fetch(`${config.campaignApiPrefix}${config.withdraw}${config.immediateWithdraw}`, {
+    headers: { ...headers, 'access-token': store.get('accessToken') },
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      transactionData,
+    }),
+  }).then(res => res.json());
+};
+
 export const sendEmailConfirmation = (userName, type, email, isGuest) => {
   const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
   let body = { userName, type, email, isGuest };
