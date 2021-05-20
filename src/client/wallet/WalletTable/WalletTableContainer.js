@@ -17,11 +17,7 @@ import {
   clearTransactionsHistory,
   getUserAccountHistory,
 } from '../../store/walletStore/walletActions';
-import {
-  getDataDemoTransactions,
-  handleLoadMoreTransactions,
-  TRANSACTION_TYPES,
-} from '../WalletHelper';
+import { getDataDemoTransactions, TRANSACTION_TYPES } from '../WalletHelper';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import TableFilter from './TableFilter';
 import WalletTable from './WalletTable';
@@ -262,7 +258,7 @@ class WalletTableContainer extends React.Component {
       if (transferActionsLength >= limit) {
         skip = transferActionsLength;
       }
-      if (!this.props.isloadingMoreDemoTransactions && startDate && endDate) {
+      if (!this.props.isloadingMoreDemoTransactions) {
         this.props.getMoreDemoTransactions(username, skip, limit, true, startDate, endDate);
       }
     }
