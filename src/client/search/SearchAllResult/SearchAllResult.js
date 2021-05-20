@@ -81,13 +81,12 @@ const SearchAllResult = props => {
       case 'Users':
         return {
           list: map(props.searchByUser, user => (
-            <div key={user.account} role="presentation" onClick={handleItemClick}>
-              <UserCard
-                user={{ ...user, name: user.account }}
-                unfollow={props.unfollowSearchUser}
-                follow={props.followSearchUser}
-              />
-            </div>
+            <UserCard
+              user={{ ...user, name: user.account }}
+              unfollow={props.unfollowSearchUser}
+              follow={props.followSearchUser}
+              handleClick={handleItemClick}
+            />
           )),
           hasMore: props.hasMoreUsers,
           loading: props.usersLoading,
@@ -98,7 +97,7 @@ const SearchAllResult = props => {
           list: map(uniqBy(props.searchResult, '_id'), obj => (
             <div
               role="presentation"
-              key={obj.author_permlink}
+              key={obj._id}
               onMouseOver={() => props.handleHoveredCard(obj.author_permlink)}
               onMouseOut={() => props.handleHoveredCard('')}
               onClick={handleItemClick}
@@ -272,9 +271,9 @@ SearchAllResult.propTypes = {
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}),
-  searchByUser: PropTypes.arrayOf().isRequired,
-  activeFilters: PropTypes.arrayOf().isRequired,
-  searchResult: PropTypes.arrayOf().isRequired,
+  searchByUser: PropTypes.arrayOf(PropTypes.shape({})),
+  activeFilters: PropTypes.arrayOf(PropTypes.shape({})),
+  searchResult: PropTypes.arrayOf(PropTypes.shape({})),
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
   hasMore: PropTypes.bool.isRequired,
@@ -283,8 +282,7 @@ SearchAllResult.propTypes = {
   loadingMore: PropTypes.bool.isRequired,
   usersLoading: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,
-  filters: PropTypes.arrayOf().isRequired,
-  // eslint-disable-next-line react/no-unused-prop-types
+  filters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   unfollowSearchUser: PropTypes.func.isRequired,
@@ -292,9 +290,7 @@ SearchAllResult.propTypes = {
   reloadSearchList: PropTypes.func.isRequired,
   handleUrlWithChangeType: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
-  // eslint-disable-next-line react/no-unused-prop-types
   assignProposition: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/no-unused-prop-types
   declineProposition: PropTypes.func.isRequired,
   handleSetFiltersInUrl: PropTypes.func.isRequired,
   handleHoveredCard: PropTypes.func,
@@ -305,6 +301,9 @@ SearchAllResult.defaultProps = {
   hasMoreUsers: false,
   showReload: false,
   handleHoveredCard: () => {},
+  searchByUser: [],
+  activeFilters: [],
+  searchResult: [],
 };
 
 export default connect(

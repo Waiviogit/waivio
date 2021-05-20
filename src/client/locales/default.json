@@ -925,7 +925,7 @@
   "check_review_primaryObject": "Link to {primaryObjectName}: {primaryObjectUrl}",
   "check_review_minExpertise": "Minimum overall expertise: {minExpertise}",
   "check_review_minFollowers": "Minimum number of followers: {minFollowers}",
-  "check_review_minPosts": "Minimum number of posts: {minPosts}",
+  "rewards_details_minimum_number_posts": "Minimum number of posts",
   "check_review_agreement_part_1": "This review meets all the technical requirements of",
   "check_review_the_reservation": "the reservation",
   "check_review_agreement_part_2": "and entitles you to specified rewards. The sponsor reserves the right to review all submissions manually before paying the rewards.",
@@ -1454,7 +1454,7 @@
   "referrals_instructions_accepted_title_widget": "Waivio widget:",
   "referrals_instructions_accepted__widget_info": "This page-size widget is designed to show relevant active rewards. Paste the following code into your webpage:",
   "referrals_instructions_accepted__widget_example": "See {text}",
-  "referrals_instructions_accepted__alert": "Please note that any misleading promotions are not allowed in accordance with the Referral agreement. Waivio reserves the right to terminate the referral program at any time for any reason.",
+  "referrals_instructions_accepted__alert": "Please note that any misleading promotions are not allowed in accordance with the Referral Program. Waivio reserves the right to terminate the referral program at any time for any reason.",
   "referrals_instructions_terminate_referral_title": "Terminate the Referral program",
   "referrals_instructions_terminate_referral_info": "If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended.",
   "copy_button": "Copy",
@@ -1676,6 +1676,10 @@
   "find_the_restaurant": "Find the restaurant and select the dish",
   "reserve_rewards_few_days": "Reserve the reward for a few days",
   "receive_restaurant_rebates": "How To Receive Restaurant Rebates",
+  "filter_posts": "Filter posts",
   "cookies_experience": "We use cookies to improve user experience. By using this site, you consent to the use of cookies. Learn more about website",
-  "list_types": "List types"
+  "list_types": "List types",
+  "Deposits": "Deposits",
+  "Withdrawals": "Withdrawals",
+  "total": "TOTAL"
 }

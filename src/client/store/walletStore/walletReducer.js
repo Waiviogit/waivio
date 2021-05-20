@@ -34,6 +34,8 @@ const initialState = {
   operationNum: -1,
   operationNumTable: -1,
   isOpenWalletTable: false,
+  withdrawals: 0,
+  deposits: 0,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -106,6 +108,8 @@ export default function walletReducer(state = initialState, action) {
         },
         hasMoreGuestActions: action.payload.hasMoreGuestActions,
         usersAccountHistoryLoading: false,
+        withdrawals: action.payload.withdrawals,
+        deposits: action.payload.deposits,
       };
     }
     case walletActions.GET_USER_ACCOUNT_HISTORY.ERROR:
@@ -130,6 +134,8 @@ export default function walletReducer(state = initialState, action) {
         hasMore: action.payload.hasMore,
         operationNum: action.payload.operationNum,
         transactionsHistoryLoading: false,
+        withdrawals: 0,
+        deposits: 0,
       };
     }
     case walletActions.GET_TABLE_TRANSACTIONS_HISTORY.START:
@@ -138,7 +144,7 @@ export default function walletReducer(state = initialState, action) {
         tableTransactionsHistoryLoading: true,
       };
     case walletActions.GET_TABLE_TRANSACTIONS_HISTORY.SUCCESS: {
-      const usernameKey = action.payload.username;
+      const usernameKey = action.payload.userName;
 
       return {
         ...state,
@@ -149,6 +155,8 @@ export default function walletReducer(state = initialState, action) {
         hasMoreTable: action.payload.hasMoreTable,
         operationNumTable: action.payload.operationNumTable,
         tableTransactionsHistoryLoading: false,
+        withdrawals: action.payload.withdrawals,
+        deposits: action.payload.deposits,
       };
     }
     case walletActions.GET_MORE_TRANSACTIONS_HISTORY.START:
@@ -186,7 +194,7 @@ export default function walletReducer(state = initialState, action) {
         loadingMoreTableTransactions: true,
       };
     case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.SUCCESS: {
-      const usernameKey = action.payload.username;
+      const usernameKey = action.payload.userName;
       const userCurrentTransactions = get(state.tableTransactionsHistory, usernameKey, []);
 
       return {
@@ -202,6 +210,8 @@ export default function walletReducer(state = initialState, action) {
         operationNumTable: action.payload.operationNumTable,
         loadingMoreTableTransactions: false,
         isErrorLoadingTableTransactions: false,
+        deposits: state.deposits ? state.deposits + action.payload.deposits : 0,
+        withdrawals: state.withdrawals ? state.withdrawals + action.payload.withdrawals : 0,
       };
     }
     case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.ERROR:
@@ -240,6 +250,10 @@ export default function walletReducer(state = initialState, action) {
         },
         hasMoreGuestActions: action.payload.hasMoreGuestActions,
         loadingMoreUsersAccountHistory: false,
+        withdrawals: action.payload.withdrawals
+          ? action.payload.withdrawals + state.withdrawals
+          : 0,
+        deposits: action.payload.deposits ? action.payload.deposits + state.deposits : 0,
       };
     }
     case walletActions.GET_MORE_USER_ACCOUNT_HISTORY.ERROR:

@@ -35,7 +35,7 @@ const SidenavDiscoverObjects = ({ withTitle, intl }) => {
     } else {
       setTypesCount(typesLimit);
     }
-  }, [pathname]);
+  }, [pathname, objectTypes]);
 
   const toggleMenuCondition = menuItem => {
     setMenuCondition({

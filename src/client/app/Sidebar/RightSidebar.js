@@ -22,16 +22,23 @@ import {
 } from '../../store/authStore/authSelectors';
 import { getFeed } from '../../store/feedStore/feedSelectors';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import FilterPosts from '../../components/Sidebar/FilterPosts/FilterPosts';
+import { setProfileFilters } from '../../store/feedStore/feedActions';
 
 @withRouter
-@connect(state => ({
-  authenticated: getIsAuthenticated(state),
-  authUserName: getAuthenticatedUserName(state),
-  isAuthFetching: getIsAuthFetching(state),
-  locale: getLocale(state),
-  isGuest: isGuestUser(state),
-  feed: getFeed(state),
-}))
+@connect(
+  state => ({
+    authenticated: getIsAuthenticated(state),
+    authUserName: getAuthenticatedUserName(state),
+    isAuthFetching: getIsAuthFetching(state),
+    locale: getLocale(state),
+    isGuest: isGuestUser(state),
+    feed: getFeed(state),
+  }),
+  {
+    setProfileFilters,
+  },
+)
 export default class RightSidebar extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool,
@@ -42,6 +49,7 @@ export default class RightSidebar extends React.Component {
     locale: PropTypes.string,
     isGuest: PropTypes.bool,
     feed: PropTypes.shape().isRequired,
+    setProfileFilters: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -86,14 +94,22 @@ export default class RightSidebar extends React.Component {
           <Route
             path="/@:name"
             render={() => (
-              <UserSidebar
-                authenticated={authenticated}
-                isGuest={isGuest}
-                content={content}
-                match={match}
-                authUserName={authUserName}
-                locale={locale}
-              />
+              <React.Fragment>
+                {match.url === `/@${match.params.name}` && (
+                  <FilterPosts
+                    setProfileFilters={this.props.setProfileFilters}
+                    name={match.params.name}
+                  />
+                )}
+                <UserSidebar
+                  authenticated={authenticated}
+                  isGuest={isGuest}
+                  content={content}
+                  match={match}
+                  authUserName={authUserName}
+                  locale={locale}
+                />
+              </React.Fragment>
             )}
           />
           <Route

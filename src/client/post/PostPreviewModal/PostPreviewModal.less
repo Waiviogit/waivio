@@ -4,8 +4,10 @@
 .ant-modal-mask[style*='z-index: 1500'] {
   background-color: @white !important;
 }
+
 .post-preview-modal.ant-modal-wrap {
   z-index: 1500;
+  margin-bottom: 40px;
 
   .ant-modal-content {
     box-shadow: none;
@@ -13,8 +15,10 @@
 
   &.publishing {
     filter: blur(2px);
+
     &:hover {
       cursor: wait;
+
       .ant-modal-close,
       .st-post-chart-wrap,
       .ant-select-selection {

@@ -26,10 +26,11 @@ const WalletTable = ({
         <tr>
           {WalletTableHeader.map(tdInfo => (
             <th key={tdInfo.id} className={tdInfo.className}>
-              {intl.formatMessage({
-                id: tdInfo.id,
-                defaultMessage: tdInfo.message,
-              })}
+              {tdInfo.symbol ||
+                intl.formatMessage({
+                  id: tdInfo.id,
+                  defaultMessage: tdInfo.message,
+                })}
             </th>
           ))}
         </tr>

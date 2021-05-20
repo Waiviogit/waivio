@@ -13,6 +13,7 @@ import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
 import { IS_RESERVED } from '../common/constants/rewards';
 import { isMobileDevice } from '../client/helpers/apiHelpers';
 import { createQuery } from './helpers';
+import { TRANSACTION_TYPES } from '../client/wallet/WalletHelper';
 
 let headers = {
   Accept: 'application/json',
@@ -182,8 +183,9 @@ export const getFeedContent = (sortBy, locale, follower, queryData) => {
 export const getUserProfileBlog = (
   userName,
   follower,
-  { startAuthor = '', startPermlink = '', limit = 10, skip },
+  { limit = 10, skip },
   locale = 'en-US',
+  tagsArray,
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
@@ -197,8 +199,7 @@ export const getUserProfileBlog = (
       body: JSON.stringify({
         limit,
         skip,
-        start_author: startAuthor,
-        start_permlink: startPermlink,
+        ...(isEmpty(tagsArray) ? {} : { tagsArray }),
       }),
     })
       .then(res => res.json())
@@ -233,7 +234,7 @@ export const getMoreUserFeedContent = ({
 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
-      headers: { ...headers, app: config.appName, locale },
+      headers: { ...headers, app: config.appName, locale, follower: userName },
       method: 'POST',
       body: JSON.stringify({
         skip,
@@ -1485,6 +1486,17 @@ export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
   ).then(res => res.json());
 };
 
+export const confirmWithDraw = (userName, transactionData) => {
+  return fetch(`${config.campaignApiPrefix}${config.withdraw}${config.immediateWithdraw}`, {
+    headers: { ...headers, 'access-token': store.get('accessToken') },
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      transactionData,
+    }),
+  }).then(res => res.json());
+};
+
 export const sendEmailConfirmation = (userName, type, email, isGuest) => {
   const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
   let body = { userName, type, email, isGuest };
@@ -1635,19 +1647,15 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
       .catch(error => reject(error));
   });
 
-export const getTransferHistoryTableView = (
-  username,
-  limit = 10,
-  tableView = true,
-  startDate,
-  endDate,
-  types,
-  operationNum = -1,
-) => {
-  const typesQuery = types.reduce((acc, curr) => `${acc}&types=${curr}`, '');
+export const getTransferHistoryTableView = (data, types, filterAcc) => {
+  const typesQuery = TRANSACTION_TYPES.reduce((acc, curr) => `${acc}&types=${curr}`, '');
+  const filterAccounts =
+    filterAcc && filterAcc.reduce((acc, curr) => `${acc}&filterAccounts=${curr}`, '');
+  const query = createQuery(data);
+
   return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&${typesQuery}&operationNum=${operationNum}`,
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?${query}&${typesQuery}&${filterAccounts}`,
       {
         headers,
         method: 'GET',

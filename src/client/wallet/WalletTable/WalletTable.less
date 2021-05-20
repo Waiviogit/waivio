@@ -7,7 +7,6 @@
   text-align: center;
   text-transform: capitalize;
   border-collapse: collapse;
-  margin-top: 20px;
   position: relative;
   width: 100%;
   overflow: auto;
@@ -55,7 +54,8 @@
   }
 
   &__back-btn {
-    .wallet-table-btn();
+    display: block;
+    text-align: right;
   }
 
   &__submit {
@@ -118,12 +118,40 @@
     width: 120px;
   }
 
+  &__plusmn {
+    width: 25px;
+  }
+
   &__description {
     width: 400px;
   }
 
   &__memo {
     width: 335px;
+  }
+
+  &__total {
+    padding: 15px 0;
+
+    b {
+      color: @black;
+    }
+  }
+
+  &__userSearch {
+    width: 50%;
+  }
+
+  &__date-wrap {
+    display: flex;
+  }
+
+  &__tableFilter {
+    .ant-row.ant-form-item {
+      display: flex;
+      flex-direction: column;
+      align-items: end;
+    }
   }
 }
 

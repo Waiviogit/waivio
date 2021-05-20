@@ -109,16 +109,7 @@ export function getHtml(
       const embed = getEmbed(link);
 
       sections.push(
-        ReactDOMServer.renderToString(
-          <PostFeedEmbed
-            key={`embed-a-${i}`}
-            inPost
-            embed={embed}
-            isPostPreviewModal={isPostPreviewModal}
-            isFullStory={full}
-            isGuest={isGuest}
-          />,
-        ),
+        ReactDOMServer.renderToString(<PostFeedEmbed key={`embed-a-${i}`} inPost embed={embed} />),
       );
       section = section.substring(`${id} ${type} ${link} ~~~`.length);
     }
@@ -140,13 +131,7 @@ export function getHtml(
 
           sections.push(
             ReactDOMServer.renderToString(
-              <PostFeedEmbed
-                key={`embed-a-${item}`}
-                inPost
-                embed={embed}
-                isModal={isModal}
-                is3Speak
-              />,
+              <PostFeedEmbed key={`embed-a-${item}`} inPost embed={embed} />,
             ),
           );
         }

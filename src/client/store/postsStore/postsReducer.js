@@ -130,6 +130,56 @@ const posts = (state = initialState, action) => {
         lastId,
       };
     }
+    case feedTypes.GET_MORE_FEED_CONTENT_BY_BLOG.SUCCESS: {
+      const list = {
+        ...state.list,
+      };
+      const postsStates = {
+        ...state.postsStates,
+      };
+
+      each(action.payload.posts, post => {
+        const key = getPostKey(post);
+
+        list[key] = { ...post, id: key };
+        postsStates[key] = {
+          fetching: false,
+          loaded: true,
+          failed: false,
+        };
+      });
+
+      return {
+        ...state,
+        list,
+        postsStates,
+      };
+    }
+    case feedTypes.GET_FEED_CONTENT_BY_BLOG.SUCCESS: {
+      const list = {
+        ...state.list,
+      };
+      const postsStates = {
+        ...state.postsStates,
+      };
+
+      each(action.payload.posts, post => {
+        const key = getPostKey(post);
+
+        list[key] = { ...post, id: key };
+        postsStates[key] = {
+          fetching: false,
+          loaded: true,
+          failed: false,
+        };
+      });
+
+      return {
+        ...state,
+        list,
+        postsStates,
+      };
+    }
     case postsActions.GET_CONTENT.START:
       if (action.meta.afterLike) return state;
 

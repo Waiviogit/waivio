@@ -36,7 +36,7 @@ import ObjectCard from '../../components/Sidebar/ObjectCard';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
+import { getObjectAlbums, getRelatedPhotos } from '../../store/galleryStore/gallerySelectors';
 
 import './ObjectInfo.less';
 
@@ -45,6 +45,7 @@ import './ObjectInfo.less';
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
   isWaivio: getIsWaivio(state),
+  relatedAlbum: getRelatedPhotos(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -57,6 +58,7 @@ class ObjectInfo extends React.Component {
     history: PropTypes.shape().isRequired,
     appendAlbum: PropTypes.func.isRequired,
     albums: PropTypes.shape(),
+    relatedAlbum: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -73,7 +75,10 @@ class ObjectInfo extends React.Component {
     selectedField: null,
     showModal: false,
     showMore: {},
+    countPhones: 3,
   };
+
+  incrementPhoneCount = 3;
 
   getFieldLayout = (fieldName, params) => {
     const { body } = params;
@@ -96,7 +101,17 @@ class ObjectInfo extends React.Component {
     return null;
   };
 
-  handleSelectField = field => () => this.setState({ selectedField: field });
+  handleSelectField = field => () => {
+    this.setState({ selectedField: field });
+  };
+
+  handleShowMorePhones = field => {
+    this.setState(prev => ({
+      countPhones: prev.countPhones + this.incrementPhoneCount,
+    }));
+
+    return this.handleSelectField(field);
+  };
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
@@ -279,7 +294,7 @@ class ObjectInfo extends React.Component {
     });
 
   render() {
-    const { wobject, userName, isAuthenticated } = this.props;
+    const { wobject, userName, isAuthenticated, relatedAlbum } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
     const website = parseWobjectField(wobject, 'website');
@@ -293,7 +308,8 @@ class ObjectInfo extends React.Component {
     const price = get(wobject, 'price');
     const avatar = get(wobject, 'avatar');
     const background = get(wobject, 'background');
-    const pictures = get(wobject, 'preview_gallery');
+
+    const pictures = [...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])];
     const short = get(wobject, 'title');
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
@@ -308,7 +324,7 @@ class ObjectInfo extends React.Component {
           github: linkField[linkFields.linkGitHub] || '',
         }
       : {};
-    const phones = get(wobject, 'phone', []) || [];
+    const phones = get(wobject, 'phone', []);
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
@@ -513,19 +529,21 @@ class ObjectInfo extends React.Component {
                 )
             ) : (
               <React.Fragment>
-                {phones
-                  .slice(0, 2)
-                  .map(({ body, number }) =>
+                {phones.map(
+                  ({ body, number }, index) =>
+                    index < this.state.countPhones &&
                     this.getFieldLayout(objectFields.phone, { body, number }),
-                  )}
-                <Link
-                  to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
-                  onClick={() => this.handleSelectField(objectFields.phone)}
-                >
-                  <FormattedMessage id="show_more_tags" defaultMessage="show more">
-                    {value => <div className="phone">{value}</div>}
-                  </FormattedMessage>
-                </Link>
+                )}
+                {phones.length > this.state.countPhones && (
+                  <Link
+                    to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
+                    onClick={() => this.handleShowMorePhones(objectFields.phone)}
+                  >
+                    <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                      {value => <div className="phone">{value}</div>}
+                    </FormattedMessage>
+                  </Link>
+                )}
               </React.Fragment>
             )}
           </React.Fragment>,

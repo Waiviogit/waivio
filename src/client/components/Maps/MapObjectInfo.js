@@ -1,7 +1,7 @@
 import { Icon, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import React, { createRef } from 'react';
-import Map from 'pigeon-maps';
+import { Map } from 'pigeon-maps';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Overlay from 'pigeon-overlay';

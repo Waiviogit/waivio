@@ -925,7 +925,7 @@
   "check_review_primaryObject": "Lien vers {primaryObjectName}: {primaryObjectUrl}",
   "check_review_minExpertise": "Expertise globale minimale : {minExpertise}",
   "check_review_minFollowers": "Nombre minimum d'adeptes : {minFollowers}",
-  "check_review_minPosts": "Nombre minimum de postes : {minPosts}",
+  "rewards_details_minimum_number_posts": "Nombre minimum de postes",
   "check_review_agreement_part_1": "Cet examen répond à toutes les exigences techniques de",
   "check_review_the_reservation": "la réserve",
   "check_review_agreement_part_2": "et vous donne droit à des récompenses spécifiques. Le sponsor se réserve le droit d'examiner manuellement toutes les soumissions avant de payer les récompenses.",
@@ -1454,7 +1454,7 @@
   "referrals_instructions_accepted_title_widget": "Widget Waivio :",
   "referrals_instructions_accepted__widget_info": "Ce widget de la taille d'une page est conçu pour montrer les récompenses actives pertinentes. Collez le code suivant dans votre page web :",
   "referrals_instructions_accepted__widget_example": "Voir {text}",
-  "referrals_instructions_accepted__alert": "Veuillez noter que toute promotion trompeuse n'est pas autorisée conformément à l'accord de recommandation. Waivio se réserve le droit de mettre fin au programme de parrainage à tout moment et pour quelque raison que ce soit.",
+  "referrals_instructions_accepted__alert": "Veuillez noter que les promotions trompeuses ne sont pas autorisées conformément au programme de parrainage. Waivio se réserve le droit de mettre fin au programme de parrainage à tout moment pour quelque raison que ce soit.",
   "referrals_instructions_terminate_referral_title": "Mettre fin au programme de renvoi",
   "referrals_instructions_terminate_referral_info": "Si vous n'acceptez plus les termes et conditions de l'accord de service Waivio, vous ne pouvez plus participer au programme d'orientation. Tous les futurs renvois seront suspendus.",
   "copy_button": "Copie",
@@ -1678,4 +1678,3 @@
   "cookies_experience": "Nous utilisons des cookies pour améliorer l'expérience utilisateur. En utilisant ce site, vous consentez à l'utilisation de cookies. En savoir plus sur le site Web",
   "list_types": "Types de listes"
 }
-

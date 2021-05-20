@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, truncate, get, isEmpty } from 'lodash';
+import { includes, truncate, get, isEmpty, uniq } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -41,7 +41,7 @@ const ObjectCardView = ({
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
 
-    setTags([wObject.object_type, ...objectTags]);
+    setTags(uniq([wObject.object_type, ...objectTags]));
   }, [wObject.author_permlink, setTags]);
 
   const avatarLayout = () => {
@@ -155,7 +155,7 @@ const ObjectCardView = ({
 ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   wObject: PropTypes.shape(),
-  passedParent: PropTypes.shape(),
+  passedParent: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   path: PropTypes.string,
   hovered: PropTypes.bool,
   options: PropTypes.shape({
