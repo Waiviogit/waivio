@@ -107,7 +107,7 @@ class LikeSection extends React.Component {
               {
                 required: true,
                 transform: value => value || undefined,
-                type: 'bo olean',
+                type: 'boolean',
                 message: intl.formatMessage({
                   id: 'need_like',
                   defaultMessage: 'Field is required',
