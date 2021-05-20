@@ -99,7 +99,7 @@ class LikeSection extends React.Component {
 
     return (
       <div className="LikeSection">
-        <Form.Item>
+        <Form.Item className="like-form">
           {form.getFieldDecorator('like', {
             valuePropName: 'checked',
             initialValue: true,
@@ -107,7 +107,7 @@ class LikeSection extends React.Component {
               {
                 required: true,
                 transform: value => value || undefined,
-                type: 'boolean',
+                type: 'bo olean',
                 message: intl.formatMessage({
                   id: 'need_like',
                   defaultMessage: 'Field is required',
