@@ -99,7 +99,7 @@ class LikeSection extends React.Component {
 
     return (
       <div className="LikeSection">
-        <Form.Item>
+        <Form.Item className="like-form">
           {form.getFieldDecorator('like', {
             valuePropName: 'checked',
             initialValue: true,
