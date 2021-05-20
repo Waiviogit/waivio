@@ -262,8 +262,8 @@ class WalletTableContainer extends React.Component {
       if (transferActionsLength >= limit) {
         skip = transferActionsLength;
       }
-      if (!this.props.isloadingMoreDemoTransactions) {
-        this.props.getMoreDemoTransactions(username, skip, limit);
+      if (!this.props.isloadingMoreDemoTransactions && startDate && endDate) {
+        this.props.getMoreDemoTransactions(username, skip, limit, true, startDate, endDate);
       }
     }
 

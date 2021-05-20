@@ -108,6 +108,8 @@ export default function walletReducer(state = initialState, action) {
         },
         hasMoreGuestActions: action.payload.hasMoreGuestActions,
         usersAccountHistoryLoading: false,
+        withdrawals: action.payload.withdrawals,
+        deposits: action.payload.deposits,
       };
     }
     case walletActions.GET_USER_ACCOUNT_HISTORY.ERROR:
@@ -208,6 +210,8 @@ export default function walletReducer(state = initialState, action) {
         operationNumTable: action.payload.operationNumTable,
         loadingMoreTableTransactions: false,
         isErrorLoadingTableTransactions: false,
+        deposits: state.deposits + action.payload.deposits,
+        withdrawals: state.deposits + action.payload.withdrawals,
       };
     }
     case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.ERROR:
@@ -246,6 +250,10 @@ export default function walletReducer(state = initialState, action) {
         },
         hasMoreGuestActions: action.payload.hasMoreGuestActions,
         loadingMoreUsersAccountHistory: false,
+        withdrawals: action.payload.withdrawals
+          ? action.payload.withdrawals + state.withdrawals
+          : 0,
+        deposits: action.payload.deposits ? action.payload.deposits + state.deposits : 0,
       };
     }
     case walletActions.GET_MORE_USER_ACCOUNT_HISTORY.ERROR:

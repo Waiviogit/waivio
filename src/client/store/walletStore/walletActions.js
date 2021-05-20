@@ -184,6 +184,8 @@ export const getMoreUserAccountHistory = (
           userWalletTransactions: parsedUserActions.userWalletTransactions,
           userAccountHistory: parsedUserActions.userAccountHistory,
           hasMoreGuestActions: get(userActions, ['hasMore'], false),
+          withdrawals: userActions.withdrawals,
+          deposits: userActions.deposits,
         };
       }),
     },
@@ -273,6 +275,8 @@ export const getUserAccountHistory = (username, tableView, startDate, endDate) =
             userAccountHistory: parsedUserActions.userAccountHistory,
             balance: get(userActions, ['payable'], null),
             hasMoreGuestActions: get(userActions, ['hasMore'], false),
+            withdrawals: userActions.withdrawals,
+            deposits: userActions.deposits,
           };
         },
       ),
