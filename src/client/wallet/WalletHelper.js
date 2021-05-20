@@ -264,7 +264,7 @@ export const handleLoadMoreTransactions = ({
   }
 
   if (!isGuest && !table && !isLoadingMore) {
-    getMoreFunction({ username, limit, operationNumber });
+    getMoreFunction(username, limit, operationNumber);
   }
 };
 
