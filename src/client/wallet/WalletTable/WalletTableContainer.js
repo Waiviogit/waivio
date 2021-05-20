@@ -274,15 +274,6 @@ class WalletTableContainer extends React.Component {
         filterAccounts,
       });
     }
-
-    if (!isGuestPage && !this.props.isloadingMoreTableTransactions) {
-      this.props.getMoreTableTransactions({
-        username,
-        limit,
-        operationNum: this.props.operationNum,
-        filterAccounts,
-      });
-    }
   };
 
   selectRenderElements = (intl, transactions, isGuestPage, currentUsername) => {

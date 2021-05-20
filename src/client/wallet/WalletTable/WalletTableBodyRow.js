@@ -187,8 +187,10 @@ const WalletTableBodyRow = props => {
       description = getSavingsTransactionMessage(transaction.type, transaction, transaction.amount);
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
-        fieldHIVE: transferToSavingAmount.currency === 'HIVE' && `${transferToSavingAmount.amount}`,
-        fieldHBD: transferToSavingAmount.currency === 'HBD' && `${transferToSavingAmount.amount}`,
+        fieldHIVE:
+          get(transferToSavingAmount, 'currency') === 'HIVE' && `${transferToSavingAmount.amount}`,
+        fieldHBD:
+          get(transferToSavingAmount, 'currency') === 'HBD' && `${transferToSavingAmount.amount}`,
         fieldDescription: description,
         fieldMemo: transaction.memo,
         hiveUSD: get(transaction, 'hiveUSD'),
