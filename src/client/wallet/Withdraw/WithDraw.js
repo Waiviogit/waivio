@@ -9,7 +9,11 @@ import store from 'store';
 
 import { closeWithdraw } from '../../store/walletStore/walletActions';
 import QrModal from '../../widgets/QrModal';
-import { estimateAmount, validaveCryptoWallet } from '../../../waivioApi/ApiClient';
+import {
+  confirmWithDraw,
+  estimateAmount,
+  validaveCryptoWallet,
+} from '../../../waivioApi/ApiClient';
 import EmailConfirmation from '../../widgets/EmailConfirmation';
 import {
   CRYPTO_FOR_VALIDATE_WALLET,
@@ -182,6 +186,34 @@ const Withdraw = ({
     isUserCanMakeTransfer
   );
 
+  const handleSubmitTransaction = () =>
+    confirmWithDraw(user.name, {
+      outputCoinType: currentCurrency,
+      inputCoinType: 'hive',
+      address: walletAddress,
+      amount: hiveAmount,
+    })
+      .then(r => {
+        if (r.result) {
+          closeWithdrawModal();
+          message.success(
+            intl.formatMessage({
+              id: 'transaction_success',
+              defaultMessage: 'Your transaction success',
+            }),
+          );
+        }
+
+        if (r.message) message.error(r.message);
+
+        return r;
+      })
+      .catch(e => {
+        message.error(e.message);
+
+        return e;
+      });
+
   return (
     <React.Fragment>
       <Modal
@@ -321,7 +353,11 @@ const Withdraw = ({
           handleClose={setShowScanner}
         />
       )}
-      <EmailConfirmation visible={isShowConfirm} handleClose={setShowConfirm} />
+      <EmailConfirmation
+        visible={isShowConfirm}
+        handleClose={setShowConfirm}
+        handleSubmit={handleSubmitTransaction}
+      />
     </React.Fragment>
   );
 };

@@ -24,6 +24,7 @@ const EmailConfirmation = ({
   isGuest,
   closeWithdrawModal,
   isSettings,
+  handleSubmit,
 }) => {
   const [isCheck, setCheck] = useState(false);
   const [newEmail, setNewEmail] = useState('');
@@ -64,11 +65,17 @@ const EmailConfirmation = ({
   };
 
   const handleSendConfirmation = (changeEmail = '') => {
-    const type = changeEmail === 'pullEmail' ? changeEmail : confirmationType;
-
     setIsLoading(true);
 
-    sendEmailConfirmation(userName, type, currentEmail, isGuest)
+    if (!isSettings)
+      return handleSubmit().then(r => {
+        handleClose(false);
+        setIsLoading(false);
+      });
+
+    const type = changeEmail === 'pullEmail' ? changeEmail : confirmationType;
+
+    return sendEmailConfirmation(userName, type, currentEmail, isGuest)
       .then(r => {
         if (r.message) message.error(`${r.message}. Please, try again`);
         else
@@ -97,6 +104,7 @@ const EmailConfirmation = ({
       .catch(e => message.error(e.message))
       .finally(() => setIsLoading(false));
   };
+
   const onCancel = () => {
     if (isSettings && email) handleCancel();
     else setIsVisibleConfirm(false);
@@ -126,14 +134,16 @@ const EmailConfirmation = ({
         }}
       >
         <Form>
-          <Form.Item
-            label={intl.formatMessage({
-              id: 'confirmed_by_email',
-              defaultMessage: 'This transaction must be confirmed by email:',
-            })}
-          >
-            {emailInput}
-          </Form.Item>
+          {isSettings && (
+            <Form.Item
+              label={intl.formatMessage({
+                id: 'confirmed_by_email',
+                defaultMessage: 'This transaction must be confirmed by email:',
+              })}
+            >
+              {emailInput}
+            </Form.Item>
+          )}
           <PolicyConfirmation
             isChecked={isCheck}
             checkboxLabel={intl.formatMessage({
@@ -212,6 +222,7 @@ EmailConfirmation.propTypes = {
   intl: PropTypes.shape().isRequired,
   visible: PropTypes.bool,
   handleClose: PropTypes.func,
+  handleSubmit: PropTypes.func,
   email: PropTypes.string,
   userName: PropTypes.string.isRequired,
   isGuest: PropTypes.bool.isRequired,
@@ -223,6 +234,7 @@ EmailConfirmation.defaultProps = {
   visible: false,
   isSettings: false,
   handleClose: () => {},
+  handleSubmit: () => {},
   email: '',
 };
 

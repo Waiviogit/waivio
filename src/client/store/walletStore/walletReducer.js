@@ -132,6 +132,8 @@ export default function walletReducer(state = initialState, action) {
         hasMore: action.payload.hasMore,
         operationNum: action.payload.operationNum,
         transactionsHistoryLoading: false,
+        withdrawals: 0,
+        deposits: 0,
       };
     }
     case walletActions.GET_TABLE_TRANSACTIONS_HISTORY.START:
