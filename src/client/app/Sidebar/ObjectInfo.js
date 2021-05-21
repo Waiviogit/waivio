@@ -33,6 +33,7 @@ import DescriptionInfo from './DescriptionInfo';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
+import ObjectInfoExperts from './ObjectInfoExperts';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../store/authStore/authSelectors';
@@ -611,6 +612,7 @@ class ObjectInfo extends React.Component {
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
+            <ObjectInfoExperts userName={userName} wobject={wobject} />
           </div>
         )}
       </React.Fragment>

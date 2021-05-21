@@ -12,7 +12,7 @@ import { AppSharedContext } from '../../../Wrapper';
 
 import './ObjectsRelated.less';
 
-const ObjectsRelated = ({ wobject, intl }) => {
+const ObjectsRelated = ({ wobject, intl, isCenterContent }) => {
   const [objectsState, setObjectsState] = useState({
     objects: [],
     loading: true,
@@ -88,14 +88,15 @@ const ObjectsRelated = ({ wobject, intl }) => {
         />
       ));
 
-      const renderButtons = () => (
-        <div className="ObjectsRelated__more">
-          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-          <a onClick={() => setShowModal(true)} id="show_more_div">
-            {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
-          </a>
-        </div>
-      );
+      const renderButtons = () =>
+        !isCenterContent && (
+          <div className="ObjectsRelated__more">
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+            <a onClick={() => setShowModal(true)} id="show_more_div">
+              {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
+            </a>
+          </div>
+        );
 
       const onWheelHandler = () => {
         if (objectsState.hasNext) {
@@ -103,10 +104,14 @@ const ObjectsRelated = ({ wobject, intl }) => {
         }
       };
 
+      const handleOpenModal = () => {
+        if (isCenterContent) setShowModal(true);
+      };
+
       renderCard = (
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
-          <div className="SidebarContentBlock__title">
-            <i className="iconfont icon-link SidebarContentBlock__icon" />{' '}
+          <div className="SidebarContentBlock__title" onClick={handleOpenModal}>
+            {!isCenterContent && <i className="iconfont icon-link SidebarContentBlock__icon" />}{' '}
             {intl.formatMessage({ id: 'related_to_object', defaultMessage: 'Related to object' })}
           </div>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
@@ -135,6 +140,11 @@ const ObjectsRelated = ({ wobject, intl }) => {
 ObjectsRelated.propTypes = {
   wobject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  isCenterContent: PropTypes.bool,
+};
+
+ObjectsRelated.defaultProps = {
+  isCenterContent: false,
 };
 
 export default injectIntl(ObjectsRelated);
