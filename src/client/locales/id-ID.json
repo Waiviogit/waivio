@@ -1218,7 +1218,7 @@
   "confirmation_email": "Konfirmasi email terkirim",
   "confirm_transaction": "Harap konfirmasi transaksi ini dari email Anda ( {currentEmail} )",
   "blocktrades_exchange_request": "Permintaan pertukaran Blocktrades.us",
-  "send_confirmation": "Kirim konfirmasi",
+  "send_confirmation": "Konfirmasi",
   "confirmed_by_email": "Transaksi ini harus dikonfirmasi melalui email:",
   "agree_to": "Saya setuju",
   "blocktrades_conditions": "Syarat dan Ketentuan Penggunaan Blocktrades.us",

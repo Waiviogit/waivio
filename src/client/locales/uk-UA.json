@@ -1218,7 +1218,7 @@
   "confirmation_email": "Електронний лист із підтвердженням надіслано",
   "confirm_transaction": "Підтвердьте цю трансакцію зі свого електронного листа ( {currentEmail} )",
   "blocktrades_exchange_request": "Запит на обмін Blocktrades.us",
-  "send_confirmation": "Надішліть підтвердження",
+  "send_confirmation": "Підтвердити",
   "confirmed_by_email": "Ця транзакція повинна бути підтверджена електронною поштою:",
   "agree_to": "Я погоджуюсь",
   "blocktrades_conditions": "Умови використання Blocktrades.us",
