@@ -91,7 +91,6 @@ const ObjectsRelated = ({ wobject, intl, isCenterContent }) => {
       const renderButtons = () =>
         !isCenterContent && (
           <div className="ObjectsRelated__more">
-            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
             <a onClick={() => setShowModal(true)} id="show_more_div">
               {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
             </a>
