@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { draftType, draftArrayType } from '../../types/drafts';
 import Loading from '../../components/Icon/Loading';
 import './LastDrafts.less';
@@ -27,6 +27,10 @@ const Draft = ({ draft }) => (
 
 Draft.propTypes = {
   draft: draftType.isRequired,
+};
+
+Draft.defaultProps = {
+  saving: false,
 };
 
 const LastDrafts = ({ drafts, loaded }) => {
@@ -71,4 +75,4 @@ LastDrafts.defaultProps = {
   loaded: false,
 };
 
-export default LastDrafts;
+export default withRouter(LastDrafts);

@@ -1218,7 +1218,7 @@
   "confirmation_email": "Bevestigings-e-pos gestuur",
   "confirm_transaction": "Bevestig asseblief hierdie transaksie vanaf u e-pos ( {currentEmail} )",
   "blocktrades_exchange_request": "Blocktrades.us-uitruilversoek",
-  "send_confirmation": "Stuur bevestiging",
+  "send_confirmation": "Bevestig",
   "confirmed_by_email": "Hierdie transaksie moet per e-pos bevestig word:",
   "agree_to": "Ek stem in",
   "blocktrades_conditions": "Gebruiksvoorwaardes van Blocktrades.us",

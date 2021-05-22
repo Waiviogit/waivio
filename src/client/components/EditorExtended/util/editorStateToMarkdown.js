@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 import { ATOMIC_TYPES, Block, Entity } from './constants';
 
 const defaultMarkdownDict = {
@@ -142,7 +144,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
 
   let isListType = false;
 
-  raw.blocks.forEach((block, blockIndex) => {
+  get(raw, 'blocks', []).forEach((block, blockIndex) => {
     if (blockIndex !== 0) {
       returnString += '\n';
       totalOffset = 0;

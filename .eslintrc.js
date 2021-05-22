@@ -62,6 +62,7 @@ module.exports = {
     }],
     "no-underscore-dangle": OFF,
     "no-plusplus": OFF,
+    "no-unused-expressions": OFF,
     "jsx-a11y/no-noninteractive-element-interactions": OFF,
     "jsx-a11y/no-static-element-interactions": OFF,
   },

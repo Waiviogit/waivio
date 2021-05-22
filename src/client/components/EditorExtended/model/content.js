@@ -1,9 +1,12 @@
-import { EditorState, convertFromRaw, CompositeDecorator, ContentState } from 'draft-js';
-
-import Link, { findLinkEntities } from '../components/entities/link';
+import { CompositeDecorator, ContentState, convertFromRaw, EditorState } from 'draft-js';
 import ObjectLink, { findObjEntities } from '../components/entities/objectlink';
+import Link, { findLinkEntities } from '../components/entities/link';
+import ImageSideButton from '../components/sides/ImageSideButton';
+import VideoSideButton from '../components/sides/VideoSideButton';
+import ObjectSideButton from '../components/sides/ObjectSideButton';
+import SeparatorButton from '../components/sides/SeparatorSideButton';
 
-const defaultDecorators = new CompositeDecorator([
+export const defaultDecorators = new CompositeDecorator([
   {
     strategy: findObjEntities,
     component: ObjectLink,
@@ -13,6 +16,25 @@ const defaultDecorators = new CompositeDecorator([
     component: Link,
   },
 ]);
+
+export const SIDE_BUTTONS = [
+  {
+    title: 'Image',
+    component: ImageSideButton,
+  },
+  {
+    title: 'Video',
+    component: VideoSideButton,
+  },
+  {
+    title: 'Object',
+    component: ObjectSideButton,
+  },
+  {
+    title: 'Separator',
+    component: SeparatorButton,
+  },
+];
 
 const createEditorState = (content = null, decorators = defaultDecorators) => {
   let initialEditorState = {};
