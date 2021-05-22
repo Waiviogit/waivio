@@ -1218,7 +1218,7 @@
   "confirmation_email": "確認メールが送信されました",
   "confirm_transaction": "このトランザクションをメールで確認してください（ {currentEmail} ）",
   "blocktrades_exchange_request": "Blocktrades.us交換リクエスト",
-  "send_confirmation": "確認を送信する",
+  "send_confirmation": "確認",
   "confirmed_by_email": "このトランザクションは、電子メールで確認する必要があります。",
   "agree_to": "同意します",
   "blocktrades_conditions": "Blocktrades.us利用規約",

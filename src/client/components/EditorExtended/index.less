@@ -92,26 +92,31 @@
 .md-RichEditor-title {
   border: 1px solid @white-gainsboro;
   background-color: @white;
-  color: @black;
   font-size: 32px;
   font-weight: bold;
   padding: 0 20px;
   caret-color: @black;
   resize: none;
-  margin-bottom: 10px;
   width: 100%;
-  margin-left: 5px;
+
+  &.ant-input {
+    height: 50px;
+    color: @black;
+    padding: 0 20px;
+    font-size: 32px;
+    margin: 0 0 10px 5px;
+
+    &::placeholder {
+      font-size: 32px;
+      font-weight: bold;
+      padding-left: 2px;
+      color: @blue-botticelli;
+    }
+  }
 
   &textaria {
     overflow: hidden;
   }
-}
-
-.md-RichEditor-title::placeholder {
-  padding-left: 2px;
-  font-size: 32px;
-  font-weight: bold;
-  color: @blue-botticelli;
 }
 
 .md-RichEditor-editor {

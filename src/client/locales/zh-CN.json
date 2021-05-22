@@ -1218,7 +1218,7 @@
   "confirmation_email": "确认邮件已发送",
   "confirm_transaction": "请通过您的电子邮件（ {currentEmail} ）确认此交易",
   "blocktrades_exchange_request": "Blocktrades.us兑换请求",
-  "send_confirmation": "发送确认",
+  "send_confirmation": "确认",
   "confirmed_by_email": "此交易必须通过电子邮件确认：",
   "agree_to": "我同意",
   "blocktrades_conditions": "Blocktrades.us使用条款和条件",

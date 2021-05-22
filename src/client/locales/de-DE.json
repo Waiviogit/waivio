@@ -1218,7 +1218,7 @@
   "confirmation_email": "Bestätigungs-E-Mail gesendet",
   "confirm_transaction": "Bitte bestätigen Sie diese Transaktion von Ihrer E-Mail aus ({currentEmail})",
   "blocktrades_exchange_request": "Blocktrades.us-Austauschantrag",
-  "send_confirmation": "Bestätigung senden",
+  "send_confirmation": "Bestätigen",
   "confirmed_by_email": "Diese Transaktion muss per E-Mail bestätigt werden:",
   "agree_to": "Ich bin einverstanden mit",
   "blocktrades_conditions": "Blocktrades.us Nutzungsbedingungen",
