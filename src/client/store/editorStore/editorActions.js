@@ -1,8 +1,25 @@
+/* eslint-disable arrow-body-style */
 import { batch } from 'react-redux';
+import { message } from 'antd';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { orderBy } from 'lodash';
+import { convertToRaw, EditorState } from 'draft-js';
+import {
+  forEach,
+  get,
+  has,
+  includes,
+  isEmpty,
+  isEqual,
+  kebabCase,
+  map,
+  orderBy,
+  uniqBy,
+  uniqWith,
+  size,
+  differenceBy,
+} from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { REFERRAL_PERCENT } from '../../helpers/constants';
@@ -23,8 +40,37 @@ import {
   getTranslationByKey,
   getWebsiteBeneficiary,
 } from '../appStore/appSelectors';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
+import { getObjectsByIds, getReviewCheckInfo } from '../../../waivioApi/ApiClient';
+import {
+  getCurrentLinkPermlink,
+  getCurrentLoadObjects,
+  getNewLinkedObjectsCards,
+  getReviewTitle,
+  getObjPercentsHideObject,
+  getCurrentDraftContent,
+  getFilteredLinkedObjects,
+  updatedHideObjectsPaste,
+  getLinkedObjects as getLinkedObjectsHelper,
+} from '../../helpers/editorHelper';
+import {
+  getCurrentDraft,
+  getEditor,
+  getEditorDraftBody,
+  getEditorExtended,
+  getEditorLinkedObjects,
+  getEditorLinkedObjectsCards,
+  getIsEditorSaving,
+  getLinkedObjects,
+} from './editorSelectors';
+import { getQueryString, getSuitableLanguage } from '../reducers';
+import { getObjectName } from '../../helpers/wObjectHelper';
+import { createPostMetadata, getObjectUrl } from '../../helpers/postHelpers';
+import { createEditorState, Entity, fromMarkdown } from '../../components/EditorExtended';
+import { handlePastedLink, QUERY_APP } from '../../components/EditorExtended/util/editorHelper';
+import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import { extractLinks } from '../../helpers/parser';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -56,11 +102,28 @@ export const CREATE_WAIVIO_OBJECT = '@editor/CREATE_WAIVIO_OBJECT';
 
 export const UPLOAD_IMG_START = '@editor/UPLOAD_IMG_START';
 export const UPLOAD_IMG_FINISH = '@editor/UPLOAD_IMG_FINISH';
+export const SET_EDITOR_STATE = '@editor/SET_EDITOR_STATE';
+
+export const SET_CLEAR_STATE = '@editor/SET_CLEAR_STATE';
+export const LEAVE_EDITOR = '@editor/LEAVE_EDITOR';
 
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
+export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
+export const setClearState = () => ({ type: SET_CLEAR_STATE });
+export const leaveEditor = () => ({ type: LEAVE_EDITOR });
 
-export const saveDraft = (draft, redirect, intl) => dispatch =>
+export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
+  const state = getState();
+  const saving = getIsEditorSaving(state);
+
+  if (saving) return;
+  const draft = dispatch(buildPost(draftId, data));
+
+  const postBody = draft.originalBody || draft.body;
+
+  if (!postBody) return;
+
   dispatch({
     type: SAVE_DRAFT,
     payload: {
@@ -80,9 +143,8 @@ export const saveDraft = (draft, redirect, intl) => dispatch =>
       }),
     },
     meta: { postId: draft.draftId },
-  }).then(() => {
-    if (redirect) dispatch(push(`/editor?draft=${draft.draftId}`));
   });
+};
 export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
@@ -370,3 +432,370 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
     );
   };
 }
+
+export const SET_UPDATED_EDITOR_DATA = '@editor/SET_UPDATED_EDITOR_DATA';
+export const SET_UPDATED_EDITOR_EXTENDED_DATA = '@editor/SET_UPDATED_EDITOR_EXTENDED_DATA';
+export const setUpdatedEditorData = payload => ({ type: SET_UPDATED_EDITOR_DATA, payload });
+export const setUpdatedEditorExtendedData = payload => ({
+  type: SET_UPDATED_EDITOR_EXTENDED_DATA,
+  payload,
+});
+
+export const reviewCheckInfo = (
+  { campaignId, isPublicReview, postPermlinkParam },
+  intl,
+  needReviewTitle = false,
+) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const userName = getAuthenticatedUserName(state);
+    const locale = getSuitableLanguage(state);
+    const linkedObjects = getLinkedObjects(state);
+    const draftBody = getEditorDraftBody(state);
+    const postPermlink = postPermlinkParam || isPublicReview;
+
+    return getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
+      .then(campaignData => {
+        const draftId = new URLSearchParams(getQueryString(state)).get('draft');
+        const currDraft = getCurrentDraft(state, { draftId });
+        const reviewedTitle = needReviewTitle
+          ? getReviewTitle(campaignData, linkedObjects, draftBody, get(currDraft, 'title', ''))
+          : {};
+        const updatedEditorData = {
+          ...reviewedTitle,
+          campaign: campaignData,
+        };
+
+        dispatch(setUpdatedEditorData(updatedEditorData));
+        dispatch(
+          setUpdatedEditorExtendedData({
+            titleValue: get(currDraft, 'title', '') || updatedEditorData.draftContent.title,
+            editorState: EditorState.moveFocusToEnd(
+              createEditorState(fromMarkdown(updatedEditorData.draftContent)),
+            ),
+          }),
+        );
+        dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
+        dispatch(
+          saveDraft(draftId, intl, {
+            content: updatedEditorData.draftContent.body,
+            titleValue: updatedEditorData.draftContent.title,
+          }),
+        );
+      })
+      .catch(error => {
+        message.error(
+          intl.formatMessage(
+            {
+              id: 'imageSetter_link_is_already_added',
+              defaultMessage: `Failed to get campaign data: {error}`,
+            },
+            { error },
+          ),
+        );
+      });
+  };
+};
+
+export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
+  const state = getState();
+  const host = getCurrentHost(state);
+  const user = getAuthenticatedUser(state);
+  const currDraft = getCurrentDraft(state, { draftId });
+  const {
+    linkedObjects,
+    topics,
+    campaign,
+    content,
+    isUpdating,
+    settings,
+    titleValue,
+    permlink,
+    parentPermlink,
+    objPercentage,
+    originalBody,
+  } = { ...getEditor(state), ...data };
+  const currentObject = get(linkedObjects, '[0]', {});
+  const objName = currentObject.author_permlink;
+
+  if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
+    setUpdatedEditorData({ topics: uniqWith([...topics, objName], isEqual) });
+  }
+  const campaignId = get(campaign, '_id', null);
+  const postData = {
+    body: content,
+    lastUpdated: Date.now(),
+    isUpdating,
+    draftId,
+    ...settings,
+  };
+
+  if (titleValue) {
+    postData.title = titleValue;
+    postData.permlink = permlink || kebabCase(titleValue);
+  }
+
+  postData.parentAuthor = '';
+  postData.parentPermlink = parentPermlink;
+  postData.author = user.name || '';
+
+  const oldMetadata = get(currDraft, 'jsonMetadata', {});
+
+  const waivioData = {
+    wobjects: linkedObjects
+      .filter(obj => get(objPercentage, `[${obj._id}].percent`, 0) > 0)
+      .map(obj => ({
+        object_type: obj.object_type,
+        objectName: getObjectName(obj),
+        author_permlink: obj.author_permlink,
+        percent: get(objPercentage, [obj._id, 'percent']),
+      })),
+  };
+
+  postData.jsonMetadata = createPostMetadata(
+    content,
+    topics,
+    oldMetadata,
+    waivioData,
+    campaignId,
+    host,
+  );
+  if (originalBody) {
+    postData.originalBody = originalBody;
+  }
+
+  return postData;
+};
+
+export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispatch, getState) => {
+  const state = getState();
+  const {
+    content,
+    titleValue,
+    topics,
+    linkedObjects,
+    hideLinkedObjects,
+    objPercentage,
+    currentRawContent,
+    draftId,
+  } = getEditor(state);
+  const objName = getObjectName(object).toLowerCase();
+  const objPermlink = object.author_permlink;
+  const separator = content.slice(-1) === '\n' ? '' : '\n';
+  const draftContent = {
+    title: titleValue,
+    body: `${content}${separator}[${objName}](${getObjectUrl(object.id || objPermlink)})&nbsp;\n`,
+  };
+  const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
+
+  const { rawContentUpdated } = await dispatch(getRestoreObjects(fromMarkdown(draftContent)));
+  const parsedLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
+  const newLinkedObject = parsedLinkedObjects.find(item => item._id === object._id);
+  const updatedLinkedObjects = uniqBy(
+    [...uniqBy(linkedObjects, '_id'), newLinkedObject],
+    '_id',
+  ).filter(item => has(item, '_id'));
+  let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
+  const isHideObject = hideLinkedObjects.find(
+    item => item.author_permlink === newLinkedObject.author_permlink,
+  );
+
+  if (isHideObject) {
+    const filteredObjectCards = hideLinkedObjects.filter(
+      item => item.author_permlink !== newLinkedObject.author_permlink,
+    );
+
+    updatedStore.hideLinkedObjects = filteredObjectCards;
+    sessionStorage.setItem('hideLinkedObjects', JSON.stringify(filteredObjectCards));
+    updatedObjPercentage = getObjPercentsHideObject(
+      updatedLinkedObjects,
+      isHideObject,
+      updatedObjPercentage,
+    );
+  }
+  updatedStore.linkedObjects = getFilteredLinkedObjects(
+    updatedLinkedObjects,
+    updatedStore.hideLinkedObjects,
+  );
+  updatedStore.objPercentage = updatedObjPercentage;
+  const newData = {
+    ...updatedStore,
+    ...getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent),
+  };
+  const editorState = isCursorToEnd
+    ? EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent)))
+    : createEditorState(fromMarkdown(draftContent));
+  const updateTopics = uniqWith(
+    object.type === 'hashtag' || (object.object_type === 'hashtag' && [...topics, objPermlink]),
+    isEqual,
+  );
+
+  dispatch(setUpdatedEditorExtendedData({ editorState }));
+  dispatch(
+    setUpdatedEditorData({
+      ...newData,
+      draftContent,
+      topics: size(updateTopics) ? updateTopics : topics,
+    }),
+  );
+  dispatch(
+    saveDraft(draftId, intl, { content: draftContent.body, titleValue: draftContent.title }),
+  );
+
+  return Promise.resolve(draftContent);
+};
+
+export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getState) => {
+  const isReview = includes(draftId, 'review');
+  const state = getState();
+  const linkedObjects = getEditorLinkedObjects(state);
+  const isLinked = string => linkedObjects.some(item => item.defaultShowLink.includes(string));
+
+  return (
+    Object.values(rawContent.entityMap)
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .filter(entity => {
+        if (entity.type === Entity.OBJECT) {
+          return has(entity, 'data.object.id');
+        }
+        if (!isReview && entity.type === Entity.LINK) {
+          const string = get(entity, 'data.url', '');
+          const queryString = string.match(handlePastedLink(QUERY_APP));
+
+          if (queryString) {
+            return has(entity, 'data.url');
+          }
+
+          return null;
+        }
+      })
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .map(entity => {
+        if (entity.type === Entity.OBJECT) {
+          return get(entity, 'data.object.id', '');
+        }
+        if (
+          !isReview &&
+          entity.type === Entity.LINK &&
+          (isLinked(get(entity, 'data.url', '')) || newObject)
+        ) {
+          return getCurrentLinkPermlink(entity);
+        }
+      })
+  );
+};
+
+export const getRawContentEntityMap = (rawContent, response) => (dispatch, getState) => {
+  const state = getState();
+  const linkedObjects = getEditorLinkedObjects(state);
+  const entityMap = {};
+
+  forEach(rawContent.entityMap, (value, key) => {
+    let currObj = null;
+    const loadedObject = getCurrentLoadObjects(response, value);
+
+    if (loadedObject) {
+      linkedObjects.push(loadedObject);
+      if (!isEmpty(linkedObjects) && !isEmpty(loadedObject)) {
+        map(linkedObjects, obj => {
+          if (isEqual(obj.author_permlink, loadedObject.author_permlink)) {
+            currObj = loadedObject;
+          }
+        });
+      } else {
+        currObj = loadedObject;
+      }
+
+      entityMap[key] = {
+        ...value,
+        data: currObj ? { ...value.data, object: currObj } : { ...value.data },
+      };
+    }
+  });
+
+  return entityMap;
+};
+
+export const getRestoreObjects = (rawContent, newObject, draftId) => async (dispatch, getState) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const { prevEditorState } = getEditorExtended(state);
+  const linkedCards = getEditorLinkedObjectsCards(state);
+
+  const objectIds = dispatch(getObjectIds(rawContent, newObject, draftId));
+
+  const newLinkedObjectsCards = getNewLinkedObjectsCards(
+    linkedCards,
+    objectIds,
+    Object.values(rawContent.entityMap),
+    get(prevEditorState, 'getCurrentContent', false) &&
+      Object.values(convertToRaw(prevEditorState.getCurrentContent()).entityMap),
+  );
+
+  let rawContentUpdated = rawContent;
+
+  if (objectIds.length) {
+    const response = await getObjectsByIds({
+      locale,
+      requiredFields: ['rating'],
+      authorPermlinks: objectIds,
+    });
+    const entityMap = dispatch(getRawContentEntityMap(rawContent, response));
+
+    rawContentUpdated = { ...rawContentUpdated, entityMap };
+  }
+
+  return { rawContentUpdated, newLinkedObjectsCards };
+};
+
+export const firstParseLinkedObjects = draft => async dispatch => {
+  if (draft) {
+    const entities = fromMarkdown({ body: draft.body });
+    const { rawContentUpdated } = await dispatch(getRestoreObjects(entities));
+    const draftLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
+    const draftObjPercentage = setObjPercents(draftLinkedObjects);
+
+    dispatch(
+      setUpdatedEditorData({
+        linkedObjects: draftLinkedObjects,
+        objPercentage: draftObjPercentage,
+      }),
+    );
+  }
+};
+
+export const handlePasteText = html => async (dispatch, getState) => {
+  const links = extractLinks(html);
+  const objectIds = links.map(item => {
+    const itemArray = item.split('/');
+
+    return itemArray[itemArray.length - 1];
+  });
+
+  if (objectIds.length) {
+    const state = getState();
+    const locale = getLocale(state);
+    const linkedObjects = getEditorLinkedObjects(state);
+    const hideLinkedObjects = getEditorLinkedObjectsCards(state);
+    const { wobjects } = await getObjectsByIds({
+      locale,
+      requiredFields: ['rating'],
+      authorPermlinks: objectIds,
+    });
+
+    const newLinkedObjects = uniqBy([...linkedObjects, ...wobjects], '_id');
+    const updatedHideLinkedObjects = size(hideLinkedObjects)
+      ? updatedHideObjectsPaste(hideLinkedObjects, wobjects)
+      : hideLinkedObjects;
+    const objectsForPercentage = differenceBy(newLinkedObjects, updatedHideLinkedObjects, '_id');
+    const objPercentage = setObjPercents(objectsForPercentage);
+
+    dispatch(
+      setUpdatedEditorData({
+        objPercentage,
+        linkedObjects: newLinkedObjects,
+        hideLinkedObjects: updatedHideLinkedObjects,
+      }),
+    );
+  }
+};

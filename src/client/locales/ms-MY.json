@@ -1218,7 +1218,7 @@
   "confirmation_email": "E-mel pengesahan dihantar",
   "confirm_transaction": "Sila sahkan transaksi ini dari e-mel anda ( {currentEmail} )",
   "blocktrades_exchange_request": "Permintaan pertukaran Blocktrades.us",
-  "send_confirmation": "Hantar pengesahan",
+  "send_confirmation": "Sahkan",
   "confirmed_by_email": "Transaksi ini mesti disahkan melalui e-mel:",
   "agree_to": "Saya bersetuju untuk",
   "blocktrades_conditions": "Terma dan Syarat Penggunaan Blocktrades.us",

@@ -29,13 +29,15 @@ export const setLocaleMetadata = locale =>
 
 export const addDraftMetadata = draft =>
   getMetadata(draft.author)
-    .then(metadata =>
+    .then(metadata => {
       updateUserMetadata(draft.author, {
         ...metadata,
         drafts: [...metadata.drafts.filter(d => d.draftId !== draft.draftId), draft],
-      }).catch(e => e.message),
-    )
-    .then(() => draft);
+      }).catch(e => e.message);
+
+      return metadata.drafts.find(d => d.draftId === draft.draftId);
+    })
+    .then(newDraft => ({ ...newDraft, ...draft }));
 
 export const deleteDraftMetadataObject = (draftId, userName, objPermlink) => {
   const getFilteredDrafts = metadata =>

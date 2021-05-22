@@ -62,5 +62,6 @@ module.exports = {
     }],
     "no-underscore-dangle": OFF,
     "no-plusplus": OFF,
+    "no-unused-expressions": OFF,
   },
 };

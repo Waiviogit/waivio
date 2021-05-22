@@ -1218,7 +1218,7 @@
   "confirmation_email": "Confirmation email sent",
   "confirm_transaction": "Please confirm this transaction from your email ({currentEmail})",
   "blocktrades_exchange_request": "Blocktrades.us exchange request",
-  "send_confirmation": "Send confirmation",
+  "send_confirmation": "Confirm",
   "confirmed_by_email": "This transaction must be confirmed by email:",
   "agree_to": "I agree to",
   "blocktrades_conditions": "Blocktrades.us Terms and Conditions of Use",
