@@ -75,6 +75,7 @@ export default class MediumDraftEditor extends React.Component {
     ),
     editorState: PropTypes.shape().isRequired,
     onChange: PropTypes.func.isRequired,
+    handleObjectSelect: PropTypes.func.isRequired,
     handleKeyCommand: PropTypes.func,
     handleReturn: PropTypes.func,
     handlePastedText: PropTypes.func,
@@ -736,6 +737,7 @@ export default class MediumDraftEditor extends React.Component {
               focus={this.focus}
               sideButtons={this.props.sideButtons}
               handleHashtag={this.props.handleHashtag}
+              handleObjectSelect={this.props.handleObjectSelect}
             />
           )}
           {!disableToolbar && (

@@ -1,8 +1,11 @@
-import { get } from 'lodash';
+import { EditorState } from 'draft-js';
+import { get, uniqBy } from 'lodash';
 import * as editorActions from './editorActions';
 import * as postActions from '../postsStore/postActions';
 import * as authActions from '../authStore/authActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
+import { defaultDecorators } from '../../components/EditorExtended/model/content';
+import { createEditorState, fromMarkdown } from '../../components/EditorExtended';
 
 const defaultState = {
   loading: false,
@@ -13,6 +16,14 @@ const defaultState = {
   pendingDrafts: [],
   editedPosts: [],
   loadingImg: false,
+  editor: {},
+  editorExtended: {
+    isMounted: false,
+    editorEnabled: false,
+    prevEditorState: null,
+    editorState: EditorState.createEmpty(defaultDecorators),
+    titleValue: '',
+  },
 };
 
 const editor = (state = defaultState, action) => {
@@ -80,6 +91,10 @@ const editor = (state = defaultState, action) => {
       return {
         ...state,
         saving: true,
+        editor: {
+          ...state.editor,
+          linkedObjects: uniqBy(get(state, 'editor.linkedObjects', []), '_id'),
+        },
       };
     case editorActions.SAVE_DRAFT_SUCCESS:
       return {
@@ -135,6 +150,45 @@ const editor = (state = defaultState, action) => {
       return {
         ...state,
         loadingImg: false,
+      };
+    case editorActions.SET_EDITOR_STATE:
+      return {
+        ...state,
+        editor: action.payload,
+        editorExtended: {
+          ...state.editorExtended,
+          editorState: EditorState.moveFocusToEnd(
+            createEditorState(fromMarkdown(action.payload.draftContent)),
+          ),
+          titleValue: action.payload.draftContent.title,
+        },
+      };
+    case editorActions.SET_UPDATED_EDITOR_DATA: {
+      const updatedState = { ...state, editor: { ...state.editor, ...action.payload } };
+
+      return {
+        ...updatedState,
+        editor: {
+          ...updatedState.editor,
+          linkedObjects: uniqBy(get(updatedState, 'editor.linkedObjects', []), '_id'),
+        },
+      };
+    }
+    case editorActions.SET_UPDATED_EDITOR_EXTENDED_DATA:
+      return {
+        ...state,
+        editorExtended: { ...state.editorExtended, ...action.payload },
+        editor: {
+          ...state.editor,
+          linkedObjects: uniqBy(get(state, 'editor.linkedObjects', []), '_id'),
+        },
+      };
+    case editorActions.SET_CLEAR_STATE:
+      return defaultState;
+    case editorActions.LEAVE_EDITOR:
+      return {
+        ...defaultState,
+        draftPosts: state.draftPosts,
       };
     default:
       return state;

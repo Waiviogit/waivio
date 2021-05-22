@@ -111,6 +111,11 @@ class CreateObject extends React.Component {
 
   handleVotePercentChange = votePercent => this.setState({ votePercent });
 
+  forceCloseObject = () =>
+    this.setState({ loading: false, isModalOpen: false }, () => {
+      this.handleCloseModal();
+    });
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -204,7 +209,7 @@ class CreateObject extends React.Component {
               },
               { locale: values.locale },
             );
-            this.setState({ loading: false, isModalOpen: false });
+            this.forceCloseObject();
           })
           .catch(error => {
             this.props.notify(
@@ -214,7 +219,7 @@ class CreateObject extends React.Component {
               }),
               'error',
             );
-            this.setState({ loading: false, isModalOpen: false });
+            this.forceCloseObject();
           });
       }
     });

@@ -10,6 +10,7 @@ import {
   isEmpty,
   size,
   isNil,
+  uniqBy,
 } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
@@ -140,7 +141,10 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, cam
   }
   if (campaignId) metaData.campaignId = campaignId;
 
-  return metaData;
+  return {
+    ...metaData,
+    wobj: { wobjects: uniqBy(get(metaData, 'wobj.wobjects', []), 'author_permlink') },
+  };
 }
 
 /**
@@ -166,10 +170,10 @@ export function getObjectUrl(objPermlink) {
   return `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objPermlink}`;
 }
 
-export function getInitialState(props) {
+export function getInitialState(props, hideLinkedObjectsSession = []) {
   const search = props.location.search.replace(/ & /, ' ');
   const initObjects = new URLSearchParams(search).getAll('object');
-
+  const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
   let state = {
     campaign: props.campaignId ? { id: props.campaignId } : null,
     draftId: props.draftId || uuidv4(),
@@ -191,7 +195,7 @@ export function getInitialState(props) {
     content: '',
     topics: [],
     linkedObjects: [],
-    linkedObjectsCards: [],
+    hideLinkedObjects: hideObjects,
     objPercentage: {},
     settings: {
       reward: rewardsValues.half,
@@ -202,7 +206,7 @@ export function getInitialState(props) {
     permlink: null,
     originalBody: null,
     titleValue: '',
-    currentRawContent: [],
+    currentRawContent: {},
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts.find(d => d.draftId === draftId);
@@ -221,7 +225,8 @@ export function getInitialState(props) {
       },
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
-      linkedObjects: [],
+      linkedObjects: draftPost.linkedObjects || [],
+      hideLinkedObjects: hideObjects,
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
       ),
@@ -233,6 +238,7 @@ export function getInitialState(props) {
       isUpdating: Boolean(draftPost.isUpdating),
       permlink: draftPost.permlink || null,
       originalBody: draftPost.originalBody || null,
+      titleValue: get(draftPost, 'title', ''),
     };
   }
 
@@ -240,7 +246,7 @@ export function getInitialState(props) {
 }
 
 export function isContentValid(markdownContent) {
-  const { postBody } = splitPostContent(markdownContent);
+  const { postBody } = markdownContent ? splitPostContent(markdownContent) : { postBody: '' };
 
   return Boolean(postBody.trim());
 }
