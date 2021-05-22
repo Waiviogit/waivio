@@ -113,7 +113,7 @@ class CreateObject extends React.Component {
 
   forceCloseObject = () =>
     this.setState({ loading: false, isModalOpen: false }, () => {
-      this.handleCloseModal();
+      this.props.onCloseModal();
     });
 
   handleSubmit = e => {
