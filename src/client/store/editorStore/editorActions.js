@@ -654,22 +654,6 @@ export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getSt
   return (
     Object.values(rawContent.entityMap)
       // eslint-disable-next-line array-callback-return,consistent-return
-      .filter(entity => {
-        if (entity.type === Entity.OBJECT) {
-          return has(entity, 'data.object.id');
-        }
-        if (!isReview && entity.type === Entity.LINK) {
-          const string = get(entity, 'data.url', '');
-          const queryString = string.match(handlePastedLink(QUERY_APP));
-
-          if (queryString) {
-            return has(entity, 'data.url');
-          }
-
-          return null;
-        }
-      })
-      // eslint-disable-next-line array-callback-return,consistent-return
       .map(entity => {
         if (entity.type === Entity.OBJECT) {
           return get(entity, 'data.object.id', '');
@@ -682,6 +666,7 @@ export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getSt
           return getCurrentLinkPermlink(entity);
         }
       })
+      .filter(item => !!item)
   );
 };
 
