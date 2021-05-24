@@ -196,6 +196,8 @@ export const editPost = (
   };
 
   dispatch(saveDraft(draft, true, intl));
+
+  return Promise.resolve();
 };
 
 const requiredFields = 'parentAuthor,parentPermlink,author,permlink,title,body,jsonMetadata'.split(
@@ -542,7 +544,7 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   const oldMetadata = get(currDraft, 'jsonMetadata', {});
 
   const waivioData = {
-    wobjects: linkedObjects
+    wobjects: (linkedObjects || [])
       .filter(obj => get(objPercentage, `[${obj._id}].percent`, 0) > 0)
       .map(obj => ({
         object_type: obj.object_type,
