@@ -136,7 +136,6 @@ const EditPost = props => {
         updateLinkedObjects
       ) {
         props.saveDraft(updatedStore);
-        props.setUpdatedEditorData(updatedStore);
       }
     }, 1500),
     [props.draftId],

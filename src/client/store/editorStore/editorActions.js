@@ -64,11 +64,10 @@ import {
   getIsEditorSaving,
   getLinkedObjects,
 } from './editorSelectors';
-import { getQueryString, getSuitableLanguage } from '../reducers';
+import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../components/EditorExtended';
-import { handlePastedLink, QUERY_APP } from '../../components/EditorExtended/util/editorHelper';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import { extractLinks } from '../../helpers/parser';
 
@@ -116,8 +115,10 @@ export const leaveEditor = () => ({ type: LEAVE_EDITOR });
 export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
   const state = getState();
   const saving = getIsEditorSaving(state);
+  const location = getCurrentLocation(state);
 
-  if (saving) return;
+  if (saving || location.pathname !== '/editor') return;
+  dispatch(setUpdatedEditorData(data));
   const draft = dispatch(buildPost(draftId, data));
 
   const postBody = draft.originalBody || draft.body;
