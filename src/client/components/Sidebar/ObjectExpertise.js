@@ -11,11 +11,15 @@ import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
 
 import './ObjectExpertise.less';
 
-const ObjectExpertise = ({ username, wobject, match }) => {
+const ObjectExpertise = ({ username, wobject, match, isCenterContent, history }) => {
   const [experts, setExperts] = useState({ user: {}, users: [], loading: true });
   const { users, user, loading } = experts;
   const isUserInTopFive = users.find(u => u.name === username);
   const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
+
+  const handleRedirectToExperts = () => {
+    if (isCenterContent) history.push(`${match.url.replace(/\/[^/]+$/, '')}/expertise`);
+  };
 
   useEffect(() => {
     getWobjectsExpertiseWithNewsFilter(username, wobject.author_permlink, 0, 5, newsFilter)
@@ -31,8 +35,8 @@ const ObjectExpertise = ({ username, wobject, match }) => {
   } else if (!loading && !isEmpty(users)) {
     renderExperts = (
       <div className="SidebarContentBlock">
-        <h4 className="SidebarContentBlock__title">
-          <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
+        <h4 className="SidebarContentBlock__title" onClick={handleRedirectToExperts}>
+          {!isCenterContent && <i className="iconfont icon-collection SidebarContentBlock__icon" />}{' '}
           <FormattedMessage id="object_expertise" defaultMessage="Experts" />
         </h4>
         <div className="SidebarContentBlock__content">
@@ -77,6 +81,12 @@ ObjectExpertise.propTypes = {
   username: PropTypes.string.isRequired,
   wobject: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
+  history: PropTypes.shape().isRequired,
+  isCenterContent: PropTypes.bool,
+};
+
+ObjectExpertise.propTypes = {
+  isCenterContent: false,
 };
 
 export default withRouter(ObjectExpertise);
