@@ -36,15 +36,12 @@ import './ObjectFeed.less';
 )
 export default class ObjectFeed extends React.Component {
   static propTypes = {
-    /* from connect */
     feed: PropTypes.shape().isRequired,
     getObjectPosts: PropTypes.func,
     getMoreObjectPosts: PropTypes.func,
     showPostModal: PropTypes.func.isRequired,
     readLocales: PropTypes.arrayOf(PropTypes.string),
-    /* passed */
     match: PropTypes.shape().isRequired,
-    /* default props */
     limit: PropTypes.number,
     handleCreatePost: PropTypes.func,
     wobject: PropTypes.shape(),

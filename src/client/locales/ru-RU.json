@@ -1421,6 +1421,7 @@
   "administrative": "Администратор",
   "ownership": "Владелец",
   "claim_authority": "Заявить о полномочиях",
+  "campaign_message_reply": "{author} ответил на ваш комментарий",
   "rewards_details_for_reviewing": "за отзывы",
   "widget_addition_text": "пример.",
   "referrals": "Рефералы",
@@ -1680,5 +1681,6 @@
   "create_new_account_protect": "Чтобы защитить Hive от спама, свидетели блокчейна ввели небольшую единовременную плату за новые учетные записи Hive.",
   "Deposits": "Депозиты",
   "Withdrawals": "Вывод средств",
+  "totals_calculated": "Итоги могут быть рассчитаны только за определенный период от до.",
   "total": "ОБЩЕЕ"
 }

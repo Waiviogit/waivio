@@ -7,7 +7,8 @@ export const blogNameValidationRegExp = /^[^!@#$%^&*(),.?":{}|<>]{0,17}$/;
 
 export const websiteTitleRegExp = /^[a-zA-Z0-9!@#$%^&*)(+=._ -]{0,100}$/;
 
-export const objectURLValidationRegExp = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/;
+// export const objectURLValidationRegExp = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+export const objectURLValidationRegExp = /.*/;
 
 export const phoneNameValidationRegExp = /^[^!@#$%^&*,?":{}|<>]{0,100}$/;
 

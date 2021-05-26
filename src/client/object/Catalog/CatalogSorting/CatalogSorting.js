@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import SortSelector from '../../../components/SortSelector/SortSelector';
-import CatalogBreadcrumb from '../CatalogBreadcrumb/CatalogBreadcrumb';
 
 const CatalogSorting = ({ currWobject, sort, handleSortChange, isSortCustomExist }) =>
   !isEmpty(currWobject[objectFields.sorting]) && isSortCustomExist ? (
@@ -57,7 +56,7 @@ CatalogSorting.propTypes = {
   isSortCustomExist: PropTypes.bool.isRequired,
 };
 
-CatalogBreadcrumb.defaultProps = {
+CatalogSorting.defaultProps = {
   sort: [],
   currWobject: {},
 };

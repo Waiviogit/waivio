@@ -3,54 +3,8 @@
 @import (reference) '../../styles/mixins.less';
 
 .WalletTable {
-  border: 1px solid @black;
-  text-align: center;
-  text-transform: capitalize;
-  border-collapse: collapse;
-  position: relative;
-  width: 100%;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-
-  @media @medium, @large {
-    overflow: visible;
-    width: 100%;
-  }
-
-  &__empty-table {
-    display: flex;
-    justify-content: center;
-    margin: 10px auto;
-    font-weight: 600;
-    font-size: 18px;
-    transition: 0.5s;
-  }
-
   &__bright {
     margin-left: 44.5% !important;
-  }
-
-  &__title-wrap {
-    display: flex;
-    align-items: baseline;
-  }
-
-  &__star-flag {
-    color: @red-danger;
-    font-size: 25px;
-    line-height: 5px;
-  }
-
-  &__from {
-    color: @black;
-    font-weight: 500;
-    margin-bottom: -10px !important;
-  }
-
-  &__till {
-    color: @black;
-    font-weight: 500;
-    margin-bottom: -10px !important;
   }
 
   &__back-btn {
@@ -61,10 +15,6 @@
   &__submit {
     display: block;
     margin-top: 15px;
-  }
-
-  &__main-content {
-    display: contents;
   }
 
   & span.username {
@@ -102,32 +52,14 @@
     vertical-align: middle;
   }
 
-  &__date {
-    width: 120px;
-  }
+  &__selectedUserWrap {
+    .SelectUserForAutocomplete {
+      &:last-child {
+        margin-bottom: 0;
+      }
 
-  &__HIVE {
-    width: 120px;
-  }
-
-  &__HP {
-    width: 120px;
-  }
-
-  &__HBD {
-    width: 120px;
-  }
-
-  &__plusmn {
-    width: 25px;
-  }
-
-  &__description {
-    width: 400px;
-  }
-
-  &__memo {
-    width: 335px;
+      margin-bottom: 5px;
+    }
   }
 
   &__total {
@@ -138,8 +70,12 @@
     }
   }
 
-  &__userSearch {
-    width: 50%;
+  &__userSearch.ant-select {
+    width: 100%;
+
+    @media @small {
+      width: 455px;
+    }
   }
 
   &__date-wrap {
