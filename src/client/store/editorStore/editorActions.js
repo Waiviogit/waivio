@@ -112,12 +112,14 @@ export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
 export const setClearState = () => ({ type: SET_CLEAR_STATE });
 export const leaveEditor = () => ({ type: LEAVE_EDITOR });
 
-export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
+export const saveDraft = (draftId, intl, data = {}, continueSave = true) => (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const saving = getIsEditorSaving(state);
-  const location = getCurrentLocation(state);
 
-  if (saving || location.pathname !== '/editor') return;
+  if (!continueSave && (continueSave || saving)) return;
   dispatch(setUpdatedEditorData(data));
   const draft = dispatch(buildPost(draftId, data));
 
@@ -196,7 +198,7 @@ export const editPost = (
     title,
   };
 
-  dispatch(saveDraft(draft, true, intl));
+  dispatch(saveDraft(id, intl, draft, false));
 
   return Promise.resolve();
 };
@@ -506,6 +508,8 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   const user = getAuthenticatedUser(state);
   const currDraft = getCurrentDraft(state, { draftId });
   const {
+    body,
+    originalBody,
     linkedObjects,
     topics,
     campaign,
@@ -513,10 +517,10 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
     isUpdating,
     settings,
     titleValue,
+    title,
     permlink,
     parentPermlink,
     objPercentage,
-    originalBody,
   } = { ...getEditor(state), ...data };
   const currentObject = get(linkedObjects, '[0]', {});
   const objName = currentObject.author_permlink;
@@ -526,15 +530,15 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   }
   const campaignId = get(campaign, '_id', null);
   const postData = {
-    body: content,
+    body: content || body || originalBody,
     lastUpdated: Date.now(),
     isUpdating,
     draftId,
     ...settings,
   };
 
-  if (titleValue) {
-    postData.title = titleValue;
+  if (titleValue || title) {
+    postData.title = titleValue || title;
     postData.permlink = permlink || kebabCase(titleValue);
   }
 
@@ -742,11 +746,20 @@ export const firstParseLinkedObjects = draft => async dispatch => {
     const { rawContentUpdated } = await dispatch(getRestoreObjects(entities));
     const draftLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
     const draftObjPercentage = setObjPercents(draftLinkedObjects);
+    const draftContent = { title: draft.title, body: draft.body };
 
     dispatch(
       setUpdatedEditorData({
         linkedObjects: draftLinkedObjects,
         objPercentage: draftObjPercentage,
+        draftContent: { title: draft.title, body: draft.body },
+      }),
+    );
+
+    dispatch(
+      setUpdatedEditorExtendedData({
+        titleValue: draftContent.title,
+        editorState: EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent))),
       }),
     );
   }
