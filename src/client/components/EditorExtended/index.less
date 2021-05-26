@@ -24,18 +24,6 @@
   position: relative;
   line-height: 1.4em;
   min-height: 178px;
-
-  .PostFeedEmbed__container {
-    padding-bottom: 135%;
-
-    @media @xsmall {
-      padding-bottom: 120%;
-    }
-
-    @media @small {
-      padding-bottom: 0;
-    }
-  }
 }
 
 .md-RichEditor-root-vimeo {
@@ -50,41 +38,6 @@
 
     @media @small {
       height: 300px;
-    }
-  }
-
-  .PostFeedEmbed__container {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 60%;
-
-    @media @xsmall {
-      padding-bottom: 53%;
-    }
-
-    @media @small {
-      padding-bottom: 60%;
-    }
-
-    @media @medium {
-      padding-bottom: 58%;
-    }
-
-    & > iframe {
-      position: absolute;
-      width: 100%;
-      height: 172px;
-      left: 0;
-      top: 0;
-
-      @media @small {
-        height: 250px;
-      }
-
-      @media @medium {
-        height: 400px;
-      }
     }
   }
 }
