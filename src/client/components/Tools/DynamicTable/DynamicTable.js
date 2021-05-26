@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { get, isEmpty, size } from 'lodash';
@@ -65,31 +65,33 @@ export const DynamicTable = ({
           ))}
         </tr>
       </thead>
-      <tbody>
-        {isEmpty(bodyConfig) ? (
-          <tr>
-            <td colSpan={size(header)}>
-              {emptyTitle ||
-                intl.formatMessage({
-                  id: 'empty_dynamic_table',
-                  defaultMessage: "You haven't had any payments yet",
-                })}
-            </td>
-          </tr>
-        ) : (
-          bodyConfig.map(item => (
-            <tr key={get(item, '_id')}>
-              {header.map(head => (
-                <td key={head.id} style={head.style || {}}>
-                  {head.checkShowItem
-                    ? head.checkShowItem(item, getTdBodyType)
-                    : getTdBodyType(item, head)}
-                </td>
-              ))}
+      {
+        <tbody>
+          {isEmpty(bodyConfig) ? (
+            <tr>
+              <td colSpan={size(header)}>
+                {emptyTitle ||
+                  intl.formatMessage({
+                    id: 'empty_dynamic_table',
+                    defaultMessage: "You haven't had any payments yet",
+                  })}
+              </td>
             </tr>
-          ))
-        )}
-      </tbody>
+          ) : (
+            bodyConfig.map(item => (
+              <tr key={get(item, '_id')}>
+                {header.map(head => (
+                  <td key={head.id} style={head.style || {}}>
+                    {head.checkShowItem
+                      ? head.checkShowItem(item, getTdBodyType)
+                      : getTdBodyType(item, head)}
+                  </td>
+                ))}
+              </tr>
+            ))
+          )}
+        </tbody>
+      }
       {showMore && (
         <tr onClick={handleShowMore}>
           <td colSpan={size(header)} className="DynamicTable__showMore">
