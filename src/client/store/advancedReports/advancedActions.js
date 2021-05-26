@@ -26,9 +26,17 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
         endDate,
         filterAccounts,
         accounts,
-      }).then(data => ({
-        data,
-      })),
+      }).then(data => {
+        const getCurrentValues = value => (startDate && endDate ? value : 0);
+
+        return {
+          data: {
+            ...data,
+            withdrawals: getCurrentValues(data.withdrawals),
+            deposits: getCurrentValues(data.deposits),
+          },
+        };
+      }),
     },
   });
 };
@@ -41,6 +49,7 @@ export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, 
   getState,
 ) => {
   const accounts = getTransfersAccounts(getState());
+  const getCurrentValues = value => (startDate && endDate ? value : 0);
 
   return dispatch({
     type: GET_MORE_TRANSACTIONS_FOR_TABLE.ACTION,
@@ -51,7 +60,11 @@ export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, 
         filterAccounts,
         accounts,
       }).then(data => ({
-        data,
+        data: {
+          ...data,
+          withdrawals: getCurrentValues(data.withdrawals),
+          deposits: getCurrentValues(data.deposits),
+        },
       })),
     },
   });

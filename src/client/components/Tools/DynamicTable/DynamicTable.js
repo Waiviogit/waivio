@@ -18,7 +18,6 @@ export const DynamicTable = ({
   showMore,
   handleShowMore,
   loadingMore,
-  infinity,
 }) => {
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type))
@@ -57,12 +56,6 @@ export const DynamicTable = ({
     }
   };
 
-  useEffect(() => {
-    if (showMore && infinity && !isEmpty(bodyConfig)) {
-      handleShowMore();
-    }
-  }, [bodyConfig, showMore]);
-
   return (
     <table className="DynamicTable">
       <thead>
@@ -99,7 +92,7 @@ export const DynamicTable = ({
           )}
         </tbody>
       }
-      {showMore && !infinity && (
+      {showMore && (
         <tr onClick={handleShowMore}>
           <td colSpan={size(header)} className="DynamicTable__showMore">
             {loadingMore ? (
@@ -125,7 +118,6 @@ DynamicTable.propTypes = {
   showMore: PropTypes.bool,
   loadingMore: PropTypes.bool,
   buttons: PropTypes.shape({}),
-  infinity: PropTypes.bool,
 };
 
 DynamicTable.defaultProps = {
@@ -139,7 +131,6 @@ DynamicTable.defaultProps = {
   buttons: {},
   showMore: false,
   loadingMore: false,
-  infinity: false,
 };
 
 export default injectIntl(DynamicTable);

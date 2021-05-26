@@ -166,12 +166,6 @@ TableFilter.propTypes = {
   }).isRequired,
   isloadingTableTransactions: PropTypes.bool.isRequired,
   locale: PropTypes.string.isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func,
-  }).isRequired,
-  user: PropTypes.shape({
-    name: PropTypes.string,
-  }).isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   filterUsersList: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleOnClick: PropTypes.func.isRequired,

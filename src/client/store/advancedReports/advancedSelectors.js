@@ -8,3 +8,6 @@ export const getTransactions = createSelector([reportsState], state => state.wal
 export const getTransactionsHasMore = createSelector([reportsState], state => state.hasMore);
 export const getTransfersAccounts = createSelector([reportsState], state => state.accounts);
 export const getTransfersLoading = createSelector([reportsState], state => state.isLoading);
+export const getTransfersWithdrawals = createSelector([reportsState], state => state.withdrawals);
+export const getTransfersDeposits = createSelector([reportsState], state => state.deposits);
+export const getIsLoadingAllData = createSelector([reportsState], state => state.loadingAllData);
