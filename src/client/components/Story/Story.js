@@ -207,7 +207,10 @@ class Story extends React.Component {
   handleEditClick = post => {
     const { intl } = this.props;
 
-    if (post.depth === 0) return this.props.editPost(post, intl);
+    if (post.depth === 0)
+      return this.props
+        .editPost(post, intl)
+        .then(() => this.props.push(`/editor?draft=${post.id}`));
 
     return this.props.push(`${post.url}-edit`);
   };
