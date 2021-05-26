@@ -28,6 +28,7 @@ import websiteReducer from './websiteStore/websiteReducer';
 import referralReducer from './referralStore/ReferralReducer';
 import { getUsedLocale } from './appStore/appSelectors';
 import { getLocale } from './settingsStore/settingsSelectors';
+import advancedReducer from './advancedReports/advancedReducer';
 
 export default history =>
   combineReducers({
@@ -56,6 +57,7 @@ export default history =>
     rewards: rewardsReducer,
     referral: referralReducer,
     website: websiteReducer,
+    advancedReports: advancedReducer,
   });
 
 // common selectors

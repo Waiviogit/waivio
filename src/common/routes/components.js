@@ -28,7 +28,7 @@ export default {
   UserFollowing: loableComponent(import('../../client/user/UserFollowing')),
   UserReblogs: loableComponent(import('../../client/user/UserReblogs')),
   UserWallet: loableComponent(import('../../client/user/UserWallet')),
-  WalletTable: loableComponent(import('../../client/wallet/WalletTable/WalletTableContainer')),
+  WalletTable: loableComponent(import('../../client/wallet/WalletTable/WalletTableRes')),
   UserActivity: loableComponent(import('../../client/activity/UserActivity')),
   Discover: loableComponent(import('../../client/discover/Discover')),
   Objects: loableComponent(import('../../client/objects/Objects')),

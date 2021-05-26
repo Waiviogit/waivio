@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { get, isEmpty, size } from 'lodash';
@@ -18,6 +18,7 @@ export const DynamicTable = ({
   showMore,
   handleShowMore,
   loadingMore,
+  infinity,
 }) => {
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type))
@@ -56,6 +57,12 @@ export const DynamicTable = ({
     }
   };
 
+  useEffect(() => {
+    if (showMore && infinity && !isEmpty(bodyConfig)) {
+      handleShowMore();
+    }
+  }, [bodyConfig, showMore]);
+
   return (
     <table className="DynamicTable">
       <thead>
@@ -65,32 +72,34 @@ export const DynamicTable = ({
           ))}
         </tr>
       </thead>
-      <tbody>
-        {isEmpty(bodyConfig) ? (
-          <tr>
-            <td colSpan={size(header)}>
-              {emptyTitle ||
-                intl.formatMessage({
-                  id: 'empty_dynamic_table',
-                  defaultMessage: "You haven't had any payments yet",
-                })}
-            </td>
-          </tr>
-        ) : (
-          bodyConfig.map(item => (
-            <tr key={get(item, '_id')}>
-              {header.map(head => (
-                <td key={head.id} style={head.style || {}}>
-                  {head.checkShowItem
-                    ? head.checkShowItem(item, getTdBodyType)
-                    : getTdBodyType(item, head)}
-                </td>
-              ))}
+      {
+        <tbody>
+          {isEmpty(bodyConfig) ? (
+            <tr>
+              <td colSpan={size(header)}>
+                {emptyTitle ||
+                  intl.formatMessage({
+                    id: 'empty_dynamic_table',
+                    defaultMessage: "You haven't had any payments yet",
+                  })}
+              </td>
             </tr>
-          ))
-        )}
-      </tbody>
-      {showMore && (
+          ) : (
+            bodyConfig.map(item => (
+              <tr key={get(item, '_id')}>
+                {header.map(head => (
+                  <td key={head.id} style={head.style || {}}>
+                    {head.checkShowItem
+                      ? head.checkShowItem(item, getTdBodyType)
+                      : getTdBodyType(item, head)}
+                  </td>
+                ))}
+              </tr>
+            ))
+          )}
+        </tbody>
+      }
+      {showMore && !infinity && (
         <tr onClick={handleShowMore}>
           <td colSpan={size(header)} className="DynamicTable__showMore">
             {loadingMore ? (
@@ -116,6 +125,7 @@ DynamicTable.propTypes = {
   showMore: PropTypes.bool,
   loadingMore: PropTypes.bool,
   buttons: PropTypes.shape({}),
+  infinity: PropTypes.bool,
 };
 
 DynamicTable.defaultProps = {
@@ -129,6 +139,7 @@ DynamicTable.defaultProps = {
   buttons: {},
   showMore: false,
   loadingMore: false,
+  infinity: false,
 };
 
 export default injectIntl(DynamicTable);
