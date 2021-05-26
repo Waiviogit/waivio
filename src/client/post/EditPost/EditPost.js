@@ -118,6 +118,10 @@ const EditPost = props => {
     props.firstParseLinkedObjects(props.currDraft);
   }, [props.draftId, props.campaignId]);
 
+  React.useEffect(() => {
+    props.firstParseLinkedObjects(props.currDraft);
+  }, [props.currDraft]);
+
   const setDraftId = hideObjects => {
     if (props.draftId && props.draftId !== draftIdEditor) {
       props.setEditorState(getInitialState(props, hideObjects));
