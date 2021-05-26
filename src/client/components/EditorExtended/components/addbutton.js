@@ -18,7 +18,9 @@ export default class AddButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      style: {},
+      style: {
+        top: 0,
+      },
       visible: true,
       isOpen: false,
       isControlElem: false,
@@ -158,6 +160,7 @@ export default class AddButton extends React.Component {
                   >
                     <Button
                       {...extraProps}
+                      handleObjectSelect={this.props.handleObjectSelect}
                       getEditorState={this.props.getEditorState}
                       setEditorState={this.props.setEditorState}
                       close={this.openToolbar}
@@ -177,6 +180,7 @@ export default class AddButton extends React.Component {
 AddButton.propTypes = {
   getEditorState: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
+  handleObjectSelect: PropTypes.func.isRequired,
   withTitleLine: PropTypes.bool,
   focus: PropTypes.func,
   sideButtons: PropTypes.arrayOf(PropTypes.object),

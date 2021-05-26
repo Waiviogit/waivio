@@ -1218,7 +1218,7 @@
   "confirmation_email": "पुष्टिकरण का ईमेल भेजा गया",
   "confirm_transaction": "कृपया अपने ईमेल से इस लेन-देन की पुष्टि करें ( {currentEmail} )",
   "blocktrades_exchange_request": "Blocktrades.us विनिमय अनुरोध",
-  "send_confirmation": "पुष्टि भेजें",
+  "send_confirmation": "पुष्टि करें",
   "confirmed_by_email": "इस लेन-देन की पुष्टि ईमेल द्वारा की जानी चाहिए:",
   "agree_to": "मैं इसके लिए सहमत हूं",
   "blocktrades_conditions": "Blocktrades.us उपयोग के नियम और शर्तें",

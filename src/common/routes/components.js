@@ -14,7 +14,7 @@ export default {
   Activity: loableComponent(import('../../client/activity/Activity')),
   Wallet: loableComponent(import('../../client/wallet/Wallet')),
   BusyEditor: loableComponent(import('../../client/post/Write/Write')),
-  Editor: loableComponent(import('../../client/post/EditPost/EditPost')),
+  Editor: loableComponent(import('../../client/post/EditPost')),
   Settings: loableComponent(import('../../client/settings/Settings')),
   GuestsSettings: loableComponent(import('../../client/settings/GuestsSettings')),
   WebsiteSettings: loableComponent(import('../../client/settings/WebsiteSettings')),

@@ -2,7 +2,9 @@
 @import (reference) '../../styles/modules/variables';
 
 .object-sidebar {
-  padding-bottom: 50px;
+  @media @small {
+    padding-bottom: 50px;
+  }
 
   &__section-title {
     display: flex;
