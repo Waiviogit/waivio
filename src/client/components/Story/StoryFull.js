@@ -561,6 +561,7 @@ class StoryFull extends React.Component {
           onLikeClick={onLikeClick}
           onShareClick={onShareClick}
           onEditClick={onEditClick}
+          handleEditClick={onEditClick}
         />
         <MuteModal
           item={post}
