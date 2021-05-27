@@ -1217,7 +1217,7 @@
   "confirmation_email": "Письмо с подтверждением отправлено",
   "confirm_transaction": "Пожалуйста, подтвердите эту транзакцию с вашего адреса электронной почты ({currentEmail})",
   "blocktrades_exchange_request": "Blocktrades.us запрос на обмен",
-  "send_confirmation": "Отправить подтверждение",
+  "send_confirmation": "Подтвердить",
   "confirmed_by_email": "Эта транзакция должна быть подтверждена по электронной почте:",
   "agree_to": "я согласен с",
   "blocktrades_conditions": "Blocktrades.us Правила и условия пользования",
@@ -1681,5 +1681,6 @@
   "create_new_account_protect": "Чтобы защитить Hive от спама, свидетели блокчейна ввели небольшую единовременную плату за новые учетные записи Hive.",
   "Deposits": "Депозиты",
   "Withdrawals": "Вывод средств",
+  "totals_calculated": "Итоги могут быть рассчитаны только за определенный период от до.",
   "total": "ОБЩЕЕ"
 }

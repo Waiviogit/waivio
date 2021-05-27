@@ -13,13 +13,14 @@ import { isContentValid } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import { clearBeneficiariesUsers } from '../../store/searchStore/searchActions';
+import { setUpdatedEditorData } from '../../store/editorStore/editorActions';
 
 import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
 @injectIntl
-@connect(null, { clearBeneficiariesUsers })
+@connect(null, { clearBeneficiariesUsers, setUpdatedEditorData })
 class PostPreviewModal extends Component {
   static findScrollElement() {
     return document.querySelector('.post-preview-modal');
@@ -42,9 +43,8 @@ class PostPreviewModal extends Component {
     }),
     isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
-    onTopicsChange: PropTypes.func.isRequired,
+    setUpdatedEditorData: PropTypes.func.isRequired,
     onSettingsChange: PropTypes.func.isRequired,
-    onPercentChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
@@ -81,7 +81,8 @@ class PostPreviewModal extends Component {
       nextState.isModalOpen ||
       this.state.isModalOpen ||
       isContentValid(this.props.content) !== isContentValid(nextProps.content) ||
-      nextProps.content
+      nextProps.content ||
+      nextProps.titleValue
     );
   }
 
@@ -125,16 +126,16 @@ class PostPreviewModal extends Component {
 
   handleSettingsChange = updatedValue => this.props.onSettingsChange(updatedValue);
 
-  handleTopicsChange = topics => this.props.onTopicsChange(topics);
+  handleTopicsChange = topics => this.props.setUpdatedEditorData({ topics });
 
   handlePercentChange = (objId, percent) => {
-    const { objPercentage, onPercentChange } = this.props;
+    const { objPercentage } = this.props;
     const nextObjPercentage = {
       ...objPercentage,
       [objId]: { percent },
     };
 
-    onPercentChange(nextObjPercentage);
+    this.props.setUpdatedEditorData({ objPercentage: nextObjPercentage });
   };
 
   handleReviewSubmit = () => {

@@ -1,82 +1,272 @@
-import { map } from 'lodash';
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Form } from 'antd';
+import { injectIntl } from 'react-intl';
+import { round, map, isEmpty, isEqual } from 'lodash';
+import moment from 'moment';
+import { Link } from 'react-router-dom';
 
-import WalletTableHeader from '../constants';
-import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
+import { openWalletTable, closeWalletTable } from '../../store/walletStore/walletActions';
+import TableFilter from './TableFilter';
+import {
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+} from '../../store/walletStore/walletSelectors';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import {
+  getUserTableTransactions,
+  getMoreTableUserTransactionHistory,
+} from '../../store/advancedReports/advancedActions';
+import compareTransferBody from './common/helpers';
+import {
+  getIsLoadingAllData,
+  getTransactions,
+  getTransactionsHasMore,
+  getTransfersAccounts,
+  getTransfersDeposits,
+  getTransfersLoading,
+  getTransfersWithdrawals,
+} from '../../store/advancedReports/advancedSelectors';
+import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
+import { configReportsWebsitesTableHeader } from './common/tableConfig';
 import Loading from '../../components/Icon/Loading';
-import WalletTableBodyRow from './WalletTableBodyRow';
-import { guestUserRegex } from '../../helpers/regexHelpers';
 
 import './WalletTable.less';
 
-const WalletTable = ({
-  intl,
-  handleLoadMore,
-  hasMore,
-  isErrorLoading,
-  transactions,
-  currentUsername,
-  totalVestingShares,
-  totalVestingFundSteem,
-}) => (
-  <div className="WalletTable">
-    <table>
-      <thead>
-        <tr>
-          {WalletTableHeader.map(tdInfo => (
-            <th key={tdInfo.id} className={tdInfo.className}>
-              {tdInfo.symbol ||
-                intl.formatMessage({
-                  id: tdInfo.id,
-                  defaultMessage: tdInfo.message,
-                })}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        <ReduxInfiniteScroll
-          className="WalletTable__main-content"
-          loadMore={handleLoadMore}
-          hasMore={hasMore}
-          elementIsScrollable={false}
-          threshold={500}
-          loader={
-            !isErrorLoading && (
-              <div className="WalletTable__loader">
-                <Loading />
-              </div>
-            )
-          }
-        >
-          {map(transactions, transaction => (
-            <WalletTableBodyRow
-              key={transaction.timestamp}
-              transaction={transaction}
-              isGuestPage={guestUserRegex.test(currentUsername)}
-              currentUsername={currentUsername}
-              totalVestingShares={totalVestingShares}
-              totalVestingFundSteem={totalVestingFundSteem}
-            />
-          ))}
-        </ReduxInfiniteScroll>
-      </tbody>
-    </table>
-  </div>
-);
+@Form.create()
+@injectIntl
+@connect(
+  state => ({
+    totalVestingShares: getTotalVestingShares(state),
+    totalVestingFundSteem: getTotalVestingFundSteem(state),
+    hasMore: getTransactionsHasMore(state),
+    locale: getLocale(state),
+    deposits: getTransfersDeposits(state),
+    withdrawals: getTransfersWithdrawals(state),
+    transactionsList: getTransactions(state),
+    loading: getTransfersLoading(state),
+    accounts: getTransfersAccounts(state),
+    isLoadingAllData: getIsLoadingAllData(state),
+  }),
+  {
+    openTable: openWalletTable,
+    closeTable: closeWalletTable,
+    getUserTableTransactions,
+    getMoreTableUserTransactionHistory,
+  },
+)
+class WalletTable extends React.Component {
+  static propTypes = {
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func.isRequired,
+    }).isRequired,
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        name: PropTypes.string,
+      }),
+    }).isRequired,
+    totalVestingShares: PropTypes.string.isRequired,
+    totalVestingFundSteem: PropTypes.string.isRequired,
+    openTable: PropTypes.func.isRequired,
+    closeTable: PropTypes.func.isRequired,
+    hasMore: PropTypes.bool,
+    isLoadingAllData: PropTypes.bool.isRequired,
+    form: PropTypes.shape({
+      setFieldsValue: PropTypes.func,
+      validateFieldsAndScroll: PropTypes.func,
+      getFieldDecorator: PropTypes.func,
+      getFieldsValue: PropTypes.func,
+    }).isRequired,
+    locale: PropTypes.string.isRequired,
+    deposits: PropTypes.number,
+    withdrawals: PropTypes.number,
+    getUserTableTransactions: PropTypes.func.isRequired,
+    getMoreTableUserTransactionHistory: PropTypes.func.isRequired,
+    transactionsList: PropTypes.arrayOf(PropTypes.shape({})),
+    accounts: PropTypes.arrayOf(PropTypes.shape({})),
+    loading: PropTypes.bool,
+  };
 
-WalletTable.propTypes = {
-  intl: PropTypes.shape({
-    formatMessage: PropTypes.func,
-  }).isRequired,
-  handleLoadMore: PropTypes.func.isRequired,
-  hasMore: PropTypes.bool.isRequired,
-  isErrorLoading: PropTypes.bool.isRequired,
-  transactions: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  currentUsername: PropTypes.string.isRequired,
-  totalVestingShares: PropTypes.string.isRequired,
-  totalVestingFundSteem: PropTypes.string.isRequired,
-};
+  static defaultProps = {
+    hasMore: false,
+    deposits: 0,
+    withdrawals: 0,
+    transactionsList: [],
+    accounts: [],
+    loading: false,
+  };
+
+  state = {
+    isEmptyPeriod: true,
+    filterAccounts: [this.props.match.params.name],
+    dateEstablished: false,
+  };
+
+  componentDidMount() {
+    const { filterAccounts } = this.state;
+
+    this.props.openTable();
+    this.props.form.setFieldsValue({ filterAccounts });
+    this.props.getUserTableTransactions(filterAccounts);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      !isEmpty(this.props.accounts) &&
+      !isEqual(prevProps.accounts, this.props.accounts) &&
+      this.props.hasMore &&
+      this.state.dateEstablished
+    ) {
+      this.handleLoadMore();
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.closeTable();
+  }
+
+  handleSubmit = () => {
+    const { from, end } = this.props.form.getFieldsValue();
+
+    this.setState({ dateEstablished: true });
+
+    return this.props.getUserTableTransactions(
+      this.state.filterAccounts,
+      this.handleChangeStartDate(from),
+      this.handleChangeEndDate(end),
+    );
+  };
+
+  handleOnClick = e => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll(err => !err && this.handleSubmit());
+  };
+
+  deleteUserFromFilterAccounts = user => {
+    this.setState(
+      preState => ({
+        filterAccounts: preState.filterAccounts.filter(acc => acc !== user),
+      }),
+      () => this.props.form.setFieldsValue({ filterAccounts: this.state.filterAccounts }),
+    );
+  };
+
+  handleSelectUserFilterAccounts = user =>
+    this.setState(preState => ({
+      filterAccounts: [...preState.filterAccounts, user.account],
+    }));
+
+  handleChangeStartDate = value =>
+    moment(value)
+      .startOf('day')
+      .unix();
+
+  handleLoadMore = () => {
+    const { from, end } = this.props.form.getFieldsValue();
+
+    return this.props.getMoreTableUserTransactionHistory({
+      filterAccounts: this.state.filterAccounts,
+      ...(this.state.dateEstablished
+        ? {
+            startDate: this.handleChangeStartDate(from),
+            endDate: this.handleChangeEndDate(end),
+          }
+        : {}),
+    });
+  };
+
+  handleChangeEndDate = value => {
+    const date = moment(value);
+    const isToday =
+      date.startOf('day').unix() ===
+      moment()
+        .startOf('day')
+        .unix();
+    const endDate = isToday ? moment() : date.endOf('day');
+
+    return endDate.unix();
+  };
+
+  render() {
+    const { match, intl, locale, form, transactionsList } = this.props;
+    const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed!';
+    const handleChangeTotalValue = value =>
+      this.state.dateEstablished ? <b>${round(value, 3)}</b> : '-';
+    const mappedList = map(transactionsList, transaction =>
+      compareTransferBody(
+        transaction,
+        this.props.totalVestingShares,
+        this.props.totalVestingFundSteem,
+      ),
+    );
+
+    return (
+      <React.Fragment>
+        <Link to={`/@${match.params.name}/transfers`} className="WalletTable__back-btn">
+          {intl.formatMessage({
+            id: 'table_back',
+            defaultMessage: 'Back',
+          })}
+        </Link>
+        <h3>
+          {intl.formatMessage({
+            id: 'table_view',
+            defaultMessage: 'Advanced reports',
+          })}
+        </h3>
+        <TableFilter
+          intl={intl}
+          filterUsersList={this.state.filterAccounts}
+          locale={locale}
+          getFieldDecorator={form.getFieldDecorator}
+          handleOnClick={this.handleOnClick}
+          handleSelectUser={this.handleSelectUserFilterAccounts}
+          isLoadingTableTransactions={this.props.loading}
+          deleteUser={this.deleteUserFromFilterAccounts}
+        />
+        <div className="WalletTable__total">
+          {intl.formatMessage({
+            id: 'total',
+            defaultMessage: 'TOTAL',
+          })}
+          :{' '}
+          {intl.formatMessage({
+            id: 'Deposits',
+            defaultMessage: 'Deposits',
+          })}
+          : {handleChangeTotalValue(this.props.deposits)}.{' '}
+          {intl.formatMessage({
+            id: 'Withdrawals',
+            defaultMessage: 'Withdrawals',
+          })}
+          : {handleChangeTotalValue(this.props.withdrawals)}. (
+          {this.state.dateEstablished
+            ? loadingBar
+            : intl.formatMessage({
+                id: 'totals_calculated',
+                defaultMessage: 'Totals can be calculated only for a defined from-till period.',
+              })}
+          )
+        </div>
+        {this.props.loading && isEmpty(mappedList) ? (
+          <Loading />
+        ) : (
+          <DynamicTbl
+            infinity
+            header={configReportsWebsitesTableHeader}
+            bodyConfig={mappedList}
+            emptyTitle={intl.formatMessage({
+              id: 'empty_table_transaction_list',
+              defaultMessage: `You did not have any transactions during this period`,
+            })}
+            showMore={this.props.hasMore && !this.state.dateEstablished}
+            handleShowMore={this.handleLoadMore}
+          />
+        )}
+      </React.Fragment>
+    );
+  }
+}
 
 export default WalletTable;

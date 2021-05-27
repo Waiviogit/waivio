@@ -1647,7 +1647,7 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
       .catch(error => reject(error));
   });
 
-export const getTransferHistoryTableView = (data, types, filterAcc) => {
+export const getTransferHistoryTableView = (data, filterAcc) => {
   const typesQuery = TRANSACTION_TYPES.reduce((acc, curr) => `${acc}&types=${curr}`, '');
   const filterAccounts =
     filterAcc && filterAcc.reduce((acc, curr) => `${acc}&filterAccounts=${curr}`, '');
@@ -1655,7 +1655,7 @@ export const getTransferHistoryTableView = (data, types, filterAcc) => {
 
   return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?${query}&${typesQuery}&${filterAccounts}`,
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?${query}&${typesQuery}&tableView=true&limit=15&${filterAccounts}`,
       {
         headers,
         method: 'GET',
@@ -2056,6 +2056,17 @@ export const addNoteInVipTicket = (body, isGuest) => {
     },
     body: JSON.stringify(body),
     method: 'PATCH',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const getAdvancedReports = body => {
+  return fetch(`${config.campaignApiPrefix}${config.payments}${config.advancedReport}`, {
+    headers,
+    body: JSON.stringify(body),
+    method: 'POST',
   })
     .then(res => res.json())
     .then(res => res)

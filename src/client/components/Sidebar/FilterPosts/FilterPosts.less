@@ -11,10 +11,27 @@
   }
 
   &__tag {
+    display: flex;
+    align-items: center;
+
     .ant-checkbox-wrapper {
       display: flex;
       align-items: center;
+
+      .ant-checkbox + span {
+        display: inline-block;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
+  }
+
+  &__tagName {
+    display: inline-block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__showMore {

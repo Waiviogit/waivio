@@ -196,7 +196,7 @@ const WebsiteBody = props => {
   const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
   const currentLogo = configLogo || getObjectAvatar(aboutObject);
   const logoLink = get(aboutObject, ['defaultShowLink'], '/');
-  const description = get({}, 'description');
+  const description = get(aboutObject, 'description', '');
 
   const reloadSearchList = () => {
     handleSetMapForSearch();

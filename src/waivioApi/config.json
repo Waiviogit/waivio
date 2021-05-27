@@ -125,5 +125,6 @@
   "geoIp": "/geo-ip",
   "vipTickets": "/vip-tickets",
   "payableWarning": "/payable-warning",
+  "advancedReport": "/advanced-report",
   "immediateWithdraw": "/immediate-withdraw"
 }

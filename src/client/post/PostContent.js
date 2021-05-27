@@ -206,7 +206,10 @@ class PostContent extends React.Component {
   handleEditClick = post => {
     const { intl } = this.props;
 
-    if (post.depth === 0) return this.props.editPost(post, intl);
+    if (post.depth === 0)
+      return this.props
+        .editPost(post, intl)
+        .then(() => this.props.push(`/editor?draft=${post.id}`));
 
     return this.props.push(`${post.url}-edit`);
   };
@@ -293,7 +296,6 @@ class PostContent extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <link rel="amphtml" href={ampUrl} />
-
           <meta property="fb:app_id" content="754038848413420" />
           <meta property="og:url" content={url} />
           <meta property="og:type" content="article" />
@@ -305,6 +307,7 @@ class PostContent extends React.Component {
           <meta name="twitter:title" content={metaTitle} />
           <meta name="twitter:description" content={desc} />
           <meta property="og:image" content={image} />
+          <meta property="og:image:alt" content="image" />
           <meta property="og:image:url" content={image} />
           <meta property="og:image:width" content="680" />
           <meta property="og:image:height" content="555" />
