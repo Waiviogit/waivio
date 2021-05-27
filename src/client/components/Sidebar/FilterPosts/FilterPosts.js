@@ -23,9 +23,8 @@ const FilterPosts = ({ setProfileFilters, name, tags }) => {
       <div className="FilterPosts__tags-list">
         {tagsList.map(tag => (
           <div key={tag.author_permlink} className="FilterPosts__tag">
-            <Checkbox onChange={() => setProfileFilters(tag.author_permlink)}>
-              {tag.name} ({tag.counter})
-            </Checkbox>
+            <Checkbox onChange={() => setProfileFilters(tag.author_permlink)}>{tag.name}</Checkbox>{' '}
+            ({tag.counter})
           </div>
         ))}
         {tags.length > 9 && !showMore && (

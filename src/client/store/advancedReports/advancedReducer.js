@@ -19,6 +19,7 @@ export default function advancedReducer(state = initialState, action) {
         deposits: 0,
         withdrawals: 0,
         wallet: [],
+        accounts: [],
       };
     }
     case GET_TRANSACTIONS_FOR_TABLE.SUCCESS: {
