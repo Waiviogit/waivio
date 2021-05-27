@@ -235,7 +235,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
         beneficiary: draftPost.beneficiary,
         upvote: draftPost.upvote,
       },
-      isUpdating: Boolean(draftPost.isUpdating),
+      isUpdating: get(props.currDraft, 'isUpdating', false),
       permlink: draftPost.permlink || null,
       originalBody: draftPost.originalBody || null,
       titleValue: get(draftPost, 'title', ''),

@@ -124,6 +124,7 @@ const EditPost = props => {
   React.useEffect(() => {
     if (!currDraft && props.currDraft) {
       props.firstParseLinkedObjects(props.currDraft);
+      props.setEditorState(getInitialState(props));
       setCurrDraft(props.currDraft);
     }
   }, [props.currDraft]);
