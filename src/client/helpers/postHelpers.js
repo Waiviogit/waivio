@@ -174,8 +174,11 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
   const search = props.location.search.replace(/ & /, ' ');
   const initObjects = new URLSearchParams(search).getAll('object');
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
+  const campaign = get(props, 'editor.campaign', null)
+    ? props.editor.campaign
+    : { id: props.campaignId };
   let state = {
-    campaign: props.campaignId ? { id: props.campaignId } : null,
+    campaign,
     draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
@@ -216,7 +219,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
 
     state = {
-      campaign: draftPost.campaignId ? { id: draftPost.campaignId } : null,
+      campaign,
       draftId: props.draftId,
       parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
