@@ -79,7 +79,8 @@ class PostPreviewModal extends Component {
       nextState.isModalOpen ||
       this.state.isModalOpen ||
       isContentValid(this.props.content) !== isContentValid(nextProps.content) ||
-      nextProps.content
+      nextProps.content ||
+      nextProps.titleValue
     );
   }
 

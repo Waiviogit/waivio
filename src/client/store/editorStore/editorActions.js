@@ -112,21 +112,7 @@ export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
 export const setClearState = () => ({ type: SET_CLEAR_STATE });
 export const leaveEditor = () => ({ type: LEAVE_EDITOR });
 
-export const saveDraft = (draftId, intl, data = {}, continueSave = true) => (
-  dispatch,
-  getState,
-) => {
-  const state = getState();
-  const saving = getIsEditorSaving(state);
-
-  if (!continueSave && (continueSave || saving)) return;
-  dispatch(setUpdatedEditorData(data));
-  const draft = dispatch(buildPost(draftId, data));
-
-  const postBody = draft.originalBody || draft.body;
-
-  if (!postBody) return;
-
+const saveDraftRequest = (draft, intl) => dispatch =>
   dispatch({
     type: SAVE_DRAFT,
     payload: {
@@ -147,6 +133,20 @@ export const saveDraft = (draftId, intl, data = {}, continueSave = true) => (
     },
     meta: { postId: draft.draftId },
   });
+
+export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
+  const state = getState();
+  const saving = getIsEditorSaving(state);
+  const { pathname } = getCurrentLocation(state);
+
+  if (saving || (pathname !== '/editor' && pathname !== `/${data.author}`)) return;
+  const draft = dispatch(buildPost(draftId, data));
+
+  const postBody = draft.originalBody || draft.body;
+
+  if (!postBody) return;
+
+  dispatch(saveDraftRequest(draft, intl));
 };
 export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getState) => {
   const state = getState();
@@ -178,6 +178,12 @@ export const deleteDraft = draftIds => (dispatch, getState) => {
   });
 };
 
+const editPostSetCurrentDraft = (draftId, intl, draft) => dispatch => {
+  const draftBuild = dispatch(buildPost(draftId, draft));
+
+  dispatch(saveDraftRequest(draftBuild, intl));
+};
+
 export const editPost = (
   { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
   intl,
@@ -198,7 +204,7 @@ export const editPost = (
     title,
   };
 
-  dispatch(saveDraft(id, intl, draft, false));
+  dispatch(editPostSetCurrentDraft(id, intl, draft));
 
   return Promise.resolve();
 };
@@ -291,7 +297,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
   });
 
   return (dispatch, getState, { steemConnectAPI }) => {
-    if (isReview) {
+    if (isReview && campaign) {
       // eslint-disable-next-line no-param-reassign
       postData.body += `\n***\n${intl.formatMessage({
         id: `check_review_post_add_text`,
@@ -526,7 +532,7 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   const objName = currentObject.author_permlink;
 
   if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
-    setUpdatedEditorData({ topics: uniqWith([...topics, objName], isEqual) });
+    dispatch(setUpdatedEditorData({ topics: uniqWith([...topics, objName], isEqual) }));
   }
   const campaignId = get(campaign, '_id', null);
   const postData = {
@@ -753,6 +759,8 @@ export const firstParseLinkedObjects = draft => async dispatch => {
         linkedObjects: draftLinkedObjects,
         objPercentage: draftObjPercentage,
         draftContent: { title: draft.title, body: draft.body },
+        titleValue: draft.title,
+        content: draft.body,
       }),
     );
 

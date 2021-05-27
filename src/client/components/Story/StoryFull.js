@@ -235,6 +235,8 @@ class StoryFull extends React.Component {
       });
   };
 
+  toggleBookmark = () => this.clickMenuItem('save');
+
   render() {
     const {
       intl,
@@ -561,6 +563,8 @@ class StoryFull extends React.Component {
           onLikeClick={onLikeClick}
           onShareClick={onShareClick}
           onEditClick={onEditClick}
+          handleEditClick={onEditClick}
+          toggleBookmark={this.toggleBookmark}
         />
         <MuteModal
           item={post}
