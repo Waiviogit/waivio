@@ -90,7 +90,8 @@ export const configReportsWebsitesTableHeader = [
   {
     id: 'fieldMemo',
     style: {
-      width: '335px',
+      maxWidth: '335px',
+      wordWrap: 'break-word',
     },
     intl: {
       id: 'memo',
