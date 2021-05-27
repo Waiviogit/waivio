@@ -174,9 +174,8 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
   const search = props.location.search.replace(/ & /, ' ');
   const initObjects = new URLSearchParams(search).getAll('object');
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
-  const campaign = get(props, 'editor.campaign', null)
-    ? props.editor.campaign
-    : { id: props.campaignId };
+  const campaignId = props.campaignId ? { id: props.campaignId } : null;
+  const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
   let state = {
     campaign,
     draftId: props.draftId || uuidv4(),
