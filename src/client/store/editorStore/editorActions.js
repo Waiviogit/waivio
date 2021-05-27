@@ -140,7 +140,6 @@ export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
   const { pathname } = getCurrentLocation(state);
 
   if (saving || (pathname !== '/editor' && pathname !== `/${data.author}`)) return;
-  dispatch(setUpdatedEditorData(data));
   const draft = dispatch(buildPost(draftId, data));
 
   const postBody = draft.originalBody || draft.body;
@@ -298,7 +297,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
   });
 
   return (dispatch, getState, { steemConnectAPI }) => {
-    if (isReview) {
+    if (isReview && campaign) {
       // eslint-disable-next-line no-param-reassign
       postData.body += `\n***\n${intl.formatMessage({
         id: `check_review_post_add_text`,
@@ -533,7 +532,7 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   const objName = currentObject.author_permlink;
 
   if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
-    setUpdatedEditorData({ topics: uniqWith([...topics, objName], isEqual) });
+    dispatch(setUpdatedEditorData({ topics: uniqWith([...topics, objName], isEqual) }));
   }
   const campaignId = get(campaign, '_id', null);
   const postData = {
@@ -760,6 +759,8 @@ export const firstParseLinkedObjects = draft => async dispatch => {
         linkedObjects: draftLinkedObjects,
         objPercentage: draftObjPercentage,
         draftContent: { title: draft.title, body: draft.body },
+        titleValue: draft.title,
+        content: draft.body,
       }),
     );
 
