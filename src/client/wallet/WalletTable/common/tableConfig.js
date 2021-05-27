@@ -80,7 +80,8 @@ export const configReportsWebsitesTableHeader = [
   {
     id: 'fieldDescription',
     style: {
-      width: '400px',
+      maxWidth: '300px',
+      wordWrap: 'break-word',
     },
     intl: {
       id: 'table_description',

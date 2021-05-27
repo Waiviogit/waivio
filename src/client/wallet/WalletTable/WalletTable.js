@@ -162,10 +162,10 @@ class WalletTable extends React.Component {
       .unix();
 
   handleLoadMore = () => {
-    const { from, end, filterAccounts } = this.props.form.getFieldsValue();
+    const { from, end } = this.props.form.getFieldsValue();
 
     return this.props.getMoreTableUserTransactionHistory({
-      filterAccounts,
+      filterAccounts: this.state.filterAccounts,
       ...(this.state.dateEstablished
         ? {
             startDate: this.handleChangeStartDate(from),
