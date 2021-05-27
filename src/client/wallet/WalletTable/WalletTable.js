@@ -191,7 +191,7 @@ class WalletTable extends React.Component {
     const { match, intl, locale, form, transactionsList } = this.props;
     const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed!';
     const handleChangeTotalValue = value =>
-      this.state.dateEstablished && value ? <b>${round(value, 3)}</b> : '-';
+      this.state.dateEstablished ? <b>${round(value, 3)}</b> : '-';
     const mappedList = map(transactionsList, transaction =>
       compareTransferBody(
         transaction,
