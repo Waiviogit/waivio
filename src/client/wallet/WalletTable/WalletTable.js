@@ -113,6 +113,7 @@ class WalletTable extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (
+      !isEmpty(this.props.accounts) &&
       !isEqual(prevProps.accounts, this.props.accounts) &&
       this.props.hasMore &&
       this.state.dateEstablished
@@ -221,7 +222,7 @@ class WalletTable extends React.Component {
           getFieldDecorator={form.getFieldDecorator}
           handleOnClick={this.handleOnClick}
           handleSelectUser={this.handleSelectUserFilterAccounts}
-          isloadingTableTransactions={this.props.loading}
+          isLoadingTableTransactions={this.props.loading}
           deleteUser={this.deleteUserFromFilterAccounts}
         />
         <div className="WalletTable__total">
