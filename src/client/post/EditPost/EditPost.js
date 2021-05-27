@@ -223,7 +223,6 @@ const EditPost = props => {
             </div>
           )}
           <PostPreviewModal
-            draftContent={draftContent}
             content={content}
             isPublishing={props.publishing}
             isUpdating={isUpdating}
