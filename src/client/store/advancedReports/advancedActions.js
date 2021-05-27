@@ -3,6 +3,35 @@ import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import { getTransfersAccounts } from './advancedSelectors';
 
+const parseTransactionData = trans => {
+  if (guestUserRegex.test(trans.userName)) {
+    const guestActionType = {
+      DEMO_POST: 'demo_post',
+      GUEST_TRANSFER: 'user_to_guest_transfer',
+      DEMO_DEBT: 'demo_debt',
+    };
+    const transferDirection = Object.values(guestActionType).includes(trans.type)
+      ? { from: trans.sponsor, to: trans.userName }
+      : { from: trans.userName, to: trans.sponsor || 'mock' };
+
+    return {
+      ...transferDirection,
+      type: 'transfer',
+      timestamp: trans.createdAt.split('.')[0],
+      amount: `${trans.amount} HIVE`,
+      memo: trans.memo || '',
+      typeTransfer: trans.type,
+      details: trans.details || null,
+      userName: trans.userName,
+      hbdUSD: trans.hbdUSD,
+      hiveUSD: trans.hiveUSD,
+      withdrawDeposit: trans.withdrawDeposit,
+    };
+  }
+
+  return trans;
+};
+
 export const GET_TRANSACTIONS_FOR_TABLE = createAsyncActionType(
   '@advanced/GET_TRANSACTIONS_FOR_TABLE',
 );
@@ -32,6 +61,7 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
         return {
           data: {
             ...data,
+            wallet: data.wallet && data.wallet.map(parseTransactionData),
             withdrawals: getCurrentValues(data.withdrawals),
             deposits: getCurrentValues(data.deposits),
           },
@@ -62,6 +92,7 @@ export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, 
       }).then(data => ({
         data: {
           ...data,
+          wallet: data.wallet.map(parseTransactionData),
           withdrawals: getCurrentValues(data.withdrawals),
           deposits: getCurrentValues(data.deposits),
         },

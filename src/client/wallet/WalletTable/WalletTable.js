@@ -76,6 +76,7 @@ class WalletTable extends React.Component {
       setFieldsValue: PropTypes.func,
       validateFieldsAndScroll: PropTypes.func,
       getFieldDecorator: PropTypes.func,
+      getFieldsValue: PropTypes.func,
     }).isRequired,
     locale: PropTypes.string.isRequired,
     deposits: PropTypes.number,
@@ -99,6 +100,7 @@ class WalletTable extends React.Component {
   state = {
     isEmptyPeriod: true,
     filterAccounts: [this.props.match.params.name],
+    dateEstablished: false,
   };
 
   componentDidMount() {
@@ -110,7 +112,11 @@ class WalletTable extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.accounts, this.props.accounts) && this.props.hasMore) {
+    if (
+      !isEqual(prevProps.accounts, this.props.accounts) &&
+      this.props.hasMore &&
+      this.state.dateEstablished
+    ) {
       this.handleLoadMore();
     }
   }
@@ -120,9 +126,15 @@ class WalletTable extends React.Component {
   }
 
   handleSubmit = () => {
-    const { startDate, endDate, filterAccounts } = this.state;
+    const { from, end, filterAccounts } = this.props.form.getFieldsValue();
 
-    return this.props.getUserTableTransactions(filterAccounts, startDate, endDate);
+    this.setState({ dateEstablished: true });
+
+    return this.props.getUserTableTransactions(
+      filterAccounts,
+      this.handleChangeStartDate(from),
+      this.handleChangeEndDate(end),
+    );
   };
 
   handleOnClick = e => {
@@ -144,13 +156,22 @@ class WalletTable extends React.Component {
       filterAccounts: [...preState.filterAccounts, user.account],
     }));
 
-  handleLoadMore = () => {
-    const { startDate, endDate, filterAccounts } = this.state;
+  handleChangeStartDate = value =>
+    moment(value)
+      .startOf('day')
+      .unix();
 
-    this.props.getMoreTableUserTransactionHistory({
+  handleLoadMore = () => {
+    const { from, end, filterAccounts } = this.props.form.getFieldsValue();
+
+    return this.props.getMoreTableUserTransactionHistory({
       filterAccounts,
-      startDate,
-      endDate,
+      ...(this.state.dateEstablished
+        ? {
+            startDate: this.handleChangeStartDate(from),
+            endDate: this.handleChangeEndDate(end),
+          }
+        : {}),
     });
   };
 
@@ -161,24 +182,16 @@ class WalletTable extends React.Component {
       moment()
         .startOf('day')
         .unix();
-    const endDate = isToday ? moment().unix() : date.endOf('day').unix();
+    const endDate = isToday ? moment() : date.endOf('day');
 
-    this.setState({ endDate });
+    return endDate.unix();
   };
-
-  handleChangeStartDate = value =>
-    this.setState({
-      startDate: moment(value)
-        .startOf('day')
-        .unix(),
-    });
 
   render() {
     const { match, intl, locale, form, transactionsList } = this.props;
-    const dateEstablished = this.state.startDate && this.state.endDate;
     const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed!';
     const handleChangeTotalValue = value =>
-      dateEstablished && value ? <b>${round(value, 3)}</b> : '-';
+      this.state.dateEstablished && value ? <b>${round(value, 3)}</b> : '-';
     const mappedList = map(transactionsList, transaction =>
       compareTransferBody(
         transaction,
@@ -210,8 +223,6 @@ class WalletTable extends React.Component {
           handleSelectUser={this.handleSelectUserFilterAccounts}
           isloadingTableTransactions={this.props.loading}
           deleteUser={this.deleteUserFromFilterAccounts}
-          changeEndDate={this.handleChangeEndDate}
-          changeStartDate={this.handleChangeStartDate}
         />
         <div className="WalletTable__total">
           {intl.formatMessage({
@@ -229,7 +240,7 @@ class WalletTable extends React.Component {
             defaultMessage: 'Withdrawals',
           })}
           : {handleChangeTotalValue(this.props.withdrawals)}. (
-          {dateEstablished
+          {this.state.dateEstablished
             ? loadingBar
             : intl.formatMessage({
                 id: 'totals_calculated',
@@ -248,6 +259,8 @@ class WalletTable extends React.Component {
               id: 'empty_table_transaction_list',
               defaultMessage: `You did not have any transactions during this period`,
             })}
+            showMore={this.props.hasMore && !this.state.dateEstablished}
+            handleShowMore={this.handleLoadMore}
           />
         )}
       </React.Fragment>

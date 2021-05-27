@@ -72,7 +72,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
               transaction.typeTransfer === 'demo_post'
                 ? validateGuestTransferTitle(
                     transaction.details,
-                    transaction.username,
+                    transaction.userName,
                     false,
                     transactionType,
                     true,

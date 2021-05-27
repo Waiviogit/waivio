@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { get, isEmpty, size } from 'lodash';
@@ -17,8 +17,8 @@ export const DynamicTable = ({
   buttons,
   showMore,
   handleShowMore,
-  loadingMore,
 }) => {
+  const [loading, setLoading] = useState(false);
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type))
       return <Loading data-test={`loading/${item.host}`} />;
@@ -93,9 +93,15 @@ export const DynamicTable = ({
         </tbody>
       }
       {showMore && (
-        <tr onClick={handleShowMore}>
+        <tr
+          onClick={() => {
+            setLoading(true);
+
+            return handleShowMore().then(() => setLoading(false));
+          }}
+        >
           <td colSpan={size(header)} className="DynamicTable__showMore">
-            {loadingMore ? (
+            {loading ? (
               <Loading />
             ) : (
               intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })
@@ -116,7 +122,6 @@ DynamicTable.propTypes = {
   handleShowMore: PropTypes.func,
   emptyTitle: PropTypes.string,
   showMore: PropTypes.bool,
-  loadingMore: PropTypes.bool,
   buttons: PropTypes.shape({}),
 };
 
@@ -130,7 +135,6 @@ DynamicTable.defaultProps = {
   emptyTitle: '',
   buttons: {},
   showMore: false,
-  loadingMore: false,
 };
 
 export default injectIntl(DynamicTable);

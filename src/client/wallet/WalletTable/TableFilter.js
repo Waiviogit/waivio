@@ -9,12 +9,10 @@ import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 
 const TableFilter = ({
   intl,
-  isloadingTableTransactions,
+  isLoadingTableTransactions,
   locale,
   getFieldDecorator,
   handleOnClick,
-  changeStartDate,
-  changeEndDate,
   filterUsersList,
   handleSelectUser,
   deleteUser,
@@ -97,7 +95,6 @@ const TableFilter = ({
                 id: 'table_start_date_picker',
                 defaultMessage: 'Select start date',
               })}
-              onChange={changeStartDate}
               disabledDate={disabledDate}
             />,
           )}
@@ -138,7 +135,6 @@ const TableFilter = ({
                 id: 'table_end_date_picker',
                 defaultMessage: 'Select end date',
               })}
-              onChange={changeEndDate}
               disabledDate={disabledDate}
             />,
           )}
@@ -149,7 +145,7 @@ const TableFilter = ({
         onClick={handleOnClick}
         type="primary"
         htmlType="submit"
-        loading={isloadingTableTransactions}
+        loading={isLoadingTableTransactions}
       >
         {intl.formatMessage({
           id: 'append_send',
@@ -164,13 +160,11 @@ TableFilter.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  isloadingTableTransactions: PropTypes.bool.isRequired,
+  isLoadingTableTransactions: PropTypes.bool.isRequired,
   locale: PropTypes.string.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   filterUsersList: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleOnClick: PropTypes.func.isRequired,
-  changeStartDate: PropTypes.func.isRequired,
-  changeEndDate: PropTypes.func.isRequired,
   handleSelectUser: PropTypes.func.isRequired,
   deleteUser: PropTypes.func.isRequired,
 };
