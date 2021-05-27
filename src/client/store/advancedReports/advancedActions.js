@@ -92,7 +92,7 @@ export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, 
       }).then(data => ({
         data: {
           ...data,
-          wallet: data.wallet.map(parseTransactionData),
+          wallet: data.wallet && data.wallet.map(parseTransactionData),
           withdrawals: getCurrentValues(data.withdrawals),
           deposits: getCurrentValues(data.deposits),
         },
