@@ -761,6 +761,7 @@ export const firstParseLinkedObjects = draft => async dispatch => {
         draftContent: { title: draft.title, body: draft.body },
         titleValue: draft.title,
         content: draft.body,
+        isUpdating: draft.isUpdating,
       }),
     );
 
