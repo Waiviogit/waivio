@@ -3,21 +3,19 @@ import { Button, DatePicker, Form } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-import { selectFormatDate, validateDate } from '../WalletHelper';
+import { validateDate } from '../WalletHelper';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 
 const TableFilter = ({
   intl,
   isLoadingTableTransactions,
-  locale,
   getFieldDecorator,
   handleOnClick,
   filterUsersList,
   handleSelectUser,
   deleteUser,
 }) => {
-  const formatDate = selectFormatDate(locale);
   const disabledDate = current => current > moment().endOf('day');
 
   return (
@@ -90,12 +88,21 @@ const TableFilter = ({
             ],
           })(
             <DatePicker
-              format={formatDate}
+              format={'MM/DD/YYYY'}
+              showToday={false}
               placeholder={intl.formatMessage({
                 id: 'table_start_date_picker',
                 defaultMessage: 'Select start date',
               })}
               disabledDate={disabledDate}
+              renderExtraFooter={() => (
+                <button className="WalletTable__datepickerFooter">
+                  {intl.formatMessage({
+                    id: 'account_creation',
+                    defaultMessage: 'Account creation',
+                  })}
+                </button>
+              )}
             />,
           )}
         </Form.Item>
@@ -130,7 +137,7 @@ const TableFilter = ({
             ],
           })(
             <DatePicker
-              format={formatDate}
+              format={'MM/DD/YYYY'}
               placeholder={intl.formatMessage({
                 id: 'table_end_date_picker',
                 defaultMessage: 'Select end date',
@@ -161,7 +168,6 @@ TableFilter.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   isLoadingTableTransactions: PropTypes.bool.isRequired,
-  locale: PropTypes.string.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   filterUsersList: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleOnClick: PropTypes.func.isRequired,

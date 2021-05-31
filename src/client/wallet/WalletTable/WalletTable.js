@@ -13,7 +13,6 @@ import {
   getTotalVestingFundSteem,
   getTotalVestingShares,
 } from '../../store/walletStore/walletSelectors';
-import { getLocale } from '../../store/settingsStore/settingsSelectors';
 import {
   getUserTableTransactions,
   getMoreTableUserTransactionHistory,
@@ -41,7 +40,6 @@ import './WalletTable.less';
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     hasMore: getTransactionsHasMore(state),
-    locale: getLocale(state),
     deposits: getTransfersDeposits(state),
     withdrawals: getTransfersWithdrawals(state),
     transactionsList: getTransactions(state),
@@ -78,7 +76,6 @@ class WalletTable extends React.Component {
       getFieldDecorator: PropTypes.func,
       getFieldsValue: PropTypes.func,
     }).isRequired,
-    locale: PropTypes.string.isRequired,
     deposits: PropTypes.number,
     withdrawals: PropTypes.number,
     getUserTableTransactions: PropTypes.func.isRequired,
@@ -189,7 +186,7 @@ class WalletTable extends React.Component {
   };
 
   render() {
-    const { match, intl, locale, form, transactionsList } = this.props;
+    const { match, intl, form, transactionsList } = this.props;
     const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed!';
     const handleChangeTotalValue = value =>
       this.state.dateEstablished ? <b>${round(value, 3)}</b> : '-';
@@ -218,7 +215,6 @@ class WalletTable extends React.Component {
         <TableFilter
           intl={intl}
           filterUsersList={this.state.filterAccounts}
-          locale={locale}
           getFieldDecorator={form.getFieldDecorator}
           handleOnClick={this.handleOnClick}
           handleSelectUser={this.handleSelectUserFilterAccounts}

@@ -1681,6 +1681,7 @@
   "list_types": "List types",
   "Deposits": "Deposits",
   "Withdrawals": "Withdrawals",
+  "account_creation": "Account creation",
   "totals_calculated": "Totals can be calculated only for a defined from-till period.",
   "total": "TOTAL"
 }
