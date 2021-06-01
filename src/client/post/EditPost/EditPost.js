@@ -76,6 +76,8 @@ const EditPost = props => {
     intl,
   } = props;
 
+  const [currDraft, setCurrDraft] = React.useState();
+
   React.useEffect(() => {
     props.history.replace({
       pathname: props.location.pathname,
@@ -116,7 +118,16 @@ const EditPost = props => {
 
     if (editorData.title || editorData.body) props.saveDraft(editorData);
     props.firstParseLinkedObjects(props.currDraft);
+    setCurrDraft(props.currDraft);
   }, [props.draftId, props.campaignId]);
+
+  React.useEffect(() => {
+    if (!currDraft && props.currDraft) {
+      props.firstParseLinkedObjects(props.currDraft);
+      props.setEditorState(getInitialState(props));
+      setCurrDraft(props.currDraft);
+    }
+  }, [props.currDraft]);
 
   const setDraftId = hideObjects => {
     if (props.draftId && props.draftId !== draftIdEditor) {
@@ -127,19 +138,15 @@ const EditPost = props => {
   };
 
   const handleChangeContent = useCallback(
-    debounce((rawContent, title, updateLinkedObjects = false) => {
+    debounce((rawContent, title) => {
       const updatedStore = { content: toMarkdown(rawContent), titleValue: title };
 
-      if (
-        content !== updatedStore.content ||
-        titleValue !== updatedStore.titleValue ||
-        updateLinkedObjects
-      ) {
+      if (content !== updatedStore.content || titleValue !== updatedStore.titleValue) {
         props.saveDraft(updatedStore);
         props.setUpdatedEditorData(updatedStore);
       }
     }, 1500),
-    [props.draftId],
+    [props.draftId, content, titleValue],
   );
 
   const handleSettingsChange = updatedValue =>

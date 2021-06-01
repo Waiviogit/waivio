@@ -64,11 +64,10 @@ import {
   getIsEditorSaving,
   getLinkedObjects,
 } from './editorSelectors';
-import { getQueryString, getSuitableLanguage } from '../reducers';
+import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../components/EditorExtended';
-import { handlePastedLink, QUERY_APP } from '../../components/EditorExtended/util/editorHelper';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import { extractLinks } from '../../helpers/parser';
 
@@ -113,17 +112,7 @@ export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
 export const setClearState = () => ({ type: SET_CLEAR_STATE });
 export const leaveEditor = () => ({ type: LEAVE_EDITOR });
 
-export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
-  const state = getState();
-  const saving = getIsEditorSaving(state);
-
-  if (saving) return;
-  const draft = dispatch(buildPost(draftId, data));
-
-  const postBody = draft.originalBody || draft.body;
-
-  if (!postBody) return;
-
+const saveDraftRequest = (draft, intl) => dispatch =>
   dispatch({
     type: SAVE_DRAFT,
     payload: {
@@ -144,6 +133,20 @@ export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
     },
     meta: { postId: draft.draftId },
   });
+
+export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
+  const state = getState();
+  const saving = getIsEditorSaving(state);
+  const { pathname } = getCurrentLocation(state);
+
+  if (saving || (pathname !== '/editor' && pathname !== `/${data.author}`)) return;
+  const draft = dispatch(buildPost(draftId, data));
+
+  const postBody = draft.originalBody || draft.body;
+
+  if (!postBody) return;
+
+  dispatch(saveDraftRequest(draft, intl));
 };
 export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getState) => {
   const state = getState();
@@ -175,6 +178,12 @@ export const deleteDraft = draftIds => (dispatch, getState) => {
   });
 };
 
+const editPostSetCurrentDraft = (draftId, intl, draft) => dispatch => {
+  const draftBuild = dispatch(buildPost(draftId, draft));
+
+  dispatch(saveDraftRequest(draftBuild, intl));
+};
+
 export const editPost = (
   { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
   intl,
@@ -195,7 +204,9 @@ export const editPost = (
     title,
   };
 
-  dispatch(saveDraft(draft, true, intl));
+  dispatch(editPostSetCurrentDraft(id, intl, draft));
+
+  return Promise.resolve();
 };
 
 const requiredFields = 'parentAuthor,parentPermlink,author,permlink,title,body,jsonMetadata'.split(
@@ -286,7 +297,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
   });
 
   return (dispatch, getState, { steemConnectAPI }) => {
-    if (isReview) {
+    if (isReview && campaign) {
       // eslint-disable-next-line no-param-reassign
       postData.body += `\n***\n${intl.formatMessage({
         id: `check_review_post_add_text`,
@@ -503,6 +514,8 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   const user = getAuthenticatedUser(state);
   const currDraft = getCurrentDraft(state, { draftId });
   const {
+    body,
+    originalBody,
     linkedObjects,
     topics,
     campaign,
@@ -510,28 +523,28 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
     isUpdating,
     settings,
     titleValue,
+    title,
     permlink,
     parentPermlink,
     objPercentage,
-    originalBody,
   } = { ...getEditor(state), ...data };
   const currentObject = get(linkedObjects, '[0]', {});
   const objName = currentObject.author_permlink;
 
   if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
-    setUpdatedEditorData({ topics: uniqWith([...topics, objName], isEqual) });
+    dispatch(setUpdatedEditorData({ topics: uniqWith([...topics, objName], isEqual) }));
   }
   const campaignId = get(campaign, '_id', null);
   const postData = {
-    body: content,
+    body: content || body || originalBody,
     lastUpdated: Date.now(),
     isUpdating,
     draftId,
     ...settings,
   };
 
-  if (titleValue) {
-    postData.title = titleValue;
+  if (titleValue || title) {
+    postData.title = titleValue || title;
     postData.permlink = permlink || kebabCase(titleValue);
   }
 
@@ -542,7 +555,7 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   const oldMetadata = get(currDraft, 'jsonMetadata', {});
 
   const waivioData = {
-    wobjects: linkedObjects
+    wobjects: (linkedObjects || [])
       .filter(obj => get(objPercentage, `[${obj._id}].percent`, 0) > 0)
       .map(obj => ({
         object_type: obj.object_type,
@@ -654,22 +667,6 @@ export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getSt
   return (
     Object.values(rawContent.entityMap)
       // eslint-disable-next-line array-callback-return,consistent-return
-      .filter(entity => {
-        if (entity.type === Entity.OBJECT) {
-          return has(entity, 'data.object.id');
-        }
-        if (!isReview && entity.type === Entity.LINK) {
-          const string = get(entity, 'data.url', '');
-          const queryString = string.match(handlePastedLink(QUERY_APP));
-
-          if (queryString) {
-            return has(entity, 'data.url');
-          }
-
-          return null;
-        }
-      })
-      // eslint-disable-next-line array-callback-return,consistent-return
       .map(entity => {
         if (entity.type === Entity.OBJECT) {
           return get(entity, 'data.object.id', '');
@@ -682,6 +679,7 @@ export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getSt
           return getCurrentLinkPermlink(entity);
         }
       })
+      .filter(item => !!item)
   );
 };
 
@@ -754,11 +752,23 @@ export const firstParseLinkedObjects = draft => async dispatch => {
     const { rawContentUpdated } = await dispatch(getRestoreObjects(entities));
     const draftLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
     const draftObjPercentage = setObjPercents(draftLinkedObjects);
+    const draftContent = { title: draft.title, body: draft.body };
 
     dispatch(
       setUpdatedEditorData({
         linkedObjects: draftLinkedObjects,
         objPercentage: draftObjPercentage,
+        draftContent: { title: draft.title, body: draft.body },
+        titleValue: draft.title,
+        content: draft.body,
+        isUpdating: draft.isUpdating,
+      }),
+    );
+
+    dispatch(
+      setUpdatedEditorExtendedData({
+        titleValue: draftContent.title,
+        editorState: EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent))),
       }),
     );
   }

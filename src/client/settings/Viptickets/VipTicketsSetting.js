@@ -62,7 +62,7 @@ const VipTicketsSetting = props => {
   const handleShowMoreTicket = (tickets, isActive = false) => {
     setShowMoreLoading({ [isActive ? 'active' : 'consumed']: true });
 
-    props.getMoreVipTickets(isActive, size(tickets)).then(() => {
+    return props.getMoreVipTickets(isActive, size(tickets)).then(() => {
       setShowMoreLoading({});
     });
   };

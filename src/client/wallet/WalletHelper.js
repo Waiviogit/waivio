@@ -300,19 +300,28 @@ export const dateTableField = (timestamp, isGuestPage) => (
   </BTooltip>
 );
 
+export const getTransactionTableCurrency = (amount, type, currency) => {
+  if (!amount) return null;
+
+  const transaction = amount.split(' ');
+  const transactionAmount = parseFloat(get(transaction, '[0]', null));
+
+  if (type === accountHistoryConstants.CANCEL_ORDER && !transactionAmount) return null;
+
+  return {
+    amount: round(transactionAmount, 3),
+    currency: get(transaction, '[1]', currency),
+  };
+};
+
 export const getTransactionCurrency = (amount, currency, type, tableView) => {
-  if (!amount) {
-    return null;
-  }
+  if (!amount) return null;
+
   const transaction = amount.split(' ');
   const transactionAmount = parseFloat(get(transaction, '[0]', null));
   const transactionCurrency = get(transaction, '[1]', currency);
 
-  if (type === accountHistoryConstants.CANCEL_ORDER) {
-    if (!transactionAmount) {
-      return null;
-    }
-  }
+  if (type === accountHistoryConstants.CANCEL_ORDER && !transactionAmount) return null;
 
   if (tableView) {
     return {
@@ -375,20 +384,23 @@ export const validateGuestTransferTitle = (
   transactionType,
   tableView,
 ) => {
-  const postPermlink = details && details.post_permlink;
-  const postParentAuthor = details && details.post_parent_author;
-  const postParentPermlink = details && details.post_parent_permlink;
-  const title = details && details.title;
+  const postPermlink = get(details, 'post_permlink');
+  const postParentAuthor = get(details, 'post_parent_author');
+  const postParentPermlink = get(details, 'post_parent_permlink');
+  const title = get(details, 'title');
   const post = details && postParentAuthor === '';
 
   const urlComment = `/@${postParentAuthor}/${postParentPermlink}#@${username}/${postPermlink}`;
   const urlPost = `/@${username}/${postPermlink}`;
-  const options = { urlComment, urlPost, title, isMobile, tableView };
-  const description = getTransactionDescription(transactionType, options);
+  const description = getTransactionDescription(transactionType, {
+    urlComment,
+    urlPost,
+    title,
+    isMobile,
+    tableView,
+  });
 
-  if (post) {
-    return description.reviewAuthorRewards;
-  }
+  if (post) return description.reviewAuthorRewards;
 
   return description.commentsAuthorRewards;
 };

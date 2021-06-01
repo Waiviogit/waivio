@@ -1,0 +1,33 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/mixins.less';
+
+.objectInfo {
+  @media @small {
+    display: none;
+  }
+
+  &_experts,
+  &_related {
+    .SidebarContentBlock {
+      border-bottom: none;
+      border-top: none;
+
+      &__title {
+        color: @orange-hot;
+
+        & i {
+          color: @orange-hot;
+        }
+      }
+    }
+  }
+
+  &_experts {
+    .SidebarContentBlock {
+      &:first-child {
+        margin-bottom: 25px;
+      }
+    }
+  }
+}

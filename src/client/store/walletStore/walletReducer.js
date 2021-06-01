@@ -188,36 +188,6 @@ export default function walletReducer(state = initialState, action) {
         loadingMoreTransactions: false,
       };
 
-    case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.START:
-      return {
-        ...state,
-        loadingMoreTableTransactions: true,
-      };
-    case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.SUCCESS: {
-      const usernameKey = action.payload.userName;
-      const userCurrentTransactions = get(state.tableTransactionsHistory, usernameKey, []);
-
-      return {
-        ...state,
-        tableTransactionsHistory: {
-          ...state.tableTransactionsHistory,
-          [usernameKey]: uniqWith(
-            userCurrentTransactions.concat(action.payload.tableTransactionsHistory),
-            isEqual,
-          ),
-        },
-        hasMoreTable: action.payload.hasMoreTable,
-        operationNumTable: action.payload.operationNumTable,
-        loadingMoreTableTransactions: false,
-        isErrorLoadingTableTransactions: false,
-        deposits: state.deposits ? state.deposits + action.payload.deposits : 0,
-        withdrawals: state.withdrawals ? state.withdrawals + action.payload.withdrawals : 0,
-      };
-    }
-    case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.ERROR:
-      return {
-        loadingMoreTableTransactions: false,
-      };
     case walletActions.GET_TRANSACTIONS_HISTORY.ERROR:
       return {
         transactionsHistoryLoading: false,

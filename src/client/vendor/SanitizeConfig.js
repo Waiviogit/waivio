@@ -73,6 +73,7 @@ export const parseLink = appUrl => (tagName, attribs) => {
   href = href.trim();
   const attys = {};
   const linkUrl = url.parse(href);
+
   const linkWebsiteUrl = url.format({
     protocol: linkUrl.protocol,
     host: linkUrl.host,

@@ -174,8 +174,10 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
   const search = props.location.search.replace(/ & /, ' ');
   const initObjects = new URLSearchParams(search).getAll('object');
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
+  const campaignId = props.campaignId ? { id: props.campaignId } : null;
+  const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
   let state = {
-    campaign: props.campaignId ? { id: props.campaignId } : null,
+    campaign,
     draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
@@ -216,7 +218,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
 
     state = {
-      campaign: draftPost.campaignId ? { id: draftPost.campaignId } : null,
+      campaign,
       draftId: props.draftId,
       parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
@@ -235,7 +237,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
         beneficiary: draftPost.beneficiary,
         upvote: draftPost.upvote,
       },
-      isUpdating: Boolean(draftPost.isUpdating),
+      isUpdating: get(props.currDraft, 'isUpdating', false),
       permlink: draftPost.permlink || null,
       originalBody: draftPost.originalBody || null,
       titleValue: get(draftPost, 'title', ''),
