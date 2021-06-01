@@ -21,15 +21,26 @@ const NotificationTransferVesting = ({ notification, read, onClick }) => {
       <Avatar username={notification.from} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
-          <FormattedMessage
-            id="transfer_to_vesting"
-            defaultMessage="{from} sent to {to} {amount}"
-            values={{
-              from: <span className="username">{notification.from}</span>,
-              to: <span>{notification.to}</span>,
-              amount: <span>{notification.amount}</span>,
-            }}
-          />
+          {notification.from === notification.to ? (
+            <FormattedMessage
+              id="transfer_to_vesting_to_current"
+              defaultMessage="{from} initiated 'Power Up' on {amount}"
+              values={{
+                from: <span className="username">{notification.from}</span>,
+                amount: <span>{notification.amount}</span>,
+              }}
+            />
+          ) : (
+            <FormattedMessage
+              id="transfer_to_vesting"
+              defaultMessage="{from} initiated 'Power Up' on {amount} to {to}"
+              values={{
+                from: <span className="username">{notification.from}</span>,
+                amount: <span>{notification.amount}</span>,
+                to: <span>{notification.to}</span>,
+              }}
+            />
+          )}
         </div>
         <div className="Notification__text__date">
           <FormattedRelative value={epochToUTC(notification.timestamp)} />

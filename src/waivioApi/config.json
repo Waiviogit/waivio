@@ -126,5 +126,6 @@
   "vipTickets": "/vip-tickets",
   "payableWarning": "/payable-warning",
   "advancedReport": "/advanced-report",
+  "creationDate": "/creation-date",
   "immediateWithdraw": "/immediate-withdraw"
 }

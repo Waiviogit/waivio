@@ -1196,7 +1196,8 @@
   "withdraw_route": "Account {to_account} registered withdraw route for {from_account} account",
   "change_password": "Account {account} initiated a password change procedure",
   "transfer_from": "You transferred {amount} to {to}",
-  "transfer_to_vesting": "{from} sent to {to} {amount}",
+  "transfer_to_vesting": "{from} initiated 'Power Up' on {amount} to {to}",
+  "transfer_to_vesting_to_current": "{from} initiated 'Power Up' on {amount}",
   "change_recovery_account": "{account_to_recover} initiated change recovery account on {new_recovery_account}",
   "transfer_from_savings ": "Account {from} initiated a power down on the saving account to {to}",
   "address_valid": "Address is valid",
@@ -1681,6 +1682,7 @@
   "list_types": "List types",
   "Deposits": "Deposits",
   "Withdrawals": "Withdrawals",
+  "account_creation": "Account creation",
   "totals_calculated": "Totals can be calculated only for a defined from-till period.",
   "total": "TOTAL"
 }

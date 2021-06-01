@@ -23,6 +23,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     hiveUSD: round(get(transaction, 'hiveUSD'), 3),
     hbdUSD: round(get(transaction, 'hbdUSD'), 3),
     withdrawDeposit: get(transaction, 'withdrawDeposit'),
+    usd: get(transaction, 'usd'),
     userName: user,
   };
 
@@ -34,22 +35,18 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         'HP',
       );
 
+      data.fieldHIVE = `- ${toVestingAmount.amount}`;
       description = getTransactionDescription(transactionType, {
         from: transaction.from,
         to: transaction.to,
       });
 
       if (transaction.to === user) {
-        if (transaction.to === transaction.from) {
-          data.fieldHIVE = `- ${toVestingAmount.amount}`;
-          data.fieldDescription = description.powerUpTransaction;
-        } else {
-          data.fieldDescription = description.powerUpTransactionFrom;
-        }
-      } else {
-        data.fieldHIVE = `- ${toVestingAmount.amount}`;
-        data.fieldDescription = description.powerUpTransactionTo;
-      }
+        data.fieldDescription =
+          transaction.to === transaction.from
+            ? description.powerUpTransaction
+            : description.powerUpTransactionFrom;
+      } else data.fieldDescription = description.powerUpTransactionTo;
 
       return data;
     }

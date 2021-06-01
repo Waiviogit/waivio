@@ -2073,4 +2073,14 @@ export const getAdvancedReports = body => {
     .catch(e => e);
 };
 
+export const accountsCreationDate = userName => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.creationDate}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
 export default null;

@@ -20,17 +20,15 @@ export const DynamicTable = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const getTdBodyType = (item, head) => {
-    if (get(item, 'pending', []).includes(head.type))
-      return <Loading data-test={`loading/${item.host}`} />;
+    if (get(item, 'pending', []).includes(head.type)) return <Loading />;
 
     switch (head.type) {
       case 'checkbox':
         return (
           <Checkbox
             className="DynamicTable__checkbox"
-            data-key={`check/${item.host}`}
-            checked={item.checked}
             onChange={e => onChange(e, item)}
+            {...(item.checked ? { checked: item.checked } : {})}
           />
         );
 
@@ -61,54 +59,52 @@ export const DynamicTable = ({
       <thead>
         <tr>
           {header.map(th => (
-            <th key={th.id}>{intl.formatMessage(th.intl)}</th>
+            <th key={th.id}>{th.intl && intl.formatMessage(th.intl)}</th>
           ))}
         </tr>
       </thead>
-      {
-        <tbody>
-          {isEmpty(bodyConfig) ? (
-            <tr>
-              <td colSpan={size(header)}>
-                {emptyTitle ||
-                  intl.formatMessage({
-                    id: 'empty_dynamic_table',
-                    defaultMessage: "You haven't had any payments yet",
-                  })}
-              </td>
+      <tbody>
+        {isEmpty(bodyConfig) ? (
+          <tr>
+            <td colSpan={size(header)}>
+              {emptyTitle ||
+                intl.formatMessage({
+                  id: 'empty_dynamic_table',
+                  defaultMessage: "You haven't had any payments yet",
+                })}
+            </td>
+          </tr>
+        ) : (
+          bodyConfig.map(item => (
+            <tr key={get(item, '_id')}>
+              {header.map(head => (
+                <td key={head.id} style={head.style || {}}>
+                  {head.checkShowItem
+                    ? head.checkShowItem(item, getTdBodyType)
+                    : getTdBodyType(item, head)}
+                </td>
+              ))}
             </tr>
-          ) : (
-            bodyConfig.map(item => (
-              <tr key={get(item, '_id')}>
-                {header.map(head => (
-                  <td key={head.id} style={head.style || {}}>
-                    {head.checkShowItem
-                      ? head.checkShowItem(item, getTdBodyType)
-                      : getTdBodyType(item, head)}
-                  </td>
-                ))}
-              </tr>
-            ))
-          )}
-        </tbody>
-      }
-      {showMore && (
-        <tr
-          onClick={() => {
-            setLoading(true);
+          ))
+        )}
+        {showMore && (
+          <tr
+            onClick={() => {
+              setLoading(true);
 
-            return handleShowMore().then(() => setLoading(false));
-          }}
-        >
-          <td colSpan={size(header)} className="DynamicTable__showMore">
-            {loading ? (
-              <Loading />
-            ) : (
-              intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })
-            )}
-          </td>
-        </tr>
-      )}
+              return handleShowMore().then(() => setLoading(false));
+            }}
+          >
+            <td colSpan={size(header)} className="DynamicTable__showMore">
+              {loading ? (
+                <Loading />
+              ) : (
+                intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })
+              )}
+            </td>
+          </tr>
+        )}
+      </tbody>
     </table>
   );
 };
