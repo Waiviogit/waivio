@@ -1,5 +1,9 @@
 export const configReportsWebsitesTableHeader = [
   {
+    id: 'active',
+    type: 'checkbox',
+  },
+  {
     id: 'time',
     style: {
       width: '120px',

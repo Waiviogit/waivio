@@ -1056,7 +1056,7 @@
   "EOS": "EOS",
   "health": "zdrowie",
   "travel": "podróżować",
-  "post_btn_video_placeholder": "Wklej link (YouTube | DTube | Vimeo | 3Speak) i naciśnij „Enter”",
+  "post_btn_video_placeholder": "Wklej link wideo i naciśnij Enter",
   "need_confirm_agreement": "Musisz potwierdzić zgodę",
   "please_input_nickname": "Pseudonim nie może być pusty",
   "link_placeholder": "Dodaj adres url",
