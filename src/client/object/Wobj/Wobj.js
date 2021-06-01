@@ -14,6 +14,7 @@ import ObjectsRelated from '../../components/Sidebar/ObjectsRelated/ObjectsRelat
 import { getObjectAvatar, getObjectType, hasType } from '../../helpers/wObjectHelper';
 import OBJECT_TYPE from '../const/objectTypes';
 import { formColumnsField } from '../../../common/constants/listOfFields';
+import WobjectSidebarFollowers from '../../app/Sidebar/ObjectInfoExperts/WobjectSidebarFollowers';
 
 const Wobj = ({
   authenticated,
@@ -121,6 +122,7 @@ const Wobj = ({
                 )}
               </div>
               <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
+              <div>{wobject.author_permlink && <WobjectSidebarFollowers wobject={wobject} />}</div>
             </Affix>
             <div className={centerClassList}>
               {renderRoutes(route.routes, {

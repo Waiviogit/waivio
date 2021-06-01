@@ -28,7 +28,7 @@ export const DynamicTable = ({
           <Checkbox
             className="DynamicTable__checkbox"
             onChange={e => onChange(e, item)}
-            {...(item.checked ? { checked: item.checked } : {})}
+            {...(get(item, 'checked') ? { checked: item.checked } : {})}
           />
         );
 

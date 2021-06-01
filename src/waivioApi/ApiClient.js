@@ -355,7 +355,7 @@ export const getAllFollowingObjects = (username, skip, limit, authUser, locale) 
   });
 };
 
-export const getWobjectFollowers = (wobject, skip = 0, limit = 50, sort, authUser) => {
+export const getWobjectFollowers = (wobject, skip = 0, limit = 50, sort = 'recency', authUser) => {
   const actualHeaders = authUser
     ? { ...headers, following: authUser, follower: authUser }
     : headers;

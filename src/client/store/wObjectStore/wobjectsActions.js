@@ -14,6 +14,15 @@ export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
 export const GET_OBJECT_ERROR = '@objects/GET_OBJECT_ERROR';
 export const GET_OBJECT_SUCCESS = '@objects/GET_OBJECT_SUCCESS';
 export const CLEAR_OBJECT = '@objects/CLEAR_OBJECT';
+export const GET_OBJECT_FOLLOWERS = createAsyncActionType('@objects/GET_OBJECT_FOLLOWERS');
+
+export const getObjectFollowers = ({ object, skip, limit, userName, sort = 'rank' }) => dispatch =>
+  dispatch({
+    type: GET_OBJECT_FOLLOWERS.ACTION,
+    payload: {
+      promise: ApiClient.getWobjectFollowers(object, skip, limit, sort, userName),
+    },
+  });
 
 export const getObject = (authorPermlink, user) => (dispatch, getState) => {
   const usedLocale = getUsedLocale(getState());
