@@ -23,7 +23,7 @@ const UserCard = ({ user, alt, showFollow, unfollow, follow, withoutLine, handle
             <Link to={`/@${user.name}`}>
               <Avatar username={user.name} size={40} />
             </Link>
-            <Link to={`/@${user.name}`}>
+            <Link to={`/@${user.name}`} classNames="username_wrapper">
               <span className="username">{user.name}</span>
             </Link>
             {user.admin && (

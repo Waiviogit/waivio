@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+
 import { getWobjectFollowers } from '../../waivioApi/ApiClient';
 import UserDynamicList from '../user/UserDynamicList';
 import { changeSorting } from '../store/authStore/authActions';
 import { getAuthorizationUserFollowSort } from '../store/authStore/authSelectors';
 
+@withRouter
 @connect(
   state => ({
     sort: getAuthorizationUserFollowSort(state),

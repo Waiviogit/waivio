@@ -1,0 +1,29 @@
+@import (reference) '../../../../styles/custom.less';
+@import (reference) '../../../../styles/modules/variables.less';
+@import (reference) '../../../../styles/mixins.less';
+
+.SidebarContentFollowers {
+  border-top: 0;
+  border-bottom: 0;
+
+  @media @small {
+    border-top: 1px solid @white-gainsboro;
+    border-bottom: 1px solid @white-gainsboro;
+  }
+
+  .SidebarContentBlock__title {
+    color: @orange-hot;
+    cursor: pointer;
+  }
+
+  @media @small {
+    .SidebarContentBlock__title {
+      color: @blue-baliHai;
+      cursor: default;
+
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
+}

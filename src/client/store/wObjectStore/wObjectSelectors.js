@@ -34,3 +34,15 @@ export const getLoadingFlag = createSelector([objectState], state => state.isLoa
 export const getObjectAuthor = createSelector([objectState], state => state.author);
 
 export const getObjectFetchingState = createSelector([objectState], state => state.isFetching);
+
+export const getObjectFollowersState = createSelector([objectState], state => state.followers);
+
+export const getObjectFollowersUsers = createSelector(
+  [getObjectFollowersState],
+  state => state.users,
+);
+
+export const getObjectFollowersHasMore = createSelector(
+  [getObjectFollowersState],
+  state => state.hasMore,
+);
