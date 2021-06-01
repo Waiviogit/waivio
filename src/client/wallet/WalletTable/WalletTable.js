@@ -7,7 +7,11 @@ import { round, map, isEmpty, isEqual } from 'lodash';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
-import { openWalletTable, closeWalletTable } from '../../store/walletStore/walletActions';
+import {
+  openWalletTable,
+  closeWalletTable,
+  getGlobalProperties,
+} from '../../store/walletStore/walletActions';
 import TableFilter from './TableFilter';
 import {
   getTotalVestingFundSteem,
@@ -16,6 +20,9 @@ import {
 import {
   getUserTableTransactions,
   getMoreTableUserTransactionHistory,
+  getUsersTransactionDate,
+  deleteUsersTransactionDate,
+  decreaseTotal,
 } from '../../store/advancedReports/advancedActions';
 import compareTransferBody from './common/helpers';
 import {
@@ -52,6 +59,10 @@ import './WalletTable.less';
     closeTable: closeWalletTable,
     getUserTableTransactions,
     getMoreTableUserTransactionHistory,
+    getUsersTransactionDate,
+    deleteUsersTransactionDate,
+    getGlobalProperties,
+    decreaseTotal,
   },
 )
 class WalletTable extends React.Component {
@@ -79,6 +90,10 @@ class WalletTable extends React.Component {
     deposits: PropTypes.number,
     withdrawals: PropTypes.number,
     getUserTableTransactions: PropTypes.func.isRequired,
+    getUsersTransactionDate: PropTypes.func.isRequired,
+    getGlobalProperties: PropTypes.func.isRequired,
+    deleteUsersTransactionDate: PropTypes.func.isRequired,
+    decreaseTotal: PropTypes.func.isRequired,
     getMoreTableUserTransactionHistory: PropTypes.func.isRequired,
     transactionsList: PropTypes.arrayOf(PropTypes.shape({})),
     accounts: PropTypes.arrayOf(PropTypes.shape({})),
@@ -102,10 +117,14 @@ class WalletTable extends React.Component {
 
   componentDidMount() {
     const { filterAccounts } = this.state;
+    const { totalVestingShares, totalVestingFundSteem } = this.props;
 
     this.props.openTable();
     this.props.form.setFieldsValue({ filterAccounts });
     this.props.getUserTableTransactions(filterAccounts);
+    this.props.getUsersTransactionDate(this.props.match.params.name);
+
+    if (!totalVestingShares && !totalVestingFundSteem) this.props.getGlobalProperties();
   }
 
   componentDidUpdate(prevProps) {
@@ -145,14 +164,21 @@ class WalletTable extends React.Component {
       preState => ({
         filterAccounts: preState.filterAccounts.filter(acc => acc !== user),
       }),
-      () => this.props.form.setFieldsValue({ filterAccounts: this.state.filterAccounts }),
+      () => {
+        this.props.form.setFieldsValue({ filterAccounts: this.state.filterAccounts });
+        this.props.deleteUsersTransactionDate(user);
+      },
     );
   };
 
-  handleSelectUserFilterAccounts = user =>
-    this.setState(preState => ({
-      filterAccounts: [...preState.filterAccounts, user.account],
-    }));
+  handleSelectUserFilterAccounts = user => {
+    this.setState(
+      preState => ({
+        filterAccounts: [...preState.filterAccounts, user.account],
+      }),
+      () => this.props.getUsersTransactionDate(user.account),
+    );
+  };
 
   handleChangeStartDate = value =>
     moment(value)
@@ -220,6 +246,7 @@ class WalletTable extends React.Component {
           handleSelectUser={this.handleSelectUserFilterAccounts}
           isLoadingTableTransactions={this.props.loading}
           deleteUser={this.deleteUserFromFilterAccounts}
+          form={form}
         />
         <div className="WalletTable__total">
           {intl.formatMessage({
@@ -258,6 +285,9 @@ class WalletTable extends React.Component {
             })}
             showMore={this.props.hasMore && !this.state.dateEstablished}
             handleShowMore={this.handleLoadMore}
+            onChange={(e, item) =>
+              this.props.decreaseTotal(item.usd, item.withdrawDeposit, e.target.checked)
+            }
           />
         )}
       </React.Fragment>

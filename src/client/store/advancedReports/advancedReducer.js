@@ -1,4 +1,11 @@
-import { GET_MORE_TRANSACTIONS_FOR_TABLE, GET_TRANSACTIONS_FOR_TABLE } from './advancedActions';
+import {
+  DECREASE_TOTAL,
+  DELETE_USERS_CREATION_DATE,
+  GET_MORE_TRANSACTIONS_FOR_TABLE,
+  GET_TRANSACTIONS_FOR_TABLE,
+  GET_USERS_CREATION_DATE,
+} from './advancedActions';
+import { totalType } from '../../../common/constants/advansedReports';
 
 const initialState = {
   deposits: 0,
@@ -7,6 +14,7 @@ const initialState = {
   isLoadingMore: false,
   wallet: [],
   loadingAllData: false,
+  creationDate: [],
 };
 
 export default function advancedReducer(state = initialState, action) {
@@ -54,6 +62,31 @@ export default function advancedReducer(state = initialState, action) {
         loadingAllData: data.hasMore,
       };
     }
+
+    case GET_USERS_CREATION_DATE.SUCCESS: {
+      return {
+        ...state,
+        creationDate: [...state.creationDate, action.payload],
+      };
+    }
+
+    case DELETE_USERS_CREATION_DATE: {
+      return {
+        ...state,
+        creationDate: state.creationDate.filter(date => !date[action.payload]),
+      };
+    }
+
+    case DECREASE_TOTAL: {
+      const key = totalType[action.payload.type];
+      const amount = action.payload.decrement ? action.payload.amount * -1 : action.payload.amount;
+
+      return {
+        ...state,
+        [key]: state[key] + amount,
+      };
+    }
+
     default:
       return state;
   }

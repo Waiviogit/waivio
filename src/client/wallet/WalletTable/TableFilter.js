@@ -2,10 +2,12 @@ import React from 'react';
 import { Button, DatePicker, Form } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 import { validateDate } from '../WalletHelper';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
+import { getCreationAccDate } from '../../store/advancedReports/advancedSelectors';
 
 const TableFilter = ({
   intl,
@@ -15,8 +17,10 @@ const TableFilter = ({
   filterUsersList,
   handleSelectUser,
   deleteUser,
+  form,
 }) => {
   const disabledDate = current => current > moment().endOf('day');
+  const creationAccDate = useSelector(getCreationAccDate);
 
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
@@ -96,7 +100,16 @@ const TableFilter = ({
               })}
               disabledDate={disabledDate}
               renderExtraFooter={() => (
-                <button className="WalletTable__datepickerFooter">
+                <button
+                  className="WalletTable__datepickerFooter"
+                  onClick={() => {
+                    const from = creationAccDate
+                      .map(date => Object.values(date))
+                      .sort((a, b) => a - b)[0];
+
+                    form.setFieldsValue({ from: moment.unix(from) });
+                  }}
+                >
                   {intl.formatMessage({
                     id: 'account_creation',
                     defaultMessage: 'Account creation',
@@ -166,6 +179,9 @@ const TableFilter = ({
 TableFilter.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
+  }).isRequired,
+  form: PropTypes.shape({
+    setFieldsValue: PropTypes.func,
   }).isRequired,
   isLoadingTableTransactions: PropTypes.bool.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
