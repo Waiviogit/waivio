@@ -1056,7 +1056,7 @@
   "EOS": "欧斯",
   "health": "健康",
   "travel": "旅行",
-  "post_btn_video_placeholder": "粘贴链接（YouTube | DTube | Vimeo | 3Speak），然后按“ Enter”",
+  "post_btn_video_placeholder": "粘贴视频链接并按 Enter",
   "need_confirm_agreement": "您需要确认同意",
   "please_input_nickname": "昵称不能为空",
   "link_placeholder": "添加网址",

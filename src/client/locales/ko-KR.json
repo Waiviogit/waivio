@@ -1056,7 +1056,7 @@
   "EOS": "EOS",
   "health": "건강",
   "travel": "여행하다",
-  "post_btn_video_placeholder": "링크 (YouTube | DTube | Vimeo | 3Speak)를 붙여넣고 'Enter'를 누릅니다.",
+  "post_btn_video_placeholder": "비디오 링크를 붙여넣고 Enter 키를 누릅니다.",
   "need_confirm_agreement": "동의를 확인해야합니다.",
   "please_input_nickname": "닉네임은 비워 둘 수 없습니다.",
   "link_placeholder": "URL 추가",
