@@ -9,13 +9,13 @@ import './ObjectInfoExperts.less';
 
 const ObjectInfoExperts = ({ wobject, userName }) => (
   <div className="objectInfo">
-    <div className="objectInfo_experts">
+    <div className="objectInfo__experts">
       <ObjectExpertise wobject={wobject} username={userName} isCenterContent />
     </div>
-    <div className="objectInfo_related">
+    <div className="objectInfo__related">
       {wobject.author_permlink && <ObjectsRelated wobject={wobject} isCenterContent />}
     </div>
-    <div className="objectInfo_followers">
+    <div className="objectInfo__followers">
       <WobjectSidebarFollowers wobject={wobject} isCenterContent />
     </div>
   </div>

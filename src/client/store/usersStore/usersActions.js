@@ -94,8 +94,6 @@ export const unfollowUser = (username, top = false) => (
 
           if (data.status !== 200) throw new Error(data.message);
 
-          if (window.gtag) window.gtag('event', 'vote');
-
           busyAPI.instance.sendAsync(subscribeMethod, [
             authUser,
             res.block_num,
@@ -142,8 +140,6 @@ export const followUser = (username, top = false) => (
           const res = isGuest ? await data.json() : data.result;
 
           if (data.status !== 200) throw new Error(data.message);
-
-          if (window.gtag) window.gtag('event', 'vote');
 
           busyAPI.instance.sendAsync(subscribeMethod, [
             authUser,
