@@ -1056,7 +1056,7 @@
   "EOS": "EOS",
   "health": "zdravlje",
   "travel": "putovati",
-  "post_btn_video_placeholder": "Zalijepite vezu (YouTube | DTube | Vimeo | 3Speak) i pritisnite 'Enter'",
+  "post_btn_video_placeholder": "Zalijepite video vezu i pritisnite Enter",
   "need_confirm_agreement": "Morate potvrditi sporazum",
   "please_input_nickname": "Nadimak ne može biti prazan",
   "link_placeholder": "Dodajte URL",

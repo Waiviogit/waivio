@@ -1056,7 +1056,7 @@
   "EOS": "EOS",
   "health": "здоров'я",
   "travel": "подорожі",
-  "post_btn_video_placeholder": "Вставте посилання (YouTube | DTube | Vimeo | 3Speak) і натисніть 'Enter'",
+  "post_btn_video_placeholder": "Вставте посилання на відео та натисніть Enter",
   "need_confirm_agreement": "Вам потрібно підтвердити згоду",
   "please_input_nickname": "Псевдонім не може бути порожнім",
   "link_placeholder": "Додати URL-адресу",
