@@ -29,23 +29,23 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING: {
+      const powerUpToMyself = transaction.from === transaction.to;
       const toVestingAmount = getTransactionTableCurrency(
         transaction.amount,
         transactionType,
         'HP',
       );
 
-      data.fieldHIVE = `- ${toVestingAmount.amount}`;
+      data.fieldHIVE = `${powerUpToMyself ? '-' : ''}${toVestingAmount.amount}`;
       description = getTransactionDescription(transactionType, {
         from: transaction.from,
         to: transaction.to,
       });
 
       if (transaction.to === user) {
-        data.fieldDescription =
-          transaction.to === transaction.from
-            ? description.powerUpTransaction
-            : description.powerUpTransactionFrom;
+        data.fieldDescription = powerUpToMyself
+          ? description.powerUpTransaction
+          : description.powerUpTransactionFrom;
       } else data.fieldDescription = description.powerUpTransactionTo;
 
       return data;
