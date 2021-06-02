@@ -1,6 +1,6 @@
 export const totalType = {
-  w: 'deposits',
-  d: 'withdrawals',
+  w: 'withdrawals',
+  d: 'deposits',
 };
 
 export default null;

@@ -19,7 +19,7 @@ const PowerUpTransactionFrom = ({ timestamp, amount, from, to, transactionType }
           {to === from ? (
             <React.Fragment>
               {description.powerUpTransaction}
-              <span className="UserWalletTransactions__payout">{amount}</span>
+              <span className="UserWalletTransactions__payout-black">{amount}</span>
             </React.Fragment>
           ) : (
             <React.Fragment>

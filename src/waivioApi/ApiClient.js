@@ -2083,4 +2083,16 @@ export const accountsCreationDate = userName => {
     .catch(e => e);
 };
 
+export const calculateVoteValueForSlider = (userName, query) => {
+  const queryString = createQuery(query);
+
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.voteValue}?${queryString}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
 export default null;

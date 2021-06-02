@@ -1,9 +1,10 @@
 import {
-  DECREASE_TOTAL,
+  CALCULATE_TOTAL_CHANGES,
   DELETE_USERS_CREATION_DATE,
   GET_MORE_TRANSACTIONS_FOR_TABLE,
   GET_TRANSACTIONS_FOR_TABLE,
   GET_USERS_CREATION_DATE,
+  RESET_REPORTS,
 } from './advancedActions';
 import { totalType } from '../../../common/constants/advansedReports';
 
@@ -77,7 +78,7 @@ export default function advancedReducer(state = initialState, action) {
       };
     }
 
-    case DECREASE_TOTAL: {
+    case CALCULATE_TOTAL_CHANGES: {
       const key = totalType[action.payload.type];
       const amount = action.payload.decrement ? action.payload.amount * -1 : action.payload.amount;
 
@@ -85,6 +86,10 @@ export default function advancedReducer(state = initialState, action) {
         ...state,
         [key]: state[key] + amount,
       };
+    }
+
+    case RESET_REPORTS: {
+      return initialState;
     }
 
     default:

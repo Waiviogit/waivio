@@ -118,9 +118,15 @@ export const deleteUsersTransactionDate = name => ({
   payload: name,
 });
 
-export const DECREASE_TOTAL = '@advanced/DECREASE_TOTAL';
+export const CALCULATE_TOTAL_CHANGES = '@advanced/CALCULATE_TOTAL_CHANGES';
 
-export const decreaseTotal = (amount, type, decrement) => ({
-  type: DECREASE_TOTAL,
+export const calculateTotalChanges = (amount, type, decrement) => ({
+  type: CALCULATE_TOTAL_CHANGES,
   payload: { amount, type, decrement },
+});
+
+export const RESET_REPORTS = '@advanced/RESET_REPORTS';
+
+export const resetReportsData = () => ({
+  type: RESET_REPORTS,
 });

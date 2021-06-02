@@ -59,26 +59,22 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
 
       data.fieldMemo = transaction.memo;
 
-      if (transaction.to === user) {
-        if (transaction.from !== transaction.to) {
-          return {
-            ...data,
-            fieldHIVE: transferAmount.currency === 'HIVE' && `${transferAmount.amount}`,
-            fieldHBD: transferAmount.currency === 'HBD' && `${transferAmount.amount}`,
-            fieldDescription:
-              transaction.typeTransfer === 'demo_post'
-                ? validateGuestTransferTitle(
-                    transaction.details,
-                    transaction.userName,
-                    false,
-                    transactionType,
-                    true,
-                  )
-                : receiveDescription.receivedFrom,
-          };
-        }
-
-        return null;
+      if (transaction.from !== transaction.to) {
+        return {
+          ...data,
+          fieldHIVE: transferAmount.currency === 'HIVE' && `${transferAmount.amount}`,
+          fieldHBD: transferAmount.currency === 'HBD' && `${transferAmount.amount}`,
+          fieldDescription:
+            transaction.typeTransfer === 'demo_post'
+              ? validateGuestTransferTitle(
+                  transaction.details,
+                  transaction.userName,
+                  false,
+                  transactionType,
+                  true,
+                )
+              : receiveDescription.receivedFrom,
+        };
       }
 
       return {

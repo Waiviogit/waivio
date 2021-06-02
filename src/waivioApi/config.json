@@ -127,5 +127,6 @@
   "payableWarning": "/payable-warning",
   "advancedReport": "/advanced-report",
   "creationDate": "/creation-date",
+  "voteValue": "/vote-value",
   "immediateWithdraw": "/immediate-withdraw"
 }
