@@ -163,7 +163,7 @@ class Story extends React.Component {
 
   handleClickVote(post, postState, weight, type) {
     const { sliderMode, defaultVotePercent, votePost } = this.props;
-    const author = post.root_author;
+    const author = post.author;
 
     if (sliderMode && !postState[type]) {
       votePost(post.id, author, post.permlink, Number(weight));
