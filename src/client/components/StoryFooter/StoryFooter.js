@@ -188,7 +188,7 @@ class StoryFooter extends React.Component {
     const voteWorth =
       isGuest || isPostCashout(post)
         ? 0
-        : await calculateVotePowerForSlider(user.name, value, post.root_author, post.permlink);
+        : await calculateVotePowerForSlider(user.name, value, post.author, post.permlink);
 
     this.setState({ sliderValue: value, voteWorth });
   };
