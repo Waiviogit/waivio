@@ -34,7 +34,6 @@ export const followExpert = username => (dispatch, getState, { steemConnectAPI }
   return new Promise((resolve, reject) =>
     steemConnectAPI
       .follow(authUser, username)
-      .then(res => res.json())
       .then(res => resolve(res))
       .catch(error => reject(error)),
   );
@@ -51,7 +50,6 @@ export const unfollowExpert = username => (dispatch, getState, { steemConnectAPI
   return new Promise((resolve, reject) =>
     steemConnectAPI
       .unfollow(authUser, username)
-      .then(res => res.json())
       .then(res => resolve(res))
       .catch(error => reject(error)),
   );

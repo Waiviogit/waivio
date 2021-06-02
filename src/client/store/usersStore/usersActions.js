@@ -92,7 +92,7 @@ export const unfollowUser = (username, top = false) => (
         .then(async data => {
           const res = isGuest ? await data.json() : data.result;
 
-          if (data.status !== 200) throw new Error(data.message);
+          if (!res.block_num) throw new Error('Something went wrong');
 
           busyAPI.instance.sendAsync(subscribeMethod, [
             authUser,
@@ -139,7 +139,7 @@ export const followUser = (username, top = false) => (
         .then(async data => {
           const res = isGuest ? await data.json() : data.result;
 
-          if (data.status !== 200) throw new Error(data.message);
+          if (!res.block_num) throw new Error('Something went wrong');
 
           busyAPI.instance.sendAsync(subscribeMethod, [
             authUser,

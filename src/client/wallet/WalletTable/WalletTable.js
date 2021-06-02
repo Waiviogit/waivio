@@ -22,7 +22,8 @@ import {
   getMoreTableUserTransactionHistory,
   getUsersTransactionDate,
   deleteUsersTransactionDate,
-  decreaseTotal,
+  resetReportsData,
+  calculateTotalChanges,
 } from '../../store/advancedReports/advancedActions';
 import compareTransferBody from './common/helpers';
 import {
@@ -62,7 +63,8 @@ import './WalletTable.less';
     getUsersTransactionDate,
     deleteUsersTransactionDate,
     getGlobalProperties,
-    decreaseTotal,
+    calculateTotalChanges,
+    resetReportsData,
   },
 )
 class WalletTable extends React.Component {
@@ -93,7 +95,8 @@ class WalletTable extends React.Component {
     getUsersTransactionDate: PropTypes.func.isRequired,
     getGlobalProperties: PropTypes.func.isRequired,
     deleteUsersTransactionDate: PropTypes.func.isRequired,
-    decreaseTotal: PropTypes.func.isRequired,
+    calculateTotalChanges: PropTypes.func.isRequired,
+    resetReportsData: PropTypes.func.isRequired,
     getMoreTableUserTransactionHistory: PropTypes.func.isRequired,
     transactionsList: PropTypes.arrayOf(PropTypes.shape({})),
     accounts: PropTypes.arrayOf(PropTypes.shape({})),
@@ -140,6 +143,7 @@ class WalletTable extends React.Component {
 
   componentWillUnmount() {
     this.props.closeTable();
+    this.props.resetReportsData();
   }
 
   handleSubmit = () => {
@@ -286,7 +290,7 @@ class WalletTable extends React.Component {
             showMore={this.props.hasMore && !this.state.dateEstablished}
             handleShowMore={this.handleLoadMore}
             onChange={(e, item) =>
-              this.props.decreaseTotal(item.usd, item.withdrawDeposit, e.target.checked)
+              this.props.calculateTotalChanges(item.usd, item.withdrawDeposit, e.target.checked)
             }
           />
         )}

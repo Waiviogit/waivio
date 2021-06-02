@@ -6,11 +6,10 @@ import * as steem from 'steem';
 import { get, size } from 'lodash';
 import { Client } from '@hiveio/dhive';
 
-import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getDownvotes } from '../helpers/voteHelpers';
-import { getContent } from '../../waivioApi/ApiClient';
+import { calculateVoteValueForSlider, getContent } from '../../waivioApi/ApiClient';
 
 const dmp = new diff_match_patch();
 /**
@@ -91,36 +90,10 @@ export const isPostCashout = post => Date.parse(get(post, 'cashout_time')) < Dat
 export const isFlaggedPost = (votes, name) =>
   getDownvotes(votes).some(({ voter }) => voter === name);
 
-export const calculateVotePowerForSlider = async (name, voteWeight, author, permlink) => {
-  const account = (await steemAPI.sendAsync('get_accounts', [[name]]))[0];
-  const sbdMedian = await steemAPI.sendAsync('get_current_median_history_price', []);
-  const rewardFund = await steemAPI.sendAsync('get_reward_fund', ['post']);
-  const post = await steemAPI.sendAsync('get_content', [author, permlink]);
-  const price = parseFloat(sbdMedian.base) / parseFloat(sbdMedian.quote);
-  const vests =
-    parseFloat(account.vesting_shares) +
-    parseFloat(account.received_vesting_shares) -
-    parseFloat(account.delegated_vesting_shares);
+export const calculateVotePowerForSlider = async (name, weight, author, permlink) => {
+  const res = await calculateVoteValueForSlider(name, { author, permlink, weight });
 
-  const previousVoteTime =
-    (new Date().getTime() - new Date(`${account.last_vote_time}Z`).getTime()) / 1000;
-  const accountVotingPower = Math.min(
-    10000,
-    account.voting_power + (10000 * previousVoteTime) / 432000,
-  );
-
-  const power = Math.round(((accountVotingPower / 100) * voteWeight) / 50);
-  const rShares = vests * power * 100 - 50000000;
-  const tRShares = parseFloat(post.vote_rshares) + rShares;
-
-  const s = parseFloat(rewardFund.content_constant);
-  const tClaims = (tRShares * (tRShares + 2 * s)) / (tRShares + 4 * s);
-
-  const rewards = parseFloat(rewardFund.reward_balance) / parseFloat(rewardFund.recent_claims);
-  const postValue = tClaims * rewards * price;
-  const voteValue = postValue * (rShares / tRShares);
-
-  return voteValue >= 0 ? voteValue : 0;
+  return res.result;
 };
 
 function checkPermLinkLength(permlink) {

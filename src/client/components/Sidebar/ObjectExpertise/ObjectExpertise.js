@@ -44,7 +44,7 @@ const ObjectExpertise = ({
   const setIsLoading = userExpert =>
     setExperts(data => ({
       ...data,
-      users: users.map(item =>
+      users: data.users.map(item =>
         item.name === userExpert ? { ...item, pending: !item.pending } : item,
       ),
     }));
@@ -52,8 +52,10 @@ const ObjectExpertise = ({
   const setFollowUnFollow = userExpert =>
     setExperts(data => ({
       ...data,
-      users: users.map(item =>
-        item.name === userExpert ? { ...item, youFollows: !item.youFollows } : item,
+      users: data.users.map(item =>
+        item.name === userExpert
+          ? { ...item, youFollows: !item.youFollows, pending: !item.pending }
+          : item,
       ),
     }));
 
