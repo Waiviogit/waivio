@@ -166,7 +166,7 @@ class Story extends React.Component {
     const author = post.root_author;
 
     if (sliderMode && !postState[type]) {
-      votePost(post.id, author, post.permlink, weight);
+      votePost(post.id, author, post.permlink, Number(weight));
     } else if (postState[type]) {
       votePost(post.id, author, post.permlink, 0);
     } else {

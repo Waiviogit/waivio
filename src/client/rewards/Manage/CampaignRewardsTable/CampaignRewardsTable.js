@@ -1,8 +1,10 @@
-import _ from 'lodash';
+import { map } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+
 import CampaignRewardsTableRow from './CampaignRewardsTableBodyRow';
+
 import '../Manage.less';
 import './CampaignRewardsTable.less';
 
@@ -73,11 +75,10 @@ const CampaignRewardsTable = ({
         </tr>
       </thead>
       <tbody>
-        {_.map(campaigns, current => (
+        {map(campaigns, current => (
           <CampaignRewardsTableRow
             activateCampaign={activateCampaign}
             inactivateCampaign={inactivateCampaign}
-            // eslint-disable-next-line no-underscore-dangle
             key={current._id}
             currentItem={current}
             userName={userName}
