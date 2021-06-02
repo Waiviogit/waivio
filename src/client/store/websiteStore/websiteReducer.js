@@ -68,6 +68,7 @@ export default function websiteReducer(state = initialState, action) {
         ...website,
         checked: website.status === 'active',
         pending: [],
+        _id: website.host,
       }));
 
       return {
