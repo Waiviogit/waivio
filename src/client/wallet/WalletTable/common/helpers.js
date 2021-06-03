@@ -61,16 +61,22 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
       });
 
       data.fieldMemo = transaction.memo;
-      data.fieldDescription =
-        transaction.to === user
-          ? receiveDescription.transferredTo
-          : receiveDescription.receivedFrom;
 
       if (transaction.withdrawDeposit === 'd') {
         return {
           ...data,
           fieldHIVE: transferAmount.currency === 'HIVE' && `${transferAmount.amount}`,
           fieldHBD: transferAmount.currency === 'HBD' && `${transferAmount.amount}`,
+          fieldDescription:
+            transaction.typeTransfer === 'demo_post'
+              ? validateGuestTransferTitle(
+                  transaction.details,
+                  transaction.userName,
+                  false,
+                  transactionType,
+                  true,
+                )
+              : receiveDescription.receivedFrom,
         };
       }
 
@@ -78,6 +84,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         ...data,
         fieldHIVE: transferAmount.currency === 'HIVE' && `- ${transferAmount.amount}`,
         fieldHBD: transferAmount.currency === 'HBD' && `- ${transferAmount.amount}`,
+        fieldDescription: receiveDescription.transferredTo,
       };
     }
     case accountHistoryConstants.CLAIM_REWARD_BALANCE: {
