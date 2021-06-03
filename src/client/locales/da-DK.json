@@ -1056,7 +1056,7 @@
     "EOS": "EOS",
     "health": "sundhed",
     "travel": "rejse",
-    "post_btn_video_placeholder": "Indsæt link (YouTube | DTube | Vimeo | 3Speak) og tryk på 'Enter'",
+    "post_btn_video_placeholder": "Indsæt videolink, og tryk på Enter",
     "need_confirm_agreement": "Du skal bekræfte aftalen",
     "please_input_nickname": "Kælenavn må ikke være tomt",
     "link_placeholder": "Tilføj url",

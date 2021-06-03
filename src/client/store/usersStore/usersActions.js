@@ -1,7 +1,15 @@
+import { message } from 'antd';
+
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
 import { getUser } from './usersSelectors';
+import { LIKE_POST } from '../postsStore/postActions';
+import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../authStore/authSelectors';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
@@ -66,20 +74,41 @@ export const UNFOLLOW_USER = createAsyncActionType('@users/UNFOLLOW_USER');
 export const unfollowUser = (username, top = false) => (
   dispatch,
   getState,
-  { steemConnectAPI },
+  { steemConnectAPI, busyAPI },
 ) => {
   const state = getState();
 
   if (!getIsAuthenticated(state)) {
     return Promise.reject('User is not authenticated');
   }
-
+  const isGuest = isGuestUser(state);
   const authUser = getAuthenticatedUserName(state);
 
   return dispatch({
     type: UNFOLLOW_USER.ACTION,
     payload: {
-      promise: steemConnectAPI.unfollow(authUser, username),
+      promise: steemConnectAPI
+        .unfollow(authUser, username)
+        .then(async data => {
+          const res = isGuest ? await data.json() : data.result;
+
+          if (!res.block_num) throw new Error('Something went wrong');
+
+          busyAPI.instance.sendAsync(subscribeMethod, [
+            authUser,
+            res.block_num,
+            subscribeTypes.posts,
+          ]);
+          busyAPI.instance.subscribeBlock(subscribeTypes.posts, res.block_num);
+
+          return res;
+        })
+        .catch(() => {
+          message.error('Something went wrong');
+          dispatch({
+            type: LIKE_POST.ERROR,
+          });
+        }),
     },
     meta: {
       username,
@@ -89,19 +118,44 @@ export const unfollowUser = (username, top = false) => (
 };
 export const FOLLOW_USER = createAsyncActionType('@user/FOLLOW_USER');
 
-export const followUser = (username, top = false) => (dispatch, getState, { steemConnectAPI }) => {
+export const followUser = (username, top = false) => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
   const state = getState();
+  const isGuest = isGuestUser(state);
+  const authUser = getAuthenticatedUserName(state);
 
   if (!getIsAuthenticated(state)) {
     return Promise.reject('User is not authenticated');
   }
 
-  const authUser = getAuthenticatedUserName(state);
-
   return dispatch({
     type: FOLLOW_USER.ACTION,
     payload: {
-      promise: steemConnectAPI.follow(authUser, username),
+      promise: steemConnectAPI
+        .follow(authUser, username)
+        .then(async data => {
+          const res = isGuest ? await data.json() : data.result;
+
+          if (!res.block_num) throw new Error('Something went wrong');
+
+          busyAPI.instance.sendAsync(subscribeMethod, [
+            authUser,
+            res.block_num,
+            subscribeTypes.posts,
+          ]);
+          busyAPI.instance.subscribeBlock(subscribeTypes.posts, res.block_num);
+
+          return res;
+        })
+        .catch(() => {
+          message.error('Something went wrong');
+          dispatch({
+            type: LIKE_POST.ERROR,
+          });
+        }),
     },
     meta: {
       username,

@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { isEmpty, get } from 'lodash';
 import OBJECT_TYPE from '../const/objectTypes';
-import { clearObjectFromStore, getObject } from '../../store/wObjectStore/wobjectsActions';
+import {
+  clearObjectFromStore,
+  getObject,
+  getObjectFollowers,
+} from '../../store/wObjectStore/wobjectsActions';
 import {
   getAlbums,
   resetGallery,
@@ -58,6 +62,7 @@ import { getConfiguration } from '../../store/websiteStore/websiteSelectors';
     appendObject,
     addAlbumToStore,
     clearRelatedPhoto,
+    getObjectFollowers,
   },
 )
 export default class WobjectContainer extends React.Component {
@@ -110,6 +115,7 @@ export default class WobjectContainer extends React.Component {
     return Promise.all([
       store.dispatch(getObject(match.params.name)),
       store.dispatch(getAlbums(match.params.name)),
+      store.dispatch(getObjectFollowers({ object: match.params.name, skip: 0, limit: 5 })),
     ]);
   }
 

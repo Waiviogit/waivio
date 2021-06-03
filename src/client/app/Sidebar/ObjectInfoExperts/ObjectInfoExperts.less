@@ -7,14 +7,16 @@
     display: none;
   }
 
-  &_experts,
-  &_related {
+  &__experts,
+  &__related,
+  &__followers {
     .SidebarContentBlock {
       border-bottom: none;
       border-top: none;
 
       &__title {
         color: @orange-hot;
+        cursor: pointer;
 
         & i {
           color: @orange-hot;
@@ -23,10 +25,20 @@
     }
   }
 
-  &_experts {
+  &__experts {
     .SidebarContentBlock {
       &:first-child {
         margin-bottom: 25px;
+      }
+    }
+  }
+
+  &__followers {
+    .UserDynamicList {
+      .UserCard {
+        &:last-child {
+          border-bottom: 0;
+        }
       }
     }
   }

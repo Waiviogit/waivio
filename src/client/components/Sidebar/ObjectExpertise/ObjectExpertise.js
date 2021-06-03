@@ -4,30 +4,72 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
-import UserCard from '../UserCard';
-import WeightTag from '../WeightTag';
-import { getWobjectsExpertiseWithNewsFilter } from '../../../waivioApi/ApiClient';
-import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
+import UserCard from '../../UserCard';
+import WeightTag from '../../WeightTag';
+import { getWobjectsExpertiseWithNewsFilter } from '../../../../waivioApi/ApiClient';
+import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 
-import './ObjectExpertise.less';
+import '../ObjectExpertise.less';
 
-const ObjectExpertise = ({ username, wobject, match, isCenterContent, history }) => {
+const ObjectExpertise = ({
+  username,
+  wobject,
+  match,
+  isCenterContent,
+  history,
+  unfollowExpert,
+  followExpert,
+}) => {
   const [experts, setExperts] = useState({ user: {}, users: [], loading: true });
   const { users, user, loading } = experts;
   const isUserInTopFive = users.find(u => u.name === username);
   const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
+  useEffect(() => {
+    getWobjectsExpertiseWithNewsFilter(username, wobject.author_permlink, 0, 5, newsFilter)
+      .then(data => {
+        setExperts({
+          ...data,
+          users: data.users.map(userExpert => ({ ...userExpert, pending: false })),
+          loading: false,
+        });
+      })
+      .catch(() => setExperts({ user: {}, users: [], loading: false }));
+  }, [wobject.author_permlink, match.url]);
+
   const handleRedirectToExperts = () => {
     if (isCenterContent) history.push(`${match.url.replace(/\/[^/]+$/, '')}/expertise`);
   };
 
-  useEffect(() => {
-    getWobjectsExpertiseWithNewsFilter(username, wobject.author_permlink, 0, 5, newsFilter)
-      .then(data => {
-        setExperts({ ...data, loading: false });
-      })
-      .catch(() => setExperts({ user: {}, users: [], loading: false }));
-  }, [wobject.author_permlink, match.url]);
+  const setIsLoading = userExpert =>
+    setExperts(data => ({
+      ...data,
+      users: data.users.map(item =>
+        item.name === userExpert ? { ...item, pending: !item.pending } : item,
+      ),
+    }));
+
+  const setFollowUnFollow = userExpert =>
+    setExperts(data => ({
+      ...data,
+      users: data.users.map(item =>
+        item.name === userExpert
+          ? { ...item, youFollows: !item.youFollows, pending: !item.pending }
+          : item,
+      ),
+    }));
+
+  const followUnFollow = (userExpert, callback) => {
+    setIsLoading(userExpert);
+    callback(userExpert)
+      .then(() => setFollowUnFollow(userExpert))
+      .catch(() => setIsLoading(userExpert));
+  };
+
+  const follow = userExpert => followUnFollow(userExpert, followExpert);
+
+  const unFollow = userExpert => followUnFollow(userExpert, unfollowExpert);
+
   let renderExperts = null;
 
   if (loading) {
@@ -45,7 +87,9 @@ const ObjectExpertise = ({ username, wobject, match, isCenterContent, history })
               <UserCard
                 key={u.name}
                 user={u}
-                showFollow={false}
+                showFollow={isCenterContent}
+                follow={follow}
+                unfollow={unFollow}
                 alt={<WeightTag weight={u.weight} />}
               />
             ))}
@@ -55,6 +99,8 @@ const ObjectExpertise = ({ username, wobject, match, isCenterContent, history })
               <UserCard
                 key={user.name}
                 user={user}
+                follow={follow}
+                unfollow={unFollow}
                 showFollow={false}
                 alt={<WeightTag weight={user.weight} />}
               />
@@ -83,9 +129,11 @@ ObjectExpertise.propTypes = {
   match: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   isCenterContent: PropTypes.bool,
+  followExpert: PropTypes.func.isRequired,
+  unfollowExpert: PropTypes.func.isRequired,
 };
 
-ObjectExpertise.propTypes = {
+ObjectExpertise.defaultProps = {
   isCenterContent: false,
 };
 

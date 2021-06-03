@@ -11,6 +11,7 @@ import {
 } from '../../WalletHelper';
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import { guestUserRegex } from '../../../helpers/regexHelpers';
+import { totalType } from '../../../../common/constants/advansedReports';
 
 const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSteem) => {
   const transactionType = transaction.type;
@@ -23,6 +24,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     hiveUSD: round(get(transaction, 'hiveUSD'), 3),
     hbdUSD: round(get(transaction, 'hbdUSD'), 3),
     withdrawDeposit: get(transaction, 'withdrawDeposit'),
+    usd: get(transaction, 'usd'),
     userName: user,
   };
 
@@ -34,22 +36,20 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         'HP',
       );
 
+      data.fieldHIVE = `${
+        transaction.withdrawDeposit === 'w' || !transaction.withdrawDeposit ? '-' : ''
+      }${toVestingAmount.amount}`;
       description = getTransactionDescription(transactionType, {
         from: transaction.from,
         to: transaction.to,
       });
 
       if (transaction.to === user) {
-        if (transaction.to === transaction.from) {
-          data.fieldHIVE = `- ${toVestingAmount.amount}`;
-          data.fieldDescription = description.powerUpTransaction;
-        } else {
-          data.fieldDescription = description.powerUpTransactionFrom;
-        }
-      } else {
-        data.fieldHIVE = `- ${toVestingAmount.amount}`;
-        data.fieldDescription = description.powerUpTransactionTo;
-      }
+        data.fieldDescription =
+          transaction.from === transaction.to
+            ? description.powerUpTransaction
+            : description.powerUpTransactionFrom;
+      } else data.fieldDescription = description.powerUpTransactionTo;
 
       return data;
     }
@@ -62,26 +62,22 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
 
       data.fieldMemo = transaction.memo;
 
-      if (transaction.to === user) {
-        if (transaction.from !== transaction.to) {
-          return {
-            ...data,
-            fieldHIVE: transferAmount.currency === 'HIVE' && `${transferAmount.amount}`,
-            fieldHBD: transferAmount.currency === 'HBD' && `${transferAmount.amount}`,
-            fieldDescription:
-              transaction.typeTransfer === 'demo_post'
-                ? validateGuestTransferTitle(
-                    transaction.details,
-                    transaction.userName,
-                    false,
-                    transactionType,
-                    true,
-                  )
-                : receiveDescription.receivedFrom,
-          };
-        }
-
-        return null;
+      if (transaction.withdrawDeposit === 'd') {
+        return {
+          ...data,
+          fieldHIVE: transferAmount.currency === 'HIVE' && `${transferAmount.amount}`,
+          fieldHBD: transferAmount.currency === 'HBD' && `${transferAmount.amount}`,
+          fieldDescription:
+            transaction.typeTransfer === 'demo_post'
+              ? validateGuestTransferTitle(
+                  transaction.details,
+                  transaction.userName,
+                  false,
+                  transactionType,
+                  true,
+                )
+              : receiveDescription.receivedFrom,
+        };
       }
 
       return {

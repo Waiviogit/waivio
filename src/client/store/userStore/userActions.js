@@ -23,6 +23,38 @@ export const FOLLOW_USER_START = '@user/FOLLOW_USER_START';
 export const FOLLOW_USER_SUCCESS = '@user/FOLLOW_USER_SUCCESS';
 export const FOLLOW_USER_ERROR = '@user/FOLLOW_USER_ERROR';
 
+export const followExpert = username => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const authUser = getAuthenticatedUserName(state);
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  return new Promise((resolve, reject) =>
+    steemConnectAPI
+      .follow(authUser, username)
+      .then(res => resolve(res))
+      .catch(error => reject(error)),
+  );
+};
+
+export const unfollowExpert = username => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const authUser = getAuthenticatedUserName(state);
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  return new Promise((resolve, reject) =>
+    steemConnectAPI
+      .unfollow(authUser, username)
+      .then(res => resolve(res))
+      .catch(error => reject(error)),
+  );
+};
+
 export const followUser = username => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
 

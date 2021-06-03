@@ -264,8 +264,10 @@ export const postCreateWaivioObject = requestBody =>
 
 export const getContent = (author, permlink = '', locale, follower) =>
   new Promise((resolve, reject) => {
+    const headers = { ...headers, app: config.appName, locale };
+    if (follower) headers.follower = follower;
     fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
-      headers: { ...headers, app: config.appName, locale, follower },
+      headers,
       method: 'GET',
     })
       .then(res => res.json())
@@ -355,7 +357,7 @@ export const getAllFollowingObjects = (username, skip, limit, authUser, locale) 
   });
 };
 
-export const getWobjectFollowers = (wobject, skip = 0, limit = 50, sort, authUser) => {
+export const getWobjectFollowers = (wobject, skip = 0, limit = 50, sort = 'recency', authUser) => {
   const actualHeaders = authUser
     ? { ...headers, following: authUser, follower: authUser }
     : headers;
@@ -2067,6 +2069,28 @@ export const getAdvancedReports = body => {
     headers,
     body: JSON.stringify(body),
     method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const accountsCreationDate = userName => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.creationDate}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const calculateVoteValueForSlider = (userName, query) => {
+  const queryString = createQuery(query);
+
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.voteValue}?${queryString}`, {
+    headers,
+    method: 'GET',
   })
     .then(res => res.json())
     .then(res => res)

@@ -1056,7 +1056,7 @@
   "EOS": "EOS",
   "health": "健康",
   "travel": "トラベル",
-  "post_btn_video_placeholder": "リンクを貼り付け（YouTube | DTube | Vimeo | 3Speak）、「Enter」を押します",
+  "post_btn_video_placeholder": "ビデオリンクを貼り付けてEnterキーを押します",
   "need_confirm_agreement": "同意を確認する必要があります",
   "please_input_nickname": "ニックネームを空にすることはできません",
   "link_placeholder": "URLを追加",

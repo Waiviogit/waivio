@@ -2,23 +2,25 @@ import React from 'react';
 import { Button, DatePicker, Form } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
-import { selectFormatDate, validateDate } from '../WalletHelper';
+import { validateDate } from '../WalletHelper';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
+import { getCreationAccDate } from '../../store/advancedReports/advancedSelectors';
 
 const TableFilter = ({
   intl,
   isLoadingTableTransactions,
-  locale,
   getFieldDecorator,
   handleOnClick,
   filterUsersList,
   handleSelectUser,
   deleteUser,
+  form,
 }) => {
-  const formatDate = selectFormatDate(locale);
   const disabledDate = current => current > moment().endOf('day');
+  const creationAccDate = useSelector(getCreationAccDate);
 
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
@@ -90,12 +92,30 @@ const TableFilter = ({
             ],
           })(
             <DatePicker
-              format={formatDate}
+              format={'MM/DD/YYYY'}
+              showToday={false}
               placeholder={intl.formatMessage({
                 id: 'table_start_date_picker',
                 defaultMessage: 'Select start date',
               })}
               disabledDate={disabledDate}
+              renderExtraFooter={() => (
+                <button
+                  className="WalletTable__datepickerFooter"
+                  onClick={() => {
+                    const from = creationAccDate
+                      .map(date => Object.values(date))
+                      .sort((a, b) => a - b)[0];
+
+                    form.setFieldsValue({ from: moment.unix(from) });
+                  }}
+                >
+                  {intl.formatMessage({
+                    id: 'account_creation',
+                    defaultMessage: 'Account creation',
+                  })}
+                </button>
+              )}
             />,
           )}
         </Form.Item>
@@ -130,7 +150,7 @@ const TableFilter = ({
             ],
           })(
             <DatePicker
-              format={formatDate}
+              format={'MM/DD/YYYY'}
               placeholder={intl.formatMessage({
                 id: 'table_end_date_picker',
                 defaultMessage: 'Select end date',
@@ -160,8 +180,10 @@ TableFilter.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
+  form: PropTypes.shape({
+    setFieldsValue: PropTypes.func,
+  }).isRequired,
   isLoadingTableTransactions: PropTypes.bool.isRequired,
-  locale: PropTypes.string.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   filterUsersList: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleOnClick: PropTypes.func.isRequired,

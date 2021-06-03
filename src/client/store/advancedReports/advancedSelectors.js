@@ -11,3 +11,4 @@ export const getTransfersLoading = createSelector([reportsState], state => state
 export const getTransfersWithdrawals = createSelector([reportsState], state => state.withdrawals);
 export const getTransfersDeposits = createSelector([reportsState], state => state.deposits);
 export const getIsLoadingAllData = createSelector([reportsState], state => state.loadingAllData);
+export const getCreationAccDate = createSelector([reportsState], state => state.creationDate);

@@ -26,6 +26,7 @@ const parseTransactionData = trans => {
       hbdUSD: trans.hbdUSD,
       hiveUSD: trans.hiveUSD,
       withdrawDeposit: trans.withdrawDeposit,
+      usd: trans.usd,
     };
   }
 
@@ -100,3 +101,32 @@ export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, 
     },
   });
 };
+
+export const GET_USERS_CREATION_DATE = createAsyncActionType('@advanced/GET_USERS_CREATION_DATE');
+
+export const getUsersTransactionDate = name => ({
+  type: GET_USERS_CREATION_DATE.ACTION,
+  payload: {
+    promise: ApiClient.accountsCreationDate(name).then(res => ({ [name]: res.timestamp })),
+  },
+});
+
+export const DELETE_USERS_CREATION_DATE = '@advanced/DELETE_USERS_CREATION_DATE';
+
+export const deleteUsersTransactionDate = name => ({
+  type: DELETE_USERS_CREATION_DATE,
+  payload: name,
+});
+
+export const CALCULATE_TOTAL_CHANGES = '@advanced/CALCULATE_TOTAL_CHANGES';
+
+export const calculateTotalChanges = (amount, type, decrement) => ({
+  type: CALCULATE_TOTAL_CHANGES,
+  payload: { amount, type, decrement },
+});
+
+export const RESET_REPORTS = '@advanced/RESET_REPORTS';
+
+export const resetReportsData = () => ({
+  type: RESET_REPORTS,
+});

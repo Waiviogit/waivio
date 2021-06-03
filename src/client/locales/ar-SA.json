@@ -1056,7 +1056,7 @@
   "EOS": "EOS",
   "health": "صحة",
   "travel": "السفر",
-  "post_btn_video_placeholder": "الصق الرابط (YouTube | DTube | Vimeo | 3Speak) واضغط على 'إدخال'",
+  "post_btn_video_placeholder": "الصق رابط الفيديو واضغط على Enter",
   "need_confirm_agreement": "تحتاج إلى تأكيد الاتفاق",
   "please_input_nickname": "لا يمكن أن يكون الاسم المستعار فارغًا",
   "link_placeholder": "إضافة رابط",

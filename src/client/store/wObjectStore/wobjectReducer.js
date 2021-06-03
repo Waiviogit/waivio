@@ -14,6 +14,7 @@ import {
   BELL_WOBJECT_NOTIFICATION,
 } from './wobjActions';
 import { objectFields } from '../../../common/constants/listOfFields';
+import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
 
 export const initialState = {
   wobject: {},
@@ -23,6 +24,11 @@ export const initialState = {
   isFailed: false,
   breadcrumb: [],
   isLoadingFlag: true,
+  followers: {
+    users: [],
+    hasMore: false,
+    isLoading: false,
+  },
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -336,6 +342,53 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     }
+
+    case actions.GET_OBJECT_FOLLOWERS.START: {
+      return {
+        ...state,
+        followers: {
+          ...state.followers,
+          isLoading: true,
+        },
+      };
+    }
+
+    case actions.GET_OBJECT_FOLLOWERS.SUCCESS: {
+      return {
+        ...state,
+        followers: {
+          ...state.followers,
+          users: action.payload.wobjectFollowers.map(user => ({ ...user, isLoading: false })),
+          hasMore: action.payload.hasMore,
+        },
+      };
+    }
+    case FOLLOW_USER.START:
+    case UNFOLLOW_USER.START:
+      return {
+        ...state,
+        followers: {
+          ...state.followers,
+          users: state.followers.users.map(user =>
+            action.meta.username === user.name ? { ...user, pending: !user.pending } : user,
+          ),
+        },
+      };
+
+    case FOLLOW_USER.SUCCESS:
+    case UNFOLLOW_USER.SUCCESS:
+      return {
+        ...state,
+        followers: {
+          ...state.followers,
+          isLoading: false,
+          users: state.followers.users.map(user =>
+            action.meta.username === user.name
+              ? { ...user, pending: !user.pending, youFollows: !user.youFollows }
+              : user,
+          ),
+        },
+      };
 
     default: {
       return state;

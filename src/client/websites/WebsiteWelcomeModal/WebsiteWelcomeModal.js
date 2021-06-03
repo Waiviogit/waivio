@@ -74,7 +74,7 @@ const WebsiteWelcomeModal = props => {
       onCancel={handleClose}
       title={props.intl.formatMessage({
         id: 'receive_restaurant_rebates',
-        defaultMessage: 'How To Receive Restaurant Rebates',
+        defaultMessage: 'Earn crypto every time you dine out!',
       })}
       className="WebsiteWelcomeModal"
       footer={footer}
