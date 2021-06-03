@@ -264,8 +264,10 @@ export const postCreateWaivioObject = requestBody =>
 
 export const getContent = (author, permlink = '', locale, follower) =>
   new Promise((resolve, reject) => {
+    const headers = { ...headers, app: config.appName, locale };
+    if (follower) headers.follower = follower;
     fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
-      headers: { ...headers, app: config.appName, locale, follower },
+      headers,
       method: 'GET',
     })
       .then(res => res.json())
