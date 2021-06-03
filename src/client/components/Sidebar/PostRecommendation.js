@@ -34,7 +34,7 @@ class PostRecommendation extends Component {
     super(props);
 
     this.state = {
-      recommendedPosts: [],
+      recommendedPosts: {},
       loading: false,
       currentAuthor: '',
     };
@@ -72,7 +72,7 @@ class PostRecommendation extends Component {
 
     getUserProfileBlog(author, follower, { limit: 4 }, this.props.locale)
       .then(result => {
-        const recommendedPosts = result || [];
+        const recommendedPosts = result || {};
 
         this.setState({
           recommendedPosts,
@@ -90,9 +90,9 @@ class PostRecommendation extends Component {
   getFilteredPosts = () => {
     const { match } = this.props;
 
-    if (!Array.isArray(this.state.recommendedPosts)) return [];
+    if (!Array.isArray(this.state.recommendedPosts.posts)) return [];
 
-    return this.state.recommendedPosts
+    return this.state.recommendedPosts.posts
       .filter(
         post =>
           formatter.reputation(post.author_reputation) > -1 &&
