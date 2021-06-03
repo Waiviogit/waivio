@@ -11,6 +11,7 @@ import {
 } from '../../WalletHelper';
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import { guestUserRegex } from '../../../helpers/regexHelpers';
+import { totalType } from '../../../../common/constants/advansedReports';
 
 const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSteem) => {
   const transactionType = transaction.type;
@@ -29,23 +30,25 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING: {
-      const powerUpToMyself = transaction.from === transaction.to;
       const toVestingAmount = getTransactionTableCurrency(
         transaction.amount,
         transactionType,
         'HP',
       );
 
-      data.fieldHIVE = `${powerUpToMyself ? '-' : ''}${toVestingAmount.amount}`;
+      data.fieldHIVE = `${
+        transaction.withdrawDeposit === 'w' || !transaction.withdrawDeposit ? '-' : ''
+      }${toVestingAmount.amount}`;
       description = getTransactionDescription(transactionType, {
         from: transaction.from,
         to: transaction.to,
       });
 
       if (transaction.to === user) {
-        data.fieldDescription = powerUpToMyself
-          ? description.powerUpTransaction
-          : description.powerUpTransactionFrom;
+        data.fieldDescription =
+          transaction.from === transaction.to
+            ? description.powerUpTransaction
+            : description.powerUpTransactionFrom;
       } else data.fieldDescription = description.powerUpTransactionTo;
 
       return data;
