@@ -19,6 +19,7 @@ const CampaignRewardsTableRow = ({
   inactivateCampaign,
   userName,
   intl,
+  setHistoryFilters,
 }) => {
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
@@ -26,7 +27,6 @@ const CampaignRewardsTableRow = ({
   const [activationPermlink, setActivationPermlink] = useState('');
   const isChecked = includes(isCheckedStatus, currentItem.status);
   const isInactive = includes(isInactiveStatus, currentItem.status);
-
   const activateCamp = () => {
     const generatedPermlink = `activate-${rewardPostContainerData.author}-${generatePermlink()}`;
 
@@ -183,8 +183,36 @@ const CampaignRewardsTableRow = ({
         <td>{currentItem.type}</td>
         <td className="Campaign-rewards hide-element">{currentItem.budget.toFixed(2)}</td>
         <td className="Campaign-rewards hide-element">{currentItem.reward.toFixed(2)}</td>
-        <td className="Campaign-rewards hide-element">{currentItem.reserved}</td>
-        <td className="Campaign-rewards hide-element">{currentItem.completed}</td>
+        <td className="Campaign-rewards hide-element">
+          {Boolean(currentItem.reserved) && (
+            <Link
+              onClick={() =>
+                setHistoryFilters({
+                  messagesCampaigns: [currentItem.name],
+                  rewards: ['Reserved'],
+                })
+              }
+              to="/rewards/guideHistory"
+            >
+              {currentItem.reserved}
+            </Link>
+          )}
+        </td>
+        <td className="Campaign-rewards hide-element">
+          {Boolean(currentItem.completed) && (
+            <Link
+              onClick={() => {
+                setHistoryFilters({
+                  messagesCampaigns: [currentItem.name],
+                  rewards: ['Completed'],
+                });
+              }}
+              to="/rewards/guideHistory"
+            >
+              {currentItem.completed}
+            </Link>
+          )}
+        </td>
         <td className="Campaign-rewards hide-element">{currentItem.remaining}</td>
       </tr>
       <Modal
@@ -239,6 +267,7 @@ const CampaignRewardsTableRow = ({
 
 CampaignRewardsTableRow.propTypes = {
   activateCampaign: PropTypes.func.isRequired,
+  setHistoryFilters: PropTypes.func.isRequired,
   inactivateCampaign: PropTypes.func.isRequired,
   currentItem: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
