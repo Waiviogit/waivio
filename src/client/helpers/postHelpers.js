@@ -209,6 +209,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     originalBody: null,
     titleValue: '',
     currentRawContent: {},
+    isEditPost: get(props, 'editor.isEditPost', false),
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts.find(d => d.draftId === draftId);
@@ -241,6 +242,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
       permlink: draftPost.permlink || null,
       originalBody: draftPost.originalBody || null,
       titleValue: get(draftPost, 'title', ''),
+      isEditPost: get(props, 'editor.isEditPost', false),
     };
   }
 

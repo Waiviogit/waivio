@@ -64,6 +64,7 @@ const EditPost = props => {
       draftContent,
       content,
       topics,
+      isEditPost,
       linkedObjects = [],
       hideLinkedObjects = [],
       objPercentage,
@@ -122,7 +123,7 @@ const EditPost = props => {
   }, [props.draftId, props.campaignId]);
 
   React.useEffect(() => {
-    if (!currDraft && props.currDraft) {
+    if (!currDraft && props.currDraft && isEditPost) {
       props.firstParseLinkedObjects(props.currDraft);
       props.setEditorState(getInitialState(props));
       setCurrDraft(props.currDraft);
