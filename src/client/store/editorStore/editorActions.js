@@ -592,7 +592,7 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
     currentRawContent,
     draftId,
   } = getEditor(state);
-  const objName = getObjectName(object).toLowerCase();
+  const objName = getObjectName(object);
   const objPermlink = object.author_permlink;
   const separator = content.slice(-1) === '\n' ? '' : '\n';
   const draftContent = {
