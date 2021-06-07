@@ -283,7 +283,6 @@ class WalletTable extends React.Component {
             defaultMessage: 'Use this field to exclude an entry from the totals calculation.',
           })}
         </p>
-
         {this.props.loading && isEmpty(mappedList) ? (
           <Loading />
         ) : (

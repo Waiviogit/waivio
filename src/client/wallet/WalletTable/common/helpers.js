@@ -35,9 +35,6 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         'HP',
       );
 
-      data.fieldHIVE = `${
-        transaction.withdrawDeposit === 'w' || !transaction.withdrawDeposit ? '-' : ''
-      }${toVestingAmount.amount}`;
       description = getTransactionDescription(transactionType, {
         from: transaction.from,
         to: transaction.to,
@@ -48,7 +45,16 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
           transaction.from === transaction.to
             ? description.powerUpTransaction
             : description.powerUpTransactionFrom;
-      } else data.fieldDescription = description.powerUpTransactionTo;
+        data.fieldHP = toVestingAmount.amount;
+      } else {
+        data.fieldDescription = description.powerUpTransactionTo;
+        data.fieldHIVE = `- ${toVestingAmount.amount}`;
+      }
+
+      if (transaction.to === transaction.from) {
+        data.fieldHP = toVestingAmount.amount;
+        data.fieldHIVE = `- ${toVestingAmount.amount}`;
+      }
 
       return data;
     }
