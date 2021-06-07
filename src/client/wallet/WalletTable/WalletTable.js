@@ -217,7 +217,7 @@ class WalletTable extends React.Component {
 
   render() {
     const { match, intl, form, transactionsList } = this.props;
-    const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed!';
+    const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed';
     const handleChangeTotalValue = value =>
       this.state.dateEstablished ? <b>${round(value, 3)}</b> : '-';
     const mappedList = map(transactionsList, transaction =>
@@ -252,7 +252,7 @@ class WalletTable extends React.Component {
           deleteUser={this.deleteUserFromFilterAccounts}
           form={form}
         />
-        <div className="WalletTable__total">
+        <p className="WalletTable__total">
           {intl.formatMessage({
             id: 'total',
             defaultMessage: 'TOTAL',
@@ -275,7 +275,15 @@ class WalletTable extends React.Component {
                 defaultMessage: 'Totals can be calculated only for a defined from-till period.',
               })}
           )
-        </div>
+        </p>
+        <p className="WalletTable__exclude">
+          X) -{' '}
+          {intl.formatMessage({
+            id: 'x_field_description',
+            defaultMessage: 'Use this field to exclude an entry from the totals calculation.',
+          })}
+        </p>
+
         {this.props.loading && isEmpty(mappedList) ? (
           <Loading />
         ) : (
