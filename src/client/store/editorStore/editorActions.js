@@ -179,7 +179,7 @@ export const deleteDraft = draftIds => (dispatch, getState) => {
 };
 
 const editPostSetCurrentDraft = (draftId, intl, draft) => dispatch => {
-  const draftBuild = dispatch(buildPost(draftId, draft));
+  const draftBuild = dispatch(buildPost(draftId, draft, true));
 
   dispatch(saveDraftRequest(draftBuild, intl));
 };
@@ -508,7 +508,7 @@ export const reviewCheckInfo = (
   };
 };
 
-export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
+export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState) => {
   const state = getState();
   const host = getCurrentHost(state);
   const user = getAuthenticatedUser(state);
@@ -530,10 +530,12 @@ export const buildPost = (draftId, data = {}) => (dispatch, getState) => {
   } = { ...getEditor(state), ...data };
   const currentObject = get(linkedObjects, '[0]', {});
   const objName = currentObject.author_permlink;
+  let updatedEditor = { isEditPost };
 
   if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
-    dispatch(setUpdatedEditorData({ topics: uniqWith([...topics, objName], isEqual) }));
+    updatedEditor = { ...updatedEditor, topics: uniqWith([...topics, objName], isEqual) };
   }
+  dispatch(setUpdatedEditorData(updatedEditor));
   const campaignId = get(campaign, '_id', null);
   const postData = {
     body: content || body || originalBody,
@@ -592,7 +594,7 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
     currentRawContent,
     draftId,
   } = getEditor(state);
-  const objName = getObjectName(object).toLowerCase();
+  const objName = getObjectName(object);
   const objPermlink = object.author_permlink;
   const separator = content.slice(-1) === '\n' ? '' : '\n';
   const draftContent = {
