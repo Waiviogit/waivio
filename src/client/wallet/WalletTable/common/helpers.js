@@ -11,7 +11,6 @@ import {
 } from '../../WalletHelper';
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import { guestUserRegex } from '../../../helpers/regexHelpers';
-import { totalType } from '../../../../common/constants/advansedReports';
 
 const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSteem) => {
   const transactionType = transaction.type;
@@ -141,6 +140,17 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         fieldHIVE: currentPaysAmount.currency === 'HIVE' && `${currentPaysAmount.amount}`,
         fieldHBD: currentPaysAmount.currency === 'HBD' && `${currentPaysAmount.amount}`,
         fieldDescription: limitOrderDescription.limitOrder,
+      };
+    }
+    case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
+      const isWithdraw = transaction.withdrawDeposit === 'w';
+
+      description = getTransactionDescription(transactionType);
+
+      return {
+        ...data,
+        fieldHIVE: `${isWithdraw ? '-' : ''} ${transaction.amount.split(' ')[0]}`,
+        fieldDescription: description.powerDownWithdraw,
       };
     }
     case accountHistoryConstants.FILL_ORDER: {

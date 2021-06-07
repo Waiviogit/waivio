@@ -10,8 +10,12 @@ import WalletFillOrderTransferred from './WalletFillOrderTransferred';
 import WalletLimitOrder from './WalletLimitOrder';
 import WalletCancelOrder from './WalletCancelOrder';
 import PowerUpTransactionTo from './PowerUpTransactionTo';
-import WalletProposalPay from './WalletProposalPay';
-import { fillOrderExchanger, getTransactionCurrency } from './WalletHelper';
+import {
+  fillOrderExchanger,
+  getTransactionCurrency,
+  getTransactionDescription,
+} from './WalletHelper';
+import PowerDownTransaction from './PowerDownTransaction';
 
 import './UserWalletTransactions.less';
 
@@ -142,18 +146,17 @@ const WalletTransaction = ({
           transactionType={transactionType}
         />
       );
-    case accountHistoryConstants.PROPOSAL_PAY:
+    case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
+      const desc = getTransactionDescription(transactionType);
+
       return (
-        <WalletProposalPay
-          receiver={transactionDetails.receiver}
-          payment={getTransactionCurrency(transactionDetails.payment)}
+        <PowerDownTransaction
+          amount={getTransactionCurrency(transactionDetails.amount, 'HP')}
           timestamp={transaction.timestamp}
-          withdraw={transaction.withdraw}
-          getDetails={handleDetailsClick}
-          currentUsername={currentUsername}
-          transactionType={transactionType}
+          description={desc.powerDownWithdraw}
         />
       );
+    }
     default:
       return null;
   }

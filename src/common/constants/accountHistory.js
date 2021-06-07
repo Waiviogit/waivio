@@ -15,6 +15,8 @@ export const CURATION_REWARD = 'curation_reward';
 export const AUTHOR_REWARD = 'author_reward';
 export const ACCOUNT_WITNESS_VOTE = 'account_witness_vote';
 export const FILL_VESTING_WITHDRAW = 'fill_vesting_withdraw';
+export const POWER_DOWN_INITIATED_OR_STOP = 'withdraw_vesting';
+export const POWER_DOWN_WITHDRAW = 'fill_vesting_withdraw';
 
 // Supported Custom JSON Type IDs
 export const ID_FOLLOW = 'follow';
