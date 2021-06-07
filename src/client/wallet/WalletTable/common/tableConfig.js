@@ -2,6 +2,10 @@ export const configReportsWebsitesTableHeader = [
   {
     id: 'active',
     type: 'checkbox',
+    intl: {
+      id: 'x',
+      defaultMessage: 'X',
+    },
   },
   {
     id: 'time',
@@ -77,8 +81,8 @@ export const configReportsWebsitesTableHeader = [
   {
     id: 'userName',
     intl: {
-      id: 'accounts',
-      defaultMessage: 'Accounts',
+      id: 'account',
+      defaultMessage: 'Account',
     },
   },
   {
