@@ -1680,5 +1680,11 @@
   "list_types": "Mga uri ng listahan",
   "Deposits": "Mga deposito",
   "Withdrawals": "Mga Withdrawals",
-  "total": "TOTAL"
+  "total": "TOTAL",
+  "website_create_alerts_info": "Nabasa ko at sumasang-ayon ako sa mga tuntunin at kundisyon ng",
+  "account_creation": "Paglikha ng account",
+  "totals_calculated": "Ang mga kabuuan ay makakalkula lamang para sa isang tinukoy mula sa hanggang yugto.",
+  "power_down_started": "Nagsimulang power down",
+  "power_down_stopping": "Natigil ang power down",
+  "power_down_withdraw": "Umatras mula sa pagtustos"
 }

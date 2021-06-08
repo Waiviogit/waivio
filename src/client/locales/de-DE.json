@@ -1676,5 +1676,15 @@
   "reserve_rewards_few_days": "Reservieren Sie die Belohnung für ein paar Tage",
   "receive_restaurant_rebates": "So erhalten Sie Restaurantrabatte",
   "cookies_experience": "Wir verwenden Cookies, um die Benutzererfahrung zu verbessern. Durch die Nutzung dieser Website stimmen Sie der Verwendung von Cookies zu. Weitere Informationen zur Website",
-  "list_types": "Listentypen"
+  "list_types": "Listentypen",
+  "website_create_alerts_info": "Ich habe die AGB gelesen und stimme ihnen zu",
+  "filter_posts": "Posts filtern",
+  "Deposits": "Einlagen",
+  "Withdrawals": "Auszahlungen",
+  "account_creation": "Kontoerstellung",
+  "totals_calculated": "Summen können nur für einen definierten Von-bis-Zeitraum berechnet werden.",
+  "power_down_started": "Herunterfahren gestartet",
+  "power_down_stopped": "Stromausfall gestoppt",
+  "power_down_withdraw": "Aus der Unverfallbarkeit zurückziehen",
+  "total": "GESAMT"
 }

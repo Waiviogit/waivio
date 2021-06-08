@@ -1676,5 +1676,15 @@
   "reserve_rewards_few_days": "Reserva la recompensa por unos días",
   "receive_restaurant_rebates": "Cómo recibir reembolsos en restaurantes",
   "cookies_experience": "Usamos cookies para mejorar la experiencia del usuario. Al utilizar este sitio, acepta el uso de cookies. Más información sobre el sitio web",
-  "list_types": "Tipos de lista"
+  "list_types": "Tipos de lista",
+  "website_create_alerts_info": "He leído y acepto los términos y condiciones del",
+  "Deposits": "Depósitos",
+  "Withdrawals": "Retiros",
+  "account_creation": "Creación de cuenta",
+  "totals_calculated": "Los totales se pueden calcular solo para un período desde-hasta definido.",
+  "power_down_started": "Inicio de apagado",
+  "power_down_stopped": "Detenido apagado",
+  "power_down_withdraw": "Retirar de la concesión",
+  "filter_posts": "Filtrar publicaciones",
+  "total": "TOTAL"
 }

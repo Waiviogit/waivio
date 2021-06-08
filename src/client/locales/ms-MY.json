@@ -1676,5 +1676,14 @@
   "reserve_rewards_few_days": "Tempah ganjaran selama beberapa hari",
   "receive_restaurant_rebates": "Cara Menerima Rebat Restoran",
   "cookies_experience": "Kami menggunakan kuki untuk meningkatkan pengalaman pengguna. Dengan menggunakan laman web ini, anda bersetuju dengan penggunaan kuki. Ketahui lebih lanjut mengenai laman web",
-  "list_types": "Jenis senarai"
+  "list_types": "Jenis senarai",
+  "website_create_alerts_info": "Saya telah membaca dan bersetuju dengan terma dan syarat",
+  "Deposits": "Deposits",
+  "Withdrawals": "Pengeluaran",
+  "account_creation": "Pembuatan akaun",
+  "totals_calculated": "Jumlah dapat dihitung hanya untuk jangka waktu yang ditentukan dari yang sampai.",
+  "power_down_started": "Mula dimatikan",
+  "power_down_stopped": "Daya berhenti dihentikan",
+  "power_down_withdraw": "Menarik balik hak letak hak",
+  "total": "JUMLAH"
 }

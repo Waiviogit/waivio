@@ -1676,5 +1676,14 @@
   "reserve_rewards_few_days": "保留奖励几天",
   "receive_restaurant_rebates": "如何获得餐厅回扣",
   "cookies_experience": "我们使用cookie来改善用户体验。使用本网站，即表示您同意使用cookie。了解有关网站的更多信息",
-  "list_types": "清单类型"
+  "list_types": "清单类型",
+  "website_create_alerts_info": "我已阅读并同意条款和条件",
+  "Deposits": "存款",
+  "Withdrawals": "提款",
+  "account_creation": "账户创建",
+  "totals_calculated": "只能计算定义的从-到期间的总数。",
+  "power_down_started": "开始断电",
+  "power_down_stopped": "停止断电",
+  "power_down_withdraw": "退出归属",
+  "total": "总计”"
 }

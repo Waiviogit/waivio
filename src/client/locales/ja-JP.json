@@ -1676,5 +1676,15 @@
   "reserve_rewards_few_days": "報酬を数日間予約する",
   "receive_restaurant_rebates": "レストランのリベートを受け取る方法",
   "cookies_experience": "ユーザーエクスペリエンスを向上させるためにCookieを使用しています。このサイトを使用することにより、Cookieの使用に同意したことになります。ウェブサイトの詳細",
-  "list_types": "リストタイプ"
+  "list_types": "リストタイプ",
+  "filter_posts": "投稿をフィルタリングする",
+  "website_create_alerts_info": "の利用規約を読み、同意します",
+  "Deposits": "預金",
+  "Withdrawals": "撤回",
+  "account_creation": "アカウントの作成",
+  "totals_calculated": "合計は、定義された開始から終了までの期間についてのみ計算できます。",
+  "power_down_started": "パワーダウンを開始しました",
+  "power_down_stopped": "停止した電源オフ",
+  "power_down_withdraw": "権利確定からの撤回",
+  "total": "合計"
 }

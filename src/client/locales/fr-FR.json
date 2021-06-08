@@ -1676,5 +1676,14 @@
   "reserve_rewards_few_days": "Réservez la récompense pendant quelques jours",
   "receive_restaurant_rebates": "Comment recevoir des remises au restaurant",
   "cookies_experience": "Nous utilisons des cookies pour améliorer l'expérience utilisateur. En utilisant ce site, vous consentez à l'utilisation de cookies. En savoir plus sur le site Web",
-  "list_types": "Types de listes"
+  "list_types": "Types de listes",
+  "website_create_alerts_info": "J'ai lu et j'accepte les termes et conditions du",
+  "Deposits": "Dépôts",
+  "Withdrawals": "Retraits",
+  "account_creation": "Création de compte",
+  "totals_calculated": "Les totaux ne peuvent être calculés que pour une période définie de début à fin.",
+  "power_down_started": "L'extinction a commencé",
+  "power_down_stopped": "Arrêt de la mise hors tension",
+  "power_down_withdraw": "Retrait de l'acquisition",
+  "total": "TOTAL"
 }

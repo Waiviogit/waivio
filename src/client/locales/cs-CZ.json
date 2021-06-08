@@ -1680,5 +1680,11 @@
   "list_types": "Typy seznamu",
   "Deposits": "Vklady",
   "Withdrawals": "Výběry",
-  "total": "CELKOVÝ"
+  "total": "CELKOVÝ",
+  "website_create_alerts_info": "Přečetl jsem a souhlasím s podmínkami",
+  "account_creation": "Vytvoření účtu",
+  "totals_calculated": "Součty lze vypočítat pouze za definované období od do do.",
+  "power_down_started": "Spuštěno napájení",
+  "power_down_stopped": "Vypnuto napájení",
+  "power_down_withdraw": "Odstoupit od nároku"
 }
