@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
 import { convertToRaw } from 'draft-js';
-import { fromMarkdown, Editor as MediumDraftEditor } from '../index';
+import { fromMarkdown, Editor as MediumDraftEditor, createEditorState } from '../index';
 import { SIDE_BUTTONS } from '../model/content';
 
 const MAX_LENGTH = 255;
@@ -19,6 +19,7 @@ const Editor = props => {
     props.setUpdatedEditorExtendedData({
       isMounted: true,
       titleValue: get(props, 'initialContent.title', ''),
+      editorState: createEditorState(fromMarkdown(props.initialContent)),
     });
     restoreObjects(fromMarkdown(props.initialContent));
   }, []);
