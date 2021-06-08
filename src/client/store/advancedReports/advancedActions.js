@@ -2,6 +2,7 @@ import * as ApiClient from '../../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import { getTransfersAccounts } from './advancedSelectors';
+import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 const parseTransactionData = trans => {
   if (guestUserRegex.test(trans.userName)) {
@@ -37,7 +38,11 @@ export const GET_TRANSACTIONS_FOR_TABLE = createAsyncActionType(
   '@advanced/GET_TRANSACTIONS_FOR_TABLE',
 );
 
-export const getUserTableTransactions = (filterAccounts, startDate, endDate) => dispatch => {
+export const getUserTableTransactions = (filterAccounts, startDate, endDate) => (
+  dispatch,
+  getState,
+) => {
+  const user = getAuthenticatedUserName(getState());
   const accounts = filterAccounts.map(acc => {
     const guest = guestUserRegex.test(acc);
 
@@ -51,12 +56,15 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
   return dispatch({
     type: GET_TRANSACTIONS_FOR_TABLE.ACTION,
     payload: {
-      promise: ApiClient.getAdvancedReports({
-        startDate,
-        endDate,
-        filterAccounts,
-        accounts,
-      }).then(data => {
+      promise: ApiClient.getAdvancedReports(
+        {
+          startDate,
+          endDate,
+          filterAccounts,
+          accounts,
+        },
+        user,
+      ).then(data => {
         const getCurrentValues = value => (startDate && endDate ? value : 0);
 
         return {
@@ -79,18 +87,23 @@ export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, 
   dispatch,
   getState,
 ) => {
-  const accounts = getTransfersAccounts(getState());
+  const state = getState();
+  const user = getAuthenticatedUserName(state);
+  const accounts = getTransfersAccounts(state);
   const getCurrentValues = value => (startDate && endDate ? value : 0);
 
   return dispatch({
     type: GET_MORE_TRANSACTIONS_FOR_TABLE.ACTION,
     payload: {
-      promise: ApiClient.getAdvancedReports({
-        startDate,
-        endDate,
-        filterAccounts,
-        accounts,
-      }).then(data => ({
+      promise: ApiClient.getAdvancedReports(
+        {
+          startDate,
+          endDate,
+          filterAccounts,
+          accounts,
+        },
+        user,
+      ).then(data => ({
         data: {
           ...data,
           wallet: data.wallet && data.wallet.map(parseTransactionData),

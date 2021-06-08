@@ -2064,16 +2064,15 @@ export const addNoteInVipTicket = (body, isGuest) => {
     .catch(e => e);
 };
 
-export const getAdvancedReports = body => {
-  return fetch(`${config.campaignApiPrefix}${config.payments}${config.advancedReport}`, {
-    headers,
+export const getAdvancedReports = (body, user = '') =>
+  fetch(`${config.campaignApiPrefix}${config.payments}${config.advancedReport}`, {
+    headers: { ...headers, user },
     body: JSON.stringify(body),
     method: 'POST',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
-};
 
 export const accountsCreationDate = userName => {
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.creationDate}`, {
@@ -2096,5 +2095,19 @@ export const calculateVoteValueForSlider = (userName, query) => {
     .then(res => res)
     .catch(e => e);
 };
+
+export const excludeAdvancedReports = (body, isGuest) =>
+  fetch(`${config.apiPrefix}${config.payments}`, {
+    headers: {
+      ...headers,
+      'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token'),
+      ...(isGuest ? { 'waivio-auth': true } : {}),
+    },
+    body: JSON.stringify(body),
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
 
 export default null;
