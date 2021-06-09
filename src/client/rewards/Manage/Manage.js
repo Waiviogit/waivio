@@ -28,6 +28,7 @@ class Manage extends React.Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape(),
     activateCampaign: PropTypes.func,
+    setHistoryFilters: PropTypes.func,
     inactivateCampaign: PropTypes.func,
     isGuest: PropTypes.bool,
   };
@@ -36,6 +37,7 @@ class Manage extends React.Component {
     user: {},
     activateCampaign: () => {},
     inactivateCampaign: () => {},
+    setHistoryFilters: () => {},
     isGuest: false,
     guestBalance: null,
   };
@@ -103,7 +105,7 @@ class Manage extends React.Component {
   };
 
   render() {
-    const { intl, user, userName, isGuest } = this.props;
+    const { intl, user, userName, isGuest, setHistoryFilters } = this.props;
     const { budgetTotal, campaigns } = this.state;
     const balanceContent = this.balanceContent();
     const rewardsCampaignContent = this.rewardsCampaignContent();
@@ -147,6 +149,7 @@ class Manage extends React.Component {
                   inactivateCampaign={this.props.inactivateCampaign}
                   campaigns={activeAndPendingCampaigns}
                   userName={user.name}
+                  setHistoryFilters={setHistoryFilters}
                 />
                 <div className="Manage__rewards-campaign-wrap-text-content">
                   {rewardsCampaignContent}
@@ -168,7 +171,11 @@ class Manage extends React.Component {
                   defaultMessage: 'History',
                 })}
               </div>
-              <CampaignRewardsHistoryTable userName={user.name} campaigns={historyCampaigns} />
+              <CampaignRewardsHistoryTable
+                userName={user.name}
+                campaigns={historyCampaigns}
+                setHistoryFilters={setHistoryFilters}
+              />
             </div>
           </React.Fragment>
         ) : (

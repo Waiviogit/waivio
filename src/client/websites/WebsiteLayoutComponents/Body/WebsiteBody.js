@@ -36,6 +36,7 @@ import { distanceInMBetweenEarthCoordinates } from '../../helper';
 import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
 import {
   getConfigurationValues,
+  getHostAddress,
   getReserveCounter,
   getScreenSize,
 } from '../../../store/appStore/appSelectors';
@@ -197,6 +198,7 @@ const WebsiteBody = props => {
   const currentLogo = configLogo || getObjectAvatar(aboutObject);
   const logoLink = get(aboutObject, ['defaultShowLink'], '/');
   const description = get(aboutObject, 'description', '');
+  const title = get(aboutObject, 'title', '');
 
   const reloadSearchList = () => {
     handleSetMapForSearch();
@@ -379,9 +381,10 @@ const WebsiteBody = props => {
   return (
     <div className="WebsiteBody">
       <Helmet>
-        <title>{description ? `${objName} - ${description}` : objName}</title>
+        <title>{title ? `${objName} - ${title}` : objName}</title>
+        <link rel="canonical" href={`https://${props.host}`} />
         <meta property="description" content={description} />
-        <meta property="og:title" content={objName} />
+        <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={global.postOrigin} />
         <meta property="og:image" content={currentLogo} />
@@ -391,7 +394,7 @@ const WebsiteBody = props => {
         <meta property="og:description" content={description} />
         <meta name="twitter:card" content={currentLogo ? 'summary_large_image' : 'summary'} />
         <meta name="twitter:site" content={'@waivio'} />
-        <meta name="twitter:title" content={objName} />
+        <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" property="twitter:image" content={currentLogo} />
         <meta property="og:site_name" content={objName} />
@@ -497,6 +500,7 @@ WebsiteBody.propTypes = {
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   searchString: PropTypes.string.isRequired,
+  host: PropTypes.string.isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   putUserCoordinates: PropTypes.func.isRequired,
@@ -544,6 +548,7 @@ export default connect(
     searchMap: getWebsiteMap(state),
     showReloadButton: getShowReloadButton(state),
     searchType: getWebsiteSearchType(state),
+    host: getHostAddress(state),
   }),
   {
     getCoordinates,

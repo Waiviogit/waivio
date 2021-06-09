@@ -1033,6 +1033,7 @@ class Rewards extends React.Component {
       propositionsReserved,
       activeGuideHistoryFilters,
       url,
+      setHistoryFilters: filters => this.setFilters(GUIDE_HISTORY, filters),
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);

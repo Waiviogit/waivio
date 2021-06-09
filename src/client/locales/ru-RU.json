@@ -1682,6 +1682,11 @@
   "create_new_account_protect": "Чтобы защитить Hive от спама, свидетели блокчейна ввели небольшую единовременную плату за новые учетные записи Hive.",
   "Deposits": "Депозиты",
   "Withdrawals": "Вывод средств",
+  "account_creation": "Создание аккаунта",
   "totals_calculated": "Итоги могут быть рассчитаны только за определенный период от до.",
-  "total": "ОБЩЕЕ"
+  "power_down_started": "Power down начался",
+  "power_down_stopped": "Закончился power down",
+  "power_down_withdraw": "Отказ от наделения",
+  "total": "ОБЩЕЕ",
+  "x_field_description": "Используйте это поле, чтобы исключить запись из расчета итогов."
 }

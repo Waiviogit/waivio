@@ -1676,5 +1676,15 @@
   "reserve_rewards_few_days": "Simpan hadiahnya untuk beberapa hari",
   "receive_restaurant_rebates": "Cara Menerima Rabat Restoran",
   "cookies_experience": "Kami menggunakan cookie untuk meningkatkan pengalaman pengguna. Dengan menggunakan situs ini, Anda menyetujui penggunaan cookie. Pelajari lebih lanjut tentang situs web",
-  "list_types": "Jenis daftar"
+  "list_types": "Jenis daftar",
+  "website_create_alerts_info": "Saya telah membaca dan menyetujui syarat dan ketentuan dari",
+  "Deposits": "Setoran",
+  "Withdrawals": "Penarikan",
+  "account_creation": "Pembuatan akun",
+  "totals_calculated": "Total hanya dapat dihitung untuk periode dari-sampai yang ditentukan.",
+  "power_down_started": "Mematikan daya",
+  "power_down_stopped": "Mematikan daya",
+  "power_down_withdraw": "Menari dari vesting",
+  "total": "JUMLAH",
+  "x_field_description": "Gunakan bidang ini untuk mengecualikan entri dari penghitungan total."
 }

@@ -1682,5 +1682,11 @@
   "Deposits": "Betétek",
   "Withdrawals": "Kivonások",
   "totals_calculated": "Összesen csak egy meghatározott kezdő-ig tartó időszakra lehet számítani",
-  "total": "TELJES"
+  "total": "TELJES",
+  "website_create_alerts_info": "Elolvastam és elfogadom a",
+  "account_creation": "Fiók létrehozása",
+  "power_down_started": "Megkezdte a kikapcsolást",
+  "power_down_stopped": "Leállított áramkimaradás",
+  "power_down_withdraw": "Visszavonás a tulajdonjogtól",
+  "x_field_description": "Ezzel a mezővel kizárhat egy bejegyzést az összesített számításból."
 }

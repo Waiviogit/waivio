@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { parseInt, round } from 'lodash';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import ReceiveTransaction from './ReceiveTransaction';
 import TransferTransaction from './TransferTransaction';
@@ -10,8 +11,13 @@ import WalletFillOrderTransferred from './WalletFillOrderTransferred';
 import WalletLimitOrder from './WalletLimitOrder';
 import WalletCancelOrder from './WalletCancelOrder';
 import PowerUpTransactionTo from './PowerUpTransactionTo';
-import WalletProposalPay from './WalletProposalPay';
-import { fillOrderExchanger, getTransactionCurrency } from './WalletHelper';
+import {
+  fillOrderExchanger,
+  getTransactionCurrency,
+  getTransactionDescription,
+} from './WalletHelper';
+import PowerDownTransaction from './PowerDownTransaction';
+import formatter from '../helpers/steemitFormatter';
 
 import './UserWalletTransactions.less';
 
@@ -142,18 +148,34 @@ const WalletTransaction = ({
           transactionType={transactionType}
         />
       );
-    case accountHistoryConstants.PROPOSAL_PAY:
+    case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
+      const desc = getTransactionDescription(transactionType);
+
       return (
-        <WalletProposalPay
-          receiver={transactionDetails.receiver}
-          payment={getTransactionCurrency(transactionDetails.payment)}
+        <PowerDownTransaction
+          amount={transactionDetails.amount}
           timestamp={transaction.timestamp}
-          withdraw={transaction.withdraw}
-          getDetails={handleDetailsClick}
-          currentUsername={currentUsername}
-          transactionType={transactionType}
+          description={desc.powerDownWithdraw}
         />
       );
+    }
+    case accountHistoryConstants.POWER_DOWN_INITIATED_OR_STOP: {
+      const desc = getTransactionDescription(transactionType);
+      const isInitiated = !!parseInt(transactionDetails.vesting_shares);
+      const amount = formatter.vestToSteem(
+        transactionDetails.vesting_shares,
+        totalVestingShares,
+        totalVestingFundSteem,
+      );
+
+      return (
+        <PowerDownTransaction
+          amount={`${round(amount, 3)} HP`}
+          timestamp={transaction.timestamp}
+          description={isInitiated ? desc.powerDownStarted : desc.powerDownStopped}
+        />
+      );
+    }
     default:
       return null;
   }

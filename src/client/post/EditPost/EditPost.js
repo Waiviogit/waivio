@@ -64,6 +64,7 @@ const EditPost = props => {
       draftContent,
       content,
       topics,
+      isEditPost,
       linkedObjects = [],
       hideLinkedObjects = [],
       objPercentage,
@@ -112,17 +113,17 @@ const EditPost = props => {
 
     setDraftId(hideLinkedObjectsSession);
     const editorData = {
-      title: get(props.currDraft, 'title', ''),
-      body: get(props.currDraft, 'body', ''),
+      title: get(props.currDraft, 'title', '') || get(props.editor, 'draftContent.title', ''),
+      body: get(props.currDraft, 'body', '') || get(props.editor, 'draftContent.body', ''),
     };
 
     if (editorData.title || editorData.body) props.saveDraft(editorData);
-    props.firstParseLinkedObjects(props.currDraft);
+    props.firstParseLinkedObjects(props.currDraft || props.editor.draftContent);
     setCurrDraft(props.currDraft);
   }, [props.draftId, props.campaignId]);
 
   React.useEffect(() => {
-    if (!currDraft && props.currDraft) {
+    if (!currDraft && props.currDraft && isEditPost) {
       props.firstParseLinkedObjects(props.currDraft);
       props.setEditorState(getInitialState(props));
       setCurrDraft(props.currDraft);

@@ -14,6 +14,7 @@ const CampaignRewardsTable = ({
   activateCampaign,
   inactivateCampaign,
   userName,
+  setHistoryFilters,
 }) => (
   <div>
     <table className="Campaign-rewards">
@@ -82,6 +83,7 @@ const CampaignRewardsTable = ({
             key={current._id}
             currentItem={current}
             userName={userName}
+            setHistoryFilters={setHistoryFilters}
           />
         ))}
       </tbody>
@@ -94,6 +96,7 @@ CampaignRewardsTable.propTypes = {
   intl: PropTypes.shape().isRequired,
   activateCampaign: PropTypes.func.isRequired,
   inactivateCampaign: PropTypes.func.isRequired,
+  setHistoryFilters: PropTypes.func.isRequired,
   userName: PropTypes.string.isRequired,
 };
 

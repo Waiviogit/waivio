@@ -11,7 +11,6 @@ import {
 } from '../../WalletHelper';
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import { guestUserRegex } from '../../../helpers/regexHelpers';
-import { totalType } from '../../../../common/constants/advansedReports';
 
 const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSteem) => {
   const transactionType = transaction.type;
@@ -36,9 +35,6 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         'HP',
       );
 
-      data.fieldHIVE = `${
-        transaction.withdrawDeposit === 'w' || !transaction.withdrawDeposit ? '-' : ''
-      }${toVestingAmount.amount}`;
       description = getTransactionDescription(transactionType, {
         from: transaction.from,
         to: transaction.to,
@@ -49,7 +45,16 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
           transaction.from === transaction.to
             ? description.powerUpTransaction
             : description.powerUpTransactionFrom;
-      } else data.fieldDescription = description.powerUpTransactionTo;
+        data.fieldHP = toVestingAmount.amount;
+      } else {
+        data.fieldDescription = description.powerUpTransactionTo;
+        data.fieldHIVE = `- ${toVestingAmount.amount}`;
+      }
+
+      if (transaction.to === transaction.from) {
+        data.fieldHP = toVestingAmount.amount;
+        data.fieldHIVE = `- ${toVestingAmount.amount}`;
+      }
 
       return data;
     }
@@ -141,6 +146,17 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         fieldHIVE: currentPaysAmount.currency === 'HIVE' && `${currentPaysAmount.amount}`,
         fieldHBD: currentPaysAmount.currency === 'HBD' && `${currentPaysAmount.amount}`,
         fieldDescription: limitOrderDescription.limitOrder,
+      };
+    }
+    case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
+      const isWithdraw = transaction.withdrawDeposit === 'w';
+
+      description = getTransactionDescription(transactionType);
+
+      return {
+        ...data,
+        fieldHIVE: `${isWithdraw ? '-' : ''} ${transaction.amount.split(' ')[0]}`,
+        fieldDescription: description.powerDownWithdraw,
       };
     }
     case accountHistoryConstants.FILL_ORDER: {

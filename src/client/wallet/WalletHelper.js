@@ -67,6 +67,23 @@ export const getTransactionDescription = (type, options) => {
         ),
       };
     }
+    case accountHistoryConstants.POWER_DOWN_INITIATED_OR_STOP: {
+      return {
+        powerDownStarted: (
+          <FormattedMessage id="power_down_started" defaultMessage="Started power down" />
+        ),
+        powerDownStopped: (
+          <FormattedMessage id="power_down_stopped" defaultMessage="Stopped power down" />
+        ),
+      };
+    }
+    case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
+      return {
+        powerDownWithdraw: (
+          <FormattedMessage id="power_down_withdraw" defaultMessage="Withdraw from vesting" />
+        ),
+      };
+    }
     case accountHistoryConstants.TRANSFER: {
       const urlPost = get(options, 'urlPost', '');
       const urlComment = get(options, 'urlComment', '');
