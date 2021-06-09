@@ -14,7 +14,11 @@ import {
   differenceBy,
   isEmpty,
 } from 'lodash';
-import { Entity } from '../components/EditorExtended';
+import { convertToRaw } from "draft-js";
+
+import { Block, createEditorState, Entity } from '../components/EditorExtended';
+
+// const mockPhoto = '📷';
 
 export const getNewLinkedObjectsCards = (
   prohibitObjects,
@@ -162,3 +166,35 @@ export const updatedHideObjectsPaste = (hideLinkedObjects, pastedObjects) => {
 
   return differenceBy(hideLinkedObjects, updatedHideLinkedObjects, '_id');
 };
+
+export const parseImagesFromBlocks = editorState => {
+  const { blocks, entityMap } = convertToRaw(editorState.getCurrentContent());
+  const entities = Object.values(entityMap);
+  const newBlocks = {
+    blocks: [],
+    entityMap,
+  };
+
+  console.log({ blocks, entityMap });
+  blocks.forEach((item) => {
+
+    if (item.text.includes('📷')) {
+      const correctText = item.text.trim().replace(/\r?\n/g, "");
+
+        if (correctText.length === 1 || correctText === '📷') {
+          const block = { ...item, type: Block.IMAGE, data: entities[0].data };
+
+          newBlocks.blocks = [...newBlocks.blocks, block];
+        } else {
+          // Есть предложение: Привет как дела, мокФото нормально дела, мокФото, плохо дела
+          // нужно разделить так на части: ['Привет как дела, ', 'мокФото', ' нормально дела, ', 'мокФото', ', плохо дела']
+          newBlocks.blocks = [...newBlocks.blocks, item];
+        }
+    } else {
+      newBlocks.blocks = [...newBlocks.blocks, item];
+    }
+  });
+  // console.log('parsedEditor', parsedEditor);
+
+  return createEditorState(newBlocks);
+}
