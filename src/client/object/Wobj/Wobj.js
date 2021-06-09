@@ -11,7 +11,7 @@ import Affix from '../../components/Utils/Affix';
 import LeftObjectProfileSidebar from '../../app/Sidebar/LeftObjectProfileSidebar';
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../../components/Sidebar/ObjectsRelated/ObjectsRelated';
-import { getObjectAvatar, getObjectType, hasType } from '../../helpers/wObjectHelper';
+import { getObjectAvatar, getObjectType, hasType, parseAddress } from '../../helpers/wObjectHelper';
 import OBJECT_TYPE from '../const/objectTypes';
 import { formColumnsField } from '../../../common/constants/listOfFields';
 import WobjectSidebarFollowers from '../../app/Sidebar/ObjectInfoExperts/WobjectSidebarFollowers';
@@ -37,8 +37,9 @@ const Wobj = ({
   const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
   const url = `${waivioHost}/object/${match.params.name}`;
   const albumsAndImagesCount = wobject.albums_count;
-  const displayedObjectName = objectName;
-  const desc = wobject.description || objectName;
+  const desc =
+    objectName && `${objectName}. ${parseAddress(wobject) || ''} ${wobject.description || ''}`;
+  const title = wobject.title || objectName;
   const formsList = get(wobject, 'form', []);
   const currentForm = formsList.find(item => item.permlink === match.params.itemId);
   const currentColumn = get(currentForm, 'column', '');
@@ -73,7 +74,7 @@ const Wobj = ({
           <title>{objectName}</title>
           <link rel="canonical" href={canonicalUrl} />
           <meta property="description" content={desc} />
-          <meta property="og:title" content={objectName} />
+          <meta property="og:title" content={title} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
@@ -83,7 +84,7 @@ const Wobj = ({
           <meta property="og:description" content={desc} />
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta name="twitter:site" content={'@waivio'} />
-          <meta name="twitter:title" content={objectName} />
+          <meta name="twitter:title" content={title} />
           <meta name="twitter:description" content={desc} />
           <meta name="twitter:image" property="twitter:image" content={image} />
           <meta property="og:site_name" content="Waivio" />
@@ -96,7 +97,7 @@ const Wobj = ({
           authenticated={authenticated}
           isFetching={isEmpty(wobject)}
           wobject={wobject}
-          username={displayedObjectName}
+          username={objectName}
           onFollowClick={handleFollowClick}
           toggleViewEditMode={toggleViewEditMode}
           albumsAndImagesCount={albumsAndImagesCount}
