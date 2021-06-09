@@ -1686,5 +1686,6 @@
   "total_calculated": "Kogusummasid saab arvutada ainult määratletud perioodist kuni.",
   "power_down_started": "Käivituslülitus",
   "power_down_stopped": "Seiskamine on peatatud",
-  "power_down_withdraw": "Taganemisest loobumine"
+  "power_down_withdraw": "Taganemisest loobumine",
+  "x_field_description": "Kasutage seda välja, et välistada kirje kogusummade arvutamisest."
 }

@@ -1686,5 +1686,6 @@
   "power_down_started": "تم بدء إيقاف التشغيل",
   "power_down_stopped": "تم إيقاف تشغيل الطاقة",
   "power_down_withdraw": "سحب من الاستحقاق",
-  "total": "إجمالي"
+  "total": "إجمالي",
+  "x_field_description": "استخدم هذا الحقل لاستبعاد إدخال من حساب الإجماليات."
 }

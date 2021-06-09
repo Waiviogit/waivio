@@ -1686,5 +1686,6 @@
   "power_down_stopped": "Spegnimento interrotto",
   "power_down_withdraw": "Ritiro dalla maturazione",
   "total": "TOTALE",
-  "filter_posts": "Filtra post"
+  "filter_posts": "Filtra post",
+  "x_field_description": "Utilizza questo campo per escludere una voce dal calcolo dei totali."
 }

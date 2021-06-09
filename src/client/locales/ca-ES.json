@@ -1686,5 +1686,6 @@
   "totals_calculated": "Els totals només es poden calcular per a un període definit de fins a.",
   "power_down_started": "S'ha iniciat l'apagat",
   "power_down_stopped": "S'ha aturat l'apagat",
-  "power_down_withdraw": "Retirar-se de la confecció"
+  "power_down_withdraw": "Retirar-se de la confecció",
+  "x_field_description": "Utilitzeu aquest camp per excloure una entrada del càlcul dels totals."
 }

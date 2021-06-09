@@ -1685,5 +1685,6 @@
   "power_down_started": "Desligamento iniciado",
   "power_down_stopped": "Desligamento interrompido",
   "power_down_withdraw": "Retirar da aquisição",
-  "total": "TOTAL"
+  "total": "TOTAL",
+  "x_field_description": "Use este campo para excluir uma entrada do cálculo de totais."
 }

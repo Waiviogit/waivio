@@ -1685,5 +1685,6 @@
   "power_down_started": "Rozpoczęto wyłączanie",
   "power_down_stopped": "Zatrzymano wyłączanie",
   "power_down_withdraw": "Wycofaj się z nabycia uprawnień",
-  "total": "OGÓŁEM"
+  "total": "OGÓŁEM",
+  "x_field_description": "Użyj tego pola, aby wykluczyć rekord z obliczania sum"
 }

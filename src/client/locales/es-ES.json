@@ -1686,5 +1686,6 @@
   "power_down_stopped": "Detenido apagado",
   "power_down_withdraw": "Retirar de la concesión",
   "filter_posts": "Filtrar publicaciones",
-  "total": "TOTAL"
+  "total": "TOTAL",
+  "x_field_description": "Utilice este campo para excluir una entrada del cálculo de totales"
 }

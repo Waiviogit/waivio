@@ -1685,5 +1685,6 @@
   "power_down_started": "पावर डाउन शुरू किया",
   "power_down_stopped": "पॉवर बंद कर दिया",
   "power_down_withdraw": "निहित होने से हटें",
-  "total": "कुल"
+  "total": "कुल",
+  "x_field_description": "इस फ़ील्ड का उपयोग कुल गणना से किसी प्रविष्टि को बाहर करने के लिए करें।"
 }

@@ -1685,5 +1685,6 @@
   "power_down_started": "Mematikan daya",
   "power_down_stopped": "Mematikan daya",
   "power_down_withdraw": "Menari dari vesting",
-  "total": "JUMLAH"
+  "total": "JUMLAH",
+  "x_field_description": "Gunakan bidang ini untuk mengecualikan entri dari penghitungan total."
 }

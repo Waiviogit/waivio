@@ -1686,5 +1686,6 @@
   "totals_calculated": "Součty lze vypočítat pouze za definované období od do do.",
   "power_down_started": "Spuštěno napájení",
   "power_down_stopped": "Vypnuto napájení",
-  "power_down_withdraw": "Odstoupit od nároku"
+  "power_down_withdraw": "Odstoupit od nároku",
+  "x_field_description": "Toto pole použijte k vyloučení položky z výpočtu součtu."
 }

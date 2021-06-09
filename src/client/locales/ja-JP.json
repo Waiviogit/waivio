@@ -1686,5 +1686,6 @@
   "power_down_started": "パワーダウンを開始しました",
   "power_down_stopped": "停止した電源オフ",
   "power_down_withdraw": "権利確定からの撤回",
-  "total": "合計"
+  "total": "合計",
+  "x_field_description": "このフィールドを使用して、合計の計算からエントリを除外します。"
 }

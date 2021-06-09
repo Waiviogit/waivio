@@ -1686,5 +1686,6 @@
   "power_down_stopped": "Leállított áramkimaradás",
   "power_down_withdraw": "Visszavonás a tulajdonjogtól",
   "account_creation": "Fiók létrehozása",
-  "totals_calculated": "Az összegek csak egy meghatározott átmeneti időszakra számíthatók."
+  "totals_calculated": "Az összegek csak egy meghatározott átmeneti időszakra számíthatók.",
+  "x_field_description": "Koristite ovo polje za izuzimanje unosa iz izračuna ukupnih unosa."
 }

@@ -1685,5 +1685,6 @@
   "power_down_started": "L'extinction a commencé",
   "power_down_stopped": "Arrêt de la mise hors tension",
   "power_down_withdraw": "Retrait de l'acquisition",
-  "total": "TOTAL"
+  "total": "TOTAL",
+  "x_field_description": "Utilisez ce champ pour exclure une entrée du calcul des totaux."
 }

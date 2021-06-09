@@ -1685,5 +1685,6 @@
   "power_down_started": "开始断电",
   "power_down_stopped": "停止断电",
   "power_down_withdraw": "退出归属",
-  "total": "总计”"
+  "total": "总计",
+  "x_field_description": "使用此字段从总计计算中排除条目。"
 }

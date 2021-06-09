@@ -1687,5 +1687,6 @@
   "account_creation": "Rekening skep",
   "power_down_started": "Begin om af te skakel",
   "power_down_stopped": "Gestop gestop",
-  "power_down_withdraw": "Onttrek van vestiging"
+  "power_down_withdraw": "Onttrek van vestiging",
+  "x_field_description": "Gebruik hierdie veld om 'n inskrywing van die totale berekening uit te sluit."
 }

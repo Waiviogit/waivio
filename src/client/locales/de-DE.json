@@ -1686,5 +1686,6 @@
   "power_down_started": "Herunterfahren gestartet",
   "power_down_stopped": "Stromausfall gestoppt",
   "power_down_withdraw": "Aus der Unverfallbarkeit zurückziehen",
-  "total": "GESAMT"
+  "total": "GESAMT",
+  "x_field_description": "Verwenden Sie dieses Feld, um einen Eintrag von der Summenberechnung auszuschließen."
 }

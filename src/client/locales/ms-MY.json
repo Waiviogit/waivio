@@ -1685,5 +1685,6 @@
   "power_down_started": "Mula dimatikan",
   "power_down_stopped": "Daya berhenti dihentikan",
   "power_down_withdraw": "Menarik balik hak letak hak",
-  "total": "JUMLAH"
+  "total": "JUMLAH",
+  "x_field_description": "Gunakan bidang ini untuk mengecualikan entri dari jumlah pengiraan."
 }
