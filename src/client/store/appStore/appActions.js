@@ -167,4 +167,5 @@ export const GET_WEBSITE_CONFIG_FOR_SSR = createAsyncActionType('@app/GET_WEBSIT
 export const getWebsiteConfigForSSR = host => ({
   type: GET_WEBSITE_CONFIG_FOR_SSR.ACTION,
   payload: ApiClient.getWebsitesConfiguration(host),
+  meta: host,
 });

@@ -68,6 +68,8 @@ export const getWebsiteParentHost = createSelector([appState], state => state.pa
 
 export const getHelmetIcon = createSelector([appState], state => state.helmetIcon);
 
+export const getHostAddress = createSelector([appState], state => state.hostAddress);
+
 export const getWeightValue = createSelector(
   getRate,
   getRewardFund,
