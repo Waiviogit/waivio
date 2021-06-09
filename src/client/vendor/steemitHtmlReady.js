@@ -245,11 +245,6 @@ function linkify(content, mutate, hashtags, usertags, images, links) {
   );
 
   content = content.replace(linksRe.any, ln => {
-    if (linksRe.image.test(ln)) {
-      if (images) images.add(ln);
-      return `<img src="${ln}" />`;
-    }
-
     // do not linkify .exe or .zip urls
     if (/\.(zip|exe)$/i.test(ln)) return ln;
 
