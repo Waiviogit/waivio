@@ -1680,5 +1680,12 @@
   "list_types": "목록 유형",
   "Deposits": "매장",
   "Withdrawals": "인출",
-  "total": "합계"
+  "total": "합계",
+  "website_create_alerts_info": "나는 약관을 읽었으며 이에 동의합니다.",
+  "account_creation": "계정 생성",
+  "totals_calculated": "총계는 정의 된 시작-경계 기간에 대해서만 계산할 수 있습니다.",
+  "power_down_started": "전원 차단 시작",
+  "power_down_stopped": "전원 차단 중지",
+  "power_down_withdraw": "베스 팅에서 철회",
+  "x_field_description": "총계 계산에서 항목을 제외하려면이 필드를 사용하십시오."
 }

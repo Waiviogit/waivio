@@ -1676,5 +1676,15 @@
   "reserve_rewards_few_days": "Zarezerwuj nagrodę na kilka dni",
   "receive_restaurant_rebates": "Jak otrzymywać rabaty w restauracji",
   "cookies_experience": "Używamy plików cookie, aby poprawić komfort użytkowania. Korzystając z tej strony, wyrażasz zgodę na używanie plików cookie. Dowiedz się więcej o stronie internetowej",
-  "list_types": "Typy list"
+  "list_types": "Typy list",
+  "website_create_alerts_info": "Przeczytałem i zgadzam się z regulaminem",
+  "Deposits": "Depozyty",
+  "Withdrawals": "Wypłaty",
+  "account_creation": "Tworzenie konta",
+  "totals_calculated": "Podsumowania można obliczyć tylko za zdefiniowany okres od-do.",
+  "power_down_started": "Rozpoczęto wyłączanie",
+  "power_down_stopped": "Zatrzymano wyłączanie",
+  "power_down_withdraw": "Wycofaj się z nabycia uprawnień",
+  "total": "OGÓŁEM",
+  "x_field_description": "Użyj tego pola, aby wykluczyć rekord z obliczania sum"
 }
