@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { parseInt, round } from 'lodash';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import ReceiveTransaction from './ReceiveTransaction';
 import TransferTransaction from './TransferTransaction';
@@ -16,6 +17,7 @@ import {
   getTransactionDescription,
 } from './WalletHelper';
 import PowerDownTransaction from './PowerDownTransaction';
+import formatter from '../helpers/steemitFormatter';
 
 import './UserWalletTransactions.less';
 
@@ -151,9 +153,26 @@ const WalletTransaction = ({
 
       return (
         <PowerDownTransaction
-          amount={getTransactionCurrency(transactionDetails.amount, 'HP')}
+          amount={transactionDetails.amount}
           timestamp={transaction.timestamp}
           description={desc.powerDownWithdraw}
+        />
+      );
+    }
+    case accountHistoryConstants.POWER_DOWN_INITIATED_OR_STOP: {
+      const desc = getTransactionDescription(transactionType);
+      const isInitiated = !!parseInt(transactionDetails.vesting_shares);
+      const amount = formatter.vestToSteem(
+        transactionDetails.vesting_shares,
+        totalVestingShares,
+        totalVestingFundSteem,
+      );
+
+      return (
+        <PowerDownTransaction
+          amount={`${round(amount, 3)} HP`}
+          timestamp={transaction.timestamp}
+          description={isInitiated ? desc.powerDownStarted : desc.powerDownStopped}
         />
       );
     }

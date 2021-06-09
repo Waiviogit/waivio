@@ -1676,5 +1676,16 @@
   "reserve_rewards_few_days": "احتفظ بالمكافأة لبضعة أيام",
   "receive_restaurant_rebates": "كيفية الحصول على حسومات المطعم",
   "cookies_experience": "نحن نستخدم ملفات تعريف الارتباط لتحسين تجربة المستخدم. باستخدام هذا الموقع ، فإنك توافق على استخدام ملفات تعريف الارتباط. تعرف على المزيد حول الموقع",
-  "list_types": "أنواع القوائم"
+  "list_types": "أنواع القوائم",
+  "website_create_alerts_info": "لقد قرأت ووافقت على شروط وأحكام",
+  "filter_posts": "تصفية المشاركات",
+  "Deposits": "الودائع",
+  "Withdrawals": "الانسحابات",
+  "account_creation": "إنشاء الحساب",
+  "totals_calculated": "يمكن حساب المجاميع فقط لفترة محددة من",
+  "power_down_started": "تم بدء إيقاف التشغيل",
+  "power_down_stopped": "تم إيقاف تشغيل الطاقة",
+  "power_down_withdraw": "سحب من الاستحقاق",
+  "total": "إجمالي",
+  "x_field_description": "استخدم هذا الحقل لاستبعاد إدخال من حساب الإجماليات."
 }

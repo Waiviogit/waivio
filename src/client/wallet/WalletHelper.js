@@ -69,7 +69,6 @@ export const getTransactionDescription = (type, options) => {
     }
     case accountHistoryConstants.POWER_DOWN_INITIATED_OR_STOP: {
       return {
-        powerUpTransaction: <FormattedMessage id="powered_up" defaultMessage="Powered up " />,
         powerDownStarted: (
           <FormattedMessage id="power_down_started" defaultMessage="Started power down" />
         ),

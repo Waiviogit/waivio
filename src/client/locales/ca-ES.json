@@ -1678,7 +1678,14 @@
   "filter_posts": "Filtra les publicacions",
   "cookies_experience": "Utilitzem cookies per millorar l'experiència de l'usuari. En utilitzar aquest lloc, accepteu l’ús de cookies. Obteniu més informació sobre el lloc web",
   "list_types": "Tipus de llista",
-  "Deposits": "Deposits",
-  "Withdrawals": "Withdrawals",
-  "total": "TOTAL"
+  "Deposits": "Depósitos",
+  "Withdrawals": "Retiros",
+  "total": "TOTAL",
+  "website_create_alerts_info": "He llegit i accepto els termes i condicions del",
+  "account_creation": "Creació de comptes",
+  "totals_calculated": "Els totals només es poden calcular per a un període definit de fins a.",
+  "power_down_started": "S'ha iniciat l'apagat",
+  "power_down_stopped": "S'ha aturat l'apagat",
+  "power_down_withdraw": "Retirar-se de la confecció",
+  "x_field_description": "Utilitzeu aquest camp per excloure una entrada del càlcul dels totals."
 }
