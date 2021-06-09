@@ -171,10 +171,8 @@ export function getObjectUrl(objPermlink) {
 }
 
 const setTitle = (initObjects, props) => {
-  const objects = initObjects.reverse();
-
-  if (size(objects)) {
-    const title = objects.reduce((acc, curr) => {
+  if (size(initObjects)) {
+    const title = initObjects.reduce((acc, curr) => {
       const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
 
       if (!isNil(matches) && matches[1]) {

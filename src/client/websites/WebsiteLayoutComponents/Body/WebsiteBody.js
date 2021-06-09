@@ -382,7 +382,7 @@ const WebsiteBody = props => {
     <div className="WebsiteBody">
       <Helmet>
         <title>{title ? `${objName} - ${title}` : objName}</title>
-        <link rel="canonical" href={`https://${props.host}`} />
+        <link rel="canonical" href={`https://${props.host}/`} />
         <meta property="description" content={description} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
