@@ -1680,5 +1680,12 @@
     "list_types": "Listetyper",
     "Deposits": "Indskud",
     "Withdrawals": "Tilbagetrækninger",
-    "total": "TOTAL"
-}
+    "total": "TOTAL",
+    "website_create_alerts_info": "Jeg har læst og accepteret vilkårene og betingelser for",
+    "account_creation": "Oprettelse af konto",
+    "totals_calculated": "Samlet kan beregnes for en defineret fra-til-periode.",
+    "power_down_started": "Startet nedlukning",
+    "power_down_stopped": "Stop med strømmen ned",
+    "power_down_withdraw": "Tilbagetrækning fra optjening",
+    "x_field_description": "Brug dette felt til at udelukke en post fra totalberegningen."
+  }
