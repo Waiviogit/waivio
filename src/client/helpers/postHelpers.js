@@ -170,29 +170,50 @@ export function getObjectUrl(objPermlink) {
   return `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objPermlink}`;
 }
 
+const setTitle = (initObjects, props) => {
+  const objects = initObjects.reverse();
+
+  if (size(objects)) {
+    const title = objects.reduce((acc, curr) => {
+      const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
+
+      if (!isNil(matches) && matches[1]) {
+        return `${acc}${matches[1]}, `;
+      }
+
+      return acc;
+    }, 'Review: ');
+
+    return title.substr(0, title.length - 2);
+  }
+
+  return get(props, 'editor.draftContent.title', '');
+};
+
 export function getInitialState(props, hideLinkedObjectsSession = []) {
-  const search = props.location.search.replace(/ & /, ' ');
-  const initObjects = new URLSearchParams(search).getAll('object');
+  const initObjects = new URLSearchParams(props.location.search).getAll('object');
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
   const campaignId = props.campaignId ? { id: props.campaignId } : null;
   const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
+  const title = setTitle(initObjects, props);
   let state = {
     campaign,
     draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
-      title: '',
-      body: initObjects
-        ? initObjects.reduce((acc, curr) => {
-            const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
+      title,
+      body:
+        get(props, 'editor.draftContent.body', false) || size(initObjects)
+          ? initObjects.reduce((acc, curr) => {
+              const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
 
-            if (!isNil(matches) && matches[1] && matches[2]) {
-              return `${acc}[${matches[1]}](${getObjectUrl(matches[2])})\n`;
-            }
+              if (!isNil(matches) && matches[1] && matches[2]) {
+                return `${acc}[${matches[1]}](${getObjectUrl(matches[2])})\n`;
+              }
 
-            return acc;
-          }, '')
-        : '',
+              return acc;
+            }, '')
+          : '',
     },
     content: '',
     topics: [],
@@ -207,7 +228,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     isUpdating: false,
     permlink: null,
     originalBody: null,
-    titleValue: '',
+    titleValue: title,
     currentRawContent: {},
     isEditPost: get(props, 'editor.isEditPost', false),
   };

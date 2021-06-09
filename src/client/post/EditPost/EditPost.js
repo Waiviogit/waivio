@@ -113,12 +113,12 @@ const EditPost = props => {
 
     setDraftId(hideLinkedObjectsSession);
     const editorData = {
-      title: get(props.currDraft, 'title', ''),
-      body: get(props.currDraft, 'body', ''),
+      title: get(props.currDraft, 'title', '') || get(props.editor, 'draftContent.title', ''),
+      body: get(props.currDraft, 'body', '') || get(props.editor, 'draftContent.body', ''),
     };
 
     if (editorData.title || editorData.body) props.saveDraft(editorData);
-    props.firstParseLinkedObjects(props.currDraft);
+    props.firstParseLinkedObjects(props.currDraft || props.editor.draftContent);
     setCurrDraft(props.currDraft);
   }, [props.draftId, props.campaignId]);
 
