@@ -2,7 +2,7 @@ import * as ApiClient from '../../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import { getTransfersAccounts } from './advancedSelectors';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 
 const parseTransactionData = trans => {
   if (guestUserRegex.test(trans.userName)) {
@@ -133,13 +133,47 @@ export const deleteUsersTransactionDate = name => ({
 
 export const CALCULATE_TOTAL_CHANGES = '@advanced/CALCULATE_TOTAL_CHANGES';
 
-export const calculateTotalChanges = (amount, type, decrement) => ({
-  type: CALCULATE_TOTAL_CHANGES,
-  payload: { amount, type, decrement },
-});
+export const calculateTotalChanges = (item, checked) => dispatch => {
+  dispatch({
+    type: CALCULATE_TOTAL_CHANGES,
+    payload: { amount: item.usd, type: item.withdrawDeposit, decrement: checked },
+  });
+  dispatch(
+    excludeTransfer({
+      ...item,
+      checked,
+    }),
+  );
+};
 
 export const RESET_REPORTS = '@advanced/RESET_REPORTS';
 
 export const resetReportsData = () => ({
   type: RESET_REPORTS,
 });
+
+export const EXCLUDE_TRANSFER = createAsyncActionType('@advanced/EXCLUDE_TRANSFER');
+
+export const excludeTransfer = body => (dispatch, getState) => {
+  const state = getState();
+  const isGuest = isGuestUser(state);
+  const authUserName = getAuthenticatedUserName(state);
+  const key = guestUserRegex.test(body.userName) ? 'recordId' : 'operationNum';
+
+  return dispatch({
+    type: EXCLUDE_TRANSFER.ACTION,
+    payload: ApiClient.excludeAdvancedReports(
+      {
+        userName: authUserName,
+        userWithExemptions: body.userName,
+        checked: body.checked,
+        [key]: body.id,
+      },
+      isGuest,
+    ),
+    meta: {
+      id: body.id,
+      key,
+    },
+  });
+};

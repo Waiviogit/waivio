@@ -1,6 +1,6 @@
 export const configReportsWebsitesTableHeader = [
   {
-    id: 'active',
+    id: 'checked',
     type: 'checkbox',
     intl: {
       id: 'x',
