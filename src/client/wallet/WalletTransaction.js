@@ -149,13 +149,20 @@ const WalletTransaction = ({
         />
       );
     case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
-      const desc = getTransactionDescription(transactionType);
+      const desc = getTransactionDescription(transactionType, {
+        to: transactionDetails.to,
+        from: transactionDetails.from,
+      });
 
       return (
         <PowerDownTransaction
           amount={transactionDetails.amount}
           timestamp={transaction.timestamp}
-          description={desc.powerDownWithdraw}
+          description={
+            transactionDetails.to === transactionDetails.from
+              ? desc.powerDownWithdraw
+              : desc.powerDownWithdrawTo
+          }
         />
       );
     }

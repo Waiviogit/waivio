@@ -153,12 +153,18 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
       const isWithdraw = transaction.withdrawDeposit === 'w';
 
-      description = getTransactionDescription(transactionType);
+      description = getTransactionDescription(transactionType, {
+        from: transaction.from,
+        to: transaction.to,
+      });
 
       return {
         ...data,
         fieldHIVE: `${isWithdraw ? '-' : ''} ${transaction.amount.split(' ')[0]}`,
-        fieldDescription: description.powerDownWithdraw,
+        fieldDescription:
+          transaction.from === transaction.to
+            ? description.powerDownWithdraw
+            : description.powerDownWithdrawTo,
       };
     }
     case accountHistoryConstants.FILL_ORDER: {

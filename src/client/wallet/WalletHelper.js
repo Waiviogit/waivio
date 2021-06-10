@@ -78,9 +78,30 @@ export const getTransactionDescription = (type, options) => {
       };
     }
     case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
+      const from = get(options, 'from', '');
+      const to = get(options, 'to', '');
+
       return {
         powerDownWithdraw: (
           <FormattedMessage id="power_down_withdraw" defaultMessage="Withdraw from vesting" />
+        ),
+        powerDownWithdrawTo: (
+          <FormattedMessage
+            id="power_down_withdraw_from"
+            defaultMessage="Withdraw from vesting from {from} to {to}"
+            values={{
+              from: (
+                <Link to={`/@${from}`}>
+                  <span className="username">{from}</span>
+                </Link>
+              ),
+              to: (
+                <Link to={`/@${to}`}>
+                  <span className="username">{to}</span>
+                </Link>
+              ),
+            }}
+          />
         ),
       };
     }

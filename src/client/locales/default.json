@@ -1687,5 +1687,6 @@
   "power_down_started": "Started power down",
   "power_down_stopped": "Stopped power down",
   "power_down_withdraw": "Withdraw from vesting",
+  "power_down_withdraw_from": "Withdraw from vesting from {from} to {to}",
   "total": "TOTAL"
 }
