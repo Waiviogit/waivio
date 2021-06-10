@@ -128,5 +128,6 @@
   "advancedReport": "/advanced-report",
   "creationDate": "/creation-date",
   "voteValue": "/vote-value",
+  "exemptions": "/exemptions",
   "immediateWithdraw": "/immediate-withdraw"
 }

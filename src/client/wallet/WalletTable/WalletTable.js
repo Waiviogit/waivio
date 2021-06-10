@@ -24,6 +24,7 @@ import {
   deleteUsersTransactionDate,
   resetReportsData,
   calculateTotalChanges,
+  excludeTransfer,
 } from '../../store/advancedReports/advancedActions';
 import compareTransferBody from './common/helpers';
 import {
@@ -65,6 +66,7 @@ import './WalletTable.less';
     getGlobalProperties,
     calculateTotalChanges,
     resetReportsData,
+    excludeTransfer,
   },
 )
 class WalletTable extends React.Component {
@@ -296,9 +298,7 @@ class WalletTable extends React.Component {
             })}
             showMore={this.props.hasMore && !this.state.dateEstablished}
             handleShowMore={this.handleLoadMore}
-            onChange={(e, item) =>
-              this.props.calculateTotalChanges(item.usd, item.withdrawDeposit, e.target.checked)
-            }
+            onChange={(e, item) => this.props.calculateTotalChanges(item, e.target.checked)}
           />
         )}
       </React.Fragment>

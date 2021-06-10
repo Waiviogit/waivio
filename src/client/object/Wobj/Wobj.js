@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Helmet } from 'react-helmet';
-import { get, isEmpty, round } from 'lodash';
+import { get, isEmpty, round, reduce } from 'lodash';
 import { renderRoutes } from 'react-router-config';
 import DEFAULTS from '../const/defaultValues';
 import ScrollToTopOnMount from '../../components/Utils/ScrollToTopOnMount';
@@ -41,13 +41,17 @@ const Wobj = ({
   const titleText = isWaivio
     ? `${objectName}${` - ${parseAddress(wobject)}` || ''} - Waivio`
     : objectName;
-  const tagCategories = wobject.tagCategory.reduce((acc, curr) => {
-    const currentCategory = !isEmpty(curr.items)
-      ? `${curr.body}: ${curr.items.map(item => item.body).join(' ,')}`
-      : '';
+  const tagCategories = reduce(
+    wobject.tagCategory,
+    (acc, curr) => {
+      const currentCategory = !isEmpty(curr.items)
+        ? `${curr.body}: ${curr.items.map(item => item.body).join(' ,')}`
+        : '';
 
-    return acc ? `${acc}. ${currentCategory}` : currentCategory;
-  }, '');
+      return acc ? `${acc}. ${currentCategory}` : currentCategory;
+    },
+    '',
+  );
 
   const desc =
     objectName &&

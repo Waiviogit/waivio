@@ -1,6 +1,7 @@
 import {
   CALCULATE_TOTAL_CHANGES,
   DELETE_USERS_CREATION_DATE,
+  EXCLUDE_TRANSFER,
   GET_MORE_TRANSACTIONS_FOR_TABLE,
   GET_TRANSACTIONS_FOR_TABLE,
   GET_USERS_CREATION_DATE,
@@ -85,6 +86,26 @@ export default function advancedReducer(state = initialState, action) {
       return {
         ...state,
         [key]: state[key] + amount,
+      };
+    }
+
+    case EXCLUDE_TRANSFER.START: {
+      const transferList = [...state.wallet];
+      const transferIndex = transferList.findIndex(
+        transaction => transaction[action.meta.key] === action.meta.id,
+      );
+      const transfer = transferList[transferIndex];
+
+      if (transfer) {
+        transferList.splice(transferIndex, 1, {
+          ...transfer,
+          checked: !transfer.checked,
+        });
+      }
+
+      return {
+        ...state,
+        wallet: transferList,
       };
     }
 

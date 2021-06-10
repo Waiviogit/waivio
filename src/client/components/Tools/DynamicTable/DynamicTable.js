@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { get, isEmpty, size } from 'lodash';
+import { get, isEmpty, size, isNil } from 'lodash';
 import { Checkbox } from 'antd';
 import Loading from '../../Icon/Loading';
 
@@ -28,7 +28,7 @@ export const DynamicTable = ({
           <Checkbox
             className="DynamicTable__checkbox"
             onChange={e => onChange(e, item)}
-            {...(get(item, 'checked') ? { checked: item.checked } : {})}
+            {...(!isNil(get(item, 'checked')) ? { checked: item.checked } : {})}
           />
         );
 

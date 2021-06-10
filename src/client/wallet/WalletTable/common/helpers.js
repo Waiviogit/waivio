@@ -24,7 +24,9 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     hbdUSD: round(get(transaction, 'hbdUSD'), 3),
     withdrawDeposit: get(transaction, 'withdrawDeposit'),
     usd: get(transaction, 'usd'),
+    checked: get(transaction, 'checked'),
     userName: user,
+    id: isGuestPage ? get(transaction, '_id') : get(transaction, 'operationNum'),
   };
 
   switch (transactionType) {
