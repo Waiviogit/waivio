@@ -13,7 +13,7 @@ const parseTransactionData = trans => {
     };
     const transferDirection = Object.values(guestActionType).includes(trans.type)
       ? { from: trans.sponsor, to: trans.userName }
-      : { from: trans.userName, to: trans.sponsor || 'mock' };
+      : { from: trans.userName, to: trans.sponsor };
 
     return {
       ...transferDirection,
@@ -28,6 +28,7 @@ const parseTransactionData = trans => {
       hiveUSD: trans.hiveUSD,
       withdrawDeposit: trans.withdrawDeposit,
       usd: trans.usd,
+      _id: trans._id,
     };
   }
 
