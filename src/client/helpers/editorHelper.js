@@ -14,11 +14,11 @@ import {
   differenceBy,
   isEmpty,
 } from 'lodash';
-import { convertToRaw } from "draft-js";
+import { convertToRaw, genKey } from 'draft-js';
 
 import { Block, createEditorState, Entity } from '../components/EditorExtended';
 
-// const mockPhoto = '📷';
+const mockPhoto = '📷';
 
 export const getNewLinkedObjectsCards = (
   prohibitObjects,
@@ -167,34 +167,74 @@ export const updatedHideObjectsPaste = (hideLinkedObjects, pastedObjects) => {
   return differenceBy(hideLinkedObjects, updatedHideLinkedObjects, '_id');
 };
 
+const getPartsOfSentence = string => {
+  const parts = string
+    .trim()
+    .split(mockPhoto)
+    .reduce((acc, part) => [...acc, part, mockPhoto], []);
+
+  parts.pop();
+
+  return parts;
+};
+
 export const parseImagesFromBlocks = editorState => {
   const { blocks, entityMap } = convertToRaw(editorState.getCurrentContent());
+
   const entities = Object.values(entityMap);
+  const images = entities.filter(entity => entity.type === Entity.IMAGE);
   const newBlocks = {
     blocks: [],
     entityMap,
   };
 
-  console.log({ blocks, entityMap });
-  blocks.forEach((item) => {
+  blocks.forEach((item, index) => {
+    if (item.text.includes(mockPhoto)) {
+      const correctText = item.text.trim().replace(/\r?\n/g, '');
 
-    if (item.text.includes('📷')) {
-      const correctText = item.text.trim().replace(/\r?\n/g, "");
+      if (correctText.length === 1 || correctText === mockPhoto) {
+        const block = {
+          ...item,
+          type: Block.IMAGE,
+          data: get(images, '[0].data', false) || get(item, 'data', {}),
+        };
 
-        if (correctText.length === 1 || correctText === '📷') {
-          const block = { ...item, type: Block.IMAGE, data: entities[0].data };
+        images.shift();
+        newBlocks.blocks = [...newBlocks.blocks, block];
+      } else {
+        const parts = getPartsOfSentence(item.text);
 
-          newBlocks.blocks = [...newBlocks.blocks, block];
-        } else {
-          // Есть предложение: Привет как дела, мокФото нормально дела, мокФото, плохо дела
-          // нужно разделить так на части: ['Привет как дела, ', 'мокФото', ' нормально дела, ', 'мокФото', ', плохо дела']
-          newBlocks.blocks = [...newBlocks.blocks, item];
-        }
+        parts.forEach(part => {
+          const newBlockKey = genKey();
+
+          if (part.trim().replace(/\r?\n/g, '') === mockPhoto) {
+            const newBlock = {
+              key: newBlockKey,
+              type: Block.IMAGE,
+              text: mockPhoto,
+              depth: 0,
+              data: get(images, '[0].data', {}),
+            };
+
+            images.shift();
+            newBlocks.blocks = [...newBlocks.blocks, newBlock];
+          } else {
+            const newBlock = {
+              key: newBlockKey,
+              type: Block.TODO,
+              text: part,
+              depth: 0,
+              data: {},
+            };
+
+            newBlocks.blocks = [...newBlocks.blocks, newBlock];
+          }
+        });
+      }
     } else {
       newBlocks.blocks = [...newBlocks.blocks, item];
     }
   });
-  // console.log('parsedEditor', parsedEditor);
 
   return createEditorState(newBlocks);
-}
+};
