@@ -158,6 +158,14 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         to: transaction.to,
       });
 
+      if (transaction.userName !== transaction.from && transaction.from !== transaction.to) {
+        return {
+          ...data,
+          fieldHIVE: transaction.amount.split(' ')[0],
+          fieldDescription: description.powerDownWithdrawFrom,
+        };
+      }
+
       return {
         ...data,
         fieldHIVE: `${isWithdraw ? '-' : ''} ${transaction.amount.split(' ')[0]}`,
