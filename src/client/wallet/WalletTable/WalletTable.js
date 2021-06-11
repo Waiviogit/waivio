@@ -231,7 +231,7 @@ class WalletTable extends React.Component {
     );
 
     return (
-      <React.Fragment>
+      <div className="WalletTable">
         <Link to={`/@${match.params.name}/transfers`} className="WalletTable__back-btn">
           {intl.formatMessage({
             id: 'table_back',
@@ -285,6 +285,22 @@ class WalletTable extends React.Component {
             defaultMessage: 'Use this field to exclude an entry from the totals calculation.',
           })}
         </p>
+        <p className="WalletTable__disclaimer">
+          <b>
+            {intl.formatMessage({
+              id: 'disclaimer',
+              defaultMessage: 'Disclaimer',
+            })}
+            :{' '}
+          </b>
+          <span className="WalletTable__exclude">
+            {intl.formatMessage({
+              id: 'disclaimer_info',
+              defaultMessage:
+                'The information provided by this site, including financial reports, is provided on an ""as is"" basis with no guarantees of completeness, accuracy, usefulness or timeliness. Waivio Technologies Inc. assumes no responsibility or liability for any errors or omissions in the content of this site."',
+            })}
+          </span>
+        </p>
         {this.props.loading && isEmpty(mappedList) ? (
           <Loading />
         ) : (
@@ -301,7 +317,7 @@ class WalletTable extends React.Component {
             onChange={(e, item) => this.props.calculateTotalChanges(item, e.target.checked)}
           />
         )}
-      </React.Fragment>
+      </div>
     );
   }
 }

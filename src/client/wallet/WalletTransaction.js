@@ -153,16 +153,28 @@ const WalletTransaction = ({
         to: transactionDetails.to,
         from: transactionDetails.from,
       });
+      let color = 'black';
+      let description = desc.powerDownWithdraw;
+      let character = '';
+
+      if (transactionDetails.to !== transactionDetails.from) {
+        color = 'red';
+        description = desc.powerDownWithdrawTo;
+        character = '- ';
+
+        if (transaction.userName !== transaction.from) {
+          description = desc.powerDownWithdrawFrom;
+          color = 'green';
+          character = '+ ';
+        }
+      }
 
       return (
         <PowerDownTransaction
-          amount={transactionDetails.amount}
+          amount={`${character}${transactionDetails.amount}`}
           timestamp={transaction.timestamp}
-          description={
-            transactionDetails.to === transactionDetails.from
-              ? desc.powerDownWithdraw
-              : desc.powerDownWithdrawTo
-          }
+          description={description}
+          color={color}
         />
       );
     }

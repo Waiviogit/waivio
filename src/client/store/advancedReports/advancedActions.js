@@ -28,6 +28,7 @@ const parseTransactionData = trans => {
       hiveUSD: trans.hiveUSD,
       withdrawDeposit: trans.withdrawDeposit,
       usd: trans.usd,
+      checked: trans.checked,
       _id: trans._id,
     };
   }

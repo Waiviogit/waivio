@@ -60,6 +60,13 @@ const TableFilter = ({
           ))}
         </div>
       </Form.Item>
+      <div className="WalletTable__exclude">
+        {intl.formatMessage({
+          id: 'multiple_accounts_included',
+          defaultMessage:
+            'If multiple accounts are included in the report, transactions between the specified accounts are excluded from the totals calculations for withdrawals and deposits.',
+        })}
+      </div>
       <div className="WalletTable__date-wrap">
         <Form.Item
           rules={[
