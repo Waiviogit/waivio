@@ -1689,5 +1689,8 @@
   "power_down_withdraw": "Power down",
   "power_down_withdraw_to": "Power down to {to}",
   "power_down_withdraw_from": "Power down from {from}",
-  "total": "TOTAL"
+  "total": "TOTAL",
+  "disclaimer_info": "The information provided by this site, including financial reports, is provided on an \"\"as is\"\" basis with no guarantees of completeness, accuracy, usefulness or timeliness. Waivio Technologies Inc. assumes no responsibility or liability for any errors or omissions in the content of this site.",
+  "multiple_accounts_included": "If multiple accounts are included in the report, transactions between the specified accounts are excluded from the totals calculations for withdrawals and deposits.",
+  "beneficiary_error": "Beneficiary % could not be less than 1"
 }

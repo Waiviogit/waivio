@@ -1687,5 +1687,8 @@
   "power_down_started": "S'ha iniciat l'apagat",
   "power_down_stopped": "S'ha aturat l'apagat",
   "power_down_withdraw": "Retirar-se de la confecció",
-  "x_field_description": "Utilitzeu aquest camp per excloure una entrada del càlcul dels totals."
+  "x_field_description": "Utilitzeu aquest camp per excloure una entrada del càlcul dels totals.",
+  "disclaimer_info": "La informació proporcionada per aquest lloc, inclosos els informes financers, es proporciona \"\"tal qual\"\" sense garanties de completesa, precisió, utilitat o actualitat. Waivio Technologies Inc. no assumeix cap responsabilitat per qualsevol error o omissió en el contingut d’aquest lloc.",
+  "multiple_accounts_included": "Si s'inclouen diversos comptes a l'informe, les transaccions entre els comptes especificats s'exclouen dels càlculs totals de retirades i dipòsits.",
+  "beneficiary_error": "El beneficiari no podia ser inferior a 1"
 }

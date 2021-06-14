@@ -1687,5 +1687,8 @@
   "power_down_started": "Käivituslülitus",
   "power_down_stopped": "Seiskamine on peatatud",
   "power_down_withdraw": "Taganemisest loobumine",
-  "x_field_description": "Kasutage seda välja, et välistada kirje kogusummade arvutamisest."
+  "x_field_description": "Kasutage seda välja, et välistada kirje kogusummade arvutamisest.",
+  "disclaimer_info": "Selle saidi pakutav teave, sealhulgas finantsaruanded, esitatakse põhimõttel \"\"nagu on\"\" ilma täielikkuse, täpsuse, kasulikkuse või õigeaegsuse garantiideta. Waivio Technologies Inc. ei võta endale vastutust selle saidi sisus esinevate vigade või puuduste eest.",
+  "multiple_accounts_included": "Kui aruandesse on kaasatud mitu kontot, jäetakse väljamaksete ja hoiuste kogusummade arvutustest kindlaksmääratud kontode vahelised tehingud.",
+  "beneficiary_error": "Saaja ei saanud olla väiksem kui 1"
 }
