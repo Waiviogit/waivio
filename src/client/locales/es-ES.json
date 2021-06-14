@@ -1687,5 +1687,8 @@
   "power_down_withdraw": "Retirar de la concesión",
   "filter_posts": "Filtrar publicaciones",
   "total": "TOTAL",
-  "x_field_description": "Utilice este campo para excluir una entrada del cálculo de totales"
+  "x_field_description": "Utilice este campo para excluir una entrada del cálculo de totales",
+  "disclaimer_info": "La información proporcionada por este sitio, incluidos los informes financieros, se proporciona \"\" tal cual \"\" sin garantías de integridad, precisión, utilidad o puntualidad. Waivio Technologies Inc. no asume ninguna responsabilidad por cualquier error u omisión en el contenido de este sitio.",
+  "multiple_accounts_included": "Si se incluyen varias cuentas en el informe, las transacciones entre las cuentas especificadas se excluyen de los cálculos de totales para retiros y depósitos.",
+  "beneficiary_error": "El beneficiario no puede ser menos de 1"
 }

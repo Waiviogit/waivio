@@ -1686,5 +1686,8 @@
   "power_down_stopped": "Mematikan daya",
   "power_down_withdraw": "Menari dari vesting",
   "total": "JUMLAH",
-  "x_field_description": "Gunakan bidang ini untuk mengecualikan entri dari penghitungan total."
+  "x_field_description": "Gunakan bidang ini untuk mengecualikan entri dari penghitungan total.",
+  "disclaimer_info": "Az ezen az oldalon nyújtott információkat, ideértve a pénzügyi jelentéseket is, ahogy van, a teljesség, a pontosság, a hasznosság vagy az időszerűség garanciája nélkül. A Waivio Technologies Inc. nem vállal felelősséget a webhely tartalmában előforduló hibákért vagy kihagyásokért.",
+  "multiple_accounts_included": "Ha több számla szerepel a jelentésben, a meghatározott számlák közötti tranzakciókat kizárják a felvételek és betétek összesítéséből.",
+  "beneficiary_error": "A kedvezményezett nem lehet kevesebb, mint 1"
 }

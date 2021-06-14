@@ -1687,5 +1687,8 @@
     "power_down_started": "Startet nedlukning",
     "power_down_stopped": "Stop med strømmen ned",
     "power_down_withdraw": "Tilbagetrækning fra optjening",
-    "x_field_description": "Brug dette felt til at udelukke en post fra totalberegningen."
+    "x_field_description": "Brug dette felt til at udelukke en post fra totalberegningen.",
+    "disclaimer_info": "Oplysningerne på dette websted, herunder finansielle rapporter, leveres på \"\" som de er \"basis uden garantier for fuldstændighed, nøjagtighed, anvendelighed eller aktualitet. Waivio Technologies Inc. påtager sig intet ansvar for eventuelle fejl eller udeladelser i indholdet af dette websted.",
+    "multiple_accounts_included": "Hvis der er inkluderet flere konti i rapporten, udelukkes transaktioner mellem de angivne konti fra totalberegningerne for udbetalinger og indskud.",
+    "beneficiary_error": "Modtageren kunne ikke være mindre end 1"
   }
