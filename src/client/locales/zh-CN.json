@@ -1686,5 +1686,8 @@
   "power_down_stopped": "停止断电",
   "power_down_withdraw": "退出归属",
   "total": "总计",
-  "x_field_description": "使用此字段从总计计算中排除条目。"
+  "x_field_description": "使用此字段从总计计算中排除条目。",
+  "disclaimer_info": "本网站提供的信息，包括财务报告，均按“原样”提供，不保证完整性、准确性、有用性或及时性。 Waivio Technologies Inc. 对本网站内容中的任何错误或遗漏不承担任何责任或义务。",
+  "multiple_accounts_included": "如果报告中包含多个账户，则指定账户之间的交易不包括在取款和存款总额计算中。",
+  "beneficiary_error": "受益人不能少于1"
 }

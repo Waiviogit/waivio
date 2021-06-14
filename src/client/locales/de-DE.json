@@ -1687,5 +1687,8 @@
   "power_down_stopped": "Stromausfall gestoppt",
   "power_down_withdraw": "Aus der Unverfallbarkeit zurückziehen",
   "total": "GESAMT",
-  "x_field_description": "Verwenden Sie dieses Feld, um einen Eintrag von der Summenberechnung auszuschließen."
+  "x_field_description": "Verwenden Sie dieses Feld, um einen Eintrag von der Summenberechnung auszuschließen.",
+  "disclaimer_info": "Die auf dieser Website bereitgestellten Informationen, einschließlich Finanzberichte, werden ohne Gewähr für Vollständigkeit, Genauigkeit, Nützlichkeit oder Aktualität bereitgestellt. Waivio Technologies Inc. übernimmt keine Verantwortung oder Haftung für Fehler oder Auslassungen im Inhalt dieser Site.",
+  "multiple_accounts_included": "Wenn der Bericht mehrere Konten enthält, werden Transaktionen zwischen den angegebenen Konten von der Summenberechnung für Abhebungen und Einzahlungen ausgeschlossen.",
+  "beneficiary_error": "Begünstigter darf nicht kleiner als 1 . sein"
 }

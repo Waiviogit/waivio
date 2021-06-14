@@ -1688,5 +1688,8 @@
   "power_down_started": "Megkezdte a kikapcsolást",
   "power_down_stopped": "Leállított áramkimaradás",
   "power_down_withdraw": "Visszavonás a tulajdonjogtól",
-  "x_field_description": "Ezzel a mezővel kizárhat egy bejegyzést az összesített számításból."
+  "x_field_description": "Ezzel a mezővel kizárhat egy bejegyzést az összesített számításból.",
+  "disclaimer_info": "Az ezen az oldalon nyújtott információkat, ideértve a pénzügyi jelentéseket is, ahogy van, a teljesség, a pontosság, a hasznosság vagy az időszerűség garanciája nélkül. A Waivio Technologies Inc. nem vállal felelősséget a webhely tartalmában előforduló hibákért vagy kihagyásokért.",
+  "multiple_accounts_included": "Ha több számla szerepel a jelentésben, a meghatározott számlák közötti tranzakciókat kizárják a felvételek és betétek összesítéséből.",
+  "beneficiary_error": "A kedvezményezett nem lehet kevesebb, mint 1"
 }

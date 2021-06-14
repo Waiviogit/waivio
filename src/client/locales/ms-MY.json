@@ -1686,5 +1686,8 @@
   "power_down_stopped": "Daya berhenti dihentikan",
   "power_down_withdraw": "Menarik balik hak letak hak",
   "total": "JUMLAH",
-  "x_field_description": "Gunakan bidang ini untuk mengecualikan entri dari jumlah pengiraan."
+  "x_field_description": "Gunakan bidang ini untuk mengecualikan entri dari jumlah pengiraan.",
+  "disclaimer_info": "Maklumat yang disediakan oleh laman web ini, termasuk laporan kewangan, disediakan berdasarkan sebagaimana adanya tanpa jaminan kelengkapan, ketepatan, kegunaan atau ketepatan masa. Waivio Technologies Inc. tidak memikul tanggungjawab atau liabiliti atas sebarang kesalahan atau peninggalan dalam kandungan laman web ini.",
+  "multiple_accounts_included": "Sekiranya banyak akaun dimasukkan dalam laporan, transaksi antara akaun yang ditentukan dikecualikan dari jumlah perhitungan untuk pengeluaran dan deposit.",
+  "beneficiary_error": "Penerima tidak boleh kurang dari 1"
 }
