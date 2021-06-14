@@ -1687,5 +1687,8 @@
   "power_down_withdraw": "Ritiro dalla maturazione",
   "total": "TOTALE",
   "filter_posts": "Filtra post",
-  "x_field_description": "Utilizza questo campo per escludere una voce dal calcolo dei totali."
+  "x_field_description": "Utilizza questo campo per escludere una voce dal calcolo dei totali.",
+  "disclaimer_info": "Le informazioni fornite da questo sito, inclusi i rapporti finanziari, sono fornite così come sono senza garanzie di completezza, accuratezza, utilità o tempestività. Waivio Technologies Inc. non si assume alcuna responsabilità per eventuali errori od omissioni nel contenuto di questo sito.",
+  "multiple_accounts_included": "Se nel report sono inclusi più conti, le transazioni tra i conti specificati vengono escluse dai calcoli dei totali per prelievi e depositi.",
+  "beneficiary_error": "Il beneficiario non può essere inferiore a 1"
 }

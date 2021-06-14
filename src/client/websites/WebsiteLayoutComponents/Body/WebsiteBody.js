@@ -53,7 +53,6 @@ import {
   getShowReloadButton,
   getWobjectsPoint,
 } from '../../../store/websiteStore/websiteSelectors';
-import WebsiteWelcomeModal from '../../WebsiteWelcomeModal/WebsiteWelcomeModal';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 
 import './WebsiteBody.less';
@@ -474,7 +473,6 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
-      <WebsiteWelcomeModal />
     </div>
   );
 };

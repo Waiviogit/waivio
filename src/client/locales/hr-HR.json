@@ -1687,5 +1687,8 @@
   "power_down_withdraw": "Visszavonás a tulajdonjogtól",
   "account_creation": "Fiók létrehozása",
   "totals_calculated": "Az összegek csak egy meghatározott átmeneti időszakra számíthatók.",
-  "x_field_description": "Koristite ovo polje za izuzimanje unosa iz izračuna ukupnih unosa."
+  "x_field_description": "Koristite ovo polje za izuzimanje unosa iz izračuna ukupnih unosa.",
+  "disclaimer_info": "Podaci koje pruža ova web stranica, uključujući financijska izvješća, pružaju se takvi kakvi jesu bez jamstava cjelovitosti, točnosti, korisnosti ili pravodobnosti. Waivio Technologies Inc. ne preuzima odgovornost za bilo kakve pogreške ili propuste u sadržaju ove stranice.",
+  "multiple_accounts_included": "Ako je u izvještaj uključeno više računa, transakcije između navedenih računa izuzimaju se iz izračuna ukupnih iznosa za isplate i depozite.",
+  "beneficiary_error": "Korisnik ne može biti manji od 1"
 }

@@ -1686,5 +1686,8 @@
   "power_down_stopped": "Desligamento interrompido",
   "power_down_withdraw": "Retirar da aquisição",
   "total": "TOTAL",
-  "x_field_description": "Use este campo para excluir uma entrada do cálculo de totais."
+  "x_field_description": "Use este campo para excluir uma entrada do cálculo de totais.",
+  "disclaimer_info": "As informações fornecidas por este site, incluindo relatórios financeiros, são fornecidas \"\"como estão\"\", sem garantias de integridade, precisão, utilidade ou oportunidade. Waivio Technologies Inc. não assume qualquer responsabilidade ou obrigação por quaisquer erros ou omissões no conteúdo deste site.",
+  "multiple_accounts_included": "Se várias contas forem incluídas no relatório, as transações entre as contas especificadas são excluídas dos cálculos de totais para retiradas e depósitos.",
+  "beneficiary_error": "O beneficiário não pode ser inferior a 1"
 }

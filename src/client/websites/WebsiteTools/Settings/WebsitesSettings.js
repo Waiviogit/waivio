@@ -161,6 +161,7 @@ const WebsitesSettings = ({
               })}
             </h3>
             {getFieldDecorator('beneficiaryPercent', {
+              initialValue: beneficiaryPercent,
               rules: [
                 {
                   required: beneficiaryAccount,
@@ -194,7 +195,6 @@ const WebsitesSettings = ({
                   defaultMessage: 'Enter percentage',
                 })}
                 onChange={handleChangePercent}
-                value={beneficiaryPercent}
               />,
             )}
           </Form.Item>

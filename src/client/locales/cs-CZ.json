@@ -1687,5 +1687,8 @@
   "power_down_started": "Spuštěno napájení",
   "power_down_stopped": "Vypnuto napájení",
   "power_down_withdraw": "Odstoupit od nároku",
-  "x_field_description": "Toto pole použijte k vyloučení položky z výpočtu součtu."
+  "x_field_description": "Toto pole použijte k vyloučení položky z výpočtu součtu.",
+  "disclaimer_info": "Informace poskytované touto stránkou, včetně finančních zpráv, jsou poskytovány „„ tak, jak jsou “, bez jakýchkoli záruk úplnosti, přesnosti, užitečnosti nebo včasnosti. Společnost Waivio Technologies Inc. nepřebírá žádnou odpovědnost ani odpovědnost za jakékoli chyby nebo opomenutí obsahu tohoto webu.",
+  "multiple_accounts_included": "Pokud je v sestavě zahrnuto více účtů, transakce mezi zadanými účty jsou z výpočtu součtu pro výběry a vklady vyloučeny.",
+  "beneficiary_error": "Příjemce nesmí být menší než 1"
 }
