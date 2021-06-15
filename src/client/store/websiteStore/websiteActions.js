@@ -45,8 +45,9 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
   return dispatch({
     type: CREATE_NEW_WEBSITE.ACTION,
     payload: {
-      promise: ApiClient.createWebsite(body)
-        .then(res => {
+      promise: ApiClient.createWebsite(body).then(res => {
+        if (res.message) message.error(res.message);
+        else {
           const { block_num: blockNum } = res.result;
           const creator = getAuthenticatedUserName(state);
 
@@ -57,8 +58,8 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
               dispatch(getOwnWebsite());
             }
           });
-        })
-        .cache(e => message.error(e.message)),
+        }
+      }),
     },
   });
 };

@@ -26,7 +26,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     usd: get(transaction, 'usd'),
     checked: get(transaction, 'checked'),
     userName: user,
-    id: isGuestPage ? get(transaction, '_id') : get(transaction, 'operationNum'),
+    _id: isGuestPage ? get(transaction, '_id') : get(transaction, 'operationNum'),
   };
 
   switch (transactionType) {

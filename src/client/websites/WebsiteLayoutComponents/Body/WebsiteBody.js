@@ -21,7 +21,11 @@ import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import mapProvider from '../../../helpers/mapProvider';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
-import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
+import {
+  getObjectAvatar,
+  getObjectMapInArray,
+  getObjectName,
+} from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
 import {
   getCurrentAppSettings,
@@ -374,6 +378,17 @@ const WebsiteBody = props => {
     props.history.push(query);
   };
 
+  const setQueryFromSearchList = obj => {
+    const objMap = getObjectMapInArray(obj);
+
+    props.query.set('center', area.map);
+    props.query.set('zoom', area.zoom);
+    props.query.set('permlink', obj.author_permlink);
+
+    if (map) props.query.set('center', objMap);
+    if (props.searchString) props.query.set('searchString', props.searchString);
+  };
+
   const setQueryInLocalStorage = () => localStorage.setItem('query', props.query.toString());
   const objName = getObjectName(aboutObject);
 
@@ -408,6 +423,7 @@ const WebsiteBody = props => {
         handleSetFiltersInUrl={handleSetFiltersInUrl}
         handleUrlWithChangeType={handleUrlWithChangeType}
         setQueryInLocalStorage={setQueryInLocalStorage}
+        setQueryFromSearchList={setQueryFromSearchList}
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
