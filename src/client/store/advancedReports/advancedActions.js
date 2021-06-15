@@ -1,3 +1,4 @@
+import moment from 'moment';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { guestUserRegex } from '../../helpers/regexHelpers';
@@ -60,8 +61,12 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
     payload: {
       promise: ApiClient.getAdvancedReports(
         {
-          startDate,
-          endDate,
+          startDate:
+            startDate ||
+            moment()
+              .subtract(10, 'year')
+              .unix(),
+          endDate: endDate || moment().unix(),
           filterAccounts,
           accounts,
         },
