@@ -13,8 +13,9 @@ import {
   size,
   differenceBy,
   isEmpty,
+  without,
 } from 'lodash';
-import { convertToRaw, genKey } from 'draft-js';
+import { convertToRaw, EditorState, genKey, SelectionState } from 'draft-js';
 
 import { Block, createEditorState, Entity } from '../components/EditorExtended';
 
@@ -178,63 +179,136 @@ const getPartsOfSentence = string => {
   return parts;
 };
 
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
+
 export const parseImagesFromBlocks = editorState => {
+  const selectionState = editorState.getSelection();
+  const anchorKey = selectionState.getAnchorKey();
+  const currentContent = editorState.getCurrentContent();
+  const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+  const start = selectionState.getStartOffset();
+  const end = selectionState.getEndOffset();
+
   const { blocks, entityMap } = convertToRaw(editorState.getCurrentContent());
 
-  const entities = Object.values(entityMap);
-  const images = entities.filter(entity => entity.type === Entity.IMAGE);
+  const entityMapArray = Object.values(entityMap);
   const newBlocks = {
     blocks: [],
     entityMap,
   };
 
-  blocks.forEach((item, index) => {
-    if (item.text.includes(mockPhoto)) {
-      const correctText = item.text.trim().replace(/\r?\n/g, '');
-
-      if (correctText.length === 1 || correctText === mockPhoto) {
-        const block = {
-          ...item,
-          type: Block.IMAGE,
-          data: get(images, '[0].data', false) || get(item, 'data', {}),
-        };
-
-        images.shift();
-        newBlocks.blocks = [...newBlocks.blocks, block];
-      } else {
-        const parts = getPartsOfSentence(item.text);
-
-        parts.forEach(part => {
-          const newBlockKey = genKey();
-
-          if (part.trim().replace(/\r?\n/g, '') === mockPhoto) {
-            const newBlock = {
-              key: newBlockKey,
-              type: Block.IMAGE,
-              text: mockPhoto,
-              depth: 0,
-              data: get(images, '[0].data', {}),
-            };
-
-            images.shift();
-            newBlocks.blocks = [...newBlocks.blocks, newBlock];
-          } else {
-            const newBlock = {
-              key: newBlockKey,
-              type: Block.TODO,
-              text: part,
-              depth: 0,
-              data: {},
-            };
-
-            newBlocks.blocks = [...newBlocks.blocks, newBlock];
-          }
-        });
-      }
+  blocks.forEach(block => {
+    if (!block.entityRanges.length) {
+      newBlocks.blocks = [...newBlocks.blocks, block];
     } else {
-      newBlocks.blocks = [...newBlocks.blocks, item];
+      let blockText = block.text;
+      let blocksUpdated = [];
+      const blockEntities = [];
+
+      block.entityRanges.forEach(entityRange => {
+        const blockEntity = block.text.substring(
+          entityRange.offset,
+          entityRange.offset + entityRange.length,
+        );
+
+        blockEntities.push(blockEntity.trim().replace(/\r?\n/g, ''));
+        const firstText = blockText
+          .substring(0, entityRange.offset)
+          .trim()
+          .replace(/\r?\n/g, '');
+        const secondText = blockText
+          .substring(entityRange.offset, entityRange.offset + entityRange.length)
+          .trim()
+          .replace(/\r?\n/g, '');
+
+        blockText = blockText.substring(entityRange.offset + entityRange.length, blockText.length);
+        blocksUpdated = [...blocksUpdated, firstText, secondText];
+      });
+      const newBlocksParsed = without(blocksUpdated, '').map(blockUpdated => {
+        const isCustomBlock = blockEntities.some(
+          entityBlock =>
+            entityBlock.trim().replace(/\r?\n/g, '') === blockUpdated.trim().replace(/\r?\n/g, ''),
+        );
+
+        if (isCustomBlock) {
+          const returnBlock = {
+            text: blockUpdated,
+            entity: entityMapArray[0],
+          };
+
+          entityMapArray.shift();
+
+          return returnBlock;
+        }
+
+        return blockUpdated;
+      });
+
+      const blockObjects = newBlocksParsed.map(blockParsed => {
+        if (has(blockParsed, 'text')) {
+          switch (blockParsed.entity.type) {
+            case Entity.LINK:
+              return {
+                key: genKey(),
+                type: Block.UNSTYLED,
+                text: blockParsed.text,
+                depth: 0,
+                data: {},
+                entityRanges: [
+                  {
+                    offset: 0,
+                    length: blockParsed.text.length,
+                    key: getKeyByValue(entityMap, blockParsed.entity),
+                  },
+                ],
+              };
+            case Entity.IMAGE:
+              return {
+                key: genKey(),
+                type: Block.IMAGE,
+                text: mockPhoto,
+                depth: 0,
+                data: blockParsed.entity.data,
+              };
+            default:
+              return {
+                key: genKey(),
+                type: Block.TODO,
+                text: blockParsed.text,
+                depth: 0,
+                data: {},
+              };
+          }
+        } else {
+          return {
+            key: genKey(),
+            type: Block.TODO,
+            text: blockParsed,
+            depth: 0,
+            data: {},
+          };
+        }
+      });
+
+      newBlocks.blocks = [...newBlocks.blocks, ...blockObjects];
     }
   });
 
-  return createEditorState(newBlocks);
+  let newEditorState = createEditorState(newBlocks);
+
+  const updateSelection = new SelectionState({
+    anchorKey,
+    anchorOffset: start,
+    focusKey: anchorKey,
+    focusOffset: start,
+    isBackward: false,
+  });
+
+  newEditorState = EditorState.acceptSelection(newEditorState, updateSelection);
+  newEditorState = EditorState.forceSelection(newEditorState, updateSelection);
+
+  return newEditorState;
+  // return createEditorState(newBlocks);
 };
