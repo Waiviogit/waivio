@@ -160,7 +160,7 @@ export const excludeTransfer = body => (dispatch, getState) => {
   const state = getState();
   const isGuest = isGuestUser(state);
   const authUserName = getAuthenticatedUserName(state);
-  const key = guestUserRegex.test(body.userName) ? 'recordId' : 'operationNum';
+  const getKey = guestKey => (guestUserRegex.test(body.userName) ? guestKey : 'operationNum');
 
   return dispatch({
     type: EXCLUDE_TRANSFER.ACTION,
@@ -169,13 +169,13 @@ export const excludeTransfer = body => (dispatch, getState) => {
         userName: authUserName,
         userWithExemptions: body.userName,
         checked: body.checked,
-        [key]: body.id,
+        [getKey('recordId')]: body._id,
       },
       isGuest,
     ),
     meta: {
-      id: body.id,
-      key,
+      id: body._id,
+      key: getKey('_id'),
     },
   });
 };
