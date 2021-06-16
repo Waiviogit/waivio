@@ -39,7 +39,7 @@ const Wobj = ({
   const url = `${waivioHost}/object/${match.params.name}`;
   const albumsAndImagesCount = wobject.albums_count;
   const titleText = isWaivio
-    ? `${objectName}${` - ${parseAddress(wobject)}` || ''} - Waivio`
+    ? `${objectName} - ${`${parseAddress(wobject)} - ` || ''}Waivio`
     : objectName;
   const tagCategories = reduce(
     wobject.tagCategory,

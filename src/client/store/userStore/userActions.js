@@ -505,8 +505,8 @@ export const activateCampaign = (company, campaignPermlink) => (
   const rewardFund = getRewardFund(state);
   const recentClaims = rewardFund.recent_claims;
   const rewardBalance = rewardFund.reward_balance.replace(' HIVE', '');
-  const proposedWobjName = getObjectName(company.objects[0]);
-  const proposedAuthorPermlink = company.objects[0].author_permlink;
+  const proposedWobjName = getObjectName(company.requiredObject);
+  const proposedAuthorPermlink = company.requiredObject.author_permlink;
   const primaryObjectName = getObjectName(company.requiredObject);
   const processingFees = company.commissionAgreement * 100;
   const expiryDate = moment(company.expired_at).format('YYYY-MM-DD');
@@ -530,7 +530,6 @@ export const activateCampaign = (company, campaignPermlink) => (
       title: 'Activate rewards campaign',
       body: `${alias} (@${username}) has activated rewards campaign for <a href="/object/${company.requiredObject.author_permlink}">${primaryObjectName}</a> (${company.requiredObject.object_type}) with the target reward of $ ${company.reward} USD.  ${detailsBody} Campaign expiry date: ${expiryDate}. Processing fees: ${processingFees}% of the total amount of rewards (Campaign server @waivio.campaigns offers 50% commissions to index services for reservations). `,
       json_metadata: JSON.stringify({
-        // eslint-disable-next-line no-underscore-dangle
         waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
       }),
     },

@@ -381,11 +381,11 @@ const WebsiteBody = props => {
   const setQueryFromSearchList = obj => {
     const objMap = getObjectMapInArray(obj);
 
-    props.query.set('center', area.map);
+    props.query.set('center', area.center);
     props.query.set('zoom', area.zoom);
     props.query.set('permlink', obj.author_permlink);
 
-    if (map) props.query.set('center', objMap);
+    if (objMap) props.query.set('center', objMap);
     if (props.searchString) props.query.set('searchString', props.searchString);
   };
 
