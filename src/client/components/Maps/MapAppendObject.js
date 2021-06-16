@@ -108,7 +108,6 @@ class MapAppendObject extends React.Component {
           zoom={zoom}
           onClick={this.setCoordinates}
           animate
-          height={400}
         >
           {this.props.center && !isNil(this.props.center[0]) && (
             <CustomMarker key={this.props.center.join('/')} anchor={this.props.center} />
