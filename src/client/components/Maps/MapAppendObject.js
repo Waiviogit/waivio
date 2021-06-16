@@ -30,13 +30,6 @@ class MapAppendObject extends React.Component {
       userCoordinates: null,
       isInitial: true,
     };
-
-    // this.onBoundsChanged = this.onBoundsChanged.bind(this);
-    // this.showUserPosition = this.showUserPosition.bind(this);
-    // this.setCoordinates = this.setCoordinates.bind(this);
-    // this.incrementZoom = this.incrementZoom.bind(this);
-    // this.decrementZoom = this.decrementZoom.bind(this);
-    // this.zoomButtonsLayout = this.zoomButtonsLayout.bind(this);
   }
 
   componentDidMount() {
