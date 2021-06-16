@@ -115,7 +115,6 @@ class MapAppendObject extends React.Component {
           zoom={zoom}
           onClick={this.setCoordinates}
           animate
-          width={719}
           height={400}
         >
           {this.props.center && !isNil(this.props.center[0]) && (

@@ -77,7 +77,7 @@ const SearchAllResult = props => {
     props.setQueryInLocalStorage();
   };
 
-  const currentListState = useCallback(() => {
+  const currentListState = () => {
     switch (props.searchType) {
       case 'Users':
         return {
@@ -110,7 +110,7 @@ const SearchAllResult = props => {
           loading: props.loading,
         };
     }
-  }, [props.searchType, props.searchResult, props.searchByUser, props.loading, props.usersLoading]);
+  };
 
   useEffect(() => {
     if (!isEmpty(props.searchResult) && localStorage.getItem('scrollTop')) {
