@@ -183,7 +183,7 @@ function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
 
-export const parseImagesFromBlocks = editorState => {
+export const parseImagesFromBlocks = (editorState, isFocus) => {
   const selectionState = editorState.getSelection();
   const anchorKey = selectionState.getAnchorKey();
   const currentContent = editorState.getCurrentContent();
@@ -191,15 +191,15 @@ export const parseImagesFromBlocks = editorState => {
   const start = selectionState.getStartOffset();
   const end = selectionState.getEndOffset();
 
-  const { blocks, entityMap } = convertToRaw(editorState.getCurrentContent());
+  const blocksEditor = convertToRaw(editorState.getCurrentContent());
 
-  const entityMapArray = Object.values(entityMap);
+  const entityMapArray = Object.values(blocksEditor.entityMap);
   const newBlocks = {
     blocks: [],
-    entityMap,
+    entityMap: blocksEditor.entityMap,
   };
 
-  blocks.forEach(block => {
+  blocksEditor.blocks.forEach(block => {
     if (!block.entityRanges.length) {
       newBlocks.blocks = [...newBlocks.blocks, block];
     } else {
@@ -260,7 +260,7 @@ export const parseImagesFromBlocks = editorState => {
                   {
                     offset: 0,
                     length: blockParsed.text.length,
-                    key: getKeyByValue(entityMap, blockParsed.entity),
+                    key: getKeyByValue(blocksEditor.entityMap, blockParsed.entity),
                   },
                 ],
               };
@@ -268,7 +268,7 @@ export const parseImagesFromBlocks = editorState => {
               return {
                 key: genKey(),
                 type: Block.IMAGE,
-                text: mockPhoto,
+                text: '',
                 depth: 0,
                 data: blockParsed.entity.data,
               };
@@ -295,20 +295,25 @@ export const parseImagesFromBlocks = editorState => {
       newBlocks.blocks = [...newBlocks.blocks, ...blockObjects];
     }
   });
+  const correctBlocks =
+    size(newBlocks.blocks) === size(blocksEditor.blocks) ? blocksEditor : newBlocks;
+  let newEditorState = createEditorState(correctBlocks);
+  const isExistBlock = correctBlocks.blocks.find(item => item.key === anchorKey);
 
-  let newEditorState = createEditorState(newBlocks);
+  if (isExistBlock && isFocus) {
+    const updateSelection = new SelectionState({
+      anchorKey,
+      anchorOffset: start,
+      focusKey: anchorKey,
+      focusOffset: start,
+      isBackward: false,
+    });
 
-  const updateSelection = new SelectionState({
-    anchorKey,
-    anchorOffset: start,
-    focusKey: anchorKey,
-    focusOffset: start,
-    isBackward: false,
-  });
+    newEditorState = EditorState.acceptSelection(newEditorState, updateSelection);
+    newEditorState = EditorState.forceSelection(newEditorState, updateSelection);
 
-  newEditorState = EditorState.acceptSelection(newEditorState, updateSelection);
-  newEditorState = EditorState.forceSelection(newEditorState, updateSelection);
+    return newEditorState;
+  }
 
-  return newEditorState;
-  // return createEditorState(newBlocks);
+  return createEditorState(correctBlocks);
 };
