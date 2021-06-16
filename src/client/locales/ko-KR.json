@@ -1687,5 +1687,8 @@
   "power_down_started": "전원 차단 시작",
   "power_down_stopped": "전원 차단 중지",
   "power_down_withdraw": "베스 팅에서 철회",
-  "x_field_description": "총계 계산에서 항목을 제외하려면이 필드를 사용하십시오."
+  "x_field_description": "총계 계산에서 항목을 제외하려면이 필드를 사용하십시오.",
+  "disclaimer_info": "재무 보고서를 포함하여이 사이트에서 제공하는 정보는 완전성, 정확성, 유용성 또는 적시성에 대한 보장없이 \"\"있는 그대로 \"\"제공됩니다. Waivio Technologies Inc.는이 사이트 콘텐츠의 오류나 누락에 대해 책임을지지 않습니다.",
+  "multiple_accounts_included": "보고서에 여러 계정이 포함 된 경우 지정된 계정 간의 거래는 인출 및 입금에 대한 총계 계산에서 제외됩니다.",
+  "beneficiary_error": "수혜자는 1보다 작을 수 없습니다."
 }

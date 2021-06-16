@@ -21,7 +21,11 @@ import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import mapProvider from '../../../helpers/mapProvider';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
-import { getObjectAvatar, getObjectName } from '../../../helpers/wObjectHelper';
+import {
+  getObjectAvatar,
+  getObjectMapInArray,
+  getObjectName,
+} from '../../../helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../../rewards/rewardsHelper';
 import {
   getCurrentAppSettings,
@@ -53,7 +57,6 @@ import {
   getShowReloadButton,
   getWobjectsPoint,
 } from '../../../store/websiteStore/websiteSelectors';
-import WebsiteWelcomeModal from '../../WebsiteWelcomeModal/WebsiteWelcomeModal';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 
 import './WebsiteBody.less';
@@ -375,6 +378,17 @@ const WebsiteBody = props => {
     props.history.push(query);
   };
 
+  const setQueryFromSearchList = obj => {
+    const objMap = getObjectMapInArray(obj);
+
+    props.query.set('center', area.center);
+    props.query.set('zoom', area.zoom);
+    props.query.set('permlink', obj.author_permlink);
+
+    if (objMap) props.query.set('center', objMap);
+    if (props.searchString) props.query.set('searchString', props.searchString);
+  };
+
   const setQueryInLocalStorage = () => localStorage.setItem('query', props.query.toString());
   const objName = getObjectName(aboutObject);
 
@@ -382,7 +396,7 @@ const WebsiteBody = props => {
     <div className="WebsiteBody">
       <Helmet>
         <title>{title ? `${objName} - ${title}` : objName}</title>
-        <link rel="canonical" href={`https://${props.host}`} />
+        <link rel="canonical" href={`https://${props.host}/`} />
         <meta property="description" content={description} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
@@ -409,6 +423,7 @@ const WebsiteBody = props => {
         handleSetFiltersInUrl={handleSetFiltersInUrl}
         handleUrlWithChangeType={handleUrlWithChangeType}
         setQueryInLocalStorage={setQueryInLocalStorage}
+        setQueryFromSearchList={setQueryFromSearchList}
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
@@ -474,7 +489,6 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
-      <WebsiteWelcomeModal />
     </div>
   );
 };

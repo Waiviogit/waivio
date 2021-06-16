@@ -71,12 +71,13 @@ const SearchAllResult = props => {
     return <ObjectCardView wObject={obj} hovered />;
   };
 
-  const handleItemClick = () => {
+  const handleItemClick = wobj => {
     localStorage.setItem('scrollTop', resultList.current.scrollTop);
+    props.setQueryFromSearchList(wobj);
     props.setQueryInLocalStorage();
   };
 
-  const currentListState = useCallback(() => {
+  const currentListState = () => {
     switch (props.searchType) {
       case 'Users':
         return {
@@ -100,7 +101,7 @@ const SearchAllResult = props => {
               key={obj._id}
               onMouseOver={() => props.handleHoveredCard(obj.author_permlink)}
               onMouseOut={() => props.handleHoveredCard('')}
-              onClick={handleItemClick}
+              onClick={() => handleItemClick(obj)}
             >
               {switcherObjectCard(obj)}
             </div>
@@ -109,7 +110,7 @@ const SearchAllResult = props => {
           loading: props.loading,
         };
     }
-  }, [props.searchType, props.searchResult, props.searchByUser, props.loading, props.usersLoading]);
+  };
 
   useEffect(() => {
     if (!isEmpty(props.searchResult) && localStorage.getItem('scrollTop')) {
@@ -289,6 +290,7 @@ SearchAllResult.propTypes = {
   followSearchUser: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
   handleUrlWithChangeType: PropTypes.func.isRequired,
+  setQueryFromSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
   assignProposition: PropTypes.func.isRequired,
   declineProposition: PropTypes.func.isRequired,

@@ -21,7 +21,12 @@ import { setCatalogBreadCrumbs, setNestedWobject } from '../../store/wObjectStor
 import { appendObject } from '../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
-import { getHelmetIcon, getIsWaivio, getScreenSize } from '../../store/appStore/appSelectors';
+import {
+  getHelmetIcon,
+  getIsWaivio,
+  getScreenSize,
+  getWeightValue,
+} from '../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -35,6 +40,7 @@ import {
 } from '../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
 import { getConfiguration } from '../../store/websiteStore/websiteSelectors';
+import { getRate, getRewardFund } from '../../store/appStore/appActions';
 
 @withRouter
 @connect(
@@ -51,6 +57,7 @@ import { getConfiguration } from '../../store/websiteStore/websiteSelectors';
     helmetIcon: getHelmetIcon(state),
     isWaivio: getIsWaivio(state),
     supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
+    weightValue: getWeightValue(state, getObjectState(state).weight),
   }),
   {
     clearObjectFromStore,
@@ -78,6 +85,7 @@ export default class WobjectContainer extends React.Component {
     failed: PropTypes.bool,
     isFetching: PropTypes.bool,
     getObject: PropTypes.func.isRequired,
+    weightValue: PropTypes.number.isRequired,
     supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
     isWaivio: PropTypes.bool.isRequired,
     resetGallery: PropTypes.func.isRequired,
@@ -114,8 +122,9 @@ export default class WobjectContainer extends React.Component {
   static fetchData({ store, match }) {
     return Promise.all([
       store.dispatch(getObject(match.params.name)),
-      store.dispatch(getAlbums(match.params.name)),
       store.dispatch(getObjectFollowers({ object: match.params.name, skip: 0, limit: 5 })),
+      store.dispatch(getRate()),
+      store.dispatch(getRewardFund()),
     ]);
   }
 
@@ -215,6 +224,7 @@ export default class WobjectContainer extends React.Component {
         helmetIcon={this.props.helmetIcon}
         isWaivio={this.props.isWaivio}
         supportedObjectTypes={this.props.supportedObjectTypes}
+        weightValue={this.props.weightValue}
       />
     );
   }

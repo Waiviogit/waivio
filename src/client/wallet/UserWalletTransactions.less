@@ -104,6 +104,10 @@
       display: flex;
       flex-direction: row;
     }
+
+    span:first-child {
+      white-space: break-spaces;
+    }
   }
 
   &__timestamp {
@@ -192,6 +196,20 @@
 
   &__modal-subtitle {
     font-weight: bold;
+  }
+
+  &__amountColor {
+    &--black {
+      color: @black;
+    }
+
+    &--red {
+      color: @red;
+    }
+
+    &--green {
+      color: @green;
+    }
   }
 }
 

@@ -24,7 +24,9 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     hbdUSD: round(get(transaction, 'hbdUSD'), 3),
     withdrawDeposit: get(transaction, 'withdrawDeposit'),
     usd: get(transaction, 'usd'),
+    checked: get(transaction, 'checked'),
     userName: user,
+    _id: isGuestPage ? get(transaction, '_id') : get(transaction, 'operationNum'),
   };
 
   switch (transactionType) {
@@ -151,12 +153,26 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
       const isWithdraw = transaction.withdrawDeposit === 'w';
 
-      description = getTransactionDescription(transactionType);
+      description = getTransactionDescription(transactionType, {
+        from: transaction.from,
+        to: transaction.to,
+      });
+
+      if (transaction.userName !== transaction.from && transaction.from !== transaction.to) {
+        return {
+          ...data,
+          fieldHIVE: transaction.amount.split(' ')[0],
+          fieldDescription: description.powerDownWithdrawFrom,
+        };
+      }
 
       return {
         ...data,
         fieldHIVE: `${isWithdraw ? '-' : ''} ${transaction.amount.split(' ')[0]}`,
-        fieldDescription: description.powerDownWithdraw,
+        fieldDescription:
+          transaction.from === transaction.to
+            ? description.powerDownWithdraw
+            : description.powerDownWithdrawTo,
       };
     }
     case accountHistoryConstants.FILL_ORDER: {

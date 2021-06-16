@@ -46,16 +46,19 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
     type: CREATE_NEW_WEBSITE.ACTION,
     payload: {
       promise: ApiClient.createWebsite(body).then(res => {
-        const { block_num: blockNum } = res.result;
-        const creator = getAuthenticatedUserName(state);
+        if (res.message) message.error(res.message);
+        else {
+          const { block_num: blockNum } = res.result;
+          const creator = getAuthenticatedUserName(state);
 
-        busyAPI.instance.sendAsync(subscribeMethod, [creator, blockNum, subscribeTypes.posts]);
-        busyAPI.instance.subscribe((response, mess) => {
-          if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
-            history.push(`/${formData.domain}.${formData.parent}/configuration`);
-            dispatch(getOwnWebsite());
-          }
-        });
+          busyAPI.instance.sendAsync(subscribeMethod, [creator, blockNum, subscribeTypes.posts]);
+          busyAPI.instance.subscribe((response, mess) => {
+            if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
+              history.push(`/${formData.domain}.${formData.parent}/configuration`);
+              dispatch(getOwnWebsite());
+            }
+          });
+        }
       }),
     },
   });

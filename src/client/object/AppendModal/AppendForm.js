@@ -13,6 +13,7 @@ import {
   isNil,
   size,
   uniqBy,
+  debounce,
 } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
@@ -885,6 +886,10 @@ export default class AppendForm extends Component {
     }
   };
 
+  handleChangeMapsData = debounce((value, key) => {
+    this.setState(() => ({ [key]: value }));
+  }, 500);
+
   checkRequiredField = (form, currentField) => {
     let formFields = null;
 
@@ -1544,6 +1549,7 @@ export default class AppendForm extends Component {
                     id: 'location_latitude',
                     defaultMessage: 'Latitude',
                   })}
+                  onChange={e => this.handleChangeMapsData(e.currentTarget.value, 'latitude')}
                 />,
               )}
             </Form.Item>
@@ -1561,16 +1567,13 @@ export default class AppendForm extends Component {
                     id: 'location_longitude',
                     defaultMessage: 'Longitude',
                   })}
+                  onChange={e => this.handleChangeMapsData(e.currentTarget.value, 'longitude')}
                 />,
               )}
             </Form.Item>
             <MapAppendObject
               setCoordinates={this.setCoordinates}
-              heigth={400}
-              center={[
-                Number(getFieldValue(mapFields.latitude)),
-                Number(getFieldValue(mapFields.longitude)),
-              ]}
+              center={[this.state.longitude, this.state.latitude]}
             />
           </React.Fragment>
         );

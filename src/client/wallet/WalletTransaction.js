@@ -149,13 +149,32 @@ const WalletTransaction = ({
         />
       );
     case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
-      const desc = getTransactionDescription(transactionType);
+      const desc = getTransactionDescription(transactionType, {
+        to: transactionDetails.to,
+        from: transactionDetails.from,
+      });
+      let color = 'black';
+      let description = desc.powerDownWithdraw;
+      let character = '';
+
+      if (transactionDetails.to !== transactionDetails.from) {
+        color = 'red';
+        description = desc.powerDownWithdrawTo;
+        character = '- ';
+
+        if (transaction.userName !== transaction.from) {
+          description = desc.powerDownWithdrawFrom;
+          color = 'green';
+          character = '+ ';
+        }
+      }
 
       return (
         <PowerDownTransaction
-          amount={transactionDetails.amount}
+          amount={`${character}${transactionDetails.amount}`}
           timestamp={transaction.timestamp}
-          description={desc.powerDownWithdraw}
+          description={description}
+          color={color}
         />
       );
     }

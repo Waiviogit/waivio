@@ -79,7 +79,9 @@ export const configUsersWebsitesTableHeader = [
     },
     type: 'delete',
     checkShowItem: (item, getBody) =>
-      ['pending', 'inactive'].includes(item.status) ? getBody(item, { type: 'delete' }) : '-',
+      ['pending', 'inactive', 'suspended'].includes(item.status)
+        ? getBody(item, { type: 'delete' })
+        : '-',
   },
 ];
 

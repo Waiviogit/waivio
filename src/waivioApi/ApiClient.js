@@ -2097,7 +2097,7 @@ export const calculateVoteValueForSlider = (userName, query) => {
 };
 
 export const excludeAdvancedReports = (body, isGuest) =>
-  fetch(`${config.apiPrefix}${config.payments}`, {
+  fetch(`${config.campaignApiPrefix}${config.payments}${config.exemptions}`, {
     headers: {
       ...headers,
       'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token'),

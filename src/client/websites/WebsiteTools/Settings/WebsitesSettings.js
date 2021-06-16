@@ -160,19 +160,42 @@ const WebsitesSettings = ({
                 defaultMessage: 'Beneficiary %:',
               })}
             </h3>
-            {getFieldDecorator('beneficiaryPercent')(
-              <Input.Group>
-                <Input
-                  disabled={!beneficiaryAccount}
-                  placeholder={intl.formatMessage({
-                    id: 'enter_percentage',
-                    defaultMessage: 'Enter percentage',
-                  })}
-                  onChange={handleChangePercent}
-                  value={beneficiaryPercent}
-                  required={beneficiaryAccount}
-                />
-              </Input.Group>,
+            {getFieldDecorator('beneficiaryPercent', {
+              initialValue: beneficiaryPercent,
+              rules: [
+                {
+                  required: beneficiaryAccount,
+                  message: intl.formatMessage({
+                    id: 'beneficiary_is_required',
+                    defaultMessage: 'Beneficiary is required',
+                  }),
+                },
+                {
+                  validator: (rule, value) => {
+                    if (value) {
+                      return Number(value)
+                        ? Promise.resolve()
+                        : Promise.reject(
+                            intl.formatMessage({
+                              id: 'beneficiary_error',
+                              defaultMessage: 'Beneficiary could not be less than 1',
+                            }),
+                          );
+                    }
+
+                    return Promise.resolve();
+                  },
+                },
+              ],
+            })(
+              <Input
+                disabled={!beneficiaryAccount}
+                placeholder={intl.formatMessage({
+                  id: 'enter_percentage',
+                  defaultMessage: 'Enter percentage',
+                })}
+                onChange={handleChangePercent}
+              />,
             )}
           </Form.Item>
         </div>

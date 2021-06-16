@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isNil, isEmpty, isEqual } from 'lodash';
 import React from 'react';
 import { Map } from 'pigeon-maps';
 import { connect } from 'react-redux';
@@ -30,21 +30,15 @@ class MapAppendObject extends React.Component {
       userCoordinates: null,
       isInitial: true,
     };
-
-    this.onBoundsChanged = this.onBoundsChanged.bind(this);
-    this.showUserPosition = this.showUserPosition.bind(this);
-    this.setCoordinates = this.setCoordinates.bind(this);
-    this.incrementZoom = this.incrementZoom.bind(this);
-    this.decrementZoom = this.decrementZoom.bind(this);
-    this.zoomButtonsLayout = this.zoomButtonsLayout.bind(this);
   }
 
   componentDidMount() {
-    if (
-      (_.isNan(this.props.center[0]) || defaultCoords[0] === this.props.center[0]) &&
-      _.isEmpty(this.props.userLocation)
-    ) {
-      this.props.getCoordinates();
+    if (isNil(this.props.center[0]) || isEmpty(this.props.userLocation)) {
+      this.props.getCoordinates().then(res =>
+        this.setState({
+          userCoordinates: [+res.value.latitude, +res.value.longitude],
+        }),
+      );
     } else {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
@@ -53,41 +47,36 @@ class MapAppendObject extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps !== this.props) {
-      let location = defaultCoords;
-
-      if (_.size(nextProps.userLocation) > 0 && this.state.isInitial) {
-        location = [+nextProps.userLocation.lat, +nextProps.userLocation.lon];
-        this.setState({ userCoordinates: location, isInitial: false });
-      } else if (!_.isNan(this.props.center[0])) {
-        location = [nextProps.center[0], nextProps.center[1]];
-        this.setState({ userCoordinates: location });
-      }
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.center, this.props.center)) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState(() => ({ userCoordinates: this.props.center }));
     }
   }
 
   onBoundsChanged = ({ center, zoom, bounds, initial }) =>
     this.setState({ center, zoom, bounds, initial, userCoordinates: center });
 
-  setPosition = () => {
-    if (navigator && navigator.geolocation) {
-      const positionGPS = navigator.geolocation.getCurrentPosition(this.showUserPosition);
-
-      if (positionGPS) {
-        this.setState({ userCoordinates: positionGPS });
-
-        return true;
-      }
+  handleError = async () => {
+    if (isEmpty(this.props.userLocation)) {
+      this.props.getCoordinates().then(res =>
+        this.setState({
+          userCoordinates: [+res.value.latitude, +res.value.longitude],
+        }),
+      );
+    } else {
+      this.setState({
+        userCoordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+      });
     }
-    this.setState({ userCoordinates: [this.props.userLocation.lat, this.props.userLocation.lon] });
-
-    return true;
   };
 
-  setCoordinates = coord => {
-    this.props.setCoordinates(coord);
+  setPosition = () => {
+    if (navigator && navigator.geolocation)
+      navigator.geolocation.getCurrentPosition(this.showUserPosition, this.handleError);
   };
+
+  setCoordinates = coord => this.props.setCoordinates(coord);
 
   showUserPosition = position =>
     this.setState({ center: [position.coords.latitude, position.coords.longitude] });
@@ -108,28 +97,10 @@ class MapAppendObject extends React.Component {
   );
 
   render() {
-    const { infoboxData, zoom, userCoordinates } = this.state;
+    const { zoom, userCoordinates } = this.state;
 
     return userCoordinates ? (
-      <div className="MapOS">
-        <Map
-          provider={mapProvider}
-          onBoundsChanged={this.onBoundsChanged}
-          center={userCoordinates}
-          zoom={zoom}
-          onClick={this.setCoordinates}
-          animate
-          width={719}
-          height={400}
-        >
-          {this.props.center && !_.isNan(this.props.center[0]) && (
-            <CustomMarker
-              key={`${this.props.center[0]}${this.props.center[1]}`}
-              anchor={this.props.center}
-            />
-          )}
-          {infoboxData && this.getOverlayLayout()}
-        </Map>
+      <div style={{ position: 'relative' }}>
         {this.zoomButtonsLayout()}
         <div
           role="presentation"
@@ -139,6 +110,19 @@ class MapAppendObject extends React.Component {
         >
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
+        <Map
+          provider={mapProvider}
+          onBoundsChanged={this.onBoundsChanged}
+          center={userCoordinates}
+          zoom={zoom}
+          onClick={this.setCoordinates}
+          height={400}
+          animate
+        >
+          {this.props.center && !isNil(this.props.center[0]) && (
+            <CustomMarker key={this.props.center.join('/')} anchor={this.props.center} />
+          )}
+        </Map>
       </div>
     ) : (
       <Loading />

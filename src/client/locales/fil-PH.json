@@ -1687,5 +1687,8 @@
   "power_down_started": "Nagsimulang power down",
   "power_down_stopping": "Natigil ang power down",
   "power_down_withdraw": "Umatras mula sa pagtustos",
-  "x_field_description": "Gamitin ang patlang na ito upang maibukod ang isang entry mula sa pagkalkula ng kabuuan."
+  "x_field_description": "Gamitin ang patlang na ito upang maibukod ang isang entry mula sa pagkalkula ng kabuuan.",
+  "disclaimer_info": "Ang impormasyong ibinigay ng site na ito, kabilang ang mga ulat sa pananalapi, ay ibinibigay sa batayang \"\"tulad nito\"\" na walang mga garantiya ng pagkakumpleto, kawastuhan, pagiging kapaki-pakinabang o pagiging maagap ng panahon. Walang pananagutan o pananagutan ang Waivio Technologies Inc. para sa anumang mga pagkakamali o pagkukulang sa nilalaman ng site na ito.",
+  "multiple_accounts_included": "Kung maraming mga account ang kasama sa ulat, ang mga transaksyon sa pagitan ng mga tinukoy na account ay hindi kasama mula sa mga kabuuang kalkulasyon para sa mga pag-withdraw at deposito.",
+  "beneficiary_error": "Ang beneficiary ay hindi maaaring mas mababa sa 1"
 }

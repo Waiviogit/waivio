@@ -1,8 +1,9 @@
+import moment from 'moment';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import { getTransfersAccounts } from './advancedSelectors';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 
 const parseTransactionData = trans => {
   if (guestUserRegex.test(trans.userName)) {
@@ -13,7 +14,7 @@ const parseTransactionData = trans => {
     };
     const transferDirection = Object.values(guestActionType).includes(trans.type)
       ? { from: trans.sponsor, to: trans.userName }
-      : { from: trans.userName, to: trans.sponsor || 'mock' };
+      : { from: trans.userName, to: trans.sponsor };
 
     return {
       ...transferDirection,
@@ -28,6 +29,8 @@ const parseTransactionData = trans => {
       hiveUSD: trans.hiveUSD,
       withdrawDeposit: trans.withdrawDeposit,
       usd: trans.usd,
+      checked: trans.checked,
+      _id: trans._id,
     };
   }
 
@@ -58,8 +61,12 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
     payload: {
       promise: ApiClient.getAdvancedReports(
         {
-          startDate,
-          endDate,
+          startDate:
+            startDate ||
+            moment()
+              .subtract(10, 'year')
+              .unix(),
+          endDate: endDate || moment().unix(),
           filterAccounts,
           accounts,
         },
@@ -133,13 +140,47 @@ export const deleteUsersTransactionDate = name => ({
 
 export const CALCULATE_TOTAL_CHANGES = '@advanced/CALCULATE_TOTAL_CHANGES';
 
-export const calculateTotalChanges = (amount, type, decrement) => ({
-  type: CALCULATE_TOTAL_CHANGES,
-  payload: { amount, type, decrement },
-});
+export const calculateTotalChanges = (item, checked) => dispatch => {
+  dispatch({
+    type: CALCULATE_TOTAL_CHANGES,
+    payload: { amount: item.usd, type: item.withdrawDeposit, decrement: checked },
+  });
+  dispatch(
+    excludeTransfer({
+      ...item,
+      checked,
+    }),
+  );
+};
 
 export const RESET_REPORTS = '@advanced/RESET_REPORTS';
 
 export const resetReportsData = () => ({
   type: RESET_REPORTS,
 });
+
+export const EXCLUDE_TRANSFER = createAsyncActionType('@advanced/EXCLUDE_TRANSFER');
+
+export const excludeTransfer = body => (dispatch, getState) => {
+  const state = getState();
+  const isGuest = isGuestUser(state);
+  const authUserName = getAuthenticatedUserName(state);
+  const getKey = guestKey => (guestUserRegex.test(body.userName) ? guestKey : 'operationNum');
+
+  return dispatch({
+    type: EXCLUDE_TRANSFER.ACTION,
+    payload: ApiClient.excludeAdvancedReports(
+      {
+        userName: authUserName,
+        userWithExemptions: body.userName,
+        checked: body.checked,
+        [getKey('recordId')]: body._id,
+      },
+      isGuest,
+    ),
+    meta: {
+      id: body._id,
+      key: getKey('_id'),
+    },
+  });
+};

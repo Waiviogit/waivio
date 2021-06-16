@@ -1688,5 +1688,8 @@
   "power_down_started": "Begin om af te skakel",
   "power_down_stopped": "Gestop gestop",
   "power_down_withdraw": "Onttrek van vestiging",
-  "x_field_description": "Gebruik hierdie veld om 'n inskrywing van die totale berekening uit te sluit."
+  "x_field_description": "Gebruik hierdie veld om 'n inskrywing van die totale berekening uit te sluit.",
+  "disclaimer_info": "Die inligting wat deur hierdie webwerf verskaf word, insluitend finansiële verslae, word op 'n \"\"as 'n\"\" basis verskaf sonder enige waarborge vir volledigheid, akkuraatheid, bruikbaarheid of tydigheid. Waivio Technologies Inc. aanvaar geen verantwoordelikheid of aanspreeklikheid vir enige foute of weglatings in die inhoud van hierdie webwerf nie.",
+  "multiple_accounts_included": "As daar verskeie rekeninge in die verslag is, word transaksies tussen die gespesifiseerde rekeninge uitgesluit van die totale berekeninge vir onttrekkings en deposito's.",
+  "beneficiary_error": "Begunstigde mag nie minder as 1 wees nie"
 }

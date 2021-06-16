@@ -4,7 +4,7 @@ import { FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../helpers/formatter';
 
-const PowerDownTransaction = ({ timestamp, amount, description }) => (
+const PowerDownTransaction = ({ timestamp, amount, description, color }) => (
   <div className="UserWalletTransactions__transaction">
     <div className="UserWalletTransactions__icon-container">
       <i className="iconfont icon-flashlight_fill UserWalletTransactions__icon" />
@@ -12,7 +12,11 @@ const PowerDownTransaction = ({ timestamp, amount, description }) => (
     <div className="UserWalletTransactions__content">
       <div className="UserWalletTransactions__content-recipient">
         {description}
-        <span className="UserWalletTransactions__marginLeft">{amount}</span>
+        <span
+          className={`UserWalletTransactions__marginLeft UserWalletTransactions__amountColor--${color}`}
+        >
+          {amount}
+        </span>
       </div>
       <span className="UserWalletTransactions__timestamp">
         <BTooltip
@@ -34,6 +38,7 @@ const PowerDownTransaction = ({ timestamp, amount, description }) => (
 PowerDownTransaction.propTypes = {
   timestamp: PropTypes.number.isRequired,
   amount: PropTypes.element.isRequired,
+  color: PropTypes.string.isRequired,
   description: PropTypes.shape({}).isRequired,
 };
 
