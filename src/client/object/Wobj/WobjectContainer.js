@@ -122,7 +122,6 @@ export default class WobjectContainer extends React.Component {
   static fetchData({ store, match }) {
     return Promise.all([
       store.dispatch(getObject(match.params.name)),
-      store.dispatch(getAlbums(match.params.name)),
       store.dispatch(getObjectFollowers({ object: match.params.name, skip: 0, limit: 5 })),
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),

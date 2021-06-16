@@ -31,12 +31,12 @@ class MapAppendObject extends React.Component {
       isInitial: true,
     };
 
-    this.onBoundsChanged = this.onBoundsChanged.bind(this);
-    this.showUserPosition = this.showUserPosition.bind(this);
-    this.setCoordinates = this.setCoordinates.bind(this);
-    this.incrementZoom = this.incrementZoom.bind(this);
-    this.decrementZoom = this.decrementZoom.bind(this);
-    this.zoomButtonsLayout = this.zoomButtonsLayout.bind(this);
+    // this.onBoundsChanged = this.onBoundsChanged.bind(this);
+    // this.showUserPosition = this.showUserPosition.bind(this);
+    // this.setCoordinates = this.setCoordinates.bind(this);
+    // this.incrementZoom = this.incrementZoom.bind(this);
+    // this.decrementZoom = this.decrementZoom.bind(this);
+    // this.zoomButtonsLayout = this.zoomButtonsLayout.bind(this);
   }
 
   componentDidMount() {
@@ -107,7 +107,7 @@ class MapAppendObject extends React.Component {
     const { zoom, userCoordinates } = this.state;
 
     return userCoordinates ? (
-      <div className="MapOS">
+      <div className="MapOS" style={{ height: '400px' }}>
         <Map
           provider={mapProvider}
           onBoundsChanged={this.onBoundsChanged}
