@@ -38,8 +38,9 @@ const Wobj = ({
   const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
   const url = `${waivioHost}/object/${match.params.name}`;
   const albumsAndImagesCount = wobject.albums_count;
+  const address = parseAddress(wobject);
   const titleText = isWaivio
-    ? `${objectName} - ${`${parseAddress(wobject)} - ` || ''}Waivio`
+    ? `${objectName} - ${address ? `${address} -` : ''} Waivio`
     : objectName;
   const tagCategories = reduce(
     wobject.tagCategory,

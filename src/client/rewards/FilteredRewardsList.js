@@ -147,6 +147,14 @@ const FilteredRewardsList = props => {
 
     return [
       {
+        key: 'proximity',
+        id: 'proximity',
+        defaultMessage: 'proximity',
+      },      {
+        key: 'payout',
+        id: 'payouts',
+        defaultMessage: 'payouts',
+      },      {
         key: 'reward',
         id: 'amount_sort',
         defaultMessage: 'amount',

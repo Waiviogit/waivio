@@ -1573,7 +1573,6 @@ export default class AppendForm extends Component {
             </Form.Item>
             <MapAppendObject
               setCoordinates={this.setCoordinates}
-              heigth={400}
               center={[this.state.longitude, this.state.latitude]}
             />
           </React.Fragment>

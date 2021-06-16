@@ -100,19 +100,7 @@ class MapAppendObject extends React.Component {
     const { zoom, userCoordinates } = this.state;
 
     return userCoordinates ? (
-      <div className="MapOS" style={{ height: '400px' }}>
-        <Map
-          provider={mapProvider}
-          onBoundsChanged={this.onBoundsChanged}
-          center={userCoordinates}
-          zoom={zoom}
-          onClick={this.setCoordinates}
-          animate
-        >
-          {this.props.center && !isNil(this.props.center[0]) && (
-            <CustomMarker key={this.props.center.join('/')} anchor={this.props.center} />
-          )}
-        </Map>
+      <div style={{ position: 'relative' }}>
         {this.zoomButtonsLayout()}
         <div
           role="presentation"
@@ -122,6 +110,19 @@ class MapAppendObject extends React.Component {
         >
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
+        <Map
+          provider={mapProvider}
+          onBoundsChanged={this.onBoundsChanged}
+          center={userCoordinates}
+          zoom={zoom}
+          onClick={this.setCoordinates}
+          height={400}
+          animate
+        >
+          {this.props.center && !isNil(this.props.center[0]) && (
+            <CustomMarker key={this.props.center.join('/')} anchor={this.props.center} />
+          )}
+        </Map>
       </div>
     ) : (
       <Loading />
