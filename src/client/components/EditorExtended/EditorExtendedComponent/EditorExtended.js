@@ -6,6 +6,7 @@ import { injectIntl } from 'react-intl';
 import { convertToRaw } from 'draft-js';
 import { fromMarkdown, Editor as MediumDraftEditor, createEditorState } from '../index';
 import { SIDE_BUTTONS } from '../model/content';
+import { parseImagesFromBlocks } from '../../../helpers/editorHelper';
 
 const MAX_LENGTH = 255;
 
@@ -28,8 +29,9 @@ const Editor = props => {
 
   const onChange = updatedEditorState => {
     const { editorState: prevEditorState } = props.editorExtended;
+    const updatedEditorStateParsed = parseImagesFromBlocks(updatedEditorState);
 
-    props.setUpdatedEditorExtendedData({ editorState: updatedEditorState, prevEditorState });
+    props.setUpdatedEditorExtendedData({ editorState: updatedEditorStateParsed, prevEditorState });
   };
 
   const setFocusAfterMount = () => {

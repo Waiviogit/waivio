@@ -183,13 +183,10 @@ function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
 
-export const parseImagesFromBlocks = (editorState, isFocus) => {
+export const parseImagesFromBlocks = editorState => {
   const selectionState = editorState.getSelection();
   const anchorKey = selectionState.getAnchorKey();
-  const currentContent = editorState.getCurrentContent();
-  const currentContentBlock = currentContent.getBlockForKey(anchorKey);
   const start = selectionState.getStartOffset();
-  const end = selectionState.getEndOffset();
 
   const blocksEditor = convertToRaw(editorState.getCurrentContent());
 
@@ -199,8 +196,35 @@ export const parseImagesFromBlocks = (editorState, isFocus) => {
     entityMap: blocksEditor.entityMap,
   };
 
+  const needParse = [];
+
   blocksEditor.blocks.forEach(block => {
-    if (!block.entityRanges.length) {
+    const typesOfRanges = [];
+
+    const isSameTypeRanges = block.entityRanges
+      .map(entity => typesOfRanges.push(entity))
+      .every((element, index, array) => array[0] === element);
+
+    if (!isSameTypeRanges) {
+      needParse.push(block);
+    } else {
+      const key = get(block.entityRanges, '[0].key', false);
+
+      if (key && blocksEditor.entityMap[key] === Entity.IMAGE && block.type !== Block.IMAGE) {
+        needParse.push(block);
+      }
+    }
+  });
+
+  if (!size(needParse)) {
+    return editorState;
+  }
+
+  blocksEditor.blocks.forEach(block => {
+    if (
+      !block.entityRanges.length ||
+      !needParse.find(needParseBlock => needParseBlock.key === block.key)
+    ) {
       newBlocks.blocks = [...newBlocks.blocks, block];
     } else {
       let blockText = block.text;
@@ -300,7 +324,7 @@ export const parseImagesFromBlocks = (editorState, isFocus) => {
   let newEditorState = createEditorState(correctBlocks);
   const isExistBlock = correctBlocks.blocks.find(item => item.key === anchorKey);
 
-  if (isExistBlock && isFocus) {
+  if (isExistBlock && size(needParse)) {
     const updateSelection = new SelectionState({
       anchorKey,
       anchorOffset: start,
