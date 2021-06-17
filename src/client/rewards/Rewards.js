@@ -444,7 +444,6 @@ class Rewards extends React.Component {
 
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
-      // eslint-disable-next-line camelcase
       const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
       const newSponsors = sortBy(sponsors);
       const rewardsTab = {

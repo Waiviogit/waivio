@@ -46,7 +46,7 @@ const Wobj = ({
     wobject.tagCategory,
     (acc, curr) => {
       const currentCategory = !isEmpty(curr.items)
-        ? `${curr.body}: ${curr.items.map(item => item.body).join(' ,')}`
+        ? `${curr.body}: ${curr.items.map(item => item.body).join(', ')}`
         : '';
 
       return acc ? `${acc}. ${currentCategory}` : currentCategory;
@@ -58,7 +58,7 @@ const Wobj = ({
     objectName &&
     `${objectName}. ${
       hasType(wobject, 'restaurant') ? `Restaurant rank: ${round(weightValue, 2)}.` : ''
-    } ${`${parseAddress(wobject)}.` || ''} ${wobject.description || ''} ${tagCategories}`;
+    } ${parseAddress(wobject) || ''} ${wobject.description || ''} ${tagCategories}`;
 
   const formsList = get(wobject, 'form', []);
   const currentForm = formsList.find(item => item.permlink === match.params.itemId);
