@@ -14,6 +14,7 @@ import {
   differenceBy,
   isEmpty,
   without,
+  isString,
 } from 'lodash';
 import { convertToRaw, EditorState, genKey, SelectionState } from 'draft-js';
 
@@ -168,17 +169,6 @@ export const updatedHideObjectsPaste = (hideLinkedObjects, pastedObjects) => {
   return differenceBy(hideLinkedObjects, updatedHideLinkedObjects, '_id');
 };
 
-const getPartsOfSentence = string => {
-  const parts = string
-    .trim()
-    .split(mockPhoto)
-    .reduce((acc, part) => [...acc, part, mockPhoto], []);
-
-  parts.pop();
-
-  return parts;
-};
-
 function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
@@ -190,7 +180,6 @@ export const parseImagesFromBlocks = editorState => {
 
   const blocksEditor = convertToRaw(editorState.getCurrentContent());
 
-  const entityMapArray = Object.values(blocksEditor.entityMap);
   const newBlocks = {
     blocks: [],
     entityMap: blocksEditor.entityMap,
@@ -199,10 +188,8 @@ export const parseImagesFromBlocks = editorState => {
   const needParse = [];
 
   blocksEditor.blocks.forEach(block => {
-    const typesOfRanges = [];
-
     const isSameTypeRanges = block.entityRanges
-      .map(entity => typesOfRanges.push(entity))
+      .map(entity => blocksEditor.entityMap[entity.key].type)
       .every((element, index, array) => array[0] === element);
 
     if (!isSameTypeRanges) {
@@ -210,74 +197,85 @@ export const parseImagesFromBlocks = editorState => {
     } else {
       const key = get(block.entityRanges, '[0].key', false);
 
-      if (key && blocksEditor.entityMap[key] === Entity.IMAGE && block.type !== Block.IMAGE) {
+      if (
+        (key || key === 0) &&
+        blocksEditor.entityMap[key].type === Entity.IMAGE &&
+        block.type !== Block.IMAGE
+      ) {
         needParse.push(block);
       }
     }
   });
-
   if (!size(needParse)) {
     return editorState;
   }
-
   blocksEditor.blocks.forEach(block => {
-    if (
-      !block.entityRanges.length ||
-      !needParse.find(needParseBlock => needParseBlock.key === block.key)
-    ) {
-      newBlocks.blocks = [...newBlocks.blocks, block];
+    if (!needParse.find(needParseBlock => needParseBlock.key === block.key)) {
+      newBlocks.blocks = [...newBlocks.blocks, { ...block, text: block.text.trim() }];
     } else {
-      let blockText = block.text;
       let blocksUpdated = [];
       const blockEntities = [];
+      let prevOffset = 0;
 
-      block.entityRanges.forEach(entityRange => {
+      block.entityRanges.forEach((entityRange, index) => {
         const blockEntity = block.text.substring(
           entityRange.offset,
           entityRange.offset + entityRange.length,
         );
 
         blockEntities.push(blockEntity.trim().replace(/\r?\n/g, ''));
-        const firstText = blockText
-          .substring(0, entityRange.offset)
+        const firstText = block.text
+          .substring(prevOffset, entityRange.offset)
           .trim()
           .replace(/\r?\n/g, '');
-        const secondText = blockText
+        const secondText = block.text
           .substring(entityRange.offset, entityRange.offset + entityRange.length)
           .trim()
           .replace(/\r?\n/g, '');
 
-        blockText = blockText.substring(entityRange.offset + entityRange.length, blockText.length);
-        blocksUpdated = [...blocksUpdated, firstText, secondText];
+        prevOffset = entityRange.offset + entityRange.length;
+        blocksUpdated = [
+          ...blocksUpdated,
+          firstText,
+          { text: secondText, entityKey: entityRange.key },
+        ];
+        if (index === block.entityRanges.length - 1) {
+          blocksUpdated = [
+            ...blocksUpdated,
+            block.text
+              .substring(prevOffset, block.text.length)
+              .trim()
+              .replace(/\r?\n/g, ''),
+          ];
+        }
       });
       const newBlocksParsed = without(blocksUpdated, '').map(blockUpdated => {
+        const text = isString(blockUpdated.text) ? blockUpdated.text : blockUpdated;
         const isCustomBlock = blockEntities.some(
           entityBlock =>
-            entityBlock.trim().replace(/\r?\n/g, '') === blockUpdated.trim().replace(/\r?\n/g, ''),
+            entityBlock.trim().replace(/\r?\n/g, '') === text.trim().replace(/\r?\n/g, ''),
         );
 
         if (isCustomBlock) {
-          const returnBlock = {
-            text: blockUpdated,
-            entity: entityMapArray[0],
+          return {
+            text: text.replace(mockPhoto, ''),
+            entity: blocksEditor.entityMap[blockUpdated.entityKey],
           };
-
-          entityMapArray.shift();
-
-          return returnBlock;
         }
 
-        return blockUpdated;
+        return blockUpdated.replace(mockPhoto, '');
       });
 
       const blockObjects = newBlocksParsed.map(blockParsed => {
+        const text = blockParsed.text ? blockParsed.text : blockParsed;
+
         if (has(blockParsed, 'text')) {
-          switch (blockParsed.entity.type) {
+          switch (get(blockParsed, 'entity.type', false)) {
             case Entity.LINK:
               return {
                 key: genKey(),
                 type: Block.UNSTYLED,
-                text: blockParsed.text,
+                text: text.trim().replace(/\r?\n/g, ''),
                 depth: 0,
                 data: {},
                 entityRanges: [
@@ -300,7 +298,7 @@ export const parseImagesFromBlocks = editorState => {
               return {
                 key: genKey(),
                 type: Block.TODO,
-                text: blockParsed.text,
+                text: text.trim().replace(/\r?\n/g, ''),
                 depth: 0,
                 data: {},
               };
@@ -309,7 +307,7 @@ export const parseImagesFromBlocks = editorState => {
           return {
             key: genKey(),
             type: Block.TODO,
-            text: blockParsed,
+            text,
             depth: 0,
             data: {},
           };
@@ -319,10 +317,8 @@ export const parseImagesFromBlocks = editorState => {
       newBlocks.blocks = [...newBlocks.blocks, ...blockObjects];
     }
   });
-  const correctBlocks =
-    size(newBlocks.blocks) === size(blocksEditor.blocks) ? blocksEditor : newBlocks;
-  let newEditorState = createEditorState(correctBlocks);
-  const isExistBlock = correctBlocks.blocks.find(item => item.key === anchorKey);
+  let newEditorState = createEditorState(newBlocks);
+  const isExistBlock = newBlocks.blocks.find(item => item.key === anchorKey);
 
   if (isExistBlock && size(needParse)) {
     const updateSelection = new SelectionState({
@@ -339,5 +335,5 @@ export const parseImagesFromBlocks = editorState => {
     return newEditorState;
   }
 
-  return createEditorState(correctBlocks);
+  return EditorState.moveFocusToEnd(newEditorState);
 };
