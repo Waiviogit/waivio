@@ -29,9 +29,8 @@ const Editor = props => {
 
   const onChange = updatedEditorState => {
     const { editorState: prevEditorState } = props.editorExtended;
-    const updatedEditorStateParsed = parseImagesFromBlocks(updatedEditorState);
 
-    props.setUpdatedEditorExtendedData({ editorState: updatedEditorStateParsed, prevEditorState });
+    props.setUpdatedEditorExtendedData({ editorState: updatedEditorState, prevEditorState });
   };
 
   const setFocusAfterMount = () => {
@@ -45,9 +44,11 @@ const Editor = props => {
   };
 
   const handleContentChange = updatedEditorState => {
-    onChange(updatedEditorState);
+    const updatedEditorStateParsed = parseImagesFromBlocks(updatedEditorState);
+
+    onChange(updatedEditorStateParsed);
     props.onChange(
-      convertToRaw(updatedEditorState.getCurrentContent()),
+      convertToRaw(updatedEditorStateParsed.getCurrentContent()),
       props.editorExtended.titleValue,
     );
   };

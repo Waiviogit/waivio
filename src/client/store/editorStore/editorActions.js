@@ -52,6 +52,7 @@ import {
   getCurrentDraftContent,
   getFilteredLinkedObjects,
   updatedHideObjectsPaste,
+  parseImagesFromBlocks,
   getLinkedObjects as getLinkedObjectsHelper,
 } from '../../helpers/editorHelper';
 import {
