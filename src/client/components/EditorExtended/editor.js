@@ -123,9 +123,6 @@ export default class MediumDraftEditor extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      isFocus: true,
-    };
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
 
     this.onChange = (editorState, cb) => {
@@ -146,10 +143,6 @@ export default class MediumDraftEditor extends React.Component {
     this.handleDroppedFiles = this.handleDroppedFiles.bind(this);
     this.handlePastedFiles = this.handlePastedFiles.bind(this);
   }
-
-  handleBlur = () => this.setState({ isFocus: false });
-
-  handleFocus = () => this.setState({ isFocus: true });
 
   // Copy/paste method
   handlePastedFiles = async event => {
@@ -717,8 +710,6 @@ export default class MediumDraftEditor extends React.Component {
               this._editorNode = node; // eslint-disable-line
             }}
             {...this.props}
-            onBlur={this.handleBlur}
-            onFocus={this.handleFocus}
             editorState={editorState}
             blockRendererFn={this.blockRendererFn}
             blockStyleFn={this.props.blockStyleFn}
