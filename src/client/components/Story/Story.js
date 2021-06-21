@@ -27,6 +27,7 @@ import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import { guestUserRegex } from '../../helpers/regexHelpers';
 
 import './Story.less';
 
@@ -163,7 +164,7 @@ class Story extends React.Component {
 
   handleClickVote(post, postState, weight, type) {
     const { sliderMode, defaultVotePercent, votePost } = this.props;
-    const author = post.author;
+    const author = guestUserRegex.test(post.author) ? post.root_author : post.author;
 
     if (sliderMode && !postState[type]) {
       votePost(post.id, author, post.permlink, Number(weight));
