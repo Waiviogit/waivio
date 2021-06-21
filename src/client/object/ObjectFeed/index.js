@@ -40,9 +40,7 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
         )}&object=`;
       }
 
-      redirectUrl += encodeURIComponent(
-        `[${wobject.name || wobject.default_name}](${wobject.author_permlink})`,
-      );
+      redirectUrl += encodeURIComponent(`[${getObjectName(wobject)}](${wobject.author_permlink})`);
       history.push(redirectUrl);
     }
   };
