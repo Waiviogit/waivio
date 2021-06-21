@@ -30,6 +30,7 @@ import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 import ImageSideButton from './components/sides/ImageSideButton';
 import { encodeImageFileAsURL } from './model/content';
+import { parseImagesFromBlocks } from '../../helpers/editorHelper';
 
 import './index.less';
 
@@ -122,7 +123,6 @@ export default class MediumDraftEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
 
     this.onChange = (editorState, cb) => {

@@ -146,7 +146,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   };
 
   const addImage = child => {
-    data.src = getImagePathPost(child.url);
+    data.src = child.url;
     data.alt = child.alt || '';
   };
 
