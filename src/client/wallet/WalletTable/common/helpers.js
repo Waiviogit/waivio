@@ -69,7 +69,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
 
       data.fieldMemo = transaction.memo;
 
-      if (transaction.withdrawDeposit === 'd') {
+      if (transaction.withdrawDeposit === 'd' || transaction.to === transaction.userName) {
         return {
           ...data,
           fieldHIVE: transferAmount.currency === 'HIVE' && `${transferAmount.amount}`,

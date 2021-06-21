@@ -32,16 +32,15 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
     if (wobject && wobject.author_permlink) {
       let redirectUrl = `/editor?object=`;
 
-      redirectUrl += encodeURIComponent(
-        `[${wobject.name || wobject.default_name}](${wobject.author_permlink})`,
-      );
       if (!isEmpty(wobject.parent)) {
         const parentObject = wobject.parent;
 
-        redirectUrl += `&object=${encodeURIComponent(
+        redirectUrl += `${encodeURIComponent(
           `[${getObjectName(parentObject)}](${parentObject.author_permlink})`,
-        )}`;
+        )}&object=`;
       }
+
+      redirectUrl += encodeURIComponent(`[${getObjectName(wobject)}](${wobject.author_permlink})`);
       history.push(redirectUrl);
     }
   };
