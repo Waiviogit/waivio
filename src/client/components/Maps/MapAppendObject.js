@@ -4,7 +4,6 @@ import React from 'react';
 import { Map } from 'pigeon-maps';
 import { connect } from 'react-redux';
 import CustomMarker from './CustomMarker';
-import Loading from '../Icon/Loading';
 import { getCoordinates } from '../../store/userStore/userActions';
 import mapProvider from '../../helpers/mapProvider';
 import { getUserLocation } from '../../store/userStore/userSelectors';
@@ -28,7 +27,6 @@ class MapAppendObject extends React.Component {
     this.state = {
       zoom: 12,
       userCoordinates: null,
-      isInitial: true,
     };
   }
 
@@ -37,12 +35,14 @@ class MapAppendObject extends React.Component {
       this.props.getCoordinates().then(res =>
         this.setState({
           userCoordinates: [+res.value.latitude, +res.value.longitude],
+          loading: false,
         }),
       );
     } else {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
         userCoordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+        loading: false,
       });
     }
   }
@@ -99,7 +99,7 @@ class MapAppendObject extends React.Component {
   render() {
     const { zoom, userCoordinates } = this.state;
 
-    return userCoordinates ? (
+    return (
       <div style={{ position: 'relative' }}>
         {this.zoomButtonsLayout()}
         <div
@@ -124,8 +124,6 @@ class MapAppendObject extends React.Component {
           )}
         </Map>
       </div>
-    ) : (
-      <Loading />
     );
   }
 }

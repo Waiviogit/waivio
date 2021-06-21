@@ -558,6 +558,7 @@ export default class AppendForm extends Component {
   };
 
   setCoordinates = ({ latLng }) => {
+    this.setState({ latitude: latLng[1], longitude: latLng[0] });
     this.props.form.setFieldsValue({
       [mapFields.latitude]: latLng[0].toFixed(6),
       [mapFields.longitude]: latLng[1].toFixed(6),
