@@ -129,7 +129,7 @@ class MapAppendObject extends React.Component {
 }
 
 MapAppendObject.defaultProps = {
-  center: defaultCoords,
+  center: [],
   userLocation: {},
   setCoordinates: () => {},
   getCoordinates: () => {},
