@@ -145,16 +145,43 @@ const FilteredRewardsList = props => {
       ];
     }
 
+    if (match.params.filterKey === 'reserved') {
+      return [
+        {
+          key: 'payout',
+          id: 'payouts',
+          defaultMessage: 'payouts',
+        },
+        {
+          key: 'reward',
+          id: 'amount_sort',
+          defaultMessage: 'amount',
+        },
+        {
+          key: 'date',
+          id: 'expiry_sort',
+          defaultMessage: 'expiry',
+        },
+        {
+          key: 'proximity',
+          id: 'proximity_sort',
+          defaultMessage: 'proximity',
+        },
+      ];
+    }
+
     return [
       {
-        key: 'proximity',
-        id: 'proximity',
-        defaultMessage: 'proximity',
-      },      {
+        key: 'default',
+        id: 'default_sort',
+        defaultMessage: 'default',
+      },
+      {
         key: 'payout',
         id: 'payouts',
         defaultMessage: 'payouts',
-      },      {
+      },
+      {
         key: 'reward',
         id: 'amount_sort',
         defaultMessage: 'amount',

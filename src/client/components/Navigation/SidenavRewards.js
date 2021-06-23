@@ -3,12 +3,7 @@ import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  MESSAGES,
-  HISTORY,
-  PATH_NAME_HISTORY,
-  FRAUD_DETECTION,
-} from '../../../common/constants/rewards';
+import { MESSAGES, HISTORY, PATH_NAME_HISTORY } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 import {
@@ -43,7 +38,7 @@ export default class SidenavRewards extends React.Component {
     intl: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
     isGuest: PropTypes.bool.isRequired,
-    hasReceivables: PropTypes.bool,
+    hasReceivables: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
     isWaivio: PropTypes.bool,
     isExpired: PropTypes.bool,
     countTookPartCampaigns: PropTypes.number,

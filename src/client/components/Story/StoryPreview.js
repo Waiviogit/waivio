@@ -40,16 +40,16 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   ) {
     imagePath = jsonMetadata.image[0];
   } else if (jsonMetadata && jsonMetadata.image && jsonMetadata.image[0]) {
-    imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
+    imagePath = jsonMetadata.image[0];
   } else if (
     [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(field.name)
   ) {
-    imagePath = getProxyImageURL(jsonMetadata.wobj.field.body, 'preview');
+    imagePath = jsonMetadata.wobj.field.body;
   } else {
     const contentImages = getContentImages(post.body);
 
     if (contentImages.length) {
-      imagePath = getProxyImageURL(contentImages[0], 'preview');
+      imagePath = contentImages[0];
     }
   }
 
@@ -62,7 +62,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
       imagePath = post.body;
     } else {
-      imagePath = getProxyImageURL(post.body, 'preview');
+      imagePath = post.body;
     }
   }
 
@@ -108,7 +108,6 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       }
       if (embeds[0]) {
         embeds[0] = steemEmbed.get(videoLink, options);
-        embeds[0].thumbnail = getProxyImageURL(embeds[0].thumbnail, 'preview');
       }
     }
   }

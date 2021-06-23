@@ -114,6 +114,7 @@ export const addNewBlockAt = (
   pivotBlockKey,
   newBlockType = Block.UNSTYLED,
   initialData = {},
+  isImage = false,
 ) => {
   const content = editorState.getCurrentContent();
   const blockMap = content.getBlockMap();
@@ -162,7 +163,9 @@ export const addNewBlockAt = (
     }),
   });
 
-  return EditorState.moveFocusToEnd(EditorState.push(editorState, newContent, 'split-block'));
+  return isImage
+    ? EditorState.push(editorState, newContent, 'split-block')
+    : EditorState.moveFocusToEnd(EditorState.push(editorState, newContent, 'split-block'));
 };
 
 /**

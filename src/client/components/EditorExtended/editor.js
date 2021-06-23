@@ -122,7 +122,6 @@ export default class MediumDraftEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
 
     this.onChange = (editorState, cb) => {

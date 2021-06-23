@@ -167,9 +167,9 @@ class Rewards extends React.Component {
     sortGuideHistory: 'reservation',
     sortFraudDetection: 'reservation',
     sortMessages: 'inquiryDate',
-    sortAll: 'proximity',
-    sortEligible: 'proximity',
-    sortReserved: 'proximity',
+    sortAll: 'default',
+    sortEligible: 'default',
+    sortReserved: 'payout',
     radius: RADIUS,
     area: [],
     campaignsTypes: [],
@@ -444,7 +444,6 @@ class Rewards extends React.Component {
 
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
-      // eslint-disable-next-line camelcase
       const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
       const newSponsors = sortBy(sponsors);
       const rewardsTab = {
