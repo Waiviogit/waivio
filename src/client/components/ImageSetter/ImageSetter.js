@@ -52,7 +52,7 @@ const ImageSetter = ({
 
   const addImage = () => {
     if (isModal && isOkayBtn) {
-      currentImages.forEach(newImage => {
+      currentImages.reverse().forEach(newImage => {
         if (selection && newImage) {
           setTimeout(() => {
             const selectionBlock = getEditorState().getSelection();
