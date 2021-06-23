@@ -58,18 +58,29 @@ const ImageSetter = ({
             const selectionBlock = getEditorState().getSelection();
             const key = selectionBlock.getAnchorKey();
 
-            setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
+            setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}, true));
             setEditorState(
-              addNewBlockAt(getEditorState(), key, Block.IMAGE, {
-                src: `${
-                  newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`
-                }`,
-                alt: newImage.name,
-              }),
+              addNewBlockAt(
+                getEditorState(),
+                key,
+                Block.IMAGE,
+                {
+                  src: `${
+                    newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`
+                  }`,
+                  alt: newImage.name,
+                },
+                true,
+              ),
             );
           }, 1000);
         }
       });
+      setTimeout(() => {
+        const es = getEditorState();
+
+        setEditorState(EditorState.moveFocusToEnd(es));
+      }, 1100);
     }
 
     return clearImageState();

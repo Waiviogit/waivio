@@ -30,7 +30,6 @@ import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 import ImageSideButton from './components/sides/ImageSideButton';
 import { encodeImageFileAsURL } from './model/content';
-import { parseImagesFromBlocks } from '../../helpers/editorHelper';
 
 import './index.less';
 
