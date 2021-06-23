@@ -257,7 +257,6 @@ const Proposition = props => {
             blacklistUsers={props.blacklistUsers}
             sortFraudDetection={props.sortFraudDetection}
             userFollowing={props.proposition.guide.youFollows}
-            objectFollowing={props.proposition.required_object.followsObject}
             fraudNumbers={props.fraudNumbers}
           />
         ) : (

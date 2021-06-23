@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { isEqual } from 'lodash';
+import { isEqual, get } from 'lodash';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -77,7 +77,12 @@ const Details = ({
   const disabled = (isAuth && !isEligible) || isInActive || isExpired;
 
   // eslint-disable-next-line no-underscore-dangle
-  const writeReviewUrl = `/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`;
+  const writeReviewUrl = `/editor?object=[${objName}](${get(
+    objectDetails,
+    'required_object.author_permlink',
+  )})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${
+    objectDetails._id
+  }`;
   const toCurrentWobjLink = `/object/${proposedWobj.author_permlink}`;
 
   const handleWriteReviewBtn = () => {
