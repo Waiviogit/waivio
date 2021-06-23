@@ -218,10 +218,10 @@ export const parseImagesFromBlocks = editorState => {
       let prevOffset = 0;
 
       block.entityRanges.forEach((entityRange, index) => {
-        const blockEntity = block.text.substring(
-          entityRange.offset,
-          entityRange.offset + entityRange.length,
-        );
+        const mockPhotoLength = block.text.trim() === mockPhoto ? 1 : 0;
+
+        prevOffset = entityRange.offset + entityRange.length + mockPhotoLength;
+        const blockEntity = block.text.substring(entityRange.offset, prevOffset);
 
         blockEntities.push(blockEntity.trim().replace(/\r?\n/g, ''));
         const firstText = block.text
@@ -229,17 +229,16 @@ export const parseImagesFromBlocks = editorState => {
           .trim()
           .replace(/\r?\n/g, '');
         const secondText = block.text
-          .substring(entityRange.offset, entityRange.offset + entityRange.length)
+          .substring(entityRange.offset, prevOffset)
           .trim()
           .replace(/\r?\n/g, '');
 
-        prevOffset = entityRange.offset + entityRange.length;
         blocksUpdated = [
           ...blocksUpdated,
           firstText,
           { text: secondText, entityKey: entityRange.key },
         ];
-        if (index === block.entityRanges.length - 1) {
+        if (index === block.entityRanges.length - 1 && prevOffset < block.text.length) {
           blocksUpdated = [
             ...blocksUpdated,
             block.text
@@ -256,10 +255,12 @@ export const parseImagesFromBlocks = editorState => {
             entityBlock.trim().replace(/\r?\n/g, '') === text.trim().replace(/\r?\n/g, ''),
         );
 
-        if (isCustomBlock) {
+        const isExistEntityMap = blocksEditor.entityMap[blockUpdated.entityKey];
+
+        if (isCustomBlock && isExistEntityMap) {
           return {
             text: text.replace(mockPhoto, ''),
-            entity: blocksEditor.entityMap[blockUpdated.entityKey],
+            entity: isExistEntityMap,
           };
         }
 
