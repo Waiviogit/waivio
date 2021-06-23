@@ -169,7 +169,7 @@ class Rewards extends React.Component {
     sortMessages: 'inquiryDate',
     sortAll: 'default',
     sortEligible: 'default',
-    sortReserved: 'default',
+    sortReserved: 'payout',
     radius: RADIUS,
     area: [],
     campaignsTypes: [],
