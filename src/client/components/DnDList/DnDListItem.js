@@ -6,14 +6,14 @@ import './DnDListItem.less';
 
 const DnDListItem = ({ name, type, wobjType, id, toggleItemInSortingList, checkedItemInList }) => (
   <div className="dnd-list-item">
-    {wobjType === OBJECT_TYPE.LIST ? (
+    {wobjType === OBJECT_TYPE.LIST && (
       <Checkbox
         defaultChecked
         id={id}
         onChange={toggleItemInSortingList}
         checked={checkedItemInList}
       />
-    ) : null}
+    )}
     <div className="dnd-list-content">
       <div className="dnd-list-content__name">{name}</div>
       <div className="dnd-list-content__type">{type}</div>
