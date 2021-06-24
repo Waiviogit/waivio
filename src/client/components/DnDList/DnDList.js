@@ -129,16 +129,10 @@ class DnDList extends Component {
                           toggleItemInSortingList={this.toggleItemInSortingList}
                           id={item.id}
                           checkedItemInList={item.checkedItemInList}
-                          screenSize={this.props.screenSize}
                         />
                       ) : (
-                        <DnDListItem
-                          name={item.name}
-                          type={item.type}
-                          screenSize={this.props.screenSize}
-                        />
+                        <DnDListItem name={item.name} type={item.type} />
                       )}
-                      {/* {item.content} */}
                     </div>
                   )}
                 </Draggable>
