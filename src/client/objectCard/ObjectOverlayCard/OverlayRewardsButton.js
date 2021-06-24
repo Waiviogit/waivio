@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { Icon } from 'antd';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, round } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
@@ -37,7 +37,8 @@ const OverlayRewardsButton = props => {
             defaultMessage: 'Earn up to',
           })}{' '}
       <b data-anchor={props.wObject.author_permlink}>
-        {reward * currencyInfo.rate} {currencyInfo.type} {!props.isPropos && <Icon type="right" />}
+        {round(reward * currencyInfo.rate, 3)} {currencyInfo.type}{' '}
+        {!props.isPropos && <Icon type="right" />}
       </b>
     </Link>
   );

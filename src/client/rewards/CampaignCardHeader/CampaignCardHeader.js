@@ -26,7 +26,7 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
   const rewardPriceHive = `${
     price ? round(price, 3) : round(campainReward / currentUSDPrice, 3)
   } HIVE`;
-  const rewardPriceUsd = `${round(campainReward, 2) * currencyInfo.rate} ${currencyInfo.type}`;
+  const rewardPriceUsd = `${round(campainReward * currencyInfo.rate, 2)} ${currencyInfo.type}`;
   const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
 
   return (

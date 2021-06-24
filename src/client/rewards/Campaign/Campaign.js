@@ -25,8 +25,13 @@ const Campaign = ({
   const requiredObject = hasCampaigns ? proposition : get(proposition, ['required_object'], {});
   const minReward = get(campaign, ['min_reward'], 0);
   const maxReward = get(campaign, ['max_reward'], 0);
-  const rewardPrice = minReward ? `${round(minReward, 2)} ${currencyInfo.type}` : '';
-  const rewardMax = maxReward !== minReward ? `${round(maxReward, 2)} ${currencyInfo.type}` : '';
+  const rewardPrice = minReward
+    ? `${round(minReward * currencyInfo.rate, 2)} ${currencyInfo.type}`
+    : '';
+  const rewardMax =
+    maxReward !== minReward
+      ? `${round(maxReward * currencyInfo.rate, 2)} ${currencyInfo.type}`
+      : '';
   const goToProducts = () =>
     history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
 

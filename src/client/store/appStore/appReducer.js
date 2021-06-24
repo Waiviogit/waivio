@@ -26,11 +26,10 @@ const initialState = {
   mainPage: 'waivio',
   currPage: '',
   currMap: { center: [], zoom: 6 },
-  configuration: {
-    currency: {
-      type: 'USD',
-      rate: 1,
-    },
+  configuration: {},
+  currency: {
+    type: 'USD',
+    rate: 1,
   },
   isWaivio: true,
   reservedCounter: 0,
@@ -144,19 +143,14 @@ export default (state = initialState, action) => {
         isMobile: mobileUserAgents.test(navigator.userAgent),
       };
     case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
-      const { mainPage, host, configuration, beneficiary, parentHost } = action.payload;
+      const { mainPage, host, configuration, beneficiary, parentHost, currency } = action.payload;
 
       return {
         ...state,
         mainPage,
         host,
-        configuration: {
-          ...configuration,
-          currency: {
-            type: 'USD',
-            rate: 1,
-          },
-        },
+        configuration,
+        currency,
         parentHost,
         websiteBeneficiary: {
           account: beneficiary.account,
