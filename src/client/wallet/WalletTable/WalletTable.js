@@ -1,8 +1,8 @@
 import React from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form } from 'antd';
-import { injectIntl } from 'react-intl';
+import { FormattedNumber, injectIntl } from 'react-intl';
 import { round, map, isEmpty, isEqual } from 'lodash';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -224,10 +224,17 @@ class WalletTable extends React.Component {
   };
 
   render() {
-    const { match, intl, form, transactionsList } = this.props;
+    const { match, intl, form, transactionsList, currencyInfo } = this.props;
     const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed';
+    /* eslint-disable react/style-prop-object */
     const handleChangeTotalValue = value =>
-      this.state.dateEstablished ? <b>${round(value, 3)}</b> : '-';
+      this.state.dateEstablished ? (
+        <b>
+          <FormattedNumber style="currency" currency={currencyInfo.type} value={round(value, 3)} />
+        </b>
+      ) : (
+        '-'
+      );
     const mappedList = map(transactionsList, transaction =>
       compareTransferBody(
         transaction,

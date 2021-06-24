@@ -168,6 +168,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         configuration: action.payload,
+        currency: action.payload.currency,
         helmetIcon: getObjectAvatar(action.payload.aboutObject),
         hostAddress: action.meta,
         currMap: {
