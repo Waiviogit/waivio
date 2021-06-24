@@ -2,9 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { has, get, round } from 'lodash';
+import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
 import ObjectCardView from '../../objectCard/ObjectCardView';
+import { getCurrentCurrency } from '../../store/appStore/appSelectors';
 
 import './Campaign.less';
 
@@ -18,12 +20,13 @@ const Campaign = ({
   hovered,
 }) => {
   const hasCampaigns = has(proposition, ['campaigns']);
+  const currencyInfo = useSelector(getCurrentCurrency);
   const campaign = hasCampaigns ? get(proposition, 'campaigns') : proposition;
   const requiredObject = hasCampaigns ? proposition : get(proposition, ['required_object'], {});
   const minReward = get(campaign, ['min_reward'], 0);
   const maxReward = get(campaign, ['max_reward'], 0);
-  const rewardPrice = minReward ? `${round(minReward, 2)} USD` : '';
-  const rewardMax = maxReward !== minReward ? `${round(maxReward, 2)} USD` : '';
+  const rewardPrice = minReward ? `${round(minReward, 2)} ${currencyInfo.type}` : '';
+  const rewardMax = maxReward !== minReward ? `${round(maxReward, 2)} ${currencyInfo.type}` : '';
   const goToProducts = () =>
     history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
 

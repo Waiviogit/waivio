@@ -4,11 +4,14 @@ import { Icon } from 'antd';
 import { get, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
+import { getCurrentCurrency } from '../../store/appStore/appSelectors';
 
 const OverlayRewardsButton = props => {
   const ObjectOverlayCardEarnClassList = classNames('ObjectOverlayCard__earn', {
     'ObjectOverlayCard__earn--proposition': props.isPropos,
   });
+  const currencyInfo = useSelector(getCurrentCurrency);
   const proposition = get(props.wObject, 'propositions[0]', {});
   const campaign = get(props.wObject, 'campaigns', {});
   const reward = props.isPropos ? proposition.reward : campaign.max_reward;
@@ -34,7 +37,7 @@ const OverlayRewardsButton = props => {
             defaultMessage: 'Earn up to',
           })}{' '}
       <b data-anchor={props.wObject.author_permlink}>
-        {reward} USD {!props.isPropos && <Icon type="right" />}
+        {reward * currencyInfo.rate} {currencyInfo.type} {!props.isPropos && <Icon type="right" />}
       </b>
     </Link>
   );

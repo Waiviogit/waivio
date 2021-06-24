@@ -26,7 +26,12 @@ const initialState = {
   mainPage: 'waivio',
   currPage: '',
   currMap: { center: [], zoom: 6 },
-  configuration: {},
+  configuration: {
+    currency: {
+      type: 'USD',
+      rate: 1,
+    },
+  },
   isWaivio: true,
   reservedCounter: 0,
   helmetIcon: DEFAULTS.FAVICON,
@@ -145,7 +150,13 @@ export default (state = initialState, action) => {
         ...state,
         mainPage,
         host,
-        configuration,
+        configuration: {
+          ...configuration,
+          currency: {
+            type: 'USD',
+            rate: 1,
+          },
+        },
         parentHost,
         websiteBeneficiary: {
           account: beneficiary.account,

@@ -4,6 +4,7 @@ import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import { getTransfersAccounts } from './advancedSelectors';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
+import { getCurrentCurrency } from '../appStore/appSelectors';
 
 const parseTransactionData = trans => {
   if (guestUserRegex.test(trans.userName)) {
@@ -45,7 +46,9 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
   dispatch,
   getState,
 ) => {
-  const user = getAuthenticatedUserName(getState());
+  const state = getState();
+  const user = getAuthenticatedUserName(state);
+  const currency = getCurrentCurrency(state);
   const accounts = filterAccounts.map(acc => {
     const guest = guestUserRegex.test(acc);
 
@@ -69,6 +72,7 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
           endDate: endDate || moment().unix(),
           filterAccounts,
           accounts,
+          currency: currency.type,
         },
         user,
       ).then(data => {
@@ -97,6 +101,7 @@ export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, 
   const state = getState();
   const user = getAuthenticatedUserName(state);
   const accounts = getTransfersAccounts(state);
+  const currency = getCurrentCurrency(state);
   const getCurrentValues = value => (startDate && endDate ? value : 0);
 
   return dispatch({
@@ -108,6 +113,7 @@ export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, 
           endDate,
           filterAccounts,
           accounts,
+          currency: currency.type,
         },
         user,
       ).then(data => ({

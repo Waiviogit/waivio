@@ -70,6 +70,11 @@ export const getHelmetIcon = createSelector([appState], state => state.helmetIco
 
 export const getHostAddress = createSelector([appState], state => state.hostAddress);
 
+export const getCurrentCurrency = createSelector(
+  [getWebsiteConfiguration],
+  state => state.currency,
+);
+
 export const getWeightValue = createSelector(
   getRate,
   getRewardFund,

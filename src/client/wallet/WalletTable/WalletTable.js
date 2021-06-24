@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form } from 'antd';
 import { injectIntl } from 'react-intl';
@@ -41,6 +41,7 @@ import { configReportsWebsitesTableHeader } from './common/tableConfig';
 import Loading from '../../components/Icon/Loading';
 
 import './WalletTable.less';
+import { getCurrentCurrency } from '../../store/appStore/appSelectors';
 
 @Form.create()
 @injectIntl
@@ -55,6 +56,7 @@ import './WalletTable.less';
     loading: getTransfersLoading(state),
     accounts: getTransfersAccounts(state),
     isLoadingAllData: getIsLoadingAllData(state),
+    currencyInfo: getCurrentCurrency(state),
   }),
   {
     openTable: openWalletTable,
@@ -78,6 +80,10 @@ class WalletTable extends React.Component {
       params: PropTypes.shape({
         name: PropTypes.string,
       }),
+    }).isRequired,
+    currencyInfo: PropTypes.shape({
+      type: PropTypes.string,
+      rate: PropTypes.number,
     }).isRequired,
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
@@ -227,6 +233,7 @@ class WalletTable extends React.Component {
         transaction,
         this.props.totalVestingShares,
         this.props.totalVestingFundSteem,
+        this.props.currencyInfo.type,
       ),
     );
 
@@ -306,7 +313,7 @@ class WalletTable extends React.Component {
         ) : (
           <DynamicTbl
             infinity
-            header={configReportsWebsitesTableHeader}
+            header={configReportsWebsitesTableHeader(this.props.currencyInfo.type)}
             bodyConfig={mappedList}
             emptyTitle={intl.formatMessage({
               id: 'empty_table_transaction_list',

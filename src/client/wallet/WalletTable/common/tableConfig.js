@@ -1,4 +1,4 @@
-export const configReportsWebsitesTableHeader = [
+export const configReportsWebsitesTableHeader = type => [
   {
     id: 'checked',
     type: 'checkbox',
@@ -54,7 +54,7 @@ export const configReportsWebsitesTableHeader = [
     },
     intl: {
       id: 'table_HIVE_USD',
-      defaultMessage: 'HIVE/USD',
+      defaultMessage: `HIVE/${type}`,
     },
   },
   {
@@ -64,7 +64,7 @@ export const configReportsWebsitesTableHeader = [
     },
     intl: {
       id: 'table_HBD_USD',
-      defaultMessage: 'HBD/USD',
+      defaultMessage: `HBD/${type}`,
     },
   },
   {
