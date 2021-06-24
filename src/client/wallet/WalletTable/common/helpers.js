@@ -12,7 +12,7 @@ import {
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import { guestUserRegex } from '../../../helpers/regexHelpers';
 
-const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSteem) => {
+const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSteem, currency) => {
   const transactionType = transaction.type;
   const user = transaction.userName;
   const isGuestPage = guestUserRegex.test(user);
@@ -23,7 +23,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     hiveUSD: round(get(transaction, 'hiveUSD'), 3),
     hbdUSD: round(get(transaction, 'hbdUSD'), 3),
     withdrawDeposit: get(transaction, 'withdrawDeposit'),
-    usd: get(transaction, 'usd'),
+    [currency]: get(transaction, currency),
     checked: get(transaction, 'checked'),
     userName: user,
     _id: isGuestPage ? get(transaction, '_id') : get(transaction, 'operationNum'),

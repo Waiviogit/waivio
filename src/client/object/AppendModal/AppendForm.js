@@ -1924,7 +1924,6 @@ export default class AppendForm extends Component {
               accentColor={PRIMARY_COLOR}
               onChange={this.handleChangeSorting}
               wobjType={wobjType}
-              screenSize={this.props.screenSize}
             />
           </React.Fragment>
         );
