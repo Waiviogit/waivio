@@ -36,8 +36,7 @@ const ObjectCardView = ({
   });
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
-  pathName = hasType(wObject, 'page') ? path : pathName;
-
+  pathName = hasType(wObject, 'page') ? path || pathName : pathName;
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
 
