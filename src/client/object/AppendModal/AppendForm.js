@@ -230,7 +230,7 @@ export default class AppendForm extends Component {
         id: item.body || item.author_permlink,
         checkedItemInList: !isEmpty(sortCustom) ? sortCustom.includes(item.author_permlink) : true,
       }));
-      let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), sortCustom);
+      let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), sortCustom, true);
       const sorting = listItems.filter(item => !sortCustom.includes(item.author_permlink));
 
       sortedListItems = uniqBy([...sortedListItems, ...sorting], '_id');
