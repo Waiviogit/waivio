@@ -45,14 +45,14 @@ export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) 
  * @param items - array of waivio objects
  * @param sortByParam - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'recency'|'custom'
  * @param sortOrder - array of strings (object permlinks)
- * @param isCustomSortModal - if true, the list will be sorted by the date the object was added
+ * @param isSortByDateAdding - if true, the list will be sorted by the date the object was added
  * @returns {*}
  */
 export const sortListItemsBy = (
   items,
   sortByParam = 'recency',
   sortOrder = null,
-  isCustomSortModal = false,
+  isSortByDateAdding = false,
 ) => {
   if (!items || !items.length) return [];
   if (!sortByParam) return items;
@@ -81,7 +81,7 @@ export const sortListItemsBy = (
       .filter(item => item);
   }
   const sortedByDate =
-    sorted.every(item => has(item, 'addedAt')) && isCustomSortModal
+    sorted.every(item => has(item, 'addedAt')) && isSortByDateAdding
       ? orderBy(sorted, ['addedAt'], 'desc')
       : sorted;
 
