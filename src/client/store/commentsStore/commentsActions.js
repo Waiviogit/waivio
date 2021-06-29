@@ -157,7 +157,7 @@ export const getComments = postId => (dispatch, getState) => {
   }
 };
 
-export const sendComment = (parentPost, body, isUpdating = false, originalComment) => (
+export const sendComment = (parentPost, newBody, isUpdating = false, originalComment) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -180,7 +180,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     return dispatch(notify('You have to be logged in to comment', 'error'));
   }
 
-  if (!body || !body.length) {
+  if (!newBody || !newBody.length) {
     return dispatch(notify("Message can't be empty", 'error'));
   }
 
@@ -190,13 +190,10 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     : createCommentPermlink(parentAuthor, parentPermlink);
   const currCategory = category ? [category] : [];
   const jsonMetadata = createPostMetadata(
-    body,
+    newBody,
     currCategory,
     isUpdating && jsonParse(originalComment.json_metadata),
   );
-
-  const newBody =
-    isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
 
   let rootPostId = null;
 
