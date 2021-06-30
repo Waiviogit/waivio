@@ -2110,4 +2110,16 @@ export const excludeAdvancedReports = (body, isGuest) =>
     .then(res => res)
     .catch(e => e);
 
+export const getCurrentCurrencyRate = currency =>
+  fetch(
+    `${config.currenciesApiPrefix}${config.rate}${config.latest}?base=USD&symbols=${currency}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;

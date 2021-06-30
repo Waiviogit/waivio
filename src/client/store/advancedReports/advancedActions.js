@@ -42,13 +42,12 @@ export const GET_TRANSACTIONS_FOR_TABLE = createAsyncActionType(
   '@advanced/GET_TRANSACTIONS_FOR_TABLE',
 );
 
-export const getUserTableTransactions = (filterAccounts, startDate, endDate) => (
+export const getUserTableTransactions = ({ filterAccounts, startDate, endDate, currency }) => (
   dispatch,
   getState,
 ) => {
   const state = getState();
   const user = getAuthenticatedUserName(state);
-  const currency = getCurrentCurrency(state);
   const accounts = filterAccounts.map(acc => {
     const guest = guestUserRegex.test(acc);
 
@@ -72,7 +71,7 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
           endDate: endDate || moment().unix(),
           filterAccounts,
           accounts,
-          currency: currency.type,
+          currency,
         },
         user,
       ).then(data => {
@@ -94,14 +93,16 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
 export const GET_MORE_TRANSACTIONS_FOR_TABLE = createAsyncActionType(
   '@advanced/GET_MORE_TRANSACTIONS_FOR_TABLE',
 );
-export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, endDate }) => (
-  dispatch,
-  getState,
-) => {
+
+export const getMoreTableUserTransactionHistory = ({
+  filterAccounts,
+  startDate,
+  endDate,
+  currency,
+}) => (dispatch, getState) => {
   const state = getState();
   const user = getAuthenticatedUserName(state);
   const accounts = getTransfersAccounts(state);
-  const currency = getCurrentCurrency(state);
   const getCurrentValues = value => (startDate && endDate ? value : 0);
 
   return dispatch({
@@ -113,7 +114,7 @@ export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, 
           endDate,
           filterAccounts,
           accounts,
-          currency: currency.type,
+          currency,
         },
         user,
       ).then(data => ({

@@ -165,13 +165,14 @@ class Story extends React.Component {
   handleClickVote(post, postState, weight, type) {
     const { sliderMode, defaultVotePercent, votePost } = this.props;
     const author = guestUserRegex.test(post.author) ? post.root_author : post.author;
+    const charter = type === 'isReported' ? -1 : 1;
 
     if (sliderMode && !postState[type]) {
       votePost(post.id, author, post.permlink, Number(weight));
     } else if (postState[type]) {
       votePost(post.id, author, post.permlink, 0);
     } else {
-      votePost(post.id, author, post.permlink, defaultVotePercent);
+      votePost(post.id, author, post.permlink, defaultVotePercent * charter);
     }
   }
 

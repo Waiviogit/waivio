@@ -4,6 +4,8 @@ import { createAsyncActionType } from '../../helpers/stateHelpers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { setBeneficiaryOwner } from '../searchStore/searchActions';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getCurrentCurrency } from './appSelectors';
+import { defaultCurrency } from '../../websites/constants/currencyTypes';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
@@ -126,6 +128,8 @@ export const getCurrentAppSettings = () => dispatch => {
         ]),
       );
 
+      dispatch(getCurrentCurrencyRate(res.currency));
+
       return res;
     })
     .catch(e => {
@@ -169,3 +173,17 @@ export const getWebsiteConfigForSSR = host => ({
   payload: ApiClient.getWebsitesConfiguration(host),
   meta: host,
 });
+
+export const GET_CURRENCY_RATE = createAsyncActionType('@app/GET_CURRENCY_RATE');
+
+export const getCurrentCurrencyRate = currency => (dispatch, getState) => {
+  const currentCurrency = getCurrentCurrency(getState());
+
+  if (currentCurrency === currency) return null;
+
+  return dispatch({
+    type: GET_CURRENCY_RATE.ACTION,
+    payload: ApiClient.getCurrentCurrencyRate(currency),
+    meta: currency,
+  });
+};

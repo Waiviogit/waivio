@@ -48,7 +48,7 @@ export const configReportsWebsitesTableHeader = type => [
     },
   },
   {
-    id: 'hiveUSD',
+    id: 'hiveCurrentCurrency',
     style: {
       width: '120px',
     },
@@ -58,7 +58,7 @@ export const configReportsWebsitesTableHeader = type => [
     },
   },
   {
-    id: 'hbdUSD',
+    id: 'hbdCurrentCurrency',
     style: {
       width: '120px',
     },

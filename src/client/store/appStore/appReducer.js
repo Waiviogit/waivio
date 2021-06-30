@@ -27,7 +27,7 @@ const initialState = {
   currPage: '',
   currMap: { center: [], zoom: 6 },
   configuration: {},
-  currency: {
+  currencyInfo: {
     type: 'USD',
     rate: 1,
   },
@@ -143,14 +143,13 @@ export default (state = initialState, action) => {
         isMobile: mobileUserAgents.test(navigator.userAgent),
       };
     case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
-      const { mainPage, host, configuration, beneficiary, parentHost, currency } = action.payload;
+      const { mainPage, host, configuration, beneficiary, parentHost } = action.payload;
 
       return {
         ...state,
         mainPage,
         host,
         configuration,
-        currency,
         parentHost,
         websiteBeneficiary: {
           account: beneficiary.account,
@@ -188,6 +187,15 @@ export default (state = initialState, action) => {
       return {
         ...state,
         reservedCounter: action.payload.count,
+      };
+
+    case appTypes.GET_CURRENCY_RATE.SUCCESS:
+      return {
+        ...state,
+        currencyInfo: {
+          type: action.meta,
+          rate: action.payload[action.meta],
+        },
       };
 
     default:

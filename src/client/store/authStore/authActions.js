@@ -2,7 +2,7 @@ import Cookie from 'js-cookie';
 import { get } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
-import { addNewNotification } from '../appStore/appActions';
+import { addNewNotification, getCurrentCurrencyRate } from '../appStore/appActions';
 import { getFollowing } from '../userStore/userActions';
 import { BUSY_API_TYPES } from '../../../common/constants/notifications';
 import { setToken } from '../../helpers/getToken';
@@ -115,6 +115,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
         const privateEmail = await getPrivateEmail(userData.name);
 
+        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+
         resolve({
           account: userData,
           userMetaData,
@@ -135,6 +137,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         const privateEmail = await getPrivateEmail(scUserData.name);
+
+        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
         resolve({
           ...scUserData,
