@@ -18,20 +18,12 @@ const parseTransactionData = trans => {
       : { from: trans.userName, to: trans.sponsor };
 
     return {
+      ...trans,
       ...transferDirection,
       type: 'transfer',
       timestamp: trans.createdAt.split('.')[0],
       amount: `${trans.amount} HIVE`,
-      memo: trans.memo || '',
       typeTransfer: trans.type,
-      details: trans.details || null,
-      userName: trans.userName,
-      hbdUSD: trans.hbdUSD,
-      hiveUSD: trans.hiveUSD,
-      withdrawDeposit: trans.withdrawDeposit,
-      usd: trans.usd,
-      checked: trans.checked,
-      _id: trans._id,
     };
   }
 
@@ -147,10 +139,12 @@ export const deleteUsersTransactionDate = name => ({
 
 export const CALCULATE_TOTAL_CHANGES = '@advanced/CALCULATE_TOTAL_CHANGES';
 
-export const calculateTotalChanges = (item, checked) => dispatch => {
+export const calculateTotalChanges = (item, checked) => (dispatch, getState) => {
+  const currency = getCurrentCurrency(getState());
+
   dispatch({
     type: CALCULATE_TOTAL_CHANGES,
-    payload: { amount: item.usd, type: item.withdrawDeposit, decrement: checked },
+    payload: { amount: item[currency.type], type: item.withdrawDeposit, decrement: checked },
   });
   dispatch(
     excludeTransfer({
