@@ -43,11 +43,17 @@ export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) 
 /**
  *
  * @param items - array of waivio objects
- * @param sortBy - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'recency'|'custom'
+ * @param sortByParam - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'recency'|'custom'
  * @param sortOrder - array of strings (object permlinks)
+ * @param isSortByDateAdding - if true, the list will be sorted by the date the object was added
  * @returns {*}
  */
-export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null) => {
+export const sortListItemsBy = (
+  items,
+  sortByParam = 'recency',
+  sortOrder = null,
+  isSortByDateAdding = false,
+) => {
   if (!items || !items.length) return [];
   if (!sortByParam) return items;
   const isCustomSorting = sortByParam === 'custom';
@@ -74,9 +80,10 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
       .map(permlink => sorted.find(item => item.author_permlink === permlink))
       .filter(item => item);
   }
-  const sortedByDate = sorted.every(item => has(item, 'addedAt'))
-    ? orderBy(sorted, ['addedAt'], 'desc')
-    : sorted;
+  const sortedByDate =
+    sorted.every(item => has(item, 'addedAt')) && isSortByDateAdding
+      ? orderBy(sorted, ['addedAt'], 'desc')
+      : sorted;
 
   const sorting = (a, b) => isList(b) - isList(a);
   const resultArr = isCustomSorting ? sorted : sortedByDate.sort(sorting);
