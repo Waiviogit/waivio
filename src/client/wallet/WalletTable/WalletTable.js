@@ -334,7 +334,9 @@ class WalletTable extends React.Component {
             })}
             showMore={this.props.hasMore && !this.state.dateEstablished}
             handleShowMore={this.handleLoadMore}
-            onChange={(e, item) => this.props.calculateTotalChanges(item, e.target.checked)}
+            onChange={(e, item) =>
+              this.props.calculateTotalChanges(item, e.target.checked, this.state.currentCurrency)
+            }
           />
         )}
       </div>

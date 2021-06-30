@@ -106,7 +106,7 @@ const WebsitesSettings = ({
             })}
           </h3>
           {getFieldDecorator('currency', {
-            initialValue: get(settings, 'currency.type') || defaultCurrency,
+            initialValue: get(settings, 'currency') || defaultCurrency,
           })(
             <Select className="WebsitesSettings__currency">
               {currencyTypes.map(currency => (

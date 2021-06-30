@@ -139,12 +139,10 @@ export const deleteUsersTransactionDate = name => ({
 
 export const CALCULATE_TOTAL_CHANGES = '@advanced/CALCULATE_TOTAL_CHANGES';
 
-export const calculateTotalChanges = (item, checked) => (dispatch, getState) => {
-  const currency = getCurrentCurrency(getState());
-
+export const calculateTotalChanges = (item, checked, currency) => dispatch => {
   dispatch({
     type: CALCULATE_TOTAL_CHANGES,
-    payload: { amount: item[currency.type], type: item.withdrawDeposit, decrement: checked },
+    payload: { amount: item[currency], type: item.withdrawDeposit, decrement: checked },
   });
   dispatch(
     excludeTransfer({
