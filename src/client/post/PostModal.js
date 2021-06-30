@@ -74,8 +74,9 @@ class PostModal extends React.Component {
     const userPostURL = `@${author}/${permlink}`;
     const guestUserPostURL = `@${authorName}/${permlink}`;
     const postURL = isEmpty(guestInfo) ? userPostURL : guestUserPostURL;
+    const baseURL = window ? window.location.origin : 'https://waivio.com';
 
-    PostModal.pushURLState(title, postURL);
+    PostModal.pushURLState(title, `${baseURL}/${postURL}`);
     if (permlink === rootPermlink) {
       this.props.getSocialInfoPost(authorName, permlink);
     }
