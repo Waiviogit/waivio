@@ -18,6 +18,7 @@ import {
   isGuestUser,
 } from '../store/authStore/authSelectors';
 import {
+  getCurrency,
   getExitPageSetting,
   getIsSettingsLoading,
   getLocale,
@@ -29,6 +30,8 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../store/settingsStore/settingsSelectors';
+import { currencyTypes, defaultCurrency } from '../websites/constants/currencyTypes';
+import { getIsWaivio } from '../store/appStore/appSelectors';
 
 import './Settings.less';
 
@@ -44,6 +47,8 @@ import './Settings.less';
     votePercent: getVotePercent(state),
     showNSFWPosts: getShowNSFWPosts(state),
     nightmode: getNightmode(state),
+    currency: getCurrency(state),
+    isWaivio: getIsWaivio(state),
     rewriteLinks: getRewriteLinks(state),
     loading: getIsSettingsLoading(state),
     upvoteSetting: getUpvoteSetting(state),
@@ -57,6 +62,7 @@ export default class Settings extends React.Component {
     intl: PropTypes.shape().isRequired,
     reloading: PropTypes.bool,
     locale: PropTypes.string,
+    currency: PropTypes.string,
     readLanguages: PropTypes.arrayOf(PropTypes.string),
     votingPower: PropTypes.bool,
     votePercent: PropTypes.number,
@@ -64,6 +70,7 @@ export default class Settings extends React.Component {
     showNSFWPosts: PropTypes.bool,
     nightmode: PropTypes.bool,
     rewriteLinks: PropTypes.bool,
+    isWaivio: PropTypes.bool,
     reload: PropTypes.func,
     saveSettings: PropTypes.func,
     notify: PropTypes.func,
@@ -85,7 +92,9 @@ export default class Settings extends React.Component {
     nightmode: false,
     rewriteLinks: false,
     upvoteSetting: true,
+    isWaivio: true,
     exitPageSetting: true,
+    currency: defaultCurrency,
     isGuest: false,
     reload: () => {},
     saveSettings: () => {},
@@ -111,6 +120,7 @@ export default class Settings extends React.Component {
       upvoteSetting: props.exitPageSetting,
       searchBarActive: '',
       dropdownOpen: false,
+      currency: props.currency,
     };
   }
 
@@ -182,6 +192,7 @@ export default class Settings extends React.Component {
         upvoteSetting: this.state.upvoteSetting,
         postLocales: this.state.readLanguages,
         votePercent: this.state.votePercent * 100,
+        currency: this.state.currency,
       })
       .then(() =>
         this.props.notify(
@@ -342,6 +353,30 @@ export default class Settings extends React.Component {
                 ))}
               </Select>
             </div>
+            {this.props.isWaivio && (
+              <div className="Settings__section">
+                <h3>
+                  <FormattedMessage id="base_currency" defaultMessage="Base currency" />
+                </h3>
+                <Select
+                  defaultValue={this.props.currency}
+                  style={{ width: '90px' }}
+                  onChange={currency => this.setState(() => ({ currency }))}
+                >
+                  {currencyTypes.map(currency => (
+                    <Select.Option key={currency} value={currency}>
+                      {currency}
+                    </Select.Option>
+                  ))}
+                </Select>
+                <p>
+                  <FormattedMessage
+                    id="post_currency_info"
+                    defaultMessage="Base currency is used for displaying rewards, vote value and post earnings."
+                  />
+                </p>
+              </div>
+            )}
             <div className="Settings__section">
               <h3>
                 <FormattedMessage id="nsfw_posts" defaultMessage="NSFW Posts" />

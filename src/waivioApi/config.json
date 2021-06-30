@@ -129,5 +129,7 @@
   "creationDate": "/creation-date",
   "voteValue": "/vote-value",
   "exemptions": "/exemptions",
+  "rate":  "/rate",
+  "latest": "/latest",
   "immediateWithdraw": "/immediate-withdraw"
 }

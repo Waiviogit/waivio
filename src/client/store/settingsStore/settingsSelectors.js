@@ -18,6 +18,8 @@ export const getShowNSFWPosts = createSelector([settingsState], state => state.s
 
 export const getNightmode = createSelector([settingsState], state => state.nightmode);
 
+export const getCurrency = createSelector([settingsState], state => state.currency);
+
 export const getRewriteLinks = createSelector([settingsState], state => !!state.rewriteLinks);
 
 export const getUpvoteSetting = createSelector([settingsState], state => state.upvoteSetting);

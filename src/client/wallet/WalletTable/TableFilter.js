@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, DatePicker, Form } from 'antd';
+import { Button, DatePicker, Form, Select } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -8,6 +8,7 @@ import { validateDate } from '../WalletHelper';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { getCreationAccDate } from '../../store/advancedReports/advancedSelectors';
+import { currencyTypes } from '../../websites/constants/currencyTypes';
 
 const TableFilter = ({
   intl,
@@ -18,6 +19,7 @@ const TableFilter = ({
   handleSelectUser,
   deleteUser,
   form,
+  currency,
 }) => {
   const disabledDate = current => current > moment().endOf('day');
   const creationAccDate = useSelector(getCreationAccDate);
@@ -167,6 +169,29 @@ const TableFilter = ({
           )}
         </Form.Item>
       </div>
+      <Form.Item
+        label={intl.formatMessage({
+          id: 'base_currency',
+          defaultMessage: 'Base currency:',
+        })}
+      >
+        {getFieldDecorator('currency', {
+          rules: [
+            {
+              required: true,
+            },
+          ],
+          initialValue: currency,
+        })(
+          <Select defaultValue={currency} style={{ width: '90px' }}>
+            {currencyTypes.map(curr => (
+              <Select.Option key={curr} value={curr}>
+                {curr}
+              </Select.Option>
+            ))}
+          </Select>,
+        )}
+      </Form.Item>
       <Button
         className="WalletTable__submit"
         onClick={handleOnClick}
@@ -196,6 +221,7 @@ TableFilter.propTypes = {
   handleOnClick: PropTypes.func.isRequired,
   handleSelectUser: PropTypes.func.isRequired,
   deleteUser: PropTypes.func.isRequired,
+  currency: PropTypes.string.isRequired,
 };
 
 export default TableFilter;

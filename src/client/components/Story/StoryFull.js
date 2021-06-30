@@ -545,7 +545,6 @@ class StoryFull extends React.Component {
             </Collapse.Panel>
           )}
         </Collapse>
-
         <StoryFooter
           user={user}
           post={post}
@@ -560,6 +559,7 @@ class StoryFull extends React.Component {
           saving={saving}
           sliderMode={sliderMode}
           defaultVotePercent={defaultVotePercent}
+          onReportClick={this.props.onReportClick}
           onLikeClick={onLikeClick}
           onShareClick={onShareClick}
           onEditClick={onEditClick}
