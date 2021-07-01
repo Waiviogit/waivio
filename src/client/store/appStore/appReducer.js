@@ -27,6 +27,10 @@ const initialState = {
   currPage: '',
   currMap: { center: [], zoom: 6 },
   configuration: {},
+  currencyInfo: {
+    type: 'USD',
+    rate: 1,
+  },
   isWaivio: true,
   reservedCounter: 0,
   helmetIcon: DEFAULTS.FAVICON,
@@ -163,6 +167,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         configuration: action.payload,
+        currency: action.payload.currency,
         helmetIcon: getObjectAvatar(action.payload.aboutObject),
         hostAddress: action.meta,
         currMap: {
@@ -182,6 +187,15 @@ export default (state = initialState, action) => {
       return {
         ...state,
         reservedCounter: action.payload.count,
+      };
+
+    case appTypes.GET_CURRENCY_RATE.SUCCESS:
+      return {
+        ...state,
+        currencyInfo: {
+          type: action.meta,
+          rate: action.payload[action.meta],
+        },
       };
 
     default:

@@ -1,4 +1,4 @@
-import { get, filter, isEmpty, uniqBy, size } from 'lodash';
+import { get, filter, isEmpty, uniqBy, size, orderBy, has } from 'lodash';
 import {
   TYPES_OF_MENU_ITEM,
   objectFields,
@@ -43,18 +43,24 @@ export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) 
 /**
  *
  * @param items - array of waivio objects
- * @param sortBy - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'recency'|'custom'
+ * @param sortByParam - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'recency'|'custom'
  * @param sortOrder - array of strings (object permlinks)
+ * @param isSortByDateAdding - if true, the list will be sorted by the date the object was added
  * @returns {*}
  */
-export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => {
+export const sortListItemsBy = (
+  items,
+  sortByParam = 'recency',
+  sortOrder = null,
+  isSortByDateAdding = false,
+) => {
   if (!items || !items.length) return [];
-  if (!sortBy) return items;
-  const isCustomSorting = sortBy === 'custom';
-  const isRecencySorting = sortBy === 'recency';
+  if (!sortByParam) return items;
+  const isCustomSorting = sortByParam === 'custom';
+  const isRecencySorting = sortByParam === 'recency';
   let comparator;
 
-  switch (sortBy) {
+  switch (sortByParam) {
     case 'rank':
       comparator = (a, b) => b.weight - a.weight || (a.name >= b.name ? 1 : -1);
       break;
@@ -74,8 +80,13 @@ export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => 
       .map(permlink => sorted.find(item => item.author_permlink === permlink))
       .filter(item => item);
   }
+  const sortedByDate =
+    sorted.every(item => has(item, 'addedAt')) && isSortByDateAdding
+      ? orderBy(sorted, ['addedAt'], 'desc')
+      : sorted;
+
   const sorting = (a, b) => isList(b) - isList(a);
-  const resultArr = isCustomSorting ? sorted : sorted.sort(sorting);
+  const resultArr = isCustomSorting ? sorted : sortedByDate.sort(sorting);
 
   return resultArr;
 };

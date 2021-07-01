@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form } from 'antd';
-import { injectIntl } from 'react-intl';
+import { FormattedNumber, injectIntl } from 'react-intl';
 import { round, map, isEmpty, isEqual } from 'lodash';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -39,6 +39,7 @@ import {
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configReportsWebsitesTableHeader } from './common/tableConfig';
 import Loading from '../../components/Icon/Loading';
+import { getCurrentCurrency } from '../../store/appStore/appSelectors';
 
 import './WalletTable.less';
 
@@ -55,6 +56,7 @@ import './WalletTable.less';
     loading: getTransfersLoading(state),
     accounts: getTransfersAccounts(state),
     isLoadingAllData: getIsLoadingAllData(state),
+    currencyInfo: getCurrentCurrency(state),
   }),
   {
     openTable: openWalletTable,
@@ -78,6 +80,10 @@ class WalletTable extends React.Component {
       params: PropTypes.shape({
         name: PropTypes.string,
       }),
+    }).isRequired,
+    currencyInfo: PropTypes.shape({
+      type: PropTypes.string,
+      rate: PropTypes.number,
     }).isRequired,
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
@@ -118,6 +124,7 @@ class WalletTable extends React.Component {
     isEmptyPeriod: true,
     filterAccounts: [this.props.match.params.name],
     dateEstablished: false,
+    currentCurrency: this.props.currencyInfo.type,
   };
 
   componentDidMount() {
@@ -126,7 +133,7 @@ class WalletTable extends React.Component {
 
     this.props.openTable();
     this.props.form.setFieldsValue({ filterAccounts });
-    this.props.getUserTableTransactions(filterAccounts);
+    this.props.getUserTableTransactions({ filterAccounts, currency: this.props.currencyInfo.type });
     this.props.getUsersTransactionDate(this.props.match.params.name);
 
     if (!totalVestingShares && !totalVestingFundSteem) this.props.getGlobalProperties();
@@ -149,15 +156,16 @@ class WalletTable extends React.Component {
   }
 
   handleSubmit = () => {
-    const { from, end } = this.props.form.getFieldsValue();
+    const { from, end, currency } = this.props.form.getFieldsValue();
 
-    this.setState({ dateEstablished: true });
+    this.setState({ dateEstablished: true, currentCurrency: currency });
 
-    return this.props.getUserTableTransactions(
-      this.state.filterAccounts,
-      this.handleChangeStartDate(from),
-      this.handleChangeEndDate(end),
-    );
+    return this.props.getUserTableTransactions({
+      filterAccounts: this.state.filterAccounts,
+      startDate: this.handleChangeStartDate(from),
+      endDate: this.handleChangeEndDate(end),
+      currency,
+    });
   };
 
   handleOnClick = e => {
@@ -196,6 +204,7 @@ class WalletTable extends React.Component {
 
     return this.props.getMoreTableUserTransactionHistory({
       filterAccounts: this.state.filterAccounts,
+      currency: this.state.currentCurrency,
       ...(this.state.dateEstablished
         ? {
             startDate: this.handleChangeStartDate(from),
@@ -218,15 +227,25 @@ class WalletTable extends React.Component {
   };
 
   render() {
-    const { match, intl, form, transactionsList } = this.props;
+    const { match, intl, form, transactionsList, currencyInfo } = this.props;
+    const currencyType = this.state.currentCurrency || currencyInfo.type;
+
     const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed';
+    /* eslint-disable react/style-prop-object */
     const handleChangeTotalValue = value =>
-      this.state.dateEstablished ? <b>${round(value, 3)}</b> : '-';
+      this.state.dateEstablished ? (
+        <b>
+          <FormattedNumber style="currency" currency={currencyType} value={round(value, 3)} />
+        </b>
+      ) : (
+        '-'
+      );
     const mappedList = map(transactionsList, transaction =>
       compareTransferBody(
         transaction,
         this.props.totalVestingShares,
         this.props.totalVestingFundSteem,
+        currencyType,
       ),
     );
 
@@ -252,6 +271,7 @@ class WalletTable extends React.Component {
           handleSelectUser={this.handleSelectUserFilterAccounts}
           isLoadingTableTransactions={this.props.loading}
           deleteUser={this.deleteUserFromFilterAccounts}
+          currency={currencyInfo.type}
           form={form}
         />
         <p className="WalletTable__total">
@@ -306,7 +326,7 @@ class WalletTable extends React.Component {
         ) : (
           <DynamicTbl
             infinity
-            header={configReportsWebsitesTableHeader}
+            header={configReportsWebsitesTableHeader(this.state.currentCurrency)}
             bodyConfig={mappedList}
             emptyTitle={intl.formatMessage({
               id: 'empty_table_transaction_list',
@@ -314,7 +334,9 @@ class WalletTable extends React.Component {
             })}
             showMore={this.props.hasMore && !this.state.dateEstablished}
             handleShowMore={this.handleLoadMore}
-            onChange={(e, item) => this.props.calculateTotalChanges(item, e.target.checked)}
+            onChange={(e, item) =>
+              this.props.calculateTotalChanges(item, e.target.checked, this.state.currentCurrency)
+            }
           />
         )}
       </div>

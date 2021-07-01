@@ -4,6 +4,8 @@ import { setUserStatus, getVipTicketsInfo, addNoteInVipTicket } from '../../../w
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { getVipTicketsQuery } from '../../settings/common/helpers';
+import { getCurrentCurrencyRate } from '../appStore/appActions';
+import { getCurrentCurrency } from '../appStore/appSelectors';
 
 export const SAVE_SETTINGS = '@app/SAVE_SETTINGS';
 export const SAVE_SETTINGS_START = '@app/SAVE_SETTINGS_START';
@@ -21,7 +23,11 @@ export const saveSettings = settings => (dispatch, getState) => {
   return dispatch({
     type: SAVE_SETTINGS,
     payload: {
-      promise: saveSettingsMetadata(userName, settings),
+      promise: saveSettingsMetadata(userName, settings).then(res => {
+        dispatch(getCurrentCurrencyRate(res.currency));
+
+        return res;
+      }),
     },
   });
 };
@@ -40,11 +46,7 @@ export const setUsersStatus = () => (dispatch, getState) => {
 
 export const OPEN_LINK_MODAL = 'OPEN_LINK_MODAL';
 
-export const openLinkHiveAccountModal = payload => dispatch =>
-  dispatch({
-    type: OPEN_LINK_MODAL,
-    payload,
-  });
+export const openLinkHiveAccountModal = payload => ({ type: OPEN_LINK_MODAL, payload });
 
 export const SET_LOCALE = '@app/SET_LOCALE';
 

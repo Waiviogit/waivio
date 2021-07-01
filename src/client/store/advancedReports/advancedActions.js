@@ -4,6 +4,7 @@ import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { guestUserRegex } from '../../helpers/regexHelpers';
 import { getTransfersAccounts } from './advancedSelectors';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
+import { getCurrentCurrency } from '../appStore/appSelectors';
 
 const parseTransactionData = trans => {
   if (guestUserRegex.test(trans.userName)) {
@@ -17,20 +18,12 @@ const parseTransactionData = trans => {
       : { from: trans.userName, to: trans.sponsor };
 
     return {
+      ...trans,
       ...transferDirection,
       type: 'transfer',
       timestamp: trans.createdAt.split('.')[0],
       amount: `${trans.amount} HIVE`,
-      memo: trans.memo || '',
       typeTransfer: trans.type,
-      details: trans.details || null,
-      userName: trans.userName,
-      hbdUSD: trans.hbdUSD,
-      hiveUSD: trans.hiveUSD,
-      withdrawDeposit: trans.withdrawDeposit,
-      usd: trans.usd,
-      checked: trans.checked,
-      _id: trans._id,
     };
   }
 
@@ -41,11 +34,12 @@ export const GET_TRANSACTIONS_FOR_TABLE = createAsyncActionType(
   '@advanced/GET_TRANSACTIONS_FOR_TABLE',
 );
 
-export const getUserTableTransactions = (filterAccounts, startDate, endDate) => (
+export const getUserTableTransactions = ({ filterAccounts, startDate, endDate, currency }) => (
   dispatch,
   getState,
 ) => {
-  const user = getAuthenticatedUserName(getState());
+  const state = getState();
+  const user = getAuthenticatedUserName(state);
   const accounts = filterAccounts.map(acc => {
     const guest = guestUserRegex.test(acc);
 
@@ -69,6 +63,7 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
           endDate: endDate || moment().unix(),
           filterAccounts,
           accounts,
+          currency,
         },
         user,
       ).then(data => {
@@ -90,10 +85,13 @@ export const getUserTableTransactions = (filterAccounts, startDate, endDate) => 
 export const GET_MORE_TRANSACTIONS_FOR_TABLE = createAsyncActionType(
   '@advanced/GET_MORE_TRANSACTIONS_FOR_TABLE',
 );
-export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, endDate }) => (
-  dispatch,
-  getState,
-) => {
+
+export const getMoreTableUserTransactionHistory = ({
+  filterAccounts,
+  startDate,
+  endDate,
+  currency,
+}) => (dispatch, getState) => {
   const state = getState();
   const user = getAuthenticatedUserName(state);
   const accounts = getTransfersAccounts(state);
@@ -108,6 +106,7 @@ export const getMoreTableUserTransactionHistory = ({ filterAccounts, startDate, 
           endDate,
           filterAccounts,
           accounts,
+          currency,
         },
         user,
       ).then(data => ({
@@ -140,10 +139,10 @@ export const deleteUsersTransactionDate = name => ({
 
 export const CALCULATE_TOTAL_CHANGES = '@advanced/CALCULATE_TOTAL_CHANGES';
 
-export const calculateTotalChanges = (item, checked) => dispatch => {
+export const calculateTotalChanges = (item, checked, currency) => dispatch => {
   dispatch({
     type: CALCULATE_TOTAL_CHANGES,
-    payload: { amount: item.usd, type: item.withdrawDeposit, decrement: checked },
+    payload: { amount: item[currency], type: item.withdrawDeposit, decrement: checked },
   });
   dispatch(
     excludeTransfer({

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, Select } from 'antd';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 
@@ -15,6 +15,7 @@ import {
 } from '../../../store/websiteStore/websiteActions';
 import Loading from '../../../components/Icon/Loading';
 import { getSettingsSite, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
+import { currencyTypes, defaultCurrency } from '../../constants/currencyTypes';
 
 import './WebsitesSettings.less';
 
@@ -76,7 +77,7 @@ const WebsitesSettings = ({
         const tag = values.googleAnalyticsTag || settings.googleAnalyticsTag || '';
         const beneficiary = { account, percent };
 
-        saveWebSettings(host, tag, beneficiary);
+        saveWebSettings(host, tag, beneficiary, values.currency);
         referralUserForWeb(referralAccount, host);
 
         message.success(
@@ -97,6 +98,30 @@ const WebsitesSettings = ({
         <FormattedMessage id="settings" defaultMessage="Settings" />
       </h1>
       <Form className="WebsitesSettings" id="WebsitesSettings" onSubmit={handleSubmit}>
+        <Form.Item>
+          <h3>
+            {intl.formatMessage({
+              id: 'base_currency',
+              defaultMessage: 'Base currency:',
+            })}
+          </h3>
+          {getFieldDecorator('currency', {
+            initialValue: get(settings, 'currency') || defaultCurrency,
+          })(
+            <Select className="WebsitesSettings__currency">
+              {currencyTypes.map(currency => (
+                <Select.Option key={currency}>{currency}</Select.Option>
+              ))}
+            </Select>,
+          )}
+          <p>
+            {intl.formatMessage({
+              id: 'disclaimer_exchange_rates',
+              defaultMessage:
+                'Disclaimer: Exchange rates are provided by third parties and may not always be accurate.',
+            })}
+          </p>
+        </Form.Item>
         <Form.Item>
           <h3>
             {intl.formatMessage({

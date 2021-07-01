@@ -3,13 +3,18 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { get, includes, round } from 'lodash';
+import { useSelector } from 'react-redux';
+
+import { getCurrentCurrency } from '../../store/appStore/appSelectors';
 import Avatar from '../../components/Avatar';
 import { GUIDE_HISTORY, MESSAGES, HISTORY, ASSIGNED } from '../../../common/constants/rewards';
 import { getCurrentUSDPrice } from '../rewardsHelper';
+
 import './CampaignCardHeader.less';
 
 const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPrice }) => {
   const currentUSDPrice = getCurrentUSDPrice();
+  const currencyInfo = useSelector(getCurrentCurrency);
   const price = get(campaignData, ['objects', '0', 'reward']) || wobjPrice;
   const isAssigned = get(campaignData, ['objects', '0', ASSIGNED]) || isWobjAssigned;
   const campainReward = get(campaignData, 'reward', 0);
@@ -21,7 +26,7 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
   const rewardPriceHive = `${
     price ? round(price, 3) : round(campainReward / currentUSDPrice, 3)
   } HIVE`;
-  const rewardPriceUsd = `${round(campainReward, 2)} USD`;
+  const rewardPriceUsd = `${round(campainReward * currencyInfo.rate, 2)} ${currencyInfo.type}`;
   const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
 
   return (
@@ -40,11 +45,9 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
               defaultMessage: 'Earn',
             })}{' '}
           </span>
-          <React.Fragment>
-            <span className="CampaignCardHeader__data-colored">
-              <span className="fw6">{rewardPrice}</span>
-            </span>
-          </React.Fragment>
+          <span className="CampaignCardHeader__data-colored">
+            <span className="fw6">{rewardPrice}</span>
+          </span>
         </div>
       </div>
       <div className="user-info">

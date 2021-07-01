@@ -3,6 +3,7 @@ import * as authTypes from '../authStore/authActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
 import { rewardsValues } from '../../../common/constants/rewards';
 import { changeDate } from '../../settings/common/helpers';
+import { defaultCurrency } from '../../websites/constants/currencyTypes';
 
 const initialState = {
   locale: 'en-US',
@@ -19,6 +20,7 @@ const initialState = {
   newUser: false,
   openLinkModal: false,
   vipTicketsInfo: {},
+  currency: defaultCurrency,
 };
 
 const settings = (state = initialState, action) => {
