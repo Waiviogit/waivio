@@ -83,19 +83,34 @@ const Details = ({
   )})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${
     objectDetails._id
   }`;
+  const urlConfig = {
+    pathname: '/editor',
+    search: `?object=[${objName}](${get(
+      objectDetails,
+      'required_object.author_permlink',
+    )})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${
+      objectDetails._id
+    }`,
+    state: {
+      mainObject: `[${objName}](${get(objectDetails, 'required_object.author_permlink')})`,
+      secondaryObject: `[${objName}](${get(objectDetails, 'required_object.author_permlink')})`,
+      campaign: objectDetails._id,
+    },
+  };
+
   const toCurrentWobjLink = `/object/${proposedWobj.author_permlink}`;
 
   const handleWriteReviewBtn = () => {
     if (isAuth) {
       if (userName) {
         if (isEqual(userName, authorizedUserName)) {
-          history.push(writeReviewUrl);
+          history.push(urlConfig);
         } else {
           history.push(toCurrentWobjLink);
         }
         clearAllSessionProposition();
       } else {
-        history.push(writeReviewUrl);
+        history.push(urlConfig);
       }
     }
   };
