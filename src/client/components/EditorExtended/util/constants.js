@@ -49,6 +49,7 @@ export const KEY_COMMANDS = {
   addNewBlock: () => 'add-new-block',
   changeType: (type = '') => `changetype:${type}`,
   showLinkInput: () => 'showlinkinput',
+  showSearchBlock: 'showSearchBlock',
   unlink: () => 'unlink',
   toggleInline: (type = '') => `toggleinline:${type}`,
   deleteBlock: () => 'delete-block',

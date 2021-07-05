@@ -18,6 +18,7 @@ const defaultState = {
   loadingImg: false,
   editor: {},
   editorExtended: {
+    isShowEditorSearch: false,
     isMounted: false,
     editorEnabled: false,
     prevEditorState: null,
@@ -157,6 +158,7 @@ const editor = (state = defaultState, action) => {
         editor: action.payload,
         editorExtended: {
           ...state.editorExtended,
+          isShowEditorSearch: false,
           editorState: EditorState.moveFocusToEnd(
             createEditorState(fromMarkdown(action.payload.draftContent)),
           ),
@@ -181,6 +183,14 @@ const editor = (state = defaultState, action) => {
         editor: {
           ...state.editor,
           linkedObjects: uniqBy(get(state, 'editor.linkedObjects', []), '_id'),
+        },
+      };
+    case editorActions.SET_IS_SHOW_EDITOR_SEARCH:
+      return {
+        ...state,
+        editorExtended: {
+          ...state.editorExtended,
+          isShowEditorSearch: action.payload,
         },
       };
     case editorActions.SET_CLEAR_STATE:

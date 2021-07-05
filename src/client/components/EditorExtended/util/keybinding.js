@@ -2,7 +2,7 @@ import { getDefaultKeyBinding, KeyBindingUtil } from 'draft-js';
 
 import { KEY_COMMANDS } from './constants';
 
-const { changeType, showLinkInput, unlink } = KEY_COMMANDS;
+const { changeType, showLinkInput, unlink, showSearchBlock } = KEY_COMMANDS;
 
 /*
 Emits various key commands to be used by `handleKeyCommand` in `Editor` based
@@ -15,6 +15,9 @@ export default e => {
     }
 
     return showLinkInput();
+  }
+  if (e.key === '#') {
+    return showSearchBlock;
   }
   if (e.altKey === true && !e.ctrlKey) {
     if (e.shiftKey === true) {
@@ -54,8 +57,5 @@ export default e => {
     }
   }
 
-  // if (e.keyCode === 46 && !e.ctrlKey) {
-  //   return KEY_COMMANDS.deleteBlock();
-  // }
   return getDefaultKeyBinding(e);
 };

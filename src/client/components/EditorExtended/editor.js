@@ -30,6 +30,8 @@ import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 import ImageSideButton from './components/sides/ImageSideButton';
 import { encodeImageFileAsURL } from './model/content';
+import { addTextToCursor } from '../../helpers/editorHelper';
+import EditorSearchObjects from './components/EditorSearchObjects';
 
 import './index.less';
 
@@ -86,6 +88,8 @@ export default class MediumDraftEditor extends React.Component {
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
     isVimeo: PropTypes.bool,
+    isShowEditorSearch: PropTypes.bool.isRequired,
+    setShowEditorSearch: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -426,6 +430,16 @@ export default class MediumDraftEditor extends React.Component {
 
         return HANDLED;
       }
+    } else if (command === KEY_COMMANDS.showSearchBlock) {
+      const block = getCurrentBlock(editorState);
+      const blockText = block.getText();
+      const selectionState = editorState.getSelection();
+      const start = selectionState.getStartOffset();
+
+      this.onChange(addTextToCursor(editorState, '#'));
+      if (blockText[start - 1] === ' ') this.props.setShowEditorSearch(true);
+
+      return HANDLED;
     }
     /* else if (command === KEY_COMMANDS.addNewBlock()) {
       const { editorState } = this.props;
@@ -683,6 +697,7 @@ export default class MediumDraftEditor extends React.Component {
       editorEnabled,
       disableToolbar,
       showLinkEditToolbar,
+      isShowEditorSearch,
       toolbarConfig,
       isVimeo,
     } = this.props;
@@ -739,6 +754,7 @@ export default class MediumDraftEditor extends React.Component {
               handleObjectSelect={this.props.handleObjectSelect}
             />
           )}
+          {isShowEditorSearch && <EditorSearchObjects />}
           {!disableToolbar && (
             <Toolbar
               ref={c => {

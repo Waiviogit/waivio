@@ -12,7 +12,7 @@ const MAX_LENGTH = 255;
 
 const Editor = props => {
   const {
-    editorExtended: { editorState, isMounted, editorEnabled, titleValue },
+    editorExtended: { editorState, isMounted, editorEnabled, titleValue, isShowEditorSearch },
   } = props;
   const refsEditor = React.useRef();
 
@@ -92,8 +92,10 @@ const Editor = props => {
             sideButtons={SIDE_BUTTONS}
             onChange={handleContentChange}
             handleHashtag={props.handleHashtag}
+            isShowEditorSearch={isShowEditorSearch}
             handleObjectSelect={props.handleObjectSelect}
             editorEnabled={editorEnabled && props.enabled}
+            setShowEditorSearch={props.setShowEditorSearch}
             placeholder={props.intl.formatMessage({
               id: 'story_placeholder',
               defaultMessage: 'Write your story...',
@@ -122,6 +124,7 @@ const propTypes = {
   editorExtended: PropTypes.shape().isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   setUpdatedEditorData: PropTypes.func.isRequired,
+  setShowEditorSearch: PropTypes.func.isRequired,
   setUpdatedEditorExtendedData: PropTypes.func.isRequired,
 };
 

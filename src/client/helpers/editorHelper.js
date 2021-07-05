@@ -16,7 +16,7 @@ import {
   without,
   isString,
 } from 'lodash';
-import { convertToRaw, EditorState, genKey, SelectionState } from 'draft-js';
+import { convertToRaw, EditorState, genKey, Modifier, SelectionState } from 'draft-js';
 
 import { Block, createEditorState, Entity } from '../components/EditorExtended';
 
@@ -337,4 +337,15 @@ export const parseImagesFromBlocks = editorState => {
   }
 
   return EditorState.moveFocusToEnd(newEditorState);
+};
+
+export const addTextToCursor = (editorState, text) => {
+  const content = Modifier.insertText(
+    editorState.getCurrentContent(),
+    editorState.getSelection(),
+    text,
+    null,
+  );
+
+  return EditorState.push(editorState, content, 'insert-characters');
 };
