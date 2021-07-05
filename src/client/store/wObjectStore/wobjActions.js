@@ -8,7 +8,6 @@ import { getChangedField } from '../../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
 import { APPEND_WAIVIO_OBJECT } from '../appendStore/appendActions';
 import { BELL_USER_NOTIFICATION } from '../userStore/userActions';
-import { isPostCashout } from '../../vendor/steemitHelpers';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -224,8 +223,7 @@ export const voteAppends = (
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
   const fieldName = name || post.name;
-  const currentHieUserMethod =
-    !isEmpty(type) || isPostCashout(post) || weight % 5 ? 'appendVote' : 'vote';
+  const currentHieUserMethod = !isEmpty(type) || weight % 5 ? 'appendVote' : 'vote';
   const currentMethod = isGuest ? 'vote' : currentHieUserMethod;
 
   if (!getIsAuthenticated(state)) return null;

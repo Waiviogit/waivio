@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { useSelector } from 'react-redux';
-import { get, isEmpty, map } from 'lodash';
+import { get, isEmpty, map, round } from 'lodash';
 import { getSingleReportData } from '../../../store/rewardsStore/rewardsSelectors';
 
-const ReportFooter = ({ intl, toggleModal }) => {
+const ReportFooter = ({ intl, toggleModal, currencyInfo }) => {
   const singleReportData = useSelector(getSingleReportData);
   const reservationRate = get(singleReportData, ['histories', '0', 'details', 'hiveCurrency']);
   const sponsor = get(singleReportData, ['sponsor', 'name']);
@@ -20,10 +20,12 @@ const ReportFooter = ({ intl, toggleModal }) => {
             {
               id: 'exchange_rate',
               defaultMessage:
-                'The exchange rate is recorded at the time of reservation of the reward (1 HIVE = {reservationRate} USD).',
+                'The exchange rate is recorded at the time of reservation of the reward (1 HIVE = {reservationRate}).',
             },
             {
-              reservationRate: reservationRate || 'N/A',
+              reservationRate:
+                `${round(reservationRate * currencyInfo.rate, 3)} ${currencyInfo.type}` ||
+                'N/A USD',
             },
           )}
         </div>
@@ -72,6 +74,10 @@ const ReportFooter = ({ intl, toggleModal }) => {
 ReportFooter.propTypes = {
   intl: PropTypes.shape().isRequired,
   toggleModal: PropTypes.func.isRequired,
+  currencyInfo: PropTypes.shape({
+    type: PropTypes.string,
+    rate: PropTypes.number,
+  }).isRequired,
 };
 
 export default injectIntl(ReportFooter);
