@@ -126,7 +126,7 @@ const EmailConfirmation = ({
         onOk={handleSendConfirmation}
         onCancel={handleCancel}
         okButtonProps={{
-          disabled: !((email || newEmail) && isCheck),
+          disabled: !isCheck,
           loading: isLoading,
         }}
         cancelButtonProps={{

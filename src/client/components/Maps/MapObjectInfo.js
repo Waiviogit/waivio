@@ -1,13 +1,12 @@
 import { Icon, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import React, { createRef } from 'react';
-import { Map } from 'pigeon-maps';
+import { Map, Marker } from 'pigeon-maps';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Overlay from 'pigeon-overlay';
 import { isEmpty } from 'lodash';
 import { getRadius, getParsedMap } from './mapHelper';
-import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
 import { getCoordinates } from '../../store/userStore/userActions';
 import mapProvider from '../../helpers/mapProvider';
@@ -62,18 +61,10 @@ class MapObjectInfo extends React.Component {
     const parsedMap = getParsedMap(wobject);
     const lat = parsedMap.latitude;
     const lng = parsedMap.longitude;
-    const isMarked = Boolean(
-      (wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions)),
-    );
+    const anchor = [+lat, +lng];
 
     return lat && lng ? (
-      <CustomMarker
-        key={`obj${wobject.author_permlink}`}
-        isMarked={isMarked}
-        anchor={[+lat, +lng]}
-        payload={wobject}
-        onClick={this.handleMarkerClick}
-      />
+      <Marker width={40} anchor={anchor} onClick={() => this.handleMarkerClick(wobject, anchor)} />
     ) : null;
   };
 
@@ -83,14 +74,14 @@ class MapObjectInfo extends React.Component {
     this.props.history.push(`/?${url}`);
   };
 
-  handleMarkerClick = ({ payload, anchor }) => {
+  handleMarkerClick = (wobject, anchor) => {
     if (this.props.isWaivio) {
       if (this.state.infoboxData && this.state.infoboxData.coordinates === anchor) {
         this.setState({ infoboxData: null });
       }
-      this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
+      this.setState({ infoboxData: { wobject, coordinates: anchor } });
     } else {
-      this.setQueryInUrl(anchor, payload.author_permlink);
+      this.setQueryInUrl(anchor, wobject.author_permlink);
     }
   };
 

@@ -37,7 +37,7 @@ const OverlayRewardsButton = props => {
             defaultMessage: 'Earn up to',
           })}{' '}
       <b data-anchor={props.wObject.author_permlink}>
-        {round(reward * currencyInfo.rate, 3)} {currencyInfo.type}{' '}
+        {round(reward * currencyInfo.rate, 2)} {currencyInfo.type}{' '}
         {!props.isPropos && <Icon type="right" />}
       </b>
     </Link>
