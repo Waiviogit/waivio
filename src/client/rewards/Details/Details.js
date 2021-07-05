@@ -76,28 +76,32 @@ const Details = ({
   const onClick = () => onActionInitiated(reserveOnClickHandler);
   const disabled = (isAuth && !isEligible) || isInActive || isExpired;
 
-  // eslint-disable-next-line no-underscore-dangle
-  const writeReviewUrl = `/editor?object=[${objName}](${get(
-    objectDetails,
-    'required_object.author_permlink',
-  )})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${
-    objectDetails._id
-  }`;
+  const mainObjectPermLink = get(objectDetails, 'required_object.author_permlink');
+  const mainObject = `[${objName}](${mainObjectPermLink})`;
+  const secondaryObject = `[${proposedWobjNewName}](${proposedWobj.author_permlink})`;
+  const urlConfig = {
+    pathname: '/editor',
+    search: `?object=${mainObject}&object=${secondaryObject}&campaign=${objectDetails._id}`,
+    state: {
+      mainObject,
+      secondaryObject,
+      campaign: objectDetails._id,
+    },
+  };
+
   const toCurrentWobjLink = `/object/${proposedWobj.author_permlink}`;
 
   const handleWriteReviewBtn = () => {
-    if (isAuth) {
-      if (userName) {
-        if (isEqual(userName, authorizedUserName)) {
-          history.push(writeReviewUrl);
-        } else {
-          history.push(toCurrentWobjLink);
-        }
-        clearAllSessionProposition();
-      } else {
-        history.push(writeReviewUrl);
-      }
+    if (!isAuth) return;
+    if (userName) {
+      const historyUrl = isEqual(userName, authorizedUserName) ? urlConfig : toCurrentWobjLink;
+
+      history.push(historyUrl);
+      clearAllSessionProposition();
+
+      return;
     }
+    history.push(urlConfig);
   };
 
   const handleCancelModalBtn = value => {
