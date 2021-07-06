@@ -6,6 +6,7 @@ import {
   handleObjectSelect,
   setUpdatedEditorData,
   setShowEditorSearch,
+  setCursorCoordinates,
   setUpdatedEditorExtendedData,
 } from '../../../store/editorStore/editorActions';
 import EditorExtended from './EditorExtended';
@@ -23,6 +24,7 @@ const mapDispatchToProps = (dispatch, props) => ({
     dispatch(handleObjectSelect(object, isFocusEndCursor, props.intl)),
   setUpdatedEditorExtendedData: data => dispatch(setUpdatedEditorExtendedData(data)),
   setShowEditorSearch: data => dispatch(setShowEditorSearch(data)),
+  setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditorExtended));

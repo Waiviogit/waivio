@@ -18,6 +18,8 @@ const defaultState = {
   loadingImg: false,
   editor: {},
   editorExtended: {
+    searchSelectionState: {},
+    searchCoordinates: {},
     isShowEditorSearch: false,
     isMounted: false,
     editorEnabled: false,
@@ -191,6 +193,15 @@ const editor = (state = defaultState, action) => {
         editorExtended: {
           ...state.editorExtended,
           isShowEditorSearch: action.payload,
+        },
+      };
+    case editorActions.SET_SEARCH_COORDINATES:
+      return {
+        ...state,
+        editorExtended: {
+          ...state.editorExtended,
+          searchCoordinates: action.payload.selectionBoundary,
+          searchSelectionState: action.payload.selectionState,
         },
       };
     case editorActions.SET_CLEAR_STATE:

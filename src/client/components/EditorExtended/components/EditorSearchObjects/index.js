@@ -1,3 +1,16 @@
-import EditorSearchObjects from './EditorSearchObjects';
+import { connect } from 'react-redux';
 
-export default EditorSearchObjects;
+import EditorSearchObjects from './EditorSearchObjects';
+import {
+  getEditorExtendedSelectionState,
+  getEditorExtendedState,
+  getSearchCoordinates,
+} from '../../../../store/editorStore/editorSelectors';
+
+const mapStateToProps = state => ({
+  searchCoordinates: getSearchCoordinates(state),
+  editorState: getEditorExtendedState(state),
+  oldSelectionState: getEditorExtendedSelectionState(state),
+});
+
+export default connect(mapStateToProps)(EditorSearchObjects);

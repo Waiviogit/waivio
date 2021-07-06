@@ -96,6 +96,7 @@ const Editor = props => {
             handleObjectSelect={props.handleObjectSelect}
             editorEnabled={editorEnabled && props.enabled}
             setShowEditorSearch={props.setShowEditorSearch}
+            setSearchCoordinates={props.setCursorCoordinates}
             placeholder={props.intl.formatMessage({
               id: 'story_placeholder',
               defaultMessage: 'Write your story...',
@@ -125,6 +126,7 @@ const propTypes = {
   handleObjectSelect: PropTypes.func.isRequired,
   setUpdatedEditorData: PropTypes.func.isRequired,
   setShowEditorSearch: PropTypes.func.isRequired,
+  setCursorCoordinates: PropTypes.func.isRequired,
   setUpdatedEditorExtendedData: PropTypes.func.isRequired,
 };
 

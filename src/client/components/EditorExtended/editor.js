@@ -32,6 +32,7 @@ import ImageSideButton from './components/sides/ImageSideButton';
 import { encodeImageFileAsURL } from './model/content';
 import { addTextToCursor } from '../../helpers/editorHelper';
 import EditorSearchObjects from './components/EditorSearchObjects';
+import { getSelection, getSelectionRect } from './util';
 
 import './index.less';
 
@@ -90,6 +91,7 @@ export default class MediumDraftEditor extends React.Component {
     isVimeo: PropTypes.bool,
     isShowEditorSearch: PropTypes.bool.isRequired,
     setShowEditorSearch: PropTypes.func.isRequired,
+    setSearchCoordinates: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -435,9 +437,21 @@ export default class MediumDraftEditor extends React.Component {
       const blockText = block.getText();
       const selectionState = editorState.getSelection();
       const start = selectionState.getStartOffset();
+      const newES = addTextToCursor(editorState, '#');
 
-      this.onChange(addTextToCursor(editorState, '#'));
-      if (blockText[start - 1] === ' ') this.props.setShowEditorSearch(true);
+      this.onChange(newES);
+      const newESSelectionState = newES.getSelection();
+
+      if (blockText[start - 1] === ' ') {
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
+
+        this.props.setSearchCoordinates({
+          selectionBoundary,
+          selectionState: newESSelectionState,
+        });
+        this.props.setShowEditorSearch(true);
+      }
 
       return HANDLED;
     }
@@ -754,7 +768,7 @@ export default class MediumDraftEditor extends React.Component {
               handleObjectSelect={this.props.handleObjectSelect}
             />
           )}
-          {isShowEditorSearch && <EditorSearchObjects />}
+          {isShowEditorSearch && <EditorSearchObjects editorNode={this._editorNode} />}
           {!disableToolbar && (
             <Toolbar
               ref={c => {

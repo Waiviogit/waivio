@@ -52,3 +52,18 @@ export const getFilteredObjectCards = createSelector(getEditor, editor =>
 );
 
 export const getEditorExtended = createSelector([editorState], state => state.editorExtended);
+
+export const getSearchCoordinates = createSelector(
+  [getEditorExtended],
+  state => state.searchCoordinates,
+);
+
+export const getEditorExtendedState = createSelector(
+  [getEditorExtended],
+  state => state.editorState,
+);
+
+export const getEditorExtendedSelectionState = createSelector(
+  [getEditorExtended],
+  state => state.selectionState,
+);
