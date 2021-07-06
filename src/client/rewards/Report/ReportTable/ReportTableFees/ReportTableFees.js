@@ -10,7 +10,7 @@ import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelec
 
 import './ReportTableFees.less';
 
-const ReportTableFees = ({ intl }) => {
+const ReportTableFees = ({ intl, currencyInfo }) => {
   const singleReportData = useSelector(getSingleReportData);
 
   const fees = reduce(
@@ -49,21 +49,8 @@ const ReportTableFees = ({ intl }) => {
             <th className="ReportTableFees basicWidth">
               {intl.formatMessage({ id: 'share', defaultMessage: `Share` })}
             </th>
-            <th className="ReportTableFees basicWidth">
-              {intl
-                .formatMessage({
-                  id: 'hive',
-                  defaultMessage: 'HIVE',
-                })
-                .toUpperCase()}
-            </th>
-            <th className="ReportTableFees basicWidth">
-              {intl.formatMessage({
-                id: 'usd)',
-                defaultMessage: 'USD',
-              })}
-              *
-            </th>
+            <th className="ReportTableFees basicWidth">HIVE</th>
+            <th className="ReportTableFees basicWidth">{currencyInfo.type}*</th>
           </tr>
         </thead>
         <tbody>
@@ -83,6 +70,9 @@ const ReportTableFees = ({ intl }) => {
 
 ReportTableFees.propTypes = {
   intl: PropTypes.shape().isRequired,
+  currencyInfo: PropTypes.shape({
+    type: PropTypes.string,
+  }).isRequired,
 };
 
 export default injectIntl(ReportTableFees);

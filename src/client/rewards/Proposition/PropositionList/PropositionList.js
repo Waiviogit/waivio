@@ -11,8 +11,8 @@ import OBJ_TYPE from '../../../object/const/objectTypes';
 import { createNewHash, hasType, parseWobjectField } from '../../../helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
-import PropositionMainObjectCard from '../PropositionMainObjectCard';
 import { getObject } from '../../../../waivioApi/ApiClient';
+import Campaign from '../../Campaign/Campaign';
 
 const PropositionList = ({
   wobject,
@@ -127,20 +127,8 @@ const PropositionList = ({
     }
 
     if (isEmpty(currPropos)) return null;
-    const maxReward = get(currentProposition, ['max_reward'], 0);
-    const rewardPrise = `${round(get(currentProposition, ['reward'], 0), 3)} USD`;
-    const proposSize = size(allCurrentPropositions);
 
-    return (
-      <PropositionMainObjectCard
-        intl={intl}
-        wobject={currWobject}
-        goToProducts={() => goToProducts(wobject)}
-        maxReward={maxReward}
-        rewardPrise={rewardPrise}
-        proposSize={proposSize}
-      />
-    );
+    return <Campaign proposition={currentProposition} />;
   };
 
   const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Col, Rate, Row } from 'antd';
+import { Col, Icon, Rate, Row } from 'antd';
 import { sortBy } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
