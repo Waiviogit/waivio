@@ -1,25 +1,30 @@
 import * as React from 'react';
+import { get } from 'lodash';
+import PropTypes from "prop-types";
 
 import './EditorSearchAutoComplete.less';
 
-const EditorSearchAutoComplete = () => {
-  const searchInput = React.useRef(null);
+const EditorSearchAutoComplete = ({ onKeyDown, ref }) => {
   const [searchString, setSearchString] = React.useState('');
 
   React.useEffect(() => {
-    searchInput.current.focus();
-  }, []);
+    if (get(ref, 'current')) ref.current.focus();
+  }, [get(ref, 'current')]);
+
   const handleChange = event => {
     const value = event.target.value;
 
     setSearchString(value);
   };
 
+  const handleOnKeyDown = () => setSearchString(searchString);
+
   return (
     <div className="editor_search">
       <input
-        ref={searchInput}
+        ref={ref}
         type="text"
+        onKeyDown={onKeyDown}
         value={searchString}
         onChange={handleChange}
         className="editor_search__input"
@@ -32,5 +37,14 @@ const EditorSearchAutoComplete = () => {
     </div>
   );
 };
+
+EditorSearchAutoComplete.propTypes = {
+  onKeyDown: PropTypes.func,
+  ref: PropTypes.shape().isRequired,
+}
+
+EditorSearchAutoComplete.defaultProps = {
+  onKeyDown: () => {}
+}
 
 export default EditorSearchAutoComplete;

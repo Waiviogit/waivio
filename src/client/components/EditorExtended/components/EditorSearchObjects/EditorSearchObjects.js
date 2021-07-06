@@ -7,6 +7,7 @@ import EditorSearchAutoComplete from './EditorSearchAutoComplete';
 import './EditorSearchObjects.less';
 
 const EditorSearchObjects = ({ editorNode, searchCoordinates }) => {
+  const searchInput = React.useRef(null);
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
 
   React.useEffect(() => {
@@ -29,9 +30,19 @@ const EditorSearchObjects = ({ editorNode, searchCoordinates }) => {
     setCoordinates({ top, left: left + 25 });
   }, [editorNode]);
 
+  const handleKeyDown = event => {
+    if (event.keyCode === 8) {
+      searchInput.current.getSelection();
+      console.log('backspace');
+    }
+  };
+
   return (
     <div className="EditorSearchObjects" style={{ top: coordinates.top, left: coordinates.left }}>
-      <EditorSearchAutoComplete />
+      <EditorSearchAutoComplete
+        ref={searchInput}
+        onKeyDown={handleKeyDown}
+      />
     </div>
   );
 };
