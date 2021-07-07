@@ -269,9 +269,15 @@ const Proposition = props => {
                   disabled={props.loading || props.proposition.isReservedSiblingObj}
                   onClick={handleReserveOnClick}
                 >
+                  <b>
+                    {props.intl.formatMessage({
+                      id: 'reserve',
+                      defaultMessage: 'Reserve',
+                    })}
+                  </b>{' '}
                   {props.intl.formatMessage({
-                    id: 'reserve',
-                    defaultMessage: `Reserve`,
+                    id: 'your_reward',
+                    defaultMessage: 'Your Reward',
                   })}
                 </Button>
                 <div className="Proposition__footer-button-days">
