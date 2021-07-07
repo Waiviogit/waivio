@@ -37,6 +37,7 @@ import { getCommentContent } from '../../store/commentsStore/commentsSelectors';
 import { getIsOpenWriteReviewModal } from '../../store/rewardsStore/rewardsSelectors';
 
 import './Proposition.less';
+import { getCurrentCurrency } from '../../store/appStore/appSelectors';
 
 const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');
@@ -46,7 +47,6 @@ const Proposition = props => {
     'Proposition--hovered': props.hovered,
   });
   const searchParams = new URLSearchParams(props.location.search);
-
   const isWidget = searchParams.get('display');
   const isReservedLink = searchParams.get('toReserved');
   const sessionCurrentProposjId = sessionStorage.getItem('currentProposId');
@@ -234,7 +234,12 @@ const Proposition = props => {
         />
       </div>
       <div className="Proposition__card">
-        <ObjectCardView passedParent={requiredObject} wObject={proposedWobj} />
+        <ObjectCardView
+          passedParent={requiredObject}
+          wObject={proposedWobj}
+          withRewards
+          rewardPrice={props.proposition.reward}
+        />
       </div>
       <div
         className={classNames('Proposition__footer', {
@@ -329,6 +334,7 @@ const Proposition = props => {
 Proposition.propTypes = {
   proposition: PropTypes.shape().isRequired,
   wobj: PropTypes.shape().isRequired,
+  currencyInfo: PropTypes.shape().isRequired,
   assignProposition: PropTypes.func,
   discardProposition: PropTypes.func,
   removeToggleFlag: PropTypes.func,
@@ -371,6 +377,7 @@ export default withRouter(
           : {},
       isAuth: getIsAuthenticated(state),
       isOpenWriteReviewModal: getIsOpenWriteReviewModal(state),
+      currencyInfo: getCurrentCurrency(state),
     }),
     {
       removeToggleFlag,

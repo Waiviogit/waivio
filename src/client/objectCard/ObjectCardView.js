@@ -10,10 +10,12 @@ import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
-import { getScreenSize } from '../store/appStore/appSelectors';
+import { getCurrentCurrency, getScreenSize } from '../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
 
 import './ObjectCardView.less';
+import USDDisplay from '../components/Utils/USDDisplay';
+import { defaultCurrency } from '../websites/constants/currencyTypes';
 
 const ObjectCardView = ({
   intl,
@@ -22,15 +24,19 @@ const ObjectCardView = ({
   path,
   passedParent,
   hovered,
+  withRewards,
+  rewardPrice,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
+  const currency = useSelector(getCurrentCurrency);
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const parentLink = get(parent, 'defaultShowLink');
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
+  const prise = withRewards ? null : wObject.price;
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
@@ -122,14 +128,14 @@ const ObjectCardView = ({
               />
             )}
             <span className="ObjectCardView__tag-text">
-              {wObject.price && (
-                <span className="ObjectCardView__price" title={wObject.price}>
-                  {wObject.price}
+              {prise && (
+                <span className="ObjectCardView__price" title={prise}>
+                  {prise}
                 </span>
               )}
               {tags.map((tag, index) => (
                 <span key={tag}>
-                  {index === 0 && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
+                  {index === 0 && !prise ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
                 </span>
               ))}
             </span>
@@ -146,6 +152,28 @@ const ObjectCardView = ({
             )}
           </div>
         </div>
+        {withRewards && (
+          <div className="ObjectCardView__rewards-price">
+            {Boolean(wObject.price) && (
+              <React.Fragment>
+                <span>PRICE: {wObject.price}</span> |{' '}
+              </React.Fragment>
+            )}
+            <b>
+              {intl.formatMessage({
+                id: 'you_earn',
+                defaultMessage: 'YOU EARN',
+              })}
+              :
+            </b>{' '}
+            <USDDisplay
+              value={rewardPrice}
+              currencyDisplay="symbol"
+              style={{ color: '#f97b38', fontWeight: 'bolder' }}
+            />{' '}
+            {currency.type}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -157,6 +185,8 @@ ObjectCardView.propTypes = {
   passedParent: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   path: PropTypes.string,
   hovered: PropTypes.bool,
+  withRewards: PropTypes.bool,
+  rewardPrice: PropTypes.number,
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -169,6 +199,9 @@ ObjectCardView.defaultProps = {
   wObject: {},
   path: '',
   passedParent: {},
+  withRewards: false,
+  rewardPrice: 0,
+  currency: defaultCurrency,
   hovered: false,
 };
 export default injectIntl(ObjectCardView);
