@@ -107,6 +107,7 @@ export const SET_CLEAR_STATE = '@editor/SET_CLEAR_STATE';
 export const LEAVE_EDITOR = '@editor/LEAVE_EDITOR';
 export const SET_IS_SHOW_EDITOR_SEARCH = '@editor/SET_IS_SHOW_EDITOR_SEARCH';
 export const SET_SEARCH_COORDINATES = '@editor/SET_CURSOR_COORDINATES';
+export const SET_EDITOR_EXTENDED_STATE = '@editor/SET_EDITOR_EXTENDED_STATE';
 
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
@@ -115,6 +116,7 @@ export const setClearState = () => ({ type: SET_CLEAR_STATE });
 export const leaveEditor = () => ({ type: LEAVE_EDITOR });
 export const setShowEditorSearch = payload => ({ type: SET_IS_SHOW_EDITOR_SEARCH, payload });
 export const setCursorCoordinates = payload => ({ type: SET_SEARCH_COORDINATES, payload });
+export const setEditorExtendedState = payload => ({ type: SET_EDITOR_EXTENDED_STATE, payload });
 
 const saveDraftRequest = (draft, intl) => dispatch =>
   dispatch({

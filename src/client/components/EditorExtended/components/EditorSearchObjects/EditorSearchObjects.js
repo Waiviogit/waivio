@@ -1,13 +1,14 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
+import { EditorState } from "draft-js";
 
 import EditorSearchAutoComplete from './EditorSearchAutoComplete';
+import { addTextToCursor } from "../../../../helpers/editorHelper";
 
 import './EditorSearchObjects.less';
 
-const EditorSearchObjects = ({ editorNode, searchCoordinates }) => {
-  const searchInput = React.useRef(null);
+const EditorSearchObjects = ({ editorNode, searchCoordinates, closeSearchInput, oldSelectionState, editorState, setUpdatedEditorExtendedData }) => {
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
 
   React.useEffect(() => {
@@ -31,16 +32,18 @@ const EditorSearchObjects = ({ editorNode, searchCoordinates }) => {
   }, [editorNode]);
 
   const handleKeyDown = event => {
-    if (event.keyCode === 8) {
-      searchInput.current.getSelection();
-      console.log('backspace');
+    if (event.keyCode === 8 && !event.target.selectionStart) { // НЕ ПЕРЕСТАВЛЯТЬ МЕСТАМИ ФУНКЦИИ НИЖЕ
+      closeSearchInput(); // закрывается поиск
+      let newEditorState = addTextToCursor(editorState, event.target.value); // добавляется текст в едитор из поиска
+
+      newEditorState = EditorState.forceSelection(newEditorState, oldSelectionState); // выставляется курсор на старое место
+      setUpdatedEditorExtendedData({ editorState: newEditorState }); // устанавливаем едитор стейт
     }
   };
 
   return (
     <div className="EditorSearchObjects" style={{ top: coordinates.top, left: coordinates.left }}>
       <EditorSearchAutoComplete
-        ref={searchInput}
         onKeyDown={handleKeyDown}
       />
     </div>
@@ -50,6 +53,10 @@ const EditorSearchObjects = ({ editorNode, searchCoordinates }) => {
 EditorSearchObjects.propTypes = {
   editorNode: PropTypes.shape().isRequired,
   searchCoordinates: PropTypes.shape().isRequired,
+  editorState: PropTypes.shape().isRequired,
+  oldSelectionState: PropTypes.shape().isRequired,
+  closeSearchInput: PropTypes.func.isRequired,
+  setUpdatedEditorExtendedData: PropTypes.func.isRequired,
 };
 
 export default EditorSearchObjects;

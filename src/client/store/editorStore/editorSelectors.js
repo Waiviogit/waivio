@@ -65,5 +65,5 @@ export const getEditorExtendedState = createSelector(
 
 export const getEditorExtendedSelectionState = createSelector(
   [getEditorExtended],
-  state => state.selectionState,
+  state => state.searchSelectionState,
 );

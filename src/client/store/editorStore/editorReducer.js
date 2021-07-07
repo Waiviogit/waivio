@@ -204,6 +204,15 @@ const editor = (state = defaultState, action) => {
           searchSelectionState: action.payload.selectionState,
         },
       };
+    case editorActions.SET_EDITOR_EXTENDED_STATE:
+      return {
+        ...state,
+        editorExtended: {
+          ...state.editorExtended,
+          editorState: action.payload,
+          prevEditorState: state.editorExtended.editorState,
+        },
+      };
     case editorActions.SET_CLEAR_STATE:
       return defaultState;
     case editorActions.LEAVE_EDITOR:

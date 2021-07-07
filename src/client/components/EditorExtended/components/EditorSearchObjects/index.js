@@ -6,6 +6,10 @@ import {
   getEditorExtendedState,
   getSearchCoordinates,
 } from '../../../../store/editorStore/editorSelectors';
+import {
+  setShowEditorSearch,
+  setUpdatedEditorExtendedData
+} from "../../../../store/editorStore/editorActions";
 
 const mapStateToProps = state => ({
   searchCoordinates: getSearchCoordinates(state),
@@ -13,4 +17,9 @@ const mapStateToProps = state => ({
   oldSelectionState: getEditorExtendedSelectionState(state),
 });
 
-export default connect(mapStateToProps)(EditorSearchObjects);
+const mapDispatchToProps = dispatch => ({
+  closeSearchInput: () => dispatch(setShowEditorSearch(false)),
+  setUpdatedEditorExtendedData: editorState => dispatch(setUpdatedEditorExtendedData(editorState)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditorSearchObjects);
