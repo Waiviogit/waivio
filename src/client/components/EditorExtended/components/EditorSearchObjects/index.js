@@ -7,9 +7,9 @@ import {
   getSearchCoordinates,
 } from '../../../../store/editorStore/editorSelectors';
 import {
+  setEditorExtendedState,
   setShowEditorSearch,
-  setUpdatedEditorExtendedData
-} from "../../../../store/editorStore/editorActions";
+} from '../../../../store/editorStore/editorActions';
 
 const mapStateToProps = state => ({
   searchCoordinates: getSearchCoordinates(state),
@@ -19,7 +19,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   closeSearchInput: () => dispatch(setShowEditorSearch(false)),
-  setUpdatedEditorExtendedData: editorState => dispatch(setUpdatedEditorExtendedData(editorState)),
+  setEditorExtendedState: editorState => dispatch(setEditorExtendedState(editorState)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorSearchObjects);

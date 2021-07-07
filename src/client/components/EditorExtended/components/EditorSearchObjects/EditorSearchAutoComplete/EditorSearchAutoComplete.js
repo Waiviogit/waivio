@@ -1,14 +1,14 @@
 import * as React from 'react';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 import './EditorSearchAutoComplete.less';
 
-const EditorSearchAutoComplete = ({ onKeyDown }) => {
+const EditorSearchAutoComplete = ({ onKeyDown, onBlur }) => {
   const searchInput = React.useRef(null);
   const [searchString, setSearchString] = React.useState('');
 
   React.useEffect(() => {
-      searchInput.current.focus();
+    searchInput.current.focus();
   }, []);
 
   const handleChange = event => {
@@ -22,6 +22,7 @@ const EditorSearchAutoComplete = ({ onKeyDown }) => {
       <input
         ref={searchInput}
         type="text"
+        onBlur={onBlur}
         onKeyDown={onKeyDown}
         value={searchString}
         onChange={handleChange}
@@ -37,11 +38,13 @@ const EditorSearchAutoComplete = ({ onKeyDown }) => {
 };
 
 EditorSearchAutoComplete.propTypes = {
+  onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
-}
+};
 
 EditorSearchAutoComplete.defaultProps = {
-  onKeyDown: () => {}
-}
+  onBlur: () => {},
+  onKeyDown: () => {},
+};
 
 export default EditorSearchAutoComplete;
