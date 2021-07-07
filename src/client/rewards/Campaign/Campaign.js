@@ -26,11 +26,9 @@ const Campaign = ({
   const minReward = get(campaign, ['min_reward'], 0);
   const maxReward = get(campaign, ['max_reward'], 0);
   const rewardMax = maxReward !== minReward ? maxReward : '';
-  let rewardPrice = minReward || '' || rewardPricePassed;
+  let rewardPrice = minReward || rewardPricePassed || 0;
 
-  if (!hasCampaigns) {
-    rewardPrice = get(proposition, 'reward');
-  }
+  if (campaign.reward) rewardPrice = get(campaign, 'reward', 0);
 
   const goToProducts = () =>
     history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
