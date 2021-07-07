@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import { getCurrentCurrency } from '../../store/appStore/appSelectors';
 
-const USDDisplay = ({ value, currencyDisplay }) => {
+const USDDisplay = ({ value, currencyDisplay, style }) => {
   const currencyInfo = useSelector(getCurrentCurrency);
   const negative = value < 0;
   const absValue = Math.abs(value);
@@ -13,7 +13,7 @@ const USDDisplay = ({ value, currencyDisplay }) => {
   const precision = absValue < 0.02 && absValue > 0 ? 3 : 2;
 
   return (
-    <span>
+    <span style={style}>
       {negative && '-'}
       {/* eslint-disable react/style-prop-object */}
       <FormattedNumber
@@ -31,11 +31,13 @@ const USDDisplay = ({ value, currencyDisplay }) => {
 USDDisplay.propTypes = {
   value: PropTypes.number,
   currencyDisplay: PropTypes.string,
+  style: PropTypes.shape({}),
 };
 
 USDDisplay.defaultProps = {
   value: 0,
   currencyDisplay: 'code',
+  style: {},
 };
 
 export default USDDisplay;

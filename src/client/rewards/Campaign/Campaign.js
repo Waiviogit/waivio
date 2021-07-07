@@ -39,6 +39,8 @@ const Campaign = ({
         wObject={requiredObject}
         passedParent={requiredObject.parent}
         hovered={hovered}
+        withRewards
+        rewardPrice={!rewardMax && !rewardMaxPassed ? rewardPrice : rewardMax}
       />
       <div className="Campaign__button" role="presentation" onClick={goToProducts}>
         <Button type="primary" size="large">
