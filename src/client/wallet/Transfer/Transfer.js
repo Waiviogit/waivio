@@ -297,7 +297,6 @@ export default class Transfer extends React.Component {
       if (!errors) {
         const transferQuery = {
           amount: `${round(parseFloat(values.amount), 3)} ${values.currency}`,
-          memo: {},
         };
 
         if (guestUserRegex.test(values.to)) {
@@ -309,13 +308,13 @@ export default class Transfer extends React.Component {
         }
 
         if (memo) {
-          transferQuery.memo = { ...transferQuery.memo, id: memo };
+          transferQuery.memo = { ...(transferQuery.memo || {}), id: memo };
           if (values.memo) transferQuery.memo.message = values.memo;
         }
 
-        if (app) transferQuery.memo = { ...transferQuery.memo, app };
-        if (values.to && transferQuery.memo.id === REWARD.guestTransfer)
-          transferQuery.memo = { ...transferQuery.memo, to: values.to };
+        if (app) transferQuery.memo = { ...(transferQuery.memo || {}), app };
+        if (values.to && get(transferQuery, 'memo.id') === REWARD.guestTransfer)
+          transferQuery.memo = { ...(transferQuery.memo || {}), to: values.to };
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (isTip) transferQuery.memo = memo;
 

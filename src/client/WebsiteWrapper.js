@@ -221,7 +221,7 @@ class WebsiteWrapper extends React.PureComponent {
               isGuestUser: username && guestUserRegex.test(username),
             }}
           >
-            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
+            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'} className="WebsiteLayout">
               {!location.pathname.includes('sign-in') && (
                 <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                   <WebsiteHeader />

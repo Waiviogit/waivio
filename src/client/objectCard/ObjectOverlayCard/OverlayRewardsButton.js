@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { getCurrentCurrency } from '../../store/appStore/appSelectors';
+import USDDisplay from '../../components/Utils/USDDisplay';
 
 const OverlayRewardsButton = props => {
   const ObjectOverlayCardEarnClassList = classNames('ObjectOverlayCard__earn', {
@@ -37,7 +38,8 @@ const OverlayRewardsButton = props => {
             defaultMessage: 'Earn up to',
           })}{' '}
       <b data-anchor={props.wObject.author_permlink}>
-        {round(reward * currencyInfo.rate, 2)} {currencyInfo.type}{' '}
+        <USDDisplay value={round(reward * currencyInfo.rate, 2)} currencyDisplay="symbol" />{' '}
+        <span className="ObjectOverlayCard__currency">{currencyInfo.type}</span>{' '}
         {!props.isPropos && <Icon type="right" />}
       </b>
     </Link>

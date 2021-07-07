@@ -25,13 +25,13 @@ const Campaign = ({
   const requiredObject = hasCampaigns ? proposition : get(proposition, ['required_object'], {});
   const minReward = get(campaign, ['min_reward'], 0);
   const maxReward = get(campaign, ['max_reward'], 0);
-  const rewardPrice = minReward
-    ? `${round(minReward * currencyInfo.rate, 2)} ${currencyInfo.type}`
-    : '';
-  const rewardMax =
-    maxReward !== minReward
-      ? `${round(maxReward * currencyInfo.rate, 2)} ${currencyInfo.type}`
-      : '';
+  const rewardMax = maxReward !== minReward ? maxReward : '';
+  let rewardPrice = minReward || '' || rewardPricePassed;
+
+  if (!hasCampaigns) {
+    rewardPrice = get(proposition, 'reward');
+  }
+
   const goToProducts = () =>
     history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
 
@@ -53,7 +53,9 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{rewardPrice || rewardPricePassed}</span>
+                <span className="fw6 ml1">
+                  {round(rewardPrice * currencyInfo.rate, 3)} {currencyInfo.type}
+                </span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -66,7 +68,9 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{rewardMax || rewardMaxPassed}</span>
+                <span className="fw6 ml1">
+                  {round((rewardMax || rewardMaxPassed) * currencyInfo.rate, 3)} {currencyInfo.type}
+                </span>
                 <Icon type="right" />
               </span>
             </React.Fragment>

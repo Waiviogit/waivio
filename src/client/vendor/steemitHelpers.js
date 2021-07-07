@@ -61,10 +61,10 @@ export const calculatePayout = post => {
 
   payoutDetails.payoutLimitHit = payout >= max_payout;
   payoutDetails.totalPayout = payout;
+  payoutDetails.potentialPayout = pending_payout;
 
   if (!isPostCashout(post)) {
     payoutDetails.cashoutInTime = cashout_time + '.000Z';
-    payoutDetails.potentialPayout = pending_payout;
   }
 
   if (promoted > 0) {

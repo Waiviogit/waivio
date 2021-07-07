@@ -483,10 +483,9 @@ class StoryFull extends React.Component {
               {map(linkedObjects, obj => {
                 if (obj.campaigns) {
                   const minReward = get(obj, ['campaigns', 'min_reward']);
-                  const rewardPricePassed = minReward ? `${round(minReward, 2)} USD` : '';
+                  const rewardPricePassed = minReward ? round(minReward, 2) : '';
                   const maxReward = get(obj, ['campaigns', 'max_reward']);
-                  const rewardMaxPassed =
-                    maxReward !== minReward ? `${round(maxReward, 2)} USD` : '';
+                  const rewardMaxPassed = maxReward !== minReward ? round(maxReward, 2) : '';
 
                   return (
                     <Campaign

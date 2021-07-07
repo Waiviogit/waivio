@@ -154,10 +154,11 @@ export const currentUserFollowersUser = (currentUsername, username) =>
   ]);
 
 export const createQuery = params =>
-  Object.keys(params).reduce(
-    (acc, value) => (acc ? `${acc}&${value}=${params[value]}` : `${value}=${params[value]}`),
-    '',
-  );
+  Object.keys(params).reduce((acc, value) => {
+    if (!params[value]) return acc;
+
+    return acc ? `${acc}&${value}=${params[value]}` : `${value}=${params[value]}`;
+  }, '');
 
 export const isMobileDevice = () => {
   if (typeof navigator !== 'undefined' && mobileUserAgents.test(navigator.userAgent))
