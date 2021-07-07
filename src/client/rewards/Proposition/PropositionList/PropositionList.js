@@ -128,7 +128,7 @@ const PropositionList = ({
 
     if (isEmpty(currPropos)) return null;
 
-    return <Campaign proposition={currentProposition} />;
+    return <Campaign proposition={currentProposition} filterKey="all" />;
   };
 
   const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
