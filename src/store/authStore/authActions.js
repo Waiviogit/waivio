@@ -20,6 +20,7 @@ import {
   getIsLoaded,
   isGuestUser,
 } from './authSelectors';
+import { getIsWaivio } from '../appStore/appSelectors';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -105,6 +106,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   const guestAccessToken = getGuestAccessToken();
   const isGuest = Boolean(guestAccessToken);
+  const isWaivio = getIsWaivio(state);
 
   if (isUserLoaded(state)) {
     promise = Promise.resolve(null);
@@ -115,7 +117,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
         const privateEmail = await getPrivateEmail(userData.name);
 
-        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        if (!isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
         resolve({
           account: userData,
@@ -138,7 +140,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         const privateEmail = await getPrivateEmail(scUserData.name);
 
-        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        if (!isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
         resolve({
           ...scUserData,

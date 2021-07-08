@@ -296,7 +296,6 @@ const WebsiteBody = props => {
         <div
           className="WebsiteBody__overlay-wrap"
           role="presentation"
-          data-anchor={wobject.author_permlink}
           onClick={() => localStorage.setItem('query', props.query)}
         >
           <ObjectOverlayCard wObject={wobject} showParent={props.searchType !== 'restaurant'} />
@@ -447,7 +446,7 @@ const WebsiteBody = props => {
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
               onClick={({ event }) => {
-                if (!get(event, 'target.dataset.anchor')) {
+                if (event.target.classList.value === 'pigeon-overlays') {
                   setInfoboxData(null);
                   props.query.delete('center');
                   props.query.delete('zoom');

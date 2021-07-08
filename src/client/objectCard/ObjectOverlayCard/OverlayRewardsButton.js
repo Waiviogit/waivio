@@ -24,11 +24,7 @@ const OverlayRewardsButton = props => {
     !isEmpty(campaign.campaigns) && campaign.max_reward === campaign.min_reward;
 
   return (
-    <Link
-      data-anchor={props.wObject.author_permlink}
-      className={ObjectOverlayCardEarnClassList}
-      to={linkTo}
-    >
+    <Link className={ObjectOverlayCardEarnClassList} to={linkTo}>
       {!hasSeveralMeanings
         ? props.intl.formatMessage({
             id: 'rewards_details_earn',
@@ -38,7 +34,7 @@ const OverlayRewardsButton = props => {
             id: 'rewards_details_earn_up_to',
             defaultMessage: 'Earn up to',
           })}{' '}
-      <b data-anchor={props.wObject.author_permlink}>
+      <b>
         <USDDisplay value={reward} currencyDisplay="symbol" roundTo={roundUpToThisIndex} />{' '}
         <span className="ObjectOverlayCard__currency">{currencyInfo.type}</span>{' '}
         {!props.isPropos && <Icon type="right" />}
