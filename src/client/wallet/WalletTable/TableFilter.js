@@ -27,11 +27,6 @@ const TableFilter = ({
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
       <Form.Item
-        rules={[
-          {
-            required: true,
-          },
-        ]}
         label={intl.formatMessage({
           id: 'accounts',
           defaultMessage: 'Accounts:',
@@ -71,11 +66,6 @@ const TableFilter = ({
       </div>
       <div className="WalletTable__date-wrap">
         <Form.Item
-          rules={[
-            {
-              required: true,
-            },
-          ]}
           label={intl.formatMessage({
             id: 'table_date_from',
             defaultMessage: 'From:',
@@ -129,11 +119,6 @@ const TableFilter = ({
           )}
         </Form.Item>
         <Form.Item
-          rules={[
-            {
-              required: true,
-            },
-          ]}
           label={intl.formatMessage({
             id: 'table_date_till',
             defaultMessage: 'Till:',
