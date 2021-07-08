@@ -1,20 +1,47 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { debounce } from "lodash";
+
+import SearchOneObject from "../SearchOneObject";
 
 import './EditorSearchAutoComplete.less';
 
-const EditorSearchAutoComplete = ({ onKeyDown, onBlur }) => {
+const EditorSearchAutoComplete = ({
+  onBlur,
+  onKeyDown,
+  handleBlur,
+  searchString,
+  searchObjects,
+  setSearchString,
+  selectObjectSearch,
+  searchObjectsResults,
+}) => {
   const searchInput = React.useRef(null);
-  const [searchString, setSearchString] = React.useState('');
 
   React.useEffect(() => {
     searchInput.current.focus();
+    document.addEventListener('click', blurInput);
+
+    return () => {
+      document.removeEventListener('click', blurInput);
+    };
   }, []);
+
+  const blurInput = event => {
+    handleBlur(event, searchInput.current.value)
+  };
+
+  const debouncedSearch = debounce(searchStr => searchObjects(searchStr), 100);
 
   const handleChange = event => {
     const value = event.target.value;
 
     setSearchString(value);
+    debouncedSearch(value);
+  };
+
+  const handleSelectObject = object => {
+    selectObjectSearch(object);
   };
 
   return (
@@ -29,9 +56,7 @@ const EditorSearchAutoComplete = ({ onKeyDown, onBlur }) => {
         className="editor_search__input"
       />
       <div>
-        <div>item 1</div>
-        <div>item 2</div>
-        <div>item 3</div>
+        {searchObjectsResults.map(obj => <SearchOneObject obj={obj} objectSelect={handleSelectObject} key={obj.id} />)}
       </div>
     </div>
   );
@@ -40,11 +65,19 @@ const EditorSearchAutoComplete = ({ onKeyDown, onBlur }) => {
 EditorSearchAutoComplete.propTypes = {
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
+  searchObjects: PropTypes.func.isRequired,
+  searchString: PropTypes.string.isRequired,
+  setSearchString: PropTypes.func.isRequired,
+  handleBlur: PropTypes.func.isRequired,
+  selectObjectSearch: PropTypes.func.isRequired,
+  searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
 };
 
 EditorSearchAutoComplete.defaultProps = {
   onBlur: () => {},
   onKeyDown: () => {},
+  isSearchObject: false,
+  searchObjectsResults: [],
 };
 
 export default EditorSearchAutoComplete;

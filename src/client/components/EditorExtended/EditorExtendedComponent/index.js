@@ -10,10 +10,11 @@ import {
   setUpdatedEditorExtendedData,
 } from '../../../store/editorStore/editorActions';
 import EditorExtended from './EditorExtended';
-import { getEditorExtended } from '../../../store/editorStore/editorSelectors';
+import { getEditorExtended, getEditorExtendedIsShowSearch } from '../../../store/editorStore/editorSelectors';
 
 const mapStateToProps = state => ({
   editorExtended: getEditorExtended(state),
+  isShowEditorSearch: getEditorExtendedIsShowSearch(state),
 });
 
 const mapDispatchToProps = (dispatch, props) => ({

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { EditorState } from 'draft-js';
 
 import EditorSearchAutoComplete from './EditorSearchAutoComplete';
-import { addTextToCursor } from '../../../../helpers/editorHelper';
+import { addTextToCursor, getIsNodeInPath } from '../../../../helpers/editorHelper';
 
 import './EditorSearchObjects.less';
 
@@ -16,6 +16,7 @@ const EditorSearchObjects = ({
   editorState,
   setEditorExtendedState,
 }) => {
+  const [searchString, setSearchString] = React.useState('');
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
 
   React.useEffect(() => {
@@ -38,29 +39,38 @@ const EditorSearchObjects = ({
     setCoordinates({ top, left: left + 25 });
   }, [editorNode]);
 
-  const handleCloseSearchInput = (event, isNeedSetCursor = true) => {
+  const handleCloseSearchInput = (value, isNeedSetCursor = true) => {
     // НЕ ПЕРЕСТАВЛЯТЬ МЕСТАМИ ФУНКЦИИ НИЖЕ
-    closeSearchInput(); // закрывается поиск
-    let newEditorState = addTextToCursor(editorState, event.target.value); // добавляется текст в едитор из поиска
+    let newEditorState = addTextToCursor(editorState, value); // добавляется текст в едитор из поиска
 
     if (isNeedSetCursor)
       newEditorState = EditorState.forceSelection(newEditorState, oldSelectionState); // выставляется курсор на старое место
     setEditorExtendedState(newEditorState); // устанавливаем эдитор стейт
+    closeSearchInput(); // закрывается поиск
   };
 
   const handleKeyDown = event => {
     if (event.keyCode === 8 && !event.target.selectionStart) {
-      handleCloseSearchInput(event);
+      handleCloseSearchInput(event.target.value, true);
     }
   };
 
-  const handleBlur = event => {
-    handleCloseSearchInput(event, false);
+  const handleBlur = (event, value) => {
+    const isNodeInPath = getIsNodeInPath('EditorSearchObjects', event);
+
+    if (!isNodeInPath) {
+      handleCloseSearchInput(value, false);
+    }
   };
 
   return (
     <div className="EditorSearchObjects" style={{ top: coordinates.top, left: coordinates.left }}>
-      <EditorSearchAutoComplete onBlur={handleBlur} onKeyDown={handleKeyDown} />
+      <EditorSearchAutoComplete
+        handleBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        searchString={searchString}
+        setSearchString={setSearchString}
+      />
     </div>
   );
 };

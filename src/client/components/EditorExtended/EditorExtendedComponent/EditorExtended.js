@@ -12,7 +12,7 @@ const MAX_LENGTH = 255;
 
 const Editor = props => {
   const {
-    editorExtended: { editorState, isMounted, editorEnabled, titleValue, isShowEditorSearch },
+    editorExtended: { editorState, isMounted, editorEnabled, titleValue },
   } = props;
   const refsEditor = React.useRef();
 
@@ -92,7 +92,7 @@ const Editor = props => {
             sideButtons={SIDE_BUTTONS}
             onChange={handleContentChange}
             handleHashtag={props.handleHashtag}
-            isShowEditorSearch={isShowEditorSearch}
+            isShowEditorSearch={props.isShowEditorSearch}
             handleObjectSelect={props.handleObjectSelect}
             editorEnabled={editorEnabled && props.enabled}
             setShowEditorSearch={props.setShowEditorSearch}
@@ -124,6 +124,7 @@ const propTypes = {
   enabled: PropTypes.bool.isRequired,
   editorExtended: PropTypes.shape().isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
+  isShowEditorSearch: PropTypes.bool.isRequired,
   setUpdatedEditorData: PropTypes.func.isRequired,
   setShowEditorSearch: PropTypes.func.isRequired,
   setCursorCoordinates: PropTypes.func.isRequired,

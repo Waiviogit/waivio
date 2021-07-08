@@ -349,3 +349,15 @@ export const addTextToCursor = (editorState, text) => {
 
   return EditorState.push(editorState, content, 'insert-characters');
 };
+
+export const getIsNodeInPath = (className, event) => {
+  const path = [];
+  let node = event.target;
+
+  while(node !== document.body) {
+    path.push(node.className);
+    node = node.parentNode;
+  }
+
+  return path.includes(className);
+};

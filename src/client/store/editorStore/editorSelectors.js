@@ -67,3 +67,8 @@ export const getEditorExtendedSelectionState = createSelector(
   [getEditorExtended],
   state => state.searchSelectionState,
 );
+
+export const getEditorExtendedIsShowSearch = createSelector(
+  [getEditorExtended],
+  state => state.isShowEditorSearch,
+);
