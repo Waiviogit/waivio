@@ -5,7 +5,6 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { setBeneficiaryOwner } from '../searchStore/searchActions';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getCurrentCurrency } from './appSelectors';
-import { defaultCurrency } from '../../client/websites/constants/currencyTypes';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
@@ -179,7 +178,7 @@ export const GET_CURRENCY_RATE = createAsyncActionType('@app/GET_CURRENCY_RATE')
 export const getCurrentCurrencyRate = currency => (dispatch, getState) => {
   const currentCurrency = getCurrentCurrency(getState());
 
-  if (currentCurrency === currency) return null;
+  if (currentCurrency.type === currency) return null;
 
   return dispatch({
     type: GET_CURRENCY_RATE.ACTION,
