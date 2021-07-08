@@ -117,7 +117,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
         const privateEmail = await getPrivateEmail(userData.name);
 
-        if (!isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        if (isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
         resolve({
           account: userData,
@@ -140,7 +140,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         const privateEmail = await getPrivateEmail(scUserData.name);
 
-        if (!isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        if (isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
         resolve({
           ...scUserData,

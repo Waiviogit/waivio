@@ -5,7 +5,7 @@ import { createAsyncActionType } from '../../client/helpers/stateHelpers';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { getVipTicketsQuery } from '../../client/settings/common/helpers';
 import { getCurrentCurrencyRate } from '../appStore/appActions';
-import { getCurrentCurrency } from '../appStore/appSelectors';
+import { getIsWaivio } from '../appStore/appSelectors';
 
 export const SAVE_SETTINGS = '@app/SAVE_SETTINGS';
 export const SAVE_SETTINGS_START = '@app/SAVE_SETTINGS_START';
@@ -17,6 +17,7 @@ export const SET_USER_STATUS = createAsyncActionType('@app/SET_USER_STATUS');
 export const saveSettings = settings => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+  const isWaivio = getIsWaivio(state);
 
   if (!userName) return dispatch({ type: SAVE_SETTINGS_ERROR });
 
@@ -24,7 +25,7 @@ export const saveSettings = settings => (dispatch, getState) => {
     type: SAVE_SETTINGS,
     payload: {
       promise: saveSettingsMetadata(userName, settings).then(res => {
-        dispatch(getCurrentCurrencyRate(res.currency));
+        if (isWaivio) dispatch(getCurrentCurrencyRate(res.currency));
 
         return res;
       }),
