@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, truncate, get, isEmpty, uniq } from 'lodash';
+import { includes, truncate, get, isEmpty, uniq, round } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -10,13 +10,13 @@ import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
-import { getCurrentCurrency, getScreenSize } from '../../store/appStore/appSelectors';
+import { getCurrentCurrency, getRate, getScreenSize } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
-
-import './ObjectCardView.less';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
 import { roundUpToThisIndex } from '../../common/constants/waivio';
+
+import './ObjectCardView.less';
 
 const ObjectCardView = ({
   intl,
@@ -27,10 +27,12 @@ const ObjectCardView = ({
   hovered,
   withRewards,
   rewardPrice,
+  isReserved,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const currency = useSelector(getCurrentCurrency);
+  const rate = useSelector(getRate);
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
@@ -172,13 +174,21 @@ const ObjectCardView = ({
               })}
               :
             </b>{' '}
-            <USDDisplay
-              value={rewardPrice}
-              currencyDisplay="symbol"
-              style={{ color: '#f97b38', fontWeight: 'bolder' }}
-              roundTo={roundUpToThisIndex}
-            />{' '}
-            {currency.type}
+            {isReserved ? (
+              <React.Fragment>
+                <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b> HIVE
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <USDDisplay
+                  value={rewardPrice}
+                  currencyDisplay="symbol"
+                  style={{ color: '#f97b38', fontWeight: 'bolder' }}
+                  roundTo={roundUpToThisIndex}
+                />{' '}
+                {currency.type}
+              </React.Fragment>
+            )}
           </div>
         )}
       </div>
@@ -193,6 +203,7 @@ ObjectCardView.propTypes = {
   path: PropTypes.string,
   hovered: PropTypes.bool,
   withRewards: PropTypes.bool,
+  isReserved: PropTypes.bool,
   rewardPrice: PropTypes.number,
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
@@ -207,6 +218,7 @@ ObjectCardView.defaultProps = {
   path: '',
   passedParent: {},
   withRewards: false,
+  isReserved: false,
   rewardPrice: 0,
   currency: defaultCurrency,
   hovered: false,
