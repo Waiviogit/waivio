@@ -7,11 +7,11 @@ import { isEmpty } from 'lodash';
 import getSlug from 'speakingurl';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
-import { login } from '../../../store/authStore/authActions';
+import { login } from '../../../../store/authStore/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
 import GuestSignUpFormContent from './GuestSignUpFormContent';
-import { getIsWaivio } from '../../../store/appStore/appSelectors';
-import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import { getIsWaivio } from '../../../../store/appStore/appSelectors';
+import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 
 import './GuestSignUpForm.less';
 

@@ -21,8 +21,8 @@ import {
   CAMPAIGN_STATUS,
   isDisabledStatus,
 } from '../../../common/constants/rewards';
-import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
-import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 
 import './CreateReward.less';
 

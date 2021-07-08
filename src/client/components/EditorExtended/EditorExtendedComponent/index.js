@@ -6,9 +6,9 @@ import {
   handleObjectSelect,
   setUpdatedEditorData,
   setUpdatedEditorExtendedData,
-} from '../../../store/editorStore/editorActions';
+} from '../../../../store/editorStore/editorActions';
 import EditorExtended from './EditorExtended';
-import { getEditorExtended } from '../../../store/editorStore/editorSelectors';
+import { getEditorExtended } from '../../../../store/editorStore/editorSelectors';
 
 const mapStateToProps = state => ({
   editorExtended: getEditorExtended(state),

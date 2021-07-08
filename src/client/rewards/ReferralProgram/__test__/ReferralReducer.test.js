@@ -1,7 +1,7 @@
-import ReferralReducer from '../../../store/referralStore/ReferralReducer';
+import ReferralReducer from '../../../../store/referralStore/ReferralReducer';
 // eslint-disable-next-line no-duplicate-imports
-import * as selector from '../../../store/referralStore/ReferralReducer';
-import * as actions from '../../../store/referralStore/ReferralActions';
+import * as selector from '../../../../store/referralStore/ReferralReducer';
+import * as actions from '../../../../store/referralStore/ReferralActions';
 import * as mock from '../__mock__/mockData';
 
 describe('ReferralReducer', () => {

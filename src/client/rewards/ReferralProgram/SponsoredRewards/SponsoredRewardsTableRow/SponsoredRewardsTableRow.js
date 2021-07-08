@@ -12,7 +12,7 @@ import {
   getSponsoredUserWeight,
 } from '../../ReferralHelper';
 import { getReport } from '../../../../../waivioApi/ApiClient';
-import { setDataForSingleReport } from '../../../../store/rewardsStore/rewardsActions';
+import { setDataForSingleReport } from '../../../../../store/rewardsStore/rewardsActions';
 import SponsoredRewardsTableRowView from './SponsoredRewardsTableRowView';
 
 import './SponsoredRewardsTableRow.less';

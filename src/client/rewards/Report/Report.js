@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Modal } from 'antd';
 import { connect } from 'react-redux';
-import { getCurrentCurrency } from '../../store/appStore/appSelectors';
+import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import ReportHeader from './ReportHeader/ReportHeader';
 import ReportFooter from './ReportFooter/ReportFooter';
 import ReportTableRewards from './ReportTable/ReportTableRewards/ReportTableRewards';

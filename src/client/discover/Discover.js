@@ -8,9 +8,9 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverContent from './DiscoverContent';
 import Affix from '../components/Utils/Affix';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import { resetSearchUsersForDiscoverPage } from '../store/searchStore/searchActions';
+import { resetSearchUsersForDiscoverPage } from '../../store/searchStore/searchActions';
 import { PATH_NAME_DISCOVER } from '../../common/constants/rewards';
-import { getHelmetIcon } from '../store/appStore/appSelectors';
+import { getHelmetIcon } from '../../store/appStore/appSelectors';
 
 import './Discover.less';
 

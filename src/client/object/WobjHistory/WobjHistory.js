@@ -17,13 +17,13 @@ import AppendCard from '../AppendCard/AppendCard';
 import Loading from '../../components/Icon/Loading';
 import { getObjectName, isPhotosAlbumExist } from '../../helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
-import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
-import { getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getPosts } from '../../store/postsStore/postsSelectors';
-import { getObject } from '../../store/wObjectStore/wObjectSelectors';
-import { getReadLanguages } from '../../store/settingsStore/settingsSelectors';
-import { getIsAppendLoading } from '../../store/appendStore/appendSelectors';
-import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
+import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getPosts } from '../../../store/postsStore/postsSelectors';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import { getReadLanguages } from '../../../store/settingsStore/settingsSelectors';
+import { getIsAppendLoading } from '../../../store/appendStore/appendSelectors';
+import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
 
 import './WobjHistory.less';
 

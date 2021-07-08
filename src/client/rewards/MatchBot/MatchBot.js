@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { Button, message, Modal, Slider, Switch, Tooltip } from 'antd';
-import { setMatchBotVotingPower } from '../../store/rewardsStore/rewardsActions';
+import { setMatchBotVotingPower } from '../../../store/rewardsStore/rewardsActions';
 import CreateRule from './CreateRule/CreateRule';
 import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import Error401 from '../../statics/Error401';
 import getMatchBotMessageData from './matchBotMessageData';
-import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 
 import './MatchBot.less';
 

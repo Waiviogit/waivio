@@ -15,18 +15,21 @@ import Notifications from '../Navigation/Notifications/Notifications';
 import Avatar from '../Avatar';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
-import { getUserMetadata } from '../../store/usersStore/usersActions';
+import { getUserMetadata } from '../../../store/usersStore/usersActions';
 import { PATH_NAME_ACTIVE } from '../../../common/constants/rewards';
-import { logout } from '../../store/authStore/authActions';
+import { logout } from '../../../store/authStore/authActions';
 import ModalSignIn from '../Navigation/ModlaSignIn/ModalSignIn';
 import LanguageSettings from '../Navigation/LanguageSettings';
-import { setCurrentPage } from '../../store/appStore/appActions';
-import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { setCurrentPage } from '../../../store/appStore/appActions';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
-} from '../../store/authStore/authSelectors';
-import { getIsLoadingNotifications, getNotifications } from '../../store/userStore/userSelectors';
+} from '../../../store/authStore/authSelectors';
+import {
+  getIsLoadingNotifications,
+  getNotifications,
+} from '../../../store/userStore/userSelectors';
 
 const HeaderButtons = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);

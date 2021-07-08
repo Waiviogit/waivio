@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
-import { saveSettings } from '../store/settingsStore/settingsActions';
-import { reload } from '../store/authStore/authActions';
+import { saveSettings } from '../../store/settingsStore/settingsActions';
+import { reload } from '../../store/authStore/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Action from '../components/Button/Action';
 import Loading from '../components/Icon/Loading';
@@ -16,7 +16,7 @@ import {
   getAuthenticatedUser,
   getIsReloading,
   isGuestUser,
-} from '../store/authStore/authSelectors';
+} from '../../store/authStore/authSelectors';
 import {
   getCurrency,
   getExitPageSetting,
@@ -29,9 +29,9 @@ import {
   getUpvoteSetting,
   getVotePercent,
   getVotingPower,
-} from '../store/settingsStore/settingsSelectors';
+} from '../../store/settingsStore/settingsSelectors';
 import { currencyTypes, defaultCurrency } from '../websites/constants/currencyTypes';
-import { getIsWaivio } from '../store/appStore/appSelectors';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './Settings.less';
 

@@ -17,15 +17,15 @@ import {
   addNoteInTicket,
   getMoreVipTickets,
   getVipTickets,
-} from '../../store/settingsStore/settingsActions';
-import { openTransfer } from '../../store/walletStore/walletActions';
+} from '../../../store/settingsStore/settingsActions';
+import { openTransfer } from '../../../store/walletStore/walletActions';
 import {
   getActiveTickets,
   getConsumedTickets,
   getShowMoreActiveTickets,
   getShowMoreConsumedTickets,
   getTicketsPrice,
-} from '../../store/settingsStore/settingsSelectors';
+} from '../../../store/settingsStore/settingsSelectors';
 
 import './VipTicketsSetting.less';
 

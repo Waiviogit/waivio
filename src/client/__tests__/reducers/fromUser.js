@@ -16,7 +16,7 @@ import {
   getPendingUpdate,
   getRecommendedObjects,
   getUserLocation,
-} from '../../store/userStore/userSelectors';
+} from '../../../store/userStore/userSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

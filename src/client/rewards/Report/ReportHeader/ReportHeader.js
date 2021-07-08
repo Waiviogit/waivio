@@ -6,7 +6,7 @@ import moment from 'moment';
 import { get, map, round } from 'lodash';
 
 import Avatar from '../../../components/Avatar';
-import { getSingleReportData } from '../../../store/rewardsStore/rewardsSelectors';
+import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
 
 import './ReportHeader.less';
 

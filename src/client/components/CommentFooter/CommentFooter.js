@@ -12,8 +12,8 @@ import {
 } from '../../vendor/steemitHelpers';
 import { getDownvotes } from '../../helpers/voteHelpers';
 import MuteModal from '../../widgets/MuteModal';
-import { muteAuthorComment } from '../../store/commentsStore/commentsActions';
-import { isGuestUser } from '../../store/authStore/authSelectors';
+import { muteAuthorComment } from '../../../store/commentsStore/commentsActions';
+import { isGuestUser } from '../../../store/authStore/authSelectors';
 
 import './CommentFooter.less';
 

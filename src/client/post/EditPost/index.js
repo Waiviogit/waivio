@@ -3,8 +3,8 @@ import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import EditPost from './EditPost';
 import requiresLogin from '../../auth/requiresLogin';
-import { isGuestUser } from '../../store/authStore/authSelectors';
-import { getSuitableLanguage } from '../../store/reducers';
+import { isGuestUser } from '../../../store/authStore/authSelectors';
+import { getSuitableLanguage } from '../../../store/reducers';
 import {
   getEditor,
   getDraftPosts,
@@ -13,9 +13,9 @@ import {
   getIsEditorLoading,
   getIsImageUploading,
   getFilteredObjectCards,
-} from '../../store/editorStore/editorSelectors';
-import { getBeneficiariesUsers } from '../../store/searchStore/searchSelectors';
-import { getIsWaivio } from '../../store/appStore/appSelectors';
+} from '../../../store/editorStore/editorSelectors';
+import { getBeneficiariesUsers } from '../../../store/searchStore/searchSelectors';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import {
   buildPost,
   saveDraft,
@@ -28,7 +28,7 @@ import {
   handleObjectSelect,
   setUpdatedEditorData,
   firstParseLinkedObjects,
-} from '../../store/editorStore/editorActions';
+} from '../../../store/editorStore/editorActions';
 
 const mapStateToProps = (state, props) => {
   const draftId = new URLSearchParams(props.location.search).get('draft');

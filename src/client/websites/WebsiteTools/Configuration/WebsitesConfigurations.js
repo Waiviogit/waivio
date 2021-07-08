@@ -16,18 +16,21 @@ import {
   getCoordinatesForMap,
   getWebConfiguration,
   saveWebConfiguration,
-} from '../../../store/websiteStore/websiteActions';
+} from '../../../../store/websiteStore/websiteActions';
 import Loading from '../../../components/Icon/Loading';
-import { getCoordinates } from '../../../store/userStore/userActions';
+import { getCoordinates } from '../../../../store/userStore/userActions';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
 import { getPropositions } from '../../../../waivioApi/ApiClient';
-import { getPropositionsForMap } from '../../../store/mapStore/mapActions';
+import { getPropositionsForMap } from '../../../../store/mapStore/mapActions';
 import MapControllers from '../../../widgets/MapControllers';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getUserLocation } from '../../../store/userStore/userSelectors';
-import { getObjectsMap } from '../../../store/mapStore/mapSelectors';
-import { getConfiguration, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getUserLocation } from '../../../../store/userStore/userSelectors';
+import { getObjectsMap } from '../../../../store/mapStore/mapSelectors';
+import {
+  getConfiguration,
+  getWebsiteLoading,
+} from '../../../../store/websiteStore/websiteSelectors';
 
 import './WebsitesConfigurations.less';
 

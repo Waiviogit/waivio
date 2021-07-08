@@ -5,7 +5,7 @@ import { map, filter, find, get, reduce, round } from 'lodash';
 import { useSelector } from 'react-redux';
 import ReportTableRewardsRow from '../ReportTableRewards/ReportTableRewardsRow';
 import ReportTableRewardsRowTotal from './ReportTableRewardsRowTotal';
-import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
+import { getSingleReportData } from '../../../../../store/rewardsStore/rewardsSelectors';
 
 import './ReportTableRewards.less';
 

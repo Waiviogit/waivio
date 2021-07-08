@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { isGuestUser } from '../../../store/authStore/authSelectors';
+import { isGuestUser } from '../../../../store/authStore/authSelectors';
 
 const SettingsItem = ({ toggleMenuCondition, condition, configItem }) => {
   const isGuest = useSelector(isGuestUser);

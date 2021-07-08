@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { sortListItemsBy } from '../wObjectHelper';
 import AddItemModal from './AddItemModal/AddItemModal';
-import { getSuitableLanguage } from '../../store/reducers';
+import { getSuitableLanguage } from '../../../store/reducers';
 import {
   getLastPermlinksFromHash,
   itemsList,
@@ -19,14 +19,14 @@ import {
   setLoadedNestedWobject,
   setListItems,
   setNestedWobject,
-} from '../../store/wObjectStore/wobjActions';
+} from '../../../store/wObjectStore/wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import {
   getLoadingFlag,
   getObject,
   getObjectLists,
   getWobjectNested,
-} from '../../store/wObjectStore/wObjectSelectors';
+} from '../../../store/wObjectStore/wObjectSelectors';
 
 import './CatalogWrap.less';
 

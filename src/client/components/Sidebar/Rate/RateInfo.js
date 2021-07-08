@@ -9,7 +9,7 @@ import { averageRate, rateCount } from './rateHelper';
 import { ratePercent } from '../../../../common/constants/listOfFields';
 import BTooltip from '../../BTooltip';
 import RateObjectModal from './RateObjectModal';
-import { getRatingFields } from '../../../store/wObjectStore/wObjectSelectors';
+import { getRatingFields } from '../../../../store/wObjectStore/wObjectSelectors';
 
 import './RateInfo.less';
 

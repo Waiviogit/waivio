@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { Button } from 'antd';
 import { map, isEmpty } from 'lodash';
-import { changeBlackAndWhiteLists } from '../../store/rewardsStore/rewardsActions';
+import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
 import { getSuccessAddMessage } from '../rewardsHelper';
 
 import './Blacklist.less';

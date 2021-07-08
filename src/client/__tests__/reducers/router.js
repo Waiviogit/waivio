@@ -1,4 +1,4 @@
-import { getCurrentLocation, getQueryString } from '../../store/reducers';
+import { getCurrentLocation, getQueryString } from '../../../store/reducers';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

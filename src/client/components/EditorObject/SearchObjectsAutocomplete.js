@@ -8,7 +8,7 @@ import {
   clearSearchObjectsResults,
   resetToInitialIsClearSearchObj,
   searchObjectsAutoCompete,
-} from '../../store/searchStore/searchActions';
+} from '../../../store/searchStore/searchActions';
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
 import { getObjectName } from '../../helpers/wObjectHelper';
@@ -16,7 +16,7 @@ import { pendingSearch } from '../../search/helpers';
 import {
   getIsStartSearchObject,
   getSearchObjectsResults,
-} from '../../store/searchStore/searchSelectors';
+} from '../../../store/searchStore/searchSelectors';
 
 import './SearchObjectsAutocomplete.less';
 

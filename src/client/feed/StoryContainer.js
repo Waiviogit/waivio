@@ -6,23 +6,23 @@ import {
   followingPostAuthor,
   pendingFollowingPostAuthor,
   votePost,
-} from '../store/postsStore/postActions';
-import { toggleBookmark } from '../store/bookmarksStore/bookmarksActions';
-import { editPost } from '../store/editorStore/editorActions';
-import { reblog } from '../store/reblogStore/reblogActions';
-import { unfollowUser, followUser } from '../store/usersStore/usersActions';
+} from '../../store/postsStore/postActions';
+import { toggleBookmark } from '../../store/bookmarksStore/bookmarksActions';
+import { editPost } from '../../store/editorStore/editorActions';
+import { reblog } from '../../store/reblogStore/reblogActions';
+import { unfollowUser, followUser } from '../../store/usersStore/usersActions';
 import { getDownvotes, getUpvotes } from '../helpers/voteHelpers';
-import { getRewardFund } from '../store/appStore/appSelectors';
-import { getAuthenticatedUser } from '../store/authStore/authSelectors';
-import { getIsEditorSaving } from '../store/editorStore/editorSelectors';
-import { getPendingLikes, getPosts } from '../store/postsStore/postsSelectors';
-import { getBookmarks, getPendingBookmarks } from '../store/bookmarksStore/bookmarksSelectors';
-import { getPendingReblogs, getRebloggedList } from '../store/reblogStore/reblogSelectors';
+import { getRewardFund } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { getIsEditorSaving } from '../../store/editorStore/editorSelectors';
+import { getPendingLikes, getPosts } from '../../store/postsStore/postsSelectors';
+import { getBookmarks, getPendingBookmarks } from '../../store/bookmarksStore/bookmarksSelectors';
+import { getPendingReblogs, getRebloggedList } from '../../store/reblogStore/reblogSelectors';
 import {
   getShowNSFWPosts,
   getVotePercent,
   getVotingPower,
-} from '../store/settingsStore/settingsSelectors';
+} from '../../store/settingsStore/settingsSelectors';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);

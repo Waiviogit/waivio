@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { getCryptoPriceHistory, setIsMobile } from '../../store/appStore/appActions';
+import { getCryptoPriceHistory, setIsMobile } from '../../../store/appStore/appActions';
 import CryptoChart from './CryptoChart';
 import { getCryptoDetails } from '../../helpers/cryptosHelper';
-import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
+import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 
 import './SidebarContentBlock.less';
 import './CryptoTrendingCharts.less';

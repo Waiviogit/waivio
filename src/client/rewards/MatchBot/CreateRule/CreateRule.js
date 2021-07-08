@@ -8,7 +8,10 @@ import { Button, DatePicker, Form, Input, message, Modal, Slider } from 'antd';
 import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../../Create-Edit/ReviewItem';
-import { deleteMatchBotRule, setMatchBotRules } from '../../../store/rewardsStore/rewardsActions';
+import {
+  deleteMatchBotRule,
+  setMatchBotRules,
+} from '../../../../store/rewardsStore/rewardsActions';
 import DeleteRuleModal from './DeleteRuleModal/DeleteRuleModal';
 import ConfirmModal from './ConfirmModal';
 

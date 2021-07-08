@@ -9,16 +9,16 @@ import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
 } from '../helpers/stateHelpers';
-import { reload } from '../store/authStore/authActions';
-import { getBookmarks } from '../store/feedStore/feedActions';
-import { showPostModal } from '../store/appStore/appActions';
+import { reload } from '../../store/authStore/authActions';
+import { getBookmarks } from '../../store/feedStore/feedActions';
+import { showPostModal } from '../../store/appStore/appActions';
 import requiresLogin from '../auth/requiresLogin';
 import PostModal from '../post/PostModalContainer';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import { getIsReloading } from '../store/authStore/authSelectors';
-import { getPosts } from '../store/postsStore/postsSelectors';
-import { getFeed } from '../store/feedStore/feedSelectors';
-import { getPendingBookmarks } from '../store/bookmarksStore/bookmarksSelectors';
+import { getIsReloading } from '../../store/authStore/authSelectors';
+import { getPosts } from '../../store/postsStore/postsSelectors';
+import { getFeed } from '../../store/feedStore/feedSelectors';
+import { getPendingBookmarks } from '../../store/bookmarksStore/bookmarksSelectors';
 
 @requiresLogin
 @injectIntl

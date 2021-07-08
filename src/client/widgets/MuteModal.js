@@ -3,9 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { muteAuthorComment } from '../store/commentsStore/commentsActions';
-import { muteUserBlog } from '../store/usersStore/usersActions';
-import { muteAuthorPost } from '../store/postsStore/postActions';
+import { muteAuthorComment } from '../../store/commentsStore/commentsActions';
+import { muteUserBlog } from '../../store/usersStore/usersActions';
+import { muteAuthorPost } from '../../store/postsStore/postActions';
 
 const MuteModal = props => {
   const handleMuteUser = () => {

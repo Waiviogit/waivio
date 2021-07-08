@@ -7,7 +7,7 @@ import {
   getUserReferralInfo,
   referralConfirmRules,
   referralRejectRules,
-} from '../../../store/referralStore/ReferralActions';
+} from '../../../../store/referralStore/ReferralActions';
 import { referralInstructionsContent } from '../ReferralTextHelper';
 import ReferralsInstructionsView from './ReferralInstructionsView';
 import { getCopyTextButtonResult, widget } from '../ReferralHelper';
@@ -15,13 +15,13 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
-} from '../../../store/authStore/authSelectors';
+} from '../../../../store/authStore/authSelectors';
 import {
   getIsStartChangeRules,
   getIsStartGetReferralInfo,
   getIsUserInWaivioBlackList,
   getReferralStatus,
-} from '../../../store/referralStore/referralSelectors';
+} from '../../../../store/referralStore/referralSelectors';
 
 import './ReferralsInstructions.less';
 

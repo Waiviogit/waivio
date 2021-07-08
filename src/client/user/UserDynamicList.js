@@ -9,9 +9,9 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
-import { changeCounterFollow, followUser, unfollowUser } from '../store/usersStore/usersActions';
+import { changeCounterFollow, followUser, unfollowUser } from '../../store/usersStore/usersActions';
 import { SORT_OPTIONS } from '../../common/constants/waivioFiltres';
-import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 
 import './UserDynamicList.less';
 

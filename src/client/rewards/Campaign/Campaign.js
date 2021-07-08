@@ -6,9 +6,11 @@ import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getCurrentCurrency } from '../../store/appStore/appSelectors';
+import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
+import { roundUpToThisIndex } from '../../../common/constants/waivio';
 
 import './Campaign.less';
+import USDDisplay from '../../components/Utils/USDDisplay';
 
 const Campaign = ({
   proposition,
@@ -25,7 +27,7 @@ const Campaign = ({
   const requiredObject = hasCampaigns ? proposition : get(proposition, ['required_object'], {});
   const minReward = get(campaign, ['min_reward'], 0);
   const maxReward = get(campaign, ['max_reward'], 0);
-  const rewardMax = maxReward !== minReward ? maxReward : '';
+  const rewardMax = maxReward !== minReward ? maxReward : 0;
   let rewardPrice = minReward || rewardPricePassed || 0;
 
   if (campaign.reward) rewardPrice = get(campaign, 'reward', 0);
@@ -54,7 +56,12 @@ const Campaign = ({
               </span>
               <span>
                 <span className="fw6 ml1">
-                  {round(rewardPrice * currencyInfo.rate, 3)} {currencyInfo.type}
+                  <USDDisplay
+                    value={rewardPrice}
+                    currencyDisplay={'none'}
+                    roundTo={roundUpToThisIndex}
+                  />{' '}
+                  {currencyInfo.type}
                 </span>
                 <Icon type="right" />
               </span>
@@ -69,7 +76,12 @@ const Campaign = ({
               </span>
               <span>
                 <span className="fw6 ml1">
-                  {round((rewardMax || rewardMaxPassed) * currencyInfo.rate, 3)} {currencyInfo.type}
+                  <USDDisplay
+                    value={rewardMax || rewardMaxPassed}
+                    currencyDisplay={'none'}
+                    roundTo={roundUpToThisIndex}
+                  />{' '}
+                  {currencyInfo.type}
                 </span>
                 <Icon type="right" />
               </span>

@@ -7,10 +7,10 @@ import { injectIntl } from 'react-intl';
 import { message } from 'antd';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
-import { assignProposition, declineProposition } from '../../../store/userStore/userActions';
+import { assignProposition, declineProposition } from '../../../../store/userStore/userActions';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
-import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors';
+import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 
 const PropositionListContainer = ({
   wobject,

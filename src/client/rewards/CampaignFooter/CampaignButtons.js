@@ -30,7 +30,7 @@ import {
 } from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
-import { rejectReview, changeReward, reinstateReward } from '../../store/userStore/userActions';
+import { rejectReview, changeReward, reinstateReward } from '../../../store/userStore/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
 import {
   changeBlackAndWhiteLists,
@@ -38,7 +38,7 @@ import {
   getBlacklist,
   getFraudSuspicion,
   setToggleFlag,
-} from '../../store/rewardsStore/rewardsActions';
+} from '../../../store/rewardsStore/rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
 import '../../components/StoryFooter/Buttons.less';

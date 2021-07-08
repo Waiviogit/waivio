@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { validateDate } from '../WalletHelper';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
-import { getCreationAccDate } from '../../store/advancedReports/advancedSelectors';
+import { getCreationAccDate } from '../../../store/advancedReports/advancedSelectors';
 import { currencyTypes } from '../../websites/constants/currencyTypes';
 
 const TableFilter = ({

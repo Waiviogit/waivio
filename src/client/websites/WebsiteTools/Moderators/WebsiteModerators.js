@@ -11,12 +11,12 @@ import {
   addWebsiteModerators,
   deleteWebModerators,
   getWebModerators,
-} from '../../../store/websiteStore/websiteActions';
+} from '../../../../store/websiteStore/websiteActions';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import Avatar from '../../../components/Avatar';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import WeightTag from '../../../components/WeightTag';
-import { getModerators, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
+import { getModerators, getWebsiteLoading } from '../../../../store/websiteStore/websiteSelectors';
 
 import './WebsiteModerators.less';
 

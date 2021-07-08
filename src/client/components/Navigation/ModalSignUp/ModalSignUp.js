@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import { Modal, Form } from 'antd';
 import { batch, useDispatch } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { busyLogin, getAuthGuestBalance, login } from '../../../store/authStore/authActions';
+import { busyLogin, getAuthGuestBalance, login } from '../../../../store/authStore/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import {
   getFollowing,
   getFollowingObjects,
   getNotifications,
-} from '../../../store/userStore/userActions';
-import { getRate, getRewardFund } from '../../../store/appStore/appActions';
-import { getRebloggedList } from '../../../store/reblogStore/reblogActions';
+} from '../../../../store/userStore/userActions';
+import { getRate, getRewardFund } from '../../../../store/appStore/appActions';
+import { getRebloggedList } from '../../../../store/reblogStore/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import Spinner from '../../Icon/Loading';

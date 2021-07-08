@@ -1,7 +1,7 @@
 import {
   getObjectTypesList,
   getObjectTypesLoading,
-} from '../../store/objectTypesStore/objectTypesSelectors';
+} from '../../../store/objectTypesStore/objectTypesSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

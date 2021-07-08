@@ -19,7 +19,7 @@ import {
   getUsersAccountHistoryLoading,
   getUsersEstAccountsValues,
   getUsersTransactions,
-} from '../../store/walletStore/walletSelectors';
+} from '../../../store/walletStore/walletSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

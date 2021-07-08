@@ -5,12 +5,12 @@ import {
   getFollowingObjectsUpdatesMore,
   getFollowingUpdates,
   getFollowingUsersUpdatesMore,
-} from '../../../store/userStore/userActions';
+} from '../../../../store/userStore/userActions';
 import SidebarMenu from '../SidebarMenu/SidebarMenu';
 import Loading from '../../Icon/Loading';
 import { getObjectName } from '../../../helpers/wObjectHelper';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import * as userSelectors from '../../../store/userStore/userSelectors';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import * as userSelectors from '../../../../store/userStore/userSelectors';
 
 const itemsCount = 5;
 const usersSection = 'People';

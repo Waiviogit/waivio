@@ -5,19 +5,19 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { isEmpty, uniq, get, filter } from 'lodash';
 import PropositionContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import Feed from '../../feed/Feed';
-import { getSuitableLanguage } from '../../store/reducers';
+import { getSuitableLanguage } from '../../../store/reducers';
 import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../../helpers/stateHelpers';
-import { getObjectPosts, getMoreObjectPosts } from '../../store/feedStore/feedActions';
-import { showPostModal } from '../../store/appStore/appActions';
+import { getObjectPosts, getMoreObjectPosts } from '../../../store/feedStore/feedActions';
+import { showPostModal } from '../../../store/appStore/appActions';
 import PostModal from '../../post/PostModalContainer';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
-import { getFeed } from '../../store/feedStore/feedSelectors';
-import { getReadLanguages } from '../../store/settingsStore/settingsSelectors';
+import { getFeed } from '../../../store/feedStore/feedSelectors';
+import { getReadLanguages } from '../../../store/settingsStore/settingsSelectors';
 
 import './ObjectFeed.less';
 

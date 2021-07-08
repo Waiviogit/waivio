@@ -35,10 +35,10 @@ import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import ObjectInfoExperts from './ObjectInfoExperts';
 import LinkButton from '../../components/LinkButton/LinkButton';
-import { getIsWaivio } from '../../store/appStore/appSelectors';
-import { getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getObjectAlbums, getRelatedPhotos } from '../../store/galleryStore/gallerySelectors';
-import { getRelatedAlbum } from '../../store/galleryStore/galleryActions';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
+import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
 
 import './ObjectInfo.less';
 

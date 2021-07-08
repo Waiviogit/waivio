@@ -10,8 +10,8 @@ import DEFAULTS from '../../object/const/defaultValues';
 import { getObjectName, getObjectAvatar, hasType } from '../../helpers/wObjectHelper';
 import { getProxyImageURL } from '../../helpers/image';
 import OverlayRewardsButton from './OverlayRewardsButton';
-import { getScreenSize } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getScreenSize } from '../../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './ObjectOverlayCard.less';
 
