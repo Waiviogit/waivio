@@ -12,10 +12,10 @@ import {
   getSocialInfoPost,
   handleHidePost,
   muteAuthorPost,
-} from '../../store/postsStore/postActions';
+} from '../../../store/postsStore/postActions';
 import withAuthActions from '../../auth/withAuthActions';
 import MuteModal from '../../widgets/MuteModal';
-import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 
 import './StoryFooter.less';
 
@@ -110,10 +110,7 @@ class StoryFooter extends React.Component {
   }
 
   handleLikeClick = () => {
-    if (
-      (this.props.sliderMode || isPostCashout(this.props.post)) &&
-      !this.props.postState.isLiked
-    ) {
+    if (this.props.sliderMode && !this.props.postState.isLiked) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({
           sliderVisible: !prevState.sliderVisible,
@@ -185,10 +182,9 @@ class StoryFooter extends React.Component {
 
   handleSliderChange = async value => {
     const { user, isGuest, post } = this.props;
-    const voteWorth =
-      isGuest || isPostCashout(post)
-        ? 0
-        : await calculateVotePowerForSlider(user.name, value, post.author, post.permlink);
+    const voteWorth = isGuest
+      ? 0
+      : await calculateVotePowerForSlider(user.name, value, post.author, post.permlink);
 
     this.setState({ sliderValue: value, voteWorth });
   };
@@ -215,7 +211,6 @@ class StoryFooter extends React.Component {
       getSocialInfoPostAction,
       userComments,
     } = this.props;
-    const isCashout = isPostCashout(post);
 
     return (
       <div className="StoryFooter">
@@ -225,7 +220,6 @@ class StoryFooter extends React.Component {
             <Confirmation
               onConfirm={this.handleClickConfirm}
               onCancel={this.handleSliderCancel}
-              isCashout={isCashout}
               type={sliderType}
             />
           )}
@@ -256,7 +250,6 @@ class StoryFooter extends React.Component {
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
             onChange={this.handleSliderChange}
-            isPostCashout={isCashout}
             post={post}
             type={sliderType}
           />

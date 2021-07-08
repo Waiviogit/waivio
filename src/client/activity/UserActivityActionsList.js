@@ -8,12 +8,15 @@ import {
   setInitialCurrentDisplayedActions,
   addMoreActionsToCurrentDisplayedActions,
   loadMoreCurrentUsersActions,
-} from '../store/walletStore/walletActions';
+} from '../../store/walletStore/walletActions';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import WalletTransaction from '../wallet/WalletTransaction';
 import UserAction from './UserAction';
-import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
-import { getUser } from '../store/usersStore/usersSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
 import {
   getAccountHistoryFilter,
   getCurrentDisplayedActions,
@@ -23,7 +26,7 @@ import {
   getTotalVestingShares,
   getUserHasMoreAccountHistory,
   getUsersAccountHistory,
-} from '../store/walletStore/walletSelectors';
+} from '../../store/walletStore/walletSelectors';
 
 @withRouter
 @connect(

@@ -4,16 +4,16 @@ import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Modal } from 'antd';
 import { round } from 'lodash';
-import { closePowerUpOrDown } from '../store/walletStore/walletActions';
+import { closePowerUpOrDown } from '../../store/walletStore/walletActions';
 import formatter from '../helpers/steemitFormatter';
 import { createQuery } from '../helpers/apiHelpers';
-import { getAuthenticatedUser } from '../store/authStore/authSelectors';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import {
   getIsPowerDown,
   getIsPowerUpOrDownVisible,
   getTotalVestingFundSteem,
   getTotalVestingShares,
-} from '../store/walletStore/walletSelectors';
+} from '../../store/walletStore/walletSelectors';
 
 import './Transfer/Transfer.less';
 

@@ -4,8 +4,11 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Loading from '../components/Icon/Loading';
-import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
-import { getUser } from '../store/usersStore/usersSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
 import {
   getAccountHistoryFilter,
   getCurrentDisplayedActions,
@@ -13,7 +16,7 @@ import {
   getLoadingMoreUsersAccountHistory,
   getUserHasMoreAccountHistory,
   getUsersAccountHistory,
-} from '../store/walletStore/walletSelectors';
+} from '../../store/walletStore/walletSelectors';
 
 @withRouter
 @connect((state, ownProps) => ({

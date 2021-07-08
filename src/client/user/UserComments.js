@@ -9,12 +9,12 @@ import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
 } from '../helpers/stateHelpers';
-import { showPostModal } from '../store/appStore/appActions';
-import { getUserComments, getMoreUserComments } from '../store/feedStore/feedActions';
+import { showPostModal } from '../../store/appStore/appActions';
+import { getUserComments, getMoreUserComments } from '../../store/feedStore/feedActions';
 import EmptyMutedUserProfile from '../statics/MutedContent';
-import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
-import { getFeed } from '../store/feedStore/feedSelectors';
-import { getUser } from '../store/usersStore/usersSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
+import { getFeed } from '../../store/feedStore/feedSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
 
 @connect(
   (state, ownProps) => ({

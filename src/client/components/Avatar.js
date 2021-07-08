@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
-import { getAuthenticatedUser } from '../store/authStore/authSelectors';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 
 import './Avatar.less';
 

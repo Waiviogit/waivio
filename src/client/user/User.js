@@ -5,8 +5,8 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import { openTransfer } from '../store/walletStore/walletActions';
-import { getUserAccount } from '../store/usersStore/usersActions';
+import { openTransfer } from '../../store/walletStore/walletActions';
+import { getUserAccount } from '../../store/usersStore/usersActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
 import UserHero from './UserHero';
@@ -19,19 +19,22 @@ import { getMetadata } from '../helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import DEFAULTS from '../object/const/defaultValues';
 import Loading from '../components/Icon/Loading';
-import { getHelmetIcon, getRate, getRewardFund } from '../store/appStore/appSelectors';
+import { getHelmetIcon, getRate, getRewardFund } from '../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
-} from '../store/authStore/authSelectors';
+} from '../../store/authStore/authSelectors';
 import {
   getAllUsers,
   getIsUserFailed,
   getIsUserLoaded,
   getUser,
-} from '../store/usersStore/usersSelectors';
-import { getIsOpenWalletTable, getUsersAccountHistory } from '../store/walletStore/walletSelectors';
+} from '../../store/usersStore/usersSelectors';
+import {
+  getIsOpenWalletTable,
+  getUsersAccountHistory,
+} from '../../store/walletStore/walletSelectors';
 
 @connect(
   (state, ownProps) => ({

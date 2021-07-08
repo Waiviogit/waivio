@@ -9,7 +9,7 @@ import {
   getObjectTypeSorting,
   getObjectTypeState,
   getTypeName,
-} from '../../store/objectTypeStore/objectTypeSelectors';
+} from '../../../store/objectTypeStore/objectTypeSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

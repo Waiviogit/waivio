@@ -5,9 +5,9 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import User from './User';
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
-import { getRandomExperts } from '../../store/usersStore/usersActions';
+import { getRandomExperts } from '../../../store/usersStore/usersActions';
 import { PATH_NAME_DISCOVER } from '../../../common/constants/rewards';
-import * as usersSelectors from '../../store/usersStore/usersSelectors';
+import * as usersSelectors from '../../../store/usersStore/usersSelectors';
 
 import './InterestingPeople.less';
 import './SidebarContentBlock.less';

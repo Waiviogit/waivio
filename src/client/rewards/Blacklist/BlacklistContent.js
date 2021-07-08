@@ -11,7 +11,7 @@ import ReviewItem from '../Create-Edit/ReviewItem';
 import { getContent, getSuccessDeleteMessage } from '../rewardsHelper';
 import BlacklistFooter from './BlacklistFooter';
 import BlacklistUser from './BlacklistUser';
-import { changeBlackAndWhiteLists, getBlacklist } from '../../store/rewardsStore/rewardsActions';
+import { changeBlackAndWhiteLists, getBlacklist } from '../../../store/rewardsStore/rewardsActions';
 
 import './Blacklist.less';
 

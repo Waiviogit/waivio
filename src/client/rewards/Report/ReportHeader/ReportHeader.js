@@ -6,18 +6,20 @@ import moment from 'moment';
 import { get, map, round } from 'lodash';
 
 import Avatar from '../../../components/Avatar';
-import { getSingleReportData } from '../../../store/rewardsStore/rewardsSelectors';
+import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
 
 import './ReportHeader.less';
 
-const ReportHeader = ({ intl }) => {
+const ReportHeader = ({ intl, currencyInfo }) => {
   const singleReportData = useSelector(getSingleReportData);
   const createCampaignDate = moment(singleReportData.createCampaignDate).format('MMMM D, YYYY');
   const reservationDate = moment(singleReportData.reservationDate).format('MMMM D, YYYY');
   const reviewDate = moment(singleReportData.reviewDate).format('MMMM D, YYYY');
   const title = singleReportData.title;
   const rewardHive = singleReportData.rewardHive ? round(singleReportData.rewardHive, 3) : 0;
-  const rewardUsd = singleReportData.rewardUsd ? round(singleReportData.rewardUsd, 2) : 'N/A';
+  const rewardUsd = singleReportData.rewardUsd
+    ? round(singleReportData.rewardUsd * currencyInfo.rate, 2)
+    : 'N/A';
   const userAlias = singleReportData.user.alias;
   const userName = singleReportData.user.name;
   const sponsorAlias = singleReportData.sponsor.alias;
@@ -50,7 +52,9 @@ const ReportHeader = ({ intl }) => {
           <React.Fragment>
             <span className="ReportHeader__data-colored">
               <span className="hive">{` ${rewardHive} HIVE `}</span>
-              <span className="usd">{` (${rewardUsd} USD*) `}</span>
+              <span className="usd">
+                ({rewardUsd} {currencyInfo.type}*)
+              </span>
             </span>
           </React.Fragment>
         </div>
@@ -160,6 +164,10 @@ const ReportHeader = ({ intl }) => {
 
 ReportHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
+  currencyInfo: PropTypes.shape({
+    type: PropTypes.string,
+    rate: PropTypes.number,
+  }).isRequired,
 };
 
 export default injectIntl(ReportHeader);

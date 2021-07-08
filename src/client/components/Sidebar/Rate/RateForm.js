@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Form, message, Rate } from 'antd';
-import { rateObject } from '../../../store/wObjectStore/wobjActions';
+import { rateObject } from '../../../../store/wObjectStore/wobjActions';
 import { ratePercent, ratingFields } from '../../../../common/constants/listOfFields';
 import StarRating from './StarRating';
 

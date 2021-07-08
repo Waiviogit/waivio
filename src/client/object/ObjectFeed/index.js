@@ -8,8 +8,8 @@ import ObjectFeed from './ObjectFeed';
 import IconButton from '../../components/IconButton';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import Loading from '../../components/Icon/Loading';
-import { getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getObjectFetchingState } from '../../store/wObjectStore/wObjectSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getObjectFetchingState } from '../../../store/wObjectStore/wObjectSelectors';
 
 const propTypes = {
   history: PropTypes.shape().isRequired,

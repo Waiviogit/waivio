@@ -8,13 +8,13 @@ import {
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../helpers/stateHelpers';
-import { showPostModal } from '../store/appStore/appActions';
-import { getFeedContent, getMoreFeedContent } from '../store/feedStore/feedActions';
+import { showPostModal } from '../../store/appStore/appActions';
+import { getFeedContent, getMoreFeedContent } from '../../store/feedStore/feedActions';
 import PostModal from '../post/PostModalContainer';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
-import { getAuthenticatedUser, getIsAuthenticated } from '../store/authStore/authSelectors';
-import { getFeed } from '../store/feedStore/feedSelectors';
+import { getAuthenticatedUser, getIsAuthenticated } from '../../store/authStore/authSelectors';
+import { getFeed } from '../../store/feedStore/feedSelectors';
 
 @connect(
   state => ({

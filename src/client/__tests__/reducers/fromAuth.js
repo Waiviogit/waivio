@@ -8,7 +8,7 @@ import {
   getIsLoaded,
   getIsReloading,
   isGuestUser,
-} from '../../store/authStore/authSelectors';
+} from '../../../store/authStore/authSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

@@ -1,4 +1,4 @@
-import { getPendingReblogs, getRebloggedList } from '../../store/reblogStore/reblogSelectors';
+import { getPendingReblogs, getRebloggedList } from '../../../store/reblogStore/reblogSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

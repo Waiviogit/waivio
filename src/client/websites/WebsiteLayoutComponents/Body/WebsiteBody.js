@@ -9,14 +9,14 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Map } from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
-import { getCoordinates } from '../../../store/userStore/userActions';
+import { getCoordinates } from '../../../../store/userStore/userActions';
 import {
   setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
-} from '../../../store/searchStore/searchActions';
+} from '../../../../store/searchStore/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import mapProvider from '../../../helpers/mapProvider';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
@@ -31,11 +31,11 @@ import {
   getCurrentAppSettings,
   getReservedCounter,
   putUserCoordinates,
-} from '../../../store/appStore/appActions';
+} from '../../../../store/appStore/appActions';
 import {
   getWebsiteObjWithCoordinates,
   setShowReload,
-} from '../../../store/websiteStore/websiteActions';
+} from '../../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates } from '../../helper';
 import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
 import {
@@ -43,20 +43,20 @@ import {
   getHostAddress,
   getReserveCounter,
   getScreenSize,
-} from '../../../store/appStore/appSelectors';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
-import { getUserLocation } from '../../../store/userStore/userSelectors';
+} from '../../../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
+import { getUserLocation } from '../../../../store/userStore/userSelectors';
 import {
   getSearchFiltersTagCategory,
   getShowSearchResult,
   getWebsiteMap,
   getWebsiteSearchString,
   getWebsiteSearchType,
-} from '../../../store/searchStore/searchSelectors';
+} from '../../../../store/searchStore/searchSelectors';
 import {
   getShowReloadButton,
   getWobjectsPoint,
-} from '../../../store/websiteStore/websiteSelectors';
+} from '../../../../store/websiteStore/websiteSelectors';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 
 import './WebsiteBody.less';
@@ -296,7 +296,6 @@ const WebsiteBody = props => {
         <div
           className="WebsiteBody__overlay-wrap"
           role="presentation"
-          data-anchor={wobject.author_permlink}
           onClick={() => localStorage.setItem('query', props.query)}
         >
           <ObjectOverlayCard wObject={wobject} showParent={props.searchType !== 'restaurant'} />
@@ -447,7 +446,7 @@ const WebsiteBody = props => {
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
               onClick={({ event }) => {
-                if (!get(event, 'target.dataset.anchor')) {
+                if (event.target.classList.value === 'pigeon-overlays') {
                   setInfoboxData(null);
                   props.query.delete('center');
                   props.query.delete('zoom');

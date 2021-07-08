@@ -9,23 +9,23 @@ import {
   followUser,
   getTopExperts as getTopExpertsApi,
   unfollowUser,
-} from '../store/usersStore/usersActions';
+} from '../../store/usersStore/usersActions';
 import Loading from '../components/Icon/Loading';
-import { getObjectTypes } from '../store/objectTypesStore/objectTypesActions';
+import { getObjectTypes } from '../../store/objectTypesStore/objectTypesActions';
 import {
   followSearchUser,
   resetSearchUsersForDiscoverPage,
   searchUsersForDiscoverPage,
   unfollowSearchUser,
-} from '../store/searchStore/searchActions';
+} from '../../store/searchStore/searchActions';
 import withAuthActions from '../auth/withAuthActions';
-import { getObjectTypesList } from '../store/objectTypesStore/objectTypesSelectors';
+import { getObjectTypesList } from '../../store/objectTypesStore/objectTypesSelectors';
 import {
   getTopExperts,
   getTopExpertsHasMore,
   getTopExpertsLoading,
-} from '../store/usersStore/usersSelectors';
-import { getSearchUsersResultsForDiscoverPage } from '../store/searchStore/searchSelectors';
+} from '../../store/usersStore/usersSelectors';
+import { getSearchUsersResultsForDiscoverPage } from '../../store/searchStore/searchSelectors';
 
 const displayLimit = 20;
 

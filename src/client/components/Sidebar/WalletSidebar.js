@@ -8,15 +8,15 @@ import {
   openTransfer,
   openPowerUpOrDown,
   openWithdraw,
-} from '../../store/walletStore/walletActions';
+} from '../../../store/walletStore/walletActions';
 import { HIVE, HBD } from '../../../common/constants/cryptos';
 import Action from '../Button/Action';
 import ClaimRewardsBlock from '../../wallet/ClaimRewardsBlock';
 import CryptoTrendingCharts from './CryptoTrendingCharts';
-import { openLinkHiveAccountModal } from '../../store/settingsStore/settingsActions';
-import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';
-import { getHiveBeneficiaryAccount } from '../../store/settingsStore/settingsSelectors';
+import { openLinkHiveAccountModal } from '../../../store/settingsStore/settingsActions';
+import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
+import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
+import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
 
 import './WalletSidebar.less';
 

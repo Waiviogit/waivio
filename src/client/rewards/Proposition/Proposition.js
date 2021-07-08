@@ -16,13 +16,14 @@ import {
   HISTORY,
   MESSAGES,
   FRAUD_DETECTION,
+  IS_RESERVED,
 } from '../../../common/constants/rewards';
 import {
   rejectReservationCampaign,
   reserveActivatedCampaign,
   getCurrentHivePrice,
 } from '../../../waivioApi/ApiClient';
-import { removeToggleFlag } from '../../store/rewardsStore/rewardsActions';
+import { removeToggleFlag } from '../../../store/rewardsStore/rewardsActions';
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
@@ -32,11 +33,12 @@ import {
   removeSessionData,
   setSessionData,
 } from '../rewardsHelper';
-import { getAuthenticatedUser, getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getCommentContent } from '../../store/commentsStore/commentsSelectors';
-import { getIsOpenWriteReviewModal } from '../../store/rewardsStore/rewardsSelectors';
+import { getAuthenticatedUser, getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getCommentContent } from '../../../store/commentsStore/commentsSelectors';
+import { getIsOpenWriteReviewModal } from '../../../store/rewardsStore/rewardsSelectors';
 
 import './Proposition.less';
+import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 
 const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');
@@ -46,7 +48,6 @@ const Proposition = props => {
     'Proposition--hovered': props.hovered,
   });
   const searchParams = new URLSearchParams(props.location.search);
-
   const isWidget = searchParams.get('display');
   const isReservedLink = searchParams.get('toReserved');
   const sessionCurrentProposjId = sessionStorage.getItem('currentProposId');
@@ -234,7 +235,13 @@ const Proposition = props => {
         />
       </div>
       <div className="Proposition__card">
-        <ObjectCardView passedParent={requiredObject} wObject={proposedWobj} />
+        <ObjectCardView
+          passedParent={requiredObject}
+          wObject={proposedWobj}
+          withRewards
+          rewardPrice={props.proposition.reward}
+          isReserved={some([HISTORY, IS_RESERVED], item => includes(props.match.url, item))}
+        />
       </div>
       <div
         className={classNames('Proposition__footer', {
@@ -269,9 +276,15 @@ const Proposition = props => {
                   disabled={props.loading || props.proposition.isReservedSiblingObj}
                   onClick={handleReserveOnClick}
                 >
+                  <b>
+                    {props.intl.formatMessage({
+                      id: 'reserve',
+                      defaultMessage: 'Reserve',
+                    })}
+                  </b>{' '}
                   {props.intl.formatMessage({
-                    id: 'reserve',
-                    defaultMessage: `Reserve`,
+                    id: 'your_reward',
+                    defaultMessage: 'Your Reward',
                   })}
                 </Button>
                 <div className="Proposition__footer-button-days">
@@ -323,6 +336,7 @@ const Proposition = props => {
 Proposition.propTypes = {
   proposition: PropTypes.shape().isRequired,
   wobj: PropTypes.shape().isRequired,
+  currencyInfo: PropTypes.shape().isRequired,
   assignProposition: PropTypes.func,
   discardProposition: PropTypes.func,
   removeToggleFlag: PropTypes.func,
@@ -365,6 +379,7 @@ export default withRouter(
           : {},
       isAuth: getIsAuthenticated(state),
       isOpenWriteReviewModal: getIsOpenWriteReviewModal(state),
+      currencyInfo: getCurrentCurrency(state),
     }),
     {
       removeToggleFlag,

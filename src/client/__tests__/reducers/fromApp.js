@@ -11,7 +11,7 @@ import {
   getShowPostModal,
   getTranslations,
   getUsedLocale,
-} from '../../store/appStore/appSelectors';
+} from '../../../store/appStore/appSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

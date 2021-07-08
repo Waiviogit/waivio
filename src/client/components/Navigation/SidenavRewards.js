@@ -5,19 +5,19 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { MESSAGES, HISTORY, PATH_NAME_HISTORY } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
-import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
-} from '../../store/authStore/authSelectors';
-import { getAutoCompleteSearchResults } from '../../store/searchStore/searchSelectors';
+} from '../../../store/authStore/authSelectors';
+import { getAutoCompleteSearchResults } from '../../../store/searchStore/searchSelectors';
 import {
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
   getExpiredPayment,
   getHasReceivables,
-} from '../../store/rewardsStore/rewardsSelectors';
+} from '../../../store/rewardsStore/rewardsSelectors';
 
 import './Sidenav.less';
 

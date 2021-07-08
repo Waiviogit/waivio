@@ -12,8 +12,8 @@ import {
   setSearchInBox,
   setShowSearchResult,
   setWebsiteSearchString,
-} from '../../store/searchStore/searchActions';
-import { resetWebsiteObjectsCoordinates } from '../../store/websiteStore/websiteActions';
+} from '../../../store/searchStore/searchActions';
+import { resetWebsiteObjectsCoordinates } from '../../../store/websiteStore/websiteActions';
 import {
   getIsStartSearchAutoComplete,
   getSearchFiltersTagCategory,
@@ -23,7 +23,7 @@ import {
   getWebsiteSearchString,
   getWebsiteSearchType,
   searchObjectTypesResults,
-} from '../../store/searchStore/searchSelectors';
+} from '../../../store/searchStore/searchSelectors';
 
 import './WebsiteSearch.less';
 

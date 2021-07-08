@@ -11,12 +11,12 @@ import {
   openWalletTable,
   closeWalletTable,
   getGlobalProperties,
-} from '../../store/walletStore/walletActions';
+} from '../../../store/walletStore/walletActions';
 import TableFilter from './TableFilter';
 import {
   getTotalVestingFundSteem,
   getTotalVestingShares,
-} from '../../store/walletStore/walletSelectors';
+} from '../../../store/walletStore/walletSelectors';
 import {
   getUserTableTransactions,
   getMoreTableUserTransactionHistory,
@@ -25,7 +25,7 @@ import {
   resetReportsData,
   calculateTotalChanges,
   excludeTransfer,
-} from '../../store/advancedReports/advancedActions';
+} from '../../../store/advancedReports/advancedActions';
 import compareTransferBody from './common/helpers';
 import {
   getIsLoadingAllData,
@@ -35,11 +35,11 @@ import {
   getTransfersDeposits,
   getTransfersLoading,
   getTransfersWithdrawals,
-} from '../../store/advancedReports/advancedSelectors';
+} from '../../../store/advancedReports/advancedSelectors';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configReportsWebsitesTableHeader } from './common/tableConfig';
 import Loading from '../../components/Icon/Loading';
-import { getCurrentCurrency } from '../../store/appStore/appSelectors';
+import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 
 import './WalletTable.less';
 

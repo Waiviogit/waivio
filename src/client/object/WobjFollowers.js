@@ -5,8 +5,8 @@ import { withRouter } from 'react-router';
 
 import { getWobjectFollowers } from '../../waivioApi/ApiClient';
 import UserDynamicList from '../user/UserDynamicList';
-import { changeSorting } from '../store/authStore/authActions';
-import { getAuthorizationUserFollowSort } from '../store/authStore/authSelectors';
+import { changeSorting } from '../../store/authStore/authActions';
+import { getAuthorizationUserFollowSort } from '../../store/authStore/authSelectors';
 
 @withRouter
 @connect(

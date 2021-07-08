@@ -7,7 +7,7 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   getIsAuthFetching,
-} from '../store/authStore/authSelectors';
+} from '../../store/authStore/authSelectors';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';

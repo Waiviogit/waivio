@@ -7,9 +7,9 @@ import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
 import { calculateVotePower } from '../helpers/user';
 import USDDisplay from '../components/Utils/USDDisplay';
-import { getRate, getRewardFund } from '../store/appStore/appSelectors';
-import { getAuthenticatedUser } from '../store/authStore/authSelectors';
-import { getVotePercent, getVotingPower } from '../store/settingsStore/settingsSelectors';
+import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
 
 import './LikeSection.less';
 

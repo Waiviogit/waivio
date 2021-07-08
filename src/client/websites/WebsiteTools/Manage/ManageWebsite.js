@@ -12,16 +12,16 @@ import {
   deleteWebsite,
   getManageInfo,
   suspendWebsite,
-} from '../../../store/websiteStore/websiteActions';
+} from '../../../../store/websiteStore/websiteActions';
 import {
   configBalanceTableHeader,
   configUsersWebsitesTableHeader,
 } from '../../constants/tableConfig';
 import Loading from '../../../components/Icon/Loading';
-import { openTransfer } from '../../../store/walletStore/walletActions';
+import { openTransfer } from '../../../../store/walletStore/walletActions';
 import Transfer from '../../../wallet/Transfer/Transfer';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getManage, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getManage, getWebsiteLoading } from '../../../../store/websiteStore/websiteSelectors';
 
 import './ManageWebsite.less';
 

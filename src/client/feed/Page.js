@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { getFeedContent } from '../store/feedStore/feedActions';
+import { getFeedContent } from '../../store/feedStore/feedActions';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
@@ -13,9 +13,9 @@ import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import { getIsAuthenticated, getIsLoaded } from '../store/authStore/authSelectors';
-import { getObject as getObjectState } from '../store/wObjectStore/wObjectSelectors';
-import { getHelmetIcon } from '../store/appStore/appSelectors';
+import { getIsAuthenticated, getIsLoaded } from '../../store/authStore/authSelectors';
+import { getObject as getObjectState } from '../../store/wObjectStore/wObjectSelectors';
+import { getHelmetIcon } from '../../store/appStore/appSelectors';
 
 @injectIntl
 @withRouter

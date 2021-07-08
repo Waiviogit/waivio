@@ -5,15 +5,15 @@ import { connect } from 'react-redux';
 import {
   getMoreUserStatusCards,
   getUserStatusCards,
-} from '../../../store/referralStore/ReferralActions';
+} from '../../../../store/referralStore/ReferralActions';
 import ReferralStatusView from './ReferralStatusView';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import {
   getCurrentUserCards,
   getIsErrorLoadingUserCards,
   getIsHasMoreCards,
   getIsLoadingMoreUserCards,
-} from '../../../store/referralStore/referralSelectors';
+} from '../../../../store/referralStore/referralSelectors';
 
 import './ReferralStatus.less';
 

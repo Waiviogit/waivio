@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import {
   getObjectFollowersHasMore,
   getObjectFollowersUsers,
-} from '../../../../store/wObjectStore/wObjectSelectors';
+} from '../../../../../store/wObjectStore/wObjectSelectors';
 import WobjectSidebarFollowers from './WobjectSidebarFollowers';
-import { unfollowUser, followUser } from '../../../../store/usersStore/usersActions';
-import { getObjectFollowers } from '../../../../store/wObjectStore/wobjectsActions';
-import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { unfollowUser, followUser } from '../../../../../store/usersStore/usersActions';
+import { getObjectFollowers } from '../../../../../store/wObjectStore/wobjectsActions';
+import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 
 const mapStateToProps = state => ({
   followers: getObjectFollowersUsers(state),

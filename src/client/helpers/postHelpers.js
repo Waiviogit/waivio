@@ -188,8 +188,18 @@ const setTitle = (initObjects, props) => {
   return get(props, 'editor.draftContent.title', '');
 };
 
+const getObjects = state => {
+  const objects = [state.mainObject];
+
+  if (state.secondaryObject) objects.push(state.secondaryObject);
+
+  return objects;
+};
+
 export function getInitialState(props, hideLinkedObjectsSession = []) {
-  const initObjects = new URLSearchParams(props.location.search).getAll('object');
+  const initObjects = props.location.state
+    ? getObjects(props.location.state)
+    : new URLSearchParams(props.location.search).getAll('object');
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
   const campaignId = props.campaignId ? { id: props.campaignId } : null;
   const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;

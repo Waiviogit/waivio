@@ -32,10 +32,10 @@ import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
 import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { assignProposition } from '../../store/userStore/userActions';
+import { assignProposition } from '../../../store/userStore/userActions';
 import { getImagePathPost } from '../../helpers/image';
 import MuteModal from '../../widgets/MuteModal';
-import { muteAuthorPost } from '../../store/postsStore/postActions';
+import { muteAuthorPost } from '../../../store/postsStore/postActions';
 
 import './StoryFull.less';
 
@@ -483,10 +483,9 @@ class StoryFull extends React.Component {
               {map(linkedObjects, obj => {
                 if (obj.campaigns) {
                   const minReward = get(obj, ['campaigns', 'min_reward']);
-                  const rewardPricePassed = minReward ? `${round(minReward, 2)} USD` : '';
+                  const rewardPricePassed = minReward ? round(minReward, 2) : '';
                   const maxReward = get(obj, ['campaigns', 'max_reward']);
-                  const rewardMaxPassed =
-                    maxReward !== minReward ? `${round(maxReward, 2)} USD` : '';
+                  const rewardMaxPassed = maxReward !== minReward ? round(maxReward, 2) : '';
 
                   return (
                     <Campaign

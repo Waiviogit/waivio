@@ -1,6 +1,6 @@
-import * as appendActions from '../../store/appendStore/appendActions';
-import appendReducer from '../../store/appendStore/appendReducer';
-import { getIsAppendLoading } from '../../store/appendStore/appendSelectors';
+import * as appendActions from '../../../store/appendStore/appendActions';
+import appendReducer from '../../../store/appendStore/appendReducer';
+import { getIsAppendLoading } from '../../../store/appendStore/appendSelectors';
 
 describe('append reducer', () => {
   it('should return the initial state', () => {

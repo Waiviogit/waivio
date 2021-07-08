@@ -4,9 +4,9 @@ import React from 'react';
 import { Map } from 'pigeon-maps';
 import { connect } from 'react-redux';
 import CustomMarker from './CustomMarker';
-import { getCoordinates } from '../../store/userStore/userActions';
+import { getCoordinates } from '../../../store/userStore/userActions';
 import mapProvider from '../../helpers/mapProvider';
-import { getUserLocation } from '../../store/userStore/userSelectors';
+import { getUserLocation } from '../../../store/userStore/userSelectors';
 
 import './Map.less';
 

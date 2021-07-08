@@ -5,14 +5,14 @@ import axios from 'axios';
 import { message } from 'antd';
 import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
-import { getSuitableLanguage } from '../../store/reducers';
+import { getSuitableLanguage } from '../../../store/reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import * as api from '../../../waivioApi/ApiClient';
-import { voteObject, followObject } from '../../store/wObjectStore/wobjActions';
+import { voteObject, followObject } from '../../../store/wObjectStore/wobjActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
 import { generateRandomString } from '../../helpers/wObjectHelper';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';

@@ -8,17 +8,17 @@ import {
   clearObjectFromStore,
   getObject,
   getObjectFollowers,
-} from '../../store/wObjectStore/wobjectsActions';
+} from '../../../store/wObjectStore/wobjectsActions';
 import {
   getAlbums,
   resetGallery,
   addAlbumToStore,
   clearRelatedPhoto,
-} from '../../store/galleryStore/galleryActions';
+} from '../../../store/galleryStore/galleryActions';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
-import { setCatalogBreadCrumbs, setNestedWobject } from '../../store/wObjectStore/wobjActions';
-import { appendObject } from '../../store/appendStore/appendActions';
+import { setCatalogBreadCrumbs, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
+import { appendObject } from '../../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
 import {
@@ -26,21 +26,21 @@ import {
   getIsWaivio,
   getScreenSize,
   getWeightValue,
-} from '../../store/appStore/appSelectors';
+} from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
-} from '../../store/authStore/authSelectors';
+} from '../../../store/authStore/authSelectors';
 import {
   getObject as getObjectState,
   getObjectFetchingState,
   getWobjectIsFailed,
   getWobjectIsFatching,
-} from '../../store/wObjectStore/wObjectSelectors';
-import { getLocale } from '../../store/settingsStore/settingsSelectors';
-import { getConfiguration } from '../../store/websiteStore/websiteSelectors';
-import { getRate, getRewardFund } from '../../store/appStore/appActions';
+} from '../../../store/wObjectStore/wObjectSelectors';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
+import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 
 @withRouter
 @connect(

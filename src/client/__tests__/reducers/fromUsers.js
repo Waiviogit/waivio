@@ -9,7 +9,7 @@ import {
   getTopExpertsHasMore,
   getTopExpertsLoading,
   getUser,
-} from '../../store/usersStore/usersSelectors';
+} from '../../../store/usersStore/usersSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

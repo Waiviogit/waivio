@@ -4,7 +4,7 @@ import { chunk, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { getBlogFiltersList } from '../../../store/feedStore/feedSelectors';
+import { getBlogFiltersList } from '../../../../store/feedStore/feedSelectors';
 
 import './FilterPosts.less';
 

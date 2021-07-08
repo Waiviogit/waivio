@@ -5,9 +5,9 @@ import { get } from 'lodash';
 import VisibilitySensor from 'react-visibility-sensor';
 import formatter from '../helpers/steemitFormatter';
 import { isBannedPost } from '../helpers/postHelpers';
-import { getSuitableLanguage } from '../store/reducers';
-import { getContent } from '../store/postsStore/postActions';
-import { getUserAccount } from '../store/usersStore/usersActions';
+import { getSuitableLanguage } from '../../store/reducers';
+import { getContent } from '../../store/postsStore/postActions';
+import { getUserAccount } from '../../store/usersStore/usersActions';
 import Error404 from '../statics/Error404';
 import Comments from '../comments/Comments';
 import Loading from '../components/Icon/Loading';
@@ -16,15 +16,15 @@ import Affix from '../components/Utils/Affix';
 import HiddenPostMessage from './HiddenPostMessage';
 import PostRecommendation from '../components/Sidebar/PostRecommendation';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
-import { getIsPostEdited } from '../store/editorStore/editorSelectors';
+import { getAuthenticatedUserName, getIsAuthFetching } from '../../store/authStore/authSelectors';
+import { getIsPostEdited } from '../../store/editorStore/editorSelectors';
 import {
   getIsPostFailed,
   getIsPostFetching,
   getIsPostLoaded,
   getPostContent,
-} from '../store/postsStore/postsSelectors';
-import { getUser } from '../store/usersStore/usersSelectors';
+} from '../../store/postsStore/postsSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
 
 @connect(
   (state, ownProps) => {

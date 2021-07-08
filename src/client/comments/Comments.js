@@ -4,21 +4,21 @@ import { find, size } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import CommentsList from '../components/Comments/Comments';
-import * as commentsActions from '../store/commentsStore/commentsActions';
+import * as commentsActions from '../../store/commentsStore/commentsActions';
 import { notify } from '../app/Notification/notificationActions';
 import { getDownvotes } from '../helpers/voteHelpers';
-import { getRewardFund } from '../store/appStore/appSelectors';
+import { getRewardFund } from '../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
-} from '../store/authStore/authSelectors';
+} from '../../store/authStore/authSelectors';
 import {
   getComments,
   getCommentsList,
   getCommentsPendingVotes,
-} from '../store/commentsStore/commentsSelectors';
-import { getVotePercent, getVotingPower } from '../store/settingsStore/settingsSelectors';
+} from '../../store/commentsStore/commentsSelectors';
+import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
 
 @connect(
   state => ({

@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { round } from 'lodash';
 import './ReportTableRewards.less';
+import USDDisplay from '../../../../components/Utils/USDDisplay';
 
 const ReportTableRewardsRowTotal = ({ intl, totalUSD, totalHive }) => {
-  const totalUsd = totalUSD !== 0 ? `$ ${round(totalUSD, 2)}` : '';
-  const totalHIVE = totalHive !== 0 ? `${round(totalHive, 3)}` : '';
+  const totalUsd = totalUSD ? round(totalUSD, 2) : '';
+  const totalHIVE = totalHive ? round(totalHive, 3) : '';
 
   return (
     <tr>
@@ -34,7 +35,7 @@ const ReportTableRewardsRowTotal = ({ intl, totalUSD, totalHive }) => {
       </td>
       <td>
         <div className="ReportTableRewardsRow__amount">
-          <span>{totalUsd}</span>
+          <USDDisplay value={totalUsd} currencyDisplay="symbol" />
         </div>
       </td>
     </tr>
