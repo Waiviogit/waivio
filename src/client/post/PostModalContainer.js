@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 import * as PropTypes from 'prop-types';
-import { getSocialInfoPost as getSocialInfoPostAction } from '../store/postsStore/postActions';
-import { hidePostModal as hidePostModalAction } from '../store/appStore/appActions';
+import { getSocialInfoPost as getSocialInfoPostAction } from '../../store/postsStore/postActions';
+import { hidePostModal as hidePostModalAction } from '../../store/appStore/appActions';
 import PostModal from './PostModal';
-import { getCurrentShownPost, getShowPostModal } from '../store/appStore/appSelectors';
-import { getAuthenticatedUserName, isGuestUser } from '../store/authStore/authSelectors';
-import { getPostCities, getPostContent, getPostTags } from '../store/postsStore/postsSelectors';
-import { getUser } from '../store/usersStore/usersSelectors';
+import { getCurrentShownPost, getShowPostModal } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
+import { getPostCities, getPostContent, getPostTags } from '../../store/postsStore/postsSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
 
 const PostModalContainer = ({
   showPostModal,

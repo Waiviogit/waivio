@@ -5,7 +5,7 @@ import {
   getSearchResults,
   getSearchUsersResults,
   searchObjectTypesResults,
-} from '../../store/searchStore/searchSelectors';
+} from '../../../store/searchStore/searchSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

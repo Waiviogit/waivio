@@ -12,10 +12,10 @@ import {
   getSocialInfoPost,
   handleHidePost,
   muteAuthorPost,
-} from '../../store/postsStore/postActions';
+} from '../../../store/postsStore/postActions';
 import withAuthActions from '../../auth/withAuthActions';
 import MuteModal from '../../widgets/MuteModal';
-import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 
 import './StoryFooter.less';
 

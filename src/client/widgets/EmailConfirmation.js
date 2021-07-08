@@ -6,12 +6,12 @@ import PropTypes from 'prop-types';
 
 import PolicyConfirmation from '../components/PolicyConfirmation/PolicyConfirmation';
 import { sendEmailConfirmation } from '../../waivioApi/ApiClient';
-import { closeWithdraw } from '../store/walletStore/walletActions';
+import { closeWithdraw } from '../../store/walletStore/walletActions';
 import {
   getAuthenticatedUserName,
   getAuthenticatedUserPrivateEmail,
   isGuestUser,
-} from '../store/authStore/authSelectors';
+} from '../../store/authStore/authSelectors';
 
 import './widgetsStyle.less';
 

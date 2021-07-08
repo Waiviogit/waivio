@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import ObjectExpertise from './ObjectExpertise';
-import { followExpert, unfollowExpert } from '../../../store/userStore/userActions';
+import { followExpert, unfollowExpert } from '../../../../store/userStore/userActions';
 
 const mapDispatchToProps = dispatch => ({
   followExpert: userName => dispatch(followExpert(userName)),

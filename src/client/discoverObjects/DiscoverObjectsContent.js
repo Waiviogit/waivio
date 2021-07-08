@@ -20,8 +20,8 @@ import {
   setActiveFilters,
   setTagsFiltersAndLoad,
   setActiveTagsFilters,
-} from '../store/objectTypeStore/objectTypeActions';
-import { setMapFullscreenMode } from '../store/mapStore/mapActions';
+} from '../../store/objectTypeStore/objectTypeActions';
+import { setMapFullscreenMode } from '../../store/mapStore/mapActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
@@ -35,12 +35,12 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
-} from '../store/userStore/userActions';
+} from '../../store/userStore/userActions';
 import * as apiConfig from '../../waivioApi/config.json';
 import { RADIUS, ZOOM } from '../../common/constants/map';
-import { getCryptoPriceHistory } from '../store/appStore/appActions';
+import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import { HBD, HIVE } from '../../common/constants/cryptos';
-import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import {
   getActiveFilters,
   getActiveFiltersTags,
@@ -52,8 +52,8 @@ import {
   getObjectTypeLoading,
   getObjectTypeSorting,
   getObjectTypeState,
-} from '../store/objectTypeStore/objectTypeSelectors';
-import { getIsMapModalOpen } from '../store/mapStore/mapSelectors';
+} from '../../store/objectTypeStore/objectTypeSelectors';
+import { getIsMapModalOpen } from '../../store/mapStore/mapSelectors';
 
 const modalName = {
   FILTERS: 'filters',

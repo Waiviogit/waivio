@@ -20,9 +20,9 @@ import { getMetadata } from '../../helpers/postingMetadata';
 import BTooltip from '../../components/BTooltip';
 import { getTimeFromLastAction } from '../../helpers/accountHistoryHelper';
 import { guestUserRegex } from '../../helpers/regexHelpers';
-import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
-import { getAllUsers, getUser } from '../../store/usersStore/usersSelectors';
-import { getUsersAccountHistory } from '../../store/walletStore/walletSelectors';
+import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
+import { getAllUsers, getUser } from '../../../store/usersStore/usersSelectors';
+import { getUsersAccountHistory } from '../../../store/walletStore/walletSelectors';
 
 @injectIntl
 @connect((state, ownProps) => ({

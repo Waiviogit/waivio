@@ -6,10 +6,10 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import ObjectCard from './ObjectCard';
-import { getRecommendedObj } from '../../store/userStore/userActions';
+import { getRecommendedObj } from '../../../store/userStore/userActions';
 import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
 import WeightTag from '../WeightTag';
-import { getRecommendedObjects } from '../../store/userStore/userSelectors';
+import { getRecommendedObjects } from '../../../store/userStore/userSelectors';
 
 import './InterestingObjects.less';
 import './SidebarContentBlock.less';

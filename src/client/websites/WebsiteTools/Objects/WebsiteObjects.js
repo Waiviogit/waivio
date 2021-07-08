@@ -9,14 +9,14 @@ import { isEmpty, isEqual, map } from 'lodash';
 import { Map } from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../helpers/mapProvider';
-import { getCoordinates } from '../../../store/userStore/userActions';
+import { getCoordinates } from '../../../../store/userStore/userActions';
 import {
   setWebsiteObjectsCoordinates,
   getWebsiteObjectsCoordinates,
-} from '../../../store/websiteStore/websiteActions';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getUserLocation } from '../../../store/userStore/userSelectors';
-import { getIsUsersAreas } from '../../../store/websiteStore/websiteSelectors';
+} from '../../../../store/websiteStore/websiteActions';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getUserLocation } from '../../../../store/userStore/userSelectors';
+import { getIsUsersAreas } from '../../../../store/websiteStore/websiteSelectors';
 
 import './WebsiteObjects.less';
 

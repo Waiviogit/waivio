@@ -6,7 +6,7 @@ import { getCryptoDetails } from '../../helpers/cryptosHelper';
 import InterestingObjects from './InterestingObjects';
 import CryptoTrendingCharts from './CryptoTrendingCharts';
 import InterestingPeople from './InterestingPeople';
-import { getIsAuthenticated } from '../../store/authStore/authSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 @connect(state => ({
   authenticated: getIsAuthenticated(state),

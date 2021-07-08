@@ -3,9 +3,9 @@ import settingsReducer, {
   getIsLoading,
   getLocale,
   getVotingPower,
-} from '../../store/settingsStore/settingsReducer';
-import * as settingsTypes from '../../store/settingsStore/settingsActions';
-import * as authTypes from '../../store/authStore/authActions';
+} from '../../../store/settingsStore/settingsReducer';
+import * as settingsTypes from '../../../store/settingsStore/settingsActions';
+import * as authTypes from '../../../store/authStore/authActions';
 import { rewardsValues } from '../../../common/constants/rewards';
 
 describe('settingsReducer', () => {

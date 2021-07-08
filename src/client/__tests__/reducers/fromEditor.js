@@ -5,7 +5,7 @@ import {
   getIsImageUploading,
   getIsPostEdited,
   getPendingDrafts,
-} from '../../store/editorStore/editorSelectors';
+} from '../../../store/editorStore/editorSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

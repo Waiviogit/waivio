@@ -14,12 +14,12 @@ import {
   setFiltersAndLoad,
   showMoreTags,
   setTagsFiltersAndLoad,
-} from '../../store/objectTypeStore/objectTypeActions';
+} from '../../../store/objectTypeStore/objectTypeActions';
 import FilterItem from './FilterItem';
 import {
   getActiveFilters,
   getActiveFiltersTags,
-} from '../../store/objectTypeStore/objectTypeSelectors';
+} from '../../../store/objectTypeStore/objectTypeSelectors';
 
 const FiltersContainer = ({
   filters,

@@ -10,12 +10,13 @@ import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
-import { getCurrentCurrency, getScreenSize } from '../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getCurrentCurrency, getScreenSize } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 import './ObjectCardView.less';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
+import { roundUpToThisIndex } from '../../common/constants/waivio';
 
 const ObjectCardView = ({
   intl,
@@ -153,11 +154,16 @@ const ObjectCardView = ({
           </div>
         </div>
         {withRewards && (
-          <div className="ObjectCardView__rewards-price">
+          <div className="ObjectCardView__rewardsInfo">
             {Boolean(wObject.price) && (
-              <React.Fragment>
-                <span>PRICE: {wObject.price}</span> |{' '}
-              </React.Fragment>
+              <span title={wObject.price} className="ObjectCardView__rewardsPrice">
+                PRICE:{' '}
+                {truncate(wObject.price, {
+                  length: 10,
+                  separator: '...',
+                })}{' '}
+                |{' '}
+              </span>
             )}
             <b>
               {intl.formatMessage({
@@ -170,6 +176,7 @@ const ObjectCardView = ({
               value={rewardPrice}
               currencyDisplay="symbol"
               style={{ color: '#f97b38', fontWeight: 'bolder' }}
+              roundTo={roundUpToThisIndex}
             />{' '}
             {currency.type}
           </div>

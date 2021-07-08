@@ -19,11 +19,11 @@ import {
   getIsAuthenticated,
   getIsAuthFetching,
   isGuestUser,
-} from '../../store/authStore/authSelectors';
-import { getFeed } from '../../store/feedStore/feedSelectors';
-import { getLocale } from '../../store/settingsStore/settingsSelectors';
+} from '../../../store/authStore/authSelectors';
+import { getFeed } from '../../../store/feedStore/feedSelectors';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import FilterPosts from '../../components/Sidebar/FilterPosts/FilterPosts';
-import { setProfileFilters } from '../../store/feedStore/feedActions';
+import { setProfileFilters } from '../../../store/feedStore/feedActions';
 
 @withRouter
 @connect(

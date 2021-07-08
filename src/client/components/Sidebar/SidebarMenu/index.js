@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import SidebarMenu from './SidebarMenu';
 import FollowingUpdates from '../FollowingUpdates/FollowingUpdates';
 import ModalSignIn from '../../Navigation/ModlaSignIn/ModalSignIn';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 
 const menuSections = {
   HIVE: 'Hive',

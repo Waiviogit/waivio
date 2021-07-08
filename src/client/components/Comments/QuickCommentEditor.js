@@ -6,7 +6,7 @@ import { get, isEmpty } from 'lodash';
 import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
 import ImageSetter from '../ImageSetter/ImageSetter';
-import { getIsAuthenticated } from '../../store/authStore/authSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './QuickCommentEditor.less';
 

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import ReportTableFeesRow from '../ReportTableFees/ReportTableFeesRow';
 import ReportTableFeesRowTotal from './ReportTableFeesRowTotal';
 import { getProcessingFee } from '../../../rewardsHelper';
-import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
+import { getSingleReportData } from '../../../../../store/rewardsStore/rewardsSelectors';
 
 import './ReportTableFees.less';
 

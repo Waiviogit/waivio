@@ -9,7 +9,7 @@ import {
   getBlacklist,
   getMoreRewardsHistory,
   getRewardsHistory,
-} from '../../store/rewardsStore/rewardsActions';
+} from '../../../store/rewardsStore/rewardsActions';
 import {
   REWARDS_TYPES_MESSAGES,
   CAMPAIGNS_TYPES_MESSAGES,
@@ -17,14 +17,14 @@ import {
   PATH_NAME_HISTORY,
 } from '../../../common/constants/rewards';
 import { pathNameHistoryNotify } from '../rewardsHelper';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import {
   getCampaignNames,
   getHasMoreHistory,
   getHistoryCampaigns,
   getHistorySponsors,
   getIsLoadingRewardsHistory,
-} from '../../store/rewardsStore/rewardsSelectors';
+} from '../../../store/rewardsStore/rewardsSelectors';
 
 const History = ({
   intl,

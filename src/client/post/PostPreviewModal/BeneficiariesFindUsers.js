@@ -8,11 +8,11 @@ import {
   resetSearchAutoCompete,
   searchAutoComplete,
   saveBeneficiariesUsers,
-} from '../../store/searchStore/searchActions';
-import { getUserMetadata } from '../../store/usersStore/usersActions';
+} from '../../../store/searchStore/searchActions';
+import { getUserMetadata } from '../../../store/usersStore/usersActions';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
-import { getAutoCompleteSearchResults } from '../../store/searchStore/searchSelectors';
+import { getAutoCompleteSearchResults } from '../../../store/searchStore/searchSelectors';
 
 @injectIntl
 @connect(

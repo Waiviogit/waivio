@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 
 import { getExpertiseCounters, getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
-import { getUser } from '../store/usersStore/usersSelectors';
-import { getLocale } from '../store/settingsStore/settingsSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
 
 import './UserExpertise.less';
 

@@ -13,14 +13,17 @@ import {
   getAlbums,
   getRelatedAlbum,
   getMoreRelatedAlbum,
-} from '../../store/galleryStore/galleryActions';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getObject } from '../../store/wObjectStore/wObjectSelectors';
+} from '../../../store/galleryStore/galleryActions';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import {
   getIsObjectAlbumsLoading,
   getObjectAlbums,
   getRelatedPhotos,
-} from '../../store/galleryStore/gallerySelectors';
+} from '../../../store/galleryStore/gallerySelectors';
 
 import './ObjectGallery.less';
 

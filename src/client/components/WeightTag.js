@@ -5,7 +5,7 @@ import { Icon, Tag } from 'antd';
 import { isNaN } from 'lodash';
 import { connect } from 'react-redux';
 import WeightDisplay from './Utils/WeightDisplay';
-import { getRate, getRewardFund, getWeightValue } from '../store/appStore/appSelectors';
+import { getRate, getRewardFund, getWeightValue } from '../../store/appStore/appSelectors';
 
 const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
   const isValidWeight = isNaN(weight);

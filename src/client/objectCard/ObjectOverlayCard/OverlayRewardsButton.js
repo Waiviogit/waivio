@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { Icon } from 'antd';
-import { get, isEmpty, round } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
-import { getCurrentCurrency } from '../../store/appStore/appSelectors';
+import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import USDDisplay from '../../components/Utils/USDDisplay';
+import { roundUpToThisIndex } from '../../../common/constants/waivio';
 
 const OverlayRewardsButton = props => {
   const ObjectOverlayCardEarnClassList = classNames('ObjectOverlayCard__earn', {
@@ -38,7 +39,7 @@ const OverlayRewardsButton = props => {
             defaultMessage: 'Earn up to',
           })}{' '}
       <b data-anchor={props.wObject.author_permlink}>
-        <USDDisplay value={round(reward * currencyInfo.rate, 2)} currencyDisplay="symbol" />{' '}
+        <USDDisplay value={reward} currencyDisplay="symbol" roundTo={roundUpToThisIndex} />{' '}
         <span className="ObjectOverlayCard__currency">{currencyInfo.type}</span>{' '}
         {!props.isPropos && <Icon type="right" />}
       </b>

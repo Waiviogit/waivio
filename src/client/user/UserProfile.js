@@ -11,9 +11,9 @@ import {
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../helpers/stateHelpers';
-import { getUserAccountHistory } from '../store/walletStore/walletActions';
-import { getUserProfileBlogPosts, resetProfileFilters } from '../store/feedStore/feedActions';
-import { showPostModal } from '../store/appStore/appActions';
+import { getUserAccountHistory } from '../../store/walletStore/walletActions';
+import { getUserProfileBlogPosts, resetProfileFilters } from '../../store/feedStore/feedActions';
+import { showPostModal } from '../../store/appStore/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
 import PostModal from '../post/PostModalContainer';
@@ -22,10 +22,10 @@ import {
   getAuthenticatedUser,
   getIsAuthenticated,
   isGuestUser,
-} from '../store/authStore/authSelectors';
-import { getBlogFilters, getFeed } from '../store/feedStore/feedSelectors';
-import { getUser } from '../store/usersStore/usersSelectors';
-import { getUsersAccountHistory } from '../store/walletStore/walletSelectors';
+} from '../../store/authStore/authSelectors';
+import { getBlogFilters, getFeed } from '../../store/feedStore/feedSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
+import { getUsersAccountHistory } from '../../store/walletStore/walletSelectors';
 
 @withRouter
 @connect(

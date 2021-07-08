@@ -10,10 +10,10 @@ import {
   resetSearchAutoCompete,
   searchAutoComplete,
   searchUsersAutoCompete,
-} from '../../store/searchStore/searchActions';
+} from '../../../store/searchStore/searchActions';
 import BeneficiariesWeights from './BeneficiariesWeights';
-import { getHiveBeneficiaryAccount } from '../../store/settingsStore/settingsSelectors';
-import { getAutoCompleteSearchResults } from '../../store/searchStore/searchSelectors';
+import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
+import { getAutoCompleteSearchResults } from '../../../store/searchStore/searchSelectors';
 
 import './AdvanceSettings.less';
 

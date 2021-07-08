@@ -8,8 +8,8 @@ import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
 } from '../helpers/stateHelpers';
-import { showPostModal } from '../store/appStore/appActions';
-import { getReplies, getMoreReplies } from '../store/feedStore/feedActions';
+import { showPostModal } from '../../store/appStore/appActions';
+import { getReplies, getMoreReplies } from '../../store/feedStore/feedActions';
 import Feed from '../feed/Feed';
 import Loading from '../components/Icon/Loading';
 import Affix from '../components/Utils/Affix';
@@ -17,8 +17,8 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import PostModal from '../post/PostModalContainer';
 import requiresLogin from '../auth/requiresLogin';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../store/authStore/authSelectors';
-import { getFeed } from '../store/feedStore/feedSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
+import { getFeed } from '../../store/feedStore/feedSelectors';
 
 class Replies extends React.Component {
   static propTypes = {

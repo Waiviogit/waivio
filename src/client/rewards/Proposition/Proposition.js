@@ -22,7 +22,7 @@ import {
   reserveActivatedCampaign,
   getCurrentHivePrice,
 } from '../../../waivioApi/ApiClient';
-import { removeToggleFlag } from '../../store/rewardsStore/rewardsActions';
+import { removeToggleFlag } from '../../../store/rewardsStore/rewardsActions';
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
@@ -32,12 +32,12 @@ import {
   removeSessionData,
   setSessionData,
 } from '../rewardsHelper';
-import { getAuthenticatedUser, getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getCommentContent } from '../../store/commentsStore/commentsSelectors';
-import { getIsOpenWriteReviewModal } from '../../store/rewardsStore/rewardsSelectors';
+import { getAuthenticatedUser, getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getCommentContent } from '../../../store/commentsStore/commentsSelectors';
+import { getIsOpenWriteReviewModal } from '../../../store/rewardsStore/rewardsSelectors';
 
 import './Proposition.less';
-import { getCurrentCurrency } from '../../store/appStore/appSelectors';
+import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 
 const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');

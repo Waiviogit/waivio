@@ -12,10 +12,10 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { getSettingsTitle } from './common/helpers';
 import RightSidebar from '../app/Sidebar/RightSidebar';
-import * as websiteAction from '../store/websiteStore/websiteActions';
-import { getIsWaivio } from '../store/appStore/appSelectors';
-import { getIsAuthenticated, isGuestUser } from '../store/authStore/authSelectors';
-import { getOwnWebsites } from '../store/websiteStore/websiteSelectors';
+import * as websiteAction from '../../store/websiteStore/websiteActions';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { getIsAuthenticated, isGuestUser } from '../../store/authStore/authSelectors';
+import { getOwnWebsites } from '../../store/websiteStore/websiteSelectors';
 
 import './Settings.less';
 

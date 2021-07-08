@@ -7,13 +7,13 @@ import _ from 'lodash';
 import {
   clearSearchObjectsResults,
   searchUsersAutoCompete,
-} from '../../store/searchStore/searchActions';
+} from '../../../store/searchStore/searchActions';
 import Avatar from '../Avatar';
 import { pendingSearch } from '../../search/helpers';
 import {
   getIsStartSearchUser,
   getSearchUsersResults,
-} from '../../store/searchStore/searchSelectors';
+} from '../../../store/searchStore/searchSelectors';
 
 import './SearchUsersAutocomplete.less';
 
