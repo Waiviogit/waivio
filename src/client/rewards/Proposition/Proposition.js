@@ -239,6 +239,7 @@ const Proposition = props => {
           wObject={proposedWobj}
           withRewards
           rewardPrice={props.proposition.reward}
+          isReserved={props.isAssign}
         />
       </div>
       <div
