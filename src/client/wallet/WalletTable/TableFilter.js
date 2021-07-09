@@ -27,16 +27,19 @@ const TableFilter = ({
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
       <Form.Item
-        label={intl.formatMessage({
-          id: 'accounts',
-          defaultMessage: 'Accounts:',
-        })}
+        label={
+          <span className="WalletTable__accountsLabel">
+            {intl.formatMessage({
+              id: 'accounts',
+              defaultMessage: 'Accounts',
+            })}
+          </span>
+        }
       >
         <div>
           {getFieldDecorator('filterAccounts', {
             rules: [
               {
-                required: true,
                 message: intl.formatMessage({
                   id: 'table_accounts_validation',
                   defaultMessage: 'Field "Accounts" is required',

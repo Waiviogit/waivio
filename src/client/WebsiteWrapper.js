@@ -152,25 +152,26 @@ class WebsiteWrapper extends React.PureComponent {
     const token = query.get('access_token');
     const provider = query.get('socialProvider');
 
-    this.props.getCurrentAppSettings();
-    this.props.login(token, provider).then(() => {
-      batch(() => {
-        this.props.getNotifications();
-        this.props.busyLogin();
-        this.props.getRewardFund();
-        this.props.dispatchGetAuthGuestBalance();
-        this.props.getRate();
+    this.props.getCurrentAppSettings().then(() => {
+      this.props.login(token, provider).then(() => {
+        batch(() => {
+          this.props.getNotifications();
+          this.props.busyLogin();
+          this.props.getRewardFund();
+          this.props.dispatchGetAuthGuestBalance();
+          this.props.getRate();
+        });
+
+        if (token && provider) {
+          query.delete('access_token');
+          query.delete('socialProvider');
+          let queryString = query.toString();
+
+          if (queryString) queryString = `/?${queryString}`;
+
+          this.props.history.push(`${this.props.location.pathname}${queryString}`);
+        }
       });
-
-      if (token && provider) {
-        query.delete('access_token');
-        query.delete('socialProvider');
-        let queryString = query.toString();
-
-        if (queryString) queryString = `/?${queryString}`;
-
-        this.props.history.push(`${this.props.location.pathname}${queryString}`);
-      }
     });
   }
 
