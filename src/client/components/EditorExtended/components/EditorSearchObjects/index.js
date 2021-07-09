@@ -10,13 +10,14 @@ import {
   setEditorExtendedState,
   setShowEditorSearch,
 } from '../../../../store/editorStore/editorActions';
-import { getSearchObjectsResults } from "../../../../store/searchStore/searchSelectors";
+import { getIsStartSearchObject, getSearchObjectsResults } from "../../../../store/searchStore/searchSelectors";
 
 const mapStateToProps = state => ({
   searchCoordinates: getSearchCoordinates(state),
   editorState: getEditorExtendedState(state),
   oldSelectionState: getEditorExtendedSelectionState(state),
   searchObjectsResults: getSearchObjectsResults(state),
+  isStartSearchObj: getIsStartSearchObject(state),
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -1,21 +1,24 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { EditorState } from 'draft-js';
 
 import EditorSearchAutoComplete from './EditorSearchAutoComplete';
-import { addTextToCursor, getIsNodeInPath } from '../../../../helpers/editorHelper';
+import { addTextToCursor, getIsNodeInPath, setCursorPosition } from '../../../../helpers/editorHelper';
+import { CURSOR_ACTIONS } from "../../util/constants";
 
 import './EditorSearchObjects.less';
 
 const EditorSearchObjects = ({
   editorNode,
-  searchCoordinates,
-  closeSearchInput,
-  oldSelectionState,
   editorState,
+  isStartSearchObj,
+  closeSearchInput,
+  searchCoordinates,
+  oldSelectionState,
+  searchObjectsResults,
   setEditorExtendedState,
 }) => {
+  const [isTypeSpace, setIsTypeSpace] = React.useState(false);
   const [searchString, setSearchString] = React.useState('');
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
 
@@ -39,19 +42,35 @@ const EditorSearchObjects = ({
     setCoordinates({ top, left: left + 25 });
   }, [editorNode]);
 
-  const handleCloseSearchInput = (value, isNeedSetCursor = true) => {
+  React.useEffect(() => {
+    if (!isStartSearchObj && isTypeSpace) {
+      if (!searchObjectsResults.length) {
+        handleCloseSearchInput(searchString, CURSOR_ACTIONS.NO_RESULT);
+        setIsTypeSpace(false);
+      }
+    }
+  }, [isStartSearchObj, searchObjectsResults.length]);
+
+  const handleCloseSearchInput = (value, actionType) => {
     // НЕ ПЕРЕСТАВЛЯТЬ МЕСТАМИ ФУНКЦИИ НИЖЕ
     let newEditorState = addTextToCursor(editorState, value); // добавляется текст в едитор из поиска
 
-    if (isNeedSetCursor)
-      newEditorState = EditorState.forceSelection(newEditorState, oldSelectionState); // выставляется курсор на старое место
+    newEditorState = setCursorPosition(newEditorState, actionType, oldSelectionState, value) // выставляется курсор на нужное место
     setEditorExtendedState(newEditorState); // устанавливаем эдитор стейт
     closeSearchInput(); // закрывается поиск
   };
 
   const handleKeyDown = event => {
-    if (event.keyCode === 8 && !event.target.selectionStart) {
-      handleCloseSearchInput(event.target.value, true);
+    if (event.keyCode === 8 && !event.target.selectionStart) { // backspace
+      handleCloseSearchInput(event.target.value, CURSOR_ACTIONS.BACKSPACE);
+    }
+
+    if (event.keyCode === 32 && (event.target.selectionStart === event.target.value.length)) { // space
+      setIsTypeSpace(true);
+    }
+
+    if (event.keyCode === 37 && !event.target.selectionStart) { // arrow left
+      handleCloseSearchInput(event.target.value, CURSOR_ACTIONS.BACKSPACE);
     }
   };
 
@@ -59,7 +78,7 @@ const EditorSearchObjects = ({
     const isNodeInPath = getIsNodeInPath('EditorSearchObjects', event);
 
     if (!isNodeInPath) {
-      handleCloseSearchInput(value, false);
+      handleCloseSearchInput(value, CURSOR_ACTIONS.BLUR);
     }
   };
 
@@ -77,11 +96,13 @@ const EditorSearchObjects = ({
 
 EditorSearchObjects.propTypes = {
   editorNode: PropTypes.shape().isRequired,
-  searchCoordinates: PropTypes.shape().isRequired,
   editorState: PropTypes.shape().isRequired,
-  oldSelectionState: PropTypes.shape().isRequired,
+  isStartSearchObj: PropTypes.bool.isRequired,
   closeSearchInput: PropTypes.func.isRequired,
+  searchCoordinates: PropTypes.shape().isRequired,
+  oldSelectionState: PropTypes.shape().isRequired,
   setEditorExtendedState: PropTypes.func.isRequired,
+  searchObjectsResults: PropTypes.shape().isRequired,
 };
 
 export default EditorSearchObjects;

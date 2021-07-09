@@ -11,6 +11,7 @@ const EditorSearchAutoComplete = ({
   onKeyDown,
   handleBlur,
   searchString,
+  onChange,
   searchObjects,
   setSearchString,
   selectObjectSearch,
@@ -36,6 +37,7 @@ const EditorSearchAutoComplete = ({
   const handleChange = event => {
     const value = event.target.value;
 
+    onChange(event);
     setSearchString(value);
     debouncedSearch(value);
   };
@@ -64,17 +66,19 @@ const EditorSearchAutoComplete = ({
 
 EditorSearchAutoComplete.propTypes = {
   onBlur: PropTypes.func,
+  onChange: PropTypes.func,
   onKeyDown: PropTypes.func,
+  handleBlur: PropTypes.func.isRequired,
   searchObjects: PropTypes.func.isRequired,
   searchString: PropTypes.string.isRequired,
   setSearchString: PropTypes.func.isRequired,
-  handleBlur: PropTypes.func.isRequired,
   selectObjectSearch: PropTypes.func.isRequired,
   searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
 };
 
 EditorSearchAutoComplete.defaultProps = {
   onBlur: () => {},
+  onChange: () => {},
   onKeyDown: () => {},
   isSearchObject: false,
   searchObjectsResults: [],

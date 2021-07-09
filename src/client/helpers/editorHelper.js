@@ -19,6 +19,7 @@ import {
 import { convertToRaw, EditorState, genKey, Modifier, SelectionState } from 'draft-js';
 
 import { Block, createEditorState, Entity } from '../components/EditorExtended';
+import { CURSOR_ACTIONS } from "../components/EditorExtended/util/constants";
 
 const mockPhoto = '📷';
 
@@ -360,4 +361,23 @@ export const getIsNodeInPath = (className, event) => {
   }
 
   return path.includes(className);
+};
+
+export const setCursorPosition = (es, actionType, oldSelectionState, value) => {
+  switch (actionType) {
+    case CURSOR_ACTIONS.BACKSPACE:
+      return EditorState.forceSelection(es, oldSelectionState);
+    case CURSOR_ACTIONS.NO_RESULT: {
+      const newSelection = new SelectionState({
+        anchorKey: oldSelectionState.getAnchorKey(),
+        focusKey: oldSelectionState.getFocusKey(),
+        anchorOffset: oldSelectionState.getAnchorOffset() + value.length,
+        focusOffset: oldSelectionState.getFocusOffset() + value.length,
+      });
+
+      return EditorState.forceSelection(es, newSelection);
+    }
+    default:
+      return es;
+  }
 };
