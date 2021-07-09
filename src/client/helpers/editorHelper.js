@@ -381,3 +381,33 @@ export const setCursorPosition = (es, actionType, oldSelectionState, value) => {
       return es;
   }
 };
+
+export const checkCursorInSearch = editorState => {
+  const selectionState = editorState.getSelection();
+  const anchorKey = selectionState.getAnchorKey();
+  const currentContent = editorState.getCurrentContent();
+  const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+  const start = selectionState.getStartOffset();
+  const blockText = currentContentBlock.getText();
+
+  const startPositionOfWord = blockText.lastIndexOf('#', start);
+  const endPositionOfWord = blockText.indexOf(' ', start);
+
+  const searchString = blockText.substring(startPositionOfWord - 2, endPositionOfWord).trim();
+
+
+  if (!(searchString.includes(' ') || startPositionOfWord === -1)) {
+    return {
+      isNeedOpenSearch: true,
+      startPositionOfWord,
+    };
+  }
+
+  return {
+    isNeedOpenSearch: false,
+  };
+};
+
+export const replaceTextToCursor = (editorState, text, selectionState) => {
+
+};

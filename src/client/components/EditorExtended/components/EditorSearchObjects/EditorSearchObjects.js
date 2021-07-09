@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
 import EditorSearchAutoComplete from './EditorSearchAutoComplete';
-import { addTextToCursor, getIsNodeInPath, setCursorPosition } from '../../../../helpers/editorHelper';
+import { addTextToCursor, getIsNodeInPath, setCursorPosition, replaceTextToCursor } from '../../../../helpers/editorHelper';
 import { CURSOR_ACTIONS } from "../../util/constants";
 
 import './EditorSearchObjects.less';
@@ -18,6 +18,7 @@ const EditorSearchObjects = ({
   searchObjectsResults,
   setEditorExtendedState,
 }) => {
+  const inputWrapper = React.useRef(null);
   const [isTypeSpace, setIsTypeSpace] = React.useState(false);
   const [searchString, setSearchString] = React.useState('');
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
@@ -82,9 +83,20 @@ const EditorSearchObjects = ({
     }
   };
 
+  // const handleChange = event => {
+  //   const value = event.target.value;
+  //
+  //   replaceTextToCursor(editorState, )
+  // };
+
   return (
-    <div className="EditorSearchObjects" style={{ top: coordinates.top, left: coordinates.left }}>
+    <div
+      className="EditorSearchObjects"
+      ref={inputWrapper}
+      style={{ top: coordinates.top, left: coordinates.left }}
+    >
       <EditorSearchAutoComplete
+        // onChange={handleChange}
         handleBlur={handleBlur}
         onKeyDown={handleKeyDown}
         searchString={searchString}

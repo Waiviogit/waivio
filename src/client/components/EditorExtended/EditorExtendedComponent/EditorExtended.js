@@ -3,10 +3,11 @@ import { get, size } from 'lodash';
 import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
-import { convertToRaw } from 'draft-js';
+import { convertToRaw, SelectionState } from 'draft-js';
 import { fromMarkdown, Editor as MediumDraftEditor, createEditorState } from '../index';
 import { SIDE_BUTTONS } from '../model/content';
-import { parseImagesFromBlocks } from '../../../helpers/editorHelper';
+import { checkCursorInSearch, parseImagesFromBlocks } from '../../../helpers/editorHelper';
+import { getSelection, getSelectionRect } from "../util";
 
 const MAX_LENGTH = 255;
 
@@ -45,6 +46,26 @@ const Editor = props => {
 
   const handleContentChange = updatedEditorState => {
     const updatedEditorStateParsed = parseImagesFromBlocks(updatedEditorState);
+    const { isNeedOpenSearch, startPositionOfWord } = checkCursorInSearch(updatedEditorStateParsed);
+
+    if (isNeedOpenSearch) {
+      const selectionState = updatedEditorStateParsed.getSelection();
+      const newSelection = new SelectionState({
+        anchorKey: selectionState.getAnchorKey(),
+        focusKey: selectionState.getFocusKey(),
+        anchorOffset: startPositionOfWord,
+        focusOffset: startPositionOfWord,
+      });
+      const nativeSelection = getSelection(window);
+      const selectionBoundary = getSelectionRect(nativeSelection);
+
+      // console.log('handleContent', selectionBoundary)
+      props.setCursorCoordinates({
+        selectionBoundary,
+        selectionState: newSelection,
+      });
+      props.setShowEditorSearch(true);
+    }
 
     onChange(updatedEditorStateParsed);
     props.onChange(
@@ -125,8 +146,8 @@ const propTypes = {
   editorExtended: PropTypes.shape().isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   isShowEditorSearch: PropTypes.bool.isRequired,
-  setUpdatedEditorData: PropTypes.func.isRequired,
   setShowEditorSearch: PropTypes.func.isRequired,
+  setUpdatedEditorData: PropTypes.func.isRequired,
   setCursorCoordinates: PropTypes.func.isRequired,
   setUpdatedEditorExtendedData: PropTypes.func.isRequired,
 };

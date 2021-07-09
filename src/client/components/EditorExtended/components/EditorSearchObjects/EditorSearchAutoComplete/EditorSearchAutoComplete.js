@@ -18,11 +18,14 @@ const EditorSearchAutoComplete = ({
   searchObjectsResults,
 }) => {
   const searchInput = React.useRef(null);
+  const fakeBlockInput = React.useRef(null);
+  const [inputWidth, setInputWidth] = React.useState(0);
 
   React.useEffect(() => {
     searchInput.current.focus();
     document.addEventListener('click', blurInput);
 
+    // eslint-disable-next-line react/no-find-dom-node
     return () => {
       document.removeEventListener('click', blurInput);
     };
@@ -42,24 +45,30 @@ const EditorSearchAutoComplete = ({
     debouncedSearch(value);
   };
 
-  const handleSelectObject = object => {
-    selectObjectSearch(object);
+  const handleSelectObject = object => selectObjectSearch(object);
+
+  const handleOnInput = (event) => {
+    fakeBlockInput.current.innerHTML = event.target.value.replace(/\s/g, '&nbsp;');
+    setInputWidth(fakeBlockInput.current.offsetWidth)
   };
 
   return (
     <div className="editor_search">
       <input
-        ref={searchInput}
         type="text"
         onBlur={onBlur}
-        onKeyDown={onKeyDown}
+        ref={searchInput}
         value={searchString}
+        onKeyDown={onKeyDown}
         onChange={handleChange}
+        onInput={handleOnInput}
+        style={{ width: inputWidth }}
         className="editor_search__input"
       />
       <div>
         {searchObjectsResults.map(obj => <SearchOneObject obj={obj} objectSelect={handleSelectObject} key={obj.id} />)}
       </div>
+      <div className='fake-div__input' ref={fakeBlockInput} />
     </div>
   );
 };
