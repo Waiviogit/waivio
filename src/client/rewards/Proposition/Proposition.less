@@ -49,11 +49,16 @@
     }
 
     &-details {
-      font-weight: 500;
-      color: @blue-botticelli;
+      display: none;
 
-      &:hover {
-        cursor: pointer;
+      @media @small {
+        display: inline-block;
+        font-weight: 500;
+        color: @blue-botticelli;
+
+        &:hover {
+          cursor: pointer;
+        }
       }
     }
   }
@@ -136,58 +141,6 @@
         background: @solitaire;
       }
     }
-  }
-}
-
-@media (max-width: 414px) {
-  .Proposition {
-    &__footer-button {
-      display: flex;
-
-      button {
-        width: 140px;
-      }
-
-      &-days {
-        padding-top: 4px;
-      }
-    }
-  }
-
-  .ant-btn > span {
-    max-width: 120px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-@media (max-width: 375px) {
-  .Proposition {
-    &__footer-button {
-      button {
-        width: 110px;
-      }
-    }
-  }
-
-  .ant-btn > span {
-    max-width: 90px;
-    margin-top: 2px;
-  }
-}
-
-@media (max-width: 360px) {
-  .Proposition {
-    &__footer-button {
-      button {
-        width: 100px;
-      }
-    }
-  }
-
-  .ant-btn > span {
-    max-width: 90px;
   }
 }
 
