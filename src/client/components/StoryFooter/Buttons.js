@@ -223,7 +223,7 @@ export default class Buttons extends React.Component {
               <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
               <span style={{ opacity: '0.5' }}>
                 {' '}
-                <USDDisplay value={vote.rshares * ratio} />
+                <USDDisplay value={vote.rshares * ratio} currencyDisplay="symbols" />
               </span>
             </p>,
           );
@@ -233,7 +233,7 @@ export default class Buttons extends React.Component {
               <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
               {vote.rshares * ratio > 0.01 && (
                 <span style={{ opacity: '0.5' }}>
-                  <USDDisplay value={vote.rshares * ratio} />
+                  <USDDisplay value={vote.rshares * ratio} currencyDisplay="symbols" />
                 </span>
               )}
             </p>,

@@ -158,14 +158,16 @@ class WalletTable extends React.Component {
   handleSubmit = () => {
     const { from, end, currency } = this.props.form.getFieldsValue();
 
-    this.setState({ dateEstablished: true, currentCurrency: currency });
+    if (!isEmpty(this.state.filterAccounts)) {
+      this.setState({ dateEstablished: true, currentCurrency: currency });
 
-    return this.props.getUserTableTransactions({
-      filterAccounts: this.state.filterAccounts,
-      startDate: this.handleChangeStartDate(from),
-      endDate: this.handleChangeEndDate(end),
-      currency,
-    });
+      this.props.getUserTableTransactions({
+        filterAccounts: this.state.filterAccounts,
+        startDate: this.handleChangeStartDate(from),
+        endDate: this.handleChangeEndDate(end),
+        currency,
+      });
+    }
   };
 
   handleOnClick = e => {

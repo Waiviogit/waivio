@@ -41,15 +41,19 @@
   }
 
   .total-paid {
-    display: flex;
-    white-space: nowrap;
-    font-weight: 500;
-    color: @blue-botticelli;
+    display: none;
+
     @media @small {
       flex-direction: column;
+      display: flex;
+      white-space: nowrap;
+      font-weight: 500;
+      color: @blue-botticelli;
     }
+
     &__colon {
       padding-right: 0.5rem;
+
       @media @small {
         display: none;
       }
@@ -62,6 +66,7 @@
     margin-left: 10px;
     justify-content: space-between;
     flex-direction: column;
+
     @media @small {
       flex-direction: row;
     }

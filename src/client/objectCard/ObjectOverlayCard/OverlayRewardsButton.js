@@ -7,7 +7,6 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import USDDisplay from '../../components/Utils/USDDisplay';
-import { roundUpToThisIndex } from '../../../common/constants/waivio';
 
 const OverlayRewardsButton = props => {
   const ObjectOverlayCardEarnClassList = classNames('ObjectOverlayCard__earn', {
@@ -35,7 +34,7 @@ const OverlayRewardsButton = props => {
             defaultMessage: 'Earn up to',
           })}{' '}
       <b>
-        <USDDisplay value={reward} currencyDisplay="symbol" roundTo={roundUpToThisIndex} />{' '}
+        <USDDisplay value={reward} currencyDisplay="symbol" />{' '}
         <span className="ObjectOverlayCard__currency">{currencyInfo.type}</span>{' '}
         {!props.isPropos && <Icon type="right" />}
       </b>
