@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
 import EditorSearchAutoComplete from './EditorSearchAutoComplete';
-import { addTextToCursor, getIsNodeInPath, setCursorPosition, replaceTextToCursor } from '../../../../helpers/editorHelper';
+import { getIsNodeInPath, setCursorPosition, replaceTextOnChange } from '../../../../helpers/editorHelper';
 import { CURSOR_ACTIONS } from "../../util/constants";
 
 import './EditorSearchObjects.less';
@@ -15,15 +15,20 @@ const EditorSearchObjects = ({
   closeSearchInput,
   searchCoordinates,
   oldSelectionState,
+  wordForCountWidth,
+  searchStringValue,
   searchObjectsResults,
   setEditorExtendedState,
 }) => {
   const inputWrapper = React.useRef(null);
+  const fakeLeftBlockPosition = React.useRef(null);
   const [isTypeSpace, setIsTypeSpace] = React.useState(false);
-  const [searchString, setSearchString] = React.useState('');
+  const [searchString, setSearchString] = React.useState(searchStringValue);
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
 
   React.useEffect(() => {
+    fakeLeftBlockPosition.current.innerHTML = wordForCountWidth.replace(/\s/g, '&nbsp;');
+
     // eslint-disable-next-line react/no-find-dom-node
     const parent = ReactDOM.findDOMNode(editorNode);
 
@@ -40,13 +45,17 @@ const EditorSearchObjects = ({
       left = -parentBoundary.left;
     }
 
+    if (wordForCountWidth) {
+      left -= (fakeLeftBlockPosition.current.offsetWidth + 10);
+    }
+
     setCoordinates({ top, left: left + 25 });
-  }, [editorNode]);
+  }, [editorNode, wordForCountWidth]);
 
   React.useEffect(() => {
     if (!isStartSearchObj && isTypeSpace) {
       if (!searchObjectsResults.length) {
-        handleCloseSearchInput(searchString, CURSOR_ACTIONS.NO_RESULT);
+        closeSearchInput();
         setIsTypeSpace(false);
       }
     }
@@ -54,9 +63,10 @@ const EditorSearchObjects = ({
 
   const handleCloseSearchInput = (value, actionType) => {
     // НЕ ПЕРЕСТАВЛЯТЬ МЕСТАМИ ФУНКЦИИ НИЖЕ
-    let newEditorState = addTextToCursor(editorState, value); // добавляется текст в едитор из поиска
+    // let newEditorState = addTextToCursor(editorState, value); // добавляется текст в едитор из поиска
+    //
+    const newEditorState = setCursorPosition(editorState, actionType, oldSelectionState, value) // выставляется курсор на нужное место
 
-    newEditorState = setCursorPosition(newEditorState, actionType, oldSelectionState, value) // выставляется курсор на нужное место
     setEditorExtendedState(newEditorState); // устанавливаем эдитор стейт
     closeSearchInput(); // закрывается поиск
   };
@@ -83,30 +93,37 @@ const EditorSearchObjects = ({
     }
   };
 
-  // const handleChange = event => {
-  //   const value = event.target.value;
-  //
-  //   replaceTextToCursor(editorState, )
-  // };
+  const handleChange = event => {
+    const value = event.target.value;
+    const newES = replaceTextOnChange(editorState, value, oldSelectionState);
+
+    setEditorExtendedState(newES);
+  };
 
   return (
     <div
-      className="EditorSearchObjects"
       ref={inputWrapper}
+      className="EditorSearchObjects"
       style={{ top: coordinates.top, left: coordinates.left }}
     >
       <EditorSearchAutoComplete
-        // onChange={handleChange}
+        onChange={handleChange}
         handleBlur={handleBlur}
         onKeyDown={handleKeyDown}
         searchString={searchString}
         setSearchString={setSearchString}
+      />
+      <div
+        ref={fakeLeftBlockPosition}
+        className='FakeLeftPosition'
       />
     </div>
   );
 };
 
 EditorSearchObjects.propTypes = {
+  searchStringValue: PropTypes.string,
+  wordForCountWidth: PropTypes.string,
   editorNode: PropTypes.shape().isRequired,
   editorState: PropTypes.shape().isRequired,
   isStartSearchObj: PropTypes.bool.isRequired,
@@ -115,6 +132,11 @@ EditorSearchObjects.propTypes = {
   oldSelectionState: PropTypes.shape().isRequired,
   setEditorExtendedState: PropTypes.func.isRequired,
   searchObjectsResults: PropTypes.shape().isRequired,
+};
+
+EditorSearchObjects.defaultProps = {
+  searchStringValue: '',
+  wordForCountWidth: '',
 };
 
 export default EditorSearchObjects;

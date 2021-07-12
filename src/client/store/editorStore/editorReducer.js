@@ -18,6 +18,8 @@ const defaultState = {
   loadingImg: false,
   editor: {},
   editorExtended: {
+    searchString: '',
+    wordForCountWidth: '',
     searchSelectionState: {},
     searchCoordinates: {},
     isShowEditorSearch: false,
@@ -200,6 +202,8 @@ const editor = (state = defaultState, action) => {
         ...state,
         editorExtended: {
           ...state.editorExtended,
+          searchString: action.payload.searchString,
+          wordForCountWidth: action.payload.wordForCountWidth,
           searchCoordinates: action.payload.selectionBoundary,
           searchSelectionState: action.payload.selectionState,
         },

@@ -24,6 +24,7 @@ const EditorSearchAutoComplete = ({
   React.useEffect(() => {
     searchInput.current.focus();
     document.addEventListener('click', blurInput);
+    resizeInput(searchString);
 
     // eslint-disable-next-line react/no-find-dom-node
     return () => {
@@ -47,10 +48,12 @@ const EditorSearchAutoComplete = ({
 
   const handleSelectObject = object => selectObjectSearch(object);
 
-  const handleOnInput = (event) => {
-    fakeBlockInput.current.innerHTML = event.target.value.replace(/\s/g, '&nbsp;');
-    setInputWidth(fakeBlockInput.current.offsetWidth)
+  const resizeInput = value => {
+    fakeBlockInput.current.innerHTML = value.replace(/\s/g, '&nbsp;');
+    setInputWidth(fakeBlockInput.current.offsetWidth + 3)
   };
+
+  const handleOnInput = (event) => resizeInput(event.target.value);
 
   return (
     <div className="editor_search">

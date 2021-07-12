@@ -46,23 +46,24 @@ const Editor = props => {
 
   const handleContentChange = updatedEditorState => {
     const updatedEditorStateParsed = parseImagesFromBlocks(updatedEditorState);
-    const { isNeedOpenSearch, startPositionOfWord } = checkCursorInSearch(updatedEditorStateParsed);
+    const searchInfo = checkCursorInSearch(updatedEditorStateParsed);
 
-    if (isNeedOpenSearch) {
+    if (searchInfo.isNeedOpenSearch && !props.isShowEditorSearch) {
       const selectionState = updatedEditorStateParsed.getSelection();
       const newSelection = new SelectionState({
         anchorKey: selectionState.getAnchorKey(),
         focusKey: selectionState.getFocusKey(),
-        anchorOffset: startPositionOfWord,
-        focusOffset: startPositionOfWord,
+        anchorOffset: searchInfo.startPositionOfWord,
+        focusOffset: searchInfo.startPositionOfWord,
       });
       const nativeSelection = getSelection(window);
       const selectionBoundary = getSelectionRect(nativeSelection);
 
-      // console.log('handleContent', selectionBoundary)
       props.setCursorCoordinates({
         selectionBoundary,
         selectionState: newSelection,
+        searchString: searchInfo.searchString,
+        wordForCountWidth: searchInfo.wordForCountWidth,
       });
       props.setShowEditorSearch(true);
     }
