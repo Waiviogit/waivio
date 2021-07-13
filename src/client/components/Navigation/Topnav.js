@@ -160,7 +160,7 @@ class Topnav extends React.Component {
   }
 
   handleSearchForInput(event) {
-    const value = replacer(event.target.value, '@');
+    const value = replacer(event.target.value);
     const checkIsUserExist = inpValue =>
       this.props.searchByUser.some(item => item.account === inpValue);
     const waivioValue = `waivio_${value}`;

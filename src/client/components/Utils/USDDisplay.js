@@ -11,7 +11,7 @@ const USDDisplay = ({ value, currencyDisplay, style }) => {
   const currencyInfo = useSelector(getCurrentCurrency);
   const negative = value < 0;
   const absValue = Math.abs(value);
-  const precision = absValue < 0.01 ? 3 : 2;
+  const precision = absValue > 0.01 || absValue === 0 ? 2 : 3;
   const sum = round(absValue * currencyInfo.rate, precision).toFixed(precision);
   const formattedCurrency = num => {
     switch (currencyDisplay) {
