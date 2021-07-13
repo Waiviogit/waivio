@@ -161,24 +161,26 @@ const ObjectCardView = ({
                 PRICE: {wObject.price} |{' '}
               </span>
             )}
-            <b>
-              {intl.formatMessage({
-                id: 'you_earn',
-                defaultMessage: 'YOU EARN',
-              })}
-              :
-            </b>{' '}
-            {isReserved ? (
-              <React.Fragment>
-                <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b> HIVE
-              </React.Fragment>
-            ) : (
-              <USDDisplay
-                value={rewardPrice}
-                currencyDisplay="symbol"
-                style={{ color: '#f97b38', fontWeight: 'bolder' }}
-              />
-            )}
+            <span className="ObjectCardView__earnWrap">
+              <b>
+                {intl.formatMessage({
+                  id: 'you_earn',
+                  defaultMessage: 'YOU EARN',
+                })}
+                :
+              </b>{' '}
+              {isReserved ? (
+                <React.Fragment>
+                  <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b> HIVE
+                </React.Fragment>
+              ) : (
+                <USDDisplay
+                  value={rewardPrice}
+                  currencyDisplay="symbol"
+                  style={{ color: '#f97b38', fontWeight: 'bolder' }}
+                />
+              )}
+            </span>
           </div>
         )}
       </div>

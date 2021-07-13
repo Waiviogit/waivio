@@ -46,7 +46,7 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
   getState,
 ) => {
   const state = getState();
-  const searchString = replacer(search, '@');
+  const searchString = replacer(search);
   const user = getAuthenticatedUserName(state);
   const locale = getLocale(state);
 
@@ -99,7 +99,7 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent, addHa
   const state = getState();
   const usedLocale = getSuitableLanguage(state);
   const locale = getLocale(state);
-  const search = replacer(searchString, '@');
+  const search = replacer(searchString);
   const body = {};
 
   if (addHashtag) body.addHashtag = true;
@@ -229,7 +229,7 @@ export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
   dispatch,
   getState,
 ) => {
-  const search = replacer(userName, '@');
+  const search = replacer(userName);
   const user = getAuthenticatedUserName(getState());
 
   dispatch({
@@ -256,7 +256,7 @@ export const searchUsersAutoCompeteLoadingMore = (userName, skip) => (dispatch, 
 };
 
 export const searchUsersForDiscoverPage = (userName, limit) => (dispatch, getState) => {
-  const search = replacer(userName, '@');
+  const search = replacer(userName);
   const user = getAuthenticatedUserName(getState());
 
   if (search) {
@@ -327,7 +327,7 @@ export const resetSearchUsersForDiscoverPage = () => dispatch =>
   });
 
 export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch => {
-  const search = replacer(searchString, '@');
+  const search = replacer(searchString);
 
   if (searchString) {
     dispatch({

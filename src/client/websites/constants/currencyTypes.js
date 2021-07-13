@@ -2,6 +2,7 @@ export const currencyTypes = ['USD', 'CAD', 'UAH', 'RUB', 'CNY', 'JPY', 'GBP', '
 
 export const currencyPrefix = {
   AUD: 'A$',
+  USD: '$',
   CAD: 'C$',
   JPY: '¥',
   NZD: 'NZ$',
