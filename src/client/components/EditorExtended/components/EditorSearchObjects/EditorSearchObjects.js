@@ -63,7 +63,6 @@ EditorSearchObjects.propTypes = {
 };
 
 EditorSearchObjects.defaultProps = {
-  searchStringValue: '',
   wordForCountWidth: '',
 };
 

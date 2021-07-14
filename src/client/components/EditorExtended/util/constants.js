@@ -64,12 +64,6 @@ export const ATOMIC_TYPES = {
   VIDEO: 'video',
 };
 
-export const CURSOR_ACTIONS = {
-  BLUR: 'blur',
-  NO_RESULT: 'no_result',
-  BACKSPACE: 'backspace',
-};
-
 export default {
   Block,
   Inline,
