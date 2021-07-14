@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { size } from 'lodash';
 
-import SearchOneObject from './SearchOneObject';
+import SearchItemObject from './SearchItemObject';
 
 import './EditorSearchObjects.less';
 
@@ -53,7 +53,7 @@ const EditorSearchObjects = ({
           style={{ top: coordinates.top, left: coordinates.left }}
         >
           {searchObjectsResults.map(obj => (
-            <SearchOneObject obj={obj} objectSelect={handleSelectObject} key={obj.id} />
+            <SearchItemObject obj={obj} objectSelect={handleSelectObject} key={obj.id} />
           ))}
         </div>
       )}

@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import ObjectSearchCard from '../../../../ObjectSearchCard/ObjectSearchCard';
 import { getObjectName } from '../../../../../helpers/wObjectHelper';
 
-import './SearchOneObject.less';
+import './SearchItemObject.less';
 
-const SearchOneObject = ({ objectSelect, obj }) => {
+const SearchItemObject = ({ objectSelect, obj }) => {
   const handleSelectObject = () => objectSelect(obj);
 
   return (
@@ -22,9 +22,9 @@ const SearchOneObject = ({ objectSelect, obj }) => {
   );
 };
 
-SearchOneObject.propTypes = {
+SearchItemObject.propTypes = {
   obj: PropTypes.shape().isRequired,
   objectSelect: PropTypes.func.isRequired,
 };
 
-export default SearchOneObject;
+export default SearchItemObject;

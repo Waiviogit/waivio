@@ -794,11 +794,12 @@ export const firstParseLinkedObjects = (draft, objName, cursorPosition) => async
       const cursorBlock = parsedEditorState.blocks.find(block =>
         block.text.lastIndexOf(objName, cursorPosition),
       );
+      const newCursorPosition = cursorPosition - 2 + objName.length;
       const updateSelection = new SelectionState({
         anchorKey: cursorBlock.key,
-        anchorOffset: cursorPosition - 2 + objName.length,
+        anchorOffset: newCursorPosition,
         focusKey: cursorBlock.key,
-        focusOffset: cursorPosition - 2 + objName.length,
+        focusOffset: newCursorPosition,
       });
 
       editorState = EditorState.acceptSelection(editorState, updateSelection);
