@@ -791,8 +791,8 @@ export const firstParseLinkedObjects = (draft, objName, cursorPosition) => async
     const parsedEditorState = convertToRaw(editorState.getCurrentContent());
 
     if (objName && cursorPosition) {
-      const cursorBlock = parsedEditorState.blocks.find(block =>
-        block.text.lastIndexOf(objName, cursorPosition),
+      const cursorBlock = parsedEditorState.blocks.find(
+        block => block.text.lastIndexOf(objName, cursorPosition) !== -1,
       );
       const newCursorPosition = cursorPosition - 2 + objName.length;
       const updateSelection = new SelectionState({
