@@ -50,6 +50,7 @@ export const KEY_COMMANDS = {
   changeType: (type = '') => `changetype:${type}`,
   showLinkInput: () => 'showlinkinput',
   showSearchBlock: 'showSearchBlock',
+  space: 'space',
   unlink: () => 'unlink',
   toggleInline: (type = '') => `toggleinline:${type}`,
   deleteBlock: () => 'delete-block',

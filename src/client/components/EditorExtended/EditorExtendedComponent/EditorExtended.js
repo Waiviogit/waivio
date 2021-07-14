@@ -1,5 +1,5 @@
-import React from 'react';
-import { get, size } from 'lodash';
+import React, { useCallback } from 'react';
+import { debounce, get, size } from 'lodash';
 import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
@@ -15,6 +15,8 @@ const Editor = props => {
   const {
     editorExtended: { editorState, isMounted, editorEnabled, titleValue },
   } = props;
+  const [prevSearchValue, setPrevSearch] = React.useState('');
+  const [isTypeSpace, setIsTypeSpace] = React.useState(false);
   const refsEditor = React.useRef();
 
   React.useEffect(() => {
@@ -25,6 +27,12 @@ const Editor = props => {
     });
     restoreObjects(fromMarkdown(props.initialContent));
   }, []);
+  React.useEffect(() => {
+    if (!props.searchObjectsResults.length && isTypeSpace && !props.isStartSearchObject) {
+      props.setShowEditorSearch(false);
+      setIsTypeSpace(false);
+    }
+  }, [isTypeSpace, props.searchObjectsResults.length, props.isStartSearchObject]);
 
   React.useEffect(() => setFocusAfterMount(), [isMounted, props.draftId]);
 
@@ -44,30 +52,41 @@ const Editor = props => {
     props.setUpdatedEditorData({ hideLinkedObjects: newLinkedObjectsCards });
   };
 
+  const debouncedSearch = useCallback(debounce(searchStr => props.searchObjects(searchStr, props.isWaivio), 150), []);
+
   const handleContentChange = updatedEditorState => {
     const updatedEditorStateParsed = parseImagesFromBlocks(updatedEditorState);
-    const searchInfo = checkCursorInSearch(updatedEditorStateParsed);
+    const searchInfo = checkCursorInSearch(updatedEditorStateParsed, isTypeSpace);
 
-    if (searchInfo.isNeedOpenSearch && !props.isShowEditorSearch) {
-      const selectionState = updatedEditorStateParsed.getSelection();
-      const newSelection = new SelectionState({
-        anchorKey: selectionState.getAnchorKey(),
-        focusKey: selectionState.getFocusKey(),
-        anchorOffset: searchInfo.startPositionOfWord,
-        focusOffset: searchInfo.startPositionOfWord,
-      });
-      const nativeSelection = getSelection(window);
-      const selectionBoundary = getSelectionRect(nativeSelection);
+    // console.log('searchInfo', searchInfo);
+    if (searchInfo.isNeedOpenSearch) {
+      if (!props.isShowEditorSearch) {
+        const selectionState = updatedEditorStateParsed.getSelection();
+        const newSelection = new SelectionState({
+          anchorKey: selectionState.getAnchorKey(),
+          focusKey: selectionState.getFocusKey(),
+          anchorOffset: searchInfo.startPositionOfWord,
+          focusOffset: searchInfo.startPositionOfWord,
+        });
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
 
-      props.setCursorCoordinates({
-        selectionBoundary,
-        selectionState: newSelection,
-        searchString: searchInfo.searchString,
-        wordForCountWidth: searchInfo.wordForCountWidth,
-      });
-      props.setShowEditorSearch(true);
+        props.setCursorCoordinates({
+          selectionBoundary,
+          selectionState: newSelection,
+          searchString: searchInfo.searchString,
+          wordForCountWidth: searchInfo.wordForCountWidth,
+        });
+        props.setShowEditorSearch(true);
+      }
+      setPrevSearch(searchInfo.searchString);
+      if (prevSearchValue !== searchInfo.searchString) {
+        debouncedSearch(searchInfo.searchString);
+      }
+    } else {
+      props.setShowEditorSearch(false);
     }
-
+    console.log('newContent', convertToRaw(updatedEditorStateParsed.getCurrentContent()))
     onChange(updatedEditorStateParsed);
     props.onChange(
       convertToRaw(updatedEditorStateParsed.getCurrentContent()),
@@ -89,6 +108,8 @@ const Editor = props => {
       );
     }
   };
+
+  const handleCloseSearch = () => setIsTypeSpace(true);
 
   const isVimeo = get(props, 'initialContent.body', '').includes('player.vimeo.com');
 
@@ -119,6 +140,7 @@ const Editor = props => {
             editorEnabled={editorEnabled && props.enabled}
             setShowEditorSearch={props.setShowEditorSearch}
             setSearchCoordinates={props.setCursorCoordinates}
+            closeSearch={handleCloseSearch}
             placeholder={props.intl.formatMessage({
               id: 'story_placeholder',
               defaultMessage: 'Write your story...',
@@ -140,10 +162,14 @@ const propTypes = {
   onChange: PropTypes.func,
   draftId: PropTypes.string,
   displayTitle: PropTypes.bool,
+  isWaivio: PropTypes.bool,
   handleHashtag: PropTypes.func,
   handlePasteTest: PropTypes.func,
   getRestoreObjects: PropTypes.func,
   enabled: PropTypes.bool.isRequired,
+  isStartSearchObject: PropTypes.bool,
+  searchObjectsResults: PropTypes.shape(),
+  searchObjects: PropTypes.func.isRequired,
   editorExtended: PropTypes.shape().isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   isShowEditorSearch: PropTypes.bool.isRequired,
@@ -155,13 +181,16 @@ const propTypes = {
 
 const defaultProps = {
   intl: {},
+  isWaivio: false,
   onChange: () => {},
   handleHashtag: () => {},
   handlePasteTest: () => {},
   displayTitle: true,
   draftId: '',
   linkedObjects: [],
+  searchObjectsResults: [],
   getRestoreObjects: () => {},
+  isStartSearchObject: false,
 };
 
 Editor.propTypes = propTypes;

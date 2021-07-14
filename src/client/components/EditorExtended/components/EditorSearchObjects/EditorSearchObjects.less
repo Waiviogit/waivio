@@ -1,14 +1,17 @@
 @import (reference) '../../../../styles/custom.less';
 
-.EditorSearchObjects {
+.editor-search-objects {
   z-index: 10;
   position: absolute;
+  height: 250px;
+  overflow-y: scroll;
+  border: 1px solid @white-gainsboro;
+}
 
-  .FakeLeftPosition {
-    height: 0;
-    position: absolute;
-    left: 0;
-    top: 0;
-    visibility: hidden;
-  }
+.fake-position-left {
+  top: 0;
+  left: 0;
+  height: 0;
+  position: absolute;
+  visibility: hidden;
 }

@@ -92,6 +92,7 @@ export default class MediumDraftEditor extends React.Component {
     isShowEditorSearch: PropTypes.bool.isRequired,
     setShowEditorSearch: PropTypes.func.isRequired,
     setSearchCoordinates: PropTypes.func.isRequired,
+    closeSearch: PropTypes.func,
   };
 
   static defaultProps = {
@@ -123,6 +124,7 @@ export default class MediumDraftEditor extends React.Component {
     handlePastedText: () => {},
     intl: {},
     handleHashtag: () => {},
+    closeSearch: () => {},
     isVimeo: false,
   };
 
@@ -432,7 +434,7 @@ export default class MediumDraftEditor extends React.Component {
 
         return HANDLED;
       }
-    } else if (command === KEY_COMMANDS.showSearchBlock) {
+    } else if (command === KEY_COMMANDS.showSearchBlock) { // открытие поиска
       const block = getCurrentBlock(editorState);
       const blockText = block.getText();
       const selectionState = editorState.getSelection();
@@ -454,6 +456,33 @@ export default class MediumDraftEditor extends React.Component {
       }
 
       return HANDLED;
+    } else if (command === KEY_COMMANDS.backspace) { // закрытие поиска на backspace
+      if (this.props.isShowEditorSearch) {
+        const selectionState = editorState.getSelection();
+        const anchorKey = selectionState.getAnchorKey();
+        const currentContent = editorState.getCurrentContent();
+        const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+        const start = selectionState.getStartOffset();
+        const end = selectionState.getEndOffset();
+        const textBlock = currentContentBlock.getText();
+        const deletedString = textBlock.substring(start - 1, end);
+
+        if (textBlock[start - 1] === '#' || deletedString.includes(' #')) {
+          this.props.setShowEditorSearch(false);
+        }
+      }
+
+      return NOT_HANDLED;
+    }
+    else if (command === KEY_COMMANDS.space) { // проверка, если нету результатов поиска, то закрываем поиск
+      const newES = addTextToCursor(editorState, ' ');
+
+      this.onChange(newES);
+      if (this.props.isShowEditorSearch) {
+        this.props.closeSearch();
+      }
+
+      return NOT_HANDLED;
     }
     /* else if (command === KEY_COMMANDS.addNewBlock()) {
       const { editorState } = this.props;

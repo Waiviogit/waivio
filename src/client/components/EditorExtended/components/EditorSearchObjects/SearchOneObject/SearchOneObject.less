@@ -1,0 +1,38 @@
+@import (reference) '../../../../../styles/custom.less';
+
+@avatar_size: 40px;
+
+.object-card {
+  width: 250px;
+  display: flex;
+  cursor: pointer;
+  background: @white;
+  align-items: center;
+  border-bottom: 1px solid @white-gainsboro;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .object-search-card {
+    padding: 10px 14px;
+
+    &__content-avatar {
+      margin-top: 0;
+      width: @avatar_size;
+      height: @avatar_size;
+    }
+
+    &__content-info {
+      width: calc(100% - 40px);
+
+      .object-search-card__content-name {
+        font-size: @font-size-lg;
+      }
+
+      .object-search-card__content-text {
+        font-size: small;
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ import { message } from 'antd';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { convertToRaw, EditorState } from 'draft-js';
+import { convertToRaw, EditorState, Modifier, SelectionState, ContentState } from 'draft-js';
 import {
   forEach,
   get,
@@ -52,13 +52,13 @@ import {
   getCurrentDraftContent,
   getFilteredLinkedObjects,
   updatedHideObjectsPaste,
-  getLinkedObjects as getLinkedObjectsHelper,
+  getLinkedObjects as getLinkedObjectsHelper, checkCursorInSearch,
 } from '../../helpers/editorHelper';
 import {
   getCurrentDraft,
   getEditor,
   getEditorDraftBody,
-  getEditorExtended,
+  getEditorExtended, getEditorExtendedSelectionState, getEditorExtendedState,
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
   getIsEditorSaving,
@@ -820,6 +820,40 @@ export const handlePasteText = html => async (dispatch, getState) => {
   }
 };
 
-export const selectObjectEditorSearch = (selectedObject) => (dispatch) => {
-  console.log('selectedObject action', selectedObject);
+export const selectObjectFromSearch = (selectedObject) => (dispatch, getState) => {
+  const state = getState();
+  const editorState = getEditorExtendedState(state);
+  const { startPositionOfWord, searchString } = checkCursorInSearch(editorState, true);
+  const selectionState = editorState.getSelection();
+  const anchorKey = selectionState.getAnchorKey();
+  const currentContent = editorState.getCurrentContent();
+  const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+  const selectedText = currentContentBlock.getText();
+  const endPositionOfWord = startPositionOfWord + searchString.length + 1;
+
+  const contentState = Modifier.replaceText(
+    editorState.getCurrentContent(),
+    new SelectionState({
+      anchorKey,
+      anchorOffset: startPositionOfWord,
+      focusKey: anchorKey,
+      focusOffset: endPositionOfWord,
+    }),
+    getObjectName(selectedObject));
+
+  const editorStateWithObjectName = EditorState.push(
+    editorState,
+    contentState,
+    'replace-text'
+  );
+
+
+  // const contentStateWithEntity = newContentState.createEntity(
+  //   "LINK",
+  //   "MUTABLE",
+  //   { object: { id: selectedObject.author_permlink }, url: 'http://waivio.com/' },
+  // );
+
+
+  console.log('selectedText', selectedText, convertToRaw(editorStateWithObjectName.getCurrentContent()));
 };

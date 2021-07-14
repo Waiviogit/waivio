@@ -9,10 +9,10 @@ import {
   getEditorExtendedSelectionState,
 } from '../../../../store/editorStore/editorSelectors';
 import {
+  selectObjectFromSearch,
   setEditorExtendedState,
-  setShowEditorSearch,
 } from '../../../../store/editorStore/editorActions';
-import { getIsStartSearchObject, getSearchObjectsResults } from "../../../../store/searchStore/searchSelectors";
+import { getSearchObjectsResults } from "../../../../store/searchStore/searchSelectors";
 
 const mapStateToProps = state => ({
   wordForCountWidth: getWordForCountWidth(state),
@@ -21,12 +21,11 @@ const mapStateToProps = state => ({
   editorState: getEditorExtendedState(state),
   oldSelectionState: getEditorExtendedSelectionState(state),
   searchObjectsResults: getSearchObjectsResults(state),
-  isStartSearchObj: getIsStartSearchObject(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  closeSearchInput: () => dispatch(setShowEditorSearch(false)),
   setEditorExtendedState: editorState => dispatch(setEditorExtendedState(editorState)),
+  selectObjectFromSearch: (object) => dispatch(selectObjectFromSearch(object)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorSearchObjects);

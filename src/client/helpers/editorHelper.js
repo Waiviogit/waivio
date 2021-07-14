@@ -382,7 +382,7 @@ export const setCursorPosition = (es, actionType, oldSelectionState, value) => {
   }
 };
 
-export const checkCursorInSearch = editorState => {
+export const checkCursorInSearch = (editorState, isTypeSpace) => {
   const selectionState = editorState.getSelection();
   const anchorKey = selectionState.getAnchorKey();
   const currentContent = editorState.getCurrentContent();
@@ -396,15 +396,16 @@ export const checkCursorInSearch = editorState => {
   if (endPositionOfWord === -1) endPositionOfWord = blockText.length;
 
   const searchString = blockText.substring(startPositionOfWord + 1, endPositionOfWord).trim();
+  const spaceCondition = isTypeSpace ? !(size(searchString.match(/\s/g)) <= 2) : searchString.includes(' ');
 
-  if (!(searchString.includes(' ') || startPositionOfWord === -1)) {
+  if (!(spaceCondition || startPositionOfWord === -1) && blockText[start] !== '#') {
     const wordForCountWidth = blockText.substring(startPositionOfWord + 1, start).trim();
 
     return {
-      isNeedOpenSearch: true,
+      searchString,
       startPositionOfWord,
       wordForCountWidth,
-      searchString,
+      isNeedOpenSearch: true,
     };
   }
 
