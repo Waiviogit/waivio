@@ -15,16 +15,19 @@ import {
   getMoreUserTransactionHistory,
   getUserAccountHistory,
   clearTransactionsHistory,
-} from '../store/walletStore/walletActions';
-import { getUserAccount } from '../store/usersStore/usersActions';
+} from '../../store/walletStore/walletActions';
+import { getUserAccount } from '../../store/usersStore/usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import Transfer from '../wallet/Transfer/Transfer';
 import Withdraw from '../wallet/Withdraw/WithDraw';
 import PowerUpOrDown from '../wallet/PowerUpOrDown';
-import { getCryptosPriceHistory, getScreenSize } from '../store/appStore/appSelectors';
-import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
-import { getUser } from '../store/usersStore/usersSelectors';
+import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
 import {
   getIsErrorLoading,
   getIsloadingMoreTransactions,
@@ -41,7 +44,7 @@ import {
   getUsersAccountHistoryLoading,
   getUsersTransactions,
   hasMoreGuestActions,
-} from '../store/walletStore/walletSelectors';
+} from '../../store/walletStore/walletSelectors';
 
 import './UserWallet.less';
 

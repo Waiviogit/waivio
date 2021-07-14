@@ -3,7 +3,7 @@ import {
   getComments,
   getCommentsList,
   getCommentsPendingVotes,
-} from '../../store/commentsStore/commentsSelectors';
+} from '../../../store/commentsStore/commentsSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

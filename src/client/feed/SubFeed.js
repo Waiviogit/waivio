@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Cookie from 'js-cookie';
 import { isEmpty, isNil, uniq } from 'lodash';
-import { showPostModal } from '../store/appStore/appActions';
+import { showPostModal } from '../../store/appStore/appActions';
 import {
   getFeedContent,
   getUserFeedContent,
   getMoreFeedContent,
   getMoreUserFeedContent,
-} from '../store/feedStore/feedActions';
+} from '../../store/feedStore/feedActions';
 
 import {
   getFeedFromState,
@@ -33,8 +33,8 @@ import {
   getAuthenticatedUser,
   getIsAuthenticated,
   getIsLoaded,
-} from '../store/authStore/authSelectors';
-import { getFeed } from '../store/feedStore/feedSelectors';
+} from '../../store/authStore/authSelectors';
+import { getFeed } from '../../store/feedStore/feedSelectors';
 
 @withRouter
 @connect(

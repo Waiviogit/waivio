@@ -5,8 +5,8 @@ import { injectIntl } from 'react-intl';
 import { Button, Modal, message, Select, Form } from 'antd';
 import { filter, isEmpty } from 'lodash';
 import { getAppendData, getObjectName, getObjectType } from '../../../helpers/wObjectHelper';
-import { getSuitableLanguage } from '../../../store/reducers';
-import { appendObject } from '../../../store/appendStore/appendActions';
+import { getSuitableLanguage } from '../../../../store/reducers';
+import { appendObject } from '../../../../store/appendStore/appendActions';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
 import LikeSection from '../../../object/LikeSection';
@@ -15,8 +15,8 @@ import { getLanguageText } from '../../../translations';
 import FollowObjectForm from '../../FollowObjectForm';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import apiConfig from '../../../../waivioApi/config.json';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getFollowingObjectsList } from '../../../../store/userStore/userSelectors';
 
 import './AddItemModal.less';
 

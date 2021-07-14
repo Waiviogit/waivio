@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { deleteDraft } from '../../store/editorStore/editorActions';
+import { deleteDraft } from '../../../store/editorStore/editorActions';
 import { notify } from '../../app/Notification/notificationActions';
 
 @injectIntl

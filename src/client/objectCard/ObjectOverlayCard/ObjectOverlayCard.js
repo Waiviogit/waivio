@@ -10,8 +10,8 @@ import DEFAULTS from '../../object/const/defaultValues';
 import { getObjectName, getObjectAvatar, hasType } from '../../helpers/wObjectHelper';
 import { getProxyImageURL } from '../../helpers/image';
 import OverlayRewardsButton from './OverlayRewardsButton';
-import { getScreenSize } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getScreenSize } from '../../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './ObjectOverlayCard.less';
 
@@ -69,11 +69,7 @@ const ObjectOverlayCard = ({
     })} ${wobjName}`;
 
   return (
-    <div
-      className="ObjectOverlayCard"
-      key={wObject.author_permlink}
-      data-anchor={wObject.author_permlink}
-    >
+    <div className="ObjectOverlayCard" key={wObject.author_permlink}>
       {(wObject.campaigns || wObject.propositions) && (
         <OverlayRewardsButton wObject={wObject} isPropos={isProposition} intl={intl} />
       )}
@@ -88,12 +84,7 @@ const ObjectOverlayCard = ({
         </Link>
         <div className="ObjectOverlayCard__info">
           {parentName && showParent && (
-            <Link
-              to={parentLink}
-              data-anchor={wObject.author_permlink}
-              title={goToObjTitle(parentName)}
-              className="ObjectCardView__type"
-            >
+            <Link to={parentLink} title={goToObjTitle(parentName)} className="ObjectCardView__type">
               {parentName}
             </Link>
           )}
@@ -103,7 +94,6 @@ const ObjectOverlayCard = ({
               to={pathName}
               className="ObjectOverlayCard__name-truncated"
               title={goToObjTitle(objName)}
-              data-anchor={wObject.author_permlink}
             >
               {objName}
             </Link>

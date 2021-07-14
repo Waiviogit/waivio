@@ -5,8 +5,8 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './AppendCard.less';
 

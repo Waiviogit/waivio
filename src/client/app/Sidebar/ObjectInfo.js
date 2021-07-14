@@ -35,23 +35,28 @@ import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import ObjectInfoExperts from './ObjectInfoExperts';
 import LinkButton from '../../components/LinkButton/LinkButton';
-import { getIsWaivio } from '../../store/appStore/appSelectors';
-import { getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getObjectAlbums, getRelatedPhotos } from '../../store/galleryStore/gallerySelectors';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
+import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
 
 import './ObjectInfo.less';
 
 @withRouter
-@connect(state => ({
-  albums: getObjectAlbums(state),
-  isAuthenticated: getIsAuthenticated(state),
-  isWaivio: getIsWaivio(state),
-  relatedAlbum: getRelatedPhotos(state),
-}))
+@connect(
+  state => ({
+    albums: getObjectAlbums(state),
+    isAuthenticated: getIsAuthenticated(state),
+    isWaivio: getIsWaivio(state),
+    relatedAlbum: getRelatedPhotos(state),
+  }),
+  { getRelatedAlbum },
+)
 class ObjectInfo extends React.Component {
   static propTypes = {
     location: PropTypes.shape(),
     wobject: PropTypes.shape().isRequired,
+    match: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool,
@@ -60,6 +65,7 @@ class ObjectInfo extends React.Component {
     appendAlbum: PropTypes.func.isRequired,
     albums: PropTypes.shape(),
     relatedAlbum: PropTypes.shape().isRequired,
+    getRelatedAlbum: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -78,6 +84,10 @@ class ObjectInfo extends React.Component {
     showMore: {},
     countPhones: 3,
   };
+
+  componentDidMount() {
+    this.props.getRelatedAlbum(this.props.match.params.name, 10);
+  }
 
   incrementPhoneCount = 3;
 

@@ -1,5 +1,9 @@
 import { get, some, filter, isEmpty, compact, isEqual } from 'lodash';
-import { addressFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
+import {
+  addressFields,
+  addressFieldsForFormatting,
+  TYPES_OF_MENU_ITEM,
+} from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 
 export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'default_name') || '';
@@ -198,7 +202,7 @@ export const parseAddress = (wobject, hideField = []) => {
   if (isEmpty(wobject) || !wobject.address) return null;
 
   return compact(
-    Object.values(addressFields).map(fieldName => {
+    addressFieldsForFormatting.map(fieldName => {
       const parsedWobject = parseWobjectField(wobject, 'address');
 
       if (hideField.some(field => field === fieldName)) return null;

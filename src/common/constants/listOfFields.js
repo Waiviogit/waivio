@@ -71,6 +71,16 @@ export const addressFields = {
   country: 'country',
 };
 
+export const addressFieldsForFormatting = [
+  'accommodation',
+  'address',
+  'street',
+  'city',
+  'state',
+  'postalCode',
+  'country',
+];
+
 export const mapFields = {
   latitude: 'latitude',
   longitude: 'longitude',

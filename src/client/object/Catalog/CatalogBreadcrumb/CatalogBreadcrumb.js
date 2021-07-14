@@ -12,10 +12,10 @@ import {
   hasType,
   sortWobjectsByHash,
 } from '../../../helpers/wObjectHelper';
-import { setCatalogBreadCrumbs } from '../../../store/wObjectStore/wobjActions';
-import { getSuitableLanguage } from '../../../store/reducers';
+import { setCatalogBreadCrumbs } from '../../../../store/wObjectStore/wobjActions';
+import { getSuitableLanguage } from '../../../../store/reducers';
 import { getObjectsByIds } from '../../../../waivioApi/ApiClient';
-import { getBreadCrumbs, getWobjectNested } from '../../../store/wObjectStore/wObjectSelectors';
+import { getBreadCrumbs, getWobjectNested } from '../../../../store/wObjectStore/wObjectSelectors';
 
 import './CatalogBreadcrumb.less';
 

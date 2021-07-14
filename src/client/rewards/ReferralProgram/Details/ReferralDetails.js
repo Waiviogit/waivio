@@ -3,12 +3,12 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getCurrentFeesValue, getCurrentOfferPercent } from '../ReferralHelper';
-import { getUserReferralDetails } from '../../../store/referralStore/ReferralActions';
+import { getUserReferralDetails } from '../../../../store/referralStore/ReferralActions';
 import ReferralDetailsView from './ReferralDetailsView';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
-} from '../../../store/authStore/authSelectors';
+} from '../../../../store/authStore/authSelectors';
 import {
   getCampaignServerPercent,
   getIndexAbsolutePercent,
@@ -17,7 +17,7 @@ import {
   getReferralDuration,
   getReferralServerPercent,
   getSuspendedTimer,
-} from '../../../store/referralStore/referralSelectors';
+} from '../../../../store/referralStore/referralSelectors';
 
 import './ReferralDetails.less';
 

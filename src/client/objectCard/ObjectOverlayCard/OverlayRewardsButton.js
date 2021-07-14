@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { Icon } from 'antd';
-import { get, isEmpty, round } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
-import { getCurrentCurrency } from '../../store/appStore/appSelectors';
+import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
+import USDDisplay from '../../components/Utils/USDDisplay';
 
 const OverlayRewardsButton = props => {
   const ObjectOverlayCardEarnClassList = classNames('ObjectOverlayCard__earn', {
@@ -22,11 +23,7 @@ const OverlayRewardsButton = props => {
     !isEmpty(campaign.campaigns) && campaign.max_reward === campaign.min_reward;
 
   return (
-    <Link
-      data-anchor={props.wObject.author_permlink}
-      className={ObjectOverlayCardEarnClassList}
-      to={linkTo}
-    >
+    <Link className={ObjectOverlayCardEarnClassList} to={linkTo}>
       {!hasSeveralMeanings
         ? props.intl.formatMessage({
             id: 'rewards_details_earn',
@@ -36,8 +33,9 @@ const OverlayRewardsButton = props => {
             id: 'rewards_details_earn_up_to',
             defaultMessage: 'Earn up to',
           })}{' '}
-      <b data-anchor={props.wObject.author_permlink}>
-        {round(reward * currencyInfo.rate, 3)} {currencyInfo.type}{' '}
+      <b>
+        <USDDisplay value={reward} currencyDisplay="symbol" />{' '}
+        <span className="ObjectOverlayCard__currency">{currencyInfo.type}</span>{' '}
         {!props.isPropos && <Icon type="right" />}
       </b>
     </Link>

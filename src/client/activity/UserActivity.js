@@ -10,12 +10,15 @@ import {
   getMoreUserAccountHistory,
   updateAccountHistoryFilter,
   setInitialCurrentDisplayedActions,
-} from '../store/walletStore/walletActions';
-import { getUserAccount } from '../store/usersStore/usersActions';
+} from '../../store/walletStore/walletActions';
+import { getUserAccount } from '../../store/usersStore/usersActions';
 import Loading from '../components/Icon/Loading';
 import UserActivityActions from './UserActivityActions';
-import { getAuthenticatedUser, getAuthenticatedUserName } from '../store/authStore/authSelectors';
-import { getUser } from '../store/usersStore/usersSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
 import {
   getAccountHistoryFilter,
   getCurrentDisplayedActions,
@@ -25,7 +28,7 @@ import {
   getUsersAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersEstAccountsValues,
-} from '../store/walletStore/walletSelectors';
+} from '../../store/walletStore/walletSelectors';
 
 @withRouter
 @connect(

@@ -12,8 +12,8 @@ import {
 } from '../../vendor/steemitHelpers';
 import { getDownvotes } from '../../helpers/voteHelpers';
 import MuteModal from '../../widgets/MuteModal';
-import { muteAuthorComment } from '../../store/commentsStore/commentsActions';
-import { isGuestUser } from '../../store/authStore/authSelectors';
+import { muteAuthorComment } from '../../../store/commentsStore/commentsActions';
+import { isGuestUser } from '../../../store/authStore/authSelectors';
 
 import './CommentFooter.less';
 
@@ -163,7 +163,7 @@ export default class CommentFooter extends React.Component {
     const { isGuest, user, comment } = this.props;
     const voteWorth = isGuest
       ? 0
-      : await calculateVotePowerForSlider(user.name, value, comment.root_author, comment.permlink);
+      : await calculateVotePowerForSlider(user.name, value, comment.author, comment.permlink);
 
     this.setState({ sliderValue: value, voteWorth });
   };
@@ -179,7 +179,6 @@ export default class CommentFooter extends React.Component {
       pendingVotes,
     } = this.props;
     const { sliderVisible, isLiked, sliderType } = this.state;
-    const isCashout = isPostCashout(comment);
     const isFlagged = isFlaggedPost(comment.active_votes, user.name);
 
     return (
@@ -190,7 +189,6 @@ export default class CommentFooter extends React.Component {
               <Confirmation
                 onConfirm={this.handleLikeConfirm}
                 onCancel={this.handleSliderCancel}
-                isCashout={isCashout}
                 type={sliderType}
               />
             )}

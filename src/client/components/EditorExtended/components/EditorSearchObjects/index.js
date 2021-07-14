@@ -5,9 +5,9 @@ import {
   getSearchCoordinates,
   getSearchString,
   getWordForCountWidth,
-} from '../../../../store/editorStore/editorSelectors';
-import { selectObjectFromSearch } from '../../../../store/editorStore/editorActions';
-import { getSearchObjectsResults } from '../../../../store/searchStore/searchSelectors';
+} from '../../../../../store/editorStore/editorSelectors';
+import { selectObjectFromSearch } from '../../../../../store/editorStore/editorActions';
+import { getSearchObjectsResults } from '../../../../../store/searchStore/searchSelectors';
 
 const mapStateToProps = state => ({
   wordForCountWidth: getWordForCountWidth(state),

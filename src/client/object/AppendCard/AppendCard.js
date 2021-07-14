@@ -12,17 +12,17 @@ import Comments from '../../comments/Comments';
 import Slider from '../../components/Slider/Slider';
 import AppendObjButtons from '../../components/StoryFooter/AppendObjButtons';
 import { getAppendDownvotes, getAppendUpvotes } from '../../helpers/voteHelpers';
-import { voteAppends } from '../../store/wObjectStore/wobjActions';
+import { voteAppends } from '../../../store/wObjectStore/wobjActions';
 import Payout from '../../components/StoryFooter/Payout';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import ApprovingCard from './ApprovingCard';
 import { calculateVotePowerForSlider } from '../../vendor/steemitHelpers';
-import { getAuthenticatedUser, isGuestUser } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
 import {
   getShowNSFWPosts,
   getVotePercent,
   getVotingPower,
-} from '../../store/settingsStore/settingsSelectors';
+} from '../../../store/settingsStore/settingsSelectors';
 
 import '../../components/Story/Story.less';
 import '../../components/StoryFooter/StoryFooter.less';

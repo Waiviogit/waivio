@@ -12,11 +12,11 @@ import {
   searchObjectsAutoCompete,
   searchObjectTypesAutoCompete,
   searchUsersAutoCompete,
-} from '../../store/searchStore/searchActions';
+} from '../../../store/searchStore/searchActions';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
 import { getObjectName } from '../../helpers/wObjectHelper';
-import { setFiltersAndLoad } from '../../store/objectTypeStore/objectTypeActions';
+import { setFiltersAndLoad } from '../../../store/objectTypeStore/objectTypeActions';
 import HeaderButton from '../HeaderButton/HeaderButton';
 import { getTranformSearchCountData, pendingSearch } from '../../search/helpers';
 import UserSearchItem from '../../search/SearchItems/UserSearchItem';
@@ -27,7 +27,7 @@ import {
   getSearchObjectsResults,
   getSearchUsersResults,
   searchObjectTypesResults,
-} from '../../store/searchStore/searchSelectors';
+} from '../../../store/searchStore/searchSelectors';
 
 import './Topnav.less';
 
@@ -160,7 +160,7 @@ class Topnav extends React.Component {
   }
 
   handleSearchForInput(event) {
-    const value = replacer(event.target.value, '@');
+    const value = replacer(event.target.value);
     const checkIsUserExist = inpValue =>
       this.props.searchByUser.some(item => item.account === inpValue);
     const waivioValue = `waivio_${value}`;

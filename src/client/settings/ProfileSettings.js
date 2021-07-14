@@ -6,7 +6,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
 import SteemConnectAPI from '../steemConnectAPI';
-import { updateProfile, reload } from '../store/authStore/authActions';
+import { updateProfile, reload } from '../../store/authStore/authActions';
 import { getMetadata } from '../helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../helpers/socialProfiles';
@@ -23,7 +23,7 @@ import {
   getAuthenticatedUser,
   getIsReloading,
   isGuestUser,
-} from '../store/authStore/authSelectors';
+} from '../../store/authStore/authSelectors';
 
 import './Settings.less';
 

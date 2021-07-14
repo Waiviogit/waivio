@@ -18,11 +18,11 @@ import {
   setWebsiteSearchFilter,
   setWebsiteSearchType,
   unfollowSearchUser,
-} from '../../store/searchStore/searchActions';
+} from '../../../store/searchStore/searchActions';
 import Loading from '../../components/Icon/Loading';
 import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
-import { assignProposition, declineProposition } from '../../store/userStore/userActions';
+import { assignProposition, declineProposition } from '../../../store/userStore/userActions';
 import ViewMapButton from '../../widgets/ViewMapButton';
 import {
   getAllSearchLoadingMore,
@@ -36,7 +36,7 @@ import {
   getWebsiteSearchResult,
   getWebsiteSearchResultLoading,
   getWebsiteSearchString,
-} from '../../store/searchStore/searchSelectors';
+} from '../../../store/searchStore/searchSelectors';
 
 import './SearchAllResult.less';
 

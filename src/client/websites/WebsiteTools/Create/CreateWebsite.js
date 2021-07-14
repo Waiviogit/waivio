@@ -11,12 +11,12 @@ import {
   checkAvailableDomain,
   createNewWebsite,
   getParentDomainList,
-} from '../../../store/websiteStore/websiteActions';
+} from '../../../../store/websiteStore/websiteActions';
 import {
   getCreateWebsiteLoading,
   getDomainAvailableStatus,
   getParentDomain,
-} from '../../../store/websiteStore/websiteSelectors';
+} from '../../../../store/websiteStore/websiteSelectors';
 
 import './CreateWebsite.less';
 

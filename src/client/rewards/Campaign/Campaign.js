@@ -6,9 +6,11 @@ import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getCurrentCurrency } from '../../store/appStore/appSelectors';
+import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
+import { roundUpToThisIndex } from '../../../common/constants/waivio';
 
 import './Campaign.less';
+import USDDisplay from '../../components/Utils/USDDisplay';
 
 const Campaign = ({
   proposition,
@@ -25,13 +27,11 @@ const Campaign = ({
   const requiredObject = hasCampaigns ? proposition : get(proposition, ['required_object'], {});
   const minReward = get(campaign, ['min_reward'], 0);
   const maxReward = get(campaign, ['max_reward'], 0);
-  const rewardPrice = minReward
-    ? `${round(minReward * currencyInfo.rate, 2)} ${currencyInfo.type}`
-    : '';
-  const rewardMax =
-    maxReward !== minReward
-      ? `${round(maxReward * currencyInfo.rate, 2)} ${currencyInfo.type}`
-      : '';
+  const rewardMax = maxReward !== minReward ? maxReward : 0;
+  let rewardPrice = minReward || rewardPricePassed || 0;
+
+  if (campaign.reward) rewardPrice = get(campaign, 'reward', 0);
+
   const goToProducts = () =>
     history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
 
@@ -41,6 +41,8 @@ const Campaign = ({
         wObject={requiredObject}
         passedParent={requiredObject.parent}
         hovered={hovered}
+        withRewards
+        rewardPrice={!rewardMax && !rewardMaxPassed ? rewardPrice : rewardMax}
       />
       <div className="Campaign__button" role="presentation" onClick={goToProducts}>
         <Button type="primary" size="large">
@@ -53,7 +55,9 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{rewardPrice || rewardPricePassed}</span>
+                <span className="fw6 ml1">
+                  <USDDisplay value={rewardPrice} currencyDisplay={'code'} />
+                </span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -66,7 +70,14 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{rewardMax || rewardMaxPassed}</span>
+                <span className="fw6 ml1">
+                  <USDDisplay
+                    value={rewardMax || rewardMaxPassed}
+                    currencyDisplay={'none'}
+                    roundTo={roundUpToThisIndex}
+                  />{' '}
+                  {currencyInfo.type}
+                </span>
                 <Icon type="right" />
               </span>
             </React.Fragment>

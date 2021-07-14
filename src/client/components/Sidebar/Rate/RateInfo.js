@@ -1,7 +1,7 @@
 import { isEqual, sortBy } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Rate } from 'antd';
+import { Icon, Rate } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 
@@ -9,7 +9,7 @@ import { averageRate, rateCount } from './rateHelper';
 import { ratePercent } from '../../../../common/constants/listOfFields';
 import BTooltip from '../../BTooltip';
 import RateObjectModal from './RateObjectModal';
-import { getRatingFields } from '../../../store/wObjectStore/wObjectSelectors';
+import { getRatingFields } from '../../../../store/wObjectStore/wObjectSelectors';
 
 import './RateInfo.less';
 

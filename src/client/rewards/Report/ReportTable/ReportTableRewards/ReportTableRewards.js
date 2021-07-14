@@ -5,11 +5,11 @@ import { map, filter, find, get, reduce, round } from 'lodash';
 import { useSelector } from 'react-redux';
 import ReportTableRewardsRow from '../ReportTableRewards/ReportTableRewardsRow';
 import ReportTableRewardsRowTotal from './ReportTableRewardsRowTotal';
-import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
+import { getSingleReportData } from '../../../../../store/rewardsStore/rewardsSelectors';
 
 import './ReportTableRewards.less';
 
-const ReportTableRewards = ({ intl }) => {
+const ReportTableRewards = ({ intl, currencyInfo }) => {
   const singleReportData = useSelector(getSingleReportData);
   const reportUserName = get(singleReportData, ['user', 'name']);
   const getPayableInDollars = item => get(item, ['details', 'payableInDollars']);
@@ -82,8 +82,9 @@ const ReportTableRewards = ({ intl }) => {
             <th className="ReportTableRewards basicWidth">
               {intl.formatMessage({
                 id: 'total_usd',
-                defaultMessage: 'Total* (USD)',
-              })}
+                defaultMessage: 'Total*',
+              })}{' '}
+              ({currencyInfo.type})
             </th>
           </tr>
         </thead>
@@ -100,6 +101,10 @@ const ReportTableRewards = ({ intl }) => {
 
 ReportTableRewards.propTypes = {
   intl: PropTypes.shape().isRequired,
+  currencyInfo: PropTypes.shape({
+    type: PropTypes.string,
+    rate: PropTypes.number,
+  }).isRequired,
 };
 
 export default injectIntl(ReportTableRewards);

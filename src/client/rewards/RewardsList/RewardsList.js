@@ -6,16 +6,16 @@ import { map, isEmpty } from 'lodash';
 import {
   getFollowingSponsorsRewards,
   clearFollowingSponsorsRewards,
-} from '../../store/rewardsStore/rewardsActions';
+} from '../../../store/rewardsStore/rewardsActions';
 import Campaign from '../Campaign/Campaign';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import {
   getHasMoreFollowingRewards,
   getIsLoading,
   getSponsorsRewards,
-} from '../../store/rewardsStore/rewardsSelectors';
+} from '../../../store/rewardsStore/rewardsSelectors';
 
 import './RewardsList.less';
 

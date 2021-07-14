@@ -19,7 +19,7 @@ import {
   CAMPAIGNS,
 } from '../../../../common/constants/rewards';
 import { pages } from './helpers';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 
 import './MobileNavigation.less';
 

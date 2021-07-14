@@ -8,7 +8,7 @@ import {
   getCurrentDisplayedActions,
   getCurrentFilteredActions,
   getLoadingMoreUsersAccountHistory,
-} from '../store/walletStore/walletSelectors';
+} from '../../store/walletStore/walletSelectors';
 
 const UserActivitySearchMessage = ({
   loadingMoreUsersAccountHistory,

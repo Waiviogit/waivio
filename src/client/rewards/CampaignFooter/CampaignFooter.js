@@ -14,14 +14,14 @@ import Confirmation from '../../components/StoryFooter/Confirmation';
 import {
   getReservedComments,
   sendCommentMessages,
-} from '../../store/commentsStore/commentsActions';
+} from '../../../store/commentsStore/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
-import { getAppUrl, getRate } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
-import { getLocale } from '../../store/settingsStore/settingsSelectors';
-import { getCommentsFromReserved } from '../../store/rewardsStore/rewardsSelectors';
+import { getAppUrl, getRate } from '../../../store/appStore/appSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import { getCommentsFromReserved } from '../../../store/rewardsStore/rewardsSelectors';
 
 import './CampaignFooter.less';
 

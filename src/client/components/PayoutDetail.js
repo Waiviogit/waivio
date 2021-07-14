@@ -2,19 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
-import _ from 'lodash';
+import { isNumber, get, isNil, isEmpty, map } from 'lodash';
 import USDDisplay from './Utils/USDDisplay';
 import { calculatePayout, isPostCashout } from '../vendor/steemitHelpers';
 
 const AmountWithLabel = ({ id, defaultMessage, nonzero, amount }) =>
-  _.isNumber(amount) &&
+  isNumber(amount) &&
   (nonzero ? amount !== 0 : true) && (
     <div>
       <FormattedMessage
         id={id}
         defaultMessage={defaultMessage}
         values={{
-          amount: <USDDisplay value={amount} />,
+          amount: <USDDisplay value={amount} currencyDisplay="symbol" />,
         }}
       />
     </div>
@@ -33,18 +33,18 @@ AmountWithLabel.defaultProps = {
 };
 
 const getBeneficiariesPercent = user => {
-  const weight = parseFloat(_.get(user, 'weight', 0)) / 10000;
+  const weight = parseFloat(get(user, 'weight', 0)) / 10000;
 
   // eslint-disable-next-line react/style-prop-object
-  return <FormattedNumber value={_.isNan(weight) ? 0 : weight} style="percent" />;
+  return <FormattedNumber value={isNil(weight) ? 0 : weight} style="percent" />;
 };
 
 const getBeneficaries = post => {
-  const beneficiaries = _.get(post, 'beneficiaries', []);
+  const beneficiaries = get(post, 'beneficiaries', []);
 
-  if (_.isEmpty(beneficiaries)) return null;
+  if (isEmpty(beneficiaries)) return null;
 
-  return _.map(beneficiaries, user => (
+  return map(beneficiaries, user => (
     <p key={user.account}>
       <Link to={`/@${user.account}`}>{user.account}</Link>{' '}
       <span style={{ opacity: '0.5' }}>{getBeneficiariesPercent(user)}</span>

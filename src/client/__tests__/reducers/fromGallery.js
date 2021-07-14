@@ -1,7 +1,7 @@
 import {
   getIsObjectAlbumsLoading,
   getObjectAlbums,
-} from '../../store/galleryStore/gallerySelectors';
+} from '../../../store/galleryStore/gallerySelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

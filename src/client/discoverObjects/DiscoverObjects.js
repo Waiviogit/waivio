@@ -4,14 +4,14 @@ import Helmet from 'react-helmet';
 import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { getObjectTypes } from '../store/objectTypesStore/objectTypesActions';
+import { getObjectTypes } from '../../store/objectTypesStore/objectTypesActions';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverObjectsContent from './DiscoverObjectsContent';
 import ObjectsContainer from '../objects/ObjectsContainer';
 import RightSidebar from '../app/Sidebar/RightSidebar';
-import { getObjectTypesList } from '../store/objectTypesStore/objectTypesSelectors';
-import { getHelmetIcon } from '../store/appStore/appSelectors';
+import { getObjectTypesList } from '../../store/objectTypesStore/objectTypesSelectors';
+import { getHelmetIcon } from '../../store/appStore/appSelectors';
 
 import './DiscoverObjects.less';
 

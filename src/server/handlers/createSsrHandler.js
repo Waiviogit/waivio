@@ -8,7 +8,7 @@ import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 
 import { getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
-import getStore from '../../client/store/store';
+import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../common/routes/switchRoutes';
 

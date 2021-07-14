@@ -14,8 +14,8 @@ import {
   login,
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
-} from './store/authStore/authActions';
-import { getNotifications } from './store/userStore/userActions';
+} from '../store/authStore/authActions';
+import { getNotifications } from '../store/userStore/userActions';
 import {
   getRate,
   getRewardFund,
@@ -23,23 +23,23 @@ import {
   setAppUrl,
   getCurrentAppSettings,
   getWebsiteConfigForSSR,
-} from './store/appStore/appActions';
+} from '../store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import { guestUserRegex } from './helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
-import { getWebsiteObjWithCoordinates } from './store/websiteStore/websiteActions';
-import { getTranslations, getUsedLocale } from './store/appStore/appSelectors';
+import { getWebsiteObjWithCoordinates } from '../store/websiteStore/websiteActions';
+import { getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
   getIsAuthFetching,
-} from './store/authStore/authSelectors';
-import { getIsOpenWalletTable } from './store/walletStore/walletSelectors';
-import { getLocale, getNightmode } from './store/settingsStore/settingsSelectors';
+} from '../store/authStore/authSelectors';
+import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
+import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
 import WebsiteWelcomeModal from './websites/WebsiteWelcomeModal/WebsiteWelcomeModal';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
@@ -152,25 +152,26 @@ class WebsiteWrapper extends React.PureComponent {
     const token = query.get('access_token');
     const provider = query.get('socialProvider');
 
-    this.props.getCurrentAppSettings();
-    this.props.login(token, provider).then(() => {
-      batch(() => {
-        this.props.getNotifications();
-        this.props.busyLogin();
-        this.props.getRewardFund();
-        this.props.dispatchGetAuthGuestBalance();
-        this.props.getRate();
+    this.props.getCurrentAppSettings().then(() => {
+      this.props.login(token, provider).then(() => {
+        batch(() => {
+          this.props.getNotifications();
+          this.props.busyLogin();
+          this.props.getRewardFund();
+          this.props.dispatchGetAuthGuestBalance();
+          this.props.getRate();
+        });
+
+        if (token && provider) {
+          query.delete('access_token');
+          query.delete('socialProvider');
+          let queryString = query.toString();
+
+          if (queryString) queryString = `/?${queryString}`;
+
+          this.props.history.push(`${this.props.location.pathname}${queryString}`);
+        }
       });
-
-      if (token && provider) {
-        query.delete('access_token');
-        query.delete('socialProvider');
-        let queryString = query.toString();
-
-        if (queryString) queryString = `/?${queryString}`;
-
-        this.props.history.push(`${this.props.location.pathname}${queryString}`);
-      }
     });
   }
 
@@ -221,7 +222,7 @@ class WebsiteWrapper extends React.PureComponent {
               isGuestUser: username && guestUserRegex.test(username),
             }}
           >
-            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
+            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'} className="WebsiteLayout">
               {!location.pathname.includes('sign-in') && (
                 <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                   <WebsiteHeader />

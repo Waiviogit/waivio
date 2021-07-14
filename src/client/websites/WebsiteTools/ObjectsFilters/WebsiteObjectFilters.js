@@ -9,10 +9,10 @@ import { Button } from 'antd';
 import {
   getWebsiteTags,
   saveTagsCategoryForSite,
-} from '../../../store/websiteStore/websiteActions';
+} from '../../../../store/websiteStore/websiteActions';
 import TagsSelector from '../../../components/TagsSelector/TagsSelector';
 import Loading from '../../../components/Icon/Loading';
-import { getTagsSite, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
+import { getTagsSite, getWebsiteLoading } from '../../../../store/websiteStore/websiteSelectors';
 
 import './WebsiteObjectFilters.less';
 

@@ -4,8 +4,8 @@ import _ from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import * as notificationConstants from '../../common/constants/notifications';
-import { getUserMetadata } from '../store/usersStore/usersActions';
-import { getNotifications } from '../store/userStore/userActions';
+import { getUserMetadata } from '../../store/usersStore/usersActions';
+import { getNotifications } from '../../store/userStore/userActions';
 import requiresLogin from '../auth/requiresLogin';
 import NotificationReply from '../components/Navigation/Notifications/NotificationReply';
 import NotificationMention from '../components/Navigation/Notifications/NotificationMention';
@@ -41,8 +41,8 @@ import NotificationWobjectPostBell from '../components/Navigation/Notifications/
 import {
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
-} from '../store/authStore/authSelectors';
-import * as userSelectors from '../store/userStore/userSelectors';
+} from '../../store/authStore/authSelectors';
+import * as userSelectors from '../../store/userStore/userSelectors';
 
 import './Notifications.less';
 

@@ -6,8 +6,8 @@ import { getFollowersFromAPI } from '../../waivioApi/ApiClient';
 import {
   getAuthenticatedUserName,
   getAuthorizationUserFollowSort,
-} from '../store/authStore/authSelectors';
-import { changeSorting } from '../store/authStore/authActions';
+} from '../../store/authStore/authSelectors';
+import { changeSorting } from '../../store/authStore/authActions';
 
 const UserFollowers = ({ match, sort, authUser, handleChange }) => {
   const limit = 50;

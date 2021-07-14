@@ -13,7 +13,7 @@ import BTooltip from '../BTooltip';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import withAuthActions from '../../auth/withAuthActions';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './Buttons.less';
 

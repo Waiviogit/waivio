@@ -8,8 +8,8 @@ import { get, isNull, isEmpty, isNaN, includes, isString, round } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
-import { getCryptoPriceHistory } from '../../store/appStore/appActions';
-import { closeTransfer, sendPendingTransfer } from '../../store/walletStore/walletActions';
+import { getCryptoPriceHistory } from '../../../store/appStore/appActions';
+import { closeTransfer, sendPendingTransfer } from '../../../store/walletStore/walletActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -19,14 +19,17 @@ import Avatar from '../../components/Avatar';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { REWARD } from '../../../common/constants/rewards';
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
-import { saveSettings, openLinkHiveAccountModal } from '../../store/settingsStore/settingsActions';
+import {
+  saveSettings,
+  openLinkHiveAccountModal,
+} from '../../../store/settingsStore/settingsActions';
 import { createQuery } from '../../helpers/apiHelpers';
-import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
+import { getCryptosPriceHistory, getScreenSize } from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getIsAuthenticated,
   isGuestUser,
-} from '../../store/authStore/authSelectors';
+} from '../../../store/authStore/authSelectors';
 import {
   getIsTransferVisible,
   getIsVipTickets,
@@ -38,12 +41,12 @@ import {
   getTransferIsTip,
   getTransferMemo,
   getTransferTo,
-} from '../../store/walletStore/walletSelectors';
+} from '../../../store/walletStore/walletSelectors';
 import {
   getHiveBeneficiaryAccount,
   isOpenLinkModal,
-} from '../../store/settingsStore/settingsSelectors';
-import { getSearchUsersResults } from '../../store/searchStore/searchSelectors';
+} from '../../../store/settingsStore/settingsSelectors';
+import { getSearchUsersResults } from '../../../store/searchStore/searchSelectors';
 
 import './Transfer.less';
 
@@ -297,7 +300,6 @@ export default class Transfer extends React.Component {
       if (!errors) {
         const transferQuery = {
           amount: `${round(parseFloat(values.amount), 3)} ${values.currency}`,
-          memo: {},
         };
 
         if (guestUserRegex.test(values.to)) {
@@ -309,13 +311,13 @@ export default class Transfer extends React.Component {
         }
 
         if (memo) {
-          transferQuery.memo = { ...transferQuery.memo, id: memo };
+          transferQuery.memo = { ...(transferQuery.memo || {}), id: memo };
           if (values.memo) transferQuery.memo.message = values.memo;
         }
 
-        if (app) transferQuery.memo = { ...transferQuery.memo, app };
-        if (values.to && transferQuery.memo.id === REWARD.guestTransfer)
-          transferQuery.memo = { ...transferQuery.memo, to: values.to };
+        if (app) transferQuery.memo = { ...(transferQuery.memo || {}), app };
+        if (values.to && get(transferQuery, 'memo.id') === REWARD.guestTransfer)
+          transferQuery.memo = { ...(transferQuery.memo || {}), to: values.to };
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (isTip) transferQuery.memo = memo;
 

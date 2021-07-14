@@ -12,8 +12,8 @@ import {
 } from '../helpers/notificationsHelper';
 import { epochToUTC } from '../helpers/formatter';
 import Avatar from '../components/Avatar';
-import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
-import { getLatestNotification } from '../store/userStore/userSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getLatestNotification } from '../../store/userStore/userSelectors';
 
 import './NotificationPopup.less';
 

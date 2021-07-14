@@ -5,7 +5,7 @@ import {
   getObjectFields,
   getObjectTagCategory,
   getRatingFields,
-} from '../../store/wObjectStore/wObjectSelectors';
+} from '../../../store/wObjectStore/wObjectSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

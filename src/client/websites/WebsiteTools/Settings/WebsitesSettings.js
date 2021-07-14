@@ -12,9 +12,12 @@ import {
   getWebsiteSettings,
   referralUserForWebsite,
   saveWebsiteSettings,
-} from '../../../store/websiteStore/websiteActions';
+} from '../../../../store/websiteStore/websiteActions';
 import Loading from '../../../components/Icon/Loading';
-import { getSettingsSite, getWebsiteLoading } from '../../../store/websiteStore/websiteSelectors';
+import {
+  getSettingsSite,
+  getWebsiteLoading,
+} from '../../../../store/websiteStore/websiteSelectors';
 import { currencyTypes, defaultCurrency } from '../../constants/currencyTypes';
 
 import './WebsitesSettings.less';

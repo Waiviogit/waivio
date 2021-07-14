@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { PATH_NAME_DISCOVER } from '../../../common/constants/rewards';
-import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 
 import './TopNavigation.less';
 

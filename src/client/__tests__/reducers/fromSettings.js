@@ -10,7 +10,7 @@ import {
   getUpvoteSetting,
   getVotePercent,
   getVotingPower,
-} from '../../store/settingsStore/settingsSelectors';
+} from '../../../store/settingsStore/settingsSelectors';
 
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 

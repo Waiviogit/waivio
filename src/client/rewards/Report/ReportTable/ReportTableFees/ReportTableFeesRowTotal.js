@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { round } from 'lodash';
 import './ReportTableFees.less';
+import USDDisplay from '../../../../components/Utils/USDDisplay';
 
 const ReportTableFeesRowTotal = ({ intl, shareAmount, hiveAmount, usdAmount }) => {
   const share = shareAmount !== 0 ? `${round(shareAmount / 100, 2)} %` : '';
-  const usd = usdAmount !== 0 ? `$ ${round(usdAmount, 2)}` : '';
+  const usd = usdAmount !== 0 ? round(usdAmount, 2) : '';
   const hive = hiveAmount !== 0 ? `${round(hiveAmount, 3)}` : '';
 
   return (
@@ -29,7 +30,9 @@ const ReportTableFeesRowTotal = ({ intl, shareAmount, hiveAmount, usdAmount }) =
         <div className="ReportTableFeesRow__amount">{hive}</div>
       </td>
       <td>
-        <div className="ReportTableFeesRow__amount">{usd}</div>
+        <div className="ReportTableFeesRow__amount">
+          <USDDisplay value={usd} currencyDisplay="symbol" />
+        </div>
       </td>
     </tr>
   );

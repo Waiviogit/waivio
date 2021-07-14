@@ -4,12 +4,12 @@ import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
-import { pendingUpdateSuccess } from '../../store/userStore/userActions';
+import { pendingUpdateSuccess } from '../../../store/userStore/userActions';
 import { delay } from '../rewardsHelpers';
 import { getSort } from '../rewardsHelper';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
-import { getPendingUpdate } from '../../store/userStore/userSelectors';
-import { getHelmetIcon } from '../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getPendingUpdate } from '../../../store/userStore/userSelectors';
+import { getHelmetIcon } from '../../../store/appStore/appSelectors';
 
 const RewardsComponent = ({
   match,
