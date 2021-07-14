@@ -12,7 +12,7 @@ export const currencyPrefix = {
   HKD: 'HK$',
   MXN: 'MX$',
   RUB: '₽',
-  CNH: '¥',
+  CNY: '¥',
   UAH: '₴',
 };
 
