@@ -59,6 +59,7 @@ import {
   getCurrentDraft,
   getEditor,
   getEditorDraftBody,
+  getEditorDraftId,
   getEditorExtended,
   getEditorExtendedState,
   getEditorLinkedObjects,
@@ -842,6 +843,7 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
   const state = getState();
   const titleValue = getTitleValue(state);
   const editorState = getEditorExtendedState(state);
+  const draftId = getEditorDraftId(state);
   const { startPositionOfWord, searchString } = checkCursorInSearch(editorState, true);
   const selectionState = editorState.getSelection();
   const anchorKey = selectionState.getAnchorKey();
@@ -891,7 +893,7 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
 
   const updatedStateBody = { body: toMarkdown(newEditorBody), title: titleValue };
 
-  dispatch(saveDraft(updatedStateBody));
+  dispatch(saveDraft(draftId, null, updatedStateBody));
   dispatch(setShowEditorSearch(false));
   dispatch(firstParseLinkedObjects(updatedStateBody));
 };

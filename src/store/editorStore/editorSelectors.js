@@ -23,8 +23,6 @@ export const getEditor = createSelector([editorState], state => state.editor);
 
 export const getLinkedObjects = createSelector([getEditor], state => state.linkedObjects);
 
-export const getEditorDraftId = createSelector([getEditor], state => state.draftIdEditor);
-
 export const getEditorDraftBody = createSelector([getEditor], state => state.draftContent.body);
 
 export const getCurrentDraft = createSelector(
@@ -40,6 +38,8 @@ export const getEditorLinkedObjects = createSelector(getEditor, state =>
 export const getEditorLinkedObjectsCards = createSelector(getEditor, state =>
   get(state, 'hideLinkedObjects', []),
 );
+
+export const getEditorDraftId = createSelector(getEditor, state => get(state, 'draftId', null));
 
 export const getFilteredObjectCards = createSelector(getEditor, editor =>
   uniqBy(
