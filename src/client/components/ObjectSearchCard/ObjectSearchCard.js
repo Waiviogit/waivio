@@ -9,7 +9,7 @@ import { getProxyImageURL } from '../../helpers/image';
 import './ObjectSearchCard.less';
 
 const ObjectSearchCard = props => {
-  const { object, type, parentElement } = props;
+  const { object, type, parentElement, isNeedType } = props;
   const parent = get(object, objectFields.parent);
   const parentString = getObjectName(parent);
   const titleSrting = get(object, objectFields.title, '');
@@ -31,7 +31,7 @@ const ObjectSearchCard = props => {
           {parentString || titleSrting || description || ''}
         </div>
       </div>
-      <div className="object-search-card__content-type">{type}</div>
+      {!isNeedType && <div className="object-search-card__content-type">{type}</div>}
     </div>
   );
 };
@@ -40,6 +40,7 @@ ObjectSearchCard.propTypes = {
   object: PropTypes.shape(),
   type: PropTypes.string,
   parentElement: PropTypes.string,
+  isNeedType: PropTypes.bool,
 };
 
 ObjectSearchCard.defaultProps = {
@@ -47,6 +48,7 @@ ObjectSearchCard.defaultProps = {
   name: '',
   type: '',
   parentElement: '',
+  isNeedType: false,
 };
 
 export default ObjectSearchCard;

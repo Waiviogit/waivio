@@ -4,7 +4,7 @@ import { message } from 'antd';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { convertToRaw, EditorState } from 'draft-js';
+import { convertToRaw, EditorState, Modifier, SelectionState, ContentState } from 'draft-js';
 import {
   forEach,
   get,
@@ -53,21 +53,30 @@ import {
   getFilteredLinkedObjects,
   updatedHideObjectsPaste,
   getLinkedObjects as getLinkedObjectsHelper,
+  checkCursorInSearch,
 } from '../../client/helpers/editorHelper';
 import {
   getCurrentDraft,
   getEditor,
   getEditorDraftBody,
+  getEditorDraftId,
   getEditorExtended,
+  getEditorExtendedState,
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
   getIsEditorSaving,
   getLinkedObjects,
+  getTitleValue,
 } from './editorSelectors';
 import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
 import { getObjectName } from '../../client/helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../client/helpers/postHelpers';
-import { createEditorState, Entity, fromMarkdown } from '../../client/components/EditorExtended';
+import {
+  createEditorState,
+  Entity,
+  fromMarkdown,
+  toMarkdown,
+} from '../../client/components/EditorExtended';
 import { setObjPercents } from '../../client/helpers/wObjInfluenceHelper';
 import { extractLinks } from '../../client/helpers/parser';
 
@@ -105,12 +114,22 @@ export const SET_EDITOR_STATE = '@editor/SET_EDITOR_STATE';
 
 export const SET_CLEAR_STATE = '@editor/SET_CLEAR_STATE';
 export const LEAVE_EDITOR = '@editor/LEAVE_EDITOR';
+export const SET_IS_SHOW_EDITOR_SEARCH = '@editor/SET_IS_SHOW_EDITOR_SEARCH';
+export const SET_SEARCH_COORDINATES = '@editor/SET_CURSOR_COORDINATES';
+export const SET_EDITOR_EXTENDED_STATE = '@editor/SET_EDITOR_EXTENDED_STATE';
+export const SET_EDITOR_SEARCH_VALUE = '@editor/SET_EDITOR_SEARCH_VALUE';
+export const CLEAR_EDITOR_SEARCH_OBJECTS = '@editor/CLEAR_EDITOR_SEARCH_OBJECTS';
 
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
 export const setEditorState = payload => ({ type: SET_EDITOR_STATE, payload });
 export const setClearState = () => ({ type: SET_CLEAR_STATE });
 export const leaveEditor = () => ({ type: LEAVE_EDITOR });
+export const setShowEditorSearch = payload => ({ type: SET_IS_SHOW_EDITOR_SEARCH, payload });
+export const setCursorCoordinates = payload => ({ type: SET_SEARCH_COORDINATES, payload });
+export const setEditorExtendedState = payload => ({ type: SET_EDITOR_EXTENDED_STATE, payload });
+export const setEditorSearchValue = payload => ({ type: SET_EDITOR_SEARCH_VALUE, payload });
+export const clearEditorSearchObjects = () => ({ type: CLEAR_EDITOR_SEARCH_OBJECTS });
 
 const saveDraftRequest = (draft, intl) => dispatch =>
   dispatch({
@@ -748,7 +767,7 @@ export const getRestoreObjects = (rawContent, newObject, draftId) => async (disp
   return { rawContentUpdated, newLinkedObjectsCards };
 };
 
-export const firstParseLinkedObjects = draft => async dispatch => {
+export const firstParseLinkedObjects = (draft, objName, cursorPosition) => async dispatch => {
   if (draft) {
     const entities = fromMarkdown({ body: draft.body });
     const { rawContentUpdated } = await dispatch(getRestoreObjects(entities));
@@ -767,10 +786,30 @@ export const firstParseLinkedObjects = draft => async dispatch => {
       }),
     );
 
+    let editorState = EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent)));
+
+    const parsedEditorState = convertToRaw(editorState.getCurrentContent());
+
+    if (objName && cursorPosition) {
+      const cursorBlock = parsedEditorState.blocks.find(
+        block => block.text.lastIndexOf(objName, cursorPosition) !== -1,
+      );
+      const newCursorPosition = cursorPosition - 2 + objName.length;
+      const updateSelection = new SelectionState({
+        anchorKey: cursorBlock.key,
+        anchorOffset: newCursorPosition,
+        focusKey: cursorBlock.key,
+        focusOffset: newCursorPosition,
+      });
+
+      editorState = EditorState.acceptSelection(editorState, updateSelection);
+      editorState = EditorState.forceSelection(editorState, updateSelection);
+    }
+
     dispatch(
       setUpdatedEditorExtendedData({
         titleValue: draftContent.title,
-        editorState: EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent))),
+        editorState,
       }),
     );
   }
@@ -810,4 +849,75 @@ export const handlePasteText = html => async (dispatch, getState) => {
       }),
     );
   }
+};
+
+const addEntityRange = (block, startPosition, objName, entityKey) => {
+  return {
+    ...block,
+    entityRanges: [
+      ...block.entityRanges,
+      { offset: startPosition, length: objName.length, key: entityKey },
+    ],
+  };
+};
+
+export const selectObjectFromSearch = selectedObject => (dispatch, getState) => {
+  const state = getState();
+  const titleValue = getTitleValue(state);
+  const editorState = getEditorExtendedState(state);
+  const draftId = getEditorDraftId(state);
+  const { startPositionOfWord, searchString } = checkCursorInSearch(editorState, true);
+  const selectionState = editorState.getSelection();
+  const anchorKey = selectionState.getAnchorKey();
+  const currentContent = editorState.getCurrentContent();
+  const endPositionOfWord = startPositionOfWord + searchString.length + 1;
+  const objectName = getObjectName(selectedObject);
+
+  const contentState = Modifier.replaceText(
+    currentContent,
+    new SelectionState({
+      anchorKey,
+      anchorOffset: startPositionOfWord,
+      focusKey: anchorKey,
+      focusOffset: endPositionOfWord,
+    }),
+    objectName,
+  );
+
+  const editorStateWithObjectName = EditorState.push(editorState, contentState, 'replace-text');
+
+  const { blocks, entityMap } = convertToRaw(editorStateWithObjectName.getCurrentContent());
+
+  const newEntityMap = {
+    ...entityMap,
+    [Object.values(entityMap).length]: {
+      type: 'OBJECT',
+      mutability: 'IMMUTABLE',
+      data: {
+        object: { id: selectedObject.author_permlink },
+        url: getObjectUrl(selectedObject.id || selectedObject.author_permlink),
+      },
+    },
+  };
+
+  const newEditorBody = {
+    blocks: blocks.map(block =>
+      block.key === anchorKey
+        ? addEntityRange(block, startPositionOfWord, objectName, Object.values(entityMap).length)
+        : block,
+    ),
+    entityMap: newEntityMap,
+  };
+
+  const updatedStateBody = { body: toMarkdown(newEditorBody), title: titleValue };
+  const newCursor = new SelectionState({
+    anchorKey,
+    anchorOffset: endPositionOfWord,
+    focusKey: anchorKey,
+    focusOffset: endPositionOfWord,
+  });
+
+  dispatch(setShowEditorSearch(false));
+  dispatch(saveDraft(draftId, null, updatedStateBody));
+  dispatch(firstParseLinkedObjects(updatedStateBody, objectName, endPositionOfWord));
 };

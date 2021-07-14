@@ -16,7 +16,7 @@ import {
   without,
   isString,
 } from 'lodash';
-import { convertToRaw, EditorState, genKey, SelectionState } from 'draft-js';
+import { convertToRaw, EditorState, genKey, Modifier, SelectionState } from 'draft-js';
 
 import { Block, createEditorState, Entity } from '../components/EditorExtended';
 
@@ -337,4 +337,75 @@ export const parseImagesFromBlocks = editorState => {
   }
 
   return EditorState.moveFocusToEnd(newEditorState);
+};
+
+export const addTextToCursor = (editorState, text) => {
+  const content = Modifier.insertText(
+    editorState.getCurrentContent(),
+    editorState.getSelection(),
+    text,
+    null,
+  );
+
+  return EditorState.push(editorState, content, 'insert-characters');
+};
+
+export const checkCursorInSearch = (editorState, isTypeSpace) => {
+  const selectionState = editorState.getSelection();
+  const anchorKey = selectionState.getAnchorKey();
+  const currentContent = editorState.getCurrentContent();
+  const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+  const start = selectionState.getStartOffset();
+  const blockText = currentContentBlock.getText();
+
+  const startPositionOfWord = blockText.lastIndexOf('#', start);
+  let endPositionOfWord = blockText.indexOf(' ', start);
+
+  if (endPositionOfWord === -1) endPositionOfWord = blockText.length;
+
+  const searchString = blockText.substring(startPositionOfWord + 1, endPositionOfWord).trim();
+  const spaceCondition = isTypeSpace
+    ? !(size(searchString.match(/\s/g)) <= 2)
+    : searchString.includes(' ');
+
+  if (!(spaceCondition || startPositionOfWord === -1) && blockText[start] !== '#') {
+    const wordForCountWidth = blockText.substring(startPositionOfWord + 1, start).trim();
+
+    return {
+      searchString,
+      startPositionOfWord,
+      wordForCountWidth,
+      isNeedOpenSearch: true,
+    };
+  }
+
+  return {
+    isNeedOpenSearch: false,
+  };
+};
+
+export const replaceTextOnChange = (editorState, text, selectionState) => {
+  const anchorKey = selectionState.getAnchorKey();
+  const currentContent = editorState.getCurrentContent();
+  const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+  const start = selectionState.getStartOffset();
+  const blockText = currentContentBlock.getText();
+
+  const startPositionOfWord = blockText.lastIndexOf('#', start);
+  let endPositionOfWord = blockText.indexOf(' ', start);
+
+  if (endPositionOfWord === -1) endPositionOfWord = blockText.length;
+
+  const contentWithoutDash = Modifier.replaceText(
+    editorState.getCurrentContent(),
+    new SelectionState({
+      anchorKey,
+      anchorOffset: startPositionOfWord + 1,
+      focusKey: anchorKey,
+      focusOffset: endPositionOfWord,
+    }),
+    text,
+  );
+
+  return EditorState.push(editorState, contentWithoutDash, 'replace-text');
 };

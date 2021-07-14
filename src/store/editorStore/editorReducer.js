@@ -18,6 +18,10 @@ const defaultState = {
   loadingImg: false,
   editor: {},
   editorExtended: {
+    wordForCountWidth: '',
+    searchSelectionState: {},
+    searchCoordinates: {},
+    isShowEditorSearch: false,
     isMounted: false,
     editorEnabled: false,
     prevEditorState: null,
@@ -157,6 +161,7 @@ const editor = (state = defaultState, action) => {
         editor: action.payload,
         editorExtended: {
           ...state.editorExtended,
+          isShowEditorSearch: false,
           editorState: EditorState.moveFocusToEnd(
             createEditorState(fromMarkdown(action.payload.draftContent)),
           ),
@@ -183,8 +188,47 @@ const editor = (state = defaultState, action) => {
           linkedObjects: uniqBy(get(state, 'editor.linkedObjects', []), '_id'),
         },
       };
+    case editorActions.SET_IS_SHOW_EDITOR_SEARCH:
+      return {
+        ...state,
+        editorExtended: {
+          ...state.editorExtended,
+          isShowEditorSearch: action.payload,
+        },
+      };
+    case editorActions.SET_SEARCH_COORDINATES:
+      return {
+        ...state,
+        editorExtended: {
+          ...state.editorExtended,
+          searchString: action.payload.searchString,
+          searchCoordinates: action.payload.selectionBoundary,
+          searchSelectionState: action.payload.selectionState,
+          wordForCountWidth: action.payload.wordForCountWidth,
+        },
+      };
+    case editorActions.SET_EDITOR_EXTENDED_STATE:
+      return {
+        ...state,
+        editorExtended: {
+          ...state.editorExtended,
+          editorState: action.payload,
+          prevEditorState: state.editorExtended.editorState,
+        },
+      };
     case editorActions.SET_CLEAR_STATE:
       return defaultState;
+    case editorActions.CLEAR_EDITOR_SEARCH_OBJECTS:
+      return {
+        ...state,
+        editorExtended: {
+          ...state.editorExtended,
+          wordForCountWidth: '',
+          searchSelectionState: {},
+          searchCoordinates: {},
+          isShowEditorSearch: false,
+        },
+      };
     case editorActions.LEAVE_EDITOR:
       return {
         ...defaultState,
