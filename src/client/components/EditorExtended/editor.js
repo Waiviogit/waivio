@@ -30,6 +30,9 @@ import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 import ImageSideButton from './components/sides/ImageSideButton';
 import { encodeImageFileAsURL } from './model/content';
+import { addTextToCursor } from '../../helpers/editorHelper';
+import EditorSearchObjects from './components/EditorSearchObjects';
+import { getSelection, getSelectionRect } from './util';
 
 import './index.less';
 
@@ -86,6 +89,10 @@ export default class MediumDraftEditor extends React.Component {
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
     isVimeo: PropTypes.bool,
+    isShowEditorSearch: PropTypes.bool.isRequired,
+    setShowEditorSearch: PropTypes.func.isRequired,
+    setSearchCoordinates: PropTypes.func.isRequired,
+    closeSearch: PropTypes.func,
   };
 
   static defaultProps = {
@@ -117,6 +124,7 @@ export default class MediumDraftEditor extends React.Component {
     handlePastedText: () => {},
     intl: {},
     handleHashtag: () => {},
+    closeSearch: () => {},
     isVimeo: false,
   };
 
@@ -426,6 +434,57 @@ export default class MediumDraftEditor extends React.Component {
 
         return HANDLED;
       }
+    } else if (command === KEY_COMMANDS.showSearchBlock) {
+      // открытие поиска
+      const block = getCurrentBlock(editorState);
+      const blockText = block.getText();
+      const selectionState = editorState.getSelection();
+      const start = selectionState.getStartOffset();
+      const newES = addTextToCursor(editorState, '#');
+
+      this.onChange(newES);
+      const newESSelectionState = newES.getSelection();
+
+      if (blockText[start - 1] === ' ') {
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
+
+        this.props.setSearchCoordinates({
+          selectionBoundary,
+          selectionState: newESSelectionState,
+        });
+        this.props.setShowEditorSearch(true);
+      }
+
+      return HANDLED;
+    } else if (command === KEY_COMMANDS.backspace) {
+      // закрытие поиска на backspace
+      if (this.props.isShowEditorSearch) {
+        const selectionState = editorState.getSelection();
+        const anchorKey = selectionState.getAnchorKey();
+        const currentContent = editorState.getCurrentContent();
+        const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+        const start = selectionState.getStartOffset();
+        const end = selectionState.getEndOffset();
+        const textBlock = currentContentBlock.getText();
+        const deletedString = textBlock.substring(start - 1, end);
+
+        if (textBlock[start - 1] === '#' || deletedString.includes(' #')) {
+          this.props.setShowEditorSearch(false);
+        }
+      }
+
+      return NOT_HANDLED;
+    } else if (command === KEY_COMMANDS.space) {
+      // проверка, если нету результатов поиска, то закрываем поиск
+      const newES = addTextToCursor(editorState, ' ');
+
+      this.onChange(newES);
+      if (this.props.isShowEditorSearch) {
+        this.props.closeSearch();
+      }
+
+      return NOT_HANDLED;
     }
     /* else if (command === KEY_COMMANDS.addNewBlock()) {
       const { editorState } = this.props;
@@ -683,6 +742,7 @@ export default class MediumDraftEditor extends React.Component {
       editorEnabled,
       disableToolbar,
       showLinkEditToolbar,
+      isShowEditorSearch,
       toolbarConfig,
       isVimeo,
     } = this.props;
@@ -739,6 +799,7 @@ export default class MediumDraftEditor extends React.Component {
               handleObjectSelect={this.props.handleObjectSelect}
             />
           )}
+          {isShowEditorSearch && <EditorSearchObjects editorNode={this._editorNode} />}
           {!disableToolbar && (
             <Toolbar
               ref={c => {

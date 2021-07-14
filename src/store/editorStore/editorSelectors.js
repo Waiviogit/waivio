@@ -23,8 +23,6 @@ export const getEditor = createSelector([editorState], state => state.editor);
 
 export const getLinkedObjects = createSelector([getEditor], state => state.linkedObjects);
 
-export const getEditorDraftId = createSelector([getEditor], state => state.draftIdEditor);
-
 export const getEditorDraftBody = createSelector([getEditor], state => state.draftContent.body);
 
 export const getCurrentDraft = createSelector(
@@ -41,6 +39,8 @@ export const getEditorLinkedObjectsCards = createSelector(getEditor, state =>
   get(state, 'hideLinkedObjects', []),
 );
 
+export const getEditorDraftId = createSelector(getEditor, state => get(state, 'draftId', null));
+
 export const getFilteredObjectCards = createSelector(getEditor, editor =>
   uniqBy(
     filter(
@@ -52,3 +52,32 @@ export const getFilteredObjectCards = createSelector(getEditor, editor =>
 );
 
 export const getEditorExtended = createSelector([editorState], state => state.editorExtended);
+
+export const getSearchCoordinates = createSelector(
+  [getEditorExtended],
+  state => state.searchCoordinates,
+);
+
+export const getEditorExtendedState = createSelector(
+  [getEditorExtended],
+  state => state.editorState,
+);
+
+export const getEditorExtendedSelectionState = createSelector(
+  [getEditorExtended],
+  state => state.searchSelectionState,
+);
+
+export const getEditorExtendedIsShowSearch = createSelector(
+  [getEditorExtended],
+  state => state.isShowEditorSearch,
+);
+
+export const getSearchString = createSelector([getEditorExtended], state => state.searchString);
+
+export const getWordForCountWidth = createSelector(
+  [getEditorExtended],
+  state => state.wordForCountWidth,
+);
+
+export const getTitleValue = createSelector([getEditorExtended], state => state.titleValue);
