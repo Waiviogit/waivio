@@ -19,7 +19,7 @@ import {
 import { convertToRaw, EditorState, genKey, Modifier, SelectionState } from 'draft-js';
 
 import { Block, createEditorState, Entity } from '../components/EditorExtended';
-import { CURSOR_ACTIONS } from "../components/EditorExtended/util/constants";
+import { CURSOR_ACTIONS } from '../components/EditorExtended/util/constants';
 
 const mockPhoto = '📷';
 
@@ -355,7 +355,7 @@ export const getIsNodeInPath = (className, event) => {
   const path = [];
   let node = event.target;
 
-  while(node !== document.body) {
+  while (node !== document.body) {
     path.push(node.className);
     node = node.parentNode;
   }
@@ -396,7 +396,9 @@ export const checkCursorInSearch = (editorState, isTypeSpace) => {
   if (endPositionOfWord === -1) endPositionOfWord = blockText.length;
 
   const searchString = blockText.substring(startPositionOfWord + 1, endPositionOfWord).trim();
-  const spaceCondition = isTypeSpace ? !(size(searchString.match(/\s/g)) <= 2) : searchString.includes(' ');
+  const spaceCondition = isTypeSpace
+    ? !(size(searchString.match(/\s/g)) <= 2)
+    : searchString.includes(' ');
 
   if (!(spaceCondition || startPositionOfWord === -1) && blockText[start] !== '#') {
     const wordForCountWidth = blockText.substring(startPositionOfWord + 1, start).trim();
@@ -432,13 +434,10 @@ export const replaceTextOnChange = (editorState, text, selectionState) => {
       anchorKey,
       anchorOffset: startPositionOfWord + 1,
       focusKey: anchorKey,
-      focusOffset: endPositionOfWord
+      focusOffset: endPositionOfWord,
     }),
-    text);
-
-  return EditorState.push(
-    editorState,
-    contentWithoutDash,
-    'replace-text'
+    text,
   );
+
+  return EditorState.push(editorState, contentWithoutDash, 'replace-text');
 };

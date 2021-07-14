@@ -1,8 +1,8 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { debounce } from "lodash";
+import { debounce } from 'lodash';
 
-import SearchOneObject from "../SearchOneObject";
+import SearchOneObject from '../SearchOneObject';
 
 import './EditorSearchAutoComplete.less';
 
@@ -33,7 +33,7 @@ const EditorSearchAutoComplete = ({
   }, []);
 
   const blurInput = event => {
-    handleBlur(event, searchInput.current.value)
+    handleBlur(event, searchInput.current.value);
   };
 
   const debouncedSearch = debounce(searchStr => searchObjects(searchStr), 100);
@@ -50,10 +50,10 @@ const EditorSearchAutoComplete = ({
 
   const resizeInput = value => {
     fakeBlockInput.current.innerHTML = value.replace(/\s/g, '&nbsp;');
-    setInputWidth(fakeBlockInput.current.offsetWidth + 3)
+    setInputWidth(fakeBlockInput.current.offsetWidth + 3);
   };
 
-  const handleOnInput = (event) => resizeInput(event.target.value);
+  const handleOnInput = event => resizeInput(event.target.value);
 
   return (
     <div className="editor_search">
@@ -69,9 +69,11 @@ const EditorSearchAutoComplete = ({
         className="editor_search__input"
       />
       <div>
-        {searchObjectsResults.map(obj => <SearchOneObject obj={obj} objectSelect={handleSelectObject} key={obj.id} />)}
+        {searchObjectsResults.map(obj => (
+          <SearchOneObject obj={obj} objectSelect={handleSelectObject} key={obj.id} />
+        ))}
       </div>
-      <div className='fake-div__input' ref={fakeBlockInput} />
+      <div className="fake-div__input" ref={fakeBlockInput} />
     </div>
   );
 };

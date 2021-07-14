@@ -1,10 +1,13 @@
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 import EditorSearchAutoComplete from './EditorSearchAutoComplete';
-import { searchObjectsAutoCompete } from "../../../../../store/searchStore/searchActions";
-import { getIsWaivio } from "../../../../../store/appStore/appSelectors";
-import { getIsStartSearchObject, getSearchObjectsResults } from "../../../../../store/searchStore/searchSelectors";
-import { selectObjectEditorSearch } from "../../../../../store/editorStore/editorActions";
+import { searchObjectsAutoCompete } from '../../../../../store/searchStore/searchActions';
+import { getIsWaivio } from '../../../../../store/appStore/appSelectors';
+import {
+  getIsStartSearchObject,
+  getSearchObjectsResults,
+} from '../../../../../store/searchStore/searchSelectors';
+import { selectObjectEditorSearch } from '../../../../../store/editorStore/editorActions';
 
 const mapStateToProps = state => ({
   isWaivio: getIsWaivio(state),
@@ -22,7 +25,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     selectObjectSearch: object => dispatch(selectObjectEditorSearch(object)),
     searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, isWaivio)),
-  }
+  };
 };
 
 export default connect(mapStateToProps, null, mergeProps)(EditorSearchAutoComplete);

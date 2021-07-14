@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { size } from 'lodash';
 
-import SearchOneObject from "./SearchOneObject";
+import SearchOneObject from './SearchOneObject';
 
 import './EditorSearchObjects.less';
 
@@ -30,25 +30,26 @@ const EditorSearchObjects = ({
     const screenLeft = parentBoundary.left + selectionCenter;
 
     if (screenLeft < 0) left = -parentBoundary.left;
-    if (wordForCountWidth) left -= (fakeLeftPositionBlock.current.offsetWidth);
-    setCoordinates({ top, left: left + 15});
+    if (wordForCountWidth) left -= fakeLeftPositionBlock.current.offsetWidth;
+    setCoordinates({ top, left: left + 15 });
   }, [editorNode]);
 
   const handleSelectObject = object => selectObjectFromSearch(object);
 
   return (
     <React.Fragment>
-      {!!size(searchObjectsResults) && <div
-        ref={inputWrapper}
-        className="editor-search-objects"
-        style={{ top: coordinates.top, left: coordinates.left }}
-      >
-        {searchObjectsResults.map(obj => <SearchOneObject obj={obj} objectSelect={handleSelectObject} key={obj.id}/>)}
-      </div>}
-      <div
-        ref={fakeLeftPositionBlock}
-        className='fake-position-left'
-      />
+      {!!size(searchObjectsResults) && (
+        <div
+          ref={inputWrapper}
+          className="editor-search-objects"
+          style={{ top: coordinates.top, left: coordinates.left }}
+        >
+          {searchObjectsResults.map(obj => (
+            <SearchOneObject obj={obj} objectSelect={handleSelectObject} key={obj.id} />
+          ))}
+        </div>
+      )}
+      <div ref={fakeLeftPositionBlock} className="fake-position-left" />
     </React.Fragment>
   );
 };

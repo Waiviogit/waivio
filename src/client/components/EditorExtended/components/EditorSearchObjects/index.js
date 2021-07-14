@@ -12,7 +12,7 @@ import {
   selectObjectFromSearch,
   setEditorExtendedState,
 } from '../../../../store/editorStore/editorActions';
-import { getSearchObjectsResults } from "../../../../store/searchStore/searchSelectors";
+import { getSearchObjectsResults } from '../../../../store/searchStore/searchSelectors';
 
 const mapStateToProps = state => ({
   wordForCountWidth: getWordForCountWidth(state),
@@ -25,7 +25,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   setEditorExtendedState: editorState => dispatch(setEditorExtendedState(editorState)),
-  selectObjectFromSearch: (object) => dispatch(selectObjectFromSearch(object)),
+  selectObjectFromSearch: object => dispatch(selectObjectFromSearch(object)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorSearchObjects);

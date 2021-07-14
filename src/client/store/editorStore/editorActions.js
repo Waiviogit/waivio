@@ -52,22 +52,30 @@ import {
   getCurrentDraftContent,
   getFilteredLinkedObjects,
   updatedHideObjectsPaste,
-  getLinkedObjects as getLinkedObjectsHelper, checkCursorInSearch,
+  getLinkedObjects as getLinkedObjectsHelper,
+  checkCursorInSearch,
 } from '../../helpers/editorHelper';
 import {
   getCurrentDraft,
   getEditor,
   getEditorDraftBody,
-  getEditorExtended, getEditorExtendedSelectionState, getEditorExtendedState,
+  getEditorExtended,
+  getEditorExtendedState,
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
   getIsEditorSaving,
   getLinkedObjects,
+  getTitleValue,
 } from './editorSelectors';
 import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../helpers/postHelpers';
-import { createEditorState, Entity, fromMarkdown } from '../../components/EditorExtended';
+import {
+  createEditorState,
+  Entity,
+  fromMarkdown,
+  toMarkdown,
+} from '../../components/EditorExtended';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import { extractLinks } from '../../helpers/parser';
 
@@ -820,40 +828,70 @@ export const handlePasteText = html => async (dispatch, getState) => {
   }
 };
 
-export const selectObjectFromSearch = (selectedObject) => (dispatch, getState) => {
+const addEntityRange = (block, startPosition, objName, entityKey) => {
+  return {
+    ...block,
+    entityRanges: [
+      ...block.entityRanges,
+      { offset: startPosition, length: objName.length, key: entityKey },
+    ],
+  };
+};
+
+export const selectObjectFromSearch = selectedObject => (dispatch, getState) => {
   const state = getState();
+  const titleValue = getTitleValue(state);
   const editorState = getEditorExtendedState(state);
   const { startPositionOfWord, searchString } = checkCursorInSearch(editorState, true);
   const selectionState = editorState.getSelection();
   const anchorKey = selectionState.getAnchorKey();
   const currentContent = editorState.getCurrentContent();
-  const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-  const selectedText = currentContentBlock.getText();
   const endPositionOfWord = startPositionOfWord + searchString.length + 1;
 
   const contentState = Modifier.replaceText(
-    editorState.getCurrentContent(),
+    currentContent,
     new SelectionState({
       anchorKey,
       anchorOffset: startPositionOfWord,
       focusKey: anchorKey,
       focusOffset: endPositionOfWord,
     }),
-    getObjectName(selectedObject));
-
-  const editorStateWithObjectName = EditorState.push(
-    editorState,
-    contentState,
-    'replace-text'
+    getObjectName(selectedObject),
   );
 
+  const editorStateWithObjectName = EditorState.push(editorState, contentState, 'replace-text');
 
-  // const contentStateWithEntity = newContentState.createEntity(
-  //   "LINK",
-  //   "MUTABLE",
-  //   { object: { id: selectedObject.author_permlink }, url: 'http://waivio.com/' },
-  // );
+  const { blocks, entityMap } = convertToRaw(editorStateWithObjectName.getCurrentContent());
 
+  const newEntityMap = {
+    ...entityMap,
+    [Object.values(entityMap).length]: {
+      type: 'OBJECT',
+      mutability: 'IMMUTABLE',
+      data: {
+        object: { id: selectedObject.author_permlink },
+        url: getObjectUrl(selectedObject.id || selectedObject.author_permlink),
+      },
+    },
+  };
 
-  console.log('selectedText', selectedText, convertToRaw(editorStateWithObjectName.getCurrentContent()));
+  const newEditorBody = {
+    blocks: blocks.map(block =>
+      block.key === anchorKey
+        ? addEntityRange(
+            block,
+            startPositionOfWord,
+            getObjectName(selectedObject),
+            Object.values(entityMap).length,
+          )
+        : block,
+    ),
+    entityMap: newEntityMap,
+  };
+
+  const updatedStateBody = { body: toMarkdown(newEditorBody), title: titleValue };
+
+  dispatch(saveDraft(updatedStateBody));
+  dispatch(setShowEditorSearch(false));
+  dispatch(firstParseLinkedObjects(updatedStateBody));
 };

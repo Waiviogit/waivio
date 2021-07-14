@@ -434,7 +434,8 @@ export default class MediumDraftEditor extends React.Component {
 
         return HANDLED;
       }
-    } else if (command === KEY_COMMANDS.showSearchBlock) { // открытие поиска
+    } else if (command === KEY_COMMANDS.showSearchBlock) {
+      // открытие поиска
       const block = getCurrentBlock(editorState);
       const blockText = block.getText();
       const selectionState = editorState.getSelection();
@@ -456,7 +457,8 @@ export default class MediumDraftEditor extends React.Component {
       }
 
       return HANDLED;
-    } else if (command === KEY_COMMANDS.backspace) { // закрытие поиска на backspace
+    } else if (command === KEY_COMMANDS.backspace) {
+      // закрытие поиска на backspace
       if (this.props.isShowEditorSearch) {
         const selectionState = editorState.getSelection();
         const anchorKey = selectionState.getAnchorKey();
@@ -473,8 +475,8 @@ export default class MediumDraftEditor extends React.Component {
       }
 
       return NOT_HANDLED;
-    }
-    else if (command === KEY_COMMANDS.space) { // проверка, если нету результатов поиска, то закрываем поиск
+    } else if (command === KEY_COMMANDS.space) {
+      // проверка, если нету результатов поиска, то закрываем поиск
       const newES = addTextToCursor(editorState, ' ');
 
       this.onChange(newES);

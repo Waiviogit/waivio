@@ -1,3 +1,3 @@
-import SearchOneObject from "./SearchOneObject";
+import SearchOneObject from './SearchOneObject';
 
 export default SearchOneObject;

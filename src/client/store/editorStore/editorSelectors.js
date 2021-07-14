@@ -73,12 +73,11 @@ export const getEditorExtendedIsShowSearch = createSelector(
   state => state.isShowEditorSearch,
 );
 
-export const getSearchString = createSelector(
-  [getEditorExtended],
-  state => state.searchString,
-);
+export const getSearchString = createSelector([getEditorExtended], state => state.searchString);
 
 export const getWordForCountWidth = createSelector(
   [getEditorExtended],
   state => state.wordForCountWidth,
 );
+
+export const getTitleValue = createSelector([getEditorExtended], state => state.titleValue);

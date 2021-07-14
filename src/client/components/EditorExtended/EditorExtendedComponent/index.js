@@ -10,10 +10,16 @@ import {
   setUpdatedEditorExtendedData,
 } from '../../../store/editorStore/editorActions';
 import EditorExtended from './EditorExtended';
-import { getEditorExtended, getEditorExtendedIsShowSearch } from '../../../store/editorStore/editorSelectors';
-import { searchObjectsAutoCompete } from "../../../store/searchStore/searchActions";
-import { getIsWaivio } from "../../../store/appStore/appSelectors";
-import { getIsStartSearchObject, getSearchObjectsResults } from "../../../store/searchStore/searchSelectors";
+import {
+  getEditorExtended,
+  getEditorExtendedIsShowSearch,
+} from '../../../store/editorStore/editorSelectors';
+import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActions';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import {
+  getIsStartSearchObject,
+  getSearchObjectsResults,
+} from '../../../store/searchStore/searchSelectors';
 
 const mapStateToProps = state => ({
   isWaivio: getIsWaivio(state),

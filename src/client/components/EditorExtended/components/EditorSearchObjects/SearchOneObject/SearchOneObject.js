@@ -1,8 +1,8 @@
 import * as React from 'react';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-import ObjectSearchCard from "../../../../ObjectSearchCard/ObjectSearchCard";
-import { getObjectName } from "../../../../../helpers/wObjectHelper";
+import ObjectSearchCard from '../../../../ObjectSearchCard/ObjectSearchCard';
+import { getObjectName } from '../../../../../helpers/wObjectHelper';
 
 import './SearchOneObject.less';
 
@@ -10,7 +10,7 @@ const SearchOneObject = ({ objectSelect, obj }) => {
   const handleSelectObject = () => objectSelect(obj);
 
   return (
-    <div onClick={handleSelectObject} className='object-card'>
+    <div onClick={handleSelectObject} className="object-card">
       <ObjectSearchCard
         key={obj.id}
         object={obj}
@@ -20,7 +20,7 @@ const SearchOneObject = ({ objectSelect, obj }) => {
       />
     </div>
   );
-}
+};
 
 SearchOneObject.propTypes = {
   obj: PropTypes.shape().isRequired,

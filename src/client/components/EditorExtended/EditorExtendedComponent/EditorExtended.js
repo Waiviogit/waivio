@@ -7,7 +7,7 @@ import { convertToRaw, SelectionState } from 'draft-js';
 import { fromMarkdown, Editor as MediumDraftEditor, createEditorState } from '../index';
 import { SIDE_BUTTONS } from '../model/content';
 import { checkCursorInSearch, parseImagesFromBlocks } from '../../../helpers/editorHelper';
-import { getSelection, getSelectionRect } from "../util";
+import { getSelection, getSelectionRect } from '../util';
 
 const MAX_LENGTH = 255;
 
@@ -52,13 +52,15 @@ const Editor = props => {
     props.setUpdatedEditorData({ hideLinkedObjects: newLinkedObjectsCards });
   };
 
-  const debouncedSearch = useCallback(debounce(searchStr => props.searchObjects(searchStr, props.isWaivio), 150), []);
+  const debouncedSearch = useCallback(
+    debounce(searchStr => props.searchObjects(searchStr, props.isWaivio), 150),
+    [],
+  );
 
   const handleContentChange = updatedEditorState => {
     const updatedEditorStateParsed = parseImagesFromBlocks(updatedEditorState);
     const searchInfo = checkCursorInSearch(updatedEditorStateParsed, isTypeSpace);
 
-    // console.log('searchInfo', searchInfo);
     if (searchInfo.isNeedOpenSearch) {
       if (!props.isShowEditorSearch) {
         const selectionState = updatedEditorStateParsed.getSelection();
@@ -86,7 +88,6 @@ const Editor = props => {
     } else {
       props.setShowEditorSearch(false);
     }
-    console.log('newContent', convertToRaw(updatedEditorStateParsed.getCurrentContent()))
     onChange(updatedEditorStateParsed);
     props.onChange(
       convertToRaw(updatedEditorStateParsed.getCurrentContent()),
