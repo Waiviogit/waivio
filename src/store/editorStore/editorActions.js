@@ -767,7 +767,7 @@ export const getRestoreObjects = (rawContent, newObject, draftId) => async (disp
   return { rawContentUpdated, newLinkedObjectsCards };
 };
 
-export const firstParseLinkedObjects = draft => async dispatch => {
+export const firstParseLinkedObjects = (draft, objName, cursorPosition) => async dispatch => {
   if (draft) {
     const entities = fromMarkdown({ body: draft.body });
     const { rawContentUpdated } = await dispatch(getRestoreObjects(entities));
@@ -786,10 +786,29 @@ export const firstParseLinkedObjects = draft => async dispatch => {
       }),
     );
 
+    let editorState = EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent)));
+
+    const parsedEditorState = convertToRaw(editorState.getCurrentContent());
+
+    if (objName && cursorPosition) {
+      const cursorBlock = parsedEditorState.blocks.find(block =>
+        block.text.lastIndexOf(objName, cursorPosition),
+      );
+      const updateSelection = new SelectionState({
+        anchorKey: cursorBlock.key,
+        anchorOffset: cursorPosition - 2 + objName.length,
+        focusKey: cursorBlock.key,
+        focusOffset: cursorPosition - 2 + objName.length,
+      });
+
+      editorState = EditorState.acceptSelection(editorState, updateSelection);
+      editorState = EditorState.forceSelection(editorState, updateSelection);
+    }
+
     dispatch(
       setUpdatedEditorExtendedData({
         titleValue: draftContent.title,
-        editorState: EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent))),
+        editorState,
       }),
     );
   }
@@ -851,6 +870,7 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
   const anchorKey = selectionState.getAnchorKey();
   const currentContent = editorState.getCurrentContent();
   const endPositionOfWord = startPositionOfWord + searchString.length + 1;
+  const objectName = getObjectName(selectedObject);
 
   const contentState = Modifier.replaceText(
     currentContent,
@@ -860,7 +880,7 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
       focusKey: anchorKey,
       focusOffset: endPositionOfWord,
     }),
-    getObjectName(selectedObject),
+    objectName,
   );
 
   const editorStateWithObjectName = EditorState.push(editorState, contentState, 'replace-text');
@@ -882,20 +902,21 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
   const newEditorBody = {
     blocks: blocks.map(block =>
       block.key === anchorKey
-        ? addEntityRange(
-            block,
-            startPositionOfWord,
-            getObjectName(selectedObject),
-            Object.values(entityMap).length,
-          )
+        ? addEntityRange(block, startPositionOfWord, objectName, Object.values(entityMap).length)
         : block,
     ),
     entityMap: newEntityMap,
   };
 
   const updatedStateBody = { body: toMarkdown(newEditorBody), title: titleValue };
+  const newCursor = new SelectionState({
+    anchorKey,
+    anchorOffset: endPositionOfWord,
+    focusKey: anchorKey,
+    focusOffset: endPositionOfWord,
+  });
 
-  dispatch(saveDraft(draftId, null, updatedStateBody));
   dispatch(setShowEditorSearch(false));
-  dispatch(firstParseLinkedObjects(updatedStateBody));
+  dispatch(saveDraft(draftId, null, updatedStateBody));
+  dispatch(firstParseLinkedObjects(updatedStateBody, objectName, endPositionOfWord));
 };
