@@ -13,6 +13,7 @@ const EditorSearchObjects = ({
   wordForCountWidth,
   searchObjectsResults,
   selectObjectFromSearch,
+  clearEditorSearchObjects,
 }) => {
   const inputWrapper = React.useRef(null);
   const fakeLeftPositionBlock = React.useRef(null);
@@ -35,6 +36,10 @@ const EditorSearchObjects = ({
       left = window.innerWidth - 300;
     }
     setCoordinates({ top, left: left + 15 });
+
+    return () => {
+      clearEditorSearchObjects();
+    };
   }, [editorNode]);
 
   const handleSelectObject = object => selectObjectFromSearch(object);
@@ -63,6 +68,7 @@ EditorSearchObjects.propTypes = {
   searchCoordinates: PropTypes.shape().isRequired,
   selectObjectFromSearch: PropTypes.func.isRequired,
   searchObjectsResults: PropTypes.shape().isRequired,
+  clearEditorSearchObjects: PropTypes.func.isRequired,
 };
 
 EditorSearchObjects.defaultProps = {

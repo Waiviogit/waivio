@@ -218,6 +218,17 @@ const editor = (state = defaultState, action) => {
       };
     case editorActions.SET_CLEAR_STATE:
       return defaultState;
+    case editorActions.CLEAR_EDITOR_SEARCH_OBJECTS:
+      return {
+        ...state,
+        editorExtended: {
+          ...state.editorExtended,
+          wordForCountWidth: '',
+          searchSelectionState: {},
+          searchCoordinates: {},
+          isShowEditorSearch: false,
+        },
+      };
     case editorActions.LEAVE_EDITOR:
       return {
         ...defaultState,

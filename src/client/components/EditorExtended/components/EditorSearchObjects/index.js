@@ -6,7 +6,10 @@ import {
   getSearchString,
   getWordForCountWidth,
 } from '../../../../../store/editorStore/editorSelectors';
-import { selectObjectFromSearch } from '../../../../../store/editorStore/editorActions';
+import {
+  clearEditorSearchObjects,
+  selectObjectFromSearch,
+} from '../../../../../store/editorStore/editorActions';
 import { getSearchObjectsResults } from '../../../../../store/searchStore/searchSelectors';
 
 const mapStateToProps = state => ({
@@ -18,6 +21,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   selectObjectFromSearch: object => dispatch(selectObjectFromSearch(object)),
+  clearEditorSearchObjects: object => dispatch(clearEditorSearchObjects(object)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorSearchObjects);
