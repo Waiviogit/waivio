@@ -1,4 +1,4 @@
-export default (messageFactory, validators, userName) => ({
+export default (messageFactory, validators, userName, currency) => ({
   campaignName: {
     name: 'campaignName',
     label: messageFactory('campaign_name', 'campaign name'),
@@ -41,9 +41,26 @@ export default (messageFactory, validators, userName) => ({
       'The campaign parameters are specific to the type of campaign',
     ),
   },
+  baseCurrency: {
+    name: 'baseCurrency',
+    label: messageFactory('base_currency', 'Base currency'),
+    rules: [
+      {
+        required: true,
+        message: messageFactory('select_base_currency', 'Please, select your campaign currency!'),
+      },
+    ],
+    options: {
+      reviews: messageFactory('reviews', 'Reviews'),
+    },
+    caption: messageFactory(
+      'disclaimer_campaign_currency',
+      'Disclaimer: Exchange rates are provided by third parties and may not be accurate.',
+    ),
+  },
   budget: {
     name: 'budget',
-    label: messageFactory('campaign_budget', 'Campaign budget (monthly, USD)'),
+    label: messageFactory('campaign_budget', 'Campaign budget (monthly, {currency})', { currency }),
     rules: [
       {
         max: 10,
@@ -67,7 +84,9 @@ export default (messageFactory, validators, userName) => ({
   },
   reward: {
     name: 'reward',
-    label: messageFactory('reward_per_review_STEEM', 'Reward (per review, USD)'),
+    label: messageFactory('reward_per_review_STEEM', 'Reward (per review, {currency})', {
+      currency,
+    }),
     rules: [
       {
         max: 10,

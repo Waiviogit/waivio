@@ -13,6 +13,8 @@ import { setDataForGlobalReport } from '../../../store/rewardsStore/rewardsActio
 import { getObjectName } from '../../helpers/wObjectHelper';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { currencyTypes } from '../../websites/constants/currencyTypes';
+import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 
 @injectIntl
 @connect(
@@ -29,7 +31,7 @@ class ReportsForm extends Component {
     loading: false,
     openFrom: false,
     openTill: false,
-    currency: 'hive',
+    currency: 'HIVE',
     amount: 0,
     sponsor: {},
     object: {},
@@ -143,12 +145,10 @@ class ReportsForm extends Component {
       globalReport: true,
       filters: {
         payable: get(data, ['amount']),
-        // eslint-disable-next-line no-underscore-dangle
         endDate: endDate._i,
-        // eslint-disable-next-line no-underscore-dangle
         startDate: startDate._i,
         objects: objectsNames,
-        currency: get(data, ['currency']).toLowerCase(),
+        currency: get(data, ['currency']),
         processingFees: get(data, ['fees']) || false,
       },
     };
@@ -194,14 +194,10 @@ class ReportsForm extends Component {
 
     const renderSponsor =
       (!isEmpty(sponsor) && sponsor.account) || sponsor.name ? (
-        <div className="CreateReportForm__objects-wrap">
-          <ReviewItem
-            key={sponsor}
-            object={sponsor}
-            removeReviewObject={this.removeSponsor}
-            isUser
-          />
-        </div>
+        <SelectUserForAutocomplete
+          account={sponsor.name || sponsor.account}
+          resetUser={this.removeSponsor}
+        />
       ) : null;
 
     const renderObjects = !isEmpty(objects)
@@ -242,7 +238,7 @@ class ReportsForm extends Component {
                   id: 'find_users_placeholder',
                   defaultMessage: 'Find user',
                 })}
-                style={{ width: '100%' }}
+                style={{ width: '100%', marginBottom: '10px' }}
                 autoFocus={false}
               />,
             )}
@@ -351,8 +347,11 @@ class ReportsForm extends Component {
                     style={{ width: '120px', left: '15px' }}
                     onChange={this.handleSelectChange}
                   >
-                    <Option value="usd">USD</Option>
-                    <Option value="hive">HIVE</Option>
+                    {['HIVE', ...currencyTypes].map(curr => (
+                      <Option key={curr} value={curr}>
+                        {curr}
+                      </Option>
+                    ))}
                   </Select>,
                 )}
               </Form.Item>

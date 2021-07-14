@@ -98,6 +98,7 @@ class CreateRewardForm extends React.Component {
     campaignId: '',
     isDuplicate: false,
     isOpenAddChild: false,
+    currency: 'USD',
   };
 
   componentDidMount = async () => {
@@ -259,7 +260,6 @@ class CreateRewardForm extends React.Component {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const minExpertise = Number(data.minExpertise);
     const minExpertisePrepared = getMinExpertisePrepared({ minExpertise, rewardFund, rate });
-
     const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
@@ -288,11 +288,11 @@ class CreateRewardForm extends React.Component {
         data.compensationAccount && data.compensationAccount.account
           ? data.compensationAccount.account
           : '',
-      usersLegalNotice: data.usersLegalNotice ? data.usersLegalNotice : '',
+      usersLegalNotice: data.usersLegalNotice || '',
       match_bots: sponsorAccounts,
-      // eslint-disable-next-line no-underscore-dangle
       expired_at: data.expiredAt._d,
       reservation_timetable: data.targetDays,
+      currency: data.baseCurrency,
     };
 
     if (data.description) preparedObject.description = data.description;
@@ -472,16 +472,20 @@ class CreateRewardForm extends React.Component {
       });
     },
 
-    messageFactory: (id, defaultMessage) => {
+    messageFactory: (id, defaultMessage, options = {}) => {
       const { intl } = this.props;
 
-      return intl.formatMessage({
-        id,
-        defaultMessage,
-      });
+      return intl.formatMessage(
+        {
+          id,
+          defaultMessage,
+        },
+        options,
+      );
     },
 
     handleSelectChange: () => {},
+    handleCurrencyChanges: currency => this.setState(() => ({ currency })),
   };
 
   handleCreateDuplicate = () => {
@@ -559,6 +563,7 @@ class CreateRewardForm extends React.Component {
         isDuplicate={isDuplicate}
         handleCreateDuplicate={this.handleCreateDuplicate}
         isOpenAddChild={this.state.isOpenAddChild}
+        currency={this.state.currency}
       />
     );
   }
