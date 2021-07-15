@@ -169,9 +169,9 @@ export const formatDate = (intl, date) => {
   }
 };
 
-export const convertDigits = (number, isHive) => {
+export const convertDigits = number => {
   if (number) {
-    return parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
+    return parseFloat(Math.round(number * 1000) / 1000).toFixed(3);
   }
 
   return 0;

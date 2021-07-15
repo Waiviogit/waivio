@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, DatePicker, Form, Select } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 
 import { validateDate } from '../WalletHelper';
@@ -27,23 +28,17 @@ const TableFilter = ({
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
       <Form.Item
-        label={intl.formatMessage({
-          id: 'accounts',
-          defaultMessage: 'Accounts:',
-        })}
+        label={
+          <span className="WalletTable__accountsLabel">
+            {intl.formatMessage({
+              id: 'accounts',
+              defaultMessage: 'Accounts',
+            })}
+          </span>
+        }
       >
         <div>
-          {getFieldDecorator('filterAccounts', {
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'table_accounts_validation',
-                  defaultMessage: 'Field "Accounts" is required',
-                }),
-              },
-            ],
-          })(
+          {getFieldDecorator('filterAccounts')(
             <SearchUsersAutocomplete
               handleSelect={handleSelectUser}
               className="WalletTable__userSearch"
@@ -51,6 +46,14 @@ const TableFilter = ({
             />,
           )}
         </div>
+        {isEmpty(filterUsersList) && (
+          <span className="WalletTable__error">
+            {intl.formatMessage({
+              id: 'table_accounts_validation',
+              defaultMessage: 'Field "Accounts" is required',
+            })}
+          </span>
+        )}
         <div className="WalletTable__selectedUserWrap">
           {filterUsersList.map(acc => (
             <SelectUserForAutocomplete key={acc} account={acc} resetUser={deleteUser} />

@@ -12,6 +12,7 @@ import ReviewItem from './ReviewItem';
 import { validatorMessagesCreator, validatorsCreator } from './validators';
 import fieldsData from './fieldsData';
 import { getObjectName, getObjectType } from '../../helpers/wObjectHelper';
+import { currencyTypes } from '../../websites/constants/currencyTypes';
 
 const { Option } = Select;
 
@@ -62,9 +63,9 @@ const CreateFormRenderer = props => {
     getFieldValue,
     primaryObject,
     secondaryObjectsList,
-    compensationAccount,
+    props.currency,
   );
-  const fields = fieldsData(handlers.messageFactory, validators, user.name);
+  const fields = fieldsData(handlers.messageFactory, validators, user.name, props.currency);
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
   const disabled = (isDisabled && !isDuplicate && !isEmpty(campaignId)) || loading;
 
@@ -208,6 +209,22 @@ const CreateFormRenderer = props => {
             </Select>,
           )}
           <div className="CreateReward__field-caption">{fields.campaignType.caption}</div>
+        </Form.Item>
+
+        <Form.Item label={fields.baseCurrency.label}>
+          {getFieldDecorator(fields.baseCurrency.name, {
+            rules: fields.baseCurrency.rules,
+            initialValue: props.currency,
+          })(
+            <Select onChange={handlers.handleCurrencyChanges} disabled={disabled}>
+              {currencyTypes.map(currency => (
+                <Option key={currency} value={currency}>
+                  {currency}
+                </Option>
+              ))}
+            </Select>,
+          )}
+          <div className="CreateReward__field-caption">{fields.baseCurrency.caption}</div>
         </Form.Item>
 
         <Form.Item label={fields.budget.label}>
@@ -570,6 +587,7 @@ CreateFormRenderer.propTypes = {
   commissionAgreement: PropTypes.number,
   handlers: PropTypes.shape({
     handleAddSponsorToList: PropTypes.func.isRequired,
+    handleCurrencyChanges: PropTypes.func.isRequired,
     removeSponsorObject: PropTypes.func.isRequired,
     setPrimaryObject: PropTypes.func.isRequired,
     removePrimaryObject: PropTypes.func.isRequired,
@@ -597,6 +615,7 @@ CreateFormRenderer.propTypes = {
   primaryObject: PropTypes.shape(),
   loading: PropTypes.bool.isRequired,
   parentPermlink: PropTypes.string,
+  currency: PropTypes.string.isRequired,
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,

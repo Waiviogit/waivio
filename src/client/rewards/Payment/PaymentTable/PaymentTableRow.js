@@ -14,12 +14,10 @@ import { getObjectName } from '../../../helpers/wObjectHelper';
 
 import './PaymentTable.less';
 
-const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink }) => {
+const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
   const getConvertDigits = obj =>
-    obj.type === 'transfer'
-      ? `-${convertDigits(obj.amount, isHive)}`
-      : convertDigits(obj.amount, isHive);
+    obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
   const dispatch = useDispatch();
   const toggleModalReport = () => {
     const requestParams = {
@@ -233,9 +231,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink
         />
       </td>
       <td>{sponsor.amount ? getConvertDigits(sponsor) : 0}</td>
-      <td className="PaymentTable__balance-column">
-        {convertDigits(sponsor.balance, isHive) ? convertDigits(sponsor.balance, isHive) : 0}
-      </td>
+      <td className="PaymentTable__balance-column">{convertDigits(sponsor.balance) || 0}</td>
     </tr>
   );
 };
@@ -244,13 +240,11 @@ PaymentTableRow.propTypes = {
   intl: PropTypes.shape().isRequired,
   sponsor: PropTypes.shape().isRequired,
   isReports: PropTypes.bool,
-  isHive: PropTypes.bool,
   reservationPermlink: PropTypes.string,
 };
 
 PaymentTableRow.defaultProps = {
   isReports: false,
-  isHive: false,
   reservationPermlink: '',
 };
 

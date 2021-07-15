@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { map } from 'lodash';
 import PaymentTableRow from './PaymentTableRow';
 import './PaymentTable.less';
 
-const PaymentTable = ({ intl, sponsors, isReports, isHive, reservationPermlink }) => (
+const PaymentTable = ({ intl, sponsors, isReports, currency, reservationPermlink }) => (
   <table className="PaymentTable">
     <thead>
       <tr>
@@ -22,28 +22,32 @@ const PaymentTable = ({ intl, sponsors, isReports, isHive, reservationPermlink }
           {intl.formatMessage({ id: 'paymentTable_details', defaultMessage: `Details` })}
         </th>
         <th className="PaymentTable basicWidth">
-          {intl.formatMessage({
-            id: `${isHive ? 'paymentTable_amount' : 'paymentTable_amount_USD'}`,
-            defaultMessage: `${isHive ? 'Amount HIVE' : 'Amount USD'}`,
-          })}
+          {intl.formatMessage(
+            {
+              id: 'paymentTable_amount',
+              defaultMessage: 'Amount {currency}',
+            },
+            { currency },
+          )}
         </th>
         <th className="PaymentTable basicWidth">
-          {intl.formatMessage({
-            id: `${isHive ? 'paymentTable_balance' : 'paymentTable_balance_USD'}`,
-            defaultMessage: `${isHive ? 'Balance HIVE' : 'Balance USD'}`,
-          })}
+          {intl.formatMessage(
+            {
+              id: 'paymentTable_balance',
+              defaultMessage: 'Balance {currency}',
+            },
+            { currency },
+          )}
         </th>
       </tr>
     </thead>
     <tbody>
-      {_.map(sponsors, sponsor => (
+      {map(sponsors, sponsor => (
         <PaymentTableRow
           {...{
-            // eslint-disable-next-line no-underscore-dangle
             key: sponsor._id,
             sponsor,
             isReports,
-            isHive,
             reservationPermlink,
           }}
         />
@@ -58,12 +62,14 @@ PaymentTable.propTypes = {
   isReports: PropTypes.bool,
   isHive: PropTypes.bool,
   reservationPermlink: PropTypes.string,
+  currency: PropTypes.string,
 };
 
 PaymentTable.defaultProps = {
   isReports: false,
   isHive: false,
   reservationPermlink: '',
+  currency: 'HIVE',
 };
 
 export default injectIntl(PaymentTable);

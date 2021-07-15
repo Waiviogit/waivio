@@ -21,7 +21,7 @@ const Payout = ({ intl, post }) => {
             'Payout--rejected': payout.isPayoutDeclined,
           })}
         >
-          <USDDisplay value={currentPayout} />
+          <USDDisplay value={currentPayout} currencyDisplay="symbol" />
         </span>
       </BTooltip>
       {post.percent_hbd === 0 && (

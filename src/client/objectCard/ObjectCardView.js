@@ -14,7 +14,6 @@ import { getCurrentCurrency, getRate, getScreenSize } from '../../store/appStore
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
-import { roundUpToThisIndex } from '../../common/constants/waivio';
 
 import './ObjectCardView.less';
 
@@ -159,36 +158,29 @@ const ObjectCardView = ({
           <div className="ObjectCardView__rewardsInfo">
             {Boolean(wObject.price) && (
               <span title={wObject.price} className="ObjectCardView__rewardsPrice">
-                PRICE:{' '}
-                {truncate(wObject.price, {
-                  length: 10,
-                  separator: '...',
-                })}{' '}
-                |{' '}
+                PRICE: {wObject.price} |{' '}
               </span>
             )}
-            <b>
-              {intl.formatMessage({
-                id: 'you_earn',
-                defaultMessage: 'YOU EARN',
-              })}
-              :
-            </b>{' '}
-            {isReserved ? (
-              <React.Fragment>
-                <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b> HIVE
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
+            <span className="ObjectCardView__earnWrap">
+              <b>
+                {intl.formatMessage({
+                  id: 'you_earn',
+                  defaultMessage: 'YOU EARN',
+                })}
+                :
+              </b>{' '}
+              {isReserved ? (
+                <React.Fragment>
+                  <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b> HIVE
+                </React.Fragment>
+              ) : (
                 <USDDisplay
                   value={rewardPrice}
                   currencyDisplay="symbol"
                   style={{ color: '#f97b38', fontWeight: 'bolder' }}
-                  roundTo={roundUpToThisIndex}
-                />{' '}
-                {currency.type}
-              </React.Fragment>
-            )}
+                />
+              )}
+            </span>
           </div>
         )}
       </div>

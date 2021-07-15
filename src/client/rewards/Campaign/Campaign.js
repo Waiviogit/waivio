@@ -56,12 +56,7 @@ const Campaign = ({
               </span>
               <span>
                 <span className="fw6 ml1">
-                  <USDDisplay
-                    value={rewardPrice}
-                    currencyDisplay={'none'}
-                    roundTo={roundUpToThisIndex}
-                  />{' '}
-                  {currencyInfo.type}
+                  <USDDisplay value={rewardPrice} currencyDisplay={'code'} />
                 </span>
                 <Icon type="right" />
               </span>

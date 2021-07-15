@@ -1,6 +1,7 @@
 import { get, isEmpty, remove, findIndex, isEqual, uniqBy } from 'lodash';
 import * as searchActions from './searchActions';
 import { userToggleFollow } from '../../client/search/helpers';
+import { CLEAR_EDITOR_SEARCH_OBJECTS } from '../editorStore/editorActions';
 
 const initialState = {
   loading: true,
@@ -531,6 +532,13 @@ export default (state = initialState, action) => {
       return {
         ...state,
         searchInBox: action.payload,
+      };
+    }
+
+    case CLEAR_EDITOR_SEARCH_OBJECTS: {
+      return {
+        ...state,
+        searchObjectsResults: [],
       };
     }
 

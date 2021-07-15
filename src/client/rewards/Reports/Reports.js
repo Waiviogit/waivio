@@ -9,22 +9,17 @@ import './Reports.less';
 
 const Reports = ({ intl, userName }) => {
   const [sponsors, setSponsors] = useState({});
-  const [isHive, setIsHive] = useState(true);
-
+  const [currency, setCurrency] = useState('HIVE');
   const requestParams = {
     sponsor: userName,
     globalReport: true,
   };
 
-  const getIsHive = currency => currency === 'hive';
-
-  const getHistories = (params, currency) => {
+  const getHistories = (params, curr) => {
+    setCurrency(curr);
     getLenders(params)
       .then(data => {
         setSponsors(data.histories);
-        const hive = currency ? getIsHive(currency) : isHive;
-
-        setIsHive(hive);
       })
       .catch(e => console.error(e));
   };
@@ -35,21 +30,17 @@ const Reports = ({ intl, userName }) => {
 
   return (
     <div className="Reports">
-      <React.Fragment>
-        <div className="Reports__wrap">
-          <div className="Reports__wrap-title">
-            {intl.formatMessage({
-              id: 'reports',
-              defaultMessage: `Reports`,
-            })}{' '}
-            :
-          </div>
-        </div>
-        <WrappedNormalLoginForm intl={intl} userName={userName} getHistories={getHistories} />
-        {!isEmpty(sponsors) && (
-          <PaymentTable sponsors={sponsors} isReports userName={userName} isHive={isHive} />
-        )}
-      </React.Fragment>
+      <div className="Reports__wrap-title">
+        {intl.formatMessage({
+          id: 'reports',
+          defaultMessage: `Reports`,
+        })}{' '}
+        :
+      </div>
+      <WrappedNormalLoginForm intl={intl} userName={userName} getHistories={getHistories} />
+      {!isEmpty(sponsors) && (
+        <PaymentTable sponsors={sponsors} isReports userName={userName} currency={currency} />
+      )}
     </div>
   );
 };

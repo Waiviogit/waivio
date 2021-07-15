@@ -5,36 +5,41 @@ import { useSelector } from 'react-redux';
 import { round } from 'lodash';
 
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
+import { currencyPrefix } from '../../websites/constants/currencyTypes';
 
-const USDDisplay = ({ value, currencyDisplay, style, roundTo }) => {
+const USDDisplay = ({ value, currencyDisplay, style }) => {
   const currencyInfo = useSelector(getCurrentCurrency);
   const negative = value < 0;
-  const absValue = round(Math.abs(value) * currencyInfo.rate, roundTo);
+  const absValue = Math.abs(value);
+  const precision = absValue > 0.01 || absValue === 0 ? 2 : 3;
+  const sum = round(absValue * currencyInfo.rate, precision).toFixed(precision);
+  const formattedCurrency = num => {
+    switch (currencyDisplay) {
+      case 'code':
+        return `${num} ${currencyInfo.type}`;
+      case 'symbol':
+        return `${currencyPrefix[currencyInfo.type]} ${num}`;
+      default:
+        return num;
+    }
+  };
 
   return (
-    <span style={style} title={absValue}>
+    <span style={style} title={sum}>
       {negative && '-'}
-      {/* eslint-disable react/style-prop-object */}
-      <FormattedNumber
-        style="currency"
-        currencyDisplay={currencyDisplay}
-        currency={currencyInfo.type}
-        value={absValue}
-      />
+      {formattedCurrency(sum)}
     </span>
   );
 };
 
 USDDisplay.propTypes = {
   value: PropTypes.number,
-  roundTo: PropTypes.number,
   currencyDisplay: PropTypes.string,
   style: PropTypes.shape({}),
 };
 
 USDDisplay.defaultProps = {
   value: 0,
-  roundTo: 3,
   currencyDisplay: 'code',
   style: {},
 };
