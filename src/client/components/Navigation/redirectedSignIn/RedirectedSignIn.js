@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import hivesigner from 'hivesigner';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 
@@ -60,79 +60,81 @@ const RedirectedSignIn = props => {
 
   const renderSignIn = () => (
     <div className="RedirectedSignIn">
-      <div>
-        <h1>
-          {props.intl.formatMessage({
-            id: 'eat_out_earn_crypto',
-            defaultMessage: 'eat out, earn crypto',
-          })}
-        </h1>
-        <h2>
-          {props.intl.formatMessage({
-            id: 'sign_in_for_reward',
-            defaultMessage: 'Sign-in for rewards per meal',
-          })}
-        </h2>
-      </div>
-      <p>
-        {props.intl.formatMessage({ id: 'get_a_free', defaultMessage: 'get a free' })}{' '}
-        <i>{props.intl.formatMessage({ id: 'full_featured', defaultMessage: 'full-featured' })}</i>{' '}
-        {props.intl.formatMessage({ id: 'account', defaultMessage: 'account' })}
-      </p>
-      <a role="button" href={hiveSinger.getLoginURL(url)}>
-        <img
-          src="/images/icons/logo-hive.svg"
-          alt="hive"
-          className="RedirectedSignIn__icon-steemit"
-        />
-        {props.intl.formatMessage({ id: 'join_with', defaultMessage: 'Join with' })}{' '}
-        <i>HiveSinger</i>
-      </a>
-      <p className="RedirectedSignIn__title">
-        {props.intl.formatMessage({ id: 'or', defaultMessage: 'or' })}
-      </p>
-      <div onClick={handleClickLoading} role="presentation">
-        <SocialButtons className="RedirectedSignIn__social" responseSocial={responseSocial} />
-      </div>
-      <p className="RedirectedSignIn__rules">
-        {props.intl.formatMessage({
-          id: 'sing_in_modal_rules',
-          defaultMessage: 'By using this Service, you agree to be bound by',
-        })}
-        <a
-          href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/xrj-terms-and-conditions"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {props.intl.formatMessage({
-            id: 'terms_and_conditions',
-            defaultMessage: 'the Terms and Conditions',
-          })}
-        </a>
-        ,
-        <a
-          href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/poi-privacy-policy"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {props.intl.formatMessage({
-            id: 'privacy_policy',
-            defaultMessage: 'the Privacy Policy',
-          })}
-        </a>
-        ,&ensp;
-        <a
-          href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/uid-cookies-policy"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {props.intl.formatMessage({
-            id: 'cookies_policy',
-            defaultMessage: 'the Cookies Policy',
-          })}
-        </a>
-        .
-      </p>
+      {isLoading ? (
+        <React.Fragment>
+          <h2 className="RedirectedSignIn__loading">
+            <FormattedMessage id="signing" defaultMessage="Signing in!" />
+          </h2>
+          <Spinner />
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <h2 className="RedirectedSignIn__title">
+            <FormattedMessage id="signinForRewards" defaultMessage="Sign in for rewards!" />
+          </h2>
+          <p className="RedirectedSignIn__rules">
+            <FormattedMessage
+              id="sing_in_modal_message"
+              defaultMessage="Waivio is powered by the Hive open social blockchain"
+            />
+          </p>
+          <p className="RedirectedSignIn__title RedirectedSignIn__title--lined">
+            <span>
+              <FormattedMessage id="steem_accounts" defaultMessage="HIVE ACCOUNTS" />
+            </span>
+          </p>
+          <a role="button" href={hiveSinger.getLoginURL(url)} className="RedirectedSignIn__signin">
+            <img
+              src="/images/icons/logo-hive.svg"
+              alt="hive"
+              className="RedirectedSignIn__icon-steemit"
+            />
+            <FormattedMessage id="signin_with_steemIt" defaultMessage="HiveSinger" />
+          </a>
+          <p className="RedirectedSignIn__title RedirectedSignIn__title--lined">
+            <span>
+              <FormattedMessage id="guestAccounts" defaultMessage="GUEST ACCOUNTS" />
+            </span>
+          </p>
+          <div onClick={handleClickLoading} role="presentation">
+            <SocialButtons className="RedirectedSignIn__social" responseSocial={responseSocial} />
+          </div>
+          <p className="RedirectedSignIn__rules">
+            <FormattedMessage
+              id="sing_in_modal_rules"
+              defaultMessage="By using this Service, you agree to be bound by"
+            />
+            &ensp;
+            <a
+              href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/xrj-terms-and-conditions"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FormattedMessage
+                id="terms_and_conditions"
+                defaultMessage="the Terms and Conditions"
+              />
+            </a>
+            ,&ensp;
+            <a
+              href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/poi-privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FormattedMessage id="privacy_policy" defaultMessage="the Privacy Policy" />
+            </a>
+            ,&ensp;
+            <a
+              href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/uid-cookies-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FormattedMessage id="cookies_policy" defaultMessage="the Cookies Policy" />
+            </a>
+            .
+          </p>
+        </React.Fragment>
+      )}
     </div>
   );
 
@@ -151,4 +153,4 @@ RedirectedSignIn.propTypes = {
   }).isRequired,
 };
 
-export default injectIntl(RedirectedSignIn);
+export default RedirectedSignIn;
