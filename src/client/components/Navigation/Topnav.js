@@ -173,12 +173,14 @@ class Topnav extends React.Component {
     }
 
     this.props.resetSearchAutoCompete();
-    this.props.history.push({
-      pathname,
-      state: {
-        query: value,
-      },
-    });
+    if (pathname) {
+      this.props.history.push({
+        pathname,
+        state: {
+          query: value,
+        },
+      });
+    }
 
     if (this.props.searchByUser.some(item => item.account === value)) {
       this.setState({
