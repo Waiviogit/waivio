@@ -180,9 +180,9 @@ class CreateRewardForm extends React.Component {
       });
 
       Promise.all([primaryObject, secondaryObjects, agreementObjects, sponsors]).then(values => {
-        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
           campaign,
+          currency: campaign.currency,
           iAgree: true,
           loading: false,
           campaignName: `${this.state.createDuplicate ? `Copy ${campaign.name}` : campaign.name}`,

@@ -214,7 +214,7 @@ const CreateFormRenderer = props => {
         <Form.Item label={fields.baseCurrency.label}>
           {getFieldDecorator(fields.baseCurrency.name, {
             rules: fields.baseCurrency.rules,
-            initialValue: 'USD',
+            initialValue: props.currency,
           })(
             <Select onChange={handlers.handleCurrencyChanges} disabled={disabled}>
               {currencyTypes.map(currency => (
