@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Всього сплачено (ліквідне)",
   "date_and_time_picker_placeholder": "Виберіть дату та час",
   "memo_optional": "Пам’ятка (необов’язково)",
-  "estimated_value": "Орієнтовна вартість транзакції: {estimate} дол. США",
+  "estimated_value": "Орієнтовна вартість транзакції: {estimate}",
   "powered_up_from": "Працює з {from}",
   "powered_up_to": "Працює до {to}",
   "blacklist": "Чорний список",

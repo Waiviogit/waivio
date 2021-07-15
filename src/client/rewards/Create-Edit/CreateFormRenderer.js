@@ -63,7 +63,7 @@ const CreateFormRenderer = props => {
     getFieldValue,
     primaryObject,
     secondaryObjectsList,
-    compensationAccount,
+    props.currency,
   );
   const fields = fieldsData(handlers.messageFactory, validators, user.name, props.currency);
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');

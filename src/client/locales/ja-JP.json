@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "支払った合計（流動性）",
   "date_and_time_picker_placeholder": "日付と時刻を選択します",
   "memo_optional": "メモ（オプション）",
-  "estimated_value": "推定取引額： {estimate}米ドル",
+  "estimated_value": "推定取引額： {estimate}",
   "powered_up_from": "{from}からパワーアップ",
   "powered_up_to": "{to}までパワーアップ",
   "blacklist": "ブラックリスト",

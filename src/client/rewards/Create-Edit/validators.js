@@ -1,4 +1,5 @@
 import { isEmpty } from 'lodash';
+import { getCurrentCurrencyRate } from '../../../waivioApi/ApiClient';
 
 export const validatorMessagesCreator = messageFactory => ({
   budgetLess: messageFactory(
@@ -73,6 +74,7 @@ export const validatorsCreator = (
   getFieldValue,
   requiredObject,
   objectsToAction,
+  currency,
 ) => ({
   checkPrimaryObject: (rule, value, callback) => {
     // eslint-disable-next-line no-unused-expressions
@@ -148,8 +150,9 @@ export const validatorsCreator = (
     value && value.match(/^ *$/) !== null ? callback(messages.nameField) : callback();
   },
 
-  compareBudgetValues: (rule, value, callback) => {
-    const userUSDBalance = parseFloat(user.balance);
+  compareBudgetValues: async (rule, value, callback) => {
+    const rate = await getCurrentCurrencyRate(currency);
+    const userUSDBalance = parseFloat(user.balance) * rate[currency];
 
     if (value > 0 && value < 0.001) callback(messages.budgetLess);
     if (value <= 0 && value !== '') callback(messages.budgetToZero);

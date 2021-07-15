@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Celkem zaplaceno (likvidní)",
   "date_and_time_picker_placeholder": "Vyberte datum a čas",
   "memo_optional": "Memo (volitelně)",
-  "estimated_value": "Odhadovaná hodnota transakce: {estimate} USD",
+  "estimated_value": "Odhadovaná hodnota transakce: {estimate}",
   "powered_up_from": "Zapnuto z {from}",
   "powered_up_to": "Napájeno až {to}",
   "blacklist": "Černá listina",

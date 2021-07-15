@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Samlet betalt (likvid)",
   "date_and_time_picker_placeholder": "Vælg dato og klokkeslæt",
   "memo_optional": "Notat (valgfrit)",
-  "estimated_value": "Anslået transaktionsværdi: {estimate} USD",
+  "estimated_value": "Anslået transaktionsværdi: {estimate}",
   "powered_up_from": "Drevet fra {from}",
   "powered_up_to": "Drevet op til {to}",
   "blacklist": "Sortliste",

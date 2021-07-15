@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Total pagat (líquid)",
   "date_and_time_picker_placeholder": "Seleccioneu la data i l'hora",
   "memo_optional": "Nota (opcional)",
-  "estimated_value": "Valor estimat de la transacció: {estimate} USD",
+  "estimated_value": "Valor estimat de la transacció: {estimate}",
   "powered_up_from": "Alimentat des de {from}",
   "powered_up_to": "Alimentat fins a {to}",
   "blacklist": "Llista negra",

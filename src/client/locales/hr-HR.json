@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Ukupno plaćeno (likvidno)",
   "date_and_time_picker_placeholder": "Odaberite datum i vrijeme",
   "memo_optional": "Dopis (neobavezno)",
-  "estimated_value": "Procijenjena vrijednost transakcije: {estimate} USD",
+  "estimated_value": "Procijenjena vrijednost transakcije: {estimate}",
   "powered_up_from": "Pokreće {from}",
   "powered_up_to": "Pokreće se do {to}",
   "blacklist": "Crna lista",

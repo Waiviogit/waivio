@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Jumlah dibayar (cecair)",
   "date_and_time_picker_placeholder": "Pilih tarikh dan masa",
   "memo_optional": "Memo (pilihan)",
-  "estimated_value": "Anggaran nilai transaksi: {estimate} USD",
+  "estimated_value": "Anggaran nilai transaksi: {estimate}",
   "powered_up_from": "Dikuasakan dari {from}",
   "powered_up_to": "Dikuasakan sehingga {to}",
   "blacklist": "Senarai hitam",

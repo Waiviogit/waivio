@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "총 지불액 (액체)",
   "date_and_time_picker_placeholder": "날짜 및 시간 선택하세요",
   "memo_optional": "메모 (선택 사항)",
-  "estimated_value": "예상 거래 금액 : {estimate} USD",
+  "estimated_value": "예상 거래 금액 : {estimate}",
   "powered_up_from": "{from} 에서 전원 공급",
   "powered_up_to": "{to} 까지 구동",
   "blacklist": "블랙리스트",

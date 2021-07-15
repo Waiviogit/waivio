@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Totaal betaal (vloeistof)",
   "date_and_time_picker_placeholder": "Kies datum en tyd",
   "memo_optional": "Memo (opsioneel)",
-  "estimated_value": "Geskatte transaksiewaarde: {estimate} USD",
+  "estimated_value": "Geskatte transaksiewaarde: {estimate}",
   "powered_up_from": "Aangedryf vanaf {from}",
   "powered_up_to": "Aangedryf tot {to}",
   "blacklist": "Swartlys",
