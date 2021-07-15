@@ -50,7 +50,7 @@ export const getIsMobile = createSelector([appState], state => state.isMobile);
 
 export const getCurrPage = createSelector([appState], state => state.currPage);
 
-export const getCurrentHost = createSelector([appState], state => state.host);
+export const getCurrentHost = createSelector([appState], state => state.appUrl);
 
 export const getMapForMainPage = createSelector([appState], state => state.currMap);
 
