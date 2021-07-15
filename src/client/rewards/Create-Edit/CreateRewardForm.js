@@ -268,7 +268,7 @@ class CreateRewardForm extends React.Component {
       app: appName,
       type: data.type,
       budget: data.budget,
-      reward: data.rewardInCurrency,
+      reward: data.reward,
       requirements: {
         minPhotos: data.minPhotos,
         receiptPhoto: data.receiptPhoto,
