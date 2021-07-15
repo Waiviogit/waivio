@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Összes fizetett (likvid)",
   "date_and_time_picker_placeholder": "Válassza ki a dátumot és az időt",
   "memo_optional": "Jegyzet (opcionális)",
-  "estimated_value": "Becsült tranzakcióérték: {estimate} USD",
+  "estimated_value": "Becsült tranzakcióérték: {estimate}",
   "powered_up_from": "Bekapcsolva innen: {from}",
   "powered_up_to": "Teljesítmény: {to}",
   "blacklist": "Feketelista",

@@ -699,7 +699,7 @@ export default class Transfer extends React.Component {
           <div className={'Transfer__info-text'}>
             <FormattedMessage
               id="estimated_value"
-              defaultMessage="Estimated transaction value: {estimate} USD"
+              defaultMessage="Estimated transaction value: {estimate}"
               values={{
                 estimate: (
                   <span role="presentation" className="estimate">

@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Totaal betaald (vloeibaar)",
   "date_and_time_picker_placeholder": "Selecteer datum en tijd",
   "memo_optional": "Memo (optioneel)",
-  "estimated_value": "Geschatte transactiewaarde: {estimate} USD",
+  "estimated_value": "Geschatte transactiewaarde: {estimate}",
   "powered_up_from": "Opgestart vanaf {from}",
   "powered_up_to": "Aangedreven tot {to}",
   "blacklist": "Zwarte lijst",

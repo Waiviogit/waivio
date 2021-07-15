@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Total pago (líquido)",
   "date_and_time_picker_placeholder": "Selecione a data e hora",
   "memo_optional": "Memorando (opcional)",
-  "estimated_value": "Valor estimado da transação: {estimate} USD",
+  "estimated_value": "Valor estimado da transação: {estimate}",
   "powered_up_from": "Ligado a partir de {from}",
   "powered_up_to": "Com potência de {to}",
   "blacklist": "Lista negra",

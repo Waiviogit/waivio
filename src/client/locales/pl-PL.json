@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Razem zapłacone (płynne)",
   "date_and_time_picker_placeholder": "Wybierz datę i godzinę",
   "memo_optional": "Notatka (opcjonalnie)",
-  "estimated_value": "Szacunkowa wartość transakcji: {estimate} USD",
+  "estimated_value": "Szacunkowa wartość transakcji: {estimate}",
   "powered_up_from": "Wzmocniony z {from}",
   "powered_up_to": "Zasilany do {to}",
   "blacklist": "Czarna lista",

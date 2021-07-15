@@ -1160,7 +1160,7 @@
   "date_and_time_picker_placeholder": "Выберите дату и время",
   "paymentTable_data_time": "Дата & время (GMT)",
   "memo_optional": "Примечание (необязательно)",
-  "estimated_value": "Расчетная стоимость сделки: {estimate} USD",
+  "estimated_value": "Расчетная стоимость сделки: {estimate}",
   "powered_up_from": "Увеличение силы голоса от {from}",
   "powered_up_to": "Увеличение силы голоса для {to}",
   "blacklist": "Черный список",

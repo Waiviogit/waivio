@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "Total pembayaran (cair)",
   "date_and_time_picker_placeholder": "Pilih tanggal dan waktu",
   "memo_optional": "Memo (opsional)",
-  "estimated_value": "Perkiraan nilai transaksi: {estimate} USD",
+  "estimated_value": "Perkiraan nilai transaksi: {estimate}",
   "powered_up_from": "Diberdayakan dari {from}",
   "powered_up_to": "Diberdayakan hingga {to}",
   "blacklist": "Daftar Hitam",

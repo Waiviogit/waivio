@@ -1162,7 +1162,7 @@
   "total_paid_liquid": "支付总额（流动性）",
   "date_and_time_picker_placeholder": "选择日期和时间",
   "memo_optional": "备注（可选）",
-  "estimated_value": "预计交易价值： {estimate}美元",
+  "estimated_value": "预计交易价值： {estimate}",
   "powered_up_from": "由{from}",
   "powered_up_to": "上电{to}",
   "blacklist": "黑名单",
