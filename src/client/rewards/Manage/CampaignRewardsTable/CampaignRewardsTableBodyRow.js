@@ -181,7 +181,7 @@ const CampaignRewardsTableRow = ({
             : currentItem.status}
         </td>
         <td>{currentItem.type}</td>
-        <td className="Campaign-rewards hide-element">{currentItem.budget.toFixed(2)}</td>
+        <td className="Campaign-rewards hide-element">{currentItem.budgetUSD.toFixed(2)}</td>
         <td className="Campaign-rewards hide-element">{currentItem.reward.toFixed(2)}</td>
         <td className="Campaign-rewards hide-element">
           {Boolean(currentItem.reserved) && (
