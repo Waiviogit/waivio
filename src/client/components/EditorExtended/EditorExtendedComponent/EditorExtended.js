@@ -25,7 +25,6 @@ const Editor = props => {
       titleValue: get(props, 'initialContent.title', ''),
       editorState: createEditorState(fromMarkdown(props.initialContent)),
     });
-    restoreObjects(fromMarkdown(props.initialContent));
   }, []);
   React.useEffect(() => {
     if (!props.searchObjectsResults.length && isTypeSpace && !props.isStartSearchObject) {
@@ -44,12 +43,6 @@ const Editor = props => {
 
   const setFocusAfterMount = () => {
     props.setUpdatedEditorExtendedData({ editorEnabled: true });
-  };
-
-  const restoreObjects = (rawContent, newObject) => {
-    const newLinkedObjectsCards = props.getRestoreObjects(rawContent, newObject, props.draftId);
-
-    props.setUpdatedEditorData({ hideLinkedObjects: newLinkedObjectsCards });
   };
 
   const debouncedSearch = useCallback(

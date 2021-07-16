@@ -66,7 +66,6 @@ const EditPost = props => {
       topics,
       isEditPost,
       linkedObjects = [],
-      hideLinkedObjects = [],
       objPercentage,
       settings,
       campaign,
@@ -84,13 +83,12 @@ const EditPost = props => {
       pathname: props.location.pathname,
       search: `draft=${getCurrentDraftId(props.draftId, draftIdEditor)}`,
     });
-    const hideLinkedObjectsSession = JSON.parse(sessionStorage.getItem('hideLinkedObjects')) || [];
 
-    props.setEditorState(getInitialState(props, hideLinkedObjectsSession));
+    props.setEditorState(getInitialState(props));
     const campaignId = props.campaignId || get(props.currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
 
-    props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
+    props.setUpdatedEditorData({ isReview });
 
     if (isReview) {
       props.getReviewCheckInfo({ campaignId }, intl, true);
@@ -98,7 +96,6 @@ const EditPost = props => {
 
     return () => {
       props.leaveEditor();
-      sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
     };
   }, []);
 
@@ -107,34 +104,31 @@ const EditPost = props => {
 
     if (oldDraftId !== props.draftId) {
       sessionStorage.setItem('draftId', props.draftId);
-      sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
     }
-    const hideLinkedObjectsSession = JSON.parse(sessionStorage.getItem('hideLinkedObjects')) || [];
 
-    setDraftId(hideLinkedObjectsSession);
+    setDraftId();
     const editorData = {
       title: get(props.currDraft, 'title', '') || get(props.editor, 'draftContent.title', ''),
       body: get(props.currDraft, 'body', '') || get(props.editor, 'draftContent.body', ''),
     };
 
     if (editorData.title || editorData.body) props.saveDraft(editorData);
-    props.firstParseLinkedObjects(props.currDraft || props.editor.draftContent);
+    // props.firstParseLinkedObjects(props.currDraft || props.editor.draftContent);
     setCurrDraft(props.currDraft);
   }, [props.draftId, props.campaignId]);
 
   React.useEffect(() => {
     if (!currDraft && props.currDraft && isEditPost) {
-      props.firstParseLinkedObjects(props.currDraft);
+      console.log('currDraft && props.currDraft && isEditPost');
+      // props.firstParseLinkedObjects(props.currDraft);
       props.setEditorState(getInitialState(props));
       setCurrDraft(props.currDraft);
     }
   }, [props.currDraft]);
 
-  const setDraftId = hideObjects => {
-    if (props.draftId && props.draftId !== draftIdEditor) {
-      props.setEditorState(getInitialState(props, hideObjects));
-    } else if (isNull(props.draftId) && draftIdEditor) {
-      props.setEditorState(getInitialState(props, hideObjects));
+  const setDraftId = () => {
+    if ((props.draftId && props.draftId !== draftIdEditor) || (isNull(props.draftId) && draftIdEditor)) {
+      props.setEditorState(getInitialState(props));
     }
   };
 
@@ -161,7 +155,6 @@ const EditPost = props => {
     props.createPost(postData, props.beneficiaries, isReview, campaign, props.intl);
   };
   const handleToggleLinkedObject = (objId, isLinked, uniqId) => {
-    const prohibitedObjectCards = hideLinkedObjects || [];
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObjPermlink = currentObj.author_permlink;
     const indexSwitchableHashtag = topics.indexOf(switchableObjPermlink);
@@ -174,12 +167,9 @@ const EditPost = props => {
       [objId || uniqId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
 
-    prohibitedObjectCards.push(currentObj);
-    sessionStorage.setItem('hideLinkedObjects', JSON.stringify(prohibitedObjectCards));
     props.setUpdatedEditorData({
       topics,
       linkedObjects: linkedObjects.filter(object => object._id !== uniqId),
-      hideLinkedObjects: prohibitedObjectCards,
       objPercentage: setObjPercents(linkedObjects, updPercentage),
     });
   };

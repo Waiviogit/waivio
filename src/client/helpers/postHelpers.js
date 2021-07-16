@@ -141,10 +141,11 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, cam
   }
   if (campaignId) metaData.campaignId = campaignId;
 
-  return {
-    ...metaData,
-    wobj: { wobjects: uniqBy(get(metaData, 'wobj.wobjects', []), 'author_permlink') },
-  };
+  return metaData;
+  // {
+  //   ...metaData,
+  //   wobj: { wobjects: uniqBy(get(metaData, 'wobj.wobjects', []), 'author_permlink') },
+  // };
 }
 
 /**
@@ -196,11 +197,10 @@ const getObjects = state => {
   return objects;
 };
 
-export function getInitialState(props, hideLinkedObjectsSession = []) {
+export function getInitialState(props) {
   const initObjects = props.location.state
     ? getObjects(props.location.state)
     : new URLSearchParams(props.location.search).getAll('object');
-  const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
   const campaignId = props.campaignId ? { id: props.campaignId } : null;
   const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
   const title = setTitle(initObjects, props);
@@ -226,7 +226,6 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     content: '',
     topics: [],
     linkedObjects: [],
-    hideLinkedObjects: hideObjects,
     objPercentage: {},
     settings: {
       reward: rewardsValues.half,
@@ -258,7 +257,6 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
       linkedObjects: draftPost.linkedObjects || [],
-      hideLinkedObjects: hideObjects,
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
       ),
@@ -274,6 +272,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
       isEditPost: get(props, 'editor.isEditPost', false),
     };
   }
+  console.log('state', draftPost);
 
   return state;
 }

@@ -4,11 +4,10 @@ import { message } from 'antd';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { convertToRaw, EditorState, Modifier, SelectionState, ContentState } from 'draft-js';
+import { convertToRaw, EditorState, Modifier, SelectionState } from 'draft-js';
 import {
   forEach,
   get,
-  has,
   includes,
   isEmpty,
   isEqual,
@@ -17,8 +16,6 @@ import {
   orderBy,
   uniqBy,
   uniqWith,
-  size,
-  differenceBy,
 } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
@@ -48,10 +45,6 @@ import {
   getCurrentLoadObjects,
   getNewLinkedObjectsCards,
   getReviewTitle,
-  getObjPercentsHideObject,
-  getCurrentDraftContent,
-  getFilteredLinkedObjects,
-  updatedHideObjectsPaste,
   getLinkedObjects as getLinkedObjectsHelper,
   checkCursorInSearch,
 } from '../../client/helpers/editorHelper';
@@ -164,7 +157,6 @@ export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
   const postBody = draft.originalBody || draft.body;
 
   if (!postBody) return;
-
   dispatch(saveDraftRequest(draft, intl));
 };
 export const deleteDraftMetadataObj = (draftId, objPermlink) => (dispatch, getState) => {
@@ -480,9 +472,11 @@ export const reviewCheckInfo = (
     const state = getState();
     const userName = getAuthenticatedUserName(state);
     const locale = getSuitableLanguage(state);
-    const linkedObjects = getLinkedObjects(state);
+    const linkedObjects = getEditorLinkedObjects(state);
     const draftBody = getEditorDraftBody(state);
     const postPermlink = postPermlinkParam || isPublicReview;
+
+    console.log('linkedObjects', linkedObjects);
 
     return getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
       .then(campaignData => {
@@ -547,6 +541,8 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     parentPermlink,
     objPercentage,
   } = { ...getEditor(state), ...data };
+
+  console.log('buildPost', { ...getEditor(state), ...data });
   const currentObject = get(linkedObjects, '[0]', {});
   const objName = currentObject.author_permlink;
   let updatedEditor = { isEditPost };
@@ -577,15 +573,15 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
 
   const waivioData = {
     wobjects: (linkedObjects || [])
-      .filter(obj => get(objPercentage, `[${obj._id}].percent`, 0) > 0)
       .map(obj => ({
-        object_type: obj.object_type,
+        // object_type: obj.object_type,
         objectName: getObjectName(obj),
         author_permlink: obj.author_permlink,
         percent: get(objPercentage, [obj._id, 'percent']),
       })),
   };
 
+  console.log('waivioData buildPost', waivioData)
   postData.jsonMetadata = createPostMetadata(
     content,
     topics,
@@ -606,11 +602,7 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
   const {
     content,
     titleValue,
-    topics,
     linkedObjects,
-    hideLinkedObjects,
-    objPercentage,
-    currentRawContent,
     draftId,
   } = getEditor(state);
   const objName = getObjectName(object);
@@ -620,60 +612,15 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
     title: titleValue,
     body: `${content}${separator}[${objName}](${getObjectUrl(object.id || objPermlink)})&nbsp;\n`,
   };
-  const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
-
-  const { rawContentUpdated } = await dispatch(getRestoreObjects(fromMarkdown(draftContent)));
-  const parsedLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
-  const newLinkedObject = parsedLinkedObjects.find(item => item._id === object._id);
-  const updatedLinkedObjects = uniqBy(
-    [...uniqBy(linkedObjects, '_id'), newLinkedObject],
-    '_id',
-  ).filter(item => has(item, '_id'));
-  let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
-  const isHideObject = hideLinkedObjects.find(
-    item => item.author_permlink === newLinkedObject.author_permlink,
-  );
-
-  if (isHideObject) {
-    const filteredObjectCards = hideLinkedObjects.filter(
-      item => item.author_permlink !== newLinkedObject.author_permlink,
-    );
-
-    updatedStore.hideLinkedObjects = filteredObjectCards;
-    sessionStorage.setItem('hideLinkedObjects', JSON.stringify(filteredObjectCards));
-    updatedObjPercentage = getObjPercentsHideObject(
-      updatedLinkedObjects,
-      isHideObject,
-      updatedObjPercentage,
-    );
-  }
-  updatedStore.linkedObjects = getFilteredLinkedObjects(
-    updatedLinkedObjects,
-    updatedStore.hideLinkedObjects,
-  );
-  updatedStore.objPercentage = updatedObjPercentage;
-  const newData = {
-    ...updatedStore,
-    ...getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent),
-  };
   const editorState = isCursorToEnd
     ? EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent)))
     : createEditorState(fromMarkdown(draftContent));
-  const updateTopics = uniqWith(
-    object.type === 'hashtag' || (object.object_type === 'hashtag' && [...topics, objPermlink]),
-    isEqual,
-  );
+
+  const newLinkedObjects = [object, ...linkedObjects]
 
   dispatch(setUpdatedEditorExtendedData({ editorState }));
   dispatch(
-    setUpdatedEditorData({
-      ...newData,
-      draftContent,
-      topics: size(updateTopics) ? updateTopics : topics,
-    }),
-  );
-  dispatch(
-    saveDraft(draftId, intl, { content: draftContent.body, titleValue: draftContent.title }),
+    saveDraft(draftId, intl, { content: draftContent.body, titleValue: draftContent.title, linkedObjects: newLinkedObjects }),
   );
 
   return Promise.resolve(draftContent);
@@ -827,7 +774,6 @@ export const handlePasteText = html => async (dispatch, getState) => {
     const state = getState();
     const locale = getLocale(state);
     const linkedObjects = getEditorLinkedObjects(state);
-    const hideLinkedObjects = getEditorLinkedObjectsCards(state);
     const { wobjects } = await getObjectsByIds({
       locale,
       requiredFields: ['rating'],
@@ -835,17 +781,12 @@ export const handlePasteText = html => async (dispatch, getState) => {
     });
 
     const newLinkedObjects = uniqBy([...linkedObjects, ...wobjects], '_id');
-    const updatedHideLinkedObjects = size(hideLinkedObjects)
-      ? updatedHideObjectsPaste(hideLinkedObjects, wobjects)
-      : hideLinkedObjects;
-    const objectsForPercentage = differenceBy(newLinkedObjects, updatedHideLinkedObjects, '_id');
-    const objPercentage = setObjPercents(objectsForPercentage);
+    const objPercentage = setObjPercents(newLinkedObjects);
 
     dispatch(
       setUpdatedEditorData({
         objPercentage,
         linkedObjects: newLinkedObjects,
-        hideLinkedObjects: updatedHideLinkedObjects,
       }),
     );
   }
@@ -872,7 +813,6 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
   const currentContent = editorState.getCurrentContent();
   const endPositionOfWord = startPositionOfWord + searchString.length + 1;
   const objectName = getObjectName(selectedObject);
-
   const contentState = Modifier.replaceText(
     currentContent,
     new SelectionState({
@@ -883,11 +823,8 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
     }),
     objectName,
   );
-
   const editorStateWithObjectName = EditorState.push(editorState, contentState, 'replace-text');
-
   const { blocks, entityMap } = convertToRaw(editorStateWithObjectName.getCurrentContent());
-
   const newEntityMap = {
     ...entityMap,
     [Object.values(entityMap).length]: {
@@ -899,7 +836,6 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
       },
     },
   };
-
   const newEditorBody = {
     blocks: blocks.map(block =>
       block.key === anchorKey
@@ -908,16 +844,10 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
     ),
     entityMap: newEntityMap,
   };
-
   const updatedStateBody = { body: toMarkdown(newEditorBody), title: titleValue };
-  const newCursor = new SelectionState({
-    anchorKey,
-    anchorOffset: endPositionOfWord,
-    focusKey: anchorKey,
-    focusOffset: endPositionOfWord,
-  });
 
   dispatch(setShowEditorSearch(false));
   dispatch(saveDraft(draftId, null, updatedStateBody));
   dispatch(firstParseLinkedObjects(updatedStateBody, objectName, endPositionOfWord));
 };
+

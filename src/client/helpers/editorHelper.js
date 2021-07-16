@@ -161,14 +161,6 @@ export const getFilteredLinkedObjects = (linkedObjects, hiddenObjects) => {
   return linkedObjects.filter(object => hiddenObjects.every(item => !isEqual(item, object)));
 };
 
-export const updatedHideObjectsPaste = (hideLinkedObjects, pastedObjects) => {
-  const updatedHideLinkedObjects = hideLinkedObjects.filter(hideObject =>
-    pastedObjects.some(object => object._id === hideObject._id),
-  );
-
-  return differenceBy(hideLinkedObjects, updatedHideLinkedObjects, '_id');
-};
-
 function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
