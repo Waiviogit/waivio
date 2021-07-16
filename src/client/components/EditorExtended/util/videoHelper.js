@@ -2,13 +2,15 @@ const YOUTUBEMATCH_URL = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com
 const VIMEOMATCH_URL = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/; // eslint-disable-line no-useless-escape
 const DTUBEMATCH_URL = /^https:\/\/(emb\.)?d\.tube(\/#!)?(\/v)?\/([^/"]+\/[^/"]+)$/;
 const THREESPEAKMATCH_URL = /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/;
-const RUMBLE_URL = /^https:\/\/rumble\.com\/embed\/([a-z0-9-]*)/;
+const RUMBLE_URL = /^https:\/\/rumble\.com\/embed\/([a-zA-Z0-9-_]*)/;
+const BITCHUTE_URL = /^https:\/\/www\.bitchute\.com\/video\/([a-zA-Z0-9-_]*)/;
 
 const YOUTUBE_PREFIX = 'https://www.youtube.com/embed/';
 const VIMEO_PREFIX = 'https://player.vimeo.com/video/';
 const DTUBE_PREFIX = 'https://emb.d.tube/#!/';
 const THREESPEAK_PREFIX = 'https://3speak.online/embed?v=';
 const RUMBLE_PREFIX = 'https://rumble.com/embed/';
+const BITCHUTE_PREFIX = 'https://www.bitchute.com/embed/';
 
 export const isYoutube = url => YOUTUBEMATCH_URL.test(url);
 
@@ -17,7 +19,10 @@ export const isVimeo = url => VIMEOMATCH_URL.test(url);
 export const isDTube = url => DTUBEMATCH_URL.test(url);
 
 export const isThreeSpeak = url => THREESPEAKMATCH_URL.test(url);
+
 export const isRumble = url => RUMBLE_URL.test(url);
+
+export const isBitchute = url => BITCHUTE_URL.test(url);
 
 export const getYoutubeSrc = url => {
   const id = url && url.match(YOUTUBEMATCH_URL)[1];
@@ -69,6 +74,16 @@ export const getRumbleSrc = url => {
   };
 };
 
+export const getBitchuteSrc = url => {
+  const id = url.match(BITCHUTE_URL)[1];
+
+  return {
+    srcID: id,
+    srcType: 'bitchute',
+    url,
+  };
+};
+
 export const getSrc = ({ src }) => {
   if (isYoutube(src)) {
     const { srcID } = getYoutubeSrc(src);
@@ -94,6 +109,11 @@ export const getSrc = ({ src }) => {
     const { srcID } = getRumbleSrc(src);
 
     return `${RUMBLE_PREFIX}${srcID}`;
+  }
+  if (isBitchute(src)) {
+    const { srcID } = getBitchuteSrc(src);
+
+    return `${BITCHUTE_PREFIX}${srcID}/`;
   }
 
   return undefined;
