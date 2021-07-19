@@ -114,8 +114,6 @@ export default {
     import('../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody'),
   ),
   FormPage: loableComponent(import('../../client/object/FormPage/FormPage')),
-  RedirectedSignIn: loableComponent(
-    import(`../../client/components/Navigation/redirectedSignIn/RedirectedSignIn`),
-  ),
+  WebsiteSignIn: loableComponent(import(`../../client/websites/WebsiteSignIn/WebsiteSignIn.js`)),
   VipTicketsSetting: loableComponent(import(`../../client/settings/Viptickets/VipTicketsSetting`)),
 };

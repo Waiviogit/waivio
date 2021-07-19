@@ -8,6 +8,7 @@ import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
 import WebsiteBody from '../../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
 import Rewards from '../../../client/rewards/Rewards';
 import RewardsComponent from '../../../client/rewards/RewardsComponent/RewardsComponent';
+import RedirectedSignIn from '../../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
 
 const routes = {
   component: WebsiteWrapper,
@@ -284,7 +285,7 @@ const routes = {
     {
       path: '/sign-in',
       exact: true,
-      component: Views.RedirectedSignIn,
+      component: RedirectedSignIn,
     },
     // {
     //   path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
