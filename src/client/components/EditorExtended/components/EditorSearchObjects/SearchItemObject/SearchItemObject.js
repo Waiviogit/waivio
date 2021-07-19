@@ -16,7 +16,6 @@ const SearchItemObject = ({ objectSelect, obj }) => {
         object={obj}
         name={getObjectName(obj)}
         type={obj.type || obj.object_type}
-        isNeedType
       />
     </div>
   );
