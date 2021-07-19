@@ -1,0 +1,35 @@
+@import (reference) '../../styles/modules/variables.less';
+
+.WebsiteSignIn {
+  align-items: flex-start;
+
+  @media @small {
+    align-items: center;
+  }
+
+  &__or {
+    display: flex;
+    align-items: center;
+    font-size: 35px;
+    color: #b6b6b6;
+    text-transform: uppercase;
+
+    &::before,
+    &::after {
+      content: '';
+      width: 45px;
+      height: 1px;
+      background: #ededed;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    &::after {
+      margin-left: 10px;
+    }
+  }
+}
+
+.SocialButton {
+  font-weight: 100;
+}
