@@ -188,7 +188,7 @@ class CreateRewardForm extends React.Component {
           campaignName: `${this.state.createDuplicate ? `Copy ${campaign.name}` : campaign.name}`,
           campaignType: campaign.type,
           budget: campaign.budget.toString(),
-          reward: campaign.reward.toString(),
+          reward: campaign.rewardInCurrency.toString(),
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
           pageObjects: !isEmpty(values[2]) ? [values[2]] : [],
@@ -260,6 +260,7 @@ class CreateRewardForm extends React.Component {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const minExpertise = Number(data.minExpertise);
     const minExpertisePrepared = getMinExpertisePrepared({ minExpertise, rewardFund, rate });
+
     const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
