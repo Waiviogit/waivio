@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import WobjectNearby from './WobjectNearby';
 import WobjectSidebarFollowers from './WobjectSidebarFollowers';
 import ObjectExpertise from '../../../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../../../components/Sidebar/ObjectsRelated/ObjectsRelated';
@@ -11,6 +12,9 @@ const ObjectInfoExperts = ({ wobject, userName }) => (
   <div className="objectInfo">
     <div className="objectInfo__experts">
       <ObjectExpertise wobject={wobject} username={userName} isCenterContent />
+    </div>
+    <div className="objectInfo__related">
+      {wobject.author_permlink && <WobjectNearby wobject={wobject} isCenterContent />}
     </div>
     <div className="objectInfo__related">
       {wobject.author_permlink && <ObjectsRelated wobject={wobject} isCenterContent />}

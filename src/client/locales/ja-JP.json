@@ -550,6 +550,7 @@
   "emptyCategory": "このカテゴリは空です",
   "add_catalog_item": "@ {currentUserName}がカテゴリ<strong> {category} </strong>をカタログに追加しました。",
   "related_to_object": "関連",
+  "nearby_to_object": "Nearby",
   "emptyList": "このリストは空です",
   "list": "リスト",
   "list_update": "更新リスト",

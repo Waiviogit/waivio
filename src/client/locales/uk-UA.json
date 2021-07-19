@@ -550,6 +550,7 @@
   "emptyCategory": "Ця категорія порожня",
   "add_catalog_item": "@ {currentUserName} додав категорію <strong> {category} </strong> до каталогу.",
   "related_to_object": "Пов’язані",
+  "nearby_to_object": "Поруч",
   "emptyList": "Цей список порожній",
   "list": "список",
   "list_update": "Оновити список",
