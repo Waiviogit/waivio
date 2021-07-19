@@ -3,7 +3,7 @@ const VIMEOMATCH_URL = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?
 const DTUBEMATCH_URL = /^https:\/\/(emb\.)?d\.tube(\/#!)?(\/v)?\/([^/"]+\/[^/"]+)$/;
 const THREESPEAKMATCH_URL = /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/;
 const RUMBLE_URL = /^https:\/\/rumble\.com\/embed\/([a-zA-Z0-9-_]*)/;
-const BITCHUTE_URL = /^https:\/\/www\.bitchute\.com\/video\/([a-zA-Z0-9-_]*)/;
+const BITCHUTE_URL = /^https:\/\/www\.bitchute\.com\/(video|embed)\/([a-zA-Z0-9-_]*)/;
 
 const YOUTUBE_PREFIX = 'https://www.youtube.com/embed/';
 const VIMEO_PREFIX = 'https://player.vimeo.com/video/';
@@ -75,7 +75,7 @@ export const getRumbleSrc = url => {
 };
 
 export const getBitchuteSrc = url => {
-  const id = url.match(BITCHUTE_URL)[1];
+  const id = url.match(BITCHUTE_URL)[2];
 
   return {
     srcID: id,
