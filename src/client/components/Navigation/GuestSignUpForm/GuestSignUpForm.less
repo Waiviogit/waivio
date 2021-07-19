@@ -1,3 +1,5 @@
+@import (reference) '../../../styles/modules/variables.less';
+
 .ant-form-item-label > label {
   color: rgba(0, 0, 0, 0.65);
   font-size: 19px;
@@ -6,4 +8,14 @@
 
 form > div.ant-row {
   padding-bottom: 0 !important;
+}
+
+.GuestSignUpFormContent {
+  display: flex;
+  flex-direction: column;
+  padding: 0 5px 25px;
+
+  @media @small {
+    padding: 0 !important;
+  }
 }
