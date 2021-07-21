@@ -72,6 +72,8 @@ export const getHostAddress = createSelector([appState], state => state.hostAddr
 
 export const getCurrentCurrency = createSelector([appState], state => state.currencyInfo);
 
+export const getIsDiningGifts = createSelector([appState], state => state.isDiningGifts);
+
 export const getWeightValue = createSelector(
   getRate,
   getRewardFund,

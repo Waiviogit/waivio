@@ -41,6 +41,8 @@ const ModalSignIn = ({
   setIsShowSignInModal,
   toCurrentWobjLink,
   history,
+  buttonClassName,
+  text,
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -252,7 +254,14 @@ const ModalSignIn = ({
 
   return (
     <React.Fragment>
-      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={onSignUpClick} />}
+      {!hideLink && (
+        <SignUpButton
+          isButton={isButton}
+          setIsModalOpen={onSignUpClick}
+          className={buttonClassName}
+          text={text}
+        />
+      )}
       <Modal
         width={480}
         visible={isModalOpen}
@@ -268,6 +277,7 @@ const ModalSignIn = ({
 
 ModalSignIn.propTypes = {
   next: PropTypes.string,
+  text: PropTypes.string,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -277,11 +287,14 @@ ModalSignIn.propTypes = {
   isButton: PropTypes.bool,
   setIsShowSignInModal: PropTypes.func,
   toCurrentWobjLink: PropTypes.string,
+  buttonClassName: PropTypes.string,
   history: PropTypes.shape(),
 };
 
 ModalSignIn.defaultProps = {
   next: '',
+  buttonClassName: '',
+  text: '',
   showModal: false,
   handleLoginModalCancel: () => {},
   hideLink: false,
