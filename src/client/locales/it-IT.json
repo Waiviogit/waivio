@@ -1685,10 +1685,21 @@
   "power_down_started": "Spegnimento avviato",
   "power_down_stopped": "Spegnimento interrotto",
   "power_down_withdraw": "Ritiro dalla maturazione",
+  "power_down_withdraw_to": "Apaga {to}",
+  "power_down_withdraw_from": "Apagar desde {from}",
   "total": "TOTALE",
+  "payouts": "pagamenti",
+  "default_sort": "predefinito",
   "filter_posts": "Filtra post",
   "x_field_description": "Utilizza questo campo per escludere una voce dal calcolo dei totali.",
   "disclaimer_info": "Le informazioni fornite da questo sito, inclusi i rapporti finanziari, sono fornite così come sono senza garanzie di completezza, accuratezza, utilità o tempestività. Waivio Technologies Inc. non si assume alcuna responsabilità per eventuali errori od omissioni nel contenuto di questo sito.",
   "multiple_accounts_included": "Se nel report sono inclusi più conti, le transazioni tra i conti specificati vengono escluse dai calcoli dei totali per prelievi e depositi.",
-  "beneficiary_error": "Il beneficiario non può essere inferiore a 1"
+  "beneficiary_error": "Il beneficiario non può essere inferiore a 1",
+  "rewards_details_earn_up_to": "Guadagna fino a",
+  "your_reward": "La tua ricompensa",
+  "rewards_details_reward_for_reviews_title": "Condividi {count} foto del piatto e guadagna criptovalute",
+  "you_earn": "GUADAGNI",
+  "disclaimer_campaign_currency": "Disclaimer: i tassi di cambio sono forniti da terze parti e potrebbero non essere accurati.",
+  "base_currency": "Valuta di base",
+  "post_currency_info": "La valuta di base viene utilizzata per visualizzare i premi, il valore dei voti e i guadagni dei post."
 }

@@ -1685,9 +1685,20 @@
   "power_down_started": "Rozpoczęto wyłączanie",
   "power_down_stopped": "Zatrzymano wyłączanie",
   "power_down_withdraw": "Wycofaj się z nabycia uprawnień",
+  "power_down_withdraw_to": "Wyłącz do {to}",
+  "power_down_withdraw_from": "Wyłącz z {from}",
   "total": "OGÓŁEM",
+  "payouts": "wypłaty",
+  "default_sort": "domyślna",
   "x_field_description": "Użyj tego pola, aby wykluczyć rekord z obliczania sum",
   "disclaimer_info": "Informacje udostępniane przez tę witrynę, w tym raporty finansowe, są dostarczane na zasadzie „tak jak są” bez gwarancji kompletności, dokładności, użyteczności ani aktualności. Waivio Technologies Inc. nie ponosi odpowiedzialności za jakiekolwiek błędy lub pominięcia w treści tej witryny.",
   "multiple_accounts_included": "Jeśli raport zawiera wiele rachunków, transakcje pomiędzy określonymi rachunkami są wykluczane z obliczeń sum dla wypłat i wpłat.",
-  "beneficiary_error": "Beneficjent nie może być mniejszy niż 1"
+  "beneficiary_error": "Beneficjent nie może być mniejszy niż 1",
+  "rewards_details_earn_up_to": "Zarabiaj do",
+  "your_reward": "Twoja nagroda",
+  "rewards_details_reward_for_reviews_title": "Udostępnij {count} zdjęcia dania i zdobądź krypto",
+  "you_earn": "ZAROBIŁEŚ",
+  "disclaimer_campaign_currency": "Zastrzeżenie: Kursy walut są dostarczane przez strony trzecie i mogą nie być dokładne.",
+  "base_currency": "Waluta bazowa",
+  "post_currency_info": "Waluta podstawowa służy do wyświetlania nagród, wartości głosów i księgowania zarobków."
 }
