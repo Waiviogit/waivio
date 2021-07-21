@@ -1,3 +1,4 @@
+import { omit } from 'lodash';
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
 import { getQueryString } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -41,12 +42,13 @@ export const getObjectType = (
   const sort = getObjectTypeSorting(state);
   const locale = getLocale(state);
 
+  const changeFilters = omit(filters, ['map.zoom']);
   const preparedData = {
     wobjects_count: limit,
     simplified,
     wobjects_skip: skip,
     filter: {
-      ...filters,
+      ...changeFilters,
       tagCategory: filterBody,
     },
     sort,
@@ -143,6 +145,7 @@ export const setActiveFilters = filters => dispatch => {
 };
 
 export const setFiltersAndLoad = filters => (dispatch, getState) => {
+  // console.log('filters setFiltersAndLoad', filters)
   dispatch(setActiveFilters(filters)).then(() => {
     const typeName = getTypeName(getState());
 

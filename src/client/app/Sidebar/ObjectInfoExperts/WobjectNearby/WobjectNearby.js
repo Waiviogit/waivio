@@ -1,21 +1,40 @@
-import React, { useEffect } from 'react';
+import { Icon } from "antd";
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import React, { useEffect } from 'react';
+import { withRouter } from "react-router-dom";
 
 import WeightTag from '../../../../components/WeightTag';
 import ObjectCard from '../../../../components/Sidebar/ObjectCard';
 
 import './WobjectNearby.less';
 
-const WobjectNearby = ({ wobject, intl, isCenterContent, getNearbyObjects, nearbyObjects }) => {
+const WobjectNearby = ({ wobject, intl, isCenterContent, getNearbyObjects, nearbyObjects, history, setFiltersAndLoad, activeFilters }) => {
   useEffect(() => {
     getNearbyObjects(wobject.author_permlink);
   }, [wobject.author_permlink]);
 
+  const handleRedirect = () => {
+    const map = JSON.parse(wobject.map);
+
+    const filters = {
+      ...activeFilters,
+      map: {
+        zoom: 12,
+        radius: 20000,
+        coordinates: [map.latitude, map.longitude],
+      }
+    };
+
+    setFiltersAndLoad(filters);
+    history.push(`/discover-objects/restaurant?mapX=${map.latitude}&mapY=${map.longitude}&zoom=${filters.map.zoom}&radius=${filters.map.radius}`);
+  };
+
+
   return (
-    <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
-      <div className="SidebarContentBlock__title">
-        {!isCenterContent && <i className="iconfont icon-link SidebarContentBlock__icon" />}{' '}
+    <div className="SidebarContentBlock">
+      <div className="SidebarContentBlock__title" onClick={handleRedirect}>
+        {!isCenterContent && <span className='SidebarContentBlock__icon'><Icon type="environment-o" /></span>}
         {intl.formatMessage({ id: 'nearby_to_object', defaultMessage: 'Nearby' })}
       </div>
       <div className="SidebarContentBlock__content">
@@ -30,6 +49,11 @@ const WobjectNearby = ({ wobject, intl, isCenterContent, getNearbyObjects, nearb
           />
         ))}
       </div>
+      <div className='ObjectsNearby__more'>
+        <span onClick={handleRedirect}>
+           {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
+        </span>
+      </div>
     </div>
   );
 };
@@ -38,13 +62,17 @@ WobjectNearby.propTypes = {
   isCenterContent: PropTypes.bool,
   nearbyObjects: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
+  history: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
+  activeFilters: PropTypes.shape(),
   getNearbyObjects: PropTypes.func.isRequired,
+  setFiltersAndLoad: PropTypes.func.isRequired,
 };
 
 WobjectNearby.defaultProps = {
+  activeFilters: {},
   nearbyObjects: [],
   isCenterContent: false,
 };
 
-export default injectIntl(WobjectNearby);
+export default withRouter(injectIntl(WobjectNearby));

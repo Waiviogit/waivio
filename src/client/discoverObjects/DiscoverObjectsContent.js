@@ -164,10 +164,21 @@ class DiscoverObjectsContent extends Component {
     const activeFilters = parseUrl(location.search);
     const activeTagsFilter = parseTagsFilters(location.search);
 
-    if (activeFilters.rating)
-      this.props.setActiveFilters({ rating: activeFilters.rating.split(',') });
-    if (activeFilters.searchString)
-      this.props.setActiveFilters({ searchString: activeFilters.searchString });
+    const searchFilters = {};
+
+    if (activeFilters.searchString) searchFilters.searchString = activeFilters.searchString;
+    if (activeFilters.rating) searchFilters.rating = activeFilters.rating.split(',');
+    if (activeFilters.mapX) searchFilters.map = {
+      zoom: +activeFilters.zoom,
+      radius: +activeFilters.radius,
+      coordinates: [+activeFilters.mapX, +activeFilters.mapY],
+    };
+    console.log('searchFilters, componentDidMount', searchFilters);
+    this.props.setActiveFilters(searchFilters);
+    // if (activeFilters.rating)
+    //   this.props.setActiveFilters({ rating: activeFilters.rating.split(',') });
+    // if (activeFilters.searchString)
+    //   this.props.setActiveFilters({ searchString: activeFilters.searchString });
     if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
     dispatchGetObjectType(typeName, { skip: 0 });
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
@@ -412,7 +423,7 @@ class DiscoverObjectsContent extends Component {
                 </span>
                 {this.getCommonFiltersLayout()}
                 {map(activeTagsFilters, (filterValues, filterName) =>
-                  filterValues.map(filterValue => (
+                  map(filterValues, filterValue => (
                     <Tag
                       className="ttc"
                       key={`${filterName}:${filterValue}`}

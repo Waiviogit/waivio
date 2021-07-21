@@ -31,7 +31,7 @@ const objectType = (state = initialState, action) => {
         tagsForFilter,
         ...data
       } = action.payload;
-      const filteredRelatedWobjects = relatedWobjects.filter(wObj => {
+      const filteredRelatedWobjects = filter(relatedWobjects, wObj => {
         const wobjStatus = parseWobjectField(wObj, 'status');
 
         return (

@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
-import { isEmpty, memoize } from 'lodash';
+import { isEmpty, memoize, get } from 'lodash';
 import { isNeedFilters } from '../helper';
 import {
   setFiltersAndLoad,
@@ -39,11 +39,35 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const hasMap = useSelector(getHasMap);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
   const tagsFilters = useSelector(getFiltersTags);
+  const [mapSettings, setMapSettings] = React.useState({
+    zoom: DEFAULT_ZOOM,
+    radius: DEFAULT_RADIUS,
+    coordinates: userLocation,
+  });
 
   if (isEmpty(userLocation)) dispatch(getCoordinates());
 
+  useEffect(() => {
+    const zoom = get(activeFilters, 'map.zoom', null);
+    const radius = get(activeFilters, 'map.radius', null);
+    const coordinates = get(activeFilters, 'map.coordinates', null);
+
+    console.log('activeFilters, useEffect', activeFilters);
+    if (coordinates) {
+      setMapSettings({
+        zoom: zoom || DEFAULT_ZOOM,
+        radius: radius || DEFAULT_RADIUS,
+        coordinates: coordinates || userLocation,
+      });
+    }
+  }, [get(activeFilters, 'map.coordinates', null)]);
+
   const objectType = match.params.typeName;
-  const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
+  const setSearchArea = map => {
+    if (map) {
+      dispatch(setFiltersAndLoad({ ...activeFilters, map }))
+    }
+  };
   const setMapArea = ({ radius, coordinates }) => {
     if (isEmpty(activeFilters))
       dispatch(getObjectTypeMap({ radius, coordinates }, isFullscreenMode));
@@ -51,8 +75,8 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
 
   useEffect(() => {
     setMapArea({
-      radius: DEFAULT_RADIUS,
-      coordinates: [+userLocation.lat, +userLocation.lon],
+      radius: mapSettings.radius,
+      coordinates: mapSettings.coordinates,
       isMap: true,
       firstMapLoad: true,
     });
@@ -77,11 +101,11 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
             onMarkerClick={handleMapMarkerClick}
             getAreaSearchData={setSearchArea}
             setMapArea={setMapArea}
-            userLocation={userLocation}
+            userLocation={mapSettings.coordinates}
             customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
             onCustomControlClick={handleMapSearchClick}
             match={match}
-            zoomMap={DEFAULT_ZOOM}
+            zoomMap={mapSettings.zoom}
           />
         )}
         {(!isEmpty(filters) || !isEmpty(tagsFilters)) && (

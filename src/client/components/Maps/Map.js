@@ -81,7 +81,6 @@ class MapOS extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { primaryObjectCoordinates, zoomMap, match, wobjects } = this.props;
     const { zoom, center } = this.state;
-    let newZoom;
 
     if (
       (!isEmpty(get(nextProps.match, ['params', 'campaignParent'])) &&
@@ -98,11 +97,11 @@ class MapOS extends React.Component {
       }
       const distance = this.getDistance(coordinates, center);
 
-      newZoom = has(match, ['params', 'campaignParent']) ? getZoom(distance) - 2 : zoom;
-    } else {
-      newZoom = zoom;
+      const newZoom = has(match, ['params', 'campaignParent']) ? getZoom(distance) - 2 : zoom;
+
+      console.log('setZoom1');
+      this.setState({ zoom: newZoom });
     }
-    this.setState({ zoom: newZoom });
     if (
       !isEqual(nextProps.primaryObjectCoordinates, primaryObjectCoordinates) &&
       !isEmpty(nextProps.primaryObjectCoordinates)
@@ -118,6 +117,17 @@ class MapOS extends React.Component {
       match.params.filterKey !== nextProps.match.params.filterKey ||
       match.params.campaignParent !== nextProps.match.params.campaignParent
     ) {
+      this.setState({ zoom: nextProps.zoomMap });
+    }
+    if (!isEqual(this.props.userLocation, nextProps.userLocation)) {
+      const coordinates = isArray(nextProps.userLocation)
+        ? nextProps.userLocation
+        : [+nextProps.userLocation.lat, +nextProps.userLocation.lon]
+
+      this.setState({ center: coordinates })
+    }
+    if (!isEqual(this.props.zoomMap, nextProps.zoomMap) && nextProps.match.params.filterKey !== IS_RESERVED) {
+      console.log('setZoom');
       this.setState({ zoom: nextProps.zoomMap });
     }
   }

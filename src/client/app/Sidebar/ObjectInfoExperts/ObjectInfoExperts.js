@@ -14,7 +14,7 @@ const ObjectInfoExperts = ({ wobject, userName }) => (
       <ObjectExpertise wobject={wobject} username={userName} isCenterContent />
     </div>
     <div className="objectInfo__related">
-      {wobject.author_permlink && <WobjectNearby wobject={wobject} isCenterContent />}
+      {(wobject.author_permlink && wobject.map) && <WobjectNearby wobject={wobject} isCenterContent />}
     </div>
     <div className="objectInfo__related">
       {wobject.author_permlink && <ObjectsRelated wobject={wobject} isCenterContent />}
