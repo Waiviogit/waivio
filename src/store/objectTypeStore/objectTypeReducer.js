@@ -125,6 +125,12 @@ const objectType = (state = initialState, action) => {
         filteredObjects: [],
       };
 
+    case wobjTypeActions.SET_OBJECT_SORT_TYPE:
+      return {
+        ...state,
+        sort: action.payload,
+      };
+
     default:
       return state;
   }

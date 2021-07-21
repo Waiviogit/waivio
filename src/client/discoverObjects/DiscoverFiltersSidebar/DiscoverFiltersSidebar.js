@@ -9,6 +9,7 @@ import { isNeedFilters } from '../helper';
 import {
   setFiltersAndLoad,
   getObjectTypeMap,
+  setObjectSortType,
 } from '../../../store/objectTypeStore/objectTypeActions';
 import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 import { getCoordinates } from '../../../store/userStore/userActions';
@@ -27,6 +28,7 @@ import {
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
+import { SORT_OPTIONS } from '../DiscoverObjectsContent';
 
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   // redux-store
@@ -52,20 +54,20 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
     const radius = get(activeFilters, 'map.radius', null);
     const coordinates = get(activeFilters, 'map.coordinates', null);
 
-    console.log('activeFilters, useEffect', activeFilters);
     if (coordinates) {
       setMapSettings({
         zoom: zoom || DEFAULT_ZOOM,
         radius: radius || DEFAULT_RADIUS,
         coordinates: coordinates || userLocation,
       });
+      dispatch(setObjectSortType(SORT_OPTIONS.PROXIMITY));
     }
   }, [get(activeFilters, 'map.coordinates', null)]);
 
   const objectType = match.params.typeName;
   const setSearchArea = map => {
     if (map) {
-      dispatch(setFiltersAndLoad({ ...activeFilters, map }))
+      dispatch(setFiltersAndLoad({ ...activeFilters, map }));
     }
   };
   const setMapArea = ({ radius, coordinates }) => {

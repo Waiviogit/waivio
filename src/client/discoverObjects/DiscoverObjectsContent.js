@@ -20,6 +20,7 @@ import {
   setActiveFilters,
   setTagsFiltersAndLoad,
   setActiveTagsFilters,
+  setObjectSortType,
 } from '../../store/objectTypeStore/objectTypeActions';
 import { setMapFullscreenMode } from '../../store/mapStore/mapActions';
 import Loading from '../components/Icon/Loading';
@@ -59,7 +60,8 @@ const modalName = {
   FILTERS: 'filters',
   OBJECTS: 'objects',
 };
-const SORT_OPTIONS = {
+
+export const SORT_OPTIONS = {
   WEIGHT: 'weight',
   PROXIMITY: 'proximity',
 };
@@ -94,6 +96,7 @@ const SORT_OPTIONS = {
     setActiveFilters,
     setActiveTagsFilters,
     setTagsFiltersAndLoad,
+    setObjectSortType,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -120,6 +123,7 @@ class DiscoverObjectsContent extends Component {
     userName: PropTypes.string,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
+    setObjectSortType: PropTypes.func.isRequired,
     match: PropTypes.shape().isRequired,
     getCryptoPriceHistoryAction: PropTypes.func.isRequired,
     setActiveFilters: PropTypes.func.isRequired,
@@ -168,17 +172,16 @@ class DiscoverObjectsContent extends Component {
 
     if (activeFilters.searchString) searchFilters.searchString = activeFilters.searchString;
     if (activeFilters.rating) searchFilters.rating = activeFilters.rating.split(',');
-    if (activeFilters.mapX) searchFilters.map = {
-      zoom: +activeFilters.zoom,
-      radius: +activeFilters.radius,
-      coordinates: [+activeFilters.mapX, +activeFilters.mapY],
-    };
-    console.log('searchFilters, componentDidMount', searchFilters);
+    if (activeFilters.mapX)
+      searchFilters.map = {
+        zoom: +activeFilters.zoom,
+        radius: +activeFilters.radius,
+        coordinates: [+activeFilters.mapX, +activeFilters.mapY],
+      };
     this.props.setActiveFilters(searchFilters);
-    // if (activeFilters.rating)
-    //   this.props.setActiveFilters({ rating: activeFilters.rating.split(',') });
-    // if (activeFilters.searchString)
-    //   this.props.setActiveFilters({ searchString: activeFilters.searchString });
+    if (searchFilters.map) {
+      this.props.setObjectSortType(SORT_OPTIONS.PROXIMITY);
+    }
     if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
     dispatchGetObjectType(typeName, { skip: 0 });
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);

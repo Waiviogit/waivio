@@ -99,7 +99,6 @@ class MapOS extends React.Component {
 
       const newZoom = has(match, ['params', 'campaignParent']) ? getZoom(distance) - 2 : zoom;
 
-      console.log('setZoom1');
       this.setState({ zoom: newZoom });
     }
     if (
@@ -122,12 +121,14 @@ class MapOS extends React.Component {
     if (!isEqual(this.props.userLocation, nextProps.userLocation)) {
       const coordinates = isArray(nextProps.userLocation)
         ? nextProps.userLocation
-        : [+nextProps.userLocation.lat, +nextProps.userLocation.lon]
+        : [+nextProps.userLocation.lat, +nextProps.userLocation.lon];
 
-      this.setState({ center: coordinates })
+      this.setState({ center: coordinates });
     }
-    if (!isEqual(this.props.zoomMap, nextProps.zoomMap) && nextProps.match.params.filterKey !== IS_RESERVED) {
-      console.log('setZoom');
+    if (
+      !isEqual(this.props.zoomMap, nextProps.zoomMap) &&
+      nextProps.match.params.filterKey !== IS_RESERVED
+    ) {
       this.setState({ zoom: nextProps.zoomMap });
     }
   }

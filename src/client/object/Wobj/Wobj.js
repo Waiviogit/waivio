@@ -15,7 +15,7 @@ import { getObjectAvatar, getObjectType, hasType, parseAddress } from '../../hel
 import OBJECT_TYPE from '../const/objectTypes';
 import { formColumnsField } from '../../../common/constants/listOfFields';
 import WobjectSidebarFollowers from '../../app/Sidebar/ObjectInfoExperts/WobjectSidebarFollowers';
-import WobjectNearby from "../../app/Sidebar/ObjectInfoExperts/WobjectNearby";
+import WobjectNearby from '../../app/Sidebar/ObjectInfoExperts/WobjectNearby';
 
 const Wobj = ({
   authenticated,
@@ -140,7 +140,9 @@ const Wobj = ({
             <div className="right">
               {wobject.author_permlink && <ObjectExpertise username={userName} wobject={wobject} />}
             </div>
-            <div>{(wobject.author_permlink && wobject.map) && <WobjectNearby wobject={wobject} />}</div>
+            <div>
+              {wobject.author_permlink && wobject.map && <WobjectNearby wobject={wobject} />}
+            </div>
             <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
             <div>{wobject.author_permlink && <WobjectSidebarFollowers wobject={wobject} />}</div>
           </Affix>

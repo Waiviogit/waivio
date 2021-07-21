@@ -19,6 +19,7 @@ export const CLEAR_OBJECT_TYPE = '@objectType/CLEAR_OBJECT_TYPE';
 export const UPDATE_ACTIVE_FILTERS = '@objectType/UPDATE_ACTIVE_FILTERS';
 export const CHANGE_SORTING = '@objectType/CHANGE_SORTING';
 export const RESET_UPDATED_STATE = '@objectType/RESET_UPDATED_STATE';
+export const SET_OBJECT_SORT_TYPE = '@objectType/SET_OBJECT_SORT_TYPE';
 
 /**
  * Action to get wobject of specific type with related wobjects
@@ -30,6 +31,12 @@ export const RESET_UPDATED_STATE = '@objectType/RESET_UPDATED_STATE';
  * @param {number} skip - count of skipping objects (for infinite scroll)
  * @returns {Function} - dispatch action
  */
+
+export const setObjectSortType = payload => ({
+  type: SET_OBJECT_SORT_TYPE,
+  payload,
+});
+
 export const getObjectType = (
   objectTypeName,
   actionType,
