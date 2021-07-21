@@ -170,6 +170,7 @@ export default (state = initialState, action) => {
         currency: action.payload.currency,
         helmetIcon: getObjectAvatar(action.payload.aboutObject),
         hostAddress: action.meta,
+        isDiningGifts: action.meta === 'dining.gifts' || action.meta === 'dining.pp.ua',
         currMap: {
           center: get(action.payload, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
           zoom: get(action.payload, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),

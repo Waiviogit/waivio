@@ -9,12 +9,18 @@ import WebsiteBody from '../../../client/websites/WebsiteLayoutComponents/Body/W
 import Rewards from '../../../client/rewards/Rewards';
 import RewardsComponent from '../../../client/rewards/RewardsComponent/RewardsComponent';
 import RedirectedSignIn from '../../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
+import WebsiteMainPage from '../../../client/websites/WebsiteLayoutComponents/MainPage/WebsiteMainPage';
 
-const routes = {
+const routes = host => ({
   component: WebsiteWrapper,
   routes: [
     {
       path: '/',
+      exact: true,
+      component: host === 'dining.gifts' || host === 'dining.pp.ua' ? WebsiteMainPage : WebsiteBody,
+    },
+    {
+      path: '/map',
       exact: true,
       component: WebsiteBody,
     },
@@ -323,6 +329,6 @@ const routes = {
       component: Views.Error404,
     },
   ],
-};
+});
 
-export default [createNestedRouts(routes)];
+export default host => [createNestedRouts(routes(host))];
