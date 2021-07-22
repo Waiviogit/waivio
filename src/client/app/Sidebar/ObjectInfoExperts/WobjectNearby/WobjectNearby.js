@@ -7,9 +7,9 @@ import { withRouter } from 'react-router-dom';
 
 import WeightTag from '../../../../components/WeightTag';
 import ObjectCard from '../../../../components/Sidebar/ObjectCard';
+import RightSidebarLoading from '../../RightSidebarLoading';
 
 import './WobjectNearby.less';
-import RightSidebarLoading from '../../RightSidebarLoading';
 
 const WobjectNearby = ({
   wobject,

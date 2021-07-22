@@ -152,7 +152,6 @@ export const setActiveFilters = filters => dispatch => {
 };
 
 export const setFiltersAndLoad = filters => (dispatch, getState) => {
-  // console.log('filters setFiltersAndLoad', filters)
   dispatch(setActiveFilters(filters)).then(() => {
     const typeName = getTypeName(getState());
 
