@@ -6,6 +6,8 @@
 
 import getUrls from 'get-urls';
 
+import { VIDEO_MATCH_URL } from '../helpers/regexHelpers';
+
 const SteemEmbed = {};
 
 SteemEmbed.getUrls = function(text) {
@@ -47,6 +49,7 @@ SteemEmbed.get = function(url, options) {
   const soundcloudId = this.isSoundcloud(url);
   const vimeoId = this.isVimeo(url);
   const bitchuteId = this.isBitchute(url);
+  const rumbleId = this.isRumble(url);
 
   if (youtubeId) {
     return {
@@ -118,12 +121,20 @@ SteemEmbed.get = function(url, options) {
       id: bitchuteId,
       embed: this.bitchute(url, bitchuteId, options),
     };
+  } else if (rumbleId) {
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'Rumble',
+      id: rumbleId,
+      embed: this.rumble(url, rumbleId, options),
+    };
   }
 };
 
 SteemEmbed.isYoutube = function(url) {
-  const p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-  return url.match(p) ? RegExp.$1 : false;
+  const match = url.match(VIDEO_MATCH_URL.YOUTUBE);
+  return match ? match[1] : false;
 };
 
 SteemEmbed.youtube = function(url, id, options) {
@@ -166,8 +177,8 @@ SteemEmbed.dTube = function(url, id, options) {
 };
 
 SteemEmbed.is3Speak = function(url) {
-  const p = /^https:\/\/3speak\.co\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/;
-  return url.match(p) ? RegExp.$2 : false;
+  const match = url.match(VIDEO_MATCH_URL.THREE_SPEAK);
+  return match ? match[2] : false;
 };
 
 SteemEmbed.threeSpeak = function(url, authorPermlink, options) {
@@ -236,8 +247,8 @@ SteemEmbed.soundcloud = function(url, id, options) {
 };
 
 SteemEmbed.isVimeo = function(url) {
-  let p = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
-  return url.match(p) ? RegExp.$3 : false;
+  const match = url.match(VIDEO_MATCH_URL.VIMEO);
+  return match ? match[3] : false;
 };
 
 SteemEmbed.vimeo = function(url, id, options) {
@@ -253,8 +264,8 @@ SteemEmbed.vimeo = function(url, id, options) {
 };
 
 SteemEmbed.isBitchute = function(url) {
-  let p = /^(?:https?:\/\/)?(?:www\.)?(?:bitchute\.com\/video\/)(\w+)\/?$/;
-  return url.match(p) ? RegExp.$1 : false;
+  const match = url.match(VIDEO_MATCH_URL.BITCHUTE);
+  return match ? match[2] : false;
 };
 
 SteemEmbed.bitchute = function(url, id, options) {
@@ -264,6 +275,23 @@ SteemEmbed.bitchute = function(url, id, options) {
     '" height="' +
     options.height +
     '" src="https://www.bitchute.com/embed/' +
+    id +
+    '" frameborder="0" scrolling="no" allowfullscreen></iframe>'
+  );
+};
+
+SteemEmbed.isRumble = function(url) {
+  let match = url.match(VIDEO_MATCH_URL.RUMBLE);
+  return match ? match[1] : false;
+};
+
+SteemEmbed.rumble = function(url, id, options) {
+  return (
+    '<iframe width="' +
+    options.width +
+    '" height="' +
+    options.height +
+    '" src="https://rumble.com/embed/' +
     id +
     '" frameborder="0" scrolling="no" allowfullscreen></iframe>'
   );
