@@ -20,7 +20,7 @@ const WebsiteMainPage = () => (
             You deserve to get more out of your meals.
           </h2>
         </div>
-        <div>
+        <div className="WebsiteMainPage__buttonWrap">
           <ModalSignIn
             buttonClassName="WebsiteMainPage__button WebsiteMainPage__button--fill"
             text="Sing up"
@@ -63,7 +63,7 @@ const WebsiteMainPage = () => (
             </div>
             <div className="WebsiteMainPage__stepsBody">
               <h5>
-                Find the <i>restaurant</i>, choose your <i>dish</i>
+                <i>Reserve</i> your reward
               </h5>
               <img src={'/images/tab_2.png'} alt="Find the restaurant, choose your dish" />
             </div>
@@ -80,7 +80,7 @@ const WebsiteMainPage = () => (
             </div>
             <div className="WebsiteMainPage__stepsBody">
               <h5>
-                Find the <i>restaurant</i>, choose your <i>dish</i>
+                <i>Share</i> two photos of your dish & earn!
               </h5>
               <img src={'/images/tab_3.png'} alt="Find the restaurant, choose your dish" />
             </div>
@@ -88,7 +88,7 @@ const WebsiteMainPage = () => (
         </li>
       </ol>
       <Link
-        to={'https://dining.gifts/object/mds-dining-gifts/page#wdh-about'}
+        to={'/object/mds-dining-gifts/page#wdh-about'}
         className="WebsiteMainPage__button WebsiteMainPage__button--fill"
       >
         Learn more
@@ -107,6 +107,7 @@ const WebsiteMainPage = () => (
           They offer rewards that are practically meaningless. Or they’re rewards can only be used
           on a set list of items. Or their rewards require you to jump through hoops to withdraw.
         </p>
+        <p>Dining.Gifts makes rewards fun, like they’re meant to be.</p>
         <p className="WebsiteMainPage__paragraphCurrency">
           We help you <i>instantly</i> convert rewards you earn into major cryptos, such as{' '}
           <i>Bitcoin, Ethereum, Litecoin</i> or directly into cash using any Bitcoin ATM.
@@ -114,7 +115,7 @@ const WebsiteMainPage = () => (
         <p>It’s 2021. Rewards should be easy!</p>
       </div>
       <Link
-        to={'https://dining.gifts/object/mds-dining-gifts/page#dyq-faq'}
+        to={'/object/mds-dining-gifts/page#dyq-faq'}
         className="WebsiteMainPage__button WebsiteMainPage__button--fill"
       >
         Learn more

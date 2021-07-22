@@ -18,7 +18,7 @@
   }
 
   &__mainTitle {
-    font-size: 32px;
+    font-size: 40px;
     font-weight: 600;
     line-height: 32px;
     padding-bottom: 10px;
@@ -40,6 +40,7 @@
   }
 
   &__button {
+    display: inline-block;
     border-radius: 8px;
     border: 3px solid @orange-light;
     background-color: transparent;
@@ -48,6 +49,10 @@
     margin-right: 15px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 20px;
+    height: 35px;
+    width: fit-content;
+    text-transform: capitalize;
 
     &--fill {
       background-color: @orange-light;
@@ -104,6 +109,7 @@
       h4 {
         display: none;
         font-weight: bolder;
+        margin-bottom: 10px;
 
         @media @small {
           display: block;
@@ -122,7 +128,7 @@
     -webkit-box-shadow: 0 0 8px 0 rgba(34, 60, 80, 0.2);
     -moz-box-shadow: 0 0 8px 0 rgba(34, 60, 80, 0.2);
     box-shadow: 0 0 8px 0 rgba(34, 60, 80, 0.2);
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     width: 350px;
 
     @media @small {
@@ -152,8 +158,8 @@
       width: 100%;
 
       @media @small {
-        height: 350px;
-        width: 350px;
+        height: 320px;
+        width: 325px;
       }
     }
   }
@@ -194,7 +200,7 @@
   }
 
   &__paragraphCurrency {
-    color: @orange-light;
+    color: #e83c04;
     font-weight: bolder;
     text-align: justify;
   }
@@ -204,6 +210,7 @@
     border-top: 1px solid #c8c8c8;
     margin-top: 20px;
     text-align: justify;
+    padding: 30px 0 0;
 
     @media @small {
       width: 50%;
@@ -214,5 +221,22 @@
   p.WebsiteMainPage__services {
     font-size: 30px;
     line-height: 35px;
+  }
+
+  &__buttonWrap {
+    display: flex;
+    flex-direction: column;
+
+    .WebsiteMainPage__button {
+      margin-bottom: 10px;
+
+      @media @small {
+        margin-bottom: 0;
+      }
+    }
+
+    @media @small {
+      flex-direction: row;
+    }
   }
 }
