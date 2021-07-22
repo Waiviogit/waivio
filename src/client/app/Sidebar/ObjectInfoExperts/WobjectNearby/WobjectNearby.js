@@ -9,7 +9,7 @@ import WeightTag from '../../../../components/WeightTag';
 import ObjectCard from '../../../../components/Sidebar/ObjectCard';
 
 import './WobjectNearby.less';
-import RightSidebarLoading from "../../RightSidebarLoading";
+import RightSidebarLoading from '../../RightSidebarLoading';
 
 const WobjectNearby = ({
   wobject,
@@ -46,19 +46,19 @@ const WobjectNearby = ({
 
   const redirectOnTitleClick = () => {
     if (isCenterContent) handleRedirect();
-  }
+  };
   let renderObjects = null;
 
   if (nearbyObjectsIsLoading) {
-    renderObjects = <RightSidebarLoading id="RightSidebarLoading" />
+    renderObjects = <RightSidebarLoading id="RightSidebarLoading" />;
   } else if (size(nearbyObjects) && !nearbyObjectsIsLoading) {
     renderObjects = (
       <div className="SidebarContentBlock">
         <div className="SidebarContentBlock__title" onClick={redirectOnTitleClick}>
           {!isCenterContent && (
             <span className="SidebarContentBlock__icon">
-            <Icon type="environment-o" />
-          </span>
+              <Icon type="environment-o" />
+            </span>
           )}
           {intl.formatMessage({ id: 'nearby_to_object', defaultMessage: 'Nearby' })}
         </div>
@@ -76,9 +76,9 @@ const WobjectNearby = ({
         </div>
         {!isCenterContent && (
           <div className="ObjectsNearby__more">
-        <span onClick={handleRedirect}>
-          {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
-        </span>
+            <span onClick={handleRedirect}>
+              {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
+            </span>
           </div>
         )}
       </div>
