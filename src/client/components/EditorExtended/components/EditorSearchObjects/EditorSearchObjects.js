@@ -1,7 +1,8 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { size } from 'lodash';
+import { get } from 'lodash';
+import classNames from 'classnames';
 
 import SearchItemObject from './SearchItemObject';
 
@@ -20,6 +21,17 @@ const EditorSearchObjects = ({
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
 
   React.useEffect(() => {
+    countCoordinates();
+    setPositionWhenBlockExist();
+
+    return () => {
+      clearEditorSearchObjects();
+    };
+  }, [editorNode]);
+
+  const countCoordinates = () => {
+    const searchBlockWidth = get(inputWrapper, 'current.offsetWidth', 0);
+
     fakeLeftPositionBlock.current.innerHTML = wordForCountWidth;
     // eslint-disable-next-line react/no-find-dom-node
     const parent = ReactDOM.findDOMNode(editorNode);
@@ -32,47 +44,46 @@ const EditorSearchObjects = ({
 
     if (screenLeft < 0) left = -parentBoundary.left;
     if (wordForCountWidth) left -= fakeLeftPositionBlock.current.offsetWidth;
-    if (left + 250 > window.innerWidth) {
-      left = window.innerWidth - 300;
+    if (left + searchBlockWidth > window.innerWidth) {
+      left = window.innerWidth - (searchBlockWidth + 50);
     }
     setCoordinates({ top, left: left + 15 });
+  };
 
-    return () => {
-      clearEditorSearchObjects();
-    };
-  }, [editorNode]);
+  const setPositionWhenBlockExist = () => countCoordinates();
 
   const handleSelectObject = object => selectObjectFromSearch(object);
 
   return (
     <React.Fragment>
-      {!!size(searchObjectsResults) && (
-        <div
-          ref={inputWrapper}
-          className="editor-search-objects"
-          style={{ top: coordinates.top, left: coordinates.left }}
-        >
-          {searchObjectsResults.map(obj => (
-            <SearchItemObject obj={obj} objectSelect={handleSelectObject} key={obj.id} />
-          ))}
-        </div>
-      )}
+      <div
+        ref={inputWrapper}
+        className={classNames('editor-search-objects', {
+          'editor-search-objects__empty': !searchObjectsResults.length,
+        })}
+        style={{ top: coordinates.top, left: coordinates.left }}
+      >
+        {searchObjectsResults.map(obj => (
+          <SearchItemObject obj={obj} key={obj.id} objectSelect={handleSelectObject} />
+        ))}
+      </div>
       <div ref={fakeLeftPositionBlock} className="fake-position-left" />
     </React.Fragment>
   );
 };
 
 EditorSearchObjects.propTypes = {
-  editorNode: PropTypes.shape().isRequired,
   wordForCountWidth: PropTypes.string,
+  searchObjectsResults: PropTypes.shape(),
+  editorNode: PropTypes.shape().isRequired,
   searchCoordinates: PropTypes.shape().isRequired,
   selectObjectFromSearch: PropTypes.func.isRequired,
-  searchObjectsResults: PropTypes.shape().isRequired,
   clearEditorSearchObjects: PropTypes.func.isRequired,
 };
 
 EditorSearchObjects.defaultProps = {
   wordForCountWidth: '',
+  searchObjectsResults: [],
 };
 
 export default EditorSearchObjects;

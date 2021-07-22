@@ -71,7 +71,7 @@ class MapObjectInfo extends React.Component {
   setQueryInUrl = (anchor, permlink) => {
     const url = `center=${anchor.join(',')}&zoom=${this.state.zoom}&permlink=${permlink}`;
 
-    this.props.history.push(`/?${url}`);
+    this.props.history.push(`/map?${url}`);
   };
 
   handleMarkerClick = (wobject, anchor) => {

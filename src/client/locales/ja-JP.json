@@ -1686,9 +1686,20 @@
   "power_down_started": "パワーダウンを開始しました",
   "power_down_stopped": "停止した電源オフ",
   "power_down_withdraw": "権利確定からの撤回",
+  "power_down_withdraw_to": "{to}にパワーダウン",
+  "power_down_withdraw_from": "{from}からパワーダウン",
   "total": "合計",
+  "payouts": "支払い",
+  "default_sort": "デフォルト",
   "x_field_description": "このフィールドを使用して、合計の計算からエントリを除外します。",
   "disclaimer_info": "財務報告を含むこのサイトによって提供される情報は、「現状有姿」で提供され、完全性、正確性、有用性または適時性を保証するものではありません。 Waivio Technologies Inc.は、このサイトのコンテンツの誤りまたは脱落について一切の責任を負いません。",
   "multiple_accounts_included": "レポートに複数のアカウントが含まれている場合、指定されたアカウント間のトランザクションは、引き出しと預金の合計計算から除外されます。",
-  "beneficiary_error": "受益者は1人以上である必要があります"
+  "beneficiary_error": "受益者は1人以上である必要があります",
+  "rewards_details_earn_up_to": "まで稼ぐ",
+  "your_reward": "あなたの報酬",
+  "rewards_details_reward_for_reviews_title": "料理の{count}写真を共有して、暗号を獲得しましょう",
+  "you_earn": "あなたが稼ぐ",
+  "disclaimer_campaign_currency": "免責事項：為替レートはサードパーティによって提供されており、正確でない場合があります。",
+  "base_currency": "基本通貨",
+  "post_currency_info": "基本通貨は、報酬、投票値、およびポスト収益を表示するために使用されます。"
 }

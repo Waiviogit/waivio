@@ -1685,10 +1685,21 @@
   "power_down_started": "Inicio de apagado",
   "power_down_stopped": "Detenido apagado",
   "power_down_withdraw": "Retirar de la concesión",
+  "power_down_withdraw_to": "Apague a {to}",
+  "power_down_withdraw_from": "Apagar desde {from}",
   "filter_posts": "Filtrar publicaciones",
   "total": "TOTAL",
+  "payouts": "pagos",
+  "default_sort": "defecto",
   "x_field_description": "Utilice este campo para excluir una entrada del cálculo de totales",
   "disclaimer_info": "La información proporcionada por este sitio, incluidos los informes financieros, se proporciona \"\"tal cual\"\" sin garantías de integridad, precisión, utilidad o puntualidad. Waivio Technologies Inc. no asume ninguna responsabilidad por cualquier error u omisión en el contenido de este sitio.",
   "multiple_accounts_included": "Si se incluyen varias cuentas en el informe, las transacciones entre las cuentas especificadas se excluyen de los cálculos de totales para retiros y depósitos.",
-  "beneficiary_error": "El beneficiario no puede ser menos de 1"
+  "beneficiary_error": "El beneficiario no puede ser menos de 1",
+  "rewards_details_earn_up_to": "Gane hasta",
+  "your_reward": "Tu recompensa",
+  "rewards_details_reward_for larger_title": "Comparte {count} fotos del plato y gana criptomonedas",
+  "you_earn": "USTED GANA",
+  "disclaimer_campaign_currency": "Descargo de responsabilidad: los tipos de cambio son proporcionados por terceros y pueden no ser precisos.",
+  "base_currency": "Moneda base",
+  "post_currency_info": "La moneda base se utiliza para mostrar las recompensas, el valor de los votos y publicar las ganancias"
 }

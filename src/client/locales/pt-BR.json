@@ -1685,9 +1685,20 @@
   "power_down_started": "Desligamento iniciado",
   "power_down_stopped": "Desligamento interrompido",
   "power_down_withdraw": "Retirar da aquisição",
+  "power_down_withdraw_to": "Desligue para {to}",
+  "power_down_withdraw_from": "Desligue de {from}",
   "total": "TOTAL",
+  "payouts": "pagamentos",
+  "default_sort": "default",
   "x_field_description": "Use este campo para excluir uma entrada do cálculo de totais.",
   "disclaimer_info": "As informações fornecidas por este site, incluindo relatórios financeiros, são fornecidas \"\"como estão\"\", sem garantias de integridade, precisão, utilidade ou oportunidade. Waivio Technologies Inc. não assume qualquer responsabilidade ou obrigação por quaisquer erros ou omissões no conteúdo deste site.",
   "multiple_accounts_included": "Se várias contas forem incluídas no relatório, as transações entre as contas especificadas são excluídas dos cálculos de totais para retiradas e depósitos.",
-  "beneficiary_error": "O beneficiário não pode ser inferior a 1"
+  "beneficiary_error": "O beneficiário não pode ser inferior a 1",
+  "rewards_details_earn_up_to": "Ganhe até",
+  "your_reward": "Your Reward",
+  "rewards_details_reward_for_reviews_title": "Compartilhe {count} fotos do prato e ganhe criptografia",
+  "you_earn": "VOCÊ GANHA",
+  "disclaimer_campaign_currency": "Aviso: as taxas de câmbio são fornecidas por terceiros e podem não ser precisas.",
+  "base_currency": "Moeda base",
+  "post_currency_info": "A moeda base é usada para exibir recompensas, valor de voto e postar ganhos."
 }

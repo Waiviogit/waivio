@@ -6,18 +6,22 @@ import { get, upperFirst } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
-
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import { getObjectType } from '../../../helpers/wObjectHelper';
-import { getConfigurationValues, getCurrPage } from '../../../../store/appStore/appSelectors';
+import {
+  getConfigurationValues,
+  getCurrPage,
+  getIsDiningGifts,
+} from '../../../../store/appStore/appSelectors';
 import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 
 import './WebsiteHeader.less';
 
-const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
+const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDiningGifts }) => {
   const pathName = location.pathname;
-  const isMainPage = pathName === '/';
+  const pageWithMapUrl = isDiningGifts ? '/map' : '/';
+  const isPageWithMap = pathName === pageWithMapUrl;
   let setHrefBackButton = () => history.push('/');
   let currentPage = currPage || store.get('currentPage');
   const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
@@ -41,7 +45,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
 
   if (query) {
     setHrefBackButton = () => {
-      history.push(`/?${query}`);
+      history.push(`/${pageWithMapUrl}?${query}`);
       localStorage.removeItem('query');
     };
   }
@@ -49,7 +53,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location }) => {
   return (
     <div className="WebsiteHeader" style={{ backgroundColor: `#${backgroundColor}` }}>
       <div className="topnav-layout isWebsiteView">
-        {isMainPage ? (
+        {isPageWithMap ? (
           <WebsiteSearch history={history} location={location} />
         ) : (
           <React.Fragment>
@@ -95,6 +99,7 @@ WebsiteHeader.propTypes = {
   history: PropTypes.shape().isRequired,
   config: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  isDiningGifts: PropTypes.bool.isRequired,
 };
 
 WebsiteHeader.defaultProps = {
@@ -105,4 +110,5 @@ export default connect(state => ({
   currPage: getCurrPage(state),
   config: getConfigurationValues(state),
   wobj: getObject(state),
+  isDiningGifts: getIsDiningGifts(state),
 }))(withRouter(injectIntl(WebsiteHeader)));

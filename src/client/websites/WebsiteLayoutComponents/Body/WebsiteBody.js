@@ -123,7 +123,7 @@ const WebsiteBody = props => {
       });
     }
 
-    props.history.push(`/?${props.query.toString()}`);
+    props.history.push(`?${props.query.toString()}`);
     localStorage.setItem('query', props.query.toString());
   };
 
@@ -237,7 +237,7 @@ const WebsiteBody = props => {
       props.query.set('center', anchor);
       props.query.set('zoom', area.zoom);
       props.query.set('permlink', payload.author_permlink);
-      props.history.push(`/?${props.query.toString()}`);
+      props.history.push(`?${props.query.toString()}`);
       setInfoboxData({ wobject: payload, coordinates: anchor });
     },
     [area.zoom, props.location.search],
@@ -451,7 +451,7 @@ const WebsiteBody = props => {
                   props.query.delete('center');
                   props.query.delete('zoom');
                   props.query.delete('permlink');
-                  props.history.push(`/?${props.query.toString()}`);
+                  props.history.push(`?${props.query.toString()}`);
                 }
               }}
               animate

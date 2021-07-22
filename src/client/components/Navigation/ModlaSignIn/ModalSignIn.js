@@ -41,6 +41,8 @@ const ModalSignIn = ({
   setIsShowSignInModal,
   toCurrentWobjLink,
   history,
+  buttonClassName,
+  text,
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,7 +59,7 @@ const ModalSignIn = ({
 
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: `https://${host}/callback`,
+    callbackURL: `${host}/callback`,
   });
   const isWidget = getSessionData('isWidget');
 
@@ -156,7 +158,7 @@ const ModalSignIn = ({
                 })}
               </span>
             </p>
-            <a role="button" href={hiveSinger.getLoginURL(next)} className="ModalSignIn__signin">
+            <a role="button" href={hiveSinger.getLoginURL()} className="ModalSignIn__signin">
               <img
                 src="/images/icons/logo-hive.svg"
                 alt="hive"
@@ -252,7 +254,14 @@ const ModalSignIn = ({
 
   return (
     <React.Fragment>
-      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={onSignUpClick} />}
+      {!hideLink && (
+        <SignUpButton
+          isButton={isButton}
+          setIsModalOpen={onSignUpClick}
+          className={buttonClassName}
+          text={text}
+        />
+      )}
       <Modal
         width={480}
         visible={isModalOpen}
@@ -268,6 +277,7 @@ const ModalSignIn = ({
 
 ModalSignIn.propTypes = {
   next: PropTypes.string,
+  text: PropTypes.string,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -277,11 +287,14 @@ ModalSignIn.propTypes = {
   isButton: PropTypes.bool,
   setIsShowSignInModal: PropTypes.func,
   toCurrentWobjLink: PropTypes.string,
+  buttonClassName: PropTypes.string,
   history: PropTypes.shape(),
 };
 
 ModalSignIn.defaultProps = {
   next: '',
+  buttonClassName: '',
+  text: '',
   showModal: false,
   handleLoginModalCancel: () => {},
   hideLink: false,
