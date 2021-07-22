@@ -44,10 +44,6 @@
   justify-content: space-between;
   padding: 5px 15px;
 
-  @media @small {
-    padding: 5px 5px;
-  }
-
   &__logo {
     display: flex;
     align-items: center;
@@ -103,22 +99,29 @@
     a {
       display: none;
 
-      @media @small {
-        display: inline-block;
-        color: #888888;
-        position: relative;
-        margin: 0 10px;
-        font-size: 20px;
-      }
-
       &::after {
         content: '';
+        display: inline-block;
         height: 30px;
         width: 1px;
         background: #888888;
         position: absolute;
         margin: 0 10px;
         top: 0;
+      }
+
+      &:last-child {
+        &::after {
+          display: none;
+        }
+      }
+
+      @media @small {
+        display: inline-block;
+        color: #888888;
+        position: relative;
+        margin: 0 10px;
+        font-size: 20px;
       }
     }
   }
