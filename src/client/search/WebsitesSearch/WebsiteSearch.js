@@ -38,7 +38,7 @@ const WebsiteSearch = props => {
     else props.query.delete('searchString');
 
     localStorage.removeItem('scrollTop');
-    props.history.push(`/?${props.query.toString()}`);
+    props.history.push(`?${props.query.toString()}`);
 
     if (window.gtag) window.gtag('event', `search_${props.searchType.toLowerCase()}`);
 
@@ -76,7 +76,7 @@ const WebsiteSearch = props => {
     setSearchString('');
     props.resetSearchAutoCompete();
     handleSearchAutocomplete('');
-    props.history.push(`/?type=${props.searchType}`);
+    props.history.push(`?type=${props.searchType}`);
   };
 
   return (

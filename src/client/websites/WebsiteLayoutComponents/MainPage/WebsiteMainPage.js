@@ -6,7 +6,6 @@ import WebsiteFooter from '../WebsiteFooter/Footer';
 import MainPageHeader from '../Header/MainPageHeader';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
-
 import './WebsiteMainPage.less';
 
 const WebsiteMainPage = () => {

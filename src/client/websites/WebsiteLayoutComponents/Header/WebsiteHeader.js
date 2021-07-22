@@ -20,9 +20,10 @@ import './WebsiteHeader.less';
 
 const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDiningGifts }) => {
   const pathName = location.pathname;
+
   const pageWithMapUrl = isDiningGifts ? '/map' : '/';
   const isPageWithMap = pathName === pageWithMapUrl;
-  let setHrefBackButton = () => history.push(pageWithMapUrl);
+  let setHrefBackButton = () => history.push('/');
   let currentPage = currPage || store.get('currentPage');
   const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
   const query = store.get('query');
@@ -43,9 +44,9 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
     currentPage = 'Rewards';
   }
 
-  if (query) {
+  if (query && !isDiningGifts) {
     setHrefBackButton = () => {
-      history.push(`${pageWithMapUrl}?${query}`);
+      history.push(`/?${query}`);
       localStorage.removeItem('query');
     };
   }

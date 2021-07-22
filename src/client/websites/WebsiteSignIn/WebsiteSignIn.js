@@ -20,7 +20,7 @@ const WebsiteSignIn = props => {
   const url = query.get('host');
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: `https://${url}/callback`,
+    callbackURL: `${url}/callback`,
   });
 
   const responseSocial = async (response, socialNetwork) => {
@@ -34,7 +34,7 @@ const WebsiteSignIn = props => {
 
       if (res) {
         setGuestLoginData(response.accessToken, socialNetwork, id);
-        window.location.href = `https://${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
+        window.location.href = `${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
       } else {
         let image = '';
 
