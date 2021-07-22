@@ -123,7 +123,7 @@ const ModalSignIn = ({
   );
 
   const renderSignIn = () => {
-    if (isWaivio) return <WebsiteSignIn />;
+    if (!isWaivio) return <WebsiteSignIn />;
 
     return (
       <React.Fragment>

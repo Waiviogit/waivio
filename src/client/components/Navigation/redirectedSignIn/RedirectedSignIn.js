@@ -15,7 +15,17 @@ const RedirectedSignIn = props => {
       {isFormVisible ? (
         <GuestSignUpForm userData={userData} isModalOpen={isFormVisible} url={url} />
       ) : (
-        <WebsiteSignIn setUserData={setUserData} setIsFormVisible={setIsFormVisible} />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100vw',
+            marginTop: '100px',
+          }}
+        >
+          <WebsiteSignIn setUserData={setUserData} setIsFormVisible={setIsFormVisible} />
+        </div>
       )}
     </div>
   );
