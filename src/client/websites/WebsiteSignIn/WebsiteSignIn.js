@@ -4,20 +4,23 @@ import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { setGuestLoginData } from '../../helpers/localStorageHelpers';
 import { isUserRegistered } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import SocialButton from './SocialButton';
+import { getCurrentHost } from '../../../store/appStore/appSelectors';
 
 import styles from './styles';
 import './WebsiteSignIn.less';
 
 const WebsiteSignIn = props => {
   const [loading, setIsLoading] = useState(false);
+  const currentHost = useSelector(getCurrentHost);
   const query = new URLSearchParams(props.location.search);
-  const url = query.get('host');
+  const url = query.get('host') || currentHost;
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: `${url}/callback`,
