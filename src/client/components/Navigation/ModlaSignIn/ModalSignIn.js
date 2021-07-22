@@ -271,6 +271,7 @@ const ModalSignIn = ({
         onCancel={memoizedOnModalClose}
         footer={null}
         closable={!isLoading}
+        className={!isWaivio ? 'ModalSignIn__website' : ''}
       >
         {isFormVisible ? renderGuestSignUpForm() : renderSignIn()}
       </Modal>

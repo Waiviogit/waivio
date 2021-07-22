@@ -11,7 +11,6 @@ import { setShowSearchResult } from '../../../../store/searchStore/searchActions
 
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
-  const dispatch = useDispatch();
 
   return (
     <div className="WebsiteMainPage">
@@ -34,11 +33,7 @@ const WebsiteMainPage = () => {
                 isButton
               />
             )}
-            <Link
-              to={'/map'}
-              className="WebsiteMainPage__button"
-              onClick={() => dispatch(setShowSearchResult(true))}
-            >
+            <Link to={'/map'} className="WebsiteMainPage__button">
               Find Rewards <Icon type="right" />
             </Link>
           </div>
