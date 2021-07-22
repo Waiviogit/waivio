@@ -1,15 +1,17 @@
 import React from 'react';
 import { Icon } from 'antd';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import WebsiteFooter from '../WebsiteFooter/Footer';
 import MainPageHeader from '../Header/MainPageHeader';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import './WebsiteMainPage.less';
+import { setShowSearchResult } from '../../../../store/searchStore/searchActions';
 
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
+  const dispatch = useDispatch();
 
   return (
     <div className="WebsiteMainPage">
@@ -32,7 +34,11 @@ const WebsiteMainPage = () => {
                 isButton
               />
             )}
-            <Link to={'/map'} className="WebsiteMainPage__button">
+            <Link
+              to={'/map'}
+              className="WebsiteMainPage__button"
+              onClick={() => dispatch(setShowSearchResult(true))}
+            >
               Find Rewards <Icon type="right" />
             </Link>
           </div>
