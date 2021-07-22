@@ -32,7 +32,6 @@ import {
 import './ModalSignIn.less';
 
 const ModalSignIn = ({
-  next,
   intl,
   showModal,
   handleLoginModalCancel,
@@ -243,13 +242,12 @@ const ModalSignIn = ({
 
   const memoizedOnModalClose = useCallback(() => {
     if (isWidget) {
-      onModalClose();
       removeSessionData('userName', 'isWidget');
       clearAllSessionProposition();
       history.push(toCurrentWobjLink);
-    } else {
-      onModalClose();
     }
+
+    onModalClose();
   }, []);
 
   return (
@@ -265,7 +263,7 @@ const ModalSignIn = ({
       <Modal
         width={480}
         visible={isModalOpen}
-        onCancel={!isLoading ? memoizedOnModalClose : null}
+        onCancel={memoizedOnModalClose}
         footer={null}
         closable={!isLoading}
       >
@@ -276,7 +274,6 @@ const ModalSignIn = ({
 };
 
 ModalSignIn.propTypes = {
-  next: PropTypes.string,
   text: PropTypes.string,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
@@ -292,7 +289,6 @@ ModalSignIn.propTypes = {
 };
 
 ModalSignIn.defaultProps = {
-  next: '',
   buttonClassName: '',
   text: '',
   showModal: false,

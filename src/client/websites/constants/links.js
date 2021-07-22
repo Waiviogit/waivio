@@ -43,7 +43,7 @@ export const footerLinks = {
   ],
   CONTACT: [
     { name: 'Discord', link: 'https://discord.gg/Rr9zG7fH' },
-    { name: 'Github', link: 'https://www.waivio.com/@waiviolabs' },
+    { name: 'Github', link: 'https://github.com/Waiviogit/waivio' },
     { name: 'Twitter', link: 'https://twitter.com/WaivioLabs' },
     { name: 'Waivio', link: 'https://waivio.com/@waiviolabs' },
   ],

@@ -22,7 +22,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
   const pathName = location.pathname;
   const pageWithMapUrl = isDiningGifts ? '/map' : '/';
   const isPageWithMap = pathName === pageWithMapUrl;
-  let setHrefBackButton = () => history.push('/');
+  let setHrefBackButton = () => history.push(pageWithMapUrl);
   let currentPage = currPage || store.get('currentPage');
   const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
   const query = store.get('query');
@@ -45,7 +45,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
 
   if (query) {
     setHrefBackButton = () => {
-      history.push(`/${pageWithMapUrl}?${query}`);
+      history.push(`${pageWithMapUrl}?${query}`);
       localStorage.removeItem('query');
     };
   }
