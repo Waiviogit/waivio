@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { get } from 'lodash';
+import { get, size } from 'lodash';
 import classNames from 'classnames';
 
 import SearchItemObject from './SearchItemObject';
@@ -19,6 +19,28 @@ const EditorSearchObjects = ({
   const inputWrapper = React.useRef(null);
   const fakeLeftPositionBlock = React.useRef(null);
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
+  const [selectedObjIndex, setSelectedObjIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+
+      setSelectedObjIndex(prev => prev + 1);
+      // console.log('handleKeyDown', event.key);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setSelectedObjIndex(prev => prev - 1);
+      // console.log('handleKeyUp', event.key);
+    }
+  };
 
   React.useEffect(() => {
     countCoordinates();
@@ -28,6 +50,10 @@ const EditorSearchObjects = ({
       clearEditorSearchObjects();
     };
   }, [editorNode]);
+
+  React.useEffect(() => {
+    setSelectedObjIndex(0);
+  }, [size(searchObjectsResults)]);
 
   const countCoordinates = () => {
     const searchBlockWidth = get(inputWrapper, 'current.offsetWidth', 0);
@@ -63,8 +89,15 @@ const EditorSearchObjects = ({
         })}
         style={{ top: coordinates.top, left: coordinates.left }}
       >
-        {searchObjectsResults.map(obj => (
-          <SearchItemObject obj={obj} key={obj.id} objectSelect={handleSelectObject} />
+        {searchObjectsResults.map((obj, index) => (
+          <SearchItemObject
+            obj={obj}
+            key={obj.id}
+            objectIndex={index}
+            selectedObjIndex={selectedObjIndex}
+            objectSelect={handleSelectObject}
+            setSelectedObjIndex={setSelectedObjIndex}
+          />
         ))}
       </div>
       <div ref={fakeLeftPositionBlock} className="fake-position-left" />

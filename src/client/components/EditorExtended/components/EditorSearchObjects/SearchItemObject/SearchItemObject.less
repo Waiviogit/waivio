@@ -1,6 +1,7 @@
 @import (reference) '../../../../../styles/custom.less';
 
 @avatar_size: 40px;
+@obj_card_hover: #fff5e6;
 
 .object-card {
   width: 100%;
@@ -9,6 +10,10 @@
   background: @white;
   align-items: center;
   border-bottom: 1px solid @white-gainsboro;
+
+  &__hover {
+    background: @obj_card_hover;
+  }
 
   &:last-child {
     border-bottom: none;
