@@ -17,7 +17,7 @@ const routes = host => ({
     {
       path: '/',
       exact: true,
-      component: true ? WebsiteMainPage : WebsiteBody,
+      component: host ? WebsiteMainPage : WebsiteBody,
     },
     {
       path: '/map',
