@@ -67,7 +67,7 @@ const WebsiteSignIn = props => {
       <div
         className="WebsiteSignIn"
         style={{
-          width: '480px',
+          width: '440px',
           borderRadius: '4px',
           boxShadow: '0px 0px 12px 2px rgba(34, 60, 80, 0.2)',
         }}
@@ -78,6 +78,7 @@ const WebsiteSignIn = props => {
               id: 'eat_out_earn_crypto',
               defaultMessage: 'eat out, earn crypto',
             })}
+            .
           </h1>
           <h2
             style={{
@@ -89,6 +90,7 @@ const WebsiteSignIn = props => {
               id: 'sign_in_for_reward',
               defaultMessage: 'Sign-in for rewards per meal',
             })}
+            .
           </h2>
         </div>
         <div
@@ -194,19 +196,15 @@ const WebsiteSignIn = props => {
               >
                 {props.intl.formatMessage({
                   id: 'sing_in_modal_rules',
-                  defaultMessage: 'By using this Service, you agree to be bound by',
+                  defaultMessage: 'By using this service, you agree to our',
                 })}
+                &ensp;<i>our</i>&ensp;
                 <a
                   href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/xrj-terms-and-conditions"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i>
-                    {props.intl.formatMessage({
-                      id: 'terms_and_conditions',
-                      defaultMessage: 'the Terms and Conditions',
-                    })}
-                  </i>
+                  <i>Terms&Conditions</i>
                 </a>
                 ,&ensp;
                 <a
@@ -214,25 +212,17 @@ const WebsiteSignIn = props => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i>
-                    {props.intl.formatMessage({
-                      id: 'privacy_policy',
-                      defaultMessage: 'the Privacy Policy',
-                    })}
-                  </i>
+                  <i>Privacy Policy</i>
                 </a>
-                ,&ensp;
+                , &ensp;
+                <i>and our</i>
+                &ensp;
                 <a
                   href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/uid-cookies-policy"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i>
-                    {props.intl.formatMessage({
-                      id: 'cookies_policy',
-                      defaultMessage: 'the Cookies Policy',
-                    })}
-                  </i>
+                  <i>Cookies Policy</i>
                 </a>
                 .
               </p>

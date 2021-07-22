@@ -228,12 +228,12 @@ class WebsiteWrapper extends React.PureComponent {
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-              {showHeader && (
+              {showHeader && !signInPage && (
                 <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                   <WebsiteHeader />
                 </Layout.Header>
               )}
-              <div className={showHeader && 'content'}>
+              <div className={showHeader && !signInPage && 'content'}>
                 {loadingFetching && !signInPage ? (
                   <Loading />
                 ) : (
