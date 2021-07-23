@@ -57,7 +57,7 @@ const WebsiteMainPage = () => {
             {!isAuth && (
               <ModalSignIn
                 buttonClassName="WebsiteMainPage__button WebsiteMainPage__button--fill"
-                text="Sing up"
+                text="Sign up"
                 isButton
               />
             )}
