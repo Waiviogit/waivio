@@ -550,6 +550,7 @@
   "emptyCategory": "Ova je kategorija prazna",
   "add_catalog_item": "@ {currentUserName} dodao je kategoriju <strong> {category} </strong> u katalog.",
   "related_to_object": "Povezano",
+  "nearby_to_object": "Nearby",
   "emptyList": "Ovaj je popis prazan",
   "list": "popis",
   "list_update": "Ažuriraj popis",

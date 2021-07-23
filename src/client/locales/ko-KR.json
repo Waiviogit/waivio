@@ -550,6 +550,7 @@
   "emptyCategory": "이 카테고리는 비어 있습니다",
   "add_catalog_item": "@ {currentUserName} 이 카탈로그에 <strong> {category} </strong> 카테고리를 추가했습니다.",
   "related_to_object": "관련",
+  "nearby_to_object": "Nearby",
   "emptyList": "이 목록은 비어 있습니다",
   "list": "명부",
   "list_update": "목록 업데이트",

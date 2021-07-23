@@ -550,6 +550,7 @@
   "emptyCategory": "See kategooria on tühi",
   "add_catalog_item": "@ {currentUserName} lisas kataloogi <strong> {category} </strong>",
   "related_to_object": "Seotud",
+  "nearby_to_object": "Nearby",
   "emptyList": "See loend on tühi",
   "list": "nimekirja",
   "list_update": "Loendi värskendamine",

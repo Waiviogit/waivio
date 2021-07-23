@@ -587,6 +587,7 @@
   "emptyCategory": "Эта категория пуста",
   "add_catalog_item": "@{currentUserName} добавил категорию <strong>{category}</strong> в каталог.",
   "related_to_object": "Связанные с объектом",
+  "nearby_to_object": "Рядом",
   "emptyList": "Этот список пуст",
   "list": "список",
   "list_update": "Обновить список",

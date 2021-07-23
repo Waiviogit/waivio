@@ -550,6 +550,7 @@
   "emptyCategory": "Denne kategori er tomt",
   "add_catalog_item": "@ {currentUserName} tilføjede kategori <strong> {category} </strong> til kataloget.",
   "related_to_object": "Relaterede",
+    "nearby_to_object": "Nearby",
   "emptyList": "Denne liste er tomt",
   "list": "liste",
   "list_update": "Opdater liste",

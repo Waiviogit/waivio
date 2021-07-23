@@ -550,6 +550,7 @@
   "emptyCategory": "Diese Kategorie ist leer",
   "add_catalog_item": "@{currentUserName} Kategorie <strong>{category}</strong> zum Katalog hinzugefügt.",
   "related_to_object": "Verwandte Links",
+  "nearby_to_object": "Nearby",
   "emptyList": "Diese Liste ist leer",
   "list": "Liste",
   "list_update": "Liste aktualisieren",

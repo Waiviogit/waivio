@@ -550,6 +550,7 @@
   "emptyCategory": "Hierdie kategorie is leeg",
   "add_catalog_item": "@ {currentUserName} het kategorie <strong> {category} </strong> by die katalogus gevoeg.",
   "related_to_object": "Verwante",
+  "nearby_to_object": "Nearby",
   "emptyList": "Hierdie lys is leeg",
   "list": "lys",
   "list_update": "Lys lys op",

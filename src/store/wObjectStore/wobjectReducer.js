@@ -19,6 +19,7 @@ import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
 export const initialState = {
   wobject: {},
   nestedWobject: {},
+  nearbyWobjects: [],
   lists: [],
   isFetching: false,
   isFailed: false,
@@ -389,7 +390,26 @@ export default function wobjectReducer(state = initialState, action) {
           ),
         },
       };
+    case actions.GET_OBJECTS_NEARBY.START: {
+      return {
+        ...state,
+        nearbyWobjects: {
+          ...state.nearbyWobjects,
+          isLoading: true,
+        },
+      };
+    }
 
+    case actions.GET_OBJECTS_NEARBY.SUCCESS: {
+      return {
+        ...state,
+        nearbyWobjects: {
+          ...state.nearbyWobjects,
+          objects: action.payload,
+          isLoading: false,
+        },
+      };
+    }
     default: {
       return state;
     }

@@ -1,0 +1,27 @@
+@import (reference) '../../../../styles/custom.less';
+
+.SidebarContentBlock {
+  &__title {
+    cursor: pointer;
+  }
+
+  &__icon {
+    margin-right: 5px;
+  }
+
+  .ObjectsNearby__more {
+    padding: 16px 16px 0 16px;
+    display: flex;
+    justify-content: space-between;
+
+    & > span {
+      cursor: pointer;
+      color: @blue-botticelli;
+      font-weight: 500;
+
+      &:hover {
+        color: @primary-color;
+      }
+    }
+  }
+}

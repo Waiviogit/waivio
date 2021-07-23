@@ -58,6 +58,7 @@
   "getObjectFollowers": "/followers",
   "getObjectTypes": "/objectTypes",
   "getObjects": "/wobject",
+  "nearby": "/nearby",
   "inactivation": "/validate_inactivation",
   "objectType": "/objectType",
   "objectTypes": "/objectTypes",

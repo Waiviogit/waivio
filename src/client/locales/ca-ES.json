@@ -550,6 +550,7 @@
   "emptyCategory": "Aquesta categoria està buida",
   "add_catalog_item": "@ {currentUserName} afegit la categoria <strong> {category} </strong> al catàleg.",
   "related_to_object": "Relacionat",
+  "nearby_to_object": "Nearby",
   "emptyList": "Aquesta llista està buida",
   "list": "llista",
   "list_update": "Llista d'actualitzacions",

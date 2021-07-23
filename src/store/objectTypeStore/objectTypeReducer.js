@@ -31,7 +31,7 @@ const objectType = (state = initialState, action) => {
         tagsForFilter,
         ...data
       } = action.payload;
-      const filteredRelatedWobjects = relatedWobjects.filter(wObj => {
+      const filteredRelatedWobjects = filter(relatedWobjects, wObj => {
         const wobjStatus = parseWobjectField(wObj, 'status');
 
         return (
@@ -123,6 +123,12 @@ const objectType = (state = initialState, action) => {
         ...state,
         activeTagsFilters: action.payload,
         filteredObjects: [],
+      };
+
+    case wobjTypeActions.SET_OBJECT_SORT_TYPE:
+      return {
+        ...state,
+        sort: action.payload,
       };
 
     default:
