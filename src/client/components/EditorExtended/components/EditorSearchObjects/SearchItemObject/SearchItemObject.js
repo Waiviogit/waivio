@@ -7,16 +7,17 @@ import { getObjectName } from '../../../../../helpers/wObjectHelper';
 
 import './SearchItemObject.less';
 
-const SearchItemObject = ({ objectSelect, obj, selectedObjIndex, setSelectedObjIndex, objectIndex }) => {
-  const hoverObjCard = selectedObjIndex === objectIndex;
+const SearchItemObject = ({ objectSelect, obj, currentObjIndex, setCurrentObjIndex, objectIndex, searchBlockItem }) => {
+  const hoverObjCard = currentObjIndex === objectIndex;
   const handleSelectObject = () => objectSelect(obj);
-  const handleMouseOver = () => setSelectedObjIndex(objectIndex);
+  const handleMouseOver = () => setCurrentObjIndex(objectIndex);
 
   return (
     <div
+      ref={searchBlockItem}
+      onClick={handleSelectObject}
       onMouseOver={handleMouseOver}
       className={classNames("object-card", { "object-card__hover": hoverObjCard })}
-      onClick={handleSelectObject}
     >
       <ObjectSearchCard
         key={obj.id}
@@ -32,8 +33,9 @@ SearchItemObject.propTypes = {
   obj: PropTypes.shape().isRequired,
   objectSelect: PropTypes.func.isRequired,
   objectIndex: PropTypes.number.isRequired,
-  selectedObjIndex: PropTypes.number.isRequired,
-  setSelectedObjIndex: PropTypes.func.isRequired,
+  searchBlockItem: PropTypes.shape().isRequired,
+  currentObjIndex: PropTypes.number.isRequired,
+  setCurrentObjIndex: PropTypes.func.isRequired,
 };
 
 export default SearchItemObject;
