@@ -86,10 +86,8 @@ const EditorSearchObjects = ({
 
           if (newResult >= 0) {
             if (
-              !(
-                offsetScrollHeight >= scrollTop &&
-                offsetScrollHeight <= scrollTop + heightSearchBlock
-              )
+                offsetScrollHeight <= scrollTop &&
+                offsetScrollHeight >= scrollTop + heightSearchBlock
             ) {
               inputWrapper.current.scrollTo(0, scrollTop + blockItemHeight);
             }
@@ -147,6 +145,7 @@ const EditorSearchObjects = ({
         ref={inputWrapper}
         className={classNames('editor-search-objects', {
           'editor-search-objects__empty': !searchObjectsResults.length,
+          'editor-search-objects__not-scroll': searchObjectsResults.length <= 4
         })}
         style={{ top: coordinates.top, left: coordinates.left }}
       >
