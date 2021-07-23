@@ -1685,9 +1685,20 @@
   "power_down_started": "L'extinction a commencé",
   "power_down_stopped": "Arrêt de la mise hors tension",
   "power_down_withdraw": "Retrait de l'acquisition",
+  "power_down_withdraw_to": "Éteignez jusqu'à {to}",
+  "power_down_withdraw_from": "Mise hors tension de {from}",
   "total": "TOTAL",
+  "payouts": "paiements",
+  "default_sort": "défaut",
   "x_field_description": "Utilisez ce champ pour exclure une entrée du calcul des totaux.",
   "disclaimer_info": "Les informations fournies par ce site, y compris les rapports financiers, sont fournies « en l'état » sans aucune garantie d'exhaustivité, d'exactitude, d'utilité ou d'actualité. Waivio Technologies Inc. n'assume aucune responsabilité pour toute erreur ou omission dans le contenu de ce site.",
   "multiple_accounts_included": "Si plusieurs comptes sont inclus dans le rapport, les transactions entre les comptes spécifiés sont exclues des calculs des totaux pour les retraits et les dépôts.",
-  "beneficiary_error": "Le bénéficiaire ne peut pas être inférieur à 1"
+  "beneficiary_error": "Le bénéficiaire ne peut pas être inférieur à 1",
+  "rewards_details_earn_up_to": "Gagnez jusqu'à",
+  "your_reward": "Votre récompense",
+  "rewards_details_reward_for_reviews_title": "Partagez {count} photos du plat et gagnez de la crypto",
+  "you_earn": "VOUS GAGNEZ",
+  "disclaimer_campaign_currency": "Avertissement: les taux de change sont fournis par des tiers et peuvent ne pas être exacts.",
+  "base_currency": "Devise de base",
+  "post_currency_info": "La devise de base est utilisée pour afficher les récompenses, la valeur des votes et publier les gains."
 }

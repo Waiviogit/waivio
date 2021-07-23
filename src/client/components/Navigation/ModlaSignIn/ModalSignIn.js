@@ -30,9 +30,9 @@ import {
 } from '../../../../store/appStore/appSelectors';
 
 import './ModalSignIn.less';
+import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
 
 const ModalSignIn = ({
-  next,
   intl,
   showModal,
   handleLoginModalCancel,
@@ -41,6 +41,8 @@ const ModalSignIn = ({
   setIsShowSignInModal,
   toCurrentWobjLink,
   history,
+  buttonClassName,
+  text,
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,7 +59,7 @@ const ModalSignIn = ({
 
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: `https://${host}/callback`,
+    callbackURL: `${host}/callback`,
   });
   const isWidget = getSessionData('isWidget');
 
@@ -120,109 +122,113 @@ const ModalSignIn = ({
     </React.Fragment>
   );
 
-  const renderSignIn = () => (
-    <React.Fragment>
-      <div className="ModalSignIn">
-        {isLoading ? (
-          <h2 className="ModalSignIn__loading">
-            {intl.formatMessage({
-              id: 'signing',
-              defaultMessage: 'Signing in!',
-            })}
-          </h2>
-        ) : (
-          <h2 className="ModalSignIn__title">
-            {intl.formatMessage({
-              id: 'signinForRewards',
-              defaultMessage: 'Sign in for rewards!',
-            })}
-          </h2>
-        )}
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <React.Fragment>
-            <p className="ModalSignIn__rules">
+  const renderSignIn = () => {
+    if (!isWaivio) return <WebsiteSignIn />;
+
+    return (
+      <React.Fragment>
+        <div className="ModalSignIn">
+          {isLoading ? (
+            <h2 className="ModalSignIn__loading">
               {intl.formatMessage({
-                id: 'sing_in_modal_message',
-                defaultMessage: 'Waivio is powered by the Hive open social blockchain',
+                id: 'signing',
+                defaultMessage: 'Signing in!',
               })}
-            </p>
-            <p className="ModalSignIn__title ModalSignIn__title--lined">
-              <span>
+            </h2>
+          ) : (
+            <h2 className="ModalSignIn__title">
+              {intl.formatMessage({
+                id: 'signinForRewards',
+                defaultMessage: 'Sign in for rewards!',
+              })}
+            </h2>
+          )}
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            <React.Fragment>
+              <p className="ModalSignIn__rules">
                 {intl.formatMessage({
-                  id: 'steem_accounts',
-                  defaultMessage: 'HIVE ACCOUNTS',
+                  id: 'sing_in_modal_message',
+                  defaultMessage: 'Waivio is powered by the Hive open social blockchain',
                 })}
-              </span>
-            </p>
-            <a role="button" href={hiveSinger.getLoginURL(next)} className="ModalSignIn__signin">
-              <img
-                src="/images/icons/logo-hive.svg"
-                alt="hive"
-                className="ModalSignIn__icon-steemit"
-              />
-              {intl.formatMessage({
-                id: 'signin_with_steemIt',
-                defaultMessage: 'HiveSinger',
-              })}
-            </a>
-            <p className="ModalSignIn__title ModalSignIn__title--lined">
-              <span>
+              </p>
+              <p className="ModalSignIn__title ModalSignIn__title--lined">
+                <span>
+                  {intl.formatMessage({
+                    id: 'steem_accounts',
+                    defaultMessage: 'HIVE ACCOUNTS',
+                  })}
+                </span>
+              </p>
+              <a role="button" href={hiveSinger.getLoginURL()} className="ModalSignIn__signin">
+                <img
+                  src="/images/icons/logo-hive.svg"
+                  alt="hive"
+                  className="ModalSignIn__icon-steemit"
+                />
                 {intl.formatMessage({
-                  id: 'guestAccounts',
-                  defaultMessage: 'GUEST ACCOUNTS',
-                })}
-              </span>
-            </p>
-            <div onClick={handleClickLoading} role="presentation">
-              <SocialButtons className="ModalSignIn__social" responseSocial={responseSocial} />
-            </div>
-            <p className="ModalSignIn__rules">
-              {intl.formatMessage({
-                id: 'sing_in_modal_rules',
-                defaultMessage: 'By using this Service, you agree to be bound by',
-              })}
-              &ensp;
-              <a
-                href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/xrj-terms-and-conditions"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {intl.formatMessage({
-                  id: 'terms_and_conditions',
-                  defaultMessage: 'the Terms and Conditions',
+                  id: 'signin_with_steemIt',
+                  defaultMessage: 'HiveSinger',
                 })}
               </a>
-              ,&ensp;
-              <a
-                href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/poi-privacy-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <p className="ModalSignIn__title ModalSignIn__title--lined">
+                <span>
+                  {intl.formatMessage({
+                    id: 'guestAccounts',
+                    defaultMessage: 'GUEST ACCOUNTS',
+                  })}
+                </span>
+              </p>
+              <div onClick={handleClickLoading} role="presentation">
+                <SocialButtons className="ModalSignIn__social" responseSocial={responseSocial} />
+              </div>
+              <p className="ModalSignIn__rules">
                 {intl.formatMessage({
-                  id: 'privacy_policy',
-                  defaultMessage: 'the Privacy Policy',
+                  id: 'sing_in_modal_rules',
+                  defaultMessage: 'By using this Service, you agree to be bound by',
                 })}
-              </a>
-              ,&ensp;
-              <a
-                href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/uid-cookies-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {intl.formatMessage({
-                  id: 'cookies_policy',
-                  defaultMessage: 'the Cookies Policy',
-                })}
-              </a>
-              .
-            </p>
-          </React.Fragment>
-        )}
-      </div>
-    </React.Fragment>
-  );
+                &ensp;
+                <a
+                  href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/xrj-terms-and-conditions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {intl.formatMessage({
+                    id: 'terms_and_conditions',
+                    defaultMessage: 'the Terms and Conditions',
+                  })}
+                </a>
+                ,&ensp;
+                <a
+                  href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/poi-privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {intl.formatMessage({
+                    id: 'privacy_policy',
+                    defaultMessage: 'the Privacy Policy',
+                  })}
+                </a>
+                ,&ensp;
+                <a
+                  href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/uid-cookies-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {intl.formatMessage({
+                    id: 'cookies_policy',
+                    defaultMessage: 'the Cookies Policy',
+                  })}
+                </a>
+                .
+              </p>
+            </React.Fragment>
+          )}
+        </div>
+      </React.Fragment>
+    );
+  };
 
   const onModalClose = () => {
     setIsModalOpen(false);
@@ -241,24 +247,31 @@ const ModalSignIn = ({
 
   const memoizedOnModalClose = useCallback(() => {
     if (isWidget) {
-      onModalClose();
       removeSessionData('userName', 'isWidget');
       clearAllSessionProposition();
       history.push(toCurrentWobjLink);
-    } else {
-      onModalClose();
     }
+
+    onModalClose();
   }, []);
 
   return (
     <React.Fragment>
-      {!hideLink && <SignUpButton isButton={isButton} setIsModalOpen={onSignUpClick} />}
+      {!hideLink && (
+        <SignUpButton
+          isButton={isButton}
+          setIsModalOpen={onSignUpClick}
+          className={buttonClassName}
+          text={text}
+        />
+      )}
       <Modal
         width={480}
         visible={isModalOpen}
-        onCancel={!isLoading ? memoizedOnModalClose : null}
+        onCancel={memoizedOnModalClose}
         footer={null}
         closable={!isLoading}
+        className={!isWaivio ? 'ModalSignIn__website' : ''}
       >
         {isFormVisible ? renderGuestSignUpForm() : renderSignIn()}
       </Modal>
@@ -267,7 +280,7 @@ const ModalSignIn = ({
 };
 
 ModalSignIn.propTypes = {
-  next: PropTypes.string,
+  text: PropTypes.string,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -277,11 +290,13 @@ ModalSignIn.propTypes = {
   isButton: PropTypes.bool,
   setIsShowSignInModal: PropTypes.func,
   toCurrentWobjLink: PropTypes.string,
+  buttonClassName: PropTypes.string,
   history: PropTypes.shape(),
 };
 
 ModalSignIn.defaultProps = {
-  next: '',
+  buttonClassName: '',
+  text: '',
   showModal: false,
   handleLoginModalCancel: () => {},
   hideLink: false,

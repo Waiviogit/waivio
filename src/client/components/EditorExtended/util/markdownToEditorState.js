@@ -1,8 +1,9 @@
 import { parse } from '@textlint/markdown-to-ast';
 import { last } from 'lodash';
+
+import { getSrc } from './videoHelper';
 import { ATOMIC_TYPES, Block, Entity } from './constants';
-import { isYoutube, isVimeo, isDTube, isThreeSpeak, getSrc } from './videoHelper';
-import { getImagePathPost } from '../../../helpers/image';
+import { VIDEO_MATCH_URL } from '../../../helpers/regexHelpers';
 
 const defaultInlineStyles = {
   Strong: {
@@ -28,7 +29,7 @@ const defaultBlockStyles = {
   HorizontalRule: 'atomic',
 };
 
-const isVideoLink = url => isYoutube(url) || isVimeo(url) || isDTube(url) || isThreeSpeak(url);
+const isVideoLink = url => Object.values(VIDEO_MATCH_URL).some(match => match.test(url));
 
 const normalizeMd = content => {
   const regExp = new RegExp('<center>|</center>', 'g');

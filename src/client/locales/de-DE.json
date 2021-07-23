@@ -1686,9 +1686,19 @@
   "power_down_started": "Herunterfahren gestartet",
   "power_down_stopped": "Stromausfall gestoppt",
   "power_down_withdraw": "Aus der Unverfallbarkeit zurückziehen",
+  "power_down_withdraw_to": "Ausschalten auf {to}",
+  "power_down_withdraw_from": "Ausschalten von {from}",
   "total": "GESAMT",
+  "payouts": "Auszahlungen",
+  "default_sort": "Standard",
   "x_field_description": "Verwenden Sie dieses Feld, um einen Eintrag von der Summenberechnung auszuschließen.",
   "disclaimer_info": "Die auf dieser Website bereitgestellten Informationen, einschließlich Finanzberichte, werden ohne Gewähr für Vollständigkeit, Genauigkeit, Nützlichkeit oder Aktualität bereitgestellt. Waivio Technologies Inc. übernimmt keine Verantwortung oder Haftung für Fehler oder Auslassungen im Inhalt dieser Site.",
   "multiple_accounts_included": "Wenn der Bericht mehrere Konten enthält, werden Transaktionen zwischen den angegebenen Konten von der Summenberechnung für Abhebungen und Einzahlungen ausgeschlossen.",
-  "beneficiary_error": "Begünstigter darf nicht kleiner als 1 . sein"
+  "beneficiary_error": "Begünstigter darf nicht kleiner als 1 . sein",
+  "rewards_details_earn_up_to": "Verdienen bis zu",
+  "your_reward": "Deine Belohnung",
+  "you_earn": "DU VERDIENST",
+  "disclaimer_campaign_currency": "Haftungsausschluss: Wechselkurse werden von Dritten bereitgestellt und sind möglicherweise nicht korrekt.",
+  "base_currency": "Hauptwährung",
+  "post_currency_info": "Die Basiswährung wird für die Anzeige von Belohnungen, Stimmenwert und Beitragseinnahmen verwendet."
 }

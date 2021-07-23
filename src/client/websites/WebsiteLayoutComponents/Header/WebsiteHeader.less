@@ -38,3 +38,127 @@
     }
   }
 }
+
+.MainPageHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 15px;
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+
+    @media @small {
+      font-size: 25px;
+    }
+
+    span {
+      display: none;
+
+      @media @medium {
+        display: inline;
+      }
+    }
+
+    b {
+      font-size: 15px;
+      color: @black;
+      margin-right: 20px;
+      position: relative;
+      font-weight: 500;
+
+      @media @small {
+        font-size: 25px;
+        margin-right: 40px;
+      }
+
+      &::after {
+        content: '';
+        display: none;
+        height: 30px;
+        width: 1px;
+        background: #888888;
+        position: absolute;
+        margin: 0 10px;
+        top: 0;
+
+        @media @medium {
+          display: inline-block;
+          top: 5px;
+          margin: 0 20px;
+        }
+      }
+    }
+  }
+
+  &__listLink {
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+
+    a {
+      display: none;
+
+      &::after {
+        content: '';
+        display: inline-block;
+        height: 30px;
+        width: 1px;
+        background: #888888;
+        position: absolute;
+        margin: 0 10px;
+        top: 0;
+      }
+
+      &.Topnav__user {
+        margin-right: 0;
+
+        &::after {
+          display: none;
+        }
+      }
+
+      @media @small {
+        display: inline-block;
+        color: #888888;
+        position: relative;
+        margin: 0 10px;
+        font-size: 20px;
+      }
+    }
+
+    button {
+      background: transparent;
+      border: none;
+      font-size: 15px;
+      color: #888888;
+    }
+  }
+
+  button.MainPageHeader__signIn {
+    border-radius: 8px;
+    border: 3px solid @orange-light;
+    background-color: transparent;
+    color: @orange-light;
+    padding: 0 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 0;
+
+    @media @small {
+      margin: 0 15px;
+      font-size: 20px;
+    }
+  }
+
+  &__logoImg {
+    border-radius: 50%;
+    margin-right: 5px;
+    width: 35px;
+
+    @media @small {
+      width: 50px;
+    }
+  }
+}

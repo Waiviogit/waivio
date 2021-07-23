@@ -1685,9 +1685,20 @@
   "power_down_started": "Mematikan daya",
   "power_down_stopped": "Mematikan daya",
   "power_down_withdraw": "Menari dari vesting",
+  "power_down_withdraw_to": "Matikan ke {to}",
+  "power_down_withdraw_from": "Matikan dari {from}",
   "total": "JUMLAH",
+  "payouts": "pembayaran",
+  "default_sort": "default",
   "x_field_description": "Gunakan bidang ini untuk mengecualikan entri dari penghitungan total.",
   "disclaimer_info": "Az ezen az oldalon nyújtott információkat, ideértve a pénzügyi jelentéseket is, ahogy van, a teljesség, a pontosság, a hasznosság vagy az időszerűség garanciája nélkül. A Waivio Technologies Inc. nem vállal felelősséget a webhely tartalmában előforduló hibákért vagy kihagyásokért.",
   "multiple_accounts_included": "Ha több számla szerepel a jelentésben, a meghatározott számlák közötti tranzakciókat kizárják a felvételek és betétek összesítéséből.",
-  "beneficiary_error": "A kedvezményezett nem lehet kevesebb, mint 1"
+  "beneficiary_error": "A kedvezményezett nem lehet kevesebb, mint 1",
+  "rewards_details_earn_up_to": "Dapatkan hingga",
+  "your_reward": "Hadiah Anda",
+  "rewards_details_reward_for_reviews_title": "Bagikan {count} foto hidangan dan dapatkan kripto",
+  "you_earn": "ANDA DAPAT",
+  "disclaimer_campaign_currency": "Penafian: Nilai tukar disediakan oleh pihak ketiga dan mungkin tidak akurat.",
+  "base_currency": "Mata uang dasar",
+  "post_currency_info": "Mata uang dasar digunakan untuk menampilkan hadiah, nilai suara, dan pendapatan posting."
 }

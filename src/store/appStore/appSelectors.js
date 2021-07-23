@@ -50,7 +50,7 @@ export const getIsMobile = createSelector([appState], state => state.isMobile);
 
 export const getCurrPage = createSelector([appState], state => state.currPage);
 
-export const getCurrentHost = createSelector([appState], state => state.host);
+export const getCurrentHost = createSelector([appState], state => state.appUrl);
 
 export const getMapForMainPage = createSelector([appState], state => state.currMap);
 
@@ -71,6 +71,8 @@ export const getHelmetIcon = createSelector([appState], state => state.helmetIco
 export const getHostAddress = createSelector([appState], state => state.hostAddress);
 
 export const getCurrentCurrency = createSelector([appState], state => state.currencyInfo);
+
+export const getIsDiningGifts = createSelector([appState], state => state.isDiningGifts);
 
 export const getWeightValue = createSelector(
   getRate,

@@ -1,23 +1,26 @@
-const YOUTUBEMATCH_URL = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-const VIMEOMATCH_URL = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/; // eslint-disable-line no-useless-escape
-const DTUBEMATCH_URL = /^https:\/\/(emb\.)?d\.tube(\/#!)?(\/v)?\/([^/"]+\/[^/"]+)$/;
-const THREESPEAKMATCH_URL = /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/;
+import { VIDEO_MATCH_URL } from '../../../helpers/regexHelpers';
 
 const YOUTUBE_PREFIX = 'https://www.youtube.com/embed/';
 const VIMEO_PREFIX = 'https://player.vimeo.com/video/';
 const DTUBE_PREFIX = 'https://emb.d.tube/#!/';
 const THREESPEAK_PREFIX = 'https://3speak.online/embed?v=';
+const RUMBLE_PREFIX = 'https://rumble.com/embed/';
+const BITCHUTE_PREFIX = 'https://www.bitchute.com/embed/';
 
-export const isYoutube = url => YOUTUBEMATCH_URL.test(url);
+export const isYoutube = url => VIDEO_MATCH_URL.YOUTUBE.test(url);
 
-export const isVimeo = url => VIMEOMATCH_URL.test(url);
+export const isVimeo = url => VIDEO_MATCH_URL.VIMEO.test(url);
 
-export const isDTube = url => DTUBEMATCH_URL.test(url);
+export const isDTube = url => VIDEO_MATCH_URL.DTUBE.test(url);
 
-export const isThreeSpeak = url => THREESPEAKMATCH_URL.test(url);
+export const isThreeSpeak = url => VIDEO_MATCH_URL.THREE_SPEAK.test(url);
+
+export const isRumble = url => VIDEO_MATCH_URL.RUMBLE.test(url);
+
+export const isBitchute = url => VIDEO_MATCH_URL.BITCHUTE.test(url);
 
 export const getYoutubeSrc = url => {
-  const id = url && url.match(YOUTUBEMATCH_URL)[1];
+  const id = url && url.match(VIDEO_MATCH_URL.YOUTUBE)[1];
 
   return {
     srcID: id,
@@ -27,7 +30,7 @@ export const getYoutubeSrc = url => {
 };
 
 export const getVimeoSrc = url => {
-  const id = url.match(VIMEOMATCH_URL)[3];
+  const id = url.match(VIDEO_MATCH_URL.VIMEO)[3];
 
   return {
     srcID: id,
@@ -37,7 +40,7 @@ export const getVimeoSrc = url => {
 };
 
 export const getDTubeSrc = url => {
-  const id = url.match(DTUBEMATCH_URL)[4];
+  const id = url.match(VIDEO_MATCH_URL.DTUBE)[4];
 
   return {
     srcID: id,
@@ -47,11 +50,31 @@ export const getDTubeSrc = url => {
 };
 
 export const getThreeSpeakSrc = url => {
-  const id = url.match(THREESPEAKMATCH_URL)[2];
+  const id = url.match(VIDEO_MATCH_URL.THREE_SPEAK)[2];
 
   return {
     srcID: id,
     srcType: '3speak',
+    url,
+  };
+};
+
+export const getRumbleSrc = url => {
+  const id = url.match(VIDEO_MATCH_URL.RUMBLE)[1];
+
+  return {
+    srcID: id,
+    srcType: 'rumble',
+    url,
+  };
+};
+
+export const getBitchuteSrc = url => {
+  const id = url.match(VIDEO_MATCH_URL.BITCHUTE)[2];
+
+  return {
+    srcID: id,
+    srcType: 'bitchute',
     url,
   };
 };
@@ -76,6 +99,16 @@ export const getSrc = ({ src }) => {
     const { srcID } = getThreeSpeakSrc(src);
 
     return `${THREESPEAK_PREFIX}${srcID}`;
+  }
+  if (isRumble(src)) {
+    const { srcID } = getRumbleSrc(src);
+
+    return `${RUMBLE_PREFIX}${srcID}`;
+  }
+  if (isBitchute(src)) {
+    const { srcID } = getBitchuteSrc(src);
+
+    return `${BITCHUTE_PREFIX}${srcID}/`;
   }
 
   return undefined;

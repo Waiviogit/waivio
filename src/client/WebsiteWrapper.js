@@ -31,7 +31,7 @@ import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
 import { getWebsiteObjWithCoordinates } from '../store/websiteStore/websiteActions';
-import { getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
+import { getIsDiningGifts, getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -40,7 +40,6 @@ import {
 } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
-import WebsiteWelcomeModal from './websites/WebsiteWelcomeModal/WebsiteWelcomeModal';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -56,6 +55,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     nightmode: getNightmode(state),
     isOpenWalletTable: getIsOpenWalletTable(state),
     loadingFetching: getIsAuthFetching(state),
+    isDiningGifts: getIsDiningGifts(state),
   }),
   {
     login,
@@ -84,6 +84,7 @@ class WebsiteWrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     getCurrentAppSettings: PropTypes.func,
     nightmode: PropTypes.bool,
+    isDiningGifts: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
     loadingFetching: PropTypes.bool,
@@ -112,6 +113,7 @@ class WebsiteWrapper extends React.PureComponent {
     nightmode: false,
     dispatchGetAuthGuestBalance: () => {},
     isOpenWalletTable: false,
+    isDiningGifts: false,
     loadingFetching: true,
     location: {},
   };
@@ -209,9 +211,12 @@ class WebsiteWrapper extends React.PureComponent {
       isOpenWalletTable,
       loadingFetching,
       location,
+      isDiningGifts,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
+    const signInPage = location.pathname.includes('sign-in');
+    const showHeader = !isDiningGifts || (isDiningGifts && location.pathname !== '/');
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -222,19 +227,18 @@ class WebsiteWrapper extends React.PureComponent {
               isGuestUser: username && guestUserRegex.test(username),
             }}
           >
-            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'} className="WebsiteLayout">
-              {!location.pathname.includes('sign-in') && (
+            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
+              {showHeader && !signInPage && (
                 <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                   <WebsiteHeader />
                 </Layout.Header>
               )}
-              <div className="content">
+              <div className={showHeader && !signInPage && 'content'}>
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
               </div>
             </Layout>
-            <WebsiteWelcomeModal />
           </AppSharedContext.Provider>
         </ConfigProvider>
       </IntlProvider>

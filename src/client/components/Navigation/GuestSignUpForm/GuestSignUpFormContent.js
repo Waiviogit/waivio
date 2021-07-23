@@ -26,7 +26,7 @@ const GuestSignUpFormContent = ({
   const agreementError = getFieldError('agreement');
 
   return (
-    <React.Fragment>
+    <div className="GuestSignUpFormContent">
       <h2 className="ModalSignUp__title">
         <FormattedMessage id="public_profile" defaultMessage="Public profile" />
       </h2>
@@ -200,7 +200,7 @@ const GuestSignUpFormContent = ({
           </Button>
         </Form.Item>
       </Form>
-    </React.Fragment>
+    </div>
   );
 };
 
