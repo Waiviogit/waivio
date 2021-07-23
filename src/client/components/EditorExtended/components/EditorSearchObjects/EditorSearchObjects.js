@@ -1,7 +1,7 @@
+import { get } from 'lodash';
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { get, size } from 'lodash';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import SearchItemObject from './SearchItemObject';
@@ -19,17 +19,23 @@ const EditorSearchObjects = ({
   const inputWrapper = React.useRef(null);
   const searchBlockItem = React.useRef(null);
   const fakeLeftPositionBlock = React.useRef(null);
-  const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
+  const [selectedObj, setSelectedObj] = React.useState(false);
   const [currentObjIndex, setCurrentObjIndex] = React.useState(0);
+  const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
 
   React.useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown, { capture: true });
+    window.addEventListener('keydown', handleKeyDown, { capture: true });
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown, { capture: true });
+      window.removeEventListener('keydown', handleKeyDown, { capture: true });
     };
-  // }, [size(searchObjectsResults), currentObjIndex]);
   }, []);
+
+  React.useEffect(() => {
+    if (selectedObj) {
+      handleSelectObject(searchObjectsResults[currentObjIndex]);
+    }
+  }, [selectedObj]);
 
   const scrollSearchBlock = (objIndex, isDownArrow) => {
     const blockItemHeight = searchBlockItem.current.offsetHeight;
@@ -37,24 +43,35 @@ const EditorSearchObjects = ({
     const heightSearchBlock = inputWrapper.current.offsetHeight;
     const scrollTop = inputWrapper.current.scrollTop;
 
-    if (!(offsetScrollHeight >= scrollTop && offsetScrollHeight <= scrollTop + heightSearchBlock) && !isDownArrow) {
+    if (
+      !(offsetScrollHeight >= scrollTop && offsetScrollHeight <= scrollTop + heightSearchBlock) &&
+      !isDownArrow
+    ) {
       inputWrapper.current.scrollTo(0, offsetScrollHeight);
-    } else if (isDownArrow && offsetScrollHeight + blockItemHeight >= scrollTop + heightSearchBlock + blockItemHeight) {
+    } else if (
+      isDownArrow &&
+      offsetScrollHeight + blockItemHeight >= scrollTop + heightSearchBlock
+    ) {
       inputWrapper.current.scrollTo(0, scrollTop + blockItemHeight);
     }
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = event => {
     if (searchBlockItem.current) {
+      const blockItemHeight = searchBlockItem.current.offsetHeight;
+      const heightSearchBlock = inputWrapper.current.offsetHeight;
+      const scrollTop = inputWrapper.current.scrollTop;
+
       if (event.key === 'ArrowDown') {
         event.preventDefault();
         setCurrentObjIndex(prev => {
           const newResult = prev + 1;
-          const blockItemHeight = searchBlockItem.current.offsetHeight;
           const offsetScrollHeight = newResult * blockItemHeight;
 
           if (offsetScrollHeight + blockItemHeight <= inputWrapper.current.scrollHeight) {
-            scrollSearchBlock(newResult, true);
+            if (offsetScrollHeight + blockItemHeight >= scrollTop + heightSearchBlock) {
+              inputWrapper.current.scrollTo(0, scrollTop + blockItemHeight);
+            }
 
             return newResult;
           }
@@ -65,8 +82,17 @@ const EditorSearchObjects = ({
         event.preventDefault();
         setCurrentObjIndex(prev => {
           const newResult = prev - 1;
+          const offsetScrollHeight = newResult * blockItemHeight;
 
           if (newResult >= 0) {
+            if (
+              !(
+                offsetScrollHeight >= scrollTop &&
+                offsetScrollHeight <= scrollTop + heightSearchBlock
+              )
+            ) {
+              inputWrapper.current.scrollTo(0, scrollTop + blockItemHeight);
+            }
             scrollSearchBlock(newResult, false);
 
             return newResult;
@@ -76,9 +102,7 @@ const EditorSearchObjects = ({
         });
       } else if (event.key === 'Enter') {
         event.preventDefault();
-        console.log('currentObjIndex', currentObjIndex);
-        console.log('searchObjectsResults', searchObjectsResults);
-        handleSelectObject(searchObjectsResults[currentObjIndex]);
+        setSelectedObj(true);
       }
     }
   };
@@ -116,7 +140,6 @@ const EditorSearchObjects = ({
   const setPositionWhenBlockExist = () => countCoordinates();
 
   const handleSelectObject = object => selectObjectFromSearch(object);
-
 
   return (
     <React.Fragment>

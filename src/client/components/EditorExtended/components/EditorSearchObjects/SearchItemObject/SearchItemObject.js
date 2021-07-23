@@ -1,13 +1,20 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import classNames from "classnames";
+import classNames from 'classnames';
 
 import ObjectSearchCard from '../../../../ObjectSearchCard/ObjectSearchCard';
 import { getObjectName } from '../../../../../helpers/wObjectHelper';
 
 import './SearchItemObject.less';
 
-const SearchItemObject = ({ objectSelect, obj, currentObjIndex, setCurrentObjIndex, objectIndex, searchBlockItem }) => {
+const SearchItemObject = ({
+  objectSelect,
+  obj,
+  currentObjIndex,
+  setCurrentObjIndex,
+  objectIndex,
+  searchBlockItem,
+}) => {
   const hoverObjCard = currentObjIndex === objectIndex;
   const handleSelectObject = () => objectSelect(obj);
   const handleMouseOver = () => setCurrentObjIndex(objectIndex);
@@ -16,8 +23,8 @@ const SearchItemObject = ({ objectSelect, obj, currentObjIndex, setCurrentObjInd
     <div
       ref={searchBlockItem}
       onClick={handleSelectObject}
-      onMouseOver={handleMouseOver}
-      className={classNames("object-card", { "object-card__hover": hoverObjCard })}
+      onMouseMove={handleMouseOver}
+      className={classNames('object-card', { 'object-card__hover': hoverObjCard })}
     >
       <ObjectSearchCard
         key={obj.id}
