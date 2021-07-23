@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Icon } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -6,11 +6,17 @@ import WebsiteFooter from '../WebsiteFooter/Footer';
 import MainPageHeader from '../Header/MainPageHeader';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
+
 import './WebsiteMainPage.less';
-import { setShowSearchResult } from '../../../../store/searchStore/searchActions';
 
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
+
+  useEffect(() => {
+    if (window) {
+      window.scrollTo(0, 0);
+    }
+  }, []);
 
   return (
     <div className="WebsiteMainPage">

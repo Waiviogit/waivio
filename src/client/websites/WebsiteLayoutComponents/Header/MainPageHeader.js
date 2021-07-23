@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import Avatar from '../../../components/Avatar';
+import AuthUserBar from '../../../components/AuthUserBar/AuthUserBar';
 
 const MainPageHeader = () => {
   const username = useSelector(getAuthenticatedUserName);
@@ -20,9 +21,7 @@ const MainPageHeader = () => {
         <Link to="/map">map</Link>
         <Link to="/object/mds-dining-gifts/page#voy-business-3-0">partners</Link>
         {username ? (
-          <Link className="Topnav__user" to={`/@${username}`}>
-            <Avatar username={username} size={36} />
-          </Link>
+          <AuthUserBar />
         ) : (
           <ModalSignIn buttonClassName="MainPageHeader__signIn" isButton />
         )}
