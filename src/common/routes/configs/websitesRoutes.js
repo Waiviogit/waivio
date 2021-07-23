@@ -17,7 +17,7 @@ const routes = host => ({
     {
       path: '/',
       exact: true,
-      component: host ? WebsiteMainPage : WebsiteBody,
+      component: host === 'dining.gifts' || host === 'dining.pp.ua' ? WebsiteMainPage : WebsiteBody,
     },
     {
       path: '/map',
