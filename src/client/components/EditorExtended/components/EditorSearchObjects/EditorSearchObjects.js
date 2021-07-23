@@ -28,7 +28,8 @@ const EditorSearchObjects = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown, { capture: true });
     };
-  }, [size(searchObjectsResults), currentObjIndex]);
+  // }, [size(searchObjectsResults), currentObjIndex]);
+  }, []);
 
   const scrollSearchBlock = (objIndex, isDownArrow) => {
     const blockItemHeight = searchBlockItem.current.offsetHeight;
@@ -44,37 +45,41 @@ const EditorSearchObjects = ({
   };
 
   const handleKeyDown = (event) => {
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      setCurrentObjIndex(prev => {
-        const newResult = prev + 1;
-        const blockItemHeight = searchBlockItem.current.offsetHeight;
-        const offsetScrollHeight = newResult * blockItemHeight;
+    if (searchBlockItem.current) {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        setCurrentObjIndex(prev => {
+          const newResult = prev + 1;
+          const blockItemHeight = searchBlockItem.current.offsetHeight;
+          const offsetScrollHeight = newResult * blockItemHeight;
 
-        if (offsetScrollHeight + blockItemHeight <= inputWrapper.current.scrollHeight) {
-          scrollSearchBlock(newResult, true);
+          if (offsetScrollHeight + blockItemHeight <= inputWrapper.current.scrollHeight) {
+            scrollSearchBlock(newResult, true);
 
-          return newResult;
-        }
+            return newResult;
+          }
 
-        return prev;
-      });
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      setCurrentObjIndex(prev => {
-        const newResult = prev - 1;
+          return prev;
+        });
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        setCurrentObjIndex(prev => {
+          const newResult = prev - 1;
 
-        if (newResult >= 0) {
-          scrollSearchBlock(newResult, false);
+          if (newResult >= 0) {
+            scrollSearchBlock(newResult, false);
 
-          return newResult;
-        }
+            return newResult;
+          }
 
-        return prev;
-      });
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      handleSelectObject(searchObjectsResults[currentObjIndex]);
+          return prev;
+        });
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        console.log('currentObjIndex', currentObjIndex);
+        console.log('searchObjectsResults', searchObjectsResults);
+        handleSelectObject(searchObjectsResults[currentObjIndex]);
+      }
     }
   };
 
@@ -111,6 +116,7 @@ const EditorSearchObjects = ({
   const setPositionWhenBlockExist = () => countCoordinates();
 
   const handleSelectObject = object => selectObjectFromSearch(object);
+
 
   return (
     <React.Fragment>
