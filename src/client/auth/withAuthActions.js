@@ -58,11 +58,9 @@ export default function withAuthActions(WrappedComponent) {
       } else if (this.props.isWaivio || !this.props.domain) {
         this.displayLoginModal();
       } else {
-        this.displayLoginModal();
+        const path = window.location.pathname === '/' ? '' : window.location.pathname;
 
-        // const path = window.location.pathname === '/' ? '' : window.location.pathname;
-        //
-        // window.location.href = `https://${this.props.domain}/sign-in?host=${window.location.host}${path}`;
+        window.location.href = `https://${this.props.domain}/sign-in?host=${window.location.host}${path}`;
       }
     }
 
