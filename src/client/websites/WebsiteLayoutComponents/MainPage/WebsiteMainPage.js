@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Icon } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { Helmet } from 'react-helmet';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import WebsiteFooter from '../WebsiteFooter/Footer';
 import MainPageHeader from '../Header/MainPageHeader';
@@ -20,6 +21,27 @@ const WebsiteMainPage = () => {
 
   return (
     <div className="WebsiteMainPage">
+      <Helmet>
+        <title>Dining.Gifts</title>
+        <link rel="canonical" href={`https://dining.gifts/`} />
+        <meta property="description" content={'Dining.Gifts'} />
+        <meta property="og:title" content={'Dining.Gifts'} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={global.postOrigin} />
+        <meta property="og:image" content={'/images/dining.gifts.png'} />
+        <meta property="og:image:url" content={'/images/dining.gifts.png'} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:description" content={'Dining.Gifts'} />
+        <meta name="twitter:card" content={'summary_large_image'} />
+        <meta name="twitter:site" content={'@Dining.Gifts'} />
+        <meta name="twitter:title" content={'Dining.Gifts'} />
+        <meta name="twitter:description" content={'Dining.Gifts'} />
+        <meta name="twitter:image" property="twitter:image" content={'/images/dining.gifts.png'} />
+        <meta property="og:site_name" content={'Dining.Gifts'} />
+        <link rel="image_src" href={'/images/dining.gifts.png'} />
+        <link id="favicon" rel="icon" href={'/images/dining.gifts.png'} type="image/x-icon" />
+      </Helmet>
       <MainPageHeader />
       <div className="WebsiteMainPage__banner">
         <div className="WebsiteMainPage__wrapperTitle">
