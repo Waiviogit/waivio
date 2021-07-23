@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Icon } from 'antd';
 import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
@@ -7,12 +7,17 @@ import WebsiteFooter from '../WebsiteFooter/Footer';
 import MainPageHeader from '../Header/MainPageHeader';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
-import { getObjectAvatar } from '../../../helpers/wObjectHelper';
 
 import './WebsiteMainPage.less';
 
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
+
+  useEffect(() => {
+    if (window) {
+      window.scrollTo(0, 0);
+    }
+  }, []);
 
   return (
     <div className="WebsiteMainPage">
