@@ -83,7 +83,7 @@ const WebsiteMainPage = () => {
                 <h5>
                   Find the <i>restaurant</i>, choose your <i>dish</i>
                 </h5>
-                <img src={'/images/tab_1.png'} alt="Find the restaurant, choose your dish" />
+                <img src={'/images/step_1.png'} alt="Find the restaurant, choose your dish" />
               </div>
             </div>
           </li>
@@ -100,7 +100,7 @@ const WebsiteMainPage = () => {
                 <h5>
                   <i>Reserve</i> your reward
                 </h5>
-                <img src={'/images/tab_2.png'} alt="Find the restaurant, choose your dish" />
+                <img src={'/images/step_2.png'} alt="Find the restaurant, choose your dish" />
               </div>
             </div>
           </li>
@@ -117,7 +117,7 @@ const WebsiteMainPage = () => {
                 <h5>
                   <i>Share</i> two photos of your dish & earn!
                 </h5>
-                <img src={'/images/tab_3.png'} alt="Find the restaurant, choose your dish" />
+                <img src={'/images/step_3.png'} alt="Find the restaurant, choose your dish" />
               </div>
             </div>
           </li>
