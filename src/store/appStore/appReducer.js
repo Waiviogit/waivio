@@ -6,6 +6,7 @@ import { GET_USER_METADATA } from '../usersStore/usersActions';
 import { mobileUserAgents } from '../../client/helpers/regexHelpers';
 import { getObjectAvatar } from '../../client/helpers/wObjectHelper';
 import DEFAULTS from '../../client/object/const/defaultValues';
+import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 
 const initialState = {
   isFetching: false,
@@ -170,7 +171,7 @@ export default (state = initialState, action) => {
         currency: action.payload.currency,
         helmetIcon: getObjectAvatar(action.payload.aboutObject),
         hostAddress: action.meta,
-        isDiningGifts: action.meta === 'dining.gifts' || action.meta === 'dining.pp.ua',
+        isDiningGifts: listOfWebsiteWithMainPage.some(site => site === action.meta),
         currMap: {
           center: get(action.payload, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
           zoom: get(action.payload, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),

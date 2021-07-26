@@ -10,6 +10,7 @@ import Rewards from '../../../client/rewards/Rewards';
 import RewardsComponent from '../../../client/rewards/RewardsComponent/RewardsComponent';
 import RedirectedSignIn from '../../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
 import WebsiteMainPage from '../../../client/websites/WebsiteLayoutComponents/MainPage/WebsiteMainPage';
+import { listOfWebsiteWithMainPage } from '../../constants/listOfWebsite';
 
 const routes = host => ({
   component: WebsiteWrapper,
@@ -17,7 +18,9 @@ const routes = host => ({
     {
       path: '/',
       exact: true,
-      component: host === 'dining.gifts' || host === 'dining.pp.ua' ? WebsiteMainPage : WebsiteBody,
+      component: listOfWebsiteWithMainPage.some(site => site === host)
+        ? WebsiteMainPage
+        : WebsiteBody,
     },
     {
       path: '/map',

@@ -81,7 +81,7 @@ const WebsiteSignIn = props => {
         >
           {props.intl.formatMessage({
             id: 'sign_in_for_reward',
-            defaultMessage: 'Sign-in for rewards per meal',
+            defaultMessage: 'Sign-In for rewards per meal',
           })}
           .
         </h2>
@@ -131,7 +131,7 @@ const WebsiteSignIn = props => {
                   fontWeight: 'bold',
                   fontStyle: 'italic',
                 }}
-                href="https://signup.hive.io/"
+                href="https://hiveonboard.com/create-account"
               >
                 {props.intl.formatMessage({ id: 'click_here', defaultMessage: 'Click here' })}.
               </a>
@@ -149,7 +149,7 @@ const WebsiteSignIn = props => {
               }}
             >
               {props.intl.formatMessage({ id: 'get_a_free', defaultMessage: 'get a free' })}{' '}
-              <i>{props.intl.formatMessage({ id: 'beginner', defaultMessage: 'beginner' })}</i>{' '}
+              <i>{props.intl.formatMessage({ id: 'guest', defaultMessage: 'guest' })}</i>{' '}
               {props.intl.formatMessage({ id: 'account', defaultMessage: 'account' })}
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -188,18 +188,17 @@ const WebsiteSignIn = props => {
               }}
             >
               {props.intl.formatMessage({
-                id: 'sing_in_modal_rules',
+                id: 'website_sing_in_modal_rules',
                 defaultMessage: 'By using this service, you agree to our',
-              })}
-              &ensp;<i>our</i>&ensp;
+              })}{' '}
               <a
                 href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/xrj-terms-and-conditions"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i>Terms&Conditions</i>
+                <i>Terms & Conditions</i>
               </a>
-              ,&ensp;
+              , our{' '}
               <a
                 href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/poi-privacy-policy"
                 target="_blank"
@@ -207,9 +206,7 @@ const WebsiteSignIn = props => {
               >
                 <i>Privacy Policy</i>
               </a>
-              , &ensp;
-              <i>and our</i>
-              &ensp;
+              , and our{' '}
               <a
                 href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/uid-cookies-policy"
                 target="_blank"

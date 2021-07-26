@@ -76,43 +76,43 @@ const AuthUserBar = props => {
         props.logout();
         break;
       case 'activity':
-        history.push('/activity');
+        props.history.push('/activity');
         break;
       case 'replies':
-        history.push('/replies');
+        props.history.push('/replies');
         break;
       case 'bookmarks':
-        history.push('/bookmarks');
+        props.history.push('/bookmarks');
         break;
       case 'drafts':
-        history.push('/drafts');
+        props.history.push('/drafts');
         break;
       case 'settings':
-        history.push('/settings');
+        props.history.push('/settings');
         break;
       case 'feed':
-        history.push('/');
+        props.history.push('/');
         break;
       case 'news':
-        history.push('/trending');
+        props.history.push('/trending');
         break;
       case 'objects':
-        history.push('/objects');
+        props.history.push('/objects');
         break;
       case 'wallet':
-        history.push(`/@${props.username}/transfers`);
+        props.history.push(`/@${props.username}/transfers`);
         break;
       case 'my-profile':
-        history.push(`/@${props.username}`);
+        props.history.push(`/@${props.username}`);
         break;
       case 'rewards':
-        history.push(PATH_NAME_ACTIVE);
+        props.history.push(PATH_NAME_ACTIVE);
         break;
       case 'discover':
-        history.push(`/discover-objects/hashtag`);
+        props.history.push(`/discover-objects/hashtag`);
         break;
       case 'tools':
-        history.push(`/drafts`);
+        props.history.push(`/drafts`);
         break;
       default:
         break;
@@ -142,6 +142,9 @@ const AuthUserBar = props => {
 };
 
 AuthUserBar.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
   username: PropTypes.string.isRequired,
   logout: PropTypes.func.isRequired,
   setCurrentPage: PropTypes.func.isRequired,
