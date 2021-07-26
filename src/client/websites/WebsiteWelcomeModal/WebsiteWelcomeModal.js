@@ -90,7 +90,7 @@ const WebsiteWelcomeModal = props => {
               defaultMessage: 'Find the restaurant and select the dish',
             })}
           </p>
-          <img src={'/images/tab_1.png'} alt="" className="WebsiteWelcomeModal__img" />
+          <img src={'/images/step_1.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
         <Tabs.TabPane key="2" tab="2">
           <p className="WebsiteWelcomeModal__paragph">
@@ -99,7 +99,7 @@ const WebsiteWelcomeModal = props => {
               defaultMessage: 'Reserve the reward for a few days',
             })}
           </p>
-          <img src={'/images/tab_2.png'} alt="" className="WebsiteWelcomeModal__img" />
+          <img src={'/images/step_2.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
         <Tabs.TabPane key="3" tab="3">
           <p className="WebsiteWelcomeModal__paragph">
@@ -108,7 +108,7 @@ const WebsiteWelcomeModal = props => {
               defaultMessage: 'Share photos of the dish and get the reward!',
             })}
           </p>
-          <img src={'/images/tab_3.png'} alt="" className="WebsiteWelcomeModal__img" />
+          <img src={'/images/step_3.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
       </Tabs>
       <h3 className="WebsiteWelcomeModal__police-title">
