@@ -106,7 +106,7 @@ const AuthUserBar = props => {
         props.history.push(`/@${props.username}`);
         break;
       case 'rewards':
-        history.push(PATH_NAME_ACTIVE);
+        props.history.push(PATH_NAME_ACTIVE);
         break;
       case 'discover':
         props.history.push(`/discover-objects/hashtag`);
