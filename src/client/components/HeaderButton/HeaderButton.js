@@ -51,6 +51,9 @@ const HeaderButtons = props => {
     <PopoverMenuItem key="tools" topNav>
       <FormattedMessage id="menu_tools" defaultMessage="Tools" />
     </PopoverMenuItem>,
+    <PopoverMenuItem key="drafts" topNav>
+      <FormattedMessage id="menu_drafts" defaultMessage="Drafts" />
+    </PopoverMenuItem>,
     <PopoverMenuItem key="my-profile" topNav>
       <FormattedMessage id="my_profile" defaultMessage="Profile" />
     </PopoverMenuItem>,
@@ -66,10 +69,13 @@ const HeaderButtons = props => {
   ];
 
   if (props.isWaivio) {
+    const rewardItem = popoverItems.shift();
+
     popoverItems = [
       <PopoverMenuItem key="feed" topNav>
         <FormattedMessage id="feed" defaultMessage="My Feed" />
       </PopoverMenuItem>,
+      rewardItem,
       <PopoverMenuItem key="discover" topNav>
         <FormattedMessage id="menu_discover" defaultMessage="Discover" />
       </PopoverMenuItem>,
