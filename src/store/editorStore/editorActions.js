@@ -615,11 +615,15 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
     draftId,
   } = getEditor(state);
   const objName = getObjectName(object);
+  const objType = getObjectType(object);
+  const objNameDisplay = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
   const objPermlink = object.author_permlink;
   const separator = content.slice(-1) === '\n' ? '' : '\n';
   const draftContent = {
     title: titleValue,
-    body: `${content}${separator}[${objName}](${getObjectUrl(object.id || objPermlink)})&nbsp;\n`,
+    body: `${content}${separator}[${objNameDisplay}](${getObjectUrl(
+      object.id || objPermlink,
+    )})&nbsp;\n`,
   };
   const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
 
