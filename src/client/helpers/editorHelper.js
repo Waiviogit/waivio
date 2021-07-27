@@ -350,7 +350,7 @@ export const addTextToCursor = (editorState, text) => {
   return EditorState.push(editorState, content, 'insert-characters');
 };
 
-export const checkCursorInSearch = (editorState, isTypeSpace) => {
+export const checkCursorInSearch = editorState => {
   const selectionState = editorState.getSelection();
   const anchorKey = selectionState.getAnchorKey();
   const currentContent = editorState.getCurrentContent();
@@ -363,19 +363,19 @@ export const checkCursorInSearch = (editorState, isTypeSpace) => {
 
   if (endPositionOfWord === -1) endPositionOfWord = blockText.length;
 
-  const searchString = blockText.substring(startPositionOfWord + 1, endPositionOfWord).trim();
-  const spaceCondition = isTypeSpace
-    ? !(size(searchString.match(/\s/g)) <= 2)
-    : searchString.includes(' ');
+  const searchString = blockText.substring(startPositionOfWord + 1, endPositionOfWord);
+  const searchStringTrim = blockText.substring(startPositionOfWord + 1, endPositionOfWord).trim();
+
+  const spaceCondition = searchString.match(/(\s{2,})|^\s/g);
 
   if (!(spaceCondition || startPositionOfWord === -1) && blockText[start] !== '#') {
     const wordForCountWidth = blockText.substring(startPositionOfWord + 1, start).trim();
 
     return {
-      searchString,
-      startPositionOfWord,
       wordForCountWidth,
+      startPositionOfWord,
       isNeedOpenSearch: true,
+      searchString: searchStringTrim,
     };
   }
 

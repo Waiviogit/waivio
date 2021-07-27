@@ -32,6 +32,15 @@ const EditorSearchObjects = ({
   }, []);
 
   React.useEffect(() => {
+    countCoordinates();
+    setPositionWhenBlockExist();
+
+    return () => {
+      clearEditorSearchObjects();
+    };
+  }, [editorNode]);
+
+  React.useEffect(() => {
     if (selectedObj) {
       handleSelectObject(searchObjectsResults[currentObjIndex]);
     }
@@ -82,15 +91,6 @@ const EditorSearchObjects = ({
       setSelectedObj(true);
     }
   };
-
-  React.useEffect(() => {
-    countCoordinates();
-    setPositionWhenBlockExist();
-
-    return () => {
-      clearEditorSearchObjects();
-    };
-  }, [editorNode]);
 
   const countCoordinates = () => {
     const searchBlockWidth = get(inputWrapper, 'current.offsetWidth', 0);

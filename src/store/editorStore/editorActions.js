@@ -866,7 +866,7 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
   const titleValue = getTitleValue(state);
   const editorState = getEditorExtendedState(state);
   const draftId = getEditorDraftId(state);
-  const { startPositionOfWord, searchString } = checkCursorInSearch(editorState, true);
+  const { startPositionOfWord, searchString } = checkCursorInSearch(editorState);
   const selectionState = editorState.getSelection();
   const anchorKey = selectionState.getAnchorKey();
   const currentContent = editorState.getCurrentContent();
