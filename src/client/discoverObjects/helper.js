@@ -73,6 +73,10 @@ export const parseTagsFilters = url => {
 
   delete parseSearchParams.rating;
   delete parseSearchParams.search;
+  delete parseSearchParams.mapX;
+  delete parseSearchParams.mapY;
+  delete parseSearchParams.radius;
+  delete parseSearchParams.zoom;
 
   return Object.keys(parseSearchParams).reduce(
     (acc, category) => ({

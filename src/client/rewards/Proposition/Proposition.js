@@ -38,7 +38,6 @@ import { getCommentContent } from '../../../store/commentsStore/commentsSelector
 import { getIsOpenWriteReviewModal } from '../../../store/rewardsStore/rewardsSelectors';
 
 import './Proposition.less';
-import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 
 const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');
@@ -126,13 +125,16 @@ const Proposition = props => {
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
       if (!isEmpty(props.user)) {
+        const userMetaData =
+          get(props.user, 'posting_json_metadata') || get(props.user, 'json_metadata');
+
         try {
-          return !isEmpty(props.user.posting_json_metadata)
-            ? JSON.parse(props.user.posting_json_metadata)
-            : JSON.parse(props.user.json_metadata);
+          if (userMetaData) return JSON.parse(userMetaData);
+
+          return '';
         } catch (err) {
           message.error(
-            intl.formatMessage({
+            props.intl.formatMessage({
               id: 'something_went_wrong',
               defaultMessage: 'Something went wrong',
             }),
@@ -336,13 +338,11 @@ const Proposition = props => {
 Proposition.propTypes = {
   proposition: PropTypes.shape().isRequired,
   wobj: PropTypes.shape().isRequired,
-  currencyInfo: PropTypes.shape().isRequired,
   assignProposition: PropTypes.func,
   discardProposition: PropTypes.func,
   removeToggleFlag: PropTypes.func,
   loading: PropTypes.bool,
   assigned: PropTypes.bool,
-  assignCommentPermlink: PropTypes.string,
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
   users: PropTypes.shape(),
@@ -379,7 +379,6 @@ export default withRouter(
           : {},
       isAuth: getIsAuthenticated(state),
       isOpenWriteReviewModal: getIsOpenWriteReviewModal(state),
-      currencyInfo: getCurrentCurrency(state),
     }),
     {
       removeToggleFlag,
