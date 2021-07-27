@@ -74,10 +74,7 @@ const EditorSearchObjects = ({
         const offsetScrollHeight = newResult * blockItemHeight;
 
         if (newResult >= 0) {
-          if (
-            offsetScrollHeight <= scrollTop &&
-            offsetScrollHeight >= scrollTop + heightSearchBlock
-          ) {
+          if (offsetScrollHeight <= scrollTop) {
             inputWrapper.current.scrollTo(0, offsetScrollHeight);
           }
 

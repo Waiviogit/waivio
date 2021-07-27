@@ -83,7 +83,7 @@ const Editor = props => {
       if (prevSearchValue !== searchInfo.searchString) {
         debouncedSearch(searchInfo.searchString);
       }
-    } else {
+    } else if (props.isShowEditorSearch) {
       props.setShowEditorSearch(false);
     }
     onChange(updatedEditorStateParsed);
