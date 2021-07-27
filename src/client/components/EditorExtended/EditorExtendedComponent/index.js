@@ -36,7 +36,7 @@ const mapDispatchToProps = (dispatch, props) => ({
   setUpdatedEditorExtendedData: data => dispatch(setUpdatedEditorExtendedData(data)),
   setShowEditorSearch: data => dispatch(setShowEditorSearch(data)),
   setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
-  searchObjects: (value, isWaivio) => dispatch(searchObjectsAutoCompete(value, '', null, isWaivio)),
+  searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditorExtended));

@@ -53,7 +53,7 @@ const Editor = props => {
   };
 
   const debouncedSearch = useCallback(
-    debounce(searchStr => props.searchObjects(searchStr, true), 150),
+    debounce(searchStr => props.searchObjects(searchStr), 150),
     [],
   );
 
