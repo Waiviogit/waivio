@@ -550,6 +550,7 @@
   "emptyCategory": "Ez a kategória üres",
   "add_catalog_item": "@ {currentUserName} hozzáadta a <strong> {category} <\/strong> kategóriát a katalógushoz.",
   "related_to_object": "Összefüggő",
+  "nearby_to_object": "Nearby",
   "emptyList": "Ez a lista üres",
   "list": "lista",
   "list_update": "Lista frissítése",

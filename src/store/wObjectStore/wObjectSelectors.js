@@ -46,3 +46,13 @@ export const getObjectFollowersHasMore = createSelector(
   [getObjectFollowersState],
   state => state.hasMore,
 );
+
+export const getObjectsNearby = createSelector([objectState], state => state.nearbyWobjects);
+
+export const getObjectsNearbyArray = createSelector([getObjectsNearby], state =>
+  get(state, 'objects', []),
+);
+
+export const getObjectsNearbyIsLoading = createSelector([getObjectsNearby], state =>
+  get(state, 'isLoading', true),
+);

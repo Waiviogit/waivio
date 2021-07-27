@@ -2122,4 +2122,19 @@ export const getCurrentCurrencyRate = currency =>
     .then(res => res)
     .catch(e => e);
 
+export const getNearbyObjects = (authorPermlink, host, skip = 0, limit = 5, radius = 20000) => {
+  const queryString = `?skip=${skip}&limit=${limit}&radius=${radius}`;
+  return fetch(
+    `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.nearby}${queryString}`,
+    {
+      headers: {
+        ...headers,
+        Domain: host,
+      },
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json());
+};
+
 export default null;

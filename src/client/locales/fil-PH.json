@@ -550,6 +550,7 @@
   "emptyCategory": "Walang laman ang kategoryang ito",
   "add_catalog_item": "Nagdagdag si @ {currentUserName} kategorya na <strong> {category} </strong> sa catalog.",
   "related_to_object": "Kaugnay",
+  "nearby_to_object": "Nearby",
   "emptyList": "Walang laman ang listahang ito",
   "list": "listahan",
   "list_update": "Listahan ng pag-update",
