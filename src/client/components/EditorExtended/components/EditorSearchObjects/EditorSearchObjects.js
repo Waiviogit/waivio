@@ -37,71 +37,49 @@ const EditorSearchObjects = ({
     }
   }, [selectedObj]);
 
-  const scrollSearchBlock = (objIndex, isDownArrow) => {
-    const blockItemHeight = searchBlockItem.current.offsetHeight;
-    const offsetScrollHeight = objIndex * blockItemHeight;
-    const heightSearchBlock = inputWrapper.current.offsetHeight;
-    const scrollTop = inputWrapper.current.scrollTop;
-
-    if (
-      !(offsetScrollHeight >= scrollTop && offsetScrollHeight <= scrollTop + heightSearchBlock) &&
-      !isDownArrow
-    ) {
-      inputWrapper.current.scrollTo(0, offsetScrollHeight);
-    } else if (
-      isDownArrow &&
-      offsetScrollHeight + blockItemHeight >= scrollTop + heightSearchBlock
-    ) {
-      inputWrapper.current.scrollTo(0, scrollTop + blockItemHeight);
-    }
-  };
-
   const handleKeyDown = event => {
-    if (searchBlockItem.current) {
-      const blockItemHeight = searchBlockItem.current.offsetHeight;
-      const heightSearchBlock = inputWrapper.current.offsetHeight;
-      const scrollTop = inputWrapper.current.scrollTop;
+    const blockItemHeight = 60; // height of one item in search result block
+    const heightSearchBlock = get(inputWrapper, 'current.offsetHeight', null);
+    const scrollTop = get(inputWrapper, 'current.scrollTop', null);
 
-      if (event.key === 'ArrowDown') {
-        event.preventDefault();
-        setCurrentObjIndex(prev => {
-          const newResult = prev + 1;
-          const offsetScrollHeight = newResult * blockItemHeight;
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setCurrentObjIndex(prev => {
+        const newResult = prev + 1;
+        const offsetScrollHeight = newResult * blockItemHeight;
 
-          if (offsetScrollHeight + blockItemHeight <= inputWrapper.current.scrollHeight) {
-            if (offsetScrollHeight + blockItemHeight >= scrollTop + heightSearchBlock) {
-              inputWrapper.current.scrollTo(0, scrollTop + blockItemHeight);
-            }
-
-            return newResult;
+        if (offsetScrollHeight + blockItemHeight <= inputWrapper.current.scrollHeight) {
+          if (offsetScrollHeight + blockItemHeight >= scrollTop + heightSearchBlock) {
+            inputWrapper.current.scrollTo(0, scrollTop + blockItemHeight);
           }
 
-          return prev;
-        });
-      } else if (event.key === 'ArrowUp') {
-        event.preventDefault();
-        setCurrentObjIndex(prev => {
-          const newResult = prev - 1;
-          const offsetScrollHeight = newResult * blockItemHeight;
+          return newResult;
+        }
 
-          if (newResult >= 0) {
-            if (
-                offsetScrollHeight <= scrollTop &&
-                offsetScrollHeight >= scrollTop + heightSearchBlock
-            ) {
-              inputWrapper.current.scrollTo(0, scrollTop + blockItemHeight);
-            }
-            scrollSearchBlock(newResult, false);
+        return prev;
+      });
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setCurrentObjIndex(prev => {
+        const newResult = prev - 1;
+        const offsetScrollHeight = newResult * blockItemHeight;
 
-            return newResult;
+        if (newResult >= 0) {
+          if (
+            offsetScrollHeight <= scrollTop &&
+            offsetScrollHeight >= scrollTop + heightSearchBlock
+          ) {
+            inputWrapper.current.scrollTo(0, offsetScrollHeight);
           }
 
-          return prev;
-        });
-      } else if (event.key === 'Enter') {
-        event.preventDefault();
-        setSelectedObj(true);
-      }
+          return newResult;
+        }
+
+        return prev;
+      });
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      setSelectedObj(true);
     }
   };
 
@@ -145,7 +123,7 @@ const EditorSearchObjects = ({
         ref={inputWrapper}
         className={classNames('editor-search-objects', {
           'editor-search-objects__empty': !searchObjectsResults.length,
-          'editor-search-objects__not-scroll': searchObjectsResults.length <= 4
+          'editor-search-objects__not-scroll': searchObjectsResults.length <= 4,
         })}
         style={{ top: coordinates.top, left: coordinates.left }}
       >
