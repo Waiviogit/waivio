@@ -28,6 +28,13 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
   const postsRequired = getChecked(requirementFilters.posts);
   const frequencyRequired = getChecked(frequency);
   const notBlacklistedRequired = getChecked(objectDetails.requirement_filters.not_blacklisted);
+  const expertiseRequiredClassName = classNames({ 'criteria-row__required': !expertiseRequired });
+  const followersRequiredClassName = classNames({ 'criteria-row__required': !followersRequired });
+  const postsRequiredClassName = classNames({ 'criteria-row__required': !postsRequired });
+  const frequencyRequiredClassName = classNames({ 'criteria-row__required': !frequencyRequired });
+  const notBlacklistedRequiredClassName = classNames({
+    'criteria-row__required': !notBlacklistedRequired,
+  });
 
   return (
     <div className="Details__text-wrap">
@@ -36,26 +43,26 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row">
           <Checkbox checked={expertiseRequired} disabled />
-          <div className={classNames({ 'criteria-row__required': !expertiseRequired })}>{`${
+          <div className={expertiseRequiredClassName}>{`${
             messageData.minimumWaivioExpertise
           }: ${minExpertise.toFixed(2)}`}</div>
         </div>
         <div className="Details__criteria-row">
           <Checkbox checked={followersRequired} disabled />
           <div
-            className={classNames({ 'criteria-row__required': !followersRequired })}
+            className={followersRequiredClassName}
           >{`${messageData.minimumNumberFollowers}: ${objectDetails.userRequirements.minFollowers}`}</div>
         </div>
         <div className="Details__criteria-row">
           <Checkbox checked={postsRequired} disabled />
           <div
-            className={classNames({ 'criteria-row__required': !postsRequired })}
+            className={postsRequiredClassName}
           >{`${messageData.minimumNumberPosts}: ${objectDetails.userRequirements.minPosts}`}</div>
         </div>
         {!!objectDetails.frequency_assign && (
           <div className="Details__criteria-row">
             <Checkbox checked={frequencyRequired} disabled />
-            <div className={classNames({ 'criteria-row__required': !frequencyRequired })}>
+            <div className={frequencyRequiredClassName}>
               {messageData.receivedRewardFrom}
               <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
               {messageData.forReviewing}
@@ -68,7 +75,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
         )}
         <div className="Details__criteria-row">
           <Checkbox checked={notBlacklistedRequired} disabled />
-          <div className={classNames({ 'criteria-row__required': !notBlacklistedRequired })}>
+          <div className={notBlacklistedRequiredClassName}>
             {messageData.accountNotBlacklisted}
             <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
             {messageData.referencedAccounts}
