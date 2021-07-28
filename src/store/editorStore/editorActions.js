@@ -4,7 +4,7 @@ import { message } from 'antd';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { convertToRaw, EditorState, Modifier, SelectionState, ContentState } from 'draft-js';
+import { convertToRaw, EditorState, Modifier, SelectionState } from 'draft-js';
 import {
   forEach,
   get,
@@ -69,7 +69,7 @@ import {
   getTitleValue,
 } from './editorSelectors';
 import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
-import { getObjectName } from '../../client/helpers/wObjectHelper';
+import { getObjectName, getObjectType } from '../../client/helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../client/helpers/postHelpers';
 import {
   createEditorState,
@@ -79,6 +79,7 @@ import {
 } from '../../client/components/EditorExtended';
 import { setObjPercents } from '../../client/helpers/wObjInfluenceHelper';
 import { extractLinks } from '../../client/helpers/parser';
+import objectTypes from '../../client/object/const/objectTypes';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -614,11 +615,15 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
     draftId,
   } = getEditor(state);
   const objName = getObjectName(object);
+  const objType = getObjectType(object);
+  const objNameDisplay = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
   const objPermlink = object.author_permlink;
   const separator = content.slice(-1) === '\n' ? '' : '\n';
   const draftContent = {
     title: titleValue,
-    body: `${content}${separator}[${objName}](${getObjectUrl(object.id || objPermlink)})&nbsp;\n`,
+    body: `${content}${separator}[${objNameDisplay}](${getObjectUrl(
+      object.id || objPermlink,
+    )})&nbsp;\n`,
   };
   const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
 
@@ -862,62 +867,60 @@ const addEntityRange = (block, startPosition, objName, entityKey) => {
 };
 
 export const selectObjectFromSearch = selectedObject => (dispatch, getState) => {
-  const state = getState();
-  const titleValue = getTitleValue(state);
-  const editorState = getEditorExtendedState(state);
-  const draftId = getEditorDraftId(state);
-  const { startPositionOfWord, searchString } = checkCursorInSearch(editorState, true);
-  const selectionState = editorState.getSelection();
-  const anchorKey = selectionState.getAnchorKey();
-  const currentContent = editorState.getCurrentContent();
-  const endPositionOfWord = startPositionOfWord + searchString.length + 1;
-  const objectName = getObjectName(selectedObject);
+  if (selectedObject) {
+    const state = getState();
+    const titleValue = getTitleValue(state);
+    const editorState = getEditorExtendedState(state);
+    const draftId = getEditorDraftId(state);
+    const { startPositionOfWord, searchString } = checkCursorInSearch(editorState);
+    const selectionState = editorState.getSelection();
+    const anchorKey = selectionState.getAnchorKey();
+    const currentContent = editorState.getCurrentContent();
+    const endPositionOfWord = startPositionOfWord + searchString.length + 1;
+    const objectType = getObjectType(selectedObject);
+    const objectName = getObjectName(selectedObject);
+    const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
 
-  const contentState = Modifier.replaceText(
-    currentContent,
-    new SelectionState({
-      anchorKey,
-      anchorOffset: startPositionOfWord,
-      focusKey: anchorKey,
-      focusOffset: endPositionOfWord,
-    }),
-    objectName,
-  );
+    const contentState = Modifier.replaceText(
+      currentContent,
+      new SelectionState({
+        anchorKey,
+        anchorOffset: startPositionOfWord,
+        focusKey: anchorKey,
+        focusOffset: endPositionOfWord,
+      }),
+      textReplace,
+    );
 
-  const editorStateWithObjectName = EditorState.push(editorState, contentState, 'replace-text');
+    const editorStateWithObjectName = EditorState.push(editorState, contentState, 'replace-text');
 
-  const { blocks, entityMap } = convertToRaw(editorStateWithObjectName.getCurrentContent());
+    const { blocks, entityMap } = convertToRaw(editorStateWithObjectName.getCurrentContent());
 
-  const newEntityMap = {
-    ...entityMap,
-    [Object.values(entityMap).length]: {
-      type: 'OBJECT',
-      mutability: 'IMMUTABLE',
-      data: {
-        object: { id: selectedObject.author_permlink },
-        url: getObjectUrl(selectedObject.id || selectedObject.author_permlink),
+    const newEntityMap = {
+      ...entityMap,
+      [Object.values(entityMap).length]: {
+        type: 'OBJECT',
+        mutability: 'IMMUTABLE',
+        data: {
+          object: { id: selectedObject.author_permlink },
+          url: getObjectUrl(selectedObject.id || selectedObject.author_permlink),
+        },
       },
-    },
-  };
+    };
 
-  const newEditorBody = {
-    blocks: blocks.map(block =>
-      block.key === anchorKey
-        ? addEntityRange(block, startPositionOfWord, objectName, Object.values(entityMap).length)
-        : block,
-    ),
-    entityMap: newEntityMap,
-  };
+    const newEditorBody = {
+      blocks: blocks.map(block =>
+        block.key === anchorKey
+          ? addEntityRange(block, startPositionOfWord, textReplace, Object.values(entityMap).length)
+          : block,
+      ),
+      entityMap: newEntityMap,
+    };
 
-  const updatedStateBody = { body: toMarkdown(newEditorBody), title: titleValue };
-  const newCursor = new SelectionState({
-    anchorKey,
-    anchorOffset: endPositionOfWord,
-    focusKey: anchorKey,
-    focusOffset: endPositionOfWord,
-  });
+    const updatedStateBody = { body: toMarkdown(newEditorBody), title: titleValue };
 
-  dispatch(setShowEditorSearch(false));
-  dispatch(saveDraft(draftId, null, updatedStateBody));
-  dispatch(firstParseLinkedObjects(updatedStateBody, objectName, endPositionOfWord));
+    dispatch(setShowEditorSearch(false));
+    dispatch(saveDraft(draftId, null, updatedStateBody));
+    dispatch(firstParseLinkedObjects(updatedStateBody, objectName, endPositionOfWord));
+  }
 };

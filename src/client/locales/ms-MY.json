@@ -550,6 +550,7 @@
   "emptyCategory": "Kategori ini kosong",
   "add_catalog_item": "@ {currentUserName} menambahkan kategori <strong> {category} </strong> ke katalog.",
   "related_to_object": "Berkaitan",
+  "nearby_to_object": "Nearby",
   "emptyList": "Senarai ini kosong",
   "list": "senarai",
   "list_update": "Kemas kini senarai",

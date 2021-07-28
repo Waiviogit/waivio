@@ -92,7 +92,6 @@ export default class MediumDraftEditor extends React.Component {
     isShowEditorSearch: PropTypes.bool.isRequired,
     setShowEditorSearch: PropTypes.func.isRequired,
     setSearchCoordinates: PropTypes.func.isRequired,
-    closeSearch: PropTypes.func,
   };
 
   static defaultProps = {
@@ -124,7 +123,6 @@ export default class MediumDraftEditor extends React.Component {
     handlePastedText: () => {},
     intl: {},
     handleHashtag: () => {},
-    closeSearch: () => {},
     isVimeo: false,
   };
 
@@ -480,9 +478,6 @@ export default class MediumDraftEditor extends React.Component {
       const newES = addTextToCursor(editorState, ' ');
 
       this.onChange(newES);
-      if (this.props.isShowEditorSearch) {
-        this.props.closeSearch();
-      }
 
       return NOT_HANDLED;
     }

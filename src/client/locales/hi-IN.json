@@ -550,6 +550,7 @@
   "emptyCategory": "यह श्रेणी खाली है",
   "add_catalog_item": "@ {currentUserName} ने श्रेणी <strong> {category} </strong> को कैटलॉग में जोड़ा।",
   "related_to_object": "सम्बंधित",
+  "nearby_to_object": "Nearby",
   "emptyList": "यह सूची खाली है",
   "list": "सूची",
   "list_update": "अद्यतन सूची",

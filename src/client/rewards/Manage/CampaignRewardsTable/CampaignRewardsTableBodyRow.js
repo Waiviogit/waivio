@@ -20,6 +20,7 @@ const CampaignRewardsTableRow = ({
   userName,
   intl,
   setHistoryFilters,
+  rate,
 }) => {
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
@@ -181,8 +182,10 @@ const CampaignRewardsTableRow = ({
             : currentItem.status}
         </td>
         <td>{currentItem.type}</td>
-        <td className="Campaign-rewards hide-element">{currentItem.budgetUSD.toFixed(2)}</td>
-        <td className="Campaign-rewards hide-element">{currentItem.reward.toFixed(2)}</td>
+        <td className="Campaign-rewards hide-element">
+          {(currentItem.budgetUSD * rate).toFixed(2)}
+        </td>
+        <td className="Campaign-rewards hide-element">{(currentItem.reward * rate).toFixed(2)}</td>
         <td className="Campaign-rewards hide-element">
           {Boolean(currentItem.reserved) && (
             <Link
@@ -272,6 +275,7 @@ CampaignRewardsTableRow.propTypes = {
   currentItem: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
+  rate: PropTypes.number.isRequired,
 };
 
 export default injectIntl(CampaignRewardsTableRow);

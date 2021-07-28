@@ -550,6 +550,7 @@
   "emptyCategory": "هذه الفئة فارغة",
   "add_catalog_item": "أضاف @ {currentUserName} <strong> {category} </strong> إلى الكتالوج.",
   "related_to_object": "متعلق ب",
+  "nearby_to_object": "Nearby",
   "emptyList": "هذه القائمة فارغة",
   "list": "قائمة",
   "list_update": "قائمة التحديث",

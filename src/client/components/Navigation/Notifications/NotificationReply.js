@@ -25,7 +25,7 @@ const NotificationReply = ({ notification, currentAuthUsername, read, onClick })
           {reply ? (
             <FormattedMessage
               id="replied_to_your_comment"
-              defaultMessage="{username} replied to your comment"
+              defaultMessage="{username} has replied to your comment"
               values={{
                 username: <span className="username">{author}</span>,
               }}
