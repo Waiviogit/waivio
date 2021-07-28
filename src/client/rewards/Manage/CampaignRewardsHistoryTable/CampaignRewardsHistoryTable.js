@@ -5,7 +5,7 @@ import { map } from 'lodash';
 import CampaignRewardsHistoryTableBodyRow from './CampaignRewardsHistoryTableBodyRow';
 import './CampaignsRewardsHistoryTable.less';
 
-const CampaignRewardsHistoryTable = ({ intl, campaigns }) => (
+const CampaignRewardsHistoryTable = ({ intl, campaigns, currencyInfo }) => (
   <div>
     <table className="Campaign-rewards-history">
       <thead>
@@ -68,7 +68,7 @@ const CampaignRewardsHistoryTable = ({ intl, campaigns }) => (
       </thead>
       <tbody>
         {map(campaigns, campaign => (
-          <CampaignRewardsHistoryTableBodyRow currentItem={campaign} />
+          <CampaignRewardsHistoryTableBodyRow currentItem={campaign} currencyInfo={currencyInfo} />
         ))}
       </tbody>
     </table>
@@ -78,6 +78,7 @@ const CampaignRewardsHistoryTable = ({ intl, campaigns }) => (
 CampaignRewardsHistoryTable.propTypes = {
   campaigns: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
+  currencyInfo: PropTypes.shape().isRequired,
 };
 
 CampaignRewardsHistoryTable.defaultProps = {

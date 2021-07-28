@@ -550,6 +550,7 @@
   "emptyCategory": "Deze categorie is leeg",
   "add_catalog_item": "@ {currentUserName} categorie <strong> {category} </strong> aan catalogus.",
   "related_to_object": "Verwant",
+  "nearby_to_object": "Nearby",
   "emptyList": "Deze lijst is leeg",
   "list": "lijst",
   "list_update": "Lijst bijwerken",

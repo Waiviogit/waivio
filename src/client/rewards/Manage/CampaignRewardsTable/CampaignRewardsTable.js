@@ -15,6 +15,7 @@ const CampaignRewardsTable = ({
   inactivateCampaign,
   userName,
   setHistoryFilters,
+  currencyInfo,
 }) => (
   <div>
     <table className="Campaign-rewards">
@@ -58,11 +59,11 @@ const CampaignRewardsTable = ({
         <tr>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             <p>{intl.formatMessage({ id: 'monthly', defaultMessage: `Monthly` })}</p>
-            <p>(USD)</p>
+            <p>({currencyInfo.type})</p>
           </th>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             <p>{intl.formatMessage({ id: 'reward', defaultMessage: `Reward` })}</p>
-            <p>(USD)</p>
+            <p>({currencyInfo.type})</p>
           </th>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             {intl.formatMessage({ id: 'reserved', defaultMessage: `Reserved` })}
@@ -84,6 +85,7 @@ const CampaignRewardsTable = ({
             currentItem={current}
             userName={userName}
             setHistoryFilters={setHistoryFilters}
+            rate={currencyInfo.rate}
           />
         ))}
       </tbody>
@@ -98,6 +100,10 @@ CampaignRewardsTable.propTypes = {
   inactivateCampaign: PropTypes.func.isRequired,
   setHistoryFilters: PropTypes.func.isRequired,
   userName: PropTypes.string.isRequired,
+  currencyInfo: PropTypes.shape({
+    type: PropTypes.string,
+    rate: PropTypes.number,
+  }).isRequired,
 };
 
 CampaignRewardsTable.defaultProps = {

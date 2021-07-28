@@ -11,6 +11,7 @@ import { activateCampaign, inactivateCampaign } from '../../../store/userStore/u
 import CampaignRewardsHistoryTable from '../Manage/CampaignRewardsHistoryTable/CampaignRewardsHistoryTable';
 import Error401 from '../../statics/Error401';
 import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
+import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 
 import './Manage.less';
 
@@ -19,6 +20,7 @@ import './Manage.less';
   state => ({
     user: getAuthenticatedUser(state),
     isGuest: isGuestUser(state),
+    currencyInfo: getCurrentCurrency(state),
   }),
   { activateCampaign, inactivateCampaign },
 )
@@ -27,6 +29,7 @@ class Manage extends React.Component {
     userName: PropTypes.string,
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape(),
+    currencyInfo: PropTypes.shape().isRequired,
     activateCampaign: PropTypes.func,
     setHistoryFilters: PropTypes.func,
     inactivateCampaign: PropTypes.func,
@@ -150,6 +153,7 @@ class Manage extends React.Component {
                   campaigns={activeAndPendingCampaigns}
                   userName={user.name}
                   setHistoryFilters={setHistoryFilters}
+                  currencyInfo={this.props.currencyInfo}
                 />
                 <div className="Manage__rewards-campaign-wrap-text-content">
                   {rewardsCampaignContent}
@@ -175,6 +179,7 @@ class Manage extends React.Component {
                 userName={user.name}
                 campaigns={historyCampaigns}
                 setHistoryFilters={setHistoryFilters}
+                currencyInfo={this.props.currencyInfo}
               />
             </div>
           </React.Fragment>

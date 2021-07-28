@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { isEmpty, get } from 'lodash';
 import { Checkbox } from 'antd';
 import getDetailsMessages from './detailsMessagesData';
@@ -22,6 +23,18 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
     requirementFilters.frequency &&
     (requirementFilters.not_same_assigns || requirementFilters.freeReservation);
   const getChecked = useCallback(param => (isAuthenticated ? param : null), []);
+  const expertiseRequired = getChecked(requirementFilters.expertise);
+  const followersRequired = getChecked(requirementFilters.followers);
+  const postsRequired = getChecked(requirementFilters.posts);
+  const frequencyRequired = getChecked(frequency);
+  const notBlacklistedRequired = getChecked(objectDetails.requirement_filters.not_blacklisted);
+  const expertiseRequiredClassName = classNames({ 'criteria-row__required': !expertiseRequired });
+  const followersRequiredClassName = classNames({ 'criteria-row__required': !followersRequired });
+  const postsRequiredClassName = classNames({ 'criteria-row__required': !postsRequired });
+  const frequencyRequiredClassName = classNames({ 'criteria-row__required': !frequencyRequired });
+  const notBlacklistedRequiredClassName = classNames({
+    'criteria-row__required': !notBlacklistedRequired,
+  });
 
   return (
     <div className="Details__text-wrap">
@@ -29,21 +42,27 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
       <div className="Details__text mv3">{messageData.eligibilityCriteriaParticipate}</div>
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row">
-          <Checkbox checked={getChecked(requirementFilters.expertise)} disabled />
-          <div>{`${messageData.minimumWaivioExpertise}: ${minExpertise.toFixed(2)}`}</div>
+          <Checkbox checked={expertiseRequired} disabled />
+          <div className={expertiseRequiredClassName}>{`${
+            messageData.minimumWaivioExpertise
+          }: ${minExpertise.toFixed(2)}`}</div>
         </div>
         <div className="Details__criteria-row">
-          <Checkbox checked={getChecked(requirementFilters.followers)} disabled />
-          <div>{`${messageData.minimumNumberFollowers}: ${objectDetails.userRequirements.minFollowers}`}</div>
+          <Checkbox checked={followersRequired} disabled />
+          <div
+            className={followersRequiredClassName}
+          >{`${messageData.minimumNumberFollowers}: ${objectDetails.userRequirements.minFollowers}`}</div>
         </div>
         <div className="Details__criteria-row">
-          <Checkbox checked={getChecked(requirementFilters.posts)} disabled />
-          <div>{`${messageData.minimumNumberPosts}: ${objectDetails.userRequirements.minPosts}`}</div>
+          <Checkbox checked={postsRequired} disabled />
+          <div
+            className={postsRequiredClassName}
+          >{`${messageData.minimumNumberPosts}: ${objectDetails.userRequirements.minPosts}`}</div>
         </div>
         {!!objectDetails.frequency_assign && (
           <div className="Details__criteria-row">
-            <Checkbox checked={getChecked(frequency)} disabled />
-            <div>
+            <Checkbox checked={frequencyRequired} disabled />
+            <div className={frequencyRequiredClassName}>
               {messageData.receivedRewardFrom}
               <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
               {messageData.forReviewing}
@@ -55,11 +74,8 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
           </div>
         )}
         <div className="Details__criteria-row">
-          <Checkbox
-            checked={getChecked(objectDetails.requirement_filters.not_blacklisted)}
-            disabled
-          />
-          <div>
+          <Checkbox checked={notBlacklistedRequired} disabled />
+          <div className={notBlacklistedRequiredClassName}>
             {messageData.accountNotBlacklisted}
             <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
             {messageData.referencedAccounts}
