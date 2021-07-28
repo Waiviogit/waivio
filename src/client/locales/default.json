@@ -1092,7 +1092,7 @@
   "append_form_NSFW": "NSFW (not safe for work)",
   "append_form_flagged": "Flagged",
   "author_rewards": "Author rewards",
-  "replied_to_your_comment": "{username} replied to your comment",
+  "replied_to_your_comment": "{username} has replied to your comment",
   "status_change": "{username} marked {restaurant} as {status}",
   "power_down_notification": "{username} initiated 'Power Down' on {amount}",
   "fill_order_notification": "You sold {current_pays} and bought {open_pays} from {exchanger}",
