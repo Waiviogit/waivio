@@ -5,7 +5,6 @@ import { injectIntl } from 'react-intl';
 import { size } from 'lodash';
 import { EditorState, Modifier } from 'draft-js';
 
-import Cube from '../../../../../../public/images/icons/cube.png';
 import { Entity } from '../../util/constants';
 import SearchObjectsAutocomplete from '../../../../../client/components/EditorObject/SearchObjectsAutocomplete';
 import * as apiConfig from '../../../../../waivioApi/config.json';
@@ -106,7 +105,7 @@ class ObjectSideButton extends Component {
         })}
         onClick={this.onClick}
       >
-        <img src={Cube} className="action-btn__icon action-btn__icon--cube" alt="object" />
+        <span className="action-btn__icon action-btn__icon--text">#</span>
         <span className="action-btn__caption">
           {this.props.intl.formatMessage({ id: 'post_btn_object', defaultMessage: 'Object' })}
         </span>
