@@ -106,7 +106,7 @@ const EditorToolbar = ({ intl, onSelect }) => {
           onClick={() => onSelect('object')}
         >
           <Button className="EditorToolbar__button">
-            <Icon type="codepen" className="iconfont" />
+            <span className="iconfont iconText">#</span>
           </Button>
         </BTooltip>
       </div>
