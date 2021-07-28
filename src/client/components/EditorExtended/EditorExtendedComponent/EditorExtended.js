@@ -16,7 +16,6 @@ const Editor = props => {
     editorExtended: { editorState, isMounted, editorEnabled, titleValue },
   } = props;
   const [prevSearchValue, setPrevSearch] = React.useState('');
-  const [isTypeSpace, setIsTypeSpace] = React.useState(false);
   const refsEditor = React.useRef();
 
   React.useEffect(() => {
@@ -28,11 +27,10 @@ const Editor = props => {
     restoreObjects(fromMarkdown(props.initialContent));
   }, []);
   React.useEffect(() => {
-    if (!props.searchObjectsResults.length && isTypeSpace && !props.isStartSearchObject) {
+    if (!props.searchObjectsResults.length && !props.isStartSearchObject) {
       props.setShowEditorSearch(false);
-      setIsTypeSpace(false);
     }
-  }, [isTypeSpace, props.searchObjectsResults.length, props.isStartSearchObject]);
+  }, [props.searchObjectsResults.length, props.isStartSearchObject]);
 
   React.useEffect(() => setFocusAfterMount(), [isMounted, props.draftId]);
 
@@ -59,7 +57,7 @@ const Editor = props => {
 
   const handleContentChange = updatedEditorState => {
     const updatedEditorStateParsed = parseImagesFromBlocks(updatedEditorState);
-    const searchInfo = checkCursorInSearch(updatedEditorStateParsed, isTypeSpace);
+    const searchInfo = checkCursorInSearch(updatedEditorStateParsed);
 
     if (searchInfo.isNeedOpenSearch) {
       if (!props.isShowEditorSearch) {
@@ -85,7 +83,7 @@ const Editor = props => {
       if (prevSearchValue !== searchInfo.searchString) {
         debouncedSearch(searchInfo.searchString);
       }
-    } else {
+    } else if (props.isShowEditorSearch) {
       props.setShowEditorSearch(false);
     }
     onChange(updatedEditorStateParsed);
@@ -109,8 +107,6 @@ const Editor = props => {
       );
     }
   };
-
-  const handleCloseSearch = () => setIsTypeSpace(true);
 
   const isVimeo = get(props, 'initialContent.body', '').includes('player.vimeo.com');
 
@@ -141,7 +137,6 @@ const Editor = props => {
             editorEnabled={editorEnabled && props.enabled}
             setShowEditorSearch={props.setShowEditorSearch}
             setSearchCoordinates={props.setCursorCoordinates}
-            closeSearch={handleCloseSearch}
             placeholder={props.intl.formatMessage({
               id: 'story_placeholder',
               defaultMessage: 'Write your story...',
