@@ -4,7 +4,7 @@ import { message } from 'antd';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { convertToRaw, EditorState, Modifier, SelectionState, ContentState } from 'draft-js';
+import { convertToRaw, EditorState, Modifier, SelectionState } from 'draft-js';
 import {
   forEach,
   get,
@@ -69,7 +69,7 @@ import {
   getTitleValue,
 } from './editorSelectors';
 import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
-import { getObjectName } from '../../client/helpers/wObjectHelper';
+import { getObjectName, getObjectType } from '../../client/helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../client/helpers/postHelpers';
 import {
   createEditorState,
@@ -79,6 +79,7 @@ import {
 } from '../../client/components/EditorExtended';
 import { setObjPercents } from '../../client/helpers/wObjInfluenceHelper';
 import { extractLinks } from '../../client/helpers/parser';
+import objectTypes from '../../client/object/const/objectTypes';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -614,11 +615,15 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
     draftId,
   } = getEditor(state);
   const objName = getObjectName(object);
+  const objType = getObjectType(object);
+  const objNameDisplay = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
   const objPermlink = object.author_permlink;
   const separator = content.slice(-1) === '\n' ? '' : '\n';
   const draftContent = {
     title: titleValue,
-    body: `${content}${separator}[${objName}](${getObjectUrl(object.id || objPermlink)})&nbsp;\n`,
+    body: `${content}${separator}[${objNameDisplay}](${getObjectUrl(
+      object.id || objPermlink,
+    )})&nbsp;\n`,
   };
   const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
 
@@ -866,12 +871,14 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
   const titleValue = getTitleValue(state);
   const editorState = getEditorExtendedState(state);
   const draftId = getEditorDraftId(state);
-  const { startPositionOfWord, searchString } = checkCursorInSearch(editorState, true);
+  const { startPositionOfWord, searchString } = checkCursorInSearch(editorState);
   const selectionState = editorState.getSelection();
   const anchorKey = selectionState.getAnchorKey();
   const currentContent = editorState.getCurrentContent();
   const endPositionOfWord = startPositionOfWord + searchString.length + 1;
+  const objectType = getObjectType(selectedObject);
   const objectName = getObjectName(selectedObject);
+  const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
 
   const contentState = Modifier.replaceText(
     currentContent,
@@ -881,7 +888,7 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
       focusKey: anchorKey,
       focusOffset: endPositionOfWord,
     }),
-    objectName,
+    textReplace,
   );
 
   const editorStateWithObjectName = EditorState.push(editorState, contentState, 'replace-text');
@@ -903,7 +910,7 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
   const newEditorBody = {
     blocks: blocks.map(block =>
       block.key === anchorKey
-        ? addEntityRange(block, startPositionOfWord, objectName, Object.values(entityMap).length)
+        ? addEntityRange(block, startPositionOfWord, textReplace, Object.values(entityMap).length)
         : block,
     ),
     entityMap: newEntityMap,

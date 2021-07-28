@@ -15,14 +15,12 @@ import {
   getEditorExtendedIsShowSearch,
 } from '../../../../store/editorStore/editorSelectors';
 import { searchObjectsAutoCompete } from '../../../../store/searchStore/searchActions';
-import { getIsWaivio } from '../../../../store/appStore/appSelectors';
 import {
   getIsStartSearchObject,
   getSearchObjectsResults,
 } from '../../../../store/searchStore/searchSelectors';
 
 const mapStateToProps = state => ({
-  isWaivio: getIsWaivio(state),
   editorExtended: getEditorExtended(state),
   isShowEditorSearch: getEditorExtendedIsShowSearch(state),
   searchObjectsResults: getSearchObjectsResults(state),
@@ -38,7 +36,7 @@ const mapDispatchToProps = (dispatch, props) => ({
   setUpdatedEditorExtendedData: data => dispatch(setUpdatedEditorExtendedData(data)),
   setShowEditorSearch: data => dispatch(setShowEditorSearch(data)),
   setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
-  searchObjects: (value, isWaivio) => dispatch(searchObjectsAutoCompete(value, '', null, isWaivio)),
+  searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditorExtended));

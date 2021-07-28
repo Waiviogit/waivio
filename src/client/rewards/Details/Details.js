@@ -45,40 +45,15 @@ const Details = ({
   const isInActive = objectDetails.status === 'inactive';
   const proposedWobjName = getObjectName(proposedWobj);
 
-  const getRequiredObjectName = () => {
-    let result;
-
-    if (requiredObjectName.includes('&')) {
-      result = requiredObjectName.replace('&', '%26');
-    } else {
-      result = requiredObjectName;
-    }
-
-    return result;
-  };
-
-  const getProposedWobjName = () => {
-    let result;
-
-    if (proposedWobjName && proposedWobjName.toString().includes('&')) {
-      result = proposedWobjName.replace('&', '%26');
-    } else {
-      result = proposedWobjName;
-    }
-
-    return result;
-  };
-
   const handleTypeReserveButton = () => (isAuth ? 'primary' : 'default');
 
-  const objName = getRequiredObjectName();
-  const proposedWobjNewName = getProposedWobjName();
   const onClick = () => onActionInitiated(reserveOnClickHandler);
   const disabled = (isAuth && !isEligible) || isInActive || isExpired;
 
   const mainObjectPermLink = get(objectDetails, 'required_object.author_permlink');
-  const mainObject = `[${objName}](${mainObjectPermLink})`;
-  const secondaryObject = `[${proposedWobjNewName}](${proposedWobj.author_permlink})`;
+  const mainObject = `[${requiredObjectName}](${mainObjectPermLink})`;
+  const secondaryObject = `[${proposedWobjName}](${proposedWobj.author_permlink})`;
+
   const urlConfig = {
     pathname: '/editor',
     search: `?object=${mainObject}&object=${secondaryObject}&campaign=${objectDetails._id}`,

@@ -550,6 +550,7 @@
   "emptyCategory": "此类别为空",
   "add_catalog_item": "@ {currentUserName}在目录中添加了<strong> {category} </strong>类别。",
   "related_to_object": "有关的",
+  "nearby_to_object": "Nearby",
   "emptyList": "此清单为空",
   "list": "列表",
   "list_update": "更新清单",
