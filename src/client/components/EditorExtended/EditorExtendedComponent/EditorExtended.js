@@ -51,7 +51,7 @@ const Editor = props => {
   };
 
   const debouncedSearch = useCallback(
-    debounce(searchStr => props.searchObjects(searchStr, props.isWaivio), 150),
+    debounce(searchStr => props.searchObjects(searchStr), 150),
     [],
   );
 
@@ -158,7 +158,6 @@ const propTypes = {
   onChange: PropTypes.func,
   draftId: PropTypes.string,
   displayTitle: PropTypes.bool,
-  isWaivio: PropTypes.bool,
   handleHashtag: PropTypes.func,
   handlePasteTest: PropTypes.func,
   getRestoreObjects: PropTypes.func,
