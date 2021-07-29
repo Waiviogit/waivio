@@ -104,7 +104,7 @@ const EditorSearchObjects = ({
 
     if (screenLeft < 0) left = -parentBoundary.left;
     if (wordForCountWidth) left -= fakeLeftPositionBlock.current.offsetWidth;
-    if (left + searchBlockWidth > window.innerWidth) {
+    if (left + searchBlockWidth + 35 > window.innerWidth) {
       left = window.innerWidth - (searchBlockWidth + 50);
     }
     setCoordinates({ top, left: left + 15 });
