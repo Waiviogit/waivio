@@ -15,6 +15,25 @@
     display: flex;
     align-items: baseline;
 
+    a {
+      color: @regent-gray;
+    }
+
+    .WebsiteHeader__linkMap {
+      position: relative;
+      margin-left: 20px;
+
+      &::before {
+        content: '';
+        height: 20px;
+        width: 1px;
+        background: @regent-gray;
+        position: absolute;
+        bottom: 15px;
+        right: 48px;
+      }
+    }
+
     @media @small {
       font-size: 20px;
     }

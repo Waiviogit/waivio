@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { Icon } from 'antd';
 import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
@@ -13,7 +13,7 @@ import './WebsiteMainPage.less';
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (window) {
       window.scrollTo(0, 0);
     }

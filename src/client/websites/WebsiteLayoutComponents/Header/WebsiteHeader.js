@@ -3,7 +3,7 @@ import store from 'store';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { get, upperFirst } from 'lodash';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
@@ -23,7 +23,13 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
 
   const pageWithMapUrl = isDiningGifts ? '/map' : '/';
   const isPageWithMap = pathName === pageWithMapUrl;
-  let setHrefBackButton = () => history.push('/');
+  const getHrefBackButton = (link = '') => {
+    if (query) {
+      return `/${link}?${query}`;
+    }
+
+    return `/${link}`;
+  };
   let currentPage = currPage || store.get('currentPage');
   const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
   const query = store.get('query');
@@ -44,13 +50,6 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
     currentPage = 'Rewards';
   }
 
-  if (query && !isDiningGifts) {
-    setHrefBackButton = () => {
-      history.push(`/?${query}`);
-      localStorage.removeItem('query');
-    };
-  }
-
   return (
     <div className="WebsiteHeader" style={{ backgroundColor: `#${backgroundColor}` }}>
       <div className="topnav-layout isWebsiteView">
@@ -61,15 +60,22 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
             <div
               role="presentation"
               className="WebsiteHeader__link left"
-              onClick={setHrefBackButton}
+              onClick={() => localStorage.removeItem('query')}
             >
-              <Icon type="left" />{' '}
-              <span>
+              <Link to={isDiningGifts ? '/' : getHrefBackButton()}>
                 {intl.formatMessage({
                   id: 'home',
                   defaultMessage: 'Home',
                 })}
-              </span>
+              </Link>
+              {isDiningGifts && (
+                <Link to={getHrefBackButton('map')} className="WebsiteHeader__linkMap">
+                  {intl.formatMessage({
+                    id: 'map',
+                    defaultMessage: 'Map',
+                  })}
+                </Link>
+              )}
             </div>
             {currentPage && (
               <span className="center WebsiteHeader__title">
