@@ -424,6 +424,10 @@ export default class MediumDraftEditor extends React.Component {
       }
 
       return NOT_HANDLED;
+    } else if (command === KEY_COMMANDS.enter) {
+      if (this.props.isShowEditorSearch) {
+        return HANDLED;
+      }
     } else if (command === KEY_COMMANDS.unlink()) {
       const isCursorLink = isCursorBetweenLink(editorState);
 

@@ -366,7 +366,7 @@ export const checkCursorInSearch = editorState => {
   const searchString = blockText.substring(startPositionOfWord + 1, endPositionOfWord);
   const searchStringTrim = blockText.substring(startPositionOfWord + 1, endPositionOfWord).trim();
   const spaceCount = searchString.split(' ').length - 1;
-  const spaceCondition = searchString.match(/(\s{2,})|^\s/g) || spaceCount > 2;
+  const spaceCondition = searchString.match(/(\s{2,})|^\s/g) || spaceCount >= 2;
 
   if (!(spaceCondition || startPositionOfWord === -1) && blockText[start] !== '#') {
     const wordForCountWidth = blockText.substring(startPositionOfWord + 1, start).trim();
