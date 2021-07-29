@@ -68,16 +68,14 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
                   defaultMessage: 'Home',
                 })}
               </Link>
-              {
-                // isDiningGifts && (
+              {isDiningGifts && (
                 <Link to={getHrefBackButton('map')} className="WebsiteHeader__linkMap">
                   {intl.formatMessage({
                     id: 'map',
                     defaultMessage: 'Map',
                   })}
                 </Link>
-                // )
-              }
+              )}
             </div>
             {currentPage && (
               <span className="center WebsiteHeader__title">
