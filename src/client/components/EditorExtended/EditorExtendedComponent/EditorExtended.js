@@ -26,11 +26,6 @@ const Editor = props => {
     });
     restoreObjects(fromMarkdown(props.initialContent));
   }, []);
-  React.useEffect(() => {
-    if (!props.searchObjectsResults.length && !props.isStartSearchObject) {
-      props.setShowEditorSearch(false);
-    }
-  }, [props.searchObjectsResults.length, props.isStartSearchObject]);
 
   React.useEffect(() => setFocusAfterMount(), [isMounted, props.draftId]);
 
@@ -162,8 +157,6 @@ const propTypes = {
   handlePasteTest: PropTypes.func,
   getRestoreObjects: PropTypes.func,
   enabled: PropTypes.bool.isRequired,
-  isStartSearchObject: PropTypes.bool,
-  searchObjectsResults: PropTypes.shape(),
   searchObjects: PropTypes.func.isRequired,
   editorExtended: PropTypes.shape().isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
