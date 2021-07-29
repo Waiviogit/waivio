@@ -1,5 +1,5 @@
 import { EditorState } from 'draft-js';
-import { get, uniqBy } from 'lodash';
+import { get, isNil, uniqBy } from 'lodash';
 import * as editorActions from './editorActions';
 import * as postActions from '../postsStore/postActions';
 import * as authActions from '../authStore/authActions';
@@ -205,6 +205,9 @@ const editor = (state = defaultState, action) => {
           searchCoordinates: action.payload.selectionBoundary,
           searchSelectionState: action.payload.selectionState,
           wordForCountWidth: action.payload.wordForCountWidth,
+          isShowEditorSearch: isNil(action.payload.isShowEditorSearch)
+            ? state.editorExtended.isShowEditorSearch
+            : action.payload.isShowEditorSearch,
         },
       };
     case editorActions.SET_EDITOR_EXTENDED_STATE:

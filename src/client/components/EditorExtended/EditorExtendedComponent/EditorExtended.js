@@ -76,8 +76,8 @@ const Editor = props => {
           selectionState: newSelection,
           searchString: searchInfo.searchString,
           wordForCountWidth: searchInfo.wordForCountWidth,
+          isShowEditorSearch: true,
         });
-        props.setShowEditorSearch(true);
       }
       setPrevSearch(searchInfo.searchString);
       if (prevSearchValue !== searchInfo.searchString) {

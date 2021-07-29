@@ -451,7 +451,6 @@ export default class MediumDraftEditor extends React.Component {
           selectionBoundary,
           selectionState: newESSelectionState,
         });
-        this.props.setShowEditorSearch(true);
       }
 
       return HANDLED;
