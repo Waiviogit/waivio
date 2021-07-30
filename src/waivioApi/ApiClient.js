@@ -2129,8 +2129,9 @@ export const getNearbyObjects = (authorPermlink, host, skip = 0, limit = 5, radi
     {
       headers: {
         ...headers,
-        Domain: host,
+        Origin: host,
       },
+      method: 'GET',
     },
   )
     .then(handleErrors)

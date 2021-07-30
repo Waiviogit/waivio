@@ -780,6 +780,14 @@ export const firstParseLinkedObjects = (draft, objName, cursorPosition) => async
     const draftObjPercentage = setObjPercents(draftLinkedObjects);
     const draftContent = { title: draft.title, body: draft.body };
 
+    const topics = draftLinkedObjects.reduce((acc, linkedObj) => {
+      if (linkedObj.type === 'hashtag' || linkedObj.object_type === 'hashtag') {
+        return [...acc, linkedObj.author_permlink];
+      }
+
+      return acc;
+    }, []);
+
     dispatch(
       setUpdatedEditorData({
         linkedObjects: draftLinkedObjects,
@@ -788,6 +796,7 @@ export const firstParseLinkedObjects = (draft, objName, cursorPosition) => async
         titleValue: draft.title,
         content: draft.body,
         isUpdating: draft.isUpdating,
+        topics,
       }),
     );
 
@@ -921,6 +930,6 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
 
     dispatch(setShowEditorSearch(false));
     dispatch(saveDraft(draftId, null, updatedStateBody));
-    dispatch(firstParseLinkedObjects(updatedStateBody, objectName, endPositionOfWord));
+    dispatch(firstParseLinkedObjects(updatedStateBody, textReplace, endPositionOfWord));
   }
 };
