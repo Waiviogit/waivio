@@ -6,6 +6,7 @@ import { isEmpty, get } from 'lodash';
 import OBJECT_TYPE from '../const/objectTypes';
 import {
   clearObjectFromStore,
+  getNearbyObjects as getNearbyObjectsAction,
   getObject,
   getObjectFollowers,
 } from '../../../store/wObjectStore/wobjectsActions';
@@ -70,6 +71,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     addAlbumToStore,
     clearRelatedPhoto,
     getObjectFollowers,
+    getNearbyObjects: getNearbyObjectsAction,
   },
 )
 export default class WobjectContainer extends React.Component {
@@ -99,6 +101,7 @@ export default class WobjectContainer extends React.Component {
     appendObject: PropTypes.func,
     addAlbumToStore: PropTypes.func,
     clearRelatedPhoto: PropTypes.func,
+    getNearbyObjects: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -125,6 +128,7 @@ export default class WobjectContainer extends React.Component {
       store.dispatch(getObjectFollowers({ object: match.params.name, skip: 0, limit: 5 })),
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),
+      store.dispatch(getNearbyObjectsAction(match.params.name)),
     ]);
   }
 
@@ -144,6 +148,7 @@ export default class WobjectContainer extends React.Component {
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
+      this.props.getNearbyObjects(match.params.name);
     }
   }
 
