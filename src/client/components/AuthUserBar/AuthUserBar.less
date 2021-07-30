@@ -1,0 +1,27 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.AuthUserBar {
+  &__icon {
+    color: @blue-botticelli;
+
+    .anticon-caret-down {
+      display: none;
+    }
+
+    .anticon-bars {
+      display: inline-block;
+      font-size: 28px;
+    }
+
+    @media @small {
+      .anticon-caret-down {
+        display: inline-block;
+      }
+
+      .anticon-bars {
+        display: none;
+      }
+    }
+  }
+}

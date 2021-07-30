@@ -155,13 +155,14 @@ class WebsiteWrapper extends React.PureComponent {
     const provider = query.get('socialProvider');
 
     this.props.getCurrentAppSettings().then(() => {
+      this.props.getRate();
+
       this.props.login(token, provider).then(() => {
         batch(() => {
           this.props.getNotifications();
           this.props.busyLogin();
           this.props.getRewardFund();
           this.props.dispatchGetAuthGuestBalance();
-          this.props.getRate();
         });
 
         if (token && provider) {

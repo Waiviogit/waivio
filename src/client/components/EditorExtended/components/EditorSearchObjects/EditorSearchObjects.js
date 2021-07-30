@@ -25,9 +25,11 @@ const EditorSearchObjects = ({
 
   React.useEffect(() => {
     window.addEventListener('keydown', handleKeyDown, { capture: true });
+    window.addEventListener('keydown', handleKeyEnter, { capture: false });
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown, { capture: true });
+      window.removeEventListener('keydown', handleKeyEnter, { capture: false });
     };
   }, []);
 
@@ -45,6 +47,13 @@ const EditorSearchObjects = ({
       handleSelectObject(searchObjectsResults[currentObjIndex]);
     }
   }, [selectedObj]);
+
+  const handleKeyEnter = event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      setSelectedObj(true);
+    }
+  };
 
   const handleKeyDown = event => {
     const blockItemHeight = 60; // height of one item in search result block
@@ -83,9 +92,6 @@ const EditorSearchObjects = ({
 
         return prev;
       });
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      setSelectedObj(true);
     }
   };
 

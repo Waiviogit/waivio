@@ -10,7 +10,7 @@ import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
-import { getCurrentCurrency, getRate, getScreenSize } from '../../store/appStore/appSelectors';
+import { getRate, getScreenSize } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
@@ -30,8 +30,7 @@ const ObjectCardView = ({
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
-  const currency = useSelector(getCurrentCurrency);
-  const rate = useSelector(getRate);
+  const rate = useSelector(getRate) || 1;
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
