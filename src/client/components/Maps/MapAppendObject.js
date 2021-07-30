@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 import { isNil, isEmpty, isEqual } from 'lodash';
 import React from 'react';
-import { Map } from 'pigeon-maps';
+import { Map, Marker } from 'pigeon-maps';
 import { connect } from 'react-redux';
-import CustomMarker from './CustomMarker';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import mapProvider from '../../helpers/mapProvider';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
@@ -57,18 +56,11 @@ class MapAppendObject extends React.Component {
   onBoundsChanged = ({ center, zoom, bounds, initial }) =>
     this.setState({ center, zoom, bounds, initial, userCoordinates: center });
 
-  handleError = async () => {
-    if (isEmpty(this.props.userLocation)) {
-      this.props.getCoordinates().then(res =>
-        this.setState({
-          userCoordinates: [+res.value.latitude, +res.value.longitude],
-        }),
-      );
-    } else {
-      this.setState({
-        userCoordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
-      });
-    }
+  handleError = () => {
+    this.setState({
+      userCoordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+    });
+    this.setCoordinates({ latLng: [+this.props.userLocation.lat, +this.props.userLocation.lon] });
   };
 
   setPosition = () => {
@@ -78,8 +70,12 @@ class MapAppendObject extends React.Component {
 
   setCoordinates = coord => this.props.setCoordinates(coord);
 
-  showUserPosition = position =>
-    this.setState({ center: [position.coords.latitude, position.coords.longitude] });
+  showUserPosition = position => {
+    const center = [position.coords.latitude, position.coords.longitude];
+
+    this.setState({ center });
+    this.setCoordinates({ latLng: center });
+  };
 
   incrementZoom = () => this.setState({ zoom: this.state.zoom + 1 });
 
@@ -120,7 +116,7 @@ class MapAppendObject extends React.Component {
           animate
         >
           {this.props.center && !isNil(this.props.center[0]) && (
-            <CustomMarker key={this.props.center.join('/')} anchor={this.props.center} />
+            <Marker width={50} anchor={this.props.center} />
           )}
         </Map>
       </div>
