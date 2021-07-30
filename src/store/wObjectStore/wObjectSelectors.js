@@ -56,3 +56,13 @@ export const getObjectsNearbyArray = createSelector([getObjectsNearby], state =>
 export const getObjectsNearbyIsLoading = createSelector([getObjectsNearby], state =>
   get(state, 'isLoading', true),
 );
+
+export const getObjectExpertise = createSelector([objectState], state => state.objectExpertise);
+
+export const getObjectExpertiseUsers = createSelector([getObjectExpertise], state =>
+  get(state, 'users', []),
+);
+
+export const getObjectExpertiseIsLoading = createSelector([getObjectExpertise], state =>
+  get(state, 'isLoading', true),
+);

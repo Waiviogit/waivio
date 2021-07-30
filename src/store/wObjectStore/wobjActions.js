@@ -4,21 +4,26 @@ import { get, isEmpty } from 'lodash';
 
 import { getAllFollowing } from '../../client/helpers/apiHelpers';
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
-import { getChangedField } from '../../waivioApi/ApiClient';
+import { getChangedField, getWobjectsExpertiseWithNewsFilter } from '../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { APPEND_WAIVIO_OBJECT } from '../appendStore/appendActions';
-import { BELL_USER_NOTIFICATION } from '../userStore/userActions';
+import { BELL_USER_NOTIFICATION, followExpert, unfollowExpert } from '../userStore/userActions';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
 } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
+import { getObject as getObjectState } from './wObjectSelectors';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
 export const FOLLOW_WOBJECT_SUCCESS = '@wobj/FOLLOW_WOBJECT_SUCCESS';
 export const FOLLOW_WOBJECT_ERROR = '@wobj/FOLLOW_WOBJECT_ERROR';
+export const GET_WOBJECT_EXPERTISE = createAsyncActionType('GET_WOBJECT_EXPERTISE');
+export const FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE = createAsyncActionType(
+  'FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE',
+);
 
 export const APPENDS_VOTE = '@wobj/APPENDS_VOTE';
 
@@ -371,3 +376,45 @@ export const wobjectBellNotification = followingWobj => (
       });
     });
 };
+
+export const getWobjectExpertise = (newsFilter = {}) => (dispatch, getState) => {
+  const state = getState();
+
+  const username = getAuthenticatedUserName(state);
+  const wObject = getObjectState(state);
+
+  return dispatch({
+    type: GET_WOBJECT_EXPERTISE.ACTION,
+    payload: {
+      promise: getWobjectsExpertiseWithNewsFilter(
+        username,
+        wObject.author_permlink,
+        0,
+        5,
+        newsFilter,
+      ),
+    },
+  });
+};
+
+export const followUserWObjectExpertise = userExpert => dispatch =>
+  dispatch({
+    type: FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE.ACTION,
+    payload: {
+      promise: dispatch(followExpert(userExpert)),
+    },
+    meta: {
+      userExpert,
+    },
+  });
+
+export const unfollowUserWObjectExpertise = userExpert => dispatch =>
+  dispatch({
+    type: FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE.ACTION,
+    payload: {
+      promise: dispatch(unfollowExpert(userExpert)),
+    },
+    meta: {
+      userExpert,
+    },
+  });

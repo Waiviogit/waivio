@@ -12,6 +12,8 @@ import {
   SET_LIST_ITEMS,
   SET_LOADING_NESTED_WOBJECT,
   BELL_WOBJECT_NOTIFICATION,
+  GET_WOBJECT_EXPERTISE,
+  FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
@@ -20,6 +22,10 @@ export const initialState = {
   wobject: {},
   nestedWobject: {},
   nearbyWobjects: [],
+  objectExpertise: {
+    users: [],
+    isLoading: true,
+  },
   lists: [],
   isFetching: false,
   isFailed: false,
@@ -407,6 +413,58 @@ export default function wobjectReducer(state = initialState, action) {
           ...state.nearbyWobjects,
           objects: action.payload,
           isLoading: false,
+        },
+      };
+    }
+    case GET_WOBJECT_EXPERTISE.START: {
+      return {
+        ...state,
+        objectExpertise: {
+          ...state.objectExpertise,
+          isLoading: true,
+        },
+      };
+    }
+    case GET_WOBJECT_EXPERTISE.SUCCESS: {
+      return {
+        ...state,
+        objectExpertise: {
+          users: action.payload.users.map(userExpert => ({ ...userExpert, pending: false })),
+          isLoading: false,
+        },
+      };
+    }
+    case GET_WOBJECT_EXPERTISE.ERROR: {
+      return {
+        ...state,
+        objectExpertise: {
+          users: [],
+          isLoading: true,
+        },
+      };
+    }
+    case FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE.ERROR:
+    case FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE.START: {
+      return {
+        ...state,
+        objectExpertise: {
+          ...state.objectExpertise,
+          users: state.objectExpertise.users.map(item =>
+            item.name === action.meta.userExpert ? { ...item, pending: !item.pending } : item,
+          ),
+        },
+      };
+    }
+    case FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE.SUCCESS: {
+      return {
+        ...state,
+        objectExpertise: {
+          ...state.objectExpertise,
+          users: state.objectExpertise.users.map(item =>
+            item.name === action.meta.userExpert
+              ? { ...item, youFollows: !item.youFollows, pending: !item.pending }
+              : item,
+          ),
         },
       };
     }

@@ -138,7 +138,7 @@ const Wobj = ({
           </Affix>
           <Affix className={rightSidebarClassList} stickPosition={72}>
             <div className="right">
-              {wobject.author_permlink && <ObjectExpertise username={userName} wobject={wobject} />}
+              {wobject.author_permlink && <ObjectExpertise wobject={wobject} />}
             </div>
             <div>
               {wobject.author_permlink && wobject.map && <WobjectNearby wobject={wobject} />}

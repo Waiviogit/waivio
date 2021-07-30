@@ -18,7 +18,11 @@ import {
 } from '../../../store/galleryStore/galleryActions';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
-import { setCatalogBreadCrumbs, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
+import {
+  setNestedWobject,
+  setCatalogBreadCrumbs,
+  getWobjectExpertise as getWobjectExpertiseAction,
+} from '../../../store/wObjectStore/wobjActions';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
@@ -72,6 +76,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     clearRelatedPhoto,
     getObjectFollowers,
     getNearbyObjects: getNearbyObjectsAction,
+    getWobjectExpertise: getWobjectExpertiseAction,
   },
 )
 export default class WobjectContainer extends React.Component {
@@ -102,6 +107,7 @@ export default class WobjectContainer extends React.Component {
     addAlbumToStore: PropTypes.func,
     clearRelatedPhoto: PropTypes.func,
     getNearbyObjects: PropTypes.func.isRequired,
+    getWobjectExpertise: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -129,6 +135,11 @@ export default class WobjectContainer extends React.Component {
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),
       store.dispatch(getNearbyObjectsAction(match.params.name)),
+      store.dispatch(
+        getWobjectExpertiseAction(
+          match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {},
+        ),
+      ),
     ]);
   }
 
@@ -144,11 +155,13 @@ export default class WobjectContainer extends React.Component {
 
   componentDidMount() {
     const { match, wobject, authenticatedUserName } = this.props;
+    const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
       this.props.getNearbyObjects(match.params.name);
+      this.props.getWobjectExpertise(newsFilter);
     }
   }
 
