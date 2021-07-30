@@ -8,7 +8,7 @@ import {
   clearObjectFromStore,
   getNearbyObjects as getNearbyObjectsAction,
   getObject,
-  getObjectFollowers,
+  getObjectFollowers as getObjectFollowersAction,
 } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getAlbums,
@@ -74,9 +74,9 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     appendObject,
     addAlbumToStore,
     clearRelatedPhoto,
-    getObjectFollowers,
     getNearbyObjects: getNearbyObjectsAction,
     getWobjectExpertise: getWobjectExpertiseAction,
+    getObjectFollowers: getObjectFollowersAction,
   },
 )
 export default class WobjectContainer extends React.Component {
@@ -108,6 +108,7 @@ export default class WobjectContainer extends React.Component {
     clearRelatedPhoto: PropTypes.func,
     getNearbyObjects: PropTypes.func.isRequired,
     getWobjectExpertise: PropTypes.func.isRequired,
+    getObjectFollowers: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -131,7 +132,7 @@ export default class WobjectContainer extends React.Component {
   static fetchData({ store, match }) {
     return Promise.all([
       store.dispatch(getObject(match.params.name)),
-      store.dispatch(getObjectFollowers({ object: match.params.name, skip: 0, limit: 5 })),
+      store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),
       store.dispatch(getNearbyObjectsAction(match.params.name)),
@@ -162,6 +163,12 @@ export default class WobjectContainer extends React.Component {
       this.props.getAlbums(match.params.name);
       this.props.getNearbyObjects(match.params.name);
       this.props.getWobjectExpertise(newsFilter);
+      this.props.getObjectFollowers({
+        object: match.params.name,
+        skip: 0,
+        limit: 5,
+        userName: authenticatedUserName,
+      });
     }
   }
 
