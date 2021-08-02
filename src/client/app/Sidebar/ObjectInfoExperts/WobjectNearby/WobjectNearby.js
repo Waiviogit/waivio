@@ -2,7 +2,7 @@ import { Icon } from 'antd';
 import { size } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 
 import WeightTag from '../../../../components/WeightTag';
@@ -15,17 +15,12 @@ const WobjectNearby = ({
   wobject,
   intl,
   isCenterContent,
-  getNearbyObjects,
   nearbyObjects,
   history,
   setFiltersAndLoad,
   activeFilters,
   nearbyObjectsIsLoading,
 }) => {
-  useEffect(() => {
-    getNearbyObjects(wobject.author_permlink);
-  }, [wobject.author_permlink]);
-
   const handleRedirect = () => {
     const map = JSON.parse(wobject.map);
 
@@ -95,7 +90,6 @@ WobjectNearby.propTypes = {
   intl: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
-  getNearbyObjects: PropTypes.func.isRequired,
   setFiltersAndLoad: PropTypes.func.isRequired,
   nearbyObjectsIsLoading: PropTypes.shape().isRequired,
 };
