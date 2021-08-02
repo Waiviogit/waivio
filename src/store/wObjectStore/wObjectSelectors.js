@@ -66,3 +66,25 @@ export const getObjectExpertiseUsers = createSelector([getObjectExpertise], stat
 export const getObjectExpertiseIsLoading = createSelector([getObjectExpertise], state =>
   get(state, 'isLoading', true),
 );
+
+export const getRelatedObjects = createSelector([objectState], state => state.relatedWobjects);
+
+export const getRelatedObjectsSkip = createSelector([getRelatedObjects], state =>
+  get(state, 'skip', 0),
+);
+
+export const getRelatedObjectsHasNext = createSelector([getRelatedObjects], state =>
+  get(state, 'hasNext', false),
+);
+
+export const getRelatedObjectsArray = createSelector([getRelatedObjects], state =>
+  get(state, 'objects', []),
+);
+
+export const getRelatedObjectsForSidebar = createSelector([getRelatedObjectsArray], objects =>
+  objects.length ? objects.slice(0, 5) : [],
+);
+
+export const getRelatedObjectsIsLoading = createSelector([getRelatedObjects], state =>
+  get(state, 'isLoading', []),
+);

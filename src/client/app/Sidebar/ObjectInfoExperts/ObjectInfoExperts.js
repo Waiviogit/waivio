@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import WobjectNearby from './WobjectNearby';
 import WobjectSidebarFollowers from './WobjectSidebarFollowers';
 import ObjectExpertise from '../../../components/Sidebar/ObjectExpertise';
-import ObjectsRelated from '../../../components/Sidebar/ObjectsRelated/ObjectsRelated';
+import ObjectsRelated from '../../../components/Sidebar/ObjectsRelated/index';
 
 import './ObjectInfoExperts.less';
 

@@ -22,6 +22,7 @@ import {
   setNestedWobject,
   setCatalogBreadCrumbs,
   getWobjectExpertise as getWobjectExpertiseAction,
+  getRelatedWobjects,
 } from '../../../store/wObjectStore/wobjActions';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import Wobj from './Wobj';
@@ -77,6 +78,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     getNearbyObjects: getNearbyObjectsAction,
     getWobjectExpertise: getWobjectExpertiseAction,
     getObjectFollowers: getObjectFollowersAction,
+    getRelatedWobjects,
   },
 )
 export default class WobjectContainer extends React.Component {
@@ -109,6 +111,7 @@ export default class WobjectContainer extends React.Component {
     getNearbyObjects: PropTypes.func.isRequired,
     getWobjectExpertise: PropTypes.func.isRequired,
     getObjectFollowers: PropTypes.func.isRequired,
+    getRelatedWobjects: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -169,6 +172,7 @@ export default class WobjectContainer extends React.Component {
         limit: 5,
         userName: authenticatedUserName,
       });
+      this.props.getRelatedWobjects(match.params.name);
     }
   }
 
@@ -181,6 +185,7 @@ export default class WobjectContainer extends React.Component {
       this.props.setCatalogBreadCrumbs([]);
       this.props.setNestedWobject({});
       this.props.getObject(match.params.name, authenticatedUserName);
+      this.props.getRelatedWobjects(match.params.name);
     }
   }
 

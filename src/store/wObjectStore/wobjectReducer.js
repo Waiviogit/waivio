@@ -1,3 +1,5 @@
+import { uniqBy } from 'lodash';
+
 import * as actions from './wobjectsActions';
 import {
   FOLLOW_OBJECT,
@@ -13,6 +15,8 @@ import {
   SET_LOADING_NESTED_WOBJECT,
   BELL_WOBJECT_NOTIFICATION,
   GET_WOBJECT_EXPERTISE,
+  GET_RELATED_WOBJECT,
+  CLEAR_RELATED_OBJECTS,
   FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
@@ -25,6 +29,12 @@ export const initialState = {
   objectExpertise: {
     users: [],
     isLoading: true,
+  },
+  relatedWobjects: {
+    skip: 0,
+    objects: [],
+    isLoading: false,
+    hasNext: true,
   },
   lists: [],
   isFetching: false,
@@ -468,6 +478,46 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     }
+    case GET_RELATED_WOBJECT.START: {
+      return {
+        ...state,
+        relatedWobjects: {
+          ...state.relatedWobjects,
+          isLoading: true,
+        },
+      };
+    }
+    case GET_RELATED_WOBJECT.SUCCESS: {
+      const objects = action.payload.map(obj => ({ ...obj, parent: action.meta.wobject }));
+
+      return {
+        ...state,
+        relatedWobjects: {
+          ...state.relatedWobjects,
+          objects: uniqBy([...state.relatedWobjects.objects, ...objects], 'author_permlink'),
+          isLoading: false,
+          skip: state.relatedWobjects.skip + 5,
+          hasNext: action.payload.length === 5,
+        },
+      };
+    }
+    case GET_RELATED_WOBJECT.ERROR: {
+      return {
+        ...state,
+        relatedWobjects: {
+          ...state.relatedWobjects,
+          isLoading: false,
+          skip: state.relatedWobjects.skip + 5,
+          hasNext: action.payload.length === 5,
+        },
+      };
+    }
+
+    case CLEAR_RELATED_OBJECTS:
+      return {
+        ...state,
+        relatedWobjects: initialState.relatedWobjects,
+      };
     default: {
       return state;
     }
