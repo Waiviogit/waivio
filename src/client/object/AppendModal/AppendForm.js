@@ -558,10 +558,10 @@ export default class AppendForm extends Component {
   };
 
   setCoordinates = ({ latLng }) => {
-    this.setState({ latitude: latLng[1], longitude: latLng[0] });
+    this.setState({ latitude: latLng[0], longitude: latLng[1] });
     this.props.form.setFieldsValue({
-      [mapFields.latitude]: latLng[1].toFixed(6),
-      [mapFields.longitude]: latLng[0].toFixed(6),
+      [mapFields.latitude]: latLng[0].toFixed(6),
+      [mapFields.longitude]: latLng[1].toFixed(6),
     });
   };
 
@@ -1574,7 +1574,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <MapAppendObject
               setCoordinates={this.setCoordinates}
-              center={[this.state.longitude, this.state.latitude]}
+              center={[this.state.latitude, this.state.longitude]}
             />
           </React.Fragment>
         );

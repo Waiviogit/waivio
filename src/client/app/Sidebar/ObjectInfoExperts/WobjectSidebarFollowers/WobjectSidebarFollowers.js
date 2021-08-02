@@ -19,13 +19,8 @@ const WobjectSidebarFollowers = ({
   wobject,
   followUser,
   unfollowUser,
-  getObjFollowers,
-  userName,
   hasMore,
 }) => {
-  React.useEffect(() => {
-    getObjFollowers({ object: match.params.name, skip: 0, limit: 5, userName });
-  }, []);
   const handleRedirectToFollowers = () => {
     if (isCenterContent) history.push(`${match.url.replace(/\/[^/]+$/, '')}/followers`);
   };
@@ -67,14 +62,12 @@ const WobjectSidebarFollowers = ({
 
 WobjectSidebarFollowers.propTypes = {
   isCenterContent: PropTypes.bool,
-  userName: PropTypes.string.isRequired,
   match: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
   followers: PropTypes.arrayOf(PropTypes.shape()),
   followUser: PropTypes.func.isRequired,
   unfollowUser: PropTypes.func.isRequired,
-  getObjFollowers: PropTypes.func.isRequired,
   hasMore: PropTypes.bool.isRequired,
 };
 

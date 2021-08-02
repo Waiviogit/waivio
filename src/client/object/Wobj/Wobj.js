@@ -10,7 +10,7 @@ import WobjHero from '../WobjHero';
 import Affix from '../../components/Utils/Affix';
 import LeftObjectProfileSidebar from '../../app/Sidebar/LeftObjectProfileSidebar';
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
-import ObjectsRelated from '../../components/Sidebar/ObjectsRelated/ObjectsRelated';
+import ObjectsRelated from '../../components/Sidebar/ObjectsRelated/index';
 import { getObjectAvatar, getObjectType, hasType, parseAddress } from '../../helpers/wObjectHelper';
 import OBJECT_TYPE from '../const/objectTypes';
 import { formColumnsField } from '../../../common/constants/listOfFields';
@@ -138,7 +138,7 @@ const Wobj = ({
           </Affix>
           <Affix className={rightSidebarClassList} stickPosition={72}>
             <div className="right">
-              {wobject.author_permlink && <ObjectExpertise username={userName} wobject={wobject} />}
+              {wobject.author_permlink && <ObjectExpertise wobject={wobject} />}
             </div>
             <div>
               {wobject.author_permlink && wobject.map && <WobjectNearby wobject={wobject} />}

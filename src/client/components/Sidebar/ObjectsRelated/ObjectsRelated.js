@@ -1,149 +1,79 @@
-import _ from 'lodash';
-import React, { useContext, useEffect, useState } from 'react';
+import { throttle } from 'lodash';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
-import { injectIntl } from 'react-intl';
 
 import WeightTag from '../../WeightTag';
-import { getAuthorsChildWobjects } from '../../../../waivioApi/ApiClient';
-import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import ObjectCard from '../ObjectCard';
-import { AppSharedContext } from '../../../Wrapper';
+import ObjectsRelatedContent from './ObjectsRelatedContent';
 
 import './ObjectsRelated.less';
 
-const ObjectsRelated = ({ wobject, intl, isCenterContent }) => {
-  const [objectsState, setObjectsState] = useState({
-    objects: [],
-    loading: true,
-    skip: 0,
-    hasNext: true,
-  });
+const ObjectsRelated = ({
+  clearRelateObjects,
+  wobject,
+  isCenterContent,
+  getObjectRelated,
+  hasNext,
+  objects,
+}) => {
   const [showModal, setShowModal] = useState(false);
-  const { usedLocale } = useContext(AppSharedContext);
-  const getInitialWobjects = () => {
-    getAuthorsChildWobjects(wobject.author_permlink, objectsState.skip, 5, usedLocale)
-      .then(data => {
-        const objects = data.map(wobj => ({
-          ...wobj,
-          parent: wobject,
-        }));
 
-        setObjectsState({
-          objects: [...objects],
-          loading: false,
-          skip: 5,
-          hasNext: data.length === 5,
-        });
-      })
-      .catch(() => setObjectsState({ loading: false }));
-  };
+  React.useEffect(
+    () => () => {
+      clearRelateObjects();
+    },
+    [],
+  );
 
-  const getWobjects = () => {
-    getAuthorsChildWobjects(wobject.author_permlink, objectsState.skip, 5, usedLocale)
-      .then(data => {
-        const objects = data.map(wobj => ({
-          ...wobj,
-          parent: wobject,
-        }));
-
-        setObjectsState({
-          objects: [...objectsState.objects, ...objects],
-          skip: objectsState.skip + 5,
-          hasNext: data.length === 5,
-        });
-      })
-      .catch(() => setObjectsState({ ...objectsState, hasNext: false }));
-  };
-
-  useEffect(() => {
-    getInitialWobjects();
-  }, [wobject.author_permlink]);
-
-  let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
-
-  if (!objectsState.loading) {
-    if (!_.isEmpty(objectsState.objects)) {
-      const renderObjects = objectsState.objects
-        .slice(0, 5)
-        .map(item => (
-          <ObjectCard
-            key={item.author_permlink}
-            wobject={item}
-            showFollow={false}
-            alt={<WeightTag weight={item.weight} />}
-            isNewWindow={false}
-            id="ObjectCard"
-          />
-        ));
-
-      const renderObjectsModal = objectsState.objects.map(item => (
-        <ObjectCard
-          key={item.author_permlink}
-          wobject={item}
-          parent={wobject}
-          showFollow={false}
-          alt={<WeightTag weight={item.weight} />}
-          isNewWindow={false}
-        />
-      ));
-
-      const renderButtons = () =>
-        !isCenterContent && (
-          <div className="ObjectsRelated__more">
-            <a onClick={() => setShowModal(true)} id="show_more_div">
-              {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
-            </a>
-          </div>
-        );
-
-      const onWheelHandler = () => {
-        if (objectsState.hasNext) {
-          getWobjects();
-        }
-      };
-
-      const handleOpenModal = () => {
-        if (isCenterContent) setShowModal(true);
-      };
-
-      renderCard = (
-        <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
-          <div className="SidebarContentBlock__title" onClick={handleOpenModal}>
-            {!isCenterContent && <i className="iconfont icon-link SidebarContentBlock__icon" />}{' '}
-            {intl.formatMessage({ id: 'related_to_object', defaultMessage: 'Related to object' })}
-          </div>
-          <div className="SidebarContentBlock__content">{renderObjects}</div>
-          {renderButtons()}
-          <div onWheel={_.throttle(onWheelHandler, 100)}>
-            <Modal
-              title="Related"
-              visible={showModal}
-              footer={null}
-              onCancel={() => setShowModal(false)}
-              id="ObjectRelated__Modal"
-            >
-              {renderObjectsModal}
-            </Modal>
-          </div>
-        </div>
-      );
-    } else {
-      renderCard = null;
+  const onWheelHandler = () => {
+    if (hasNext) {
+      getObjectRelated();
     }
-  }
+  };
 
-  return renderCard;
+  const renderObjectsModal = objects.map(item => (
+    <ObjectCard
+      key={item.author_permlink}
+      wobject={item}
+      parent={wobject}
+      showFollow={false}
+      alt={<WeightTag weight={item.weight} />}
+      isNewWindow={false}
+    />
+  ));
+
+  return (
+    <React.Fragment>
+      <ObjectsRelatedContent setShowModal={setShowModal} isCenterContent={isCenterContent} />
+      <div onWheel={throttle(onWheelHandler, 500)}>
+        <Modal
+          title="Related"
+          visible={showModal}
+          footer={null}
+          onCancel={() => setShowModal(false)}
+          id="ObjectRelated__Modal"
+        >
+          {renderObjectsModal}
+        </Modal>
+      </div>
+    </React.Fragment>
+  );
 };
 
 ObjectsRelated.propTypes = {
   wobject: PropTypes.shape().isRequired,
-  intl: PropTypes.shape().isRequired,
+  getObjectRelated: PropTypes.func.isRequired,
+  clearRelateObjects: PropTypes.func.isRequired,
   isCenterContent: PropTypes.bool,
+  hasNext: PropTypes.bool,
+  objects: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 ObjectsRelated.defaultProps = {
   isCenterContent: false,
+  hasNext: false,
+  objects: [],
 };
 
-export default injectIntl(ObjectsRelated);
+export default ObjectsRelated;
