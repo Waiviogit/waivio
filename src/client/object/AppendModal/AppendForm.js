@@ -560,8 +560,8 @@ export default class AppendForm extends Component {
   setCoordinates = ({ latLng }) => {
     this.setState({ latitude: latLng[1], longitude: latLng[0] });
     this.props.form.setFieldsValue({
-      [mapFields.latitude]: latLng[0].toFixed(6),
-      [mapFields.longitude]: latLng[1].toFixed(6),
+      [mapFields.latitude]: latLng[1].toFixed(6),
+      [mapFields.longitude]: latLng[0].toFixed(6),
     });
   };
 
@@ -887,9 +887,9 @@ export default class AppendForm extends Component {
     }
   };
 
-  handleChangeMapsData = debounce((value, key) => {
-    this.setState(() => ({ [key]: value }));
-  }, 500);
+  handleChangeMapsData = (value, key) => this.setState(() => ({ [key]: +value }));
+
+  debounceChangeMapsData = debounce(this.handleChangeMapsData, 300);
 
   checkRequiredField = (form, currentField) => {
     let formFields = null;
@@ -1550,7 +1550,7 @@ export default class AppendForm extends Component {
                     id: 'location_latitude',
                     defaultMessage: 'Latitude',
                   })}
-                  onChange={e => this.handleChangeMapsData(e.currentTarget.value, 'latitude')}
+                  onChange={e => this.debounceChangeMapsData(e.currentTarget.value, 'latitude')}
                 />,
               )}
             </Form.Item>
@@ -1568,7 +1568,7 @@ export default class AppendForm extends Component {
                     id: 'location_longitude',
                     defaultMessage: 'Longitude',
                   })}
-                  onChange={e => this.handleChangeMapsData(e.currentTarget.value, 'longitude')}
+                  onChange={e => this.debounceChangeMapsData(e.currentTarget.value, 'longitude')}
                 />,
               )}
             </Form.Item>
