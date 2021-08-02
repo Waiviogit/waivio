@@ -458,21 +458,19 @@ export default class MediumDraftEditor extends React.Component {
       }
 
       return HANDLED;
-    } else if (command === KEY_COMMANDS.backspace) {
+    } else if (command === KEY_COMMANDS.backspace && this.props.isShowEditorSearch) {
       // закрытие поиска на backspace
-      if (this.props.isShowEditorSearch) {
-        const selectionState = editorState.getSelection();
-        const anchorKey = selectionState.getAnchorKey();
-        const currentContent = editorState.getCurrentContent();
-        const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-        const start = selectionState.getStartOffset();
-        const end = selectionState.getEndOffset();
-        const textBlock = currentContentBlock.getText();
-        const deletedString = textBlock.substring(start - 1, end);
+      const selectionState = editorState.getSelection();
+      const anchorKey = selectionState.getAnchorKey();
+      const currentContent = editorState.getCurrentContent();
+      const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+      const start = selectionState.getStartOffset();
+      const end = selectionState.getEndOffset();
+      const textBlock = currentContentBlock.getText();
+      const deletedString = textBlock.substring(start - 1, end);
 
-        if (textBlock[start - 1] === '#' || deletedString.includes(' #')) {
-          this.props.setShowEditorSearch(false);
-        }
+      if (textBlock[start - 1] === '#' || deletedString.includes(' #')) {
+        this.props.setShowEditorSearch(false);
       }
 
       return NOT_HANDLED;
