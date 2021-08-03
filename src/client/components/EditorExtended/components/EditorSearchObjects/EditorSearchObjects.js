@@ -101,7 +101,7 @@ const EditorSearchObjects = ({
     fakeLeftPositionBlock.current.innerHTML = wordForCountWidth;
     // eslint-disable-next-line react/no-find-dom-node
     const parent = ReactDOM.findDOMNode(editorNode);
-    const parentBoundary = parent.getBoundingClientRect();
+    const parentBoundary = parent.getBoundingClientRect(); // DraftEditor-root
     const top = searchCoordinates.bottom - parentBoundary.top + 11;
     const selectionCenter =
       searchCoordinates.left + searchCoordinates.width / 2 - parentBoundary.left;
@@ -110,7 +110,7 @@ const EditorSearchObjects = ({
 
     if (screenLeft < 0) left = -parentBoundary.left;
     if (wordForCountWidth) left -= fakeLeftPositionBlock.current.offsetWidth;
-    if (left + searchBlockWidth + 35 > window.innerWidth) {
+    if (left + searchBlockWidth + 35 >= window.innerWidth) {
       left = window.innerWidth - (searchBlockWidth + 50);
     }
     setCoordinates({ top, left: left + 15 });
