@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions';
 import { message } from 'antd';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, size } from 'lodash';
 
 import { getAllFollowing } from '../../client/helpers/apiHelpers';
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
@@ -18,7 +18,12 @@ import {
   isGuestUser,
 } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
-import { getObject as getObjectState, getRelatedObjectsSkip } from './wObjectSelectors';
+import {
+  getRelatedObjectsSkip,
+  getRelatedObjectsArray,
+  getRelatedObjectsHasNext,
+  getObject as getObjectState,
+} from './wObjectSelectors';
 import { getUsedLocale } from '../appStore/appSelectors';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
@@ -431,16 +436,21 @@ export const getRelatedWobjects = objPermlink => (dispatch, getState) => {
   const state = getState();
   const wobject = getObjectState(state);
   const relatedObjectsSkip = getRelatedObjectsSkip(state);
+  const relatedObjects = getRelatedObjectsArray(state);
+  const hasMore = getRelatedObjectsHasNext(state);
   const usedLocale = getUsedLocale(state);
   const objName = wobject.author_permlink || objPermlink;
+  const notHaveObjects = size(relatedObjects) % 5;
 
-  dispatch({
-    type: GET_RELATED_WOBJECT.ACTION,
-    payload: {
-      promise: getAuthorsChildWobjects(objName, relatedObjectsSkip, 5, usedLocale),
-    },
-    meta: {
-      wobject,
-    },
-  });
+  if (hasMore && !notHaveObjects) {
+    dispatch({
+      type: GET_RELATED_WOBJECT.ACTION,
+      payload: {
+        promise: getAuthorsChildWobjects(objName, relatedObjectsSkip, 5, usedLocale),
+      },
+      meta: {
+        wobject,
+      },
+    });
+  }
 };
