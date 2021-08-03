@@ -52,7 +52,6 @@ export default {
   Rewards: loableComponent(import('../../client/rewards/Rewards')),
   CreateRewardForm: loableComponent(import('../../client/rewards/Create-Edit/CreateRewardForm')),
   ManageCampaign: loableComponent(import('../../client/rewards/Manage/Manage')),
-  MatchBotCampaign: loableComponent(import('../../client/rewards/MatchBot/MatchBot')),
   ReceivablesCampaign: loableComponent(import('../../client/rewards/Receivables/Receivables')),
   PayablesCampaign: loableComponent(import('../../client/rewards/Payables/Payables')),
   BlacklistCampaign: loableComponent(import('../../client/rewards/Blacklist/Blacklist')),
@@ -116,4 +115,7 @@ export default {
   FormPage: loableComponent(import('../../client/object/FormPage/FormPage')),
   WebsiteSignIn: loableComponent(import(`../../client/websites/WebsiteSignIn/WebsiteSignIn.js`)),
   VipTicketsSetting: loableComponent(import(`../../client/settings/Viptickets/VipTicketsSetting`)),
+  MatchBotsAuthors: loableComponent(import('../../client/rewards/FraudDetection/FraudDetection')),
+  MatchBotsCurators: loableComponent(import('../../client/rewards/FraudDetection/FraudDetection')),
+  MatchBotsSponsors: loableComponent(import('../../client/rewards/MatchBot/MatchBot')),
 };

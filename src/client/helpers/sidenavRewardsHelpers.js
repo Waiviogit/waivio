@@ -70,3 +70,21 @@ export const getSectionItemsCampaigns = () => [
     sectionItemName: 'Blacklist',
   },
 ];
+
+export const getSectionItemsMatchBots = () => [
+  {
+    path: '/rewards/match-bots-authors',
+    sectionItemNameId: 'authorsBots',
+    sectionItemName: 'Authors',
+  },
+  {
+    path: '/rewards/match-bots-curators',
+    sectionItemNameId: 'curatorsBots',
+    sectionItemName: 'Curators',
+  },
+  {
+    path: '/rewards/match-bots-sponsors',
+    sectionItemNameId: 'sponsorsBots',
+    sectionItemName: 'Sponsors',
+  },
+];

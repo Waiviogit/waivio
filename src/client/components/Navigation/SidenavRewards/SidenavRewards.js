@@ -7,6 +7,7 @@ import SectionOneItem from './SectionOneItem';
 import SectionItems from './SectionItems';
 import {
   getSectionItemsCampaigns,
+  getSectionItemsMatchBots,
   getSectionItemsReferrals,
   getSectionItemsRewards,
 } from '../../../helpers/sidenavRewardsHelpers';
@@ -108,6 +109,16 @@ const SidenavRewards = ({
                     />
                     {menuCondition.referrals && (
                       <SectionItems sections={getSectionItemsReferrals(authUserName)} />
+                    )}
+                    <SectionTitle
+                      sectionId="matchBots"
+                      defaultName="Match Bots"
+                      nameKey="matchBots"
+                      isOpen={menuCondition.matchBots}
+                      toggleSection={toggleMenuCondition}
+                    />
+                    {menuCondition.matchBots && (
+                      <SectionItems sections={getSectionItemsMatchBots(authUserName)} />
                     )}
                   </React.Fragment>
                 )}
