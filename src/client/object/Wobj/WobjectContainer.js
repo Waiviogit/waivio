@@ -189,6 +189,12 @@ export default class WobjectContainer extends React.Component {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getRelatedWobjects(match.params.name);
       this.props.getWobjectExpertise(newsFilter, match.params.name);
+      this.props.getObjectFollowers({
+        object: match.params.name,
+        skip: 0,
+        limit: 5,
+        userName: authenticatedUserName,
+      });
     }
   }
 

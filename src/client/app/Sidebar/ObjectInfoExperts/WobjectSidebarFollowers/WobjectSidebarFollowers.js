@@ -44,7 +44,7 @@ const WobjectSidebarFollowers = ({
               key={follower.name}
               follow={follow}
               unfollow={unfollow}
-              alt={<WeightTag weight={follower.weight} />}
+              alt={<WeightTag weight={follower.wobjects_weight || follower.weight} />}
             />
           ))}
           {!isCenterContent && hasMore && (
