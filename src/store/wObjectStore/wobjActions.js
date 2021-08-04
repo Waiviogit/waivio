@@ -234,6 +234,7 @@ export const voteAppends = (
   name = '',
   isNew = false,
   type = '',
+  blockNum,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const wobj = get(state, ['object', 'wobject'], {});
@@ -264,7 +265,7 @@ export const voteAppends = (
           fieldName,
           author,
           permlink,
-          res.block_num,
+          res.block_num || blockNum,
           isNew,
         ),
       );
