@@ -25,9 +25,11 @@ const EditorSearchObjects = ({
 
   React.useEffect(() => {
     window.addEventListener('keydown', handleKeyDown, { capture: true });
+    window.addEventListener('keydown', handleKeyEnter, { capture: false });
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown, { capture: true });
+      window.removeEventListener('keydown', handleKeyEnter, { capture: false });
     };
   }, []);
 
@@ -45,6 +47,13 @@ const EditorSearchObjects = ({
       handleSelectObject(searchObjectsResults[currentObjIndex]);
     }
   }, [selectedObj]);
+
+  const handleKeyEnter = event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      setSelectedObj(true);
+    }
+  };
 
   const handleKeyDown = event => {
     const blockItemHeight = 60; // height of one item in search result block
@@ -83,9 +92,6 @@ const EditorSearchObjects = ({
 
         return prev;
       });
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      setSelectedObj(true);
     }
   };
 
@@ -95,7 +101,7 @@ const EditorSearchObjects = ({
     fakeLeftPositionBlock.current.innerHTML = wordForCountWidth;
     // eslint-disable-next-line react/no-find-dom-node
     const parent = ReactDOM.findDOMNode(editorNode);
-    const parentBoundary = parent.getBoundingClientRect();
+    const parentBoundary = parent.getBoundingClientRect(); // DraftEditor-root
     const top = searchCoordinates.bottom - parentBoundary.top + 11;
     const selectionCenter =
       searchCoordinates.left + searchCoordinates.width / 2 - parentBoundary.left;
@@ -104,7 +110,7 @@ const EditorSearchObjects = ({
 
     if (screenLeft < 0) left = -parentBoundary.left;
     if (wordForCountWidth) left -= fakeLeftPositionBlock.current.offsetWidth;
-    if (left + searchBlockWidth + 35 > window.innerWidth) {
+    if (left + searchBlockWidth + 35 >= window.innerWidth) {
       left = window.innerWidth - (searchBlockWidth + 50);
     }
     setCoordinates({ top, left: left + 15 });

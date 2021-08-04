@@ -1,26 +1,44 @@
 import { createAction } from 'redux-actions';
 import { message } from 'antd';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, size } from 'lodash';
 
 import { getAllFollowing } from '../../client/helpers/apiHelpers';
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
-import { getChangedField } from '../../waivioApi/ApiClient';
+import {
+  getAuthorsChildWobjects,
+  getChangedField,
+  getWobjectsExpertiseWithNewsFilter,
+} from '../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { APPEND_WAIVIO_OBJECT } from '../appendStore/appendActions';
-import { BELL_USER_NOTIFICATION } from '../userStore/userActions';
+import { BELL_USER_NOTIFICATION, followExpert, unfollowExpert } from '../userStore/userActions';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
 } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
+import {
+  getRelatedObjectsSkip,
+  getRelatedObjectsArray,
+  getRelatedObjectsHasNext,
+  getObject as getObjectState,
+} from './wObjectSelectors';
+import { getUsedLocale } from '../appStore/appSelectors';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
 export const FOLLOW_WOBJECT_SUCCESS = '@wobj/FOLLOW_WOBJECT_SUCCESS';
 export const FOLLOW_WOBJECT_ERROR = '@wobj/FOLLOW_WOBJECT_ERROR';
+export const CLEAR_RELATED_OBJECTS = '@wobj/CLEAR_RELATED_OBJECTS';
+export const GET_WOBJECT_EXPERTISE = createAsyncActionType('@wobj/GET_WOBJECT_EXPERTISE');
+export const GET_RELATED_WOBJECT = createAsyncActionType('@wobj/GET_RELATED_WOBJECT');
+export const FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE = createAsyncActionType(
+  '@wobj/FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE',
+);
 
 export const APPENDS_VOTE = '@wobj/APPENDS_VOTE';
+export const clearRelateObjects = () => ({ type: CLEAR_RELATED_OBJECTS });
 
 export const followObject = authorPermlink => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
@@ -370,4 +388,69 @@ export const wobjectBellNotification = followingWobj => (
         type: BELL_USER_NOTIFICATION.ERROR,
       });
     });
+};
+
+export const getWobjectExpertise = (newsFilter = {}) => (dispatch, getState) => {
+  const state = getState();
+
+  const username = getAuthenticatedUserName(state);
+  const wObject = getObjectState(state);
+
+  return dispatch({
+    type: GET_WOBJECT_EXPERTISE.ACTION,
+    payload: {
+      promise: getWobjectsExpertiseWithNewsFilter(
+        username,
+        wObject.author_permlink,
+        0,
+        5,
+        newsFilter,
+      ),
+    },
+  });
+};
+
+export const followUserWObjectExpertise = userExpert => dispatch =>
+  dispatch({
+    type: FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE.ACTION,
+    payload: {
+      promise: dispatch(followExpert(userExpert)),
+    },
+    meta: {
+      userExpert,
+    },
+  });
+
+export const unfollowUserWObjectExpertise = userExpert => dispatch =>
+  dispatch({
+    type: FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE.ACTION,
+    payload: {
+      promise: dispatch(unfollowExpert(userExpert)),
+    },
+    meta: {
+      userExpert,
+    },
+  });
+
+export const getRelatedWobjects = objPermlink => (dispatch, getState) => {
+  const state = getState();
+  const wobject = getObjectState(state);
+  const relatedObjectsSkip = getRelatedObjectsSkip(state);
+  const relatedObjects = getRelatedObjectsArray(state);
+  const hasMore = getRelatedObjectsHasNext(state);
+  const usedLocale = getUsedLocale(state);
+  const objName = wobject.author_permlink || objPermlink;
+  const notHaveObjects = size(relatedObjects) % 5;
+
+  if (hasMore && !notHaveObjects) {
+    dispatch({
+      type: GET_RELATED_WOBJECT.ACTION,
+      payload: {
+        promise: getAuthorsChildWobjects(objName, relatedObjectsSkip, 5, usedLocale),
+      },
+      meta: {
+        wobject,
+      },
+    });
+  }
 };

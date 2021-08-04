@@ -1,11 +1,23 @@
 import { connect } from 'react-redux';
 
 import ObjectExpertise from './ObjectExpertise';
-import { followExpert, unfollowExpert } from '../../../../store/userStore/userActions';
+import {
+  getObjectExpertiseIsLoading,
+  getObjectExpertiseUsers,
+} from '../../../../store/wObjectStore/wObjectSelectors';
+import {
+  followUserWObjectExpertise,
+  unfollowUserWObjectExpertise,
+} from '../../../../store/wObjectStore/wobjActions';
 
-const mapDispatchToProps = dispatch => ({
-  followExpert: userName => dispatch(followExpert(userName)),
-  unfollowExpert: userName => dispatch(unfollowExpert(userName)),
+const mapStateToProps = state => ({
+  users: getObjectExpertiseUsers(state),
+  isLoading: getObjectExpertiseIsLoading(state),
 });
 
-export default connect(null, mapDispatchToProps)(ObjectExpertise);
+const mapDispatchToProps = dispatch => ({
+  followExpert: userName => dispatch(followUserWObjectExpertise(userName)),
+  unfollowExpert: userName => dispatch(unfollowUserWObjectExpertise(userName)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ObjectExpertise);

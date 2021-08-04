@@ -6,8 +6,9 @@ import { isEmpty, get } from 'lodash';
 import OBJECT_TYPE from '../const/objectTypes';
 import {
   clearObjectFromStore,
+  getNearbyObjects as getNearbyObjectsAction,
   getObject,
-  getObjectFollowers,
+  getObjectFollowers as getObjectFollowersAction,
 } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getAlbums,
@@ -17,7 +18,12 @@ import {
 } from '../../../store/galleryStore/galleryActions';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
-import { setCatalogBreadCrumbs, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
+import {
+  setNestedWobject,
+  setCatalogBreadCrumbs,
+  getWobjectExpertise as getWobjectExpertiseAction,
+  getRelatedWobjects,
+} from '../../../store/wObjectStore/wobjActions';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
@@ -69,7 +75,10 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     appendObject,
     addAlbumToStore,
     clearRelatedPhoto,
-    getObjectFollowers,
+    getNearbyObjects: getNearbyObjectsAction,
+    getWobjectExpertise: getWobjectExpertiseAction,
+    getObjectFollowers: getObjectFollowersAction,
+    getRelatedWobjects,
   },
 )
 export default class WobjectContainer extends React.Component {
@@ -99,6 +108,10 @@ export default class WobjectContainer extends React.Component {
     appendObject: PropTypes.func,
     addAlbumToStore: PropTypes.func,
     clearRelatedPhoto: PropTypes.func,
+    getNearbyObjects: PropTypes.func.isRequired,
+    getWobjectExpertise: PropTypes.func.isRequired,
+    getObjectFollowers: PropTypes.func.isRequired,
+    getRelatedWobjects: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -122,9 +135,15 @@ export default class WobjectContainer extends React.Component {
   static fetchData({ store, match }) {
     return Promise.all([
       store.dispatch(getObject(match.params.name)),
-      store.dispatch(getObjectFollowers({ object: match.params.name, skip: 0, limit: 5 })),
+      store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),
+      store.dispatch(getNearbyObjectsAction(match.params.name)),
+      store.dispatch(
+        getWobjectExpertiseAction(
+          match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {},
+        ),
+      ),
     ]);
   }
 
@@ -140,10 +159,20 @@ export default class WobjectContainer extends React.Component {
 
   componentDidMount() {
     const { match, wobject, authenticatedUserName } = this.props;
+    const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
+      this.props.getNearbyObjects(match.params.name);
+      this.props.getWobjectExpertise(newsFilter);
+      this.props.getObjectFollowers({
+        object: match.params.name,
+        skip: 0,
+        limit: 5,
+        userName: authenticatedUserName,
+      });
+      this.props.getRelatedWobjects(match.params.name);
     }
   }
 
@@ -156,6 +185,7 @@ export default class WobjectContainer extends React.Component {
       this.props.setCatalogBreadCrumbs([]);
       this.props.setNestedWobject({});
       this.props.getObject(match.params.name, authenticatedUserName);
+      this.props.getRelatedWobjects(match.params.name);
     }
   }
 

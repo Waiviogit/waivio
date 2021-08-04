@@ -61,8 +61,8 @@ const applyAtomicStyle = (block, entityMap, content) => {
   if (block.type === Block.ATOMIC) {
     const key = block.entityRanges[0] && block.entityRanges[0].key;
 
-    type = entityMap[key].type;
-    data = entityMap[key].data;
+    type = get(entityMap[key], 'type', null);
+    data = get(entityMap[key], 'data', null);
   } else {
     type = block.type.split(':')[1] || 'atomic';
     data = block.data;

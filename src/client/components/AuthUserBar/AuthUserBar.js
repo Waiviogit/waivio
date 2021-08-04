@@ -17,6 +17,7 @@ import { logout } from '../../../store/authStore/authActions';
 import { setCurrentPage } from '../../../store/appStore/appActions';
 
 import '../../../client/components/Navigation/Topnav.less';
+import './AuthUserBar.less';
 
 const AuthUserBar = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -133,8 +134,9 @@ const AuthUserBar = props => {
         content={<PopoverMenu onSelect={handleMoreMenuSelect}>{popoverItems}</PopoverMenu>}
         overlayClassName="Topnav__popover"
       >
-        <button>
+        <button className="AuthUserBar__icon">
           <Icon type="caret-down" />
+          <Icon type="bars" />
         </button>
       </Popover>
     </React.Fragment>

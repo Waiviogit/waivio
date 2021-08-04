@@ -15,16 +15,10 @@ import {
   getEditorExtendedIsShowSearch,
 } from '../../../../store/editorStore/editorSelectors';
 import { searchObjectsAutoCompete } from '../../../../store/searchStore/searchActions';
-import {
-  getIsStartSearchObject,
-  getSearchObjectsResults,
-} from '../../../../store/searchStore/searchSelectors';
 
 const mapStateToProps = state => ({
   editorExtended: getEditorExtended(state),
   isShowEditorSearch: getEditorExtendedIsShowSearch(state),
-  searchObjectsResults: getSearchObjectsResults(state),
-  isStartSearchObject: getIsStartSearchObject(state),
 });
 
 const mapDispatchToProps = (dispatch, props) => ({
