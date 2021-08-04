@@ -142,6 +142,7 @@ export default class WobjectContainer extends React.Component {
       store.dispatch(
         getWobjectExpertiseAction(
           match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {},
+          match.params.name,
         ),
       ),
     ]);
@@ -165,7 +166,7 @@ export default class WobjectContainer extends React.Component {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
       this.props.getNearbyObjects(match.params.name);
-      this.props.getWobjectExpertise(newsFilter);
+      this.props.getWobjectExpertise(newsFilter, match.params.name);
       this.props.getObjectFollowers({
         object: match.params.name,
         skip: 0,
@@ -178,6 +179,7 @@ export default class WobjectContainer extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { authenticatedUserName, match, locale } = this.props;
+    const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
       this.props.resetGallery();
@@ -186,6 +188,7 @@ export default class WobjectContainer extends React.Component {
       this.props.setNestedWobject({});
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getRelatedWobjects(match.params.name);
+      this.props.getWobjectExpertise(newsFilter, match.params.name);
     }
   }
 

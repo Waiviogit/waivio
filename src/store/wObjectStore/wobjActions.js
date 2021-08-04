@@ -391,22 +391,17 @@ export const wobjectBellNotification = followingWobj => (
     });
 };
 
-export const getWobjectExpertise = (newsFilter = {}) => (dispatch, getState) => {
+export const getWobjectExpertise = (newsFilter = {}, authorPermlink) => (dispatch, getState) => {
   const state = getState();
 
   const username = getAuthenticatedUserName(state);
   const wObject = getObjectState(state);
+  const objAuthorPermlink = authorPermlink || wObject.author_permlink;
 
   return dispatch({
     type: GET_WOBJECT_EXPERTISE.ACTION,
     payload: {
-      promise: getWobjectsExpertiseWithNewsFilter(
-        username,
-        wObject.author_permlink,
-        0,
-        5,
-        newsFilter,
-      ),
+      promise: getWobjectsExpertiseWithNewsFilter(username, objAuthorPermlink, 0, 5, newsFilter),
     },
   });
 };
