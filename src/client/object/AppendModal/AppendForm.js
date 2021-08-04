@@ -242,7 +242,7 @@ export default class AppendForm extends Component {
     }
     this.calculateVoteWorth(this.state.votePercent);
   };
-
+  getVote = () => (this.state.votePercent !== null ? this.state.votePercent * 100 : null);
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
@@ -526,8 +526,7 @@ export default class AppendForm extends Component {
       data.lastUpdated = Date.now();
 
       data.wobjectName = getObjectName(wObject);
-
-      data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
+      data.votePower = this.getVote();
 
       postData.push(data);
     });
@@ -625,7 +624,8 @@ export default class AppendForm extends Component {
 
   handleCreateAlbum = async formData => {
     const { user, wObject, hideModal, addAlbum } = this.props;
-    const data = prepareAlbumData(formData, user.name, wObject);
+    const votePercent = this.getVote();
+    const data = prepareAlbumData(formData, user.name, wObject, votePercent);
     const album = prepareAlbumToStore(data);
 
     this.setState({ loading: true });
@@ -660,7 +660,8 @@ export default class AppendForm extends Component {
   handleAddBlog = () => {
     const { user, intl, hideModal, wObject, form } = this.props;
     const formData = form.getFieldsValue();
-    const data = prepareBlogData(formData, user.name, wObject);
+    const votePercent = this.getVote();
+    const data = prepareBlogData(formData, user.name, wObject, votePercent);
 
     this.setState({ loading: true });
 
@@ -779,7 +780,7 @@ export default class AppendForm extends Component {
     data.title = '';
     data.lastUpdated = Date.now();
     data.wobjectName = getObjectName(wObject);
-    data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
+    data.votePower = this.getVote();
 
     return data;
   };
