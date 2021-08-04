@@ -11,6 +11,7 @@ import { addAlbumToStore } from '../../../store/galleryStore/galleryActions';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getIsAppendLoading } from '../../../store/appendStore/appendSelectors';
+import { getVotePercent } from '../../../store/settingsStore/settingsSelectors';
 
 import './CreateAlbum.less';
 
@@ -22,11 +23,13 @@ const CreateAlbum = ({
   intl,
   currentUsername,
   wObject,
+  votePercent,
   appendObjectDispatch,
   addAlbumToStoreDispatch,
 }) => {
   const handleSubmit = async formData => {
-    const data = prepareAlbumData(formData, currentUsername, wObject);
+    const vote = votePercent !== null ? votePercent : null;
+    const data = prepareAlbumData(formData, currentUsername, wObject, vote);
     const album = prepareAlbumToStore(data);
 
     try {
@@ -126,6 +129,7 @@ const CreateAlbum = ({
 };
 
 CreateAlbum.propTypes = {
+  votePercent: PropTypes.number.isRequired,
   showModal: PropTypes.bool.isRequired,
   hideModal: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
@@ -138,6 +142,7 @@ CreateAlbum.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  votePercent: getVotePercent(state),
   loading: getIsAppendLoading(state),
   currentUsername: getAuthenticatedUserName(state),
   wObject: getObject(state),
