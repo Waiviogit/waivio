@@ -28,8 +28,7 @@ const CreateAlbum = ({
   addAlbumToStoreDispatch,
 }) => {
   const handleSubmit = async formData => {
-    const vote = votePercent !== null ? votePercent : null;
-    const data = prepareAlbumData(formData, currentUsername, wObject, vote);
+    const data = prepareAlbumData(formData, currentUsername, wObject, votePercent);
     const album = prepareAlbumToStore(data);
 
     try {
