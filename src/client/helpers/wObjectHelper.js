@@ -63,7 +63,7 @@ export const generatePermlink = () =>
     .toString(36)
     .substring(2);
 
-export const prepareAlbumData = (form, currentUsername, wObject) => {
+export const prepareAlbumData = (form, currentUsername, wObject, votePercent) => {
   const data = {};
 
   data.author = currentUsername;
@@ -82,11 +82,12 @@ export const prepareAlbumData = (form, currentUsername, wObject) => {
   data.permlink = `${data.author}-${generatePermlink()}`;
   data.lastUpdated = Date.now();
   data.wobjectName = getObjectName(wObject);
+  data.votePower = votePercent;
 
   return data;
 };
 
-export const prepareBlogData = (form, currentUserName, wObject) => {
+export const prepareBlogData = (form, currentUserName, wObject, votePercent) => {
   const blog = form.blogTitle || form.blogAccount;
   const data = {};
 
@@ -94,7 +95,7 @@ export const prepareBlogData = (form, currentUserName, wObject) => {
   data.parentAuthor = wObject.author;
   data.parentPermlink = wObject.author_permlink;
   data.body = `@${data.author} added a new blog: ${blog}.`;
-  data.title = '';
+  data.title = blog || '';
 
   data.permlink = `${data.author}-${generatePermlink()}`;
   data.lastUpdated = Date.now();
@@ -105,6 +106,7 @@ export const prepareBlogData = (form, currentUserName, wObject) => {
     locale: form.currentLocale,
     blogTitle: blog,
   };
+  data.votePower = votePercent;
 
   return data;
 };
