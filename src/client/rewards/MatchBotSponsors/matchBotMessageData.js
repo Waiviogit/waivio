@@ -7,12 +7,12 @@ export default localizer => ({
     'matchBot_success_min_voted_changed',
     'Minimum voting power changed',
   ),
-  manageMatchBot: localizer('matchBot_manage_match_bot', 'Manage match bot'),
+  manageMatchBot: localizer('matchBot_sponsors_match_bot', 'Sponsors match bot'),
   turnOn: localizer('matchBot_turn_on', 'Turn on'),
   turnOff: localizer('matchBot_turn_off', 'Turn off'),
   designedOffsetPortion: localizer(
     'matchBot_designed_offset_portion_of_direct_rewards',
-    'Match bot is designed to offset portion of direct rewards with upvotes.',
+    'The Sponsors match bot is designed to offset portion of direct rewards with upvotes.',
   ),
   contentUserPostedReview: localizer(
     'matchBot_content_user_has_posted_review_eligible_receive_direct_reward',
@@ -78,4 +78,9 @@ export default localizer => ({
   edit: localizer('matchBot_table_edit', 'Edit'),
   addNewSponsor: localizer('matchBot_title_add_new_sponsor', 'Add new sponsor'),
   titleEditRule: localizer('matchBot_title_edit_rule', 'Edit match bot rules for'),
+  disclaimer: localizer('matchBot_sponsors_disclaimer', 'Disclaimer:'),
+  matchBotsProvided: localizer(
+    'matchBot_sponsors_provided',
+    ' The Sponsors match bot service is provided on as-is / as-available basis.',
+  ),
 });

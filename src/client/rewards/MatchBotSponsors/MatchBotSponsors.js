@@ -12,9 +12,9 @@ import Error401 from '../../statics/Error401';
 import getMatchBotMessageData from './matchBotMessageData';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 
-import './MatchBot.less';
+import './MatchBotSponsors.less';
 
-const MatchBot = ({ intl, userName }) => {
+const MatchBotSponsors = ({ intl, userName }) => {
   const [editRule, setEditRule] = useState({});
   const [isLoading, setLoaded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -94,28 +94,28 @@ const MatchBot = ({ intl, userName }) => {
   };
 
   return (
-    <div className="MatchBot">
+    <div className="MatchBotSponsors">
       {userName ? (
         <React.Fragment>
-          <div className="MatchBot__title-wrap">
-            <div className="MatchBot__title">{messageData.manageMatchBot}</div>
-            <Tooltip title={!isAuthority ? messageData.turnOn : messageData.turnOff}>
-              <div className="MatchBot__switcher">
+          <div className="MatchBotSponsors__title-wrap">
+            <div className="MatchBotSponsors__title">{messageData.manageMatchBot}</div>
+            <div className="MatchBotSponsors__switcher">
+              <Tooltip title={!isAuthority ? messageData.turnOn : messageData.turnOff}>
                 <Switch checked={isAuthority} onChange={handleSwitcher} />
-              </div>
-            </Tooltip>
+              </Tooltip>
+            </div>
           </div>
-          <div className="MatchBot__text-content">
+          <div className="MatchBotSponsors__text-content">
             <p>{messageData.designedOffsetPortion}</p>
             <p>{messageData.contentUserPostedReview}</p>
-            <p className="MatchBot__text fw6">{messageData.thirdPartyCampaignSponsors}</p>
-            <div className="MatchBot__highlighted-block">
-              <div className="MatchBot__text mb3 fw6">
+            <p className="MatchBotSponsors__text fw6">{messageData.thirdPartyCampaignSponsors}</p>
+            <div className="MatchBotSponsors__highlighted-block">
+              <div className="MatchBotSponsors__text mb3 fw6">
                 <p>
                   {messageData.matchBotRequiresAuthorization}:
                   {
                     <span
-                      className="MatchBot__text-link"
+                      className="MatchBotSponsors__text-link"
                       onClick={handleSwitcher}
                       role="presentation"
                     >
@@ -132,7 +132,7 @@ const MatchBot = ({ intl, userName }) => {
                 </span>
                 (
                 <span
-                  className="MatchBot__highlighted-block-change-vote"
+                  className="MatchBotSponsors__highlighted-block-change-vote"
                   onClick={handleOpenVoteModal}
                   role="presentation"
                 >
@@ -141,6 +141,10 @@ const MatchBot = ({ intl, userName }) => {
                 )
               </p>
               <p>{messageData.upvoteEligiblePosts}</p>
+              <p className="mt3">
+                <span className="fw6">{messageData.disclaimer}</span>
+                <span>{messageData.matchBotsProvided}</span>
+              </p>
             </div>
           </div>
           {!isEmpty(rules) && !isEmpty(rules.results) && (
@@ -153,7 +157,7 @@ const MatchBot = ({ intl, userName }) => {
               setIsEnabledRule={setIsEnabledRule}
             />
           )}
-          <div className="MatchBot__button">
+          <div className="MatchBotSponsors__button">
             <Button type="primary" onClick={handleChangeModalVisible}>
               {messageData.addSponsor}
             </Button>
@@ -190,13 +194,13 @@ const MatchBot = ({ intl, userName }) => {
   );
 };
 
-MatchBot.propTypes = {
+MatchBotSponsors.propTypes = {
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string,
 };
 
-MatchBot.defaultProps = {
+MatchBotSponsors.defaultProps = {
   userName: '',
 };
 
-export default injectIntl(MatchBot);
+export default injectIntl(MatchBotSponsors);

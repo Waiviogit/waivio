@@ -117,5 +117,7 @@ export default {
   VipTicketsSetting: loableComponent(import(`../../client/settings/Viptickets/VipTicketsSetting`)),
   MatchBotsAuthors: loableComponent(import('../../client/rewards/FraudDetection/FraudDetection')),
   MatchBotsCurators: loableComponent(import('../../client/rewards/FraudDetection/FraudDetection')),
-  MatchBotsSponsors: loableComponent(import('../../client/rewards/MatchBot/MatchBot')),
+  MatchBotsSponsors: loableComponent(
+    import('../../client/rewards/MatchBotSponsors/MatchBotSponsors'),
+  ),
 };
