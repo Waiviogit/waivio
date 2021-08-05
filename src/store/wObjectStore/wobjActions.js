@@ -223,8 +223,15 @@ export const getChangedWobjectField = (
       meta: { isNew },
     });
 
-  busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNum, subscribeTypes.votes]);
-  busyAPI.instance.subscribeBlock(subscribeTypes.votes, blockNum, subscribeCallback);
+  // TODO fix no number of last block
+  if (blockNum) {
+    busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNum, subscribeTypes.votes]);
+    busyAPI.instance.subscribeBlock(subscribeTypes.votes, blockNum, subscribeCallback);
+  } else {
+    setTimeout(() => {
+      subscribeCallback();
+    }, 8000);
+  }
 };
 
 export const voteAppends = (
