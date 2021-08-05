@@ -92,7 +92,10 @@ export const unfollowUser = (username, top = false) => (
         .then(async data => {
           const res = isGuest ? await data.json() : data.result;
 
-          if (!res.block_num) throw new Error('Something went wrong');
+          // TODO cannot get number of last block
+          if (!res.block_num) {
+            return new Promise(resolve => setTimeout(() => resolve(res), 3000));
+          }
 
           busyAPI.instance.sendAsync(subscribeMethod, [
             authUser,
@@ -100,8 +103,7 @@ export const unfollowUser = (username, top = false) => (
             subscribeTypes.posts,
           ]);
           busyAPI.instance.subscribeBlock(subscribeTypes.posts, res.block_num);
-
-          return res;
+          throw new Error('Something went wrong');
         })
         .catch(() => {
           message.error('Something went wrong');
@@ -139,7 +141,11 @@ export const followUser = (username, top = false) => (
         .then(async data => {
           const res = isGuest ? await data.json() : data.result;
 
-          if (!res.block_num) throw new Error('Something went wrong');
+          // TODO cannot get number of last block
+          if (!res.block_num) {
+            return new Promise(resolve => setTimeout(() => resolve(res), 3000));
+          }
+          // if (!res.block_num) throw new Error('Something went wrong');
 
           busyAPI.instance.sendAsync(subscribeMethod, [
             authUser,
@@ -147,8 +153,7 @@ export const followUser = (username, top = false) => (
             subscribeTypes.posts,
           ]);
           busyAPI.instance.subscribeBlock(subscribeTypes.posts, res.block_num);
-
-          return res;
+          throw new Error('Something went wrong');
         })
         .catch(() => {
           message.error('Something went wrong');

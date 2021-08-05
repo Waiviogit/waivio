@@ -366,10 +366,14 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
         const res = isGuest ? await data.json() : data.result;
         const subscribeCallback = () => dispatch(getSingleComment(author, permlink));
 
-        if (data.status !== 200 && isGuest) throw new Error(data.message);
-
-        busyAPI.instance.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
-        busyAPI.instance.subscribeBlock(subscribeTypes.votes, res.block_num, subscribeCallback);
+        // TODO cannot get number of last block
+        if (res.block_num) {
+          if (data.status !== 200 && isGuest) throw new Error(data.message);
+          busyAPI.instance.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
+          busyAPI.instance.subscribeBlock(subscribeTypes.votes, res.block_num, subscribeCallback);
+        } else {
+          setTimeout(() => subscribeCallback(), 8000);
+        }
 
         return res;
       }),
