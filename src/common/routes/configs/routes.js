@@ -10,6 +10,7 @@ import Rewards from '../../../client/rewards/Rewards';
 import Discover from '../../../client/discover/Discover';
 import DiscoverObjects from '../../../client/discoverObjects/DiscoverObjects';
 import RewardsComponent from '../../../client/rewards/RewardsComponent/RewardsComponent';
+import MatchBotsAuthors from '../../../client/rewards/MatchBots/MatchBotsAuthors/MatchBotsAuthors';
 
 const routes = {
   component: Wrapper,
@@ -64,7 +65,7 @@ const routes = {
         {
           path: '/match-bots-authors',
           exact: true,
-          component: Views.MatchBotsSponsors,
+          component: Views.MatchBotsAuthors,
         },
         {
           path: '/(history|guideHistory|messages)/:campaignId?/:permlink?/:username?',

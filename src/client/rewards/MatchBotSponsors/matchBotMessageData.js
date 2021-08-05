@@ -83,4 +83,5 @@ export default localizer => ({
     'matchBot_sponsors_provided',
     ' The Sponsors match bot service is provided on as-is / as-available basis.',
   ),
+  titleBotsAuthors: localizer('matchBot_title_ authors', 'Authors match bot'),
 });
