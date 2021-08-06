@@ -278,10 +278,19 @@ export const roundNumberToThousands = number => {
   return number;
 };
 
-export const dHive = new Client(['https://anyx.io/'], {
-  timeout: 8 * 1000,
-  failoverThreshold: 4,
-  rebrandedApi: true,
-});
+export const dHive = new Client(
+  [
+    'https://rpc.esteem.app',
+    'https://rpc.ausbit.dev',
+    'https://rpc.ecency.com',
+    'https://hived.emre.sh',
+    'https://api.deathwing.me',
+    'https://api.hive.blog',
+  ],
+  {
+    timeout: 8 * 1000,
+    failoverThreshold: 0,
+  },
+);
 
 export const calcReputation = rep => steem.formatter.reputation(rep);

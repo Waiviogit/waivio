@@ -1,6 +1,7 @@
 import { get, isArray } from 'lodash';
 import { message } from 'antd';
 
+import { dHive } from '../vendor/steemitHelpers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const getAvailableStatus = status => {
@@ -32,16 +33,18 @@ export const getConfigFieldsValue = (obj, values) => {
 };
 
 export const getChangesInAccessOption = (
-  blockNum,
   username,
   host,
   currentActionType,
   processingFunction,
   meta,
-) => (dispatch, getState, { busyAPI }) => {
-  busyAPI.instance.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
+) => async (dispatch, getState, { busyAPI }) => {
+  const { head_block_number } = await dHive.database.getDynamicGlobalProperties();
+  const blockNumber = head_block_number + 1;
+
+  busyAPI.instance.sendAsync(subscribeMethod, [username, blockNumber, subscribeTypes.posts]);
   busyAPI.instance.subscribe((response, mess) => {
-    if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
+    if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNumber) {
       processingFunction(host, username)
         .then(res => {
           dispatch({
