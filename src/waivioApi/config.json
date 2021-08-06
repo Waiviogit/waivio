@@ -22,6 +22,8 @@
     "appName": "waivio"
   },
   "apiPrefix": "/api",
+  "hive": "/hive",
+  "blockNum": "/block-num",
   "campaignApiPrefix": "/campaigns-api",
   "objectsBotApiPrefix": "/objects-bot",
   "currenciesApiPrefix": "/currencies-api",

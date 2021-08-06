@@ -37,7 +37,7 @@
   ],
   "dependencies": {
     "@hivechain/dsteem": "^0.12.14",
-    "@hiveio/dhive": "^0.14.4",
+    "@hiveio/dhive": "^1.0.1",
     "@hot-loader/react-dom": "^16.8.6",
     "@loadable/babel-plugin": "^5.13.2",
     "@sentry/react": "^5.24.2",
