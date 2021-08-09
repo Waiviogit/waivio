@@ -22,6 +22,7 @@
     "appName": "waivio"
   },
   "apiPrefix": "/api",
+  "hive": "/hive",
   "campaignApiPrefix": "/campaigns-api",
   "objectsBotApiPrefix": "/objects-bot",
   "currenciesApiPrefix": "/currencies-api",
@@ -132,5 +133,7 @@
   "exemptions": "/exemptions",
   "rate":  "/rate",
   "latest": "/latest",
-  "immediateWithdraw": "/immediate-withdraw"
+  "immediateWithdraw": "/immediate-withdraw",
+  "rewardFund": "/reward-fund",
+  "currentMedianHistory": "/current-median-history"
 }

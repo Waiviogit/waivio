@@ -195,7 +195,7 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.DELETE_WEBSITE_ADMINISTRATOR.SUCCESS: {
       return {
         ...state,
-        administrators: state.administrators.filter(admin => !action.payload.includes(admin.name)),
+        administrators: state.administrators.filter(admin => action.payload !== admin.name),
       };
     }
 
@@ -230,7 +230,7 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.DELETE_WEBSITE_MODERATORS.SUCCESS: {
       return {
         ...state,
-        moderators: state.moderators.filter(admin => !action.payload.includes(admin.name)),
+        moderators: state.moderators.filter(admin => action.payload !== admin.name),
       };
     }
 
@@ -265,7 +265,7 @@ export default function websiteReducer(state = initialState, action) {
     case websiteAction.DELETE_WEBSITE_AUTHORITIES.SUCCESS: {
       return {
         ...state,
-        authorities: state.authorities.filter(admin => !action.payload.includes(admin.name)),
+        authorities: state.authorities.filter(admin => action.payload !== admin.name),
       };
     }
 

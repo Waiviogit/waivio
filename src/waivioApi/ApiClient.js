@@ -2138,4 +2138,24 @@ export const getNearbyObjects = (authorPermlink, host, skip = 0, limit = 5, radi
     .then(res => res.json());
 };
 
+export const getRewardFund = () => {
+  return fetch(`${config.apiPrefix}${config.hive}${config.rewardFund}`, {
+    headers: headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
+export const getCurrentMedianHistory = () => {
+  return fetch(`${config.apiPrefix}${config.hive}${config.currentMedianHistory}`, {
+    headers: headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
 export default null;

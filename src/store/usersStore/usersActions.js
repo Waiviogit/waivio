@@ -10,7 +10,7 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../authStore/authSelectors';
-import { dHive } from '../../client/vendor/steemitHelpers';
+import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
@@ -92,8 +92,7 @@ export const unfollowUser = (username, top = false) => (
         .unfollow(authUser, username)
         .then(async data => {
           const res = isGuest ? await data.json() : data.result;
-          const { head_block_number } = await dHive.database.getDynamicGlobalProperties();
-          const blockNumber = head_block_number + 1;
+          const blockNumber = await getLastBlockNum();
 
           if (!blockNumber) throw new Error('Something went wrong');
 
@@ -141,8 +140,7 @@ export const followUser = (username, top = false) => (
         .follow(authUser, username)
         .then(async data => {
           const res = isGuest ? await data.json() : data.result;
-          const { head_block_number } = await dHive.database.getDynamicGlobalProperties();
-          const blockNumber = head_block_number + 1;
+          const blockNumber = await getLastBlockNum();
 
           if (!blockNumber) throw new Error('Something went wrong');
 
