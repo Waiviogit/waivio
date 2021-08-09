@@ -1,8 +1,8 @@
 import { get } from 'lodash';
 import {
   createCommentPermlink,
-  dHive,
   getBodyPatchIfSmaller,
+  getLastBlockNum,
 } from '../../client/vendor/steemitHelpers';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { jsonParse } from '../../client/helpers/formatter';
@@ -367,9 +367,8 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
     type: LIKE_COMMENT.ACTION,
     payload: {
       promise: steemConnectAPI.vote(voter, author, permlink, weight).then(async data => {
-        const { head_block_number } = await dHive.database.getDynamicGlobalProperties();
         const res = isGuest ? await data.json() : data.result;
-        const blockNumber = head_block_number + 1;
+        const blockNumber = await getLastBlockNum();
         const subscribeCallback = () => dispatch(getSingleComment(author, permlink));
 
         if (data.status !== 200 && isGuest) throw new Error(data.message);

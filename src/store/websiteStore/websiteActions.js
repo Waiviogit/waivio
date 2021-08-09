@@ -9,7 +9,7 @@ import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
 import { getOwnWebsites, getParentDomain } from './websiteSelectors';
-import { dHive } from '../../client/vendor/steemitHelpers';
+import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 
@@ -49,8 +49,7 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
       promise: ApiClient.createWebsite(body).then(async res => {
         if (res.message) message.error(res.message);
         else {
-          const { head_block_number } = await dHive.database.getDynamicGlobalProperties();
-          const blockNumber = head_block_number + 1;
+          const blockNumber = await getLastBlockNum();
           const creator = getAuthenticatedUserName(state);
 
           busyAPI.instance.sendAsync(subscribeMethod, [creator, blockNumber, subscribeTypes.posts]);
@@ -99,8 +98,7 @@ export const activateWebsite = id => (dispatch, getState, { steemConnectAPI, bus
 
   dispatch({ type: CHANGE_STATUS_WEBSITE, id });
   steemConnectAPI.activateWebsite(name, id).then(async () => {
-    const { head_block_number } = await dHive.database.getDynamicGlobalProperties();
-    const blockNumber = head_block_number + 1;
+    const blockNumber = await getLastBlockNum();
 
     busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
     busyAPI.instance.subscribe((response, mess) => {
@@ -116,8 +114,7 @@ export const suspendWebsite = id => (dispatch, getState, { steemConnectAPI, busy
 
   dispatch({ type: CHANGE_STATUS_WEBSITE, id });
   steemConnectAPI.suspendWebsite(name, id).then(async () => {
-    const { head_block_number } = await dHive.database.getDynamicGlobalProperties();
-    const blockNumber = head_block_number + 1;
+    const blockNumber = await getLastBlockNum();
 
     busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
     busyAPI.instance.subscribe((response, mess) => {
@@ -139,8 +136,7 @@ export const deleteWebsite = item => (dispatch, getState, { busyAPI }) => {
   return ApiClient.deleteSite(name, item.host)
     .then(async res => {
       if (res.result) {
-        const { head_block_number } = await dHive.database.getDynamicGlobalProperties();
-        const blockNumber = head_block_number + 1;
+        const blockNumber = await getLastBlockNum();
 
         busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
         busyAPI.instance.subscribe((response, mess) => {

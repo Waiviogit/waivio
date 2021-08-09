@@ -25,7 +25,7 @@ import {
   getObject as getObjectState,
 } from './wObjectSelectors';
 import { getUsedLocale } from '../appStore/appSelectors';
-import { dHive } from '../../client/vendor/steemitHelpers';
+import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -223,8 +223,7 @@ export const getChangedWobjectField = (
       meta: { isNew },
     });
 
-  const { head_block_number } = await dHive.database.getDynamicGlobalProperties();
-  const blockNumber = head_block_number + 1;
+  const blockNumber = await getLastBlockNum();
 
   if (!blockNumber) throw new Error('Something went wrong');
   busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.votes]);
