@@ -622,7 +622,7 @@ class ObjectInfo extends React.Component {
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
-            <ObjectInfoExperts userName={userName} wobject={wobject} />
+            <ObjectInfoExperts wobject={wobject} />
           </div>
         )}
       </React.Fragment>

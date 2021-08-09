@@ -1,5 +1,9 @@
 import { get } from 'lodash';
-import { createCommentPermlink, getBodyPatchIfSmaller } from '../../client/vendor/steemitHelpers';
+import {
+  createCommentPermlink,
+  getBodyPatchIfSmaller,
+  getLastBlockNum,
+} from '../../client/vendor/steemitHelpers';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { jsonParse } from '../../client/helpers/formatter';
 import { createPostMetadata } from '../../client/helpers/postHelpers';
@@ -364,12 +368,12 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
     payload: {
       promise: steemConnectAPI.vote(voter, author, permlink, weight).then(async data => {
         const res = isGuest ? await data.json() : data.result;
+        const blockNumber = await getLastBlockNum();
         const subscribeCallback = () => dispatch(getSingleComment(author, permlink));
 
         if (data.status !== 200 && isGuest) throw new Error(data.message);
-
-        busyAPI.instance.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.votes]);
-        busyAPI.instance.subscribeBlock(subscribeTypes.votes, res.block_num, subscribeCallback);
+        busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.votes]);
+        busyAPI.instance.subscribeBlock(subscribeTypes.votes, blockNumber, subscribeCallback);
 
         return res;
       }),

@@ -50,6 +50,12 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   if (isEmpty(userLocation)) dispatch(getCoordinates());
 
   useEffect(() => {
+    if (isEmpty(mapSettings.coordinates) || !mapSettings.coordinates) {
+      setMapSettings(prev => ({ ...prev, coordinates: userLocation }));
+    }
+  }, [userLocation]);
+
+  useEffect(() => {
     const zoom = get(activeFilters, 'map.zoom', null);
     const radius = get(activeFilters, 'map.radius', null);
     const coordinates = get(activeFilters, 'map.coordinates', null);

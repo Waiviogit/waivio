@@ -2,7 +2,7 @@ import { getDefaultKeyBinding, KeyBindingUtil } from 'draft-js';
 
 import { KEY_COMMANDS } from './constants';
 
-const { changeType, showLinkInput, unlink, showSearchBlock, backspace, space } = KEY_COMMANDS;
+const { changeType, showLinkInput, unlink, showSearchBlock, space } = KEY_COMMANDS;
 
 /*
 Emits various key commands to be used by `handleKeyCommand` in `Editor` based
@@ -18,9 +18,6 @@ export default e => {
   }
   if (e.key === '#') {
     return showSearchBlock;
-  }
-  if (e.key === 'Backspace') {
-    return backspace;
   }
   if (e.keyCode === 32) {
     return space;

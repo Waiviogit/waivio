@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { isEmpty, map } from 'lodash';
 import classNames from 'classnames';
 
 import {
@@ -120,7 +120,7 @@ export const WebsiteModerators = ({
         {emptyModerators ? (
           <FormattedMessage id={'web_mods_empty'} defaultMessage={'No moderators added.'} />
         ) : (
-          moderators.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
+          map(moderators, ({ name, _id: id, wobjects_weight: weight, loading }) => (
             <div key={id} className="WebsitesAdministrators__user">
               <span className="WebsitesAdministrators__user-info">
                 <Avatar size={50} username={name} />
