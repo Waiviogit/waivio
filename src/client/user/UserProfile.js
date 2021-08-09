@@ -56,38 +56,28 @@ export default class UserProfile extends React.Component {
     tagsCondition: PropTypes.arrayOf(PropTypes.string).isRequired,
     limit: PropTypes.number,
     getUserProfileBlogPosts: PropTypes.func,
-    getUserAccountHistory: PropTypes.func,
-    usersAccountHistory: PropTypes.shape(),
     isGuest: PropTypes.bool,
     history: PropTypes.shape(),
     user: PropTypes.shape(),
-    isBlogInObject: PropTypes.bool,
   };
 
   static defaultProps = {
     limit: 10,
-    location: {},
     getUserProfileBlogPosts: () => {},
-    getUserAccountHistory: () => {},
-    usersAccountHistory: {},
     isGuest: false,
     history: {},
     user: {},
-    isBlogInObject: false,
   };
 
   componentDidMount() {
-    const { match, limit, usersAccountHistory, isBlogInObject } = this.props;
+    const { match, limit } = this.props;
     const { name } = match.params;
 
     this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
-    if (isEmpty(usersAccountHistory[name])) {
-      this.props.getUserAccountHistory(name);
-    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, limit, isBlogInObject } = this.props;
+    const { match, limit } = this.props;
     const { name } = match.params;
 
     if (name !== nextProps.match.params.name) {

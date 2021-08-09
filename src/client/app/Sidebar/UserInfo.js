@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
-import { ceil, get, truncate } from 'lodash';
+import { ceil, get, isEmpty, truncate } from 'lodash';
 import {
   injectIntl,
   FormattedMessage,
@@ -55,12 +55,12 @@ class UserInfo extends React.Component {
   };
 
   componentDidMount() {
-    this.getUserInfo();
+    if (this.props.user.loaded) this.getUserInfo();
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.name !== this.props.match.params.name) {
-      this.getUserInfo();
+      // this.getUserInfo();
     }
   }
 
@@ -72,15 +72,9 @@ class UserInfo extends React.Component {
       !match.params.name.startsWith(BXY_GUEST_PREFIX)
     ) {
       dHive.rc.getRCMana(match.params.name).then(res => {
-        this.setState({
-          rc_percentage: res.percentage,
-        });
+        this.setState({ rc_percentage: res.percentage });
       });
-      dHive.database.getAccounts([match.params.name]).then(res => {
-        this.setState({
-          voting_mana: dHive.rc.calculateVPMana(res[0]).percentage,
-        });
-      });
+      this.setState({ voting_mana: dHive.rc.calculateVPMana(this.props.user).percentage });
     }
   };
 
