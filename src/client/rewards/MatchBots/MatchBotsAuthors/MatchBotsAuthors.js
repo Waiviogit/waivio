@@ -11,7 +11,11 @@ import getMatchBotMessageData from '../../MatchBotSponsors/matchBotMessageData';
 
 import '../MatchBots.less';
 
-const MatchBotsAuthors = ({ intl, isEngLocale, isAuthority }) => {
+const MatchBotsAuthors = ({ intl, isEngLocale, isAuthority, getMatchBots }) => {
+
+  React.useEffect(() => {
+    if (isAuthority) getMatchBots();
+  }, [isAuthority]);
   const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
   const messageData = getMatchBotMessageData(localizer);
 
@@ -39,6 +43,7 @@ MatchBotsAuthors.propTypes = {
   intl: PropTypes.shape().isRequired,
   isEngLocale: PropTypes.bool.isRequired,
   isAuthority: PropTypes.bool.isRequired,
+  getMatchBots: PropTypes.func.isRequired,
 };
 
 export default injectIntl(MatchBotsAuthors);

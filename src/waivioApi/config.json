@@ -132,5 +132,6 @@
   "exemptions": "/exemptions",
   "rate":  "/rate",
   "latest": "/latest",
-  "immediateWithdraw": "/immediate-withdraw"
+  "immediateWithdraw": "/immediate-withdraw",
+  "getMatchBots": "/match-bots"
 }

@@ -4,6 +4,11 @@ export const MATCH_BOTS_TYPES = {
   SPONSORS: 'waiviocampaigns',
 };
 
+export const MATCH_BOTS_NAMES = {
+  AUTHORS: 'author',
+  CURATORS: 'curator',
+};
+
 export const redirectAuthHiveSigner = (isAuthority, botType) => {
   const path = window.location.href;
 

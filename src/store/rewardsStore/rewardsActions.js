@@ -4,6 +4,7 @@ import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 
 export const SET_MATCH_BOT_RULE = createAsyncActionType('@rewards/SET_MATCH_BOT_RULE');
+export const GET_MATCH_BOTS = createAsyncActionType('@rewards/GET_MATCH_BOTS');
 
 export const setMatchBotRules = ruleObj => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
@@ -175,3 +176,15 @@ export const checkExpiredPayment = name => ({
   type: CHECK_EXPIRED_PAYMENTS.ACTION,
   payload: ApiClient.checkExpiredPayment(name).then(data => data.warning),
 });
+
+export const getMatchBots = botType => (dispatch, getState) =>  {
+  const state = getState();
+  const botName = getAuthenticatedUserName(state);
+
+  return dispatch({
+    type: GET_MATCH_BOTS.ACTION,
+    payload: {
+      promise: ApiClient.getMatchBots(botName, botType),
+    },
+  })
+};
