@@ -5,32 +5,32 @@ import { injectIntl } from 'react-intl';
 import MatchBotsBtn from '../MatchBotsBtn';
 import MatchBotsTitle from '../MatchBotsTitle';
 import MatchBotsService from '../MatchBotsService';
-import MatchBotsAuthorsContent from './MatchBotsAuthorsContent';
+import MatchBotsCuratorsContent from './MatchBotsCuratorsContent';
 import getMatchBotMessageData from '../../MatchBotSponsors/matchBotMessageData';
 
 import '../MatchBots.less';
 
-const MatchBotsAuthors = ({ intl, isEngLocale }) => {
+const MatchBotsCurators = ({ intl, isEngLocale }) => {
   const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
   const messageData = getMatchBotMessageData(localizer);
 
   return (
     <div className="MatchBots">
       <MatchBotsTitle
-        botTitle={messageData.titleBotsAuthors}
+        botTitle={messageData.titleBotsCurators}
         turnOffTitle={messageData.turnOff}
         turnOnTitle={messageData.turnOn}
       />
-      <MatchBotsAuthorsContent messageData={messageData} isEngLocale={isEngLocale} />
-      <MatchBotsService messageData={messageData} botName="Authors" />
+      <MatchBotsCuratorsContent messageData={messageData} isEngLocale={isEngLocale} />
+      <MatchBotsService messageData={messageData} botName="Curators" />
       <MatchBotsBtn name={messageData.matchBotsAuthorsBtnAdd} onClick={() => {}} />
     </div>
   );
 };
 
-MatchBotsAuthors.propTypes = {
+MatchBotsCurators.propTypes = {
   intl: PropTypes.shape().isRequired,
   isEngLocale: PropTypes.bool.isRequired,
 };
 
-export default injectIntl(MatchBotsAuthors);
+export default injectIntl(MatchBotsCurators);

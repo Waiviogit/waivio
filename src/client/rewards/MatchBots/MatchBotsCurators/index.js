@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 
-import MatchBotsAuthors from './MatchBotsAuthors';
+import MatchBotsCurators from './MatchBotsCurators';
 import { getIsEngLocale } from '../../../../store/appStore/appSelectors';
 
 const mapStateToProps = state => ({
   isEngLocale: getIsEngLocale(state),
 });
 
-export default connect(mapStateToProps)(MatchBotsAuthors);
+export default connect(mapStateToProps)(MatchBotsCurators);

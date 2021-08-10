@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Tooltip } from 'antd';
 
+import './MatchBotsTitle.less';
+
 const MatchBotsTitle = ({ isAuthority, handleSwitcher, botTitle, turnOffTitle, turnOnTitle }) => (
   <div className="MatchBots__title-wrap">
     <div className="MatchBots__title">{botTitle}</div>

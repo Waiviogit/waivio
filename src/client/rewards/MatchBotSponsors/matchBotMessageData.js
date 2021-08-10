@@ -83,5 +83,70 @@ export default localizer => ({
     'matchBot_sponsors_provided',
     ' The Sponsors match bot service is provided on as-is / as-available basis.',
   ),
-  titleBotsAuthors: localizer('matchBot_title_ authors', 'Authors match bot'),
+  titleBotsAuthors: localizer('matchBot_title_authors', ' Authors match bot'),
+  authorsMatchBotsMeaning: localizer(
+    'authors_match_bots_meaning',
+    'automatically upvotes posts published by the specified authors. It does not upvote comments or re-blogs.',
+  ),
+  authorsMatchBotsCommand: localizer(
+    'authors_match_bots_command',
+    'For each author, please specify the upvoting power in the range from +1% to +100% (maximum upvote). Actual value of the upvote depends on the current upvoting mana on the account at the time of the action.',
+  ),
+  authorsMatchBotsImportant: localizer(
+    'authors_match_bots_important',
+    'Important: The Authors match bot only publishes upvotes with estimated value of 0.01 HBD or more.',
+  ),
+  authorsMatchBotsVotes: localizer(
+    'authors_match_bots_votes',
+    'Votes will be processed as long as the mana (voting power) on the account remains above the threshold as specified for each author.',
+  ),
+  matchBotsFee: localizer('match_bots_fee', 'Match bot service fee: '),
+  matchBotsSupport: localizer(
+    'match_bots_support',
+    'To support the community, one 100% vote per day will be used to upvote a qualifying post published via Waivio.com. One daily vote pays for both Authors and Curators match bots.',
+  ),
+  matchBotsAuthorsAuthText: localizer(
+    'match_bots_authors_auth_text',
+    'The Authors match bot requires authorization to distribute votes on your behalf: ',
+  ),
+  matchBotsAuthLink: localizer('match_bots_auth_link', 'Authorization now'),
+  matchBotsUnAuthLink: localizer('match_bots_unauth_link', 'Remove authorization'),
+  matchBotsAuthHiveSigner: localizer(
+    'match_bots_auth_hivesigner',
+    'The authorization is completed via HiveSigner and can be revoked at any time.',
+  ),
+  matchBotsAuthorsProvided: localizer(
+    'matchBot_authors_provided',
+    ' The Authors match bot service is provided on as-is / as-available basis.',
+  ),
+  matchBotsAuthorsBtnAdd: localizer('matchBot_authors_btn_add', 'Add author'),
+  titleBotsCurators: localizer('matchBot_title_curators', ' Curators match bot'),
+  curatorsMatchBotsMeaning: localizer(
+    'curators_match_bots_meaning',
+    'automatically repeats the upvotes and downvotes of specified users (curators) on posts and comments.',
+  ),
+  curatorsMatchBotsCommand: localizer(
+    'curators_match_bots_command',
+    "For each curator, please specify the voting ratio - the proportion of your vote to the curator's vote. For example, 100% means that you want the same vote as the curator. Sometimes, if your vote value is less than the curator's, you can amplify your vote. If you specified a 200% vote ratio and the curator voted 10%, your vote would be 20%. Please note that all votes are capped at a maximum of 100%.",
+  ),
+  curatorsMatchBotsImportant: localizer(
+    'curators_match_bots_important',
+    'Important: If the estimated value of the vote is less than 0.01 HBD, the Curator match bot will skip this vote.',
+  ),
+  curatorsMatchBotsCondition: localizer(
+    'curators_match_bots_condition',
+    'If you also want to repeat curator’s downvotes, please check the corresponding box.',
+  ),
+  curatorsMatchBotsVotes: localizer(
+    'curators_match_bots_votes',
+    'Votes will be processed as long as the mana (voting power) on the account remains above the threshold specified for each curator.',
+  ),
+  matchBotsCuratorsProvided: localizer(
+    'matchBot_curators_provided',
+    ' The Curators match bot service is provided on as-is / as-available basis.',
+  ),
+  matchBotsCuratorsAuthText: localizer(
+    'match_bots_curators_auth_text',
+    'The Curators match bot requires authorization to distribute votes on your behalf: ',
+  ),
 });

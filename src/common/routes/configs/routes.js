@@ -60,7 +60,7 @@ const routes = {
         {
           path: '/match-bots-curators',
           exact: true,
-          component: Views.MatchBotsSponsors,
+          component: Views.MatchBotsCurators,
         },
         {
           path: '/match-bots-authors',
