@@ -20,35 +20,25 @@ import './WebsiteHeader.less';
 
 const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDiningGifts }) => {
   const pathName = location.pathname;
-
   const pageWithMapUrl = isDiningGifts ? '/map' : '/';
   const isPageWithMap = pathName === pageWithMapUrl;
+  const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
+  const query = store.get('query');
+  let currentPage = currPage || store.get('currentPage');
+
   const getHrefBackButton = (link = '') => {
-    if (query) {
-      return `/${link}?${query}`;
-    }
+    if (query) return `/${link}?${query}`;
 
     return `/${link}`;
   };
-  let currentPage = currPage || store.get('currentPage');
-  const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
-  const query = store.get('query');
 
-  if (pathName.includes('/object/')) {
-    currentPage = getObjectType(wobj);
-  }
+  if (pathName.includes('/object/')) currentPage = getObjectType(wobj);
 
-  if (pathName.includes('/@')) {
-    currentPage = 'Profile';
-  }
+  if (pathName.includes('/@')) currentPage = 'Profile';
 
-  if (pathName.includes('/editor')) {
-    currentPage = 'Editor';
-  }
+  if (pathName.includes('/editor')) currentPage = 'Editor';
 
-  if (pathName.includes('/rewards')) {
-    currentPage = 'Rewards';
-  }
+  if (pathName.includes('/rewards')) currentPage = 'Rewards';
 
   return (
     <div className="WebsiteHeader" style={{ backgroundColor: `#${backgroundColor}` }}>

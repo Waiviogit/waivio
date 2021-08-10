@@ -61,7 +61,7 @@ const WebsiteMainPage = () => {
                 isButton
               />
             )}
-            <Link to={'/map'} className="WebsiteMainPage__button">
+            <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
               Find Rewards <Icon type="right" />
             </Link>
           </div>
