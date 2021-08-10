@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { Button, message, Modal, Slider, Switch, Tooltip } from 'antd';
@@ -10,11 +10,11 @@ import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import Error401 from '../../statics/Error401';
 import getMatchBotMessageData from './matchBotMessageData';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../helpers/matchBotsHelpers';
 
 import './MatchBotSponsors.less';
 
-const MatchBotSponsors = ({ intl, userName }) => {
+const MatchBotSponsors = ({ intl, userName, isAuthority }) => {
   const [editRule, setEditRule] = useState({});
   const [isLoading, setLoaded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,23 +24,7 @@ const MatchBotSponsors = ({ intl, userName }) => {
   const [voteModalVisible, setVoteModalVisible] = useState(false);
   const [isEnabledRule, setIsEnabledRule] = useState(false);
 
-  const authenticatedUser = useSelector(getAuthenticatedUser);
-  const authority = 'waiviocampaigns';
-  const isAuthority =
-    !isEmpty(authenticatedUser) &&
-    !isEmpty(authenticatedUser.posting) &&
-    authenticatedUser.posting.account_auths
-      .map(auth => auth[0])
-      .some(authName => authName === authority);
-  const handleSwitcher = () => {
-    const path = window.location.href;
-
-    if (!isAuthority) {
-      window.location = `https://hivesigner.com/authorize/waiviocampaigns?redirect_uri=${path}&callback`;
-    } else {
-      window.location = `https://hivesigner.com/revoke/waiviocampaigns?redirect_uri=${path}&callback`;
-    }
-  };
+  const handleSwitcher = () => redirectAuthHiveSigner(isAuthority, MATCH_BOTS_TYPES.SPONSORS);
   const maxRulesLimit = 25;
   const isOverRules = rules.results.length >= maxRulesLimit;
   const marks = {
@@ -197,10 +181,12 @@ const MatchBotSponsors = ({ intl, userName }) => {
 MatchBotSponsors.propTypes = {
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string,
+  isAuthority: PropTypes.bool,
 };
 
 MatchBotSponsors.defaultProps = {
   userName: '',
+  isAuthority: false,
 };
 
 export default injectIntl(MatchBotSponsors);
