@@ -30,7 +30,7 @@ const ObjectCardView = ({
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
-  const rate = useSelector(getRate) || 1;
+  const rate = useSelector(getRate);
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
@@ -44,6 +44,7 @@ const ObjectCardView = ({
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   pathName = hasType(wObject, 'page') && path ? path : pathName;
+
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
 

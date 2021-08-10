@@ -23,7 +23,7 @@ const WebsiteSignIn = props => {
   const url = query.get('host') || currentHost;
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: `${url}/callback`,
+    callbackURL: `${currentHost}/callback`,
   });
 
   const responseSocial = async (response, socialNetwork) => {
@@ -119,7 +119,7 @@ const WebsiteSignIn = props => {
             <SocialButton
               socialNetwork={'HiveSinger'}
               size={'28px'}
-              href={hiveSinger.getLoginURL(url)}
+              href={hiveSinger.getLoginURL()}
             />
             <p>
               {props.intl.formatMessage({

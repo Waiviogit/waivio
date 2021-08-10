@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isEmpty, get, map, debounce, isEqual, size, reverse } from 'lodash';
 import { Helmet } from 'react-helmet';
@@ -14,6 +14,7 @@ import {
   setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
+  setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../../../../store/searchStore/searchActions';
@@ -81,6 +82,7 @@ const WebsiteBody = props => {
     isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   let mapHeight = 'calc(100vh - 57px)';
+  const mapRef = useRef();
 
   if (height && isMobile) mapHeight = `${height - 57}px`;
 
@@ -93,11 +95,24 @@ const WebsiteBody = props => {
     queryCenter = queryCenter.split(',').map(item => Number(item));
   }
 
+  const setBoundsWithDinamycArg = (center, zoom) => {
+    if (props.query.get('showPanel')) {
+      const bounds = mapRef.current.getBounds(center, zoom);
+
+      setBoundsParams({
+        topPoint: [bounds.ne[1], bounds.ne[0]],
+        bottomPoint: [bounds.sw[1], bounds.sw[0]],
+      });
+      props.setShowSearchResult(true);
+    }
+  };
+
   const getCoordinatesForMap = async () => {
     if (!isEmpty(queryCenter)) {
       const queryZoom = props.query.get('zoom');
 
       setCurrMapConfig(queryCenter, +queryZoom);
+      setBoundsWithDinamycArg(queryCenter, +queryZoom);
     } else {
       const currLocation = await props.getCoordinates();
       const res = await props.getCurrentAppSettings();
@@ -110,6 +125,7 @@ const WebsiteBody = props => {
         : center;
 
       setCurrMapConfig(center, zoom);
+      setBoundsWithDinamycArg(center, zoom);
     }
   };
 
@@ -117,6 +133,7 @@ const WebsiteBody = props => {
     if (!isEmpty(area.center)) {
       props.query.set('center', area.center);
       props.query.set('zoom', area.zoom);
+      props.query.set('showPanel', true);
       props.setMapForSearch({
         coordinates: reverse([...area.center]),
         ...boundsParams,
@@ -159,6 +176,8 @@ const WebsiteBody = props => {
       props.setMapForSearch({});
       props.setShowReload(false);
       props.setSearchInBox(true);
+      props.query.delete('showPanel');
+      props.history.push(`?${props.query.toString()}`);
     }
   }, [props.isShowResult]);
 
@@ -442,6 +461,7 @@ const WebsiteBody = props => {
             <Map
               center={area.center}
               height={Number(mapHeight)}
+              ref={mapRef}
               zoom={area.zoom}
               provider={mapProvider}
               onBoundsChanged={data => onBoundsChanged(data)}
@@ -517,6 +537,7 @@ WebsiteBody.propTypes = {
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   putUserCoordinates: PropTypes.func.isRequired,
+  setShowSearchResult: PropTypes.func.isRequired,
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   setSearchInBox: PropTypes.func.isRequired,
@@ -575,5 +596,6 @@ export default connect(
     setShowReload,
     setSearchInBox,
     setFilterFromQuery,
+    setShowSearchResult,
   },
 )(withRouter(WebsiteBody));

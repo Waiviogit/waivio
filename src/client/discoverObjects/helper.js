@@ -39,6 +39,7 @@ export const createFilterBody = parseObject => {
   delete parseSearchParams.type;
   delete parseSearchParams.access_token;
   delete parseSearchParams.socialProvider;
+  delete parseSearchParams.showPanel;
 
   const mappedFilter = Object.keys(parseSearchParams).map(category => ({
     categoryName: category.replace('%20', ' ').replace('+', ' '),
@@ -75,6 +76,7 @@ export const parseTagsFilters = url => {
   delete parseSearchParams.search;
   delete parseSearchParams.mapX;
   delete parseSearchParams.mapY;
+  delete parseSearchParams.showPanel;
   delete parseSearchParams.radius;
   delete parseSearchParams.zoom;
 
