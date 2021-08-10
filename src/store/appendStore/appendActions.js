@@ -20,7 +20,6 @@ export const appendObject = (postData, type, { follow } = {}) => dispatch => {
             postData.field.name,
             true,
             type,
-            res.block_num,
           ),
         );
         if (follow) dispatch(followObject(postData.parentPermlink));

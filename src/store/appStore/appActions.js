@@ -33,21 +33,21 @@ export const GET_CRYPTO_PRICE_HISTORY = createAsyncActionType('@app/GET_CRYPTOS_
 export const REFRESH_CRYPTO_PRICE_HISTORY = '@app/REFRESH_CRYPTO_PRICE_HISTORY';
 export const refreshCryptoPriceHistory = createAction(REFRESH_CRYPTO_PRICE_HISTORY);
 
-export const getRate = () => (dispatch, getState, { steemAPI }) => {
+export const getRate = () => dispatch => {
   dispatch({
     type: RATE_REQUEST.ACTION,
     payload: {
-      promise: steemAPI
-        .sendAsync('get_current_median_history_price', [])
-        .then(resp => parseFloat(resp.base) / parseFloat(resp.quote)),
+      promise: ApiClient.getCurrentMedianHistory().then(
+        resp => parseFloat(resp.base) / parseFloat(resp.quote),
+      ),
     },
   });
 };
 
-export const getRewardFund = () => (dispatch, getSelection, { steemAPI }) =>
+export const getRewardFund = () => dispatch =>
   dispatch({
     type: GET_REWARD_FUND,
-    payload: { promise: steemAPI.sendAsync('get_reward_fund', ['post']) },
+    payload: { promise: ApiClient.getRewardFund() },
   });
 
 export const getCryptoPriceHistory = (symbols, refresh = false) => dispatch => {
