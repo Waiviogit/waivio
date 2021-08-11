@@ -1726,5 +1726,13 @@
   "curators_match_bots_condition": "If you also want to repeat curator’s downvotes, please check the corresponding box.",
   "curators_match_bots_votes": "Votes will be processed as long as the mana (voting power) on the account remains above the threshold specified for each curator.",
   "matchBot_curators_provided": " The Curators match bot service is provided on as-is / as-available basis.",
-  "match_bots_curators_auth_text": "The Curators match bot requires authorization to distribute votes on your behalf: "
+  "match_bots_curators_auth_text": "The Curators match bot requires authorization to distribute votes on your behalf: ",
+  "match_bots_add_new_author": "Add new author",
+  "match_bot_placeholder_find_author": "Find author",
+  "match_bot_search_author": "Author",
+  "match_bot_slider_title_vote": "Specify the value for the vote:",
+  "match_bot_slider_description_vote": "The Authors match bot only publishes upvotes with estimated value of 0.01 HBD or more.",
+  "match_bot_slider_title_mana": "Min Voting Power (mana):",
+  "match_bot_slider_description_mana": "Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting (typically, 5 min after the post is published).",
+  "match_bot_notes": "Notes:"
 }

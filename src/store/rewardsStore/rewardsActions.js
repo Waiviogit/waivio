@@ -177,7 +177,7 @@ export const checkExpiredPayment = name => ({
   payload: ApiClient.checkExpiredPayment(name).then(data => data.warning),
 });
 
-export const getMatchBots = botType => (dispatch, getState) =>  {
+export const getMatchBots = botType => (dispatch, getState) => {
   const state = getState();
   const botName = getAuthenticatedUserName(state);
 
@@ -186,5 +186,5 @@ export const getMatchBots = botType => (dispatch, getState) =>  {
     payload: {
       promise: ApiClient.getMatchBots(botName, botType),
     },
-  })
+  });
 };

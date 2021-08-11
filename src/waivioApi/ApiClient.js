@@ -2139,14 +2139,11 @@ export const getNearbyObjects = (authorPermlink, host, skip = 0, limit = 5, radi
 };
 
 export const getMatchBots = (botName, botType) => {
-  const queryString = `?botName=${botName}&type=${botType}`;
-  return fetch(
-    `${config.campaignApiPrefix}${config.getMatchBots}${queryString}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
+  const queryString = `?botName=${botName}`;
+  return fetch(`${config.campaignApiPrefix}${config.getMatchBots}/${botType}${queryString}`, {
+    headers,
+    method: 'GET',
+  })
     .then(handleErrors)
     .then(res => res.json());
 };

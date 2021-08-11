@@ -2,17 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
-import MatchBotsBtn from '../MatchBotsBtn';
 import MatchBotsTitle from '../MatchBotsTitle';
 import MatchBotsService from '../MatchBotsService';
-import { MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
+import ModalsAuthors from '../MatchBotsModals/ModalsAuthors';
 import MatchBotsAuthorsContent from './MatchBotsAuthorsContent';
+import { MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
 import getMatchBotMessageData from '../../MatchBotSponsors/matchBotMessageData';
 
 import '../MatchBots.less';
 
 const MatchBotsAuthors = ({ intl, isEngLocale, isAuthority, getMatchBots }) => {
-
   React.useEffect(() => {
     if (isAuthority) getMatchBots();
   }, [isAuthority]);
@@ -34,7 +33,7 @@ const MatchBotsAuthors = ({ intl, isEngLocale, isAuthority, getMatchBots }) => {
         isAuthority={isAuthority}
         botType={MATCH_BOTS_TYPES.AUTHORS}
       />
-      <MatchBotsBtn name={messageData.matchBotsAuthorsBtnAdd} onClick={() => {}} />
+      <ModalsAuthors modalType="add" />
     </div>
   );
 };
