@@ -1696,6 +1696,8 @@
   "default_sort": "default",
   "rewards_details_earn_up_to": "Earn up to",
   "your_reward": "Your Reward",
+  "default_language": "Default language:",
+  "disclaimer_language": "Users can select another language for the interface in the user settings.",
   "rewards_details_reward_for_reviews_title": "Share {count} photos of the dish and earn crypto",
   "disclaimer_info": "The information provided by this site, including financial reports, is provided on an \"\"as is\"\" basis with no guarantees of completeness, accuracy, usefulness or timeliness. Waivio Technologies Inc. assumes no responsibility or liability for any errors or omissions in the content of this site.",
   "multiple_accounts_included": "If multiple accounts are included in the report, transactions between the specified accounts are excluded from the totals calculations for withdrawals and deposits.",
