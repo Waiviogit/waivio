@@ -4,7 +4,7 @@ import * as appTypes from './appActions';
 import * as postActions from '../postsStore/postActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
 import { mobileUserAgents } from '../../client/helpers/regexHelpers';
-import { getObjectAvatar } from '../../client/helpers/wObjectHelper';
+import { getObjectAvatar, getObjectName } from '../../client/helpers/wObjectHelper';
 import DEFAULTS from '../../client/object/const/defaultValues';
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 
@@ -25,6 +25,7 @@ const initialState = {
   screenSize: 'large',
   isMobile: false,
   mainPage: 'waivio',
+  websiteName: 'Waivio',
   currPage: '',
   currMap: { center: [], zoom: 6 },
   configuration: {},
@@ -148,6 +149,7 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
+        websiteName: getObjectName(configuration.aboutObject),
         mainPage,
         host,
         configuration,
@@ -170,6 +172,7 @@ export default (state = initialState, action) => {
         configuration: action.payload,
         currency: action.payload.currency,
         helmetIcon: getObjectAvatar(action.payload.aboutObject),
+        websiteName: getObjectName(action.payload.aboutObject),
         hostAddress: action.meta,
         isDiningGifts: listOfWebsiteWithMainPage.some(site => site === action.meta),
         currMap: {

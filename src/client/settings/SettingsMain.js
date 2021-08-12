@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import PropTypes from 'prop-types';
@@ -16,6 +15,7 @@ import * as websiteAction from '../../store/websiteStore/websiteActions';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 import { getIsAuthenticated, isGuestUser } from '../../store/authStore/authSelectors';
 import { getOwnWebsites } from '../../store/websiteStore/websiteSelectors';
+import Seo from '../SEO/Seo';
 
 import './Settings.less';
 
@@ -39,11 +39,7 @@ const SettingsMain = props => {
 
   return (
     <div className="shifted">
-      <Helmet>
-        <title>
-          {props.intl.formatMessage(getSettingsTitle(props.match))} {title} - Waivio
-        </title>
-      </Helmet>
+      <Seo title={props.intl.formatMessage(getSettingsTitle(props.match)) + title} privat />
       <div className={containerClassList}>
         <Affix className="leftContainer" stickPosition={77}>
           <div className="left">

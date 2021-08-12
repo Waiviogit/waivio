@@ -76,11 +76,7 @@ import {
 } from '../../store/mapStore/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
-import {
-  getCryptosPriceHistory,
-  getHelmetIcon,
-  getIsWaivio,
-} from '../../store/appStore/appSelectors';
+import { getCryptosPriceHistory, getIsWaivio } from '../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -90,7 +86,7 @@ import {
 import { getAllUsers } from '../../store/usersStore/usersSelectors';
 import { getPendingUpdate, getUserLocation } from '../../store/userStore/userSelectors';
 import { getIsMapModalOpen, getObjectsMap } from '../../store/mapStore/mapSelectors';
-import DEFAULTS from '../object/const/defaultValues';
+import Seo from '../SEO/Seo';
 
 @withRouter
 @injectIntl
@@ -108,7 +104,6 @@ import DEFAULTS from '../object/const/defaultValues';
     pendingUpdate: getPendingUpdate(state),
     authenticated: getIsAuthenticated(state),
     isWaivio: getIsWaivio(state),
-    helmetIcon: getHelmetIcon(state),
   }),
   {
     assignProposition,
@@ -148,7 +143,6 @@ class Rewards extends React.Component {
     users: PropTypes.shape(),
     getCryptoPriceHistory: PropTypes.func.isRequired,
     setMapFullscreenMode: PropTypes.func.isRequired,
-    helmetIcon: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -1049,37 +1043,15 @@ class Rewards extends React.Component {
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
     const isWidget =
       typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('isWidget') : false;
-    const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
-    const img = DEFAULTS.FAVICON;
-    const waivioHost = global.postOrigin || 'https://www.waivio.com';
-    const urlCurr = `${waivioHost}/rewards`;
-    const title = `Rewards - Waivio`;
 
     return (
       <div className="Rewards">
         <div className="shifted">
-          <Helmet>
-            <title>{title}</title>
-            <meta property="og:title" content={title} />
-            <meta name="robots" content={robots} />
-            <link rel="canonical" href={urlCurr} />
-            <meta property="description" content={desc} />
-            <meta name="twitter:card" content={'summary_large_image'} />
-            <meta name="twitter:site" content={'@waivio'} />
-            <meta name="twitter:title" content={title} />
-            <meta name="twitter:description" content={desc} />
-            <meta name="twitter:image" content={img} />
-            <meta property="og:title" content={title} />
-            <meta property="og:type" content="article" />
-            <meta property="og:url" content={urlCurr} />
-            <meta property="og:image" content={img} />
-            <meta property="og:image:width" content="600" />
-            <meta property="og:image:height" content="600" />
-            <meta property="og:description" content={desc} />
-            <meta property="og:site_name" content="Waivio" />
-            <link rel="image_src" href={img} />
-            <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
-          </Helmet>
+          <Seo
+            desc={'Reserve the reward for a few days. Share photos of the dish and get the reward!'}
+            title={'Rewards'}
+            params={'/rewards/all'}
+          />
           <ScrollToTop />
           <ScrollToTopOnMount />
           <div className={classNames('feed-layout container', { 'isWidget-container': isWidget })}>

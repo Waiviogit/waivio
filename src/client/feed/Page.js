@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
-import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { getFeedContent } from '../../store/feedStore/feedActions';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
@@ -15,7 +14,7 @@ import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { getIsAuthenticated, getIsLoaded } from '../../store/authStore/authSelectors';
 import { getObject as getObjectState } from '../../store/wObjectStore/wObjectSelectors';
-import { getHelmetIcon } from '../../store/appStore/appSelectors';
+import Seo from '../SEO/Seo';
 
 @injectIntl
 @withRouter
@@ -23,7 +22,6 @@ import { getHelmetIcon } from '../../store/appStore/appSelectors';
   authenticated: getIsAuthenticated(state),
   loaded: getIsLoaded(state),
   wobject: getObjectState(state),
-  helmetIcon: getHelmetIcon(state),
 }))
 class Page extends React.Component {
   static fetchData({ store, match }) {
@@ -34,7 +32,6 @@ class Page extends React.Component {
 
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
-    helmetIcon: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     route: PropTypes.shape().isRequired,
@@ -67,26 +64,7 @@ class Page extends React.Component {
 
     return (
       <div>
-        <Helmet>
-          <title>Waivio</title>
-          <meta property="description" content={description} />
-          <meta property="og:title" content={'Waivio'} />
-          <meta property="og:type" content="article" />
-          <meta property="og:url" content={global.postOrigin} />
-          <meta property="og:image" content={this.props.helmetIcon} />
-          <meta property="og:image:url" content={this.props.helmetIcon} />
-          <meta property="og:image:width" content="600" />
-          <meta property="og:image:height" content="600" />
-          <meta property="og:description" content={description} />
-          <meta name="twitter:card" content={'summary_large_image'} />
-          <meta name="twitter:site" content={'@waivio'} />
-          <meta name="twitter:title" content={'Waivio'} />
-          <meta name="twitter:description" content={description} />
-          <meta name="twitter:image" property="twitter:image" content={this.props.helmetIcon} />
-          <meta property="og:site_name" content={'Waivio'} />
-          <link rel="image_src" href={this.props.helmetIcon} />
-          <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
-        </Helmet>
+        <Seo desc={description} />
         <ScrollToTop />
         <ScrollToTopOnMount />
         <div className="shifted">
