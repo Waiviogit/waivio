@@ -12,7 +12,6 @@ import { isUserRegistered } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import SocialButton from './SocialButton';
 import { getCurrentHost } from '../../../store/appStore/appSelectors';
-import { domainWithoutParams } from '../../helpers/regexHelpers';
 
 import styles from './styles';
 import './WebsiteSignIn.less';
@@ -22,9 +21,10 @@ const WebsiteSignIn = props => {
   const currentHost = useSelector(getCurrentHost);
   const query = new URLSearchParams(props.location.search);
   const url = query.get('host') || currentHost;
+  const urlObj = new URL(url);
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: `${url.match(domainWithoutParams)[0]}/callback`,
+    callbackURL: `${urlObj.origin}/callback`,
   });
 
   const responseSocial = async (response, socialNetwork) => {

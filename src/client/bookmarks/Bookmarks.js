@@ -19,6 +19,8 @@ import { getIsReloading } from '../../store/authStore/authSelectors';
 import { getPosts } from '../../store/postsStore/postsSelectors';
 import { getFeed } from '../../store/feedStore/feedSelectors';
 import { getPendingBookmarks } from '../../store/bookmarksStore/bookmarksSelectors';
+import Seo from '../SEO/Seo';
+import { getSettingsTitle } from '../settings/common/helpers';
 
 @requiresLogin
 @injectIntl
@@ -68,11 +70,7 @@ export default class Bookmarks extends React.Component {
 
     return (
       <React.Fragment>
-        <Helmet>
-          <title>
-            {intl.formatMessage({ id: 'bookmarks', defaultMessage: 'Bookmarks' })} - Waivio
-          </title>
-        </Helmet>
+        <Seo title={intl.formatMessage({ id: 'bookmarks', defaultMessage: 'Bookmarks' })} />
         {noBookmarks ? (
           <div className="container">
             <h3 className="text-center">

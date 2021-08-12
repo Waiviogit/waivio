@@ -1,18 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Helmet from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import ObjectsContainer from './ObjectsContainer';
 import Affix from '../components/Utils/Affix';
+import Seo from '../SEO/Seo';
 
 const Objects = ({ intl }) => (
   <div className="shifted">
-    <Helmet>
-      <title>
-        {intl.formatMessage({ id: 'objects_title', defaultMessage: 'objects_title' })} - Waivio
-      </title>
-    </Helmet>
+    <Seo title={intl.formatMessage({ id: 'objects_title' })} />
     <div className="feed-layout container">
       <Affix className="leftContainer" stickPosition={77}>
         <div className="left">
