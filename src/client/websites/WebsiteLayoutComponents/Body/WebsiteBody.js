@@ -14,7 +14,6 @@ import {
   setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
-  setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../../../../store/searchStore/searchActions';
@@ -103,7 +102,6 @@ const WebsiteBody = props => {
         topPoint: [bounds.ne[1], bounds.ne[0]],
         bottomPoint: [bounds.sw[1], bounds.sw[0]],
       });
-      props.setShowSearchResult(true);
     }
   };
 
@@ -131,9 +129,9 @@ const WebsiteBody = props => {
 
   const handleSetMapForSearch = () => {
     if (!isEmpty(area.center)) {
+      props.query.set('showPanel', true);
       props.query.set('center', area.center);
       props.query.set('zoom', area.zoom);
-      props.query.set('showPanel', true);
       props.setMapForSearch({
         coordinates: reverse([...area.center]),
         ...boundsParams,
@@ -170,7 +168,7 @@ const WebsiteBody = props => {
   }, []);
 
   useEffect(() => {
-    if (props.isShowResult) {
+    if (props.query.get('showPanel')) {
       handleSetMapForSearch();
     } else {
       props.setMapForSearch({});
@@ -537,7 +535,6 @@ WebsiteBody.propTypes = {
   setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   putUserCoordinates: PropTypes.func.isRequired,
-  setShowSearchResult: PropTypes.func.isRequired,
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   setSearchInBox: PropTypes.func.isRequired,
@@ -596,6 +593,5 @@ export default connect(
     setShowReload,
     setSearchInBox,
     setFilterFromQuery,
-    setShowSearchResult,
   },
 )(withRouter(WebsiteBody));
