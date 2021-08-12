@@ -1,0 +1,60 @@
+@import (reference) '../../../../../styles/custom.less';
+
+.modalFooter {
+  &_buttons {
+    display: flex;
+    justify-content: flex-end;
+
+    & button:last-child {
+      margin-left: 10px;
+    }
+  }
+
+  &__button {
+    display: flex;
+    justify-content: flex-end;
+
+    &-delete {
+      display: flex;
+      justify-content: center;
+      margin-top: 2.3rem;
+
+      .ant-btn {
+        color: @white;
+        background-color: @red;
+        border-color: @red;
+
+        &:hover {
+          color: @white;
+          background-color: @red-danger;
+          border-color: @red-danger;
+        }
+
+        &:focus {
+          color: @red;
+          background-color: @white;
+          border-color: @red;
+        }
+      }
+    }
+
+    .ant-btn-primary {
+      margin-left: 0.85rem;
+    }
+  }
+
+  &__label::before {
+    display: inline-block;
+    margin-right: 4px;
+    color: @red-danger;
+    font-size: 1em;
+    font-family: SimSun, sans-serif;
+    content: '*';
+  }
+
+  &__edit-footer {
+    margin-top: 2.3rem;
+    padding-top: 1rem;
+    border-top: 1px solid @blue-hawkesBlue;
+  }
+}

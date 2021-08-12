@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { get } from 'lodash';
 
 export const MATCH_BOTS_TYPES = {
@@ -9,6 +10,15 @@ export const MATCH_BOTS_TYPES = {
 export const MATCH_BOTS_NAMES = {
   AUTHORS: 'author',
   CURATORS: 'curator',
+};
+
+export const INITIAL_INPUTS_VALUE = {
+  selectedUser: null,
+  voteValue: 100,
+  manaValue: 100,
+  expiredDate: null,
+  notesValue: '',
+  isSubmitted: false,
 };
 
 export const redirectAuthHiveSigner = (isAuthority, botType) => {
@@ -27,7 +37,7 @@ export const getBotObjAuthor = botData => {
     voteWeight: botData.voteValue * 100,
     minVotingPower: botData.manaValue * 100,
     note: botData.notesValue,
-    expiredAt: botData.expiredDate,
+    expiredAt: botData.expiredDate.format(),
   };
 
   if (
@@ -42,3 +52,12 @@ export const getBotObjAuthor = botData => {
 
   return {};
 };
+
+export const setInitialInputValues = value => ({
+  selectedUser: { account: value.name },
+  voteValue: value.voteWeight / 100,
+  manaValue: value.minVotingPower / 100,
+  expiredDate: moment(value.expiredAt),
+  notesValue: value.note || '',
+  isSubmitted: false,
+});

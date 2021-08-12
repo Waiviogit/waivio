@@ -6,6 +6,7 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 export const SET_MATCH_BOT_RULE = createAsyncActionType('@rewards/SET_MATCH_BOT_RULE');
 export const GET_MATCH_BOTS = createAsyncActionType('@rewards/GET_MATCH_BOTS');
 export const SET_MATCH_BOT = createAsyncActionType('@rewards/SET_MATCH_BOT');
+export const UNSET_MATCH_BOT = createAsyncActionType('@rewards/UNSET_MATCH_BOT');
 
 export const setMatchBotRules = ruleObj => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
@@ -198,6 +199,18 @@ export const setMatchBot = ruleObj => (dispatch, getState, { steemConnectAPI }) 
     type: SET_MATCH_BOT.ACTION,
     payload: {
       promise: steemConnectAPI.setMatchBot(username, ruleObj),
+    },
+  });
+};
+
+export const unsetMatchBot = (name, type) => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+
+  return dispatch({
+    type: UNSET_MATCH_BOT.ACTION,
+    payload: {
+      promise: steemConnectAPI.unsetMatchBot(username, name, type),
     },
   });
 };

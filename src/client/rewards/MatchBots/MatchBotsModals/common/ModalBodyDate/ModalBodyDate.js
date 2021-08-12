@@ -6,13 +6,13 @@ import { injectIntl } from 'react-intl';
 
 import './ModalBodyDate.less';
 
-const ModalBodyDate = ({ intl, onChange }) => {
+const ModalBodyDate = ({ intl, onChange, value }) => {
   const disableDate = currentDate => !currentDate.isSameOrAfter(moment());
 
   return (
     <div className="modalBodyDate">
       <p className="modalBodyDate_title">{intl.formatMessage({ id: 'matchBot_expiry_date' })}</p>
-      <DatePicker allowClear={false} onChange={onChange} disabledDate={disableDate} />
+      <DatePicker allowClear={false} onChange={onChange} disabledDate={disableDate} value={value} />
     </div>
   );
 };
@@ -20,6 +20,7 @@ const ModalBodyDate = ({ intl, onChange }) => {
 ModalBodyDate.propTypes = {
   intl: PropTypes.shape().isRequired,
   onChange: PropTypes.func.isRequired,
+  value: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(ModalBodyDate);

@@ -10,11 +10,10 @@ import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
 
 import './ModalAuthorsBody.less';
 
-const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue }) => {
+const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => {
   const handleChangeSliderVote = value => setInputsValue(prev => ({ ...prev, voteValue: value }));
   const handleChangeSliderMana = value => setInputsValue(prev => ({ ...prev, manaValue: value }));
-  const handleChangeDate = value =>
-    setInputsValue(prev => ({ ...prev, expiredDate: value.format() }));
+  const handleChangeDate = expiredDate => setInputsValue(prev => ({ ...prev, expiredDate }));
   const handleChangeNote = debounce(
     value => setInputsValue(prev => ({ ...prev, notesValue: value })),
     250,
@@ -22,11 +21,13 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue }) => {
 
   return (
     <div className="authorModalBody">
-      <ModalBodySearch
-        isSubmitted={inputsValue.isSubmitted}
-        selectedUser={inputsValue.selectedUser}
-        setInputsValue={setInputsValue}
-      />
+      {isAddModal && (
+        <ModalBodySearch
+          isSubmitted={inputsValue.isSubmitted}
+          selectedUser={inputsValue.selectedUser}
+          setInputsValue={setInputsValue}
+        />
+      )}
       <ModalBodySlider
         sliderValue={inputsValue.voteValue}
         handleChangeSlider={handleChangeSliderVote}
@@ -39,8 +40,8 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue }) => {
         sliderTitle={intl.formatMessage({ id: 'match_bot_slider_title_mana' })}
         sliderDescription={intl.formatMessage({ id: 'match_bot_slider_description_mana' })}
       />
-      <ModalBodyDate onChange={handleChangeDate} />
-      <ModalBodyNotes onChange={handleChangeNote} />
+      <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredDate} />
+      <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />
     </div>
   );
 };
@@ -49,6 +50,7 @@ ModalAuthorsBody.propTypes = {
   intl: PropTypes.shape().isRequired,
   inputsValue: PropTypes.shape().isRequired,
   setInputsValue: PropTypes.func.isRequired,
+  isAddModal: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(ModalAuthorsBody);

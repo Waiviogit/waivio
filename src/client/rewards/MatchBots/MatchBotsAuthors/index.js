@@ -1,14 +1,16 @@
 import { connect } from 'react-redux';
 
 import MatchBotsAuthors from './MatchBotsAuthors';
-import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
 import { getIsEngLocale } from '../../../../store/appStore/appSelectors';
-import { getIsConnectMatchBot } from '../../../../store/authStore/authSelectors';
 import { getMatchBots } from '../../../../store/rewardsStore/rewardsActions';
+import { getIsConnectMatchBot } from '../../../../store/authStore/authSelectors';
+import { getMatchBotsSelector } from '../../../../store/rewardsStore/rewardsSelectors';
+import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
 
 const mapStateToProps = state => ({
   isEngLocale: getIsEngLocale(state),
   isAuthority: getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.AUTHORS }),
+  matchBots: getMatchBotsSelector(state),
 });
 
 const mapDispatchToProps = dispatch => ({

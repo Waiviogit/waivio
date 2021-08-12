@@ -5,8 +5,12 @@ import { injectIntl } from 'react-intl';
 
 import './ModalBodyNotes.less';
 
-const ModalBodyNotes = ({ intl, onChange }) => {
+const ModalBodyNotes = ({ intl, onChange, textAreaValue }) => {
   const [value, setValue] = React.useState('');
+
+  React.useEffect(() => {
+    setValue(textAreaValue);
+  }, []);
   const handleChange = event => {
     setValue(event.target.value);
     onChange(event.target.value);
@@ -23,6 +27,7 @@ const ModalBodyNotes = ({ intl, onChange }) => {
 ModalBodyNotes.propTypes = {
   intl: PropTypes.shape().isRequired,
   onChange: PropTypes.func.isRequired,
+  textAreaValue: PropTypes.string.isRequired,
 };
 
 export default injectIntl(ModalBodyNotes);

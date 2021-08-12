@@ -230,6 +230,18 @@ function sc2Extended() {
       },
     },
     {
+      unsetMatchBot(username, name, type, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'matchBotUnset',
+          json: JSON.stringify({ type, name }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       addWebsiteAdministrators(username, host, names, cb) {
         const params = {
           required_auths: [],
