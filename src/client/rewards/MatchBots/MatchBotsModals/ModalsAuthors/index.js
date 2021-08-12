@@ -1,3 +1,10 @@
-import ModalsAuthors from './ModalsAuthors';
+import { connect } from 'react-redux';
 
-export default ModalsAuthors;
+import ModalsAuthors from './ModalsAuthors';
+import { setMatchBot } from '../../../../../store/rewardsStore/rewardsActions';
+
+const mapDispatchToProps = dispatch => ({
+  addAuthorBot: payload => dispatch(setMatchBot(payload)),
+});
+
+export default connect(null, mapDispatchToProps)(ModalsAuthors);
