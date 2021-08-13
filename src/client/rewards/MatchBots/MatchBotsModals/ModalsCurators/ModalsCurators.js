@@ -7,18 +7,18 @@ import { injectIntl } from 'react-intl';
 
 import MatchBotsBtn from '../../MatchBotsBtn';
 import ModalFooter from '../common/ModalFooter';
-import ModalAuthorsBody from '../ModalAuthorsBody';
 import ModalBodyDelete from '../common/ModalBodyDelete';
 import {
-  getBotObjAuthor,
+  getBotObjCurator,
   setInitialInputValues,
-  INITIAL_INPUTS_VALUE,
+  INITIAL_INPUTS_VALUE_CURATOR,
 } from '../../../../helpers/matchBotsHelpers';
+import ModalCuratorsBody from '../ModalCuratorsBody';
 import ModalBodyConfirm from '../common/ModalBodyConfirm/ModalBodyConfirm';
 
-const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) => {
+const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot }) => {
   const isAddModal = modalType === 'add';
-  const [inputsValue, setInputsValue] = React.useState(INITIAL_INPUTS_VALUE);
+  const [inputsValue, setInputsValue] = React.useState(INITIAL_INPUTS_VALUE_CURATOR);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [isModalOpenConfirmDelete, setIsModalOpenConfirmDelete] = React.useState(false);
   const [isModalOpenConfirmEdit, setIsModalOpenConfirmEdit] = React.useState(false);
@@ -30,17 +30,17 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
   const handleToggleModalDelete = () => setIsModalOpenConfirmDelete(prev => !prev);
   const handleToggleModalEdit = () => setIsModalOpenConfirmEdit(prev => !prev);
   const handleAddBot = () => {
-    const ruleObj = getBotObjAuthor(inputsValue);
+    const ruleObj = getBotObjCurator(inputsValue);
 
     setInputsValue(prev => ({ ...prev, isSubmitted: true }));
     if (!isEmpty(ruleObj)) {
-      addAuthorBot(ruleObj);
+      addCuratorBot(ruleObj);
       setIsModalOpen(false);
       setIsModalOpenConfirmEdit(false);
     }
   };
   const handleDeleteBot = () => {
-    deleteAuthorBot(bot.name);
+    deleteCuratorBot(bot.name);
     setIsModalOpen(false);
     setIsModalOpenConfirmDelete(false);
   };
@@ -50,7 +50,7 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
       {isAddModal ? (
         <MatchBotsBtn
           onClick={handleToggleModal}
-          name={intl.formatMessage({ id: 'matchBot_author_btn_add' })}
+          name={intl.formatMessage({ id: 'matchBot_curator_btn_add' })}
         />
       ) : (
         <p onClick={handleToggleModal}>{intl.formatMessage({ id: 'edit' })}</p>
@@ -61,23 +61,23 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
         onCancel={handleToggleModal}
         title={
           isAddModal ? (
-            intl.formatMessage({ id: `match_bots_${modalType}_author` })
+            intl.formatMessage({ id: `match_bots_${modalType}_curator` })
           ) : (
             <span>
-              {intl.formatMessage({ id: 'matchBot_title_edit_rule_author' })}
+              {intl.formatMessage({ id: 'matchBot_title_edit_rule_curator' })}
               <Link to={`/@${bot.name}`}>{` @${bot.name}`}</Link>
             </span>
           )
         }
-        okText={intl.formatMessage({ id: `matchBot_authors_btn_${modalType}` })}
+        okText={intl.formatMessage({ id: `matchBot_curator_btn_${modalType}` })}
       >
-        <ModalAuthorsBody
+        <ModalCuratorsBody
           isAddModal={isAddModal}
           inputsValue={inputsValue}
           setInputsValue={setInputsValue}
         />
         <ModalFooter
-          botName={'author'}
+          botName="curator"
           isAddModal={isAddModal}
           handleAddBot={handleAddBot}
           handleCloseModal={handleToggleModal}
@@ -113,12 +113,12 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
   );
 };
 
-ModalsAuthors.propTypes = {
+ModalsCurators.propTypes = {
   intl: PropTypes.shape().isRequired,
   modalType: PropTypes.oneOf(['add', 'edit']).isRequired,
-  addAuthorBot: PropTypes.func.isRequired,
+  addCuratorBot: PropTypes.func.isRequired,
   bot: PropTypes.shape().isRequired,
-  deleteAuthorBot: PropTypes.func.isRequired,
+  deleteCuratorBot: PropTypes.func.isRequired,
 };
 
-export default injectIntl(ModalsAuthors);
+export default injectIntl(ModalsCurators);

@@ -1,39 +1,46 @@
 import * as React from 'react';
-import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { debounce } from 'lodash';
 
 import ModalBodyDate from '../common/ModalBodyDate';
 import ModalBodyNotes from '../common/ModalBodyNotes';
 import ModalBodySlider from '../common/ModalBodySlider';
+import ModalBodyVoteRatio from '../common/ModalBodyVoteRatio';
 import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
+import ModalBodyCheckBox from '../common/ModalBodyCheckBox/ModalBodyCheckBox';
 
-import './ModalAuthorsBody.less';
-
-const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => {
-  const handleChangeSliderVote = value => setInputsValue(prev => ({ ...prev, voteValue: value }));
-  const handleChangeSliderMana = value => setInputsValue(prev => ({ ...prev, manaValue: value }));
+const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) => {
+  const handleChangeSliderMana = manaValue => setInputsValue(prev => ({ ...prev, manaValue }));
   const handleChangeDate = expiredDate => setInputsValue(prev => ({ ...prev, expiredDate }));
-  const handleChangeNote = debounce(
-    value => setInputsValue(prev => ({ ...prev, notesValue: value })),
-    250,
+  const handleChangeNote = notesValue => setInputsValue(prev => ({ ...prev, notesValue }));
+  const handleChangeVote = debounce(
+    voteRatio => setInputsValue(prev => ({ ...prev, voteRatio })),
+    200,
   );
 
   return (
-    <div className="authorModalBody">
+    <div>
       {isAddModal && (
         <ModalBodySearch
-          botType="author"
+          botType="curator"
           isSubmitted={inputsValue.isSubmitted}
           selectedUser={inputsValue.selectedUser}
           setInputsValue={setInputsValue}
         />
       )}
-      <ModalBodySlider
-        sliderValue={inputsValue.voteValue}
-        handleChangeSlider={handleChangeSliderVote}
-        sliderTitle={intl.formatMessage({ id: 'match_bot_slider_title_vote' })}
-        sliderDescription={intl.formatMessage({ id: 'match_bot_slider_description_vote' })}
+      <ModalBodyVoteRatio value={inputsValue.voteRatio} handleChangeVote={handleChangeVote} />
+      <ModalBodyCheckBox
+        type="isDownvote"
+        textId="matchBot_curator_downvotes"
+        value={inputsValue.isDownvote}
+        setInputsValue={setInputsValue}
+      />
+      <ModalBodyCheckBox
+        type="isComment"
+        textId="matchBot_curator_comments"
+        value={inputsValue.isComment}
+        setInputsValue={setInputsValue}
       />
       <ModalBodySlider
         sliderValue={inputsValue.manaValue}
@@ -47,11 +54,11 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => 
   );
 };
 
-ModalAuthorsBody.propTypes = {
+ModalCuratorsBody.propTypes = {
   intl: PropTypes.shape().isRequired,
-  inputsValue: PropTypes.shape().isRequired,
-  setInputsValue: PropTypes.func.isRequired,
   isAddModal: PropTypes.bool.isRequired,
+  setInputsValue: PropTypes.func.isRequired,
+  inputsValue: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(ModalAuthorsBody);
+export default injectIntl(ModalCuratorsBody);

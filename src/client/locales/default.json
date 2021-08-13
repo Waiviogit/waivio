@@ -1719,7 +1719,7 @@
   "match_bots_unauth_link": "Remove authorization",
   "match_bots_auth_hivesigner": "The authorization is completed via HiveSigner and can be revoked at any time.",
   "matchBot_authors_provided": " The Authors match bot service is provided on as-is / as-available basis.",
-  "matchBot_authors_btn_add": "Add author",
+  "matchBot_author_btn_add": "Add author",
   "matchBot_authors_btn_edit": "Save Changes",
   "matchBot_title_curators": " Curators match bot",
   "curators_match_bots_meaning": "automatically repeats the upvotes and downvotes of specified users (curators) on posts and comments.",
@@ -1743,5 +1743,16 @@
   "matchBot_btn_add_curator": "Add curator",
   "match_bots_delete_confirmation": "Delete confirmation",
   "match_bots_delete_message": "Do you want to delete match bot rule for ",
-  "match_bots_edit_message": "Do you want to save the changes for "
+  "match_bots_edit_message": "Do you want to save the changes for ",
+  "match_bots_add_curator": "Add new curator",
+  "matchBot_title_edit_rule_curator": "Edit match bot rules for curator",
+  "matchBot_curator_btn_add": "Add curator",
+  "matchBot_curator_vote_ratio": "Vote ratio (1%-1000%):",
+  "matchBot_curator_vote_ratio_msg": "The Curators match bot only publishes votes with estimated value of 0.01 HBD or more.",
+  "matchBot_curator_downvotes": "Repeat downvotes made by the curator as well",
+  "matchBot_curator_comments": "Like the comments of the author who are supported by the curator",
+  "match_bot_search_curator": "Curator",
+  "match_bot_placeholder_find_curator": "Find curator",
+  "matchBot_curator": "Curator",
+  "matchBot_voteRatio": "Vote ratio"
 }

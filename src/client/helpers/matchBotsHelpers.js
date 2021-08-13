@@ -21,6 +21,17 @@ export const INITIAL_INPUTS_VALUE = {
   isSubmitted: false,
 };
 
+export const INITIAL_INPUTS_VALUE_CURATOR = {
+  voteRatio: 100,
+  manaValue: 100,
+  notesValue: '',
+  isDownvote: true,
+  isComment: true,
+  expiredDate: null,
+  isSubmitted: false,
+  selectedUser: null,
+};
+
 export const redirectAuthHiveSigner = (isAuthority, botType) => {
   const path = window.location.href;
 
@@ -37,7 +48,7 @@ export const getBotObjAuthor = botData => {
     voteWeight: botData.voteValue * 100,
     minVotingPower: botData.manaValue * 100,
     note: botData.notesValue,
-    expiredAt: botData.expiredDate.format(),
+    expiredAt: botData.expiredDate && botData.expiredDate.format(),
   };
 
   if (
@@ -53,11 +64,45 @@ export const getBotObjAuthor = botData => {
   return {};
 };
 
-export const setInitialInputValues = value => ({
-  selectedUser: { account: value.name },
-  voteValue: value.voteWeight / 100,
-  manaValue: value.minVotingPower / 100,
-  expiredDate: moment(value.expiredAt),
-  notesValue: value.note || '',
-  isSubmitted: false,
-});
+export const getBotObjCurator = botData => {
+  const dataObj = {
+    type: 'curator',
+    enabled: true,
+    note: botData.notesValue,
+    voteComments: botData.isComment,
+    voteRatio: botData.voteRatio / 100,
+    enablePowerDown: botData.isDownvote,
+    minVotingPower: botData.manaValue * 100,
+    expiredAt: botData.expiredDate && botData.expiredDate.format(),
+    name: get(botData, 'selectedUser.account', ''),
+  };
+
+  if (
+    dataObj.type &&
+    dataObj.name &&
+    dataObj.enabled &&
+    dataObj.voteRatio &&
+    dataObj.minVotingPower
+  ) {
+    return dataObj;
+  }
+
+  return {};
+};
+
+export const setInitialInputValues = value => {
+  const initialState = {
+    selectedUser: { account: value.name },
+    manaValue: value.minVotingPower / 100,
+    expiredDate: moment(value.expiredAt),
+    notesValue: value.note || '',
+    isSubmitted: false,
+  };
+
+  if (value.voteWeight) initialState.voteValue = value.voteWeight / 100;
+  if (value.voteComments) initialState.isComments = value.voteComments;
+  if (value.enablePowerDown) initialState.isDownvote = value.enablePowerDown;
+  if (value.voteRatio) initialState.voteRatio = value.voteRatio * 100;
+
+  return initialState;
+};

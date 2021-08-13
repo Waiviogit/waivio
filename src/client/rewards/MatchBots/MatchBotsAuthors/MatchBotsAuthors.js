@@ -14,8 +14,8 @@ import '../MatchBots.less';
 
 const MatchBotsAuthors = ({ intl, isEngLocale, isAuthority, getMatchBots, matchBots }) => {
   React.useEffect(() => {
-    if (isAuthority) getMatchBots();
-  }, [isAuthority]);
+    getMatchBots();
+  }, []);
   const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
   const messageData = getMatchBotMessageData(localizer);
 

@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
 import { formatDate } from '../../../rewardsHelper';
-import ModalsAuthors from '../../MatchBotsModals/ModalsAuthors';
+import ModalsCurators from '../../MatchBotsModals/ModalsCurators';
 
 const MatchBotsTableRow = ({
   intl,
   bot,
+  type,
   editRule,
   isAuthority,
   handleChangeModalVisible,
@@ -22,12 +23,12 @@ const MatchBotsTableRow = ({
       />
     </td>
     <td>{bot.name}</td>
-    <td>{Math.round(bot.voteWeight / 100)}%</td>
+    {type === 'curator' && <td>{Math.round(bot.voteRatio * 100)}%</td>}
+    {type === 'author' && <td>{Math.round(bot.voteWeight / 100)}%</td>}
     <td>{Math.round(bot.minVotingPower / 100)}%</td>
     <td>
       <div className="MatchBotTable__edit" onClick={editRule} role="presentation">
-        {/* {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })} */}
-        <ModalsAuthors modalType="edit" bot={bot} />
+        <ModalsCurators modalType="edit" bot={bot} />
       </div>
     </td>
     <td>
@@ -42,6 +43,7 @@ const MatchBotsTableRow = ({
 MatchBotsTableRow.propTypes = {
   isAuthority: PropTypes.bool.isRequired,
   bot: PropTypes.shape().isRequired,
+  type: PropTypes.oneOf(['curator, author']).isRequired,
   intl: PropTypes.shape().isRequired,
   editRule: PropTypes.func.isRequired,
   handleChangeModalVisible: PropTypes.func.isRequired,

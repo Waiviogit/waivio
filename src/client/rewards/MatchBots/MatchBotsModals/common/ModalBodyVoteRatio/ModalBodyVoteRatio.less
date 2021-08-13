@@ -1,0 +1,28 @@
+@import (reference) '../../../../../styles/custom.less';
+@import (reference) '../../../../../styles/modules/variables.less';
+
+.voteRatio {
+  padding: 8px 0;
+
+  &_content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    &__input.ant-input {
+      margin: 0 10px 0 5px;
+      width: 100px;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+  }
+
+  &_description {
+    color: @grey-darkGrey;
+    padding-top: 10px;
+  }
+}

@@ -23,9 +23,16 @@ const MatchBotsTable = ({
         <th className="MatchBotTable sponsorWidth">
           {intl.formatMessage({ id: `matchBot_${type}` })}
         </th>
-        <th className="MatchBotTable basicWidth">
-          {intl.formatMessage({ id: 'matchBot_upvote', defaultMessage: 'Upvote' })}
-        </th>
+        {type === 'curator' && (
+          <th className="MatchBotTable basicWidth">
+            {intl.formatMessage({ id: 'matchBot_voteRatio', defaultMessage: 'Vote ratio' })}
+          </th>
+        )}
+        {type === 'author' && (
+          <th className="MatchBotTable basicWidth">
+            {intl.formatMessage({ id: 'matchBot_upvote', defaultMessage: 'Upvote' })}
+          </th>
+        )}
         <th className="MatchBotTable basicWidth">
           {intl.formatMessage({ id: 'matchBot_MinVP', defaultMessage: 'Min VP' })}
         </th>
@@ -44,6 +51,7 @@ const MatchBotsTable = ({
       {map(bots, bot => (
         <MatchBotsTableRow
           key={bot.sponsor}
+          type={type}
           handleEditRule={handleEditRule}
           handleSwitcher={handleSwitcher}
           isAuthority={isAuthority}

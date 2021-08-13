@@ -8,7 +8,7 @@ import SearchUsersAutocomplete from '../../../../../components/EditorUser/Search
 
 import './ModalBodySearch.less';
 
-const ModalBodySearch = ({ intl, setInputsValue, selectedUser, isSubmitted }) => {
+const ModalBodySearch = ({ intl, setInputsValue, selectedUser, isSubmitted, botType }) => {
   const handleSetSponsor = user =>
     setInputsValue(prev => ({ ...prev, selectedUser: user, isSubmitted: false }));
   const handleRemoveSelectedUser = () => setInputsValue(prev => ({ ...prev, selectedUser: null }));
@@ -17,7 +17,7 @@ const ModalBodySearch = ({ intl, setInputsValue, selectedUser, isSubmitted }) =>
   return (
     <div className="modalBodySearch">
       <p className="modalBodySearch_label">
-        {intl.formatMessage({ id: 'match_bot_search_author' })}
+        {intl.formatMessage({ id: `match_bot_search_${botType}` })}
       </p>
       <SearchUsersAutocomplete
         autoFocus={false}
@@ -25,11 +25,11 @@ const ModalBodySearch = ({ intl, setInputsValue, selectedUser, isSubmitted }) =>
         style={{ width: '100%' }}
         handleSelect={handleSetSponsor}
         className={classNames({ 'has-error': isError })}
-        placeholder={intl.formatMessage({ id: 'match_bot_placeholder_find_author' })}
+        placeholder={intl.formatMessage({ id: `match_bot_placeholder_find_${botType}` })}
       />
       {isError && (
         <p className="modalBodySearch-error">
-          {intl.formatMessage({ id: 'matchBot_authors_btn_add' })}
+          {intl.formatMessage({ id: `matchBot_${botType}_btn_add` })}
         </p>
       )}
       {selectedUser && (
@@ -46,6 +46,7 @@ const ModalBodySearch = ({ intl, setInputsValue, selectedUser, isSubmitted }) =>
 
 ModalBodySearch.propTypes = {
   intl: PropTypes.shape().isRequired,
+  botType: PropTypes.string.isRequired,
   selectedUser: PropTypes.shape(),
   isSubmitted: PropTypes.bool,
   setInputsValue: PropTypes.func.isRequired,
