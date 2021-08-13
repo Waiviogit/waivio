@@ -7,6 +7,7 @@ import MainPageHeader from '../Header/MainPageHeader';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import Seo from '../../../SEO/Seo';
+import DistrictsCard from "./components/DistrictsCard/DistrictsCard";
 
 import './WebsiteMainPage.less';
 
@@ -135,6 +136,39 @@ const WebsiteMainPage = () => {
         >
           Learn more
         </Link>
+      </section>
+      <section  className="WebsiteMainPage__districtsSection">
+        <h2 className="WebsiteMainPage__withdrawTitle">Find rewards in your area now!</h2>
+        <p>(Note: Dining.Gifts is available in VANCOUVER ONLY during beta.)</p>
+        <div className="WebsiteMainPage__districtsList">
+          {
+            [{
+              "city": "string",
+              "counter": 0
+            },{
+              "city": "string",
+              "counter": 0
+            },{
+              "city": "string",
+              "counter": 0
+            },{
+              "city": "string",
+              "counter": 0
+            },{
+              "city": "string",
+              "counter": 0
+            },{
+              "city": "string",
+              "counter": 0
+            }].map(card => <DistrictsCard key={card.city} {...card} />)
+          }
+        </div>
+            <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
+              Find Rewards <Icon type="right" />
+            </Link>
+      </section>
+      <section>
+
       </section>
       <WebsiteFooter />
     </div>

@@ -1,0 +1,35 @@
+@import (reference) '../../../../../styles/modules/variables.less';
+@import (reference) '../../../../../styles/custom.less';
+
+.DistrictsCard {
+  margin: 5px;
+  width: 45%;
+
+  @media @small {
+    margin: 10px;
+    width: 25%;
+  }
+
+  h5,
+  div {
+    text-align: center;
+  }
+
+  &__city {
+    background: #bebebe;
+    height: 65px;
+    line-height: 65px;
+    border-radius: 10px 10px 0 0;
+    border-bottom: 1px solid #dfdfdf;
+    font-size: 30px;
+    text-transform: uppercase;
+  }
+
+  &__counter {
+    background: #cccccc;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 0 0 10px 10px;
+    text-transform: uppercase;
+  }
+}

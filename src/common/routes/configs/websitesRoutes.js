@@ -18,7 +18,7 @@ const routes = host => ({
     {
       path: '/',
       exact: true,
-      component: listOfWebsiteWithMainPage.some(site => site === host)
+      component: true
         ? WebsiteMainPage
         : WebsiteBody,
     },
