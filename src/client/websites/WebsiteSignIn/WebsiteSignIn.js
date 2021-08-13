@@ -21,9 +21,10 @@ const WebsiteSignIn = props => {
   const currentHost = useSelector(getCurrentHost);
   const query = new URLSearchParams(props.location.search);
   const url = query.get('host') || currentHost;
+  const urlObj = new URL(url);
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: `${currentHost}/callback`,
+    callbackURL: `${urlObj.origin}/callback`,
   });
 
   const responseSocial = async (response, socialNetwork) => {

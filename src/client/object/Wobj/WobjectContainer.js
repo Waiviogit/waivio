@@ -27,12 +27,7 @@ import {
 import { appendObject } from '../../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
-import {
-  getHelmetIcon,
-  getIsWaivio,
-  getScreenSize,
-  getWeightValue,
-} from '../../../store/appStore/appSelectors';
+import { getIsWaivio, getScreenSize, getWeightValue } from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -60,7 +55,6 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     wobject: getObjectState(state),
     isFetching: getObjectFetchingState(state),
     screenSize: getScreenSize(state),
-    helmetIcon: getHelmetIcon(state),
     isWaivio: getIsWaivio(state),
     supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
     weightValue: getWeightValue(state, getObjectState(state).weight),
@@ -103,7 +97,6 @@ export default class WobjectContainer extends React.Component {
     setNestedWobject: PropTypes.func,
     setCatalogBreadCrumbs: PropTypes.func,
     locale: PropTypes.string,
-    helmetIcon: PropTypes.string.isRequired,
     getAlbums: PropTypes.func,
     appendObject: PropTypes.func,
     addAlbumToStore: PropTypes.func,
@@ -260,7 +253,6 @@ export default class WobjectContainer extends React.Component {
         toggleViewEditMode={this.toggleViewEditMode}
         objectName={objectName}
         appendAlbum={this.appendAlbum}
-        helmetIcon={this.props.helmetIcon}
         isWaivio={this.props.isWaivio}
         supportedObjectTypes={this.props.supportedObjectTypes}
         weightValue={this.props.weightValue}
