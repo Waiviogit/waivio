@@ -43,7 +43,7 @@ const MatchBotsAuthors = ({
         botType={MATCH_BOTS_TYPES.AUTHORS}
       />
       <ModalsAuthors modalType="add" />
-      {matchBots.length && <MatchBotsTable type="author" botType={MATCH_BOTS_TYPES.AUTHORS} />}
+      {!!matchBots.length && <MatchBotsTable type="author" botType={MATCH_BOTS_TYPES.AUTHORS} />}
     </div>
   );
 };

@@ -1,7 +1,9 @@
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
+import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
+import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
+import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const CLEAR_MATCH_BOTS = '@rewards/CLEAR_MATCH_BOTS';
 export const SET_MATCH_BOT_RULE = createAsyncActionType('@rewards/SET_MATCH_BOT_RULE');
@@ -194,26 +196,49 @@ export const getMatchBots = botType => (dispatch, getState) => {
   });
 };
 
-export const setMatchBot = ruleObj => (dispatch, getState, { steemConnectAPI }) => {
+export const setMatchBot = ruleObj => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const state = getState();
-  const username = getAuthenticatedUserName(state);
+  const voter = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
 
   return dispatch({
     type: SET_MATCH_BOT.ACTION,
     payload: {
-      promise: steemConnectAPI.setMatchBot(username, ruleObj),
+      promise: steemConnectAPI.setMatchBot(voter, ruleObj).then(async data => {
+        const res = isGuest ? await data.json() : data.result;
+        const blockNumber = await getLastBlockNum();
+        const subscribeCallback = () => dispatch(getMatchBots(ruleObj.type));
+
+        if (data.status !== 200 && isGuest) throw new Error(data.message);
+        busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.campaigns]);
+        busyAPI.instance.subscribeBlock(subscribeTypes.campaigns, blockNumber, subscribeCallback);
+
+        return res;
+      }),
     },
   });
 };
 
-export const unsetMatchBot = (name, type) => (dispatch, getState, { steemConnectAPI }) => {
+export const unsetMatchBot = (name, type) => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
+  const voter = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
 
   return dispatch({
     type: UNSET_MATCH_BOT.ACTION,
     payload: {
-      promise: steemConnectAPI.unsetMatchBot(username, name, type),
+      promise: steemConnectAPI.unsetMatchBot(username, name, type).then(async data => {
+        const res = isGuest ? await data.json() : data.result;
+        const blockNumber = await getLastBlockNum();
+        const subscribeCallback = () => dispatch(getMatchBots(type));
+
+        if (data.status !== 200 && isGuest) throw new Error(data.message);
+        busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.campaigns]);
+        busyAPI.instance.subscribeBlock(subscribeTypes.campaigns, blockNumber, subscribeCallback);
+
+        return res;
+      }),
     },
   });
 };

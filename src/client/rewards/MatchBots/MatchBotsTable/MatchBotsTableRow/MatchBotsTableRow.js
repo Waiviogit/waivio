@@ -5,6 +5,7 @@ import { injectIntl } from 'react-intl';
 
 import { formatDate } from '../../../rewardsHelper';
 import ModalsCurators from '../../MatchBotsModals/ModalsCurators';
+import ModalsAuthors from '../../MatchBotsModals/ModalsAuthors';
 
 const MatchBotsTableRow = ({
   intl,
@@ -28,7 +29,8 @@ const MatchBotsTableRow = ({
     <td>{Math.round(bot.minVotingPower / 100)}%</td>
     <td>
       <div className="MatchBotTable__edit" onClick={editRule} role="presentation">
-        <ModalsCurators modalType="edit" bot={bot} />
+        {type === 'curator' && <ModalsCurators modalType="edit" bot={bot} />}
+        {type === 'author' && <ModalsAuthors modalType="edit" bot={bot} />}
       </div>
     </td>
     <td>
