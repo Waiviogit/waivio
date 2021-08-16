@@ -74,6 +74,8 @@ export const getCurrentCurrency = createSelector([appState], state => state.curr
 
 export const getIsDiningGifts = createSelector([appState], state => state.isDiningGifts);
 
+export const getWebsiteName = createSelector([appState], state => state.websiteName);
+
 export const getWeightValue = createSelector(
   getRate,
   getRewardFund,

@@ -10,6 +10,7 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../authStore/authSelectors';
+import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
@@ -91,15 +92,16 @@ export const unfollowUser = (username, top = false) => (
         .unfollow(authUser, username)
         .then(async data => {
           const res = isGuest ? await data.json() : data.result;
+          const blockNumber = await getLastBlockNum();
 
-          if (!res.block_num) throw new Error('Something went wrong');
+          if (!blockNumber) throw new Error('Something went wrong');
 
           busyAPI.instance.sendAsync(subscribeMethod, [
             authUser,
-            res.block_num,
+            blockNumber,
             subscribeTypes.posts,
           ]);
-          busyAPI.instance.subscribeBlock(subscribeTypes.posts, res.block_num);
+          busyAPI.instance.subscribeBlock(subscribeTypes.posts, blockNumber);
 
           return res;
         })
@@ -138,15 +140,16 @@ export const followUser = (username, top = false) => (
         .follow(authUser, username)
         .then(async data => {
           const res = isGuest ? await data.json() : data.result;
+          const blockNumber = await getLastBlockNum();
 
-          if (!res.block_num) throw new Error('Something went wrong');
+          if (!blockNumber) throw new Error('Something went wrong');
 
           busyAPI.instance.sendAsync(subscribeMethod, [
             authUser,
-            res.block_num,
+            blockNumber,
             subscribeTypes.posts,
           ]);
-          busyAPI.instance.subscribeBlock(subscribeTypes.posts, res.block_num);
+          busyAPI.instance.subscribeBlock(subscribeTypes.posts, blockNumber);
 
           return res;
         })

@@ -44,20 +44,18 @@ const ObjectsRelated = ({
   ));
 
   return (
-    <React.Fragment>
+    <div onWheel={throttle(onWheelHandler, 500)}>
       <ObjectsRelatedContent setShowModal={setShowModal} isCenterContent={isCenterContent} />
-      <div onWheel={throttle(onWheelHandler, 500)}>
-        <Modal
-          title="Related"
-          visible={showModal}
-          footer={null}
-          onCancel={() => setShowModal(false)}
-          id="ObjectRelated__Modal"
-        >
-          {renderObjectsModal}
-        </Modal>
-      </div>
-    </React.Fragment>
+      <Modal
+        title="Related"
+        visible={showModal}
+        footer={null}
+        onCancel={() => setShowModal(false)}
+        id="ObjectRelated__Modal"
+      >
+        {renderObjectsModal}
+      </Modal>
+    </div>
   );
 };
 

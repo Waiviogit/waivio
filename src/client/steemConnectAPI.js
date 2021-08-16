@@ -471,7 +471,15 @@ function sc2Extended() {
 
         return this.broadcast([['custom_json', params]], cb);
       },
-      saveWebsiteSettings(username, appId, googleAnalyticsTag, beneficiary, currency, cb) {
+      saveWebsiteSettings(
+        username,
+        appId,
+        googleAnalyticsTag,
+        beneficiary,
+        currency,
+        language,
+        cb,
+      ) {
         const params = {
           required_auths: [],
           required_posting_auths: [username],
@@ -481,6 +489,7 @@ function sc2Extended() {
             googleAnalyticsTag,
             beneficiary,
             currency,
+            language,
           }),
         };
 

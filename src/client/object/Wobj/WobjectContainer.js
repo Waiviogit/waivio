@@ -27,12 +27,7 @@ import {
 import { appendObject } from '../../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
-import {
-  getHelmetIcon,
-  getIsWaivio,
-  getScreenSize,
-  getWeightValue,
-} from '../../../store/appStore/appSelectors';
+import { getIsWaivio, getScreenSize, getWeightValue } from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -60,7 +55,6 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     wobject: getObjectState(state),
     isFetching: getObjectFetchingState(state),
     screenSize: getScreenSize(state),
-    helmetIcon: getHelmetIcon(state),
     isWaivio: getIsWaivio(state),
     supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
     weightValue: getWeightValue(state, getObjectState(state).weight),
@@ -103,7 +97,6 @@ export default class WobjectContainer extends React.Component {
     setNestedWobject: PropTypes.func,
     setCatalogBreadCrumbs: PropTypes.func,
     locale: PropTypes.string,
-    helmetIcon: PropTypes.string.isRequired,
     getAlbums: PropTypes.func,
     appendObject: PropTypes.func,
     addAlbumToStore: PropTypes.func,
@@ -142,6 +135,7 @@ export default class WobjectContainer extends React.Component {
       store.dispatch(
         getWobjectExpertiseAction(
           match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {},
+          match.params.name,
         ),
       ),
     ]);
@@ -165,7 +159,7 @@ export default class WobjectContainer extends React.Component {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
       this.props.getNearbyObjects(match.params.name);
-      this.props.getWobjectExpertise(newsFilter);
+      this.props.getWobjectExpertise(newsFilter, match.params.name);
       this.props.getObjectFollowers({
         object: match.params.name,
         skip: 0,
@@ -178,6 +172,7 @@ export default class WobjectContainer extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { authenticatedUserName, match, locale } = this.props;
+    const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
       this.props.resetGallery();
@@ -186,6 +181,13 @@ export default class WobjectContainer extends React.Component {
       this.props.setNestedWobject({});
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getRelatedWobjects(match.params.name);
+      this.props.getWobjectExpertise(newsFilter, match.params.name);
+      this.props.getObjectFollowers({
+        object: match.params.name,
+        skip: 0,
+        limit: 5,
+        userName: authenticatedUserName,
+      });
     }
   }
 
@@ -251,7 +253,6 @@ export default class WobjectContainer extends React.Component {
         toggleViewEditMode={this.toggleViewEditMode}
         objectName={objectName}
         appendAlbum={this.appendAlbum}
-        helmetIcon={this.props.helmetIcon}
         isWaivio={this.props.isWaivio}
         supportedObjectTypes={this.props.supportedObjectTypes}
         weightValue={this.props.weightValue}

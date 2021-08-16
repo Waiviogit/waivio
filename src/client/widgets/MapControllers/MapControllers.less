@@ -1,0 +1,34 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.MapConfigurationControl {
+  &__zoom {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    z-index: 100;
+
+    &__button {
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      background-color: @white;
+      border: 1px solid @white-gainsboro;
+
+      &:hover {
+        background-color: @white-gainsboro;
+      }
+    }
+  }
+
+  &__gps {
+    position: absolute;
+    cursor: pointer;
+    left: 10px;
+    bottom: 15px;
+    z-index: 100;
+  }
+}

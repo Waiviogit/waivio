@@ -9,6 +9,7 @@ import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
 import { getOwnWebsites, getParentDomain } from './websiteSelectors';
+import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 
@@ -45,15 +46,18 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
   return dispatch({
     type: CREATE_NEW_WEBSITE.ACTION,
     payload: {
-      promise: ApiClient.createWebsite(body).then(res => {
+      promise: ApiClient.createWebsite(body).then(async res => {
         if (res.message) message.error(res.message);
         else {
-          const { block_num: blockNum } = res.result;
+          const blockNumber = await getLastBlockNum();
           const creator = getAuthenticatedUserName(state);
 
-          busyAPI.instance.sendAsync(subscribeMethod, [creator, blockNum, subscribeTypes.posts]);
+          busyAPI.instance.sendAsync(subscribeMethod, [creator, blockNumber, subscribeTypes.posts]);
           busyAPI.instance.subscribe((response, mess) => {
-            if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
+            if (
+              subscribeTypes.posts === mess.type &&
+              mess.notification.blockParsed === blockNumber
+            ) {
               history.push(`/${formData.domain}.${formData.parent}/configuration`);
               dispatch(getOwnWebsite());
             }
@@ -93,13 +97,12 @@ export const activateWebsite = id => (dispatch, getState, { steemConnectAPI, bus
   const name = getAuthenticatedUserName(getState());
 
   dispatch({ type: CHANGE_STATUS_WEBSITE, id });
-  steemConnectAPI.activateWebsite(name, id).then(res => {
-    busyAPI.instance.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
+  steemConnectAPI.activateWebsite(name, id).then(async () => {
+    const blockNumber = await getLastBlockNum();
+
+    busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
     busyAPI.instance.subscribe((response, mess) => {
-      if (
-        subscribeTypes.posts === mess.type &&
-        mess.notification.blockParsed === res.result.block_num
-      ) {
+      if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNumber) {
         dispatch(getManageInfo(name));
       }
     });
@@ -110,13 +113,12 @@ export const suspendWebsite = id => (dispatch, getState, { steemConnectAPI, busy
   const name = getAuthenticatedUserName(getState());
 
   dispatch({ type: CHANGE_STATUS_WEBSITE, id });
-  steemConnectAPI.suspendWebsite(name, id).then(res => {
-    busyAPI.instance.sendAsync(subscribeMethod, [name, res.result.block_num, subscribeTypes.posts]);
+  steemConnectAPI.suspendWebsite(name, id).then(async () => {
+    const blockNumber = await getLastBlockNum();
+
+    busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
     busyAPI.instance.subscribe((response, mess) => {
-      if (
-        subscribeTypes.posts === mess.type &&
-        mess.notification.blockParsed === res.result.block_num
-      ) {
+      if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNumber) {
         dispatch(getManageInfo(name));
       }
     });
@@ -132,18 +134,13 @@ export const deleteWebsite = item => (dispatch, getState, { busyAPI }) => {
   dispatch({ type: DELETE_WEBSITE, id: item.host });
 
   return ApiClient.deleteSite(name, item.host)
-    .then(res => {
+    .then(async res => {
       if (res.result) {
-        busyAPI.instance.sendAsync(subscribeMethod, [
-          name,
-          res.result.block_num,
-          subscribeTypes.posts,
-        ]);
+        const blockNumber = await getLastBlockNum();
+
+        busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
         busyAPI.instance.subscribe((response, mess) => {
-          if (
-            subscribeTypes.posts === mess.type &&
-            mess.notification.blockParsed === res.result.block_num
-          ) {
+          if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNumber) {
             dispatch(getManageInfo(name));
             dispatch(getOwnWebsite());
           }
@@ -235,11 +232,8 @@ export const addWebAdministrator = (host, account) => (dispatch, getState, { ste
     .addWebsiteAdministrators(userName, host, [account.name])
     .then(async res => {
       if (!res.message) {
-        const data = await res.result;
-
         return dispatch(
           getChangesInAccessOption(
-            get(data, 'block_num'),
             userName,
             host,
             ADD_WEBSITE_ADMINISTRATOR,
@@ -310,11 +304,8 @@ export const addWebsiteModerators = (host, account) => (
     .addWebsiteModerators(userName, host, [account.name])
     .then(async res => {
       if (!res.message) {
-        const data = await res.result;
-
         return dispatch(
           getChangesInAccessOption(
-            get(data, 'block_num'),
             userName,
             host,
             ADD_WEBSITE_MODERATORS,
@@ -381,11 +372,8 @@ export const addWebAuthorities = (host, account) => (dispatch, getState, { steem
     .addWebsiteAuthorities(userName, host, [account.name])
     .then(async res => {
       if (!res.message) {
-        const data = await res.result;
-
         return dispatch(
           getChangesInAccessOption(
-            get(data, 'block_num'),
             userName,
             host,
             ADD_WEBSITE_AUTHORITIES,
@@ -427,7 +415,7 @@ export const deleteWebAuthorities = (host, name) => (dispatch, getState, { steem
 
 export const SAVE_WEBSITE_SETTINGS = createAsyncActionType('@website/SAVE_WEBSITE_SETTINGS');
 
-export const saveWebsiteSettings = (host, googleAnalyticsTag, beneficiary, currency) => (
+export const saveWebsiteSettings = (host, googleAnalyticsTag, beneficiary, currency, language) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -445,6 +433,7 @@ export const saveWebsiteSettings = (host, googleAnalyticsTag, beneficiary, curre
         googleAnalyticsTag,
         beneficiary,
         currency,
+        language,
       ),
     },
   });
@@ -595,18 +584,11 @@ export const muteUser = (follower, following, action, host) => (
     meta: following,
   });
 
-  return steemConnectAPI.muteUser(follower, following, action).then(data => {
+  return steemConnectAPI.muteUser(follower, following, action).then(() => {
     dispatch(
-      getChangesInAccessOption(
-        get(data, ['result', 'block_num']),
-        follower,
-        host,
-        type,
-        ApiClient.getRestrictionsInfo,
-        {
-          following,
-        },
-      ),
+      getChangesInAccessOption(follower, host, type, ApiClient.getRestrictionsInfo, {
+        following,
+      }),
     );
   });
 };

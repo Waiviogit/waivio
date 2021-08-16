@@ -3,8 +3,9 @@ import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { setBeneficiaryOwner } from '../searchStore/searchActions';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
 import { getCurrentCurrency } from './appSelectors';
+import { setLocale } from '../settingsStore/settingsActions';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
@@ -33,21 +34,21 @@ export const GET_CRYPTO_PRICE_HISTORY = createAsyncActionType('@app/GET_CRYPTOS_
 export const REFRESH_CRYPTO_PRICE_HISTORY = '@app/REFRESH_CRYPTO_PRICE_HISTORY';
 export const refreshCryptoPriceHistory = createAction(REFRESH_CRYPTO_PRICE_HISTORY);
 
-export const getRate = () => (dispatch, getState, { steemAPI }) => {
+export const getRate = () => dispatch => {
   dispatch({
     type: RATE_REQUEST.ACTION,
     payload: {
-      promise: steemAPI
-        .sendAsync('get_current_median_history_price', [])
-        .then(resp => parseFloat(resp.base) / parseFloat(resp.quote)),
+      promise: ApiClient.getCurrentMedianHistory().then(
+        resp => parseFloat(resp.base) / parseFloat(resp.quote),
+      ),
     },
   });
 };
 
-export const getRewardFund = () => (dispatch, getSelection, { steemAPI }) =>
+export const getRewardFund = () => dispatch =>
   dispatch({
     type: GET_REWARD_FUND,
-    payload: { promise: steemAPI.sendAsync('get_reward_fund', ['post']) },
+    payload: { promise: ApiClient.getRewardFund() },
   });
 
 export const getCryptoPriceHistory = (symbols, refresh = false) => dispatch => {
@@ -99,7 +100,9 @@ export const setIsMobile = createAction(SET_IS_MOBILE);
 
 export const GET_CURRENT_APP_SETTINGS = createAsyncActionType('@app/GET_CURRENT_APP_SETTINGS');
 
-export const getCurrentAppSettings = () => dispatch => {
+export const getCurrentAppSettings = () => (dispatch, getState) => {
+  const isAuth = getIsAuthenticated(getState());
+
   dispatch({ type: GET_CURRENT_APP_SETTINGS.START });
 
   return ApiClient.getCurrentAppSettings()
@@ -118,15 +121,9 @@ export const getCurrentAppSettings = () => dispatch => {
       });
       const { account, percent: weight } = res.beneficiary;
 
-      dispatch(
-        setBeneficiaryOwner([
-          {
-            account,
-            weight,
-          },
-        ]),
-      );
+      if (!isAuth) dispatch(setLocale(res.language));
 
+      dispatch(setBeneficiaryOwner([{ account, weight }]));
       dispatch(getCurrentCurrencyRate(res.currency));
 
       return res;

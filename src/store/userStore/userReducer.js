@@ -1,4 +1,4 @@
-import { get, keyBy, orderBy, slice } from 'lodash';
+import { keyBy, orderBy, slice } from 'lodash';
 import * as authActions from '../authStore/authActions';
 import * as userActions from './userActions';
 import * as wobjActions from '../wObjectStore/wobjActions';
@@ -67,7 +67,6 @@ export default function userReducer(state = initialState, action) {
         fetchFollowListError: true,
       };
 
-    // eslint-disable-next-line no-case-declarations
     case userActions.GET_FOLLOWING_SUCCESS:
       const following = {};
 

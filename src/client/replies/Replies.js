@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Helmet from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import {
@@ -19,6 +18,7 @@ import PostModal from '../post/PostModalContainer';
 import requiresLogin from '../auth/requiresLogin';
 import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
 import { getFeed } from '../../store/feedStore/feedSelectors';
+import Seo from '../SEO/Seo';
 
 class Replies extends React.Component {
   static propTypes = {
@@ -65,9 +65,7 @@ class Replies extends React.Component {
 
     return (
       <div className="shifted">
-        <Helmet>
-          <title>{intl.formatMessage({ id: 'replies', defaultMessage: 'Replies' })} - Waivio</title>
-        </Helmet>
+        <Seo title={intl.formatMessage({ id: 'replies' })} />
         <div className="feed-layout container">
           <Affix className="leftContainer" stickPosition={77}>
             <div className="left">

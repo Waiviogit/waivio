@@ -9,8 +9,6 @@ import { getUserLocation } from '../../../store/userStore/userSelectors';
 
 import './Map.less';
 
-export const defaultCoords = [37.0902, 95.0235];
-
 @connect(
   state => ({
     userLocation: getUserLocation(state),

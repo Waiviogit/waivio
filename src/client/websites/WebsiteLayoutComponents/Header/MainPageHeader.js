@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
-import Avatar from '../../../components/Avatar';
 import AuthUserBar from '../../../components/AuthUserBar/AuthUserBar';
 
 const MainPageHeader = () => {
@@ -18,7 +17,7 @@ const MainPageHeader = () => {
       </div>
       <div className="MainPageHeader__listLink">
         <Link to="/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh">Reviews</Link>
-        <Link to="/map">map</Link>
+        <Link to="/map?showPanel=true">map</Link>
         <Link to="/object/mds-dining-gifts/page#voy-business-3-0">partners</Link>
         {username ? (
           <AuthUserBar />

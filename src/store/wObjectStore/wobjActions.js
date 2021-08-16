@@ -25,6 +25,7 @@ import {
   getObject as getObjectState,
 } from './wObjectSelectors';
 import { getUsedLocale } from '../appStore/appSelectors';
+import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -202,9 +203,8 @@ export const getChangedWobjectField = (
   fieldName,
   author,
   permlink,
-  blockNum,
   isNew = false,
-) => (dispatch, getState, { busyAPI }) => {
+) => async (dispatch, getState, { busyAPI }) => {
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
@@ -223,8 +223,11 @@ export const getChangedWobjectField = (
       meta: { isNew },
     });
 
-  busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNum, subscribeTypes.votes]);
-  busyAPI.instance.subscribeBlock(subscribeTypes.votes, blockNum, subscribeCallback);
+  const blockNumber = await getLastBlockNum();
+
+  if (!blockNumber) throw new Error('Something went wrong');
+  busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.votes]);
+  busyAPI.instance.subscribeBlock(subscribeTypes.votes, blockNumber, subscribeCallback);
 };
 
 export const voteAppends = (
@@ -255,20 +258,9 @@ export const voteAppends = (
   });
 
   return steemConnectAPI[currentMethod](voter, author, permlink, weight)
-    .then(async data => {
-      const res = isGuest ? await data.json() : data.result;
-
-      return dispatch(
-        getChangedWobjectField(
-          wobj.author_permlink,
-          fieldName,
-          author,
-          permlink,
-          res.block_num,
-          isNew,
-        ),
-      );
-    })
+    .then(async () =>
+      dispatch(getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew)),
+    )
     .catch(e => {
       message.error(e.error_description);
 
@@ -390,22 +382,17 @@ export const wobjectBellNotification = followingWobj => (
     });
 };
 
-export const getWobjectExpertise = (newsFilter = {}) => (dispatch, getState) => {
+export const getWobjectExpertise = (newsFilter = {}, authorPermlink) => (dispatch, getState) => {
   const state = getState();
 
   const username = getAuthenticatedUserName(state);
   const wObject = getObjectState(state);
+  const objAuthorPermlink = authorPermlink || wObject.author_permlink;
 
   return dispatch({
     type: GET_WOBJECT_EXPERTISE.ACTION,
     payload: {
-      promise: getWobjectsExpertiseWithNewsFilter(
-        username,
-        wObject.author_permlink,
-        0,
-        5,
-        newsFilter,
-      ),
+      promise: getWobjectsExpertiseWithNewsFilter(username, objAuthorPermlink, 0, 5, newsFilter),
     },
   });
 };
