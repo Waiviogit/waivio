@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isEmpty, get, map, debounce, isEqual, size, reverse } from 'lodash';
 import { FormattedMessage } from 'react-intl';
@@ -13,6 +13,7 @@ import {
   setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
+  setShowSearchResult,
   setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../../../../store/searchStore/searchActions';
@@ -57,9 +58,10 @@ import {
   getWobjectsPoint,
 } from '../../../../store/websiteStore/websiteSelectors';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
+import Seo from '../../../SEO/Seo';
+import MapControllers from '../../../widgets/MapControllers/MapControllers';
 
 import './WebsiteBody.less';
-import Seo from '../../../SEO/Seo';
 
 const WebsiteBody = props => {
   const [boundsParams, setBoundsParams] = useState({
@@ -89,28 +91,27 @@ const WebsiteBody = props => {
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
 
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
-
-  if (queryCenter) {
-    queryCenter = queryCenter.split(',').map(item => Number(item));
-  }
-
-  const setBoundsWithDinamycArg = (center, zoom) => {
+  const setBoundsWithDinamycArg = (coordinates, zoom) => {
     if (props.query.get('showPanel')) {
-      const bounds = mapRef.current.getBounds(center, zoom);
+      const bounds = mapRef.current.getBounds(coordinates, zoom);
 
-      setBoundsParams({
+      props.setMapForSearch({
+        coordinates,
         topPoint: [bounds.ne[1], bounds.ne[0]],
         bottomPoint: [bounds.sw[1], bounds.sw[0]],
       });
     }
   };
 
+  if (queryCenter) {
+    queryCenter = queryCenter.split(',').map(item => Number(item));
+  }
+
   const getCoordinatesForMap = async () => {
     if (!isEmpty(queryCenter)) {
       const queryZoom = props.query.get('zoom');
 
       setCurrMapConfig(queryCenter, +queryZoom);
-      setBoundsWithDinamycArg(queryCenter, +queryZoom);
     } else {
       const currLocation = await props.getCoordinates();
       const res = await props.getCurrentAppSettings();
@@ -123,7 +124,6 @@ const WebsiteBody = props => {
         : center;
 
       setCurrMapConfig(center, zoom);
-      setBoundsWithDinamycArg(center, zoom);
     }
   };
 
@@ -145,6 +145,8 @@ const WebsiteBody = props => {
   useEffect(() => {
     const query = props.location.search;
     const handleResize = () => setHeight(window.innerHeight);
+
+    if (props.query.get('showPanel')) props.setShowSearchResult(true);
 
     setHeight(window.innerHeight);
 
@@ -168,7 +170,7 @@ const WebsiteBody = props => {
   }, []);
 
   useEffect(() => {
-    if (props.query.get('showPanel')) {
+    if (props.isShowResult) {
       handleSetMapForSearch();
     } else {
       props.setMapForSearch({});
@@ -220,6 +222,10 @@ const WebsiteBody = props => {
   const description = get(aboutObject, 'description', '');
   const objName = getObjectName(aboutObject);
   const title = get(aboutObject, 'title', '') || objName;
+
+  useLayoutEffect(() => {
+    setBoundsWithDinamycArg();
+  });
 
   const reloadSearchList = () => {
     handleSetMapForSearch();
@@ -324,60 +330,21 @@ const WebsiteBody = props => {
 
   const incrementZoom = () => setArea({ ...area, zoom: area.zoom + 1 });
   const decrementZoom = () => setArea({ ...area, zoom: area.zoom - 1 });
+  const setLocationFromNavigator = position => {
+    const { latitude, longitude } = position.coords;
 
-  const setCurrentLocation = () => {
-    const nav = navigator.geolocation;
-
-    nav.getCurrentPosition(
-      position => {
-        const { latitude, longitude } = position.coords;
-
-        setArea({
-          ...area,
-          center: [latitude, longitude],
-        });
-        setShowLocation(true);
-        props.putUserCoordinates({ latitude, longitude });
-      },
-      () => {
-        setShowLocation(false);
-        setArea({
-          ...area,
-          center: [props.userLocation.lat, props.userLocation.lon],
-        });
-      },
-    );
+    setArea({ ...area, center: [latitude, longitude] });
+    setShowLocation(true);
+    props.putUserCoordinates({ latitude, longitude });
   };
 
-  const zoomButtonsLayout = () => (
-    <div className="WebsiteBodyControl">
-      <div className="WebsiteBodyControl__gps">
-        <div
-          role="presentation"
-          className="WebsiteBodyControl__locateGPS"
-          onClick={setCurrentLocation}
-        >
-          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
-        </div>
-      </div>
-      <div className="WebsiteBodyControl__zoom">
-        <div
-          role="presentation"
-          className="WebsiteBodyControl__zoom__button"
-          onClick={incrementZoom}
-        >
-          +
-        </div>
-        <div
-          role="presentation"
-          className="WebsiteBodyControl__zoom__button"
-          onClick={decrementZoom}
-        >
-          -
-        </div>
-      </div>
-    </div>
-  );
+  const setLocationFromApi = () => {
+    setShowLocation(false);
+    setArea({
+      ...area,
+      center: [props.userLocation.lat, props.userLocation.lon],
+    });
+  };
 
   const handleSetFiltersInUrl = (category, value) => {
     if (value === 'all') props.query.delete(category);
@@ -435,7 +402,13 @@ const WebsiteBody = props => {
                 :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
               </Link>
             )}
-            {zoomButtonsLayout()}
+            <MapControllers
+              className={'WebsiteBodyControl'}
+              decrementZoom={decrementZoom}
+              incrementZoom={incrementZoom}
+              successCallback={setLocationFromNavigator}
+              rejectCallback={setLocationFromApi}
+            />
             <Map
               center={area.center}
               height={Number(mapHeight)}
@@ -520,6 +493,7 @@ WebsiteBody.propTypes = {
   setFilterFromQuery: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
+  setShowSearchResult: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
   activeFilters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   counter: PropTypes.number.isRequired,
@@ -572,5 +546,6 @@ export default connect(
     setShowReload,
     setSearchInBox,
     setFilterFromQuery,
+    setShowSearchResult,
   },
 )(withRouter(WebsiteBody));
