@@ -122,10 +122,6 @@ class Wrapper extends React.PureComponent {
   };
 
   static fetchData({ store, req }) {
-    const appUrl = url.format({
-      protocol: req.protocol,
-      host: req.get('host'),
-    });
     const state = store.getState();
     let activeLocale = getLocale(state);
 
@@ -136,7 +132,10 @@ class Wrapper extends React.PureComponent {
 
     store.dispatch(login());
 
-    return Promise.all([store.dispatch(setAppUrl(appUrl)), store.dispatch(setUsedLocale(lang))]);
+    return Promise.all([
+      store.dispatch(setAppUrl(req.hostname)),
+      store.dispatch(setUsedLocale(lang)),
+    ]);
   }
 
   constructor(props) {
@@ -156,12 +155,8 @@ class Wrapper extends React.PureComponent {
     const isWidget = querySelectorSearchParams.get('display');
     const userName = querySelectorSearchParams.get('userName');
 
-    if (ref) {
-      setSessionData('refUser', ref);
-    }
-    if (userName) {
-      setSessionData('userName', userName);
-    }
+    if (ref) setSessionData('refUser', ref);
+    if (userName) setSessionData('userName', userName);
     if (isWidget) {
       /* Check on new tab from widget:
         the page, when switching to a new tab, should not remain a widget
@@ -209,13 +204,10 @@ class Wrapper extends React.PureComponent {
   componentDidUpdate() {
     const widgetLink = getSessionData('isWidget');
     const userName = getSessionData('userName');
-
-    if (this.props.nightmode) {
-      document.body.classList.add('nightmode');
-    } else {
-      document.body.classList.remove('nightmode');
-    }
     const refName = getSessionData('refUser');
+
+    if (this.props.nightmode) document.body.classList.add('nightmode');
+    else document.body.classList.remove('nightmode');
 
     if (this.props.isAuthenticated && refName) {
       const currentRefName = handleRefName(refName);
@@ -223,9 +215,8 @@ class Wrapper extends React.PureComponent {
       this.props.handleRefAuthUser(this.props.username, currentRefName, this.props.isGuest);
       removeSessionData('refUser');
     }
-    if (this.props.isAuthenticated && widgetLink && userName) {
+    if (this.props.isAuthenticated && widgetLink && userName)
       removeSessionData('userName', 'isWidget');
-    }
   }
 
   async loadLocale(locale) {

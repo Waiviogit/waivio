@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { setGuestLoginData } from '../../helpers/localStorageHelpers';
@@ -15,12 +15,21 @@ import { getCurrentHost } from '../../../store/appStore/appSelectors';
 
 import styles from './styles';
 import './WebsiteSignIn.less';
+import {
+  getFollowing,
+  getFollowingObjects,
+  getNotifications,
+} from '../../../store/userStore/userActions';
+import { busyLogin, getAuthGuestBalance, login } from '../../../store/authStore/authActions';
+import { getRate, getRewardFund } from '../../../store/appStore/appActions';
+import { getRebloggedList } from '../../../store/reblogStore/reblogActions';
 
 const WebsiteSignIn = props => {
   const [loading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
   const currentHost = useSelector(getCurrentHost);
   const query = new URLSearchParams(props.location.search);
-  const url = query.get('host') || currentHost;
+  const url = query.get('host') || currentHost + location.pathname;
   const urlObj = new URL(url);
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
@@ -38,7 +47,23 @@ const WebsiteSignIn = props => {
 
       if (res) {
         setGuestLoginData(response.accessToken, socialNetwork, id);
-        window.location.href = `${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
+        if (query.get('host')) {
+          window.location.href = `${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
+        } else {
+          dispatch(login(response.accessToken, socialNetwork)).then(() => {
+            setIsLoading(false);
+            batch(() => {
+              dispatch(getFollowing());
+              dispatch(getFollowingObjects());
+              dispatch(getNotifications());
+              dispatch(busyLogin());
+              dispatch(getRewardFund());
+              dispatch(getRebloggedList());
+              dispatch(getRate());
+              dispatch(getAuthGuestBalance());
+            });
+          });
+        }
       } else {
         let image = '';
 
