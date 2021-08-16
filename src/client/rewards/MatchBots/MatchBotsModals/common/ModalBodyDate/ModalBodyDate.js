@@ -11,7 +11,9 @@ const ModalBodyDate = ({ intl, onChange, value }) => {
 
   return (
     <div className="modalBodyDate">
-      <p className="modalBodyDate_title">{intl.formatMessage({ id: 'matchBot_expiry_date' })}</p>
+      <p className="modalBodyDate_title">
+        {intl.formatMessage({ id: 'matchBot_expiry_date', defaultMessage: 'Expiry date' })}
+      </p>
       <DatePicker allowClear={false} onChange={onChange} disabledDate={disableDate} value={value} />
     </div>
   );

@@ -29,9 +29,12 @@ const MatchBotsAuthors = ({
     <div className="MatchBots">
       <MatchBotsTitle
         botType={MATCH_BOTS_TYPES.AUTHORS}
-        botTitle={intl.formatMessage({ id: 'matchBot_title_authors' })}
-        turnOffTitle={intl.formatMessage({ id: 'matchBot_turn_off' })}
-        turnOnTitle={intl.formatMessage({ id: 'matchBot_turn_on' })}
+        botTitle={intl.formatMessage({
+          id: 'matchBot_title_authors',
+          defaultMessage: ' Authors match bot',
+        })}
+        turnOffTitle={intl.formatMessage({ id: 'matchBot_turn_off', defaultMessage: 'Turn off' })}
+        turnOnTitle={intl.formatMessage({ id: 'matchBot_turn_on', defaultMessage: 'Turn on' })}
       />
       <MatchBotsAuthorsContent isEngLocale={isEngLocale} />
       <MatchBotsService

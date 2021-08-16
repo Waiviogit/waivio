@@ -45,8 +45,15 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) =>
       <ModalBodySlider
         sliderValue={inputsValue.manaValue}
         handleChangeSlider={handleChangeSliderMana}
-        sliderTitle={intl.formatMessage({ id: 'match_bot_slider_title_mana' })}
-        sliderDescription={intl.formatMessage({ id: 'match_bot_slider_description_mana' })}
+        sliderTitle={intl.formatMessage({
+          id: 'match_bot_slider_title_mana',
+          defaultMessage: 'Min Voting Power (mana):',
+        })}
+        sliderDescription={intl.formatMessage({
+          id: 'match_bot_slider_description_mana',
+          defaultMessage:
+            'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting (typically, 5 min after the post is published).',
+        })}
       />
       <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredDate} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />

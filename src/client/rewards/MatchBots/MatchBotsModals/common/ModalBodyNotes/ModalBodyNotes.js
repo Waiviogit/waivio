@@ -18,7 +18,9 @@ const ModalBodyNotes = ({ intl, onChange, textAreaValue }) => {
 
   return (
     <div className="modalBodyNotes">
-      <p className="modalBodyNotes_title">{intl.formatMessage({ id: 'match_bot_notes' })}</p>
+      <p className="modalBodyNotes_title">
+        {intl.formatMessage({ id: 'match_bot_notes', defaultMessage: 'Notes:' })}
+      </p>
       <Input.TextArea maxLength={255} value={value} onChange={handleChange} />
     </div>
   );

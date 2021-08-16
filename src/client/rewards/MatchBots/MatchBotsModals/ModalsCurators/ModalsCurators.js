@@ -50,10 +50,18 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
       {isAddModal ? (
         <MatchBotsBtn
           onClick={handleToggleModal}
-          name={intl.formatMessage({ id: 'matchBot_curator_btn_add' })}
+          name={intl.formatMessage({
+            id: 'matchBot_curator_btn_add',
+            defaultMessage: 'Add curator',
+          })}
         />
       ) : (
-        <p onClick={handleToggleModal}>{intl.formatMessage({ id: 'edit' })}</p>
+        <p onClick={handleToggleModal}>
+          {intl.formatMessage({
+            id: 'edit',
+            defaultMessage: 'Edit',
+          })}
+        </p>
       )}
       <Modal
         footer={null}
@@ -64,7 +72,10 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
             intl.formatMessage({ id: `match_bots_${modalType}_curator` })
           ) : (
             <span>
-              {intl.formatMessage({ id: 'matchBot_title_edit_rule_curator' })}
+              {intl.formatMessage({
+                id: 'matchBot_title_edit_rule_curator',
+                defaultMessage: 'Edit match bot rules for curator',
+              })}
               <Link to={`/@${bot.name}`}>{` @${bot.name}`}</Link>
             </span>
           )
@@ -89,7 +100,10 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
           <Modal
             visible={isModalOpenConfirmDelete}
             onCancel={handleToggleModalDelete}
-            title={intl.formatMessage({ id: 'match_bots_delete_confirmation' })}
+            title={intl.formatMessage({
+              id: 'match_bots_delete_confirmation',
+              defaultMessage: 'Delete confirmation',
+            })}
             footer={null}
           >
             <ModalBodyDelete
@@ -102,7 +116,10 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
             onOk={handleAddBot}
             visible={isModalOpenConfirmEdit}
             onCancel={handleToggleModalEdit}
-            title={intl.formatMessage({ id: 'match_bots_delete_confirmation' })}
+            title={intl.formatMessage({
+              id: 'match_bots_delete_confirmation',
+              defaultMessage: 'Delete confirmation',
+            })}
           >
             <ModalBodyConfirm name={bot.name} />
           </Modal>

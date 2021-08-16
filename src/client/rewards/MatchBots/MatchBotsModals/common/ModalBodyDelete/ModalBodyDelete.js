@@ -9,16 +9,19 @@ import './ModalBodyDelete.less';
 const ModalBodyDelete = ({ name, intl, handleCloseModal, handleDeleteBot }) => (
   <div className="deleteConfirmation">
     <span>
-      {intl.formatMessage({ id: 'match_bots_delete_message' })}
+      {intl.formatMessage({
+        id: 'match_bots_delete_message',
+        defaultMessage: 'Do you want to delete match bot rule for ',
+      })}
       <Link to={`/@${name}`}>{` @${name}`}</Link>?
     </span>
     <div className="modalFooter_buttons">
       <Button disabled={false} onClick={handleCloseModal}>
-        {intl.formatMessage({ id: 'matchBot_btn_cancel' })}
+        {intl.formatMessage({ id: 'matchBot_btn_cancel', defaultMessage: 'Cancel' })}
       </Button>
       <div className="modalFooter__button-delete">
         <Button disabled={false} onClick={handleDeleteBot}>
-          {intl.formatMessage({ id: 'matchBot_btn_delete' })}
+          {intl.formatMessage({ id: 'matchBot_btn_delete', defaultMessage: 'Delete' })}
         </Button>
       </div>
     </div>

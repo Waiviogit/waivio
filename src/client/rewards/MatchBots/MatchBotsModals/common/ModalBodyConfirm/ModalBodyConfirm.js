@@ -5,7 +5,10 @@ import { injectIntl } from 'react-intl';
 
 const ModalBodyConfirm = ({ intl, name }) => (
   <span>
-    {intl.formatMessage({ id: 'match_bots_edit_message' })}
+    {intl.formatMessage({
+      id: 'match_bots_edit_message',
+      defaultMessage: 'Do you want to save the changes for ',
+    })}
     <Link to={`/@${name}`}>{` @${name}`}</Link>?
   </span>
 );

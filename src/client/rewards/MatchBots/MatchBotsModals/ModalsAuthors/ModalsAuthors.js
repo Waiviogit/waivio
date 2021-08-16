@@ -50,10 +50,12 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
       {isAddModal ? (
         <MatchBotsBtn
           onClick={handleToggleModal}
-          name={intl.formatMessage({ id: 'matchBot_author_btn_add' })}
+          name={intl.formatMessage({ id: 'matchBot_author_btn_add', defaultMessage: 'Add author' })}
         />
       ) : (
-        <p onClick={handleToggleModal}>{intl.formatMessage({ id: 'edit' })}</p>
+        <p onClick={handleToggleModal}>
+          {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+        </p>
       )}
       <Modal
         footer={null}
@@ -61,10 +63,18 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
         onCancel={handleToggleModal}
         title={
           isAddModal ? (
-            <span>{intl.formatMessage({ id: `match_bots_add_author` })}</span>
+            <span>
+              {intl.formatMessage({
+                id: 'match_bots_add_author',
+                defaultMessage: 'Add new author',
+              })}
+            </span>
           ) : (
             <span>
-              {intl.formatMessage({ id: 'matchBot_title_edit_rule_author' })}
+              {intl.formatMessage({
+                id: 'matchBot_title_edit_rule_author',
+                defaultMessage: 'Edit match bot rules for author',
+              })}
               <Link to={`/@${bot.name}`}>{` @${bot.name}`}</Link>
             </span>
           )
@@ -89,7 +99,10 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
           <Modal
             visible={isModalOpenConfirmDelete}
             onCancel={handleToggleModalDelete}
-            title={intl.formatMessage({ id: 'match_bots_delete_confirmation' })}
+            title={intl.formatMessage({
+              id: 'match_bots_delete_confirmation',
+              defaultMessage: 'Delete confirmation',
+            })}
             footer={null}
           >
             <ModalBodyDelete

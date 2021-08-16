@@ -32,14 +32,28 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => 
       <ModalBodySlider
         sliderValue={inputsValue.voteValue}
         handleChangeSlider={handleChangeSliderVote}
-        sliderTitle={intl.formatMessage({ id: 'match_bot_slider_title_vote' })}
-        sliderDescription={intl.formatMessage({ id: 'match_bot_slider_description_vote' })}
+        sliderTitle={intl.formatMessage({
+          id: 'match_bot_slider_title_vote',
+          defaultMessage: 'Specify the value for the vote:',
+        })}
+        sliderDescription={intl.formatMessage({
+          id: 'match_bot_slider_description_vote',
+          defaultMessage:
+            'The Authors match bot only publishes upvotes with estimated value of 0.01 HBD or more.',
+        })}
       />
       <ModalBodySlider
         sliderValue={inputsValue.manaValue}
         handleChangeSlider={handleChangeSliderMana}
-        sliderTitle={intl.formatMessage({ id: 'match_bot_slider_title_mana' })}
-        sliderDescription={intl.formatMessage({ id: 'match_bot_slider_description_mana' })}
+        sliderTitle={intl.formatMessage({
+          id: 'match_bot_slider_title_mana',
+          defaultMessage: 'Min Voting Power (mana):',
+        })}
+        sliderDescription={intl.formatMessage({
+          id: 'match_bot_slider_description_mana',
+          defaultMessage:
+            'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting (typically, 5 min after the post is published).',
+        })}
       />
       <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredDate} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />
