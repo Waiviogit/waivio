@@ -2,10 +2,10 @@ import { connect } from 'react-redux';
 
 import MatchBotsAuthors from './MatchBotsAuthors';
 import { getIsEngLocale } from '../../../../store/appStore/appSelectors';
-import { getMatchBots } from '../../../../store/rewardsStore/rewardsActions';
 import { getIsConnectMatchBot } from '../../../../store/authStore/authSelectors';
 import { getMatchBotsSelector } from '../../../../store/rewardsStore/rewardsSelectors';
 import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
+import { clearMatchBots, getMatchBots } from '../../../../store/rewardsStore/rewardsActions';
 
 const mapStateToProps = state => ({
   isEngLocale: getIsEngLocale(state),
@@ -14,6 +14,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  clearMatchBots: () => dispatch(clearMatchBots()),
   getMatchBots: () => dispatch(getMatchBots(MATCH_BOTS_NAMES.AUTHORS)),
 });
 

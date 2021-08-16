@@ -12,6 +12,7 @@ import {
   REMOVE_TOGGLE_FLAG,
   CHECK_EXPIRED_PAYMENTS,
   GET_MATCH_BOTS,
+  CLEAR_MATCH_BOTS,
 } from './rewardsActions';
 import { GET_RESERVED_COMMENTS_SUCCESS } from '../commentsStore/commentsActions';
 
@@ -174,6 +175,7 @@ const rewardsReducer = (state = initialState, action) => {
         matchBots: action.payload,
       };
     }
+    case CLEAR_MATCH_BOTS:
     case GET_MATCH_BOTS.ERROR: {
       return {
         ...state,

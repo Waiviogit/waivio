@@ -17,10 +17,7 @@ const ModalFooter = ({
   <div className="modalFooter">
     <div className="modalFooter_buttons">
       <Button disabled={false} onClick={handleCloseModal}>
-        {intl.formatMessage({
-          id: 'matchBot_btn_cancel',
-          defaultMessage: 'Cancel',
-        })}
+        {intl.formatMessage({ id: 'matchBot_btn_cancel' })}
       </Button>
       {isAddModal ? (
         <Button type="primary" disabled={false} onClick={handleAddBot}>
@@ -35,18 +32,11 @@ const ModalFooter = ({
     {!isAddModal && (
       <div className="modalFooter__edit-footer">
         <div className="modalFooter__text f9">
-          {intl.formatMessage({
-            id: 'matchBot_remove_match_bot_rule_click_button',
-            defaultMessage: 'To remove the match bot rule, click the delete button',
-          })}
-          :
+          {intl.formatMessage({ id: 'matchBot_remove_match_bot_rule_click_button' })}:
         </div>
         <div className="modalFooter__button-delete">
           <Button disabled={false} onClick={handleDeleteConfirmation}>
-            {intl.formatMessage({
-              id: 'matchBot_btn_delete_rule',
-              defaultMessage: 'Delete rule',
-            })}
+            {intl.formatMessage({ id: 'matchBot_btn_delete_rule' })}
           </Button>
         </div>
       </div>

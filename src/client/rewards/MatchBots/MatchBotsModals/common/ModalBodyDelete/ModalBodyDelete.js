@@ -14,17 +14,11 @@ const ModalBodyDelete = ({ name, intl, handleCloseModal, handleDeleteBot }) => (
     </span>
     <div className="modalFooter_buttons">
       <Button disabled={false} onClick={handleCloseModal}>
-        {intl.formatMessage({
-          id: 'matchBot_btn_cancel',
-          defaultMessage: 'Cancel',
-        })}
+        {intl.formatMessage({ id: 'matchBot_btn_cancel' })}
       </Button>
       <div className="modalFooter__button-delete">
         <Button disabled={false} onClick={handleDeleteBot}>
-          {intl.formatMessage({
-            id: 'matchBot_btn_delete',
-            defaultMessage: 'Delete',
-          })}
+          {intl.formatMessage({ id: 'matchBot_btn_delete' })}
         </Button>
       </div>
     </div>

@@ -69,7 +69,6 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
             </span>
           )
         }
-        okText={intl.formatMessage({ id: `matchBot_curator_btn_${modalType}` })}
       >
         <ModalCuratorsBody
           isAddModal={isAddModal}

@@ -8,29 +8,34 @@ import MatchBotsService from '../MatchBotsService';
 import ModalsAuthors from '../MatchBotsModals/ModalsAuthors';
 import MatchBotsAuthorsContent from './MatchBotsAuthorsContent';
 import { MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
-import getMatchBotMessageData from '../../MatchBotSponsors/matchBotMessageData';
 
 import '../MatchBots.less';
 
-const MatchBotsAuthors = ({ intl, isEngLocale, isAuthority, getMatchBots, matchBots }) => {
+const MatchBotsAuthors = ({
+  intl,
+  isEngLocale,
+  isAuthority,
+  getMatchBots,
+  matchBots,
+  clearMatchBots,
+}) => {
   React.useEffect(() => {
     getMatchBots();
+
+    return () => clearMatchBots();
   }, []);
-  const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
-  const messageData = getMatchBotMessageData(localizer);
 
   return (
     <div className="MatchBots">
       <MatchBotsTitle
         botType={MATCH_BOTS_TYPES.AUTHORS}
-        botTitle={messageData.titleBotsAuthors}
-        turnOffTitle={messageData.turnOff}
-        turnOnTitle={messageData.turnOn}
+        botTitle={intl.formatMessage({ id: 'matchBot_title_authors' })}
+        turnOffTitle={intl.formatMessage({ id: 'matchBot_turn_off' })}
+        turnOnTitle={intl.formatMessage({ id: 'matchBot_turn_on' })}
       />
-      <MatchBotsAuthorsContent messageData={messageData} isEngLocale={isEngLocale} />
+      <MatchBotsAuthorsContent isEngLocale={isEngLocale} />
       <MatchBotsService
-        botName="Authors"
-        messageData={messageData}
+        botName="authors"
         isAuthority={isAuthority}
         botType={MATCH_BOTS_TYPES.AUTHORS}
       />
@@ -45,6 +50,7 @@ MatchBotsAuthors.propTypes = {
   isEngLocale: PropTypes.bool.isRequired,
   isAuthority: PropTypes.bool.isRequired,
   getMatchBots: PropTypes.func.isRequired,
+  clearMatchBots: PropTypes.func.isRequired,
   matchBots: PropTypes.arrayOf(PropTypes.shape()),
 };
 

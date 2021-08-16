@@ -3,10 +3,13 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 
+export const CLEAR_MATCH_BOTS = '@rewards/CLEAR_MATCH_BOTS';
 export const SET_MATCH_BOT_RULE = createAsyncActionType('@rewards/SET_MATCH_BOT_RULE');
 export const GET_MATCH_BOTS = createAsyncActionType('@rewards/GET_MATCH_BOTS');
 export const SET_MATCH_BOT = createAsyncActionType('@rewards/SET_MATCH_BOT');
 export const UNSET_MATCH_BOT = createAsyncActionType('@rewards/UNSET_MATCH_BOT');
+
+export const clearMatchBots = () => ({ type: CLEAR_MATCH_BOTS });
 
 export const setMatchBotRules = ruleObj => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();

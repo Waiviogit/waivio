@@ -61,7 +61,7 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
         onCancel={handleToggleModal}
         title={
           isAddModal ? (
-            intl.formatMessage({ id: `match_bots_${modalType}_author` })
+            <span>{intl.formatMessage({ id: `match_bots_add_author` })}</span>
           ) : (
             <span>
               {intl.formatMessage({ id: 'matchBot_title_edit_rule_author' })}
@@ -69,7 +69,6 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
             </span>
           )
         }
-        okText={intl.formatMessage({ id: `matchBot_authors_btn_${modalType}` })}
       >
         <ModalAuthorsBody
           isAddModal={isAddModal}
