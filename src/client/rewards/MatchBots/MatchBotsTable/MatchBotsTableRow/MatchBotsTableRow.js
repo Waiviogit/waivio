@@ -7,22 +7,13 @@ import { formatDate } from '../../../rewardsHelper';
 import ModalsCurators from '../../MatchBotsModals/ModalsCurators';
 import ModalsAuthors from '../../MatchBotsModals/ModalsAuthors';
 
-const MatchBotsTableRow = ({
-  intl,
-  bot,
-  type,
-  editRule,
-  setModalBot,
-}) => {
+const MatchBotsTableRow = ({ intl, bot, type, editRule, setModalBot }) => {
   const toggleEnableBot = () => setModalBot(bot);
 
   return (
     <tr>
       <td>
-        <Checkbox
-          checked={bot.enabled}
-          onChange={toggleEnableBot}
-        />
+        <Checkbox checked={bot.enabled} onChange={toggleEnableBot} />
       </td>
       <td>{bot.name}</td>
       {type === 'curator' && <td>{Math.round(bot.voteRatio * 100)}%</td>}
@@ -42,7 +33,7 @@ const MatchBotsTableRow = ({
       <td>{bot.note}</td>
     </tr>
   );
-}
+};
 
 MatchBotsTableRow.propTypes = {
   bot: PropTypes.shape().isRequired,

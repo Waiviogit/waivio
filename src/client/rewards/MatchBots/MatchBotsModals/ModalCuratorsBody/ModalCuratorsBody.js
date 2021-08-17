@@ -12,10 +12,10 @@ import ModalBodyCheckBox from '../common/ModalBodyCheckBox/ModalBodyCheckBox';
 
 const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) => {
   const handleChangeSliderMana = manaValue => setInputsValue(prev => ({ ...prev, manaValue }));
-  const handleChangeDate = expiredDate => setInputsValue(prev => ({ ...prev, expiredDate }));
+  const handleChangeDate = expiredAt => setInputsValue(prev => ({ ...prev, expiredAt }));
   const handleChangeNote = notesValue => setInputsValue(prev => ({ ...prev, notesValue }));
   const handleChangeVote = debounce(
-    voteRatio => setInputsValue(prev => ({ ...prev, voteRatio })),
+    voteRatio => setInputsValue(prev => ({ ...prev, voteRatio, isSubmitted: false })),
     200,
   );
 
@@ -29,7 +29,11 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) =>
           setInputsValue={setInputsValue}
         />
       )}
-      <ModalBodyVoteRatio value={inputsValue.voteRatio} handleChangeVote={handleChangeVote} />
+      <ModalBodyVoteRatio
+        value={inputsValue.voteRatio}
+        handleChangeVote={handleChangeVote}
+        isSubmitted={inputsValue.isSubmitted}
+      />
       <ModalBodyCheckBox
         type="isDownvote"
         textId="matchBot_curator_downvotes"
@@ -37,9 +41,9 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) =>
         setInputsValue={setInputsValue}
       />
       <ModalBodyCheckBox
-        type="isComment"
+        type="isComments"
         textId="matchBot_curator_comments"
-        value={inputsValue.isComment}
+        value={inputsValue.isComments}
         setInputsValue={setInputsValue}
       />
       <ModalBodySlider
@@ -55,7 +59,7 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) =>
             'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting (typically, 5 min after the post is published).',
         })}
       />
-      <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredDate} />
+      <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredAt} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />
     </div>
   );

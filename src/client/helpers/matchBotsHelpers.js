@@ -1,5 +1,5 @@
+import { get } from 'lodash';
 import moment from 'moment';
-import {get, isNil} from 'lodash';
 
 export const MATCH_BOTS_TYPES = {
   AUTHORS: 'waivioauthors',
@@ -16,7 +16,7 @@ export const INITIAL_INPUTS_VALUE = {
   selectedUser: null,
   voteValue: 100,
   manaValue: 100,
-  expiredDate: null,
+  expiredAt: null,
   notesValue: '',
   isSubmitted: false,
 };
@@ -26,8 +26,8 @@ export const INITIAL_INPUTS_VALUE_CURATOR = {
   manaValue: 100,
   notesValue: '',
   isDownvote: true,
-  isComment: true,
-  expiredDate: null,
+  isComments: true,
+  expiredAt: null,
   isSubmitted: false,
   selectedUser: null,
 };
@@ -40,36 +40,29 @@ export const redirectAuthHiveSigner = (isAuthority, botType) => {
     : (window.location = `https://hivesigner.com/revoke/${botType}?redirect_uri=${path}&callback`);
 };
 
-export const getBotObjAuthor = botData => {
+export const getBotObjAuthor = (botData, isEdit) => {
   const dataObj = {
     type: 'author',
     name: get(botData, 'selectedUser.account', ''),
-    enabled: isNil(botData.enabled) || true,
+    enabled: isEdit ? botData.enabled : true,
     voteWeight: botData.voteValue * 100,
     minVotingPower: botData.manaValue * 100,
   };
 
   if (botData.notesValue) dataObj.note = botData.notesValue;
-  if (botData.expiredAt) botData.expiredDate && botData.expiredDate.format();
-
-  if (
-    dataObj.type &&
-    dataObj.name &&
-    dataObj.enabled &&
-    dataObj.voteWeight &&
-    dataObj.minVotingPower
-  ) {
+  if (botData.expiredAt) dataObj.expiredAt = botData.expiredAt && botData.expiredAt.format();
+  if (dataObj.type && dataObj.name && dataObj.voteWeight && dataObj.minVotingPower) {
     return dataObj;
   }
 
   return {};
 };
 
-export const getBotObjCurator = botData => {
+export const getBotObjCurator = (botData, isEdit) => {
   const dataObj = {
     type: 'curator',
-    enabled: isNil(botData.enabled) || true,
-    voteComments: botData.isComment,
+    enabled: isEdit ? botData.enabled : true,
+    voteComments: botData.isComments,
     voteRatio: botData.voteRatio / 100,
     enablePowerDown: botData.isDownvote,
     minVotingPower: botData.manaValue * 100,
@@ -77,15 +70,8 @@ export const getBotObjCurator = botData => {
   };
 
   if (botData.notesValue) dataObj.note = botData.notesValue;
-  if (botData.expiredAt) botData.expiredDate && botData.expiredDate.format();
-
-  if (
-    dataObj.type &&
-    dataObj.name &&
-    dataObj.enabled &&
-    dataObj.voteRatio &&
-    dataObj.minVotingPower
-  ) {
+  if (botData.expiredAt) dataObj.expiredAt = botData.expiredAt && botData.expiredAt.format();
+  if (dataObj.type && dataObj.name && dataObj.voteRatio && dataObj.minVotingPower) {
     return dataObj;
   }
 
@@ -96,7 +82,7 @@ export const setInitialInputValues = value => {
   const initialState = {
     selectedUser: { account: value.name },
     manaValue: value.minVotingPower / 100,
-    expiredDate: moment(value.expiredAt),
+    enabled: value.enabled,
     notesValue: value.note || '',
     isSubmitted: false,
   };
@@ -105,6 +91,7 @@ export const setInitialInputValues = value => {
   if (value.voteComments) initialState.isComments = value.voteComments;
   if (value.enablePowerDown) initialState.isDownvote = value.enablePowerDown;
   if (value.voteRatio) initialState.voteRatio = value.voteRatio * 100;
+  if (value.expiredAt) initialState.expiredAt = moment(value.expiredAt);
 
   return initialState;
 };

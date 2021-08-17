@@ -1,18 +1,27 @@
-import {Modal} from "antd";
+import { message, Modal } from 'antd';
 import * as React from 'react';
-import PropTypes from "prop-types";
-import {isEmpty, omit} from "lodash";
-import {Link} from "react-router-dom";
-import {injectIntl} from "react-intl";
+import PropTypes from 'prop-types';
+import { isEmpty, omit } from 'lodash';
+import { Link } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
 
-import {redirectAuthHiveSigner} from "../../../../helpers/matchBotsHelpers";
+import { redirectAuthHiveSigner } from '../../../../helpers/matchBotsHelpers';
 
-const ModalBotsEnableAuth = ({ isAuthority, modalBot, intl, setModalBot, type, botType, toggleEnableAuthorBot }) => {
+const ModalBotsEnableAuth = ({
+  isAuthority,
+  modalBot,
+  intl,
+  setModalBot,
+  type,
+  botType,
+  toggleEnableAuthorBot,
+}) => {
   const setContent = () => {
-    if (!isAuthority) return intl.formatMessage({
-      id: 'matchBot_match_bot_requires_authorization_distribute_votes_behalf',
-      defaultMessage: 'The match bot requires authorization to distribute votes on your behalf'
-    });
+    if (!isAuthority)
+      return intl.formatMessage({
+        id: 'matchBot_match_bot_requires_authorization_distribute_votes_behalf',
+        defaultMessage: 'The match bot requires authorization to distribute votes on your behalf',
+      });
     if (!modalBot.enabled)
       return (
         <div>
@@ -37,22 +46,53 @@ const ModalBotsEnableAuth = ({ isAuthority, modalBot, intl, setModalBot, type, b
     }
     const bot = omit({ ...modalBot, enabled: !modalBot.enabled, type }, '_id');
 
-    return toggleEnableAuthorBot(bot);
-  }
+    setModalBot(null);
 
-  return modalBot && (
-    <Modal
-      onCancel={handleCancel}
-      onOk={handleOkModal}
-      okText={intl.formatMessage({id: isAuthority ? 'confirm' : 'matchBot_authorize_now'})}
-      title={intl.formatMessage({id: isAuthority ? 'matchBot_success_rule_activation' : 'matchBot_authorization_required'})}
-      cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
-      visible={!isEmpty(modalBot)}
-    >
-      {setContent()}
-    </Modal>
+    return toggleEnableAuthorBot(bot)
+      .then(() => {
+        if (type === 'author') {
+          message.success(
+            intl.formatMessage({
+              id: 'matchBot_success_updated_author',
+              defaultMessage: 'Author was successfully updated',
+            }),
+          );
+        } else if (type === 'curator') {
+          message.success(
+            intl.formatMessage({
+              id: 'matchBot_success_updated_curator',
+              defaultMessage: 'Curator was successfully updated',
+            }),
+          );
+        }
+      })
+      .catch(() =>
+        message.error(
+          intl.formatMessage({
+            id: 'append_validate_common_message',
+            defaultMessage: 'Something went wrong',
+          }),
+        ),
+      );
+  };
+
+  return (
+    modalBot && (
+      <Modal
+        onCancel={handleCancel}
+        onOk={handleOkModal}
+        okText={intl.formatMessage({ id: isAuthority ? 'confirm' : 'matchBot_authorize_now' })}
+        title={intl.formatMessage({
+          id: isAuthority ? 'matchBot_success_rule_activation' : 'matchBot_authorization_required',
+        })}
+        cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
+        visible={!isEmpty(modalBot)}
+      >
+        {setContent()}
+      </Modal>
+    )
   );
-}
+};
 
 ModalBotsEnableAuth.propTypes = {
   modalBot: PropTypes.shape(),

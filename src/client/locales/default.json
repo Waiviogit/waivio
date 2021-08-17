@@ -1767,5 +1767,14 @@
   "matchBot_curator": "Curator",
   "matchBot_voteRatio": "Vote ratio",
   "matchBot_success_intention_rule_activation_author": "Do you want to activate match bot rule for author",
-  "matchBot_success_intention_rule_inactivation_curator": "Do you want to inactivate match bot rule for curator"
+  "matchBot_success_intention_rule_inactivation_author": "Do you want to inactivate match bot rule for author",
+  "matchBot_success_intention_rule_activation_curator": "Do you want to inactivate match bot rule for curator",
+  "matchBot_success_intention_rule_inactivation_curator": "Do you want to inactivate match bot rule for curator",
+  "matchBot_success_added_author": "Author was successfully added",
+  "matchBot_success_updated_author": "Author was successfully updated",
+  "matchBot_success_deleted_author": "Author was successfully deleted",
+  "matchBot_success_added_curator": "Curator was successfully added",
+  "matchBot_success_updated_curator": "Curator was successfully updated",
+  "matchBot_success_deleted_curator": "Curator was successfully deleted",
+  "matchBot_voteRatio_validation": "Vote ratio is invalid"
 }

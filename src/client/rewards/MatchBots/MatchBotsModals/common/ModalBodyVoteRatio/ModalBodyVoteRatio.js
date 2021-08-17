@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 
 import './ModalBodyVoteRatio.less';
 
-const ModalBodyVoteRatio = ({ intl, value, handleChangeVote }) => {
+const ModalBodyVoteRatio = ({ intl, value, handleChangeVote, isSubmitted }) => {
   const [voteValue, setVoteValue] = React.useState('');
 
   React.useEffect(() => {
@@ -17,7 +17,7 @@ const ModalBodyVoteRatio = ({ intl, value, handleChangeVote }) => {
 
     if (+valueInput <= 1000) {
       setVoteValue(valueInput);
-      handleChangeVote(prev => ({ ...prev, voteRatio: valueInput }));
+      handleChangeVote(valueInput);
     }
   };
 
@@ -44,6 +44,14 @@ const ModalBodyVoteRatio = ({ intl, value, handleChangeVote }) => {
         />
         <span>%</span>
       </div>
+      {!voteValue && isSubmitted && (
+        <span className="modalBodySearch-error">
+          {intl.formatMessage({
+            id: 'matchBot_voteRatio_validation',
+            defaultMessage: 'Vote ratio is invalid',
+          })}
+        </span>
+      )}
       <p className="voteRatio_description">
         {intl.formatMessage({ id: 'matchBot_curator_vote_ratio_msg' })}
       </p>
@@ -54,6 +62,7 @@ const ModalBodyVoteRatio = ({ intl, value, handleChangeVote }) => {
 ModalBodyVoteRatio.propTypes = {
   intl: PropTypes.shape().isRequired,
   value: PropTypes.string.isRequired,
+  isSubmitted: PropTypes.bool.isRequired,
   handleChangeVote: PropTypes.func.isRequired,
 };
 

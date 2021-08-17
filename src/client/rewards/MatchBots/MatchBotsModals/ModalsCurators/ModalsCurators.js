@@ -1,4 +1,4 @@
-import { Modal } from 'antd';
+import { message, Modal } from 'antd';
 import * as React from 'react';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
@@ -25,24 +25,70 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
 
   React.useEffect(() => {
     if (bot) setInputsValue(setInitialInputValues(bot));
-  }, []);
+  }, [bot]);
+
   const handleToggleModal = () => setIsModalOpen(prev => !prev);
   const handleToggleModalDelete = () => setIsModalOpenConfirmDelete(prev => !prev);
-  const handleToggleModalEdit = () => setIsModalOpenConfirmEdit(prev => !prev);
-  const handleAddBot = () => {
-    const ruleObj = getBotObjCurator(inputsValue);
+  const handleCloseModalEdit = () => setIsModalOpenConfirmEdit(false);
+
+  const handleOpenConfirmEditModal = () => {
+    setInputsValue(prev => ({ ...prev, isSubmitted: true }));
+    if (inputsValue.voteRatio) {
+      setIsModalOpenConfirmEdit(true);
+    }
+  };
+  const handleAddBot = isEdit => {
+    const ruleObj = getBotObjCurator(inputsValue, isEdit);
 
     setInputsValue(prev => ({ ...prev, isSubmitted: true }));
     if (!isEmpty(ruleObj)) {
-      addCuratorBot(ruleObj);
+      addCuratorBot(ruleObj)
+        .then(() =>
+          message.success(
+            intl.formatMessage({
+              id: isEdit ? 'matchBot_success_updated_curator' : 'matchBot_success_added_curator',
+            }),
+          ),
+        )
+        .catch(() =>
+          message.error(
+            intl.formatMessage({
+              id: 'append_validate_common_message',
+              defaultMessage: 'Something went wrong',
+            }),
+          ),
+        );
       setIsModalOpen(false);
       setIsModalOpenConfirmEdit(false);
     }
   };
   const handleDeleteBot = () => {
-    deleteCuratorBot(bot.name);
+    deleteCuratorBot(bot.name)
+      .then(() => {
+        message.success(
+          intl.formatMessage({
+            id: 'matchBot_success_deleted_author',
+            defaultMessage: 'Author was successfully deleted',
+          }),
+        );
+      })
+      .catch(() =>
+        message.error(
+          intl.formatMessage({
+            id: 'append_validate_common_message',
+            defaultMessage: 'Something went wrong',
+          }),
+        ),
+      );
     setIsModalOpen(false);
     setIsModalOpenConfirmDelete(false);
+  };
+
+  const handleEditRule = () => handleAddBot(true);
+
+  const handleCancelModal = () => {
+    handleToggleModal();
+    setInputsValue(INITIAL_INPUTS_VALUE_CURATOR);
   };
 
   return (
@@ -66,7 +112,7 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
       <Modal
         footer={null}
         visible={isModalOpen}
-        onCancel={handleToggleModal}
+        onCancel={handleCancelModal}
         title={
           isAddModal ? (
             intl.formatMessage({ id: `match_bots_${modalType}_curator` })
@@ -90,9 +136,9 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
           botName="curator"
           isAddModal={isAddModal}
           handleAddBot={handleAddBot}
-          handleCloseModal={handleToggleModal}
+          handleCloseModal={handleCancelModal}
           handleDeleteConfirmation={handleToggleModalDelete}
-          handleEditConfirmation={handleToggleModalEdit}
+          handleEditConfirmation={handleOpenConfirmEditModal}
         />
       </Modal>
       {!isAddModal && (
@@ -113,12 +159,12 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
             />
           </Modal>
           <Modal
-            onOk={handleAddBot}
+            onOk={handleEditRule}
             visible={isModalOpenConfirmEdit}
-            onCancel={handleToggleModalEdit}
+            onCancel={handleCloseModalEdit}
             title={intl.formatMessage({
-              id: 'match_bots_delete_confirmation',
-              defaultMessage: 'Delete confirmation',
+              id: 'matchBot_rule_editing_confirmation',
+              defaultMessage: 'Rule editing confirmation',
             })}
           >
             <ModalBodyConfirm name={bot.name} />

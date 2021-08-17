@@ -13,7 +13,7 @@ import './ModalAuthorsBody.less';
 const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => {
   const handleChangeSliderVote = value => setInputsValue(prev => ({ ...prev, voteValue: value }));
   const handleChangeSliderMana = value => setInputsValue(prev => ({ ...prev, manaValue: value }));
-  const handleChangeDate = expiredDate => setInputsValue(prev => ({ ...prev, expiredDate }));
+  const handleChangeDate = expiredAt => setInputsValue(prev => ({ ...prev, expiredAt }));
   const handleChangeNote = debounce(
     value => setInputsValue(prev => ({ ...prev, notesValue: value })),
     250,
@@ -55,7 +55,7 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => 
             'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting (typically, 5 min after the post is published).',
         })}
       />
-      <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredDate} />
+      <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredAt} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />
     </div>
   );

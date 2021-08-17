@@ -1,4 +1,4 @@
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import * as React from 'react';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
@@ -25,22 +25,55 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
 
   React.useEffect(() => {
     if (bot) setInputsValue(setInitialInputValues(bot));
-  }, []);
+  }, [bot]);
   const handleToggleModal = () => setIsModalOpen(prev => !prev);
   const handleToggleModalDelete = () => setIsModalOpenConfirmDelete(prev => !prev);
   const handleToggleModalEdit = () => setIsModalOpenConfirmEdit(prev => !prev);
-  const handleAddBot = () => {
-    const ruleObj = getBotObjAuthor(inputsValue);
+  const handleAddBot = isEdit => {
+    const ruleObj = getBotObjAuthor(inputsValue, isEdit);
 
     setInputsValue(prev => ({ ...prev, isSubmitted: true }));
     if (!isEmpty(ruleObj)) {
-      addAuthorBot(ruleObj).then(data => console.log('data', data));
+      addAuthorBot(ruleObj)
+        .then(() =>
+          message.success(
+            intl.formatMessage({
+              id: isEdit ? 'matchBot_success_updated_author' : 'matchBot_success_added_author',
+            }),
+          ),
+        )
+        .catch(() =>
+          message.error(
+            intl.formatMessage({
+              id: 'append_validate_common_message',
+              defaultMessage: 'Something went wrong',
+            }),
+          ),
+        );
       setIsModalOpen(false);
       setIsModalOpenConfirmEdit(false);
     }
   };
+
+  const handleEditRule = () => handleAddBot(true);
   const handleDeleteBot = () => {
-    deleteAuthorBot(bot.name);
+    deleteAuthorBot(bot.name)
+      .then(() => {
+        message.success(
+          intl.formatMessage({
+            id: 'matchBot_success_deleted_author',
+            defaultMessage: 'Author was successfully deleted',
+          }),
+        );
+      })
+      .catch(() =>
+        message.error(
+          intl.formatMessage({
+            id: 'append_validate_common_message',
+            defaultMessage: 'Something went wrong',
+          }),
+        ),
+      );
     setIsModalOpen(false);
     setIsModalOpenConfirmDelete(false);
   };
@@ -112,10 +145,13 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
             />
           </Modal>
           <Modal
-            onOk={handleAddBot}
+            onOk={handleEditRule}
             visible={isModalOpenConfirmEdit}
             onCancel={handleToggleModalEdit}
-            title={intl.formatMessage({ id: 'match_bots_delete_confirmation' })}
+            title={intl.formatMessage({
+              id: 'matchBot_rule_editing_confirmation',
+              defaultMessage: 'Rule editing confirmation',
+            })}
           >
             <ModalBodyConfirm name={bot.name} />
           </Modal>
