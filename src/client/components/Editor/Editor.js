@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Helmet from 'react-helmet';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { find, isEqual, throttle, isEmpty } from 'lodash';
@@ -22,7 +23,6 @@ import {
   changeObjInfluenceHandler,
   removeObjInfluenceHandler,
 } from '../../helpers/wObjInfluenceHelper';
-import Seo from '../../SEO/Seo';
 
 import './Editor.less';
 
@@ -436,7 +436,9 @@ class Editor extends React.Component {
 
     return (
       <Form className="Editor" layout="vertical" onSubmit={this.handleSubmit}>
-        <Seo title={intl.formatMessage({ id: 'write_post' })} />
+        <Helmet>
+          <title>{intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}</title>
+        </Helmet>
         <Form.Item
           label={
             <span className="Editor__label">
