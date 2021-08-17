@@ -9,6 +9,7 @@ import ModalBodySlider from '../common/ModalBodySlider';
 import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
 
 import './ModalAuthorsBody.less';
+import { MATCH_BOTS_NAMES } from '../../../../helpers/matchBotsHelpers';
 
 const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => {
   const handleChangeSliderVote = value => setInputsValue(prev => ({ ...prev, voteValue: value }));
@@ -23,7 +24,7 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => 
     <div className="authorModalBody">
       {isAddModal && (
         <ModalBodySearch
-          botType="author"
+          botType={MATCH_BOTS_NAMES.AUTHORS}
           isSubmitted={inputsValue.isSubmitted}
           selectedUser={inputsValue.selectedUser}
           setInputsValue={setInputsValue}

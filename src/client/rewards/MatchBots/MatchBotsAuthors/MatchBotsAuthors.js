@@ -7,7 +7,7 @@ import MatchBotsTable from '../MatchBotsTable';
 import MatchBotsService from '../MatchBotsService';
 import ModalsAuthors from '../MatchBotsModals/ModalsAuthors';
 import MatchBotsAuthorsContent from './MatchBotsAuthorsContent';
-import { MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
+import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
 
 import '../MatchBots.less';
 
@@ -38,12 +38,14 @@ const MatchBotsAuthors = ({
       />
       <MatchBotsAuthorsContent isEngLocale={isEngLocale} />
       <MatchBotsService
-        botName="authors"
+        botName={MATCH_BOTS_NAMES.AUTHORS}
         isAuthority={isAuthority}
         botType={MATCH_BOTS_TYPES.AUTHORS}
       />
       <ModalsAuthors modalType="add" />
-      {!!matchBots.length && <MatchBotsTable type="author" botType={MATCH_BOTS_TYPES.AUTHORS} />}
+      {!!matchBots.length && (
+        <MatchBotsTable type={MATCH_BOTS_NAMES.AUTHORS} botType={MATCH_BOTS_TYPES.AUTHORS} />
+      )}
     </div>
   );
 };

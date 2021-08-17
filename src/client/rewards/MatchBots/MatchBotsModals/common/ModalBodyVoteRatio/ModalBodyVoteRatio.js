@@ -34,10 +34,8 @@ const ModalBodyVoteRatio = ({ intl, value, handleChangeVote, isSubmitted }) => {
           {intl.formatMessage({ id: 'matchBot_curator_vote_ratio' })}
         </span>
         <Input
-          min={1}
           type="number"
           value={voteValue}
-          pattern="^[1-9]\d*$"
           onKeyDown={handleKeyDown}
           onChange={handleChange}
           className="voteRatio_content__input"
@@ -53,7 +51,11 @@ const ModalBodyVoteRatio = ({ intl, value, handleChangeVote, isSubmitted }) => {
         </span>
       )}
       <p className="voteRatio_description">
-        {intl.formatMessage({ id: 'matchBot_curator_vote_ratio_msg' })}
+        {intl.formatMessage({
+          id: 'matchBot_curator_vote_ratio_msg',
+          defaultMessage:
+            'The Curators match bot only publishes votes with estimated value of 0.01 HBD or more.',
+        })}
       </p>
     </div>
   );

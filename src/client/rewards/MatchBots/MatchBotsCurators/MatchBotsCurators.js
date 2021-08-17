@@ -6,7 +6,7 @@ import MatchBotsTitle from '../MatchBotsTitle';
 import MatchBotsService from '../MatchBotsService';
 import ModalsCurators from '../MatchBotsModals/ModalsCurators';
 import MatchBotsCuratorsContent from './MatchBotsCuratorsContent';
-import { MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
+import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
 
 import '../MatchBots.less';
 import MatchBotsTable from '../MatchBotsTable';
@@ -40,12 +40,14 @@ const MatchBotsCurators = ({
       />
       <MatchBotsCuratorsContent isEngLocale={isEngLocale} />
       <MatchBotsService
-        botName="curators"
         isAuthority={isAuthority}
+        botName={MATCH_BOTS_NAMES.CURATORS}
         botType={MATCH_BOTS_TYPES.CURATORS}
       />
       <ModalsCurators modalType="add" />
-      {!!matchBots.length && <MatchBotsTable type="curator" botType={MATCH_BOTS_TYPES.CURATORS} />}
+      {!!matchBots.length && (
+        <MatchBotsTable type={MATCH_BOTS_NAMES.CURATORS} botType={MATCH_BOTS_TYPES.CURATORS} />
+      )}
     </div>
   );
 };

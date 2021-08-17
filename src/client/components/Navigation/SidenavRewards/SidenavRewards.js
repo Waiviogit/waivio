@@ -162,16 +162,3 @@ SidenavRewards.defaultProps = {
 };
 
 export default injectIntl(SidenavRewards);
-
-// <li>
-//   <NavLink
-//     to={`/rewards/match-bot`}
-//     className="sidenav-discover-objects__item"
-//     activeClassName="Sidenav__item--active"
-//   >
-//     {intl.formatMessage({
-//       id: 'matchBot',
-//       defaultMessage: `Match bot`,
-//     })}
-//   </NavLink>
-// </li>

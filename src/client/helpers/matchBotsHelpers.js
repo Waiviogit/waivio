@@ -42,7 +42,7 @@ export const redirectAuthHiveSigner = (isAuthority, botType) => {
 
 export const getBotObjAuthor = (botData, isEdit) => {
   const dataObj = {
-    type: 'author',
+    type: MATCH_BOTS_NAMES.AUTHORS,
     name: get(botData, 'selectedUser.account', ''),
     enabled: isEdit ? botData.enabled : true,
     voteWeight: botData.voteValue * 100,
@@ -60,7 +60,7 @@ export const getBotObjAuthor = (botData, isEdit) => {
 
 export const getBotObjCurator = (botData, isEdit) => {
   const dataObj = {
-    type: 'curator',
+    type: MATCH_BOTS_NAMES.CURATORS,
     enabled: isEdit ? botData.enabled : true,
     voteComments: botData.isComments,
     voteRatio: botData.voteRatio / 100,

@@ -13,6 +13,7 @@ import {
   getBotObjAuthor,
   setInitialInputValues,
   INITIAL_INPUTS_VALUE,
+  MATCH_BOTS_NAMES,
 } from '../../../../helpers/matchBotsHelpers';
 import ModalBodyConfirm from '../common/ModalBodyConfirm/ModalBodyConfirm';
 
@@ -119,7 +120,7 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
           setInputsValue={setInputsValue}
         />
         <ModalFooter
-          botName={'author'}
+          botName={MATCH_BOTS_NAMES.AUTHORS}
           isAddModal={isAddModal}
           handleAddBot={handleAddBot}
           handleCloseModal={handleToggleModal}

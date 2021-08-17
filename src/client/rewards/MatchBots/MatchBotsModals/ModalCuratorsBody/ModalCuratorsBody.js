@@ -7,6 +7,7 @@ import ModalBodyDate from '../common/ModalBodyDate';
 import ModalBodyNotes from '../common/ModalBodyNotes';
 import ModalBodySlider from '../common/ModalBodySlider';
 import ModalBodyVoteRatio from '../common/ModalBodyVoteRatio';
+import { MATCH_BOTS_NAMES } from '../../../../helpers/matchBotsHelpers';
 import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
 import ModalBodyCheckBox from '../common/ModalBodyCheckBox/ModalBodyCheckBox';
 
@@ -23,7 +24,7 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) =>
     <div>
       {isAddModal && (
         <ModalBodySearch
-          botType="curator"
+          botType={MATCH_BOTS_NAMES.CURATORS}
           isSubmitted={inputsValue.isSubmitted}
           selectedUser={inputsValue.selectedUser}
           setInputsValue={setInputsValue}

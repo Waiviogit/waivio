@@ -5,7 +5,7 @@ import { isEmpty, omit } from 'lodash';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 
-import { redirectAuthHiveSigner } from '../../../../helpers/matchBotsHelpers';
+import { MATCH_BOTS_NAMES, redirectAuthHiveSigner } from '../../../../helpers/matchBotsHelpers';
 
 const ModalBotsEnableAuth = ({
   isAuthority,
@@ -50,14 +50,14 @@ const ModalBotsEnableAuth = ({
 
     return toggleEnableAuthorBot(bot)
       .then(() => {
-        if (type === 'author') {
+        if (type === MATCH_BOTS_NAMES.AUTHORS) {
           message.success(
             intl.formatMessage({
               id: 'matchBot_success_updated_author',
               defaultMessage: 'Author was successfully updated',
             }),
           );
-        } else if (type === 'curator') {
+        } else if (type === MATCH_BOTS_NAMES.CURATORS) {
           message.success(
             intl.formatMessage({
               id: 'matchBot_success_updated_curator',

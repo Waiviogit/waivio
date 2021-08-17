@@ -3,6 +3,8 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
+import { MATCH_BOTS_NAMES } from '../../../../../helpers/matchBotsHelpers';
+
 import './ModalFooter.less';
 
 const ModalFooter = ({
@@ -62,7 +64,7 @@ ModalFooter.propTypes = {
   handleCloseModal: PropTypes.func.isRequired,
   handleEditConfirmation: PropTypes.func.isRequired,
   handleDeleteConfirmation: PropTypes.func.isRequired,
-  botName: PropTypes.oneOf(['author', 'curator']).isRequired,
+  botName: PropTypes.oneOf([MATCH_BOTS_NAMES.AUTHORS, MATCH_BOTS_NAMES.CURATORS]).isRequired,
 };
 
 export default injectIntl(ModalFooter);

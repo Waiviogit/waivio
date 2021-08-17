@@ -12,6 +12,7 @@ import {
   getBotObjCurator,
   setInitialInputValues,
   INITIAL_INPUTS_VALUE_CURATOR,
+  MATCH_BOTS_NAMES,
 } from '../../../../helpers/matchBotsHelpers';
 import ModalCuratorsBody from '../ModalCuratorsBody';
 import ModalBodyConfirm from '../common/ModalBodyConfirm/ModalBodyConfirm';
@@ -133,9 +134,9 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
           setInputsValue={setInputsValue}
         />
         <ModalFooter
-          botName="curator"
           isAddModal={isAddModal}
           handleAddBot={handleAddBot}
+          botName={MATCH_BOTS_NAMES.CURATORS}
           handleCloseModal={handleCancelModal}
           handleDeleteConfirmation={handleToggleModalDelete}
           handleEditConfirmation={handleOpenConfirmEditModal}
