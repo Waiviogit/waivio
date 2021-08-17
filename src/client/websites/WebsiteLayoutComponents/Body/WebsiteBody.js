@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isEmpty, get, map, debounce, isEqual, reverse } from 'lodash';
+import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -56,7 +57,6 @@ import {
   getWobjectsPoint,
 } from '../../../../store/websiteStore/websiteSelectors';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
-import Seo from '../../../SEO/Seo';
 import MapControllers from '../../../widgets/MapControllers/MapControllers';
 import TagFilters from '../../TagFilters/TagFilters';
 
@@ -97,12 +97,14 @@ const WebsiteBody = props => {
     if (mapRef.current && props.query.get('showPanel')) {
       const bounce = mapRef.current.getBounds();
 
-      props.setShowSearchResult(true);
-      props.setMapForSearch({
-        coordinates: reverse([...area.center]),
-        topPoint: [bounce.ne[1], bounce.ne[0]],
-        bottomPoint: [bounce.sw[1], bounce.sw[0]],
-      });
+      if (bounce.ne[0] && bounce.sw[0]) {
+        props.setShowSearchResult(true);
+        props.setMapForSearch({
+          coordinates: reverse([...area.center]),
+          topPoint: [bounce.ne[1], bounce.ne[0]],
+          bottomPoint: [bounce.sw[1], bounce.sw[0]],
+        });
+      }
     }
   }, [mapRef.current]);
 
@@ -368,7 +370,27 @@ const WebsiteBody = props => {
 
   return (
     <div className="WebsiteBody">
-      <Seo image={currentLogo} desc={description} title={title} />
+      <Helmet>
+        <title>{title ? `${objName} - ${title}` : objName}</title>
+        <link rel="canonical" href={`https://${props.host}/`} />
+        <meta property="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={global.postOrigin} />
+        <meta property="og:image" content={currentLogo} />
+        <meta property="og:image:url" content={currentLogo} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:description" content={description} />
+        <meta name="twitter:card" content={currentLogo ? 'summary_large_image' : 'summary'} />
+        <meta name="twitter:site" content={'@waivio'} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" property="twitter:image" content={currentLogo} />
+        <meta property="og:site_name" content={objName} />
+        <link rel="image_src" href={currentLogo} />
+        <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
+      </Helmet>
       <SearchAllResult
         showReload={props.showReloadButton}
         reloadSearchList={reloadSearchList}
@@ -458,6 +480,7 @@ WebsiteBody.propTypes = {
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   searchString: PropTypes.string.isRequired,
+  host: PropTypes.string.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   putUserCoordinates: PropTypes.func.isRequired,
   setMapForSearch: PropTypes.func.isRequired,

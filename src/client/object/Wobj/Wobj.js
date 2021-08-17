@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { Helmet } from 'react-helmet';
 import { get, isEmpty, round, reduce } from 'lodash';
 import { renderRoutes } from 'react-router-config';
 import DEFAULTS from '../const/defaultValues';
@@ -15,7 +16,6 @@ import OBJECT_TYPE from '../const/objectTypes';
 import { formColumnsField } from '../../../common/constants/listOfFields';
 import WobjectSidebarFollowers from '../../app/Sidebar/ObjectInfoExperts/WobjectSidebarFollowers';
 import WobjectNearby from '../../app/Sidebar/ObjectInfoExperts/WobjectNearby';
-import Seo from '../../SEO/Seo';
 
 const Wobj = ({
   authenticated,
@@ -29,11 +29,16 @@ const Wobj = ({
   handleFollowClick,
   objectName,
   appendAlbum,
+  helmetIcon,
   isWaivio,
   supportedObjectTypes,
   weightValue,
+  siteName,
+  appUrl,
 }) => {
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
+  const canonicalUrl = `${appUrl}/object/${match.params.name}`;
+  const url = `${appUrl}/object/${match.params.name}`;
   const albumsAndImagesCount = wobject.albums_count;
   const address = parseAddress(wobject);
   const titleText = isWaivio ? `${objectName} - ${address || ''}` : objectName;
@@ -82,7 +87,27 @@ const Wobj = ({
 
   return (
     <div className="main-panel">
-      <Seo image={image} desc={desc} title={titleText} params={`/object/${match.params.name}`} />
+      <Helmet>
+        <title>{`${titleText} - ${siteName}`}</title>
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="description" content={desc} />
+        <meta property="og:title" content={titleText} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={url} />
+        <meta property="og:image" content={image} />
+        <meta property="og:image:url" content={image} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:description" content={desc} />
+        <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+        <meta name="twitter:site" content={`@${siteName}`} />
+        <meta name="twitter:title" content={titleText} />
+        <meta name="twitter:description" content={desc} />
+        <meta name="twitter:image" property="twitter:image" content={image} />
+        <meta property="og:site_name" content={siteName} />
+        <link rel="image_src" href={image} />
+        <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
+      </Helmet>
       <ScrollToTopOnMount />
       <WobjHero
         isEditMode={isEditMode}
@@ -147,6 +172,9 @@ Wobj.propTypes = {
   toggleViewEditMode: PropTypes.func,
   handleFollowClick: PropTypes.func,
   objectName: PropTypes.string.isRequired,
+  helmetIcon: PropTypes.string.isRequired,
+  siteName: PropTypes.string.isRequired,
+  appUrl: PropTypes.string.isRequired,
   weightValue: PropTypes.number.isRequired,
   appendAlbum: PropTypes.func,
 };

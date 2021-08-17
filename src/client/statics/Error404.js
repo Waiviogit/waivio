@@ -1,14 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Helmet from 'react-helmet';
 import { withRouter, Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import Seo from '../SEO/Seo';
-
 import './ErrorPage.less';
 
 const Error404 = ({ intl }) => (
   <div className="ErrorPage container">
-    <Seo title={intl.formatMessage({ id: 'page_not_found' })} />
+    <Helmet>
+      <title>
+        {intl.formatMessage({ id: 'page_not_found', defaultMessage: 'Page not found' })} - Waivio
+      </title>
+    </Helmet>
     <h1>
       <FormattedMessage id="page_not_found" defaultMessage="Page not found" />
     </h1>
