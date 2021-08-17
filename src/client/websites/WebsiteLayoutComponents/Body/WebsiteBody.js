@@ -49,6 +49,7 @@ import {
   getWebsiteMap,
   getWebsiteSearchString,
   getWebsiteSearchType,
+  tagsCategoryIsEmpty,
 } from '../../../../store/searchStore/searchSelectors';
 import {
   getShowReloadButton,
@@ -71,9 +72,9 @@ const WebsiteBody = props => {
   const [height, setHeight] = useState('100%');
   const [showLocation, setShowLocation] = useState(false);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
-  // const reservedButtonClassList = classNames('WebsiteBody__reserved', {
-  //   'WebsiteBody__reserved--withMobileFilters': isActiveFilters,
-  // });
+  const reservedButtonClassList = classNames('WebsiteBody__reserved', {
+    'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
+  });
   let queryCenter = props.query.get('center');
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const getCurrentConfig = config =>
@@ -388,7 +389,7 @@ const WebsiteBody = props => {
         {!isEmpty(area.center) && !isEmpty(props.configuration) && (
           <React.Fragment>
             {Boolean(props.counter) && props.isAuth && (
-              <Link to="/rewards/reserved" className={'reservedButtonClassList'}>
+              <Link to="/rewards/reserved" className={reservedButtonClassList}>
                 <FormattedMessage id="reserved" defaultMessage="Reserved" />
                 :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
               </Link>
@@ -469,6 +470,7 @@ WebsiteBody.propTypes = {
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
+  isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
@@ -503,6 +505,7 @@ export default connect(
     showReloadButton: getShowReloadButton(state),
     searchType: getWebsiteSearchType(state),
     host: getHostAddress(state),
+    isActiveFilters: tagsCategoryIsEmpty(state),
   }),
   {
     getCoordinates,
