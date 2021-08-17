@@ -97,12 +97,14 @@ const WebsiteBody = props => {
     if (mapRef.current && props.query.get('showPanel')) {
       const bounce = mapRef.current.getBounds();
 
-      props.setShowSearchResult(true);
-      props.setMapForSearch({
-        coordinates: reverse([...area.center]),
-        topPoint: [bounce.ne[1], bounce.ne[0]],
-        bottomPoint: [bounce.sw[1], bounce.sw[0]],
-      });
+      if (bounce.ne[0] && bounce.sw[0]) {
+        props.setShowSearchResult(true);
+        props.setMapForSearch({
+          coordinates: reverse([...area.center]),
+          topPoint: [bounce.ne[1], bounce.ne[0]],
+          bottomPoint: [bounce.sw[1], bounce.sw[0]],
+        });
+      }
     }
   }, [mapRef.current]);
 
