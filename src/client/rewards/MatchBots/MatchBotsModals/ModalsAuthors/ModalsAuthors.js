@@ -34,7 +34,7 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
 
     setInputsValue(prev => ({ ...prev, isSubmitted: true }));
     if (!isEmpty(ruleObj)) {
-      addAuthorBot(ruleObj);
+      addAuthorBot(ruleObj).then(data => console.log('data', data));
       setIsModalOpen(false);
       setIsModalOpenConfirmEdit(false);
     }

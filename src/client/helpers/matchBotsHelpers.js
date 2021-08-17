@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { get } from 'lodash';
+import {get, isNil} from 'lodash';
 
 export const MATCH_BOTS_TYPES = {
   AUTHORS: 'waivioauthors',
@@ -44,12 +44,13 @@ export const getBotObjAuthor = botData => {
   const dataObj = {
     type: 'author',
     name: get(botData, 'selectedUser.account', ''),
-    enabled: true,
+    enabled: isNil(botData.enabled) || true,
     voteWeight: botData.voteValue * 100,
     minVotingPower: botData.manaValue * 100,
-    note: botData.notesValue,
-    expiredAt: botData.expiredDate && botData.expiredDate.format(),
   };
+
+  if (botData.notesValue) dataObj.note = botData.notesValue;
+  if (botData.expiredAt) botData.expiredDate && botData.expiredDate.format();
 
   if (
     dataObj.type &&
@@ -67,15 +68,16 @@ export const getBotObjAuthor = botData => {
 export const getBotObjCurator = botData => {
   const dataObj = {
     type: 'curator',
-    enabled: true,
-    note: botData.notesValue,
+    enabled: isNil(botData.enabled) || true,
     voteComments: botData.isComment,
     voteRatio: botData.voteRatio / 100,
     enablePowerDown: botData.isDownvote,
     minVotingPower: botData.manaValue * 100,
-    expiredAt: botData.expiredDate && botData.expiredDate.format(),
     name: get(botData, 'selectedUser.account', ''),
   };
+
+  if (botData.notesValue) dataObj.note = botData.notesValue;
+  if (botData.expiredAt) botData.expiredDate && botData.expiredDate.format();
 
   if (
     dataObj.type &&

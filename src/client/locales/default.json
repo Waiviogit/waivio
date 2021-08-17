@@ -1765,5 +1765,7 @@
   "match_bot_search_curator": "Curator",
   "match_bot_placeholder_find_curator": "Find curator",
   "matchBot_curator": "Curator",
-  "matchBot_voteRatio": "Vote ratio"
+  "matchBot_voteRatio": "Vote ratio",
+  "matchBot_success_intention_rule_activation_author": "Do you want to activate match bot rule for author",
+  "matchBot_success_intention_rule_inactivation_curator": "Do you want to inactivate match bot rule for curator"
 }
