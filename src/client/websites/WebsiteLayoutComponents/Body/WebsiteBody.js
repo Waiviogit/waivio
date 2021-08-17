@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { isEmpty, get, map, debounce, isEqual, size, reverse } from 'lodash';
+import { isEmpty, get, map, debounce, isEqual, reverse } from 'lodash';
 import { FormattedMessage } from 'react-intl';
-import { Tag } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -14,7 +13,6 @@ import {
   setMapForSearch,
   setSearchInBox,
   setShowSearchResult,
-  setWebsiteSearchFilter,
   setWebsiteSearchType,
 } from '../../../../store/searchStore/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
@@ -36,7 +34,7 @@ import {
   getWebsiteObjWithCoordinates,
   setShowReload,
 } from '../../../../store/websiteStore/websiteActions';
-import { distanceInMBetweenEarthCoordinates } from '../../helper';
+import { distanceInMBetweenEarthCoordinates, getFirstOffsetNumber } from '../../helper';
 import ObjectOverlayCard from '../../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
 import {
   getConfigurationValues,
@@ -47,11 +45,11 @@ import {
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import { getUserLocation } from '../../../../store/userStore/userSelectors';
 import {
-  getSearchFiltersTagCategory,
   getShowSearchResult,
   getWebsiteMap,
   getWebsiteSearchString,
   getWebsiteSearchType,
+  tagsCategoryIsEmpty,
 } from '../../../../store/searchStore/searchSelectors';
 import {
   getShowReloadButton,
@@ -60,6 +58,7 @@ import {
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 import Seo from '../../../SEO/Seo';
 import MapControllers from '../../../widgets/MapControllers/MapControllers';
+import TagFilters from '../../TagFilters/TagFilters';
 
 import './WebsiteBody.less';
 
@@ -73,9 +72,8 @@ const WebsiteBody = props => {
   const [height, setHeight] = useState('100%');
   const [showLocation, setShowLocation] = useState(false);
   const [area, setArea] = useState({ center: [], zoom: 11, bounds: [] });
-  const isActiveFilters = !isEmpty(props.activeFilters);
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
-    'WebsiteBody__reserved--withMobileFilters': isActiveFilters,
+    'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
   });
   let queryCenter = props.query.get('center');
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
@@ -89,42 +87,48 @@ const WebsiteBody = props => {
 
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
-
   const setCurrMapConfig = (center, zoom) => setArea({ center, zoom, bounds: [] });
-  const setBoundsWithDinamycArg = (coordinates, zoom) => {
-    if (props.query.get('showPanel')) {
-      const bounds = mapRef.current.getBounds(coordinates, zoom);
-
-      props.setMapForSearch({
-        coordinates,
-        topPoint: [bounds.ne[1], bounds.ne[0]],
-        bottomPoint: [bounds.sw[1], bounds.sw[0]],
-      });
-    }
-  };
 
   if (queryCenter) {
     queryCenter = queryCenter.split(',').map(item => Number(item));
   }
 
-  const getCoordinatesForMap = async () => {
-    if (!isEmpty(queryCenter)) {
-      const queryZoom = props.query.get('zoom');
+  useEffect(() => {
+    if (mapRef.current && props.query.get('showPanel')) {
+      const bounce = mapRef.current.getBounds();
 
-      setCurrMapConfig(queryCenter, +queryZoom);
+      props.setShowSearchResult(true);
+      props.setMapForSearch({
+        coordinates: reverse([...area.center]),
+        topPoint: [bounce.ne[1], bounce.ne[0]],
+        bottomPoint: [bounce.sw[1], bounce.sw[0]],
+      });
+    }
+  }, [mapRef.current]);
+
+  const getCoordinatesForMap = async () => {
+    let currZoom;
+    let currCenter;
+
+    if (!isEmpty(queryCenter)) {
+      currZoom = +props.query.get('zoom');
+      currCenter = queryCenter;
     } else {
       const currLocation = await props.getCoordinates();
       const res = await props.getCurrentAppSettings();
       const siteConfig = get(res, 'configuration');
-      const zoom = getZoom(siteConfig) || 6;
-      let center = getCenter(siteConfig);
 
-      center = isEmpty(center)
+      currZoom = getZoom(siteConfig) || 6;
+      currCenter = getCenter(siteConfig);
+
+      currCenter = isEmpty(currCenter)
         ? [get(currLocation, ['value', 'latitude']), get(currLocation, ['value', 'longitude'])]
-        : center;
-
-      setCurrMapConfig(center, zoom);
+        : currCenter;
     }
+
+    setCurrMapConfig(currCenter, currZoom);
+
+    return { currCenter, currZoom };
   };
 
   const handleSetMapForSearch = () => {
@@ -132,6 +136,7 @@ const WebsiteBody = props => {
       props.query.set('showPanel', true);
       props.query.set('center', area.center);
       props.query.set('zoom', area.zoom);
+
       props.setMapForSearch({
         coordinates: reverse([...area.center]),
         ...boundsParams,
@@ -145,8 +150,6 @@ const WebsiteBody = props => {
   useEffect(() => {
     const query = props.location.search;
     const handleResize = () => setHeight(window.innerHeight);
-
-    if (props.query.get('showPanel')) props.setShowSearchResult(true);
 
     setHeight(window.innerHeight);
 
@@ -176,7 +179,6 @@ const WebsiteBody = props => {
       props.setMapForSearch({});
       props.setShowReload(false);
       props.setSearchInBox(true);
-      props.query.delete('showPanel');
       props.history.push(`?${props.query.toString()}`);
     }
   }, [props.isShowResult]);
@@ -213,7 +215,7 @@ const WebsiteBody = props => {
             }
           }
         });
-  }, [props.userLocation, boundsParams, props.searchString, props.searchType, props.activeFilters]);
+  }, [props.userLocation, boundsParams, props.query.toString()]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
@@ -222,10 +224,6 @@ const WebsiteBody = props => {
   const description = get(aboutObject, 'description', '');
   const objName = getObjectName(aboutObject);
   const title = get(aboutObject, 'title', '') || objName;
-
-  useLayoutEffect(() => {
-    setBoundsWithDinamycArg();
-  });
 
   const reloadSearchList = () => {
     handleSetMapForSearch();
@@ -236,7 +234,6 @@ const WebsiteBody = props => {
     debounce(data => {
       if (!isEmpty(data) && data.ne[0] && data.sw[0]) {
         setBoundsParams({
-          ...boundsParams,
           topPoint: [data.ne[1], data.ne[0]],
           bottomPoint: [data.sw[1], data.sw[0]],
         });
@@ -299,17 +296,8 @@ const WebsiteBody = props => {
     const currentWobj = infoboxData;
     const name = getObjectName(currentWobj.wobject);
     const wobject = get(currentWobj, 'wobject', {});
-    const getFirstOffsetNumber = () => {
-      const lengthMoreThanOrSame = number => size(name) <= number;
-
-      if (lengthMoreThanOrSame(15)) return 125;
-      if (lengthMoreThanOrSame(20)) return 160;
-      if (lengthMoreThanOrSame(35)) return 180;
-
-      return 170;
-    };
-
-    const firstOffsetNumber = getFirstOffsetNumber();
+    const firstOffsetNumber = getFirstOffsetNumber(name);
+    const setQueryInStorage = () => localStorage.setItem('query', props.query);
 
     return (
       <Overlay
@@ -317,11 +305,7 @@ const WebsiteBody = props => {
         offset={[firstOffsetNumber, 160]}
         className="WebsiteBody__overlay"
       >
-        <div
-          className="WebsiteBody__overlay-wrap"
-          role="presentation"
-          onClick={() => localStorage.setItem('query', props.query)}
-        >
+        <div className="WebsiteBody__overlay-wrap" role="presentation" onClick={setQueryInStorage}>
           <ObjectOverlayCard wObject={wobject} showParent={props.searchType !== 'restaurant'} />
         </div>
       </Overlay>
@@ -375,6 +359,13 @@ const WebsiteBody = props => {
 
   const setQueryInLocalStorage = () => localStorage.setItem('query', props.query.toString());
 
+  const deleteShowPanel = () => {
+    if (props.query.get('showPanel')) {
+      props.query.delete('showPanel');
+      props.history.push(`?${props.query.toString()}`);
+    }
+  };
+
   return (
     <div className="WebsiteBody">
       <Seo image={currentLogo} desc={description} title={title} />
@@ -387,6 +378,7 @@ const WebsiteBody = props => {
         handleUrlWithChangeType={handleUrlWithChangeType}
         setQueryInLocalStorage={setQueryInLocalStorage}
         setQueryFromSearchList={setQueryFromSearchList}
+        deleteShowPanel={deleteShowPanel}
       />
       <div className={mapClassList} style={{ height: mapHeight }}>
         {currentLogo && (
@@ -410,12 +402,12 @@ const WebsiteBody = props => {
               rejectCallback={setLocationFromApi}
             />
             <Map
+              ref={mapRef}
               center={area.center}
               height={Number(mapHeight)}
-              ref={mapRef}
               zoom={area.zoom}
               provider={mapProvider}
-              onBoundsChanged={data => onBoundsChanged(data)}
+              onBoundsChanged={onBoundsChanged}
               onClick={({ event }) => {
                 if (event.target.classList.value === 'pigeon-overlays') {
                   setInfoboxData(null);
@@ -428,27 +420,9 @@ const WebsiteBody = props => {
               animate
               zoomSnap
             >
-              {isActiveFilters && (
-                <div className="WebsiteBody__filters-list">
-                  {props.activeFilters.map(filter =>
-                    filter.tags.map(tag => (
-                      <Tag
-                        key={tag}
-                        closable
-                        onClose={() => {
-                          props.setWebsiteSearchFilter(filter.categoryName, 'all');
-                          props.query.delete(filter.categoryName);
-                          props.history.push(`?${props.query.toString()}`);
-                        }}
-                      >
-                        {tag}
-                      </Tag>
-                    )),
-                  )}
-                </div>
-              )}
+              <TagFilters query={props.query} history={props.history} />
               {getMarkers(props.wobjectsPoint)}
-              {infoboxData && getOverlayLayout()}
+              {getOverlayLayout()}
               {showLocation && (
                 <CustomMarker
                   anchor={[props.userLocation.lat, props.userLocation.lon]}
@@ -484,7 +458,6 @@ WebsiteBody.propTypes = {
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   searchString: PropTypes.string.isRequired,
-  setWebsiteSearchFilter: PropTypes.func.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   putUserCoordinates: PropTypes.func.isRequired,
   setMapForSearch: PropTypes.func.isRequired,
@@ -495,9 +468,9 @@ WebsiteBody.propTypes = {
   setWebsiteSearchType: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
-  activeFilters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
+  isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
@@ -524,7 +497,6 @@ export default connect(
     configuration: getConfigurationValues(state),
     screenSize: getScreenSize(state),
     wobjectsPoint: getWobjectsPoint(state),
-    activeFilters: getSearchFiltersTagCategory(state),
     counter: getReserveCounter(state),
     isAuth: getIsAuthenticated(state),
     query: new URLSearchParams(ownProps.location.search),
@@ -533,12 +505,12 @@ export default connect(
     showReloadButton: getShowReloadButton(state),
     searchType: getWebsiteSearchType(state),
     host: getHostAddress(state),
+    isActiveFilters: tagsCategoryIsEmpty(state),
   }),
   {
     getCoordinates,
     setWebsiteSearchType,
     getWebsiteObjWithCoordinates,
-    setWebsiteSearchFilter,
     getReservedCounter,
     putUserCoordinates,
     getCurrentAppSettings,

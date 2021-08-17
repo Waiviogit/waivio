@@ -1,4 +1,4 @@
-import { get, isArray } from 'lodash';
+import { get, isArray, size } from 'lodash';
 import { message } from 'antd';
 
 import { getLastBlockNum } from '../vendor/steemitHelpers';
@@ -80,6 +80,16 @@ export const distanceInMBetweenEarthCoordinates = ([lat1, lon1], [lat2, lon2]) =
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return Math.round(radius * c);
+};
+
+export const getFirstOffsetNumber = wobjName => {
+  const lengthMoreThanOrSame = number => size(wobjName) <= number;
+
+  if (lengthMoreThanOrSame(15)) return 125;
+  if (lengthMoreThanOrSame(20)) return 160;
+  if (lengthMoreThanOrSame(35)) return 180;
+
+  return 170;
 };
 
 export default null;
