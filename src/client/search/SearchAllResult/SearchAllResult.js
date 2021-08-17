@@ -183,16 +183,18 @@ const SearchAllResult = props => {
   ) : (
     currRenderListState.list
   );
+  const toggleSearchResultPanel = () => {
+    props.setShowSearchResult(!props.isShowResult);
+    if (props.isShowResult) props.deleteShowPanel();
+    if (isEmpty(currRenderListState.list)) localStorage.removeItem('scrollTop');
+  };
 
   return (
     <div className={searchResultClassList}>
       <div
         className="SearchAllResult__toggle-button"
         role="presentation"
-        onClick={() => {
-          props.setShowSearchResult(!props.isShowResult);
-          if (isEmpty(currRenderListState.list)) localStorage.removeItem('scrollTop');
-        }}
+        onClick={toggleSearchResultPanel}
       >
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
@@ -265,6 +267,7 @@ SearchAllResult.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
+  deleteShowPanel: PropTypes.func.isRequired,
   setQueryInLocalStorage: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
