@@ -2158,4 +2158,14 @@ export const getCurrentMedianHistory = () => {
     .catch(e => e);
 };
 
+export const getMatchBots = (botName, botType) => {
+  const queryString = `?botName=${botName}`;
+  return fetch(`${config.campaignApiPrefix}${config.getMatchBots}/${botType}${queryString}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json());
+};
+
 export default null;

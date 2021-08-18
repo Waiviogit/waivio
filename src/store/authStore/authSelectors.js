@@ -41,3 +41,15 @@ export const getAuthenticatedUserPrivateEmail = createSelector(
 );
 
 export const getAuthorizationUserFollowSort = createSelector([authState], state => state.sort);
+
+export const getUserPosting = createSelector(getAuthenticatedUser, state => state.posting);
+
+export const getUserAccountsAuth = createSelector(getUserPosting, state =>
+  get(state, 'account_auths', []),
+);
+
+export const getIsConnectMatchBot = createSelector(
+  getUserAccountsAuth,
+  (state, props) => props.botType,
+  (accounts, botName) => accounts.some(item => item[0] === botName),
+);

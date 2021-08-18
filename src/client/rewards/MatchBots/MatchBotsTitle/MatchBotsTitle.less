@@ -1,0 +1,25 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.MatchBots {
+  &__title-wrap {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    @media @small {
+      justify-content: space-between;
+    }
+  }
+
+  &__title {
+    display: none;
+    font-size: 1.7em;
+    font-weight: 500;
+    margin-bottom: 1rem;
+
+    @media @small {
+      display: block;
+    }
+  }
+}

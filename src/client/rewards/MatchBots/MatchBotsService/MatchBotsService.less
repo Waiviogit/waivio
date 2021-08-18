@@ -1,0 +1,25 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.MatchBots {
+  &__highlighted-block {
+    border-top: 1px solid @black-text-basic;
+    border-bottom: 1px solid @black-text-basic;
+    margin: 20px 0 20px 0;
+    padding: 20px 0 20px 0;
+
+    &-change-vote {
+      color: @orange-hot;
+      cursor: pointer;
+    }
+  }
+
+  &__text-content {
+    font-size: medium;
+  }
+
+  &__text-link {
+    color: @orange-hot;
+    cursor: pointer;
+  }
+}
