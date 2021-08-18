@@ -5,7 +5,6 @@ import { injectIntl } from 'react-intl';
 import { get, upperFirst } from 'lodash';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import { getObjectType } from '../../../helpers/wObjectHelper';
@@ -52,19 +51,25 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
               className="WebsiteHeader__link left"
               onClick={() => localStorage.removeItem('query')}
             >
-              <Link to={isDiningGifts ? '/' : getHrefBackButton()}>
+              <Link
+                to={isDiningGifts ? '/' : getHrefBackButton()}
+                className="WebsiteHeader__linkHome"
+              >
                 {intl.formatMessage({
                   id: 'home',
                   defaultMessage: 'Home',
                 })}
               </Link>
               {isDiningGifts && (
-                <Link to={getHrefBackButton('map')} className="WebsiteHeader__linkMap">
-                  {intl.formatMessage({
-                    id: 'map',
-                    defaultMessage: 'Map',
-                  })}
-                </Link>
+                <React.Fragment>
+                  |
+                  <Link to={getHrefBackButton('map')} className="WebsiteHeader__linkMap">
+                    {intl.formatMessage({
+                      id: 'map',
+                      defaultMessage: 'Map',
+                    })}
+                  </Link>
+                </React.Fragment>
               )}
             </div>
             {currentPage && (
