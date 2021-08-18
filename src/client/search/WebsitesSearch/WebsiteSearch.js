@@ -57,7 +57,12 @@ const WebsiteSearch = props => {
   }, []);
 
   useEffect(() => {
-    if (props.isShowResult && !isEmpty(props.searchMap) && !localStorage.getItem('scrollTop'))
+    if (
+      props.isShowResult &&
+      !isEmpty(props.searchMap.bottomPoint) &&
+      !isEmpty(props.searchMap.topPoint) &&
+      !localStorage.getItem('scrollTop')
+    )
       currentSearchMethod(searchString);
   }, [props.searchType, props.activeFilters, props.searchMap]);
 
