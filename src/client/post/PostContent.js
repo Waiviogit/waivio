@@ -306,7 +306,7 @@ class PostContent extends React.Component {
           <meta property="og:description" content={desc} />
           <meta property="description" content={desc} />
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta name="twitter:site" content={'@waivio'} />
+          <meta name="twitter:site" content={`@${siteName}`} />
           <meta name="twitter:title" content={metaTitle} />
           <meta name="twitter:description" content={desc} />
           <meta property="og:image" content={image} />
@@ -315,7 +315,7 @@ class PostContent extends React.Component {
           <meta property="og:image:width" content="680" />
           <meta property="og:image:height" content="555" />
           <meta name="twitter:image:src" content={image} />
-          <meta property="og:site_name" content="Waivio" />
+          <meta property="og:site_name" content={siteName} />
           <meta name="article:tag" property="article:tag" content={category} />
           <link rel="image_src" href={image} />
           <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />

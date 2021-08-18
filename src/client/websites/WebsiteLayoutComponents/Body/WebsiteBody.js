@@ -383,7 +383,7 @@ const WebsiteBody = props => {
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={description} />
         <meta name="twitter:card" content={currentLogo ? 'summary_large_image' : 'summary'} />
-        <meta name="twitter:site" content={'@waivio'} />
+        <meta name="twitter:site" content={`@${objName}`} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" property="twitter:image" content={currentLogo} />
