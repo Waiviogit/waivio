@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { Button, message, Modal, Slider, Switch, Tooltip } from 'antd';
@@ -10,11 +10,11 @@ import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import Error401 from '../../statics/Error401';
 import getMatchBotMessageData from './matchBotMessageData';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../helpers/matchBotsHelpers';
 
-import './MatchBot.less';
+import './MatchBotSponsors.less';
 
-const MatchBot = ({ intl, userName }) => {
+const MatchBotSponsors = ({ intl, userName, isAuthority }) => {
   const [editRule, setEditRule] = useState({});
   const [isLoading, setLoaded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,23 +24,7 @@ const MatchBot = ({ intl, userName }) => {
   const [voteModalVisible, setVoteModalVisible] = useState(false);
   const [isEnabledRule, setIsEnabledRule] = useState(false);
 
-  const authenticatedUser = useSelector(getAuthenticatedUser);
-  const authority = 'waiviocampaigns';
-  const isAuthority =
-    !isEmpty(authenticatedUser) &&
-    !isEmpty(authenticatedUser.posting) &&
-    authenticatedUser.posting.account_auths
-      .map(auth => auth[0])
-      .some(authName => authName === authority);
-  const handleSwitcher = () => {
-    const path = window.location.href;
-
-    if (!isAuthority) {
-      window.location = `https://hivesigner.com/authorize/waiviocampaigns?redirect_uri=${path}&callback`;
-    } else {
-      window.location = `https://hivesigner.com/revoke/waiviocampaigns?redirect_uri=${path}&callback`;
-    }
-  };
+  const handleSwitcher = () => redirectAuthHiveSigner(isAuthority, MATCH_BOTS_TYPES.SPONSORS);
   const maxRulesLimit = 25;
   const isOverRules = rules.results.length >= maxRulesLimit;
   const marks = {
@@ -94,28 +78,28 @@ const MatchBot = ({ intl, userName }) => {
   };
 
   return (
-    <div className="MatchBot">
+    <div className="MatchBotSponsors">
       {userName ? (
         <React.Fragment>
-          <div className="MatchBot__title-wrap">
-            <div className="MatchBot__title">{messageData.manageMatchBot}</div>
-            <Tooltip title={!isAuthority ? messageData.turnOn : messageData.turnOff}>
-              <div className="MatchBot__switcher">
+          <div className="MatchBotSponsors__title-wrap">
+            <div className="MatchBotSponsors__title">{messageData.manageMatchBot}</div>
+            <div className="MatchBotSponsors__switcher">
+              <Tooltip title={!isAuthority ? messageData.turnOn : messageData.turnOff}>
                 <Switch checked={isAuthority} onChange={handleSwitcher} />
-              </div>
-            </Tooltip>
+              </Tooltip>
+            </div>
           </div>
-          <div className="MatchBot__text-content">
+          <div className="MatchBotSponsors__text-content">
             <p>{messageData.designedOffsetPortion}</p>
             <p>{messageData.contentUserPostedReview}</p>
-            <p className="MatchBot__text fw6">{messageData.thirdPartyCampaignSponsors}</p>
-            <div className="MatchBot__highlighted-block">
-              <div className="MatchBot__text mb3 fw6">
+            <p className="MatchBotSponsors__text fw6">{messageData.thirdPartyCampaignSponsors}</p>
+            <div className="MatchBotSponsors__highlighted-block">
+              <div className="MatchBotSponsors__text mb3 fw6">
                 <p>
                   {messageData.matchBotRequiresAuthorization}:
                   {
                     <span
-                      className="MatchBot__text-link"
+                      className="MatchBotSponsors__text-link"
                       onClick={handleSwitcher}
                       role="presentation"
                     >
@@ -132,7 +116,7 @@ const MatchBot = ({ intl, userName }) => {
                 </span>
                 (
                 <span
-                  className="MatchBot__highlighted-block-change-vote"
+                  className="MatchBotSponsors__highlighted-block-change-vote"
                   onClick={handleOpenVoteModal}
                   role="presentation"
                 >
@@ -141,6 +125,10 @@ const MatchBot = ({ intl, userName }) => {
                 )
               </p>
               <p>{messageData.upvoteEligiblePosts}</p>
+              <p className="mt3">
+                <span className="fw6">{messageData.disclaimer}</span>
+                <span>{messageData.matchBotsProvided}</span>
+              </p>
             </div>
           </div>
           {!isEmpty(rules) && !isEmpty(rules.results) && (
@@ -153,7 +141,7 @@ const MatchBot = ({ intl, userName }) => {
               setIsEnabledRule={setIsEnabledRule}
             />
           )}
-          <div className="MatchBot__button">
+          <div className="MatchBotSponsors__button">
             <Button type="primary" onClick={handleChangeModalVisible}>
               {messageData.addSponsor}
             </Button>
@@ -190,13 +178,15 @@ const MatchBot = ({ intl, userName }) => {
   );
 };
 
-MatchBot.propTypes = {
+MatchBotSponsors.propTypes = {
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string,
+  isAuthority: PropTypes.bool,
 };
 
-MatchBot.defaultProps = {
+MatchBotSponsors.defaultProps = {
   userName: '',
+  isAuthority: false,
 };
 
-export default injectIntl(MatchBot);
+export default injectIntl(MatchBotSponsors);

@@ -52,9 +52,19 @@ const routes = {
           component: Views.PaymentCampaign,
         },
         {
-          path: '/match-bot',
+          path: '/match-bots-sponsors',
           exact: true,
-          component: Views.MatchBotCampaign,
+          component: Views.MatchBotsSponsors,
+        },
+        {
+          path: '/match-bots-curators',
+          exact: true,
+          component: Views.MatchBotsCurators,
+        },
+        {
+          path: '/match-bots-authors',
+          exact: true,
+          component: Views.MatchBotsAuthors,
         },
         {
           path: '/(history|guideHistory|messages)/:campaignId?/:permlink?/:username?',
