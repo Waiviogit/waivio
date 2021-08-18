@@ -85,3 +85,5 @@ export const getWeightValue = createSelector(
   (rate, rewardFund, recentClaims, rewardBalance, weight) =>
     getWeightHelper(rate, rewardFund, recentClaims, rewardBalance, weight),
 );
+
+export const getIsEngLocale = createSelector([getUsedLocale], locale => locale === 'en-US');
