@@ -16,7 +16,12 @@ const MatchBotsTableRow = ({ intl, bot, type, editRule, setModalBot }) => {
         <Checkbox checked={bot.enabled} onChange={toggleEnableBot} />
       </td>
       <td>{bot.name}</td>
-      {type === 'curator' && <td>{Math.round(bot.voteRatio * 100)}%</td>}
+      {type === 'curator' && (
+        <td>
+          {bot.enablePowerDown && '±'}
+          {Math.round(bot.voteRatio * 100)}%
+        </td>
+      )}
       {type === 'author' && <td>{Math.round(bot.voteWeight / 100)}%</td>}
       <td>{Math.round(bot.minVotingPower / 100)}%</td>
       <td>
@@ -30,7 +35,7 @@ const MatchBotsTableRow = ({ intl, bot, type, editRule, setModalBot }) => {
           ? formatDate(intl, bot.expiredAt)
           : intl.formatMessage({ id: 'matchBot_termless', defaultMessage: 'Termless' })}
       </td>
-      <td>{bot.note}</td>
+      <td className="cell_note">{bot.note}</td>
     </tr>
   );
 };

@@ -524,6 +524,11 @@ export default class Transfer extends React.Component {
     this.props.form.validateFields(['amount']);
   };
 
+  handleCloseLinkHiveAccountModal = () => {
+    this.props.openLinkHiveAccountModal(false);
+    this.props.closeTransfer();
+  };
+
   render() {
     const {
       intl,
@@ -598,6 +603,7 @@ export default class Transfer extends React.Component {
         <Form className="Transfer" hideRequiredMark>
           <Form.Item label={<FormattedMessage id="to" defaultMessage="To" />}>
             {getFieldDecorator('to', {
+              initialValue: to,
               rules: [
                 {
                   required: true,
@@ -637,6 +643,7 @@ export default class Transfer extends React.Component {
           >
             <InputGroup className="Transfer__amount">
               {getFieldDecorator('amount', {
+                initialValue: amount,
                 trigger: '',
                 rules: [
                   {
@@ -740,10 +747,7 @@ export default class Transfer extends React.Component {
       <LinkHiveAccountModal
         handleOk={this.handleOkModal}
         handleSelect={this.handleUserSelect}
-        handleClose={() => {
-          this.props.openLinkHiveAccountModal(false);
-          this.props.closeTransfer();
-        }}
+        handleClose={this.handleCloseLinkHiveAccountModal}
         showModal={showModal}
         hiveBeneficiaryAccount={this.state.hiveBeneficiaryAccount}
         handleUnselectUser={this.handleUnselectUser}
