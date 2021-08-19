@@ -3,32 +3,21 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
 import InfiniteSroll from 'react-infinite-scroller';
-import { take, isNil, isEmpty } from 'lodash';
+import { take, isEmpty } from 'lodash';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import UserCard from '../UserCard';
 import USDDisplay from '../Utils/USDDisplay';
-import { checkFollowing } from '../../../waivioApi/ApiClient';
-import { followUser, unfollowUser } from '../../../store/usersStore/usersActions';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './ReactionsList.less';
 
-@connect(
-  state => ({
-    isAuth: getIsAuthenticated(state),
-  }),
-  {
-    unfollow: unfollowUser,
-    follow: followUser,
-  },
-)
+@connect(state => ({
+  isAuth: getIsAuthenticated(state),
+}))
 export default class UserList extends React.Component {
   static propTypes = {
     votes: PropTypes.arrayOf(PropTypes.shape()),
     ratio: PropTypes.number,
-    name: PropTypes.string,
-    unfollow: PropTypes.func,
-    follow: PropTypes.func,
     isAuth: PropTypes.bool,
   };
 
@@ -36,8 +25,6 @@ export default class UserList extends React.Component {
     votes: [],
     ratio: 0,
     name: '',
-    unfollow: () => {},
-    follow: () => {},
     isAuth: false,
   };
 
@@ -46,87 +33,12 @@ export default class UserList extends React.Component {
     usersList: [],
   };
 
-  componentDidMount() {
-    const { votes, name, isAuth } = this.props;
-    const usersList = votes.map(vote => vote.voter);
-
-    if (isAuth) {
-      checkFollowing(name, usersList).then(res => {
-        const mappedList = votes.map(vote => {
-          const follow = res.find(r => !isNil(r[vote.voter]));
-
-          return {
-            ...vote,
-            name: vote.voter,
-            youFollows: follow[vote.voter],
-            pending: false,
-          };
-        });
-
-        this.setState({ usersList: mappedList });
-      });
-    }
-  }
-
   paginate = () => this.setState(prevState => ({ page: prevState.page + 1 }));
-
-  followUser = user => {
-    const usersList = [...this.state.usersList];
-    const findUserIndex = usersList.findIndex(usr => user === usr.name);
-
-    usersList.splice(findUserIndex, 1, {
-      ...usersList[findUserIndex],
-      pending: true,
-    });
-
-    this.setState({
-      usersList,
-    });
-    this.props.follow(user).then(() => {
-      usersList.splice(findUserIndex, 1, {
-        ...usersList[findUserIndex],
-        youFollows: true,
-        pending: false,
-      });
-
-      this.setState({
-        usersList,
-      });
-    });
-  };
-
-  unfollowUser = user => {
-    const usersList = [...this.state.usersList];
-    const findUserIndex = usersList.findIndex(usr => user === usr.name);
-
-    usersList.splice(findUserIndex, 1, {
-      ...usersList[findUserIndex],
-      pending: true,
-    });
-
-    this.setState({
-      usersList,
-    });
-
-    this.props.unfollow(user).then(() => {
-      usersList.splice(findUserIndex, 1, {
-        ...usersList[findUserIndex],
-        youFollows: false,
-        pending: false,
-      });
-
-      this.setState({
-        usersList,
-      });
-    });
-  };
 
   renderUserCards = (vote, ratio, isSponsor) => (
     <UserCard
       key={vote.voter}
       user={vote}
-      follow={this.followUser}
-      unfollow={this.unfollowUser}
       showFollow={false}
       alt={
         <span>
@@ -183,7 +95,6 @@ export default class UserList extends React.Component {
       ...vote,
       name: vote.voter,
       pending: false,
-      youFollows: false,
     }));
     const currentVoterList =
       isAuth && this.state.usersList.length ? this.state.usersList : votesList;
