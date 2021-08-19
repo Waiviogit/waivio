@@ -110,6 +110,7 @@ export default class User extends React.Component {
       (!prevProps.authenticatedUserName && this.props.authenticatedUserName)
     ) {
       this.props.getUserAccount(this.props.match.params.name);
+      this.props.getUserAccountHistory(this.props.match.params.name);
     }
   }
 
