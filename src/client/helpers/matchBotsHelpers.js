@@ -15,7 +15,7 @@ export const MATCH_BOTS_NAMES = {
 export const INITIAL_INPUTS_VALUE = {
   selectedUser: null,
   voteValue: 100,
-  manaValue: 100,
+  manaValue: 75,
   expiredAt: null,
   notesValue: '',
   isSubmitted: false,
@@ -23,10 +23,10 @@ export const INITIAL_INPUTS_VALUE = {
 
 export const INITIAL_INPUTS_VALUE_CURATOR = {
   voteRatio: 100,
-  manaValue: 100,
+  manaValue: 75,
   notesValue: '',
-  isDownvote: true,
-  isComments: true,
+  isDownvote: false,
+  isComments: false,
   expiredAt: null,
   isSubmitted: false,
   selectedUser: null,
@@ -44,7 +44,7 @@ export const getBotObjAuthor = (botData, isEdit) => {
   const dataObj = {
     type: MATCH_BOTS_NAMES.AUTHORS,
     name: get(botData, 'selectedUser.account', ''),
-    enabled: isEdit ? botData.enabled : true,
+    enabled: isEdit ? botData.enabled : false,
     voteWeight: botData.voteValue * 100,
     minVotingPower: botData.manaValue * 100,
   };
@@ -61,7 +61,7 @@ export const getBotObjAuthor = (botData, isEdit) => {
 export const getBotObjCurator = (botData, isEdit) => {
   const dataObj = {
     type: MATCH_BOTS_NAMES.CURATORS,
-    enabled: isEdit ? botData.enabled : true,
+    enabled: isEdit ? botData.enabled : false,
     voteComments: botData.isComments,
     voteRatio: botData.voteRatio / 100,
     enablePowerDown: botData.isDownvote,

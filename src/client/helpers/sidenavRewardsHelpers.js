@@ -12,13 +12,13 @@ export const getSectionItemsRewards = (hasReceivables, countTookPartCampaigns) =
     sectionItemName: 'Reserves',
   },
   {
-    isShow: hasReceivables,
+    isShow: !!hasReceivables,
     path: '/rewards/receivables',
     sectionItemNameId: 'sidenav_rewards_receivables',
     sectionItemName: 'Receivables',
   },
   {
-    isShow: countTookPartCampaigns,
+    isShow: !!countTookPartCampaigns,
     path: PATH_NAME_HISTORY,
     sectionItemNameId: HISTORY,
     sectionItemName: 'History',
