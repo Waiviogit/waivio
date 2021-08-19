@@ -5,7 +5,7 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import { openTransfer } from '../../store/walletStore/walletActions';
+import { getUserAccountHistory, openTransfer } from '../../store/walletStore/walletActions';
 import { getUserAccount } from '../../store/usersStore/usersActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
@@ -58,6 +58,7 @@ import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
   {
     getUserAccount,
     openTransfer,
+    getUserAccountHistory,
   },
 )
 export default class User extends React.Component {
@@ -72,6 +73,7 @@ export default class User extends React.Component {
     loaded: PropTypes.bool,
     failed: PropTypes.bool,
     getUserAccount: PropTypes.func,
+    getUserAccountHistory: PropTypes.func.isRequired,
     openTransfer: PropTypes.func,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
@@ -99,6 +101,7 @@ export default class User extends React.Component {
     if (window.gtag) window.gtag('event', 'view_user_profile');
 
     this.props.getUserAccount(name);
+    this.props.getUserAccountHistory(name);
   }
 
   componentDidUpdate(prevProps) {
