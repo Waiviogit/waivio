@@ -99,8 +99,7 @@ const WebsiteBody = props => {
 
       if (bounce.ne[0] && bounce.sw[0]) {
         props.setShowSearchResult(true);
-        props.setMapForSearch({
-          coordinates: reverse([...area.center]),
+        setBoundsParams({
           topPoint: [bounce.ne[1], bounce.ne[0]],
           bottomPoint: [bounce.sw[1], bounce.sw[0]],
         });
@@ -138,7 +137,6 @@ const WebsiteBody = props => {
       props.query.set('showPanel', true);
       props.query.set('center', area.center);
       props.query.set('zoom', area.zoom);
-
       props.setMapForSearch({
         coordinates: reverse([...area.center]),
         ...boundsParams,
