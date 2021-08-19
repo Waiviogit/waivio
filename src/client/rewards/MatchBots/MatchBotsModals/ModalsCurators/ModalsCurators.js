@@ -72,8 +72,8 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
       .then(() => {
         message.success(
           intl.formatMessage({
-            id: 'matchBot_success_deleted_author',
-            defaultMessage: 'Author was successfully deleted',
+            id: 'matchBot_success_deleted_curator',
+            defaultMessage: 'Curator was successfully deleted',
           }),
         );
       })
