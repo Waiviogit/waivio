@@ -58,7 +58,7 @@ export const getRecommendedObjects = (locale = 'en-US') =>
         'indices',
         'stocks',
         'currencies',
-        'commodities',
+        'commodity',
         'car',
         'test',
         'car',
