@@ -14,7 +14,7 @@ import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../helpers/matchBot
 
 import './MatchBotSponsors.less';
 
-const MatchBotSponsors = ({ intl, userName, isAuthority }) => {
+const MatchBotSponsors = ({ intl, userName, isAuthority, isEngLocale }) => {
   const [editRule, setEditRule] = useState({});
   const [isLoading, setLoaded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -90,9 +90,15 @@ const MatchBotSponsors = ({ intl, userName, isAuthority }) => {
             </div>
           </div>
           <div className="MatchBotSponsors__text-content">
-            <p>{messageData.designedOffsetPortion}</p>
+            <p className="mb3">
+              {isEngLocale && <span>The</span>}
+              <span className="fw6">{messageData.manageMatchBot}</span>
+              <span>{messageData.designedOffsetPortion}</span>
+            </p>
             <p>{messageData.contentUserPostedReview}</p>
-            <p className="MatchBotSponsors__text fw6">{messageData.thirdPartyCampaignSponsors}</p>
+            <p className="MatchBotSponsors__text fw6 mt3">
+              {messageData.thirdPartyCampaignSponsors}
+            </p>
             <div className="MatchBotSponsors__highlighted-block">
               <div className="MatchBotSponsors__text mb3 fw6">
                 <p>
@@ -182,11 +188,13 @@ MatchBotSponsors.propTypes = {
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string,
   isAuthority: PropTypes.bool,
+  isEngLocale: PropTypes.bool,
 };
 
 MatchBotSponsors.defaultProps = {
   userName: '',
   isAuthority: false,
+  isEngLocale: false,
 };
 
 export default injectIntl(MatchBotSponsors);

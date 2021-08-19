@@ -25,8 +25,12 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
   const [isModalOpenConfirmEdit, setIsModalOpenConfirmEdit] = React.useState(false);
 
   React.useEffect(() => {
-    if (bot) setInputsValue(setInitialInputValues(bot));
-  }, [bot]);
+    if (!isModalOpen) setInputsValue(INITIAL_INPUTS_VALUE);
+  }, [isModalOpen]);
+
+  React.useEffect(() => {
+    if (bot && isModalOpen) setInputsValue(setInitialInputValues(bot));
+  }, [bot, isModalOpen]);
   const handleToggleModal = () => setIsModalOpen(prev => !prev);
   const handleToggleModalDelete = () => setIsModalOpenConfirmDelete(prev => !prev);
   const handleToggleModalEdit = () => setIsModalOpenConfirmEdit(prev => !prev);
@@ -91,71 +95,76 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
           {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
         </p>
       )}
-      <Modal
-        footer={null}
-        visible={isModalOpen}
-        onCancel={handleToggleModal}
-        title={
-          isAddModal ? (
-            <span>
-              {intl.formatMessage({
-                id: 'match_bots_add_author',
-                defaultMessage: 'Add new author',
-              })}
-            </span>
-          ) : (
-            <span>
-              {intl.formatMessage({
-                id: 'matchBot_title_edit_rule_author',
-                defaultMessage: 'Edit match bot rules for author',
-              })}
-              <Link to={`/@${bot.name}`}>{` @${bot.name}`}</Link>
-            </span>
-          )
-        }
-      >
-        <ModalAuthorsBody
-          isAddModal={isAddModal}
-          inputsValue={inputsValue}
-          setInputsValue={setInputsValue}
-        />
-        <ModalFooter
-          botName={MATCH_BOTS_NAMES.AUTHORS}
-          isAddModal={isAddModal}
-          handleAddBot={handleAddBot}
-          handleCloseModal={handleToggleModal}
-          handleDeleteConfirmation={handleToggleModalDelete}
-          handleEditConfirmation={handleToggleModalEdit}
-        />
-      </Modal>
-      {!isAddModal && (
+      {isModalOpen && (
         <React.Fragment>
           <Modal
-            visible={isModalOpenConfirmDelete}
-            onCancel={handleToggleModalDelete}
-            title={intl.formatMessage({
-              id: 'match_bots_delete_confirmation',
-              defaultMessage: 'Delete confirmation',
-            })}
             footer={null}
+            visible={isModalOpen}
+            onCancel={handleToggleModal}
+            title={
+              isAddModal ? (
+                <span>
+                  {intl.formatMessage({
+                    id: 'match_bots_add_author',
+                    defaultMessage: 'Add new author',
+                  })}
+                </span>
+              ) : (
+                <span>
+                  {intl.formatMessage({
+                    id: 'matchBot_title_edit_rule_author',
+                    defaultMessage: 'Edit match bot rules for author',
+                  })}
+                  <Link to={`/@${bot.name}`}>{` @${bot.name}`}</Link>
+                </span>
+              )
+            }
           >
-            <ModalBodyDelete
-              name={bot.name}
-              handleCloseModal={handleToggleModalDelete}
-              handleDeleteBot={handleDeleteBot}
+            <ModalAuthorsBody
+              isAddModal={isAddModal}
+              inputsValue={inputsValue}
+              setInputsValue={setInputsValue}
+            />
+            <ModalFooter
+              botName={MATCH_BOTS_NAMES.AUTHORS}
+              isAddModal={isAddModal}
+              handleAddBot={handleAddBot}
+              handleCloseModal={handleToggleModal}
+              handleDeleteConfirmation={handleToggleModalDelete}
+              handleEditConfirmation={handleToggleModalEdit}
             />
           </Modal>
-          <Modal
-            onOk={handleEditRule}
-            visible={isModalOpenConfirmEdit}
-            onCancel={handleToggleModalEdit}
-            title={intl.formatMessage({
-              id: 'matchBot_rule_editing_confirmation',
-              defaultMessage: 'Rule editing confirmation',
-            })}
-          >
-            <ModalBodyConfirm name={bot.name} />
-          </Modal>
+          {!isAddModal && (
+            <React.Fragment>
+              <Modal
+                visible={isModalOpenConfirmDelete}
+                onCancel={handleToggleModalDelete}
+                title={intl.formatMessage({
+                  id: 'match_bots_delete_confirmation',
+                  defaultMessage: 'Delete confirmation',
+                })}
+                footer={null}
+              >
+                <ModalBodyDelete
+                  name={bot.name}
+                  type={MATCH_BOTS_NAMES.AUTHORS}
+                  handleCloseModal={handleToggleModalDelete}
+                  handleDeleteBot={handleDeleteBot}
+                />
+              </Modal>
+              <Modal
+                onOk={handleEditRule}
+                visible={isModalOpenConfirmEdit}
+                onCancel={handleToggleModalEdit}
+                title={intl.formatMessage({
+                  id: 'matchBot_confirm_changes',
+                  defaultMessage: 'Confirm changes',
+                })}
+              >
+                <ModalBodyConfirm name={bot.name} />
+              </Modal>
+            </React.Fragment>
+          )}
         </React.Fragment>
       )}
     </div>

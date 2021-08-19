@@ -48,7 +48,7 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => 
         handleChangeSlider={handleChangeSliderMana}
         sliderTitle={intl.formatMessage({
           id: 'match_bot_slider_title_mana',
-          defaultMessage: 'Min Voting Power (mana):',
+          defaultMessage: 'Min. Voting Power (mana):',
         })}
         sliderDescription={intl.formatMessage({
           id: 'match_bot_slider_description_mana',
