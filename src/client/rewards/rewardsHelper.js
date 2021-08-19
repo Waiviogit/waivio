@@ -995,7 +995,7 @@ export const handleAddMapCoordinates = coordinates => {
     searchParams.append('mapY', coordinates[1]);
   }
   if (isLocation) {
-    history.pushState('', '', `${location.pathname}?${searchParams.toString()}`);
+    history.pushState('', '', `/?${searchParams.toString()}`);
   }
 };
 
