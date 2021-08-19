@@ -77,9 +77,11 @@ import {
 import { RADIUS } from '../../common/constants/map';
 import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
 import {
+  getAppUrl,
   getCryptosPriceHistory,
   getHelmetIcon,
   getIsWaivio,
+  getWebsiteName,
 } from '../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
@@ -109,6 +111,8 @@ import DEFAULTS from '../object/const/defaultValues';
     authenticated: getIsAuthenticated(state),
     isWaivio: getIsWaivio(state),
     helmetIcon: getHelmetIcon(state),
+    siteName: getWebsiteName(state),
+    appUrl: getAppUrl(state),
   }),
   {
     assignProposition,
@@ -149,6 +153,8 @@ class Rewards extends React.Component {
     getCryptoPriceHistory: PropTypes.func.isRequired,
     setMapFullscreenMode: PropTypes.func.isRequired,
     helmetIcon: PropTypes.string.isRequired,
+    appUrl: PropTypes.string.isRequired,
+    siteName: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -1051,9 +1057,8 @@ class Rewards extends React.Component {
       typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('isWidget') : false;
     const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
     const img = DEFAULTS.FAVICON;
-    const waivioHost = global.postOrigin || 'https://www.waivio.com';
-    const urlCurr = `${waivioHost}/rewards`;
-    const title = `Rewards - Waivio`;
+    const urlCurr = `${this.props.appUrl}/rewards`;
+    const title = `Rewards - ${this.props.siteName}`;
 
     return (
       <div className="Rewards">
@@ -1065,7 +1070,7 @@ class Rewards extends React.Component {
             <link rel="canonical" href={urlCurr} />
             <meta property="description" content={desc} />
             <meta name="twitter:card" content={'summary_large_image'} />
-            <meta name="twitter:site" content={'@waivio'} />
+            <meta name="twitter:site" content={`@${this.props.siteName}`} />
             <meta name="twitter:title" content={title} />
             <meta name="twitter:description" content={desc} />
             <meta name="twitter:image" content={img} />
@@ -1076,7 +1081,7 @@ class Rewards extends React.Component {
             <meta property="og:image:width" content="600" />
             <meta property="og:image:height" content="600" />
             <meta property="og:description" content={desc} />
-            <meta property="og:site_name" content="Waivio" />
+            <meta property="og:site_name" content={this.props.siteName} />
             <link rel="image_src" href={img} />
             <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
           </Helmet>

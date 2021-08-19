@@ -1,0 +1,37 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.MatchBots {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  padding: 0 12px 0 12px;
+
+  @media @small {
+    padding: 0 20px 0 0;
+  }
+
+  @media @large {
+    padding: 0;
+  }
+
+  &__switcher {
+    .ant-switch {
+      background-color: @red;
+    }
+
+    .ant-switch-checked {
+      background-color: @green-darker;
+    }
+  }
+
+  .MatchBotTable {
+    width: 100%;
+
+    .cell_note {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

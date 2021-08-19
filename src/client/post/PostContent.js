@@ -28,7 +28,12 @@ import { getHtml } from '../components/Story/Body';
 import { jsonParse } from '../helpers/formatter';
 import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
-import { getAppUrl, getHelmetIcon, getRewardFund } from '../../store/appStore/appSelectors';
+import {
+  getAppUrl,
+  getHelmetIcon,
+  getRewardFund,
+  getWebsiteName,
+} from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getIsEditorSaving } from '../../store/editorStore/editorSelectors';
 import { getPendingLikes } from '../../store/postsStore/postsSelectors';
@@ -53,6 +58,7 @@ import { getVotePercent, getVotingPower } from '../../store/settingsStore/settin
     defaultVotePercent: getVotePercent(state),
     appUrl: getAppUrl(state),
     helmetIcon: getHelmetIcon(state),
+    siteName: getWebsiteName(state),
   }),
   {
     editPost,
@@ -83,6 +89,7 @@ class PostContent extends React.Component {
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     appUrl: PropTypes.string.isRequired,
+    siteName: PropTypes.string.isRequired,
     bookmarks: PropTypes.arrayOf(PropTypes.string),
     sliderMode: PropTypes.bool,
     editPost: PropTypes.func,
@@ -232,18 +239,14 @@ class PostContent extends React.Component {
       appUrl,
       isOriginalPost,
       isModal,
+      siteName,
     } = this.props;
-
     const { tags, cities, wobjectsFacebook, userFacebook } = content;
 
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
 
     const postMetaData = jsonParse(content.json_metadata);
-    const waivioHost = appUrl || 'https://www.waivio.com';
-    const canonicalHost = 'https://www.waivio.com';
-
     const userVote = find(content.active_votes, { voter: user.name }) || {};
-
     const postState = {
       isReblogged: reblogList.includes(content.id),
       isReblogging: pendingReblogs.includes(content.id),
@@ -282,13 +285,13 @@ class PostContent extends React.Component {
       postMetaImage ||
       getAvatarURL(authorName) ||
       'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
-    const canonicalUrl = `${canonicalHost}${replaceBotWithGuestName(
+    const canonicalUrl = `${appUrl}${replaceBotWithGuestName(
       dropCategory(content.url),
       guestInfo,
     )}`;
-    const url = `${waivioHost}${replaceBotWithGuestName(dropCategory(content.url), guestInfo)}`;
+    const url = `${appUrl}${replaceBotWithGuestName(dropCategory(content.url), guestInfo)}`;
     const ampUrl = `${url}/amp`;
-    const metaTitle = `${title} - Waivio`;
+    const metaTitle = `${title} - ${siteName}`;
 
     return (
       <div>
@@ -303,7 +306,7 @@ class PostContent extends React.Component {
           <meta property="og:description" content={desc} />
           <meta property="description" content={desc} />
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta name="twitter:site" content={'@waivio'} />
+          <meta name="twitter:site" content={`@${siteName}`} />
           <meta name="twitter:title" content={metaTitle} />
           <meta name="twitter:description" content={desc} />
           <meta property="og:image" content={image} />
@@ -312,7 +315,7 @@ class PostContent extends React.Component {
           <meta property="og:image:width" content="680" />
           <meta property="og:image:height" content="555" />
           <meta name="twitter:image:src" content={image} />
-          <meta property="og:site_name" content="Waivio" />
+          <meta property="og:site_name" content={siteName} />
           <meta name="article:tag" property="article:tag" content={category} />
           <link rel="image_src" href={image} />
           <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />

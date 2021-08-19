@@ -5,7 +5,7 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import { openTransfer } from '../../store/walletStore/walletActions';
+import { getUserAccountHistory, openTransfer } from '../../store/walletStore/walletActions';
 import { getUserAccount } from '../../store/usersStore/usersActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
@@ -19,7 +19,13 @@ import { getMetadata } from '../helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import DEFAULTS from '../object/const/defaultValues';
 import Loading from '../components/Icon/Loading';
-import { getHelmetIcon, getRate, getRewardFund } from '../../store/appStore/appSelectors';
+import {
+  getAppUrl,
+  getHelmetIcon,
+  getRate,
+  getRewardFund,
+  getWebsiteName,
+} from '../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -31,10 +37,7 @@ import {
   getIsUserLoaded,
   getUser,
 } from '../../store/usersStore/usersSelectors';
-import {
-  getIsOpenWalletTable,
-  getUsersAccountHistory,
-} from '../../store/walletStore/walletSelectors';
+import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
 
 @connect(
   (state, ownProps) => ({
@@ -49,10 +52,13 @@ import {
     allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
     isOpenWalletTable: getIsOpenWalletTable(state),
     helmetIcon: getHelmetIcon(state),
+    siteName: getWebsiteName(state),
+    appUrl: getAppUrl(state),
   }),
   {
     getUserAccount,
     openTransfer,
+    getUserAccountHistory,
   },
 )
 export default class User extends React.Component {
@@ -67,10 +73,13 @@ export default class User extends React.Component {
     loaded: PropTypes.bool,
     failed: PropTypes.bool,
     getUserAccount: PropTypes.func,
+    getUserAccountHistory: PropTypes.func.isRequired,
     openTransfer: PropTypes.func,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
     isOpenWalletTable: PropTypes.bool,
+    siteName: PropTypes.string.isRequired,
+    appUrl: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -92,6 +101,7 @@ export default class User extends React.Component {
     if (window.gtag) window.gtag('event', 'view_user_profile');
 
     this.props.getUserAccount(name);
+    this.props.getUserAccountHistory(name);
   }
 
   componentDidUpdate(prevProps) {
@@ -100,6 +110,7 @@ export default class User extends React.Component {
       (!prevProps.authenticatedUserName && this.props.authenticatedUserName)
     ) {
       this.props.getUserAccount(this.props.match.params.name);
+      this.props.getUserAccountHistory(this.props.match.params.name);
     }
   }
 
@@ -119,6 +130,8 @@ export default class User extends React.Component {
       user,
       isOpenWalletTable,
       helmetIcon,
+      siteName,
+      appUrl,
     } = this.props;
 
     if (failed) return <Error404 />;
@@ -148,10 +161,8 @@ export default class User extends React.Component {
       coverImage = profile.cover_image;
     }
     const hasCover = !!coverImage;
-    const waivioHost = global.postOrigin || 'https://www.waivio.com';
     const image = getAvatarURL(username) || DEFAULTS.AVATAR;
-    const canonicalUrl = `https://www.waivio.com/@${username}`;
-    const url = `${waivioHost}/@${username}`;
+    const url = `${appUrl}/@${username}`;
     const title = displayedUsername;
     const isSameUser = authenticated && authenticatedUser.name === username;
     const isAboutPage = match.params['0'] === 'about';
@@ -165,10 +176,10 @@ export default class User extends React.Component {
       <div className="main-panel">
         <Helmet>
           <title>{title}</title>
-          <link rel="canonical" href={canonicalUrl} />
+          <link rel="canonical" href={url} />
           <meta property="description" content={desc} />
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta name="twitter:site" content={'@waivio'} />
+          <meta name="twitter:site" content={`@${siteName}`} />
           <meta name="twitter:title" content={title} />
           <meta name="twitter:description" content={desc} />
           <meta
@@ -185,7 +196,7 @@ export default class User extends React.Component {
           <meta property="og:image:width" content="600" />
           <meta property="og:image:height" content="600" />
           <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="Waivio" />
+          <meta property="og:site_name" content={siteName} />
           <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
         </Helmet>
         <ScrollToTopOnMount />

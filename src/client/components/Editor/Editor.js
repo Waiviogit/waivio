@@ -437,9 +437,7 @@ class Editor extends React.Component {
     return (
       <Form className="Editor" layout="vertical" onSubmit={this.handleSubmit}>
         <Helmet>
-          <title>
-            {intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })} - Waivio
-          </title>
+          <title>{intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}</title>
         </Helmet>
         <Form.Item
           label={

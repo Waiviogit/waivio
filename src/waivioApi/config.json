@@ -135,5 +135,6 @@
   "latest": "/latest",
   "immediateWithdraw": "/immediate-withdraw",
   "rewardFund": "/reward-fund",
-  "currentMedianHistory": "/current-median-history"
+  "currentMedianHistory": "/current-median-history",
+  "getMatchBots": "/match-bots"
 }

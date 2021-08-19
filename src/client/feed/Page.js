@@ -15,7 +15,7 @@ import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { getIsAuthenticated, getIsLoaded } from '../../store/authStore/authSelectors';
 import { getObject as getObjectState } from '../../store/wObjectStore/wObjectSelectors';
-import { getHelmetIcon } from '../../store/appStore/appSelectors';
+import { getCurrentHost, getHelmetIcon } from '../../store/appStore/appSelectors';
 
 @injectIntl
 @withRouter
@@ -24,6 +24,7 @@ import { getHelmetIcon } from '../../store/appStore/appSelectors';
   loaded: getIsLoaded(state),
   wobject: getObjectState(state),
   helmetIcon: getHelmetIcon(state),
+  host: getCurrentHost(state),
 }))
 class Page extends React.Component {
   static fetchData({ store, match }) {
@@ -35,6 +36,7 @@ class Page extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
     helmetIcon: PropTypes.string.isRequired,
+    host: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     route: PropTypes.shape().isRequired,
@@ -70,9 +72,10 @@ class Page extends React.Component {
         <Helmet>
           <title>Waivio</title>
           <meta property="description" content={description} />
+          <link rel="canonical" href={this.props.host} />
           <meta property="og:title" content={'Waivio'} />
           <meta property="og:type" content="article" />
-          <meta property="og:url" content={global.postOrigin} />
+          <meta property="og:url" content={this.props.host} />
           <meta property="og:image" content={this.props.helmetIcon} />
           <meta property="og:image:url" content={this.props.helmetIcon} />
           <meta property="og:image:width" content="600" />

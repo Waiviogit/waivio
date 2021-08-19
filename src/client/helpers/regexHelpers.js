@@ -30,4 +30,6 @@ export const guestUserRegex = /(waivio_|bxy_)([\w-.]+)/;
 
 export const photosInPostRegex = /(?:!\[(.*?)\((.*?)\))/gi;
 
+export const domainWithoutParams = /^https?:\/\/([^/]+)/;
+
 export default null;

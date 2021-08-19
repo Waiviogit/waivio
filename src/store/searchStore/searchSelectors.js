@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { createSelector } from 'reselect';
 
 // selector
@@ -75,6 +75,11 @@ export const getWebsiteSearchString = createSelector([searchState], state =>
 
 export const getSearchFiltersTagCategory = createSelector([searchState], state =>
   get(state, 'tagCategory', []),
+);
+
+export const tagsCategoryIsEmpty = createSelector(
+  [getSearchFiltersTagCategory],
+  state => !isEmpty(state),
 );
 
 export const getSearchSort = createSelector([searchState], state => get(state, 'sort', ''));

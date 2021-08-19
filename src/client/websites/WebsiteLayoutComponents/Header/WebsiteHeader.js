@@ -5,7 +5,6 @@ import { injectIntl } from 'react-intl';
 import { get, upperFirst } from 'lodash';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import { getObjectType } from '../../../helpers/wObjectHelper';
@@ -20,35 +19,25 @@ import './WebsiteHeader.less';
 
 const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDiningGifts }) => {
   const pathName = location.pathname;
-
   const pageWithMapUrl = isDiningGifts ? '/map' : '/';
   const isPageWithMap = pathName === pageWithMapUrl;
+  const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
+  const query = store.get('query');
+  let currentPage = currPage || store.get('currentPage');
+
   const getHrefBackButton = (link = '') => {
-    if (query) {
-      return `/${link}?${query}`;
-    }
+    if (query) return `/${link}?${query}`;
 
     return `/${link}`;
   };
-  let currentPage = currPage || store.get('currentPage');
-  const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
-  const query = store.get('query');
 
-  if (pathName.includes('/object/')) {
-    currentPage = getObjectType(wobj);
-  }
+  if (pathName.includes('/object/')) currentPage = getObjectType(wobj);
 
-  if (pathName.includes('/@')) {
-    currentPage = 'Profile';
-  }
+  if (pathName.includes('/@')) currentPage = 'Profile';
 
-  if (pathName.includes('/editor')) {
-    currentPage = 'Editor';
-  }
+  if (pathName.includes('/editor')) currentPage = 'Editor';
 
-  if (pathName.includes('/rewards')) {
-    currentPage = 'Rewards';
-  }
+  if (pathName.includes('/rewards')) currentPage = 'Rewards';
 
   return (
     <div className="WebsiteHeader" style={{ backgroundColor: `#${backgroundColor}` }}>
@@ -62,19 +51,25 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
               className="WebsiteHeader__link left"
               onClick={() => localStorage.removeItem('query')}
             >
-              <Link to={isDiningGifts ? '/' : getHrefBackButton()}>
+              <Link
+                to={isDiningGifts ? '/' : getHrefBackButton()}
+                className="WebsiteHeader__linkHome"
+              >
                 {intl.formatMessage({
                   id: 'home',
                   defaultMessage: 'Home',
                 })}
               </Link>
               {isDiningGifts && (
-                <Link to={getHrefBackButton('map')} className="WebsiteHeader__linkMap">
-                  {intl.formatMessage({
-                    id: 'map',
-                    defaultMessage: 'Map',
-                  })}
-                </Link>
+                <React.Fragment>
+                  |
+                  <Link to={getHrefBackButton('map')} className="WebsiteHeader__linkMap">
+                    {intl.formatMessage({
+                      id: 'map',
+                      defaultMessage: 'Map',
+                    })}
+                  </Link>
+                </React.Fragment>
               )}
             </div>
             {currentPage && (

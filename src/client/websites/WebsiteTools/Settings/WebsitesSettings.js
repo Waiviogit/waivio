@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Form, Input, message, Select } from 'antd';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
-
+import languages from '../../../translations/languages';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import {
@@ -38,7 +38,6 @@ const WebsitesSettings = ({
   const [beneficiaryPercent, setBeneficiaryPercent] = useState(1);
   const [referralAccount, setReferralAccount] = useState('');
   const [settingsLoading, setSettingsLoading] = useState(false);
-
   const host = match.params.site;
 
   useEffect(() => {
@@ -80,15 +79,9 @@ const WebsitesSettings = ({
         const tag = values.googleAnalyticsTag || settings.googleAnalyticsTag || '';
         const beneficiary = { account, percent };
 
-        saveWebSettings(host, tag, beneficiary, values.currency);
+        saveWebSettings(host, tag, beneficiary, values.currency, values.language);
         referralUserForWeb(referralAccount, host);
-
-        message.success(
-          intl.formatMessage({
-            id: 'settings_updated_successfully',
-            defaultMessage: 'Settings updated successfully',
-          }),
-        );
+        message.success(intl.formatMessage({ id: 'settings_updated_successfully' }));
       }
     });
   };
@@ -97,17 +90,23 @@ const WebsitesSettings = ({
 
   return (
     <div className="WebsitesSettings-middle">
-      <h1>
-        <FormattedMessage id="settings" defaultMessage="Settings" />
-      </h1>
+      <h1>{intl.formatMessage({ id: 'settings' })}</h1>
       <Form className="WebsitesSettings" id="WebsitesSettings" onSubmit={handleSubmit}>
         <Form.Item>
-          <h3>
-            {intl.formatMessage({
-              id: 'base_currency',
-              defaultMessage: 'Base currency:',
-            })}
-          </h3>
+          <h3>{intl.formatMessage({ id: 'default_language' })}</h3>
+          {getFieldDecorator('language', {
+            initialValue: get(settings, 'language') || 'en-US',
+          })(
+            <Select className="WebsitesSettings__language">
+              {languages.map(lang => (
+                <Select.Option key={lang.id}>{lang.name}</Select.Option>
+              ))}
+            </Select>,
+          )}
+          <p>{intl.formatMessage({ id: 'disclaimer_language' })}</p>
+        </Form.Item>
+        <Form.Item>
+          <h3>{intl.formatMessage({ id: 'base_currency' })}</h3>
           {getFieldDecorator('currency', {
             initialValue: get(settings, 'currency') || defaultCurrency,
           })(
@@ -117,58 +116,27 @@ const WebsitesSettings = ({
               ))}
             </Select>,
           )}
-          <p>
-            {intl.formatMessage({
-              id: 'disclaimer_exchange_rates',
-              defaultMessage:
-                'Disclaimer: Exchange rates are provided by third parties and may not always be accurate.',
-            })}
-          </p>
+          <p>{intl.formatMessage({ id: 'disclaimer_exchange_rates' })}</p>
         </Form.Item>
         <Form.Item>
-          <h3>
-            {intl.formatMessage({
-              id: 'google_analytic_tag',
-              defaultMessage: 'Google Analytics 4 property ID:',
-            })}
-          </h3>
+          <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}</h3>
           {getFieldDecorator('googleAnalyticsTag')(
             <Input.Group>
               <Input
                 type="text"
-                placeholder={intl.formatMessage({
-                  id: 'paste_tag_here',
-                  defaultMessage: 'Paste Measurement ID here',
-                })}
+                placeholder={intl.formatMessage({ id: 'paste_tag_here' })}
                 defaultValue={get(settings, 'googleAnalyticsTag')}
                 onChange={e => handleChange(e, 'googleAnalyticsTag')}
               />
             </Input.Group>,
           )}
-          <p>
-            {intl.formatMessage({
-              id: 'website_performance',
-              defaultMessage:
-                'You can monitor website performance using Google Analytics. Please note, that Google Measurement ID should look like G-XXXXXXX.',
-            })}
-          </p>
+          <p>{intl.formatMessage({ id: 'website_performance' })}</p>
         </Form.Item>
-        <h3>{intl.formatMessage({ id: 'beneficiary', defaultMessage: 'Beneficiary' })}</h3>
-        <p>
-          {intl.formatMessage({
-            id: 'beneficiary_rules',
-            defaultMessage:
-              'The website owner may earn a share of the author rewards on posts submitted using their website.',
-          })}
-        </p>
+        <h3>{intl.formatMessage({ id: 'beneficiary' })}</h3>
+        <p>{intl.formatMessage({ id: 'beneficiary_rules' })}</p>
         <div className="WebsitesSettings__benefic-block">
           <Form.Item>
-            <h3>
-              {intl.formatMessage({
-                id: 'beneficiary_account',
-                defaultMessage: 'Beneficiary account:',
-              })}
-            </h3>
+            <h3>{intl.formatMessage({ id: 'beneficiary_account' })}</h3>
             {beneficiaryAccount ? (
               <SelectUserForAutocomplete
                 account={beneficiaryAccount}
@@ -182,33 +150,20 @@ const WebsitesSettings = ({
             )}
           </Form.Item>
           <Form.Item>
-            <h3>
-              {intl.formatMessage({
-                id: 'beneficiary_percent',
-                defaultMessage: 'Beneficiary %:',
-              })}
-            </h3>
+            <h3>{intl.formatMessage({ id: 'beneficiary_percent' })}</h3>
             {getFieldDecorator('beneficiaryPercent', {
               initialValue: beneficiaryPercent,
               rules: [
                 {
                   required: beneficiaryAccount,
-                  message: intl.formatMessage({
-                    id: 'beneficiary_is_required',
-                    defaultMessage: 'Beneficiary is required',
-                  }),
+                  message: intl.formatMessage({ id: 'beneficiary_is_required' }),
                 },
                 {
                   validator: (rule, value) => {
                     if (value) {
                       return Number(value)
                         ? Promise.resolve()
-                        : Promise.reject(
-                            intl.formatMessage({
-                              id: 'beneficiary_error',
-                              defaultMessage: 'Beneficiary could not be less than 1',
-                            }),
-                          );
+                        : Promise.reject(intl.formatMessage({ id: 'beneficiary_error' }));
                     }
 
                     return Promise.resolve();
@@ -218,33 +173,17 @@ const WebsitesSettings = ({
             })(
               <Input
                 disabled={!beneficiaryAccount}
-                placeholder={intl.formatMessage({
-                  id: 'enter_percentage',
-                  defaultMessage: 'Enter percentage',
-                })}
+                placeholder={intl.formatMessage({ id: 'enter_percentage' })}
                 onChange={handleChangePercent}
               />,
             )}
           </Form.Item>
         </div>
-        <h3>
-          {intl.formatMessage({ id: 'referral_payments', defaultMessage: 'Referral payments' })}
-        </h3>
-        <p>
-          {intl.formatMessage({
-            id: 'referral_rules',
-            defaultMessage:
-              'The website owner may receive referral commissions when users claim their rewards through the website.',
-          })}
-        </p>
+        <h3>{intl.formatMessage({ id: 'referral_payments' })}</h3>
+        <p>{intl.formatMessage({ id: 'referral_rules' })}</p>
         <div className="WebsitesSettings__benefic-block">
           <Form.Item>
-            <h3>
-              {intl.formatMessage({
-                id: 'referral_payments_acc',
-                defaultMessage: 'Account for referral payments:',
-              })}
-            </h3>
+            <h3>{intl.formatMessage({ id: 'referral_payments_acc' })}</h3>
             {referralAccount ? (
               <SelectUserForAutocomplete
                 account={referralAccount}
@@ -259,17 +198,10 @@ const WebsitesSettings = ({
           </Form.Item>
         </div>
         <p className="WebsitesSettings__referral-terms">
-          {intl.formatMessage({
-            id: 'referral_terms',
-            defaultMessage:
-              'The terms for referral commissions are defined by the Campaign Management Services used by sponsors to launch their campaigns.',
-          })}
+          {intl.formatMessage({ id: 'referral_terms' })}
         </p>
         <Button type="primary" htmlType="submit" loading={loading}>
-          {intl.formatMessage({
-            id: 'save',
-            defaultMessage: 'Save',
-          })}
+          {intl.formatMessage({ id: 'save' })}
         </Button>
       </Form>
     </div>

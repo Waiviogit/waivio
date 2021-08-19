@@ -2,7 +2,6 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { injectIntl } from 'react-intl';
 import { Tag } from 'antd';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverContent from './DiscoverContent';
@@ -14,7 +13,7 @@ import { getHelmetIcon } from '../../store/appStore/appSelectors';
 
 import './Discover.less';
 
-const Discover = ({ intl, match, history }) => {
+const Discover = ({ match, history }) => {
   const dispatch = useDispatch();
   const desc = 'All users are located here. Discover new users!';
   const image =
@@ -75,7 +74,6 @@ const Discover = ({ intl, match, history }) => {
 };
 
 Discover.propTypes = {
-  intl: PropTypes.shape().isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       search: PropTypes.string,
@@ -84,4 +82,4 @@ Discover.propTypes = {
   history: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(Discover);
+export default Discover;

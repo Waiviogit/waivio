@@ -14,7 +14,6 @@ import { getBookmarks } from '../../store/feedStore/feedActions';
 import { showPostModal } from '../../store/appStore/appActions';
 import requiresLogin from '../auth/requiresLogin';
 import PostModal from '../post/PostModalContainer';
-import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { getIsReloading } from '../../store/authStore/authSelectors';
 import { getPosts } from '../../store/postsStore/postsSelectors';
 import { getFeed } from '../../store/feedStore/feedSelectors';
@@ -69,9 +68,7 @@ export default class Bookmarks extends React.Component {
     return (
       <React.Fragment>
         <Helmet>
-          <title>
-            {intl.formatMessage({ id: 'bookmarks', defaultMessage: 'Bookmarks' })} - Waivio
-          </title>
+          <title>{intl.formatMessage({ id: 'bookmarks', defaultMessage: 'Bookmarks' })}</title>
         </Helmet>
         {noBookmarks ? (
           <div className="container">

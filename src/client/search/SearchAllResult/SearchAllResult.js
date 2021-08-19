@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty, map, size, get, uniqBy } from 'lodash';
@@ -178,24 +178,23 @@ const SearchAllResult = props => {
   };
   const currentList = isEmpty(currRenderListState.list) ? (
     <div className="SearchAllResult__empty">
-      {props.intl.formatMessage({
-        id: 'search_no_result',
-        defaultMessage: 'No results were found for this request',
-      })}
+      {props.intl.formatMessage({ id: 'search_no_result' })}
     </div>
   ) : (
     currRenderListState.list
   );
+  const toggleSearchResultPanel = () => {
+    props.setShowSearchResult(!props.isShowResult);
+    if (props.isShowResult) props.deleteShowPanel();
+    if (isEmpty(currRenderListState.list)) localStorage.removeItem('scrollTop');
+  };
 
   return (
     <div className={searchResultClassList}>
       <div
         className="SearchAllResult__toggle-button"
         role="presentation"
-        onClick={() => {
-          props.setShowSearchResult(!props.isShowResult);
-          if (isEmpty(currRenderListState.list)) localStorage.removeItem('scrollTop');
-        }}
+        onClick={toggleSearchResultPanel}
       >
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
@@ -268,6 +267,7 @@ SearchAllResult.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
+  deleteShowPanel: PropTypes.func.isRequired,
   setQueryInLocalStorage: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,

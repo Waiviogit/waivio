@@ -36,7 +36,9 @@ export default {
     tabs: [
       'create',
       'manage',
-      'match-bot',
+      'match-bots-sponsors',
+      'match-bots-curators',
+      'match-bots-authors',
       'edit',
       'history',
       'guideHistory',

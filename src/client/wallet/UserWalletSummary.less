@@ -43,6 +43,7 @@
     .red {
       color: @red;
     }
+
     align-items: center;
     color: @black;
     display: flex;
@@ -52,13 +53,13 @@
   }
 
   &__reward {
-    &:after {
+    &::after {
       color: @blue-botticelli;
       content: ' - ';
     }
 
     &:last-of-type {
-      &:after {
+      &::after {
         content: '';
       }
     }

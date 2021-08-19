@@ -28,9 +28,11 @@ import { appendObject } from '../../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
 import {
+  getAppUrl,
   getHelmetIcon,
   getIsWaivio,
   getScreenSize,
+  getWebsiteName,
   getWeightValue,
 } from '../../../store/appStore/appSelectors';
 import {
@@ -64,6 +66,8 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     isWaivio: getIsWaivio(state),
     supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
     weightValue: getWeightValue(state, getObjectState(state).weight),
+    siteName: getWebsiteName(state),
+    appUrl: getAppUrl(state),
   }),
   {
     clearObjectFromStore,
@@ -104,6 +108,8 @@ export default class WobjectContainer extends React.Component {
     setCatalogBreadCrumbs: PropTypes.func,
     locale: PropTypes.string,
     helmetIcon: PropTypes.string.isRequired,
+    siteName: PropTypes.string.isRequired,
+    appUrl: PropTypes.string.isRequired,
     getAlbums: PropTypes.func,
     appendObject: PropTypes.func,
     addAlbumToStore: PropTypes.func,
@@ -261,6 +267,8 @@ export default class WobjectContainer extends React.Component {
         objectName={objectName}
         appendAlbum={this.appendAlbum}
         helmetIcon={this.props.helmetIcon}
+        siteName={this.props.siteName}
+        appUrl={this.props.appUrl}
         isWaivio={this.props.isWaivio}
         supportedObjectTypes={this.props.supportedObjectTypes}
         weightValue={this.props.weightValue}

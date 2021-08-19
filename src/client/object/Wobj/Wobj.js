@@ -33,16 +33,17 @@ const Wobj = ({
   isWaivio,
   supportedObjectTypes,
   weightValue,
+  siteName,
+  appUrl,
 }) => {
-  const waivioHost = global.postOrigin || 'https://www.waivio.com';
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
-  const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
-  const url = `${waivioHost}/object/${match.params.name}`;
+  const canonicalUrl = `${appUrl}/object/${match.params.name}`;
+  const url = `${appUrl}/object/${match.params.name}`;
   const albumsAndImagesCount = wobject.albums_count;
   const address = parseAddress(wobject);
-  const titleText = isWaivio
-    ? `${objectName} - ${address ? `${address} -` : ''} Waivio`
-    : objectName;
+  const titleText = isWaivio ? `${objectName} - ${address || ''}` : objectName;
+  const rank = hasType(wobject, 'restaurant') ? `Restaurant rank: ${round(weightValue, 2)}.` : '';
+
   const tagCategories = reduce(
     wobject.tagCategory,
     (acc, curr) => {
@@ -55,12 +56,8 @@ const Wobj = ({
     '',
   );
 
-  const desc =
-    objectName &&
-    `${objectName}. ${
-      hasType(wobject, 'restaurant') ? `Restaurant rank: ${round(weightValue, 2)}.` : ''
-    } ${parseAddress(wobject) || ''} ${wobject.description || ''} ${tagCategories}`;
-
+  const desc = `${objectName}. ${rank} ${parseAddress(wobject) || ''} ${wobject.description ||
+    ''} ${tagCategories}`;
   const formsList = get(wobject, 'form', []);
   const currentForm = formsList.find(item => item.permlink === match.params.itemId);
   const currentColumn = get(currentForm, 'column', '');
@@ -91,7 +88,7 @@ const Wobj = ({
   return (
     <div className="main-panel">
       <Helmet>
-        <title>{titleText}</title>
+        <title>{`${titleText} - ${siteName}`}</title>
         <link rel="canonical" href={canonicalUrl} />
         <meta property="description" content={desc} />
         <meta property="og:title" content={titleText} />
@@ -103,11 +100,11 @@ const Wobj = ({
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={desc} />
         <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-        <meta name="twitter:site" content={'@waivio'} />
+        <meta name="twitter:site" content={`@${siteName}`} />
         <meta name="twitter:title" content={titleText} />
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" property="twitter:image" content={image} />
-        <meta property="og:site_name" content="Waivio" />
+        <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
@@ -136,16 +133,14 @@ const Wobj = ({
               />
             </div>
           </Affix>
-          <Affix className={rightSidebarClassList} stickPosition={72}>
-            <div className="right">
-              {wobject.author_permlink && <ObjectExpertise wobject={wobject} />}
-            </div>
-            <div>
-              {wobject.author_permlink && wobject.map && <WobjectNearby wobject={wobject} />}
-            </div>
-            <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
-            <div>{wobject.author_permlink && <WobjectSidebarFollowers wobject={wobject} />}</div>
-          </Affix>
+          {wobject.author_permlink && (
+            <Affix className={rightSidebarClassList} stickPosition={72}>
+              <ObjectExpertise wobject={wobject} />
+              {wobject.map && <WobjectNearby wobject={wobject} />}
+              <ObjectsRelated wobject={wobject} />
+              <WobjectSidebarFollowers wobject={wobject} />
+            </Affix>
+          )}
           <div className={centerClassList}>
             {renderRoutes(route.routes, {
               isEditMode,
@@ -178,6 +173,8 @@ Wobj.propTypes = {
   handleFollowClick: PropTypes.func,
   objectName: PropTypes.string.isRequired,
   helmetIcon: PropTypes.string.isRequired,
+  siteName: PropTypes.string.isRequired,
+  appUrl: PropTypes.string.isRequired,
   weightValue: PropTypes.number.isRequired,
   appendAlbum: PropTypes.func,
 };

@@ -12,6 +12,7 @@ import './WebsiteMainPage.less';
 
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
+  const helmetImg = '/images/dining.gifts.png';
 
   useLayoutEffect(() => {
     if (window) {
@@ -23,13 +24,13 @@ const WebsiteMainPage = () => {
     <div className="WebsiteMainPage">
       <Helmet>
         <title>Dining.Gifts</title>
-        <link rel="canonical" href={`https://dining.gifts/`} />
+        <link rel="canonical" href={'https://dining.gifts/'} />
         <meta property="description" content={'Dining.Gifts'} />
         <meta property="og:title" content={'Dining.Gifts'} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={global.postOrigin} />
-        <meta property="og:image" content={'/images/dining.gifts.png'} />
-        <meta property="og:image:url" content={'/images/dining.gifts.png'} />
+        <meta property="og:url" content={'https://dining.gifts/'} />
+        <meta property="og:image" content={helmetImg} />
+        <meta property="og:image:url" content={helmetImg} />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={'Dining.Gifts'} />
@@ -37,10 +38,10 @@ const WebsiteMainPage = () => {
         <meta name="twitter:site" content={'@Dining.Gifts'} />
         <meta name="twitter:title" content={'Dining.Gifts'} />
         <meta name="twitter:description" content={'Dining.Gifts'} />
-        <meta name="twitter:image" property="twitter:image" content={'/images/dining.gifts.png'} />
+        <meta name="twitter:image" property="twitter:image" content={helmetImg} />
         <meta property="og:site_name" content={'Dining.Gifts'} />
-        <link rel="image_src" href={'/images/dining.gifts.png'} />
-        <link id="favicon" rel="icon" href={'/images/dining.gifts.png'} type="image/x-icon" />
+        <link rel="image_src" href={helmetImg} />
+        <link id="favicon" rel="icon" href={helmetImg} type="image/x-icon" />
       </Helmet>
       <MainPageHeader />
       <div className="WebsiteMainPage__banner">
@@ -61,7 +62,7 @@ const WebsiteMainPage = () => {
                 isButton
               />
             )}
-            <Link to={'/map'} className="WebsiteMainPage__button">
+            <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
               Find Rewards <Icon type="right" />
             </Link>
           </div>

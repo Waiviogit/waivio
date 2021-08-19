@@ -1,0 +1,22 @@
+@import (reference) '../../../../../styles/custom.less';
+
+.modalBodySearch {
+  &_label {
+    padding-bottom: 8px;
+    font-weight: 500;
+
+    &::before {
+      display: inline-block;
+      margin-right: 4px;
+      color: @red-danger;
+      font-size: 1em;
+      font-family: SimSun, sans-serif;
+      content: '*';
+    }
+  }
+
+  &-error {
+    color: @red-danger;
+    padding-top: 4px;
+  }
+}

@@ -12,6 +12,8 @@ import RightSidebarLoading from '../../RightSidebarLoading';
 import './WobjectNearby.less';
 
 const WobjectNearby = ({
+  isWaivio,
+  location,
   wobject,
   intl,
   isCenterContent,
@@ -34,9 +36,18 @@ const WobjectNearby = ({
     };
 
     setFiltersAndLoad(filters);
-    history.push(
-      `/discover-objects/${wobject.object_type}?mapX=${map.latitude}&mapY=${map.longitude}&zoom=${filters.map.zoom}&radius=${filters.map.radius}`,
-    );
+    if (isWaivio) {
+      history.push(
+        `/discover-objects/${wobject.object_type}?mapX=${map.latitude}&mapY=${map.longitude}&zoom=${filters.map.zoom}&radius=${filters.map.radius}`,
+      );
+    } else {
+      const query = new URLSearchParams(location.search);
+
+      query.set('center', filters.map.coordinates);
+      query.set('zoom', 14);
+      query.set('permlink', wobject.author_permlink);
+      history.push(`/?${query.toString()}`);
+    }
   };
 
   const redirectOnTitleClick = () => {
@@ -84,11 +95,14 @@ const WobjectNearby = ({
 };
 
 WobjectNearby.propTypes = {
+  isWaivio: PropTypes.bool,
   isCenterContent: PropTypes.bool,
   nearbyObjects: PropTypes.shape(),
   activeFilters: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
+  query: PropTypes.shape().isRequired,
+  location: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
   setFiltersAndLoad: PropTypes.func.isRequired,
   nearbyObjectsIsLoading: PropTypes.shape().isRequired,

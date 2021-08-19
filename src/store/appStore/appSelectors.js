@@ -74,6 +74,8 @@ export const getCurrentCurrency = createSelector([appState], state => state.curr
 
 export const getIsDiningGifts = createSelector([appState], state => state.isDiningGifts);
 
+export const getWebsiteName = createSelector([appState], state => state.websiteName);
+
 export const getWeightValue = createSelector(
   getRate,
   getRewardFund,
@@ -83,3 +85,5 @@ export const getWeightValue = createSelector(
   (rate, rewardFund, recentClaims, rewardBalance, weight) =>
     getWeightHelper(rate, rewardFund, recentClaims, rewardBalance, weight),
 );
+
+export const getIsEngLocale = createSelector([getUsedLocale], locale => locale === 'en-US');

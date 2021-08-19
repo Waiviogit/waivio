@@ -218,6 +218,30 @@ function sc2Extended() {
       },
     },
     {
+      setMatchBot(username, ruleObj, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'matchBotSet',
+          json: JSON.stringify(ruleObj),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      unsetMatchBot(username, name, type, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'matchBotUnset',
+          json: JSON.stringify({ type, name }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       addWebsiteAdministrators(username, host, names, cb) {
         const params = {
           required_auths: [],
@@ -447,7 +471,15 @@ function sc2Extended() {
 
         return this.broadcast([['custom_json', params]], cb);
       },
-      saveWebsiteSettings(username, appId, googleAnalyticsTag, beneficiary, currency, cb) {
+      saveWebsiteSettings(
+        username,
+        appId,
+        googleAnalyticsTag,
+        beneficiary,
+        currency,
+        language,
+        cb,
+      ) {
         const params = {
           required_auths: [],
           required_posting_auths: [username],
@@ -457,6 +489,7 @@ function sc2Extended() {
             googleAnalyticsTag,
             beneficiary,
             currency,
+            language,
           }),
         };
 

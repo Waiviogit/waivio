@@ -41,7 +41,7 @@ const SettingsMain = props => {
     <div className="shifted">
       <Helmet>
         <title>
-          {props.intl.formatMessage(getSettingsTitle(props.match))} {title} - Waivio
+          {props.intl.formatMessage(getSettingsTitle(props.match))} {title}
         </title>
       </Helmet>
       <div className={containerClassList}>
