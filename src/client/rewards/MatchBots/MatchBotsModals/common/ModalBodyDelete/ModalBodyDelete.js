@@ -6,11 +6,11 @@ import { Button } from 'antd';
 
 import './ModalBodyDelete.less';
 
-const ModalBodyDelete = ({ name, intl, handleCloseModal, handleDeleteBot }) => (
+const ModalBodyDelete = ({ name, intl, handleCloseModal, handleDeleteBot, type }) => (
   <div className="deleteConfirmation">
     <span>
       {intl.formatMessage({
-        id: 'match_bots_delete_message',
+        id: `match_bots_${type}_delete_message`,
         defaultMessage: 'Do you want to delete match bot rule for ',
       })}
       <Link to={`/@${name}`}>{` @${name}`}</Link>?
@@ -30,6 +30,7 @@ const ModalBodyDelete = ({ name, intl, handleCloseModal, handleDeleteBot }) => (
 
 ModalBodyDelete.propTypes = {
   name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
   handleCloseModal: PropTypes.func.isRequired,
   handleDeleteBot: PropTypes.func.isRequired,

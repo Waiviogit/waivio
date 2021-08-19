@@ -7,12 +7,12 @@ export default localizer => ({
     'matchBot_success_min_voted_changed',
     'Minimum voting power changed',
   ),
-  manageMatchBot: localizer('matchBot_sponsors_match_bot', 'Sponsors match bot'),
+  manageMatchBot: localizer('matchBot_sponsors_match_bot', ' Sponsors match bot'),
   turnOn: localizer('matchBot_turn_on', 'Turn on'),
   turnOff: localizer('matchBot_turn_off', 'Turn off'),
   designedOffsetPortion: localizer(
     'matchBot_designed_offset_portion_of_direct_rewards',
-    'The Sponsors match bot is designed to offset portion of direct rewards with upvotes.',
+    ' is designed to offset portion of direct rewards with upvotes.',
   ),
   contentUserPostedReview: localizer(
     'matchBot_content_user_has_posted_review_eligible_receive_direct_reward',
@@ -109,8 +109,8 @@ export default localizer => ({
     'match_bots_authors_auth_text',
     'The Authors match bot requires authorization to distribute votes on your behalf: ',
   ),
-  matchBotsAuthLink: localizer('match_bots_auth_link', 'Authorization now'),
-  matchBotsUnAuthLink: localizer('match_bots_unauth_link', 'Remove authorization'),
+  matchBotsAuthLink: localizer('match_bots_auth_link', 'Authorize now'),
+  matchBotsUnAuthLink: localizer('match_bots_unauth_link', 'Remove authorize'),
   matchBotsAuthHiveSigner: localizer(
     'match_bots_auth_hivesigner',
     'The authorization is completed via HiveSigner and can be revoked at any time.',
