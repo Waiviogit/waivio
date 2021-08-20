@@ -240,7 +240,6 @@ const Proposition = props => {
       </div>
       <div className="Proposition__card">
         <ObjectCardView
-          passedParent={requiredObject}
           wObject={proposedWobj}
           withRewards
           rewardPrice={props.proposition.reward}
