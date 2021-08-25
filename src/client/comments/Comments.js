@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { find, size } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from '../../store/commentsStore/commentsActions';
 import { notify } from '../app/Notification/notificationActions';
@@ -126,16 +127,18 @@ export default class Comments extends React.Component {
     return newNestedComments;
   };
 
-  handleLikeClick = (id, weight = 10000) => {
+  handleLikeClick = (id, weight) => {
     const { commentsList, sliderMode, user, defaultVotePercent } = this.props;
     const userVote = find(commentsList[id].active_votes, { voter: user.name }) || {};
 
-    if (sliderMode && userVote.percent <= 0) {
-      this.props.voteComment(id, weight, 'like');
-    } else if (userVote.percent > 0) {
-      this.props.voteComment(id, 0, 'like');
+    if (!Number(userVote.percent)) {
+      // ставим лайк
+      const likeWeight = weight > 0 ? weight : defaultVotePercent;
+
+      this.props.voteComment(id, likeWeight, 'like');
     } else {
-      this.props.voteComment(id, defaultVotePercent, 'like');
+      // снимаем лайк
+      this.props.voteComment(id, 0, 'like');
     }
   };
 

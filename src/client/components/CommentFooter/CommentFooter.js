@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { isEqual } from 'lodash';
 import find from 'lodash/find';
+
 import Slider from '../Slider/Slider';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
@@ -78,6 +80,16 @@ export default class CommentFooter extends React.Component {
   };
 
   componentWillMount() {
+    this.updateState();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.comment.active_votes, this.props.comment.active_votes)) {
+      this.updateState();
+    }
+  }
+
+  updateState = () => {
     const { user, comment, defaultVotePercent } = this.props;
 
     if (user) {
@@ -91,10 +103,11 @@ export default class CommentFooter extends React.Component {
       } else {
         this.setState({
           sliderValue: defaultVotePercent / 100,
+          isLiked: false,
         });
       }
     }
-  }
+  };
 
   handleLikeClick = () => {
     const { sliderMode, comment } = this.props;
@@ -102,10 +115,10 @@ export default class CommentFooter extends React.Component {
 
     if (sliderMode || (isPostCashout(this.props.comment) && !isLiked)) {
       if (!this.state.sliderVisible) {
-        this.setState(prevState => ({
-          sliderVisible: !prevState.sliderVisible,
+        this.setState({
+          sliderVisible: true,
           sliderType: 'Confirm',
-        }));
+        });
       }
     } else {
       this.props.onLikeClick(comment.id);
