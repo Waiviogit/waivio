@@ -6,6 +6,11 @@ export const personalSettings = {
   },
   settings: [
     {
+      to: '/notification-settings',
+      id: 'notifications',
+      defaultMessage: 'Notifications',
+    },
+    {
       to: '/drafts',
       id: 'drafts',
       defaultMessage: 'Drafts',
@@ -30,11 +35,6 @@ export const personalSettings = {
       id: 'guest_settings',
       defaultMessage: 'Guests Settings',
       forGuest: true,
-    },
-    {
-      to: '/notification-settings',
-      id: 'notifications',
-      defaultMessage: 'Notifications',
     },
     {
       to: '/new-accounts',

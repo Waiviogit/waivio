@@ -104,8 +104,34 @@ export default class NotificationSettings extends React.Component {
           <div className="Settings">
             <div className="Settings__section">
               <h3>
-                <FormattedMessage id="сommunity_actions" defaultMessage="Community actions" />:
+                <FormattedMessage
+                  id="instant_mobile_notifications"
+                  defaultMessage="Instant mobile notifications:"
+                />
               </h3>
+              <p className="mt3">
+                <FormattedMessage
+                  id="instant_mobile_notifications_description"
+                  defaultMessage="You can now receive instant mobile notifications via the Telegram app when someone replies to or re-blogs your post on Hive, mentions you, follows you, transfers funds to you, and so on."
+                />
+              </p>
+              <p className="mt3">
+                <FormattedMessage
+                  id="instant_mobile_notifications_open"
+                  defaultMessage="Open the Telegram chart with"
+                />
+                <a
+                  href="https://web.telegram.org/#/im?p=@WaivioNotificationsBot"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  @WaivioNotificationsBot
+                </a>
+                <FormattedMessage
+                  id="instant_mobile_notifications_hive"
+                  defaultMessage="and enter the Hive usernames to subscribe."
+                />
+              </p>
             </div>
             <div className="Settings__section">
               {notificationType.сommunityActions.map(notify => (
