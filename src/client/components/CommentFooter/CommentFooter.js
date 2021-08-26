@@ -79,7 +79,7 @@ export default class CommentFooter extends React.Component {
     visible: false,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.updateState();
   }
 
