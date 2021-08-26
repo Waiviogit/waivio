@@ -49,6 +49,7 @@ const ModalSignIn = ({
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [lastError, setLastError] = React.useState('');
   let host = useSelector(getCurrentHost);
   const domain = useSelector(getWebsiteParentHost);
   const isWaivio = useSelector(getIsWaivio);
@@ -71,6 +72,7 @@ const ModalSignIn = ({
     if (response.error || (socialNetwork === 'facebook' && isEmpty(response.id))) {
       setIsLoading(false);
       setIsShowSignInModal(false);
+      setIsModalOpen(false);
     } else if (isModalOpen && response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
       const res = await isUserRegistered(id, socialNetwork);
@@ -109,7 +111,9 @@ const ModalSignIn = ({
   };
 
   const handleClickLoading = () => {
-    setIsLoading(true);
+    if (lastError !== 'idpiframe_initialization_failed') {
+      setIsLoading(true);
+    }
   };
 
   const renderGuestSignUpForm = () => (
@@ -180,7 +184,12 @@ const ModalSignIn = ({
                 </span>
               </p>
               <div onClick={handleClickLoading} role="presentation">
-                <SocialButtons className="ModalSignIn__social" responseSocial={responseSocial} />
+                <SocialButtons
+                  className="ModalSignIn__social"
+                  responseSocial={responseSocial}
+                  lastError={lastError}
+                  setLastError={setLastError}
+                />
               </div>
               <p className="ModalSignIn__rules">
                 {intl.formatMessage({
