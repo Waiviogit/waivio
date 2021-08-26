@@ -53,9 +53,7 @@ const ModalSignIn = ({
   const domain = useSelector(getWebsiteParentHost);
   const isWaivio = useSelector(getIsWaivio);
 
-  if (!host && typeof location !== 'undefined') {
-    host = location.host;
-  }
+  if (!host && typeof location !== 'undefined') host = location.host;
 
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
@@ -123,7 +121,8 @@ const ModalSignIn = ({
   );
 
   const renderSignIn = () => {
-    if (!isWaivio) return <WebsiteSignIn />;
+    if (!isWaivio)
+      return <WebsiteSignIn setUserData={setUserData} setIsFormVisible={setIsFormVisible} />;
 
     return (
       <React.Fragment>

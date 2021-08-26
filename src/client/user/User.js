@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
+import { Helmet } from 'react-helmet';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import { openTransfer } from '../../store/walletStore/walletActions';
+import { getUserAccountHistory, openTransfer } from '../../store/walletStore/walletActions';
 import { getUserAccount } from '../../store/usersStore/usersActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
@@ -18,7 +19,13 @@ import { getMetadata } from '../helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import DEFAULTS from '../object/const/defaultValues';
 import Loading from '../components/Icon/Loading';
-import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
+import {
+  getAppUrl,
+  getHelmetIcon,
+  getRate,
+  getRewardFund,
+  getWebsiteName,
+} from '../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -31,7 +38,6 @@ import {
   getUser,
 } from '../../store/usersStore/usersSelectors';
 import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
-import Seo from '../SEO/Seo';
 
 @connect(
   (state, ownProps) => ({
@@ -45,10 +51,14 @@ import Seo from '../SEO/Seo';
     rate: getRate(state),
     allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
     isOpenWalletTable: getIsOpenWalletTable(state),
+    helmetIcon: getHelmetIcon(state),
+    siteName: getWebsiteName(state),
+    appUrl: getAppUrl(state),
   }),
   {
     getUserAccount,
     openTransfer,
+    getUserAccountHistory,
   },
 )
 export default class User extends React.Component {
@@ -57,15 +67,19 @@ export default class User extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     authenticatedUser: PropTypes.shape().isRequired,
     authenticatedUserName: PropTypes.string,
+    helmetIcon: PropTypes.string.isRequired,
     match: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     loaded: PropTypes.bool,
     failed: PropTypes.bool,
     getUserAccount: PropTypes.func,
+    getUserAccountHistory: PropTypes.func.isRequired,
     openTransfer: PropTypes.func,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
     isOpenWalletTable: PropTypes.bool,
+    siteName: PropTypes.string.isRequired,
+    appUrl: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -87,6 +101,7 @@ export default class User extends React.Component {
     if (window.gtag) window.gtag('event', 'view_user_profile');
 
     this.props.getUserAccount(name);
+    this.props.getUserAccountHistory(name);
   }
 
   componentDidUpdate(prevProps) {
@@ -95,6 +110,7 @@ export default class User extends React.Component {
       (!prevProps.authenticatedUserName && this.props.authenticatedUserName)
     ) {
       this.props.getUserAccount(this.props.match.params.name);
+      this.props.getUserAccountHistory(this.props.match.params.name);
     }
   }
 
@@ -113,6 +129,9 @@ export default class User extends React.Component {
       rate,
       user,
       isOpenWalletTable,
+      helmetIcon,
+      siteName,
+      appUrl,
     } = this.props;
 
     if (failed) return <Error404 />;
@@ -143,6 +162,8 @@ export default class User extends React.Component {
     }
     const hasCover = !!coverImage;
     const image = getAvatarURL(username) || DEFAULTS.AVATAR;
+    const url = `${appUrl}/@${username}`;
+    const title = displayedUsername;
     const isSameUser = authenticated && authenticatedUser.name === username;
     const isAboutPage = match.params['0'] === 'about';
     const isGuest =
@@ -153,7 +174,31 @@ export default class User extends React.Component {
 
     return (
       <div className="main-panel">
-        <Seo image={image} desc={desc} title={displayedUsername} params={`/@${username}`} />
+        <Helmet>
+          <title>{title}</title>
+          <link rel="canonical" href={url} />
+          <meta property="description" content={desc} />
+          <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+          <meta name="twitter:site" content={`@${siteName}`} />
+          <meta name="twitter:title" content={title} />
+          <meta name="twitter:description" content={desc} />
+          <meta
+            name="twitter:image"
+            content={
+              image ||
+              'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
+            }
+          />
+          <meta property="og:title" content={title} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={url} />
+          <meta property="og:image" content={image} />
+          <meta property="og:image:width" content="600" />
+          <meta property="og:image:height" content="600" />
+          <meta property="og:description" content={desc} />
+          <meta property="og:site_name" content={siteName} />
+          <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
+        </Helmet>
         <ScrollToTopOnMount />
         {user.fetching ? (
           <Loading style={{ marginTop: '130px' }} />

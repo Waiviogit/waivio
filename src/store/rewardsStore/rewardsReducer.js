@@ -11,6 +11,8 @@ import {
   SET_TOGGLE_FLAG,
   REMOVE_TOGGLE_FLAG,
   CHECK_EXPIRED_PAYMENTS,
+  GET_MATCH_BOTS,
+  CLEAR_MATCH_BOTS,
 } from './rewardsActions';
 import { GET_RESERVED_COMMENTS_SUCCESS } from '../commentsStore/commentsActions';
 
@@ -34,6 +36,7 @@ const initialState = {
   hasMoreHistory: false,
   isOpenWriteReviewModal: false,
   expiredPayment: false,
+  matchBots: [],
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -164,6 +167,19 @@ const rewardsReducer = (state = initialState, action) => {
       return {
         ...state,
         expiredPayment: action.payload,
+      };
+    }
+    case GET_MATCH_BOTS.SUCCESS: {
+      return {
+        ...state,
+        matchBots: action.payload,
+      };
+    }
+    case CLEAR_MATCH_BOTS:
+    case GET_MATCH_BOTS.ERROR: {
+      return {
+        ...state,
+        matchBots: [],
       };
     }
     default:

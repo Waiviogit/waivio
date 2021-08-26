@@ -262,5 +262,52 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 60px 0;
+  }
+
+  &__districtsTitle {
+    color: #625d56;
+    font-size: 30px;
+    font-weight: 100;
+    text-align: center;
+
+    @media @medium {
+      font-size: 50px;
+    }
+
+    @media @small {
+      font-size: 50px;
+    }
+  }
+
+  &__districtsSubtitle {
+    color: @red-danger;
+    font-weight: 500;
+  }
+
+  &__nearbyList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__carouselSection {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fce2c9;
+
+    @media @small {
+      padding: 90px 0;
+    }
+  }
+
+  &__nearbySection {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 350px 100px;
+    align-items: center;
   }
 }

@@ -119,10 +119,6 @@ class WebsiteWrapper extends React.PureComponent {
   };
 
   static fetchData({ store, req }) {
-    const appUrl = url.format({
-      protocol: req.protocol,
-      host: req.get('host'),
-    });
     const state = store.getState();
     let activeLocale = getLocale(state);
 
@@ -132,7 +128,7 @@ class WebsiteWrapper extends React.PureComponent {
     const lang = loadLanguage(activeLocale);
 
     return Promise.all([
-      store.dispatch(setAppUrl(appUrl)),
+      store.dispatch(setAppUrl(`${req.protocol}://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
       store.dispatch(login()),
       store.dispatch(getWebsiteConfigForSSR(req.hostname)),

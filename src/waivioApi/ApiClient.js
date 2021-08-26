@@ -52,7 +52,19 @@ export const getRecommendedObjects = (locale = 'en-US') =>
       userLimit: 5,
       locale: locale,
       limit: 6,
-      exclude_object_types: ['hashtag'],
+      exclude_object_types: [
+        'list',
+        'crypto',
+        'indices',
+        'stocks',
+        'currencies',
+        'commodity',
+        'car',
+        'test',
+        'car',
+        'page',
+        'hashtag',
+      ],
       sample: true,
     }),
   }).then(res => res.json());
@@ -2150,6 +2162,26 @@ export const getRewardFund = () => {
 
 export const getCurrentMedianHistory = () => {
   return fetch(`${config.apiPrefix}${config.hive}${config.currentMedianHistory}`, {
+    headers: headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
+export const getMatchBots = (botName, botType) => {
+  const queryString = `?botName=${botName}`;
+  return fetch(`${config.campaignApiPrefix}${config.getMatchBots}/${botType}${queryString}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json());
+};
+
+export const getDistrictsWithCount = () => {
+  return fetch(`${config.apiPrefix}${config.getObjects}${config.count}${config.area}`, {
     headers: headers,
     method: 'GET',
   })

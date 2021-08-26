@@ -31,14 +31,7 @@ const WebsiteSearch = props => {
   const [searchString, setSearchString] = useState('');
 
   const currentSearchMethod = value => {
-    props.setWebsiteSearchString(value);
-    props.setSearchInBox(true);
-
-    if (value) props.query.set('searchString', value);
-    else props.query.delete('searchString');
-
     localStorage.removeItem('scrollTop');
-    props.history.push(`?${props.query.toString()}`);
 
     if (window.gtag) window.gtag('event', `search_${props.searchType.toLowerCase()}`);
 
@@ -57,9 +50,15 @@ const WebsiteSearch = props => {
   }, []);
 
   useEffect(() => {
-    if (props.isShowResult && !isEmpty(props.searchMap) && !localStorage.getItem('scrollTop'))
+    if (
+      props.isShowResult &&
+      !isEmpty(props.searchMap.bottomPoint) &&
+      !isEmpty(props.searchMap.topPoint) &&
+      !localStorage.getItem('scrollTop')
+    ) {
       currentSearchMethod(searchString);
-  }, [props.searchType, props.activeFilters, props.searchMap]);
+    }
+  }, [props.searchType, props.activeFilters, props.searchMap, searchString]);
 
   useEffect(() => {
     props.resetWebsiteObjectsCoordinates();
@@ -67,7 +66,12 @@ const WebsiteSearch = props => {
 
   const handleSearchAutocomplete = useCallback(
     debounce(value => {
-      currentSearchMethod(value);
+      props.setWebsiteSearchString(value);
+      props.setSearchInBox(true);
+
+      if (value) props.query.set('searchString', value);
+      else props.query.delete('searchString');
+      props.history.push(`?${props.query.toString()}`);
     }, 500),
     [props.searchType],
   );
@@ -79,12 +83,18 @@ const WebsiteSearch = props => {
     props.history.push(`?type=${props.searchType}`);
   };
 
+  const handleOpenSearchPanel = () => {
+    if (!props.isShowResult) props.setShowSearchResult(true);
+  };
+
+  const handleOnChange = value => setSearchString(value);
+
   return (
     <div>
       <AutoComplete
         className="WebsiteSearch"
         onSearch={handleSearchAutocomplete}
-        onChange={value => setSearchString(value)}
+        onChange={handleOnChange}
         dropdownClassName={'WebsiteSearch__dropdown'}
         value={searchString}
       >
@@ -94,9 +104,7 @@ const WebsiteSearch = props => {
             id: 'find_restaurants_and_dishes',
             defaultMessage: 'Find restaurants and dishes',
           })}
-          onClick={() => {
-            if (!props.isShowResult) props.setShowSearchResult(true);
-          }}
+          onClick={handleOpenSearchPanel}
         />
       </AutoComplete>
       {!!searchString.length && (

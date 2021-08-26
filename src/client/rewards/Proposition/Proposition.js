@@ -38,6 +38,7 @@ import { getCommentContent } from '../../../store/commentsStore/commentsSelector
 import { getIsOpenWriteReviewModal } from '../../../store/rewardsStore/rewardsSelectors';
 
 import './Proposition.less';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 
 const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');
@@ -201,6 +202,7 @@ const Proposition = props => {
   ]);
 
   const paramsUrl = [HISTORY, GUIDE_HISTORY, MESSAGES, FRAUD_DETECTION];
+  const isEnglishLocale = props.locale === 'en-US';
 
   useEffect(() => {
     if (sessionCurrentProposjId && sessionCurrentWobjjId) {
@@ -238,7 +240,6 @@ const Proposition = props => {
       </div>
       <div className="Proposition__card">
         <ObjectCardView
-          passedParent={requiredObject}
           wObject={proposedWobj}
           withRewards
           rewardPrice={props.proposition.reward}
@@ -284,19 +285,20 @@ const Proposition = props => {
                       defaultMessage: 'Reserve',
                     })}
                   </b>{' '}
-                  {props.intl.formatMessage({
-                    id: 'your_reward',
-                    defaultMessage: 'Your Reward',
-                  })}
+                  {isEnglishLocale &&
+                    props.intl.formatMessage({
+                      id: 'your_reward',
+                      defaultMessage: 'Your Reward',
+                    })}
                 </Button>
                 <div className="Proposition__footer-button-days">
                   {props.proposition.count_reservation_days &&
                     `${props.intl.formatMessage({
                       id: 'for_days',
-                      defaultMessage: `for`,
+                      defaultMessage: 'for',
                     })} ${props.proposition.count_reservation_days} ${props.intl.formatMessage({
                       id: 'days',
-                      defaultMessage: `days`,
+                      defaultMessage: 'days',
                     })}`}
                 </div>
               </div>
@@ -348,6 +350,7 @@ Proposition.propTypes = {
   users: PropTypes.shape(),
   match: PropTypes.shape(),
   sortFraudDetection: PropTypes.string,
+  locale: PropTypes.string.isRequired,
   isAuth: PropTypes.bool,
   isOpenWriteReviewModal: PropTypes.bool,
   fraudNumbers: PropTypes.arrayOf(PropTypes.number),
@@ -379,6 +382,7 @@ export default withRouter(
           : {},
       isAuth: getIsAuthenticated(state),
       isOpenWriteReviewModal: getIsOpenWriteReviewModal(state),
+      locale: getLocale(state),
     }),
     {
       removeToggleFlag,

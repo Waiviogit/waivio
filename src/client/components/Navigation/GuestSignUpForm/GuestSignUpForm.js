@@ -102,7 +102,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
           setIsLoading(false);
 
           if (!isWaivio && url) {
-            window.location.href = `https://${url}/?access_token=${userData.accessToken}&socialProvider=${userData.socialNetwork}`;
+            window.location.href = `https://${url.host}/?access_token=${userData.accessToken}&socialProvider=${userData.socialNetwork}`;
           }
         });
       } else {

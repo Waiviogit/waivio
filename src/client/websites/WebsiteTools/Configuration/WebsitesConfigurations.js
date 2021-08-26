@@ -23,7 +23,7 @@ import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
 import { getPropositions } from '../../../../waivioApi/ApiClient';
 import { getPropositionsForMap } from '../../../../store/mapStore/mapActions';
-import MapControllers from '../../../widgets/MapControllers';
+import MapControllers from '../../../widgets/MapControllers/MapControllers';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getUserLocation } from '../../../../store/userStore/userSelectors';
 import { getObjectsMap } from '../../../../store/mapStore/mapSelectors';

@@ -188,7 +188,7 @@ class CreateObject extends React.Component {
             );
             this.props.onCreateObject(
               {
-                id: parentPermlink,
+                _id: parentPermlink,
                 author: parentAuthor,
                 avatar: DEFAULTS.AVATAR,
                 name: objData.name,
@@ -203,7 +203,7 @@ class CreateObject extends React.Component {
                 version: 0,
                 isNew: false,
                 rank: 1,
-                type: objData.type,
+                object_type: objData.type,
                 background: '',
                 author_permlink: parentPermlink,
               },

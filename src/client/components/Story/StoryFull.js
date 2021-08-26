@@ -500,24 +500,22 @@ class StoryFull extends React.Component {
                   );
                 }
 
-                if (obj.propositions) {
-                  return !isEmpty(obj.propositions)
-                    ? obj.propositions.map(proposition => (
-                        <Proposition
-                          guide={proposition.guide}
-                          proposition={proposition}
-                          wobj={obj}
-                          assignCommentPermlink={obj.permlink}
-                          assignProposition={this.assignPropositionHandler}
-                          authorizedUserName={user.name}
-                          loading={loadingAssign}
-                          key={obj.author_permlink}
-                          match={match}
-                          user={user}
-                          history={history}
-                        />
-                      ))
-                    : null;
+                if (!isEmpty(obj.propositions)) {
+                  return obj.propositions.map(proposition => (
+                    <Proposition
+                      guide={proposition.guide}
+                      proposition={proposition}
+                      wobj={obj}
+                      assignCommentPermlink={obj.permlink}
+                      assignProposition={this.assignPropositionHandler}
+                      authorizedUserName={user.name}
+                      loading={loadingAssign}
+                      key={obj.author_permlink}
+                      match={match}
+                      user={user}
+                      history={history}
+                    />
+                  ));
                 }
 
                 return (

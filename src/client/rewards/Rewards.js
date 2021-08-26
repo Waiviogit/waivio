@@ -76,7 +76,13 @@ import {
 } from '../../store/mapStore/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
-import { getCryptosPriceHistory, getIsWaivio } from '../../store/appStore/appSelectors';
+import {
+  getAppUrl,
+  getCryptosPriceHistory,
+  getHelmetIcon,
+  getIsWaivio,
+  getWebsiteName,
+} from '../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -86,7 +92,7 @@ import {
 import { getAllUsers } from '../../store/usersStore/usersSelectors';
 import { getPendingUpdate, getUserLocation } from '../../store/userStore/userSelectors';
 import { getIsMapModalOpen, getObjectsMap } from '../../store/mapStore/mapSelectors';
-import Seo from '../SEO/Seo';
+import DEFAULTS from '../object/const/defaultValues';
 
 @withRouter
 @injectIntl
@@ -104,6 +110,9 @@ import Seo from '../SEO/Seo';
     pendingUpdate: getPendingUpdate(state),
     authenticated: getIsAuthenticated(state),
     isWaivio: getIsWaivio(state),
+    helmetIcon: getHelmetIcon(state),
+    siteName: getWebsiteName(state),
+    appUrl: getAppUrl(state),
   }),
   {
     assignProposition,
@@ -143,6 +152,9 @@ class Rewards extends React.Component {
     users: PropTypes.shape(),
     getCryptoPriceHistory: PropTypes.func.isRequired,
     setMapFullscreenMode: PropTypes.func.isRequired,
+    helmetIcon: PropTypes.string.isRequired,
+    appUrl: PropTypes.string.isRequired,
+    siteName: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -1043,15 +1055,36 @@ class Rewards extends React.Component {
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
     const isWidget =
       typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('isWidget') : false;
+    const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
+    const img = DEFAULTS.FAVICON;
+    const urlCurr = `${this.props.appUrl}/rewards`;
+    const title = `Rewards - ${this.props.siteName}`;
 
     return (
       <div className="Rewards">
         <div className="shifted">
-          <Seo
-            desc={'Reserve the reward for a few days. Share photos of the dish and get the reward!'}
-            title={'Rewards'}
-            params={'/rewards/all'}
-          />
+          <Helmet>
+            <title>{title}</title>
+            <meta property="og:title" content={title} />
+            <meta name="robots" content={robots} />
+            <link rel="canonical" href={urlCurr} />
+            <meta property="description" content={desc} />
+            <meta name="twitter:card" content={'summary_large_image'} />
+            <meta name="twitter:site" content={`@${this.props.siteName}`} />
+            <meta name="twitter:title" content={title} />
+            <meta name="twitter:description" content={desc} />
+            <meta name="twitter:image" content={img} />
+            <meta property="og:title" content={title} />
+            <meta property="og:type" content="article" />
+            <meta property="og:url" content={urlCurr} />
+            <meta property="og:image" content={img} />
+            <meta property="og:image:width" content="600" />
+            <meta property="og:image:height" content="600" />
+            <meta property="og:description" content={desc} />
+            <meta property="og:site_name" content={this.props.siteName} />
+            <link rel="image_src" href={img} />
+            <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
+          </Helmet>
           <ScrollToTop />
           <ScrollToTopOnMount />
           <div className={classNames('feed-layout container', { 'isWidget-container': isWidget })}>

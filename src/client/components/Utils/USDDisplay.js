@@ -16,9 +16,17 @@ const USDDisplay = ({ value, currencyDisplay, style }) => {
   const formattedCurrency = num => {
     switch (currencyDisplay) {
       case 'code':
-        return `${num} ${currencyInfo.type}`;
+        return (
+          <React.Fragment>
+            <FormattedNumber value={num} locale={'en-IN'} /> {currencyInfo.type}
+          </React.Fragment>
+        );
       case 'symbol':
-        return `${currencyPrefix[currencyInfo.type]} ${num}`;
+        return (
+          <React.Fragment>
+            {currencyPrefix[currencyInfo.type]} <FormattedNumber value={num} locale={'en-IN'} />
+          </React.Fragment>
+        );
       default:
         return num;
     }

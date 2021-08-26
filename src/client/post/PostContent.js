@@ -28,7 +28,12 @@ import { getHtml } from '../components/Story/Body';
 import { jsonParse } from '../helpers/formatter';
 import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
-import { getAppUrl, getHelmetIcon, getRewardFund } from '../../store/appStore/appSelectors';
+import {
+  getAppUrl,
+  getHelmetIcon,
+  getRewardFund,
+  getWebsiteName,
+} from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getIsEditorSaving } from '../../store/editorStore/editorSelectors';
 import { getPendingLikes } from '../../store/postsStore/postsSelectors';
@@ -36,7 +41,6 @@ import { getFollowingList } from '../../store/userStore/userSelectors';
 import { getBookmarks, getPendingBookmarks } from '../../store/bookmarksStore/bookmarksSelectors';
 import { getPendingReblogs, getRebloggedList } from '../../store/reblogStore/reblogSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
-import Seo from '../SEO/Seo';
 
 @injectIntl
 @connect(
@@ -52,7 +56,9 @@ import Seo from '../SEO/Seo';
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),
     defaultVotePercent: getVotePercent(state),
+    appUrl: getAppUrl(state),
     helmetIcon: getHelmetIcon(state),
+    siteName: getWebsiteName(state),
   }),
   {
     editPost,
@@ -82,6 +88,8 @@ class PostContent extends React.Component {
     saving: PropTypes.bool.isRequired,
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
+    appUrl: PropTypes.string.isRequired,
+    siteName: PropTypes.string.isRequired,
     bookmarks: PropTypes.arrayOf(PropTypes.string),
     sliderMode: PropTypes.bool,
     editPost: PropTypes.func,
@@ -93,6 +101,7 @@ class PostContent extends React.Component {
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
     isOriginalPost: PropTypes.string,
+    helmetIcon: PropTypes.string.isRequired,
     pendingFollowingPostAuthor: PropTypes.func.isRequired,
     followingPostAuthor: PropTypes.func.isRequired,
     errorFollowingPostAuthor: PropTypes.func.isRequired,
@@ -227,10 +236,11 @@ class PostContent extends React.Component {
       sliderMode,
       rewardFund,
       defaultVotePercent,
+      appUrl,
       isOriginalPost,
       isModal,
+      siteName,
     } = this.props;
-
     const { tags, cities, wobjectsFacebook, userFacebook } = content;
 
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
@@ -261,7 +271,6 @@ class PostContent extends React.Component {
     let hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
 
     hashtags = hashtags.map(hashtag => `#${hashtag}`);
-
     const authorName = getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
@@ -271,22 +280,47 @@ class PostContent extends React.Component {
     const desc = `${truncate(bodyText, { length: 143 })} ${truncate(hashtags, {
       length: 120,
     })} ${wobjectFacebook} ${authorFacebook}`;
+
     const image =
       postMetaImage ||
       getAvatarURL(authorName) ||
       'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
+    const canonicalUrl = `${appUrl}${replaceBotWithGuestName(
+      dropCategory(content.url),
+      guestInfo,
+    )}`;
+    const url = `${appUrl}${replaceBotWithGuestName(dropCategory(content.url), guestInfo)}`;
+    const ampUrl = `${url}/amp`;
+    const metaTitle = `${title} - ${siteName}`;
 
     return (
       <div>
-        <Seo
-          image={image}
-          desc={desc}
-          title={title}
-          params={replaceBotWithGuestName(dropCategory(content.url), guestInfo)}
-          ampUrl={'/amp'}
-          category={category}
-          created={created}
-        />
+        <Helmet>
+          <title>{title}</title>
+          <link rel="canonical" href={canonicalUrl} />
+          <link rel="amphtml" href={ampUrl} />
+          <meta property="fb:app_id" content="754038848413420" />
+          <meta property="og:url" content={url} />
+          <meta property="og:type" content="article" />
+          <meta property="og:title" content={metaTitle} />
+          <meta property="og:description" content={desc} />
+          <meta property="description" content={desc} />
+          <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+          <meta name="twitter:site" content={`@${siteName}`} />
+          <meta name="twitter:title" content={metaTitle} />
+          <meta name="twitter:description" content={desc} />
+          <meta property="og:image" content={image} />
+          <meta property="og:image:alt" content="image" />
+          <meta property="og:image:url" content={image} />
+          <meta property="og:image:width" content="680" />
+          <meta property="og:image:height" content="555" />
+          <meta name="twitter:image:src" content={image} />
+          <meta property="og:site_name" content={siteName} />
+          <meta name="article:tag" property="article:tag" content={category} />
+          <link rel="image_src" href={image} />
+          <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
+          <meta name="article:published_time" property="article:published_time" content={created} />
+        </Helmet>
         <StoryFull
           user={user}
           post={content}

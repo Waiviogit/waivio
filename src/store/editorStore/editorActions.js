@@ -629,11 +629,14 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
 
   const { rawContentUpdated } = await dispatch(getRestoreObjects(fromMarkdown(draftContent)));
   const parsedLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
-  const newLinkedObject = parsedLinkedObjects.find(item => item._id === object._id);
+  let newLinkedObject = parsedLinkedObjects.find(item => item._id === object._id);
+
+  newLinkedObject = newLinkedObject || object;
   const updatedLinkedObjects = uniqBy(
-    [...uniqBy(linkedObjects, '_id'), newLinkedObject],
-    '_id',
+    uniqBy([...linkedObjects, newLinkedObject], '_id'),
+    'author_permlink',
   ).filter(item => has(item, '_id'));
+
   let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
   const isHideObject = hideLinkedObjects.find(
     item => item.author_permlink === newLinkedObject.author_permlink,

@@ -1,18 +1,22 @@
 import React, { useLayoutEffect } from 'react';
-import { Icon } from 'antd';
+import { Carousel, Icon } from 'antd';
+import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import WebsiteFooter from '../WebsiteFooter/Footer';
 import MainPageHeader from '../Header/MainPageHeader';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
-import Seo from '../../../SEO/Seo';
-import DistrictsCard from "./components/DistrictsCard/DistrictsCard";
 
 import './WebsiteMainPage.less';
+import DistrictsCard from './components/DistrictsCard/DistrictsCard';
+import CarouselSection from './components/CarouselSection/CarouselSection';
+import NearByCard from './components/NearByCard/NearByCard';
+import DistrictSection from "./components/DistrictSection/DistrictSection";
 
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
+  const helmetImg = '/images/dining.gifts.png';
 
   useLayoutEffect(() => {
     if (window) {
@@ -22,7 +26,27 @@ const WebsiteMainPage = () => {
 
   return (
     <div className="WebsiteMainPage">
-      <Seo image={'/images/dining.gifts.png'} />
+      <Helmet>
+        <title>Dining.Gifts</title>
+        <link rel="canonical" href={'https://dining.gifts/'} />
+        <meta property="description" content={'Dining.Gifts'} />
+        <meta property="og:title" content={'Dining.Gifts'} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={'https://dining.gifts/'} />
+        <meta property="og:image" content={helmetImg} />
+        <meta property="og:image:url" content={helmetImg} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:description" content={'Dining.Gifts'} />
+        <meta name="twitter:card" content={'summary_large_image'} />
+        <meta name="twitter:site" content={'@Dining.Gifts'} />
+        <meta name="twitter:title" content={'Dining.Gifts'} />
+        <meta name="twitter:description" content={'Dining.Gifts'} />
+        <meta name="twitter:image" property="twitter:image" content={helmetImg} />
+        <meta property="og:site_name" content={'Dining.Gifts'} />
+        <link rel="image_src" href={helmetImg} />
+        <link id="favicon" rel="icon" href={helmetImg} type="image/x-icon" />
+      </Helmet>
       <MainPageHeader />
       <div className="WebsiteMainPage__banner">
         <div className="WebsiteMainPage__wrapperTitle">
@@ -137,38 +161,35 @@ const WebsiteMainPage = () => {
           Learn more
         </Link>
       </section>
-      <section  className="WebsiteMainPage__districtsSection">
-        <h2 className="WebsiteMainPage__withdrawTitle">Find rewards in your area now!</h2>
-        <p>(Note: Dining.Gifts is available in VANCOUVER ONLY during beta.)</p>
-        <div className="WebsiteMainPage__districtsList">
-          {
-            [{
-              "city": "string",
-              "counter": 0
-            },{
-              "city": "string",
-              "counter": 0
-            },{
-              "city": "string",
-              "counter": 0
-            },{
-              "city": "string",
-              "counter": 0
-            },{
-              "city": "string",
-              "counter": 0
-            },{
-              "city": "string",
-              "counter": 0
-            }].map(card => <DistrictsCard key={card.city} {...card} />)
-          }
+      <DistrictSection />
+      <CarouselSection />
+      <section className="WebsiteMainPage__nearbySection">
+        <h2 className="WebsiteMainPage__withdrawTitle">Nearby Food & Drink</h2>
+        <div className="WebsiteMainPage__nearbyList">
+          {[
+            {
+              name: 'string',
+              image: 0,
+            },
+            {
+              name: 'string',
+              image: 0,
+            },
+            {
+              name: 'string',
+              image: 0,
+            },
+            {
+              name: 'string',
+              image: 0,
+            },
+          ].map(card => (
+            <NearByCard key={card.city} {...card} />
+          ))}
         </div>
-            <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
-              Find Rewards <Icon type="right" />
-            </Link>
-      </section>
-      <section>
-
+        <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
+          See All Nearby <Icon type="right" />
+        </Link>
       </section>
       <WebsiteFooter />
     </div>
