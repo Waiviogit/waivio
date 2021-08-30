@@ -1,15 +1,25 @@
 import { Carousel, Icon } from 'antd';
 import { Link } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { mobileUserAgents } from '../../../../../helpers/regexHelpers';
+import { getListOfRestaurant } from '../../../../../../store/websiteStore/websiteSelectors';
+import { getRestaurants } from '../../../../../../store/websiteStore/websiteActions';
+import Loading from '../../../../../components/Icon/Loading';
 
 import './CarouselSection.less';
 
-const CarouselSection = () => {
+const CarouselSection = props => {
   let isMobile = false;
 
   if (typeof navigator !== 'undefined' && mobileUserAgents.test(navigator.userAgent))
     isMobile = true;
+
+  useEffect(() => {
+    props.getRestaurants();
+  }, []);
 
   const settings = {
     dots: false,
@@ -20,23 +30,23 @@ const CarouselSection = () => {
     slidesToShow: isMobile ? 2 : 3,
   };
 
+  if (!props.restaurants) return <Loading />;
+
   return (
     <section className="WebsiteMainPage__carouselSection">
       <div className="CarouselSection__wrapper">
         <Carousel {...settings}>
-          {[0, 1, 2, 3, 4].map(t => (
-            <div key={t} className="CarouselSection__itemWrapper">
+          {props.restaurants.map(item => (
+            <Link
+              to={`/map?${item.route}&showPanel=true`}
+              key={item._id}
+              className="CarouselSection__itemWrapper"
+            >
               <div className="CarouselSection__item">
-                <img
-                  className="CarouselSection__itemImg"
-                  src={
-                    'https://images.unsplash.com/photo-1546549032-9571cd6b27df?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
-                  }
-                  alt=""
-                />
-                <p className="CarouselSection__itemName">ITALIAN RESTAURANT</p>
+                <img className="CarouselSection__itemImg" src={item.image} alt={item.name} />
+                <p className="CarouselSection__itemName">{item.name}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </Carousel>
       </div>
@@ -47,4 +57,14 @@ const CarouselSection = () => {
   );
 };
 
-export default CarouselSection;
+CarouselSection.propTypes = {
+  restaurants: PropTypes.arrayOf().isRequired,
+  getRestaurants: PropTypes.func.isRequired,
+};
+
+export default connect(
+  state => ({
+    restaurants: getListOfRestaurant(state),
+  }),
+  { getRestaurants },
+)(CarouselSection);

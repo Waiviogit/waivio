@@ -2181,7 +2181,22 @@ export const getMatchBots = (botName, botType) => {
 };
 
 export const getDistrictsWithCount = () => {
-  return fetch(`${config.apiPrefix}${config.getObjects}${config.count}${config.area}`, {
+  return fetch(
+    `${config.apiPrefix}${config.getObjects}${config.count}${config.area}?objectType=restaurant`,
+    {
+      headers: headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
+export const getTypesPrefetch = types => {
+  const type = types.length > 1 ? types.join(',') : types.toString();
+
+  return fetch(`${config.apiPrefix}${config.sites}${config.prefetch}?type=${type}`, {
     headers: headers,
     method: 'GET',
   })

@@ -1,14 +1,20 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {Icon} from "antd";
+import { Icon } from 'antd';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import DistrictsCard from '../DistrictsCard/DistrictsCard';
-import {getDistrictsWithCount} from "../../../../../../waivioApi/ApiClient";
+import { getListOfDistricts } from '../../../../../../store/websiteStore/websiteSelectors';
+import { getDistricts } from '../../../../../../store/websiteStore/websiteActions';
+import Loading from '../../../../../components/Icon/Loading';
 
-const DistrictSection = () => {
+const DistrictSection = props => {
   useEffect(() => {
-    getDistrictsWithCount().then(res => console.log(res))
-  }, [])
+    props.getDistricts();
+  }, []);
+
+  if (!props.districts) return <Loading />;
 
   return (
     <section className="WebsiteMainPage__districtsSection">
@@ -17,33 +23,8 @@ const DistrictSection = () => {
         Note: Dining.Gifts is available in VANCOUVER ONLY during beta.
       </p>
       <div className="WebsiteMainPage__districtsList">
-        {[
-          {
-            city: 'string',
-            counter: 0,
-          },
-          {
-            city: 'string',
-            counter: 0,
-          },
-          {
-            city: 'string',
-            counter: 0,
-          },
-          {
-            city: 'string',
-            counter: 0,
-          },
-          {
-            city: 'string',
-            counter: 0,
-          },
-          {
-            city: 'string',
-            counter: 0,
-          },
-        ].map(card => (
-          <DistrictsCard key={card.city} {...card} />
+        {props.districts.map(card => (
+          <DistrictsCard key={card.name} {...card} />
         ))}
       </div>
       <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
@@ -53,4 +34,16 @@ const DistrictSection = () => {
   );
 };
 
-export default DistrictSection;
+DistrictSection.propTypes = {
+  districts: PropTypes.arrayOf().isRequired,
+  getDistricts: PropTypes.func.isRequired,
+};
+
+export default connect(
+  state => ({
+    districts: getListOfDistricts(state),
+  }),
+  {
+    getDistricts,
+  },
+)(DistrictSection);

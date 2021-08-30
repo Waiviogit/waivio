@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { Carousel, Icon } from 'antd';
+import { Icon } from 'antd';
 import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -7,12 +7,11 @@ import WebsiteFooter from '../WebsiteFooter/Footer';
 import MainPageHeader from '../Header/MainPageHeader';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
+import CarouselSection from './components/CarouselSection/CarouselSection';
+import DistrictSection from './components/DistrictSection/DistrictSection';
+import NearbySection from './components/NearbySection/NearbySection';
 
 import './WebsiteMainPage.less';
-import DistrictsCard from './components/DistrictsCard/DistrictsCard';
-import CarouselSection from './components/CarouselSection/CarouselSection';
-import NearByCard from './components/NearByCard/NearByCard';
-import DistrictSection from "./components/DistrictSection/DistrictSection";
 
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
@@ -163,34 +162,7 @@ const WebsiteMainPage = () => {
       </section>
       <DistrictSection />
       <CarouselSection />
-      <section className="WebsiteMainPage__nearbySection">
-        <h2 className="WebsiteMainPage__withdrawTitle">Nearby Food & Drink</h2>
-        <div className="WebsiteMainPage__nearbyList">
-          {[
-            {
-              name: 'string',
-              image: 0,
-            },
-            {
-              name: 'string',
-              image: 0,
-            },
-            {
-              name: 'string',
-              image: 0,
-            },
-            {
-              name: 'string',
-              image: 0,
-            },
-          ].map(card => (
-            <NearByCard key={card.city} {...card} />
-          ))}
-        </div>
-        <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
-          See All Nearby <Icon type="right" />
-        </Link>
-      </section>
+      <NearbySection />
       <WebsiteFooter />
     </div>
   );

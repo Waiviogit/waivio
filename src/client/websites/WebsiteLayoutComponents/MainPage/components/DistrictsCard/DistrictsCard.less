@@ -17,12 +17,18 @@
 
   &__city {
     background: #bebebe;
-    height: 65px;
-    line-height: 65px;
+    height: 50px;
+    line-height: 50px;
     border-radius: 10px 10px 0 0;
     border-bottom: 1px solid #dfdfdf;
-    font-size: 30px;
+    font-size: 15px;
     text-transform: uppercase;
+
+    @media @small {
+      height: 65px;
+      line-height: 65px;
+      font-size: 25px;
+    }
   }
 
   &__counter {
