@@ -17,7 +17,7 @@ import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 
 import './WebsiteHeader.less';
 
-const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDiningGifts }) => {
+const WebsiteHeader = React.memo(({ currPage, wobj, history, config, intl, location, isDiningGifts }) => {
   const pathName = location.pathname;
   const pageWithMapUrl = isDiningGifts ? '/map' : '/';
   const isPageWithMap = pathName === pageWithMapUrl;
@@ -90,7 +90,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
       </div>
     </div>
   );
-};
+});
 
 WebsiteHeader.propTypes = {
   currPage: PropTypes.string.isRequired,
