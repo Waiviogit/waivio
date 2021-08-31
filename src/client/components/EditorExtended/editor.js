@@ -333,7 +333,7 @@ export default class MediumDraftEditor extends React.Component {
       if (url.indexOf('@') >= 0) {
         newUrl = `mailto:${newUrl}`;
       } else {
-        newUrl = `http://${newUrl}`;
+        newUrl = `https://${newUrl}`;
       }
     }
     if (newUrl !== '') {
