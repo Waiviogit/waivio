@@ -42,6 +42,8 @@ import {
   getHostAddress,
   getReserveCounter,
   getScreenSize,
+  getWebsiteLogo,
+  getWebsiteMainMap,
 } from '../../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import { getUserLocation } from '../../../../store/userStore/userSelectors';
@@ -218,8 +220,7 @@ const WebsiteBody = props => {
   }, [props.userLocation, boundsParams, props.query.toString()]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
-  const configLogo = isMobile ? props.configuration.mobileLogo : props.configuration.desktopLogo;
-  const currentLogo = configLogo || getObjectAvatar(aboutObject);
+  const currentLogo = props.logo || getObjectAvatar(aboutObject);
   const logoLink = get(aboutObject, ['defaultShowLink'], '/');
   const description = get(aboutObject, 'description', '');
   const objName = getObjectName(aboutObject);
@@ -374,7 +375,7 @@ const WebsiteBody = props => {
         <meta property="description" content={description} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={global.postOrigin} />
+        <meta property="og:url" content={`https://${props.host}/`} />
         <meta property="og:image" content={currentLogo} />
         <meta property="og:image:url" content={currentLogo} />
         <meta property="og:image:width" content="600" />
@@ -491,6 +492,7 @@ WebsiteBody.propTypes = {
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
+  logo: PropTypes.string.isRequired,
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
   searchMap: PropTypes.shape({
@@ -527,6 +529,8 @@ export default connect(
     searchType: getWebsiteSearchType(state),
     host: getHostAddress(state),
     isActiveFilters: tagsCategoryIsEmpty(state),
+    logo: getWebsiteLogo(state),
+    currMap: getWebsiteMainMap(state),
   }),
   {
     getCoordinates,

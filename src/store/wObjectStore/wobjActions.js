@@ -230,22 +230,16 @@ export const getChangedWobjectField = (
   busyAPI.instance.subscribeBlock(subscribeTypes.votes, blockNumber, subscribeCallback);
 };
 
-export const voteAppends = (
-  author,
-  permlink,
-  weight = 10000,
-  name = '',
-  isNew = false,
-  type = '',
-) => (dispatch, getState, { steemConnectAPI }) => {
+export const voteAppends = (author, permlink, weight = 10000, name = '', isNew = false) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const state = getState();
   const wobj = get(state, ['object', 'wobject'], {});
   const post = wobj.fields.find(field => field.permlink === permlink) || null;
   const voter = getAuthenticatedUserName(state);
-  const isGuest = isGuestUser(state);
   const fieldName = name || post.name;
-  const currentHieUserMethod = !isEmpty(type) || weight % 5 ? 'appendVote' : 'vote';
-  const currentMethod = isGuest ? 'vote' : currentHieUserMethod;
 
   if (!getIsAuthenticated(state)) return null;
 
@@ -257,7 +251,8 @@ export const voteAppends = (
     },
   });
 
-  return steemConnectAPI[currentMethod](voter, author, permlink, weight)
+  return steemConnectAPI
+    .vote(voter, author, permlink, weight)
     .then(async () =>
       dispatch(getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew)),
     )

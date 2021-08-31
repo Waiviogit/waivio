@@ -146,6 +146,9 @@ export default (state = initialState, action) => {
       };
     case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
       const { mainPage, host, configuration, beneficiary, parentHost } = action.payload;
+      const deviceType = state.isMobile ? 'mobile' : 'desktop';
+      const currMap = configuration[`${deviceType}Map`];
+      const logo = configuration[`${deviceType}Logo`];
 
       return {
         ...state,
@@ -159,14 +162,16 @@ export default (state = initialState, action) => {
           weight: beneficiary.percent,
         },
         helmetIcon: getObjectAvatar(configuration.aboutObject),
-        currMap: {
-          center: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
-          zoom: get(configuration, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),
-        },
+        logo,
+        currMap,
         isWaivio: mainPage === 'waivio',
       };
     }
     case appTypes.GET_WEBSITE_CONFIG_FOR_SSR.SUCCESS: {
+      const deviceType = state.isMobile ? 'mobile' : 'desktop';
+      const currMap = action.payload[`${deviceType}Map`];
+      const logo = action.payload[`${deviceType}Logo`];
+
       return {
         ...state,
         configuration: action.payload,
@@ -175,10 +180,8 @@ export default (state = initialState, action) => {
         websiteName: getObjectName(action.payload.aboutObject),
         hostAddress: action.meta,
         isDiningGifts: listOfWebsiteWithMainPage.some(site => site === action.meta),
-        currMap: {
-          center: get(action.payload, [state.isMobile ? 'mobileMap' : 'desktopMap', 'center'], []),
-          zoom: get(action.payload, [state.isMobile ? 'mobileMap' : 'desktopMap', 'zoom'], 6),
-        },
+        logo,
+        currMap,
       };
     }
 
