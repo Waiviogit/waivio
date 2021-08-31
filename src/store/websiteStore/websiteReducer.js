@@ -2,6 +2,7 @@ import { get, uniqBy } from 'lodash';
 import moment from 'moment';
 import * as websiteAction from './websiteActions';
 import { getAvailableStatus } from '../../client/websites/helper';
+import { GET_DISTRICTS, GET_NEARBY_FOOD, GET_RESTAURANTS } from './websiteActions';
 
 const initialState = {
   parentDomain: [],
@@ -24,6 +25,7 @@ const initialState = {
   unmuteUsers: [],
   wobjectsPoint: [],
   wobjectsPointHasMore: false,
+  districts: null,
 };
 
 export default function websiteReducer(state = initialState, action) {
@@ -418,6 +420,27 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         showReloadButton: action.payload,
+      };
+    }
+
+    case websiteAction.GET_DISTRICTS.SUCCESS: {
+      return {
+        ...state,
+        districts: action.payload,
+      };
+    }
+
+    case websiteAction.GET_RESTAURANTS.SUCCESS: {
+      return {
+        ...state,
+        restaurants: action.payload,
+      };
+    }
+
+    case websiteAction.GET_NEARBY_FOOD.SUCCESS: {
+      return {
+        ...state,
+        nearbyFood: action.payload,
       };
     }
 

@@ -64,3 +64,9 @@ export const getWobjectsPoint = createSelector([websiteState], state => state.wo
 export const getIsUsersAreas = createSelector([websiteState], state => state.areas);
 
 export const getShowReloadButton = createSelector([websiteState], state => state.showReloadButton);
+
+export const getListOfDistricts = createSelector([websiteState], state => state.districts);
+
+export const getListOfRestaurant = createSelector([websiteState], state => state.restaurants);
+
+export const getListOfDishAndDrink = createSelector([websiteState], state => state.nearbyFood);

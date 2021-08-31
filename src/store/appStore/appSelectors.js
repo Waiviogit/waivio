@@ -58,6 +58,10 @@ export const getWebsiteConfiguration = createSelector([appState], state => state
 
 export const getConfigurationValues = createSelector([appState], state => state.configuration);
 
+export const getWebsiteLogo = createSelector([appState], state => state.logo);
+
+export const getWebsiteMainMap = createSelector([appState], state => state.currMap);
+
 export const getIsWaivio = createSelector([appState], state => state.isWaivio);
 
 export const getReserveCounter = createSelector([appState], state => state.reservedCounter);
