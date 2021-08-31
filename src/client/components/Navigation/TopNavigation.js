@@ -124,7 +124,7 @@ const TopNavigation = ({ location: { pathname } }) => {
           {!isEmpty(authenticatedUser) && (
             <li className="TopNavigation__item">
               <Link
-                to={`${LINKS.TOOLS_DRAFTS}`}
+                to={`${LINKS.TOOLS_SETTINGS_NOTIFICATIONS}`}
                 className={classNames('TopNavigation__link', {
                   'TopNavigation__link--active':
                     !pathname.includes(LINKS.REWARDS) &&

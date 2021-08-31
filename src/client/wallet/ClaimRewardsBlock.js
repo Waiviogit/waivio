@@ -5,7 +5,6 @@ import { startCase } from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { message } from 'antd';
 import SteemConnect from '../steemConnectAPI';
-import { getUserAccountHistory } from '../../store/walletStore/walletActions';
 import { reload } from '../../store/authStore/authActions';
 import Action from '../components/Button/Action';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
@@ -19,7 +18,6 @@ import '../components/Sidebar/SidebarContentBlock.less';
     user: getAuthenticatedUser(state),
   }),
   {
-    getUserAccountHistory,
     reload,
   },
 )
@@ -27,7 +25,6 @@ class ClaimRewardsBlock extends Component {
   static propTypes = {
     user: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
-    getUserAccountHistory: PropTypes.func.isRequired,
     reload: PropTypes.func.isRequired,
   };
 
@@ -39,6 +36,10 @@ class ClaimRewardsBlock extends Component {
     loading: false,
     rewardClaimed: false,
   };
+
+  componentDidMount() {
+    this.props.reload();
+  }
 
   handleClaimRewards = () => {
     const { user } = this.props;
@@ -54,14 +55,11 @@ class ClaimRewardsBlock extends Component {
     });
 
     SteemConnect.claimRewardBalance(name, hiveBalance, hbdBalance, vestingBalance)
-      .then(
-        () =>
-          this.setState({
-            loading: false,
-            rewardClaimed: true,
-          }),
-
-        this.props.getUserAccountHistory(name).then(() => this.props.reload()),
+      .then(() =>
+        this.setState({
+          loading: false,
+          rewardClaimed: true,
+        }),
       )
       .catch(e => {
         this.setState({

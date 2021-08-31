@@ -13,14 +13,7 @@ export const appendObject = (postData, type, { follow } = {}) => dispatch => {
     .then(res => {
       if (!res.message) {
         dispatch(
-          voteAppends(
-            res.author,
-            res.permlink,
-            postData.votePower,
-            postData.field.name,
-            true,
-            type,
-          ),
+          voteAppends(res.author, res.permlink, postData.votePower, postData.field.name, true),
         );
         if (follow) dispatch(followObject(postData.parentPermlink));
       }

@@ -1780,5 +1780,9 @@
   "matchBot_confirm_changes": "Confirm changes",
   "match_bots_author_delete_message": "Do you want to delete author match bot rule for ",
   "match_bots_curator_delete_message": "Do you want to delete curator match bot rule for ",
-  "match_bot_slider_description_mana_curator": "Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting."
+  "match_bot_slider_description_mana_curator": "Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting.",
+  "instant_mobile_notifications": "Instant mobile notifications:",
+  "instant_mobile_notifications_open": "Open the Telegram chart with ",
+  "instant_mobile_notifications_hive": " and enter the Hive usernames to subscribe.",
+  "sign_in_error_not_cookies": "You need to disable blocking cookies in incognito mode, in your browser settings"
 }
