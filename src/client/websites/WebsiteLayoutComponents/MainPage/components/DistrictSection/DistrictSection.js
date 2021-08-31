@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 
 import DistrictsCard from '../DistrictsCard/DistrictsCard';
 import { getListOfDistricts } from '../../../../../../store/websiteStore/websiteSelectors';
 import { getDistricts } from '../../../../../../store/websiteStore/websiteActions';
-import Loading from '../../../../../components/Icon/Loading';
 
 const DistrictSection = props => {
   useEffect(() => {
     props.getDistricts();
   }, []);
 
-  if (!props.districts) return <Loading />;
+  if (isEmpty(props.districts)) return null;
 
   return (
     <section className="WebsiteMainPage__districtsSection">

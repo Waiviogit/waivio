@@ -2,12 +2,12 @@ import { Carousel, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 
 import { mobileUserAgents } from '../../../../../helpers/regexHelpers';
 import { getListOfRestaurant } from '../../../../../../store/websiteStore/websiteSelectors';
 import { getRestaurants } from '../../../../../../store/websiteStore/websiteActions';
-import Loading from '../../../../../components/Icon/Loading';
 
 import './CarouselSection.less';
 
@@ -30,7 +30,7 @@ const CarouselSection = props => {
     slidesToShow: isMobile ? 2 : 3,
   };
 
-  if (!props.restaurants) return <Loading />;
+  if (isEmpty(props.restaurants)) return null;
 
   return (
     <section className="WebsiteMainPage__carouselSection">

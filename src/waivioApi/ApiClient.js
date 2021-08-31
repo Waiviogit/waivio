@@ -2196,7 +2196,7 @@ export const getDistrictsWithCount = () => {
 export const getTypesPrefetch = types => {
   const type = types.length > 1 ? types.join(',') : types.toString();
 
-  return fetch(`${config.apiPrefix}${config.sites}${config.prefetch}?type=${type}`, {
+  return fetch(`${config.apiPrefix}${config.sites}${config.prefetch}?types=${type}`, {
     headers: headers,
     method: 'GET',
   })
