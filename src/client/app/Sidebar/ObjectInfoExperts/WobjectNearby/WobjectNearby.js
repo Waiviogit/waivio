@@ -46,7 +46,7 @@ const WobjectNearby = ({
       query.set('center', filters.map.coordinates);
       query.set('zoom', 14);
       query.set('permlink', wobject.author_permlink);
-      history.push(`/?${query.toString()}`);
+      history.push(`/map?${query.toString()}`);
     }
   };
 
