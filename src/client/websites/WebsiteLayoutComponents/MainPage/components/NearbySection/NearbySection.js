@@ -3,6 +3,7 @@ import { Icon } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 
 import NearByCard from '../NearByCard/NearByCard';
 import { getNearbyFood } from '../../../../../../store/websiteStore/websiteActions';
@@ -13,7 +14,7 @@ const NearbySection = props => {
     props.getNearbyFood();
   }, []);
 
-  if (!props.nearbyFood) return null;
+  if (isEmpty(props.nearbyFood)) return null;
 
   return (
     <section className="WebsiteMainPage__nearbySection">

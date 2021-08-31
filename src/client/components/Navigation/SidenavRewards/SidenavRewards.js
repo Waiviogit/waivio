@@ -112,7 +112,7 @@ const SidenavRewards = ({
                     )}
                     <SectionTitle
                       sectionId="matchBots"
-                      defaultName="Match Bots"
+                      defaultName="Match bots"
                       nameKey="matchBots"
                       isOpen={menuCondition.matchBots}
                       toggleSection={toggleMenuCondition}
