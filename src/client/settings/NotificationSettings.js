@@ -134,6 +134,9 @@ export default class NotificationSettings extends React.Component {
               </p>
             </div>
             <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="сommunity_actions" defaultMessage="Community actions" />:
+              </h3>
               {notificationType.сommunityActions.map(notify => (
                 <div className="Settings__section__checkbox" key={notify.name}>
                   <Checkbox
@@ -197,8 +200,6 @@ export default class NotificationSettings extends React.Component {
               <h3>
                 <FormattedMessage id="my_actions" defaultMessage="My actions" />:
               </h3>
-            </div>
-            <div className="Settings__section">
               {notificationType.myActions.map(notify => (
                 <div className="Settings__section__checkbox" key={notify.name}>
                   <Checkbox
