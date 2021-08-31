@@ -44,7 +44,7 @@ export const getBotObjAuthor = (botData, isEdit) => {
   const dataObj = {
     type: MATCH_BOTS_NAMES.AUTHORS,
     name: get(botData, 'selectedUser.account', ''),
-    enabled: isEdit ? botData.enabled : false,
+    enabled: !isEdit || botData.enabled,
     voteWeight: botData.voteValue * 100,
     minVotingPower: botData.manaValue * 100,
   };
@@ -61,7 +61,7 @@ export const getBotObjAuthor = (botData, isEdit) => {
 export const getBotObjCurator = (botData, isEdit) => {
   const dataObj = {
     type: MATCH_BOTS_NAMES.CURATORS,
-    enabled: isEdit ? botData.enabled : false,
+    enabled: !isEdit || botData.enabled,
     voteComments: botData.isComments,
     voteRatio: botData.voteRatio / 100,
     enablePowerDown: botData.isDownvote,
