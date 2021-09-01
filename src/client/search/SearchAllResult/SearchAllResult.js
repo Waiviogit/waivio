@@ -20,13 +20,16 @@ import {
   getAllSearchLoadingMore,
   getHasMoreObjectsForWebsite,
   getHasMoreUsers,
+  getSearchUsersResultsQuantity,
   getShowSearchResult,
+  getWebsiteSearchResultQuantity,
   getWebsiteSearchString,
 } from '../../../store/searchStore/searchSelectors';
 import SearchMapFilters from './components/SearchMapFilters';
 import UsersList from './components/UsersList';
-import './SearchAllResult.less';
 import WobjectsList from './components/WobjectsList';
+
+import './SearchAllResult.less';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -38,10 +41,10 @@ const SearchAllResult = props => {
   });
 
   const handleItemClick = wobj => {
-      localStorage.setItem('scrollTop', resultList.current.scrollTop);
-      props.setQueryFromSearchList(wobj);
-      props.setQueryInLocalStorage();
-    };
+    localStorage.setItem('scrollTop', resultList.current.scrollTop);
+    props.setQueryFromSearchList(wobj);
+    props.setQueryInLocalStorage();
+  };
 
   const currentListState = () => {
     switch (props.searchType) {
@@ -65,7 +68,7 @@ const SearchAllResult = props => {
   };
 
   useEffect(() => {
-    if (!isEmpty(props.searchResult) && localStorage.getItem('scrollTop')) {
+    if (props.wobjectsCounter && localStorage.getItem('scrollTop')) {
       resultList.current.scrollTo(0, +localStorage.getItem('scrollTop'));
     }
   }, []);
@@ -76,13 +79,13 @@ const SearchAllResult = props => {
     if (isScrolled && currRenderListState.hasMore && !props.showReload) {
       switch (props.searchType) {
         case 'Users':
-          props.searchUsersAutoCompeteLoadingMore(props.searchString, size(props.searchByUser));
+          props.searchUsersAutoCompeteLoadingMore(props.searchString, props.usersCounter);
           break;
         default:
           props.searchObjectsAutoCompeteLoadingMore(
             props.searchString,
             props.searchType,
-            size(props.searchResult),
+            props.wobjectsCounter,
           );
       }
     }
@@ -181,9 +184,10 @@ SearchAllResult.propTypes = {
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}),
   searchByUser: PropTypes.arrayOf(PropTypes.shape({})),
-  searchResult: PropTypes.arrayOf(PropTypes.shape({})),
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
+  wobjectsCounter: PropTypes.number.isRequired,
+  usersCounter: PropTypes.number.isRequired,
   hasMore: PropTypes.bool.isRequired,
   hasMoreUsers: PropTypes.bool,
   loadingMore: PropTypes.bool.isRequired,
@@ -212,6 +216,8 @@ export default connect(
     loadingMore: getAllSearchLoadingMore(state),
     hasMore: getHasMoreObjectsForWebsite(state),
     hasMoreUsers: getHasMoreUsers(state),
+    wobjectsCounter: getWebsiteSearchResultQuantity(state),
+    usersCounter: getSearchUsersResultsQuantity(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,

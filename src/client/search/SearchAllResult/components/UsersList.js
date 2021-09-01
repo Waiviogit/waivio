@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
 import {
-  getHasMoreUsers,
   getIsStartSearchUser,
   getSearchUsersResults,
 } from '../../../../store/searchStore/searchSelectors';
@@ -14,6 +13,7 @@ import Loading from '../../../components/Icon/Loading';
 
 const UsersList = props => {
   if (props.usersLoading) return <Loading />;
+
   if (isEmpty(props.searchByUser)) {
     return (
       <div className="SearchAllResult__empty">

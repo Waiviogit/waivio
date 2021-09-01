@@ -55,6 +55,15 @@ const MainMap = React.memo(props => {
   const [currCenter, setCenter] = useState([]);
   const query = new URLSearchParams(props.location.search);
 
+  useEffect(() => {
+    if (!props.showReloadButton) {
+      props.setMapForSearch({
+        coordinates: reverse([...currCenter]),
+        ...boundsParams,
+      });
+    }
+  }, [props.showReloadButton]);
+
   let queryCenter = query.get('center');
   let mapHeight = 'calc(100vh - 57px)';
 
@@ -201,7 +210,7 @@ const MainMap = React.memo(props => {
       setArea(bounds);
       setCenter(center);
       setZoom(zoom);
-    };
+    }
     if (!isEqual(bounds, area)) handleOnBoundsChanged(bounds);
   };
 
@@ -276,8 +285,8 @@ const MainMap = React.memo(props => {
     );
   }, [infoboxData]);
 
-  const incrementZoom = useCallback(() => setZoom(prev => prev + 1 ), [currZoom]);
-  const decrementZoom = useCallback(() => setZoom(prev => prev - 1 ), [currZoom]);
+  const incrementZoom = useCallback(() => setZoom(prev => prev + 1), [currZoom]);
+  const decrementZoom = useCallback(() => setZoom(prev => prev - 1), [currZoom]);
   const setLocationFromNavigator = position => {
     const { latitude, longitude } = position.coords;
 

@@ -145,7 +145,6 @@ export const searchObjectsAutoCompeteLoadingMore = (
   };
 
   if (inBox) body.box = { topPoint, bottomPoint };
-
   return dispatch({
     type: SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.ACTION,
     payload: ApiClient.searchObjects(searchString, objType, forParent, 15, locale, body, skip).then(

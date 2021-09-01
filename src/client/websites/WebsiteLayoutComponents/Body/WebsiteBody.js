@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, reverse } from 'lodash';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -47,7 +47,6 @@ const WebsiteBody = props => {
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
   });
-  const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
 
   useEffect(() => {
@@ -205,7 +204,6 @@ export default connect(
     userLocation: getUserLocation(state),
     isShowResult: getShowSearchResult(state),
     configuration: getConfigurationValues(state),
-    screenSize: getScreenSize(state),
     counter: getReserveCounter(state),
     isAuth: getIsAuthenticated(state),
     query: new URLSearchParams(ownProps.location.search),
