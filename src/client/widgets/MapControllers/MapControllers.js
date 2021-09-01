@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import './MapControllers.less';
 
-const MapControllers = props => {
+const MapControllers = React.memo(props => {
   const currClass = props.className || 'MapConfigurationControl';
   const setCurrentLocation = () =>
     navigator.geolocation.getCurrentPosition(props.successCallback, props.rejectCallback);
@@ -37,7 +37,7 @@ const MapControllers = props => {
       </div>
     </div>
   );
-};
+});
 
 MapControllers.propTypes = {
   incrementZoom: PropTypes.func.isRequired,

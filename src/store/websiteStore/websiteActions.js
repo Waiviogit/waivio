@@ -10,6 +10,7 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
 import { getOwnWebsites, getParentDomain } from './websiteSelectors';
 import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
+import { getDistrictsWithCount, getTypesPrefetch } from '../../waivioApi/ApiClient';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 
@@ -610,4 +611,25 @@ export const SET_SHOW_RELOAD = '@website/SET_SHOW_RELOAD';
 export const setShowReload = payload => ({
   type: SET_SHOW_RELOAD,
   payload,
+});
+
+export const GET_DISTRICTS = createAsyncActionType('@website/GET_DISTRICTS');
+
+export const getDistricts = () => ({
+  type: GET_DISTRICTS.ACTION,
+  payload: getDistrictsWithCount(),
+});
+
+export const GET_RESTAURANTS = createAsyncActionType('@website/GET_RESTAURANTS');
+
+export const getRestaurants = () => ({
+  type: GET_RESTAURANTS.ACTION,
+  payload: getTypesPrefetch(['restaurant']),
+});
+
+export const GET_NEARBY_FOOD = createAsyncActionType('@website/GET_NEARBY_FOOD');
+
+export const getNearbyFood = () => ({
+  type: GET_NEARBY_FOOD.ACTION,
+  payload: getTypesPrefetch(['dish', 'drink']),
 });

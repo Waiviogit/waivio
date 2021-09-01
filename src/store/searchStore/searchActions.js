@@ -392,6 +392,12 @@ export const setWebsiteSearchFilter = (category, tag) => ({
   },
 });
 
+export const RESET_FILTER = '@search/RESET_FILTER';
+
+export const resetWebsiteFilters = () => ({
+  type: RESET_FILTER,
+});
+
 export const SET_WEBSITE_SEARCH_STRING = '@search/SET_WEBSITE_SEARCH_STRING';
 
 export const setWebsiteSearchString = searchString => ({

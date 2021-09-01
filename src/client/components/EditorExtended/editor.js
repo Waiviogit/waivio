@@ -323,16 +323,17 @@ export default class MediumDraftEditor extends React.Component {
     let { editorState } = this.props;
     const selection = editorState.getSelection();
     const content = editorState.getCurrentContent();
+    const lowerUrl = url.toLowerCase();
     let entityKey = null;
     let newUrl = url;
 
     if (this.props.processURL) {
       newUrl = this.props.processURL(url);
-    } else if (url.indexOf('http') !== 0 && url.indexOf('mailto:') !== 0) {
+    } else if (lowerUrl.indexOf('http') !== 0 && lowerUrl.indexOf('mailto:') !== 0) {
       if (url.indexOf('@') >= 0) {
         newUrl = `mailto:${newUrl}`;
       } else {
-        newUrl = `http://${newUrl}`;
+        newUrl = `https://${newUrl}`;
       }
     }
     if (newUrl !== '') {

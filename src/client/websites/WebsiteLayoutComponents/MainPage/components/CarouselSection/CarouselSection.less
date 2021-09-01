@@ -1,0 +1,75 @@
+@import (reference) '../../../../../styles/modules/variables.less';
+@import (reference) '../../../../../styles/custom.less';
+
+.CarouselSection {
+  &__wrapper {
+    width: 380px;
+    padding-bottom: 25px;
+
+    @media @small {
+      width: 645px;
+      padding-bottom: 50px;
+    }
+
+    .slick-prev,
+    .slick-next {
+      display: none;
+
+      @media @small {
+        display: inline-block;
+        z-index: 1200;
+        color: #bebebe !important;
+
+        svg {
+          height: auto;
+          width: 30px;
+        }
+      }
+    }
+
+    .ant-carousel .slick-prev {
+      left: -35px;
+
+      @media @small {
+        left: -50px;
+      }
+    }
+
+    .ant-carousel .slick-next {
+      right: -25px;
+    }
+  }
+
+  &__itemWrapper {
+    display: flex !important;
+    justify-content: center;
+  }
+
+  &__item {
+    border: 0.5px solid #ffffff;
+    position: relative;
+  }
+
+  &__itemImg {
+    height: 270px;
+    width: 190px;
+
+    @media @small {
+      height: 400px;
+      width: 215px;
+    }
+  }
+
+  &__itemName {
+    position: absolute;
+    bottom: 0;
+    font-size: 20px;
+    color: #ffffff;
+    text-transform: uppercase;
+    background: #000000;
+    opacity: 0.9;
+    padding: 15px 5px;
+    font-weight: bolder;
+    width: 100%;
+  }
+}

@@ -2180,4 +2180,29 @@ export const getMatchBots = (botName, botType) => {
     .then(res => res.json());
 };
 
+export const getDistrictsWithCount = () => {
+  return fetch(
+    `${config.apiPrefix}${config.getObjects}${config.count}${config.area}?objectType=restaurant`,
+    {
+      headers: headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
+export const getTypesPrefetch = types => {
+  const type = types.length > 1 ? types.join(',') : types.toString();
+
+  return fetch(`${config.apiPrefix}${config.sites}${config.prefetch}?types=${type}`, {
+    headers: headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
 export default null;

@@ -7,6 +7,9 @@ import WebsiteFooter from '../WebsiteFooter/Footer';
 import MainPageHeader from '../Header/MainPageHeader';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
+import CarouselSection from './components/CarouselSection/CarouselSection';
+import DistrictSection from './components/DistrictSection/DistrictSection';
+import NearbySection from './components/NearbySection/NearbySection';
 
 import './WebsiteMainPage.less';
 
@@ -157,6 +160,9 @@ const WebsiteMainPage = () => {
           Learn more
         </Link>
       </section>
+      <DistrictSection />
+      <CarouselSection />
+      <NearbySection />
       <WebsiteFooter />
     </div>
   );
