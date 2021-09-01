@@ -10,6 +10,7 @@ import { Map } from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
 import { getCoordinates } from '../../../../store/userStore/userActions';
 import {
+  resetWebsiteFilters,
   setFilterFromQuery,
   setMapForSearch,
   setSearchInBox,
@@ -171,6 +172,7 @@ const WebsiteBody = props => {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      props.resetWebsiteFilters();
     };
   }, []);
 
@@ -484,6 +486,7 @@ WebsiteBody.propTypes = {
   putUserCoordinates: PropTypes.func.isRequired,
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
+  resetWebsiteFilters: PropTypes.func.isRequired,
   setSearchInBox: PropTypes.func.isRequired,
   setFilterFromQuery: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
@@ -544,5 +547,6 @@ export default connect(
     setSearchInBox,
     setFilterFromQuery,
     setShowSearchResult,
+    resetWebsiteFilters,
   },
 )(withRouter(WebsiteBody));

@@ -38,7 +38,7 @@ const CarouselSection = props => {
         <Carousel {...settings}>
           {props.restaurants.map(item => (
             <Link
-              to={`/map?${item.route}&showPanel=true`}
+              to={`/map?${item.route}&showPanel=true&type=restaurant`}
               key={item._id}
               className="CarouselSection__itemWrapper"
             >
