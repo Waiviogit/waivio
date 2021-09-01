@@ -499,6 +499,13 @@ export default (state = initialState, action) => {
       };
     }
 
+    case searchActions.RESET_FILTER: {
+      return {
+        ...state,
+        tagCategory: [],
+      };
+    }
+
     case searchActions.SET_SEARCH_SORT: {
       return {
         ...state,
