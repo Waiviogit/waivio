@@ -24,7 +24,7 @@ const NearbySection = props => {
           <NearByCard key={card.name} {...card} />
         ))}
       </div>
-      <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
+      <Link to={'/map?showPanel=true&type=dish'} className="WebsiteMainPage__button">
         See All Nearby <Icon type="right" />
       </Link>
     </section>
