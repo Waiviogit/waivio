@@ -1,7 +1,5 @@
 export const objectFields = {
   name: 'name',
-  title: 'title',
-  description: 'description',
   address: 'address',
   map: 'map',
   link: 'link',
