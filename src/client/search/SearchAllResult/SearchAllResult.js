@@ -1,18 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, map, size, uniqBy } from 'lodash';
+import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import classNames from 'classnames';
 import { ReactSVG } from 'react-svg';
 
-import { getActiveItemClassList } from '../helpers';
 import {
   searchObjectsAutoCompeteLoadingMore,
   searchUsersAutoCompeteLoadingMore,
   setShowSearchResult,
-  setWebsiteSearchType,
 } from '../../../store/searchStore/searchActions';
 import Loading from '../../components/Icon/Loading';
 import ViewMapButton from '../../widgets/ViewMapButton';
@@ -28,12 +26,13 @@ import {
 import SearchMapFilters from './components/SearchMapFilters';
 import UsersList from './components/UsersList';
 import WobjectsList from './components/WobjectsList';
+import FilterTypesList from './components/FilterTypesList';
+import ReloadButton from './components/ReloadButton';
 
 import './SearchAllResult.less';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const filterTypes = ['restaurant', 'dish', 'drink', 'Users'];
   const isUsersSearch = props.searchType === 'Users';
   const resultList = useRef();
   const searchResultClassList = classNames('SearchAllResult', {
@@ -113,6 +112,8 @@ const SearchAllResult = props => {
     if (isEmpty(currRenderListState.list)) localStorage.removeItem('scrollTop');
   };
 
+  const setCloseResult = useCallback(() => props.setShowSearchResult(false), []);
+
   return (
     <div className={searchResultClassList}>
       <div
@@ -122,49 +123,26 @@ const SearchAllResult = props => {
       >
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
-      <div className="SearchAllResult__type-wrap">
-        {filterTypes.map(type => (
-          <span
-            role="presentation"
-            className={getActiveItemClassList(type, props.searchType, 'SearchAllResult__type')}
-            key={type}
-            onClick={() => {
-              props.setWebsiteSearchType(type);
-              props.handleUrlWithChangeType(type);
-              localStorage.removeItem('scrollTop');
-            }}
-          >
-            {type}
-          </span>
-        ))}
-      </div>
+      <FilterTypesList />
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
         {!isUsersSearch && (
           <React.Fragment>
             <SearchMapFilters />
-            <div className="SearchAllResult__sortWrap">
-              {props.showReload && (
-                <span
-                  className="SearchAllResult__reload"
-                  role="presentation"
-                  onClick={props.reloadSearchList}
-                >
-                  <ReactSVG wrapper="span" src="/images/icons/redo-alt-solid.svg" /> Reload
-                </span>
-              )}
-            </div>
+            {props.showReload && (
+              <ReloadButton
+                className="SearchAllResult__reload"
+                reloadSearchList={props.reloadSearchList}
+              />
+            )}
           </React.Fragment>
         )}
-        <ViewMapButton handleClick={() => props.setShowSearchResult(false)} />
+        <ViewMapButton handleClick={setCloseResult} />
         {currRenderListState.loading ? <Loading /> : currentList}
         {props.showReload ? (
-          <div
+          <ReloadButton
             className="SearchAllResult__listReload"
-            role="presentation"
-            onClick={props.reloadSearchList}
-          >
-            <ReactSVG wrapper="span" src="/images/icons/redo-alt-solid.svg" /> <span>Reload</span>
-          </div>
+            reloadSearchList={props.reloadSearchList}
+          />
         ) : (
           <div className="SearchAllResult__loader">{props.loadingMore && <Loading />}</div>
         )}
@@ -177,13 +155,11 @@ SearchAllResult.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  setWebsiteSearchType: PropTypes.func.isRequired,
   deleteShowPanel: PropTypes.func.isRequired,
   setQueryInLocalStorage: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({}),
-  searchByUser: PropTypes.arrayOf(PropTypes.shape({})),
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
   wobjectsCounter: PropTypes.number.isRequired,
@@ -194,7 +170,6 @@ SearchAllResult.propTypes = {
   isShowResult: PropTypes.bool.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
-  handleUrlWithChangeType: PropTypes.func.isRequired,
   setQueryFromSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
@@ -221,7 +196,6 @@ export default connect(
   }),
   {
     searchUsersAutoCompeteLoadingMore,
-    setWebsiteSearchType,
     searchObjectsAutoCompeteLoadingMore,
     setShowSearchResult,
   },

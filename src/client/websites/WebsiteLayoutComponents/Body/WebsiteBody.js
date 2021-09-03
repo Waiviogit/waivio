@@ -73,14 +73,6 @@ const WebsiteBody = props => {
 
   const handleHoveredCard = permlink => setHoveredCardPermlink(permlink);
 
-  const handleUrlWithChangeType = type => {
-    let query = `?type=${type}`;
-
-    if (props.searchString) query = `${query}&searchString=${props.searchString}`;
-
-    props.history.push(query);
-  };
-
   const setQueryFromSearchList = obj => {
     const objMap = getObjectMapInArray(obj);
 
@@ -126,7 +118,6 @@ const WebsiteBody = props => {
         reloadSearchList={reloadSearchList}
         searchType={props.searchType}
         handleHoveredCard={handleHoveredCard}
-        handleUrlWithChangeType={handleUrlWithChangeType}
         setQueryInLocalStorage={setQueryInLocalStorage}
         setQueryFromSearchList={setQueryFromSearchList}
         deleteShowPanel={deleteShowPanel}
@@ -170,7 +161,6 @@ WebsiteBody.propTypes = {
   }).isRequired,
   isShowResult: PropTypes.bool.isRequired,
   configuration: PropTypes.shape().isRequired,
-  screenSize: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
   host: PropTypes.string.isRequired,
   getReservedCounter: PropTypes.func.isRequired,

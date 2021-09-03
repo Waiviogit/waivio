@@ -58,7 +58,6 @@ export const getMoreRelatedAlbum = (authorPermlink, limit = 30) => (dispatch, ge
 export const clearRelatedPhoto = () => dispatch =>
   dispatch({
     type: CLEAR_RELATED_PHOTO,
-    paeload: {},
   });
 
 export const addAlbumToStore = createAction(ADD_ALBUM);

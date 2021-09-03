@@ -277,16 +277,27 @@ export const roundNumberToThousands = number => {
   }
   return number;
 };
+const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'staging';
+
+const PRODUCTION_REQUEST_NODES = [
+  'https://anyx.io',
+  'https://api.hive.blog',
+  'https://rpc.ecency.com',
+];
+
+const STAGING_REQUEST_NODES = [
+  'https://api.openhive.network',
+  'https://api.pharesim.me',
+  'https://rpc.esteem.app',
+  'https://hive-api.arcange.eu',
+  'https://hive.roelandp.nl',
+  'https://rpc.ausbit.dev',
+];
+
+const currentNodesList = isDev ? STAGING_REQUEST_NODES : PRODUCTION_REQUEST_NODES;
 
 export const dHive = new Client(
-  [
-    'https://rpc.esteem.app',
-    'https://rpc.ausbit.dev',
-    'https://rpc.ecency.com',
-    'https://hived.emre.sh',
-    'https://api.deathwing.me',
-    'https://api.hive.blog',
-  ],
+  currentNodesList,
   {
     timeout: 8 * 1000,
     failoverThreshold: 0,

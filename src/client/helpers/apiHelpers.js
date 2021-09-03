@@ -166,3 +166,5 @@ export const isMobileDevice = () => {
 
   return {};
 };
+
+export const isMobile = () => typeof navigator !== 'undefined' && mobileUserAgents.test(navigator.userAgent);

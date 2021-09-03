@@ -12,9 +12,7 @@ export const appendObject = (postData, type, { follow } = {}) => dispatch => {
   return postAppendWaivioObject(postData)
     .then(res => {
       if (!res.message) {
-        dispatch(
-          voteAppends(res.author, res.permlink, postData.votePower, postData.field.name, true),
-        );
+        dispatch(voteAppends(res.author, res.permlink, postData.votePower, postData.field.name, true),);
         if (follow) dispatch(followObject(postData.parentPermlink));
       }
       dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });
