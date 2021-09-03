@@ -253,7 +253,7 @@ export default class AppendForm extends Component {
 
       this.setState({ loading: true });
       this.props
-        .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
+        .appendObject(data, { votePower: data.votePower, follow: formValues.follow, isLike: true })
         .then(res => {
           const mssg = get(res, ['value', 'message']);
 
