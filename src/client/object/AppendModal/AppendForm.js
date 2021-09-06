@@ -871,9 +871,7 @@ export default class AppendForm extends Component {
               }),
             );
           } else {
-            if (objectFields.blog === currentField) {
-              this.handleAddBlog();
-            }
+            if (objectFields.blog === currentField) this.handleAddBlog();
             this.onSubmit(values);
           }
         } else {
@@ -1123,13 +1121,17 @@ export default class AppendForm extends Component {
 
   handleCreateObject = (createdObject, options) => {
     const currentField = this.props.form.getFieldValue('currentField');
+    const timeoutCallback = () => setTimeout(e => this.handleSubmit(e), 3000);
 
     this.props.form.setFieldsValue({
-      [currentField]: createdObject.id,
+      [currentField]: createdObject.author_permlink,
       menuItemName: createdObject.name,
       locale: options.locale,
     });
-    this.setState({ selectedObject: createdObject, votePercent: null }, this.handleSubmit);
+    this.setState(
+      { selectedObject: createdObject, votePercent: null, loading: true },
+      timeoutCallback,
+    );
   };
 
   handleSelectObject = (obj = {}) => {
