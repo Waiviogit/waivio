@@ -48,7 +48,7 @@ export const getUsersByObject = object => dispatch =>
   dispatch({
     type: GET_USERS_BY_OBJECT.ACTION,
     payload: ApiClient.getUsersByObject(object),
-  }).catch(() => {});
+  });
 
 export const GET_FEED_CONTENT_BY_OBJECT = createAsyncActionType(
   '@objects/GET_FEED_CONTENT_BY_OBJECT',
@@ -106,9 +106,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
               };
 
               return ApiClient.postCreateWaivioObject(requestBody).then(response => {
-                if (follow) {
-                  dispatch(followObject(response.permlink));
-                }
+                if (follow) dispatch(followObject(response.permlink));
 
                 dispatch(voteObject(response.author, response.permlink, votePower));
 
