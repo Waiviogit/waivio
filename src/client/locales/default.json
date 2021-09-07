@@ -1507,7 +1507,7 @@
   "pay_now": "Pay now",
   "websites": "Websites:",
   "website_save_webconfig_success" : "Website successfully updated",
-  "website_domain_pattern" : "domain value {value} does not match pattern /[a-z,0-9]+$/",
+  "website_domain_pattern" : "You`ve entered invalid data. Only Latin lowercase letters and 0-9 digits allowed",
   "website_domain_available": "The domain must contain at least {symbol} characters.",
   "website_domain_name_available": "You can`t use only www in domain name",
   "website_politics_available": "Should accept agreement",

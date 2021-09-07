@@ -42,7 +42,7 @@ export default {
           return Promise.reject(
             <FormattedMessage
               id="website_domain_pattern"
-              defaultMessage="domain value {value} does not match pattern /[a-z,0-9]+$/"
+              defaultMessage="You`ve entered invalid data. Only Latin lowercase letters and 0-9 digits allowed"
               values={{ value }}
             />,
           );
