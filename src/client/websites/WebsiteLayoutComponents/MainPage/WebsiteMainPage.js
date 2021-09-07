@@ -10,12 +10,14 @@ import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import CarouselSection from './components/CarouselSection/CarouselSection';
 import DistrictSection from './components/DistrictSection/DistrictSection';
 import NearbySection from './components/NearbySection/NearbySection';
+import { isMobile } from '../../../helpers/apiHelpers';
 
 import './WebsiteMainPage.less';
 
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
   const helmetImg = '/images/dining.gifts.png';
+  const findRewardsLink = isMobile() ? '/map' : '/map?showPanel=true';
 
   useLayoutEffect(() => {
     if (window) {
@@ -65,7 +67,7 @@ const WebsiteMainPage = () => {
                 isButton
               />
             )}
-            <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
+            <Link to={findRewardsLink} className="WebsiteMainPage__button">
               Find Rewards <Icon type="right" />
             </Link>
           </div>
