@@ -40,6 +40,7 @@ import {
 } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
+import MainPageHeader from './websites/WebsiteLayoutComponents/Header/MainPageHeader';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -225,10 +226,14 @@ class WebsiteWrapper extends React.PureComponent {
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-              {showHeader && !signInPage && (
-                <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                  <WebsiteHeader />
-                </Layout.Header>
+              {showHeader ? (
+                !signInPage && (
+                  <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
+                    <WebsiteHeader />
+                  </Layout.Header>
+                )
+              ) : (
+                <MainPageHeader />
               )}
               <div className={showHeader && !signInPage && 'content'}>
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}

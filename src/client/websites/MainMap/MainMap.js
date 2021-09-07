@@ -314,33 +314,36 @@ const MainMap = React.memo(props => {
   ]);
 
   return (
-    <div className={mapClassList} style={{ height: mapHeight }}>
-      <MapControllers
-        className={'WebsiteBodyControl'}
-        decrementZoom={decrementZoom}
-        incrementZoom={incrementZoom}
-        successCallback={setLocationFromNavigator}
-        rejectCallback={setLocationFromApi}
-      />
-      <Map
-        ref={mapRef}
-        center={currCenter}
-        height={Number(mapHeight)}
-        zoom={currZoom}
-        provider={mapProvider}
-        onBoundsChanged={onBoundsChanged}
-        onClick={handleClickOnMap}
-        animate
-        zoomSnap
-      >
-        <TagFilters query={query} history={props.history} />
-        {markersList}
-        {overlay}
-        {showLocation && (
-          <CustomMarker anchor={[props.userLocation.lat, props.userLocation.lon]} currLocation />
-        )}
-      </Map>
-    </div>
+    !isEmpty(currCenter) &&
+    currZoom && (
+      <div className={mapClassList} style={{ height: mapHeight }}>
+        <MapControllers
+          className={'WebsiteBodyControl'}
+          decrementZoom={decrementZoom}
+          incrementZoom={incrementZoom}
+          successCallback={setLocationFromNavigator}
+          rejectCallback={setLocationFromApi}
+        />
+        <Map
+          ref={mapRef}
+          center={currCenter}
+          height={Number(mapHeight)}
+          zoom={currZoom}
+          provider={mapProvider}
+          onBoundsChanged={onBoundsChanged}
+          onClick={handleClickOnMap}
+          animate
+          zoomSnap
+        >
+          <TagFilters query={query} history={props.history} />
+          {markersList}
+          {overlay}
+          {showLocation && (
+            <CustomMarker anchor={[props.userLocation.lat, props.userLocation.lon]} currLocation />
+          )}
+        </Map>
+      </div>
+    )
   );
 });
 
