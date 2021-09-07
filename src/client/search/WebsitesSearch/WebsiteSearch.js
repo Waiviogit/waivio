@@ -4,6 +4,7 @@ import { AutoComplete, Icon, Input } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { debounce, isEmpty } from 'lodash';
+import { withRouter } from 'react-router';
 
 import {
   resetSearchAutoCompete,
@@ -29,6 +30,7 @@ import './WebsiteSearch.less';
 
 const WebsiteSearch = props => {
   const [searchString, setSearchString] = useState('');
+  const query = new URLSearchParams(props.location.search);
 
   const currentSearchMethod = value => {
     localStorage.removeItem('scrollTop');
@@ -44,7 +46,7 @@ const WebsiteSearch = props => {
   };
 
   useEffect(() => {
-    const querySearch = props.query.get('searchString');
+    const querySearch = query.get('searchString');
 
     if (querySearch) setSearchString(querySearch);
   }, []);
@@ -69,9 +71,9 @@ const WebsiteSearch = props => {
       props.setWebsiteSearchString(value);
       props.setSearchInBox(true);
 
-      if (value) props.query.set('searchString', value);
-      else props.query.delete('searchString');
-      props.history.push(`?${props.query.toString()}`);
+      if (value) query.set('searchString', value);
+      else query.delete('searchString');
+      props.history.push(`?${query.toString()}`);
     }, 500),
     [props.searchType],
   );
@@ -90,7 +92,7 @@ const WebsiteSearch = props => {
   const handleOnChange = value => setSearchString(value);
 
   return (
-    <div>
+    <React.Fragment>
       <AutoComplete
         className="WebsiteSearch"
         onSearch={handleSearchAutocomplete}
@@ -114,19 +116,13 @@ const WebsiteSearch = props => {
           style={{ position: 'relative', left: '-20px', cursor: 'pointer', zIndex: 5 }}
         />
       )}
-    </div>
+    </React.Fragment>
   );
 };
 
 WebsiteSearch.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
-  }).isRequired,
-  query: PropTypes.shape({
-    get: PropTypes.func,
-    set: PropTypes.func,
-    delete: PropTypes.func,
-    toString: PropTypes.func,
   }).isRequired,
   location: PropTypes.shape({
     search: PropTypes.string,
@@ -153,7 +149,7 @@ WebsiteSearch.defaultProps = {
 };
 
 export default connect(
-  (state, ownProps) => ({
+  state => ({
     searchByObject: getSearchObjectsResults(state),
     searchByObjectType: searchObjectTypesResults(state),
     isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
@@ -162,7 +158,6 @@ export default connect(
     isShowResult: getShowSearchResult(state),
     searchMap: getWebsiteMap(state),
     savedSearchString: getWebsiteSearchString(state),
-    query: new URLSearchParams(ownProps.location.search),
   }),
   {
     resetSearchAutoCompete,
@@ -173,4 +168,4 @@ export default connect(
     setSearchInBox,
     resetWebsiteObjectsCoordinates,
   },
-)(injectIntl(WebsiteSearch));
+)(withRouter(injectIntl(WebsiteSearch)));
