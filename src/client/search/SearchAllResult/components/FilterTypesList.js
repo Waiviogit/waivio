@@ -1,9 +1,9 @@
-import { getActiveItemClassList } from '../../helpers';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 
+import { getActiveItemClassList } from '../../helpers';
 import { setWebsiteSearchType } from '../../../../store/searchStore/searchActions';
 import { getWebsiteSearchType } from '../../../../store/searchStore/searchSelectors';
 

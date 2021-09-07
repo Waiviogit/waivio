@@ -160,7 +160,6 @@ class CreateObject extends React.Component {
                     locale: values.locale,
                   },
                 ),
-                { votePower: null, follow: false, isLike: false },
               );
             }
             const isObjType = type => listofObjTypesWithAlbum.some(item => item === type);

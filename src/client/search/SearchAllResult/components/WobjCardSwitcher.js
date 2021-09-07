@@ -1,12 +1,12 @@
 import { isEmpty } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import Proposition from '../../../rewards/Proposition/Proposition';
 import Campaign from '../../../rewards/Campaign/Campaign';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import { assignProposition, declineProposition } from '../../../../store/userStore/userActions';
-import { connect } from 'react-redux';
 
 const WobjCardSwitcher = React.memo(props => {
   if (!isEmpty(props.obj.propositions)) {
@@ -38,6 +38,7 @@ WobjCardSwitcher.propTypes = {
   assignProposition: PropTypes.func.isRequired,
   declineProposition: PropTypes.func.isRequired,
 };
+
 export default connect(null, {
   declineProposition,
   assignProposition,

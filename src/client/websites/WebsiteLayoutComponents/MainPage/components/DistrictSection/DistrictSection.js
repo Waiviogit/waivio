@@ -20,15 +20,15 @@ const DistrictSection = props => {
     <section className="WebsiteMainPage__districtsSection">
       <h2 className="WebsiteMainPage__districtsTitle">Find rewards in your area now!</h2>
       <p className="WebsiteMainPage__districtsSubtitle">
-        Note: Dining.Gifts is available in VANCOUVER ONLY during beta.
+        Dining.Gifts is available in Greater Vancouver ONLY during the initial launch.
       </p>
       <div className="WebsiteMainPage__districtsList">
         {props.districts.map(card => (
           <DistrictsCard key={card.name} {...card} />
         ))}
       </div>
-      <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
-        Find Rewards <Icon type="right" />
+      <Link to={'/map'} className="WebsiteMainPage__button">
+        See All Rewards <Icon type="right" />
       </Link>
     </section>
   );

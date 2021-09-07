@@ -1,9 +1,8 @@
 import { map, isEmpty } from 'lodash';
-import UserCard from '../../../components/UserCard';
 import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-
+import UserCard from '../../../components/UserCard';
 import {
   getIsStartSearchUser,
   getSearchUsersResults,

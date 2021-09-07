@@ -59,9 +59,7 @@ class UserInfo extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.match.params.name !== this.props.match.params.name) {
-      // this.getUserInfo();
-    }
+    if (prevProps.match.params.name !== this.props.match.params.name) this.getUserInfo();
   }
 
   getUserInfo = () => {
@@ -107,6 +105,7 @@ class UserInfo extends React.Component {
     if (hostWithoutWWW.indexOf('www.') === 0) {
       hostWithoutWWW = hostWithoutWWW.slice(4);
     }
+
     const voteWorth =
       user && rewardFund && rate ? ceil(calculateVotePower(user, rewardFund, rate), 3) : 0;
     const rc = this.state.rc_percentage ? this.state.rc_percentage / 100 : 0;

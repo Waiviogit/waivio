@@ -10,9 +10,9 @@ import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import CarouselSection from './components/CarouselSection/CarouselSection';
 import DistrictSection from './components/DistrictSection/DistrictSection';
 import NearbySection from './components/NearbySection/NearbySection';
+import { isMobile } from '../../../helpers/apiHelpers';
 
 import './WebsiteMainPage.less';
-import {isMobile} from "../../../helpers/apiHelpers";
 
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);

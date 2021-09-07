@@ -38,7 +38,7 @@ const CarouselSection = props => {
         <Carousel {...settings}>
           {props.restaurants.map(item => (
             <Link
-              to={`/map?${item.route}&showPanel=true`}
+              to={`/map?${item.route}&showPanel=true&type=restaurant`}
               key={item._id}
               className="CarouselSection__itemWrapper"
             >
@@ -51,7 +51,7 @@ const CarouselSection = props => {
         </Carousel>
       </div>
       <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
-        See All Restaurant <Icon type="right" />
+        See All Restaurants <Icon type="right" />
       </Link>
     </section>
   );

@@ -296,13 +296,10 @@ const STAGING_REQUEST_NODES = [
 
 const currentNodesList = isDev ? STAGING_REQUEST_NODES : PRODUCTION_REQUEST_NODES;
 
-export const dHive = new Client(
-  currentNodesList,
-  {
-    timeout: 8 * 1000,
-    failoverThreshold: 0,
-  },
-);
+export const dHive = new Client(currentNodesList, {
+  timeout: 8 * 1000,
+  failoverThreshold: 0,
+});
 
 export const getLastBlockNum = async () => {
   const { head_block_number } = await dHive.database.getDynamicGlobalProperties();

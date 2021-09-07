@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { isEmpty, get, reverse } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import {
+  resetWebsiteFilters,
   setFilterFromQuery,
   setMapForSearch,
   setWebsiteSearchType,
@@ -22,8 +23,8 @@ import { setShowReload } from '../../../../store/websiteStore/websiteActions';
 import {
   getConfigurationValues,
   getHostAddress,
+  getIsDiningGifts,
   getReserveCounter,
-  getScreenSize,
   getWebsiteLogo,
   getWebsiteMainMap,
 } from '../../../../store/appStore/appSelectors';
@@ -39,6 +40,8 @@ import {
 import { getShowReloadButton } from '../../../../store/websiteStore/websiteSelectors';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 import MainMap from '../../MainMap/MainMap';
+import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
+import FilterTypesList from '../../../search/SearchAllResult/components/FilterTypesList';
 
 import './WebsiteBody.less';
 
@@ -48,6 +51,7 @@ const WebsiteBody = props => {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
   });
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
+  const bodyClassList = classNames('WebsiteBody', { WebsiteBody__isDining: props.isDining });
 
   useEffect(() => {
     const query = props.location.search;
@@ -60,6 +64,10 @@ const WebsiteBody = props => {
       if (type) props.setWebsiteSearchType(type);
       if (!isEmpty(filterBody)) props.setFilterFromQuery(filterBody);
     }
+
+    return () => {
+      props.resetWebsiteFilters();
+    };
   }, []);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
@@ -91,7 +99,7 @@ const WebsiteBody = props => {
   };
 
   return (
-    <div className="WebsiteBody">
+    <div className={bodyClassList}>
       <Helmet>
         <title>{title ? `${objName} - ${title}` : objName}</title>
         <link rel="canonical" href={`https://${props.host}/`} />
@@ -113,6 +121,10 @@ const WebsiteBody = props => {
         <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
       </Helmet>
+      <div className="NewFiltersClass">
+        <WebsiteSearch />
+        {props.isDining && <FilterTypesList />}
+      </div>
       <SearchAllResult
         showReload={props.showReloadButton}
         reloadSearchList={reloadSearchList}
@@ -160,11 +172,13 @@ WebsiteBody.propTypes = {
     lon: PropTypes.number,
   }).isRequired,
   isShowResult: PropTypes.bool.isRequired,
+  isDining: PropTypes.bool,
   configuration: PropTypes.shape().isRequired,
   searchString: PropTypes.string.isRequired,
   host: PropTypes.string.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
+  resetWebsiteFilters: PropTypes.func.isRequired,
   setFilterFromQuery: PropTypes.func.isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
   counter: PropTypes.number.isRequired,
@@ -187,6 +201,7 @@ WebsiteBody.defaultProps = {
   searchString: '',
   isAuth: false,
   showReloadButton: false,
+  isDining: false,
 };
 
 export default connect(
@@ -205,6 +220,7 @@ export default connect(
     isActiveFilters: tagsCategoryIsEmpty(state),
     logo: getWebsiteLogo(state),
     currMap: getWebsiteMainMap(state),
+    isDining: getIsDiningGifts(state),
   }),
   {
     setWebsiteSearchType,
@@ -212,5 +228,6 @@ export default connect(
     setMapForSearch,
     setShowReload,
     setFilterFromQuery,
+    resetWebsiteFilters,
   },
 )(withRouter(WebsiteBody));
