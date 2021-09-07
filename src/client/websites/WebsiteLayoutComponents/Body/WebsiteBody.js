@@ -121,10 +121,12 @@ const WebsiteBody = props => {
         <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
       </Helmet>
-      <div className="NewFiltersClass">
-        <WebsiteSearch />
-        {props.isDining && <FilterTypesList />}
-      </div>
+      {props.isDining && (
+        <div className="NewFiltersClass">
+          <WebsiteSearch />
+          <FilterTypesList />
+        </div>
+      )}
       <SearchAllResult
         showReload={props.showReloadButton}
         reloadSearchList={reloadSearchList}
