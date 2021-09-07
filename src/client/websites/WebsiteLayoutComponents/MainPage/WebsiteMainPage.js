@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import WebsiteFooter from '../WebsiteFooter/Footer';
-import MainPageHeader from '../Header/MainPageHeader';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import CarouselSection from './components/CarouselSection/CarouselSection';
@@ -48,7 +47,6 @@ const WebsiteMainPage = () => {
         <link rel="image_src" href={helmetImg} />
         <link id="favicon" rel="icon" href={helmetImg} type="image/x-icon" />
       </Helmet>
-      <MainPageHeader />
       <div className="WebsiteMainPage__banner">
         <div className="WebsiteMainPage__wrapperTitle">
           <div>
