@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import url from 'url';
 import { connect, batch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
@@ -216,7 +215,7 @@ class WebsiteWrapper extends React.PureComponent {
     const signInPage = location.pathname.includes('sign-in');
     const showHeader =
       !isDiningGifts ||
-      (isDiningGifts && (location.pathname !== '/' || location.pathname !== '/map'));
+      (isDiningGifts && location.pathname !== '/' && location.pathname !== '/map');
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
