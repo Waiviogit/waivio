@@ -59,6 +59,10 @@
   padding: 5px 15px;
   background: @white-ghostWhite;
   width: 100vw;
+  -webkit-box-shadow: 1px 8px 15px -11px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 1px 8px 15px -11px rgba(34, 60, 80, 0.2);
+  box-shadow: 1px 8px 15px -11px rgba(34, 60, 80, 0.2);
+  z-index: 205;
 
   &__navWrapper {
     display: flex;
@@ -107,7 +111,7 @@
 
         @media @medium {
           display: inline-block;
-          top: 5px;
+          top: 0;
           margin: 0 20px;
         }
       }
@@ -188,7 +192,7 @@
     width: 100%;
     display: flex;
     background: @white-ghostWhite;
-    padding: 15px 0;
+    padding: 15px 0 0;
     flex-direction: column;
 
     @media @small {
@@ -237,7 +241,7 @@
       background: transparent;
       padding: 0;
       width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
 
       @media @small {
         margin-right: 25px;
@@ -250,6 +254,16 @@
 
       .ant-select-search.ant-select-search--inline {
         margin-top: 0;
+      }
+
+      &__close {
+        left: 155px;
+        top: -25px;
+
+        @media @small {
+          left: -50px;
+          top: 10px;
+        }
       }
     }
   }

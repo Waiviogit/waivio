@@ -113,11 +113,7 @@ const WebsiteSearch = props => {
         />
       </AutoComplete>
       {!!searchString.length && (
-        <Icon
-          type="close"
-          onClick={handleResetAutocomplete}
-          style={{ position: 'relative', left: '-20px', cursor: 'pointer', zIndex: 5 }}
-        />
+        <Icon type="close" onClick={handleResetAutocomplete} className="WebsiteSearch__close" />
       )}
     </React.Fragment>
   );

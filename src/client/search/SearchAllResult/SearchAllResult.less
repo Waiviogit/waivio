@@ -44,10 +44,6 @@
     background: @white;
     padding: 10px;
     height: 100%;
-
-    @media @small {
-      height: 94%;
-    }
   }
 
   &__filters {
@@ -197,6 +193,15 @@
 
     .SearchAllResult__filters {
       text-transform: uppercase;
+    }
+
+    .SearchAllResult__filters-button.ant-btn {
+      text-transform: uppercase;
+
+      .SearchAllResult__filters-button--active {
+        background: @scorpion;
+        color: @white;
+      }
     }
   }
 }
