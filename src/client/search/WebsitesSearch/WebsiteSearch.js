@@ -102,10 +102,13 @@ const WebsiteSearch = props => {
       >
         <Input.Search
           size="large"
-          placeholder={props.intl.formatMessage({
-            id: 'find_restaurants_and_dishes',
-            defaultMessage: 'Find restaurants and dishes',
-          })}
+          placeholder={
+            props.placeholder ||
+            props.intl.formatMessage({
+              id: 'find_restaurants_and_dishes',
+              defaultMessage: 'Find restaurants and dishes',
+            })
+          }
           onClick={handleOpenSearchPanel}
         />
       </AutoComplete>
@@ -135,6 +138,7 @@ WebsiteSearch.propTypes = {
   setSearchInBox: PropTypes.func.isRequired,
   resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
+  placeholder: PropTypes.string.isRequired,
   savedSearchString: PropTypes.string.isRequired,
   activeFilters: PropTypes.arrayOf(PropTypes.shape()),
   isShowResult: PropTypes.bool.isRequired,

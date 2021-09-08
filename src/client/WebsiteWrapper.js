@@ -214,7 +214,9 @@ class WebsiteWrapper extends React.PureComponent {
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
     const signInPage = location.pathname.includes('sign-in');
-    const showHeader = !isDiningGifts || (isDiningGifts && location.pathname !== '/');
+    const showHeader =
+      !isDiningGifts ||
+      (isDiningGifts && (location.pathname !== '/' || location.pathname !== '/map'));
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -233,7 +235,7 @@ class WebsiteWrapper extends React.PureComponent {
                   </Layout.Header>
                 )
               ) : (
-                <MainPageHeader />
+                <MainPageHeader withMap={location.pathname === '/map'} />
               )}
               <div className={showHeader && !signInPage && 'content'}>
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}

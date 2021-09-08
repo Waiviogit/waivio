@@ -40,8 +40,6 @@ import {
 import { getShowReloadButton } from '../../../../store/websiteStore/websiteSelectors';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 import MainMap from '../../MainMap/MainMap';
-import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
-import FilterTypesList from '../../../search/SearchAllResult/components/FilterTypesList';
 
 import './WebsiteBody.less';
 
@@ -50,7 +48,10 @@ const WebsiteBody = props => {
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
   });
-  const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
+  const mapClassList = classNames('WebsiteBody__map', {
+    WebsiteBody__hideMap: props.isShowResult,
+    WebsiteBody__diningMap: props.isDining,
+  });
   const bodyClassList = classNames('WebsiteBody', { WebsiteBody__isDining: props.isDining });
 
   useEffect(() => {
@@ -121,12 +122,6 @@ const WebsiteBody = props => {
         <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
       </Helmet>
-      {props.isDining && (
-        <div className="NewFiltersClass">
-          <WebsiteSearch />
-          <FilterTypesList />
-        </div>
-      )}
       <SearchAllResult
         showReload={props.showReloadButton}
         reloadSearchList={reloadSearchList}
@@ -135,6 +130,7 @@ const WebsiteBody = props => {
         setQueryInLocalStorage={setQueryInLocalStorage}
         setQueryFromSearchList={setQueryFromSearchList}
         deleteShowPanel={deleteShowPanel}
+        isDining={props.isDining}
       />
       <div className={mapClassList}>
         {currentLogo && (

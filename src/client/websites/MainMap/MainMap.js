@@ -25,7 +25,7 @@ import {
 } from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates, getFirstOffsetNumber } from '../helper';
 import ObjectOverlayCard from '../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
-import { getScreenSize } from '../../../store/appStore/appSelectors';
+import { getIsDiningGifts, getScreenSize } from '../../../store/appStore/appSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import {
   getShowSearchResult,
@@ -54,6 +54,7 @@ const MainMap = React.memo(props => {
   const [currZoom, setZoom] = useState(6);
   const [currCenter, setCenter] = useState([]);
   const query = new URLSearchParams(props.location.search);
+  const headerHeight = props.isDining ? 139 : 57;
 
   useEffect(() => {
     if (!props.showReloadButton) {
@@ -65,7 +66,7 @@ const MainMap = React.memo(props => {
   }, [props.showReloadButton]);
 
   let queryCenter = query.get('center');
-  let mapHeight = 'calc(100vh - 57px)';
+  let mapHeight = `calc(100vh - ${headerHeight}px)`;
 
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const getCurrentConfig = config =>
@@ -73,7 +74,7 @@ const MainMap = React.memo(props => {
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const mapRef = useRef();
 
-  if (isMobile) mapHeight = `${height - 57}px`;
+  if (isMobile) mapHeight = `${height - headerHeight}px`;
 
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
@@ -364,6 +365,7 @@ MainMap.propTypes = {
     lon: PropTypes.number,
   }).isRequired,
   isShowResult: PropTypes.bool.isRequired,
+  isDining: PropTypes.bool.isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   searchString: PropTypes.string.isRequired,
@@ -403,6 +405,7 @@ export default connect(
     searchMap: getWebsiteMap(state),
     showReloadButton: getShowReloadButton(state),
     searchType: getWebsiteSearchType(state),
+    isDining: getIsDiningGifts(state),
   }),
   {
     getCoordinates,
