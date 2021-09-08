@@ -54,7 +54,7 @@ const AppendCard = props => {
   const upVotes = props.post.active_votes && getAppendUpvotes(props.post.active_votes);
   const isLiked = props.post.isLiked || some(upVotes, { voter: props.user.name });
 
-  function handleLikeClick(post, weight = 10000) {
+  const handleLikeClick = (post, weight = 10000) => {
     const { sliderMode } = props;
 
     if (isLiked) {
@@ -64,9 +64,9 @@ const AppendCard = props => {
     } else {
       props.voteAppends(props.post.author, props.post.permlink, weight);
     }
-  }
+  };
 
-  async function handleSliderChange(value) {
+  const handleSliderChange = async value => {
     const { user, post, isGuest } = props;
     const voteWorthCalc = isGuest
       ? 0
@@ -74,9 +74,9 @@ const AppendCard = props => {
 
     setVoteWorth(voteWorthCalc);
     setSliderValue(value);
-  }
+  };
 
-  function handleReportClick(post, myWeight) {
+  const handleReportClick = (post, myWeight) => {
     const { user } = props;
     const downVotes = getAppendDownvotes(post.active_votes);
     const isReject = post.isReject || some(downVotes, { voter: user.name });
@@ -86,9 +86,9 @@ const AppendCard = props => {
     } else {
       props.voteAppends(post.author, post.permlink, myWeight);
     }
-  }
+  };
 
-  function handleCommentsClick(e) {
+  const handleCommentsClick = e => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -97,12 +97,12 @@ const AppendCard = props => {
     } else {
       setCommentsVisible(false);
     }
-  }
+  };
 
-  function handleLikeConfirm() {
+  const handleLikeConfirm = () => {
     showSlider(false);
     props.voteAppends(props.post.author, props.post.permlink, sliderValue * 100);
-  }
+  };
 
   const fieldName = {
     id: `object_field_${props.post.name}`,
