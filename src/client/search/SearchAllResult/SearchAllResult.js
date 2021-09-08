@@ -37,6 +37,7 @@ const SearchAllResult = props => {
   const resultList = useRef();
   const searchResultClassList = classNames('SearchAllResult', {
     SearchAllResult__show: props.isShowResult,
+    SearchAllResult__dining: props.isDining,
   });
 
   const handleItemClick = wobj => {
@@ -165,6 +166,7 @@ SearchAllResult.propTypes = {
   wobjectsCounter: PropTypes.number.isRequired,
   usersCounter: PropTypes.number.isRequired,
   hasMore: PropTypes.bool.isRequired,
+  isDining: PropTypes.bool.isRequired,
   hasMoreUsers: PropTypes.bool,
   loadingMore: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,

@@ -235,7 +235,7 @@ class WebsiteWrapper extends React.PureComponent {
                   </Layout.Header>
                 )
               ) : (
-                <MainPageHeader />
+                <MainPageHeader withMap={location.pathname === '/map'} />
               )}
               <div className={showHeader && !signInPage && 'content'}>
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}

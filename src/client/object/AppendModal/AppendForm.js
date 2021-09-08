@@ -666,7 +666,7 @@ export default class AppendForm extends Component {
     this.setState({ loading: true });
 
     this.props
-      .appendObject(data)
+      .appendObject(data, { isLike: true })
       .then(() => {
         hideModal();
         this.setState({ selectedUserBlog: null, loading: false });
