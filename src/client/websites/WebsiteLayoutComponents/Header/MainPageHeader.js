@@ -15,10 +15,13 @@ const MainPageHeader = props => {
   return (
     <div className="MainPageHeader">
       <div className="MainPageHeader__navWrapper">
-        <Link to="/" className="MainPageHeader__logo">
+        <div className="MainPageHeader__logo">
           <img src={'/images/dining.gifts.png'} className="MainPageHeader__logoImg" alt="logo" />
-          <b>Dining.Gifts</b> <span>Eat out, earn crypto.</span>
-        </Link>
+          <Link to="/">
+            <b>Dining.Gifts</b>
+          </Link>{' '}
+          <span>Eat out, earn crypto.</span>
+        </div>
         <div className="MainPageHeader__listLink">
           <Link to="/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh">Reviews</Link>
           <Link to="/map?showPanel=true">map</Link>

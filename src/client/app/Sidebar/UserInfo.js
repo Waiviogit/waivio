@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
-import { ceil, get, isEmpty, truncate } from 'lodash';
+import { ceil, get, isEmpty, truncate, isEqual } from 'lodash';
 import {
   injectIntl,
   FormattedMessage,
@@ -55,11 +55,15 @@ class UserInfo extends React.Component {
   };
 
   componentDidMount() {
-    if (this.props.user.loaded) this.getUserInfo();
+    this.getUserInfo();
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.match.params.name !== this.props.match.params.name) this.getUserInfo();
+    if (
+      prevProps.match.params.name !== this.props.match.params.name ||
+      !isEqual(prevProps.user, this.props.user)
+    )
+      this.getUserInfo();
   }
 
   getUserInfo = () => {
@@ -69,10 +73,12 @@ class UserInfo extends React.Component {
       !match.params.name.startsWith(GUEST_PREFIX) &&
       !match.params.name.startsWith(BXY_GUEST_PREFIX)
     ) {
-      dHive.rc.getRCMana(match.params.name).then(res => {
-        this.setState({ rc_percentage: res.percentage });
-      });
-      this.setState({ voting_mana: dHive.rc.calculateVPMana(this.props.user).percentage });
+      dHive.rc
+        .getRCMana(match.params.name)
+        .then(res => this.setState({ rc_percentage: res.percentage }));
+      if (!isEmpty(this.props.user._id)) {
+        this.setState({ voting_mana: dHive.rc.calculateVPMana(this.props.user).percentage });
+      }
     }
   };
 
