@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { get, isArray, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 
 import {
   getWebsiteTags,
@@ -33,7 +33,10 @@ export const WebsiteObjectFilters = ({
 
   if (isEmpty(categories)) return <Loading />;
 
-  const saveTags = () => saveCategoryForSite(host, currentTags);
+  const saveTags = () => {
+    message.success(intl.formatMessage({ id: 'Object filters update successfully' }));
+    saveCategoryForSite(host, currentTags);
+  };
 
   const handleChangeCurrentTags = (topic, category, tag) => {
     const topics = { ...categories };
