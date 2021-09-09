@@ -123,7 +123,7 @@ const SearchAllResult = props => {
       >
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
-      {props.isDining && <FilterTypesList />}
+      {!props.isDining && <FilterTypesList />}
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
         {!isUsersSearch && (
           <React.Fragment>
