@@ -4,18 +4,19 @@ import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import WebsiteFooter from '../WebsiteFooter/Footer';
-import MainPageHeader from '../Header/MainPageHeader';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import CarouselSection from './components/CarouselSection/CarouselSection';
 import DistrictSection from './components/DistrictSection/DistrictSection';
 import NearbySection from './components/NearbySection/NearbySection';
+import { isMobile } from '../../../helpers/apiHelpers';
 
 import './WebsiteMainPage.less';
 
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
   const helmetImg = '/images/dining.gifts.png';
+  const findRewardsLink = isMobile() ? '/map' : '/map?showPanel=true';
 
   useLayoutEffect(() => {
     if (window) {
@@ -46,7 +47,6 @@ const WebsiteMainPage = () => {
         <link rel="image_src" href={helmetImg} />
         <link id="favicon" rel="icon" href={helmetImg} type="image/x-icon" />
       </Helmet>
-      <MainPageHeader />
       <div className="WebsiteMainPage__banner">
         <div className="WebsiteMainPage__wrapperTitle">
           <div>
@@ -65,7 +65,7 @@ const WebsiteMainPage = () => {
                 isButton
               />
             )}
-            <Link to={'/map?showPanel=true'} className="WebsiteMainPage__button">
+            <Link to={findRewardsLink} className="WebsiteMainPage__button">
               Find Rewards <Icon type="right" />
             </Link>
           </div>

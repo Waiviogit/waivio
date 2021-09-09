@@ -1,4 +1,4 @@
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, size } from 'lodash';
 import { createSelector } from 'reselect';
 
 // selector
@@ -22,6 +22,10 @@ export const getSearchObjectsResults = createSelector(
 export const getSearchUsersResults = createSelector(
   [searchState],
   state => state.searchUsersResults,
+);
+
+export const getSearchUsersResultsQuantity = createSelector([getSearchUsersResults], state =>
+  size(state),
 );
 
 export const getSearchUsersResultsForDiscoverPage = createSelector(
@@ -61,6 +65,10 @@ export const getWebsiteSearchType = createSelector([searchState], state => state
 export const getWebsiteSearchResult = createSelector(
   [searchState],
   state => state.websiteSearchResult,
+);
+
+export const getWebsiteSearchResultQuantity = createSelector([getWebsiteSearchResult], state =>
+  size(state),
 );
 
 export const getHasMoreObjects = createSelector([searchState], state => state.hasMoreObjects);

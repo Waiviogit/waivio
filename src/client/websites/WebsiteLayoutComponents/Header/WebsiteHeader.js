@@ -17,11 +17,12 @@ import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 
 import './WebsiteHeader.less';
 
-const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDiningGifts }) => {
+const WebsiteHeader = React.memo(({ currPage, wobj, config, intl, location, isDiningGifts }) => {
   const pathName = location.pathname;
   const pageWithMapUrl = isDiningGifts ? '/map' : '/';
   const isPageWithMap = pathName === pageWithMapUrl;
   const backgroundColor = get(config, ['colors', 'header']) || 'fafbfc';
+  const deleteQueryFromStorage = () => localStorage.removeItem('query');
   const query = store.get('query');
   let currentPage = currPage || store.get('currentPage');
 
@@ -43,13 +44,13 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
     <div className="WebsiteHeader" style={{ backgroundColor: `#${backgroundColor}` }}>
       <div className="topnav-layout isWebsiteView">
         {isPageWithMap ? (
-          <WebsiteSearch history={history} location={location} />
+          <WebsiteSearch />
         ) : (
           <React.Fragment>
             <div
               role="presentation"
               className="WebsiteHeader__link left"
-              onClick={() => localStorage.removeItem('query')}
+              onClick={deleteQueryFromStorage}
             >
               <Link
                 to={isDiningGifts ? '/' : getHrefBackButton()}
@@ -90,7 +91,7 @@ const WebsiteHeader = ({ currPage, wobj, history, config, intl, location, isDini
       </div>
     </div>
   );
-};
+});
 
 WebsiteHeader.propTypes = {
   currPage: PropTypes.string.isRequired,
@@ -98,7 +99,6 @@ WebsiteHeader.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,
-  history: PropTypes.shape().isRequired,
   config: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   isDiningGifts: PropTypes.bool.isRequired,

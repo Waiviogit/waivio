@@ -253,7 +253,7 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
 
   return steemConnectAPI
     .vote(voter, author, permlink, weight)
-    .then(async () =>
+    .then(() =>
       dispatch(getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew)),
     )
     .catch(e => {

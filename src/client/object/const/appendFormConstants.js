@@ -81,16 +81,16 @@ export const fieldsRules = {
     {
       transform: value => value && value.toLowerCase(),
     },
-    {
-      required: true,
-      message: {
-        intlId: {
-          id: 'field_error',
-          defaultMessage: 'Field is required',
-        },
-        intlMeta: { field: 'Menu item' },
-      },
-    },
+    // {
+    //   required: true,
+    //   message: {
+    //     intlId: {
+    //       id: 'field_error',
+    //       defaultMessage: 'Field is required',
+    //     },
+    //     intlMeta: { field: 'Menu item' },
+    //   },
+    // },
     {
       validator: true,
     },

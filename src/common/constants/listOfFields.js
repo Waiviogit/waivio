@@ -1,7 +1,5 @@
 export const objectFields = {
   name: 'name',
-  title: 'title',
-  description: 'description',
   address: 'address',
   map: 'map',
   link: 'link',
@@ -30,6 +28,8 @@ export const objectFields = {
   tag: 'tag',
   blog: 'blog',
   form: 'formField',
+  description: 'description',
+  title: 'title',
 };
 
 export const TYPES_OF_MENU_ITEM = {

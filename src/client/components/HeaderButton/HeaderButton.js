@@ -151,7 +151,7 @@ const HeaderButtons = props => {
         history.push(`/discover-objects/hashtag`);
         break;
       case 'tools':
-        history.push(`/drafts`);
+        history.push(`/notification-settings`);
         break;
       default:
         break;

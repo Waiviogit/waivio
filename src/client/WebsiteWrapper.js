@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import url from 'url';
 import { connect, batch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
@@ -40,6 +39,7 @@ import {
 } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
+import MainPageHeader from './websites/WebsiteLayoutComponents/Header/MainPageHeader';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -213,7 +213,9 @@ class WebsiteWrapper extends React.PureComponent {
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
     const signInPage = location.pathname.includes('sign-in');
-    const showHeader = !isDiningGifts || (isDiningGifts && location.pathname !== '/');
+    const showHeader =
+      !isDiningGifts ||
+      (isDiningGifts && location.pathname !== '/' && location.pathname !== '/map');
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -225,10 +227,14 @@ class WebsiteWrapper extends React.PureComponent {
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-              {showHeader && !signInPage && (
-                <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                  <WebsiteHeader />
-                </Layout.Header>
+              {showHeader ? (
+                !signInPage && (
+                  <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
+                    <WebsiteHeader />
+                  </Layout.Header>
+                )
+              ) : (
+                <MainPageHeader withMap={location.pathname === '/map'} />
               )}
               <div className={showHeader && !signInPage && 'content'}>
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}

@@ -55,13 +55,25 @@
 
 .MainPageHeader {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 5px 15px;
+  background: @white-ghostWhite;
+  width: 100vw;
+  -webkit-box-shadow: 1px 8px 15px -11px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 1px 8px 15px -11px rgba(34, 60, 80, 0.2);
+  box-shadow: 1px 8px 15px -11px rgba(34, 60, 80, 0.2);
+  z-index: 205;
+
+  &__navWrapper {
+    display: flex;
+    justify-content: space-between;
+  }
 
   &__logo {
     display: flex;
     align-items: center;
     font-size: 15px;
+    color: @black;
 
     @media @small {
       font-size: 25px;
@@ -99,7 +111,7 @@
 
         @media @medium {
           display: inline-block;
-          top: 5px;
+          top: 0;
           margin: 0 20px;
         }
       }
@@ -173,6 +185,87 @@
 
     @media @small {
       width: 50px;
+    }
+  }
+
+  .NewFiltersClass {
+    width: 100%;
+    display: flex;
+    background: @white-ghostWhite;
+    padding: 15px 0 0;
+    flex-direction: column;
+
+    @media @small {
+      flex-direction: row;
+    }
+
+    .SearchAllResult__type-wrap {
+      border-radius: 5px;
+      border: 1px solid @grey-iron;
+      background: transparent;
+      padding: 0;
+      text-transform: uppercase;
+      height: 35px;
+    }
+
+    .SearchAllResult__type {
+      padding: 5px 15px;
+      height: auto;
+      border: none;
+      transition: 0.2s;
+      border-radius: 5px;
+      font-size: 16px;
+
+      @media @small {
+        padding: 5px 20px;
+        width: inherit;
+      }
+
+      &:hover {
+        color: @scorpion;
+      }
+
+      &--active {
+        background: @scorpion;
+        color: @white-ghostWhite;
+
+        &:hover {
+          color: @white-ghostWhite;
+        }
+      }
+    }
+
+    .WebsiteSearch {
+      border-radius: 5px;
+      border: 1px solid @grey-iron;
+      background: transparent;
+      padding: 0;
+      width: 100%;
+      margin-bottom: 5px;
+
+      &__wrap {
+        position: relative;
+        width: 100%;
+
+        @media @small {
+          width: 30%;
+          margin-right: 25px;
+        }
+      }
+
+      .ant-input {
+        border: none;
+      }
+
+      .ant-select-search.ant-select-search--inline {
+        margin-top: 0;
+      }
+
+      &__close {
+        position: absolute;
+        top: 10px;
+        left: 93%;
+      }
     }
   }
 }
