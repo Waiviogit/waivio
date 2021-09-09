@@ -36,7 +36,6 @@ const WebsiteSearch = props => {
     localStorage.removeItem('scrollTop');
 
     if (window.gtag) window.gtag('event', `search_${props.searchType.toLowerCase()}`);
-
     switch (props.searchType) {
       case 'Users':
         return props.searchUsersAutoCompete(value);
