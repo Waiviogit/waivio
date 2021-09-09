@@ -4,7 +4,7 @@
 .SearchAllResult {
   position: absolute;
   width: 60%;
-  height: 100%;
+  height: 94%;
   padding: 0 20px 0 0;
   transition: 0.3s;
   left: -100%;
@@ -187,6 +187,8 @@
   }
 
   &__dining {
+    height: 100%;
+
     .SearchAllResult__type-wrap {
       display: none;
     }
@@ -197,11 +199,11 @@
 
     .SearchAllResult__filters-button.ant-btn {
       text-transform: uppercase;
+    }
 
-      .SearchAllResult__filters-button--active {
-        background: @scorpion;
-        color: @white;
-      }
+    .SearchAllResult__filters-button--active {
+      background: @scorpion;
+      color: @white;
     }
   }
 }

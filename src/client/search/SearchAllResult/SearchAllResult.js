@@ -5,7 +5,6 @@ import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import classNames from 'classnames';
-import { ReactSVG } from 'react-svg';
 
 import {
   searchObjectsAutoCompeteLoadingMore,
@@ -124,7 +123,7 @@ const SearchAllResult = props => {
       >
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
-      <FilterTypesList />
+      {props.isDining && <FilterTypesList />}
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
         {!isUsersSearch && (
           <React.Fragment>
