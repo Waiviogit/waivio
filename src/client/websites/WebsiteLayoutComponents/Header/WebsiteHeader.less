@@ -243,9 +243,14 @@
       width: 100%;
       margin-bottom: 5px;
 
-      @media @small {
-        margin-right: 25px;
-        width: 35%;
+      &__wrap {
+        position: relative;
+        width: 100%;
+
+        @media @small {
+          width: 30%;
+          margin-right: 25px;
+        }
       }
 
       .ant-input {
@@ -257,13 +262,9 @@
       }
 
       &__close {
-        left: 155px;
-        top: -25px;
-
-        @media @small {
-          left: -50px;
-          top: 10px;
-        }
+        position: absolute;
+        top: 10px;
+        left: 93%;
       }
     }
   }

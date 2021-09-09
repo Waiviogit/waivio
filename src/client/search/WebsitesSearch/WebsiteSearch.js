@@ -91,7 +91,7 @@ const WebsiteSearch = props => {
   const handleOnChange = value => setSearchString(value);
 
   return (
-    <React.Fragment>
+    <div className="WebsiteSearch__wrap">
       <AutoComplete
         className="WebsiteSearch"
         onSearch={handleSearchAutocomplete}
@@ -114,7 +114,7 @@ const WebsiteSearch = props => {
       {!!searchString.length && (
         <Icon type="close" onClick={handleResetAutocomplete} className="WebsiteSearch__close" />
       )}
-    </React.Fragment>
+    </div>
   );
 };
 
