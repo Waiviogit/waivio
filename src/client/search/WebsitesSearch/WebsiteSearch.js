@@ -36,7 +36,6 @@ const WebsiteSearch = props => {
     localStorage.removeItem('scrollTop');
 
     if (window.gtag) window.gtag('event', `search_${props.searchType.toLowerCase()}`);
-
     switch (props.searchType) {
       case 'Users':
         return props.searchUsersAutoCompete(value);
@@ -92,7 +91,7 @@ const WebsiteSearch = props => {
   const handleOnChange = value => setSearchString(value);
 
   return (
-    <React.Fragment>
+    <div className="WebsiteSearch__wrap">
       <AutoComplete
         className="WebsiteSearch"
         onSearch={handleSearchAutocomplete}
@@ -115,7 +114,7 @@ const WebsiteSearch = props => {
       {!!searchString.length && (
         <Icon type="close" onClick={handleResetAutocomplete} className="WebsiteSearch__close" />
       )}
-    </React.Fragment>
+    </div>
   );
 };
 
