@@ -10,6 +10,7 @@ import {
   resetWebsiteFilters,
   setFilterFromQuery,
   setMapForSearch,
+  setShowSearchResult,
   setWebsiteSearchType,
 } from '../../../../store/searchStore/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
@@ -68,6 +69,7 @@ const WebsiteBody = props => {
 
     return () => {
       props.resetWebsiteFilters();
+      props.setShowSearchResult(false);
     };
   }, []);
 
@@ -177,6 +179,7 @@ WebsiteBody.propTypes = {
   getReservedCounter: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   resetWebsiteFilters: PropTypes.func.isRequired,
+  setShowSearchResult: PropTypes.func.isRequired,
   setFilterFromQuery: PropTypes.func.isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
   counter: PropTypes.number.isRequired,
@@ -227,5 +230,6 @@ export default connect(
     setShowReload,
     setFilterFromQuery,
     resetWebsiteFilters,
+    setShowSearchResult,
   },
 )(withRouter(WebsiteBody));
