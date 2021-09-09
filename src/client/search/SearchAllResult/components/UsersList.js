@@ -1,4 +1,5 @@
 import { map, isEmpty } from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -29,6 +30,21 @@ const UsersList = props => {
       handleClick={props.handleItemClick}
     />
   ));
+};
+
+UsersList.propTypes = {
+  usersLoading: PropTypes.bool,
+  searchByUser: PropTypes.string,
+  unfollowSearchUser: PropTypes.func,
+  followSearchUser: PropTypes.func,
+  handleItemClick: PropTypes.func,
+};
+UsersList.defaultProps = {
+  usersLoading: false,
+  searchByUser: '',
+  unfollowSearchUser: () => {},
+  followSearchUser: () => {},
+  handleItemClick: () => {},
 };
 
 export default connect(
