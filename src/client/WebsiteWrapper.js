@@ -213,9 +213,6 @@ class WebsiteWrapper extends React.PureComponent {
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
     const signInPage = location.pathname.includes('sign-in');
-    const showHeader =
-      !isDiningGifts ||
-      (isDiningGifts && location.pathname !== '/' && location.pathname !== '/map');
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -227,16 +224,15 @@ class WebsiteWrapper extends React.PureComponent {
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-              {showHeader ? (
-                !signInPage && (
+              {!signInPage &&
+                (isDiningGifts ? (
+                  <MainPageHeader withMap={location.pathname === '/map'} />
+                ) : (
                   <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                     <WebsiteHeader />
                   </Layout.Header>
-                )
-              ) : (
-                <MainPageHeader withMap={location.pathname === '/map'} />
-              )}
-              <div className={showHeader && !signInPage && 'content'}>
+                ))}
+              <div className={!isDiningGifts && !signInPage && 'content'}>
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
