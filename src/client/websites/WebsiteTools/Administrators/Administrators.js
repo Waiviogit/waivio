@@ -20,7 +20,7 @@ import {
   getAdministrators,
   getWebsiteLoading,
 } from '../../../../store/websiteStore/websiteSelectors';
-
+import { getNightmode } from '../../../../store/settingsStore/settingsSelectors';
 import './Administrators.less';
 
 export const WebsitesAdministrators = ({
@@ -32,14 +32,19 @@ export const WebsitesAdministrators = ({
   deleteWebAdmins,
   isLoading,
   location,
+  nightmode,
 }) => {
   const [selectUser, setSelectUser] = useState('');
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
   const emptyAdmins = isEmpty(admins);
-  const adminsClassList = classNames('WebsitesAdministrators__user-table', {
-    'WebsitesAdministrators__table-empty': emptyAdmins,
-  });
+  const adminsClassList = classNames(
+    'WebsitesAdministrators__user-table',
+    { 'WebsitesAdministrators__user-table-dark': nightmode },
+    {
+      'WebsitesAdministrators__table-empty': emptyAdmins,
+    },
+  );
 
   const addAdmin = () => {
     if (admins.includes(selectUser.name)) {
@@ -162,6 +167,7 @@ WebsitesAdministrators.propTypes = {
   }).isRequired,
   isLoading: PropTypes.bool.isRequired,
   location: PropTypes.shape().isRequired,
+  nightmode: PropTypes.bool.isRequired,
 };
 
 WebsitesAdministrators.defaultProps = {
@@ -172,6 +178,7 @@ export default connect(
   state => ({
     admins: getAdministrators(state),
     isLoading: getWebsiteLoading(state),
+    nightmode: getNightmode(state),
   }),
   {
     getWebAdmins: getWebAdministrators,
