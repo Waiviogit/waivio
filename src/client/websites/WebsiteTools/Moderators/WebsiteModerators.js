@@ -17,7 +17,6 @@ import Avatar from '../../../components/Avatar';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import WeightTag from '../../../components/WeightTag';
 import { getModerators, getWebsiteLoading } from '../../../../store/websiteStore/websiteSelectors';
-import { getNightmode } from '../../../../store/settingsStore/settingsSelectors';
 import './WebsiteModerators.less';
 
 export const WebsiteModerators = ({
@@ -29,19 +28,14 @@ export const WebsiteModerators = ({
   delWebModerators,
   isLoading,
   location,
-  nightmode,
 }) => {
   const [selectUser, setSelectUser] = useState('');
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
   const emptyModerators = isEmpty(moderators);
-  const moderatorsClassList = classNames(
-    'WebsiteModerators__user-table',
-    { 'WebsiteModerators__user-table-dark': nightmode },
-    {
-      'WebsiteModerators__table-empty': emptyModerators,
-    },
-  );
+  const moderatorsClassList = classNames('WebsiteModerators__user-table', {
+    'WebsiteModerators__table-empty': emptyModerators,
+  });
 
   const addModerator = () => {
     addWebModerators(host, selectUser);
@@ -158,7 +152,6 @@ WebsiteModerators.propTypes = {
   }).isRequired,
   isLoading: PropTypes.string.isRequired,
   location: PropTypes.shape().isRequired,
-  nightmode: PropTypes.bool.isRequired,
 };
 
 WebsiteModerators.defaultProps = {
@@ -169,7 +162,6 @@ export default connect(
   state => ({
     moderators: getModerators(state),
     isLoading: getWebsiteLoading(state),
-    nightmode: getNightmode(state),
   }),
   {
     getWebMods: getWebModerators,

@@ -17,7 +17,6 @@ import Avatar from '../../../components/Avatar';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import WeightTag from '../../../components/WeightTag';
 import { getAuthorities, getWebsiteLoading } from '../../../../store/websiteStore/websiteSelectors';
-import { getNightmode } from '../../../../store/settingsStore/settingsSelectors';
 import './WebsitesAuthorities.less';
 
 export const WebsitesAuthorities = ({
@@ -29,19 +28,14 @@ export const WebsitesAuthorities = ({
   deleteWebsiteAuthorities,
   isLoading,
   location,
-  nightmode,
 }) => {
   const [selectUser, setSelectUser] = useState('');
   const [searchString, setSearchString] = useState('');
   const host = match.params.site;
   const emptyAuthorities = isEmpty(authorities);
-  const authoritiesClassList = classNames(
-    'WebsitesAuthorities__user-table',
-    { 'WebsitesAuthorities__user-table-dark': nightmode },
-    {
-      'WebsitesAuthorities__table-empty': emptyAuthorities,
-    },
-  );
+  const authoritiesClassList = classNames('WebsitesAuthorities__user-table', {
+    'WebsitesAuthorities__table-empty': emptyAuthorities,
+  });
 
   const addAdmin = () => {
     if (authorities.includes(selectUser.name)) {
@@ -165,7 +159,6 @@ WebsitesAuthorities.propTypes = {
   }).isRequired,
   isLoading: PropTypes.bool.isRequired,
   location: PropTypes.shape().isRequired,
-  nightmode: PropTypes.bool.isRequired,
 };
 
 WebsitesAuthorities.defaultProps = {
@@ -176,7 +169,6 @@ export default connect(
   state => ({
     authorities: getAuthorities(state),
     isLoading: getWebsiteLoading(state),
-    nightmode: getNightmode(state),
   }),
   {
     getWebAuthority: getWebAuthorities,
