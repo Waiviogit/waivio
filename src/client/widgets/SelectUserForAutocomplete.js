@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
 import Avatar from '../components/Avatar';
-import { getBlacklist } from '../../waivioApi/ApiClient';
 
 const SelectUserForAutocomplete = ({ account, resetUser }) => (
   <div className="SelectUserForAutocomplete">
@@ -19,4 +17,4 @@ SelectUserForAutocomplete.propTypes = {
   account: PropTypes.string.isRequired,
 };
 
-export default injectIntl(SelectUserForAutocomplete);
+export default SelectUserForAutocomplete;
