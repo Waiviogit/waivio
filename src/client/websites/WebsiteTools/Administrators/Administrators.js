@@ -20,7 +20,6 @@ import {
   getAdministrators,
   getWebsiteLoading,
 } from '../../../../store/websiteStore/websiteSelectors';
-
 import './Administrators.less';
 
 export const WebsitesAdministrators = ({

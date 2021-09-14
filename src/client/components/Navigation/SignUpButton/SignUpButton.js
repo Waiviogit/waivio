@@ -8,7 +8,7 @@ const SignUpButton = ({ isButton, setIsModalOpen, className, text }) =>
       {text || <FormattedMessage id="signin" defaultMessage="Sign in" />}
     </button>
   ) : (
-    <a role="presentation" onClick={() => setIsModalOpen(true)}>
+    <a role="presentation" onClick={() => setIsModalOpen(true)} className="ModalSignIn__link-type">
       <FormattedMessage id="signin" defaultMessage="Sign in" />
     </a>
   );
