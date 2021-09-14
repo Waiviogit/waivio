@@ -43,6 +43,7 @@ import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/hel
 import MainMap from '../../MainMap/MainMap';
 
 import './WebsiteBody.less';
+import QuickRewardsModal from '../../../rewards/QiuckRewardsModal/QuickRewardsModal';
 
 const WebsiteBody = props => {
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
@@ -152,6 +153,7 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
+      {props.isAuth && <QuickRewardsModal />}
     </div>
   );
 };

@@ -2205,4 +2205,22 @@ export const getTypesPrefetch = types => {
     .catch(e => e);
 };
 
+export const getEligibleList = (userName, requiredObject) => {
+  return fetch(`${config.campaignApiPrefix}${config.campaigns}${config.eligible}`, {
+    headers: headers,
+    body: JSON.stringify({
+      userName,
+      requiredObject,
+      skip: 0,
+      limit: 25,
+      sort: 'default',
+      status: ['active'],
+    }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
 export default null;
