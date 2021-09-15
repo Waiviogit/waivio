@@ -1,17 +1,17 @@
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
-import { getEligibleList } from '../../waivioApi/ApiClient';
+import {getEligibleList, searchObjects} from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
-import { getSelectedRestaurant } from './quickRewardsSelectors';
+import {getLocale} from "../settingsStore/settingsSelectors";
 
 export const GET_ELIGIBLE_REWARDS = createAsyncActionType('@quickRewards/GET_ELIGIBLE_REWARDS');
 
-export const getEligibleRewardsList = () => (dispatch, getState) => {
+export const getEligibleRewardsList = searchString => (dispatch, getState) => {
   const state = getState();
-  const name = getAuthenticatedUserName(state);
+  const locale = getLocale(state);
 
   return dispatch({
     type: GET_ELIGIBLE_REWARDS.ACTION,
-    payload: getEligibleList(name),
+    payload: searchObjects(searchString, 'restaurant', false, 20, locale),
   });
 };
 
@@ -20,6 +20,18 @@ export const SELECT_DISH = '@quickRewards/SELECT_DISH';
 export const setSelectedDish = rest => ({
   type: SELECT_DISH,
   payload: rest,
+});
+
+export const RESET_RESTAURANT = '@quickRewards/RESET_RESTAURANT';
+
+export const resetRestaurant = () => ({
+  type: RESET_RESTAURANT,
+});
+
+export const RESET_DISH = '@quickRewards/RESET_DISH';
+
+export const resetDish = () => ({
+  type: RESET_DISH,
 });
 
 export const SELECT_RESTAURANT = '@quickRewards/SELECT_RESTAURANT';

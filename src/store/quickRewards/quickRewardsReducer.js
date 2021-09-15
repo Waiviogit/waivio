@@ -1,6 +1,9 @@
 import {
   GET_ELIGIBLE_REWARDS,
-  GET_ELIGIBLE_REWARDS_WITH_RESTAURANT, SELECT_DISH,
+  GET_ELIGIBLE_REWARDS_WITH_RESTAURANT,
+  RESET_DISH,
+  RESET_RESTAURANT,
+  SELECT_DISH,
   SELECT_RESTAURANT,
 } from './quickRewardsActions';
 
@@ -21,7 +24,11 @@ export default (state = defaultState, action) => {
     case GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS:
       return {
         ...state,
-        eligibleRestList: action.payload.campaigns,
+        eligibleDishFromRest: action.payload.campaigns[0].objects.map(obj => ({
+          ...obj.object,
+          reward: action.payload.campaigns[0].reward,
+          requirements: action.payload.campaigns[0].requirements,
+        })),
       };
     case SELECT_RESTAURANT:
       return {
@@ -32,6 +39,17 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         selectedDish: action.payload,
+      };
+    case RESET_RESTAURANT:
+      return {
+        ...state,
+        selectedRest: null,
+        selectedDish: null,
+      };
+    case RESET_DISH:
+      return {
+        ...state,
+        selectedDish: null,
       };
     default:
       return state;

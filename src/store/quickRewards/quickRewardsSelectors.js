@@ -7,10 +7,7 @@ export const getSelectedRestaurant = createSelector(
   state => state.selectedRest,
 );
 
-export const getSelectedDish = createSelector(
-  [quickRewardsState],
-  state => state.selectedDish,
-);
+export const getSelectedDish = createSelector([quickRewardsState], state => state.selectedDish);
 
 export const getEligibleRewardsListFromState = createSelector(
   [quickRewardsState],

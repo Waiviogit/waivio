@@ -1,106 +1,60 @@
-import React, { useEffect } from 'react';
-import { Modal, AutoComplete } from 'antd';
+import React, {useEffect, useState} from 'react';
+import { Modal, AutoComplete, Button } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import {
-  getEligibleRewardsList,
-  getEligibleRewardsListWithRestaurant, setSelectedDish,
+  resetDish,
+  resetRestaurant,
+  setSelectedDish,
   setSelectedRestaurant,
 } from '../../../store/quickRewards/quickRewardsActions';
 import {
-  getDishRewardsListFromState,
-  getEligibleRewardsListFromState, getSelectedDish, getSelectedRestaurant,
+  getSelectedDish,
+  getSelectedRestaurant,
 } from '../../../store/quickRewards/quickRewardsSelectors';
-import { getObjectName, getObjectType } from '../../helpers/wObjectHelper';
-import ObjectSearchCard from '../../components/ObjectSearchCard/ObjectSearchCard';
-
+import USDDisplay from '../../components/Utils/USDDisplay';
+import ModalFirstScreen from "./components/FirstScreen/FirstScreen";
 import './QuickRewardsModal.less';
+import ModalSecondScreen from "./components/SecondScreen";
 
 const QuickRewardsModal = props => {
-  useEffect(() => {
-    props.getEligibleRewardsList();
-  }, []);
-
-  const handleSelectRestaurant = item => {
-    const restaurant = props.eligible.find(camp => camp.required_object.author_permlink === item);
-
-    props.setSelectedRestaurant(restaurant.required_object);
-    props.getEligibleRewardsListWithRestaurant(restaurant.required_object);
-  };
-
-  const handleSelectDish = item => {
-    const restaurant = props.eligible.find(camp => camp.required_object.author_permlink === item);
-
-    props.setSelectedDish(restaurant.required_object);
-  };
+  const [nextPage, setNextPage] = useState(false);
 
   return (
-    <Modal title="Submit dish photos and earn crypto!" visible>
-      <div>
-        <h4>Choose a restaurant</h4>
-        <AutoComplete
-          className="QuickRewardsModal__select"
-          placeholder="Search"
-          onSelect={handleSelectRestaurant}
+    <Modal title="Submit dish photos and earn crypto!" visible={false} footer={null}>
+      {nextPage ?  <ModalSecondScreen/> : <ModalFirstScreen/>}
+      <div className="QuickRewardsModal__button-wrap">
+        <div className="circle-wrap">
+          <div className="circle-item circle-item--active">
+            <span className="circle">1</span>
+            <span className="circle-title">Reserve</span>
+          </div>
+          <div className="circle-item">
+            <span className="circle">2</span>
+            <span className="circle-title">Write & Publish</span>
+          </div>
+        </div>
+        {!isEmpty(props.selectedDish) && (
+          <b>
+            YOU EARN: <USDDisplay value={props.selectedDish.reward} currencyDisplay="symbol"/>
+          </b>
+        )}
+        <Button
+          type="primary"
+          className="QuickRewardsModal__button"
+          disabled={isEmpty(props.selectedDish) || isEmpty(props.selectedRestaurant)}
+          onClick={() => setNextPage(true)}
         >
-          {props.eligible.map(camp => {
-            if (!isEmpty(camp)) {
-              return (
-                <AutoComplete.Option
-                  key={camp.required_object.author_permlink}
-                  className="QuickRewardsModal__select-item"
-                >
-                  <ObjectSearchCard
-                    object={camp.required_object}
-                    name={getObjectName(camp.required_object)}
-                    type={getObjectType(camp.required_object)}
-                    isNeedType
-                  />
-                  Earn up to 9.99
-                </AutoComplete.Option>
-              );
-            }
-          })}
-        </AutoComplete>
-      </div>
-      <div>
-        <h4>Choose a dish</h4>
-        <AutoComplete className="QuickRewardsModal__select" placeholder="Search" onSelect={handleSelectDish}>
-          {props.eligible.map(camp => {
-            if (!isEmpty(camp)) {
-              return (
-                <AutoComplete.Option
-                  key={camp.required_object.author_permlink}
-                  className="QuickRewardsModal__select-item"
-                >
-                  <ObjectSearchCard
-                    object={camp.required_object}
-                    name={getObjectName(camp.required_object)}
-                    type={getObjectType(camp.required_object)}
-                    isNeedType
-                  />
-                  Earn up to 9.99
-                </AutoComplete.Option>
-              );
-            }
-          })}
-        </AutoComplete>
+          Next
+        </Button>
       </div>
     </Modal>
-  );
+  )
 };
 
 export default connect(
   state => ({
-    eligible: getEligibleRewardsListFromState(state),
-    dishes: getDishRewardsListFromState(state),
     selectedRestaurant: getSelectedRestaurant(state),
     selectedDish: getSelectedDish(state),
-  }),
-  {
-    getEligibleRewardsList,
-    setSelectedRestaurant,
-    getEligibleRewardsListWithRestaurant,
-    setSelectedDish
-  },
+  })
 )(QuickRewardsModal);
