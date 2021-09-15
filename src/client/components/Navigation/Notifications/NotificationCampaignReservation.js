@@ -34,7 +34,7 @@ const NotificationCampaignReservation = ({ notification, read, onClick }) => {
           ) : (
             <FormattedMessage
               id="notification_campaign_reserved_reservation"
-              defaultMessage="{author} has deactivated the campaign for {campaignName}"
+              defaultMessage="{author} made a reservation for {campaignName}"
               values={{
                 author: <span className="username">{notification.author}</span>,
                 campaignName: <span>{notification.campaignName}</span>,

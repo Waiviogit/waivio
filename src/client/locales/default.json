@@ -1486,7 +1486,7 @@
   "sponsored_rewards_review": "Review:",
   "sponsored_rewards_beneficiaries": "Beneficiaries: ",
   "sponsored_rewards_details_reservation": "Reservation",
-  "notification_campaign_reserved_reservation": "{author} has deactivated the campaign for {campaignName}",
+  "notification_campaign_reserved_reservation": "{author} made a reservation for {campaignName}",
   "notification_campaign_released_reservation": "{author} released a reservation for {campaignName}",
   "tipping": "tipping",
   "sponsored_rewards_details_report": "Report",
