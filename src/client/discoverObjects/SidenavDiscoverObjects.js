@@ -80,16 +80,6 @@ const SidenavDiscoverObjects = ({ withTitle, intl }) => {
         ) : (
           menuCondition.objects && (
             <React.Fragment>
-              <li key="all-types" className="ttc">
-                <NavLink
-                  to={`/discover-objects`}
-                  isActive={() => pathname === '/discover-objects'}
-                  className="sidenav-discover-objects__item"
-                  activeClassName="Sidenav__item--active"
-                >
-                  <FormattedMessage id="all" defaultMessage="All" />
-                </NavLink>
-              </li>
               {Object.values(objectTypes)
                 .slice(0, displayedTypesCount)
                 .map(type => (

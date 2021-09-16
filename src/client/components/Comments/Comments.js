@@ -285,7 +285,7 @@ class Comments extends React.Component {
             )}
           </React.Fragment>
         )}
-        {isQuickComments && show && (
+        {isQuickComments && show && this.nRenderedComments !== 3 && (
           <MoreCommentsButton
             comments={rootLevelComments.length}
             visibleComments={commentsToRender.length}
@@ -321,25 +321,16 @@ class Comments extends React.Component {
               onSendComment={this.props.onSendComment}
             />
           ))}
-        {isQuickComments ? (
-          authenticated && (
-            <QuickCommentEditor
-              parentPost={this.props.parentPost}
-              username={username}
-              onSubmit={this.handleSubmitComment}
-              isLoading={this.state.showCommentFormLoading}
-              inputValue={this.state.commentFormText}
-              submitted={this.state.commentSubmitted}
-              onImageInserted={this.handleImageInserted}
-              onImageInvalid={this.handleImageInvalid}
-            />
-          )
-        ) : (
-          <MoreCommentsButton
-            comments={rootLevelComments.length}
-            visibleComments={commentsToRender.length}
-            isQuickComments={isQuickComments}
-            onClick={this.handleShowMoreComments}
+        {isQuickComments && authenticated && (
+          <QuickCommentEditor
+            parentPost={this.props.parentPost}
+            username={username}
+            onSubmit={this.handleSubmitComment}
+            isLoading={this.state.showCommentFormLoading}
+            inputValue={this.state.commentFormText}
+            submitted={this.state.commentSubmitted}
+            onImageInserted={this.handleImageInserted}
+            onImageInvalid={this.handleImageInvalid}
           />
         )}
       </div>

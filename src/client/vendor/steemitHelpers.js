@@ -273,7 +273,7 @@ export const roundNumberToThousands = number => {
       fixedBillNumber.charAt(fixedBillNumber.length - 1) === '0'
         ? fixedBillNumber.slice(0, fixedBillNumber.length - 3)
         : fixedBillNumber
-    }'B'`;
+    } M`;
   }
   return number;
 };
