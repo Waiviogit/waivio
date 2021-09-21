@@ -13,6 +13,7 @@ import { validatorMessagesCreator, validatorsCreator } from './validators';
 import fieldsData from './fieldsData';
 import { getObjectName, getObjectType } from '../../helpers/wObjectHelper';
 import { currencyTypes } from '../../websites/constants/currencyTypes';
+import { closePowerUpOrDown } from '../../../store/walletStore/walletActions';
 
 const { Option } = Select;
 
@@ -241,6 +242,10 @@ const CreateFormRenderer = props => {
             initialValue: reward,
           })(<Input type="number" disabled={disabled} step={0.1} />)}
           <div className="CreateReward__field-caption">{fields.reward.caption}</div>
+          <span className="CreateReward__field-exceed ">
+            {Number(getFieldValue('budget')) < Number(getFieldValue('reward')) &&
+              messages.rewardToBudget}
+          </span>
         </Form.Item>
 
         <Form.Item label={fields.sponsorsList.label}>

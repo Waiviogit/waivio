@@ -98,7 +98,6 @@ const EditPost = props => {
 
     return () => {
       props.leaveEditor();
-      sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
     };
   }, []);
 
@@ -107,7 +106,6 @@ const EditPost = props => {
 
     if (oldDraftId !== props.draftId) {
       sessionStorage.setItem('draftId', props.draftId);
-      sessionStorage.setItem('hideLinkedObjects', JSON.stringify([]));
     }
     const hideLinkedObjectsSession = JSON.parse(sessionStorage.getItem('hideLinkedObjects')) || [];
 
