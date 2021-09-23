@@ -12,11 +12,8 @@
     }
 
     &-title {
-      text-overflow: ellipsis;
       white-space: nowrap;
-      overflow: hidden;
       font-weight: 500;
-      max-width: 50%;
 
       &--withoutTruncate {
         overflow: visible;
@@ -47,6 +44,12 @@
     padding-right: 15px !important;
     border-right: 2px @border-style-base @border-color-base;
     width: 55% !important;
+  }
+
+  @media (max-width: 900px) {
+    &__response {
+      display: none;
+    }
   }
 }
 
