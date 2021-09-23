@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import { message } from 'antd';
 
 function topPosition(domElt) {
   if (!domElt) {
@@ -98,7 +99,7 @@ export default class ReduxInfiniteScroll extends React.Component {
       try {
         this.props.loadMore();
       } catch (error) {
-        console.log('hasNoMore');
+        message.error('All activity messages loaded successfully');
       }
     }
   }
