@@ -37,7 +37,7 @@ const CustomJSONMessage = ({ actionDetails, actionType }) => {
     switch (whatTypes) {
       case 'ignore':
         messageId = 'ignore_user';
-        messageDefault = 'Ignored {following}';
+        messageDefault = 'Muted {following}';
         break;
       case 'blog':
         messageId = 'followed_user';
