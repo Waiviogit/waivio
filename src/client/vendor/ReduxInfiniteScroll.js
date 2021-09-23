@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import { message } from 'antd';
 
 function topPosition(domElt) {
   if (!domElt) {
@@ -95,7 +96,11 @@ export default class ReduxInfiniteScroll extends React.Component {
 
     if (bottomPosition < Number(this.props.threshold)) {
       this.detachScrollListener();
-      this.props.loadMore();
+      try {
+        this.props.loadMore();
+      } catch (error) {
+        message.error('All activity messages loaded successfully');
+      }
     }
   }
 
@@ -120,12 +125,6 @@ export default class ReduxInfiniteScroll extends React.Component {
     this.detachScrollListener();
   }
 
-  renderLoader() {
-    return this.props.loadingMore || (this.props.hasMore && this.props.showLoader)
-      ? this.props.loader
-      : null;
-  }
-
   _assignHolderClass() {
     let additionalClass;
     additionalClass =
@@ -140,7 +139,6 @@ export default class ReduxInfiniteScroll extends React.Component {
     return (
       <Holder className={this._assignHolderClass()} style={{ height: this.props.containerHeight }}>
         {this._renderOptions()}
-        {this.renderLoader()}
       </Holder>
     );
   }

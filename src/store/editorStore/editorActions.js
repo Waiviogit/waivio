@@ -325,7 +325,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
       })} ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
     }
 
-    const host = getCurrentHost(getState());
+    const host = getCurrentHost(getState()).slice(7);
 
     const {
       parentAuthor,
