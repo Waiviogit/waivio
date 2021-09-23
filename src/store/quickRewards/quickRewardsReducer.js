@@ -19,16 +19,12 @@ export default (state = defaultState, action) => {
     case GET_ELIGIBLE_REWARDS.SUCCESS:
       return {
         ...state,
-        eligibleRestList: action.payload.campaigns,
+        eligibleRestList: action.payload.wobjects,
       };
     case GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS:
       return {
         ...state,
-        eligibleDishFromRest: action.payload.campaigns[0].objects.map(obj => ({
-          ...obj.object,
-          reward: action.payload.campaigns[0].reward,
-          requirements: action.payload.campaigns[0].requirements,
-        })),
+        eligibleDishFromRest: action.payload,
       };
     case SELECT_RESTAURANT:
       return {

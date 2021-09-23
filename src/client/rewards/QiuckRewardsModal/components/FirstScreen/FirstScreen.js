@@ -1,36 +1,42 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 import ObjectCardView from '../../../../objectCard/ObjectCardView';
 import { AutoComplete } from 'antd';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import ObjectSearchCard from '../../../../components/ObjectSearchCard/ObjectSearchCard';
 import { getObjectName, getObjectType } from '../../../../helpers/wObjectHelper';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 import {
   getDishRewardsListFromState,
-  getEligibleRewardsListFromState, getSelectedDish, getSelectedRestaurant
-} from "../../../../../store/quickRewards/quickRewardsSelectors";
+  getEligibleRewardsListFromState,
+  getSelectedDish,
+  getSelectedRestaurant,
+} from '../../../../../store/quickRewards/quickRewardsSelectors';
 import {
   getEligibleRewardsList,
-  getEligibleRewardsListWithRestaurant, resetDish, resetRestaurant, setSelectedDish,
-  setSelectedRestaurant
-} from "../../../../../store/quickRewards/quickRewardsActions";
+  getEligibleRewardsListWithRestaurant,
+  resetDish,
+  resetRestaurant,
+  setSelectedDish,
+  setSelectedRestaurant,
+} from '../../../../../store/quickRewards/quickRewardsActions';
 
 const ModalFirstScreen = props => {
   useEffect(() => {
     props.getEligibleRewardsList();
   }, []);
 
+  const dishRewards = get(props, 'selectedDish.propositions[0].reward', null);
   const earnMessage = camp =>
-    camp.max_reward !== camp.min_reward
-      ? `Earn up to ${camp.max_reward}`
-      : `Earn ${camp.max_reward}`;
+    camp.campaigns.max_reward !== camp.campaigns.min_reward
+      ? `Earn up to ${camp.campaigns.max_reward}`
+      : `Earn ${camp.campaigns.max_reward}`;
 
   const handleSelectRestaurant = item => {
-    const restaurant = props.eligible.find(camp => camp.required_object.author_permlink === item);
+    const restaurant = props.eligible.find(camp => camp.author_permlink === item);
 
-    props.setSelectedRestaurant(restaurant.required_object);
-    props.getEligibleRewardsListWithRestaurant(restaurant.required_object);
+    props.setSelectedRestaurant(restaurant);
+    props.getEligibleRewardsListWithRestaurant(restaurant);
   };
 
   const handleSelectDish = item => {
@@ -59,16 +65,16 @@ const ModalFirstScreen = props => {
               if (!isEmpty(camp)) {
                 return (
                   <AutoComplete.Option
-                    key={camp.required_object.author_permlink}
+                    key={camp.author_permlink}
                     className="QuickRewardsModal__select-item"
                   >
                     <ObjectSearchCard
-                      object={camp.required_object}
-                      name={getObjectName(camp.required_object)}
-                      type={getObjectType(camp.required_object)}
+                      object={camp}
+                      name={getObjectName(camp)}
+                      type={getObjectType(camp)}
                       isNeedType
                     />
-                    {earnMessage(camp)}
+                    {camp.campaigns && earnMessage(camp)}
                   </AutoComplete.Option>
                 );
               }
@@ -83,8 +89,8 @@ const ModalFirstScreen = props => {
             wObject={props.selectedDish}
             closeButton
             onDelete={props.resetDish}
-            withRewards
-            rewardPrice={props.selectedDish.reward}
+            withRewards={dishRewards}
+            rewardPrice={dishRewards}
           />
         ) : (
           <AutoComplete
@@ -94,6 +100,8 @@ const ModalFirstScreen = props => {
           >
             {props.dishes.map(camp => {
               if (!isEmpty(camp)) {
+                const reward = get(camp, 'propositions[0].reward', null);
+
                 return (
                   <AutoComplete.Option
                     key={camp.author_permlink}
@@ -106,7 +114,7 @@ const ModalFirstScreen = props => {
                       isNeedType
                       closeButton
                     />
-                    Earn {camp.reward}
+                    {reward && <span>Earn {reward}</span>}
                   </AutoComplete.Option>
                 );
               }
