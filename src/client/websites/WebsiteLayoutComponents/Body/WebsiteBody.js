@@ -135,7 +135,7 @@ const WebsiteBody = props => {
         isDining={props.isDining}
       />
       <div className={mapClassList}>
-        {currentLogo && (
+        {currentLogo && !props.isDining && (
           <Link to={logoLink}>
             <img className="WebsiteBody__logo" src={currentLogo} alt="your logo" />
           </Link>

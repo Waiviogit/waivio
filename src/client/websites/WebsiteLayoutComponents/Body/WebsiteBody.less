@@ -140,14 +140,37 @@
     cursor: pointer;
     z-index: 100;
     margin-bottom: 5px;
+    width: 35px;
+    height: 35px;
+    border: 1px solid #e9e7e7;
+    background: @white;
+
+    &:hover {
+      background-color: #e9e7e7;
+    }
+
+    @media @small {
+      width: 25px;
+      height: 25px;
+    }
+
+    .MapOS__locateGPS {
+      text-align: center;
+      line-height: 15px;
+    }
 
     .MapOS__locateGPS-button {
-      width: 35px;
-      height: 35px;
+      width: 25px;
+      height: 25px;
+      border: none;
 
       @media @small {
-        width: 25px;
-        height: 25px;
+        width: 15px;
+        height: 15px;
+      }
+
+      &:hover {
+        background: @white;
       }
     }
   }
