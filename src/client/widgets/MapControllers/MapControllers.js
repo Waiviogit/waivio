@@ -32,7 +32,7 @@ const MapControllers = React.memo(props => {
           className="MapConfigurationZoom__locateGPS"
           onClick={setCurrentLocation}
         >
-          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+          <img src="/images/focus.svg" alt="aim" className="MapOS__locateGPS-button" />
         </div>
       </div>
     </div>
