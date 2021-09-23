@@ -59,7 +59,7 @@ const WebsiteSearch = props => {
     ) {
       currentSearchMethod(searchString);
     }
-  }, [props.searchType, props.activeFilters, props.searchMap, searchString]);
+  }, [props.searchType, props.activeFilters, props.searchMap]);
 
   useEffect(() => {
     props.resetWebsiteObjectsCoordinates();
@@ -69,7 +69,7 @@ const WebsiteSearch = props => {
     debounce(value => {
       props.setWebsiteSearchString(value);
       props.setSearchInBox(true);
-
+      if (value) currentSearchMethod(value);
       if (value) query.set('searchString', value);
       else query.delete('searchString');
       props.history.push(`?${query.toString()}`);
