@@ -8,7 +8,8 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationDeacticationCampaign = ({ notification, read, onClick }) => {
-  const url = `/rewards/guideHistory?campaign=${notification.campaignName}&${'Released'}`;
+  const currentFilter = notification.isReleased ? 'released=Released' : 'reserved=Reserved';
+  const url = `/rewards/guideHistory?campaign=${notification.campaignName}&${currentFilter}`;
 
   return (
     <Link
