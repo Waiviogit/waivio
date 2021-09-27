@@ -1,6 +1,7 @@
-import React, {useCallback, useEffect} from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { debounce, get } from 'lodash';
+import PropTypes from 'prop-types';
 
 import {
   getSelectedDish,
@@ -44,7 +45,6 @@ const ModalSecondScreen = props => {
       <h4>Review content</h4>
       <textarea onChange={handleBodyChange} className="SecondScreen__textarea" />
       <TagsSelector
-        // disabled={isPublishing}
         label={'HashTags(topics)'}
         placeholder={'Add hashtags (without #) here'}
         tags={props.topics}
@@ -52,6 +52,15 @@ const ModalSecondScreen = props => {
       />
     </div>
   );
+};
+
+ModalSecondScreen.propTypes = {
+  selectedDish: PropTypes.shape().isRequired,
+  selectedRestaurant: PropTypes.shape().isRequired,
+  topics: PropTypes.arrayOf().isRequired,
+  setBody: PropTypes.func.isRequired,
+  setImages: PropTypes.func.isRequired,
+  setTopic: PropTypes.func.isRequired,
 };
 
 export default connect(state => ({

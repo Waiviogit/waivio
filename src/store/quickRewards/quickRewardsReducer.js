@@ -5,6 +5,7 @@ import {
   RESET_RESTAURANT,
   SELECT_DISH,
   SELECT_RESTAURANT,
+  TOGGLE_MODAL,
 } from './quickRewardsActions';
 
 const defaultState = {
@@ -12,6 +13,7 @@ const defaultState = {
   eligibleDishFromRest: [],
   selectedRest: null,
   selectedDish: null,
+  isOpen: false,
 };
 
 export default (state = defaultState, action) => {
@@ -20,6 +22,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         eligibleRestList: action.payload.wobjects,
+      };
+    case TOGGLE_MODAL:
+      return {
+        ...state,
+        isOpen: action.payload,
       };
     case GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS:
       return {

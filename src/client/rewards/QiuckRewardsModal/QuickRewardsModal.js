@@ -2,27 +2,43 @@ import React, { useState } from 'react';
 import { Modal, Button } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import {
+  getIsOpenModal,
   getSelectedDish,
   getSelectedRestaurant,
 } from '../../../store/quickRewards/quickRewardsSelectors';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import ModalFirstScreen from './components/FirstScreen/FirstScreen';
-import './QuickRewardsModal.less';
 import ModalSecondScreen from './components/SecondScreen/SecondScreen';
-import { buildPost } from '../../../store/editorStore/editorActions';
-import { createQuickPost } from '../../../store/quickRewards/quickRewardsActions';
+import {
+  createQuickPost,
+  reserveProposition,
+  toggleModal,
+} from '../../../store/quickRewards/quickRewardsActions';
 import { getObjectName } from '../../helpers/wObjectHelper';
 
+import './QuickRewardsModal.less';
+
 const QuickRewardsModal = props => {
-  const [nextPage, setNextPage] = useState(false);
+  const [isPublishPage, setIsPublishPage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [topics, setTopic] = useState(['food', 'restaurant']);
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
+  const circleClassList = status =>
+    classNames('circle-item', {
+      'circle-item--active':
+        (status === 'publish' && isPublishPage) || (status === 'select' && !isPublishPage),
+    });
+  const isPropositionObj = !isEmpty(get(props.selectedDish, 'propositions'));
   const title = `Review: ${getObjectName(props.selectedRestaurant)}, ${getObjectName(
     props.selectedDish,
   )}`;
+  const requirements = get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0);
+
+  const closeModal = () => props.toggleModal(false);
 
   const createImagesLink = () =>
     images.map(img => `\n<center>![image]( ${img.src})</center>\n`).join('');
@@ -34,15 +50,23 @@ const QuickRewardsModal = props => {
       props.selectedRestaurant.defaultShowLink
     }) \\n ${createImagesLink()} ${body}`;
 
-    if (nextPage) {
-      setLoading(true);
-      props.createQuickPost(title, compareBody, topics);
-    } else setNextPage(true);
+    setLoading(true);
+
+    if (isPublishPage) props.createQuickPost(title, compareBody, topics);
+    if (isPropositionObj) props.reserveProposition();
+
+    setLoading(false);
+    setIsPublishPage(true);
   };
 
   return (
-    <Modal title="Submit dish photos and earn crypto!" visible={true} footer={null}>
-      {nextPage ? (
+    <Modal
+      title="Submit dish photos and earn crypto!"
+      footer={null}
+      visible={props.isOpenModal}
+      onCancel={closeModal}
+    >
+      {isPublishPage ? (
         <ModalSecondScreen
           topics={topics}
           setTopic={setTopic}
@@ -55,16 +79,16 @@ const QuickRewardsModal = props => {
       )}
       <div className="QuickRewardsModal__button-wrap">
         <div className="circle-wrap">
-          <div className="circle-item circle-item--active">
+          <div className={circleClassList('select')}>
             <span className="circle">1</span>
             <span className="circle-title">Reserve</span>
           </div>
-          <div className="circle-item">
+          <div className={circleClassList('publish')}>
             <span className="circle">2</span>
             <span className="circle-title">Write & Publish</span>
           </div>
         </div>
-        {!isEmpty(get(props.selectedDish, 'propositions')) && (
+        {isPropositionObj && (
           <b>
             YOU EARN:{' '}
             <USDDisplay
@@ -76,23 +100,39 @@ const QuickRewardsModal = props => {
         <Button
           type="primary"
           className="QuickRewardsModal__button"
-          disabled={isEmpty(props.selectedDish) || isEmpty(props.selectedRestaurant) || (nextPage && !body)}
+          disabled={
+            isEmpty(props.selectedDish) ||
+            isEmpty(props.selectedRestaurant) ||
+            (isPublishPage && !body && requirements !== images.length)
+          }
           loading={loading}
           onClick={handleCreatePost}
         >
-          Next
+          {isPublishPage ? 'Publish' : 'Next'}
         </Button>
       </div>
     </Modal>
   );
 };
 
+QuickRewardsModal.propTypes = {
+  selectedDish: PropTypes.shape().isRequired,
+  selectedRestaurant: PropTypes.shape().isRequired,
+  toggleModal: PropTypes.func.isRequired,
+  createQuickPost: PropTypes.func.isRequired,
+  reserveProposition: PropTypes.func.isRequired,
+  isOpenModal: PropTypes.bool.isRequired,
+};
+
 export default connect(
   state => ({
     selectedRestaurant: getSelectedRestaurant(state),
     selectedDish: getSelectedDish(state),
+    isOpenModal: getIsOpenModal(state),
   }),
   {
     createQuickPost,
+    reserveProposition,
+    toggleModal,
   },
 )(QuickRewardsModal);

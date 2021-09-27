@@ -14,6 +14,8 @@ export const getEligibleRewardsListFromState = createSelector(
   state => state.eligibleRestList,
 );
 
+export const getIsOpenModal = createSelector([quickRewardsState], state => state.isOpen);
+
 export const getDishRewardsListFromState = createSelector(
   [quickRewardsState],
   state => state.eligibleDishFromRest,

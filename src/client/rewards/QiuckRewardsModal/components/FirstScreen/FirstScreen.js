@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-
-import ObjectCardView from '../../../../objectCard/ObjectCardView';
+import { connect } from 'react-redux';
 import { AutoComplete } from 'antd';
 import { isEmpty, get } from 'lodash';
+import PropTypes from 'prop-types';
+
+import ObjectCardView from '../../../../objectCard/ObjectCardView';
 import ObjectSearchCard from '../../../../components/ObjectSearchCard/ObjectSearchCard';
 import { getObjectName, getObjectType } from '../../../../helpers/wObjectHelper';
-import { connect } from 'react-redux';
 import {
   getDishRewardsListFromState,
   getEligibleRewardsListFromState,
@@ -78,6 +79,8 @@ const ModalFirstScreen = props => {
                   </AutoComplete.Option>
                 );
               }
+
+              return null;
             })}
           </AutoComplete>
         )}
@@ -118,12 +121,27 @@ const ModalFirstScreen = props => {
                   </AutoComplete.Option>
                 );
               }
+
+              return null;
             })}
           </AutoComplete>
         )}
       </div>
     </React.Fragment>
   );
+};
+
+ModalFirstScreen.propTypes = {
+  selectedDish: PropTypes.shape().isRequired,
+  selectedRestaurant: PropTypes.shape().isRequired,
+  dishes: PropTypes.arrayOf().isRequired,
+  eligible: PropTypes.arrayOf().isRequired,
+  resetDish: PropTypes.func.isRequired,
+  getEligibleRewardsList: PropTypes.func.isRequired,
+  setSelectedRestaurant: PropTypes.func.isRequired,
+  resetRestaurant: PropTypes.func.isRequired,
+  getEligibleRewardsListWithRestaurant: PropTypes.func.isRequired,
+  setSelectedDish: PropTypes.func.isRequired,
 };
 
 export default connect(

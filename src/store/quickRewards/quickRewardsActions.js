@@ -1,16 +1,20 @@
+import { get, kebabCase, round } from 'lodash';
+
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
-import { getAuthorsChildWobjects, getEligibleList, searchObjects } from '../../waivioApi/ApiClient';
+import {
+  getAuthorsChildWobjects,
+  getCurrentHivePrice,
+  searchObjects,
+} from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { createPost } from '../editorStore/editorActions';
-import { get, kebabCase } from 'lodash';
 import { createPostMetadata } from '../../client/helpers/postHelpers';
 import { getBeneficiariesUsers } from '../searchStore/searchSelectors';
 import { getSelectedDish, getSelectedRestaurant } from './quickRewardsSelectors';
 import config from '../../waivioApi/config.json';
-import { getObjectName, getObjectType } from '../../client/helpers/wObjectHelper';
-import {getDetailsBody} from "../../client/rewards/rewardsHelper";
-import {SET_PENDING_UPDATE} from "../userStore/userActions";
+import { generatePermlink, getObjectName, getObjectType } from '../../client/helpers/wObjectHelper';
+import { getDetailsBody } from '../../client/rewards/rewardsHelper';
 
 export const GET_ELIGIBLE_REWARDS = createAsyncActionType('@quickRewards/GET_ELIGIBLE_REWARDS');
 
@@ -29,6 +33,13 @@ export const SELECT_DISH = '@quickRewards/SELECT_DISH';
 export const setSelectedDish = rest => ({
   type: SELECT_DISH,
   payload: rest,
+});
+
+export const TOGGLE_MODAL = '@quickRewards/TOGGLE_MODAL';
+
+export const toggleModal = open => ({
+  type: TOGGLE_MODAL,
+  payload: open,
 });
 
 export const RESET_RESTAURANT = '@quickRewards/RESET_RESTAURANT';
@@ -103,52 +114,51 @@ export const createQuickPost = (title, body, topics) => (dispatch, getState) => 
       },
     }),
   };
-  console.log(body);
+
   dispatch({ type: CREATE_QUICK_POST });
 
-  // dispatch(createPost(postData, beneficiaries, isReview, get(dish, '.propositions[0]', null)));
+  dispatch(createPost(postData, beneficiaries, isReview, get(dish, '.propositions[0]', null)));
 };
 
 export const RESERVE_REWARD = createAsyncActionType('@quickRewards/RESERVE_REWARD');
 
-export const reserveProposition = ({
-                                    companyAuthor,
-                                    companyPermlink,
-                                    resPermlink,
-                                    objPermlink,
-                                    appName,
-                                    primaryObjectName,
-                                    amount,
-                                    proposition,
-                                    proposedWobj,
-                                    userName,
-                                    currencyId,
-                                  }) => (dispatch, getState, { steemConnectAPI }) => {
-  const username = getAuthenticatedUserName(getState());
-  const proposedWobjName = getObjectName(proposedWobj);
-  const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
-  const primaryObjectPermlink = get(proposition, ['required_object', 'author_permlink']);
+export const reserveProposition = () => async (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+  const dish = getSelectedDish(state);
+  const proposition = dish.propositions[0];
+  const proposedWobjName = getObjectName(dish);
+  const proposedWobjAuthorPermlink = dish.author_permlink;
+  const primaryObject = get(proposition, 'required_object');
+  const currencyInfo = await getCurrentHivePrice();
+  const amount = round(proposition.reward / currencyInfo.hiveCurrency, 3);
   const detailsBody = getDetailsBody({
     proposition,
     proposedWobjName,
     proposedWobjAuthorPermlink,
-    primaryObjectName,
+    primaryObjectName: proposition.required_object,
   });
   const commentOp = [
     'comment',
     {
-      parent_author: companyAuthor,
-      parent_permlink: companyPermlink,
+      parent_author: proposition.guideName,
+      parent_permlink: proposition.activation_permlink,
       author: username,
-      permlink: resPermlink,
+      permlink: `reserve-${generatePermlink()}`,
       title: 'Rewards reservations',
-      body: `<p>User ${userName} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.author_permlink}">${proposedWobjName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
+      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${
+        proposition.count_reservation_days
+      } days to write a review of <a href="/object/${
+        dish.author_permlink
+      }">${proposedWobjName}</a>, <a href="/object/${
+        primaryObject.author_permlink
+      }">${getObjectName(primaryObject)}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
-        app: appName,
+        app: config.appName,
         waivioRewards: {
           type: 'waivio_assign_campaign',
-          approved_object: objPermlink,
-          currencyId,
+          approved_object: proposedWobjAuthorPermlink,
+          currencyId: currencyInfo.id,
         },
       }),
     },
