@@ -40,16 +40,7 @@ const getEmbed = link => {
 
 // Should return text(html) if returnType is text
 // Should return Object(React Compatible) if returnType is Object
-export function getHtml(
-  body,
-  jsonMetadata = {},
-  returnType = 'Object',
-  options = {},
-  isModal,
-  isPostPreviewModal,
-  full,
-  isGuest,
-) {
+export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
 
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];

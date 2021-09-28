@@ -101,6 +101,7 @@ class UserActivityActionsList extends Component {
       accountHistoryFilter,
       currentDisplayedActions,
       currentFilteredActions,
+      isCurrentUser,
     } = this.props;
     const currentUsername = user.name;
     const actions = get(usersAccountHistory, currentUsername, []);
@@ -117,6 +118,7 @@ class UserActivityActionsList extends Component {
         threshold={200}
         loader={null}
         loadingMore={loadingMoreUsersAccountHistory}
+        isCurrentUser={isCurrentUser}
       >
         <div />
         {displayedActions.map(action =>

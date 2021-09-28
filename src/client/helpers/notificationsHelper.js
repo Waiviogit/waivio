@@ -270,6 +270,17 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           post: notification.title,
         },
       );
+    case notificationConstants.DEACTIVATION_CAMPAIGN:
+      return intl.formatMessage(
+        {
+          id: 'deactivation_campaign',
+          defaultMessage: '{author}  has deactivated the campaign for {object_name}',
+        },
+        {
+          author: notification.author,
+          object_name: notification.object_name,
+        },
+      );
     case notificationConstants.CAMPAIGN_RESERVATION:
       if (notification.isReleased) {
         return intl.formatMessage(

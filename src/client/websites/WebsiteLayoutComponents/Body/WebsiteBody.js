@@ -41,6 +41,7 @@ import {
 import { getShowReloadButton } from '../../../../store/websiteStore/websiteSelectors';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 import MainMap from '../../MainMap/MainMap';
+import QuickRewardsModal from '../../../rewards/QiuckRewardsModal/QuickRewardsModal';
 
 import './WebsiteBody.less';
 
@@ -152,6 +153,7 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
+      {props.isAuth && <QuickRewardsModal />}
     </div>
   );
 };

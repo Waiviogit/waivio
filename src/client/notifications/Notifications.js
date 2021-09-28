@@ -38,6 +38,7 @@ import NotificationFollowBell from '../components/Navigation/Notifications/Notif
 import NotificationCampaignReservation from '../components/Navigation/Notifications/NotificationCampaignReservation';
 import NotificationWobjectRewardsBell from '../components/Navigation/Notifications/NotificationWobjectRewardsBell';
 import NotificationWobjectPostBell from '../components/Navigation/Notifications/NotificationWobjectPostBell';
+import NotificationDeacticationCampaign from '../components/Navigation/Notifications/NotificationDeactivationCampaign';
 import {
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
@@ -366,6 +367,16 @@ class Notifications extends React.Component {
               case notificationConstants.BELL_WOBJECT_POST:
                 return (
                   <NotificationWobjectPostBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+
+              case notificationConstants.DEACTIVATION_CAMPAIGN:
+                return (
+                  <NotificationDeacticationCampaign
                     key={key}
                     notification={notification}
                     read={read}
