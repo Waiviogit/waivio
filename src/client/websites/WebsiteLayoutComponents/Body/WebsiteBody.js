@@ -41,9 +41,9 @@ import {
 import { getShowReloadButton } from '../../../../store/websiteStore/websiteSelectors';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 import MainMap from '../../MainMap/MainMap';
+import QuickRewardsModal from '../../../rewards/QiuckRewardsModal/QuickRewardsModal';
 
 import './WebsiteBody.less';
-import QuickRewardsModal from '../../../rewards/QiuckRewardsModal/QuickRewardsModal';
 
 const WebsiteBody = props => {
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
