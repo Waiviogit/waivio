@@ -16,7 +16,9 @@ import './WebsiteMainPage.less';
 const WebsiteMainPage = () => {
   const isAuth = useSelector(getIsAuthenticated);
   const helmetImg = '/images/dining.gifts.png';
-  const findRewardsLink = isMobile() ? '/map' : '/map?showPanel=true';
+  const findRewardsLink = isMobile()
+    ? '/map?type=restaurant'
+    : '/map?showPanel=true&type=restaurant';
 
   useLayoutEffect(() => {
     if (window) {

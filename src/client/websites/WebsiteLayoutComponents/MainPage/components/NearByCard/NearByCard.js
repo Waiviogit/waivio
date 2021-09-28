@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import './NearByCard.less';
 
 const NearByCard = props => (
-  <Link to={`/map?${props.route}&type=dish&showPanel=true`} className="NearByCard">
+  <Link to={`/map?${props.route}&showPanel=true`} className="NearByCard">
     <h5 className="NearByCard__title">{props.name}</h5>
     <img src={props.image} className="NearByCard__image" alt={props.name} />
   </Link>

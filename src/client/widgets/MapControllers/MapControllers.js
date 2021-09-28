@@ -26,13 +26,17 @@ const MapControllers = React.memo(props => {
           -
         </div>
       </div>
-      <div className={`${currClass}__gps`}>
+      <div className={'MapConfigurationControl__gps'}>
         <div
           role="presentation"
-          className="MapConfigurationZoom__locateGPS"
+          className="MapConfigurationControl__locateGPS"
           onClick={setCurrentLocation}
         >
-          <img src="/images/focus.svg" alt="aim" className="MapOS__locateGPS-button" />
+          <img
+            src="/images/focus.svg"
+            alt="aim"
+            className="MapConfigurationControl__locateGPS-button"
+          />
         </div>
       </div>
     </div>

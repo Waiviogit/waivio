@@ -291,14 +291,16 @@ const MainMap = React.memo(props => {
   const setLocationFromNavigator = position => {
     const { latitude, longitude } = position.coords;
 
-    setCenter([latitude, longitude]);
-    setShowLocation(true);
     props.putUserCoordinates({ latitude, longitude });
+    setShowLocation(true);
+    setCenter([latitude, longitude]);
   };
+
   const setLocationFromApi = () => {
     setShowLocation(false);
     setCenter([props.userLocation.lat, props.userLocation.lon]);
   };
+
   const handleClickOnMap = ({ event }) => {
     if (event.target.classList.value === 'pigeon-overlays') {
       resetInfoBox();
