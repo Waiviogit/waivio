@@ -229,9 +229,19 @@
     background: @white-ghostWhite;
     padding: 15px 0 0;
     flex-direction: column;
+    justify-content: space-between;
 
     @media @small {
       flex-direction: row;
+    }
+
+    &__submit {
+      text-transform: uppercase;
+    }
+
+    &__searchWrap {
+      display: flex;
+      width: 60%;
     }
 
     .SearchAllResult__type-wrap {
@@ -283,7 +293,7 @@
         width: 100%;
 
         @media @small {
-          width: 30%;
+          width: 60%;
           margin-right: 25px;
         }
       }

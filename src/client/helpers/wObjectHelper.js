@@ -7,12 +7,17 @@ import {
 import LANGUAGES from '../translations/languages';
 
 export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'default_name') || '';
+
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
+
 export const getObjectUrl = (wobj = {}) =>
   get(wobj, 'defaultShowLink') || `/object/${wobj.author_permlink}`;
+
 export const getObjectAvatar = (wobj = {}) =>
   get(wobj, 'avatar', '') || get(wobj, ['parent', 'avatar'], '');
+
 export const getObjectType = (wobj = {}) => get(wobj, 'object_type') || get(wobj, 'type');
+
 export const getObjectMap = (wobj = {}) => {
   const map = get(wobj, 'map');
 
@@ -20,6 +25,7 @@ export const getObjectMap = (wobj = {}) => {
 
   return null;
 };
+
 export const getObjectMapInArray = (wobj = {}) => {
   const objMap = getObjectMap(wobj);
 
@@ -27,6 +33,7 @@ export const getObjectMapInArray = (wobj = {}) => {
 
   return null;
 };
+
 export const isList = wobj => getObjectType(wobj) === 'list';
 
 export const getCurrentPoint = (wobjects, queryCenter) =>
