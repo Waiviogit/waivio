@@ -27,7 +27,7 @@ const DistrictSection = props => {
           <DistrictsCard key={card.name} {...card} />
         ))}
       </div>
-      <Link to={'/map'} className="WebsiteMainPage__button">
+      <Link to={'/map?type=restaurant'} className="WebsiteMainPage__button">
         See All Rewards <Icon type="right" />
       </Link>
     </section>

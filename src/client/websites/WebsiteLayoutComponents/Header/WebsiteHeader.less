@@ -56,7 +56,7 @@
 .MainPageHeader {
   display: flex;
   flex-direction: column;
-  padding: 5px 15px;
+  padding: 5px 15px 10px;
   background: @white-ghostWhite;
   width: 100vw;
   -webkit-box-shadow: 1px 8px 15px -11px rgba(34, 60, 80, 0.2);
@@ -111,11 +111,12 @@
     color: @black;
 
     @media @small {
-      font-size: 25px;
+      font-size: 20px;
     }
 
     span {
       display: none;
+      color: #6a6a6a;
 
       @media @medium {
         display: inline;
@@ -130,8 +131,8 @@
       font-weight: 500;
 
       @media @small {
-        font-size: 25px;
-        margin-right: 40px;
+        font-size: 20px;
+        margin-right: 30px;
       }
 
       &::after {
@@ -147,10 +148,15 @@
         @media @medium {
           display: inline-block;
           top: 0;
-          margin: 0 20px;
+          margin: 0 15px;
         }
       }
     }
+  }
+
+  &__logoLink {
+    display: flex;
+    align-items: center;
   }
 
   &__listLink {
@@ -217,10 +223,6 @@
     border-radius: 50%;
     margin-right: 5px;
     width: 35px;
-
-    @media @small {
-      width: 50px;
-    }
   }
 
   .NewFiltersClass {
@@ -237,15 +239,23 @@
 
     &__submit {
       text-transform: uppercase;
+      border-radius: 8px;
     }
 
     &__searchWrap {
       display: flex;
-      width: 60%;
+      width: 100%;
+      flex-wrap: wrap;
+      margin-bottom: 5px;
+
+      @media @small {
+        width: 60%;
+        margin-bottom: 0;
+      }
     }
 
     .SearchAllResult__type-wrap {
-      border-radius: 5px;
+      border-radius: 8px;
       border: 1px solid @grey-iron;
       background: transparent;
       padding: 0;
@@ -258,7 +268,7 @@
       height: auto;
       border: none;
       transition: 0.2s;
-      border-radius: 5px;
+      border-radius: 8px;
       font-size: 16px;
 
       @media @small {
@@ -281,7 +291,7 @@
     }
 
     .WebsiteSearch {
-      border-radius: 5px;
+      border-radius: 8px;
       border: 1px solid @grey-iron;
       background: transparent;
       padding: 0;
