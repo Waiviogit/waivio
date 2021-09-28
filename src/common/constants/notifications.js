@@ -30,6 +30,7 @@ export const MY_COMMENT = 'myComment';
 export const MY_POST = 'myPost';
 export const CAMPAIGN_RESERVATION = 'campaignReservation';
 export const WEBSITE_BALANCE = 'webSiteBalance';
+export const DEACTIVATION_CAMPAIGN = 'deactivationCampaign';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -62,6 +63,7 @@ export const PARSED_NOTIFICATIONS = [
   CAMPAIGN_RESERVATION,
   BELL_WOBJECT_REWARDS,
   BELL_WOBJECT_POST,
+  DEACTIVATION_CAMPAIGN,
 ];
 
 export const BUSY_API_TYPES = {
