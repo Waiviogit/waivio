@@ -55,7 +55,7 @@ const WebsiteSearch = props => {
       props.isShowResult &&
       !isEmpty(props.searchMap.bottomPoint) &&
       !isEmpty(props.searchMap.topPoint) &&
-      !localStorage.getItem('scrollTop')
+      !+localStorage.getItem('scrollTop')
     ) {
       currentSearchMethod(searchString);
     }
