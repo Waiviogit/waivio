@@ -35,9 +35,11 @@ const MainPageHeader = props => {
             <WebsiteSearch placeholder="Search" />
             <FilterTypesList />
           </div>
-          <Button type="primary" className="NewFiltersClass__submit" onClick={openModal}>
-            <Icon type="camera" /> Submit dish photos
-          </Button>
+          {props.isAuthenticated && (
+            <Button type="primary" className="NewFiltersClass__submit" onClick={openModal}>
+              <Icon type="camera" /> Submit dish photos
+            </Button>
+          )}
         </div>
       )}
     </div>
@@ -46,6 +48,7 @@ const MainPageHeader = props => {
 
 MainPageHeader.propTypes = {
   withMap: PropTypes.bool.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 

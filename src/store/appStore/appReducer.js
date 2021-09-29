@@ -159,7 +159,7 @@ export default (state = initialState, action) => {
         parentHost,
         websiteBeneficiary: {
           account: beneficiary.account,
-          weight: +beneficiary.percent,
+          weight: beneficiary.percent,
         },
         helmetIcon: getObjectAvatar(configuration.aboutObject),
         logo,
