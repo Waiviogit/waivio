@@ -104,6 +104,11 @@ class CustomMarker extends React.Component {
     let currentImg = this.image();
     let currTop = imageOffset.top;
     let currLeft = imageOffset.left;
+    const style = {
+      position: 'absolute',
+      cursor: onClick ? 'pointer' : 'default',
+      zIndex: isMarked ? 2 : 1,
+    };
 
     if (currLocation) {
       currentImg = '/images/icons/location.png';
@@ -111,6 +116,7 @@ class CustomMarker extends React.Component {
       height = 20;
       currTop = 20;
       currLeft = 10;
+      style.zIndex = 5;
     }
 
     if (hoveredWobj) {
@@ -124,12 +130,7 @@ class CustomMarker extends React.Component {
       currLeft = 20;
     }
 
-    const style = {
-      position: 'absolute',
-      transform: `translate(${left - currLeft}px, ${top - currTop}px)`,
-      cursor: onClick ? 'pointer' : 'default',
-      zIndex: isMarked ? 2 : 1,
-    };
+    style.transform = `translate(${left - currLeft}px, ${top - currTop}px)`;
 
     return (
       <div
