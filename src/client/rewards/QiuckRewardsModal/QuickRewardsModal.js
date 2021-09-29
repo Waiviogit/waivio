@@ -36,9 +36,15 @@ const QuickRewardsModal = props => {
   const title = `Review: ${getObjectName(props.selectedRestaurant)}, ${getObjectName(
     props.selectedDish,
   )}`;
+  const nextButtonClassList = classNames('QuickRewardsModal__button', {
+    'QuickRewardsModal__button--withRewards': isPropositionObj,
+  });
   const requirements = get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0);
 
-  const closeModal = () => props.toggleModal(false);
+  const closeModal = () => {
+    props.toggleModal(false);
+    setIsPublishPage(false);
+  };
 
   const createImagesLink = () =>
     images.map(img => `\n<center>![image]( ${img.src})</center>\n`).join('');
@@ -65,6 +71,7 @@ const QuickRewardsModal = props => {
       footer={null}
       visible={props.isOpenModal}
       onCancel={closeModal}
+      className="QuickRewardsModal"
     >
       {isPublishPage ? (
         <ModalSecondScreen
@@ -75,7 +82,7 @@ const QuickRewardsModal = props => {
           setImages={setImages}
         />
       ) : (
-        <ModalFirstScreen />
+        <ModalFirstScreen isShow={props.isOpenModal} />
       )}
       <div className="QuickRewardsModal__button-wrap">
         <div className="circle-wrap">
@@ -99,7 +106,7 @@ const QuickRewardsModal = props => {
         )}
         <Button
           type="primary"
-          className="QuickRewardsModal__button"
+          className={nextButtonClassList}
           disabled={
             isEmpty(props.selectedDish) ||
             isEmpty(props.selectedRestaurant) ||

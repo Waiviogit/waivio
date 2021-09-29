@@ -1,4 +1,5 @@
 import {
+  CREATE_QUICK_POST,
   GET_ELIGIBLE_REWARDS,
   GET_ELIGIBLE_REWARDS_WITH_RESTAURANT,
   RESET_DISH,
@@ -23,11 +24,17 @@ export default (state = defaultState, action) => {
         ...state,
         eligibleRestList: action.payload.wobjects,
       };
-    case TOGGLE_MODAL:
-      return {
-        ...state,
-        isOpen: action.payload,
-      };
+    case TOGGLE_MODAL: {
+      if (action.payload) {
+        return {
+          ...state,
+          isOpen: action.payload,
+        };
+      }
+
+      return defaultState;
+    }
+
     case GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS:
       return {
         ...state,
@@ -54,6 +61,8 @@ export default (state = defaultState, action) => {
         ...state,
         selectedDish: null,
       };
+    case CREATE_QUICK_POST:
+      return defaultState;
     default:
       return state;
   }

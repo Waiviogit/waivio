@@ -1,3 +1,6 @@
+@import (reference) '../../../../styles/custom.less';
+@import (reference) '../../../../styles/modules/variables.less';
+
 .SecondScreen {
   &__textarea {
     height: 90px;
@@ -5,5 +8,20 @@
     outline: none;
     border-radius: 4px;
     border: 1px solid #e9e7e7;
+    padding: 5px;
+  }
+
+  &__text,
+  .ImageSetter__label,
+  .tags-selector__label {
+    padding: 10px 0 5px;
+    font-size: 1em;
+    font-weight: 500;
+    color: #5e5e5e;
+
+    @media @small {
+      padding: 20px 0 5px;
+      font-size: 1.2em;
+    }
   }
 }
