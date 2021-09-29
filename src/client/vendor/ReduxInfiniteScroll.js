@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import { message } from 'antd';
+import UserActivityActionsLoader from '../activity/UserActivityActionsLoader';
 
 function topPosition(domElt) {
   if (!domElt) {
@@ -20,6 +22,9 @@ export default class ReduxInfiniteScroll extends React.Component {
   constructor(props) {
     super(props);
     this.scrollFunction = this.scrollListener.bind(this);
+    this.state = {
+      isloading: true,
+    };
   }
 
   componentDidMount() {
@@ -95,7 +100,11 @@ export default class ReduxInfiniteScroll extends React.Component {
 
     if (bottomPosition < Number(this.props.threshold)) {
       this.detachScrollListener();
-      this.props.loadMore();
+      try {
+        this.props.loadMore();
+      } catch (error) {
+        this.setState({ isloading: false });
+      }
     }
   }
 
@@ -120,12 +129,6 @@ export default class ReduxInfiniteScroll extends React.Component {
     this.detachScrollListener();
   }
 
-  renderLoader() {
-    return this.props.loadingMore || (this.props.hasMore && this.props.showLoader)
-      ? this.props.loader
-      : null;
-  }
-
   _assignHolderClass() {
     let additionalClass;
     additionalClass =
@@ -136,11 +139,11 @@ export default class ReduxInfiniteScroll extends React.Component {
 
   render() {
     const Holder = this.props.holderType;
-
+    const isCurrentUser = this.props.isCurrentUser;
     return (
       <Holder className={this._assignHolderClass()} style={{ height: this.props.containerHeight }}>
         {this._renderOptions()}
-        {this.renderLoader()}
+        {this.state.isloading && <UserActivityActionsLoader isCurrentUser={isCurrentUser} />}
       </Holder>
     );
   }
@@ -160,6 +163,7 @@ ReduxInfiniteScroll.propTypes = {
   children: PropTypes.node,
   holderType: PropTypes.string,
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  isCurrentUser: PropTypes.bool,
 };
 
 ReduxInfiniteScroll.defaultProps = {
@@ -175,4 +179,5 @@ ReduxInfiniteScroll.defaultProps = {
   holderType: 'div',
   children: [],
   items: [],
+  isCurrentUser: false,
 };

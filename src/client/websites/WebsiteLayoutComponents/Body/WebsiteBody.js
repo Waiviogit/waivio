@@ -41,6 +41,7 @@ import {
 import { getShowReloadButton } from '../../../../store/websiteStore/websiteSelectors';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 import MainMap from '../../MainMap/MainMap';
+import QuickRewardsModal from '../../../rewards/QiuckRewardsModal/QuickRewardsModal';
 
 import './WebsiteBody.less';
 
@@ -135,7 +136,7 @@ const WebsiteBody = props => {
         isDining={props.isDining}
       />
       <div className={mapClassList}>
-        {currentLogo && (
+        {currentLogo && !props.isDining && (
           <Link to={logoLink}>
             <img className="WebsiteBody__logo" src={currentLogo} alt="your logo" />
           </Link>
@@ -152,6 +153,7 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
+      {props.isAuth && <QuickRewardsModal />}
     </div>
   );
 };

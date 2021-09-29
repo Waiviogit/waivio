@@ -54,7 +54,7 @@ const MainMap = React.memo(props => {
   const [currZoom, setZoom] = useState(6);
   const [currCenter, setCenter] = useState([]);
   const query = new URLSearchParams(props.location.search);
-  const headerHeight = props.isDining ? 115 : 57;
+  const headerHeight = props.isDining ? 125 : 57;
 
   useEffect(() => {
     if (!props.showReloadButton) {
@@ -291,14 +291,16 @@ const MainMap = React.memo(props => {
   const setLocationFromNavigator = position => {
     const { latitude, longitude } = position.coords;
 
-    setCenter([latitude, longitude]);
-    setShowLocation(true);
     props.putUserCoordinates({ latitude, longitude });
+    setShowLocation(true);
+    setCenter([latitude, longitude]);
   };
+
   const setLocationFromApi = () => {
     setShowLocation(false);
     setCenter([props.userLocation.lat, props.userLocation.lon]);
   };
+
   const handleClickOnMap = ({ event }) => {
     if (event.target.classList.value === 'pigeon-overlays') {
       resetInfoBox();

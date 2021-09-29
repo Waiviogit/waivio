@@ -40,7 +40,6 @@ const SearchAllResult = props => {
   });
 
   const handleItemClick = wobj => {
-    localStorage.setItem('scrollTop', resultList.current.scrollTop);
     props.setQueryFromSearchList(wobj);
     props.setQueryInLocalStorage();
   };
@@ -70,6 +69,8 @@ const SearchAllResult = props => {
     if (props.wobjectsCounter && localStorage.getItem('scrollTop')) {
       resultList.current.scrollTo(0, +localStorage.getItem('scrollTop'));
     }
+
+    return () => localStorage.setItem('scrollTop', resultList.current.scrollTop);
   }, []);
 
   const currRenderListState = currentListState();

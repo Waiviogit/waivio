@@ -559,8 +559,11 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
       title: 'unactivate object for rewards',
       body: `Campaign ${company.name} was inactivated by ${username} `,
       json_metadata: JSON.stringify({
-        // eslint-disable-next-line no-underscore-dangle
-        waivioRewards: { type: 'waivio_stop_campaign', campaign_id: company._id },
+        waivioRewards: {
+          type: 'waivio_stop_campaign',
+          campaign_id: company._id,
+          timestamp: moment(Date.now()).unix(),
+        },
       }),
     },
   ];

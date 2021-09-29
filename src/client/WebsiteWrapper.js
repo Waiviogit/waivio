@@ -40,6 +40,7 @@ import {
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
 import MainPageHeader from './websites/WebsiteLayoutComponents/Header/MainPageHeader';
+import { toggleModal } from '../store/quickRewards/quickRewardsActions';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -67,6 +68,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     dispatchGetAuthGuestBalance,
     getWebsiteObjWithCoordinates,
     getCurrentAppSettings,
+    toggleModal,
   },
 )
 class WebsiteWrapper extends React.PureComponent {
@@ -78,6 +80,7 @@ class WebsiteWrapper extends React.PureComponent {
     username: PropTypes.string,
     login: PropTypes.func,
     getRewardFund: PropTypes.func,
+    toggleModal: PropTypes.func.isRequired,
     getRate: PropTypes.func,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
@@ -87,6 +90,7 @@ class WebsiteWrapper extends React.PureComponent {
     isDiningGifts: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
+    isAuthenticated: PropTypes.bool,
     loadingFetching: PropTypes.bool,
     location: PropTypes.shape({
       search: PropTypes.string,
@@ -114,6 +118,7 @@ class WebsiteWrapper extends React.PureComponent {
     dispatchGetAuthGuestBalance: () => {},
     isOpenWalletTable: false,
     isDiningGifts: false,
+    isAuthenticated: false,
     loadingFetching: true,
     location: {},
   };
@@ -226,7 +231,11 @@ class WebsiteWrapper extends React.PureComponent {
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               {!signInPage &&
                 (isDiningGifts ? (
-                  <MainPageHeader withMap={location.pathname === '/map'} />
+                  <MainPageHeader
+                    withMap={location.pathname === '/map'}
+                    toggleModal={this.props.toggleModal}
+                    isAuth={this.props.isAuthenticated}
+                  />
                 ) : (
                   <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                     <WebsiteHeader />

@@ -27,6 +27,8 @@ const ObjectCardView = ({
   withRewards,
   rewardPrice,
   isReserved,
+  closeButton,
+  onDelete,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
@@ -184,6 +186,9 @@ const ObjectCardView = ({
           </div>
         )}
       </div>
+      {closeButton && (
+        <span role="presentation" onClick={onDelete} className="iconfont icon-delete" />
+      )}
     </div>
   );
 };
@@ -202,6 +207,8 @@ ObjectCardView.propTypes = {
     ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
+  closeButton: PropTypes.bool,
+  onDelete: PropTypes.func,
 };
 
 ObjectCardView.defaultProps = {
@@ -214,5 +221,7 @@ ObjectCardView.defaultProps = {
   rewardPrice: 0,
   currency: defaultCurrency,
   hovered: false,
+  closeButton: false,
+  onDelete: null,
 };
 export default injectIntl(ObjectCardView);

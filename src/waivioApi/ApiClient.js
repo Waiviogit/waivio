@@ -585,12 +585,16 @@ export const getAuthorsChildWobjects = (
   limit = 30,
   locale,
   excludeTypes = '',
+  name,
+  searchString,
 ) =>
   new Promise((resolve, reject) =>
     fetch(
       `${config.apiPrefix}${config.getObjects}/${authorPermlink}${
         config.childWobjects
-      }?limit=${limit}&skip=${skip}${excludeTypes ? `&excludeTypes=${excludeTypes}` : ''}`,
+      }?limit=${limit}&skip=${skip}${excludeTypes ? `&excludeTypes=${excludeTypes}` : ''}${
+        searchString ? `&searchString=${searchString}` : ''
+      }&userName=${name}`,
       {
         headers: {
           ...headers,
@@ -2199,6 +2203,24 @@ export const getTypesPrefetch = types => {
   return fetch(`${config.apiPrefix}${config.sites}${config.prefetch}?types=${type}`, {
     headers: headers,
     method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
+export const getEligibleList = (userName, requiredObject) => {
+  return fetch(`${config.campaignApiPrefix}${config.campaigns}${config.eligible}`, {
+    headers: headers,
+    body: JSON.stringify({
+      userName,
+      requiredObject,
+      skip: 0,
+      limit: 25,
+      sort: 'default',
+      status: ['active'],
+    }),
+    method: 'POST',
   })
     .then(handleErrors)
     .then(res => res.json())

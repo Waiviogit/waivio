@@ -3,6 +3,7 @@ import * as authActions from '../authStore/authActions';
 import * as userActions from './userActions';
 import * as wobjActions from '../wObjectStore/wobjActions';
 import * as appTypes from '../appStore/appActions';
+import { PUT_USER_COORDINATES } from '../appStore/appActions';
 
 const initialState = {
   recommendedObjects: [],
@@ -122,6 +123,15 @@ export default function userReducer(state = initialState, action) {
       };
 
     case userActions.GET_USER_LOCATION.SUCCESS:
+      return {
+        ...state,
+        location: {
+          lat: action.payload.latitude,
+          lon: action.payload.longitude,
+        },
+      };
+
+    case PUT_USER_COORDINATES.SUCCESS:
       return {
         ...state,
         location: {

@@ -14,9 +14,12 @@
     &__button {
       width: 25px;
       height: 25px;
+      line-height: 25px;
       text-align: center;
       background-color: @white;
       border: 1px solid @white-gainsboro;
+      font-size: 30px;
+      font-weight: bolder;
 
       &:hover {
         background-color: @white-gainsboro;
@@ -24,11 +27,49 @@
     }
   }
 
+  &__locateGPS-button {
+    display: inline-block;
+    width: 15px;
+  }
+
+  &__locateGPS {
+    text-align: center;
+    line-height: 15px;
+  }
+
   &__gps {
     position: absolute;
     cursor: pointer;
-    left: 10px;
-    bottom: 15px;
+    bottom: 50px;
     z-index: 100;
+    margin-bottom: 5px;
+    width: 25px;
+    height: 25px;
+    border: 1px solid #e9e7e7;
+    background: @white;
+
+    &__zoom {
+      display: none;
+
+      @media @small {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        z-index: 100;
+
+        &__button {
+          width: 25px;
+          height: 25px;
+          text-align: center;
+          background-color: @white;
+          border: 1px solid @border-color-base;
+          color: @black;
+
+          &:hover {
+            background-color: @primary-color;
+          }
+        }
+      }
+    }
   }
 }

@@ -70,16 +70,21 @@ const RatingsWrap = ({
       ) : (
         <div className="RatingsWrap">
           <Row>
-            {rateLayout(
-              sortedRatings[1] ? 12 : 24,
-              0,
-              sortedRatings[1] ? 'RatingsWrap__divider' : '',
-            )}
+            <div className="RatingsWrap__response">
+              {rateLayout(
+                sortedRatings[1] ? 12 : 24,
+                0,
+                sortedRatings[1] ? 'RatingsWrap__divider' : '',
+              )}
+            </div>
+
             {sortedRatings[1] && rateLayout(12, 1, 'RatingsWrap__rate-right-col')}
           </Row>
           {sortedRatings[2] && (
             <Row>
-              {rateLayout(sortedRatings[3] ? 12 : 24, 2, 'RatingsWrap__divider')}
+              <div className="RatingsWrap__response">
+                {rateLayout(sortedRatings[3] ? 12 : 24, 2, 'RatingsWrap__divider')}
+              </div>
               {sortedRatings[3] && rateLayout(12, 3, 'RatingsWrap__rate-right-col')}
             </Row>
           )}
