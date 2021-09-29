@@ -586,13 +586,14 @@ export const getAuthorsChildWobjects = (
   locale,
   excludeTypes = '',
   name,
+  searchString,
 ) =>
   new Promise((resolve, reject) =>
     fetch(
       `${config.apiPrefix}${config.getObjects}/${authorPermlink}${
         config.childWobjects
-      }?limit=${limit}&skip=${skip}${
-        excludeTypes ? `&excludeTypes=${excludeTypes}` : ''
+      }?limit=${limit}&skip=${skip}${excludeTypes ? `&excludeTypes=${excludeTypes}` : ''}${
+        searchString ? `&searchString=${searchString}` : ''
       }&userName=${name}`,
       {
         headers: {

@@ -75,7 +75,15 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, searchString) =
 
   return dispatch({
     type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.ACTION,
-    payload: getAuthorsChildWobjects(selectRest.author_permlink, 0, 30, locale, '', name),
+    payload: getAuthorsChildWobjects(
+      selectRest.author_permlink,
+      0,
+      30,
+      locale,
+      '',
+      name,
+      searchString,
+    ),
   });
 };
 

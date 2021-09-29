@@ -36,16 +36,16 @@ const ModalSecondScreen = props => {
   return (
     <div className="SecondScreen">
       {requirements && (
-        <p>
+        <p className="SecondScreen__text">
           Add minimum {requirements.minPhotos} original photos of{' '}
           <a href={props.selectedDish.defaultShowLink}>{getObjectName(props.selectedDish)}</a>
         </p>
       )}
-      <ImageSetter onImageLoaded={handleImageLoaded} isRequired isMultiple />
-      <h4>Review content</h4>
+      <ImageSetter onImageLoaded={handleImageLoaded} isMultiple />
+      <h4 className="SecondScreen__text">Review content</h4>
       <textarea onChange={handleBodyChange} className="SecondScreen__textarea" />
       <TagsSelector
-        label={'HashTags(topics)'}
+        label={'Hashtags'}
         placeholder={'Add hashtags (without #) here'}
         tags={props.topics}
         onChange={handleTopicsChange}

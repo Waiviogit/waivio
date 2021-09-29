@@ -240,6 +240,7 @@
     &__submit {
       text-transform: uppercase;
       border-radius: 8px;
+      height: 33px;
     }
 
     &__searchWrap {
@@ -247,10 +248,12 @@
       width: 100%;
       flex-wrap: wrap;
       margin-bottom: 5px;
+      justify-content: center;
 
       @media @small {
-        width: 60%;
+        width: 75%;
         margin-bottom: 0;
+        justify-content: flex-start;
       }
     }
 
@@ -303,7 +306,7 @@
         width: 100%;
 
         @media @small {
-          width: 60%;
+          width: 50%;
           margin-right: 25px;
         }
       }
