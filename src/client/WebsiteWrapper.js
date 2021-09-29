@@ -90,6 +90,7 @@ class WebsiteWrapper extends React.PureComponent {
     isDiningGifts: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
+    isAuthenticated: PropTypes.bool,
     loadingFetching: PropTypes.bool,
     location: PropTypes.shape({
       search: PropTypes.string,
@@ -117,6 +118,7 @@ class WebsiteWrapper extends React.PureComponent {
     dispatchGetAuthGuestBalance: () => {},
     isOpenWalletTable: false,
     isDiningGifts: false,
+    isAuthenticated: false,
     loadingFetching: true,
     location: {},
   };
@@ -232,6 +234,7 @@ class WebsiteWrapper extends React.PureComponent {
                   <MainPageHeader
                     withMap={location.pathname === '/map'}
                     toggleModal={this.props.toggleModal}
+                    isAuth={this.props.isAuthenticated}
                   />
                 ) : (
                   <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
