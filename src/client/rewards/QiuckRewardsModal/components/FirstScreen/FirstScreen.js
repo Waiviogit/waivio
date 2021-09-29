@@ -82,6 +82,7 @@ const ModalFirstScreen = props => {
             placeholder="Search"
             onSelect={handleSelectRestaurant}
             onChange={handleSearchRestaurant}
+            disabled={isEmpty(props.eligible)}
           >
             {props.eligible.map(camp => {
               if (!isEmpty(camp)) {

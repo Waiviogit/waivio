@@ -54,7 +54,7 @@ const MainMap = React.memo(props => {
   const [currZoom, setZoom] = useState(6);
   const [currCenter, setCenter] = useState([]);
   const query = new URLSearchParams(props.location.search);
-  const headerHeight = props.isDining ? 115 : 57;
+  const headerHeight = props.isDining ? 125 : 57;
 
   useEffect(() => {
     if (!props.showReloadButton) {
