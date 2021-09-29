@@ -47,14 +47,19 @@ const QuickRewardsModal = props => {
   };
 
   const createImagesLink = () =>
-    images.map(img => `\n<center>![image]( ${img.src})</center>\n`).join('');
+    images.map(img => `\n<center>![image]( ${img.src})</center>`).join('');
+
+  const createTopicsLink = () =>
+    topics.map(tag => `\n[#${tag}](https://www.waivio.com/object/${tag})`).join('');
 
   const handleCreatePost = () => {
-    const compareBody = `\\n[${getObjectName(props.selectedDish)}](https://www.waivio.com${
-      props.selectedDish.defaultShowLink
-    }) \\n[${getObjectName(props.selectedRestaurant)}](https://www.waivio.com${
-      props.selectedRestaurant.defaultShowLink
-    }) \\n ${createImagesLink()} ${body}`;
+    const compareBody = `\n[${getObjectName(
+      props.selectedRestaurant,
+    )}](https://www.waivio.com/object/${props.selectedRestaurant.author_permlink})
+    \n[${getObjectName(props.selectedDish)}](https://www.waivio.com/object/${
+      props.selectedDish.author_permlink
+    }) 
+    ${createImagesLink()} ${body} ${createTopicsLink()}`;
 
     setLoading(true);
 
@@ -110,7 +115,7 @@ const QuickRewardsModal = props => {
           disabled={
             isEmpty(props.selectedDish) ||
             isEmpty(props.selectedRestaurant) ||
-            (isPublishPage && !body && requirements !== images.length)
+            (isPublishPage && !body && requirements && requirements !== images.length)
           }
           loading={loading}
           onClick={handleCreatePost}
