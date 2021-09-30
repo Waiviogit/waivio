@@ -10,6 +10,7 @@ import CarouselSection from './components/CarouselSection/CarouselSection';
 import DistrictSection from './components/DistrictSection/DistrictSection';
 import NearbySection from './components/NearbySection/NearbySection';
 import { isMobile } from '../../../helpers/apiHelpers';
+import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
 
 import './WebsiteMainPage.less';
 
@@ -60,7 +61,9 @@ const WebsiteMainPage = () => {
             </h2>
           </div>
           <div className="WebsiteMainPage__buttonWrap">
-            {!isAuth && (
+            {isAuth ? (
+              <SubmitDishPhotosButton className="WebsiteMainPage__button WebsiteMainPage__button--fill" />
+            ) : (
               <ModalSignIn
                 buttonClassName="WebsiteMainPage__button WebsiteMainPage__button--fill"
                 text="Sign up"

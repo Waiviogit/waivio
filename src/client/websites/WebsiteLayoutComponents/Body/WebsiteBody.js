@@ -153,7 +153,6 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
-      {props.isAuth && <QuickRewardsModal />}
     </div>
   );
 };
