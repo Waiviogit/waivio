@@ -24,7 +24,7 @@ const NotificationWithdrawRoute = ({ notification, read, onClick }) => {
         <div className="Notification__text__message">
           <FormattedMessage
             id="withdraw_route"
-            defaultMessage="Account {to_account} set withdraw route to  {from_account} account"
+            defaultMessage="{from_account} set withdraw route to {to_account}"
             values={{
               to_account: (
                 <Link to={urlTo}>
