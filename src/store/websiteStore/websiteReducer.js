@@ -2,7 +2,6 @@ import { get, uniqBy } from 'lodash';
 import moment from 'moment';
 import * as websiteAction from './websiteActions';
 import { getAvailableStatus } from '../../client/websites/helper';
-import { GET_DISTRICTS, GET_NEARBY_FOOD, GET_RESTAURANTS } from './websiteActions';
 
 const initialState = {
   parentDomain: [],
