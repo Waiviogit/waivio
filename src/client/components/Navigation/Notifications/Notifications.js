@@ -37,6 +37,7 @@ import NotificationCampaignReservation from './NotificationCampaignReservation';
 import NotificationWobjectRewardsBell from './NotificationWobjectRewardsBell';
 import NotificationWobjectPostBell from './NotificationWobjectPostBell';
 import NotificationWebsiteBalance from './NotificationWebsiteBalance';
+import NotificationDeacticationCampaign from '../../../components/Navigation/Notifications/NotificationDeactivationCampaign';
 
 import './Notification.less';
 import './Notifications.less';
@@ -458,6 +459,15 @@ class Notifications extends React.Component {
                     read={read}
                     onClick={this.handleNotificationsClick}
                     currentAuthUsername={currentAuthUsername}
+                  />
+                );
+              case notificationConstants.DEACTIVATION_CAMPAIGN:
+                return (
+                  <NotificationDeacticationCampaign
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               default:

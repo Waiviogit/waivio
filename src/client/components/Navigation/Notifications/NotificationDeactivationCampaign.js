@@ -47,6 +47,7 @@ NotificationDeacticationCampaign.propTypes = {
     timestamp: PropTypes.number,
     author_permlink: PropTypes.string,
     campaignName: PropTypes.string,
+    isReleased: PropTypes.bool,
   }),
   onClick: PropTypes.func,
 };
