@@ -56,7 +56,7 @@
 .MainPageHeader {
   display: flex;
   flex-direction: column;
-  padding: 5px 15px;
+  padding: 5px 15px 10px;
   background: @white-ghostWhite;
   width: 100vw;
   -webkit-box-shadow: 1px 8px 15px -11px rgba(34, 60, 80, 0.2);
@@ -111,11 +111,12 @@
     color: @black;
 
     @media @small {
-      font-size: 25px;
+      font-size: 20px;
     }
 
     span {
       display: none;
+      color: #6a6a6a;
 
       @media @medium {
         display: inline;
@@ -130,8 +131,8 @@
       font-weight: 500;
 
       @media @small {
-        font-size: 25px;
-        margin-right: 40px;
+        font-size: 20px;
+        margin-right: 30px;
       }
 
       &::after {
@@ -147,10 +148,15 @@
         @media @medium {
           display: inline-block;
           top: 0;
-          margin: 0 20px;
+          margin: 0 15px;
         }
       }
     }
+  }
+
+  &__logoLink {
+    display: flex;
+    align-items: center;
   }
 
   &__listLink {
@@ -164,12 +170,12 @@
       &::after {
         content: '';
         display: inline-block;
-        height: 30px;
+        height: 23px;
         width: 1px;
         background: @gray;
         position: absolute;
         margin: 0 10px;
-        top: 0;
+        top: 2px;
       }
 
       &.Topnav__user {
@@ -185,7 +191,7 @@
         color: @gray;
         position: relative;
         margin: 0 10px;
-        font-size: 20px;
+        font-size: 18px;
       }
     }
 
@@ -217,25 +223,48 @@
     border-radius: 50%;
     margin-right: 5px;
     width: 35px;
-
-    @media @small {
-      width: 50px;
-    }
   }
 
-  .NewFiltersClass {
+  .DiningFiltersClass {
     width: 100%;
     display: flex;
     background: @white-ghostWhite;
     padding: 15px 0 0;
     flex-direction: column;
+    justify-content: space-between;
 
     @media @small {
       flex-direction: row;
     }
 
+    &__submit {
+      display: inline-block;
+      text-transform: uppercase;
+      border-radius: 8px;
+      height: 33px;
+      background: @orange-hot;
+      color: @white;
+      line-height: 33px;
+      text-align: center;
+      padding: 0 15px;
+    }
+
+    &__searchWrap {
+      display: flex;
+      width: 100%;
+      flex-wrap: wrap;
+      margin-bottom: 5px;
+      justify-content: center;
+
+      @media @small {
+        width: 75%;
+        margin-bottom: 0;
+        justify-content: flex-start;
+      }
+    }
+
     .SearchAllResult__type-wrap {
-      border-radius: 5px;
+      border-radius: 8px;
       border: 1px solid @grey-iron;
       background: transparent;
       padding: 0;
@@ -248,7 +277,7 @@
       height: auto;
       border: none;
       transition: 0.2s;
-      border-radius: 5px;
+      border-radius: 8px;
       font-size: 16px;
 
       @media @small {
@@ -271,7 +300,7 @@
     }
 
     .WebsiteSearch {
-      border-radius: 5px;
+      border-radius: 8px;
       border: 1px solid @grey-iron;
       background: transparent;
       padding: 0;
@@ -283,13 +312,17 @@
         width: 100%;
 
         @media @small {
-          width: 30%;
+          width: 50%;
           margin-right: 25px;
         }
       }
 
       .ant-input {
         border: none;
+
+        &:focus {
+          border-radius: 8px;
+        }
       }
 
       .ant-select-search.ant-select-search--inline {
@@ -299,7 +332,7 @@
       &__close {
         position: absolute;
         top: 10px;
-        left: 93%;
+        left: 95%;
       }
     }
   }

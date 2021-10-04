@@ -29,10 +29,8 @@ import { guestUserRegex } from './helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
-import { getWebsiteObjWithCoordinates } from '../store/websiteStore/websiteActions';
 import { getIsDiningGifts, getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
 import {
-  getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
   getIsAuthFetching,
@@ -40,15 +38,15 @@ import {
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
 import MainPageHeader from './websites/WebsiteLayoutComponents/Header/MainPageHeader';
+import QuickRewardsModal from './rewards/QiuckRewardsModal/QuickRewardsModal';
+import { getIsOpenModal } from '../store/quickRewards/quickRewardsSelectors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
 @withRouter
 @connect(
   state => ({
-    user: getAuthenticatedUser(state),
     username: getAuthenticatedUserName(state),
-    isAuthenticated: getIsAuthenticated(state),
     usedLocale: getUsedLocale(state),
     translations: getTranslations(state),
     locale: getLocale(state),
@@ -56,6 +54,8 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isOpenWalletTable: getIsOpenWalletTable(state),
     loadingFetching: getIsAuthFetching(state),
     isDiningGifts: getIsDiningGifts(state),
+    isAuth: getIsAuthenticated(state),
+    isOpenModal: getIsOpenModal(state),
   }),
   {
     login,
@@ -65,7 +65,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     busyLogin,
     setUsedLocale,
     dispatchGetAuthGuestBalance,
-    getWebsiteObjWithCoordinates,
     getCurrentAppSettings,
   },
 )
@@ -84,6 +83,8 @@ class WebsiteWrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     getCurrentAppSettings: PropTypes.func,
     nightmode: PropTypes.bool,
+    isAuth: PropTypes.bool,
+    isOpenModal: PropTypes.bool,
     isDiningGifts: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
@@ -114,6 +115,8 @@ class WebsiteWrapper extends React.PureComponent {
     dispatchGetAuthGuestBalance: () => {},
     isOpenWalletTable: false,
     isDiningGifts: false,
+    isAuth: false,
+    isOpenModal: false,
     loadingFetching: true,
     location: {},
   };
@@ -209,6 +212,8 @@ class WebsiteWrapper extends React.PureComponent {
       loadingFetching,
       location,
       isDiningGifts,
+      isOpenModal,
+      isAuth,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
@@ -238,6 +243,7 @@ class WebsiteWrapper extends React.PureComponent {
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
               </div>
             </Layout>
+            {isAuth && isOpenModal && <QuickRewardsModal />}
           </AppSharedContext.Provider>
         </ConfigProvider>
       </IntlProvider>

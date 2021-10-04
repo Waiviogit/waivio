@@ -69,11 +69,7 @@ const Withdraw = ({
       setTimeout(
         () =>
           validaveCryptoWallet(address, crypto).then(res => {
-            if (res.isValid) {
-              setIsValidate({ valid: true, loading: false });
-            } else {
-              setIsValidate({ valid: false, loading: false });
-            }
+            setIsValidate({ valid: res.isValid, loading: false });
           }),
         1000,
       );

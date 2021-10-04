@@ -1,0 +1,104 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.QuickRewardsModal {
+  &__select {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  &__select-item.ant-select-dropdown-menu-item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eae8e8;
+
+    .object-search-card {
+      width: 65%;
+
+      @media @small {
+        width: 90%;
+      }
+    }
+  }
+
+  &__button-wrap {
+    display: flex;
+    justify-content: space-between;
+    padding: 40px 0 0;
+    flex-wrap: wrap;
+
+    @media @small {
+      flex-wrap: nowrap;
+    }
+  }
+
+  &__button {
+    width: 145px;
+    height: 30px;
+
+    &--withRewards {
+      margin: 10px auto;
+
+      @media @small {
+        margin: 0;
+      }
+    }
+  }
+}
+
+.circle-wrap {
+  display: flex;
+  position: relative;
+}
+
+.ant-modal-title {
+  text-align: center;
+}
+
+.circle {
+  border-radius: 50%;
+  background: #eaeaea;
+  color: white;
+  width: 22px;
+  height: 22px;
+  line-height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.circle-title {
+  font-size: 10px;
+}
+
+.circle-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+
+  &:first-child {
+    margin-right: 10px;
+
+    &::before {
+      content: '';
+      width: 38px;
+      height: 1px;
+      position: absolute;
+      background: #eaeaea;
+      left: 27px;
+      top: 10px;
+    }
+  }
+
+  &--active {
+    .circle {
+      background: #ff7036;
+    }
+
+    .circle-title {
+      color: #ff7036;
+    }
+  }
+}

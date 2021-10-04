@@ -143,8 +143,7 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
       return intl.formatMessage(
         {
           id: 'withdraw_route',
-          defaultMessage:
-            'Account {to_account} registered withdraw route for {from_account} account',
+          defaultMessage: '{from_account} set withdraw route to {to_account}',
         },
         {
           to_account: notification.to_account,

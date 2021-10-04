@@ -319,13 +319,10 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
   return (dispatch, getState, { steemConnectAPI }) => {
     if (isReview && campaign) {
       // eslint-disable-next-line no-param-reassign
-      postData.body += `\n***\n${intl.formatMessage({
-        id: `check_review_post_add_text`,
-        defaultMessage: 'This review was sponsored in part by',
-      })} ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
+      postData.body += `\n***\nThis review was sponsored in part by ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
     }
 
-    const host = getCurrentHost(getState());
+    const host = getCurrentHost(getState()).slice(7);
 
     const {
       parentAuthor,

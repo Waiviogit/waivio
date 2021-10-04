@@ -8,7 +8,9 @@ import classNames from 'classnames';
 
 import {
   searchObjectsAutoCompeteLoadingMore,
+  searchUsersAutoCompete,
   searchUsersAutoCompeteLoadingMore,
+  searchWebsiteObjectsAutoCompete,
   setShowSearchResult,
 } from '../../../store/searchStore/searchActions';
 import Loading from '../../components/Icon/Loading';
@@ -17,8 +19,10 @@ import {
   getAllSearchLoadingMore,
   getHasMoreObjectsForWebsite,
   getHasMoreUsers,
+  getSearchFiltersTagCategory,
   getSearchUsersResultsQuantity,
   getShowSearchResult,
+  getWebsiteMap,
   getWebsiteSearchResultQuantity,
   getWebsiteSearchString,
 } from '../../../store/searchStore/searchSelectors';
@@ -27,6 +31,7 @@ import UsersList from './components/UsersList';
 import WobjectsList from './components/WobjectsList';
 import FilterTypesList from './components/FilterTypesList';
 import ReloadButton from './components/ReloadButton';
+import { resetWebsiteObjectsCoordinates } from '../../../store/websiteStore/websiteActions';
 
 import './SearchAllResult.less';
 
@@ -40,7 +45,6 @@ const SearchAllResult = props => {
   });
 
   const handleItemClick = wobj => {
-    localStorage.setItem('scrollTop', resultList.current.scrollTop);
     props.setQueryFromSearchList(wobj);
     props.setQueryInLocalStorage();
   };
@@ -66,10 +70,36 @@ const SearchAllResult = props => {
     }
   };
 
+  const currentSearchMethod = value => {
+    localStorage.removeItem('scrollTop');
+    props.resetWebsiteObjectsCoordinates();
+    props.reloadSearchList();
+
+    switch (props.searchType) {
+      case 'Users':
+        return props.searchUsersAutoCompete(value);
+      default:
+        return props.searchWebsiteObjectsAutoCompete(value);
+    }
+  };
+
+  useEffect(() => {
+    if (
+      props.isShowResult &&
+      !isEmpty(props.searchMap.bottomPoint) &&
+      !isEmpty(props.searchMap.topPoint) &&
+      !+localStorage.getItem('scrollTop')
+    ) {
+      currentSearchMethod(props.searchString);
+    }
+  }, [props.activeFilters, props.searchMap, props.searchString]);
+
   useEffect(() => {
     if (props.wobjectsCounter && localStorage.getItem('scrollTop')) {
       resultList.current.scrollTo(0, +localStorage.getItem('scrollTop'));
     }
+
+    return () => localStorage.setItem('scrollTop', resultList.current.scrollTop);
   }, []);
 
   const currRenderListState = currentListState();
@@ -159,7 +189,6 @@ SearchAllResult.propTypes = {
   setQueryInLocalStorage: PropTypes.func.isRequired,
   searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
-  userLocation: PropTypes.shape({}),
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
   wobjectsCounter: PropTypes.number.isRequired,
@@ -174,10 +203,14 @@ SearchAllResult.propTypes = {
   setQueryFromSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
+  searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
+  resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
+  searchUsersAutoCompete: PropTypes.func.isRequired,
+  searchMap: PropTypes.shape().isRequired,
+  activeFilters: PropTypes.shape().isRequired,
 };
 
 SearchAllResult.defaultProps = {
-  userLocation: {},
   hasMoreUsers: false,
   showReload: false,
   handleHoveredCard: () => {},
@@ -194,10 +227,15 @@ export default connect(
     hasMoreUsers: getHasMoreUsers(state),
     wobjectsCounter: getWebsiteSearchResultQuantity(state),
     usersCounter: getSearchUsersResultsQuantity(state),
+    activeFilters: getSearchFiltersTagCategory(state),
+    searchMap: getWebsiteMap(state),
   }),
   {
     searchUsersAutoCompeteLoadingMore,
     searchObjectsAutoCompeteLoadingMore,
     setShowSearchResult,
+    searchWebsiteObjectsAutoCompete,
+    searchUsersAutoCompete,
+    resetWebsiteObjectsCoordinates,
   },
 )(injectIntl(SearchAllResult));

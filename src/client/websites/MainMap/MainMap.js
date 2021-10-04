@@ -54,27 +54,18 @@ const MainMap = React.memo(props => {
   const [currZoom, setZoom] = useState(6);
   const [currCenter, setCenter] = useState([]);
   const query = new URLSearchParams(props.location.search);
-  const headerHeight = props.isDining ? 115 : 57;
-
-  useEffect(() => {
-    if (!props.showReloadButton) {
-      props.setMapForSearch({
-        coordinates: reverse([...currCenter]),
-        ...boundsParams,
-      });
-    }
-  }, [props.showReloadButton]);
-
+  const headerHeight = props.isDining ? 125 : 57;
   let queryCenter = query.get('center');
   let mapHeight = `calc(100vh - ${headerHeight}px)`;
-
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
-  const getCurrentConfig = config =>
-    isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const mapRef = useRef();
 
+  if (queryCenter) queryCenter = queryCenter.split(',').map(item => Number(item));
   if (isMobile) mapHeight = `${height - headerHeight}px`;
+
+  const getCurrentConfig = config =>
+    isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
 
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
@@ -82,24 +73,6 @@ const MainMap = React.memo(props => {
     setCenter(center);
     setZoom(zoom);
   };
-
-  if (queryCenter) {
-    queryCenter = queryCenter.split(',').map(item => Number(item));
-  }
-
-  useEffect(() => {
-    if (mapRef.current && query.get('showPanel')) {
-      const bounce = mapRef.current.getBounds();
-
-      if (bounce.ne[0] && bounce.sw[0]) {
-        props.setShowSearchResult(true);
-        setBoundsParams({
-          topPoint: [bounce.ne[1], bounce.ne[0]],
-          bottomPoint: [bounce.sw[1], bounce.sw[0]],
-        });
-      }
-    }
-  }, [mapRef.current]);
 
   const getCoordinatesForMap = async () => {
     let zoom = +query.get('zoom');
@@ -135,6 +108,18 @@ const MainMap = React.memo(props => {
     localStorage.setItem('query', query.toString());
   };
 
+  const checkDistanceAndSetReload = useCallback(() => {
+    if (!isEmpty(props.searchMap)) {
+      const distance = distanceInMBetweenEarthCoordinates(
+        reverse([...props.searchMap.coordinates]),
+        currCenter,
+      );
+
+      if (distance > 20 && !props.showReloadButton) props.setShowReload(true);
+      if (!distance) props.setShowReload(false);
+    }
+  }, [props.searchMap, props.showReloadButton, currCenter]);
+
   useEffect(() => {
     const handleResize = () => setHeight(window.innerHeight);
 
@@ -150,6 +135,20 @@ const MainMap = React.memo(props => {
   }, []);
 
   useEffect(() => {
+    if (mapRef.current && query.get('showPanel')) {
+      const bounce = mapRef.current.getBounds();
+
+      if (bounce.ne[0] && bounce.sw[0]) {
+        props.setShowSearchResult(true);
+        setBoundsParams({
+          topPoint: [bounce.ne[1], bounce.ne[0]],
+          bottomPoint: [bounce.sw[1], bounce.sw[0]],
+        });
+      }
+    }
+  }, [mapRef.current]);
+
+  useEffect(() => {
     if (props.isShowResult) {
       handleSetMapForSearch();
     } else {
@@ -161,21 +160,22 @@ const MainMap = React.memo(props => {
   }, [props.isShowResult]);
 
   useEffect(() => {
+    if (!props.showReloadButton) {
+      props.setMapForSearch({
+        coordinates: reverse([...currCenter]),
+        ...boundsParams,
+      });
+    }
+  }, [props.showReloadButton]);
+
+  useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint))
       props
-        .getWebsiteObjWithCoordinates(props.searchString, { topPoint, bottomPoint }, 50)
+        .getWebsiteObjWithCoordinates(props.searchString, { topPoint, bottomPoint }, 80)
         .then(res => {
-          if (!isEmpty(props.searchMap)) {
-            const distance = distanceInMBetweenEarthCoordinates(
-              reverse([...props.searchMap.coordinates]),
-              currCenter,
-            );
-
-            if (distance > 20 && !props.showReloadButton) props.setShowReload(true);
-            if (!distance) props.setShowReload(false);
-          }
+          checkDistanceAndSetReload();
           if (!isEmpty(queryCenter)) {
             const { wobjects } = res.value;
             const queryPermlink = props.query.get('permlink');
@@ -287,18 +287,22 @@ const MainMap = React.memo(props => {
   }, [infoboxData]);
 
   const incrementZoom = useCallback(() => setZoom(prev => prev + 1), [currZoom]);
+
   const decrementZoom = useCallback(() => setZoom(prev => prev - 1), [currZoom]);
+
   const setLocationFromNavigator = position => {
     const { latitude, longitude } = position.coords;
 
-    setCenter([latitude, longitude]);
-    setShowLocation(true);
     props.putUserCoordinates({ latitude, longitude });
+    setShowLocation(true);
+    setCenter([latitude, longitude]);
   };
+
   const setLocationFromApi = () => {
     setShowLocation(false);
     setCenter([props.userLocation.lat, props.userLocation.lon]);
   };
+
   const handleClickOnMap = ({ event }) => {
     if (event.target.classList.value === 'pigeon-overlays') {
       resetInfoBox();
@@ -308,7 +312,9 @@ const MainMap = React.memo(props => {
       props.history.push(`?${query.toString()}`);
     }
   };
+
   const overlay = useMemo(() => getOverlayLayout(), [infoboxData]);
+
   const markersList = useMemo(() => getMarkers(props.wobjectsPoint), [
     props.wobjectsPoint,
     props.hoveredCardPermlink,
@@ -352,9 +358,6 @@ MainMap.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string,
-  }).isRequired,
-  match: PropTypes.shape({
-    site: PropTypes.string,
   }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,

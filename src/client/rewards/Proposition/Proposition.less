@@ -39,6 +39,10 @@
       font-weight: 500;
       display: flex;
 
+      button {
+        border-radius: 8px;
+      }
+
       &-days {
         padding-top: 4px;
       }
@@ -49,16 +53,18 @@
     }
 
     &-details {
-      display: none;
+      // display: none;
 
-      @media @small {
-        display: inline-block;
-        font-weight: 500;
-        color: @blue-botticelli;
+      display: inline-block;
+      font-weight: 500;
+      color: @blue-botticelli;
 
-        &:hover {
-          cursor: pointer;
-        }
+      &:hover {
+        cursor: pointer;
+      }
+
+      @media (max-width: 1100px) {
+        display: none;
       }
     }
   }

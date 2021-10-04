@@ -23,7 +23,7 @@
       height: 50px;
       text-align: center;
       line-height: 50px;
-      color: @blue-botticelli;
+      color: #818181;
       position: absolute;
       border: 1px solid @white-gainsboro;
       border-radius: 4px;
@@ -49,12 +49,13 @@
   &__filters {
     display: flex;
     justify-content: space-evenly;
-    padding: 0 0 15px;
+    padding: 15px 0;
   }
 
   &__filters-button.ant-btn {
     display: flex;
     align-items: center;
+    border-radius: 8px;
 
     span {
       margin: 0;
@@ -194,11 +195,16 @@
     }
 
     .SearchAllResult__filters {
-      text-transform: uppercase;
+      padding: 15px 0;
     }
 
     .SearchAllResult__filters-button.ant-btn {
       text-transform: uppercase;
+      border-radius: 8px;
+
+      span {
+        font-size: 13px;
+      }
     }
 
     .SearchAllResult__filters-button--active {

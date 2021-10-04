@@ -127,7 +127,6 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, cam
   }
 
   const parsedBody = getHtml(body, {}, 'text', { appUrl: host });
-
   const images = getContentImages(parsedBody, true);
   const links = extractLinks(parsedBody);
 
