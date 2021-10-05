@@ -160,6 +160,10 @@ const MainMap = React.memo(props => {
   }, [props.isShowResult]);
 
   useEffect(() => {
+    setInfoboxData(null);
+  }, [props.searchType]);
+
+  useEffect(() => {
     if (!props.showReloadButton) {
       props.setMapForSearch({
         coordinates: reverse([...currCenter]),
