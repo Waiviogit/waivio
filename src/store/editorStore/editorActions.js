@@ -311,7 +311,7 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations, isReview);
 };
 
-export function createPost(postData, beneficiaries, isReview, campaign, intl) {
+export function createPost(postData, beneficiaries, isReview, campaign) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });

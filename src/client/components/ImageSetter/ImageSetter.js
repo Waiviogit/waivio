@@ -196,6 +196,7 @@ const ImageSetter = ({
       setLoadingImage(true);
       onLoadingImage(true);
       /* eslint-disable no-restricted-syntax */
+      // eslint-disable-next-line no-unused-vars
       for (const image of images) {
         if (!isValidImage(image, MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)) {
           onImageInvalid(

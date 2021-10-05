@@ -1,4 +1,4 @@
-import { get, uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 
 export const getFeedFromState = (sortBy, category = 'all', state) => {
   switch (sortBy) {

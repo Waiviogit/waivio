@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { AutoComplete, Button, Checkbox, Input, Form, message } from 'antd';
+import { AutoComplete, Button, Checkbox, Input, Form } from 'antd';
 import { connect } from 'react-redux';
 import { debounce, get, isEmpty } from 'lodash';
 import { withRouter } from 'react-router-dom';

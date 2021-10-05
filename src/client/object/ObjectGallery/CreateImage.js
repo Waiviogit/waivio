@@ -239,6 +239,7 @@ class CreateImage extends React.Component {
     const data = this.getWobjectData();
 
     /* eslint-disable no-restricted-syntax */
+    // eslint-disable-next-line no-unused-vars
     for (const image of currentImages) {
       const postData = {
         ...data,

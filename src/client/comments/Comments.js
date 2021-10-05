@@ -128,7 +128,7 @@ export default class Comments extends React.Component {
   };
 
   handleLikeClick = (id, weight) => {
-    const { commentsList, sliderMode, user, defaultVotePercent } = this.props;
+    const { commentsList, user, defaultVotePercent } = this.props;
     const userVote = find(commentsList[id].active_votes, { voter: user.name }) || {};
 
     if (!Number(userVote.percent)) {

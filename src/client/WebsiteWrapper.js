@@ -30,11 +30,7 @@ import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
 import { getIsDiningGifts, getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
-import {
-  getAuthenticatedUserName,
-  getIsAuthenticated,
-  getIsAuthFetching,
-} from '../store/authStore/authSelectors';
+import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
 import MainPageHeader from './websites/WebsiteLayoutComponents/Header/MainPageHeader';
@@ -54,7 +50,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isOpenWalletTable: getIsOpenWalletTable(state),
     loadingFetching: getIsAuthFetching(state),
     isDiningGifts: getIsDiningGifts(state),
-    isAuth: getIsAuthenticated(state),
     isOpenModal: getIsOpenModal(state),
   }),
   {
@@ -83,7 +78,6 @@ class WebsiteWrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     getCurrentAppSettings: PropTypes.func,
     nightmode: PropTypes.bool,
-    isAuth: PropTypes.bool,
     isOpenModal: PropTypes.bool,
     isDiningGifts: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
@@ -115,7 +109,6 @@ class WebsiteWrapper extends React.PureComponent {
     dispatchGetAuthGuestBalance: () => {},
     isOpenWalletTable: false,
     isDiningGifts: false,
-    isAuth: false,
     isOpenModal: false,
     loadingFetching: true,
     location: {},
@@ -213,7 +206,6 @@ class WebsiteWrapper extends React.PureComponent {
       location,
       isDiningGifts,
       isOpenModal,
-      isAuth,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
@@ -243,7 +235,7 @@ class WebsiteWrapper extends React.PureComponent {
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
               </div>
             </Layout>
-            {isAuth && isOpenModal && <QuickRewardsModal />}
+            {isOpenModal && <QuickRewardsModal />}
           </AppSharedContext.Provider>
         </ConfigProvider>
       </IntlProvider>
