@@ -4,7 +4,6 @@ import { createAsyncActionType } from '../../client/helpers/stateHelpers';
 import { guestUserRegex } from '../../client/helpers/regexHelpers';
 import { getTransfersAccounts } from './advancedSelectors';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
-import { getCurrentCurrency } from '../appStore/appSelectors';
 
 const parseTransactionData = trans => {
   if (guestUserRegex.test(trans.userName)) {

@@ -1,0 +1,23 @@
+@import (reference) '../../../styles/custom';
+
+.MarkerWithReward {
+  display: inline-block;
+  background: @orange-hot;
+  border-radius: 8px;
+  padding: 0 2px;
+  color: @white;
+  font-size: 15px;
+  position: relative;
+
+  &::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 10px 0 10px;
+    border-color: @orange-hot transparent transparent transparent;
+    position: absolute;
+    bottom: -6px;
+    left: 40%;
+  }
+}

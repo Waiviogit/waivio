@@ -248,6 +248,7 @@ export default class AppendForm extends Component {
     const postData = this.getNewPostData(formValues);
 
     /* eslint-disable no-restricted-syntax */
+    // eslint-disable-next-line no-unused-vars
     for (const data of postData) {
       const field = form.getFieldValue('currentField');
 
@@ -733,6 +734,7 @@ export default class AppendForm extends Component {
     const data = this.getWobjectData();
 
     /* eslint-disable no-restricted-syntax */
+    // eslint-disable-next-line no-unused-vars
     for (const image of currentImages) {
       const postData = {
         ...data,
@@ -1103,6 +1105,7 @@ export default class AppendForm extends Component {
   };
 
   checkLengthHashtags = intl => (rule, values, callback) => {
+    // eslint-disable-next-line no-unused-vars
     for (const val of values) {
       if (val.length > 100) {
         return callback(
@@ -1207,7 +1210,7 @@ export default class AppendForm extends Component {
   renderContentValue = currentField => {
     const { loading, selectedObject, selectedCategory, fileList } = this.state;
     const { intl, wObject, categories, selectedAlbum, albums } = this.props;
-    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     const statusTitle = this.props.form.getFieldValue(statusFields.title);
     const defaultAlbum = getDefaultAlbum(albums);
     const albumInitialValue = selectedAlbum

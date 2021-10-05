@@ -63,8 +63,15 @@ const QuickRewardsModal = props => {
 
     setLoading(true);
 
-    if (isPublishPage) props.createQuickPost(title, compareBody, topics);
-    if (isPropositionObj) props.reserveProposition();
+    if (isPublishPage) {
+      if (window.gtag) window.gtag('event', 'create_post_in_quick_rewards_modal');
+      props.createQuickPost(title, compareBody, topics);
+    }
+
+    if (isPropositionObj) {
+      if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
+      props.reserveProposition();
+    }
 
     setLoading(false);
     setIsPublishPage(true);

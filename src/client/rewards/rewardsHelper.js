@@ -886,7 +886,7 @@ export const pathNameHistoryNotify = match =>
 export const handleRequirementFilters = requirementFilters => {
   const filteredObj = {};
 
-  // eslint-disable-next-line no-restricted-syntax
+  // eslint-disable-next-line no-restricted-syntax,no-unused-vars
   for (const key in requirementFilters) {
     if (key !== 'expertise' && key !== 'followers' && key !== 'posts') {
       filteredObj[key] = requirementFilters[key];
@@ -951,7 +951,7 @@ export const filterSponsorsName = location => {
   const searchParams = new URLSearchParams(location.search);
   const arr = [];
 
-  // eslint-disable-next-line no-restricted-syntax
+  // eslint-disable-next-line no-restricted-syntax,no-unused-vars
   for (const pair of searchParams.entries()) {
     const key = pair[0];
 
@@ -966,12 +966,8 @@ export const filterSponsorsName = location => {
 export const filterSelectedRewardsType = location =>
   new URLSearchParams(location.search).getAll('rewardsType');
 
-export const isHasSearchKey = key => isLocation && new URLSearchParams(location.search).has(key);
-
 export const handleFilters = (setFilterValue, filterSponsorNames, value) =>
   map(filterSponsorNames, sponsorName => setFilterValue(sponsorName[1], value, true));
-
-export const handleLinkSlash = url => url.replace(/\/{2,}/g, '/');
 
 export const handleAddSearchLink = filterValue => {
   const searchParams = isLocation && new URLSearchParams(location.search);

@@ -8,7 +8,7 @@ import { getBlogFiltersList } from '../../../../store/feedStore/feedSelectors';
 
 import './FilterPosts.less';
 
-const FilterPosts = ({ setProfileFilters, name, tags }) => {
+const FilterPosts = ({ setProfileFilters, tags }) => {
   if (isEmpty(tags)) return null;
 
   const [showMore, setShowMore] = useState(false);
@@ -42,7 +42,6 @@ const FilterPosts = ({ setProfileFilters, name, tags }) => {
 };
 
 FilterPosts.propTypes = {
-  name: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   setProfileFilters: PropTypes.func.isRequired,
 };

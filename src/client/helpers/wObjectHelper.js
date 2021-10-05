@@ -1,6 +1,5 @@
 import { get, some, filter, isEmpty, compact, isEqual } from 'lodash';
 import {
-  addressFields,
   addressFieldsForFormatting,
   TYPES_OF_MENU_ITEM,
 } from '../../common/constants/listOfFields';

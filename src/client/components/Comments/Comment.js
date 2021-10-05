@@ -21,8 +21,8 @@ import Avatar from '../Avatar';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import CommentFooter from '../CommentFooter/CommentFooter';
 import HiddenCommentMessage from './HiddenCommentMessage';
-import './Comment.less';
 import WeightTag from '../WeightTag';
+import './Comment.less';
 
 @injectIntl
 class Comment extends React.Component {

@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions';
 import { message } from 'antd';
-import { get, isEmpty, size } from 'lodash';
+import { get, size } from 'lodash';
 
 import { getAllFollowing } from '../../client/helpers/apiHelpers';
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
@@ -12,11 +12,7 @@ import {
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { APPEND_WAIVIO_OBJECT } from '../appendStore/appendActions';
 import { BELL_USER_NOTIFICATION, followExpert, unfollowExpert } from '../userStore/userActions';
-import {
-  getAuthenticatedUserName,
-  getIsAuthenticated,
-  isGuestUser,
-} from '../authStore/authSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import {
   getRelatedObjectsSkip,

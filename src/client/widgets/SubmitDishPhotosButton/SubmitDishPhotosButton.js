@@ -2,27 +2,28 @@ import { Icon } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { toggleModal } from '../../../store/quickRewards/quickRewardsActions';
+import withAuthActions from '../../auth/withAuthActions';
 
 const SubmitDishPhotosButton = props => {
-  if (!props.isAuth) return null;
+  const openModal = () => {
+    props.toggleModal(true);
+    if (window.gtag) window.gtag('event', 'on_click_submit_dish_photos');
+  };
 
-  const openModal = () => props.toggleModal(true);
+  const onClick = () => props.onActionInitiated(openModal);
 
   return (
-    <a className={props.className} onClick={openModal}>
+    <a className={props.className} onClick={onClick}>
       <Icon type="camera" /> Submit dish photos
     </a>
   );
 };
 
 SubmitDishPhotosButton.propTypes = {
-  isAuth: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
   className: PropTypes.func.isRequired,
+  onActionInitiated: PropTypes.func.isRequired,
 };
 
-export default connect(state => ({ isAuth: getIsAuthenticated(state) }), { toggleModal })(
-  SubmitDishPhotosButton,
-);
+export default withAuthActions(connect(null, { toggleModal })(SubmitDishPhotosButton));

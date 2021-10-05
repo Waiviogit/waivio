@@ -8,13 +8,11 @@ import { setWebsiteSearchType } from '../../../../store/searchStore/searchAction
 import { getWebsiteSearchType } from '../../../../store/searchStore/searchSelectors';
 
 const FilterTypesList = props => {
-  const query = new URLSearchParams(props.location.search);
   const filterTypes = ['restaurant', 'dish', 'drink', 'Users'];
   const onClickTypeItem = type => {
     props.setWebsiteSearchType(type);
-    query.set('type', type);
     localStorage.removeItem('scrollTop');
-    props.history.push(`?${query.toString()}`);
+    props.history.push(`?type=${type}&showPanel=true`);
   };
 
   return (

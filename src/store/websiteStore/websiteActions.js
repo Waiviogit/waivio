@@ -44,28 +44,21 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
     owner,
   };
 
-  return dispatch({
-    type: CREATE_NEW_WEBSITE.ACTION,
-    payload: {
-      promise: ApiClient.createWebsite(body).then(async res => {
-        if (res.message) message.error(res.message);
-        else {
-          const blockNumber = await getLastBlockNum();
-          const creator = getAuthenticatedUserName(state);
+  dispatch({ type: CREATE_NEW_WEBSITE.START });
 
-          busyAPI.instance.sendAsync(subscribeMethod, [creator, blockNumber, subscribeTypes.posts]);
-          busyAPI.instance.subscribe((response, mess) => {
-            if (
-              subscribeTypes.posts === mess.type &&
-              mess.notification.blockParsed === blockNumber
-            ) {
-              history.push(`/${formData.domain}.${formData.parent}/configuration`);
-              dispatch(getOwnWebsite());
-            }
-          });
-        }
-      }),
-    },
+  ApiClient.createWebsite(body).then(async res => {
+    if (res.message) message.error(res.message);
+    else {
+      const blockNumber = await getLastBlockNum();
+      const creator = getAuthenticatedUserName(state);
+
+      busyAPI.instance.sendAsync(subscribeMethod, [creator, blockNumber, subscribeTypes.posts]);
+      busyAPI.instance.subscribeBlock(subscribeTypes.posts, blockNumber, () => {
+        dispatch(getOwnWebsite());
+        dispatch({ type: CREATE_NEW_WEBSITE.SUCCESS });
+        history.push(`/${formData.domain}.${formData.parent}/configuration`);
+      });
+    }
   });
 };
 
