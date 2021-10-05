@@ -5,6 +5,7 @@ import pinMarked from '../../../../../public/images/icons/pin-mark@2x.png';
 import pinHoverMarked from '../../../../../public/images/icons/pin-hover-mark@2x.png';
 import pinHover from '../../../../../public/images/icons/pin-hover@2x.png';
 import pin from '../../../../../public/images/icons/pin@2x.png';
+import MarkerWithReward from '../../../websites/MainMap/MarkerWithReward/MarkerWithReward';
 
 const imageOffset = {
   left: 15,
@@ -27,12 +28,14 @@ class CustomMarker extends React.Component {
     isMarked: PropTypes.bool,
     currLocation: PropTypes.bool,
     hoveredWobj: PropTypes.bool,
+    price: PropTypes.number,
   };
 
   static defaultProps = {
     onContextMenu: () => {},
     left: 0,
     top: 0,
+    price: 0,
     hover: false,
     currLocation: false,
     hoveredWobj: false,
@@ -86,13 +89,11 @@ class CustomMarker extends React.Component {
     this.props.onContextMenu && this.props.onContextMenu(this.eventParameters(event));
 
   handleMouseOver = event => {
-    // eslint-disable-next-line no-unused-expressions
     this.props.onMouseOver && this.props.onMouseOver(this.eventParameters(event));
     this.setState({ hoverImg: true });
   };
 
   handleMouseOut = event => {
-    // eslint-disable-next-line no-unused-expressions
     this.props.onMouseOut && this.props.onMouseOut(this.eventParameters(event));
     this.setState({ hoverImg: false });
   };
@@ -143,7 +144,11 @@ class CustomMarker extends React.Component {
         onMouseOut={this.handleMouseOut}
         role="presentation"
       >
-        <img src={currentImg} width={width} height={height} alt="" />
+        {isMarked ? (
+          <MarkerWithReward price={this.props.price} />
+        ) : (
+          <img src={currentImg} width={width} height={height} alt="" />
+        )}
       </div>
     );
   }

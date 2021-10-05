@@ -132,12 +132,10 @@ export default class Comments extends React.Component {
     const userVote = find(commentsList[id].active_votes, { voter: user.name }) || {};
 
     if (!Number(userVote.percent)) {
-      // ставим  лайк
       const likeWeight = weight > 0 ? weight : defaultVotePercent;
 
       this.props.voteComment(id, likeWeight, 'like');
     } else {
-      // снимаем лайк
       this.props.voteComment(id, 0, 'like');
     }
   };

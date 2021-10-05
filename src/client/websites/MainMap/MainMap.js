@@ -258,6 +258,7 @@ const MainMap = React.memo(props => {
             onClick={handleMarkerClick}
             onDoubleClick={resetInfoBox}
             hoveredWobj={hoveredWobj}
+            price={get(wobject, 'campaigns.max_reward') || get(wobject, 'propositions[0].reward')}
           />
         );
       });
