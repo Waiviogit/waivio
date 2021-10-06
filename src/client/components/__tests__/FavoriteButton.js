@@ -1,6 +1,6 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import { IntlProvider } from 'react-intl';
 import FavoriteButton from '../FavoriteButton';
 
