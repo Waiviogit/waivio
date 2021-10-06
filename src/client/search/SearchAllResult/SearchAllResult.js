@@ -121,7 +121,7 @@ const SearchAllResult = props => {
   const getEndScroll = () => {
     const bottom =
       resultList.current.scrollHeight - resultList.current.scrollTop <=
-      resultList.current.clientHeight + 600;
+      resultList.current.clientHeight * 2;
 
     localStorage.removeItem('scrollTop');
 
