@@ -17,6 +17,7 @@ export const ACCOUNT_WITNESS_VOTE = 'account_witness_vote';
 export const FILL_VESTING_WITHDRAW = 'fill_vesting_withdraw';
 export const POWER_DOWN_INITIATED_OR_STOP = 'withdraw_vesting';
 export const POWER_DOWN_WITHDRAW = 'fill_vesting_withdraw';
+export const SET_WITHDRAW_VESTING_ROUTE = 'set_withdraw_vesting_route';
 
 // Supported Custom JSON Type IDs
 export const ID_FOLLOW = 'follow';
@@ -68,6 +69,7 @@ export const PARSED_PROPERTIES = [
   CLAIM_REWARD_BALANCE,
   ACCOUNT_WITNESS_VOTE,
   FILL_VESTING_WITHDRAW,
+  SET_WITHDRAW_VESTING_ROUTE,
 ];
 
 export const PARSED_CUSTOM_JSON_IDS = [ID_FOLLOW];
