@@ -175,7 +175,7 @@ const MainMap = React.memo(props => {
   useEffect(() => {
     const { topPoint, bottomPoint } = boundsParams;
 
-    if (!isEmpty(topPoint) && !isEmpty(bottomPoint))
+    if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
       props
         .getWebsiteObjWithCoordinates(props.searchString, { topPoint, bottomPoint }, 80)
         .then(res => {
@@ -196,6 +196,7 @@ const MainMap = React.memo(props => {
             }
           }
         });
+    }
   }, [props.userLocation, boundsParams, query.toString()]);
 
   const handleOnBoundsChanged = useCallback(
