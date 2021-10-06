@@ -8,6 +8,8 @@
   color: @white;
   font-size: 13px;
   position: relative;
+  min-width: 50px;
+  text-align: center;
 
   &::after {
     content: '';
@@ -19,5 +21,16 @@
     position: absolute;
     bottom: -6px;
     left: 28%;
+  }
+
+  &--hovered {
+    font-size: 15px;
+    -webkit-box-shadow: 0 0 6px 3px rgba(248, 112, 7, 0.64);
+    -moz-box-shadow: 0 0 6px 3px rgba(248, 112, 7, 0.64);
+    box-shadow: 0 0 6px 3px rgba(248, 112, 7, 0.64);
+
+    &::after {
+      left: 31%;
+    }
   }
 }

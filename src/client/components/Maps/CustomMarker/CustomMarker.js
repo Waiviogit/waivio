@@ -120,10 +120,8 @@ class CustomMarker extends React.Component {
       style.zIndex = 5;
     }
 
-    if (hoveredWobj) {
-      currentImg = isMarked
-        ? '/images/icons/campaings-hovered.png'
-        : '/images/icons/object-hovered.png';
+    if (hoveredWobj && !isMarked) {
+      currentImg = '/images/icons/object-hovered.png';
 
       width = 40;
       height = 45;
@@ -136,8 +134,8 @@ class CustomMarker extends React.Component {
         ? '/images/icons/campaings-hovered.png'
         : '/images/icons/object-hovered.png';
 
-      currTop = 30;
-      currLeft = 25;
+      currTop = 31;
+      currLeft = hoveredWobj ? 30 : 25;
     }
 
     style.transform = `translate(${left - currLeft}px, ${top - currTop}px)`;
@@ -154,7 +152,7 @@ class CustomMarker extends React.Component {
         role="presentation"
       >
         {isMarked ? (
-          <MarkerWithReward price={this.props.price} />
+          <MarkerWithReward price={this.props.price} hovered={hoveredWobj} />
         ) : (
           <img src={currentImg} width={width} height={height} alt="" />
         )}
