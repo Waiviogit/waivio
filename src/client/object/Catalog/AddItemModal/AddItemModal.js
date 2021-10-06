@@ -101,6 +101,7 @@ class AddItemModal extends Component {
           .appendObject(appendData, {
             votePower: isManualSelected ? votePercent * 100 : null,
             follow: objectValues.follow,
+            isLike: true,
           })
           .then(() => {
             this.setState({ isLoading: false });

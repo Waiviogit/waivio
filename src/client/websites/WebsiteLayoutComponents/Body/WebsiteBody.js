@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import {
   resetWebsiteFilters,
   setFilterFromQuery,
-  setMapForSearch,
   setShowSearchResult,
   setWebsiteSearchType,
 } from '../../../../store/searchStore/searchActions';
@@ -27,13 +26,10 @@ import {
   getIsDiningGifts,
   getReserveCounter,
   getWebsiteLogo,
-  getWebsiteMainMap,
 } from '../../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
-import { getUserLocation } from '../../../../store/userStore/userSelectors';
 import {
   getShowSearchResult,
-  getWebsiteMap,
   getWebsiteSearchString,
   getWebsiteSearchType,
   tagsCategoryIsEmpty,
@@ -41,7 +37,6 @@ import {
 import { getShowReloadButton } from '../../../../store/websiteStore/websiteSelectors';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 import MainMap from '../../MainMap/MainMap';
-import QuickRewardsModal from '../../../rewards/QiuckRewardsModal/QuickRewardsModal';
 
 import './WebsiteBody.less';
 
@@ -153,7 +148,6 @@ const WebsiteBody = props => {
           </React.Fragment>
         )}
       </div>
-      {props.isAuth && <QuickRewardsModal />}
     </div>
   );
 };
@@ -168,10 +162,6 @@ WebsiteBody.propTypes = {
   }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
-  }).isRequired,
-  userLocation: PropTypes.shape({
-    lat: PropTypes.number,
-    lon: PropTypes.number,
   }).isRequired,
   isShowResult: PropTypes.bool.isRequired,
   isDining: PropTypes.bool,
@@ -189,9 +179,6 @@ WebsiteBody.propTypes = {
   logo: PropTypes.string.isRequired,
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
-  searchMap: PropTypes.shape({
-    coordinates: PropTypes.arrayOf(PropTypes.number),
-  }).isRequired,
   isAuth: PropTypes.bool,
   query: PropTypes.shape({
     get: PropTypes.func,
@@ -209,26 +196,22 @@ WebsiteBody.defaultProps = {
 
 export default connect(
   (state, ownProps) => ({
-    userLocation: getUserLocation(state),
     isShowResult: getShowSearchResult(state),
     configuration: getConfigurationValues(state),
     counter: getReserveCounter(state),
     isAuth: getIsAuthenticated(state),
     query: new URLSearchParams(ownProps.location.search),
     searchString: getWebsiteSearchString(state),
-    searchMap: getWebsiteMap(state),
     showReloadButton: getShowReloadButton(state),
     searchType: getWebsiteSearchType(state),
     host: getHostAddress(state),
     isActiveFilters: tagsCategoryIsEmpty(state),
     logo: getWebsiteLogo(state),
-    currMap: getWebsiteMainMap(state),
     isDining: getIsDiningGifts(state),
   }),
   {
     setWebsiteSearchType,
     getReservedCounter,
-    setMapForSearch,
     setShowReload,
     setFilterFromQuery,
     resetWebsiteFilters,

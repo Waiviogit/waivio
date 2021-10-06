@@ -232,7 +232,7 @@ export default class MediumDraftEditor extends React.Component {
       return 'not_handled';
     }
 
-    // eslint-disable-next-line no-restricted-syntax
+    // eslint-disable-next-line no-unused-vars,no-restricted-syntax
     for (const file of files) {
       // eslint-disable-next-line no-await-in-loop
       await encodeImageFileAsURL(file, insertImage);

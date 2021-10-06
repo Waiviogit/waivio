@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { has, get, round } from 'lodash';
+import { has, get } from 'lodash';
 import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';

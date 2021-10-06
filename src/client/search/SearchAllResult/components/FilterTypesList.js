@@ -6,15 +6,15 @@ import PropTypes from 'prop-types';
 import { getActiveItemClassList } from '../../helpers';
 import { setWebsiteSearchType } from '../../../../store/searchStore/searchActions';
 import { getWebsiteSearchType } from '../../../../store/searchStore/searchSelectors';
+import { resetWebsiteObjectsCoordinates } from '../../../../store/websiteStore/websiteActions';
 
 const FilterTypesList = props => {
-  const query = new URLSearchParams(props.location.search);
   const filterTypes = ['restaurant', 'dish', 'drink', 'Users'];
   const onClickTypeItem = type => {
     props.setWebsiteSearchType(type);
-    query.set('type', type);
     localStorage.removeItem('scrollTop');
-    props.history.push(`?${query.toString()}`);
+    props.history.push(`?type=${type}&showPanel=true`);
+    props.resetWebsiteObjectsCoordinates();
   };
 
   return (
@@ -49,6 +49,7 @@ FilterTypesList.propTypes = {
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
+  resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -57,5 +58,6 @@ export default connect(
   }),
   {
     setWebsiteSearchType,
+    resetWebsiteObjectsCoordinates,
   },
 )(withRouter(FilterTypesList));

@@ -35,6 +35,9 @@ const WebsiteSignIn = props => {
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: `${urlObj.origin}/callback`,
   });
+  const onClickHiveSingerAuthButton = () => {
+    if (window.gtag) window.gtag('event', 'login_hive_singer');
+  };
 
   const responseSocial = async (response, socialNetwork) => {
     setIsLoading(true);
@@ -50,6 +53,7 @@ const WebsiteSignIn = props => {
         if (query.get('host')) {
           window.location.href = `${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
         } else {
+          if (window.gtag) window.gtag('event', `login_${socialNetwork}`);
           dispatch(login(response.accessToken, socialNetwork)).then(() => {
             setIsLoading(false);
             batch(() => {
@@ -146,6 +150,7 @@ const WebsiteSignIn = props => {
               socialNetwork={'HiveSinger'}
               size={'28px'}
               href={hiveSinger.getLoginURL()}
+              onClick={onClickHiveSingerAuthButton}
             />
             <p>
               {props.intl.formatMessage({

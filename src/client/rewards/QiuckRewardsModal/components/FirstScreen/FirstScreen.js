@@ -48,12 +48,18 @@ const ModalFirstScreen = props => {
   };
 
   const handleResetDish = () => {
-    props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant);
     props.resetDish();
+    props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant);
+  };
+
+  const handleResetRestaurant = () => {
+    props.resetRestaurant();
+    props.getEligibleRewardsList();
   };
 
   const handleSearchRestaurant = useCallback(
     debounce(search => {
+      if (window.gtag) window.gtag('event', 'search_restaurant_in_quick_rewards_modal');
       props.getEligibleRewardsList(search);
     }, 300),
     [],
@@ -61,6 +67,7 @@ const ModalFirstScreen = props => {
 
   const handleSearchDish = useCallback(
     debounce(search => {
+      if (window.gtag) window.gtag('event', 'search_dish_in_quick_rewards_modal');
       props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant, search);
     }, 300),
     [props.selectedRestaurant],
@@ -74,7 +81,7 @@ const ModalFirstScreen = props => {
           <ObjectCardView
             wObject={props.selectedRestaurant}
             closeButton
-            onDelete={props.resetRestaurant}
+            onDelete={handleResetRestaurant}
           />
         ) : (
           <AutoComplete

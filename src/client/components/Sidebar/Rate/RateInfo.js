@@ -1,7 +1,7 @@
 import { isEqual, sortBy } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Icon, Rate } from 'antd';
+import { Rate } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 

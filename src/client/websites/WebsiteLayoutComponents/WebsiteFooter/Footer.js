@@ -3,7 +3,7 @@ import { footerLinks } from '../../constants/links';
 
 import './Footer.less';
 
-const WebsiteFooter = pros => (
+const WebsiteFooter = () => (
   <footer className="Footer">
     {Object.keys(footerLinks).map(section => (
       <div key={section} className="Footer__list">

@@ -95,10 +95,10 @@ const ObjectOfTypePage = props => {
           body: content,
           locale,
         };
-        const wobj = breadcrumb.length > 1 ? nestedWobject : wobject;
+        const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
         const postData = getAppendData(userName, wobj, '', pageContentField);
 
-        appendPageContent(postData, { follow, votePercent: votePercent * 100 })
+        appendPageContent(postData, { follow, votePercent: votePercent * 100, isLike: true })
           .then(() => {
             message.success(
               intl.formatMessage(
@@ -108,7 +108,7 @@ const ObjectOfTypePage = props => {
                 },
                 {
                   field: objectFields.pageContent,
-                  wobject: getObjectName(wobject),
+                  wobject: getObjectName(wobj),
                 },
               ),
             );

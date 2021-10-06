@@ -3,6 +3,8 @@ import { Icon } from 'antd';
 import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
 import WebsiteFooter from '../WebsiteFooter/Footer';
 import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
@@ -10,21 +12,27 @@ import CarouselSection from './components/CarouselSection/CarouselSection';
 import DistrictSection from './components/DistrictSection/DistrictSection';
 import NearbySection from './components/NearbySection/NearbySection';
 import { isMobile } from '../../../helpers/apiHelpers';
+import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
 
 import './WebsiteMainPage.less';
 
-const WebsiteMainPage = () => {
+const WebsiteMainPage = props => {
   const isAuth = useSelector(getIsAuthenticated);
   const helmetImg = '/images/dining.gifts.png';
-  const findRewardsLink = isMobile()
-    ? '/map?type=restaurant'
-    : '/map?showPanel=true&type=restaurant';
 
   useLayoutEffect(() => {
     if (window) {
       window.scrollTo(0, 0);
     }
   }, []);
+
+  const onClickButtonFindRewards = () => {
+    const findRewardsLink = isMobile() ? 'type=restaurant' : 'showPanel=true&type=restaurant';
+
+    if (window.gtag) window.gtag('event', 'click_button_find_rewards');
+
+    props.history.push(`/map?${findRewardsLink}`);
+  };
 
   return (
     <div className="WebsiteMainPage">
@@ -60,16 +68,18 @@ const WebsiteMainPage = () => {
             </h2>
           </div>
           <div className="WebsiteMainPage__buttonWrap">
-            {!isAuth && (
+            {isAuth ? (
+              <SubmitDishPhotosButton className="WebsiteMainPage__button WebsiteMainPage__button--fill" />
+            ) : (
               <ModalSignIn
                 buttonClassName="WebsiteMainPage__button WebsiteMainPage__button--fill"
                 text="Sign up"
                 isButton
               />
             )}
-            <Link to={findRewardsLink} className="WebsiteMainPage__button">
+            <button onClick={onClickButtonFindRewards} className="WebsiteMainPage__button">
               Find Rewards <Icon type="right" />
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -168,6 +178,12 @@ const WebsiteMainPage = () => {
       <WebsiteFooter />
     </div>
   );
+};
+
+WebsiteMainPage.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
 };
 
 export default WebsiteMainPage;

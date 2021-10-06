@@ -32,7 +32,7 @@ module.exports = {
         ],
       },
     ],
-    'no-unused-vars': OFF,
+    'no-unused-vars': ERROR,
     'no-use-before-define': OFF,
     'no-case-declarations': OFF,
     'no-console': [ERROR, { allow: ["warn", "error"] }],

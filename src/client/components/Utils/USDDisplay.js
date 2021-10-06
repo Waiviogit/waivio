@@ -7,24 +7,33 @@ import { round } from 'lodash';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import { currencyPrefix } from '../../websites/constants/currencyTypes';
 
-const USDDisplay = ({ value, currencyDisplay, style }) => {
+const USDDisplay = React.memo(({ value, currencyDisplay, style }) => {
   const currencyInfo = useSelector(getCurrentCurrency);
   const negative = value < 0;
   const absValue = Math.abs(value);
   const precision = absValue > 0.01 || absValue === 0 ? 2 : 3;
-  const sum = round(absValue * currencyInfo.rate, precision).toFixed(precision);
+  const sum = round(absValue * currencyInfo.rate, precision);
+  const formatted = num => (
+    <FormattedNumber
+      value={num}
+      locale={'en-IN'}
+      minimumFractionDigits={precision}
+      maximumFractionDigits={precision}
+    />
+  );
+
   const formattedCurrency = num => {
     switch (currencyDisplay) {
       case 'code':
         return (
           <React.Fragment>
-            <FormattedNumber value={num} locale={'en-IN'} /> {currencyInfo.type}
+            {formatted(num)} {currencyInfo.type}
           </React.Fragment>
         );
       case 'symbol':
         return (
           <React.Fragment>
-            {currencyPrefix[currencyInfo.type]} <FormattedNumber value={num} locale={'en-IN'} />
+            {currencyPrefix[currencyInfo.type]} {formatted(num)}
           </React.Fragment>
         );
       default:
@@ -38,7 +47,7 @@ const USDDisplay = ({ value, currencyDisplay, style }) => {
       {formattedCurrency(sum)}
     </span>
   );
-};
+});
 
 USDDisplay.propTypes = {
   value: PropTypes.number,
