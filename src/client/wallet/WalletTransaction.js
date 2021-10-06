@@ -11,6 +11,7 @@ import WalletFillOrderTransferred from './WalletFillOrderTransferred';
 import WalletLimitOrder from './WalletLimitOrder';
 import WalletCancelOrder from './WalletCancelOrder';
 import PowerUpTransactionTo from './PowerUpTransactionTo';
+import SetWithdrawVestingRoute from './SetWithdrawVestingRoute';
 import {
   fillOrderExchanger,
   getTransactionCurrency,
@@ -56,6 +57,7 @@ const WalletTransaction = ({
           transactionType={transactionType}
         />
       );
+
     case accountHistoryConstants.TRANSFER:
       if (transactionDetails.to === currentUsername) {
         return (
@@ -87,6 +89,17 @@ const WalletTransaction = ({
           transactionType={transactionType}
         />
       );
+
+    case accountHistoryConstants.SET_WITHDRAW_VESTING_ROUTE: {
+      return (
+        <SetWithdrawVestingRoute
+          isGuestPage={isGuestPage}
+          from={transactionDetails.from}
+          to={transactionDetails.to}
+          timestamp={transaction.timestamp}
+        />
+      );
+    }
     case accountHistoryConstants.CLAIM_REWARD_BALANCE:
       return (
         <ClaimReward

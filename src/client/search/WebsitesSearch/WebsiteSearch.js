@@ -46,7 +46,6 @@ const WebsiteSearch = props => {
   const handleResetAutocomplete = () => {
     setSearchString('');
     props.resetSearchAutoCompete();
-    handleSearchAutocomplete('');
     props.history.push(`?type=${props.searchType}`);
   };
 

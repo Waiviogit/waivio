@@ -31,7 +31,6 @@ import UsersList from './components/UsersList';
 import WobjectsList from './components/WobjectsList';
 import FilterTypesList from './components/FilterTypesList';
 import ReloadButton from './components/ReloadButton';
-import { resetWebsiteObjectsCoordinates } from '../../../store/websiteStore/websiteActions';
 
 import './SearchAllResult.less';
 
@@ -72,7 +71,6 @@ const SearchAllResult = props => {
 
   const currentSearchMethod = value => {
     localStorage.removeItem('scrollTop');
-    props.resetWebsiteObjectsCoordinates();
     props.reloadSearchList();
 
     switch (props.searchType) {
@@ -123,7 +121,7 @@ const SearchAllResult = props => {
   const getEndScroll = () => {
     const bottom =
       resultList.current.scrollHeight - resultList.current.scrollTop <=
-      resultList.current.clientHeight + 600;
+      resultList.current.clientHeight * 2;
 
     localStorage.removeItem('scrollTop');
 
@@ -206,7 +204,6 @@ SearchAllResult.propTypes = {
   showReload: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
-  resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   searchUsersAutoCompete: PropTypes.func.isRequired,
   searchMap: PropTypes.shape().isRequired,
   activeFilters: PropTypes.shape().isRequired,
@@ -238,6 +235,5 @@ export default connect(
     setShowSearchResult,
     searchWebsiteObjectsAutoCompete,
     searchUsersAutoCompete,
-    resetWebsiteObjectsCoordinates,
   },
 )(injectIntl(SearchAllResult));

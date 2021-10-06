@@ -61,6 +61,7 @@ export default (state = initialState, action) => {
         searchUsersResults: [],
         websiteSearchResult: [],
         tagCategory: [],
+        websiteSearchString: '',
       };
     }
     case searchActions.SEARCH_OBJECTS.START:

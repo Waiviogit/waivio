@@ -131,6 +131,15 @@ class CustomMarker extends React.Component {
       currLeft = 20;
     }
 
+    if (isMarked) {
+      currentImg = isMarked
+        ? '/images/icons/campaings-hovered.png'
+        : '/images/icons/object-hovered.png';
+
+      currTop = 30;
+      currLeft = 25;
+    }
+
     style.transform = `translate(${left - currLeft}px, ${top - currTop}px)`;
 
     return (

@@ -48,8 +48,13 @@ const ModalFirstScreen = props => {
   };
 
   const handleResetDish = () => {
-    props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant);
     props.resetDish();
+    props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant);
+  };
+
+  const handleResetRestaurant = () => {
+    props.resetRestaurant();
+    props.getEligibleRewardsList();
   };
 
   const handleSearchRestaurant = useCallback(
@@ -76,7 +81,7 @@ const ModalFirstScreen = props => {
           <ObjectCardView
             wObject={props.selectedRestaurant}
             closeButton
-            onDelete={props.resetRestaurant}
+            onDelete={handleResetRestaurant}
           />
         ) : (
           <AutoComplete
