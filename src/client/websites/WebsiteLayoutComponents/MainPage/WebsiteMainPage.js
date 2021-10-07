@@ -1,13 +1,10 @@
 import React, { useLayoutEffect } from 'react';
 import { Icon } from 'antd';
 import { Helmet } from 'react-helmet';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import WebsiteFooter from '../WebsiteFooter/Footer';
-import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
-import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import CarouselSection from './components/CarouselSection/CarouselSection';
 import DistrictSection from './components/DistrictSection/DistrictSection';
 import NearbySection from './components/NearbySection/NearbySection';
@@ -17,7 +14,6 @@ import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/Subm
 import './WebsiteMainPage.less';
 
 const WebsiteMainPage = props => {
-  const isAuth = useSelector(getIsAuthenticated);
   const helmetImg = '/images/dining.gifts.png';
 
   useLayoutEffect(() => {
@@ -68,15 +64,7 @@ const WebsiteMainPage = props => {
             </h2>
           </div>
           <div className="WebsiteMainPage__buttonWrap">
-            {isAuth ? (
-              <SubmitDishPhotosButton className="WebsiteMainPage__button WebsiteMainPage__button--fill" />
-            ) : (
-              <ModalSignIn
-                buttonClassName="WebsiteMainPage__button WebsiteMainPage__button--fill"
-                text="Sign up"
-                isButton
-              />
-            )}
+            <SubmitDishPhotosButton className="WebsiteMainPage__button WebsiteMainPage__button--fill" />
             <button onClick={onClickButtonFindRewards} className="WebsiteMainPage__button">
               Find Rewards <Icon type="right" />
             </button>
