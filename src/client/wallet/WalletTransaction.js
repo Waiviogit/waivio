@@ -97,6 +97,7 @@ const WalletTransaction = ({
           from={transactionDetails.from}
           to={transactionDetails.to}
           timestamp={transaction.timestamp}
+          percent={transaction.percent}
         />
       );
     }
