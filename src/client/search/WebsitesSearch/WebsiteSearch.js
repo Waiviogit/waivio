@@ -26,7 +26,10 @@ const WebsiteSearch = props => {
   useEffect(() => {
     const querySearch = query.get('searchString');
 
-    if (querySearch) setSearchString(querySearch);
+    if (querySearch) {
+      setSearchString(querySearch);
+      props.setWebsiteSearchString(querySearch);
+    }
   }, []);
 
   const handleSearchAutocomplete = useCallback(

@@ -138,5 +138,8 @@
   "currentMedianHistory": "/current-median-history",
   "area": "/by-area",
   "prefetch": "/prefetch",
+  "wobjects": "/wobjects",
+  "experts": "/experts",
+  "lastPost": "/last-post",
   "getMatchBots": "/match-bots"
 }

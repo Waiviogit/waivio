@@ -7,9 +7,9 @@ import { Icon } from 'antd';
 import classNames from 'classnames';
 
 import {
+  searchExpertsForMap,
+  searchExpertsForMapLoadingMore,
   searchObjectsAutoCompeteLoadingMore,
-  searchUsersAutoCompete,
-  searchUsersAutoCompeteLoadingMore,
   searchWebsiteObjectsAutoCompete,
   setShowSearchResult,
 } from '../../../store/searchStore/searchActions';
@@ -17,8 +17,8 @@ import Loading from '../../components/Icon/Loading';
 import ViewMapButton from '../../widgets/ViewMapButton';
 import {
   getAllSearchLoadingMore,
+  getHasMoreExpertsUsersResults,
   getHasMoreObjectsForWebsite,
-  getHasMoreUsers,
   getSearchFiltersTagCategory,
   getSearchUsersResultsQuantity,
   getShowSearchResult,
@@ -75,7 +75,7 @@ const SearchAllResult = props => {
 
     switch (props.searchType) {
       case 'Users':
-        return props.searchUsersAutoCompete(value);
+        return props.searchExpertsForMap(value);
       default:
         return props.searchWebsiteObjectsAutoCompete(value);
     }
@@ -106,7 +106,7 @@ const SearchAllResult = props => {
     if (isScrolled && currRenderListState.hasMore && !props.showReload) {
       switch (props.searchType) {
         case 'Users':
-          props.searchUsersAutoCompeteLoadingMore(props.searchString, props.usersCounter);
+          props.searchExpertsForMapLoadingMore(props.searchString, props.usersCounter);
           break;
         default:
           props.searchObjectsAutoCompeteLoadingMore(
@@ -187,7 +187,7 @@ SearchAllResult.propTypes = {
   }).isRequired,
   deleteShowPanel: PropTypes.func.isRequired,
   setQueryInLocalStorage: PropTypes.func.isRequired,
-  searchUsersAutoCompeteLoadingMore: PropTypes.func.isRequired,
+  searchExpertsForMapLoadingMore: PropTypes.func.isRequired,
   searchObjectsAutoCompeteLoadingMore: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
   searchString: PropTypes.string.isRequired,
@@ -204,7 +204,7 @@ SearchAllResult.propTypes = {
   showReload: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
-  searchUsersAutoCompete: PropTypes.func.isRequired,
+  searchExpertsForMap: PropTypes.func.isRequired,
   searchMap: PropTypes.shape().isRequired,
   activeFilters: PropTypes.shape().isRequired,
 };
@@ -223,17 +223,17 @@ export default connect(
     isShowResult: getShowSearchResult(state),
     loadingMore: getAllSearchLoadingMore(state),
     hasMore: getHasMoreObjectsForWebsite(state),
-    hasMoreUsers: getHasMoreUsers(state),
+    hasMoreUsers: getHasMoreExpertsUsersResults(state),
     wobjectsCounter: getWebsiteSearchResultQuantity(state),
     usersCounter: getSearchUsersResultsQuantity(state),
     activeFilters: getSearchFiltersTagCategory(state),
     searchMap: getWebsiteMap(state),
   }),
   {
-    searchUsersAutoCompeteLoadingMore,
+    searchExpertsForMapLoadingMore,
     searchObjectsAutoCompeteLoadingMore,
     setShowSearchResult,
     searchWebsiteObjectsAutoCompete,
-    searchUsersAutoCompete,
+    searchExpertsForMap,
   },
 )(injectIntl(SearchAllResult));

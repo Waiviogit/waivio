@@ -430,3 +430,66 @@ export const setMapForSearch = payload => ({ type: SET_MAP_FOR_SEARCH, payload }
 export const SET_FILTER_FROM_QUERY = '@search/SET_FILTER_FROM_QUERY';
 
 export const setFilterFromQuery = payload => ({ type: SET_FILTER_FROM_QUERY, payload });
+
+export const SEARCH_EXPERTS = createAsyncActionType('@search/SEARCH_EXPERTS');
+
+export const searchExpertsForMap = search => (dispatch, getState) => {
+  const state = getState();
+  const user = getAuthenticatedUserName(state);
+  const { topPoint, bottomPoint } = getWebsiteMap(state);
+  const searchRequest = () =>
+    search
+      ? ApiClient.searchUsers(search, user).then(res => ({
+          ...res,
+          users: res.users.map(usr => ({
+            ...usr,
+            name: usr.account,
+          })),
+        }))
+      : ApiClient.getMapExperts(user, {
+          box: {
+            topPoint,
+            bottomPoint,
+          },
+        });
+
+  return dispatch({
+    type: SEARCH_EXPERTS.ACTION,
+    payload: {
+      promise: searchRequest(),
+    },
+  });
+};
+
+export const SEARCH_EXPERTS_LOADING_MORE = createAsyncActionType(
+  '@search/SEARCH_EXPERTS_LOADING_MORE',
+);
+
+export const searchExpertsForMapLoadingMore = (search, skip) => (dispatch, getState) => {
+  const state = getState();
+  const user = getAuthenticatedUserName(state);
+  const { topPoint, bottomPoint } = getWebsiteMap(state);
+  const searchRequest = () =>
+    search
+      ? ApiClient.searchUsers(search, user, 15, false, skip).then(res => ({
+          ...res,
+          users: res.users.map(usr => ({
+            ...usr,
+            name: usr.account,
+          })),
+        }))
+      : ApiClient.getMapExperts(user, {
+          box: {
+            topPoint,
+            bottomPoint,
+          },
+          skip,
+        });
+
+  return dispatch({
+    type: SEARCH_EXPERTS_LOADING_MORE.ACTION,
+    payload: {
+      promise: searchRequest(),
+    },
+  });
+};

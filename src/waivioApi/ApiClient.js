@@ -2227,4 +2227,30 @@ export const getEligibleList = (userName, requiredObject) => {
     .catch(e => e);
 };
 
+export const getMapExperts = (userName, params) => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.map}${config.experts}`, {
+    headers: {
+      ...headers,
+      follower: userName,
+      following: userName,
+    },
+    body: JSON.stringify(params),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
+export const getPostsForMap = params => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.map}${config.lastPost}`, {
+    headers,
+    body: JSON.stringify(params),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
 export default null;
