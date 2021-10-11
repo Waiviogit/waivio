@@ -5,15 +5,14 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import UserCard from '../../../components/UserCard';
 import {
-  getIsStartSearchUser,
-  getSearchUsersResults,
+  getExpertsUsersResults,
+  getLoadingExpertsUsersResults,
 } from '../../../../store/searchStore/searchSelectors';
 import { followSearchUser, unfollowSearchUser } from '../../../../store/searchStore/searchActions';
 import Loading from '../../../components/Icon/Loading';
 
 const UsersList = props => {
   if (props.usersLoading) return <Loading />;
-
   if (isEmpty(props.searchByUser)) {
     return (
       <div className="SearchAllResult__empty">
@@ -24,7 +23,7 @@ const UsersList = props => {
 
   return map(props.searchByUser, user => (
     <UserCard
-      user={{ ...user, name: user.account }}
+      user={user}
       unfollow={props.unfollowSearchUser}
       follow={props.followSearchUser}
       handleClick={props.handleItemClick}
@@ -49,8 +48,8 @@ UsersList.defaultProps = {
 
 export default connect(
   state => ({
-    searchByUser: getSearchUsersResults(state),
-    usersLoading: getIsStartSearchUser(state),
+    searchByUser: getExpertsUsersResults(state),
+    usersLoading: getLoadingExpertsUsersResults(state),
   }),
   {
     unfollowSearchUser,

@@ -5,8 +5,8 @@ import { get, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
-import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
-import USDDisplay from '../../components/Utils/USDDisplay';
+import { getCurrentCurrency } from '../../../../../store/appStore/appSelectors';
+import USDDisplay from '../../../Utils/USDDisplay';
 
 const OverlayRewardsButton = props => {
   const ObjectOverlayCardEarnClassList = classNames('ObjectOverlayCard__earn', {
