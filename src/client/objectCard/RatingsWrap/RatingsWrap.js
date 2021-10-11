@@ -70,26 +70,26 @@ const RatingsWrap = ({
       ) : (
         <div className="RatingsWrap">
           <Row>
-            <div className="RatingsWrap__response">
+            <div className="RatingsWrap__left-wrapper">
               {rateLayout(
                 sortedRatings[1] ? 12 : 24,
                 0,
-                sortedRatings[1] ? 'RatingsWrap__divider' : '',
+                sortedRatings[1] ? 'RatingsWrap__rate-left-col' : '',
               )}
             </div>
-
             {sortedRatings[1] && rateLayout(12, 1, 'RatingsWrap__rate-right-col')}
           </Row>
           {sortedRatings[2] && (
             <Row>
-              <div className="RatingsWrap__response">
-                {rateLayout(sortedRatings[3] ? 12 : 24, 2, 'RatingsWrap__divider')}
+              <div className="RatingsWrap__left-wrapper">
+                {rateLayout(sortedRatings[3] ? 12 : 24, 2, 'RatingsWrap__rate-left-col')}
               </div>
               {sortedRatings[3] && rateLayout(12, 3, 'RatingsWrap__rate-right-col')}
             </Row>
           )}
         </div>
       )}
+
       <RateObjectModal
         isVisible={isModalVisible}
         ownRatesOnly={ownRatesOnly}
