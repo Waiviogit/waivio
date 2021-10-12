@@ -1,4 +1,5 @@
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
 
 .RatingsWrap {
   margin-top: 0.5em;
@@ -6,9 +7,15 @@
   &__rate {
     display: flex !important;
 
+    &-left-col {
+      padding-right: 10px !important;
+      border-right: 2px @border-style-base @border-color-base;
+      width: 55% !important;
+    }
+
     &-right-col {
       width: 45% !important;
-      padding-left: 15px !important;
+      padding-left: 10px !important;
     }
 
     &-title {
@@ -42,15 +49,14 @@
     }
   }
 
-  &__divider {
-    padding-right: 15px !important;
-    border-right: 2px @border-style-base @border-color-base;
-    width: 55% !important;
-  }
-
-  @media (max-width: 1232px) {
-    &__response {
+  @media (max-width: 1300px) {
+    &__left-wrapper {
       display: none;
+    }
+
+    &__rate-right-col {
+      padding-left: 0px !important;
+      width: 100% !important;
     }
   }
 }

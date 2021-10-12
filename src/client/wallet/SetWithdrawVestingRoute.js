@@ -5,7 +5,7 @@ import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
 
-const SetWithdrawVestingRoute = ({ from, to, timestamp, isGuestPage }) => (
+const SetWithdrawVestingRoute = ({ percent, from, to, timestamp, isGuestPage }) => (
   <div className="UserWalletTransactions__transaction">
     <div className="UserWalletTransactions__avatar">
       <Avatar username={from} size={40} />
@@ -40,8 +40,10 @@ const SetWithdrawVestingRoute = ({ from, to, timestamp, isGuestPage }) => (
           </BTooltip>
         )}
       </span>
+
       <div>{'{"id":"set_withdraw_vesting_route",'}</div>
-      <div> {`"from":"${from}", "to":"${to}"}`}</div>
+      <div> {`"from":"${from}", "to":"${to}"`}</div>
+      <div> {`"percent": ${percent} }`}</div>
     </div>
   </div>
 );
@@ -51,6 +53,7 @@ SetWithdrawVestingRoute.propTypes = {
   to: PropTypes.string,
   timestamp: PropTypes.string,
   isGuestPage: PropTypes.bool,
+  percent: PropTypes.string,
 };
 
 SetWithdrawVestingRoute.defaultProps = {
@@ -58,6 +61,7 @@ SetWithdrawVestingRoute.defaultProps = {
   to: '',
   timestamp: '',
   isGuestPage: false,
+  percent: '',
 };
 
 export default SetWithdrawVestingRoute;

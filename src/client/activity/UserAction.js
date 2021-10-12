@@ -10,6 +10,8 @@ const UserAction = ({ action, totalVestingShares, totalVestingFundSteem, current
   const actionType = action.op[0];
   const actionDetails = action.op[1];
 
+  if (actionType === 'effective_comment_vote') return null;
+
   return (
     <div className="UserActivityActions__action">
       <UserActionIcon
