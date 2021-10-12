@@ -6,6 +6,7 @@ import { photosInPostRegex } from '../../helpers/regexHelpers';
 import { getReviewRequirements } from '../../rewards/rewardsHelper';
 
 import './CheckReviewModal.less';
+import SubmitReviewPublish from './SubmitReviewPublish';
 
 const getIcon = isValidOption => (
   <Icon type="check-square" style={{ color: isValidOption ? '#30b580' : '#d9534f' }} />
@@ -31,64 +32,7 @@ const CheckReviewModal = ({
   const modalBody =
     hasMinPhotos && hasObject(secondaryObject) && hasObject(primaryObject) ? (
       <React.Fragment>
-        <div className="check-review-modal__paragraph">
-          <span>
-            {intl.formatMessage({
-              id: `check_review_agreement_part_1`,
-              defaultMessage: 'This review meets all the technical requirements of',
-            })}
-          </span>
-          &nbsp;
-          <a
-            href={`/rewards/reserved/${primaryObject.author_permlink}`}
-            title={reviewData.name}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {intl.formatMessage({
-              id: `check_review_the_reservation`,
-              defaultMessage: 'the reservation',
-            })}
-          </a>
-          &nbsp;
-          <span>
-            {intl.formatMessage({
-              id: `check_review_agreement_part_2`,
-              defaultMessage:
-                'and entitles you to specified rewards. The sponsor reserves the right to review all submissions manually before paying the rewards.',
-            })}
-          </span>
-        </div>
-        <div className="check-review-modal__paragraph">
-          {intl.formatMessage({
-            id: `check_review_agreement_part_3`,
-            defaultMessage:
-              'In many jurisdictions, readers should be informed that the review has been partially sponsored. In order to meet these requirements, the following notice will be added to your post:',
-          })}
-        </div>
-        <div className="check-review-modal__paragraph">
-          <hr />
-        </div>
-        <div className="check-review-modal__paragraph">
-          <span>
-            {intl.formatMessage({
-              id: `check_review_post_add_text`,
-              defaultMessage: 'This review was sponsored in part by',
-            })}
-          </span>
-          &nbsp;
-          {reviewData.alias}
-          &nbsp; (
-          <a
-            href={`/@${reviewData.guideName}`}
-            title={reviewData.guideName}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            @{reviewData.guideName}
-          </a>
-          ).
-        </div>
+        <SubmitReviewPublish reviewData={reviewData} primaryObject={primaryObject} />
         <div className="check-review-modal__buttons">
           <Button htmlType="button" onClick={onSubmit} size="large">
             {intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
