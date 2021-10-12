@@ -155,16 +155,12 @@ const SearchAllResult = props => {
       </div>
       {!props.isDining && <FilterTypesList />}
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
-        {!isUsersSearch && (
-          <React.Fragment>
-            <SearchMapFilters />
-            {props.showReload && (
-              <ReloadButton
-                className="SearchAllResult__reload"
-                reloadSearchList={props.reloadSearchList}
-              />
-            )}
-          </React.Fragment>
+        {!isUsersSearch && <SearchMapFilters />}
+        {props.showReload && (
+          <ReloadButton
+            className="SearchAllResult__reload"
+            reloadSearchList={props.reloadSearchList}
+          />
         )}
         <ViewMapButton handleClick={setCloseResult} />
         {currRenderListState.loading ? <Loading /> : currentList}

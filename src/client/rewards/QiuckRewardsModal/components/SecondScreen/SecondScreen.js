@@ -19,7 +19,7 @@ const ModalSecondScreen = props => {
   useEffect(() => {
     const address = parseWobjectField(props.selectedRestaurant, 'address');
 
-    if (address && address.city) {
+    if (address && address.city && !props.topics.includes(address.city)) {
       props.setTopic([...props.topics, address.city]);
     }
   }, []);
