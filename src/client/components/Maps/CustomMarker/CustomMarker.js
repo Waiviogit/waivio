@@ -4,7 +4,7 @@ import MarkerWithReward from '../../../websites/MainMap/MarkerWithReward/MarkerW
 
 const imageOffset = {
   left: 15,
-  top: 31,
+  top: 29,
 };
 
 class CustomMarker extends React.Component {
@@ -85,7 +85,7 @@ class CustomMarker extends React.Component {
   render() {
     const { left, top, onClick, isMarked, currLocation, hoveredWobj } = this.props;
     let width = 29;
-    let height = 34;
+    let height = 30;
     let currentImg = '/images/icons/Marker.svg';
     let currTop = imageOffset.top;
     let currLeft = imageOffset.left;
