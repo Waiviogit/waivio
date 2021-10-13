@@ -10,7 +10,6 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
 import { getOwnWebsites, getParentDomain } from './websiteSelectors';
 import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
-import { getDistrictsWithCount, getTypesPrefetch } from '../../waivioApi/ApiClient';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 
@@ -524,22 +523,28 @@ export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70)
 ) => {
   const state = getState();
   const locale = getLocale(state);
-  let objType = getWebsiteSearchType(state);
+  const objType = getWebsiteSearchType(state);
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
+  const userType = objType === 'Users';
   const body = {
     userName,
     ...tagCategory,
     box,
   };
-  let searchStr = searchString;
+  const searchStr = searchString;
 
   if (!searchString) body.mapMarkers = true;
 
-  if (!objType || objType === 'Users') {
-    objType = 'restaurant';
-    searchStr = '';
+  if (userType) {
+    return dispatch({
+      type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
+      payload: ApiClient.getPostsForMap({
+        box,
+        limit,
+      }),
+    });
   }
 
   return dispatch({
@@ -610,19 +615,19 @@ export const GET_DISTRICTS = createAsyncActionType('@website/GET_DISTRICTS');
 
 export const getDistricts = () => ({
   type: GET_DISTRICTS.ACTION,
-  payload: getDistrictsWithCount(),
+  payload: ApiClient.getDistrictsWithCount(),
 });
 
 export const GET_RESTAURANTS = createAsyncActionType('@website/GET_RESTAURANTS');
 
 export const getRestaurants = () => ({
   type: GET_RESTAURANTS.ACTION,
-  payload: getTypesPrefetch(['restaurant']),
+  payload: ApiClient.getTypesPrefetch(['restaurant']),
 });
 
 export const GET_NEARBY_FOOD = createAsyncActionType('@website/GET_NEARBY_FOOD');
 
 export const getNearbyFood = () => ({
   type: GET_NEARBY_FOOD.ACTION,
-  payload: getTypesPrefetch(['dish', 'drink']),
+  payload: ApiClient.getTypesPrefetch(['dish', 'drink']),
 });

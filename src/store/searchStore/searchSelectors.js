@@ -24,10 +24,6 @@ export const getSearchUsersResults = createSelector(
   state => state.searchUsersResults,
 );
 
-export const getSearchUsersResultsQuantity = createSelector([getSearchUsersResults], state =>
-  size(state),
-);
-
 export const getSearchUsersResultsForDiscoverPage = createSelector(
   [searchState],
   state => state.usersForDiscoverPage,
@@ -112,4 +108,20 @@ export const getHasMoreObjectsForWebsite = createSelector([searchState], state =
 
 export const getSearchInBox = createSelector([searchState], state =>
   get(state, 'searchInBox', true),
+);
+
+export const getExpertsUsersResults = createSelector([searchState], state =>
+  get(state, 'searchExpertsUsersResults.result', []),
+);
+
+export const getLoadingExpertsUsersResults = createSelector([searchState], state =>
+  get(state, 'searchExpertsUsersResults.loading', false),
+);
+
+export const getHasMoreExpertsUsersResults = createSelector([searchState], state =>
+  get(state, 'searchExpertsUsersResults.hasMore', false),
+);
+
+export const getSearchUsersResultsQuantity = createSelector([getExpertsUsersResults], state =>
+  size(state),
 );

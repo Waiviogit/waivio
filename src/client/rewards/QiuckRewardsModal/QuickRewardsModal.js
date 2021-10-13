@@ -17,25 +17,18 @@ import {
   reserveProposition,
   toggleModal,
 } from '../../../store/quickRewards/quickRewardsActions';
-import { getObjectName } from '../../helpers/wObjectHelper';
+import SubmitReviewPublish from '../../post/CheckReviewModal/SubmitReviewPublish';
 
 import './QuickRewardsModal.less';
 
 const QuickRewardsModal = props => {
-  const [isPublishPage, setIsPublishPage] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
   const [loading, setLoading] = useState(false);
   const [topics, setTopic] = useState(['food', 'restaurant']);
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
-  const circleClassList = status =>
-    classNames('circle-item', {
-      'circle-item--active':
-        (status === 'publish' && isPublishPage) || (status === 'select' && !isPublishPage),
-    });
+
   const isPropositionObj = !isEmpty(get(props.selectedDish, 'propositions'));
-  const title = `Review: ${getObjectName(props.selectedRestaurant)}, ${getObjectName(
-    props.selectedDish,
-  )}`;
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
   });
@@ -43,39 +36,78 @@ const QuickRewardsModal = props => {
 
   const closeModal = () => {
     props.toggleModal(false);
-    setIsPublishPage(false);
+    setPageNumber(1);
   };
 
-  const createImagesLink = () =>
-    images.map(img => `\n<center>![image]( ${img.src})</center>`).join('');
+  const handleOnClickBack = () => {
+    setPageNumber(1);
+    setTopic(['food', 'restaurant']);
+    setBody('');
+    setImages([]);
+  };
 
-  const createTopicsLink = () =>
-    topics.map(tag => `\n[#${tag}](https://www.waivio.com/object/${tag})`).join('');
-
-  const handleCreatePost = () => {
-    const compareBody = `\n[${getObjectName(
-      props.selectedRestaurant,
-    )}](https://www.waivio.com/object/${props.selectedRestaurant.author_permlink})
-    \n[${getObjectName(props.selectedDish)}](https://www.waivio.com/object/${
-      props.selectedDish.author_permlink
-    }) 
-    ${createImagesLink()} ${body} ${createTopicsLink()}`;
-
+  const handleOnClickPublishButton = () => {
     setLoading(true);
-
-    if (isPublishPage) {
-      if (window.gtag) window.gtag('event', 'create_post_in_quick_rewards_modal');
-      props.createQuickPost(title, compareBody, topics);
-    }
-
     if (isPropositionObj) {
       if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
       props.reserveProposition();
+      setPageNumber(3);
+    } else {
+      handleCreatePost();
     }
-
     setLoading(false);
-    setIsPublishPage(true);
   };
+
+  const handleCreatePost = () => {
+    setLoading(true);
+
+    if (window.gtag) window.gtag('event', 'create_post_in_quick_rewards_modal');
+    props.createQuickPost(body, topics, images).then(() => setLoading(false));
+  };
+
+  const getCurrentScreen = (() => {
+    const guideInfo = get(props.selectedDish, 'propositions[0].guide');
+
+    switch (pageNumber) {
+      case 1:
+        return {
+          component: <ModalFirstScreen isShow={props.isOpenModal} />,
+          buttonName: 'Next',
+          buttonHandler: () => setPageNumber(2),
+          disabled: isEmpty(props.selectedDish) || isEmpty(props.selectedRestaurant),
+        };
+      case 2:
+        return {
+          component: (
+            <ModalSecondScreen
+              topics={topics}
+              setTopic={setTopic}
+              setBody={setBody}
+              images={images}
+              setImages={setImages}
+            />
+          ),
+          buttonName: 'Publish',
+          buttonHandler: handleOnClickPublishButton,
+          disabled: requirements && requirements !== images.length,
+        };
+      case 3:
+        return {
+          component: (
+            <SubmitReviewPublish
+              primaryObject={props.selectedRestaurant}
+              reviewData={{ ...guideInfo, guideName: guideInfo.name }}
+            />
+          ),
+          buttonName: 'Submit',
+          buttonHandler: handleCreatePost,
+          disabled: false,
+        };
+
+      default:
+        return null;
+    }
+  })();
 
   return (
     <Modal
@@ -85,28 +117,13 @@ const QuickRewardsModal = props => {
       onCancel={closeModal}
       className="QuickRewardsModal"
     >
-      {isPublishPage ? (
-        <ModalSecondScreen
-          topics={topics}
-          setTopic={setTopic}
-          setBody={setBody}
-          images={images}
-          setImages={setImages}
-        />
-      ) : (
-        <ModalFirstScreen isShow={props.isOpenModal} />
-      )}
+      {getCurrentScreen.component}
       <div className="QuickRewardsModal__button-wrap">
-        <div className="circle-wrap">
-          <div className={circleClassList('select')}>
-            <span className="circle">1</span>
-            <span className="circle-title">Reserve</span>
-          </div>
-          <div className={circleClassList('publish')}>
-            <span className="circle">2</span>
-            <span className="circle-title">Write & Publish</span>
-          </div>
-        </div>
+        {pageNumber === 2 && (
+          <Button type="primary" className={nextButtonClassList} onClick={handleOnClickBack}>
+            Back
+          </Button>
+        )}
         {isPropositionObj && (
           <b>
             YOU EARN:{' '}
@@ -119,15 +136,11 @@ const QuickRewardsModal = props => {
         <Button
           type="primary"
           className={nextButtonClassList}
-          disabled={
-            isEmpty(props.selectedDish) ||
-            isEmpty(props.selectedRestaurant) ||
-            (isPublishPage && !body && requirements && requirements !== images.length)
-          }
+          disabled={getCurrentScreen.disabled}
           loading={loading}
-          onClick={handleCreatePost}
+          onClick={getCurrentScreen.buttonHandler}
         >
-          {isPublishPage ? 'Publish' : 'Next'}
+          {getCurrentScreen.buttonName}
         </Button>
       </div>
     </Modal>

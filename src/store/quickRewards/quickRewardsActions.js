@@ -15,6 +15,7 @@ import { getSelectedDish, getSelectedRestaurant } from './quickRewardsSelectors'
 import config from '../../waivioApi/config.json';
 import { generatePermlink, getObjectName, getObjectType } from '../../client/helpers/wObjectHelper';
 import { getDetailsBody } from '../../client/rewards/rewardsHelper';
+import { getCurrentHost } from '../appStore/appSelectors';
 
 export const GET_ELIGIBLE_REWARDS = createAsyncActionType('@quickRewards/GET_ELIGIBLE_REWARDS');
 
@@ -89,13 +90,26 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, searchString) =
 
 export const CREATE_QUICK_POST = '@quickRewards/CREATE_QUICK_POST';
 
-export const createQuickPost = (title, body, topics) => (dispatch, getState) => {
+export const createQuickPost = (userBody, topics, images) => async (dispatch, getState) => {
   const state = getState();
   const author = getAuthenticatedUserName(state);
   const beneficiaries = getBeneficiariesUsers(state);
   const restaurant = getSelectedRestaurant(state);
   const dish = getSelectedDish(state);
+  const host = getCurrentHost(state);
   const isReview = restaurant.campaigns && dish.propositions;
+  const campaignId = isReview ? get(dish, 'propositions[0]._id') : null;
+  const imagesLink = images.map(img => `\n<center>![image]( ${img.src})</center>`).join('');
+  const topicsLink = topics
+    .map(tag => `\n[#${tag}](https://www.waivio.com/object/${tag})`)
+    .join('');
+  const title = `Review: ${getObjectName(restaurant)}, ${getObjectName(dish)}`;
+  const body = `\n[${getObjectName(restaurant)}](https://${host}m/object/${
+    restaurant.author_permlink
+  })
+    \n[${getObjectName(dish)}](https://${host}/object/${
+    dish.author_permlink
+  })${imagesLink} ${userBody} ${topicsLink}`;
   const postData = {
     title,
     body,
@@ -103,29 +117,37 @@ export const createQuickPost = (title, body, topics) => (dispatch, getState) => 
     parentPermlink: config[process.env.NODE_ENV].appName,
     parentAuthor: '',
     author,
-    jsonMetadata: createPostMetadata(body, topics, {
-      wobj: {
-        wobjects: [
-          {
-            object_type: getObjectType(restaurant),
-            objectName: getObjectName(restaurant),
-            author_permlink: restaurant.author_permlink,
-            percent: 50,
-          },
-          {
-            object_type: getObjectType(dish),
-            objectName: getObjectName(dish),
-            author_permlink: dish.author_permlink,
-            percent: 50,
-          },
-        ],
+    jsonMetadata: createPostMetadata(
+      body,
+      topics,
+      {
+        wobj: {
+          wobjects: [
+            {
+              object_type: getObjectType(restaurant),
+              objectName: getObjectName(restaurant),
+              author_permlink: restaurant.author_permlink,
+              percent: 50,
+            },
+            {
+              object_type: getObjectType(dish),
+              objectName: getObjectName(dish),
+              author_permlink: dish.author_permlink,
+              percent: 50,
+            },
+          ],
+        },
       },
-    }),
+      null,
+      campaignId,
+      host,
+    ),
   };
 
-  dispatch({ type: CREATE_QUICK_POST });
-
-  dispatch(createPost(postData, beneficiaries, isReview, get(dish, '.propositions[0]', null)));
+  await dispatch(
+    createPost(postData, beneficiaries, isReview, get(dish, '.propositions[0]', null)),
+  );
+  await dispatch({ type: CREATE_QUICK_POST });
 };
 
 export const RESERVE_REWARD = createAsyncActionType('@quickRewards/RESERVE_REWARD');

@@ -24,7 +24,7 @@ import {
   setShowReload,
 } from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates, getFirstOffsetNumber } from '../helper';
-import ObjectOverlayCard from '../../objectCard/ObjectOverlayCard/ObjectOverlayCard';
+import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
 import { getIsDiningGifts, getScreenSize } from '../../../store/appStore/appSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import {
@@ -41,6 +41,7 @@ import MapControllers from '../../widgets/MapControllers/MapControllers';
 import TagFilters from '../TagFilters/TagFilters';
 
 import '../WebsiteLayoutComponents/Body/WebsiteBody.less';
+import PostOverlayCard from '../../components/Maps/Overlays/PostOverlayCard/PostOverlayCard';
 
 const MainMap = React.memo(props => {
   const [boundsParams, setBoundsParams] = useState({
@@ -278,15 +279,17 @@ const MainMap = React.memo(props => {
     const wobject = get(currentWobj, 'wobject', {});
     const firstOffsetNumber = getFirstOffsetNumber(name);
     const setQueryInStorage = () => localStorage.setItem('query', query);
+    const usersType = props.searchType === 'Users';
+    const offset = usersType ? [80, 240] : [firstOffsetNumber, 160];
 
     return (
-      <Overlay
-        anchor={infoboxData.coordinates}
-        offset={[firstOffsetNumber, 160]}
-        className="WebsiteBody__overlay"
-      >
+      <Overlay anchor={infoboxData.coordinates} offset={offset} className="WebsiteBody__overlay">
         <div className="WebsiteBody__overlay-wrap" role="presentation" onClick={setQueryInStorage}>
-          <ObjectOverlayCard wObject={wobject} showParent={props.searchType !== 'restaurant'} />
+          {usersType ? (
+            <PostOverlayCard wObject={wobject} />
+          ) : (
+            <ObjectOverlayCard wObject={wobject} showParent={props.searchType !== 'restaurant'} />
+          )}
         </div>
       </Overlay>
     );

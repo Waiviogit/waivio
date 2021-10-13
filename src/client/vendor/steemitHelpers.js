@@ -303,7 +303,7 @@ export const dHive = new Client(currentNodesList, {
 
 export const getLastBlockNum = async () => {
   const { head_block_number } = await dHive.database.getDynamicGlobalProperties();
-  return head_block_number + 1;
+  return head_block_number + 2;
 };
 
 export const calcReputation = rep => steem.formatter.reputation(rep);

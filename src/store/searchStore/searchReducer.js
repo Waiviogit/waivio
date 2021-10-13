@@ -2,6 +2,7 @@ import { get, isEmpty, remove, findIndex, isEqual, uniqBy } from 'lodash';
 import * as searchActions from './searchActions';
 import { userToggleFollow } from '../../client/search/helpers';
 import { CLEAR_EDITOR_SEARCH_OBJECTS } from '../editorStore/editorActions';
+import { SEARCH_EXPERTS, SEARCH_EXPERTS_LOADING_MORE } from './searchActions';
 
 const initialState = {
   loading: true,
@@ -29,6 +30,10 @@ const initialState = {
   hasMoreObjectsForWebsite: false,
   websiteMap: {},
   searchInBox: true,
+  searchExpertsUsersResults: {
+    result: [],
+    loading: false,
+  },
 };
 
 export default (state = initialState, action) => {
@@ -38,6 +43,7 @@ export default (state = initialState, action) => {
         ...state,
         isStartSearchAutoComplete: true,
       };
+
     case searchActions.AUTO_COMPLETE_SEARCH.SUCCESS: {
       const { result, search } = action.payload;
       const { followingUsersList } = action.meta;
@@ -53,22 +59,26 @@ export default (state = initialState, action) => {
         isStartSearchAutoComplete: false,
       };
     }
+
     case searchActions.RESET_AUTO_COMPLETE_SEARCH: {
       return {
         ...state,
         autoCompleteSearchResults: [],
         searchObjectsResults: [],
         searchUsersResults: [],
+        searchExpertsUsersResults: [],
         websiteSearchResult: [],
         tagCategory: [],
         websiteSearchString: '',
       };
     }
+
     case searchActions.SEARCH_OBJECTS.START:
       return {
         ...state,
         isStartSearchObject: true,
       };
+
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
       const result = get(action, ['payload', 'result']);
       const search = get(action, ['payload', 'search']);
@@ -84,6 +94,7 @@ export default (state = initialState, action) => {
     case searchActions.SEARCH_OBJECTS.ERROR: {
       return initialState;
     }
+
     case searchActions.SEARCH_OBJECT_TYPES.SUCCESS: {
       const { result, search } = action.payload;
 
@@ -136,6 +147,7 @@ export default (state = initialState, action) => {
         },
       };
     }
+
     case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.SUCCESS: {
       const { result } = action.payload;
 
@@ -147,6 +159,7 @@ export default (state = initialState, action) => {
         },
       };
     }
+
     case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.ERROR: {
       return {
         ...state,
@@ -163,6 +176,7 @@ export default (state = initialState, action) => {
         usersForDiscoverPage: [],
       };
     }
+
     case searchActions.CLEAR_SEARCH_OBJECTS_RESULT: {
       return {
         ...state,
@@ -170,6 +184,7 @@ export default (state = initialState, action) => {
         isClearSearchObjects: true,
       };
     }
+
     case searchActions.RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS: {
       return {
         ...state,
@@ -190,6 +205,7 @@ export default (state = initialState, action) => {
         },
       };
     }
+
     case searchActions.UNFOLLOW_SEARCH_USER.SUCCESS: {
       userToggleFollow(state.usersForDiscoverPage.result, action.meta.username, {
         youFollows: false,
@@ -204,6 +220,7 @@ export default (state = initialState, action) => {
         },
       };
     }
+
     case searchActions.UNFOLLOW_SEARCH_USER.ERROR: {
       userToggleFollow(state.usersForDiscoverPage.result, action.meta.username, {
         pending: false,
@@ -231,6 +248,7 @@ export default (state = initialState, action) => {
         },
       };
     }
+
     case searchActions.FOLLOW_SEARCH_USER.SUCCESS: {
       userToggleFollow(state.usersForDiscoverPage.result, action.meta.username, {
         youFollows: true,
@@ -245,6 +263,7 @@ export default (state = initialState, action) => {
         },
       };
     }
+
     case searchActions.FOLLOW_SEARCH_USER.ERROR: {
       userToggleFollow(state.usersForDiscoverPage.result, action.meta.username, {
         pending: false,
@@ -269,6 +288,7 @@ export default (state = initialState, action) => {
         searchUsersResults: [...state.searchUsersResults],
       };
     }
+
     case searchActions.UNFOLLOW_SEARCH_USER_WEBSITE.SUCCESS: {
       userToggleFollow(state.searchUsersResults, action.meta.username, {
         pending: false,
@@ -280,6 +300,7 @@ export default (state = initialState, action) => {
         searchUsersResults: [...state.searchUsersResults],
       };
     }
+
     case searchActions.UNFOLLOW_SEARCH_USER_WEBSITE.ERROR: {
       userToggleFollow(state.searchUsersResults, action.meta.username, {
         pending: false,
@@ -301,6 +322,7 @@ export default (state = initialState, action) => {
         searchUsersResults: [...state.searchUsersResults],
       };
     }
+
     case searchActions.FOLLOW_SEARCH_USER_WEBSITE.SUCCESS: {
       userToggleFollow(state.searchUsersResults, action.meta.username, {
         pending: false,
@@ -312,6 +334,7 @@ export default (state = initialState, action) => {
         searchUsersResults: [...state.searchUsersResults],
       };
     }
+
     case searchActions.FOLLOW_SEARCH_USER_WEBSITE.ERROR: {
       userToggleFollow(state.searchUsersResults, action.meta.username, {
         pending: false,
@@ -378,6 +401,7 @@ export default (state = initialState, action) => {
         websiteSearchResultLoading: true,
       };
     }
+
     case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.SUCCESS: {
       return {
         ...state,
@@ -386,6 +410,7 @@ export default (state = initialState, action) => {
         websiteSearchResultLoading: false,
       };
     }
+
     case searchActions.SEARCH_OBJECTS_FOR_WEBSITE.ERROR: {
       return {
         ...state,
@@ -394,6 +419,7 @@ export default (state = initialState, action) => {
         websiteSearchResultLoading: false,
       };
     }
+
     case searchActions.SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.START: {
       return {
         ...state,
@@ -547,6 +573,60 @@ export default (state = initialState, action) => {
       return {
         ...state,
         searchObjectsResults: [],
+      };
+    }
+
+    case SEARCH_EXPERTS.START: {
+      return {
+        ...state,
+        searchExpertsUsersResults: {
+          result: [],
+          loading: true,
+        },
+      };
+    }
+
+    case SEARCH_EXPERTS.SUCCESS: {
+      return {
+        ...state,
+        searchExpertsUsersResults: {
+          result: action.payload.users,
+          hasMore: action.payload.hasMore,
+          loading: false,
+        },
+      };
+    }
+
+    case SEARCH_EXPERTS.ERROR: {
+      return {
+        ...state,
+        searchExpertsUsersResults: {
+          result: [],
+          hasMore: false,
+          loading: false,
+        },
+      };
+    }
+
+    case SEARCH_EXPERTS_LOADING_MORE.SUCCESS: {
+      return {
+        ...state,
+        searchExpertsUsersResults: {
+          result: [...state.searchExpertsUsersResults.result, ...action.payload.users],
+          hasMore: action.payload.hasMore,
+          loading: false,
+        },
+      };
+    }
+
+    case SEARCH_EXPERTS_LOADING_MORE.ERROR: {
+      return {
+        ...state,
+        searchExpertsUsersResults: {
+          ...state.searchExpertsUsersResults,
+          hasMore: false,
+          loading: false,
+        },
       };
     }
 

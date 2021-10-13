@@ -5,13 +5,13 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import RatingsWrap from './../RatingsWrap/RatingsWrap';
-import DEFAULTS from '../../object/const/defaultValues';
-import { getObjectName, getObjectAvatar, hasType } from '../../helpers/wObjectHelper';
-import { getProxyImageURL } from '../../helpers/image';
+import RatingsWrap from '../../../../objectCard/RatingsWrap/RatingsWrap';
+import DEFAULTS from '../../../../object/const/defaultValues';
+import { getObjectName, getObjectAvatar, hasType } from '../../../../helpers/wObjectHelper';
+import { getProxyImageURL } from '../../../../helpers/image';
 import OverlayRewardsButton from './OverlayRewardsButton';
-import { getScreenSize } from '../../../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getScreenSize } from '../../../../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 
 import './ObjectOverlayCard.less';
 
