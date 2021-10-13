@@ -65,8 +65,8 @@ const Campaign = ({
             <React.Fragment>
               <span>
                 {intl.formatMessage({
-                  id: 'rewards_details_earn_up_to',
-                  defaultMessage: 'Earn up to',
+                  id: 'rewards_details_earn',
+                  defaultMessage: 'Earn',
                 })}
               </span>
               <span>

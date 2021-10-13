@@ -6,6 +6,7 @@ import Avatar from '../../../Avatar';
 import { jsonParse } from '../../../../helpers/formatter';
 import { getObjectAvatar } from '../../../../helpers/wObjectHelper';
 import USDDisplay from '../../../Utils/USDDisplay';
+import { calculatePayout, isPostCashout } from '../../../../vendor/steemitHelpers';
 
 import './PostOverlayCard.less';
 
@@ -18,7 +19,8 @@ const PostOverlayCard = ({ wObject }) => {
     getObjectAvatar(wObject) ||
     'https://waivio.nyc3.digitaloceanspaces.com/1586860195_f1e17c2d-5138-4462-9a6d-5468276e208e_medium';
   const title = get(wObject, 'post.title', '');
-  const reward = get(wObject, 'propositions[0].reward') || get(wObject, 'campaigns.max_reward');
+  const payout = calculatePayout(wObject.post);
+  const currentPayout = isPostCashout(wObject.post) ? payout.pastPayouts : payout.potentialPayout;
 
   return (
     <div className="PostOverlayCard" key={wObject.author_permlink}>
@@ -38,13 +40,11 @@ const PostOverlayCard = ({ wObject }) => {
             {userName}
           </b>
         </a>
-        {reward && (
-          <USDDisplay
-            value={reward}
-            currencyDisplay={'symbol'}
-            style={{ fontSize: '12px', fontWeight: 'bold', color: '#f87006' }}
-          />
-        )}
+        <USDDisplay
+          value={currentPayout}
+          currencyDisplay={'symbol'}
+          style={{ fontSize: '12px', fontWeight: 'bold', color: '#f87006' }}
+        />
       </div>
     </div>
   );
