@@ -18,13 +18,13 @@ const PostOverlayCard = ({ wObject }) => {
     getObjectAvatar(wObject) ||
     'https://waivio.nyc3.digitaloceanspaces.com/1586860195_f1e17c2d-5138-4462-9a6d-5468276e208e_medium';
   const title = get(wObject, 'post.title', '');
-  const reward = get(wObject, 'propositions[0].reward');
+  const reward = get(wObject, 'propositions[0].reward') || get(wObject, 'campaigns.max_reward');
 
   return (
     <div className="PostOverlayCard" key={wObject.author_permlink}>
       <a href={`/@${userName}/${postPermlink}`} className="PostOverlayCard__title" title={title}>
         {truncate(title, {
-          length: 50,
+          length: 60,
           separator: '...',
         })}
       </a>
