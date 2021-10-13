@@ -280,12 +280,12 @@ const MainMap = React.memo(props => {
     const firstOffsetNumber = getFirstOffsetNumber(name);
     const setQueryInStorage = () => localStorage.setItem('query', query);
     const usersType = props.searchType === 'Users';
-    const offset = usersType ? [70, 240] : [firstOffsetNumber, 160];
+    const offset = usersType ? [80, 240] : [firstOffsetNumber, 160];
 
     return (
       <Overlay anchor={infoboxData.coordinates} offset={offset} className="WebsiteBody__overlay">
         <div className="WebsiteBody__overlay-wrap" role="presentation" onClick={setQueryInStorage}>
-          {props.searchType === 'Users' ? (
+          {usersType ? (
             <PostOverlayCard wObject={wobject} />
           ) : (
             <ObjectOverlayCard wObject={wobject} showParent={props.searchType !== 'restaurant'} />

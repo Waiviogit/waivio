@@ -5,29 +5,46 @@ import PropTypes from 'prop-types';
 import Avatar from '../../../Avatar';
 import { jsonParse } from '../../../../helpers/formatter';
 import { getObjectAvatar } from '../../../../helpers/wObjectHelper';
+import USDDisplay from '../../../Utils/USDDisplay';
 
 import './PostOverlayCard.less';
 
 const PostOverlayCard = ({ wObject }) => {
   const userName = get(wObject, 'post.author');
+  const postPermlink = get(wObject, 'post.permlink');
   const postMetaData = jsonParse(get(wObject, 'post.json_metadata'));
-  const img = get(postMetaData, 'image[0]') || getObjectAvatar(wObject);
+  const img =
+    get(postMetaData, 'image[0]') ||
+    getObjectAvatar(wObject) ||
+    'https://waivio.nyc3.digitaloceanspaces.com/1586860195_f1e17c2d-5138-4462-9a6d-5468276e208e_medium';
   const title = get(wObject, 'post.title', '');
+  const reward = get(wObject, 'propositions[0].reward');
 
   return (
     <div className="PostOverlayCard" key={wObject.author_permlink}>
-      <div className="PostOverlayCard__title" title={title}>
+      <a href={`/@${userName}/${postPermlink}`} className="PostOverlayCard__title" title={title}>
         {truncate(title, {
           length: 50,
           separator: '...',
         })}
-      </div>
-      <img className="PostOverlayCard__image" src={img} alt={title} />
-      <div className="PostOverlayCard__userInfo">
-        <Avatar username={userName} size={25} />{' '}
-        <b className="PostOverlayCard__userName" title={userName}>
-          {userName}
-        </b>
+      </a>
+      <a href={`/@${userName}/${postPermlink}`}>
+        <img className="PostOverlayCard__image" src={img} alt={title} />
+      </a>
+      <div className="PostOverlayCard__userCard">
+        <a href={`/@${userName}`} className="PostOverlayCard__userInfo">
+          <Avatar username={userName} size={25} />{' '}
+          <b className="PostOverlayCard__userName" title={userName}>
+            {userName}
+          </b>
+        </a>
+        {reward && (
+          <USDDisplay
+            value={reward}
+            currencyDisplay={'symbol'}
+            style={{ fontSize: '12px', fontWeight: 'bold', color: '#f87006' }}
+          />
+        )}
       </div>
     </div>
   );
