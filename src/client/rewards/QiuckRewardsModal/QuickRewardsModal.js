@@ -39,7 +39,12 @@ const QuickRewardsModal = props => {
     setPageNumber(1);
   };
 
-  const handleOnClickBack = () => setPageNumber(1);
+  const handleOnClickBack = () => {
+    setPageNumber(1);
+    setTopic(['food', 'restaurant']);
+    setBody('');
+    setImages([]);
+  };
 
   const handleOnClickPublishButton = () => {
     setLoading(true);
@@ -57,10 +62,12 @@ const QuickRewardsModal = props => {
     setLoading(true);
 
     if (window.gtag) window.gtag('event', 'create_post_in_quick_rewards_modal');
-    props.createQuickPost(topics, images).then(() => setLoading(false));
+    props.createQuickPost(body, topics, images).then(() => setLoading(false));
   };
 
   const getCurrentScreen = (() => {
+    const guideInfo = get(props.selectedDish, 'propositions[0].guide');
+
     switch (pageNumber) {
       case 1:
         return {
@@ -82,14 +89,14 @@ const QuickRewardsModal = props => {
           ),
           buttonName: 'Publish',
           buttonHandler: handleOnClickPublishButton,
-          disabled: !body || (requirements && requirements !== images.length),
+          disabled: requirements && requirements !== images.length,
         };
       case 3:
         return {
           component: (
             <SubmitReviewPublish
               primaryObject={props.selectedRestaurant}
-              reviewData={props.selectedDish.propositions[0].guide}
+              reviewData={{ ...guideInfo, guideName: guideInfo.name }}
             />
           ),
           buttonName: 'Submit',

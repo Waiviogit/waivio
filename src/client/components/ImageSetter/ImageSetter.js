@@ -46,9 +46,7 @@ const ImageSetter = ({
     }
   }, [currentImages]);
 
-  const clearImageState = () => {
-    setCurrentImages([]);
-  };
+  const clearImageState = () => setCurrentImages([]);
 
   const addImage = () => {
     if (isModal && isOkayBtn) {
