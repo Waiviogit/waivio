@@ -105,7 +105,7 @@ const ModalFirstScreen = props => {
                       isNeedType
                     />
                     {camp.campaigns && (
-                      <span>
+                      <span className="FirstScreen__priceWrap">
                         <span className="FirstScreen__earn">{earnMessage(camp)} </span>
                         <USDDisplay
                           value={camp.campaigns.max_reward}
@@ -158,7 +158,7 @@ const ModalFirstScreen = props => {
                       closeButton
                     />
                     {reward && (
-                      <span>
+                      <span className="FirstScreen__priceWrap">
                         <span className="FirstScreen__earn">Earn </span>
                         <USDDisplay
                           value={reward}

@@ -53,12 +53,12 @@ const SubmitReviewPublish = ({ intl, reviewData, primaryObject }) => (
       {reviewData.alias}
       &nbsp; (
       <a
-        href={`/@${reviewData.name}`}
-        title={reviewData.name}
+        href={`/@${reviewData.guideName}`}
+        title={reviewData.guideName}
         target="_blank"
         rel="noopener noreferrer"
       >
-        @{reviewData.name}
+        @{reviewData.guideName}
       </a>
       ).
     </div>
