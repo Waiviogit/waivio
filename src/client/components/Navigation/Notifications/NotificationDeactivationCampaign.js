@@ -8,7 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationDeacticationCampaign = ({ notification, read, onClick }) => {
-  const url = `/rewards/guideHistory?campaign=${notification.campaignName}`;
+  const url = `/object/${notification.author_permlink}`;
 
   return (
     <Link
