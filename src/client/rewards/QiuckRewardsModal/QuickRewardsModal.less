@@ -13,10 +13,16 @@
     border-bottom: 1px solid #eae8e8;
 
     .object-search-card {
+      width: 100%;
+    }
+  }
+
+  &__select-item--withReward.ant-select-dropdown-menu-item {
+    .object-search-card {
       width: 65%;
 
       @media @small {
-        width: 78%;
+        width: 74%;
       }
     }
   }
@@ -48,6 +54,14 @@
   .ant-modal-title {
     text-align: center;
     font-size: 1.2em;
+  }
+
+  .ant-modal-body {
+    padding: 15px;
+
+    @media @small {
+      padding: 20px;
+    }
   }
 }
 
