@@ -17,6 +17,9 @@ export const getObjectAvatar = (wobj = {}) =>
 
 export const getObjectType = (wobj = {}) => get(wobj, 'object_type') || get(wobj, 'type');
 
+export const getObjectReward = (wobj = {}) =>
+  get(wobj, 'campaigns.max_reward') || get(wobj, 'propositions[0].reward') || get(wobj, 'reward');
+
 export const getObjectMap = (wobj = {}) => {
   const map = get(wobj, 'map');
 

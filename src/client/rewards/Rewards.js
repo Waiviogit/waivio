@@ -899,12 +899,17 @@ class Rewards extends React.Component {
     const { match } = this.props;
     const newPropositions = !isEmpty(propositions) ? propositions : propositionsReserved;
     const secondaryObjects = flatten(
-      map(newPropositions, proposition => map(proposition.objects, object => object.object)),
+      map(newPropositions, proposition =>
+        map(proposition.objects, object => ({ ...object.object, reward: proposition.reward })),
+      ),
     );
     const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
     const primaryObjectForMap =
       !isEmpty(secondaryObjectsForMap) && match.params.filterKey !== 'reserved'
-        ? get(newPropositions, ['0', 'required_object'])
+        ? {
+            ...get(newPropositions, ['0', 'required_object'], {}),
+            reward: newPropositions[0].reward,
+          }
         : {};
     const secondaryObjectsWithUniqueCoordinates = filter(secondaryObjectsForMap, object => {
       const parent = object.parent;
@@ -916,7 +921,10 @@ class Rewards extends React.Component {
 
     return match.params.filterKey === 'reserved'
       ? map(newPropositions, proposition => {
-          const propositionObject = get(proposition, ['objects', '0', 'object']);
+          const propositionObject = {
+            ...get(proposition, ['objects', '0', 'object'], {}),
+            reward: proposition.reward,
+          };
           const propositionObjectMap = get(proposition, ['objects', '0', 'object', 'map']);
 
           return !isEmpty(propositionObjectMap) ? propositionObject : proposition.required_object;
@@ -980,7 +988,10 @@ class Rewards extends React.Component {
       url,
       sortFraudDetection,
     } = this.state;
-    const mapWobjects = map(wobjects, wobj => wobj.required_object);
+    const mapWobjects = map(wobjects, wobj => ({
+      ...wobj.required_object,
+      reward: wobj.max_reward,
+    }));
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
