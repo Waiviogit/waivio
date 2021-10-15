@@ -36,6 +36,7 @@ const WebsiteSignIn = props => {
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: `${urlObj.origin}/callback`,
   });
+
   const onClickHiveSingerAuthButton = () => {
     if (window.gtag) window.gtag('event', 'login_hive_singer');
   };

@@ -201,10 +201,7 @@ const MainMap = React.memo(props => {
   }, [props.userLocation, boundsParams, query.toString()]);
 
   const handleOnBoundsChanged = useCallback(
-    debounce((center, zoom, bounds) => {
-      setArea(bounds);
-      setCenter(center);
-      setZoom(zoom);
+    debounce((zoom, bounds) => {
       if (!isEmpty(bounds) && bounds.ne[0] && bounds.sw[0]) {
         setBoundsParams({
           topPoint: [bounds.ne[1], bounds.ne[0]],
@@ -216,7 +213,13 @@ const MainMap = React.memo(props => {
   );
 
   const onBoundsChanged = ({ center, zoom, bounds }) => {
-    if (!isEqual(bounds, area)) handleOnBoundsChanged(center, zoom, bounds);
+    if (!isEmpty(center)) {
+      setArea(bounds);
+      setCenter(center);
+      setZoom(zoom);
+    }
+
+    if (!isEqual(bounds, area)) handleOnBoundsChanged(bounds);
   };
 
   const handleMarkerClick = useCallback(
