@@ -28,9 +28,9 @@ import {
   getIsWaivio,
   getWebsiteParentHost,
 } from '../../../../store/appStore/appSelectors';
+import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
 
 import './ModalSignIn.less';
-import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
 
 const ModalSignIn = ({
   intl,
@@ -118,11 +118,9 @@ const ModalSignIn = ({
   };
 
   const renderGuestSignUpForm = () => (
-    <React.Fragment>
-      <div className="ModalGuestForm">
-        <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
-      </div>
-    </React.Fragment>
+    <div className="ModalGuestForm">
+      <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
+    </div>
   );
 
   const renderSignIn = () => {
