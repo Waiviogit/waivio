@@ -201,11 +201,14 @@ const MainMap = React.memo(props => {
   }, [props.userLocation, boundsParams, query.toString()]);
 
   const handleOnBoundsChanged = useCallback(
-    debounce(data => {
-      if (!isEmpty(data) && data.ne[0] && data.sw[0]) {
+    debounce((center, zoom, bounds) => {
+      setArea(bounds);
+      setCenter(center);
+      setZoom(zoom);
+      if (!isEmpty(bounds) && bounds.ne[0] && bounds.sw[0]) {
         setBoundsParams({
-          topPoint: [data.ne[1], data.ne[0]],
-          bottomPoint: [data.sw[1], data.sw[0]],
+          topPoint: [bounds.ne[1], bounds.ne[0]],
+          bottomPoint: [bounds.sw[1], bounds.sw[0]],
         });
       }
     }, 300),
@@ -213,12 +216,7 @@ const MainMap = React.memo(props => {
   );
 
   const onBoundsChanged = ({ center, zoom, bounds }) => {
-    if (!isEmpty(center)) {
-      setArea(bounds);
-      setCenter(center);
-      setZoom(zoom);
-    }
-    if (!isEqual(bounds, area)) handleOnBoundsChanged(bounds);
+    if (!isEqual(bounds, area)) handleOnBoundsChanged(center, zoom, bounds);
   };
 
   const handleMarkerClick = useCallback(
@@ -264,7 +262,6 @@ const MainMap = React.memo(props => {
             onClick={handleMarkerClick}
             onDoubleClick={resetInfoBox}
             hoveredWobj={hoveredWobj}
-            price={get(wobject, 'campaigns.max_reward') || get(wobject, 'propositions[0].reward')}
           />
         );
       });
@@ -333,13 +330,6 @@ const MainMap = React.memo(props => {
     !isEmpty(currCenter) &&
     currZoom && (
       <div className={mapClassList} style={{ height: mapHeight }}>
-        <MapControllers
-          className={'WebsiteBodyControl'}
-          decrementZoom={decrementZoom}
-          incrementZoom={incrementZoom}
-          successCallback={setLocationFromNavigator}
-          rejectCallback={setLocationFromApi}
-        />
         <Map
           ref={mapRef}
           center={currCenter}
@@ -348,8 +338,6 @@ const MainMap = React.memo(props => {
           provider={mapProvider}
           onBoundsChanged={onBoundsChanged}
           onClick={handleClickOnMap}
-          animate
-          zoomSnap
         >
           <TagFilters query={query} history={props.history} />
           {markersList}
@@ -358,6 +346,13 @@ const MainMap = React.memo(props => {
             <CustomMarker anchor={[props.userLocation.lat, props.userLocation.lon]} currLocation />
           )}
         </Map>
+        <MapControllers
+          className={'WebsiteBodyControl'}
+          decrementZoom={decrementZoom}
+          incrementZoom={incrementZoom}
+          successCallback={setLocationFromNavigator}
+          rejectCallback={setLocationFromApi}
+        />
       </div>
     )
   );

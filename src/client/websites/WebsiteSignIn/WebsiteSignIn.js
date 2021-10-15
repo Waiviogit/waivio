@@ -4,6 +4,8 @@ import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { message } from 'antd';
+
 import { batch, useDispatch, useSelector } from 'react-redux';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
@@ -12,9 +14,6 @@ import { isUserRegistered } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import SocialButton from './SocialButton';
 import { getCurrentHost } from '../../../store/appStore/appSelectors';
-
-import styles from './styles';
-import './WebsiteSignIn.less';
 import {
   getFollowing,
   getFollowingObjects,
@@ -23,6 +22,8 @@ import {
 import { busyLogin, getAuthGuestBalance, login } from '../../../store/authStore/authActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { getRebloggedList } from '../../../store/reblogStore/reblogActions';
+import styles from './styles';
+import './WebsiteSignIn.less';
 
 const WebsiteSignIn = props => {
   const [loading, setIsLoading] = useState(false);
@@ -83,6 +84,20 @@ const WebsiteSignIn = props => {
         props.setUserData({ ...response, image, socialNetwork });
         props.setIsFormVisible(true);
       }
+    }
+  };
+
+  const handleFailure = failResponse => {
+    if (failResponse.error === 'idpiframe_initialization_failed') {
+      message.error(
+        props.intl.formatMessage({
+          id: 'sign_in_error_not_cookies',
+          defaultMessage:
+            'You need to disable blocking cookies in incognito mode, in your browser settings',
+        }),
+      );
+    } else {
+      responseSocial(failResponse, 'google');
     }
   };
 
@@ -187,7 +202,7 @@ const WebsiteSignIn = props => {
               <GoogleLogin
                 clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
                 onSuccess={response => responseSocial(response, 'google')}
-                onFailure={failResponse => responseSocial(failResponse, 'google')}
+                onFailure={handleFailure}
                 cookiePolicy={'single_host_origin'}
                 render={renderProps => (
                   <SocialButton
