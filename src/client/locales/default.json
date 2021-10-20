@@ -84,6 +84,7 @@
   "remove_from_favorites": "Remove from favorites",
   "like": "Like",
   "like_slider_info": "Your vote will be worth",
+  "voting_after_7days": "Voting after 7 days will not affect the rewards. But you can always send a tip to the author",
   "dislike": "Dislike",
   "unlike": "Unlike",
   "and_more_amount": "and {amount} more",

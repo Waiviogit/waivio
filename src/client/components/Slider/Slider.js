@@ -17,6 +17,7 @@ export default class Slider extends React.Component {
       title: PropTypes.string,
       url: PropTypes.string,
       author: PropTypes.string,
+      created: PropTypes.string,
     }),
     type: PropTypes.string,
   };
@@ -31,6 +32,7 @@ export default class Slider extends React.Component {
 
   state = {
     value: 100,
+    oldPost: false,
   };
 
   componentWillMount() {
@@ -38,6 +40,16 @@ export default class Slider extends React.Component {
       this.setState({
         value: this.props.value,
       });
+    }
+
+    const today = new Date();
+    const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+    const dateParsed = date.split('-').join('');
+    const postday = this.props.post.created.slice(0, 10);
+    const postDayParsed = postday.split('-').join('');
+
+    if (dateParsed - postDayParsed > 7) {
+      this.setState({ oldPost: true });
     }
   }
 
@@ -75,7 +87,7 @@ export default class Slider extends React.Component {
   );
 
   render() {
-    const { value } = this.state;
+    const { value, oldPost } = this.state;
     const { type } = this.props;
     const oprtr = type === 'flag' ? '-' : '';
 
@@ -88,13 +100,24 @@ export default class Slider extends React.Component {
           oprtr={oprtr}
         />
         <div className="Slider__info">
-          <h3>
-            <span>
-              <FormattedMessage id="like_slider_info" defaultMessage="Your vote will be worth." />{' '}
-              {oprtr}
-              {<USDDisplay value={this.getCurrentValue()} />}.
-            </span>
-          </h3>
+          {oldPost ? (
+            <h3>
+              <span>
+                <FormattedMessage
+                  id="voting_after_7days"
+                  defaultMessage="Voting after 7 days will not affect the rewards. But you can always send a tip to the author."
+                />
+              </span>
+            </h3>
+          ) : (
+            <h3>
+              <span>
+                <FormattedMessage id="like_slider_info" defaultMessage="Your vote will be worth." />{' '}
+                {oprtr}
+                {<USDDisplay value={this.getCurrentValue()} />}.
+              </span>
+            </h3>
+          )}
         </div>
       </div>
     );
