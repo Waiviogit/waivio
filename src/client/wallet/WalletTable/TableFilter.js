@@ -26,6 +26,7 @@ const TableFilter = ({
   const creationAccDate = useSelector(getCreationAccDate);
 
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
       <Form.Item
