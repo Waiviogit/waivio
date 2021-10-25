@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
+import { Link } from 'react-router-dom';
 import { debounce } from 'lodash';
 import USDDisplay from '../Utils/USDDisplay';
 import RawSlider from './RawSlider';
-
 import './Slider.less';
+import { setIsOld } from '../../../store/walletStore/walletActions';
 
 @injectIntl
+@connect(() => ({}), { setIsOld })
 export default class Slider extends React.Component {
   static propTypes = {
     value: PropTypes.number,
@@ -20,6 +23,7 @@ export default class Slider extends React.Component {
       created: PropTypes.string,
     }),
     type: PropTypes.string,
+    setIsOld: PropTypes.func,
   };
 
   static defaultProps = {
@@ -28,6 +32,7 @@ export default class Slider extends React.Component {
     onChange: () => {},
     post: {},
     type: 'confirm',
+    setIsOld: () => {},
   };
 
   state = {
@@ -99,13 +104,27 @@ export default class Slider extends React.Component {
           tipFormatter={this.formatTip}
           oprtr={oprtr}
         />
+
         <div className="Slider__info">
           {oldPost ? (
             <h3>
               <span>
                 <FormattedMessage
-                  id="voting_after_7days"
-                  defaultMessage="Voting after 7 days will not affect the rewards. But you can always send a tip to the author."
+                  id="voting_after_7days_firstPart"
+                  defaultMessage="Voting after 7 days will not affect the rewards. But you can always"
+                />
+                <Link
+                  to={`/@${this.props.post.author}/transfers`}
+                  onClick={() => this.props.setIsOld(this.props.post.author)}
+                >
+                  <FormattedMessage
+                    id="voting_after_7days_secondPart"
+                    defaultMessage="send a tip"
+                  />
+                </Link>
+                <FormattedMessage
+                  id="voting_after_7days_thirdPart"
+                  defaultMessage=" to the author."
                 />
               </span>
             </h3>
