@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import React from 'react';
 
 const validate = {
-  text: /[a-z,0-9]+$/,
+  text: /[A-z,0-9]+$/,
 };
 
 export default {
@@ -42,7 +42,7 @@ export default {
           return Promise.reject(
             <FormattedMessage
               id="website_domain_pattern"
-              defaultMessage="You`ve entered invalid data. Only Latin lowercase letters and 0-9 digits allowed"
+              defaultMessage="You`ve entered invalid data. Only Latin  letters and 0-9 digits allowed"
               values={{ value }}
             />,
           );
