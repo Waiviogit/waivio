@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, DatePicker, Form, Select } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -24,6 +24,8 @@ const TableFilter = ({
 }) => {
   const disabledDate = current => current > moment().endOf('day');
   const creationAccDate = useSelector(getCreationAccDate);
+  const [isOpen, setIsOpen] = useState(false);
+  const onOpenChange = () => setIsOpen(!isOpen);
 
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
@@ -96,6 +98,8 @@ const TableFilter = ({
             <DatePicker
               format={'MM/DD/YYYY'}
               showToday={false}
+              open={isOpen}
+              onOpenChange={onOpenChange}
               placeholder={intl.formatMessage({
                 id: 'table_start_date_picker',
                 defaultMessage: 'Select start date',
@@ -110,6 +114,7 @@ const TableFilter = ({
                       .sort((a, b) => a - b)[0];
 
                     form.setFieldsValue({ from: moment.unix(from) });
+                    setIsOpen(false);
                   }}
                 >
                   {intl.formatMessage({
