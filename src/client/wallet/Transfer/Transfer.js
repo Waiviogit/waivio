@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { func } from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -9,7 +9,11 @@ import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
 import { getCryptoPriceHistory } from '../../../store/appStore/appActions';
-import { closeTransfer, sendPendingTransfer } from '../../../store/walletStore/walletActions';
+import {
+  openTransfer,
+  closeTransfer,
+  sendPendingTransfer,
+} from '../../../store/walletStore/walletActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -31,6 +35,7 @@ import {
   isGuestUser,
 } from '../../../store/authStore/authSelectors';
 import {
+  getIsOld,
   getIsTransferVisible,
   getIsVipTickets,
   getTotalVestingFundSteem,
@@ -74,6 +79,7 @@ const InputGroup = Input.Group;
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
     isVipTickets: getIsVipTickets(state),
     showModal: isOpenLinkModal(state),
+    isOld: getIsOld(state),
   }),
   {
     closeTransfer,
@@ -82,6 +88,7 @@ const InputGroup = Input.Group;
     saveSettings,
     openLinkHiveAccountModal,
     sendPendingTransfer,
+    openTransfer,
   },
 )
 @Form.create()
@@ -112,6 +119,8 @@ export default class Transfer extends React.Component {
     match: PropTypes.shape().isRequired,
     isTip: PropTypes.bool.isRequired,
     isVipTickets: PropTypes.bool,
+    isOld: PropTypes.string,
+    openTransfer: func,
   };
 
   static defaultProps = {
@@ -130,6 +139,8 @@ export default class Transfer extends React.Component {
     hiveBeneficiaryAccount: '',
     getPayables: () => {},
     isTip: false,
+    isOld: '',
+    openTransfer: () => {},
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -168,6 +179,7 @@ export default class Transfer extends React.Component {
       to,
       amount,
       currency,
+      isOld,
     } = this.props;
     const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
     const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
@@ -181,6 +193,10 @@ export default class Transfer extends React.Component {
       to,
       amount,
     });
+
+    if (isOld) {
+      this.props.openTransfer(isOld);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -514,6 +530,7 @@ export default class Transfer extends React.Component {
 
     this.setState({
       inputValue: value,
+
       oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
       currentEstimate: this.estimatedValue(cryptosPriceHistory, value),
     });
@@ -543,7 +560,9 @@ export default class Transfer extends React.Component {
       hiveBeneficiaryAccount,
       showModal,
       isTip,
+      isOld,
     } = this.props;
+
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
     const isChangesDisabled = !!memo || this.props.isVipTickets;
@@ -722,6 +741,7 @@ export default class Transfer extends React.Component {
               }}
             />
           </div>
+
           <Form.Item
             label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
           >
@@ -731,7 +751,11 @@ export default class Transfer extends React.Component {
               <Input.TextArea
                 disabled={isChangesDisabled}
                 autoSize={{ minRows: 2, maxRows: 6 }}
-                placeholder={memoPlaceHolder}
+                placeholder={
+                  isOld
+                    ? `Tips: Witness(re)Announcement - ${`https://www.waivio.com/@${isOld}/witness-re-announcement`}`
+                    : memoPlaceHolder
+                }
               />,
             )}
           </Form.Item>
