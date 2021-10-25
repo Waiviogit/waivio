@@ -6,12 +6,12 @@ import { Link } from 'react-router-dom';
 import { debounce } from 'lodash';
 import USDDisplay from '../Utils/USDDisplay';
 import RawSlider from './RawSlider';
-import './Slider.less';
 import { setIsOld } from '../../../store/walletStore/walletActions';
 import { isPostCashout } from '../../vendor/steemitHelpers';
+import './Slider.less';
 
 @injectIntl
-@connect(() => ({}), { setIsOld })
+@connect(null, { setIsOld })
 export default class Slider extends React.Component {
   static propTypes = {
     value: PropTypes.number,
@@ -62,6 +62,8 @@ export default class Slider extends React.Component {
 
   getCurrentValue = () => this.props.voteWorth || 0;
 
+  sendTip = () => this.props.setIsOld(this.props.post.author);
+
   handleChange = debounce(value => {
     this.setState({ value }, () => {
       this.props.onChange(value);
@@ -103,10 +105,7 @@ export default class Slider extends React.Component {
                   id="voting_after_7days_firstPart"
                   defaultMessage="Voting after 7 days will not affect the rewards. But you can always"
                 />
-                <Link
-                  to={`/@${this.props.post.author}/transfers`}
-                  onClick={() => this.props.setIsOld(this.props.post.author)}
-                >
+                <Link to={`/@${this.props.post.author}/transfers`} onClick={this.sendTip}>
                   <FormattedMessage
                     id="voting_after_7days_secondPart"
                     defaultMessage="send a tip"
