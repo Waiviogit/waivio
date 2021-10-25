@@ -3,6 +3,7 @@ import * as walletActions from './walletActions';
 import { actionsFilter, ACTIONS_DISPLAY_LIMIT } from '../../client/helpers/accountHistoryHelper';
 
 const initialState = {
+  isOld: '',
   transferVisible: false,
   transferTo: '',
   powerUpOrDownVisible: false,
@@ -40,6 +41,12 @@ const initialState = {
 
 export default function walletReducer(state = initialState, action) {
   switch (action.type) {
+    case walletActions.SET_IS_OLD: {
+      return {
+        ...state,
+        isOld: action.payload,
+      };
+    }
     case walletActions.OPEN_TRANSFER:
       return {
         ...state,

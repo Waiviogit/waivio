@@ -50,6 +50,13 @@ export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
 
 export const SET_PENDING_TRANSFER = '@wallet/SET_PENDING_TRANSFER';
 
+export const SET_IS_OLD = 'SET_IS_OLD';
+
+export const setIsOld = payload => ({
+  type: SET_IS_OLD,
+  payload,
+});
+
 export const openTransfer = (
   userName,
   amount = 0,
