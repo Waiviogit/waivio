@@ -24,8 +24,8 @@ const TableFilter = ({
 }) => {
   const disabledDate = current => current > moment().endOf('day');
   const creationAccDate = useSelector(getCreationAccDate);
-
   const [isOpen, setIsOpen] = useState(false);
+  const onOpenChange = () => setIsOpen(!isOpen);
 
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
@@ -99,7 +99,7 @@ const TableFilter = ({
               format={'MM/DD/YYYY'}
               showToday={false}
               open={isOpen}
-              onOpenChange={() => setIsOpen(!isOpen)}
+              onOpenChange={onOpenChange}
               placeholder={intl.formatMessage({
                 id: 'table_start_date_picker',
                 defaultMessage: 'Select start date',
