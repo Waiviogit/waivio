@@ -95,7 +95,7 @@ class CustomMarker extends React.Component {
     };
 
     if (currLocation) {
-      currentImg = '/images/icons/location.png';
+      currentImg = '/images/icons/location.svg';
       width = 20;
       height = 20;
       currTop = 20;
