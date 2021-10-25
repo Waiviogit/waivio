@@ -8,6 +8,7 @@ import USDDisplay from '../Utils/USDDisplay';
 import RawSlider from './RawSlider';
 import './Slider.less';
 import { setIsOld } from '../../../store/walletStore/walletActions';
+import { isPostCashout } from '../../vendor/steemitHelpers';
 
 @injectIntl
 @connect(() => ({}), { setIsOld })
@@ -37,7 +38,6 @@ export default class Slider extends React.Component {
 
   state = {
     value: 100,
-    oldPost: false,
   };
 
   componentWillMount() {
@@ -45,16 +45,6 @@ export default class Slider extends React.Component {
       this.setState({
         value: this.props.value,
       });
-    }
-
-    const today = new Date();
-    const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-    const dateParsed = date.split('-').join('');
-    const postday = this.props.post.created.slice(0, 10);
-    const postDayParsed = postday.split('-').join('');
-
-    if (dateParsed - postDayParsed > 7) {
-      this.setState({ oldPost: true });
     }
   }
 
@@ -92,8 +82,8 @@ export default class Slider extends React.Component {
   );
 
   render() {
-    const { value, oldPost } = this.state;
-    const { type } = this.props;
+    const { value } = this.state;
+    const { type, post } = this.props;
     const oprtr = type === 'flag' ? '-' : '';
 
     return (
@@ -106,7 +96,7 @@ export default class Slider extends React.Component {
         />
 
         <div className="Slider__info">
-          {oldPost ? (
+          {isPostCashout(post) ? (
             <h3>
               <span>
                 <FormattedMessage
