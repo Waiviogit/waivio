@@ -274,14 +274,14 @@ class StoryFull extends React.Component {
       else linkedObjects.push(wobj);
     });
     const { open, index } = this.state.lightbox;
-    const getImagePath = item =>
-      item.includes('waivio.nyc3.digitaloceanspaces') ? item : getImagePathPost(item);
+    const getImagePath = item => getImagePathPost(item);
     const parsedBody = getHtml(post.body, {}, 'text');
 
     this.images = extractImageTags(parsedBody).map(image => ({
       ...image,
       src: getImagePath(image.src),
     }));
+
     const body = this.images.reduce(
       (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
       post.body,

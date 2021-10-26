@@ -292,13 +292,13 @@ const MainMap = React.memo(props => {
     );
   }, [infoboxData]);
 
-  const incrementZoom = useCallback(() => setMapData({ ...mapData, zoom: mapData.zoom + 1 }), [
-    mapData.zoom,
-  ]);
+  const incrementZoom = useCallback(() => {
+    if (mapData.zoom < 18) setMapData({ ...mapData, zoom: mapData.zoom + 1 });
+  }, [mapData.zoom]);
 
-  const decrementZoom = useCallback(() => setMapData({ ...mapData, zoom: mapData.zoom - 1 }), [
-    mapData.zoom,
-  ]);
+  const decrementZoom = useCallback(() => {
+    if (mapData.zoom > 1) setMapData({ ...mapData, zoom: mapData.zoom - 1 });
+  }, [mapData.zoom]);
 
   const setLocationFromNavigator = position => {
     const { latitude, longitude } = position.coords;
