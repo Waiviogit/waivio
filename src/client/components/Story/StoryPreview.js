@@ -18,7 +18,7 @@ import {
   postWithPicture,
 } from './StoryHelper';
 import { getHtml } from './Body';
-import { getProxyImageURL } from '../../helpers/image';
+import { getImagePathPost, getProxyImageURL } from '../../helpers/image';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import { videoPreviewRegex } from '../../helpers/regexHelpers';
@@ -125,7 +125,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     embed: () => embeds && embeds[0] && <PostFeedEmbed key="embed" embed={embeds[0]} />,
     image: () => (
       <div key={imagePath} className="Story__content__img-container">
-        <LazyLoadImage src={imagePath} threshold={250} />
+        <LazyLoadImage src={getImagePathPost(imagePath)} threshold={250} />
       </div>
     ),
   };
