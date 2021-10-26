@@ -6,12 +6,13 @@ import { Link } from 'react-router-dom';
 import { debounce } from 'lodash';
 import USDDisplay from '../Utils/USDDisplay';
 import RawSlider from './RawSlider';
-import { setIsOld } from '../../../store/walletStore/walletActions';
+import { openTransfer } from '../../../store/walletStore/walletActions';
 import { isPostCashout } from '../../vendor/steemitHelpers';
+import Transfer from '../../wallet/Transfer/Transfer';
 import './Slider.less';
 
 @injectIntl
-@connect(null, { setIsOld })
+@connect(null, { openTransfer })
 export default class Slider extends React.Component {
   static propTypes = {
     value: PropTypes.number,
@@ -24,7 +25,7 @@ export default class Slider extends React.Component {
       created: PropTypes.string,
     }),
     type: PropTypes.string,
-    setIsOld: PropTypes.func,
+    openTransfer: PropTypes.func,
   };
 
   static defaultProps = {
@@ -33,7 +34,7 @@ export default class Slider extends React.Component {
     onChange: () => {},
     post: {},
     type: 'confirm',
-    setIsOld: () => {},
+    openTransfer: () => {},
   };
 
   state = {
@@ -62,7 +63,7 @@ export default class Slider extends React.Component {
 
   getCurrentValue = () => this.props.voteWorth || 0;
 
-  sendTip = () => this.props.setIsOld(this.props.post.author);
+  sendTip = () => this.props.openTransfer(this.props.post.author);
 
   handleChange = debounce(value => {
     this.setState({ value }, () => {
@@ -98,6 +99,7 @@ export default class Slider extends React.Component {
         />
 
         <div className="Slider__info">
+          <Transfer sendTo={post.author} />
           {isPostCashout(post) ? (
             <h3>
               <span>
@@ -105,7 +107,7 @@ export default class Slider extends React.Component {
                   id="voting_after_7days_firstPart"
                   defaultMessage="Voting after 7 days will not affect the rewards. But you can always"
                 />
-                <Link to={`/@${this.props.post.author}/transfers`} onClick={this.sendTip}>
+                <Link onClick={this.sendTip}>
                   <FormattedMessage
                     id="voting_after_7days_secondPart"
                     defaultMessage="send a tip"

@@ -5,7 +5,6 @@ import { createSelector } from 'reselect';
 export const walletState = state => state.wallet;
 
 // reselect function
-export const getIsOld = createSelector([walletState], state => state.isOld);
 
 export const getIsTransferVisible = createSelector([walletState], state => state.transferVisible);
 
