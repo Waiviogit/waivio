@@ -743,7 +743,7 @@ export default class Transfer extends React.Component {
               rules: [{ validator: this.validateMemo }],
             })(
               <Input.TextArea
-                disabled={sendTo ? true : isChangesDisabled}
+                disabled={sendTo || isChangesDisabled}
                 autoSize={{ minRows: 2, maxRows: 6 }}
                 placeHolder={memoPlaceHolder}
               />,
