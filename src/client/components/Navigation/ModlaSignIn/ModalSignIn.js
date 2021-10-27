@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import hivesigner from 'hivesigner';
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { batch, connect, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { login, busyLogin, getAuthGuestBalance } from '../../../../store/authStore/authActions';
@@ -28,9 +28,9 @@ import {
   getIsWaivio,
   getWebsiteParentHost,
 } from '../../../../store/appStore/appSelectors';
+import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
 
 import './ModalSignIn.less';
-import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
 
 const ModalSignIn = ({
   intl,
@@ -43,6 +43,9 @@ const ModalSignIn = ({
   history,
   buttonClassName,
   text,
+  currHost,
+  isWaivio,
+  domain,
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,9 +53,7 @@ const ModalSignIn = ({
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [lastError, setLastError] = React.useState('');
-  let host = useSelector(getCurrentHost);
-  const domain = useSelector(getWebsiteParentHost);
-  const isWaivio = useSelector(getIsWaivio);
+  let host = currHost;
 
   if (!host && typeof location !== 'undefined') host = location.host;
 
@@ -117,11 +118,9 @@ const ModalSignIn = ({
   };
 
   const renderGuestSignUpForm = () => (
-    <React.Fragment>
-      <div className="ModalGuestForm">
-        <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
-      </div>
-    </React.Fragment>
+    <div className="ModalGuestForm">
+      <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
+    </div>
   );
 
   const renderSignIn = () => {
@@ -300,6 +299,9 @@ ModalSignIn.propTypes = {
   toCurrentWobjLink: PropTypes.string,
   buttonClassName: PropTypes.string,
   history: PropTypes.shape(),
+  currHost: PropTypes.string.isRequired,
+  isWaivio: PropTypes.bool.isRequired,
+  domain: PropTypes.string.isRequired,
 };
 
 ModalSignIn.defaultProps = {
@@ -314,4 +316,8 @@ ModalSignIn.defaultProps = {
   history: {},
 };
 
-export default injectIntl(ModalSignIn);
+export default connect(state => ({
+  currHost: getCurrentHost(state),
+  domain: getWebsiteParentHost(state),
+  isWaivio: getIsWaivio(state),
+}))(injectIntl(ModalSignIn));

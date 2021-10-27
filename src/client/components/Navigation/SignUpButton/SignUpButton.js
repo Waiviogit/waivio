@@ -1,14 +1,14 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 
 const SignUpButton = ({ isButton, setIsModalOpen, className, text }) => {
-  const onClick = useCallback(() => {
+  const onClick = () => {
     const evenName = text ? text.replace(' ', '_').toLowerCase() : 'sign_in';
 
     if (window.gtag) window.gtag('event', evenName);
     setIsModalOpen(true);
-  }, []);
+  };
 
   if (isButton)
     return (

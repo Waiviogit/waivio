@@ -47,6 +47,7 @@ export function parsePayoutAmount(amount) {
  * https://github.com/steemit/steemit.com/blob/47fd0e0846bd8c7c941ee4f95d5f971d3dc3981d/app/components/elements/Voting.jsx
  */
 export const calculatePayout = post => {
+  if (!post) return {};
   const payoutDetails = {};
   const { cashout_time } = post;
 

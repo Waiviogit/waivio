@@ -52,8 +52,7 @@ const MainMap = React.memo(props => {
   const [height, setHeight] = useState('100%');
   const [showLocation, setShowLocation] = useState(false);
   const [area, setArea] = useState([]);
-  const [currZoom, setZoom] = useState(6);
-  const [currCenter, setCenter] = useState([]);
+  const [mapData, setMapData] = useState({ center: [], zoom: 6 });
   const query = new URLSearchParams(props.location.search);
   const headerHeight = props.isDining ? 125 : 57;
   let queryCenter = query.get('center');
@@ -71,8 +70,7 @@ const MainMap = React.memo(props => {
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
   const setCurrMapConfig = (center, zoom) => {
-    setCenter(center);
-    setZoom(zoom);
+    setMapData({ center, zoom });
   };
 
   const getCoordinatesForMap = async () => {
@@ -95,10 +93,12 @@ const MainMap = React.memo(props => {
   };
 
   const handleSetMapForSearch = () => {
+    const currCenter = mapData.center;
+
     if (!isEmpty(currCenter)) {
       query.set('showPanel', true);
       query.set('center', currCenter);
-      query.set('zoom', currZoom);
+      query.set('zoom', mapData.zoom);
       props.setMapForSearch({
         coordinates: reverse([...currCenter]),
         ...boundsParams,
@@ -113,13 +113,13 @@ const MainMap = React.memo(props => {
     if (!isEmpty(props.searchMap)) {
       const distance = distanceInMBetweenEarthCoordinates(
         reverse([...props.searchMap.coordinates]),
-        currCenter,
+        mapData.center,
       );
 
       if (distance > 20 && !props.showReloadButton) props.setShowReload(true);
       if (!distance) props.setShowReload(false);
     }
-  }, [props.searchMap, props.showReloadButton, currCenter]);
+  }, [props.searchMap, props.showReloadButton, mapData.center]);
 
   useEffect(() => {
     const handleResize = () => setHeight(window.innerHeight);
@@ -167,7 +167,7 @@ const MainMap = React.memo(props => {
   useEffect(() => {
     if (!props.showReloadButton) {
       props.setMapForSearch({
-        coordinates: reverse([...currCenter]),
+        coordinates: reverse([...mapData.center]),
         ...boundsParams,
       });
     }
@@ -201,11 +201,11 @@ const MainMap = React.memo(props => {
   }, [props.userLocation, boundsParams, query.toString()]);
 
   const handleOnBoundsChanged = useCallback(
-    debounce(data => {
-      if (!isEmpty(data) && data.ne[0] && data.sw[0]) {
+    debounce(bounds => {
+      if (!isEmpty(bounds) && bounds.ne[0] && bounds.sw[0]) {
         setBoundsParams({
-          topPoint: [data.ne[1], data.ne[0]],
-          bottomPoint: [data.sw[1], data.sw[0]],
+          topPoint: [bounds.ne[1], bounds.ne[0]],
+          bottomPoint: [bounds.sw[1], bounds.sw[0]],
         });
       }
     }, 300),
@@ -213,11 +213,9 @@ const MainMap = React.memo(props => {
   );
 
   const onBoundsChanged = ({ center, zoom, bounds }) => {
-    if (!isEmpty(center)) {
-      setArea(bounds);
-      setCenter(center);
-      setZoom(zoom);
-    }
+    setArea(bounds);
+    setMapData({ zoom, center });
+
     if (!isEqual(bounds, area)) handleOnBoundsChanged(bounds);
   };
 
@@ -228,12 +226,12 @@ const MainMap = React.memo(props => {
       if (get(infoboxData, 'coordinates', []) === anchor) setInfoboxData({ infoboxData: null });
 
       query.set('center', anchor);
-      query.set('zoom', currZoom);
+      query.set('zoom', mapData.zoom);
       query.set('permlink', payload.author_permlink);
       props.history.push(`?${query.toString()}`);
       setInfoboxData({ wobject: payload, coordinates: anchor });
     },
-    [currZoom, props.location.search],
+    [mapData.zoom, props.location.search],
   );
 
   const resetInfoBox = () => setInfoboxData(null);
@@ -264,7 +262,6 @@ const MainMap = React.memo(props => {
             onClick={handleMarkerClick}
             onDoubleClick={resetInfoBox}
             hoveredWobj={hoveredWobj}
-            price={get(wobject, 'campaigns.max_reward') || get(wobject, 'propositions[0].reward')}
           />
         );
       });
@@ -295,21 +292,25 @@ const MainMap = React.memo(props => {
     );
   }, [infoboxData]);
 
-  const incrementZoom = useCallback(() => setZoom(prev => prev + 1), [currZoom]);
+  const incrementZoom = useCallback(() => {
+    if (mapData.zoom < 18) setMapData({ ...mapData, zoom: mapData.zoom + 1 });
+  }, [mapData.zoom]);
 
-  const decrementZoom = useCallback(() => setZoom(prev => prev - 1), [currZoom]);
+  const decrementZoom = useCallback(() => {
+    if (mapData.zoom > 1) setMapData({ ...mapData, zoom: mapData.zoom - 1 });
+  }, [mapData.zoom]);
 
   const setLocationFromNavigator = position => {
     const { latitude, longitude } = position.coords;
 
     props.putUserCoordinates({ latitude, longitude });
     setShowLocation(true);
-    setCenter([latitude, longitude]);
+    setMapData({ center: [latitude, longitude], zoom: mapData.zoom });
   };
 
   const setLocationFromApi = () => {
     setShowLocation(false);
-    setCenter([props.userLocation.lat, props.userLocation.lon]);
+    setMapData({ center: [props.userLocation.lat, props.userLocation.lon], zoom: mapData.zoom });
   };
 
   const handleClickOnMap = ({ event }) => {
@@ -330,26 +331,17 @@ const MainMap = React.memo(props => {
   ]);
 
   return (
-    !isEmpty(currCenter) &&
-    currZoom && (
+    !isEmpty(mapData.center) &&
+    mapData.zoom && (
       <div className={mapClassList} style={{ height: mapHeight }}>
-        <MapControllers
-          className={'WebsiteBodyControl'}
-          decrementZoom={decrementZoom}
-          incrementZoom={incrementZoom}
-          successCallback={setLocationFromNavigator}
-          rejectCallback={setLocationFromApi}
-        />
         <Map
           ref={mapRef}
-          center={currCenter}
+          center={mapData.center}
           height={Number(mapHeight)}
-          zoom={currZoom}
+          zoom={mapData.zoom}
           provider={mapProvider}
           onBoundsChanged={onBoundsChanged}
           onClick={handleClickOnMap}
-          animate
-          zoomSnap
         >
           <TagFilters query={query} history={props.history} />
           {markersList}
@@ -358,6 +350,13 @@ const MainMap = React.memo(props => {
             <CustomMarker anchor={[props.userLocation.lat, props.userLocation.lon]} currLocation />
           )}
         </Map>
+        <MapControllers
+          className={'WebsiteBodyControl'}
+          decrementZoom={decrementZoom}
+          incrementZoom={incrementZoom}
+          successCallback={setLocationFromNavigator}
+          rejectCallback={setLocationFromApi}
+        />
       </div>
     )
   );

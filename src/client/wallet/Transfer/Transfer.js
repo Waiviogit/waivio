@@ -112,6 +112,9 @@ export default class Transfer extends React.Component {
     match: PropTypes.shape().isRequired,
     isTip: PropTypes.bool.isRequired,
     isVipTickets: PropTypes.bool,
+    sendTo: PropTypes.string,
+    title: PropTypes.string,
+    permlink: PropTypes.string,
   };
 
   static defaultProps = {
@@ -130,6 +133,9 @@ export default class Transfer extends React.Component {
     hiveBeneficiaryAccount: '',
     getPayables: () => {},
     isTip: false,
+    sendTo: '',
+    title: '',
+    permlink: '',
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -168,6 +174,9 @@ export default class Transfer extends React.Component {
       to,
       amount,
       currency,
+      sendTo,
+      permlink,
+      title,
     } = this.props;
     const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
     const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
@@ -180,6 +189,10 @@ export default class Transfer extends React.Component {
     this.props.form.setFieldsValue({
       to,
       amount,
+    });
+
+    this.props.form.setFieldsValue({
+      memo: sendTo ? `${title} - https://www.waivio.com/@${sendTo}/${permlink}` : null,
     });
   }
 
@@ -289,6 +302,7 @@ export default class Transfer extends React.Component {
       getPayables,
       isTip,
     } = this.props;
+
     const matchPath = get(match, ['params', '0']);
     const params = ['payables', 'receivables'];
     const sponsor = user.name;
@@ -514,6 +528,7 @@ export default class Transfer extends React.Component {
 
     this.setState({
       inputValue: value,
+
       oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
       currentEstimate: this.estimatedValue(cryptosPriceHistory, value),
     });
@@ -543,7 +558,9 @@ export default class Transfer extends React.Component {
       hiveBeneficiaryAccount,
       showModal,
       isTip,
+      sendTo,
     } = this.props;
+
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
     const isChangesDisabled = !!memo || this.props.isVipTickets;
@@ -722,6 +739,7 @@ export default class Transfer extends React.Component {
               }}
             />
           </div>
+
           <Form.Item
             label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
           >
@@ -729,9 +747,9 @@ export default class Transfer extends React.Component {
               rules: [{ validator: this.validateMemo }],
             })(
               <Input.TextArea
-                disabled={isChangesDisabled}
+                disabled={sendTo || isChangesDisabled}
                 autoSize={{ minRows: 2, maxRows: 6 }}
-                placeholder={memoPlaceHolder}
+                placeHolder={memoPlaceHolder}
               />,
             )}
           </Form.Item>

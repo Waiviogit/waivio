@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MarkerWithReward from '../../../websites/MainMap/MarkerWithReward/MarkerWithReward';
+import { getObjectReward } from '../../../helpers/wObjectHelper';
 
 const imageOffset = {
   left: 15,
@@ -22,14 +23,12 @@ class CustomMarker extends React.Component {
     isMarked: PropTypes.bool,
     currLocation: PropTypes.bool,
     hoveredWobj: PropTypes.bool,
-    price: PropTypes.number,
   };
 
   static defaultProps = {
     onContextMenu: () => {},
     left: 0,
     top: 0,
-    price: 0,
     hover: false,
     currLocation: false,
     hoveredWobj: false,
@@ -96,7 +95,7 @@ class CustomMarker extends React.Component {
     };
 
     if (currLocation) {
-      currentImg = '/images/icons/location.png';
+      currentImg = '/images/icons/location.svg';
       width = 20;
       height = 20;
       currTop = 20;
@@ -131,7 +130,7 @@ class CustomMarker extends React.Component {
         role="presentation"
       >
         {isMarked ? (
-          <MarkerWithReward price={this.props.price} hovered={hoveredWobj} />
+          <MarkerWithReward price={getObjectReward(this.props.payload)} hovered={hoveredWobj} />
         ) : (
           <img src={currentImg} width={width} height={height} alt="" />
         )}

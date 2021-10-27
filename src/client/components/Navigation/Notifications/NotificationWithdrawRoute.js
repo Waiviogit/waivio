@@ -9,7 +9,7 @@ import './Notification.less';
 
 const NotificationWithdrawRoute = ({ notification, read, onClick }) => {
   const urlTo = `/@${notification.to_account}`;
-  const urlFrom = `/@${notification.from_account}`;
+  const urlFrom = `/@${notification.from_account}/transfers`;
 
   return (
     <Link

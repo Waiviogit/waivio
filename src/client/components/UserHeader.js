@@ -21,6 +21,7 @@ import { getIsMobile } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 import './UserHeader.less';
+import { getImagePathPost } from '../helpers/image';
 
 const UserHeader = ({
   username,
@@ -42,7 +43,7 @@ const UserHeader = ({
   handleMuteUserBlog,
 }) => {
   const [visible, setVisible] = useState(false);
-  const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
+  const style = hasCover ? { backgroundImage: `url("${getImagePathPost(coverImage)}")` } : {};
   const mutedByModerator = !isEmpty(user.mutedBy) && !includes(user.mutedBy, authUserName);
   const mutedLabelText = mutedByModerator ? 'Blocked' : 'Muted';
 

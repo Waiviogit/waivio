@@ -118,7 +118,7 @@ const WebsiteBody = props => {
         <meta name="twitter:image" property="twitter:image" content={currentLogo} />
         <meta property="og:site_name" content={objName} />
         <link rel="image_src" href={currentLogo} />
-        <link id="favicon" rel="icon" href={getObjectAvatar(aboutObject)} type="image/x-icon" />
+        <link id="favicon" rel="icon" href={currentLogo} type="image/x-icon" />
       </Helmet>
       <SearchAllResult
         showReload={props.showReloadButton}

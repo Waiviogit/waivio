@@ -104,12 +104,10 @@ export const createQuickPost = (userBody, topics, images) => async (dispatch, ge
     .map(tag => `\n[#${tag}](https://www.waivio.com/object/${tag})`)
     .join('');
   const title = `Review: ${getObjectName(restaurant)}, ${getObjectName(dish)}`;
-  const body = `\n[${getObjectName(restaurant)}](https://${host}m/object/${
-    restaurant.author_permlink
-  })
-    \n[${getObjectName(dish)}](https://${host}/object/${
+  const body = `\n[${getObjectName(restaurant)}](${host}/object/${restaurant.author_permlink}),
+    \n[${getObjectName(dish)}](${host}/object/${
     dish.author_permlink
-  })${imagesLink} ${userBody} ${topicsLink}`;
+  }) ${imagesLink} ${userBody} ${topicsLink}`;
   const postData = {
     title,
     body,

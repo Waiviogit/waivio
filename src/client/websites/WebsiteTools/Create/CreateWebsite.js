@@ -43,7 +43,8 @@ export const CreateWebsite = ({
   const statusMessageClassList = available ? 'CreateWebsite__available' : 'CreateWebsite__error';
   const domainStatus = useCallback(
     debounce(
-      () => checkStatusAvailableDomain(getFieldValue('domain'), parentDomain[template]),
+      () =>
+        checkStatusAvailableDomain(getFieldValue('domain').toLowerCase(), parentDomain[template]),
       300,
     ),
     [template],

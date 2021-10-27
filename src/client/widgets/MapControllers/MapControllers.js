@@ -4,13 +4,12 @@ import PropTypes from 'prop-types';
 import './MapControllers.less';
 
 const MapControllers = React.memo(props => {
-  const currClass = props.className || 'MapConfigurationControl';
   const setCurrentLocation = () =>
     navigator.geolocation.getCurrentPosition(props.successCallback, props.rejectCallback);
 
   return (
-    <div className={currClass}>
-      <div className={`${currClass}__zoom`}>
+    <div className={props.className}>
+      <div className={`${props.className}__zoom`}>
         <div
           role="presentation"
           className="MapConfigurationControl__zoom__button"
@@ -46,10 +45,13 @@ const MapControllers = React.memo(props => {
 MapControllers.propTypes = {
   incrementZoom: PropTypes.func.isRequired,
   decrementZoom: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/require-default-props
   className: PropTypes.string,
   successCallback: PropTypes.func.isRequired,
   rejectCallback: PropTypes.func.isRequired,
+};
+
+MapControllers.defaultProps = {
+  className: 'MapConfigurationControl',
 };
 
 export default MapControllers;

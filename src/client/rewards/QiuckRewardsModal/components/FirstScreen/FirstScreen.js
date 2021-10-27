@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { AutoComplete } from 'antd';
 import { isEmpty, get, debounce } from 'lodash';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import ObjectCardView from '../../../../objectCard/ObjectCardView';
 import ObjectSearchCard from '../../../../components/ObjectSearchCard/ObjectSearchCard';
@@ -29,6 +30,11 @@ const ModalFirstScreen = props => {
   useEffect(() => {
     if (props.isShow) props.getEligibleRewardsList();
   }, [props.isShow]);
+
+  const userCardClassList = withReward =>
+    classNames('QuickRewardsModal__select-item', {
+      'QuickRewardsModal__select-item--withReward': withReward,
+    });
 
   const dishRewards = get(props, 'selectedDish.propositions[0].reward', null);
   const earnMessage = camp =>
@@ -96,7 +102,7 @@ const ModalFirstScreen = props => {
                 return (
                   <AutoComplete.Option
                     key={camp.author_permlink}
-                    className="QuickRewardsModal__select-item"
+                    className={userCardClassList(camp.campaigns)}
                   >
                     <ObjectSearchCard
                       object={camp}
@@ -148,7 +154,7 @@ const ModalFirstScreen = props => {
                 return (
                   <AutoComplete.Option
                     key={camp.author_permlink}
-                    className="QuickRewardsModal__select-item"
+                    className={userCardClassList(reward)}
                   >
                     <ObjectSearchCard
                       object={camp}

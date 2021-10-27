@@ -26,7 +26,7 @@ const PostOverlayCard = ({ wObject }) => {
     <div className="PostOverlayCard" key={wObject.author_permlink}>
       <a href={`/@${userName}/${postPermlink}`} className="PostOverlayCard__title" title={title}>
         {truncate(title, {
-          length: 60,
+          length: 55,
           separator: '...',
         })}
       </a>
