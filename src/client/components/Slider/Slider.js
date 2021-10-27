@@ -23,6 +23,7 @@ export default class Slider extends React.Component {
       url: PropTypes.string,
       author: PropTypes.string,
       created: PropTypes.string,
+      permlink: PropTypes.string,
     }),
     type: PropTypes.string,
     openTransfer: PropTypes.func,
@@ -63,7 +64,9 @@ export default class Slider extends React.Component {
 
   getCurrentValue = () => this.props.voteWorth || 0;
 
-  sendTip = () => this.props.openTransfer(this.props.post.author);
+  sendTip = () => {
+    this.props.openTransfer(this.props.post.author);
+  };
 
   handleChange = debounce(value => {
     this.setState({ value }, () => {
@@ -99,7 +102,7 @@ export default class Slider extends React.Component {
         />
 
         <div className="Slider__info">
-          <Transfer sendTo={post.author} />
+          <Transfer sendTo={post.author} title={post.title} permLink={post.permlink} />
           {isPostCashout(post) ? (
             <h3>
               <span>
