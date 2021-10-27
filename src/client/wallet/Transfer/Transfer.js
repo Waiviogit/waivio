@@ -133,9 +133,9 @@ export default class Transfer extends React.Component {
     hiveBeneficiaryAccount: '',
     getPayables: () => {},
     isTip: false,
-    sendTo: null,
-    title: null,
-    permlink: null,
+    sendTo: '',
+    title: '',
+    permlink: '',
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
