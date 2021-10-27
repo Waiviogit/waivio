@@ -113,6 +113,8 @@ export default class Transfer extends React.Component {
     isTip: PropTypes.bool.isRequired,
     isVipTickets: PropTypes.bool,
     sendTo: PropTypes.string,
+    title: PropTypes.string,
+    permlink: PropTypes.string,
   };
 
   static defaultProps = {
@@ -131,7 +133,9 @@ export default class Transfer extends React.Component {
     hiveBeneficiaryAccount: '',
     getPayables: () => {},
     isTip: false,
-    sendTo: '',
+    sendTo: null,
+    title: null,
+    permlink: null,
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -171,6 +175,8 @@ export default class Transfer extends React.Component {
       amount,
       currency,
       sendTo,
+      permlink,
+      title,
     } = this.props;
     const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
     const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
@@ -186,9 +192,7 @@ export default class Transfer extends React.Component {
     });
 
     this.props.form.setFieldsValue({
-      memo: sendTo
-        ? `Tips: Witness(re)Announcement - ${`https://www.waivio.com/@${sendTo}/witness-re-announcement`}`
-        : null,
+      memo: sendTo ? `${title} - https://www.waivio.com/@${sendTo}/${permlink}` : null,
     });
   }
 
