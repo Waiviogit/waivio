@@ -1,17 +1,15 @@
 @import (reference) '../../../../../styles/custom.less';
 
-@obj_card_hover_night: rgb(75, 75, 75);
-
 .nightmode {
   .object-card {
     background: @grey-nero;
     border: none;
 
-    &__hover {
-      background: @obj_card_hover_night;
+    &__hover > .object-search-card {
+      background: @blue-darkGrayish;
     }
     .object-search-card {
-      border-bottom: 1px solid @normal-grey;
+      border-top: 1px solid @normal-grey;
     }
   }
 }
