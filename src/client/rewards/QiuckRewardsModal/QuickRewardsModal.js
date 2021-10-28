@@ -18,6 +18,7 @@ import {
   toggleModal,
 } from '../../../store/quickRewards/quickRewardsActions';
 import SubmitReviewPublish from '../../post/CheckReviewModal/SubmitReviewPublish';
+import StepsItems from '../../widgets/CircleSteps/StepsItems';
 
 import './QuickRewardsModal.less';
 
@@ -28,6 +29,20 @@ const QuickRewardsModal = props => {
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
 
+  const stepsConfig = [
+    {
+      title: 'Find the dish',
+      num: 1,
+    },
+    {
+      title: 'Submit photos',
+      num: 2,
+    },
+    {
+      title: 'Confirm and earn',
+      num: 3,
+    },
+  ];
   const isPropositionObj = !isEmpty(get(props.selectedDish, 'propositions'));
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
@@ -117,6 +132,7 @@ const QuickRewardsModal = props => {
       onCancel={closeModal}
       className="QuickRewardsModal"
     >
+      <StepsItems config={stepsConfig} activeStep={pageNumber} />
       {getCurrentScreen.component}
       <div className="QuickRewardsModal__button-wrap">
         {pageNumber === 2 && (
