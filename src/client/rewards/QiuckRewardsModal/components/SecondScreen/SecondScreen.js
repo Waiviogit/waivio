@@ -42,7 +42,7 @@ const ModalSecondScreen = props => {
         </p>
       )}
       <ImageSetter onImageLoaded={handleImageLoaded} isMultiple />
-      <h4 className="SecondScreen__text">Review content</h4>
+      <h4 className="SecondScreen__text">Did you like the presentation? The taste?</h4>
       <textarea onChange={handleBodyChange} className="SecondScreen__textarea" />
       <TagsSelector
         label={'Hashtags'}

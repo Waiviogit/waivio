@@ -594,7 +594,7 @@ export const getAuthorsChildWobjects = (
         config.childWobjects
       }?limit=${limit}&skip=${skip}${excludeTypes ? `&excludeTypes=${excludeTypes}` : ''}${
         searchString ? `&searchString=${searchString}` : ''
-      }&userName=${name}`,
+      }`,
       {
         headers: {
           ...headers,
@@ -2244,6 +2244,17 @@ export const getMapExperts = (userName, params) => {
 
 export const getPostsForMap = params => {
   return fetch(`${config.apiPrefix}${config.wobjects}${config.map}${config.lastPost}`, {
+    headers,
+    body: JSON.stringify(params),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+};
+
+export const getAllCampaingForRequiredObject = params => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.campaign}${config.requiredObject}`, {
     headers,
     body: JSON.stringify(params),
     method: 'POST',
