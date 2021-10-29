@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import React from 'react';
 
 const validate = {
-  text: /[A-z,0-9]+$/,
+  text: /[a-z,0-9]+$/,
 };
 
 export default {
