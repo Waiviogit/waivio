@@ -12,6 +12,7 @@ import WalletLimitOrder from './WalletLimitOrder';
 import WalletCancelOrder from './WalletCancelOrder';
 import PowerUpTransactionTo from './PowerUpTransactionTo';
 import SetWithdrawVestingRoute from './SetWithdrawVestingRoute';
+import ConvertHbdRequest from './ConvertHbdRequest';
 import {
   fillOrderExchanger,
   getTransactionCurrency,
@@ -89,7 +90,6 @@ const WalletTransaction = ({
           transactionType={transactionType}
         />
       );
-
     case accountHistoryConstants.SET_WITHDRAW_VESTING_ROUTE: {
       return (
         <SetWithdrawVestingRoute
@@ -98,6 +98,15 @@ const WalletTransaction = ({
           to={transactionDetails.to}
           timestamp={transaction.timestamp}
           percent={transaction.percent}
+        />
+      );
+    }
+    case accountHistoryConstants.CONVERT_HBD_REQUEST: {
+      return (
+        <ConvertHbdRequest
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount}
         />
       );
     }
