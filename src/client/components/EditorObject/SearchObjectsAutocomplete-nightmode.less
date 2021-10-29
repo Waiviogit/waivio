@@ -6,19 +6,24 @@
     background-color: @grey-nero;
     color: @white-smoke;
     border-bottom: @border-width-base @border-style-base @normal-grey;
+    transition: 0.1s;
 
     &:hover > .object-search-card {
       background-color: @blue-darkGrayish;
+      transition: 0.1s;
     }
   }
 
   .obj-search-option.item.ant-select-dropdown-menu-item-active {
     &:hover > .object-search-card {
       background-color: @blue-darkGrayish;
+      transition: 0.1s;
     }
   }
 
-  .obj-search-option.item.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+  .obj-search-option.item.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled)
+    > .object-search-card {
     background-color: @blue-darkGrayish;
+    transition: 0.1s;
   }
 }
