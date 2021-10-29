@@ -1,7 +1,8 @@
-import { get, kebabCase, round } from 'lodash';
+import { get, kebabCase, round, uniqBy } from 'lodash';
 
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
 import {
+  getAllCampaingForRequiredObject,
   getAuthorsChildWobjects,
   getCurrentHivePrice,
   searchObjects,
@@ -13,7 +14,7 @@ import { createPostMetadata } from '../../client/helpers/postHelpers';
 import { getBeneficiariesUsers } from '../searchStore/searchSelectors';
 import { getSelectedDish, getSelectedRestaurant } from './quickRewardsSelectors';
 import config from '../../waivioApi/config.json';
-import { generatePermlink, getObjectName, getObjectType } from '../../client/helpers/wObjectHelper';
+import { getObjectName, getObjectType } from '../../client/helpers/wObjectHelper';
 import { getDetailsBody } from '../../client/rewards/rewardsHelper';
 import { getCurrentHost } from '../appStore/appSelectors';
 
@@ -66,26 +67,43 @@ export const GET_ELIGIBLE_REWARDS_WITH_RESTAURANT = createAsyncActionType(
   '@quickRewards/GET_ELIGIBLE_REWARDS_WITH_RESTAURANT',
 );
 
-export const getEligibleRewardsListWithRestaurant = (selectRest, searchString) => (
+export const getEligibleRewardsListWithRestaurant = (selectRest, searchString) => async (
   dispatch,
   getState,
 ) => {
   const state = getState();
   const name = getAuthenticatedUserName(state);
   const locale = getLocale(state);
+  const isReview = selectRest.campaigns;
 
-  return dispatch({
-    type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.ACTION,
-    payload: getAuthorsChildWobjects(
+  dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.START });
+
+  try {
+    const objChild = await getAuthorsChildWobjects(
       selectRest.author_permlink,
       0,
-      30,
+      50,
       locale,
       '',
       name,
       searchString,
-    ),
-  });
+    );
+    const objCampaings =
+      isReview &&
+      (await getAllCampaingForRequiredObject({
+        requiredObject: selectRest.author_permlink,
+        limit: 50,
+      }));
+
+    return dispatch({
+      type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS,
+      payload: isReview
+        ? uniqBy([...objCampaings.wobjects, ...objChild], 'author_permlink')
+        : objChild,
+    });
+  } catch (e) {
+    return dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.ERROR });
+  }
 };
 
 export const CREATE_QUICK_POST = '@quickRewards/CREATE_QUICK_POST';
@@ -150,7 +168,7 @@ export const createQuickPost = (userBody, topics, images) => async (dispatch, ge
 
 export const RESERVE_REWARD = createAsyncActionType('@quickRewards/RESERVE_REWARD');
 
-export const reserveProposition = () => async (dispatch, getState, { steemConnectAPI }) => {
+export const reserveProposition = permlink => async (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
   const dish = getSelectedDish(state);
@@ -172,7 +190,7 @@ export const reserveProposition = () => async (dispatch, getState, { steemConnec
       parent_author: proposition.guideName,
       parent_permlink: proposition.activation_permlink,
       author: username,
-      permlink: `reserve-${generatePermlink()}`,
+      permlink,
       title: 'Rewards reservations',
       body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${
         proposition.count_reservation_days
