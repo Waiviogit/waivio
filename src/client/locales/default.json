@@ -218,6 +218,7 @@
   "title_error_too_long": "Title can't be longer than 255 characters.",
   "link_error_empty": "Please enter the URL",
   "topics": "Hashtags (topics)",
+  "hashtag_waivio": "Please note that the hashtag #waivio will be added to the post to allow for WAIV token rewards.",
   "topics_placeholder": "Add hashtags (without #) here",
   "topics_extra": "Separate topics with commas. Only lowercase letters, numbers and hyphen character is permitted.",
   "topics_error_empty": "Please enter topics",
