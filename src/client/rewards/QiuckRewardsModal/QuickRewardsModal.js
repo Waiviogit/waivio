@@ -56,9 +56,13 @@ const QuickRewardsModal = props => {
 
   const closeModal = () => {
     props.toggleModal(false);
-    handelRejectReservation();
+
+    if (reservationPermlink) {
+      handelRejectReservation();
+      setReservationPermlink('');
+    }
+
     setPageNumber(1);
-    setReservationPermlink('');
   };
 
   const handleOnClickBack = () => {
@@ -123,6 +127,7 @@ const QuickRewardsModal = props => {
               setBody={setBody}
               images={images}
               setImages={setImages}
+              body={body}
             />
           ),
           buttonName: 'Next',

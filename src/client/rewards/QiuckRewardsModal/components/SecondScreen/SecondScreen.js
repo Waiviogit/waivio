@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { debounce, get } from 'lodash';
+import { get } from 'lodash';
 import PropTypes from 'prop-types';
 
 import {
@@ -24,12 +24,7 @@ const ModalSecondScreen = props => {
     }
   }, []);
 
-  const handleBodyChangeDebounce = useCallback(
-    debounce(e => props.setBody(e), 300),
-    [],
-  );
-
-  const handleBodyChange = e => handleBodyChangeDebounce(e.target.value);
+  const handleBodyChange = e => props.setBody(e.target.value);
   const handleImageLoaded = img => props.setImages(img);
   const handleTopicsChange = topic => props.setTopic(topic);
 
@@ -41,9 +36,9 @@ const ModalSecondScreen = props => {
           <a href={props.selectedDish.defaultShowLink}>{getObjectName(props.selectedDish)}</a>
         </p>
       )}
-      <ImageSetter onImageLoaded={handleImageLoaded} isMultiple />
+      <ImageSetter onImageLoaded={handleImageLoaded} isMultiple imagesList={props.images} />
       <h4 className="SecondScreen__text">Did you like the presentation? The taste?</h4>
-      <textarea onChange={handleBodyChange} className="SecondScreen__textarea" />
+      <textarea value={props.body} onChange={handleBodyChange} className="SecondScreen__textarea" />
       <TagsSelector
         label={'Hashtags'}
         placeholder={'Add hashtags (without #) here'}
@@ -57,10 +52,12 @@ const ModalSecondScreen = props => {
 ModalSecondScreen.propTypes = {
   selectedDish: PropTypes.shape().isRequired,
   selectedRestaurant: PropTypes.shape().isRequired,
+  images: PropTypes.shape().isRequired,
   topics: PropTypes.arrayOf().isRequired,
   setBody: PropTypes.func.isRequired,
   setImages: PropTypes.func.isRequired,
   setTopic: PropTypes.func.isRequired,
+  body: PropTypes.string.isRequired,
 };
 
 export default connect(state => ({
