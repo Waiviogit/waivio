@@ -13,6 +13,7 @@ import WalletCancelOrder from './WalletCancelOrder';
 import PowerUpTransactionTo from './PowerUpTransactionTo';
 import SetWithdrawVestingRoute from './SetWithdrawVestingRoute';
 import ConvertHbdRequest from './ConvertHbdRequest';
+import ConvertHbdCompleted from './ConvertHbdCompleted';
 import {
   fillOrderExchanger,
   getTransactionCurrency,
@@ -107,6 +108,15 @@ const WalletTransaction = ({
           isGuestPage={isGuestPage}
           timestamp={transaction.timestamp}
           amount={transaction.amount}
+        />
+      );
+    }
+    case accountHistoryConstants.CONVERT_HBD_COMPLETED: {
+      return (
+        <ConvertHbdCompleted
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount_out}
         />
       );
     }

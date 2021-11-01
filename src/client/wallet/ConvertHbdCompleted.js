@@ -5,7 +5,7 @@ import BTooltip from '../components/BTooltip';
 
 import { epochToUTC } from '../helpers/formatter';
 
-const ConvertHbdRequest = ({ amount, timestamp, isGuestPage }) => (
+const ConvertHbdCompleted = ({ amount, timestamp, isGuestPage }) => (
   <div className="UserWalletTransactions__transaction">
     <img
       src="/images/icons/convert.svg"
@@ -14,7 +14,7 @@ const ConvertHbdRequest = ({ amount, timestamp, isGuestPage }) => (
     />
 
     <div className="UserWalletTransactions__content">
-      {'HBD > HIVE conversion request'}
+      {'HBD > HIVE conversion completed'}
       <span className="UserWalletTransactions__timestamp">
         {isGuestPage ? (
           <BTooltip
@@ -44,21 +44,21 @@ const ConvertHbdRequest = ({ amount, timestamp, isGuestPage }) => (
       </span>
     </div>
     <div className={'UserWalletTransactions__content-recipient'}>
-      <div className="UserWalletTransactions__request"> {`-${amount}`}</div>
+      <div className="UserWalletTransactions__completed"> {`+${amount}`}</div>
     </div>
   </div>
 );
 
-ConvertHbdRequest.propTypes = {
+ConvertHbdCompleted.propTypes = {
   amount: PropTypes.string,
   timestamp: PropTypes.string,
   isGuestPage: PropTypes.bool,
 };
 
-ConvertHbdRequest.defaultProps = {
+ConvertHbdCompleted.defaultProps = {
   amount: '',
   timestamp: '',
   isGuestPage: false,
 };
 
-export default ConvertHbdRequest;
+export default ConvertHbdCompleted;
