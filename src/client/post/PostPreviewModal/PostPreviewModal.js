@@ -201,6 +201,14 @@ class PostPreviewModal extends Component {
               validator={isTopicValid}
               onChange={this.handleTopicsChange}
             />
+            <div className="hashtag-waivio">
+              {intl.formatMessage({
+                id: 'hashtag_waivio',
+                defaultMessage:
+                  'Please note that the hashtag #waivio will be added to the post to allow for WAIV token rewards.',
+              })}
+            </div>
+
             <PolicyConfirmation
               className="post-preview-legal-notice"
               isChecked={isConfirmed}
