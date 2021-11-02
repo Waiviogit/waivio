@@ -14,7 +14,7 @@ const ConvertHbdRequest = ({ amount, timestamp, isGuestPage }) => (
     />
 
     <div className="UserWalletTransactions__content">
-      {'HBD > HIVE conversion request'}
+      {'HBD>HIVE: conversion request'}
       <span className="UserWalletTransactions__timestamp">
         {isGuestPage ? (
           <BTooltip
@@ -44,7 +44,7 @@ const ConvertHbdRequest = ({ amount, timestamp, isGuestPage }) => (
       </span>
     </div>
     <div className={'UserWalletTransactions__content-recipient'}>
-      <div className="UserWalletTransactions__request"> {`-${amount}`}</div>
+      <div className="UserWalletTransactions__request"> {`- ${amount}`}</div>
     </div>
   </div>
 );

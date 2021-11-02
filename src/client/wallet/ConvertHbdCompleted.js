@@ -7,14 +7,12 @@ import { epochToUTC } from '../helpers/formatter';
 
 const ConvertHbdCompleted = ({ amount, timestamp, isGuestPage }) => (
   <div className="UserWalletTransactions__transaction">
-    <img
-      src="/images/icons/convert.svg"
-      className="UserWalletTransactions__svg"
-      alt="Convert logo"
-    />
+    <div className="UserWalletTransactions__icon-wrapper">
+      <i className="iconfont icon-success_fill UserWalletTransactions__icon" />
+    </div>
 
     <div className="UserWalletTransactions__content">
-      {'HBD > HIVE conversion completed'}
+      {'HBD>HIVE: conversion completed'}
       <span className="UserWalletTransactions__timestamp">
         {isGuestPage ? (
           <BTooltip
@@ -44,7 +42,7 @@ const ConvertHbdCompleted = ({ amount, timestamp, isGuestPage }) => (
       </span>
     </div>
     <div className={'UserWalletTransactions__content-recipient'}>
-      <div className="UserWalletTransactions__completed"> {`+${amount}`}</div>
+      <div className="UserWalletTransactions__completed"> {`+ ${amount}`}</div>
     </div>
   </div>
 );
