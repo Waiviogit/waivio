@@ -38,6 +38,10 @@ class TagsSelector extends Component {
   render() {
     const { label, placeholder, tags, className, disabled } = this.props;
 
+    if (!tags.includes('waivio')) {
+      tags.unshift('waivio');
+    }
+
     return (
       <div className={classNames('tags-selector', { [className]: Boolean(className) })}>
         {label && <div className="tags-selector__label">{label}</div>}
