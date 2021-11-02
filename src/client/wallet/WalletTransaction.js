@@ -14,6 +14,8 @@ import PowerUpTransactionTo from './PowerUpTransactionTo';
 import SetWithdrawVestingRoute from './SetWithdrawVestingRoute';
 import ConvertHbdRequest from './ConvertHbdRequest';
 import ConvertHbdCompleted from './ConvertHbdCompleted';
+import ConvertHiveRequest from './ConvertHiveRequest';
+import ConvertHiveCompleted from './ConvertHiveCompleted';
 import {
   fillOrderExchanger,
   getTransactionCurrency,
@@ -120,6 +122,27 @@ const WalletTransaction = ({
         />
       );
     }
+    case accountHistoryConstants.CONVERT_HIVE_REQUEST: {
+      return (
+        <ConvertHiveRequest
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount}
+        />
+      );
+    }
+    case accountHistoryConstants.CONVERT_HIVE_COMPLETED: {
+      return (
+        <ConvertHiveCompleted
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount_out}
+          amount_in={transaction.amount_in}
+          excess={transaction.excess_collateral}
+        />
+      );
+    }
+
     case accountHistoryConstants.CLAIM_REWARD_BALANCE:
       return (
         <ClaimReward
