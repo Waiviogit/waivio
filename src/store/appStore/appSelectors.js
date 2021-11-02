@@ -60,6 +60,8 @@ export const getConfigurationValues = createSelector([appState], state => state.
 
 export const getWebsiteLogo = createSelector([appState], state => state.logo);
 
+export const getWebsiteColors = createSelector([getWebsiteConfiguration], state => state.colors);
+
 export const getWebsiteMainMap = createSelector([appState], state => state.currMap);
 
 export const getIsWaivio = createSelector([appState], state => state.isWaivio);
