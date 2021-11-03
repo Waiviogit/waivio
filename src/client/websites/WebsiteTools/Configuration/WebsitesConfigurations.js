@@ -31,6 +31,8 @@ import {
   getConfiguration,
   getWebsiteLoading,
 } from '../../../../store/websiteStore/websiteSelectors';
+import SelectColorModal from './SelectColorModal/SelectColorModal';
+import { initialColors } from '../../constants/colors';
 
 import './WebsitesConfigurations.less';
 
@@ -50,6 +52,7 @@ export const WebsitesConfigurations = ({
 }) => {
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');
+  const [openColorsModal, setOpenColorsModal] = useState('');
   const [image, setImage] = useState('');
   const [settingMap, setSettingMap] = useState({});
   const [paramsSaving, setParamsSaving] = useState(false);
@@ -57,6 +60,7 @@ export const WebsitesConfigurations = ({
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const aboutObj = get(config, 'aboutObject');
+  const colorsList = get(config, 'colors', {});
   const { lat, lon } = userLocation;
   const isDesktopModalShow = showMap === 'desktopMap';
   const mapModalClassList = classNames('WebsitesConfigurations__modal', {
@@ -98,6 +102,8 @@ export const WebsitesConfigurations = ({
       setImage('');
       setShowMap('');
       setSettingMap({});
+      setOpenColorsModal(false);
+
       message.success(
         intl.formatMessage({
           id: 'website_save_webconfig_success',
@@ -127,6 +133,11 @@ export const WebsitesConfigurations = ({
   const handleSubmitMap = () =>
     handleSubmit({
       [showMap]: settingMap,
+    });
+
+  const handleSubmitColors = colors =>
+    handleSubmit({
+      colors,
     });
 
   const handleModalState = key => {
@@ -380,6 +391,47 @@ export const WebsitesConfigurations = ({
                 />
               </p>
             </Form.Item>
+            <Form.Item>
+              <h3>
+                {intl.formatMessage({
+                  id: 'website_colors',
+                  defaultMessage: 'Website colors',
+                })}
+                :
+              </h3>
+              <div className="WebsitesConfigurations__colors-wrap">
+                <div className="WebsitesConfigurations__colorsItem">
+                  <div
+                    className="WebsitesConfigurations__colors"
+                    style={{ backgroundColor: colorsList.mapMarkerBody || initialColors.marker }}
+                  />
+                  <b>
+                    {intl.formatMessage({
+                      id: 'website_colors_marker',
+                      defaultMessage: 'Marker color',
+                    })}
+                  </b>
+                </div>
+                <div className="WebsitesConfigurations__colorsItem">
+                  <div
+                    className="WebsitesConfigurations__colors"
+                    style={{ backgroundColor: colorsList.mapMarkerText || initialColors.text }}
+                  />
+                  <b>
+                    {intl.formatMessage({
+                      id: 'website_colors_text',
+                      defaultMessage: 'Marker text',
+                    })}
+                  </b>
+                </div>
+              </div>
+              <Button type="primary" onClick={() => setOpenColorsModal(true)}>
+                {intl.formatMessage({
+                  id: 'select_color',
+                  defaultMessage: 'Select color',
+                })}
+              </Button>
+            </Form.Item>
           </Form>
           <Modal
             wrapClassName="Settings__modal"
@@ -428,6 +480,15 @@ export const WebsitesConfigurations = ({
               </div>
             )}
           </Modal>
+          {openColorsModal && (
+            <SelectColorModal
+              openColorsModal={openColorsModal}
+              handleSubmitColors={handleSubmitColors}
+              setOpenColorsModal={setOpenColorsModal}
+              colors={colorsList}
+              loading={paramsSaving}
+            />
+          )}
         </React.Fragment>
       ) : (
         <Loading />

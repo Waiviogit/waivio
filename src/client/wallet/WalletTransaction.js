@@ -12,6 +12,10 @@ import WalletLimitOrder from './WalletLimitOrder';
 import WalletCancelOrder from './WalletCancelOrder';
 import PowerUpTransactionTo from './PowerUpTransactionTo';
 import SetWithdrawVestingRoute from './SetWithdrawVestingRoute';
+import ConvertHbdRequest from './ConvertHbdRequest';
+import ConvertHbdCompleted from './ConvertHbdCompleted';
+import ConvertHiveRequest from './ConvertHiveRequest';
+import ConvertHiveCompleted from './ConvertHiveCompleted';
 import {
   fillOrderExchanger,
   getTransactionCurrency,
@@ -89,7 +93,6 @@ const WalletTransaction = ({
           transactionType={transactionType}
         />
       );
-
     case accountHistoryConstants.SET_WITHDRAW_VESTING_ROUTE: {
       return (
         <SetWithdrawVestingRoute
@@ -101,6 +104,45 @@ const WalletTransaction = ({
         />
       );
     }
+    case accountHistoryConstants.CONVERT_HBD_REQUEST: {
+      return (
+        <ConvertHbdRequest
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount}
+        />
+      );
+    }
+    case accountHistoryConstants.CONVERT_HBD_COMPLETED: {
+      return (
+        <ConvertHbdCompleted
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount_out}
+        />
+      );
+    }
+    case accountHistoryConstants.CONVERT_HIVE_REQUEST: {
+      return (
+        <ConvertHiveRequest
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount}
+        />
+      );
+    }
+    case accountHistoryConstants.CONVERT_HIVE_COMPLETED: {
+      return (
+        <ConvertHiveCompleted
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount_out}
+          amount_in={transaction.amount_in}
+          excess={transaction.excess_collateral}
+        />
+      );
+    }
+
     case accountHistoryConstants.CLAIM_REWARD_BALANCE:
       return (
         <ClaimReward

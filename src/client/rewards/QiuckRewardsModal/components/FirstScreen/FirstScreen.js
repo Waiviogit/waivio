@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AutoComplete } from 'antd';
 import { isEmpty, get, debounce } from 'lodash';
@@ -27,6 +27,8 @@ import USDDisplay from '../../../../components/Utils/USDDisplay';
 import './FirstScreen.less';
 
 const ModalFirstScreen = props => {
+  const [searchStr, setSearchStr] = useState('');
+
   useEffect(() => {
     if (props.isShow) props.getEligibleRewardsList();
   }, [props.isShow]);
@@ -67,6 +69,7 @@ const ModalFirstScreen = props => {
     debounce(search => {
       if (window.gtag) window.gtag('event', 'search_restaurant_in_quick_rewards_modal');
       props.getEligibleRewardsList(search);
+      setSearchStr('');
     }, 300),
     [],
   );
@@ -74,15 +77,19 @@ const ModalFirstScreen = props => {
   const handleSearchDish = useCallback(
     debounce(search => {
       if (window.gtag) window.gtag('event', 'search_dish_in_quick_rewards_modal');
-      props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant, search);
+      setSearchStr(search);
     }, 300),
     [props.selectedRestaurant],
   );
 
+  const filteredDishesList = searchStr
+    ? props.dishes.filter(dish => getObjectName(dish).includes(searchStr))
+    : props.dishes;
+
   return (
     <div className="FirstScreen">
       <div className="FirstScreen__selectBlock">
-        <h4 className="FirstScreen__title">Choose a restaurant</h4>
+        <h4 className="FirstScreen__title">Select a restaurant</h4>
         {props.selectedRestaurant ? (
           <ObjectCardView
             wObject={props.selectedRestaurant}
@@ -130,7 +137,7 @@ const ModalFirstScreen = props => {
         )}
       </div>
       <div className="FirstScreen__selectBlock">
-        <h4 className="FirstScreen__title">Choose a dish</h4>
+        <h4 className="FirstScreen__title">Select a dish</h4>
         {props.selectedDish ? (
           <ObjectCardView
             wObject={props.selectedDish}
@@ -147,7 +154,7 @@ const ModalFirstScreen = props => {
             disabled={!props.selectedRestaurant}
             onChange={handleSearchDish}
           >
-            {props.dishes.map(camp => {
+            {filteredDishesList.map(camp => {
               if (!isEmpty(camp)) {
                 const reward = get(camp, 'propositions[0].reward', null);
 
@@ -155,6 +162,7 @@ const ModalFirstScreen = props => {
                   <AutoComplete.Option
                     key={camp.author_permlink}
                     className={userCardClassList(reward)}
+                    disabled={isEmpty(props.dishes)}
                   >
                     <ObjectSearchCard
                       object={camp}
