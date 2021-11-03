@@ -39,9 +39,9 @@ import {
 } from '../../../store/websiteStore/websiteSelectors';
 import MapControllers from '../../widgets/MapControllers/MapControllers';
 import TagFilters from '../TagFilters/TagFilters';
+import PostOverlayCard from '../../components/Maps/Overlays/PostOverlayCard/PostOverlayCard';
 
 import '../WebsiteLayoutComponents/Body/WebsiteBody.less';
-import PostOverlayCard from '../../components/Maps/Overlays/PostOverlayCard/PostOverlayCard';
 
 const MainMap = React.memo(props => {
   const [boundsParams, setBoundsParams] = useState({
@@ -294,11 +294,11 @@ const MainMap = React.memo(props => {
 
   const incrementZoom = useCallback(() => {
     if (mapData.zoom < 18) setMapData({ ...mapData, zoom: mapData.zoom + 1 });
-  }, [mapData.zoom]);
+  }, [mapData]);
 
   const decrementZoom = useCallback(() => {
     if (mapData.zoom > 1) setMapData({ ...mapData, zoom: mapData.zoom - 1 });
-  }, [mapData.zoom]);
+  }, [mapData]);
 
   const setLocationFromNavigator = position => {
     const { latitude, longitude } = position.coords;

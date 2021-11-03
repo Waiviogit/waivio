@@ -397,6 +397,7 @@ export const WebsitesConfigurations = ({
                   id: 'website_colors',
                   defaultMessage: 'Website colors',
                 })}
+                :
               </h3>
               <div className="WebsitesConfigurations__colors-wrap">
                 <div className="WebsitesConfigurations__colorsItem">
