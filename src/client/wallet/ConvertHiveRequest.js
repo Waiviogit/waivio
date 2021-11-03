@@ -8,7 +8,11 @@ import { epochToUTC } from '../helpers/formatter';
 const ConvertHiveRequest = ({ amount, timestamp, isGuestPage }) => (
   <div className="UserWalletTransactions__transaction">
     <div className="UserWalletTransactions__icon-wrapper">
-      <i className="iconfont icon-success_fill UserWalletTransactions__icon" />
+      <img
+        src="../images/icons/convert.svg"
+        className="UserWalletTransactions__convert-icon"
+        alt="convert"
+      />
     </div>
 
     <div className="UserWalletTransactions__content">
