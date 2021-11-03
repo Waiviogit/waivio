@@ -83,7 +83,7 @@ const ModalFirstScreen = props => {
   );
 
   const filteredDishesList = searchStr
-    ? props.dishes.filter(dish => dish.name.includes(searchStr))
+    ? props.dishes.filter(dish => getObjectName(dish).includes(searchStr))
     : props.dishes;
 
   return (
