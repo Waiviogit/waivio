@@ -65,14 +65,16 @@ const QuickRewardsModal = props => {
     setPageNumber(1);
   };
 
-  const handleOnClickBack = () => {
+  const handleOnClickBack = e => {
+    e.currentTarget.blur();
     setPageNumber(1);
     setTopic(['food', 'restaurant']);
     setBody('');
     setImages([]);
   };
 
-  const handleOnClickPublishButton = () => {
+  const handleOnClickPublishButton = e => {
+    e.currentTarget.blur();
     setLoading(true);
     if (isPropositionObj) {
       if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
@@ -115,7 +117,11 @@ const QuickRewardsModal = props => {
         return {
           component: <ModalFirstScreen isShow={props.isOpenModal} />,
           buttonName: 'Next',
-          buttonHandler: () => setPageNumber(2),
+          buttonHandler: e => {
+            e.currentTarget.blur();
+
+            setPageNumber(2);
+          },
           disabled: isEmpty(props.selectedDish) || isEmpty(props.selectedRestaurant),
         };
       case 2:
@@ -146,7 +152,8 @@ const QuickRewardsModal = props => {
           buttonName: 'Confirm',
           buttonHandler: handleCreatePost,
           disabled: false,
-          previousHandler: () => {
+          previousHandler: e => {
+            e.currentTarget.blur();
             handelRejectReservation();
             setPageNumber(2);
           },
