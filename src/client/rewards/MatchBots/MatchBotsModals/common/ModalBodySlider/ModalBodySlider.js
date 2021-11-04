@@ -11,6 +11,8 @@ const ModalBodySlider = ({
   sliderTitle,
   sliderDescription,
   selectOptions,
+  handleChangeCurrency,
+  currency,
 }) => {
   const formatTooltip = value => `${value}%`;
 
@@ -20,13 +22,14 @@ const ModalBodySlider = ({
         {sliderTitle}
         {selectOptions && (
           <Select
-            defaultValue="HIVE"
+            defaultValue={currency.join(' OR ')}
             className="modalBodySlider__select"
             dropdownClassName="modalBodySlider__selectDropdown"
+            onSelect={handleChangeCurrency}
           >
             {selectOptions.map(item => (
-              <Select.Option key={item} value={item}>
-                {item}
+              <Select.Option key={item.key} value={item.key}>
+                {item.text}
               </Select.Option>
             ))}
           </Select>
@@ -47,8 +50,10 @@ const ModalBodySlider = ({
 ModalBodySlider.propTypes = {
   marks: PropTypes.shape(),
   selectOptions: PropTypes.arrayOf(),
+  currency: PropTypes.arrayOf(),
   sliderValue: PropTypes.number,
   handleChangeSlider: PropTypes.func,
+  handleChangeCurrency: PropTypes.func,
   sliderTitle: PropTypes.string.isRequired,
   sliderDescription: PropTypes.string.isRequired,
 };
@@ -64,6 +69,8 @@ ModalBodySlider.defaultProps = {
   sliderValue: 100,
   handleChangeSlider: () => {},
   selectOptions: null,
+  handleChangeCurrency: null,
+  currency: ['HIVE'],
 };
 
 export default ModalBodySlider;

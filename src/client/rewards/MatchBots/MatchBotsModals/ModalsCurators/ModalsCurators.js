@@ -138,6 +138,7 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
               isAddModal={isAddModal}
               inputsValue={inputsValue}
               setInputsValue={setInputsValue}
+              bot={bot}
             />
             <ModalFooter
               isAddModal={isAddModal}

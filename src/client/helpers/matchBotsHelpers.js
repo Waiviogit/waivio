@@ -19,6 +19,7 @@ export const INITIAL_INPUTS_VALUE = {
   expiredAt: null,
   notesValue: '',
   isSubmitted: false,
+  minVotingPowerCurrencies: ['HIVE'],
 };
 
 export const INITIAL_INPUTS_VALUE_CURATOR = {
@@ -47,6 +48,7 @@ export const getBotObjAuthor = (botData, isEdit) => {
     enabled: !isEdit || botData.enabled,
     voteWeight: botData.voteValue * 100,
     minVotingPower: botData.manaValue * 100,
+    minVotingPowerCurrencies: botData.minVotingPowerCurrencies,
   };
 
   if (botData.notesValue) dataObj.note = botData.notesValue;
@@ -67,6 +69,7 @@ export const getBotObjCurator = (botData, isEdit) => {
     enablePowerDown: botData.isDownvote,
     minVotingPower: botData.manaValue * 100,
     name: get(botData, 'selectedUser.account', ''),
+    minVotingPowerCurrencies: botData.minVotingPowerCurrencies,
   };
 
   if (botData.notesValue) dataObj.note = botData.notesValue;
@@ -85,6 +88,7 @@ export const setInitialInputValues = value => {
     enabled: value.enabled,
     notesValue: value.note || '',
     isSubmitted: false,
+    minVotingPowerCurrencies: ['HIVE'],
   };
 
   if (value.voteWeight) initialState.voteValue = value.voteWeight / 100;

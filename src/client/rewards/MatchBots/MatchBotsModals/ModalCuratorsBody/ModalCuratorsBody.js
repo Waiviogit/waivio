@@ -10,12 +10,21 @@ import ModalBodyVoteRatio from '../common/ModalBodyVoteRatio';
 import { MATCH_BOTS_NAMES } from '../../../../helpers/matchBotsHelpers';
 import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
 import ModalBodyCheckBox from '../common/ModalBodyCheckBox/ModalBodyCheckBox';
-import { cryptoCurrencyListForSlider } from '../../../../../common/constants/cryptos';
+import {
+  cryptoCurrencyListForSlider,
+  currencyListForSliderValues,
+} from '../../../../../common/constants/cryptos';
 
-const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) => {
+const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue, bot }) => {
   const handleChangeSliderMana = manaValue => setInputsValue(prev => ({ ...prev, manaValue }));
   const handleChangeDate = expiredAt => setInputsValue(prev => ({ ...prev, expiredAt }));
   const handleChangeNote = notesValue => setInputsValue(prev => ({ ...prev, notesValue }));
+  const handleChangeCurrency = value =>
+    setInputsValue(prev => ({
+      ...prev,
+      minVotingPowerCurrencies: currencyListForSliderValues[value],
+    }));
+
   const handleChangeVote = debounce(
     voteRatio => setInputsValue(prev => ({ ...prev, voteRatio, isSubmitted: false })),
     200,
@@ -61,6 +70,8 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) =>
             'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting.',
         })}
         selectOptions={cryptoCurrencyListForSlider}
+        handleChangeCurrency={handleChangeCurrency}
+        currency={bot.minVotingPowerCurrencies}
       />
       <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredAt} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />
@@ -73,6 +84,7 @@ ModalCuratorsBody.propTypes = {
   isAddModal: PropTypes.bool.isRequired,
   setInputsValue: PropTypes.func.isRequired,
   inputsValue: PropTypes.shape().isRequired,
+  bot: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(ModalCuratorsBody);

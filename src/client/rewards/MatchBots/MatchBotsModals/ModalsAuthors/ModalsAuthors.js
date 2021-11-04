@@ -125,6 +125,7 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
               isAddModal={isAddModal}
               inputsValue={inputsValue}
               setInputsValue={setInputsValue}
+              bot={bot}
             />
             <ModalFooter
               botName={MATCH_BOTS_NAMES.AUTHORS}
