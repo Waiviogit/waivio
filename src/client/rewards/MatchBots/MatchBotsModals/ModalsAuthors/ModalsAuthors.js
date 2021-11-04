@@ -31,6 +31,7 @@ const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) 
   React.useEffect(() => {
     if (bot && isModalOpen) setInputsValue(setInitialInputValues(bot));
   }, [bot, isModalOpen]);
+
   const handleToggleModal = () => setIsModalOpen(prev => !prev);
   const handleToggleModalDelete = () => setIsModalOpenConfirmDelete(prev => !prev);
   const handleToggleModalEdit = () => setIsModalOpenConfirmEdit(prev => !prev);

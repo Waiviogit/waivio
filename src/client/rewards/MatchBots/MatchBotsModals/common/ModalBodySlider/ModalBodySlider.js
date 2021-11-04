@@ -1,4 +1,4 @@
-import { Slider } from 'antd';
+import { Select, Slider } from 'antd';
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
@@ -10,12 +10,28 @@ const ModalBodySlider = ({
   handleChangeSlider,
   sliderTitle,
   sliderDescription,
+  selectOptions,
 }) => {
   const formatTooltip = value => `${value}%`;
 
   return (
     <div className="modalBodySlider">
-      <p className="modalBodySlider_title">{sliderTitle}</p>
+      <p className="modalBodySlider_title">
+        {sliderTitle}
+        {selectOptions && (
+          <Select
+            defaultValue="HIVE"
+            className="modalBodySlider__select"
+            dropdownClassName="modalBodySlider__selectDropdown"
+          >
+            {selectOptions.map(item => (
+              <Select.Option key={item} value={item}>
+                {item}
+              </Select.Option>
+            ))}
+          </Select>
+        )}
+      </p>
       <Slider
         min={1}
         defaultValue={sliderValue}
@@ -30,6 +46,7 @@ const ModalBodySlider = ({
 
 ModalBodySlider.propTypes = {
   marks: PropTypes.shape(),
+  selectOptions: PropTypes.arrayOf(),
   sliderValue: PropTypes.number,
   handleChangeSlider: PropTypes.func,
   sliderTitle: PropTypes.string.isRequired,
@@ -46,6 +63,7 @@ ModalBodySlider.defaultProps = {
   },
   sliderValue: 100,
   handleChangeSlider: () => {},
+  selectOptions: null,
 };
 
 export default ModalBodySlider;

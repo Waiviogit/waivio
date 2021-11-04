@@ -7,9 +7,10 @@ import ModalBodyDate from '../common/ModalBodyDate';
 import ModalBodyNotes from '../common/ModalBodyNotes';
 import ModalBodySlider from '../common/ModalBodySlider';
 import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
+import { MATCH_BOTS_NAMES } from '../../../../helpers/matchBotsHelpers';
+import { cryptoCurrencyListForSlider } from '../../../../../common/constants/cryptos';
 
 import './ModalAuthorsBody.less';
-import { MATCH_BOTS_NAMES } from '../../../../helpers/matchBotsHelpers';
 
 const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => {
   const handleChangeSliderVote = value => setInputsValue(prev => ({ ...prev, voteValue: value }));
@@ -55,6 +56,7 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => 
           defaultMessage:
             'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting (typically, 5 min after the post is published).',
         })}
+        selectOptions={cryptoCurrencyListForSlider}
       />
       <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredAt} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />

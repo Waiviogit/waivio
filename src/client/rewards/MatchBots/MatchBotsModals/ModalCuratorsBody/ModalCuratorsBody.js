@@ -10,6 +10,7 @@ import ModalBodyVoteRatio from '../common/ModalBodyVoteRatio';
 import { MATCH_BOTS_NAMES } from '../../../../helpers/matchBotsHelpers';
 import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
 import ModalBodyCheckBox from '../common/ModalBodyCheckBox/ModalBodyCheckBox';
+import { cryptoCurrencyListForSlider } from '../../../../../common/constants/cryptos';
 
 const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) => {
   const handleChangeSliderMana = manaValue => setInputsValue(prev => ({ ...prev, manaValue }));
@@ -59,6 +60,7 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) =>
           defaultMessage:
             'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting.',
         })}
+        selectOptions={cryptoCurrencyListForSlider}
       />
       <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredAt} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />

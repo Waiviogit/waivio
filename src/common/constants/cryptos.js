@@ -618,6 +618,8 @@ export const SBD = {
   symbol: 'SBD',
 };
 
+export const cryptoCurrencyListForSlider = ['WAIV', 'HIVE', 'WAIV OR HIVE'];
+
 export const CRYPTO_MAP = {
   [BTC.symbol]: BTC,
   [ETH.symbol]: ETH,
