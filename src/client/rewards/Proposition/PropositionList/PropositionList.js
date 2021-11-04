@@ -222,7 +222,7 @@ const PropositionList = ({
                 />
               </div>
               {renderPropositions()}
-              <div className="CatalogWrap">
+              <div className={isEmpty(listItems) && 'CatalogWrap__empty'}>
                 <div>{getMenuList()}</div>
               </div>
             </React.Fragment>
