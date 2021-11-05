@@ -31,7 +31,7 @@ const MatchBotsAuthorsContent = ({ intl, isEngLocale }) => (
       {intl.formatMessage({
         id: 'authors_match_bots_important',
         defaultMessage:
-          'Important: The Authors match bot only publishes upvotes with estimated value of 0.01 HBD or more.',
+          'Important: The Authors match bot only publishes upvotes with estimated combine value of 0.01 HBD or more.',
       })}
     </p>
     <p>
