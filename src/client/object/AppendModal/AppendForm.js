@@ -949,16 +949,12 @@ export default class AppendForm extends Component {
         isEqual(this.getCurrentObjectBody(currentField), JSON.parse(f.body)),
       );
     }
-
     if (currentField === objectFields.authority) {
       return filtered.some(f => f.body === currentValue && f.creator === user.name);
     }
-
     if (currentField === objectFields.phone)
       return filtered.some(f => this.getCurrentObjectBody(currentField).number === f.number);
-
     if (currentField === objectFields.name) return filtered.some(f => f.body === currentValue);
-
     if (currentField === objectFields.categoryItem) {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
 
@@ -968,7 +964,7 @@ export default class AppendForm extends Component {
       return filtered.some(f => this.getCurrentObjectBody(currentField).blogAccount === f.body);
     }
 
-    return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
+    return filtered.some(f => f.body === currentValue);
   };
 
   getCurrentObjectBody = () => {
