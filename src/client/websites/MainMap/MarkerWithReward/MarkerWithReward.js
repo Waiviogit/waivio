@@ -14,7 +14,14 @@ const MarkerWithReward = props => {
   const textColor = get(props, 'colors.mapMarkerText', '') || initialColors.text;
 
   return (
-    <span className={classList} style={{ background: markerColor, color: textColor }}>
+    <span
+      className={classList}
+      style={{
+        background: markerColor,
+        color: textColor,
+        ...(props.hovered ? { boxShadow: `0 0 6px 3px ${markerColor}` } : {}),
+      }}
+    >
       <USDDisplay currencyDisplay="symbol" value={props.price} />
       <span
         className="MarkerWithReward__triangular"

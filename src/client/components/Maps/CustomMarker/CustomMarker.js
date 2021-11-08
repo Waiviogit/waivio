@@ -31,12 +31,14 @@ class CustomMarker extends React.Component {
     hoveredWobj: PropTypes.bool,
     colors: PropTypes.shape({
       mapMarkerBody: PropTypes.string,
+      mapMarkerText: PropTypes.string,
     }),
   };
 
   static defaultProps = {
     colors: {
       mapMarkerBody: '',
+      mapMarkerText: '',
     },
     onContextMenu: () => {},
     left: 0,
@@ -128,6 +130,7 @@ class CustomMarker extends React.Component {
 
     const currentItem = () => {
       const markerColor = this.props.colors.mapMarkerBody || initialColors.marker;
+      const markerTextColor = this.props.colors.mapMarkerText || initialColors.text;
 
       if (currLocation) {
         return <UserLocation markerColor={markerColor} />;
@@ -143,7 +146,14 @@ class CustomMarker extends React.Component {
         );
       }
 
-      return <SimpleMarker width={width} height={height} markerColor={markerColor} />;
+      return (
+        <SimpleMarker
+          width={width}
+          height={height}
+          markerColor={markerColor}
+          markerText={markerTextColor}
+        />
+      );
     };
 
     return (
