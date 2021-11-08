@@ -25,10 +25,12 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
         <div className="Details__criteria-row Details__criteria-row--mobile">
           {/* eslint-disable-next-line no-plusplus */}
           {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
-          <Link className="ml1" to={`/object/${proposedWobj.id || proposedWobj.author_permlink}`}>
+          <Link
+            className="ml1 Details__container"
+            to={`/object/${proposedWobj.id || proposedWobj.author_permlink}`}
+          >
             {proposedWobjName || proposedWobj.name}
           </Link>
-          ;
         </div>
         {receiptPhoto && (
           /* eslint-disable-next-line no-plusplus */
@@ -36,21 +38,19 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
             messageData.photoReceipt
           }`}</div>
         )}
-        <div className="Details__criteria-row nowrap">
+        <div className="Details__criteria-row ">
           {/* eslint-disable-next-line no-plusplus */}
           {`${indexItem++}. ${messageData.linkTo}`}
-          <Link className="ml1" to={`/object/${proposedWobj.author_permlink}`}>
+          <Link className="ml1 Details__container" to={`/object/${proposedWobj.author_permlink}`}>
             {proposedWobjName || proposedWobj.name}
           </Link>
-          ;
         </div>
-        <div className="Details__criteria-row nowrap">
+        <div className="Details__criteria-row ">
           {/* eslint-disable-next-line no-plusplus */}
           {`${indexItem++}. ${messageData.linkTo}`}
-          <Link className="ml1" to={`/object/${requiredObject}`}>
+          <Link className="ml1 Details__container" to={`/object/${requiredObject}`}>
             {requiredObjectName}
           </Link>
-          ;
         </div>
         <div className="Details__criteria-row">
           {description &&

@@ -5,7 +5,7 @@ import BTooltip from '../components/BTooltip';
 
 import { epochToUTC } from '../helpers/formatter';
 
-const ConvertHiveCompleted = ({ amount_in, excess, amount, timestamp, isGuestPage }) => (
+const ConvertHiveCompleted = ({ amount, timestamp, isGuestPage }) => (
   <div className="UserWalletTransactions__transaction">
     <div className="UserWalletTransactions__icon-wrapper">
       <img
@@ -16,7 +16,7 @@ const ConvertHiveCompleted = ({ amount_in, excess, amount, timestamp, isGuestPag
     </div>
 
     <div className="UserWalletTransactions__content">
-      {`HIVE>HBD:  request ${amount_in} converted, ${excess} returned`}
+      {`HIVE>HBD: adjusted collateral release`}
       <span className="UserWalletTransactions__timestamp">
         {isGuestPage ? (
           <BTooltip
@@ -53,8 +53,6 @@ const ConvertHiveCompleted = ({ amount_in, excess, amount, timestamp, isGuestPag
 
 ConvertHiveCompleted.propTypes = {
   amount: PropTypes.string,
-  amount_in: PropTypes.string,
-  excess: PropTypes.string,
   timestamp: PropTypes.string,
   isGuestPage: PropTypes.bool,
 };
@@ -63,8 +61,6 @@ ConvertHiveCompleted.defaultProps = {
   amount: '',
   timestamp: '',
   isGuestPage: false,
-  excess: '',
-  amount_in: '',
 };
 
 export default ConvertHiveCompleted;

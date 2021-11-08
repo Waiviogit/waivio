@@ -94,7 +94,7 @@ export default localizer => ({
   ),
   authorsMatchBotsImportant: localizer(
     'authors_match_bots_important',
-    'Important: The Authors match bot only publishes upvotes with estimated value of 0.01 HBD or more.',
+    'Important: The Authors match bot only publishes upvotes with estimated combine value of 0.01 HBD or more.',
   ),
   authorsMatchBotsVotes: localizer(
     'authors_match_bots_votes',
@@ -131,7 +131,7 @@ export default localizer => ({
   ),
   curatorsMatchBotsImportant: localizer(
     'curators_match_bots_important',
-    'Important: If the estimated value of the vote is less than 0.01 HBD, the Curator match bot will skip this vote.',
+    'Important: If the estimated combine value of the vote is less than 0.01 HBD, the Curator match bot will skip this vote.',
   ),
   curatorsMatchBotsCondition: localizer(
     'curators_match_bots_condition',

@@ -137,8 +137,6 @@ const WalletTransaction = ({
           isGuestPage={isGuestPage}
           timestamp={transaction.timestamp}
           amount={transaction.amount_out}
-          amount_in={transaction.amount_in}
-          excess={transaction.excess_collateral}
         />
       );
     }
