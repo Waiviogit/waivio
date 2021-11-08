@@ -24,32 +24,36 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row Details__criteria-row--mobile">
           {/* eslint-disable-next-line no-plusplus */}
-          {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
+          <div className="nowrap"> {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}</div>
           <Link
             className="ml1 Details__container"
             to={`/object/${proposedWobj.id || proposedWobj.author_permlink}`}
           >
             {proposedWobjName || proposedWobj.name}
+            <span className="Details__break">;</span>
           </Link>
         </div>
+
         {receiptPhoto && (
           /* eslint-disable-next-line no-plusplus */
           <div className="Details__criteria-row">{`${indexItem++}. ${
             messageData.photoReceipt
           }`}</div>
         )}
-        <div className="Details__criteria-row ">
+        <div className="Details__criteria-row">
           {/* eslint-disable-next-line no-plusplus */}
           {`${indexItem++}. ${messageData.linkTo}`}
           <Link className="ml1 Details__container" to={`/object/${proposedWobj.author_permlink}`}>
             {proposedWobjName || proposedWobj.name}
+            <span className="Details__break">;</span>
           </Link>
         </div>
-        <div className="Details__criteria-row ">
+        <div className="Details__criteria-row">
           {/* eslint-disable-next-line no-plusplus */}
           {`${indexItem++}. ${messageData.linkTo}`}
           <Link className="ml1 Details__container" to={`/object/${requiredObject}`}>
             {requiredObjectName}
+            <span className="Details__break">;</span>
           </Link>
         </div>
         <div className="Details__criteria-row">
