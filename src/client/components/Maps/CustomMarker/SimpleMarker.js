@@ -20,7 +20,7 @@ const SimpleMarker = props => (
       stroke="white"
       strokeWidth="2"
     />
-    <circle cx="27" cy="26" r="15" fill="white" fillOpacity="0.7" />
+    <circle cx="27" cy="26" r="15" fill={props.markerText} fillOpacity="0.7" />
   </svg>
 );
 
@@ -28,5 +28,6 @@ SimpleMarker.propTypes = {
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
   markerColor: PropTypes.string.isRequired,
+  markerText: PropTypes.string.isRequired,
 };
 export default SimpleMarker;

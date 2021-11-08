@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { debounce } from 'lodash';
+import { debounce, get } from 'lodash';
 
 import ModalBodyDate from '../common/ModalBodyDate';
 import ModalBodyNotes from '../common/ModalBodyNotes';
@@ -71,7 +71,7 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue, bot 
         })}
         selectOptions={cryptoCurrencyListForSlider}
         handleChangeCurrency={handleChangeCurrency}
-        currency={bot.minVotingPowerCurrencies}
+        currency={get(bot, 'minVotingPowerCurrencies')}
       />
       <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredAt} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />
