@@ -37,8 +37,9 @@ class TagsSelector extends Component {
 
   render() {
     const { label, placeholder, tags, className, disabled } = this.props;
+    const currentURL = window.location.href.includes('objects-filters');
 
-    if (!tags.includes('waivio')) {
+    if (!tags.includes('waivio') && !currentURL) {
       tags.unshift('waivio');
     }
 
