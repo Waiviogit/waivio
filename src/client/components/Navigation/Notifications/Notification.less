@@ -1,4 +1,6 @@
 @import (reference) '../../../styles/custom.less';
+.object_name {
+}
 
 .Notification {
   display: flex;
@@ -7,6 +9,10 @@
   border-bottom: @base-border;
 
   .Notification__text__message {
+    // border: 2px solid red;
+    // inline-size: 200px;
+    // overflow-wrap: break-word;
+
     span {
       transition: 0.3s;
     }
@@ -29,6 +35,8 @@
   &__text {
     padding: 0 15px;
     text-align: left;
+    width: 95%;
+    overflow-wrap: break-word;
 
     &__message {
       color: @grey-mortar;
