@@ -24,14 +24,16 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row Details__criteria-row--mobile">
           {/* eslint-disable-next-line no-plusplus */}
-          <div className="nowrap"> {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}</div>
-          <Link
-            className="ml1 Details__photos-container"
-            to={`/object/${proposedWobj.id || proposedWobj.author_permlink}`}
-          >
-            {proposedWobjName || proposedWobj.name}
-            <span className="Details__break">;</span>
-          </Link>
+
+          <span className="Details__container">
+            <span className="nowrap">
+              {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
+            </span>
+            <Link className="ml1" to={`/object/${proposedWobj.id || proposedWobj.author_permlink}`}>
+              {proposedWobjName || proposedWobj.name}
+            </Link>
+            ;
+          </span>
         </div>
 
         {receiptPhoto && (
@@ -40,21 +42,27 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
             messageData.photoReceipt
           }`}</div>
         )}
+
         <div className="Details__criteria-row">
           {/* eslint-disable-next-line no-plusplus */}
-          {`${indexItem++}. ${messageData.linkTo}`}
-          <Link className="ml1 Details__container" to={`/object/${proposedWobj.author_permlink}`}>
-            {proposedWobjName || proposedWobj.name}
-            <span className="Details__break">;</span>
-          </Link>
+          <span className="Details__container">
+            <span className="nowrap">{`${indexItem++}. ${messageData.linkTo}`} </span>
+            <Link className="ml1 Details__container" to={`/object/${proposedWobj.author_permlink}`}>
+              {proposedWobjName || proposedWobj.name}
+            </Link>
+            ;
+          </span>
         </div>
+
         <div className="Details__criteria-row">
           {/* eslint-disable-next-line no-plusplus */}
-          {`${indexItem++}. ${messageData.linkTo}`}
-          <Link className="ml1 Details__container" to={`/object/${requiredObject}`}>
-            {requiredObjectName}
-            <span className="Details__break">;</span>
-          </Link>
+          <span>
+            <span className="nowrap"> {`${indexItem++}. ${messageData.linkTo}`}</span>
+            <Link className="ml1 Details__container" to={`/object/${requiredObject}`}>
+              {requiredObjectName}
+            </Link>
+            ;
+          </span>
         </div>
         <div className="Details__criteria-row">
           {description &&
