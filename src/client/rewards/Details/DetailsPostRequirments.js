@@ -26,7 +26,7 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
           {/* eslint-disable-next-line no-plusplus */}
           <div className="nowrap"> {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}</div>
           <Link
-            className="ml1 Details__container"
+            className="ml1 Details__photos-container"
             to={`/object/${proposedWobj.id || proposedWobj.author_permlink}`}
           >
             {proposedWobjName || proposedWobj.name}
