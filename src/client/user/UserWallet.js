@@ -192,7 +192,6 @@ class Wallet extends Component {
           getMoreUserTransactionHistory={this.props.getMoreUserTransactionHistory}
           transactions={transactions}
           hasMore={hasMore}
-          currentUsername={this.props.match.params.name}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}
           getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
