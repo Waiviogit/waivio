@@ -19,7 +19,11 @@ const WalletSummaryInfo = ({ estAccValue, children }) => (
         <FormattedMessage id="est_account_value" defaultMessage="Est. Account Value" />
       </div>
       <div className="WalletSummaryInfo__value">
-        {!isNil(estAccValue) ? <USDDisplay value={estAccValue} /> : <Loading />}
+        {isNil(estAccValue) || isNaN(estAccValue) ? (
+          <Loading />
+        ) : (
+          <USDDisplay value={estAccValue} />
+        )}
       </div>
     </div>
   </div>
