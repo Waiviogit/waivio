@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { isEmpty } from 'lodash';
 
 import { getWaivTransactionHistoryFromState } from '../../../../../store/walletStore/walletSelectors';
 import {
@@ -16,7 +18,15 @@ const WAIVWalletTransferList = props => {
     props.getWAIVTransferList(props.name);
   }, []);
 
-  if (!props.transaction) return 'Empty';
+  if (isEmpty(props.transaction.list))
+    return (
+      <div className="UserWallet__empty-transactions-list">
+        <FormattedMessage
+          id="empty_transaction_list"
+          defaultMessage="You don't have any transactions yet"
+        />
+      </div>
+    );
 
   return (
     <div className="WAIVWalletTransferList">
