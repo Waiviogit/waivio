@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { round } from 'lodash';
+import { round, get, isNil } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedNumber } from 'react-intl';
 
@@ -12,14 +12,16 @@ import { getTokenBalance } from '../../../../waivioApi/ApiClient';
 const WAIVWalletSummaryInfo = props => {
   const [currencyInfo, setCurrencyInfo] = useState({});
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
-  const estAccValue = rates * (Number(currencyInfo.balance) + Number(currencyInfo.stake));
+  const balance = get(currencyInfo, 'balance', 0);
+  const stake = get(currencyInfo, 'stake', 0);
+  const estAccValue = rates * (Number(balance) + Number(stake));
 
   useEffect(() => {
     getTokenBalance('WAIV', props.name).then(res => setCurrencyInfo(res));
   }, []);
 
   const formattedNumber = num => {
-    if (!num) return <Loading />;
+    if (isNil(num)) return <Loading />;
     const precision = num > 0.01 || num === 0 ? 2 : 3;
 
     return <FormattedNumber value={round(num, precision)} />;
@@ -35,9 +37,7 @@ const WAIVWalletSummaryInfo = props => {
             alt="hive"
           />
           <div className="WalletSummaryInfo__label">WAIV</div>
-          <div className="WalletSummaryInfo__value">
-            {formattedNumber(currencyInfo.balance)} WAIV
-          </div>
+          <div className="WalletSummaryInfo__value">{formattedNumber(balance)} WAIV</div>
         </div>
         <p className="WalletSummaryInfo__description">Liquid WAIV tokens</p>
       </div>
@@ -45,7 +45,7 @@ const WAIVWalletSummaryInfo = props => {
         <div className="WalletSummaryInfo__item">
           <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
           <div className="WalletSummaryInfo__label">WAIV Power</div>
-          <div className="WalletSummaryInfo__value">{formattedNumber(currencyInfo.stake)} WP</div>
+          <div className="WalletSummaryInfo__value">{formattedNumber(stake)} WP</div>
         </div>
         <p className="WalletSummaryInfo__description">Staked WAIV tokens</p>
       </div>
