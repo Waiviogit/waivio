@@ -15,7 +15,6 @@ import './UserWalletTransactions.less';
 @injectIntl
 class UserWalletTransactions extends React.Component {
   static propTypes = {
-    currentUsername: PropTypes.string,
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
     transactions: PropTypes.arrayOf(PropTypes.shape()),
@@ -23,7 +22,7 @@ class UserWalletTransactions extends React.Component {
     getMoreUserTransactionHistory: PropTypes.func,
     demoTransactions: PropTypes.arrayOf(PropTypes.shape()),
     demoHasMoreActions: PropTypes.bool.isRequired,
-    user: PropTypes.shape().isRequired,
+    user: PropTypes.string.isRequired,
     actions: PropTypes.arrayOf(PropTypes.shape()),
     getMoreUserAccountHistory: PropTypes.func.isRequired,
     intl: PropTypes.shape({
@@ -37,7 +36,7 @@ class UserWalletTransactions extends React.Component {
   };
 
   static defaultProps = {
-    currentUsername: '',
+    user: '',
     transactions: [],
     hasMore: false,
     getMoreUserTransactionHistory: () => {},
@@ -66,7 +65,7 @@ class UserWalletTransactions extends React.Component {
       .catch(e => message.error(e.message));
   };
 
-  isGuestPage = () => guestUserRegex.test(this.props.user && this.props.user.name);
+  isGuestPage = () => guestUserRegex.test(this.props.user);
 
   toggleDetailsModal = () =>
     this.setState(prevState => ({ isOpenDetailsModal: !prevState.isOpenDetailsModal }));
@@ -83,7 +82,7 @@ class UserWalletTransactions extends React.Component {
 
   handleLoadMore = () => {
     const {
-      currentUsername,
+      user,
       operationNum,
       isloadingMoreTransactions,
       isloadingMoreDemoTransactions,
@@ -93,7 +92,7 @@ class UserWalletTransactions extends React.Component {
     } = this.props;
 
     const values = {
-      username: currentUsername,
+      username: user,
       operationNumber: operationNum,
       isLoadingMore: isloadingMoreTransactions,
       demoIsLoadingMore: isloadingMoreDemoTransactions,
@@ -109,7 +108,7 @@ class UserWalletTransactions extends React.Component {
 
   render() {
     const {
-      currentUsername,
+      user,
       totalVestingShares,
       totalVestingFundSteem,
       transactions,
@@ -142,10 +141,10 @@ class UserWalletTransactions extends React.Component {
             {this.isGuestPage()
               ? demoTransactions.map(demoTransaction => (
                   <WalletTransaction
-                    isGuestPage={this.isGuestPage()}
+                    isGuestPage
                     key={`${demoTransaction.trx_id}${demoTransaction.actionCount}`}
                     transaction={demoTransaction}
-                    currentUsername={currentUsername}
+                    currentUsername={user}
                     totalVestingShares={totalVestingShares}
                     totalVestingFundSteem={totalVestingFundSteem}
                     handleDetailsClick={this.getWithDrawDetails}
@@ -154,10 +153,9 @@ class UserWalletTransactions extends React.Component {
                 ))
               : transactions.map(transaction => (
                   <WalletTransaction
-                    isGuestPage={this.isGuestPage()}
                     key={`${transaction.timestamp}${transaction.operationNum}`}
                     transaction={transaction}
-                    currentUsername={currentUsername}
+                    currentUsername={user}
                     totalVestingShares={totalVestingShares}
                     totalVestingFundSteem={totalVestingFundSteem}
                     handleDetailsClick={this.getWithDrawDetails}
