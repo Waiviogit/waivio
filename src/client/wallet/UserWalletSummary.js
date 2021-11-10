@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { FormattedMessage, FormattedNumber, FormattedDate, FormattedTime } from 'react-intl';
+
+import { getUser } from '../../store/usersStore/usersSelectors';
 import formatter from '../helpers/steemitFormatter';
 import {
   calculateTotalDelegatedSP,
@@ -9,7 +13,12 @@ import {
 } from '../vendor/steemitHelpers';
 import BTooltip from '../components/BTooltip';
 import Loading from '../components/Icon/Loading';
-import USDDisplay from '../components/Utils/USDDisplay';
+import { guestUserRegex } from '../helpers/regexHelpers';
+import WalletSummaryInfo from './WalletSummaryInfo/WalletSummaryInfo';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
 import './UserWalletSummary.less';
 
 const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
@@ -79,31 +88,19 @@ const getFormattedPendingWithdrawalSP = (user, totalVestingShares, totalVestingF
 
 const UserWalletSummary = ({
   user,
-  loading,
   totalVestingShares,
   totalVestingFundSteem,
   loadingGlobalProperties,
   steemRate,
   sbdRate,
-  steemRateLoading,
-  isGuest,
 }) => {
-  const estAccValue = isGuest ? (
-    <USDDisplay value={user.balance * steemRate} />
-  ) : (
-    <USDDisplay
-      value={calculateEstAccountValue(
-        user,
-        totalVestingShares,
-        totalVestingFundSteem,
-        steemRate,
-        sbdRate,
-      )}
-    />
-  );
+  const isGuest = guestUserRegex.test(user.name);
+  const estAccValue = isGuest
+    ? user.balance * steemRate
+    : calculateEstAccountValue(user, totalVestingShares, totalVestingFundSteem, steemRate, sbdRate);
 
   return (
-    <div className="UserWalletSummary">
+    <WalletSummaryInfo estAccValue={estAccValue}>
       <div className="UserWalletSummary__item">
         <img
           className="UserWalletSummary__icon hive"
@@ -114,7 +111,7 @@ const UserWalletSummary = ({
           <FormattedMessage id="hive" defaultMessage="Hive" />
         </div>
         <div className="UserWalletSummary__value">
-          {loading ? (
+          {user.fetching ? (
             <Loading />
           ) : (
             <span>
@@ -132,7 +129,7 @@ const UserWalletSummary = ({
               <FormattedMessage id="steem_power" defaultMessage="Hive Power" />
             </div>
             <div className="UserWalletSummary__value">
-              {loading || loadingGlobalProperties ? (
+              {user.fetching || loadingGlobalProperties ? (
                 <Loading />
               ) : (
                 <span className={`${user.to_withdraw ? 'red' : ''}`}>
@@ -158,7 +155,7 @@ const UserWalletSummary = ({
               <FormattedMessage id="steem_dollar" defaultMessage="Hive Dollar" />
             </div>
             <div className="UserWalletSummary__value">
-              {loading ? (
+              {user.fetching ? (
                 <Loading />
               ) : (
                 <span>
@@ -174,7 +171,7 @@ const UserWalletSummary = ({
               <FormattedMessage id="savings" defaultMessage="Savings" />
             </div>
             <div className="UserWalletSummary__value">
-              {loading ? (
+              {user.fetching ? (
                 <Loading />
               ) : (
                 <span>
@@ -188,16 +185,7 @@ const UserWalletSummary = ({
           </div>
         </React.Fragment>
       )}
-      {!(loading || loadingGlobalProperties || steemRateLoading) && (
-        <div className="UserWalletSummary__item">
-          <i className="iconfont icon-people_fill UserWalletSummary__icon" />
-          <div className="UserWalletSummary__label">
-            <FormattedMessage id="est_account_value" defaultMessage="Est. Account Value" />
-          </div>
-          <div className="UserWalletSummary__value">{estAccValue || 0}</div>
-        </div>
-      )}
-    </div>
+    </WalletSummaryInfo>
   );
 };
 
@@ -208,17 +196,16 @@ UserWalletSummary.propTypes = {
   totalVestingFundSteem: PropTypes.string.isRequired,
   steemRate: PropTypes.number,
   sbdRate: PropTypes.number,
-  loading: PropTypes.bool,
-  steemRateLoading: PropTypes.bool,
-  isGuest: PropTypes.bool,
 };
 
 UserWalletSummary.defaultProps = {
   steemRate: 1,
   sbdRate: 1,
-  loading: false,
-  steemRateLoading: false,
-  isGuest: false,
 };
 
-export default UserWalletSummary;
+export default connect((state, ownProps) => ({
+  user:
+    ownProps.userName === getAuthenticatedUserName(state)
+      ? getAuthenticatedUser(state)
+      : getUser(state, ownProps.userName),
+}))(withRouter(UserWalletSummary));

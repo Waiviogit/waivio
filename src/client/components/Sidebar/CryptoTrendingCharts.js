@@ -43,7 +43,6 @@ class CryptoTrendingCharts extends React.Component {
   }
 
   componentDidMount() {
-    if (this.cryptoSymbols) this.props.getCryptoPriceHistory(this.cryptoSymbols);
     this.props.setIsMobile();
   }
 

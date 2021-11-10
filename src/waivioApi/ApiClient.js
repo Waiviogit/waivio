@@ -2264,4 +2264,56 @@ export const getAllCampaingForRequiredObject = params => {
     .catch(e => e);
 };
 
+export const getTokenBalance = (currency, userName) => {
+  return fetch('https://ha.herpc.dtools.dev/contracts', {
+    headers,
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 10,
+      method: 'find',
+      params: {
+        contract: 'tokens',
+        table: 'balances',
+        query: {
+          account: userName,
+          symbol: currency,
+        },
+        limit: 1000,
+        offset: 0,
+        indexes: '',
+      },
+    }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result[0])
+    .catch(e => e);
+};
+
+export const getTokensEngineRates = currency => {
+  return fetch(`${config.currenciesApiPrefix}${config.engineRates}?base=${currency}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getTokensTransferList = (symbol, account, offset = 0, limit = 50) => {
+  return fetch(
+    `https://accounts.hive-engine.com/accountHistory?account=${account}&limit=${limit}&offset=${offset}&symbol=${symbol}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;
