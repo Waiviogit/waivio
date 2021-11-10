@@ -459,3 +459,27 @@ export const sendPendingTransfer = ({
     type: SET_PENDING_TRANSFER,
     payload: ApiClient.sendPendingTransfer({ sponsor, userName, amount, transactionId, memo }),
   });
+
+export const GET_TOKEN_RATES = createAsyncActionType('@wallet/GET_TOKEN_RATES');
+
+export const getTokenRates = tokenName => dispatch =>
+  dispatch({
+    type: GET_TOKEN_RATES.ACTION,
+    payload: ApiClient.getTokensEngineRates(tokenName),
+    meta: tokenName,
+  });
+
+export const GET_WAIV_TRANSFER_LIST = createAsyncActionType('@wallet/GET_WAIV_TRANSFER_LIST');
+export const GET_MORE_WAIV_TRANSFER_LIST = createAsyncActionType(
+  '@wallet/GET_MORE_WAIV_TRANSFER_LIST',
+);
+
+export const getWAIVTransferList = (account, offset, type = GET_WAIV_TRANSFER_LIST) => dispatch =>
+  dispatch({
+    type: type.ACTION,
+    payload: ApiClient.getTokensTransferList('WAIV', account, offset),
+    meta: 50,
+  });
+
+export const getMoreWAIVTransferList = (account, offset) => dispatch =>
+  dispatch(getWAIVTransferList(account, offset, GET_MORE_WAIV_TRANSFER_LIST));

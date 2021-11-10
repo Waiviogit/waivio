@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isEmpty, isNull } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
@@ -16,18 +16,12 @@ import {
   getUserAccountHistory,
   clearTransactionsHistory,
 } from '../../store/walletStore/walletActions';
-import { getUserAccount } from '../../store/usersStore/usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 import { guestUserRegex } from '../helpers/regexHelpers';
-import Transfer from '../wallet/Transfer/Transfer';
 import Withdraw from '../wallet/Withdraw/WithDraw';
 import PowerUpOrDown from '../wallet/PowerUpOrDown';
 import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
-import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-} from '../../store/authStore/authSelectors';
-import { getUser } from '../../store/usersStore/usersSelectors';
+
 import {
   getIsErrorLoading,
   getIsloadingMoreTransactions,
@@ -51,12 +45,7 @@ import './UserWallet.less';
 @injectIntl
 @withRouter
 @connect(
-  (state, ownProps) => ({
-    user:
-      ownProps.isCurrentUser || ownProps.match.params.name === getAuthenticatedUserName(state)
-        ? getAuthenticatedUser(state)
-        : getUser(state, ownProps.match.params.name),
-    authenticatedUserName: getAuthenticatedUserName(state),
+  state => ({
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     usersAccountHistory: getUsersAccountHistory(state),
@@ -79,7 +68,6 @@ import './UserWallet.less';
   {
     getGlobalProperties,
     getMoreUserAccountHistory,
-    getUserAccount,
     getUserTransactionHistory,
     getMoreUserTransactionHistory,
     getUserAccountHistory,
@@ -94,17 +82,13 @@ class Wallet extends Component {
     location: PropTypes.shape().isRequired,
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
-    user: PropTypes.shape().isRequired,
     getGlobalProperties: PropTypes.func.isRequired,
     getMoreUserAccountHistory: PropTypes.func.isRequired,
-    getUserAccount: PropTypes.func.isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     usersAccountHistoryLoading: PropTypes.bool.isRequired,
     loadingGlobalProperties: PropTypes.bool.isRequired,
     loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
     demoHasMoreActions: PropTypes.bool.isRequired,
-    isCurrentUser: PropTypes.bool,
-    authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
     transactionsHistory: PropTypes.shape(),
     getUserTransactionHistory: PropTypes.func.isRequired,
@@ -125,8 +109,6 @@ class Wallet extends Component {
   };
 
   static defaultProps = {
-    isCurrentUser: false,
-    authenticatedUserName: '',
     usersTransactions: [],
     transactionsHistory: {},
     hasMore: false,
@@ -143,25 +125,12 @@ class Wallet extends Component {
   };
 
   componentDidMount() {
-    const {
-      totalVestingShares,
-      totalVestingFundSteem,
-      user,
-      isCurrentUser,
-      authenticatedUserName,
-      transactionsHistory,
-    } = this.props;
-
-    const isGuest = guestUserRegex.test(user && user.name);
-
-    const username = isCurrentUser ? authenticatedUserName : this.props.match.params.name;
+    const { totalVestingShares, totalVestingFundSteem, transactionsHistory } = this.props;
+    const username = this.props.match.params.name;
+    const isGuest = guestUserRegex.test(username);
 
     if (isEmpty(totalVestingFundSteem) || isEmpty(totalVestingShares)) {
       this.props.getGlobalProperties();
-    }
-
-    if (isEmpty(user)) {
-      this.props.getUserAccount(username);
     }
 
     if (!isGuest && isEmpty(transactionsHistory[username])) {
@@ -172,30 +141,25 @@ class Wallet extends Component {
   }
 
   componentWillUnmount() {
-    const { isCurrentUser, authenticatedUserName, history } = this.props;
-    const username = isCurrentUser ? authenticatedUserName : this.props.match.params.name;
-
-    if (history.location.pathname !== `/@${username}/transfers/table`) {
+    if (
+      this.props.history.location.pathname !== `/@${this.props.match.params.name}/transfers/table`
+    ) {
       this.props.clearTransactionsHistory();
     }
   }
 
-  tableButton = () => {
-    const { intl, user } = this.props;
-
-    return (
-      <span
-        className="UserWallet__view-btn"
-        role="presentation"
-        onClick={() => this.props.history.push(`/@${user.name}/transfers/table`)}
-      >
-        {intl.formatMessage({
-          id: 'table_view',
-          defaultMessage: 'Advanced reports',
-        })}
-      </span>
-    );
-  };
+  tableButton = () => (
+    <span
+      className="UserWallet__view-btn"
+      role="presentation"
+      onClick={() => this.props.history.push(`/@${this.props.match.params.name}/transfers/table`)}
+    >
+      {this.props.intl.formatMessage({
+        id: 'table_view',
+        defaultMessage: 'Advanced reports',
+      })}
+    </span>
+  );
 
   handleRenderWalletTransactions = (
     transactions,
@@ -205,7 +169,6 @@ class Wallet extends Component {
     isMobile,
   ) => {
     const {
-      user,
       usersAccountHistoryLoading,
       isTransactionsHistoryLoading,
       hasMore,
@@ -225,11 +188,11 @@ class Wallet extends Component {
     if (!isEmptyTransactions) {
       return (
         <UserWalletTransactions
-          user={user}
+          user={this.props.match.params.name}
           getMoreUserTransactionHistory={this.props.getMoreUserTransactionHistory}
           transactions={transactions}
           hasMore={hasMore}
-          currentUsername={user.name}
+          currentUsername={this.props.match.params.name}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}
           getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
@@ -258,7 +221,6 @@ class Wallet extends Component {
 
   render() {
     const {
-      user,
       totalVestingShares,
       totalVestingFundSteem,
       loadingGlobalProperties,
@@ -268,8 +230,8 @@ class Wallet extends Component {
       usersTransactions,
       usersAccountHistory,
     } = this.props;
-    const isGuest = guestUserRegex.test(user && user.name);
-    const userKey = user.name;
+    const userKey = this.props.match.params.name;
+    const isGuest = guestUserRegex.test(userKey);
     const demoTransactions = get(usersTransactions, userKey, []);
     const actions = get(usersAccountHistory, userKey, []);
     const transactions = get(transactionsHistory, userKey, []);
@@ -282,22 +244,17 @@ class Wallet extends Component {
       null,
     );
     const currentSBDRate = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, null);
-    const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
-
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
 
     return (
       <div>
         <UserWalletSummary
-          user={user}
-          loading={user.fetching}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}
           loadingGlobalProperties={loadingGlobalProperties}
           steemRate={currentSteemRate}
           sbdRate={currentSBDRate}
-          steemRateLoading={steemRateLoading}
-          isGuest={isGuest}
+          userName={this.props.match.params.name}
         />
         {!isEmptyTransactions && this.tableButton(isEmptyTransactions)}
         {isMobile && <WalletSidebar />}
@@ -308,7 +265,6 @@ class Wallet extends Component {
           actions,
           isMobile,
         )}
-        <Transfer history={this.props.history} />
         <PowerUpOrDown />
         {this.props.isWithdrawOpen && <Withdraw />}
       </div>
