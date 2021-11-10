@@ -1,0 +1,68 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.WalletSummaryInfo {
+  border: @base-border;
+  border-radius: 4px;
+  background-color: @white;
+  padding: 10px 15px;
+
+  &__item {
+    display: flex;
+    border-bottom: @base-border;
+    align-items: center;
+    flex-direction: row;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+  }
+
+  &__icon {
+    margin-right: 10px;
+    color: @blue-baliHai;
+
+    &.waiv {
+      height: 25px;
+      width: 25px;
+      margin-left: 0;
+      border-radius: 50%;
+    }
+  }
+
+  &__label {
+    align-items: center;
+    color: @black;
+    display: flex;
+    font-size: 18px;
+  }
+
+  &__value {
+    .red {
+      color: @red;
+    }
+
+    color: @black;
+    font-size: 18px;
+    margin-left: auto;
+    text-align: right;
+  }
+
+  &__description {
+    color: @blue-baliHai;
+    margin: 5px 0 0 35px;
+  }
+
+  &__itemWrap {
+    border-bottom: @base-border;
+    padding: 10px 0;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+  }
+
+  &__estimateItem {
+    padding: 10px 0 0;
+  }
+}

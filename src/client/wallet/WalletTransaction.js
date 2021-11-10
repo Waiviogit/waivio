@@ -2,22 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { parseInt, round } from 'lodash';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
-import ReceiveTransaction from './ReceiveTransaction';
-import TransferTransaction from './TransferTransaction';
-import SavingsTransaction from './SavingsTransaction';
-import PowerUpTransactionFrom from './PowerUpTransactionFrom';
-import ClaimReward from './ClaimReward';
-import WalletFillOrderTransferred from './WalletFillOrderTransferred';
-import WalletLimitOrder from './WalletLimitOrder';
-import WalletCancelOrder from './WalletCancelOrder';
-import PowerUpTransactionTo from './PowerUpTransactionTo';
-import SetWithdrawVestingRoute from './SetWithdrawVestingRoute';
+import ReceiveTransaction from './TransfersCards/ReceiveTransaction';
+import TransferTransaction from './TransfersCards/TransferTransaction';
+import SavingsTransaction from './TransfersCards/SavingsTransaction';
+import PowerUpTransactionFrom from './TransfersCards/PowerUpTransactionFrom';
+import ClaimReward from './TransfersCards/ClaimReward';
+import WalletFillOrderTransferred from './TransfersCards/WalletFillOrderTransferred';
+import WalletLimitOrder from './TransfersCards/WalletLimitOrder';
+import WalletCancelOrder from './TransfersCards/WalletCancelOrder';
+import PowerUpTransactionTo from './TransfersCards/PowerUpTransactionTo';
+import SetWithdrawVestingRoute from './TransfersCards/SetWithdrawVestingRoute';
+import ConvertHbdRequest from './TransfersCards/ConvertHbdRequest';
+import ConvertHbdCompleted from './TransfersCards/ConvertHbdCompleted';
+import ConvertHiveRequest from './TransfersCards/ConvertHiveRequest';
+import ConvertHiveCompleted from './TransfersCards/ConvertHiveCompleted';
 import {
   fillOrderExchanger,
   getTransactionCurrency,
   getTransactionDescription,
 } from './WalletHelper';
-import PowerDownTransaction from './PowerDownTransaction';
+import PowerDownTransaction from './TransfersCards/PowerDownTransaction';
 import formatter from '../helpers/steemitFormatter';
 
 import './UserWalletTransactions.less';
@@ -89,7 +93,6 @@ const WalletTransaction = ({
           transactionType={transactionType}
         />
       );
-
     case accountHistoryConstants.SET_WITHDRAW_VESTING_ROUTE: {
       return (
         <SetWithdrawVestingRoute
@@ -101,6 +104,43 @@ const WalletTransaction = ({
         />
       );
     }
+    case accountHistoryConstants.CONVERT_HBD_REQUEST: {
+      return (
+        <ConvertHbdRequest
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount}
+        />
+      );
+    }
+    case accountHistoryConstants.CONVERT_HBD_COMPLETED: {
+      return (
+        <ConvertHbdCompleted
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount_out}
+        />
+      );
+    }
+    case accountHistoryConstants.CONVERT_HIVE_REQUEST: {
+      return (
+        <ConvertHiveRequest
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount}
+        />
+      );
+    }
+    case accountHistoryConstants.CONVERT_HIVE_COMPLETED: {
+      return (
+        <ConvertHiveCompleted
+          isGuestPage={isGuestPage}
+          timestamp={transaction.timestamp}
+          amount={transaction.amount_out}
+        />
+      );
+    }
+
     case accountHistoryConstants.CLAIM_REWARD_BALANCE:
       return (
         <ClaimReward

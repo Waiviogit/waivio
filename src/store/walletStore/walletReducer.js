@@ -36,6 +36,8 @@ const initialState = {
   isOpenWalletTable: false,
   withdrawals: 0,
   deposits: 0,
+  tokensRates: {},
+  waivTransactionHistory: { list: [], hasMore: false },
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -336,6 +338,24 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         isErrorLoadingTableTransactions: true,
+      };
+
+    case walletActions.GET_TOKEN_RATES.SUCCESS:
+      return {
+        ...state,
+        tokensRates: {
+          ...state.tokensRates,
+          [action.meta]: action.payload,
+        },
+      };
+
+    case walletActions.GET_WAIV_TRANSFER_LIST.SUCCESS:
+      return {
+        ...state,
+        waivTransactionHistory: {
+          list: action.payload,
+          hasMore: action.payload.length === action.meta,
+        },
       };
     default:
       return state;

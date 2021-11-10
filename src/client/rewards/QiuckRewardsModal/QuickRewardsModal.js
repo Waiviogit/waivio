@@ -18,7 +18,10 @@ import {
   toggleModal,
 } from '../../../store/quickRewards/quickRewardsActions';
 import SubmitReviewPublish from '../../post/CheckReviewModal/SubmitReviewPublish';
-
+import StepsItems from '../../widgets/CircleSteps/StepsItems';
+import { declineProposition } from '../../../store/userStore/userActions';
+import { generatePermlink } from '../../helpers/wObjectHelper';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import './QuickRewardsModal.less';
 
 const QuickRewardsModal = props => {
@@ -27,30 +30,58 @@ const QuickRewardsModal = props => {
   const [topics, setTopic] = useState(['food', 'restaurant']);
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
-
+  const [reservationPermlink, setReservationPermlink] = useState('[]');
+  const stepsConfig = [
+    {
+      title: 'Find the dish',
+      num: 1,
+    },
+    {
+      title: 'Submit photos',
+      num: 2,
+    },
+    {
+      title: 'Confirm and earn',
+      num: 3,
+    },
+  ];
   const isPropositionObj = !isEmpty(get(props.selectedDish, 'propositions'));
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
+  });
+  const buttonWrapClassList = classNames('QuickRewardsModal__button-wrap', {
+    'QuickRewardsModal__button-wrap--firstScreen': pageNumber === 1,
   });
   const requirements = get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0);
 
   const closeModal = () => {
     props.toggleModal(false);
+
+    if (reservationPermlink) {
+      handelRejectReservation();
+      setReservationPermlink('');
+    }
+
     setPageNumber(1);
   };
 
-  const handleOnClickBack = () => {
+  const handleOnClickBack = e => {
+    e.currentTarget.blur();
     setPageNumber(1);
     setTopic(['food', 'restaurant']);
     setBody('');
     setImages([]);
   };
 
-  const handleOnClickPublishButton = () => {
+  const handleOnClickPublishButton = e => {
+    e.currentTarget.blur();
     setLoading(true);
     if (isPropositionObj) {
       if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
-      props.reserveProposition();
+      const permlink = `reserve-${generatePermlink()}`;
+
+      props.reserveProposition(permlink);
+      setReservationPermlink(permlink);
       setPageNumber(3);
     } else {
       handleCreatePost();
@@ -65,6 +96,19 @@ const QuickRewardsModal = props => {
     props.createQuickPost(body, topics, images).then(() => setLoading(false));
   };
 
+  const handelRejectReservation = () => {
+    const proposition = props.selectedDish.propositions[0];
+    const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
+
+    props.declineProposition({
+      companyAuthor: proposition.guideName,
+      companyPermlink: proposition.activation_permlink,
+      objPermlink: props.selectedDish.author_permlink,
+      unreservationPermlink,
+      reservationPermlink,
+    });
+  };
+
   const getCurrentScreen = (() => {
     const guideInfo = get(props.selectedDish, 'propositions[0].guide');
 
@@ -73,7 +117,11 @@ const QuickRewardsModal = props => {
         return {
           component: <ModalFirstScreen isShow={props.isOpenModal} />,
           buttonName: 'Next',
-          buttonHandler: () => setPageNumber(2),
+          buttonHandler: e => {
+            e.currentTarget.blur();
+
+            setPageNumber(2);
+          },
           disabled: isEmpty(props.selectedDish) || isEmpty(props.selectedRestaurant),
         };
       case 2:
@@ -85,11 +133,13 @@ const QuickRewardsModal = props => {
               setBody={setBody}
               images={images}
               setImages={setImages}
+              body={body}
             />
           ),
-          buttonName: 'Publish',
+          buttonName: 'Next',
           buttonHandler: handleOnClickPublishButton,
           disabled: requirements && requirements !== images.length,
+          previousHandler: handleOnClickBack,
         };
       case 3:
         return {
@@ -99,9 +149,14 @@ const QuickRewardsModal = props => {
               reviewData={{ ...guideInfo, guideName: guideInfo.name }}
             />
           ),
-          buttonName: 'Submit',
+          buttonName: 'Confirm',
           buttonHandler: handleCreatePost,
           disabled: false,
+          previousHandler: e => {
+            e.currentTarget.blur();
+            handelRejectReservation();
+            setPageNumber(2);
+          },
         };
 
       default:
@@ -117,19 +172,21 @@ const QuickRewardsModal = props => {
       onCancel={closeModal}
       className="QuickRewardsModal"
     >
+      <StepsItems config={stepsConfig} activeStep={pageNumber} />
       {getCurrentScreen.component}
-      <div className="QuickRewardsModal__button-wrap">
-        {pageNumber === 2 && (
-          <Button type="primary" className={nextButtonClassList} onClick={handleOnClickBack}>
-            Back
+      <div className={buttonWrapClassList}>
+        {pageNumber !== 1 && (
+          <Button className={nextButtonClassList} onClick={getCurrentScreen.previousHandler}>
+            Previous
           </Button>
         )}
-        {isPropositionObj && (
+        {isPropositionObj && pageNumber !== 1 && (
           <b>
             YOU EARN:{' '}
             <USDDisplay
               value={props.selectedDish.propositions[0].reward}
               currencyDisplay="symbol"
+              style={{ color: '#f97b38' }}
             />
           </b>
         )}
@@ -153,6 +210,7 @@ QuickRewardsModal.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   createQuickPost: PropTypes.func.isRequired,
   reserveProposition: PropTypes.func.isRequired,
+  declineProposition: PropTypes.func.isRequired,
   isOpenModal: PropTypes.bool.isRequired,
 };
 
@@ -161,10 +219,12 @@ export default connect(
     selectedRestaurant: getSelectedRestaurant(state),
     selectedDish: getSelectedDish(state),
     isOpenModal: getIsOpenModal(state),
+    authUser: getAuthenticatedUserName(state),
   }),
   {
     createQuickPost,
     reserveProposition,
     toggleModal,
+    declineProposition,
   },
 )(QuickRewardsModal);

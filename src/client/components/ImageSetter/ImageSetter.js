@@ -34,6 +34,7 @@ const ImageSetter = ({
   selection,
   isOkayBtn,
   isModal,
+  imagesList,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -159,6 +160,7 @@ const ImageSetter = ({
 
   useEffect(() => {
     handleOnUploadImageByLink(defaultImage);
+    setCurrentImages(imagesList);
   }, []);
 
   const handleChangeImage = async e => {
@@ -216,26 +218,29 @@ const ImageSetter = ({
     const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
 
     setCurrentImages(filteredImages);
-    const contentState = getEditorState().getCurrentContent();
-    const allBlocks = contentState.getBlockMap();
 
-    allBlocks.forEach((block, index) => {
-      // eslint-disable-next-line no-underscore-dangle
-      const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
+    if (getEditorState) {
+      const contentState = getEditorState().getCurrentContent();
+      const allBlocks = contentState.getBlockMap();
 
-      if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
-        const blockBefore = contentState.getBlockBefore(index).getKey();
-        const removeImage = contentState.getBlockMap().delete(index);
-        const contentAfterRemove = removeImage.delete(blockBefore);
-        const filtered = contentAfterRemove.filter(element => !isNil(element));
+      allBlocks.forEach((block, index) => {
+        // eslint-disable-next-line no-underscore-dangle
+        const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
 
-        const newContent = contentState.merge({
-          blockMap: filtered,
-        });
+        if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
+          const blockBefore = contentState.getBlockBefore(index).getKey();
+          const removeImage = contentState.getBlockMap().delete(index);
+          const contentAfterRemove = removeImage.delete(blockBefore);
+          const filtered = contentAfterRemove.filter(element => !isNil(element));
 
-        setEditorState(EditorState.push(getEditorState(), newContent, 'split-block'));
-      }
-    });
+          const newContent = contentState.merge({
+            blockMap: filtered,
+          });
+
+          setEditorState(EditorState.push(getEditorState(), newContent, 'split-block'));
+        }
+      });
+    }
 
     if (!size(filteredImages)) onImageLoaded([]);
   };
@@ -365,6 +370,7 @@ ImageSetter.propTypes = {
   selection: PropTypes.func,
   Block: PropTypes.shape(),
   isOkayBtn: PropTypes.bool,
+  imagesList: PropTypes.arrayOf(),
   isModal: PropTypes.bool,
 };
 
@@ -374,12 +380,13 @@ ImageSetter.defaultProps = {
   isRequired: false,
   isTitle: true,
   setEditorState: () => {},
-  getEditorState: () => {},
+  getEditorState: null,
   addNewBlockAt: () => {},
   onLoadingImage: () => {},
   selection: undefined,
   Block: {},
   isOkayBtn: false,
+  imagesList: [],
   isModal: false,
 };
 

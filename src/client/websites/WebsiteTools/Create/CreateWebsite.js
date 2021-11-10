@@ -115,6 +115,7 @@ export const CreateWebsite = ({
           <div className="CreateWebsite__domain-wrap">
             {getFieldDecorator('domain', {
               rules: validateRules.domain,
+              getValueFromEvent: e => e.target.value.toLowerCase(),
             })(<Input disabled={!template} id="domain" onInput={domainStatus} />)}
             {template && <span className="CreateWebsite__domain-name">.{template}</span>}
           </div>

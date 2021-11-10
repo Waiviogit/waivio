@@ -141,5 +141,7 @@
   "wobjects": "/wobjects",
   "experts": "/experts",
   "lastPost": "/last-post",
+  "requiredObject": "/required-object",
+  "engineRates": "/engine-rates",
   "getMatchBots": "/match-bots"
 }

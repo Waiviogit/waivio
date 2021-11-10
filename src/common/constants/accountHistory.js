@@ -35,6 +35,10 @@ export const LIMIT_ORDER = 'limitOrder';
 export const FILL_ORDER = 'fillOrder';
 export const CANCEL_ORDER = 'cancelOrder';
 export const PROPOSAL_PAY = 'proposal_pay';
+export const CONVERT_HBD_REQUEST = 'convert';
+export const CONVERT_HBD_COMPLETED = 'fill_convert_request';
+export const CONVERT_HIVE_REQUEST = 'collateralized_convert';
+export const CONVERT_HIVE_COMPLETED = 'fill_collateralized_convert_request';
 
 // Filter Types - General
 export const DOWNVOTED = 'downvoted';
@@ -70,6 +74,10 @@ export const PARSED_PROPERTIES = [
   ACCOUNT_WITNESS_VOTE,
   FILL_VESTING_WITHDRAW,
   SET_WITHDRAW_VESTING_ROUTE,
+  CONVERT_HBD_REQUEST,
+  CONVERT_HBD_COMPLETED,
+  CONVERT_HIVE_REQUEST,
+  CONVERT_HIVE_COMPLETED,
 ];
 
 export const PARSED_CUSTOM_JSON_IDS = [ID_FOLLOW];

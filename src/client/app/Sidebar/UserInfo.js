@@ -62,8 +62,9 @@ class UserInfo extends React.Component {
     if (
       prevProps.match.params.name !== this.props.match.params.name ||
       !isEqual(prevProps.user, this.props.user)
-    )
+    ) {
       this.getUserInfo();
+    }
   }
 
   getUserInfo = () => {

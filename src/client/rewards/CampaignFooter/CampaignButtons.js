@@ -747,7 +747,7 @@ export default class CampaignButtons extends React.Component {
         {(isAssigned || status === ASSIGNED) &&
           every(matchParams, item => item !== this.matchParams) && (
             <React.Fragment>
-              <Button type="primary" onClick={this.openModalDetails}>
+              <Button className="Buttons__border" type="primary" onClick={this.openModalDetails}>
                 {intl.formatMessage({
                   id: 'campaign_buttons_write_review',
                   defaultMessage: `Write review`,

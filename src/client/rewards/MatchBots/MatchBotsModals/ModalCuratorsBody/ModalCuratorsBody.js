@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { debounce } from 'lodash';
+import { debounce, get } from 'lodash';
 
 import ModalBodyDate from '../common/ModalBodyDate';
 import ModalBodyNotes from '../common/ModalBodyNotes';
@@ -10,11 +10,21 @@ import ModalBodyVoteRatio from '../common/ModalBodyVoteRatio';
 import { MATCH_BOTS_NAMES } from '../../../../helpers/matchBotsHelpers';
 import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
 import ModalBodyCheckBox from '../common/ModalBodyCheckBox/ModalBodyCheckBox';
+import {
+  cryptoCurrencyListForSlider,
+  currencyListForSliderValues,
+} from '../../../../../common/constants/cryptos';
 
-const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) => {
+const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue, bot }) => {
   const handleChangeSliderMana = manaValue => setInputsValue(prev => ({ ...prev, manaValue }));
   const handleChangeDate = expiredAt => setInputsValue(prev => ({ ...prev, expiredAt }));
   const handleChangeNote = notesValue => setInputsValue(prev => ({ ...prev, notesValue }));
+  const handleChangeCurrency = value =>
+    setInputsValue(prev => ({
+      ...prev,
+      minVotingPowerCurrencies: currencyListForSliderValues[value],
+    }));
+
   const handleChangeVote = debounce(
     voteRatio => setInputsValue(prev => ({ ...prev, voteRatio, isSubmitted: false })),
     200,
@@ -59,6 +69,9 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue }) =>
           defaultMessage:
             'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting.',
         })}
+        selectOptions={cryptoCurrencyListForSlider}
+        handleChangeCurrency={handleChangeCurrency}
+        currency={get(bot, 'minVotingPowerCurrencies')}
       />
       <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredAt} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />
@@ -71,6 +84,7 @@ ModalCuratorsBody.propTypes = {
   isAddModal: PropTypes.bool.isRequired,
   setInputsValue: PropTypes.func.isRequired,
   inputsValue: PropTypes.shape().isRequired,
+  bot: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(ModalCuratorsBody);

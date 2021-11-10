@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { debounce } from 'lodash';
+import { debounce, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
@@ -7,14 +7,24 @@ import ModalBodyDate from '../common/ModalBodyDate';
 import ModalBodyNotes from '../common/ModalBodyNotes';
 import ModalBodySlider from '../common/ModalBodySlider';
 import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
+import { MATCH_BOTS_NAMES } from '../../../../helpers/matchBotsHelpers';
+import {
+  cryptoCurrencyListForSlider,
+  currencyListForSliderValues,
+} from '../../../../../common/constants/cryptos';
 
 import './ModalAuthorsBody.less';
-import { MATCH_BOTS_NAMES } from '../../../../helpers/matchBotsHelpers';
 
-const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => {
+const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal, bot }) => {
   const handleChangeSliderVote = value => setInputsValue(prev => ({ ...prev, voteValue: value }));
   const handleChangeSliderMana = value => setInputsValue(prev => ({ ...prev, manaValue: value }));
   const handleChangeDate = expiredAt => setInputsValue(prev => ({ ...prev, expiredAt }));
+  const handleChangeCurrency = value =>
+    setInputsValue(prev => ({
+      ...prev,
+      minVotingPowerCurrencies: currencyListForSliderValues[value],
+    }));
+
   const handleChangeNote = debounce(
     value => setInputsValue(prev => ({ ...prev, notesValue: value })),
     250,
@@ -55,6 +65,9 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal }) => 
           defaultMessage:
             'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting (typically, 5 min after the post is published).',
         })}
+        selectOptions={cryptoCurrencyListForSlider}
+        handleChangeCurrency={handleChangeCurrency}
+        currency={get(bot, 'minVotingPowerCurrencies')}
       />
       <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredAt} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />
@@ -67,6 +80,7 @@ ModalAuthorsBody.propTypes = {
   inputsValue: PropTypes.shape().isRequired,
   setInputsValue: PropTypes.func.isRequired,
   isAddModal: PropTypes.bool.isRequired,
+  bot: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(ModalAuthorsBody);

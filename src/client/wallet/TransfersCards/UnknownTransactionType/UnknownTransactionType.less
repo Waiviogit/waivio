@@ -1,0 +1,32 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.UnknownTransactionType {
+  border-bottom: @base-border;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+
+  &__info {
+    border-radius: 4px;
+    border: @base-border;
+    padding: 5px;
+  }
+
+  &__icon-container {
+    align-items: center;
+    color: @blue-heather;
+    background-color: @blue-solitude;
+    border-radius: 4px;
+    display: flex;
+    height: 40px;
+    justify-content: center;
+    margin-top: 4px;
+    width: 44px;
+  }
+
+  &__info-container {
+    width: 90%;
+    margin-left: 10px;
+  }
+}

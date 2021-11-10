@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
 import MarkerWithReward from '../../../websites/MainMap/MarkerWithReward/MarkerWithReward';
 import { getObjectReward } from '../../../helpers/wObjectHelper';
+import { initialColors } from '../../../websites/constants/colors';
+import { getWebsiteColors } from '../../../../store/appStore/appSelectors';
+import SimpleMarker from './SimpleMarker';
+import UserLocation from './UserLocation';
 
 const imageOffset = {
   left: 15,
@@ -23,9 +29,17 @@ class CustomMarker extends React.Component {
     isMarked: PropTypes.bool,
     currLocation: PropTypes.bool,
     hoveredWobj: PropTypes.bool,
+    colors: PropTypes.shape({
+      mapMarkerBody: PropTypes.string,
+      mapMarkerText: PropTypes.string,
+    }),
   };
 
   static defaultProps = {
+    colors: {
+      mapMarkerBody: '',
+      mapMarkerText: '',
+    },
     onContextMenu: () => {},
     left: 0,
     top: 0,
@@ -85,7 +99,6 @@ class CustomMarker extends React.Component {
     const { left, top, onClick, isMarked, currLocation, hoveredWobj } = this.props;
     let width = 29;
     let height = 30;
-    let currentImg = '/images/icons/Marker.svg';
     let currTop = imageOffset.top;
     let currLeft = imageOffset.left;
     const style = {
@@ -95,9 +108,6 @@ class CustomMarker extends React.Component {
     };
 
     if (currLocation) {
-      currentImg = '/images/icons/location.svg';
-      width = 20;
-      height = 20;
       currTop = 20;
       currLeft = 10;
       style.zIndex = 5;
@@ -118,6 +128,34 @@ class CustomMarker extends React.Component {
 
     style.transform = `translate(${left - currLeft}px, ${top - currTop}px)`;
 
+    const currentItem = () => {
+      const markerColor = this.props.colors.mapMarkerBody || initialColors.marker;
+      const markerTextColor = this.props.colors.mapMarkerText || initialColors.text;
+
+      if (currLocation) {
+        return <UserLocation markerColor={markerColor} />;
+      }
+
+      if (isMarked) {
+        return (
+          <MarkerWithReward
+            colors={this.props.colors}
+            price={getObjectReward(this.props.payload)}
+            hovered={hoveredWobj}
+          />
+        );
+      }
+
+      return (
+        <SimpleMarker
+          width={width}
+          height={height}
+          markerColor={markerColor}
+          markerText={markerTextColor}
+        />
+      );
+    };
+
     return (
       <div
         style={style}
@@ -129,14 +167,12 @@ class CustomMarker extends React.Component {
         onMouseOut={this.handleMouseOut}
         role="presentation"
       >
-        {isMarked ? (
-          <MarkerWithReward price={getObjectReward(this.props.payload)} hovered={hoveredWobj} />
-        ) : (
-          <img src={currentImg} width={width} height={height} alt="" />
-        )}
+        {currentItem()}
       </div>
     );
   }
 }
 
-export default CustomMarker;
+export default connect(state => ({
+  colors: getWebsiteColors(state),
+}))(CustomMarker);

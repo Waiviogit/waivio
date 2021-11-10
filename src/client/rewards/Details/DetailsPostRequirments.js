@@ -24,33 +24,45 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row Details__criteria-row--mobile">
           {/* eslint-disable-next-line no-plusplus */}
-          {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
-          <Link className="ml1" to={`/object/${proposedWobj.id || proposedWobj.author_permlink}`}>
-            {proposedWobjName || proposedWobj.name}
-          </Link>
-          ;
+
+          <span className="Details__container">
+            <span className="nowrap">
+              {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
+            </span>
+            <Link className="ml1" to={`/object/${proposedWobj.id || proposedWobj.author_permlink}`}>
+              {proposedWobjName || proposedWobj.name}
+            </Link>
+            ;
+          </span>
         </div>
+
         {receiptPhoto && (
           /* eslint-disable-next-line no-plusplus */
           <div className="Details__criteria-row">{`${indexItem++}. ${
             messageData.photoReceipt
           }`}</div>
         )}
-        <div className="Details__criteria-row nowrap">
+
+        <div className="Details__criteria-row">
           {/* eslint-disable-next-line no-plusplus */}
-          {`${indexItem++}. ${messageData.linkTo}`}
-          <Link className="ml1" to={`/object/${proposedWobj.author_permlink}`}>
-            {proposedWobjName || proposedWobj.name}
-          </Link>
-          ;
+          <span className="Details__container">
+            <span className="nowrap">{`${indexItem++}. ${messageData.linkTo}`} </span>
+            <Link className="ml1 Details__container" to={`/object/${proposedWobj.author_permlink}`}>
+              {proposedWobjName || proposedWobj.name}
+            </Link>
+            ;
+          </span>
         </div>
-        <div className="Details__criteria-row nowrap">
+
+        <div className="Details__criteria-row">
           {/* eslint-disable-next-line no-plusplus */}
-          {`${indexItem++}. ${messageData.linkTo}`}
-          <Link className="ml1" to={`/object/${requiredObject}`}>
-            {requiredObjectName}
-          </Link>
-          ;
+          <span>
+            <span className="nowrap"> {`${indexItem++}. ${messageData.linkTo}`}</span>
+            <Link className="ml1 Details__container" to={`/object/${requiredObject}`}>
+              {requiredObjectName}
+            </Link>
+            ;
+          </span>
         </div>
         <div className="Details__criteria-row">
           {description &&

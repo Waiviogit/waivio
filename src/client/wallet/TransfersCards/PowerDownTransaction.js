@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedRelative } from 'react-intl';
-import BTooltip from '../components/BTooltip';
-import { epochToUTC } from '../helpers/formatter';
+import CardsTimeStamp from './CardsTimeStamp';
 
 const PowerDownTransaction = ({ timestamp, amount, description, color }) => (
   <div className="UserWalletTransactions__transaction">
@@ -18,19 +16,7 @@ const PowerDownTransaction = ({ timestamp, amount, description, color }) => (
           {amount}
         </span>
       </div>
-      <span className="UserWalletTransactions__timestamp">
-        <BTooltip
-          title={
-            <span>
-              <FormattedRelative value={epochToUTC(timestamp)} />
-            </span>
-          }
-        >
-          <span>
-            <FormattedRelative value={epochToUTC(timestamp)} />
-          </span>
-        </BTooltip>
-      </span>
+      <CardsTimeStamp timestamp={timestamp} />
     </div>
   </div>
 );

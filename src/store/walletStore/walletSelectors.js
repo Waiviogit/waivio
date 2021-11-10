@@ -1,4 +1,4 @@
-import { last } from 'lodash';
+import { last, get } from 'lodash';
 import { createSelector } from 'reselect';
 
 // selector
@@ -150,3 +150,13 @@ export const getCurrentFilteredActions = createSelector(
 export const getCurrentDeposits = createSelector([walletState], state => state.deposits);
 
 export const getCurrentWithdrawals = createSelector([walletState], state => state.withdrawals);
+export const getWaivTransactionHistoryFromState = createSelector(
+  [walletState],
+  state => state.waivTransactionHistory,
+);
+
+export const getTokenRatesInUSD = (state, token) => {
+  const wallet = walletState(state);
+
+  return get(wallet.tokensRates, `${token}.current.rates.USD`);
+};

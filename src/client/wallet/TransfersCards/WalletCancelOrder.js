@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedRelative } from 'react-intl';
-import BTooltip from '../components/BTooltip';
-import { epochToUTC } from '../helpers/formatter';
-import { getTransactionDescription } from './WalletHelper';
+import { getTransactionDescription } from '../WalletHelper';
+import CardsTimeStamp from './CardsTimeStamp';
 
 const WalletCancelOrder = ({ timestamp, openPays, currentPays, transactionType }) => {
   const options = { openPays };
@@ -21,19 +19,7 @@ const WalletCancelOrder = ({ timestamp, openPays, currentPays, transactionType }
             <div className="UserWalletTransactions__cancel-order-current-pays">{currentPays}</div>
           )}
         </div>
-        <span className="UserWalletTransactions__timestamp">
-          <BTooltip
-            title={
-              <span>
-                <FormattedRelative value={epochToUTC(timestamp)} />
-              </span>
-            }
-          >
-            <span>
-              <FormattedRelative value={epochToUTC(timestamp)} />
-            </span>
-          </BTooltip>
-        </span>
+        <CardsTimeStamp timestamp={timestamp} />
       </div>
     </div>
   );
