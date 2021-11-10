@@ -1,10 +1,7 @@
 import React from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
-
-import { FormattedDate, FormattedRelative } from 'react-intl';
-import BTooltip from '../../../components/BTooltip';
-import { epochToUTC } from '../../../helpers/formatter';
+import CardsTimeStamp from '../CardsTimeStamp';
 
 import './UnknownTransactionType.less';
 
@@ -28,19 +25,7 @@ const UnknownTransactionType = ({ transaction }) => {
             );
           })}
         </div>
-        <span className="UserWalletTransactions__timestamp">
-          <BTooltip
-            title={
-              <span>
-                <FormattedDate value={epochToUTC(transaction.timestamp)} />
-              </span>
-            }
-          >
-            <span>
-              <FormattedRelative value={epochToUTC(transaction.timestamp)} />
-            </span>
-          </BTooltip>
-        </span>
+        <CardsTimeStamp timestamp={transaction.timestamp} />
       </div>
     </div>
   );

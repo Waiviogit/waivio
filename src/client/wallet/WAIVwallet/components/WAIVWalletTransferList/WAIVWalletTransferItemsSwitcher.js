@@ -2,14 +2,15 @@ import React from 'react';
 import { round } from 'lodash';
 import PropTypes from 'prop-types';
 
-import PowerUpTransactionFrom from '../../../PowerUpTransactionFrom';
+import PowerUpTransactionFrom from '../../../TransfersCards/PowerUpTransactionFrom';
 import { getTransactionCurrency, getTransactionDescription } from '../../../WalletHelper';
 import * as accountHistoryConstants from '../../../../../common/constants/accountHistory';
-import ReceiveTransaction from '../../../ReceiveTransaction';
-import TransferTransaction from '../../../TransferTransaction';
+import ReceiveTransaction from '../../../TransfersCards/ReceiveTransaction';
+import TransferTransaction from '../../../TransfersCards/TransferTransaction';
 import { isMobile } from '../../../../helpers/apiHelpers';
-import PowerDownTransaction from '../../../PowerDownTransaction';
+import PowerDownTransaction from '../../../TransfersCards/PowerDownTransaction';
 import UnknownTransactionType from '../../../TransfersCards/UnknownTransactionType/UnknownTransactionType';
+import TokenBoughtCard from '../../../TransfersCards/TokenBoughtCard.js/TokenBoughtCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const isMobileDevice = isMobile();
@@ -25,7 +26,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           transactionType={accountHistoryConstants.TRANSFER_TO_VESTING}
         />
       );
-    case 'tokens_unstakeStart':
+    case 'tokens_unstakeStart': {
       const desc = getTransactionDescription(accountHistoryConstants.POWER_DOWN_INITIATED_OR_STOP);
 
       return (
@@ -33,6 +34,16 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           amount={`${round(transaction.quantity, 3)} WP`}
           timestamp={transaction.timestamp}
           description={desc.powerDownStarted}
+        />
+      );
+    }
+    case 'market_buy':
+      return (
+        <TokenBoughtCard
+          quantity={transaction.quantityTokens}
+          timestamp={transaction.timestamp}
+          account={transaction.account}
+          symbol={transaction.symbol}
         />
       );
     case 'tokens_transfer':
@@ -79,6 +90,8 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     details: PropTypes.string,
     account: PropTypes.string,
     operation: PropTypes.string,
+    quantityTokens: PropTypes.string,
+    symbol: PropTypes.string,
   }).isRequired,
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import PowerUpTransactionFrom from '../PowerUpTransactionFrom';
+import PowerUpTransactionFrom from '../TransfersCards/PowerUpTransactionFrom';
 
 describe('(Component) PowerUpTransactionFrom', () => {
   describe('with default prop values', () => {

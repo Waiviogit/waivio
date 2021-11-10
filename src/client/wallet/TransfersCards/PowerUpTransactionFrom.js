@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedRelative } from 'react-intl';
-import BTooltip from '../components/BTooltip';
-import { epochToUTC } from '../helpers/formatter';
-import { getTransactionDescription } from './WalletHelper';
+import { getTransactionDescription } from '../WalletHelper';
+import CardsTimeStamp from './CardsTimeStamp';
 
 const PowerUpTransactionFrom = ({ timestamp, amount, from, to, transactionType }) => {
   const options = { from };
@@ -31,19 +29,7 @@ const PowerUpTransactionFrom = ({ timestamp, amount, from, to, transactionType }
             </React.Fragment>
           )}
         </div>
-        <span className="UserWalletTransactions__timestamp">
-          <BTooltip
-            title={
-              <span>
-                <FormattedRelative value={epochToUTC(timestamp)} />
-              </span>
-            }
-          >
-            <span>
-              <FormattedRelative value={epochToUTC(timestamp)} />
-            </span>
-          </BTooltip>
-        </span>
+        <CardsTimeStamp timestamp={timestamp} />
       </div>
     </div>
   );

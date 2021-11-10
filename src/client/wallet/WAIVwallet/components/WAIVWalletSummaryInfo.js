@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { round } from 'lodash';
 import PropTypes from 'prop-types';
+import { FormattedNumber } from 'react-intl';
 
 import WalletSummaryInfo from '../../WalletSummaryInfo/WalletSummaryInfo';
 import { getTokenRatesInUSD } from '../../../../store/walletStore/walletSelectors';
@@ -21,7 +22,7 @@ const WAIVWalletSummaryInfo = props => {
     if (!num) return <Loading />;
     const precision = num > 0.01 || num === 0 ? 2 : 3;
 
-    return round(num, precision);
+    return <FormattedNumber value={round(num, precision)} />;
   };
 
   return (

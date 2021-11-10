@@ -2,26 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { parseInt, round } from 'lodash';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
-import ReceiveTransaction from './ReceiveTransaction';
-import TransferTransaction from './TransferTransaction';
-import SavingsTransaction from './SavingsTransaction';
-import PowerUpTransactionFrom from './PowerUpTransactionFrom';
-import ClaimReward from './ClaimReward';
-import WalletFillOrderTransferred from './WalletFillOrderTransferred';
-import WalletLimitOrder from './WalletLimitOrder';
-import WalletCancelOrder from './WalletCancelOrder';
-import PowerUpTransactionTo from './PowerUpTransactionTo';
-import SetWithdrawVestingRoute from './SetWithdrawVestingRoute';
-import ConvertHbdRequest from './ConvertHbdRequest';
-import ConvertHbdCompleted from './ConvertHbdCompleted';
-import ConvertHiveRequest from './ConvertHiveRequest';
-import ConvertHiveCompleted from './ConvertHiveCompleted';
+import ReceiveTransaction from './TransfersCards/ReceiveTransaction';
+import TransferTransaction from './TransfersCards/TransferTransaction';
+import SavingsTransaction from './TransfersCards/SavingsTransaction';
+import PowerUpTransactionFrom from './TransfersCards/PowerUpTransactionFrom';
+import ClaimReward from './TransfersCards/ClaimReward';
+import WalletFillOrderTransferred from './TransfersCards/WalletFillOrderTransferred';
+import WalletLimitOrder from './TransfersCards/WalletLimitOrder';
+import WalletCancelOrder from './TransfersCards/WalletCancelOrder';
+import PowerUpTransactionTo from './TransfersCards/PowerUpTransactionTo';
+import SetWithdrawVestingRoute from './TransfersCards/SetWithdrawVestingRoute';
+import ConvertHbdRequest from './TransfersCards/ConvertHbdRequest';
+import ConvertHbdCompleted from './TransfersCards/ConvertHbdCompleted';
+import ConvertHiveRequest from './TransfersCards/ConvertHiveRequest';
+import ConvertHiveCompleted from './TransfersCards/ConvertHiveCompleted';
 import {
   fillOrderExchanger,
   getTransactionCurrency,
   getTransactionDescription,
 } from './WalletHelper';
-import PowerDownTransaction from './PowerDownTransaction';
+import PowerDownTransaction from './TransfersCards/PowerDownTransaction';
 import formatter from '../helpers/steemitFormatter';
 
 import './UserWalletTransactions.less';

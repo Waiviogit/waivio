@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
-import ReceiveTransaction from '../ReceiveTransaction';
+import ReceiveTransaction from '../TransfersCards/ReceiveTransaction';
 
 describe('(Component) ReceiveTransaction', () => {
   describe('with default prop values', () => {

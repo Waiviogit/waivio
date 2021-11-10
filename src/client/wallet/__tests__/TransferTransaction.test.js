@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import TransferTransaction from '../TransferTransaction';
+import TransferTransaction from '../TransfersCards/TransferTransaction';
 
 describe('(Component) TransferTransaction', () => {
   describe('with default prop values', () => {

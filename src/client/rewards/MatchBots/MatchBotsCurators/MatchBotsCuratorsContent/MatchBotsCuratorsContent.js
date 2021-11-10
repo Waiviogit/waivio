@@ -31,7 +31,7 @@ const MatchBotsCuratorsContent = ({ isEngLocale, intl }) => (
       {intl.formatMessage({
         id: 'curators_match_bots_important',
         defaultMessage:
-          'Important: If the estimated combine value of the vote is less than 0.01 HBD, the Curator match bot will skip this vote.',
+          'Important: If the estimated combined value of the vote is less than 0.01 HBD, the Curator match bot will skip this vote.',
       })}
     </p>
     <p>
