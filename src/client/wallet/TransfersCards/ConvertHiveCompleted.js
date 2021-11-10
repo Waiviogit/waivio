@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
-import BTooltip from '../components/BTooltip';
 
-import { epochToUTC } from '../helpers/formatter';
+import CardsTimeStamp from './CardsTimeStamp';
 
 const ConvertHiveCompleted = ({ amount, timestamp, isGuestPage }) => (
   <div className="UserWalletTransactions__transaction">
@@ -17,33 +15,7 @@ const ConvertHiveCompleted = ({ amount, timestamp, isGuestPage }) => (
 
     <div className="UserWalletTransactions__content">
       {`HIVE>HBD: adjusted collateral release`}
-      <span className="UserWalletTransactions__timestamp">
-        {isGuestPage ? (
-          <BTooltip
-            title={
-              <span>
-                <FormattedDate value={`${timestamp}Z`} /> <FormattedTime value={`${timestamp}Z`} />
-              </span>
-            }
-          >
-            <span>
-              <FormattedRelative value={`${timestamp}Z`} />
-            </span>
-          </BTooltip>
-        ) : (
-          <BTooltip
-            title={
-              <span>
-                <FormattedRelative value={epochToUTC(timestamp)} />
-              </span>
-            }
-          >
-            <span>
-              <FormattedRelative value={epochToUTC(timestamp)} />
-            </span>
-          </BTooltip>
-        )}
-      </span>
+      <CardsTimeStamp timestamp={isGuestPage ? `${timestamp}Z` : timestamp} />
     </div>
     <div className={'UserWalletTransactions__content-recipient'}>
       <div className="UserWalletTransactions__completed"> {`+ ${amount}`}</div>

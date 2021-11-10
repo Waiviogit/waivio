@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
-import { FormattedRelative } from 'react-intl';
-import BTooltip from '../components/BTooltip';
-import { epochToUTC } from '../helpers/formatter';
-import { getFormattedClaimRewardPayout, getTransactionDescription } from './WalletHelper';
+import { getFormattedClaimRewardPayout, getTransactionDescription } from '../WalletHelper';
+import CardsTimeStamp from './CardsTimeStamp';
 
 const ClaimReward = ({
   timestamp,
@@ -37,19 +35,7 @@ const ClaimReward = ({
             {get(formattedClaimReward, 'payouts')}
           </div>
         </div>
-        <span className="UserWalletTransactions__timestamp">
-          <BTooltip
-            title={
-              <span>
-                <FormattedRelative value={epochToUTC(timestamp)} />
-              </span>
-            }
-          >
-            <span>
-              <FormattedRelative value={epochToUTC(timestamp)} />
-            </span>
-          </BTooltip>
-        </span>
+        <CardsTimeStamp timestamp={timestamp} />
       </div>
     </div>
   );

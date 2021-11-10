@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
-import BTooltip from '../components/BTooltip';
-import Avatar from '../components/Avatar';
-import { epochToUTC } from '../helpers/formatter';
-import { getTransactionDescription } from './WalletHelper';
+import { FormattedMessage } from 'react-intl';
+import Avatar from '../../components/Avatar';
+import { getTransactionDescription } from '../WalletHelper';
+import CardsTimeStamp from './CardsTimeStamp';
 
 const TransferTransaction = ({
   to,
@@ -32,34 +31,7 @@ const TransferTransaction = ({
             {amount}
           </div>
         </div>
-        <span className="UserWalletTransactions__timestamp">
-          {isGuestPage ? (
-            <BTooltip
-              title={
-                <span>
-                  <FormattedDate value={`${timestamp}Z`} />{' '}
-                  <FormattedTime value={`${timestamp}Z`} />
-                </span>
-              }
-            >
-              <span>
-                <FormattedRelative value={`${timestamp}Z`} />
-              </span>
-            </BTooltip>
-          ) : (
-            <BTooltip
-              title={
-                <span>
-                  <FormattedRelative value={epochToUTC(timestamp)} />
-                </span>
-              }
-            >
-              <span>
-                <FormattedRelative value={epochToUTC(timestamp)} />
-              </span>
-            </BTooltip>
-          )}
-        </span>
+        <CardsTimeStamp timestamp={isGuestPage ? `${timestamp}Z` : timestamp} />
         <span className="UserWalletTransactions__memo">{memo}</span>
         {withdraw && (
           <a onClick={() => getDetails(withdraw)} role="presentation">

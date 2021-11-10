@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedRelative } from 'react-intl';
-import BTooltip from '../components/BTooltip';
-import Avatar from '../components/Avatar';
-import { epochToUTC } from '../helpers/formatter';
-import { getTransactionDescription, selectCurrectFillOrderValue } from './WalletHelper';
+import Avatar from '../../components/Avatar';
+import { getTransactionDescription, selectCurrectFillOrderValue } from '../WalletHelper';
+import CardsTimeStamp from './CardsTimeStamp';
 
 const WalletFillOrderTransferred = ({
   transactionDetails,
@@ -44,19 +42,7 @@ const WalletFillOrderTransferred = ({
               </span>
             </span>
           </div>
-          <span className="UserWalletTransactions__timestamp">
-            <BTooltip
-              title={
-                <span>
-                  <FormattedRelative value={epochToUTC(timestamp)} />
-                </span>
-              }
-            >
-              <span>
-                <FormattedRelative value={epochToUTC(timestamp)} />
-              </span>
-            </BTooltip>
-          </span>
+          <CardsTimeStamp timestamp={timestamp} />
         </div>
       </div>
     </React.Fragment>

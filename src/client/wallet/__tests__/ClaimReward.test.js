@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import ClaimReward from '../ClaimReward';
+import ClaimReward from '../TransfersCards/ClaimReward';
 
 describe('(Component) ClaimReward', () => {
   describe('with default prop values', () => {
