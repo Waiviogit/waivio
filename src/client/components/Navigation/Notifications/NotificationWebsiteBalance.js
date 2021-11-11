@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { FormattedRelative } from 'react-intl';
+import { FormattedRelative, FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import Avatar from '../../Avatar';
 import { epochToUTC } from '../../../helpers/formatter';
@@ -17,7 +17,10 @@ const NotificationWebsiteBalance = ({ notification, read, onClick, currentAuthUs
   >
     <Avatar username={currentAuthUsername} size={40} />
     <div className="Notification__text">
-      <div className="Notification__text__message">{notification.message}</div>
+      <FormattedMessage
+        id="website_account_balance"
+        defaultMessage="website account balance may run out in a day"
+      />
       <div className="Notification__text__date">
         <FormattedRelative value={epochToUTC(notification.timestamp)} />
       </div>
