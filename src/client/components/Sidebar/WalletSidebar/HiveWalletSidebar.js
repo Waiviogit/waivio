@@ -8,15 +8,15 @@ import {
   openTransfer,
   openPowerUpOrDown,
   openWithdraw,
-} from '../../../store/walletStore/walletActions';
-import { HIVE, HBD } from '../../../common/constants/cryptos';
-import Action from '../Button/Action';
-import ClaimRewardsBlock from '../../wallet/ClaimRewardsBlock';
-import CryptoTrendingCharts from './CryptoTrendingCharts';
-import { openLinkHiveAccountModal } from '../../../store/settingsStore/settingsActions';
-import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
-import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
-import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
+} from '../../../../store/walletStore/walletActions';
+import { HIVE, HBD } from '../../../../common/constants/cryptos';
+import Action from '../../Button/Action';
+import ClaimRewardsBlock from '../../../wallet/ClaimRewardsBlock';
+import CryptoTrendingCharts from '../CryptoTrendingCharts';
+import { openLinkHiveAccountModal } from '../../../../store/settingsStore/settingsActions';
+import { getCryptosPriceHistory } from '../../../../store/appStore/appSelectors';
+import { getAuthenticatedUser, isGuestUser } from '../../../../store/authStore/authSelectors';
+import { getHiveBeneficiaryAccount } from '../../../../store/settingsStore/settingsSelectors';
 
 import './WalletSidebar.less';
 
@@ -35,7 +35,7 @@ import './WalletSidebar.less';
     openLinkHiveAccountModal,
   },
 )
-class WalletSidebar extends React.Component {
+class HiveWalletSidebar extends React.Component {
   static propTypes = {
     user: PropTypes.shape(),
     isCurrentUser: PropTypes.bool,
@@ -119,4 +119,4 @@ class WalletSidebar extends React.Component {
   }
 }
 
-export default WalletSidebar;
+export default HiveWalletSidebar;

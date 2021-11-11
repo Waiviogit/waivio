@@ -8,7 +8,6 @@ import SignUp from '../../components/Sidebar/SignUp';
 import PostRecommendation from '../../components/Sidebar/PostRecommendation';
 import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
-import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
 import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
@@ -24,6 +23,7 @@ import { getFeed } from '../../../store/feedStore/feedSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import FilterPosts from '../../components/Sidebar/FilterPosts/FilterPosts';
 import { setProfileFilters } from '../../../store/feedStore/feedActions';
+import WalletSidebarSwitcher from '../../components/Sidebar/WalletSidebar/WalletSidebarSwitcher';
 
 @withRouter
 @connect(
@@ -86,7 +86,7 @@ export default class RightSidebar extends React.Component {
         <Switch>
           <Route path="/activity" component={UserActivitySearch} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
-          <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
+          <Route path="/@:name/transfers" render={() => <WalletSidebarSwitcher />} />
           <Route path="/trending/:tag" component={FeedSidebar} />
           <Route path="/created/:tag" component={FeedSidebar} />
           <Route path="/hot/:tag" component={FeedSidebar} />
