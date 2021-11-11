@@ -1724,7 +1724,7 @@
   "beneficiary_error": "Beneficiary % could not be less than 1",
   "authors_match_bots_meaning": "automatically upvotes posts published by the specified authors. It does not upvote comments or re-blogs.",
   "authors_match_bots_command": "For each author, please specify the upvoting power in the range from +1% to +100% (maximum upvote). Actual value of the upvote depends on the current upvoting mana on the account at the time of the action.",
-  "authors_match_bots_important": "Important: The Authors match bot only publishes upvotes with estimated combine value of 0.01 HBD or more.",
+  "authors_match_bots_important": "Important: The Authors match bot only publishes upvotes with estimated combined value of 0.01 HBD or more.",
   "authors_match_bots_votes": "Votes will be processed as long as the mana (voting power) on the account remains above the threshold as specified for each author.",
   "matchBot_title_authors": " Authors match bot",
   "match_bots_fee": "Match bot service fee: ",
