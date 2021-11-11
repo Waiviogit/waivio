@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Wallet from '../user/UserWallet';
 import Transfer from './Transfer/Transfer';
 import WAIVwallet from './WAIVwallet/WAIVwallet';
-import { getTokenRates } from '../../store/walletStore/walletActions';
+import { getTokenRates, setWalletType } from '../../store/walletStore/walletActions';
 
 const Wallets = props => {
   useEffect(() => {
@@ -15,11 +15,11 @@ const Wallets = props => {
 
   return (
     <React.Fragment>
-      <Tabs defaultActiveKey="1">
-        <Tabs.TabPane tab="WAIV wallet" key="1">
+      <Tabs defaultActiveKey="WAIV" onChange={key => props.setWalletType(key)}>
+        <Tabs.TabPane tab="WAIV wallet" key="WAIV">
           <WAIVwallet />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="HIVE wallet" key="2">
+        <Tabs.TabPane tab="HIVE wallet" key="HIVE">
           <Wallet />
         </Tabs.TabPane>
       </Tabs>
@@ -30,7 +30,8 @@ const Wallets = props => {
 
 Wallets.propTypes = {
   getTokenRates: PropTypes.func.isRequired,
+  setWalletType: PropTypes.func.isRequired,
   history: PropTypes.shape({}).isRequired,
 };
 
-export default connect(null, { getTokenRates })(Wallets);
+export default connect(null, { getTokenRates, setWalletType })(Wallets);

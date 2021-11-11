@@ -140,11 +140,6 @@ const routes = {
           component: Views.Activity,
         },
         {
-          path: '/wallet',
-          exact: true,
-          component: Views.Wallet,
-        },
-        {
           path: '/editor',
           component: Views.Editor,
           exact: true,

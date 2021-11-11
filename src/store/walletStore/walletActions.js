@@ -483,3 +483,10 @@ export const getWAIVTransferList = (account, offset, type = GET_WAIV_TRANSFER_LI
 
 export const getMoreWAIVTransferList = (account, offset) => dispatch =>
   dispatch(getWAIVTransferList(account, offset, GET_MORE_WAIV_TRANSFER_LIST));
+
+export const SET_CURRENT_WALLET = '@wallet/SET_CURRENT_WALLET';
+
+export const setWalletType = wallet => ({
+  type: SET_CURRENT_WALLET,
+  payload: wallet,
+});

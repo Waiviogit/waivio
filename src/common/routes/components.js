@@ -12,7 +12,6 @@ export default {
   Drafts: loableComponent(import('../../client/post/Write/Drafts')),
   Replies: loableComponent(import('../../client/replies/Replies')),
   Activity: loableComponent(import('../../client/activity/Activity')),
-  Wallet: loableComponent(import('../../client/wallet/Wallet')),
   BusyEditor: loableComponent(import('../../client/post/Write/Write')),
   Editor: loableComponent(import('../../client/post/EditPost')),
   Settings: loableComponent(import('../../client/settings/Settings')),
