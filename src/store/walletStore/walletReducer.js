@@ -38,6 +38,7 @@ const initialState = {
   deposits: 0,
   tokensRates: {},
   waivTransactionHistory: { list: [], hasMore: false },
+  currentWallet: 'WAIV',
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -356,6 +357,12 @@ export default function walletReducer(state = initialState, action) {
           list: action.payload,
           hasMore: action.payload.length === action.meta,
         },
+      };
+
+    case walletActions.SET_CURRENT_WALLET:
+      return {
+        ...state,
+        currentWallet: action.payload,
       };
     default:
       return state;

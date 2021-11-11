@@ -150,6 +150,9 @@ export const getCurrentFilteredActions = createSelector(
 export const getCurrentDeposits = createSelector([walletState], state => state.deposits);
 
 export const getCurrentWithdrawals = createSelector([walletState], state => state.withdrawals);
+
+export const getCurrentWalletType = createSelector([walletState], state => state.currentWallet);
+
 export const getWaivTransactionHistoryFromState = createSelector(
   [walletState],
   state => state.waivTransactionHistory,

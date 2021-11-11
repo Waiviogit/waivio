@@ -16,7 +16,6 @@ import {
   getUserAccountHistory,
   clearTransactionsHistory,
 } from '../../store/walletStore/walletActions';
-import WalletSidebar from '../components/Sidebar/WalletSidebar';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import Withdraw from '../wallet/Withdraw/WithDraw';
 import PowerUpOrDown from '../wallet/PowerUpOrDown';
@@ -39,6 +38,7 @@ import {
   getUsersTransactions,
   hasMoreGuestActions,
 } from '../../store/walletStore/walletSelectors';
+import HiveWalletSidebar from '../components/Sidebar/WalletSidebar/HiveWalletSidebar';
 
 import './UserWallet.less';
 
@@ -256,7 +256,7 @@ class Wallet extends Component {
           userName={this.props.match.params.name}
         />
         {!isEmptyTransactions && this.tableButton(isEmptyTransactions)}
-        {isMobile && <WalletSidebar />}
+        {isMobile && <HiveWalletSidebar />}
         {this.handleRenderWalletTransactions(
           transactions,
           demoTransactions,
