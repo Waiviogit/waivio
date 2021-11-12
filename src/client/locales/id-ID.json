@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} diblok {postLink}",
   "reblogged_post": "reblogged {postLink}",
   "account_updated": "Akun diperbarui",
-  "curation_reward_for_post": "Hadiah {steemPower} SP untuk {author} ( {postLink} )",
+  "curation_reward_for_post": "Hadiah {steemPower} HP untuk {author} ( {postLink} )",
   "curation_reward": "Imbalan kurasi",
   "author_reward_for_post": "Hadiah penulis: {rewards} untuk {postLink}",
   "author_reward": "Penghargaan penulis",

@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} ha {postLink}",
   "reblogged_post": "ha publicat {postLink}",
   "account_updated": "Compte actualitzat",
-  "curation_reward_for_post": "Recompensa {steemPower} SP per a {author} ( {postLink} )",
+  "curation_reward_for_post": "Recompensa {steemPower} HP per a {author} ( {postLink} )",
   "curation_reward": "Recompensa curativa",
   "author_reward_for_post": "Recompensa de l'autor: {rewards} per {postLink}",
   "author_reward": "Recompensa d’autor",

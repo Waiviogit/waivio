@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} reblogged {postLink}",
   "reblogged_post": "reblogged {postLink}",
   "account_updated": "Account updated",
-  "curation_reward_for_post": "Curation reward: {steemPower} SP for {author} ({postLink})",
+  "curation_reward_for_post": "Curation reward: {steemPower} HP for {author} ({postLink})",
   "curation_reward": "Curation reward",
   "author_reward_for_post": "Author reward: {rewards} for {postLink}",
   "author_reward": "Author reward",

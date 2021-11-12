@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} het {postLink}",
   "reblogged_post": "het {postLink}",
   "account_updated": "Rekening opgedateer",
-  "curation_reward_for_post": "Curasie-beloning: {steemPower} SP vir {author} ( {postLink} )",
+  "curation_reward_for_post": "Curasie-beloning: {steemPower} HP vir {author} ( {postLink} )",
   "curation_reward": "Curasie beloning",
   "author_reward_for_post": "Skrywerbeloning: {rewards} vir {postLink}",
   "author_reward": "Skrywersbeloning",

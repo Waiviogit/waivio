@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} зробив реблог {postLink}",
   "reblogged_post": "зробив реблог {postLink}",
   "account_updated": "Обліковий запис оновлено",
-  "curation_reward_for_post": "Нагорода за {steemPower} SP для {author} ( {postLink} )",
+  "curation_reward_for_post": "Нагорода за {steemPower} HP для {author} ( {postLink} )",
   "curation_reward": "Кураторська винагорода",
   "author_reward_for_post": "Нагорода автора: {rewards} за {postLink}",
   "author_reward": "Нагорода автора",
