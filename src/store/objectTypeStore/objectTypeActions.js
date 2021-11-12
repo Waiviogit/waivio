@@ -186,10 +186,10 @@ export const SHOW_MORE_TAGS_FOR_FILTERS = createAsyncActionType(
   '@objectType/SHOW_MORE_TAGS_FOR_FILTERS',
 );
 
-export const showMoreTags = (category, skip, limit) => dispatch =>
+export const showMoreTags = (category, skip, parameter, limit) => dispatch =>
   dispatch({
     type: SHOW_MORE_TAGS_FOR_FILTERS.ACTION,
-    payload: ApiClient.showMoreTagsForFilters(category, skip, limit),
+    payload: ApiClient.showMoreTagsForFilters(category, skip, parameter, limit),
     meta: category,
   });
 

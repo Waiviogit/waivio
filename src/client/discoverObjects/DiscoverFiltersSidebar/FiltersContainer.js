@@ -96,7 +96,11 @@ const FiltersContainer = ({
               filterValues={filterValues.tags}
               hasMore={filterValues.hasMore}
               showMoreTags={() =>
-                dispatchShowMoreTags(filterValues.tagCategory, size(filterValues.tags))
+                dispatchShowMoreTags(
+                  filterValues.tagCategory,
+                  size(filterValues.tags),
+                  location.pathname.slice(18),
+                )
               }
             />
           ))}
