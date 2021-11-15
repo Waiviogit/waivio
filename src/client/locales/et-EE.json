@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} rebloggitud {postLink}",
   "reblogged_post": "uuesti {postLink}",
   "account_updated": "Konto uuendatud",
-  "curation_reward_for_post": "Kureerimispreemia: {steemPower} SP {author} ( {postLink} )",
+  "curation_reward_for_post": "Kureerimispreemia: {steemPower} HP {author} ( {postLink} )",
   "curation_reward": "Kureerimispreemia",
   "author_reward_for_post": "Autor tasu: {rewards} jaoks {postLink}",
   "author_reward": "Autori preemia",

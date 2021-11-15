@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} reblogged {postLink}",
   "reblogged_post": "na- {postLink}",
   "account_updated": "Na-update ang account",
-  "curation_reward_for_post": "Gantimpala sa paglikha: {steemPower} SP para sa {author} ({postLink})",
+  "curation_reward_for_post": "Gantimpala sa paglikha: {steemPower} HP para sa {author} ({postLink})",
   "curation_reward": "Gantimpala sa pag-ayos",
   "author_reward_for_post": "Gantimpala ng may-akda: {rewards} para sa {postLink}",
   "author_reward": "Gantimpala ng may akda",

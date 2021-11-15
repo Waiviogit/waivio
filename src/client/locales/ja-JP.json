@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username}から{postLink}",
   "reblogged_post": "{postLink}",
   "account_updated": "アカウントが更新されました",
-  "curation_reward_for_post": "キュレーション報酬： {steemPower}ためSP {author} （ {postLink} ）",
+  "curation_reward_for_post": "キュレーション報酬： {steemPower}ためHP {author} （ {postLink} ）",
   "curation_reward": "キュレーション報酬",
   "author_reward_for_post": "著者の報酬： {postLink} {rewards}",
   "author_reward": "著者の報酬",

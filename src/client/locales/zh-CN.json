@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username}转发了{postLink}",
   "reblogged_post": "从{postLink}",
   "account_updated": "帐户已更新",
-  "curation_reward_for_post": "策划奖赏： {author} {steemPower} SP（ {postLink} ）",
+  "curation_reward_for_post": "策划奖赏： {author} {steemPower} HP（ {postLink} ）",
   "curation_reward": "策展奖励",
   "author_reward_for_post": "作者奖励： {rewards}为{postLink}",
   "author_reward": "作者奖赏",

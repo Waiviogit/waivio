@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} reblogou isto {postLink}",
   "reblogged_post": "reblogou a {postLink}",
   "account_updated": "Conta atualizada",
-  "curation_reward_for_post": "Recompensa da curadoria: {steemPower} SP para {author} ( {postLink} )",
+  "curation_reward_for_post": "Recompensa da curadoria: {steemPower} HP para {author} ( {postLink} )",
   "curation_reward": "Recompensa de curadoria",
   "author_reward_for_post": "Recompensa do autor: {rewards} por {postLink}",
   "author_reward": "Recompensa do autor",
