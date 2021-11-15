@@ -54,7 +54,7 @@ const NotificationWebsiteBalance = ({ notification, read, onClick, currentAuthUs
         <FormattedMessage id="balance_run_out_three_months" defaultMessage={notification.message} />
       )}
       {notification.message.includes('Attention!') && (
-        <FormattedMessage id="balance_run_out_three_months" defaultMessage={notification.message} />
+        <FormattedMessage id="website_account_suspended" defaultMessage={notification.message} />
       )}
       <div className="Notification__text__date">
         <FormattedRelative value={epochToUTC(notification.timestamp)} />
