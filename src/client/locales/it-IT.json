@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} ha rebloggato questo post {postLink}",
   "reblogged_post": "ha rebloggato questo post {postLink}",
   "account_updated": "Account aggiornato",
-  "curation_reward_for_post": "Ricompensa per la cura: {steemPower} SP per {author} ( {postLink} )",
+  "curation_reward_for_post": "Ricompensa per la cura: {steemPower} HP per {author} ( {postLink} )",
   "curation_reward": "Ricompensa per la cura",
   "author_reward_for_post": "Ricompensa per l'autore: {rewards} per {postLink}",
   "author_reward": "Ricompensa dell'autore",

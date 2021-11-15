@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} reblogget {postLink}",
   "reblogged_post": "reblogget {postLink}",
   "account_updated": "Konto opdateret",
-  "curation_reward_for_post": "Curation belønning: {steemPower} SP for {author} ( {postLink} )",
+  "curation_reward_for_post": "Curation belønning: {steemPower} HP for {author} ( {postLink} )",
   "curation_reward": "Curation belønning",
   "author_reward_for_post": "Forfatterbelønning: {rewards} for {postLink}",
   "author_reward": "Forfatterbelønning",
