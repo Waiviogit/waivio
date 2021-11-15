@@ -9,7 +9,6 @@ import {
   openPowerUpOrDown,
   openWithdraw,
 } from '../../../../store/walletStore/walletActions';
-import { HIVE, HBD } from '../../../../common/constants/cryptos';
 import Action from '../../Button/Action';
 import ClaimRewardsBlock from '../../../wallet/ClaimRewardsBlock';
 import CryptoTrendingCharts from '../CryptoTrendingCharts';
@@ -40,6 +39,7 @@ class HiveWalletSidebar extends React.Component {
     user: PropTypes.shape(),
     isCurrentUser: PropTypes.bool,
     match: PropTypes.shape().isRequired,
+    cryptos: PropTypes.shape().isRequired,
     openTransfer: PropTypes.func.isRequired,
     openPowerUpOrDown: PropTypes.func.isRequired,
     cryptosPriceHistory: PropTypes.shape(),
@@ -76,9 +76,8 @@ class HiveWalletSidebar extends React.Component {
   handleChartsLoading = () => {};
 
   render() {
-    const { match, user, isCurrentUser, cryptosPriceHistory, isGuest } = this.props;
+    const { match, user, isCurrentUser, cryptosPriceHistory, isGuest, cryptos } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
-    const cryptos = [HIVE.symbol, HBD.symbol];
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
 
     return (

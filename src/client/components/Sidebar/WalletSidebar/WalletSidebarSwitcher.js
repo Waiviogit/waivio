@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux';
 import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
 import HiveWalletSidebar from './HiveWalletSidebar';
 import CryptoTrendingCharts from '../CryptoTrendingCharts';
-import { HBD, HIVE } from '../../../../common/constants/cryptos';
+import { HBD, HIVE, WAIV } from '../../../../common/constants/cryptos';
 
 const WalletSidebarSwitcher = () => {
   const type = useSelector(getCurrentWalletType);
-  const cryptos = [HIVE.symbol, HBD.symbol];
+  const cryptos = [WAIV.symbol, HIVE.symbol, HBD.symbol];
 
   switch (type) {
     case 'HIVE':
-      return <HiveWalletSidebar />;
+      return <HiveWalletSidebar cryptos={cryptos} />;
 
     default:
       return <CryptoTrendingCharts cryptos={cryptos} />;

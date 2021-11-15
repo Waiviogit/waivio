@@ -1,30 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { getCryptoPriceHistory, setIsMobile } from '../../../store/appStore/appActions';
 import CryptoChart from './CryptoChart';
 import { getCryptoDetails } from '../../helpers/cryptosHelper';
-import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
+import { WAIV, cryptoRatesForChart } from '../../../common/constants/cryptos';
+import { getTokenRates } from '../../../store/walletStore/walletActions';
 
 import './SidebarContentBlock.less';
 import './CryptoTrendingCharts.less';
 
-@connect(
-  state => ({
-    cryptosPriceHistory: getCryptosPriceHistory(state),
-  }),
-  {
-    getCryptoPriceHistory,
-    setIsMobile,
-  },
-)
+@connect(null, {
+  getCryptoPriceHistory,
+  setIsMobile,
+  getTokenRates,
+})
 class CryptoTrendingCharts extends React.Component {
   static propTypes = {
     cryptos: PropTypes.arrayOf(PropTypes.string),
-    cryptosPriceHistory: PropTypes.shape().isRequired,
     getCryptoPriceHistory: PropTypes.func.isRequired,
+    getTokenRates: PropTypes.func.isRequired,
     setIsMobile: PropTypes.func.isRequired,
   };
 
@@ -57,6 +53,7 @@ class CryptoTrendingCharts extends React.Component {
       },
       () => {
         this.props.getCryptoPriceHistory(this.cryptoSymbols, true);
+        this.props.getTokenRates(WAIV.symbol);
         this.setState({
           refreshCharts: false,
         });
@@ -64,46 +61,7 @@ class CryptoTrendingCharts extends React.Component {
     );
   }
 
-  hasAPIError() {
-    const { cryptosPriceHistory, cryptos } = this.props;
-    const apiErrors = [];
-
-    if (_.isEmpty(cryptosPriceHistory)) return false;
-
-    _.each(cryptos, crypto => {
-      const cryptoDetails = getCryptoDetails(crypto);
-      const cryptoSymbol = _.get(cryptoDetails, 'coinGeckoId', null);
-      const cryptoAPIDetails = _.get(cryptosPriceHistory, cryptoSymbol, null);
-      const hasAPIError =
-        !(_.isUndefined(cryptoAPIDetails) || _.isNull(cryptoAPIDetails)) &&
-        (cryptoAPIDetails.usdAPIError || _.isEmpty(cryptoAPIDetails.usdPriceHistory));
-
-      if (hasAPIError) {
-        apiErrors.push(cryptoDetails);
-      }
-    });
-
-    return cryptos.length === apiErrors.length;
-  }
-
-  renderCryptoCharts() {
-    const { cryptos, cryptosPriceHistory } = this.props;
-
-    if (_.isEmpty(cryptos)) {
-      return null;
-    }
-
-    return _.map(cryptos, crypto => [
-      <CryptoChart key={crypto} crypto={crypto} />,
-      !_.isEmpty(_.get(cryptosPriceHistory, `${crypto}.usdPriceHistory`, [])) && (
-        <div key={`${crypto}-divider`} className="SidebarContentBlock__divider" />
-      ),
-    ]);
-  }
-
   render() {
-    if (this.hasAPIError()) return <div />;
-
     return (
       <div className="SidebarContentBlock CryptoTrendingCharts">
         <h4 className="SidebarContentBlock__title">
@@ -115,7 +73,9 @@ class CryptoTrendingCharts extends React.Component {
             className="iconfont icon-refresh CryptoTrendingCharts__icon-refresh"
           />
         </h4>
-        {this.renderCryptoCharts()}
+        {this.props.cryptos.map(chart => (
+          <CryptoChart key={chart} crypto={chart} currency={cryptoRatesForChart[chart]} />
+        ))}
       </div>
     );
   }
