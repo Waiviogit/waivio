@@ -2080,15 +2080,17 @@ export const addNoteInVipTicket = (body, isGuest) => {
     .catch(e => e);
 };
 
-export const getAdvancedReports = (body, user = '') =>
-  fetch(`${config.campaignApiPrefix}${config.payments}${config.advancedReport}`, {
-    headers: { ...headers, user },
+export const getAdvancedReports = (body, user = '') => {
+  const actualHeaders = user ? { ...headers, user } : { ...headers };
+  return fetch(`${config.campaignApiPrefix}${config.payments}${config.advancedReport}`, {
+    headers: actualHeaders,
     body: JSON.stringify(body),
     method: 'POST',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
 export const accountsCreationDate = userName => {
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.creationDate}`, {

@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} {postLink}",
   "reblogged_post": "{postLink}",
   "account_updated": "खाता अपडेट किया गया",
-  "curation_reward_for_post": "अवधि पुरस्कार: {steemPower} SP के लिए {author} ( {postLink} )",
+  "curation_reward_for_post": "अवधि पुरस्कार: {steemPower} HP के लिए {author} ( {postLink} )",
   "curation_reward": "अवधि पुरस्कार",
   "author_reward_for_post": "लेखक इनाम: {rewards} लिए {postLink}",
   "author_reward": "लेखक इनाम",

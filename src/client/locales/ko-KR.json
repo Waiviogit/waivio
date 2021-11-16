@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} {postLink} 님으로부터 리 블로그했습니다.",
   "reblogged_post": "{postLink} 올림",
   "account_updated": "계정이 업데이트되었습니다.",
-  "curation_reward_for_post": "큐 레이션 보상 : {steemPower} 에 대한 SP {author} ( {postLink} )",
+  "curation_reward_for_post": "큐 레이션 보상 : {steemPower} 에 대한 HP {author} ( {postLink} )",
   "curation_reward": "큐 레이션 보상",
   "author_reward_for_post": "작성자 보상 : {postLink} 대한 {rewards}",
   "author_reward": "저자 보상",

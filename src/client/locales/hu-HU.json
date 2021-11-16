@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} reblogged {postLink}",
   "reblogged_post": "reblogged {postLink}",
   "account_updated": "Fiók frissítve",
-  "curation_reward_for_post": "Kurációs jutalom: {steemPower} SP {author} ( {postLink} )",
+  "curation_reward_for_post": "Kurációs jutalom: {steemPower} HP {author} ( {postLink} )",
   "curation_reward": "Kurációs jutalom",
   "author_reward_for_post": "Szerzői jutalom: {rewards} a {postLink}",
   "author_reward": "Szerzői jutalom",

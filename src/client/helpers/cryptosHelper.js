@@ -65,3 +65,28 @@ export function getCryptoPriceIncreaseDetails(usdCryptoPriceHistory, btcCryptoPr
     btcPriceDifferencePercent,
   };
 }
+
+export const adaptMarketDataToEngine = (data, cryptos) =>
+  cryptos.reduce((acc, s) => {
+    acc[s] = {
+      current: {
+        base: s,
+        change24h: {
+          BTC: data.current[s].btc_24h_change,
+          USD: data.current[s].usd_24h_change,
+        },
+        rates: {
+          BTC: data.current[s].btc,
+          USD: data.current[s].usd,
+        },
+      },
+      weekly: data.weekly.map(w => ({
+        base: s,
+        change24h: {
+          USD: w[s].usd,
+        },
+      })),
+    };
+
+    return acc;
+  }, {});

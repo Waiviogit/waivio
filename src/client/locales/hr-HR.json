@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} reblogged {postLink}",
   "reblogged_post": "reblogged {postLink}",
   "account_updated": "Račun ažuriran",
-  "curation_reward_for_post": "Nagrada za {steemPower} SP za {author} ( {postLink} )",
+  "curation_reward_for_post": "Nagrada za {steemPower} HP za {author} ( {postLink} )",
   "curation_reward": "Nagrada za kuraciju",
   "author_reward_for_post": "Nagrada autora: {rewards} za {postLink}",
   "author_reward": "Nagrada autora",

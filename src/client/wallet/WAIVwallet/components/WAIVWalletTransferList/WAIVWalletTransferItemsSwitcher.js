@@ -11,6 +11,11 @@ import { isMobile } from '../../../../helpers/apiHelpers';
 import PowerDownTransaction from '../../../TransfersCards/PowerDownTransaction';
 import UnknownTransactionType from '../../../TransfersCards/UnknownTransactionType/UnknownTransactionType';
 import TokenBoughtCard from '../../../TransfersCards/TokenBoughtCard.js/TokenBoughtCard';
+import MarketBuyCard from '../../../TransfersCards/MarketBuyCard';
+import DelegatedTo from '../../../TransfersCards/DelegatedTo';
+import MarketCancel from '../../../TransfersCards/MarketCancel';
+import MarketCloseOrder from '../../../TransfersCards/MarketCloseOrder';
+import UndelegateStart from '../../../TransfersCards/UndelegateStart';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const isMobileDevice = isMobile();
@@ -46,6 +51,56 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           symbol={transaction.symbol}
         />
       );
+
+    case 'market_placeOrder':
+      return (
+        <MarketBuyCard
+          quantity={transaction.quantityLocked}
+          timestamp={transaction.timestamp}
+          orderType={transaction.orderType}
+          symbol={transaction.symbol}
+        />
+      );
+
+    case 'market_cancel':
+      return (
+        <MarketCancel
+          quantity={transaction.quantityReturned}
+          timestamp={transaction.timestamp}
+          orderType={transaction.orderType}
+          symbol={transaction.symbol}
+        />
+      );
+
+    case 'market_closeOrder':
+      return (
+        <MarketCloseOrder timestamp={transaction.timestamp} orderType={transaction.orderType} />
+      );
+
+    case 'tokens_delegate':
+      return (
+        <DelegatedTo
+          quantity={transaction.quantity}
+          timestamp={transaction.timestamp}
+          symbol={transaction.symbol}
+          to={transaction.to}
+          from={transaction.from}
+          account={transaction.account}
+        />
+      );
+
+    case 'tokens_undelegateStart':
+      return (
+        <UndelegateStart
+          quantity={transaction.quantity}
+          timestamp={transaction.timestamp}
+          symbol={transaction.symbol}
+          to={transaction.to}
+          from={transaction.from}
+          account={transaction.account}
+        />
+      );
+
     case 'tokens_transfer':
       if (transaction.to === currentName) {
         return (
@@ -91,6 +146,9 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     account: PropTypes.string,
     operation: PropTypes.string,
     quantityTokens: PropTypes.string,
+    orderType: PropTypes.string,
+    quantityLocked: PropTypes.string,
+    quantityReturned: PropTypes.string,
     symbol: PropTypes.string,
   }).isRequired,
 };
