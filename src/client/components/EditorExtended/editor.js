@@ -758,6 +758,14 @@ export default class MediumDraftEditor extends React.Component {
     const blockButtons = this.configureToolbarBlockOptions(toolbarConfig);
     const inlineButtons = this.configureToolbarInlineOptions(toolbarConfig);
 
+    const selectionState = editorState.getSelection();
+    const firstline =
+      editorState
+        .getCurrentContent()
+        .getBlockMap()
+        .first()
+        .getKey() === selectionState.getFocusKey();
+
     return (
       <div className={RichEditorRootClassNamesList}>
         <div className={editorClass}>
@@ -771,7 +779,7 @@ export default class MediumDraftEditor extends React.Component {
             blockStyleFn={this.props.blockStyleFn}
             onChange={this.onChange}
             onTab={this.onTab}
-            onUpArrow={this.onUpArrow}
+            onUpArrow={!firstline && this.onUpArrow}
             blockRenderMap={this.props.blockRenderMap}
             handleKeyCommand={this.handleKeyCommand}
             handleBeforeInput={this.handleBeforeInput}
