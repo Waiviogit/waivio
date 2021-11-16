@@ -36,6 +36,7 @@ import {
   getTransfersLoading,
   getTransfersWithdrawals,
 } from '../../../store/advancedReports/advancedSelectors';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configReportsWebsitesTableHeader } from './common/tableConfig';
 import Loading from '../../components/Icon/Loading';
@@ -57,6 +58,7 @@ import './WalletTable.less';
     accounts: getTransfersAccounts(state),
     isLoadingAllData: getIsLoadingAllData(state),
     currencyInfo: getCurrentCurrency(state),
+    user: getAuthenticatedUser(state),
   }),
   {
     openTable: openWalletTable,
@@ -109,6 +111,7 @@ class WalletTable extends React.Component {
     transactionsList: PropTypes.arrayOf(PropTypes.shape({})),
     accounts: PropTypes.arrayOf(PropTypes.shape({})),
     loading: PropTypes.bool,
+    user: PropTypes.string,
   };
 
   static defaultProps = {
@@ -118,6 +121,7 @@ class WalletTable extends React.Component {
     transactionsList: [],
     accounts: [],
     loading: false,
+    user: '',
   };
 
   state = {
@@ -228,6 +232,11 @@ class WalletTable extends React.Component {
     return endDate.unix();
   };
 
+  handleOnChange = (e, item) => {
+    this.props.user &&
+      this.props.calculateTotalChanges(item, e.target.checked, this.state.currentCurrency);
+  };
+
   render() {
     const { match, intl, form, transactionsList, currencyInfo } = this.props;
     const currencyType = this.state.currentCurrency || currencyInfo.type;
@@ -336,9 +345,7 @@ class WalletTable extends React.Component {
             })}
             showMore={this.props.hasMore && !this.state.dateEstablished}
             handleShowMore={this.handleLoadMore}
-            onChange={(e, item) =>
-              this.props.calculateTotalChanges(item, e.target.checked, this.state.currentCurrency)
-            }
+            onChange={this.handleOnChange}
           />
         )}
       </div>
