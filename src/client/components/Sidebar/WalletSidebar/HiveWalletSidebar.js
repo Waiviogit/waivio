@@ -13,7 +13,6 @@ import Action from '../../Button/Action';
 import ClaimRewardsBlock from '../../../wallet/ClaimRewardsBlock';
 import CryptoTrendingCharts from '../CryptoTrendingCharts';
 import { openLinkHiveAccountModal } from '../../../../store/settingsStore/settingsActions';
-import { getCryptosPriceHistory } from '../../../../store/appStore/appSelectors';
 import { getAuthenticatedUser, isGuestUser } from '../../../../store/authStore/authSelectors';
 import { getHiveBeneficiaryAccount } from '../../../../store/settingsStore/settingsSelectors';
 
@@ -24,7 +23,6 @@ import './WalletSidebar.less';
   state => ({
     isGuest: isGuestUser(state),
     user: getAuthenticatedUser(state),
-    cryptosPriceHistory: getCryptosPriceHistory(state),
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
   }),
   {
@@ -42,7 +40,6 @@ class HiveWalletSidebar extends React.Component {
     cryptos: PropTypes.shape().isRequired,
     openTransfer: PropTypes.func.isRequired,
     openPowerUpOrDown: PropTypes.func.isRequired,
-    cryptosPriceHistory: PropTypes.shape(),
     isGuest: PropTypes.bool,
     openWithdraw: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
@@ -52,7 +49,6 @@ class HiveWalletSidebar extends React.Component {
   static defaultProps = {
     user: {},
     isCurrentUser: false,
-    cryptosPriceHistory: {},
     isGuest: false,
     hiveBeneficiaryAccount: '',
   };
@@ -76,7 +72,7 @@ class HiveWalletSidebar extends React.Component {
   handleChartsLoading = () => {};
 
   render() {
-    const { match, user, isCurrentUser, cryptosPriceHistory, isGuest, cryptos } = this.props;
+    const { match, user, isCurrentUser, isGuest, cryptos } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
 
@@ -95,7 +91,7 @@ class HiveWalletSidebar extends React.Component {
             </Action>
           </div>
         )}
-        {!isEmpty(cryptosPriceHistory) && <CryptoTrendingCharts cryptos={cryptos} />}
+        {<CryptoTrendingCharts cryptos={cryptos} />}
         {ownProfile && <ClaimRewardsBlock />}
         <a
           href={`https://widget.blocktrades.us/trade?affiliate_id=8523b1e2-b2d5-4f76-b920-8f11cd4f45f0&input_coin_type=hive&input_coin_amount=${steemBalance}&output_coin_type=ltc`}
