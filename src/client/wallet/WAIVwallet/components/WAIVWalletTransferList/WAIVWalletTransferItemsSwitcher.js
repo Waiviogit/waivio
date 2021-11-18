@@ -10,7 +10,7 @@ import TransferTransaction from '../../../TransfersCards/TransferTransaction';
 import { isMobile } from '../../../../helpers/apiHelpers';
 import PowerDownTransaction from '../../../TransfersCards/PowerDownTransaction';
 import UnknownTransactionType from '../../../TransfersCards/UnknownTransactionType/UnknownTransactionType';
-import TokenBoughtCard from '../../../TransfersCards/TokenBoughtCard.js/TokenBoughtCard';
+import TokenActionInMarketCard from '../../../TransfersCards/TokenBoughtCard.js/TokenActionInMarketCard';
 import MarketBuyCard from '../../../TransfersCards/MarketBuyCard';
 import DelegatedTo from '../../../TransfersCards/DelegatedTo';
 import MarketCancel from '../../../TransfersCards/MarketCancel';
@@ -42,13 +42,37 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         />
       );
     }
+
+    case 'tokens_unstakeDone': {
+      const desc = getTransactionDescription(accountHistoryConstants.POWER_DOWN_INITIATED_OR_STOP);
+
+      return (
+        <PowerDownTransaction
+          amount={`${round(transaction.quantity, 3)} WP`}
+          timestamp={transaction.timestamp}
+          description={desc.powerDownStopped}
+        />
+      );
+    }
     case 'market_buy':
       return (
-        <TokenBoughtCard
+        <TokenActionInMarketCard
           quantity={transaction.quantityTokens}
           timestamp={transaction.timestamp}
           account={transaction.account}
           symbol={transaction.symbol}
+          action={'bought'}
+        />
+      );
+
+    case 'market_sell':
+      return (
+        <TokenActionInMarketCard
+          quantity={transaction.quantityTokens}
+          timestamp={transaction.timestamp}
+          account={transaction.account}
+          symbol={transaction.symbol}
+          action={'sold'}
         />
       );
 
@@ -82,7 +106,6 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         <DelegatedTo
           quantity={transaction.quantity}
           timestamp={transaction.timestamp}
-          symbol={transaction.symbol}
           to={transaction.to}
           from={transaction.from}
           account={transaction.account}
@@ -94,10 +117,22 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         <UndelegateStart
           quantity={transaction.quantity}
           timestamp={transaction.timestamp}
-          symbol={transaction.symbol}
           to={transaction.to}
           from={transaction.from}
           account={transaction.account}
+          status={'started'}
+        />
+      );
+
+    case 'tokens_undelegateDone':
+      return (
+        <UndelegateStart
+          quantity={transaction.quantity}
+          timestamp={transaction.timestamp}
+          to={transaction.to}
+          from={transaction.from}
+          account={transaction.account}
+          status={'completed'}
         />
       );
 

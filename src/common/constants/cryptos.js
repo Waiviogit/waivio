@@ -6,14 +6,14 @@ export const BTC = {
 
 export const HIVE = {
   id: 'hive',
-  name: 'Hive',
+  name: 'HIVE',
   symbol: 'HIVE',
   coinGeckoId: 'hive',
 };
 
 export const WAIV = {
   id: 'waiv',
-  name: 'Waiv',
+  name: 'WAIV',
   symbol: 'WAIV',
   coinGeckoId: 'WAIV',
 };

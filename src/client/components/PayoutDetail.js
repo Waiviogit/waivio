@@ -14,13 +14,8 @@ const AmountWithLabel = ({ id, defaultMessage, nonzero, amount }) =>
   isNumber(amount) &&
   (nonzero ? amount !== 0 : true) && (
     <div>
-      <FormattedMessage
-        id={id}
-        defaultMessage={defaultMessage}
-        values={{
-          amount: <USDDisplay value={amount} currencyDisplay="symbol" />,
-        }}
-      />
+      <FormattedMessage id={id} defaultMessage={defaultMessage} />
+      <USDDisplay value={amount} currencyDisplay="symbol" />
     </div>
   );
 
@@ -87,7 +82,7 @@ const PayoutDetail = React.memo(({ intl, post }) => {
       <AmountWithLabel
         nonzero
         id="payout_promoted_amount"
-        defaultMessage="Promoted: {amount}"
+        defaultMessage="Promoted:"
         amount={promotionCost}
       />
       {isPostCashout(post) ? (
@@ -103,12 +98,12 @@ const PayoutDetail = React.memo(({ intl, post }) => {
           />
           <AmountWithLabel
             id="payout_author_payout_amount"
-            defaultMessage="Author Payout: {amount}"
+            defaultMessage="Author Payout:"
             amount={authorPayouts}
           />
           <AmountWithLabel
             id="payout_curators_payout_amount"
-            defaultMessage="Curators payout: {amount}"
+            defaultMessage="Curators payout:"
             amount={curatorPayouts}
           />
         </div>
