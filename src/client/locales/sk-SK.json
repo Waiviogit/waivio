@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "Are you sure you want to delete this draft permanently?",
   "payout_limit_reached": "Limit výplaty dosiahnutý v tomto príspevku",
   "payout_promoted_amount": "Podporované: {amount}",
-  "payout_total_past_payout_amount": "Celkové minulosti výplaty: {amount}",
+  "payout_total_past_payout_amount": "Celkové minulosti výplaty:",
   "payout_author_payout_amount": "Autor výhra: {amount}",
   "payout_curators_payout_amount": "Kurátori výhra: {amount}",
   "payout_potential_payout_amount": "Potenciálna výhra: {amount}",

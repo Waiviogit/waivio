@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "Да ли сте сигурни да заувек желите да избришете ово?",
   "payout_limit_reached": "Максимална исплата је достигнута",
   "payout_promoted_amount": "Промовисано: {amount}",
-  "payout_total_past_payout_amount": "Укупне прошле исплате: {amount}",
+  "payout_total_past_payout_amount": "Укупне прошле исплате:",
   "payout_author_payout_amount": "Ауторова исплата: {amount}",
   "payout_curators_payout_amount": "Исплата гласачима: {amount}",
   "payout_potential_payout_amount": "Потенционална исплата: {amount}",

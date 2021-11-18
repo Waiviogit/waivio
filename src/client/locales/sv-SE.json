@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "Är du säker på att du vill ta bort det här utkastet permanent?",
   "payout_limit_reached": "Utbetalningsgränsen har nåtts på detta inlägg",
   "payout_promoted_amount": "Marknadsförde: {amount}",
-  "payout_total_past_payout_amount": "Summa av tidigare utbetalningar: {amount}",
+  "payout_total_past_payout_amount": "Summa av tidigare utbetalningar:",
   "payout_author_payout_amount": "Författares belöning: {amount}",
   "payout_curators_payout_amount": "Kuratorers belöning: {amount}",
   "payout_potential_payout_amount": "Potentiell utbetalning: {amount}",

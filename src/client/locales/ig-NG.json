@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "Are you sure you want to delete this draft permanently?",
   "payout_limit_reached": "Ọnụ ego ịkwụ ụgwọ ruru na post a",
   "payout_promoted_amount": "Kwalite: {ego}",
-  "payout_total_past_payout_amount": "Ọnụ ọgụgụ ego gara aga: {ego}",
+  "payout_total_past_payout_amount": "Ọnụ ọgụgụ ego gara aga:",
   "payout_author_payout_amount": "Onye na-ede akwụkwọ ịkwụ ụgwọ: {ego}",
   "payout_curators_payout_amount": "Ọnụ ego na-akwụ ụgwọ: {ego}",
   "payout_potential_payout_amount": "Pụrụ iche payout: {ego}",

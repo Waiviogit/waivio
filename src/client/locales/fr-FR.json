@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "Êtes-vous sûr de vouloir supprimer définitivement ce projet ?",
   "payout_limit_reached": "Limite de paiement atteinte sur ce poste ",
   "payout_promoted_amount": "Promue: {amount}",
-  "payout_total_past_payout_amount": "Total des paiements passés : {amount}",
+  "payout_total_past_payout_amount": "Total des paiements passés :",
   "payout_author_payout_amount": "Rémunération de l'auteur : {amount}",
   "payout_curators_payout_amount": "Les curateurs sont payés : {amount}",
   "payout_potential_payout_amount": "Rémunération potentielle : {amount}",

@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "האם אתה בטוח שברצונך למחוק את טיוטה זו?",
   "payout_limit_reached": "הפוסט הגיע למכסת התשלום המקסימלית",
   "payout_promoted_amount": "קידום: {amount}",
-  "payout_total_past_payout_amount": "Total Past Payouts: {amount}",
+  "payout_total_past_payout_amount": "Total Past Payouts:",
   "payout_author_payout_amount": "Author Payout: {amount}",
   "payout_curators_payout_amount": "תשלום מאותרים: {amount}",
   "payout_potential_payout_amount": "Potential Payout: {amount}",

@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "क्या आप वाकई इस मसौदे को स्थायी रूप से हटाना चाहते हैं?",
   "payout_limit_reached": "इस पद पर पेआउट की सीमा समाप्त हो गई",
   "payout_promoted_amount": "प्रचारित: {amount}",
-  "payout_total_past_payout_amount": "कुल पिछले भुगतान: {amount}",
+  "payout_total_past_payout_amount": "कुल पिछले भुगतान:",
   "payout_author_payout_amount": "लेखक भुगतान: {amount}",
   "payout_curators_payout_amount": "क्यूरेटर भुगतान: {amount}",
   "payout_potential_payout_amount": "संभावित भुगतान: {amount}",

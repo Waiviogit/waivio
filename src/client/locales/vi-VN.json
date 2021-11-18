@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "Bạn có chắc bạn muốn xóa bỏ dự thảo này vĩnh viễn không?",
   "payout_limit_reached": "Giới hạn thanh toán cho bài đăng này",
   "payout_promoted_amount": "Quảng cáo: {amount}",
-  "payout_total_past_payout_amount": "Tổng số đã thanh toán: {amount}",
+  "payout_total_past_payout_amount": "Tổng số đã thanh toán:",
   "payout_author_payout_amount": "Thanh toán cho Tác giả: {amount}",
   "payout_curators_payout_amount": "Thanh toán cho người quản lý: {amount}",
   "payout_potential_payout_amount": "Khả năng thanh toán: {amount}",

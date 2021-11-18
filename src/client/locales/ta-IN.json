@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "Are you sure you want to delete this draft permanently?",
   "payout_limit_reached": "இந்த பதிவில் சுயவிருப்பு வரம்பை",
   "payout_promoted_amount": "பதவி உயர்வு: {amount}",
-  "payout_total_past_payout_amount": "அவைகளுக்குள் கடந்த மொத்தம்: {amount}",
+  "payout_total_past_payout_amount": "அவைகளுக்குள் கடந்த மொத்தம்:",
   "payout_author_payout_amount": "ஆசிரியர் நாள்: {amount}",
   "payout_curators_payout_amount": "காப்பாட்சியர்கள் நாள்: {amount}",
   "payout_potential_payout_amount": "சாத்தியமான நாள்: {amount}",

@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "Tem certeza de que deseja excluir este rascunho permanentemente?",
   "payout_limit_reached": "Limite de pagamento atingido nesta postagem",
   "payout_promoted_amount": "Promovido: {amount}",
-  "payout_total_past_payout_amount": "Total de pagamentos anteriores: {amount}",
+  "payout_total_past_payout_amount": "Total de pagamentos anteriores:",
   "payout_author_payout_amount": "Pagamento do autor: {amount}",
   "payout_curators_payout_amount": "Pagamento de curadores: {amount}",
   "payout_potential_payout_amount": "Pagamento potencial: {amount}",

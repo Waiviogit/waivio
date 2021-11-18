@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "Anda yakin ingin menghapus draf ini secara permanen?",
   "payout_limit_reached": "Batas pembayaran telah tercapai pada posting ini",
   "payout_promoted_amount": "Dipromosikan: {amount}",
-  "payout_total_past_payout_amount": "Total pembayaran sebelumnya: {amount}",
+  "payout_total_past_payout_amount": "Total pembayaran sebelumnya:",
   "payout_author_payout_amount": "Pembayaran penulis: {amount}",
   "payout_curators_payout_amount": "Pembayaran kurator: {amount}",
   "payout_potential_payout_amount": "Potensi pembayaran: {amount}",

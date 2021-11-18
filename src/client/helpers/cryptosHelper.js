@@ -82,7 +82,7 @@ export const adaptMarketDataToEngine = (data, cryptos) =>
       },
       weekly: data.weekly.map(w => ({
         base: s,
-        change24h: {
+        rates: {
           USD: w[s].usd,
         },
       })),

@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "Ka/ki tabartar kana/kina so ka/ki share wannan zane har abada?",
   "payout_limit_reached": "Ƙayyadadden iyaka ya isa wannan post",
   "payout_promoted_amount": "Ƙaddamar da: {amount}",
-  "payout_total_past_payout_amount": "Jimlar da aka biya a baya: {amount}",
+  "payout_total_past_payout_amount": "Jimlar da aka biya a baya:",
   "payout_author_payout_amount": "Mawallafin rubutun: {amount}",
   "payout_curators_payout_amount": "An biya kuɗi: {amount}",
   "payout_potential_payout_amount": "Kayan biya mai kyau: {amount}",

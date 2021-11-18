@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "Are you sure you want to delete this draft permanently?",
   "payout_limit_reached": "ຈຳກັດການຈ່າຍເງິນໃນໂພສນີ້",
   "payout_promoted_amount": "ສະໜັບສະໜູນ(ຈຳນວນເງິນ)",
-  "payout_total_past_payout_amount": "Total Past Payouts: {amount}",
+  "payout_total_past_payout_amount": "Total Past Payouts:",
   "payout_author_payout_amount": "Author Payout: {amount}",
   "payout_curators_payout_amount": "ຄ່າແລກເຕີຈ່າຍ(ຈຳນວນເງິນ)",
   "payout_potential_payout_amount": "Potential Payout: {amount}",
