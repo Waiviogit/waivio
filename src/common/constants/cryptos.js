@@ -6,14 +6,21 @@ export const BTC = {
 
 export const HIVE = {
   id: 'hive',
-  name: 'Hive',
+  name: 'HIVE',
   symbol: 'HIVE',
   coinGeckoId: 'hive',
 };
 
+export const WAIV = {
+  id: 'waiv',
+  name: 'WAIV',
+  symbol: 'WAIV',
+  coinGeckoId: 'WAIV',
+};
+
 export const HBD = {
   id: 'hive-dollars',
-  name: 'Hive Dollars',
+  name: 'Hive Dollars(HBD)',
   symbol: 'HBD',
   coinGeckoId: 'hive_dollar',
 };
@@ -642,6 +649,11 @@ export const currencyListForSliderValues = {
   HIVEWAIV: ['HIVE', 'WAIV'],
 };
 
+export const cryptoRatesForChart = {
+  [HIVE.symbol]: BTC.symbol,
+  [WAIV.symbol]: HIVE.symbol,
+};
+
 export const CRYPTO_MAP = {
   [BTC.symbol]: BTC,
   [ETH.symbol]: ETH,
@@ -746,4 +758,5 @@ export const CRYPTO_MAP = {
   [LINK.symbol]: LINK,
   [PPC.symbol]: PPC,
   [FTC.symbol]: FTC,
+  [WAIV.symbol]: WAIV,
 };

@@ -1,5 +1,6 @@
 import { last, get } from 'lodash';
 import { createSelector } from 'reselect';
+import { CRYPTO_MAP } from '../../common/constants/cryptos';
 
 // selector
 export const walletState = state => state.wallet;
@@ -161,5 +162,31 @@ export const getWaivTransactionHistoryFromState = createSelector(
 export const getTokenRatesInUSD = (state, token) => {
   const wallet = walletState(state);
 
-  return get(wallet.tokensRates, `${token}.current.rates.USD`);
+  return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'current', 'rates', 'USD']);
+};
+
+export const getTokenRatesInSelectCurrency = (state, token, currency) => {
+  const wallet = walletState(state);
+
+  return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'current', 'rates', currency]);
+};
+export const getTokenRatesInUSDChanged = (state, token) => {
+  const wallet = walletState(state);
+
+  return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'current', 'change24h', 'USD']);
+};
+
+export const getTokenRatesInSelectCurrencyChanged = (state, token, currency) => {
+  const wallet = walletState(state);
+
+  return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'current', 'change24h', currency]);
+};
+
+// get weekle price for chart
+export const getWeeklyTokenRatesPrice = (state, token) => {
+  const wallet = walletState(state);
+
+  return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'weekly'], []).map(
+    price => price.rates.USD,
+  );
 };

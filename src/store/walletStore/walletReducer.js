@@ -350,6 +350,15 @@ export default function walletReducer(state = initialState, action) {
         },
       };
 
+    case walletActions.ADAPT_MARKET_TO_ENGINE:
+      return {
+        ...state,
+        tokensRates: {
+          ...state.tokensRates,
+          ...action.payload,
+        },
+      };
+
     case walletActions.GET_WAIV_TRANSFER_LIST.SUCCESS:
       return {
         ...state,

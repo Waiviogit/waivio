@@ -323,7 +323,7 @@
   "user_reblogged_post": "{username} reblogged {postLink}",
   "reblogged_post": "إعادة تسجيل {postLink}",
   "account_updated": "تم تحديث الحساب",
-  "curation_reward_for_post": "مكافأة التنظيم: {steemPower} SP لـ {author} ( {postLink} )",
+  "curation_reward_for_post": "مكافأة التنظيم: {steemPower} HP لـ {author} ( {postLink} )",
   "curation_reward": "",
   "author_reward_for_post": "مكافأة المؤلف: {rewards} عن {postLink}",
   "author_reward": "مكافأة المؤلف",

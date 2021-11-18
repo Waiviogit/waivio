@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "Weet je zeker dat je dit concept definitief wilt verwijderen?",
   "payout_limit_reached": "Uitbetalingslimiet bereikt voor dit bericht",
   "payout_promoted_amount": "Gepromoveerd: {amount}",
-  "payout_total_past_payout_amount": "Totale eerdere uitbetalingen: {amount}",
+  "payout_total_past_payout_amount": "Totale eerdere uitbetalingen:",
   "payout_author_payout_amount": "Uitbetaling auteur: {amount}",
   "payout_curators_payout_amount": "Uitbetaling curatoren: {amount}",
   "payout_potential_payout_amount": "Potentiële uitbetaling: {amount}",

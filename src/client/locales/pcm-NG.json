@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "You sure say you wan permanently delet dis draft ni?",
   "payout_limit_reached": "Payout limit on reach for dis post",
   "payout_promoted_amount": "Promoted: {amount}",
-  "payout_total_past_payout_amount": "Total payout wey don pass: {amount}",
+  "payout_total_past_payout_amount": "Total payout wey don pass:",
   "payout_author_payout_amount": "Author payout: {amount}",
   "payout_curators_payout_amount": "Curator payout: {amount}",
   "payout_potential_payout_amount": "Potential payout: {amount}",

@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "Are you sure you want to delete this draft permanently?",
   "payout_limit_reached": "यो पोष्टमा भुक्तानी सिमा पुग्यो",
   "payout_promoted_amount": "प्रचारित: {amount}",
-  "payout_total_past_payout_amount": "विगतको जम्मा भुक्तानी: {amount}",
+  "payout_total_past_payout_amount": "विगतको जम्मा भुक्तानी:",
   "payout_author_payout_amount": "लेखक भुक्तानी: {amount}",
   "payout_curators_payout_amount": "क्यूरेटर भुक्तानी: {amount}",
   "payout_potential_payout_amount": "संभावित भुक्तानी:{amount}",

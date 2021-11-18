@@ -461,6 +461,7 @@ export const sendPendingTransfer = ({
   });
 
 export const GET_TOKEN_RATES = createAsyncActionType('@wallet/GET_TOKEN_RATES');
+export const ADAPT_MARKET_TO_ENGINE = '@wallet/ADAPT_MARKET_TO_ENGINE';
 
 export const getTokenRates = tokenName => dispatch =>
   dispatch({

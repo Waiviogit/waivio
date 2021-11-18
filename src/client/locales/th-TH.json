@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "คุณแน่ใจคุณต้องการลบฉบับร่างนี้อย่างถาวรหรือไม่",
   "payout_limit_reached": "วงเงินการจ่ายบนโพสต์นี้",
   "payout_promoted_amount": "โปรโมท: {amount}",
-  "payout_total_past_payout_amount": "การจ่ายเงินทั้งหมดที่ผ่านมา: {amount}",
+  "payout_total_past_payout_amount": "การจ่ายเงินทั้งหมดที่ผ่านมา:",
   "payout_author_payout_amount": "การจ่ายเงินให้ผู้เขียน: {amount}",
   "payout_curators_payout_amount": "การจ่ายเงินให้ผู้แนะนำ {amount}",
   "payout_potential_payout_amount": "การจ่ายเงินที่อาจเกิดขึ้น: {amount}",

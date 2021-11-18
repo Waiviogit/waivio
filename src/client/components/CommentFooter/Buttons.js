@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
 import { take, find } from 'lodash';
 import { injectIntl, FormattedNumber, FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
@@ -13,7 +14,9 @@ import withAuthActions from '../../auth/withAuthActions';
 import USDDisplay from '../Utils/USDDisplay';
 import PayoutDetail from '../PayoutDetail';
 import CommentPopover from './Popover/CommentPopover';
+import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 
+@connect(state => ({ waivRates: getTokenRatesInUSD(state, 'WAIV') }))
 @injectIntl
 @withAuthActions
 class Buttons extends React.Component {
@@ -22,6 +25,7 @@ class Buttons extends React.Component {
     user: PropTypes.shape().isRequired,
     comment: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
+    waivRates: PropTypes.number.isRequired,
     onActionInitiated: PropTypes.func,
     editable: PropTypes.bool,
     editing: PropTypes.bool,
@@ -95,12 +99,13 @@ class Buttons extends React.Component {
       editable,
       editing,
       replying,
+      waivRates,
     } = this.props;
     const pendingVote = find(pendingVotes, { id: comment.id });
     const pendingLike = pendingVote && (pendingVote.percent > 0 || pendingVote.vote === 'like');
     const pendingDisLike =
       pendingVote && (pendingVote.percent < 0 || pendingVote.vote === 'dislike');
-    const payout = calculatePayout(comment);
+    const payout = calculatePayout(comment, waivRates);
     const ownPost = comment.author === user.name;
     const upVotes = getUpvotes(comment.active_votes).sort(sortVotes);
     const downVotes = getDownvotes(comment.active_votes)

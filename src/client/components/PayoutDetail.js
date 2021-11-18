@@ -1,22 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { isNumber, get, isNil, isEmpty, map } from 'lodash';
 import USDDisplay from './Utils/USDDisplay';
 import { calculatePayout, isPostCashout } from '../vendor/steemitHelpers';
+import PayoutCurrencyBlock from './PayoutComponents/PayoutCurrencyBlock';
+import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
 const AmountWithLabel = ({ id, defaultMessage, nonzero, amount }) =>
   isNumber(amount) &&
   (nonzero ? amount !== 0 : true) && (
     <div>
-      <FormattedMessage
-        id={id}
-        defaultMessage={defaultMessage}
-        values={{
-          amount: <USDDisplay value={amount} currencyDisplay="symbol" />,
-        }}
-      />
+      <FormattedMessage id={id} defaultMessage={defaultMessage} />
+      <USDDisplay value={amount} currencyDisplay="symbol" />
     </div>
   );
 
@@ -52,7 +51,9 @@ const getBeneficaries = post => {
   ));
 };
 
-const PayoutDetail = ({ intl, post }) => {
+const PayoutDetail = React.memo(({ intl, post }) => {
+  const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
+
   const {
     payoutLimitHit,
     potentialPayout,
@@ -61,7 +62,9 @@ const PayoutDetail = ({ intl, post }) => {
     pastPayouts,
     authorPayouts,
     curatorPayouts,
-  } = calculatePayout(post);
+    HBDPayout,
+    WAIVPayout,
+  } = calculatePayout(post, rates);
   const beneficaries = getBeneficaries(post);
 
   if (isPayoutDeclined) {
@@ -79,24 +82,28 @@ const PayoutDetail = ({ intl, post }) => {
       <AmountWithLabel
         nonzero
         id="payout_promoted_amount"
-        defaultMessage="Promoted: {amount}"
+        defaultMessage="Promoted:"
         amount={promotionCost}
       />
       {isPostCashout(post) ? (
         <div>
           <AmountWithLabel
             id="payout_total_past_payout_amount"
-            defaultMessage="Total Past Payouts: {amount}"
-            amount={pastPayouts}
+            defaultMessage="Total Past Payouts:"
+          />
+          <PayoutCurrencyBlock
+            HBDPayout={HBDPayout}
+            WAIVPayout={WAIVPayout}
+            totalPayout={pastPayouts}
           />
           <AmountWithLabel
             id="payout_author_payout_amount"
-            defaultMessage="Author Payout: {amount}"
+            defaultMessage="Author Payout:"
             amount={authorPayouts}
           />
           <AmountWithLabel
             id="payout_curators_payout_amount"
-            defaultMessage="Curators payout: {amount}"
+            defaultMessage="Curators payout:"
             amount={curatorPayouts}
           />
         </div>
@@ -107,17 +114,24 @@ const PayoutDetail = ({ intl, post }) => {
             defaultMessage="Potential Payout: {amount}"
             amount={potentialPayout}
           />
-          {beneficaries}
-          <FormattedMessage
-            id="payout_will_release_in_time"
-            defaultMessage="Will release {time}"
-            values={{ time: intl.formatRelative(post.cashout_time) }}
+          <PayoutCurrencyBlock
+            HBDPayout={HBDPayout}
+            WAIVPayout={WAIVPayout}
+            totalPayout={potentialPayout}
           />
+          <div>
+            {beneficaries}
+            <FormattedMessage
+              id="payout_will_release_in_time"
+              defaultMessage="Will release {time}"
+              values={{ time: intl.formatRelative(post.cashout_time) }}
+            />
+          </div>
         </div>
       )}
     </div>
   );
-};
+});
 
 PayoutDetail.propTypes = {
   intl: PropTypes.shape().isRequired,

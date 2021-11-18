@@ -6,6 +6,8 @@ import { setBeneficiaryOwner } from '../searchStore/searchActions';
 import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
 import { getCurrentCurrency } from './appSelectors';
 import { setLocale } from '../settingsStore/settingsActions';
+import { adaptMarketDataToEngine } from '../../client/helpers/cryptosHelper';
+import { ADAPT_MARKET_TO_ENGINE } from '../walletStore/walletActions';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
@@ -59,6 +61,12 @@ export const getCryptoPriceHistory = (symbols, refresh = false) => dispatch => {
     payload: {
       promise: ApiClient.getWalletCryptoPriceHistory(symbols).then(response => {
         const storeObject = {};
+        const eng = adaptMarketDataToEngine(response, symbols);
+
+        dispatch({
+          type: ADAPT_MARKET_TO_ENGINE,
+          payload: eng,
+        });
 
         Object.keys(response.current).forEach(key => {
           const {
