@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
 
-const UndelegateStart = ({ timestamp, account, to, from, quantity, symbol }) => {
+const UndelegateStart = ({ timestamp, account, to, from, quantity, status }) => {
   const isReceive = account === to;
 
   const cardInfo = isReceive
     ? {
         description: (
           <span>
-            Undelegated started from{' '}
+            from{' '}
             <a href={`/@${from}`} className="username">
               {from}
             </a>
@@ -21,7 +21,7 @@ const UndelegateStart = ({ timestamp, account, to, from, quantity, symbol }) => 
     : {
         description: (
           <span>
-            Undelegated started to{' '}
+            to{' '}
             <a href={`/@${to}`} className="username">
               {to}
             </a>
@@ -35,12 +35,14 @@ const UndelegateStart = ({ timestamp, account, to, from, quantity, symbol }) => 
     <TransactionCardContainer
       timestamp={timestamp}
       iconType={'arrow-left'}
-      symbol={symbol}
+      symbol={'WP'}
       quantity={quantity}
       color={cardInfo.color}
       point={cardInfo.point}
     >
-      {cardInfo.description}
+      <span>
+        Undelegated {status} {cardInfo.description}
+      </span>
     </TransactionCardContainer>
   );
 };
@@ -51,7 +53,7 @@ UndelegateStart.propTypes = {
   to: PropTypes.string.isRequired,
   from: PropTypes.string.isRequired,
   quantity: PropTypes.string.isRequired,
-  symbol: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
 };
 
 export default UndelegateStart;

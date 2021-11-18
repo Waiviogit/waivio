@@ -262,7 +262,7 @@ class WalletTable extends React.Component {
 
     return (
       <div className="WalletTable">
-        <Link to={`/@${match.params.name}/transfers`} className="WalletTable__back-btn">
+        <Link to={`/@${match.params.name}/transfers?type=HIVE`} className="WalletTable__back-btn">
           {intl.formatMessage({
             id: 'table_back',
             defaultMessage: 'Back',

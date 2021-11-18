@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
 
-const DelegatedTo = ({ timestamp, quantity, symbol, to, from, account }) => {
+const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
   const isReceive = account === to;
 
   const cardInfo = isReceive
@@ -35,7 +35,7 @@ const DelegatedTo = ({ timestamp, quantity, symbol, to, from, account }) => {
     <TransactionCardContainer
       timestamp={timestamp}
       quantity={quantity}
-      symbol={symbol}
+      symbol={'WP'}
       iconType={'arrow-right'}
       color={cardInfo.color}
       point={cardInfo.point}
@@ -49,7 +49,6 @@ DelegatedTo.propTypes = {
   timestamp: PropTypes.number.isRequired,
   quantity: PropTypes.string.isRequired,
   to: PropTypes.string.isRequired,
-  symbol: PropTypes.string.isRequired,
   account: PropTypes.string.isRequired,
   from: PropTypes.string.isRequired,
 };

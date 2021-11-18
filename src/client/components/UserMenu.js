@@ -99,7 +99,7 @@ class UserMenu extends React.Component {
               className={this.getItemClasses('transfers')}
               onClick={this.handleClick}
               role="presentation"
-              data-key="transfers"
+              data-key="transfers?type=WAIV"
             >
               <FormattedMessage id="wallet" defaultMessage="Wallet" />
             </li>
