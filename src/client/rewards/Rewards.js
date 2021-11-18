@@ -454,53 +454,56 @@ class Rewards extends React.Component {
     const searchParams = new URLSearchParams(location.search);
     const isWidget = searchParams.get('display');
     const isReserved = searchParams.get('toReserved');
+    const actualArea = !area[0] ? [] : area;
 
     this.setState({ loadingCampaigns: true });
-    this.props.getRewardsGeneralCounts({ userName: username, sort, match, area }).then(data => {
-      const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
-      const newSponsors = sortBy(sponsors);
-      const rewardsTab = {
-        reserved: 'reserved',
-        eligible: 'active',
-        all: 'all',
-      };
+    this.props
+      .getRewardsGeneralCounts({ userName: username, sort, match, actualArea })
+      .then(data => {
+        const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
+        const newSponsors = sortBy(sponsors);
+        const rewardsTab = {
+          reserved: 'reserved',
+          eligible: 'active',
+          all: 'all',
+        };
 
-      this.setState({
-        sponsors: newSponsors,
-        hasMore,
-        campaignsTypes: campaigns_types,
-        loadingCampaigns: false,
-      });
+        this.setState({
+          sponsors: newSponsors,
+          hasMore,
+          campaignsTypes: campaigns_types,
+          loadingCampaigns: false,
+        });
 
-      if (!isWidget && !isReserved) {
-        const filterKey = match.params.filterKey;
-        const arrFilterKey = [PAYABLES, RECEIVABLES];
+        if (!isWidget && !isReserved) {
+          const filterKey = match.params.filterKey;
+          const arrFilterKey = [PAYABLES, RECEIVABLES];
 
-        if (
-          !pendingUpdate &&
-          filterKey &&
-          every(arrFilterKey, key => filterKey !== key) &&
-          !match.params.campaignParent
-        ) {
-          if (match.params.filterKey !== rewardsTab[tabType]) {
-            this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
-          }
-          if (tabType === 'reserved') {
-            this.setState({
-              propositionsReserved: campaigns,
-            });
+          if (
+            !pendingUpdate &&
+            filterKey &&
+            every(arrFilterKey, key => filterKey !== key) &&
+            !match.params.campaignParent
+          ) {
+            if (match.params.filterKey !== rewardsTab[tabType]) {
+              this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+            }
+            if (tabType === 'reserved') {
+              this.setState({
+                propositionsReserved: campaigns,
+              });
+            } else {
+              this.setState({
+                propositions: campaigns,
+              });
+            }
           } else {
-            this.setState({
-              propositions: campaigns,
-            });
+            this.setState({ url: this.props.match.url });
           }
         } else {
           this.setState({ url: this.props.match.url });
         }
-      } else {
-        this.setState({ url: this.props.match.url });
-      }
-    });
+      });
   };
 
   getPropositions = (
