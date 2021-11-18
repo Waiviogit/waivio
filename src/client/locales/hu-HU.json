@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "Biztosan véglegesen törölni kívánja ezt a piszkozatot?",
   "payout_limit_reached": "A kifizetési korlát elérte ezt a bejegyzést",
   "payout_promoted_amount": "Előléptetve: {amount}",
-  "payout_total_past_payout_amount": "Korábbi kifizetések összesen: {amount}",
+  "payout_total_past_payout_amount": "Korábbi kifizetések összesen:",
   "payout_author_payout_amount": "Szerzői kifizetés: {amount}",
   "payout_curators_payout_amount": "Kurátorok kifizetése: {amount}",
   "payout_potential_payout_amount": "Potenciális kifizetés: {amount}",

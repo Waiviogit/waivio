@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "Ви впевнені, що хочете назавжди видалити цю чернетку?",
   "payout_limit_reached": "У цій публікації досягнуто ліміту виплат",
   "payout_promoted_amount": "Просунуто: {amount}",
-  "payout_total_past_payout_amount": "Загальна сума минулих виплат: {amount}",
+  "payout_total_past_payout_amount": "Загальна сума минулих виплат:",
   "payout_author_payout_amount": "Виплата автору: {amount}",
   "payout_curators_payout_amount": "Виплата кураторів: {amount}",
   "payout_potential_payout_amount": "Потенційна виплата: {amount}",

@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { getCryptoPriceHistory, setIsMobile } from '../../../store/appStore/appActions';
 import CryptoChart from './CryptoChart';
-import { getCryptoDetails } from '../../helpers/cryptosHelper';
-import { WAIV, cryptoRatesForChart } from '../../../common/constants/cryptos';
+import { WAIV, cryptoRatesForChart, HIVE, HBD } from '../../../common/constants/cryptos';
 import { getTokenRates } from '../../../store/walletStore/walletActions';
 
 import './SidebarContentBlock.less';
@@ -42,17 +41,13 @@ class CryptoTrendingCharts extends React.Component {
     this.props.setIsMobile();
   }
 
-  cryptoSymbols =
-    this.props.cryptos.length &&
-    this.props.cryptos.map(crypto => getCryptoDetails(crypto).coinGeckoId);
-
   handleOnClickRefresh() {
     this.setState(
       {
         refreshCharts: true,
       },
       () => {
-        this.props.getCryptoPriceHistory(this.cryptoSymbols, true);
+        this.props.getCryptoPriceHistory([HIVE.coinGeckoId, HBD.coinGeckoId], true);
         this.props.getTokenRates(WAIV.symbol);
         this.setState({
           refreshCharts: false,

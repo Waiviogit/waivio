@@ -1,4 +1,4 @@
-import { some } from 'lodash';
+import { get, some } from 'lodash';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
@@ -16,6 +16,8 @@ import withAuthActions from '../../auth/withAuthActions';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './Buttons.less';
+import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
+import { getWaivVotePrice } from '../../../common/helpers';
 
 const AppendObjButtons = ({
   post,
@@ -29,6 +31,7 @@ const AppendObjButtons = ({
   handleCloseReactions,
   defaultVotePercent,
   onActionInitiated,
+  waivRates,
 }) => {
   const [key, setKey] = useState('1');
   const upVotes = getAppendUpvotes(post.active_votes).sort(sortVotes);
@@ -44,26 +47,35 @@ const AppendObjButtons = ({
     parseFloat(post.pending_payout_value) +
     parseFloat(post.total_payout_value) +
     parseFloat(post.curator_payout_value);
-  const voteRshares = post.active_votes.reduce(
-    (a, b) => a + parseFloat(b.rshares_weight || b.rshares),
-    0,
+
+  const ratio = post.vote_rshares > 0 ? totalPayout / post.vote_rshares : 0;
+  const waivRatio = getWaivVotePrice(
+    get(post, 'total_payout_WAIV', 0),
+    get(post, 'net_rshares_WAIV', 0),
+    waivRates,
   );
-  const ratio = voteRshares > 0 ? totalPayout / voteRshares : 0;
+
   const openReactionModal = tab => {
     handleShowReactions();
     setKey(tab);
   };
+
   const upVotesPreview = votes =>
-    take(votes, 10).map(vote => (
-      <p key={vote.voter}>
-        <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
-        {(vote.rshares_weight || vote.rshares) * ratio > 0.01 && (
-          <span style={{ opacity: '0.5' }}>
-            <USDDisplay value={(vote.rshares_weight || vote.rshares) * ratio} />
-          </span>
-        )}
-      </p>
-    ));
+    take(votes, 10).map(vote => {
+      const voteValue =
+        (vote.rshares_weight || vote.rshares) * ratio + get(vote, 'rsharesWAIV', 0) * waivRatio;
+
+      return (
+        <p key={vote.voter}>
+          <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
+          {voteValue > 0.01 && (
+            <span style={{ opacity: '0.5' }}>
+              <USDDisplay value={voteValue} />
+            </span>
+          )}
+        </p>
+      );
+    });
 
   const upVotesDiff = upVotes.length - upVotesPreview(upVotes).length;
   const upVotesMore = upVotesDiff > 0 && (
@@ -225,10 +237,12 @@ AppendObjButtons.propTypes = {
   handleShowReactions: PropTypes.func.isRequired,
   onActionInitiated: PropTypes.func.isRequired,
   defaultVotePercent: PropTypes.number.isRequired,
+  waivRates: PropTypes.number.isRequired,
 };
 
 AppendObjButtons.defaultProps = { userName: '' };
 
 export default connect(state => ({
   userName: getAuthenticatedUserName(state),
+  waivRates: getTokenRatesInUSD(state, 'WAIV'),
 }))(injectIntl(withAuthActions(AppendObjButtons)));

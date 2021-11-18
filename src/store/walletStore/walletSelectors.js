@@ -187,6 +187,6 @@ export const getWeeklyTokenRatesPrice = (state, token) => {
   const wallet = walletState(state);
 
   return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'weekly'], []).map(
-    price => price.change24h.USD,
+    price => price.rates.USD,
   );
 };

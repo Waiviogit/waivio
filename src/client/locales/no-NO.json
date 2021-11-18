@@ -232,7 +232,7 @@
   "draft_delete_modal_content": "Er du sikker på at du vil slette dette utkastet permanent?",
   "payout_limit_reached": "Utbetalingsgrensen er nådd på dette innholdet",
   "payout_promoted_amount": "Promotert: {amount}",
-  "payout_total_past_payout_amount": "Totalt utbetalt: {amount}",
+  "payout_total_past_payout_amount": "Totalt utbetalt:",
   "payout_author_payout_amount": "Utbetalt til forfatter: {amount}",
   "payout_curators_payout_amount": "Utbetalt til kuratorer: {amount}",
   "payout_potential_payout_amount": "Potensiell Utbetaling: {amount}",

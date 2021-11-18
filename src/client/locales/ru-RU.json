@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "Вы уверены, что вы хотите окончательно удалить этот черновик?",
   "payout_limit_reached": "Достигнут предел выплат по этому посту",
   "payout_promoted_amount": "Продвижение: {amount}",
-  "payout_total_past_payout_amount": "Всего в прошлом выплаты: {amount}",
+  "payout_total_past_payout_amount": "Всего в прошлом выплаты:",
   "payout_author_payout_amount": "Выплата Автору: {amount}",
   "payout_curators_payout_amount": "Выплата Кураторам: {amount}",
   "payout_potential_payout_amount": "Потенциальная выплата: {amount}",

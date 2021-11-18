@@ -2,15 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
+
 import { calculatePayout, isPostCashout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
 import USDDisplay from '../Utils/USDDisplay';
 import PayoutDetail from '../PayoutDetail';
+import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 
 import './Payout.less';
 
-const Payout = ({ intl, post }) => {
-  const payout = calculatePayout(post);
+const Payout = React.memo(({ intl, post }) => {
+  const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
+  const payout = calculatePayout(post, rates);
   const currentPayout = isPostCashout(post) ? payout.pastPayouts : payout.potentialPayout;
 
   return (
@@ -36,7 +40,7 @@ const Payout = ({ intl, post }) => {
       )}
     </span>
   );
-};
+});
 
 Payout.propTypes = {
   intl: PropTypes.shape().isRequired,

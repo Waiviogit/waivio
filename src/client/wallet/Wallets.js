@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Wallet from '../user/UserWallet';
 import Transfer from './Transfer/Transfer';
 import WAIVwallet from './WAIVwallet/WAIVwallet';
-import { getTokenRates, setWalletType } from '../../store/walletStore/walletActions';
+import { setWalletType } from '../../store/walletStore/walletActions';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -14,7 +14,6 @@ const Wallets = props => {
 
   useEffect(() => {
     props.setWalletType(walletsType);
-    props.getTokenRates('WAIV');
   }, []);
 
   const handleOnChange = key => {
@@ -38,7 +37,6 @@ const Wallets = props => {
 };
 
 Wallets.propTypes = {
-  getTokenRates: PropTypes.func.isRequired,
   setWalletType: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
@@ -48,4 +46,4 @@ Wallets.propTypes = {
   }).isRequired,
 };
 
-export default connect(null, { getTokenRates, setWalletType })(Wallets);
+export default connect(null, { setWalletType })(Wallets);

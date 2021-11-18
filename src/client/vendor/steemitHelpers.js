@@ -10,6 +10,8 @@ import formatter from '../helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getDownvotes } from '../helpers/voteHelpers';
 import { calculateVoteValueForSlider, getContent } from '../../waivioApi/ApiClient';
+import { useSelector } from 'react-redux';
+import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
 const dmp = new diff_match_patch();
 /**
@@ -46,23 +48,27 @@ export function parsePayoutAmount(amount) {
  * Calculates Payout Details Modified as needed
  * https://github.com/steemit/steemit.com/blob/47fd0e0846bd8c7c941ee4f95d5f971d3dc3981d/app/components/elements/Voting.jsx
  */
-export const calculatePayout = post => {
+export const calculatePayout = (post, rates) => {
   if (!post) return {};
   const payoutDetails = {};
   const { cashout_time } = post;
-
+  //need to fix on back side
+  const waivPayout = (get(post, 'total_payout_WAIV', 0) / 2) * rates;
+  const waivPayoutHalf = waivPayout / 2;
   const max_payout = parsePayoutAmount(post.max_accepted_payout);
   const pending_payout = parsePayoutAmount(post.pending_payout_value);
   const promoted = parsePayoutAmount(post.promoted);
   const total_author_payout = parsePayoutAmount(post.total_payout_value);
   const total_curator_payout = parsePayoutAmount(post.curator_payout_value);
-  let payout = pending_payout + total_author_payout + total_curator_payout;
-  if (payout < 0.0) payout = 0.0;
+  let payout = pending_payout + total_author_payout + total_curator_payout + waivPayout;
+  if (payout < 0) payout = 0.0;
   if (payout > max_payout) payout = max_payout;
 
   payoutDetails.payoutLimitHit = payout >= max_payout;
   payoutDetails.totalPayout = payout;
-  payoutDetails.potentialPayout = pending_payout;
+  payoutDetails.potentialPayout = pending_payout + waivPayout;
+  payoutDetails.HBDPayout = total_author_payout + total_curator_payout + pending_payout;
+  payoutDetails.WAIVPayout = waivPayout;
 
   if (!isPostCashout(post)) {
     payoutDetails.cashoutInTime = cashout_time + '.000Z';
@@ -79,9 +85,9 @@ export const calculatePayout = post => {
   }
 
   if (payout > 0) {
-    payoutDetails.pastPayouts = total_author_payout + total_curator_payout;
-    payoutDetails.authorPayouts = total_author_payout;
-    payoutDetails.curatorPayouts = total_curator_payout;
+    payoutDetails.pastPayouts = total_author_payout + total_curator_payout + waivPayout;
+    payoutDetails.authorPayouts = total_author_payout + waivPayoutHalf;
+    payoutDetails.curatorPayouts = total_curator_payout + waivPayoutHalf;
   }
 
   return payoutDetails;

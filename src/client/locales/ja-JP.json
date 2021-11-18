@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "このドラフトを完全に削除してもよろしいですか？",
   "payout_limit_reached": "この投稿で支払い限度額に達しました",
   "payout_promoted_amount": "昇格： {amount}",
-  "payout_total_past_payout_amount": "過去の支払い総額： {amount}",
+  "payout_total_past_payout_amount": "過去の支払い総額：",
   "payout_author_payout_amount": "著者の支払い： {amount}",
   "payout_curators_payout_amount": "キュレーターの支払い： {amount}",
   "payout_potential_payout_amount": "潜在的な支払い： {amount}",

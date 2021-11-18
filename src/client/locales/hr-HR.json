@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "Jeste li sigurni da želite trajno izbrisati ovu skicu?",
   "payout_limit_reached": "Ograničenje isplate dosegnuto na ovom postu",
   "payout_promoted_amount": "Promovirano: {amount}",
-  "payout_total_past_payout_amount": "Ukupne prošle isplate: {amount}",
+  "payout_total_past_payout_amount": "Ukupne prošle isplate:",
   "payout_author_payout_amount": "Isplata autora: {amount}",
   "payout_curators_payout_amount": "Isplata kustosa: {amount}",
   "payout_potential_payout_amount": "Potencijalna isplata: {amount}",

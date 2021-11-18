@@ -259,7 +259,7 @@
   "draft_delete_modal_content": "Sigurado ka bang nais mong permanenteng tanggalin ang draft na ito?",
   "payout_limit_reached": "Naabot ang limitasyon sa pagbabayad sa post na ito",
   "payout_promoted_amount": "Itinaguyod: {amount}",
-  "payout_total_past_payout_amount": "Kabuuang nakaraang mga pagbabayad: {amount}",
+  "payout_total_past_payout_amount": "Kabuuang nakaraang mga pagbabayad:",
   "payout_author_payout_amount": "Bayad ng may-akda: {amount}",
   "payout_curators_payout_amount": "Bayad ng mga curator: {amount}",
   "payout_potential_payout_amount": "Potensyal na pagbabayad: {amount}",
