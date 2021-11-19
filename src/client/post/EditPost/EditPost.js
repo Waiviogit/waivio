@@ -39,9 +39,9 @@ const propTypes = {
   beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
   history: PropTypes.shape().isRequired,
   editor: PropTypes.shape().isRequired,
-  currDraft: PropTypes.shape().isRequired,
+  currDraft: PropTypes.shape(),
   location: PropTypes.shape().isRequired,
-  filteredObjectsCards: PropTypes.arrayOf().isRequired,
+  filteredObjectsCards: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   handlePasteText: PropTypes.func.isRequired,
 };
 
@@ -56,6 +56,7 @@ const defaultProps = {
   saveDraft: () => {},
   isGuest: false,
   beneficiaries: [],
+  currDraft: {},
 };
 
 const EditPost = props => {

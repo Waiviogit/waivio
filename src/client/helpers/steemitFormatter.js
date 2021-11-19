@@ -9,10 +9,11 @@ const createFormatter = api => {
   }
 
   function vestingSteem(account, gprops) {
-    const vests = parseFloat(account.vesting_shares.split(' ')[0]);
-    const total_vests = parseFloat(gprops.total_vesting_shares.split(' ')[0]);
-    const total_vest_steem = parseFloat(gprops.total_vesting_fund_steem.split(' ')[0]);
+    const vests = parseFloat(account.vesting_shares);
+    const total_vests = parseFloat(gprops.total_vesting_shares);
+    const total_vest_steem = parseFloat(gprops.total_vesting_fund_hive);
     const vesting_steemf = total_vest_steem * (vests / total_vests);
+
     return vesting_steemf;
   }
 

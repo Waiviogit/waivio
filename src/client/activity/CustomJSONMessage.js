@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
-import UserActionMessage from './UserActionMessage';
 
 const CustomJSONMessage = ({ actionDetails, actionType }) => {
   const customFollowType = actionDetails.id;
@@ -95,7 +94,7 @@ const CustomJSONMessage = ({ actionDetails, actionType }) => {
       />
     );
   } else if (customFollowType === accountHistoryConstants.WOBJ_RATING) {
-    return UserActionMessage.renderDefault(actionType);
+    return actionType;
   }
 
   return null;

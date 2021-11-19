@@ -127,5 +127,5 @@ export const getTimeFromLastAction = (username, accountHistory) => {
   });
   const lastActionElement = first(actions);
 
-  return get(lastActionElement, 'timestamp', null);
+  return get(lastActionElement, 'timestamp', 0);
 };

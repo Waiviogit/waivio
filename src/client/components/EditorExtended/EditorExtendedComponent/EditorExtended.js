@@ -148,7 +148,7 @@ const propTypes = {
   initialContent: PropTypes.shape({
     body: PropTypes.string,
     title: PropTypes.string,
-  }).isRequired,
+  }),
   intl: PropTypes.shape(),
   onChange: PropTypes.func,
   draftId: PropTypes.string,
@@ -179,6 +179,10 @@ const defaultProps = {
   searchObjectsResults: [],
   getRestoreObjects: () => {},
   isStartSearchObject: false,
+  initialContent: {
+    body: '',
+    title: '',
+  },
 };
 
 Editor.propTypes = propTypes;
