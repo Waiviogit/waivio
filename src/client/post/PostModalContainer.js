@@ -7,7 +7,7 @@ import { hidePostModal as hidePostModalAction } from '../../store/appStore/appAc
 import PostModal from './PostModal';
 import { getCurrentShownPost, getShowPostModal } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
-import { getPostCities, getPostContent, getPostTags } from '../../store/postsStore/postsSelectors';
+import { getPostContent } from '../../store/postsStore/postsSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
 
 const PostModalContainer = ({
@@ -19,8 +19,6 @@ const PostModalContainer = ({
   getSocialInfoPost,
   isGuest,
   userName,
-  postTags,
-  postCities,
 }) =>
   showPostModal && (
     <PostModal
@@ -32,8 +30,6 @@ const PostModalContainer = ({
       getSocialInfoPost={getSocialInfoPost}
       isGuest={isGuest}
       username={userName}
-      postTags={postTags}
-      postCities={postCities}
     />
   );
 
@@ -46,8 +42,6 @@ PostModalContainer.propTypes = {
   getSocialInfoPost: PropTypes.func.isRequired,
   isGuest: PropTypes.bool,
   userName: PropTypes.string,
-  postTags: PropTypes.shape(),
-  postCities: PropTypes.shape(),
 };
 
 PostModalContainer.defaultProps = {
@@ -57,8 +51,6 @@ PostModalContainer.defaultProps = {
   shownPostContents: {},
   isGuest: false,
   userName: '',
-  postTags: [],
-  postCities: [],
 };
 
 export default connect(
@@ -75,8 +67,6 @@ export default connect(
       shownPostContents: getContent(state),
       isGuest: isGuestUser(state),
       userName: getAuthenticatedUserName(state),
-      postTags: getPostTags(state, { author, permlink }),
-      postCities: getPostCities(state, { author, permlink }),
     };
   },
   {

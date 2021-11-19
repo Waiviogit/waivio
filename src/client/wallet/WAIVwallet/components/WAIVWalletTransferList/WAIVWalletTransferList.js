@@ -32,7 +32,7 @@ const WAIVWalletTransferList = props => {
     <div className="WAIVWalletTransferList">
       {props.transaction.list.map(item => (
         <WAIVWalletTransferItemsSwitcher
-          key={item.transactionId}
+          key={item._id}
           transaction={item}
           currentName={props.name}
         />
@@ -45,7 +45,7 @@ WAIVWalletTransferList.propTypes = {
   getWAIVTransferList: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   transaction: PropTypes.shape({
-    list: PropTypes.arrayOf(),
+    list: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,
 };
 

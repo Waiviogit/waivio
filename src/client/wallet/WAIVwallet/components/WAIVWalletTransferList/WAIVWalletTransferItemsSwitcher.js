@@ -176,7 +176,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     from: PropTypes.string,
     memo: PropTypes.string,
     quantity: PropTypes.string,
-    timestamp: PropTypes.string,
+    timestamp: PropTypes.number,
     details: PropTypes.string,
     account: PropTypes.string,
     operation: PropTypes.string,
