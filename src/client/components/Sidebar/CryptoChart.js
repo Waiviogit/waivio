@@ -75,12 +75,22 @@ const CryptoChart = props => {
 
 CryptoChart.propTypes = {
   crypto: PropTypes.string,
-  usdPrice: PropTypes.string.isRequired,
-  usdPriceChange: PropTypes.string.isRequired,
-  currencyPrice: PropTypes.string.isRequired,
-  currencyPriceChange: PropTypes.string.isRequired,
-  currency: PropTypes.string.isRequired,
-  price: PropTypes.arrayOf(PropTypes.number).isRequired,
+  usdPrice: PropTypes.number,
+  usdPriceChange: PropTypes.number,
+  currencyPrice: PropTypes.number,
+  currencyPriceChange: PropTypes.number,
+  currency: PropTypes.string,
+  price: PropTypes.arrayOf(PropTypes.number),
+};
+
+CryptoChart.defaultProps = {
+  crypto: PropTypes.string,
+  usdPrice: 0,
+  usdPriceChange: 0,
+  currencyPrice: 0,
+  currency: '',
+  currencyPriceChange: 0,
+  price: [],
 };
 
 CryptoChart.defaultProps = {

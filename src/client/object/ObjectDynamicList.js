@@ -26,7 +26,7 @@ class ObjectDynamicList extends React.Component {
     changeCounterFollow: PropTypes.func,
     isGuest: PropTypes.bool,
     authUser: PropTypes.string,
-    limit: PropTypes.string,
+    limit: PropTypes.number,
     match: PropTypes.shape({
       params: PropTypes.shape({
         name: PropTypes.string,

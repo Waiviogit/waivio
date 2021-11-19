@@ -139,7 +139,7 @@ const HeaderButtons = props => {
         history.push('/objects');
         break;
       case 'wallet':
-        history.push(`/@${username}/transfers`);
+        history.push(`/@${username}/transfers?type=WAIV`);
         break;
       case 'my-profile':
         history.push(`/@${username}`);

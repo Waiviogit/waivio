@@ -53,7 +53,7 @@ const TransactionCardContainer = ({
 
 TransactionCardContainer.propTypes = {
   timestamp: PropTypes.number.isRequired,
-  quantity: PropTypes.string,
+  quantity: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   color: PropTypes.string,
   iconType: PropTypes.string.isRequired,
   point: PropTypes.string,

@@ -205,7 +205,7 @@ class UserInfo extends React.Component {
                           }
                         >
                           <span>
-                            <FormattedRelative value={`${lastActive}Z`} />
+                            <FormattedRelative value={lastActive} />
                           </span>
                         </BTooltip>
                       </div>
