@@ -43,7 +43,7 @@ const TokenActionInMarketCard = ({ account, symbol, quantity, timestamp, action 
 
 TokenActionInMarketCard.propTypes = {
   quantity: PropTypes.string.isRequired,
-  timestamp: PropTypes.string.isRequired,
+  timestamp: PropTypes.number.isRequired,
   account: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,

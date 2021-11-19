@@ -53,7 +53,7 @@ export default class UserProfile extends React.Component {
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
     resetProfileFilters: PropTypes.func.isRequired,
-    tagsCondition: PropTypes.arrayOf(PropTypes.string).isRequired,
+    tagsCondition: PropTypes.arrayOf(PropTypes.string),
     limit: PropTypes.number,
     getUserProfileBlogPosts: PropTypes.func,
     isGuest: PropTypes.bool,
@@ -67,6 +67,7 @@ export default class UserProfile extends React.Component {
     isGuest: false,
     history: {},
     user: {},
+    tagsCondition: [],
   };
 
   componentDidMount() {

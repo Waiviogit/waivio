@@ -212,7 +212,7 @@ export default class Buttons extends React.Component {
       parseFloat(post.total_payout_value) +
       parseFloat(post.curator_payout_value);
 
-    const ratio = post.vote_rshares > 0 ? totalPayout / post.vote_rshares : 0;
+    const ratio = post.net_rshares > 0 ? totalPayout / post.net_rshares : 0;
     const waivRatio = getWaivVotePrice(
       get(post, 'total_payout_WAIV', 0),
       get(post, 'net_rshares_WAIV', 0),
@@ -320,51 +320,49 @@ export default class Buttons extends React.Component {
 
     return (
       <div className="Buttons">
-        <React.Fragment>
-          <ReactionsModal
-            visible={this.state.reactionsModalVisible}
-            upVotes={upVotes}
-            ratio={ratio}
-            waivRatio={waivRatio}
-            downVotes={downVotes}
-            onClose={this.handleCloseReactions}
-            user={username}
-          />
-          <BTooltip title={likeTooltip}>
-            <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
-              {pendingLike ? (
-                <Icon type="loading" />
-              ) : (
-                <i
-                  className={`iconfont icon-${this.state.sliderVisible ? 'right' : 'praise_fill'}`}
-                />
-              )}
-            </a>
-          </BTooltip>
-          {post.active_votes.length > 0 && (
-            <span
-              className="Buttons__number Buttons__reactions-count"
-              role="presentation"
-              onClick={this.handleShowReactions}
+        <ReactionsModal
+          visible={this.state.reactionsModalVisible}
+          upVotes={upVotes}
+          ratio={ratio}
+          waivRatio={waivRatio}
+          downVotes={downVotes}
+          onClose={this.handleCloseReactions}
+          user={username}
+        />
+        <BTooltip title={likeTooltip}>
+          <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
+            {pendingLike ? (
+              <Icon type="loading" />
+            ) : (
+              <i
+                className={`iconfont icon-${this.state.sliderVisible ? 'right' : 'praise_fill'}`}
+              />
+            )}
+          </a>
+        </BTooltip>
+        {post.active_votes.length > 0 && (
+          <span
+            className="Buttons__number Buttons__reactions-count"
+            role="presentation"
+            onClick={this.handleShowReactions}
+          >
+            <BTooltip
+              title={
+                <div>
+                  {upVotes.length > 0 ? (
+                    upVotesPreview(upVotes)
+                  ) : (
+                    <FormattedMessage id="no_likes" defaultMessage="No likes yet" />
+                  )}
+                  {upVotesMore}
+                </div>
+              }
             >
-              <BTooltip
-                title={
-                  <div>
-                    {upVotes.length > 0 ? (
-                      upVotesPreview(upVotes)
-                    ) : (
-                      <FormattedMessage id="no_likes" defaultMessage="No likes yet" />
-                    )}
-                    {upVotesMore}
-                  </div>
-                }
-              >
-                <FormattedNumber value={upVotes.length} />
-                <span />
-              </BTooltip>
-            </span>
-          )}
-        </React.Fragment>
+              <FormattedNumber value={upVotes.length} />
+              <span />
+            </BTooltip>
+          </span>
+        )}
         <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
           <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
             <i className="iconfont icon-message_fill" />

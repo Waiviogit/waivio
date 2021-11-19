@@ -491,3 +491,18 @@ export const setWalletType = wallet => ({
   type: SET_CURRENT_WALLET,
   payload: wallet,
 });
+
+export const GET_TOKENS_BALANCE = createAsyncActionType('@wallet/GET_TOKENS_BALANCE');
+
+export const getTokenBalance = (token, name) => dispatch =>
+  dispatch({
+    type: GET_TOKENS_BALANCE.ACTION,
+    payload: ApiClient.getTokenBalance(token, name),
+    meta: token,
+  });
+
+export const RESET_TOKENS_BALANCE = '@wallet/RESET_TOKENS_BALANCE';
+
+export const resetTokenBalance = () => ({
+  type: RESET_TOKENS_BALANCE,
+});

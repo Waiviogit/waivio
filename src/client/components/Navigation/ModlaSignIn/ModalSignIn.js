@@ -301,11 +301,12 @@ ModalSignIn.propTypes = {
   history: PropTypes.shape(),
   currHost: PropTypes.string.isRequired,
   isWaivio: PropTypes.bool.isRequired,
-  domain: PropTypes.string.isRequired,
+  domain: PropTypes.string,
 };
 
 ModalSignIn.defaultProps = {
   buttonClassName: '',
+  domain: '',
   text: '',
   showModal: false,
   handleLoginModalCancel: () => {},

@@ -1202,7 +1202,7 @@ export const isUserNameVacant = userName => fetch(`${config.baseUrl}${config.use
 
 export const isUserRegistered = (id, socialNetwork) =>
   fetch(
-    `${config.baseUrl}${config.auth}/${config.hasSocialAccount}?id=${id}&provider=${socialNetwork}`,
+    `${config.baseUrl}${config.auth}${config.hasSocialAccount}?id=${id}&provider=${socialNetwork}`,
   )
     .then(data => data.json())
     .then(data => data.result);

@@ -74,7 +74,7 @@ class SubFeed extends React.Component {
     getUserFeedContent: () => {},
     getMoreUserFeedContent: () => {},
     getMoreFeedContent: () => {},
-    sortBy: () => {},
+    sortBy: '',
   };
   state = { isAuthHomeFeed: false };
 

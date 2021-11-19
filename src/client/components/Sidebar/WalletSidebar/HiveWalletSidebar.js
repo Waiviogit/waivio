@@ -37,7 +37,7 @@ class HiveWalletSidebar extends React.Component {
     user: PropTypes.shape(),
     isCurrentUser: PropTypes.bool,
     match: PropTypes.shape().isRequired,
-    cryptos: PropTypes.shape().isRequired,
+    cryptos: PropTypes.arrayOf(PropTypes.string).isRequired,
     openTransfer: PropTypes.func.isRequired,
     openPowerUpOrDown: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,

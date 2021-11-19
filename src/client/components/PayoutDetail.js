@@ -14,7 +14,7 @@ const AmountWithLabel = ({ id, defaultMessage, nonzero, amount }) =>
   isNumber(amount) &&
   (nonzero ? amount !== 0 : true) && (
     <div>
-      <FormattedMessage id={id} defaultMessage={defaultMessage} />
+      <FormattedMessage id={id} defaultMessage={defaultMessage} />{' '}
       <USDDisplay value={amount} currencyDisplay="symbol" />
     </div>
   );
@@ -53,7 +53,6 @@ const getBeneficaries = post => {
 
 const PayoutDetail = React.memo(({ intl, post }) => {
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
-
   const {
     payoutLimitHit,
     potentialPayout,
@@ -87,10 +86,10 @@ const PayoutDetail = React.memo(({ intl, post }) => {
       />
       {isPostCashout(post) ? (
         <div>
-          <AmountWithLabel
+          <FormattedMessage
             id="payout_total_past_payout_amount"
             defaultMessage="Total Past Payouts:"
-          />
+          />{' '}
           <PayoutCurrencyBlock
             HBDPayout={HBDPayout}
             WAIVPayout={WAIVPayout}
@@ -109,11 +108,10 @@ const PayoutDetail = React.memo(({ intl, post }) => {
         </div>
       ) : (
         <div>
-          <AmountWithLabel
+          <FormattedMessage
             id="payout_potential_payout_amount"
-            defaultMessage="Potential Payout: {amount}"
-            amount={potentialPayout}
-          />
+            defaultMessage="Potential Payout:"
+          />{' '}
           <PayoutCurrencyBlock
             HBDPayout={HBDPayout}
             WAIVPayout={WAIVPayout}

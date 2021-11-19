@@ -46,6 +46,10 @@ FilterPosts.propTypes = {
   setProfileFilters: PropTypes.func.isRequired,
 };
 
+FilterPosts.defaultProps = {
+  tags: [],
+};
+
 export default connect((state, props) => ({
   tags: getBlogFiltersList(state, props.name),
 }))(FilterPosts);

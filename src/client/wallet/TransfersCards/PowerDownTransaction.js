@@ -23,9 +23,13 @@ const PowerDownTransaction = ({ timestamp, amount, description, color }) => (
 
 PowerDownTransaction.propTypes = {
   timestamp: PropTypes.number.isRequired,
-  amount: PropTypes.element.isRequired,
-  color: PropTypes.string.isRequired,
+  amount: PropTypes.string.isRequired,
+  color: PropTypes.string,
   description: PropTypes.shape({}).isRequired,
+};
+
+PowerDownTransaction.defaultProps = {
+  color: '',
 };
 
 export default PowerDownTransaction;

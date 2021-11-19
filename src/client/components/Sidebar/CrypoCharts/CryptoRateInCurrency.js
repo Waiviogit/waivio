@@ -49,8 +49,8 @@ const CryptoRateInCurrency = ({
 };
 
 CryptoRateInCurrency.propTypes = {
-  currentUSDPrice: PropTypes.string.isRequired,
-  priceDifference: PropTypes.string.isRequired,
+  currentUSDPrice: PropTypes.number.isRequired,
+  priceDifference: PropTypes.number.isRequired,
   minimumFractionDigits: PropTypes.number.isRequired,
   currency: PropTypes.string.isRequired,
   valueClassName: PropTypes.string.isRequired,

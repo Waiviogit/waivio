@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
-import { ceil, get, isEmpty, truncate, isEqual } from 'lodash';
+import { ceil, get, truncate } from 'lodash';
 import {
   injectIntl,
   FormattedMessage,
@@ -12,7 +12,7 @@ import {
 } from 'react-intl';
 import urlParse from 'url-parse';
 import { calculateVotePower } from '../../helpers/user';
-import { calculateDownVote, calcReputation, dHive } from '../../vendor/steemitHelpers';
+import { calculateDownVote, calcReputation } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
@@ -38,7 +38,6 @@ class UserInfo extends React.Component {
     user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
-    match: PropTypes.shape().isRequired,
     usersAccountHistory: PropTypes.shape(),
   };
 
@@ -47,40 +46,6 @@ class UserInfo extends React.Component {
     rewardFund: {},
     rate: 0,
     usersAccountHistory: {},
-  };
-
-  state = {
-    rc_percentage: 0,
-    voting_mana: 0,
-  };
-
-  componentDidMount() {
-    this.getUserInfo();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (
-      prevProps.match.params.name !== this.props.match.params.name ||
-      !isEqual(prevProps.user, this.props.user)
-    ) {
-      this.getUserInfo();
-    }
-  }
-
-  getUserInfo = () => {
-    const { match } = this.props;
-
-    if (
-      !match.params.name.startsWith(GUEST_PREFIX) &&
-      !match.params.name.startsWith(BXY_GUEST_PREFIX)
-    ) {
-      dHive.rc
-        .getRCMana(match.params.name)
-        .then(res => this.setState({ rc_percentage: res.percentage }));
-      if (!isEmpty(this.props.user._id)) {
-        this.setState({ voting_mana: dHive.rc.calculateVPMana(this.props.user).percentage });
-      }
-    }
   };
 
   render() {
@@ -115,8 +80,8 @@ class UserInfo extends React.Component {
 
     const voteWorth =
       user && rewardFund && rate ? ceil(calculateVotePower(user, rewardFund, rate), 3) : 0;
-    const rc = this.state.rc_percentage ? this.state.rc_percentage / 100 : 0;
-    const votingMana = this.state.voting_mana ? this.state.voting_mana / 100 : 0;
+    const rc = user.rc_percentage ? user.rc_percentage / 100 : 0;
+    const votingMana = user.voting_mana ? user.voting_mana / 100 : 0;
 
     return (
       <div className="UserInfo">
@@ -205,7 +170,7 @@ class UserInfo extends React.Component {
                           }
                         >
                           <span>
-                            <FormattedRelative value={`${lastActive}Z`} />
+                            <FormattedRelative value={lastActive} />
                           </span>
                         </BTooltip>
                       </div>

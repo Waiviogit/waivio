@@ -41,7 +41,7 @@ const UndelegateStart = ({ timestamp, account, to, from, quantity, status }) => 
       point={cardInfo.point}
     >
       <span>
-        Undelegated {status} {cardInfo.description}
+        Undelegated {status} {(to || from) && cardInfo.description}
       </span>
     </TransactionCardContainer>
   );
@@ -50,10 +50,15 @@ const UndelegateStart = ({ timestamp, account, to, from, quantity, status }) => 
 UndelegateStart.propTypes = {
   timestamp: PropTypes.number.isRequired,
   account: PropTypes.string.isRequired,
-  to: PropTypes.string.isRequired,
-  from: PropTypes.string.isRequired,
+  to: PropTypes.string,
+  from: PropTypes.string,
   quantity: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+};
+
+UndelegateStart.defaultProps = {
+  to: '',
+  from: '',
 };
 
 export default UndelegateStart;

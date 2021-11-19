@@ -18,10 +18,6 @@ class UserActionMessage extends React.Component {
     currentUsername: PropTypes.string.isRequired,
   };
 
-  static renderDefault(actionType) {
-    return <FormattedMessage id={actionType} defaultMessage={actionType} />;
-  }
-
   renderFormattedMessage() {
     const {
       actionType,
@@ -187,7 +183,7 @@ class UserActionMessage extends React.Component {
           />
         );
       default:
-        return UserActionMessage.renderDefault(actionType);
+        return actionType;
     }
   }
   render() {
