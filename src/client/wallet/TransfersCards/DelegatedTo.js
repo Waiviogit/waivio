@@ -9,7 +9,7 @@ const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
     ? {
         description: (
           <span>
-            Delegated from{' '}
+            from{' '}
             <a href={`/@${from}`} className="username">
               {from}
             </a>
@@ -21,7 +21,7 @@ const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
     : {
         description: (
           <span>
-            Delegated to{' '}
+            to{' '}
             <a href={`/@${to}`} className="username">
               {to}
             </a>
@@ -40,7 +40,7 @@ const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
       color={cardInfo.color}
       point={cardInfo.point}
     >
-      {cardInfo.description}
+      Delegated {to || (from && cardInfo.description)}
     </TransactionCardContainer>
   );
 };
