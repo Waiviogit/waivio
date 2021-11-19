@@ -373,6 +373,21 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         currentWallet: action.payload,
       };
+
+    case walletActions.GET_TOKENS_BALANCE.SUCCESS:
+      return {
+        ...state,
+        userBalances: {
+          ...state.userBalances,
+          [action.meta]: action.payload,
+        },
+      };
+
+    case walletActions.RESET_TOKENS_BALANCE:
+      return {
+        ...state,
+        userBalances: {},
+      };
     default:
       return state;
   }

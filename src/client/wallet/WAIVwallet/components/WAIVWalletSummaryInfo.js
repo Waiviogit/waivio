@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { round, get, isNil } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedNumber } from 'react-intl';
 
 import WalletSummaryInfo from '../../WalletSummaryInfo/WalletSummaryInfo';
-import { getTokenRatesInUSD } from '../../../../store/walletStore/walletSelectors';
+import {
+  getTokenRatesInUSD,
+  getUserCurrencyBalance,
+} from '../../../../store/walletStore/walletSelectors';
 import Loading from '../../../components/Icon/Loading';
-import { getTokenBalance } from '../../../../waivioApi/ApiClient';
+import { getTokenBalance, resetTokenBalance } from '../../../../store/walletStore/walletActions';
 
 const WAIVWalletSummaryInfo = props => {
-  const [currencyInfo, setCurrencyInfo] = useState({});
-  const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
-  const balance = get(currencyInfo, 'balance', 0);
-  const stake = get(currencyInfo, 'stake', 0);
-  const estAccValue = rates * (Number(balance) + Number(stake));
+  const balance = get(props.currencyInfo, 'balance', 0);
+  const stake = get(props.currencyInfo, 'stake', 0);
+  const estAccValue = props.rates * (Number(balance) + Number(stake));
 
   useEffect(() => {
-    getTokenBalance('WAIV', props.name).then(res => setCurrencyInfo(res));
+    props.getTokenBalance('WAIV', props.name);
+
+    return () => props.resetTokenBalance();
   }, []);
 
   const formattedNumber = num => {
@@ -55,6 +58,19 @@ const WAIVWalletSummaryInfo = props => {
 
 WAIVWalletSummaryInfo.propTypes = {
   name: PropTypes.string.isRequired,
+  currencyInfo: PropTypes.shape({}).isRequired,
+  getTokenBalance: PropTypes.func.isRequired,
+  resetTokenBalance: PropTypes.func.isRequired,
+  rates: PropTypes.number.isRequired,
 };
 
-export default WAIVWalletSummaryInfo;
+export default connect(
+  state => ({
+    currencyInfo: getUserCurrencyBalance(state, 'WAIV'),
+    rates: getTokenRatesInUSD(state, 'WAIV'),
+  }),
+  {
+    getTokenBalance,
+    resetTokenBalance,
+  },
+)(WAIVWalletSummaryInfo);

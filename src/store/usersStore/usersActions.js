@@ -10,7 +10,7 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../authStore/authSelectors';
-import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
+import { dHive, getLastBlockNum } from '../../client/vendor/steemitHelpers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
@@ -20,7 +20,16 @@ export const getUserAccount = name => (dispatch, getState) => {
 
   return dispatch({
     type: GET_ACCOUNT.ACTION,
-    payload: ApiClient.getUserAccount(name, false, authUser),
+    payload: ApiClient.getUserAccount(name, false, authUser).then(async res => {
+      const rc = await dHive.rc.getRCMana(name);
+      const voting_mana = await dHive.rc.calculateVPMana(res);
+
+      return {
+        ...res,
+        rc_percentage: rc.percentage,
+        voting_mana: voting_mana.percentage,
+      };
+    }),
     meta: { username: name },
   });
 };

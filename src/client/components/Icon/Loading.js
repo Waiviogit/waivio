@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import { Icon } from 'antd';
 import './Loading.less';
 
-const Loading = ({ center, ...restProps }) => (
-  <div className={classNames('Loading', { 'Loading--center': center })} {...restProps}>
+const Loading = ({ center }) => (
+  <div className={classNames('Loading', { 'Loading--center': center })}>
     <Icon className="Loading__icon" type="loading" />
   </div>
 );

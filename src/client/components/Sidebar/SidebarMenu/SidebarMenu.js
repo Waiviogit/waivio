@@ -62,9 +62,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
         role="presentation"
         onClick={toggleBlock(menuSection)}
       >
-        <span className="collapsible-block__title-text">
-          {intl.formatMessage({ id: menuSection.intlId, defaultMessage: menuSection.name })}
-        </span>
+        <span className="collapsible-block__title-text">{menuSection.name}</span>
         <span className="collapsible-block__title-icon">
           {menuState[menuSection.name].isCollapsed ? (
             <i className="iconfont icon-addition" />

@@ -190,3 +190,10 @@ export const getWeeklyTokenRatesPrice = (state, token) => {
     price => price.rates.USD,
   );
 };
+
+// get weekle price for chart
+export const getUserCurrencyBalance = (state, token) => {
+  const wallet = walletState(state);
+
+  return get(wallet.userBalances, token, {});
+};

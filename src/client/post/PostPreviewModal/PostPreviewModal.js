@@ -33,9 +33,9 @@ class PostPreviewModal extends Component {
       reward: PropTypes.oneOf([rewardsValues.none, rewardsValues.half, rewardsValues.all]),
       beneficiary: PropTypes.bool,
       upvote: PropTypes.bool,
-    }).isRequired,
-    content: PropTypes.string.isRequired,
-    topics: PropTypes.arrayOf(PropTypes.string).isRequired,
+    }),
+    content: PropTypes.string,
+    topics: PropTypes.arrayOf(PropTypes.string),
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
     reviewData: PropTypes.shape({
       reviewer: PropTypes.shape(),
@@ -55,11 +55,18 @@ class PostPreviewModal extends Component {
     intl: {},
     isPublishing: false,
     linkedObjects: [],
+    topics: [],
     objPercentage: {},
     reviewData: null,
     isUpdating: false,
     isGuest: false,
     titleValue: '',
+    content: '',
+    settings: {
+      reward: rewardsValues.none,
+      beneficiary: false,
+      upvote: false,
+    },
   };
 
   constructor(props) {
