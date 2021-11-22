@@ -61,14 +61,16 @@ export const calculatePayout = (post, rates) => {
   const total_author_payout = parsePayoutAmount(post.total_payout_value);
   const total_curator_payout = parsePayoutAmount(post.curator_payout_value);
   let payout = pending_payout + total_author_payout + total_curator_payout + waivPayout;
+  const hivePayout = total_author_payout + total_curator_payout + pending_payout;
+  const hbdPercent = post.percent_hbd ? 0.25 : 0;
   if (payout < 0) payout = 0.0;
   if (payout > max_payout) payout = max_payout;
-
   payoutDetails.payoutLimitHit = payout >= max_payout;
   payoutDetails.totalPayout = payout;
   payoutDetails.potentialPayout = pending_payout + waivPayout;
-  payoutDetails.HBDPayout = total_author_payout + total_curator_payout + pending_payout;
+  payoutDetails.HBDPayout = hivePayout * hbdPercent;
   payoutDetails.WAIVPayout = waivPayout;
+  payoutDetails.HIVEPayout = hivePayout - payoutDetails.HBDPayout;
 
   if (!isPostCashout(post)) {
     payoutDetails.cashoutInTime = cashout_time + '.000Z';

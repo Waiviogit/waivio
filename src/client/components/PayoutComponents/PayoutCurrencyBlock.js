@@ -11,6 +11,9 @@ const PayoutCurrencyBlock = props => (
         HBD: <USDDisplay value={props.HBDPayout} currencyDisplay="symbol" />
       </div>
       <div>
+        HIVE: <USDDisplay value={props.HIVEPayout} currencyDisplay="symbol" />
+      </div>
+      <div>
         WAIV: <USDDisplay value={props.WAIVPayout} currencyDisplay="symbol" />
       </div>
     </div>
@@ -27,6 +30,7 @@ PayoutCurrencyBlock.propTypes = {
   totalPayout: PropTypes.number.isRequired,
   WAIVPayout: PropTypes.number.isRequired,
   HBDPayout: PropTypes.number.isRequired,
+  HIVEPayout: PropTypes.number.isRequired,
 };
 
 export default PayoutCurrencyBlock;

@@ -1,6 +1,8 @@
 import { last, get } from 'lodash';
+import moment from 'moment';
 import { createSelector } from 'reselect';
 import { CRYPTO_MAP } from '../../common/constants/cryptos';
+import { getLocale } from '../settingsStore/settingsSelectors';
 
 // selector
 export const walletState = state => state.wallet;
@@ -185,10 +187,14 @@ export const getTokenRatesInSelectCurrencyChanged = (state, token, currency) => 
 // get weekle price for chart
 export const getWeeklyTokenRatesPrice = (state, token) => {
   const wallet = walletState(state);
+  const locale = getLocale(state);
 
-  return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'weekly'], []).map(
-    price => price.rates.USD,
-  );
+  return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'weekly'], []).map(price => ({
+    price: price.rates.USD,
+    day: moment(price.dateString)
+      .locale(locale)
+      .format('ddd'),
+  }));
 };
 
 // get weekle price for chart

@@ -11,6 +11,7 @@ import {
   isGuestUser,
 } from '../authStore/authSelectors';
 import { dHive, getLastBlockNum } from '../../client/vendor/steemitHelpers';
+import { guestUserRegex } from '../../client/helpers/regexHelpers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
@@ -21,14 +22,18 @@ export const getUserAccount = name => (dispatch, getState) => {
   return dispatch({
     type: GET_ACCOUNT.ACTION,
     payload: ApiClient.getUserAccount(name, false, authUser).then(async res => {
-      const rc = await dHive.rc.getRCMana(name);
-      const voting_mana = await dHive.rc.calculateVPMana(res);
+      const data = { ...res };
+      const isGuest = guestUserRegex.test(name);
 
-      return {
-        ...res,
-        rc_percentage: rc.percentage,
-        voting_mana: voting_mana.percentage,
-      };
+      if (!isGuest) {
+        const rc = await dHive.rc.getRCMana(name);
+        const voting_mana = await dHive.rc.calculateVPMana(res);
+
+        data.rc_percentage = rc;
+        data.voting_mana = voting_mana.percentage;
+      }
+
+      return data;
     }),
     meta: { username: name },
   });

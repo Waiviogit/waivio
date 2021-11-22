@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { FormattedNumber } from 'react-intl';
 import React from 'react';
 import PropTypes from 'prop-types';
+import USDDisplay from '../../Utils/USDDisplay';
 
 const CryptoRateInCurrency = ({
   currentUSDPrice,
@@ -18,8 +19,17 @@ const CryptoRateInCurrency = ({
   return (
     <div className="CryptoTrendingCharts__chart-value">
       <span className={valueClassName}>
-        <FormattedNumber value={currentUSDPrice} minimumFractionDigits={minimumFractionDigits} />{' '}
-        {currency}
+        {currency ? (
+          <React.Fragment>
+            <FormattedNumber
+              value={currentUSDPrice}
+              minimumFractionDigits={minimumFractionDigits}
+            />{' '}
+            {currency}
+          </React.Fragment>
+        ) : (
+          <USDDisplay value={currentUSDPrice} currencyDisplay={'code'} />
+        )}
       </span>
       <span
         className={classNames('CryptoTrendingCharts__chart-percent', {
@@ -52,8 +62,12 @@ CryptoRateInCurrency.propTypes = {
   currentUSDPrice: PropTypes.number.isRequired,
   priceDifference: PropTypes.number.isRequired,
   minimumFractionDigits: PropTypes.number.isRequired,
-  currency: PropTypes.string.isRequired,
+  currency: PropTypes.string,
   valueClassName: PropTypes.string.isRequired,
+};
+
+CryptoRateInCurrency.defaultProps = {
+  currency: '',
 };
 
 export default CryptoRateInCurrency;
