@@ -63,6 +63,7 @@ const PayoutDetail = React.memo(({ intl, post }) => {
     curatorPayouts,
     HBDPayout,
     WAIVPayout,
+    HIVEPayout,
   } = calculatePayout(post, rates);
   const beneficaries = getBeneficaries(post);
 
@@ -92,6 +93,7 @@ const PayoutDetail = React.memo(({ intl, post }) => {
           />{' '}
           <PayoutCurrencyBlock
             HBDPayout={HBDPayout}
+            HIVEPayout={HIVEPayout}
             WAIVPayout={WAIVPayout}
             totalPayout={pastPayouts}
           />
@@ -115,6 +117,7 @@ const PayoutDetail = React.memo(({ intl, post }) => {
           <PayoutCurrencyBlock
             HBDPayout={HBDPayout}
             WAIVPayout={WAIVPayout}
+            HIVEPayout={HIVEPayout}
             totalPayout={potentialPayout}
           />
           <div>
