@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import UserInfo from './UserInfo';
+import UserInfo from './UserInfo/UserInfo';
 import SettingsSidenav from '../../components/Navigation/SettingsSidenav/SettingsSidenav';
 import SidebarMenu from '../../components/Sidebar/SidebarMenu';
 import SidenavRewards from '../../components/Navigation/SidenavRewards';

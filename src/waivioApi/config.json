@@ -143,5 +143,6 @@
   "lastPost": "/last-post",
   "requiredObject": "/required-object",
   "engineRates": "/engine-rates",
+  "voteValueInfo": "/vote-value-info",
   "getMatchBots": "/match-bots"
 }

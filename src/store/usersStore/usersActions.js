@@ -22,15 +22,21 @@ export const getUserAccount = name => (dispatch, getState) => {
   return dispatch({
     type: GET_ACCOUNT.ACTION,
     payload: ApiClient.getUserAccount(name, false, authUser).then(async res => {
-      const data = { ...res };
       const isGuest = guestUserRegex.test(name);
+      const data = { ...res };
 
       if (!isGuest) {
         const rc = await dHive.rc.getRCMana(name);
         const voting_mana = await dHive.rc.calculateVPMana(res);
+        const waivVotingMana = await ApiClient.getWaivVoteMana(name);
+        const userVoteValue = await ApiClient.getUserVoteValueInfo(name);
 
-        data.rc_percentage = rc;
-        data.voting_mana = voting_mana.percentage;
+        data.rc_percentage = rc.percentage * 0.01;
+        data.voting_mana = voting_mana.percentage * 0.01;
+        data.waivVotingPower = waivVotingMana.votingPower * 0.01;
+        data.waivDownvotingPower = waivVotingMana.downvotingPower * 0.01;
+        data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
+        data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
       }
 
       return data;

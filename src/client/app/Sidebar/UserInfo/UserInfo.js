@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
-import { ceil, get, truncate } from 'lodash';
+import { get, truncate } from 'lodash';
 import {
   injectIntl,
   FormattedMessage,
@@ -11,33 +11,38 @@ import {
   FormattedRelative,
 } from 'react-intl';
 import urlParse from 'url-parse';
-import { calculateVotePower } from '../../helpers/user';
-import { calculateDownVote, calcReputation } from '../../vendor/steemitHelpers';
-import SocialLinks from '../../components/SocialLinks';
-import USDDisplay from '../../components/Utils/USDDisplay';
-import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
-import { getMetadata } from '../../helpers/postingMetadata';
-import BTooltip from '../../components/BTooltip';
-import { getTimeFromLastAction } from '../../helpers/accountHistoryHelper';
-import { guestUserRegex } from '../../helpers/regexHelpers';
-import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
-import { getAllUsers, getUser } from '../../../store/usersStore/usersSelectors';
-import { getUsersAccountHistory } from '../../../store/walletStore/walletSelectors';
+import { calculateDownVote, calcReputation } from '../../../vendor/steemitHelpers';
+import SocialLinks from '../../../components/SocialLinks';
+import USDDisplay from '../../../components/Utils/USDDisplay';
+import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../../common/constants/waivio';
+import { getMetadata } from '../../../helpers/postingMetadata';
+import BTooltip from '../../../components/BTooltip';
+import { getTimeFromLastAction } from '../../../helpers/accountHistoryHelper';
+import { guestUserRegex } from '../../../helpers/regexHelpers';
+import { getRate, getRewardFund, getWeightValue } from '../../../../store/appStore/appSelectors';
+import { getUser } from '../../../../store/usersStore/usersSelectors';
+import { getUsersAccountHistory } from '../../../../store/walletStore/walletSelectors';
+import WeightDisplay from '../../../components/Utils/WeightDisplay';
+import WAIVtokenInfo from './WAIVtokenInfo';
+import HIVEtokenInfo from './HIVEtokenInfo';
 
 @injectIntl
-@connect((state, ownProps) => ({
-  user: getUser(state, ownProps.match.params.name),
-  rewardFund: getRewardFund(state),
-  rate: getRate(state),
-  allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
-  usersAccountHistory: getUsersAccountHistory(state),
-}))
+@connect((state, ownProps) => {
+  const user = getUser(state, ownProps.match.params.name);
+
+  return {
+    user,
+    rewardFund: getRewardFund(state),
+    rate: getRate(state),
+    usersAccountHistory: getUsersAccountHistory(state),
+    weightValue: getWeightValue(state, user.wobjects_weight),
+  };
+})
 class UserInfo extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape(),
-    rewardFund: PropTypes.shape(),
-    rate: PropTypes.number,
+    weightValue: PropTypes.number,
     usersAccountHistory: PropTypes.shape(),
   };
 
@@ -45,19 +50,21 @@ class UserInfo extends React.Component {
     user: {},
     rewardFund: {},
     rate: 0,
+    weightValue: 0,
     usersAccountHistory: {},
   };
 
   render() {
-    const { intl, user, rewardFund, rate, usersAccountHistory } = this.props;
+    const { intl, user, usersAccountHistory } = this.props;
     const isGuestPage = guestUserRegex.test(user && user.name);
     let metadata = {};
     let location = null;
     let profile = {};
     let website = null;
     let about = null;
-    const lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
     let email;
+    const lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
+    const totalVotePrice = user.hiveVotingPowerPrice + user.waivVotingPowerPrice;
 
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
       metadata = getMetadata(user);
@@ -77,11 +84,6 @@ class UserInfo extends React.Component {
     if (hostWithoutWWW.indexOf('www.') === 0) {
       hostWithoutWWW = hostWithoutWWW.slice(4);
     }
-
-    const voteWorth =
-      user && rewardFund && rate ? ceil(calculateVotePower(user, rewardFund, rate), 3) : 0;
-    const rc = user.rc_percentage ? user.rc_percentage / 100 : 0;
-    const votingMana = user.voting_mana ? user.voting_mana / 100 : 0;
 
     return (
       <div className="UserInfo">
@@ -129,35 +131,17 @@ class UserInfo extends React.Component {
                     }}
                   />
                 </div>
-                {!!calcReputation(user.reputation) && (
-                  <div>
-                    <i className="hashtag text-icon">#</i>
-                    <FormattedMessage id="steem_reputation" defaultMessage="Hive reputation" />
-                    :&nbsp;{calcReputation(user.reputation)}
-                  </div>
-                )}
+                <div>
+                  <i className="hashtag text-icon">#</i>
+                  <FormattedMessage id="expertise" defaultMessage="Expertise" />
+                  :&nbsp;
+                  <WeightDisplay value={this.props.weightValue} />
+                </div>
                 {user &&
                   user.name &&
                   !user.name.startsWith(GUEST_PREFIX) &&
                   !user.name.startsWith(BXY_GUEST_PREFIX) && (
                     <React.Fragment>
-                      <div>
-                        <i className="iconfont icon-praise text-icon" />
-                        <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
-                        <span>{votingMana}%</span>
-                      </div>
-                      <div>
-                        <i className="iconfont icon-praise Comment__icon_dislike text-icon" />
-                        <FormattedMessage
-                          id="downvoting_mana"
-                          defaultMessage="Downvoting mana"
-                        />: <span>{calculateDownVote(user)}%</span>
-                      </div>
-                      <div>
-                        <i className="iconfont icon-flashlight text-icon" />
-                        <FormattedMessage id="resource_credits" defaultMessage="Resource credits" />
-                        <span>: {rc}%</span>
-                      </div>
                       <div>
                         <i className="iconfont icon-time text-icon" />
                         <FormattedMessage id="active_info" defaultMessage="Active" />: &nbsp;
@@ -177,16 +161,24 @@ class UserInfo extends React.Component {
                       <div>
                         <i className="iconfont icon-dollar text-icon" />
                         <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-                        {isNaN(voteWorth) ? (
-                          <Icon type="loading" className="text-icon-right" />
-                        ) : (
-                          <USDDisplay value={voteWorth} />
-                        )}
+                        <USDDisplay value={totalVotePrice} />
                       </div>
                     </React.Fragment>
                   )}
                 <SocialLinks profile={profile} />
               </div>
+              <WAIVtokenInfo
+                votingPower={user.waivVotingPower}
+                downVotingPower={user.waivDownvotingPower}
+                votePrice={user.waivVotingPowerPrice}
+              />
+              <HIVEtokenInfo
+                downVotingMana={calculateDownVote(user)}
+                rc={user.rc_percentage}
+                reputation={calcReputation(user.reputation)}
+                votingMana={user.voting_mana}
+                votePrice={user.hiveVotingPowerPrice}
+              />
             </div>
           </div>
         )}

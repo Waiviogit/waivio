@@ -60,7 +60,7 @@ export default {
     import('../../client/object/ObjectOfTypePage/ObjectOfTypePage'),
   ),
   SubFeed: loableComponent(import('../../client/feed/SubFeed')),
-  UserInfo: loableComponent(import('../../client/app/Sidebar/UserInfo')),
+  UserInfo: loableComponent(import('../../client/app/Sidebar/UserInfo/UserInfo')),
   ConfirmationModal: loableComponent(import('../../client/widgets/ConfirmationModal')),
   RewardsComponent: loableComponent(
     import('../../client/rewards/RewardsComponent/RewardsComponent'),
