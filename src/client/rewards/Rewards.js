@@ -221,7 +221,7 @@ class Rewards extends React.Component {
       getCryptoPriceHistory: getCryptoPriceHistoryAction,
       location,
     } = this.props;
-    const { sortAll, sortEligible, sortReserved, url, activeFilters } = this.state;
+    const { sortAll, sortEligible, sortReserved, url } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
 
     if (authenticated) this.props.checkExpiredPayment(username);
@@ -246,16 +246,6 @@ class Rewards extends React.Component {
     const { area } = this.state;
 
     if (username && !url) this.getPropositionsByStatus({ username, sort, area });
-    const linkForReserveEligible = `/rewards/active/${match.params.campaignParent}/`;
-    const fromWidgetUrl = isEqual(linkForReserveEligible, match.url);
-    const keys = ['active', 'reserved'];
-
-    if (
-      (!authenticated && match.params.filterKey === 'all') ||
-      every(keys, key => match.params.filterKey !== key) ||
-      fromWidgetUrl
-    )
-      this.getPropositions({ username, match, activeFilters, sort, area, authenticated });
   }
 
   componentWillReceiveProps(nextProps) {
