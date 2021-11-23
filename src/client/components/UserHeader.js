@@ -19,9 +19,9 @@ import MuteModal from '../widgets/MuteModal';
 import UserPopoverMenu from './UserPopoverMenu';
 import { getIsMobile } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getImagePathPost } from '../helpers/image';
 
 import './UserHeader.less';
-import { getImagePathPost } from '../helpers/image';
 
 const UserHeader = ({
   username,

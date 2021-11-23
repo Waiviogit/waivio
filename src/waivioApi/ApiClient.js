@@ -21,6 +21,8 @@ let headers = {
   ...isMobileDevice(),
 };
 
+const WAIVIdPool = 13;
+
 export function handleErrors(response) {
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -2304,6 +2306,17 @@ export const getTokensEngineRates = currency => {
     .catch(e => e);
 };
 
+export const getUserVoteValueInfo = userName => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.voteValueInfo}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const getTokensTransferList = (symbol, account, offset = 0, limit = 50) => {
   return fetch(
     `https://accounts.hive-engine.com/accountHistory?account=${account}&limit=${limit}&offset=${offset}&symbol=${symbol}`,
@@ -2315,6 +2328,27 @@ export const getTokensTransferList = (symbol, account, offset = 0, limit = 50) =
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
+    .catch(e => e);
+};
+
+export const getWaivVoteMana = account => {
+  return fetch('https://ha.herpc.dtools.dev/contracts', {
+    headers,
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 10,
+      method: 'find',
+      params: {
+        contract: 'comments',
+        table: 'votingPower',
+        query: { rewardPoolId: WAIVIdPool, account },
+      },
+    }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result[0])
     .catch(e => e);
 };
 
