@@ -11,7 +11,7 @@
     flex-direction: column;
     padding-bottom: 20px;
     margin: 0;
-    color: @white;
+    color: @grey-gondola;
     align-items: center;
 
     @media @small {
@@ -25,6 +25,14 @@
     }
   }
 
+  &__name {
+    font-weight: 700;
+  }
+
+  &__nick {
+    color: @blue-botticelli;
+  }
+
   &--cover {
     background-color: darken(@primary-color, 25%) !important;
 
@@ -32,6 +40,9 @@
     .UserHeader__rank & > i,
     .UserHeader__handle,
     .UserHeader__user__username,
+    .UserHeader__voteValue,
+    .UserHeader__nick,
+    .UserHeader__name,
     .UserHeader__follows-you {
       color: @white !important;
       text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
@@ -144,7 +155,6 @@
   &__voteValue {
     display: flex;
     align-items: center;
-    color: @white;
     padding-left: 10px;
   }
 
@@ -169,15 +179,22 @@
 
   &__edit {
     background: #9faeba;
-    border-color: #7c92a0;
+    border: 1px solid @regent-gray;
     white-space: nowrap;
     color: @white;
     border-radius: 4px;
     height: 30px;
     padding: 0 15px;
     text-align: center;
-    box-shadow: 0 2px 0 rgb(0 0 0 / 2%);
     line-height: 30px;
+    outline: none;
+    transition: 0.5s;
+
+    &:hover {
+      color: @white;
+      background: #8195a4;
+      border: 1px solid #657d8c;
+    }
   }
 
   &__container {
@@ -189,7 +206,7 @@
     flex-direction: column;
 
     &--active {
-      position: absolute;
+      position: relative;
       left: 75px;
       bottom: 35px;
       width: 25px;
@@ -216,10 +233,6 @@
     & > span {
       margin-left: 4px;
     }
-  }
-
-  &__name {
-    color: @white;
   }
 }
 
