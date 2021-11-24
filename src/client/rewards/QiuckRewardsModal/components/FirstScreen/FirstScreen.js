@@ -89,7 +89,7 @@ const ModalFirstScreen = props => {
   return (
     <div className="FirstScreen">
       <div className="FirstScreen__selectBlock">
-        <h4 className="FirstScreen__title">Select a restaurant</h4>
+        <h4 className="FirstScreen__title">Select restaurant</h4>
         {props.selectedRestaurant ? (
           <ObjectCardView
             wObject={props.selectedRestaurant}
@@ -137,7 +137,7 @@ const ModalFirstScreen = props => {
         )}
       </div>
       <div className="FirstScreen__selectBlock">
-        <h4 className="FirstScreen__title">Select a dish</h4>
+        <h4 className="FirstScreen__title">Select dish</h4>
         {props.selectedDish ? (
           <ObjectCardView
             wObject={props.selectedDish}
