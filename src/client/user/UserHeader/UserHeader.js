@@ -121,7 +121,7 @@ const UserHeader = ({
             {!isMobileDevice && buttons}
           </div>
           <div className="UserHeader__userInfo">
-            <span>
+            <span className="UserHeader__nick">
               @{user.name}
               {isGuest && guestPrefix}
             </span>
