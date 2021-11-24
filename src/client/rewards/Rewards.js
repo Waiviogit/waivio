@@ -246,16 +246,11 @@ class Rewards extends React.Component {
     const { area } = this.state;
 
     if (username && !url) this.getPropositionsByStatus({ username, sort, area });
-    const linkForReserveEligible = `/rewards/active/${match.params.campaignParent}/`;
-    const fromWidgetUrl = isEqual(linkForReserveEligible, match.url);
-    const keys = ['active', 'reserved'];
 
-    if (
-      (!authenticated && match.params.filterKey === 'all') ||
-      every(keys, key => match.params.filterKey !== key) ||
-      fromWidgetUrl
-    )
-      this.getPropositions({ username, match, activeFilters, sort, area, authenticated });
+    const actualArea = !area[0] ? [] : area;
+
+    if (!authenticated && match.params.filterKey === 'all')
+      this.getPropositions({ username, match, activeFilters, sort, actualArea, authenticated });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -454,6 +449,7 @@ class Rewards extends React.Component {
     const searchParams = new URLSearchParams(location.search);
     const isWidget = searchParams.get('display');
     const isReserved = searchParams.get('toReserved');
+
     const actualArea = !area[0] ? [] : area;
 
     this.setState({ loadingCampaigns: true });

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import UserHeader from '../components/UserHeader';
+import UserHeader from './UserHeader/UserHeader';
 import UserMenu from '../components/UserMenu';
 import Hero from '../components/Hero';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
@@ -56,23 +56,11 @@ const isUserActive = user =>
       5 * 60 * 1000,
   );
 
-const UserHero = ({
-  authenticated,
-  user,
-  username,
-  isSameUser,
-  coverImage,
-  hasCover,
-  isFollowing,
-  onTransferClick,
-  rewardFund,
-  rate,
-  isGuest,
-}) => {
-  const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
-  const usersFollowingCount = user.users_following_count ? user.users_following_count : 0;
+const UserHero = ({ authenticated, user, username, isSameUser, coverImage, hasCover, isGuest }) => {
+  const objectsFollowingCount = user.objects_following_count || 0;
+  const usersFollowingCount = user.users_following_count || 0;
   const followingCount = usersFollowingCount + objectsFollowingCount;
-  const followersCount = user.followers_count ? user.followers_count : 0;
+  const followersCount = user.followers_count || 0;
 
   return (
     <div>
@@ -88,11 +76,7 @@ const UserHero = ({
                 isSameUser={isSameUser}
                 coverImage={coverImage}
                 hasCover={hasCover}
-                isFollowing={isFollowing}
-                onTransferClick={onTransferClick}
                 isActive={isUserActive(user)}
-                rewardFund={rewardFund}
-                rate={rate}
                 isGuest={isGuest}
               />
               <UserMenuWrapper followers={followersCount} following={followingCount} />
@@ -112,10 +96,6 @@ UserHero.propTypes = {
   isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
   hasCover: PropTypes.bool,
-  isFollowing: PropTypes.bool,
-  onTransferClick: PropTypes.func,
-  rate: PropTypes.number.isRequired,
-  rewardFund: PropTypes.shape().isRequired,
   isGuest: PropTypes.bool,
 };
 
@@ -123,9 +103,7 @@ UserHero.defaultProps = {
   isSameUser: false,
   coverImage: '',
   hasCover: false,
-  isFollowing: false,
   isPopoverVisible: false,
-  onTransferClick: () => {},
   isGuest: false,
 };
 

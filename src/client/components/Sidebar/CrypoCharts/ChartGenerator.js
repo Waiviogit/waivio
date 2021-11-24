@@ -4,9 +4,9 @@ import { LineChart } from 'react-easy-chart';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 
-import { getCurrentDaysOfTheWeek } from '../../../helpers/cryptosHelper';
 import { getIsMobile } from '../../../../store/appStore/appSelectors';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
+import USDDisplay from '../../Utils/USDDisplay';
 
 const ChartGenerator = props => {
   const [chartConfig, setChartConfig] = useState({
@@ -23,7 +23,7 @@ const ChartGenerator = props => {
       ...chartConfig,
       showTooltip: true,
       left: `${event.x - 30}px`,
-      top: `${event.y + 10}px`,
+      top: `${event.y - 35}px`,
       x: data.x,
       y: data.y,
     });
@@ -38,8 +38,7 @@ const ChartGenerator = props => {
 
   if (isEmpty(props.prices)) return null;
 
-  const daysOfTheWeek = getCurrentDaysOfTheWeek(props.locale);
-  const graphData = props.prices.map((price, index) => ({ x: daysOfTheWeek[index], y: price }));
+  const graphData = props.prices.map(price => ({ x: price.day, y: price.price })).reverse();
   const config = {
     width: props.width,
     height: 100,
@@ -57,10 +56,9 @@ const ChartGenerator = props => {
     <div>
       <LineChart {...config} />
       {chartConfig.showTooltip && (
-        <p
-          className="linechart-tooltip"
-          style={{ top: chartConfig.top, left: chartConfig.left }}
-        >{`${chartConfig.x}: $${chartConfig.y.toFixed(3)}`}</p>
+        <p className="linechart-tooltip" style={{ top: chartConfig.top, left: chartConfig.left }}>
+          {chartConfig.x}: <USDDisplay value={chartConfig.y} currencyDisplay={'symbol'} />
+        </p>
       )}
     </div>
   );
