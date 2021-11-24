@@ -7,19 +7,18 @@ import { get, isEmpty, includes } from 'lodash';
 import urlParse from 'url-parse';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { getUserRankKey, getUserRank, getVoteValue } from '../helpers/user';
-import AvatarLightbox from './AvatarLightbox';
-import FollowButton from '../widgets/FollowButton';
-import Action from './Button/Action';
-import WeightTag from './WeightTag';
-import USDDisplay from './Utils/USDDisplay';
-import { unfollowUser, followUser, muteUserBlog } from '../../store/usersStore/usersActions';
-import BellButton from '../widgets/BellButton';
-import MuteModal from '../widgets/MuteModal';
-import UserPopoverMenu from './UserPopoverMenu';
-import { getIsMobile } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
-import { getImagePathPost } from '../helpers/image';
+import { getUserRankKey, getUserRank } from '../../helpers/user';
+import AvatarLightbox from '../../components/AvatarLightbox';
+import FollowButton from '../../widgets/FollowButton';
+import WeightTag from '../../components/WeightTag';
+import USDDisplay from '../../components/Utils/USDDisplay';
+import { unfollowUser, followUser, muteUserBlog } from '../../../store/usersStore/usersActions';
+import BellButton from '../../widgets/BellButton';
+import MuteModal from '../../widgets/MuteModal';
+import UserPopoverMenu from '../../components/UserPopoverMenu';
+import { isMobile } from '../../helpers/apiHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getImagePathPost } from '../../helpers/image';
 
 import './UserHeader.less';
 
@@ -30,15 +29,11 @@ const UserHeader = ({
   isSameUser,
   coverImage,
   hasCover,
-  isFollowing,
   isActive,
   intl,
-  rewardFund,
-  rate,
   unfollow,
   follow,
   isGuest,
-  isMobile,
   authUserName,
   handleMuteUserBlog,
 }) => {
@@ -46,6 +41,7 @@ const UserHeader = ({
   const style = hasCover ? { backgroundImage: `url("${getImagePathPost(coverImage)}")` } : {};
   const mutedByModerator = !isEmpty(user.mutedBy) && !includes(user.mutedBy, authUserName);
   const mutedLabelText = mutedByModerator ? 'Blocked' : 'Muted';
+  const isMobileDevice = isMobile();
 
   let metadata = {};
   let location = null;
@@ -84,87 +80,73 @@ const UserHeader = ({
     hostWithoutWWW = hostWithoutWWW.slice(4);
   }
 
-  const voteWorth =
-    user && rewardFund.recent_claims && rewardFund.reward_balance && rate
-      ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
-      : 0;
-
   const guestPrefix = ' (guest)';
   const mobileUserName = username.length < 26 ? username : `${`${username.slice(0, 20)}...`}`;
-  const headerUserName = isMobile !== 'large' ? mobileUserName : username;
+  const headerUserName = isMobileDevice ? mobileUserName : username;
+  const buttons = isSameUser ? (
+    <Link to="/edit-profile" className="UserHeader__edit">
+      {intl.formatMessage({ id: 'edit_profile', defaultMessage: 'Edit profile' })}
+    </Link>
+  ) : (
+    <div className="UserHeader__buttons-container">
+      <FollowButton
+        unfollowUser={unfollow}
+        followUser={follow}
+        following={user.youFollows}
+        user={user}
+        followingType="user"
+      />
+      {user.youFollows && <BellButton user={user} />}
+      {user.muted && <span className="UserHeader__muteCard">{mutedLabelText}</span>}
+      {!mutedByModerator && (
+        <UserPopoverMenu
+          user={user}
+          handleMuteCurrUser={handleMuteCurrUser}
+          handleUnMuteUserBlog={handleMuteUserBlog}
+        />
+      )}
+    </div>
+  );
 
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
         <AvatarLightbox username={user.name} size={100} isActive={isActive} />
         <div className="UserHeader__user">
-          <div className="UserHeader__row">
-            <h2 className="UserHeader__user__username">
-              <span className="headerUsername">{headerUserName}</span>
+          <div className="UserHeader__flexWrap">
+            <h2>
+              <span className="UserHeader__name">{headerUserName}</span>
               <WeightTag weight={user.wobjects_weight} />
             </h2>
-            <div className="UserHeader__user__buttons">
-              <div
-                className={classNames('UserHeader__user__button', {
-                  'UserHeader__user__button-follows-you': isFollowing && !isSameUser,
-                })}
-              >
-                {isSameUser ? (
-                  <Link to="/edit-profile">
-                    <Action>
-                      <FormattedMessage id="edit_profile" defaultMessage="Edit profile" />
-                    </Action>
-                  </Link>
-                ) : (
-                  <div className="UserHeader__buttons-container">
-                    <FollowButton
-                      unfollowUser={unfollow}
-                      followUser={follow}
-                      following={user.youFollows}
-                      user={user}
-                      followingType="user"
-                    />
-                    {user.youFollows && <BellButton user={user} />}
-                    {user.muted && <span className="UserHeader__muteCard">{mutedLabelText}</span>}
-                    {!mutedByModerator && (
-                      <UserPopoverMenu
-                        user={user}
-                        handleMuteCurrUser={handleMuteCurrUser}
-                        handleUnMuteUserBlog={handleMuteUserBlog}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
+            {!isMobileDevice && buttons}
           </div>
-          <div className="UserHeader__handle-rank-container">
-            <div className="UserHeader__row UserHeader__handle">
+          <div className="UserHeader__userInfo">
+            <span>
               @{user.name}
               {isGuest && guestPrefix}
-              {isFollowing && (
-                <span className="UserHeader__follows-you">
-                  <FormattedMessage id="follows_you" defaultMessage="Follows you" />
-                </span>
-              )}
-            </div>
-            <div className="UserHeader__rank">
-              <i className="iconfont icon-ranking" />
-              <FormattedMessage
-                id={getUserRankKey(vestingShares)}
-                defaultMessage={getUserRank(vestingShares)}
-              />
-            </div>
-          </div>
-          {isFollowing && !isSameUser && (
-            <span
-              className={classNames('UserHeader__follows-you UserHeader__follows-you--mobile', {
-                'UserHeader__follows-you-cover-text-color': hasCover,
-              })}
-            >
-              <FormattedMessage id="follows_you" defaultMessage="Follows you" />
             </span>
-          )}
+            <div className="UserHeader__flexWrap">
+              <div className="UserHeader__rank">
+                <i className="iconfont icon-ranking" />
+                <FormattedMessage
+                  id={getUserRankKey(vestingShares)}
+                  defaultMessage={getUserRank(vestingShares)}
+                />
+              </div>
+              <div className="UserHeader__voteValue">
+                <img
+                  src={'/images/icons/dollar.svg'}
+                  alt={'dollar'}
+                  className="UserHeader__dollarIcon"
+                />
+                <span>
+                  <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
+                  <USDDisplay value={user.totalVotingPowerPrice} />
+                </span>
+              </div>
+            </div>
+            {isMobileDevice && buttons}
+          </div>
         </div>
       </div>
       <div className="UserHeader__info-mobile">
@@ -180,7 +162,7 @@ const UserHeader = ({
             <div>
               <i className="iconfont icon-dollar text-icon" />
               <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-              {isNaN(voteWorth) ? <USDDisplay value={0} /> : <USDDisplay value={voteWorth} />}
+              <USDDisplay value={user.totalVotingPowerPrice} />
             </div>
           </div>
           <div className="UserHeader__info-fields">
@@ -211,24 +193,17 @@ const UserHeader = ({
 
 UserHeader.propTypes = {
   user: PropTypes.shape(),
-  rate: PropTypes.number.isRequired,
   username: PropTypes.string,
   vestingShares: PropTypes.number,
   isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
   hasCover: PropTypes.bool,
-  isFollowing: PropTypes.bool,
   isActive: PropTypes.bool.isRequired,
-  rewardFund: PropTypes.shape({
-    recent_claims: PropTypes.string,
-    reward_balance: PropTypes.string,
-  }).isRequired,
   intl: PropTypes.shape().isRequired,
   unfollow: PropTypes.func.isRequired,
   follow: PropTypes.func.isRequired,
   isGuest: PropTypes.bool,
   handleMuteUserBlog: PropTypes.func,
-  isMobile: PropTypes.bool.isRequired,
   authUserName: PropTypes.string,
 };
 
@@ -241,8 +216,6 @@ UserHeader.defaultProps = {
   isSameUser: false,
   coverImage: '',
   hasCover: false,
-  isFollowing: false,
-  onTransferClick: () => {},
   handleMuteUserBlog: () => {},
   isGuest: false,
 };
@@ -250,7 +223,6 @@ UserHeader.defaultProps = {
 export default injectIntl(
   connect(
     state => ({
-      isMobile: getIsMobile(state),
       authUserName: getAuthenticatedUserName(state),
     }),
     {

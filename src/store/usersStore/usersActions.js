@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { get } from 'lodash';
 
 import { createAsyncActionType } from '../../client/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -33,10 +34,11 @@ export const getUserAccount = name => (dispatch, getState) => {
 
         data.rc_percentage = rc.percentage * 0.01;
         data.voting_mana = voting_mana.percentage * 0.01;
-        data.waivVotingPower = waivVotingMana.votingPower * 0.01;
-        data.waivDownvotingPower = waivVotingMana.downvotingPower * 0.01;
+        data.waivVotingPower = get(waivVotingMana, 'votingPower', 0) * 0.01;
+        data.waivDownvotingPower = get(waivVotingMana, 'downvotingPower', 0) * 0.01;
         data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
         data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
+        data.totalVotingPowerPrice = userVoteValue.estimatedHIVE + userVoteValue.estimatedWAIV;
       }
 
       return data;

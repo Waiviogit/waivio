@@ -21,8 +21,7 @@ const WAIVtokenInfo = ({ votingPower, downVotingPower, votePrice }) => (
     </div>
     <div>
       <i className="iconfont icon-dollar text-icon" />
-      <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-      <USDDisplay value={votePrice} />
+      WAIV vote: <USDDisplay value={votePrice} />
     </div>
   </div>
 );
