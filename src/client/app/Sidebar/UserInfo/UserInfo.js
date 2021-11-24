@@ -14,7 +14,6 @@ import urlParse from 'url-parse';
 import { calculateDownVote, calcReputation } from '../../../vendor/steemitHelpers';
 import SocialLinks from '../../../components/SocialLinks';
 import USDDisplay from '../../../components/Utils/USDDisplay';
-import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getMetadata } from '../../../helpers/postingMetadata';
 import BTooltip from '../../../components/BTooltip';
 import { getTimeFromLastAction } from '../../../helpers/accountHistoryHelper';
@@ -64,7 +63,6 @@ class UserInfo extends React.Component {
     let about = null;
     let email;
     const lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
-    const totalVotePrice = user.hiveVotingPowerPrice + user.waivVotingPowerPrice;
 
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
       metadata = getMetadata(user);
@@ -137,48 +135,49 @@ class UserInfo extends React.Component {
                   :&nbsp;
                   <WeightDisplay value={this.props.weightValue} />
                 </div>
-                {user &&
-                  user.name &&
-                  !user.name.startsWith(GUEST_PREFIX) &&
-                  !user.name.startsWith(BXY_GUEST_PREFIX) && (
-                    <React.Fragment>
-                      <div>
-                        <i className="iconfont icon-time text-icon" />
-                        <FormattedMessage id="active_info" defaultMessage="Active" />: &nbsp;
-                        <BTooltip
-                          title={
-                            <span>
-                              <FormattedDate value={`${lastActive}Z`} />{' '}
-                              <FormattedTime value={`${lastActive}Z`} />
-                            </span>
-                          }
-                        >
+                {!isGuestPage && (
+                  <React.Fragment>
+                    <div>
+                      <i className="iconfont icon-time text-icon" />
+                      <FormattedMessage id="active_info" defaultMessage="Active" />: &nbsp;
+                      <BTooltip
+                        title={
                           <span>
-                            <FormattedRelative value={lastActive} />
+                            <FormattedDate value={`${lastActive}Z`} />{' '}
+                            <FormattedTime value={`${lastActive}Z`} />
                           </span>
-                        </BTooltip>
-                      </div>
-                      <div>
-                        <i className="iconfont icon-dollar text-icon" />
-                        <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-                        <USDDisplay value={totalVotePrice} />
-                      </div>
-                    </React.Fragment>
-                  )}
+                        }
+                      >
+                        <span>
+                          <FormattedRelative value={lastActive} />
+                        </span>
+                      </BTooltip>
+                    </div>
+                    <div>
+                      <i className="iconfont icon-dollar text-icon" />
+                      <FormattedMessage id="vote_price" defaultMessage="Vote value" />:{' '}
+                      <USDDisplay value={user.totalVotingPowerPrice} />
+                    </div>
+                  </React.Fragment>
+                )}
                 <SocialLinks profile={profile} />
               </div>
-              <WAIVtokenInfo
-                votingPower={user.waivVotingPower}
-                downVotingPower={user.waivDownvotingPower}
-                votePrice={user.waivVotingPowerPrice}
-              />
-              <HIVEtokenInfo
-                downVotingMana={calculateDownVote(user)}
-                rc={user.rc_percentage}
-                reputation={calcReputation(user.reputation)}
-                votingMana={user.voting_mana}
-                votePrice={user.hiveVotingPowerPrice}
-              />
+              {!isGuestPage && (
+                <React.Fragment>
+                  <WAIVtokenInfo
+                    votingPower={user.waivVotingPower}
+                    downVotingPower={user.waivDownvotingPower}
+                    votePrice={user.waivVotingPowerPrice}
+                  />
+                  <HIVEtokenInfo
+                    downVotingMana={calculateDownVote(user)}
+                    rc={user.rc_percentage}
+                    reputation={calcReputation(user.reputation)}
+                    votingMana={user.voting_mana}
+                    votePrice={user.hiveVotingPowerPrice}
+                  />
+                </React.Fragment>
+              )}
             </div>
           </div>
         )}

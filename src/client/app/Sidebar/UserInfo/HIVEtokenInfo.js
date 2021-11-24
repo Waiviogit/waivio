@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
+import { round } from 'lodash';
 
 import USDDisplay from '../../../components/Utils/USDDisplay';
 
@@ -19,22 +20,21 @@ const HIVEtokenInfo = props => (
     <div>
       <i className="iconfont icon-praise text-icon" />
       <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
-      <span>{props.votingMana}%</span>
+      <span>{round(props.votingMana, 2)}%</span>
     </div>
     <div>
       <i className="iconfont icon-praise Comment__icon_dislike text-icon" />
       <FormattedMessage id="downvoting_mana" defaultMessage="Downvoting mana" />:{' '}
-      <span>{props.downVotingMana}%</span>
-    </div>
-    <div>
-      <i className="iconfont icon-dollar text-icon" />
-      <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-      <USDDisplay value={props.votePrice} />
+      <span>{round(props.downVotingMana, 2)}%</span>
     </div>
     <div>
       <i className="iconfont icon-flashlight text-icon" />
       <FormattedMessage id="resource_credits" defaultMessage="Resource credits" />
-      <span>: {props.rc}%</span>
+      <span>: {round(props.rc, 2)}%</span>
+    </div>
+    <div>
+      <i className="iconfont icon-dollar text-icon" />
+      HIVE vote: <USDDisplay value={props.votePrice} />
     </div>
   </div>
 );

@@ -210,7 +210,6 @@ export default class User extends React.Component {
             isSameUser={isSameUser}
             coverImage={coverImage}
             hasCover={hasCover}
-            onFollowClick={this.handleFollowClick}
             onTransferClick={this.handleTransferClick}
             rewardFund={rewardFund}
             rate={rate}
