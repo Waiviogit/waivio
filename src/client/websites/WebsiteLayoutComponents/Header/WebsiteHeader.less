@@ -89,19 +89,24 @@
     .Topnav__menu-container__menu > li.ant-menu-item > a.ModalSignIn__link-type {
       display: flex;
       align-items: center;
-      border-radius: 8px;
-      border: 3px solid @orange-light;
+      border-radius: 12px;
+      border: 1px solid @orange-light;
       background-color: transparent;
       color: @orange-light !important;
-      padding: 0 6px;
+      padding: 0 8px;
       cursor: pointer;
-      font-weight: bold !important;
-      font-size: 20px;
-      height: 35px;
+      font-weight: lighter !important;
+      font-size: 18px;
+      height: 30px;
       width: fit-content;
       text-transform: capitalize;
       margin-left: 5px;
     }
+  }
+
+  &__link {
+    text-transform: uppercase;
+    color: @gray;
   }
 
   &__logo {
@@ -116,7 +121,10 @@
 
     span {
       display: none;
-      color: #6a6a6a;
+      color: @dim-gray;
+      border-left: 1px solid @dim-gray;
+      margin-left: 10px;
+      padding-left: 10px;
 
       @media @medium {
         display: inline;
