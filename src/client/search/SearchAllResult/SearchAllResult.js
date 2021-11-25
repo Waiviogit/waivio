@@ -189,7 +189,7 @@ SearchAllResult.propTypes = {
   searchString: PropTypes.string.isRequired,
   wobjectsCounter: PropTypes.number.isRequired,
   usersCounter: PropTypes.number.isRequired,
-  hasMore: PropTypes.bool.isRequired,
+  hasMore: PropTypes.bool,
   isDining: PropTypes.bool.isRequired,
   hasMoreUsers: PropTypes.bool,
   loadingMore: PropTypes.bool.isRequired,
@@ -202,11 +202,12 @@ SearchAllResult.propTypes = {
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchExpertsForMap: PropTypes.func.isRequired,
   searchMap: PropTypes.shape().isRequired,
-  activeFilters: PropTypes.shape().isRequired,
+  activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 SearchAllResult.defaultProps = {
   hasMoreUsers: false,
+  hasMore: false,
   showReload: false,
   handleHoveredCard: () => {},
   searchByUser: [],

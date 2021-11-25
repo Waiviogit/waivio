@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SimpleMarker = props => (
+const SimpleMarker = React.memo(props => (
   <svg
     width={props.width}
     height={props.height}
@@ -17,16 +17,16 @@ const SimpleMarker = props => (
       d="M16.3579 2.26126L16.358 2.2614L16.3694 2.25597L16.3846 2.24878C16.3846 2.24876 16.3846 2.24875 16.3847 2.24874C19.5207 0.760237 24.4441 0.211099 29.4586 0.643058C34.4807 1.07569 39.117 2.45107 41.7445 4.38025C50.0907 10.5719 53.8043 16.865 53.4806 24.8302L53.9801 24.8505L53.4806 24.8302C53.1462 33.0598 48.5081 43.4363 38.9703 57.6884C35.881 62.252 33.5134 65.5451 31.5056 67.6964C29.4477 69.9014 28.1328 70.5 27.1905 70.5C26.2526 70.5 24.9494 69.906 22.9159 67.7038L22.5486 68.043L22.9159 67.7038C20.9303 65.5538 18.5957 62.2615 15.5499 57.6963C15.5495 57.6957 15.5491 57.6951 15.5487 57.6944L15.547 57.6919L15.5471 57.6919L15.5429 57.6857C10.5746 50.3275 6.83316 43.8979 4.31896 38.5454C1.79066 33.163 0.584956 29.0379 0.500008 26.2191C0.51183 16.4502 7.02558 6.42439 16.3432 2.26779L16.3579 2.26126Z"
       fill={props.markerColor}
       fillOpacity="0.5"
-      stroke="white"
+      stroke={props.markerText}
       strokeWidth="2"
     />
     <circle cx="27" cy="26" r="15" fill={props.markerText} fillOpacity="0.7" />
   </svg>
-);
+));
 
 SimpleMarker.propTypes = {
-  width: PropTypes.string.isRequired,
-  height: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
   markerColor: PropTypes.string.isRequired,
   markerText: PropTypes.string.isRequired,
 };

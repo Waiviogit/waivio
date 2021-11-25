@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
@@ -25,13 +25,12 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
   return size > 64 ? `${url}/${username}/avatar` : `${url}/${username}/avatar/small`;
 }
 
-const Avatar = ({ username, size }) => {
+const Avatar = ({ username, size, authenticatedUser }) => {
   let style = {
     minWidth: `${size}px`,
     width: `${size}px`,
     height: `${size}px`,
   };
-  const authenticatedUser = useSelector(getAuthenticatedUser);
   const url = getAvatarURL(username, size, authenticatedUser);
 
   if (username) {
@@ -46,12 +45,14 @@ const Avatar = ({ username, size }) => {
 
 Avatar.propTypes = {
   username: PropTypes.string,
+  authenticatedUser: PropTypes.shape({}),
   size: PropTypes.number,
 };
 
 Avatar.defaultProps = {
   size: 100,
   username: '',
+  authenticatedUser: {},
 };
 
-export default Avatar;
+export default connect(state => ({ authenticatedUser: getAuthenticatedUser(state) }))(Avatar);

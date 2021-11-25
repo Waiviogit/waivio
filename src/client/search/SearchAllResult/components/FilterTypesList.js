@@ -48,8 +48,14 @@ FilterTypesList.propTypes = {
   searchType: PropTypes.string.isRequired,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
-  }).isRequired,
+  }),
   resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
+};
+
+FilterTypesList.defaultProps = {
+  searchMap: {
+    coordinates: [],
+  },
 };
 
 export default connect(

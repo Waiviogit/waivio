@@ -32,8 +32,8 @@ const WobjCardSwitcher = React.memo(props => {
 
 WobjCardSwitcher.propTypes = {
   obj: PropTypes.shape({
-    propositions: PropTypes.arrayOf(),
-    campaigns: PropTypes.arrayOf(),
+    propositions: PropTypes.arrayOf(PropTypes.shape()),
+    campaigns: PropTypes.arrayOf(PropTypes.shape()),
   }).isRequired,
   assignProposition: PropTypes.func.isRequired,
   declineProposition: PropTypes.func.isRequired,

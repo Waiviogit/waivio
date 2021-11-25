@@ -46,7 +46,7 @@ OverlayRewardsButton.propTypes = {
   intl: PropTypes.shape().isRequired,
   wObject: PropTypes.shape({
     author_permlink: PropTypes.string,
-    propositions: PropTypes.arrayOf(),
+    propositions: PropTypes.arrayOf(PropTypes.shape()),
     campaigns: PropTypes.shape({
       max_reward: PropTypes.number,
       min_reward: PropTypes.number,

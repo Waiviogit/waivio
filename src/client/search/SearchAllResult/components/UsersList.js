@@ -24,6 +24,7 @@ const UsersList = props => {
   return map(props.searchByUser, user => (
     <UserCard
       user={user}
+      key={user.name}
       unfollow={props.unfollowSearchUser}
       follow={props.followSearchUser}
       handleClick={props.handleItemClick}
@@ -33,7 +34,7 @@ const UsersList = props => {
 
 UsersList.propTypes = {
   usersLoading: PropTypes.bool,
-  searchByUser: PropTypes.string,
+  searchByUser: PropTypes.arrayOf(PropTypes.string),
   unfollowSearchUser: PropTypes.func,
   followSearchUser: PropTypes.func,
   handleItemClick: PropTypes.func,

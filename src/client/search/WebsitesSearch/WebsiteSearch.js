@@ -98,7 +98,7 @@ WebsiteSearch.propTypes = {
   setShowSearchResult: PropTypes.func.isRequired,
   setSearchInBox: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
   isShowResult: PropTypes.bool.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
@@ -107,6 +107,7 @@ WebsiteSearch.propTypes = {
 
 WebsiteSearch.defaultProps = {
   activeFilters: [],
+  placeholder: '',
 };
 
 export default connect(
