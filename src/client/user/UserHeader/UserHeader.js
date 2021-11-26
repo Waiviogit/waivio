@@ -133,17 +133,19 @@ const UserHeader = ({
                   defaultMessage={getUserRank(vestingShares)}
                 />
               </div>
-              <div className="UserHeader__voteValue">
-                <img
-                  src={'/images/icons/dollar.svg'}
-                  alt={'dollar'}
-                  className="UserHeader__dollarIcon"
-                />
-                <span>
-                  <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-                  <USDDisplay value={user.totalVotingPowerPrice} />
-                </span>
-              </div>
+              {!isGuest && (
+                <div className="UserHeader__voteValue">
+                  <img
+                    src={'/images/icons/dollar.svg'}
+                    alt={'dollar'}
+                    className="UserHeader__dollarIcon"
+                  />
+                  <span>
+                    <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
+                    <USDDisplay value={user.totalVotingPowerPrice} />
+                  </span>
+                </div>
+              )}
             </div>
             {isMobileDevice && buttons}
           </div>
@@ -159,11 +161,13 @@ const UserHeader = ({
                 {location}
               </div>
             )}
-            <div>
-              <i className="iconfont icon-dollar text-icon" />
-              <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-              <USDDisplay value={user.totalVotingPowerPrice} />
-            </div>
+            {!isGuest && (
+              <div>
+                <i className="iconfont icon-dollar text-icon" />
+                <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
+                <USDDisplay value={user.totalVotingPowerPrice} />
+              </div>
+            )}
           </div>
           <div className="UserHeader__info-fields">
             {website && (
