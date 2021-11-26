@@ -213,7 +213,7 @@ export default class Buttons extends React.Component {
       parseFloat(post.total_payout_value) +
       parseFloat(post.curator_payout_value);
 
-    const ratio = post.vote_rshares > 0 ? totalPayout / post.vote_rshares : 0;
+    const ratio = post.net_rshares > 0 ? totalPayout / post.net_rshares : 0;
     const waivRatio = getWaivVotePrice(
       get(post, 'total_payout_WAIV', 0),
       get(post, 'net_rshares_WAIV', 0),
