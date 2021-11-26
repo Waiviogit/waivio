@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
+import '../UserWalletTransactions.less';
 
 const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
   const isReceive = account === to;
@@ -40,7 +41,10 @@ const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
       color={cardInfo.color}
       point={cardInfo.point}
     >
-      Delegated {to || (from && cardInfo.description)}
+      {isReceive ? 'Delegated from' : 'Delegated to'}
+      <div className="UserWalletTransactions__delegated">
+        {to || (from && cardInfo.description)}
+      </div>
     </TransactionCardContainer>
   );
 };
