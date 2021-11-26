@@ -32,7 +32,7 @@ const TransactionCardContainer = ({
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           {children}
-          {!!quantity && (
+          {symbol !== 'WAIV' && !!quantity && (
             <span className={amountClassList}>
               {point}{' '}
               <FormattedNumber
