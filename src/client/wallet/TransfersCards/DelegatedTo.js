@@ -43,7 +43,15 @@ const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
     >
       {isReceive ? 'Delegated from' : 'Delegated to'}
       <div className="UserWalletTransactions__delegated">
-        {to || (from && cardInfo.description)}
+        {isReceive ? (
+          <a className="UserWalletTransactions__delegated-color" href={`/@${from}`}>
+            {from}
+          </a>
+        ) : (
+          <a className="UserWalletTransactions__delegated-color" href={`/@${to}`}>
+            {to}
+          </a>
+        )}
       </div>
     </TransactionCardContainer>
   );
