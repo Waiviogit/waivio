@@ -57,10 +57,9 @@ const WAIVWalletSummaryInfo = props => {
           <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
           <div className="WalletSummaryInfo__label">WAIV Power</div>
           <div className={powerClassList}>
-            {formattedNumber(stake)}{' '}
+            {formattedNumber(stake)}
             {!!unstake && <span> - {formattedNumber(unstake * 0.25)}</span>}{' '}
-            {!!delegation && <span>({formattedNumber(delegation)})</span>}
-            WP
+            {!!delegation && <span>({formattedNumber(delegation)})</span>} WP
           </div>
         </div>
         <p className="WalletSummaryInfo__description">Staked WAIV tokens</p>
