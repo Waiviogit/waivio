@@ -562,7 +562,7 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
         waivioRewards: {
           type: 'waivio_stop_campaign',
           campaign_id: company._id,
-          timestamp: moment(Date.now()).unix(),
+          stoppedAt: moment().utc(),
         },
       }),
     },
