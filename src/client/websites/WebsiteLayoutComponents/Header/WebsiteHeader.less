@@ -105,8 +105,12 @@
   }
 
   &__link {
+    display: none;
     text-transform: uppercase;
     color: @gray;
+    @media @medium {
+      display: inline;
+    }
   }
 
   &__logo {
@@ -121,8 +125,8 @@
 
     span {
       display: none;
-      color: @dim-gray;
-      border-left: 1px solid @dim-gray;
+      color: @gray;
+      border-left: 1px solid @gray;
       margin-left: 10px;
       padding-left: 10px;
 
