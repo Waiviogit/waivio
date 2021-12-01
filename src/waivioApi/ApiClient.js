@@ -2268,7 +2268,7 @@ export const getAllCampaingForRequiredObject = params => {
     .catch(e => e);
 };
 
-export const getTokenBalance = (currency, userName) => {
+export const getTokenBalance = (userName, symbol) => {
   return fetch('https://ha.herpc.dtools.dev/contracts', {
     headers,
     body: JSON.stringify({
@@ -2280,7 +2280,7 @@ export const getTokenBalance = (currency, userName) => {
         table: 'balances',
         query: {
           account: userName,
-          symbol: currency,
+          symbol,
         },
         limit: 1000,
         offset: 0,
@@ -2291,7 +2291,7 @@ export const getTokenBalance = (currency, userName) => {
   })
     .then(handleErrors)
     .then(res => res.json())
-    .then(response => response.result[0])
+    .then(response => response.result)
     .catch(e => e);
 };
 
@@ -2349,6 +2349,30 @@ export const getWaivVoteMana = account => {
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response.result[0])
+    .catch(e => e);
+};
+
+export const getTokensRate = symbols => {
+  return fetch('https://ha.herpc.dtools.dev/contracts', {
+    headers,
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 10,
+      method: 'find',
+      params: {
+        contract: 'market',
+        indexes: '',
+        limit: 1000,
+        offset: 0,
+        query: { symbol: { $in: symbols } },
+        table: 'metrics',
+      },
+    }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result)
     .catch(e => e);
 };
 

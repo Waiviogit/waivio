@@ -39,6 +39,7 @@ const initialState = {
   tokensRates: {},
   waivTransactionHistory: { list: [], hasMore: false },
   currentWallet: 'WAIV',
+  tokensBalanceList: [],
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -379,8 +380,14 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         userBalances: {
           ...state.userBalances,
-          [action.meta]: action.payload,
+          [action.meta]: action.payload[0],
         },
+      };
+
+    case walletActions.GET_USER_TOKENS_BALANCE_LIST.SUCCESS:
+      return {
+        ...state,
+        tokensBalanceList: action.payload,
       };
 
     case walletActions.RESET_TOKENS_BALANCE:
