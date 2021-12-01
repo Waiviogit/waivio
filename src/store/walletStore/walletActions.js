@@ -497,8 +497,36 @@ export const GET_TOKENS_BALANCE = createAsyncActionType('@wallet/GET_TOKENS_BALA
 export const getTokenBalance = (token, name) => dispatch =>
   dispatch({
     type: GET_TOKENS_BALANCE.ACTION,
-    payload: ApiClient.getTokenBalance(token, name),
+    payload: ApiClient.getTokenBalance(name, token),
     meta: token,
+  });
+
+export const GET_USER_TOKENS_BALANCE_LIST = createAsyncActionType(
+  '@wallet/GET_USER_TOKENS_BALANCE_LIST',
+);
+
+export const getUserTokensBalanceList = name => dispatch =>
+  dispatch({
+    type: GET_USER_TOKENS_BALANCE_LIST.ACTION,
+    payload: ApiClient.getTokenBalance(name).then(async res => {
+      const tokensList = res.map(item => item.symbol);
+      const rates = await ApiClient.getTokensRate(tokensList);
+
+      if (!isEmpty(rates)) {
+        const listTokensWithRates = res.map(token => {
+          const rate = rates.find(r => r.symbol === token.symbol);
+
+          return {
+            ...token,
+            rate: +get(rate, 'lastDayPrice', 1),
+          };
+        });
+
+        return listTokensWithRates;
+      }
+
+      return res;
+    }),
   });
 
 export const RESET_TOKENS_BALANCE = '@wallet/RESET_TOKENS_BALANCE';

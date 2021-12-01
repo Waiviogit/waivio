@@ -38,7 +38,6 @@ const TransactionCardContainer = ({
               <FormattedNumber
                 value={quantity}
                 locale={'en-IN'}
-                minimumFractionDigits={precision}
                 maximumFractionDigits={precision}
               />{' '}
               {symbol}

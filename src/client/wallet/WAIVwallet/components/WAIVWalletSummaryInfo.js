@@ -33,9 +33,8 @@ const WAIVWalletSummaryInfo = props => {
 
   const formattedNumber = num => {
     if (isNil(num)) return <Loading />;
-    const precision = num > 0.01 || num === 0 ? 2 : 3;
 
-    return <FormattedNumber value={round(num, precision)} />;
+    return <FormattedNumber value={round(num, 3)} />;
   };
 
   return (

@@ -156,6 +156,8 @@ export const getCurrentWithdrawals = createSelector([walletState], state => stat
 
 export const getCurrentWalletType = createSelector([walletState], state => state.currentWallet);
 
+export const getTokensBalanceList = createSelector([walletState], state => state.tokensBalanceList);
+
 export const getWaivTransactionHistoryFromState = createSelector(
   [walletState],
   state => state.waivTransactionHistory,

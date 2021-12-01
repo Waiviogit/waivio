@@ -8,6 +8,7 @@ import { getCurrentCurrency } from './appSelectors';
 import { setLocale } from '../settingsStore/settingsActions';
 import { adaptMarketDataToEngine } from '../../client/helpers/cryptosHelper';
 import { ADAPT_MARKET_TO_ENGINE } from '../walletStore/walletActions';
+import { HBD, HIVE } from '../../common/constants/cryptos';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
@@ -53,7 +54,9 @@ export const getRewardFund = () => dispatch =>
     payload: { promise: ApiClient.getRewardFund() },
   });
 
-export const getCryptoPriceHistory = (symbols, refresh = false) => dispatch => {
+export const getCryptoPriceHistory = (refresh = false) => dispatch => {
+  const symbols = [HIVE.coinGeckoId, HBD.coinGeckoId];
+
   if (refresh) symbols.forEach(symbol => dispatch(refreshCryptoPriceHistory(symbol)));
 
   dispatch({
