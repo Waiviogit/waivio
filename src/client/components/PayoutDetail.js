@@ -51,7 +51,7 @@ const getBeneficaries = post => {
   ));
 };
 
-const PayoutDetail = React.memo(({ intl, post }) => {
+const PayoutDetail = React.memo(({ intl, post, withoutTitle }) => {
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
   const {
     payoutLimitHit,
@@ -87,10 +87,12 @@ const PayoutDetail = React.memo(({ intl, post }) => {
       />
       {isPostCashout(post) ? (
         <div>
-          <FormattedMessage
-            id="payout_total_past_payout_amount"
-            defaultMessage="Total Past Payouts:"
-          />{' '}
+          {!withoutTitle && (
+            <FormattedMessage
+              id="payout_total_past_payout_amount"
+              defaultMessage="Total Past Payouts:"
+            />
+          )}{' '}
           <PayoutCurrencyBlock
             HBDPayout={HBDPayout}
             HIVEPayout={HIVEPayout}
@@ -110,10 +112,12 @@ const PayoutDetail = React.memo(({ intl, post }) => {
         </div>
       ) : (
         <div>
-          <FormattedMessage
-            id="payout_potential_payout_amount"
-            defaultMessage="Potential Payout:"
-          />{' '}
+          {!withoutTitle && (
+            <FormattedMessage
+              id="payout_potential_payout_amount"
+              defaultMessage="Potential Payout:"
+            />
+          )}{' '}
           <PayoutCurrencyBlock
             HBDPayout={HBDPayout}
             WAIVPayout={WAIVPayout}
@@ -137,6 +141,11 @@ const PayoutDetail = React.memo(({ intl, post }) => {
 PayoutDetail.propTypes = {
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape().isRequired,
+  withoutTitle: PropTypes.bool,
+};
+
+PayoutDetail.defaultProps = {
+  withoutTitle: false,
 };
 
 export default injectIntl(PayoutDetail);

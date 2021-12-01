@@ -7,6 +7,8 @@ import Wallet from '../user/UserWallet';
 import Transfer from './Transfer/Transfer';
 import WAIVwallet from './WAIVwallet/WAIVwallet';
 import { setWalletType } from '../../store/walletStore/walletActions';
+import { getIsTransferVisible } from '../../store/walletStore/walletSelectors';
+import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -14,6 +16,7 @@ const Wallets = props => {
 
   useEffect(() => {
     props.setWalletType(walletsType);
+    props.getCryptoPriceHistory();
   }, []);
 
   const handleOnChange = key => {
@@ -31,13 +34,15 @@ const Wallets = props => {
           <Wallet />
         </Tabs.TabPane>
       </Tabs>
-      <Transfer history={props.history} />
+      {props.visible && <Transfer history={props.history} />}
     </React.Fragment>
   );
 };
 
 Wallets.propTypes = {
   setWalletType: PropTypes.func.isRequired,
+  getCryptoPriceHistory: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -46,4 +51,7 @@ Wallets.propTypes = {
   }).isRequired,
 };
 
-export default connect(null, { setWalletType })(Wallets);
+export default connect(state => ({ visible: getIsTransferVisible(state) }), {
+  setWalletType,
+  getCryptoPriceHistory,
+})(Wallets);
