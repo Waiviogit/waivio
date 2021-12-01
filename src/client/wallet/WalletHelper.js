@@ -378,11 +378,7 @@ export const getTransactionCurrency = (amount, currency, type, tableView) => {
 
   return (
     <span>
-      <FormattedNumber
-        value={transactionAmount}
-        minimumFractionDigits={3}
-        maximumFractionDigits={3}
-      />
+      <FormattedNumber value={transactionAmount} maximumFractionDigits={3} />
       {` ${transactionCurrency}`}
     </span>
   );
@@ -469,11 +465,7 @@ export const getFormattedClaimRewardPayout = (
   if (parsedRewardSteem > 0) {
     payouts.push(
       <span key="HIVE" className={usedClassName}>
-        <FormattedNumber
-          value={parsedRewardSteem}
-          minimumFractionDigits={3}
-          maximumFractionDigits={3}
-        />
+        <FormattedNumber value={parsedRewardSteem} maximumFractionDigits={3} />
         {' HIVE'}
       </span>,
     );
@@ -482,11 +474,7 @@ export const getFormattedClaimRewardPayout = (
   if (parsedRewardSbd > 0) {
     payouts.push(
       <span key="HBD" className={usedClassName}>
-        <FormattedNumber
-          value={parsedRewardSbd}
-          minimumFractionDigits={3}
-          maximumFractionDigits={3}
-        />
+        <FormattedNumber value={parsedRewardSbd} maximumFractionDigits={3} />
         {' HBD'}
       </span>,
     );
@@ -495,11 +483,7 @@ export const getFormattedClaimRewardPayout = (
   if (parsedRewardVests > 0) {
     payouts.push(
       <span key="HP" className={usedClassName}>
-        <FormattedNumber
-          value={parsedRewardVests}
-          minimumFractionDigits={3}
-          maximumFractionDigits={3}
-        />
+        <FormattedNumber value={parsedRewardVests} maximumFractionDigits={3} />
         {' HP'}
       </span>,
     );

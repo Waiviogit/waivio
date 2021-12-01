@@ -542,6 +542,24 @@ function sc2Extended() {
 
         return this.broadcast([['custom_json', params]], cb);
       },
+      hiveEngineTransfer(follower, following, action, cb) {
+        const params = {
+          required_auths: ['@lucykolosova'],
+          required_posting_auths: [],
+          id: 'ssc-mainnet-hive',
+          json: JSON.stringify({
+            contractName: 'tokens',
+            contractAction: 'transfer',
+            contractPayload: {
+              symbol: 'WAIV',
+              to: 'flowmaster',
+              quantity: '0.001',
+            },
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
     },
   );
 }
