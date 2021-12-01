@@ -25,7 +25,7 @@ const UserSidebar = ({ authenticated, isGuest, content, authUserName, match, loc
 UserSidebar.propTypes = {
   authenticated: PropTypes.bool,
   isGuest: PropTypes.bool,
-  content: PropTypes.arrayOf(PropTypes.shape({})),
+  content: PropTypes.arrayOf(PropTypes.string),
   match: PropTypes.shape(),
   authUserName: PropTypes.string,
   locale: PropTypes.string,
@@ -34,7 +34,7 @@ UserSidebar.propTypes = {
 UserSidebar.defaultProps = {
   authenticated: false,
   isGuest: false,
-  content: {},
+  content: [],
   match: {},
   authUserName: '',
   locale: 'en-US',

@@ -20,7 +20,7 @@ export const WAIV = {
 
 export const HBD = {
   id: 'hive-dollars',
-  name: 'Hive Dollars(HBD)',
+  name: 'Hive Dollars',
   symbol: 'HBD',
   coinGeckoId: 'hive_dollar',
 };

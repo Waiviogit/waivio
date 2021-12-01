@@ -9,6 +9,7 @@ import ModalsAuthors from '../../MatchBotsModals/ModalsAuthors';
 
 const MatchBotsTableRow = ({ intl, bot, type, editRule, setModalBot }) => {
   const toggleEnableBot = () => setModalBot(bot);
+  const voteCurrencyArray = bot.minVotingPowerCurrencies || ['HIVE'];
 
   return (
     <tr>
@@ -23,7 +24,9 @@ const MatchBotsTableRow = ({ intl, bot, type, editRule, setModalBot }) => {
         </td>
       )}
       {type === 'author' && <td>{Math.round(bot.voteWeight / 100)}%</td>}
-      <td>{Math.round(bot.minVotingPower / 100)}%</td>
+      <td>
+        {Math.round(bot.minVotingPower / 100)}% {voteCurrencyArray.join('/')}
+      </td>
       <td>
         <div className="MatchBotTable__edit" onClick={editRule} role="presentation">
           {type === 'curator' && <ModalsCurators modalType="edit" bot={bot} />}

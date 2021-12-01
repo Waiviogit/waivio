@@ -42,7 +42,7 @@ const HIVEtokenInfo = props => (
 HIVEtokenInfo.propTypes = {
   reputation: PropTypes.number.isRequired,
   votingMana: PropTypes.number.isRequired,
-  downVotingMana: PropTypes.number.isRequired,
+  downVotingMana: PropTypes.string.isRequired,
   rc: PropTypes.number.isRequired,
   votePrice: PropTypes.number.isRequired,
 };

@@ -69,7 +69,12 @@ class CryptoTrendingCharts extends React.Component {
           />
         </h4>
         {this.props.cryptos.map(chart => (
-          <CryptoChart key={chart} crypto={chart} currency={cryptoRatesForChart[chart]} />
+          <CryptoChart
+            key={chart}
+            crypto={chart}
+            currency={cryptoRatesForChart[chart]}
+            withoutPercent={chart === 'HBD'}
+          />
         ))}
       </div>
     );

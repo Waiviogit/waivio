@@ -77,8 +77,8 @@ const SearchMapFilters = React.memo(props => {
 });
 
 SearchMapFilters.propTypes = {
-  filters: PropTypes.arrayOf().isRequired,
-  activeFilters: PropTypes.arrayOf().isRequired,
+  filters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   location: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   setWebsiteSearchFilter: PropTypes.func.isRequired,

@@ -151,9 +151,7 @@ const UserWalletSummary = ({
           </div>
           <div className="UserWalletSummary__item">
             <i className="iconfont icon-Dollar UserWalletSummary__icon" />
-            <div className="UserWalletSummary__label">
-              <FormattedMessage id="steem_dollar" defaultMessage="Hive Dollar" />
-            </div>
+            <div className="UserWalletSummary__label">Hive Backed Dollar</div>
             <div className="UserWalletSummary__value">
               {user.fetching ? (
                 <Loading />

@@ -99,41 +99,34 @@
 
   &__amount {
     display: flex !important;
+    flex-direction: column;
 
-    &__type {
-      width: 100%;
-
-      &-steem {
-        padding-top: 4px !important;
-        height: 38px !important;
-        width: 50%;
-      }
-
-      &-sbd {
-        padding-top: 4px !important;
-        height: 38px !important;
-        width: 50%;
-      }
+    @media @small {
+      flex-direction: row;
     }
 
     &__input {
-      border-right: 0 !important;
+      border: @base-border !important;
       width: 100% !important;
-      margin-bottom: 15px !important;
+      border-radius: 4px;
 
       @media @small {
         width: 50% !important;
+        border-right: 0 !important;
+        border-radius: 4px 0 0 4px;
       }
 
       &:focus,
       &:hover {
         outline: none !important;
         box-shadow: none !important;
+
         .ant-input-group-wrapper {
           .Transfer__usd-value {
             border: @border-width-base @border-style-base @primary-color;
             border-right: 0;
           }
+
           .ant-input-group-addon {
             border: @border-width-base @border-style-base @primary-color;
           }
@@ -181,6 +174,7 @@
         border-right: 0 !important;
         border-left: 0 !important;
       }
+
       .ant-input-group-addon {
         border: @border-width-base @border-style-base @red-6 !important;
       }
@@ -203,6 +197,48 @@
 
   .ant-form-explain {
     margin: 0;
+  }
+
+  form .ant-input-group &__currency.ant-select {
+    width: 100%;
+    margin-top: 10px;
+
+    .Transfer__currency-balance {
+      display: none;
+    }
+
+    @media @small {
+      margin: 0;
+    }
+
+    .ant-select-selection {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 38px;
+      border-radius: 4px;
+
+      @media @small {
+        border-radius: 0 4px 4px 0;
+      }
+    }
+
+    .ant-select-selection__rendered {
+      width: 100%;
+      display: flex !important;
+      justify-content: space-between;
+
+      .ant-select-selection-selected-value {
+        display: flex !important;
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+  }
+
+  &__currency-item.ant-select-dropdown-menu-item {
+    display: flex;
+    justify-content: space-between;
   }
 }
 

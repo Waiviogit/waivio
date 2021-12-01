@@ -17,13 +17,17 @@ import { getAuthenticatedUser, isGuestUser } from '../../../../store/authStore/a
 import { getHiveBeneficiaryAccount } from '../../../../store/settingsStore/settingsSelectors';
 
 import './WalletSidebar.less';
+import withAuthActions from '../../../auth/withAuthActions';
+import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
 
+@withAuthActions
 @withRouter
 @connect(
   state => ({
     isGuest: isGuestUser(state),
     user: getAuthenticatedUser(state),
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
+    walletType: getCurrentWalletType(state),
   }),
   {
     openTransfer,
@@ -44,6 +48,8 @@ class HiveWalletSidebar extends React.Component {
     openWithdraw: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
     hiveBeneficiaryAccount: PropTypes.string,
+    walletType: PropTypes.string.isRequired,
+    onActionInitiated: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -60,6 +66,8 @@ class HiveWalletSidebar extends React.Component {
     if (!hiveBeneficiaryAccount && isGuest) this.props.openLinkHiveAccountModal(true);
     this.props.openTransfer(username);
   };
+
+  handleOpenTransferWithAuth = () => this.props.onActionInitiated(this.handleOpenTransfer);
 
   handleOpenPowerUp = () => {
     this.props.openPowerUpOrDown();
@@ -78,10 +86,15 @@ class HiveWalletSidebar extends React.Component {
 
     return (
       <div className="WalletSidebar">
-        <Action big className="WalletSidebar__transfer" primary onClick={this.handleOpenTransfer}>
+        <Action
+          big
+          className="WalletSidebar__transfer"
+          primary
+          onClick={this.handleOpenTransferWithAuth}
+        >
           <FormattedMessage id="transfer" defaultMessage="Transfer" />
         </Action>
-        {ownProfile && !isGuest && (
+        {ownProfile && !isGuest && this.props.walletType === 'HIVE' && (
           <div className="WalletSidebar__power">
             <Action big onClick={this.handleOpenPowerUp}>
               <FormattedMessage id="power_up" defaultMessage="Power up" />

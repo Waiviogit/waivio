@@ -28,7 +28,7 @@ export default class Buttons extends React.Component {
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
-    waivRates: PropTypes.number.isRequired,
+    waivRates: PropTypes.number,
     onActionInitiated: PropTypes.func.isRequired,
     ownPost: PropTypes.bool,
     pendingLike: PropTypes.bool,
@@ -50,6 +50,7 @@ export default class Buttons extends React.Component {
     pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
+    waivRates: 0,
     saving: false,
     onLikeClick: () => {},
     onShareClick: () => {},
@@ -228,7 +229,7 @@ export default class Buttons extends React.Component {
 
         if (vote.sponsor) {
           sponsors.push(
-            <p>
+            <p key={vote.voter}>
               <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
               <span style={{ opacity: '0.5' }}>
                 {' '}

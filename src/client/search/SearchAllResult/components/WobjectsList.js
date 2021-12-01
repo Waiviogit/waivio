@@ -41,7 +41,7 @@ const WobjectsList = React.memo(props => {
 });
 
 WobjectsList.propTypes = {
-  searchResult: PropTypes.arrayOf().isRequired,
+  searchResult: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   loading: PropTypes.bool.isRequired,
   handleHoveredCard: PropTypes.func.isRequired,
   handleItemClick: PropTypes.func.isRequired,

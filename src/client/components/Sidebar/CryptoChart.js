@@ -41,7 +41,7 @@ const CryptoChart = props => {
       <div className="SidebarContentBlock__content">
         <div className="CryptoTrendingCharts__chart-header">
           <div className="CryptoTrendingCharts__crypto-name">
-            {CRYPTO_MAP[props.crypto].name}
+            {CRYPTO_MAP[props.crypto].symbol}
             <i
               role="presentation"
               onClick={toggleDisplayChart}
@@ -51,6 +51,7 @@ const CryptoChart = props => {
           <CryptoRateInUsd
             currentUSDPrice={props.usdPrice}
             priceDifference={props.usdPriceChange}
+            withoutPercent={props.withoutPercent}
             minimumFractionDigits={3}
             valueClassName={'CryptoTrendingCharts__usd-price'}
           />
@@ -80,16 +81,18 @@ CryptoChart.propTypes = {
   currencyPriceChange: PropTypes.number,
   currency: PropTypes.string,
   price: PropTypes.arrayOf(PropTypes.number),
+  withoutPercent: PropTypes.bool,
 };
 
 CryptoChart.defaultProps = {
-  crypto: PropTypes.string,
+  crypto: '',
   usdPrice: 0,
   usdPriceChange: 0,
   currencyPrice: 0,
   currency: '',
   currencyPriceChange: 0,
   price: [],
+  withoutPercent: false,
 };
 
 CryptoChart.defaultProps = {

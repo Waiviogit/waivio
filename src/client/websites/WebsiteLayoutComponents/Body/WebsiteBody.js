@@ -176,7 +176,7 @@ WebsiteBody.propTypes = {
   setWebsiteSearchType: PropTypes.func.isRequired,
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
-  logo: PropTypes.string.isRequired,
+  logo: PropTypes.string,
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
   isAuth: PropTypes.bool,
@@ -189,6 +189,7 @@ WebsiteBody.propTypes = {
 
 WebsiteBody.defaultProps = {
   searchString: '',
+  logo: '',
   isAuth: false,
   showReloadButton: false,
   isDining: false,
