@@ -195,8 +195,7 @@ export default class Transfer extends React.Component {
 
     this.props.getUserTokensBalanceList(this.props.user.name);
 
-    if (isNull(currentHiveRate) || isNull(currentHBDRate))
-      getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
+    if (isNull(currentHiveRate) || isNull(currentHBDRate)) getCryptoPriceHistoryAction();
     this.props.form.setFieldsValue({
       to,
       amount,
@@ -575,7 +574,7 @@ export default class Transfer extends React.Component {
       { symbol: 'HIVE', balance: parseFloat(user.balance) },
       { symbol: 'HBD', balance: parseFloat(user.hbd_balance) },
     ];
-    const isChangesDisabled = !!memo || this.props.isVipTickets;
+    const isChangesDisabled = !!memo || this.props.isVipTickets || this.props.amount;
     const amountClassList = classNames('balance', {
       'balance--disabled': isChangesDisabled,
     });
@@ -685,6 +684,7 @@ export default class Transfer extends React.Component {
                   className="Transfer__currency"
                   defaultValue={this.state.currency}
                   onChange={this.handleCurrencyChange}
+                  disabled={isChangesDisabled}
                 >
                   {userBalances.map(token => (
                     <Select.Option
@@ -698,7 +698,7 @@ export default class Transfer extends React.Component {
                       className="Transfer__currency-item"
                     >
                       <span>{token.symbol}</span>
-                      <span>{round(token.balance, 3)}</span>
+                      <span className="Transfer__currency-balance">{round(token.balance, 3)}</span>
                     </Select.Option>
                   ))}
                 </Select>,
