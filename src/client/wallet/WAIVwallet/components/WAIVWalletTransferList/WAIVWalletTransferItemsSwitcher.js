@@ -79,7 +79,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
     case 'market_placeOrder':
       return (
         <MarketBuyCard
-          quantity={transaction.quantityLocked}
+          quantity={transaction.price}
           timestamp={transaction.timestamp}
           orderType={transaction.orderType}
           symbol={transaction.symbol}
@@ -185,6 +185,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     quantityLocked: PropTypes.string,
     quantityReturned: PropTypes.string,
     symbol: PropTypes.string,
+    price: PropTypes.string,
   }).isRequired,
 };
 
