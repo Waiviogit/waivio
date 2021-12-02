@@ -9,7 +9,7 @@ const MarketBuyCard = ({ timestamp, quantity, orderType, symbol }) => {
     <TransactionCardContainer
       timestamp={timestamp}
       quantity={quantity}
-      symbol={symbol}
+      symbol={`per ${symbol}`}
       iconType={'tag'}
       color={amountInfo.color}
       point={amountInfo.point}

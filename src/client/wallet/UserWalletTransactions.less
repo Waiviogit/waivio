@@ -8,8 +8,16 @@
   margin: 20px 0;
 
   &__delegated {
-    font-weight: bold;
+    font-weight: 500;
     margin-left: 4px;
+
+    &-color {
+      color: @black;
+    }
+    &-text {
+      font-weight: lighter;
+      color: @dim-gray;
+    }
   }
 
   &:empty {
@@ -120,7 +128,7 @@
   &__content-recipient {
     display: block;
     white-space: nowrap;
-    color: @grey-mortar;
+    color: @black;
 
     @media @xsmall {
       display: flex;
