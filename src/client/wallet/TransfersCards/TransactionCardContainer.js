@@ -32,7 +32,7 @@ const TransactionCardContainer = ({
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           {children}
-          {symbol !== 'WAIV' && !!quantity && (
+          {!!quantity && (
             <span className={amountClassList}>
               {point}{' '}
               <FormattedNumber
@@ -40,7 +40,7 @@ const TransactionCardContainer = ({
                 locale={'en-IN'}
                 maximumFractionDigits={precision}
               />{' '}
-              {symbol}
+              per {symbol}
             </span>
           )}
         </div>

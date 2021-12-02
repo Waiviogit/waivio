@@ -5,7 +5,7 @@ import '../UserWalletTransactions.less';
 
 const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
   const isReceive = account === to;
-
+  const link = isReceive ? from : to;
   const cardInfo = isReceive
     ? {
         description: (
@@ -41,17 +41,11 @@ const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
       color={cardInfo.color}
       point={cardInfo.point}
     >
-      {isReceive ? 'Delegated from' : 'Delegated to'}
+      {`Delegated ${isReceive ? 'from' : 'to'}`}
       <div className="UserWalletTransactions__delegated">
-        {isReceive ? (
-          <a className="UserWalletTransactions__delegated-color" href={`/@${from}`}>
-            {from}
-          </a>
-        ) : (
-          <a className="UserWalletTransactions__delegated-color" href={`/@${to}`}>
-            {to}
-          </a>
-        )}
+        <a className="UserWalletTransactions__delegated-color" href={`/@${link}`}>
+          {link}
+        </a>
       </div>
     </TransactionCardContainer>
   );
