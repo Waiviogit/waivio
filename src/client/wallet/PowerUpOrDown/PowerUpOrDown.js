@@ -2,20 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Input, Modal } from 'antd';
+import { Form, Input, Modal, Select } from 'antd';
 import { round } from 'lodash';
-import { closePowerUpOrDown } from '../../store/walletStore/walletActions';
-import formatter from '../helpers/steemitFormatter';
-import { createQuery } from '../helpers/apiHelpers';
-import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { closePowerUpOrDown } from '../../../store/walletStore/walletActions';
+import formatter from '../../helpers/steemitFormatter';
+import { createQuery } from '../../helpers/apiHelpers';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 import {
+  getCurrentWalletType,
   getIsPowerDown,
   getIsPowerUpOrDownVisible,
   getTotalVestingFundSteem,
   getTotalVestingShares,
-} from '../../store/walletStore/walletSelectors';
+} from '../../../store/walletStore/walletSelectors';
 
-import './Transfer/Transfer.less';
+import './PowerUpOrDown.less';
 
 @injectIntl
 @connect(
@@ -25,6 +26,7 @@ import './Transfer/Transfer.less';
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     down: getIsPowerDown(state),
+    walletType: getCurrentWalletType(state),
   }),
   {
     closePowerUpOrDown,
@@ -41,12 +43,14 @@ export default class PowerUpOrDown extends React.Component {
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
     down: PropTypes.bool.isRequired,
+    walletType: PropTypes.string.isRequired,
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
 
   state = {
     oldAmount: undefined,
+    currency: this.props.walletType,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -70,11 +74,10 @@ export default class PowerUpOrDown extends React.Component {
   };
 
   handleBalanceClick = event => {
-    const { oldAmount } = this.state;
     const value = parseFloat(event.currentTarget.innerText);
 
     this.setState({
-      oldAmount: PowerUpOrDown.amountRegex.test(value) ? value : oldAmount,
+      oldAmount: value,
     });
     this.props.form.setFieldsValue({
       amount: value,
@@ -174,53 +177,56 @@ export default class PowerUpOrDown extends React.Component {
         onOk={this.handleContinueClick}
         onCancel={this.handleCancelClick}
       >
-        <Form className="Transfer" hideRequiredMark>
+        <Form className="PowerUpOrDown" hideRequiredMark>
           <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
-            {getFieldDecorator('amount', {
-              trigger: '',
-              rules: [
-                {
-                  required: true,
-                  message: intl.formatMessage({
-                    id: 'amount_error_empty',
-                    defaultMessage: 'Amount is required.',
-                  }),
-                },
-                {
-                  pattern: PowerUpOrDown.amountRegex,
-                  message: intl.formatMessage({
-                    id: 'amount_error_format',
-                    defaultMessage:
-                      'Incorrect format. Use comma or dot as decimal separator. Use at most 3 decimal places.',
-                  }),
-                },
-                { validator: this.validateBalance },
-              ],
-            })(<Input onChange={this.handleAmountChange} />)}
-            <FormattedMessage
-              id="balance_amount"
-              defaultMessage="Your balance: {amount}"
-              values={{
-                amount: (
-                  <span role="presentation" onClick={this.handleBalanceClick} className="balance">
-                    <FormattedMessage
-                      id="amount_currency"
-                      defaultMessage="{amount} {currency}"
-                      values={{
-                        amount: Math.floor(this.getAvailableBalance() * 1000) / 1000,
-                        currency: down ? 'HP' : 'HIVE',
-                      }}
-                    />
-                  </span>
-                ),
-              }}
-            />
+            <div className="PowerUpOrDown__row">
+              {getFieldDecorator('amount', {
+                trigger: '',
+                rules: [
+                  {
+                    required: true,
+                    message: intl.formatMessage({
+                      id: 'amount_error_empty',
+                      defaultMessage: 'Amount is required.',
+                    }),
+                  },
+                  {
+                    pattern: PowerUpOrDown.amountRegex,
+                    message: intl.formatMessage({
+                      id: 'amount_error_format',
+                      defaultMessage:
+                        'Incorrect format. Use comma or dot as decimal separator. Use at most 3 decimal places.',
+                    }),
+                  },
+                  { validator: this.validateBalance },
+                ],
+              })(<Input onChange={this.handleAmountChange} className="PowerUpOrDown__amount" />)}
+              {getFieldDecorator('currency', {
+                // rules: [],
+                initialValue: this.props.walletType,
+              })(
+                <Select
+                  className="PowerUpOrDown__currency"
+                  onChange={currency => this.setState({ currency })}
+                >
+                  {['HIVE', 'WAIV'].map(token => (
+                    <Select.Option key={token}>
+                      <span>{token}</span>
+                    </Select.Option>
+                  ))}
+                </Select>,
+              )}
+            </div>
           </Form.Item>
         </Form>
-        <FormattedMessage
-          id="transfer_modal_info"
-          defaultMessage="Click the button below to be redirected to SteemConnect to complete your transaction."
-        />
+        <FormattedMessage id="balance_amount" defaultMessage="Your balance" />:{' '}
+        <span role="presentation" onClick={this.handleBalanceClick} className="balance">
+          {Math.floor(this.getAvailableBalance())} {down ? 'HP' : this.state.currency}
+        </span>
+        {/*<FormattedMessage*/}
+        {/*  id="transfer_modal_info"*/}
+        {/*  defaultMessage="Click the button below to be redirected to SteemConnect to complete your transaction."*/}
+        {/*/>*/}
       </Modal>
     );
   }

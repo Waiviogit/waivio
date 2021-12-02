@@ -18,7 +18,7 @@ import {
 } from '../../store/walletStore/walletActions';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import Withdraw from '../wallet/Withdraw/WithDraw';
-import PowerUpOrDown from '../wallet/PowerUpOrDown';
+import PowerUpOrDown from '../wallet/PowerUpOrDown/PowerUpOrDown';
 import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
 
 import {
