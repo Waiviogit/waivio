@@ -119,6 +119,12 @@
     font-size: 15px;
     color: @black;
 
+    &-border {
+      border-left: 1px solid @gray;
+      margin-left: 10px;
+      padding-left: 10px;
+    }
+
     @media @small {
       font-size: 20px;
     }
@@ -126,9 +132,6 @@
     span {
       display: none;
       color: @gray;
-      border-left: 1px solid @gray;
-      margin-left: 10px;
-      padding-left: 10px;
 
       @media @medium {
         display: inline;
