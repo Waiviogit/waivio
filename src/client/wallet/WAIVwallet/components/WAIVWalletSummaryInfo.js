@@ -58,7 +58,13 @@ const WAIVWalletSummaryInfo = props => {
           <div className={powerClassList}>
             {formattedNumber(stake)}
             {!!unstake && <span> - {formattedNumber(unstake * 0.25)}</span>}{' '}
-            {!!delegation && <span>({formattedNumber(delegation)})</span>} WP
+            {!!delegation && (
+              <span>
+                ({delegation > 0 && '+'}
+                {formattedNumber(delegation)})
+              </span>
+            )}{' '}
+            WP
           </div>
         </div>
         <p className="WalletSummaryInfo__description">Staked WAIV tokens</p>
