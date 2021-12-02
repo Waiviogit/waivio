@@ -20,7 +20,9 @@ const MainPageHeader = props => (
             map
           </Link>
         )}
-        <span>Eat out, earn crypto.</span>
+        <span className={!props.withMap && 'MainPageHeader__logo-border'}>
+          Eat out, earn crypto.
+        </span>
       </div>
       <div className="MainPageHeader__buttonWrap">
         <div className="MainPageHeader__listLink">
