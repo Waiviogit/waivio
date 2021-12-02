@@ -40,7 +40,7 @@ const TransactionCardContainer = ({
                 locale={'en-IN'}
                 maximumFractionDigits={precision}
               />{' '}
-              per {symbol}
+              {symbol}
             </span>
           )}
         </div>
