@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
 
 const MarketBuyCard = ({ timestamp, quantity, orderType, symbol }) => {
-  const amountInfo = orderType !== 'buy' && { color: 'red', point: '-' };
+  const amountInfo = orderType !== 'buy' && { color: 'black', point: '' };
 
   return (
     <TransactionCardContainer

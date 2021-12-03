@@ -11,7 +11,8 @@ const PowerDownTransaction = ({ timestamp, amount, description, color }) => (
       <div className="UserWalletTransactions__content-recipient">
         {description}
         <span
-          className={`UserWalletTransactions__marginLeft UserWalletTransactions__amountColor--${color}`}
+          className={`UserWalletTransactions__marginLeft 
+          // UserWalletTransactions__amountColor--${color}`}
         >
           {amount}
         </span>
