@@ -1,11 +1,14 @@
-FROM node:alpine
+FROM node:16.13-alpine
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-COPY . /usr/src/app
+
+ARG ENV
+
+COPY ./package.json ./
 
 RUN yarn install
-RUN yarn build
+COPY . .
+RUN yarn run build $ENV
 
-EXPOSE 3000
 CMD yarn start
