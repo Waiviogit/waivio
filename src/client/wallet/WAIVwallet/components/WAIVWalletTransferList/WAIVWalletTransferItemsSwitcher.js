@@ -62,6 +62,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           account={transaction.account}
           symbol={transaction.symbol}
           action={'bought'}
+          from={transaction.from}
         />
       );
 
@@ -73,6 +74,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           account={transaction.account}
           symbol={transaction.symbol}
           action={'sold'}
+          to={transaction.to}
         />
       );
 
