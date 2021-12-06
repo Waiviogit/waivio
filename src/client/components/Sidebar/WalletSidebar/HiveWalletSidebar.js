@@ -15,10 +15,9 @@ import CryptoTrendingCharts from '../CryptoTrendingCharts';
 import { openLinkHiveAccountModal } from '../../../../store/settingsStore/settingsActions';
 import { getAuthenticatedUser, isGuestUser } from '../../../../store/authStore/authSelectors';
 import { getHiveBeneficiaryAccount } from '../../../../store/settingsStore/settingsSelectors';
+import withAuthActions from '../../../auth/withAuthActions';
 
 import './WalletSidebar.less';
-import withAuthActions from '../../../auth/withAuthActions';
-import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
 
 @withAuthActions
 @withRouter
@@ -27,7 +26,6 @@ import { getCurrentWalletType } from '../../../../store/walletStore/walletSelect
     isGuest: isGuestUser(state),
     user: getAuthenticatedUser(state),
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
-    walletType: getCurrentWalletType(state),
   }),
   {
     openTransfer,
@@ -48,7 +46,6 @@ class HiveWalletSidebar extends React.Component {
     openWithdraw: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
     hiveBeneficiaryAccount: PropTypes.string,
-    walletType: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
   };
 
@@ -94,13 +91,13 @@ class HiveWalletSidebar extends React.Component {
         >
           <FormattedMessage id="transfer" defaultMessage="Transfer" />
         </Action>
-        {ownProfile && !isGuest && this.props.walletType === 'HIVE' && (
+        {ownProfile && !isGuest && (
           <div className="WalletSidebar__power">
             <Action big onClick={this.handleOpenPowerUp}>
-              <FormattedMessage id="power_up" defaultMessage="Power up" />
+              Power up
             </Action>
             <Action big onClick={this.handleOpenPowerDown}>
-              <FormattedMessage id="power_down" defaultMessage="Power down" />
+              Power down
             </Action>
           </div>
         )}

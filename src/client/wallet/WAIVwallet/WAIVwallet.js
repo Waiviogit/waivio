@@ -9,7 +9,7 @@ import './WAIVwallet.less';
 
 const WAIVwallet = props => (
   <div className="WAIVwallet">
-    <WAIVWalletSummaryInfo name={props.match.params.name} />
+    <WAIVWalletSummaryInfo />
     <WAIVWalletTransferList name={props.match.params.name} />
   </div>
 );
