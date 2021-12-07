@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import CardsTimeStamp from './CardsTimeStamp';
 
 const ConvertHiveCompleted = ({ amount, timestamp, isGuestPage }) => {
-  const actualAmount = `+${amount.slice(0, -4) * 1} HBD`;
+  const actualAmount = `+${parseFloat(amount)} HBD`;
 
   return (
     <div className="UserWalletTransactions__transaction">
