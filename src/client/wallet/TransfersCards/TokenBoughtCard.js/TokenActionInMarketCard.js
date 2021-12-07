@@ -18,6 +18,8 @@ const TokenActionInMarketCard = ({ from, to, account, symbol, quantity, timestam
           point: '-',
         };
 
+  const recipient = from ? `from ${from}` : to && `to ${to}`;
+
   return (
     <div className="TokenBoughtCard">
       <div className="UserWalletTransactions__icon-container">
@@ -31,7 +33,7 @@ const TokenActionInMarketCard = ({ from, to, account, symbol, quantity, timestam
             </a>{' '}
             {action} {symbol}
             <br />
-            {from ? `from ${from}` : to && `to ${to}`}
+            {recipient}
           </p>
           <CardsTimeStamp timestamp={timestamp} />
         </div>
