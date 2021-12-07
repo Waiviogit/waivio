@@ -1,4 +1,8 @@
 .PowerUpOrDown {
+  label {
+    font-weight: 800;
+  }
+
   &__row {
     .ant-form-item-children {
       display: flex;
@@ -31,5 +35,23 @@
 
   .ant-form-item-control {
     margin-bottom: 0;
+  }
+
+  &__options {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__notice {
+    padding: 15px 0;
+    font-weight: 500;
+
+    h4 {
+      font-weight: 800;
+    }
+  }
+
+  .ant-row.ant-form-item {
+    margin: 0;
   }
 }

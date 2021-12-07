@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-const PowerDown = props => {
+const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
   const amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
 
@@ -65,7 +65,7 @@ const PowerDown = props => {
         })(
           <Select className="PowerUpOrDown__currency" onChange={key => setCurrency(key)}>
             {Object.entries(props.currencyList).map(token => (
-              <Select.Option key={token[0]}>
+              <Select.Option key={token[0]} className="PowerUpOrDown__options">
                 <span>{token[0]}</span>
                 <span className="PowerUpOrDown__currency-balance">{token[1]}</span>
               </Select.Option>
@@ -85,7 +85,7 @@ const PowerDown = props => {
   );
 };
 
-PowerDown.propTypes = {
+PowerSwitcher.propTypes = {
   intl: PropTypes.shape().isRequired,
   defaultType: PropTypes.string.isRequired,
   currencyList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -94,4 +94,4 @@ PowerDown.propTypes = {
   handleAmountChange: PropTypes.func.isRequired,
 };
 
-export default injectIntl(PowerDown);
+export default injectIntl(PowerSwitcher);
