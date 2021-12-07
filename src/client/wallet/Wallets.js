@@ -6,7 +6,11 @@ import PropTypes from 'prop-types';
 import Wallet from '../user/UserWallet';
 import Transfer from './Transfer/Transfer';
 import WAIVwallet from './WAIVwallet/WAIVwallet';
-import { getTokenBalance, setWalletType } from '../../store/walletStore/walletActions';
+import {
+  getGlobalProperties,
+  getTokenBalance,
+  setWalletType,
+} from '../../store/walletStore/walletActions';
 import {
   getIsPowerUpOrDownVisible,
   getIsTransferVisible,
@@ -22,6 +26,7 @@ const Wallets = props => {
     props.setWalletType(walletsType);
     props.getTokenBalance('WAIV', props.match.params.name);
     props.getCryptoPriceHistory();
+    props.getGlobalProperties();
   }, []);
 
   const handleOnChange = key => {
@@ -49,6 +54,7 @@ Wallets.propTypes = {
   setWalletType: PropTypes.func.isRequired,
   getCryptoPriceHistory: PropTypes.func.isRequired,
   getTokenBalance: PropTypes.func.isRequired,
+  getGlobalProperties: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
   visiblePower: PropTypes.bool.isRequired,
   history: PropTypes.shape({
@@ -73,5 +79,6 @@ export default connect(
     setWalletType,
     getCryptoPriceHistory,
     getTokenBalance,
+    getGlobalProperties,
   },
 )(Wallets);

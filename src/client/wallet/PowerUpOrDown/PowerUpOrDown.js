@@ -17,7 +17,7 @@ import {
   getTotalVestingShares,
   getUserCurrencyBalance,
 } from '../../../store/walletStore/walletSelectors';
-import PowerDown from './PowerDown';
+import PowerSwitcher from './PowerSwitcher';
 
 import './PowerUpOrDown.less';
 
@@ -188,7 +188,7 @@ export default class PowerUpOrDown extends React.Component {
         {visible && (
           <Form className="PowerUpOrDown" hideRequiredMark>
             <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
-              <PowerDown
+              <PowerSwitcher
                 handleAmountChange={this.handleAmountChange}
                 handleBalanceClick={this.handleBalanceClick}
                 getFieldDecorator={getFieldDecorator}
@@ -198,7 +198,7 @@ export default class PowerUpOrDown extends React.Component {
             </Form.Item>
           </Form>
         )}
-        <div>
+        <div className="PowerUpOrDown__notice">
           <h4>Notice:</h4>
           Please note that Power Up (staking) is instant, while Power Down (unstaking) takes time:
           <ul>
