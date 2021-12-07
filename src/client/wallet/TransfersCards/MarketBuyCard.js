@@ -2,22 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
 
-const MarketBuyCard = ({ timestamp, quantity, orderType, symbol }) => {
-  const amountInfo = orderType !== 'buy' && { color: 'black', point: '' };
-
-  return (
-    <TransactionCardContainer
-      timestamp={timestamp}
-      quantity={quantity}
-      symbol={`per ${symbol}`}
-      iconType={'tag'}
-      color={amountInfo.color}
-      point={amountInfo.point}
-    >
-      <span>Limit order to {orderType}</span>
-    </TransactionCardContainer>
-  );
-};
+const MarketBuyCard = ({ timestamp, quantity, orderType, symbol }) => (
+  <TransactionCardContainer
+    timestamp={timestamp}
+    quantity={quantity}
+    symbol={`per ${symbol}`}
+    iconType={'tag'}
+  >
+    <span>Limit order to {orderType}</span>
+  </TransactionCardContainer>
+);
 
 MarketBuyCard.propTypes = {
   timestamp: PropTypes.number.isRequired,
