@@ -35,6 +35,7 @@ import {
   isGuestUser,
 } from '../../../store/authStore/authSelectors';
 import {
+  getCurrentWalletType,
   getIsTransferVisible,
   getIsVipTickets,
   getTokensBalanceList,
@@ -80,6 +81,7 @@ const InputGroup = Input.Group;
     isVipTickets: getIsVipTickets(state),
     showModal: isOpenLinkModal(state),
     tokensList: getTokensBalanceList(state),
+    walletType: getCurrentWalletType(state),
   }),
   {
     closeTransfer,
@@ -119,6 +121,7 @@ export default class Transfer extends React.Component {
     getPayables: PropTypes.func,
     match: PropTypes.shape().isRequired,
     isTip: PropTypes.bool.isRequired,
+    walletType: PropTypes.string.isRequired,
     isVipTickets: PropTypes.bool,
     sendTo: PropTypes.string,
     title: PropTypes.string,
@@ -132,7 +135,7 @@ export default class Transfer extends React.Component {
     amount: 0,
     memo: '',
     app: '',
-    currency: 'HIVE',
+    currency: '',
     closeTransfer: () => {},
     screenSize: 'large',
     isGuest: false,
@@ -230,6 +233,20 @@ export default class Transfer extends React.Component {
       this.setState({ currency: nextProps.currency });
     }
   }
+
+  getTokensBalanceList = () => {
+    const hiveEngineList = this.props.tokensList.reduce((acc, curr) => {
+      acc[curr.symbol] = curr.balance;
+
+      return acc;
+    }, {});
+
+    return {
+      HBD: parseFloat(this.props.user.hbd_balance),
+      HIVE: parseFloat(this.props.user.balance),
+      ...hiveEngineList,
+    };
+  };
 
   handleOkModal = () =>
     this.props
@@ -447,13 +464,7 @@ export default class Transfer extends React.Component {
       return;
     }
 
-    let selectedBalance = this.state.balance;
-
-    if (Object.keys(Transfer.CURRENCIES).includes(this.state.currency)) {
-      selectedBalance =
-        this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.hbd_balance;
-    }
-
+    const selectedBalance = this.getTokensBalanceList()[this.state.currency];
     const currentSelectedBalance = this.props.isGuest ? user.balance : selectedBalance;
 
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
@@ -570,6 +581,7 @@ export default class Transfer extends React.Component {
     } = this.props;
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
+    const currAmount = this.getTokensBalanceList()[this.state.currency];
     let userBalances = [
       { symbol: 'HIVE', balance: parseFloat(user.balance) },
       { symbol: 'HBD', balance: parseFloat(user.hbd_balance) },
@@ -580,7 +592,7 @@ export default class Transfer extends React.Component {
     });
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
-    const currentBalance = isGuest ? user.balance : this.state.balance;
+    const currentBalance = isGuest ? user.balance : currAmount;
     const memoPlaceHolder = isTip
       ? get(memo, 'message', memo)
       : intl.formatMessage({
@@ -678,7 +690,7 @@ export default class Transfer extends React.Component {
                 />,
               )}
               {getFieldDecorator('currency', {
-                initialValue: this.props.currency,
+                initialValue: this.props.currency || this.props.walletType,
               })(
                 <Select
                   className="Transfer__currency"
@@ -717,7 +729,7 @@ export default class Transfer extends React.Component {
                   className={amountClassList}
                 >
                   {' '}
-                  {round(currentBalance, 3)} {this.state.currency}
+                  {round(currentBalance, 3) || 0} {this.state.currency}
                 </span>
               </React.Fragment>
             )}
