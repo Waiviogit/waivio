@@ -1,12 +1,12 @@
 import React from 'react';
-import { Icon } from 'antd';
 import { round } from 'lodash';
 import PropTypes from 'prop-types';
 import CardsTimeStamp from '../CardsTimeStamp';
+import Avatar from '../../../components/Avatar';
 
 import './TokenBoughtCard.less';
 
-const TokenActionInMarketCard = ({ account, symbol, quantity, timestamp, action }) => {
+const TokenActionInMarketCard = ({ from, to, account, symbol, quantity, timestamp, action }) => {
   const cardInfo =
     action === 'bought'
       ? {
@@ -18,10 +18,12 @@ const TokenActionInMarketCard = ({ account, symbol, quantity, timestamp, action 
           point: '-',
         };
 
+  const recipient = from ? `from ${from}` : to && `to ${to}`;
+
   return (
     <div className="TokenBoughtCard">
       <div className="UserWalletTransactions__icon-container">
-        <Icon type="tags-o" />
+        <Avatar username={account} size={40} />
       </div>
       <div className="TokenBoughtCard__info-container">
         <div>
@@ -30,6 +32,8 @@ const TokenActionInMarketCard = ({ account, symbol, quantity, timestamp, action 
               {account}
             </a>{' '}
             {action} {symbol}
+            <br />
+            {recipient}
           </p>
           <CardsTimeStamp timestamp={timestamp} />
         </div>
@@ -47,6 +51,8 @@ TokenActionInMarketCard.propTypes = {
   account: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  from: PropTypes.string.isRequired,
+  to: PropTypes.string.isRequired,
 };
 
 export default TokenActionInMarketCard;
