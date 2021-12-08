@@ -18,24 +18,30 @@ const TokenActionInMarketCard = ({ from, to, account, symbol, quantity, timestam
           point: '-',
         };
 
-  const recipient = from || (to && to);
-  const sent = from ? ' from ' : to && ' to ';
+  const recipient = from || to;
+  const sent = from ? ' from ' : ' to ';
 
   return (
     <div className="TokenBoughtCard">
-      <div className="UserWalletTransactions__icon-container">
+      <div className="UserWalletTransactionsicon-container">
         <Avatar username={account} size={40} />
       </div>
       <div className="TokenBoughtCard__info-container">
         <div>
           <p>
-            {action} {symbol} {sent}
-            <a href={`/@${recipient}`} className="TokenBoughtCard__userName">
-              {recipient}
-            </a>
+            {action} {symbol}
+            {recipient && (
+              <span>
+                {sent}
+                <a href={`/@${recipient}`} className="TokenBoughtCard__userName">
+                  {recipient}
+                </a>
+              </span>
+            )}
           </p>
           <CardsTimeStamp timestamp={timestamp} />
         </div>
+
         <span className={`TokenBoughtCard__quantity--${cardInfo.color}`}>
           {cardInfo.point} {round(quantity, 3)} {symbol}
         </span>
