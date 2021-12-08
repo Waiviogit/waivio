@@ -6,7 +6,7 @@ import Avatar from '../../../components/Avatar';
 
 import './TokenBoughtCard.less';
 
-const TokenActionInMarketCard = ({ from, to, account, symbol, quantity, timestamp, action }) => {
+const TokenActionInMarketCard = ({ from, to, symbol, quantity, timestamp, action }) => {
   const cardInfo =
     action === 'Bought'
       ? {
@@ -24,7 +24,7 @@ const TokenActionInMarketCard = ({ from, to, account, symbol, quantity, timestam
   return (
     <div className="TokenBoughtCard">
       <div className="UserWalletTransactionsicon-container">
-        <Avatar username={account} size={40} />
+        <Avatar username={recipient} size={40} />
       </div>
       <div className="TokenBoughtCard__info-container">
         <div>
@@ -53,7 +53,6 @@ const TokenActionInMarketCard = ({ from, to, account, symbol, quantity, timestam
 TokenActionInMarketCard.propTypes = {
   quantity: PropTypes.string.isRequired,
   timestamp: PropTypes.number.isRequired,
-  account: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   from: PropTypes.string.isRequired,
