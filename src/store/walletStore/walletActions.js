@@ -484,7 +484,7 @@ export const getWAIVTransferList = (account, offset, type = GET_WAIV_TRANSFER_LI
   dispatch({
     type: type.ACTION,
     payload: ApiClient.getTokensTransferList('WAIV', account, offset),
-    meta: 50,
+    meta: 10,
   });
 
 export const getMoreWAIVTransferList = (account, offset) => dispatch =>

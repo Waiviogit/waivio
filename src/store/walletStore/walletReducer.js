@@ -388,21 +388,13 @@ export default function walletReducer(state = initialState, action) {
         },
       };
 
-    case walletActions.GET_MORE_WAIV_TRANSFER_LIST.START:
-      return {
-        ...state,
-        waivTransactionHistory: {
-          ...state.waivTransactionHistory,
-          loading: true,
-        },
-      };
-
     case walletActions.GET_MORE_WAIV_TRANSFER_LIST.ERROR:
       return {
         ...state,
         waivTransactionHistory: {
           ...state.waivTransactionHistory,
           loading: false,
+          hasMore: false,
         },
       };
 
@@ -410,7 +402,7 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         waivTransactionHistory: {
-          list: [...state.waivTransactionHistory, ...action.payload],
+          list: [...state.waivTransactionHistory.list, ...action.payload],
           hasMore: action.payload.length === action.meta,
           loading: false,
         },

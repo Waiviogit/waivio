@@ -2335,7 +2335,7 @@ export const likePost = body => {
     .catch(e => e);
 };
 
-export const getTokensTransferList = (symbol, account, offset = 0, limit = 50) => {
+export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) => {
   return fetch(
     `https://accounts.hive-engine.com/accountHistory?account=${account}&limit=${limit}&offset=${offset}&symbol=${symbol}`,
     {

@@ -137,7 +137,6 @@ class UserWalletTransactions extends React.Component {
               )
             }
           >
-            <div />
             {this.isGuestPage()
               ? demoTransactions.map(demoTransaction => (
                   <WalletTransaction
