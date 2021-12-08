@@ -7,6 +7,8 @@
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 
   & > .iconfont {
     margin-left: 4px;
@@ -15,8 +17,24 @@
     color: @blue-linkWater;
   }
 
+  &--waiv {
+    color: @orange-hot;
+
+    & > .iconfont {
+      color: @orange-hot;
+    }
+  }
+
   &--rejected {
     text-decoration: line-through;
+  }
+
+  &__waiv-eligible {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-left: 10px;
   }
 }
 

@@ -2317,6 +2317,20 @@ export const getUserVoteValueInfo = userName => {
     .catch(e => e);
 };
 
+export const likePost = body =>
+  fetch(`${config.apiPrefix}${config.post}${config.likePost}`, {
+    headers: {
+      ...headers,
+      'access-token': getGuestAccessToken() || Cookie.get('access_token'),
+    },
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export const getTokensTransferList = (symbol, account, offset = 0, limit = 50) => {
   return fetch(
     `https://accounts.hive-engine.com/accountHistory?account=${account}&limit=${limit}&offset=${offset}&symbol=${symbol}`,

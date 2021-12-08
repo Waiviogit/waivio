@@ -144,5 +144,6 @@
   "requiredObject": "/required-object",
   "engineRates": "/engine-rates",
   "voteValueInfo": "/vote-value-info",
+  "likePost": "/like-post",
   "getMatchBots": "/match-bots"
 }

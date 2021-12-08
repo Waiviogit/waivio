@@ -138,7 +138,7 @@ const QuickRewardsModal = props => {
           ),
           buttonName: 'Next',
           buttonHandler: handleOnClickPublishButton,
-          disabled: requirements && requirements !== images.length,
+          disabled: requirements && requirements > images.length,
           previousHandler: handleOnClickBack,
         };
       case 3:

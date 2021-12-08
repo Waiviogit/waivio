@@ -244,6 +244,44 @@ const posts = (state = initialState, action) => {
         pendingLikes,
       };
     }
+
+    case postsActions.LIKE_POST.SUCCESS: {
+      const key = getPostKey(action.payload);
+      const author = action.payload.author;
+      const pendingLikes = omit(state.pendingLikes, key);
+      let reblogged_by = '';
+
+      if (state.list[key].reblogged_by) {
+        reblogged_by = state.list[key].reblogged_by.length
+          ? state.list[key].reblogged_by
+          : action.payload.reblogged_by;
+      }
+      const lastId = get(action.payload, [action.payload.length - 1, '_id']);
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [key]: {
+            ...state.list[key],
+            ...action.payload,
+            reblogged_by,
+            author,
+            id: key,
+          },
+        },
+        lastId,
+        postsStates: {
+          ...state.postsStates,
+          [key]: {
+            fetching: false,
+            loaded: true,
+            failed: false,
+          },
+        },
+        pendingLikes,
+      };
+    }
     case postsActions.GET_CONTENT.ERROR:
       return {
         ...state,
@@ -265,7 +303,7 @@ const posts = (state = initialState, action) => {
     case postsActions.LIKE_POST.ERROR:
       return {
         ...state,
-        pendingLikes: omit(state.pendingLikes, get(action, 'meta.postId')),
+        pendingLikes: omit(state.pendingLikes, action.meta),
       };
     case commentsActions.SEND_COMMENT_SUCCESS:
       return {

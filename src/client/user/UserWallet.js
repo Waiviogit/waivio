@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { get, isEmpty } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
-import { HBD, HIVE, WAIV } from '../../common/constants/cryptos';
+import { HBD, HIVE } from '../../common/constants/cryptos';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
 import Loading from '../components/Icon/Loading';
 import {
@@ -36,7 +36,6 @@ import {
   getUsersTransactions,
   hasMoreGuestActions,
 } from '../../store/walletStore/walletSelectors';
-import HiveWalletSidebar from '../components/Sidebar/WalletSidebar/HiveWalletSidebar';
 
 import './UserWallet.less';
 
@@ -248,7 +247,6 @@ class Wallet extends Component {
           userName={this.props.match.params.name}
         />
         {!isEmptyTransactions && this.tableButton(isEmptyTransactions)}
-        {isMobile && <HiveWalletSidebar cryptos={[WAIV.symbol, HIVE.symbol, HBD.symbol]} />}
         {this.handleRenderWalletTransactions(
           transactions,
           demoTransactions,
