@@ -4,6 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { Modal } from 'antd';
+import { get } from 'lodash';
 
 import { calculatePayout, isPostCashout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
@@ -19,7 +20,7 @@ const Payout = React.memo(({ intl, post }) => {
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
   const payout = calculatePayout(post, rates);
   const currentPayout = isPostCashout(post) ? payout.pastPayouts : payout.potentialPayout;
-  const postTags = JSON.parse(post.json_metadata).tags;
+  const postTags = get(JSON.parse(post.json_metadata), 'tags', []);
   const waivEligible = postTags.some(tag => WAIVEligibleTags.includes(tag));
   const payoutClassList = classNames('Payout', {
     'Payout--waiv': waivEligible,
