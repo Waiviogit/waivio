@@ -4,7 +4,6 @@ import { LineChart } from 'react-easy-chart';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 
-import { getIsMobile } from '../../../../store/appStore/appSelectors';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 import USDDisplay from '../../Utils/USDDisplay';
 
@@ -48,8 +47,8 @@ const ChartGenerator = props => {
     yTicks: 0,
     data: [graphData],
     dataPoints: true,
-    mouseOverHandler: !props.isMobile ? chartMouseOverHandler : () => {},
-    mouseOutHandler: !props.isMobile ? chartMouseOutHandler : () => {},
+    mouseOverHandler: chartMouseOverHandler,
+    mouseOutHandler: chartMouseOutHandler,
   };
 
   return (
@@ -68,10 +67,8 @@ ChartGenerator.propTypes = {
   prices: PropTypes.arrayOf().isRequired,
   width: PropTypes.string.isRequired,
   locale: PropTypes.string.isRequired,
-  isMobile: PropTypes.string.isRequired,
 };
 
 export default connect(state => ({
   locale: getLocale(state),
-  isMobile: getIsMobile(state),
 }))(ChartGenerator);

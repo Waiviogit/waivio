@@ -127,3 +127,5 @@ export const notificationType = {
 export const roundUpToThisIndex = 2;
 
 export const CRYPTO_LIST_FOR_WALLET = ['btc', 'ltc', 'eth'];
+
+export const WAIVEligibleTags = ['waivio', 'neoxian', 'palnet', 'waiv', 'food'];
