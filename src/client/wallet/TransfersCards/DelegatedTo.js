@@ -41,7 +41,7 @@ const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
       color={cardInfo.color}
       point={cardInfo.point}
     >
-      {`Delegated ${isReceive ? 'from' : 'to'}`}
+      {`Delegation ${isReceive ? 'from' : 'to'}`}
       <div className="UserWalletTransactions__delegated">
         <a className="UserWalletTransactions__delegated-color" href={`/@${link}`}>
           {link}
