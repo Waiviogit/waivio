@@ -8,7 +8,7 @@ import './TokenBoughtCard.less';
 
 const TokenActionInMarketCard = ({ from, to, account, symbol, quantity, timestamp, action }) => {
   const cardInfo =
-    action === 'bought'
+    action === 'Bought'
       ? {
           color: 'green',
           point: '+',
@@ -18,7 +18,8 @@ const TokenActionInMarketCard = ({ from, to, account, symbol, quantity, timestam
           point: '-',
         };
 
-  const recipient = from ? `from ${from}` : to && `to ${to}`;
+  const recipient = from || (to && to);
+  const sent = from ? ' from ' : to && ' to ';
 
   return (
     <div className="TokenBoughtCard">
@@ -28,12 +29,10 @@ const TokenActionInMarketCard = ({ from, to, account, symbol, quantity, timestam
       <div className="TokenBoughtCard__info-container">
         <div>
           <p>
-            <a href={`/@${account}`} className="TokenBoughtCard__userName">
-              {account}
-            </a>{' '}
-            {action} {symbol}
-            <br />
-            {recipient}
+            {action} {symbol} {sent}
+            <a href={`/@${recipient}`} className="TokenBoughtCard__userName">
+              {recipient}
+            </a>
           </p>
           <CardsTimeStamp timestamp={timestamp} />
         </div>

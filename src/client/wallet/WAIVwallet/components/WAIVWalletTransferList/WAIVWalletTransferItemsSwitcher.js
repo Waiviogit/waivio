@@ -61,7 +61,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           timestamp={transaction.timestamp}
           account={transaction.account}
           symbol={transaction.symbol}
-          action={'bought'}
+          action={'Bought'}
           from={transaction.from}
         />
       );
@@ -73,7 +73,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           timestamp={transaction.timestamp}
           account={transaction.account}
           symbol={transaction.symbol}
-          action={'sold'}
+          action={'Sold'}
           to={transaction.to}
         />
       );
