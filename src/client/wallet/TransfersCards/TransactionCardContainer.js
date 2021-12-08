@@ -18,7 +18,6 @@ const TransactionCardContainer = ({
   const amountClassList = classNames('UserWalletTransactions__marginLeft', {
     [`UserWalletTransactions__amount--${color}`]: color,
   });
-  const precision = quantity > 0.01 || quantity === 0 ? 2 : 3;
 
   return (
     <div className="UserWalletTransactions__transaction">
@@ -35,11 +34,7 @@ const TransactionCardContainer = ({
           {!!quantity && (
             <span className={amountClassList}>
               {point}{' '}
-              <FormattedNumber
-                value={quantity}
-                locale={'en-IN'}
-                maximumFractionDigits={precision}
-              />{' '}
+              <FormattedNumber value={quantity} locale={'en-IN'} maximumFractionDigits={3} />{' '}
               {symbol}
             </span>
           )}

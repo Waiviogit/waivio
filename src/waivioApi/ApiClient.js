@@ -2317,11 +2317,14 @@ export const getUserVoteValueInfo = userName => {
     .catch(e => e);
 };
 
-export const likePost = body =>
-  fetch(`${config.apiPrefix}${config.post}${config.likePost}`, {
+export const likePost = body => {
+  const guestToken = getGuestAccessToken();
+
+  return fetch(`${config.apiPrefix}${config.post}${config.likePost}`, {
     headers: {
       ...headers,
-      'access-token': getGuestAccessToken() || Cookie.get('access_token'),
+      'access-token': guestToken || Cookie.get('access_token'),
+      'waivio-auth': Boolean(guestToken),
     },
     method: 'POST',
     body: JSON.stringify(body),
@@ -2330,6 +2333,7 @@ export const likePost = body =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
 export const getTokensTransferList = (symbol, account, offset = 0, limit = 50) => {
   return fetch(

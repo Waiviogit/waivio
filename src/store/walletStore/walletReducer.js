@@ -37,7 +37,7 @@ const initialState = {
   withdrawals: 0,
   deposits: 0,
   tokensRates: {},
-  waivTransactionHistory: { list: [], hasMore: false },
+  waivTransactionHistory: { list: [], hasMore: false, loading: false },
   currentWallet: 'WAIV',
   tokensBalanceList: [],
 };
@@ -360,12 +360,59 @@ export default function walletReducer(state = initialState, action) {
         },
       };
 
+    case walletActions.GET_WAIV_TRANSFER_LIST.START:
+      return {
+        ...state,
+        waivTransactionHistory: {
+          ...state.waivTransactionHistory,
+          loading: true,
+        },
+      };
+
+    case walletActions.GET_WAIV_TRANSFER_LIST.ERROR:
+      return {
+        ...state,
+        waivTransactionHistory: {
+          ...state.waivTransactionHistory,
+          loading: false,
+        },
+      };
+
     case walletActions.GET_WAIV_TRANSFER_LIST.SUCCESS:
       return {
         ...state,
         waivTransactionHistory: {
           list: action.payload,
           hasMore: action.payload.length === action.meta,
+          loading: false,
+        },
+      };
+
+    case walletActions.GET_MORE_WAIV_TRANSFER_LIST.START:
+      return {
+        ...state,
+        waivTransactionHistory: {
+          ...state.waivTransactionHistory,
+          loading: true,
+        },
+      };
+
+    case walletActions.GET_MORE_WAIV_TRANSFER_LIST.ERROR:
+      return {
+        ...state,
+        waivTransactionHistory: {
+          ...state.waivTransactionHistory,
+          loading: false,
+        },
+      };
+
+    case walletActions.GET_MORE_WAIV_TRANSFER_LIST.SUCCESS:
+      return {
+        ...state,
+        waivTransactionHistory: {
+          list: [...state.waivTransactionHistory, ...action.payload],
+          hasMore: action.payload.length === action.meta,
+          loading: false,
         },
       };
 
