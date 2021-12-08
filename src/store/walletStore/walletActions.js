@@ -12,6 +12,7 @@ import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../../client/helpers/accou
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { guestUserRegex } from '../../client/helpers/regexHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getCurrentWalletType } from './walletSelectors';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -60,24 +61,28 @@ export const setIsOld = payload => ({
 export const openTransfer = (
   userName,
   amount = 0,
-  currency = 'HIVE',
+  currency,
   memo = '',
   app,
   tip = false,
   isVipTicket = false,
-) => dispatch =>
-  dispatch({
+) => (dispatch, getState) => {
+  const walletType = getCurrentWalletType(getState());
+  const currentCurrency = currency || walletType;
+
+  return dispatch({
     type: OPEN_TRANSFER,
     payload: {
       userName,
       amount,
-      currency,
+      currency: currentCurrency,
       memo,
       app,
       tip,
       isVipTicket,
     },
   });
+};
 
 const parseSteemUserActions = userActions => {
   const userWalletTransactions = [];
