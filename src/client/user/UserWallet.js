@@ -5,11 +5,10 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { get, isEmpty } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
-import { HBD, HIVE, WAIV } from '../../common/constants/cryptos';
+import { HBD, HIVE } from '../../common/constants/cryptos';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
 import Loading from '../components/Icon/Loading';
 import {
-  getGlobalProperties,
   getMoreUserAccountHistory,
   getUserTransactionHistory,
   getMoreUserTransactionHistory,
@@ -18,7 +17,6 @@ import {
 } from '../../store/walletStore/walletActions';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import Withdraw from '../wallet/Withdraw/WithDraw';
-import PowerUpOrDown from '../wallet/PowerUpOrDown';
 import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
 
 import {
@@ -38,7 +36,6 @@ import {
   getUsersTransactions,
   hasMoreGuestActions,
 } from '../../store/walletStore/walletSelectors';
-import HiveWalletSidebar from '../components/Sidebar/WalletSidebar/HiveWalletSidebar';
 
 import './UserWallet.less';
 
@@ -66,7 +63,6 @@ import './UserWallet.less';
     isTransactionsHistoryLoading: getIsTransactionsHistoryLoading(state),
   }),
   {
-    getGlobalProperties,
     getMoreUserAccountHistory,
     getUserTransactionHistory,
     getMoreUserTransactionHistory,
@@ -82,7 +78,6 @@ class Wallet extends Component {
     location: PropTypes.shape().isRequired,
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
-    getGlobalProperties: PropTypes.func.isRequired,
     getMoreUserAccountHistory: PropTypes.func.isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     usersAccountHistoryLoading: PropTypes.bool.isRequired,
@@ -125,13 +120,9 @@ class Wallet extends Component {
   };
 
   componentDidMount() {
-    const { totalVestingShares, totalVestingFundSteem, transactionsHistory } = this.props;
+    const { transactionsHistory } = this.props;
     const username = this.props.match.params.name;
     const isGuest = guestUserRegex.test(username);
-
-    if (isEmpty(totalVestingFundSteem) || isEmpty(totalVestingShares)) {
-      this.props.getGlobalProperties();
-    }
 
     if (!isGuest && isEmpty(transactionsHistory[username])) {
       this.props.getUserTransactionHistory(username);
@@ -256,7 +247,6 @@ class Wallet extends Component {
           userName={this.props.match.params.name}
         />
         {!isEmptyTransactions && this.tableButton(isEmptyTransactions)}
-        {isMobile && <HiveWalletSidebar cryptos={[WAIV.symbol, HIVE.symbol, HBD.symbol]} />}
         {this.handleRenderWalletTransactions(
           transactions,
           demoTransactions,
@@ -264,7 +254,6 @@ class Wallet extends Component {
           actions,
           isMobile,
         )}
-        <PowerUpOrDown />
         {this.props.isWithdrawOpen && <Withdraw />}
       </div>
     );

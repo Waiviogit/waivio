@@ -4,12 +4,15 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { Modal } from 'antd';
+import { get } from 'lodash';
 
 import { calculatePayout, isPostCashout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
 import USDDisplay from '../Utils/USDDisplay';
 import PayoutDetail from '../PayoutDetail';
 import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
+import { WAIVEligibleTags } from '../../../common/constants/waivio';
+import { parseJSON } from '../../helpers/parseJSON';
 
 import './Payout.less';
 
@@ -18,6 +21,11 @@ const Payout = React.memo(({ intl, post }) => {
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
   const payout = calculatePayout(post, rates);
   const currentPayout = isPostCashout(post) ? payout.pastPayouts : payout.potentialPayout;
+  const postTags = get(parseJSON(post.json_metadata), 'tags', []);
+  const waivEligible = postTags.some(tag => WAIVEligibleTags.includes(tag));
+  const payoutClassList = classNames('Payout', {
+    'Payout--waiv': waivEligible,
+  });
   const toggleModal = () => setVisible(show => !show);
   const modalTitle = isPostCashout(post) ? (
     <FormattedMessage id="payout_total_past_payout_amount" defaultMessage="Total Past Payouts:" />
@@ -27,7 +35,7 @@ const Payout = React.memo(({ intl, post }) => {
 
   return (
     <React.Fragment>
-      <span className="Payout" onClick={toggleModal}>
+      <span className={payoutClassList} onClick={toggleModal}>
         <BTooltip title={<PayoutDetail post={post} />}>
           <span
             className={classNames({
@@ -47,6 +55,20 @@ const Payout = React.memo(({ intl, post }) => {
             <i className="iconfont icon-flashlight" />
           </BTooltip>
         )}
+        {waivEligible && (
+          <BTooltip
+            title={intl.formatMessage({
+              id: 'eligible_for_waiv',
+              defaultMessage: 'Eligible for WAIV rewards',
+            })}
+          >
+            <img
+              src={'/images/logo.png'}
+              className="Payout__waiv-eligible"
+              alt="Eligible for WAIV rewards"
+            />
+          </BTooltip>
+        )}
       </span>
       {visible && (
         <Modal visible={visible} onCancel={toggleModal} title={modalTitle} footer={null}>
@@ -61,6 +83,7 @@ Payout.propTypes = {
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape({
     percent_hbd: PropTypes.number,
+    json_metadata: PropTypes.string,
   }).isRequired,
 };
 

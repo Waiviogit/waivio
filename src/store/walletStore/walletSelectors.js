@@ -193,7 +193,8 @@ export const getWeeklyTokenRatesPrice = (state, token) => {
 
   return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'weekly'], []).map(price => ({
     price: price.rates.USD,
-    day: moment(price.dateString)
+    day: moment
+      .utc(price.dateString)
       .locale(locale)
       .format('ddd'),
   }));

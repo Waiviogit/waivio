@@ -11,7 +11,7 @@ import {
   getUserCurrencyBalance,
 } from '../../../../store/walletStore/walletSelectors';
 import Loading from '../../../components/Icon/Loading';
-import { getTokenBalance, resetTokenBalance } from '../../../../store/walletStore/walletActions';
+import { resetTokenBalance } from '../../../../store/walletStore/walletActions';
 
 const WAIVWalletSummaryInfo = props => {
   const balance = +get(props.currencyInfo, 'balance', 0);
@@ -25,11 +25,7 @@ const WAIVWalletSummaryInfo = props => {
     'WalletSummaryInfo__value--unstake': unstake,
   });
 
-  useEffect(() => {
-    props.getTokenBalance('WAIV', props.name);
-
-    return () => props.resetTokenBalance();
-  }, []);
+  useEffect(() => () => props.resetTokenBalance(), []);
 
   const formattedNumber = num => {
     if (isNil(num)) return <Loading />;
@@ -57,8 +53,14 @@ const WAIVWalletSummaryInfo = props => {
           <div className="WalletSummaryInfo__label">WAIV Power</div>
           <div className={powerClassList}>
             {formattedNumber(stake)}
-            {!!unstake && <span> - {formattedNumber(unstake * 0.25)}</span>}{' '}
-            {!!delegation && <span>({formattedNumber(delegation)})</span>} WP
+            {!!unstake && <span> - {formattedNumber(unstake)}</span>}{' '}
+            {!!delegation && (
+              <span>
+                ({delegation > 0 && '+'}
+                {formattedNumber(delegation)})
+              </span>
+            )}{' '}
+            WP
           </div>
         </div>
         <p className="WalletSummaryInfo__description">Staked WAIV tokens</p>
@@ -68,9 +70,7 @@ const WAIVWalletSummaryInfo = props => {
 };
 
 WAIVWalletSummaryInfo.propTypes = {
-  name: PropTypes.string.isRequired,
   currencyInfo: PropTypes.shape({}).isRequired,
-  getTokenBalance: PropTypes.func.isRequired,
   resetTokenBalance: PropTypes.func.isRequired,
   rates: PropTypes.number.isRequired,
 };
@@ -81,7 +81,6 @@ export default connect(
     rates: getTokenRatesInUSD(state, 'WAIV'),
   }),
   {
-    getTokenBalance,
     resetTokenBalance,
   },
 )(WAIVWalletSummaryInfo);

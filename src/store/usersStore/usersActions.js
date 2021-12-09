@@ -34,8 +34,10 @@ export const getUserAccount = name => (dispatch, getState) => {
 
         data.rc_percentage = rc.percentage * 0.01;
         data.voting_mana = voting_mana.percentage * 0.01;
-        data.waivVotingPower = get(waivVotingMana, 'votingPower', 0) * 0.01;
-        data.waivDownvotingPower = get(waivVotingMana, 'downvotingPower', 0) * 0.01;
+        data.waivVotingPower = waivVotingMana ? get(waivVotingMana, 'votingPower', 0) * 0.01 : 100;
+        data.waivDownvotingPower = waivVotingMana
+          ? get(waivVotingMana, 'downvotingPower', 0) * 0.01
+          : 100;
         data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
         data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
         data.totalVotingPowerPrice = userVoteValue.estimatedHIVE + userVoteValue.estimatedWAIV;

@@ -61,7 +61,8 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           timestamp={transaction.timestamp}
           account={transaction.account}
           symbol={transaction.symbol}
-          action={'bought'}
+          action={'Bought'}
+          from={transaction.from}
         />
       );
 
@@ -72,14 +73,15 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           timestamp={transaction.timestamp}
           account={transaction.account}
           symbol={transaction.symbol}
-          action={'sold'}
+          action={'Sold'}
+          to={transaction.to}
         />
       );
 
     case 'market_placeOrder':
       return (
         <MarketBuyCard
-          quantity={transaction.quantityLocked}
+          quantity={transaction.price}
           timestamp={transaction.timestamp}
           orderType={transaction.orderType}
           symbol={transaction.symbol}
@@ -185,6 +187,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     quantityLocked: PropTypes.string,
     quantityReturned: PropTypes.string,
     symbol: PropTypes.string,
+    price: PropTypes.string,
   }).isRequired,
 };
 

@@ -2317,7 +2317,25 @@ export const getUserVoteValueInfo = userName => {
     .catch(e => e);
 };
 
-export const getTokensTransferList = (symbol, account, offset = 0, limit = 50) => {
+export const likePost = body => {
+  const guestToken = getGuestAccessToken();
+
+  return fetch(`${config.apiPrefix}${config.post}${config.likePost}`, {
+    headers: {
+      ...headers,
+      'access-token': guestToken || Cookie.get('access_token'),
+      'waivio-auth': Boolean(guestToken),
+    },
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) => {
   return fetch(
     `https://accounts.hive-engine.com/accountHistory?account=${account}&limit=${limit}&offset=${offset}&symbol=${symbol}`,
     {

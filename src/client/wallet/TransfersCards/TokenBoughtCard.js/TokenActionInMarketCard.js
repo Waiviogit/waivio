@@ -1,14 +1,14 @@
 import React from 'react';
-import { Icon } from 'antd';
 import { round } from 'lodash';
 import PropTypes from 'prop-types';
 import CardsTimeStamp from '../CardsTimeStamp';
+import Avatar from '../../../components/Avatar';
 
 import './TokenBoughtCard.less';
 
-const TokenActionInMarketCard = ({ account, symbol, quantity, timestamp, action }) => {
+const TokenActionInMarketCard = ({ from, to, symbol, quantity, timestamp, action }) => {
   const cardInfo =
-    action === 'bought'
+    action === 'Bought'
       ? {
           color: 'green',
           point: '+',
@@ -18,21 +18,30 @@ const TokenActionInMarketCard = ({ account, symbol, quantity, timestamp, action 
           point: '-',
         };
 
+  const recipient = from || to;
+  const sent = from ? ' from ' : ' to ';
+
   return (
     <div className="TokenBoughtCard">
-      <div className="UserWalletTransactions__icon-container">
-        <Icon type="tags-o" />
+      <div className="UserWalletTransactionsicon-container">
+        <Avatar username={recipient} size={40} />
       </div>
       <div className="TokenBoughtCard__info-container">
         <div>
           <p>
-            <a href={`/@${account}`} className="TokenBoughtCard__userName">
-              {account}
-            </a>{' '}
             {action} {symbol}
+            {recipient && (
+              <span>
+                {sent}
+                <a href={`/@${recipient}`} className="TokenBoughtCard__userName">
+                  {recipient}
+                </a>
+              </span>
+            )}
           </p>
           <CardsTimeStamp timestamp={timestamp} />
         </div>
+
         <span className={`TokenBoughtCard__quantity--${cardInfo.color}`}>
           {cardInfo.point} {round(quantity, 3)} {symbol}
         </span>
@@ -44,9 +53,10 @@ const TokenActionInMarketCard = ({ account, symbol, quantity, timestamp, action 
 TokenActionInMarketCard.propTypes = {
   quantity: PropTypes.string.isRequired,
   timestamp: PropTypes.number.isRequired,
-  account: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  from: PropTypes.string.isRequired,
+  to: PropTypes.string.isRequired,
 };
 
 export default TokenActionInMarketCard;
