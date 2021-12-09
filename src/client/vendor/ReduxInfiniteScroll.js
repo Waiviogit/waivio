@@ -32,6 +32,7 @@ export default class ReduxInfiniteScroll extends React.Component {
   }
 
   componentDidUpdate() {
+    console.log('kkk');
     this.attachScrollListener();
   }
 
@@ -120,8 +121,8 @@ export default class ReduxInfiniteScroll extends React.Component {
 
   _totalItemsSize() {
     let totalSize;
-    totalSize += this.props.children.size ? this.props.children.size : this.props.children.length;
-    totalSize += this.props.items.size ? this.props.items.size : this.props.items.length;
+    totalSize += this.props.children.size || this.props.children.length;
+    totalSize += this.props.items.size || this.props.items.length;
     return totalSize;
   }
 
