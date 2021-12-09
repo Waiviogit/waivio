@@ -32,7 +32,6 @@ export default class ReduxInfiniteScroll extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('kkk');
     this.attachScrollListener();
   }
 
