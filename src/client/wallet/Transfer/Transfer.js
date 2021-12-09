@@ -169,7 +169,7 @@ export default class Transfer extends React.Component {
     super(props);
 
     this.state = {
-      currency: this.props.currency,
+      currency: this.props.isGuest ? 'HIVE' : this.props.currency,
       balance: parseFloat(this.props.user.balance),
       oldAmount: undefined,
       searchBarValue: '',
@@ -690,13 +690,14 @@ export default class Transfer extends React.Component {
                 />,
               )}
               {getFieldDecorator('currency', {
-                initialValue: this.props.currency || this.props.walletType,
+                initialValue: isGuest
+                  ? this.state.currency
+                  : this.props.currency || this.props.walletType,
               })(
                 <Select
                   className="Transfer__currency"
-                  defaultValue={this.state.currency}
                   onChange={this.handleCurrencyChange}
-                  disabled={isChangesDisabled}
+                  disabled={isChangesDisabled || isGuest}
                 >
                   {userBalances.map(token => (
                     <Select.Option
