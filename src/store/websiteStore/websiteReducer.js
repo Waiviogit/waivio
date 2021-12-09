@@ -322,7 +322,9 @@ export default function websiteReducer(state = initialState, action) {
 
       return {
         ...state,
-        wobjectsPoint: uniqBy(state.wobjectsPoint.concat(action.payload.wobjects), '_id'),
+        wobjectsPoint: action.meta
+          ? action.payload.wobjects
+          : uniqBy(state.wobjectsPoint.concat(action.payload.wobjects), '_id'),
         wobjectsPointHasMore: action.payload.hasMore,
       };
     }

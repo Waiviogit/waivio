@@ -5,7 +5,7 @@ import SettingsSidenav from '../../components/Navigation/SettingsSidenav/Setting
 import SidebarMenu from '../../components/Sidebar/SidebarMenu';
 import SidenavRewards from '../../components/Navigation/SidenavRewards';
 import SidenavDiscoverObjects from '../../discoverObjects/SidenavDiscoverObjects';
-import URL from '../../../common/routes/constants';
+import URL from '../../../routes/constants';
 
 const LeftSidebar = () => {
   const isWidget =
