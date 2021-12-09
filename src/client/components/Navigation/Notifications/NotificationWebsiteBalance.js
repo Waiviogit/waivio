@@ -17,10 +17,7 @@ const NotificationWebsiteBalance = ({ notification, read, onClick, currentAuthUs
   >
     <Avatar username={currentAuthUsername} size={40} />
     <div className="Notification__text">
-      <FormattedMessage
-        id="website_account_balance"
-        defaultMessage="website account balance may run out in a day"
-      />
+      <FormattedMessage id={notification.message} defaultMessage={notification.message} />
       <div className="Notification__text__date">
         <FormattedRelative value={epochToUTC(notification.timestamp)} />
       </div>
