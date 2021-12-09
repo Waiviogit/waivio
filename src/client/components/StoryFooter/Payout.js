@@ -12,6 +12,7 @@ import USDDisplay from '../Utils/USDDisplay';
 import PayoutDetail from '../PayoutDetail';
 import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 import { WAIVEligibleTags } from '../../../common/constants/waivio';
+import { parseJSON } from '../../helpers/parseJSON';
 
 import './Payout.less';
 
@@ -20,7 +21,7 @@ const Payout = React.memo(({ intl, post }) => {
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
   const payout = calculatePayout(post, rates);
   const currentPayout = isPostCashout(post) ? payout.pastPayouts : payout.potentialPayout;
-  const postTags = get(JSON.parse(post.json_metadata), 'tags', []);
+  const postTags = get(parseJSON(post.json_metadata), 'tags', []);
   const waivEligible = postTags.some(tag => WAIVEligibleTags.includes(tag));
   const payoutClassList = classNames('Payout', {
     'Payout--waiv': waivEligible,
