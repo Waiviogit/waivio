@@ -428,6 +428,7 @@
   "object": "object",
   "objects": "Objects",
   "users": "Users",
+  "Authors": "Authors",
   "preview_locale": "in {locale} locale",
   "description_short": "Short description",
   "description_full": "Full description",
