@@ -1,4 +1,4 @@
-import { objMenuTypes, supportedObjectFields } from '../constants/listOfFields';
+import { objMenuTypes, supportedObjectFields } from '../common/constants/listOfFields';
 
 export default {
   WOBJ: {

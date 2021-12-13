@@ -1,15 +1,15 @@
 import Views from '../components';
-import Post from '../../../client/post/Post';
-import Wrapper from '../../../client/Wrapper';
+import Post from '../../client/post/Post';
+import Wrapper from '../../client/Wrapper';
 import URL from '../constants';
 import createNestedRouts from '../helper';
-import User from '../../../client/user/User';
-import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
-import Page from '../../../client/feed/Page';
-import Rewards from '../../../client/rewards/Rewards';
-import Discover from '../../../client/discover/Discover';
-import DiscoverObjects from '../../../client/discoverObjects/DiscoverObjects';
-import RewardsComponent from '../../../client/rewards/RewardsComponent/RewardsComponent';
+import User from '../../client/user/User';
+import WobjectContainer from '../../client/object/Wobj/WobjectContainer';
+import Page from '../../client/feed/Page';
+import Rewards from '../../client/rewards/Rewards';
+import Discover from '../../client/discover/Discover';
+import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
+import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsComponent';
 
 const routes = {
   component: Wrapper,

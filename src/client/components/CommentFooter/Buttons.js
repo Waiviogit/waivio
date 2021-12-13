@@ -12,7 +12,7 @@ import BTooltip from '../BTooltip';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import withAuthActions from '../../auth/withAuthActions';
 import USDDisplay from '../Utils/USDDisplay';
-import PayoutDetail from '../PayoutDetail';
+import PayoutDetail from '../PayoutComponents/PayoutDetail/PayoutDetail';
 import CommentPopover from './Popover/CommentPopover';
 import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 

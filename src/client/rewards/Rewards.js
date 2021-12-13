@@ -249,7 +249,7 @@ class Rewards extends React.Component {
 
     const actualArea = !area[0] ? [] : area;
 
-    if (!authenticated && match.params.filterKey === 'all')
+    if (authenticated && match.params.filterKey === 'all')
       this.getPropositions({ username, match, activeFilters, sort, actualArea, authenticated });
   }
 
