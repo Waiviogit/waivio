@@ -17,6 +17,7 @@ import {
 } from '../../store/walletStore/walletSelectors';
 import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import PowerUpOrDown from './PowerUpOrDown/PowerUpOrDown';
+import HiveEngineWallet from './HiveEngineWallet/HiveEngineWallet';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -42,6 +43,9 @@ const Wallets = props => {
         </Tabs.TabPane>
         <Tabs.TabPane tab="HIVE wallet" key="HIVE">
           <Wallet />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="HIVE Engine wallet" key="ENGINE">
+          <HiveEngineWallet />
         </Tabs.TabPane>
       </Tabs>
       {props.visible && <Transfer history={props.history} />}

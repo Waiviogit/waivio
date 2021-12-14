@@ -38,7 +38,7 @@ import {
   getCurrentWalletType,
   getIsTransferVisible,
   getIsVipTickets,
-  getTokensBalanceList,
+  getTokensBalanceListForTransfer,
   getTotalVestingFundSteem,
   getTotalVestingShares,
   getTransferAmount,
@@ -80,7 +80,7 @@ const InputGroup = Input.Group;
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
     isVipTickets: getIsVipTickets(state),
     showModal: isOpenLinkModal(state),
-    tokensList: getTokensBalanceList(state),
+    tokensList: getTokensBalanceListForTransfer(state),
     walletType: getCurrentWalletType(state),
   }),
   {

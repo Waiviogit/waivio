@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 import { FormattedNumber } from 'react-intl';
 import classNames from 'classnames';
 
-import WalletSummaryInfo from '../../WalletSummaryInfo/WalletSummaryInfo';
+import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
 import {
   getTokenRatesInUSD,
   getUserCurrencyBalance,
-} from '../../../../store/walletStore/walletSelectors';
-import Loading from '../../../components/Icon/Loading';
-import { resetTokenBalance } from '../../../../store/walletStore/walletActions';
+} from '../../../store/walletStore/walletSelectors';
+import Loading from '../../components/Icon/Loading';
+import { resetTokenBalance } from '../../../store/walletStore/walletActions';
 
 const WAIVWalletSummaryInfo = props => {
   const balance = +get(props.currencyInfo, 'balance', 0);
