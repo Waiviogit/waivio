@@ -173,6 +173,11 @@ export const getHasMoreHiveEngineTransactionHistory = createSelector(
 
 export const getTokensBalanceList = createSelector([walletState], state => state.tokensBalanceList);
 
+export const getSwapTokensBalanceList = createSelector(
+  [walletState],
+  state => state.swapTokensBalanceList,
+);
+
 export const getWaivTransactionHistoryFromState = createSelector(
   [walletState],
   state => state.waivTransactionHistory,

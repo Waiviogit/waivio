@@ -4,6 +4,9 @@ import { isEqual, get } from 'lodash';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import WebsiteReservedButtons from '../Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
 import getDetailsMessages from './detailsMessagesData';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import DetailsBody from './DetailsBody';
@@ -34,6 +37,8 @@ const Details = ({
 }) => {
   const isWidget = new URLSearchParams(location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
+  const isWaivio = useSelector(getIsWaivio);
+  const requiredObject = get(proposedWobj, 'propositions[0].required_object');
   const userName = getSessionData('userName');
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
@@ -65,6 +70,22 @@ const Details = ({
   };
 
   const toCurrentWobjLink = `/object/${proposedWobj.author_permlink}`;
+  const reserveButton = isWaivio ? (
+    <Button
+      type={handleTypeReserveButton()}
+      loading={loading}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {!isCamaignReserved ? messageData.reserve : messageData.reserved}
+    </Button>
+  ) : (
+    <WebsiteReservedButtons
+      dish={proposedWobj}
+      restaurant={requiredObject}
+      handleReserve={reserveOnClickHandler}
+    />
+  );
 
   const handleWriteReviewBtn = () => {
     if (!isAuth) return;
@@ -121,14 +142,7 @@ const Details = ({
           <Button onClick={handleCancelModalBtn}>{messageData.cancel}</Button>
           {/* Button "Reserve" inside the reward card */}
           {!isReviewDetails ? (
-            <Button
-              type={handleTypeReserveButton()}
-              loading={loading}
-              disabled={disabled}
-              onClick={onClick}
-            >
-              {!isCamaignReserved ? messageData.reserve : messageData.reserved}
-            </Button>
+            reserveButton
           ) : (
             <Button type={handleTypeReserveButton()} onClick={handleWriteReviewBtn}>
               {intl.formatMessage({
@@ -138,6 +152,7 @@ const Details = ({
             </Button>
           )}
           {objectDetails.count_reservation_days &&
+            isWaivio &&
             `${messageData.forDays} ${objectDetails.count_reservation_days} ${messageData.days}`}
         </div>
       </div>

@@ -14,6 +14,10 @@ import { guestUserRegex } from '../../client/helpers/regexHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getCurrentWalletType } from './walletSelectors';
 import { parseJSON } from '../../client/helpers/parseJSON';
+import {
+  HIVE_ENGINE_DEFAULT_SWAP_LIST,
+  HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY,
+} from '../../common/constants/swapList';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -506,7 +510,7 @@ export const getHiveEngineTransferList = (
   dispatch({
     type: type.ACTION,
     payload: ApiClient.getTokensTransferList(null, account, offset).then(res => ({
-      list: res.filter(trans => trans.symbol !== 'WAIV'),
+      list: res,
       hasMore: res.length === 10,
     })),
   });
@@ -572,10 +576,46 @@ export const GET_CURRENT_USER_TOKENS_BALANCE_LIST = createAsyncActionType(
 );
 
 export const getCurrUserTokensBalanceList = name =>
-  getUserTokensBalanceList(name, GET_CURRENT_USER_TOKENS_BALANCE_LIST, { $ne: 'WAIV' });
+  getUserTokensBalanceList(name, GET_CURRENT_USER_TOKENS_BALANCE_LIST, {
+    $nin: ['WAIV', 'SWAP.HIVE', 'SWAP.LTC', 'SWAP.BTC', 'SWAP.ETH'],
+  });
+
+export const GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST = createAsyncActionType(
+  '@wallet/GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST',
+);
+
+export const getCurrUserTokensBalanceSwap = name => ({
+  type: GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST.ACTION,
+  payload: ApiClient.getTokensInformation(HIVE_ENGINE_DEFAULT_SWAP_LIST).then(async res => {
+    const rates = await ApiClient.getTokensRate(HIVE_ENGINE_DEFAULT_SWAP_LIST);
+    const userBalances = await ApiClient.getTokenBalance(name, {
+      $in: HIVE_ENGINE_DEFAULT_SWAP_LIST,
+    });
+    const swapList = res.map(swap => {
+      const rate = rates.find(r => r.symbol === swap.symbol);
+      const userBalance = userBalances.find(r => r.symbol === swap.symbol);
+
+      return {
+        ...swap,
+        rate: +get(rate, 'lastDayPrice', 1),
+        avatar: get(parseJSON(swap.metadata), 'icon', ''),
+        balance: get(userBalance, 'balance', 0),
+        orderKey: HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY[swap.symbol],
+      };
+    });
+
+    return swapList.sort((a, b) => a.orderKey - b.orderKey);
+  }),
+});
 
 export const RESET_TOKENS_BALANCE = '@wallet/RESET_TOKENS_BALANCE';
 
 export const resetTokenBalance = () => ({
   type: RESET_TOKENS_BALANCE,
+});
+
+export const RESET_HIVE_ENGINE_TOKENS_BALANCE = '@wallet/RESET_HIVE_ENGINE_TOKENS_BALANCE';
+
+export const resetHiveEngineTokenBalance = () => ({
+  type: RESET_HIVE_ENGINE_TOKENS_BALANCE,
 });

@@ -31,9 +31,10 @@ const OverlayRewardsButton = props => {
     openModal();
   };
 
-  const handleButtonClick = props.onActionInitiated(() =>
-    props.isPropos ? handleClickProposButton() : handleClickCampaignButton(),
-  );
+  const handleButtonClick = () =>
+    props.onActionInitiated(() =>
+      props.isPropos ? handleClickProposButton() : handleClickCampaignButton(),
+    );
 
   const hasSeveralMeanings =
     !isEmpty(campaign.campaigns) && campaign.max_reward === campaign.min_reward;

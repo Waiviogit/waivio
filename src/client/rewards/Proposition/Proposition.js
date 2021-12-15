@@ -39,8 +39,9 @@ import { getIsOpenWriteReviewModal } from '../../../store/rewardsStore/rewardsSe
 
 import './Proposition.less';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
-import WebsitePropositionFooter from './WebsitePropositionFooter';
+import WebsitePropositionFooter from './WebsiteReservedButtons/WebsiteReservedButtons';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import WebsiteReservedButtons from './WebsiteReservedButtons/WebsiteReservedButtons';
 
 const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');
@@ -178,11 +179,9 @@ const Proposition = props => {
           });
         })
         .then(() => {
-          setModalDetailsOpen(!isModalDetailsOpen);
+          if (isModalDetailsOpen) setModalDetailsOpen(!isModalDetailsOpen);
           setReservation(true);
-          setTimeout(() => {
-            props.history.push('/rewards/reserved');
-          }, 5000);
+          props.history.push('/rewards/reserved');
         })
         .catch(e => {
           if (e.error_description || e.message) {
@@ -270,7 +269,13 @@ const Proposition = props => {
       );
     }
 
-    return <WebsitePropositionFooter dish={proposedWobj} restaurant={requiredObject} />;
+    return (
+      <WebsiteReservedButtons
+        dish={proposedWobj}
+        restaurant={requiredObject}
+        handleReserve={reserveOnClickHandler}
+      />
+    );
   };
 
   return (
