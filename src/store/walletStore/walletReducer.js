@@ -41,6 +41,7 @@ const initialState = {
   hiveEngineTransactionHistory: { list: [], hasMore: false, loading: false },
   currentWallet: 'WAIV',
   tokensBalanceList: [],
+  swapTokensBalanceList: [],
   tokensBalanceListForTransfer: [],
 };
 
@@ -415,6 +416,23 @@ export default function walletReducer(state = initialState, action) {
           list: action.payload.list,
           hasMore: action.payload.hasMore,
         },
+      };
+
+    case walletActions.RESET_HIVE_ENGINE_TOKENS_BALANCE:
+      return {
+        ...state,
+        hiveEngineTransactionHistory: {
+          list: [],
+          hasMore: false,
+        },
+        tokensBalanceList: [],
+        swapTokensBalanceList: [],
+      };
+
+    case walletActions.GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST.SUCCESS:
+      return {
+        ...state,
+        swapTokensBalanceList: [...action.payload],
       };
 
     case walletActions.GET_MORE_HIVE_ENGINE_TRANSFER_LIST.SUCCESS:

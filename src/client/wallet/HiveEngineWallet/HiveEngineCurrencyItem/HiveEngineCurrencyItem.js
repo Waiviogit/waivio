@@ -6,11 +6,11 @@ import USDDisplay from '../../../components/Utils/USDDisplay';
 import './HiveEngineCurrencyItem.less';
 
 const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
-  const balance = token.balance * token.rate * hiveRate;
+  const balance = (Number(token.balance) + Number(token.stake)) * token.rate * hiveRate;
 
   return (
     <div key={token.symbol} className="HiveEngineCurrencyItem">
-      <img src={token.avatar} alt={token.symbol} className="HiveEngineCurrencyItem__avatar" />
+      <img src={token.avatar} alt="" className="HiveEngineCurrencyItem__avatar" />
       <div className="HiveEngineCurrencyItem__info">
         <div className="HiveEngineCurrencyItem__row">
           <span>
