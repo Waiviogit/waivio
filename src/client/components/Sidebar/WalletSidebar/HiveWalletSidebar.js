@@ -18,6 +18,7 @@ import { getHiveBeneficiaryAccount } from '../../../../store/settingsStore/setti
 import withAuthActions from '../../../auth/withAuthActions';
 
 import './WalletSidebar.less';
+import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
 
 @withAuthActions
 @withRouter
@@ -26,6 +27,7 @@ import './WalletSidebar.less';
     isGuest: isGuestUser(state),
     user: getAuthenticatedUser(state),
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
+    walletType: getCurrentWalletType(state),
   }),
   {
     openTransfer,
@@ -46,6 +48,7 @@ class HiveWalletSidebar extends React.Component {
     openWithdraw: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
     hiveBeneficiaryAccount: PropTypes.string,
+    walletType: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
   };
 
@@ -77,21 +80,24 @@ class HiveWalletSidebar extends React.Component {
   handleChartsLoading = () => {};
 
   render() {
-    const { match, user, isCurrentUser, isGuest, cryptos } = this.props;
+    const { match, user, isCurrentUser, isGuest, cryptos, walletType } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
+    const isNotHiveEngineWallet = walletType !== 'ENGINE';
 
     return (
       <div className="WalletSidebar">
-        <Action
-          big
-          className="WalletSidebar__transfer"
-          primary
-          onClick={this.handleOpenTransferWithAuth}
-        >
-          <FormattedMessage id="transfer" defaultMessage="Transfer" />
-        </Action>
-        {ownProfile && !isGuest && (
+        {isNotHiveEngineWallet && (
+          <Action
+            big
+            className="WalletSidebar__transfer"
+            primary
+            onClick={this.handleOpenTransferWithAuth}
+          >
+            <FormattedMessage id="transfer" defaultMessage="Transfer" />
+          </Action>
+        )}
+        {ownProfile && !isGuest && isNotHiveEngineWallet && (
           <div className="WalletSidebar__power">
             <Action big onClick={this.handleOpenPowerUp}>
               Power up
@@ -108,7 +114,7 @@ class HiveWalletSidebar extends React.Component {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {!isEmpty(user) && !isGuest && ownProfile && (
+          {!isEmpty(user) && !isGuest && ownProfile && isNotHiveEngineWallet && (
             <Action big className="WalletSidebar__transfer">
               <FormattedMessage id="exchange" defaultMessage="Exchange" />
             </Action>

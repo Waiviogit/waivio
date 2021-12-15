@@ -2337,7 +2337,9 @@ export const likePost = body => {
 
 export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) => {
   return fetch(
-    `https://accounts.hive-engine.com/accountHistory?account=${account}&limit=${limit}&offset=${offset}&symbol=${symbol}`,
+    `https://accounts.hive-engine.com/accountHistory?account=${account}&limit=${limit}&offset=${offset}${
+      symbol ? `&symbol=${symbol}` : ''
+    }`,
     {
       headers,
       method: 'GET',
@@ -2384,6 +2386,30 @@ export const getTokensRate = symbols => {
         offset: 0,
         query: { symbol: { $in: symbols } },
         table: 'metrics',
+      },
+    }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result)
+    .catch(e => e);
+};
+
+export const getTokensInformation = symbols => {
+  return fetch('https://ha.herpc.dtools.dev/contracts', {
+    headers,
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 10,
+      method: 'find',
+      params: {
+        contract: 'tokens',
+        table: 'tokens',
+        indexes: '',
+        limit: 1000,
+        offset: 0,
+        query: { symbol: { $in: symbols } },
       },
     }),
     method: 'POST',

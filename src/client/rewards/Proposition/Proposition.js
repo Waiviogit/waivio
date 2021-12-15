@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
 import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
@@ -39,6 +39,8 @@ import { getIsOpenWriteReviewModal } from '../../../store/rewardsStore/rewardsSe
 
 import './Proposition.less';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import WebsitePropositionFooter from './WebsitePropositionFooter';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
 
 const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');
@@ -52,6 +54,7 @@ const Proposition = props => {
   const isReservedLink = searchParams.get('toReserved');
   const sessionCurrentProposjId = sessionStorage.getItem('currentProposId');
   const sessionCurrentWobjjId = sessionStorage.getItem('currentWobjId');
+  const isWaivio = useSelector(getIsWaivio);
 
   const handleCurrentEligibleParam = obj => Object.values(obj).every(item => item === true);
 
@@ -228,6 +231,48 @@ const Proposition = props => {
     }
   };
 
+  const propositionFooter = () => {
+    if (isWaivio) {
+      return (
+        !isReserved &&
+        !props.assigned && (
+          <div className="Proposition__footer-button">
+            <Button
+              type="primary"
+              loading={props.loading}
+              disabled={props.loading || props.proposition.isReservedSiblingObj}
+              onClick={handleReserveOnClick}
+            >
+              <b>
+                {props.intl.formatMessage({
+                  id: 'reserve',
+                  defaultMessage: 'Reserve',
+                })}
+              </b>{' '}
+              {isEnglishLocale &&
+                props.intl.formatMessage({
+                  id: 'your_reward',
+                  defaultMessage: 'Your Reward',
+                })}
+            </Button>
+            <div className="Proposition__footer-button-days">
+              {props.proposition.count_reservation_days &&
+                `${props.intl.formatMessage({
+                  id: 'for_days',
+                  defaultMessage: 'for',
+                })} ${props.proposition.count_reservation_days} ${props.intl.formatMessage({
+                  id: 'days',
+                  defaultMessage: 'days',
+                })}`}
+            </div>
+          </div>
+        )
+      );
+    }
+
+    return <WebsitePropositionFooter dish={proposedWobj} restaurant={requiredObject} />;
+  };
+
   return (
     <div className={propositionClassList}>
       <div className="Proposition__header">
@@ -271,38 +316,7 @@ const Proposition = props => {
           />
         ) : (
           <React.Fragment>
-            {!isReserved && !props.assigned && (
-              <div className="Proposition__footer-button">
-                <Button
-                  type="primary"
-                  loading={props.loading}
-                  disabled={props.loading || props.proposition.isReservedSiblingObj}
-                  onClick={handleReserveOnClick}
-                >
-                  <b>
-                    {props.intl.formatMessage({
-                      id: 'reserve',
-                      defaultMessage: 'Reserve',
-                    })}
-                  </b>{' '}
-                  {isEnglishLocale &&
-                    props.intl.formatMessage({
-                      id: 'your_reward',
-                      defaultMessage: 'Your Reward',
-                    })}
-                </Button>
-                <div className="Proposition__footer-button-days">
-                  {props.proposition.count_reservation_days &&
-                    `${props.intl.formatMessage({
-                      id: 'for_days',
-                      defaultMessage: 'for',
-                    })} ${props.proposition.count_reservation_days} ${props.intl.formatMessage({
-                      id: 'days',
-                      defaultMessage: 'days',
-                    })}`}
-                </div>
-              </div>
-            )}
+            {propositionFooter()}
             <div className="Proposition__footer-details" onClick={toggleModalDetails}>
               <span role="presentation">
                 {props.intl.formatMessage({

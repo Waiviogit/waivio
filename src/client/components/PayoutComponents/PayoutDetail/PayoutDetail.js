@@ -74,6 +74,9 @@ const PayoutDetail = React.memo(({ intl, post, isModal }) => {
   const beneficariesClassList = classNames('PayoutDetail__benefisItem', {
     'PayoutDetail__benefisItem--modal': isModal,
   });
+  const labelClassList = classNames({
+    'PayoutDetail__title--modal': isModal,
+  });
 
   if (isPayoutDeclined) {
     return <FormattedMessage id="payout_declined" defaultMessage="Payout declined" />;
@@ -135,9 +138,9 @@ const PayoutDetail = React.memo(({ intl, post, isModal }) => {
           <div>
             {Boolean(beneficaries) && (
               <div>
-                <b>
-                  <FormattedMessage id={isModal ? 'Authors' : 'beneficiaries'} />:
-                </b>
+                <span className={labelClassList}>
+                  {intl.formatMessage({ id: isModal ? 'Authors' : 'beneficiaries' })}:
+                </span>
                 <div className="PayoutDetail__beneficiaries">
                   {beneficaries.map(user => {
                     const amount = (authorPayout * user.percent) / 100;
@@ -146,7 +149,7 @@ const PayoutDetail = React.memo(({ intl, post, isModal }) => {
                       <div className={beneficariesClassList} key={user.account}>
                         <p>
                           <Link to={`/@${user.account}`}>{user.account}</Link>{' '}
-                          <span style={{ opacity: '0.5' }}>{user.percent} %</span>
+                          <span style={{ opacity: '0.5' }}>{user.percent}%</span>
                         </p>
                         {isModal && <USDDisplay value={amount} currencyDisplay="symbol" />}
                       </div>
@@ -158,7 +161,7 @@ const PayoutDetail = React.memo(({ intl, post, isModal }) => {
             {isModal && (
               <div className="PayoutDetail__row">
                 <b>
-                  <FormattedMessage id="payout_curators_payout_amount" />
+                  <FormattedMessage id="curators" />:
                 </b>{' '}
                 <USDDisplay value={payout / 2} currencyDisplay="symbol" />
               </div>

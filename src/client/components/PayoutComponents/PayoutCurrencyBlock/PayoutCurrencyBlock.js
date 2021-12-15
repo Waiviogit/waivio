@@ -11,10 +11,10 @@ const PayoutCurrencyBlock = props => (
         WAIV: <USDDisplay value={props.WAIVPayout} currencyDisplay="symbol" />
       </div>
       <div>
-        HBD: <USDDisplay value={props.HBDPayout} currencyDisplay="symbol" />
+        HIVE: <USDDisplay value={props.HIVEPayout} currencyDisplay="symbol" />
       </div>
       <div>
-        HIVE: <USDDisplay value={props.HIVEPayout} currencyDisplay="symbol" />
+        HBD: <USDDisplay value={props.HBDPayout} currencyDisplay="symbol" />
       </div>
     </div>
     <div className="PayoutCurrencyBlock__total">

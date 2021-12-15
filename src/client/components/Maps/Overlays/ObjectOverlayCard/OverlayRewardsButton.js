@@ -1,38 +1,39 @@
 import React from 'react';
-import { useHistory } from 'react-router';
 import { Icon } from 'antd';
 import { get, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getCurrentCurrency } from '../../../../../store/appStore/appSelectors';
 import USDDisplay from '../../../Utils/USDDisplay';
-import {
-  setSelectedDish,
-  setSelectedRestaurant,
-  toggleModal,
-} from '../../../../../store/quickRewards/quickRewardsActions';
+import useQuickRewards from '../../../../../hooks/useQuickRewards';
+import withAuthActions from '../../../../auth/withAuthActions';
 
 const OverlayRewardsButton = props => {
   const ObjectOverlayCardEarnClassList = classNames('ObjectOverlayCard__earn', {
     'ObjectOverlayCard__earn--proposition': props.isPropos,
   });
+
+  const { setDish, setRestaurant, openModal } = useQuickRewards();
   const currencyInfo = useSelector(getCurrentCurrency);
   const proposition = get(props.wObject, 'propositions[0]', {});
   const campaign = get(props.wObject, 'campaigns', {});
   const reward = props.isPropos ? proposition.reward : campaign.max_reward;
-  const history = useHistory();
+
   const handleClickProposButton = () => {
-    props.setSelectedRestaurant(proposition.required_object);
-    props.setSelectedDish(props.wObject);
-    props.toggleModal(true);
+    setRestaurant(proposition.required_object);
+    setDish(props.wObject);
+    openModal();
   };
 
   const handleClickCampaignButton = () => {
-    history.push(`/rewards/all/${props.wObject.author_permlink}`);
+    setRestaurant(props.wObject);
+    openModal();
   };
-  const handleButtonClick = () =>
-    props.isPropos ? handleClickProposButton() : handleClickCampaignButton();
+
+  const handleButtonClick = props.onActionInitiated(() =>
+    props.isPropos ? handleClickProposButton() : handleClickCampaignButton(),
+  );
 
   const hasSeveralMeanings =
     !isEmpty(campaign.campaigns) && campaign.max_reward === campaign.min_reward;
@@ -68,11 +69,7 @@ OverlayRewardsButton.propTypes = {
     }),
   }).isRequired,
   isPropos: PropTypes.bool.isRequired,
-  setSelectedRestaurant: PropTypes.func.isRequired,
-  setSelectedDish: PropTypes.func.isRequired,
-  toggleModal: PropTypes.func.isRequired,
+  onActionInitiated: PropTypes.func.isRequired,
 };
 
-export default connect(null, { setSelectedDish, setSelectedRestaurant, toggleModal })(
-  OverlayRewardsButton,
-);
+export default withAuthActions(OverlayRewardsButton);

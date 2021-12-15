@@ -13,6 +13,7 @@ import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { guestUserRegex } from '../../client/helpers/regexHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getCurrentWalletType } from './walletSelectors';
+import { parseJSON } from '../../client/helpers/parseJSON';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -490,6 +491,29 @@ export const getWAIVTransferList = (account, offset, type = GET_WAIV_TRANSFER_LI
 export const getMoreWAIVTransferList = (account, offset) => dispatch =>
   dispatch(getWAIVTransferList(account, offset, GET_MORE_WAIV_TRANSFER_LIST));
 
+export const GET_HIVE_ENGINE_TRANSFER_LIST = createAsyncActionType(
+  '@wallet/GET_HIVE_ENGINE_TRANSFER_LIST',
+);
+export const GET_MORE_HIVE_ENGINE_TRANSFER_LIST = createAsyncActionType(
+  '@wallet/GET_MORE_HIVE_ENGINE_TRANSFER_LIST',
+);
+
+export const getHiveEngineTransferList = (
+  account,
+  offset,
+  type = GET_HIVE_ENGINE_TRANSFER_LIST,
+) => dispatch =>
+  dispatch({
+    type: type.ACTION,
+    payload: ApiClient.getTokensTransferList(null, account, offset).then(res => ({
+      list: res.filter(trans => trans.symbol !== 'WAIV'),
+      hasMore: res.length === 10,
+    })),
+  });
+
+export const getMoreHiveEngineTransferList = (account, offset) => dispatch =>
+  dispatch(getHiveEngineTransferList(account, offset, GET_MORE_HIVE_ENGINE_TRANSFER_LIST));
+
 export const SET_CURRENT_WALLET = '@wallet/SET_CURRENT_WALLET';
 
 export const setWalletType = wallet => ({
@@ -506,23 +530,32 @@ export const getTokenBalance = (token, name) => dispatch =>
     meta: token,
   });
 
-export const GET_USER_TOKENS_BALANCE_LIST = createAsyncActionType(
-  '@wallet/GET_USER_TOKENS_BALANCE_LIST',
+export const GET_AUTH_USER_TOKENS_BALANCE_LIST = createAsyncActionType(
+  '@wallet/GET_AUTH_USER_TOKENS_BALANCE_LIST',
 );
 
-export const getUserTokensBalanceList = name => dispatch =>
+export const getUserTokensBalanceList = (
+  name,
+  type = GET_AUTH_USER_TOKENS_BALANCE_LIST,
+  symbol,
+) => dispatch =>
   dispatch({
-    type: GET_USER_TOKENS_BALANCE_LIST.ACTION,
-    payload: ApiClient.getTokenBalance(name).then(async res => {
+    type: type.ACTION,
+    payload: ApiClient.getTokenBalance(name, symbol).then(async res => {
       const tokensList = res.map(item => item.symbol);
       const rates = await ApiClient.getTokensRate(tokensList);
+      const infos = await ApiClient.getTokensInformation(tokensList);
 
       if (!isEmpty(rates)) {
         const listTokensWithRates = res.map(token => {
           const rate = rates.find(r => r.symbol === token.symbol);
+          const info = infos.find(r => r.symbol === token.symbol);
 
           return {
             ...token,
+            stakingEnabled: get(info, 'stakingEnabled', true),
+            name: info.name,
+            avatar: get(parseJSON(info.metadata), 'icon', ''),
             rate: +get(rate, 'lastDayPrice', 1),
           };
         });
@@ -533,6 +566,13 @@ export const getUserTokensBalanceList = name => dispatch =>
       return res;
     }),
   });
+
+export const GET_CURRENT_USER_TOKENS_BALANCE_LIST = createAsyncActionType(
+  '@wallet/GET_CURRENT_USER_TOKENS_BALANCE_LIST',
+);
+
+export const getCurrUserTokensBalanceList = name =>
+  getUserTokensBalanceList(name, GET_CURRENT_USER_TOKENS_BALANCE_LIST, { $ne: 'WAIV' });
 
 export const RESET_TOKENS_BALANCE = '@wallet/RESET_TOKENS_BALANCE';
 

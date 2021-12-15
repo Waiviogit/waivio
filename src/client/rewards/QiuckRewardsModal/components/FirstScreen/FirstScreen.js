@@ -30,7 +30,13 @@ const ModalFirstScreen = props => {
   const [searchStr, setSearchStr] = useState('');
 
   useEffect(() => {
-    if (props.isShow) props.getEligibleRewardsList();
+    if (props.isShow) {
+      if (!props.selectedRestaurant) {
+        props.getEligibleRewardsList();
+      } else {
+        props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant);
+      }
+    }
   }, [props.isShow]);
 
   const userCardClassList = withReward =>

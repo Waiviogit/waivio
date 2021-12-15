@@ -429,6 +429,7 @@
   "objects": "Objects",
   "users": "Users",
   "Authors": "Authors",
+  "curators": "Curators",
   "preview_locale": "in {locale} locale",
   "description_short": "Short description",
   "description_full": "Full description",

@@ -2,8 +2,8 @@ import React from 'react';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 
-import WAIVWalletSummaryInfo from './components/WAIVWalletSummaryInfo';
-import WAIVWalletTransferList from './components/WAIVWalletTransferList/WAIVWalletTransferList';
+import WAIVWalletSummaryInfo from './WAIVWalletSummaryInfo';
+import WAIVWalletTransferList from './WAIVWalletTransferList/WAIVWalletTransferList';
 
 import './WAIVwallet.less';
 
