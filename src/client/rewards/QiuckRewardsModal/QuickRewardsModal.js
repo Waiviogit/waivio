@@ -97,7 +97,7 @@ const QuickRewardsModal = props => {
   };
 
   const handelRejectReservation = () => {
-    const proposition = props.selectedDish.propositions[0];
+    const proposition = get(props.selectedDish, 'propositions[0]', {});
     const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
 
     props.declineProposition({

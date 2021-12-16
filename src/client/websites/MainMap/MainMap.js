@@ -208,7 +208,7 @@ const MainMap = React.memo(props => {
           bottomPoint: [bounds.sw[1], bounds.sw[0]],
         });
       }
-    }, 300),
+    }, 500),
     [],
   );
 

@@ -1,16 +1,16 @@
 import Views from '../components';
-import Post from '../../../client/post/Post';
+import Post from '../../client/post/Post';
 import URL from '../constants';
 import createNestedRouts from '../helper';
-import WebsiteWrapper from '../../../client/WebsiteWrapper';
-import User from '../../../client/user/User';
-import WobjectContainer from '../../../client/object/Wobj/WobjectContainer';
-import WebsiteBody from '../../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
-import Rewards from '../../../client/rewards/Rewards';
-import RewardsComponent from '../../../client/rewards/RewardsComponent/RewardsComponent';
-import RedirectedSignIn from '../../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
-import WebsiteMainPage from '../../../client/websites/WebsiteLayoutComponents/MainPage/WebsiteMainPage';
-import { listOfWebsiteWithMainPage } from '../../constants/listOfWebsite';
+import WebsiteWrapper from '../../client/WebsiteWrapper';
+import User from '../../client/user/User';
+import WobjectContainer from '../../client/object/Wobj/WobjectContainer';
+import WebsiteBody from '../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
+import Rewards from '../../client/rewards/Rewards';
+import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsComponent';
+import RedirectedSignIn from '../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
+import WebsiteMainPage from '../../client/websites/WebsiteLayoutComponents/MainPage/WebsiteMainPage';
+import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 
 const routes = host => ({
   component: WebsiteWrapper,

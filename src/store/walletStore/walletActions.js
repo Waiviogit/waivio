@@ -13,6 +13,11 @@ import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { guestUserRegex } from '../../client/helpers/regexHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getCurrentWalletType } from './walletSelectors';
+import { parseJSON } from '../../client/helpers/parseJSON';
+import {
+  HIVE_ENGINE_DEFAULT_SWAP_LIST,
+  HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY,
+} from '../../common/constants/swapList';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -490,6 +495,29 @@ export const getWAIVTransferList = (account, offset, type = GET_WAIV_TRANSFER_LI
 export const getMoreWAIVTransferList = (account, offset) => dispatch =>
   dispatch(getWAIVTransferList(account, offset, GET_MORE_WAIV_TRANSFER_LIST));
 
+export const GET_HIVE_ENGINE_TRANSFER_LIST = createAsyncActionType(
+  '@wallet/GET_HIVE_ENGINE_TRANSFER_LIST',
+);
+export const GET_MORE_HIVE_ENGINE_TRANSFER_LIST = createAsyncActionType(
+  '@wallet/GET_MORE_HIVE_ENGINE_TRANSFER_LIST',
+);
+
+export const getHiveEngineTransferList = (
+  account,
+  offset,
+  type = GET_HIVE_ENGINE_TRANSFER_LIST,
+) => dispatch =>
+  dispatch({
+    type: type.ACTION,
+    payload: ApiClient.getTokensTransferList(null, account, offset).then(res => ({
+      list: res,
+      hasMore: res.length === 10,
+    })),
+  });
+
+export const getMoreHiveEngineTransferList = (account, offset) => dispatch =>
+  dispatch(getHiveEngineTransferList(account, offset, GET_MORE_HIVE_ENGINE_TRANSFER_LIST));
+
 export const SET_CURRENT_WALLET = '@wallet/SET_CURRENT_WALLET';
 
 export const setWalletType = wallet => ({
@@ -506,23 +534,32 @@ export const getTokenBalance = (token, name) => dispatch =>
     meta: token,
   });
 
-export const GET_USER_TOKENS_BALANCE_LIST = createAsyncActionType(
-  '@wallet/GET_USER_TOKENS_BALANCE_LIST',
+export const GET_AUTH_USER_TOKENS_BALANCE_LIST = createAsyncActionType(
+  '@wallet/GET_AUTH_USER_TOKENS_BALANCE_LIST',
 );
 
-export const getUserTokensBalanceList = name => dispatch =>
+export const getUserTokensBalanceList = (
+  name,
+  type = GET_AUTH_USER_TOKENS_BALANCE_LIST,
+  symbol,
+) => dispatch =>
   dispatch({
-    type: GET_USER_TOKENS_BALANCE_LIST.ACTION,
-    payload: ApiClient.getTokenBalance(name).then(async res => {
+    type: type.ACTION,
+    payload: ApiClient.getTokenBalance(name, symbol).then(async res => {
       const tokensList = res.map(item => item.symbol);
       const rates = await ApiClient.getTokensRate(tokensList);
+      const infos = await ApiClient.getTokensInformation(tokensList);
 
       if (!isEmpty(rates)) {
         const listTokensWithRates = res.map(token => {
           const rate = rates.find(r => r.symbol === token.symbol);
+          const info = infos.find(r => r.symbol === token.symbol);
 
           return {
             ...token,
+            stakingEnabled: get(info, 'stakingEnabled', true),
+            name: info.name,
+            avatar: get(parseJSON(info.metadata), 'icon', ''),
             rate: +get(rate, 'lastDayPrice', 1),
           };
         });
@@ -534,8 +571,51 @@ export const getUserTokensBalanceList = name => dispatch =>
     }),
   });
 
+export const GET_CURRENT_USER_TOKENS_BALANCE_LIST = createAsyncActionType(
+  '@wallet/GET_CURRENT_USER_TOKENS_BALANCE_LIST',
+);
+
+export const getCurrUserTokensBalanceList = name =>
+  getUserTokensBalanceList(name, GET_CURRENT_USER_TOKENS_BALANCE_LIST, {
+    $nin: ['WAIV', 'SWAP.HIVE', 'SWAP.LTC', 'SWAP.BTC', 'SWAP.ETH'],
+  });
+
+export const GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST = createAsyncActionType(
+  '@wallet/GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST',
+);
+
+export const getCurrUserTokensBalanceSwap = name => ({
+  type: GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST.ACTION,
+  payload: ApiClient.getTokensInformation(HIVE_ENGINE_DEFAULT_SWAP_LIST).then(async res => {
+    const rates = await ApiClient.getTokensRate(HIVE_ENGINE_DEFAULT_SWAP_LIST);
+    const userBalances = await ApiClient.getTokenBalance(name, {
+      $in: HIVE_ENGINE_DEFAULT_SWAP_LIST,
+    });
+    const swapList = res.map(swap => {
+      const rate = rates.find(r => r.symbol === swap.symbol);
+      const userBalance = userBalances.find(r => r.symbol === swap.symbol);
+
+      return {
+        ...swap,
+        rate: +get(rate, 'lastDayPrice', 1),
+        avatar: get(parseJSON(swap.metadata), 'icon', ''),
+        balance: get(userBalance, 'balance', 0),
+        orderKey: HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY[swap.symbol],
+      };
+    });
+
+    return swapList.sort((a, b) => a.orderKey - b.orderKey);
+  }),
+});
+
 export const RESET_TOKENS_BALANCE = '@wallet/RESET_TOKENS_BALANCE';
 
 export const resetTokenBalance = () => ({
   type: RESET_TOKENS_BALANCE,
+});
+
+export const RESET_HIVE_ENGINE_TOKENS_BALANCE = '@wallet/RESET_HIVE_ENGINE_TOKENS_BALANCE';
+
+export const resetHiveEngineTokenBalance = () => ({
+  type: RESET_HIVE_ENGINE_TOKENS_BALANCE,
 });

@@ -1,0 +1,39 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.HiveEngineCurrencyItem {
+  padding: 15px 0;
+  display: flex;
+  border-bottom: @base-border;
+  color: @black;
+  font-size: 18px;
+
+  &:last-child {
+    border: none;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__avatar {
+    height: 25px;
+  }
+
+  &__info {
+    width: 100%;
+    padding-left: 10px;
+  }
+
+  &__shadow {
+    color: @blue-botticelli;
+  }
+
+  &__bold {
+    font-weight: 500;
+  }
+}
+
+@import 'HiveEngineCurrencyItem-nightmode';

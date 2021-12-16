@@ -17,10 +17,13 @@ import {
 } from '../../store/walletStore/walletSelectors';
 import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import PowerUpOrDown from './PowerUpOrDown/PowerUpOrDown';
+import HiveEngineWallet from './HiveEngineWallet/HiveEngineWallet';
+import { guestUserRegex } from '../helpers/regexHelpers';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
   const walletsType = query.get('type');
+  const isGuestUser = guestUserRegex.test(props.match.params.name);
 
   useEffect(() => {
     props.setWalletType(walletsType);
@@ -43,6 +46,11 @@ const Wallets = props => {
         <Tabs.TabPane tab="HIVE wallet" key="HIVE">
           <Wallet />
         </Tabs.TabPane>
+        {!isGuestUser && (
+          <Tabs.TabPane tab="HIVE Engine wallet" key="ENGINE">
+            <HiveEngineWallet />
+          </Tabs.TabPane>
+        )}
       </Tabs>
       {props.visible && <Transfer history={props.history} />}
       {props.visiblePower && <PowerUpOrDown />}

@@ -6,11 +6,13 @@ import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
+import { getCurrentCurrency, getIsWaivio } from '../../../store/appStore/appSelectors';
 import { roundUpToThisIndex } from '../../../common/constants/waivio';
 
 import './Campaign.less';
 import USDDisplay from '../../components/Utils/USDDisplay';
+import useQuickRewards from '../../../hooks/useQuickRewards';
+import withAuthActions from '../../auth/withAuthActions';
 
 const Campaign = ({
   proposition,
@@ -20,9 +22,12 @@ const Campaign = ({
   rewardPricePassed,
   rewardMaxPassed,
   hovered,
+  onActionInitiated,
 }) => {
   const hasCampaigns = has(proposition, ['campaigns']);
   const currencyInfo = useSelector(getCurrentCurrency);
+  const isWaivio = useSelector(getIsWaivio);
+  const { setRestaurant, openModal } = useQuickRewards();
   const campaign = hasCampaigns ? get(proposition, 'campaigns') : proposition;
   const requiredObject = hasCampaigns ? proposition : get(proposition, ['required_object'], {});
   const minReward = get(campaign, ['min_reward'], 0);
@@ -32,8 +37,18 @@ const Campaign = ({
 
   if (campaign.reward) rewardPrice = get(campaign, 'reward', 0);
 
-  const goToProducts = () =>
-    history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
+  const handleOpenQuickRewards = () =>
+    onActionInitiated(() => {
+      openModal();
+      setRestaurant(proposition);
+    });
+
+  const goToProducts = () => {
+    if (isWaivio) history.push(`/rewards/${filterKey}/${requiredObject.author_permlink}`);
+    else {
+      handleOpenQuickRewards();
+    }
+  };
 
   return (
     <div className="Campaign">
@@ -96,6 +111,7 @@ Campaign.propTypes = {
   rewardPricePassed: PropTypes.string,
   rewardMaxPassed: PropTypes.string,
   hovered: PropTypes.bool,
+  onActionInitiated: PropTypes.func.isRequired,
 };
 
 Campaign.defaultProps = {
@@ -106,4 +122,4 @@ Campaign.defaultProps = {
   hovered: false,
 };
 
-export default injectIntl(withRouter(Campaign));
+export default injectIntl(withRouter(withAuthActions(Campaign)));

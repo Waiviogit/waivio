@@ -2,29 +2,30 @@ import React from 'react';
 import { round } from 'lodash';
 import PropTypes from 'prop-types';
 
-import PowerUpTransactionFrom from '../../../TransfersCards/PowerUpTransactionFrom';
-import { getTransactionCurrency, getTransactionDescription } from '../../../WalletHelper';
-import * as accountHistoryConstants from '../../../../../common/constants/accountHistory';
-import ReceiveTransaction from '../../../TransfersCards/ReceiveTransaction';
-import TransferTransaction from '../../../TransfersCards/TransferTransaction';
-import { isMobile } from '../../../../helpers/apiHelpers';
-import PowerDownTransaction from '../../../TransfersCards/PowerDownTransaction';
-import UnknownTransactionType from '../../../TransfersCards/UnknownTransactionType/UnknownTransactionType';
-import TokenActionInMarketCard from '../../../TransfersCards/TokenBoughtCard.js/TokenActionInMarketCard';
-import MarketBuyCard from '../../../TransfersCards/MarketBuyCard';
-import DelegatedTo from '../../../TransfersCards/DelegatedTo';
-import MarketCancel from '../../../TransfersCards/MarketCancel';
-import MarketCloseOrder from '../../../TransfersCards/MarketCloseOrder';
-import UndelegateStart from '../../../TransfersCards/UndelegateStart';
+import PowerUpTransactionFrom from '../../TransfersCards/PowerUpTransactionFrom';
+import { getTransactionCurrency, getTransactionDescription } from '../../WalletHelper';
+import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
+import ReceiveTransaction from '../../TransfersCards/ReceiveTransaction';
+import TransferTransaction from '../../TransfersCards/TransferTransaction';
+import { isMobile } from '../../../helpers/apiHelpers';
+import PowerDownTransaction from '../../TransfersCards/PowerDownTransaction';
+import UnknownTransactionType from '../../TransfersCards/UnknownTransactionType/UnknownTransactionType';
+import TokenActionInMarketCard from '../../TransfersCards/TokenBoughtCard.js/TokenActionInMarketCard';
+import MarketBuyCard from '../../TransfersCards/MarketBuyCard';
+import DelegatedTo from '../../TransfersCards/DelegatedTo';
+import MarketCancel from '../../TransfersCards/MarketCancel';
+import MarketCloseOrder from '../../TransfersCards/MarketCloseOrder';
+import UndelegateStart from '../../TransfersCards/UndelegateStart';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const isMobileDevice = isMobile();
+  const powerSymbol = transaction.symbol === 'WAIV' ? 'WP' : transaction.symbol;
 
   switch (transaction.operation) {
     case 'tokens_stake':
       return (
         <PowerUpTransactionFrom
-          amount={getTransactionCurrency(transaction.quantity, 'WP')}
+          amount={getTransactionCurrency(transaction.quantity, powerSymbol)}
           timestamp={transaction.timestamp}
           to={transaction.to}
           from={transaction.from}
@@ -36,7 +37,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
 
       return (
         <PowerDownTransaction
-          amount={`${round(transaction.quantity, 3)} WP`}
+          amount={`${round(transaction.quantity, 3)} ${powerSymbol}`}
           timestamp={transaction.timestamp}
           description={desc.powerDownStarted}
         />
@@ -48,7 +49,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
 
       return (
         <PowerDownTransaction
-          amount={`${round(transaction.quantity, 3)} WP`}
+          amount={`${round(transaction.quantity, 3)} ${powerSymbol}`}
           timestamp={transaction.timestamp}
           description={desc.powerDownStopped}
         />
@@ -145,7 +146,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
             from={transaction.from}
             to={transaction.to}
             memo={transaction.memo}
-            amount={getTransactionCurrency(transaction.quantity, 'WAIV')}
+            amount={getTransactionCurrency(transaction.quantity, transaction.symbol)}
             timestamp={transaction.timestamp}
             details={transaction.details}
             type={accountHistoryConstants.TRANSFER}
@@ -160,7 +161,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         <TransferTransaction
           to={transaction.to}
           memo={transaction.memo}
-          amount={getTransactionCurrency(transaction.quantity, 'WAIV')}
+          amount={getTransactionCurrency(transaction.quantity, transaction.symbol)}
           timestamp={transaction.timestamp}
           transactionType={accountHistoryConstants.TRANSFER}
         />

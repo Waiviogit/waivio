@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import React from 'react';
 import { Icon } from 'antd';
 import { get, isEmpty } from 'lodash';
@@ -7,23 +6,41 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { getCurrentCurrency } from '../../../../../store/appStore/appSelectors';
 import USDDisplay from '../../../Utils/USDDisplay';
+import useQuickRewards from '../../../../../hooks/useQuickRewards';
+import withAuthActions from '../../../../auth/withAuthActions';
 
 const OverlayRewardsButton = props => {
   const ObjectOverlayCardEarnClassList = classNames('ObjectOverlayCard__earn', {
     'ObjectOverlayCard__earn--proposition': props.isPropos,
   });
+
+  const { setDish, setRestaurant, openModal } = useQuickRewards();
   const currencyInfo = useSelector(getCurrentCurrency);
   const proposition = get(props.wObject, 'propositions[0]', {});
   const campaign = get(props.wObject, 'campaigns', {});
   const reward = props.isPropos ? proposition.reward : campaign.max_reward;
-  const linkTo = props.isPropos
-    ? `/rewards/all/${proposition.requiredObject}`
-    : `/rewards/all/${props.wObject.author_permlink}`;
+
+  const handleClickProposButton = () => {
+    setRestaurant(proposition.required_object);
+    setDish(props.wObject);
+    openModal();
+  };
+
+  const handleClickCampaignButton = () => {
+    setRestaurant(props.wObject);
+    openModal();
+  };
+
+  const handleButtonClick = () =>
+    props.onActionInitiated(() =>
+      props.isPropos ? handleClickProposButton() : handleClickCampaignButton(),
+    );
+
   const hasSeveralMeanings =
     !isEmpty(campaign.campaigns) && campaign.max_reward === campaign.min_reward;
 
   return (
-    <Link className={ObjectOverlayCardEarnClassList} to={linkTo}>
+    <button className={ObjectOverlayCardEarnClassList} onClick={handleButtonClick}>
       {!hasSeveralMeanings
         ? props.intl.formatMessage({
             id: 'rewards_details_earn',
@@ -38,7 +55,7 @@ const OverlayRewardsButton = props => {
         <span className="ObjectOverlayCard__currency">{currencyInfo.type}</span>{' '}
         {!props.isPropos && <Icon type="right" />}
       </b>
-    </Link>
+    </button>
   );
 };
 
@@ -53,6 +70,7 @@ OverlayRewardsButton.propTypes = {
     }),
   }).isRequired,
   isPropos: PropTypes.bool.isRequired,
+  onActionInitiated: PropTypes.func.isRequired,
 };
 
-export default OverlayRewardsButton;
+export default withAuthActions(OverlayRewardsButton);

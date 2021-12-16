@@ -533,7 +533,6 @@ export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70)
     ...tagCategory,
     box,
   };
-  const searchStr = searchString;
 
   if (!searchString) body.mapMarkers = true;
 
@@ -549,7 +548,8 @@ export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70)
 
   return dispatch({
     type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
-    payload: ApiClient.searchObjects(searchStr, objType, false, limit, locale, body),
+    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, body),
+    meta: Boolean(searchString),
   });
 };
 

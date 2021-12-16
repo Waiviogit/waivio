@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 
-import { getWaivTransactionHistoryFromState } from '../../../../../store/walletStore/walletSelectors';
+import { getWaivTransactionHistoryFromState } from '../../../../store/walletStore/walletSelectors';
 import {
   getMoreWAIVTransferList,
   getWAIVTransferList,
-} from '../../../../../store/walletStore/walletActions';
+} from '../../../../store/walletStore/walletActions';
 import WAIVWalletTransferItemsSwitcher from './WAIVWalletTransferItemsSwitcher';
-import ReduxInfiniteScroll from '../../../../vendor/ReduxInfiniteScroll';
-import Loading from '../../../../components/Icon/Loading';
+import ReduxInfiniteScroll from '../../../vendor/ReduxInfiniteScroll';
+import Loading from '../../../components/Icon/Loading';
 import './WAIVWalletTransferList.less';
 
 const WAIVWalletTransferList = React.memo(props => {

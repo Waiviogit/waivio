@@ -38,8 +38,11 @@ const initialState = {
   deposits: 0,
   tokensRates: {},
   waivTransactionHistory: { list: [], hasMore: false, loading: false },
+  hiveEngineTransactionHistory: { list: [], hasMore: false, loading: false },
   currentWallet: 'WAIV',
   tokensBalanceList: [],
+  swapTokensBalanceList: [],
+  tokensBalanceListForTransfer: [],
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -384,7 +387,6 @@ export default function walletReducer(state = initialState, action) {
         waivTransactionHistory: {
           list: action.payload,
           hasMore: action.payload.length === action.meta,
-          loading: false,
         },
       };
 
@@ -393,7 +395,6 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         waivTransactionHistory: {
           ...state.waivTransactionHistory,
-          loading: false,
           hasMore: false,
         },
       };
@@ -404,6 +405,42 @@ export default function walletReducer(state = initialState, action) {
         waivTransactionHistory: {
           list: [...state.waivTransactionHistory.list, ...action.payload],
           hasMore: action.payload.length === action.meta,
+          loading: false,
+        },
+      };
+
+    case walletActions.GET_HIVE_ENGINE_TRANSFER_LIST.SUCCESS:
+      return {
+        ...state,
+        hiveEngineTransactionHistory: {
+          list: action.payload.list,
+          hasMore: action.payload.hasMore,
+        },
+      };
+
+    case walletActions.RESET_HIVE_ENGINE_TOKENS_BALANCE:
+      return {
+        ...state,
+        hiveEngineTransactionHistory: {
+          list: [],
+          hasMore: false,
+        },
+        tokensBalanceList: [],
+        swapTokensBalanceList: [],
+      };
+
+    case walletActions.GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST.SUCCESS:
+      return {
+        ...state,
+        swapTokensBalanceList: [...action.payload],
+      };
+
+    case walletActions.GET_MORE_HIVE_ENGINE_TRANSFER_LIST.SUCCESS:
+      return {
+        ...state,
+        hiveEngineTransactionHistory: {
+          list: [...state.hiveEngineTransactionHistory.list, ...action.payload.list],
+          hasMore: action.payload.hasMore,
           loading: false,
         },
       };
@@ -423,7 +460,13 @@ export default function walletReducer(state = initialState, action) {
         },
       };
 
-    case walletActions.GET_USER_TOKENS_BALANCE_LIST.SUCCESS:
+    case walletActions.GET_AUTH_USER_TOKENS_BALANCE_LIST.SUCCESS:
+      return {
+        ...state,
+        tokensBalanceListForTransfer: action.payload,
+      };
+
+    case walletActions.GET_CURRENT_USER_TOKENS_BALANCE_LIST.SUCCESS:
       return {
         ...state,
         tokensBalanceList: action.payload,

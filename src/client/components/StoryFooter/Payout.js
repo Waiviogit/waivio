@@ -9,7 +9,7 @@ import { get } from 'lodash';
 import { calculatePayout, isPostCashout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
 import USDDisplay from '../Utils/USDDisplay';
-import PayoutDetail from '../PayoutDetail';
+import PayoutDetail from '../PayoutComponents/PayoutDetail/PayoutDetail';
 import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 import { WAIVEligibleTags } from '../../../common/constants/waivio';
 import { parseJSON } from '../../helpers/parseJSON';
@@ -74,7 +74,7 @@ const Payout = React.memo(({ intl, post }) => {
       </span>
       {visible && (
         <Modal visible={visible} onCancel={toggleModal} title={modalTitle} footer={null}>
-          <PayoutDetail post={post} withoutTitle />
+          <PayoutDetail post={post} isModal />
         </Modal>
       )}
     </React.Fragment>
