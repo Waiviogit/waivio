@@ -30,7 +30,11 @@ const WebsiteReservedButtons = props => {
 
   return (
     <div className="WebsiteReservedButtons">
-      <Button type="primary" onClick={handleClickProposButton}>
+      <Button
+        type="primary"
+        onClick={handleClickProposButton}
+        className="WebsiteReservedButtons__button"
+      >
         <b>Submit</b> dish photo
       </Button>
       <Popover
