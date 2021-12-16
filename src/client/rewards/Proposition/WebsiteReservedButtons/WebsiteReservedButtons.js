@@ -35,7 +35,7 @@ const WebsiteReservedButtons = props => {
         onClick={handleClickProposButton}
         className="WebsiteReservedButtons__button"
       >
-        <b>Submit</b> dish photo
+        <b>Submit</b> dish photos
       </Button>
       <Popover
         placement="bottomRight"
