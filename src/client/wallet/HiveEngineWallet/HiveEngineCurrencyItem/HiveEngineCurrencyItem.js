@@ -4,14 +4,16 @@ import PropTypes from 'prop-types';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 
 import './HiveEngineCurrencyItem.less';
+import { getProxyImageURL } from '../../../helpers/image';
 
 const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
   const stake = token.stake || 0;
   const balance = (Number(token.balance) + Number(stake)) * token.rate * hiveRate;
+  const avatar = token.avatar ? getProxyImageURL(token.avatar) : token.avatar;
 
   return (
     <div key={token.symbol} className="HiveEngineCurrencyItem">
-      <img src={token.avatar} alt="" className="HiveEngineCurrencyItem__avatar" />
+      <img src={avatar} alt="" className="HiveEngineCurrencyItem__avatar" />
       <div className="HiveEngineCurrencyItem__info">
         <div className="HiveEngineCurrencyItem__row">
           <span>

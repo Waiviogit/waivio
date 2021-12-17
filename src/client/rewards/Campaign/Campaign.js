@@ -40,7 +40,7 @@ const Campaign = ({
   const handleOpenQuickRewards = () =>
     onActionInitiated(() => {
       openModal();
-      setRestaurant(proposition);
+      setRestaurant(requiredObject);
     });
 
   const goToProducts = () => {

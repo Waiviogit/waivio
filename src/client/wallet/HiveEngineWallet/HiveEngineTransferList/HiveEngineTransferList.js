@@ -17,6 +17,8 @@ import ReduxInfiniteScroll from '../../../vendor/ReduxInfiniteScroll';
 import Loading from '../../../components/Icon/Loading';
 import WAIVWalletTransferItemsSwitcher from '../../WAIVwallet/WAIVWalletTransferList/WAIVWalletTransferItemsSwitcher';
 
+import '../../WAIVwallet/WAIVwallet.less';
+
 const HiveEngineTransferList = React.memo(props => {
   const params = useParams();
 

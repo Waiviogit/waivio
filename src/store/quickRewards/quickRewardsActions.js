@@ -74,7 +74,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, searchString) =
   const state = getState();
   const name = getAuthenticatedUserName(state);
   const locale = getLocale(state);
-  const isReview = selectRest.campaigns;
+  const isReview = Boolean(selectRest.campaigns || selectRest.activeCampaignsCount);
 
   dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.START });
 
