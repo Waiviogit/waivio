@@ -4,7 +4,7 @@
 .nightmode {
   .UserWalletTransactions {
     background-color: @grey-nero;
-    border: none;
+    border: 1px solid @normal-grey;
 
     &__delegated {
       &-color {
@@ -41,17 +41,7 @@
 
     &__transaction {
       color: @white-gainsboro;
-
       border-bottom: @border-width-base @border-style-base @normal-grey;
-
-      &:nth-of-type(2) {
-        border-top: @border-width-base @border-style-base @normal-grey;
-      }
-
-      @media @small {
-        border-right: @border-width-base @border-style-base @normal-grey;
-        border-left: @border-width-base @border-style-base @normal-grey;
-      }
     }
 
     &__limit-order {
