@@ -6,4 +6,6 @@ export const HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY = {
   'SWAP.ETH': 4,
 };
 
+export const swapImpactPercent = [0.5, 1, 5, 10, 25, 49];
+
 export default null;

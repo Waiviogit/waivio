@@ -145,5 +145,7 @@
   "engineRates": "/engine-rates",
   "voteValueInfo": "/vote-value-info",
   "likePost": "/like-post",
+  "hiveEngine": "/hive-engine",
+  "swap": "/swap",
   "getMatchBots": "/match-bots"
 }

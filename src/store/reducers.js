@@ -30,6 +30,7 @@ import { getUsedLocale } from './appStore/appSelectors';
 import { getLocale } from './settingsStore/settingsSelectors';
 import advancedReducer from './advancedReports/advancedReducer';
 import quickRewardsReducer from './quickRewards/quickRewardsReducer';
+import swapReducer from './swapStore/swapReducers';
 
 export default history =>
   combineReducers({
@@ -60,6 +61,7 @@ export default history =>
     website: websiteReducer,
     advancedReports: advancedReducer,
     quickRewards: quickRewardsReducer,
+    swap: swapReducer,
   });
 
 // common selectors

@@ -2420,4 +2420,14 @@ export const getTokensInformation = symbols => {
     .catch(e => e);
 };
 
+export const getHiveEngineSwap = () =>
+  fetch(`${config.campaignApiPrefix}${config.hiveEngine}${config.swap}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export default null;
