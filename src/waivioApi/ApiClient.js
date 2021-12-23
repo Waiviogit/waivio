@@ -2317,6 +2317,18 @@ export const getUserVoteValueInfo = userName => {
     .catch(e => e);
 };
 
+export const getEngineTransactionHistory = body => {
+  return fetch(`${config.campaignApiPrefix}${config.hiveEngine}${config.accountHistory}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const likePost = body => {
   const guestToken = getGuestAccessToken();
 
