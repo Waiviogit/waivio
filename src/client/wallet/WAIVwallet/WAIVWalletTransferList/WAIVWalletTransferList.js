@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 
 import { getWaivTransactionHistoryFromState } from '../../../../store/walletStore/walletSelectors';
 import {
@@ -20,7 +20,11 @@ const WAIVWalletTransferList = React.memo(props => {
   }, []);
 
   const handleLoadMore = useCallback(
-    () => props.getMoreWAIVTransferList(props.name, props.transaction.list.length),
+    () =>
+      props.getMoreWAIVTransferList(
+        props.name,
+        get(props.transaction.list, `[${props.transaction.list.length - 1}].timestamp`),
+      ),
     [props.name, props.transaction.list.length],
   );
 

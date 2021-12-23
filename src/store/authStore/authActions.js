@@ -132,7 +132,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       }
     });
   } else if (!steemConnectAPI.accessToken && !isGuest) {
-    promise = Promise.reject(new Error('There is not accessToken present'));
+    promise = Promise.reject();
   } else if (isGuest || steemConnectAPI.accessToken) {
     promise = new Promise(async (resolve, reject) => {
       try {

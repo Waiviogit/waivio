@@ -19,6 +19,7 @@ import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import PowerUpOrDown from './PowerUpOrDown/PowerUpOrDown';
 import HiveEngineWallet from './HiveEngineWallet/HiveEngineWallet';
 import { guestUserRegex } from '../helpers/regexHelpers';
+import SwapTokens from './SwapTokens/SwapTokens';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -54,6 +55,7 @@ const Wallets = props => {
       </Tabs>
       {props.visible && <Transfer history={props.history} />}
       {props.visiblePower && <PowerUpOrDown />}
+      <SwapTokens />
     </React.Fragment>
   );
 };

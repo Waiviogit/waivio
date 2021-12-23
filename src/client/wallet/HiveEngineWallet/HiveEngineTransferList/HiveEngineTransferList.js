@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { useParams } from 'react-router';
 
 import {
@@ -27,7 +27,11 @@ const HiveEngineTransferList = React.memo(props => {
   }, []);
 
   const handleLoadMore = useCallback(
-    () => props.getMoreHiveEngineTransferList(params.name, props.transactionList.length),
+    () =>
+      props.getMoreHiveEngineTransferList(
+        params.name,
+        get(props.transactionList, `[${props.transactionList.length - 1}].timestamp`),
+      ),
     [params.name, props.transactionList.length],
   );
 
