@@ -80,7 +80,7 @@ class HiveWalletSidebar extends React.Component {
     this.props.openPowerUpOrDown(true);
   };
 
-  handleOpenSwapModal = () => this.props.onActionInitiated(this.props.openSwapTokensModal(true));
+  handleOpenSwapModal = () => this.props.openSwapTokensModal(true);
 
   render() {
     const { match, user, isCurrentUser, isGuest, cryptos, walletType } = this.props;

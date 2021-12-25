@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Form, Icon, Modal, Select, Radio } from 'antd';
+import { Form, Icon, Modal, Radio } from 'antd';
 import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -25,11 +25,13 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import { getSwapOutput } from '../../helpers/swapTokenHelpers';
 import { createQuery } from '../../helpers/apiHelpers';
+import TokensSelect from './components/TokensSelect';
 
 import './SwapTokens.less';
 
 const SwapTokens = props => {
-  const [impact, setImpact] = useState(0.05);
+  const [impact, setImpact] = useState(0.3);
+  const [slippage, setSlippage] = useState(0.05);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
 
@@ -48,18 +50,22 @@ const SwapTokens = props => {
   });
 
   const handelChangeOrderToken = () => {
-    const amount = getSwapOutput({
-      symbol: props.to.symbol,
-      amountIn: toAmount,
-      pool: currTo,
-      impact,
-      from: true,
-    });
+    if (!isEmpty(props.to) && !isEmpty(props.from)) {
+      const pool = currTo.tokenPair ? currTo : currFrom;
 
-    props.setFromToken(props.to);
-    props.setToToken(props.from);
-    setFromAmount(toAmount);
-    setToAmount(amount.amountOut);
+      const amount = getSwapOutput({
+        symbol: props.to.symbol,
+        amountIn: toAmount,
+        pool,
+        impact,
+        from: true,
+      });
+
+      props.setFromToken(props.to);
+      props.setToToken(props.from);
+      setFromAmount(toAmount);
+      setToAmount(amount.amountOut);
+    }
   };
 
   const handleChangeFromValue = value => {
@@ -70,10 +76,11 @@ const SwapTokens = props => {
         symbol: props.from.symbol,
         amountIn: value,
         pool: currFrom,
-        impact,
+        slippage,
         from: true,
       });
 
+      setImpact(amount.priceImpact);
       setToAmount(amount.amountOut);
     }
   };
@@ -86,9 +93,10 @@ const SwapTokens = props => {
         symbol: props.to.symbol,
         amountIn: value,
         pool: currTo,
-        impact,
+        slippage,
       });
 
+      setImpact(amount.priceImpact);
       setFromAmount(amount.amountOut);
     }
   };
@@ -105,7 +113,7 @@ const SwapTokens = props => {
       symbol: props.from.symbol,
       amountIn: fromAmount,
       pool: currFrom,
-      impact,
+      slippage,
       from: true,
     });
 
@@ -133,26 +141,14 @@ const SwapTokens = props => {
     >
       <Form className="SwapTokens">
         <h3 className="SwapTokens__title">From:</h3>
-        <div className={inputWrapClassList}>
-          <input
-            value={fromAmount}
-            onChange={e => handleChangeFromValue(e.currentTarget.value)}
-            type="number"
-            className="SwapTokens__input"
-          />
-          <Select value={props.from.symbol} className="SwapTokens__selector">
-            {props.swapListTo.map(swap => (
-              <Select.Option
-                className="SwapTokens__selector-option"
-                onClick={() => props.setFromToken(swap)}
-                key={swap.symbol}
-              >
-                <span>{swap.symbol}</span>
-                <span className="SwapTokens__selector-balance">{swap.balance}</span>
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
+        <TokensSelect
+          list={props.swapListFrom}
+          setToken={props.setFromToken}
+          inputWrapClassList={inputWrapClassList}
+          amound={fromAmount}
+          handleChangeValue={handleChangeFromValue}
+          symbol={props.from.symbol}
+        />
         {insufficientFunds(fromAmount) && <p className="invalid">Insufficient funds.</p>}{' '}
         <p>
           Your balance:{' '}
@@ -160,30 +156,18 @@ const SwapTokens = props => {
             {get(currFrom, 'balance')} {get(currFrom, 'symbol')}
           </span>
         </p>
-        <div className="SwapTokens__arrow" onClick={handelChangeOrderToken}>
-          <Icon type="arrow-down" />
+        <div className="SwapTokens__arrow">
+          <Icon type="arrow-down" onClick={handelChangeOrderToken} />
         </div>
         <h3 className="SwapTokens__title">To:</h3>
-        <div className="SwapTokens__inputWrap">
-          <input
-            onChange={e => handleChangeToValue(e.currentTarget.value)}
-            value={toAmount}
-            type="number"
-            className="SwapTokens__input"
-          />
-          <Select value={props.to.symbol} className="SwapTokens__selector">
-            {props.swapListFrom.map(swap => (
-              <Select.Option
-                className="SwapTokens__selector-option"
-                key={swap}
-                onClick={() => props.setToToken(swap)}
-              >
-                <span>{swap.symbol}</span>
-                <span className="SwapTokens__selector-balance">{swap.balance}</span>
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
+        <TokensSelect
+          list={props.swapListTo}
+          setToken={props.setToToken}
+          inputWrapClassList={inputWrapClassList}
+          amound={toAmount}
+          handleChangeValue={handleChangeToValue}
+          symbol={props.to.symbol}
+        />
         <p>
           Your balance:{' '}
           <span className="SwapTokens__balance" onClick={handleClickBalanceTo}>
@@ -199,9 +183,9 @@ const SwapTokens = props => {
         </div>
         <div className="SwapTokens__impactBlock">
           <h4>Max price impact:</h4>
-          <Radio.Group defaultValue={0.5} onChange={setImpact}>
+          <Radio.Group defaultValue={0.5}>
             {swapImpactPercent.map(imp => (
-              <Radio.Button key={imp} value={imp}>
+              <Radio.Button key={imp} value={imp} onClick={() => setSlippage(imp * 0.05)}>
                 {imp}%
               </Radio.Button>
             ))}
