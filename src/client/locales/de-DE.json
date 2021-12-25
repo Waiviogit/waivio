@@ -124,7 +124,7 @@
   "amount_error_format": "Falsches Format. Verwende einen Punkt als Dezimaltrennzeichen und höchstens 3 Dezimalstellen.",
   "amount_error_zero": "Betrag muss größer als 0 sein.",
   "amount_error_funds": "Unzureichendes Guthaben.",
-  "balance_amount": "Kontostand: {amount}.",
+  "balance_amount": "Kontostand:",
   "by": "Von {username}",
   "memo": "Notiz",
   "memo_placeholder": "Zusätzliche Nachricht für diese Überweisung (optional)",

@@ -124,7 +124,7 @@
   "amount_error_format": "Nesprávný formát. Použijte tečku jako oddělovač desetinných míst a maximálně 3 desetinná místa.",
   "amount_error_zero": "Částka musí být vyšší než 0.",
   "amount_error_funds": "Nedostatečné finanční prostředky.",
-  "balance_amount": "Váš zůstatek: {amount} .",
+  "balance_amount": "Váš zůstatek",
   "by": "Autor: {username}",
   "memo": "Memo",
   "memo_placeholder": "Další zpráva k zahrnutí do této platby",

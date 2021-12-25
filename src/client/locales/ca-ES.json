@@ -124,7 +124,7 @@
   "amount_error_format": "Format incorrecte. Utilitzeu el punt com a separador decimal i com a màxim 3 decimals.",
   "amount_error_zero": "L’import ha de ser superior a 0.",
   "amount_error_funds": "Fons insuficients.",
-  "balance_amount": "El vostre saldo: {amount} .",
+  "balance_amount": "El vostre saldo",
   "by": "Per {username}",
   "memo": "Nota",
   "memo_placeholder": "Missatge addicional per incloure en aquest pagament",
