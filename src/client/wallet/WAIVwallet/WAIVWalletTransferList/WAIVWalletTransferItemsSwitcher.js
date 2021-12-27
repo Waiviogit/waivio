@@ -16,6 +16,8 @@ import DelegatedTo from '../../TransfersCards/DelegatedTo';
 import MarketCancel from '../../TransfersCards/MarketCancel';
 import MarketCloseOrder from '../../TransfersCards/MarketCloseOrder';
 import UndelegateStart from '../../TransfersCards/UndelegateStart';
+import SwapTokenCard from '../../TransfersCards/SwapTokenCard';
+import AirDropCard from '../../TransfersCards/AirDropCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const isMobileDevice = isMobile();
@@ -139,6 +141,27 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         />
       );
 
+    case 'marketpools_swapTokens':
+      return (
+        <SwapTokenCard
+          timestamp={transaction.timestamp}
+          symbolTo={transaction.symbolOut}
+          quantity={transaction.symbolOutQuantity}
+          symbolFrom={transaction.symbolIn}
+        />
+      );
+
+    case 'airdrops_newAirdrop':
+      console.log(transaction);
+      return (
+        <AirDropCard
+          timestamp={transaction.timestamp}
+          account={transaction.account}
+          symbol={transaction.symbol}
+          quantity={transaction.quantity}
+        />
+      );
+
     case 'tokens_transfer':
       if (transaction.to === currentName) {
         return (
@@ -189,6 +212,9 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     quantityReturned: PropTypes.string,
     symbol: PropTypes.string,
     price: PropTypes.string,
+    symbolOut: PropTypes.string,
+    symbolOutQuantity: PropTypes.string,
+    symbolIn: PropTypes.string,
   }).isRequired,
 };
 
