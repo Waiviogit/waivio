@@ -18,6 +18,7 @@ import MarketCloseOrder from '../../TransfersCards/MarketCloseOrder';
 import UndelegateStart from '../../TransfersCards/UndelegateStart';
 import SwapTokenCard from '../../TransfersCards/SwapTokenCard';
 import AirDropCard from '../../TransfersCards/AirDropCard';
+import CuratorRewardsCard from '../../TransfersCards/CuratorRewardsCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const isMobileDevice = isMobile();
@@ -152,13 +153,34 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
       );
 
     case 'airdrops_newAirdrop':
-      console.log(transaction);
       return (
         <AirDropCard
           timestamp={transaction.timestamp}
           account={transaction.account}
           symbol={transaction.symbol}
           quantity={transaction.quantity}
+        />
+      );
+
+    case 'comments_curationReward':
+      return (
+        <CuratorRewardsCard
+          timestamp={transaction.timestamp}
+          symbol={transaction.symbol}
+          quantity={transaction.quantity}
+          authorperm={transaction.authorperm}
+          description={'Curator rewards from'}
+        />
+      );
+
+    case 'comments_authorReward':
+      return (
+        <CuratorRewardsCard
+          timestamp={transaction.timestamp}
+          symbol={transaction.symbol}
+          quantity={transaction.quantity}
+          authorperm={transaction.authorperm}
+          description={'Author rewards from'}
         />
       );
 
@@ -214,6 +236,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     price: PropTypes.string,
     symbolOut: PropTypes.string,
     symbolOutQuantity: PropTypes.string,
+    authorperm: PropTypes.string,
     symbolIn: PropTypes.string,
   }).isRequired,
 };

@@ -30,7 +30,7 @@ const QuickRewardsModal = props => {
   const [topics, setTopic] = useState(['food', 'restaurant']);
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
-  const [reservationPermlink, setReservationPermlink] = useState('[]');
+  const [reservationPermlink, setReservationPermlink] = useState('');
   const stepsConfig = [
     {
       title: 'Find the dish',
