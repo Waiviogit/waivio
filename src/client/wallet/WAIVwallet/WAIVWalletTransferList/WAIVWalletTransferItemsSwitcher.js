@@ -185,6 +185,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
       );
 
     case 'tokens_transfer':
+    case 'tokens_issue':
       if (transaction.to === currentName) {
         return (
           <ReceiveTransaction
