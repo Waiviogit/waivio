@@ -112,7 +112,7 @@
   "amount_error_format": "Malĝusta formato. Uzu punkton por la decimala apartigilo kaj maksimume 3 decimaloj.",
   "amount_error_zero": "Kvanto devas esti pli alta ol 0.",
   "amount_error_funds": "Nesufiĉaj fondusoj.",
-  "balance_amount": "Via bilanco: {amount}.",
+  "balance_amount": "Via bilanco.",
   "by": "De {username}",
   "memo": "Noto",
   "memo_placeholder": "Aldona mesaĝo por inkluzivi en ĉi tiu pago (nedeviga)",

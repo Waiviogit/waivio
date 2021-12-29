@@ -124,7 +124,7 @@
   "amount_error_format": "Maling format. Gumamit ng tuldok bilang decimal separator at hindi hihigit sa 3 decimal na lugar.",
   "amount_error_zero": "Ang halaga ay dapat na mas mataas sa 0.",
   "amount_error_funds": "Hindi sapat na pondo.",
-  "balance_amount": "Ang iyong balanse: {amount} .",
+  "balance_amount": "Ang iyong balanse.",
   "by": "Sa pamamagitan ng {username}",
   "memo": "Memo",
   "memo_placeholder": "Karagdagang mensahe upang isama sa pagbabayad na ito",

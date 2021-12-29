@@ -13,8 +13,8 @@ export const getSwapList = () => (dispatch, getState) => {
   return dispatch({
     type: GET_SWAP_LIST.ACTION,
     payload: getHiveEngineSwap().then(async res => {
-      const to = await compareTokensList(name, res['SWAP.HIVE']);
-      const from = await compareTokensList(name, res.WAIV);
+      const from = await compareTokensList(name, Object.keys(res));
+      const to = await compareTokensList(name, res.WAIV);
 
       return {
         list: res,
@@ -25,33 +25,25 @@ export const getSwapList = () => (dispatch, getState) => {
   });
 };
 
+export const SET_TO_TOKEN = '@swap/SET_TO_TOKEN';
+
+export const setToToken = token => ({
+  type: SET_TO_TOKEN,
+  payload: {
+    token,
+  },
+});
+
 export const SET_FROM_TOKEN = '@swap/SET_FROM_TOKEN';
 
 export const setFromToken = token => async (dispatch, getState) => {
   const state = getState();
   const swapList = getSwapListFromStore(state);
   const name = getAuthenticatedUserName(state);
-  const list = await compareTokensList(name, swapList[token.symbol]);
+  const list = token.symbol ? await compareTokensList(name, swapList[token.symbol]) : null;
 
   return dispatch({
     type: SET_FROM_TOKEN,
-    payload: {
-      token,
-      list,
-    },
-  });
-};
-
-export const SET_TO_TOKEN = '@swap/SET_TO_TOKEN';
-
-export const setToToken = token => async (dispatch, getState) => {
-  const state = getState();
-  const swapList = getSwapListFromStore(state);
-  const name = getAuthenticatedUserName(state);
-  const list = await compareTokensList(name, swapList[token.symbol]);
-
-  return dispatch({
-    type: SET_TO_TOKEN,
     payload: {
       token,
       list,

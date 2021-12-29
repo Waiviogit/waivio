@@ -23,10 +23,9 @@ export const createJSON = ({ tokenPair, from, symbol, amountOut, amountIn, minAm
   });
 };
 
-export const getSwapOutput = ({ symbol, amountIn, pool, impact, from }) => {
+export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from }) => {
   if (!pool) return {};
 
-  const slippage = impact * 0.01;
   const { baseQuantity, quoteQuantity, tokenPair, precision } = pool;
   const [baseSymbol] = tokenPair.split(':');
   const isBase = symbol === baseSymbol;

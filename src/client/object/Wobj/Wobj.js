@@ -16,6 +16,7 @@ import OBJECT_TYPE from '../const/objectTypes';
 import { formColumnsField } from '../../../common/constants/listOfFields';
 import WobjectSidebarFollowers from '../../app/Sidebar/ObjectInfoExperts/WobjectSidebarFollowers';
 import WobjectNearby from '../../app/Sidebar/ObjectInfoExperts/WobjectNearby';
+import { compareObjectTitle } from '../../helpers/seoHelpes';
 
 const Wobj = ({
   authenticated,
@@ -41,7 +42,7 @@ const Wobj = ({
   const url = `${appUrl}/object/${match.params.name}`;
   const albumsAndImagesCount = wobject.albums_count;
   const address = parseAddress(wobject);
-  const titleText = isWaivio ? `${objectName} - ${address || ''}` : objectName;
+  const titleText = compareObjectTitle(isWaivio, objectName, address, siteName);
   const rank = hasType(wobject, 'restaurant') ? `Restaurant rank: ${round(weightValue, 2)}.` : '';
 
   const tagCategories = reduce(
@@ -88,7 +89,7 @@ const Wobj = ({
   return (
     <div className="main-panel">
       <Helmet>
-        <title>{`${titleText} - ${siteName}`}</title>
+        <title>{titleText}</title>
         <link rel="canonical" href={canonicalUrl} />
         <meta property="description" content={desc} />
         <meta property="og:title" content={titleText} />

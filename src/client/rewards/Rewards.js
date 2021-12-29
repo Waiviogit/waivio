@@ -926,7 +926,9 @@ class Rewards extends React.Component {
           };
           const propositionObjectMap = get(proposition, ['objects', '0', 'object', 'map']);
 
-          return !isEmpty(propositionObjectMap) ? propositionObject : proposition.required_object;
+          return !isEmpty(propositionObjectMap)
+            ? propositionObject
+            : { ...propositionObject, map: proposition.required_object.map };
         })
       : [primaryObjectForMap, ...secondaryObjectsWithUniqueCoordinates];
   };

@@ -124,7 +124,7 @@
   "amount_error_format": "Formato incorrecto. Utilice un punto como separador decimal y como máximo 3 lugares decimales.",
   "amount_error_zero": "Amount has to be higher than 0.",
   "amount_error_funds": "No hay fondos suficientes.",
-  "balance_amount": "Su saldo: {amount}.",
+  "balance_amount": "Su saldo",
   "by": "Por {username}",
   "memo": "Nota",
   "memo_placeholder": "Mensaje adicional para incluir en este pago",

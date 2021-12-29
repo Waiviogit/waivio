@@ -124,7 +124,7 @@
   "amount_error_format": "Vale vorming. Kasutage punkti kümnendkoha eraldajana ja maksimaalselt kolme kohta pärast koma.",
   "amount_error_zero": "Summa peab olema suurem kui 0.",
   "amount_error_funds": "Rahalised vahendid on ebapiisavad.",
-  "balance_amount": "Teie saldo: {amount} .",
+  "balance_amount": "Teie saldo.",
   "by": "Autor: {username}",
   "memo": "Memo",
   "memo_placeholder": "Lisasõnum selle makse lisamiseks",
