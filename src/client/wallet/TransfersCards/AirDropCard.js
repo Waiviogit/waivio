@@ -11,7 +11,7 @@ const AirDropCard = props => (
     color={'green'}
     point={'+'}
   >
-    Airdrop from waivio
+    Airdrop
   </TransactionCardContainer>
 );
 

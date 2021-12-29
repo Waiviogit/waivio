@@ -8,16 +8,22 @@ const CuratorRewardsCard = props => (
     symbol={props.symbol}
     quantity={props.quantity}
     account={props.account}
+    memo={props.memo}
     iconType={'wallet'}
     color={'green'}
     point={'+'}
+    fractionDigits={5}
   >
-    <span>
-      {props.description}{' '}
-      <a href={`/${props.authorperm}`}>
-        <b>post</b>
-      </a>
-    </span>
+    <div>
+      <span>
+        {props.description}{' '}
+        {props.authorperm && (
+          <a href={`/${props.authorperm}`}>
+            (<b>post</b>)
+          </a>
+        )}
+      </span>
+    </div>
   </TransactionCardContainer>
 );
 
@@ -28,6 +34,7 @@ CuratorRewardsCard.propTypes = {
   symbol: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   authorperm: PropTypes.string.isRequired,
+  memo: PropTypes.string.isRequired,
 };
 
 export default CuratorRewardsCard;

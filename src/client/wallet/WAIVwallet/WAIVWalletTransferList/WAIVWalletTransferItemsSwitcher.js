@@ -169,7 +169,8 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           symbol={transaction.symbol}
           quantity={transaction.quantity}
           authorperm={transaction.authorperm}
-          description={'Curator rewards from'}
+          memo={transaction.memo}
+          description={'Curator rewards'}
         />
       );
 
@@ -180,12 +181,24 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           symbol={transaction.symbol}
           quantity={transaction.quantity}
           authorperm={transaction.authorperm}
-          description={'Author rewards from'}
+          memo={transaction.memo}
+          description={'Author rewards'}
+        />
+      );
+
+    case 'tokens_issue':
+      return (
+        <CuratorRewardsCard
+          timestamp={transaction.timestamp}
+          symbol={transaction.symbol}
+          quantity={transaction.quantity}
+          authorperm={transaction.authorperm}
+          memo={transaction.memo}
+          description={'Maining rewards'}
         />
       );
 
     case 'tokens_transfer':
-    case 'tokens_issue':
       if (transaction.to === currentName) {
         return (
           <ReceiveTransaction
