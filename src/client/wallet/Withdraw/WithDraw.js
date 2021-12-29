@@ -50,6 +50,7 @@ const Withdraw = ({
   // const currencyAmount = get(currencyInput, ['current', 'value'], 0);
   const draftTransfer = store.get('withdrawData');
   const hivePrice = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 0);
+  const estimateValue = ceil(hiveCount * hivePrice, 3) || 0;
   const currentBalance = `${user.balance} HIVE`;
   const hiveAmountClassList = classNames('Withdraw__input-text Withdraw__input-text--send-input', {
     'Withdraw__input-text--error': hiveAmount > user.balance,
@@ -173,14 +174,15 @@ const Withdraw = ({
   const validatorMessage = validationAddressState.valid
     ? intl.formatMessage({ id: 'address_valid', defaultMessage: 'Address is valid' })
     : intl.formatMessage({ id: 'address_not_valid', defaultMessage: 'Address is invalid' });
-  const disabled = !(
-    walletAddress &&
-    currentCurrency &&
-    hiveAmount &&
-    currencyAmount &&
-    validationAddressState.valid &&
-    isUserCanMakeTransfer
-  );
+  const disabled =
+    !(
+      walletAddress &&
+      currentCurrency &&
+      hiveAmount &&
+      currencyAmount &&
+      validationAddressState.valid &&
+      isUserCanMakeTransfer
+    ) || estimateValue > 100;
 
   const handleSubmitTransaction = () =>
     confirmWithDraw(user.name, {
@@ -259,17 +261,11 @@ const Withdraw = ({
             </p>
           )}
           <div className="Withdraw__subtitle">
-            <FormattedMessage
-              id="balance_amount"
-              defaultMessage="Your balance: {amount}"
-              values={{
-                amount: (
-                  <span className="balance" role="presentation" onClick={handleClickCurrentAmount}>
-                    {currentBalance || 0}
-                  </span>
-                ),
-              }}
-            />
+            <FormattedMessage id="balance_amount" defaultMessage="Your balance" />:{' '}
+            <span className="balance" role="presentation" onClick={handleClickCurrentAmount}>
+              {currentBalance || 0}
+            </span>
+            .
           </div>
           <Form.Item
             className="Withdraw__title"
@@ -301,13 +297,13 @@ const Withdraw = ({
               ))}
             </div>
           </div>
-          <div className="Withdraw__subtitle">
+          <div className={classNames('Withdraw__subtitle', { invalid: estimateValue > 100 })}>
             {intl.formatMessage(
               {
                 id: 'est_account_value_withdraw',
                 defaultMessage: 'Est. amount: {amount} USD (limit: 100 per day)',
               },
-              { amount: ceil(hiveCount * hivePrice, 3) || '0,00' },
+              { amount: estimateValue || '0.00' },
             )}
           </div>
           <Form.Item

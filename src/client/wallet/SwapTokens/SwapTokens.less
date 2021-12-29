@@ -1,0 +1,93 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.SwapTokens {
+  &__arrow {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 30px 0;
+    cursor: pointer;
+
+    .anticon {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      background: #f5f6f9;
+      color: #aebac3;
+      line-height: 45px;
+    }
+  }
+
+  &__input {
+    outline: none;
+    border: @base-border;
+    border-radius: 4px 0 0 4px;
+    border-right: none;
+    padding: 0 10px;
+  }
+
+  &__selector {
+    .ant-select-selection {
+      border-radius: 0 4px 4px 0;
+
+      .SwapTokens__selector-balance {
+        display: none;
+      }
+    }
+  }
+
+  &__impactBlock {
+    padding: 0 0 10px;
+
+    .ant-radio-group.ant-radio-group-outline {
+      padding: 10px 0;
+      width: 100%;
+    }
+
+    p {
+      font-weight: 500;
+    }
+  }
+
+  &__inputWrap {
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+
+    &--error {
+      .SwapTokens__input {
+        border-color: @red-danger;
+      }
+
+      .SwapTokens__selector {
+        .ant-select-selection {
+          border-color: @red-danger;
+          color: @red-danger;
+        }
+      }
+    }
+  }
+
+  &__balance {
+    border-bottom: 1px dotted @blue-botticelli;
+  }
+
+  &__hiveEngineInfo {
+    padding: 10px 0;
+  }
+
+  &__estimatedWrap {
+    padding: 20px 0;
+  }
+
+  &__selector-option {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .invalid {
+    color: @red;
+  }
+}

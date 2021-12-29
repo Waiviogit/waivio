@@ -124,7 +124,7 @@
   "amount_error_format": "Verkeerde formaat. Gebruik die punt as desimale skeiding en hoogstens 3 desimale plekke.",
   "amount_error_zero": "Bedrag moet hoër as 0 wees.",
   "amount_error_funds": "Onvoldoende fondse.",
-  "balance_amount": "U saldo: {amount} .",
+  "balance_amount": "U saldo",
   "by": "Volgens {username}",
   "memo": "Memo",
   "memo_placeholder": "Bykomende boodskap om by hierdie betaling in te sluit",

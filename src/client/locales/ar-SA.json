@@ -124,7 +124,7 @@
   "amount_error_format": "تنسيق غير صحيح. استخدم النقطة كفاصل عشري وفي 3 منازل عشرية على الأكثر.",
   "amount_error_zero": "يجب أن يكون المبلغ أكبر من 0.",
   "amount_error_funds": "رصيد غير كاف.",
-  "balance_amount": "رصيدك: {amount} .",
+  "balance_amount": "رصيدك",
   "by": "بواسطة {username}",
   "memo": "مذكرة",
   "memo_placeholder": "رسالة إضافية لتضمينها في هذا الدفع",

@@ -112,7 +112,7 @@
   "amount_error_format": "ভুল বিন্যাস। দশমিক পৃথকীকরণ ও সর্বোচ্চ ৩ দশমিক বিন্দু ব্যবহার করুন।",
   "amount_error_zero": "পরিমাণ ০ চেয়েও বেশি হতে হবে।",
   "amount_error_funds": "অপর্যাপ্ত তহবিল।",
-  "balance_amount": "আপনার ব্যালেন্স: {amount}",
+  "balance_amount": "আপনার ব্যালেন্স",
   "by": "{username} দ্বারা",
   "memo": "মেমো",
   "memo_placeholder": "এই পেমেন্ট (optional) অন্তর্ভুক্ত করতে অতিরিক্ত বার্তা",

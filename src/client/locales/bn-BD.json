@@ -112,7 +112,7 @@
   "amount_error_format": "Incorrect format. Use dot as decimal separator and at most 3 decimal places.",
   "amount_error_zero": "পরিমাণ 0 এর চেয়ে বেশি হতে হবে।",
   "amount_error_funds": "অপর্যাপ্ত তহবিল।",
-  "balance_amount": "আপনার ব্যালেন্স: {amount}.",
+  "balance_amount": "আপনার ব্যালেন্স",
   "by": "{username} দ্বারা",
   "memo": "মেমো",
   "memo_placeholder": "Additional message to include in this payment (optional)",

@@ -485,10 +485,19 @@ export const GET_MORE_WAIV_TRANSFER_LIST = createAsyncActionType(
   '@wallet/GET_MORE_WAIV_TRANSFER_LIST',
 );
 
-export const getWAIVTransferList = (account, offset, type = GET_WAIV_TRANSFER_LIST) => dispatch =>
+export const getWAIVTransferList = (
+  account,
+  timestampEnd,
+  type = GET_WAIV_TRANSFER_LIST,
+) => dispatch =>
   dispatch({
     type: type.ACTION,
-    payload: ApiClient.getTokensTransferList('WAIV', account, offset),
+    payload: ApiClient.getEngineTransactionHistory({
+      symbol: 'WAIV',
+      account,
+      timestampEnd,
+      limit: 10,
+    }),
     meta: 10,
   });
 
@@ -504,19 +513,24 @@ export const GET_MORE_HIVE_ENGINE_TRANSFER_LIST = createAsyncActionType(
 
 export const getHiveEngineTransferList = (
   account,
-  offset,
+  timestampEnd,
   type = GET_HIVE_ENGINE_TRANSFER_LIST,
 ) => dispatch =>
   dispatch({
     type: type.ACTION,
-    payload: ApiClient.getTokensTransferList(null, account, offset).then(res => ({
-      list: res,
-      hasMore: res.length === 10,
+    payload: ApiClient.getEngineTransactionHistory({
+      excludeSymbols: ['WAIV'],
+      account,
+      timestampEnd,
+      limit: 10,
+    }).then(res => ({
+      list: res.history,
+      hasMore: res.history.length === 10,
     })),
   });
 
-export const getMoreHiveEngineTransferList = (account, offset) => dispatch =>
-  dispatch(getHiveEngineTransferList(account, offset, GET_MORE_HIVE_ENGINE_TRANSFER_LIST));
+export const getMoreHiveEngineTransferList = (account, timestampEnd) => dispatch =>
+  dispatch(getHiveEngineTransferList(account, timestampEnd, GET_MORE_HIVE_ENGINE_TRANSFER_LIST));
 
 export const SET_CURRENT_WALLET = '@wallet/SET_CURRENT_WALLET';
 

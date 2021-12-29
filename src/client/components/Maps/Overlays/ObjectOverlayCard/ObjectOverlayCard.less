@@ -15,6 +15,7 @@
   -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.21);
   -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.21);
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.21);
+  overflow: hidden;
 
   &__earn {
     position: absolute;
@@ -117,6 +118,15 @@
   &__currency {
     font-size: 10px;
     font-weight: normal;
+  }
+
+  .ObjectCardView__type {
+    display: inline-block;
+    margin: 0;
+    max-width: 180px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
 

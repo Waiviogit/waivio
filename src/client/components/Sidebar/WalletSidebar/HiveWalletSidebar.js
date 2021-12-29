@@ -16,9 +16,10 @@ import { openLinkHiveAccountModal } from '../../../../store/settingsStore/settin
 import { getAuthenticatedUser, isGuestUser } from '../../../../store/authStore/authSelectors';
 import { getHiveBeneficiaryAccount } from '../../../../store/settingsStore/settingsSelectors';
 import withAuthActions from '../../../auth/withAuthActions';
+import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
+import { toggleModal } from '../../../../store/swapStore/swapActions';
 
 import './WalletSidebar.less';
-import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
 
 @withAuthActions
 @withRouter
@@ -34,6 +35,7 @@ import { getCurrentWalletType } from '../../../../store/walletStore/walletSelect
     openPowerUpOrDown,
     openWithdraw,
     openLinkHiveAccountModal,
+    openSwapTokensModal: toggleModal,
   },
 )
 class HiveWalletSidebar extends React.Component {
@@ -47,6 +49,7 @@ class HiveWalletSidebar extends React.Component {
     isGuest: PropTypes.bool,
     openWithdraw: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
+    openSwapTokensModal: PropTypes.func.isRequired,
     hiveBeneficiaryAccount: PropTypes.string,
     walletType: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
@@ -77,7 +80,7 @@ class HiveWalletSidebar extends React.Component {
     this.props.openPowerUpOrDown(true);
   };
 
-  handleChartsLoading = () => {};
+  handleOpenSwapModal = () => this.props.openSwapTokensModal(true);
 
   render() {
     const { match, user, isCurrentUser, isGuest, cryptos, walletType } = this.props;
@@ -87,16 +90,14 @@ class HiveWalletSidebar extends React.Component {
 
     return (
       <div className="WalletSidebar">
-        {isNotHiveEngineWallet && (
-          <Action
-            big
-            className="WalletSidebar__transfer"
-            primary
-            onClick={this.handleOpenTransferWithAuth}
-          >
-            <FormattedMessage id="transfer" defaultMessage="Transfer" />
-          </Action>
-        )}
+        <Action
+          big
+          className="WalletSidebar__transfer"
+          primary
+          onClick={this.handleOpenTransferWithAuth}
+        >
+          <FormattedMessage id="transfer" defaultMessage="Transfer" />
+        </Action>
         {ownProfile && !isGuest && isNotHiveEngineWallet && (
           <div className="WalletSidebar__power">
             <Action big onClick={this.handleOpenPowerUp}>
@@ -123,6 +124,16 @@ class HiveWalletSidebar extends React.Component {
         {!isEmpty(user) && ownProfile && isGuest && (
           <Action big className="WalletSidebar__transfer" primary onClick={this.props.openWithdraw}>
             <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
+          </Action>
+        )}
+        {!isEmpty(user) && ownProfile && !isGuest && (
+          <Action
+            big
+            className="WalletSidebar__transfer"
+            primary
+            onClick={this.handleOpenSwapModal}
+          >
+            <FormattedMessage id="swap_tokens" defaultMessage="Swap tokens" />
           </Action>
         )}
       </div>
