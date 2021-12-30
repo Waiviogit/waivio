@@ -1712,7 +1712,7 @@
   "account_creation": "Account creation",
   "totals_calculated": "Totals can be calculated only for a defined from-till period.",
   "power_down_started": "Started power down",
-  "power_down_stopped": "Stopped power down",
+  "power_down_stopped": "Power down",
   "power_down_withdraw": "Power down",
   "power_down_withdraw_to": "Power down to {to}",
   "power_down_withdraw_from": "Power down from {from}",
