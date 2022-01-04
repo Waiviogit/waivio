@@ -187,14 +187,15 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
       );
 
     case 'tokens_issue':
+    case 'mining_lottery':
       return (
         <CuratorRewardsCard
           timestamp={transaction.timestamp}
           symbol={transaction.symbol}
           quantity={transaction.quantity}
           authorperm={transaction.authorperm}
-          memo={transaction.memo}
-          description={'Maining rewards'}
+          memo={transaction.poolId ? `{poolId: ${transaction.poolId}}`: transaction.memo}
+          description={'Mining rewards'}
         />
       );
 
@@ -251,6 +252,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     symbolOut: PropTypes.string,
     symbolOutQuantity: PropTypes.string,
     authorperm: PropTypes.string,
+    poolId: PropTypes.string,
     symbolIn: PropTypes.string,
   }).isRequired,
 };
