@@ -7,6 +7,7 @@ import classNames from 'classnames';
 
 import {
   getSwapList,
+  resetModalData,
   setFromToken,
   setToToken,
   toggleModal,
@@ -30,13 +31,15 @@ import TokensSelect from './components/TokensSelect';
 import './SwapTokens.less';
 
 const SwapTokens = props => {
-  const [impact, setImpact] = useState(0.3);
+  const [impact, setImpact] = useState(0);
   const [slippage, setSlippage] = useState(0.05);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
 
   useLayoutEffect(() => {
     props.getSwapList();
+
+    return () => props.resetModalData();
   }, []);
 
   if (isEmpty(props.swapListTo) && isEmpty(props.swapListFrom)) return null;
@@ -51,7 +54,7 @@ const SwapTokens = props => {
 
     return getSwapOutput({
       symbol: from.symbol,
-      amountIn: value,
+      amountIn: value || 0,
       pool,
       slippage,
       from: isFrom,
@@ -99,13 +102,7 @@ const SwapTokens = props => {
   const handleClickBalanceTo = e => handleChangeToValue(parseFloat(e.currentTarget.textContent));
 
   const handleSwap = () => {
-    const swapInfo = getSwapOutput({
-      symbol: props.from.symbol,
-      amountIn: fromAmount,
-      pool: props.from,
-      slippage,
-      from: true,
-    });
+    const swapInfo = calculateOutputInfo(fromAmount, props.from, props.to, true);
 
     const win = window.open(
       `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
@@ -128,6 +125,7 @@ const SwapTokens = props => {
       onOk={handleSwap}
       onCancel={handleCloseModal}
       okButtonProps={{ disabled: !fromAmount || !toAmount || insufficientFunds(fromAmount) }}
+      okText={'Submit'}
     >
       <Form className="SwapTokens">
         <h3 className="SwapTokens__title">From:</h3>
@@ -197,6 +195,7 @@ SwapTokens.propTypes = {
   getSwapList: PropTypes.func.isRequired,
   setFromToken: PropTypes.func.isRequired,
   setToToken: PropTypes.func.isRequired,
+  resetModalData: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   swapListFrom: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   swapListTo: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -223,5 +222,5 @@ export default connect(
       visible: getVisibleModal(state),
     };
   },
-  { getSwapList, setFromToken, setToToken, toggleModal },
+  { getSwapList, setFromToken, setToToken, toggleModal, resetModalData },
 )(SwapTokens);
