@@ -4,8 +4,6 @@ const initialState = {
   swapList: {},
   swapListTo: {},
   swapListFrom: {},
-  from: { symbol: 'WAIV' },
-  to: {},
   impact: 0.5,
   visible: false,
 };
@@ -18,6 +16,8 @@ export default function swapReducer(state = initialState, action) {
         swapList: action.payload.list,
         swapListTo: action.payload.to,
         swapListFrom: action.payload.from,
+        from: action.payload.from.find(token => token.symbol === 'WAIV'),
+        to: action.payload.to.find(token => token.symbol === 'SWAP.HIVE'),
       };
     }
 
@@ -25,7 +25,6 @@ export default function swapReducer(state = initialState, action) {
       return {
         ...state,
         from: action.payload.token,
-        to: {},
         swapListTo: action.payload.list || state.swapListFrom,
       };
     }
