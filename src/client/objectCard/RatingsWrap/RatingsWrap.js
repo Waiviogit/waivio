@@ -1,126 +1,104 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Rate, Row } from 'antd';
 import { sortBy } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { averageRate } from '../../components/Sidebar/Rate/rateHelper';
-import RateObjectModal from '../../components/Sidebar/Rate/RateObjectModal';
+import { averageRate, calculateRateCurrUser } from '../../components/Sidebar/Rate/rateHelper';
+import steemConnectAPI from '../../steemConnectAPI';
+
 import './RatingsWrap.less';
 
-const RatingsWrap = ({
-  ownRatesOnly,
-  ratings,
-  screenSize,
-  wobjId,
-  wobjName,
-  username,
-  mobileView,
-  overlay,
-}) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedRating, setSelectedRating] = useState(null);
-  const isMobile = screenSize === 'xsmall' || screenSize === 'small';
+const RatingsWrap = ({ ratings, wobjId, username, overlay }) => {
+  const [sortedRatings, setSortingRatings] = useState([]);
   const mappedRatings = ratings.map(d => ({ ...d, rating: averageRate(d) }));
+
+  useEffect(() => {
+    const ratingList = overlay
+      ? [mappedRatings.sort((a, b) => b.rating - a.rating)[0]]
+      : sortBy(mappedRatings, ['body']);
+
+    setSortingRatings(ratingList);
+  }, []);
   const ratingTitleClassList = classNames('RatingsWrap__rate-title');
 
-  let sortedRatings = sortBy(mappedRatings, ['body']);
+  const handleSubmit = (rate, field) =>
+    steemConnectAPI.rankingObject(username, field.author, field.permlink, wobjId, rate * 2);
 
-  if (overlay) sortedRatings = [mappedRatings.sort((a, b) => b.rating - a.rating)[0]];
+  const rateLayout = (colNum, rateIndex, dividerClass) => {
+    const currRate = sortedRatings[rateIndex];
+    const ratingVotesList = currRate.rating_votes || [];
+    const haveCurrentUserVote = ratingVotesList.some(vote => vote.voter === username);
+    const defaultValue = haveCurrentUserVote
+      ? calculateRateCurrUser(currRate.rating_votes, username)
+      : averageRate(currRate);
 
-  const openRateModal = selectedRate => () => {
-    setSelectedRating(selectedRate);
-    setIsModalVisible(true);
-  };
+    const onChange = e => {
+      handleSubmit(e, currRate);
+      if (!haveCurrentUserVote) {
+        sortedRatings.splice(rateIndex, 1, {
+          ...currRate,
+          rating_votes: [...ratingVotesList, { rate: e, voter: username }],
+        });
 
-  const closeRateModal = () => {
-    setSelectedRating(null);
-    setIsModalVisible(false);
-  };
+        setSortingRatings([...sortedRatings]);
+      }
+    };
 
-  const rateLayout = (colNum, rateIndex, dividerClass) => (
-    <Col className={`RatingsWrap__rate ${dividerClass}`} span={colNum}>
-      <div
-        className="RatingsWrap__stars"
-        role="presentation"
-        onClick={openRateModal(sortedRatings[rateIndex])}
-      >
-        <Rate allowHalf disabled value={averageRate(sortedRatings[rateIndex])} />
-      </div>
-      <div className={ratingTitleClassList}>{sortedRatings[rateIndex].body}</div>
-    </Col>
-  );
+    const ratingClassList = classNames({
+      myvote: haveCurrentUserVote,
+    });
 
-  const mobileRatesLayout = () => (
-    <div className="RatingsWrap">
-      {sortedRatings.map(rate => (
-        <div className="RatingsWrap__rate" key={rate.body}>
-          <div className="RatingsWrap__stars" role="presentation" onClick={openRateModal(rate)}>
-            <Rate allowHalf disabled value={averageRate(rate)} />
-          </div>
-          <div className={ratingTitleClassList}>{rate.body}</div>
+    return (
+      <Col className={`RatingsWrap__rate ${dividerClass}`} span={colNum}>
+        <div className="RatingsWrap__stars" role="presentation">
+          <Rate
+            allowHalf
+            defaultValue={defaultValue}
+            onChange={onChange}
+            className={ratingClassList}
+          />
         </div>
-      ))}
-    </div>
-  );
+        <div className={ratingTitleClassList}>{currRate.body}</div>
+      </Col>
+    );
+  };
 
   return sortedRatings[0] ? (
     <React.Fragment>
-      {isMobile ? (
-        mobileRatesLayout(mobileView === 'compact')
-      ) : (
-        <div className="RatingsWrap">
+      <div className="RatingsWrap">
+        <Row>
+          <div className="RatingsWrap__left-wrapper">
+            {rateLayout(
+              sortedRatings[1] ? 12 : 24,
+              0,
+              sortedRatings[1] ? 'RatingsWrap__rate-left-col' : '',
+            )}
+          </div>
+          {sortedRatings[1] && rateLayout(12, 1, 'RatingsWrap__rate-right-col')}
+        </Row>
+        {sortedRatings[2] && (
           <Row>
             <div className="RatingsWrap__left-wrapper">
-              {rateLayout(
-                sortedRatings[1] ? 12 : 24,
-                0,
-                sortedRatings[1] ? 'RatingsWrap__rate-left-col' : '',
-              )}
+              {rateLayout(sortedRatings[3] ? 12 : 24, 2, 'RatingsWrap__rate-left-col')}
             </div>
-            {sortedRatings[1] && rateLayout(12, 1, 'RatingsWrap__rate-right-col')}
+            {sortedRatings[3] && rateLayout(12, 3, 'RatingsWrap__rate-right-col')}
           </Row>
-          {sortedRatings[2] && (
-            <Row>
-              <div className="RatingsWrap__left-wrapper">
-                {rateLayout(sortedRatings[3] ? 12 : 24, 2, 'RatingsWrap__rate-left-col')}
-              </div>
-              {sortedRatings[3] && rateLayout(12, 3, 'RatingsWrap__rate-right-col')}
-            </Row>
-          )}
-        </div>
-      )}
-
-      <RateObjectModal
-        isVisible={isModalVisible}
-        ownRatesOnly={ownRatesOnly}
-        ratingCategoryField={selectedRating}
-        ratingFields={sortedRatings}
-        username={username}
-        wobjId={wobjId}
-        wobjName={wobjName}
-        onCancel={closeRateModal}
-      />
+        )}
+      </div>
     </React.Fragment>
   ) : null;
 };
 
 RatingsWrap.propTypes = {
-  ownRatesOnly: PropTypes.bool,
   overlay: PropTypes.bool,
   ratings: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  screenSize: PropTypes.string.isRequired,
   wobjId: PropTypes.string.isRequired,
-  wobjName: PropTypes.string.isRequired,
   username: PropTypes.string,
-  mobileView: PropTypes.oneOf(['compact', 'full']),
 };
 
 RatingsWrap.defaultProps = {
-  ownRatesOnly: false,
   overlay: false,
   username: '',
-  mobileView: 'compact',
-  wobjName: '',
 };
 
 export default RatingsWrap;

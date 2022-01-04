@@ -72,9 +72,7 @@ export const getTransactionDescription = (type, options) => {
         powerDownStarted: (
           <FormattedMessage id="power_down_started" defaultMessage="Started power down" />
         ),
-        powerDownStopped: (
-          <FormattedMessage id="power_down_stopped" defaultMessage="Stopped power down" />
-        ),
+        powerDownStopped: <FormattedMessage id="power_down_stopped" defaultMessage="Power down" />,
       };
     }
     case accountHistoryConstants.POWER_DOWN_WITHDRAW: {

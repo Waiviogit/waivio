@@ -10,7 +10,7 @@ import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
-import { getRate, getScreenSize } from '../../store/appStore/appSelectors';
+import { getRate } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
@@ -20,7 +20,6 @@ import './ObjectCardView.less';
 const ObjectCardView = ({
   intl,
   wObject,
-  options: { mobileView = 'compact', ownRatesOnly = false },
   path,
   passedParent,
   hovered,
@@ -29,8 +28,9 @@ const ObjectCardView = ({
   isReserved,
   closeButton,
   onDelete,
+  isPost,
+  postAuthor,
 }) => {
-  const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const rate = useSelector(getRate);
   const [tags, setTags] = useState([]);
@@ -122,11 +122,8 @@ const ObjectCardView = ({
             </div>
             {wObject.rating && (
               <RatingsWrap
-                mobileView={mobileView}
-                ownRatesOnly={ownRatesOnly}
                 ratings={wObject.rating}
-                screenSize={screenSize}
-                username={username}
+                username={isPost ? postAuthor : username}
                 wobjId={wObject.id || wObject.author_permlink}
                 wobjName={objName}
               />
@@ -203,11 +200,11 @@ ObjectCardView.propTypes = {
   isReserved: PropTypes.bool,
   rewardPrice: PropTypes.number,
   options: PropTypes.shape({
-    mobileView: PropTypes.oneOf(['compact', 'full']),
-    ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
   closeButton: PropTypes.bool,
+  isPost: PropTypes.bool,
+  postAuthor: PropTypes.string,
   onDelete: PropTypes.func,
 };
 
@@ -215,9 +212,11 @@ ObjectCardView.defaultProps = {
   options: {},
   wObject: {},
   path: '',
+  postAuthor: '',
   passedParent: {},
   withRewards: false,
   isReserved: false,
+  isPost: false,
   rewardPrice: 0,
   currency: defaultCurrency,
   hovered: false,
