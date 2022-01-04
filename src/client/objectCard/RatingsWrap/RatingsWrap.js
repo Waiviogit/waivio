@@ -26,7 +26,8 @@ const RatingsWrap = ({ ratings, wobjId, username, overlay }) => {
 
   const rateLayout = (colNum, rateIndex, dividerClass) => {
     const currRate = sortedRatings[rateIndex];
-    const haveCurrentUserVote = currRate.rating_votes.some(vote => vote.voter === username);
+    const ratingVotesList = currRate.rating_votes || [];
+    const haveCurrentUserVote = ratingVotesList.some(vote => vote.voter === username);
     const defaultValue = haveCurrentUserVote
       ? calculateRateCurrUser(currRate.rating_votes, username)
       : averageRate(currRate);
@@ -36,7 +37,7 @@ const RatingsWrap = ({ ratings, wobjId, username, overlay }) => {
       if (!haveCurrentUserVote) {
         sortedRatings.splice(rateIndex, 1, {
           ...currRate,
-          rating_votes: [...currRate.rating_votes, { rate: e, voter: username }],
+          rating_votes: [...ratingVotesList, { rate: e, voter: username }],
         });
 
         setSortingRatings([...sortedRatings]);

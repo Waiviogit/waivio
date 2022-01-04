@@ -21,6 +21,8 @@ export const averageRate = field => {
 };
 
 export const calculateRateCurrUser = (votes, user) => {
+  if(!votes) return 0;
+
   const vote = votes.find(r => r.voter === user);
   const rate = Math.round(vote.rate);
 
