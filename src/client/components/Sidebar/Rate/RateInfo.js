@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Rate } from 'antd';
+import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
@@ -41,7 +42,9 @@ class RateInfo extends React.PureComponent {
       <React.Fragment>
         {ratingFields &&
           ratingFields.map(field => {
-            const haveCurrentUserVote = field.rating_votes.some(vote => vote.voter === username);
+            const haveCurrentUserVote = get(field, 'rating_votes', []).some(
+              vote => vote.voter === username,
+            );
             const ratingClassList = classNames({
               myvote: haveCurrentUserVote,
             });

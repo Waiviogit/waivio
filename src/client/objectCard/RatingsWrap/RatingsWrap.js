@@ -3,14 +3,18 @@ import { Col, Rate, Row } from 'antd';
 import { sortBy } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
+
 import { averageRate, calculateRateCurrUser } from '../../components/Sidebar/Rate/rateHelper';
 import steemConnectAPI from '../../steemConnectAPI';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './RatingsWrap.less';
 
-const RatingsWrap = ({ ratings, wobjId, username, overlay }) => {
+const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay }) => {
   const [sortedRatings, setSortingRatings] = useState([]);
   const mappedRatings = ratings.map(d => ({ ...d, rating: averageRate(d) }));
+  const isAuth = useSelector(getIsAuthenticated);
 
   useEffect(() => {
     const ratingList = overlay
@@ -47,15 +51,19 @@ const RatingsWrap = ({ ratings, wobjId, username, overlay }) => {
     const ratingClassList = classNames({
       myvote: haveCurrentUserVote,
     });
+    const ratingWrapClassList = classNames('RatingsWrap__rate', dividerClass, {
+      RatingsWrap__overlay: overlay,
+    });
 
     return (
-      <Col className={`RatingsWrap__rate ${dividerClass}`} span={colNum}>
+      <Col className={ratingWrapClassList} span={colNum}>
         <div className="RatingsWrap__stars" role="presentation">
           <Rate
             allowHalf
             defaultValue={defaultValue}
             onChange={onChange}
             className={ratingClassList}
+            disabled={!isAuth}
           />
         </div>
         <div className={ratingTitleClassList}>{currRate.body}</div>
@@ -87,7 +95,7 @@ const RatingsWrap = ({ ratings, wobjId, username, overlay }) => {
       </div>
     </React.Fragment>
   ) : null;
-};
+});
 
 RatingsWrap.propTypes = {
   overlay: PropTypes.bool,
