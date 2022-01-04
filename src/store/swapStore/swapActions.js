@@ -57,3 +57,9 @@ export const toggleModal = isOpen => ({
   type: SHOW_MODAL,
   payload: isOpen,
 });
+
+export const RESET_MODAL_DATA = '@swap/RESET_MODAL_DATA';
+
+export const resetModalData = () => ({
+  type: RESET_MODAL_DATA,
+});

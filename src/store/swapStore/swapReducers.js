@@ -42,6 +42,11 @@ export default function swapReducer(state = initialState, action) {
         visible: action.payload,
       };
     }
+
+    case swapActions.RESET_MODAL_DATA: {
+      return initialState;
+    }
+
     default: {
       return state;
     }
