@@ -15,7 +15,9 @@ export default function swapReducer(state = initialState, action) {
         ...state,
         swapList: action.payload.list,
         swapListTo: action.payload.to,
-        swapListFrom: action.payload.from,
+        swapListFrom: action.payload.from.filter(
+          token => (token.balance > 0 && token.symbol !== 'WAIV') || token.symbol === 'WAIV',
+        ),
         from: action.payload.from.find(token => token.symbol === 'WAIV'),
         to: action.payload.to.find(token => token.symbol === 'SWAP.HIVE'),
       };

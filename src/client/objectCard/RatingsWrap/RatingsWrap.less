@@ -45,6 +45,11 @@
     }
   }
 
+  &__overlay {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+  }
+
   &__stars {
     min-width: 90px;
     line-height: 0;
@@ -58,10 +63,6 @@
   }
 
   @media (max-width: 1300px) {
-    &__left-wrapper {
-      display: none;
-    }
-
     &__rate-right-col {
       padding-left: 0px !important;
       width: 100% !important;
