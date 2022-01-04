@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Form, Icon, Modal, Radio } from 'antd';
 import { isEmpty, get } from 'lodash';
@@ -35,31 +35,32 @@ const SwapTokens = props => {
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     props.getSwapList();
   }, []);
 
   if (isEmpty(props.swapListTo) && isEmpty(props.swapListFrom)) return null;
 
-  const currFrom = props.swapListTo.find(symbol => symbol.symbol === props.from.symbol) || {};
-  const currTo = props.swapListFrom.find(symbol => symbol.symbol === props.to.symbol) || {};
-
-  const insufficientFunds = amount => currFrom.balance < amount;
+  const insufficientFunds = amount => props.from.balance < amount;
   const inputWrapClassList = classNames('SwapTokens__inputWrap', {
     'SwapTokens__inputWrap--error': insufficientFunds(fromAmount),
   });
 
+  const calculateOutputInfo = (value = 0, from, to, isFrom) => {
+    const pool = from.tokenPair ? from : to;
+
+    return getSwapOutput({
+      symbol: from.symbol,
+      amountIn: value,
+      pool,
+      slippage,
+      from: isFrom,
+    });
+  };
+
   const handelChangeOrderToken = () => {
     if (!isEmpty(props.to) && !isEmpty(props.from)) {
-      const pool = currTo.tokenPair ? currTo : currFrom;
-
-      const amount = getSwapOutput({
-        symbol: props.to.symbol,
-        amountIn: toAmount,
-        pool,
-        impact,
-        from: true,
-      });
+      const amount = calculateOutputInfo(toAmount, props.to, props.from, true);
 
       props.setFromToken(props.to);
       props.setToToken(props.from);
@@ -71,14 +72,8 @@ const SwapTokens = props => {
   const handleChangeFromValue = value => {
     setFromAmount(value);
 
-    if (!isEmpty(currTo)) {
-      const amount = getSwapOutput({
-        symbol: props.from.symbol,
-        amountIn: value,
-        pool: currFrom,
-        slippage,
-        from: true,
-      });
+    if (!isEmpty(props.to)) {
+      const amount = calculateOutputInfo(value, props.from, props.to, true);
 
       setImpact(amount.priceImpact);
       setToAmount(amount.amountOut);
@@ -88,13 +83,8 @@ const SwapTokens = props => {
   const handleChangeToValue = value => {
     setToAmount(value);
 
-    if (!isEmpty(currFrom)) {
-      const amount = getSwapOutput({
-        symbol: props.to.symbol,
-        amountIn: value,
-        pool: currTo,
-        slippage,
-      });
+    if (!isEmpty(props.from)) {
+      const amount = calculateOutputInfo(value, props.to, props.from);
 
       setImpact(amount.priceImpact);
       setFromAmount(amount.amountOut);
@@ -112,7 +102,7 @@ const SwapTokens = props => {
     const swapInfo = getSwapOutput({
       symbol: props.from.symbol,
       amountIn: fromAmount,
-      pool: currFrom,
+      pool: props.from,
       slippage,
       from: true,
     });
@@ -145,7 +135,7 @@ const SwapTokens = props => {
           list={props.swapListFrom}
           setToken={props.setFromToken}
           inputWrapClassList={inputWrapClassList}
-          amound={fromAmount}
+          amount={fromAmount}
           handleChangeValue={handleChangeFromValue}
           symbol={props.from.symbol}
         />
@@ -153,7 +143,7 @@ const SwapTokens = props => {
         <p>
           Your balance:{' '}
           <span className="SwapTokens__balance" onClick={handleClickBalanceFrom}>
-            {get(currFrom, 'balance')} {get(currFrom, 'symbol')}
+            {get(props.from, 'balance')} {get(props.from, 'symbol')}
           </span>
         </p>
         <div className="SwapTokens__arrow">
@@ -164,20 +154,20 @@ const SwapTokens = props => {
           list={props.swapListTo}
           setToken={props.setToToken}
           inputWrapClassList={inputWrapClassList}
-          amound={toAmount}
+          amount={toAmount}
           handleChangeValue={handleChangeToValue}
           symbol={props.to.symbol}
         />
         <p>
           Your balance:{' '}
           <span className="SwapTokens__balance" onClick={handleClickBalanceTo}>
-            {get(currTo, 'balance', 0)} {get(currTo, 'symbol')}
+            {get(props.to, 'balance', 0)} {get(props.to, 'symbol')}
           </span>
         </p>
         <div className="SwapTokens__estimatedWrap">
           <p>
             Estimated transaction value:{' '}
-            <USDDisplay value={fromAmount * currFrom.rate * props.hiveRateInUsd} />
+            <USDDisplay value={fromAmount * props.from.rate * props.hiveRateInUsd} />
           </p>
           <p>Estimated price impact: {impact}%</p>
         </div>

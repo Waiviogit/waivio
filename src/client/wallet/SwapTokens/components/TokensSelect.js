@@ -6,6 +6,7 @@ const TokensSelect = props => (
   <div className={props.inputWrapClassList}>
     <input
       value={props.amount}
+      placeholder={'0'}
       onChange={e => props.handleChangeValue(e.currentTarget.value)}
       type="number"
       className="SwapTokens__input"
