@@ -5,6 +5,7 @@ import {get, isEmpty} from 'lodash';
 
 const TokensSelect = props => {
   const setUserBalance = () => props.handleClickBalance(get(props.token, 'balance', 0));
+
   return (
     <React.Fragment>
       <div className={props.inputWrapClassList}>
