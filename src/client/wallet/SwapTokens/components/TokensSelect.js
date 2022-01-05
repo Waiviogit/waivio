@@ -1,7 +1,7 @@
 import { Input, Select } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {get, isEmpty} from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 const TokensSelect = props => {
   const setUserBalance = () => props.handleClickBalance(get(props.token, 'balance', 0));
@@ -66,7 +66,7 @@ TokensSelect.propTypes = {
 
 TokensSelect.defaultProps = {
   isError: false,
-  list: []
+  list: [],
 };
 
 export default TokensSelect;

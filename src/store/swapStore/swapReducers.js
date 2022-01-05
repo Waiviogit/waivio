@@ -6,8 +6,8 @@ const initialState = {
   swapListFrom: [],
   impact: 0.5,
   visible: false,
-  from: {symbol: 'WAIV'},
-  to: {symbol: 'SWAP.HIVE'}
+  from: { symbol: 'WAIV' },
+  to: { symbol: 'SWAP.HIVE' },
 };
 
 export default function swapReducer(state = initialState, action) {
