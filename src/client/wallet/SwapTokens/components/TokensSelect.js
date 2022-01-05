@@ -1,7 +1,7 @@
 import { Input, Select } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 const TokensSelect = props => {
   const setUserBalance = () => props.handleClickBalance(get(props.token, 'balance', 0));
@@ -25,6 +25,7 @@ const TokensSelect = props => {
           className="SwapTokens__selector"
           showSearch
           value={props.token.symbol}
+          disabled={isEmpty(props.list)}
           filterOption={(input, option) => option.key.toLowerCase().includes(input.toLowerCase())}
         >
           {props.list.map(swap => (
@@ -65,6 +66,7 @@ TokensSelect.propTypes = {
 
 TokensSelect.defaultProps = {
   isError: false,
+  list: [],
 };
 
 export default TokensSelect;

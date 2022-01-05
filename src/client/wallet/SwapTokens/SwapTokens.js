@@ -42,8 +42,6 @@ const SwapTokens = props => {
     return () => props.resetModalData();
   }, []);
 
-  if (isEmpty(props.swapListTo) && isEmpty(props.swapListFrom)) return null;
-
   const insufficientFunds = amount => props.from.balance < amount;
   const inputWrapClassList = classNames('SwapTokens__inputWrap', {
     'SwapTokens__inputWrap--error': insufficientFunds(fromAmount),
