@@ -8,40 +8,13 @@ const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
   const link = isReceive ? from : to;
   const delegation = isReceive ? 'Delegation from' : 'Delegated to';
 
-  const cardInfo = isReceive
-    ? {
-        description: (
-          <span>
-            from{' '}
-            <a href={`/@${from}`} className="username">
-              {from}
-            </a>
-          </span>
-        ),
-        color: 'green',
-        point: '+',
-      }
-    : {
-        description: (
-          <span>
-            to{' '}
-            <a href={`/@${to}`} className="username">
-              {to}
-            </a>
-          </span>
-        ),
-        color: 'red',
-        point: '-',
-      };
-
   return (
     <TransactionCardContainer
       timestamp={timestamp}
       quantity={quantity}
       symbol={'WP'}
       iconType={'arrow-right'}
-      color={cardInfo.color}
-      point={cardInfo.point}
+      color={isReceive ? 'green' : 'red'}
     >
       {delegation}
       <div className="UserWalletTransactions__delegated">

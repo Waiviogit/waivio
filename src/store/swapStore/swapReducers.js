@@ -1,11 +1,13 @@
 import * as swapActions from './swapActions';
 
 const initialState = {
-  swapList: {},
-  swapListTo: {},
-  swapListFrom: {},
+  swapList: [],
+  swapListTo: [],
+  swapListFrom: [],
   impact: 0.5,
   visible: false,
+  from: {symbol: 'WAIV'},
+  to: {symbol: 'SWAP.HIVE'}
 };
 
 export default function swapReducer(state = initialState, action) {

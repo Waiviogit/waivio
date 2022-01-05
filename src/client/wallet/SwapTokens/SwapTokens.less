@@ -26,6 +26,20 @@
     border-radius: 4px 0 0 4px;
     border-right: none;
     padding: 0 10px;
+    height: 32px;
+
+    .ant-input {
+      border: none;
+      padding: 0;
+      height: 30px;
+      outline: none;
+
+      &:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+      }
+    }
   }
 
   &__selector {
@@ -83,6 +97,7 @@
 
   &__balance {
     border-bottom: 1px dotted @blue-botticelli;
+    cursor: pointer;
   }
 
   &__hiveEngineInfo {
@@ -100,5 +115,22 @@
 
   .invalid {
     color: @red;
+  }
+
+  &__max-button {
+    display: inline-block;
+    border: @base-border;
+    border-radius: 4px;
+    padding: 0 5px;
+    cursor: pointer;
+  }
+
+  input[type='number'] {
+    -moz-appearance:textfield;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
   }
 }

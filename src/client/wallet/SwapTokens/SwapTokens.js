@@ -42,8 +42,6 @@ const SwapTokens = props => {
     return () => props.resetModalData();
   }, []);
 
-  if (isEmpty(props.swapListTo) && isEmpty(props.swapListFrom)) return null;
-
   const insufficientFunds = amount => props.from.balance < amount;
   const inputWrapClassList = classNames('SwapTokens__inputWrap', {
     'SwapTokens__inputWrap--error': insufficientFunds(fromAmount),
@@ -96,10 +94,9 @@ const SwapTokens = props => {
 
   const handleCloseModal = () => props.toggleModal(false);
 
-  const handleClickBalanceFrom = e =>
-    handleChangeFromValue(parseFloat(e.currentTarget.textContent));
+  const handleClickBalanceFrom = value => handleChangeFromValue(value);
 
-  const handleClickBalanceTo = e => handleChangeToValue(parseFloat(e.currentTarget.textContent));
+  const handleClickBalanceTo = value => handleChangeToValue(value);
 
   const handleSwap = () => {
     const swapInfo = calculateOutputInfo(fromAmount, props.from, props.to, true);
@@ -135,15 +132,10 @@ const SwapTokens = props => {
           inputWrapClassList={inputWrapClassList}
           amount={fromAmount}
           handleChangeValue={handleChangeFromValue}
-          symbol={props.from.symbol}
+          token={props.from}
+          handleClickBalance={handleClickBalanceFrom}
+          isError={insufficientFunds(fromAmount)}
         />
-        {insufficientFunds(fromAmount) && <p className="invalid">Insufficient funds.</p>}{' '}
-        <p>
-          Your balance:{' '}
-          <span className="SwapTokens__balance" onClick={handleClickBalanceFrom}>
-            {get(props.from, 'balance')} {get(props.from, 'symbol')}
-          </span>
-        </p>
         <div className="SwapTokens__arrow">
           <Icon type="arrow-down" onClick={handelChangeOrderToken} />
         </div>
@@ -154,14 +146,9 @@ const SwapTokens = props => {
           inputWrapClassList={inputWrapClassList}
           amount={toAmount}
           handleChangeValue={handleChangeToValue}
-          symbol={props.to.symbol}
+          token={props.to}
+          handleClickBalance={handleClickBalanceTo}
         />
-        <p>
-          Your balance:{' '}
-          <span className="SwapTokens__balance" onClick={handleClickBalanceTo}>
-            {get(props.to, 'balance', 0)} {get(props.to, 'symbol')}
-          </span>
-        </p>
         <div className="SwapTokens__estimatedWrap">
           <p>
             Estimated transaction value:{' '}

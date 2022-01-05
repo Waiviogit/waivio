@@ -1,6 +1,7 @@
 import React from 'react';
 import { round } from 'lodash';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import PowerUpTransactionFrom from '../../TransfersCards/PowerUpTransactionFrom';
 import { getTransactionCurrency, getTransactionDescription } from '../../WalletHelper';
@@ -19,8 +20,10 @@ import UndelegateStart from '../../TransfersCards/UndelegateStart';
 import SwapTokenCard from '../../TransfersCards/SwapTokenCard';
 import AirDropCard from '../../TransfersCards/AirDropCard';
 import CuratorRewardsCard from '../../TransfersCards/CuratorRewardsCard';
+import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
+  const walletType = useSelector(getCurrentWalletType);
   const isMobileDevice = isMobile();
   const powerSymbol = transaction.symbol === 'WAIV' ? 'WP' : transaction.symbol;
 
@@ -149,6 +152,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           symbolTo={transaction.symbolOut}
           quantity={transaction.symbolOutQuantity}
           symbolFrom={transaction.symbolIn}
+          walletType={walletType}
         />
       );
 
@@ -194,7 +198,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           symbol={transaction.symbol}
           quantity={transaction.quantity}
           authorperm={transaction.authorperm}
-          memo={transaction.poolId ? `{poolId: ${transaction.poolId}}`: transaction.memo}
+          memo={transaction.poolId ? `{poolId: ${transaction.poolId}}` : transaction.memo}
           description={'Mining rewards'}
         />
       );
