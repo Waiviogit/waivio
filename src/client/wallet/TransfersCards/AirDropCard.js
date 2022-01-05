@@ -9,7 +9,6 @@ const AirDropCard = props => (
     quantity={props.quantity}
     account={props.account}
     color={'green'}
-    point={'+'}
   >
     Airdrop
   </TransactionCardContainer>

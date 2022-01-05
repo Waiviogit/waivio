@@ -11,7 +11,6 @@ const CuratorRewardsCard = props => (
     memo={props.memo}
     iconType={'wallet'}
     color={'green'}
-    point={'+'}
     fractionDigits={5}
   >
     <div>

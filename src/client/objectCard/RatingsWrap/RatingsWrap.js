@@ -29,7 +29,7 @@ const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay }) => {
   const handleSubmit = (rate, field) =>
     steemConnectAPI.rankingObject(username, field.author, field.permlink, wobjId, rate * 2);
 
-  const rateLayout = (colNum, rateIndex, dividerClass) => {
+  const rateLayout = (colNum, rateIndex) => {
     const currRate = sortedRatings[rateIndex];
     const ratingVotesList = currRate.rating_votes || [];
     const haveCurrentUserVote = ratingVotesList.some(vote => vote.voter === username);
@@ -52,7 +52,7 @@ const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay }) => {
     const ratingClassList = classNames({
       myvote: haveCurrentUserVote,
     });
-    const ratingWrapClassList = classNames('RatingsWrap__rate', dividerClass, {
+    const ratingWrapClassList = classNames('RatingsWrap__rate', {
       RatingsWrap__overlay: overlay,
     });
 
@@ -73,28 +73,18 @@ const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay }) => {
   };
 
   return sortedRatings[0] ? (
-    <React.Fragment>
-      <div className="RatingsWrap">
+    <div className="RatingsWrap">
+      <Row>
+        {rateLayout(sortedRatings[1] ? 12 : 24, 0)}
+        {sortedRatings[1] && rateLayout(12, 1)}
+      </Row>
+      {sortedRatings[2] && (
         <Row>
-          <div className="RatingsWrap__left-wrapper">
-            {rateLayout(
-              sortedRatings[1] ? 12 : 24,
-              0,
-              sortedRatings[1] ? 'RatingsWrap__rate-left-col' : '',
-            )}
-          </div>
-          {sortedRatings[1] && rateLayout(12, 1, 'RatingsWrap__rate-right-col')}
+          {rateLayout(sortedRatings[3] ? 12 : 24, 2)}
+          {sortedRatings[3] && rateLayout(12, 3)}
         </Row>
-        {sortedRatings[2] && (
-          <Row>
-            <div className="RatingsWrap__left-wrapper">
-              {rateLayout(sortedRatings[3] ? 12 : 24, 2, 'RatingsWrap__rate-left-col')}
-            </div>
-            {sortedRatings[3] && rateLayout(12, 3, 'RatingsWrap__rate-right-col')}
-          </Row>
-        )}
-      </div>
-    </React.Fragment>
+      )}
+    </div>
   ) : null;
 });
 
