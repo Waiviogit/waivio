@@ -13,7 +13,6 @@ const TransactionCardContainer = ({
   children,
   iconType,
   color,
-  point,
   account,
   fractionDigits,
   memo,
@@ -21,6 +20,7 @@ const TransactionCardContainer = ({
   const amountClassList = classNames('UserWalletTransactions__marginLeft', {
     [`UserWalletTransactions__amount--${color}`]: color,
   });
+  const point = color === 'red' ? '-' : '+';
 
   return (
     <div className="UserWalletTransactions__transaction">
@@ -40,7 +40,7 @@ const TransactionCardContainer = ({
           {children}
           {!!quantity && (
             <span className={amountClassList}>
-              {point}{' '}
+              {color ? point : ''}{' '}
               <FormattedNumber
                 value={quantity}
                 locale={'en-IN'}
@@ -63,7 +63,6 @@ TransactionCardContainer.propTypes = {
   quantity: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   color: PropTypes.string,
   iconType: PropTypes.string.isRequired,
-  point: PropTypes.string,
   account: PropTypes.string,
   memo: PropTypes.string,
   fractionDigits: PropTypes.number,

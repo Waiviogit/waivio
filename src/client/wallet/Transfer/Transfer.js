@@ -167,7 +167,6 @@ export default class Transfer extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       currency: this.props.isGuest ? 'HIVE' : this.props.currency,
       balance: parseFloat(this.props.user.balance),

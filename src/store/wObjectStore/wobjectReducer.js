@@ -86,29 +86,27 @@ export default function wobjectReducer(state = initialState, action) {
       };
 
     case RATE_WOBJECT_SUCCESS: {
-      if (!state.wobject.fields) return state;
-      const isNewVote = field =>
-        field.rating_votes ? !field.rating_votes.some(v => v.voter === action.meta.voter) : true;
+      const voteRateIndex = state.wobject.rating.findIndex(
+        rating => rating.permlink === action.meta.permlink,
+      );
+      const currRating = state.wobject.rating[voteRateIndex];
+      const vote = { rate: action.meta.rate, voter: action.meta.voter };
+      const voteIndex = currRating.rating_votes.findIndex(v => v.voter === action.meta.voter);
+      const ratingsVoteList = [...currRating.rating_votes];
+      const wobjectRatingsVoteList = [...state.wobject.rating];
 
-      const vote = {
-        rate: action.meta.rate,
-        voter: action.meta.voter,
-      };
+      if (voteIndex < 0) ratingsVoteList.push(vote);
+
+      wobjectRatingsVoteList.splice(voteRateIndex, 1, {
+        ...currRating,
+        rating_votes: [...ratingsVoteList],
+      });
 
       return {
         ...state,
         wobject: {
           ...state.wobject,
-          fields: state.wobject.fields.map(field =>
-            field.permlink === action.meta.permlink
-              ? {
-                  ...field,
-                  rating_votes: isNewVote(field)
-                    ? (field.rating_votes && [...field.rating_votes, vote]) || [vote]
-                    : field.rating_votes.map(rv => (rv.voter === action.meta.voter ? vote : rv)),
-                }
-              : field,
-          ),
+          rating: [...wobjectRatingsVoteList],
         },
       };
     }

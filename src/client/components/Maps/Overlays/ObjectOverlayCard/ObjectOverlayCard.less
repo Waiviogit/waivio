@@ -8,14 +8,12 @@
   border: 1px solid @silver;
   border-radius: 4px;
   background: @white;
-  white-space: nowrap;
   padding: 10px;
   max-width: 300px;
   position: relative;
   -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.21);
   -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.21);
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.21);
-  overflow: hidden;
 
   &__earn {
     position: absolute;
@@ -61,6 +59,8 @@
     padding: 10px;
     word-wrap: break-word;
     word-break: break-word;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   &__avatar {
@@ -127,6 +127,10 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  .RatingsWrap {
+    padding: 0;
   }
 }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { round } from 'lodash';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import PowerUpTransactionFrom from '../../TransfersCards/PowerUpTransactionFrom';
 import { getTransactionCurrency, getTransactionDescription } from '../../WalletHelper';
@@ -16,11 +17,13 @@ import DelegatedTo from '../../TransfersCards/DelegatedTo';
 import MarketCancel from '../../TransfersCards/MarketCancel';
 import MarketCloseOrder from '../../TransfersCards/MarketCloseOrder';
 import UndelegateStart from '../../TransfersCards/UndelegateStart';
-import SwapTokenCard from '../../TransfersCards/SwapTokenCard';
 import AirDropCard from '../../TransfersCards/AirDropCard';
 import CuratorRewardsCard from '../../TransfersCards/CuratorRewardsCard';
+import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
+import SwapTokenCard from '../../TransfersCards/SwapTokenCard/SwapTokenCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
+  const walletType = useSelector(getCurrentWalletType);
   const isMobileDevice = isMobile();
   const powerSymbol = transaction.symbol === 'WAIV' ? 'WP' : transaction.symbol;
 
@@ -147,8 +150,10 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         <SwapTokenCard
           timestamp={transaction.timestamp}
           symbolTo={transaction.symbolOut}
-          quantity={transaction.symbolOutQuantity}
+          quantityTo={transaction.symbolOutQuantity}
           symbolFrom={transaction.symbolIn}
+          quantityFrom={transaction.symbolInQuantity}
+          walletType={walletType}
         />
       );
 
@@ -187,14 +192,15 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
       );
 
     case 'tokens_issue':
+    case 'mining_lottery':
       return (
         <CuratorRewardsCard
           timestamp={transaction.timestamp}
           symbol={transaction.symbol}
           quantity={transaction.quantity}
           authorperm={transaction.authorperm}
-          memo={transaction.memo}
-          description={'Maining rewards'}
+          memo={transaction.poolId ? `{poolId: ${transaction.poolId}}` : transaction.memo}
+          description={'Mining rewards'}
         />
       );
 
@@ -251,6 +257,8 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     symbolOut: PropTypes.string,
     symbolOutQuantity: PropTypes.string,
     authorperm: PropTypes.string,
+    symbolInQuantity: PropTypes.string,
+    poolId: PropTypes.string,
     symbolIn: PropTypes.string,
   }).isRequired,
 };

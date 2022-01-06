@@ -73,7 +73,9 @@ export const openTransfer = (
   isVipTicket = false,
 ) => (dispatch, getState) => {
   const walletType = getCurrentWalletType(getState());
-  const currentCurrency = currency || walletType;
+  let currentCurrency = currency || 'HIVE';
+
+  if (!currency && walletType === 'WAIV') currentCurrency = walletType;
 
   return dispatch({
     type: OPEN_TRANSFER,

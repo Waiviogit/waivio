@@ -2,61 +2,94 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .RatingsWrap {
-  margin-top: 0.5em;
+  padding: 5px 0;
 
-  &__rate {
-    display: flex !important;
+  &__rate.ant-col.ant-col-12 {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
 
-    &-left-col {
-      padding-right: 10px !important;
-      border-right: 2px @border-style-base @border-color-base;
-      width: 55% !important;
-    }
+    &:first-child {
+      width: 55%;
+      display: none;
+      border-left: none;
+      margin-left: 0;
+      padding-left: 0;
 
-    &-right-col {
-      width: 45% !important;
-      padding-left: 10px !important;
-    }
-
-    &-title {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      font-weight: 500;
-
-      &--withoutTruncate {
-        overflow: visible;
+      @media @large {
+        display: flex;
+        border-right: @base-border;
+        margin-right: 15px;
+        padding-right: 15px;
       }
     }
 
-    align-items: center;
+    &:last-child {
+      width: 100%;
 
-    .ant-rate {
-      line-height: 0;
-      font-size: 16px;
+      @media @large {
+        width: 45%;
+      }
     }
+  }
+
+  &__overlay.ant-col.ant-col-24 {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: flex-end;
+
+    .RatingsWrap__rate-title {
+      padding-left: 0;
+      padding-right: 5px;
+    }
+  }
+
+  &__rate.ant-col.ant-col-24 {
+    display: flex;
+    align-items: center;
+  }
+
+  .ant-row {
+    display: flex;
+  }
+
+  &__rate-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-weight: 500;
+    padding-left: 5px;
+
+    &--withoutTruncate {
+      overflow: visible;
+    }
+  }
+
+  &__overlay {
+    flex-direction: row-reverse;
+    justify-content: space-between;
   }
 
   &__stars {
-    min-width: 90px;
-    line-height: 0;
+    .myvote.ant-rate {
+      color: orange !important;
 
-    .ant-rate-star {
-      margin-right: 1px !important;
-    }
-    .ant-rate-disabled .ant-rate-star {
-      cursor: pointer;
-    }
-  }
-
-  @media (max-width: 1300px) {
-    &__left-wrapper {
-      display: none;
+      .ant-rate-star-full {
+        color: orange !important;
+      }
     }
 
-    &__rate-right-col {
-      padding-left: 0px !important;
-      width: 100% !important;
+    .ant-rate {
+      font-size: 15px;
+      line-height: 0;
+      display: flex;
+
+      .ant-rate-star {
+        line-height: 0;
+        margin-right: 1px;
+        font-size: 16px;
+      }
     }
   }
 }
