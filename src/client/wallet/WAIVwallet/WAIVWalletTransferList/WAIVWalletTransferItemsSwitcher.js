@@ -17,10 +17,10 @@ import DelegatedTo from '../../TransfersCards/DelegatedTo';
 import MarketCancel from '../../TransfersCards/MarketCancel';
 import MarketCloseOrder from '../../TransfersCards/MarketCloseOrder';
 import UndelegateStart from '../../TransfersCards/UndelegateStart';
-import SwapTokenCard from '../../TransfersCards/SwapTokenCard';
 import AirDropCard from '../../TransfersCards/AirDropCard';
 import CuratorRewardsCard from '../../TransfersCards/CuratorRewardsCard';
 import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
+import SwapTokenCard from '../../TransfersCards/SwapTokenCard/SwapTokenCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const walletType = useSelector(getCurrentWalletType);
@@ -150,8 +150,9 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         <SwapTokenCard
           timestamp={transaction.timestamp}
           symbolTo={transaction.symbolOut}
-          quantity={transaction.symbolOutQuantity}
+          quantityTo={transaction.symbolOutQuantity}
           symbolFrom={transaction.symbolIn}
+          quantityFrom={transaction.symbolInQuantity}
           walletType={walletType}
         />
       );
@@ -256,6 +257,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     symbolOut: PropTypes.string,
     symbolOutQuantity: PropTypes.string,
     authorperm: PropTypes.string,
+    symbolInQuantity: PropTypes.string,
     poolId: PropTypes.string,
     symbolIn: PropTypes.string,
   }).isRequired,

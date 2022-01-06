@@ -75,7 +75,7 @@ export const openTransfer = (
   const walletType = getCurrentWalletType(getState());
   let currentCurrency = currency || 'HIVE';
 
-  if (walletType === 'WAIV') currentCurrency = walletType;
+  if (!currency && walletType === 'WAIV') currentCurrency = walletType;
 
   return dispatch({
     type: OPEN_TRANSFER,
