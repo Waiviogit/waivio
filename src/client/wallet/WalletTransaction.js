@@ -24,7 +24,7 @@ import {
 import PowerDownTransaction from './TransfersCards/PowerDownTransaction';
 import formatter from '../helpers/steemitFormatter';
 
-import './UserWalletTransactions.less';
+import './UserWalletTransactions/UserWalletTransactions.less';
 
 const WalletTransaction = ({
   transaction,
@@ -207,25 +207,25 @@ const WalletTransaction = ({
         to: transactionDetails.to,
         from: transactionDetails.from,
       });
-      let color = 'black';
-      let description = desc.powerDownWithdraw;
+      let color;
       let character = '';
+      let description = desc.powerDownWithdraw;
 
       if (transactionDetails.to !== transactionDetails.from) {
         color = 'red';
         description = desc.powerDownWithdrawTo;
-        character = '- ';
+        character = '-';
 
         if (transaction.userName !== transaction.from) {
           description = desc.powerDownWithdrawFrom;
           color = 'green';
-          character = '+ ';
+          character = '+';
         }
       }
 
       return (
         <PowerDownTransaction
-          amount={`${character}${transactionDetails.amount}`}
+          amount={`${character} ${parseFloat(transactionDetails.amount)} HP`}
           timestamp={transaction.timestamp}
           description={description}
           color={color}

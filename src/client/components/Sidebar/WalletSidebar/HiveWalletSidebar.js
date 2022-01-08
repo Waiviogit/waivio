@@ -10,7 +10,7 @@ import {
   openWithdraw,
 } from '../../../../store/walletStore/walletActions';
 import Action from '../../Button/Action';
-import ClaimRewardsBlock from '../../../wallet/ClaimRewardsBlock';
+import ClaimRewardsBlock from '../../../wallet/ClaimRewardsBlock/ClaimRewardsBlock';
 import CryptoTrendingCharts from '../CryptoTrendingCharts';
 import { openLinkHiveAccountModal } from '../../../../store/settingsStore/settingsActions';
 import { getAuthenticatedUser, isGuestUser } from '../../../../store/authStore/authSelectors';

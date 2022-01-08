@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
-import '../UserWalletTransactions.less';
+import '../UserWalletTransactions/UserWalletTransactions.less';
 
 const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
   const isReceive = account === to;

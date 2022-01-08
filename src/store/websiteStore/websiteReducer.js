@@ -104,7 +104,6 @@ export default function websiteReducer(state = initialState, action) {
         },
       };
     }
-
     case websiteAction.DELETE_WEBSITE: {
       const websites = [...state.manage.websites];
       const changedIndex = websites.findIndex(web => web.host === action.id);
@@ -122,7 +121,6 @@ export default function websiteReducer(state = initialState, action) {
         },
       };
     }
-
     case websiteAction.GET_REPORTS_PAGE.SUCCESS: {
       return {
         ...state,
@@ -135,21 +133,18 @@ export default function websiteReducer(state = initialState, action) {
         },
       };
     }
-
     case websiteAction.GET_OWN_WEBSITE.SUCCESS: {
       return {
         ...state,
         ownWebsites: action.payload,
       };
     }
-
     case websiteAction.GET_WEBSITE_CONFIGURATIONS.START: {
       return {
         ...state,
         loading: true,
       };
     }
-
     case websiteAction.GET_WEBSITE_CONFIGURATIONS.SUCCESS: {
       return {
         ...state,
@@ -157,28 +152,24 @@ export default function websiteReducer(state = initialState, action) {
         loading: false,
       };
     }
-
     case websiteAction.GET_WEBSITE_MODERATORS.SUCCESS: {
       return {
         ...state,
         moderators: action.payload,
       };
     }
-
     case websiteAction.GET_WEBSITE_AUTHORITIES.SUCCESS: {
       return {
         ...state,
         authorities: action.payload,
       };
     }
-
     case websiteAction.GET_WEBSITE_ADMINISTRATORS.SUCCESS: {
       return {
         ...state,
         administrators: action.payload,
       };
     }
-
     case websiteAction.DELETE_WEBSITE_ADMINISTRATOR.START: {
       const administrators = [...state.administrators];
       const findUser = administrators.findIndex(admin => admin.name === action.payload);
@@ -199,7 +190,6 @@ export default function websiteReducer(state = initialState, action) {
         administrators: state.administrators.filter(admin => action.payload !== admin.name),
       };
     }
-
     case websiteAction.ADD_WEBSITE_ADMINISTRATOR.START: {
       return {
         ...state,
@@ -213,7 +203,6 @@ export default function websiteReducer(state = initialState, action) {
         loading: false,
       };
     }
-
     case websiteAction.DELETE_WEBSITE_MODERATORS.START: {
       const moderators = [...state.moderators];
       const findUser = moderators.findIndex(admin => admin.name === action.payload);
@@ -234,7 +223,6 @@ export default function websiteReducer(state = initialState, action) {
         moderators: state.moderators.filter(admin => action.payload !== admin.name),
       };
     }
-
     case websiteAction.ADD_WEBSITE_MODERATORS.START: {
       return {
         ...state,
@@ -248,7 +236,6 @@ export default function websiteReducer(state = initialState, action) {
         loading: false,
       };
     }
-
     case websiteAction.DELETE_WEBSITE_AUTHORITIES.START: {
       const authorities = [...state.authorities];
       const findUser = authorities.findIndex(admin => admin.name === action.payload);
@@ -269,14 +256,12 @@ export default function websiteReducer(state = initialState, action) {
         authorities: state.authorities.filter(admin => action.payload !== admin.name),
       };
     }
-
     case websiteAction.ADD_WEBSITE_AUTHORITIES.START: {
       return {
         ...state,
         loading: true,
       };
     }
-
     case websiteAction.ADD_WEBSITE_AUTHORITIES.SUCCESS: {
       return {
         ...state,
@@ -284,7 +269,6 @@ export default function websiteReducer(state = initialState, action) {
         loading: false,
       };
     }
-
     case websiteAction.GET_WEBSITE_TAGS.SUCCESS: {
       return {
         ...state,
@@ -292,21 +276,18 @@ export default function websiteReducer(state = initialState, action) {
         loading: false,
       };
     }
-
     case websiteAction.GET_WEBSITE_SETTINGS.SUCCESS: {
       return {
         ...state,
         settings: action.payload,
       };
     }
-
     case websiteAction.SET_WEBSITE_OBJECTS_COORDINATES.START: {
       return {
         ...state,
         isLoadingAreas: true,
       };
     }
-
     case websiteAction.SET_WEBSITE_OBJECTS_COORDINATES.SUCCESS: {
       return {
         ...state,
@@ -314,7 +295,6 @@ export default function websiteReducer(state = initialState, action) {
         areas: action.payload,
       };
     }
-
     case websiteAction.GET_WEBSITE_OBJECTS_WITH_COORDINATES.SUCCESS: {
       if (state.wobjectsPoint.length > 150) {
         state.wobjectsPoint.splice(0, 50);
@@ -328,7 +308,6 @@ export default function websiteReducer(state = initialState, action) {
         wobjectsPointHasMore: action.payload.hasMore,
       };
     }
-
     case websiteAction.GET_WEBSITE_OBJECTS_WITH_COORDINATES.ERROR: {
       return {
         ...state,
@@ -336,7 +315,6 @@ export default function websiteReducer(state = initialState, action) {
         wobjectsPointHasMore: false,
       };
     }
-
     case websiteAction.RESET_WEBSITE_OBJECTS_COORDINATES: {
       return {
         ...state,
@@ -344,21 +322,18 @@ export default function websiteReducer(state = initialState, action) {
         wobjectsPointHasMore: false,
       };
     }
-
     case websiteAction.GET_WEBSITE_RESTRICTIONS.SUCCESS: {
       return {
         ...state,
         restrictions: action.payload,
       };
     }
-
     case websiteAction.MUTE_USER.START: {
       return {
         ...state,
         muteLoading: true,
       };
     }
-
     case websiteAction.MUTE_USER.SUCCESS: {
       return {
         ...state,
@@ -369,7 +344,6 @@ export default function websiteReducer(state = initialState, action) {
         muteLoading: false,
       };
     }
-
     case websiteAction.UNMUTE_USER.START: {
       const unmuteUsers = [...state.unmuteUsers, ...action.meta];
 
@@ -378,7 +352,6 @@ export default function websiteReducer(state = initialState, action) {
         unmuteUsers,
       };
     }
-
     case websiteAction.UNMUTE_USER.SUCCESS: {
       const unmuteUsers = state.unmuteUsers.filter(user => user.name === action.meta);
 
@@ -391,7 +364,6 @@ export default function websiteReducer(state = initialState, action) {
         unmuteUsers,
       };
     }
-
     case websiteAction.SAVE_WEBSITE_CONFIGURATIONS.SUCCESS: {
       return {
         ...state,
@@ -400,7 +372,6 @@ export default function websiteReducer(state = initialState, action) {
         },
       };
     }
-
     case websiteAction.DELETE_WEBSITE_ERROR: {
       const websites = get(state, ['manage', 'websites'], []).map(website => ({
         ...website,
@@ -416,28 +387,24 @@ export default function websiteReducer(state = initialState, action) {
         },
       };
     }
-
     case websiteAction.SET_SHOW_RELOAD: {
       return {
         ...state,
         showReloadButton: action.payload,
       };
     }
-
     case websiteAction.GET_DISTRICTS.SUCCESS: {
       return {
         ...state,
         districts: action.payload,
       };
     }
-
     case websiteAction.GET_RESTAURANTS.SUCCESS: {
       return {
         ...state,
         restaurants: action.payload,
       };
     }
-
     case websiteAction.GET_NEARBY_FOOD.SUCCESS: {
       return {
         ...state,

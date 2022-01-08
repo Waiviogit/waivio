@@ -549,7 +549,7 @@ export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70)
   return dispatch({
     type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
     payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, body),
-    meta: Boolean(searchString),
+    meta: Boolean(searchString || !isEmpty(tagsFilter)),
   });
 };
 
