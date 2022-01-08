@@ -107,7 +107,7 @@ export default class UserList extends React.Component {
     const currentVoterList =
       isAuth && this.state.usersList.length ? this.state.usersList : votesList;
     const moderators = currentVoterList.filter(v => v.moderator);
-    const admins = currentVoterList.filter(v => v.admin);
+    const admins = currentVoterList.filter(v => !v.moderator && v.admin);
     const users = currentVoterList.filter(v => !v.moderator && !v.admin);
     const usersList = [...moderators, ...admins, ...users];
 
