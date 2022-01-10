@@ -1,9 +1,12 @@
 import React from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import CardsTimeStamp from './CardsTimeStamp';
 
-const PowerDownTransaction = ({ timestamp, amount, description }) => {
-  const formatNumber = num => num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+const PowerDownTransaction = ({ timestamp, amount, description, color }) => {
+  const amountClassList = classNames('UserWalletTransactions__marginLeft', {
+    [`UserWalletTransactions__marginLeft--${color}`]: color,
+  });
 
   return (
     <div className="UserWalletTransactions__transaction">
@@ -13,7 +16,7 @@ const PowerDownTransaction = ({ timestamp, amount, description }) => {
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           {description}
-          <span className={'UserWalletTransactions__marginLeft'}>{formatNumber(amount)}</span>
+          <span className={amountClassList}>{amount}</span>
         </div>
         <CardsTimeStamp timestamp={timestamp} />
       </div>
@@ -24,7 +27,12 @@ const PowerDownTransaction = ({ timestamp, amount, description }) => {
 PowerDownTransaction.propTypes = {
   timestamp: PropTypes.number.isRequired,
   amount: PropTypes.string.isRequired,
+  color: PropTypes.string,
   description: PropTypes.shape({}).isRequired,
+};
+
+PowerDownTransaction.defaultProps = {
+  color: 'black',
 };
 
 export default PowerDownTransaction;

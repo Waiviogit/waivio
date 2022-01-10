@@ -4,9 +4,9 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { get, isEmpty } from 'lodash';
-import UserWalletSummary from '../wallet/UserWalletSummary';
+import UserWalletSummary from '../wallet/UserWalletSummary/UserWalletSummary';
 import { HBD, HIVE } from '../../common/constants/cryptos';
-import UserWalletTransactions from '../wallet/UserWalletTransactions';
+import UserWalletTransactions from '../wallet/UserWalletTransactions/UserWalletTransactions';
 import Loading from '../components/Icon/Loading';
 import {
   getMoreUserAccountHistory,

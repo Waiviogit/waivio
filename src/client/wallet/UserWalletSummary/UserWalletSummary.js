@@ -4,21 +4,21 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { FormattedMessage, FormattedNumber, FormattedDate, FormattedTime } from 'react-intl';
 
-import { getUser } from '../../store/usersStore/usersSelectors';
-import formatter from '../helpers/steemitFormatter';
+import { getUser } from '../../../store/usersStore/usersSelectors';
+import formatter from '../../helpers/steemitFormatter';
 import {
   calculateTotalDelegatedSP,
   calculateEstAccountValue,
   calculatePendingWithdrawalSP,
-} from '../vendor/steemitHelpers';
-import BTooltip from '../components/BTooltip';
-import Loading from '../components/Icon/Loading';
-import { guestUserRegex } from '../helpers/regexHelpers';
-import WalletSummaryInfo from './WalletSummaryInfo/WalletSummaryInfo';
+} from '../../vendor/steemitHelpers';
+import BTooltip from '../../components/BTooltip';
+import Loading from '../../components/Icon/Loading';
+import { guestUserRegex } from '../../helpers/regexHelpers';
+import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
-} from '../../store/authStore/authSelectors';
+} from '../../../store/authStore/authSelectors';
 import './UserWalletSummary.less';
 
 const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {

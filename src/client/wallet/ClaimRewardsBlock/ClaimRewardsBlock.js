@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { message } from 'antd';
-import SteemConnect from '../steemConnectAPI';
-import { reload } from '../../store/authStore/authActions';
-import Action from '../components/Button/Action';
-import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import SteemConnect from '../../steemConnectAPI';
+import { reload } from '../../../store/authStore/authActions';
+import Action from '../../components/Button/Action';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 
 import './ClaimRewardsBlock.less';
-import '../components/Sidebar/SidebarContentBlock.less';
+import '../../components/Sidebar/SidebarContentBlock.less';
 
 @injectIntl
 @connect(

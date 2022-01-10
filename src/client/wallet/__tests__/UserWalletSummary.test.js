@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import UserWalletSummary from '../UserWalletSummary';
+import UserWalletSummary from '../UserWalletSummary/UserWalletSummary';
 
 describe('(Component) UserWalletSummary', () => {
   describe('with default prop values', () => {

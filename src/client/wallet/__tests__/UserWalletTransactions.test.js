@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import { Provider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import configureStore from 'redux-mock-store';
-import UserWalletTransactions from '../UserWalletTransactions';
+import UserWalletTransactions from '../UserWalletTransactions/UserWalletTransactions';
 
 describe('(Component) UserWalletTransactions', () => {
   it('renders and matches snapshot', () => {
