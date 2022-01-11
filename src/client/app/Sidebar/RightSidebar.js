@@ -23,7 +23,7 @@ import { getFeed } from '../../../store/feedStore/feedSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import FilterPosts from '../../components/Sidebar/FilterPosts/FilterPosts';
 import { setProfileFilters } from '../../../store/feedStore/feedActions';
-import WalletSidebarSwitcher from '../../components/Sidebar/WalletSidebar/WalletSidebarSwitcher';
+import WalletSidebar from '../../components/Sidebar/WalletSidebar/WalletSidebar';
 
 @withRouter
 @connect(
@@ -86,7 +86,7 @@ export default class RightSidebar extends React.Component {
         <Switch>
           <Route path="/activity" component={UserActivitySearch} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
-          <Route path="/@:name/transfers" render={() => <WalletSidebarSwitcher />} />
+          <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
           <Route path="/trending/:tag" component={FeedSidebar} />
           <Route path="/created/:tag" component={FeedSidebar} />
           <Route path="/hot/:tag" component={FeedSidebar} />
