@@ -27,12 +27,12 @@ import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import { getSwapOutput } from '../../helpers/swapTokenHelpers';
 import { createQuery } from '../../helpers/apiHelpers';
 import TokensSelect from './components/TokensSelect';
+import { getImpact } from '../../helpers/swapWalletHelpers';
 
 import './SwapTokens.less';
 
 const SwapTokens = props => {
   const [impact, setImpact] = useState(0);
-  const [slippage, setSlippage] = useState(0.05);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
 
@@ -54,7 +54,7 @@ const SwapTokens = props => {
       symbol: from.symbol,
       amountIn: value || 0,
       pool,
-      slippage,
+      slippage: 0,
       from: isFrom,
     });
   };
@@ -158,9 +158,14 @@ const SwapTokens = props => {
         </div>
         <div className="SwapTokens__impactBlock">
           <h4>Max price impact:</h4>
-          <Radio.Group defaultValue={0.5}>
+          <Radio.Group value={getImpact(impact)}>
             {swapImpactPercent.map(imp => (
-              <Radio.Button key={imp} value={imp} onClick={() => setSlippage(imp * 0.05)}>
+              <Radio.Button
+                disabled={impact > imp}
+                key={imp}
+                value={imp}
+                onClick={() => setImpact(imp)}
+              >
                 {imp}%
               </Radio.Button>
             ))}

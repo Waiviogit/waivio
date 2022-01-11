@@ -21,6 +21,7 @@ export const compareTokensList = async (name, tokens) => {
   return compareList.sort((a, b) => {
     if (a.symbol === 'WAIV') return -1;
     if (b.symbol === 'WAIV') return 1;
+    if (!b.balance || !a.balance) return a.symbol[0] > b.symbol[0] ? 1 : -1;
 
     return b.balance - a.balance;
   });
