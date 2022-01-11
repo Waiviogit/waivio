@@ -14,7 +14,7 @@ const PowerUpTransactionTo = ({ timestamp, amount, to, transactionType }) => {
       </div>
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
-          {description.powerUpTransactionTo}
+          <div>{description.powerUpTransactionTo}</div>
           <span className="UserWalletTransactions__transfer">
             {'- '}
             {amount}

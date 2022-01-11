@@ -15,7 +15,7 @@ const PowerDownTransaction = ({ timestamp, amount, description, color }) => {
       </div>
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
-          {description}
+          <div>{description}</div>
           <span className={amountClassList}>{amount}</span>
         </div>
         <CardsTimeStamp timestamp={timestamp} />

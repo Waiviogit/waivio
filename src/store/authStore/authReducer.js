@@ -147,7 +147,7 @@ export default (state = initialState, action) => {
             parseFloat(state.user.reward_hive_balance)} HIVE`,
           hbd_balance: `${parseFloat(state.user.hbd_balance) +
             parseFloat(state.user.reward_hbd_balance)} HBD`,
-          vesting_balance: `${parseFloat(state.user.vesting_shares) +
+          vesting_shares: `${parseFloat(state.user.vesting_shares) +
             parseFloat(state.user.reward_vesting_balance)} VESTS`,
         },
       };
