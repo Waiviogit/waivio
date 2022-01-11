@@ -12,6 +12,7 @@ import {
   setWalletType,
 } from '../../store/walletStore/walletActions';
 import {
+  getDepositVisible,
   getIsPowerUpOrDownVisible,
   getIsTransferVisible,
 } from '../../store/walletStore/walletSelectors';
@@ -21,6 +22,7 @@ import HiveEngineWallet from './HiveEngineWallet/HiveEngineWallet';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import SwapTokens from './SwapTokens/SwapTokens';
 import { getVisibleModal } from '../../store/swapStore/swapSelectors';
+import Deposit from './Deposit/Deposit';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -57,6 +59,7 @@ const Wallets = props => {
       {props.visible && <Transfer history={props.history} />}
       {props.visiblePower && <PowerUpOrDown />}
       {props.visibleSwap && <SwapTokens />}
+      {props.visibleDeposit && <Deposit />}
     </React.Fragment>
   );
 };
@@ -69,6 +72,7 @@ Wallets.propTypes = {
   visible: PropTypes.bool.isRequired,
   visiblePower: PropTypes.bool.isRequired,
   visibleSwap: PropTypes.bool.isRequired,
+  visibleDeposit: PropTypes.bool.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -87,6 +91,7 @@ export default connect(
     visible: getIsTransferVisible(state),
     visiblePower: getIsPowerUpOrDownVisible(state),
     visibleSwap: getVisibleModal(state),
+    visibleDeposit: getDepositVisible(state),
   }),
   {
     setWalletType,

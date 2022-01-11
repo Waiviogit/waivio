@@ -1,0 +1,66 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.Deposit {
+  p {
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+
+  h4 {
+    margin-bottom: 5px;
+  }
+
+  .ant-select-selection {
+    border-color: @orange-hot;
+  }
+
+  .anticon.anticon-down.ant-select-arrow-icon {
+    color: @orange-hot;
+  }
+
+  .ant-select.ant-select-enabled {
+    width: 100%;
+    color: @orange-hot;
+
+    @media @small {
+      width: 50%;
+    }
+  }
+
+  &__step {
+    margin-bottom: 15px;
+  }
+
+  &__title {
+    font-weight: bold;
+  }
+
+  &__section {
+    margin-bottom: 10px;
+  }
+
+  &__qr-code {
+    padding: 10px;
+    border: @base-border;
+    margin-top: 10px;
+  }
+
+  &__engine-link {
+    text-decoration: underline;
+    color: inherit;
+  }
+
+  &__account-link {
+    font-weight: bold;
+    color: inherit;
+
+    &:hover {
+      color: inherit;
+    }
+  }
+
+  &__input {
+    margin-bottom: 5px;
+  }
+}

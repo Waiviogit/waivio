@@ -8,9 +8,10 @@ import SteemConnect from '../../steemConnectAPI';
 import { reload } from '../../../store/authStore/authActions';
 import Action from '../../components/Button/Action';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import '../../components/Sidebar/SidebarContentBlock.less';
+import { claimRewards } from '../../../store/walletStore/walletActions';
 
 import './ClaimRewardsBlock.less';
-import '../../components/Sidebar/SidebarContentBlock.less';
 
 @injectIntl
 @connect(
@@ -19,6 +20,7 @@ import '../../components/Sidebar/SidebarContentBlock.less';
   }),
   {
     reload,
+    claimRewards,
   },
 )
 class ClaimRewardsBlock extends Component {
@@ -26,6 +28,7 @@ class ClaimRewardsBlock extends Component {
     user: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     reload: PropTypes.func.isRequired,
+    claimRewards: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -53,6 +56,8 @@ class ClaimRewardsBlock extends Component {
     this.setState({
       loading: true,
     });
+
+    this.props.claimRewards();
 
     SteemConnect.claimRewardBalance(name, hiveBalance, hbdBalance, vestingBalance)
       .then(() =>
@@ -88,10 +93,10 @@ class ClaimRewardsBlock extends Component {
   render() {
     const { user, intl } = this.props;
     const { rewardClaimed } = this.state;
-    const rewardSteem = parseFloat(user.reward_hive_balance);
-    const rewardSbd = parseFloat(user.reward_hbd_balance);
-    const rewardSP = parseFloat(user.reward_vesting_hive);
-    const userHasRewards = rewardSteem > 0 || rewardSbd > 0 || rewardSP > 0;
+    const rewardHive = parseFloat(user.reward_hive_balance);
+    const rewardHbd = parseFloat(user.reward_hbd_balance);
+    const rewardHP = parseFloat(user.reward_vesting_hive);
+    const userHasRewards = rewardHive > 0 || rewardHbd > 0 || rewardHP > 0;
 
     const buttonText = rewardClaimed
       ? intl.formatMessage({
@@ -114,9 +119,9 @@ class ClaimRewardsBlock extends Component {
         <div className="SidebarContentBlock__content">
           {!rewardClaimed && (
             <div>
-              {rewardSteem > 0 && this.renderReward(rewardSteem, 'HIVE', 'hive')}
-              {rewardSbd > 0 && this.renderReward(rewardSbd, 'HBD', 'steem_dollar')}
-              {rewardSP > 0 && this.renderReward(rewardSP, 'HP', 'steem_power')}
+              {rewardHive > 0 && this.renderReward(rewardHive, 'HIVE', 'hive')}
+              {rewardHbd > 0 && this.renderReward(rewardHbd, 'HBD', 'steem_dollar')}
+              {rewardHP > 0 && this.renderReward(rewardHP, 'HP', 'steem_power')}
             </div>
           )}
           <Action

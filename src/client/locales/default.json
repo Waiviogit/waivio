@@ -1221,6 +1221,7 @@
   "withdraw_continue": "Request withdraw",
   "final_confirmation": "Final confirmation",
   "deposit_to": "Deposit to",
+  "Deposit": "Deposit",
   "initiate_transfer": "Initiate the transfer on the Hive blockchain.",
   "request_confirmed": "Request confirmed",
   "saved_email_message": "Email address was successfully saved from @{username} user account.",

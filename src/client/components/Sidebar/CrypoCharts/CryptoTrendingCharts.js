@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { getCryptoPriceHistory, setIsMobile } from '../../../store/appStore/appActions';
+import { getCryptoPriceHistory, setIsMobile } from '../../../../store/appStore/appActions';
 import CryptoChart from './CryptoChart';
-import { WAIV, cryptoRatesForChart, HIVE, HBD } from '../../../common/constants/cryptos';
-import { getTokenRates } from '../../../store/walletStore/walletActions';
+import { WAIV, cryptoRatesForChart, HIVE, HBD } from '../../../../common/constants/cryptos';
+import { getTokenRates } from '../../../../store/walletStore/walletActions';
 
-import './SidebarContentBlock.less';
+import '../SidebarContentBlock.less';
 import './CryptoTrendingCharts.less';
 
 @connect(null, {

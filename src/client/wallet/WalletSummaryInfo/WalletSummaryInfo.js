@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import Loading from '../../components/Icon/Loading';
-import HiveWalletSidebar from '../../components/Sidebar/WalletSidebar/HiveWalletSidebar';
+import WalletSidebar from '../../components/Sidebar/WalletSidebar/WalletSidebar';
 import { HBD, HIVE, WAIV } from '../../../common/constants/cryptos';
 import { isMobile } from '../../helpers/apiHelpers';
 import './WalletSummaryInfo.less';
@@ -33,7 +33,7 @@ const WalletSummaryInfo = ({ estAccValue, children }) => {
           </div>
         </div>
       </div>
-      {isMobileDevice && <HiveWalletSidebar cryptos={[WAIV.symbol, HIVE.symbol, HBD.symbol]} />}
+      {isMobileDevice && <WalletSidebar cryptos={[WAIV.symbol, HIVE.symbol, HBD.symbol]} />}
     </React.Fragment>
   );
 };
