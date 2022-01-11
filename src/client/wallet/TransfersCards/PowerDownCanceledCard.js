@@ -9,7 +9,7 @@ const PowerDownCanceledCard = ({ timestamp, amount }) => (
     </div>
     <div className="UserWalletTransactions__content">
       <div className="UserWalletTransactions__content-recipient">
-        Canceled power down
+        <div>Canceled power down</div>
         <span className={'UserWalletTransactions__marginLeft'}>{amount}</span>
       </div>
       <CardsTimeStamp timestamp={timestamp} />

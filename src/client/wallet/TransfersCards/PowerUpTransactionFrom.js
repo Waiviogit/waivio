@@ -16,7 +16,7 @@ const PowerUpTransactionFrom = ({ timestamp, amount, from, to, transactionType }
         <div className="UserWalletTransactions__content-recipient">
           {to === from ? (
             <React.Fragment>
-              {description.powerUpTransaction}
+              <div>{description.powerUpTransaction}</div>
               <span className="UserWalletTransactions__payout-black">{amount}</span>
             </React.Fragment>
           ) : (

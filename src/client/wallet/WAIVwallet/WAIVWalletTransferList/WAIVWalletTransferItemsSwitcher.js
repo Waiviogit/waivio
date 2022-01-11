@@ -199,7 +199,18 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         />
       );
 
-    case 'tokens_issue':
+    case 'comments_beneficiaryReward':
+      return (
+        <CuratorRewardsCard
+          timestamp={transaction.timestamp}
+          symbol={transaction.symbol}
+          quantity={transaction.quantity}
+          authorperm={transaction.authorperm}
+          memo={transaction.memo}
+          description={'Beneficiary rewards'}
+        />
+      );
+
     case 'mining_lottery':
       return (
         <CuratorRewardsCard

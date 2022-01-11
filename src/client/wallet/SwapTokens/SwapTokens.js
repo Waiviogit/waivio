@@ -50,6 +50,8 @@ const SwapTokens = props => {
   const calculateOutputInfo = (value = 0, from, to, isFrom) => {
     const pool = from.tokenPair ? from : to;
 
+    if (!pool.tokenPair) return {};
+
     return getSwapOutput({
       symbol: from.symbol,
       amountIn: value || 0,
@@ -58,6 +60,8 @@ const SwapTokens = props => {
       from: isFrom,
     });
   };
+
+  const calculationImpact = calculateOutputInfo(toAmount, props.to, props.from, true).priceImpact;
 
   const handelChangeOrderToken = () => {
     if (!isEmpty(props.to) && !isEmpty(props.from)) {
@@ -161,7 +165,7 @@ const SwapTokens = props => {
           <Radio.Group value={getImpact(impact)}>
             {swapImpactPercent.map(imp => (
               <Radio.Button
-                disabled={impact > imp}
+                disabled={calculationImpact > imp}
                 key={imp}
                 value={imp}
                 onClick={() => setImpact(imp)}
