@@ -9,7 +9,7 @@ const MarketBuyCard = ({ timestamp, quantity, orderType, symbol }) => (
     symbol={`per ${symbol}`}
     iconType={'tag'}
   >
-    <span>Limit order to {orderType}</span>
+    <div>Limit order to {orderType}</div>
   </TransactionCardContainer>
 );
 
