@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
-import '../UserWalletTransactions.less';
+import '../UserWalletTransactions/UserWalletTransactions.less';
 
 const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
   const isReceive = account === to;
@@ -16,12 +16,14 @@ const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
       iconType={'arrow-right'}
       color={isReceive ? 'green' : 'red'}
     >
-      {delegation}
-      <div className="UserWalletTransactions__delegated">
-        <a className="UserWalletTransactions__delegated-color" href={`/@${link}`}>
-          {link}
-        </a>
-      </div>
+      <p>
+        {delegation}
+        <span className="UserWalletTransactions__delegated">
+          <a className="UserWalletTransactions__delegated-color" href={`/@${link}`}>
+            {link}
+          </a>
+        </span>
+      </p>
     </TransactionCardContainer>
   );
 };

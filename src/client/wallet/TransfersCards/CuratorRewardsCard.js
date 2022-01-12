@@ -18,7 +18,7 @@ const CuratorRewardsCard = props => (
         {props.description}{' '}
         {props.authorperm && (
           <a href={`/${props.authorperm}`}>
-            (<b>post</b>)
+            (<b>{props.type || 'post'}</b>)
           </a>
         )}
       </span>
@@ -34,6 +34,7 @@ CuratorRewardsCard.propTypes = {
   description: PropTypes.string.isRequired,
   authorperm: PropTypes.string.isRequired,
   memo: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 export default CuratorRewardsCard;

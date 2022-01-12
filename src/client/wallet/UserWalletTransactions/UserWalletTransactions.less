@@ -1,5 +1,5 @@
-@import (reference) '../styles/custom.less';
-@import (reference) '../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
 
 .UserWalletTransactions {
   background-color: @white;
@@ -153,6 +153,14 @@
   &__marginLeft {
     color: @black;
     margin-left: auto;
+
+    &--green {
+      color: @green;
+    }
+
+    &--red {
+      color: @red;
+    }
   }
 
   &__received {
@@ -282,4 +290,4 @@ div[data-dir='rtl'] .UserWalletTransactions {
   }
 }
 
-@import 'UserWalletTransactions-nightmode';
+@import './UserWalletTransactions-nightmode';

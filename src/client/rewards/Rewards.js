@@ -249,7 +249,7 @@ class Rewards extends React.Component {
 
     const actualArea = !area[0] ? [] : area;
 
-    if (authenticated && match.params.filterKey === 'all')
+    if (match.params.filterKey === 'all')
       this.getPropositions({ username, match, activeFilters, sort, actualArea, authenticated });
   }
 
@@ -340,7 +340,11 @@ class Rewards extends React.Component {
   };
 
   setFilterValue = (filterValue, key, fromUrl) => {
+    const { match, username, authenticated } = this.props;
+    const { sortAll, sortEligible, sortReserved } = this.state;
     const activeFilters = { ...this.state.activeFilters };
+
+    const sort = getSort(match, sortAll, sortEligible, sortReserved);
 
     if (includes(activeFilters[key], filterValue)) {
       handleRemoveSearchLink(filterValue);
@@ -356,6 +360,8 @@ class Rewards extends React.Component {
     } else {
       this.setState({ activeFilters });
     }
+
+    this.getPropositions({ username, match, activeFilters, sort, actualArea: [], authenticated });
   };
 
   setFilters = (filterKey, activeFilters) => {
@@ -658,7 +664,6 @@ class Rewards extends React.Component {
     this.state.propositions.map(proposition => {
       const updatedProposition = proposition;
 
-      // eslint-disable-next-line no-underscore-dangle
       if (updatedProposition._id && updatedProposition._id === propsId) {
         updatedProposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
@@ -670,7 +675,6 @@ class Rewards extends React.Component {
       } else {
         return updatedProposition;
       }
-      // eslint-disable-next-line no-underscore-dangle
       if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
         updatedProposition.isReservedSiblingObj = true;
       }

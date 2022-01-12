@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { message } from 'antd';
-import SteemConnect from '../steemConnectAPI';
-import { reload } from '../../store/authStore/authActions';
-import Action from '../components/Button/Action';
-import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import SteemConnect from '../../steemConnectAPI';
+import { reload } from '../../../store/authStore/authActions';
+import Action from '../../components/Button/Action';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import '../../components/Sidebar/SidebarContentBlock.less';
+import { claimRewards } from '../../../store/walletStore/walletActions';
 
 import './ClaimRewardsBlock.less';
-import '../components/Sidebar/SidebarContentBlock.less';
 
 @injectIntl
 @connect(
@@ -19,6 +20,7 @@ import '../components/Sidebar/SidebarContentBlock.less';
   }),
   {
     reload,
+    claimRewards,
   },
 )
 class ClaimRewardsBlock extends Component {
@@ -26,6 +28,7 @@ class ClaimRewardsBlock extends Component {
     user: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     reload: PropTypes.func.isRequired,
+    claimRewards: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -53,6 +56,8 @@ class ClaimRewardsBlock extends Component {
     this.setState({
       loading: true,
     });
+
+    this.props.claimRewards();
 
     SteemConnect.claimRewardBalance(name, hiveBalance, hbdBalance, vestingBalance)
       .then(() =>

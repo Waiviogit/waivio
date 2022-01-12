@@ -635,3 +635,15 @@ export const RESET_HIVE_ENGINE_TOKENS_BALANCE = '@wallet/RESET_HIVE_ENGINE_TOKEN
 export const resetHiveEngineTokenBalance = () => ({
   type: RESET_HIVE_ENGINE_TOKENS_BALANCE,
 });
+
+export const CLAIM_REWARDS = '@wallet/CLAIM_REWARDS';
+
+export const claimRewards = () => ({
+  type: CLAIM_REWARDS,
+});
+
+export const TOGGLE_DEPOSIT_MODAL = '@wallet/TOGGLE_DEPOSIT_MODAL';
+
+export const toggleDepositModal = () => ({
+  type: TOGGLE_DEPOSIT_MODAL,
+});

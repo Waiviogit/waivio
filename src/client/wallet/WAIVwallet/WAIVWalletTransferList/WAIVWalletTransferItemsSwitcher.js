@@ -21,6 +21,7 @@ import AirDropCard from '../../TransfersCards/AirDropCard';
 import CuratorRewardsCard from '../../TransfersCards/CuratorRewardsCard';
 import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
 import SwapTokenCard from '../../TransfersCards/SwapTokenCard/SwapTokenCard';
+import PowerDownCanceledCard from '../../TransfersCards/PowerDownCanceledCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const walletType = useSelector(getCurrentWalletType);
@@ -36,6 +37,13 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           to={transaction.to}
           from={transaction.from}
           transactionType={accountHistoryConstants.TRANSFER_TO_VESTING}
+        />
+      );
+    case 'tokens_cancelUnstake':
+      return (
+        <PowerDownCanceledCard
+          amount={getTransactionCurrency(transaction.quantityReturned, powerSymbol)}
+          timestamp={transaction.timestamp}
         />
       );
     case 'tokens_unstakeStart': {
@@ -191,7 +199,19 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         />
       );
 
-    case 'tokens_issue':
+    case 'comments_beneficiaryReward':
+      return (
+        <CuratorRewardsCard
+          timestamp={transaction.timestamp}
+          symbol={transaction.symbol}
+          quantity={transaction.quantity}
+          authorperm={transaction.authorperm}
+          memo={transaction.memo}
+          type={'comment'}
+          description={'Curator rewards'}
+        />
+      );
+
     case 'mining_lottery':
       return (
         <CuratorRewardsCard
