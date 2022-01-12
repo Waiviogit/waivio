@@ -4,11 +4,12 @@
 .MatchBots {
   display: flex;
   flex-direction: column;
-  position: absolute;
-  padding: 0 12px 0 12px;
+  padding: 0 5px;
+  position: static;
 
   @media @small {
     padding: 0 20px 0 0;
+    position: absolute;
   }
 
   @media @large {
@@ -26,7 +27,11 @@
   }
 
   .MatchBotTable {
-    padding-inline: 15px;
+    padding-inline: 0;
+
+    @media @small {
+      padding-inline: 15px;
+    }
 
     .cell_note {
       white-space: nowrap;

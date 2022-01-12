@@ -10,7 +10,7 @@ const AirDropCard = props => (
     account={props.account}
     color={'green'}
   >
-    Airdrop
+    <div>Airdrop</div>
   </TransactionCardContainer>
 );
 

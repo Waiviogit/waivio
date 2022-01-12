@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { round } from 'lodash';
+import { FormattedNumber } from 'react-intl';
 
 import './SwapTokenCard.less';
 
@@ -9,13 +9,27 @@ import TransactionCardContainer from '../TransactionCardContainer';
 const SwapTokenCard = props => (
   <TransactionCardContainer timestamp={props.timestamp} iconType={'swap'} symbol={props.symbolTo}>
     <div className={'SwapTokenCard'}>
-      <span>Swap</span>
+      <div>Swap</div>
       <div>
         <span className={'SwapTokenCard__from'}>
-          - {round(+props.quantityFrom, 3)} {props.symbolFrom}
+          -{' '}
+          <FormattedNumber
+            value={props.quantityFrom}
+            locale={'en-IN'}
+            minimumFractionDigits={3}
+            maximumFractionDigits={3}
+          />{' '}
+          {props.symbolFrom}
         </span>{' '}
         <span className={'SwapTokenCard__to'}>
-          + {round(+props.quantityTo, 3)} {props.symbolTo}
+          +{' '}
+          <FormattedNumber
+            value={props.quantityTo}
+            locale={'en-IN'}
+            minimumFractionDigits={3}
+            maximumFractionDigits={3}
+          />{' '}
+          {props.symbolTo}
         </span>
       </div>
     </div>

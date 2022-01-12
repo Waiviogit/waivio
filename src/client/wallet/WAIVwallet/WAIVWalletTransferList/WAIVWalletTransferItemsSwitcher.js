@@ -207,7 +207,8 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           quantity={transaction.quantity}
           authorperm={transaction.authorperm}
           memo={transaction.memo}
-          description={'Beneficiary rewards'}
+          type={'comment'}
+          description={'Curator rewards'}
         />
       );
 
