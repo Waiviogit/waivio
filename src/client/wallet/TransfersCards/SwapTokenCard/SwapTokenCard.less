@@ -1,9 +1,15 @@
 @import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
 
 .SwapTokenCard {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  flex-direction: column;
+
+  @media @small {
+    flex-direction: row;
+  }
 
   &__from {
     color: @red-danger;
@@ -11,6 +17,10 @@
 
   &__to {
     color: @green;
-    margin-left: 25px;
+    margin-left: 10px;
+
+    @media @small {
+      margin-left: 25px;
+    }
   }
 }
