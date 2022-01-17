@@ -4,17 +4,17 @@ import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 
-import Loading from '../Icon/Loading';
-import ChartGenerator from './CrypoCharts/ChartGenerator';
-import CryptoRateInUsd from './CrypoCharts/CryptoRateInCurrency';
-import { CRYPTO_MAP } from '../../../common/constants/cryptos';
+import Loading from '../../Icon/Loading';
+import ChartGenerator from './ChartGenerator';
+import CryptoRateInUsd from './CryptoRateInCurrency';
+import { CRYPTO_MAP } from '../../../../common/constants/cryptos';
 import {
   getTokenRatesInSelectCurrency,
   getTokenRatesInSelectCurrencyChanged,
   getTokenRatesInUSD,
   getTokenRatesInUSDChanged,
   getWeeklyTokenRatesPrice,
-} from '../../../store/walletStore/walletSelectors';
+} from '../../../../store/walletStore/walletSelectors';
 
 const CryptoChart = props => {
   const [displayChart, setDisplayChart] = useState(false);

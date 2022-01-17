@@ -2442,4 +2442,35 @@ export const getHiveEngineSwap = () =>
     .then(response => response)
     .catch(e => e);
 
+export const getDepositWithdrawPair = () =>
+  fetch('https://converter-api.hive-engine.com/api/pairs/', {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getHiveEngineCoins = () =>
+  fetch('https://converter-api.hive-engine.com/api/coins/', {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const converHiveEngineCoins = data =>
+  fetch('https://converter-api.hive-engine.com/api/convert/', {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export default null;

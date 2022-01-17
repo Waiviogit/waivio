@@ -31,6 +31,7 @@ import { getLocale } from './settingsStore/settingsSelectors';
 import advancedReducer from './advancedReports/advancedReducer';
 import quickRewardsReducer from './quickRewards/quickRewardsReducer';
 import swapReducer from './swapStore/swapReducers';
+import depositWithdraw from './depositeWithdrawStore/depositeWithdrawReducer';
 
 export default history =>
   combineReducers({
@@ -62,6 +63,7 @@ export default history =>
     advancedReports: advancedReducer,
     quickRewards: quickRewardsReducer,
     swap: swapReducer,
+    depositWithdraw,
   });
 
 // common selectors
