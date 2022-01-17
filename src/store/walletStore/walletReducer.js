@@ -43,6 +43,7 @@ const initialState = {
   tokensBalanceList: [],
   swapTokensBalanceList: [],
   tokensBalanceListForTransfer: [],
+  depositVisible: false,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -477,6 +478,13 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         userBalances: {},
       };
+
+    case walletActions.TOGGLE_DEPOSIT_MODAL:
+      return {
+        ...state,
+        depositVisible: !state.depositVisible,
+      };
+
     default:
       return state;
   }
