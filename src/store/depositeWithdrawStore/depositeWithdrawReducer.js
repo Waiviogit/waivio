@@ -25,10 +25,25 @@ const depositWithdraw = (state = initialState, action) => {
       };
     }
 
+    case SET_TOKEN_PAIR.START: {
+      return {
+        ...state,
+        pairLoading: true,
+      };
+    }
+
+    case SET_TOKEN_PAIR.ERROR: {
+      return {
+        ...state,
+        pairLoading: false,
+      };
+    }
+
     case SET_TOKEN_PAIR.SUCCESS: {
       return {
         ...state,
         pair: action.payload,
+        pairLoading: false,
       };
     }
 
