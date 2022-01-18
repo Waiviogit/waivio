@@ -1,17 +1,16 @@
-import { Input } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import '../Deposit.less';
 
 const MemoSection = ({ memo }) => (
-  <div className={'Deposit__section'}>
+  <p className={'Deposit__section'}>
     <h4>
-      Memo <span style={{ color: 'red' }}>(required field)</span>
+      Memo <span style={{ color: 'red' }}>(required field)</span>:
     </h4>
-    <Input className={'Deposit__input'} value={memo} />
+    <p className={'Deposit__input'}>{memo}</p>
     <p>Attention: Failure to specify the memo will result in loss of funds!</p>
-  </div>
+  </p>
 );
 
 MemoSection.propTypes = {
