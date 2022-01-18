@@ -60,7 +60,7 @@ const Deposit = () => {
         </p>
       </div>
       <div className="Deposit__step">
-        <h4 className="Deposit__title">Step 1</h4>
+        <h4 className="Deposit__title">Step 1:</h4>
         <h4>Select the crypto token to deposit:</h4>
         <Select placeholder={'Select the crypto token'}>
           {list.map(pair => (
@@ -71,7 +71,7 @@ const Deposit = () => {
         </Select>
       </div>
       <div>
-        <h4 className="Deposit__title">Step 2</h4>
+        <h4 className="Deposit__title">Step 2:</h4>
         <h4>Follow the deposit instructions:</h4>
         {selectPair ? (
           <div>

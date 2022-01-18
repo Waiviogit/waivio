@@ -85,7 +85,7 @@ class WalletSidebar extends React.Component {
     this.props.openPowerUpOrDown(true);
   };
 
-  handleOpenSwapModal = () => this.props.openSwapTokensModal();
+  handleOpenSwapModal = () => this.props.openSwapTokensModal(true);
 
   handleOpenDepositModal = () => this.props.openDepositModal();
 

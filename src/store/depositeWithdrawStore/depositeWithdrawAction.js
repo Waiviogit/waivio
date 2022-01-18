@@ -14,14 +14,24 @@ export const getDepositWithdrawPairs = () => ({
   payload: getDepositWithdrawPair().then(async res => {
     const coinList = await getHiveEngineCoins();
 
-    return res.map(pair => {
-      const curr = coinList.find(coin => coin.symbol === pair.from_coin_symbol);
+    return [
+      ...res.map(pair => {
+        const curr = coinList.find(coin => coin.symbol === pair.from_coin_symbol);
 
-      return {
-        ...pair,
-        ...curr,
-      };
-    });
+        return {
+          ...pair,
+          ...curr,
+        };
+      }),
+      {
+        from_coin_symbol: 'HIVE',
+        to_coin_symbol: 'SWAP.HIVE',
+        display_name: 'HIVE',
+        account: 'honey-swap',
+        memo:
+          '{"id":"ssc-mainnet-hive","json":{"contractName":"hivepegged","contractAction":"buy","contractPayload":{}}}',
+      },
+    ].sort((a, b) => (b.display_name > a.display_name ? -1 : 1));
   }),
 });
 
