@@ -1,14 +1,14 @@
-import { Input } from 'antd';
 import QRCode from 'qrcode.react';
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import '../Deposit.less';
+import CopyButton from '../../../widgets/CopyButton/CopyButton';
 
 const AddressSection = ({ address }) => (
   <div className={'Deposit__section'}>
-    <h4>Address</h4>
-    <Input className={'Deposit__input'} value={address} />
+    <h4>Address:</h4>
+    <CopyButton className="Deposit__input" text={address} />
     <QRCode className="Deposit__qr-code" value={address} />
   </div>
 );

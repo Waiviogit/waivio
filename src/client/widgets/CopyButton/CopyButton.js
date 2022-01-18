@@ -3,10 +3,14 @@ import { ReactSVG } from 'react-svg';
 import { message } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import './CopyButton.less';
 
 const CopyButton = props => {
+  const inputClassList = classNames('CopyButton__text', {
+    [props.className]: props.className,
+  });
   const handleClipboard = () => {
     const clipboard = navigator.clipboard;
 
@@ -22,7 +26,7 @@ const CopyButton = props => {
 
   return (
     <div className="CopyButton">
-      <span className="CopyButton__text">{props.text}</span>
+      <span className={inputClassList}>{props.text}</span>
       <ReactSVG
         className="CopyButton__icon"
         wrapper="span"
@@ -36,5 +40,6 @@ const CopyButton = props => {
 CopyButton.propTypes = {
   intl: PropTypes.shape().isRequired,
   text: PropTypes.string.isRequired,
+  className: PropTypes.string.isRequired,
 };
 export default injectIntl(CopyButton);

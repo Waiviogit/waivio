@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { Modal, Select } from 'antd';
+import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepositVisible } from '../../../store/walletStore/walletSelectors';
 import { toggleDepositModal } from '../../../store/walletStore/walletActions';
 import {
   getDepositWithdrawPairs,
   setTokenPair,
+  resetSelectPair,
 } from '../../../store/depositeWithdrawStore/depositeWithdrawAction';
 import {
   getDepositList,
@@ -26,7 +28,11 @@ const Deposit = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getDepositWithdrawPairs());
+    if (isEmpty(list)) dispatch(getDepositWithdrawPairs());
+
+    return () => {
+      dispatch(resetSelectPair());
+    };
   }, []);
 
   const handleCloseModal = () => dispatch(toggleDepositModal());
@@ -60,7 +66,7 @@ const Deposit = () => {
         </p>
       </div>
       <div className="Deposit__step">
-        <h4 className="Deposit__title">Step 1</h4>
+        <h4 className="Deposit__title">Step 1:</h4>
         <h4>Select the crypto token to deposit:</h4>
         <Select placeholder={'Select the crypto token'}>
           {list.map(pair => (
@@ -71,7 +77,7 @@ const Deposit = () => {
         </Select>
       </div>
       <div>
-        <h4 className="Deposit__title">Step 2</h4>
+        <h4 className="Deposit__title">Step 2:</h4>
         <h4>Follow the deposit instructions:</h4>
         {selectPair ? (
           <div>

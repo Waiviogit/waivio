@@ -3,6 +3,7 @@ import {
   converHiveEngineCoins,
   getDepositWithdrawPair,
   getHiveEngineCoins,
+  writeDepositeWithdraw,
 } from '../../waivioApi/ApiClient';
 
 export const GET_DEPOSIT_WITHDRAW_PAIR = createAsyncActionType(
@@ -14,14 +15,24 @@ export const getDepositWithdrawPairs = () => ({
   payload: getDepositWithdrawPair().then(async res => {
     const coinList = await getHiveEngineCoins();
 
-    return res.map(pair => {
-      const curr = coinList.find(coin => coin.symbol === pair.from_coin_symbol);
+    return [
+      ...res.map(pair => {
+        const curr = coinList.find(coin => coin.symbol === pair.from_coin_symbol);
 
-      return {
-        ...pair,
-        ...curr,
-      };
-    });
+        return {
+          ...pair,
+          ...curr,
+        };
+      }),
+      {
+        from_coin_symbol: 'HIVE',
+        to_coin_symbol: 'SWAP.HIVE',
+        display_name: 'HIVE',
+        account: 'honey-swap',
+        memo:
+          '{"id":"ssc-mainnet-hive","json":{"contractName":"hivepegged","contractAction":"buy","contractPayload":{}}}',
+      },
+    ].sort((a, b) => (b.display_name > a.display_name ? -1 : 1));
   }),
 });
 
@@ -33,5 +44,22 @@ export const setTokenPair = (pair, destination) => ({
     from_coin: pair.from_coin_symbol,
     to_coin: pair.to_coin_symbol,
     destination,
-  }).then(res => ({ ...pair, ...res })),
+  }).then(res => {
+    writeDepositeWithdraw({
+      userName: destination,
+      type: 'deposit',
+      from_coin: pair.from_coin_symbol,
+      to_coin: pair.to_coin_symbol,
+      destination,
+      ...res,
+    });
+
+    return { ...pair, ...res };
+  }),
+});
+
+export const RESET_TOKEN_PAIR = '@depositWithdraw/RESET_TOKEN_PAIR';
+
+export const resetSelectPair = () => ({
+  type: RESET_TOKEN_PAIR,
 });

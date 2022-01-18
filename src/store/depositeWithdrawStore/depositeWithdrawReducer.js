@@ -1,4 +1,8 @@
-import { GET_DEPOSIT_WITHDRAW_PAIR, SET_TOKEN_PAIR } from './depositeWithdrawAction';
+import {
+  GET_DEPOSIT_WITHDRAW_PAIR,
+  RESET_TOKEN_PAIR,
+  SET_TOKEN_PAIR,
+} from './depositeWithdrawAction';
 
 const initialState = {
   withdrawPair: [],
@@ -25,6 +29,13 @@ const depositWithdraw = (state = initialState, action) => {
       return {
         ...state,
         pair: action.payload,
+      };
+    }
+
+    case RESET_TOKEN_PAIR: {
+      return {
+        ...state,
+        pair: null,
       };
     }
     default:
