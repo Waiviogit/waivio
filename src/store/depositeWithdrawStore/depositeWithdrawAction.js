@@ -3,6 +3,7 @@ import {
   converHiveEngineCoins,
   getDepositWithdrawPair,
   getHiveEngineCoins,
+  writeDepositeWithdraw,
 } from '../../waivioApi/ApiClient';
 
 export const GET_DEPOSIT_WITHDRAW_PAIR = createAsyncActionType(
@@ -43,5 +44,22 @@ export const setTokenPair = (pair, destination) => ({
     from_coin: pair.from_coin_symbol,
     to_coin: pair.to_coin_symbol,
     destination,
-  }).then(res => ({ ...pair, ...res })),
+  }).then(res => {
+    writeDepositeWithdraw({
+      userName: destination,
+      type: 'deposit',
+      from_coin: pair.from_coin_symbol,
+      to_coin: pair.to_coin_symbol,
+      destination,
+      ...res,
+    });
+
+    return { ...pair, ...res };
+  }),
+});
+
+export const RESET_TOKEN_PAIR = '@depositWithdraw/RESET_TOKEN_PAIR';
+
+export const resetSelectPair = () => ({
+  type: RESET_TOKEN_PAIR,
 });

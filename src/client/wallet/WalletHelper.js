@@ -364,6 +364,7 @@ export const getTransactionCurrency = (amount, currency, type, tableView) => {
   const transaction = amount.split(' ');
   const transactionAmount = parseFloat(get(transaction, '[0]', null));
   const transactionCurrency = get(transaction, '[1]', currency);
+  const maximumFractionDigits = transactionAmount > 0.001 ? 3 : 6;
 
   if (type === accountHistoryConstants.CANCEL_ORDER && !transactionAmount) return null;
 
@@ -376,7 +377,7 @@ export const getTransactionCurrency = (amount, currency, type, tableView) => {
 
   return (
     <span>
-      <FormattedNumber value={transactionAmount} maximumFractionDigits={3} />
+      <FormattedNumber value={transactionAmount} maximumFractionDigits={maximumFractionDigits} />
       {` ${transactionCurrency}`}
     </span>
   );

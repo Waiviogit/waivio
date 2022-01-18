@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import CopyButton from '../../../widgets/CopyButton/CopyButton';
 
 import '../Deposit.less';
 
 const AccountSection = ({ account }) => (
   <div className={'Deposit__section'}>
     <h4>Account:</h4>
-    <p className="Deposit__input">{account}</p>
+    <CopyButton className="Deposit__input" text={account} />
   </div>
 );
 

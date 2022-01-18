@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { Modal, Select } from 'antd';
+import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepositVisible } from '../../../store/walletStore/walletSelectors';
 import { toggleDepositModal } from '../../../store/walletStore/walletActions';
 import {
   getDepositWithdrawPairs,
   setTokenPair,
+  resetSelectPair,
 } from '../../../store/depositeWithdrawStore/depositeWithdrawAction';
 import {
   getDepositList,
@@ -26,7 +28,11 @@ const Deposit = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getDepositWithdrawPairs());
+    if (isEmpty(list)) dispatch(getDepositWithdrawPairs());
+
+    return () => {
+      dispatch(resetSelectPair());
+    };
   }, []);
 
   const handleCloseModal = () => dispatch(toggleDepositModal());

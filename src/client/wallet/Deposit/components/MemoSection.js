@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import CopyButton from '../../../widgets/CopyButton/CopyButton';
 
 import '../Deposit.less';
 
@@ -8,7 +9,7 @@ const MemoSection = ({ memo }) => (
     <h4>
       Memo <span style={{ color: 'red' }}>(required field)</span>:
     </h4>
-    <p className={'Deposit__input'}>{memo}</p>
+    <CopyButton className="Deposit__input" text={memo} />
     <p>Attention: Failure to specify the memo will result in loss of funds!</p>
   </p>
 );

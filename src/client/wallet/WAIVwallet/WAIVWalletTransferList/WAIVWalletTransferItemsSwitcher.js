@@ -22,6 +22,7 @@ import CuratorRewardsCard from '../../TransfersCards/CuratorRewardsCard';
 import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
 import SwapTokenCard from '../../TransfersCards/SwapTokenCard/SwapTokenCard';
 import PowerDownCanceledCard from '../../TransfersCards/PowerDownCanceledCard';
+import DepositeCard from '../../TransfersCards/DepositeCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const walletType = useSelector(getCurrentWalletType);
@@ -196,6 +197,15 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           authorperm={transaction.authorperm}
           memo={transaction.memo}
           description={'Author rewards'}
+        />
+      );
+
+    case 'hivepegged_buy':
+      return (
+        <DepositeCard
+          timestamp={transaction.timestamp}
+          symbol={transaction.symbol}
+          quantity={transaction.quantity}
         />
       );
 
