@@ -1,9 +1,9 @@
 import QRCode from 'qrcode.react';
 import React from 'react';
 import PropTypes from 'prop-types';
+import CopyButton from '../../../widgets/CopyButton/CopyButton';
 
 import '../Deposit.less';
-import CopyButton from '../../../widgets/CopyButton/CopyButton';
 
 const AddressSection = ({ address }) => (
   <div className={'Deposit__section'}>
