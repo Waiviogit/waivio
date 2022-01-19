@@ -108,7 +108,10 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, searchString) =
 
 export const CREATE_QUICK_POST = '@quickRewards/CREATE_QUICK_POST';
 
-export const createQuickPost = (userBody, topics, images) => async (dispatch, getState) => {
+export const createQuickPost = (userBody, topics, images, reservationPermlink) => async (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const author = getAuthenticatedUserName(state);
   const beneficiaries = getBeneficiariesUsers(state);
@@ -137,6 +140,7 @@ export const createQuickPost = (userBody, topics, images) => async (dispatch, ge
       body,
       topics,
       {
+        reservation_permlink: reservationPermlink,
         wobj: {
           wobjects: [
             {
