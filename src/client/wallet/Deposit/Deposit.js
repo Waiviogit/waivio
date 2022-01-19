@@ -9,21 +9,15 @@ import {
   setTokenPair,
   resetSelectPair,
 } from '../../../store/depositeWithdrawStore/depositeWithdrawAction';
-import {
-  getDepositList,
-  getSelectPair,
-} from '../../../store/depositeWithdrawStore/depositWithdrawSelector';
+import { getDepositList } from '../../../store/depositeWithdrawStore/depositWithdrawSelector';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import AddressSection from './components/AddressSection';
-import MemoSection from './components/MemoSection';
-import AccountSection from './components/AccountSection';
+import DepositInfo from './components/DepositInfo';
 
 import './Deposit.less';
 
 const Deposit = () => {
   const visible = useSelector(getDepositVisible);
   const list = useSelector(getDepositList);
-  const selectPair = useSelector(getSelectPair);
   const authUserName = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
 
@@ -79,24 +73,7 @@ const Deposit = () => {
       <div>
         <h4 className="Deposit__title">Step 2:</h4>
         <h4>Follow the deposit instructions:</h4>
-        {selectPair ? (
-          <div>
-            <p>
-              Please send any amount of {selectPair.from_coin_symbol} to the following address and
-              you will receive an equal amount of {selectPair.to_coin_symbol} in the{' '}
-              <a className="Deposit__account-link" href={`/@${authUserName}`}>
-                @{authUserName}
-              </a>{' '}
-              account once the transaction has received the required number of confirmations on the
-              external chain.
-            </p>
-            {selectPair.account && <AccountSection account={selectPair.account} />}
-            {selectPair.memo && <MemoSection memo={selectPair.memo} />}
-            {selectPair.address && <AddressSection address={selectPair.address} />}
-          </div>
-        ) : (
-          <p>Please select the crypto token first.</p>
-        )}
+        <DepositInfo />
       </div>
     </Modal>
   );

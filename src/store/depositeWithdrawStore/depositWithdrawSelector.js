@@ -9,3 +9,5 @@ export const getDepositList = createSelector([depositWithdrawState], state => st
 export const getWithdrawList = createSelector([depositWithdrawState], state => state.withdrawPair);
 
 export const getSelectPair = createSelector([depositWithdrawState], state => state.pair);
+
+export const getPairLoading = createSelector([depositWithdrawState], state => state.pairLoading);

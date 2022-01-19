@@ -410,11 +410,6 @@ const routes = {
       exact: true,
     },
     {
-      path: '/edit',
-      component: Views.BusyEditor,
-      exact: true,
-    },
-    {
       path: '/exit',
       component: Views.ExitPage,
     },
