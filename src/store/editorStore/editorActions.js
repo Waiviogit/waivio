@@ -384,6 +384,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     dispatch({
       type: CREATE_POST_START,
     });
+    const reservationPermlink = get(campaign, 'reservation_permlink');
 
     getPermLink.then(permlink =>
       broadcastComment(
@@ -396,6 +397,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         newBody,
         {
           ...jsonMetadata,
+          ...(reservationPermlink ? { reservation_permlink: reservationPermlink } : {}),
           host,
         },
         reward,
@@ -486,6 +488,7 @@ export const reviewCheckInfo = (
       .then(campaignData => {
         const draftId = new URLSearchParams(getQueryString(state)).get('draft');
         const currDraft = getCurrentDraft(state, { draftId });
+
         const reviewedTitle = needReviewTitle
           ? getReviewTitle(campaignData, linkedObjects, draftBody, get(currDraft, 'title', ''))
           : {};

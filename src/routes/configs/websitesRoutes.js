@@ -101,11 +101,6 @@ const routes = host => ({
           exact: true,
         },
         {
-          path: '/edit',
-          component: Views.BusyEditor,
-          exact: true,
-        },
-        {
           path: '/settings',
           exact: true,
           component: Views.Settings,
@@ -280,11 +275,6 @@ const routes = host => ({
     {
       path: '/editor',
       component: Views.Editor,
-      exact: true,
-    },
-    {
-      path: '/edit',
-      component: Views.BusyEditor,
       exact: true,
     },
     {
