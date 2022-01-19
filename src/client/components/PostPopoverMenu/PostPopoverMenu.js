@@ -35,6 +35,11 @@ const propTypes = {
     url: PropTypes.string,
     title: PropTypes.string,
     author_original: PropTypes.string,
+    active_votes: PropTypes.arrayOf(
+      PropTypes.shape({
+        sponsor: PropTypes.bool,
+      }),
+    ),
     net_rshares_WAIV: PropTypes.number,
     permlink: PropTypes.string,
     net_rshares: PropTypes.number,
@@ -85,8 +90,10 @@ const PostPopoverMenu = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { isReported, isSaved } = postState;
-  const canDeletePost =
-    ownPost && !post.net_rshares && !post.net_rshares_WAIV && !post.children && !isGuest;
+  const hasOnlySponsorLike =
+    post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
+  const withoutLike = (!post.net_rshares_WAIV && !post.net_rshares) || hasOnlySponsorLike;
+  const canDeletePost = ownPost && withoutLike && !post.children && !isGuest;
   const {
     guestInfo,
     author,
