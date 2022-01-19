@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Icon } from 'antd';
+import { Icon, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty } from 'lodash';
 import { ReactSVG } from 'react-svg';
@@ -12,6 +12,7 @@ import { getFacebookShareURL, getTwitterShareURL } from '../../helpers/socialPro
 import { isPostCashout } from '../../vendor/steemitHelpers';
 import { getSocialInfoPost as getSocialInfoPostAction } from '../../../store/postsStore/postActions';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
+import { isMobile } from '../../helpers/apiHelpers';
 
 import './PostPopoverMenu.less';
 
@@ -34,6 +35,15 @@ const propTypes = {
     url: PropTypes.string,
     title: PropTypes.string,
     author_original: PropTypes.string,
+    active_votes: PropTypes.arrayOf(
+      PropTypes.shape({
+        sponsor: PropTypes.bool,
+      }),
+    ),
+    net_rshares_WAIV: PropTypes.number,
+    permlink: PropTypes.string,
+    net_rshares: PropTypes.number,
+    children: PropTypes.number,
     youFollows: PropTypes.bool,
     loading: PropTypes.bool,
     loadingHide: PropTypes.bool,
@@ -78,7 +88,12 @@ const PostPopoverMenu = ({
   getSocialInfoPost,
   userComments,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const { isReported, isSaved } = postState;
+  const hasOnlySponsorLike =
+    post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
+  const withoutLike = (!post.net_rshares_WAIV && !post.net_rshares) || hasOnlySponsorLike;
+  const canDeletePost = ownPost && withoutLike && !post.children && !isGuest;
   const {
     guestInfo,
     author,
@@ -91,6 +106,24 @@ const PostPopoverMenu = ({
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = typeof window !== 'undefined' ? window.location.origin : 'https://waivio.com';
+
+  const handleSelect = key => {
+    switch (key) {
+      case 'delete':
+        return setIsOpen(true);
+
+      default:
+        return handlePostPopoverMenuClick(key);
+    }
+  };
+
+  const handleDeletePost = () => {
+    window.open(
+      `https://hivesigner.com/sign/delete_comment?author=${author}&permlink=${post.permlink}`,
+      '_blank',
+    );
+    setIsOpen(false);
+  };
 
   const handleShare = isTwitter => {
     const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;
@@ -171,6 +204,16 @@ const PostPopoverMenu = ({
     ];
   }
 
+  if (canDeletePost) {
+    popoverMenu = [
+      ...popoverMenu,
+      <PopoverMenuItem key="delete">
+        <Icon type="delete" />
+        <FormattedMessage id="delete_post" defaultMessage="Delete post" />
+      </PopoverMenuItem>,
+    ];
+  }
+
   if (!ownPost) {
     popoverMenu = [
       ...popoverMenu,
@@ -240,47 +283,59 @@ const PostPopoverMenu = ({
     );
 
   return (
-    <Popover
-      placement="bottomRight"
-      trigger="click"
-      content={
-        <React.Fragment>
-          <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
-            {popoverMenu}
-          </PopoverMenu>
-          <a
-            role="presentation"
-            key="share-facebook"
-            rel="noopener noreferrer"
-            target="_blank"
-            className="Popover__shared-link"
-            onClick={e => {
-              e.preventDefault();
-              handleShare();
-            }}
-          >
-            <i className="iconfont icon-facebook" />
-            <FormattedMessage id="share_facebook" defaultMessage="Share to Facebook" />
-          </a>
-          <a
-            role="presentation"
-            key="share-twitter"
-            rel="noopener noreferrer"
-            target="_blank"
-            className="Popover__shared-link"
-            onClick={e => {
-              e.preventDefault();
-              handleShare(isTwitter);
-            }}
-          >
-            <i className="iconfont icon-twitter" />
-            <FormattedMessage id="share_twitter" defaultMessage="Share to Twitter" />
-          </a>
-        </React.Fragment>
-      }
-    >
-      {children}
-    </Popover>
+    <React.Fragment>
+      <Popover
+        placement="bottomRight"
+        trigger={isMobile() ? 'click' : 'hover'}
+        content={
+          <React.Fragment>
+            <PopoverMenu onSelect={handleSelect} bold={false}>
+              {popoverMenu}
+            </PopoverMenu>
+            <a
+              role="presentation"
+              key="share-facebook"
+              rel="noopener noreferrer"
+              target="_blank"
+              className="Popover__shared-link"
+              onClick={e => {
+                e.preventDefault();
+                handleShare();
+              }}
+            >
+              <i className="iconfont icon-facebook" />
+              <FormattedMessage id="share_facebook" defaultMessage="Share to Facebook" />
+            </a>
+            <a
+              role="presentation"
+              key="share-twitter"
+              rel="noopener noreferrer"
+              target="_blank"
+              className="Popover__shared-link"
+              onClick={e => {
+                e.preventDefault();
+                handleShare(isTwitter);
+              }}
+            >
+              <i className="iconfont icon-twitter" />
+              <FormattedMessage id="share_twitter" defaultMessage="Share to Twitter" />
+            </a>
+          </React.Fragment>
+        }
+      >
+        {children}
+      </Popover>
+      <Modal
+        title={'Delete post'}
+        okText={'Delete'}
+        visible={isOpen}
+        onCancel={() => setIsOpen(false)}
+        onOk={handleDeletePost}
+        wrapClassName={'Popover__modal'}
+      >
+        Would you like permanently delete your post?
+      </Modal>
+    </React.Fragment>
   );
 };
 

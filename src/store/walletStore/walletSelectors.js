@@ -206,6 +206,8 @@ export const getTokenRatesInSelectCurrencyChanged = (state, token, currency) => 
   return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'current', 'change24h', currency]);
 };
 
+export const getDepositVisible = createSelector([walletState], state => state.depositVisible);
+
 // get weekle price for chart
 export const getWeeklyTokenRatesPrice = (state, token) => {
   const wallet = walletState(state);

@@ -178,7 +178,7 @@ const WebsiteSignIn = props => {
                   fontWeight: 'bold',
                   fontStyle: 'italic',
                 }}
-                href="https://hiveonboard.com/create-account"
+                href="https://signup.hive.io/"
               >
                 {props.intl.formatMessage({ id: 'click_here', defaultMessage: 'Click here' })}.
               </a>

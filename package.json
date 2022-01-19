@@ -96,6 +96,7 @@
     "pigeon-marker": "^0.3.4",
     "pigeon-overlay": "^0.2.3",
     "prop-types": "^15.6.1",
+    "qrcode.react": "^1.0.1",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^10.0.4",
     "react-copy-to-clipboard": "^5.0.1",

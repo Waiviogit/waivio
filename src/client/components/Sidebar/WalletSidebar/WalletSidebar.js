@@ -8,18 +8,22 @@ import {
   openTransfer,
   openPowerUpOrDown,
   openWithdraw,
+  toggleDepositModal,
 } from '../../../../store/walletStore/walletActions';
 import Action from '../../Button/Action';
 import ClaimRewardsBlock from '../../../wallet/ClaimRewardsBlock/ClaimRewardsBlock';
-import CryptoTrendingCharts from '../CryptoTrendingCharts';
+import CryptoTrendingCharts from '../CrypoCharts/CryptoTrendingCharts';
 import { openLinkHiveAccountModal } from '../../../../store/settingsStore/settingsActions';
 import { getAuthenticatedUser, isGuestUser } from '../../../../store/authStore/authSelectors';
 import { getHiveBeneficiaryAccount } from '../../../../store/settingsStore/settingsSelectors';
 import withAuthActions from '../../../auth/withAuthActions';
 import { getCurrentWalletType } from '../../../../store/walletStore/walletSelectors';
 import { toggleModal } from '../../../../store/swapStore/swapActions';
+import { HBD, HIVE, WAIV } from '../../../../common/constants/cryptos';
 
 import './WalletSidebar.less';
+
+const cryptos = [WAIV.symbol, HIVE.symbol, HBD.symbol];
 
 @withAuthActions
 @withRouter
@@ -36,16 +40,17 @@ import './WalletSidebar.less';
     openWithdraw,
     openLinkHiveAccountModal,
     openSwapTokensModal: toggleModal,
+    openDepositModal: toggleDepositModal,
   },
 )
-class HiveWalletSidebar extends React.Component {
+class WalletSidebar extends React.Component {
   static propTypes = {
     user: PropTypes.shape(),
     isCurrentUser: PropTypes.bool,
     match: PropTypes.shape().isRequired,
-    cryptos: PropTypes.arrayOf(PropTypes.string).isRequired,
     openTransfer: PropTypes.func.isRequired,
     openPowerUpOrDown: PropTypes.func.isRequired,
+    openDepositModal: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
     openWithdraw: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
@@ -82,8 +87,10 @@ class HiveWalletSidebar extends React.Component {
 
   handleOpenSwapModal = () => this.props.openSwapTokensModal(true);
 
+  handleOpenDepositModal = () => this.props.openDepositModal();
+
   render() {
-    const { match, user, isCurrentUser, isGuest, cryptos, walletType } = this.props;
+    const { match, user, isCurrentUser, isGuest, walletType } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
     const isNotHiveEngineWallet = walletType !== 'ENGINE';
@@ -136,9 +143,19 @@ class HiveWalletSidebar extends React.Component {
             <FormattedMessage id="swap_tokens" defaultMessage="Swap tokens" />
           </Action>
         )}
+        {!isEmpty(user) && ownProfile && !isGuest && (
+          <Action
+            big
+            className="WalletSidebar__transfer"
+            primary
+            onClick={this.handleOpenDepositModal}
+          >
+            <FormattedMessage id="Deposit" defaultMessage="Deposit" />
+          </Action>
+        )}
       </div>
     );
   }
 }
 
-export default HiveWalletSidebar;
+export default WalletSidebar;

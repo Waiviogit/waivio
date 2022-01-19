@@ -93,7 +93,7 @@ const QuickRewardsModal = props => {
     setLoading(true);
 
     if (window.gtag) window.gtag('event', 'create_post_in_quick_rewards_modal');
-    props.createQuickPost(body, topics, images).then(() => setLoading(false));
+    props.createQuickPost(body, topics, images, reservationPermlink).then(() => setLoading(false));
   };
 
   const handelRejectReservation = () => {
