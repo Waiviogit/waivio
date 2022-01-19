@@ -384,6 +384,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     dispatch({
       type: CREATE_POST_START,
     });
+    const reservationPermlink = get(campaign, 'reservation_permlink');
 
     getPermLink.then(permlink =>
       broadcastComment(
@@ -396,7 +397,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         newBody,
         {
           ...jsonMetadata,
-          reservation_permlink: campaign.reservation_permlink,
+          ...(reservationPermlink ? { reservation_permlink: reservationPermlink } : {}),
           host,
         },
         reward,

@@ -12,6 +12,7 @@ import { getFacebookShareURL, getTwitterShareURL } from '../../helpers/socialPro
 import { isPostCashout } from '../../vendor/steemitHelpers';
 import { getSocialInfoPost as getSocialInfoPostAction } from '../../../store/postsStore/postActions';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
+import { isMobile } from '../../helpers/apiHelpers';
 
 import './PostPopoverMenu.less';
 
@@ -84,7 +85,8 @@ const PostPopoverMenu = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { isReported, isSaved } = postState;
-  const canDeletePost = ownPost && !post.net_rshares && !post.net_rshares_WAIV && !post.children;
+  const canDeletePost =
+    ownPost && !post.net_rshares && !post.net_rshares_WAIV && !post.children && !isGuest;
   const {
     guestInfo,
     author,
@@ -277,7 +279,7 @@ const PostPopoverMenu = ({
     <React.Fragment>
       <Popover
         placement="bottomRight"
-        trigger="click"
+        trigger={isMobile() ? 'click' : 'hover'}
         content={
           <React.Fragment>
             <PopoverMenu onSelect={handleSelect} bold={false}>
