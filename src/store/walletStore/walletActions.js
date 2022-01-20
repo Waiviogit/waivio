@@ -487,24 +487,27 @@ export const GET_MORE_WAIV_TRANSFER_LIST = createAsyncActionType(
   '@wallet/GET_MORE_WAIV_TRANSFER_LIST',
 );
 
-export const getWAIVTransferList = (account, timestampEnd, type = GET_WAIV_TRANSFER_LIST) => (
-  dispatch,
-  getState,
-) =>
+export const getWAIVTransferList = (
+  account,
+  timestampEnd,
+  lastId,
+  type = GET_WAIV_TRANSFER_LIST,
+) => (dispatch, getState) =>
   dispatch({
     type: type.ACTION,
     payload: ApiClient.getEngineTransactionHistory({
       symbol: 'WAIV',
       account,
       timestampEnd,
+      lastId,
       limit: 10,
       showRewards: getShowRewards(getState()),
     }),
     meta: 10,
   });
 
-export const getMoreWAIVTransferList = (account, offset) => dispatch =>
-  dispatch(getWAIVTransferList(account, offset, GET_MORE_WAIV_TRANSFER_LIST));
+export const getMoreWAIVTransferList = (account, offset, lastId) => dispatch =>
+  dispatch(getWAIVTransferList(account, offset, lastId, GET_MORE_WAIV_TRANSFER_LIST));
 
 export const GET_HIVE_ENGINE_TRANSFER_LIST = createAsyncActionType(
   '@wallet/GET_HIVE_ENGINE_TRANSFER_LIST',
@@ -516,6 +519,7 @@ export const GET_MORE_HIVE_ENGINE_TRANSFER_LIST = createAsyncActionType(
 export const getHiveEngineTransferList = (
   account,
   timestampEnd,
+  lastId,
   type = GET_HIVE_ENGINE_TRANSFER_LIST,
 ) => dispatch =>
   dispatch({
@@ -525,14 +529,17 @@ export const getHiveEngineTransferList = (
       account,
       timestampEnd,
       limit: 10,
+      lastId,
     }).then(res => ({
       list: res.history,
       hasMore: res.history.length === 10,
     })),
   });
 
-export const getMoreHiveEngineTransferList = (account, timestampEnd) => dispatch =>
-  dispatch(getHiveEngineTransferList(account, timestampEnd, GET_MORE_HIVE_ENGINE_TRANSFER_LIST));
+export const getMoreHiveEngineTransferList = (account, timestampEnd, lastId) => dispatch =>
+  dispatch(
+    getHiveEngineTransferList(account, timestampEnd, lastId, GET_MORE_HIVE_ENGINE_TRANSFER_LIST),
+  );
 
 export const SET_CURRENT_WALLET = '@wallet/SET_CURRENT_WALLET';
 

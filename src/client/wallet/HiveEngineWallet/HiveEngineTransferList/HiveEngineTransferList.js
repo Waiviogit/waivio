@@ -26,14 +26,15 @@ const HiveEngineTransferList = React.memo(props => {
     props.getHiveEngineTransferList(params.name);
   }, []);
 
-  const handleLoadMore = useCallback(
-    () =>
-      props.getMoreHiveEngineTransferList(
-        params.name,
-        get(props.transactionList, `[${props.transactionList.length - 1}].timestamp`),
-      ),
-    [params.name, props.transactionList.length],
-  );
+  const handleLoadMore = useCallback(() => {
+    const lastTransaction = get(props.transactionList, props.transactionList.length - 1);
+
+    return props.getMoreHiveEngineTransferList(
+      params.name,
+      get(lastTransaction, 'timestamp'),
+      get(lastTransaction, '_id'),
+    );
+  }, [params.name, props.transactionList.length]);
 
   if (isEmpty(props.transactionList))
     return (
