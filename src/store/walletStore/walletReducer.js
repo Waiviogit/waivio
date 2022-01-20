@@ -387,7 +387,7 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         waivTransactionHistory: {
-          list: action.payload.history,
+          list: [...action.payload.history],
           hasMore: action.payload.history.length === action.meta,
         },
       };

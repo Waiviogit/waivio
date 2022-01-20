@@ -18,7 +18,7 @@ import ReduxInfiniteScroll from '../../../vendor/ReduxInfiniteScroll';
 import Loading from '../../../components/Icon/Loading';
 import './WAIVWalletTransferList.less';
 
-const WAIVWalletTransferList = React.memo(props => {
+const WAIVWalletTransferList = props => {
   const transversClassList = classNames('WAIVWalletTransferList', {
     'WAIVWalletTransferList--withoutMargin': props.withoutMargin,
   });
@@ -66,7 +66,7 @@ const WAIVWalletTransferList = React.memo(props => {
       </ReduxInfiniteScroll>
     </div>
   );
-});
+};
 
 WAIVWalletTransferList.propTypes = {
   getWAIVTransferList: PropTypes.func.isRequired,
