@@ -3,8 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty, get } from 'lodash';
+import classNames from 'classnames';
 
-import { getWaivTransactionHistoryFromState } from '../../../../store/walletStore/walletSelectors';
+import {
+  getShowRewards,
+  getWaivTransactionHistoryFromState,
+} from '../../../../store/walletStore/walletSelectors';
 import {
   getMoreWAIVTransferList,
   getWAIVTransferList,
@@ -15,9 +19,13 @@ import Loading from '../../../components/Icon/Loading';
 import './WAIVWalletTransferList.less';
 
 const WAIVWalletTransferList = React.memo(props => {
+  const transversClassList = classNames('WAIVWalletTransferList', {
+    'WAIVWalletTransferList--withoutMargin': props.withoutMargin,
+  });
+
   useEffect(() => {
     props.getWAIVTransferList(props.name);
-  }, []);
+  }, [props.showRewards]);
 
   const handleLoadMore = useCallback(
     () =>
@@ -41,7 +49,7 @@ const WAIVWalletTransferList = React.memo(props => {
   return (
     <div>
       <ReduxInfiniteScroll
-        className="WAIVWalletTransferList"
+        className={transversClassList}
         loadMore={handleLoadMore}
         hasMore={props.transaction.hasMore}
         elementIsScrollable={false}
@@ -64,15 +72,22 @@ WAIVWalletTransferList.propTypes = {
   getWAIVTransferList: PropTypes.func.isRequired,
   getMoreWAIVTransferList: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
+  showRewards: PropTypes.bool.isRequired,
+  withoutMargin: PropTypes.bool,
   transaction: PropTypes.shape({
     list: PropTypes.arrayOf(PropTypes.shape({})),
     hasMore: PropTypes.bool,
   }).isRequired,
 };
 
+WAIVWalletTransferList.defaultProps = {
+  withoutMargin: false,
+};
+
 export default connect(
   state => ({
     transaction: getWaivTransactionHistoryFromState(state),
+    showRewards: getShowRewards(state),
   }),
   { getWAIVTransferList, getMoreWAIVTransferList },
 )(WAIVWalletTransferList);
