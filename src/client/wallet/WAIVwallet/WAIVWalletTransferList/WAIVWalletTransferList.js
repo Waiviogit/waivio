@@ -27,14 +27,15 @@ const WAIVWalletTransferList = props => {
     props.getWAIVTransferList(props.name);
   }, [props.showRewards]);
 
-  const handleLoadMore = useCallback(
-    () =>
-      props.getMoreWAIVTransferList(
-        props.name,
-        get(props.transaction.list, `[${props.transaction.list.length - 1}].timestamp`),
-      ),
-    [props.name, props.transaction.list],
-  );
+  const handleLoadMore = useCallback(() => {
+    const lastTransaction = get(props.transaction.list, props.transaction.list.length - 1);
+
+    return props.getMoreWAIVTransferList(
+      props.name,
+      get(lastTransaction, 'timestamp'),
+      get(lastTransaction, '_id'),
+    );
+  }, [props.name, props.transaction.list]);
 
   if (isEmpty(props.transaction.list))
     return (
