@@ -1,10 +1,17 @@
 import { Checkbox } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setShowRewards } from '../../../store/walletStore/walletActions';
 
 const ShowRewardsButton = () => {
+  useEffect(
+    () => () => {
+      setShowRewards(false);
+    },
+    [],
+  );
+
   const dispatch = useDispatch();
   const handleCheck = e => dispatch(setShowRewards(e.target.checked));
 
