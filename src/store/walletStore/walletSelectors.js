@@ -208,6 +208,8 @@ export const getTokenRatesInSelectCurrencyChanged = (state, token, currency) => 
 
 export const getDepositVisible = createSelector([walletState], state => state.depositVisible);
 
+export const getShowRewards = createSelector([walletState], state => state.showRewards);
+
 // get weekle price for chart
 export const getWeeklyTokenRatesPrice = (state, token) => {
   const wallet = walletState(state);

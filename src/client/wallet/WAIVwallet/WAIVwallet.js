@@ -4,13 +4,15 @@ import PropTypes from 'prop-types';
 
 import WAIVWalletSummaryInfo from './WAIVWalletSummaryInfo';
 import WAIVWalletTransferList from './WAIVWalletTransferList/WAIVWalletTransferList';
+import ShowRewardsButton from './ShowRewardsButton';
 
 import './WAIVwallet.less';
 
 const WAIVwallet = props => (
   <div className="WAIVwallet">
     <WAIVWalletSummaryInfo />
-    <WAIVWalletTransferList name={props.match.params.name} />
+    <ShowRewardsButton />
+    <WAIVWalletTransferList name={props.match.params.name} withoutMargin />
   </div>
 );
 

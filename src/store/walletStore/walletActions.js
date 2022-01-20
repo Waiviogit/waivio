@@ -12,7 +12,7 @@ import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../../client/helpers/accou
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { guestUserRegex } from '../../client/helpers/regexHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getCurrentWalletType } from './walletSelectors';
+import { getCurrentWalletType, getShowRewards } from './walletSelectors';
 import { parseJSON } from '../../client/helpers/parseJSON';
 import {
   HIVE_ENGINE_DEFAULT_SWAP_LIST,
@@ -487,11 +487,10 @@ export const GET_MORE_WAIV_TRANSFER_LIST = createAsyncActionType(
   '@wallet/GET_MORE_WAIV_TRANSFER_LIST',
 );
 
-export const getWAIVTransferList = (
-  account,
-  timestampEnd,
-  type = GET_WAIV_TRANSFER_LIST,
-) => dispatch =>
+export const getWAIVTransferList = (account, timestampEnd, type = GET_WAIV_TRANSFER_LIST) => (
+  dispatch,
+  getState,
+) =>
   dispatch({
     type: type.ACTION,
     payload: ApiClient.getEngineTransactionHistory({
@@ -499,6 +498,7 @@ export const getWAIVTransferList = (
       account,
       timestampEnd,
       limit: 10,
+      showRewards: getShowRewards(getState()),
     }),
     meta: 10,
   });
@@ -646,4 +646,11 @@ export const TOGGLE_DEPOSIT_MODAL = '@wallet/TOGGLE_DEPOSIT_MODAL';
 
 export const toggleDepositModal = () => ({
   type: TOGGLE_DEPOSIT_MODAL,
+});
+
+export const SET_SHOW_REWARDS = '@wallet/SET_SHOW_REWARDS';
+
+export const setShowRewards = check => ({
+  type: SET_SHOW_REWARDS,
+  payload: check,
 });
