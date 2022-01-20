@@ -44,6 +44,7 @@ const initialState = {
   swapTokensBalanceList: [],
   tokensBalanceListForTransfer: [],
   depositVisible: false,
+  showRewards: false,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -386,7 +387,7 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         waivTransactionHistory: {
-          list: action.payload.history,
+          list: [...action.payload.history],
           hasMore: action.payload.history.length === action.meta,
         },
       };
@@ -483,6 +484,12 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         depositVisible: !state.depositVisible,
+      };
+
+    case walletActions.SET_SHOW_REWARDS:
+      return {
+        ...state,
+        showRewards: action.payload,
       };
 
     default:

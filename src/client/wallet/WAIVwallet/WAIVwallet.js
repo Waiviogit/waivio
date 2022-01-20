@@ -4,15 +4,22 @@ import PropTypes from 'prop-types';
 
 import WAIVWalletSummaryInfo from './WAIVWalletSummaryInfo';
 import WAIVWalletTransferList from './WAIVWalletTransferList/WAIVWalletTransferList';
+import ShowRewardsButton from './ShowRewardsButton';
+import { guestUserRegex } from '../../helpers/regexHelpers';
 
 import './WAIVwallet.less';
 
-const WAIVwallet = props => (
-  <div className="WAIVwallet">
-    <WAIVWalletSummaryInfo />
-    <WAIVWalletTransferList name={props.match.params.name} />
-  </div>
-);
+const WAIVwallet = props => {
+  const isGuest = guestUserRegex.test(props.match.params.name);
+
+  return (
+    <div className="WAIVwallet">
+      <WAIVWalletSummaryInfo />
+      {!isGuest && <ShowRewardsButton />}
+      <WAIVWalletTransferList name={props.match.params.name} withoutMargin={!isGuest} />
+    </div>
+  );
+};
 
 WAIVwallet.propTypes = {
   match: PropTypes.shape().isRequired,
