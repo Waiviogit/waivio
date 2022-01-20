@@ -33,7 +33,7 @@ const WAIVWalletTransferList = React.memo(props => {
         props.name,
         get(props.transaction.list, `[${props.transaction.list.length - 1}].timestamp`),
       ),
-    [props.name, props.transaction.list.length],
+    [props.name, props.transaction.list],
   );
 
   if (isEmpty(props.transaction.list))
