@@ -13,6 +13,7 @@ import {
   getIsPowerDown,
   getIsPowerUpOrDownVisible,
   getTokenRatesInUSD,
+  getTokensBalanceList,
   getTotalVestingFundSteem,
   getTotalVestingShares,
   getUserCurrencyBalance,
@@ -30,6 +31,7 @@ import './PowerUpOrDown.less';
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     down: getIsPowerDown(state),
     waivCurrencyInfo: getUserCurrencyBalance(state, 'WAIV'),
+    tokensList: getTokensBalanceList(state),
     rates: getTokenRatesInUSD(state, 'WAIV'),
     walletType: getCurrentWalletType(state),
   }),
@@ -46,6 +48,12 @@ export default class PowerUpOrDown extends React.Component {
       stake: PropTypes.string,
       balance: PropTypes.string,
     }).isRequired,
+    tokensList: PropTypes.arrayOf(
+      PropTypes.shape({
+        stake: PropTypes.string,
+        balance: PropTypes.string,
+      }),
+    ).isRequired,
     visible: PropTypes.bool.isRequired,
     closePowerUpOrDown: PropTypes.func.isRequired,
     user: PropTypes.shape().isRequired,
@@ -55,10 +63,8 @@ export default class PowerUpOrDown extends React.Component {
     down: PropTypes.bool.isRequired,
   };
 
-  static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
-
   state = {
-    oldAmount: undefined,
+    disabled: true,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -69,10 +75,19 @@ export default class PowerUpOrDown extends React.Component {
     }
   }
 
-  handleBalanceClick = balance => {
-    this.setState({ oldAmount: balance });
-    this.props.form.setFieldsValue({ amount: balance });
-  };
+  handleBalanceClick = balance => this.props.form.setFieldsValue({ amount: balance });
+
+  stakinTokensList = key =>
+    this.props.tokensList.reduce((acc, curr) => {
+      if (curr.stakingEnabled || curr.symbol === 'WAIV') {
+        return {
+          ...acc,
+          [curr.symbol]: round(curr[key], 3),
+        };
+      }
+
+      return acc;
+    }, {});
 
   handleContinueClick = () => {
     const { form, user, down, totalVestingShares, totalVestingFundSteem } = this.props;
@@ -109,7 +124,7 @@ export default class PowerUpOrDown extends React.Component {
                   contractName: 'tokens',
                   contractAction: down ? 'unstake' : 'stake',
                   contractPayload: {
-                    symbol: this.props.walletType,
+                    symbol: values.currency,
                     to: user.name,
                     quantity: round(parseFloat(values.amount), 3).toString(),
                   },
@@ -126,16 +141,23 @@ export default class PowerUpOrDown extends React.Component {
 
   handleCancelClick = () => this.props.closePowerUpOrDown();
 
+  validateAmount = () => {
+    this.props.form.validateFields(['amount'], err => {
+      this.setState({ disabled: Boolean(err) });
+    });
+  };
+
   handleAmountChange = event => {
     const { value } = event.target;
 
     this.props.form.setFieldsValue({ amount: value });
-    this.props.form.validateFields(['amount']);
+    this.validateAmount(value);
   };
 
   currencyList = () => {
     if (this.props.down) {
       return {
+        WP: round(this.props.waivCurrencyInfo.stake, 3),
         HP: round(
           formatter.vestToSteem(
             parseFloat(this.props.user.vesting_shares) -
@@ -145,13 +167,14 @@ export default class PowerUpOrDown extends React.Component {
           ),
           3,
         ),
-        WP: round(this.props.waivCurrencyInfo.stake, 3),
+        ...this.stakinTokensList('stake'),
       };
     }
 
     return {
-      HIVE: round(parseFloat(this.props.user.balance), 3),
       WAIV: round(this.props.waivCurrencyInfo.balance, 3),
+      HIVE: round(parseFloat(this.props.user.balance), 3),
+      ...this.stakinTokensList('balance'),
     };
   };
 
@@ -162,10 +185,10 @@ export default class PowerUpOrDown extends React.Component {
         WAIV: 'WP',
       };
 
-      return powerNames[this.props.walletType];
+      return powerNames[this.props.walletType] || powerNames.WAIV;
     }
 
-    return this.props.walletType;
+    return this.props.walletType === 'ENGINE' ? 'WAIV' : this.props.walletType;
   };
 
   render() {
@@ -184,6 +207,9 @@ export default class PowerUpOrDown extends React.Component {
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
         onOk={this.handleContinueClick}
         onCancel={this.handleCancelClick}
+        okButtonProps={{
+          disabled: this.state.disabled,
+        }}
       >
         {visible && (
           <Form className="PowerUpOrDown" hideRequiredMark>
@@ -194,6 +220,7 @@ export default class PowerUpOrDown extends React.Component {
                 getFieldDecorator={getFieldDecorator}
                 currencyList={this.currencyList()}
                 defaultType={this.defaultCurrency()}
+                onAmoundValidate={this.validateAmount}
               />
             </Form.Item>
           </Form>

@@ -1,5 +1,5 @@
 import { Input, Select, Form } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -7,9 +7,12 @@ const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
   const amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
 
+  useEffect(() => {
+    props.onAmoundValidate();
+  }, [currency]);
+
   const validateBalance = (rule, value, callback) => {
     const { intl } = props;
-
     const currentValue = parseFloat(value);
 
     if (value && currentValue <= 0) {
@@ -92,6 +95,7 @@ PowerSwitcher.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   handleBalanceClick: PropTypes.func.isRequired,
   handleAmountChange: PropTypes.func.isRequired,
+  onAmoundValidate: PropTypes.func.isRequired,
 };
 
 export default injectIntl(PowerSwitcher);

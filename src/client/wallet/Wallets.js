@@ -7,8 +7,11 @@ import Wallet from '../user/UserWallet';
 import Transfer from './Transfer/Transfer';
 import WAIVwallet from './WAIVwallet/WAIVwallet';
 import {
+  getCurrUserTokensBalanceList,
+  getCurrUserTokensBalanceSwap,
   getGlobalProperties,
   getTokenBalance,
+  resetHiveEngineTokenBalance,
   setWalletType,
 } from '../../store/walletStore/walletActions';
 import {
@@ -34,6 +37,10 @@ const Wallets = props => {
     props.getTokenBalance('WAIV', props.match.params.name);
     props.getCryptoPriceHistory();
     props.getGlobalProperties();
+    props.getCurrUserTokensBalanceList(props.match.params.name);
+    props.getCurrUserTokensBalanceSwap(props.match.params.name);
+
+    return () => props.resetHiveEngineTokenBalance();
   }, []);
 
   const handleOnChange = key => {
@@ -72,6 +79,9 @@ Wallets.propTypes = {
   visible: PropTypes.bool.isRequired,
   visiblePower: PropTypes.bool.isRequired,
   visibleSwap: PropTypes.bool.isRequired,
+  getCurrUserTokensBalanceList: PropTypes.func.isRequired,
+  resetHiveEngineTokenBalance: PropTypes.func.isRequired,
+  getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
   visibleDeposit: PropTypes.bool.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
@@ -98,5 +108,8 @@ export default connect(
     getCryptoPriceHistory,
     getTokenBalance,
     getGlobalProperties,
+    getCurrUserTokensBalanceList,
+    resetHiveEngineTokenBalance,
+    getCurrUserTokensBalanceSwap,
   },
 )(Wallets);
