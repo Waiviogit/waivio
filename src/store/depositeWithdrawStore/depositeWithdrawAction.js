@@ -4,6 +4,7 @@ import {
   getDepositWithdrawPair,
   getHiveEngineCoins,
 } from '../../waivioApi/ApiClient';
+import { openTransfer, toggleDepositModal } from '../walletStore/walletActions';
 
 export const GET_DEPOSIT_WITHDRAW_PAIR = createAsyncActionType(
   '@depositWithdraw/GET_DEPOSIT_WITHDRAW_PAIR',
@@ -28,8 +29,10 @@ export const getDepositWithdrawPairs = () => ({
         to_coin_symbol: 'SWAP.HIVE',
         display_name: 'HIVE',
         account: 'honey-swap',
-        memo:
-          '{"id":"ssc-mainnet-hive","json":{"contractName":"hivepegged","contractAction":"buy","contractPayload":{}}}',
+        memo: {
+          id: 'ssc-mainnet-hive',
+          json: { contractName: 'hivepegged', contractAction: 'buy', contractPayload: {} },
+        },
       },
     ].sort((a, b) => (b.display_name > a.display_name ? -1 : 1));
   }),
@@ -52,7 +55,10 @@ export const setTokenPair = (pair, destination) => (dispatch, getState, { steemC
           destination,
           ...pair,
         })
-        .then(() => pair),
+        .then(() => {
+          dispatch(toggleDepositModal());
+          dispatch(openTransfer(pair.account, 0, pair.from_coin_symbol, pair.memo));
+        }),
     });
   }
 
