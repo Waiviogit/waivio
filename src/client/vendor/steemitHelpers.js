@@ -52,7 +52,11 @@ export const calculatePayout = (post, rates) => {
   if (!post) return {};
   const payoutDetails = {};
   const { cashout_time } = post;
-  //need to fix on back side
+  const sponsorLikePayout = get(
+    post.active_votes.find(vote => vote.sponsor),
+    'payout',
+    0,
+  );
   const waivPayout = (get(post, 'total_payout_WAIV', 0) / 2) * rates;
   const waivPayoutHalf = waivPayout / 2;
   const max_payout = parsePayoutAmount(post.max_accepted_payout);
@@ -62,8 +66,7 @@ export const calculatePayout = (post, rates) => {
   const total_curator_payout = parsePayoutAmount(post.curator_payout_value);
   let payout = pending_payout + total_author_payout + total_curator_payout + waivPayout;
   const hivePayout = total_author_payout + total_curator_payout + pending_payout;
-  const hivePayoutHalf = hivePayout / 2;
-
+  const hivePayoutHalf = (hivePayout - sponsorLikePayout) / 2;
   const hbdPercent = post.percent_hbd ? 0.25 : 0;
   if (payout < 0) payout = 0.0;
   if (payout > max_payout) payout = max_payout;
@@ -73,7 +76,7 @@ export const calculatePayout = (post, rates) => {
   payoutDetails.HBDPayout = hivePayout * hbdPercent;
   payoutDetails.WAIVPayout = waivPayout;
   payoutDetails.HIVEPayout = hivePayout - payoutDetails.HBDPayout;
-  payoutDetails.authorPayouts = hivePayoutHalf + waivPayoutHalf;
+  payoutDetails.authorPayouts = hivePayoutHalf + waivPayoutHalf + sponsorLikePayout;
   payoutDetails.curatorPayouts = hivePayoutHalf + waivPayoutHalf;
 
   if (!isPostCashout(post)) {

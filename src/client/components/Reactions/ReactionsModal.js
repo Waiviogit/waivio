@@ -10,8 +10,6 @@ class ReactionsModal extends React.Component {
     visible: PropTypes.bool,
     upVotes: PropTypes.arrayOf(PropTypes.shape()),
     downVotes: PropTypes.arrayOf(PropTypes.shape()),
-    ratio: PropTypes.number,
-    waivRatio: PropTypes.number,
     tab: PropTypes.string,
     onClose: PropTypes.func,
     append: PropTypes.bool,
@@ -49,7 +47,7 @@ class ReactionsModal extends React.Component {
   setTabKey = key => this.setState({ tabKey: key });
 
   render() {
-    const { upVotes, downVotes, ratio, user, setTabs, tab, append, waivRatio } = this.props;
+    const { upVotes, downVotes, user, setTabs, tab, append } = this.props;
     const tabs = [];
     const currentSetter = append ? setTabs : this.setTabKey;
     const currentKey = append ? tab : this.state.tabKey;
@@ -67,7 +65,7 @@ class ReactionsModal extends React.Component {
           }
           key="1"
         >
-          <ReactionsList votes={upVotes} ratio={ratio} waivRatio={waivRatio} name={user} />
+          <ReactionsList votes={upVotes} name={user} />
         </Tabs.TabPane>,
       );
     }
@@ -85,7 +83,7 @@ class ReactionsModal extends React.Component {
           }
           key="2"
         >
-          <ReactionsList votes={downVotes} ratio={ratio} waivRatio={waivRatio} name={user} />
+          <ReactionsList votes={downVotes} name={user} />
         </Tabs.TabPane>,
       );
     }
