@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { take, get, isEmpty } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -14,12 +13,9 @@ import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import UserRebloggedModal from '../../user/UserReblogModal';
 import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
-import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
-import { getWaivVotePrice } from '../../../common/helpers';
 
 import './Buttons.less';
 
-@connect(state => ({ waivRates: getTokenRatesInUSD(state, 'WAIV') }))
 @injectIntl
 @withAuthActions
 export default class Buttons extends React.Component {
@@ -28,7 +24,6 @@ export default class Buttons extends React.Component {
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
-    waivRates: PropTypes.number,
     onActionInitiated: PropTypes.func.isRequired,
     ownPost: PropTypes.bool,
     pendingLike: PropTypes.bool,
@@ -50,7 +45,6 @@ export default class Buttons extends React.Component {
     pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
-    waivRates: 0,
     saving: false,
     onLikeClick: () => {},
     onShareClick: () => {},
@@ -203,37 +197,23 @@ export default class Buttons extends React.Component {
       saving,
       handlePostPopoverMenuClick,
       userComments,
-      waivRates,
     } = this.props;
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
     const hasRebloggedUsers = post.reblogged_users && !!post.reblogged_users.length;
-    const totalPayout =
-      parseFloat(post.pending_payout_value) +
-      parseFloat(post.total_payout_value) +
-      parseFloat(post.curator_payout_value);
-
-    const ratio = post.net_rshares > 0 ? totalPayout / post.net_rshares : 0;
-    const waivRatio = getWaivVotePrice(
-      get(post, 'total_payout_WAIV', 0),
-      get(post, 'net_rshares_WAIV', 0),
-      waivRates,
-    );
 
     const upVotesPreview = votes => {
       const sponsors = [];
       const currentUpvotes = [];
 
       take(votes, 10).map(vote => {
-        const value = vote.rshares * ratio + get(vote, 'rsharesWAIV', 0) * waivRatio;
-
         if (vote.sponsor) {
           sponsors.push(
             <p key={vote.voter}>
               <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
               <span style={{ opacity: '0.5' }}>
                 {' '}
-                <USDDisplay value={value} currencyDisplay="symbol" />
+                <USDDisplay value={vote.payout} currencyDisplay="symbol" />
               </span>
             </p>,
           );
@@ -241,10 +221,10 @@ export default class Buttons extends React.Component {
           currentUpvotes.push(
             <p key={vote.voter}>
               <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
-              {value > 0.01 && (
+              {vote.payout > 0.01 && (
                 <span style={{ opacity: '0.5' }}>
                   {' '}
-                  <USDDisplay value={value} currencyDisplay="symbol" />
+                  <USDDisplay value={vote.payout} currencyDisplay="symbol" />
                 </span>
               )}
             </p>,
@@ -324,8 +304,6 @@ export default class Buttons extends React.Component {
         <ReactionsModal
           visible={this.state.reactionsModalVisible}
           upVotes={upVotes}
-          ratio={ratio}
-          waivRatio={waivRatio}
           downVotes={downVotes}
           onClose={this.handleCloseReactions}
           user={username}

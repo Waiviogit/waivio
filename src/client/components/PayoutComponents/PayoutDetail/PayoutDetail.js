@@ -68,9 +68,7 @@ const PayoutDetail = React.memo(({ intl, post, isModal }) => {
     WAIVPayout,
     HIVEPayout,
   } = calculatePayout(post, rates);
-  const payout = isPostCashout(post) ? pastPayouts : potentialPayout;
-  const authorPayout = payout / 2;
-  const beneficaries = getBeneficaries(post, authorPayout, isModal);
+  const beneficaries = getBeneficaries(post, authorPayouts, isModal);
   const beneficariesClassList = classNames('PayoutDetail__benefisItem', {
     'PayoutDetail__benefisItem--modal': isModal,
   });
@@ -143,7 +141,7 @@ const PayoutDetail = React.memo(({ intl, post, isModal }) => {
                 </span>
                 <div className="PayoutDetail__beneficiaries">
                   {beneficaries.map(user => {
-                    const amount = (authorPayout * user.percent) / 100;
+                    const amount = (authorPayouts * user.percent) / 100;
 
                     return (
                       <div className={beneficariesClassList} key={user.account}>
@@ -163,7 +161,7 @@ const PayoutDetail = React.memo(({ intl, post, isModal }) => {
                 <b>
                   <FormattedMessage id="curators" />:
                 </b>{' '}
-                <USDDisplay value={payout / 2} currencyDisplay="symbol" />
+                <USDDisplay value={curatorPayouts} currencyDisplay="symbol" />
               </div>
             )}
             <span className="PayoutDetail__time">

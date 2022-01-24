@@ -23,12 +23,15 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../../store/settingsStore/settingsSelectors';
+import { addPayoutForActiveVotes } from '../../common/helpers';
+import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);
   const post = getPosts(state)[id];
   const isLiked = getUpvotes(post.active_votes).some(vote => vote.voter === user.name);
   const isReported = getDownvotes(post.active_votes).some(vote => vote.voter === user.name);
+  const waivRates = getTokenRatesInUSD(state, 'WAIV');
 
   const bookmarks = getBookmarks(state);
   const postState = {
@@ -50,7 +53,10 @@ const mapStateToProps = (state, { id }) => {
 
   return {
     user,
-    post,
+    post: {
+      ...post,
+      active_votes: addPayoutForActiveVotes(post, waivRates),
+    },
     postState,
     pendingLike,
     pendingFlag,
