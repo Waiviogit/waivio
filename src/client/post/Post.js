@@ -25,6 +25,8 @@ import {
   getPostContent,
 } from '../../store/postsStore/postsSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
+import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
+import { addPayoutForActiveVotes } from '../../common/helpers';
 
 @connect(
   (state, ownProps) => {
@@ -32,10 +34,17 @@ import { getUser } from '../../store/usersStore/usersSelectors';
       ownProps.match.params.permlink,
       ownProps.match.params.author,
     );
+    const waivRates = getTokenRatesInUSD(state, 'WAIV');
+    const post = getContentOfPost(state);
 
     return {
       edited: getIsPostEdited(state, ownProps.match.params.permlink),
-      content: getContentOfPost(state),
+      content: post
+        ? {
+            ...post,
+            active_votes: addPayoutForActiveVotes(post, waivRates),
+          }
+        : post,
       isAuthFetching: getIsAuthFetching(state),
       fetching: getIsPostFetching(state, ownProps.match.params),
       loaded: getIsPostLoaded(state, ownProps.match.params.author, ownProps.match.params.permlink),

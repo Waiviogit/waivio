@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
 import InfiniteSroll from 'react-infinite-scroller';
-import { take, isEmpty, get } from 'lodash';
+import { take, isEmpty } from 'lodash';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import UserCard from '../UserCard';
 import USDDisplay from '../Utils/USDDisplay';
@@ -17,8 +17,6 @@ import './ReactionsList.less';
 export default class UserList extends React.Component {
   static propTypes = {
     votes: PropTypes.arrayOf(PropTypes.shape()),
-    ratio: PropTypes.number,
-    waivRatio: PropTypes.number,
     isAuth: PropTypes.bool,
   };
 
@@ -37,42 +35,32 @@ export default class UserList extends React.Component {
 
   paginate = () => this.setState(prevState => ({ page: prevState.page + 1 }));
 
-  renderUserCards = (vote, isSponsor) => {
-    const votePrice = this.voteValue(vote);
-
-    return (
-      <UserCard
-        key={vote.voter}
-        user={vote}
-        showFollow={false}
-        alt={
-          <span>
-            {votePrice >= 0.001 && (
-              <React.Fragment>
-                <USDDisplay value={votePrice} />
-                <span className="ReactionsList__bullet" />
-              </React.Fragment>
-            )}
-            {isSponsor ? (
-              <FormattedMessage id="sponsor" defaultMessage="Sponsor" />
-            ) : (
-              <FormattedNumber
-                style="percent" // eslint-disable-line react/style-prop-object
-                value={vote.percent / 10000}
-                maximumFractionDigits={2}
-              />
-            )}
-          </span>
-        }
-      />
-    );
-  };
-
-  voteValue = vote => {
-    const { ratio, waivRatio } = this.props;
-
-    return vote.rshares * ratio + get(vote, 'rsharesWAIV', 0) * waivRatio;
-  };
+  renderUserCards = (vote, isSponsor) => (
+    <UserCard
+      key={vote.voter}
+      user={vote}
+      showFollow={false}
+      alt={
+        <span>
+          {vote.payout >= 0.001 && (
+            <React.Fragment>
+              <USDDisplay value={vote.payout} />
+              <span className="ReactionsList__bullet" />
+            </React.Fragment>
+          )}
+          {isSponsor ? (
+            <FormattedMessage id="sponsor" defaultMessage="Sponsor" />
+          ) : (
+            <FormattedNumber
+              style="percent" // eslint-disable-line react/style-prop-object
+              value={vote.percent / 10000}
+              maximumFractionDigits={2}
+            />
+          )}
+        </span>
+      }
+    />
+  );
 
   upVotesModalPreview = (usersList, noOfItemsToShow) => {
     const sponsors = [];
