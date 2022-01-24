@@ -95,7 +95,7 @@ export const calculatePayout = (post, rates) => {
 
   if (payout > 0) {
     payoutDetails.pastPayouts = payout;
-    payoutDetails.authorPayouts = total_author_payout + waivPayoutHalf;
+    payoutDetails.authorPayouts = total_author_payout + waivPayoutHalf + sponsorLikePayout;
     payoutDetails.curatorPayouts = total_curator_payout + waivPayoutHalf;
   }
 
