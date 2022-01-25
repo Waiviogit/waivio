@@ -59,7 +59,7 @@ const TransferButton = ({
         <Action
           className="WalletSidebar__transfer"
           primary={payable > 0}
-          onClick={() => openTransf(name, payable, currency, memo, app)}
+          onClick={() => openTransf(name, payable, currency, { id: memo }, app)}
           disabled={payable <= 0}
         >
           {intl.formatMessage({
