@@ -79,7 +79,7 @@ export default class PowerUpOrDown extends React.Component {
 
   stakinTokensList = key =>
     this.props.tokensList.reduce((acc, curr) => {
-      if (curr.stakingEnabled || curr.symbol === 'WAIV') {
+      if ((curr.stakingEnabled && +curr.balance) || curr.symbol === 'WAIV') {
         return {
           ...acc,
           [curr.symbol]: round(curr[key], 3),

@@ -4,7 +4,6 @@ import {
   getDepositWithdrawPair,
   getHiveEngineCoins,
 } from '../../waivioApi/ApiClient';
-import { openTransfer, toggleDepositModal } from '../walletStore/walletActions';
 
 export const GET_DEPOSIT_WITHDRAW_PAIR = createAsyncActionType(
   '@depositWithdraw/GET_DEPOSIT_WITHDRAW_PAIR',
@@ -55,10 +54,7 @@ export const setTokenPair = (pair, destination) => (dispatch, getState, { steemC
           destination,
           ...pair,
         })
-        .then(() => {
-          dispatch(toggleDepositModal());
-          dispatch(openTransfer(pair.account, 0, pair.from_coin_symbol, pair.memo));
-        }),
+        .then(() => pair),
     });
   }
 
