@@ -323,10 +323,7 @@ export default class Transfer extends React.Component {
         }
 
         if (memo) {
-          transferQuery.memo = {
-            ...(transferQuery.memo || {}),
-            ...(memo.id ? memo : { id: memo }),
-          };
+          transferQuery.memo = memo;
           if (values.memo) transferQuery.memo.message = values.memo;
         }
 

@@ -45,7 +45,7 @@ export const ManageWebsite = props => {
 
     memo = JSON.parse(memo);
 
-    props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'HBD', memo.id);
+    props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'HBD', memo);
   };
 
   return (

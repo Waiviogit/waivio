@@ -91,7 +91,7 @@ const Payment = ({
     if (!hiveBeneficiaryAccount && isGuest) {
       openLinkModal(true);
     }
-    openTransf(name, payableForRender, currency, memo, app);
+    openTransf(name, payableForRender, currency, { id: memo }, app);
   };
 
   return (

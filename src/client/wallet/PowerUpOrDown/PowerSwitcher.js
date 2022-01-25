@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
-  const amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
+  const amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
 
   useEffect(() => {
     props.onAmoundValidate();
@@ -55,9 +55,9 @@ const PowerSwitcher = props => {
             {
               pattern: amountRegex,
               message: props.intl.formatMessage({
-                id: 'amount_error_format',
+                id: 'amount_error_format_5_places',
                 defaultMessage:
-                  'Incorrect format. Use comma or dot as decimal separator. Use at most 3 decimal places.',
+                  'Incorrect format. Use comma or dot as decimal separator. Use at most 5 decimal places.',
               }),
             },
             { validator: validateBalance },
