@@ -79,10 +79,10 @@ export default class PowerUpOrDown extends React.Component {
 
   stakinTokensList = key =>
     this.props.tokensList.reduce((acc, curr) => {
-      if ((curr.stakingEnabled && +curr.balance) || curr.symbol === 'WAIV') {
+      if ((curr.stakingEnabled && +curr[key]) || curr.symbol === 'WAIV') {
         return {
           ...acc,
-          [curr.symbol]: round(curr[key], 3),
+          [curr.symbol]: round(curr[key], 5),
         };
       }
 
@@ -104,7 +104,7 @@ export default class PowerUpOrDown extends React.Component {
               vesting_shares: `${vests} VESTS`,
             }
           : {
-              amount: `${round(parseFloat(values.amount), 3)} HIVE`,
+              amount: `${round(parseFloat(values.amount), 5)} HIVE`,
               to: user.name,
             };
 
@@ -126,7 +126,7 @@ export default class PowerUpOrDown extends React.Component {
                   contractPayload: {
                     symbol: values.currency,
                     to: user.name,
-                    quantity: round(parseFloat(values.amount), 3).toString(),
+                    quantity: round(parseFloat(values.amount), 5).toString(),
                   },
                 }),
               })}`,

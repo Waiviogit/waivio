@@ -68,8 +68,10 @@ export const calculatePayout = (post, rates) => {
   const hivePayout = total_author_payout + total_curator_payout + pending_payout;
   const hivePayoutHalf = (hivePayout - sponsorLikePayout) / 2;
   const hbdPercent = post.percent_hbd ? 0.25 : 0;
+
   if (payout < 0) payout = 0.0;
   if (payout > max_payout) payout = max_payout;
+
   payoutDetails.payoutLimitHit = payout >= max_payout;
   payoutDetails.totalPayout = payout;
   payoutDetails.potentialPayout = pending_payout + waivPayout;
@@ -81,6 +83,10 @@ export const calculatePayout = (post, rates) => {
 
   if (!isPostCashout(post)) {
     payoutDetails.cashoutInTime = cashout_time + '.000Z';
+  } else {
+    payoutDetails.pastPayouts = payout;
+    payoutDetails.authorPayouts = total_author_payout + waivPayoutHalf;
+    payoutDetails.curatorPayouts = total_curator_payout + waivPayoutHalf;
   }
 
   if (promoted > 0) {
@@ -91,12 +97,6 @@ export const calculatePayout = (post, rates) => {
     payoutDetails.isPayoutDeclined = true;
   } else if (max_payout < 1000000) {
     payoutDetails.maxAcceptedPayout = max_payout;
-  }
-
-  if (payout > 0) {
-    payoutDetails.pastPayouts = payout;
-    payoutDetails.authorPayouts = total_author_payout + waivPayoutHalf + sponsorLikePayout;
-    payoutDetails.curatorPayouts = total_curator_payout + waivPayoutHalf;
   }
 
   return payoutDetails;
