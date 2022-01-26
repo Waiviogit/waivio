@@ -30,13 +30,22 @@ import TokensSelect from './components/TokensSelect';
 import { getImpact } from '../../helpers/swapWalletHelpers';
 
 import './SwapTokens.less';
+import { getFeeInfo } from '../../../waivioApi/ApiClient';
 
 const SwapTokens = props => {
   const [impact, setImpact] = useState(0);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
+  const [param, setParams] = useState(0);
+
+  const setFeeInfo = async () => {
+    const data = await getFeeInfo();
+
+    setParams(data);
+  };
 
   useLayoutEffect(() => {
+    setFeeInfo();
     props.getSwapList();
 
     return () => props.resetModalData();
@@ -52,12 +61,18 @@ const SwapTokens = props => {
 
     if (!pool.tokenPair) return {};
 
+    const swap = pool.tokenPair.split(':')[0];
+
     return getSwapOutput({
       symbol: from.symbol,
       amountIn: value || 0,
-      pool,
+      pool: {
+        ...pool,
+        tokenPair: `${swap}:${swap === from.symbol ? to.symbol : from.symbol}`,
+      },
       slippage: 0,
       from: isFrom,
+      params: param,
     });
   };
 
