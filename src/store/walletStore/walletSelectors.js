@@ -100,6 +100,8 @@ export const getUsersAccountHistory = createSelector(
   state => state.usersAccountHistory,
 );
 
+export const getUserBalanse = createSelector([walletState], state => state.userBalances);
+
 export const getUsersAccountHistoryLoading = createSelector(
   [walletState],
   state => state.usersAccountHistoryLoading,

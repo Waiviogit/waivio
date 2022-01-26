@@ -1,15 +1,18 @@
 import { Input, Select, Form } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
-  const amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
+  const amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
+
+  useEffect(() => {
+    props.onAmoundValidate();
+  }, [currency]);
 
   const validateBalance = (rule, value, callback) => {
     const { intl } = props;
-
     const currentValue = parseFloat(value);
 
     if (value && currentValue <= 0) {
@@ -52,9 +55,9 @@ const PowerSwitcher = props => {
             {
               pattern: amountRegex,
               message: props.intl.formatMessage({
-                id: 'amount_error_format',
+                id: 'amount_error_format_5_places',
                 defaultMessage:
-                  'Incorrect format. Use comma or dot as decimal separator. Use at most 3 decimal places.',
+                  'Incorrect format. Use comma or dot as decimal separator. Use at most 5 decimal places.',
               }),
             },
             { validator: validateBalance },
@@ -92,6 +95,7 @@ PowerSwitcher.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   handleBalanceClick: PropTypes.func.isRequired,
   handleAmountChange: PropTypes.func.isRequired,
+  onAmoundValidate: PropTypes.func.isRequired,
 };
 
 export default injectIntl(PowerSwitcher);

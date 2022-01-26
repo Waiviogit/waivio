@@ -3,13 +3,16 @@ import { Modal, Select } from 'antd';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepositVisible } from '../../../store/walletStore/walletSelectors';
-import { toggleDepositModal } from '../../../store/walletStore/walletActions';
+import { openTransfer, toggleDepositModal } from '../../../store/walletStore/walletActions';
 import {
   getDepositWithdrawPairs,
   setTokenPair,
   resetSelectPair,
 } from '../../../store/depositeWithdrawStore/depositeWithdrawAction';
-import { getDepositList } from '../../../store/depositeWithdrawStore/depositWithdrawSelector';
+import {
+  getDepositList,
+  getSelectPair,
+} from '../../../store/depositeWithdrawStore/depositWithdrawSelector';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import DepositInfo from './components/DepositInfo';
 
@@ -19,7 +22,9 @@ const Deposit = () => {
   const visible = useSelector(getDepositVisible);
   const list = useSelector(getDepositList);
   const authUserName = useSelector(getAuthenticatedUserName);
+  const selectPair = useSelector(getSelectPair);
   const dispatch = useDispatch();
+  const hiveTokens = ['HIVE', 'HBD'];
 
   useEffect(() => {
     if (isEmpty(list)) dispatch(getDepositWithdrawPairs());
@@ -31,16 +36,24 @@ const Deposit = () => {
 
   const handleCloseModal = () => dispatch(toggleDepositModal());
 
+  const handleDoneDeposit = () => {
+    dispatch(toggleDepositModal());
+    if (hiveTokens.includes(selectPair.from_coin_symbol)) {
+      dispatch(openTransfer(selectPair.account, 0, selectPair.from_coin_symbol, selectPair.memo));
+    }
+  };
+
   const handleSelectPair = pair => dispatch(setTokenPair(pair, authUserName));
 
   return (
     <Modal
       visible={visible}
-      okText="Done"
+      okText={selectPair && hiveTokens.includes(selectPair.from_coin_symbol) ? 'Continue' : 'Done'}
       title="Deposit"
       onCancel={handleCloseModal}
-      onOk={handleCloseModal}
+      onOk={handleDoneDeposit}
       className="Deposit"
+      okButtonProps={{ disabled: !selectPair }}
     >
       <div className="Deposit__step">
         <p>
@@ -51,10 +64,7 @@ const Deposit = () => {
           . Once the deposit is made, you will receive an equal amount of the SWAP version of the
           deposited token, which can be exchanged for other tokens on the Hive-Engine blockchain.
         </p>
-        <p>
-          There is a 1% fee on deposits. ETH, ERC-20, BNB, BEP-20, Polygon (MATIC) and Polygon
-          ERC-20 deposits have no deposit fees.
-        </p>
+        <p>There is a 0.75% fee on deposits (minimum fee 0.001 for HIVE).</p>
         <p>
           Please note that you will also have to pay standard network fees when sending cryptos.
         </p>

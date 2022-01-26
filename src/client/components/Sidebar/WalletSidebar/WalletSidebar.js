@@ -105,7 +105,7 @@ class WalletSidebar extends React.Component {
         >
           <FormattedMessage id="transfer" defaultMessage="Transfer" />
         </Action>
-        {ownProfile && !isGuest && isNotHiveEngineWallet && (
+        {ownProfile && !isGuest && (
           <div className="WalletSidebar__power">
             <Action big onClick={this.handleOpenPowerUp}>
               Power up

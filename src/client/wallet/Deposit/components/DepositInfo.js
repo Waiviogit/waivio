@@ -30,7 +30,13 @@ const DepositInfo = () => {
         external chain.
       </p>
       {selectPair.account && <AccountSection account={selectPair.account} />}
-      {selectPair.memo && <MemoSection memo={selectPair.memo} />}
+      {selectPair.memo && (
+        <MemoSection
+          memo={
+            typeof selectPair.memo === 'object' ? JSON.stringify(selectPair.memo) : selectPair.memo
+          }
+        />
+      )}
       {selectPair.address && <AddressSection address={selectPair.address} />}
     </div>
   ) : (

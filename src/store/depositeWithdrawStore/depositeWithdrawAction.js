@@ -3,7 +3,6 @@ import {
   converHiveEngineCoins,
   getDepositWithdrawPair,
   getHiveEngineCoins,
-  writeDepositeWithdraw,
 } from '../../waivioApi/ApiClient';
 
 export const GET_DEPOSIT_WITHDRAW_PAIR = createAsyncActionType(
@@ -29,8 +28,10 @@ export const getDepositWithdrawPairs = () => ({
         to_coin_symbol: 'SWAP.HIVE',
         display_name: 'HIVE',
         account: 'honey-swap',
-        memo:
-          '{"id":"ssc-mainnet-hive","json":{"contractName":"hivepegged","contractAction":"buy","contractPayload":{}}}',
+        memo: {
+          id: 'ssc-mainnet-hive',
+          json: { contractName: 'hivepegged', contractAction: 'buy', contractPayload: {} },
+        },
       },
     ].sort((a, b) => (b.display_name > a.display_name ? -1 : 1));
   }),
@@ -38,20 +39,22 @@ export const getDepositWithdrawPairs = () => ({
 
 export const SET_TOKEN_PAIR = createAsyncActionType('@depositWithdraw/SET_TOKEN_PAIR');
 
-export const setTokenPair = (pair, destination) => dispatch => {
+export const setTokenPair = (pair, destination) => (dispatch, getState, { steemConnectAPI }) => {
   if (pair.from_coin_symbol === 'HIVE') {
     return dispatch({
       type: SET_TOKEN_PAIR.ACTION,
-      payload: writeDepositeWithdraw({
-        userName: destination,
-        type: 'deposit',
-        from_coin: pair.from_coin_symbol,
-        to_coin: pair.to_coin_symbol,
-        ex_rate: 1,
-        pair: 'HIVE -> SWAP.HIVE',
-        destination,
-        ...pair,
-      }).then(() => pair),
+      payload: steemConnectAPI
+        .hiveEngineDepositWithdraw(destination, {
+          userName: destination,
+          type: 'deposit',
+          from_coin: pair.from_coin_symbol,
+          to_coin: pair.to_coin_symbol,
+          ex_rate: 1,
+          pair: 'HIVE -> SWAP.HIVE',
+          destination,
+          ...pair,
+        })
+        .then(() => pair),
     });
   }
 
@@ -62,7 +65,7 @@ export const setTokenPair = (pair, destination) => dispatch => {
       to_coin: pair.to_coin_symbol,
       destination,
     }).then(res => {
-      writeDepositeWithdraw({
+      steemConnectAPI.hiveEngineDepositWithdraw(destination, {
         userName: destination,
         type: 'deposit',
         from_coin: pair.from_coin_symbol,

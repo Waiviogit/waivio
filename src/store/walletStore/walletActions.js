@@ -587,7 +587,13 @@ export const getUserTokensBalanceList = (
           };
         });
 
-        return listTokensWithRates;
+        return listTokensWithRates.sort((a, b) => {
+          if (a.symbol === 'WAIV') return -1;
+          if (b.symbol === 'WAIV') return 1;
+          if (!b.balance || !a.balance) return a.symbol > b.symbol ? 1 : -1;
+
+          return b.balance - a.balance;
+        });
       }
 
       return res;
