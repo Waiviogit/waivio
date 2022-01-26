@@ -61,10 +61,15 @@ const SwapTokens = props => {
 
     if (!pool.tokenPair) return {};
 
+    const swap = pool.tokenPair.split(':')[0];
+
     return getSwapOutput({
       symbol: from.symbol,
       amountIn: value || 0,
-      pool,
+      pool: {
+        ...pool,
+        tokenPair: `${swap}:${swap === from.symbol ? to.symbol : from.symbol}`,
+      },
       slippage: 0,
       from: isFrom,
       params: param,
