@@ -64,7 +64,7 @@ const Deposit = () => {
           . Once the deposit is made, you will receive an equal amount of the SWAP version of the
           deposited token, which can be exchanged for other tokens on the Hive-Engine blockchain.
         </p>
-        <p>There is a 1% fee on deposits.</p>
+        <p>There is a 0.75% fee on deposits (minimum fee 0.001 for HIVE).</p>
         <p>
           Please note that you will also have to pay standard network fees when sending cryptos.
         </p>
