@@ -1,16 +1,29 @@
-import BigNumber from 'bignumber.js';
+const BigNumber = require('bignumber.js');
 
-export const createJSON = ({ tokenPair, from, symbol, amountOut, amountIn, minAmountOut }) => {
-  // eslint-disable-next-line no-nested-ternary
-  const tokenSymbol = from
-    ? symbol
-    : symbol === tokenPair.split(':')[0]
-    ? tokenPair.split(':')[1]
-    : tokenPair.split(':')[0];
+const getAmountOut = (params, amountIn, liquidityIn, liquidityOut) => {
+  const amountInWithFee = BigNumber(amountIn).times(params.tradeFeeMul);
+  const num = BigNumber(amountInWithFee).times(liquidityOut);
+  const den = BigNumber(liquidityIn).plus(amountInWithFee);
+  const amountOut = num.dividedBy(den);
 
-  const tokenAmount = from ? amountIn : amountOut;
+  // if (!BigNumber(amountOut).lt(liquidityOut)) return false;
+  return amountOut;
+};
 
-  return JSON.stringify({
+const calcFee = ({ params, tokenAmount, liquidityIn, liquidityOut, precision }) => {
+  const tokenAmountAdjusted = BigNumber(
+    getAmountOut(params, tokenAmount, liquidityIn, liquidityOut),
+  );
+  const fee = BigNumber(tokenAmountAdjusted)
+    .dividedBy(params.tradeFeeMul)
+    .minus(tokenAmountAdjusted)
+    .toFixed(precision, BigNumber.ROUND_HALF_UP);
+
+  return fee;
+};
+
+const createJSON = ({ tokenPair, minAmountOut, tokenSymbol, tokenAmount }) =>
+  JSON.stringify({
     contractName: 'marketpools',
     contractAction: 'swapTokens',
     contractPayload: {
@@ -21,13 +34,14 @@ export const createJSON = ({ tokenPair, from, symbol, amountOut, amountIn, minAm
       minAmountOut,
     },
   });
-};
 
-export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from }) => {
+export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params }) => {
   if (!pool) return {};
+  let liquidityIn;
+  let liquidityOut;
 
   const { baseQuantity, quoteQuantity, tokenPair, precision } = pool;
-  const [baseSymbol] = tokenPair.split(':');
+  const [baseSymbol, quoteSymbol] = tokenPair.split(':');
   const isBase = symbol === baseSymbol;
 
   const tokenToExchange = isBase ? baseQuantity : quoteQuantity;
@@ -52,12 +66,6 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from }) => {
         .times(100)
         .div(tokenExchangedOn);
 
-  const slippageAmount = from ? amountOut.times(slippage) : BigNumber(amountIn).times(slippage);
-
-  const minAmountOut = from
-    ? amountOut.minus(slippageAmount)
-    : BigNumber(amountIn).minus(slippageAmount);
-
   const newBalances = {
     tokenToExchange: tokenToExchangeNewBalance.toFixed(precision, BigNumber.ROUND_DOWN),
     tokenExchangedOn: tokenExchangedOnNewBalance.toFixed(precision, BigNumber.ROUND_DOWN),
@@ -72,19 +80,40 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from }) => {
       .toFixed(precision, BigNumber.ROUND_DOWN),
   };
 
+  // eslint-disable-next-line no-nested-ternary
+  const tokenSymbol = from ? symbol : symbol === baseSymbol ? quoteSymbol : baseSymbol;
+
+  const tradeDirection = tokenSymbol === baseSymbol;
+
+  if (tradeDirection) {
+    liquidityIn = pool.baseQuantity;
+    liquidityOut = pool.quoteQuantity;
+  } else {
+    liquidityIn = pool.quoteQuantity;
+    liquidityOut = pool.baseQuantity;
+  }
+
+  const tokenAmount = from ? BigNumber(amountIn).toFixed() : amountOut;
+
+  const slippageAmount = from ? amountOut.times(slippage) : BigNumber(amountIn).times(slippage);
+
+  const fee = calcFee({ params, tokenAmount, liquidityIn, liquidityOut, precision });
+  const minAmountOut = from
+    ? amountOut.minus(slippageAmount)
+    : BigNumber(amountIn).minus(slippageAmount);
+
   const amountOutToFixed = amountOut.toFixed(precision, BigNumber.ROUND_DOWN);
-  const minAmountOutToFixed = minAmountOut.toFixed(precision, BigNumber.ROUND_DOWN);
+  const minAmountOutToFixed = minAmountOut.minus(fee).toFixed(precision, BigNumber.ROUND_DOWN);
 
   const json = createJSON({
-    amountIn: BigNumber(amountIn).toFixed(precision, BigNumber.ROUND_DOWN),
     minAmountOut: minAmountOutToFixed,
-    amountOut: amountOutToFixed,
     tokenPair,
-    symbol,
-    from,
+    tokenSymbol,
+    tokenAmount,
   });
 
   return {
+    fee,
     priceImpact: priceImpact.toFixed(2),
     minAmountOut: minAmountOutToFixed,
     amountOut: amountOutToFixed,

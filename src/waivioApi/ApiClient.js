@@ -2408,6 +2408,27 @@ export const getTokensRate = symbols => {
     .catch(e => e);
 };
 
+export const getFeeInfo = symbols => {
+  return fetch('https://api2.hive-engine.com/rpc/contracts', {
+    headers,
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'find',
+      params: {
+        contract: 'marketpools',
+        table: 'params',
+        query: {},
+      },
+      id: 'ssc-mainnet-hive',
+    }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result[0])
+    .catch(e => e);
+};
+
 export const getTokensInformation = symbols => {
   return fetch('https://ha.herpc.dtools.dev/contracts', {
     headers,
