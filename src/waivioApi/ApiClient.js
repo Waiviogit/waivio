@@ -2347,6 +2347,17 @@ export const likePost = body => {
     .catch(e => e);
 };
 
+export const getHiveDelegate = username => {
+  return fetch(`${config.apiPrefix}${config.user}/${username}${config.delegation}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) => {
   return fetch(
     `https://accounts.hive-engine.com/accountHistory?account=${account}&limit=${limit}&offset=${offset}${
@@ -2426,6 +2437,30 @@ export const getFeeInfo = symbols => {
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response.result[0])
+    .catch(e => e);
+};
+
+export const getDelegateList = data => {
+  return fetch('https://api2.hive-engine.com/rpc/contracts', {
+    headers,
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'find',
+      params: {
+        contract: 'tokens',
+        table: 'delegations',
+        query: {
+          ...data,
+          symbol: 'WAIV',
+        },
+      },
+      id: 'ssc-mainnet-hive',
+    }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result)
     .catch(e => e);
 };
 

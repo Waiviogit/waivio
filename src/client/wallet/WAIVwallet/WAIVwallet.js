@@ -14,7 +14,7 @@ const WAIVwallet = props => {
 
   return (
     <div className="WAIVwallet">
-      <WAIVWalletSummaryInfo />
+      <WAIVWalletSummaryInfo name={props.match.params.name} />
       {!isGuest && <ShowRewardsButton />}
       <WAIVWalletTransferList name={props.match.params.name} withoutMargin={!isGuest} />
     </div>
