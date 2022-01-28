@@ -547,7 +547,10 @@ function sc2Extended() {
           required_auths: [],
           required_posting_auths: [user],
           id: 'waivio_hive_engine',
-          json: JSON.stringify(data),
+          json: JSON.stringify({
+            action: 'createDepositRecord',
+            payload: data,
+          }),
         };
 
         return this.broadcast([['custom_json', params]]);
