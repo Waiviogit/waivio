@@ -752,14 +752,20 @@ export default class Transfer extends React.Component {
           <Form.Item
             label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
           >
-            {getFieldDecorator('memo', {
-              rules: [{ validator: this.validateMemo }],
-            })(
-              <Input.TextArea
-                disabled={sendTo || isChangesDisabled}
-                autoSize={{ minRows: 2, maxRows: 6 }}
-                placeHolder={memoPlaceHolder}
-              />,
+            {memo ? (
+              <div className="Transfer__memo">
+                {typeof memo === 'object' ? JSON.stringify(memo) : memo}
+              </div>
+            ) : (
+              getFieldDecorator('memo', {
+                rules: [{ validator: this.validateMemo }],
+              })(
+                <Input.TextArea
+                  disabled={sendTo || isChangesDisabled}
+                  autoSize={{ minRows: 2, maxRows: 6 }}
+                  placeHolder={memoPlaceHolder}
+                />,
+              )
             )}
           </Form.Item>
         </Form>
