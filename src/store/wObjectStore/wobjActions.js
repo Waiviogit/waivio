@@ -2,8 +2,8 @@ import { createAction } from 'redux-actions';
 import { message } from 'antd';
 import { get, size } from 'lodash';
 
-import { getAllFollowing } from '../../client/helpers/apiHelpers';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { getAllFollowing } from '../../common/helpers/apiHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   getAuthorsChildWobjects,
   getChangedField,

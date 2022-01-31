@@ -9,7 +9,7 @@ import { message } from 'antd';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
-import { setGuestLoginData } from '../../helpers/localStorageHelpers';
+import { setGuestLoginData } from '../../../common/helpers/localStorageHelpers';
 import { isUserRegistered } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import SocialButton from './SocialButton';

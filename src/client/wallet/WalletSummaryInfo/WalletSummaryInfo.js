@@ -9,7 +9,7 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import Loading from '../../components/Icon/Loading';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar/WalletSidebar';
 import { HBD, HIVE, WAIV } from '../../../common/constants/cryptos';
-import { isMobile } from '../../helpers/apiHelpers';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 import './WalletSummaryInfo.less';
 
 const WalletSummaryInfo = ({ estAccValue, children }) => {

@@ -22,7 +22,7 @@ import {
   getUserFeedFailedFromState,
   getFeedFailedFromState,
   getUserFeedFromState,
-} from '../helpers/stateHelpers';
+} from '../../common/helpers/stateHelpers';
 import Feed from './Feed';
 import FetchFailed from '../statics/FetchFailed';
 import EmptyFeed from '../statics/EmptyFeed';

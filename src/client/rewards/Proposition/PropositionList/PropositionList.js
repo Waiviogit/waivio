@@ -8,7 +8,11 @@ import Loading from '../../../components/Icon/Loading';
 import CatalogBreadcrumb from '../../../object/Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import CatalogSorting from '../../../object/Catalog/CatalogSorting/CatalogSorting';
 import OBJ_TYPE from '../../../object/const/objectTypes';
-import { createNewHash, hasType, parseWobjectField } from '../../../helpers/wObjectHelper';
+import {
+  createNewHash,
+  hasType,
+  parseWobjectField,
+} from '../../../../common/helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
 import { getObject } from '../../../../waivioApi/ApiClient';

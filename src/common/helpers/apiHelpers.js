@@ -1,6 +1,6 @@
-import SteemAPI from '../steemAPI';
-import { jsonParse } from '../helpers/formatter';
-import * as accountHistoryConstants from '../../common/constants/accountHistory';
+import SteemAPI from '../../client/steemAPI';
+import { jsonParse } from './formatter';
+import * as accountHistoryConstants from '../constants/accountHistory';
 import { getGuestPaymentsHistory, getUserAccount } from '../../waivioApi/ApiClient';
 import { mobileUserAgents } from './regexHelpers';
 

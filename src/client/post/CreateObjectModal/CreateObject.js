@@ -6,8 +6,8 @@ import { Form, Input, Select, Button, Modal } from 'antd';
 import { isEmpty, map, get } from 'lodash';
 import { withRouter } from 'react-router';
 
-import LANGUAGES from '../../translations/languages';
-import { getLanguageText } from '../../translations';
+import LANGUAGES from '../../../common/translations/languages';
+import { getLanguageText } from '../../../common/translations';
 import { objectFields } from '../../../common/constants/listOfFields';
 import listofObjTypesWithAlbum from '../../../common/constants/listofObjTypesWithAlbum';
 import LikeSection from '../../object/LikeSection';
@@ -19,7 +19,11 @@ import { appendObject } from '../../../store/appendStore/appendActions';
 import { createWaivioObject } from '../../../store/wObjectStore/wobjectsActions';
 import { addAlbumToStore } from '../../../store/galleryStore/galleryActions';
 import DEFAULTS from '../../object/const/defaultValues';
-import { getAppendData, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
+import {
+  getAppendData,
+  prepareAlbumData,
+  prepareAlbumToStore,
+} from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
 

@@ -12,7 +12,7 @@ import {
   isFlaggedPost,
   isPostCashout,
 } from '../../vendor/steemitHelpers';
-import { getDownvotes } from '../../helpers/voteHelpers';
+import { getDownvotes } from '../../../common/helpers/voteHelpers';
 import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorComment } from '../../../store/commentsStore/commentsActions';
 import { isGuestUser } from '../../../store/authStore/authSelectors';

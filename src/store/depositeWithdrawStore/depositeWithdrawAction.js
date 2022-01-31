@@ -1,4 +1,4 @@
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   converHiveEngineCoins,
   getDepositWithdrawPair,
@@ -39,22 +39,11 @@ export const getDepositWithdrawPairs = () => ({
 
 export const SET_TOKEN_PAIR = createAsyncActionType('@depositWithdraw/SET_TOKEN_PAIR');
 
-export const setTokenPair = (pair, destination) => (dispatch, getState, { steemConnectAPI }) => {
+export const setTokenPair = (pair, destination) => dispatch => {
   if (pair.from_coin_symbol === 'HIVE') {
     return dispatch({
-      type: SET_TOKEN_PAIR.ACTION,
-      payload: steemConnectAPI
-        .hiveEngineDepositWithdraw(destination, {
-          userName: destination,
-          type: 'deposit',
-          from_coin: pair.from_coin_symbol,
-          to_coin: pair.to_coin_symbol,
-          ex_rate: 1,
-          pair: 'HIVE -> SWAP.HIVE',
-          destination,
-          ...pair,
-        })
-        .then(() => pair),
+      type: SET_TOKEN_PAIR.SUCCESS,
+      payload: pair,
     });
   }
 
@@ -64,18 +53,7 @@ export const setTokenPair = (pair, destination) => (dispatch, getState, { steemC
       from_coin: pair.from_coin_symbol,
       to_coin: pair.to_coin_symbol,
       destination,
-    }).then(res => {
-      steemConnectAPI.hiveEngineDepositWithdraw(destination, {
-        userName: destination,
-        type: 'deposit',
-        from_coin: pair.from_coin_symbol,
-        to_coin: pair.to_coin_symbol,
-        destination,
-        ...res,
-      });
-
-      return { ...pair, ...res };
-    }),
+    }).then(res => ({ ...pair, ...res })),
   });
 };
 
@@ -83,4 +61,24 @@ export const RESET_TOKEN_PAIR = '@depositWithdraw/RESET_TOKEN_PAIR';
 
 export const resetSelectPair = () => ({
   type: RESET_TOKEN_PAIR,
+});
+
+export const SET_DEPOSITE_INFO_FOR_CHAIN = createAsyncActionType(
+  '@depositWithdraw/SET_DEPOSITE_INFO_FOR_CHAIN',
+);
+
+export const setDepositeInfo = (destination, pair) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => ({
+  type: SET_DEPOSITE_INFO_FOR_CHAIN.ACTION,
+  payload: steemConnectAPI.hiveEngineDepositWithdraw(destination, {
+    userName: destination,
+    type: 'deposit',
+    from_coin: pair.from_coin_symbol,
+    to_coin: pair.to_coin_symbol,
+    destination,
+    ...pair,
+  }),
 });

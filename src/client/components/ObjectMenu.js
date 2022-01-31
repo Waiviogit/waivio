@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import OBJECT_TYPE from '../object/const/objectTypes';
-import { hasType } from '../helpers/wObjectHelper';
+import { hasType } from '../../common/helpers/wObjectHelper';
 import './ObjectMenu.less';
 
 class ObjectMenu extends React.Component {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Card, Row } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { FormattedMessage } from 'react-intl';
-import { getImagePath } from '../../helpers/image';
+import { getImagePath } from '../../../common/helpers/image';
 
 import AlbumFeed from './AlbumFeed';
 

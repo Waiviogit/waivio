@@ -8,7 +8,7 @@ import { getTransactionCurrency, getTransactionDescription } from '../../WalletH
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import ReceiveTransaction from '../../TransfersCards/ReceiveTransaction';
 import TransferTransaction from '../../TransfersCards/TransferTransaction';
-import { isMobile } from '../../../helpers/apiHelpers';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 import PowerDownTransaction from '../../TransfersCards/PowerDownTransaction';
 import UnknownTransactionType from '../../TransfersCards/UnknownTransactionType/UnknownTransactionType';
 import TokenActionInMarketCard from '../../TransfersCards/TokenBoughtCard.js/TokenActionInMarketCard';

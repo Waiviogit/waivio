@@ -11,7 +11,7 @@ import { toggleBookmark } from '../../store/bookmarksStore/bookmarksActions';
 import { editPost } from '../../store/editorStore/editorActions';
 import { reblog } from '../../store/reblogStore/reblogActions';
 import { unfollowUser, followUser } from '../../store/usersStore/usersActions';
-import { getDownvotes, getUpvotes } from '../helpers/voteHelpers';
+import { getDownvotes, getUpvotes } from '../../common/helpers/voteHelpers';
 import { getRewardFund } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getIsEditorSaving } from '../../store/editorStore/editorSelectors';

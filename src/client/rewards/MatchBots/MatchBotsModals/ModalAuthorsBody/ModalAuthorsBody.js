@@ -7,7 +7,7 @@ import ModalBodyDate from '../common/ModalBodyDate';
 import ModalBodyNotes from '../common/ModalBodyNotes';
 import ModalBodySlider from '../common/ModalBodySlider';
 import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
-import { MATCH_BOTS_NAMES } from '../../../../helpers/matchBotsHelpers';
+import { MATCH_BOTS_NAMES } from '../../../../../common/helpers/matchBotsHelpers';
 import {
   cryptoCurrencyListForSlider,
   currencyListForSliderValues,

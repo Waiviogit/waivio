@@ -14,10 +14,10 @@ import {
   prepareImageToStore,
   getObjectName,
   getDefaultAlbum,
-} from '../../helpers/wObjectHelper';
+} from '../../../common/helpers/wObjectHelper';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
-import { getVoteValue } from '../../helpers/user';
+import { getVoteValue } from '../../../common/helpers/user';
 import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';

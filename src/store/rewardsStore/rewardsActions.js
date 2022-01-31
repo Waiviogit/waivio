@@ -1,7 +1,7 @@
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 

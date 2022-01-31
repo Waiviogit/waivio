@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import { createSelector } from 'reselect';
 
-import getUserAvatar from '../../client/helpers/authHelper';
+import getUserAvatar from '../../common/helpers/authHelper';
 
 // selector
 const authState = state => state.auth;

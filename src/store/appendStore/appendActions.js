@@ -1,4 +1,4 @@
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { postAppendWaivioObject } from '../../waivioApi/ApiClient';
 import { followObject, voteAppends } from '../wObjectStore/wobjActions';
 import { getLastBlockNum } from '../../client/vendor/steemitHelpers';

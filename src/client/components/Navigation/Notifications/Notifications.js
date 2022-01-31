@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { slice, get, isEmpty, isEqual, size, map } from 'lodash';
 import * as notificationConstants from '../../../../common/constants/notifications';
-import { saveNotificationsLastTimestamp } from '../../../helpers/metadata';
+import { saveNotificationsLastTimestamp } from '../../../../common/helpers/metadata';
 import NotificationFollowing from './NotificationFollowing';
 import NotificationReply from './NotificationReply';
 import NotificationMention from './NotificationMention';

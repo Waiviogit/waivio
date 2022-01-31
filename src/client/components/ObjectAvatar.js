@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { includes, get } from 'lodash';
 
 import DEFAULTS from '../object/const/defaultValues';
-import { getProxyImageURL } from '../helpers/image';
+import { getProxyImageURL } from '../../common/helpers/image';
 
 import './ObjectAvatar.less';
 

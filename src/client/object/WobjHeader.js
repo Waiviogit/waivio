@@ -19,7 +19,7 @@ import {
   haveAccess,
   getObjectName,
   parseWobjectField,
-} from '../helpers/wObjectHelper';
+} from '../../common/helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 

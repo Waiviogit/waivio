@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import ObjectSearchCard from '../../../../ObjectSearchCard/ObjectSearchCard';
-import { getObjectName } from '../../../../../helpers/wObjectHelper';
+import { getObjectName } from '../../../../../../common/helpers/wObjectHelper';
 
 import './SearchItemObject.less';
 

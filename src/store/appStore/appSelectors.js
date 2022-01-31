@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import { createSelector } from 'reselect';
 
-import getWeightHelper from '../../client/helpers/appHelper';
+import getWeightHelper from '../../common/helpers/appHelper';
 
 // selector
 export const appState = state => state.app;

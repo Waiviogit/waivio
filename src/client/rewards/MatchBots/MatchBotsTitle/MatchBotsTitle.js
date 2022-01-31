@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Tooltip } from 'antd';
 
-import { redirectAuthHiveSigner } from '../../../helpers/matchBotsHelpers';
+import { redirectAuthHiveSigner } from '../../../../common/helpers/matchBotsHelpers';
 
 import './MatchBotsTitle.less';
 

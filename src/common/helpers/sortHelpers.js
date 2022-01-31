@@ -1,4 +1,4 @@
-import formatter from '../helpers/steemitFormatter';
+import formatter from './steemitFormatter';
 
 export const sortComments = (comments, sortType = 'BEST') => {
   const sortedComments = [...comments];

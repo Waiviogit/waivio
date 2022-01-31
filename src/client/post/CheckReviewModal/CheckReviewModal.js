@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { size } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
-import { photosInPostRegex } from '../../helpers/regexHelpers';
+import { photosInPostRegex } from '../../../common/helpers/regexHelpers';
 import { getReviewRequirements } from '../../rewards/rewardsHelper';
 
 import './CheckReviewModal.less';

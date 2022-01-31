@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { get, map, find } from 'lodash';
 import { Checkbox } from 'antd';
 import { MESSAGES, HISTORY, GUIDE_HISTORY } from '../../common/constants/rewards';
-import { sortStrings } from '../helpers/sortHelpers';
+import { sortStrings } from '../../common/helpers/sortHelpers';
 
 const FilterModal = ({
   intl,

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { intersection } from 'lodash';
-import socialProfiles, { transform } from '../helpers/socialProfiles';
+import socialProfiles, { transform } from '../../common/helpers/socialProfiles';
 
 const SocialLinks = ({ profile }) => {
   const union = intersection(

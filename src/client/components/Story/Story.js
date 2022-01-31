@@ -16,7 +16,7 @@ import {
   dropCategory,
   isBannedPost,
   replaceBotWithGuestName,
-} from '../../helpers/postHelpers';
+} from '../../../common/helpers/postHelpers';
 import BTooltip from '../BTooltip';
 import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
@@ -26,8 +26,8 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
-import { getObjectName } from '../../helpers/wObjectHelper';
-import { guestUserRegex } from '../../helpers/regexHelpers';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 import './Story.less';
 

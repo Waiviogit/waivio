@@ -9,9 +9,9 @@ import {
   resetToInitialIsClearSearchObj,
   searchObjectsAutoCompete,
 } from '../../../store/searchStore/searchActions';
-import { linkRegex } from '../../helpers/regexHelpers';
+import { linkRegex } from '../../../common/helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
-import { getObjectName } from '../../helpers/wObjectHelper';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { pendingSearch } from '../../search/helpers';
 import {
   getIsStartSearchObject,

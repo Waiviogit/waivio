@@ -1,4 +1,4 @@
-import * as notificationConstants from '../../common/constants/notifications';
+import * as notificationConstants from '../constants/notifications';
 
 export const getNotificationsMessage = (notification, intl, displayUsername) => {
   switch (notification.type) {

@@ -4,7 +4,7 @@ import {
   createAsyncActionType,
   getFeedFromState,
   getFeedLoadingFromState,
-} from '../../client/helpers/stateHelpers';
+} from '../../common/helpers/stateHelpers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';

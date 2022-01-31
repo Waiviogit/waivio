@@ -8,7 +8,7 @@ import {
   getFeedFromState,
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
-} from '../helpers/stateHelpers';
+} from '../../common/helpers/stateHelpers';
 import { reload } from '../../store/authStore/authActions';
 import { getBookmarks } from '../../store/feedStore/feedActions';
 import { showPostModal } from '../../store/appStore/appActions';

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import ObjectFeed from './ObjectFeed';
 import IconButton from '../../components/IconButton';
-import { getObjectName } from '../../helpers/wObjectHelper';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import Loading from '../../components/Icon/Loading';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObjectFetchingState } from '../../../store/wObjectStore/wObjectSelectors';

@@ -1,6 +1,6 @@
 import { find, has } from 'lodash';
-import errors from '../../common/constants/errors';
-import { notify } from '../app/Notification/notificationActions';
+import errors from '../constants/errors';
+import { notify } from '../../client/app/Notification/notificationActions';
 
 export function parseBlockChainError(error) {
   const errorType = find(errors, e => error.includes(e.fingerprint));
