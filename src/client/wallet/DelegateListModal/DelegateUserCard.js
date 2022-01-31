@@ -9,7 +9,7 @@ const DelegateUserCard = props => (
   <div className="DelegateUserCard">
     <a href={`/@${props.name}`} style={{ display: 'flex', alignItems: 'center' }}>
       <Avatar size={45} username={props.name} />
-      <b className={'DelegateUserCard__name'}>{props.name}</b>
+      <span className={'DelegateUserCard__name'}>{props.name}</span>
     </a>
     <span>
       <FormattedNumber value={props.quantity} maximumFractionDigits={3} minimumFractionDigits={2} />{' '}
