@@ -29,7 +29,7 @@ const DelegateListModal = props => {
     >
       <Tabs defaultActiveKey="1" onChange={() => {}}>
         {!isEmpty(props.recivedList) && (
-          <Tabs.TabPane tab={getTitle(props.recivedList, 'Recived')} key="1">
+          <Tabs.TabPane tab={getTitle(props.recivedList, 'Received')} key="1">
             <div className="DelegateListModal__list">
               {props.recivedList
                 .sort((a, b) => b.quantity - a.quantity)
@@ -57,6 +57,17 @@ const DelegateListModal = props => {
                     symbol={props.symbol}
                   />
                 ))}
+              {!isEmpty(props.undeligatedList) &&
+                props.undeligatedList
+                  .sort((a, b) => b.quantity - a.quantity)
+                  .map(undeligate => (
+                    <DelegateUserCard
+                      key={undeligate._id}
+                      quantity={undeligate.quantity}
+                      symbol={props.symbol}
+                      pending
+                    />
+                  ))}
             </div>
           </Tabs.TabPane>
         )}
@@ -71,6 +82,7 @@ DelegateListModal.propTypes = {
   recivedList: PropsType.arrayOf(PropsType.shape({})).isRequired,
   symbol: PropsType.string.isRequired,
   deligateList: PropsType.arrayOf(PropsType.shape({})).isRequired,
+  undeligatedList: PropsType.arrayOf(PropsType.shape({})).isRequired,
 };
 
 export default DelegateListModal;

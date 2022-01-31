@@ -234,20 +234,21 @@ Remember to use the same `id` and `defaultMessage` in default.json file and comp
 
 ## Team
 
-| Lucy             | Diana              | Boris     | Alisher     | Kate     |
-|------------------|--------------------|-----------|-------------|----------|
-| [@Lucy]          | [@Diana]   | [@Boris]    | [@Alisher]    | [@Kate]  
+| Lucy     | Diana              | Boris     | Alisher     | Kate     |
+|----------|--------------------|-----------|-------------|----------|
+| [][Lucy] |[][Diana]
+| [@Lucy]  | [@Diana]   | [@Boris]    | [@Alisher]    | [@Kate]  
 
 [@Lucy]: https://github.com/lucykolosova
 [@Diana]: https://github.com/Diana-Cherry-8
 [@Boris]: https://github.com/Fesmofet
 [@Alisher]: https://github.com/Fesmofet
 [@Kate]: https://github.com/Fesmofet
-[Diana-Cherry-8]: https://avatars.githubusercontent.com/u/67378322?v=4
+[Diana]: https://avatars.githubusercontent.com/Diana-Cherry-8?size=150
 [Boris]: https://avatars.githubusercontent.com/u/59839789?v=4
 [Alisher]: https://avatars.githubusercontent.com/u/59839789?v=4
 [Kate]: https://avatars.githubusercontent.com/u/59839789?v=4
-[lucykolosova]: https://avatars.githubusercontent.com/u/67378322?v=4
+[Lucy]: https://avatars.githubusercontent.com/lucykolosova
 [client src]: ../src/client
 [server src]: ../src/server
 [default.json]: ../src/common/locales/default.json
