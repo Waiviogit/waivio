@@ -8,6 +8,7 @@ import {
   getDepositWithdrawPairs,
   setTokenPair,
   resetSelectPair,
+  setDepositeInfo,
 } from '../../../store/depositeWithdrawStore/depositeWithdrawAction';
 import {
   getDepositList,
@@ -38,6 +39,8 @@ const Deposit = () => {
 
   const handleDoneDeposit = () => {
     dispatch(toggleDepositModal());
+    dispatch(setDepositeInfo(authUserName, selectPair));
+
     if (hiveTokens.includes(selectPair.from_coin_symbol)) {
       dispatch(openTransfer(selectPair.account, 0, selectPair.from_coin_symbol, selectPair.memo));
     }
