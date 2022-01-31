@@ -257,7 +257,12 @@ class Wrapper extends React.PureComponent {
     const isWidget = new URLSearchParams(this.props.location.search).get('display');
 
     return (
-      <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
+      <IntlProvider
+        key={language.id}
+        locale={language.localeData}
+        defaultLocale="en"
+        messages={translations}
+      >
         <ConfigProvider locale={antdLocale}>
           <AppSharedContext.Provider
             value={{

@@ -216,7 +216,12 @@ class WebsiteWrapper extends React.PureComponent {
     const signInPage = location.pathname.includes('sign-in');
 
     return (
-      <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
+      <IntlProvider
+        key={language.id}
+        locale={language.localeData}
+        defaultLocale="en"
+        messages={translations}
+      >
         <ConfigProvider locale={antdLocale}>
           <AppSharedContext.Provider
             value={{

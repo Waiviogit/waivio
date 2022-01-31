@@ -20,7 +20,6 @@ const PowerSwitcher = props => {
         new Error(
           intl.formatMessage({
             id: 'amount_error_zero',
-            defaultMessage: 'Amount has to be higher than 0.',
           }),
         ),
       ]);
@@ -29,11 +28,7 @@ const PowerSwitcher = props => {
     }
 
     if (currentValue !== 0 && currentValue > props.currencyList[currency]) {
-      callback([
-        new Error(
-          intl.formatMessage({ id: 'amount_error_funds', defaultMessage: 'Insufficient funds.' }),
-        ),
-      ]);
+      callback([new Error(intl.formatMessage({ id: 'amount_error_funds' }))]);
     } else {
       callback();
     }
@@ -49,15 +44,12 @@ const PowerSwitcher = props => {
               required: true,
               message: props.intl.formatMessage({
                 id: 'amount_error_empty',
-                defaultMessage: 'Amount is required.',
               }),
             },
             {
               pattern: amountRegex,
               message: props.intl.formatMessage({
                 id: 'amount_error_format_5_places',
-                defaultMessage:
-                  'Incorrect format. Use comma or dot as decimal separator. Use at most 5 decimal places.',
               }),
             },
             { validator: validateBalance },
@@ -91,7 +83,7 @@ const PowerSwitcher = props => {
 PowerSwitcher.propTypes = {
   intl: PropTypes.shape().isRequired,
   defaultType: PropTypes.string.isRequired,
-  currencyList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  currencyList: PropTypes.shape().isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   handleBalanceClick: PropTypes.func.isRequired,
   handleAmountChange: PropTypes.func.isRequired,

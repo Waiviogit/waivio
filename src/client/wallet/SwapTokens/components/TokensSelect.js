@@ -2,27 +2,33 @@ import { Input, Select } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get, isEmpty } from 'lodash';
+import classNames from 'classnames';
+
+import './TokenSelect.less';
 
 const TokensSelect = props => {
+  const inputWrapClassList = classNames('TokenSelect__inputWrap', {
+    'TokenSelect__inputWrap--error': props.isError,
+  });
   const setUserBalance = () => props.handleClickBalance(get(props.token, 'balance', 0));
 
   return (
     <React.Fragment>
-      <div className={props.inputWrapClassList}>
+      <div className={inputWrapClassList}>
         <Input
           value={props.amount}
           placeholder={'0'}
           onChange={e => props.handleChangeValue(e.currentTarget.value)}
           type="number"
-          className="SwapTokens__input"
+          className="TokenSelect__input"
           suffix={
-            <span className="SwapTokens__max-button" onClick={setUserBalance}>
+            <span className="TokenSelect__max-button" onClick={setUserBalance}>
               max
             </span>
           }
         />
         <Select
-          className="SwapTokens__selector"
+          className="TokenSelect__selector"
           showSearch
           value={props.token.symbol}
           disabled={isEmpty(props.list)}
@@ -30,12 +36,12 @@ const TokensSelect = props => {
         >
           {props.list.map(swap => (
             <Select.Option
-              className="SwapTokens__selector-option"
+              className="TokenSelect__selector-option"
               onClick={() => props.setToken(swap)}
               key={swap.symbol}
             >
               <span>{swap.symbol}</span>
-              <span className="SwapTokens__selector-balance">{swap.balance}</span>
+              <span className="TokenSelect__selector-balance">{swap.balance}</span>
             </Select.Option>
           ))}
         </Select>
@@ -43,7 +49,7 @@ const TokensSelect = props => {
       {props.isError && <p className="invalid">Insufficient funds.</p>}{' '}
       <p>
         Your balance:{' '}
-        <span className="SwapTokens__balance" onClick={setUserBalance}>
+        <span className="TokenSelect__balance" onClick={setUserBalance}>
           {get(props.token, 'balance', 0)} {get(props.token, 'symbol')}
         </span>
       </p>
@@ -56,7 +62,6 @@ TokensSelect.propTypes = {
   setToken: PropTypes.func.isRequired,
   handleClickBalance: PropTypes.func.isRequired,
   list: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  inputWrapClassList: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   token: PropTypes.shape({
     symbol: PropTypes.string,
