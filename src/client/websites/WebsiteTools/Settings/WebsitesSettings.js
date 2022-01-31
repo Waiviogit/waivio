@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Button, Form, Input, message, Select } from 'antd';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
-import languages from '../../../translations/languages';
+import languages from '../../../../common/translations/languages';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import {

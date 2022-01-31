@@ -1,5 +1,5 @@
 import { omit } from 'lodash';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getQueryString } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createFilterBody } from '../../client/discoverObjects/helper';

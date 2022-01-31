@@ -1,5 +1,5 @@
 import { isEmpty, includes, get, first } from 'lodash';
-import * as accountHistoryConstants from '../../common/constants/accountHistory';
+import * as accountHistoryConstants from '../constants/accountHistory';
 
 export const ACTIONS_DISPLAY_LIMIT = 100;
 

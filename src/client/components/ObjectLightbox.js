@@ -8,7 +8,7 @@ import ObjectAvatar from './ObjectAvatar';
 import AppendModal from '../object/AppendModal/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
 import DEFAULTS from '../object/const/defaultValues';
-import { getProxyImageURL } from '../helpers/image';
+import { getProxyImageURL } from '../../common/helpers/image';
 
 export default class ObjectLightbox extends Component {
   static propTypes = {

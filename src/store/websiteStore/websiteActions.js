@@ -1,7 +1,7 @@
 import { message } from 'antd';
 import { get, isEmpty, size } from 'lodash';
 
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { getChangesInAccessOption } from '../../client/websites/helper';
 import * as ApiClient from '../../waivioApi/ApiClient';

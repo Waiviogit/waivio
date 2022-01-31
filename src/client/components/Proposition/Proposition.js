@@ -8,7 +8,7 @@ import AppendModal from '../../object/AppendModal/AppendModal';
 import IconButton from '../IconButton';
 import { objectFields } from '../../../common/constants/listOfFields';
 import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
-import { isPhotosAlbumExist } from '../../helpers/wObjectHelper';
+import { isPhotosAlbumExist } from '../../../common/helpers/wObjectHelper';
 import './Proposition.less';
 
 class Proposition extends React.Component {

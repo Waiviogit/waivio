@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import MarkerWithReward from '../../../websites/MainMap/MarkerWithReward/MarkerWithReward';
-import { getObjectReward } from '../../../helpers/wObjectHelper';
+import { getObjectReward } from '../../../../common/helpers/wObjectHelper';
 import { initialColors } from '../../../websites/constants/colors';
 import { getWebsiteColors } from '../../../../store/appStore/appSelectors';
 import SimpleMarker from './SimpleMarker';

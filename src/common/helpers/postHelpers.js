@@ -12,18 +12,18 @@ import {
   isNil,
   uniqBy,
 } from 'lodash';
-import { getHtml } from '../components/Story/Body';
+import { getHtml } from '../../client/components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex, botNameRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
-import DMCA from '../../common/constants/dmca.json';
+import DMCA from '../constants/dmca.json';
 import whiteListedApps from './apps';
 import {
   WAIVIO_META_FIELD_NAME,
   WAIVIO_PARENT_PERMLINK,
   POST_AUTHOR_FOR_REWARDS_COMMENTS,
-} from '../../common/constants/waivio';
-import { rewardsValues } from '../../common/constants/rewards';
+} from '../constants/waivio';
+import { rewardsValues } from '../constants/rewards';
 import * as apiConfig from '../../waivioApi/config.json';
 import { getObjectName } from './wObjectHelper';
 

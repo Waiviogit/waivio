@@ -8,7 +8,7 @@ import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import CommentsMessages from './CommentsMessages';
 import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE, IS_ALL } from '../../../common/constants/rewards';
-import { getVoteValue } from '../../helpers/user';
+import { getVoteValue } from '../../../common/helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import {

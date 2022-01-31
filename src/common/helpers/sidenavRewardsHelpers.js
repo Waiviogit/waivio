@@ -1,4 +1,4 @@
-import { PATH_NAME_HISTORY, HISTORY, MESSAGES } from '../../common/constants/rewards';
+import { PATH_NAME_HISTORY, HISTORY, MESSAGES } from '../constants/rewards';
 
 export const getSectionItemsRewards = (hasReceivables, countTookPartCampaigns) => [
   {

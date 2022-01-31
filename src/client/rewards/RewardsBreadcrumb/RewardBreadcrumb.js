@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
 import classNames from 'classnames';
-import { getObjectName } from '../../helpers/wObjectHelper';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getBreadCrumbText, getSessionData, widgetUrlConstructor } from '../rewardsHelper';
 import '../Rewards.less';
 

@@ -7,12 +7,12 @@ import { get, isEmpty } from 'lodash';
 import { ReactSVG } from 'react-svg';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import { dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
-import { getFacebookShareURL, getTwitterShareURL } from '../../helpers/socialProfiles';
+import { dropCategory, replaceBotWithGuestName } from '../../../common/helpers/postHelpers';
+import { getFacebookShareURL, getTwitterShareURL } from '../../../common/helpers/socialProfiles';
 import { isPostCashout } from '../../vendor/steemitHelpers';
 import { getSocialInfoPost as getSocialInfoPostAction } from '../../../store/postsStore/postActions';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
-import { isMobile } from '../../helpers/apiHelpers';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './PostPopoverMenu.less';
 

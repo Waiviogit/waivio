@@ -11,7 +11,7 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import ReviewItem from './ReviewItem';
 import { validatorMessagesCreator, validatorsCreator } from './validators';
 import fieldsData from './fieldsData';
-import { getObjectName, getObjectType } from '../../helpers/wObjectHelper';
+import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
 import { currencyTypes } from '../../websites/constants/currencyTypes';
 
 const { Option } = Select;

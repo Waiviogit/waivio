@@ -7,7 +7,7 @@ import {
   getSelectedDish,
   getSelectedRestaurant,
 } from '../../../../../store/quickRewards/quickRewardsSelectors';
-import { getObjectName, parseWobjectField } from '../../../../helpers/wObjectHelper';
+import { getObjectName, parseWobjectField } from '../../../../../common/helpers/wObjectHelper';
 import ImageSetter from '../../../../components/ImageSetter/ImageSetter';
 import TagsSelector from '../../../../components/TagsSelector/TagsSelector';
 

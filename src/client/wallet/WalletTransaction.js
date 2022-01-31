@@ -22,7 +22,7 @@ import {
   getTransactionDescription,
 } from './WalletHelper';
 import PowerDownTransaction from './TransfersCards/PowerDownTransaction';
-import formatter from '../helpers/steemitFormatter';
+import formatter from '../../common/helpers/steemitFormatter';
 
 import './UserWalletTransactions/UserWalletTransactions.less';
 

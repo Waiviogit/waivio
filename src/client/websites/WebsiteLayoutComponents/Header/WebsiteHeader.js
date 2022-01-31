@@ -7,7 +7,7 @@ import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
-import { getObjectType } from '../../../helpers/wObjectHelper';
+import { getObjectType } from '../../../../common/helpers/wObjectHelper';
 import {
   getConfigurationValues,
   getCurrPage,

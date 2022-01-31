@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 
 import { getUser } from '../../../store/usersStore/usersSelectors';
-import formatter from '../../helpers/steemitFormatter';
+import formatter from '../../../common/helpers/steemitFormatter';
 import {
   calculateTotalDelegatedSP,
   calculateEstAccountValue,
@@ -15,7 +15,7 @@ import {
 } from '../../vendor/steemitHelpers';
 import BTooltip from '../../components/BTooltip';
 import Loading from '../../components/Icon/Loading';
-import { guestUserRegex } from '../../helpers/regexHelpers';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
 import {
   getAuthenticatedUser,

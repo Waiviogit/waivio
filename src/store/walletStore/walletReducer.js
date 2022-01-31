@@ -1,6 +1,6 @@
 import { get, slice, filter, concat, uniqWith, isEqual } from 'lodash';
 import * as walletActions from './walletActions';
-import { actionsFilter, ACTIONS_DISPLAY_LIMIT } from '../../client/helpers/accountHistoryHelper';
+import { actionsFilter, ACTIONS_DISPLAY_LIMIT } from '../../common/helpers/accountHistoryHelper';
 
 const initialState = {
   transferVisible: false,

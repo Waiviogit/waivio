@@ -33,7 +33,7 @@ export async function loadLanguage(locale) {
   const language = findLanguage(locale);
 
   const localeDataPromise = import(`react-intl/locale-data/${language.localeData}`);
-  const translationsPromise = import(`../locales/${language.translations}`);
+  const translationsPromise = import(`./src/common/locales/${language.translations}`);
 
   const [localeData, translations] = await Promise.all([localeDataPromise, translationsPromise]);
 

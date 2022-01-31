@@ -4,7 +4,7 @@ import React from 'react';
 import { Map, Marker } from 'pigeon-maps';
 import { connect } from 'react-redux';
 import { getCoordinates } from '../../../store/userStore/userActions';
-import mapProvider from '../../helpers/mapProvider';
+import mapProvider from '../../../common/helpers/mapProvider';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 
 import './Map.less';

@@ -17,7 +17,7 @@ import {
   getObjectAvatar,
   getObjectMapInArray,
   getObjectName,
-} from '../../../helpers/wObjectHelper';
+} from '../../../../common/helpers/wObjectHelper';
 import { getReservedCounter } from '../../../../store/appStore/appActions';
 import { setShowReload } from '../../../../store/websiteStore/websiteActions';
 import {

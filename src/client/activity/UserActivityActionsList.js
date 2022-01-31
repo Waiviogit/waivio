@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { isEmpty, get } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { isWalletTransaction } from '../helpers/apiHelpers';
+import { isWalletTransaction } from '../../common/helpers/apiHelpers';
 import {
   setInitialCurrentDisplayedActions,
   addMoreActionsToCurrentDisplayedActions,

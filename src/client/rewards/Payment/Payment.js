@@ -13,7 +13,7 @@ import { openLinkHiveAccountModal } from '../../../store/settingsStore/settingsA
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
-import { guestUserRegex } from '../../helpers/regexHelpers';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import Transfer from '../../wallet/Transfer/Transfer';
 import { isGuestUser } from '../../../store/authStore/authSelectors';
 import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';

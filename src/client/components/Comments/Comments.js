@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { message } from 'antd';
-import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
-import { sortComments } from '../../helpers/sortHelpers';
+import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../../common/helpers/image';
+import { sortComments } from '../../../common/helpers/sortHelpers';
 import Loading from '../Icon/Loading';
 import SortSelector from '../SortSelector/SortSelector';
 import CommentForm from './CommentForm';
 import Comment from './Comment';
 import QuickCommentEditor from './QuickCommentEditor';
 import MoreCommentsButton from './MoreCommentsButton';
-import { getPostKey } from '../../helpers/stateHelpers';
-import { findTopComment, getLinkedComment } from '../../helpers/commentHelpers';
+import { getPostKey } from '../../../common/helpers/stateHelpers';
+import { findTopComment, getLinkedComment } from '../../../common/helpers/commentHelpers';
 import './Comments.less';
 
 @injectIntl

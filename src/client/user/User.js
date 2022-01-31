@@ -15,7 +15,7 @@ import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import NotFound from '../statics/NotFound';
-import { getMetadata } from '../helpers/postingMetadata';
+import { getMetadata } from '../../common/helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import DEFAULTS from '../object/const/defaultValues';
 import Loading from '../components/Icon/Loading';

@@ -11,12 +11,17 @@ import Affix from '../../components/Utils/Affix';
 import LeftObjectProfileSidebar from '../../app/Sidebar/LeftObjectProfileSidebar';
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../../components/Sidebar/ObjectsRelated/index';
-import { getObjectAvatar, getObjectType, hasType, parseAddress } from '../../helpers/wObjectHelper';
+import {
+  getObjectAvatar,
+  getObjectType,
+  hasType,
+  parseAddress,
+} from '../../../common/helpers/wObjectHelper';
 import OBJECT_TYPE from '../const/objectTypes';
 import { formColumnsField } from '../../../common/constants/listOfFields';
 import WobjectSidebarFollowers from '../../app/Sidebar/ObjectInfoExperts/WobjectSidebarFollowers';
 import WobjectNearby from '../../app/Sidebar/ObjectInfoExperts/WobjectNearby';
-import { compareObjectTitle } from '../../helpers/seoHelpes';
+import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 
 const Wobj = ({
   authenticated,

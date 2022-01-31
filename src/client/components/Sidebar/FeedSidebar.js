@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getCryptoDetails } from '../../helpers/cryptosHelper';
+import { getCryptoDetails } from '../../../common/helpers/cryptosHelper';
 import InterestingObjects from './InterestingObjects';
 import CryptoTrendingCharts from './CrypoCharts/CryptoTrendingCharts';
 import InterestingPeople from './InterestingPeople';

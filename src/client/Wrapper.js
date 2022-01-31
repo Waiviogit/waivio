@@ -9,7 +9,7 @@ import { ConfigProvider, Layout } from 'antd';
 import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
-import { findLanguage, getRequestLocale, loadLanguage } from './translations';
+import { findLanguage, getRequestLocale, loadLanguage } from '../common/translations';
 import {
   login,
   busyLogin,
@@ -20,7 +20,7 @@ import { getRate, getRewardFund, setUsedLocale, setAppUrl } from '../store/appSt
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
-import { guestUserRegex } from './helpers/regexHelpers';
+import { guestUserRegex } from '../common/helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';

@@ -1,6 +1,6 @@
 import sanitizeHtml from 'sanitize-html';
 import url from 'url';
-import { knownDomains } from '../helpers/constants';
+import { knownDomains } from '../../common/helpers/constants';
 
 /**
 This function is extracted from steemit.com source code and does the same tasks with some slight-

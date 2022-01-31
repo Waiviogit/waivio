@@ -12,7 +12,7 @@ import USDDisplay from '../Utils/USDDisplay';
 import PayoutDetail from '../PayoutComponents/PayoutDetail/PayoutDetail';
 import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 import { WAIVEligibleTags } from '../../../common/constants/waivio';
-import { parseJSON } from '../../helpers/parseJSON';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 import './Payout.less';
 

@@ -20,7 +20,7 @@ import {
 import SubmitReviewPublish from '../../post/CheckReviewModal/SubmitReviewPublish';
 import StepsItems from '../../widgets/CircleSteps/StepsItems';
 import { declineProposition } from '../../../store/userStore/userActions';
-import { generatePermlink } from '../../helpers/wObjectHelper';
+import { generatePermlink } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import './QuickRewardsModal.less';
 

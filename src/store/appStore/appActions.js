@@ -1,12 +1,12 @@
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { setBeneficiaryOwner } from '../searchStore/searchActions';
 import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
 import { getCurrentCurrency } from './appSelectors';
 import { setLocale } from '../settingsStore/settingsActions';
-import { adaptMarketDataToEngine } from '../../client/helpers/cryptosHelper';
+import { adaptMarketDataToEngine } from '../../common/helpers/cryptosHelper';
 import { ADAPT_MARKET_TO_ENGINE } from '../walletStore/walletActions';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 

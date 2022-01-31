@@ -8,7 +8,7 @@ import {
 } from '../../../../store/userStore/userActions';
 import SidebarMenu from '../SidebarMenu/SidebarMenu';
 import Loading from '../../Icon/Loading';
-import { getObjectName } from '../../../helpers/wObjectHelper';
+import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import * as userSelectors from '../../../../store/userStore/userSelectors';
 

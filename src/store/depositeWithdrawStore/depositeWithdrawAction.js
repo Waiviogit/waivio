@@ -1,4 +1,4 @@
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   converHiveEngineCoins,
   getDepositWithdrawPair,

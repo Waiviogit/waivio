@@ -6,9 +6,9 @@ import * as steem from 'steem';
 import { get, size } from 'lodash';
 import { Client } from '@hiveio/dhive';
 
-import formatter from '../helpers/steemitFormatter';
+import formatter from '../../common/helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
-import { getDownvotes } from '../helpers/voteHelpers';
+import { getDownvotes } from '../../common/helpers/voteHelpers';
 import { calculateVoteValueForSlider, getContent } from '../../waivioApi/ApiClient';
 import { useSelector } from 'react-redux';
 import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';

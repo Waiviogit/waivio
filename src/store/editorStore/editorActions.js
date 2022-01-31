@@ -21,14 +21,14 @@ import {
   differenceBy,
 } from 'lodash';
 import { createAction } from 'redux-actions';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
-import { REFERRAL_PERCENT } from '../../client/helpers/constants';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { REFERRAL_PERCENT } from '../../common/helpers/constants';
 import {
   addDraftMetadata,
   deleteDraftMetadata,
   deleteDraftMetadataObject,
-} from '../../client/helpers/metadata';
-import { jsonParse } from '../../client/helpers/formatter';
+} from '../../common/helpers/metadata';
+import { jsonParse } from '../../common/helpers/formatter';
 import { rewardsValues } from '../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../client/vendor/steemitHelpers';
 import { saveSettings } from '../settingsStore/settingsActions';
@@ -54,7 +54,7 @@ import {
   updatedHideObjectsPaste,
   getLinkedObjects as getLinkedObjectsHelper,
   checkCursorInSearch,
-} from '../../client/helpers/editorHelper';
+} from '../../common/helpers/editorHelper';
 import {
   getCurrentDraft,
   getEditor,
@@ -69,16 +69,16 @@ import {
   getTitleValue,
 } from './editorSelectors';
 import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
-import { getObjectName, getObjectType } from '../../client/helpers/wObjectHelper';
-import { createPostMetadata, getObjectUrl } from '../../client/helpers/postHelpers';
+import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
+import { createPostMetadata, getObjectUrl } from '../../common/helpers/postHelpers';
 import {
   createEditorState,
   Entity,
   fromMarkdown,
   toMarkdown,
 } from '../../client/components/EditorExtended';
-import { setObjPercents } from '../../client/helpers/wObjInfluenceHelper';
-import { extractLinks } from '../../client/helpers/parser';
+import { setObjPercents } from '../../common/helpers/wObjInfluenceHelper';
+import { extractLinks } from '../../common/helpers/parser';
 import objectTypes from '../../client/object/const/objectTypes';
 
 export const CREATE_POST = '@editor/CREATE_POST';

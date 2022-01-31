@@ -11,7 +11,7 @@ import StoryPreview from '../../components/Story/StoryPreview';
 import Comments from '../../comments/Comments';
 import Slider from '../../components/Slider/Slider';
 import AppendObjButtons from '../../components/StoryFooter/AppendObjButtons';
-import { getAppendDownvotes, getAppendUpvotes } from '../../helpers/voteHelpers';
+import { getAppendDownvotes, getAppendUpvotes } from '../../../common/helpers/voteHelpers';
 import { voteAppends } from '../../../store/wObjectStore/wobjActions';
 import Payout from '../../components/StoryFooter/Payout';
 import Confirmation from '../../components/StoryFooter/Confirmation';

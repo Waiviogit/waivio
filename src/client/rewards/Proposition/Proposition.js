@@ -24,7 +24,7 @@ import {
   getCurrentHivePrice,
 } from '../../../waivioApi/ApiClient';
 import { removeToggleFlag } from '../../../store/rewardsStore/rewardsActions';
-import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
+import { generatePermlink, getObjectName } from '../../../common/helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import {

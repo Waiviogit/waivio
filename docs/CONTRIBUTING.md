@@ -247,7 +247,7 @@ Remember to use the same `id` and `defaultMessage` in default.json file and comp
 [@eugenezherebilov]: https://github.com/eugenezherebilov
 [client src]: ../src/client
 [server src]: ../src/server
-[default.json]: ../src/client/locales/default.json
+[default.json]: ../src/common/locales/default.json
 [waiviogit]: https://avatars.githubusercontent.com/waiviogit?size=150
 [konstantin1390]: https://avatars.githubusercontent.com/konstantin1390?size=150
 [milklim]: https://avatars.githubusercontent.com/milklim?size=130

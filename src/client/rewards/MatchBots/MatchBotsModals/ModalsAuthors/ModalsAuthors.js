@@ -14,7 +14,7 @@ import {
   setInitialInputValues,
   INITIAL_INPUTS_VALUE,
   MATCH_BOTS_NAMES,
-} from '../../../../helpers/matchBotsHelpers';
+} from '../../../../../common/helpers/matchBotsHelpers';
 import ModalBodyConfirm from '../common/ModalBodyConfirm/ModalBodyConfirm';
 
 const ModalsAuthors = ({ intl, modalType, addAuthorBot, bot, deleteAuthorBot }) => {

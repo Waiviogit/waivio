@@ -14,8 +14,8 @@ import {
   searchUsersAutoCompete,
 } from '../../../store/searchStore/searchActions';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
-import { replacer } from '../../helpers/parser';
-import { getObjectName } from '../../helpers/wObjectHelper';
+import { replacer } from '../../../common/helpers/parser';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { setFiltersAndLoad } from '../../../store/objectTypeStore/objectTypeActions';
 import HeaderButton from '../HeaderButton/HeaderButton';
 import { getTranformSearchCountData, pendingSearch } from '../../search/helpers';

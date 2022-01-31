@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import ObjectCardView from '../../../../objectCard/ObjectCardView';
 import ObjectSearchCard from '../../../../components/ObjectSearchCard/ObjectSearchCard';
-import { getObjectName, getObjectType } from '../../../../helpers/wObjectHelper';
+import { getObjectName, getObjectType } from '../../../../../common/helpers/wObjectHelper';
 import {
   getDishRewardsListFromState,
   getEligibleRewardsListFromState,

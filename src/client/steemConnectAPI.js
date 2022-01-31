@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import hivesigner from 'hivesigner';
 import { waivioAPI } from '../waivioApi/ApiClient';
-import { getValidTokenData } from './helpers/getToken';
+import { getValidTokenData } from '../common/helpers/getToken';
 
 function broadcast(operations, isReview, actionAuthor) {
   let operation;

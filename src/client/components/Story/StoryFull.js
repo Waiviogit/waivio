@@ -15,8 +15,12 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Collapse, message } from 'antd';
 import Lightbox from 'react-image-lightbox';
-import { extractImageTags } from '../../helpers/parser';
-import { dropCategory, isPostDeleted, replaceBotWithGuestName } from '../../helpers/postHelpers';
+import { extractImageTags } from '../../../common/helpers/parser';
+import {
+  dropCategory,
+  isPostDeleted,
+  replaceBotWithGuestName,
+} from '../../../common/helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
 import { getHtml } from './Body';
@@ -33,7 +37,7 @@ import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../../store/userStore/userActions';
-import { getImagePathPost } from '../../helpers/image';
+import { getImagePathPost } from '../../../common/helpers/image';
 import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorPost } from '../../../store/postsStore/postActions';
 

@@ -6,7 +6,7 @@ import MatchBotsTitle from '../MatchBotsTitle';
 import MatchBotsService from '../MatchBotsService';
 import ModalsCurators from '../MatchBotsModals/ModalsCurators';
 import MatchBotsCuratorsContent from './MatchBotsCuratorsContent';
-import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
+import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../../common/helpers/matchBotsHelpers';
 
 import '../MatchBots.less';
 import MatchBotsTable from '../MatchBotsTable';

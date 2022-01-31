@@ -4,7 +4,7 @@ import {
   objectFields,
   sortingMenuName,
 } from '../../common/constants/listOfFields';
-import { getObjectName, isList } from '../helpers/wObjectHelper';
+import { getObjectName, isList } from '../../common/helpers/wObjectHelper';
 
 export const getListItems = (wobj, { uniq } = { uniq: false, isMappedToClientWobject: false }) => {
   let items = [];

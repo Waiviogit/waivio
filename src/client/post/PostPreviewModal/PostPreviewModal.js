@@ -9,7 +9,7 @@ import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
 import CheckReviewModal from '../CheckReviewModal/CheckReviewModal';
-import { isContentValid } from '../../helpers/postHelpers';
+import { isContentValid } from '../../../common/helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import { clearBeneficiariesUsers } from '../../../store/searchStore/searchActions';

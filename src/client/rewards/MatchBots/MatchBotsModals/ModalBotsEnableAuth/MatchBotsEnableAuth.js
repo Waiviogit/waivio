@@ -5,7 +5,10 @@ import { isEmpty, omit } from 'lodash';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 
-import { MATCH_BOTS_NAMES, redirectAuthHiveSigner } from '../../../../helpers/matchBotsHelpers';
+import {
+  MATCH_BOTS_NAMES,
+  redirectAuthHiveSigner,
+} from '../../../../../common/helpers/matchBotsHelpers';
 
 const ModalBotsEnableAuth = ({
   isAuthority,

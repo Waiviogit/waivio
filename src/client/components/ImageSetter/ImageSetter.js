@@ -7,7 +7,7 @@ import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
 import withEditor from '../Editor/withEditor';
-import { isValidImage } from '../../helpers/image';
+import { isValidImage } from '../../../common/helpers/image';
 import {
   ALLOWED_IMG_FORMATS,
   MAX_IMG_SIZE,

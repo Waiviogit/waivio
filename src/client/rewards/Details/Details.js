@@ -11,7 +11,7 @@ import getDetailsMessages from './detailsMessagesData';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
-import { getObjectName } from '../../helpers/wObjectHelper';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { clearAllSessionProposition, getSessionData } from '../rewardsHelper';
 import withAuthActions from '../../auth/withAuthActions';
 

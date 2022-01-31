@@ -10,7 +10,7 @@ import {
   validateGuestTransferTitle,
 } from '../../WalletHelper';
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
-import { guestUserRegex } from '../../../helpers/regexHelpers';
+import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 
 const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSteem, currency) => {
   const transactionType = transaction.type;
