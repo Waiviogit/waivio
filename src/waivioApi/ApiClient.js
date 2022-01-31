@@ -2268,24 +2268,14 @@ export const getAllCampaingForRequiredObject = params => {
     .catch(e => e);
 };
 
-export const getTokenBalance = (userName, symbol) => {
-  return fetch('https://ha.herpc.dtools.dev/contracts', {
+const hiveEngineContract = params =>
+  fetch('https://ha.herpc.dtools.dev/contracts', {
     headers,
     body: JSON.stringify({
       jsonrpc: '2.0',
       id: 10,
       method: 'find',
-      params: {
-        contract: 'tokens',
-        table: 'balances',
-        query: {
-          account: userName,
-          symbol,
-        },
-        limit: 1000,
-        offset: 0,
-        indexes: '',
-      },
+      params,
     }),
     method: 'POST',
   })
@@ -2293,7 +2283,19 @@ export const getTokenBalance = (userName, symbol) => {
     .then(res => res.json())
     .then(response => response.result)
     .catch(e => e);
-};
+
+export const getTokenBalance = (userName, symbol) =>
+  hiveEngineContract({
+    contract: 'tokens',
+    table: 'balances',
+    query: {
+      account: userName,
+      symbol,
+    },
+    limit: 1000,
+    offset: 0,
+    indexes: '',
+  });
 
 export const getTokensEngineRates = currency => {
   return fetch(`${config.currenciesApiPrefix}${config.engineRates}?base=${currency}`, {
@@ -2374,50 +2376,24 @@ export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) =
     .catch(e => e);
 };
 
-export const getWaivVoteMana = account => {
-  return fetch('https://ha.herpc.dtools.dev/contracts', {
-    headers,
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: 10,
-      method: 'find',
-      params: {
-        contract: 'comments',
-        table: 'votingPower',
-        query: { rewardPoolId: WAIVIdPool, account },
-      },
-    }),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(response => response.result[0])
-    .catch(e => e);
-};
+export const getWaivVoteMana = account =>
+  hiveEngineContract({
+    params: {
+      contract: 'comments',
+      table: 'votingPower',
+      query: { rewardPoolId: WAIVIdPool, account },
+    },
+  });
 
-export const getTokensRate = symbols => {
-  return fetch('https://ha.herpc.dtools.dev/contracts', {
-    headers,
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: 10,
-      method: 'find',
-      params: {
-        contract: 'market',
-        indexes: '',
-        limit: 1000,
-        offset: 0,
-        query: { symbol: { $in: symbols } },
-        table: 'metrics',
-      },
-    }),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(response => response.result)
-    .catch(e => e);
-};
+export const getTokensRate = symbols =>
+  hiveEngineContract({
+    contract: 'market',
+    indexes: '',
+    limit: 1000,
+    offset: 0,
+    query: { symbol: { $in: symbols } },
+    table: 'metrics',
+  });
 
 export const getFeeInfo = symbols => {
   return fetch('https://api2.hive-engine.com/rpc/contracts', {
@@ -2464,29 +2440,25 @@ export const getDelegateList = data => {
     .catch(e => e);
 };
 
-export const getTokensInformation = symbols => {
-  return fetch('https://ha.herpc.dtools.dev/contracts', {
-    headers,
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: 10,
-      method: 'find',
-      params: {
-        contract: 'tokens',
-        table: 'tokens',
-        indexes: '',
-        limit: 1000,
-        offset: 0,
-        query: { symbol: { $in: symbols } },
-      },
-    }),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(response => response.result)
-    .catch(e => e);
-};
+export const getTokensInformation = symbols =>
+  hiveEngineContract({
+    contract: 'tokens',
+    table: 'tokens',
+    indexes: '',
+    limit: 1000,
+    offset: 0,
+    query: { symbol: { $in: symbols } },
+  });
+
+export const getPendingUndelegationsToken = (account, symbol = 'WAIV') =>
+  hiveEngineContract({
+    contract: 'tokens',
+    table: 'pendingUndelegations',
+    query: {
+      account,
+      symbol,
+    },
+  });
 
 export const getHiveEngineSwap = () =>
   fetch(`${config.campaignApiPrefix}${config.hiveEngine}${config.swap}`, {

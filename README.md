@@ -42,6 +42,7 @@ yarn dev
 Just use prettier and adhere ESLint recomendations.
 
 ## Git conversation
+You need checkout branches and create pull request _only_ for `dev`
 
 Branch names should be prefixed with `tech/`, `feature/` or `bugfix/` followed by ticket number from Jira,
 dash and a few descriptive words.  
