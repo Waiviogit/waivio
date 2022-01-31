@@ -4,8 +4,8 @@ import { Button, Checkbox, Form, Input, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import ImageSetter from '../../ImageSetter/ImageSetter';
-import LANGUAGES from '../../../translations/languages';
-import { getLanguageText } from '../../../translations';
+import LANGUAGES from '../../../../common/translations/languages';
+import { getLanguageText } from '../../../../common/translations';
 
 const GuestSignUpFormContent = ({
   getFieldDecorator,

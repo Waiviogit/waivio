@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from '../../store/commentsStore/commentsActions';
 import { notify } from '../app/Notification/notificationActions';
-import { getDownvotes } from '../helpers/voteHelpers';
+import { getDownvotes } from '../../common/helpers/voteHelpers';
 import { getRewardFund } from '../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,

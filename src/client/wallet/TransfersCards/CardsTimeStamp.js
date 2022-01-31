@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 
 import BTooltip from '../../components/BTooltip';
-import { epochToUTC } from '../../helpers/formatter';
-import { guestUserRegex } from '../../helpers/regexHelpers';
+import { epochToUTC } from '../../../common/helpers/formatter';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 const CardsTimeStamp = ({ timestamp, match }) => {
   const isGuest = guestUserRegex.test(match.params.name);

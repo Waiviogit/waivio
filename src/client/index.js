@@ -11,7 +11,7 @@ import { waivioAPI, sendSentryNotification } from '../waivioApi/ApiClient';
 import history from './history';
 import getStore from '../store/store';
 import AppHost from './AppHost';
-import { getBrowserLocale, loadLanguage } from './translations';
+import { getBrowserLocale, loadLanguage } from '../common/translations';
 import { setScreenSize, setUsedLocale } from '../store/appStore/appActions';
 import { getLocale } from '../store/settingsStore/settingsSelectors';
 

@@ -3,7 +3,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
-import { MATCH_BOTS_NAMES } from '../../../../../helpers/matchBotsHelpers';
+import { MATCH_BOTS_NAMES } from '../../../../../../common/helpers/matchBotsHelpers';
 
 import './ModalFooter.less';
 

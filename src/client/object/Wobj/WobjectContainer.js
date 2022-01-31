@@ -17,7 +17,11 @@ import {
   clearRelatedPhoto,
 } from '../../../store/galleryStore/galleryActions';
 import { objectFields } from '../../../common/constants/listOfFields';
-import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
+import {
+  getObjectName,
+  prepareAlbumData,
+  prepareAlbumToStore,
+} from '../../../common/helpers/wObjectHelper';
 import {
   setNestedWobject,
   setCatalogBreadCrumbs,

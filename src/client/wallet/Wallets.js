@@ -22,7 +22,7 @@ import {
 import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import PowerUpOrDown from './PowerUpOrDown/PowerUpOrDown';
 import HiveEngineWallet from './HiveEngineWallet/HiveEngineWallet';
-import { guestUserRegex } from '../helpers/regexHelpers';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import SwapTokens from './SwapTokens/SwapTokens';
 import { getVisibleModal } from '../../store/swapStore/swapSelectors';
 import Deposit from './Deposit/Deposit';

@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import DEFAULTS from '../../object/const/defaultValues';
 import ObjectAvatar from '../ObjectAvatar';
-import { getProxyImageURL } from '../../helpers/image';
+import { getProxyImageURL } from '../../../common/helpers/image';
 
 describe('<ObjectAvatar />', () => {
   let props;

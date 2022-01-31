@@ -8,7 +8,7 @@ import uuidv4 from 'uuid/v4';
 import { isEmpty, isEqual, map } from 'lodash';
 import { Map } from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
-import mapProvider from '../../../helpers/mapProvider';
+import mapProvider from '../../../../common/helpers/mapProvider';
 import { getCoordinates } from '../../../../store/userStore/userActions';
 import {
   setWebsiteObjectsCoordinates,

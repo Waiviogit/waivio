@@ -2,7 +2,7 @@ import { each, find, omit, get } from 'lodash';
 import * as feedTypes from '../feedStore/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../commentsStore/commentsActions';
-import { getPostKey } from '../../client/helpers/stateHelpers';
+import { getPostKey } from '../../common/helpers/stateHelpers';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {

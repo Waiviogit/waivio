@@ -8,7 +8,7 @@ import { updateProfile, reload } from '../../store/authStore/authActions';
 import withEditor from '../components/Editor/withEditor';
 import Action from '../components/Button/Action';
 import requiresLogin from '../auth/requiresLogin';
-import { saveNotificationsSettings } from '../helpers/metadata';
+import { saveNotificationsSettings } from '../../common/helpers/metadata';
 import { notificationType } from '../../common/constants/waivio';
 import { updateUserMetadata } from '../../store/usersStore/usersActions';
 import {

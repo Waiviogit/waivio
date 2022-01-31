@@ -10,7 +10,7 @@ import {
   getFeedFetchedFromState,
   getFeedHasMoreFromState,
   getFeedFromState,
-} from '../helpers/stateHelpers';
+} from '../../common/helpers/stateHelpers';
 import { getUserAccountHistory } from '../../store/walletStore/walletActions';
 import { getUserProfileBlogPosts, resetProfileFilters } from '../../store/feedStore/feedActions';
 import { showPostModal } from '../../store/appStore/appActions';

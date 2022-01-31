@@ -8,7 +8,7 @@ import { EditorState, Modifier } from 'draft-js';
 import { Entity } from '../../util/constants';
 import SearchObjectsAutocomplete from '../../../../../client/components/EditorObject/SearchObjectsAutocomplete';
 import * as apiConfig from '../../../../../waivioApi/config.json';
-import { createNewHash, getObjectName, hasType } from '../../../../helpers/wObjectHelper';
+import { createNewHash, getObjectName, hasType } from '../../../../../common/helpers/wObjectHelper';
 import OBJECT_TYPES from '../../../../../client/object/const/objectTypes';
 
 const objectSearchInput = props => {

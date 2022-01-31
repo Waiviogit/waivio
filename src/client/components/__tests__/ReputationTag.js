@@ -2,7 +2,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 import { IntlProvider } from 'react-intl';
-import formatter from '../../helpers/steemitFormatter';
+import formatter from '../../../common/helpers/steemitFormatter';
 import ReputationTag from '../ReputationTag';
 
 describe('<ReputationTag />', () => {

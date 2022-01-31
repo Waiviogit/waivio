@@ -11,7 +11,7 @@ import UserActivitySearch from '../../activity/UserActivitySearch';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
 import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
-import { getFeedFromState } from '../../helpers/stateHelpers';
+import { getFeedFromState } from '../../../common/helpers/stateHelpers';
 import UserSidebar from './UserSidebar';
 import {
   getAuthenticatedUserName,

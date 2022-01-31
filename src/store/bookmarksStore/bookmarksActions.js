@@ -1,4 +1,4 @@
-import { toggleBookmarkMetadata } from '../../client/helpers/metadata';
+import { toggleBookmarkMetadata } from '../../common/helpers/metadata';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 export const TOGGLE_BOOKMARK = '@bookmarks/TOGGLE_BOOKMARK';

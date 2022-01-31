@@ -30,7 +30,7 @@ import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 import ImageSideButton from './components/sides/ImageSideButton';
 import { encodeImageFileAsURL } from './model/content';
-import { addTextToCursor } from '../../helpers/editorHelper';
+import { addTextToCursor } from '../../../common/helpers/editorHelper';
 import EditorSearchObjects from './components/EditorSearchObjects';
 import { getSelection, getSelectionRect } from './util';
 

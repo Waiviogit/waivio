@@ -13,7 +13,7 @@ import {
   setInitialInputValues,
   MATCH_BOTS_NAMES,
   INITIAL_INPUTS_VALUE_CURATOR,
-} from '../../../../helpers/matchBotsHelpers';
+} from '../../../../../common/helpers/matchBotsHelpers';
 import ModalCuratorsBody from '../ModalCuratorsBody';
 import ModalBodyConfirm from '../common/ModalBodyConfirm/ModalBodyConfirm';
 

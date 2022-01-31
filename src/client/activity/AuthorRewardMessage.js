@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { reduce } from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
-import formatter from '../helpers/steemitFormatter';
+import formatter from '../../common/helpers/steemitFormatter';
 
 const AuthorRewardMessage = ({
   actionDetails,

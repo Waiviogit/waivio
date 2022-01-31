@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getFacebookShareURL } from '../../helpers/socialProfiles';
+import { getFacebookShareURL } from '../../../common/helpers/socialProfiles';
 import './ShareButton.less';
 
 const FacebookShare = ({ url }) => (

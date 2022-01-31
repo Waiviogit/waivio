@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { FormattedMessage, FormattedNumber, FormattedRelative } from 'react-intl';
 
-import { getFromMetadata } from '../../helpers/parser';
-import { getProxyImageURL } from '../../helpers/image';
+import { getFromMetadata } from '../../../common/helpers/parser';
+import { getProxyImageURL } from '../../../common/helpers/image';
 
 const PostRecommendationLink = ({ post, navigateToPost, navigateToPostComments }) => {
   const images = getFromMetadata(post.json_metadata, 'image');

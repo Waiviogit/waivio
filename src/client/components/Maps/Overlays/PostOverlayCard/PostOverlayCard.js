@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import Avatar from '../../../Avatar';
-import { jsonParse } from '../../../../helpers/formatter';
-import { getObjectAvatar } from '../../../../helpers/wObjectHelper';
+import { jsonParse } from '../../../../../common/helpers/formatter';
+import { getObjectAvatar } from '../../../../../common/helpers/wObjectHelper';
 import USDDisplay from '../../../Utils/USDDisplay';
 import { calculatePayout, isPostCashout } from '../../../../vendor/steemitHelpers';
 import { getTokenRatesInUSD } from '../../../../../store/walletStore/walletSelectors';

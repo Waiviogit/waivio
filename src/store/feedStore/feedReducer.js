@@ -1,7 +1,7 @@
 import { uniq, get } from 'lodash';
 import * as feedTypes from './feedActions';
 import { TOGGLE_BOOKMARK } from '../bookmarksStore/bookmarksActions';
-import { getPostKey, setFilterTagsForUsersProfile } from '../../client/helpers/stateHelpers';
+import { getPostKey, setFilterTagsForUsersProfile } from '../../common/helpers/stateHelpers';
 
 const initialState = {
   feed: {},

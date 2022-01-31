@@ -10,8 +10,8 @@ import Action from '../components/Button/Action';
 import Loading from '../components/Icon/Loading';
 import RawSlider from '../components/Slider/RawSlider';
 import requiresLogin from '../auth/requiresLogin';
-import LANGUAGES from '../translations/languages';
-import { getLanguageText } from '../translations';
+import LANGUAGES from '../../common/translations/languages';
+import { getLanguageText } from '../../common/translations';
 import {
   getAuthenticatedUser,
   getIsReloading,

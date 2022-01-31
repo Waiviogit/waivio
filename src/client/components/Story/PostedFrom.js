@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import BTooltip from '../BTooltip';
-import { getAppData } from '../../helpers/postHelpers';
+import { getAppData } from '../../../common/helpers/postHelpers';
 import './PostedFrom.less';
 
 const PostedFrom = ({ post }) => {

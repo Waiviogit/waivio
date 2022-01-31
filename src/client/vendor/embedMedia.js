@@ -6,7 +6,7 @@
 
 import getUrls from 'get-urls';
 
-import { VIDEO_MATCH_URL } from '../helpers/regexHelpers';
+import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
 
 const SteemEmbed = {};
 

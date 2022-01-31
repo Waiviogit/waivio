@@ -1,5 +1,5 @@
 import { get, toUpper, toLower, find, isEmpty, last, nth } from 'lodash';
-import { CRYPTO_MAP } from '../../common/constants/cryptos';
+import { CRYPTO_MAP } from '../constants/cryptos';
 
 export function getCryptoDetails(cryptoQuery) {
   const getCryptoBySymbol = get(CRYPTO_MAP, toUpper(cryptoQuery), {});

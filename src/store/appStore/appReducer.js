@@ -2,8 +2,8 @@ import { LOCATION_CHANGE } from 'connected-react-router';
 import * as appTypes from './appActions';
 import * as postActions from '../postsStore/postActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
-import { mobileUserAgents } from '../../client/helpers/regexHelpers';
-import { getObjectAvatar, getObjectName } from '../../client/helpers/wObjectHelper';
+import { mobileUserAgents } from '../../common/helpers/regexHelpers';
+import { getObjectAvatar, getObjectName } from '../../common/helpers/wObjectHelper';
 import DEFAULTS from '../../client/object/const/defaultValues';
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 

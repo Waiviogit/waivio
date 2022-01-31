@@ -11,7 +11,7 @@ import {
   getPermlinksFromHash,
   hasType,
   sortWobjectsByHash,
-} from '../../../helpers/wObjectHelper';
+} from '../../../../common/helpers/wObjectHelper';
 import { setCatalogBreadCrumbs } from '../../../../store/wObjectStore/wobjActions';
 import { getSuitableLanguage } from '../../../../store/reducers';
 import { getObjectsByIds } from '../../../../waivioApi/ApiClient';

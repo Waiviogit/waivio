@@ -7,7 +7,7 @@ import WeightTag from '../components/WeightTag';
 import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
 import { addressFields, objectFields, websiteFields } from '../../common/constants/listOfFields';
-import { getObjectName, parseWobjectField } from '../helpers/wObjectHelper';
+import { getObjectName, parseWobjectField } from '../../common/helpers/wObjectHelper';
 
 import './WaivioObject.less';
 

@@ -15,7 +15,7 @@ import {
   getUserAccountHistory,
   clearTransactionsHistory,
 } from '../../store/walletStore/walletActions';
-import { guestUserRegex } from '../helpers/regexHelpers';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import Withdraw from '../wallet/Withdraw/WithDraw';
 import { getCryptosPriceHistory, getScreenSize } from '../../store/appStore/appSelectors';
 

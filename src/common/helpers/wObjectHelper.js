@@ -1,8 +1,5 @@
 import { get, some, filter, isEmpty, compact, isEqual } from 'lodash';
-import {
-  addressFieldsForFormatting,
-  TYPES_OF_MENU_ITEM,
-} from '../../common/constants/listOfFields';
+import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 
 export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'default_name') || '';
