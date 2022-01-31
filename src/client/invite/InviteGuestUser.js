@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Input } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FormattedMessage } from 'react-intl';
-import { REFERRAL_PERCENT } from '../helpers/constants';
+import { REFERRAL_PERCENT } from '../../common/helpers/constants';
 import FacebookShare from '../components/Button/FacebookShare';
 import TwitterShare from '../components/Button/TwitterShare';
 import EmailShare from '../components/Button/EmailShare';

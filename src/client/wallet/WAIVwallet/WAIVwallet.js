@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import WAIVWalletSummaryInfo from './WAIVWalletSummaryInfo';
 import WAIVWalletTransferList from './WAIVWalletTransferList/WAIVWalletTransferList';
 import ShowRewardsButton from './ShowRewardsButton';
-import { guestUserRegex } from '../../helpers/regexHelpers';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 import './WAIVwallet.less';
 

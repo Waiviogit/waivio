@@ -13,10 +13,10 @@ import {
   setSearchInBox,
   setShowSearchResult,
 } from '../../../store/searchStore/searchActions';
-import mapProvider from '../../helpers/mapProvider';
+import mapProvider from '../../../common/helpers/mapProvider';
 import { getParsedMap } from '../../components/Maps/mapHelper';
 import CustomMarker from '../../components/Maps/CustomMarker';
-import { getObjectName } from '../../helpers/wObjectHelper';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
 import { getCurrentAppSettings, putUserCoordinates } from '../../../store/appStore/appActions';
 import {

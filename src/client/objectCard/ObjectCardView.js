@@ -8,8 +8,13 @@ import classNames from 'classnames';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
-import { getObjectName, parseAddress, getObjectAvatar, hasType } from '../helpers/wObjectHelper';
-import { getProxyImageURL } from '../helpers/image';
+import {
+  getObjectName,
+  parseAddress,
+  getObjectAvatar,
+  hasType,
+} from '../../common/helpers/wObjectHelper';
+import { getProxyImageURL } from '../../common/helpers/image';
 import { getRate } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';

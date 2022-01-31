@@ -7,7 +7,7 @@ import { get, isEmpty, includes } from 'lodash';
 import urlParse from 'url-parse';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { getUserRankKey, getUserRank } from '../../helpers/user';
+import { getUserRankKey, getUserRank } from '../../../common/helpers/user';
 import AvatarLightbox from '../../components/AvatarLightbox';
 import FollowButton from '../../widgets/FollowButton';
 import WeightTag from '../../components/WeightTag';
@@ -16,9 +16,9 @@ import { unfollowUser, followUser, muteUserBlog } from '../../../store/usersStor
 import BellButton from '../../widgets/BellButton';
 import MuteModal from '../../widgets/MuteModal';
 import UserPopoverMenu from '../../components/UserPopoverMenu';
-import { isMobile } from '../../helpers/apiHelpers';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getImagePathPost } from '../../helpers/image';
+import { getImagePathPost } from '../../../common/helpers/image';
 
 import './UserHeader.less';
 

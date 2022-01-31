@@ -6,7 +6,10 @@ import { injectIntl } from 'react-intl';
 import { convertToRaw, SelectionState } from 'draft-js';
 import { fromMarkdown, Editor as MediumDraftEditor, createEditorState } from '../index';
 import { SIDE_BUTTONS } from '../model/content';
-import { checkCursorInSearch, parseImagesFromBlocks } from '../../../helpers/editorHelper';
+import {
+  checkCursorInSearch,
+  parseImagesFromBlocks,
+} from '../../../../common/helpers/editorHelper';
 import { getSelection, getSelectionRect } from '../util';
 
 const MAX_LENGTH = 255;

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
 import classNames from 'classnames';
 import Avatar from '../../Avatar';
-import { epochToUTC } from '../../../helpers/formatter';
+import { epochToUTC } from '../../../../common/helpers/formatter';
 
 const NotificationVote = ({ onClick, read, notification, currentAuthUsername }) => {
   const { voter, timestamp, permlink } = notification;

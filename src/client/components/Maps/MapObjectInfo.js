@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash';
 import { getRadius, getParsedMap } from './mapHelper';
 import Loading from '../Icon/Loading';
 import { getCoordinates } from '../../../store/userStore/userActions';
-import mapProvider from '../../helpers/mapProvider';
+import mapProvider from '../../../common/helpers/mapProvider';
 import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
 

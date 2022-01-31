@@ -2,7 +2,7 @@ import { max, get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
-import { getImagePath } from '../../helpers/image';
+import { getImagePath } from '../../../common/helpers/image';
 import DEFAULTS from '../../object/const/defaultValues';
 import './GalleryAlbum.less';
 

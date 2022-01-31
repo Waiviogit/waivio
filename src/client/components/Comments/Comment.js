@@ -11,9 +11,9 @@ import {
 } from 'react-intl';
 import { Tag, message } from 'antd';
 import BTooltip from '../../components/BTooltip';
-import formatter from '../../helpers/steemitFormatter';
-import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
-import { sortComments } from '../../helpers/sortHelpers';
+import formatter from '../../../common/helpers/steemitFormatter';
+import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../../common/helpers/image';
+import { sortComments } from '../../../common/helpers/sortHelpers';
 import CommentForm from './CommentForm';
 import EmbeddedCommentForm from './EmbeddedCommentForm';
 import QuickCommentEditor from './QuickCommentEditor';

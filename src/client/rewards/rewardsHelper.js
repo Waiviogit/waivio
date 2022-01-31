@@ -15,7 +15,7 @@ import {
   IS_RESERVED,
 } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
-import { getObjectName } from '../helpers/wObjectHelper';
+import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
 
 const isLocation = typeof location !== 'undefined';

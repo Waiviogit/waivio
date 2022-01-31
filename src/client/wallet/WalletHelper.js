@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
 import { get, size, truncate, floor, ceil, round } from 'lodash';
 import BTooltip from '../components/BTooltip';
-import { epochToUTC } from '../helpers/formatter';
-import formatter from '../helpers/steemitFormatter';
+import { epochToUTC } from '../../common/helpers/formatter';
+import formatter from '../../common/helpers/steemitFormatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 
 export const TRANSACTION_TYPES = [

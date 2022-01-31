@@ -10,7 +10,7 @@ import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import Error401 from '../../statics/Error401';
 import getMatchBotMessageData from './matchBotMessageData';
-import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../helpers/matchBotsHelpers';
+import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
 
 import './MatchBotSponsors.less';
 

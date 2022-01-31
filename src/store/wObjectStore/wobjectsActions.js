@@ -1,8 +1,8 @@
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAlbums } from '../galleryStore/galleryActions';
 import { createPermlink } from '../../client/vendor/steemitHelpers';
-import { generateRandomString } from '../../client/helpers/wObjectHelper';
+import { generateRandomString } from '../../common/helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
 import { WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
 import { getCurrentHost, getUsedLocale } from '../appStore/appSelectors';

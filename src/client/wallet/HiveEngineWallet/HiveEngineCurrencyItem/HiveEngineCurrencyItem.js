@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 
 import './HiveEngineCurrencyItem.less';
-import { getProxyImageURL } from '../../../helpers/image';
+import { getProxyImageURL } from '../../../../common/helpers/image';
 
 const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
   const stake = token.stake || 0;

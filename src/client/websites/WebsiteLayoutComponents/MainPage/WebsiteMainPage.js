@@ -8,7 +8,7 @@ import WebsiteFooter from '../WebsiteFooter/Footer';
 import CarouselSection from './components/CarouselSection/CarouselSection';
 import DistrictSection from './components/DistrictSection/DistrictSection';
 import NearbySection from './components/NearbySection/NearbySection';
-import { isMobile } from '../../../helpers/apiHelpers';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
 
 import './WebsiteMainPage.less';

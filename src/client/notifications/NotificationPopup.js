@@ -9,8 +9,8 @@ import {
   getNotificationsMessage,
   getNotificationsLink,
   getNotificationsAvatar,
-} from '../helpers/notificationsHelper';
-import { epochToUTC } from '../helpers/formatter';
+} from '../../common/helpers/notificationsHelper';
+import { epochToUTC } from '../../common/helpers/formatter';
 import Avatar from '../components/Avatar';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import { getLatestNotification } from '../../store/userStore/userSelectors';

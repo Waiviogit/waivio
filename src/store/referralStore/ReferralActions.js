@@ -1,7 +1,7 @@
 import { get, isEmpty } from 'lodash';
 import { message } from 'antd';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_USER_REFERRAL_INFO = createAsyncActionType('@referral/GET_USER_REFERRAL_INFO');

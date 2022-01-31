@@ -1,19 +1,19 @@
 import { each, get, last, findIndex, isEmpty, filter } from 'lodash';
 import { createAction } from 'redux-actions';
-import formatter from '../../client/helpers/steemitFormatter';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import formatter from '../../common/helpers/steemitFormatter';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   getAccountHistory,
   getDynamicGlobalProperties,
   isWalletTransaction,
   defaultAccountLimit,
-} from '../../client/helpers/apiHelpers';
-import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../../client/helpers/accountHistoryHelper';
+} from '../../common/helpers/apiHelpers';
+import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../../common/helpers/accountHistoryHelper';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
-import { guestUserRegex } from '../../client/helpers/regexHelpers';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getCurrentWalletType, getShowRewards } from './walletSelectors';
-import { parseJSON } from '../../client/helpers/parseJSON';
+import { parseJSON } from '../../common/helpers/parseJSON';
 import {
   HIVE_ENGINE_DEFAULT_SWAP_LIST,
   HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY,

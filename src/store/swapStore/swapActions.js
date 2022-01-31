@@ -1,4 +1,4 @@
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getHiveEngineSwap } from '../../waivioApi/ApiClient';
 import { compareTokensList } from './helper';
 import { getSwapListFromStore } from './swapSelectors';

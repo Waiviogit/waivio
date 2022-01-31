@@ -16,13 +16,13 @@ import EditorInput from './EditorInput';
 import LinkedObjects from './LinkedObjects';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import { BENEFICIARY_PERCENT } from '../../helpers/constants';
+import { BENEFICIARY_PERCENT } from '../../../common/helpers/constants';
 import { WAIVIO_META_FIELD_NAME, MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
 import {
   setInitialInfluence,
   changeObjInfluenceHandler,
   removeObjInfluenceHandler,
-} from '../../helpers/wObjInfluenceHelper';
+} from '../../../common/helpers/wObjInfluenceHelper';
 
 import './Editor.less';
 

@@ -8,7 +8,7 @@ import {
   getFeedFromState,
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
-} from '../helpers/stateHelpers';
+} from '../../common/helpers/stateHelpers';
 import { showPostModal } from '../../store/appStore/appActions';
 import { getUserComments, getMoreUserComments } from '../../store/feedStore/feedActions';
 import EmptyMutedUserProfile from '../statics/MutedContent';

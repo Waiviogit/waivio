@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { Link } from 'react-router-dom';
-import formatter from '../helpers/steemitFormatter';
+import formatter from '../../common/helpers/steemitFormatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import VoteActionMessage from './VoteActionMessage';
 import CommentActionMessage from './CommentActionMessage';

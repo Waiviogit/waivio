@@ -9,9 +9,9 @@ import { isEmpty, get, map } from 'lodash';
 import { Map } from 'pigeon-maps';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
-import { getObjectName } from '../../../helpers/wObjectHelper';
+import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 import ObjectAvatar from '../../../components/ObjectAvatar';
-import mapProvider from '../../../helpers/mapProvider';
+import mapProvider from '../../../../common/helpers/mapProvider';
 import {
   getCoordinatesForMap,
   getWebConfiguration,

@@ -8,7 +8,7 @@ import steemEmbed from './embedMedia';
 import xmldom from 'xmldom';
 import linksRe from './steemitLinks';
 import { validateAccountName } from './ChainValidation';
-import { getImagePathPost } from '../helpers/image';
+import { getImagePathPost } from '../../common/helpers/image';
 
 const noop = () => {};
 const DOMParser = new xmldom.DOMParser({

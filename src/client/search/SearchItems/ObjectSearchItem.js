@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ObjectAvatar from '../../components/ObjectAvatar';
-import { getObjectName, hasType, parseAddress } from '../../helpers/wObjectHelper';
+import { getObjectName, hasType, parseAddress } from '../../../common/helpers/wObjectHelper';
 
 const ObjectSearchItem = ({ wobj, isWebsite }) => {
   const wobjName = getObjectName(wobj);

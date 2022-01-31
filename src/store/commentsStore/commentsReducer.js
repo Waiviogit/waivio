@@ -1,6 +1,6 @@
 import { mapValues, omit, uniq } from 'lodash';
 import * as commentsTypes from './commentsActions';
-import { getPostKey, getParentKey } from '../../client/helpers/stateHelpers';
+import { getPostKey, getParentKey } from '../../common/helpers/stateHelpers';
 
 const initialState = {
   childrenById: {},

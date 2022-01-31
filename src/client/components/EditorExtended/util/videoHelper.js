@@ -1,4 +1,4 @@
-import { VIDEO_MATCH_URL } from '../../../helpers/regexHelpers';
+import { VIDEO_MATCH_URL } from '../../../../common/helpers/regexHelpers';
 
 const YOUTUBE_PREFIX = 'https://www.youtube.com/embed/';
 const VIMEO_PREFIX = 'https://player.vimeo.com/video/';

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedRelative } from 'react-intl';
 import BTooltip from '../../components/BTooltip';
 import Avatar from '../../components/Avatar';
-import { epochToUTC } from '../../helpers/formatter';
+import { epochToUTC } from '../../../common/helpers/formatter';
 import { getSavingsTransactionMessage } from '../WalletHelper';
 
 const SavingsTransaction = ({ timestamp, transactionType, transactionDetails, amount }) => (

@@ -10,7 +10,7 @@ import {
   getSectionItemsMatchBots,
   getSectionItemsReferrals,
   getSectionItemsRewards,
-} from '../../../helpers/sidenavRewardsHelpers';
+} from '../../../../common/helpers/sidenavRewardsHelpers';
 
 import '../Sidenav.less';
 

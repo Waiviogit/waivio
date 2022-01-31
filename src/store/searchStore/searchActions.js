@@ -1,9 +1,9 @@
 import { isEmpty } from 'lodash';
 import { message } from 'antd';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getSuitableLanguage } from '../reducers';
-import { replacer } from '../../client/helpers/parser';
+import { replacer } from '../../common/helpers/parser';
 import { getIsWaivio } from '../appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
 import { getFollowingList } from '../userStore/userSelectors';

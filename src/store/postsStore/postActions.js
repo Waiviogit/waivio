@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { createAsyncActionType, getPostKey } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType, getPostKey } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';

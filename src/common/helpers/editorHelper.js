@@ -18,7 +18,7 @@ import {
 } from 'lodash';
 import { convertToRaw, EditorState, genKey, Modifier, SelectionState } from 'draft-js';
 
-import { Block, createEditorState, Entity } from '../components/EditorExtended';
+import { Block, createEditorState, Entity } from '../../client/components/EditorExtended';
 
 const mockPhoto = '📷';
 

@@ -2,17 +2,17 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Badge } from 'antd';
 import { debounce, get, includes, find, uniqWith, isEqual, isEmpty, isNull } from 'lodash';
-import { getInitialState } from '../../helpers/postHelpers';
+import { getInitialState } from '../../../common/helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
 import { toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
-import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import { setObjPercents } from '../../../common/helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
-import { getCurrentDraftId } from '../../helpers/editorHelper';
+import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
 
 import './EditPost.less';
 

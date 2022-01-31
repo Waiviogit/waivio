@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { includes } from 'lodash';
 import { rewardPostContainerData } from '../../../rewards/rewardsHelper';
-import { generatePermlink } from '../../../helpers/wObjectHelper';
+import { generatePermlink } from '../../../../common/helpers/wObjectHelper';
 import {
   validateActivationCampaign,
   validateInactivationCampaign,

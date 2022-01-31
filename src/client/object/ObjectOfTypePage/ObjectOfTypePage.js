@@ -15,7 +15,7 @@ import {
   getLastPermlinksFromHash,
   getObjectName,
   hasType,
-} from '../../helpers/wObjectHelper';
+} from '../../../common/helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import IconButton from '../../components/IconButton';

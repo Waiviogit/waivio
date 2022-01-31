@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { createAction } from 'redux-actions';
 
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getWobjectGallery, getRelatedPhotos } from '../../waivioApi/ApiClient';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getRelatedPhotos as relatedPhotos } from './gallerySelectors';

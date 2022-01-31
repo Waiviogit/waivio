@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { objectNameValidationRegExp } from '../../../common/constants/validation';
-import { prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
+import { prepareAlbumData, prepareAlbumToStore } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { addAlbumToStore } from '../../../store/galleryStore/galleryActions';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';

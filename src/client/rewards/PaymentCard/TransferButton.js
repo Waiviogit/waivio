@@ -9,7 +9,7 @@ import { getMemo } from '../rewardsHelper';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../../store/walletStore/walletActions';
 import { openLinkHiveAccountModal } from '../../../store/settingsStore/settingsActions';
-import { guestUserRegex } from '../../helpers/regexHelpers';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import { PATH_NAME_RECEIVABLES, PATH_NAME_PAYABLES } from '../../../common/constants/rewards';
 import { isGuestUser } from '../../../store/authStore/authSelectors';
 import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';

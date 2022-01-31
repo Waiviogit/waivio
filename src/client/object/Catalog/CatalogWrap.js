@@ -13,7 +13,7 @@ import {
   recencySortOrder,
   getListItem,
   getListItems,
-} from '../../helpers/wObjectHelper';
+} from '../../../common/helpers/wObjectHelper';
 import PropositionListContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import {
   setLoadedNestedWobject,

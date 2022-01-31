@@ -24,10 +24,10 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import { swapImpactPercent } from '../../../common/constants/swapList';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
-import { getSwapOutput } from '../../helpers/swapTokenHelpers';
-import { createQuery } from '../../helpers/apiHelpers';
+import { getSwapOutput } from '../../../common/helpers/swapTokenHelpers';
+import { createQuery } from '../../../common/helpers/apiHelpers';
 import TokensSelect from './components/TokensSelect';
-import { getImpact } from '../../helpers/swapWalletHelpers';
+import { getImpact } from '../../../common/helpers/swapWalletHelpers';
 
 import './SwapTokens.less';
 import { getFeeInfo } from '../../../waivioApi/ApiClient';

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Checkbox, Collapse, Select } from 'antd';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { BENEFICIARY_PERCENT } from '../../helpers/constants';
+import { BENEFICIARY_PERCENT } from '../../../common/helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
 import ObjectWeights from './ObjectWeights';
 import {
