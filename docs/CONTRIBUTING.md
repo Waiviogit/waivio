@@ -234,23 +234,21 @@ Remember to use the same `id` and `defaultMessage` in default.json file and comp
 
 ## Team
 
-| Roman           | Konstantin | Vladimir | Eugene | Max | Alex |
-|---|---|---|---|---|---|
-| ![][waiviogit] | ![][konstantin1390] | ![][milklim] | ![][eugenezherebilov] | ![][maksimoancha] | ![][grigurkoalexey] 
-| [@waiviogit] | [@konstantin1390] | [@milklim] | [@eugenezherebilov] | [@maksimoancha] | [@grigurkoalexey] 
+| Lucy             | Diana              | Boris     | Alisher     | Kate     |
+|------------------|--------------------|-----------|-------------|----------|
+| [@Lucy]          | [@Diana]   | [@Boris]    | [@Alisher]    | [@Kate]  
 
-[@waiviogit]: https://github.com/waiviogit
-[@konstantin1390]: https://github.com/konstantin1390
-[@milklim]: https://github.com/milklim
-[@maksimoancha]: https://github.com/maksimoancha
-[@grigurkoalexey]: https://github.com/grigurkoalexey
-[@eugenezherebilov]: https://github.com/eugenezherebilov
+[@Lucy]: https://github.com/lucykolosova
+[@Diana]: https://github.com/Diana-Cherry-8
+[@Boris]: https://github.com/Fesmofet
+[@Alisher]: https://github.com/Fesmofet
+[@Kate]: https://github.com/Fesmofet
+[Diana-Cherry-8]: https://avatars.githubusercontent.com/u/67378322?v=4
+[Boris]: https://avatars.githubusercontent.com/u/59839789?v=4
+[Alisher]: https://avatars.githubusercontent.com/u/59839789?v=4
+[Kate]: https://avatars.githubusercontent.com/u/59839789?v=4
+[lucykolosova]: https://avatars.githubusercontent.com/u/67378322?v=4
 [client src]: ../src/client
 [server src]: ../src/server
 [default.json]: ../src/common/locales/default.json
-[waiviogit]: https://avatars.githubusercontent.com/waiviogit?size=150
-[konstantin1390]: https://avatars.githubusercontent.com/konstantin1390?size=150
-[milklim]: https://avatars.githubusercontent.com/milklim?size=130
-[maksimoancha]: https://avatars.githubusercontent.com/maksimoancha?size=150
-[grigurkoalexey]: https://avatars.githubusercontent.com/grigurkoalexey?size=150
-[eugenezherebilov]: https://avatars.githubusercontent.com/eugenezherebilov?size=150
+
