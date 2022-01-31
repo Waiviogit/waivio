@@ -113,7 +113,7 @@ const UserWalletSummary = ({
   const setDelegationLists = async () => {
     const lists = await getHiveDelegate(user.name);
     const recivedMapList = lists.received.map(item => ({
-      to: item.delegator,
+      from: item.delegator,
       quantity: formatter.vestToSteem(
         item.vesting_shares,
         totalVestingShares,
