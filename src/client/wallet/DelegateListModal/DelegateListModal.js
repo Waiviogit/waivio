@@ -44,33 +44,41 @@ const DelegateListModal = props => {
             </div>
           </Tabs.TabPane>
         )}
-        {!isEmpty(props.deligateList) && (
-          <Tabs.TabPane tab={getTitle(props.deligateList, 'Delegated')} key="2">
-            <div className="DelegateListModal__list">
-              {props.deligateList
-                .sort((a, b) => b.quantity - a.quantity)
-                .map(deligate => (
-                  <DelegateUserCard
-                    key={deligate._id}
-                    name={deligate.to}
-                    quantity={deligate.quantity}
-                    symbol={props.symbol}
-                  />
-                ))}
-              {!isEmpty(props.undeligatedList) &&
-                props.undeligatedList
+        {!isEmpty(props.deligateList) ||
+          (!isEmpty(props.undeligatedList) && (
+            <Tabs.TabPane
+              tab={
+                isEmpty(props.undeligatedList)
+                  ? getTitle(props.deligateList, 'Delegated')
+                  : getTitle([...props.deligateList, ...props.undeligatedList], 'Delegated')
+              }
+              key="2"
+            >
+              <div className="DelegateListModal__list">
+                {props.deligateList
                   .sort((a, b) => b.quantity - a.quantity)
-                  .map(undeligate => (
+                  .map(deligate => (
                     <DelegateUserCard
-                      key={undeligate._id}
-                      quantity={undeligate.quantity}
+                      key={deligate._id}
+                      name={deligate.to}
+                      quantity={deligate.quantity}
                       symbol={props.symbol}
-                      pending
                     />
                   ))}
-            </div>
-          </Tabs.TabPane>
-        )}
+                {!isEmpty(props.undeligatedList) &&
+                  props.undeligatedList
+                    .sort((a, b) => b.quantity - a.quantity)
+                    .map(undeligate => (
+                      <DelegateUserCard
+                        key={undeligate._id}
+                        quantity={undeligate.quantity}
+                        symbol={props.symbol}
+                        pending
+                      />
+                    ))}
+              </div>
+            </Tabs.TabPane>
+          ))}
       </Tabs>
     </Modal>
   );

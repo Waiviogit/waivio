@@ -106,7 +106,8 @@ const UserWalletSummary = ({
   const [recivedList, setRecivedList] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
-  const hasDelegations = !isEmpty(delegateList) || !isEmpty(recivedList);
+  const hasDelegations =
+    !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('UserWalletSummary__value', {
     'UserWalletSummary__value--cursorPointer': hasDelegations,
   });
