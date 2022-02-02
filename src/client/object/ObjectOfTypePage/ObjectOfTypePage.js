@@ -60,13 +60,13 @@ const ObjectOfTypePage = props => {
 
         getObject(pathUrl, userName, locale).then(wObject => {
           setCurrentContent(wObject.pageContent);
-          setContent(wObject.pageContent);
+          wObject.pageContent ? setContent(wObject.pageContent) : setContent('no content');
           setNestedWobj(wObject);
           setLoadingNestedWobject(false);
         });
       } else {
         setCurrentContent(wobject.pageContent);
-        setContent(wobject.pageContent);
+        wobject.pageContent ? setContent(wobject.pageContent) : setContent('no content');
         setLoadingNestedWobject(false);
       }
     }
@@ -89,7 +89,7 @@ const ObjectOfTypePage = props => {
       const { appendPageContent, userName, toggleViewEditMode, nestedWobject, breadcrumb } = props;
       const { follow } = values;
 
-      if (!err) {
+      if (!err && content !== 'no content') {
         const pageContentField = {
           name: objectFields.pageContent,
           body: content,
@@ -134,22 +134,22 @@ const ObjectOfTypePage = props => {
 
   const renderBody = () => {
     if (!isLoadingFlag) {
-      if (content) {
+      if (content && content !== 'no content') {
         return <BodyContainer full body={content} />;
+      } else if (content === 'no content') {
+        return (
+          <React.Fragment>
+            <div className="object-of-type-page__empty-placeholder">
+              <span>
+                {intl.formatMessage({
+                  id: 'empty_page_content',
+                  defaultMessage: 'This page has no content',
+                })}
+              </span>
+            </div>
+          </React.Fragment>
+        );
       }
-
-      return (
-        <React.Fragment>
-          <div className="object-of-type-page__empty-placeholder">
-            <span>
-              {intl.formatMessage({
-                id: 'empty_page_content',
-                defaultMessage: 'This page has no content',
-              })}
-            </span>
-          </div>
-        </React.Fragment>
-      );
     }
 
     return <Loading />;
