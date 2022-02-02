@@ -198,8 +198,7 @@ const WithdrawModal = props => {
         </div>
       </div>
       <p>
-        Est. transaction value:{' '}
-        <USDDisplay value={fromAmount * get(pair, 'rate') * hiveRateInUsd} />
+        Est. amount: <USDDisplay value={fromAmount * get(pair, 'rate') * hiveRateInUsd} />
       </p>
       {!hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) && (
         <p>
