@@ -46,7 +46,7 @@ const TokensSelect = props => {
           ))}
         </Select>
       </div>
-      {props.isError && <p className="invalid">Insufficient funds.</p>}{' '}
+      {props.isError && <p className="TokenSelect__invalid">Insufficient funds.</p>}{' '}
       <p>
         Your balance:{' '}
         <span className="TokenSelect__balance" onClick={setUserBalance}>
