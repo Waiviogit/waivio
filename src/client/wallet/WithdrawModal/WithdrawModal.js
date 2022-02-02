@@ -155,10 +155,18 @@ const WithdrawModal = props => {
     <Modal
       className="WithdrawModal"
       visible={visible}
-      okButtonProps={{ disabled: !fromAmount || isError }}
       onCancel={handleCloseModal}
-      onOk={handleWithdraw}
       title={'Withdraw'}
+      footer={[
+        <Button
+          key={'Withdraw'}
+          type="primary"
+          onClick={handleWithdraw}
+          disabled={!fromAmount || isError}
+        >
+          Withdraw
+        </Button>,
+      ]}
     >
       <section>
         <p>
@@ -190,13 +198,14 @@ const WithdrawModal = props => {
         </div>
       </div>
       <p>
-        Estimated transaction value:{' '}
+        Est. transaction value:{' '}
         <USDDisplay value={fromAmount * get(pair, 'rate') * hiveRateInUsd} />
       </p>
-      <p>
-        Minimal withdraw amount: {withdrawFee} {get(pair, 'from_coin_symbol')}
-      </p>
-
+      {!hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) && (
+        <p>
+          Minimal withdraw amount: {withdrawFee} {get(pair, 'from_coin_symbol')}
+        </p>
+      )}
       <div className="WithdrawModal__block">
         <h3 className="WithdrawModal__title">Destination address:</h3>
         {hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) ? (

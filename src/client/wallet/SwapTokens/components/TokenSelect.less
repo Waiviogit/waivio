@@ -2,7 +2,11 @@
 @import (reference) '../../../styles/modules/variables.less';
 
 .TokenSelect {
-  .ant-input-affix-wrapper .ant-input:not(:last-child) {
+  &__invalid {
+    color: @red;
+  }
+
+  &__input.ant-input-affix-wrapper .ant-input:not(:last-child) {
     padding-right: 45px;
   }
 
@@ -84,10 +88,6 @@
   &__selector-option {
     display: flex;
     justify-content: space-between;
-  }
-
-  .invalid {
-    color: @red;
   }
 
   &__max-button {

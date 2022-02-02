@@ -33,9 +33,11 @@
       border-radius: 4px 0 0 4px;
       outline: none;
 
-      &:focus {
+      &:focus,
+      &:hover {
         outline: none;
         box-shadow: none;
+        border-right: @base-border !important;
       }
     }
   }
@@ -64,6 +66,18 @@
 
   &__block {
     margin-top: 20px;
+  }
+
+  &__qr-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 32px;
+
+    span {
+      margin-top: 0;
+      margin-left: 5px;
+    }
   }
 }
 
