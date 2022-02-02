@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import Avatar from './Avatar';
-import { guestUserRegex } from '../helpers/regexHelpers';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 export default class AvatarLightbox extends React.Component {
   static propTypes = {

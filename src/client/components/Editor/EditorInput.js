@@ -6,7 +6,7 @@ import { Icon, Input, Form, Modal } from 'antd';
 import Dropzone from 'react-dropzone';
 import { HotKeys } from 'react-hotkeys';
 import { size } from 'lodash';
-import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../helpers/image';
+import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../../common/helpers/image';
 import EditorToolbar from './EditorToolbar';
 import ImageSetter from '../ImageSetter/ImageSetter';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';

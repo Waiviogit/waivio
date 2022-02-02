@@ -5,10 +5,10 @@ import {
   getLastBlockNum,
 } from '../../client/vendor/steemitHelpers';
 import { notify } from '../../client/app/Notification/notificationActions';
-import { jsonParse } from '../../client/helpers/formatter';
-import { createPostMetadata } from '../../client/helpers/postHelpers';
-import { createAsyncActionType, getPostKey } from '../../client/helpers/stateHelpers';
-import { findRoot } from '../../client/helpers/commentHelpers';
+import { jsonParse } from '../../common/helpers/formatter';
+import { createPostMetadata } from '../../common/helpers/postHelpers';
+import { createAsyncActionType, getPostKey } from '../../common/helpers/stateHelpers';
+import { findRoot } from '../../common/helpers/commentHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { sendCommentAppend } from '../wObjectStore/wobjActions';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';

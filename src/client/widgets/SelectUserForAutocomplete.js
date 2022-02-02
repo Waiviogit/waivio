@@ -8,13 +8,23 @@ const SelectUserForAutocomplete = ({ account, resetUser }) => (
       <Avatar username={account} size={40} />
       <span>{account}</span>
     </div>
-    <span role="presentation" onClick={() => resetUser(account)} className="iconfont icon-delete" />
+    {resetUser && (
+      <span
+        role="presentation"
+        onClick={() => resetUser(account)}
+        className="iconfont icon-delete"
+      />
+    )}
   </div>
 );
 
 SelectUserForAutocomplete.propTypes = {
-  resetUser: PropTypes.func.isRequired,
+  resetUser: PropTypes.func,
   account: PropTypes.string.isRequired,
+};
+
+SelectUserForAutocomplete.defaultProps = {
+  resetUser: null,
 };
 
 export default SelectUserForAutocomplete;

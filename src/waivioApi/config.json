@@ -148,6 +148,7 @@
   "hiveEngine": "/hive-engine",
   "accountHistory": "/account-history",
   "swap": "/swap",
+  "delegation": "/delegation",
   "depositWithdraw": "/deposit-withdraw",
   "getMatchBots": "/match-bots"
 }

@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { FormattedMessage, FormattedNumber, FormattedDate, FormattedTime } from 'react-intl';
+import { isEmpty } from 'lodash';
+import classNames from 'classnames';
 
 import { getUser } from '../../../store/usersStore/usersSelectors';
-import formatter from '../../helpers/steemitFormatter';
+import formatter from '../../../common/helpers/steemitFormatter';
 import {
   calculateTotalDelegatedSP,
   calculateEstAccountValue,
@@ -13,12 +15,16 @@ import {
 } from '../../vendor/steemitHelpers';
 import BTooltip from '../../components/BTooltip';
 import Loading from '../../components/Icon/Loading';
-import { guestUserRegex } from '../../helpers/regexHelpers';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
 } from '../../../store/authStore/authSelectors';
+import { getHiveDelegate } from '../../../waivioApi/ApiClient';
+import DelegateListModal from '../DelegateListModal/DelegateListModal';
+import { isMobile } from '../../../common/helpers/apiHelpers';
+
 import './UserWalletSummary.less';
 
 const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
@@ -39,6 +45,7 @@ const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFund
             />
           </span>
         }
+        {...(isMobile() ? { visible: false } : {})}
       >
         <span>
           {totalDelegatedSP > 0 ? ' (+' : ' ('}
@@ -74,6 +81,7 @@ const getFormattedPendingWithdrawalSP = (user, totalVestingShares, totalVestingF
             <FormattedTime value={`${user.next_vesting_withdrawal}Z`} />
           </span>
         }
+        {...(isMobile() ? { visible: false } : {})}
       >
         <span>
           {' - '}
@@ -94,10 +102,51 @@ const UserWalletSummary = ({
   steemRate,
   sbdRate,
 }) => {
+  const [delegateList, setDeligateList] = useState([]);
+  const [recivedList, setRecivedList] = useState([]);
+  const [undeligatedList, setUndeligatedList] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const hasDelegations =
+    !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
+  const powerClassList = classNames('UserWalletSummary__value', {
+    'UserWalletSummary__value--cursorPointer': hasDelegations,
+  });
   const isGuest = guestUserRegex.test(user.name);
   const estAccValue = isGuest
     ? user.balance * steemRate
     : calculateEstAccountValue(user, totalVestingShares, totalVestingFundSteem, steemRate, sbdRate);
+  const setDelegationLists = async () => {
+    const lists = await getHiveDelegate(user.name);
+    const recivedMapList = lists.received.map(item => ({
+      from: item.delegator,
+      quantity: formatter.vestToSteem(
+        item.vesting_shares,
+        totalVestingShares,
+        totalVestingFundSteem,
+      ),
+    }));
+    const delegateMapList = lists.delegated.map(item => ({
+      to: item.delegatee,
+      quantity:
+        formatter.vestToSteem(item.vesting_shares, totalVestingShares, totalVestingFundSteem) /
+        1000000,
+    }));
+
+    const undelegateMapList = lists.expirations.map(item => ({
+      to: item.delegator,
+      quantity:
+        formatter.vestToSteem(item.vesting_shares, totalVestingShares, totalVestingFundSteem) /
+        1000000,
+    }));
+
+    setDeligateList(delegateMapList);
+    setRecivedList(recivedMapList);
+    setUndeligatedList(undelegateMapList);
+  };
+
+  useEffect(() => {
+    if (totalVestingShares && totalVestingFundSteem) setDelegationLists();
+  }, [totalVestingShares, totalVestingFundSteem]);
 
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
@@ -128,7 +177,14 @@ const UserWalletSummary = ({
             <div className="UserWalletSummary__label">
               <FormattedMessage id="steem_power" defaultMessage="Hive Power" />
             </div>
-            <div className="UserWalletSummary__value">
+            <div
+              className={powerClassList}
+              onClick={() => {
+                if (hasDelegations) {
+                  setVisible(true);
+                }
+              }}
+            >
               {user.fetching || loadingGlobalProperties ? (
                 <Loading />
               ) : (
@@ -182,6 +238,16 @@ const UserWalletSummary = ({
             </div>
           </div>
         </React.Fragment>
+      )}
+      {hasDelegations && (
+        <DelegateListModal
+          visible={visible}
+          toggleModal={setVisible}
+          deligateList={delegateList}
+          recivedList={recivedList}
+          undeligatedList={undeligatedList}
+          symbol={'HP'}
+        />
       )}
     </WalletSummaryInfo>
   );

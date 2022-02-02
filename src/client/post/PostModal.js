@@ -6,10 +6,14 @@ import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import VisibilitySensor from 'react-visibility-sensor';
-import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
+import {
+  dropCategory,
+  isBannedPost,
+  replaceBotWithGuestName,
+} from '../../common/helpers/postHelpers';
 import PostContent from './PostContent';
 import Comments from '../comments/Comments';
-import { getFacebookShareURL, getTwitterShareURL } from '../helpers/socialProfiles';
+import { getFacebookShareURL, getTwitterShareURL } from '../../common/helpers/socialProfiles';
 import BBackTop from '../components/BBackTop';
 
 import './PostModal.less';

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 
-import { mobileUserAgents } from '../../../../../helpers/regexHelpers';
+import { mobileUserAgents } from '../../../../../../common/helpers/regexHelpers';
 import { getListOfRestaurant } from '../../../../../../store/websiteStore/websiteSelectors';
 import { getRestaurants } from '../../../../../../store/websiteStore/websiteActions';
 

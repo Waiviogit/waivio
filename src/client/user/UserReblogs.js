@@ -7,7 +7,7 @@ import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
   getFeedFromState,
-} from '../helpers/stateHelpers';
+} from '../../common/helpers/stateHelpers';
 import { showPostModal } from '../../store/appStore/appActions';
 import { getFeedContent, getMoreFeedContent } from '../../store/feedStore/feedActions';
 import PostModal from '../post/PostModalContainer';

@@ -1,6 +1,6 @@
 import { get, kebabCase, round, uniqBy } from 'lodash';
 
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   getAllCampaingForRequiredObject,
   getAuthorsChildWobjects,
@@ -10,11 +10,11 @@ import {
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { createPost } from '../editorStore/editorActions';
-import { createPostMetadata } from '../../client/helpers/postHelpers';
+import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { getBeneficiariesUsers } from '../searchStore/searchSelectors';
 import { getSelectedDish, getSelectedRestaurant } from './quickRewardsSelectors';
 import config from '../../waivioApi/config.json';
-import { getObjectName, getObjectType } from '../../client/helpers/wObjectHelper';
+import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { getDetailsBody } from '../../client/rewards/rewardsHelper';
 import { getCurrentHost } from '../appStore/appSelectors';
 

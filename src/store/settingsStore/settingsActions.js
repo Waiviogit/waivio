@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions';
-import { saveSettingsMetadata } from '../../client/helpers/metadata';
+import { saveSettingsMetadata } from '../../common/helpers/metadata';
 import { setUserStatus, getVipTicketsInfo, addNoteInVipTicket } from '../../waivioApi/ApiClient';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { getVipTicketsQuery } from '../../client/settings/common/helpers';
 import { getCurrentCurrencyRate } from '../appStore/appActions';

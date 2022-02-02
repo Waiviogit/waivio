@@ -1,0 +1,102 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.TokenSelect {
+  &__invalid {
+    color: @red;
+  }
+
+  &__input.ant-input-affix-wrapper .ant-input:not(:last-child) {
+    padding-right: 45px;
+  }
+
+  &__input {
+    outline: none;
+    border: @base-border;
+    border-radius: 4px 0 0 4px;
+    border-right: none;
+    padding: 0 10px;
+    height: 32px;
+
+    .ant-input {
+      border: none;
+      padding: 0;
+      height: 30px;
+      outline: none;
+
+      &:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+      }
+    }
+  }
+
+  &__selector {
+    width: 300px;
+
+    .ant-select-selection {
+      border-radius: 0 4px 4px 0;
+
+      .TokenSelect__selector-balance {
+        display: none;
+      }
+    }
+  }
+
+  &__inputWrap {
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    &--error {
+      .TokenSelect__input {
+        border-color: @red-danger;
+      }
+
+      .TokenSelect__selector {
+        .ant-select-selection {
+          border-color: @red-danger;
+          color: @red-danger;
+        }
+      }
+    }
+  }
+
+  &__balance {
+    border-bottom: 1px dotted @blue-botticelli;
+    cursor: pointer;
+  }
+
+  &__hiveEngineInfo {
+    padding: 10px 0;
+  }
+
+  &__estimatedWrap {
+    padding: 20px 0;
+  }
+
+  &__selector-option {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__max-button {
+    display: inline-block;
+    border: @base-border;
+    border-radius: 4px;
+    padding: 0 5px;
+    cursor: pointer;
+  }
+}
+
+@import './TokenSelect-nightmode.less';

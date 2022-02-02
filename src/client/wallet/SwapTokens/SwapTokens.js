@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Form, Icon, Modal, Radio } from 'antd';
 import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
 import {
   getSwapList,
@@ -24,13 +23,13 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import { swapImpactPercent } from '../../../common/constants/swapList';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
-import { getSwapOutput } from '../../helpers/swapTokenHelpers';
-import { createQuery } from '../../helpers/apiHelpers';
+import { getSwapOutput } from '../../../common/helpers/swapTokenHelpers';
+import { createQuery } from '../../../common/helpers/apiHelpers';
 import TokensSelect from './components/TokensSelect';
-import { getImpact } from '../../helpers/swapWalletHelpers';
+import { getImpact } from '../../../common/helpers/swapWalletHelpers';
+import { getFeeInfo } from '../../../waivioApi/ApiClient';
 
 import './SwapTokens.less';
-import { getFeeInfo } from '../../../waivioApi/ApiClient';
 
 const SwapTokens = props => {
   const [impact, setImpact] = useState(0);
@@ -52,9 +51,6 @@ const SwapTokens = props => {
   }, []);
 
   const insufficientFunds = amount => props.from.balance < amount;
-  const inputWrapClassList = classNames('SwapTokens__inputWrap', {
-    'SwapTokens__inputWrap--error': insufficientFunds(fromAmount),
-  });
 
   const calculateOutputInfo = (value = 0, from, to, isFrom) => {
     const pool = from.tokenPair ? from : to;
@@ -148,7 +144,6 @@ const SwapTokens = props => {
         <TokensSelect
           list={props.swapListFrom}
           setToken={props.setFromToken}
-          inputWrapClassList={inputWrapClassList}
           amount={fromAmount}
           handleChangeValue={handleChangeFromValue}
           token={props.from}
@@ -162,7 +157,6 @@ const SwapTokens = props => {
         <TokensSelect
           list={props.swapListTo}
           setToken={props.setToToken}
-          inputWrapClassList={inputWrapClassList}
           amount={toAmount}
           handleChangeValue={handleChangeToValue}
           token={props.to}
@@ -210,8 +204,8 @@ SwapTokens.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   swapListFrom: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   swapListTo: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  from: PropTypes.string.isRequired,
-  to: PropTypes.string.isRequired,
+  from: PropTypes.shape().isRequired,
+  to: PropTypes.shape().isRequired,
   authUser: PropTypes.string.isRequired,
   hiveRateInUsd: PropTypes.number.isRequired,
   visible: PropTypes.bool.isRequired,

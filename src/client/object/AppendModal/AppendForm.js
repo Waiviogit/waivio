@@ -43,9 +43,9 @@ import {
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
-import LANGUAGES from '../../translations/languages';
+import LANGUAGES from '../../../common/translations/languages';
 import { PRIMARY_COLOR } from '../../../common/constants/waivio';
-import { getLanguageText } from '../../translations';
+import { getLanguageText } from '../../../common/translations';
 import MapAppendObject from '../../components/Maps/MapAppendObject';
 import {
   generatePermlink,
@@ -63,10 +63,10 @@ import {
   getBlogItems,
   getFormItems,
   getNewsFilterItems,
-} from '../../helpers/wObjectHelper';
+} from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
-import { getVoteValue } from '../../helpers/user';
+import { getVoteValue } from '../../../common/helpers/user';
 import { getExposedFieldsByObjType, sortListItemsBy } from '../wObjectHelper';
 import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';

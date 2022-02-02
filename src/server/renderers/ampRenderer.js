@@ -3,7 +3,7 @@ import cheerio from 'cheerio';
 import Handlebars from 'handlebars';
 import HandlebarsIntl from 'handlebars-intl';
 import { getHtml } from '../../client/components/Story/Body';
-import { dropCategory } from '../../client/helpers/postHelpers';
+import { dropCategory } from '../../common/helpers/postHelpers';
 
 HandlebarsIntl.registerWith(Handlebars);
 

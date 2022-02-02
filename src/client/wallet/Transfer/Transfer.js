@@ -18,7 +18,7 @@ import { notify } from '../../app/Notification/notificationActions';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import { BANK_ACCOUNT } from '../../../common/constants/waivio';
-import { guestUserRegex } from '../../helpers/regexHelpers';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import Avatar from '../../components/Avatar';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { REWARD } from '../../../common/constants/rewards';
@@ -27,7 +27,7 @@ import {
   saveSettings,
   openLinkHiveAccountModal,
 } from '../../../store/settingsStore/settingsActions';
-import { createQuery } from '../../helpers/apiHelpers';
+import { createQuery } from '../../../common/helpers/apiHelpers';
 import { getCryptosPriceHistory, getScreenSize } from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
@@ -752,14 +752,20 @@ export default class Transfer extends React.Component {
           <Form.Item
             label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
           >
-            {getFieldDecorator('memo', {
-              rules: [{ validator: this.validateMemo }],
-            })(
-              <Input.TextArea
-                disabled={sendTo || isChangesDisabled}
-                autoSize={{ minRows: 2, maxRows: 6 }}
-                placeHolder={memoPlaceHolder}
-              />,
+            {memo ? (
+              <div className="Transfer__memo">
+                {typeof memo === 'object' ? JSON.stringify(memo) : memo}
+              </div>
+            ) : (
+              getFieldDecorator('memo', {
+                rules: [{ validator: this.validateMemo }],
+              })(
+                <Input.TextArea
+                  disabled={sendTo || isChangesDisabled}
+                  autoSize={{ minRows: 2, maxRows: 6 }}
+                  placeHolder={memoPlaceHolder}
+                />,
+              )
             )}
           </Form.Item>
         </Form>

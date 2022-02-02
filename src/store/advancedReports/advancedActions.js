@@ -1,7 +1,7 @@
 import moment from 'moment';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
-import { guestUserRegex } from '../../client/helpers/regexHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import { getTransfersAccounts } from './advancedSelectors';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 

@@ -1,11 +1,11 @@
 import Cookie from 'js-cookie';
 import { get } from 'lodash';
 import { createAction } from 'redux-actions';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { addNewNotification, getCurrentCurrencyRate } from '../appStore/appActions';
 import { getFollowing } from '../userStore/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
-import { setToken } from '../../client/helpers/getToken';
+import { setToken } from '../../common/helpers/getToken';
 import {
   getGuestPaymentsHistory,
   getPrivateEmail,
@@ -13,7 +13,7 @@ import {
 } from '../../waivioApi/ApiClient';
 import { notify } from '../../client/app/Notification/notificationActions';
 import history from '../../client/history';
-import { clearGuestAuthData, getGuestAccessToken } from '../../client/helpers/localStorageHelpers';
+import { clearGuestAuthData, getGuestAccessToken } from '../../common/helpers/localStorageHelpers';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,

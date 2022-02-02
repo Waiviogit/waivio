@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import WalletTransaction from '../WalletTransaction';
-import { guestUserRegex } from '../../helpers/regexHelpers';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import { getTransferDetails } from '../../../waivioApi/ApiClient';
 import { handleLoadMoreTransactions } from '../WalletHelper';
 import BlocktraidsTransactionModal from '../BlocktraidsTransactionModal';

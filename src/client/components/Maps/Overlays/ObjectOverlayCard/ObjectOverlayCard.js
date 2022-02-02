@@ -7,8 +7,12 @@ import { Link } from 'react-router-dom';
 
 import RatingsWrap from '../../../../objectCard/RatingsWrap/RatingsWrap';
 import DEFAULTS from '../../../../object/const/defaultValues';
-import { getObjectName, getObjectAvatar, hasType } from '../../../../helpers/wObjectHelper';
-import { getProxyImageURL } from '../../../../helpers/image';
+import {
+  getObjectName,
+  getObjectAvatar,
+  hasType,
+} from '../../../../../common/helpers/wObjectHelper';
+import { getProxyImageURL } from '../../../../../common/helpers/image';
 import OverlayRewardsButton from './OverlayRewardsButton';
 import { getScreenSize } from '../../../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';

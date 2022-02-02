@@ -1,7 +1,7 @@
 import { message } from 'antd';
 import { get } from 'lodash';
 
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUser } from './usersSelectors';
 import { LIKE_POST } from '../postsStore/postActions';
@@ -12,7 +12,7 @@ import {
   isGuestUser,
 } from '../authStore/authSelectors';
 import { dHive, getLastBlockNum } from '../../client/vendor/steemitHelpers';
-import { guestUserRegex } from '../../client/helpers/regexHelpers';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 

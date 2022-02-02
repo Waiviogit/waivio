@@ -1,11 +1,11 @@
 import moment from 'moment';
 import { get } from 'lodash';
 import { message } from 'antd';
-import { createAsyncActionType } from '../../client/helpers/stateHelpers';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getDetailsBody, rewardPostContainerData } from '../../client/rewards/rewardsHelper';
 import { createCommentPermlink } from '../../client/vendor/steemitHelpers';
-import { getObjectName } from '../../client/helpers/wObjectHelper';
+import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getRate, getRewardFund } from '../appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
 import {

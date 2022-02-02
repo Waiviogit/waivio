@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
-import { getObjectName } from '../../helpers/wObjectHelper';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 import './ObjectCard.less';
 

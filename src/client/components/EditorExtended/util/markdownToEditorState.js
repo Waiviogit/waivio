@@ -3,7 +3,7 @@ import { last } from 'lodash';
 
 import { getSrc } from './videoHelper';
 import { ATOMIC_TYPES, Block, Entity } from './constants';
-import { VIDEO_MATCH_URL } from '../../../helpers/regexHelpers';
+import { VIDEO_MATCH_URL } from '../../../../common/helpers/regexHelpers';
 
 const defaultInlineStyles = {
   Strong: {

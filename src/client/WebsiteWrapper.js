@@ -8,7 +8,7 @@ import { ConfigProvider, Layout } from 'antd';
 import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
-import { findLanguage, getRequestLocale, loadLanguage } from './translations';
+import { findLanguage, getRequestLocale, loadLanguage } from '../common/translations';
 import {
   login,
   busyLogin,
@@ -25,7 +25,7 @@ import {
 } from '../store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
-import { guestUserRegex } from './helpers/regexHelpers';
+import { guestUserRegex } from '../common/helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
 import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
@@ -216,7 +216,12 @@ class WebsiteWrapper extends React.PureComponent {
     const signInPage = location.pathname.includes('sign-in');
 
     return (
-      <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
+      <IntlProvider
+        key={language.id}
+        locale={language.localeData}
+        defaultLocale="en"
+        messages={translations}
+      >
         <ConfigProvider locale={antdLocale}>
           <AppSharedContext.Provider
             value={{

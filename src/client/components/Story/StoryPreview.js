@@ -6,8 +6,8 @@ import classNames from 'classnames';
 import steemEmbed from '../../vendor/embedMedia';
 import PostFeedEmbed from './PostFeedEmbed';
 import BodyShort from './BodyShort';
-import { jsonParse } from '../../helpers/formatter';
-import { getContentImages } from '../../helpers/postHelpers';
+import { jsonParse } from '../../../common/helpers/formatter';
+import { getContentImages } from '../../../common/helpers/postHelpers';
 import {
   getPositions,
   isPostStartsWithAnEmbed,
@@ -18,10 +18,10 @@ import {
   postWithPicture,
 } from './StoryHelper';
 import { getHtml } from './Body';
-import { getImagePathPost, getProxyImageURL } from '../../helpers/image';
+import { getImagePathPost, getProxyImageURL } from '../../../common/helpers/image';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
-import { videoPreviewRegex } from '../../helpers/regexHelpers';
+import { videoPreviewRegex } from '../../../common/helpers/regexHelpers';
 
 const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   const storyContentBodyClassList = classNames('Story__content__body', {

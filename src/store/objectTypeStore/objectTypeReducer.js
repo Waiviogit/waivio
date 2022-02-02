@@ -1,6 +1,6 @@
 import { get, isEmpty, omit, reduce, filter, uniq } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
-import { parseWobjectField } from '../../client/helpers/wObjectHelper';
+import { parseWobjectField } from '../../common/helpers/wObjectHelper';
 
 const initialState = {
   data: {},

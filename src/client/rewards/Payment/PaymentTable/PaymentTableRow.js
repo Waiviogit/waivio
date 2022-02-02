@@ -10,7 +10,7 @@ import Report from '../../Report/Report';
 import { getReport } from '../../../../waivioApi/ApiClient';
 import { setDataForSingleReport } from '../../../../store/rewardsStore/rewardsActions';
 import { TYPE } from '../../../../common/constants/rewards';
-import { getObjectName } from '../../../helpers/wObjectHelper';
+import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 
 import './PaymentTable.less';
 

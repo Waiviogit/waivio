@@ -5,8 +5,8 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Modal } from 'antd';
 import { round } from 'lodash';
 import { closePowerUpOrDown } from '../../../store/walletStore/walletActions';
-import formatter from '../../helpers/steemitFormatter';
-import { createQuery } from '../../helpers/apiHelpers';
+import formatter from '../../../common/helpers/steemitFormatter';
+import { createQuery } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 import {
   getCurrentWalletType,

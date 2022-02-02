@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
-import { epochToUTC } from '../helpers/formatter';
+import { epochToUTC } from '../../common/helpers/formatter';
 import { getTransactionDescription } from './WalletHelper';
 
 const WalletProposalPay = ({

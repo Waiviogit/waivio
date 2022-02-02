@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { round, get, isNil } from 'lodash';
+import { round, get, isNil, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedNumber } from 'react-intl';
 import classNames from 'classnames';
@@ -12,8 +12,14 @@ import {
 } from '../../../store/walletStore/walletSelectors';
 import Loading from '../../components/Icon/Loading';
 import { resetTokenBalance } from '../../../store/walletStore/walletActions';
+import DelegateListModal from '../DelegateListModal/DelegateListModal';
+import { getDelegateList, getPendingUndelegationsToken } from '../../../waivioApi/ApiClient';
 
 const WAIVWalletSummaryInfo = props => {
+  const [delegateList, setDeligateList] = useState([]);
+  const [recivedList, setRecivedList] = useState([]);
+  const [undeligatedList, setUndeligatedList] = useState([]);
+  const [visible, setVisible] = useState(false);
   const balance = +get(props.currencyInfo, 'balance', 0);
   const stake = +get(props.currencyInfo, 'stake', 0);
   const unstake = +get(props.currencyInfo, 'pendingUnstake', 0);
@@ -21,11 +27,28 @@ const WAIVWalletSummaryInfo = props => {
   const delegationsOut = +get(props.currencyInfo, 'delegationsOut', 0);
   const estAccValue = props.rates * (Number(balance) + Number(stake));
   const delegation = delegationsIn - delegationsOut;
+  const hasDelegations =
+    !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('WalletSummaryInfo__value', {
     'WalletSummaryInfo__value--unstake': unstake,
+    'WalletSummaryInfo__value--cursorPointer': hasDelegations,
   });
 
-  useEffect(() => () => props.resetTokenBalance(), []);
+  const setDelegationLists = async () => {
+    const delegated = await getDelegateList({ from: props.name });
+    const recived = await getDelegateList({ to: props.name });
+    const undeligated = await getPendingUndelegationsToken(props.name);
+
+    setDeligateList(delegated);
+    setRecivedList(recived);
+    setUndeligatedList(undeligated);
+  };
+
+  useEffect(() => {
+    setDelegationLists();
+
+    return () => props.resetTokenBalance();
+  }, []);
 
   const formattedNumber = num => {
     if (isNil(num)) return <Loading />;
@@ -51,7 +74,14 @@ const WAIVWalletSummaryInfo = props => {
         <div className="WalletSummaryInfo__item">
           <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
           <div className="WalletSummaryInfo__label">WAIV Power</div>
-          <div className={powerClassList}>
+          <div
+            className={powerClassList}
+            onClick={() => {
+              if (hasDelegations) {
+                setVisible(true);
+              }
+            }}
+          >
             {formattedNumber(stake)}
             {!!unstake && <span> - {formattedNumber(unstake)}</span>}{' '}
             {!!delegation && (
@@ -65,6 +95,16 @@ const WAIVWalletSummaryInfo = props => {
         </div>
         <p className="WalletSummaryInfo__description">Staked WAIV tokens</p>
       </div>
+      {hasDelegations && (
+        <DelegateListModal
+          visible={visible}
+          toggleModal={setVisible}
+          deligateList={delegateList}
+          recivedList={recivedList}
+          undeligatedList={undeligatedList}
+          symbol={'WP'}
+        />
+      )}
     </WalletSummaryInfo>
   );
 };
@@ -73,6 +113,7 @@ WAIVWalletSummaryInfo.propTypes = {
   currencyInfo: PropTypes.shape({}).isRequired,
   resetTokenBalance: PropTypes.func.isRequired,
   rates: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default connect(

@@ -4,14 +4,18 @@ import { isUndefined } from 'lodash';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Checkbox } from 'antd';
-import { draftType } from '../../types/drafts';
 import DeleteDraftModal from './DeleteDraftModal';
 import './DraftRow.less';
 
 class DraftRow extends React.Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
-    draft: draftType.isRequired,
+    draft: PropTypes.shape({
+      draftId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      lastUpdated: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      title: PropTypes.string,
+      body: PropTypes.string,
+    }).isRequired,
     selected: PropTypes.bool,
     onCheck: PropTypes.func,
   };

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getTwitterShareURL } from '../../helpers/socialProfiles';
+import { getTwitterShareURL } from '../../../common/helpers/socialProfiles';
 import './ShareButton.less';
 
 const TwitterShare = ({ url, text, hashtags }) => (

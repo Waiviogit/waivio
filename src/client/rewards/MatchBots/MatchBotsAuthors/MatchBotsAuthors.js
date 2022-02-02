@@ -7,7 +7,7 @@ import MatchBotsTable from '../MatchBotsTable';
 import MatchBotsService from '../MatchBotsService';
 import ModalsAuthors from '../MatchBotsModals/ModalsAuthors';
 import MatchBotsAuthorsContent from './MatchBotsAuthorsContent';
-import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../helpers/matchBotsHelpers';
+import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../../common/helpers/matchBotsHelpers';
 
 import '../MatchBots.less';
 

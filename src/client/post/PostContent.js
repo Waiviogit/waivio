@@ -11,7 +11,7 @@ import {
   isBannedPost,
   replaceBotWithGuestName,
   getAuthorName,
-} from '../helpers/postHelpers';
+} from '../../common/helpers/postHelpers';
 import { editPost } from '../../store/editorStore/editorActions';
 import {
   errorFollowingPostAuthor,
@@ -25,7 +25,7 @@ import { toggleBookmark } from '../../store/bookmarksStore/bookmarksActions';
 import { followUser, unfollowUser } from '../../store/userStore/userActions';
 import { getAvatarURL } from '../components/Avatar';
 import { getHtml } from '../components/Story/Body';
-import { jsonParse } from '../helpers/formatter';
+import { jsonParse } from '../../common/helpers/formatter';
 import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
 import {

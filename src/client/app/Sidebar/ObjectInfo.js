@@ -17,7 +17,7 @@ import {
   getMenuItems,
   getBlogItems,
   getFormItems,
-} from '../../helpers/wObjectHelper';
+} from '../../../common/helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import { getFieldsCount, getLink, getExposedFieldsByObjType } from '../../object/wObjectHelper';
 import {

@@ -2,26 +2,26 @@ import {
   GET_DEPOSIT_WITHDRAW_PAIR,
   RESET_TOKEN_PAIR,
   SET_TOKEN_PAIR,
+  SET_WITHDRAW_PAIR,
+  TOGGLE_WITHDRAW_MODAL,
 } from './depositeWithdrawAction';
 
 const initialState = {
-  withdrawPair: [],
-  depositPair: [],
+  withdrawPairs: [],
+  depositPairs: [],
   pair: null,
+  withdrawPair: null,
+  isOpenWithdraw: false,
 };
 
 const depositWithdraw = (state = initialState, action) => {
   switch (action.type) {
     case GET_DEPOSIT_WITHDRAW_PAIR.SUCCESS: {
       return {
-        withdrawPair: action.payload.filter(
-          pair =>
-            pair.from_coin_symbol.startsWith('SWAP') && !pair.to_coin_symbol.startsWith('SWAP'),
-        ),
-        depositPair: action.payload.filter(
-          pair =>
-            !pair.from_coin_symbol.startsWith('SWAP') && pair.to_coin_symbol.startsWith('SWAP'),
-        ),
+        ...state,
+        withdrawPairs: action.payload.withdrawPairs,
+        withdrawPair: action.payload.withdrawPair,
+        depositPairs: action.payload.depositPairs,
       };
     }
 
@@ -29,6 +29,12 @@ const depositWithdraw = (state = initialState, action) => {
       return {
         ...state,
         pairLoading: true,
+      };
+    }
+    case SET_WITHDRAW_PAIR: {
+      return {
+        ...state,
+        withdrawPair: action.payload,
       };
     }
 
@@ -51,6 +57,14 @@ const depositWithdraw = (state = initialState, action) => {
       return {
         ...state,
         pair: null,
+        withdrawPair: null,
+      };
+    }
+
+    case TOGGLE_WITHDRAW_MODAL: {
+      return {
+        ...state,
+        isOpenWithdraw: action.payload,
       };
     }
     default:

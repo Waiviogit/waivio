@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import SteemConnect from '../steemConnectAPI';
+import SteemConnect from '../../client/steemConnectAPI';
 import { getAuthenticatedUserMetadata, updateUserMetadata } from '../../waivioApi/ApiClient';
 
 const getMetadata = userName => getAuthenticatedUserMetadata(userName);

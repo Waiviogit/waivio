@@ -22,10 +22,12 @@ import {
 import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import PowerUpOrDown from './PowerUpOrDown/PowerUpOrDown';
 import HiveEngineWallet from './HiveEngineWallet/HiveEngineWallet';
-import { guestUserRegex } from '../helpers/regexHelpers';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import SwapTokens from './SwapTokens/SwapTokens';
 import { getVisibleModal } from '../../store/swapStore/swapSelectors';
 import Deposit from './Deposit/Deposit';
+import WithdrawModal from './WithdrawModal/WithdrawModal';
+import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWithdrawSelector';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -67,6 +69,7 @@ const Wallets = props => {
       {props.visiblePower && <PowerUpOrDown />}
       {props.visibleSwap && <SwapTokens />}
       {props.visibleDeposit && <Deposit />}
+      {props.visibleWithdraw && <WithdrawModal />}
     </React.Fragment>
   );
 };
@@ -79,6 +82,7 @@ Wallets.propTypes = {
   visible: PropTypes.bool.isRequired,
   visiblePower: PropTypes.bool.isRequired,
   visibleSwap: PropTypes.bool.isRequired,
+  visibleWithdraw: PropTypes.bool.isRequired,
   getCurrUserTokensBalanceList: PropTypes.func.isRequired,
   resetHiveEngineTokenBalance: PropTypes.func.isRequired,
   getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
@@ -102,6 +106,7 @@ export default connect(
     visiblePower: getIsPowerUpOrDownVisible(state),
     visibleSwap: getVisibleModal(state),
     visibleDeposit: getDepositVisible(state),
+    visibleWithdraw: getIsOpenWithdraw(state),
   }),
   {
     setWalletType,

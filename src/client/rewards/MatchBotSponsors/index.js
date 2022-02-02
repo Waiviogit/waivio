@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import MatchBotSponsors from './MatchBotSponsors';
-import { MATCH_BOTS_TYPES } from '../../helpers/matchBotsHelpers';
+import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
 import { getIsEngLocale } from '../../../store/appStore/appSelectors';
 import { getIsConnectMatchBot } from '../../../store/authStore/authSelectors';
 

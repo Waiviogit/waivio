@@ -5,7 +5,7 @@ import { routerMiddleware } from 'connected-react-router';
 import steemAPI from '../client/steemAPI';
 import createBusyAPI from '../common/services/createBusyAPI';
 import { createHistory } from '../client/history';
-import errorMiddleware from '../client/helpers/errorMiddleware';
+import errorMiddleware from '../common/helpers/errorMiddleware';
 import createReducer from './reducers';
 
 export default (steemConnectAPI, waivioAPI, currUrl, historyPassed) => {
