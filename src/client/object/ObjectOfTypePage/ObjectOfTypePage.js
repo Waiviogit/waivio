@@ -140,14 +140,7 @@ const ObjectOfTypePage = props => {
 
       return (
         <React.Fragment>
-          <div className="object-of-type-page__empty-placeholder">
-            <span>
-              {intl.formatMessage({
-                id: 'empty_page_content',
-                defaultMessage: 'This page has no content',
-              })}
-            </span>
-          </div>
+          <Loading />
         </React.Fragment>
       );
     }
