@@ -30,7 +30,7 @@ const TokensSelect = props => {
         <Select
           className="TokenSelect__selector"
           showSearch
-          value={props.token.symbol}
+          value={get(props.token, 'symbol', '')}
           disabled={isEmpty(props.list)}
           filterOption={(input, option) => option.key.toLowerCase().includes(input.toLowerCase())}
         >

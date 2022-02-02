@@ -13,11 +13,12 @@ import {
 import Loading from '../../components/Icon/Loading';
 import { resetTokenBalance } from '../../../store/walletStore/walletActions';
 import DelegateListModal from '../DelegateListModal/DelegateListModal';
-import { getDelegateList } from '../../../waivioApi/ApiClient';
+import { getDelegateList, getPendingUndelegationsToken } from '../../../waivioApi/ApiClient';
 
 const WAIVWalletSummaryInfo = props => {
   const [delegateList, setDeligateList] = useState([]);
   const [recivedList, setRecivedList] = useState([]);
+  const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
   const balance = +get(props.currencyInfo, 'balance', 0);
   const stake = +get(props.currencyInfo, 'stake', 0);
@@ -26,7 +27,8 @@ const WAIVWalletSummaryInfo = props => {
   const delegationsOut = +get(props.currencyInfo, 'delegationsOut', 0);
   const estAccValue = props.rates * (Number(balance) + Number(stake));
   const delegation = delegationsIn - delegationsOut;
-  const hasDelegations = !isEmpty(delegateList) || !isEmpty(recivedList);
+  const hasDelegations =
+    !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('WalletSummaryInfo__value', {
     'WalletSummaryInfo__value--unstake': unstake,
     'WalletSummaryInfo__value--cursorPointer': hasDelegations,
@@ -35,9 +37,11 @@ const WAIVWalletSummaryInfo = props => {
   const setDelegationLists = async () => {
     const delegated = await getDelegateList({ from: props.name });
     const recived = await getDelegateList({ to: props.name });
+    const undeligated = await getPendingUndelegationsToken(props.name);
 
     setDeligateList(delegated);
     setRecivedList(recived);
+    setUndeligatedList(undeligated);
   };
 
   useEffect(() => {
@@ -97,6 +101,7 @@ const WAIVWalletSummaryInfo = props => {
           toggleModal={setVisible}
           deligateList={delegateList}
           recivedList={recivedList}
+          undeligatedList={undeligatedList}
           symbol={'WP'}
         />
       )}

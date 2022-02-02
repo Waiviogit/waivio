@@ -23,6 +23,7 @@ import {
 } from '../../../store/authStore/authSelectors';
 import { getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateListModal/DelegateListModal';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './UserWalletSummary.less';
 
@@ -44,6 +45,7 @@ const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFund
             />
           </span>
         }
+        {...(isMobile() ? { visible: false } : {})}
       >
         <span>
           {totalDelegatedSP > 0 ? ' (+' : ' ('}
@@ -79,6 +81,7 @@ const getFormattedPendingWithdrawalSP = (user, totalVestingShares, totalVestingF
             <FormattedTime value={`${user.next_vesting_withdrawal}Z`} />
           </span>
         }
+        {...(isMobile() ? { visible: false } : {})}
       >
         <span>
           {' - '}
@@ -101,8 +104,10 @@ const UserWalletSummary = ({
 }) => {
   const [delegateList, setDeligateList] = useState([]);
   const [recivedList, setRecivedList] = useState([]);
+  const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
-  const hasDelegations = !isEmpty(delegateList) || !isEmpty(recivedList);
+  const hasDelegations =
+    !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('UserWalletSummary__value', {
     'UserWalletSummary__value--cursorPointer': hasDelegations,
   });
@@ -127,8 +132,16 @@ const UserWalletSummary = ({
         1000000,
     }));
 
+    const undelegateMapList = lists.expirations.map(item => ({
+      to: item.delegator,
+      quantity:
+        formatter.vestToSteem(item.vesting_shares, totalVestingShares, totalVestingFundSteem) /
+        1000000,
+    }));
+
     setDeligateList(delegateMapList);
     setRecivedList(recivedMapList);
+    setUndeligatedList(undelegateMapList);
   };
 
   useEffect(() => {
@@ -232,6 +245,7 @@ const UserWalletSummary = ({
           toggleModal={setVisible}
           deligateList={delegateList}
           recivedList={recivedList}
+          undeligatedList={undeligatedList}
           symbol={'HP'}
         />
       )}

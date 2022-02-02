@@ -29,7 +29,7 @@ const DelegateListModal = props => {
     >
       <Tabs defaultActiveKey="1" onChange={() => {}}>
         {!isEmpty(props.recivedList) && (
-          <Tabs.TabPane tab={getTitle(props.recivedList, 'Recived')} key="1">
+          <Tabs.TabPane tab={getTitle(props.recivedList, 'Received')} key="1">
             <div className="DelegateListModal__list">
               {props.recivedList
                 .sort((a, b) => b.quantity - a.quantity)
@@ -44,22 +44,41 @@ const DelegateListModal = props => {
             </div>
           </Tabs.TabPane>
         )}
-        {!isEmpty(props.deligateList) && (
-          <Tabs.TabPane tab={getTitle(props.deligateList, 'Delegated')} key="2">
-            <div className="DelegateListModal__list">
-              {props.deligateList
-                .sort((a, b) => b.quantity - a.quantity)
-                .map(deligate => (
-                  <DelegateUserCard
-                    key={deligate._id}
-                    name={deligate.to}
-                    quantity={deligate.quantity}
-                    symbol={props.symbol}
-                  />
-                ))}
-            </div>
-          </Tabs.TabPane>
-        )}
+        {!isEmpty(props.deligateList) ||
+          (!isEmpty(props.undeligatedList) && (
+            <Tabs.TabPane
+              tab={
+                isEmpty(props.undeligatedList)
+                  ? getTitle(props.deligateList, 'Delegated')
+                  : getTitle([...props.deligateList, ...props.undeligatedList], 'Delegated')
+              }
+              key="2"
+            >
+              <div className="DelegateListModal__list">
+                {props.deligateList
+                  .sort((a, b) => b.quantity - a.quantity)
+                  .map(deligate => (
+                    <DelegateUserCard
+                      key={deligate._id}
+                      name={deligate.to}
+                      quantity={deligate.quantity}
+                      symbol={props.symbol}
+                    />
+                  ))}
+                {!isEmpty(props.undeligatedList) &&
+                  props.undeligatedList
+                    .sort((a, b) => b.quantity - a.quantity)
+                    .map(undeligate => (
+                      <DelegateUserCard
+                        key={undeligate._id}
+                        quantity={undeligate.quantity}
+                        symbol={props.symbol}
+                        pending
+                      />
+                    ))}
+              </div>
+            </Tabs.TabPane>
+          ))}
       </Tabs>
     </Modal>
   );
@@ -71,6 +90,7 @@ DelegateListModal.propTypes = {
   recivedList: PropsType.arrayOf(PropsType.shape({})).isRequired,
   symbol: PropsType.string.isRequired,
   deligateList: PropsType.arrayOf(PropsType.shape({})).isRequired,
+  undeligatedList: PropsType.arrayOf(PropsType.shape({})).isRequired,
 };
 
 export default DelegateListModal;
