@@ -150,20 +150,10 @@ class WalletSidebar extends React.Component {
         )}
         {!isEmpty(user) && ownProfile && !isGuest && (
           <div className="WalletSidebar__power">
-            <Action
-              big
-              className="WalletSidebar__transfer"
-              primary
-              onClick={this.handleOpenDepositModal}
-            >
+            <Action big className="WalletSidebar__transfer" onClick={this.handleOpenDepositModal}>
               <FormattedMessage id="Deposit" defaultMessage="Deposit" />
             </Action>
-            <Action
-              big
-              className="WalletSidebar__transfer"
-              primary
-              onClick={this.handleOpenWithdrawModal}
-            >
+            <Action big className="WalletSidebar__transfer" onClick={this.handleOpenWithdrawModal}>
               <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
             </Action>
           </div>
