@@ -1,0 +1,70 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.WithdrawModal {
+  p {
+    margin: 10px 0;
+  }
+
+  &__title {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  &__inputWrap {
+    display: flex;
+    border: @base-border;
+    border-radius: 4px;
+    align-items: center;
+    margin-bottom: 10px;
+
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    .ant-input {
+      border: none;
+      border-right: @base-border;
+      border-radius: 4px 0 0 4px;
+      outline: none;
+
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+    }
+  }
+
+  &__currency {
+    padding: 0 11px;
+    width: 290px;
+  }
+
+  .qr-img {
+    width: 25px;
+  }
+
+  &__address-wrapper {
+    display: flex;
+    justify-content: space-between;
+
+    .WithdrawModal__input {
+      margin-right: 10px;
+
+      &--invalid {
+        border-color: @red-danger;
+      }
+    }
+  }
+
+  &__block {
+    margin-top: 20px;
+  }
+}
+
+@import './WithdrawModal-nightmode.less';

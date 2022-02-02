@@ -1,25 +1,7 @@
-@import (reference) '../../styles/custom.less';
-@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
 
-.SwapTokens {
-  &__arrow {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin: 30px 0;
-    cursor: pointer;
-
-    .anticon {
-      display: inline-block;
-      width: 40px;
-      height: 40px;
-      border-radius: 4px;
-      background: #f5f6f9;
-      color: #aebac3;
-      line-height: 45px;
-    }
-  }
-
+.TokenSelect {
   .ant-input-affix-wrapper .ant-input:not(:last-child) {
     padding-right: 45px;
   }
@@ -47,36 +29,14 @@
   }
 
   &__selector {
+    width: 300px;
+
     .ant-select-selection {
       border-radius: 0 4px 4px 0;
 
-      .SwapTokens__selector-balance {
+      .TokenSelect__selector-balance {
         display: none;
       }
-    }
-  }
-
-  &__impactBlock {
-    padding: 0 0 10px;
-
-    .ant-radio-group.ant-radio-group-outline {
-      padding: 10px 0;
-      width: 100%;
-    }
-
-    p {
-      font-weight: 500;
-    }
-
-    .ant-radio-button-wrapper {
-      @media @small {
-        height: 40px;
-        line-height: 40px;
-      }
-
-      width: calc(100% / 6);
-      text-align: center;
-      padding: 0 5px;
     }
   }
 
@@ -85,12 +45,21 @@
     width: 100%;
     margin-bottom: 10px;
 
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
     &--error {
-      .SwapTokens__input {
+      .TokenSelect__input {
         border-color: @red-danger;
       }
 
-      .SwapTokens__selector {
+      .TokenSelect__selector {
         .ant-select-selection {
           border-color: @red-danger;
           color: @red-danger;
@@ -128,15 +97,6 @@
     padding: 0 5px;
     cursor: pointer;
   }
-
-  input[type='number'] {
-    -moz-appearance: textfield;
-  }
-
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
 }
 
-@import 'SwatToken-nightmode.less';
+@import './TokenSelect-nightmode.less';

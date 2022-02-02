@@ -22,6 +22,7 @@ import { toggleModal } from '../../../../store/swapStore/swapActions';
 import { HBD, HIVE, WAIV } from '../../../../common/constants/cryptos';
 
 import './WalletSidebar.less';
+import { toggleWithdrawModal } from '../../../../store/depositeWithdrawStore/depositeWithdrawAction';
 
 const cryptos = [WAIV.symbol, HIVE.symbol, HBD.symbol];
 
@@ -38,6 +39,7 @@ const cryptos = [WAIV.symbol, HIVE.symbol, HBD.symbol];
     openTransfer,
     openPowerUpOrDown,
     openWithdraw,
+    toggleWithdrawModal,
     openLinkHiveAccountModal,
     openSwapTokensModal: toggleModal,
     openDepositModal: toggleDepositModal,
@@ -51,6 +53,7 @@ class WalletSidebar extends React.Component {
     openTransfer: PropTypes.func.isRequired,
     openPowerUpOrDown: PropTypes.func.isRequired,
     openDepositModal: PropTypes.func.isRequired,
+    toggleWithdrawModal: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
     openWithdraw: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
@@ -86,6 +89,8 @@ class WalletSidebar extends React.Component {
   };
 
   handleOpenSwapModal = () => this.props.openSwapTokensModal(true);
+
+  handleOpenWithdrawModal = () => this.props.toggleWithdrawModal(true);
 
   handleOpenDepositModal = () => this.props.openDepositModal();
 
@@ -144,14 +149,24 @@ class WalletSidebar extends React.Component {
           </Action>
         )}
         {!isEmpty(user) && ownProfile && !isGuest && (
-          <Action
-            big
-            className="WalletSidebar__transfer"
-            primary
-            onClick={this.handleOpenDepositModal}
-          >
-            <FormattedMessage id="Deposit" defaultMessage="Deposit" />
-          </Action>
+          <div className="WalletSidebar__power">
+            <Action
+              big
+              className="WalletSidebar__transfer"
+              primary
+              onClick={this.handleOpenDepositModal}
+            >
+              <FormattedMessage id="Deposit" defaultMessage="Deposit" />
+            </Action>
+            <Action
+              big
+              className="WalletSidebar__transfer"
+              primary
+              onClick={this.handleOpenWithdrawModal}
+            >
+              <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
+            </Action>
+          </div>
         )}
       </div>
     );
