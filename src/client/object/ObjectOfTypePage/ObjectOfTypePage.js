@@ -131,26 +131,26 @@ const ObjectOfTypePage = props => {
   };
 
   const renderBody = () => {
-    if (!isLoading) {
-      if (content) {
-        return <BodyContainer full body={content} />;
-      }
-
-      return (
-        <React.Fragment>
-          <div className="object-of-type-page__empty-placeholder">
-            <span>
-              {intl.formatMessage({
-                id: 'empty_page_content',
-                defaultMessage: 'This page has no content',
-              })}
-            </span>
-          </div>
-        </React.Fragment>
-      );
+    if (isLoading) {
+      return <Loading />;
     }
 
-    return <Loading />;
+    if (content) {
+      return <BodyContainer full body={content} />;
+    }
+
+    return (
+      <React.Fragment>
+        <div className="object-of-type-page__empty-placeholder">
+          <span>
+            {intl.formatMessage({
+              id: 'empty_page_content',
+              defaultMessage: 'This page has no content',
+            })}
+          </span>
+        </div>
+      </React.Fragment>
+    );
   };
 
   const classObjPage = `object-of-type-page ${
