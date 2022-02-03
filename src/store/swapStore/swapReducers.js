@@ -30,6 +30,7 @@ export default function swapReducer(state = initialState, action) {
         ...state,
         from: action.payload.token,
         swapListTo: action.payload.list || state.swapListFrom,
+        to: {},
       };
     }
 
