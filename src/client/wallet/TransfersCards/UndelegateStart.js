@@ -3,32 +3,29 @@ import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
 
 const UndelegateStart = ({ timestamp, account, to, from, quantity, status }) => {
-  const isReceive = account === to;
-
+  const isReceive = account !== to;
   const cardInfo = isReceive
     ? {
         description: (
           <span>
             from{' '}
-            <a href={`/@${from}`} className="username">
-              {from}
-            </a>
+            <a href={`/@${to}`} className="username">
+              {to}
+            </a>{' '}
           </span>
         ),
-        color: 'green',
-        point: '+',
+        color: 'red',
       }
     : {
         description: (
           <span>
             to{' '}
-            <a href={`/@${to}`} className="username">
-              {to}
-            </a>
+            <a href={`/@${from}`} className="username">
+              {from}
+            </a>{' '}
           </span>
         ),
-        color: 'red',
-        point: '-',
+        color: 'green',
       };
 
   return (
@@ -41,8 +38,8 @@ const UndelegateStart = ({ timestamp, account, to, from, quantity, status }) => 
       point={cardInfo.point}
     >
       <span>
-        Undelegated {status} {(to || from) && cardInfo.description}
-      </span>
+        Undelegated {status} {(to || from) && cardInfo.description}{' '}
+      </span>{' '}
     </TransactionCardContainer>
   );
 };
