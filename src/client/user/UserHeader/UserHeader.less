@@ -13,6 +13,8 @@
     margin: 0;
     color: @grey-gondola;
     align-items: center;
+    max-width: 90%;
+    flex: 1;
 
     @media @small {
       align-items: flex-start;
@@ -27,14 +29,18 @@
 
   &__name {
     font-weight: 700;
-    font-size: 32px;
+    font-size: 18px;
     padding-right: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   &__name-container {
     display: flex;
     align-items: center;
     padding-right: 10px;
+    min-width: 0;
   }
 
   &__nick {
@@ -168,6 +174,7 @@
   &__flexWrap {
     display: flex;
     align-items: center;
+    max-width: 90%;
   }
 
   &__userInfo {
@@ -177,6 +184,7 @@
 
     .UserHeader__flexWrap {
       margin: 0 0 5px;
+      max-width: 90%;
     }
 
     @media @small {
@@ -261,6 +269,12 @@
     &:hover {
       color: @red-danger !important;
     }
+  }
+}
+
+@media @xsmall {
+  .UserHeader__name {
+    font-size: 32px;
   }
 }
 
