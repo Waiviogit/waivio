@@ -41,6 +41,7 @@ const ObjectOfTypePage = props => {
   const [contentForPublish, setCurrentContent] = useState('');
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
   const [votePercent, setVotePercent] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const {
@@ -59,15 +60,18 @@ const ObjectOfTypePage = props => {
         const pathUrl = getLastPermlinksFromHash(hash);
 
         getObject(pathUrl, userName, locale).then(wObject => {
+          setNestedWobj(wObject);
+
           setCurrentContent(wObject.pageContent);
           setContent(wObject.pageContent);
-          setNestedWobj(wObject);
           setLoadingNestedWobject(false);
+          setLoading(false);
         });
       } else {
         setCurrentContent(wobject.pageContent);
         setContent(wobject.pageContent);
         setLoadingNestedWobject(false);
+        setLoading(false);
       }
     }
   }, [props.location.hash, props.wobject.author_permlink]);
@@ -133,26 +137,24 @@ const ObjectOfTypePage = props => {
   };
 
   const renderBody = () => {
-    if (!isLoadingFlag) {
-      if (content) {
-        return <BodyContainer full body={content} />;
-      }
+    if (loading) return <Loading />;
 
-      return (
-        <React.Fragment>
-          <div className="object-of-type-page__empty-placeholder">
-            <span>
-              {intl.formatMessage({
-                id: 'empty_page_content',
-                defaultMessage: 'This page has no content',
-              })}
-            </span>
-          </div>
-        </React.Fragment>
-      );
+    if (content) {
+      return <BodyContainer full body={content} />;
     }
 
-    return <Loading />;
+    return (
+      <React.Fragment>
+        <div className="object-of-type-page__empty-placeholder">
+          <span>
+            {intl.formatMessage({
+              id: 'empty_page_content',
+              defaultMessage: 'This page has no content',
+            })}
+          </span>
+        </div>
+      </React.Fragment>
+    );
   };
 
   const classObjPage = `object-of-type-page ${

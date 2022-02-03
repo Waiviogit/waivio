@@ -28,7 +28,6 @@ import BBackTop from './components/BBackTop';
 import { guestUserRegex } from '../common/helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
-import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
 import { getIsDiningGifts, getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
@@ -230,14 +229,7 @@ class WebsiteWrapper extends React.PureComponent {
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-              {!signInPage &&
-                (isDiningGifts ? (
-                  <MainPageHeader withMap={location.pathname === '/map'} />
-                ) : (
-                  <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                    <WebsiteHeader />
-                  </Layout.Header>
-                ))}
+              {!signInPage && <MainPageHeader withMap={location.pathname === '/map'} />}
               <div className={!isDiningGifts && !signInPage && 'content'}>
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />
