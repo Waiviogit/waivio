@@ -21,7 +21,7 @@ import { appendObject } from '../../../store/appendStore/appendActions';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { getObject } from '../../../waivioApi/ApiClient';
-import { setLoadedNestedWobject, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
+import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 import CatalogWrap from '../Catalog/CatalogWrap';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
@@ -41,6 +41,7 @@ const ObjectOfTypePage = props => {
   const [contentForPublish, setCurrentContent] = useState('');
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
   const [votePercent, setVotePercent] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const {
@@ -48,11 +49,8 @@ const ObjectOfTypePage = props => {
       userName,
       locale,
       setNestedWobj,
-      setLoadingNestedWobject,
       wobject,
     } = props;
-
-    setLoadingNestedWobject(true);
 
     if (!isEmpty(wobject)) {
       if (hash) {
@@ -62,12 +60,12 @@ const ObjectOfTypePage = props => {
           setCurrentContent(wObject.pageContent);
           setContent(wObject.pageContent);
           setNestedWobj(wObject);
-          setLoadingNestedWobject(false);
+          setIsLoading(false);
         });
       } else {
         setCurrentContent(wobject.pageContent);
         setContent(wobject.pageContent);
-        setLoadingNestedWobject(false);
+        setIsLoading(false);
       }
     }
   }, [props.location.hash, props.wobject.author_permlink]);
@@ -133,26 +131,26 @@ const ObjectOfTypePage = props => {
   };
 
   const renderBody = () => {
-    if (!isLoadingFlag) {
-      if (content) {
-        return <BodyContainer full body={content} />;
-      }
-
-      return (
-        <React.Fragment>
-          <div className="object-of-type-page__empty-placeholder">
-            <span>
-              {intl.formatMessage({
-                id: 'empty_page_content',
-                defaultMessage: 'This page has no content',
-              })}
-            </span>
-          </div>
-        </React.Fragment>
-      );
+    if (isLoading) {
+      return <Loading />;
     }
 
-    return <Loading />;
+    if (content) {
+      return <BodyContainer full body={content} />;
+    }
+
+    return (
+      <React.Fragment>
+        <div className="object-of-type-page__empty-placeholder">
+          <span>
+            {intl.formatMessage({
+              id: 'empty_page_content',
+              defaultMessage: 'This page has no content',
+            })}
+          </span>
+        </div>
+      </React.Fragment>
+    );
   };
 
   const classObjPage = `object-of-type-page ${
@@ -252,7 +250,6 @@ ObjectOfTypePage.propTypes = {
   appendPageContent: PropTypes.func.isRequired,
   setNestedWobj: PropTypes.func.isRequired,
   followingList: PropTypes.arrayOf(PropTypes.string),
-  setLoadingNestedWobject: PropTypes.func,
 
   /* passed */
   wobject: PropTypes.shape(),
@@ -271,7 +268,6 @@ ObjectOfTypePage.defaultProps = {
   isLoadingFlag: false,
   locale: 'en-US',
   followingList: [],
-  setLoadingNestedWobject: () => {},
   breadcrumb: [],
 };
 
@@ -286,7 +282,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   appendPageContent: appendObject,
   setNestedWobj: setNestedWobject,
-  setLoadingNestedWobject: setLoadedNestedWobject,
 };
 
 export default connect(
