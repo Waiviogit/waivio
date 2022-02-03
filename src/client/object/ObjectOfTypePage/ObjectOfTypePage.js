@@ -41,6 +41,7 @@ const ObjectOfTypePage = props => {
   const [contentForPublish, setCurrentContent] = useState('');
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
   const [votePercent, setVotePercent] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const {
@@ -52,22 +53,21 @@ const ObjectOfTypePage = props => {
       wobject,
     } = props;
 
-    setLoadingNestedWobject(true);
-
     if (!isEmpty(wobject)) {
       if (hash) {
         const pathUrl = getLastPermlinksFromHash(hash);
 
         getObject(pathUrl, userName, locale).then(wObject => {
           setCurrentContent(wObject.pageContent);
-          wObject.pageContent ? setContent(wObject.pageContent) : setContent('no content');
+          setContent(wObject.pageContent);
           setNestedWobj(wObject);
-          setLoadingNestedWobject(false);
+          setIsLoading(false);
         });
       } else {
         setCurrentContent(wobject.pageContent);
-        wobject.pageContent ? setContent(wobject.pageContent) : setContent('no content');
+        setContent(wobject.pageContent);
         setLoadingNestedWobject(false);
+        setIsLoading(false);
       }
     }
   }, [props.location.hash, props.wobject.author_permlink]);
@@ -89,7 +89,7 @@ const ObjectOfTypePage = props => {
       const { appendPageContent, userName, toggleViewEditMode, nestedWobject, breadcrumb } = props;
       const { follow } = values;
 
-      if (!err && content !== 'no content') {
+      if (!err) {
         const pageContentField = {
           name: objectFields.pageContent,
           body: content,
@@ -133,23 +133,23 @@ const ObjectOfTypePage = props => {
   };
 
   const renderBody = () => {
-    if (!isLoadingFlag) {
-      if (content && content !== 'no content') {
+    if (!isLoading) {
+      if (content) {
         return <BodyContainer full body={content} />;
-      } else if (content === 'no content') {
-        return (
-          <React.Fragment>
-            <div className="object-of-type-page__empty-placeholder">
-              <span>
-                {intl.formatMessage({
-                  id: 'empty_page_content',
-                  defaultMessage: 'This page has no content',
-                })}
-              </span>
-            </div>
-          </React.Fragment>
-        );
       }
+
+      return (
+        <React.Fragment>
+          <div className="object-of-type-page__empty-placeholder">
+            <span>
+              {intl.formatMessage({
+                id: 'empty_page_content',
+                defaultMessage: 'This page has no content',
+              })}
+            </span>
+          </div>
+        </React.Fragment>
+      );
     }
 
     return <Loading />;
@@ -268,7 +268,7 @@ ObjectOfTypePage.defaultProps = {
   nestedWobject: {},
   location: '',
   isAppending: false,
-  isLoadingFlag: false,
+  isLoadingFlag: true,
   locale: 'en-US',
   followingList: [],
   setLoadingNestedWobject: () => {},
