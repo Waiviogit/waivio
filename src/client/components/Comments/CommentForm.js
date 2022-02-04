@@ -92,7 +92,12 @@ class CommentForm extends React.Component {
     e.stopPropagation();
     this.setState({ isDisabledSubmit: true });
     if (this.state.body) {
-      this.props.onSubmit(this.props.parentPost, this.state.body).then(response => {
+      const formattedBody = this.state.body.replace(
+        /#([^\s#]+)/g,
+        '<a target="_blank" href="/$1">#$1</a>',
+      );
+
+      this.props.onSubmit(this.props.parentPost, formattedBody).then(response => {
         if (!_.get(response, 'error', false)) {
           this.setBodyAndRender('');
         }
