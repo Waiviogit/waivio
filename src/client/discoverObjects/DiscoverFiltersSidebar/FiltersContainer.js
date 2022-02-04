@@ -19,6 +19,7 @@ import FilterItem from './FilterItem';
 import {
   getActiveFilters,
   getActiveFiltersTags,
+  getTypeName,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 
 const FiltersContainer = ({
@@ -28,6 +29,7 @@ const FiltersContainer = ({
   location,
   activeFilters,
   activeTagsFilters,
+  activeObjectTypeName,
   dispatchSetActiveTagsFilters,
   dispatchShowMoreTags,
   dispatchSetFiltersAndLoad,
@@ -96,7 +98,11 @@ const FiltersContainer = ({
               filterValues={filterValues.tags}
               hasMore={filterValues.hasMore}
               showMoreTags={() =>
-                dispatchShowMoreTags(filterValues.tagCategory, size(filterValues.tags))
+                dispatchShowMoreTags(
+                  filterValues.tagCategory,
+                  activeObjectTypeName,
+                  size(filterValues.tags),
+                )
               }
             />
           ))}
@@ -125,6 +131,7 @@ FiltersContainer.propTypes = {
   dispatchShowMoreTags: PropTypes.func.isRequired,
   dispatchSetFiltersAndLoad: PropTypes.func.isRequired,
   activeFilters: PropTypes.shape({}),
+  activeObjectTypeName: PropTypes.string.isRequired,
 };
 
 FiltersContainer.defaultProps = {
@@ -137,6 +144,7 @@ export default connect(
   state => ({
     activeTagsFilters: getActiveFiltersTags(state),
     activeFilters: getActiveFilters(state),
+    activeObjectTypeName: getTypeName(state),
   }),
   {
     dispatchSetActiveTagsFilters: setTagsFiltersAndLoad,
