@@ -58,7 +58,7 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
       const withdrawPairs = await compareTokensList(name, withdrawPairsFilteredList);
 
       return {
-        withdrawPairs,
+        withdrawPairs: withdrawPairs.filter(pair => pair.balance),
         withdrawPair: withdrawPairs[0],
         depositPairs,
       };

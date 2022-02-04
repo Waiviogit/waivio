@@ -49,9 +49,11 @@ const TokensSelect = props => {
       {props.isError && <p className="TokenSelect__invalid">Insufficient funds.</p>}{' '}
       <p>
         Your balance:{' '}
-        <span className="TokenSelect__balance" onClick={setUserBalance}>
-          {get(props.token, 'balance', 0)} {get(props.token, 'symbol')}
-        </span>
+        {!isEmpty(props.token) && (
+          <span className="TokenSelect__balance" onClick={setUserBalance}>
+            {get(props.token, 'balance', 0)} {get(props.token, 'symbol')}
+          </span>
+        )}
       </p>
     </React.Fragment>
   );

@@ -5,6 +5,7 @@ import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 
 import {
+  changetTokens,
   getSwapList,
   resetModalData,
   setFromToken,
@@ -12,6 +13,7 @@ import {
   toggleModal,
 } from '../../../store/swapStore/swapActions';
 import {
+  getIsChanging,
   getSwapListFrom,
   getSwapListFromStore,
   getSwapListTo,
@@ -53,19 +55,12 @@ const SwapTokens = props => {
   const insufficientFunds = amount => props.from.balance < amount;
 
   const calculateOutputInfo = (value = 0, from, to, isFrom) => {
-    const pool = from.tokenPair ? from : to;
-
-    if (!pool.tokenPair) return {};
-
-    const swap = pool.tokenPair.split(':')[0];
+    if (!from.tokenPair) return {};
 
     return getSwapOutput({
       symbol: from.symbol,
       amountIn: value || 0,
-      pool: {
-        ...pool,
-        tokenPair: `${swap}:${swap === from.symbol ? to.symbol : from.symbol}`,
-      },
+      pool: from,
       slippage: 0,
       from: isFrom,
       params: param,
@@ -78,8 +73,7 @@ const SwapTokens = props => {
     if (!isEmpty(props.to) && !isEmpty(props.from)) {
       const amount = calculateOutputInfo(toAmount, props.to, props.from, true);
 
-      props.setFromToken(props.to);
-      props.setToToken(props.from);
+      props.changetTokens(props.to);
       setFromAmount(toAmount);
       setToAmount(amount.amountOut);
     }
@@ -92,7 +86,19 @@ const SwapTokens = props => {
       const amount = calculateOutputInfo(value, props.from, props.to, true);
 
       setImpact(amount.priceImpact);
-      setToAmount(amount.amountOut);
+      setToAmount(amount.amountOut || 0);
+    }
+  };
+
+  const handleSetToToken = token => {
+    props.setToToken(token);
+
+    if (!isEmpty(props.from)) {
+      const from = props.swapList[token.symbol].find(pair => pair.symbol === props.from.symbol);
+      const amount = calculateOutputInfo(fromAmount, from, token);
+
+      setImpact(amount.priceImpact);
+      setToAmount(amount.amountOut || 0);
     }
   };
 
@@ -143,7 +149,10 @@ const SwapTokens = props => {
         <h3 className="SwapTokens__title">From:</h3>
         <TokensSelect
           list={props.swapListFrom}
-          setToken={props.setFromToken}
+          setToken={token => {
+            props.setFromToken(token);
+            setToAmount(0);
+          }}
           amount={fromAmount}
           handleChangeValue={handleChangeFromValue}
           token={props.from}
@@ -151,12 +160,12 @@ const SwapTokens = props => {
           isError={insufficientFunds(fromAmount)}
         />
         <div className="SwapTokens__arrow">
-          <Icon type="arrow-down" onClick={handelChangeOrderToken} />
+          <Icon type="arrow-down" onClick={props.isChanging ? null : handelChangeOrderToken} />
         </div>
         <h3 className="SwapTokens__title">To:</h3>
         <TokensSelect
           list={props.swapListTo}
-          setToken={props.setToToken}
+          setToken={handleSetToToken}
           amount={toAmount}
           handleChangeValue={handleChangeToValue}
           token={props.to}
@@ -201,14 +210,17 @@ SwapTokens.propTypes = {
   setFromToken: PropTypes.func.isRequired,
   setToToken: PropTypes.func.isRequired,
   resetModalData: PropTypes.func.isRequired,
+  changetTokens: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   swapListFrom: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   swapListTo: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  swapList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   from: PropTypes.shape().isRequired,
   to: PropTypes.shape().isRequired,
   authUser: PropTypes.string.isRequired,
   hiveRateInUsd: PropTypes.number.isRequired,
   visible: PropTypes.bool.isRequired,
+  isChanging: PropTypes.bool.isRequired,
 };
 
 export default connect(
@@ -225,7 +237,8 @@ export default connect(
       hiveRateInUsd: get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', null),
       authUser: getAuthenticatedUserName(state),
       visible: getVisibleModal(state),
+      isChanging: getIsChanging(state),
     };
   },
-  { getSwapList, setFromToken, setToToken, toggleModal, resetModalData },
+  { getSwapList, setFromToken, setToToken, toggleModal, resetModalData, changetTokens },
 )(SwapTokens);
