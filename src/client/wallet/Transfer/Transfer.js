@@ -312,24 +312,21 @@ export default class Transfer extends React.Component {
       if (!errors) {
         const transferQuery = {
           amount: `${round(parseFloat(values.amount), 3)} ${values.currency}`,
+          memo,
         };
 
         if (guestUserRegex.test(values.to)) {
           transferQuery.to = BANK_ACCOUNT;
-          transferQuery.memo = { id: memo || REWARD.guestTransfer, to: values.to };
+          transferQuery.memo = {
+            ...(transferQuery.memo || { id: REWARD.guestTransfer }),
+            to: values.to,
+          };
         } else {
           transferQuery.to = values.to;
           if (values.memo) transferQuery.memo = values.memo;
         }
 
-        if (memo) {
-          transferQuery.memo = memo;
-          if (values.memo) transferQuery.memo.message = values.memo;
-        }
-
         if (app) transferQuery.memo = { ...(transferQuery.memo || {}), app };
-        if (values.to && get(transferQuery, 'memo.id') === REWARD.guestTransfer)
-          transferQuery.memo = { ...(transferQuery.memo || {}), to: values.to };
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (isTip) transferQuery.memo = memo;
         if (!isString(transferQuery.memo)) transferQuery.memo = JSON.stringify(transferQuery.memo);
