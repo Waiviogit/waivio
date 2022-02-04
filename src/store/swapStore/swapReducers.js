@@ -16,12 +16,12 @@ export default function swapReducer(state = initialState, action) {
       return {
         ...state,
         swapList: action.payload.list,
-        swapListTo: action.payload.to,
-        swapListFrom: action.payload.from.filter(
+        swapListTo: action.payload.toList,
+        swapListFrom: action.payload.fromList.filter(
           token => (token.balance > 0 && token.symbol !== 'WAIV') || token.symbol === 'WAIV',
         ),
-        from: action.payload.from.find(token => token.symbol === 'WAIV'),
-        to: action.payload.to.find(token => token.symbol === 'SWAP.HIVE'),
+        from: action.payload.from,
+        to: action.payload.toList.find(token => token.symbol === 'SWAP.HIVE'),
       };
     }
 
@@ -38,6 +38,11 @@ export default function swapReducer(state = initialState, action) {
       return {
         ...state,
         to: action.payload.token,
+        from: {
+          ...action.payload.tokenFrom,
+          rate: state.from.rate,
+          balance: state.from.balance,
+        },
       };
     }
 
@@ -48,12 +53,27 @@ export default function swapReducer(state = initialState, action) {
       };
     }
 
-    case swapActions.CHANGED_TOKENS: {
+    case swapActions.CHANGED_TOKENS.START: {
+      return {
+        ...state,
+        isChanging: true,
+      };
+    }
+
+    case swapActions.CHANGED_TOKENS.ERROR: {
+      return {
+        ...state,
+        isChanging: false,
+      };
+    }
+
+    case swapActions.CHANGED_TOKENS.SUCCESS: {
       return {
         ...state,
         from: state.to,
         swapListTo: action.list,
         to: state.from,
+        isChanging: false,
       };
     }
 

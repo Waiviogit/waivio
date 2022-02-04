@@ -13,6 +13,7 @@ import {
   toggleModal,
 } from '../../../store/swapStore/swapActions';
 import {
+  getIsChanging,
   getSwapListFrom,
   getSwapListFromStore,
   getSwapListTo,
@@ -54,19 +55,12 @@ const SwapTokens = props => {
   const insufficientFunds = amount => props.from.balance < amount;
 
   const calculateOutputInfo = (value = 0, from, to, isFrom) => {
-    const pool = from.tokenPair ? from : to;
-
-    if (!pool.tokenPair) return {};
-
-    const swap = pool.tokenPair.split(':')[0];
+    if (!from.tokenPair) return {};
 
     return getSwapOutput({
       symbol: from.symbol,
       amountIn: value || 0,
-      pool: {
-        ...pool,
-        tokenPair: `${swap}:${swap === from.symbol ? to.symbol : from.symbol}`,
-      },
+      pool: from,
       slippage: 0,
       from: isFrom,
       params: param,
@@ -100,7 +94,8 @@ const SwapTokens = props => {
     props.setToToken(token);
 
     if (!isEmpty(props.from)) {
-      const amount = calculateOutputInfo(fromAmount, props.from, token);
+      const from = props.swapList[token.symbol].find(pair => pair.symbol === props.from.symbol);
+      const amount = calculateOutputInfo(fromAmount, from, token);
 
       setImpact(amount.priceImpact);
       setToAmount(amount.amountOut || 0);
@@ -165,7 +160,7 @@ const SwapTokens = props => {
           isError={insufficientFunds(fromAmount)}
         />
         <div className="SwapTokens__arrow">
-          <Icon type="arrow-down" onClick={handelChangeOrderToken} />
+          <Icon type="arrow-down" onClick={props.isChanging ? null : handelChangeOrderToken} />
         </div>
         <h3 className="SwapTokens__title">To:</h3>
         <TokensSelect
@@ -219,11 +214,13 @@ SwapTokens.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   swapListFrom: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   swapListTo: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  swapList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   from: PropTypes.shape().isRequired,
   to: PropTypes.shape().isRequired,
   authUser: PropTypes.string.isRequired,
   hiveRateInUsd: PropTypes.number.isRequired,
   visible: PropTypes.bool.isRequired,
+  isChanging: PropTypes.bool.isRequired,
 };
 
 export default connect(
@@ -240,6 +237,7 @@ export default connect(
       hiveRateInUsd: get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', null),
       authUser: getAuthenticatedUserName(state),
       visible: getVisibleModal(state),
+      isChanging: getIsChanging(state),
     };
   },
   { getSwapList, setFromToken, setToToken, toggleModal, resetModalData, changetTokens },
