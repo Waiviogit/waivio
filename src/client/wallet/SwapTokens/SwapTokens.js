@@ -92,7 +92,18 @@ const SwapTokens = props => {
       const amount = calculateOutputInfo(value, props.from, props.to, true);
 
       setImpact(amount.priceImpact);
-      setToAmount(amount.amountOut);
+      setToAmount(amount.amountOut || 0);
+    }
+  };
+
+  const handleSetToToken = token => {
+    props.setToToken(token);
+
+    if (!isEmpty(props.from)) {
+      const amount = calculateOutputInfo(fromAmount, props.from, token);
+
+      setImpact(amount.priceImpact);
+      setToAmount(amount.amountOut || 0);
     }
   };
 
@@ -143,7 +154,10 @@ const SwapTokens = props => {
         <h3 className="SwapTokens__title">From:</h3>
         <TokensSelect
           list={props.swapListFrom}
-          setToken={props.setFromToken}
+          setToken={token => {
+            props.setFromToken(token);
+            setToAmount(0);
+          }}
           amount={fromAmount}
           handleChangeValue={handleChangeFromValue}
           token={props.from}
@@ -156,7 +170,7 @@ const SwapTokens = props => {
         <h3 className="SwapTokens__title">To:</h3>
         <TokensSelect
           list={props.swapListTo}
-          setToken={props.setToToken}
+          setToken={handleSetToToken}
           amount={toAmount}
           handleChangeValue={handleChangeToValue}
           token={props.to}
