@@ -18,3 +18,5 @@ export const getTokenTo = createSelector([swapState], state => get(state, 'to', 
 export const getTokenFrom = createSelector([swapState], state => get(state, 'from', ''));
 
 export const getVisibleModal = createSelector([swapState], state => get(state, 'visible', false));
+
+export const getIsChanging = createSelector([swapState], state => get(state, 'isChanging', false));

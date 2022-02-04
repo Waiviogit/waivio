@@ -1,7 +1,8 @@
+import { message } from 'antd';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getHiveEngineSwap } from '../../waivioApi/ApiClient';
 import { compareTokensList } from './helper';
-import { getSwapListFromStore } from './swapSelectors';
+import { getSwapListFromStore, getTokenFrom } from './swapSelectors';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 export const GET_SWAP_LIST = createAsyncActionType('@swap/GET_SWAP_LIST');
@@ -13,13 +14,15 @@ export const getSwapList = () => (dispatch, getState) => {
   return dispatch({
     type: GET_SWAP_LIST.ACTION,
     payload: getHiveEngineSwap().then(async res => {
-      const from = await compareTokensList(name, Object.keys(res));
-      const to = await compareTokensList(name, res.WAIV);
+      const fromList = await compareTokensList(name, Object.keys(res));
+      const toList = await compareTokensList(name, res.WAIV);
+      const toChildList = await compareTokensList(name, res['SWAP.HIVE']);
 
       return {
         list: res,
-        to,
-        from,
+        from: toChildList.find(item => item.symbol === 'WAIV'),
+        toList,
+        fromList,
       };
     }),
   });
@@ -27,12 +30,19 @@ export const getSwapList = () => (dispatch, getState) => {
 
 export const SET_TO_TOKEN = '@swap/SET_TO_TOKEN';
 
-export const setToToken = token => ({
-  type: SET_TO_TOKEN,
-  payload: {
-    token,
-  },
-});
+export const setToToken = token => (dispatch, getState) => {
+  const state = getState();
+  const swapList = getSwapListFromStore(state);
+  const from = getTokenFrom(state);
+
+  return dispatch({
+    type: SET_TO_TOKEN,
+    payload: {
+      token,
+      tokenFrom: swapList[token.symbol].find(pair => pair.symbol === from.symbol),
+    },
+  });
+};
 
 export const SET_FROM_TOKEN = '@swap/SET_FROM_TOKEN';
 
@@ -64,16 +74,27 @@ export const resetModalData = () => ({
   type: RESET_MODAL_DATA,
 });
 
-export const CHANGED_TOKENS = '@swap/CHANGED_TOKENS';
+export const CHANGED_TOKENS = createAsyncActionType('@swap/CHANGED_TOKENS');
 
 export const changetTokens = token => async (dispatch, getState) => {
   const state = getState();
   const swapList = getSwapListFromStore(state);
   const name = getAuthenticatedUserName(state);
-  const list = token.symbol ? await compareTokensList(name, swapList[token.symbol]) : null;
 
-  return dispatch({
-    type: CHANGED_TOKENS,
-    list,
-  });
+  dispatch({ type: CHANGED_TOKENS.START });
+
+  try {
+    const list = token.symbol ? await compareTokensList(name, swapList[token.symbol]) : null;
+
+    return dispatch({
+      type: CHANGED_TOKENS.SUCCESS,
+      list,
+    });
+  } catch (e) {
+    message.error('Something went wrong!');
+
+    return dispatch({
+      type: CHANGED_TOKENS.ERROR,
+    });
+  }
 };
