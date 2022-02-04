@@ -5,6 +5,7 @@ import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 
 import {
+  changetTokens,
   getSwapList,
   resetModalData,
   setFromToken,
@@ -78,8 +79,7 @@ const SwapTokens = props => {
     if (!isEmpty(props.to) && !isEmpty(props.from)) {
       const amount = calculateOutputInfo(toAmount, props.to, props.from, true);
 
-      props.setFromToken(props.to);
-      props.setToToken(props.from);
+      props.changetTokens(props.to);
       setFromAmount(toAmount);
       setToAmount(amount.amountOut);
     }
@@ -201,6 +201,7 @@ SwapTokens.propTypes = {
   setFromToken: PropTypes.func.isRequired,
   setToToken: PropTypes.func.isRequired,
   resetModalData: PropTypes.func.isRequired,
+  changetTokens: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   swapListFrom: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   swapListTo: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -227,5 +228,5 @@ export default connect(
       visible: getVisibleModal(state),
     };
   },
-  { getSwapList, setFromToken, setToToken, toggleModal, resetModalData },
+  { getSwapList, setFromToken, setToToken, toggleModal, resetModalData, changetTokens },
 )(SwapTokens);

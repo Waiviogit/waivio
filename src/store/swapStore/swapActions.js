@@ -63,3 +63,17 @@ export const RESET_MODAL_DATA = '@swap/RESET_MODAL_DATA';
 export const resetModalData = () => ({
   type: RESET_MODAL_DATA,
 });
+
+export const CHANGED_TOKENS = '@swap/CHANGED_TOKENS';
+
+export const changetTokens = token => async (dispatch, getState) => {
+  const state = getState();
+  const swapList = getSwapListFromStore(state);
+  const name = getAuthenticatedUserName(state);
+  const list = token.symbol ? await compareTokensList(name, swapList[token.symbol]) : null;
+
+  return dispatch({
+    type: CHANGED_TOKENS,
+    list,
+  });
+};

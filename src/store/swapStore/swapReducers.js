@@ -48,6 +48,15 @@ export default function swapReducer(state = initialState, action) {
       };
     }
 
+    case swapActions.CHANGED_TOKENS: {
+      return {
+        ...state,
+        from: state.to,
+        swapListTo: action.list,
+        to: state.from,
+      };
+    }
+
     case swapActions.RESET_MODAL_DATA: {
       return initialState;
     }
