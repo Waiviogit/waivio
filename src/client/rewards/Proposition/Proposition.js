@@ -53,8 +53,10 @@ const Proposition = props => {
   const searchParams = new URLSearchParams(props.location.search);
   const isWidget = searchParams.get('display');
   const isReservedLink = searchParams.get('toReserved');
-  const sessionCurrentProposjId = sessionStorage.getItem('currentProposId');
-  const sessionCurrentWobjjId = sessionStorage.getItem('currentWobjId');
+  const sessionCurrentProposjId =
+    typeof sessionStorage !== 'undefined' && sessionStorage.getItem('currentProposId');
+  const sessionCurrentWobjjId =
+    typeof sessionStorage !== 'undefined' && sessionStorage.getItem('currentWobjId');
   const isWaivio = useSelector(getIsWaivio);
 
   const handleCurrentEligibleParam = obj => Object.values(obj).every(item => item === true);
