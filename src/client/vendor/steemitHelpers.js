@@ -78,8 +78,8 @@ export const calculatePayout = (post, rates) => {
   payoutDetails.HBDPayout = hivePayout * hbdPercent;
   payoutDetails.WAIVPayout = waivPayout;
   payoutDetails.HIVEPayout = hivePayout - payoutDetails.HBDPayout;
-  payoutDetails.authorPayouts = hivePayoutHalf + waivPayoutHalf + sponsorLikePayout;
-  payoutDetails.curatorPayouts = hivePayoutHalf + waivPayoutHalf;
+  payoutDetails.authorPayouts = Math.abs(hivePayoutHalf + waivPayoutHalf + sponsorLikePayout);
+  payoutDetails.curatorPayouts = Math.abs(hivePayoutHalf + waivPayoutHalf);
 
   if (!isPostCashout(post)) {
     payoutDetails.cashoutInTime = cashout_time + '.000Z';
