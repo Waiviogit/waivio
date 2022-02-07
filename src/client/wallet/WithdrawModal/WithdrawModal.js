@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Input, message, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, get, round } from 'lodash';
+import { isEmpty, get, round, debounce, isNil } from 'lodash';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -45,11 +45,30 @@ const WithdrawModal = props => {
   const [toAmount, setToAmount] = useState(0);
   const [isShowScanner, setShowScanner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
-  const [invalidAddress, setInvalidAddress] = useState(false);
+  const [invalidAddress, setInvalidAddress] = useState();
   const isError = get(pair, 'balance') < fromAmount;
+  const handleValidateWalletAddress = useCallback(
+    debounce(async value => {
+      if (!value) return setInvalidAddress();
+
+      const data = await converHiveEngineCoins({
+        destination: value,
+        from_coin: pair.from_coin_symbol,
+        to_coin: pair.to_coin_symbol,
+      });
+
+      if (data.error) return setInvalidAddress(true);
+
+      return setInvalidAddress(false);
+    }, 500),
+    [converHiveEngineCoins, pair],
+  );
 
   const walletAddressClassList = classNames('WithdrawModal__input', {
     'WithdrawModal__input--invalid': invalidAddress,
+  });
+  const validateWalletAddressClassList = classNames('WithdrawModal__addressValidate', {
+    'WithdrawModal__addressValidate--invalid': invalidAddress,
   });
 
   const persentCalculate = value => value * withdrawFee;
@@ -57,8 +76,7 @@ const WithdrawModal = props => {
   const handleChange = e => {
     const address = e.currentTarget.value;
 
-    if (invalidAddress) setInvalidAddress(false);
-
+    handleValidateWalletAddress(address);
     setWalletAddress(address);
   };
 
@@ -76,7 +94,7 @@ const WithdrawModal = props => {
   };
 
   const setWalletAddressForScanner = address => {
-    if (invalidAddress) setInvalidAddress(false);
+    handleValidateWalletAddress(address);
     setWalletAddress(address);
   };
 
@@ -109,12 +127,6 @@ const WithdrawModal = props => {
           from_coin: pair.from_coin_symbol,
           to_coin: pair.to_coin_symbol,
         });
-
-        if (data.message) {
-          setInvalidAddress(true);
-
-          return message.error(data.message);
-        }
 
         window.open(
           `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
@@ -210,21 +222,28 @@ const WithdrawModal = props => {
         {hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) ? (
           <SelectUserForAutocomplete account={userName} />
         ) : (
-          <div className="WithdrawModal__address-wrapper">
-            <Input
-              className={walletAddressClassList}
-              value={walletAddress}
-              onChange={handleChange}
-              placeholder={props.intl.formatMessage({
-                id: 'enter_address',
-                defaultMessage: 'Enter address',
-              })}
-            />
-            <Button className="WithdrawModal__qr-button" onClick={() => setShowScanner(true)}>
-              <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
-              <span>QR scanner</span>
-            </Button>
-          </div>
+          <React.Fragment>
+            <div className="WithdrawModal__address-wrapper">
+              <Input
+                className={walletAddressClassList}
+                value={walletAddress}
+                onChange={handleChange}
+                placeholder={props.intl.formatMessage({
+                  id: 'enter_address',
+                  defaultMessage: 'Enter address',
+                })}
+              />
+              <Button className="WithdrawModal__qr-button" onClick={() => setShowScanner(true)}>
+                <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
+                <span>QR scanner</span>
+              </Button>
+            </div>
+            {walletAddress && !isNil(invalidAddress) && (
+              <span className={validateWalletAddressClassList}>
+                {invalidAddress ? 'Invalid address.' : 'Address valid.'}
+              </span>
+            )}
+          </React.Fragment>
         )}
       </div>
       <p>Click the button below to be redirected to HiveSinger to complete your transaction.</p>
