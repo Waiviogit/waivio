@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import { message } from 'antd';
 import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
@@ -13,6 +12,7 @@ import { createPermlink } from '../../vendor/steemitHelpers';
 import { generateRandomString } from '../../../common/helpers/wObjectHelper';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { headers } from '../../../waivioApi/ApiClient';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -81,8 +81,11 @@ export default function withEditor(WrappedComponent) {
         url = `https://www.waivio.com/api/image`;
       }
 
-      return axios
-        .post(url, formData)
+      return fetch(url, {
+        body: JSON.stringify(formData),
+        headers,
+        method: 'POST',
+      })
         .then(res => callback(res.data.image, blob.name))
         .catch(() => {
           errorCallback();

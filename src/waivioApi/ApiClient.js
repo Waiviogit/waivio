@@ -15,7 +15,7 @@ import { isMobileDevice } from '../common/helpers/apiHelpers';
 import { createQuery } from './helpers';
 import { TRANSACTION_TYPES } from '../client/wallet/WalletHelper';
 
-let headers = {
+export let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   ...isMobileDevice(),
@@ -278,10 +278,9 @@ export const postCreateWaivioObject = requestBody =>
 
 export const getContent = (author, permlink = '', locale, follower) =>
   new Promise((resolve, reject) => {
-    const headers = { ...headers, app: config.appName, locale };
     if (follower) headers.follower = follower;
     fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'GET',
     })
       .then(res => res.json())
@@ -1113,17 +1112,18 @@ export const getAuthenticatedUserMetadata = userName => {
 
 export const updateUserMetadata = async (userName, data) => {
   let isGuest = null;
-  const token = getGuestAccessToken();
+  let token = getGuestAccessToken();
   isGuest = token === 'null' ? false : Boolean(token);
 
-  if (isGuest) {
-    const token = await getValidTokenData();
-    headers = { ...headers, 'access-token': token.token, 'waivio-auth': true };
-  } else {
-    headers = { ...headers, 'access-token': Cookie.get('access_token') };
-  }
+  if (isGuest) token = await getValidTokenData();
+
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
-    headers,
+    headers: {
+      ...headers,
+      ...(isGuest
+        ? { 'access-token': token.token, 'waivio-auth': true }
+        : { 'access-token': Cookie.get('access_token') }),
+    },
     method: 'PUT',
     body: JSON.stringify({ user_metadata: data }),
   }).then(res => res.json());

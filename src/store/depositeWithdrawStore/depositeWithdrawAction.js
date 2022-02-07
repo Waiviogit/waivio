@@ -59,7 +59,6 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
 
       return {
         withdrawPairs: withdrawPairs.filter(pair => pair.balance),
-        withdrawPair: withdrawPairs[0],
         depositPairs,
       };
     }),

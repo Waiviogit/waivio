@@ -8,7 +8,7 @@ const WithdawCard = props => (
     symbol={props.symbol}
     quantity={props.quantity}
     iconType={'dollar'}
-    color={'green'}
+    color={'red'}
     fractionDigits={5}
   >
     <div>Withdraw</div>

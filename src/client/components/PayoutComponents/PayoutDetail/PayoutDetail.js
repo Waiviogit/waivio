@@ -11,6 +11,8 @@ import PayoutCurrencyBlock from '../PayoutCurrencyBlock/PayoutCurrencyBlock';
 import { getTokenRatesInUSD } from '../../../../store/walletStore/walletSelectors';
 
 import './PayoutDetail.less';
+import { GUEST_BENEFISIARY } from '../../../../common/constants/waivio';
+import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 
 const AmountWithLabel = ({ id, defaultMessage, nonzero, amount }) => {
   if (nonzero && amount === 0) return null;
@@ -40,14 +42,19 @@ const getBeneficaries = post => {
 
   if (isEmpty(beneficiaries)) return [{ account: post.author, percent: 100 }];
 
+  const authorIsGuest = guestUserRegex.test(post.author);
+
   const postBeneficiaries = get(post, 'beneficiaries', []).map(item => {
     if (!item) return null;
 
     return {
       ...item,
+      account: item.account === GUEST_BENEFISIARY && authorIsGuest ? post.author : item.account,
       percent: item.weight * 0.01,
     };
   });
+
+  if (authorIsGuest) return postBeneficiaries;
 
   const beneficiariesPercent = postBeneficiaries.reduce((acc, curr) => acc + curr.percent, 0);
 

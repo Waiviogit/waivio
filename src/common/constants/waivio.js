@@ -16,6 +16,7 @@ export const GUEST_PREFIX = 'waivio_';
 export const BXY_GUEST_PREFIX = 'bxy_';
 
 export const BANK_ACCOUNT = 'waivio.hive';
+export const GUEST_BENEFISIARY = 'waivio.hpower';
 
 export const newUserRecommendTopics = {
   news: ['politics', 'science'],

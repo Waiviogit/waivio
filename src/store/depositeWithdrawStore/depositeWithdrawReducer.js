@@ -20,7 +20,7 @@ const depositWithdraw = (state = initialState, action) => {
       return {
         ...state,
         withdrawPairs: action.payload.withdrawPairs,
-        withdrawPair: action.payload.withdrawPair,
+        withdrawPair: action.payload.withdrawPairs[0],
         depositPairs: action.payload.depositPairs,
       };
     }

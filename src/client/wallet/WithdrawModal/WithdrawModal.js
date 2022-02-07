@@ -240,7 +240,7 @@ const WithdrawModal = props => {
             </div>
             {walletAddress && !isNil(invalidAddress) && (
               <span className={validateWalletAddressClassList}>
-                {invalidAddress ? 'Invalid address.' : 'Address valid.'}
+                {invalidAddress ? 'Invalid address' : 'Address is valid'}
               </span>
             )}
           </React.Fragment>
