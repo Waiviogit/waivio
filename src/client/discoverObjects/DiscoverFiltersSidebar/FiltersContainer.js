@@ -70,6 +70,10 @@ const FiltersContainer = ({
     changeUrl({ ...activeFilters, ...updateTagsFilters }, history, location);
   };
 
+  const showMoreTagsHandler = filterValues => {
+    dispatchShowMoreTags(filterValues.tagCategory, activeObjectTypeName, size(filterValues.tags));
+  };
+
   const isCollapsed = name => collapsedFilters.includes(name);
 
   return (
@@ -97,13 +101,7 @@ const FiltersContainer = ({
               activeFilters={activeTagsFilters}
               filterValues={filterValues.tags}
               hasMore={filterValues.hasMore}
-              showMoreTags={() =>
-                dispatchShowMoreTags(
-                  filterValues.tagCategory,
-                  activeObjectTypeName,
-                  size(filterValues.tags),
-                )
-              }
+              showMoreTags={() => showMoreTagsHandler(filterValues)}
             />
           ))}
       </div>
