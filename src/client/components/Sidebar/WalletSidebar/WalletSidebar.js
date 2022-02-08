@@ -99,6 +99,7 @@ class WalletSidebar extends React.Component {
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
     const isNotHiveEngineWallet = walletType !== 'ENGINE';
+    const isNotWaivWallet = walletType !== 'WAIV';
 
     return (
       <div className="WalletSidebar">
@@ -133,7 +134,7 @@ class WalletSidebar extends React.Component {
             </Action>
           )}
         </a>
-        {!isEmpty(user) && ownProfile && isGuest && (
+        {!isEmpty(user) && ownProfile && isGuest && isNotWaivWallet && (
           <Action big className="WalletSidebar__transfer" primary onClick={this.props.openWithdraw}>
             <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
           </Action>
