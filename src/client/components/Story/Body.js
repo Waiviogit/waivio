@@ -140,7 +140,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
 
 const Body = props => {
   const options = {
-    appUrl: props.appUrl,
+    appUrl: props.appUrl.replace('http://', 'https://'),
     rewriteLinks: props.rewriteLinks,
     secureLinks: props.exitPageSetting,
   };
