@@ -44,15 +44,17 @@ const getBeneficaries = post => {
 
   const authorIsGuest = guestUserRegex.test(post.author);
 
-  const postBeneficiaries = get(post, 'beneficiaries', []).map(item => {
-    if (!item) return null;
+  const postBeneficiaries = get(post, 'beneficiaries', [])
+    .map(item => {
+      if (!item) return null;
 
-    return {
-      ...item,
-      account: item.account === GUEST_BENEFISIARY && authorIsGuest ? post.author : item.account,
-      percent: item.weight * 0.01,
-    };
-  });
+      return {
+        ...item,
+        account: item.account === GUEST_BENEFISIARY && authorIsGuest ? post.author : item.account,
+        percent: item.weight * 0.01,
+      };
+    })
+    .sort((a, b) => b.percent - a.percent);
 
   if (authorIsGuest) return postBeneficiaries;
 
