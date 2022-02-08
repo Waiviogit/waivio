@@ -19,6 +19,7 @@ import FilterItem from './FilterItem';
 import {
   getActiveFilters,
   getActiveFiltersTags,
+  getTypeName,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 
 const FiltersContainer = ({
@@ -28,6 +29,7 @@ const FiltersContainer = ({
   location,
   activeFilters,
   activeTagsFilters,
+  activeObjectTypeName,
   dispatchSetActiveTagsFilters,
   dispatchShowMoreTags,
   dispatchSetFiltersAndLoad,
@@ -68,6 +70,10 @@ const FiltersContainer = ({
     changeUrl({ ...activeFilters, ...updateTagsFilters }, history, location);
   };
 
+  const showMoreTagsHandler = filterValues => {
+    dispatchShowMoreTags(filterValues.tagCategory, activeObjectTypeName, size(filterValues.tags));
+  };
+
   const isCollapsed = name => collapsedFilters.includes(name);
 
   return (
@@ -95,9 +101,7 @@ const FiltersContainer = ({
               activeFilters={activeTagsFilters}
               filterValues={filterValues.tags}
               hasMore={filterValues.hasMore}
-              showMoreTags={() =>
-                dispatchShowMoreTags(filterValues.tagCategory, size(filterValues.tags))
-              }
+              showMoreTags={() => showMoreTagsHandler(filterValues)}
             />
           ))}
       </div>
@@ -125,6 +129,7 @@ FiltersContainer.propTypes = {
   dispatchShowMoreTags: PropTypes.func.isRequired,
   dispatchSetFiltersAndLoad: PropTypes.func.isRequired,
   activeFilters: PropTypes.shape({}),
+  activeObjectTypeName: PropTypes.string.isRequired,
 };
 
 FiltersContainer.defaultProps = {
@@ -137,6 +142,7 @@ export default connect(
   state => ({
     activeTagsFilters: getActiveFiltersTags(state),
     activeFilters: getActiveFilters(state),
+    activeObjectTypeName: getTypeName(state),
   }),
   {
     dispatchSetActiveTagsFilters: setTagsFiltersAndLoad,

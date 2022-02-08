@@ -174,7 +174,7 @@ const WithdrawModal = props => {
           key={'Withdraw'}
           type="primary"
           onClick={handleWithdraw}
-          disabled={!fromAmount || isError}
+          disabled={!fromAmount || isError || invalidAddress}
         >
           Withdraw
         </Button>,
