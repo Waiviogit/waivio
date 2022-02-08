@@ -1615,10 +1615,10 @@ export const getFollowingSponsorsRewards = ({ userName, skip }) =>
       .catch(error => reject(error));
   });
 
-export const showMoreTagsForFilters = (category, skip = 0, limit = 10) =>
+export const showMoreTagsForFilters = (category, objectTypeName, skip = 0, limit = 10) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.objectType}${config.showMoreTags}?skip=${skip}&limit=${limit}&tagCategory=${category}`,
+      `${config.apiPrefix}${config.objectType}${config.showMoreTags}?skip=${skip}&limit=${limit}&tagCategory=${category}&objectType=${objectTypeName}`,
       {
         headers,
         method: 'GET',
