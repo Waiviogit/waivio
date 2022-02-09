@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
 
-const UndelegateStart = ({ timestamp, account, to, from, quantity, status }) => {
+const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity, status }) => {
   const isReceive = account !== to;
   const cardInfo = isReceive
     ? {
@@ -32,7 +32,7 @@ const UndelegateStart = ({ timestamp, account, to, from, quantity, status }) => 
     <TransactionCardContainer
       timestamp={timestamp}
       iconType={'arrow-left'}
-      symbol={'WP'}
+      symbol={symbol}
       quantity={quantity}
       color={cardInfo.color}
       point={cardInfo.point}
@@ -51,6 +51,7 @@ UndelegateStart.propTypes = {
   from: PropTypes.string,
   quantity: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  symbol: PropTypes.string.isRequired,
 };
 
 UndelegateStart.defaultProps = {

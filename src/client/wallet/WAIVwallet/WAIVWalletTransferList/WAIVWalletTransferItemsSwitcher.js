@@ -141,6 +141,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           from={transaction.from}
           account={transaction.account}
           status={'started'}
+          symbol={transaction.symbol}
         />
       );
 
@@ -153,6 +154,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           from={transaction.from}
           account={transaction.account}
           status={'completed'}
+          symbol={transaction.symbol}
         />
       );
 
