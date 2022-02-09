@@ -124,3 +124,10 @@ export const toggleWithdrawModal = isOpen => ({
   type: TOGGLE_WITHDRAW_MODAL,
   payload: isOpen,
 });
+
+export const SET_DEPOSITE_SYMBOL = '@depositWithdraw/SET_DEPOSITE_SYMBOL';
+
+export const setDepositeSymbol = symbol => ({
+  type: SET_DEPOSITE_SYMBOL,
+  payload: symbol,
+});

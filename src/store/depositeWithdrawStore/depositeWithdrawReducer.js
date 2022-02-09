@@ -1,6 +1,7 @@
 import {
   GET_DEPOSIT_WITHDRAW_PAIR,
   RESET_TOKEN_PAIR,
+  SET_DEPOSITE_SYMBOL,
   SET_TOKEN_PAIR,
   SET_WITHDRAW_PAIR,
   TOGGLE_WITHDRAW_MODAL,
@@ -12,6 +13,7 @@ const initialState = {
   pair: null,
   withdrawPair: null,
   isOpenWithdraw: false,
+  symbol: '',
 };
 
 const depositWithdraw = (state = initialState, action) => {
@@ -58,6 +60,7 @@ const depositWithdraw = (state = initialState, action) => {
         ...state,
         pair: null,
         withdrawPair: null,
+        symbol: null,
       };
     }
 
@@ -65,6 +68,13 @@ const depositWithdraw = (state = initialState, action) => {
       return {
         ...state,
         isOpenWithdraw: action.payload,
+      };
+    }
+
+    case SET_DEPOSITE_SYMBOL: {
+      return {
+        ...state,
+        symbol: action.payload,
       };
     }
     default:

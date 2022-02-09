@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Select } from 'antd';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import {
   setDepositeInfo,
 } from '../../../store/depositeWithdrawStore/depositeWithdrawAction';
 import {
+  getDepositeSymbol,
   getDepositList,
   getSelectPair,
 } from '../../../store/depositeWithdrawStore/depositWithdrawSelector';
@@ -24,8 +25,10 @@ const Deposit = () => {
   const list = useSelector(getDepositList);
   const authUserName = useSelector(getAuthenticatedUserName);
   const selectPair = useSelector(getSelectPair);
+  const defaultSymbol = useSelector(getDepositeSymbol);
   const dispatch = useDispatch();
   const hiveTokens = ['HIVE', 'HBD'];
+  const [selectSymbol, setSelectSymbol] = useState(null);
 
   useEffect(() => {
     if (isEmpty(list)) dispatch(getDepositWithdrawPairs());
@@ -34,6 +37,15 @@ const Deposit = () => {
       dispatch(resetSelectPair());
     };
   }, []);
+
+  useEffect(() => {
+    if (!isEmpty(list) && defaultSymbol) {
+      const defaulPair = list.find(token => token.from_coin_symbol === defaultSymbol);
+
+      setSelectSymbol(defaultSymbol);
+      dispatch(setTokenPair(defaulPair, authUserName));
+    }
+  }, [defaultSymbol, list]);
 
   const handleCloseModal = () => dispatch(toggleDepositModal());
 
@@ -46,7 +58,10 @@ const Deposit = () => {
     }
   };
 
-  const handleSelectPair = pair => dispatch(setTokenPair(pair, authUserName));
+  const handleSelectPair = pair => {
+    setSelectSymbol(pair.from_coin_symbol);
+    dispatch(setTokenPair(pair, authUserName));
+  };
 
   return (
     <Modal
@@ -75,7 +90,10 @@ const Deposit = () => {
       <div className="Deposit__step">
         <h4 className="Deposit__title">Step 1:</h4>
         <h4>Select the crypto token to deposit:</h4>
-        <Select placeholder={'Select the crypto token'}>
+        <Select
+          placeholder={'Select the crypto token'}
+          {...(selectSymbol ? { value: selectSymbol } : {})}
+        >
           {list.map(pair => (
             <Select.Option onClick={() => handleSelectPair(pair)} key={pair.from_coin_symbol}>
               {pair.display_name} ({pair.from_coin_symbol})
