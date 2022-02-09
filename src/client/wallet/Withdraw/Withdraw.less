@@ -16,8 +16,18 @@
 
   &__wrapper-footer {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     color: @black;
+
+    @media @small {
+      flex-direction: row;
+    }
+
+    span {
+      word-break: break-all;
+      text-align: left;
+    }
   }
 
   &__button-footer {
