@@ -9,9 +9,9 @@
 
   &__item {
     display: flex;
-    border-bottom: @base-border;
     align-items: center;
     flex-direction: row;
+    padding: 0 0 10px 0;
 
     &:last-of-type {
       border-bottom: 0;
@@ -21,6 +21,11 @@
   &__icon {
     margin-right: 10px;
     color: @blue-baliHai;
+
+    &.icon-flashlight_fill {
+      height: 30px;
+      line-height: 30px;
+    }
 
     &.waiv {
       height: 25px;
@@ -68,6 +73,12 @@
 
   &__estimateItem {
     padding: 10px 0 0;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 
