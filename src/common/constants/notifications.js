@@ -6,7 +6,6 @@ export const REBLOG = 'reblog';
 export const WITNESS_VOTE = 'witness_vote';
 export const TRANSFER = 'transfer';
 export const STATUS_CHANGE = 'status-change';
-export const POWER_DOWN = 'power_down';
 export const FILL_ORDER = 'fillOrder';
 export const REJECT_UPDATE = 'rejectUpdate';
 export const ACTIVATION_CAMPAIGN = 'activationCampaign';
@@ -31,6 +30,12 @@ export const MY_POST = 'myPost';
 export const CAMPAIGN_RESERVATION = 'campaignReservation';
 export const WEBSITE_BALANCE = 'webSiteBalance';
 export const DEACTIVATION_CAMPAIGN = 'deactivationCampaign';
+export const DELEGATE_VESTING_SHARES = 'delegate_vesting_shares';
+export const DELEGATE = 'delegate';
+export const UNDELEGATE = 'undelegate';
+export const POWER_UP = 'power_up';
+export const POWER_DOWN = 'power_down';
+export const CANCEL_UNSTAKE = 'cancelUnstake';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -40,7 +45,6 @@ export const PARSED_NOTIFICATIONS = [
   WITNESS_VOTE,
   TRANSFER,
   STATUS_CHANGE,
-  POWER_DOWN,
   FILL_ORDER,
   REJECT_UPDATE,
   ACTIVATION_CAMPAIGN,
@@ -64,6 +68,12 @@ export const PARSED_NOTIFICATIONS = [
   BELL_WOBJECT_REWARDS,
   BELL_WOBJECT_POST,
   DEACTIVATION_CAMPAIGN,
+  DELEGATE_VESTING_SHARES,
+  DELEGATE,
+  UNDELEGATE,
+  POWER_UP,
+  POWER_DOWN,
+  CANCEL_UNSTAKE,
 ];
 
 export const BUSY_API_TYPES = {

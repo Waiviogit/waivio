@@ -39,6 +39,14 @@ import NotificationCampaignReservation from '../components/Navigation/Notificati
 import NotificationWobjectRewardsBell from '../components/Navigation/Notifications/NotificationWobjectRewardsBell';
 import NotificationWobjectPostBell from '../components/Navigation/Notifications/NotificationWobjectPostBell';
 import NotificationDeacticationCampaign from '../components/Navigation/Notifications/NotificationDeactivationCampaign';
+import NotificationDelegateFrom from '../components/Navigation/Notifications/NotificationDelegateFrom';
+import NotificationDelegateTo from '../components/Navigation/Notifications/NotificationDelegateTo';
+import NotificationUndelegateFrom from '../components/Navigation/Notifications/NotificationUndelegateFrom';
+import NotificationUndelegateTo from '../components/Navigation/Notifications/NotificationUndelegateTo';
+import NotificationDelegateVestingSharesFrom from '../components/Navigation/Notifications/NotificationDelegateVestingSharesFrom';
+import NotificationDelegateVestingSharesTo from '../components/Navigation/Notifications/NotificationDelegateVestingSharesTo';
+import NotificationPowerUp from '../components/Navigation/Notifications/NotificationPowerUp';
+
 import {
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
@@ -46,6 +54,7 @@ import {
 import * as userSelectors from '../../store/userStore/userSelectors';
 
 import './Notifications.less';
+import NotificationCancelUnstake from '../components/Navigation/Notifications/NotificationCancelUnstake';
 
 class Notifications extends React.Component {
   static propTypes = {
@@ -158,6 +167,66 @@ class Notifications extends React.Component {
                     currentAuthUsername={currentAuthUsername}
                   />
                 );
+              case notificationConstants.DELEGATE:
+                if (notification.to) {
+                  return (
+                    <NotificationDelegateFrom
+                      key={key}
+                      notification={notification}
+                      read={read}
+                      currentAuthUsername={currentAuthUsername}
+                    />
+                  );
+                }
+
+                return (
+                  <NotificationDelegateTo
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
+              case notificationConstants.UNDELEGATE:
+                if (notification.to) {
+                  return (
+                    <NotificationUndelegateFrom
+                      key={key}
+                      notification={notification}
+                      read={read}
+                      currentAuthUsername={currentAuthUsername}
+                    />
+                  );
+                }
+
+                return (
+                  <NotificationUndelegateTo
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
+              case notificationConstants.DELEGATE_VESTING_SHARES:
+                if (notification.to) {
+                  return (
+                    <NotificationDelegateVestingSharesFrom
+                      key={key}
+                      notification={notification}
+                      read={read}
+                      currentAuthUsername={currentAuthUsername}
+                    />
+                  );
+                }
+
+                return (
+                  <NotificationDelegateVestingSharesTo
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
               case notificationConstants.WITNESS_VOTE:
                 return (
                   <NotificationVoteWitness key={key} notification={notification} read={read} />
@@ -172,6 +241,17 @@ class Notifications extends React.Component {
                     key={key}
                     notification={notification}
                     read={read}
+                    currentAuthUsername={currentAuthUsername}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.POWER_UP:
+                return (
+                  <NotificationPowerUp
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    currentAuthUsername={currentAuthUsername}
                     onClick={this.handleNotificationsClick}
                   />
                 );
@@ -381,6 +461,16 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CANCEL_UNSTAKE:
+                return (
+                  <NotificationCancelUnstake
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                    currentAuthUsername={currentAuthUsername}
                   />
                 );
               default:

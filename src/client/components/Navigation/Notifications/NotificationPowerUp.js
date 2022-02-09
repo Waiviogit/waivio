@@ -7,7 +7,7 @@ import { epochToUTC } from '../../../../common/helpers/formatter';
 import Avatar from '../../Avatar';
 import './Notification.less';
 
-const NotificationPowerDown = ({ notification, read, onClick, currentAuthUsername }) => {
+const NotificationPowerUp = ({ notification, read, onClick, currentAuthUsername }) => {
   const url = `/@${notification.account}/transfers`;
   const usernameVal = notification.account === currentAuthUsername ? 'You' : notification.account;
 
@@ -23,8 +23,8 @@ const NotificationPowerDown = ({ notification, read, onClick, currentAuthUsernam
       <div className="Notification__text">
         <div className="Notification__text__message">
           <FormattedMessage
-            id="power_down_notification"
-            defaultMessage="{usernameVal} initiated 'Power Down' on {amount}"
+            id="power_up_notification"
+            defaultMessage="{username} initiated 'Power Up' on {amount}"
             values={{
               username: <span className="username">{usernameVal}</span>,
               amount: <span>{notification.amount}</span>,
@@ -39,7 +39,7 @@ const NotificationPowerDown = ({ notification, read, onClick, currentAuthUsernam
   );
 };
 
-NotificationPowerDown.propTypes = {
+NotificationPowerUp.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
     account: PropTypes.string,
@@ -50,11 +50,11 @@ NotificationPowerDown.propTypes = {
   currentAuthUsername: PropTypes.string,
 };
 
-NotificationPowerDown.defaultProps = {
+NotificationPowerUp.defaultProps = {
   read: false,
   notification: {},
   onClick: () => {},
   currentAuthUsername: '',
 };
 
-export default NotificationPowerDown;
+export default NotificationPowerUp;

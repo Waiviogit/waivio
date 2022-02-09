@@ -41,6 +41,14 @@ import NotificationDeacticationCampaign from '../../../components/Navigation/Not
 
 import './Notification.less';
 import './Notifications.less';
+import NotificationPowerUp from './NotificationPowerUp';
+import NotificationDelegateFrom from './NotificationDelegateFrom';
+import NotificationDelegateTo from './NotificationDelegateTo';
+import NotificationUndelegateFrom from './NotificationUndelegateFrom';
+import NotificationUndelegateTo from './NotificationUndelegateTo';
+import NotificationDelegateVestingSharesFrom from './NotificationDelegateVestingSharesFrom';
+import NotificationDelegateVestingSharesTo from './NotificationDelegateVestingSharesTo';
+import NotificationCancelUnstake from './NotificationCancelUnstake';
 
 const displayLimit = 6;
 
@@ -251,6 +259,17 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
+                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
+              case notificationConstants.POWER_UP:
+                return (
+                  <NotificationPowerUp
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                    currentAuthUsername={currentAuthUsername}
                   />
                 );
               case notificationConstants.FILL_ORDER:
@@ -468,6 +487,75 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.DELEGATE:
+                if (notification.to) {
+                  return (
+                    <NotificationDelegateFrom
+                      key={key}
+                      notification={notification}
+                      read={read}
+                      currentAuthUsername={currentAuthUsername}
+                    />
+                  );
+                }
+
+                return (
+                  <NotificationDelegateTo
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
+              case notificationConstants.UNDELEGATE:
+                if (notification.to) {
+                  return (
+                    <NotificationUndelegateFrom
+                      key={key}
+                      notification={notification}
+                      read={read}
+                      currentAuthUsername={currentAuthUsername}
+                    />
+                  );
+                }
+
+                return (
+                  <NotificationUndelegateTo
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
+              case notificationConstants.DELEGATE_VESTING_SHARES:
+                if (notification.to) {
+                  return (
+                    <NotificationDelegateVestingSharesFrom
+                      key={key}
+                      notification={notification}
+                      read={read}
+                      currentAuthUsername={currentAuthUsername}
+                    />
+                  );
+                }
+
+                return (
+                  <NotificationDelegateVestingSharesTo
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
+              case notificationConstants.CANCEL_UNSTAKE:
+                return (
+                  <NotificationCancelUnstake
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    currentAuthUsername={currentAuthUsername}
                   />
                 );
               default:

@@ -88,7 +88,18 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           defaultMessage: "{username} initiated 'Power Down' on {amount}",
         },
         {
-          username: notification.account,
+          username: notification.account === displayUsername ? 'You' : notification.account,
+          amount: notification.amount,
+        },
+      );
+    case notificationConstants.POWER_UP:
+      return intl.formatMessage(
+        {
+          id: 'power_up_notification',
+          defaultMessage: "{username} initiated 'Power UP' on {amount}",
+        },
+        {
+          username: notification.account === displayUsername ? 'You' : notification.account,
           amount: notification.amount,
         },
       );
@@ -171,6 +182,99 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           to: notification.to,
         },
       );
+    case notificationConstants.DELEGATE_FROM:
+      return intl.formatMessage(
+        {
+          id: 'delegate_from',
+          defaultMessage: 'You delegated {amount} to {to}',
+        },
+        {
+          amount: notification.amount,
+          to: notification.to,
+        },
+      );
+    case notificationConstants.DELEGATE:
+      if (notification.from) {
+        return intl.formatMessage(
+          {
+            id: 'delegate',
+            defaultMessage: '{from} delegated {amount} to you',
+          },
+          {
+            amount: notification.amount,
+            from: notification.from,
+          },
+        );
+      }
+
+      return intl.formatMessage(
+        {
+          id: 'delegate',
+          defaultMessage: 'You delegated {amount} to {from}',
+        },
+        {
+          amount: notification.amount,
+          to: notification.to,
+        },
+      );
+    case notificationConstants.DELEGATE_VESTING_SHARES:
+      const amount = notification.amount;
+      const amountToNum = amount.replace('HIVE', '').trim();
+      let delegateValueFrom = '{from} undelegated to you';
+      let delegateValueTo = 'You undelegated to {username}';
+
+      if (+amountToNum) {
+        delegateValueFrom = '{from} updated delegation {amount} to you';
+        delegateValueTo = 'You updated delegation {amount} to {from}';
+      }
+      if (notification.from) {
+        return intl.formatMessage(
+          {
+            id: 'delegate_vesting_shares',
+            defaultMessage: delegateValueFrom,
+          },
+          {
+            amount: notification.amount,
+            from: notification.from,
+          },
+        );
+      }
+
+      return intl.formatMessage(
+        {
+          id: 'delegate_vesting_shares',
+          defaultMessage: delegateValueTo,
+        },
+        {
+          amount: notification.amount,
+          to: notification.to,
+        },
+      );
+    case notificationConstants.UNDELEGATE:
+      if (notification.from) {
+        return intl.formatMessage(
+          {
+            id: 'undelegate',
+            defaultMessage: '{from} started undelegation {amount} to you',
+          },
+          {
+            amount: notification.amount,
+            from: notification.from,
+          },
+        );
+      }
+
+      return intl.formatMessage(
+        {
+          id: 'undelegate',
+          defaultMessage: 'You started undelegation {amount} to {from}',
+        },
+        {
+          amount: notification.amount,
+          to: notification.to,
+        },
+      );
+
     case notificationConstants.TRANSFER_TO_VESTING:
       return intl.formatMessage(
         {
@@ -304,6 +408,17 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           campaignName: notification.campaignName,
         },
       );
+    case notificationConstants.CANCEL_UNSTAKE:
+      return intl.formatMessage(
+        {
+          id: 'cancel_unstake',
+          defaultMessage: 'You cancelled power down on {amount}',
+        },
+        {
+          amount: notification.amount,
+          account: notification.account,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -324,11 +439,21 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${currentAuthUsername}/${notification.permlink}`;
     case notificationConstants.TRANSFER:
       return `/@${notification.account}/transfers`;
+    case notificationConstants.DELEGATE:
+      return `/@${notification.account}/transfers`;
+    case notificationConstants.UNDELEGATE:
+      return `/@${notification.account}/transfers`;
+    case notificationConstants.CANCEL_UNSTAKE:
+      return `/@${notification.account}/transfers`;
+    case notificationConstants.DELEGATE_VESTING_SHARES:
+      return `/@${notification.account}/transfers`;
     case notificationConstants.WITNESS_VOTE:
       return `/@${notification.account}`;
     case notificationConstants.STATUS_CHANGE:
       return `/object/${notification.author_permlink}/updates/status`;
     case notificationConstants.POWER_DOWN:
+      return `/@${notification.account}/transfers`;
+    case notificationConstants.POWER_UP:
       return `/@${notification.account}/transfers`;
     case notificationConstants.FILL_ORDER:
       return `/@${notification.account}/transfers`;
@@ -377,12 +502,20 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.author;
     case notificationConstants.TRANSFER:
       return notification.from;
+    case notificationConstants.DELEGATE:
+      return notification.to ? currentAuthUsername : notification.from;
+    case notificationConstants.UNDELEGATE:
+      return notification.to ? currentAuthUsername : notification.from;
+    case notificationConstants.DELEGATE_VESTING_SHARES:
+      return notification.to ? currentAuthUsername : notification.from;
     case notificationConstants.REBLOG:
     case notificationConstants.WITNESS_VOTE:
       return notification.account;
     case notificationConstants.STATUS_CHANGE:
       return notification.author;
     case notificationConstants.POWER_DOWN:
+      return notification.account;
+    case notificationConstants.POWER_UP:
       return notification.account;
     case notificationConstants.FILL_ORDER:
       return notification.account;
@@ -418,6 +551,8 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.author;
     case notificationConstants.CAMPAIGN_RESERVATION:
       return notification.author;
+    case notificationConstants.CANCEL_UNSTAKE:
+      return notification.account;
     default:
       return currentAuthUsername;
   }
