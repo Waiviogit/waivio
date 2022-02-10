@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
 import '../UserWalletTransactions/UserWalletTransactions.less';
 
-const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
+const DelegatedTo = ({ timestamp, quantity, symbol, to, from, account }) => {
   const isReceive = account === to;
   const link = isReceive ? from : to;
   const delegation = isReceive ? 'Delegation from' : 'Delegated to';
@@ -12,7 +12,7 @@ const DelegatedTo = ({ timestamp, quantity, to, from, account }) => {
     <TransactionCardContainer
       timestamp={timestamp}
       quantity={quantity}
-      symbol={'WP'}
+      symbol={symbol}
       iconType={'arrow-right'}
       color={isReceive ? 'green' : 'red'}
     >
@@ -34,6 +34,7 @@ DelegatedTo.propTypes = {
   to: PropTypes.string.isRequired,
   account: PropTypes.string.isRequired,
   from: PropTypes.string.isRequired,
+  symbol: PropTypes.string.isRequired,
 };
 
 export default DelegatedTo;
