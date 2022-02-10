@@ -6,10 +6,10 @@ import { Link } from 'react-router-dom';
 import { epochToUTC } from '../../../../common/helpers/formatter';
 import Avatar from '../../Avatar';
 import './Notification.less';
+import { getWalletType } from '../../../../common/helpers/notificationsHelper';
 
 const NotificationPowerDown = ({ notification, read, onClick, currentAuthUsername }) => {
-  const url = `/@${notification.account}/transfers`;
-  const usernameVal = notification.account === currentAuthUsername ? 'You' : notification.account;
+  const url = `/@${notification.account}/transfers?type=${getWalletType(notification.amount)}`;
 
   return (
     <Link
@@ -24,9 +24,13 @@ const NotificationPowerDown = ({ notification, read, onClick, currentAuthUsernam
         <div className="Notification__text__message">
           <FormattedMessage
             id="power_down_notification"
-            defaultMessage="{usernameVal} initiated 'Power Down' on {amount}"
+            defaultMessage="{username} initiated 'Power Down' on {amount}"
             values={{
-              username: <span className="username">{usernameVal}</span>,
+              username: (
+                <span className="username">
+                  {notification.account === currentAuthUsername ? 'You' : notification.account}
+                </span>
+              ),
               amount: <span>{notification.amount}</span>,
             }}
           />

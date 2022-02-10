@@ -33,7 +33,6 @@ export const DEACTIVATION_CAMPAIGN = 'deactivationCampaign';
 export const DELEGATE_VESTING_SHARES = 'delegate_vesting_shares';
 export const DELEGATE = 'delegate';
 export const UNDELEGATE = 'undelegate';
-export const POWER_UP = 'power_up';
 export const POWER_DOWN = 'power_down';
 export const CANCEL_UNSTAKE = 'cancelUnstake';
 
@@ -71,7 +70,6 @@ export const PARSED_NOTIFICATIONS = [
   DELEGATE_VESTING_SHARES,
   DELEGATE,
   UNDELEGATE,
-  POWER_UP,
   POWER_DOWN,
   CANCEL_UNSTAKE,
 ];

@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom';
 import Avatar from '../../Avatar';
 import { epochToUTC } from '../../../../common/helpers/formatter';
 import './Notification.less';
+import { getWalletType } from '../../../../common/helpers/notificationsHelper';
 
 const NotificationUndelegateTo = ({ notification, read, onClick }) => {
-  const transferUrl = `/@${notification.from}/transfers`;
+  const transferUrl = `/@${notification.from}/transfers?type=${getWalletType(notification.amount)}`;
 
   return (
     <Link

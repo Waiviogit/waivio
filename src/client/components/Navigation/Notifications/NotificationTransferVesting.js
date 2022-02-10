@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom';
 import { epochToUTC } from '../../../../common/helpers/formatter';
 import Avatar from '../../Avatar';
 import './Notification.less';
+import { getWalletType } from '../../../../common/helpers/notificationsHelper';
 
 const NotificationTransferVesting = ({ notification, read, onClick }) => {
-  const url = `/@${notification.from}/transfers`;
+  const url = `/@${notification.from}/transfers?type=${getWalletType(notification.amount)}`;
 
   return (
     <Link

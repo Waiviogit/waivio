@@ -6,16 +6,10 @@ import { Link } from 'react-router-dom';
 import Avatar from '../../Avatar';
 import { epochToUTC } from '../../../../common/helpers/formatter';
 import './Notification.less';
+import { getWalletType, isEmptyAmount } from '../../../../common/helpers/notificationsHelper';
 
-const NotificationDelegateVestingSharesFrom = ({
-  notification,
-  read,
-  onClick,
-  currentAuthUsername,
-}) => {
-  const transferUrl = `/@${currentAuthUsername}/transfers`;
-  const amount = notification.amount;
-  const amountToNum = amount.replace('HIVE', '').trim();
+const NotificationDelegateVestingSharesFrom = ({ notification, read, onClick }) => {
+  const transferUrl = `/@${notification.to}/transfers?type=${getWalletType(notification.amount)}`;
 
   return (
     <Link
@@ -25,10 +19,10 @@ const NotificationDelegateVestingSharesFrom = ({
       })}
       onClick={onClick}
     >
-      <Avatar username={currentAuthUsername} size={40} />
+      <Avatar username={notification.to} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
-          {+amountToNum ? (
+          {isEmptyAmount(notification.amount) ? (
             <FormattedMessage
               id="delegate_vesting_shares"
               defaultMessage="You updated delegation {amount} to {username}"
@@ -59,20 +53,17 @@ const NotificationDelegateVestingSharesFrom = ({
 NotificationDelegateVestingSharesFrom.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
-    follower: PropTypes.string,
     timestamp: PropTypes.number,
     to: PropTypes.string,
     amount: PropTypes.string,
   }),
   onClick: PropTypes.func,
-  currentAuthUsername: PropTypes.string,
 };
 
 NotificationDelegateVestingSharesFrom.defaultProps = {
   read: false,
   notification: {},
   onClick: () => {},
-  currentAuthUsername: '',
 };
 
 export default NotificationDelegateVestingSharesFrom;

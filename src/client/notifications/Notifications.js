@@ -45,7 +45,6 @@ import NotificationUndelegateFrom from '../components/Navigation/Notifications/N
 import NotificationUndelegateTo from '../components/Navigation/Notifications/NotificationUndelegateTo';
 import NotificationDelegateVestingSharesFrom from '../components/Navigation/Notifications/NotificationDelegateVestingSharesFrom';
 import NotificationDelegateVestingSharesTo from '../components/Navigation/Notifications/NotificationDelegateVestingSharesTo';
-import NotificationPowerUp from '../components/Navigation/Notifications/NotificationPowerUp';
 
 import {
   getAuthenticatedUserMetaData,
@@ -238,16 +237,6 @@ class Notifications extends React.Component {
               case notificationConstants.POWER_DOWN:
                 return (
                   <NotificationPowerDown
-                    key={key}
-                    notification={notification}
-                    read={read}
-                    currentAuthUsername={currentAuthUsername}
-                    onClick={this.handleNotificationsClick}
-                  />
-                );
-              case notificationConstants.POWER_UP:
-                return (
-                  <NotificationPowerUp
                     key={key}
                     notification={notification}
                     read={read}

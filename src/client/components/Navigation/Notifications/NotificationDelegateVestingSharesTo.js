@@ -6,11 +6,10 @@ import { Link } from 'react-router-dom';
 import Avatar from '../../Avatar';
 import { epochToUTC } from '../../../../common/helpers/formatter';
 import './Notification.less';
+import { getWalletType, isEmptyAmount } from '../../../../common/helpers/notificationsHelper';
 
 const NotificationDelegateVestingSharesTo = ({ notification, read, onClick }) => {
-  const transferUrl = `/@${notification.from}/transfers`;
-  const amount = notification.amount;
-  const amountToNum = amount.replace('HIVE', '').trim();
+  const transferUrl = `/@${notification.from}/transfers?type=${getWalletType(notification.amount)}`;
 
   return (
     <Link
@@ -23,10 +22,10 @@ const NotificationDelegateVestingSharesTo = ({ notification, read, onClick }) =>
       <Avatar username={notification.from} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
-          {+amountToNum ? (
+          {isEmptyAmount(notification.amount) ? (
             <FormattedMessage
               id="delegate_vesting_shares"
-              defaultMessage="{username} updated delegate {amount} to you"
+              defaultMessage="{username} updated delegation {amount} to you"
               values={{
                 username: <span className="username">{notification.from}</span>,
                 amount: notification.amount,

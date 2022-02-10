@@ -8,7 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationTransferFromSavings = ({ notification, read, onClick }) => {
-  const url = `/@${notification.from}/transfers`;
+  const url = `/@${notification.from}/transfers/`;
 
   return (
     <Link

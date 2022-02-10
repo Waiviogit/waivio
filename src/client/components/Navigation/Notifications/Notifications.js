@@ -38,10 +38,6 @@ import NotificationWobjectRewardsBell from './NotificationWobjectRewardsBell';
 import NotificationWobjectPostBell from './NotificationWobjectPostBell';
 import NotificationWebsiteBalance from './NotificationWebsiteBalance';
 import NotificationDeacticationCampaign from '../../../components/Navigation/Notifications/NotificationDeactivationCampaign';
-
-import './Notification.less';
-import './Notifications.less';
-import NotificationPowerUp from './NotificationPowerUp';
 import NotificationDelegateFrom from './NotificationDelegateFrom';
 import NotificationDelegateTo from './NotificationDelegateTo';
 import NotificationUndelegateFrom from './NotificationUndelegateFrom';
@@ -49,6 +45,9 @@ import NotificationUndelegateTo from './NotificationUndelegateTo';
 import NotificationDelegateVestingSharesFrom from './NotificationDelegateVestingSharesFrom';
 import NotificationDelegateVestingSharesTo from './NotificationDelegateVestingSharesTo';
 import NotificationCancelUnstake from './NotificationCancelUnstake';
+
+import './Notification.less';
+import './Notifications.less';
 
 const displayLimit = 6;
 
@@ -255,16 +254,6 @@ class Notifications extends React.Component {
               case notificationConstants.POWER_DOWN:
                 return (
                   <NotificationPowerDown
-                    key={key}
-                    notification={notification}
-                    read={read}
-                    onClick={this.handleNotificationsClick}
-                    currentAuthUsername={currentAuthUsername}
-                  />
-                );
-              case notificationConstants.POWER_UP:
-                return (
-                  <NotificationPowerUp
                     key={key}
                     notification={notification}
                     read={read}

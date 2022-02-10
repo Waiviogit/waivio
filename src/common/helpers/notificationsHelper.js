@@ -1,5 +1,27 @@
 import * as notificationConstants from '../constants/notifications';
 
+export const getWalletType = amount => {
+  if (amount) {
+    const currency = amount.split(' ')[1];
+
+    if (currency === 'WAIV' || currency === 'WP') {
+      return 'WAIV';
+    } else if (currency === 'HIVE' || currency === 'HP' || currency === 'HBD') {
+      return 'HIVE';
+    }
+
+    return 'ENGINE';
+  }
+
+  return ``;
+};
+
+export const isEmptyAmount = amount => {
+  const currency = amount.split(' ')[0];
+
+  return +currency;
+};
+
 export const getNotificationsMessage = (notification, intl, displayUsername) => {
   switch (notification.type) {
     case notificationConstants.REPLY:
@@ -86,17 +108,6 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
         {
           id: 'power_down_notification',
           defaultMessage: "{username} initiated 'Power Down' on {amount}",
-        },
-        {
-          username: notification.account === displayUsername ? 'You' : notification.account,
-          amount: notification.amount,
-        },
-      );
-    case notificationConstants.POWER_UP:
-      return intl.formatMessage(
-        {
-          id: 'power_up_notification',
-          defaultMessage: "{username} initiated 'Power UP' on {amount}",
         },
         {
           username: notification.account === displayUsername ? 'You' : notification.account,
@@ -218,12 +229,10 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
         },
       );
     case notificationConstants.DELEGATE_VESTING_SHARES:
-      const amount = notification.amount;
-      const amountToNum = amount.replace('HIVE', '').trim();
       let delegateValueFrom = '{from} undelegated to you';
       let delegateValueTo = 'You undelegated to {username}';
 
-      if (+amountToNum) {
+      if (isEmptyAmount(notification.amount)) {
         delegateValueFrom = '{from} updated delegation {amount} to you';
         delegateValueTo = 'You updated delegation {amount} to {from}';
       }
@@ -438,23 +447,21 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
     case notificationConstants.REBLOG:
       return `/@${currentAuthUsername}/${notification.permlink}`;
     case notificationConstants.TRANSFER:
-      return `/@${notification.account}/transfers`;
+      return `/@${notification.account}/transfers?type=${getWalletType(notification.amount)}`;
     case notificationConstants.DELEGATE:
-      return `/@${notification.account}/transfers`;
+      return `/@${notification.account}/transfers?type=${getWalletType(notification.amount)}`;
     case notificationConstants.UNDELEGATE:
-      return `/@${notification.account}/transfers`;
+      return `/@${notification.account}/transfers?type=${getWalletType(notification.amount)}`;
     case notificationConstants.CANCEL_UNSTAKE:
-      return `/@${notification.account}/transfers`;
+      return `/@${notification.account}/transfers?type=${getWalletType(notification.amount)}`;
     case notificationConstants.DELEGATE_VESTING_SHARES:
-      return `/@${notification.account}/transfers`;
+      return `/@${notification.account}/transfers??type=${getWalletType(notification.amount)}`;
     case notificationConstants.WITNESS_VOTE:
       return `/@${notification.account}`;
     case notificationConstants.STATUS_CHANGE:
       return `/object/${notification.author_permlink}/updates/status`;
     case notificationConstants.POWER_DOWN:
-      return `/@${notification.account}/transfers`;
-    case notificationConstants.POWER_UP:
-      return `/@${notification.account}/transfers`;
+      return `/@${notification.account}/transfers?type=${getWalletType(notification.amount)}`;
     case notificationConstants.FILL_ORDER:
       return `/@${notification.account}/transfers`;
     case notificationConstants.REJECT_UPDATE:
@@ -468,9 +475,9 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
     case notificationConstants.CHANGE_PASSWORD:
       return `/@${notification.account}`;
     case notificationConstants.TRANSFER_FROM:
-      return `/@${notification.to}/transfers`;
+      return `/@${notification.to}/transfers?type=${getWalletType(notification.amount)}`;
     case notificationConstants.TRANSFER_TO_VESTING:
-      return `/@${notification.from}/transfers`;
+      return `/@${notification.from}/transfers?type=${getWalletType(notification.amount)}`;
     case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
       return `/@${notification.new_recovery_account}`;
     case notificationConstants.TRANSFER_FROM_SAVINGS:
@@ -503,19 +510,17 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
     case notificationConstants.TRANSFER:
       return notification.from;
     case notificationConstants.DELEGATE:
-      return notification.to ? currentAuthUsername : notification.from;
+      return notification.to ? notification.to : notification.from;
     case notificationConstants.UNDELEGATE:
-      return notification.to ? currentAuthUsername : notification.from;
+      return notification.to ? notification.to : notification.from;
     case notificationConstants.DELEGATE_VESTING_SHARES:
-      return notification.to ? currentAuthUsername : notification.from;
+      return notification.to ? notification.to : notification.from;
     case notificationConstants.REBLOG:
     case notificationConstants.WITNESS_VOTE:
       return notification.account;
     case notificationConstants.STATUS_CHANGE:
       return notification.author;
     case notificationConstants.POWER_DOWN:
-      return notification.account;
-    case notificationConstants.POWER_UP:
       return notification.account;
     case notificationConstants.FILL_ORDER:
       return notification.account;

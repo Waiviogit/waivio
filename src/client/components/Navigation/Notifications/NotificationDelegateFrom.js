@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom';
 import Avatar from '../../Avatar';
 import { epochToUTC } from '../../../../common/helpers/formatter';
 import './Notification.less';
+import { getWalletType } from '../../../../common/helpers/notificationsHelper';
 
-const NotificationDelegateFrom = ({ notification, read, onClick, currentAuthUsername }) => {
-  const transferUrl = `/@${currentAuthUsername}/transfers`;
+const NotificationDelegateFrom = ({ notification, read, onClick }) => {
+  const transferUrl = `/@${notification.to}/transfers?type=${getWalletType(notification.amount)}`;
 
   return (
     <Link
@@ -18,7 +19,7 @@ const NotificationDelegateFrom = ({ notification, read, onClick, currentAuthUser
       })}
       onClick={onClick}
     >
-      <Avatar username={currentAuthUsername} size={40} />
+      <Avatar username={notification.to} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
           <FormattedMessage
@@ -46,14 +47,12 @@ NotificationDelegateFrom.propTypes = {
     amount: PropTypes.string,
   }),
   onClick: PropTypes.func,
-  currentAuthUsername: PropTypes.string,
 };
 
 NotificationDelegateFrom.defaultProps = {
   read: false,
   notification: {},
   onClick: () => {},
-  currentAuthUsername: '',
 };
 
 export default NotificationDelegateFrom;

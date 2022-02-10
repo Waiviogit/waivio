@@ -6,10 +6,12 @@ import { Link } from 'react-router-dom';
 import Avatar from '../../Avatar';
 import { epochToUTC } from '../../../../common/helpers/formatter';
 import './Notification.less';
+import { getWalletType } from '../../../../common/helpers/notificationsHelper';
 
 const NotificationCancelUnstake = ({ notification, read, onClick, currentAuthUsername }) => {
-  const transferUrl = `/@${notification.account}/transfers`;
-  const usernameVal = notification.account === currentAuthUsername ? 'You' : notification.account;
+  const transferUrl = `/@${notification.account}/transfers?type=${getWalletType(
+    notification.amount,
+  )}`;
 
   return (
     <Link
@@ -26,7 +28,11 @@ const NotificationCancelUnstake = ({ notification, read, onClick, currentAuthUse
             id="notification_unstake_username_amount"
             defaultMessage="{username} cancelled power down on {amount}"
             values={{
-              username: <span className="username">{usernameVal}</span>,
+              username: (
+                <span className="username">
+                  {notification.account === currentAuthUsername ? 'You' : notification.account}
+                </span>
+              ),
               amount: notification.amount,
             }}
           />
