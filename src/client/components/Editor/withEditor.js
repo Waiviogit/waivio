@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import fetch from 'isomorphic-fetch';
 import { message } from 'antd';
 import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
@@ -12,7 +13,6 @@ import { createPermlink } from '../../vendor/steemitHelpers';
 import { generateRandomString } from '../../../common/helpers/wObjectHelper';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
-import { headers } from '../../../waivioApi/ApiClient';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -82,11 +82,13 @@ export default function withEditor(WrappedComponent) {
       }
 
       return fetch(url, {
-        body: JSON.stringify(formData),
-        headers,
+        body: formData,
         method: 'POST',
       })
-        .then(res => callback(res.data.image, blob.name))
+        .then(res => res.json())
+        .then(res => {
+          callback(res.image, blob.name);
+        })
         .catch(() => {
           errorCallback();
           message.error(
