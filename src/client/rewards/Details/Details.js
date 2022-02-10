@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { isEqual, get } from 'lodash';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
+import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
@@ -35,7 +36,8 @@ const Details = ({
   removeToggleFlag,
   onActionInitiated,
 }) => {
-  const isWidget = new URLSearchParams(location.search).get('display');
+  const location = useLocation();
+  const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
   const requiredObject = get(proposedWobj, 'propositions[0].required_object');

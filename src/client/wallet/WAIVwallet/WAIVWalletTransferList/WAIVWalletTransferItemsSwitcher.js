@@ -23,6 +23,7 @@ import { getCurrentWalletType } from '../../../../store/walletStore/walletSelect
 import SwapTokenCard from '../../TransfersCards/SwapTokenCard/SwapTokenCard';
 import PowerDownCanceledCard from '../../TransfersCards/PowerDownCanceledCard';
 import DepositeCard from '../../TransfersCards/DepositeCard';
+import WithdawCard from '../../TransfersCards/WithdrawCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const walletType = useSelector(getCurrentWalletType);
@@ -122,6 +123,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
     case 'tokens_delegate':
       return (
         <DelegatedTo
+          symbol={transaction.symbol}
           quantity={transaction.quantity}
           timestamp={transaction.timestamp}
           to={transaction.to}
@@ -139,6 +141,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           from={transaction.from}
           account={transaction.account}
           status={'started'}
+          symbol={transaction.symbol}
         />
       );
 
@@ -151,6 +154,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           from={transaction.from}
           account={transaction.account}
           status={'completed'}
+          symbol={transaction.symbol}
         />
       );
 
@@ -209,6 +213,15 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         />
       );
 
+    case 'hivepegged_withdraw':
+      return (
+        <WithdawCard
+          timestamp={transaction.timestamp}
+          symbol={transaction.symbol}
+          quantity={transaction.quantity}
+        />
+      );
+
     case 'comments_beneficiaryReward':
       return (
         <CuratorRewardsCard
@@ -223,6 +236,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
       );
 
     case 'mining_lottery':
+    case 'tokens_issue':
       return (
         <CuratorRewardsCard
           timestamp={transaction.timestamp}

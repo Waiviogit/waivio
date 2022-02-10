@@ -24,6 +24,7 @@ import {
 import { getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
 
 import './UserWalletSummary.less';
 
@@ -150,91 +151,125 @@ const UserWalletSummary = ({
 
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
-      <div className="UserWalletSummary__item">
-        <img
-          className="UserWalletSummary__icon hive"
-          src="/images/icons/logo-hive-wallet.svg"
-          alt="hive"
-        />
-        <div className="UserWalletSummary__label">
-          <FormattedMessage id="hive" defaultMessage="Hive" />
+      <div className="UserWalletSummary__itemWrap">
+        <div className="UserWalletSummary__item">
+          <img
+            className="UserWalletSummary__icon hive"
+            src="/images/icons/logo-hive-wallet.svg"
+            alt="hive"
+          />
+          <div className="UserWalletSummary__label">
+            <FormattedMessage id="hive" defaultMessage="Hive" />
+          </div>
+          <div className="UserWalletSummary__value">
+            {user.fetching ? (
+              <Loading />
+            ) : (
+              <span>
+                <FormattedNumber value={user.balance ? parseFloat(user.balance) : 0} />
+                {' HIVE'}
+              </span>
+            )}
+          </div>
         </div>
-        <div className="UserWalletSummary__value">
-          {user.fetching ? (
-            <Loading />
-          ) : (
-            <span>
-              <FormattedNumber value={user.balance ? parseFloat(user.balance) : 0} />
-              {' HIVE'}
-            </span>
-          )}
+        <div className="UserWalletSummary__actions">
+          <p className="UserWalletSummary__description">Liquid HIVE tokens</p>
+          <WalletAction
+            mainKey={'power_up'}
+            options={['transfer', 'convert']}
+            mainCurrency={'HIVE'}
+            swapCurrencyOptions={['SWAP.HIVE']}
+          />
         </div>
       </div>
       {!isGuest && (
         <React.Fragment>
-          <div className="UserWalletSummary__item">
-            <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
-            <div className="UserWalletSummary__label">
-              <FormattedMessage id="steem_power" defaultMessage="Hive Power" />
-            </div>
-            <div
-              className={powerClassList}
-              onClick={() => {
-                if (hasDelegations) {
-                  setVisible(true);
-                }
-              }}
-            >
-              {user.fetching || loadingGlobalProperties ? (
-                <Loading />
-              ) : (
-                <span className={`${user.to_withdraw ? 'red' : ''}`}>
-                  <FormattedNumber
-                    value={parseFloat(
-                      formatter.vestToSteem(
-                        user.vesting_shares,
-                        totalVestingShares,
-                        totalVestingFundSteem,
-                      ),
+          <div className="UserWalletSummary__itemWrap">
+            <div className="UserWalletSummary__item">
+              <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
+              <div className="UserWalletSummary__label">
+                <FormattedMessage id="steem_power" defaultMessage="Hive Power" />
+              </div>
+              <div
+                className={powerClassList}
+                onClick={() => {
+                  if (hasDelegations) {
+                    setVisible(true);
+                  }
+                }}
+              >
+                {user.fetching || loadingGlobalProperties ? (
+                  <Loading />
+                ) : (
+                  <span className={`${user.to_withdraw ? 'red' : ''}`}>
+                    <FormattedNumber
+                      value={parseFloat(
+                        formatter.vestToSteem(
+                          user.vesting_shares,
+                          totalVestingShares,
+                          totalVestingFundSteem,
+                        ),
+                      )}
+                    />
+                    {getFormattedPendingWithdrawalSP(
+                      user,
+                      totalVestingShares,
+                      totalVestingFundSteem,
                     )}
-                  />
-                  {getFormattedPendingWithdrawalSP(user, totalVestingShares, totalVestingFundSteem)}
-                  {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)}
-                  {' HP'}
-                </span>
-              )}
+                    {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)}
+                    {' HP'}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="UserWalletSummary__actions">
+              <p className="UserWalletSummary__description">Staked HIVE tokens</p>
+              <WalletAction mainKey={'power_down'} />
             </div>
           </div>
-          <div className="UserWalletSummary__item">
-            <i className="iconfont icon-Dollar UserWalletSummary__icon" />
-            <div className="UserWalletSummary__label">Hive Backed Dollar</div>
-            <div className="UserWalletSummary__value">
-              {user.fetching ? (
-                <Loading />
-              ) : (
-                <span>
-                  <FormattedNumber value={parseFloat(user.hbd_balance)} />
-                  {' HBD'}
-                </span>
-              )}
+          <div className="UserWalletSummary__itemWrap">
+            <div className="UserWalletSummary__item">
+              <i className="iconfont icon-Dollar UserWalletSummary__icon" />
+              <div className="UserWalletSummary__label">Hive Backed Dollar</div>
+              <div className="UserWalletSummary__value">
+                {user.fetching ? (
+                  <Loading />
+                ) : (
+                  <span>
+                    <FormattedNumber value={parseFloat(user.hbd_balance)} />
+                    {' HBD'}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="UserWalletSummary__actions">
+              <p className="UserWalletSummary__description">A stable coin pegged to USD</p>
+              <WalletAction
+                mainKey={'transfer'}
+                options={['convert']}
+                swapCurrencyOptions={['SWAP.HBD']}
+                mainCurrency={'HBD'}
+              />
             </div>
           </div>
-          <div className="UserWalletSummary__item">
-            <i className="iconfont icon-savings UserWalletSummary__icon" />
-            <div className="UserWalletSummary__label">
-              <FormattedMessage id="savings" defaultMessage="Savings" />
-            </div>
-            <div className="UserWalletSummary__value">
-              {user.fetching ? (
-                <Loading />
-              ) : (
-                <span>
-                  <FormattedNumber value={parseFloat(user.savings_balance)} />
-                  {' HIVE, '}
-                  <FormattedNumber value={parseFloat(user.savings_hbd_balance)} />
-                  {' HBD'}
-                </span>
-              )}
+          <div className="UserWalletSummary__itemWrap">
+            <div className="UserWalletSummary__item">
+              <i className="iconfont icon-savings UserWalletSummary__icon" />
+              <div className="UserWalletSummary__label">
+                <FormattedMessage id="savings" defaultMessage="Savings" />
+              </div>
+              <div className="UserWalletSummary__value">
+                {user.fetching ? (
+                  <Loading />
+                ) : (
+                  <span>
+                    <FormattedNumber value={parseFloat(user.savings_balance)} />
+                    {' HIVE, '}
+                    <FormattedNumber value={parseFloat(user.savings_hbd_balance)} />
+                    {' HBD'}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </React.Fragment>

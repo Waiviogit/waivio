@@ -4,19 +4,39 @@
 .UserWalletSummary {
   &__item {
     display: flex;
-    border-bottom: @base-border;
     align-items: center;
     flex-direction: row;
+    padding: 0 0 10px 0;
+  }
+
+  &__itemWrap {
     padding: 10px 0;
+    border-bottom: @base-border;
 
     &:last-of-type {
       border-bottom: 0;
     }
   }
 
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__description {
+    color: @blue-baliHai;
+    margin: 5px 0 0 35px;
+  }
+
   &__icon {
     color: @blue-baliHai;
     margin-right: 10px;
+
+    &.icon-flashlight_fill {
+      height: 30px;
+      line-height: 30px;
+    }
 
     &.hive {
       height: 20px;

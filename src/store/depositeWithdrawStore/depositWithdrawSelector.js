@@ -21,3 +21,4 @@ export const getWithdrawSelectPair = createSelector(
 );
 
 export const getPairLoading = createSelector([depositWithdrawState], state => state.pairLoading);
+export const getDepositeSymbol = createSelector([depositWithdrawState], state => state.symbol);

@@ -1,0 +1,54 @@
+@import (reference) '../../../../styles/custom.less';
+
+.nightmode {
+  .WalletAction {
+    &__button {
+      background: transparent;
+      border: 1px solid @orange-hot;
+      border-radius: 4px 0 0 4px;
+      color: @orange-hot;
+
+      &--withoutSelect {
+        border-radius: 4px;
+      }
+    }
+
+    &__select.ant-select {
+      .ant-select-selection {
+        height: 30px;
+        background: transparent;
+        border: 1px solid @orange-hot;
+        border-radius: 0 4px 4px 0;
+        border-left: none;
+        outline: none;
+
+        &:focus,
+        &:hover {
+          outline: none;
+          box-shadow: none;
+        }
+
+        .anticon {
+          color: @orange-hot;
+        }
+      }
+    }
+
+    &__select-dropdown {
+      .ant-dropdown-menu-item {
+        color: @white;
+
+        &:hover {
+          background: @blue-darkGrayish;
+        }
+      }
+    }
+
+    &--withoutButton {
+      .ant-select-selection {
+        border: 1px solid @orange-hot;
+        border-radius: 4px;
+      }
+    }
+  }
+}

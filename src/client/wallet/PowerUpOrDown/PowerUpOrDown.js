@@ -124,7 +124,7 @@ export default class PowerUpOrDown extends React.Component {
                   contractName: 'tokens',
                   contractAction: down ? 'unstake' : 'stake',
                   contractPayload: {
-                    symbol: values.currency,
+                    symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
                     to: user.name,
                     quantity: round(parseFloat(values.amount), 5).toString(),
                   },

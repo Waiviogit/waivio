@@ -290,7 +290,8 @@ class StoryFull extends React.Component {
       (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
       post.body,
     );
-    let signedBody = body;
+
+    let signedBody = body.replaceAll('http://', 'https://');
 
     if (signature) signedBody = `${body}<hr>${signature}`;
 

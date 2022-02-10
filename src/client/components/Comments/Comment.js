@@ -234,6 +234,8 @@ class Comment extends React.Component {
     } = this.props;
     let isGuest = false;
 
+    const formattedComment = comment.body.replace(/#([^\s#]+)/g, ' #$1');
+
     if (comment.json_metadata.includes('"social":')) {
       const jsonMetadata = JSON.parse(comment.json_metadata);
 
@@ -276,7 +278,7 @@ class Comment extends React.Component {
           <FormattedMessage id="comment_collapsed" defaultMessage="Comment collapsed" />
         </div>
       ) : (
-        <BodyContainer body={comment.body} />
+        <BodyContainer body={formattedComment} />
       );
     }
 

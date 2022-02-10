@@ -14,6 +14,7 @@ import Loading from '../../components/Icon/Loading';
 import { resetTokenBalance } from '../../../store/walletStore/walletActions';
 import DelegateListModal from '../DelegateListModal/DelegateListModal';
 import { getDelegateList, getPendingUndelegationsToken } from '../../../waivioApi/ApiClient';
+import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
 
 const WAIVWalletSummaryInfo = props => {
   const [delegateList, setDeligateList] = useState([]);
@@ -68,7 +69,10 @@ const WAIVWalletSummaryInfo = props => {
           <div className="WalletSummaryInfo__label">WAIV</div>
           <div className="WalletSummaryInfo__value">{formattedNumber(balance)} WAIV</div>
         </div>
-        <p className="WalletSummaryInfo__description">Liquid WAIV tokens</p>
+        <div className="WalletSummaryInfo__actions">
+          <p className="WalletSummaryInfo__description">Liquid WAIV tokens</p>
+          <WalletAction mainKey={'power_up'} options={['transfer']} mainCurrency={'WAIV'} />
+        </div>
       </div>
       <div className="WalletSummaryInfo__itemWrap">
         <div className="WalletSummaryInfo__item">
@@ -93,7 +97,10 @@ const WAIVWalletSummaryInfo = props => {
             WP
           </div>
         </div>
-        <p className="WalletSummaryInfo__description">Staked WAIV tokens</p>
+        <div className="WalletSummaryInfo__actions">
+          <p className="WalletSummaryInfo__description">Staked WAIV tokens</p>
+          <WalletAction mainKey={'power_down'} />
+        </div>
       </div>
       {hasDelegations && (
         <DelegateListModal

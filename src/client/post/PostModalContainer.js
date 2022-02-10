@@ -9,6 +9,8 @@ import { getCurrentShownPost, getShowPostModal } from '../../store/appStore/appS
 import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 import { getPostContent } from '../../store/postsStore/postsSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
+import { addPayoutForActiveVotes } from '../../common/helpers';
+import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
 const PostModalContainer = ({
   showPostModal,
@@ -59,12 +61,17 @@ export default connect(
     const author = get(currentShownPost, 'author');
     const permlink = get(currentShownPost, 'permlink');
     const getContent = getPostContent(permlink, author);
+    const post = getContent(state);
+    const waivRates = getTokenRatesInUSD(state, 'WAIV');
 
     return {
       showPostModal: getShowPostModal(state),
       author: getUser(state, author),
       currentShownPost,
-      shownPostContents: getContent(state),
+      shownPostContents: {
+        ...post,
+        active_votes: addPayoutForActiveVotes(post, waivRates),
+      },
       isGuest: isGuestUser(state),
       userName: getAuthenticatedUserName(state),
     };
