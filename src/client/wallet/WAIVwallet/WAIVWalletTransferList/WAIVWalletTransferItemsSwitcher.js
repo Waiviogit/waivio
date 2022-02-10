@@ -123,6 +123,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
     case 'tokens_delegate':
       return (
         <DelegatedTo
+          symbol={transaction.symbol}
           quantity={transaction.quantity}
           timestamp={transaction.timestamp}
           to={transaction.to}
@@ -140,6 +141,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           from={transaction.from}
           account={transaction.account}
           status={'started'}
+          symbol={transaction.symbol}
         />
       );
 
@@ -152,6 +154,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           from={transaction.from}
           account={transaction.account}
           status={'completed'}
+          symbol={transaction.symbol}
         />
       );
 
