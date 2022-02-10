@@ -1,0 +1,61 @@
+@import (reference) '../../../../styles/custom.less';
+
+.WalletAction {
+  display: flex;
+
+  &__button {
+    background: transparent;
+    border: 1px solid @orange-hot;
+    border-radius: 4px 0 0 4px;
+    color: @orange-hot;
+
+    &--withoutSelect {
+      border-radius: 4px;
+    }
+  }
+
+  &__select {
+    height: 30px;
+    background: transparent;
+    border: 1px solid @orange-hot;
+    border-radius: 0 4px 4px 0;
+    border-left: none;
+    outline: none;
+    padding: 5px;
+
+    &:focus,
+    &:hover {
+      outline: none;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    .anticon {
+      color: @orange-hot;
+    }
+  }
+
+  &--withoutButton {
+    .ant-select-selection {
+      border: 1px solid @orange-hot;
+      border-radius: 4px;
+    }
+  }
+
+  &__select-dropdown {
+    .ant-dropdown-menu-item {
+      background: transparent;
+      color: @black-text-basic;
+
+      &:focus {
+        background: transparent;
+      }
+
+      &:hover {
+        background: @maize;
+      }
+    }
+  }
+}
+
+@import './WalletActions-nightmode.less';
