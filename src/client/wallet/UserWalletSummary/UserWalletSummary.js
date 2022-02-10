@@ -24,7 +24,7 @@ import {
 import { getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import WalletAction from '../WalletSummaryInfo/components/WalletActions';
+import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
 
 import './UserWalletSummary.less';
 

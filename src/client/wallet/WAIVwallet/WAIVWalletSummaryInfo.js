@@ -14,7 +14,7 @@ import Loading from '../../components/Icon/Loading';
 import { resetTokenBalance } from '../../../store/walletStore/walletActions';
 import DelegateListModal from '../DelegateListModal/DelegateListModal';
 import { getDelegateList, getPendingUndelegationsToken } from '../../../waivioApi/ApiClient';
-import WalletAction from '../WalletSummaryInfo/components/WalletActions';
+import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
 
 const WAIVWalletSummaryInfo = props => {
   const [delegateList, setDeligateList] = useState([]);
