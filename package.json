@@ -38,6 +38,7 @@
   "dependencies": {
     "@hiveio/dhive": "^1.0.1",
     "@hot-loader/react-dom": "^16.8.6",
+    "@loadable/babel-plugin": "^5.13.2",
     "@sentry/react": "^5.24.2",
     "@sentry/tracing": "^5.24.2",
     "@textlint/markdown-to-ast": "^6.1.2",
