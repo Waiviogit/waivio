@@ -23,6 +23,7 @@ import {
 } from './WalletHelper';
 import PowerDownTransaction from './TransfersCards/PowerDownTransaction';
 import formatter from '../../common/helpers/steemitFormatter';
+import HiveDelegatedCard from './TransfersCards/HiveDelegatedCard';
 
 import './UserWalletTransactions/UserWalletTransactions.less';
 
@@ -183,6 +184,21 @@ const WalletTransaction = ({
           exchanger={exchanger}
           currentUsername={currentUsername}
           transactionType={transactionType}
+        />
+      );
+    case accountHistoryConstants.DELEGATE:
+      return (
+        <HiveDelegatedCard
+          account={currentUsername}
+          from={transaction.delegatee}
+          to={transaction.delegator}
+          timestamp={transaction.timestamp}
+          quantity={formatter.vestToSteem(
+            transaction.vesting_shares,
+            totalVestingShares,
+            totalVestingFundSteem,
+          )}
+          symbol={'HP'}
         />
       );
     case accountHistoryConstants.CANCEL_ORDER:
