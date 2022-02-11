@@ -182,36 +182,39 @@ class CreateObject extends React.Component {
 
               this.props.addAlbumToStore({ ...album, author });
             }
-            this.props.notify(
-              this.props.intl.formatMessage({
-                id: 'create_object_success',
-                defaultMessage: 'Object has been created',
-              }),
-              'success',
-            );
-            this.props.onCreateObject(
-              {
-                _id: parentPermlink,
-                author: parentAuthor,
-                avatar: DEFAULTS.AVATAR,
-                name: objData.name,
-                title: '',
-                parent: this.props.parentObject,
-                weight: '',
-                createdAt: Date.now(),
-                updatedAt: Date.now(),
-                children: [],
-                users: [],
-                userCount: 0,
-                version: 0,
-                isNew: false,
-                rank: 1,
-                object_type: objData.type,
-                background: '',
-                author_permlink: parentPermlink,
-              },
-              { locale: values.locale },
-            );
+            setTimeout(() => {
+              this.props.notify(
+                this.props.intl.formatMessage({
+                  id: 'create_object_success',
+                  defaultMessage: 'Object has been created',
+                }),
+                'success',
+              );
+              this.props.onCreateObject(
+                {
+                  _id: parentPermlink,
+                  author: parentAuthor,
+                  avatar: DEFAULTS.AVATAR,
+                  name: objData.name,
+                  title: '',
+                  parent: this.props.parentObject,
+                  weight: '',
+                  createdAt: Date.now(),
+                  updatedAt: Date.now(),
+                  children: [],
+                  users: [],
+                  userCount: 0,
+                  version: 0,
+                  isNew: false,
+                  rank: 1,
+                  object_type: objData.type,
+                  background: '',
+                  author_permlink: parentPermlink,
+                },
+                { locale: values.locale },
+              );
+            }, 1000);
+
             this.forceCloseObject();
           })
           .catch(error => {
