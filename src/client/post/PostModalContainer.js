@@ -63,6 +63,7 @@ export default connect(
     const getContent = getPostContent(permlink, author);
     const post = getContent(state);
     const waivRates = getTokenRatesInUSD(state, 'WAIV');
+    const userName = getAuthenticatedUserName(state);
 
     return {
       showPostModal: getShowPostModal(state),
@@ -70,10 +71,10 @@ export default connect(
       currentShownPost,
       shownPostContents: {
         ...post,
-        active_votes: addPayoutForActiveVotes(post, waivRates),
+        active_votes: addPayoutForActiveVotes(post, waivRates, userName),
       },
       isGuest: isGuestUser(state),
-      userName: getAuthenticatedUserName(state),
+      userName,
     };
   },
   {

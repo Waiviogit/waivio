@@ -28,10 +28,14 @@ import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);
-  const post = getPosts(state)[id];
+  const currPost = getPosts(state)[id];
+  const waivRates = getTokenRatesInUSD(state, 'WAIV');
+  const post = {
+    ...currPost,
+    active_votes: addPayoutForActiveVotes(currPost, waivRates, user.name),
+  };
   const isLiked = getUpvotes(post.active_votes).some(vote => vote.voter === user.name);
   const isReported = getDownvotes(post.active_votes).some(vote => vote.voter === user.name);
-  const waivRates = getTokenRatesInUSD(state, 'WAIV');
 
   const bookmarks = getBookmarks(state);
   const postState = {
@@ -53,10 +57,7 @@ const mapStateToProps = (state, { id }) => {
 
   return {
     user,
-    post: {
-      ...post,
-      active_votes: addPayoutForActiveVotes(post, waivRates),
-    },
+    post,
     postState,
     pendingLike,
     pendingFlag,
