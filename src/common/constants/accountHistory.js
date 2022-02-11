@@ -55,6 +55,7 @@ export const RECEIVED = 'received';
 export const TRANSFERRED = 'transferred';
 export const SAVINGS = 'savings';
 export const CLAIM_REWARDS = 'claim_rewards';
+export const DELEGATE = 'delegate_vesting_shares';
 
 export const PARSED_PROPERTIES = [
   ACCOUNT_CREATE,
