@@ -193,17 +193,6 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           to: notification.to,
         },
       );
-    case notificationConstants.DELEGATE_FROM:
-      return intl.formatMessage(
-        {
-          id: 'delegate_from',
-          defaultMessage: 'You delegated {amount} to {to}',
-        },
-        {
-          amount: notification.amount,
-          to: notification.to,
-        },
-      );
     case notificationConstants.DELEGATE:
       if (notification.from) {
         return intl.formatMessage(
