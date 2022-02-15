@@ -51,6 +51,8 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
           to_coin_symbol: 'HIVE',
           symbol: 'SWAP.HIVE',
           account: 'honey-swap',
+          ex_rate: 1,
+          pair: 'HIVE -> SWAP.HIVE',
         },
       ].filter(
         pair => pair.from_coin_symbol.startsWith('SWAP') && !pair.to_coin_symbol.startsWith('SWAP'),
