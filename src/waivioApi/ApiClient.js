@@ -1351,6 +1351,24 @@ export const sendGuestTransfer = async ({ to, amount, memo, app }) => {
     .catch(err => err);
 };
 
+export const deletePost = async ({ root_author, permlink, userName }) => {
+  const userData = await getValidTokenData();
+
+  const body = {
+    id: 'waivio_guest_delete_comment',
+    data: { root_author, permlink },
+    userName,
+  };
+
+  return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+    method: 'POST',
+    headers: { ...headers, 'access-token': userData.token },
+    body: JSON.stringify(body),
+  })
+    .then(res => res.json())
+    .catch(err => err);
+};
+
 export const sendPendingTransfer = async ({ sponsor, userName, amount, transactionId, memo }) => {
   const body = {
     sponsor,

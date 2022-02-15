@@ -13,6 +13,7 @@ import { isPostCashout } from '../../vendor/steemitHelpers';
 import { getSocialInfoPost as getSocialInfoPostAction } from '../../../store/postsStore/postActions';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { deletePost } from '../../../waivioApi/ApiClient';
 
 import './PostPopoverMenu.less';
 
@@ -31,6 +32,7 @@ const propTypes = {
       userId: PropTypes.string,
     }),
     author: PropTypes.string,
+    root_author: PropTypes.string,
     isHide: PropTypes.bool,
     url: PropTypes.string,
     title: PropTypes.string,
@@ -93,7 +95,8 @@ const PostPopoverMenu = ({
   const hasOnlySponsorLike =
     post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
   const withoutLike = (!post.net_rshares_WAIV && !post.net_rshares) || hasOnlySponsorLike;
-  const canDeletePost = ownPost && withoutLike && !post.children && !isGuest;
+  const canDeletePost = ownPost && withoutLike && !post.children;
+
   const {
     guestInfo,
     author,
@@ -118,10 +121,15 @@ const PostPopoverMenu = ({
   };
 
   const handleDeletePost = () => {
-    window.open(
-      `https://hivesigner.com/sign/delete_comment?author=${author}&permlink=${post.permlink}`,
-      '_blank',
-    );
+    if (isGuest) {
+      deletePost({ root_author: post.root_author, permlink: post.permlink, userName });
+    } else {
+      window.open(
+        `https://hivesigner.com/sign/delete_comment?author=${author}&permlink=${post.permlink}`,
+        '_blank',
+      );
+    }
+
     setIsOpen(false);
   };
 

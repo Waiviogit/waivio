@@ -123,17 +123,6 @@ class WalletSidebar extends React.Component {
         )}
         {<CryptoTrendingCharts cryptos={cryptos} />}
         {ownProfile && <ClaimRewardsBlock />}
-        <a
-          href={`https://widget.blocktrades.us/trade?affiliate_id=8523b1e2-b2d5-4f76-b920-8f11cd4f45f0&input_coin_type=hive&input_coin_amount=${steemBalance}&output_coin_type=ltc`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {!isEmpty(user) && !isGuest && ownProfile && isNotHiveEngineWallet && (
-            <Action big className="WalletSidebar__transfer">
-              <FormattedMessage id="exchange" defaultMessage="Exchange" />
-            </Action>
-          )}
-        </a>
         {!isEmpty(user) && ownProfile && isGuest && isNotWaivWallet && (
           <Action big className="WalletSidebar__transfer" primary onClick={this.props.openWithdraw}>
             <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
