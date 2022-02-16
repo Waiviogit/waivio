@@ -97,8 +97,8 @@ class WalletSidebar extends React.Component {
   render() {
     const { match, user, isCurrentUser, isGuest, walletType } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
-    const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
-    const isNotHiveEngineWallet = walletType !== 'ENGINE';
+    // const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
+    // const isNotHiveEngineWallet = walletType !== 'ENGINE';
     const isNotWaivWallet = walletType !== 'WAIV';
 
     return (
