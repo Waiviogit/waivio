@@ -27,6 +27,7 @@ export const getEditorDraftBody = createSelector([getEditor], state => state.dra
 
 export const getCurrentDraft = (state, { draftId }) => {
   const draftPosts = getDraftPosts(state);
+
   return draftPosts.find(d => d.draftId === draftId);
 };
 

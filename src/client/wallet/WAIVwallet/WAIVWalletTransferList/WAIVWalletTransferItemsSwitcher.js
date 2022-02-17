@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import PowerUpTransactionFrom from '../../TransfersCards/PowerUpTransactionFrom';
+import UndelegateCompleted from '../../TransfersCards/UndelegateCompleted';
 import { getTransactionCurrency, getTransactionDescription } from '../../WalletHelper';
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import ReceiveTransaction from '../../TransfersCards/ReceiveTransaction';
@@ -140,20 +141,15 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           to={transaction.to}
           from={transaction.from}
           account={transaction.account}
-          status={'started'}
           symbol={transaction.symbol}
         />
       );
 
     case 'tokens_undelegateDone':
       return (
-        <UndelegateStart
+        <UndelegateCompleted
           quantity={transaction.quantity}
           timestamp={transaction.timestamp}
-          to={transaction.to}
-          from={transaction.from}
-          account={transaction.account}
-          status={'completed'}
           symbol={transaction.symbol}
         />
       );
