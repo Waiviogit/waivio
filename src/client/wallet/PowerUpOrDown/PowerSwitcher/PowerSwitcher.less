@@ -1,0 +1,58 @@
+.PowerSwitcher {
+  label {
+    font-weight: 800;
+  }
+
+  &__row {
+    .ant-form-item-children {
+      display: flex;
+    }
+  }
+
+  &__amount,
+  .has-error .ant-input {
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+  }
+
+  &__currency .ant-select-selection,
+  .has-error .ant-select-selection {
+    border-radius: 0 4px 4px 0;
+    width: 180px;
+  }
+
+  .ant-select-selection-selected-value &__currency-balance {
+    display: none;
+  }
+
+  &__current-currency-balance {
+    border-bottom: 1px dotted #a09f9f;
+    cursor: pointer;
+  }
+
+  .has-error.ant-form-item-control {
+    margin-bottom: 25px;
+  }
+
+  .ant-form-item-control {
+    margin-bottom: 0;
+  }
+
+  &__options {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__notice {
+    padding: 15px 0;
+    font-weight: 500;
+
+    h4 {
+      font-weight: 800;
+    }
+  }
+
+  .ant-row.ant-form-item {
+    margin: 0;
+  }
+}

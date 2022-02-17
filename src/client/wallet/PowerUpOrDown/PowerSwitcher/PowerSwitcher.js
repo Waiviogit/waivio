@@ -2,6 +2,9 @@ import { Input, Select, Form } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import USDDisplay from '../../../components/Utils/USDDisplay';
+
+import './PowerSwitcher.less';
 
 const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
@@ -36,9 +39,9 @@ const PowerSwitcher = props => {
 
   return (
     <React.Fragment>
-      <Form.Item className="PowerUpOrDown__row">
+      <Form.Item className="PowerSwitcher__row">
         {props.getFieldDecorator('amount', {
-          initialValue: 0,
+          initialValue: props.defaultAmount || 0,
           rules: [
             {
               required: true,
@@ -54,15 +57,15 @@ const PowerSwitcher = props => {
             },
             { validator: validateBalance },
           ],
-        })(<Input onChange={props.handleAmountChange} className="PowerUpOrDown__amount" />)}
+        })(<Input onChange={props.handleAmountChange} className="PowerSwitcher__amount" />)}
         {props.getFieldDecorator('currency', {
           initialValue: props.defaultType,
         })(
-          <Select className="PowerUpOrDown__currency" onChange={key => setCurrency(key)}>
+          <Select className="PowerSwitcher__currency" onChange={key => setCurrency(key)}>
             {Object.entries(props.currencyList).map(token => (
-              <Select.Option key={token[0]} className="PowerUpOrDown__options">
+              <Select.Option key={token[0]} className="PowerSwitcher__options">
                 <span>{token[0]}</span>
-                <span className="PowerUpOrDown__currency-balance">{token[1]}</span>
+                <span className="PowerSwitcher__currency-balance">{token[1]}</span>
               </Select.Option>
             ))}
           </Select>,
@@ -72,10 +75,15 @@ const PowerSwitcher = props => {
       <span
         role="presentation"
         onClick={() => props.handleBalanceClick(props.currencyList[currency])}
-        className="PowerUpOrDown__current-currency-balance"
+        className="PowerSwitcher__current-currency-balance"
       >
         {props.currencyList[currency]} {currency}
       </span>
+      {props.withEst && (
+        <div>
+          Est. amount: <USDDisplay value={0} />
+        </div>
+      )}
     </React.Fragment>
   );
 };

@@ -2445,7 +2445,6 @@ export const getDelegateList = data => {
         table: 'delegations',
         query: {
           ...data,
-          symbol: 'WAIV',
         },
       },
       id: 'ssc-mainnet-hive',

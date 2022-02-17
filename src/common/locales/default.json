@@ -139,6 +139,8 @@
   "power_down": "Power Down",
   "message": "Message",
   "edit_profile": "Edit profile",
+  "available_voting_power": "Available voting power for delegations",
+  "manage_delegations": "Manage delegations",
   "convert": "Convert to",
   "profile_name": "Name",
   "profile_name_placeholder": "Name to display on your profile",

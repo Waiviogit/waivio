@@ -18,6 +18,7 @@ import {
   HIVE_ENGINE_DEFAULT_SWAP_LIST,
   HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY,
 } from '../../common/constants/swapList';
+import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -659,6 +660,12 @@ export const TOGGLE_DEPOSIT_MODAL = '@wallet/TOGGLE_DEPOSIT_MODAL';
 
 export const toggleDepositModal = () => ({
   type: TOGGLE_DEPOSIT_MODAL,
+});
+
+export const TOGGLE_DELEGATE_MODAL = '@wallet/TOGGLE_DELEGATE_MODAL';
+
+export const toggleDelegateModal = () => ({
+  type: TOGGLE_DELEGATE_MODAL,
 });
 
 export const SET_SHOW_REWARDS = '@wallet/SET_SHOW_REWARDS';
