@@ -134,10 +134,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   const tagPositions = getPositions(htmlBody);
   const bodyData = [];
 
-  if (hasVideo && !isPostStartsWithAPicture(tagPositions)) {
-    bodyData.push(preview.embed());
-    bodyData.push(preview.text());
-  } else if (htmlBody.length <= 1500 && postWithPicture(tagPositions, 100)) {
+  if (htmlBody.length <= 1500 && postWithPicture(tagPositions, 100)) {
     bodyData.push(preview.image());
     bodyData.push(preview.text());
   } else if (htmlBody.length <= 1500 && postWithAnEmbed(tagPositions, 100)) {
@@ -155,6 +152,9 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   } else if (isPostWithEmbedBeforeFirstHalf(tagPositions)) {
     bodyData.push(preview.text());
     bodyData.push(preview.embed());
+  } else if (hasVideo) {
+    bodyData.push(preview.embed());
+    bodyData.push(preview.text());
   } else if (imagePath !== '') {
     bodyData.push(preview.text());
     bodyData.push(preview.image());
