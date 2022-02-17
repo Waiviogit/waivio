@@ -134,7 +134,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   const tagPositions = getPositions(htmlBody);
   const bodyData = [];
 
-  if (hasVideo) {
+  if (hasVideo && !isPostStartsWithAPicture(tagPositions)) {
     bodyData.push(preview.embed());
     bodyData.push(preview.text());
   } else if (htmlBody.length <= 1500 && postWithPicture(tagPositions, 100)) {

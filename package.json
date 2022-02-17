@@ -38,6 +38,7 @@
   "dependencies": {
     "@hiveio/dhive": "^1.0.1",
     "@hot-loader/react-dom": "^16.8.6",
+    "@loadable/babel-plugin": "^5.13.2",
     "@sentry/react": "^5.24.2",
     "@sentry/tracing": "^5.24.2",
     "@textlint/markdown-to-ast": "^6.1.2",
@@ -75,6 +76,7 @@
     "handlebars": "^4.5.3",
     "handlebars-intl": "^1.1.2",
     "he": "^1.2.0",
+    "heroku": "^7.18.3",
     "history": "^4.6.3",
     "hivesigner": "^3.2.1",
     "hoist-non-react-statics": "^3.3.2",
@@ -85,6 +87,7 @@
     "lightrpc": "0.0.1",
     "lodash": "^4.0.0",
     "moment": "^2.24.0",
+    "npm-run-all": "^4.0.2",
     "pigeon-maps": "0.19.5",
     "pigeon-overlay": "^0.2.3",
     "prop-types": "^15.6.1",

@@ -36,13 +36,14 @@ import { addPayoutForActiveVotes } from '../../common/helpers';
     );
     const waivRates = getTokenRatesInUSD(state, 'WAIV');
     const post = getContentOfPost(state);
+    const userName = getAuthenticatedUserName(state);
 
     return {
       edited: getIsPostEdited(state, ownProps.match.params.permlink),
       content: post
         ? {
             ...post,
-            active_votes: addPayoutForActiveVotes(post, waivRates),
+            active_votes: addPayoutForActiveVotes(post, waivRates, userName),
           }
         : post,
       isAuthFetching: getIsAuthFetching(state),

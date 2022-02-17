@@ -30,11 +30,18 @@ export const postPayoutCalculate = (post, rshares, rsharesWAIV = 0, waivRates) =
   return rshares * ratio + rsharesWAIV * waivRatio;
 };
 
-export const addPayoutForActiveVotes = (post, waivRates) => {
+export const addPayoutForActiveVotes = (post, waivRates, name) => {
   if (!post) return [];
 
   return post.active_votes.map(vote => {
-    if (vote.sponsor && post.active_votes.length === 1) {
+    if (vote.sponsor && vote.fake && vote.voter === name) {
+      return {
+        payout: vote.rshares,
+        sponsor: true,
+      };
+    }
+
+    if (vote.sponsor && vote.fake) {
       return {
         ...vote,
         payout: vote.rshares,

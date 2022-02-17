@@ -3,28 +3,31 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
 import { Link } from 'react-router-dom';
-import Avatar from '../../Avatar';
 import { epochToUTC } from '../../../../common/helpers/formatter';
+import Avatar from '../../Avatar';
 import './Notification.less';
 
-const NotificationMyLike = ({ notification, read, onClick }) => (
+const NotificationTemplate = ({
+  notification,
+  read,
+  onClick,
+  url,
+  username,
+  values,
+  defaultMessage,
+  id,
+}) => (
   <Link
-    to={`/@${notification.author}/${notification.permlink}`}
+    to={url}
+    onClick={onClick}
     className={classNames('Notification', {
       'Notification--unread': !read,
     })}
-    onClick={onClick}
   >
-    <Avatar username={notification.author} size={40} />
+    <Avatar username={username} size={40} />
     <div className="Notification__text">
       <div className="Notification__text__message">
-        <FormattedMessage
-          id="my_like_notify"
-          defaultMessage="You liked {post}"
-          values={{
-            post: <span>{notification.title}</span>,
-          }}
-        />
+        <FormattedMessage id={id} defaultMessage={defaultMessage} values={values} />
       </div>
       <div className="Notification__text__date">
         <FormattedRelative value={epochToUTC(notification.timestamp)} />
@@ -33,23 +36,27 @@ const NotificationMyLike = ({ notification, read, onClick }) => (
   </Link>
 );
 
-NotificationMyLike.propTypes = {
+NotificationTemplate.propTypes = {
   read: PropTypes.bool,
+  url: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
+  defaultMessage: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  values: PropTypes.shape(),
   notification: PropTypes.shape({
-    timestamp: PropTypes.number,
-    type: PropTypes.string,
-    permlink: PropTypes.string,
     author: PropTypes.string,
-    title: PropTypes.string,
-    voter: PropTypes.string,
+    object_name: PropTypes.string,
+    timestamp: PropTypes.number,
+    author_permlink: PropTypes.string,
   }),
   onClick: PropTypes.func,
 };
 
-NotificationMyLike.defaultProps = {
+NotificationTemplate.defaultProps = {
   read: false,
   notification: {},
+  values: {},
   onClick: () => {},
 };
 
-export default NotificationMyLike;
+export default NotificationTemplate;

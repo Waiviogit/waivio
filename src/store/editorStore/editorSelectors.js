@@ -25,11 +25,11 @@ export const getLinkedObjects = createSelector([getEditor], state => state.linke
 
 export const getEditorDraftBody = createSelector([getEditor], state => state.draftContent.body);
 
-export const getCurrentDraft = createSelector(
-  getDraftPosts,
-  (state, props) => props.draftId,
-  (draftPosts, draftId) => draftPosts.find(d => d.draftId === draftId),
-);
+export const getCurrentDraft = (state, { draftId }) => {
+  const draftPosts = getDraftPosts(state);
+
+  return draftPosts.find(d => d.draftId === draftId);
+};
 
 export const getEditorLinkedObjects = createSelector(getEditor, state =>
   get(state, 'linkedObjects', []),
