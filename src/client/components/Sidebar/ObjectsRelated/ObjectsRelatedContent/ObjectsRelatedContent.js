@@ -7,7 +7,14 @@ import ObjectCard from '../../ObjectCard';
 import WeightTag from '../../../WeightTag';
 import RightSidebarLoading from '../../../../app/Sidebar/RightSidebarLoading';
 
-const ObjectsRelatedContent = ({ isCenterContent, setShowModal, intl, objects, isLoading }) => {
+const ObjectsRelatedContent = ({
+  isCenterContent,
+  setShowModal,
+  intl,
+  objects,
+  currWobject,
+  isLoading,
+}) => {
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
 
   if (!isLoading) {
@@ -16,6 +23,7 @@ const ObjectsRelatedContent = ({ isCenterContent, setShowModal, intl, objects, i
         <ObjectCard
           key={item.author_permlink}
           wobject={item}
+          parent={currWobject}
           showFollow={false}
           alt={<WeightTag weight={item.weight} />}
           isNewWindow={false}
@@ -57,6 +65,7 @@ const ObjectsRelatedContent = ({ isCenterContent, setShowModal, intl, objects, i
 ObjectsRelatedContent.propTypes = {
   isCenterContent: PropTypes.bool.isRequired,
   setShowModal: PropTypes.func.isRequired,
+  currWobject: PropTypes.shape().isRequired,
   objectsState: PropTypes.shape({
     objects: PropTypes.arrayOf(PropTypes.shape()),
     skip: PropTypes.number,
