@@ -25,7 +25,7 @@ const DelegateUserCard = props => (
           maximumFractionDigits={3}
           minimumFractionDigits={2}
         />{' '}
-        {props.symbol}
+        {props.symbol[0]}P
       </span>
     </div>
     {props.withEdit && (

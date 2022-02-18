@@ -2,8 +2,8 @@ import React from 'react';
 import { isEmpty, round } from 'lodash';
 import { Button } from 'antd';
 import PropsType from 'prop-types';
-import DelegateUserCard from '../../DelegateUserCard/DelegateUserCard';
-import Loading from '../../../../components/Icon/Loading';
+import DelegateUserCard from '../../../DelegateUserCard/DelegateUserCard';
+import Loading from '../../../../../components/Icon/Loading';
 
 import './TokenManage.less';
 
@@ -13,11 +13,12 @@ const TokenManage = props => {
   return (
     <div className="TokenManage">
       <p>
-        <span className="TokenManage__title">Token:</span> {props.symbol}
+        <span className="TokenManage__title">Token:</span>{' '}
+        {props.symbol === 'HP' ? 'HIVE' : props.symbol}
       </p>
       <p>
         {props.intl.formatMessage({ id: 'available_voting_power' })}: {round(props.stakeAmount, 3)}{' '}
-        {props.symbol}
+        {props.symbol[0]}P
       </p>
       {props.loading && <Loading />}
       {!isEmpty(props.delegationList) && (

@@ -40,20 +40,20 @@ const EditDelegationModal = props => {
               '_blank',
             )
           : window.open(
-              `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
-                props.requiredUser.name
-              }"]&required_posting_auths=[]&${createQuery({
-                id: 'ssc-mainnet-hive',
-                json: JSON.stringify({
-                  contractName: 'tokens',
-                  contractAction: 'delegate',
-                  contractPayload: {
-                    symbol: values.currency,
-                    to: props.requiredUser.name,
-                    quantity: undelegate ? 0 : round(parseFloat(values.amount), 5).toString(),
-                  },
-                }),
-              })}`,
+              `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
+                {
+                  id: 'ssc-mainnet-hive',
+                  json: JSON.stringify({
+                    contractName: 'tokens',
+                    contractAction: 'delegate',
+                    contractPayload: {
+                      symbol: values.currency,
+                      to: props.requiredUser.name,
+                      quantity: undelegate ? 0 : round(parseFloat(values.amount), 5).toString(),
+                    },
+                  }),
+                },
+              )}`,
               '_blank',
             );
 
@@ -68,7 +68,7 @@ const EditDelegationModal = props => {
     <Modal
       className="EditDelegationModal"
       visible={props.visible}
-      title={'Edit Delegation'}
+      title={'Edit delegation'}
       onCancel={props.onCancel}
       footer={null}
     >
@@ -99,13 +99,21 @@ const EditDelegationModal = props => {
         <Button onClick={props.onCancel} className="EditDelegationModal__cancel-button">
           Cancel
         </Button>
-        <Button type={'primary'} onClick={handleEditDelegate}>
+        <Button
+          type={'primary'}
+          disabled={!props.form.getFieldValue('amount')}
+          onClick={handleEditDelegate}
+        >
           Submit
         </Button>
       </div>
       <div className="EditDelegationModal__footer">
-        <p>To remove delegation click undelegate</p>
-        <Button type={'danger'} onClick={handleUndelegate}>
+        <p>To remove delegation, click undelegate.</p>
+        <Button
+          type={'danger'}
+          className="EditDelegationModal__undelegate"
+          onClick={handleUndelegate}
+        >
           Undelegate
         </Button>
       </div>
