@@ -75,11 +75,11 @@ export const calculatePayout = (post, rates) => {
   payoutDetails.payoutLimitHit = payout >= max_payout;
   payoutDetails.totalPayout = payout;
   payoutDetails.potentialPayout = pending_payout + waivPayout;
-  payoutDetails.HBDPayout = Math.abs(hivePayout * hbdPercent);
-  payoutDetails.WAIVPayout = Math.abs(waivPayout);
-  payoutDetails.HIVEPayout = Math.abs(hivePayout - payoutDetails.HBDPayout);
-  payoutDetails.authorPayouts = Math.abs(hivePayoutHalf + waivPayoutHalf + sponsorLikePayout);
-  payoutDetails.curatorPayouts = Math.abs(hivePayoutHalf + waivPayoutHalf);
+  payoutDetails.HBDPayout = hivePayout * hbdPercent;
+  payoutDetails.WAIVPayout = waivPayout;
+  payoutDetails.HIVEPayout = hivePayout - payoutDetails.HBDPayout;
+  payoutDetails.authorPayouts = hivePayoutHalf + waivPayoutHalf + sponsorLikePayout;
+  payoutDetails.curatorPayouts = hivePayoutHalf + waivPayoutHalf;
 
   if (!isPostCashout(post)) {
     payoutDetails.cashoutInTime = cashout_time + '.000Z';

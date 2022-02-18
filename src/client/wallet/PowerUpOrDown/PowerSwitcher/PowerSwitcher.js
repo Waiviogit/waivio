@@ -2,9 +2,16 @@ import { Input, Select, Form } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { round } from 'lodash';
+import USDDisplay from '../../../components/Utils/USDDisplay';
+import useRate from '../../../../hooks/useRate';
+
+import './PowerSwitcher.less';
 
 const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
+  const { hiveRateInUsd, rates } = useRate();
+
   const amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
 
   useEffect(() => {
@@ -36,9 +43,9 @@ const PowerSwitcher = props => {
 
   return (
     <React.Fragment>
-      <Form.Item className="PowerUpOrDown__row">
+      <Form.Item className="PowerSwitcher__row">
         {props.getFieldDecorator('amount', {
-          initialValue: 0,
+          initialValue: round(props.defaultAmount, 3) || 0,
           rules: [
             {
               required: true,
@@ -54,17 +61,39 @@ const PowerSwitcher = props => {
             },
             { validator: validateBalance },
           ],
-        })(<Input onChange={props.handleAmountChange} className="PowerUpOrDown__amount" />)}
+        })(
+          <Input
+            onChange={props.handleAmountChange}
+            type="number"
+            className="PowerSwitcher__amount"
+            suffix={
+              <span
+                className="PowerSwitcher__max-button"
+                onClick={() => props.handleBalanceClick(props.currencyList[currency])}
+              >
+                max
+              </span>
+            }
+          />,
+        )}
         {props.getFieldDecorator('currency', {
           initialValue: props.defaultType,
         })(
-          <Select className="PowerUpOrDown__currency" onChange={key => setCurrency(key)}>
-            {Object.entries(props.currencyList).map(token => (
-              <Select.Option key={token[0]} className="PowerUpOrDown__options">
-                <span>{token[0]}</span>
-                <span className="PowerUpOrDown__currency-balance">{token[1]}</span>
-              </Select.Option>
-            ))}
+          <Select
+            className="PowerSwitcher__currency"
+            onChange={key => setCurrency(key)}
+            disabled={props.defaultAmount}
+          >
+            {Object.entries(props.currencyList).map(token => {
+              if (!token[1]) return null;
+
+              return (
+                <Select.Option key={token[0]} className="PowerSwitcher__options">
+                  <span>{token[0]}</span>
+                  <span className="PowerSwitcher__currency-balance">{token[1]}</span>
+                </Select.Option>
+              );
+            })}
           </Select>,
         )}
       </Form.Item>
@@ -72,10 +101,18 @@ const PowerSwitcher = props => {
       <span
         role="presentation"
         onClick={() => props.handleBalanceClick(props.currencyList[currency])}
-        className="PowerUpOrDown__current-currency-balance"
+        className="PowerSwitcher__current-currency-balance"
       >
         {props.currencyList[currency]} {currency}
       </span>
+      {props.withEst && (
+        <div>
+          Est. amount:{' '}
+          <USDDisplay
+            value={props.getFieldValue('amount') * hiveRateInUsd * (rates[currency] || 1)}
+          />
+        </div>
+      )}
     </React.Fragment>
   );
 };
@@ -83,8 +120,11 @@ const PowerSwitcher = props => {
 PowerSwitcher.propTypes = {
   intl: PropTypes.shape().isRequired,
   defaultType: PropTypes.string.isRequired,
+  defaultAmount: PropTypes.number.isRequired,
   currencyList: PropTypes.shape().isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
+  getFieldValue: PropTypes.func.isRequired,
+  withEst: PropTypes.bool.isRequired,
   handleBalanceClick: PropTypes.func.isRequired,
   handleAmountChange: PropTypes.func.isRequired,
   onAmoundValidate: PropTypes.func.isRequired,

@@ -13,12 +13,12 @@ import {
   getIsPowerDown,
   getIsPowerUpOrDownVisible,
   getTokenRatesInUSD,
-  getTokensBalanceList,
+  getTokensBalanceListForTransfer,
   getTotalVestingFundSteem,
   getTotalVestingShares,
   getUserCurrencyBalance,
 } from '../../../store/walletStore/walletSelectors';
-import PowerSwitcher from './PowerSwitcher';
+import PowerSwitcher from './PowerSwitcher/PowerSwitcher';
 
 import './PowerUpOrDown.less';
 
@@ -31,7 +31,7 @@ import './PowerUpOrDown.less';
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     down: getIsPowerDown(state),
     waivCurrencyInfo: getUserCurrencyBalance(state, 'WAIV'),
-    tokensList: getTokensBalanceList(state),
+    tokensList: getTokensBalanceListForTransfer(state),
     rates: getTokenRatesInUSD(state, 'WAIV'),
     walletType: getCurrentWalletType(state),
   }),
