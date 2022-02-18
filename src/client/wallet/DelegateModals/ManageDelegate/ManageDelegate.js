@@ -18,6 +18,7 @@ import TokenManage from './components/TokenManage';
 import formatter from '../../../../common/helpers/steemitFormatter';
 import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors';
 import DelegateModal from '../DelegateModal/DelegateModal';
+import EditDelegationModal from '../EditDelegationModal/EditDelegationModal';
 
 import './ManageDelegate.less';
 
@@ -33,6 +34,7 @@ const ManageDelegate = ({ intl }) => {
   const [showDelegate, setShowDelegate] = useState(false);
   const [requiredUser, setRequiredUser] = useState(null);
   const [requiredToken, setRequiredToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const completeDelegationList = async () => {
     const delegated = await getDelegateList({ from: match.params.name });
@@ -64,6 +66,7 @@ const ManageDelegate = ({ intl }) => {
     );
 
     setDelegationList(hiveEngineDelegateList);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -126,14 +129,16 @@ const ManageDelegate = ({ intl }) => {
           onOpenDelegate={handleOpenDelegateModal}
           onOpenUndelegate={handleOpenUndelegateModal}
           intl={intl}
+          loading={loading}
         />
         <TokenManage
-          symbol={'HIVE'}
+          symbol={'HP'}
           delegationList={get(delegationList, ['mainTokens', 'HIVE'])}
           stakeAmount={stakedList.HP}
           intl={intl}
           onOpenDelegate={handleOpenDelegateModal}
           onOpenUndelegate={handleOpenUndelegateModal}
+          loading={loading}
         />
         {!isEmpty(stakedList) &&
           Object.entries(stakedList).map(stake => {
@@ -148,6 +153,7 @@ const ManageDelegate = ({ intl }) => {
                 onOpenDelegate={handleOpenDelegateModal}
                 onOpenUndelegate={handleOpenUndelegateModal}
                 intl={intl}
+                loading={loading}
               />
             );
           })}
@@ -155,16 +161,14 @@ const ManageDelegate = ({ intl }) => {
       {showDelegate && (
         <DelegateModal
           stakeList={stakedList}
-          title={'Delegate'}
           visible={showDelegate}
           onCancel={() => setShowDelegate(false)}
           token={requiredToken}
         />
       )}
       {requiredUser && (
-        <DelegateModal
+        <EditDelegationModal
           stakeList={stakedList}
-          title={'Edit Delegation'}
           visible={!!requiredUser}
           onCancel={() => handleOpenUndelegateModal(null, null)}
           requiredUser={requiredUser}

@@ -1,29 +1,27 @@
-import React, { useState } from 'react';
-import { Form, Modal } from 'antd';
+import React from 'react';
+import { Button, Form, Modal } from 'antd';
 import PropsType from 'prop-types';
-import { useSelector } from 'react-redux';
 import { round } from 'lodash';
+import { useSelector } from 'react-redux';
 
-import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
-import PowerSwitcher from '../../PowerUpOrDown/PowerSwitcher/PowerSwitcher';
-import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
-import formatter from '../../../../common/helpers/steemitFormatter';
-import { createQuery } from '../../../../common/helpers/apiHelpers';
 import {
   getTotalVestingFundSteem,
   getTotalVestingShares,
 } from '../../../../store/walletStore/walletSelectors';
+import formatter from '../../../../common/helpers/steemitFormatter';
+import { createQuery } from '../../../../common/helpers/apiHelpers';
+import PowerSwitcher from '../../PowerUpOrDown/PowerSwitcher/PowerSwitcher';
+import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 
-import './DelegateModal.less';
+import './EditDelegationModal.less';
 
-const DelegateModal = props => {
-  const [selectUser, setUser] = useState();
+const EditDelegationModal = props => {
   const totalVestingShares = useSelector(getTotalVestingShares);
   const totalVestingFundSteem = useSelector(getTotalVestingFundSteem);
   const authUserName = useSelector(getAuthenticatedUserName);
 
-  const handleDelegate = () => {
+  const handleEditDelegate = (undelegate = false) => {
     props.form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const vests = round(
@@ -32,7 +30,7 @@ const DelegateModal = props => {
         );
         const transferQuery = {
           delegator: authUserName,
-          delegatee: selectUser,
+          delegatee: props.requiredUser.name,
           vesting_shares: `${vests} VESTS`,
         };
 
@@ -42,57 +40,41 @@ const DelegateModal = props => {
               '_blank',
             )
           : window.open(
-              `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${selectUser}"]&required_posting_auths=[]&${createQuery(
-                {
-                  id: 'ssc-mainnet-hive',
-                  json: JSON.stringify({
-                    contractName: 'tokens',
-                    contractAction: 'delegate',
-                    contractPayload: {
-                      symbol: values.currency,
-                      to: selectUser,
-                      quantity: round(parseFloat(values.amount), 5).toString(),
-                    },
-                  }),
-                },
-              )}`,
+              `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
+                props.requiredUser.name
+              }"]&required_posting_auths=[]&${createQuery({
+                id: 'ssc-mainnet-hive',
+                json: JSON.stringify({
+                  contractName: 'tokens',
+                  contractAction: 'delegate',
+                  contractPayload: {
+                    symbol: values.currency,
+                    to: props.requiredUser.name,
+                    quantity: undelegate ? 0 : round(parseFloat(values.amount), 5).toString(),
+                  },
+                }),
+              })}`,
               '_blank',
             );
 
         win.focus();
-        props.onCancel();
+        this.props.closePowerUpOrDown();
       }
     });
   };
+  const handleUndelegate = () => handleEditDelegate(true);
 
   return (
     <Modal
-      className="DelegateModal"
+      className="EditDelegationModal"
       visible={props.visible}
-      title={'Delegate'}
+      title={'Edit Delegation'}
       onCancel={props.onCancel}
-      onOk={handleDelegate}
-      okText={'Delegate'}
-      okButtonProps={{
-        disabled: !selectUser,
-      }}
+      footer={null}
     >
-      <p>
-        Please enter the name of the account that you wish to delegate a portion of your voting
-        power to.
-      </p>
       <div>
         <h3>Target account:</h3>
-        {selectUser ? (
-          <SelectUserForAutocomplete account={selectUser} resetUser={setUser} />
-        ) : (
-          <SearchUsersAutocomplete
-            allowClear={false}
-            handleSelect={user => setUser(user.account)}
-            style={{ width: '100%' }}
-            autoFocus={false}
-          />
-        )}
+        <SelectUserForAutocomplete account={props.requiredUser.name} />
       </div>
       <div>
         <h3>Amount to delegate:</h3>
@@ -104,6 +86,7 @@ const DelegateModal = props => {
           currencyList={props.stakeList}
           onAmoundValidate={() => {}}
           defaultType={props.token}
+          defaultAmount={props.requiredUser.quantity}
           withEst
         />
       </div>
@@ -114,16 +97,31 @@ const DelegateModal = props => {
         </p>
         <p>Click the button below to be redirected to HiveSinger to complete your transaction.</p>
       </div>
+      <div className="EditDelegationModal__buttons-wrap">
+        <Button onClick={props.onCancel} className="EditDelegationModal__cancel-button">
+          Cancel
+        </Button>
+        <Button type={'primary'} onClick={handleEditDelegate}>
+          Submit
+        </Button>
+      </div>
+      <div className="EditDelegationModal__footer">
+        <p>To remove delegation click undelegate</p>
+        <Button type={'danger'} onClick={handleUndelegate}>
+          Undelegate
+        </Button>
+      </div>
     </Modal>
   );
 };
 
-DelegateModal.propTypes = {
+EditDelegationModal.propTypes = {
   onCancel: PropsType.func.isRequired,
   visible: PropsType.bool.isRequired,
-  token: PropsType.string.isRequired,
   stakeList: PropsType.shape().isRequired,
   form: PropsType.shape().isRequired,
+  requiredUser: PropsType.shape().isRequired,
+  token: PropsType.string.isRequired,
 };
 
-export default Form.create()(DelegateModal);
+export default Form.create()(EditDelegationModal);
