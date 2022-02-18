@@ -1,0 +1,35 @@
+@import (reference) '../../../styles/custom.less';
+
+.DelegateUserCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: @base-border;
+
+  &__expiring {
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+
+    i {
+      margin-right: 10px;
+      font-size: 30px;
+    }
+  }
+
+  &__userInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__name {
+    color: @black;
+    margin-left: 10px;
+    font-weight: 500;
+  }
+}
+
+@import 'DelegateUserCard-nightmode.less';

@@ -661,6 +661,12 @@ export const toggleDepositModal = () => ({
   type: TOGGLE_DEPOSIT_MODAL,
 });
 
+export const TOGGLE_DELEGATE_MODAL = '@wallet/TOGGLE_DELEGATE_MODAL';
+
+export const toggleDelegateModal = () => ({
+  type: TOGGLE_DELEGATE_MODAL,
+});
+
 export const SET_SHOW_REWARDS = '@wallet/SET_SHOW_REWARDS';
 
 export const setShowRewards = check => ({

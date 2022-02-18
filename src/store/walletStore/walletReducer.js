@@ -44,6 +44,7 @@ const initialState = {
   swapTokensBalanceList: [],
   tokensBalanceListForTransfer: [],
   depositVisible: false,
+  delegateVisible: false,
   showRewards: false,
 };
 
@@ -490,6 +491,11 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         showRewards: action.payload,
+      };
+    case walletActions.TOGGLE_DELEGATE_MODAL:
+      return {
+        ...state,
+        delegateVisible: !state.delegateVisible,
       };
 
     default:

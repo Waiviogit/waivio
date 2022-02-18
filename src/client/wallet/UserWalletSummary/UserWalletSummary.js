@@ -22,7 +22,7 @@ import {
   getAuthenticatedUserName,
 } from '../../../store/authStore/authSelectors';
 import { getHiveDelegate } from '../../../waivioApi/ApiClient';
-import DelegateListModal from '../DelegateListModal/DelegateListModal';
+import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
 
