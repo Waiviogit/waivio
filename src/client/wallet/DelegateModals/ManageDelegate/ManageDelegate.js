@@ -14,13 +14,14 @@ import {
 } from '../../../../store/walletStore/walletSelectors';
 import { toggleDelegateModal } from '../../../../store/walletStore/walletActions';
 import { getDelegateList, getHiveDelegate } from '../../../../waivioApi/ApiClient';
-import TokenManage from './components/TokenManage';
+import TokenManage from './components/TokenManage/TokenManage';
 import formatter from '../../../../common/helpers/steemitFormatter';
 import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors';
 import DelegateModal from '../DelegateModal/DelegateModal';
 import EditDelegationModal from '../EditDelegationModal/EditDelegationModal';
 
 import './ManageDelegate.less';
+import EmptyManage from './components/EmptyManage';
 
 const ManageDelegate = ({ intl }) => {
   const dispatch = useDispatch();
@@ -88,6 +89,12 @@ const ManageDelegate = ({ intl }) => {
   const stakinTokensList = () =>
     tokensList.reduce((acc, curr) => {
       if (curr.stakingEnabled) {
+        if (curr.symbol === 'WAIV')
+          return {
+            ...acc,
+            WP: round(curr.stake, 5) || 0,
+          };
+
         return {
           ...acc,
           [curr.symbol]: round(curr.stake, 5) || 0,
@@ -122,41 +129,49 @@ const ManageDelegate = ({ intl }) => {
           </Button>,
         ]}
       >
-        <TokenManage
-          symbol={'WAIV'}
-          delegationList={get(delegationList, ['mainTokens', 'WAIV'])}
-          stakeAmount={stakedList.WAIV}
-          onOpenDelegate={handleOpenDelegateModal}
-          onOpenUndelegate={handleOpenUndelegateModal}
-          intl={intl}
-          loading={loading}
-        />
-        <TokenManage
-          symbol={'HP'}
-          delegationList={get(delegationList, ['mainTokens', 'HIVE'])}
-          stakeAmount={stakedList.HP}
-          intl={intl}
-          onOpenDelegate={handleOpenDelegateModal}
-          onOpenUndelegate={handleOpenUndelegateModal}
-          loading={loading}
-        />
-        {!isEmpty(stakedList) &&
-          Object.entries(stakedList).map(stake => {
-            if (stake[0] === 'WAIV' || stake[0] === 'HP') return null;
+        {isEmpty(delegationList.mainTokens) &&
+        isEmpty(delegationList.secondaryTokens) &&
+        isEmpty(stakedList) ? (
+          <EmptyManage />
+        ) : (
+          <React.Fragment>
+            <TokenManage
+              symbol={'WAIV'}
+              delegationList={get(delegationList, ['mainTokens', 'WAIV'])}
+              stakeAmount={stakedList.WP}
+              onOpenDelegate={handleOpenDelegateModal}
+              onOpenUndelegate={handleOpenUndelegateModal}
+              intl={intl}
+              loading={loading}
+            />
+            <TokenManage
+              symbol={'HP'}
+              delegationList={get(delegationList, ['mainTokens', 'HIVE'])}
+              stakeAmount={stakedList.HP}
+              intl={intl}
+              onOpenDelegate={handleOpenDelegateModal}
+              onOpenUndelegate={handleOpenUndelegateModal}
+              loading={loading}
+            />
+            {!isEmpty(stakedList) &&
+              Object.entries(stakedList).map(stake => {
+                if (stake[0] === 'WP' || stake[0] === 'HP') return null;
 
-            return (
-              <TokenManage
-                key={stake[0]}
-                symbol={stake[0]}
-                delegationList={get(delegationList, ['secondaryTokens', stake[0]], [])}
-                stakeAmount={stake[1]}
-                onOpenDelegate={handleOpenDelegateModal}
-                onOpenUndelegate={handleOpenUndelegateModal}
-                intl={intl}
-                loading={loading}
-              />
-            );
-          })}
+                return (
+                  <TokenManage
+                    key={stake[0]}
+                    symbol={stake[0]}
+                    delegationList={get(delegationList, ['secondaryTokens', stake[0]], [])}
+                    stakeAmount={stake[1]}
+                    onOpenDelegate={handleOpenDelegateModal}
+                    onOpenUndelegate={handleOpenUndelegateModal}
+                    intl={intl}
+                    loading={loading}
+                  />
+                );
+              })}
+          </React.Fragment>
+        )}
       </Modal>
       {showDelegate && (
         <DelegateModal

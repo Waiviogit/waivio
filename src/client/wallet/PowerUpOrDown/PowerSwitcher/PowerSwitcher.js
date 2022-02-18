@@ -11,6 +11,7 @@ import './PowerSwitcher.less';
 const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
   const { hiveRateInUsd, rates } = useRate();
+  const convertCurrency = curr => (curr === 'WAIV' ? 'WP' : curr);
 
   const amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
 
@@ -79,7 +80,7 @@ const PowerSwitcher = props => {
           />,
         )}
         {props.getFieldDecorator('currency', {
-          initialValue: props.defaultType,
+          initialValue: convertCurrency(props.defaultType),
         })(
           <Select
             className="PowerSwitcher__currency"
@@ -92,7 +93,9 @@ const PowerSwitcher = props => {
               return (
                 <Select.Option key={token[0]} className="PowerSwitcher__options">
                   <span>{token[0]}</span>
-                  <span className="PowerSwitcher__currency-balance">{token[1]}</span>
+                  <span className="PowerSwitcher__currency-balance">
+                    {convertCurrency(token[1])}
+                  </span>
                 </Select.Option>
               );
             })}
@@ -105,7 +108,7 @@ const PowerSwitcher = props => {
         onClick={() => props.handleBalanceClick(props.currencyList[currency])}
         className="PowerSwitcher__current-currency-balance"
       >
-        {props.currencyList[currency]} {currency}
+        {props.currencyList[convertCurrency(currency)]} {convertCurrency(currency)}
       </span>
       {props.withEst && (
         <div>

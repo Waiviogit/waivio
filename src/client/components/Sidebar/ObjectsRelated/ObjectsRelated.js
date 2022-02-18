@@ -11,7 +11,7 @@ import './ObjectsRelated.less';
 
 const ObjectsRelated = ({
   clearRelateObjects,
-  wobject,
+  currWobject,
   isCenterContent,
   getObjectRelated,
   hasNext,
@@ -36,7 +36,7 @@ const ObjectsRelated = ({
     <ObjectCard
       key={item.author_permlink}
       wobject={item}
-      parent={wobject}
+      parent={currWobject}
       showFollow={false}
       alt={<WeightTag weight={item.weight} />}
       isNewWindow={false}
@@ -60,7 +60,7 @@ const ObjectsRelated = ({
 };
 
 ObjectsRelated.propTypes = {
-  wobject: PropTypes.shape().isRequired,
+  currWobject: PropTypes.shape().isRequired,
   getObjectRelated: PropTypes.func.isRequired,
   clearRelateObjects: PropTypes.func.isRequired,
   isCenterContent: PropTypes.bool,
@@ -72,6 +72,7 @@ ObjectsRelated.defaultProps = {
   isCenterContent: false,
   hasNext: false,
   objects: [],
+  currWobject: {},
 };
 
 export default ObjectsRelated;

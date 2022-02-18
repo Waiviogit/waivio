@@ -42,7 +42,7 @@ const DelegateModal = props => {
               '_blank',
             )
           : window.open(
-              `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${selectUser}"]&required_posting_auths=[]&${createQuery(
+              `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
                 {
                   id: 'ssc-mainnet-hive',
                   json: JSON.stringify({
@@ -74,7 +74,7 @@ const DelegateModal = props => {
       onOk={handleDelegate}
       okText={'Delegate'}
       okButtonProps={{
-        disabled: !selectUser,
+        disabled: !selectUser && !props.form.getFieldValue('amount'),
       }}
     >
       <p>
