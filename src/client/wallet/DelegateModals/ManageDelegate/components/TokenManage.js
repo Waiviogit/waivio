@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash';
 import { Button } from 'antd';
 import PropsType from 'prop-types';
 import DelegateUserCard from '../../DelegateUserCard/DelegateUserCard';
+import Loading from '../../../../components/Icon/Loading';
 
 import './TokenManage.less';
 
@@ -15,6 +16,7 @@ const TokenManage = props => (
       {props.intl.formatMessage({ id: 'available_voting_power' })}: {props.stakeAmount}{' '}
       {props.symbol}
     </p>
+    {props.loading && <Loading />}
     {!isEmpty(props.delegationList) && (
       <div className="TokenManage__list">
         {props.delegationList.map(item => (
@@ -45,6 +47,7 @@ TokenManage.propTypes = {
     formatMessage: PropsType.func,
   }).isRequired,
   symbol: PropsType.string.isRequired,
+  loading: PropsType.bool.isRequired,
   stakeAmount: PropsType.number.isRequired,
   onOpenDelegate: PropsType.func.isRequired,
   onOpenUndelegate: PropsType.func.isRequired,

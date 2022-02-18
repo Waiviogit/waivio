@@ -18,7 +18,6 @@ import {
   HIVE_ENGINE_DEFAULT_SWAP_LIST,
   HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY,
 } from '../../common/constants/swapList';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';

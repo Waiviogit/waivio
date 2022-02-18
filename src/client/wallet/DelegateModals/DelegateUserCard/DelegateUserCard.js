@@ -41,7 +41,8 @@ const DelegateUserCard = props => (
 DelegateUserCard.propTypes = {
   quantity: PropsType.number.isRequired,
   symbol: PropsType.string.isRequired,
-  onOpenUnelegate: PropsType.func.isRequired,
+  onEdit: PropsType.func.isRequired,
+  withEdit: PropsType.bool,
   name: PropsType.string,
   quantityClassList: PropsType.string,
   pending: PropsType.bool,
@@ -51,6 +52,7 @@ DelegateUserCard.defaultProps = {
   name: '',
   quantityClassList: '',
   pending: false,
+  withEdit: false,
 };
 
 export default DelegateUserCard;
