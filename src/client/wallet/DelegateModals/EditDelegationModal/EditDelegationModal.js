@@ -90,8 +90,8 @@ const EditDelegationModal = props => {
       </div>
       <div>
         <p>
-          Please note that delegations are instant, but it will take 7 days for the amount to be
-          returned to your account after undelegation.
+          Please note that delegations are instant, but it will take {props.token === 'HP' ? 5 : 7}{' '}
+          days for the amount to be returned to your account after undelegation.
         </p>
         <p>Click the button below to be redirected to HiveSinger to complete your transaction.</p>
       </div>

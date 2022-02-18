@@ -15,7 +15,7 @@ const PowerSwitcher = props => {
   const amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
 
   useEffect(() => {
-    props.onAmoundValidate();
+    if (props.onAmoundValidate) props.onAmoundValidate();
   }, [currency]);
 
   const validateBalance = (rule, value, callback) => {
@@ -63,7 +63,9 @@ const PowerSwitcher = props => {
           ],
         })(
           <Input
-            onChange={props.handleAmountChange}
+            onChange={e => {
+              if (props.handleAmountChange) props.handleAmountChange(e);
+            }}
             type="number"
             className="PowerSwitcher__amount"
             suffix={
