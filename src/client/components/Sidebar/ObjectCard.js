@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes, { string } from 'prop-types';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 
@@ -53,7 +53,7 @@ const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow, p
 
 ObjectCard.propTypes = {
   parent: PropTypes.shape({
-    avatar: string,
+    avatar: PropTypes.string,
   }),
   wobject: PropTypes.shape({
     avatar: PropTypes.string,
