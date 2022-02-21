@@ -72,7 +72,9 @@ const PowerSwitcher = props => {
             suffix={
               <span
                 className="PowerSwitcher__max-button"
-                onClick={() => props.handleBalanceClick(props.currencyList[currency])}
+                onClick={() =>
+                  props.handleBalanceClick(props.currencyList[convertCurrency(currency)])
+                }
               >
                 max
               </span>
@@ -82,7 +84,11 @@ const PowerSwitcher = props => {
         {props.getFieldDecorator('currency', {
           initialValue: convertCurrency(props.defaultType),
         })(
-          <Select className="PowerSwitcher__currency" onChange={key => setCurrency(key)}>
+          <Select
+            className="PowerSwitcher__currency"
+            disabled={props.selestDisable}
+            onChange={key => setCurrency(key)}
+          >
             {Object.entries(props.currencyList).map(token => {
               if (!token[1]) return null;
 
@@ -126,6 +132,7 @@ PowerSwitcher.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
   withEst: PropTypes.bool.isRequired,
+  selestDisable: PropTypes.bool,
   powerVote: PropTypes.bool,
   handleBalanceClick: PropTypes.func.isRequired,
   handleAmountChange: PropTypes.func.isRequired,
@@ -134,6 +141,7 @@ PowerSwitcher.propTypes = {
 
 PowerSwitcher.defaultProps = {
   powerVote: false,
+  selestDisable: false,
 };
 
 export default injectIntl(PowerSwitcher);

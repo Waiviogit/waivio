@@ -50,7 +50,7 @@ const EditDelegationModal = props => {
                     contractAction: undelegate ? 'undelegate' : 'delegate',
                     contractPayload: {
                       symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
-                      to: props.requiredUser.name,
+                      from: props.requiredUser.name,
                       quantity: undelegate
                         ? props.requiredUser.quantity
                         : round(values.amount, 5).toString(),
@@ -91,6 +91,7 @@ const EditDelegationModal = props => {
           getFieldValue={props.form.getFieldValue}
           currencyList={props.stakeList}
           defaultType={props.token}
+          selestDisable
           withEst
           powerVote
         />
