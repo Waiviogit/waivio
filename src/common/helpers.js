@@ -34,17 +34,13 @@ export const addPayoutForActiveVotes = (post, waivRates, name) => {
   if (!post) return [];
 
   return post.active_votes.map(vote => {
-    if (vote.sponsor && vote.fake && vote.voter === name) {
-      return {
-        payout: vote.rshares,
-        sponsor: true,
-      };
-    }
-
     if (vote.sponsor && vote.fake) {
       return {
-        ...vote,
-        payout: vote.rshares,
+        ...(vote.voter === name ? vote : { sponsor: true }),
+        payout:
+          post.active_votes.length > 1
+            ? postPayoutCalculate(post, vote.rshares, vote.rsharesWAIV, waivRates)
+            : vote.rshares,
       };
     }
 
