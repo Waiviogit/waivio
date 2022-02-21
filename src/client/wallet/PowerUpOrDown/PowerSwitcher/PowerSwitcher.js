@@ -11,7 +11,7 @@ import './PowerSwitcher.less';
 const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
   const { hiveRateInUsd, rates } = useRate();
-  const convertCurrency = curr => (curr === 'WAIV' ? 'WP' : curr);
+  const convertCurrency = curr => (curr === 'WAIV' && props.powerVote ? 'WP' : curr);
 
   const amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
 
@@ -105,7 +105,7 @@ const PowerSwitcher = props => {
       <FormattedMessage id="balance_amount" defaultMessage="Your balance" />:{' '}
       <span
         role="presentation"
-        onClick={() => props.handleBalanceClick(props.currencyList[currency])}
+        onClick={() => props.handleBalanceClick(props.currencyList[convertCurrency(currency)])}
         className="PowerSwitcher__current-currency-balance"
       >
         {props.currencyList[convertCurrency(currency)]} {convertCurrency(currency)}
@@ -130,9 +130,14 @@ PowerSwitcher.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
   withEst: PropTypes.bool.isRequired,
+  powerVote: PropTypes.bool,
   handleBalanceClick: PropTypes.func.isRequired,
   handleAmountChange: PropTypes.func.isRequired,
   onAmoundValidate: PropTypes.func.isRequired,
+};
+
+PowerSwitcher.defaultProps = {
+  powerVote: false,
 };
 
 export default injectIntl(PowerSwitcher);

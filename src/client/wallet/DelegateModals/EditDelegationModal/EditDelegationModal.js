@@ -47,7 +47,7 @@ const EditDelegationModal = props => {
                     contractName: 'tokens',
                     contractAction: 'delegate',
                     contractPayload: {
-                      symbol: values.currency,
+                      symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
                       to: props.requiredUser.name,
                       quantity: undelegate ? 0 : round(parseFloat(values.amount), 5).toString(),
                     },
@@ -62,7 +62,10 @@ const EditDelegationModal = props => {
       }
     });
   };
-  const handleUndelegate = () => handleEditDelegate(true);
+  const handleUndelegate = e => {
+    e.preventDefault();
+    handleEditDelegate(true);
+  };
 
   return (
     <Modal
@@ -86,6 +89,7 @@ const EditDelegationModal = props => {
           defaultType={props.token}
           defaultAmount={props.requiredUser.quantity}
           withEst
+          powerVote
         />
       </div>
       <div>

@@ -18,7 +18,7 @@ import { getAuthenticatedUserName } from '../../../../store/authStore/authSelect
 import './DelegateModal.less';
 
 const DelegateModal = props => {
-  const [selectUser, setUser] = useState();
+  const [selectUser, setUser] = useState(null);
   const totalVestingShares = useSelector(getTotalVestingShares);
   const totalVestingFundSteem = useSelector(getTotalVestingFundSteem);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -49,7 +49,7 @@ const DelegateModal = props => {
                     contractName: 'tokens',
                     contractAction: 'delegate',
                     contractPayload: {
-                      symbol: values.currency,
+                      symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
                       to: selectUser,
                       quantity: round(parseFloat(values.amount), 5).toString(),
                     },
@@ -74,7 +74,7 @@ const DelegateModal = props => {
       onOk={handleDelegate}
       okText={'Delegate'}
       okButtonProps={{
-        disabled: !selectUser && !props.form.getFieldValue('amount'),
+        disabled: !selectUser || !props.form.getFieldValue('amount'),
       }}
     >
       <p>
@@ -103,6 +103,7 @@ const DelegateModal = props => {
           currencyList={props.stakeList}
           defaultType={props.token}
           withEst
+          powerVote
         />
       </div>
       <div>
