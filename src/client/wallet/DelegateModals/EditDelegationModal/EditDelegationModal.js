@@ -24,10 +24,12 @@ const EditDelegationModal = props => {
   const handleEditDelegate = (undelegate = false) => {
     props.form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
-        const vests = round(
-          values.amount / formatter.vestToSteem(1, totalVestingShares, totalVestingFundSteem),
-          6,
-        );
+        const vests = undelegate
+          ? 0
+          : round(
+              values.amount / formatter.vestToSteem(1, totalVestingShares, totalVestingFundSteem),
+              6,
+            );
         const transferQuery = {
           delegator: authUserName,
           delegatee: props.requiredUser.name,
@@ -45,11 +47,13 @@ const EditDelegationModal = props => {
                   id: 'ssc-mainnet-hive',
                   json: JSON.stringify({
                     contractName: 'tokens',
-                    contractAction: 'delegate',
+                    contractAction: undelegate ? 'undelegate' : 'delegate',
                     contractPayload: {
                       symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
                       to: props.requiredUser.name,
-                      quantity: undelegate ? 0 : round(parseFloat(values.amount), 5).toString(),
+                      quantity: undelegate
+                        ? props.requiredUser.quantity
+                        : round(values.amount, 5).toString(),
                     },
                   }),
                 },
@@ -87,7 +91,6 @@ const EditDelegationModal = props => {
           getFieldValue={props.form.getFieldValue}
           currencyList={props.stakeList}
           defaultType={props.token}
-          defaultAmount={props.requiredUser.quantity}
           withEst
           powerVote
         />
@@ -106,7 +109,7 @@ const EditDelegationModal = props => {
         <Button
           type={'primary'}
           disabled={!props.form.getFieldValue('amount')}
-          onClick={handleEditDelegate}
+          onClick={() => handleEditDelegate()}
         >
           Submit
         </Button>

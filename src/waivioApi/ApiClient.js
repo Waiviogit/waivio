@@ -2396,11 +2396,9 @@ export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) =
 
 export const getWaivVoteMana = account =>
   hiveEngineContract({
-    params: {
-      contract: 'comments',
-      table: 'votingPower',
-      query: { rewardPoolId: WAIVIdPool, account },
-    },
+    contract: 'comments',
+    table: 'votingPower',
+    query: { rewardPoolId: WAIVIdPool, account },
   });
 
 export const getTokensRate = symbols =>
