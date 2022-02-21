@@ -11,6 +11,7 @@ import './ObjectCard.less';
 const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow, parent }) => {
   if (!isEmpty(wobject)) {
     const updatedWObject = { ...wobject };
+
     if (!wobject.avatar && isEmpty(wobject.parent)) updatedWObject.avatar = parent.avatar;
     const name = getObjectName(wobject);
     const pathname = wobject.defaultShowLink;

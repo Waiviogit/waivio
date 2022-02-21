@@ -82,11 +82,7 @@ const PowerSwitcher = props => {
         {props.getFieldDecorator('currency', {
           initialValue: convertCurrency(props.defaultType),
         })(
-          <Select
-            className="PowerSwitcher__currency"
-            onChange={key => setCurrency(key)}
-            disabled={props.defaultAmount}
-          >
+          <Select className="PowerSwitcher__currency" onChange={key => setCurrency(key)}>
             {Object.entries(props.currencyList).map(token => {
               if (!token[1]) return null;
 
