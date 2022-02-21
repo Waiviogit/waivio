@@ -221,6 +221,7 @@ export default class PowerUpOrDown extends React.Component {
                 currencyList={this.currencyList()}
                 defaultType={this.defaultCurrency()}
                 onAmoundValidate={this.validateAmount}
+                powerVote={down}
               />
             </Form.Item>
           </Form>

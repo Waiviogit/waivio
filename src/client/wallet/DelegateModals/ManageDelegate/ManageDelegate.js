@@ -19,9 +19,9 @@ import formatter from '../../../../common/helpers/steemitFormatter';
 import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors';
 import DelegateModal from '../DelegateModal/DelegateModal';
 import EditDelegationModal from '../EditDelegationModal/EditDelegationModal';
+import EmptyManage from './components/EmptyManage';
 
 import './ManageDelegate.less';
-import EmptyManage from './components/EmptyManage';
 
 const ManageDelegate = ({ intl }) => {
   const dispatch = useDispatch();
@@ -35,9 +35,10 @@ const ManageDelegate = ({ intl }) => {
   const [showDelegate, setShowDelegate] = useState(false);
   const [requiredUser, setRequiredUser] = useState(null);
   const [requiredToken, setRequiredToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const completeDelegationList = async () => {
+    setLoading(true);
     const delegated = await getDelegateList({ from: match.params.name });
     const hiveDlegeted = await getHiveDelegate(match.params.name);
     const hiveEngineDelegateList = delegated.reduce(
@@ -52,15 +53,19 @@ const ManageDelegate = ({ intl }) => {
       },
       {
         mainTokens: {
-          HIVE: hiveDlegeted.delegated.map(item => ({
-            to: item.delegatee,
-            quantity:
-              formatter.vestToSteem(
-                item.vesting_shares,
-                totalVestingShares,
-                totalVestingFundSteem,
-              ) / 1000000,
-          })),
+          ...(isEmpty(hiveDlegeted.delegated)
+            ? {}
+            : {
+                HIVE: hiveDlegeted.delegated.map(item => ({
+                  to: item.delegatee,
+                  quantity:
+                    formatter.vestToSteem(
+                      item.vesting_shares,
+                      totalVestingShares,
+                      totalVestingFundSteem,
+                    ) / 1000000,
+                })),
+              }),
         },
         secondaryTokens: {},
       },
@@ -105,14 +110,18 @@ const ManageDelegate = ({ intl }) => {
     }, {});
 
   const stakedList = {
-    HP: round(
-      formatter.vestToSteem(
-        parseFloat(authUser.vesting_shares) - parseFloat(authUser.delegated_vesting_shares),
-        totalVestingShares,
-        totalVestingFundSteem,
-      ),
-      3,
-    ),
+    ...(parseFloat(authUser.vesting_shares)
+      ? {
+          HP: round(
+            formatter.vestToSteem(
+              parseFloat(authUser.vesting_shares) - parseFloat(authUser.delegated_vesting_shares),
+              totalVestingShares,
+              totalVestingFundSteem,
+            ),
+            3,
+          ),
+        }
+      : {}),
     ...stakinTokensList(),
   };
 
@@ -131,8 +140,8 @@ const ManageDelegate = ({ intl }) => {
       >
         {isEmpty(delegationList.mainTokens) &&
         isEmpty(delegationList.secondaryTokens) &&
-        isEmpty(stakedList) ? (
-          <EmptyManage />
+        (isEmpty(stakedList) || Object.keys(stakedList).every(stake => !stake.balance)) ? (
+          <EmptyManage loading={loading} />
         ) : (
           <React.Fragment>
             <TokenManage
