@@ -6,7 +6,7 @@ import '../UserWalletTransactions/UserWalletTransactions.less';
 const HiveDelegatedCard = ({ timestamp, quantity, symbol, to, from, account }) => {
   const isReceive = account === from;
   const link = isReceive ? to : from;
-  let delegation = isReceive ? 'Update delegation from' : 'Update delegation to';
+  let delegation = isReceive ? 'Delegated from' : 'Delegated to';
 
   if (!quantity) {
     delegation = isReceive ? 'Undelegated from' : 'Undelegated to';
@@ -18,7 +18,6 @@ const HiveDelegatedCard = ({ timestamp, quantity, symbol, to, from, account }) =
       quantity={quantity}
       symbol={symbol}
       iconType={'arrow-right'}
-      color={isReceive ? 'green' : 'red'}
     >
       <p>
         {delegation}
