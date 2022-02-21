@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { round, get, isNil, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { FormattedNumber } from 'react-intl';
+import { FormattedNumber, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
@@ -70,7 +70,15 @@ const WAIVWalletSummaryInfo = props => {
           <div className="WalletSummaryInfo__value">{formattedNumber(balance)} WAIV</div>
         </div>
         <div className="WalletSummaryInfo__actions">
-          <p className="WalletSummaryInfo__description">Liquid WAIV tokens</p>
+          <p
+            className="WalletSummaryInfo__description"
+            tab={props.intl.formatMessage({
+              id: 'liquid_waiv_tokens',
+              defaultMessage: 'Liquid WAIV tokens',
+            })}
+          >
+            Liquid WAIV tokens
+          </p>
           <WalletAction mainKey={'power_up'} options={['transfer']} mainCurrency={'WAIV'} />
         </div>
       </div>
@@ -98,7 +106,15 @@ const WAIVWalletSummaryInfo = props => {
           </div>
         </div>
         <div className="WalletSummaryInfo__actions">
-          <p className="WalletSummaryInfo__description">Staked WAIV tokens</p>
+          <p
+            className="WalletSummaryInfo__description"
+            tab={props.intl.formatMessage({
+              id: 'staked_waiv_tokens',
+              defaultMessage: 'Staked WAIV tokens',
+            })}
+          >
+            Staked WAIV tokens
+          </p>
           <WalletAction mainKey={'power_down'} />
         </div>
       </div>
@@ -117,6 +133,7 @@ const WAIVWalletSummaryInfo = props => {
 };
 
 WAIVWalletSummaryInfo.propTypes = {
+  intl: PropTypes.shape().isRequired,
   currencyInfo: PropTypes.shape({}).isRequired,
   resetTokenBalance: PropTypes.func.isRequired,
   rates: PropTypes.number.isRequired,
@@ -131,4 +148,4 @@ export default connect(
   {
     resetTokenBalance,
   },
-)(WAIVWalletSummaryInfo);
+)(injectIntl(WAIVWalletSummaryInfo));

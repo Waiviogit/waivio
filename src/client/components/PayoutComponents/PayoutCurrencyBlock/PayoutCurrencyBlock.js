@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import USDDisplay from '../../Utils/USDDisplay';
 
 import './PayoutCurrencyBlock.less';
@@ -18,12 +19,14 @@ const PayoutCurrencyBlock = props => (
       </div>
     </div>
     <div className="PayoutCurrencyBlock__total">
-      <span>Total:</span> <USDDisplay value={props.totalPayout} currencyDisplay="symbol" />
+      <span tab={props.intl.formatMessage({ id: 'total', defaultMessage: 'Total' })}>Total:</span>{' '}
+      <USDDisplay value={props.totalPayout} currencyDisplay="symbol" />
     </div>
   </React.Fragment>
 );
 
 PayoutCurrencyBlock.propTypes = {
+  intl: PropTypes.shape().isRequired,
   totalPayout: PropTypes.number.isRequired,
   WAIVPayout: PropTypes.number.isRequired,
   HBDPayout: PropTypes.number.isRequired,
@@ -31,3 +34,4 @@ PayoutCurrencyBlock.propTypes = {
 };
 
 export default PayoutCurrencyBlock;
+injectIntl(PayoutCurrencyBlock);

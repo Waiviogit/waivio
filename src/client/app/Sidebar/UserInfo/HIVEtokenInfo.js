@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { round } from 'lodash';
 
@@ -9,7 +9,9 @@ import './CurrencyInfo.less';
 
 const HIVEtokenInfo = props => (
   <div className="CurrencyInfo">
-    <h4>HIVE token</h4>
+    <h4 tab={props.intl.formatMessage({ id: 'hive_token', defaultMessage: 'HIVE token' })}>
+      HIVE token
+    </h4>
     {!!props.reputation && (
       <div>
         <i className="hashtag text-icon">#</i>
@@ -32,7 +34,7 @@ const HIVEtokenInfo = props => (
       <FormattedMessage id="resource_credits" defaultMessage="Resource credits" />
       <span>: {round(props.rc, 2)}%</span>
     </div>
-    <div>
+    <div tab={props.intl.FormattedMessage({ id: 'hive_vote', defaultMessage: 'HIVE vote' })}>
       <i className="iconfont icon-dollar text-icon" />
       HIVE vote: <USDDisplay value={props.votePrice} />
     </div>
@@ -40,6 +42,7 @@ const HIVEtokenInfo = props => (
 );
 
 HIVEtokenInfo.propTypes = {
+  intl: PropTypes.shape().isRequired,
   reputation: PropTypes.number.isRequired,
   votingMana: PropTypes.number.isRequired,
   downVotingMana: PropTypes.string.isRequired,
@@ -48,3 +51,4 @@ HIVEtokenInfo.propTypes = {
 };
 
 export default HIVEtokenInfo;
+injectIntl(HIVEtokenInfo);

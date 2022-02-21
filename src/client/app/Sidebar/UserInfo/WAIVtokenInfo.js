@@ -1,14 +1,14 @@
 import React from 'react';
 import { round } from 'lodash';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 
 import './CurrencyInfo.less';
 
-const WAIVtokenInfo = ({ votingPower, downVotingPower, votePrice }) => (
+const WAIVtokenInfo = ({ votingPower, downVotingPower, votePrice, intl }) => (
   <div className="CurrencyInfo">
-    <h4>WAIV token</h4>
+    <h4 tab={intl.formatMessage({ id: 'waiv_token', defaultMessage: 'WAIV token' })}>WAIV token</h4>
     <div>
       <i className="iconfont icon-praise text-icon" />
       <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
@@ -19,7 +19,7 @@ const WAIVtokenInfo = ({ votingPower, downVotingPower, votePrice }) => (
       <FormattedMessage id="downvoting_mana" defaultMessage="Downvoting mana" />:{' '}
       <span>{round(downVotingPower, 2)}%</span>
     </div>
-    <div>
+    <div tab={intl.formatMessage({ id: 'waiv_vote', defaultMessage: 'WAIV vote' })}>
       <i className="iconfont icon-dollar text-icon" />
       WAIV vote: <USDDisplay value={votePrice} />
     </div>
@@ -27,9 +27,11 @@ const WAIVtokenInfo = ({ votingPower, downVotingPower, votePrice }) => (
 );
 
 WAIVtokenInfo.propTypes = {
+  intl: PropTypes.shape().isRequired,
   votingPower: PropTypes.number.isRequired,
   downVotingPower: PropTypes.number.isRequired,
   votePrice: PropTypes.number.isRequired,
 };
 
 export default WAIVtokenInfo;
+injectIntl(WAIVtokenInfo);
