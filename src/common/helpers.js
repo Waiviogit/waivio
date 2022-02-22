@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import { isEmpty } from 'lodash/lang';
 
 export const getWaivVotePrice = (payout, rshares, rate) => {
   const waivPayout = payout / 2;
@@ -30,15 +31,15 @@ export const postPayoutCalculate = (post, rshares, rsharesWAIV = 0, waivRates) =
   return rshares * ratio + rsharesWAIV * waivRatio;
 };
 
-export const addPayoutForActiveVotes = (post, waivRates, name) => {
-  if (!post) return [];
+export const addPayoutForActiveVotes = (post, waivRates) => {
+  if (isEmpty(post)) return [];
 
   return post.active_votes.map(vote => {
-    if (vote.sponsor && vote.fake) {
+    if (vote.sponsor) {
       return {
-        ...(vote.voter === name ? vote : { sponsor: true }),
+        ...vote,
         payout:
-          post.active_votes.length > 1
+          post.active_votes.length > 1 || !vote.fake
             ? postPayoutCalculate(post, vote.rshares, vote.rsharesWAIV, waivRates)
             : vote.rshares,
       };
