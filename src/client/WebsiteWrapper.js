@@ -214,6 +214,7 @@ class WebsiteWrapper extends React.PureComponent {
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
     const signInPage = location.pathname.includes('sign-in');
+    // const isDiningGifts = true;
 
     return (
       <IntlProvider

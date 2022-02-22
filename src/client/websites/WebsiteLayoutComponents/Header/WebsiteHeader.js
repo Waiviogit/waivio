@@ -77,8 +77,8 @@ const WebsiteHeader = React.memo(({ currPage, wobj, config, intl, location, isDi
               <span className="center WebsiteHeader__title">
                 {upperFirst(
                   intl.formatMessage({
-                    id: currentPage,
-                    defaultMessage: currentPage,
+                    id: 'profile',
+                    defaultMessage: 'Profile',
                   }),
                 )}
               </span>

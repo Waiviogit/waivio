@@ -1818,5 +1818,6 @@
   "staked_waiv_tokens": "Staked WAIV tokens",
   "waiv_wallet": "WAIV wallet",
   "hive_wallet": "HIVE wallet",
-  "HIVE_Engine_wallet": "HIVE Engine wallet"
+  "HIVE_Engine_wallet": "HIVE Engine wallet",
+  "profile": "Profile"
 }
