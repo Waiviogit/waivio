@@ -25,6 +25,7 @@ import SwapTokenCard from '../../TransfersCards/SwapTokenCard/SwapTokenCard';
 import PowerDownCanceledCard from '../../TransfersCards/PowerDownCanceledCard';
 import DepositeCard from '../../TransfersCards/DepositeCard';
 import WithdawCard from '../../TransfersCards/WithdrawCard';
+import DelegateInstructionCard from '../../TransfersCards/DelegateInstructionCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const walletType = useSelector(getCurrentWalletType);
@@ -244,6 +245,17 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         />
       );
 
+    case 'createDepositRecord':
+      return (
+        <DelegateInstructionCard
+          timestamp={transaction.timestamp}
+          pair={transaction.pair}
+          depositAccount={transaction.depositAccount}
+          memo={transaction.memo}
+          address={transaction.address}
+        />
+      );
+
     case 'tokens_transfer':
       if (transaction.to === currentName) {
         return (
@@ -284,6 +296,9 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     from: PropTypes.string,
     memo: PropTypes.string,
     quantity: PropTypes.string,
+    pair: PropTypes.string,
+    depositAccount: PropTypes.string,
+    address: PropTypes.string,
     timestamp: PropTypes.number,
     details: PropTypes.string,
     account: PropTypes.string,

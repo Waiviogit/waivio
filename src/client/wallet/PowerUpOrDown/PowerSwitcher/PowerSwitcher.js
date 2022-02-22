@@ -110,7 +110,7 @@ const PowerSwitcher = props => {
         onClick={() => props.handleBalanceClick(props.currencyList[convertCurrency(currency)])}
         className="PowerSwitcher__current-currency-balance"
       >
-        {props.currencyList[convertCurrency(currency)]} {convertCurrency(currency)}
+        {props.currencyList[convertCurrency(currency)] || 0} {convertCurrency(currency)}
       </span>
       {props.withEst && (
         <div>

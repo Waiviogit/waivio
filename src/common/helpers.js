@@ -34,7 +34,7 @@ export const postPayoutCalculate = (post, rshares, rsharesWAIV = 0, waivRates) =
 export const addPayoutForActiveVotes = (post, waivRates) => {
   if (isEmpty(post)) return [];
 
-  return post.active_votes.map(vote => {
+  return get(post, 'active_votes', []).map(vote => {
     if (vote.sponsor) {
       return {
         ...vote,
