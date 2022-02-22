@@ -222,8 +222,8 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
       let delegateValueTo = 'You undelegated to {username}';
 
       if (isEmptyAmount(notification.amount)) {
-        delegateValueFrom = '{from} updated delegation {amount} to you';
-        delegateValueTo = 'You updated delegation {amount} to {from}';
+        delegateValueFrom = '{from} delegated {amount} to you';
+        delegateValueTo = 'You delegated {amount} to {from}';
       }
       if (notification.from) {
         return intl.formatMessage(
