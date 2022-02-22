@@ -253,7 +253,7 @@ class PostContent extends React.Component {
       isSaved: content.guestInfo
         ? bookmarks.includes(`${content.guestInfo.userId}/${content.root_permlink}`)
         : bookmarks.includes(content.id),
-      isLiked: userVote.percent > 0,
+      isLiked: userVote.percent > 0 && !userVote.fake,
       isReported: userVote.percent < 0,
       userFollowed: followingList.includes(getAuthorName(content)),
     };

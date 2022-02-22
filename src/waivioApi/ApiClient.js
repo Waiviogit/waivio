@@ -2394,12 +2394,15 @@ export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) =
     .catch(e => e);
 };
 
-export const getWaivVoteMana = account =>
-  hiveEngineContract({
+export const getWaivVoteMana = async account => {
+  const mana = await hiveEngineContract({
     contract: 'comments',
     table: 'votingPower',
     query: { rewardPoolId: WAIVIdPool, account },
   });
+
+  return mana[0];
+};
 
 export const getTokensRate = symbols =>
   hiveEngineContract({

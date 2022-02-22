@@ -21,45 +21,42 @@ const EditDelegationModal = props => {
   const totalVestingFundSteem = useSelector(getTotalVestingFundSteem);
   const authUserName = useSelector(getAuthenticatedUserName);
 
-  const handleEditDelegate = (undelegate = false) => {
+  const handleEditDelegate = () => {
     props.form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
-        const vests = undelegate
-          ? 0
-          : round(
-              values.amount / formatter.vestToSteem(1, totalVestingShares, totalVestingFundSteem),
-              6,
-            );
+        const vests = round(
+          values.amount / formatter.vestToSteem(1, totalVestingShares, totalVestingFundSteem),
+          6,
+        );
         const transferQuery = {
           delegator: authUserName,
           delegatee: props.requiredUser.name,
           vesting_shares: `${vests} VESTS`,
         };
 
-        const win = ['HP'].includes(values.currency)
-          ? window.open(
-              `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery(transferQuery)}`,
-              '_blank',
-            )
-          : window.open(
-              `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
-                {
-                  id: 'ssc-mainnet-hive',
-                  json: JSON.stringify({
-                    contractName: 'tokens',
-                    contractAction: undelegate ? 'undelegate' : 'delegate',
-                    contractPayload: {
-                      symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
-                      from: props.requiredUser.name,
-                      quantity: undelegate
-                        ? props.requiredUser.quantity
-                        : round(values.amount, 5).toString(),
-                    },
-                  }),
-                },
-              )}`,
-              '_blank',
-            );
+        const win =
+          values.currency === 'HP'
+            ? window.open(
+                `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery(transferQuery)}`,
+                '_blank',
+              )
+            : window.open(
+                `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
+                  {
+                    id: 'ssc-mainnet-hive',
+                    json: JSON.stringify({
+                      contractName: 'tokens',
+                      contractAction: 'delegate',
+                      contractPayload: {
+                        symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
+                        to: props.requiredUser.name,
+                        quantity: round(values.amount, 5).toString(),
+                      },
+                    }),
+                  },
+                )}`,
+                '_blank',
+              );
 
         win.focus();
         props.onCancel();
@@ -68,7 +65,40 @@ const EditDelegationModal = props => {
   };
   const handleUndelegate = e => {
     e.preventDefault();
-    handleEditDelegate(true);
+    props.form.validateFields({ force: true }, (errors, values) => {
+      if (!errors) {
+        const win =
+          values.currency === 'HP'
+            ? window.open(
+                `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery({
+                  delegator: authUserName,
+                  delegatee: props.requiredUser.name,
+                  vesting_shares: `0 VESTS`,
+                })}`,
+                '_blank',
+              )
+            : window.open(
+                `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
+                  {
+                    id: 'ssc-mainnet-hive',
+                    json: JSON.stringify({
+                      contractName: 'tokens',
+                      contractAction: 'undelegate',
+                      contractPayload: {
+                        symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
+                        from: props.requiredUser.name,
+                        quantity: props.requiredUser.quantity,
+                      },
+                    }),
+                  },
+                )}`,
+                '_blank',
+              );
+
+        win.focus();
+        props.onCancel();
+      }
+    });
   };
 
   return (

@@ -40,7 +40,7 @@ const ManageDelegate = ({ intl }) => {
   const completeDelegationList = async () => {
     setLoading(true);
     const delegated = await getDelegateList({ from: match.params.name });
-    const hiveDlegeted = await getHiveDelegate(match.params.name);
+    const hiveDelegeted = await getHiveDelegate(match.params.name);
     const hiveEngineDelegateList = delegated.reduce(
       (acc, curr) => {
         if (curr.symbol === 'WAIV') {
@@ -53,10 +53,10 @@ const ManageDelegate = ({ intl }) => {
       },
       {
         mainTokens: {
-          ...(isEmpty(hiveDlegeted.delegated)
+          ...(isEmpty(hiveDelegeted.delegated)
             ? {}
             : {
-                HIVE: hiveDlegeted.delegated.map(item => ({
+                HIVE: hiveDelegeted.delegated.map(item => ({
                   to: item.delegatee,
                   quantity:
                     formatter.vestToSteem(
@@ -94,32 +94,32 @@ const ManageDelegate = ({ intl }) => {
   const stakinTokensList = () =>
     tokensList.reduce((acc, curr) => {
       if (curr.stakingEnabled) {
-        if (curr.symbol === 'WAIV')
-          return {
-            ...acc,
-            WP: round(curr.stake, 5) || 0,
-          };
+        const availableVotingPower = curr.stake - curr.delegationsIn;
 
         return {
           ...acc,
-          [curr.symbol]: round(curr.stake, 5) || 0,
+          [curr.symbol === 'WAIV' ? 'WP' : curr.symbol]:
+            round(availableVotingPower >= 0 ? availableVotingPower : 0, 5) || 0,
         };
       }
 
       return acc;
     }, {});
 
+  const calculateAvailableHiveVotingPower = () => {
+    const vestingShares = parseFloat(authUser.vesting_shares);
+    const toWithdraw = parseFloat(authUser.to_withdraw);
+    const withdrawn = parseFloat(authUser.withdrawn);
+    const delegatedVestingShares = parseFloat(authUser.delegated_vesting_shares);
+    const avail = vestingShares - (toWithdraw - withdrawn) / 1e6 - delegatedVestingShares;
+
+    return formatter.vestToSteem(avail, totalVestingShares, totalVestingFundSteem);
+  };
+
   const stakedList = {
     ...(parseFloat(authUser.vesting_shares)
       ? {
-          HP: round(
-            formatter.vestToSteem(
-              parseFloat(authUser.vesting_shares) - parseFloat(authUser.delegated_vesting_shares),
-              totalVestingShares,
-              totalVestingFundSteem,
-            ),
-            3,
-          ),
+          HP: round(calculateAvailableHiveVotingPower(), 3),
         }
       : {}),
     ...stakinTokensList(),
