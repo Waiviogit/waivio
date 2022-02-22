@@ -891,7 +891,7 @@ class Notifications extends React.Component {
               case notificationConstants.DELEGATE_VESTING_SHARES:
                 if (notification.to) {
                   const delegateDefaultMessage = isEmptyAmount(notification.amount)
-                    ? 'You updated delegation {amount} to {username}'
+                    ? 'You delegated {amount} to {username}'
                     : 'You undelegated to {username}';
 
                   return (
@@ -915,7 +915,7 @@ class Notifications extends React.Component {
                 }
 
                 const defaultMessageTo = isEmptyAmount(notification.amount)
-                  ? '{username} updated delegation {amount} to you'
+                  ? '{username} delegated {amount} to you'
                   : '{username} undelegated to you';
 
                 return (
