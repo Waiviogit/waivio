@@ -5,6 +5,7 @@ import USDDisplay from '../../../components/Utils/USDDisplay';
 
 import './HiveEngineCurrencyItem.less';
 import { getProxyImageURL } from '../../../../common/helpers/image';
+import WalletAction from '../../WalletSummaryInfo/components/WalletAction/WalletActions';
 
 const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
   const stake = token.stake || 0;
@@ -40,6 +41,9 @@ const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
               {token.symbol}
             </span>
           )}
+          {token.orderKey && Boolean(token.balance) && (
+            <WalletAction mainKey={'withdraw'} mainCurrency={token.symbol} />
+          )}
         </div>
       </div>
     </div>
@@ -49,6 +53,7 @@ const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
 HiveEngineCurrencyItem.propTypes = {
   token: PropTypes.shape({
     balance: PropTypes.string,
+    orderKey: PropTypes.number,
     name: PropTypes.string,
     rate: PropTypes.number,
     symbol: PropTypes.string,

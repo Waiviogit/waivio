@@ -140,7 +140,7 @@ const ManageDelegate = ({ intl }) => {
       >
         {isEmpty(delegationList.mainTokens) &&
         isEmpty(delegationList.secondaryTokens) &&
-        (isEmpty(stakedList) || Object.keys(stakedList).every(stake => !stake.balance)) ? (
+        (isEmpty(stakedList) || Object.values(stakedList).every(stake => !stake)) ? (
           <EmptyManage loading={loading} />
         ) : (
           <React.Fragment>
