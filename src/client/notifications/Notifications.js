@@ -217,7 +217,7 @@ class Notifications extends React.Component {
 
                 return (
                   <NotificationTemplate
-                    url={`/@${notification.from}}/transfers?type=${getWalletType(
+                    url={`/@${notification.from}/transfers?type=${getWalletType(
                       notification.amount,
                     )}`}
                     username={notification.from}
@@ -276,7 +276,7 @@ class Notifications extends React.Component {
               case notificationConstants.DELEGATE_VESTING_SHARES:
                 if (notification.to) {
                   const delegateDefaultMessage = isEmptyAmount(notification.amount)
-                    ? 'You updated delegation {amount} to {username}'
+                    ? 'You delegated {amount} to {username}'
                     : 'You undelegated to {username}';
 
                   return (
@@ -300,7 +300,7 @@ class Notifications extends React.Component {
                 }
 
                 const defaultMessageTo = isEmptyAmount(notification.amount)
-                  ? '{username} updated delegation {amount} to you'
+                  ? '{username} delegated {amount} to you'
                   : '{username} undelegated to you';
 
                 return (
@@ -371,13 +371,7 @@ class Notifications extends React.Component {
                     id="power_down_notification"
                     defaultMessage="{username} initiated 'Power Down' on {amount}"
                     values={{
-                      username: (
-                        <span className="username">
-                          {notification.account === currentAuthUsername
-                            ? 'You'
-                            : notification.account}
-                        </span>
-                      ),
+                      username: <span className="username">{notification.account}</span>,
                       amount: <span>{notification.amount}</span>,
                     }}
                     key={key}
@@ -891,13 +885,12 @@ class Notifications extends React.Component {
                     id="notification_unstake_username_amount"
                     defaultMessage="{username} cancelled power down on {amount}"
                     values={{
-                      username: (
-                        <span className="username">
-                          {notification.account === currentAuthUsername
-                            ? 'You'
-                            : notification.account}
-                        </span>
-                      ),
+                      username:
+                        notification.account !== currentAuthUsername ? (
+                          <span className="username">{notification.account}</span>
+                        ) : (
+                          <span>You</span>
+                        ),
                       amount: notification.amount,
                     }}
                     key={key}

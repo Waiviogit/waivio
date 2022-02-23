@@ -12,7 +12,7 @@ import {
 } from '../../../store/walletStore/walletSelectors';
 import Loading from '../../components/Icon/Loading';
 import { resetTokenBalance } from '../../../store/walletStore/walletActions';
-import DelegateListModal from '../DelegateListModal/DelegateListModal';
+import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { getDelegateList, getPendingUndelegationsToken } from '../../../waivioApi/ApiClient';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
 
@@ -36,8 +36,8 @@ const WAIVWalletSummaryInfo = props => {
   });
 
   const setDelegationLists = async () => {
-    const delegated = await getDelegateList({ from: props.name });
-    const recived = await getDelegateList({ to: props.name });
+    const delegated = await getDelegateList({ from: props.name, symbol: 'WAIV' });
+    const recived = await getDelegateList({ to: props.name, symbol: 'WAIV' });
     const undeligated = await getPendingUndelegationsToken(props.name);
 
     setDeligateList(delegated);

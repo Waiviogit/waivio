@@ -11,10 +11,12 @@ import {
   getCurrUserTokensBalanceSwap,
   getGlobalProperties,
   getTokenBalance,
+  getUserTokensBalanceList,
   resetHiveEngineTokenBalance,
   setWalletType,
 } from '../../store/walletStore/walletActions';
 import {
+  getDelegationModalVisible,
   getDepositVisible,
   getIsPowerUpOrDownVisible,
   getIsTransferVisible,
@@ -28,6 +30,7 @@ import { getVisibleModal } from '../../store/swapStore/swapSelectors';
 import Deposit from './Deposit/Deposit';
 import WithdrawModal from './WithdrawModal/WithdrawModal';
 import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWithdrawSelector';
+import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -39,6 +42,7 @@ const Wallets = props => {
     props.getTokenBalance('WAIV', props.match.params.name);
     props.getCryptoPriceHistory();
     props.getGlobalProperties();
+    props.getUserTokensBalanceList(props.match.params.name);
     props.getCurrUserTokensBalanceList(props.match.params.name);
     props.getCurrUserTokensBalanceSwap(props.match.params.name);
 
@@ -70,6 +74,7 @@ const Wallets = props => {
       {props.visibleSwap && <SwapTokens />}
       {props.visibleDeposit && <Deposit />}
       {props.visibleWithdraw && <WithdrawModal />}
+      {props.visibleDelegate && <ManageDelegate />}
     </React.Fragment>
   );
 };
@@ -83,7 +88,9 @@ Wallets.propTypes = {
   visiblePower: PropTypes.bool.isRequired,
   visibleSwap: PropTypes.bool.isRequired,
   visibleWithdraw: PropTypes.bool.isRequired,
+  visibleDelegate: PropTypes.bool.isRequired,
   getCurrUserTokensBalanceList: PropTypes.func.isRequired,
+  getUserTokensBalanceList: PropTypes.func.isRequired,
   resetHiveEngineTokenBalance: PropTypes.func.isRequired,
   getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
   visibleDeposit: PropTypes.bool.isRequired,
@@ -107,6 +114,7 @@ export default connect(
     visibleSwap: getVisibleModal(state),
     visibleDeposit: getDepositVisible(state),
     visibleWithdraw: getIsOpenWithdraw(state),
+    visibleDelegate: getDelegationModalVisible(state),
   }),
   {
     setWalletType,
@@ -116,5 +124,6 @@ export default connect(
     getCurrUserTokensBalanceList,
     resetHiveEngineTokenBalance,
     getCurrUserTokensBalanceSwap,
+    getUserTokensBalanceList,
   },
 )(Wallets);

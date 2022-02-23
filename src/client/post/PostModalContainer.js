@@ -71,7 +71,7 @@ export default connect(
       currentShownPost,
       shownPostContents: {
         ...post,
-        active_votes: addPayoutForActiveVotes(post, waivRates, userName),
+        active_votes: addPayoutForActiveVotes(post, waivRates),
       },
       isGuest: isGuestUser(state),
       userName,

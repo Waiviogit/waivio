@@ -13,12 +13,12 @@ import {
   getIsPowerDown,
   getIsPowerUpOrDownVisible,
   getTokenRatesInUSD,
-  getTokensBalanceList,
+  getTokensBalanceListForTransfer,
   getTotalVestingFundSteem,
   getTotalVestingShares,
   getUserCurrencyBalance,
 } from '../../../store/walletStore/walletSelectors';
-import PowerSwitcher from './PowerSwitcher';
+import PowerSwitcher from './PowerSwitcher/PowerSwitcher';
 
 import './PowerUpOrDown.less';
 
@@ -31,7 +31,7 @@ import './PowerUpOrDown.less';
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     down: getIsPowerDown(state),
     waivCurrencyInfo: getUserCurrencyBalance(state, 'WAIV'),
-    tokensList: getTokensBalanceList(state),
+    tokensList: getTokensBalanceListForTransfer(state),
     rates: getTokenRatesInUSD(state, 'WAIV'),
     walletType: getCurrentWalletType(state),
   }),
@@ -79,7 +79,7 @@ export default class PowerUpOrDown extends React.Component {
 
   stakinTokensList = key =>
     this.props.tokensList.reduce((acc, curr) => {
-      if ((curr.stakingEnabled && +curr[key]) || curr.symbol === 'WAIV') {
+      if (curr.stakingEnabled && +curr[key] && curr.symbol !== 'WAIV') {
         return {
           ...acc,
           [curr.symbol]: round(curr[key], 5),
@@ -221,6 +221,7 @@ export default class PowerUpOrDown extends React.Component {
                 currencyList={this.currencyList()}
                 defaultType={this.defaultCurrency()}
                 onAmoundValidate={this.validateAmount}
+                powerVote={down}
               />
             </Form.Item>
           </Form>

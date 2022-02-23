@@ -1,0 +1,53 @@
+@import (reference) '../../../../../styles/custom.less';
+
+.TokenManage {
+  border-bottom: @base-border;
+  padding: 15px 0 20px;
+
+  p {
+    margin: 5px 0 0;
+  }
+
+  &__title {
+    font-weight: 600;
+  }
+
+  &__list {
+    padding: 0 10px;
+    border-radius: 4px;
+    border: @base-border;
+    margin-top: 10px;
+
+    .DelegateUserCard__userInfo {
+      width: auto;
+    }
+
+    .DelegateUserCard:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__cardQuantity {
+    color: @orange-hot;
+    margin-left: 20px;
+    position: relative;
+
+    &::before {
+      content: '+';
+      position: absolute;
+      color: @orange-hot;
+      left: -10px;
+    }
+  }
+
+  &__delegate {
+    color: @orange-hot;
+    text-transform: capitalize;
+    height: 40px;
+    background-color: @white-smoke;
+    border-color: @white-smoke;
+    margin-top: 25px;
+  }
+}
+
+@import 'TokenManage-nightmode.less';

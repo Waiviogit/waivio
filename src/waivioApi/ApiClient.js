@@ -2394,14 +2394,15 @@ export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) =
     .catch(e => e);
 };
 
-export const getWaivVoteMana = account =>
-  hiveEngineContract({
-    params: {
-      contract: 'comments',
-      table: 'votingPower',
-      query: { rewardPoolId: WAIVIdPool, account },
-    },
+export const getWaivVoteMana = async account => {
+  const mana = await hiveEngineContract({
+    contract: 'comments',
+    table: 'votingPower',
+    query: { rewardPoolId: WAIVIdPool, account },
   });
+
+  return mana[0];
+};
 
 export const getTokensRate = symbols =>
   hiveEngineContract({
@@ -2445,7 +2446,6 @@ export const getDelegateList = data => {
         table: 'delegations',
         query: {
           ...data,
-          symbol: 'WAIV',
         },
       },
       id: 'ssc-mainnet-hive',

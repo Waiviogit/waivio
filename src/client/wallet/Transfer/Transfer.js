@@ -9,11 +9,7 @@ import { Form, Input, Modal, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
 import { getCryptoPriceHistory } from '../../../store/appStore/appActions';
-import {
-  closeTransfer,
-  getUserTokensBalanceList,
-  sendPendingTransfer,
-} from '../../../store/walletStore/walletActions';
+import { closeTransfer, sendPendingTransfer } from '../../../store/walletStore/walletActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -90,7 +86,6 @@ const InputGroup = Input.Group;
     saveSettings,
     openLinkHiveAccountModal,
     sendPendingTransfer,
-    getUserTokensBalanceList,
   },
 )
 @Form.create()
@@ -115,7 +110,6 @@ export default class Transfer extends React.Component {
     hiveBeneficiaryAccount: PropTypes.string,
     saveSettings: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
-    getUserTokensBalanceList: PropTypes.func.isRequired,
     showModal: PropTypes.bool.isRequired,
     sendPendingTransfer: PropTypes.func.isRequired,
     getPayables: PropTypes.func,
@@ -194,8 +188,6 @@ export default class Transfer extends React.Component {
     } = this.props;
     const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
     const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
-
-    this.props.getUserTokensBalanceList(this.props.user.name);
 
     if (isNull(currentHiveRate) || isNull(currentHBDRate)) getCryptoPriceHistoryAction();
     this.props.form.setFieldsValue({
