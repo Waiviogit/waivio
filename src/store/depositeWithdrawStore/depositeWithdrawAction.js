@@ -33,6 +33,7 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
           to_coin_symbol: 'SWAP.HIVE',
           display_name: 'HIVE',
           account: 'honey-swap',
+          pair: 'HIVE -> SWAP.HIVE',
           memo: {
             id: 'ssc-mainnet-hive',
             json: { contractName: 'hivepegged', contractAction: 'buy', contractPayload: {} },
