@@ -9,6 +9,7 @@ import {
   openPowerUpOrDown,
   openWithdraw,
   toggleDepositModal,
+  toggleDelegateModal,
 } from '../../../../store/walletStore/walletActions';
 import Action from '../../Button/Action';
 import ClaimRewardsBlock from '../../../wallet/ClaimRewardsBlock/ClaimRewardsBlock';
@@ -43,6 +44,7 @@ const cryptos = [WAIV.symbol, HIVE.symbol, HBD.symbol];
     openLinkHiveAccountModal,
     openSwapTokensModal: toggleModal,
     openDepositModal: toggleDepositModal,
+    toggleDelegateModal,
   },
 )
 class WalletSidebar extends React.Component {
@@ -61,6 +63,7 @@ class WalletSidebar extends React.Component {
     hiveBeneficiaryAccount: PropTypes.string,
     walletType: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
+    toggleDelegateModal: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -92,6 +95,8 @@ class WalletSidebar extends React.Component {
 
   handleOpenWithdrawModal = () => this.props.toggleWithdrawModal(true);
 
+  handleOpenDelegateModal = () => this.props.toggleDelegateModal();
+
   handleOpenDepositModal = () => this.props.openDepositModal();
 
   render() {
@@ -118,6 +123,11 @@ class WalletSidebar extends React.Component {
               Power down
             </Action>
           </div>
+        )}
+        {ownProfile && !isGuest && (
+          <Action big onClick={this.handleOpenDelegateModal} className="WalletSidebar__transfer">
+            <FormattedMessage id="manage_delegations" />
+          </Action>
         )}
         {<CryptoTrendingCharts cryptos={cryptos} />}
         {ownProfile && <ClaimRewardsBlock />}

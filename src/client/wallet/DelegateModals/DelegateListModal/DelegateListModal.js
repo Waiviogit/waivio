@@ -2,10 +2,11 @@ import React from 'react';
 import { Modal, Tabs } from 'antd';
 import { isEmpty } from 'lodash';
 import { FormattedNumber } from 'react-intl';
-
 import PropsType from 'prop-types';
 
-import DelegateUserCard from './DelegateUserCard';
+import DelegateUserCard from '../DelegateUserCard/DelegateUserCard';
+
+import './DelegateListModal.less';
 
 const DelegateListModal = props => {
   const getTitle = (list, type) => (

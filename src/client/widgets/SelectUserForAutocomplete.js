@@ -9,11 +9,7 @@ const SelectUserForAutocomplete = ({ account, resetUser }) => (
       <span>{account}</span>
     </div>
     {resetUser && (
-      <span
-        role="presentation"
-        onClick={() => resetUser(account)}
-        className="iconfont icon-delete"
-      />
+      <span role="presentation" onClick={() => resetUser()} className="iconfont icon-delete" />
     )}
   </div>
 );

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
 
-const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity, status }) => {
+const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity }) => {
   const isReceive = account !== to;
   const cardInfo = isReceive
     ? {
@@ -37,9 +37,7 @@ const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity, statu
       color={cardInfo.color}
       point={cardInfo.point}
     >
-      <span>
-        Undelegated {status} {(to || from) && cardInfo.description}{' '}
-      </span>{' '}
+      <span>Undelegated started {(to || from) && cardInfo.description} </span>{' '}
     </TransactionCardContainer>
   );
 };
@@ -50,7 +48,6 @@ UndelegateStart.propTypes = {
   to: PropTypes.string,
   from: PropTypes.string,
   quantity: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
 };
 
