@@ -25,7 +25,7 @@ import SwapTokenCard from '../../TransfersCards/SwapTokenCard/SwapTokenCard';
 import PowerDownCanceledCard from '../../TransfersCards/PowerDownCanceledCard';
 import DepositeCard from '../../TransfersCards/DepositeCard';
 import WithdawCard from '../../TransfersCards/WithdrawCard';
-import DelegateInstructionCard from '../../TransfersCards/DelegateInstructionCard';
+import DelegateInstructionCard from '../../TransfersCards/DelegateInstructionCard/DelegateInstructionCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
   const walletType = useSelector(getCurrentWalletType);
