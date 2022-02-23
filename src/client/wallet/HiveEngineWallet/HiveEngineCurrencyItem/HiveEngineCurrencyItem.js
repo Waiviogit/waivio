@@ -16,7 +16,7 @@ const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
     <div key={token.symbol} className="HiveEngineCurrencyItem">
       <img src={avatar} alt="" className="HiveEngineCurrencyItem__avatar" />
       <div className="HiveEngineCurrencyItem__info">
-        <div className="HiveEngineCurrencyItem__row">
+        <div className="HiveEngineCurrencyItem__row HiveEngineCurrencyItem__row--paddingBottom">
           <span>
             {token.symbol} (<USDDisplay currencyDisplay="symbol" value={balance} />)
           </span>
@@ -41,7 +41,7 @@ const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
               {token.symbol}
             </span>
           )}
-          {token.orderKey && Boolean(token.balance) && (
+          {token.orderKey && token.symbol !== 'SWAP.ETH' && Boolean(token.balance) && (
             <WalletAction mainKey={'withdraw'} mainCurrency={token.symbol} />
           )}
         </div>

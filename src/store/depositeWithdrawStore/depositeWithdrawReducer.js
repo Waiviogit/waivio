@@ -12,6 +12,7 @@ const initialState = {
   depositPairs: [],
   pair: null,
   withdrawPair: null,
+  defaultWithdrawToken: '',
   isOpenWithdraw: false,
   symbol: '',
 };
@@ -22,7 +23,9 @@ const depositWithdraw = (state = initialState, action) => {
       return {
         ...state,
         withdrawPairs: action.payload.withdrawPairs,
-        withdrawPair: action.payload.withdrawPairs[0],
+        withdrawPair: state.defaultWithdrawToken
+          ? action.payload.withdrawPairs.find(pair => pair.symbol === state.defaultWithdrawToken)
+          : action.payload.withdrawPairs[0],
         depositPairs: action.payload.depositPairs,
       };
     }
@@ -67,7 +70,8 @@ const depositWithdraw = (state = initialState, action) => {
     case TOGGLE_WITHDRAW_MODAL: {
       return {
         ...state,
-        isOpenWithdraw: action.payload,
+        isOpenWithdraw: action.payload.isOpen,
+        defaultWithdrawToken: action.payload.token,
       };
     }
 
