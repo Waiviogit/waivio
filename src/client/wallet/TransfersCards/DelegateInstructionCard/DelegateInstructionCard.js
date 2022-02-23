@@ -29,7 +29,7 @@ const DelegateInstructionCard = props => (
           </div>
         )}
         {props.address && (
-          <div>
+          <div className="DelegateInstructionCard__address">
             <b>Address:</b> {props.address}
           </div>
         )}
