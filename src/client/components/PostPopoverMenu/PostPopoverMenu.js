@@ -305,7 +305,7 @@ const PostPopoverMenu = ({
               key="share-facebook"
               rel="noopener noreferrer"
               target="_blank"
-              className="Popover__shared-link"
+              className="Popover__shared-link PopoverMenuItem"
               onClick={e => {
                 e.preventDefault();
                 handleShare();
@@ -319,7 +319,7 @@ const PostPopoverMenu = ({
               key="share-twitter"
               rel="noopener noreferrer"
               target="_blank"
-              className="Popover__shared-link"
+              className="Popover__shared-link PopoverMenuItem"
               onClick={e => {
                 e.preventDefault();
                 handleShare(isTwitter);
