@@ -18,7 +18,6 @@ const ReceiveTransaction = ({
   type,
   username,
   isMobile,
-
   transactionType,
 }) => {
   const userName = useSelector(getAuthenticatedUserName);
