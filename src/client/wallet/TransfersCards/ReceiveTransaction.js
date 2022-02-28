@@ -18,6 +18,7 @@ const ReceiveTransaction = ({
   type,
   username,
   isMobile,
+
   transactionType,
 }) => {
   const userName = useSelector(getAuthenticatedUserName);
@@ -38,6 +39,7 @@ const ReceiveTransaction = ({
               : description.receivedFrom}
           </div>
           <div
+            style={{ color: '#54d2a0' }}
             className={classNames('UserWalletTransactions__received', {
               'UserWalletTransactions__received-self': userName === from,
             })}
