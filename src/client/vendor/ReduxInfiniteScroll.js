@@ -140,11 +140,10 @@ export default class ReduxInfiniteScroll extends React.Component {
   render() {
     const Holder = this.props.holderType;
     const isCurrentUser = this.props.isCurrentUser;
-    const hasMore = this.props.hasMore;
     return (
       <Holder className={this._assignHolderClass()} style={{ height: this.props.containerHeight }}>
         {this._renderOptions()}
-        {this.state.isloading && hasMore && (
+        {this.state.isloading && this.props.hasMore && (
           <UserActivityActionsLoader isCurrentUser={isCurrentUser} />
         )}
       </Holder>
