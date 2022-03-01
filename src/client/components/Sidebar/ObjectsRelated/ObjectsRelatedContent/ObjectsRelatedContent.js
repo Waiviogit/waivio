@@ -72,8 +72,9 @@ ObjectsRelatedContent.propTypes = {
     hasNext: PropTypes.bool,
     isLoading: PropTypes.bool,
   }).isRequired,
-  renderObjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  objects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   intl: PropTypes.shape().isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(ObjectsRelatedContent);
