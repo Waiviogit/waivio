@@ -10,6 +10,7 @@ import { useRouteMatch } from 'react-router';
 import {
   openPowerUpOrDown,
   openTransfer,
+  toggleDelegateModal,
   toggleDepositModal,
 } from '../../../../../store/walletStore/walletActions';
 import {
@@ -20,6 +21,7 @@ import {
   getAuthenticatedUserName,
   isGuestUser,
 } from '../../../../../store/authStore/authSelectors';
+import delegationModalTypes from '../../../../../common/constants/delegationModalTypes';
 
 import './WalletActions.less';
 
@@ -45,6 +47,8 @@ const WalletAction = props => {
     transfer: () => dispatch(openTransfer('', 0, props.mainCurrency)),
     swap: () => dispatch(toggleDepositModal(true)),
     withdraw: () => dispatch(toggleWithdrawModal(true, props.mainCurrency)),
+    delegate: () =>
+      dispatch(toggleDelegateModal(delegationModalTypes.DELEGATION, props.mainCurrency)),
   };
 
   return (

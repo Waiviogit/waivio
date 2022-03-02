@@ -18,6 +18,7 @@ import {
   HIVE_ENGINE_DEFAULT_SWAP_LIST,
   HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY,
 } from '../../common/constants/swapList';
+import delegationModalTypes from '../../common/constants/delegationModalTypes';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -663,8 +664,12 @@ export const toggleDepositModal = () => ({
 
 export const TOGGLE_DELEGATE_MODAL = '@wallet/TOGGLE_DELEGATE_MODAL';
 
-export const toggleDelegateModal = () => ({
+export const toggleDelegateModal = (modalType = delegationModalTypes.MANAGE, token = null) => ({
   type: TOGGLE_DELEGATE_MODAL,
+  payload: {
+    modalType,
+    token,
+  },
 });
 
 export const SET_SHOW_REWARDS = '@wallet/SET_SHOW_REWARDS';
