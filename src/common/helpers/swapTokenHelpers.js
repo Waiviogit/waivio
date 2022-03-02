@@ -102,7 +102,6 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params }
     ? amountOut.minus(slippageAmount)
     : BigNumber(amountIn).minus(slippageAmount);
 
-  const amountOutToFixed = amountOut.toFixed(precision, BigNumber.ROUND_DOWN);
   const minAmountOutToFixed = minAmountOut.minus(fee).toFixed(precision, BigNumber.ROUND_DOWN);
 
   const json = createJSON({
@@ -116,7 +115,7 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params }
     fee,
     priceImpact: priceImpact.toFixed(2),
     minAmountOut: minAmountOutToFixed,
-    amountOut: amountOutToFixed,
+    amountOut,
     newBalances,
     newPrices,
     json,
