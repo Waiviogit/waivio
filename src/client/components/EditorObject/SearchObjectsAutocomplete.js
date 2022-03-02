@@ -64,7 +64,7 @@ class SearchObjectsAutocomplete extends Component {
     className: PropTypes.string,
     allowClear: PropTypes.bool,
     intl: PropTypes.shape(),
-    searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
+    searchObjectsResults: PropTypes.arrayOf(PropTypes.shape()),
     searchObjects: PropTypes.func,
     clearSearchResults: PropTypes.func,
     handleSelect: PropTypes.func,
