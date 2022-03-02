@@ -88,6 +88,13 @@ const ManageDelegate = ({ intl }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (modalType === delegationModalTypes.DELEGATION) {
+      setShowDelegate(true);
+      setRequiredToken(delegationToken);
+    }
+  }, [modalType, visible]);
+
   const handleCloseMenageModal = () => dispatch(toggleDelegateModal());
 
   const handleOpenDelegateModal = token => {
