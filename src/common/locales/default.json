@@ -135,8 +135,8 @@
   "memo_placeholder": "Additional message to include in this payment",
   "memo_exchange_error": "Memo is required when sending to an exchange.",
   "memo_encryption_error": "Encrypted memos are not supported.",
-  "power_up": "Power Up",
-  "power_down": "Power Down",
+  "power_up": "Power up",
+  "power_down": "Power down",
   "message": "Message",
   "edit_profile": "Edit profile",
   "available_voting_power": "Available voting power for delegations",
@@ -1809,5 +1809,6 @@
   "instant_mobile_notifications": "Instant mobile notifications:",
   "instant_mobile_notifications_open": "Open the Telegram chart with ",
   "instant_mobile_notifications_hive": " and enter the Hive usernames to subscribe.",
+  "delegate": "Delegate",
   "sign_in_error_not_cookies": "You need to disable blocking cookies in incognito mode, in your browser settings"
 }

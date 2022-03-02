@@ -1,6 +1,7 @@
 import { get, slice, filter, concat, uniqWith, isEqual } from 'lodash';
 import * as walletActions from './walletActions';
 import { actionsFilter, ACTIONS_DISPLAY_LIMIT } from '../../common/helpers/accountHistoryHelper';
+import delegationModalTypes from '../../common/constants/delegationModalTypes';
 
 const initialState = {
   transferVisible: false,
@@ -46,6 +47,7 @@ const initialState = {
   depositVisible: false,
   delegateVisible: false,
   showRewards: false,
+  delegationModalType: delegationModalTypes.MANAGE,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -496,6 +498,8 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         delegateVisible: !state.delegateVisible,
+        delegationModalType: action.payload.modalType,
+        delegationToken: action.payload.token,
       };
 
     default:

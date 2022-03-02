@@ -7,7 +7,9 @@ import PropsType from 'prop-types';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  getDelegationModalType,
   getDelegationModalVisible,
+  getDelegationToken,
   getTokensBalanceListForTransfer,
   getTotalVestingFundSteem,
   getTotalVestingShares,
@@ -20,6 +22,7 @@ import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors'
 import DelegateModal from '../DelegateModal/DelegateModal';
 import EditDelegationModal from '../EditDelegationModal/EditDelegationModal';
 import EmptyManage from './components/EmptyManage';
+import delegationModalTypes from '../../../../common/constants/delegationModalTypes';
 
 import './ManageDelegate.less';
 
@@ -27,6 +30,8 @@ const ManageDelegate = ({ intl }) => {
   const dispatch = useDispatch();
   const totalVestingShares = useSelector(getTotalVestingShares);
   const totalVestingFundSteem = useSelector(getTotalVestingFundSteem);
+  const modalType = useSelector(getDelegationModalType);
+  const delegationToken = useSelector(getDelegationToken);
   const authUser = useSelector(getAuthenticatedUser);
   const tokensList = useSelector(getTokensBalanceListForTransfer);
   const visible = useSelector(getDelegationModalVisible);
@@ -36,7 +41,6 @@ const ManageDelegate = ({ intl }) => {
   const [requiredUser, setRequiredUser] = useState(null);
   const [requiredToken, setRequiredToken] = useState(null);
   const [loading, setLoading] = useState(false);
-
   const completeDelegationList = async () => {
     setLoading(true);
     const delegated = await getDelegateList({ from: match.params.name });
@@ -77,6 +81,11 @@ const ManageDelegate = ({ intl }) => {
 
   useEffect(() => {
     completeDelegationList();
+
+    if (modalType === delegationModalTypes.DELEGATION) {
+      setShowDelegate(true);
+      setRequiredToken(delegationToken);
+    }
   }, []);
 
   const handleCloseMenageModal = () => dispatch(toggleDelegateModal());
@@ -128,7 +137,7 @@ const ManageDelegate = ({ intl }) => {
   return (
     <React.Fragment>
       <Modal
-        visible={visible}
+        visible={visible && delegationModalTypes.MANAGE === modalType}
         onCancel={handleCloseMenageModal}
         className={'ManageDelegate'}
         title={intl.formatMessage({ id: 'manage_delegations' })}
@@ -186,7 +195,12 @@ const ManageDelegate = ({ intl }) => {
         <DelegateModal
           stakeList={stakedList}
           visible={showDelegate}
-          onCancel={() => setShowDelegate(false)}
+          onCancel={() => {
+            setShowDelegate(false);
+            if (delegationModalTypes.DELEGATION === modalType) {
+              dispatch(toggleDelegateModal());
+            }
+          }}
           token={requiredToken}
         />
       )}

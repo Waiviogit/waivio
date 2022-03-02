@@ -96,7 +96,7 @@ const PowerSwitcher = props => {
                 <Select.Option key={token[0]} className="PowerSwitcher__options">
                   <span>{token[0]}</span>
                   <span className="PowerSwitcher__currency-balance">
-                    {convertCurrency(token[1])}
+                    {round(convertCurrency(token[1]), 3)}
                   </span>
                 </Select.Option>
               );
@@ -110,7 +110,7 @@ const PowerSwitcher = props => {
         onClick={() => props.handleBalanceClick(props.currencyList[convertCurrency(currency)])}
         className="PowerSwitcher__current-currency-balance"
       >
-        {props.currencyList[convertCurrency(currency)] || 0} {convertCurrency(currency)}
+        {round(props.currencyList[convertCurrency(currency)] || 0, 3)} {convertCurrency(currency)}
       </span>
       {props.withEst && (
         <div>
