@@ -99,7 +99,7 @@ const WAIVWalletSummaryInfo = props => {
         </div>
         <div className="WalletSummaryInfo__actions">
           <p className="WalletSummaryInfo__description">Staked WAIV tokens</p>
-          <WalletAction mainKey={'power_down'} />
+          <WalletAction mainCurrency={'WP'} mainKey={'power_down'} options={['delegate']} />
         </div>
       </div>
       {hasDelegations && (

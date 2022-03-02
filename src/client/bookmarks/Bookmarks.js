@@ -18,6 +18,7 @@ import { getIsReloading } from '../../store/authStore/authSelectors';
 import { getPosts } from '../../store/postsStore/postsSelectors';
 import { getFeed } from '../../store/feedStore/feedSelectors';
 import { getPendingBookmarks } from '../../store/bookmarksStore/bookmarksSelectors';
+import './Bookmarks.less';
 
 @requiresLogin
 @injectIntl
@@ -71,7 +72,7 @@ export default class Bookmarks extends React.Component {
           <title>{intl.formatMessage({ id: 'bookmarks', defaultMessage: 'Bookmarks' })}</title>
         </Helmet>
         {noBookmarks ? (
-          <div className="container">
+          <div className="container Bookmarks">
             <h3 className="text-center">
               <FormattedMessage
                 id="bookmarks_empty"

@@ -183,7 +183,7 @@ AddButton.propTypes = {
   handleObjectSelect: PropTypes.func.isRequired,
   withTitleLine: PropTypes.bool,
   focus: PropTypes.func,
-  sideButtons: PropTypes.arrayOf(PropTypes.object),
+  sideButtons: PropTypes.arrayOf(PropTypes.shape()),
   handleHashtag: PropTypes.func.isRequired,
   isClearSearchObjects: PropTypes.bool,
 };

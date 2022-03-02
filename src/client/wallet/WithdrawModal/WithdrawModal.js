@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 
 import TokensSelect from '../SwapTokens/components/TokensSelect';
 import {
+  getDefaultToken,
   getIsOpenWithdraw,
   getWithdrawList,
   getWithdrawSelectPair,
@@ -37,6 +38,7 @@ const WithdrawModal = props => {
   const pair = useSelector(getWithdrawSelectPair);
   const visible = useSelector(getIsOpenWithdraw);
   const userName = useSelector(getAuthenticatedUserName);
+  const defaultToken = useSelector(getDefaultToken);
 
   const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
   const hiveRateInUsd = get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', 1);
@@ -82,7 +84,11 @@ const WithdrawModal = props => {
 
   useEffect(() => {
     if (isEmpty(withdraList)) dispatch(getDepositWithdrawPairs());
-    else dispatch(setWithdrawPair(withdraList[0]));
+    else {
+      const defaultPair = withdraList.find(pool => pool.symbol === defaultToken);
+
+      dispatch(setWithdrawPair(defaultPair));
+    }
 
     return () => {
       dispatch(resetSelectPair());

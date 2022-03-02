@@ -3,7 +3,7 @@ import { FormattedNumber } from 'react-intl';
 import PropTypes from 'prop-types';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 import { getProxyImageURL } from '../../../../common/helpers/image';
-// import WalletAction from '../../WalletSummaryInfo/components/WalletAction/WalletActions';
+import WalletAction from '../../WalletSummaryInfo/components/WalletAction/WalletActions';
 
 import './HiveEngineCurrencyItem.less';
 
@@ -16,7 +16,7 @@ const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
     <div key={token.symbol} className="HiveEngineCurrencyItem">
       <img src={avatar} alt="" className="HiveEngineCurrencyItem__avatar" />
       <div className="HiveEngineCurrencyItem__info">
-        <div className="HiveEngineCurrencyItem__row">
+        <div className="HiveEngineCurrencyItem__row HiveEngineCurrencyItem__row--paddingBottom">
           <span>
             {token.symbol} (<USDDisplay currencyDisplay="symbol" value={balance} />)
           </span>
@@ -41,9 +41,9 @@ const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
               {token.symbol}
             </span>
           )}
-          {/* {token.orderKey && Boolean(token.balance) && ( */}
-          {/*  <WalletAction mainKey={'withdraw'} mainCurrency={token.symbol} /> */}
-          {/* )} */}
+          {token.orderKey && token.symbol !== 'SWAP.ETH' && Boolean(token.balance) && (
+            <WalletAction mainKey={'withdraw'} mainCurrency={token.symbol} />
+          )}
         </div>
       </div>
     </div>
