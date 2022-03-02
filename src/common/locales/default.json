@@ -1809,5 +1809,6 @@
   "instant_mobile_notifications": "Instant mobile notifications:",
   "instant_mobile_notifications_open": "Open the Telegram chart with ",
   "instant_mobile_notifications_hive": " and enter the Hive usernames to subscribe.",
+  "delegate": "Delegate",
   "sign_in_error_not_cookies": "You need to disable blocking cookies in incognito mode, in your browser settings"
 }
