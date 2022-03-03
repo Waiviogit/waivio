@@ -68,11 +68,13 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
 
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
+
   if (has(video, 'content.videohash') && has(video, 'info.snaphash')) {
     const author = get(video, 'info.author', '');
     const permlink = get(video, 'info.permlink', '');
     const dTubeEmbedUrl = `https://emb.d.tube/#!/${author}/${permlink}/true`;
     const dTubeIFrame = `<iframe width="100%" height="340" src="${dTubeEmbedUrl}" allowFullScreen></iframe>`;
+
     embeds[0] = {
       type: 'video',
       provider_name: 'DTube',
@@ -159,6 +161,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   } else {
     bodyData.push(preview.text());
   }
+
   return <div>{bodyData}</div>;
 };
 

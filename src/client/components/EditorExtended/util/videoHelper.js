@@ -63,6 +63,7 @@ export const getThreeSpeakSrc = url => {
 
 export const getThreeSpeakTVSrc = url => {
   const id = url.match(VIDEO_MATCH_URL.THREE_SPEAK_TV)[2];
+
   return {
     srcID: id,
     srcType: '3speak',
@@ -108,10 +109,12 @@ export const getSrc = ({ src }) => {
   }
   if (isThreeSpeak(src)) {
     const { srcID } = getThreeSpeakSrc(src);
+
     return `${THREESPEAK_PREFIX}${srcID}`;
   }
   if (isThreeSpeakTV(src)) {
     const { srcID } = getThreeSpeakTVSrc(src);
+
     return `${THREESPEAK_TV_PREFIX}${srcID}`;
   }
   if (isRumble(src)) {
