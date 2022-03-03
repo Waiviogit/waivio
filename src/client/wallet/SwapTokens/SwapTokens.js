@@ -193,12 +193,12 @@ const SwapTokens = props => {
             ))}
           </Radio.Group>
           <p>
-            Large transactions may have an impact on the exchange rate If this impact is greater
-            than the set value, the transaction will be cancelled
+            Large transactions may have an impact on the exchange rate. If this impact is greater
+            than the set value, the transaction will be cancelled.
           </p>
         </div>
         <p className="SwapTokens__hiveEngineInfo">
-          Click the button below to be redirected to HiveSinger to complete your transaction
+          Click the button below to be redirected to HiveSinger to complete your transaction.
         </p>
       </Form>
     </Modal>
