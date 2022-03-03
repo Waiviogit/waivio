@@ -110,7 +110,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
     case 'market_cancel':
       return (
         <MarketCancel
-          quantity={transaction.quantity}
+          quantity={transaction.quantityReturned}
           timestamp={transaction.timestamp}
           orderType={transaction.orderType}
           symbol={transaction.symbol}
