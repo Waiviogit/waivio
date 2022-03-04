@@ -3,7 +3,7 @@ import { message, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-const QrModal = ({ visible, intl, setDataScan, handleClose }) => {
+const QrModal = ({ visible, intl, setDataScan, handleClose, setScanAmount, setToken }) => {
   const [result, setResult] = useState('');
   const QrReader = typeof window !== 'undefined' && require('react-qr-reader');
 
@@ -16,7 +16,18 @@ const QrModal = ({ visible, intl, setDataScan, handleClose }) => {
 
   const handleAccept = () => {
     handleClose(false);
-    setDataScan(result);
+
+    if (result.includes(':')) {
+      const dataArray = result.split(':')[1].split('?');
+      const wallet = dataArray[0];
+      const query = new URLSearchParams(`?${dataArray[1]}`);
+
+      setDataScan(wallet);
+      setScanAmount(+query.get('amount'));
+      setToken(result.split(':')[0]);
+    } else {
+      setDataScan(result);
+    }
   };
 
   const handleCancel = () => {
@@ -67,6 +78,13 @@ QrModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   setDataScan: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
+  setScanAmount: PropTypes.func,
+  setToken: PropTypes.func,
+};
+
+QrModal.defaultProps = {
+  setScanAmount: null,
+  setToken: null,
 };
 
 export default injectIntl(QrModal);
