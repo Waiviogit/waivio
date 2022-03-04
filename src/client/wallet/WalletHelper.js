@@ -38,7 +38,7 @@ export const getTransactionDescription = (type, options) => {
       const to = get(options, 'to', 'user');
 
       return {
-        powerUpTransaction: <FormattedMessage id="powered_up" defaultMessage="Powered up " />,
+        powerUpTransaction: <FormattedMessage id="power_up" defaultMessage="Power up " />,
         powerUpTransactionFrom: (
           <FormattedMessage
             id="powered_up_from"

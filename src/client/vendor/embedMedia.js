@@ -73,6 +73,7 @@ SteemEmbed.get = function(url, options) {
     };
   } else if (threeSpeakId) {
     const [, permlink] = threeSpeakId.split('/');
+
     return {
       type: 'video',
       url: url,
@@ -177,7 +178,9 @@ SteemEmbed.dTube = function(url, id, options) {
 };
 
 SteemEmbed.is3Speak = function(url) {
-  const match = url.match(VIDEO_MATCH_URL.THREE_SPEAK);
+  const match = url.includes('3speak.tv/')
+    ? url.match(VIDEO_MATCH_URL.THREE_SPEAK_TV)
+    : url.match(VIDEO_MATCH_URL.THREE_SPEAK);
   return match ? match[2] : false;
 };
 
