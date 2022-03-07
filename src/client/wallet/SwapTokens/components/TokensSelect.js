@@ -1,9 +1,9 @@
 import { Input, Select } from 'antd';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-
 import './TokenSelect.less';
 
 const TokensSelect = props => {
@@ -23,7 +23,7 @@ const TokensSelect = props => {
           className="TokenSelect__input"
           suffix={
             <span className="TokenSelect__max-button" onClick={setUserBalance}>
-              max
+              <FormattedMessage id="max" defaultMessage="max" />
             </span>
           }
         />
@@ -48,7 +48,7 @@ const TokensSelect = props => {
       </div>
       {props.isError && <p className="TokenSelect__invalid">Insufficient funds.</p>}{' '}
       <p>
-        Your balance:{' '}
+        <FormattedMessage id="your_balance" defaultMessage="Your balance" />:{' '}
         {!isEmpty(props.token) && (
           <span className="TokenSelect__balance" onClick={setUserBalance}>
             {get(props.token, 'balance', 0)} {get(props.token, 'symbol')}

@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Icon, Modal, Radio } from 'antd';
 import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
@@ -138,15 +139,17 @@ const SwapTokens = props => {
 
   return (
     <Modal
-      title="Swap tokens"
+      title={props.intl.formatMessage({ id: 'swap_tokens', defaultMessage: 'Swap tokens' })}
       visible={props.visible}
       onOk={handleSwap}
       onCancel={handleCloseModal}
       okButtonProps={{ disabled: !fromAmount || !toAmount || insufficientFunds(fromAmount) }}
-      okText={'Submit'}
+      okText={props.intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
     >
       <Form className="SwapTokens">
-        <h3 className="SwapTokens__title">From:</h3>
+        <h3 className="SwapTokens__title">
+          <FormattedMessage id="from" defaultMessage="From" />:
+        </h3>
         <TokensSelect
           list={props.swapListFrom}
           setToken={token => {
@@ -162,7 +165,9 @@ const SwapTokens = props => {
         <div className="SwapTokens__arrow">
           <Icon type="arrow-down" onClick={props.isChanging ? null : handelChangeOrderToken} />
         </div>
-        <h3 className="SwapTokens__title">To:</h3>
+        <h3 className="SwapTokens__title">
+          <FormattedMessage id="to" defaultMessage="To" />:
+        </h3>
         <TokensSelect
           list={props.swapListTo}
           setToken={handleSetToToken}
@@ -173,13 +178,21 @@ const SwapTokens = props => {
         />
         <div className="SwapTokens__estimatedWrap">
           <p>
-            Estimated transaction value:{' '}
-            <USDDisplay value={fromAmount * props.from.rate * props.hiveRateInUsd} />
+            <FormattedMessage
+              id="estimated_transaction_value"
+              defaultMessage="Estimated transaction value"
+            />
+            : <USDDisplay value={fromAmount * props.from.rate * props.hiveRateInUsd} />
           </p>
-          <p>Estimated price impact: {impact}%</p>
+          <p>
+            <FormattedMessage id="estimated_price_impact" defaultMessage="Estimated price impact" />
+            : {impact}%
+          </p>
         </div>
         <div className="SwapTokens__impactBlock">
-          <h4>Max price impact:</h4>
+          <h4>
+            <FormattedMessage id="max_price_impact" defaultMessage="Max price impact" />:
+          </h4>
           <Radio.Group value={getImpact(impact)}>
             {swapImpactPercent.map(imp => (
               <Radio.Button
@@ -193,12 +206,18 @@ const SwapTokens = props => {
             ))}
           </Radio.Group>
           <p>
-            Large transactions may have an impact on the exchange rate. If this impact is greater
-            than the set value, the transaction will be cancelled.
+            <FormattedMessage
+              id="swaptokens_info"
+              defaultMessage="Large transactions may have an impact on the exchange rate. If this impact is greater
+            than the set value, the transaction will be cancelled."
+            />
           </p>
         </div>
         <p className="SwapTokens__hiveEngineInfo">
-          Click the button below to be redirected to HiveSinger to complete your transaction.
+          <FormattedMessage
+            id="SwapTokens__hiveEngineInfo"
+            defaultMessage="Click the button below to be redirected to HiveSinger to complete your transaction."
+          />
         </p>
       </Form>
     </Modal>
@@ -206,6 +225,7 @@ const SwapTokens = props => {
 };
 
 SwapTokens.propTypes = {
+  intl: PropTypes.shape().isRequired,
   getSwapList: PropTypes.func.isRequired,
   setFromToken: PropTypes.func.isRequired,
   setToToken: PropTypes.func.isRequired,
@@ -241,4 +261,4 @@ export default connect(
     };
   },
   { getSwapList, setFromToken, setToToken, toggleModal, resetModalData, changetTokens },
-)(SwapTokens);
+)(injectIntl(SwapTokens));

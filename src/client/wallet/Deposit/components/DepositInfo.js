@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-
+import { FormattedMessage } from 'react-intl';
 import AccountSection from './AccountSection';
 import MemoSection from './MemoSection';
 import AddressSection from './AddressSection';
@@ -21,13 +21,24 @@ const DepositInfo = () => {
   return selectPair ? (
     <div>
       <p>
-        Please send any amount of {selectPair.from_coin_symbol} to the following address and you
-        will receive an equal amount of {selectPair.to_coin_symbol} in the{' '}
+        <FormattedMessage
+          id="deposit_instructions_part1"
+          defaultMessage="Please send any amount of"
+        />{' '}
+        {selectPair.from_coin_symbol}
+        <FormattedMessage
+          id="deposit_instructions_part2"
+          defaultMessage=" to the following address and you will receive an equal amount of"
+        />{' '}
+        {selectPair.to_coin_symbol} in the{' '}
         <a className="Deposit__account-link" href={`/@${authUserName}`}>
           @{authUserName}
         </a>{' '}
-        account once the transaction has received the required number of confirmations on the
-        external chain.
+        <FormattedMessage
+          id="deposit_instructions_part3"
+          defaultMessage="account once the transaction has received the required number of confirmations on the
+        external chain."
+        />
       </p>
       {selectPair.account && <AccountSection account={selectPair.account} />}
       {selectPair.memo && (
@@ -40,7 +51,13 @@ const DepositInfo = () => {
       {selectPair.address && <AddressSection address={selectPair.address} />}
     </div>
   ) : (
-    <p>Please select the crypto token first.</p>
+    <p>
+      {' '}
+      <FormattedMessage
+        id="select_the_crypto_token_first"
+        defaultMessage="Please select the crypto token first."
+      />
+    </p>
   );
 };
 
