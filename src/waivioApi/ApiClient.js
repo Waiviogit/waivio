@@ -2468,16 +2468,6 @@ export const getTokensInformation = symbols =>
     query: { symbol: { $in: symbols } },
   });
 
-export const getTokenInfo = symbol =>
-  hiveEngineContract({
-    contract: 'tokens',
-    table: 'tokens',
-    indexes: '',
-    limit: 1000,
-    offset: 0,
-    query: { symbol },
-  });
-
 export const getPendingUndelegationsToken = (account, symbol = 'WAIV') =>
   hiveEngineContract({
     contract: 'tokens',
