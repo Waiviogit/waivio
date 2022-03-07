@@ -55,16 +55,18 @@ const SwapTokens = props => {
 
   const insufficientFunds = amount => props.from.balance < amount;
 
-  const calculateOutputInfo = (value = 0, from, to, isFrom) => {
+  const calculateOutputInfo = (value = 0, from, to, isFrom, fixed) => {
     if (!from.tokenPair) return {};
 
     return getSwapOutput({
       symbol: from.symbol,
       amountIn: value || 0,
       pool: from,
-      slippage: 0,
+      slippage: 0.005,
+      precision: to.precision,
       from: isFrom,
       params: param,
+      fixed,
     });
   };
 
@@ -104,10 +106,12 @@ const SwapTokens = props => {
   };
 
   const handleChangeToValue = value => {
-    setToAmount(value);
+    const to = props.swapList[props.from.symbol].find(pair => pair.symbol === value.symbol);
+
+    setToAmount(+to || 0);
 
     if (!isEmpty(props.from)) {
-      const amount = calculateOutputInfo(value, props.to, props.from);
+      const amount = calculateOutputInfo(value, to, props.from);
 
       setImpact(amount.priceImpact);
       setFromAmount(amount.amountOut);
@@ -121,8 +125,7 @@ const SwapTokens = props => {
   const handleClickBalanceTo = value => handleChangeToValue(value);
 
   const handleSwap = () => {
-    const swapInfo = calculateOutputInfo(fromAmount, props.from, props.to, true);
-
+    const swapInfo = calculateOutputInfo(fromAmount, props.from, props.to, true, true);
     const win = window.open(
       `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
         props.authUser

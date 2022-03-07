@@ -169,6 +169,11 @@ const WithdrawModal = props => {
     setFromAmount(+value + persentCalculate(value));
   };
 
+  const handleSetScanAmount = value => {
+    setToAmount(value);
+    setFromAmount(+value + persentCalculate(value));
+  };
+
   return (
     <Modal
       className="WithdrawModal"
@@ -284,6 +289,12 @@ const WithdrawModal = props => {
           visible={isShowScanner}
           setDataScan={setWalletAddressForScanner}
           handleClose={setShowScanner}
+          setScanAmount={handleSetScanAmount}
+          setToken={name => {
+            const codeToken = withdraList.find(k => k.display_name.toLowerCase().includes(name));
+
+            dispatch(setWithdrawPair(codeToken));
+          }}
         />
       )}
     </Modal>
