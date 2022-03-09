@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Tabs } from 'antd';
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
 import Wallet from '../user/UserWallet';
 import Transfer from './Transfer/Transfer';
 import WAIVwallet from './WAIVwallet/WAIVwallet';
@@ -57,14 +57,26 @@ const Wallets = props => {
   return (
     <React.Fragment>
       <Tabs defaultActiveKey={walletsType} onChange={handleOnChange}>
-        <Tabs.TabPane tab="WAIV wallet" key="WAIV">
+        <Tabs.TabPane
+          tab={props.intl.formatMessage({ id: 'waiv_wallet', defaultMessage: 'WAIV wallet' })}
+          key="WAIV"
+        >
           <WAIVwallet />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="HIVE wallet" key="HIVE">
+        <Tabs.TabPane
+          tab={props.intl.formatMessage({ id: 'hive_wallet', defaultMessage: 'HIVE wallet' })}
+          key="HIVE"
+        >
           <Wallet />
         </Tabs.TabPane>
         {!isGuestUser && (
-          <Tabs.TabPane tab="HIVE Engine wallet" key="ENGINE">
+          <Tabs.TabPane
+            tab={props.intl.formatMessage({
+              id: 'hive_engine_wallet',
+              defaultMessage: 'HIVE Engine wallet',
+            })}
+            key="ENGINE"
+          >
             <HiveEngineWallet />
           </Tabs.TabPane>
         )}
@@ -80,6 +92,7 @@ const Wallets = props => {
 };
 
 Wallets.propTypes = {
+  intl: PropTypes.shape().isRequired,
   setWalletType: PropTypes.func.isRequired,
   getCryptoPriceHistory: PropTypes.func.isRequired,
   getTokenBalance: PropTypes.func.isRequired,
@@ -126,4 +139,4 @@ export default connect(
     getCurrUserTokensBalanceSwap,
     getUserTokensBalanceList,
   },
-)(Wallets);
+)(injectIntl(Wallets));

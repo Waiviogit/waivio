@@ -1,7 +1,7 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import USDDisplay from '../../Utils/USDDisplay';
-
 import './PayoutCurrencyBlock.less';
 
 const PayoutCurrencyBlock = props => (
@@ -18,7 +18,10 @@ const PayoutCurrencyBlock = props => (
       </div>
     </div>
     <div className="PayoutCurrencyBlock__total">
-      <span>Total:</span> <USDDisplay value={props.totalPayout} currencyDisplay="symbol" />
+      <span>
+        <FormattedMessage id="Total" defaultMessage="Total" />:
+      </span>{' '}
+      <USDDisplay value={props.totalPayout} currencyDisplay="symbol" />
     </div>
   </React.Fragment>
 );

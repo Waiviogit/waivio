@@ -8,17 +8,16 @@ export const compareTokensList = async (name, tokens) => {
   const tokensInfo = await ApiClient.getTokensInformation(tokensList);
   const compareList = tokens.map(token => {
     const tokenName = token.symbol || token;
-    const userBalance = userBalances.find(r => r.symbol === tokenName);
+    const userBalanceInfo = userBalances.find(r => r.symbol === tokenName);
     const rate = rates.find(r => r.symbol === tokenName);
     const info = tokensInfo.find(r => r.symbol === tokenName);
+    const balance = +get(userBalanceInfo, 'balance', 0);
+    const balancePrecision = balance > 0.001 ? 3 : 7;
 
     return {
       ...(isString(token) ? {} : token),
       symbol: tokenName,
-      balance:
-        +get(userBalance, 'balance', 0) > 0.001
-          ? floor(+get(userBalance, 'balance', 0), 3)
-          : +get(userBalance, 'balance', 0),
+      balance: floor(balance, balancePrecision),
       rate: floor(+get(rate, 'lastPrice', 1), 3),
       precision: info.precision,
     };
