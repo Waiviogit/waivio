@@ -9,7 +9,10 @@ import './CurrencyInfo.less';
 
 const HIVEtokenInfo = props => (
   <div className="CurrencyInfo">
-    <h4>HIVE token</h4>
+    <h4>
+      {' '}
+      <FormattedMessage id="hive_token" defaultMessage="HIVE token" />
+    </h4>
     {!!props.reputation && (
       <div>
         <i className="hashtag text-icon">#</i>
@@ -34,7 +37,8 @@ const HIVEtokenInfo = props => (
     </div>
     <div>
       <i className="iconfont icon-dollar text-icon" />
-      HIVE vote: <USDDisplay value={props.votePrice} />
+      <FormattedMessage id="hive_vote" defaultMessage="HIVE vote" />
+      :<USDDisplay value={props.votePrice} />
     </div>
   </div>
 );

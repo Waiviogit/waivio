@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Select } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepositVisible } from '../../../store/walletStore/walletSelectors';
@@ -20,7 +22,7 @@ import DepositInfo from './components/DepositInfo';
 
 import './Deposit.less';
 
-const Deposit = () => {
+const Deposit = props => {
   const visible = useSelector(getDepositVisible);
   const list = useSelector(getDepositList);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -63,11 +65,18 @@ const Deposit = () => {
     dispatch(setTokenPair(pair, authUserName));
   };
 
+  const okText =
+    selectPair && hiveTokens.includes(selectPair.from_coin_symbol) ? (
+      <FormattedMessage id="continue" defaultMessage="Continue" />
+    ) : (
+      <FormattedMessage id="done" defaultMessage="Done" />
+    );
+
   return (
     <Modal
       visible={visible}
-      okText={selectPair && hiveTokens.includes(selectPair.from_coin_symbol) ? 'Continue' : 'Done'}
-      title="Deposit"
+      okText={okText}
+      title={props.intl.formatMessage({ id: 'Deposit', defaultMessage: 'Deposit' })}
       onCancel={handleCloseModal}
       onOk={handleDoneDeposit}
       className="Deposit"
@@ -75,23 +84,52 @@ const Deposit = () => {
     >
       <div className="Deposit__step">
         <p>
-          All crypto deposits are processed by{' '}
+          <FormattedMessage
+            id="all_crypto_deposits_are_processed_by"
+            defaultMessage="All crypto deposits are processed by"
+          />{' '}
           <a href="https://hive-engine.com/" className="Deposit__engine-link">
             Hive-Engine.com
           </a>
-          . Once the deposit is made, you will receive an equal amount of the SWAP version of the
-          deposited token, which can be exchanged for other tokens on the Hive-Engine blockchain.
+          .{' '}
+          <FormattedMessage
+            id="deposit_info"
+            defaultMessage="Once the deposit is made, you will receive an equal amount of the SWAP version of the
+          deposited token, which can be exchanged for other tokens on the Hive-Engine blockchain."
+          />
         </p>
-        <p>There is a 0.75% fee on deposits (minimum fee 0.001 for HIVE).</p>
         <p>
-          Please note that you will also have to pay standard network fees when sending cryptos.
+          {' '}
+          <FormattedMessage
+            id="fee_on_deposits"
+            defaultMessage="There is a 0.75% fee on deposits (minimum fee 0.001 for HIVE)."
+          />{' '}
+        </p>
+        <p>
+          <FormattedMessage
+            id="pay_standard_network_fees"
+            defaultMessage="Please note that you will also have to pay standard network fees when sending cryptos."
+          />
         </p>
       </div>
       <div className="Deposit__step">
-        <h4 className="Deposit__title">Step 1:</h4>
-        <h4>Select the crypto token to deposit:</h4>
+        <h4 className="Deposit__title">
+          {' '}
+          <FormattedMessage id="step" defaultMessage="Step" /> 1:
+        </h4>
+        <h4>
+          {' '}
+          <FormattedMessage
+            id="select_the_crypto_token_to_deposit"
+            defaultMessage="Select the crypto token to deposit"
+          />
+          :
+        </h4>
         <Select
-          placeholder={'Select the crypto token'}
+          placeholder={props.intl.formatMessage({
+            id: 'select_the_crypto_token',
+            defaultMessage: 'Select the crypto token',
+          })}
           {...(selectSymbol ? { value: selectSymbol } : {})}
         >
           {list.map(pair => (
@@ -102,12 +140,24 @@ const Deposit = () => {
         </Select>
       </div>
       <div>
-        <h4 className="Deposit__title">Step 2:</h4>
-        <h4>Follow the deposit instructions:</h4>
+        <h4 className="Deposit__title">
+          <FormattedMessage id="step" defaultMessage="Step" /> 2:
+        </h4>
+        <h4>
+          <FormattedMessage
+            id="follow_the_deposit_instructions"
+            defaultMessage="Follow the deposit instructions"
+          />
+          :
+        </h4>
         <DepositInfo />
       </div>
     </Modal>
   );
 };
 
-export default Deposit;
+Deposit.propTypes = {
+  intl: PropTypes.shape().isRequired,
+};
+
+export default injectIntl(Deposit);
