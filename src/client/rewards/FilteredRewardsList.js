@@ -198,6 +198,9 @@ const FilteredRewardsList = props => {
       },
     ];
   }, [location, intl]);
+  const parentObj = propositions.find(
+    proposition => proposition.required_object.author_permlink === match.params.campaignParent,
+  );
 
   return !loadingCampaigns && !pendingUpdate ? (
     <React.Fragment>
@@ -205,8 +208,8 @@ const FilteredRewardsList = props => {
         tabText={getTextByFilterKey(intl, filterKey || tabType)}
         filterKey={filterKey || tabType}
         reqObject={
-          !IsRequiredObjectWrap && propositions.length && propositions[0]
-            ? propositions[0].required_object
+          !IsRequiredObjectWrap && propositions.length && parentObj
+            ? parentObj.required_object
             : null
         }
         match={match}
