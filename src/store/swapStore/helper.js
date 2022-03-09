@@ -1,4 +1,4 @@
-import { get, round, isString } from 'lodash';
+import { get, floor, isString } from 'lodash';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const compareTokensList = async (name, tokens) => {
@@ -15,8 +15,11 @@ export const compareTokensList = async (name, tokens) => {
     return {
       ...(isString(token) ? {} : token),
       symbol: tokenName,
-      balance: round(+get(userBalance, 'balance', 0), 3),
-      rate: round(+get(rate, 'lastPrice', 1), 3),
+      balance:
+        +get(userBalance, 'balance', 0) > 0.001
+          ? floor(+get(userBalance, 'balance', 0), 3)
+          : +get(userBalance, 'balance', 0),
+      rate: floor(+get(rate, 'lastPrice', 1), 3),
       precision: info.precision,
     };
   });
