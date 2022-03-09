@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Input, message, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, get, round, debounce, isNil } from 'lodash';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -169,15 +169,20 @@ const WithdrawModal = props => {
     setFromAmount(+value + persentCalculate(value));
   };
 
+  const handleSetScanAmount = value => {
+    setToAmount(value);
+    setFromAmount(+value + persentCalculate(value));
+  };
+
   return (
     <Modal
       className="WithdrawModal"
       visible={visible}
       onCancel={handleCloseModal}
-      title={'Withdraw'}
+      title={props.intl.formatMessage({ id: 'Withdraw', defaultMessage: 'Withdraw' })}
       footer={[
         <Button
-          key={'Withdraw'}
+          key={props.intl.formatMessage({ id: 'Withdraw', defaultMessage: 'Withdraw' })}
           type="primary"
           onClick={handleWithdraw}
           disabled={!fromAmount || isError || invalidAddress}
@@ -188,16 +193,27 @@ const WithdrawModal = props => {
     >
       <section>
         <p>
-          All crypto withdrawals are processed by{' '}
+          <FormattedMessage
+            id="withdraw_info_part1"
+            defaultMessage="All crypto withdrawals are processed by"
+          />{' '}
           <a href="https://hive-engine.com/">Hive-Engine.com</a>.
         </p>
-        <p>There is a {withdrawFeePercent}% fee on withdrawals.</p>
         <p>
-          Please note that standard network transfer fees will also be subtracted from the amount.
+          <FormattedMessage id="there_is_a" defaultmessage="There is a" /> {withdrawFeePercent}%{' '}
+          <FormattedMessage id="fee_on_withdrawals" defaultMessage="fee on withdrawals" />.
+        </p>
+        <p>
+          <FormattedMessage
+            id="withdraw_info_part2"
+            defaultMessage=" Please note that standard network transfer fees will also be subtracted from the amount."
+          />
         </p>
       </section>
       <div className="WithdrawModal__block">
-        <h3 className="WithdrawModal__title">Withdraw:</h3>
+        <h3 className="WithdrawModal__title">
+          <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />:
+        </h3>
         <TokensSelect
           list={withdraList}
           setToken={setTokenPair}
@@ -209,22 +225,29 @@ const WithdrawModal = props => {
         />
       </div>
       <div className="WithdrawModal__block">
-        <h3 className="WithdrawModal__title">Receive:</h3>
+        <h3 className="WithdrawModal__title">
+          {' '}
+          <FormattedMessage id="receive" defaultMessage="Receive" />:
+        </h3>
         <div className="WithdrawModal__inputWrap">
           <Input type="number" value={toAmount} onChange={handleToAmoundChange} />
           <span className="WithdrawModal__currency">{get(pair, 'to_coin_symbol')}</span>
         </div>
       </div>
       <p>
-        Est. amount: <USDDisplay value={fromAmount * get(pair, 'rate') * hiveRateInUsd} />
+        <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:
+        <USDDisplay value={fromAmount * get(pair, 'rate') * hiveRateInUsd} />
       </p>
       {!hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) && (
         <p>
-          Minimal withdraw amount: {withdrawFee} {get(pair, 'from_coin_symbol')}
+          <FormattedMessage id="minimal_withdraw_amount" defaultMessage="Minimal withdraw amount" />
+          :{withdrawFee} {get(pair, 'from_coin_symbol')}
         </p>
       )}
       <div className="WithdrawModal__block">
-        <h3 className="WithdrawModal__title">Destination address:</h3>
+        <h3 className="WithdrawModal__title">
+          <FormattedMessage id="destination_address" defaultMessage="Destination address" />:
+        </h3>
         {hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) ? (
           <SelectUserForAutocomplete account={userName} />
         ) : (
@@ -241,7 +264,10 @@ const WithdrawModal = props => {
               />
               <Button className="WithdrawModal__qr-button" onClick={() => setShowScanner(true)}>
                 <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
-                <span>QR scanner</span>
+                <span>
+                  {' '}
+                  <FormattedMessage id="qr_scanner" defaultMessage="QR scanner" />
+                </span>
               </Button>
             </div>
             {walletAddress && !isNil(invalidAddress) && (
@@ -252,12 +278,23 @@ const WithdrawModal = props => {
           </React.Fragment>
         )}
       </div>
-      <p>Click the button below to be redirected to HiveSinger to complete your transaction.</p>
+      <p>
+        <FormattedMessage
+          id="withdraw_info_part3"
+          defaultMessage="Click the button below to be redirected to HiveSinger to complete your transaction."
+        />
+      </p>
       {isShowScanner && (
         <QrModal
           visible={isShowScanner}
           setDataScan={setWalletAddressForScanner}
           handleClose={setShowScanner}
+          setScanAmount={handleSetScanAmount}
+          setToken={name => {
+            const codeToken = withdraList.find(k => k.display_name.toLowerCase().includes(name));
+
+            dispatch(setWithdrawPair(codeToken));
+          }}
         />
       )}
     </Modal>
