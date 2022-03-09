@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { round, get, isNil, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { FormattedNumber } from 'react-intl';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import classNames from 'classnames';
 
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
@@ -70,7 +70,9 @@ const WAIVWalletSummaryInfo = props => {
           <div className="WalletSummaryInfo__value">{formattedNumber(balance)} WAIV</div>
         </div>
         <div className="WalletSummaryInfo__actions">
-          <p className="WalletSummaryInfo__description">Liquid WAIV tokens</p>
+          <p className="WalletSummaryInfo__description">
+            <FormattedMessage id="liquid_waiv_tokens" defaultMessage="Liquid WAIV tokens" />
+          </p>
           <WalletAction mainKey={'power_up'} options={['transfer']} mainCurrency={'WAIV'} />
         </div>
       </div>
@@ -98,7 +100,10 @@ const WAIVWalletSummaryInfo = props => {
           </div>
         </div>
         <div className="WalletSummaryInfo__actions">
-          <p className="WalletSummaryInfo__description">Staked WAIV tokens</p>
+          <p className="WalletSummaryInfo__description">
+            {' '}
+            <FormattedMessage id="staked_waiv_tokens" defaultMessage="Staked WAIV tokens" />
+          </p>
           <WalletAction mainCurrency={'WP'} mainKey={'power_down'} options={['delegate']} />
         </div>
       </div>
