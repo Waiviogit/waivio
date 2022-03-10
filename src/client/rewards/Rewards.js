@@ -281,7 +281,9 @@ class Rewards extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const lastLinkChar = location.href;
+    const { match, username, authenticated, location } = this.props;
+    const { activeFilters } = this.state;
+    const lastLinkChar = location.pathname;
 
     if (!location.search && lastLinkChar.slice(-1) === '?') {
       const currLink = lastLinkChar.substring(0, lastLinkChar.length - 1);
@@ -292,6 +294,7 @@ class Rewards extends React.Component {
     if (this.props.match.url !== prevProps.match.url) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ url: this.props.match.url });
+      this.getPropositions({ username, match, authenticated, activeFilters });
     }
   }
 
