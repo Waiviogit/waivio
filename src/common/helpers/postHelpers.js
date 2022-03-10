@@ -100,7 +100,15 @@ export function getContentImages(content, parsed = false) {
   );
 }
 
-export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, campaignId, host) {
+export function createPostMetadata(
+  body,
+  tags,
+  oldMetadata = {},
+  waivioData,
+  campaignId,
+  host,
+  reservationPermlink,
+) {
   const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
   let metaData = {
     community: appName,
@@ -139,6 +147,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, cam
     metaData[WAIVIO_META_FIELD_NAME] = waivioData;
   }
   if (campaignId) metaData.campaignId = campaignId;
+  if (reservationPermlink) metaData.reservation_permlink = reservationPermlink;
 
   return {
     ...metaData,
