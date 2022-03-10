@@ -385,6 +385,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
       type: CREATE_POST_START,
     });
     const reservationPermlink = get(jsonMetadata, 'reservation_permlink');
+
     getPermLink.then(permlink =>
       broadcastComment(
         steemConnectAPI,
@@ -537,7 +538,6 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     originalBody,
     linkedObjects,
     topics,
-    campaign,
     content,
     isUpdating,
     settings,
@@ -600,6 +600,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   if (originalBody) {
     postData.originalBody = originalBody;
   }
+
   return postData;
 };
 

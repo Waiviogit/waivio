@@ -83,10 +83,14 @@ const EditPost = props => {
       search: `draft=${getCurrentDraftId(props.draftId, draftIdEditor)}`,
     });
     const hideLinkedObjectsSession = JSON.parse(localStorage.getItem(props.draftId)) || [];
+
     props.setEditorState(getInitialState(props, hideLinkedObjectsSession));
 
-    if (props.currDraft)
-      const campaignId = props.campaignId || props.currDraft.jsonMetadata.campaignId;
+    let campaignId;
+
+    if (props.currDraft) {
+      campaignId = props.campaignId || props.currDraft.jsonMetadata.campaignId;
+    }
 
     const isReview = !isEmpty(campaignId);
 
@@ -94,6 +98,7 @@ const EditPost = props => {
     if (isReview) {
       props.getReviewCheckInfo({ campaignId }, intl, true);
     }
+
     return () => {
       props.leaveEditor();
     };
@@ -149,6 +154,7 @@ const EditPost = props => {
 
     const isReview =
       !isEmpty(campaign) || includes(get(props.history, ['location', 'search']), 'review');
+
     props.createPost(postData, props.beneficiaries, isReview, campaign, props.intl);
   };
   const handleToggleLinkedObject = (objId, isLinked, uniqId) => {
