@@ -13,7 +13,6 @@ import { setObjPercents } from '../../../common/helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
-
 import './EditPost.less';
 
 const propTypes = {
@@ -84,17 +83,17 @@ const EditPost = props => {
       search: `draft=${getCurrentDraftId(props.draftId, draftIdEditor)}`,
     });
     const hideLinkedObjectsSession = JSON.parse(localStorage.getItem(props.draftId)) || [];
-
     props.setEditorState(getInitialState(props, hideLinkedObjectsSession));
-    const campaignId = props.campaignId || get(props.currDraft, ['jsonMetadata', 'campaignId']);
+
+    if (props.currDraft)
+      const campaignId = props.campaignId || props.currDraft.jsonMetadata.campaignId;
+
     const isReview = !isEmpty(campaignId);
 
     props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
-
     if (isReview) {
       props.getReviewCheckInfo({ campaignId }, intl, true);
     }
-
     return () => {
       props.leaveEditor();
     };
@@ -150,7 +149,6 @@ const EditPost = props => {
 
     const isReview =
       !isEmpty(campaign) || includes(get(props.history, ['location', 'search']), 'review');
-
     props.createPost(postData, props.beneficiaries, isReview, campaign, props.intl);
   };
   const handleToggleLinkedObject = (objId, isLinked, uniqId) => {
