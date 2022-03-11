@@ -1357,6 +1357,7 @@
   "menu_rewards": "Récompenses",
   "menu_discover": "Découvrez",
   "menu_tools": "Outils",
+  "menu_drafts": "Brouillons",
   "signing": "S'inscrire",
   "alphabet": "A..Z",
   "page": "Page",
@@ -1728,5 +1729,15 @@
   "disclaimer_language": "Les utilisateurs peuvent sélectionner une autre langue pour l'interface dans les paramètres utilisateur.",
   "disclaimer_campaign_currency": "Avertissement: les taux de change sont fournis par des tiers et peuvent ne pas être exacts.",
   "base_currency": "Devise de base",
-  "post_currency_info": "La devise de base est utilisée pour afficher les récompenses, la valeur des votes et publier les gains."
+  "post_currency_info": "La devise de base est utilisée pour afficher les récompenses, la valeur des votes et publier les gains.",
+  "hive_token": "Jeton HIVE",
+  "hive_vote": "Vote HIVE",
+  "waiv_token": "Jeton WAIV",
+  "waiv_vote": "Vote WAIV",
+  "Total": "Total",
+  "liquid_waiv_tokens":"Jetons WAIV liquides",
+  "staked_waiv_tokens":"Jetons WAIV jalonnés",
+  "waiv_wallet": "Portefeuille WAIV",
+  "hive_wallet": "Portefeuille HIVE",
+  "hive_engine_wallet": "Portefeuille moteur HIVE"
 }

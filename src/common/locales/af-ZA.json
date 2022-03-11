@@ -1357,6 +1357,7 @@
   "menu_rewards": "Belonings",
   "menu_discover": "Ontdek",
   "menu_tools": "Gereedskap",
+  "menu_drafts": "Konsepte",
   "signing": "Meld aan",
   "alphabet": "A..Z",
   "page": "Bladsy",
@@ -1730,5 +1731,15 @@
   "you_earn": "JY VERDIEN",
   "disclaimer_campaign_currency": "Disclaimer: Wisselkoerse word deur derde partye verskaf en is moontlik nie akkuraat nie.",
   "base_currency": "Basisvaluta",
-  "post_currency_info": "Basisvaluta word gebruik om belonings, stemwaarde en boekverdienste te vertoon."
+  "post_currency_info": "Basisvaluta word gebruik om belonings, stemwaarde en boekverdienste te vertoon.",
+  "hive_token": "HIVE-teken",
+  "hive_vote": "HIVE stem",
+  "waiv_token": "WAIV-teken",
+  "waiv_vote": "WAIV stem",
+  "Total": "Totaal",
+  "liquid_waiv_tokens":"Vloeibare WAIV-tokens",
+  "staked_waiv_tokens":"Uitgesette WAIV-tokens",
+  "waiv_wallet": "WAIV-beursie",
+  "hive_wallet": "HIVE-beursie",
+  "hive_engine_wallet": "HIVE Engine-beursie"
 }

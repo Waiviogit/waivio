@@ -1357,6 +1357,7 @@
   "menu_rewards": "Jutalmak",
   "menu_discover": "Felfedez",
   "menu_tools": "Eszközök",
+  "menu_drafts": "Dámajáték",
   "signing": "Bejelentkezés",
   "alphabet": "A..Z",
   "page": "Oldal",
@@ -1730,5 +1731,15 @@
   "you_earn": "KERESSE",
   "disclaimer_campaign_currency": "Jogi nyilatkozat: Az árfolyamokat harmadik felek adják meg, és előfordulhat, hogy nem pontosak.",
   "base_currency": "Alapvaluta",
-  "post_currency_info": "Az alap pénzneme a jutalmak, a szavazatok értékének és az utólagos bevételek megjelenítésére szolgál."
+  "post_currency_info": "Az alap pénzneme a jutalmak, a szavazatok értékének és az utólagos bevételek megjelenítésére szolgál.",
+  "hive_token": "HIVE token",
+  "hive_vote": "HIVE szavazás",
+  "waiv_token": "WAIV token",
+  "waiv_vote": "WAIV szavazás",
+  "Total": "Teljes",
+  "liquid_waiv_tokens":"Folyékony WAIV tokenek",
+  "staked_waiv_tokens":"Tétes WAIV tokenek",
+  "waiv_wallet": "WAIV pénztárca",
+  "hive_wallet": "HIVE pénztárca",
+  "hive_engine_wallet": "HIVE Engine pénztárca"
 }

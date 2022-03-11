@@ -1357,6 +1357,7 @@
   "menu_rewards": "Recompenses",
   "menu_discover": "Descobriu",
   "menu_tools": "Eines",
+  "menu_drafts": "Esborranys",
   "signing": "S'està iniciant la sessió",
   "alphabet": "A..Z",
   "page": "Pàgina",
@@ -1729,5 +1730,15 @@
   "you_earn": "GUANYES",
   "disclaimer_campaign_currency": "Exempció de responsabilitat: els tipus de canvi els proporcionen tercers i pot ser que no siguin exactes.",
   "base_currency": "Moneda base",
-  "post_currency_info": "La moneda base s'utilitza per mostrar recompenses, valor del vot i publicar guanys."
+  "post_currency_info": "La moneda base s'utilitza per mostrar recompenses, valor del vot i publicar guanys.",
+  "hive_token": "Fitxa HIVE",
+  "hive_vote": "Votació HIVE",
+  "waiv_token": "Token WAIV",
+  "waiv_vote": "Votació WAIV",
+  "Total": "Total",
+  "liquid_waiv_tokens":"Fitxes WAIV líquides",
+  "staked_waiv_tokens":"Fitxes WAIV apostades",
+  "waiv_wallet": "Cartera WAIV",
+  "hive_wallet": "Cartera HIVE",
+  "hive_engine_wallet": "Cartera del motor HIVE"
 }

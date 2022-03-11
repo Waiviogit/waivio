@@ -1357,6 +1357,7 @@
   "menu_rewards": "Belohnungen",
   "menu_discover": "Entdecken Sie",
   "menu_tools": "Werkzeuge",
+  "menu_drafts": "Entwürfe",
   "signing": "Anmelden",
   "alphabet": "A..Z",
   "page": "Seite",
@@ -1728,5 +1729,15 @@
   "you_earn": "DU VERDIENST",
   "disclaimer_campaign_currency": "Haftungsausschluss: Wechselkurse werden von Dritten bereitgestellt und sind möglicherweise nicht korrekt.",
   "base_currency": "Hauptwährung",
-  "post_currency_info": "Die Basiswährung wird für die Anzeige von Belohnungen, Stimmenwert und Beitragseinnahmen verwendet."
+  "post_currency_info": "Die Basiswährung wird für die Anzeige von Belohnungen, Stimmenwert und Beitragseinnahmen verwendet.",
+  "hive_token": "HIVE-Token",
+  "hive_vote": "HIVE-Abstimmung",
+  "waiv_token": "WAIV-Token",
+  "waiv_vote": "WAIV-Abstimmung",
+  "Total": "Gesamt",
+  "liquid_waiv_tokens":"Flüssige WAIV-Token",
+  "staked_waiv_tokens":"Gestakte WAIV-Token",
+  "waiv_wallet": "WAIV-Brieftasche",
+  "hive_wallet": "HIVE-Brieftasche",
+  "hive_engine_wallet": "HIVE Engine-Geldbörse"
 }

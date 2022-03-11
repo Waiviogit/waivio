@@ -1357,6 +1357,7 @@
   "menu_rewards": "Nagrody",
   "menu_discover": "Odkryć",
   "menu_tools": "Przybory",
+  "menu_drafts": "Warcaby",
   "signing": "Dołączanie do",
   "alphabet": "A..Z",
   "page": "Strona",
@@ -1728,5 +1729,15 @@
   "you_earn": "ZAROBIŁEŚ",
   "disclaimer_campaign_currency": "Zastrzeżenie: Kursy walut są dostarczane przez strony trzecie i mogą nie być dokładne.",
   "base_currency": "Waluta bazowa",
-  "post_currency_info": "Waluta podstawowa służy do wyświetlania nagród, wartości głosów i księgowania zarobków."
+  "post_currency_info": "Waluta podstawowa służy do wyświetlania nagród, wartości głosów i księgowania zarobków.",
+  "hive_token": "HIVE token",
+  "hive_vote": "HIVE głosowanie",
+  "waiv_token": "WAIV token",
+  "waiv_vote": "WAIV głosowanie",
+  "Total": "Całkowity",
+  "liquid_waiv_tokens":"Płynne tokeny WAIV",
+  "staked_waiv_tokens":"Postawione tokeny WAIV",
+  "waiv_wallet": "Portfel WAIV",
+  "hive_wallet": "Portfel HIVE",
+  "hive_engine_wallet": "Portfel silnika HIVE"
 }

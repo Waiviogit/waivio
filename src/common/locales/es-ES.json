@@ -1357,6 +1357,7 @@
   "menu_rewards": "Recompensas",
   "menu_discover": "Descubra",
   "menu_tools": "Herramientas",
+  "menu_drafts": "Borradores",
   "signing": "Iniciar sesión",
   "alphabet": "A..Z",
   "page": "Página",
@@ -1729,5 +1730,15 @@
   "you_earn": "USTED GANA",
   "disclaimer_campaign_currency": "Descargo de responsabilidad: los tipos de cambio son proporcionados por terceros y pueden no ser precisos.",
   "base_currency": "Moneda base",
-  "post_currency_info": "La moneda base se utiliza para mostrar las recompensas, el valor de los votos y publicar las ganancias"
+  "post_currency_info": "La moneda base se utiliza para mostrar las recompensas, el valor de los votos y publicar las ganancias",
+  "hive_token": "Token HIVE ",
+  "hive_vote": "Voto de la HIVE",
+  "waiv_token": "Token WAIV",
+  "waiv_vote": "Voto de la WAIV",
+  "Total": "Total",
+  "liquid_waiv_tokens":"Tokens WAIV líquidos",
+  "staked_waiv_tokens":"Tokens WAIV apostados",
+  "waiv_wallet": "Billetera WAIV",
+  "hive_wallet": "Billetera WAIV",
+  "hive_engine_wallet": "Billetera HIVE Engine"
 }

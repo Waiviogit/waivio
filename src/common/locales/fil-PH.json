@@ -1357,6 +1357,7 @@
   "menu_rewards": "Premyo",
   "menu_discover": "Matuklasan",
   "menu_tools": "Mga kasangkapan",
+  "menu_drafts": "Mga draft",
   "signing": "Pag-sign in",
   "alphabet": "A..Z",
   "page": "Pahina",
@@ -1729,5 +1730,15 @@
   "you_earn": "KUMITA KA",
   "disclaimer_campaign_currency": "Disclaimer: Ang mga rate ng palitan ay ibinibigay ng mga third party at maaaring hindi tumpak.",
   "base_currency": "Base currency",
-  "post_currency_info": "Ginagamit ang batayang pera para sa pagpapakita ng mga gantimpala, halaga ng boto at mga kita sa post."
+  "post_currency_info": "Ginagamit ang batayang pera para sa pagpapakita ng mga gantimpala, halaga ng boto at mga kita sa post.",
+  "hive_token": "Token ng HIVE",
+  "hive_vote": "Boto sa HIVE",
+  "waiv_token": "WAIV token",
+  "waiv_vote": "WAIV boto",
+  "Total": "Kabuuan",
+  "liquid_waiv_tokens":"Liquid WAIV token",
+  "staked_waiv_tokens":"Mga na-staked na WAIV token",
+  "waiv_wallet": "WAIV wallet",
+  "hive_wallet": "Wallet ng HIVE",
+  "hive_engine_wallet": "HIVE Engine wallet"
 }
