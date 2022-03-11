@@ -1735,5 +1735,10 @@
   "hive_vote": "HIVE投票",
   "waiv_token": "WAIVトークン",
   "waiv_vote": "WAIV投票",
-  "Total": "合計"
+  "Total": "合計",
+  "liquid_waiv_tokens":"リキッドWAIVトークン",
+  "staked_waiv_tokens":"ステーキングされたWAIVトークン",
+  "waiv_wallet": "WAIVウォレット",
+  "hive_wallet": "HIVEウォレット",
+  "hive_engine_wallet": "HIVEエンジンウォレット"
 }

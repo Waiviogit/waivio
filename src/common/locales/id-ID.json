@@ -1734,5 +1734,10 @@
   "hive_vote": "Suara HIVE",
   "waiv_token": "Token WAIV",
   "waiv_vote": "Suara WAIV",
-  "Total": "Jumlah"
+  "Total": "Jumlah",
+  "liquid_waiv_tokens":"Token WAIV cair",
+  "staked_waiv_tokens":"Token WAIV yang dipertaruhkan",
+  "waiv_wallet": "Dompet WAIV",
+  "hive_wallet": "Dompet HIVE",
+  "hive_engine_wallet": "Dompet Mesin HIVE"
 }

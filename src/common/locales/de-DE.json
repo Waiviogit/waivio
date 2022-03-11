@@ -1734,5 +1734,10 @@
   "hive_vote": "HIVE-Abstimmung",
   "waiv_token": "WAIV-Token",
   "waiv_vote": "WAIV-Abstimmung",
-  "Total": "Gesamt"
+  "Total": "Gesamt",
+  "liquid_waiv_tokens":"Flüssige WAIV-Token",
+  "staked_waiv_tokens":"Gestakte WAIV-Token",
+  "waiv_wallet": "WAIV-Brieftasche",
+  "hive_wallet": "HIVE-Brieftasche",
+  "hive_engine_wallet": "HIVE Engine-Geldbörse"
 }

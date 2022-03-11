@@ -1735,5 +1735,10 @@
   "hive_vote": "Boto sa HIVE",
   "waiv_token": "WAIV token",
   "waiv_vote": "WAIV boto",
-  "Total": "Kabuuan"
+  "Total": "Kabuuan",
+  "liquid_waiv_tokens":"Liquid WAIV token",
+  "staked_waiv_tokens":"Mga na-staked na WAIV token",
+  "waiv_wallet": "WAIV wallet",
+  "hive_wallet": "Wallet ng HIVE",
+  "hive_engine_wallet": "HIVE Engine wallet"
 }

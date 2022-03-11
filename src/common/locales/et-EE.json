@@ -1735,5 +1735,10 @@
   "hive_vote": "HIVE hääletus",
   "waiv_token": "WAIV-märk",
   "waiv_vote": "WAIV hääletus",
-  "Total": "Kokku"
+  "Total": "Kokku",
+  "liquid_waiv_tokens":"Vedelad WAIV-märgid",
+  "staked_waiv_tokens":"Panustatud WAIV märgid",
+  "waiv_wallet": "WAIV rahakott",
+  "hive_wallet": "HIVE rahakott",
+  "hive_engine_wallet": "HIVE Mootori rahakott"
 }

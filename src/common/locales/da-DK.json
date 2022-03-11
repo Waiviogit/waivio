@@ -1735,5 +1735,10 @@
     "hive_vote": "HIVE stemme",
     "waiv_token": "WAIV token",
     "waiv_vote": "WAIV stemme",
-    "Total": "Total"
+    "Total": "Total",
+    "liquid_waiv_tokens":"Flydende WAIV-tokens",
+    "staked_waiv_tokens":"Indsatte WAIV-tokens",
+    "waiv_wallet": "WAIV tegnebog",
+    "hive_wallet": "HIVE tegnebog",
+    "hive_engine_wallet": "HIVE Engine pung"
   }

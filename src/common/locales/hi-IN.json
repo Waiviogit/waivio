@@ -1734,5 +1734,10 @@
   "hive_vote": "HIVE वोट",
   "waiv_token": "WAIV टोकन",
   "waiv_vote": "WAIV वोट",
-  "Total": "संपूर्ण"
+  "Total": "संपूर्ण",
+  "liquid_waiv_tokens":"तरल WAIV टोकन",
+  "staked_waiv_tokens":"स्टैक्ड WAIV टोकन",
+  "waiv_wallet": "WAIV वॉलेट",
+  "hive_wallet": "HIVE वॉलेट",
+  "hive_engine_wallet": "HIVE इंजन वॉलेट"
 }

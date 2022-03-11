@@ -1736,5 +1736,10 @@
   "hive_vote": "HIVE stem",
   "waiv_token": "WAIV-teken",
   "waiv_vote": "WAIV stem",
-  "Total": "Totaal"
+  "Total": "Totaal",
+  "liquid_waiv_tokens":"Vloeibare WAIV-tokens",
+  "staked_waiv_tokens":"Uitgesette WAIV-tokens",
+  "waiv_wallet": "WAIV-beursie",
+  "hive_wallet": "HIVE-beursie",
+  "hive_engine_wallet": "HIVE Engine-beursie"
 }

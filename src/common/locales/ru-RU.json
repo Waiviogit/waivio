@@ -1804,5 +1804,10 @@
   "hive_vote": "HIVE голос",
   "waiv_token": "WAIV токен",
   "waiv_vote": "WAIV голос",
-  "Total": "Всего"
+  "Total": "Всего",
+  "liquid_waiv_tokens":"Ликвидные токены WAIV",
+  "staked_waiv_tokens":"Стейкнутые токены WAIV",
+  "waiv_wallet": "Кошелек WAIV",
+  "hive_wallet": "Кошелек HIVE",
+  "hive_engine_wallet": "Кошелек HIVE Engine"
 }

@@ -1735,5 +1735,10 @@
   "hive_vote": "تصويت HIVE",
   "waiv_token": "رمز WAIV المميز",
   "waiv_vote": "تصويت WAIV",
-  "Total": "المجموع"
+  "Total": "المجموع",
+  "liquid_waiv_tokens":"الرموز المميزة لـ Liquid WAIV",
+  "staked_waiv_tokens":"الرموز المميزة لـ WAIV المحصورة",
+  "waiv_wallet": "محفظة WAIV",
+  "hive_wallet": "محفظة HIVE",
+  "hive_engine_wallet": "محفظة محرك HIVE"
 }

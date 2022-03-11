@@ -1734,5 +1734,10 @@
   "hive_vote": "Voto HIVE",
   "waiv_token": "Token WAIV",
   "waiv_vote": "WAIV",
-  "Total": "Total"
+  "Total": "Total",
+  "liquid_waiv_tokens":"Tokens WAIV líquidos",
+  "staked_waiv_tokens":"Tokens WAIV apostados",
+  "waiv_wallet": "Сarteira WAIV",
+  "hive_wallet": "Сarteira HIVE",
+  "hive_engine_wallet": "Carteira HIVE Engine"
 }

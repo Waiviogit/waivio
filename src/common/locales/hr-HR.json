@@ -1735,5 +1735,10 @@
   "hive_vote": "HIVE glas",
   "waiv_token": "WAIV token",
   "waiv_vote": "WAIV glasovanje",
-  "Total": "Ukupno"
+  "Total": "Ukupno",
+  "liquid_waiv_tokens":"Tekući WAIV tokeni",
+  "staked_waiv_tokens":"Uloženi WAIV tokeni",
+  "waiv_wallet": "WAIV novčanik",
+  "hive_wallet": "HIVE novčanik",
+  "hive_engine_wallet": "HIVE Novčanik motora"
 }

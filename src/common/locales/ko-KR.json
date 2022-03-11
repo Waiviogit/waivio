@@ -1735,5 +1735,10 @@
   "hive_vote": "HIVE 투표",
   "waiv_token": "WAIV 토큰",
   "waiv_vote": "WAIV 투표",
-  "Total": "총"
+  "Total": "총",
+  "liquid_waiv_tokens":"유동적 WAIV 토큰",
+  "staked_waiv_tokens":"스테이킹된 WAIV 토큰",
+  "waiv_wallet": "WAIV 지갑",
+  "hive_wallet": "하이브 지갑",
+  "hive_engine_wallet": "HIVE 엔진 지갑"
 }

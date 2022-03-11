@@ -1735,5 +1735,10 @@
   "hive_vote": "Votació HIVE",
   "waiv_token": "Token WAIV",
   "waiv_vote": "Votació WAIV",
-  "Total": "Total"
+  "Total": "Total",
+  "liquid_waiv_tokens":"Fitxes WAIV líquides",
+  "staked_waiv_tokens":"Fitxes WAIV apostades",
+  "waiv_wallet": "Cartera WAIV",
+  "hive_wallet": "Cartera HIVE",
+  "hive_engine_wallet": "Cartera del motor HIVE"
 }

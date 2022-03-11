@@ -1736,5 +1736,10 @@
   "hive_vote": "HIVE szavazás",
   "waiv_token": "WAIV token",
   "waiv_vote": "WAIV szavazás",
-  "Total": "Teljes"
+  "Total": "Teljes",
+  "liquid_waiv_tokens":"Folyékony WAIV tokenek",
+  "staked_waiv_tokens":"Tétes WAIV tokenek",
+  "waiv_wallet": "WAIV pénztárca",
+  "hive_wallet": "HIVE pénztárca",
+  "hive_engine_wallet": "HIVE Engine pénztárca"
 }

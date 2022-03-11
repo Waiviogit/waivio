@@ -1734,5 +1734,10 @@
   "hive_vote": "Hlasování HIVE",
   "waiv_token": "WAIV token",
   "waiv_vote": "WAIV hlasování",
-  "Total": "Celkový"
+  "Total": "Celkový",
+  "liquid_waiv_tokens":"Liquid WAIV tokeny",
+  "staked_waiv_tokens":"Vsazené tokeny WAIV",
+  "waiv_wallet": "Peněženka WAIV",
+  "hive_wallet": "HIVE peněženka",
+  "hive_engine_wallet": "Peněženka HIVE Engine"
 }
