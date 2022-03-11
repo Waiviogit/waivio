@@ -1729,5 +1729,9 @@
   "disclaimer_language": "Les utilisateurs peuvent sélectionner une autre langue pour l'interface dans les paramètres utilisateur.",
   "disclaimer_campaign_currency": "Avertissement: les taux de change sont fournis par des tiers et peuvent ne pas être exacts.",
   "base_currency": "Devise de base",
-  "post_currency_info": "La devise de base est utilisée pour afficher les récompenses, la valeur des votes et publier les gains."
+  "post_currency_info": "La devise de base est utilisée pour afficher les récompenses, la valeur des votes et publier les gains.",
+  "hive_token": "Jeton HIVE",
+  "hive_vote": "Vote HIVE",
+  "waiv_token": "Jeton WAIV",
+  "waiv_vote": "Vote WAIV"
 }

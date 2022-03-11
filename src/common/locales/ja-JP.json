@@ -1730,5 +1730,9 @@
   "you_earn": "あなたが稼ぐ",
   "disclaimer_campaign_currency": "免責事項：為替レートはサードパーティによって提供されており、正確でない場合があります。",
   "base_currency": "基本通貨",
-  "post_currency_info": "基本通貨は、報酬、投票値、およびポスト収益を表示するために使用されます。"
+  "post_currency_info": "基本通貨は、報酬、投票値、およびポスト収益を表示するために使用されます。",
+  "hive_token": "HIVEトークン",
+  "hive_vote": "HIVE投票",
+  "waiv_token": "WAIVトークン",
+  "waiv_vote": "WAIV投票"
 }

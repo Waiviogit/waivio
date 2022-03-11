@@ -1729,5 +1729,9 @@
   "you_earn": "YOU EARN",
   "disclaimer_campaign_currency": "免责声明：汇率由第三方提供，可能不准确。",
   "base_currency": "基础货币",
-  "post_currency_info": "基础货币用于显示奖励、投票价值和后收入。"
+  "post_currency_info": "基础货币用于显示奖励、投票价值和后收入。",
+  "hive_token": "HIVE 令牌",
+  "hive_vote": "HIVE 投票",
+  "waiv_token": "WAIV 令牌",
+  "waiv_vote": "WAIV 投票"
 }

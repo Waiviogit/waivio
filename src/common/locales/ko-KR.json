@@ -1730,5 +1730,9 @@
   "you_earn": "당신이 벌었습니다",
   "disclaimer_campaign_currency": "면책 조항: 환율은 타사에서 제공하며 정확하지 않을 수 있습니다.",
   "base_currency": "기본 통화",
-  "post_currency_info": "기본 통화는 보상, 투표 가치 및 사후 수입을 표시하는 데 사용됩니다."
+  "post_currency_info": "기본 통화는 보상, 투표 가치 및 사후 수입을 표시하는 데 사용됩니다.",
+  "hive_token": "HIVE 토큰",
+  "hive_vote": "HIVE 투표",
+  "waiv_token": "WAIV 토큰",
+  "waiv_vote": "WAIV 투표"
 }

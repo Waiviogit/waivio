@@ -1730,5 +1730,9 @@
   "you_earn": "GUADAGNI",
   "disclaimer_campaign_currency": "Disclaimer: i tassi di cambio sono forniti da terze parti e potrebbero non essere accurati.",
   "base_currency": "Valuta di base",
-  "post_currency_info": "La valuta di base viene utilizzata per visualizzare i premi, il valore dei voti e i guadagni dei post."
+  "post_currency_info": "La valuta di base viene utilizzata per visualizzare i premi, il valore dei voti e i guadagni dei post.",
+  "hive_token": "Token HIVE",
+  "hive_vote": "Мoto HIVE",
+  "waiv_token": "Token WAIV",
+  "waiv_vote": "Voto WAIV"
 }

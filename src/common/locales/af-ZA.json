@@ -1731,5 +1731,9 @@
   "you_earn": "JY VERDIEN",
   "disclaimer_campaign_currency": "Disclaimer: Wisselkoerse word deur derde partye verskaf en is moontlik nie akkuraat nie.",
   "base_currency": "Basisvaluta",
-  "post_currency_info": "Basisvaluta word gebruik om belonings, stemwaarde en boekverdienste te vertoon."
+  "post_currency_info": "Basisvaluta word gebruik om belonings, stemwaarde en boekverdienste te vertoon.",
+  "hive_token": "HIVE-teken",
+  "hive_vote": "HIVE stem",
+  "waiv_token": "WAIV-teken",
+  "waiv_vote": "WAIV stem"
 }

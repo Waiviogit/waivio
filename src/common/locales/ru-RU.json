@@ -1799,5 +1799,9 @@
   "matchBot_confirm_changes": "Подтвердить изменения",
   "match_bots_author_delete_message": "Подтвердить изменения ",
   "match_bots_curator_delete_message": "Вы хотите удалить правило бота сопоставления куратора для ",
-  "match_bot_slider_description_mana_curator": "Голоса будут обрабатываться только в том случае, если VP на аккаунте больше указанного порога на момент голосования."
+  "match_bot_slider_description_mana_curator": "Голоса будут обрабатываться только в том случае, если VP на аккаунте больше указанного порога на момент голосования.",
+  "hive_token": "HIVE токен",
+  "hive_vote": "HIVE голос",
+  "waiv_token": "WAIV токен",
+  "waiv_vote": "WAIV голос"
 }

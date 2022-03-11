@@ -1728,5 +1728,9 @@
   "you_earn": "ANDA DAPAT",
   "disclaimer_campaign_currency": "Penafian: Kadar pertukaran disediakan oleh pihak ketiga dan mungkin tidak tepat.",
   "base_currency": "Mata wang asas",
-  "post_currency_info": "Mata wang asas digunakan untuk menunjukkan ganjaran, nilai suara dan penghasilan pos."
+  "post_currency_info": "Mata wang asas digunakan untuk menunjukkan ganjaran, nilai suara dan penghasilan pos.",
+  "hive_token": "Token HIVE",
+  "hive_vote": "Undi HIVE",
+  "waiv_token": "Token WAIV",
+  "waiv_vote": "Undi WAIV"
 }

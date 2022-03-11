@@ -1729,5 +1729,9 @@
   "you_earn": "DU VERDIENST",
   "disclaimer_campaign_currency": "Haftungsausschluss: Wechselkurse werden von Dritten bereitgestellt und sind möglicherweise nicht korrekt.",
   "base_currency": "Hauptwährung",
-  "post_currency_info": "Die Basiswährung wird für die Anzeige von Belohnungen, Stimmenwert und Beitragseinnahmen verwendet."
+  "post_currency_info": "Die Basiswährung wird für die Anzeige von Belohnungen, Stimmenwert und Beitragseinnahmen verwendet.",
+  "hive_token": "HIVE-Token",
+  "hive_vote": "HIVE-Abstimmung",
+  "waiv_token": "WAIV-Token",
+  "waiv_vote": "WAIV-Abstimmung"
 }

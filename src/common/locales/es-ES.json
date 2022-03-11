@@ -1730,5 +1730,9 @@
   "you_earn": "USTED GANA",
   "disclaimer_campaign_currency": "Descargo de responsabilidad: los tipos de cambio son proporcionados por terceros y pueden no ser precisos.",
   "base_currency": "Moneda base",
-  "post_currency_info": "La moneda base se utiliza para mostrar las recompensas, el valor de los votos y publicar las ganancias"
+  "post_currency_info": "La moneda base se utiliza para mostrar las recompensas, el valor de los votos y publicar las ganancias",
+  "hive_token": "Token HIVE ",
+  "hive_vote": "Voto de la HIVE",
+  "waiv_token": "Token WAIV",
+  "waiv_vote": "Voto de la WAIV"
 }

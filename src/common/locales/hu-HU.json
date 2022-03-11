@@ -1731,5 +1731,9 @@
   "you_earn": "KERESSE",
   "disclaimer_campaign_currency": "Jogi nyilatkozat: Az árfolyamokat harmadik felek adják meg, és előfordulhat, hogy nem pontosak.",
   "base_currency": "Alapvaluta",
-  "post_currency_info": "Az alap pénzneme a jutalmak, a szavazatok értékének és az utólagos bevételek megjelenítésére szolgál."
+  "post_currency_info": "Az alap pénzneme a jutalmak, a szavazatok értékének és az utólagos bevételek megjelenítésére szolgál.",
+  "hive_token": "HIVE token",
+  "hive_vote": "HIVE szavazás",
+  "waiv_token": "WAIV token",
+  "waiv_vote": "WAIV szavazás"
 }
