@@ -1733,5 +1733,6 @@
   "hive_token": "HIVE token",
   "hive_vote": "HIVE głosowanie",
   "waiv_token": "WAIV token",
-  "waiv_vote": "WAIV głosowanie"
+  "waiv_vote": "WAIV głosowanie",
+  "Total": "Całkowity"
 }

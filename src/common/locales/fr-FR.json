@@ -1733,5 +1733,6 @@
   "hive_token": "Jeton HIVE",
   "hive_vote": "Vote HIVE",
   "waiv_token": "Jeton WAIV",
-  "waiv_vote": "Vote WAIV"
+  "waiv_vote": "Vote WAIV",
+  "Total": "Total"
 }

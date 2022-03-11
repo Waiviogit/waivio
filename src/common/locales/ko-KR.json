@@ -1734,5 +1734,6 @@
   "hive_token": "HIVE 토큰",
   "hive_vote": "HIVE 투표",
   "waiv_token": "WAIV 토큰",
-  "waiv_vote": "WAIV 투표"
+  "waiv_vote": "WAIV 투표",
+  "Total": "총"
 }

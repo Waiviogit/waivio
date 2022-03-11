@@ -1733,5 +1733,6 @@
   "hive_token": "Token HIVE",
   "hive_vote": "Suara HIVE",
   "waiv_token": "Token WAIV",
-  "waiv_vote": "Suara WAIV"
+  "waiv_vote": "Suara WAIV",
+  "Total": "Jumlah"
 }

@@ -1734,5 +1734,6 @@
   "hive_token": "رمز HIVE المميز",
   "hive_vote": "تصويت HIVE",
   "waiv_token": "رمز WAIV المميز",
-  "waiv_vote": "تصويت WAIV"
+  "waiv_vote": "تصويت WAIV",
+  "Total": "المجموع"
 }

@@ -1733,5 +1733,6 @@
   "hive_token": "HIVE 令牌",
   "hive_vote": "HIVE 投票",
   "waiv_token": "WAIV 令牌",
-  "waiv_vote": "WAIV 投票"
+  "waiv_vote": "WAIV 投票",
+  "Total": "全部的"
 }

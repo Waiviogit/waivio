@@ -1734,5 +1734,6 @@
   "hive_token": "Token HIVE",
   "hive_vote": "Мoto HIVE",
   "waiv_token": "Token WAIV",
-  "waiv_vote": "Voto WAIV"
+  "waiv_vote": "Voto WAIV",
+  "Total": "Totale"
 }

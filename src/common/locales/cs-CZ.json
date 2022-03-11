@@ -1733,5 +1733,6 @@
   "hive_token": "HIVE token",
   "hive_vote": "Hlasování HIVE",
   "waiv_token": "WAIV token",
-  "waiv_vote": "WAIV hlasování"
+  "waiv_vote": "WAIV hlasování",
+  "Total": "Celkový"
 }

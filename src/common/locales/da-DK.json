@@ -1734,5 +1734,6 @@
     "hive_token": "HIVE token",
     "hive_vote": "HIVE stemme",
     "waiv_token": "WAIV token",
-    "waiv_vote": "WAIV stemme"
+    "waiv_vote": "WAIV stemme",
+    "Total": "Total"
   }

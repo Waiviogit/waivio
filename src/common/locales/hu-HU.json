@@ -1735,5 +1735,6 @@
   "hive_token": "HIVE token",
   "hive_vote": "HIVE szavazás",
   "waiv_token": "WAIV token",
-  "waiv_vote": "WAIV szavazás"
+  "waiv_vote": "WAIV szavazás",
+  "Total": "Teljes"
 }

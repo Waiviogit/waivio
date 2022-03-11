@@ -1734,5 +1734,6 @@
   "hive_token": "Token ng HIVE",
   "hive_vote": "Boto sa HIVE",
   "waiv_token": "WAIV token",
-  "waiv_vote": "WAIV boto"
+  "waiv_vote": "WAIV boto",
+  "Total": "Kabuuan"
 }

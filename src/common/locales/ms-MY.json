@@ -1732,5 +1732,6 @@
   "hive_token": "Token HIVE",
   "hive_vote": "Undi HIVE",
   "waiv_token": "Token WAIV",
-  "waiv_vote": "Undi WAIV"
+  "waiv_vote": "Undi WAIV",
+  "Total": "Jumlah"
 }

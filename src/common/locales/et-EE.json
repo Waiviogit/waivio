@@ -1734,5 +1734,6 @@
   "hive_token": "HIVE märk",
   "hive_vote": "HIVE hääletus",
   "waiv_token": "WAIV-märk",
-  "waiv_vote": "WAIV hääletus"
+  "waiv_vote": "WAIV hääletus",
+  "Total": "Kokku"
 }

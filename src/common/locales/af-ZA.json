@@ -1735,5 +1735,6 @@
   "hive_token": "HIVE-teken",
   "hive_vote": "HIVE stem",
   "waiv_token": "WAIV-teken",
-  "waiv_vote": "WAIV stem"
+  "waiv_vote": "WAIV stem",
+  "Total": "Totaal"
 }

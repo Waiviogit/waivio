@@ -1734,5 +1734,6 @@
   "hive_token": "Fitxa HIVE",
   "hive_vote": "Votació HIVE",
   "waiv_token": "Token WAIV",
-  "waiv_vote": "Votació WAIV"
+  "waiv_vote": "Votació WAIV",
+  "Total": "Total"
 }

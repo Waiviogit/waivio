@@ -1734,5 +1734,6 @@
   "hive_token": "HIVEトークン",
   "hive_vote": "HIVE投票",
   "waiv_token": "WAIVトークン",
-  "waiv_vote": "WAIV投票"
+  "waiv_vote": "WAIV投票",
+  "Total": "合計"
 }

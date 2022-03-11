@@ -1734,5 +1734,6 @@
   "hive_token": "HIVE token",
   "hive_vote": "HIVE glas",
   "waiv_token": "WAIV token",
-  "waiv_vote": "WAIV glasovanje"
+  "waiv_vote": "WAIV glasovanje",
+  "Total": "Ukupno"
 }
