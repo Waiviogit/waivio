@@ -1810,6 +1810,6 @@
   "instant_mobile_notifications_open": "Open the Telegram chart with ",
   "instant_mobile_notifications_hive": " and enter the Hive usernames to subscribe.",
   "sign_in_error_not_cookies": "You need to disable blocking cookies in incognito mode, in your browser settings",
-  "power_up_from":"Power up from",
-  "power_up_to":"Power up to"
+  "power_up_from":"Power up from {from}",
+  "power_up_to":"Power up to {to}"
 }

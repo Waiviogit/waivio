@@ -42,7 +42,7 @@ export const getTransactionDescription = (type, options) => {
         powerUpTransactionFrom: (
           <FormattedMessage
             id="power_up_from"
-            defaultMessage="Power up from"
+            defaultMessage="Power up from {from}"
             values={{
               from: (
                 <Link to={`/@${from}`}>
@@ -55,7 +55,7 @@ export const getTransactionDescription = (type, options) => {
         powerUpTransactionTo: (
           <FormattedMessage
             id="power_up_to"
-            defaultMessage="Power up to"
+            defaultMessage="Power up to {to}"
             values={{
               to: (
                 <Link to={`/@${to}`}>
