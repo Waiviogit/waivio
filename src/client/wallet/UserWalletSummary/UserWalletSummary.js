@@ -224,7 +224,7 @@ const UserWalletSummary = ({
             </div>
             <div className="UserWalletSummary__actions">
               <p className="UserWalletSummary__description">Staked HIVE tokens</p>
-              <WalletAction mainKey={'power_down'} />
+              <WalletAction mainCurrency={'HP'} mainKey={'power_down'} options={['delegate']} />
             </div>
           </div>
           <div className="UserWalletSummary__itemWrap">

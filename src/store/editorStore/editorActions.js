@@ -330,12 +330,12 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
       author,
       title,
       body,
-      jsonMetadata,
       reward,
       beneficiary,
       upvote,
       draftId,
       isUpdating,
+      jsonMetadata,
     } = postData;
 
     const state = getState();
@@ -384,7 +384,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     dispatch({
       type: CREATE_POST_START,
     });
-    const reservationPermlink = get(campaign, 'reservation_permlink');
+    const reservationPermlink = get(jsonMetadata, 'reservation_permlink');
 
     getPermLink.then(permlink =>
       broadcastComment(
@@ -538,7 +538,6 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     originalBody,
     linkedObjects,
     topics,
-    campaign,
     content,
     isUpdating,
     settings,
@@ -546,6 +545,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     title,
     permlink,
     parentPermlink,
+    jsonMetadata,
     objPercentage,
   } = { ...getEditor(state), ...data };
   const currentObject = get(linkedObjects, '[0]', {});
@@ -556,7 +556,8 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     updatedEditor = { ...updatedEditor, topics: uniqWith([...topics, objName], isEqual) };
   }
   dispatch(setUpdatedEditorData(updatedEditor));
-  const campaignId = get(campaign, '_id', null);
+  const campaignId = get(jsonMetadata, 'campaignId', null);
+  const reservationPermlink = get(jsonMetadata, 'reservation_permlink', null);
   const postData = {
     body: content || body || originalBody,
     lastUpdated: Date.now(),
@@ -594,6 +595,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     waivioData,
     campaignId,
     host,
+    reservationPermlink,
   );
   if (originalBody) {
     postData.originalBody = originalBody;

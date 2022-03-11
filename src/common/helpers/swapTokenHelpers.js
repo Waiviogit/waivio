@@ -35,12 +35,12 @@ const createJSON = ({ tokenPair, minAmountOut, tokenSymbol, tokenAmount }) =>
     },
   });
 
-export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params }) => {
+export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params, precision }) => {
   if (!pool) return {};
   let liquidityIn;
   let liquidityOut;
 
-  const { baseQuantity, quoteQuantity, tokenPair, precision } = pool;
+  const { baseQuantity, quoteQuantity, tokenPair } = pool;
   const [baseSymbol, quoteSymbol] = tokenPair.split(':');
   const isBase = symbol === baseSymbol;
 
@@ -101,9 +101,8 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params }
   const minAmountOut = from
     ? amountOut.minus(slippageAmount)
     : BigNumber(amountIn).minus(slippageAmount);
-
-  const amountOutToFixed = amountOut.toFixed(precision, BigNumber.ROUND_DOWN);
-  const minAmountOutToFixed = minAmountOut.minus(fee).toFixed(precision, BigNumber.ROUND_DOWN);
+  const amountOutToFixed = amountOut.toFixed(precision, BigNumber.ROUND_UP);
+  const minAmountOutToFixed = minAmountOut.minus(fee).toFixed(precision, BigNumber.ROUND_UP);
 
   const json = createJSON({
     minAmountOut: minAmountOutToFixed,

@@ -157,7 +157,7 @@
   "profile_social_profiles": "Social profiles",
   "profile_social_profile_incorrect": "This doesn't seem to be valid username. Only alphanumeric characters, hyphens, underscores and dots are allowed.",
   "profile_signature": "Signature",
-  "changes_take_effect_later" : "Changes will take effect later",
+  "changes_take_effect_later": "Changes will take effect later",
   "reply": "Reply",
   "edit": "Edit",
   "view": "View",
@@ -1809,7 +1809,5 @@
   "instant_mobile_notifications": "Instant mobile notifications:",
   "instant_mobile_notifications_open": "Open the Telegram chart with ",
   "instant_mobile_notifications_hive": " and enter the Hive usernames to subscribe.",
-  "sign_in_error_not_cookies": "You need to disable blocking cookies in incognito mode, in your browser settings",
-  "power_up_from":"Power up from {from}",
-  "power_up_to":"Power up to {to}"
+  "sign_in_error_not_cookies": "You need to disable blocking cookies in incognito mode, in your browser settings"
 }

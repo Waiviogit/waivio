@@ -82,6 +82,13 @@ export const getTotalVestingFundSteem = createSelector(
   state => state.totalVestingFundSteem,
 );
 
+export const getDelegationModalType = createSelector(
+  [walletState],
+  state => state.delegationModalType,
+);
+
+export const getDelegationToken = createSelector([walletState], state => state.delegationToken);
+
 export const getDelegationModalVisible = createSelector(
   [walletState],
   state => state.delegateVisible,

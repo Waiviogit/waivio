@@ -100,7 +100,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
     case 'market_placeOrder':
       return (
         <MarketBuyCard
-          quantity={transaction.price}
+          quantity={transaction.price || transaction.quantityLocked}
           timestamp={transaction.timestamp}
           orderType={transaction.orderType}
           symbol={transaction.symbol}

@@ -8,7 +8,9 @@ import './CurrencyInfo.less';
 
 const WAIVtokenInfo = ({ votingPower, downVotingPower, votePrice }) => (
   <div className="CurrencyInfo">
-    <h4>WAIV token</h4>
+    <h4>
+      <FormattedMessage id="waiv_token" defaultMessage="WAIV token" />
+    </h4>
     <div>
       <i className="iconfont icon-praise text-icon" />
       <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
@@ -21,7 +23,8 @@ const WAIVtokenInfo = ({ votingPower, downVotingPower, votePrice }) => (
     </div>
     <div>
       <i className="iconfont icon-dollar text-icon" />
-      WAIV vote: <USDDisplay value={votePrice} />
+      <FormattedMessage id="waiv_vote" defaultMessage="WAIV vote" />:{' '}
+      <USDDisplay value={votePrice} />
     </div>
   </div>
 );

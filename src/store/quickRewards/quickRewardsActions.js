@@ -161,6 +161,7 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
       null,
       campaignId,
       host,
+      reservationPermlink,
     ),
   };
 

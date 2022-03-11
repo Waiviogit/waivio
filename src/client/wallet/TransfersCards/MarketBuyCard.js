@@ -1,17 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import TransactionCardContainer from './TransactionCardContainer';
 
-const MarketBuyCard = ({ timestamp, quantity, orderType, symbol }) => (
-  <TransactionCardContainer
-    timestamp={timestamp}
-    quantity={quantity}
-    symbol={`per ${symbol}`}
-    iconType={'tag'}
-  >
-    <div>Limit order to {orderType}</div>
-  </TransactionCardContainer>
-);
+const MarketBuyCard = ({ timestamp, quantity, orderType, symbol }) => {
+  const isLimitOrder = orderType === 'sell' || orderType === 'buy';
+
+  return (
+    <div>
+      <TransactionCardContainer
+        timestamp={timestamp}
+        quantity={quantity}
+        symbol={isLimitOrder ? `per ${symbol}` : symbol}
+        iconType={'tag'}
+      >
+        <div>
+          <FormattedMessage id={isLimitOrder ? `limit_order_to_${orderType}` : orderType} />
+        </div>
+      </TransactionCardContainer>
+    </div>
+  );
+};
 
 MarketBuyCard.propTypes = {
   timestamp: PropTypes.number.isRequired,
