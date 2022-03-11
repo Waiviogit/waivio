@@ -10,7 +10,6 @@ import { getTransferDetails } from '../../../waivioApi/ApiClient';
 import { handleLoadMoreTransactions } from '../WalletHelper';
 import BlocktraidsTransactionModal from '../BlocktraidsTransactionModal';
 import './UserWalletTransactions.less';
-import './UserWalletTransactions-nightmode.less';
 
 @injectIntl
 class UserWalletTransactions extends React.Component {
