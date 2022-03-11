@@ -1740,5 +1740,9 @@
   "staked_waiv_tokens":"스테이킹된 WAIV 토큰",
   "waiv_wallet": "WAIV 지갑",
   "hive_wallet": "하이브 지갑",
-  "hive_engine_wallet": "HIVE 엔진 지갑"
+  "hive_engine_wallet": "HIVE 엔진 지갑",
+  "Deposit": "보증금",
+  "Withdraw": "철회하다",
+  "swap_tokens": "스왑 토큰",
+  "manage_delegations": "위임 관리"
 }

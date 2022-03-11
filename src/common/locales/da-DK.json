@@ -1740,5 +1740,9 @@
     "staked_waiv_tokens":"Indsatte WAIV-tokens",
     "waiv_wallet": "WAIV tegnebog",
     "hive_wallet": "HIVE tegnebog",
-    "hive_engine_wallet": "HIVE Engine pung"
+    "hive_engine_wallet": "HIVE Engine pung",
+    "Deposit": "Depositum",
+    "Withdraw": "Træk tilbage",
+    "swap_tokens": "Byt tokens",
+    "manage_delegations": "Administrer delegationer"
   }

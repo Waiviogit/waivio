@@ -1741,5 +1741,9 @@
   "staked_waiv_tokens":"Uitgesette WAIV-tokens",
   "waiv_wallet": "WAIV-beursie",
   "hive_wallet": "HIVE-beursie",
-  "hive_engine_wallet": "HIVE Engine-beursie"
+  "hive_engine_wallet": "HIVE Engine-beursie",
+  "Deposit": "Deposito",
+  "Withdraw": "Onttrek",
+  "swap_tokens": "Ruil tekens",
+  "manage_delegations": "Bestuur afvaardigings"
 }

@@ -1740,5 +1740,9 @@
   "staked_waiv_tokens":"Mga na-staked na WAIV token",
   "waiv_wallet": "WAIV wallet",
   "hive_wallet": "Wallet ng HIVE",
-  "hive_engine_wallet": "HIVE Engine wallet"
+  "hive_engine_wallet": "HIVE Engine wallet",
+  "Deposit": "Deposito",
+  "Withdraw": "Mag-withdraw",
+  "swap_tokens": "Magpalit ng mga token",
+  "manage_delegations": "Pamahalaan ang mga delegasyon"
 }

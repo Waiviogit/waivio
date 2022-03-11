@@ -1740,5 +1740,9 @@
   "staked_waiv_tokens":"Panustatud WAIV märgid",
   "waiv_wallet": "WAIV rahakott",
   "hive_wallet": "HIVE rahakott",
-  "hive_engine_wallet": "HIVE Mootori rahakott"
+  "hive_engine_wallet": "HIVE Mootori rahakott",
+  "Deposit": "Deposiit",
+  "Withdraw": "Tõmba tagasi",
+  "swap_tokens": "Vahetage märgid",
+  "manage_delegations": "Delegatsioonide haldamine"
 }

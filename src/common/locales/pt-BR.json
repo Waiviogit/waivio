@@ -1739,5 +1739,9 @@
   "staked_waiv_tokens":"Tokens WAIV apostados",
   "waiv_wallet": "Сarteira WAIV",
   "hive_wallet": "Сarteira HIVE",
-  "hive_engine_wallet": "Carteira HIVE Engine"
+  "hive_engine_wallet": "Carteira HIVE Engine",
+  "Deposit": "Depósito",
+  "Withdraw": "Retirar",
+  "swap_tokens": "Trocar fichas",
+  "manage_delegations": "Gerenciar delegações"
 }

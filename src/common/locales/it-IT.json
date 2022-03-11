@@ -1740,5 +1740,9 @@
   "staked_waiv_tokens":"Token WAIV puntati",
   "waiv_wallet": "Portafoglio WAIV",
   "hive_wallet": "Portafoglio HIVE",
-  "hive_engine_wallet": "Portafoglio HIVE Engine"
+  "hive_engine_wallet": "Portafoglio HIVE Engine",
+  "Deposit": "Depositare",
+  "Withdraw": "Ritirare",
+  "swap_tokens": "Scambia i token",
+  "manage_delegations": "Gestisci le deleghe"
 }

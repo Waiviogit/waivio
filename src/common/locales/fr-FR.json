@@ -1739,5 +1739,9 @@
   "staked_waiv_tokens":"Jetons WAIV jalonnés",
   "waiv_wallet": "Portefeuille WAIV",
   "hive_wallet": "Portefeuille HIVE",
-  "hive_engine_wallet": "Portefeuille moteur HIVE"
+  "hive_engine_wallet": "Portefeuille moteur HIVE",
+  "Deposit": "Verser",
+  "Withdraw": "Retirer",
+  "swap_tokens": "Échanger des jetons",
+  "manage_delegations": "Gérer les délégations"
 }

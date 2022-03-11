@@ -1740,5 +1740,9 @@
   "staked_waiv_tokens":"Uloženi WAIV tokeni",
   "waiv_wallet": "WAIV novčanik",
   "hive_wallet": "HIVE novčanik",
-  "hive_engine_wallet": "HIVE Novčanik motora"
+  "hive_engine_wallet": "HIVE Novčanik motora",
+  "Deposit": "Polog",
+  "Withdraw": "Povući",
+  "swap_tokens": "Zamijenite tokene",
+  "manage_delegations": "Upravljajte delegacijama"
 }
