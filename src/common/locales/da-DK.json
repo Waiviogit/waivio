@@ -1357,6 +1357,7 @@
     "menu_rewards": "Belønninger",
     "menu_discover": "Opdage",
     "menu_tools": "Værktøjer",
+    "menu_drafts": "Udkast",
     "signing": "Logger ind",
     "alphabet": "A..Z",
     "page": "Side",
@@ -1729,5 +1730,15 @@
     "you_earn": "DU TJENER",
     "disclaimer_campaign_currency": "Ansvarsfraskrivelse: Valutakurser leveres af tredjeparter og er muligvis ikke korrekte.",
     "base_currency": "Basisvaluta",
-    "post_currency_info": "Basisvaluta bruges til at vise belønninger, stemmeværdi og indtjening."
+    "post_currency_info": "Basisvaluta bruges til at vise belønninger, stemmeværdi og indtjening.",
+    "hive_token": "HIVE token",
+    "hive_vote": "HIVE stemme",
+    "waiv_token": "WAIV token",
+    "waiv_vote": "WAIV stemme",
+    "Total": "Total",
+    "liquid_waiv_tokens":"Flydende WAIV-tokens",
+    "staked_waiv_tokens":"Indsatte WAIV-tokens",
+    "waiv_wallet": "WAIV tegnebog",
+    "hive_wallet": "HIVE tegnebog",
+    "hive_engine_wallet": "HIVE Engine pung"
   }

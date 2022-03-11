@@ -1357,6 +1357,7 @@
   "menu_rewards": "Belønninger",
   "menu_discover": "Opdage",
   "menu_tools": "Værktøjer",
+  "menu_drafts": "Mustandid",
   "signing": "Logger ind",
   "alphabet": "A..Z",
   "page": "Side",
@@ -1729,5 +1730,15 @@
   "you_earn": "TE TULETATE",
   "disclaimer_campaign_currency": "Vastutusest loobumine: vahetuskursid pakuvad kolmandad osapooled ja need ei pruugi olla täpsed.",
   "base_currency": "Baasvaluuta",
-  "post_currency_info": "Baasvaluutat kasutatakse preemiate, hääle väärtuse ja postitulu kuvamiseks."
+  "post_currency_info": "Baasvaluutat kasutatakse preemiate, hääle väärtuse ja postitulu kuvamiseks.",
+  "hive_token": "HIVE märk",
+  "hive_vote": "HIVE hääletus",
+  "waiv_token": "WAIV-märk",
+  "waiv_vote": "WAIV hääletus",
+  "Total": "Kokku",
+  "liquid_waiv_tokens":"Vedelad WAIV-märgid",
+  "staked_waiv_tokens":"Panustatud WAIV märgid",
+  "waiv_wallet": "WAIV rahakott",
+  "hive_wallet": "HIVE rahakott",
+  "hive_engine_wallet": "HIVE Mootori rahakott"
 }
