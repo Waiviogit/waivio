@@ -1357,6 +1357,7 @@
   "menu_rewards": "المكافآت",
   "menu_discover": "يكتشف",
   "menu_tools": "أدوات",
+  "menu_drafts": "ड्राफ्ट",
   "signing": "تسجيل الدخول",
   "alphabet": "أ .. ض",
   "page": "صفحة",
@@ -1729,5 +1730,15 @@
   "you_earn": "أنت تكسب",
   "disclaimer_campaign_currency": "إخلاء المسؤولية: يتم توفير أسعار الصرف من قبل أطراف ثالثة وقد لا تكون دقيقة.",
   "base_currency": "العملة الأساسية",
-  "post_currency_info": "تُستخدم العملة الأساسية لعرض المكافآت وقيمة التصويت وأرباح النشر."
+  "post_currency_info": "تُستخدم العملة الأساسية لعرض المكافآت وقيمة التصويت وأرباح النشر.",
+  "hive_token": "رمز HIVE المميز",
+  "hive_vote": "تصويت HIVE",
+  "waiv_token": "رمز WAIV المميز",
+  "waiv_vote": "تصويت WAIV",
+  "Total": "المجموع",
+  "liquid_waiv_tokens":"الرموز المميزة لـ Liquid WAIV",
+  "staked_waiv_tokens":"الرموز المميزة لـ WAIV المحصورة",
+  "waiv_wallet": "محفظة WAIV",
+  "hive_wallet": "محفظة HIVE",
+  "hive_engine_wallet": "محفظة محرك HIVE"
 }

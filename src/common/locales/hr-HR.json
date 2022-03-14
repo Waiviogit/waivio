@@ -1357,6 +1357,7 @@
   "menu_rewards": "Nagrade",
   "menu_discover": "Otkriti",
   "menu_tools": "Alati",
+  "menu_drafts": "Nacrti",
   "signing": "Prijavljivanje",
   "alphabet": "A..Z",
   "page": "Stranica",
@@ -1729,5 +1730,15 @@
   "you_earn": "ZARADITE",
   "disclaimer_campaign_currency": "Izjava o odricanju odgovornosti: Tečajeve daju treće strane i oni možda nisu točni.",
   "base_currency": "Osnovna valuta",
-  "post_currency_info": "Osnovna valuta koristi se za prikaz nagrada, vrijednosti glasova i zarade nakon objavljivanja."
+  "post_currency_info": "Osnovna valuta koristi se za prikaz nagrada, vrijednosti glasova i zarade nakon objavljivanja.",
+  "hive_token": "HIVE token",
+  "hive_vote": "HIVE glas",
+  "waiv_token": "WAIV token",
+  "waiv_vote": "WAIV glasovanje",
+  "Total": "Ukupno",
+  "liquid_waiv_tokens":"Tekući WAIV tokeni",
+  "staked_waiv_tokens":"Uloženi WAIV tokeni",
+  "waiv_wallet": "WAIV novčanik",
+  "hive_wallet": "HIVE novčanik",
+  "hive_engine_wallet": "HIVE Novčanik motora"
 }
