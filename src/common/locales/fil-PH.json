@@ -1754,5 +1754,14 @@
   "estimated_price_impact": "Tinantyang epekto sa presyo",
   "max_price_impact": "Max na epekto sa presyo",
   "swaptokens_info": "Ang malalaking transaksyon ay maaaring magkaroon ng epekto sa halaga ng palitan. Kung mas malaki ang epektong ito kaysa sa itinakdang halaga, kakanselahin ang transaksyon.",
-  "SwapTokens__hiveEngineInfo": "I-click ang button sa ibaba upang mai-redirect sa HiveSinger upang makumpleto ang iyong transaksyon."
+  "SwapTokens__hiveEngineInfo": "I-click ang button sa ibaba upang mai-redirect sa HiveSinger upang makumpleto ang iyong transaksyon.",
+  "all_crypto_deposits_are_processed_by": "Ang lahat ng crypto deposits ay pinoproseso ng",
+  "deposit_info": "Kapag nagawa na ang deposito, makakatanggap ka ng katumbas na halaga ng bersyon ng SWAP ng nadepositong token, na maaaring ipagpalit sa iba pang mga token sa blockchain ng Hive-Engine.",
+  "fee_on_deposits": "Mayroong 0.75% na bayad sa mga deposito (minimum na bayad 0.001 para sa HIVE).",
+  "pay_standard_network_fees": "Pakitandaan na kailangan mo ring magbayad ng mga karaniwang bayarin sa network kapag nagpapadala ng cryptos.",
+  "select_the_crypto_token_to_deposit": "Piliin ang crypto token na idedeposito",
+  "select_the_crypto_token": "Piliin ang crypto token",
+  "follow_the_deposit_instructions": "Sundin ang mga tagubilin sa deposito",
+  "select_the_crypto_token_first": "Pakipili muna ang crypto token.",
+  "done": "Tapos na"
 }

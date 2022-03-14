@@ -1753,5 +1753,14 @@
   "estimated_price_impact": "估计价格影响",
   "max_price_impact": "最大价格影响",
   "swaptokens_info": "大宗交易可能会对汇率产生影响。 如果这个影响大于设定值，交易将被取消。",
-  "SwapTokens__hiveEngineInfo": "单击下面的按钮以重定向到 HiveSinger 以完成您的交易。"
+  "SwapTokens__hiveEngineInfo": "单击下面的按钮以重定向到 HiveSinger 以完成您的交易。",
+  "all_crypto_deposits_are_processed_by": "所有加密货币存款均由",
+  "deposit_info": "存款完成后，您将收到等量的 SWAP 版本的存款代币，可以在 Hive-Engine 区块链上兑换其他代币。",
+  "fee_on_deposits": "存款收取 0.75% 的费用（HIVE 的最低费用为 0.001）。",
+  "pay_standard_network_fees": "请注意，您在发送加密货币时还必须支付标准网络费用。",
+  "select_the_crypto_token_to_deposit": "选择要存入的加密代币",
+  "select_the_crypto_token": "选择加密令牌",
+  "follow_the_deposit_instructions": "按照存款说明",
+  "select_the_crypto_token_first": "请先选择加密令牌。",
+  "done": "完毕"
 }

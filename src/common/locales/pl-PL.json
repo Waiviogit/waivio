@@ -1753,5 +1753,14 @@
   "estimated_price_impact": "Szacowany wpływ na cenę",
   "max_price_impact": "Maksymalny wpływ na cenę",
   "swaptokens_info": "Duże transakcje mogą mieć wpływ na kurs walutowy. Jeśli ten wpływ jest większy niż ustawiona wartość, transakcja zostanie anulowana.",
-  "SwapTokens__hiveEngineInfo": "Kliknij przycisk poniżej, aby zostać przekierowanym do HiveSinger i dokończyć transakcję."
+  "SwapTokens__hiveEngineInfo": "Kliknij przycisk poniżej, aby zostać przekierowanym do HiveSinger i dokończyć transakcję.",
+  "all_crypto_deposits_are_processed_by": "Wszystkie depozyty kryptograficzne są przetwarzane przez",
+  "deposit_info": "Po dokonaniu wpłaty otrzymasz równą ilość wersji SWAP wpłaconego tokena, którą możesz wymienić na inne tokeny w blockchainie Hive-Engine.",
+  "fee_on_deposits": "Od depozytów pobierana jest opłata w wysokości 0,75% (minimalna opłata 0,001 dla HIVE).",
+  "pay_standard_network_fees": "Pamiętaj, że będziesz musiał również zapłacić standardowe opłaty sieciowe podczas wysyłania kryptowalut.",
+  "select_the_crypto_token_to_deposit": "Wybierz token kryptograficzny do wpłaty",
+  "select_the_crypto_token": "Wybierz token krypto",
+  "follow_the_deposit_instructions": "Postępuj zgodnie z instrukcjami wpłaty",
+  "select_the_crypto_token_first": "Najpierw wybierz token kryptograficzny.",
+  "done": "Gotowy"
 }

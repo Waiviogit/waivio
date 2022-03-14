@@ -1754,5 +1754,14 @@
   "estimated_price_impact": "Impacte en el preu estimat",
   "max_price_impact": "Màxim impacte en el preu",
   "swaptokens_info": "Les grans transaccions poden tenir un impacte en el tipus de canvi. Si aquest impacte és superior al valor establert, la transacció es cancel·larà.",
-  "SwapTokens__hiveEngineInfo": "Feu clic al botó següent per ser redirigit a HiveSinger per completar la vostra transacció."
+  "SwapTokens__hiveEngineInfo": "Feu clic al botó següent per ser redirigit a HiveSinger per completar la vostra transacció.",
+  "all_crypto_deposits_are_processed_by": "Tots els dipòsits criptogràfics són processats per",
+  "deposit_info": "Un cop fet el dipòsit, rebràs una quantitat igual de la versió SWAP del testimoni dipositat, que es pot canviar per altres fitxes a la cadena de blocs Hive-Engine.",
+  "fee_on_deposits": "Hi ha una comissió del 0,75% als dipòsits (comissió mínima de 0,001 per a HIVE).",
+  "pay_standard_network_fees": "Tingueu en compte que també haureu de pagar tarifes de xarxa estàndard quan envieu criptos.",
+  "select_the_crypto_token_to_deposit": "Seleccioneu el testimoni criptogràfic per dipositar",
+  "select_the_crypto_token":"Seleccioneu el testimoni criptogràfic",
+  "follow_the_deposit_instructions": "Seguiu les instruccions de dipòsit",
+  "select_the_crypto_token_first": "Seleccioneu primer el testimoni criptogràfic.",
+  "done": "Fet"
 }

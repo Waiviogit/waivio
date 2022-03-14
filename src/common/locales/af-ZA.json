@@ -1755,5 +1755,14 @@
   "estimated_price_impact": "Geskatte prys impak",
   "max_price_impact": "Maksimum prys impak",
   "swaptokens_info": "Groot transaksies kan 'n impak op die wisselkoers hê. As hierdie impak groter is as die vasgestelde waarde, sal die transaksie gekanselleer word.",
-  "SwapTokens__hiveEngineInfo": "Klik op die knoppie hieronder om na HiveSinger herlei te word om jou transaksie te voltooi."
+  "SwapTokens__hiveEngineInfo": "Klik op die knoppie hieronder om na HiveSinger herlei te word om jou transaksie te voltooi.",
+  "all_crypto_deposits_are_processed_by": "Alle kripto-deposito's word verwerk deur",
+  "deposit_info": "Sodra die deposito gemaak is, sal jy 'n gelyke hoeveelheid van die SWAP-weergawe van die gedeponeerde token ontvang, wat vir ander tokens op die Hive-Engine-blokketting verruil kan word.",
+  "fee_on_deposits": "Daar is 'n 0,75% fooi op deposito's (minimum fooi 0,001 vir HIVE).",
+  "pay_standard_network_fees": "Neem asseblief kennis dat u ook standaard netwerkfooie sal moet betaal wanneer u kripto's stuur.",
+  "select_the_crypto_token_to_deposit": "Kies die kripto-token om te deponeer",
+  "select_the_crypto_token":"Kies die kripto-token",
+  "follow_the_deposit_instructions": "Volg die deposito-instruksies",
+  "select_the_crypto_token_first": "Kies asseblief eers die kripto-token.",
+  "done": "Klaar"
 }

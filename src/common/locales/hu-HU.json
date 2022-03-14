@@ -1755,5 +1755,14 @@
   "estimated_price_impact": "Becsült árhatás",
   "max_price_impact": "Max árhatás",
   "swaptokens_info": "A nagy tranzakciók hatással lehetnek az árfolyamra. Ha ez a hatás nagyobb, mint a beállított érték, a tranzakció törlésre kerül.",
-  "SwapTokens__hiveEngineInfo": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez."
+  "SwapTokens__hiveEngineInfo": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez.",
+  "all_crypto_deposits_are_processed_by": "Az összes kriptobetétet a",
+  "deposit_info": "Miután a befizetés megtörtént, a befizetett token SWAP változatának azonos mennyiségét kapja meg, amelyet a Hive-Engine blokkláncon lévő más tokenekre cserélhet.",
+  "fee_on_deposits": "A betétek után 0,75% díjat számítanak fel (HIVE esetén a minimális díj 0,001).",
+  "pay_standard_network_fees": "Felhívjuk figyelmét, hogy a kriptográfiai adatok küldésekor normál hálózati díjat is kell fizetnie.",
+  "select_the_crypto_token_to_deposit": "Válassza ki a befizetendő kripto tokent",
+  "select_the_crypto_token": "Válassza ki a kripto tokent",
+  "follow_the_deposit_instructions": "Kövesse a befizetésre vonatkozó utasításokat",
+  "select_the_crypto_token_first": "Kérjük, először válassza ki a kripto tokent.",
+  "done": "Kész"
 }

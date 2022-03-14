@@ -1754,5 +1754,14 @@
   "estimated_price_impact": "Procijenjeni utjecaj na cijenu",
   "max_price_impact": "Maksimalni utjecaj na cijenu",
   "swaptokens_info": "Velike transakcije mogu utjecati na tečaj. Ako je ovaj utjecaj veći od zadane vrijednosti, transakcija će biti otkazana.",
-  "SwapTokens__hiveEngineInfo": "Kliknite donji gumb kako biste bili preusmjereni na HiveSinger kako biste dovršili svoju transakciju."
+  "SwapTokens__hiveEngineInfo": "Kliknite donji gumb kako biste bili preusmjereni na HiveSinger kako biste dovršili svoju transakciju.",
+  "all_crypto_deposits_are_processed_by": "Sve kripto depozite obrađuje",
+  "deposit_info": "Nakon izvršenog depozita, dobit ćete jednak iznos SWAP verzije deponiranog tokena, koji se može zamijeniti za druge tokene na Hive-Engine blockchainu.",
+  "fee_on_deposits": "Na depozite se plaća naknada od 0,75% (minimalna naknada 0,001 za HIVE).",
+  "pay_standard_network_fees": "Imajte na umu da ćete također morati platiti standardne mrežne naknade prilikom slanja kriptovaluta.",
+  "select_the_crypto_token_to_deposit": "Odaberite kripto žeton za uplatu",
+  "select_the_crypto_token": "Odaberite kripto žeton",
+  "follow_the_deposit_instructions": "Slijedite upute za depozit",
+  "select_the_crypto_token_first": "Najprije odaberite kripto žeton.",
+  "done": "Gotovo"
 }

@@ -1753,5 +1753,14 @@
   "estimated_price_impact": "Odhadovaný dopad na cenu",
   "max_price_impact": "Maximální dopad na cenu",
   "swaptokens_info": "Velké transakce mohou mít dopad na směnný kurz. Pokud je tento dopad větší než nastavená hodnota, transakce bude zrušena.",
-  "SwapTokens__hiveEngineInfo": "Kliknutím na tlačítko níže budete přesměrováni na HiveSinger k dokončení transakce."
+  "SwapTokens__hiveEngineInfo": "Kliknutím na tlačítko níže budete přesměrováni na HiveSinger k dokončení transakce.",
+  "all_crypto_deposits_are_processed_by": "Všechny krypto vklady zpracovává",
+  "deposit_info": "Po provedení vkladu obdržíte stejnou částku SWAP verze uloženého tokenu, kterou lze vyměnit za jiné tokeny na blockchainu Hive-Engine.",
+  "fee_on_deposits": "Za vklady se účtuje poplatek 0,75 % (minimální poplatek 0,001 pro HIVE).",
+  "pay_standard_network_fees": "Vezměte prosím na vědomí, že při odesílání kryptoměn budete muset také platit standardní síťové poplatky.",
+  "select_the_crypto_token_to_deposit": "Vyberte kryptotoken, který chcete uložit",
+  "select_the_crypto_token":"Vyberte kryptografický token",
+  "follow_the_deposit_instructions": "Postupujte podle pokynů pro vklad",
+  "select_the_crypto_token_first": "Nejprve prosím vyberte kryptotoken.",
+  "done": "Hotovo"
 }

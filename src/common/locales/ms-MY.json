@@ -1752,5 +1752,14 @@
   "estimated_price_impact": "Anggaran kesan harga",
   "max_price_impact": "Kesan harga maksimum",
   "swaptokens_info": "Urus niaga besar mungkin mempunyai kesan ke atas kadar pertukaran. Jika impak ini lebih besar daripada nilai yang ditetapkan, urus niaga akan dibatalkan.",
-  "SwapTokens__hiveEngineInfo": "Klik butang di bawah untuk diubah hala ke HiveSinger untuk menyelesaikan transaksi anda."
+  "SwapTokens__hiveEngineInfo": "Klik butang di bawah untuk diubah hala ke HiveSinger untuk menyelesaikan transaksi anda.",
+  "all_crypto_deposits_are_processed_by": "Semua deposit crypto diproses oleh",
+  "deposit_info": "Setelah deposit dibuat, anda akan menerima jumlah yang sama bagi versi SWAP bagi token yang didepositkan, yang boleh ditukar dengan token lain pada blockchain Hive-Engine.",
+  "fee_on_deposits": "Terdapat yuran 0.75% untuk deposit (yuran minimum 0.001 untuk HIVE).",
+  "pay_standard_network_fees": "Sila ambil perhatian bahawa anda juga perlu membayar yuran rangkaian standard apabila menghantar cryptos.",
+  "select_the_crypto_token_to_deposit": "Pilih token kripto untuk disimpan",
+  "select_the_crypto_token": "Pilih token kripto",
+  "follow_the_deposit_instructions": "Ikut arahan deposit",
+  "select_the_crypto_token_first": "Sila pilih token crypto dahulu.",
+  "done": "Selesai"
 }

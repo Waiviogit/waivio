@@ -1754,5 +1754,14 @@
   "estimated_price_impact": "تأثير السعر المقدر",
   "max_price_impact": "تأثير السعر الأقصى",
   "swaptokens_info": "قد يكون للمعاملات الكبيرة تأثير على سعر الصرف. إذا كان هذا التأثير أكبر من القيمة المحددة ، فسيتم إلغاء المعاملة.",
-  "SwapTokens__hiveEngineInfo": "انقر فوق الزر أدناه لإعادة توجيهك إلى HiveSinger لإكمال معاملتك."
+  "SwapTokens__hiveEngineInfo": "انقر فوق الزر أدناه لإعادة توجيهك إلى HiveSinger لإكمال معاملتك.",
+  "all_crypto_deposits_are_processed_by": "تتم معالجة جميع ودائع التشفير بواسطة",
+  "deposit_info": "بمجرد إجراء الإيداع ، ستتلقى مبلغًا متساويًا من إصدار SWAP للرمز المودع ، والذي يمكن استبداله برموز أخرى على بلوكشين Hive-Engine.",
+  "fee_on_deposits": "هناك رسوم 0.75٪ على الودائع (الحد الأدنى للرسوم 0.001 لـ HIVE).",
+  "pay_standard_network_fees": "يرجى ملاحظة أنه سيتعين عليك أيضًا دفع رسوم الشبكة القياسية عند إرسال العملات المشفرة.",
+  "select_the_crypto_token_to_deposit": "حدد رمز التشفير للإيداع",
+  "select_the_crypto_token":"حدد رمز التشفير",
+  "follow_the_deposit_instructions": "اتبع تعليمات الإيداع",
+  "select_the_crypto_token_first": "الرجاء تحديد رمز التشفير أولاً.",
+  "done": "منجز"
 }

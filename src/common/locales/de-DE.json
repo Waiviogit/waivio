@@ -1753,5 +1753,14 @@
   "estimated_price_impact": "Geschätzte Auswirkungen auf den Preis",
   "max_price_impact": "Maximale Preisauswirkung",
   "swaptokens_info": "Große Transaktionen können sich auf den Wechselkurs auswirken. Wenn diese Auswirkung größer als der festgelegte Wert ist, wird die Transaktion abgebrochen.",
-  "SwapTokens__hiveEngineInfo": "Klicken Sie auf die Schaltfläche unten, um zu HiveSinger weitergeleitet zu werden, um Ihre Transaktion abzuschließen."
+  "SwapTokens__hiveEngineInfo": "Klicken Sie auf die Schaltfläche unten, um zu HiveSinger weitergeleitet zu werden, um Ihre Transaktion abzuschließen.",
+  "all_crypto_deposits_are_processed_by": "Alle Krypto-Einzahlungen werden von verarbeitet",
+  "deposit_info": "Sobald die Einzahlung erfolgt ist, erhalten Sie einen gleichen Betrag der SWAP-Version des hinterlegten Tokens, der gegen andere Token in der Hive-Engine-Blockchain eingetauscht werden kann.",
+  "fee_on_deposits": "Es gibt eine Gebühr von 0,75 % auf Einzahlungen (Mindestgebühr 0,001 für HIVE).",
+  "pay_standard_network_fees": "Bitte beachten Sie, dass Sie beim Senden von Kryptos auch Standard-Netzwerkgebühren zahlen müssen.",
+  "select_the_crypto_token_to_deposit": "Wählen Sie das einzuzahlende Krypto-Token aus",
+  "select_the_crypto_token":"Wählen Sie das Krypto-Token aus",
+  "follow_the_deposit_instructions": "Befolgen Sie die Einzahlungsanweisungen",
+  "select_the_crypto_token_first": "Bitte wählen Sie zuerst das Krypto-Token aus.",
+  "done": "Getan"
 }
