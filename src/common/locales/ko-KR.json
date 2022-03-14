@@ -1744,5 +1744,15 @@
   "Deposit": "보증금",
   "Withdraw": "철회하다",
   "swap_tokens": "스왑 토큰",
-  "manage_delegations": "위임 관리"
+  "manage_delegations": "위임 관리",
+  "Profile": "프로필",
+  "Editor": "편집자",
+  "Rewards": "보상",
+  "max": "최대",
+  "your_balance":"잔액",
+  "estimated_transaction_value":"예상 거래 금액",
+  "estimated_price_impact": "예상 가격 영향",
+  "max_price_impact": "최대 가격 영향",
+  "swaptokens_info": "큰 거래는 환율에 영향을 미칠 수 있습니다. 이 영향이 설정 값보다 크면 거래가 취소됩니다.",
+  "SwapTokens__hiveEngineInfo": "아래 버튼을 클릭하면 거래를 완료하기 위해 HiveSinger로 리디렉션됩니다."
 }

@@ -1743,5 +1743,15 @@
   "Deposit": "订金",
   "Withdraw": "提取",
   "swap_tokens": "交换代币",
-  "manage_delegations": "管理委派"
+  "manage_delegations": "管理委派",
+  "Profile": "轮廓",
+  "Editor": "编辑",
+  "Rewards": "奖励",
+  "max": "最大限度",
+  "your_balance":"您的余额",
+  "estimated_transaction_value":"估计交易价值",
+  "estimated_price_impact": "估计价格影响",
+  "max_price_impact": "最大价格影响",
+  "swaptokens_info": "大宗交易可能会对汇率产生影响。 如果这个影响大于设定值，交易将被取消。",
+  "SwapTokens__hiveEngineInfo": "单击下面的按钮以重定向到 HiveSinger 以完成您的交易。"
 }

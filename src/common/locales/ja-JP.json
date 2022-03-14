@@ -1744,5 +1744,15 @@
   "Deposit": "保証金",
   "Withdraw": "撤退",
   "swap_tokens": "トークンを交換する",
-  "manage_delegations": "委任を管理する"
+  "manage_delegations": "委任を管理する",
+  "Profile": "プロフィール",
+  "Editor": "編集者",
+  "Rewards": "報酬",
+  "max": "最大",
+  "your_balance":"あなたのバランス",
+  "estimated_transaction_value":"推定取引額",
+  "estimated_price_impact": "推定価格への影響",
+  "max_price_impact": "最大価格への影響",
+  "swaptokens_info": "大規模な取引は、為替レートに影響を与える可能性があります。 この影響が設定値よりも大きい場合、トランザクションはキャンセルされます。",
+  "SwapTokens__hiveEngineInfo": "下のボタンをクリックしてHiveSingerにリダイレクトし、トランザクションを完了します。"
 }

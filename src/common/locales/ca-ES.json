@@ -1744,5 +1744,15 @@
   "Deposit": "Dipòsit",
   "Withdraw": "Retirar",
   "swap_tokens": "Canvia fitxes",
-  "manage_delegations": "Gestionar delegacions"
+  "manage_delegations": "Gestionar delegacions",
+  "Profile": "Perfil",
+  "Editor": "Editor",
+  "Rewards": "Recompenses",
+  "max": "màx",
+  "your_balance":"El teu saldo",
+  "estimated_transaction_value":"Valor estimat de la transacció",
+  "estimated_price_impact": "Impacte en el preu estimat",
+  "max_price_impact": "Màxim impacte en el preu",
+  "swaptokens_info": "Les grans transaccions poden tenir un impacte en el tipus de canvi. Si aquest impacte és superior al valor establert, la transacció es cancel·larà.",
+  "SwapTokens__hiveEngineInfo": "Feu clic al botó següent per ser redirigit a HiveSinger per completar la vostra transacció."
 }

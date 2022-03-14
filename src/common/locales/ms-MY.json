@@ -1742,5 +1742,15 @@
   "Deposit": "Deposit",
   "Withdraw": "Tarik diri",
   "swap_tokens": "Tukar token",
-  "manage_delegations": "Menguruskan delegasi"
+  "manage_delegations": "Menguruskan delegasi",
+  "Profile": "Profil",
+  "Editor": "Editor",
+  "Rewards": "Ganjaran",
+  "max": "maks",
+  "your_balance":"Baki anda",
+  "estimated_transaction_value":"Anggaran nilai transaksi",
+  "estimated_price_impact": "Anggaran kesan harga",
+  "max_price_impact": "Kesan harga maksimum",
+  "swaptokens_info": "Urus niaga besar mungkin mempunyai kesan ke atas kadar pertukaran. Jika impak ini lebih besar daripada nilai yang ditetapkan, urus niaga akan dibatalkan.",
+  "SwapTokens__hiveEngineInfo": "Klik butang di bawah untuk diubah hala ke HiveSinger untuk menyelesaikan transaksi anda."
 }

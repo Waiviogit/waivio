@@ -1743,5 +1743,15 @@
   "Deposit": "Menyetorkan",
   "Withdraw": "Menarik",
   "swap_tokens": "Tukar token",
-  "manage_delegations": "Kelola delegasi"
+  "manage_delegations": "Kelola delegasi",
+  "Profile": "Profil",
+  "Editor": "Editor",
+  "Rewards": "Hadiah",
+  "max": "maks",
+  "your_balance":"Keseimbanganmu",
+  "estimated_transaction_value":"Perkiraan nilai transaksi",
+  "estimated_price_impact": "Perkiraan dampak harga",
+  "max_price_impact": "Dampak harga maks",
+  "swaptokens_info": "Transaksi besar dapat berdampak pada nilai tukar. Jika dampak ini lebih besar dari nilai yang ditetapkan, transaksi akan dibatalkan.",
+  "SwapTokens__hiveEngineInfo": "Klik tombol di bawah ini untuk diarahkan ke HiveSinger untuk menyelesaikan transaksi Anda."
 }

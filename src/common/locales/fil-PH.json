@@ -1744,5 +1744,15 @@
   "Deposit": "Deposito",
   "Withdraw": "Mag-withdraw",
   "swap_tokens": "Magpalit ng mga token",
-  "manage_delegations": "Pamahalaan ang mga delegasyon"
+  "manage_delegations": "Pamahalaan ang mga delegasyon",
+  "Profile": "Profile",
+  "Editor": "Editor",
+  "Rewards": "Gantimpala",
+  "max": "max",
+  "your_balance":"Iyong balanse",
+  "estimated_transaction_value":"Tinantyang halaga ng transaksyon",
+  "estimated_price_impact": "Tinantyang epekto sa presyo",
+  "max_price_impact": "Max na epekto sa presyo",
+  "swaptokens_info": "Ang malalaking transaksyon ay maaaring magkaroon ng epekto sa halaga ng palitan. Kung mas malaki ang epektong ito kaysa sa itinakdang halaga, kakanselahin ang transaksyon.",
+  "SwapTokens__hiveEngineInfo": "I-click ang button sa ibaba upang mai-redirect sa HiveSinger upang makumpleto ang iyong transaksyon."
 }

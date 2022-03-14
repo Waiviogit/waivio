@@ -1743,5 +1743,15 @@
   "Deposit": "Anzahlung",
   "Withdraw": "Zurückziehen",
   "swap_tokens": "Token tauschen",
-  "manage_delegations": "Delegationen verwalten"
+  "manage_delegations": "Delegationen verwalten",
+  "Profile": "Profil",
+  "Editor": "Editor",
+  "Rewards": "Belohnung",
+  "max": "max",
+  "your_balance":"Dein Kontostand",
+  "estimated_transaction_value":"Geschätzter Transaktionswert",
+  "estimated_price_impact": "Geschätzte Auswirkungen auf den Preis",
+  "max_price_impact": "Maximale Preisauswirkung",
+  "swaptokens_info": "Große Transaktionen können sich auf den Wechselkurs auswirken. Wenn diese Auswirkung größer als der festgelegte Wert ist, wird die Transaktion abgebrochen.",
+  "SwapTokens__hiveEngineInfo": "Klicken Sie auf die Schaltfläche unten, um zu HiveSinger weitergeleitet zu werden, um Ihre Transaktion abzuschließen."
 }

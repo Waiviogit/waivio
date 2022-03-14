@@ -1745,5 +1745,15 @@
   "Deposit": "Deposito",
   "Withdraw": "Onttrek",
   "swap_tokens": "Ruil tekens",
-  "manage_delegations": "Bestuur afvaardigings"
+  "manage_delegations": "Bestuur afvaardigings",
+  "Profile": "Profiel",
+  "Editor": "Redakteur",
+  "Rewards": "Belonings",
+  "max": "maks",
+  "your_balance":"Jou balans",
+  "estimated_transaction_value":"Geskatte transaksiewaarde",
+  "estimated_price_impact": "Geskatte prys impak",
+  "max_price_impact": "Maksimum prys impak",
+  "swaptokens_info": "Groot transaksies kan 'n impak op die wisselkoers hê. As hierdie impak groter is as die vasgestelde waarde, sal die transaksie gekanselleer word.",
+  "SwapTokens__hiveEngineInfo": "Klik op die knoppie hieronder om na HiveSinger herlei te word om jou transaksie te voltooi."
 }

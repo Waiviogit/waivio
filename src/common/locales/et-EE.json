@@ -1744,5 +1744,15 @@
   "Deposit": "Deposiit",
   "Withdraw": "Tõmba tagasi",
   "swap_tokens": "Vahetage märgid",
-  "manage_delegations": "Delegatsioonide haldamine"
+  "manage_delegations": "Delegatsioonide haldamine",
+  "Profile": "Profiil",
+  "Editor": "Toimetaja",
+  "Rewards": "Preemiad",
+  "max": "max",
+  "your_balance":"Teie saldo",
+  "estimated_transaction_value":"Tehingu hinnanguline väärtus",
+  "estimated_price_impact": "Hinnanguline mõju hinnale",
+  "max_price_impact": "Maksimaalne mõju hinnale",
+  "swaptokens_info": "Suured tehingud võivad vahetuskurssi mõjutada. Kui see mõju on määratud väärtusest suurem, siis tehing tühistatakse.",
+  "SwapTokens__hiveEngineInfo": "Tehingu lõpuleviimiseks HiveSingeri suunamiseks klõpsake allolevat nuppu."
 }

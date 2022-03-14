@@ -1743,5 +1743,15 @@
   "Deposit": "Depósito",
   "Withdraw": "Retirar",
   "swap_tokens": "Trocar fichas",
-  "manage_delegations": "Gerenciar delegações"
+  "manage_delegations": "Gerenciar delegações",
+  "Profile": "Perfil",
+  "Editor": "Editor",
+  "Rewards": "Recompensas",
+  "max": "máx",
+  "your_balance":"Seu balanço",
+  "estimated_transaction_value":"Valor estimado da transação",
+  "estimated_price_impact": "Impacto do preço estimado",
+  "max_price_impact": "Impacto máximo do preço",
+  "swaptokens_info": "Grandes transações podem ter um impacto na taxa de câmbio. Se esse impacto for maior que o valor definido, a transação será cancelada.",
+  "SwapTokens__hiveEngineInfo": "Clique no botão abaixo para ser redirecionado ao HiveSinger para concluir sua transação."
 }

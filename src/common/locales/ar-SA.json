@@ -1744,5 +1744,15 @@
   "Deposit": "الوديعة",
   "Withdraw": "ينسحب",
   "swap_tokens": "تبادل الرموز",
-  "manage_delegations": "إدارة التفويضات"
+  "manage_delegations": "إدارة التفويضات",
+  "Profile": "حساب تعريفي",
+  "Editor": "محرر",
+  "Rewards": "المكافآت",
+  "max": "الأعلى",
+  "your_balance":"رصيدك",
+  "estimated_transaction_value":"قيمة الصفقة المقدرة",
+  "estimated_price_impact": "تأثير السعر المقدر",
+  "max_price_impact": "تأثير السعر الأقصى",
+  "swaptokens_info": "قد يكون للمعاملات الكبيرة تأثير على سعر الصرف. إذا كان هذا التأثير أكبر من القيمة المحددة ، فسيتم إلغاء المعاملة.",
+  "SwapTokens__hiveEngineInfo": "انقر فوق الزر أدناه لإعادة توجيهك إلى HiveSinger لإكمال معاملتك."
 }

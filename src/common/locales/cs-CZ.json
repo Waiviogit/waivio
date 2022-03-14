@@ -1743,5 +1743,15 @@
   "Deposit": "Vklad",
   "Withdraw": "Ustoupit",
   "swap_tokens": "Vyměňte si tokeny",
-  "manage_delegations": "Spravovat delegace"
+  "manage_delegations": "Spravovat delegace",
+  "Profile": "Profil",
+  "Editor": "Editor",
+  "Rewards": "Odměny",
+  "max": "max",
+  "your_balance":"Tvůj zůstatek",
+  "estimated_transaction_value":"Odhadovaná hodnota transakce",
+  "estimated_price_impact": "Odhadovaný dopad na cenu",
+  "max_price_impact": "Maximální dopad na cenu",
+  "swaptokens_info": "Velké transakce mohou mít dopad na směnný kurz. Pokud je tento dopad větší než nastavená hodnota, transakce bude zrušena.",
+  "SwapTokens__hiveEngineInfo": "Kliknutím na tlačítko níže budete přesměrováni na HiveSinger k dokončení transakce."
 }

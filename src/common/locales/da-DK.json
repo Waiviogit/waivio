@@ -1744,5 +1744,15 @@
     "Deposit": "Depositum",
     "Withdraw": "Træk tilbage",
     "swap_tokens": "Byt tokens",
-    "manage_delegations": "Administrer delegationer"
+    "manage_delegations": "Administrer delegationer",
+    "Profile": "Profil",
+    "Editor": "Redaktør",
+    "Rewards": "Belønninger",
+    "max": "max",
+    "your_balance":"Din balance",
+    "estimated_transaction_value":"Anslået transaktionsværdi",
+    "estimated_price_impact": "Estimeret prispåvirkning",
+    "max_price_impact": "Max prispåvirkning",
+    "swaptokens_info": "Store transaktioner kan have indflydelse på valutakursen. Hvis denne påvirkning er større end den indstillede værdi, vil transaktionen blive annulleret.",
+    "SwapTokens__hiveEngineInfo": "Klik på knappen nedenfor for at blive omdirigeret til HiveSinger for at fuldføre din transaktion."
   }

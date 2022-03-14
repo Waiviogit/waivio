@@ -1745,5 +1745,15 @@
   "Deposit": "Letét",
   "Withdraw": "Visszavonás",
   "swap_tokens": "Csere tokeneket",
-  "manage_delegations": "Delegációk kezelése"
+  "manage_delegations": "Delegációk kezelése",
+  "Profile": "Profil",
+  "Editor": "Szerkesztő",
+  "Rewards": "Jutalmak",
+  "max": "max",
+  "your_balance":"Az egyensúlyod",
+  "estimated_transaction_value":"A tranzakció becsült értéke",
+  "estimated_price_impact": "Becsült árhatás",
+  "max_price_impact": "Max árhatás",
+  "swaptokens_info": "A nagy tranzakciók hatással lehetnek az árfolyamra. Ha ez a hatás nagyobb, mint a beállított érték, a tranzakció törlésre kerül.",
+  "SwapTokens__hiveEngineInfo": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez."
 }
