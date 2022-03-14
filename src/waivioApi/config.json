@@ -150,5 +150,6 @@
   "swap": "/swap",
   "delegation": "/delegation",
   "depositWithdraw": "/deposit-withdraw",
+  "exist": "/exist",
   "getMatchBots": "/match-bots"
 }

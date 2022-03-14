@@ -10,17 +10,18 @@ export const GET_SWAP_LIST = createAsyncActionType('@swap/GET_SWAP_LIST');
 export const getSwapList = () => (dispatch, getState) => {
   const state = getState();
   const name = getAuthenticatedUserName(state);
+  const from = getTokenFrom(state);
 
   return dispatch({
     type: GET_SWAP_LIST.ACTION,
     payload: getHiveEngineSwap().then(async res => {
       const fromList = await compareTokensList(name, Object.keys(res));
-      const toList = await compareTokensList(name, res.WAIV);
-      const toChildList = await compareTokensList(name, res['SWAP.HIVE']);
+      const toList = await compareTokensList(name, res[from.symbol]);
+      const toChildList = await compareTokensList(name, res[toList[0].symbol]);
 
       return {
         list: res,
-        from: toChildList.find(item => item.symbol === 'WAIV'),
+        from: toChildList.find(item => item.symbol === from.symbol),
         toList,
         fromList,
       };
@@ -63,9 +64,9 @@ export const setFromToken = token => async (dispatch, getState) => {
 
 export const SHOW_MODAL = '@swap/SHOW_MODAL';
 
-export const toggleModal = isOpen => ({
+export const toggleModal = (isOpen, symbol) => ({
   type: SHOW_MODAL,
-  payload: isOpen,
+  payload: { isOpen, symbol },
 });
 
 export const RESET_MODAL_DATA = '@swap/RESET_MODAL_DATA';
