@@ -12,7 +12,6 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
 
 import './WebsiteMainPage.less';
-import './WebsiteMainPage-nightmode.less';
 
 const WebsiteMainPage = props => {
   const helmetImg = '/images/dining.gifts.png';
