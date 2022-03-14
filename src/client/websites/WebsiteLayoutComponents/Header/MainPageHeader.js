@@ -6,7 +6,6 @@ import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import FilterTypesList from '../../../search/SearchAllResult/components/FilterTypesList';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
-import './MainPageHeader-nightmode.less';
 
 const MainPageHeader = props => (
   <div className="MainPageHeader">
