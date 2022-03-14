@@ -1763,5 +1763,19 @@
   "select_the_crypto_token": "Odaberite kripto žeton",
   "follow_the_deposit_instructions": "Slijedite upute za depozit",
   "select_the_crypto_token_first": "Najprije odaberite kripto žeton.",
-  "done": "Gotovo"
+  "done": "Gotovo",
+  "deposit_instructions_part1": "Molimo pošaljite bilo koju količinu",
+  "deposit_instructions_part2": "na sljedeću adresu i dobit ćete jednak iznos",
+  "deposit_instructions_part3": "račun nakon što transakcija primi potreban broj potvrda na vanjskom lancu.",
+  "required_field": "Obavezno polje",
+  "memo_attention": "Pažnja: Nenavođenje dopisa rezultirat će gubitkom sredstava!",
+  "withdraw_info_part1": "Sva kripto povlačenja obrađuje",
+  "there_is_a": "Tamo je",
+  "fee_on_withdrawals": "naknada za isplate",
+  "withdraw_info_part2": "Imajte na umu da će se standardne naknade za mrežni prijenos također oduzeti od iznosa.",
+  "est_amount": "Iznos",
+  "minimal_withdraw_amount": "Minimalni iznos povlačenja",
+  "destination_address": "Adresa odredišta",
+  "qr_scanner": "QR skener",
+  "withdraw_info_part3": "Kliknite donji gumb kako biste bili preusmjereni na HiveSinger kako biste dovršili svoju transakciju."
 }

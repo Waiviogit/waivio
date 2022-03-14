@@ -1761,5 +1761,19 @@
   "select_the_crypto_token": "Pilih token kripto",
   "follow_the_deposit_instructions": "Ikut arahan deposit",
   "select_the_crypto_token_first": "Sila pilih token crypto dahulu.",
-  "done": "Selesai"
+  "done": "Selesai",
+  "deposit_instructions_part1": "Sila hantar sebarang jumlah",
+  "deposit_instructions_part2": "ke alamat berikut dan anda akan menerima jumlah yang sama sebanyak",
+  "deposit_instructions_part3": "akaun sebaik sahaja transaksi telah menerima bilangan pengesahan yang diperlukan pada rantaian luaran.",
+  "required_field": "medan yang diperlukan",
+  "memo_attention": "Perhatian: Kegagalan untuk menyatakan memo akan mengakibatkan kehilangan dana!",
+  "withdraw_info_part1": "Semua pengeluaran crypto diproses oleh",
+  "there_is_a": "Ada",
+  "fee_on_withdrawals": "bayaran untuk pengeluaran",
+  "withdraw_info_part2": "Sila ambil perhatian bahawa yuran pemindahan rangkaian standard juga akan ditolak daripada jumlah tersebut.",
+  "est_amount": "Jumlah",
+  "minimal_withdraw_amount": "Jumlah pengeluaran minimum",
+  "destination_address": "Alamat destinasi",
+  "qr_scanner": "Pengimbas QR",
+  "withdraw_info_part3": "Klik butang di bawah untuk diubah hala ke HiveSinger untuk menyelesaikan transaksi anda."
 }

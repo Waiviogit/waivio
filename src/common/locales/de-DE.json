@@ -1762,5 +1762,19 @@
   "select_the_crypto_token":"Wählen Sie das Krypto-Token aus",
   "follow_the_deposit_instructions": "Befolgen Sie die Einzahlungsanweisungen",
   "select_the_crypto_token_first": "Bitte wählen Sie zuerst das Krypto-Token aus.",
-  "done": "Getan"
+  "done": "Getan",
+  "deposit_instructions_part1": "Bitte senden Sie einen beliebigen Betrag von",
+  "deposit_instructions_part2": "an die folgende Adresse und Sie erhalten den gleichen Betrag von",
+  "deposit_instructions_part3": "Konto, sobald die Transaktion die erforderliche Anzahl von Bestätigungen auf der externen Kette erhalten hat.",
+  "required_field": "Pflichtfeld",
+  "memo_attention": "Achtung: Nichtangabe des Memos führt zu Geldverlust!",
+  "withdraw_info_part1": "Alle Krypto-Auszahlungen werden von verarbeitet",
+  "there_is_a": "Da ist ein",
+  "fee_on_withdrawals": "Gebühr auf Abhebungen",
+  "withdraw_info_part2": "Bitte beachten Sie, dass auch die üblichen Netzwerkgebühren vom Betrag abgezogen werden.",
+  "est_amount": "Menge",
+  "minimal_withdraw_amount": "Minimaler Auszahlungsbetrag",
+  "destination_address": "Zieladresse",
+  "qr_scanner": "QR-Scanner",
+  "withdraw_info_part3": "Klicken Sie auf die Schaltfläche unten, um zu HiveSinger weitergeleitet zu werden, um Ihre Transaktion abzuschließen."
 }

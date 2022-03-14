@@ -1763,5 +1763,19 @@
   "select_the_crypto_token": "Piliin ang crypto token",
   "follow_the_deposit_instructions": "Sundin ang mga tagubilin sa deposito",
   "select_the_crypto_token_first": "Pakipili muna ang crypto token.",
-  "done": "Tapos na"
+  "done": "Tapos na",
+  "deposit_instructions_part1": "Mangyaring magpadala ng anumang halaga ng",
+  "deposit_instructions_part2": "sa sumusunod na address at makakatanggap ka ng katumbas na halaga ng",
+  "deposit_instructions_part3": "account kapag natanggap na ng transaksyon ang kinakailangang bilang ng mga kumpirmasyon sa panlabas na chain.",
+  "required_field": "kinakailangang field",
+  "memo_attention": "Pansin: Ang pagkabigong tukuyin ang memo ay magreresulta sa pagkawala ng mga pondo!",
+  "withdraw_info_part1": "Ang lahat ng crypto withdrawals ay pinoproseso ng",
+  "there_is_a": "Meron isang",
+  "fee_on_withdrawals": "bayad sa mga withdrawal",
+  "withdraw_info_part2": "Pakitandaan na ang mga karaniwang bayarin sa paglipat ng network ay ibawas din sa halaga.",
+  "est_amount": "Halaga",
+  "minimal_withdraw_amount": "Minimal na halaga ng withdraw",
+  "destination_address": "Address ng patutunguhan",
+  "qr_scanner": "QR scanner",
+  "withdraw_info_part3": "I-click ang button sa ibaba upang mai-redirect sa HiveSinger upang makumpleto ang iyong transaksyon."
 }

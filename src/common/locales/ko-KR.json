@@ -1763,5 +1763,19 @@
   "select_the_crypto_token": "암호화 토큰 선택",
   "follow_the_deposit_instructions": "입금 안내를 따르세요",
   "select_the_crypto_token_first": "먼저 암호화 토큰을 선택하십시오.",
-  "done": "완료"
+  "done": "완료",
+  "deposit_instructions_part1": "얼마든지 보내주세요",
+  "deposit_instructions_part2": "다음 주소로 보내주시면 동일한 금액을 받으실 수 있습니다.",
+  "deposit_instructions_part3": "거래가 외부 체인에서 필요한 수의 확인을 받으면 계정.",
+  "required_field": "필수 필드",
+  "memo_attention": "주의: 메모를 지정하지 않으면 자금이 손실됩니다!",
+  "withdraw_info_part1": "모든 암호화폐 인출은",
+  "there_is_a": "이있다",
+  "fee_on_withdrawals": "인출 수수료",
+  "withdraw_info_part2": "표준 네트워크 송금 수수료도 금액에서 차감됩니다.",
+  "est_amount": "양",
+  "minimal_withdraw_amount": "최소 인출 금액",
+  "destination_address": "목적지 주소",
+  "qr_scanner": "QR 스캐너",
+  "withdraw_info_part3": "아래 버튼을 클릭하면 거래를 완료하기 위해 HiveSinger로 리디렉션됩니다."
 }

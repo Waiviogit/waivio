@@ -1763,5 +1763,19 @@
   "select_the_crypto_token": "暗号トークンを選択します",
   "follow_the_deposit_instructions": "入金の指示に従ってください",
   "select_the_crypto_token_first": "最初に暗号トークンを選択してください。",
-  "done": "終わり"
+  "done": "終わり",
+  "deposit_instructions_part1": "任意の金額を送ってください",
+  "deposit_instructions_part2": "次のアドレスに送信すると、同額の",
+  "deposit_instructions_part3": "トランザクションが外部チェーンで必要な数の確認を受け取ったら、アカウントを作成します。",
+  "required_field": "必須フィールド",
+  "memo_attention": "注意：メモを指定しないと、資金が失われます。",
+  "withdraw_info_part1": "すべての暗号の引き出しはによって処理されます",
+  "there_is_a": "あります",
+  "fee_on_withdrawals": "引き出し手数料",
+  "withdraw_info_part2": "標準のネットワーク転送料金も金額から差し引かれますのでご注意ください。",
+  "est_amount": "額",
+  "minimal_withdraw_amount": "最小引き出し額",
+  "destination_address": "宛先アドレス",
+  "qr_scanner": "QRスキャナー",
+  "withdraw_info_part3": "下のボタンをクリックしてHiveSingerにリダイレクトし、トランザクションを完了します。"
 }

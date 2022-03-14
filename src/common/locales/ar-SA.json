@@ -1763,5 +1763,19 @@
   "select_the_crypto_token":"حدد رمز التشفير",
   "follow_the_deposit_instructions": "اتبع تعليمات الإيداع",
   "select_the_crypto_token_first": "الرجاء تحديد رمز التشفير أولاً.",
-  "done": "منجز"
+  "done": "منجز",
+  "deposit_instructions_part1": "الرجاء إرسال أي مبلغ من",
+  "deposit_instructions_part2": "إلى العنوان التالي وستتلقى مبلغًا مساويًا من",
+  "deposit_instructions_part3": "الحساب بمجرد أن تتلقى المعاملة العدد المطلوب من التأكيدات على السلسلة الخارجية.",
+  "required_field": "يتطلب حقلا",
+  "memo_attention": "تنبيه: عدم تحديد المذكرة سيؤدي إلى خسارة الأموال!",
+  "withdraw_info_part1": "تتم معالجة جميع عمليات سحب العملات المشفرة بواسطة",
+  "there_is_a": "هناك",
+  "fee_on_withdrawals": "رسوم على عمليات السحب",
+  "withdraw_info_part2": "يرجى ملاحظة أنه سيتم أيضًا خصم رسوم نقل الشبكة القياسية من المبلغ.",
+  "est_amount": "مقدار",
+  "minimal_withdraw_amount": "الحد الأدنى لسحب المبلغ",
+  "destination_address": "عنوان الوجهة",
+  "qr_scanner": "الماسح الضوئي QR",
+  "withdraw_info_part3": "انقر فوق الزر أدناه لإعادة توجيهك إلى HiveSinger لإكمال معاملتك."
 }

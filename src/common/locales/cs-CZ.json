@@ -1762,5 +1762,19 @@
   "select_the_crypto_token":"Vyberte kryptografický token",
   "follow_the_deposit_instructions": "Postupujte podle pokynů pro vklad",
   "select_the_crypto_token_first": "Nejprve prosím vyberte kryptotoken.",
-  "done": "Hotovo"
+  "done": "Hotovo",
+  "deposit_instructions_part1": "Pošlete prosím libovolnou částku",
+  "deposit_instructions_part2": "na následující adresu a obdržíte stejnou částku",
+  "deposit_instructions_part3": "Jakmile transakce obdrží požadovaný počet potvrzení na externím řetězci.",
+  "required_field": "Povinné pole",
+  "memo_attention": "Pozor: Neupřesnění poznámky bude mít za následek ztrátu finančních prostředků!",
+  "withdraw_info_part1": "Veškeré výběry kryptoměn zpracovává",
+  "there_is_a": "Tady je",
+  "fee_on_withdrawals": "poplatek za výběr",
+  "withdraw_info_part2": "Upozorňujeme, že z částky budou rovněž odečteny standardní poplatky za síťový přenos.",
+  "est_amount": "Množství",
+  "minimal_withdraw_amount": "Minimální částka výběru",
+  "destination_address": "Cílová adresa",
+  "qr_scanner": "QR skener",
+  "withdraw_info_part3": "Kliknutím na tlačítko níže budete přesměrováni na HiveSinger k dokončení transakce."
 }

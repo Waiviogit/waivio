@@ -1763,5 +1763,19 @@
   "select_the_crypto_token":"Valige krüptomärk",
   "follow_the_deposit_instructions": "Järgige sissemakse juhiseid",
   "select_the_crypto_token_first": "Palun valige esmalt krüptomärk.",
-  "done": "Valmis"
+  "done": "Valmis",
+  "deposit_instructions_part1": "Palun saatke mis tahes summa",
+  "deposit_instructions_part2": "järgmisele aadressile ja saate samaväärse summa",
+  "deposit_instructions_part3": "kontole, kui tehing on saanud välisel ahelal vajaliku arvu kinnitusi.",
+  "required_field": "nõutud väli",
+  "memo_attention": "Tähelepanu: memo täpsustamata jätmine toob kaasa rahalise kaotuse!",
+  "withdraw_info_part1": "Kõik krüptoväljavõtted töötleb",
+  "there_is_a": "Siin on",
+  "fee_on_withdrawals": "väljamaksete tasu",
+  "withdraw_info_part2": "Pange tähele, et summast lahutatakse ka tavalised võrguülekande tasud.",
+  "est_amount": "Summa",
+  "minimal_withdraw_amount": "Minimaalne väljamakse summa",
+  "destination_address": "Sihtkoha aadress",
+  "qr_scanner": "QR-skanner",
+  "withdraw_info_part3": "Tehingu lõpuleviimiseks HiveSingeri suunamiseks klõpsake allolevat nuppu."
 }

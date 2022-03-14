@@ -1763,5 +1763,19 @@
   "select_the_crypto_token":"Seleccione el token criptográfico",
   "follow_the_deposit_instructions": "Siga las instrucciones de depósito",
   "select_the_crypto_token_first": "Seleccione primero el token criptográfico.",
-  "done": "Hecho"
+  "done": "Hecho",
+  "deposit_instructions_part1": "Por favor envíe cualquier cantidad de",
+  "deposit_instructions_part2": "a la siguiente dirección y recibirás una cantidad igual de",
+  "deposit_instructions_part3": "cuenta una vez que la transacción haya recibido el número requerido de confirmaciones en la cadena externa.",
+  "required_field": "campo requerido",
+  "memo_attention": "Atención: ¡La falta de especificación de la nota resultará en la pérdida de fondos!",
+  "withdraw_info_part1": "Todos los retiros de criptomonedas son procesados por",
+  "there_is_a": "Hay un",
+  "fee_on_withdrawals": "comisión por retiros",
+  "withdraw_info_part2": "Tenga en cuenta que las tarifas de transferencia de red estándar también se restarán del monto.",
+  "est_amount": "Cantidad",
+  "minimal_withdraw_amount": "Cantidad mínima de retiro",
+  "destination_address": "Dirección de destino",
+  "qr_scanner": "escáner QR",
+  "withdraw_info_part3": "Haga clic en el botón a continuación para ser redirigido a HiveSinger para completar su transacción."
 }

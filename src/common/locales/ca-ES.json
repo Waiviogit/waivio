@@ -1763,5 +1763,19 @@
   "select_the_crypto_token":"Seleccioneu el testimoni criptogràfic",
   "follow_the_deposit_instructions": "Seguiu les instruccions de dipòsit",
   "select_the_crypto_token_first": "Seleccioneu primer el testimoni criptogràfic.",
-  "done": "Fet"
+  "done": "Fet",
+  "deposit_instructions_part1": "Envieu qualsevol quantitat de",
+  "deposit_instructions_part2": "a la següent adreça i rebràs la mateixa quantitat de",
+  "deposit_instructions_part3": "compte un cop la transacció hagi rebut el nombre de confirmacions requerides a la cadena externa.",
+  "required_field": "Camp necessari",
+  "memo_attention": "Atenció: si no s'especifica la nota, es perdran fons!",
+  "withdraw_info_part1": "Totes les retirades de cripto es processen per",
+  "there_is_a": "Hi ha un",
+  "fee_on_withdrawals": "taxa per retirades",
+  "withdraw_info_part2": "Tingueu en compte que les tarifes estàndard de transferència de xarxa també es restaran de l'import.",
+  "est_amount": "Import",
+  "minimal_withdraw_amount": "Import mínim de retirada",
+  "destination_address": "Adreça de destinació",
+  "qr_scanner": "Escàner QR",
+  "withdraw_info_part3": "Feu clic al botó següent per ser redirigit a HiveSinger per completar la vostra transacció."
 }
