@@ -1739,5 +1739,9 @@
   "staked_waiv_tokens":"Vsazené tokeny WAIV",
   "waiv_wallet": "Peněženka WAIV",
   "hive_wallet": "HIVE peněženka",
-  "hive_engine_wallet": "Peněženka HIVE Engine"
+  "hive_engine_wallet": "Peněženka HIVE Engine",
+  "Deposit": "Vklad",
+  "Withdraw": "Ustoupit",
+  "swap_tokens": "Vyměňte si tokeny",
+  "manage_delegations": "Spravovat delegace"
 }

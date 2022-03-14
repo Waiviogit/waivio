@@ -1739,5 +1739,9 @@
   "staked_waiv_tokens":"Postawione tokeny WAIV",
   "waiv_wallet": "Portfel WAIV",
   "hive_wallet": "Portfel HIVE",
-  "hive_engine_wallet": "Portfel silnika HIVE"
+  "hive_engine_wallet": "Portfel silnika HIVE",
+  "Deposit": "Depozyt",
+  "Withdraw": "Wycofać",
+  "swap_tokens": "Zamień tokeny",
+  "manage_delegations": "Zarządzaj delegacjami"
 }

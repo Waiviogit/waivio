@@ -1809,5 +1809,9 @@
   "staked_waiv_tokens":"Стейкнутые токены WAIV",
   "waiv_wallet": "Кошелек WAIV",
   "hive_wallet": "Кошелек HIVE",
-  "hive_engine_wallet": "Кошелек HIVE Engine"
+  "hive_engine_wallet": "Кошелек HIVE Engine",
+  "Deposit": "Депозит",
+  "Withdraw": "Вывод",
+  "swap_tokens": "Обмен токенов",
+  "manage_delegations": "Управление делегациями"
 }

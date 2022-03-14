@@ -1740,5 +1740,9 @@
   "staked_waiv_tokens":"Fitxes WAIV apostades",
   "waiv_wallet": "Cartera WAIV",
   "hive_wallet": "Cartera HIVE",
-  "hive_engine_wallet": "Cartera del motor HIVE"
+  "hive_engine_wallet": "Cartera del motor HIVE",
+  "Deposit": "Dipòsit",
+  "Withdraw": "Retirar",
+  "swap_tokens": "Canvia fitxes",
+  "manage_delegations": "Gestionar delegacions"
 }

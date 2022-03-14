@@ -1740,5 +1740,9 @@
   "staked_waiv_tokens":"ステーキングされたWAIVトークン",
   "waiv_wallet": "WAIVウォレット",
   "hive_wallet": "HIVEウォレット",
-  "hive_engine_wallet": "HIVEエンジンウォレット"
+  "hive_engine_wallet": "HIVEエンジンウォレット",
+  "Deposit": "保証金",
+  "Withdraw": "撤退",
+  "swap_tokens": "トークンを交換する",
+  "manage_delegations": "委任を管理する"
 }

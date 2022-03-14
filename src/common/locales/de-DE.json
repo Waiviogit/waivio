@@ -1739,5 +1739,9 @@
   "staked_waiv_tokens":"Gestakte WAIV-Token",
   "waiv_wallet": "WAIV-Brieftasche",
   "hive_wallet": "HIVE-Brieftasche",
-  "hive_engine_wallet": "HIVE Engine-Geldbörse"
+  "hive_engine_wallet": "HIVE Engine-Geldbörse",
+  "Deposit": "Anzahlung",
+  "Withdraw": "Zurückziehen",
+  "swap_tokens": "Token tauschen",
+  "manage_delegations": "Delegationen verwalten"
 }

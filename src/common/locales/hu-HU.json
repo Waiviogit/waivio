@@ -1741,5 +1741,9 @@
   "staked_waiv_tokens":"Tétes WAIV tokenek",
   "waiv_wallet": "WAIV pénztárca",
   "hive_wallet": "HIVE pénztárca",
-  "hive_engine_wallet": "HIVE Engine pénztárca"
+  "hive_engine_wallet": "HIVE Engine pénztárca",
+  "Deposit": "Letét",
+  "Withdraw": "Visszavonás",
+  "swap_tokens": "Csere tokeneket",
+  "manage_delegations": "Delegációk kezelése"
 }

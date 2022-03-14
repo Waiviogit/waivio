@@ -1739,5 +1739,9 @@
   "staked_waiv_tokens":"质押的 WAIV 代币",
   "waiv_wallet": "WAIV 钱包",
   "hive_wallet": "蜂巢钱包",
-  "hive_engine_wallet": "HIVE 引擎钱包"
+  "hive_engine_wallet": "HIVE 引擎钱包",
+  "Deposit": "订金",
+  "Withdraw": "提取",
+  "swap_tokens": "交换代币",
+  "manage_delegations": "管理委派"
 }

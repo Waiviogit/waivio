@@ -1741,5 +1741,9 @@
   "staked_waiv_tokens":"Стейкнуті токени WAIV",
   "waiv_wallet": "Гаманець WAIV",
   "hive_wallet": "Гаманець HIVE",
-  "hive_engine_wallet": "Гаманець HIVE Engine"
+  "hive_engine_wallet": "Гаманець HIVE Engine",
+  "Deposit": "Депозит",
+  "Withdraw": "Вивести",
+  "swap_tokens": "Поміняти токени",
+  "manage_delegations": "Керування делегаціями"
 }

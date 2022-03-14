@@ -1740,5 +1740,9 @@
   "staked_waiv_tokens":"الرموز المميزة لـ WAIV المحصورة",
   "waiv_wallet": "محفظة WAIV",
   "hive_wallet": "محفظة HIVE",
-  "hive_engine_wallet": "محفظة محرك HIVE"
+  "hive_engine_wallet": "محفظة محرك HIVE",
+  "Deposit": "الوديعة",
+  "Withdraw": "ينسحب",
+  "swap_tokens": "تبادل الرموز",
+  "manage_delegations": "إدارة التفويضات"
 }

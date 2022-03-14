@@ -1738,5 +1738,9 @@
   "staked_waiv_tokens":"Token WAIV yang dipertaruhkan",
   "waiv_wallet": "Dompet WAIV",
   "hive_wallet": "Dompet HIVE",
-  "hive_engine_wallet": "Dompet Enjin HIVE"
+  "hive_engine_wallet": "Dompet Enjin HIVE",
+  "Deposit": "Deposit",
+  "Withdraw": "Tarik diri",
+  "swap_tokens": "Tukar token",
+  "manage_delegations": "Menguruskan delegasi"
 }
