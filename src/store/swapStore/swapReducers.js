@@ -7,7 +7,7 @@ const initialState = {
   impact: 0.5,
   visible: false,
   from: { symbol: 'WAIV' },
-  to: { symbol: 'SWAP.HIVE' },
+  to: {},
 };
 
 export default function swapReducer(state = initialState, action) {
@@ -21,7 +21,6 @@ export default function swapReducer(state = initialState, action) {
           token => (token.balance > 0 && token.symbol !== 'WAIV') || token.symbol === 'WAIV',
         ),
         from: action.payload.from,
-        to: action.payload.toList.find(token => token.symbol === 'SWAP.HIVE'),
       };
     }
 
@@ -49,7 +48,8 @@ export default function swapReducer(state = initialState, action) {
     case swapActions.SHOW_MODAL: {
       return {
         ...state,
-        visible: action.payload,
+        visible: action.payload.isOpen,
+        from: action.payload.symbol ? { symbol: action.payload.symbol } : state.from,
       };
     }
 

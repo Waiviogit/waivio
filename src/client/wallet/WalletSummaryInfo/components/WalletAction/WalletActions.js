@@ -22,6 +22,7 @@ import {
   isGuestUser,
 } from '../../../../../store/authStore/authSelectors';
 import delegationModalTypes from '../../../../../common/constants/delegationModalTypes';
+import { toggleModal } from '../../../../../store/swapStore/swapActions';
 
 import './WalletActions.less';
 
@@ -45,7 +46,7 @@ const WalletAction = props => {
     power_up: () => dispatch(openPowerUpOrDown()),
     power_down: () => dispatch(openPowerUpOrDown(true)),
     transfer: () => dispatch(openTransfer('', 0, props.mainCurrency)),
-    swap: () => dispatch(toggleDepositModal(true)),
+    swap: () => dispatch(toggleModal(true, props.mainCurrency)),
     withdraw: () => dispatch(toggleWithdrawModal(true, props.mainCurrency)),
     delegate: () =>
       dispatch(toggleDelegateModal(delegationModalTypes.DELEGATION, props.mainCurrency)),
