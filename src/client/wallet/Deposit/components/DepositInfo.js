@@ -25,12 +25,12 @@ const DepositInfo = () => {
           id="deposit_instructions_part1"
           defaultMessage="Please send any amount of"
         />{' '}
-        {selectPair.from_coin_symbol}
+        {selectPair.from_coin_symbol}{' '}
         <FormattedMessage
           id="deposit_instructions_part2"
           defaultMessage=" to the following address and you will receive an equal amount of"
         />{' '}
-        {selectPair.to_coin_symbol} in the{' '}
+        {selectPair.to_coin_symbol} <FormattedMessage id="in_the" defaultMessage="in the" />{' '}
         <a className="Deposit__account-link" href={`/@${authUserName}`}>
           @{authUserName}
         </a>{' '}
