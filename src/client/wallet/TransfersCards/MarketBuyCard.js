@@ -5,6 +5,7 @@ import TransactionCardContainer from './TransactionCardContainer';
 
 const MarketBuyCard = ({ timestamp, quantity, orderType, symbol }) => {
   const isLimitOrder = orderType === 'sell' || orderType === 'buy';
+  const isMarketOrder = orderType === 'marketSell' ? 'sell' : 'buy';
 
   return (
     <div>
@@ -15,7 +16,12 @@ const MarketBuyCard = ({ timestamp, quantity, orderType, symbol }) => {
         iconType={'tag'}
       >
         <div>
-          <FormattedMessage id={isLimitOrder ? `limit_order_to_${orderType}` : orderType} />
+          <FormattedMessage
+            id={isLimitOrder ? `limit_order_to_${orderType}` : `market_order_to_${isMarketOrder}`}
+            defaultMessage={
+              isLimitOrder ? `Limit order to ${orderType}` : `Market order to ${isMarketOrder}`
+            }
+          />
         </div>
       </TransactionCardContainer>
     </div>
