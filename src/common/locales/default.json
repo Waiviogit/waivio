@@ -1814,8 +1814,6 @@
   "sign_in_error_not_cookies": "You need to disable blocking cookies in incognito mode, in your browser settings",
   "limit_order_to_buy": "Limit order to buy",
   "limit_order_to_sell": "Limit order to sell",
-  "market_order_to_sell": "market order to sell",
-  "market_order_to_buy": "market order to buy"
-
-
+  "market_order_to_sell": "Market order to sell",
+  "market_order_to_buy": "Market order to buy"
 }
