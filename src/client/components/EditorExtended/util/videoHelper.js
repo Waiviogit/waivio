@@ -114,7 +114,6 @@ export const getSrc = ({ src }) => {
   }
   if (isThreeSpeakTV(src)) {
     const { srcID } = getThreeSpeakTVSrc(src);
-
     return `${THREESPEAK_TV_PREFIX}${srcID}`;
   }
   if (isRumble(src)) {
@@ -138,7 +137,6 @@ export const getBodyLink = previewResult => {
   const dTubeRes = previewResult[0].match(dTubeRegExp);
   const threeSpeakRes =
     previewResult[0].match(threeSpeakRegExp) || previewResult[0].match(threeSpeakTvRegExp);
-
   if (dTubeRes) return dTubeRes[0].split("'>")[0];
   else if (threeSpeakRes) return threeSpeakRes[0];
 
