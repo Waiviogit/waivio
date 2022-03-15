@@ -384,7 +384,8 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     dispatch({
       type: CREATE_POST_START,
     });
-    const reservationPermlink = get(jsonMetadata, 'reservation_permlink');
+    const reservationPermlink =
+      get(campaign, 'reservation_permlink') || get(jsonMetadata, 'reservation_permlink');
 
     getPermLink.then(permlink =>
       broadcastComment(
@@ -539,6 +540,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     linkedObjects,
     topics,
     content,
+    campaign,
     isUpdating,
     settings,
     titleValue,
@@ -556,7 +558,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     updatedEditor = { ...updatedEditor, topics: uniqWith([...topics, objName], isEqual) };
   }
   dispatch(setUpdatedEditorData(updatedEditor));
-  const campaignId = get(jsonMetadata, 'campaignId', null);
+  const campaignId = get(campaign, '_id', null) || get(jsonMetadata, 'campaignId', null);
   const reservationPermlink = get(jsonMetadata, 'reservation_permlink', null);
   const postData = {
     body: content || body || originalBody,
