@@ -61,7 +61,7 @@ export const calculatePayout = (post, rates) => {
     'payout',
     0,
   );
-  const waivPayout = (get(post, 'total_payout_WAIV', 0) / 2) * rates;
+  const waivPayout = get(post, 'total_payout_WAIV', 0) * rates;
   const waivPayoutHalf = waivPayout / 2;
   const max_payout = parsePayoutAmount(post.max_accepted_payout);
   const pending_payout = parsePayoutAmount(post.pending_payout_value);

@@ -182,12 +182,12 @@ const WithdrawModal = props => {
       title={props.intl.formatMessage({ id: 'Withdraw', defaultMessage: 'Withdraw' })}
       footer={[
         <Button
-          key={props.intl.formatMessage({ id: 'Withdraw', defaultMessage: 'Withdraw' })}
+          key="Withdraw"
           type="primary"
           onClick={handleWithdraw}
           disabled={!fromAmount || isError || invalidAddress}
         >
-          Withdraw
+          <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
         </Button>,
       ]}
     >
