@@ -28,13 +28,10 @@ const iframeWhitelist = [
     fn: src => src.replace(/\?.+$/, ''), // strip query string
   },
   {
-    re: /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)+/i,
+    re: /^https:\/\/3speak\.(?:online|co|tv)\/embed\?v=([A-Za-z0-9_\-\/.]+)(&.*)?$/,
     fn: src => src.replace(/\?.+$/, ''), // strip query string
   },
-  {
-    re: /^https:\/\/3speak\.tv\/(watch|embed)\?v=([\w\d-/._]*)(&|$)+/i,
-    fn: src => src.replace(/\?.+$/, ''), // strip query string
-  },
+
   {
     re: /^(https?:)?\/\/w.soundcloud.com\/player\/.*/i,
     fn: src => {

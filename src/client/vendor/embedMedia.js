@@ -73,12 +73,11 @@ SteemEmbed.get = function(url, options) {
     };
   } else if (threeSpeakId) {
     const [, permlink] = threeSpeakId.split('/');
-
     return {
       type: 'video',
       url: url,
       provider_name: '3Speak',
-      thumbnail: `https://img.3speakcontent.co/${permlink}/thumbnail.png`,
+      //thumbnail: `https://img.3speakcontent.co/${threeSpeakId}/post.png`,
       id: threeSpeakId,
       embed: this.threeSpeak(url, threeSpeakId, options),
     };

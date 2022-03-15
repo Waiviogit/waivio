@@ -125,10 +125,15 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
     .map(tag => `\n[#${tag}](https://www.waivio.com/object/${tag})`)
     .join('');
   const title = `Review: ${getObjectName(restaurant)}, ${getObjectName(dish)}`;
-  const body = `\n[${getObjectName(restaurant)}](${host}/object/${restaurant.author_permlink}),
+  let body = `\n[${getObjectName(restaurant)}](${host}/object/${restaurant.author_permlink}),
     \n[${getObjectName(dish)}](${host}/object/${
     dish.author_permlink
   }) ${imagesLink} ${userBody} ${topicsLink}`;
+
+  if (isReview) {
+    body += `\n***\nThis review was sponsored in part by ${dish.propositions[0].guide.alias} ([@${dish.propositions[0].guideName}](/@${dish.propositions[0].guideName}))`;
+  }
+
   const postData = {
     title,
     body,
