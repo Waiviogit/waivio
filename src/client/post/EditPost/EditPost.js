@@ -86,10 +86,10 @@ const EditPost = props => {
 
     props.setEditorState(getInitialState(props, hideLinkedObjectsSession));
 
-    let campaignId;
+    let campaignId = props.campaignId;
 
     if (props.currDraft) {
-      campaignId = props.campaignId || props.currDraft.jsonMetadata.campaignId;
+      campaignId = campaignId || props.currDraft.jsonMetadata.campaignId;
     }
 
     const isReview = !isEmpty(campaignId);

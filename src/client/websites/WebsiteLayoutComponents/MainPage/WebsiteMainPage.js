@@ -137,7 +137,12 @@ const WebsiteMainPage = props => {
         <h2 className="WebsiteMainPage__withdrawTitle">
           <i>Withdrawing</i> your rewards is easy too.
         </h2>
-        <img src={'/images/money-tree.png'} alt="money-tree" />
+        <img className="money-tree-picture" src={'/images/money-tree.png'} alt="money-tree" />
+        <img
+          className="money-tree-picture-nightmode"
+          src={'/images/money-tree-nightmode.png'}
+          alt="money-tree-nightmode"
+        />
         <div className="WebsiteMainPage__infoWrapper">
           <p className="WebsiteMainPage__services">
             Other services make withdrawing rewards a headache, so we’ve done better.
