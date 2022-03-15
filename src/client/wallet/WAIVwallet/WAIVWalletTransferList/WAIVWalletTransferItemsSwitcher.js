@@ -41,6 +41,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           to={transaction.to}
           from={transaction.from}
           transactionType={accountHistoryConstants.TRANSFER_TO_VESTING}
+          currentUser={currentName}
         />
       );
     case 'tokens_cancelUnstake':
