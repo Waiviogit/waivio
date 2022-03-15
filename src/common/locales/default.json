@@ -1812,5 +1812,11 @@
   "instant_mobile_notifications_open": "Open the Telegram chart with ",
   "instant_mobile_notifications_hive": " and enter the Hive usernames to subscribe.",
   "sign_in_error_not_cookies": "You need to disable blocking cookies in incognito mode, in your browser settings",
-  "in_the": "in the"
+  "in_the": "in the",
+  "limit_order_to_buy": "Limit order to buy",
+  "limit_order_to_sell": "Limit order to sell",
+  "market_order_to_sell": "market order to sell",
+  "market_order_to_buy": "market order to buy"
+
+
 }
