@@ -17,6 +17,7 @@ import MarketBuyCard from '../../TransfersCards/MarketBuyCard';
 import DelegatedTo from '../../TransfersCards/DelegatedTo';
 import MarketCancel from '../../TransfersCards/MarketCancel';
 import MarketCloseOrder from '../../TransfersCards/MarketCloseOrder';
+import MarketExpireCard from '../../TransfersCards/MarketExpireCard';
 import UndelegateStart from '../../TransfersCards/UndelegateStart';
 import AirDropCard from '../../TransfersCards/AirDropCard';
 import CuratorRewardsCard from '../../TransfersCards/CuratorRewardsCard';
@@ -74,6 +75,19 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         />
       );
     }
+
+    case 'market_expire': {
+      return (
+        <MarketExpireCard
+          symbol={transaction.symbol}
+          account={transaction.account}
+          timestamp={transaction.timestamp}
+          orderType={transaction.orderType}
+          quantity={transaction.quantityUnlocked}
+        />
+      );
+    }
+
     case 'market_buy':
       return (
         <TokenActionInMarketCard
@@ -307,6 +321,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     quantityTokens: PropTypes.string,
     orderType: PropTypes.string,
     quantityLocked: PropTypes.string,
+    quantityUnlocked: PropTypes.string,
     quantityReturned: PropTypes.string,
     symbol: PropTypes.string,
     price: PropTypes.string,

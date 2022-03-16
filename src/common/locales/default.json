@@ -1816,5 +1816,7 @@
   "limit_order_to_buy": "Limit order to buy",
   "limit_order_to_sell": "Limit order to sell",
   "market_order_to_sell": "Market order to sell",
-  "market_order_to_buy": "Market order to buy"
+  "market_order_to_buy": "Market order to buy",
+  "market_expired_to_buy": "Market expired to buy",
+  "market_expired_to_sell": "Market expired to sell"
 }
