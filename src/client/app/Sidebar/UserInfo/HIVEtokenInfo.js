@@ -37,7 +37,7 @@ const HIVEtokenInfo = props => (
     </div>
     <div>
       <i className="iconfont icon-dollar text-icon" />
-      <FormattedMessage id="hive_vote" defaultMessage="HIVE vote" /> :{' '}
+      <FormattedMessage id="hive_vote" defaultMessage="HIVE vote" />:{' '}
       <USDDisplay value={props.votePrice} />
     </div>
   </div>
