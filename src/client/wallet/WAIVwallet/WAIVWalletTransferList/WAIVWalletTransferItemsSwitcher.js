@@ -41,6 +41,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           to={transaction.to}
           from={transaction.from}
           transactionType={accountHistoryConstants.TRANSFER_TO_VESTING}
+          currentUser={currentName}
         />
       );
     case 'tokens_cancelUnstake':
@@ -103,7 +104,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           quantity={transaction.price || transaction.quantityLocked}
           timestamp={transaction.timestamp}
           orderType={transaction.orderType}
-          symbol={transaction.symbol}
+          symbol={transaction.orderType === 'marketBuy' ? 'SWAP.HIVE' : transaction.symbol}
         />
       );
 

@@ -42,7 +42,7 @@ const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
             </span>
           )}
           {token.orderKey && token.symbol !== 'SWAP.ETH' && Boolean(token.balance) && (
-            <WalletAction mainKey={'withdraw'} mainCurrency={token.symbol} />
+            <WalletAction mainKey={'withdraw'} mainCurrency={token.symbol} options={['swap']} />
           )}
         </div>
       </div>

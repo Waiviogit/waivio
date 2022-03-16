@@ -182,12 +182,12 @@ const WithdrawModal = props => {
       title={props.intl.formatMessage({ id: 'Withdraw', defaultMessage: 'Withdraw' })}
       footer={[
         <Button
-          key={props.intl.formatMessage({ id: 'Withdraw', defaultMessage: 'Withdraw' })}
+          key="Withdraw"
           type="primary"
           onClick={handleWithdraw}
           disabled={!fromAmount || isError || invalidAddress}
         >
-          Withdraw
+          <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
         </Button>,
       ]}
     >
@@ -235,13 +235,13 @@ const WithdrawModal = props => {
         </div>
       </div>
       <p>
-        <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:
+        <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
         <USDDisplay value={fromAmount * get(pair, 'rate') * hiveRateInUsd} />
       </p>
       {!hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) && (
         <p>
           <FormattedMessage id="minimal_withdraw_amount" defaultMessage="Minimal withdraw amount" />
-          :{withdrawFee} {get(pair, 'from_coin_symbol')}
+          : {withdrawFee} {get(pair, 'from_coin_symbol')}
         </p>
       )}
       <div className="WithdrawModal__block">

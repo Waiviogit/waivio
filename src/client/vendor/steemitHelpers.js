@@ -9,7 +9,11 @@ import { Client } from '@hiveio/dhive';
 import formatter from '../../common/helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getDownvotes } from '../../common/helpers/voteHelpers';
-import { calculateVoteValueForSlider, getContent } from '../../waivioApi/ApiClient';
+import {
+  calculateVoteValueForSlider,
+  checkExistPermlink,
+  getContent,
+} from '../../waivioApi/ApiClient';
 import { useSelector } from 'react-redux';
 import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
@@ -57,7 +61,7 @@ export const calculatePayout = (post, rates) => {
     'payout',
     0,
   );
-  const waivPayout = (get(post, 'total_payout_WAIV', 0) / 2) * rates;
+  const waivPayout = get(post, 'total_payout_WAIV', 0) * rates;
   const waivPayoutHalf = waivPayout / 2;
   const max_payout = parsePayoutAmount(post.max_accepted_payout);
   const pending_payout = parsePayoutAmount(post.pending_payout_value);
@@ -168,6 +172,31 @@ export function createPermlink(title, author, parent_author, parent_permlink, lo
   permlink = `re-${parent_author}-${parent_permlink}-${timeStr}`;
   return Promise.resolve(checkPermLinkLength(permlink));
 }
+
+const addPrefixForPermlink = async s => {
+  const prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
+  const permlink = prefix + s;
+  const checkWithPrefix = await checkExistPermlink(permlink);
+
+  if (!checkWithPrefix.exist) {
+    return Promise.resolve(checkPermLinkLength(permlink));
+  } else {
+    return addPrefixForPermlink(s);
+  }
+};
+
+export const getObjectPermlink = async title => {
+  let permlink = slug(title);
+  if (permlink === '') permlink = base58.encode(secureRandom.randomBuffer(4));
+
+  const checkWithoutPrefix = await checkExistPermlink(permlink);
+
+  if (!checkWithoutPrefix.exist) {
+    return Promise.resolve(checkPermLinkLength(permlink));
+  }
+
+  return addPrefixForPermlink(permlink);
+};
 
 /**
  * https://github.com/steemit/steemit.com/blob/ded8ecfcc9caf2d73b6ef12dbd0191bd9dbf990b/app/redux/TransactionSaga.js#L412

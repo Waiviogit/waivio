@@ -40,7 +40,10 @@ const Campaign = ({
   const handleOpenQuickRewards = () =>
     onActionInitiated(() => {
       openModal();
-      setRestaurant(requiredObject);
+      setRestaurant({
+        ...requiredObject,
+        campaigns: { min_reward: minReward, max_reward: maxReward },
+      });
     });
 
   const goToProducts = () => {

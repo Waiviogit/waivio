@@ -9,7 +9,6 @@ import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import { getTransferDetails } from '../../../waivioApi/ApiClient';
 import { handleLoadMoreTransactions } from '../WalletHelper';
 import BlocktraidsTransactionModal from '../BlocktraidsTransactionModal';
-
 import './UserWalletTransactions.less';
 
 @injectIntl

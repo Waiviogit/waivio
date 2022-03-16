@@ -1,10 +1,9 @@
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAlbums } from '../galleryStore/galleryActions';
-import { createPermlink } from '../../client/vendor/steemitHelpers';
+import { getObjectPermlink } from '../../client/vendor/steemitHelpers';
 import { generateRandomString } from '../../common/helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
-import { WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
 import { getCurrentHost, getUsedLocale } from '../appStore/appSelectors';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
@@ -121,33 +120,31 @@ export const createWaivioObject = postData => (dispatch, getState) => {
   return dispatch({
     type: CREATE_WOBJECT,
     payload: {
-      promise: createPermlink(wobj.id, auth.user.name, '', WAIVIO_PARENT_PERMLINK).then(
-        permlink => {
-          const requestBody = {
-            author: auth.user.name,
-            title: `${wobj.name} - waivio object`,
-            body: `Waivio object "${wobj.name}" has been created`,
-            permlink: `${generateRandomString(3).toLowerCase()}-${permlink.toLowerCase()}`,
-            objectName: wobj.name,
-            locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
-            type: wobj.type,
-            isExtendingOpen: Boolean(wobj.isExtendingOpen),
-            isPostingOpen: Boolean(wobj.isPostingOpen),
-            parentAuthor: wobj.parentAuthor,
-            parentPermlink: wobj.parentPermlink,
-          };
+      promise: getObjectPermlink(wobj.id).then(permlink => {
+        const requestBody = {
+          author: auth.user.name,
+          title: `${wobj.name} - waivio object`,
+          body: `Waivio object "${wobj.name}" has been created`,
+          permlink: `${generateRandomString(3).toLowerCase()}-${permlink.toLowerCase()}`,
+          objectName: wobj.name,
+          locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
+          type: wobj.type,
+          isExtendingOpen: Boolean(wobj.isExtendingOpen),
+          isPostingOpen: Boolean(wobj.isPostingOpen),
+          parentAuthor: wobj.parentAuthor,
+          parentPermlink: wobj.parentPermlink,
+        };
 
-          return ApiClient.postCreateWaivioObject(requestBody).then(response => {
-            if (follow) {
-              dispatch(followObject(response.permlink));
-            }
+        return ApiClient.postCreateWaivioObject(requestBody).then(response => {
+          if (follow) {
+            dispatch(followObject(response.permlink));
+          }
 
-            dispatch(voteObject(response.author, response.permlink, votePower));
+          dispatch(voteObject(response.author, response.permlink, votePower));
 
-            return response;
-          });
-        },
-      ),
+          return response;
+        });
+      }),
     },
   });
 };
