@@ -1,11 +1,8 @@
 import { get } from 'lodash';
 import { isEmpty } from 'lodash/lang';
 
-export const getWaivVotePrice = (payout, rshares, rate) => {
-  const waivPayout = payout / 2;
-
-  return rshares > 0 ? (waivPayout / rshares) * rate : 0;
-};
+export const getWaivVotePrice = (payout, rshares, rate) =>
+  rshares > 0 ? (payout / rshares) * rate : 0;
 
 const postRatioCalculate = (post, waivRates) => {
   if (!post) return {};
