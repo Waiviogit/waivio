@@ -106,9 +106,9 @@ const SwapTokens = props => {
   };
 
   const handleChangeToValue = value => {
-    const to = props.swapList[props.from.symbol].find(pair => pair.symbol === value.symbol);
+    const to = props.swapList[props.from.symbol].find(pair => pair.symbol === props.to.symbol);
 
-    setToAmount(+to || 0);
+    setToAmount(+value || 0);
 
     if (!isEmpty(props.from)) {
       const amount = calculateOutputInfo(value, to, props.from);
