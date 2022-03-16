@@ -14,6 +14,7 @@
     &-color {
       color: @black;
     }
+
     &-text {
       font-weight: lighter;
       color: @dim-gray;
@@ -164,12 +165,17 @@
   }
 
   &__received {
-    color: @black-text;
+    color: @green;
     margin-left: auto;
 
     &-self {
       color: @black-text;
     }
+  }
+
+  &__sent {
+    color: @red;
+    margin-left: auto;
   }
 
   &__limit-order {
