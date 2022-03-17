@@ -1778,5 +1778,6 @@
   "minimal_withdraw_amount": "Minimale onttrekkingsbedrag",
   "destination_address": "Bestemming adres",
   "qr_scanner": "QR skandeerder",
-  "withdraw_info_part3": "Klik op die knoppie hieronder om na HiveSinger herlei te word om jou transaksie te voltooi."
+  "withdraw_info_part3": "Klik op die knoppie hieronder om na HiveSinger herlei te word om jou transaksie te voltooi.",
+  "in_the": "in die"
 }
