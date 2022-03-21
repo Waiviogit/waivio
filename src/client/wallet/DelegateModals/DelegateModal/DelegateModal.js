@@ -3,7 +3,7 @@ import { Form, Modal } from 'antd';
 import PropsType from 'prop-types';
 import { useSelector } from 'react-redux';
 import { round } from 'lodash';
-
+import { FormattedMessage, injectIntl } from 'react-intl';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import PowerSwitcher from '../../PowerUpOrDown/PowerSwitcher/PowerSwitcher';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
@@ -69,8 +69,9 @@ const DelegateModal = props => {
     <Modal
       className="DelegateModal"
       visible={props.visible}
-      title={'Delegate'}
+      title={props.intl.formatMessage({ id: 'delegate', defaultMessage: 'Delegate' })}
       onCancel={props.onCancel}
+      s
       onOk={handleDelegate}
       okText={'Delegate'}
       okButtonProps={{
@@ -78,11 +79,16 @@ const DelegateModal = props => {
       }}
     >
       <p>
-        Please enter the name of the account that you wish to delegate a portion of your voting
-        power to.
+        <FormattedMessage
+          id="delegate_modal_info_part1"
+          defaultMessage="Please enter the name of the account that you wish to delegate a portion of your voting
+        power to."
+        />
       </p>
       <div>
-        <h3>Target account:</h3>
+        <h3>
+          <FormattedMessage id="target_account" defaultMessage="Target account" />:
+        </h3>
         {selectUser ? (
           <SelectUserForAutocomplete account={selectUser} resetUser={setUser} />
         ) : (
@@ -95,7 +101,9 @@ const DelegateModal = props => {
         )}
       </div>
       <div>
-        <h3>Amount to delegate:</h3>
+        <h3>
+          <FormattedMessage id="amount_to_delegate" defaultMessage="Amount to delegate" />:
+        </h3>
         <PowerSwitcher
           handleBalanceClick={amount => props.form.setFieldsValue({ amount })}
           getFieldDecorator={props.form.getFieldDecorator}
@@ -108,10 +116,22 @@ const DelegateModal = props => {
       </div>
       <div>
         <p>
-          Please note that delegations are instant, but it will take {props.token === 'HP' ? 5 : 7}{' '}
-          days for the amount to be returned to your account after undelegation.
+          <FormattedMessage
+            id="delegate_modal_info_part2"
+            defaultMessage="Please note that delegations are instant, but it will take"
+          />{' '}
+          {props.token === 'HP' ? 5 : 7}{' '}
+          <FormattedMessage
+            id="delegate_modal_info_part3"
+            defaultMessage="days for the amount to be returned to your account after undelegation."
+          />
         </p>
-        <p>Click the button below to be redirected to HiveSinger to complete your transaction.</p>
+        <p>
+          <FormattedMessage
+            id="delegate_modal_info_part4"
+            defaultMessage="Click the button below to be redirected to HiveSinger to complete your transaction."
+          />
+        </p>
       </div>
     </Modal>
   );
@@ -123,6 +143,7 @@ DelegateModal.propTypes = {
   token: PropsType.string.isRequired,
   stakeList: PropsType.shape().isRequired,
   form: PropsType.shape().isRequired,
+  intl: PropsType.shape().isRequired,
 };
 
-export default Form.create()(DelegateModal);
+export default injectIntl(Form.create()(DelegateModal));
