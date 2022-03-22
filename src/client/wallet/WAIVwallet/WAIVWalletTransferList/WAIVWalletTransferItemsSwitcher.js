@@ -13,7 +13,7 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 import PowerDownTransaction from '../../TransfersCards/PowerDownTransaction';
 import UnknownTransactionType from '../../TransfersCards/UnknownTransactionType/UnknownTransactionType';
 import TokenActionInMarketCard from '../../TransfersCards/TokenBoughtCard.js/TokenActionInMarketCard';
-import MarketBuyCard from '../../TransfersCards/MarketBuyCard';
+import MarketBuyCard from '../../TransfersCards/MarketBuyCard/MarketBuyCard';
 import DelegatedTo from '../../TransfersCards/DelegatedTo';
 import MarketCancel from '../../TransfersCards/MarketCancel';
 import MarketCloseOrder from '../../TransfersCards/MarketCloseOrder';
@@ -115,7 +115,9 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
     case 'market_placeOrder':
       return (
         <MarketBuyCard
-          quantity={transaction.price || transaction.quantityLocked}
+          price={transaction.price}
+          quantityLocked={transaction.quantityLocked}
+          quantity={transaction.quantity}
           timestamp={transaction.timestamp}
           orderType={transaction.orderType}
           symbol={transaction.orderType === 'marketBuy' ? 'SWAP.HIVE' : transaction.symbol}
@@ -320,6 +322,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     operation: PropTypes.string,
     quantityTokens: PropTypes.string,
     orderType: PropTypes.string,
+    quantityBuy: PropTypes.string,
     quantityLocked: PropTypes.string,
     quantityUnlocked: PropTypes.string,
     quantityReturned: PropTypes.string,
