@@ -1778,5 +1778,6 @@
   "destination_address": "宛先アドレス",
   "qr_scanner": "QRスキャナー",
   "withdraw_info_part3": "下のボタンをクリックしてHiveSingerにリダイレクトし、トランザクションを完了します。",
-  "in_the": "の中に"
+  "in_the": "の中に",
+  "expertise": "専門知識"
 }

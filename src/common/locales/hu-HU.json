@@ -1779,5 +1779,6 @@
   "destination_address": "Úticél címe",
   "qr_scanner": "QR szkenner",
   "withdraw_info_part3": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez.",
-  "in_the": "ban"
+  "in_the": "ban",
+  "expertise": "Szakvélemény"
 }

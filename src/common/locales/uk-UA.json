@@ -1779,5 +1779,6 @@
   "destination_address": "Адреса призначення",
   "qr_scanner": "QR сканер",
   "withdraw_info_part3": "Натисніть кнопку нижче, щоб бути перенаправленим на HiveSinger для завершення транзакції.",
-  "in_the": "для"
+  "in_the": "для",
+  "expertise": "Експертиза"
 }
