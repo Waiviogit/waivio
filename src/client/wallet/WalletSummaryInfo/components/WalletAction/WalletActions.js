@@ -90,7 +90,10 @@ const WalletAction = props => {
             </Menu>
           }
         >
-          <Button className={classListSelect}>
+          <Button
+            className={classListSelect}
+            title={props.intl.formatMessage({ id: props.mainKey })}
+          >
             <Icon type="caret-down" />
           </Button>
         </Dropdown>

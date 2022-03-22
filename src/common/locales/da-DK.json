@@ -1777,5 +1777,6 @@
     "minimal_withdraw_amount": "Minimum hævebeløb",
     "destination_address": "Destinationsadresse",
     "qr_scanner": "QR scanner",
-    "withdraw_info_part3": "Klik på knappen nedenfor for at blive omdirigeret til HiveSinger for at fuldføre din transaktion."
+    "withdraw_info_part3": "Klik på knappen nedenfor for at blive omdirigeret til HiveSinger for at fuldføre din transaktion.",
+    "in_the": "i"
   }

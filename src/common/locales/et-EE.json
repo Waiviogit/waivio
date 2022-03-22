@@ -1777,5 +1777,6 @@
   "minimal_withdraw_amount": "Minimaalne väljamakse summa",
   "destination_address": "Sihtkoha aadress",
   "qr_scanner": "QR-skanner",
-  "withdraw_info_part3": "Tehingu lõpuleviimiseks HiveSingeri suunamiseks klõpsake allolevat nuppu."
+  "withdraw_info_part3": "Tehingu lõpuleviimiseks HiveSingeri suunamiseks klõpsake allolevat nuppu.",
+  "in_the": "aastal"
 }

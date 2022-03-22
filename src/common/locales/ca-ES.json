@@ -1777,5 +1777,6 @@
   "minimal_withdraw_amount": "Import mínim de retirada",
   "destination_address": "Adreça de destinació",
   "qr_scanner": "Escàner QR",
-  "withdraw_info_part3": "Feu clic al botó següent per ser redirigit a HiveSinger per completar la vostra transacció."
+  "withdraw_info_part3": "Feu clic al botó següent per ser redirigit a HiveSinger per completar la vostra transacció.",
+  "in_the": "en el"
 }

@@ -117,10 +117,10 @@ class WalletSidebar extends React.Component {
         {ownProfile && !isGuest && (
           <div className="WalletSidebar__power">
             <Action big onClick={this.handleOpenPowerUp}>
-              Power up
+              <FormattedMessage id="power_up" defaultMessage="Power up" />
             </Action>
             <Action big onClick={this.handleOpenPowerDown}>
-              Power down
+              <FormattedMessage id="power_down" defaultMessage="Power down" />
             </Action>
           </div>
         )}

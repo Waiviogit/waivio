@@ -1776,5 +1776,6 @@
   "minimal_withdraw_amount": "Minimalna kwota wypłaty",
   "destination_address": "Adres przeznaczenia",
   "qr_scanner": "Skaner QR",
-  "withdraw_info_part3": "Kliknij przycisk poniżej, aby zostać przekierowanym do HiveSinger i dokończyć transakcję."
+  "withdraw_info_part3": "Kliknij przycisk poniżej, aby zostać przekierowanym do HiveSinger i dokończyć transakcję.",
+  "in_the": "w"
 }

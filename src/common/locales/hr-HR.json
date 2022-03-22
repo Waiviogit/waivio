@@ -1777,5 +1777,6 @@
   "minimal_withdraw_amount": "Minimalni iznos povlačenja",
   "destination_address": "Adresa odredišta",
   "qr_scanner": "QR skener",
-  "withdraw_info_part3": "Kliknite donji gumb kako biste bili preusmjereni na HiveSinger kako biste dovršili svoju transakciju."
+  "withdraw_info_part3": "Kliknite donji gumb kako biste bili preusmjereni na HiveSinger kako biste dovršili svoju transakciju.",
+  "in_the": "u"
 }
