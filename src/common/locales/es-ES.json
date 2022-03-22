@@ -1780,5 +1780,11 @@
   "withdraw_info_part3": "Haga clic en el botón a continuación para ser redirigido a HiveSinger para completar su transacción.",
   "in_the": "en el",
   "expertise": "Pericia",
-  "show_author_curator": "Mostrar recompensas de autores y curadores"
+  "show_author_curator": "Mostrar recompensas de autores y curadores",
+  "delegate": "Delegar",
+  "notice": "Aviso",
+  "power_up_or_down_info_part1": "Tenga en cuenta que el encendido (replanteo) es instantáneo, mientras que el apagado (retirada) lleva tiempo",
+  "waiv_power_info": "4 semanas para Waiv Power (WP);",
+  "hive_power_info": "13 semanas para Hive Power (HP).",
+  "power_up_or_down_info_part2": "Los fondos apostados se liberan cada semana durante el período especificado en cantidades iguales."
 }

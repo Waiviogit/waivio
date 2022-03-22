@@ -1781,5 +1781,11 @@
   "withdraw_info_part3": "Klik op die knoppie hieronder om na HiveSinger herlei te word om jou transaksie te voltooi.",
   "in_the": "in die",
   "expertise": "Kundigheid",
-  "show_author_curator": "Wys skrywer- en kuratorsbelonings"
+  "show_author_curator": "Wys skrywer- en kuratorsbelonings",
+  "delegate": "Delegeer",
+  "notice": "Kennisgewing",
+  "power_up_or_down_info_part1": "Neem asseblief kennis dat Power Up (inzet) onmiddellik is, terwyl Power Down (ontspan) tyd neem",
+  "waiv_power_info": "4 weke vir Waiv Power (WP);",
+  "hive_power_info": "13 weke vir Hive Power (HP).",
+  "power_up_or_down_info_part2": "Beleggingsfondse word elke week vir die gespesifiseerde tydperk in gelyke bedrae vrygestel."
 }

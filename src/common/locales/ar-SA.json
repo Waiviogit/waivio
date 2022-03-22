@@ -1780,5 +1780,11 @@
   "withdraw_info_part3": "انقر فوق الزر أدناه لإعادة توجيهك إلى HiveSinger لإكمال معاملتك.",
   "in_the": "في ال",
   "expertise": "خبرة",
-  "show_author_curator": "اعرض مكافآت المؤلف والقيمين"
+  "show_author_curator": "اعرض مكافآت المؤلف والقيمين",
+  "delegate": "مندوب",
+  "notice": "يلاحظ",
+  "power_up_or_down_info_part1": "يرجى ملاحظة أن Power Up (Staking) فوري ، بينما Power Down (unstaking) يستغرق وقتًا",
+  "waiv_power_info": "4 أسابيع لسلطة التنازل (WP) ؛",
+  "hive_power_info": "13 أسبوعًا لـ Hive Power (HP).",
+  "power_up_or_down_info_part2": "يتم تحرير الأموال المربوطة كل أسبوع للفترة المحددة بمبالغ متساوية."
 }

@@ -1780,5 +1780,11 @@
   "withdraw_info_part3": "Kliknite donji gumb kako biste bili preusmjereni na HiveSinger kako biste dovršili svoju transakciju.",
   "in_the": "u",
   "expertise": "Stručnost",
-  "show_author_curator": "Pokažite nagrade za autore i kustose"
+  "show_author_curator": "Pokažite nagrade za autore i kustose",
+  "delegate": "Delegat",
+  "notice": "Obavijest",
+  "power_up_or_down_info_part1": "Imajte na umu da je Power Up (ulaganje) trenutačno, dok je Power Down (unstaking) potrebno vrijeme",
+  "waiv_power_info": "4 tjedna za Waiv Power (WP);",
+  "hive_power_info": "13 tjedana za snagu košnice (HP).",
+  "power_up_or_down_info_part2": "Uložena sredstva se oslobađaju svaki tjedan za navedeno razdoblje u jednakim iznosima."
 }

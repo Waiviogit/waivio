@@ -1779,5 +1779,11 @@
   "withdraw_info_part3": "Klicken Sie auf die Schaltfläche unten, um zu HiveSinger weitergeleitet zu werden, um Ihre Transaktion abzuschließen.",
   "in_the": "in dem",
   "expertise": "Sachverstand",
-  "show_author_curator": "Prämien für Autoren und Kuratoren anzeigen"
+  "show_author_curator": "Prämien für Autoren und Kuratoren anzeigen",
+  "delegate": "Delegieren",
+  "notice": "Notiz",
+  "power_up_or_down_info_part1": "Bitte beachten Sie, dass Power Up (Abstecken) sofort erfolgt, während Power Down (Abstecken) Zeit braucht",
+  "waiv_power_info": "4 Wochen für Waiv Power (WP);",
+  "hive_power_info": "13 Wochen für Hive Power (HP).",
+  "power_up_or_down_info_part2": "Die eingesetzten Gelder werden jede Woche für den angegebenen Zeitraum in gleichen Beträgen freigegeben."
 }

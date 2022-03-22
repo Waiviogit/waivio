@@ -1779,5 +1779,11 @@
   "withdraw_info_part3": "Kliknij przycisk poniżej, aby zostać przekierowanym do HiveSinger i dokończyć transakcję.",
   "in_the": "w",
   "expertise": "Ekspertyza",
-  "show_author_curator": "Pokaż nagrody dla autorów i kuratorów"
+  "show_author_curator": "Pokaż nagrody dla autorów i kuratorów",
+  "delegate": "Delegat",
+  "notice": "Ogłoszenie",
+  "power_up_or_down_info_part1": "Należy pamiętać, że włączanie (stakowanie) jest natychmiastowe, podczas gdy wyłączanie (odtapianie) wymaga czasu",
+  "waiv_power_info": "4 tygodnie dla Waiv Power (WP);",
+  "hive_power_info": "13 tygodni dla mocy ula (HP).",
+  "power_up_or_down_info_part2": "Postawione środki są uwalniane co tydzień przez określony czas w równych kwotach."
 }

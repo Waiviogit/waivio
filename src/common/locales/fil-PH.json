@@ -1780,5 +1780,11 @@
   "withdraw_info_part3": "I-click ang button sa ibaba upang mai-redirect sa HiveSinger upang makumpleto ang iyong transaksyon.",
   "in_the": "nasa",
   "expertise": "Dalubhasa",
-  "show_author_curator": "Ipakita ang mga gantimpala ng may-akda at mga curator"
+  "show_author_curator": "Ipakita ang mga gantimpala ng may-akda at mga curator",
+  "delegate": "Delegado",
+  "notice": "Pansinin",
+  "power_up_or_down_info_part1": "Pakitandaan na ang Power Up (staking) ay instant, habang ang Power Down (unstaking) ay tumatagal ng oras",
+  "waiv_power_info": "4 na linggo para sa Waiv Power (WP);",
+  "hive_power_info": "13 linggo para sa Hive Power (HP).",
+  "power_up_or_down_info_part2": "Ang mga staked na pondo ay inilalabas bawat linggo para sa tinukoy na panahon sa pantay na halaga."
 }

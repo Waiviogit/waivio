@@ -1780,5 +1780,11 @@
   "withdraw_info_part3": "Fai clic sul pulsante in basso per essere reindirizzato a HiveSinger per completare la transazione.",
   "in_the": "nel",
   "expertise": "Competenza",
-  "show_author_curator": "Mostra i premi di autori e curatori"
+  "show_author_curator": "Mostra i premi di autori e curatori",
+  "delegate": "Delegare",
+  "notice": "Avviso",
+  "power_up_or_down_info_part1": "Tieni presente che Power Up (staking) è istantaneo, mentre Power Down (unstaking) richiede tempo",
+  "waiv_power_info": "4 settimane per Waiv Power (WP);",
+  "hive_power_info": "13 settimane per Hive Power (HP).",
+  "power_up_or_down_info_part2": "I fondi puntati vengono rilasciati ogni settimana per il periodo specificato in importi uguali."
 }

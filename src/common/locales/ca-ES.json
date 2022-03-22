@@ -1780,5 +1780,11 @@
   "withdraw_info_part3": "Feu clic al botó següent per ser redirigit a HiveSinger per completar la vostra transacció.",
   "in_the": "en el",
   "expertise": "Perícia",
-  "show_author_curator": "Mostra premis per a autors i comissaris"
+  "show_author_curator": "Mostra premis per a autors i comissaris",
+  "delegate": "Delegat",
+  "notice": "Avís",
+  "power_up_or_down_info_part1": "Si us plau, tingueu en compte que l'engegada (apostament) és instantània, mentre que l'apagada (desaparcada) requereix temps",
+  "waiv_power_info": "4 setmanes per a Waiv Power (WP);",
+  "hive_power_info": "13 setmanes per a Hive Power (HP).",
+  "power_up_or_down_info_part2": "Els fons apostats s'alliberen cada setmana durant el període especificat en quantitats iguals."
 }

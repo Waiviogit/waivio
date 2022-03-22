@@ -1780,5 +1780,11 @@
   "withdraw_info_part3": "Tehingu lõpuleviimiseks HiveSingeri suunamiseks klõpsake allolevat nuppu.",
   "in_the": "aastal",
   "expertise": "Ekspertiis",
-  "show_author_curator": "Näidake autorile ja kuraatoritele auhindu"
+  "show_author_curator": "Näidake autorile ja kuraatoritele auhindu",
+  "delegate": "Delegeerida",
+  "notice": "Märkus",
+  "power_up_or_down_info_part1": "Pange tähele, et sisselülitamine (panustamine) toimub kohe, samal ajal kui väljalülitamine (panustamine) võtab aega",
+  "waiv_power_info": "4 nädalat Waiv Poweri (WP) puhul;",
+  "hive_power_info": "Hive Poweri (HP) puhul 13 nädalat.",
+  "power_up_or_down_info_part2": "Panusraha vabastatakse igal nädalal kindlaksmääratud perioodi jooksul võrdsetes summades."
 }
