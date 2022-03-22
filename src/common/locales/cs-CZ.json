@@ -1776,5 +1776,6 @@
   "minimal_withdraw_amount": "Minimální částka výběru",
   "destination_address": "Cílová adresa",
   "qr_scanner": "QR skener",
-  "withdraw_info_part3": "Kliknutím na tlačítko níže budete přesměrováni na HiveSinger k dokončení transakce."
+  "withdraw_info_part3": "Kliknutím na tlačítko níže budete přesměrováni na HiveSinger k dokončení transakce.",
+  "in_the": "v"
 }

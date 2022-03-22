@@ -1777,5 +1777,6 @@
   "minimal_withdraw_amount": "最小引き出し額",
   "destination_address": "宛先アドレス",
   "qr_scanner": "QRスキャナー",
-  "withdraw_info_part3": "下のボタンをクリックしてHiveSingerにリダイレクトし、トランザクションを完了します。"
+  "withdraw_info_part3": "下のボタンをクリックしてHiveSingerにリダイレクトし、トランザクションを完了します。",
+  "in_the": "の中に"
 }
