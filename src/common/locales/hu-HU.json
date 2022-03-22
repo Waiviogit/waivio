@@ -1778,5 +1778,6 @@
   "minimal_withdraw_amount": "Minimális visszavonási összeg",
   "destination_address": "Úticél címe",
   "qr_scanner": "QR szkenner",
-  "withdraw_info_part3": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez."
+  "withdraw_info_part3": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez.",
+  "in_the": "ban"
 }

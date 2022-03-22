@@ -1776,5 +1776,6 @@
   "minimal_withdraw_amount": "Valor mínimo de saque",
   "destination_address": "Endereço de destino",
   "qr_scanner": "Leitor QR",
-  "withdraw_info_part3": "Clique no botão abaixo para ser redirecionado ao HiveSinger para concluir sua transação."
+  "withdraw_info_part3": "Clique no botão abaixo para ser redirecionado ao HiveSinger para concluir sua transação.",
+  "in_the": "no"
 }

@@ -1777,5 +1777,6 @@
   "minimal_withdraw_amount": "Importo minimo di prelievo",
   "destination_address": "Indirizzo di destinazione",
   "qr_scanner": "Scanner QR",
-  "withdraw_info_part3": "Fai clic sul pulsante in basso per essere reindirizzato a HiveSinger per completare la transazione."
+  "withdraw_info_part3": "Fai clic sul pulsante in basso per essere reindirizzato a HiveSinger per completare la transazione.",
+  "in_the": "nel"
 }

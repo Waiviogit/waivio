@@ -1777,5 +1777,6 @@
   "minimal_withdraw_amount": "الحد الأدنى لسحب المبلغ",
   "destination_address": "عنوان الوجهة",
   "qr_scanner": "الماسح الضوئي QR",
-  "withdraw_info_part3": "انقر فوق الزر أدناه لإعادة توجيهك إلى HiveSinger لإكمال معاملتك."
+  "withdraw_info_part3": "انقر فوق الزر أدناه لإعادة توجيهك إلى HiveSinger لإكمال معاملتك.",
+  "in_the": "في ال"
 }

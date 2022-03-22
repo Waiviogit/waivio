@@ -19,8 +19,8 @@ const ShowRewardsButton = () => {
     <div className="WAIVwallet__showWrap">
       <Checkbox onChange={handleCheck} />
       <FormattedMessage
-        id={'show_author_curator'}
-        defaultMessage={'Show author and curators rewards'}
+        id="show_author_curator"
+        defaultMessage="Show author and curators rewards"
       />
     </div>
   );

@@ -13,10 +13,11 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 import PowerDownTransaction from '../../TransfersCards/PowerDownTransaction';
 import UnknownTransactionType from '../../TransfersCards/UnknownTransactionType/UnknownTransactionType';
 import TokenActionInMarketCard from '../../TransfersCards/TokenBoughtCard.js/TokenActionInMarketCard';
-import MarketBuyCard from '../../TransfersCards/MarketBuyCard';
+import MarketBuyCard from '../../TransfersCards/MarketBuyCard/MarketBuyCard';
 import DelegatedTo from '../../TransfersCards/DelegatedTo';
 import MarketCancel from '../../TransfersCards/MarketCancel';
 import MarketCloseOrder from '../../TransfersCards/MarketCloseOrder';
+import MarketExpireCard from '../../TransfersCards/MarketExpireCard';
 import UndelegateStart from '../../TransfersCards/UndelegateStart';
 import AirDropCard from '../../TransfersCards/AirDropCard';
 import CuratorRewardsCard from '../../TransfersCards/CuratorRewardsCard';
@@ -74,6 +75,19 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
         />
       );
     }
+
+    case 'market_expire': {
+      return (
+        <MarketExpireCard
+          symbol={transaction.symbol}
+          account={transaction.account}
+          timestamp={transaction.timestamp}
+          orderType={transaction.orderType}
+          quantity={transaction.quantityUnlocked}
+        />
+      );
+    }
+
     case 'market_buy':
       return (
         <TokenActionInMarketCard
@@ -101,7 +115,9 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
     case 'market_placeOrder':
       return (
         <MarketBuyCard
-          quantity={transaction.price || transaction.quantityLocked}
+          price={transaction.price}
+          quantityLocked={transaction.quantityLocked}
+          quantity={transaction.quantity}
           timestamp={transaction.timestamp}
           orderType={transaction.orderType}
           symbol={transaction.orderType === 'marketBuy' ? 'SWAP.HIVE' : transaction.symbol}
@@ -306,7 +322,9 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     operation: PropTypes.string,
     quantityTokens: PropTypes.string,
     orderType: PropTypes.string,
+    quantityBuy: PropTypes.string,
     quantityLocked: PropTypes.string,
+    quantityUnlocked: PropTypes.string,
     quantityReturned: PropTypes.string,
     symbol: PropTypes.string,
     price: PropTypes.string,
