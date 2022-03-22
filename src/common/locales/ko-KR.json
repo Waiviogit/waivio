@@ -1779,5 +1779,6 @@
   "qr_scanner": "QR 스캐너",
   "withdraw_info_part3": "아래 버튼을 클릭하면 거래를 완료하기 위해 HiveSinger로 리디렉션됩니다.",
   "in_the": "에서",
-  "expertise": "전문적 지식"
+  "expertise": "전문적 지식",
+  "show_author_curator": "작성자 및 큐레이터 보상 표시"
 }

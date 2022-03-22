@@ -1779,5 +1779,6 @@
   "qr_scanner": "QRスキャナー",
   "withdraw_info_part3": "下のボタンをクリックしてHiveSingerにリダイレクトし、トランザクションを完了します。",
   "in_the": "の中に",
-  "expertise": "専門知識"
+  "expertise": "専門知識",
+  "show_author_curator": "著者とキュレーターの報酬を表示する"
 }

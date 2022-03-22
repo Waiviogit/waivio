@@ -1780,5 +1780,6 @@
   "qr_scanner": "QR szkenner",
   "withdraw_info_part3": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez.",
   "in_the": "ban",
-  "expertise": "Szakvélemény"
+  "expertise": "Szakvélemény",
+  "show_author_curator": "Mutasson szerzői és kurátori jutalmakat"
 }

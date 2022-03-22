@@ -1778,5 +1778,6 @@
   "qr_scanner": "Leitor QR",
   "withdraw_info_part3": "Clique no botão abaixo para ser redirecionado ao HiveSinger para concluir sua transação.",
   "in_the": "no",
-  "expertise": "Perícia"
+  "expertise": "Perícia",
+  "show_author_curator": "Mostrar recompensas de autores e curadores"
 }

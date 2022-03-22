@@ -1778,5 +1778,6 @@
   "qr_scanner": "Scanner QR",
   "withdraw_info_part3": "Cliquez sur le bouton ci-dessous pour être redirigé vers HiveSinger afin de finaliser votre transaction.",
   "in_the": "dans le",
-  "expertise": "Compétence"
+  "expertise": "Compétence",
+  "show_author_curator": "Afficher les récompenses des auteurs et des conservateurs"
 }
