@@ -1777,5 +1777,22 @@
   "minimal_withdraw_amount": "최소 인출 금액",
   "destination_address": "목적지 주소",
   "qr_scanner": "QR 스캐너",
-  "withdraw_info_part3": "아래 버튼을 클릭하면 거래를 완료하기 위해 HiveSinger로 리디렉션됩니다."
+  "withdraw_info_part3": "아래 버튼을 클릭하면 거래를 완료하기 위해 HiveSinger로 리디렉션됩니다.",
+  "in_the": "에서",
+  "expertise": "전문적 지식",
+  "show_author_curator": "작성자 및 큐레이터 보상 표시",
+  "delegate": "대리자",
+  "notice": "알아 채다",
+  "power_up_or_down_info_part1": "Power Up(staking)은 즉각적이며 Power Down(unstaking)은 시간이 걸립니다.",
+  "waiv_power_info": "웨이브 파워(WP)의 경우 4주;",
+  "hive_power_info": "Hive Power(HP)의 경우 13주입니다.",
+  "power_up_or_down_info_part2": "스테이킹된 자금은 지정된 기간 동안 매주 동일한 금액으로 해제됩니다.",
+  "token": "토큰",
+  "delegate_modal_info_part1": "투표권의 일부를 위임하려는 계정의 이름을 입력하십시오.",
+  "target_account": "대상 계정",
+  "amount_to_delegate": "위임할 금액",
+  "delegate_modal_info_part2": "위임은 즉시 이루어지지만 시간이 걸립니다.",
+  "delegate_modal_info_part3": "위임 취소 후 금액이 귀하의 계정으로 반환되는 데 걸리는 일.",
+  "delegate_modal_info_part4": "아래 버튼을 클릭하면 거래를 완료하기 위해 HiveSinger로 리디렉션됩니다.",
+  "available_voting_power": "위임에 사용 가능한 투표권"
 }

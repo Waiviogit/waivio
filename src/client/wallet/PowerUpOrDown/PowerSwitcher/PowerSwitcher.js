@@ -76,7 +76,7 @@ const PowerSwitcher = props => {
                   props.handleBalanceClick(props.currencyList[convertCurrency(currency)])
                 }
               >
-                max
+                <FormattedMessage id="max" defaultMessage="maxs" />
               </span>
             }
           />,
@@ -114,7 +114,7 @@ const PowerSwitcher = props => {
       </span>
       {props.withEst && (
         <div>
-          Est. amount:{' '}
+          <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
           <USDDisplay
             value={props.getFieldValue('amount') * hiveRateInUsd * (rates[currency] || 1)}
           />

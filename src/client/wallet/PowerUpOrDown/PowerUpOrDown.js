@@ -227,13 +227,36 @@ export default class PowerUpOrDown extends React.Component {
           </Form>
         )}
         <div className="PowerUpOrDown__notice">
-          <h4>Notice:</h4>
-          Please note that Power Up (staking) is instant, while Power Down (unstaking) takes time:
+          <h4>
+            <FormattedMessage id="notice" defaultMessage="Notice" />:
+          </h4>
+          <FormattedMessage
+            id="power_up_or_down_info_part1"
+            defaultMessage="Please note that Power Up (staking) is instant, while Power Down (unstaking) takes time"
+          />
+          :
           <ul>
-            <li> - 4 weeks for Waiv Power (WP);</li>
-            <li> - 13 weeks for Hive Power (HP).</li>
+            <li>
+              {' '}
+              -{' '}
+              <FormattedMessage
+                id="waiv_power_info"
+                defaultMessage="4 weeks for Waiv Power (WP);"
+              />{' '}
+            </li>
+            <li>
+              {' '}
+              -{' '}
+              <FormattedMessage
+                id="hive_power_info"
+                defaultMessage="13 weeks for Hive Power (HP)."
+              />{' '}
+            </li>
           </ul>
-          Staked funds are released each week for the specified period in equal amounts.
+          <FormattedMessage
+            id="power_up_or_down_info_part2"
+            defaultMessage=" Staked funds are released each week for the specified period in equal amounts."
+          />
         </div>
         <FormattedMessage id="transfer_modal_info" />
       </Modal>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { isEmpty, round } from 'lodash';
+import { FormattedMessage } from 'react-intl';
 import { Button } from 'antd';
 import PropsType from 'prop-types';
 import DelegateUserCard from '../../../DelegateUserCard/DelegateUserCard';
@@ -13,7 +14,10 @@ const TokenManage = props => {
   return (
     <div className="TokenManage">
       <p>
-        <span className="TokenManage__title">Token:</span>{' '}
+        <span className="TokenManage__title">
+          {' '}
+          <FormattedMessage id="token" defaultMessage="Token" />:
+        </span>{' '}
         {props.symbol === 'HP' ? 'HIVE' : props.symbol}
       </p>
       <p>

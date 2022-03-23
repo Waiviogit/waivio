@@ -1778,5 +1778,22 @@
   "minimal_withdraw_amount": "Minimale onttrekkingsbedrag",
   "destination_address": "Bestemming adres",
   "qr_scanner": "QR skandeerder",
-  "withdraw_info_part3": "Klik op die knoppie hieronder om na HiveSinger herlei te word om jou transaksie te voltooi."
+  "withdraw_info_part3": "Klik op die knoppie hieronder om na HiveSinger herlei te word om jou transaksie te voltooi.",
+  "in_the": "in die",
+  "expertise": "Kundigheid",
+  "show_author_curator": "Wys skrywer- en kuratorsbelonings",
+  "delegate": "Delegeer",
+  "notice": "Kennisgewing",
+  "power_up_or_down_info_part1": "Neem asseblief kennis dat Power Up (inzet) onmiddellik is, terwyl Power Down (ontspan) tyd neem",
+  "waiv_power_info": "4 weke vir Waiv Power (WP);",
+  "hive_power_info": "13 weke vir Hive Power (HP).",
+  "power_up_or_down_info_part2": "Beleggingsfondse word elke week vir die gespesifiseerde tydperk in gelyke bedrae vrygestel.",
+  "token": "Teken",
+  "delegate_modal_info_part1": "Voer asseblief die naam van die rekening in waaraan jy 'n gedeelte van jou stemkrag wil delegeer.",
+  "target_account": "Teiken rekening",
+  "amount_to_delegate": "Bedrag om te delegeer",
+  "delegate_modal_info_part2": "Neem asseblief kennis dat afvaardigings onmiddellik is, maar dit sal neem",
+  "delegate_modal_info_part3": "dae vir die bedrag om na ongedelegering na u rekening terugbetaal te word.",
+  "delegate_modal_info_part4": "Klik op die knoppie hieronder om na HiveSinger herlei te word om jou transaksie te voltooi.",
+  "available_voting_power": "Beskikbare stemkrag vir afvaardigings"
 }

@@ -1776,5 +1776,22 @@
   "minimal_withdraw_amount": "最低提款金额",
   "destination_address": "目的地址",
   "qr_scanner": "二维码扫描仪",
-  "withdraw_info_part3": "单击下面的按钮以重定向到 HiveSinger 以完成您的交易。"
+  "withdraw_info_part3": "单击下面的按钮以重定向到 HiveSinger 以完成您的交易。",
+  "in_the": "在里面",
+  "expertise": "专业知识",
+  "show_author_curator": "显示作者和策展人奖励",
+  "delegate": "代表",
+  "notice": "注意",
+  "power_up_or_down_info_part1": "请注意，Power Up (staking) 是即时的，而 Power Down (unstaking) 需要时间",
+  "waiv_power_info": "豁免权 (WP) 4 周；",
+  "hive_power_info": "Hive Power (HP) 为期 13 周。",
+  "power_up_or_down_info_part2": "质押的资金每周都会在指定的时间段内以等量释放。",
+  "token": "令牌",
+  "delegate_modal_info_part1": "请输入您希望将部分投票权委托给的帐户名称。",
+  "target_account": "目标账户",
+  "amount_to_delegate": "委托金额",
+  "delegate_modal_info_part2": "请注意，代表团是即时的，但需要",
+  "delegate_modal_info_part3": "取消授权后将金额退还到您的帐户的天数。",
+  "delegate_modal_info_part4": "单击下面的按钮以重定向到 HiveSinger 以完成您的交易。",
+  "available_voting_power": "代表团的可用投票权"
 }

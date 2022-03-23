@@ -1776,5 +1776,22 @@
   "minimal_withdraw_amount": "Montant de retrait minimal",
   "destination_address": "Adresse de destination",
   "qr_scanner": "Scanner QR",
-  "withdraw_info_part3": "Cliquez sur le bouton ci-dessous pour être redirigé vers HiveSinger afin de finaliser votre transaction."
+  "withdraw_info_part3": "Cliquez sur le bouton ci-dessous pour être redirigé vers HiveSinger afin de finaliser votre transaction.",
+  "in_the": "dans le",
+  "expertise": "Compétence",
+  "show_author_curator": "Afficher les récompenses des auteurs et des conservateurs",
+  "delegate": "Déléguer",
+  "notice": "Remarquer",
+  "power_up_or_down_info_part1": "Veuillez noter que la mise sous tension (piquetage) est instantanée, tandis que la mise hors tension (détachement) prend du temps",
+  "waiv_power_info": "4 semaines pour Waiv Power (WP);",
+  "hive_power_info": "13 semaines pour Hive Power (HP).",
+  "power_up_or_down_info_part2": "Les fonds jalonnés sont débloqués chaque semaine pour la période spécifiée en montants égaux.",
+  "token": "Jeton",
+  "delegate_modal_info_part1": "Veuillez saisir le nom du compte auquel vous souhaitez déléguer une partie de votre droit de vote.",
+  "target_account": "Compte cible",
+  "amount_to_delegate": "Montant à déléguer",
+  "delegate_modal_info_part2": "Veuillez noter que les délégations sont instantanées, mais il faudra",
+  "delegate_modal_info_part3": "jours pour que le montant soit restitué à votre compte après l'annulation de la délégation.",
+  "delegate_modal_info_part4": "Cliquez sur le bouton ci-dessous pour être redirigé vers HiveSinger afin de finaliser votre transaction.",
+  "available_voting_power": "Pouvoir de vote disponible pour les délégations"
 }

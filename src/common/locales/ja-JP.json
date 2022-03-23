@@ -1777,5 +1777,22 @@
   "minimal_withdraw_amount": "最小引き出し額",
   "destination_address": "宛先アドレス",
   "qr_scanner": "QRスキャナー",
-  "withdraw_info_part3": "下のボタンをクリックしてHiveSingerにリダイレクトし、トランザクションを完了します。"
+  "withdraw_info_part3": "下のボタンをクリックしてHiveSingerにリダイレクトし、トランザクションを完了します。",
+  "in_the": "の中に",
+  "expertise": "専門知識",
+  "show_author_curator": "著者とキュレーターの報酬を表示する",
+  "delegate": "委任",
+  "notice": "知らせ",
+  "power_up_or_down_info_part1": "パワーアップ（ステーキング）は瞬時に行われますが、パワーダウン（ステーキング解除）には時間がかかりますのでご注意ください",
+  "waiv_power_info": "Waiv Power（WP）の場合は4週間。",
+  "hive_power_info": "ハイブパワー（HP）は13週間。",
+  "power_up_or_down_info_part2": "賭けられた資金は、指定された期間、毎週同額でリリースされます。",
+  "token": "トークン",
+  "delegate_modal_info_part1": "議決権の一部を委任するアカウントの名前を入力してください。",
+  "target_account": "ターゲットアカウント",
+  "amount_to_delegate": "委任する金額",
+  "delegate_modal_info_part2": "委任は即座に行われますが、時間がかかることに注意してください",
+  "delegate_modal_info_part3": "委任解除後にアカウントに返される金額の日数。",
+  "delegate_modal_info_part4": "下のボタンをクリックしてHiveSingerにリダイレクトし、トランザクションを完了します。",
+  "available_voting_power": "代表団に利用可能な投票権"
 }

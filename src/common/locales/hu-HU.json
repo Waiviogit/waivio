@@ -1778,5 +1778,22 @@
   "minimal_withdraw_amount": "Minimális visszavonási összeg",
   "destination_address": "Úticél címe",
   "qr_scanner": "QR szkenner",
-  "withdraw_info_part3": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez."
+  "withdraw_info_part3": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez.",
+  "in_the": "ban",
+  "expertise": "Szakvélemény",
+  "show_author_curator": "Mutasson szerzői és kurátori jutalmakat",
+  "delegate": "Delegált",
+  "notice": "Értesítés",
+  "power_up_or_down_info_part1": "Kérjük, vegye figyelembe, hogy a bekapcsolás (kitöltés) azonnali, míg a kikapcsolás (kikapcsolás) időbe telik",
+  "waiv_power_info": "4 hét a Waiv Power (WP) esetében;",
+  "hive_power_info": "13 hét a Hive Power (HP) esetében.",
+  "power_up_or_down_info_part2": "A letétbe helyezett alapokat minden héten egyenlő mennyiségben szabadítják fel a meghatározott időszakra.",
+  "token": "Jelképes",
+  "delegate_modal_info_part1": "Kérjük, adja meg annak a fióknak a nevét, amelyre szavazati jogának egy részét át kívánja ruházni.",
+  "target_account": "Célszámla",
+  "amount_to_delegate": "A delegálandó összeg",
+  "delegate_modal_info_part2": "Felhívjuk figyelmét, hogy a delegációk azonnaliak, de időbe telik",
+  "delegate_modal_info_part3": "napon belül visszakerül az összeg a számlájára a delegálás visszavonása után.",
+  "delegate_modal_info_part4": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez.",
+  "available_voting_power": "A küldöttségek rendelkezésére álló szavazati jog"
 }

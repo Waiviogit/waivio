@@ -1776,5 +1776,22 @@
   "minimal_withdraw_amount": "Valor mínimo de saque",
   "destination_address": "Endereço de destino",
   "qr_scanner": "Leitor QR",
-  "withdraw_info_part3": "Clique no botão abaixo para ser redirecionado ao HiveSinger para concluir sua transação."
+  "withdraw_info_part3": "Clique no botão abaixo para ser redirecionado ao HiveSinger para concluir sua transação.",
+  "in_the": "no",
+  "expertise": "Perícia",
+  "show_author_curator": "Mostrar recompensas de autores e curadores",
+  "delegate": "Delegar",
+  "notice": "Perceber",
+  "power_up_or_down_info_part1": "Observe que o Power Up (staking) é instantâneo, enquanto o Power Down (unstaking) leva tempo",
+  "waiv_power_info": "4 semanas para Waiv Power (WP);",
+  "hive_power_info": "13 semanas para Hive Power (HP).",
+  "power_up_or_down_info_part2": "Os fundos apostados são liberados a cada semana pelo período especificado em quantidades iguais.",
+  "token": "Símbolo",
+  "delegate_modal_info_part1": "Insira o nome da conta à qual você deseja delegar uma parte de seu poder de voto.",
+  "target_account": "Conta de destino",
+  "amount_to_delegate": "Valor a delegar",
+  "delegate_modal_info_part2": "Observe que as delegações são instantâneas, mas levará",
+  "delegate_modal_info_part3": "dias para que o valor seja devolvido à sua conta após a remoção da delegação.",
+  "delegate_modal_info_part4": "Clique no botão abaixo para ser redirecionado ao HiveSinger para concluir sua transação.",
+  "available_voting_power": "Poder de voto disponível para delegações"
 }
