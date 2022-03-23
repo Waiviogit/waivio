@@ -1778,5 +1778,21 @@
   "destination_address": "Adreça de destinació",
   "qr_scanner": "Escàner QR",
   "withdraw_info_part3": "Feu clic al botó següent per ser redirigit a HiveSinger per completar la vostra transacció.",
-  "in_the": "en el"
+  "in_the": "en el",
+  "expertise": "Perícia",
+  "show_author_curator": "Mostra premis per a autors i comissaris",
+  "delegate": "Delegat",
+  "notice": "Avís",
+  "power_up_or_down_info_part1": "Si us plau, tingueu en compte que l'engegada (apostament) és instantània, mentre que l'apagada (desaparcada) requereix temps",
+  "waiv_power_info": "4 setmanes per a Waiv Power (WP);",
+  "hive_power_info": "13 setmanes per a Hive Power (HP).",
+  "power_up_or_down_info_part2": "Els fons apostats s'alliberen cada setmana durant el període especificat en quantitats iguals.",
+  "token": "Token",
+  "delegate_modal_info_part1": "Introduïu el nom del compte al qual voleu delegar una part del vostre poder de vot.",
+  "target_account": "Compte objectiu",
+  "amount_to_delegate": "Import a delegar",
+  "delegate_modal_info_part2": "Tingueu en compte que les delegacions són instantànies, però caldrà",
+  "delegate_modal_info_part3": "dies perquè l'import es torni al vostre compte després de la cancel·lació de la delegació.",
+  "delegate_modal_info_part4": "Feu clic al botó següent per ser redirigit a HiveSinger per completar la vostra transacció.",
+  "available_voting_power": "Poder de vot disponible per a les delegacions"
 }

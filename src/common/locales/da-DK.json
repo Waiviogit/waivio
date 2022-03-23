@@ -1778,5 +1778,21 @@
     "destination_address": "Destinationsadresse",
     "qr_scanner": "QR scanner",
     "withdraw_info_part3": "Klik på knappen nedenfor for at blive omdirigeret til HiveSinger for at fuldføre din transaktion.",
-    "in_the": "i"
+    "in_the": "i",
+    "expertise": "Ekspertise",
+    "show_author_curator": "Vis forfatter- og kuratorbelønninger",
+    "delegate": "Delegeret",
+    "notice": "Varsel",
+    "power_up_or_down_info_part1": "Bemærk venligst, at Power Up (indsats) er øjeblikkeligt, mens Power Down (udsætte) tager tid",
+    "waiv_power_info": "4 uger for Waiv Power (WP);",
+    "hive_power_info": "13 uger for Hive Power (HP).",
+    "power_up_or_down_info_part2": "Indsatte midler frigives hver uge i den angivne periode i lige store mængder.",
+    "token": "Polet",
+    "delegate_modal_info_part1": "Indtast venligst navnet på den konto, som du ønsker at delegere en del af din stemmeret til.",
+    "target_account": "Målkonto",
+    "amount_to_delegate": "Beløb, der skal uddelegeres",
+    "delegate_modal_info_part2": "Bemærk venligst, at delegationer er øjeblikkelige, men det vil tage",
+    "delegate_modal_info_part3": "dage for, at beløbet returneres til din konto efter annullering.",
+    "delegate_modal_info_part4": "Klik på knappen nedenfor for at blive omdirigeret til HiveSinger for at fuldføre din transaktion.",
+    "available_voting_power": "Tilgængelig stemmestyrke for delegationer"
   }
