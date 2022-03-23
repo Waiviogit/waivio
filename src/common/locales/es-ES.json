@@ -1786,5 +1786,13 @@
   "power_up_or_down_info_part1": "Tenga en cuenta que el encendido (replanteo) es instantáneo, mientras que el apagado (retirada) lleva tiempo",
   "waiv_power_info": "4 semanas para Waiv Power (WP);",
   "hive_power_info": "13 semanas para Hive Power (HP).",
-  "power_up_or_down_info_part2": "Los fondos apostados se liberan cada semana durante el período especificado en cantidades iguales."
+  "power_up_or_down_info_part2": "Los fondos apostados se liberan cada semana durante el período especificado en cantidades iguales.",
+  "token": "Simbólico",
+  "delegate_modal_info_part1": "Ingrese el nombre de la cuenta a la que desea delegar una parte de su poder de voto.",
+  "target_account": "Cuenta de destino",
+  "amount_to_delegate": "Cantidad a delegar",
+  "delegate_modal_info_part2": "Tenga en cuenta que las delegaciones son instantáneas, pero tomará",
+  "delegate_modal_info_part3": "días para que el importe sea devuelto a su cuenta después de la cancelación de la delegación.",
+  "delegate_modal_info_part4": "Haga clic en el botón a continuación para ser redirigido a HiveSinger para completar su transacción.",
+  "available_voting_power": "Poder de voto disponible para las delegaciones"
 }

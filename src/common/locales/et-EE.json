@@ -1786,5 +1786,13 @@
   "power_up_or_down_info_part1": "Pange tähele, et sisselülitamine (panustamine) toimub kohe, samal ajal kui väljalülitamine (panustamine) võtab aega",
   "waiv_power_info": "4 nädalat Waiv Poweri (WP) puhul;",
   "hive_power_info": "Hive Poweri (HP) puhul 13 nädalat.",
-  "power_up_or_down_info_part2": "Panusraha vabastatakse igal nädalal kindlaksmääratud perioodi jooksul võrdsetes summades."
+  "power_up_or_down_info_part2": "Panusraha vabastatakse igal nädalal kindlaksmääratud perioodi jooksul võrdsetes summades.",
+  "token": "Token",
+  "delegate_modal_info_part1": "Sisestage selle konto nimi, millele soovite osa oma hääleõigusest delegeerida.",
+  "target_account": "Sihtkonto",
+  "amount_to_delegate": "Delegeeritav summa",
+  "delegate_modal_info_part2": "Pange tähele, et delegeerimine toimub kohe, kuid see võtab aega",
+  "delegate_modal_info_part3": "päeva jooksul, et summa pärast delegeerimise tühistamist teie kontole tagastatakse.",
+  "delegate_modal_info_part4": "Tehingu lõpuleviimiseks HiveSingeri suunamiseks klõpsake allolevat nuppu.",
+  "available_voting_power": "Delegatsioonidele saadaolev hääleõigus"
 }

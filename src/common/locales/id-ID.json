@@ -1785,5 +1785,13 @@
   "power_up_or_down_info_part1": "Harap dicatat bahwa Power Up (staking) itu instan, sedangkan Power Down (unstaking) membutuhkan waktu",
   "waiv_power_info": "4 minggu untuk Waiv Power (WP);",
   "hive_power_info": "13 minggu untuk Hive Power (HP).",
-  "power_up_or_down_info_part2": "Dana yang dipertaruhkan dikeluarkan setiap minggu untuk periode yang ditentukan dalam jumlah yang sama."
+  "power_up_or_down_info_part2": "Dana yang dipertaruhkan dikeluarkan setiap minggu untuk periode yang ditentukan dalam jumlah yang sama.",
+  "token": "Token",
+  "delegate_modal_info_part1": "Harap masukkan nama akun yang ingin Anda delegasikan sebagian dari hak suara Anda.",
+  "target_account": "Akun target",
+  "amount_to_delegate": "Jumlah yang didelegasikan",
+  "delegate_modal_info_part2": "Harap dicatat bahwa pendelegasian itu instan, tetapi itu akan memakan waktu",
+  "delegate_modal_info_part3": "hari untuk jumlah yang akan dikembalikan ke akun Anda setelah pembatalan pendelegasian.",
+  "delegate_modal_info_part4": "Klik tombol di bawah ini untuk diarahkan ke HiveSinger untuk menyelesaikan transaksi Anda.",
+  "available_voting_power": "Kekuatan suara yang tersedia untuk delegasi"
 }

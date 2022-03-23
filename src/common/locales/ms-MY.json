@@ -1784,5 +1784,13 @@
   "power_up_or_down_info_part1": "Sila ambil perhatian bahawa Naik Kuasa (staking) adalah serta-merta, manakala Power Down (menyahtaruh) mengambil masa",
   "waiv_power_info": "4 minggu untuk Waiv Power (WP);",
   "hive_power_info": "13 minggu untuk Hive Power (HP).",
-  "power_up_or_down_info_part2": "Dana yang dipertaruhkan dikeluarkan setiap minggu untuk tempoh yang ditentukan dalam jumlah yang sama."
+  "power_up_or_down_info_part2": "Dana yang dipertaruhkan dikeluarkan setiap minggu untuk tempoh yang ditentukan dalam jumlah yang sama.",
+  "token": "Token",
+  "delegate_modal_info_part1": "Sila masukkan nama akaun yang anda ingin wakilkan sebahagian daripada kuasa mengundi anda.",
+  "target_account": "Akaun sasaran",
+  "amount_to_delegate": "Jumlah yang perlu diwakilkan",
+  "delegate_modal_info_part2": "Sila ambil perhatian bahawa delegasi adalah serta-merta, tetapi ia akan mengambil masa",
+  "delegate_modal_info_part3": "hari untuk jumlah itu dikembalikan ke akaun anda selepas penyahwakilan.",
+  "delegate_modal_info_part4": "Klik butang di bawah untuk diubah hala ke HiveSinger untuk menyelesaikan transaksi anda.",
+  "available_voting_power": "Kuasa mengundi yang ada untuk perwakilan"
 }

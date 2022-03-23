@@ -1785,5 +1785,13 @@
   "power_up_or_down_info_part1": "Vezměte prosím na vědomí, že zapnutí (vysazení) je okamžité, zatímco vypnutí (odpojení) nějakou dobu trvá",
   "waiv_power_info": "4 týdny pro Waiv Power (WP);",
   "hive_power_info": "13 týdnů pro Hive Power (HP).",
-  "power_up_or_down_info_part2": "Vsazené prostředky se uvolňují každý týden po stanovené období ve stejných částkách."
+  "power_up_or_down_info_part2": "Vsazené prostředky se uvolňují každý týden po stanovené období ve stejných částkách.",
+  "token": "Žeton",
+  "delegate_modal_info_part1": "Zadejte prosím název účtu, kterému chcete delegovat část svých hlasovacích práv.",
+  "target_account": "Cílový účet",
+  "amount_to_delegate": "Částka k delegování",
+  "delegate_modal_info_part2": "Upozorňujeme, že delegování je okamžité, ale bude to trvat",
+  "delegate_modal_info_part3": "dní, aby byla částka po zrušení delegování vrácena na váš účet.",
+  "delegate_modal_info_part4": "Kliknutím na tlačítko níže budete přesměrováni na HiveSinger k dokončení transakce.",
+  "available_voting_power": "Dostupná hlasovací síla pro delegace"
 }
