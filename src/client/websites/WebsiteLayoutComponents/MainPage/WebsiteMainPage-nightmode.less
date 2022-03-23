@@ -2,6 +2,11 @@
 
 .nightmode {
   .WebsiteMainPage {
+    &__stepsHeader {
+      box-shadow: 0 0 20px 0 rgba(152, 152, 152, 0.72) inset;
+      color: @white-smoke;
+    }
+
     & .money-tree-picture {
       display: none;
     }
@@ -10,6 +15,15 @@
       display: initial;
       height: 127px;
       width: 100px;
+    }
+
+    &__mainTitle,
+    &__secondTitle {
+      color: @black-text;
+    }
+
+    &__withdrawSection {
+      background: @outer-space;
     }
   }
 }

@@ -1778,5 +1778,21 @@
   "destination_address": "Address ng patutunguhan",
   "qr_scanner": "QR scanner",
   "withdraw_info_part3": "I-click ang button sa ibaba upang mai-redirect sa HiveSinger upang makumpleto ang iyong transaksyon.",
-  "in_the": "nasa"
+  "in_the": "nasa",
+  "expertise": "Dalubhasa",
+  "show_author_curator": "Ipakita ang mga gantimpala ng may-akda at mga curator",
+  "delegate": "Delegado",
+  "notice": "Pansinin",
+  "power_up_or_down_info_part1": "Pakitandaan na ang Power Up (staking) ay instant, habang ang Power Down (unstaking) ay tumatagal ng oras",
+  "waiv_power_info": "4 na linggo para sa Waiv Power (WP);",
+  "hive_power_info": "13 linggo para sa Hive Power (HP).",
+  "power_up_or_down_info_part2": "Ang mga staked na pondo ay inilalabas bawat linggo para sa tinukoy na panahon sa pantay na halaga.",
+  "token": "Token",
+  "delegate_modal_info_part1": "Pakilagay ang pangalan ng account kung saan mo gustong italaga ang isang bahagi ng iyong kapangyarihan sa pagboto.",
+  "target_account": "Target na account",
+  "amount_to_delegate": "Halaga para italaga",
+  "delegate_modal_info_part2": "Pakitandaan na ang mga delegasyon ay instant, ngunit ito ay aabutin",
+  "delegate_modal_info_part3": "araw para sa halagang ibabalik sa iyong account pagkatapos ng undelegation.",
+  "delegate_modal_info_part4": "I-click ang button sa ibaba upang mai-redirect sa HiveSinger upang makumpleto ang iyong transaksyon.",
+  "available_voting_power": "Magagamit na kapangyarihan sa pagboto para sa mga delegasyon"
 }

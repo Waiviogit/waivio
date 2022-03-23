@@ -1778,5 +1778,21 @@
   "destination_address": "Adresa odredišta",
   "qr_scanner": "QR skener",
   "withdraw_info_part3": "Kliknite donji gumb kako biste bili preusmjereni na HiveSinger kako biste dovršili svoju transakciju.",
-  "in_the": "u"
+  "in_the": "u",
+  "expertise": "Stručnost",
+  "show_author_curator": "Pokažite nagrade za autore i kustose",
+  "delegate": "Delegat",
+  "notice": "Obavijest",
+  "power_up_or_down_info_part1": "Imajte na umu da je Power Up (ulaganje) trenutačno, dok je Power Down (unstaking) potrebno vrijeme",
+  "waiv_power_info": "4 tjedna za Waiv Power (WP);",
+  "hive_power_info": "13 tjedana za snagu košnice (HP).",
+  "power_up_or_down_info_part2": "Uložena sredstva se oslobađaju svaki tjedan za navedeno razdoblje u jednakim iznosima.",
+  "token": "Znak",
+  "delegate_modal_info_part1": "Unesite naziv računa na koji želite delegirati dio svoje glasačke moći.",
+  "target_account": "Ciljni račun",
+  "amount_to_delegate": "Iznos za delegiranje",
+  "delegate_modal_info_part2": "Imajte na umu da su delegacije trenutne, ali će potrajati",
+  "delegate_modal_info_part3": "dana da se iznos vrati na vaš račun nakon poništavanja delegiranja.",
+  "delegate_modal_info_part4": "Kliknite donji gumb kako biste bili preusmjereni na HiveSinger kako biste dovršili svoju transakciju.",
+  "available_voting_power": "Dostupna moć glasa za delegacije"
 }

@@ -1778,5 +1778,21 @@
   "destination_address": "عنوان الوجهة",
   "qr_scanner": "الماسح الضوئي QR",
   "withdraw_info_part3": "انقر فوق الزر أدناه لإعادة توجيهك إلى HiveSinger لإكمال معاملتك.",
-  "in_the": "في ال"
+  "in_the": "في ال",
+  "expertise": "خبرة",
+  "show_author_curator": "اعرض مكافآت المؤلف والقيمين",
+  "delegate": "مندوب",
+  "notice": "يلاحظ",
+  "power_up_or_down_info_part1": "يرجى ملاحظة أن Power Up (Staking) فوري ، بينما Power Down (unstaking) يستغرق وقتًا",
+  "waiv_power_info": "4 أسابيع لسلطة التنازل (WP) ؛",
+  "hive_power_info": "13 أسبوعًا لـ Hive Power (HP).",
+  "power_up_or_down_info_part2": "يتم تحرير الأموال المربوطة كل أسبوع للفترة المحددة بمبالغ متساوية.",
+  "token": "رمز",
+  "delegate_modal_info_part1": "الرجاء إدخال اسم الحساب الذي ترغب في تفويض جزء من حق التصويت الخاص بك إليه.",
+  "target_account": "الحساب المستهدف",
+  "amount_to_delegate": "مبلغ التفويض",
+  "delegate_modal_info_part2": "يرجى ملاحظة أن الوفود فورية ، ولكنها ستستغرق",
+  "delegate_modal_info_part3": "أيام لإعادة المبلغ إلى حسابك بعد إلغاء التفويض.",
+  "delegate_modal_info_part4": "انقر فوق الزر أدناه لإعادة توجيهك إلى HiveSinger لإكمال معاملتك.",
+  "available_voting_power": "قوة التصويت المتاحة للوفود"
 }
