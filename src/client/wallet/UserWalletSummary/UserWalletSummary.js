@@ -173,7 +173,9 @@ const UserWalletSummary = ({
           </div>
         </div>
         <div className="UserWalletSummary__actions">
-          <p className="UserWalletSummary__description">Liquid HIVE tokens</p>
+          <p className="UserWalletSummary__description">
+            <FormattedMessage id="liquid_hive_tokens" defaultMessage="Liquid HIVE tokens" />
+          </p>
           <WalletAction
             mainKey={'power_up'}
             options={['transfer', 'convert']}
@@ -223,7 +225,9 @@ const UserWalletSummary = ({
               </div>
             </div>
             <div className="UserWalletSummary__actions">
-              <p className="UserWalletSummary__description">Staked HIVE tokens</p>
+              <p className="UserWalletSummary__description">
+                <FormattedMessage id="staked_hive_tokens" defaultMessage="Staked HIVE tokens" />
+              </p>
               <WalletAction mainCurrency={'HP'} mainKey={'power_down'} options={['delegate']} />
             </div>
           </div>
@@ -243,7 +247,12 @@ const UserWalletSummary = ({
               </div>
             </div>
             <div className="UserWalletSummary__actions">
-              <p className="UserWalletSummary__description">A stable coin pegged to USD</p>
+              <p className="UserWalletSummary__description">
+                <FormattedMessage
+                  id="a_stable_coin_pegged_to_usd"
+                  defaultMessage="A stable coin pegged to USD"
+                />
+              </p>
               <WalletAction
                 mainKey={'transfer'}
                 options={['convert']}
