@@ -58,7 +58,7 @@ const TokenActionInMarketCard = ({
             )}
           </p>
           <span className={amountClassList}>
-            {point}
+            {point}{' '}
             <FormattedNumber
               value={quantity}
               locale={'en-IN'}
@@ -68,7 +68,7 @@ const TokenActionInMarketCard = ({
             {symbol}
           </span>
           <span className={amountClassListHive}>
-            {hivePoint}
+            {hivePoint}{' '}
             <FormattedNumber
               value={quantityHive}
               locale={'en-IN'}
