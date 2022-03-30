@@ -73,7 +73,7 @@ const DelegateModal = props => {
       onCancel={props.onCancel}
       s
       onOk={handleDelegate}
-      okText={'Delegate'}
+      okText={props.intl.formatMessage({ id: 'delegate', defaultMessage: 'Delegate' })}
       okButtonProps={{
         disabled: !selectUser || !props.form.getFieldValue('amount'),
       }}

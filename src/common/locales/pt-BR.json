@@ -1793,5 +1793,8 @@
   "delegate_modal_info_part2": "Observe que as delegações são instantâneas, mas levará",
   "delegate_modal_info_part3": "dias para que o valor seja devolvido à sua conta após a remoção da delegação.",
   "delegate_modal_info_part4": "Clique no botão abaixo para ser redirecionado ao HiveSinger para concluir sua transação.",
-  "available_voting_power": "Poder de voto disponível para delegações"
+  "available_voting_power": "Poder de voto disponível para delegações",
+  "liquid_hive_tokens": "Tokens HIVE líquidos",
+  "staked_hive_tokens": "Tokens HIVE apostados",
+  "a_stable_coin_pegged_to_usd": "Uma moeda estável atrelada ao USD"
 }

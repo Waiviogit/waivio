@@ -92,6 +92,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
       return (
         <TokenActionInMarketCard
           quantity={transaction.quantityTokens}
+          quantityHive={transaction.quantityHive}
           timestamp={transaction.timestamp}
           account={transaction.account}
           symbol={transaction.symbol}
@@ -104,6 +105,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
       return (
         <TokenActionInMarketCard
           quantity={transaction.quantityTokens}
+          quantityHive={transaction.quantityHive}
           timestamp={transaction.timestamp}
           account={transaction.account}
           symbol={transaction.symbol}
@@ -323,6 +325,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     quantityTokens: PropTypes.string,
     orderType: PropTypes.string,
     quantityBuy: PropTypes.string,
+    quantityHive: PropTypes.string,
     quantityLocked: PropTypes.string,
     quantityUnlocked: PropTypes.string,
     quantityReturned: PropTypes.string,

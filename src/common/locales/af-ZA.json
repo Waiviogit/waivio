@@ -1795,5 +1795,8 @@
   "delegate_modal_info_part2": "Neem asseblief kennis dat afvaardigings onmiddellik is, maar dit sal neem",
   "delegate_modal_info_part3": "dae vir die bedrag om na ongedelegering na u rekening terugbetaal te word.",
   "delegate_modal_info_part4": "Klik op die knoppie hieronder om na HiveSinger herlei te word om jou transaksie te voltooi.",
-  "available_voting_power": "Beskikbare stemkrag vir afvaardigings"
+  "available_voting_power": "Beskikbare stemkrag vir afvaardigings",
+  "liquid_hive_tokens": "Vloeibare HIVE-tokens",
+  "staked_hive_tokens": "HIVE-tekens uitgesteek",
+  "a_stable_coin_pegged_to_usd": "'n Stabiele muntstuk gekoppel aan USD"
 }

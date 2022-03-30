@@ -1834,5 +1834,8 @@
   "est_amount": "Est. amount",
   "delegate_modal_info_part2": "Please note that delegations are instant, but it will take",
   "delegate_modal_info_part3": "days for the amount to be returned to your account after undelegation.",
-  "delegate_modal_info_part4": "Click the button below to be redirected to HiveSinger to complete your transaction."
+  "delegate_modal_info_part4": "Click the button below to be redirected to HiveSinger to complete your transaction.",
+  "liquid_hive_tokens": "Liquid HIVE tokens",
+  "staked_hive_tokens": "Staked HIVE tokens",
+  "a_stable_coin_pegged_to_usd": "A stable coin pegged to USD"
 }
