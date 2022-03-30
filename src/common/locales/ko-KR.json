@@ -1794,5 +1794,8 @@
   "delegate_modal_info_part2": "위임은 즉시 이루어지지만 시간이 걸립니다.",
   "delegate_modal_info_part3": "위임 취소 후 금액이 귀하의 계정으로 반환되는 데 걸리는 일.",
   "delegate_modal_info_part4": "아래 버튼을 클릭하면 거래를 완료하기 위해 HiveSinger로 리디렉션됩니다.",
-  "available_voting_power": "위임에 사용 가능한 투표권"
+  "available_voting_power": "위임에 사용 가능한 투표권",
+  "liquid_hive_tokens": "액체 HIVE 토큰",
+  "staked_hive_tokens": "스테이킹된 HIVE 토큰",
+  "a_stable_coin_pegged_to_usd": "USD에 고정된 스테이블 코인"
 }

@@ -1793,5 +1793,8 @@
   "delegate_modal_info_part2": "Bitte beachten Sie, dass Delegationen sofort erfolgen, aber es dauert",
   "delegate_modal_info_part3": "Tage, bis der Betrag nach der Rückübertragung auf Ihr Konto zurückgebucht wird.",
   "delegate_modal_info_part4": "Klicken Sie auf die Schaltfläche unten, um zu HiveSinger weitergeleitet zu werden, um Ihre Transaktion abzuschließen.",
-  "available_voting_power": "Verfügbares Stimmrecht für Delegationen"
+  "available_voting_power": "Verfügbares Stimmrecht für Delegationen",
+  "liquid_hive_tokens": "Flüssige HIVE-Token",
+  "staked_hive_tokens": "Abgesteckte HIVE-Token",
+  "a_stable_coin_pegged_to_usd": "Eine stabile Münze, die an USD gebunden ist"
 }
