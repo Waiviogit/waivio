@@ -1793,5 +1793,8 @@
   "delegate_modal_info_part2": "请注意，代表团是即时的，但需要",
   "delegate_modal_info_part3": "取消授权后将金额退还到您的帐户的天数。",
   "delegate_modal_info_part4": "单击下面的按钮以重定向到 HiveSinger 以完成您的交易。",
-  "available_voting_power": "代表团的可用投票权"
+  "available_voting_power": "代表团的可用投票权",
+  "liquid_hive_tokens": "液态 HIVE 代币",
+  "staked_hive_tokens": "质押的 HIVE 代币",
+  "a_stable_coin_pegged_to_usd": "与美元挂钩的稳定币"
 }

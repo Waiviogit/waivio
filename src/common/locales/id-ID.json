@@ -1793,5 +1793,8 @@
   "delegate_modal_info_part2": "Harap dicatat bahwa pendelegasian itu instan, tetapi itu akan memakan waktu",
   "delegate_modal_info_part3": "hari untuk jumlah yang akan dikembalikan ke akun Anda setelah pembatalan pendelegasian.",
   "delegate_modal_info_part4": "Klik tombol di bawah ini untuk diarahkan ke HiveSinger untuk menyelesaikan transaksi Anda.",
-  "available_voting_power": "Kekuatan suara yang tersedia untuk delegasi"
+  "available_voting_power": "Kekuatan suara yang tersedia untuk delegasi",
+  "liquid_hive_tokens": "Token HIVE cair",
+  "staked_hive_tokens": "Token HIVE yang dipertaruhkan",
+  "a_stable_coin_pegged_to_usd": "Koin stabil dipatok ke USD"
 }

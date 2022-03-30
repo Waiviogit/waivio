@@ -1793,5 +1793,8 @@
   "delegate_modal_info_part2": "Należy pamiętać, że delegacje są natychmiastowe, ale zajmie to",
   "delegate_modal_info_part3": "dni na zwrot kwoty na Twoje konto po cofnięciu delegacji.",
   "delegate_modal_info_part4": "Kliknij przycisk poniżej, aby zostać przekierowanym do HiveSinger i dokończyć transakcję.",
-  "available_voting_power": "Dostępna siła głosu dla delegacji"
+  "available_voting_power": "Dostępna siła głosu dla delegacji",
+  "liquid_hive_tokens": "Płynne żetony HIVE",
+  "staked_hive_tokens": "Postawione tokeny HIVE",
+  "a_stable_coin_pegged_to_usd": "Stabilna moneta powiązana z USD"
 }

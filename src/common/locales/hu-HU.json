@@ -1795,5 +1795,8 @@
   "delegate_modal_info_part2": "Felhívjuk figyelmét, hogy a delegációk azonnaliak, de időbe telik",
   "delegate_modal_info_part3": "napon belül visszakerül az összeg a számlájára a delegálás visszavonása után.",
   "delegate_modal_info_part4": "Kattintson az alábbi gombra, hogy átirányítsa a HiveSinger oldalra a tranzakció befejezéséhez.",
-  "available_voting_power": "A küldöttségek rendelkezésére álló szavazati jog"
+  "available_voting_power": "A küldöttségek rendelkezésére álló szavazati jog",
+  "liquid_hive_tokens": "Folyékony HIVE tokenek",
+  "staked_hive_tokens": "Tétezett HIVE tokenek",
+  "a_stable_coin_pegged_to_usd": "Egy stabil érme USD-hez kötött"
 }
