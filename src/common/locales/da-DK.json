@@ -1794,5 +1794,8 @@
     "delegate_modal_info_part2": "Bemærk venligst, at delegationer er øjeblikkelige, men det vil tage",
     "delegate_modal_info_part3": "dage for, at beløbet returneres til din konto efter annullering.",
     "delegate_modal_info_part4": "Klik på knappen nedenfor for at blive omdirigeret til HiveSinger for at fuldføre din transaktion.",
-    "available_voting_power": "Tilgængelig stemmestyrke for delegationer"
+    "available_voting_power": "Tilgængelig stemmestyrke for delegationer",
+    "liquid_hive_tokens": "Flydende HIVE-tokens",
+    "staked_hive_tokens": "Udsatte HIVE-tokens",
+    "a_stable_coin_pegged_to_usd": "En stabil mønt knyttet til USD"
   }

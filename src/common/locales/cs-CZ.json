@@ -1793,5 +1793,8 @@
   "delegate_modal_info_part2": "Upozorňujeme, že delegování je okamžité, ale bude to trvat",
   "delegate_modal_info_part3": "dní, aby byla částka po zrušení delegování vrácena na váš účet.",
   "delegate_modal_info_part4": "Kliknutím na tlačítko níže budete přesměrováni na HiveSinger k dokončení transakce.",
-  "available_voting_power": "Dostupná hlasovací síla pro delegace"
+  "available_voting_power": "Dostupná hlasovací síla pro delegace",
+  "liquid_hive_tokens": "Liquid HIVE tokeny",
+  "staked_hive_tokens": "Vsazené žetony HIVE",
+  "a_stable_coin_pegged_to_usd": "Stabilní coin navázaný na USD"
 }

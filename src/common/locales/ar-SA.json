@@ -1794,5 +1794,8 @@
   "delegate_modal_info_part2": "يرجى ملاحظة أن الوفود فورية ، ولكنها ستستغرق",
   "delegate_modal_info_part3": "أيام لإعادة المبلغ إلى حسابك بعد إلغاء التفويض.",
   "delegate_modal_info_part4": "انقر فوق الزر أدناه لإعادة توجيهك إلى HiveSinger لإكمال معاملتك.",
-  "available_voting_power": "قوة التصويت المتاحة للوفود"
+  "available_voting_power": "قوة التصويت المتاحة للوفود",
+  "liquid_hive_tokens": "الرموز السائلة لـ HIVE",
+  "staked_hive_tokens": "توكنات HIVE المكدسة",
+  "a_stable_coin_pegged_to_usd": "عملة ثابتة مربوطة بالدولار الأمريكي"
 }

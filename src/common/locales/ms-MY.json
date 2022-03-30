@@ -1792,5 +1792,8 @@
   "delegate_modal_info_part2": "Sila ambil perhatian bahawa delegasi adalah serta-merta, tetapi ia akan mengambil masa",
   "delegate_modal_info_part3": "hari untuk jumlah itu dikembalikan ke akaun anda selepas penyahwakilan.",
   "delegate_modal_info_part4": "Klik butang di bawah untuk diubah hala ke HiveSinger untuk menyelesaikan transaksi anda.",
-  "available_voting_power": "Kuasa mengundi yang ada untuk perwakilan"
+  "available_voting_power": "Kuasa mengundi yang ada untuk perwakilan",
+  "liquid_hive_tokens": "Token HIVE cecair",
+  "staked_hive_tokens": "Token HIVE yang dipertaruhkan",
+  "a_stable_coin_pegged_to_usd": "Syiling stabil yang ditambat pada USD"
 }

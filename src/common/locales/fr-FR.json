@@ -1793,5 +1793,8 @@
   "delegate_modal_info_part2": "Veuillez noter que les délégations sont instantanées, mais il faudra",
   "delegate_modal_info_part3": "jours pour que le montant soit restitué à votre compte après l'annulation de la délégation.",
   "delegate_modal_info_part4": "Cliquez sur le bouton ci-dessous pour être redirigé vers HiveSinger afin de finaliser votre transaction.",
-  "available_voting_power": "Pouvoir de vote disponible pour les délégations"
+  "available_voting_power": "Pouvoir de vote disponible pour les délégations",
+  "liquid_hive_tokens": "Jetons liquides HIVE",
+  "staked_hive_tokens": "Jetons HIVE jalonnés",
+  "a_stable_coin_pegged_to_usd": "Une pièce stable indexée sur l'USD"
 }

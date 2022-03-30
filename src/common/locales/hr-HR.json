@@ -1794,5 +1794,8 @@
   "delegate_modal_info_part2": "Imajte na umu da su delegacije trenutne, ali će potrajati",
   "delegate_modal_info_part3": "dana da se iznos vrati na vaš račun nakon poništavanja delegiranja.",
   "delegate_modal_info_part4": "Kliknite donji gumb kako biste bili preusmjereni na HiveSinger kako biste dovršili svoju transakciju.",
-  "available_voting_power": "Dostupna moć glasa za delegacije"
+  "available_voting_power": "Dostupna moć glasa za delegacije",
+  "liquid_hive_tokens": "Tekući HIVE tokeni",
+  "staked_hive_tokens": "Uloženi tokeni HIVE",
+  "a_stable_coin_pegged_to_usd": "Stabilan novčić vezan za USD"
 }

@@ -1794,5 +1794,8 @@
   "delegate_modal_info_part2": "委任は即座に行われますが、時間がかかることに注意してください",
   "delegate_modal_info_part3": "委任解除後にアカウントに返される金額の日数。",
   "delegate_modal_info_part4": "下のボタンをクリックしてHiveSingerにリダイレクトし、トランザクションを完了します。",
-  "available_voting_power": "代表団に利用可能な投票権"
+  "available_voting_power": "代表団に利用可能な投票権",
+  "liquid_hive_tokens": "LiquidHIVEトークン",
+  "staked_hive_tokens": "ステーキングされたHIVEトークン",
+  "a_stable_coin_pegged_to_usd": "USDに固定された安定したコイン"
 }
