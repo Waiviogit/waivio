@@ -4,6 +4,7 @@
 .nightmode {
   .MainPageHeader {
     background: @grey-nero;
+    box-shadow: 1px 8px 15px -11px rgb(81 86 91);
 
     &__logo b,
     &__link,
@@ -17,7 +18,15 @@
 
       .ant-input {
         border-radius: 8px;
-        border: 1px solid @white-smoke !important;
+        border: 1px solid @normal-grey !important;
+      }
+
+      .ant-input-search-icon {
+        color: @white-smoke;
+      }
+
+      .ant-input::placeholder {
+        color: @white-smoke;
       }
     }
 
@@ -27,6 +36,16 @@
 
     .DiningFiltersClass {
       background: @grey-nero;
+    }
+
+    .SearchAllResult {
+      &__type-wrap {
+        border: 1px solid @normal-grey;
+      }
+
+      &__type--active {
+        border: 1px solid @dusty-gray;
+      }
     }
 
     &__buttonWrap {
