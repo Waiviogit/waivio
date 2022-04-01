@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import TransactionCardContainer from './TransactionCardContainer';
 
 const DepositeCard = props => (
@@ -11,7 +12,9 @@ const DepositeCard = props => (
     color={'green'}
     fractionDigits={5}
   >
-    <div>Deposit</div>
+    <div>
+      <FormattedMessage id="Deposit" defaultMessage="Deposit" />
+    </div>
   </TransactionCardContainer>
 );
 

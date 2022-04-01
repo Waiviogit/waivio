@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import TransactionCardContainer from './TransactionCardContainer';
 import '../UserWalletTransactions/UserWalletTransactions.less';
 
 const DelegatedTo = ({ timestamp, quantity, symbol, to, from, account }) => {
   const isReceive = account === to;
   const link = isReceive ? from : to;
-  const delegation = isReceive ? 'Delegation from' : 'Delegated to';
 
   return (
     <TransactionCardContainer
@@ -17,7 +17,11 @@ const DelegatedTo = ({ timestamp, quantity, symbol, to, from, account }) => {
       color={isReceive ? 'green' : 'red'}
     >
       <p>
-        {delegation}
+        {isReceive ? (
+          <FormattedMessage id="delegation_from" defaultMessage="Delegation from" />
+        ) : (
+          <FormattedMessage id="delegated_to" defaultMessage="Delegated to" />
+        )}
         <span className="UserWalletTransactions__delegated">
           <a className="UserWalletTransactions__delegated-color" href={`/@${link}`}>
             {link}
