@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import TransactionCardContainer from './TransactionCardContainer';
 
 const MarketCancel = ({ timestamp, quantity, orderType, symbol }) => (
@@ -9,7 +10,13 @@ const MarketCancel = ({ timestamp, quantity, orderType, symbol }) => (
     symbol={symbol}
     iconType={'close'}
   >
-    <span>Cancel order to {orderType}</span>
+    <span>
+      {' '}
+      <FormattedMessage
+        id={`cancel_order_to_${orderType}`}
+        defaultMessage={`Cancel order to ${orderType}`}
+      />{' '}
+    </span>
   </TransactionCardContainer>
 );
 

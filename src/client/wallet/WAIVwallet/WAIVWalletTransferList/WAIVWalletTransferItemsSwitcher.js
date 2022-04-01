@@ -2,6 +2,7 @@ import React from 'react';
 import { round } from 'lodash';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { injectIntl } from 'react-intl';
 
 import PowerUpTransactionFrom from '../../TransfersCards/PowerUpTransactionFrom';
 import UndelegateCompleted from '../../TransfersCards/UndelegateCompleted';
@@ -28,7 +29,7 @@ import DepositeCard from '../../TransfersCards/DepositeCard';
 import WithdawCard from '../../TransfersCards/WithdrawCard';
 import DelegateInstructionCard from '../../TransfersCards/DelegateInstructionCard/DelegateInstructionCard';
 
-const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
+const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => {
   const walletType = useSelector(getCurrentWalletType);
   const isMobileDevice = isMobile();
   const powerSymbol = transaction.symbol === 'WAIV' ? 'WP' : transaction.symbol;
@@ -204,7 +205,10 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           quantity={transaction.quantity}
           authorperm={transaction.authorperm}
           memo={transaction.memo}
-          description={'Curator rewards'}
+          description={intl.formatMessage({
+            id: 'curator_rewards',
+            defaultMessage: 'Curator rewards',
+          })}
         />
       );
 
@@ -216,7 +220,10 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           quantity={transaction.quantity}
           authorperm={transaction.authorperm}
           memo={transaction.memo}
-          description={'Author rewards'}
+          description={intl.formatMessage({
+            id: 'author_rewards',
+            defaultMessage: 'Author rewards',
+          })}
         />
       );
 
@@ -246,8 +253,11 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           quantity={transaction.quantity}
           authorperm={transaction.authorperm}
           memo={transaction.memo}
-          type={'comment'}
-          description={'Curator rewards'}
+          type={intl.formatMessage({ id: 'comment_lowercase', defaultMessage: 'comment' })}
+          description={intl.formatMessage({
+            id: 'curator_rewards',
+            defaultMessage: 'Curator rewards',
+          })}
         />
       );
 
@@ -260,7 +270,10 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
           quantity={transaction.quantity}
           authorperm={transaction.authorperm}
           memo={transaction.poolId ? `{poolId: ${transaction.poolId}}` : transaction.memo}
-          description={'Mining rewards'}
+          description={intl.formatMessage({
+            id: 'mining_rewards',
+            defaultMessage: 'Mining rewards',
+          })}
         />
       );
 
@@ -310,6 +323,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName }) => {
 
 WAIVWalletTransferItemsSwitcher.propTypes = {
   currentName: PropTypes.string.isRequired,
+  intl: PropTypes.shape().isRequired,
   transaction: PropTypes.shape({
     to: PropTypes.string,
     from: PropTypes.string,
@@ -340,4 +354,4 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
   }).isRequired,
 };
 
-export default WAIVWalletTransferItemsSwitcher;
+export default injectIntl(WAIVWalletTransferItemsSwitcher);
