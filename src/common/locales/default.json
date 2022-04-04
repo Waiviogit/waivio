@@ -1837,5 +1837,6 @@
   "delegate_modal_info_part4": "Click the button below to be redirected to HiveSinger to complete your transaction.",
   "liquid_hive_tokens": "Liquid HIVE tokens",
   "staked_hive_tokens": "Staked HIVE tokens",
-  "a_stable_coin_pegged_to_usd": "A stable coin pegged to USD"
+  "a_stable_coin_pegged_to_usd": "A stable coin pegged to USD",
+  "hive_engine_blockchain_status":"HIVE Engine blockchain status:"
 }

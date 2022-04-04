@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
 import Loading from '../../components/Icon/Loading';
@@ -11,6 +12,7 @@ import {
 } from '../../../store/walletStore/walletSelectors';
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import HiveEngineCurrencyItem from './HiveEngineCurrencyItem/HiveEngineCurrencyItem';
+import './HiveEngineSummaryInfo.less';
 
 const HiveEngineSummaryInfo = props => {
   const combinedList = !isEmpty(props.tokensList)
@@ -27,11 +29,23 @@ const HiveEngineSummaryInfo = props => {
   }, 0);
 
   return (
-    <WalletSummaryInfo estAccValue={estAccValue}>
-      {combinedList.map(token => (
-        <HiveEngineCurrencyItem key={token.symbol} token={token} hiveRate={props.hiveRate} />
-      ))}
-    </WalletSummaryInfo>
+    <div>
+      <div className="HiveEngineSummaryInfo__hive-engine-blockchain-status">
+        <FormattedMessage
+          id="hive_engine_blockchain_status"
+          defaultMessage="HIVE Engine blockchain status:"
+        />
+        <div className="HiveEngineSummaryInfo__hive-engine-blockchain-status-green">
+          {' '}
+          Up-to-date{' '}
+        </div>
+      </div>
+      <WalletSummaryInfo estAccValue={estAccValue}>
+        {combinedList.map(token => (
+          <HiveEngineCurrencyItem key={token.symbol} token={token} hiveRate={props.hiveRate} />
+        ))}
+      </WalletSummaryInfo>
+    </div>
   );
 };
 
