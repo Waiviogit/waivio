@@ -1777,7 +1777,7 @@
   "match_bots_add_curator": "Добавить нового куратора",
   "matchBot_title_edit_rule_curator": "Редактировать правило матч-бота для куратора",
   "matchBot_curator_btn_add": "Добавить куратора",
-  "matchBot_curator_vote_ratio": "Соотношение голосов (1%-1000%):",
+  "matchBot_curator_vote_ratio": "Соотношение голосов (1%-10000%):",
   "matchBot_curator_vote_ratio_msg": "Бот для подбора кураторов публикует голоса только с оценочной стоимостью 0,01 HBD или более.",
   "matchBot_curator_downvotes": "Повторите также отрицательные голоса куратора",
   "matchBot_curator_comments": "Лайкнуть комментарии автора, поддержанные куратором",
