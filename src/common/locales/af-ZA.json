@@ -1798,5 +1798,11 @@
   "available_voting_power": "Beskikbare stemkrag vir afvaardigings",
   "liquid_hive_tokens": "Vloeibare HIVE-tokens",
   "staked_hive_tokens": "HIVE-tekens uitgesteek",
-  "a_stable_coin_pegged_to_usd": "'n Stabiele muntstuk gekoppel aan USD"
+  "a_stable_coin_pegged_to_usd": "'n Stabiele muntstuk gekoppel aan USD",
+  "limit_order_to_buy": "Beperk bestelling om te koop",
+  "limit_order_to_sell": "Beperk bestelling om te verkoop",
+  "market_order_to_sell": "Markorder om te verkoop",
+  "market_order_to_buy": "Markorde om te koop",
+  "market_expired_to_buy": "Mark het verval om te koop",
+  "market_expired_to_sell": "Mark het verval om te verkoop"
 }

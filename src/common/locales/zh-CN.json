@@ -1796,5 +1796,11 @@
   "available_voting_power": "代表团的可用投票权",
   "liquid_hive_tokens": "液态 HIVE 代币",
   "staked_hive_tokens": "质押的 HIVE 代币",
-  "a_stable_coin_pegged_to_usd": "与美元挂钩的稳定币"
+  "a_stable_coin_pegged_to_usd": "与美元挂钩的稳定币",
+  "limit_order_to_buy": "限价单买入",
+  "limit_order_to_sell": "限价单卖出",
+  "market_order_to_sell": "市价单卖出",
+  "market_order_to_buy": "市价单买",
+  "market_expired_to_buy": "市场到期买入",
+  "market_expired_to_sell": "市场到期卖出"
 }

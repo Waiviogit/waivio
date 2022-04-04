@@ -1796,5 +1796,11 @@
   "available_voting_power": "Dostępna siła głosu dla delegacji",
   "liquid_hive_tokens": "Płynne żetony HIVE",
   "staked_hive_tokens": "Postawione tokeny HIVE",
-  "a_stable_coin_pegged_to_usd": "Stabilna moneta powiązana z USD"
+  "a_stable_coin_pegged_to_usd": "Stabilna moneta powiązana z USD",
+  "limit_order_to_buy": "Limit zamówienia do zakupu",
+  "limit_order_to_sell": "Limit zlecenia na sprzedaż",
+  "market_order_to_sell": "Zlecenie rynkowe na sprzedaż",
+  "market_order_to_buy": "Zlecenie rynkowe kupna",
+  "market_expired_to_buy": "Rynek wygasł, aby kupić",
+  "market_expired_to_sell": "Rynek wygasł do sprzedaży"
 }
