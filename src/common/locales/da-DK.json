@@ -1797,5 +1797,11 @@
     "available_voting_power": "Tilgængelig stemmestyrke for delegationer",
     "liquid_hive_tokens": "Flydende HIVE-tokens",
     "staked_hive_tokens": "Udsatte HIVE-tokens",
-    "a_stable_coin_pegged_to_usd": "En stabil mønt knyttet til USD"
+    "a_stable_coin_pegged_to_usd": "En stabil mønt knyttet til USD",
+    "limit_order_to_buy": "Begræns ordre til at købe",
+    "limit_order_to_sell": "Begræns ordre til salg",
+    "market_order_to_sell": "Markedsordre til salg",
+    "market_order_to_buy": "Markedsordre til at købe",
+    "market_expired_to_buy": "Marked udløb for at købe",
+    "market_expired_to_sell": "Marked udløb for at sælge"
   }

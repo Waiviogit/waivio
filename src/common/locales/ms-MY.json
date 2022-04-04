@@ -1795,5 +1795,11 @@
   "available_voting_power": "Kuasa mengundi yang ada untuk perwakilan",
   "liquid_hive_tokens": "Token HIVE cecair",
   "staked_hive_tokens": "Token HIVE yang dipertaruhkan",
-  "a_stable_coin_pegged_to_usd": "Syiling stabil yang ditambat pada USD"
+  "a_stable_coin_pegged_to_usd": "Syiling stabil yang ditambat pada USD",
+  "limit_order_to_buy": "Hadkan pesanan untuk membeli",
+  "limit_order_to_sell": "Hadkan pesanan untuk dijual",
+  "market_order_to_sell": "Pesanan pasaran untuk dijual",
+  "market_order_to_buy": "Pesanan pasaran untuk membeli",
+  "market_expired_to_buy": "Pasaran tamat tempoh untuk membeli",
+  "market_expired_to_sell": "Pasaran tamat tempoh untuk dijual"
 }

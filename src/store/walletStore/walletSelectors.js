@@ -185,6 +185,11 @@ export const getHasMoreHiveEngineTransactionHistory = createSelector(
   state => state.hiveEngineTransactionHistory.hasMore,
 );
 
+export const getHiveEngineDelayInfo = createSelector(
+  [walletState],
+  state => state.hiveEngineDelayInfo,
+);
+
 export const getTokensBalanceList = createSelector([walletState], state => state.tokensBalanceList);
 
 export const getSwapTokensBalanceList = createSelector(
