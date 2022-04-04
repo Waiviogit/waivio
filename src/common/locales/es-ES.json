@@ -1797,5 +1797,11 @@
   "available_voting_power": "Poder de voto disponible para las delegaciones",
   "liquid_hive_tokens": "Fichas Liquid HIVE",
   "staked_hive_tokens": "Fichas HIVE replanteadas",
-  "a_stable_coin_pegged_to_usd": "Una moneda estable vinculada al USD"
+  "a_stable_coin_pegged_to_usd": "Una moneda estable vinculada al USD",
+  "limit_order_to_buy": "Límite de pedido para comprar",
+  "limit_order_to_sell": "Límite de orden para vender",
+  "market_order_to_sell": "Orden de mercado para vender",
+  "market_order_to_buy": "Orden de mercado para comprar",
+  "market_expired_to_buy": "Mercado vencido para comprar",
+  "market_expired_to_sell": "Mercado vencido para vender"
 }

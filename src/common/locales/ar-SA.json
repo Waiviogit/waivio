@@ -1797,5 +1797,11 @@
   "available_voting_power": "قوة التصويت المتاحة للوفود",
   "liquid_hive_tokens": "الرموز السائلة لـ HIVE",
   "staked_hive_tokens": "توكنات HIVE المكدسة",
-  "a_stable_coin_pegged_to_usd": "عملة ثابتة مربوطة بالدولار الأمريكي"
+  "a_stable_coin_pegged_to_usd": "عملة ثابتة مربوطة بالدولار الأمريكي",
+  "limit_order_to_buy": "أمر محدد للشراء",
+  "limit_order_to_sell": "أمر محدد للبيع",
+  "market_order_to_sell": "أمر السوق بالبيع",
+  "market_order_to_buy": "أمر السوق للشراء",
+  "market_expired_to_buy": "انتهت صلاحية السوق للشراء",
+  "market_expired_to_sell": "انتهت صلاحية السوق للبيع"
 }

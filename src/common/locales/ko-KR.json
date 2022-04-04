@@ -1797,5 +1797,11 @@
   "available_voting_power": "위임에 사용 가능한 투표권",
   "liquid_hive_tokens": "액체 HIVE 토큰",
   "staked_hive_tokens": "스테이킹된 HIVE 토큰",
-  "a_stable_coin_pegged_to_usd": "USD에 고정된 스테이블 코인"
+  "a_stable_coin_pegged_to_usd": "USD에 고정된 스테이블 코인",
+  "limit_order_to_buy": "구매 제한 주문",
+  "limit_order_to_sell": "판매 제한 주문",
+  "market_order_to_sell": "매도할 시장가 주문",
+  "market_order_to_buy": "매수할 시장가 주문",
+  "market_expired_to_buy": "시장이 구매 만료됨",
+  "market_expired_to_sell": "판매가 만료된 시장"
 }

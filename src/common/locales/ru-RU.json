@@ -1866,5 +1866,11 @@
   "available_voting_power": "Доступная сила голоса для делегаций",
   "liquid_hive_tokens": "Ликвидные токены HIVE",
   "staked_hive_tokens": "Застейканные токены HIVE",
-  "a_stable_coin_pegged_to_usd": "Стабильная монета, привязанная к доллару США"
+  "a_stable_coin_pegged_to_usd": "Стабильная монета, привязанная к доллару США",
+  "limit_order_to_buy": "Лимитный ордер на покупку",
+  "limit_order_to_sell": "Лимитный ордер на продажу",
+  "market_order_to_sell": "Рыночный ордер на продажу",
+  "market_order_to_buy": "Рыночный ордер на покупку",
+  "market_expired_to_buy": "Маркет истек, чтобы купить",
+  "market_expired_to_sell": "Маркет истек для продажи"
 }
