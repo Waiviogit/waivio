@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import { ceil } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
-import { calculateVotePower } from '../../common/helpers/user';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
+import { calculateVotePowerForSlider } from '../vendor/steemitHelpers';
 
 import './LikeSection.less';
 
@@ -64,7 +64,7 @@ class LikeSection extends React.Component {
 
   calculateVoteWorth = value => {
     const { user, rewardFund, rate, onVotePercentChange } = this.props;
-    const voteWorth = ceil((calculateVotePower(user, rewardFund, rate) * value) / 100, 3);
+    const voteWorth = ceil((calculateVotePowerForSlider(user, rewardFund, rate) * value) / 100, 3);
 
     this.setState({ votePercent: value, voteWorth });
 
