@@ -678,3 +678,16 @@ export const setShowRewards = check => ({
   type: SET_SHOW_REWARDS,
   payload: check,
 });
+
+export const GET_HIVE_ENGINE_STATUS = '@wallet/GET_HIVE_ENGINE_STATUS';
+
+export const getHiveEngineStatus = () => (dispatch, getState, { busyAPI }) => {
+  busyAPI.instance.subscribe((res, mess) => {
+    if (mess.type === 'hiveEngineDelay' && mess.notification.delay) {
+      dispatch({
+        type: GET_HIVE_ENGINE_STATUS,
+        payload: mess.notification,
+      });
+    }
+  });
+};
