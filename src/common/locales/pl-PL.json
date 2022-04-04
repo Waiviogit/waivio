@@ -1802,5 +1802,13 @@
   "market_order_to_sell": "Zlecenie rynkowe na sprzedaż",
   "market_order_to_buy": "Zlecenie rynkowe kupna",
   "market_expired_to_buy": "Rynek wygasł, aby kupić",
-  "market_expired_to_sell": "Rynek wygasł do sprzedaży"
+  "market_expired_to_sell": "Rynek wygasł do sprzedaży",
+  "delegation_from": "Delegacja z",
+  "delegated_to": "Delegowane do",
+  "undelegated_started": "Niedelegowane rozpoczęte",
+  "lowercase_to": "do",
+  "lowercase_from": "od",
+  "undelegated_completed": "Niedelegowane ukończone",
+  "bought": "Kupił",
+  "sold": "Sprzedany"
 }

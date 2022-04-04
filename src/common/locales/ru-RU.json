@@ -1872,5 +1872,13 @@
   "market_order_to_sell": "Рыночный ордер на продажу",
   "market_order_to_buy": "Рыночный ордер на покупку",
   "market_expired_to_buy": "Маркет истек, чтобы купить",
-  "market_expired_to_sell": "Маркет истек для продажи"
+  "market_expired_to_sell": "Маркет истек для продажи",
+  "delegation_from": "Делегация от",
+  "delegated_to": "Делегировано",
+  "undelegated_started": "Начато возвращение делегации",
+  "lowercase_to": "к",
+  "lowercase_from": "от",
+  "undelegated_completed": "Завершено возвращение делегации",
+  "bought": "Куплено",
+  "sold": "Продано"
 }

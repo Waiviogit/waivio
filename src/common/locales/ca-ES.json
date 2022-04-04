@@ -1803,5 +1803,13 @@
   "market_order_to_sell": "Ordre de mercat per vendre",
   "market_order_to_buy": "Comanda de mercat per comprar",
   "market_expired_to_buy": "Mercat caducat per comprar",
-  "market_expired_to_sell": "Mercat vençut per vendre"
+  "market_expired_to_sell": "Mercat vençut per vendre",
+  "delegation_from": "Delegació de",
+  "delegated_to": "Delegat a",
+  "undelegated_started": "Començat sense delegació",
+  "lowercase_to": "a",
+  "lowercase_from": "des de",
+  "undelegated_completed": "Completat sense delegació",
+  "bought": "Comprat",
+  "sold": "Vengut"
 }

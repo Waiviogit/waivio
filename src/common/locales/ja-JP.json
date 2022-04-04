@@ -1803,5 +1803,13 @@
   "market_order_to_sell": "販売する成行注文",
   "market_order_to_buy": "購入する成行注文",
   "market_expired_to_buy": "市場は購入するために期限切れになりました",
-  "market_expired_to_sell": "市場は販売期限が切れました"
+  "market_expired_to_sell": "市場は販売期限が切れました",
+  "delegation_from": "からの委任",
+  "delegated_to": "に委任",
+  "undelegated_started": "委任されていない開始",
+  "lowercase_to": "に",
+  "lowercase_from": "から",
+  "undelegated_completed": "委任されていない完了",
+  "bought": "買った",
+  "sold": "販売済み"
 }

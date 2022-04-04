@@ -1804,5 +1804,13 @@
   "market_order_to_sell": "Markorder om te verkoop",
   "market_order_to_buy": "Markorde om te koop",
   "market_expired_to_buy": "Mark het verval om te koop",
-  "market_expired_to_sell": "Mark het verval om te verkoop"
+  "market_expired_to_sell": "Mark het verval om te verkoop",
+  "delegation_from": "Afvaardiging van",
+  "delegated_to": "Gedelegeer aan",
+  "undelegated_started": "Ongedelegeer het begin",
+  "lowercase_to": "aan",
+  "lowercase_from": "van",
+  "undelegated_completed": "Ongedelegeer voltooi",
+  "bought": "Gekoop",
+  "sold": "Verkoop"
 }

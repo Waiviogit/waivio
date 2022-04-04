@@ -1802,5 +1802,13 @@
   "market_order_to_sell": "Ordem de mercado para vender",
   "market_order_to_buy": "Ordem de mercado para comprar",
   "market_expired_to_buy": "Mercado expirou para comprar",
-  "market_expired_to_sell": "Mercado expirou para vender"
+  "market_expired_to_sell": "Mercado expirou para vender",
+  "delegation_from": "Delegação de",
+  "delegated_to": "Delegado a",
+  "undelegated_started": "Iniciado sem delegação",
+  "lowercase_to": "para",
+  "lowercase_from": "a partir de",
+  "undelegated_completed": "Não delegado concluído",
+  "bought": "Comprado",
+  "sold": "Vendido"
 }

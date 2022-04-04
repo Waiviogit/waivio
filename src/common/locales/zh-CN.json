@@ -1802,5 +1802,13 @@
   "market_order_to_sell": "市价单卖出",
   "market_order_to_buy": "市价单买",
   "market_expired_to_buy": "市场到期买入",
-  "market_expired_to_sell": "市场到期卖出"
+  "market_expired_to_sell": "市场到期卖出",
+  "delegation_from": "代表团来自",
+  "delegated_to": "委派给",
+  "undelegated_started": "未授权开始",
+  "lowercase_to": "到",
+  "lowercase_from": "从",
+  "undelegated_completed": "未授权完成",
+  "bought": "买",
+  "sold": "卖"
 }
