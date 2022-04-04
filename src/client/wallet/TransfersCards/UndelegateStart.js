@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import TransactionCardContainer from './TransactionCardContainer';
 
 const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity }) => {
@@ -8,7 +9,7 @@ const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity }) => 
     ? {
         description: (
           <span>
-            from{' '}
+            <FormattedMessage id="lowercase_from" defaultMessage="from" />{' '}
             <a href={`/@${to}`} className="username">
               {to}
             </a>{' '}
@@ -19,7 +20,7 @@ const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity }) => 
     : {
         description: (
           <span>
-            to{' '}
+            <FormattedMessage id="lowercase_to" defaultMessage="to" />{' '}
             <a href={`/@${from}`} className="username">
               {from}
             </a>{' '}
@@ -37,7 +38,10 @@ const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity }) => 
       color={cardInfo.color}
       point={cardInfo.point}
     >
-      <span>Undelegated started {(to || from) && cardInfo.description} </span>{' '}
+      <span>
+        <FormattedMessage id="undelegated_started" defaultMessage="Undelegated started" />{' '}
+        {(to || from) && cardInfo.description}{' '}
+      </span>{' '}
     </TransactionCardContainer>
   );
 };

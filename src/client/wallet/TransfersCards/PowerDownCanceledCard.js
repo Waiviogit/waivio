@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import CardsTimeStamp from './CardsTimeStamp';
 
@@ -9,7 +10,10 @@ const PowerDownCanceledCard = ({ timestamp, amount }) => (
     </div>
     <div className="UserWalletTransactions__content">
       <div className="UserWalletTransactions__content-recipient">
-        <div>Canceled power down</div>
+        <div>
+          {' '}
+          <FormattedMessage id="canceled_power_down" defaultMessage="Canceled power down" />
+        </div>
         <span className={'UserWalletTransactions__marginLeft'}>{amount}</span>
       </div>
       <CardsTimeStamp timestamp={timestamp} />
