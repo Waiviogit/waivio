@@ -1840,9 +1840,6 @@
   "liquid_hive_tokens": "Liquid HIVE tokens",
   "staked_hive_tokens": "Staked HIVE tokens",
   "a_stable_coin_pegged_to_usd": "A stable coin pegged to USD",
-  "hive_engine_blockchain_status":"HIVE Engine blockchain status:",
-  "withdraw_vesting_route_is_set": "Withdraw vesting route is set",
-  "percent": "Percent",
   "delegation_from": "Delegation from",
   "delegated_to": "Delegated to",
   "undelegated_started": "Undelegated started",
@@ -1858,5 +1855,8 @@
   "post": "post",
   "comment_lowercase": "comment",
   "mining_rewards": "Mining rewards",
-  "deposit_instruction": "Deposit instruction"
+  "deposit_instruction": "Deposit instruction",
+  "hive_engine_blockchain_status":"HIVE Engine blockchain status:",
+  "withdraw_vesting_route_is_set": "Withdraw vesting route is set",
+  "percent": "Percent"
 }
